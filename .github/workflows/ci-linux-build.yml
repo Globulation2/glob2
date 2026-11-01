@@ -19,6 +19,9 @@ on:
         required: true
         type: string
 
+      desktop_localization:
+        type: boolean
+        default: false
       build_only:
         type: boolean
         default: false
@@ -181,8 +184,20 @@ jobs:
             targets=(build/linux/client/release/src/glob2 unit-tests engine-tests maxima-strategy-dump map-report-test map-generator-golden-test lan-test software-render-benchmark menu-colony-harness)
           fi
           if [ '${{ inputs.web_native }}' = true ]; then targets+=(transport-test); fi
+          if [ '${{ inputs.desktop_localization }}' = true ] && [ '${{ inputs.compiler }}' = g++-13 ] && [ '${{ inputs.runner }}' = ubuntu-24.04 ] && [ '${{ inputs.generator_only }}' != true ]; then targets+=(translation-preview-harness); fi
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CC=${{ inputs.c_compiler }} CXX=${{ inputs.compiler == 'clang-18' && 'clang++-18' || inputs.compiler }} -j$(nproc) release=1 server=0 "${targets[@]}"
 
+      - name: Capture actual registered Thai menus and gameplay on primary Linux
+        if: ${{ !cancelled() && inputs.desktop_localization && inputs.compiler == 'g++-13' && inputs.runner == 'ubuntu-24.04' && !inputs.generator_only && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        run: |
+          export LD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          python3 tools/capture_localization_platform.py --binary build/linux/client/release/test/TranslationPreviewHarness --output artifacts/localization-linux-${{ inputs.runner }}-${{ inputs.compiler }}
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && inputs.desktop_localization && inputs.compiler == 'g++-13' && inputs.runner == 'ubuntu-24.04' && !inputs.generator_only }}
+        with:
+          name: localization-linux-${{ inputs.runner }}-${{ inputs.compiler }}
+          path: artifacts/localization-linux-${{ inputs.runner }}-${{ inputs.compiler }}/
+          if-no-files-found: error
       - name: Package built Linux test programs
         id: package_linux_test_programs
         if: steps.build_glob2_and_the_regression_harnesses.outcome == 'success'

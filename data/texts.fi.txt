@@ -6818,7 +6818,43 @@ Eläinpolut
 Kalojen määrä
 [scenario messages]
 Viestit ▸
+[script error at %0:%1: %2]
+Virhe kohdassa %0:%1: %2
 [Camp-site amount]
 Leiripaikkojen määrä
+[script compilation success]
+Käännös onnistui
+[script compilation failure %0:%1:(%2):%3]
+Käännösvirhe: %0:%1:(%2):%3
+[script compilation failed %0]
+Käännös epäonnistui: %0
+[script loading failed %0]
+Skriptin lataaminen tiedostosta %0 epäonnistui
+[script saving failed %0]
+Skriptin tallentaminen tiedostoon %0 epäonnistui.
+[script line %0 column %1]
+Rivi: %0 Sarake: %1
+[game stopped %0]
+Peli pysäytetty: %0
+[game stopped script help]
+Tarkista upotettu JavaScript-koodi ja sen resurssien käyttö ennen pelin uudelleenkäynnistystä.
+[missing map generator %0]
+Karttageneraattori puuttuu: %0. Valittiin peliin sisältyvä maisema.
+[hive standing order paused]
+Pysyvä käsky vaatii huomiota ja on keskeytetty.
+[hive connection changed orders paused]
+Yhteys muuttui. Tarkista keskeytetyt pysyvät käskysi ennen niiden jatkamista.
+[hive standing order fresh instruction]
+Pysyvä käsky tarvitsee uuden ohjeen yhteyden muodostamisen jälkeen. Voit peruuttaa sen tai pyytää komentajaa korvaamaan sen.
+[hive order confirmation failed]
+Käskyä ei voitu vahvistaa. Tarkista pysyvät käskysi ennen niiden jatkamista.
+[hive previous order sending]
+Edellisen käskysi lähetys on yhä kesken. Tämä viesti on säilytetty; avaa komentaja lähettääksesi sen uudelleen.
+[hive order received %0]
+Käsky vastaanotettu: %0
+[hive order not confirmed]
+Käskyä ei vahvistettu. Avaa komentaja yrittääksesi uudelleen; viestisi on säilytetty.
+[hive standing order update failed]
+Pysyvän käskyn päivitys epäonnistui. Käskysi on keskeytetty tällä laitteella; yritä uudelleen samalla toiminnolla.
 [AI for all computer colonies]
 Tekoäly kaikille tietokoneen ohjaamille siirtokunnille

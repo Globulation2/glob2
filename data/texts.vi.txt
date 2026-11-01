@@ -6818,7 +6818,43 @@ Chỉ GL
 Lượng cá
 [scenario messages]
 Thông điệp ▸
+[script error at %0:%1: %2]
+Lỗi tại %0:%1: %2
 [Camp-site amount]
 Số khu cắm trại
+[script compilation success]
+Biên dịch thành công
+[script compilation failure %0:%1:(%2):%3]
+Lỗi biên dịch: %0:%1:(%2):%3
+[script compilation failed %0]
+Biên dịch thất bại: %0
+[script loading failed %0]
+Quá trình tải tập lệnh từ %0 thất bại.
+[script saving failed %0]
+Lưu tập lệnh vào %0 không thành công
+[script line %0 column %1]
+Dòng: %0 Cột: %1
+[game stopped %0]
+Trò chơi đã dừng: %0
+[game stopped script help]
+Hãy kiểm tra mã JavaScript được nhúng và mức sử dụng tài nguyên của mã trước khi khởi động lại trò chơi này.
+[missing map generator %0]
+Thiếu trình tạo bản đồ: %0. Đã chọn địa hình tích hợp sẵn.
+[hive standing order paused]
+Một lệnh thường trực cần được xử lý và đã bị tạm dừng.
+[hive connection changed orders paused]
+Kết nối đã thay đổi. Hãy xem lại các lệnh thường trực đang tạm dừng trước khi tiếp tục chúng.
+[hive standing order fresh instruction]
+Lệnh thường trực cần một chỉ thị mới sau khi kết nối lại. Bạn có thể hủy bỏ lệnh đó hoặc yêu cầu chỉ huy thay thế.
+[hive order confirmation failed]
+Không thể xác nhận một lệnh. Hãy xem lại các lệnh thường trực của bạn trước khi tiếp tục chúng.
+[hive previous order sending]
+Lệnh trước của bạn vẫn đang được gửi. Tin nhắn này đã được lưu giữ; hãy mở chỉ huy để gửi lại.
+[hive order received %0]
+Đã nhận lệnh: %0
+[hive order not confirmed]
+Lệnh chưa được xác nhận. Mở chỉ huy để thử lại; tin nhắn của bạn đã được lưu giữ.
+[hive standing order update failed]
+Cập nhật lệnh thường trực không thành công. Lệnh của bạn đang tạm dừng trên thiết bị này; hãy thử lại bằng thành phần điều khiển tương ứng.
 [AI for all computer colonies]
 AI cho mọi thuộc địa do máy tính điều khiển

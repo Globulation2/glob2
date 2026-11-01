@@ -135,7 +135,7 @@ Element MatchStartScreen::build(const Presentation &p)
 	if (failed)
 	{
 		body.push_back(row({icon(uiIcon(UIIcon::Warning), {24, theme().palette.danger}),
-							expanded(paragraph(tr("[match failed]") + (flow->failure().empty() ? "" : "\n" + flow->failure())))},
+							expanded(paragraph(tr("[match failed]") + (flow->failure().empty() ? "" : "\n" + failureText(flow->failure()))))},
 						   {p.pt(8), CrossAlign::Start}));
 	}
 	else if (narrow || !map)

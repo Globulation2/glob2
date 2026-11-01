@@ -6818,7 +6818,43 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 مقدار ماهی
 [scenario messages]
 پیام‌ها ▸
+[script error at %0:%1: %2]
+خطا در %0:%1: %2
 [Camp-site amount]
 تعداد اردوگاه‌ها
+[script compilation success]
+موفقیت در کامپایل
+[script compilation failure %0:%1:(%2):%3]
+خطای کامپایل: %0:%1:(%2):%3
+[script compilation failed %0]
+کامپایل ناموفق بود: %0
+[script loading failed %0]
+بارگیری اسکریپت از %0 ناموفق بود
+[script saving failed %0]
+ذخیره اسکریپت در %0 ناموفق بود
+[script line %0 column %1]
+سطر: %0 ستون: %1
+[game stopped %0]
+بازی متوقف شد: %0
+[game stopped script help]
+پیش از شروع دوبارهٔ این بازی، کد JavaScript تعبیه‌شده و میزان استفادهٔ آن از منابع را بررسی کنید.
+[missing map generator %0]
+مولد نقشه موجود نیست: %0. یک چشم‌انداز داخلی بازی انتخاب شد.
+[hive standing order paused]
+یک دستور دائمی به رسیدگی نیاز دارد و موقتاً متوقف شده است.
+[hive connection changed orders paused]
+اتصال تغییر کرده است. پیش از ازسرگیری، دستورهای دائمی متوقف‌شدهٔ خود را بررسی کنید.
+[hive standing order fresh instruction]
+یک دستور دائمی پس از اتصال مجدد به دستورالعمل جدیدی نیاز دارد. می‌توانید آن را لغو کنید یا از فرمانده بخواهید آن را جایگزین کند.
+[hive order confirmation failed]
+یک دستور تأیید نشد. پیش از ازسرگیری، دستورهای دائمی خود را بررسی کنید.
+[hive previous order sending]
+دستور قبلی شما هنوز در حال ارسال است. این پیام نگه داشته شده است؛ برای ارسال مجدد، فرمانده را باز کنید.
+[hive order received %0]
+دستور دریافت شد: %0
+[hive order not confirmed]
+دستور تأیید نشد. برای امتحان مجدد، فرمانده را باز کنید؛ پیام شما نگه داشته شده است.
+[hive standing order update failed]
+به‌روزرسانی دستور دائمی ناموفق بود. دستور شما در این دستگاه موقتاً متوقف است؛ با استفاده از کنترل مربوط دوباره تلاش کنید.
 [AI for all computer colonies]
 هوش مصنوعی برای همهٔ مستعمره‌های تحت کنترل رایانه

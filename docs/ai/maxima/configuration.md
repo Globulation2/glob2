@@ -57,6 +57,7 @@ The executable is built from `src/ai/maxima/MaximaStrategyDump.cpp` by the
 | `defense`, `tactics`, `assault`, `raiding`, `forward_support` | Defensive response, attack execution and optional forward services |
 | `recon`, `explorer_campaign`, `fruit` | Observation, explorer missions and fruit supply |
 | `scheduling` | Review intervals, phases and cooldowns |
+| `compatibility` | Retained wood-fertility diagnostics; these do not control protection |
 
 All clients simulating a new multiplayer match must use identical resolved
 settings. Resuming a saved game uses its stored strategy rather than the local

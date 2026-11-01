@@ -1390,10 +1390,19 @@ static void unifiedHospitalCapacity() {
     REQUIRE(a.collect_development_limits(a.context,1).upgradePriority(hospitalType,1)==20);
 }
 
-static void proactiveProtection() {
+static void proactiveClearingRespectsWoodQuota() {
     Fixture f; f.building(10,10,0);auto& a=*f.ai;auto& c=a.context;c.initialize();
     for(int y=0;y<64;++y)f.game.map.paintCell(0, y, WATER);
-    f.game.map.setResourceByIndex(3,11,WOOD,5);f.game.map.setResourceByIndex(4,11,WOOD,5);f.game.map.setResourceByIndex(5,11,WOOD,5);
+    const auto plantWood=[&](int x,int y) {
+        f.game.map.setResourceByIndex(x,y,WOOD,1); // one tile, not a brush-sized forest
+        f.game.map.setResourceAmount(f.game.map.coordToIndex(x,y),5);
+    };
+    // The remote grass donor is aligned; campaign wood is off the seed lattice.
+    for(int x:{4,6,8}) plantWood(x,11);
+    const int reserveIndex=35*64+3;
+    plantWood(3,35);
+    REQUIRE(f.game.addUnit(4,30,0,WORKER,0,0,0,0));
+    a.budget.farming_management_radius=0;
     a.timer=5000;a.budget.farming_enabled=true;a.budget.farming_protection_enabled=true;
     a.budget.farming_minimum_wood_fertility=0;
     a.budget.farming_wood_firebreak_enabled=false;
@@ -1401,6 +1410,7 @@ static void proactiveProtection() {
     a.budget.farming_min_workers_for_clearing=0;a.budget.farming_clearing_cooldown=0;
     a.budget.farming_clearing_duration=1500;a.budget.farming_clearing_quota=8;
     a.update_farming(c);
+    REQUIRE(a.select_wood_reserve(c).cells[reserveIndex]==1);
     for(auto o:c.managementOrders) if(auto p=dynamic_cast<Management::AddArea*>(o.get()))
         if(p->areaType==ForbiddenArea) for(auto xy:p->locations) f.game.map.addForbidden(xy.x,xy.y,f.player.team->teamNumber);
     c.managementOrders.clear();a.manage_land_clearing(c);
@@ -1411,20 +1421,25 @@ static void proactiveProtection() {
             if(f.game.map.isForbidden(xy.x,xy.y,f.player.team->me))++released;
             f.game.map.removeForbidden(xy.x,xy.y,f.player.team->teamNumber);
         }
-    REQUIRE(released>0);c.managementOrders.clear();a.timer+=64;a.update_farming(c);
+    // The reserve is outside the campaign; its donor is never released. Wood
+    // outside the quota already starts harvestable, with no old pattern to undo.
+    REQUIRE(released==0);
+    REQUIRE(f.game.map.isForbidden(3,35,f.player.team->me));
+    c.managementOrders.clear();a.timer+=64;a.update_farming(c);
     int openWood=0;
     for(int i=0;i<4096;++i) if(f.game.map.getTile(i%64,i/64).resource.type==WOOD
         &&f.game.map.warpDistSquare(x,y,i%64,i/64)<=16) {
         REQUIRE(!a.farm_protection_mask[i]);++openWood;
     }
     REQUIRE(openWood>0);
-    // Releasing the flag must allow the ordinary farming policy to resume.
+    // Ending a campaign must not recreate the obsolete uncapped wood pattern.
     ([&]{auto observation=c.scopeOwnerObservation();return c.cancel_or_destroy_building(a.proactive_clearing_flag,1u<<WORKER);}());
     c.managementOrders.clear();a.timer+=64;a.update_farming(c);
     int protectedAgain=0;
     for(int i=0;i<4096;++i) if(f.game.map.getTile(i%64,i/64).resource.type==WOOD
         &&f.game.map.warpDistSquare(x,y,i%64,i/64)<=16 && a.farm_protection_mask[i])++protectedAgain;
-    REQUIRE(protectedAgain>0);
+    REQUIRE(protectedAgain==0);
+    REQUIRE(a.farm_protection_mask[reserveIndex]);
 }
 }
 
@@ -1457,6 +1472,6 @@ TEST_SUITE("Maxima.Director")
 	TEST_CASE("third party tower") { glob2test::HeadlessGlobals globals; director_regressions::thirdPartyTower(); }
 	TEST_CASE("flying defenders and nonexploring magic threats") { glob2test::HeadlessGlobals globals; director_regressions::flyingArmyAndNonexploringMagicThreat(); }
 	TEST_CASE("disconnected army") { glob2test::HeadlessGlobals globals; director_regressions::disconnectedArmy(); }
-	TEST_CASE("proactive protection") { glob2test::HeadlessGlobals globals; director_regressions::proactiveProtection(); }
+	TEST_CASE("proactive clearing respects wood quota") { glob2test::HeadlessGlobals globals; director_regressions::proactiveClearingRespectsWoodQuota(); }
 	TEST_CASE("reused own id") { glob2test::HeadlessGlobals globals; director_regressions::reusedOwnId(); }
 }

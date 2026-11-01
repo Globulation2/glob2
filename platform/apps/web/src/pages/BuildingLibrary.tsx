@@ -1,3 +1,4 @@
+import { displayMessage } from '../i18n.tsx';
 import { statusLabel } from '../i18n.tsx';
 import { getLocale } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
@@ -70,7 +71,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
     setError(undefined);
     try {
       await operation();
-      setMessage('Saved.');
+      setMessage('Saved');
       setRevision((v) => v + 1);
     } catch (e) {
       setError(e instanceof Error ? e : new Error(String(e)));
@@ -167,7 +168,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
         </p>
       </details>
       {error && <ErrorNotice error={error} />}
-      {message && <p role="status">{message}</p>}
+      {message && <p role="status">{displayMessage(message)}</p>}
       {id ? (
         <Loaded load={detail}>
           {(family) =>
@@ -319,7 +320,10 @@ export function BuildingLibrary({ id }: { id?: string }) {
                       onClick={() => {
                         if (
                           !window.confirm(
-                            `Withdraw “${family.name}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.`,
+                            t(
+                              'Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.',
+                              { value0: family.name },
+                            ),
                           )
                         )
                           return;

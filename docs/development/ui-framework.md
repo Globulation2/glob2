@@ -48,6 +48,9 @@ as matches and the editor; see [render pacing](../architecture/rendering.md#targ
    not use raw pixel constants. The framework sizes text from the player's
    text size (in points on touch hosts), so a screen never scales fonts itself
    (see [Text size](#text-size)).
+   Use `p.textPt()` for widths that must grow with text, such as touch action
+   grids. Settings places its save-status note above the actions when the
+   available width cannot hold both comfortably at the chosen text size.
 6. **Text wraps or ellipsizes; it is never clipped silently.** Use
    `paragraph()` for wrapping text and `label()` for single lines that
    ellipsize. Controls shrink or wrap their labels within the framework's
@@ -119,7 +122,13 @@ progress; old displayed messages may retain their original wording or language
 fallback until the script emits another message.
 
 Campaign mission titles are localized for display while selection still uses
-original mission IDs. Unrecognized custom text is displayed as authored. Legacy desktop tutorial and
+original mission IDs. A fresh campaign editor uses the translated new-campaign
+label as its initial editable title, stripping native soft word-break hints before
+it can become a filename or progress identity. Loaded campaign titles and authored
+mission names, map paths and prerequisites retain their stored values. Script-editor
+status, cursor and file-failure wrappers use registered keys; compiler diagnostic
+payloads, source code and filenames remain technical or authored content.
+Unrecognized custom text is displayed as authored. Legacy desktop tutorial and
 history messages use the shared UTF-8 wrapper, including unspaced CJK text and
 explicit line breaks.
 
@@ -137,9 +146,26 @@ built from runtime data and unregistered wrappers still need contextual review.
 Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
 bindings. It also requires catalog keys for fixed UI metadata: AI tags and compatibility
 captions, connection-quality terms, route/admin/map labels, match verdicts, music
-moods/check guidance and skin model/material/shape/pose captions. Translate their displayed labels while preserving canonical protocol
-values in filters and requests. Render representative screens in each language to
-check font coverage, text fitting and layout. The legacy Arabic/Persian route in
+moods/check guidance and skin model/material/shape/pose captions. Translate their
+displayed labels while preserving canonical protocol values in filters and
+requests. Fixed studio copy passed through `ChatComposer`, `NewStudio`,
+`RevisionControls` and conversation/status props must be translated by the caller;
+project titles, prompts and generated responses remain user content. Fresh set
+workspaces start with the translated new-set title and category names with unused
+numeric suffixes for new entries. Fresh skin documents use the translated
+`My colony` title, and empty skin-name fields use the translated `New skin` label.
+`skinCopyName` reserves room for the translated copy suffix within both the form
+and protocol limits while preserving complete graphemes. This initialization
+leaves existing authored names, package UUIDs and executable preset/property
+identities unchanged. Newly cataloged legacy English UI may retain explicit
+English values and scoped
+`shared-values.json` exceptions in existing locales until translated; a completed
+new locale must translate those messages. Render representative screens in each
+language to check font coverage, text fitting and layout. Keep the skin material
+canvas and button grid at the same column count; give Thai labels more width and
+line height and allow descriptions to wrap. Center buttons with independent CSS
+`translate` when they inherit the shared design system's active `transform`, so
+pressing them preserves their pointer target. The legacy Arabic/Persian route in
 `TrueTypeFont` shapes text into visual order before rasterization and uses an
 explicit left-to-right SDL_ttf direction to prevent a second reordering pass.
 Complex script fonts retain their shaping tables and use logical directional
@@ -175,6 +201,64 @@ without changing its lesson or collapsed state; statistics paint above the minim
 Collapsed browser account actions retain their complete translated accessible
 names and show an icon in a 44-pixel target.
 
+Online music controls use `musicMoodLabel` for visible names and accessibility labels.
+The Bulgarian construction phase reuses `Build` (Изграждане), while `Building`
+continues to name a structure elsewhere. Keep mood identities and upload path
+segments canonical; translate the displayed label after selecting the wire value.
+Music notices retain original error objects and mark generated success explicitly.
+Bulgarian error captions translate explicit API message keys or show the reviewed
+generic failure, preserving raw download messages for other locales.
+Set property controls reuse reviewed captions for known properties. Other schema
+fields and material names appear as their exact identifiers in code styling;
+JSON keys and enum values remain canonical.
+
+### Native API error presentation
+
+`Online::ApiError` retains raw code, message and details for diagnostics and
+control flow, and decodes optional source `messageKey` and scalar
+`messageParams` separately. At a player-facing boundary use
+`Glob2UI::apiErrorText` before converting a typed error into a notice or exception.
+The wrapper reads the current StringTable language code. Do not rewrite
+PlatformClient diagnostics or translate script/JSON exception text with it.
+
+Local library and storage failures use `Glob2UI::exceptionText` at the UI catch
+boundary. Bulgarian shows an existing reviewed summary and logs the original
+diagnostic; other locales retain their previous message. Throw UI-only
+`PresentedError` for deliberately localized API or native messages so a catch
+preserves their specific wording. Its optional original diagnostic preserves
+logging and prior non-Bulgarian behavior. Repeated display paths use a
+per-context `DiagnosticText` cache: exact existing native keys retain their
+wording, unknown Bulgarian diagnostics use the reviewed summary, and unchanged
+failures do not log again on every paint. Keep raw validation and readiness data
+separate from displayed summaries. Hive reports retain their public raw string
+history; only explicit local producer metadata permits application acknowledgments
+to be translated. Remote reports and user-authored order text are never classified
+by matching their contents. Keep `PresentedError` out of models,
+protocols, storage and CLI code, and retain cleanup and rollback handling.
+
+Bulgarian and Thai use their reviewed online catalogs with the English source catalog.
+`tools/localization/build_online_error_catalog.py` generates the embedded resource
+with exact input SHA-256 identities. The shared `scons/online_error_catalog.py`
+rule is called independently by native, serial/threaded browser, Android and iOS
+builders, including test and unit-production consumers. It generates under each
+builder’s existing `include/generated` directory, with explicit consumer
+prerequisites and no global include-path/compile-signature change. Its
+ASCII-escaped JSON is split into portable string chunks. Each locale's lookup is
+initialized lazily on its first error. Other locales return before this work.
+Startup/first-error cost on target devices must be profiled separately.
+Plural objects are excluded because ErrorBody has no plural selector. Add other
+locales only with reviewed catalog and size coverage.
+
+The pure `Online::presentApiError` handles known source keys and substitutes
+scalar parameters once as literal text. Legacy raw messages match only an exact
+English source literal. Unknown or malformed messages use the existing reviewed
+"Something went wrong. Please try again." summary in Bulgarian or Thai; other locales
+retain their original message. `onlineProblemText` applies that safe boundary to
+plain transport diagnostics while keeping raw model/log details intact. Existing
+specialized cooldown, version and conflict branches remain authoritative.
+Generator tests live in `test/test_online_error_catalog.py`; decoder/presentation
+cases live in `src/online/ApiErrorTextTest.cpp` and the ordinary protocol suite.
+
 ### Preparing independently reviewed locales
 
 Use `python3 tools/localization/translation_program.py prepare` to freeze the
@@ -200,7 +284,7 @@ catalogs out of the selectable language inventory.
 Audit platform startup text outside these two catalogs as well. Android shows
 `preparing_game` from `mobile/android/app/src/main/res/values/strings.xml` while
 staging assets, before the native catalog can load. Add the reviewed counterpart
-in the locale's Android resource directory (for example `values-mr/strings.xml`),
+in the locale's Android resource directory (for example `values-mr/strings.xml` or `values-bg/strings.xml`),
 retain separate source/value hashes and independent review records, and check
 the actual first-run overlay in the packaged application. The catalog inventory
 checks alone do not establish that this startup text is translated.
@@ -223,7 +307,7 @@ Linux, macOS or WSL. `python3 test/test_translation_program.py` also exercises
 its mocked budget and resumption contracts.
 
 ```sh
-python3 tools/localization/google_draft.py --backend plain --output artifacts/localization-ta \
+python3 tools/localization/google_draft.py --mode plain --output artifacts/localization-ta \
   --project PROJECT_ID --locale ta --keys artifacts/localization-ta/pilot-keys.json
 # Add --execute only after checking the preflight estimate.
 ```
@@ -269,12 +353,17 @@ The runners use separate caches and accounting formats. The general `cloud_draft
 runner does not share the Tamil helper’s hard budget ledger; do not use a separate
 runner to bypass a campaign ceiling.
 
-For Norwegian Bokmål HTML comparison drafts, prepare a scoped kit (for example,
+The Google draft adapter retains distinct workflows and their existing request/cache
+formats. The estimate-first planner below writes separate machine-draft JSON files;
+the explicit `--mode thai` dollar-budget campaign fills only blank entries in its
+kit. Keep each workflow’s original ledger and response cache when resuming.
+
+For Google Cloud machine drafts, prepare a scoped kit (for example,
 `prepare --locales nb --output artifacts/norwegian/kit`), then estimate work without
 network access:
 
 ```sh
-python3 tools/localization/google_draft.py --backend html --output artifacts/norwegian/kit --locale nb
+python3 tools/localization/google_draft.py --mode html --output artifacts/norwegian/kit --locale nb
 ```
 
 Authenticate `gcloud` to an existing project with Cloud Translation enabled. Pass
@@ -298,14 +387,15 @@ workspace only when intentionally beginning review.
 
 The cumulative character allowance counts every attempted translation request,
 including uncertain failures and retries, before dispatch. It conservatively
-counts the protected HTML payload and persists across resumed invocations. Run
-one writer per kit. Authentication tokens are cached in memory and never written
+counts the protected HTML payload and persists across resumed invocations. An
+exclusive campaign lock serializes writers for each kit and locale; investigate
+the recorded process before removing a stale lock. Authentication tokens are cached in memory and never written
 to evidence. Requests use bounded retries. Invalid responses remain inspectable;
 `--retry-invalid-responses` archives them under `rejected/` before another paid
 attempt within the same allowance. Allowances remain subject to the campaign’s US$8 hard ceiling and existing
 ledger guards. Provider output remains a machine draft, never a linguistic sign-off.
 
-The optional `--backend plain|html` selects either backend explicitly. Each keeps
+The optional `--mode plain|html` selects either backend explicitly. Each keeps
 its existing request/cache formats. A shared campaign lock and ledger guard reject
 switching backends after paid or reserved work; use the original mode to resume
 that campaign, without deleting or resetting its ledger.
@@ -341,6 +431,108 @@ refreshed source kits; do not switch workflows or discard ledgers to bypass an
 authorized ceiling. The Tamil campaign retains its US$8 ceiling. These are
 accounted API-request limits, not guarantees about unrelated project spending or
 an exported billing invoice. Provider output is never a linguistic sign-off.
+
+For a Google Cloud Thai draft, use the development-only adapter after preparing
+and drafting a `th` kit:
+
+```sh
+python3 tools/localization/google_draft.py --mode thai --project PROJECT_ID --locale th \
+  --output artifacts/translation-program --budget-usd 25 --ids-file PILOT_IDS.json
+```
+
+The pilot file is a JSON array of `native:[key]` and `online:source message` IDs.
+Omit `--ids-file` only after reviewing and correcting the representative pilot.
+The adapter uses `gcloud auth print-access-token` with Cloud Translation v3, protects
+placeholders and technical literals, and fills only blank entries. Actual provider
+responses and a source-bound cost ledger remain in the kit. Each attempted request
+reserves its conservative cost before transmission, including retries and ambiguous
+network failures. The campaign ceiling does not limit other project consumers;
+verify the configured price against current provider pricing before starting.
+An exclusive campaign lock prevents concurrent writers. Investigate an abandoned
+process before removing a stale lock; retain the ledger and cached responses.
+
+Thai native catalogs may contain reviewed U+200B soft word-break hints. Generate
+candidate boundaries with `python3 tools/localization/thai_breaks.py INPUT OUTPUT`
+using distinct files, then inspect the output during the editorial pass. The tool
+uses pinned PyThaiNLP with its `newmm` dictionary segmenter from
+`requirements-dev.txt`; no segmenter ships with the game.
+The suggestion tool protects a small set of reviewed game terms from internal
+breaks. Context can still fool its dictionary: inspect every final hint and
+preserve manual corrections rather than blindly regenerating an edited catalog.
+Hints prefer whole-word wrapping without adding visible spaces, and the renderer
+omits them from measurements and drawing. Oversized words retain cluster-safe
+emergency wrapping. Keep online catalog text unannotated and use browser Thai line
+breaking. Review hint changes as catalog changes and refresh affected sign-offs.
+
+Bulgarian and Thai diagnostic surfaces keep raw errors in the diagnostic log and display
+an existing reviewed native message where available, otherwise the reviewed
+online summary. `Glob2UI::DiagnosticText` keeps a bounded cache per UI context;
+changing the diagnostic invalidates its display cache. It does not change model
+readiness, error codes, or transmitted values. Script-editor statuses, cursor
+coordinates and built-in Hive notices have explicit catalog keys. Hive's public
+string report history remains unchanged; a private companion records which
+messages were created locally. Remote reports and user text are never classified
+by matching their contents. Editor preview status retains its raw event and
+localizes it during rendering so changing language updates an existing notice
+without restarting the engine.
+
+The native API error bridge embeds the reviewed Bulgarian and Thai online catalogs
+as separate generated resources; keep the generator, SCons input dependencies and
+source hashes aligned when either catalog changes. Use the generator's byte count
+to review resource growth; catalog data adds no runtime dependency. Structured message
+keys and parameters select the current locale. An exact legacy English literal
+is accepted only when unambiguous: context-qualified keys with the same visible
+English text remain distinct, and an ambiguous unqualified literal receives the
+reviewed generic failure summary. Technical diagnostics still go to the log;
+remote reports and authored text retain their provenance and are not translated
+by string matching. Missing native values use an explicit English fallback
+instead of treating a default-locale value as a reviewed translation.
+
+For a Bulgarian Google Cloud draft, prepare a kit with `--locales bg`, then run:
+
+```sh
+python3 tools/localization/translation_program.py machine-draft \
+  --output artifacts/translation-program --locale bg --project YOUR_PROJECT \
+  --max-cost-usd 10 --rate-per-million 20
+```
+
+This development-only command uses `gcloud auth print-access-token` and Cloud
+Translation Advanced v3 NMT. Confirm the current per-million-character price
+before passing `--rate-per-million`; the default is USD 20. It requires POSIX
+file locking. `--only-keys FILE` selects a JSON array of `native:[key]` and
+`online:key` IDs for a representative pilot; `--limit-entries N` bounds the
+number of blank values filled. Establish the pilot before translating the rest.
+Frozen source contracts, protected tokens, validated response caches and raw
+provider responses stay in the kit. Provider drafts are separate from editable
+catalogs, and resuming fills only blank values. Every attempt reserves its full
+estimated cost durably before sending, including retries and ambiguous failures;
+monthly free credits are not assumed. The ledger covers this kit, not unrelated
+project usage. Reuse the same kit when resuming to retain its budget history.
+Damaged protected tokens or invalid responses stop drafting and retain evidence;
+review the affected entry before resuming rather than guessing a repair.
+
+The same explicit drafting command supports the legacy native locales when new
+shared keys need translations. Use canonical locale tags in `--locales` and
+`--locale`; native filename aliases are mapped separately. In particular,
+`pt-BR` writes `texts.br.txt` (Brazilian Portuguese), while `pt-PT` writes
+`texts.pt.txt`. Canonical `br` would mean Breton and is rejected. Inspect each
+catalog's language metadata before adding a mapping. This opt-in scope does not
+change the default release-language set or certify an unfinished online catalog.
+When a source expansion needs a fresh immutable kit, carry the complete cumulative
+cost ledger and provider evidence forward before any further request; a new
+output directory must not reset the task's spending budget.
+
+Bulgarian additionally requires an independent adversarial pass over every batch,
+after semantic review and editorial correction. Use standard Bulgarian Cyrillic
+(`bg`, `Български`), polite plural instructions, and concise action labels. Flat
+game messages with varying quantities use count-neutral labels or abbreviations;
+check actual callers at 0, 1 and 2 rather than assuming every number is plural. Game
+terms include `работник`, `разузнавач`, `воин`, `рояк`, `хан` and `флаг`; read
+actual gameplay usage and Bulgarian dictionary entries before resolving ambiguous
+labels. English controls meaning; other locale catalogs provide comparisons.
+Agents must review every key and final plural variant, record their actual
+coverage and recheck substantive edits. These records establish agent review,
+not native-human certification.
 
 For Telugu Google NMT comparison drafts, use the development-only adapter after
 preparing a Telugu kit and its blank draft:
@@ -433,42 +625,76 @@ describe it as agent-reviewed and keep unverified platforms explicit.
 
 Build `translation-preview-harness` for unregistered catalog captures. Its
 `matrix ROOT INPUT OUTPUT WIDTH HEIGHT` mode uses the actual game font and shared
-wrapper at several authored sizes and raster scales. `screen` adds a screen name
-(`main`, `settings`, `settings-audio`, `settings-player`, `lobby` or `lobby-players`); `game` adds
-`gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
-the real engine and menu dialog. `statistics` selects the win-probability metric
-on the real results screen for the current local map; it does not represent a
-completed match or validate prediction accuracy. `ingame-statistics:TOPIC` captures
-the actual live sidebar or compact sheet for `overview`, `colony`, `economy`,
-`military` or `world`, with published local-game history.
-`ingame-statistics-history` opens the real population-history dialog;
-`map-overlays` captures the desktop overlay-tools view. These modes use ordinary
-presentation navigation and preserve the simulation checksum while drawing.
-Tutorial IDs must belong to the current shipped
-lesson catalog. For a nonempty current mission briefing, the harness captures
-the real dialog separately, opening it for preview if scene admission skipped
-the automatic opening. It records preview-opened and automatic origins separately,
-then dismisses the dialog and captures the uncovered guidance panel.
-Legacy tutorial highlight arrows wait while a modal is open, then resume after
-dismissal so they cannot cover briefing text. The desktop `tutorial:swimming`
-preview at 800×600 also toggles a real highlight and compares the actual modal's
-pixels before, during and after the probe, preserving the simulation checksum.
-It retains the initial presented frame and requires two unchanged baseline frames
-before changing the highlight, distinguishing first-frame composition from arrow
-interference.
-The gameplay preview also captures the win-probability statistics screen and its
-metric explanation, checking that drawing leaves the simulation checksum intact.
+wrapper at authored sizes 10, 13 and 20 and raster scales 1, 1.5 and 2. Optional
+`SIZE SCALE` arguments select one combination for independently resumable batches;
+omitting both runs all nine. Each batch has its own complete manifest and uses
+the same wrapping and rasterization. Matrix placeholders are displayed literally;
+formatted-message coverage needs the corresponding UI capture.
 
-> > > > > > > A published tutorial model alone does not prove that its text is visible. Inputs are
-> > > > > > > `native.json` and `online.json` key/value objects plus `metadata.json` identifying
-> > > > > > > the locale. Preserve the original text-catalog hashes in that metadata when
-> > > > > > > converting formats. A small pilot is a font diagnostic, not evidence that the
-> > > > > > > whole catalog was displayed.
+`screen ROOT INPUT OUTPUT WIDTH HEIGHT SCREEN` accepts `main`, `settings`,
+`settings-audio`, `settings-ais`, `settings-online`, `settings-player`, desktop-only
+`settings-controls`, `lobby`, `lobby-players`, `new-map`, `campaign-editor-new`,
+`campaign-editor-loaded`, `script-editor-success` or `script-editor-failure`.
+The AI library capture uses its real buttons and an unavailable loopback server,
+so it verifies local labels without remote account or provider actions. For
+controlled API-error captures, `settings-ais` also accepts
+`GLOB2_TRANSLATION_PREVIEW_HTTP_ORIGIN=http://127.0.0.1:PORT` together with
+`GLOB2_TRANSLATION_PREVIEW_EXPECT_NOTICE`. It pumps the production client and
+requires that exact notice in the screen's accessible text before capturing.
+Record the local fixture response and request receipts separately; these captures
+do not verify a production server.
 
-Tutorial captures also click the actual guidance controls to record the collapsed
-control and re-expanded instructions. Those UI actions and draws must leave the
-simulation checksum unchanged; offscreen phone presentation does not establish
-mobile-platform or physical-touch hardware coverage.
+`game ROOT INPUT OUTPUT WIDTH HEIGHT MODE` accepts `gameplay`, `statistics`,
+`statistics-navigation`, `ingame-statistics:TOPIC`, `ingame-statistics-history`,
+`map-overlays`, `tutorial` (the introduction) or `tutorial:LESSON-ID`.
+`statistics` selects the win-probability metric on the real results screen for
+the current local map; it does not represent a completed match or validate
+prediction accuracy. `statistics-navigation` selects Overview, Economy and World
+on the production live panel and opens available metric history/details.
+`ingame-statistics:TOPIC` captures the actual live sidebar or compact sheet for
+`overview`, `colony`, `economy`, `military` or `world`;
+`ingame-statistics-history` opens its population-history dialog, and
+`map-overlays` captures the desktop overlay tools. These modes use real published
+session data and production drawing, with setup through harness access or public
+panel methods. They never synthesize readings or expose hidden live-player win
+probabilities. `gameplay` additionally captures all five statistics topics,
+history, unit details, missing-reading help, and the results metric explanation.
+Its explicitly named phone-component images isolate the production panel at its
+real bounds without touch navigation. The separate live-panel sequence uses the
+production Tools keyboard route on phones and shared UI actions; this is not
+physical-touch coverage. All navigation and drawing preserve the simulation
+checksum.
+
+Tutorial IDs must belong to the current shipped lesson catalog. For a nonempty
+current mission briefing, the harness captures the real dialog separately,
+opening it for preview if scene admission skipped the automatic opening. It
+records preview-opened and automatic origins separately, then dismisses the
+dialog and captures the uncovered guidance panel. Legacy tutorial highlight
+arrows wait while a modal is open, then resume after dismissal so they cannot
+cover briefing text. The desktop `tutorial:swimming` preview at 800×600 also
+toggles a real highlight and compares the actual modal's pixels before, during
+and after the probe, preserving the simulation checksum. It retains the initial
+presented frame and requires two unchanged baseline frames before changing the
+highlight, distinguishing first-frame composition from arrow interference.
+Tutorial captures also activate the actual guidance controls to record collapsed
+and re-expanded instructions. Those UI actions preserve the simulation checksum.
+A published tutorial model alone does not prove that its text is visible.
+
+Inputs are `native.json` and `online.json` key/value objects plus `metadata.json`
+identifying the locale. Preserve the original text-catalog hashes in that metadata
+when converting formats. A small pilot is a font diagnostic, not evidence that
+the whole catalog was displayed. `editor ROOT INPUT OUTPUT WIDTH HEIGHT` captures
+the production map editor, terrain controls and menu on a blank map without
+stepping the simulation. Setup and menu navigation use controlled harness friend
+access; captures use the production editor drawing path and portable SDL renderer.
+Set `GLOB2_MOBILE_UI=1` to inspect phone presentation. `script-editor ROOT INPUT
+OUTPUT WIDTH HEIGHT` captures the production scenario editor's localized cursor,
+successful JavaScript validation and a controlled syntax failure. It validates
+temporary source without confirming or saving the scenario and checks that map
+state is unchanged. Use a fresh profile with `textSizePercent=100` or `150` to
+exercise normal and enlarged text; record the profile, viewport and presentation
+settings. Offscreen phone presentation does not establish rendering on a mobile
+OS or physical-touch hardware coverage.
 
 Capture evidence includes the executable hash and compiled build provenance,
 as well as current source, catalog and font hashes. Freeze sources during builds
@@ -482,8 +708,63 @@ game concepts across both catalogs: workers gather and build, explorers scout,
 warriors fight, flags assign work or attention, Inns attract converts and Markets
 exchange fruits. Translate ambiguous terrain terms from their control's effect,
 not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
-only their presentation is localized. Review legitimate names and loanwords
+only their presentation is localized. In compact scenario editors, wrap compiler
+notices as paragraphs and size touch tab/action columns from actual label-word
+widths, retaining their control IDs and minimum hit areas. Empty statistics-chart
+notices wrap within the chart using the same font and shaping boundaries as the
+rest of the chart. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
+
+### Google NMT draft preparation
+
+After preparing a frozen kit and blank draft, use
+`python3 tools/localization/google_draft.py --mode editorial --output artifacts/translation-program --locale fil --pilot 42`
+for a pilot spanning source domains and both surfaces. Omit `--pilot` to resume
+the remaining entries. The runner uses the existing `gcloud` login and defaults
+to the Bradley Personal project; `--project` selects another explicitly authorized
+project. It uses the NMT model with English as the source language.
+
+The runner protects tokens and invariants, retains raw responses, and caches
+identical requests. Nonblank draft values are retained so resuming cannot undo
+editorial work. Inspect rejected entries rather than repeatedly requesting them.
+The local attempt ledger reserves estimated charges before each request, including
+failed attempts, without assuming monthly credits. `--max-usd` bounds cumulative
+estimated charges, including HTML protection overhead; recheck provider pricing
+before use. Interrupted runs retain their evidence and may leave a lock that must
+be inspected before removal. These drafts still require the independent review
+and rendering gates above.
+
+### Filipino terminology
+
+Filipino (`fil`, including the `tl` system-language alias) uses contemporary
+standard Filipino in the Latin script. Use direct, respectful instructions and
+recognizable technical loanwords rather than awkward literal translations.
+Follow the [KWF orthography guide](https://kwfdiksiyonaryo.ph/gabay) for retained
+foreign spellings and affixes; ordinary UI text does not need dictionary stress
+marks.
+
+Filipino uses the existing Latin font with authored drawing advances, so larger
+raster sizes retain the widths used for wrapping. Check both ordinary and
+high-density rendering when changing its font configuration.
+Check both catalog surfaces against the full font and browser startup subset,
+including shared UI symbols such as the fullwidth plus control.
+
+Use **manggagawa** for gathering/building workers, **mandirigma** for warriors,
+**tagapaggalugad** for explorers, **Pugad** for the unit-producing Swarm building,
+**Panuluyan** for Inns, **Pamilihan** for Markets, and **bandila** for flags.
+Explain unit conversion as joining another team. Distinguish credits acknowledging
+contributors from spendable studio credits, and computing workers from colony
+units. Consult gameplay context when these terms occur in other senses.
+
+For classic terrain looks, use **Mayabong na damo**, **Tuyong damo**,
+**Buhangin ng burol**, and **Maputlang buhangin**. The dune label follows the
+existing **Burol ng buhangin** theme name; these looks retain ordinary grass or
+sand rules and do not imply an elevation mechanic.
+
+Review complete sentences and assembled browser fragments. Preserve necessary
+boundary spaces, but avoid spaces introduced around protected placeholders before
+punctuation. Numeric counts usually take an unchanged noun; do not mechanically
+add `mga` or assume the runtime's `one` plural category means exactly one.
 
 ### Cloud Translation drafts
 
@@ -507,6 +788,45 @@ the response and block retransmission until a reviewer supplies a correction;
 formatting-only templates bypass translation. Keep the accounting and response
 files with the kit when resuming. A leftover runner lock needs investigation
 before removal. Credentials are never written into the kit.
+
+### Thai conventions
+
+Thai (`th`, ไทย) uses concise contemporary Standard Thai, left-to-right.
+`th-TH` selects this catalog; an explicit non-Thai script tag must not do so.
+Keep the bundled Noto Sans Thai shaping tables, HarfBuzz route and font notices.
+Check stacked vowels and tone marks at 10, 13 and 20 pixels, including higher
+pixel densities, rather than treating glyph coverage as a rendering check.
+
+Reviewed U+200B boundaries belong only in native Thai catalog values. Shared
+wrapping consumes them without displaying or measuring a visible glyph and
+keeps shaping clusters intact. Online Thai uses browser word breaking and must
+not acquire native break hints. Shorter reviewed wording, spacing and wrapping
+resolve crowded controls without shrinking text below a readable size.
+
+Disambiguate English homonyms at the catalog key: `Building` is an object,
+`Building (music mood)` is construction, and `Building (generation progress)`
+is an ongoing operation. Their English values can remain `Building`; contextual
+keys are identifiers and are never display text. Preserve mood, upload and
+protocol IDs. Review `Broken` in software-report menus as nonworking software.
+The English-identical-value audit compares against the English value as well as
+using per-key exceptions, so contextual keys do not hide untranslated text.
+
+For Thai dollar-budget campaigns, `tools/localization/google_draft.py --mode thai` retains
+actual Translation v3 requests/responses, protected tokens, resumable locks and
+conservative reservations. Keep the original campaign ledger when adding
+sources, and bind independent reviews to the final per-key text and source
+context. Report agent review accurately; it is not native-human certification.
+The review audit requires complete, independent adversarial coverage for Thai,
+in addition to meaning, editing and the final meaning recheck. When the inventory
+changes, keep original receipts immutable. Carry an unchanged approval only with
+explicit per-key source/target equality and original proof references; changed
+text or usage needs fresh review. Record retired keys separately.
+
+Installing a catalog also makes its code a legacy SGSL language token. Append
+new codes after the existing language inventory, bump `SIM_REVISION`, regenerate
+the golden match record, and verify script-token acceptance, saved script bytes
+and program-counter continuity, plus replay and relay version boundaries. Keep
+user-authored script text unchanged.
 
 ### Bengali conventions
 
@@ -851,8 +1171,11 @@ replacement/reload clears these metrics. Layout measurement neither creates
 bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
+Bulgarian opts into authored logical draw advances alongside other new locales,
+keeping the complete high-resolution raster within measured widths while
+preserving existing locale geometry.
 
-Script-layout locales, Swahili, Norwegian Bokmål and Malay draw high-DPI text
+Script-layout locales, Filipino, Swahili, Norwegian Bokmål and Malay draw high-DPI text
 at the authored width used by wrapping and hit testing. The complete
 high-resolution bitmap is resampled into that destination; font hinting at a
 larger raster size must not make a fitted line overflow its layout. Legacy
@@ -867,8 +1190,14 @@ button fitting and display-density textures for the finished labels.
 The phone HUD's bottom navigation reserves its icon band and measures every
 translated, wrapped caption using the active font and text-size preference.
 Captions taller than the original 16-point slot expand the action strip upward
-with bottom padding; world bounds and hit regions use that same strip geometry.
+with bottom padding. When whole words cannot fit across six buttons, navigation
+uses balanced rows of three, two or one button. Normal-size captions retain the
+six-button row when they fit. Drawing, pointer input and keyboard targets share
+the same button rectangles; world bounds end above the resulting strip.
 Do not shorten a translation to compensate for a fixed-height caption clip.
+Only Bulgarian single-word captions may reuse one point from each inset and
+shrink to at least 10px at 100% text size, retaining the player's text multiplier
+and conservative original strip measurement without moving icons or hit areas.
 Touch text wrapping preserves the active font's shaped clusters, including an
 indivisible cluster wider than its slot, and retains explicit blank lines.
 Navigation measurements keep one last result per HUD, invalidated by caption,

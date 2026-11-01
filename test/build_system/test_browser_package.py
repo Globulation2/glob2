@@ -48,6 +48,27 @@ class BrowserPackageTests(unittest.TestCase):
         for font in manifest['fonts']:
             name = 'fonts/' + font['name'] + '-Regular.ttf'
             self.assertEqual(hashlib.sha256((self.output / name).read_bytes()).hexdigest(), font['sha256'])
+        for name, canonical in {
+            'fonts/sans-core.ttf': 'browser/assets/sans-core.ttf',
+            'fonts/LICENSE-DejaVu.txt': 'data/fonts/LICENSE-DejaVu.txt',
+            'fonts/LICENSE-Droid.txt': 'data/fonts/LICENSE-Droid.txt',
+        }.items():
+            with self.subTest(asset=name):
+                self.assertEqual((self.output / name).read_bytes(),
+                                 (module.ROOT / canonical).read_bytes())
+                self.assertEqual(gzip.decompress((self.output / (name + '.gz')).read_bytes()),
+                                 (module.ROOT / canonical).read_bytes())
+                # Removing both representations and their checksum entries must
+                # still fail: a self-consistent inventory is not a complete package.
+                sums = self.output / 'SHA256SUMS'
+                original_sums = sums.read_text()
+                for removed in (name, name + '.gz'):
+                    (self.output / removed).unlink()
+                sums.write_text(''.join(line for line in original_sums.splitlines(keepends=True)
+                                        if line.split('  ', 1)[1].strip() not in (name, name + '.gz')))
+                with self.assertRaisesRegex(ValueError, 'Missing or unpinned launcher font asset'):
+                    module.verify(self.output)
+                module.package(self.source, self.output)
         first = self.source / 'fonts' / (manifest['fonts'][0]['name'] + '-Regular.ttf')
         first.write_bytes(b'wrong font')
         with self.assertRaisesRegex(ValueError, 'Launcher font checksum mismatch'):

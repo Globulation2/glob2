@@ -6,10 +6,12 @@ import { syncDesignSystem, stageDesignAssets } from '../../scripts/design-system
 
 const designSystem = syncDesignSystem();
 stageDesignAssets(fileURLToPath(new URL('./public', import.meta.url)), designSystem, false);
-copyFileSync(
-  fileURLToPath(new URL('../../../data/fonts/LICENSE-Noto.txt', import.meta.url)),
-  fileURLToPath(new URL('./public/fonts/LICENSE-Noto.txt', import.meta.url)),
-);
+for (const notice of ['LICENSE-Noto.txt', 'LICENSE-DejaVu.txt', 'LICENSE-Droid.txt']) {
+  copyFileSync(
+    fileURLToPath(new URL(`../../../data/fonts/${notice}`, import.meta.url)),
+    fileURLToPath(new URL(`./public/fonts/${notice}`, import.meta.url)),
+  );
+}
 
 export default defineConfig({
   plugins: [react()],

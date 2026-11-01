@@ -4876,30 +4876,6 @@ AI टेलीमेट्री
 हटाए गए संसाधन
 [stat cleared about]
 जगह बनाने के लिए सफ़ाई क्षेत्रों में श्रमिकों द्वारा हटाए गए संसाधन।
-[stats topic overview]
-
-[stats topic economy]
-
-[stats topic world]
-
-[stats work construction]
-
-[stats defence]
-
-[stats history]
-
-[stats waiting]
-
-[stats unit details]
-
-[stats map overlays]
-
-[stats topic]
-
-[stats full history]
-
-[stats missing readings]
-
 [stat win probability]
 
 [stat win probability about]
@@ -5696,6 +5672,14 @@ AI से नहीं बना
 गड्ढा
 [chasm]
 खाई
+[lush_grass]
+हरी-भरी घास
+[dry_grass]
+सूखी घास
+[dune_sand]
+टीलों की रेत
+[pale_sand]
+हल्के रंग की रेत
 [terrain group water]
 पानी
 [terrain group sand]
@@ -6812,13 +6796,65 @@ MCP सर्वर चालू करें
 पड़ावों की मात्रा
 [scenario messages]
 संदेश ▸
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[script error at %0:%1: %2]
+पंक्ति %0, कॉलम %1 पर त्रुटि: %2
 [AI for all computer colonies]
 सभी कंप्यूटर कॉलोनियों के लिए एआई
-[lush_grass]
-हरी-भरी घास
-[dry_grass]
-सूखी घास
-[dune_sand]
-टीलों की रेत
-[pale_sand]
-हल्के रंग की रेत
+[script compilation success]
+संकलन सफल रहा
+[script compilation failure %0:%1:(%2):%3]
+संकलन विफलता: %0:%1:(%2):%3
+[script compilation failed %0]
+संकलन विफल: %0
+[script loading failed %0]
+%0 से स्क्रिप्ट लोड करने में विफलता
+[script saving failed %0]
+स्क्रिप्ट को %0 में सहेजने में विफलता
+[script line %0 column %1]
+पंक्ति: %0 कॉलम: %1
+[game stopped %0]
+गेम बंद हो गया: %0
+[game stopped script help]
+इस गेम को पुनः आरंभ करने से पहले एम्बेडेड JavaScript कोड और इसके संसाधन उपयोग की समीक्षा करें।
+[missing map generator %0]
+मैप जनरेटर उपलब्ध नहीं है: %0। गेम में अंतर्निहित परिदृश्य चुन लिया गया है।
+[hive standing order paused]
+एक स्थायी आदेश पर ध्यान देने की आवश्यकता है और इसे अस्थायी रूप से रोक दिया गया है।
+[hive connection changed orders paused]
+कनेक्शन बदल गया है। फिर से शुरू करने से पहले अपने अस्थायी रूप से रोके गए स्थायी आदेशों की समीक्षा करें।
+[hive standing order fresh instruction]
+पुनः संपर्क स्थापित करने के बाद स्थायी आदेश के लिए एक नए निर्देश की आवश्यकता होती है। आप इसे रद्द कर सकते हैं या कमांडर से इसे बदलने का अनुरोध कर सकते हैं।
+[hive order confirmation failed]
+एक आदेश की पुष्टि नहीं हो सकी। फिर से शुरू करने से पहले अपने स्थायी आदेशों की समीक्षा करें।
+[hive previous order sending]
+आपका पिछला आदेश अभी भी भेजा जा रहा है। यह संदेश सहेज लिया गया है; इसे दोबारा भेजने के लिए कमांडर खोलें।
+[hive order received %0]
+आदेश प्राप्त हुआ: %0
+[hive order not confirmed]
+आदेश की पुष्टि नहीं हुई। फिर से प्रयास करने के लिए कमांडर खोलें; आपका संदेश सहेज लिया गया है।
+[hive standing order update failed]
+स्थायी आदेश को अपडेट करना विफल रहा। आपका आदेश इस डिवाइस पर अस्थायी रूप से रोका गया है; संबंधित नियंत्रण का उपयोग करके फिर से प्रयास करें।

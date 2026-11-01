@@ -22,6 +22,17 @@ test('the online choice supplies a first-visit SDL hint and startup language', (
   assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'pt_BR');
   assert.equal(context.interfaceLanguage(), 'pt-BR');
 });
+test('Filipino online selection reaches SDL and uses the existing Latin font', () => {
+  const context = profile(null, 'fil');
+  context.applyOnlineLanguage();
+  assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'fil');
+  assert.equal(context.interfaceLanguage(), 'fil');
+  assert.equal(context.cjkInterface(), false);
+  const saved = profile('fil', 'de');
+  saved.applyOnlineLanguage();
+  assert.equal(saved.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(saved.interfaceLanguage(), 'fil');
+});
 test('Norwegian online startup uses the core font and preserves the saved game choice', () => {
   const context = profile(null, 'nb');
   context.applyOnlineLanguage();
@@ -106,4 +117,24 @@ test('translated blocked-link labels isolate the technical URL from RTL text', (
   assert.equal(anchor.nodes[1].dir, 'ltr');
   assert.equal(anchor.nodes[1].textContent, 'glob2.org/account');
   assert.equal(anchor.nodes[2].text, ' ↗');
+});
+
+test('Malay starts from the online choice with the core Latin font and preserves saved choices', () => {
+  const context = profile(null, 'ms');
+  context.applyOnlineLanguage();
+  assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'ms');
+  assert.equal(context.interfaceLanguage(), 'ms');
+  assert.equal(context.cjkInterface(), false);
+  const saved = profile('fr', 'ms');
+  saved.applyOnlineLanguage();
+  assert.equal(saved.ENV.SDL_PREFERRED_LOCALES, undefined);
+  assert.equal(saved.interfaceLanguage(), 'fr');
+});
+
+test('Thai online preference reaches native startup without requesting the CJK font', () => {
+  const context = profile(null, 'th');
+  context.applyOnlineLanguage();
+  assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'th');
+  assert.equal(context.interfaceLanguage(), 'th');
+  assert.equal(context.cjkInterface(), false);
 });

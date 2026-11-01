@@ -220,6 +220,17 @@ class MaximaStrategyConfigTest(unittest.TestCase):
         self.assertTrue(all(switched[key] is False for key in disabled))
         self.assertTrue(switched["postures.recover_enabled"])
 
+    def test_legacy_wood_fertility_parameters_are_diagnostic(self) -> None:
+        metadata = {item["key"]: item for item in self.schema["parameters"]}
+        keys = ("farming.wood_fertility_base_percent", "farming.wood_fertility_pressure_percent")
+        for key in keys:
+            self.assertEqual(metadata[key]["group"], "compatibility")
+            self.assertEqual(metadata[key]["impact"], "low")
+            self.assertIn("no effect on wood protection", metadata[key]["description"])
+        # Retained keys still accept overrides and survive canonical strategy output.
+        values = self.values(self.resolve("--maxima-overrides", ",".join(f"{key}=37" for key in keys)))
+        self.assertTrue(all(values[key] == 37 for key in keys))
+
     def test_at_least_one_posture_must_remain_enabled(self) -> None:
         posture_keys = (
             "recover", "defend", "expand", "develop", "mobilize",

@@ -139,7 +139,9 @@ function JsonField({
             parseValue(text);
             element.setCustomValidity('');
           } catch {
-            element.setCustomValidity(t('Enter valid JSON.'));
+            element.setCustomValidity(
+              kind === 'array' ? t('Enter a valid JSON array.') : t('Enter valid JSON.'),
+            );
           }
         }}
         aria-label={label}
@@ -153,9 +155,13 @@ function JsonField({
             setError('');
           } catch {
             e.currentTarget.setCustomValidity(
-              kind === 'array' ? 'Enter a valid JSON array.' : 'Enter valid JSON.',
+              kind === 'array' ? t('Enter a valid JSON array.') : t('Enter valid JSON.'),
             );
-            setError(kind === 'array' ? 'Enter a valid JSON array.' : 'Enter valid JSON.');
+            setError(
+              kind === 'array'
+                ? sourceMessage('Enter a valid JSON array.')
+                : sourceMessage('Enter valid JSON.'),
+            );
           }
         }}
         onBlur={() => {
@@ -209,7 +215,7 @@ export function BuildingStudio({ id }: { id?: string }) {
               setError(undefined);
               try {
                 const draft = await request<BuildingDraft>('POST', '/api/v1/building-drafts', {
-                  body: {},
+                  body: { name: t('New building family') },
                 });
                 navigate('/building-studio/' + draft.id);
               } catch (e) {
@@ -830,7 +836,10 @@ export function BuildingEditor({
             onClick={async () => {
               if (
                 !window.confirm(
-                  `Delete “${name}”? This removes the account draft and this device’s recovery copy. Published releases remain available.`,
+                  t(
+                    'Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.',
+                    { value0: name },
+                  ),
                 )
               )
                 return;

@@ -4876,30 +4876,6 @@ AI کی قابلِ رسائی ٹیلی میٹری نہیں۔
 صاف کیے گئے وسائل
 [stat cleared about]
 جگہ بنانے کے لیے کارکنوں کے صفائی کے علاقوں میں ہٹائے ہوئے وسائل۔
-[stats topic overview]
-
-[stats topic economy]
-
-[stats topic world]
-
-[stats work construction]
-
-[stats defence]
-
-[stats history]
-
-[stats waiting]
-
-[stats unit details]
-
-[stats map overlays]
-
-[stats topic]
-
-[stats full history]
-
-[stats missing readings]
-
 [stat win probability]
 
 [stat win probability about]
@@ -5696,6 +5672,14 @@ AI کی بنائی ہوئی نہیں
 سوراخ
 [chasm]
 گہری کھائی
+[lush_grass]
+سرسبز گھاس
+[dry_grass]
+سوکھی گھاس
+[dune_sand]
+ٹیلے کی ریت
+[pale_sand]
+ہلکے رنگ کی ریت
 [terrain group water]
 پانی
 [terrain group sand]
@@ -6812,13 +6796,65 @@ MCP سرور چالو کریں
 خیمہ گاہوں کی تعداد
 [scenario messages]
 پیغامات ▸
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[script error at %0:%1: %2]
+سطر %0، کالم %1 پر خرابی: %2
 [AI for all computer colonies]
 تمام کمپیوٹر کالونیوں کے لیے اے آئی
-[lush_grass]
-سرسبز گھاس
-[dry_grass]
-سوکھی گھاس
-[dune_sand]
-ٹیلے کی ریت
-[pale_sand]
-ہلکے رنگ کی ریت
+[script compilation success]
+کمپائل کرنا کامیاب رہا
+[script compilation failure %0:%1:(%2):%3]
+کمپائل کرنا ناکام رہا: %0:%1:(%2):%3
+[script compilation failed %0]
+کمپائل کرنا ناکام رہا: %0
+[script loading failed %0]
+%0 سے اسکرپٹ لوڈ کرنا ناکام ہوگیا۔
+[script saving failed %0]
+اسکرپٹ کو %0 میں محفوظ کرنا ناکام ہو گیا۔
+[script line %0 column %1]
+سطر: %0 کالم: %1
+[game stopped %0]
+گیم رک گئی: %0
+[game stopped script help]
+اس گیم کو دوبارہ شروع کرنے سے پہلے ایمبیڈڈ JavaScript کوڈ اور اس کے وسائل کے استعمال کا جائزہ لیں۔
+[missing map generator %0]
+نقشہ بنانے والا جنریٹر موجود نہیں: %0۔ گیم میں شامل منظرنامہ منتخب کر لیا گیا ہے۔
+[hive standing order paused]
+ایک مستقل حکم پر توجہ درکار ہے اور اسے عارضی طور پر روک دیا گیا ہے۔
+[hive connection changed orders paused]
+کنکشن بدل گیا ہے۔ دوبارہ شروع کرنے سے پہلے اپنے عارضی طور پر روکے گئے مستقل احکامات کا جائزہ لیں۔
+[hive standing order fresh instruction]
+دوبارہ منسلک ہونے کے بعد ایک مستقل حکم کے لیے نئی ہدایت درکار ہے۔ آپ اسے منسوخ کر سکتے ہیں یا کمانڈر سے اس کی جگہ نیا حکم دینے کو کہہ سکتے ہیں۔
+[hive order confirmation failed]
+ایک حکم کی تصدیق نہیں ہو سکی۔ دوبارہ شروع کرنے سے پہلے اپنے مستقل احکامات کا جائزہ لیں۔
+[hive previous order sending]
+آپ کا پچھلا حکم ابھی بھی بھیجا جا رہا ہے۔ یہ پیغام محفوظ ہے؛ اسے دوبارہ بھیجنے کے لیے کمانڈر کھولیں۔
+[hive order received %0]
+حکم موصول ہوا: %0
+[hive order not confirmed]
+حکم کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کرنے کے لیے کمانڈر کھولیں؛ آپ کا پیغام محفوظ ہے۔
+[hive standing order update failed]
+مستقل حکم کو اپ ڈیٹ کرنا ناکام رہا۔ آپ کا حکم اس ڈیوائس پر عارضی طور پر روکا گیا ہے؛ متعلقہ کنٹرول استعمال کرکے دوبارہ کوشش کریں۔

@@ -167,10 +167,37 @@
   max-inline-size: 100%;
 }
 
+.map-owner-tools input,
+.map-owner-tools select,
+.map-owner-tools textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+
 /* ------------------------------------------------------------- moderation */
 
 .admin-row {
   display: block !important;
+}
+
+.admin-console > .page-head h1 {
+  overflow-wrap: anywhere;
+}
+
+.operation-recovery fieldset {
+  min-width: 0;
+}
+.operation-recovery .field {
+  grid-template-columns: minmax(0, 1fr);
+}
+.operation-recovery input,
+.operation-recovery textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+.operation-recovery button {
+  max-width: 100%;
+  white-space: normal;
 }
 
 /* Creative workspaces share the app surface while keeping their drafts mounted. */
@@ -491,5 +518,12 @@
   .map-play-art {
     max-width: 240px;
     align-self: center;
+  }
+}
+
+/* Profile summaries have fixed numeric columns and an ellipsized name column. */
+@media (max-width: 760px) {
+  .grid3 > .card > table.data {
+    table-layout: fixed;
   }
 }

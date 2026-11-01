@@ -324,7 +324,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
       ) : (
         <StudioWorkspace
           focusChat={focusChat}
-          attention={pending ? 'Working' : undefined}
+          attention={pending ? t('Working…') : undefined}
           result={
             !pending &&
             latestGeneration &&
@@ -332,10 +332,6 @@ function BuildingWorkspace({ id }: { id?: string }) {
               ? {
                   id: `${latestGeneration.id}:${latestGeneration.status}`,
                   status: latestGeneration.status,
-                  text:
-                    latestGeneration.status === 'ready'
-                      ? 'Building creation ready in Preview.'
-                      : 'Building creation needs attention in Preview.',
                 }
               : undefined
           }
@@ -602,7 +598,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
                   if (
                     manualDirty &&
                     next !== 'edit' &&
-                    !window.confirm('Leave the editor with unsaved changes?')
+                    !window.confirm(t('Leave the editor with unsaved changes?'))
                   )
                     return;
                   setView(next);
@@ -805,7 +801,9 @@ function BuildingWorkspace({ id }: { id?: string }) {
                             if (
                               !draft ||
                               !window.confirm(
-                                'Restore this saved draft? The current draft will remain in history.',
+                                t(
+                                  'Restore this saved draft? The current draft will remain in history.',
+                                ),
                               )
                             )
                               return;

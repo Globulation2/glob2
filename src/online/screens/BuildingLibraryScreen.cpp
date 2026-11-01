@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
 #include "BuildingLibraryScreen.h"
@@ -15,17 +16,17 @@ using Json = nlohmann::json;
 std::string buildingFamilyIdFromLink(const std::string &input, const std::string &origin)
 {
 	if (input.size() > 1024)
-		throw std::runtime_error(Glob2UI::libraryText("Family links must be at most 1024 characters."));
+		throw Glob2UI::PresentedError(Glob2UI::libraryText("Family links must be at most 1024 characters."));
 	const auto first = input.find_first_not_of(" \t\r\n"), last = input.find_last_not_of(" \t\r\n");
 	std::string value =
 		first == std::string::npos ? std::string{} : input.substr(first, last - first + 1);
 	if (value.find("://") != std::string::npos)
 	{
 		if (origin.empty())
-			throw std::runtime_error(Glob2UI::libraryText("Choose an online instance before opening a family link."));
+			throw Glob2UI::PresentedError(Glob2UI::libraryText("Choose an online instance before opening a family link."));
 		const auto prefix = origin + "/buildings/";
 		if (!value.starts_with(prefix))
-			throw std::runtime_error(
+			throw Glob2UI::PresentedError(
 				Glob2UI::libraryText("This link is from another instance. Switch to that instance in Online first."));
 		value = value.substr(prefix.size());
 		value = value.substr(0, value.find_first_of("?#"));
@@ -33,20 +34,20 @@ std::string buildingFamilyIdFromLink(const std::string &input, const std::string
 			value.pop_back();
 	}
 	if (value.size() != 36)
-		throw std::runtime_error(Glob2UI::libraryText("Enter a building family ID or a link to its family page."));
+		throw Glob2UI::PresentedError(Glob2UI::libraryText("Enter a building family ID or a link to its family page."));
 	for (std::size_t i = 0; i < value.size(); ++i)
 	{
 		if (i == 8 || i == 13 || i == 18 || i == 23)
 		{
 			if (value[i] != '-')
-				throw std::runtime_error(Glob2UI::libraryText("Invalid building family ID."));
+				throw Glob2UI::PresentedError(Glob2UI::libraryText("Invalid building family ID."));
 		}
 		else
 		{
 			if (value[i] >= 'A' && value[i] <= 'F')
 				value[i] += 'a' - 'A';
 			if (!((value[i] >= '0' && value[i] <= '9') || (value[i] >= 'a' && value[i] <= 'f')))
-				throw std::runtime_error(Glob2UI::libraryText("Invalid building family ID."));
+				throw Glob2UI::PresentedError(Glob2UI::libraryText("Invalid building family ID."));
 		}
 	}
 	return value;
@@ -81,10 +82,10 @@ void BuildingLibraryScreen::reload(bool more)
 			try
 			{
 				if (!response.ok)
-					throw std::runtime_error(response.error.message);
+					throw Glob2UI::PresentedError(apiErrorText(response.error), response.error.message);
 				const auto &rows = response.result.at("items");
 				if (!rows.is_array() || rows.size() > 24)
-					throw std::runtime_error(Glob2UI::libraryText("Invalid building library response"));
+					throw Glob2UI::PresentedError(Glob2UI::libraryText("Invalid building library response"));
 				if (!more)
 					families = Json::array();
 				for (const auto &row : rows)
@@ -95,12 +96,12 @@ void BuildingLibraryScreen::reload(bool more)
 					 cursor.find_first_not_of(
 						 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_") !=
 						 std::string::npos))
-					throw std::runtime_error(Glob2UI::libraryText("Invalid library cursor"));
+					throw Glob2UI::PresentedError(Glob2UI::libraryText("Invalid library cursor"));
 				status = families.empty() ? Glob2UI::libraryText("No public building families yet") : "";
 			}
 			catch (const std::exception &e)
 			{
-				status = e.what();
+				status = Glob2UI::exceptionText(e);
 			}
 			invalidate();
 		});
@@ -116,7 +117,7 @@ void BuildingLibraryScreen::openFamily()
 	}
 	catch (const std::exception &error)
 	{
-		status = error.what();
+		status = Glob2UI::exceptionText(error);
 		invalidate();
 		return;
 	}
@@ -135,19 +136,19 @@ void BuildingLibraryScreen::openFamily()
 						   if (response.error.code == "not_found" ||
 							   response.error.code == "forbidden" ||
 							   response.error.code == "unauthenticated")
-							   throw std::runtime_error(
+							   throw Glob2UI::PresentedError(
 								   Glob2UI::libraryText("Family unavailable. Private families require signing in "
 								   "through Online with an account that can access them."));
-						   throw std::runtime_error(response.error.message);
+						   throw Glob2UI::PresentedError(apiErrorText(response.error), response.error.message);
 					   }
 					   if (!response.result.is_object() || response.result.at("id") != id)
-						   throw std::runtime_error(Glob2UI::libraryText("The server returned a different family."));
+						   throw Glob2UI::PresentedError(Glob2UI::libraryText("The server returned a different family."));
 					   openedFamily = response.result;
 					   status = Glob2UI::libraryText("Opened family. Install its compatible release below.");
 				   }
 				   catch (const std::exception &error)
 				   {
-					   status = error.what();
+					   status = Glob2UI::exceptionText(error);
 				   }
 				   invalidate();
 			   });
@@ -161,7 +162,7 @@ void BuildingLibraryScreen::install(const Json &family, const Json &release)
 	{
 		const auto s = value.get<std::string>();
 		if (s.size() != 36 || s.find_first_not_of("0123456789abcdef-") != std::string::npos)
-			throw std::runtime_error(Glob2UI::libraryText("Invalid release identity"));
+			throw Glob2UI::PresentedError(Glob2UI::libraryText("Invalid release identity"));
 		return s;
 	};
 	std::string path;
@@ -173,7 +174,7 @@ void BuildingLibraryScreen::install(const Json &family, const Json &release)
 	catch (const std::exception &e)
 	{
 		busy = false;
-		status = e.what();
+		status = Glob2UI::exceptionText(e);
 		invalidate();
 		return;
 	}
@@ -184,11 +185,11 @@ void BuildingLibraryScreen::install(const Json &family, const Json &release)
 			try
 			{
 				if (!response.ok)
-					throw std::runtime_error(response.error.message);
+					throw Glob2UI::PresentedError(apiErrorText(response.error), response.error.message);
 				const auto manifest = response.result;
 				if (manifest.at("archiveHash") != release.at("archiveHash") ||
 					manifest.at("baseHash") != release.at("baseHash"))
-					throw std::runtime_error(Glob2UI::libraryText("Release identity changed during installation"));
+					throw Glob2UI::PresentedError(Glob2UI::libraryText("Release identity changed during installation"));
 				if (!manifest.contains("artworkHash"))
 				{
 					library.install(manifest, {});
@@ -204,13 +205,13 @@ void BuildingLibraryScreen::install(const Json &family, const Json &release)
 						try
 						{
 							if (!artwork.ok)
-								throw std::runtime_error(artwork.error.message);
+								throw Glob2UI::PresentedError(apiErrorText(artwork.error), artwork.error.message);
 							library.install(manifest, artwork.body);
 							status = Glob2UI::libraryText("Installed. Enable the family below for new maps.");
 						}
 						catch (const std::exception &e)
 						{
-							status = e.what();
+							status = Glob2UI::exceptionText(e);
 						}
 						busy = false;
 						invalidate();
@@ -220,7 +221,7 @@ void BuildingLibraryScreen::install(const Json &family, const Json &release)
 			catch (const std::exception &e)
 			{
 				busy = false;
-				status = e.what();
+				status = Glob2UI::exceptionText(e);
 				invalidate();
 			}
 		},
@@ -278,7 +279,7 @@ Element BuildingLibraryScreen::build(const Presentation &p)
 									  }
 									  catch (const std::exception &e)
 									  {
-										  status = e.what();
+										  status = Glob2UI::exceptionText(e);
 									  }
 									  invalidate();
 								  }));
@@ -293,7 +294,7 @@ Element BuildingLibraryScreen::build(const Presentation &p)
 									  }
 									  catch (const std::exception &e)
 									  {
-										  status = e.what();
+										  status = Glob2UI::exceptionText(e);
 									  }
 									  invalidate();
 								  },
@@ -361,7 +362,7 @@ Element BuildingLibraryScreen::build(const Presentation &p)
 	}
 	catch (const std::exception &e)
 	{
-		body.push_back(caption(e.what()));
+		body.push_back(caption(listingError.exception(e, Glob2UI::libraryText("Invalid building library response"))));
 	}
 	if (!status.empty())
 		body.push_back(caption(status));

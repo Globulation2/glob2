@@ -22,10 +22,11 @@ using namespace GAGCore;
 void SettingsScreen::buildGeneral()
 {
 	auto &s = globalContainer->settings;
-	const auto rendererLabel = [](RendererBackend backend)
+	// Localize generic display labels; protocol/backend names stay canonical.
+	const auto rendererLabel = [](RendererBackend backend) -> std::string
 	{
-		if (backend == RendererBackend::Auto) return tr("Automatic");
 		if (backend == RendererBackend::Software) return tr("Software");
+		if (backend == RendererBackend::Auto) return tr("Automatic");
 		return std::string(rendererBackendLabel(backend));
 	};
 	if (current == Category::Display)
@@ -238,7 +239,9 @@ void SettingsScreen::buildGeneral()
             info(std::string(GAGCore::FormattableString(tr("Active renderer: %0")).arg(rendererLabel(status.active))));
             if (status.phase == RendererSwitchPhase::Queued || status.phase == RendererSwitchPhase::Preparing ||
                 status.phase == RendererSwitchPhase::Presenting) info(tr("Changing renderer…"));
-            if (!status.reason.empty()) info(status.reason);
+            // Backend diagnostics may contain untranslated driver messages. Keep
+            // the detailed reason in backend status and show a catalog notice.
+            if (!status.reason.empty()) info(tr("Renderer unavailable"));
         }
 		if (touchLayout)
 			choice("display.zoomdrag", "One-finger zoom", "Double-tap the map, hold, then drag to zoom.",
@@ -344,7 +347,7 @@ void SettingsScreen::buildGeneral()
             [this,algorithms](int v){if(v<0 || v>=int(algorithms.size()))return;globalContainer->settings.gradientAlgorithm=algorithms[v];globalContainer->gradientAlgorithmOverride=algorithms[v];requestBackendConfiguration(globalContainer->gradientConfiguration());commit();});
         const auto active=configuration();const auto status=acceleratorStatus(active.backend);
         const std::string actual=isGPU(active.backend)?status.availability==Availability::Ready?status.device:std::string(backendName(automaticCPU()))+" ("+tr("CPU fallback")+")":backendName(cpuBackend());
-        info(std::string(tr("Gradient computation"))+": "+backendName(active.backend)+" / "+algorithmName(active.algorithm)+"; "+actual+"; "+std::to_string(status.fields)+" "+tr("GPU fields")+"; "+std::to_string(status.fallbacks)+" "+tr("CPU fallbacks")+(status.error.empty()?"":"; "+status.error));
+        info(std::string(tr("Gradient computation"))+": "+backendName(active.backend)+" / "+algorithmName(active.algorithm)+"; "+actual+"; "+std::to_string(status.fields)+" "+tr("GPU fields")+"; "+std::to_string(status.fallbacks)+" "+tr("CPU fallbacks")+(status.error.empty()?"":"; "+gradientError(status.error)));
 		std::vector<std::string> labels;
 		Settings copy = s;
 		for (int i = Settings::GAME_SPEED_MINIMUM; i <= Settings::GAME_SPEED_MAXIMUM; ++i)

@@ -83,6 +83,14 @@ fonts, with `LICENSE-Noto.txt`. Container builds copy both the shared stylesheet
 and pinned font files. New script locales select these families before generic
 fallbacks; existing locale font stacks remain unchanged.
 
+Bulgarian uses the existing `browser/assets/sans-core.ttf` through the shared
+stylesheet for body text, headings and its language-picker option. The Latin-only
+design-system fonts cannot provide its Cyrillic glyphs. Vite bundles the font;
+server-rendered pages explicitly serve the same bytes at
+`/signin/assets/sans-core.ttf`, and the standalone launcher packages them under
+`fonts/`. The DejaVu and Droid notices accompany those HTTP assets. This reuses the game
+font without changing other locales' font stacks or the native renderer.
+
 The standalone browser launcher also loads this stylesheet before WebAssembly
 starts. Its build copies the pinned fonts and licence under `fonts/` and rewrites
 the shared stylesheet URLs. Static packages include those files and their gzip
@@ -101,6 +109,13 @@ the unchanged upstream assets with:
 python3 data/fonts/fetch_script_fonts.py
 python3 data/fonts/fetch_script_fonts.py --download
 ```
+
+Thai uses the pinned Noto Sans Thai family through the existing logical-run
+shaping route. Validate stacked vowels/tone marks and baseline clearance at
+10, 13 and 20 pixels, including high-density rendering. Glyph coverage alone
+does not establish correct Thai shaping or readable word wrapping. Native
+catalog U+200B hints are nonprinting word-break opportunities; online pages
+use their browser’s Thai line-breaking support.
 
 Both the font and SDL3_ttf shaping support must be packaged on every platform.
 The managed SDL build, desktop/mobile vcpkg manifests and Flatpak configuration

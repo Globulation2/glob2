@@ -1,4 +1,4 @@
-import { statusLabel } from '../i18n.tsx';
+import { statusLabel, aiTagLabel } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
@@ -123,7 +123,7 @@ function Tags({ value, onChange }: { value: string[]; onChange: (tags: string[])
             )
           }
         >
-          {t(tag)}
+          {aiTagLabel(tag)}
         </button>
       ))}
     </div>
@@ -336,7 +336,7 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                         <div className="ai-tags">
                           {ai.tags.map((tag) => (
                             <span className="badge" key={tag}>
-                              {t(tag)}
+                              {aiTagLabel(tag)}
                             </span>
                           ))}
                         </div>
@@ -485,7 +485,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
           <div className="ai-tags">
             {ai.tags.map((tag) => (
               <span className="badge" key={tag}>
-                {t(tag)}
+                {aiTagLabel(tag)}
               </span>
             ))}
           </div>
@@ -547,7 +547,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               <button
                 disabled={busy}
                 onClick={() => {
-                  const reason = ai.hidden ? '' : window.prompt('Reason for hiding this AI');
+                  const reason = ai.hidden ? '' : window.prompt(t('Reason for hiding this AI'));
                   if (reason !== null) void run(() => aiApi.hide(ai.id, !ai.hidden, reason));
                 }}
               >
@@ -679,7 +679,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                   className="danger"
                   disabled={busy}
                   onClick={() => {
-                    if (window.confirm('Delete this AI and its published versions?'))
+                    if (window.confirm(t('Delete this AI and its published versions?')))
                       void run(async () => {
                         await aiApi.remove(ai.id);
                         navigate('/ais/mine');

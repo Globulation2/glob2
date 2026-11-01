@@ -1,4 +1,37 @@
 import * as localization from '../../../packages/i18n/src/index.ts';
+
+/** The music phase is construction; Building elsewhere names a structure. */
+export function musicMoodLabel(mood: string | undefined): string {
+  return t(
+    mood === 'Building'
+      ? localization.getLocale() === 'bg'
+        ? 'Build'
+        : 'Building (music mood)'
+      : mood,
+  );
+}
+
+/** Canonical protocol tags stay in English; only their visible labels change. */
+export function aiTagLabel(tag: string): string {
+  switch (tag) {
+    case 'Balanced':
+      return t('Balanced');
+    case 'Rush':
+      return t('Rush');
+    case 'Defensive':
+      return t('Defensive');
+    case 'Economy':
+      return t('Economy');
+    case 'Expansion':
+      return t('Expansion');
+    case 'Experimental':
+      return t('Experimental');
+    case 'Beginner-friendly':
+      return t('Beginner-friendly');
+    default:
+      return tag;
+  }
+}
 function displayParams(
   params?: Record<string, unknown>,
 ): Record<string, string | number> | undefined {
@@ -77,6 +110,25 @@ export function skinActionLabel(action: string): string {
 }
 export function displayMessage(value: unknown): string {
   return typeof value === 'string' ? t(value) : translateError(value);
+}
+
+/** Owned status copy is deferred; raw runtime diagnostics remain byte-for-byte strings. */
+export type StatusMessage =
+  | string
+  | {
+      source: string;
+      params?: Record<string, string | number> | (() => Record<string, string | number>);
+    };
+export function sourceMessage(
+  source: string,
+  params?: Exclude<StatusMessage, string>['params'],
+): Exclude<StatusMessage, string> {
+  return { source, params };
+}
+export function statusText(status: StatusMessage): string {
+  return typeof status === 'string'
+    ? status
+    : t(status.source, typeof status.params === 'function' ? status.params() : status.params);
 }
 
 /** Carry source and parameters until an error is presented in the current locale. */

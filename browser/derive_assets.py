@@ -10,7 +10,7 @@ test/build_system/test_web_assets.py fails.
 - sans-core.ttf: data/fonts/sans.ttf without the CJK outlines appended from Droid
   Sans Fallback (see data/fonts/README.md), keeping every original DejaVu glyph,
   its hinting and layout tables, plus the characters of every language's own name
-  for the language list. The full font arrives later in the `font-cjk` package.
+  for the language list, and shared UI symbols. The full font arrives later in the `font-cjk` package.
 - Menu images use the shared pinned lossy/lossless WebP selection policy. The wordmark
   keeps the menu crop plus a margin; the unseen area is a flat fill.
 
@@ -67,6 +67,9 @@ def font_subset(root):
     cmap = font.getBestCmap()
     keep = {cp for cp, name in cmap.items() if not name.startswith('cjk')}
     keep |= {ord(c) for c in language_names(root) if ord(c) in cmap}
+    # The shared add control uses a fullwidth plus, named as a CJK glyph in
+    # the merged source font. Keep it available in the startup subset too.
+    keep.add(0xFF0B)
     options = subset.Options()
     options.layout_features = ['*']
     options.name_IDs = ['*']

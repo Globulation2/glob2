@@ -13,6 +13,7 @@
 #include <utility>
 #include <AssetLoader.h>
 #include <StringTable.h>
+#include <TextBreaks.h>
 #include <BidiText.h>
 #include <limits>
 #include <tuple>
@@ -546,6 +547,8 @@ void TrueTypeFont::clearMetrics()
 
 std::pair<int, int> TrueTypeFont::measureString(const std::string &text)
 {
+	if (text.find(softWordBreak) != std::string::npos)
+		return measureString(withoutSoftWordBreaks(text));
 	assert(font);
 	assert(!styleStack.empty());
 	refreshScriptLanguage();
@@ -630,7 +633,7 @@ bool TrueTypeFont::hasGlyphsFor(const std::string &utf8Text)
 		for (int i = 1; i < len && s[i]; i++)
 			codepoint = (codepoint << 6) | (s[i] & 0x3F);
 
-		if (!TTF_FontHasGlyph(font, codepoint))
+		if (codepoint != 0x200B && !TTF_FontHasGlyph(font, codepoint))
 		{
 			const auto script = scriptFor(codepoint);
 			TTF_Font *fallback = script.empty() ? nullptr : scriptFont(script, baseSize, font);
@@ -701,6 +704,8 @@ std::pair<float, float> TrueTypeFont::getStringDrawSize(const std::string &text,
 
 const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string text, bool scaled, float explicitScale)
 {
+	if (text.find(softWordBreak) != std::string::npos)
+		return getStringCached(withoutSoftWordBreaks(text), scaled, explicitScale);
 	assert(font);
 	assert(styleStack.size() > 0);
 	refreshScriptLanguage();
@@ -733,12 +738,12 @@ const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string t
 
 		// create key
 		CacheData data;
-		// New locales opt into authored advances; preserve the existing Latin
-		// geometry for legacy locales. Swahili, Bokmål and Malay use the original Latin
-		// font, not the script-font/bidi composition path.
+		// New locales opt into authored advances; preserve existing geometry
+		// for legacy locales. Swahili, Bokmål, Bulgarian, Filipino and Malay use the primary font,
+		// not the script-font/bidi composition path.
 		const std::string language = SDL_GetStringProperty(
 			TTF_GetFontProperties(font), "glob2.script-language", "");
-		data.authoredDrawWidth = scripts || language == "sw" || language == "nb" || language == "ms";
+		data.authoredDrawWidth = scripts || language == "sw" || language == "bg" || language == "nb" || language == "ms" || language == "fil";
 		data.lastAccessed = now;
 		data.s = new DrawableSurface(temp);
 		assert(data.s);

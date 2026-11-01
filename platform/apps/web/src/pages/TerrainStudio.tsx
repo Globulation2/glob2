@@ -399,7 +399,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
       ) : (
         <StudioWorkspace
           focusChat={focusChat}
-          attention={pending ? 'Working' : undefined}
+          attention={pending ? t('Working…') : undefined}
           result={
             !pending &&
             latestGeneration &&
@@ -407,10 +407,6 @@ function TerrainWorkspace({ id }: { id?: string }) {
               ? {
                   id: `${latestGeneration.id}:${latestGeneration.status}`,
                   status: latestGeneration.status,
-                  text:
-                    latestGeneration.status === 'ready'
-                      ? 'Terrain creation ready in Preview.'
-                      : 'Terrain creation needs attention in Preview.',
                 }
               : undefined
           }
@@ -625,7 +621,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                   if (
                     dirty &&
                     next !== 'edit' &&
-                    !window.confirm('Leave the editor with unsaved changes?')
+                    !window.confirm(t('Leave the editor with unsaved changes?'))
                   )
                     return;
                   setView(next);
@@ -780,7 +776,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                                           '{slot0}: starts at {slot1}, holds {slot2}; {slot3}'
                                         }
                                         slots={{
-                                          slot0: propertyLabel(material),
+                                          slot0: <code>{material}</code>,
                                           slot1: yielding.initial,
                                           slot2: yielding.capacity,
                                           slot3:
@@ -849,7 +845,9 @@ function TerrainWorkspace({ id }: { id?: string }) {
                             if (
                               !draft ||
                               !window.confirm(
-                                'Restore this saved draft? The current draft will remain in history.',
+                                t(
+                                  'Restore this saved draft? The current draft will remain in history.',
+                                ),
                               )
                             )
                               return;
@@ -904,7 +902,9 @@ function TerrainWorkspace({ id }: { id?: string }) {
                               void action(async () => {
                                 if (
                                   !window.confirm(
-                                    'Restore this version as the current draft? The current draft stays in history.',
+                                    t(
+                                      'Restore this version as the current draft? The current draft stays in history.',
+                                    ),
                                   )
                                 )
                                   return;
@@ -974,11 +974,5 @@ function propertyLabel(key: string) {
     passable: t('Units can cross'),
     buildable: t('Buildings allowed'),
   };
-  return (
-    labels[key] ??
-    key
-      .replace(/Q8$/, '')
-      .replace(/([a-z])([A-Z])/g, '$1 $2')
-      .replace(/^./, (c) => c.toUpperCase())
-  );
+  return Object.hasOwn(labels, key) ? labels[key] : <code>{key}</code>;
 }

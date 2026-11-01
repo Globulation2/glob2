@@ -1,10 +1,31 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <GraphicContext.h>
+#include <TextBreaks.h>
+#include <ui/TextLayout.h>
+#include <algorithm>
+#include <limits>
 #include <vector>
 #include <string>
 namespace GAGCore {
 inline std::vector<std::string> wrapTouchText(Font* font,const std::string& text,double width) {
+    // Reuse desktop word-boundary handling for annotated catalogs, preserving
+    // the legacy touch policy for text that has no authored soft boundaries.
+    if (text.find(softWordBreak) != std::string::npos) {
+        struct Measurer : GAGGUI::ui::TextMeasurer {
+            Font *font;
+            explicit Measurer(Font *font) : font(font) {}
+            int width(GAGGUI::ui::FontRole, const std::string &value) const override
+            { return font->getStringWidth(value); }
+            int lineHeight(GAGGUI::ui::FontRole) const override
+            { return font->getStringHeight(""); }
+            std::vector<std::size_t> clusterEnds(GAGGUI::ui::FontRole, const std::string &value) const override
+            { return font->getStringClusterEnds(value); }
+        } measurer(font);
+        const int logicalWidth = static_cast<int>(std::min(
+            std::max(1.0, width), double(std::numeric_limits<int>::max())));
+        return GAGGUI::ui::wrapText(measurer, GAGGUI::ui::FontRole::Body, text, logicalWidth);
+    }
     std::vector<std::string> lines;
     std::string line;
     width=std::max(1.0,width);

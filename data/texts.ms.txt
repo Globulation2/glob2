@@ -6818,7 +6818,43 @@ Rumput subur
 Rumput kering
 [dune_sand]
 Pasir gumuk
+[script error at %0:%1: %2]
+Ralat pada %0:%1: %2
 [pale_sand]
 Pasir pucat
 [AI for all computer colonies]
 AI untuk semua koloni komputer
+[script compilation success]
+Kompilasi berjaya
+[script compilation failure %0:%1:(%2):%3]
+Kegagalan kompilasi: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompilasi gagal: %0
+[script loading failed %0]
+Gagal memuatkan skrip daripada %0
+[script saving failed %0]
+Gagal menyimpan skrip ke %0
+[script line %0 column %1]
+Baris: %0 Lajur: %1
+[game stopped %0]
+Permainan dihentikan: %0
+[game stopped script help]
+Semak JavaScript terbenam dan penggunaan sumbernya sebelum memulakan semula permainan ini.
+[missing map generator %0]
+Penjana peta tidak ditemui: %0. Landskap terbina dalam telah dipilih.
+[hive standing order paused]
+Arahan tetap perlu diberi perhatian dan telah dihentikan sementara.
+[hive connection changed orders paused]
+Sambungan telah berubah. Semak arahan tetap anda yang dijeda sebelum menyambung semula.
+[hive standing order fresh instruction]
+Arahan tetap memerlukan arahan baharu selepas sambungan dipulihkan. Anda boleh membatalkannya atau meminta komander menggantikannya.
+[hive order confirmation failed]
+Suatu arahan tidak dapat disahkan. Semak arahan tetap anda sebelum menyambung semula.
+[hive previous order sending]
+Arahan anda yang terdahulu masih sedang dihantar. Mesej ini telah disimpan; buka komander untuk menghantarnya semula.
+[hive order received %0]
+Arahan diterima: %0
+[hive order not confirmed]
+Arahan belum disahkan. Buka komander untuk mencuba semula; mesej anda telah disimpan.
+[hive standing order update failed]
+Kemas kini arahan tetap gagal. Arahan anda dijeda secara setempat; cuba semula melalui kawalan berkenaan.
