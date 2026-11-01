@@ -63,6 +63,9 @@ class OnlineErrorCatalogTest(unittest.TestCase):
         self.assertTrue(all(len(value) <= 8192 for _, value in chunks))
         payload = json.loads(''.join(value for _, value in chunks))
         self.assertEqual(payload['messages']['Long {slot0}'], self.bulgarian['Long {slot0}'])
+        sized_chunks = re.findall(r'\{R"(G2ERR[0-9a-f]+)\((.*?)\)\1", (\d+)\}', self.output.read_text(), re.S)
+        self.assertEqual(len(sized_chunks), len(chunks))
+        self.assertTrue(all(len(value.encode('ascii')) == int(size) for _, value, size in sized_chunks))
     def test_current_authoritative_catalog_hashes_and_size(self):
         en = ROOT / 'platform/packages/i18n/locales/en.json'
         bg = ROOT / 'platform/packages/i18n/locales/bg.json'

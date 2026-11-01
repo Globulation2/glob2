@@ -64,7 +64,9 @@ def generate(english_path, bulgarian_path, output, thai_path=None, *, _thai=Fals
             f'inline constexpr unsigned MessageCount = {len(messages)};\n'
             f'inline constexpr unsigned ExcludedPluralCount = {plurals};\n'
             'inline constexpr std::string_view Chunks[] = {\n' +
-            ''.join(f'R"{delimiter}({encoded[start:start + 8192]}){delimiter}",\n' for start in range(0, len(encoded), 8192)) +
+            # Supplying the ASCII byte length avoids constexpr char_traits::length
+            # scanning the entire catalog under Clang/libstdc++ step limits.
+            ''.join(f'{{R"{delimiter}({encoded[start:start + 8192]}){delimiter}", {len(encoded[start:start + 8192])}}},\n' for start in range(0, len(encoded), 8192)) +
             '};\n'
             '}\n')
     result = {'english_sha256': sha(english_bytes), 'bulgarian_sha256': sha(bulgarian_bytes),
