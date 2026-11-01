@@ -206,7 +206,7 @@ std::string EditorDock::modelSignature() const
 	  << editor.team << '|' << (editor.view.scene ? editor.view.scene->entities.teamCount : 0) << '|' << editor.buildingLevel << '|'
 	  << editor.buildingLevelCount << '|' << editor.placingUnitLevel << '|' << editor.brush.getFigure() << '|'
 	  << editor.brush.getType() << '|' << editor.brush.addRemoveIsEnabled() << '|' << editor.isFertilityOn << editor.fertilityOverlayStale() << '|'
-	  << editor.selectedUnitGID << '|' << editor.selectedBuildingGID << '|' << editor.areaNumber->getIndex() << '|'
+	  << editor.selectedUnitGID << '|' << editor.selectedBuildingGID << '|' << buildInspectorModel(editor).generation << '|' << editor.areaNumber->getIndex() << '|'
 	  << (editor.view.scene ? editor.view.scene->map.getAreaName(editor.areaNumber->getIndex()) : std::string{}) << '|' << editor.dockCollapsed.size();
 	for (int i = 0; i < Team::MAX_COUNT; ++i)
 		s << (editor.view.scene && i < editor.view.scene->entities.teamCount ? '1' : '0');
@@ -275,12 +275,20 @@ Element EditorDock::header(const Presentation &p)
 			editor.minimap.setPlacement(r.x, r.y, std::min(r.w, r.h));
 			editor.drawMiniMap();
 		},
-		{.pointer =
+		{.tap = [this](fe::Point local, fe::Host &)
+			 {
+				 const auto bounds = host().bounds("dock/minimap");
+				 editor.minimap.setPlacement(bounds.x, bounds.y, std::min(bounds.w, bounds.h));
+				 editor.centerViewOnMinimap(bounds.x + local.x, bounds.y + local.y);
+			 },
+		 .pointer =
 			 [this](fe::PointerPhase phase, fe::Point local, fe::Host &)
 			 {
 				 if (phase == fe::PointerPhase::Cancel || phase == fe::PointerPhase::Up)
 					 return;
-				 editor.centerViewOnMinimap(minimapBounds.x + local.x, minimapBounds.y + local.y);
+				 const auto bounds = host().bounds("dock/minimap");
+				 editor.minimap.setPlacement(bounds.x, bounds.y, std::min(bounds.w, bounds.h));
+				 editor.centerViewOnMinimap(bounds.x + local.x, bounds.y + local.y);
 			 },
 		 .accessibleText = fe::tr("[dock minimap]")});
 	fe::ButtonOptions menuOptions;

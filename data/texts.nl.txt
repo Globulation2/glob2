@@ -6832,3 +6832,5 @@ Berichten ▸
 
 [Camp-site amount]
 Aantal kampeerplaatsen
+[AI for all computer colonies]
+AI voor alle computergestuurde kolonies

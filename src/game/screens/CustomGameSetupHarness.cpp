@@ -35,6 +35,8 @@
 #include "LandscapePickerScreen.h"
 #include "StartQualityScreen.h"
 #include <ui/Screen.h>
+#include <ui/Host.h>
+#include <ui/TextLayout.h>
 #include "LobbyMapCatalog.h"
 #include "LobbyMapPreview.h"
 #include "MapGenerator.h"
@@ -80,6 +82,167 @@ struct CountingAI : AIImplementation {
 // Named in friend declarations, so it stays at global scope.
 struct CustomGameSetupHarness
 {
+    static void bulkAIChoice()
+    {
+        using namespace GAGGUI::ui;
+        GAGGUI::ScreenStack stack(*globalContainer->gfx);
+        CustomGameScreen screen(stack);
+        screen.setup.setCapacity(4);
+        REQUIRE(screen.setup.setController(3, CustomGameSetup::Closed));
+        screen.setup.colonies[0].ai = AI::CASTOR;
+        screen.setup.colonies[1].ai = AI::NUMBI;
+        screen.setup.colonies[2].ai = AI::NICOWAR;
+        screen.setup.colonies[3].ai = AI::MAXIMA;
+        screen.setup.colonies[5].ai = AI::ECONO; // Retained, currently inactive.
+        screen.setup.colonies[1].alliance = 3;
+        const auto original = screen.setup;
+        const auto catalog = screen.gameHeader.getBuildingCatalogSnapshot();
+        const auto sameColony = [](const auto &a, const auto &b)
+        {
+            return a.controller == b.controller && a.ai == b.ai &&
+                   a.aiLibraryId == b.aiLibraryId && a.alliance == b.alliance;
+        };
+        FixedTextMeasurer text(8, 16);
+        Host host(Glob2UI::themeFor(Glob2UI::Surface::Frontend), [&](const Presentation &p)
+        { return screen.playersTab(p, p.compact() || p.safe.w < p.pt(720)); });
+        host.setMeasurer(&text);
+        host.setPresentation(Presentation::forSurface(1280, 1024, 1, false));
+        host.layoutIfNeeded();
+        REQUIRE(host.find("players/ai"));
+        CHECK(host.find("players/ai")->accessibleText() == Toolkit::getStringTable()->getString("[Mixed]"));
+        CHECK(screen.commonAISelection() == -1);
+        const int nicowar = AINames::selectionIndex(AI::NICOWAR);
+        std::string error;
+        REQUIRE(host.act("players/ai", {ActionKind::Select, nicowar}, error));
+        const auto semantic = screen.setup;
+        for (int i = 0; i < Team::MAX_COUNT; ++i)
+        {
+            if (i == 1 || i == 2)
+            {
+                CHECK(semantic.colonies[i].ai == AI::NICOWAR);
+                CHECK(semantic.colonies[i].aiLibraryId.empty());
+            }
+            else
+                CHECK(sameColony(semantic.colonies[i], original.colonies[i]));
+            CHECK(semantic.colonies[i].alliance == original.colonies[i].alliance);
+            CHECK(semantic.colonies[i].controller == original.colonies[i].controller);
+        }
+        CHECK(screen.setup.mapRevision == original.mapRevision);
+        CHECK(screen.gameHeader.getBuildingCatalogSnapshot() == catalog);
+        CHECK(screen.commonAISelection() == nicowar);
+
+        // The ordinary popup/keyboard path must apply exactly the same model edit.
+        screen.setup = original;
+        host.invalidate(); host.layoutIfNeeded();
+        const auto point = host.bounds("players/ai").center();
+        for (auto type : {SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP})
+        {
+            SDL_Event event{}; event.type = type; event.button.button = SDL_BUTTON_LEFT;
+            event.button.x = point.x; event.button.y = point.y;
+            host.event(event);
+        }
+        REQUIRE(host.popupOpen());
+        auto key = [&](SDL_Keycode code)
+        { SDL_Event event{}; event.type = SDL_EVENT_KEY_DOWN; event.key.key = code; host.event(event); };
+        key(SDLK_HOME);
+        for (int i = 0; i < nicowar; ++i) key(SDLK_DOWN);
+        key(SDLK_RETURN);
+        REQUIRE_FALSE(host.popupOpen());
+        for (int i = 0; i < Team::MAX_COUNT; ++i)
+            CHECK(sameColony(screen.setup.colonies[i], semantic.colonies[i]));
+
+        screen.setup = original;
+        REQUIRE(screen.setup.setController(2, CustomGameSetup::Shared));
+        screen.selectAIForComputers(nicowar);
+        CHECK(screen.setup.colonies[2].controller == CustomGameSetup::Shared);
+        CHECK(screen.setup.colonies[2].ai == AI::NICOWAR);
+        CHECK(screen.setup.colonies[3].ai == original.colonies[3].ai);
+        screen.setup = original;
+
+        // Community strategies use the existing per-colony identity selection.
+        screen.aiStorage = std::make_unique<Online::MemoryStorage>();
+        screen.aiLibrary = std::make_unique<Script::Library>(*screen.aiStorage);
+        const auto id = screen.aiLibrary->put(
+            "export function metadata(){return {apiVersion:2,name:'Bulk fixture'}} "
+            "export function step(){}", "bulk-fixture.js");
+        const int custom = int(AINames::selectionOrder().size());
+        screen.selectAIForComputers(custom);
+        for (int i : {1, 2})
+        {
+            CHECK(screen.setup.colonies[i].ai == AI::JAVASCRIPT);
+            CHECK(screen.setup.colonies[i].aiLibraryId == id);
+        }
+        CHECK(screen.commonAISelection() == custom);
+        host.invalidate(); host.layoutIfNeeded();
+        auto revisionOf = [](const SurfaceSnapshot &surface, const std::string &key)
+        {
+            std::function<std::uint64_t(const std::vector<ControlSnapshot> &)> find;
+            find = [&](const auto &controls) -> std::uint64_t
+            {
+                for (const auto &control : controls)
+                {
+                    if (control.key == key) return control.revision;
+                    if (const auto revision = find(control.children)) return revision;
+                }
+                return 0;
+            };
+            return find(surface.controls);
+        };
+        const auto oldCatalog = host.inspect();
+        screen.aiLibrary->put(
+            "export function metadata(){return {apiVersion:2,name:'Bulk fixture'}} "
+            "export function step(){} // changed source, identical visible name", "bulk-fixture.js", id);
+        host.invalidate(); host.layoutIfNeeded();
+        const auto replacedCatalog = host.inspect();
+        CHECK(revisionOf(oldCatalog, "players/ai") != revisionOf(replacedCatalog, "players/ai"));
+        CHECK(revisionOf(oldCatalog, "colony/1/ai") != revisionOf(replacedCatalog, "colony/1/ai"));
+        auto stale = semanticDispatch();
+        stale->surface = oldCatalog.instance; stale->key = "players/ai";
+        stale->revision = revisionOf(oldCatalog, "players/ai");
+        stale->action = {ActionKind::Select, nicowar};
+        host.event(stale->event());
+        CHECK(stale->consumed); CHECK_FALSE(stale->error.empty());
+        CHECK(screen.setup.colonies[1].ai == AI::JAVASCRIPT);
+        // Changing the bulk action's subjects also retires the previous target,
+        // even when every displayed choice still has the same value and label.
+        screen.setup.colonies[3].controller = CustomGameSetup::Computer;
+        screen.setup.colonies[3].ai = AI::JAVASCRIPT;
+        screen.setup.colonies[3].aiLibraryId = id;
+        host.invalidate(); host.layoutIfNeeded();
+        CHECK(revisionOf(host.inspect(), "players/ai") != revisionOf(replacedCatalog, "players/ai"));
+        screen.setup.colonies[3] = original.colonies[3];
+        const auto community = screen.setup;
+        screen.frozenAIs["unchanged"] = "frozen source";
+        screen.selectAIForComputers(custom + 1);
+        for (int i = 0; i < Team::MAX_COUNT; ++i)
+            CHECK(sameColony(screen.setup.colonies[i], community.colonies[i]));
+        CHECK(screen.frozenAIs.at("unchanged") == "frozen source");
+        screen.forRoom = true;
+        screen.selectAIForComputers(custom); // Community choices are not offered in rooms.
+        CHECK(screen.frozenAIs.at("unchanged") == "frozen source");
+        screen.forRoom = false;
+
+        for (auto [width, height, scale, touch] :
+             {std::tuple{1280, 1024, 1.0, false}, std::tuple{640, 480, 1.0, false},
+              std::tuple{390, 844, 1.0, true}, std::tuple{844, 390, 1.0, true},
+              std::tuple{1280, 1024, 1.5, false}})
+        {
+            screen.setup = original;
+            const auto presentation = Presentation::forSurface(width, height, scale, touch);
+            host.setPresentation(presentation); host.invalidate(); host.layoutIfNeeded();
+            const auto bounds = host.bounds("players/ai");
+            CHECK_FALSE(bounds.empty());
+            CHECK(presentation.viewport.contains(bounds));
+            REQUIRE(host.act("players/ai", {ActionKind::Select, nicowar}, error));
+            CHECK(screen.commonAISelection() == nicowar);
+        }
+        screen.setup.colonies[1].controller = CustomGameSetup::Closed;
+        screen.setup.colonies[2].controller = CustomGameSetup::Closed;
+        host.invalidate(); host.layoutIfNeeded();
+        CHECK(screen.commonAISelection() == -2);
+        CHECK_FALSE(host.find("players/ai"));
+    }
+
     static void catalogExperimentsInPreview()
     {
         glob2test::HeadlessGame world({.teams=2, .header=true});
@@ -172,8 +335,11 @@ struct CustomGameSetupHarness
         GAGGUI::ScreenStack stack(*globalContainer->gfx);
         CustomGameScreen screen(stack);
         screen.beginExecution(globalContainer->gfx);
-        auto fields=screen.colonyFields(0,screen.presentation());
-        fields.controller->tap({},screen.host());
+        screen.selectTab(1);
+        screen.host().layoutIfNeeded();
+        auto* controller=screen.host().find("colony/0/controller");
+        REQUIRE(controller);
+        controller->tap({},screen.host());
         REQUIRE(screen.host().popupOpen());
         std::string text;
         std::function<void(GAGGUI::ui::Node*)> collect=[&](auto* node) {
@@ -2532,6 +2698,12 @@ static void commonChecks()
 
 TEST_SUITE("CustomGameSetup")
 {
+    TEST_CASE("bulk AI choice shares semantic and human behavior and preserves excluded colonies")
+    {
+        glob2test::HeadlessGlobals globals(setupOptions(false));
+        CustomGameSetupHarness::bulkAIChoice();
+    }
+
     TEST_CASE("map previews retain embedded experimental catalogs through cache hits")
     {
         glob2test::HeadlessGlobals globals(setupOptions(false));

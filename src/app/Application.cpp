@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "hive/LocalCommander.h"
 #include <GameplayRecording.h>
 #include "Application.h"
 #include "mcp/UIService.h"
@@ -162,7 +163,20 @@ Application::Application()
 {
 #if GLOB2_DESKTOP_MCP
     mcp = std::make_unique<MCP::UIService>(*globalContainer->gfx);
-    mcp->configure(globalContainer->settings.mcpEnabled, globalContainer->settings.mcpPort);
+	mcp->domainHandler = [](const std::string &tool, const MCP::Json &args)
+	{
+		MCP::Result result;
+		result.data = Hive::localCall(tool, args);
+		return result;
+	};
+	mcp->inspectionHosts = [this] {
+		return screens.top() ? screens.top()->inspectionHosts() : std::vector<GAGGUI::ui::Host *>{};
+	};
+	mcp->inspectionScreen = [this] {
+		return screens.top() ? std::string(screens.top()->recordingId())
+							 : std::string("unavailable");
+	};
+	mcp->configure(globalContainer->settings.mcpEnabled, globalContainer->settings.mcpPort);
 #endif
 	if (GAGCore::ApplicationHost::storageRestoreFailed())
 	{

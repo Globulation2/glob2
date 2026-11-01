@@ -57,6 +57,7 @@ class Engine
 	friend class HighResolutionIntegrationHarness;
 	friend class SoftwareRenderBenchmark;
 public:
+	std::vector<GAGGUI::ui::Host*> inspectionHosts() { return gui.inspectionHosts(); }
 	//! Constructor
 	Engine();
 	//! Destructor. Also finalizes globalContainer->replayWriter (which

@@ -4876,30 +4876,6 @@ Viumbe waliofungiwa bila mraba huru wa kukanyaga.
 Rasilimali zilizosafishwa
 [stat cleared about]
 Rasilimali zilizoondolewa na wafanyakazi katika maeneo ya kusafisha kutoa nafasi.
-[stats topic overview]
-
-[stats topic economy]
-
-[stats topic world]
-
-[stats work construction]
-
-[stats defence]
-
-[stats history]
-
-[stats waiting]
-
-[stats unit details]
-
-[stats map overlays]
-
-[stats topic]
-
-[stats full history]
-
-[stats missing readings]
-
 [stat win probability]
 
 [stat win probability about]
@@ -5696,6 +5672,14 @@ Maji meusi
 Shimo
 [chasm]
 Korongo
+[lush_grass]
+Nyasi mbichi
+[dry_grass]
+Nyasi kavu
+[dune_sand]
+Mchanga wa matuta
+[pale_sand]
+Mchanga wa rangi hafifu
 [terrain group water]
 Maji
 [terrain group sand]
@@ -6810,6 +6794,32 @@ Njia za wanyama
 Kiasi cha samaki
 [Camp-site amount]
 Idadi ya maeneo ya kambi
+[scenario messages]
+Ujumbe ▸
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [script compile success]
 
 [script error at %0:%1: %2]
@@ -6822,13 +6832,5 @@ Idadi ya maeneo ya kambi
 
 [script cursor %0 %1]
 
-[lush_grass]
-Nyasi mbichi
-[dry_grass]
-Nyasi kavu
-[dune_sand]
-Mchanga wa matuta
-[pale_sand]
-Mchanga wa rangi hafifu
-[scenario messages]
-Ujumbe ▸
+[AI for all computer colonies]
+AI kwa makoloni yote ya kompyuta

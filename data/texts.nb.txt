@@ -5672,6 +5672,14 @@ Mørkt vann
 Hull
 [chasm]
 Kløft
+[lush_grass]
+Frodig gress
+[dry_grass]
+Tørt gress
+[dune_sand]
+Dynesand
+[pale_sand]
+Blek sand
 [terrain group water]
 Vann
 [terrain group sand]
@@ -6786,14 +6794,10 @@ Dyretråkk
 Mengde fisk
 [Camp-site amount]
 Antall leirplasser
-[lush_grass]
-Frodig gress
-[dry_grass]
-Tørt gress
-[dune_sand]
-Dynesand
-[pale_sand]
-Blek sand
+[scenario messages]
+Meldinger ▸
+[AI for all computer colonies]
+KI for alle datastyrte kolonier
 [stats topic overview]
 Oversikt
 [stats topic economy]
@@ -6816,8 +6820,6 @@ Kartoverlegg
 Emne
 [stats full history]
 Åpne hele historikken
-[stats missing readings]
-— Ingen registrert avlesning ennå. Velg en statistikk for detaljer.
 [script compile success]
 
 [script error at %0:%1: %2]
@@ -6830,5 +6832,5 @@ Emne
 
 [script cursor %0 %1]
 
-[scenario messages]
-Meldinger ▸
+[stats missing readings]
+— Ingen registrert avlesning ennå. Velg en statistikk for detaljer.

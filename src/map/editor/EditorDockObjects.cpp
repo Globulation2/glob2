@@ -6,6 +6,7 @@
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "MapEditInspector.h"
+#include <ui/PositionedControls.h>
 #include "TeamDisplay.h"
 #include <FormatableString.h>
 
@@ -130,5 +131,6 @@ Element EditorDock::inspector(const Presentation &p)
 		parts.push_back(fe::hint(fe::tr("[dock no properties]")));
 	else
 		parts.push_back(inspectorRows(model, p, "dock/inspect", [this] { invalidate(); }));
-	return fe::column(std::move(parts), {p.pt(8)});
+	return fe::semanticContext(fe::column(std::move(parts), {p.pt(8)}),
+		"editor-inspector:" + std::to_string(int(model.kind)) + ":" + std::to_string(model.identity) + ":" + std::to_string(model.generation));
 }

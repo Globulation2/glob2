@@ -6832,3 +6832,5 @@ Pasir gumuk
 
 [pale_sand]
 Pasir pucat
+[AI for all computer colonies]
+AI untuk semua koloni komputer

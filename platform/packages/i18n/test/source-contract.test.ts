@@ -74,6 +74,15 @@ describe('localized source contract', () => {
       ),
     ).toEqual([]);
   });
+  it('checks directly rendered lookup labels without translating lookup IDs or authored values', () => {
+    expect(
+      check(`<span>{({cacheWrite: 'Cache creation/write tokens'})[kind]}</span>`),
+    ).toHaveLength(1);
+    expect(check(`<span>{({owner: authoredName, label: t('Sign in')})[kind]}</span>`)).toEqual([]);
+    expect(
+      check(`const technical = {field: 'cacheWrite'}; <input value={technical.field} />;`),
+    ).toEqual([]);
+  });
   it('requires catalog keys for deferred user-facing error messages', () => {
     expect(check("throw new MessageError('Recovery warning');")).toHaveLength(1);
     expect(check("throw new MessageError('Sign in');")).toEqual([]);

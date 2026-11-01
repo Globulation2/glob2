@@ -6832,3 +6832,5 @@ Thông điệp ▸
 
 [Camp-site amount]
 Số khu cắm trại
+[AI for all computer colonies]
+AI cho mọi thuộc địa do máy tính điều khiển

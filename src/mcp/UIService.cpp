@@ -10,9 +10,20 @@ namespace MCP
 namespace
 {
 UIService *current = nullptr;
+// HTTP retains at most 16 sessions; bounded observers leave room for actions
+// and inspections that can satisfy them, including direct HTTP clients.
+constexpr std::size_t MaxWaitObservers = 8;
 bool inputTool(const std::string &tool)
 {
-	return tool != "ui_status" && tool != "ui_screenshot" && tool != "ui_acquire_control";
+	return tool != "ui_status" && tool != "ui_screenshot" && tool != "ui_inspect" &&
+		   tool != "ui_wait" && tool != "ui_acquire_control";
+}
+bool inspectionTool(const std::string &tool, const Json &arguments)
+{
+	return tool == "ui_status" || tool == "ui_screenshot" || tool == "ui_inspect" ||
+		   tool == "hive_status" || tool == "hive_api" || tool == "hive_result" ||
+		   (tool == "hive_program" && (arguments.value("action", "") == "list" ||
+									   arguments.value("action", "") == "inspect"));
 }
 Uint8 mouseButton(const Json &args)
 {
@@ -75,11 +86,27 @@ std::shared_ptr<Request> UIService::submit(const std::string &tool, Json args, s
 	r->arguments = std::move(args);
 	r->client = std::move(client);
 	std::lock_guard lock(mutex);
-	if (!accepting || queue.size() >= 64)
+	if (!accepting || queue.size() + observers.size() >= 64)
 	{
 		Result result;
 		result.error = accepting ? "UI request queue full" : "MCP server disabled";
 		r->completion.set_value(std::move(result));
+	}
+	else if (tool == "ui_wait")
+	{
+		if (observers.size() >= MaxWaitObservers)
+		{
+			Result result;
+			result.error = "Too many pending UI waits (maximum 8); cancel or complete an earlier wait before waiting again";
+			r->completion.set_value(std::move(result));
+		}
+		else
+		{
+			r->deadline = Clock::now() +
+						  std::chrono::milliseconds(r->arguments.value("timeout_ms", 10000)) +
+						  std::chrono::seconds(1);
+			observers.push_back(r);
+		}
 	}
 	else
 		queue.push_back(r);
@@ -92,7 +119,7 @@ std::shared_ptr<Request> UIService::enqueue(std::function<Result()> execute, std
 	r->execute = std::move(execute);
 	r->client = std::move(client);
 	std::lock_guard lock(mutex);
-	if (!accepting || queue.size() >= 64)
+	if (!accepting || queue.size() + observers.size() >= 64)
 	{
 		Result result;
 		result.error = "MCP unavailable or queue full";
@@ -126,6 +153,13 @@ void UIService::configure(bool enable, int newPort, bool retry)
 			r->completion.set_value(std::move(result));
 		}
 		queue.clear();
+		for (auto &r : observers)
+		{
+			Result result;
+			result.error = "Listener stopped";
+			r->completion.set_value(std::move(result));
+		}
+		observers.clear();
 	}
 	if (active)
 		finish("Listener stopped");
@@ -184,25 +218,30 @@ void UIService::revoke()
 {
 	token.clear();
 	controller.clear();
+	cancelControllerWork("Control revoked");
+}
+void UIService::cancelControllerWork(const std::string &reason)
+{
 	release(cleanup);
 	{
 		std::lock_guard lock(mutex);
 		auto i = queue.begin();
 		while (i != queue.end())
 		{
-			if ((*i)->tool == "ui_status" || (*i)->tool == "ui_screenshot")
+			if (inspectionTool((*i)->tool, (*i)->arguments) && !(*i)->arguments.contains("token"))
 			{
 				++i;
 				continue;
 			}
 			Result result;
-			result.error = "Control revoked";
+			result.error = reason;
 			(*i)->completion.set_value(std::move(result));
 			i = queue.erase(i);
 		}
 	}
-	if (active && active->tool != "ui_status" && active->tool != "ui_screenshot")
-		finish("Control revoked");
+	if (active &&
+		(!inspectionTool(active->tool, active->arguments) || active->arguments.contains("token")))
+		finish(reason);
 }
 SDL_Keymod UIService::modifiers() const
 {
@@ -338,6 +377,19 @@ Json UIService::metadata() const
 			{"controller", currentController()},
 			{"controlled", !token.empty()}};
 }
+bool UIService::addInspection(Result &result, const Json &arguments)
+{
+	try
+	{
+		result.data["inspection"] = inspection(arguments);
+		return true;
+	}
+	catch (const std::exception &failure)
+	{
+		result.data["inspection_error"] = failure.what();
+		return false;
+	}
+}
 void UIService::finish(std::string error)
 {
 	if (!active)
@@ -357,6 +409,10 @@ void UIService::finish(std::string error)
 	result.data["dispatched"] = dispatchComplete;
 	result.data["input_started"] = r->inputStarted.load();
 	result.error = std::move(error);
+	if (result.error.empty() && dispatchComplete && r->tool == "ui_act")
+		// Input was consumed. A read failure must not disguise confirmed
+		// delivery and encourage replaying the mutation.
+		addInspection(result);
 	if (!result.error.empty())
 		r->cancelled = true;
 	r->completion.set_value(std::move(result));
@@ -379,12 +435,30 @@ void UIService::startCapture()
 			result.data = metadata();
 			result.data["viewport_id"] = capturedViewport;
 			result.data["frame_id"] = frame;
-			result.data["dispatched"] = request->tool != "ui_screenshot";
+			result.data["dispatched"] =
+				request->tool != "ui_screenshot" && request->tool != "ui_inspect";
+			result.data["input_started"] = request->inputStarted.load();
 			if (pixels)
 			{
 				result.data["width"] = pixels->w;
 				result.data["height"] = pixels->h;
+				const double scale = std::min(
+					{1.0, double(request->arguments.value("max_width", pixels->w)) / pixels->w,
+					 double(request->arguments.value("max_height", pixels->h)) / pixels->h});
+				const int w = std::max(1, int(std::floor(pixels->w * scale))),
+						  h = std::max(1, int(std::floor(pixels->h * scale)));
+				result.data["native_width"] = pixels->w;
+				result.data["native_height"] = pixels->h;
+				result.data["width"] = w;
+				result.data["height"] = h;
+				result.data["capture_id"] = ++nextCapture;
+				captures.push_back({nextCapture, capturedViewport, w, h, pixels->w, pixels->h});
+				if (captures.size() > 8)
+					captures.pop_front();
 			}
+			if (request->tool == "ui_inspect" || request->tool == "ui_act")
+				if (!addInspection(result, request->tool == "ui_inspect" ? request->arguments : Json::object()) && request->tool == "ui_inspect")
+					error = result.data["inspection_error"].get<std::string>();
 			result.pixels = std::move(pixels);
 			result.error = std::move(error);
 			if (!result.pixels && result.error.empty())
@@ -404,6 +478,123 @@ void UIService::startCapture()
 		});
 	if (!active)
 		capture = 0; // Synchronous admission failure already completed it.
+}
+Json UIService::inspection(const Json &arguments)
+{
+	Json surfaces = Json::array();
+	if (inspectionHosts)
+		for (auto *host : inspectionHosts())
+		{
+			if (!host)
+				continue;
+			host->layoutIfNeeded();
+			auto surface = Json::parse(GAGGUI::ui::inspectionJSON(host->inspect()));
+			if (arguments.contains("surface") && surface["instance"] != arguments["surface"])
+				continue;
+			if (arguments.contains("subtree"))
+			{
+				const auto key = arguments["subtree"].get<std::string>();
+				Json selected = Json::array();
+				auto find = [&](auto &&self, const Json &items) -> void
+				{
+					for (const auto &item : items)
+						if (item["key"] == key)
+							selected.push_back(item);
+						else
+							self(self, item["children"]);
+				};
+				find(find, surface["controls"]);
+				surface["controls"] = std::move(selected);
+			}
+			surfaces.push_back(std::move(surface));
+		}
+	return {{"screen", inspectionScreen ? inspectionScreen() : "unavailable"},
+			{"surfaces", surfaces}};
+}
+void UIService::observe()
+{
+	// Observers never occupy active or wait behind a gesture/another observer.
+	std::deque<std::shared_ptr<Request>> pending;
+	{
+		std::lock_guard lock(mutex);
+		pending = observers;
+	}
+	for (auto &request : pending)
+	{
+		Result result;
+		result.data = metadata();
+		auto &args = request->arguments;
+		if (request->cancelled)
+			result.error = "Wait cancelled";
+		else if (args.contains("token") && (token.empty() || args.value("token", "") != token))
+			result.error = "Controller lease lost or token invalid";
+		else
+		{
+			if (args.contains("token"))
+				renewed = Clock::now();
+			auto snapshot = inspection(args);
+			result.data["inspection"] = snapshot;
+			const auto &condition = args["condition"];
+			bool matches =
+				!condition.contains("screen") || snapshot["screen"] == condition["screen"];
+			bool target = !condition.contains("key") && !condition.contains("revision_after");
+			for (const auto &surface : snapshot["surfaces"])
+			{
+				if (!condition.contains("key") && condition.contains("revision_after") &&
+					surface["revision"].get<std::uint64_t>() >
+						condition["revision_after"].get<std::uint64_t>())
+					target = true;
+				auto check = [&](auto &&self, const Json &items) -> void
+				{
+					for (const auto &item : items)
+					{
+						if (condition.contains("key") && item["key"] == condition["key"])
+						{
+							bool ok = true;
+							for (const char *name :
+								 {"enabled", "selected", "focused", "blocked", "value"})
+								if (condition.contains(name) && item[name] != condition[name])
+									ok = false;
+							if (condition.contains("visible") &&
+								condition["visible"] != Json(item["visible"]["w"].get<int>() > 0 &&
+															 item["visible"]["h"].get<int>() > 0))
+								ok = false;
+							if (condition.contains("revision_after") &&
+								item["revision"].get<std::uint64_t>() <=
+									condition["revision_after"].get<std::uint64_t>())
+								ok = false;
+							target = target || ok;
+						}
+						self(self, item["children"]);
+					}
+				};
+				check(check, surface["controls"]);
+			}
+			if (matches && target)
+				result.data["satisfied"] = true;
+			else if (Clock::now() >= request->deadline - std::chrono::seconds(1))
+			{
+				result.data["satisfied"] = false;
+				result.error = "Wait timed out; latest inspection returned";
+			}
+			else
+				continue;
+		}
+		// Retain observers in the admission inventory while evaluating them, so
+		// concurrent submits cannot exceed the shared 64-request bound.
+		bool retained = false;
+		{
+			std::lock_guard lock(mutex);
+			auto found = std::find(observers.begin(), observers.end(), request);
+			if (found != observers.end())
+			{
+				observers.erase(found);
+				retained = true;
+			}
+		}
+		if (retained)
+			request->completion.set_value(std::move(result));
+	}
 }
 void UIService::observeHumanInput(std::vector<SDL_Event> &events)
 {
@@ -452,7 +643,7 @@ void UIService::observeHumanInput(std::vector<SDL_Event> &events)
 		{
 			humanKeys.clear();
 			humanButtons.clear();
-			revoke();
+			cancelControllerWork("Input cancelled on window focus loss; controller lease retained");
 		}
 		if (deliver)
 			human.push_back(event);
@@ -461,7 +652,7 @@ void UIService::observeHumanInput(std::vector<SDL_Event> &events)
 }
 void UIService::expireInputs(Clock::time_point now)
 {
-	if (!token.empty() && now - renewed >= std::chrono::seconds(60))
+	if (!token.empty() && now - renewed >= std::chrono::seconds(300))
 		revoke();
 	for (auto i = keys.begin(); i != keys.end();)
 	{
@@ -515,6 +706,7 @@ void UIService::pump(std::vector<SDL_Event> &events, bool available, bool dispat
 	observeHumanInput(events);
 	const auto now = Clock::now();
 	expireInputs(now);
+	observe();
 	const bool cleanupOperation =
 		active && (active->tool == "ui_release_control" || active->tool == "ui_release_inputs");
 	if (active && (active->cancelled || now >= active->deadline ||
@@ -533,8 +725,8 @@ void UIService::pump(std::vector<SDL_Event> &events, bool available, bool dispat
 			if (!queue.empty())
 			{
 				const auto &name = queue.front()->tool;
-				inspection =
-					name == "ui_status" || name == "ui_screenshot" || name == "ui_acquire_control";
+				inspection = inspectionTool(name, queue.front()->arguments) ||
+							 name == "ui_acquire_control" || name == "ui_renew_control";
 			}
 		}
 		if ((!available || inspection) && !awaitingDispatch)
@@ -655,6 +847,8 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 			active = queue.front();
 			queue.pop_front();
 			dragIndex = 0;
+			coordinatesConverted = false;
+			semantic.reset();
 			cancellationReason.clear();
 			dispatched = false;
 			dispatchAcknowledged = false;
@@ -691,6 +885,15 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		}
 		return;
 	}
+	if ((tool == "ui_inspect" || tool == "ui_screenshot") && a.contains("token"))
+	{
+		if (token.empty() || a.value("token", "") != token)
+		{
+			finish("Controller lease lost or token invalid");
+			return;
+		}
+		renewed = now;
+	}
 	if (tool == "ui_status")
 	{
 		finish();
@@ -717,12 +920,17 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		Result result;
 		result.data = metadata();
 		result.data["token"] = token;
-		result.data["lease_seconds"] = 60;
-		active->completion.set_value(std::move(result));
-		active.reset();
+		result.data["lease_seconds"] = 300;
+		auto request = std::move(active);
+		if (a.is_object() && a.value("inspect", false))
+			addInspection(result);
+		request->completion.set_value(std::move(result));
 		return;
 	}
-	if (inputTool(tool))
+	const bool domainRead = tool == "hive_status" || tool == "hive_api" || tool == "hive_result" ||
+							(tool == "hive_program" && (a.value("action", "") == "list" ||
+														a.value("action", "") == "inspect"));
+	if (inputTool(tool) && !domainRead)
 	{
 		if (token.empty() || a.value("token", "") != token)
 		{
@@ -731,6 +939,44 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		}
 		if (dragIndex == 0)
 			renewed = now;
+	}
+	if (tool.starts_with("hive_") && domainHandler)
+	{
+		const auto request = active;
+		Result result;
+		try
+		{
+			result = domainHandler(tool, a);
+		}
+		catch (const std::exception &error)
+		{
+			result.error = error.what();
+		}
+		if (active == request)
+		{
+			request->completion.set_value(std::move(result));
+			active.reset();
+		}
+		return;
+	}
+	if (tool == "ui_renew_control")
+	{
+		finish();
+		return;
+	}
+	if (tool == "ui_inspect")
+	{
+		if (a.value("screenshot", false))
+		{
+			startCapture();
+			return;
+		}
+		Result result;
+		result.data = metadata();
+		result.data["inspection"] = inspection(a);
+		active->completion.set_value(std::move(result));
+		active.reset();
+		return;
 	}
 	if (tool == "ui_release_control")
 	{
@@ -764,6 +1010,98 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		releaseTemporary(events);
 		finish("Stale viewport identity; inspect the current viewport before sending coordinates");
 		return;
+	}
+	if (tool == "ui_act")
+	{
+		auto snapshot = inspection({});
+		bool found = false;
+		for (const auto &surface : snapshot["surfaces"])
+			if (surface["instance"] == a["surface"])
+			{
+				auto check = [&](auto &&self, const Json &items) -> void
+				{
+					for (const auto &item : items)
+					{
+						if (item["key"] == a["key"] && item["revision"] == a["revision"] &&
+							item["enabled"] == true && item["blocked"] == false &&
+							item["visible"]["w"].get<int>() > 0 &&
+							item["visible"]["h"].get<int>() > 0)
+							found = true;
+						self(self, item["children"]);
+					}
+				};
+				check(check, surface["controls"]);
+			}
+		if (!found)
+		{
+			finish("Stale, hidden, disabled or blocked control; inspect again");
+			return;
+		}
+		semantic = GAGGUI::ui::semanticDispatch();
+		semantic->surface = a["surface"];
+		semantic->key = a["key"];
+		semantic->revision = a["revision"];
+		const auto action = a["action"].get<std::string>();
+		semantic->action.kind = action == "activate" ? GAGGUI::ui::ActionKind::Activate
+								: action == "select" ? GAGGUI::ui::ActionKind::Select
+								: action == "scroll" ? GAGGUI::ui::ActionKind::Scroll
+													 : GAGGUI::ui::ActionKind::SetValue;
+		if (a.contains("value"))
+		{
+			const auto &v = a["value"];
+			if (v.is_boolean())
+				semantic->action.value = v.get<bool>();
+			else if (v.is_number_integer() && v.get<double>() >= INT_MIN &&
+					 v.get<double>() <= INT_MAX)
+				semantic->action.value = v.get<int>();
+			else if (v.is_string() && v.get_ref<const std::string &>().size() <= 65536 &&
+					 v.get_ref<const std::string &>().find('\0') == std::string::npos)
+				semantic->action.value = v.get<std::string>();
+			else
+			{
+				finish("Invalid semantic action value; use boolean, integer or string. "
+					   "scroll requires signed logical pixels; select requires an integer index");
+				return;
+			}
+		}
+		r.inputStarted = true;
+		events.push_back(semantic->event());
+		dispatched = true;
+		return;
+	}
+	if (a.contains("capture_id") && !coordinatesConverted)
+	{
+		auto found = std::find_if(captures.begin(), captures.end(),
+								  [&](const auto &c) { return c.id == a["capture_id"]; });
+		if (found == captures.end())
+		{
+			finish("Capture expired; request a new screenshot");
+			return;
+		}
+		if (found->viewport != viewport)
+		{
+			finish("Capture viewport changed; request a new screenshot");
+			return;
+		}
+		auto convert = [&](Json &point) -> bool
+		{
+			double x = point["x"], y = point["y"];
+			if (x >= found->width || y >= found->height)
+				return false;
+			point["x"] = x * found->nativeWidth / found->width;
+			point["y"] = y * found->nativeHeight / found->height;
+			return true;
+		};
+		bool valid = !a.contains("x") || convert(a);
+		if (a.contains("points"))
+			for (auto &point : a["points"])
+				valid = convert(point) && valid;
+		if (!valid)
+		{
+			finish("Coordinates outside capture");
+			return;
+		}
+		coordinatesConverted = true;
 	}
 	auto validPoint = [&](const Json &p)
 	{ return p["x"].get<double>() < width && p["y"].get<double>() < height; };
@@ -982,6 +1320,15 @@ void UIService::afterDispatch(bool complete, std::size_t consumed, std::optional
 	dispatchBatch.clear();
 	if (active && dispatched)
 		dispatchAcknowledged = true;
+	if (active && active->tool == "ui_act" && semantic)
+	{
+		if (!semantic->consumed || !semantic->error.empty())
+		{
+			finish(semantic->consumed ? semantic->error
+									  : "Control surface no longer owns input; inspect again");
+			return;
+		}
+	}
 	if (!active || !dispatched || capturing)
 		return;
 	if (active->cancelled)

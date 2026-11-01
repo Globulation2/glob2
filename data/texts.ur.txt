@@ -4876,30 +4876,6 @@ AI کی قابلِ رسائی ٹیلی میٹری نہیں۔
 صاف کیے گئے وسائل
 [stat cleared about]
 جگہ بنانے کے لیے کارکنوں کے صفائی کے علاقوں میں ہٹائے ہوئے وسائل۔
-[stats topic overview]
-
-[stats topic economy]
-
-[stats topic world]
-
-[stats work construction]
-
-[stats defence]
-
-[stats history]
-
-[stats waiting]
-
-[stats unit details]
-
-[stats map overlays]
-
-[stats topic]
-
-[stats full history]
-
-[stats missing readings]
-
 [stat win probability]
 
 [stat win probability about]
@@ -5696,6 +5672,14 @@ AI کی بنائی ہوئی نہیں
 سوراخ
 [chasm]
 گہری کھائی
+[lush_grass]
+سرسبز گھاس
+[dry_grass]
+سوکھی گھاس
+[dune_sand]
+ٹیلے کی ریت
+[pale_sand]
+ہلکے رنگ کی ریت
 [terrain group water]
 پانی
 [terrain group sand]
@@ -6810,6 +6794,32 @@ MCP سرور چالو کریں
 مچھلی کی مقدار
 [Camp-site amount]
 خیمہ گاہوں کی تعداد
+[scenario messages]
+پیغامات ▸
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [script compile success]
 
 [script error at %0:%1: %2]
@@ -6822,13 +6832,5 @@ MCP سرور چالو کریں
 
 [script cursor %0 %1]
 
-[lush_grass]
-سرسبز گھاس
-[dry_grass]
-سوکھی گھاس
-[dune_sand]
-ٹیلے کی ریت
-[pale_sand]
-ہلکے رنگ کی ریت
-[scenario messages]
-پیغامات ▸
+[AI for all computer colonies]
+تمام کمپیوٹر کالونیوں کے لیے اے آئی

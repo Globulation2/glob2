@@ -20,6 +20,7 @@ class UIScreen : public Screen
 	virtual Element build(const Presentation &presentation) = 0;
 	void invalidate() { hostValue.invalidate(); }
 	Host &host() { return hostValue; }
+	std::vector<Host *> inspectionHosts() override { return {&hostValue}; }
 	const Presentation &presentation() const { return hostValue.presentation(); }
 	const Theme &theme() const { return themeValue; }
 

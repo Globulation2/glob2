@@ -6832,3 +6832,5 @@ Wiadomości ▸
 
 [Camp-site amount]
 Liczba obozowisk
+[AI for all computer colonies]
+SI dla wszystkich kolonii sterowanych przez komputer

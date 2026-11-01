@@ -80,6 +80,12 @@ export function sourceErrors(
       } else if (ts.isParenthesizedExpression(node)) renderedCopy(node.expression);
       else if (ts.isArrayLiteralExpression(node)) {
         for (const item of node.elements) if (ts.isExpression(item)) renderedCopy(item);
+      } else if (ts.isElementAccessExpression(node)) {
+        let lookup: ts.Expression = node.expression;
+        while (ts.isParenthesizedExpression(lookup)) lookup = lookup.expression;
+        if (ts.isObjectLiteralExpression(lookup))
+          for (const property of lookup.properties)
+            if (ts.isPropertyAssignment(property)) renderedCopy(property.initializer);
       } else if (ts.isObjectLiteralExpression(node)) {
         // Status/result IDs and execution states are technical; only text is copy.
         for (const property of node.properties)

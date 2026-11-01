@@ -6832,3 +6832,5 @@ MCP 伺服器
 
 [Camp-site amount]
 營地數量
+[AI for all computer colonies]
+所有電腦控制殖民地的 AI

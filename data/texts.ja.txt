@@ -6832,3 +6832,5 @@ GL のみ
 
 [Camp-site amount]
 野営地の数
+[AI for all computer colonies]
+すべてのコンピューター操作コロニーのAI

@@ -6832,3 +6832,5 @@ GL 전용
 
 [Camp-site amount]
 야영지 수
+[AI for all computer colonies]
+모든 컴퓨터 제어 식민지의 AI

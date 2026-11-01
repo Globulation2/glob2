@@ -228,32 +228,12 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 
 void GameGUI::handleReplayProgressBarClick(int mx, int my, int button)
 {
-	// Check the play, pause and fast-forward buttons
-	if (globalContainer->replaying)
-	{
-		int x = REPLAY_BAR_WIDTH - REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_CAP_WIDTH;
-		int y = REPLAY_BAR_Y + REPLAY_PROGRESS_BAR_Y_OFFSET;
-		int inc = REPLAY_PROGRESS_BAR_BUTTON_WIDTH;
-
-		if (my >= y && my <= y+20)
-		{
-			if (mx >= x-3*inc && mx <= x-2*inc)
-			{
-				// Play
-				gamePaused = false;
-				globalContainer->replayFastForward = false;
-			}
-			if (mx > x-2*inc && mx <= x-inc)
-			{
-				// Pause
-				gamePaused = true;
-			}
-			if (mx > x-inc && mx <= x)
-			{
-				// Fast-forward
-				gamePaused = false;
-				globalContainer->replayFastForward = true;
-			}
-		}
-	}
+    if(!globalContainer->replaying)return;
+    const auto bounds=replayPlaybackControlBounds();
+    for(int i=0;i<3;++i)if(bounds[i].contains(GAGGUI::ui::Point{mx,my}))
+    {
+        gamePaused=i==1;
+        if(i!=1)globalContainer->replayFastForward=i==2;
+        return;
+    }
 }

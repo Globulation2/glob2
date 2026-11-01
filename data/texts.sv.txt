@@ -6832,3 +6832,5 @@ Meddelanden ▸
 
 [Camp-site amount]
 Antal lägerplatser
+[AI for all computer colonies]
+AI för alla datorstyrda kolonier

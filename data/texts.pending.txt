@@ -22,3 +22,4 @@
 [script load failed %0]
 [script save failed %0]
 [script cursor %0 %1]
+[AI for all computer colonies]

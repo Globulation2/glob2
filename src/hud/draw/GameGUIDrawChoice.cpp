@@ -66,8 +66,9 @@ bool GameGUI::scrollBuildingChoices(double delta)
     {
         const bool overPreview=drawnScene().panels.building.valid && hoveredBuildingPreview(drawnScene().panels.building)!=BuildingPreview::None;
         if (!overPreview && (mouseY<YPOS_BASE_BUILDING || mouseY>=globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET-4)) return false;
-        buildingInfoScroll=std::clamp(buildingInfoScroll+(delta>0 ? -32 : delta<0 ? 32 : 0),0,buildingInfoScrollMaximum);
-        return true;
+        for(const auto &c:describeHudControls())if(c.key.starts_with("building/") && c.key.ends_with("/scroll"))
+            return c.perform && c.perform({GAGGUI::ui::ActionKind::Scroll,delta>0?-32:delta<0?32:0});
+        return false;
     }
     const bool flags=displayMode==FLAG_VIEW;
     if (!flags && displayMode!=CONSTRUCTION_VIEW) return false;
@@ -75,10 +76,18 @@ bool GameGUI::scrollBuildingChoices(double delta)
     const unsigned columns=flags ? 3 : 2;
     const int rows=choiceVisibleRows(top,columns);
     if (mouseY<top || mouseY>=top+rows*CHOICE_ROW_HEIGHT_PX) return false;
-    const int count=static_cast<int>((flags ? flagsChoiceName : buildingsChoiceName).size());
-    int& offset=flags ? flagChoiceRow : buildingChoiceRow;
-    offset=std::clamp(offset+(delta>0 ? -1 : delta<0 ? 1 : 0),0,std::max(0,(count+int(columns)-1)/int(columns)-rows));
-    return true;
+    const std::string key=flags?"game/flags/scroll":"game/buildings/scroll";
+    for(const auto &c:describeHudControls())if(c.key==key)
+        return c.perform && c.perform({GAGGUI::ui::ActionKind::Scroll,delta>0?-CHOICE_ROW_HEIGHT_PX:delta<0?CHOICE_ROW_HEIGHT_PX:0});
+    return false;
+}
+
+GAGGUI::ui::Rect GameGUI::choiceControlBounds(int panelTopY, size_t index, unsigned columns) const
+{
+    const int offset=columns==3?flagChoiceRow:buildingChoiceRow;
+    const int cell=RIGHT_MENU_WIDTH/int(columns);
+    return {globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+int(index%columns)*cell,
+        panelTopY+(int(index/columns)-offset)*CHOICE_ROW_HEIGHT_PX,cell,CHOICE_ROW_HEIGHT_PX};
 }
 
 void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& types, const std::vector<bool>& states, unsigned numberPerLine)
@@ -98,8 +107,8 @@ void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& t
 		assert(bt);
 		int imgid = bt->miniSpriteImage;
 
-		const int x = (static_cast<int>(i % numberPerLine) * width) + panelLeftX;
-		const int y = ((static_cast<int>(i / numberPerLine)-offset) * CHOICE_ROW_HEIGHT_PX) + panelTopY;
+		const auto rect=choiceControlBounds(panelTopY,i,numberPerLine);
+		const int x=rect.x, y=rect.y;
 		globalContainer->gfx->setClipRect(x, y, CHOICE_SPRITE_CLIP_W_PX, CHOICE_ROW_HEIGHT_PX);
 
 		Sprite *buildingSprite;
