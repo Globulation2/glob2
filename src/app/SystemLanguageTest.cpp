@@ -145,6 +145,10 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("tl", "PH") == "fil");
 		CHECK(code("jw") == "jv");
 		CHECK(code("yo", "NG") == "yo");
+		CHECK(code("th", "TH") == "th");
+		CHECK(code("th-TH") == "th");
+		CHECK(code("th-Thai", "TH") == "th");
+		CHECK(code("th-Latn").empty());
 		CHECK(code("pa", "PK") == "pa-arab");
 		CHECK(code("pa", "IN") == "pa-guru");
 		CHECK(code("pa-Guru", "PK") == "pa-guru");
@@ -216,6 +220,14 @@ TEST_SUITE("SystemLanguage")
 		CHECK(SystemLanguage::choose({{"de", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
 	}
 
+	TEST_CASE("Thai starts from an installed catalog for system and saved preferences")
+	{
+		PreferredLocales locales("th_TH,en_US");
+		CHECK(startupLanguage("") == "th");
+		CHECK(startupLanguage("th") == "th");
+		CHECK(startupLanguage("en") == "en");
+	}
+
 	TEST_CASE("Filipino startup accepts the Tagalog alias and preserves a saved language")
 	{
 		PreferredLocales locales("tl_PH,en_US");
@@ -224,6 +236,7 @@ TEST_SUITE("SystemLanguage")
 		CHECK(startupLanguage("fr") == "fr");
 		CHECK(startupLanguage("fil") == "fil");
 	}
+
 	TEST_CASE("startup selects installed Tamil and preserves an explicit saved choice")
 	{
 		PreferredLocales locales("ta_LK,en_US");

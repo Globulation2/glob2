@@ -9,6 +9,32 @@ const std::string Generic = "Нещо се обърка. Моля, опитай�
 }
 TEST_SUITE("ApiErrorText")
 {
+	TEST_CASE("Thai errors select reviewed Thai text and preserve literal parameters and diagnostics")
+	{
+		const auto error = errorFromJson(Json{{"code", "unauthenticated"}, {"message", "private diagnostic"},
+			{"messageKey", "Sign in first (session.authenticate)."}}, "fallback");
+		for (const auto *locale : {"th", "th-TH"})
+		{
+			CHECK_EQ(presentApiError(error, locale), "ลงชื่อเข้าใช้ก่อน ( session.authenticate )");
+			CHECK_EQ(presentOnlineProblem("private driver error", locale), "เกิดข้อผิดพลาดบางอย่าง โปรดลองใหม่อีกครั้ง");
+			CHECK_EQ(presentOnlineProblem("Building", locale), "เกิดข้อผิดพลาดบางอย่าง โปรดลองใหม่อีกครั้ง");
+			CHECK_EQ(Glob2UI::presentException(std::runtime_error("private socket error"), locale,
+				"เกิดข้อผิดพลาดบางอย่าง โปรดลองใหม่อีกครั้ง"), "เกิดข้อผิดพลาดบางอย่าง โปรดลองใหม่อีกครั้ง");
+			const Glob2UI::PresentedError shown("ข้อความภาษาไทย", "private socket error");
+			CHECK_EQ(Glob2UI::presentException(shown, locale, "unused summary"), "ข้อความภาษาไทย");
+			auto contextual = error;
+			contextual.messageKey = "Building (music mood)";
+			CHECK_EQ(presentApiError(contextual, locale), "การก่อสร้าง");
+			contextual.messageKey = "Building (generation progress)";
+			CHECK_EQ(presentApiError(contextual, locale), "กำลังสร้าง");
+			auto parameterized = errorFromJson(Json{{"message", "raw"}, {"messageKey", "{slot0} · {slot1}"},
+				{"messageParams", {{"slot0", "ผู้เล่น {slot1} %0"}, {"slot1", 42}}}}, "fallback");
+			CHECK_EQ(presentApiError(parameterized, locale), "ผู้เล่น {slot1} %0 · 42");
+		}
+		CHECK_EQ(error.message, "private diagnostic");
+		CHECK_EQ(error.code, "unauthenticated");
+		CHECK_EQ(presentApiError(error, "en"), error.message);
+	}
 	TEST_CASE("known metadata translates without rewriting diagnostics or details")
 	{
 		const Json body = {{"code", "unauthenticated"}, {"message", "raw diagnostic"},

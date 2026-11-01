@@ -217,12 +217,7 @@ export function Overview() {
                 xLabel={t('UTC day')}
                 yLabel={t('Matches per day')}
                 series={['started', 'completed', 'cancelled'].map((kind, i) => ({
-                  name:
-                    kind === 'started'
-                      ? t('Started')
-                      : kind === 'completed'
-                        ? t('Completed')
-                        : t('Cancelled'),
+                  name: measureName('matches.' + kind, ''),
                   dashed: kind === 'cancelled',
                   color: ['var(--success)', 'var(--ink)', 'var(--warn)'][i] ?? 'var(--ink)',
                   points: current

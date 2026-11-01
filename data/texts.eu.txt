@@ -6818,12 +6818,12 @@ Animalien bidexkak
 Arrain kopurua
 [scenario messages]
 Mezuak ▸
+[script error at %0:%1: %2]
+Errorea %0 lerroan, %1 zutabean: %2
 [Camp-site amount]
 Kanpaleku kopurua
 [script compilation success]
 Konpilazio arrakastatsua
-[script error at %0:%1: %2]
-Errorea %0 lerroan, %1 zutabean: %2
 [script compilation failure %0:%1:(%2):%3]
 Konpilazio-hutsegitea: %0:%1:(%2):%3
 [script compilation failed %0]

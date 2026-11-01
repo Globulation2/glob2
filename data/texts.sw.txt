@@ -4876,30 +4876,6 @@ Viumbe waliofungiwa bila mraba huru wa kukanyaga.
 Rasilimali zilizosafishwa
 [stat cleared about]
 Rasilimali zilizoondolewa na wafanyakazi katika maeneo ya kusafisha kutoa nafasi.
-[stats topic overview]
-
-[stats topic economy]
-
-[stats topic world]
-
-[stats work construction]
-
-[stats defence]
-
-[stats history]
-
-[stats waiting]
-
-[stats unit details]
-
-[stats map overlays]
-
-[stats topic]
-
-[stats full history]
-
-[stats missing readings]
-
 [stat win probability]
 
 [stat win probability about]
@@ -5696,6 +5672,14 @@ Maji meusi
 Shimo
 [chasm]
 Korongo
+[lush_grass]
+Nyasi mbichi
+[dry_grass]
+Nyasi kavu
+[dune_sand]
+Mchanga wa matuta
+[pale_sand]
+Mchanga wenye rangi hafifu
 [terrain group water]
 Maji
 [terrain group sand]
@@ -6812,10 +6796,36 @@ Kiasi cha samaki
 Idadi ya maeneo ya kambi
 [scenario messages]
 Ujumbe ▸
-[script compilation success]
-Ukusanyaji wa msimbo umefaulu
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [script error at %0:%1: %2]
 Hitilafu katika %0:%1: %2
+[AI for all computer colonies]
+AI kwa makoloni yote ya kompyuta
+[script compilation success]
+Ukusanyaji wa msimbo umefaulu
 [script compilation failure %0:%1:(%2):%3]
 Ukusanyaji wa msimbo umeshindwa: %0:%1:(%2):%3
 [script compilation failed %0]
@@ -6848,13 +6858,3 @@ Amri imepokelewa: %0
 Amri haijathibitishwa. Fungua kamanda ili ujaribu tena; ujumbe wako umehifadhiwa.
 [hive standing order update failed]
 Usasishaji wa amri inayoendelea umeshindwa. Amri yako imesitishwa kwa muda kwenye kifaa hiki; jaribu tena kwa kutumia kidhibiti husika.
-[lush_grass]
-Nyasi mbichi
-[dry_grass]
-Nyasi kavu
-[dune_sand]
-Mchanga wa matuta
-[pale_sand]
-Mchanga wenye rangi hafifu
-[AI for all computer colonies]
-AI kwa makoloni yote ya kompyuta

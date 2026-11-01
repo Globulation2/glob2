@@ -6818,12 +6818,12 @@ Zvieracie chodníky
 Množstvo rýb
 [scenario messages]
 Správy ▸
+[script error at %0:%1: %2]
+Chyba na riadku %0, v stĺpci %1: %2
 [Camp-site amount]
 Počet táborísk
 [script compilation success]
 Úspešná kompilácia
-[script error at %0:%1: %2]
-Chyba na riadku %0, v stĺpci %1: %2
 [script compilation failure %0:%1:(%2):%3]
 Zlyhanie kompilácie: %0:%1:(%2):%3
 [script compilation failed %0]

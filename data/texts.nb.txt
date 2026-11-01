@@ -5672,6 +5672,14 @@ Mørkt vann
 Hull
 [chasm]
 Kløft
+[lush_grass]
+Frodig gress
+[dry_grass]
+Tørt gress
+[dune_sand]
+Dynesand
+[pale_sand]
+Lys sand
 [terrain group water]
 Vann
 [terrain group sand]
@@ -6788,6 +6796,34 @@ Mengde fisk
 Antall leirplasser
 [scenario messages]
 Meldinger ▸
+[AI for all computer colonies]
+KI for alle datastyrte kolonier
+[stats topic overview]
+Oversikt
+[stats topic economy]
+Økonomi
+[stats topic world]
+Verden
+[stats work construction]
+Arbeid og bygging
+[stats defence]
+Forsvar
+[stats history]
+Vis historikk
+[stats waiting]
+Venter på statistikk…
+[stats unit details]
+Enhetsdetaljer
+[stats map overlays]
+Kartoverlegg
+[stats topic]
+Emne
+[stats full history]
+Åpne full historikk
+[script error at %0:%1: %2]
+Feil ved %0:%1: %2
+[stats missing readings]
+— Ingen måling er registrert ennå. Velg en statistikk for detaljer.
 [game stopped %0]
 Spillet stoppet: %0
 [game stopped script help]
@@ -6816,45 +6852,9 @@ Kompilering mislyktes: %0
 Kompileringsfeil: %0:%1:(%2):%3
 [script compilation success]
 Kompilering fullført
-[script error at %0:%1: %2]
-Feil ved %0:%1: %2
 [script line %0 column %1]
 Linje: %0 Kol.: %1
 [script loading failed %0]
 Kunne ikke laste skriptet fra %0
 [script saving failed %0]
 Kunne ikke lagre skriptet i %0
-[lush_grass]
-Frodig gress
-[dry_grass]
-Tørt gress
-[dune_sand]
-Dynesand
-[pale_sand]
-Lys sand
-[stats defence]
-Forsvar
-[stats full history]
-Åpne full historikk
-[stats history]
-Vis historikk
-[stats map overlays]
-Kartoverlegg
-[stats missing readings]
-— Ingen måling er registrert ennå. Velg en statistikk for detaljer.
-[stats topic economy]
-Økonomi
-[stats topic overview]
-Oversikt
-[stats topic world]
-Verden
-[stats topic]
-Emne
-[stats unit details]
-Enhetsdetaljer
-[stats waiting]
-Venter på statistikk…
-[stats work construction]
-Arbeid og bygging
-[AI for all computer colonies]
-KI for alle datastyrte kolonier

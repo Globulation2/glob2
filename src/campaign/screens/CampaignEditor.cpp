@@ -3,6 +3,7 @@
 #include "CampaignEditor.h"
 #include "ChooseMapScreen.h"
 #include "MapHeader.h"
+#include <TextBreaks.h>
 #include <algorithm>
 #include <set>
 
@@ -10,7 +11,9 @@ using namespace Glob2UI;
 
 CampaignEditor::CampaignEditor(const std::string &name, GAGGUI::ScreenStack &screens) : screens(screens)
 {
-	if (name != "" && !campaign.load(name))
+	if (name.empty())
+		campaign.setName(GAGCore::withoutSoftWordBreaks(tr("[new campaign]")));
+	else if (!campaign.load(name))
 		campaign.setName(name);
 	syncMapList();
 }

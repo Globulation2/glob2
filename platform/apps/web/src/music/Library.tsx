@@ -30,7 +30,8 @@ const UPLOADS = [
 ] as const;
 type MusicNotice = { kind: 'success'; source: 'Saved' } | { kind: 'error'; error: unknown } | null;
 function musicErrorText(error: unknown): string {
-  if (getLocale() !== 'bg') return error instanceof Error ? error.message : String(error);
+  if (getLocale() !== 'bg' && getLocale() !== 'th')
+    return error instanceof Error ? error.message : String(error);
   // Raw diagnostics are never display keys. Only explicit API metadata identifies one.
   if (
     error &&

@@ -11,6 +11,18 @@ on:
         type: choice
         options: [compatibility, full]
         default: full
+      desktop_localization:
+        description: Add native Thai preview captures to the existing native build
+        type: boolean
+        default: false
+      ios_localization:
+        description: Run only focused unsigned iOS simulator localization qualification
+        type: boolean
+        default: false
+      locale:
+        description: Reviewed localization to qualify (currently th)
+        type: string
+        default: th
   workflow_call:
     inputs:
       revision:
@@ -19,6 +31,9 @@ on:
       coverage_profile:
         type: string
         default: compatibility
+      desktop_localization:
+        type: boolean
+        default: false
 concurrency:
   group: macos-development-${{ github.ref }}-${{ inputs.revision }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
@@ -28,8 +43,9 @@ env:
   GLOB2_DEV_MODE: isolated
 jobs:
   native:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.ios_localization) }}
     runs-on: macos-26
-    timeout-minutes: 90
+    timeout-minutes: ${{ inputs.desktop_localization && 180 || 90 }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,9 +68,34 @@ jobs:
           openssl="$(brew --prefix openssl@3)"
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 \
+          preview_target=""
+          if test "${{ inputs.desktop_localization }}" = true; then
+            preview_target="translation-preview-harness bundle"
+            export PKG_CONFIG_PATH="$PWD/build/sdl3-ci/prefix/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+            for library in webp webpdemux webpmux sharpyuv; do
+              test -f "$PWD/build/sdl3-ci/prefix/lib/lib$library.a"
+            done
+            for package in libwebp libwebpdemux libwebpmux; do
+              test "$(pkg-config --variable=libdir "$package")" = "$PWD/build/sdl3-ci/prefix/lib"
+            done
+          fi
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 $preview_target \
             build/darwin/client/release/src/glob2 unit-tests engine-tests map-generator-golden-test \
             CXXFLAGS="-I$openssl/include" LINKFLAGS="-L$openssl/lib"
+      - name: Capture actual registered Thai menus and gameplay on macOS
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build.outcome == 'success' }}
+        run: |
+          export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
+          python3 tools/capture_localization_platform.py --binary build/darwin/client/release/test/TranslationPreviewHarness --output artifacts/localization-macos
+      - name: Validate the actual ad hoc macOS app package
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build.outcome == 'success' }}
+        run: python3 tools/check_macos_localization_bundle.py --bundle build/darwin/client/release/Glob2.app --output artifacts/localization-macos/package.json
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && inputs.desktop_localization }}
+        with:
+          name: localization-macos
+          path: artifacts/localization-macos/
+          if-no-files-found: error
       - name: Execute selected regression cases and continuation
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
@@ -105,3 +146,73 @@ jobs:
           path: |
             artifacts/tests/
             artifacts/cli-smoke/
+
+  ios-localization:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.ios_localization }}
+    runs-on: xcode-27
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        id: checkout
+        with:
+          ref: ${{ inputs.revision }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12'
+      - name: Install pinned build drivers
+        run: |
+          python3 -m venv "$RUNNER_TEMP/ios-localization-tools"
+          "$RUNNER_TEMP/ios-localization-tools/bin/pip" install scons==4.11.1 cmake==4.4.3
+          echo "$RUNNER_TEMP/ios-localization-tools/bin" >> "$GITHUB_PATH"
+          brew install autoconf automake libtool nasm pkgconf
+      - name: Select and verify the existing pinned Xcode
+        id: ios_toolchain
+        run: python3 mobile/ios_localization_qa.py select-xcode
+      - name: Restore validated simulator dependencies
+        id: ios_dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: build/ios/simulator/arm64/15.0/client/release/vcpkg-installed
+          key: ios-simulator-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.ios_toolchain.outputs.fingerprint }}-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/dependencies.py', 'mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+      - name: Build and validate pinned simulator dependencies
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/ios-localization
+          python3 mobile/dependencies.py --target ios --environment simulator --release --jobs 2 2>&1 | tee artifacts/ios-localization/dependencies.log
+      # Save only the checksum-validated dependency prefix, before app/QA failures.
+      # No game objects or app binaries are reused across source revisions.
+      - name: Save validated simulator dependencies
+        if: ${{ steps.ios_dependencies.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: build/ios/simulator/arm64/15.0/client/release/vcpkg-installed
+          key: ${{ steps.ios_dependencies.outputs.cache-primary-key }}
+      - name: Build unsigned release app at the checked-out revision
+        run: |
+          set -euo pipefail
+          python3 mobile/ios.py build --environment simulator --release --jobs 2 2>&1 | tee artifacts/ios-localization/build.log
+      - name: Qualify actual simulator bundle and native lifecycle
+        env:
+          QA_LOCALE: ${{ inputs.locale }}
+        run: python3 mobile/ios_localization_qa.py run --locale "$QA_LOCALE"
+      - name: Clean up only the recorded owned simulator
+        if: ${{ always() && steps.checkout.outcome == 'success' }}
+        run: python3 mobile/ios_localization_qa.py cleanup
+      - name: Preserve the tested app and symbols
+        if: ${{ !cancelled() }}
+        run: |
+          product=build/ios/simulator/arm64/15.0/client/release/xcode-project/build/Release-iphonesimulator
+          if test -d "$product/Glob2.app"; then
+            if test -d "$product/Glob2.app.dSYM"; then
+              tar -C "$product" -czf artifacts/ios-localization/app.tar.gz Glob2.app Glob2.app.dSYM
+            else
+              tar -C "$product" -czf artifacts/ios-localization/app.tar.gz Glob2.app
+            fi
+          fi
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.checkout.outcome == 'success' }}
+        with:
+          name: ios-localization-${{ inputs.locale }}-${{ github.run_attempt }}
+          path: artifacts/ios-localization/
+          if-no-files-found: error

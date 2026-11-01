@@ -766,7 +766,8 @@ class TextField : public Node
 			return Node::perform(action, host);
 		const auto *text = std::get_if<std::string>(&action.value);
 		if (!text || options.selectForCopy ||
-			(options.maxLength && glyphCount(*text) > options.maxLength))
+			(options.maxLength && glyphCount(*text) > options.maxLength) ||
+			(options.maxBytes && text->size() > options.maxBytes))
 			return false;
 		tap(bounds.center(), host);
 		commit(host, *text, text->size());

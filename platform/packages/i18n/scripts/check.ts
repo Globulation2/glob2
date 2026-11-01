@@ -68,7 +68,10 @@ for (const locale of locales) {
         errors.push(`${locale.code}: empty message ${source}`);
         continue;
       }
-      if (locale.code !== 'en' && value === source && !sharedValues[locale.code]?.includes(source))
+      const englishValue = english[source as keyof typeof english];
+      const unchangedEnglish =
+        typeof englishValue === 'string' ? value === englishValue : value === source;
+      if (locale.code !== 'en' && unchangedEnglish && !sharedValues[locale.code]?.includes(source))
         errors.push(`${locale.code}: unreviewed English text: ${source}`);
       for (const token of invariants[source] ?? []) {
         if (!value.includes(token))

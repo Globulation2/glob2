@@ -192,7 +192,7 @@ bool ScriptEditorScreen::testCompile()
 		{
 			Script::makeRuntime()->validate(script);
 			compiled = true;
-			compilation = Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success") : "Compilation success";
+			compilation = Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success");
 		}
 		else if (selectedLanguage == Language::USL)
 		{
@@ -202,13 +202,13 @@ bool ScriptEditorScreen::testCompile()
 			if (candidate.compileCode())
 			{
 				compiled = true;
-				compilation = Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success") : "Compilation success";
+				compilation = Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success");
 			}
 			else
 			{
 				MapScriptError error = candidate.getError();
 				compiled = false;
-				compilation = FormattableString(Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[script error at %0:%1: %2]", "Error at %0:%1: %2") : "Error at %0:%1: %2")
+				compilation = FormattableString(Glob2UI::nativeSurfaceText("[script error at %0:%1: %2]", "Error at %0:%1: %2"))
 								  .arg(error.getLine())
 								  .arg(error.getColumn())
 								  .arg(compilationDiagnostic(error.getMessage()));
@@ -221,12 +221,12 @@ bool ScriptEditorScreen::testCompile()
 			if (er.type == ErrorReport::ET_OK)
 			{
 				compiled = true;
-				compilation = Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success") : "Compilation success";
+				compilation = Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success");
 			}
 			else
 			{
 				compiled = false;
-				compilation = FormattableString(Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[script compilation failure %0:%1:(%2):%3]", "Compilation failure : %0:%1:(%2):%3") : "Compilation failure : %0:%1:(%2):%3")
+				compilation = FormattableString(Glob2UI::nativeSurfaceText("[script compilation failure %0:%1:(%2):%3]", "Compilation failure : %0:%1:(%2):%3"))
 								  .arg(er.line + 1)
 								  .arg(er.col)
 								  .arg(er.pos)
@@ -239,7 +239,7 @@ bool ScriptEditorScreen::testCompile()
 	catch (const std::exception& error)
 	{
 		compiled = false;
-		compilation = Glob2UI::bulgarianErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.what())}) : error.what();
+		compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.what())}) : error.what();
 	}
 
 	invalidate();
@@ -260,7 +260,7 @@ void ScriptEditorScreen::confirm()
 											 ? MapScript::JavaScript : MapScript::USL, script, error))
 			{
 				compiled = false;
-				compilation = Glob2UI::bulgarianErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.getMessage())}) : error.getMessage();
+				compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.getMessage())}) : error.getMessage();
 				invalidate();
 				return;
 			}
@@ -273,7 +273,7 @@ void ScriptEditorScreen::confirm()
 			if (error.type != ErrorReport::ET_OK)
 			{
 				compiled = false;
-				compilation = Glob2UI::bulgarianErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.getErrorString())}) : error.getErrorString();
+				compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.getErrorString())}) : error.getErrorString();
 				invalidate();
 				return;
 			}
@@ -288,7 +288,7 @@ void ScriptEditorScreen::confirm()
 				if (!emptyUSL)
 				{
 					compiled = false;
-					compilation = Glob2UI::bulgarianErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.getMessage())}) : error.getMessage();
+					compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.getMessage())}) : error.getMessage();
 					invalidate();
 					return;
 				}
@@ -302,7 +302,7 @@ void ScriptEditorScreen::confirm()
 	catch (const std::exception& error)
 	{
 		compiled = false;
-		compilation = Glob2UI::bulgarianErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.what())}) : error.what();
+		compilation = Glob2UI::localizedErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"), {compilationDiagnostic(error.what())}) : error.what();
 		invalidate();
 		return;
 	}
@@ -434,7 +434,7 @@ void ScriptEditorScreen::finishFileDialog()
 			{
 				compiled = false;
 				compilation =
-					FormattableString(Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[script loading failed %0]", "Loading script from %0 failed") : "Loading script from %0 failed").arg(dialog->getName());
+					FormattableString(Glob2UI::nativeSurfaceText("[script loading failed %0]", "Loading script from %0 failed")).arg(dialog->getName());
 			}
 			else
 				testCompile();
@@ -442,7 +442,7 @@ void ScriptEditorScreen::finishFileDialog()
 		else if (!saveText(dialog->getFileName(), script))
 		{
 			compiled = false;
-			compilation = FormattableString(Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[script saving failed %0]", "Saving script to %0 failed") : "Saving script to %0 failed").arg(dialog->getName());
+			compilation = FormattableString(Glob2UI::nativeSurfaceText("[script saving failed %0]", "Saving script to %0 failed")).arg(dialog->getName());
 		}
 	}
 	invalidate();
@@ -459,8 +459,7 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 	resultStyle.role = fe::FontRole::Support;
 	if (!compilation.empty())
 		resultStyle.color = compiled ? theme().palette.success : theme().palette.danger;
-	const auto cursorTemplate = Glob2UI::bulgarianErrorLocale()
-		? Glob2UI::nativeSurfaceText("[script line %0 column %1]", "Line: %0 Col: %1") : "Line: %0 Col: %1";
+	const auto cursorTemplate = Glob2UI::nativeSurfaceText("[script line %0 column %1]", "Line: %0 Col: %1");
 	auto cursorText = [this, cursorTemplate]()
 	{
 					   std::size_t cursor = 0;

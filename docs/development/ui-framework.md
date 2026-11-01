@@ -122,7 +122,13 @@ progress; old displayed messages may retain their original wording or language
 fallback until the script emits another message.
 
 Campaign mission titles are localized for display while selection still uses
-original mission IDs. Unrecognized custom text is displayed as authored. Legacy desktop tutorial and
+original mission IDs. A fresh campaign editor uses the translated new-campaign
+label as its initial editable title, stripping native soft word-break hints before
+it can become a filename or progress identity. Loaded campaign titles and authored
+mission names, map paths and prerequisites retain their stored values. Script-editor
+status, cursor and file-failure wrappers use registered keys; compiler diagnostic
+payloads, source code and filenames remain technical or authored content.
+Unrecognized custom text is displayed as authored. Legacy desktop tutorial and
 history messages use the shared UTF-8 wrapper, including unspaced CJK text and
 explicit line breaks.
 
@@ -140,9 +146,26 @@ built from runtime data and unregistered wrappers still need contextual review.
 Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
 bindings. It also requires catalog keys for fixed UI metadata: AI tags and compatibility
 captions, connection-quality terms, route/admin/map labels, match verdicts, music
-moods/check guidance and skin model/material/shape/pose captions. Translate their displayed labels while preserving canonical protocol
-values in filters and requests. Render representative screens in each language to
-check font coverage, text fitting and layout. The legacy Arabic/Persian route in
+moods/check guidance and skin model/material/shape/pose captions. Translate their
+displayed labels while preserving canonical protocol values in filters and
+requests. Fixed studio copy passed through `ChatComposer`, `NewStudio`,
+`RevisionControls` and conversation/status props must be translated by the caller;
+project titles, prompts and generated responses remain user content. Fresh set
+workspaces start with the translated new-set title and category names with unused
+numeric suffixes for new entries. Fresh skin documents use the translated
+`My colony` title, and empty skin-name fields use the translated `New skin` label.
+`skinCopyName` reserves room for the translated copy suffix within both the form
+and protocol limits while preserving complete graphemes. This initialization
+leaves existing authored names, package UUIDs and executable preset/property
+identities unchanged. Newly cataloged legacy English UI may retain explicit
+English values and scoped
+`shared-values.json` exceptions in existing locales until translated; a completed
+new locale must translate those messages. Render representative screens in each
+language to check font coverage, text fitting and layout. Keep the skin material
+canvas and button grid at the same column count; give Thai labels more width and
+line height and allow descriptions to wrap. Center buttons with independent CSS
+`translate` when they inherit the shared design system's active `transform`, so
+pressing them preserves their pointer target. The legacy Arabic/Persian route in
 `TrueTypeFont` shapes text into visual order before rasterization and uses an
 explicit left-to-right SDL_ttf direction to prevent a second reordering pass.
 Complex script fonts retain their shaping tables and use logical directional
@@ -213,23 +236,23 @@ to be translated. Remote reports and user-authored order text are never classifi
 by matching their contents. Keep `PresentedError` out of models,
 protocols, storage and CLI code, and retain cleanup and rollback handling.
 
-Bulgarian initially uses the already reviewed English/Bulgarian online catalogs.
+Bulgarian and Thai use their reviewed online catalogs with the English source catalog.
 `tools/localization/build_online_error_catalog.py` generates the embedded resource
 with exact input SHA-256 identities. The shared `scons/online_error_catalog.py`
 rule is called independently by native, serial/threaded browser, Android and iOS
 builders, including test and unit-production consumers. It generates under each
 builder’s existing `include/generated` directory, with explicit consumer
 prerequisites and no global include-path/compile-signature change. Its
-ASCII-escaped JSON is split into portable string chunks. On the first Bulgarian error it joins and parses
-the resource once into a process-static lookup; other locales return before that
-work. Startup/first-error cost on target devices must be profiled separately.
+ASCII-escaped JSON is split into portable string chunks. Each locale's lookup is
+initialized lazily on its first error. Other locales return before this work.
+Startup/first-error cost on target devices must be profiled separately.
 Plural objects are excluded because ErrorBody has no plural selector. Add other
 locales only with reviewed catalog and size coverage.
 
 The pure `Online::presentApiError` handles known source keys and substitutes
 scalar parameters once as literal text. Legacy raw messages match only an exact
 English source literal. Unknown or malformed messages use the existing reviewed
-“Something went wrong. Please try again.” summary in Bulgarian; other locales
+"Something went wrong. Please try again." summary in Bulgarian or Thai; other locales
 retain their original message. `onlineProblemText` applies that safe boundary to
 plain transport diagnostics while keeping raw model/log details intact. Existing
 specialized cooldown, version and conflict branches remain authoritative.
@@ -284,7 +307,7 @@ Linux, macOS or WSL. `python3 test/test_translation_program.py` also exercises
 its mocked budget and resumption contracts.
 
 ```sh
-python3 tools/localization/google_draft.py --backend plain --output artifacts/localization-ta \
+python3 tools/localization/google_draft.py --mode plain --output artifacts/localization-ta \
   --project PROJECT_ID --locale ta --keys artifacts/localization-ta/pilot-keys.json
 # Add --execute only after checking the preflight estimate.
 ```
@@ -330,12 +353,17 @@ The runners use separate caches and accounting formats. The general `cloud_draft
 runner does not share the Tamil helper’s hard budget ledger; do not use a separate
 runner to bypass a campaign ceiling.
 
-For Norwegian Bokmål HTML comparison drafts, prepare a scoped kit (for example,
+The Google draft adapter retains distinct workflows and their existing request/cache
+formats. The estimate-first planner below writes separate machine-draft JSON files;
+the explicit `--mode thai` dollar-budget campaign fills only blank entries in its
+kit. Keep each workflow’s original ledger and response cache when resuming.
+
+For Google Cloud machine drafts, prepare a scoped kit (for example,
 `prepare --locales nb --output artifacts/norwegian/kit`), then estimate work without
 network access:
 
 ```sh
-python3 tools/localization/google_draft.py --backend html --output artifacts/norwegian/kit --locale nb
+python3 tools/localization/google_draft.py --mode html --output artifacts/norwegian/kit --locale nb
 ```
 
 Authenticate `gcloud` to an existing project with Cloud Translation enabled. Pass
@@ -359,14 +387,15 @@ workspace only when intentionally beginning review.
 
 The cumulative character allowance counts every attempted translation request,
 including uncertain failures and retries, before dispatch. It conservatively
-counts the protected HTML payload and persists across resumed invocations. Run
-one writer per kit. Authentication tokens are cached in memory and never written
+counts the protected HTML payload and persists across resumed invocations. An
+exclusive campaign lock serializes writers for each kit and locale; investigate
+the recorded process before removing a stale lock. Authentication tokens are cached in memory and never written
 to evidence. Requests use bounded retries. Invalid responses remain inspectable;
 `--retry-invalid-responses` archives them under `rejected/` before another paid
 attempt within the same allowance. Allowances remain subject to the campaign’s US$8 hard ceiling and existing
 ledger guards. Provider output remains a machine draft, never a linguistic sign-off.
 
-The optional `--backend plain|html` selects either backend explicitly. Each keeps
+The optional `--mode plain|html` selects either backend explicitly. Each keeps
 its existing request/cache formats. A shared campaign lock and ledger guard reject
 switching backends after paid or reserved work; use the original mode to resume
 that campaign, without deleting or resetting its ledger.
@@ -403,7 +432,39 @@ authorized ceiling. The Tamil campaign retains its US$8 ceiling. These are
 accounted API-request limits, not guarantees about unrelated project spending or
 an exported billing invoice. Provider output is never a linguistic sign-off.
 
-Bulgarian diagnostic surfaces keep raw errors in the diagnostic log and display
+For a Google Cloud Thai draft, use the development-only adapter after preparing
+and drafting a `th` kit:
+
+```sh
+python3 tools/localization/google_draft.py --mode thai --project PROJECT_ID --locale th \
+  --output artifacts/translation-program --budget-usd 25 --ids-file PILOT_IDS.json
+```
+
+The pilot file is a JSON array of `native:[key]` and `online:source message` IDs.
+Omit `--ids-file` only after reviewing and correcting the representative pilot.
+The adapter uses `gcloud auth print-access-token` with Cloud Translation v3, protects
+placeholders and technical literals, and fills only blank entries. Actual provider
+responses and a source-bound cost ledger remain in the kit. Each attempted request
+reserves its conservative cost before transmission, including retries and ambiguous
+network failures. The campaign ceiling does not limit other project consumers;
+verify the configured price against current provider pricing before starting.
+An exclusive campaign lock prevents concurrent writers. Investigate an abandoned
+process before removing a stale lock; retain the ledger and cached responses.
+
+Thai native catalogs may contain reviewed U+200B soft word-break hints. Generate
+candidate boundaries with `python3 tools/localization/thai_breaks.py INPUT OUTPUT`
+using distinct files, then inspect the output during the editorial pass. The tool
+uses pinned PyThaiNLP with its `newmm` dictionary segmenter from
+`requirements-dev.txt`; no segmenter ships with the game.
+The suggestion tool protects a small set of reviewed game terms from internal
+breaks. Context can still fool its dictionary: inspect every final hint and
+preserve manual corrections rather than blindly regenerating an edited catalog.
+Hints prefer whole-word wrapping without adding visible spaces, and the renderer
+omits them from measurements and drawing. Oversized words retain cluster-safe
+emergency wrapping. Keep online catalog text unannotated and use browser Thai line
+breaking. Review hint changes as catalog changes and refresh affected sign-offs.
+
+Bulgarian and Thai diagnostic surfaces keep raw errors in the diagnostic log and display
 an existing reviewed native message where available, otherwise the reviewed
 online summary. `Glob2UI::DiagnosticText` keeps a bounded cache per UI context;
 changing the diagnostic invalidates its display cache. It does not change model
@@ -414,6 +475,18 @@ messages were created locally. Remote reports and user text are never classified
 by matching their contents. Editor preview status retains its raw event and
 localizes it during rendering so changing language updates an existing notice
 without restarting the engine.
+
+The native API error bridge embeds the reviewed Bulgarian and Thai online catalogs
+as separate generated resources; keep the generator, SCons input dependencies and
+source hashes aligned when either catalog changes. Use the generator's byte count
+to review resource growth; catalog data adds no runtime dependency. Structured message
+keys and parameters select the current locale. An exact legacy English literal
+is accepted only when unambiguous: context-qualified keys with the same visible
+English text remain distinct, and an ambiguous unqualified literal receives the
+reviewed generic failure summary. Technical diagnostics still go to the log;
+remote reports and authored text retain their provenance and are not translated
+by string matching. Missing native values use an explicit English fallback
+instead of treating a default-locale value as a reviewed translation.
 
 For a Bulgarian Google Cloud draft, prepare a kit with `--locales bg`, then run:
 
@@ -552,78 +625,76 @@ describe it as agent-reviewed and keep unverified platforms explicit.
 
 Build `translation-preview-harness` for unregistered catalog captures. Its
 `matrix ROOT INPUT OUTPUT WIDTH HEIGHT` mode uses the actual game font and shared
-wrapper at authored sizes 10, 13 and 20 and raster scales 1 and 2. Optional
-`SIZE SCALE` arguments select exactly one of these combinations for independently
-resumable batches; omitting both runs all six. Each batch has its own complete
-manifest and uses the same wrapping and rasterization. `screen` adds a screen name
-(`main`, `settings`, `settings-audio`, `settings-ais`, `settings-online`,
-`settings-player`, desktop-only `settings-controls`, `lobby`, `lobby-players` or
-`new-map`). The AI library capture uses its real buttons and an unavailable
-loopback server, so it verifies local labels without remote account or provider
-actions. For controlled API-error captures, `settings-ais` also accepts
+wrapper at authored sizes 10, 13 and 20 and raster scales 1, 1.5 and 2. Optional
+`SIZE SCALE` arguments select one combination for independently resumable batches;
+omitting both runs all nine. Each batch has its own complete manifest and uses
+the same wrapping and rasterization. Matrix placeholders are displayed literally;
+formatted-message coverage needs the corresponding UI capture.
+
+`screen ROOT INPUT OUTPUT WIDTH HEIGHT SCREEN` accepts `main`, `settings`,
+`settings-audio`, `settings-ais`, `settings-online`, `settings-player`, desktop-only
+`settings-controls`, `lobby`, `lobby-players`, `new-map`, `campaign-editor-new`,
+`campaign-editor-loaded`, `script-editor-success` or `script-editor-failure`.
+The AI library capture uses its real buttons and an unavailable loopback server,
+so it verifies local labels without remote account or provider actions. For
+controlled API-error captures, `settings-ais` also accepts
 `GLOB2_TRANSLATION_PREVIEW_HTTP_ORIGIN=http://127.0.0.1:PORT` together with
 `GLOB2_TRANSLATION_PREVIEW_EXPECT_NOTICE`. It pumps the production client and
 requires that exact notice in the screen's accessible text before capturing.
 Record the local fixture response and request receipts separately; these captures
-do not verify a production server. `game` adds
-`gameplay`, `statistics`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
-the real engine and menu dialog. Statistics captures navigate the real Overview, Economy and World topics and available metric history/details. They retain live-player visibility rules and never synthesize history or expose hidden win probabilities. Tutorial IDs must belong to the current shipped
-lesson catalog. When a lesson opens its automatic briefing, the harness saves
-that state separately, dismisses it and captures the uncovered guidance panel.
-Each gameplay capture checks that drawing leaves the simulation checksum intact.
-A published tutorial model alone does not prove that its text is visible. Inputs are
-`native.json` and `online.json` key/value objects plus `metadata.json` identifying
-the locale. Preserve the original text-catalog hashes in that metadata when
-converting formats. A small pilot is a font diagnostic, not evidence that the
-whole catalog was displayed. `editor ROOT INPUT OUTPUT WIDTH HEIGHT` captures the
-production map editor, terrain controls and menu on a blank map without stepping
-the simulation. Setup and menu navigation use controlled harness friend access;
-captures use the production editor drawing path. It uses the portable SDL renderer; set `GLOB2_MOBILE_UI=1` to
-inspect the phone presentation. These resized desktop captures do not establish
-rendering on an actual mobile device. `script-editor ROOT INPUT OUTPUT WIDTH HEIGHT`
-opens the production scenario editor and captures its localized cursor, successful
-JavaScript validation and a controlled syntax failure. It validates temporary
-source without confirming or saving the scenario and checks that map state is
-unchanged. Use a fresh profile with `textSizePercent=100` or `150` to exercise
-normal and enlarged text; record the profile, viewport and presentation settings
-with the captures.
+do not verify a production server.
 
-wrapper at several authored sizes and raster scales. `screen` adds a screen name
-(`main`, `settings`, `settings-audio`, `settings-player`, `lobby` or `lobby-players`); `game` adds
-`gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
-the real engine and menu dialog. `statistics` selects the win-probability metric
-on the real results screen for the current local map; it does not represent a
-completed match or validate prediction accuracy. `ingame-statistics:TOPIC` captures
-the actual live sidebar or compact sheet for `overview`, `colony`, `economy`,
-`military` or `world`, with published local-game history.
-`ingame-statistics-history` opens the real population-history dialog;
-`map-overlays` captures the desktop overlay-tools view. These modes use ordinary
-presentation navigation and preserve the simulation checksum while drawing.
-Tutorial IDs must belong to the current shipped
-lesson catalog. For a nonempty current mission briefing, the harness captures
-the real dialog separately, opening it for preview if scene admission skipped
-the automatic opening. It records preview-opened and automatic origins separately,
-then dismisses the dialog and captures the uncovered guidance panel.
-Legacy tutorial highlight arrows wait while a modal is open, then resume after
-dismissal so they cannot cover briefing text. The desktop `tutorial:swimming`
-preview at 800×600 also toggles a real highlight and compares the actual modal's
-pixels before, during and after the probe, preserving the simulation checksum.
-It retains the initial presented frame and requires two unchanged baseline frames
-before changing the highlight, distinguishing first-frame composition from arrow
-interference.
-The gameplay preview also captures the win-probability statistics screen and its
-metric explanation, checking that drawing leaves the simulation checksum intact.
+`game ROOT INPUT OUTPUT WIDTH HEIGHT MODE` accepts `gameplay`, `statistics`,
+`statistics-navigation`, `ingame-statistics:TOPIC`, `ingame-statistics-history`,
+`map-overlays`, `tutorial` (the introduction) or `tutorial:LESSON-ID`.
+`statistics` selects the win-probability metric on the real results screen for
+the current local map; it does not represent a completed match or validate
+prediction accuracy. `statistics-navigation` selects Overview, Economy and World
+on the production live panel and opens available metric history/details.
+`ingame-statistics:TOPIC` captures the actual live sidebar or compact sheet for
+`overview`, `colony`, `economy`, `military` or `world`;
+`ingame-statistics-history` opens its population-history dialog, and
+`map-overlays` captures the desktop overlay tools. These modes use real published
+session data and production drawing, with setup through harness access or public
+panel methods. They never synthesize readings or expose hidden live-player win
+probabilities. `gameplay` additionally captures all five statistics topics,
+history, unit details, missing-reading help, and the results metric explanation.
+Its explicitly named phone-component images isolate the production panel at its
+real bounds without touch navigation. The separate live-panel sequence uses the
+production Tools keyboard route on phones and shared UI actions; this is not
+physical-touch coverage. All navigation and drawing preserve the simulation
+checksum.
 
-> > > > > > > A published tutorial model alone does not prove that its text is visible. Inputs are
-> > > > > > > `native.json` and `online.json` key/value objects plus `metadata.json` identifying
-> > > > > > > the locale. Preserve the original text-catalog hashes in that metadata when
-> > > > > > > converting formats. A small pilot is a font diagnostic, not evidence that the
-> > > > > > > whole catalog was displayed.
+Tutorial IDs must belong to the current shipped lesson catalog. For a nonempty
+current mission briefing, the harness captures the real dialog separately,
+opening it for preview if scene admission skipped the automatic opening. It
+records preview-opened and automatic origins separately, then dismisses the
+dialog and captures the uncovered guidance panel. Legacy tutorial highlight
+arrows wait while a modal is open, then resume after dismissal so they cannot
+cover briefing text. The desktop `tutorial:swimming` preview at 800×600 also
+toggles a real highlight and compares the actual modal's pixels before, during
+and after the probe, preserving the simulation checksum. It retains the initial
+presented frame and requires two unchanged baseline frames before changing the
+highlight, distinguishing first-frame composition from arrow interference.
+Tutorial captures also activate the actual guidance controls to record collapsed
+and re-expanded instructions. Those UI actions preserve the simulation checksum.
+A published tutorial model alone does not prove that its text is visible.
 
-Tutorial captures also click the actual guidance controls to record the collapsed
-control and re-expanded instructions. Those UI actions and draws must leave the
-simulation checksum unchanged; offscreen phone presentation does not establish
-mobile-platform or physical-touch hardware coverage.
+Inputs are `native.json` and `online.json` key/value objects plus `metadata.json`
+identifying the locale. Preserve the original text-catalog hashes in that metadata
+when converting formats. A small pilot is a font diagnostic, not evidence that
+the whole catalog was displayed. `editor ROOT INPUT OUTPUT WIDTH HEIGHT` captures
+the production map editor, terrain controls and menu on a blank map without
+stepping the simulation. Setup and menu navigation use controlled harness friend
+access; captures use the production editor drawing path and portable SDL renderer.
+Set `GLOB2_MOBILE_UI=1` to inspect phone presentation. `script-editor ROOT INPUT
+OUTPUT WIDTH HEIGHT` captures the production scenario editor's localized cursor,
+successful JavaScript validation and a controlled syntax failure. It validates
+temporary source without confirming or saving the scenario and checks that map
+state is unchanged. Use a fresh profile with `textSizePercent=100` or `150` to
+exercise normal and enlarged text; record the profile, viewport and presentation
+settings. Offscreen phone presentation does not establish rendering on a mobile
+OS or physical-touch hardware coverage.
 
 Capture evidence includes the executable hash and compiled build provenance,
 as well as current source, catalog and font hashes. Freeze sources during builds
@@ -717,6 +788,45 @@ the response and block retransmission until a reviewer supplies a correction;
 formatting-only templates bypass translation. Keep the accounting and response
 files with the kit when resuming. A leftover runner lock needs investigation
 before removal. Credentials are never written into the kit.
+
+### Thai conventions
+
+Thai (`th`, ไทย) uses concise contemporary Standard Thai, left-to-right.
+`th-TH` selects this catalog; an explicit non-Thai script tag must not do so.
+Keep the bundled Noto Sans Thai shaping tables, HarfBuzz route and font notices.
+Check stacked vowels and tone marks at 10, 13 and 20 pixels, including higher
+pixel densities, rather than treating glyph coverage as a rendering check.
+
+Reviewed U+200B boundaries belong only in native Thai catalog values. Shared
+wrapping consumes them without displaying or measuring a visible glyph and
+keeps shaping clusters intact. Online Thai uses browser word breaking and must
+not acquire native break hints. Shorter reviewed wording, spacing and wrapping
+resolve crowded controls without shrinking text below a readable size.
+
+Disambiguate English homonyms at the catalog key: `Building` is an object,
+`Building (music mood)` is construction, and `Building (generation progress)`
+is an ongoing operation. Their English values can remain `Building`; contextual
+keys are identifiers and are never display text. Preserve mood, upload and
+protocol IDs. Review `Broken` in software-report menus as nonworking software.
+The English-identical-value audit compares against the English value as well as
+using per-key exceptions, so contextual keys do not hide untranslated text.
+
+For Thai dollar-budget campaigns, `tools/localization/google_draft.py --mode thai` retains
+actual Translation v3 requests/responses, protected tokens, resumable locks and
+conservative reservations. Keep the original campaign ledger when adding
+sources, and bind independent reviews to the final per-key text and source
+context. Report agent review accurately; it is not native-human certification.
+The review audit requires complete, independent adversarial coverage for Thai,
+in addition to meaning, editing and the final meaning recheck. When the inventory
+changes, keep original receipts immutable. Carry an unchanged approval only with
+explicit per-key source/target equality and original proof references; changed
+text or usage needs fresh review. Record retired keys separately.
+
+Installing a catalog also makes its code a legacy SGSL language token. Append
+new codes after the existing language inventory, bump `SIM_REVISION`, regenerate
+the golden match record, and verify script-token acceptance, saved script bytes
+and program-counter continuity, plus replay and relay version boundaries. Keep
+user-authored script text unchanged.
 
 ### Bengali conventions
 

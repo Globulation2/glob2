@@ -1,5 +1,37 @@
+[hub finish in browser, game continues]
+Selesaikan daftar masuk dalam pelayar web anda. Permainan diteruskan secara automatik setelah anda selesai.
+[hub browser did not open]
+Pelayar web anda tidak terbuka. Buka halaman daftar masuk untuk meneruskan.
+[hub compare code %0]
+Jika diminta, pastikan halaman itu memaparkan %0.
+[hub code copied]
+Kod disalin
+[settings Finish in your browser. The game continues by itself.]
+Selesaikan dalam pelayar web anda. Permainan diteruskan secara automatik.
+[music set]
+Set muzik
+[random music set]
+Rawak setiap perlawanan
+[playing music set %0]
+Sedang dimainkan: %0
+[music set failed]
+Tidak dapat memuatkan set muzik ini.
+[settings Edge scrolling]
+Tatal di tepi
+[settings Edge scrolling in fullscreen]
+Tatal di tepi dalam skrin penuh
+[settings Edge scrolling in windowed mode]
+Tatal di tepi dalam mod bertetingkap
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+Gerakkan peta permainan dan editor apabila tetikus sampai ke tepi tetingkap.
 [%0 has left the game]
 %0 telah keluar dari permainan.
+[start recording]
+Mulakan rakaman
+[stop recording]
+Hentikan rakaman
+[finalizing recording]
+Memuktamadkan rakaman…
 [%0 level %1]
 %0 tahap %1
 [%0 units can't access building]
@@ -374,16 +406,6 @@ Skrin penuh
 Permainan penuh
 [game shortcuts]
 Pintasan permainan
-[game speed help]
-Pemain tunggal dan ulang tayang sahaja. Permainan berbilang pemain berjalan pada kelajuan 1x.
-[music set]
-Set muzik
-[random music set]
-Rawak setiap perlawanan
-[playing music set %0]
-Sedang dimainkan: %0
-[music set failed]
-Tidak dapat memuatkan set muzik ini.
 [game speed]
 Kelajuan permainan
 [Game]
@@ -534,8 +556,6 @@ buah-buahan dengan orang lain
 Membenarkan pertukaran
 [market]
 Pasar
-[maximum game speed]
-Maksimum
 [medium priority]
 pertengahan
 [meta %0]
@@ -544,8 +564,6 @@ meta-%0
 Tahap minimum yang diperlukan:
 [Minimum Level To Flag]
 Tahap unit minimum
-[multiplayer game speed]
-Kelajuan permainan: 1x (berbilang pemain)
 [Music volume]
 Kelantangan (muzik)
 [Mute]
@@ -686,8 +704,6 @@ Ulang tayang tamat
 Pulihkan pintasan papan kekunci lalai
 [return to editor]
 Kembali ke editor
-[Reroll terrain look]
-Rawakkan semula rupa bumi
 [return to game]
 Kembali ke permainan
 [return to replay]
@@ -712,6 +728,8 @@ Anda ingin menyimpan sebelum berhenti?
 Simpan permainan
 [save map]
 Simpan Peta
+[Reroll terrain look]
+Rawakkan semula rupa bumi
 [save replay]
 Simpan ulang tayang
 [save script]
@@ -994,8 +1012,6 @@ Jumlah mata ketahanan
 Jumlah prestij dicapai
 [Total]
 Jumlah
-[tutorial]
-Tutorial
 [tutorial text 1]
 Selamat datang ke tutorial asas Globulation 2! Tutorial ini merangkumi pembinaan Penginapan, penjelajahan kawasan dan pemusnahan musuh! Banyak ilmu berguna menanti anda!
 [tutorial text 2]
@@ -1004,6 +1020,8 @@ Kini anda telah menguasai asasnya. Sudah tiba masanya untuk mengenali bangunan l
 Syabas kerana berjaya sampai ke tahap ini. Sekarang kita beralih kepada Pahlawan, Berek dan Naik Taraf.
 [tutorial text 4]
 Anda hampir selesai. Hanya bendera dan serangan yang tinggal. Selepas itu, anda cukup bersedia untuk mencuba Permainan Tersuai dan akhirnya bermain dalam talian menentang pemain terbaik Globulation 2.
+[tutorial]
+Tutorial
 [Uncontrolled]
 Tidak terkawal
 [undo]
@@ -1102,6 +1120,12 @@ Anda telah disingkirkan dari permainan
 %0 anda sedang diserang
 [Your unit got converted to %0's team]
 Unit anda telah menyertai pasukan %0
+[game speed help]
+Pemain tunggal dan ulang tayang sahaja. Permainan berbilang pemain berjalan pada kelajuan 1x.
+[maximum game speed]
+Maksimum
+[multiplayer game speed]
+Kelajuan permainan: 1x (berbilang pemain)
 [Units still inside: %0]
 Masih di dalam: %0
 [Units still working: %0]
@@ -2186,10 +2210,10 @@ Makan / rawatan
 Statistik 1/3 >
 [Stats page two]
 Statistik 2/3 >
-[Stats next page]
-Halaman (P)
 [Stats page three]
 Statistik 3/3 >
+[Stats next page]
+Halaman (P)
 [Stats blocked units]
 Unit disekat S/C
 [Stats blocked buildings]
@@ -2216,12 +2240,12 @@ Pertumbuhan dalam 16 petak
 Pertumbuhan dalam 32 petak
 [Stats low HP 25]
 Unit pada 25% HP
+[Stats low food 25]
+Unit pada rizab makanan 25%
 [Stats low HP 50]
 Unit pada 50% HP
 [Stats low HP 75]
 Unit pada 75% HP
-[Stats low food 25]
-Unit pada rizab makanan 25%
 [Stats low food 50]
 Unit pada rizab makanan 50%
 [Stats low food 75]
@@ -3274,22 +3298,6 @@ Momentum senarai
 Lantunan senarai
 [Map momentum]
 Momentum peta
-[lan pairing field]
-Rentetan gandingan hos (atau URL WSS yang dipercayai)
-[lan pairing connect]
-Pasangkan dan sambungkan
-[lan discovery instructions]
-Pilih hos, kemudian tampal rentetan gandingannya untuk mengesahkan identitinya.
-[lan discovery unavailable]
-Penemuan LAN tidak tersedia. Semak kebenaran rangkaian setempat atau tampal rentetan gandingan hos.
-[lan discovered host %0]
-Hos yang ditemui %0 — pasangkan untuk melihat permainan
-[lan connection unavailable]
-Tidak dapat menghubungi hos LAN. Semak kebenaran rangkaian setempat dan rentetan gandingan hos.
-[lan connection verification failed %0]
-Tidak dapat mengesahkan atau menyambung ke hos LAN: %0
-[lan lobby endpoint required]
-Gunakan titik akhir lobi hos
 [settings Artwork]
 Karya seni
 [settings Original]
@@ -3356,6 +3364,22 @@ Permudahkan bar, zon, rupa bumi dan unit apabila peta mengezum keluar dan pastik
 Saiz teks
 [settings Enlarge interface text without changing the map scale.]
 Besarkan teks antara muka tanpa mengubah skala peta.
+[lan pairing field]
+Rentetan gandingan hos (atau URL WSS yang dipercayai)
+[lan pairing connect]
+Pasangkan dan sambungkan
+[lan discovery instructions]
+Pilih hos, kemudian tampal rentetan gandingannya untuk mengesahkan identitinya.
+[lan discovery unavailable]
+Penemuan LAN tidak tersedia. Semak kebenaran rangkaian setempat atau tampal rentetan gandingan hos.
+[lan discovered host %0]
+Hos yang ditemui %0 — pasangkan untuk melihat permainan
+[lan connection unavailable]
+Tidak dapat menghubungi hos LAN. Semak kebenaran rangkaian setempat dan rentetan gandingan hos.
+[lan connection verification failed %0]
+Tidak dapat mengesahkan atau menyambung ke hos LAN: %0
+[lan lobby endpoint required]
+Gunakan titik akhir lobi hos
 [turn reconnecting]
 Sambungan ke hos terputus. Menyambung semula...
 [turn waiting for players]
@@ -4604,12 +4628,6 @@ Urus kredit dan pembelian dalam pelayar web anda. Bantuan komander dibenarkan da
 Buka komander
 [stop commander]
 Hentikan komander
-[start recording]
-Mulakan rakaman
-[stop recording]
-Hentikan rakaman
-[finalizing recording]
-Memuktamadkan rakaman…
 [settings Recording]
 Rakaman
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
@@ -5294,24 +5312,6 @@ Mengikut tempat
 Set muzik
 [settings Random each match]
 Pilih Rawak untuk memilih runut bunyi pada setiap permulaan perlawanan.
-[settings Edge scrolling]
-Tatal di tepi
-[settings Edge scrolling in fullscreen]
-Tatal di tepi dalam skrin penuh
-[settings Edge scrolling in windowed mode]
-Tatal di tepi dalam mod bertetingkap
-[settings Move the game and editor maps when the mouse reaches the window edge.]
-Gerakkan peta permainan dan editor apabila tetikus sampai ke tepi tetingkap.
-[hub finish in browser, game continues]
-Selesaikan daftar masuk dalam pelayar web anda. Permainan diteruskan secara automatik setelah anda selesai.
-[hub browser did not open]
-Pelayar web anda tidak terbuka. Buka halaman daftar masuk untuk meneruskan.
-[hub compare code %0]
-Jika diminta, pastikan halaman itu memaparkan %0.
-[hub code copied]
-Kod disalin
-[settings Finish in your browser. The game continues by itself.]
-Selesaikan dalam pelayar web anda. Permainan diteruskan secara automatik.
 [AI Library]
 Pustaka AI
 [Authoring guide]
@@ -5672,14 +5672,6 @@ Air gelap
 Lubang
 [chasm]
 Jurang
-[lush_grass]
-Rumput subur
-[dry_grass]
-Rumput kering
-[dune_sand]
-Pasir gumuk
-[pale_sand]
-Pasir pucat
 [terrain group water]
 Air
 [terrain group sand]
@@ -5994,8 +5986,6 @@ Discord telah dibuka. Anda boleh kembali ke permainan pada bila-bila masa.
 Tidak dapat membuka Discord. Salin pautan jemputan dan bukanya dalam pelayar anda.
 [discord link copied]
 Pautan jemputan disalin.
-[discord copy failed]
-Tidak dapat menyalin pautan. Pilih jemputan di atas untuk menyalinnya secara manual.
 [settings CPU automatic]
 CPU automatik
 [settings Scalar]
@@ -6068,6 +6058,8 @@ Tidak dapat menyimpan pilihan anda. Sila cuba lagi.
 Tangan kiri
 [Right hand]
 Tangan kanan
+[discord copy failed]
+Tidak dapat menyalin pautan. Pilih jemputan di atas untuk menyalinnya secara manual.
 [stat ground movement]
 Pergerakan darat
 [stat ground movement about]
@@ -6454,8 +6446,6 @@ Buka Bendera, pilih Bendera serangan, letakkannya pada Sarang musuh di sebelah t
 Tunjukkan destinasi
 [intro scout destination]
 Tinjau di sini
-[intro attack destination]
-Serang di sini
 [intro compact scout]
 Bendera → Bendera penjelajahan. Letakkan pada batu; tugaskan 1 penjelajah.
 [intro compact build]
@@ -6784,6 +6774,8 @@ Bendera → Pengawal. Tandakan 4 petak; biarkan 2 pahlawan tiba.
 Pertahankan zon pengawal. Kekalkan bekalan ke Penginapan.
 [lesson defensive-tactics counterattack compact]
 Bendera serangan → Sarang musuh. Minta 3 pahlawan; jejari ≤4.
+[intro attack destination]
+Serang di sini
 [Grassland]
 Padang Rumput
 [Kopjes]
@@ -6792,10 +6784,10 @@ Bukit batu
 Laluan haiwan
 [Fish amount]
 Jumlah ikan
-[Camp-site amount]
-Jumlah tapak perkhemahan
 [scenario messages]
 Mesej ▸
+[Camp-site amount]
+Jumlah tapak perkhemahan
 [stats topic overview]
 Gambaran keseluruhan
 [stats topic economy]
@@ -6820,10 +6812,20 @@ Topik
 Buka sejarah penuh
 [stats missing readings]
 — Belum ada bacaan direkodkan. Pilih statistik untuk butiran lanjut.
-[script compilation success]
-Kompilasi berjaya
+[lush_grass]
+Rumput subur
+[dry_grass]
+Rumput kering
+[dune_sand]
+Pasir gumuk
 [script error at %0:%1: %2]
 Ralat pada %0:%1: %2
+[pale_sand]
+Pasir pucat
+[AI for all computer colonies]
+AI untuk semua koloni komputer
+[script compilation success]
+Kompilasi berjaya
 [script compilation failure %0:%1:(%2):%3]
 Kegagalan kompilasi: %0:%1:(%2):%3
 [script compilation failed %0]
@@ -6856,5 +6858,3 @@ Arahan diterima: %0
 Arahan belum disahkan. Buka komander untuk mencuba semula; mesej anda telah disimpan.
 [hive standing order update failed]
 Kemas kini arahan tetap gagal. Arahan anda dijeda secara setempat; cuba semula melalui kawalan berkenaan.
-[AI for all computer colonies]
-AI untuk semua koloni komputer

@@ -1,5 +1,5 @@
-import { skinProductLabel } from './labels.ts';
 import { displayMessage } from '../i18n.tsx';
+import { skinProductLabel } from './labels.ts';
 import { useFeatures } from '../features.tsx';
 import { statusLabel } from '../i18n.tsx';
 import { MessageError } from '../i18n.tsx';

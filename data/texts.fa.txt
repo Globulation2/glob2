@@ -6818,12 +6818,12 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 مقدار ماهی
 [scenario messages]
 پیام‌ها ▸
+[script error at %0:%1: %2]
+خطا در %0:%1: %2
 [Camp-site amount]
 تعداد اردوگاه‌ها
 [script compilation success]
 موفقیت در کامپایل
-[script error at %0:%1: %2]
-خطا در %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 خطای کامپایل: %0:%1:(%2):%3
 [script compilation failed %0]

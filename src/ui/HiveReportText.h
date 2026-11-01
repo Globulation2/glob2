@@ -11,7 +11,7 @@ inline std::string hiveReportText(const Hive::Report &report)
 	// Existing local stop acknowledgments were already translated in every locale.
 	if (report.source == Hive::ReportSource::Stopped) return nativeSurfaceText("[hive stopped]", "Stopped");
 	if (report.source == Hive::ReportSource::StopFailed) return nativeSurfaceText("[hive stop failed]", "Stop failed; retry the stop shortcut");
-	if (!bulgarianErrorLocale()) return report.text;
+	if (!localizedErrorLocale()) return report.text;
 	switch (report.source)
 	{
 	case Hive::ReportSource::StandingOrderPaused: return nativeSurfaceText("[hive standing order paused]", "A standing order needs attention and has been paused.");

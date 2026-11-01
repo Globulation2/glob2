@@ -110,6 +110,13 @@ python3 data/fonts/fetch_script_fonts.py
 python3 data/fonts/fetch_script_fonts.py --download
 ```
 
+Thai uses the pinned Noto Sans Thai family through the existing logical-run
+shaping route. Validate stacked vowels/tone marks and baseline clearance at
+10, 13 and 20 pixels, including high-density rendering. Glyph coverage alone
+does not establish correct Thai shaping or readable word wrapping. Native
+catalog U+200B hints are nonprinting word-break opportunities; online pages
+use their browser’s Thai line-breaking support.
+
 Both the font and SDL3_ttf shaping support must be packaged on every platform.
 The managed SDL build, desktop/mobile vcpkg manifests and Flatpak configuration
 enable HarfBuzz. A font-loading success without HarfBuzz is rejected by the

@@ -156,14 +156,12 @@ export function StudioWorkspace(p: Props) {
           ? {
               id: `${latestGeneration.id}:${latestGeneration.status}`,
               status: latestGeneration.status,
-              text:
-                latestGeneration.status === 'ready'
-                  ? 'Map creation ready in Preview.'
-                  : 'Map creation needs attention in Preview.',
             }
           : undefined
       }
-      attention={active ? 'Working' : current?.status === 'failed' ? 'Needs attention' : undefined}
+      attention={
+        active ? t('Working…') : current?.status === 'failed' ? t('Needs attention') : undefined
+      }
       conversation={
         <>
           <Conversation
@@ -434,7 +432,7 @@ export function StudioWorkspace(p: Props) {
                   onClick={() => {
                     p.setDraft(
                       t('Please try building the map again and address this issue: {value0}', {
-                        value0: current.error ?? 'The last build did not complete.',
+                        value0: current.error ?? t('The last build did not complete.'),
                       }),
                     );
                     focusComposer();

@@ -132,6 +132,7 @@ const AI_NAMES: Record<string, string> = {
 
 export function aiName(id: string | undefined): string {
   if (!id) return 'AI';
+  if (id === 'none') return t('Nobody');
   return AI_NAMES[id] ?? id.charAt(0).toUpperCase() + id.slice(1);
 }
 

@@ -161,7 +161,7 @@ export function SkinLibrary({
                 .map((s) => (
                   <LibraryCard key={s.skinId}>
                     <SkinThumbnail skin={{ ...s, kind: 'preset', entitlement: '' }} />
-                    <h2>{skinPresetLabel(s.name)}</h2>
+                    <h2>{skinPresetLabel(s.skinId, s.name)}</h2>
                     <p className="skin-card-state">
                       {collection.activeSkinId === s.skinId ? t('In use') : t('Owned')}
                     </p>
@@ -175,7 +175,7 @@ export function SkinLibrary({
                       </button>
                       <button
                         disabled={busy}
-                        onClick={() => onDuplicate(s.skinId, skinPresetLabel(s.name))}
+                        onClick={() => onDuplicate(s.skinId, skinPresetLabel(s.skinId, s.name))}
                       >
                         {t('Customize')}
                       </button>
@@ -319,7 +319,7 @@ function SkinThumbnail({ skin }: { skin: Skin }) {
           phase={0}
           interactive={false}
           label={t('{value0} rendered preview', {
-            value0: skin.kind === 'preset' ? skinPresetLabel(skin.name) : skin.name,
+            value0: skin.kind === 'preset' ? skinPresetLabel(skin.skinId, skin.name) : skin.name,
           })}
         />
       ) : (

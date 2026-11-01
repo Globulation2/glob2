@@ -119,6 +119,146 @@ TEST_SUITE("RelayAdmission")
         }
     }
 
+    TEST_CASE("published Telugu catalog separates historical revision 112 and 113 match admission")
+    {
+        // Real simulation keys immediately before/after the registration: the
+        // data inputs and 191/73 save/network versions are identical. Only
+        // SIM_REVISION changes. Keep these historical boundary fixtures fixed.
+        const SimVersion before{191, 73,
+            "9ce97439847adc396d7cf42390d2962c382a23f89363df4dd92c53dbc1f6c4d9"};
+        const SimVersion after{191, 73,
+            "289bec536583fdb3508350732d433c2aab519de883507b9af486b120b1cea81d"};
+        CHECK(before.key() != after.key());
+        for (const bool newMatch : {false, true})
+        {
+            CAPTURE(newMatch);
+            auto first = claims(A, 0);
+            first.simVersion = newMatch ? after : before;
+            MatchDirectory directory;
+            REQUIRE(directory.check(first, false, 10) == Admission::Create);
+            directory.create(first);
+            auto same = first;
+            same.seat = 1;
+            CHECK(directory.check(same, false, 10) == Admission::Join);
+            auto incompatible = same;
+            incompatible.simVersion = newMatch ? before : after;
+            CHECK(directory.check(incompatible, false, 10) == Admission::SimVersionDiffers);
+            CHECK(directory.check(first, false, 10) == Admission::Join);
+        }
+    }
+
+    TEST_CASE("Thai catalog registration separates revision 113 and 114 match admission")
+    {
+        // Real simulation keys immediately before/after the registration: the
+        // data inputs and 191/73 save/network versions are identical. Only
+        // SIM_REVISION changes. Keep these historical boundary fixtures fixed.
+        const SimVersion before{191, 73,
+            "289bec536583fdb3508350732d433c2aab519de883507b9af486b120b1cea81d"};
+        const SimVersion after{191, 73,
+            "cb71317a961766ae7d249e039c3f6ea8fcc6fb3b6d620e1cb69ae0cbae014e7a"};
+        CHECK(before.key() != after.key());
+        for (const bool newMatch : {false, true})
+        {
+            CAPTURE(newMatch);
+            auto first = claims(A, 0);
+            first.simVersion = newMatch ? after : before;
+            MatchDirectory directory;
+            REQUIRE(directory.check(first, false, 10) == Admission::Create);
+            directory.create(first);
+            auto same = first;
+            same.seat = 1;
+            CHECK(directory.check(same, false, 10) == Admission::Join);
+            auto incompatible = same;
+            incompatible.simVersion = newMatch ? before : after;
+            CHECK(directory.check(incompatible, false, 10) == Admission::SimVersionDiffers);
+            CHECK(directory.check(first, false, 10) == Admission::Join);
+        }
+    }
+
+    TEST_CASE("combined Thai and Filipino catalogs separate shared revision 114 from revision 115 match admission")
+    {
+        // Real simulation keys immediately before/after the registration: the
+        // data inputs and 191/73 save/network versions are identical. Only
+        // SIM_REVISION changes. Keep these historical boundary fixtures fixed.
+        const SimVersion before{191, 73,
+            "cb71317a961766ae7d249e039c3f6ea8fcc6fb3b6d620e1cb69ae0cbae014e7a"};
+        const SimVersion after{191, 73,
+            "e09bf9518579c665617212e36e5ff735ad3e3bae85e0d994b836f2ce35babe56"};
+        CHECK(before.key() != after.key());
+        for (const bool newMatch : {false, true})
+        {
+            CAPTURE(newMatch);
+            auto first = claims(A, 0);
+            first.simVersion = newMatch ? after : before;
+            MatchDirectory directory;
+            REQUIRE(directory.check(first, false, 10) == Admission::Create);
+            directory.create(first);
+            auto same = first;
+            same.seat = 1;
+            CHECK(directory.check(same, false, 10) == Admission::Join);
+            auto incompatible = same;
+            incompatible.simVersion = newMatch ? before : after;
+            CHECK(directory.check(incompatible, false, 10) == Admission::SimVersionDiffers);
+            CHECK(directory.check(first, false, 10) == Admission::Join);
+        }
+    }
+
+    TEST_CASE("combined Thai and Bulgarian catalogs separate shared revision 115 from revision 116 match admission")
+    {
+        // Real simulation keys immediately before/after the registration: the
+        // data inputs and 191/73 save/network versions are identical. Only
+        // SIM_REVISION changes. Keep these historical boundary fixtures fixed.
+        const SimVersion before{191, 73,
+            "e09bf9518579c665617212e36e5ff735ad3e3bae85e0d994b836f2ce35babe56"};
+        const SimVersion after{191, 73,
+            "073ef28125370208bf905617952c192cff54c21ca8a0d6c38465e5affeae607c"};
+        CHECK(before.key() != after.key());
+        for (const bool newMatch : {false, true})
+        {
+            CAPTURE(newMatch);
+            auto first = claims(A, 0);
+            first.simVersion = newMatch ? after : before;
+            MatchDirectory directory;
+            REQUIRE(directory.check(first, false, 10) == Admission::Create);
+            directory.create(first);
+            auto same = first;
+            same.seat = 1;
+            CHECK(directory.check(same, false, 10) == Admission::Join);
+            auto incompatible = same;
+            incompatible.simVersion = newMatch ? before : after;
+            CHECK(directory.check(incompatible, false, 10) == Admission::SimVersionDiffers);
+            CHECK(directory.check(first, false, 10) == Admission::Join);
+        }
+    }
+
+    TEST_CASE("combined Thai and Honeycomb integration separates shared revision 116 from revision 117 match admission")
+    {
+        // Real simulation keys before/after the combined Honeycomb integration: the
+        // data inputs and 191/73 save/network versions are identical. Only
+        // SIM_REVISION changes. Keep these historical boundary fixtures fixed.
+        const SimVersion before{191, 73,
+            "073ef28125370208bf905617952c192cff54c21ca8a0d6c38465e5affeae607c"};
+        const SimVersion after{191, 73,
+            "041f396d9de131fdadebbaf4592cac97bc44b323b307d8fab1ddd66fda4eb42d"};
+        CHECK(before.key() != after.key());
+        for (const bool newMatch : {false, true})
+        {
+            CAPTURE(newMatch);
+            auto first = claims(A, 0);
+            first.simVersion = newMatch ? after : before;
+            MatchDirectory directory;
+            REQUIRE(directory.check(first, false, 10) == Admission::Create);
+            directory.create(first);
+            auto same = first;
+            same.seat = 1;
+            CHECK(directory.check(same, false, 10) == Admission::Join);
+            auto incompatible = same;
+            incompatible.simVersion = newMatch ? before : after;
+            CHECK(directory.check(incompatible, false, 10) == Admission::SimVersionDiffers);
+            CHECK(directory.check(first, false, 10) == Admission::Join);
+        }
+    }
+
 	TEST_CASE("an ended match cannot be restarted by a late ticket until every ticket has expired")
 	{
 		MatchDirectory d;

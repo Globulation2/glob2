@@ -6818,12 +6818,12 @@ Wildpaden
 Hoeveelheid vis
 [scenario messages]
 Berichten ▸
+[script error at %0:%1: %2]
+Fout bij %0:%1: %2
 [Camp-site amount]
 Aantal kampeerplaatsen
 [script compilation success]
 Compilatie geslaagd
-[script error at %0:%1: %2]
-Fout bij %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Compilatie mislukt: %0:%1:(%2):%3
 [script compilation failed %0]
