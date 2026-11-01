@@ -488,7 +488,7 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
         className="card"
         onSubmit={(e) => {
           e.preventDefault();
-          void run(() => api.updateMap(map.id, { title, description, visibility }), 'Saved.');
+          void run(() => api.updateMap(map.id, { title, description, visibility }), 'Saved');
         }}
       >
         <h3>{t('Edit')}</h3>

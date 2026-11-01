@@ -423,7 +423,7 @@ export function MusicDetail({ id }: { id: string }) {
     try {
       await request(method, `/api/v1/music/${id}${suffix}`, { body });
       data.reload();
-      setNotice('Saved.');
+      setNotice('Saved');
     } catch (e) {
       setNotice(errorText(e));
     } finally {

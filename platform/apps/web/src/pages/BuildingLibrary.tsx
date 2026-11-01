@@ -71,7 +71,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
     setError(undefined);
     try {
       await operation();
-      setMessage('Saved.');
+      setMessage('Saved');
       setRevision((v) => v + 1);
     } catch (e) {
       setError(e instanceof Error ? e : new Error(String(e)));
