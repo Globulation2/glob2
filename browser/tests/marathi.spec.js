@@ -5,7 +5,7 @@ const path = require('node:path');
 const {createHash} = require('node:crypto');
 const {
   gameURL, clickMainMenu, clickControl, clickByLabel, clickSettingsDone,
-  clickCustomAIProfile, clickListRow, control, controlBox, readBrowserFile,
+  clickCustomAIProfile, clickListRow, control, controlBox, rootBox, readBrowserFile,
 } = require('./main-menu');
 const {hasDarkText} = require('./pixels');
 
@@ -115,11 +115,26 @@ for (const device of [
     await expect.poll(() => label(page, 'profile/use')).toBe('वापरा Maxima');
     records.aiProfileTop = await snapshot(page);
     await page.screenshot({path: path.join(evidence, 'ai-profile-top.png')});
-    const details = await controlBox(page, 'profile/details');
-    await page.mouse.move(details.x + details.width / 2, details.y + details.height / 2);
+    // Scroll regions are not interactive diagnostic targets. Aim the wheel
+    // inside the actual published dialog, beyond its optional profile list.
+    const dialog = await rootBox(page, 'profile/use');
+    const list = records.aiProfileTop.controls['profile/list']
+      ? await controlBox(page, 'profile/list') : null;
+    const left = list ? list.x + list.width : dialog.x;
+    const center = {x: (left + dialog.x + dialog.width) / 2,
+      y: dialog.y + dialog.height / 2};
+    // This opaque central text crop excludes the animated menu background,
+    // footer and selector, so a change proves that the prose actually scrolled.
+    const crop = {x: Math.round(center.x - dialog.width / 8),
+      y: Math.round(center.y - dialog.height / 8),
+      width: Math.round(dialog.width / 4), height: Math.round(dialog.height / 4)};
+    const beforeScroll = sha256(await page.screenshot({clip: crop}));
+    await page.mouse.move(center.x, center.y);
     for (let step = 0; step < 3; ++step) await page.mouse.wheel(0, 1600);
-    const loop = (await snapshot(page)).loop;
-    await expect.poll(async () => (await snapshot(page)).loop).toBeGreaterThan(loop + 2);
+    await expect.poll(async () => sha256(await page.screenshot({clip: crop})),
+      {message: 'AI profile prose did not scroll'}).not.toBe(beforeScroll);
+    records.aiProfileScroll = {crop, beforeSha256: beforeScroll,
+      afterSha256: sha256(await page.screenshot({clip: crop}))};
     records.aiProfileBottom = await snapshot(page);
     await page.screenshot({path: path.join(evidence, 'ai-profile-bottom.png')});
     await clickControl(page, 'profile/back');
