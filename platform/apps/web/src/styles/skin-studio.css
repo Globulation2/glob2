@@ -1519,3 +1519,41 @@
     min-height: 44px;
   }
 }
+
+/* Thai marks and word boundaries need more room than the compact Latin swatch
+   captions. Keep four square cells so each label stays over its canvas sphere. */
+:root:lang(th) .skin-materials button {
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: normal;
+  letter-spacing: normal;
+}
+:root:lang(th) .skin-materials button > span {
+  max-width: 100%;
+  background: var(--surface);
+  border-radius: 3px;
+  padding-inline: 1px;
+}
+:root:lang(th) .skin-material-group h4 {
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: normal;
+}
+@media (min-width: 600px) {
+  :root:lang(th) .skin-toolbox {
+    width: 330px;
+    max-width: calc(100% - 48px);
+  }
+}
+@media (max-width: 700px) {
+  :root:lang(th) .skin-material-groups {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+}
+@media (max-width: 599px) {
+  :root:lang(th) .skin-models button {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+}
