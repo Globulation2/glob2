@@ -31,9 +31,9 @@ def select_device(runtimes, device_types):
     if len(phones) != 1:
         raise ValueError('No unambiguous compatible conventional '+SIMULATOR_PHONE_NAME+' device type')
     phone = phones[0]
-    # The newest runtime can support only a foldable device whose default
-    # screenshot display differs. Qualify a fixed conventional phone instead
-    # of selecting an arbitrary model by name. Inventory IDs remain authoritative.
+    # The newest runtime can support only a foldable device. Keep screenshot
+    # qualification on a fixed conventional phone rather than selecting an
+    # arbitrary model by name. Inventory IDs remain authoritative.
     for runtime in sorted(available, key=lambda r: tuple(int(x) for x in r['version'].split('.')), reverse=True):
         supported = {d['identifier'] for d in runtime.get('supportedDeviceTypes', [])}
         if not supported or phone['identifier'] in supported:
