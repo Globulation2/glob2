@@ -1,0 +1,72 @@
+{
+  "tested_commit": "68f671be7a686218b104de971cb9d198f3b48d72",
+  "base_revision": "985b78d7d434aff8dbabd89035f273819e96df6c",
+  "integration": "PR head; base unchanged since fetch before final validation",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "binary_sha256": "56e0b793356e5e073972e44e25ea8d0a6abbf99af6e25e84b90c23a763c086da",
+  "build_provenance": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/aa79/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/aa79/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/b174/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "68f671be7a686218b104de971cb9d198f3b48d72",
+    "sourceStatus": [],
+    "sourceTreeSha256": "a230cb525c577a595d824151344f2304becd7c0f8b6b1a8dd9a0f4fafd6f6617"
+  },
+  "build_command": "GLOB2_SDL3_PREFIX=/home/bradley/.codex/worktrees/b174/glob2/build/sdl3/prefix python3 tools/dev_build.py engine-tests maxima-strategy-dump",
+  "focused_command": "python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary engine -j 4 --filter 'Maxima.Director/*' --filter 'Maxima.FarmingIntegration/*' --filter 'Maxima.Implementation/*' --filter 'Maxima.Lifecycle/*' --filter 'Maxima.Strategy/*' --filter 'TurnEngineHarness/the committed*' --filter 'TurnEngineHarness/*registration rejects earlier match identities*' --artifacts artifacts/wood-reserve/accepted-artifacts --junit artifacts/wood-reserve/accepted-native.xml",
+  "focused_results": {
+    "passed": 73,
+    "failed": 0
+  },
+  "python_command": "GLOB2_BUILD_DIR=$PWD/build/linux/client/debug/dev-dev_fast-true-linker-auto MAXIMA_STRATEGY_DUMP=$PWD/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/MaximaStrategyDump python3 -m unittest discover -s src/ai/maxima -p \"*Test.py\"",
+  "python_results": {
+    "run": 76,
+    "passed": 75,
+    "skipped": 1,
+    "failed": 0,
+    "skip_reason": "Standalone-client per-player override game test; client binary not built."
+  },
+  "broader_logical_case_coverage": {
+    "unique_passed": 184,
+    "broad_revision": "45da0f99ed35b49e435d5f30bd4e371f124787bf",
+    "production_equivalence": "Only MaximaDirectorRegressionTest.cpp differs between reviewed production 0562d2286d and final head. Broad run passed 181 cases; its obsolete/incorrect clearing fixture is replaced and passes at final head. Two feeding cases passed isolated direct runs. Final-focused run repeats 73 affected cases at final head.",
+    "feeding_receipts": [
+      {
+        "command": [
+          "/home/bradley/.codex/worktrees/aa79/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+          "--test-suite=Maxima.Economy",
+          "--test-case=sustained stock feeding reports capability estimates and historical strategy targets",
+          "--reporters=junit",
+          "--out=/home/bradley/.codex/worktrees/aa79/glob2/artifacts/wood-reserve/final-feeding-0.xml"
+        ],
+        "timeout_seconds": 600,
+        "elapsed_seconds": 86.171,
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/home/bradley/.codex/worktrees/aa79/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+          "--test-suite=Maxima.Economy",
+          "--test-case=observed hunger expands feeding for an opening colony mix beyond nominal forecasts",
+          "--reporters=junit",
+          "--out=/home/bradley/.codex/worktrees/aa79/glob2/artifacts/wood-reserve/final-feeding-1.xml"
+        ],
+        "timeout_seconds": 600,
+        "elapsed_seconds": 101.15,
+        "exit_code": 0
+      }
+    ]
+  },
+  "simulation_revision_check": "python3 test/check_sim_revision.py --base origin/master (exit 0)",
+  "review": "Independent agent review of production 0562d2286d and final test change 68f671be7a: no unresolved actionable findings.",
+  "limits": [
+    "Linux x86_64 fast development build only; no cross-platform Maxima checksum comparison performed",
+    "No release performance qualification, comparative tournament or human playtest",
+    "Original 120-second feeding timeouts retained; isolated reruns used bounded 600-second limits and passed"
+  ]
+}

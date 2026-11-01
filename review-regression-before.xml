@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="Maxima.FarmingIntegration"><testcase classname="Maxima.FarmingIntegration" name="wood reserve preserves live wheat donors" time="1.34847" status="run">
+      <failure message="0" type="REQUIRE">
+src/ai/maxima/MaximaFarmingIntegrationTest.cpp:499:
+REQUIRE( ai.wheat_farm_protection_mask[wheat] ) is NOT correct!
+  values: REQUIRE( 0 )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>
