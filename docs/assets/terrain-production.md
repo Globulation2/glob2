@@ -120,8 +120,10 @@ three-quarter view:
 - One soft ground shadow falls to the lower right.
 
 The sets are rounded boulders, a continuous hedge mass that joins its
-neighbours, scrubby bushes with twigs, tilted ridge slabs and shards, and
-bedrock massifs with sparse lichen. The tool writes `data/gfx/terrain-decorN.png`
+neighbours, scrubby bushes with twigs, clusters of faceted crags along a shared
+grain, and broad stepped bedrock blocks with sparse lichen. Ridge and outcrop
+rocks are flat-shaded prisms: a convex ring raised into walls, with sloping top
+facets meeting at an off-centre peak, so each face takes one light value. The tool writes `data/gfx/terrain-decorN.png`
 (set k at frames 12k–12k+11), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`
 writes a review sheet. Decor is presentation only: the minimap, the overview and

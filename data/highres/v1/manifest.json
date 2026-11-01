@@ -111777,17 +111777,17 @@
         {
           "file": "terrain-decor0.png",
           "role": "base",
-          "sha256": "86883c4b29c3809cba67294ca699af8d8a0a1ddfd1029e125bfbfbdd644f3e8b",
-          "source_sha256": "86883c4b29c3809cba67294ca699af8d8a0a1ddfd1029e125bfbfbdd644f3e8b",
+          "sha256": "ca580b62f6701e9d9a352565d779a8954b329b5d3ef326f2b19155b476bec6db",
+          "source_sha256": "ca580b62f6701e9d9a352565d779a8954b329b5d3ef326f2b19155b476bec6db",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "4f0cd48db2a595a32869d502b15759d423d293e1e5e45fb84052825f12826180"
+          "original_sha256": "5dc167f58fbc5e3821166fcbba617b66baa15fc47ed1eb6a0afe3e0d3bc4ad73"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -111801,17 +111801,17 @@
         {
           "file": "terrain-decor1.png",
           "role": "base",
-          "sha256": "76102376bfc1ce57ed7d155f22221b02686b3ff9340616c513bfb6e1d62a6ef8",
-          "source_sha256": "76102376bfc1ce57ed7d155f22221b02686b3ff9340616c513bfb6e1d62a6ef8",
+          "sha256": "7e8b9dade191e81d2953276c95196b65ff29544fa8dc8cdc01eab6e9356d0be4",
+          "source_sha256": "7e8b9dade191e81d2953276c95196b65ff29544fa8dc8cdc01eab6e9356d0be4",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "2595ff86e0cd8a2b35f2dd9a4a499f65060df349db29a9a41b43d9decae560fb"
+          "original_sha256": "78927b76be4bad4f04dee2b906a0db0923df54945089c48bc1fa0caa629e7c87"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -111825,17 +111825,17 @@
         {
           "file": "terrain-decor2.png",
           "role": "base",
-          "sha256": "4e1a84642c463723369bb967df779181e690746fd08669d4045662ee770502a6",
-          "source_sha256": "4e1a84642c463723369bb967df779181e690746fd08669d4045662ee770502a6",
+          "sha256": "b7aa073e329799045d12e5264cbfe2d7fd926d05dc291755cbb368c073ee5249",
+          "source_sha256": "b7aa073e329799045d12e5264cbfe2d7fd926d05dc291755cbb368c073ee5249",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "0ee0066887d0b5e0bddb86e67d9de7999838ae910d1ce14e65087d96dfdfb260"
+          "original_sha256": "39b811c78ea9a9e58b3366d8e7d5dda556b490524f232dd37300add39b55df21"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -111849,17 +111849,17 @@
         {
           "file": "terrain-decor3.png",
           "role": "base",
-          "sha256": "4b62b4bf31e4827305dee34d2516ee8b88e10c3ecebf340d8de43a0ea549fc04",
-          "source_sha256": "4b62b4bf31e4827305dee34d2516ee8b88e10c3ecebf340d8de43a0ea549fc04",
+          "sha256": "1ae840ea8a5f3fea576e2d41c64f9d27358d5eca1231555c835d465ade659930",
+          "source_sha256": "1ae840ea8a5f3fea576e2d41c64f9d27358d5eca1231555c835d465ade659930",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "0c7d9dac794b38f2f08b48adf0ca1545069586e39428efc81f81c6a861bcee58"
+          "original_sha256": "5828b6dbffd16b469af6f4efee1f1cd95a54a1c39d7a8daaff25b2a44873dc04"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -111873,17 +111873,17 @@
         {
           "file": "terrain-decor4.png",
           "role": "base",
-          "sha256": "91bdee231eb3c8ff03481becb45a3e21035a6fd462841230b0a7f48efe38e129",
-          "source_sha256": "91bdee231eb3c8ff03481becb45a3e21035a6fd462841230b0a7f48efe38e129",
+          "sha256": "9fa48555ebf0eccf12b9a43855140be2cccbdf7745f5cf5291d460fdf7dba4d0",
+          "source_sha256": "9fa48555ebf0eccf12b9a43855140be2cccbdf7745f5cf5291d460fdf7dba4d0",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "4ef7fb7aeaca852b2522444eb178fbfc99962b7cd48380e45402de615d9d39d5"
+          "original_sha256": "91b52fc0bf691d18dfa1ae248ef805ef5e0b620ffda38e5a79f3d7e32dd867f7"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -111897,17 +111897,17 @@
         {
           "file": "terrain-decor5.png",
           "role": "base",
-          "sha256": "6ff6958cea0668bf920c5b3ffbe813d3ea15fbcb7df70d02a4986c2573f30faa",
-          "source_sha256": "6ff6958cea0668bf920c5b3ffbe813d3ea15fbcb7df70d02a4986c2573f30faa",
+          "sha256": "308ea6239fd3ac7104ba4f84642c7236ab9c4e1b05336b3f115475ed93da7178",
+          "source_sha256": "308ea6239fd3ac7104ba4f84642c7236ab9c4e1b05336b3f115475ed93da7178",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "21b8e0f689d2c3132146a5e39e1690b09a5862cdf72fcf19a678c5b80806af4b"
+          "original_sha256": "9c078ec6ce94f9c39fc0d0c69462e44c7727569e1084c28c720997d7f2ce27cd"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -111921,17 +111921,17 @@
         {
           "file": "terrain-decor6.png",
           "role": "base",
-          "sha256": "bb4a229461a46bcbe7ee931f7851d83b702c90fef85fcc99b2602cfe619517b8",
-          "source_sha256": "bb4a229461a46bcbe7ee931f7851d83b702c90fef85fcc99b2602cfe619517b8",
+          "sha256": "02d5a06928a2f00a4aa79061c5d5e2daeaaa168a14c3df271e0099e04d1ba2c7",
+          "source_sha256": "02d5a06928a2f00a4aa79061c5d5e2daeaaa168a14c3df271e0099e04d1ba2c7",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "01be849f556ffd794616e50dc1e5c2d5af188a2078b65fd7b280a07141927855"
+          "original_sha256": "24448a2e1b80812f8e2d45022ebe15fa82afd847b4397fe65543eb0a6316a5ce"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -111945,17 +111945,17 @@
         {
           "file": "terrain-decor7.png",
           "role": "base",
-          "sha256": "221a6a678160c00f6f11c483b6230d099994537b7c9e2aafb9325e070594ba99",
-          "source_sha256": "221a6a678160c00f6f11c483b6230d099994537b7c9e2aafb9325e070594ba99",
+          "sha256": "d282b100ac36a4a5ae25e3369574c2ed782e914085c9636500a93fd77e5ceb20",
+          "source_sha256": "d282b100ac36a4a5ae25e3369574c2ed782e914085c9636500a93fd77e5ceb20",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "20ded2ef0b31c71d63654e622c097bb1b95fae9028d67c35207c598531542699"
+          "original_sha256": "afb0a65a8576fe3ffa14f362bd9e00ed235aee2e7fc14e78f1ad6da6df302693"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -111969,17 +111969,17 @@
         {
           "file": "terrain-decor8.png",
           "role": "base",
-          "sha256": "fc59490d2385f340ee1b4f5912aeb4f71e563298360358334d39c7b19a91681d",
-          "source_sha256": "fc59490d2385f340ee1b4f5912aeb4f71e563298360358334d39c7b19a91681d",
+          "sha256": "001a10d52a5760885c5e00d17d5fefdc42e5606bca5936a214654d9b5d84b1bc",
+          "source_sha256": "001a10d52a5760885c5e00d17d5fefdc42e5606bca5936a214654d9b5d84b1bc",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "1c6ef44cee940d45a984f3c3752d987f85463760b75fd59771c839c1cedcc737"
+          "original_sha256": "4b238c43ec7b343aa3b8266849f12c96b91a87b82f76857f328d5b086b320128"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -111993,17 +111993,17 @@
         {
           "file": "terrain-decor9.png",
           "role": "base",
-          "sha256": "50be050b65866a688c46715507f3554474f67fe43954e8769f42a0b0660141a3",
-          "source_sha256": "50be050b65866a688c46715507f3554474f67fe43954e8769f42a0b0660141a3",
+          "sha256": "4ead1ad6c44f574aa29ee053a7c901bb7f5cdaad7e9f6b2f603c067ca982dfad",
+          "source_sha256": "4ead1ad6c44f574aa29ee053a7c901bb7f5cdaad7e9f6b2f603c067ca982dfad",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "8a1e6206052e36b071e1b1734884da91438055efd9550ca41888d3d017730b03"
+          "original_sha256": "2fcb7b788104b46a447a42da9460f864ae62b11ddfedee24be679b0fae7303d0"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112017,17 +112017,17 @@
         {
           "file": "terrain-decor10.png",
           "role": "base",
-          "sha256": "80d5045b003d930fac754ee50e58165e084f495576293cf6935e1771188a481a",
-          "source_sha256": "80d5045b003d930fac754ee50e58165e084f495576293cf6935e1771188a481a",
+          "sha256": "9d6a09066c08b097edffcdbe233f8404f1469ffde7e42bc90b61ee9f9b72bec0",
+          "source_sha256": "9d6a09066c08b097edffcdbe233f8404f1469ffde7e42bc90b61ee9f9b72bec0",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "55eb040cc5fbd1b6fe34fe945373bce9e1778e714fbbb185d12b40068b7f9265"
+          "original_sha256": "53fd817de1adc96a346381ff1ffc42e6fecf4e8599c0cce8c0aad3ab1b04ed78"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112041,17 +112041,17 @@
         {
           "file": "terrain-decor11.png",
           "role": "base",
-          "sha256": "6f15a15bdb4cfc4b10aa48d4aded928dc351895239f268c9b7e6de176cbe3e3b",
-          "source_sha256": "6f15a15bdb4cfc4b10aa48d4aded928dc351895239f268c9b7e6de176cbe3e3b",
+          "sha256": "9a2529c909b91e5032c0c47f2849caf50cfd2141a0ac48036bc0a7062dd552e2",
+          "source_sha256": "9a2529c909b91e5032c0c47f2849caf50cfd2141a0ac48036bc0a7062dd552e2",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "2bf92ca9b43df3a595142d89aa2d90fbe7d214f9436f4e3908ff810b10d4dfeb"
+          "original_sha256": "fad4556604ab24206e7b18b3165163562426ac52d5b1dcb9b2f726e4e26ee860"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112065,17 +112065,17 @@
         {
           "file": "terrain-decor12.png",
           "role": "base",
-          "sha256": "f2fbf11d3291edf02e617cb19f11ea4bd3a9d9821f68ac613fe5fd6d2dbf088f",
-          "source_sha256": "f2fbf11d3291edf02e617cb19f11ea4bd3a9d9821f68ac613fe5fd6d2dbf088f",
+          "sha256": "d86a11a9cd2bbb32ffee33113bab430d7915a48fab8619e0b8940be9184df7d4",
+          "source_sha256": "d86a11a9cd2bbb32ffee33113bab430d7915a48fab8619e0b8940be9184df7d4",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "f9717919f80d54df83d1e9d2f7933ae7d1d9f09e2e4a6559681c9a4a203b341a"
+          "original_sha256": "0cc3381ab056fb9e7aa5e9031fa837fe20ec5d040270278bd863a41d518489a6"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112089,17 +112089,17 @@
         {
           "file": "terrain-decor13.png",
           "role": "base",
-          "sha256": "7e59d514e4bb94e96b970c3e2a0e3679dd7dce71c29a2cd7f9edda1c56b39cee",
-          "source_sha256": "7e59d514e4bb94e96b970c3e2a0e3679dd7dce71c29a2cd7f9edda1c56b39cee",
+          "sha256": "a1edf40ee18a2b1b023d7218a0b23eff0b57adf4e49f9a87cb2b787f5f63d820",
+          "source_sha256": "a1edf40ee18a2b1b023d7218a0b23eff0b57adf4e49f9a87cb2b787f5f63d820",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "ebe927c6913a8afbcd206aac98637d0d85f5190145d0ae6e73ff13f5159a75f0"
+          "original_sha256": "35b4115c9a3ebecc2a1c7333eb108bb450c1a10fd8abd8791b9fb120e60b6f45"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112113,17 +112113,17 @@
         {
           "file": "terrain-decor14.png",
           "role": "base",
-          "sha256": "1e74507f9e9819ff1427a06d05699b68737b828a7a7a3311dd1de8229db30b89",
-          "source_sha256": "1e74507f9e9819ff1427a06d05699b68737b828a7a7a3311dd1de8229db30b89",
+          "sha256": "8a011a2767983bb07d6c2dcdbcebf00c8338141e01fed2e1942422c9be6ebd07",
+          "source_sha256": "8a011a2767983bb07d6c2dcdbcebf00c8338141e01fed2e1942422c9be6ebd07",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "d12b752417d78993d5990906c57c7ff0c3a21bee63681bb660b1eeb097025352"
+          "original_sha256": "f45112c5da0737dbfa411cc76452f1ed6afe255ba9dbfb9b01dcedf1173a622e"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112137,17 +112137,17 @@
         {
           "file": "terrain-decor15.png",
           "role": "base",
-          "sha256": "ae7cfb620801ff46ee97a385be5d98cc09fa5dbbd388987c5318a5dff98f5238",
-          "source_sha256": "ae7cfb620801ff46ee97a385be5d98cc09fa5dbbd388987c5318a5dff98f5238",
+          "sha256": "3d6b46fbdac12eb73238b5e3a6461cfd8acf0519c1a8297813f743fa22b6be02",
+          "source_sha256": "3d6b46fbdac12eb73238b5e3a6461cfd8acf0519c1a8297813f743fa22b6be02",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "57c6cb889384d0a3c5feb7d1dd8ece8e4c71a8da0aa69902a71333ccd44fb0b7"
+          "original_sha256": "8ee8dc410d9c261e33922d1849d2e2577232abab3df634473d586d5a09b77011"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112161,17 +112161,17 @@
         {
           "file": "terrain-decor16.png",
           "role": "base",
-          "sha256": "690a713cd1c057bae0da0bb2316e7d39c1855c96728979db7971132007b9d068",
-          "source_sha256": "690a713cd1c057bae0da0bb2316e7d39c1855c96728979db7971132007b9d068",
+          "sha256": "6ecc0046ae5d4772d46f6951b095317787ac7586263e530044ab50b1b4e04d82",
+          "source_sha256": "6ecc0046ae5d4772d46f6951b095317787ac7586263e530044ab50b1b4e04d82",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "5b43cea9e7b05fbe256f9d94cfc4ba10134f4ec507146b0a2ee48cf3ae756cff"
+          "original_sha256": "aeb9e232c72e9934686ca6972d04991f835fd848b99c68a92a078620f738ca9a"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112185,17 +112185,17 @@
         {
           "file": "terrain-decor17.png",
           "role": "base",
-          "sha256": "9095b0866333f4dd8a063f258216c9cf8441245f56465d2fb0754f15cafce6d4",
-          "source_sha256": "9095b0866333f4dd8a063f258216c9cf8441245f56465d2fb0754f15cafce6d4",
+          "sha256": "e0dce1fba576239ba740f5fab2d2e0943003b94685d258a51f2218ee573ddffa",
+          "source_sha256": "e0dce1fba576239ba740f5fab2d2e0943003b94685d258a51f2218ee573ddffa",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "cc86bcdeac07f5c987d8a08a887a7db8d02aa3ba6dad67409f81d489f94ff7b9"
+          "original_sha256": "9804ff26b4172990adda72ff8210efbe9dda102515a53b0e505b0704b0006153"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112209,17 +112209,17 @@
         {
           "file": "terrain-decor18.png",
           "role": "base",
-          "sha256": "d13dac1f409092ea815c6a13d4848431d217a7f6311da4b2a75266e0a786eceb",
-          "source_sha256": "d13dac1f409092ea815c6a13d4848431d217a7f6311da4b2a75266e0a786eceb",
+          "sha256": "2661f911cc20d46d25d2ae7bbb4fee65b2c52b74d5ef9903f4cbb84498f45fe9",
+          "source_sha256": "2661f911cc20d46d25d2ae7bbb4fee65b2c52b74d5ef9903f4cbb84498f45fe9",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "dbd63fa7d6c1e944050d96df9780ce3c9bea96e588ab9b78b29ff37aa21ac366"
+          "original_sha256": "030973d7b355924c4ad9a35dd8e90805936ed35c6aef754af5bd4e8ee6277008"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112233,17 +112233,17 @@
         {
           "file": "terrain-decor19.png",
           "role": "base",
-          "sha256": "187138a88bc594ecc132559f288ccd2cbf7c49f6336bfee49fc51cd57d01527c",
-          "source_sha256": "187138a88bc594ecc132559f288ccd2cbf7c49f6336bfee49fc51cd57d01527c",
+          "sha256": "06aaeb28eabf9d18eb1df6645372b3005f46b86313942201db061bf69dfcac79",
+          "source_sha256": "06aaeb28eabf9d18eb1df6645372b3005f46b86313942201db061bf69dfcac79",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "fc8dabd0bf81c7f7f9da90a63252e60cf342a4d017adbd92d2b5d1f5f4f4b6b6"
+          "original_sha256": "384f91de7d9445f8825592dbbc43b299884f99556bf7e6c3be0eef0fd0009fca"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112257,17 +112257,17 @@
         {
           "file": "terrain-decor20.png",
           "role": "base",
-          "sha256": "6972f3a91608968e64c33b88728c27f1fe5c71dace59cb4d1cd3fce3cd23ea9f",
-          "source_sha256": "6972f3a91608968e64c33b88728c27f1fe5c71dace59cb4d1cd3fce3cd23ea9f",
+          "sha256": "a82a89f6f16d71b1b911ae07aaad9f299f1c9a866d46100e97fb9f894aebe84c",
+          "source_sha256": "a82a89f6f16d71b1b911ae07aaad9f299f1c9a866d46100e97fb9f894aebe84c",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "992078d8b0a6024a4183e8d8b959ee7438944d587eac1fb873f65745806387ca"
+          "original_sha256": "cec053518f949f4c8b7957c257aff681d3530fd923ed38509d041acd48f1906c"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112281,17 +112281,17 @@
         {
           "file": "terrain-decor21.png",
           "role": "base",
-          "sha256": "083f7cbe27cb4e767bf3ea368356743728417884ae4e0a01d64baadc1e0cdc80",
-          "source_sha256": "083f7cbe27cb4e767bf3ea368356743728417884ae4e0a01d64baadc1e0cdc80",
+          "sha256": "0281a31425fd1557f57cd1386f278523a3a8a40dc17a5fa09203ab5f98baa651",
+          "source_sha256": "0281a31425fd1557f57cd1386f278523a3a8a40dc17a5fa09203ab5f98baa651",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "f44040564f321f3e7be6f7c1927ff5152fa7c6b17aadaa7f0381a43f46bf325d"
+          "original_sha256": "c1fd6a157a2da604a149d8324b66f18b256a64e9ec58a9c888b3f1baa47d966c"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112305,17 +112305,17 @@
         {
           "file": "terrain-decor22.png",
           "role": "base",
-          "sha256": "d72a672dc4f126bce0250163c9aa93f277f507ee246b42e5e768d1c79f18c671",
-          "source_sha256": "d72a672dc4f126bce0250163c9aa93f277f507ee246b42e5e768d1c79f18c671",
+          "sha256": "4e2146c7b4606a17823ef39ded5eab5cc0bc3e866479bba88620e449fdbc9b6f",
+          "source_sha256": "4e2146c7b4606a17823ef39ded5eab5cc0bc3e866479bba88620e449fdbc9b6f",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "6a8a707facde5de93d865cc821330a659a6aded3d4f3a079fdd4c93236432f46"
+          "original_sha256": "68c5785e2a3b119cd846c438ee294928bbaea119299de421eb24d2c1b9dd322d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112329,17 +112329,17 @@
         {
           "file": "terrain-decor23.png",
           "role": "base",
-          "sha256": "f2c0cd98a0d02874f5b3a340bb92803f07b29aba4f6648468800cf8fa89bf1c0",
-          "source_sha256": "f2c0cd98a0d02874f5b3a340bb92803f07b29aba4f6648468800cf8fa89bf1c0",
+          "sha256": "b61671825bba11f0a8bc3f03c369219c6cef8b9edf9a4b1c2d895acc66e07349",
+          "source_sha256": "b61671825bba11f0a8bc3f03c369219c6cef8b9edf9a4b1c2d895acc66e07349",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "09271435bccb79f6111f2edbb2da6813f2d8339325be68ebe76b46af2032a6bc"
+          "original_sha256": "fff1211c1e5bdd67e32f3ec8f3502b2fe3849590a8ea5fd4265576d749b0dab8"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112353,17 +112353,17 @@
         {
           "file": "terrain-decor24.png",
           "role": "base",
-          "sha256": "22c87b69f7f74c06f1b15bc619cb8eb497a2a0809cb8c86e9cac4db0774d266f",
-          "source_sha256": "22c87b69f7f74c06f1b15bc619cb8eb497a2a0809cb8c86e9cac4db0774d266f",
+          "sha256": "e56cf305256563e9da6c3509c4d734130a87bbec94c623be243bcf3f970eb701",
+          "source_sha256": "e56cf305256563e9da6c3509c4d734130a87bbec94c623be243bcf3f970eb701",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "373b4bf88ea2ad5690296ff659b94dc8264184fbc95676eb7df50d3aee92fe2c"
+          "original_sha256": "0c366fa88093bf6b51f478038ba4167d8f24ca9c894651ad893f949c631fb719"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112377,17 +112377,17 @@
         {
           "file": "terrain-decor25.png",
           "role": "base",
-          "sha256": "0a1aeb687ac034e8d5f629e6d1ad5df94905d8a288052641714cf85bcb4d570f",
-          "source_sha256": "0a1aeb687ac034e8d5f629e6d1ad5df94905d8a288052641714cf85bcb4d570f",
+          "sha256": "af0f12dba37e1915c7bbf996cfa02d9d977d0f174fc7266ca5724830b75e8582",
+          "source_sha256": "af0f12dba37e1915c7bbf996cfa02d9d977d0f174fc7266ca5724830b75e8582",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "a8cd64c9a6917f88b8fb4b6afe2522ce2181a58013209e063f02afe4d2c0a7de"
+          "original_sha256": "b9bc751052861498ac16eaa94221def849ba32d108f651db1fc3459fca8576d0"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112401,17 +112401,17 @@
         {
           "file": "terrain-decor26.png",
           "role": "base",
-          "sha256": "5909359811e5c33ac4af832c6ec833b04075090fbcf43588422543faa0b0fe14",
-          "source_sha256": "5909359811e5c33ac4af832c6ec833b04075090fbcf43588422543faa0b0fe14",
+          "sha256": "8286da2fb20751110fa447566257f8c9e8e865d860c2536710a62cd2b5c4d63e",
+          "source_sha256": "8286da2fb20751110fa447566257f8c9e8e865d860c2536710a62cd2b5c4d63e",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "d9eaeb32f35fd9f0eaa89d9be73bdcb5fdfc061cf80ad8bf19cba15348f10c93"
+          "original_sha256": "3ec1a7d718f70acad1402c52a0c13cdb2193b188c3891dd10216979a74428362"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112425,17 +112425,17 @@
         {
           "file": "terrain-decor27.png",
           "role": "base",
-          "sha256": "c58786b988a8888007f7ba3a706fd00f8102da44ed1f516d1279cfbb40b15d08",
-          "source_sha256": "c58786b988a8888007f7ba3a706fd00f8102da44ed1f516d1279cfbb40b15d08",
+          "sha256": "eb424c4ee037d4d82d4c9f85c14c1b047e61801cbad57087f8027bf71e673b0e",
+          "source_sha256": "eb424c4ee037d4d82d4c9f85c14c1b047e61801cbad57087f8027bf71e673b0e",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "74ae833797dec2593058f8d2e04f0d87fa55505f539c1896dda31acfe9626f4c"
+          "original_sha256": "448688fc00fb1900e50a4ec5b0fb6e0394733f0ff77c31034d3b029612aaa1c1"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112449,17 +112449,17 @@
         {
           "file": "terrain-decor28.png",
           "role": "base",
-          "sha256": "af23c52a920efdfd28bb4e683602bba986d75503cd2acf38feae2a55c618df8a",
-          "source_sha256": "af23c52a920efdfd28bb4e683602bba986d75503cd2acf38feae2a55c618df8a",
+          "sha256": "c7668fe1486af77b938808fc74c189555428c0400fc060f44675357e9f214c0c",
+          "source_sha256": "c7668fe1486af77b938808fc74c189555428c0400fc060f44675357e9f214c0c",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "1303f4ff0ec8b19bba06ca63b78c782a1fbe7feb567fce9e9de51bea3a39f993"
+          "original_sha256": "780e4897344740ca9fbd3fb668b0325bcb6efe493be8268fd2e7a3fdf66005ef"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112473,17 +112473,17 @@
         {
           "file": "terrain-decor29.png",
           "role": "base",
-          "sha256": "b96e81deb73997895522974932c16890ee5a2a53f681381ed9ff5d66fcdd686b",
-          "source_sha256": "b96e81deb73997895522974932c16890ee5a2a53f681381ed9ff5d66fcdd686b",
+          "sha256": "a736dbc27d3743d082ec1469e9acfbf1d297cfeac64c7298740ddf5a5acf941d",
+          "source_sha256": "a736dbc27d3743d082ec1469e9acfbf1d297cfeac64c7298740ddf5a5acf941d",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "6a11a353a9907c711f1d6cd85a7036761bc140682e13cc1fc733a0d613f6af1d"
+          "original_sha256": "a8ec44012dc1be4be265bebfed7a9d0d88a218656d0a7d2aae17439dbc149b77"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112497,17 +112497,17 @@
         {
           "file": "terrain-decor30.png",
           "role": "base",
-          "sha256": "7647272317e142f691823c1a75fbb30c87dba3d8a3f50a24d6c4dcf7bff93918",
-          "source_sha256": "7647272317e142f691823c1a75fbb30c87dba3d8a3f50a24d6c4dcf7bff93918",
+          "sha256": "6634050a0bf63ede5f8fac687d4599159f7c682db825dfb0a1a5993b687b369d",
+          "source_sha256": "6634050a0bf63ede5f8fac687d4599159f7c682db825dfb0a1a5993b687b369d",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "29a5f746b2b60ec11962bdee4060a74d3453a30aa42c0c6c4687d682f2ad09a0"
+          "original_sha256": "9d18b8eae3441d9dd0467b0a6b3c1927400ab5882a1c8b9200819dab43c5011b"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112521,17 +112521,17 @@
         {
           "file": "terrain-decor31.png",
           "role": "base",
-          "sha256": "5f0c462cd530b59be4a83b8e67e7857a86a089b0c5f94d5fc4a6319b63a6fabf",
-          "source_sha256": "5f0c462cd530b59be4a83b8e67e7857a86a089b0c5f94d5fc4a6319b63a6fabf",
+          "sha256": "4ed25041b7dd6ee4a3815ee3d65fc84d2c2618f5d10854b857e3b004302c2ec8",
+          "source_sha256": "4ed25041b7dd6ee4a3815ee3d65fc84d2c2618f5d10854b857e3b004302c2ec8",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "91588d8898ed003908dbaf5b59622d578e4b6fde89f4c39115d6e73985c74a05"
+          "original_sha256": "e8b7bbf28a2c87b1f62bfb2ebfdea527f263348a2bf89f627a09237a00a2e1be"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112545,17 +112545,17 @@
         {
           "file": "terrain-decor32.png",
           "role": "base",
-          "sha256": "d99e73f3c76cdf8574fba9ee6b469af910ac3c185a36608a290457b0bc376787",
-          "source_sha256": "d99e73f3c76cdf8574fba9ee6b469af910ac3c185a36608a290457b0bc376787",
+          "sha256": "36c77bb317f77365bf8622f6ae06b56d76d1fb0c8ce8bae05367f03d113d3b01",
+          "source_sha256": "36c77bb317f77365bf8622f6ae06b56d76d1fb0c8ce8bae05367f03d113d3b01",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "65dbbdd4cb71f017fd929a68b9af6e839e837de0b935274d65c2644fbc4edd74"
+          "original_sha256": "0ce5c0abe8b2042951bae858f38b748fc57b9d8261b82320790672e1b8474136"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112569,17 +112569,17 @@
         {
           "file": "terrain-decor33.png",
           "role": "base",
-          "sha256": "cc6ea2e73e1eedef9386b70fefba758e393b047b2737776a6b23cd0638bd2d58",
-          "source_sha256": "cc6ea2e73e1eedef9386b70fefba758e393b047b2737776a6b23cd0638bd2d58",
+          "sha256": "65a485944845ae8cf01b7e2eb63c0426cee8e88edcb8a9bfdcb4564eee9c03fd",
+          "source_sha256": "65a485944845ae8cf01b7e2eb63c0426cee8e88edcb8a9bfdcb4564eee9c03fd",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "279cf95d9f204a37ca8cb6160dcdd3b64ac08f24bcba7ff635c58a76a265ebe2"
+          "original_sha256": "e9701da652ba5f022ec6f5fa4e543c2201ac8f1b9fbfee47c9a65343ff1a698b"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112593,17 +112593,17 @@
         {
           "file": "terrain-decor34.png",
           "role": "base",
-          "sha256": "3186079d68d0e100b92a2d2abc4f632dbe0bc348ea4468c7e73175da05ca8d78",
-          "source_sha256": "3186079d68d0e100b92a2d2abc4f632dbe0bc348ea4468c7e73175da05ca8d78",
+          "sha256": "c601fe29f566752e7b13b9975a2098e72aab2816aca71f9d815b8c22745ea6e8",
+          "source_sha256": "c601fe29f566752e7b13b9975a2098e72aab2816aca71f9d815b8c22745ea6e8",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "763b3e4b2c7c106a4bc8b96e5fd65dc4a0deda9a6e4633e192a163b930c2aa81"
+          "original_sha256": "f09d8e54270820a4d808f9b917c9d3e4a5cc73a6a558589d98c3b3e214215598"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112617,17 +112617,17 @@
         {
           "file": "terrain-decor35.png",
           "role": "base",
-          "sha256": "3f0334d2f4b926112e37162b858948025c8e639a2dae99d0e42543c9903eb8ac",
-          "source_sha256": "3f0334d2f4b926112e37162b858948025c8e639a2dae99d0e42543c9903eb8ac",
+          "sha256": "214411c86b0151169887949aade80764519ef3a8ef448c0a3fde2ebeeb42ff2d",
+          "source_sha256": "214411c86b0151169887949aade80764519ef3a8ef448c0a3fde2ebeeb42ff2d",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "fe21ab3e4a07c11fa7a53aeda5f084119cad8715302aee0214bf453a3c4eb078"
+          "original_sha256": "e10396eb4ad4a4a122c1ceef1f622726f6ef0a8e14db72655178c55decc5e0b7"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112641,17 +112641,17 @@
         {
           "file": "terrain-decor36.png",
           "role": "base",
-          "sha256": "5da2ef9d137ac089c172fd51d0ce5808dcedc62495354c4805ed08dcb3b7dbbe",
-          "source_sha256": "5da2ef9d137ac089c172fd51d0ce5808dcedc62495354c4805ed08dcb3b7dbbe",
+          "sha256": "9aff92e7f9dd61b7c9c46f7d1b42aea71b1c1b4db3c460352ead5304a396a4c5",
+          "source_sha256": "9aff92e7f9dd61b7c9c46f7d1b42aea71b1c1b4db3c460352ead5304a396a4c5",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "5fd8b38d578417c449416130873e3b85aa857a927a3d680507f6acef719ebebb"
+          "original_sha256": "e7629f1238f9df18ded66f54eb04840363e5aa8fcfd1c26da19ad09b45efa96c"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112665,17 +112665,17 @@
         {
           "file": "terrain-decor37.png",
           "role": "base",
-          "sha256": "4fdc36622dbb597460e139f86f8b6fdeafc8acc61e19ac0949ea4e4a0858d29e",
-          "source_sha256": "4fdc36622dbb597460e139f86f8b6fdeafc8acc61e19ac0949ea4e4a0858d29e",
+          "sha256": "974f735ad3b4fcbca782b289688ca555d2292fee5f2951f4d9291ff98a184f54",
+          "source_sha256": "974f735ad3b4fcbca782b289688ca555d2292fee5f2951f4d9291ff98a184f54",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "cb1531b1564ac9663ebb55c456da0b6e230ad623b46265696f8da9ef64195c5d"
+          "original_sha256": "b2f1aadb965df495f86256d9eeac2a2c5a14667ba199e527d8e5aca19b3f8aa9"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112689,17 +112689,17 @@
         {
           "file": "terrain-decor38.png",
           "role": "base",
-          "sha256": "e0c7deb77ec18f964eda4f2a82f788af6c899a7c86bc6afb546215993d166ebc",
-          "source_sha256": "e0c7deb77ec18f964eda4f2a82f788af6c899a7c86bc6afb546215993d166ebc",
+          "sha256": "db049118499e8e45e2bfee3c47efc33303e8e4f0c24db5c2c7b282027b1202f5",
+          "source_sha256": "db049118499e8e45e2bfee3c47efc33303e8e4f0c24db5c2c7b282027b1202f5",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "922c2e242fa0818fec09c1aa47b7ff2045a5ae2075bb2df93a94a3ebee1a70bf"
+          "original_sha256": "ec48cfe97a57116d8b40d9a3a1becb0a816d0bb60766a902dfbfa94542b6edd7"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112713,17 +112713,17 @@
         {
           "file": "terrain-decor39.png",
           "role": "base",
-          "sha256": "53e26763836c9429c40da06dddc5bddf060dc94ada3dd016a436c2b283551e07",
-          "source_sha256": "53e26763836c9429c40da06dddc5bddf060dc94ada3dd016a436c2b283551e07",
+          "sha256": "d09e0bc0d2fc908928d29a023dd075583490883ad54e916f2aea795b8ce8df23",
+          "source_sha256": "d09e0bc0d2fc908928d29a023dd075583490883ad54e916f2aea795b8ce8df23",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "12880f5129c8adab021ac459311f1332a9c9a0ebb2c00aba95ad78e950c22234"
+          "original_sha256": "a23cc86a000c8f6cf927ada1c5d0dfa55d22c84cda90516f8c6dc7cbbde701c7"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112737,17 +112737,17 @@
         {
           "file": "terrain-decor40.png",
           "role": "base",
-          "sha256": "304f619b50964d4884f83fac19641397cfc7aa7caea144113005467dc709b843",
-          "source_sha256": "304f619b50964d4884f83fac19641397cfc7aa7caea144113005467dc709b843",
+          "sha256": "55fe08aa0f2372f6fb22a7e96db8ccb59d075807da8bee64926b566544b318a1",
+          "source_sha256": "55fe08aa0f2372f6fb22a7e96db8ccb59d075807da8bee64926b566544b318a1",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "09b1e6db5a3ad246e59e207f61e631320258f9c87cdac09a9c0bbdf2bf8eeca1"
+          "original_sha256": "296a2f8a4321493e06aa21069f38a59505b484f3b05a181693b3c4da2efe05d2"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112761,17 +112761,17 @@
         {
           "file": "terrain-decor41.png",
           "role": "base",
-          "sha256": "5632b3ef26a5503f690c969cd4c721b94b22775c8928d20c90911d29c2eea736",
-          "source_sha256": "5632b3ef26a5503f690c969cd4c721b94b22775c8928d20c90911d29c2eea736",
+          "sha256": "67e26ff5f5e674bbd6b41794b2de7ac630ced750a993b66b9158d33193e5bddf",
+          "source_sha256": "67e26ff5f5e674bbd6b41794b2de7ac630ced750a993b66b9158d33193e5bddf",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "1906d3835a06ff0c071c673b910a935feba5fead037c0f587d76aae3d7c02c11"
+          "original_sha256": "924cd041eeb6033b54d476fdbd34ccc592582ec695424b4342847b50d0970942"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112785,17 +112785,17 @@
         {
           "file": "terrain-decor42.png",
           "role": "base",
-          "sha256": "e477284e6dde8e3aaad31f95dc1161bc548189a87c432827fc8825b733a4e930",
-          "source_sha256": "e477284e6dde8e3aaad31f95dc1161bc548189a87c432827fc8825b733a4e930",
+          "sha256": "bd31c1fa40993aaa61ca501f0ed498f3567282470e14742b1254189214529ff7",
+          "source_sha256": "bd31c1fa40993aaa61ca501f0ed498f3567282470e14742b1254189214529ff7",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "a72686e9d5ee7fe03f045e3669c20a9c008db19067d18ef3b943dacbfd4f93eb"
+          "original_sha256": "c2277bfe1b5e8a572c9f494368e0f805695e6569659634ce858f09a8e788c73c"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112809,17 +112809,17 @@
         {
           "file": "terrain-decor43.png",
           "role": "base",
-          "sha256": "71709b5eb14a114a54251b4d0f039350631b69d81b6de7e5477e21d4d6d7c33a",
-          "source_sha256": "71709b5eb14a114a54251b4d0f039350631b69d81b6de7e5477e21d4d6d7c33a",
+          "sha256": "3c6b13896baab5f3c683355b901822f92bec80b05939167bd7407e727c65e377",
+          "source_sha256": "3c6b13896baab5f3c683355b901822f92bec80b05939167bd7407e727c65e377",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "6bfba8448fbcf52605653c4dec6bfcc84bf89183170923126d678a0462cbb5a9"
+          "original_sha256": "836a90bafb53a8d6a5f3b37b61d537e2287f9f249c7b40e70822fe56a4d8bd8f"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112833,17 +112833,17 @@
         {
           "file": "terrain-decor44.png",
           "role": "base",
-          "sha256": "8ed553555434d7066f89e95fc3df76151d50554b2a8adec3251394f23cbddc17",
-          "source_sha256": "8ed553555434d7066f89e95fc3df76151d50554b2a8adec3251394f23cbddc17",
+          "sha256": "a2a923427f3325f7cc03ff0a3a8cbb1c389501cbb4642e970cf061a24468ab8b",
+          "source_sha256": "a2a923427f3325f7cc03ff0a3a8cbb1c389501cbb4642e970cf061a24468ab8b",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "1786952b72583c2967ec227c0b136ea6b45ebb53d70acf50f5b734974dce1143"
+          "original_sha256": "7ddf312d5cc9f56c7b0d54f8ea1c50d8c640ca145a9a582862d50fe49d22a69d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112857,17 +112857,17 @@
         {
           "file": "terrain-decor45.png",
           "role": "base",
-          "sha256": "0e412e4b946522eaae82add64cf2a1dfd46d8d077990b06bc051520e11705850",
-          "source_sha256": "0e412e4b946522eaae82add64cf2a1dfd46d8d077990b06bc051520e11705850",
+          "sha256": "fdfc675a4115bb7b1ac8b689864fc567f543b7e45036620cfd147414d1f485e5",
+          "source_sha256": "fdfc675a4115bb7b1ac8b689864fc567f543b7e45036620cfd147414d1f485e5",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "81a026f1ead3b3b1df0143744cf8084828c2ce29ce6476819698ec3f12245bd0"
+          "original_sha256": "1d58baf67d00fb7ad930f09fa855e08ff3b37117281ac14a4ac62bddcd42e038"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112881,17 +112881,17 @@
         {
           "file": "terrain-decor46.png",
           "role": "base",
-          "sha256": "0aa882e805238f0da9b7d16920bf90f923f25c9be9e643f097b4fa823d151b59",
-          "source_sha256": "0aa882e805238f0da9b7d16920bf90f923f25c9be9e643f097b4fa823d151b59",
+          "sha256": "530b465d41e19a3439900af3216b566a1030e4f687fb370ccd1ac35c90e19802",
+          "source_sha256": "530b465d41e19a3439900af3216b566a1030e4f687fb370ccd1ac35c90e19802",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "b75141790019c01f1fcfc014b839ccdb9884bb4123721e4fc0252a7a4420379e"
+          "original_sha256": "52a7e84003e3f83c96e60fb3d4e0eff359249fc8f6ec1db74fdae2aae910d617"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112905,17 +112905,17 @@
         {
           "file": "terrain-decor47.png",
           "role": "base",
-          "sha256": "8b9e9e5562ee8757537497e777a684f8bedc3e9b37b7fc5bc5fd42b7245d99e2",
-          "source_sha256": "8b9e9e5562ee8757537497e777a684f8bedc3e9b37b7fc5bc5fd42b7245d99e2",
+          "sha256": "17c98c9fc0398133a27b0d8a122d32f745745a1292063a6c19111500630a50fb",
+          "source_sha256": "17c98c9fc0398133a27b0d8a122d32f745745a1292063a6c19111500630a50fb",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "87a46280e56e1afb366b94d073137f54a5f5f7232b33dac8a282e45fbb687c5c"
+          "original_sha256": "56e14b0f8ef270b5ccae33dc232f8c0aeb9a5c62f31292c29cb6cbb91e4520b9"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112929,17 +112929,17 @@
         {
           "file": "terrain-decor48.png",
           "role": "base",
-          "sha256": "fc7096076c0934487415812b98b969f9058e1c87a24e8b2104d1e7dcf5ce5c35",
-          "source_sha256": "fc7096076c0934487415812b98b969f9058e1c87a24e8b2104d1e7dcf5ce5c35",
+          "sha256": "066b6b1b0da0c6ca93d1fecac7365ecab85badc2ca7fd1b735376b12f45baf86",
+          "source_sha256": "066b6b1b0da0c6ca93d1fecac7365ecab85badc2ca7fd1b735376b12f45baf86",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "1b7278cf66caf822485cd9f9b8791802dd776c231dc24b42d35adb36438beed5"
+          "original_sha256": "fba03432762c608a6c8b441cd1da93cda716a808c7ebd2b375ab44198ff381b1"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112953,17 +112953,17 @@
         {
           "file": "terrain-decor49.png",
           "role": "base",
-          "sha256": "bd55850647d5d9d6c51448db0d40d0d9279a3fc1a357a826e3b12400a2480ccf",
-          "source_sha256": "bd55850647d5d9d6c51448db0d40d0d9279a3fc1a357a826e3b12400a2480ccf",
+          "sha256": "f44f71c721a0b101b45fbb49e98542204e250878b7a5d00f3e736ad25d995dfd",
+          "source_sha256": "f44f71c721a0b101b45fbb49e98542204e250878b7a5d00f3e736ad25d995dfd",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "4d000cbd6de890271c8b2c4eb8c19df95b178d2d4016a18f72eb9eb48a30fcaf"
+          "original_sha256": "d42ff6ec502f8c120374109eefee16e195f3943738838495d8469c31f0480143"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -112977,17 +112977,17 @@
         {
           "file": "terrain-decor50.png",
           "role": "base",
-          "sha256": "42c952a6bbb00a2a6308737b0978a5dcb3731c4eea6b709195e20b772acd400e",
-          "source_sha256": "42c952a6bbb00a2a6308737b0978a5dcb3731c4eea6b709195e20b772acd400e",
+          "sha256": "3268842dc40e5bae17e937c895a177be751b42158331c99e04718a24373aa3e7",
+          "source_sha256": "3268842dc40e5bae17e937c895a177be751b42158331c99e04718a24373aa3e7",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "e902b69a60c9ddaa2d46accd06e08c7101cd44d3c41792f1bfa753dabc1274d5"
+          "original_sha256": "84a71c5039ecec7b3f1ec4badcf9283b7899052e5cc1b52ce0ca0530a6eb4a76"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -113001,17 +113001,17 @@
         {
           "file": "terrain-decor51.png",
           "role": "base",
-          "sha256": "862ff20114b96422fa19ab6eb011f406b0546b462899eeccfc7bbde8abfe9cca",
-          "source_sha256": "862ff20114b96422fa19ab6eb011f406b0546b462899eeccfc7bbde8abfe9cca",
+          "sha256": "a42d1023e8f84ba725ec0de47f4fcffa7b3e3494f433532aaa0be7a4e9f77260",
+          "source_sha256": "a42d1023e8f84ba725ec0de47f4fcffa7b3e3494f433532aaa0be7a4e9f77260",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "b5b4de8b3adc8134fe03f9c3303924085204dc2073088ec9f9b036a88cffe2f9"
+          "original_sha256": "e787d1f879f4f85ad874a5eb911b92d5e68ebda1f94299da325d75b04bf55af3"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -113025,17 +113025,17 @@
         {
           "file": "terrain-decor52.png",
           "role": "base",
-          "sha256": "8c04714b97c9c7c36cc235f439720b882bd1e8b1df425174c0e8bb67d9c34811",
-          "source_sha256": "8c04714b97c9c7c36cc235f439720b882bd1e8b1df425174c0e8bb67d9c34811",
+          "sha256": "cca23f3c2f4fcb42dd7ee6e52fe71a7417d48ba02d0d52f4ca4223970777c138",
+          "source_sha256": "cca23f3c2f4fcb42dd7ee6e52fe71a7417d48ba02d0d52f4ca4223970777c138",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "1647409480efbba3b354ddfd605eca791e80e7fb6556f36b113b4e5d03a1cdfc"
+          "original_sha256": "ee823415fe99f78ab07fcca071d4675b2c4cb8691c8ae70829d72734a8710bad"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -113049,17 +113049,17 @@
         {
           "file": "terrain-decor53.png",
           "role": "base",
-          "sha256": "0763d801ddc7bb2faa487b640c77f1354eefa5eb089a052a1bf8dd4444b8f7eb",
-          "source_sha256": "0763d801ddc7bb2faa487b640c77f1354eefa5eb089a052a1bf8dd4444b8f7eb",
+          "sha256": "a081b19c30395fe60df3fca9822bfdc40fab635ca1b21c56a1a9c0328a5db4b9",
+          "source_sha256": "a081b19c30395fe60df3fca9822bfdc40fab635ca1b21c56a1a9c0328a5db4b9",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "9d1ef5087fe0f76c1e9711a03e5ed6066c97e9f710d98435daedaa9429107525"
+          "original_sha256": "512119dfafcbabc64e0a4682fa345084f0d15bfb4974b72741343d71b1a87280"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -113073,17 +113073,17 @@
         {
           "file": "terrain-decor54.png",
           "role": "base",
-          "sha256": "d67bd71adaf86f9e1fbe3ba2b548d98dd9799a97a6ceeabea9e5c9f1edb9a0ab",
-          "source_sha256": "d67bd71adaf86f9e1fbe3ba2b548d98dd9799a97a6ceeabea9e5c9f1edb9a0ab",
+          "sha256": "62112eebfa3135085e780c09488181a8f952a1cfbe6f46b9ec2148c62348ed91",
+          "source_sha256": "62112eebfa3135085e780c09488181a8f952a1cfbe6f46b9ec2148c62348ed91",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "268d439988b3c4eb96247f56ad115e431bb858796d5d1b93a06ac3527a47b340"
+          "original_sha256": "eefc4c473d67597c31c47af550562b160f6b50edc0c8c384d429fea64a5cfc5d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -113097,17 +113097,17 @@
         {
           "file": "terrain-decor55.png",
           "role": "base",
-          "sha256": "96715931cfb5ef0f721cbc5f027fea010084c1dcaded162e04265ef655e5c068",
-          "source_sha256": "96715931cfb5ef0f721cbc5f027fea010084c1dcaded162e04265ef655e5c068",
+          "sha256": "ca749efbefc4444f83d35682499902aaa4b602e7b955fa33a6ce0d70d2de02d2",
+          "source_sha256": "ca749efbefc4444f83d35682499902aaa4b602e7b955fa33a6ce0d70d2de02d2",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "642288e85736f1313a9acc372fa8d67032dc4654eb2d94df370525bbe56ee1ea"
+          "original_sha256": "21a267cbc23772007a627960307b89c8ae0036f758d496d464a5b4dd061c5989"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -113121,17 +113121,17 @@
         {
           "file": "terrain-decor56.png",
           "role": "base",
-          "sha256": "7d28458c7cbd37a7dc730ef89eb34e57f510f87726d97f6aba0d54f82402fc6f",
-          "source_sha256": "7d28458c7cbd37a7dc730ef89eb34e57f510f87726d97f6aba0d54f82402fc6f",
+          "sha256": "976b279cc0eb5e27457c3f9f974b0ec9e42c5937364b9553cae465a4a796c128",
+          "source_sha256": "976b279cc0eb5e27457c3f9f974b0ec9e42c5937364b9553cae465a4a796c128",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "17fd4fc23e653f803c66b7e5533707ce594b10cd5297f7ad788de425b56dde88"
+          "original_sha256": "f7f01da0f0874532d9c6e44c6c206e6ebafa26a6b27664c1339e08365df32ad2"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -113145,17 +113145,17 @@
         {
           "file": "terrain-decor57.png",
           "role": "base",
-          "sha256": "4c32555b97ad5c0d7b884304ed2b7414cb8c32fefb123047bf4e323a89e5a5e8",
-          "source_sha256": "4c32555b97ad5c0d7b884304ed2b7414cb8c32fefb123047bf4e323a89e5a5e8",
+          "sha256": "c7ef60ed086ae4075260b8735eb64f0a5f5a85847b823cb59eda48b8213b575d",
+          "source_sha256": "c7ef60ed086ae4075260b8735eb64f0a5f5a85847b823cb59eda48b8213b575d",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "d11b48ebd5e8d86bae5a015285ed3d94d5aa8af84f0df50797b8282abcc598af"
+          "original_sha256": "617f9ddc4e3e301a6b721b1ec77c58f12f618ad73218d38e9ffd35e5813c3660"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -113169,17 +113169,17 @@
         {
           "file": "terrain-decor58.png",
           "role": "base",
-          "sha256": "c63006524ca2ae91d85efc27acb6a51f3273a664cb3079ad4f16d549353c0933",
-          "source_sha256": "c63006524ca2ae91d85efc27acb6a51f3273a664cb3079ad4f16d549353c0933",
+          "sha256": "143831d5c15a861e6b5a7e5cb01f88e50684d017accf98f06ebbda3d10708d14",
+          "source_sha256": "143831d5c15a861e6b5a7e5cb01f88e50684d017accf98f06ebbda3d10708d14",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "813e6690270761828ed9dc5e9d30eec5a4c192b9259a75dc1089db1730a16225"
+          "original_sha256": "ce6007df139c2686a4411631dd1f53564b75ec01ba02aef00907481625b4d1db"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },
@@ -113193,17 +113193,17 @@
         {
           "file": "terrain-decor59.png",
           "role": "base",
-          "sha256": "f021cc1d574f733743662579ff3a9ad3a34e7e3c21ed584bbcbd05bf44e7af7a",
-          "source_sha256": "f021cc1d574f733743662579ff3a9ad3a34e7e3c21ed584bbcbd05bf44e7af7a",
+          "sha256": "3afd183e754939a9a49a5f667d4260c05265f013a4fa825ab5e724e358af8ddb",
+          "source_sha256": "3afd183e754939a9a49a5f667d4260c05265f013a4fa825ab5e724e358af8ddb",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "476e23c5b331e5da1df45d9a4b4e3da3be30b82874b9fb5c6579caf02274667e"
+          "original_sha256": "95efeaa584b54422f34b1e8143b5aa8366ea46ba6b88168b501f04a7ecc6604d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/terrain_decor.py",
-          "sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b"
+          "sha256": "dfb5a7b16a40f37dc8782b0685644a06ff47e9852e4a9a97bc2cfa604ff31994"
         }
       ]
     },

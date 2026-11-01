@@ -62,6 +62,8 @@ HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain decor v1"
 LIGHT = (-0.62, -0.78)  # toward the upper left, screen space
 SHADOW = (0.55, 0.42)   # contact shadow offset direction (lower right)
+# The same light in 3D for faceted rock: x right, y south, z up; unit length.
+LIGHT3 = tuple(c / math.hypot(LIGHT[0], LIGHT[1], 0.9) for c in (LIGHT[0], LIGHT[1], 0.9))
 
 
 def clamp(v, lo=0.0, hi=1.0):
@@ -112,10 +114,15 @@ class Canvas:
     def __init__(self):
         self.rgb = [[0.0, 0.0, 0.0] for _ in range(S * S)]
         self.a = [0.0] * (S * S)
+        # Coverage by object bodies alone, so a shadow can tell an object it
+        # darkens from earlier shadow on the ground it should deepen.
+        self.body = [0.0] * (S * S)
 
-    def over(self, i, color, alpha):
+    def over(self, i, color, alpha, body=True):
         if alpha <= 0:
             return
+        if body:
+            self.body[i] = alpha + self.body[i] * (1 - alpha)
         a0 = self.a[i]
         out = alpha + a0 * (1 - alpha)
         if out <= 0:
@@ -194,9 +201,9 @@ def cast_shadow(canvas, footprint, strength, spread, offset):
     for i, v in enumerate(img.getdata()):
         if v:
             a = strength * v / 255
-            if canvas.a[i] > 0:
-                canvas.darken(i, a * 0.8)
-            canvas.over(i, (12, 14, 10), a * 0.85)
+            b = canvas.body[i]
+            canvas.darken(i, a * 0.8 * b)
+            canvas.over(i, (12, 14, 10), a * 0.85 * (1 - b), body=False)
 
 
 def ground_shadow(canvas, bx, by, rx, ry, strength=0.45):
@@ -208,11 +215,12 @@ def ground_shadow(canvas, bx, by, rx, ry, strength=0.45):
     img = img.filter(ImageFilter.GaussianBlur(max(2.0, ry * 0.35)))
     for i, v in enumerate(img.getdata()):
         if v:
+            # Darken the objects it falls on; deepen shadow already on the
+            # ground rather than stopping at its faint rim.
             a = strength * v / 255
-            if canvas.a[i] > 0:
-                canvas.darken(i, a * 0.6)
-            else:
-                canvas.over(i, (14, 16, 12), a * 0.8)
+            b = canvas.body[i]
+            canvas.darken(i, a * 0.6 * b)
+            canvas.over(i, (14, 16, 12), a * 0.8 * (1 - b), body=False)
 
 
 def shade_dome(canvas, pixels, color_at, *, light=0.55, rim=0.35, front=0.0, face_color=None,
@@ -293,28 +301,146 @@ def stone_palette(rng):
     return tuple(c + j + rng.uniform(-5, 5) for c in base)
 
 
-@spec("boulders", "rounded weathered boulders, three-quarter view")
+def facet_rock(rng, cx, cy, r, squash=0.8, height=0.95):
+    """A convex faceted rock: the soft minimum of jittered sloped planes and a
+    tilted top, so the outline is angular and each facet catches the light on
+    its own. Planes facing the viewer (down-screen) are steeper, giving the
+    rock a narrow front face in the three-quarter view.
+
+    Returns [(i, alpha, nx, ny, nz, rim)] for its silhouette, where rim is
+    how far toward the outline the pixel lies (0 inside, 1 at the edge)."""
+    base = rng.uniform(0, math.tau)
+    facets = rng.randint(6, 9)
+    planes = []
+    for k in range(facets):
+        a = base + k * math.tau / facets + rng.gauss(0, 0.22)
+        reach = rng.uniform(0.8, 1.12)
+        steep = 1 + 1.8 * max(0.0, math.sin(a)) ** 2
+        planes.append((steep, math.cos(a) / reach, math.sin(a) / reach))
+    top = rng.uniform(0.6, 0.78)
+    tilt = (rng.uniform(-0.2, -0.04), rng.uniform(-0.18, -0.02))
+    soft = 0.05
+    ry = r * squash
+    out = []
+    for y in range(max(0, int(cy - ry * 1.4)), min(S, int(cy + ry * 1.4) + 1)):
+        v = (y + 0.5 - cy) / ry
+        for x in range(max(0, int(cx - r * 1.4)), min(S, int(cx + r * 1.4) + 1)):
+            u = (x + 0.5 - cx) / r
+            hs = [(s * (1 - (u * pu + v * pv)), -s * pu, -s * pv) for s, pu, pv in planes]
+            hs.append((top + tilt[0] * u + tilt[1] * v, tilt[0], tilt[1]))
+            m = min(h for h, _, _ in hs)
+            if m <= 0:
+                continue
+            ws = [math.exp(-(h - m) / soft) for h, _, _ in hs]
+            total = sum(ws)
+            h = m - soft * math.log(total)
+            if h <= 0:
+                continue
+            gu = sum(w * g for w, (_, g, _) in zip(ws, hs)) / total
+            gv = sum(w * g for w, (_, _, g) in zip(ws, hs)) / total
+            nx, ny, nz = -height * gu, -height * gv / squash, 1.0
+            n = math.sqrt(nx * nx + ny * ny + nz * nz)
+            out.append((y * S + x, clamp(h / 0.03), nx / n, ny / n, nz / n, 1 - smoothstep(0, 0.14, h)))
+    return out
+
+
+def place_rocks(rng, sizes, edge):
+    """Base points for rocks of the given radii, largest first, around a
+    cluster centre that wanders off the cell centre so neighbouring cells do
+    not line up in rows. Sorted back to front by base."""
+    spread = 0.24 if edge else 0.42
+    wander = 0.12 if edge else 0.2
+    ox = S / 2 + rng.uniform(-1, 1) * CELL * wander
+    oy = S / 2 + CELL * 0.14 + rng.uniform(-1, 1) * CELL * wander * 1.2
+    items = []
+    for r, kind in sorted(sizes, key=lambda t: -t[0]):
+        ry = r * 0.8
+        lo_x, hi_x = r * 1.45 + 6, S - r * 1.45 - 6
+        lo_y, hi_y = ry * 2.0 + 8, S - ry * 0.9 - 16
+        for _ in range(60):
+            cx = clamp(ox + rng.uniform(-1, 1) * CELL * spread, lo_x, hi_x)
+            cy = clamp(oy + rng.uniform(-1, 1) * CELL * spread * 0.9, lo_y, hi_y)
+            # Rocks may lean on each other but not sink into one another.
+            if all(math.hypot(cx - x, (cy - y) * 1.2) > 0.72 * (r + rr) for x, y, rr, _ in items):
+                break
+        items.append((cx, cy, r, kind))
+    return sorted(items, key=lambda t: t[1])
+
+
+def boulder_sizes(rng, edge):
+    """A size hierarchy: one dominant rock or a few medium ones, plus rubble."""
+    def rubble(n, lo=10, hi=18):
+        return [(rng.uniform(lo, hi), "rubble") for _ in range(n)]
+    if edge:
+        rocks = [(rng.uniform(30, 40), "rock")] + [(rng.uniform(18, 26), "rock")] * rng.randint(0, 1)
+        return rocks + rubble(rng.randint(1, 2), 9, 15)
+    kind = rng.choice(("anchor", "anchor", "pair", "cluster", "heap"))
+    if kind == "anchor":
+        return [(rng.uniform(56, 66), "rock"), (rng.uniform(28, 36), "rock")] + rubble(rng.randint(2, 3))
+    if kind == "pair":
+        return [(rng.uniform(42, 52), "rock") for _ in range(2)] + rubble(rng.randint(1, 3))
+    if kind == "cluster":
+        return [(rng.uniform(34, 42), "rock") for _ in range(3)] + rubble(rng.randint(1, 2))
+    return [(rng.uniform(26, 36), "rock") for _ in range(4)] + rubble(rng.randint(1, 2))
+
+
+def boulder_palette(rng):
+    """Warm greys that sit with the dusty ground rather than turning blue
+    against it."""
+    tones = [(142, 136, 126), (126, 121, 114), (152, 142, 124), (116, 112, 106), (138, 130, 118)]
+    return rng.choice(tones)
+
+
+@spec("boulders", "faceted weathered boulders and rubble, three-quarter view")
 def render_boulders(rng, edge):
     canvas = Canvas()
-    count = rng.choice((1, 2, 2)) if edge else rng.choice((2, 3, 3, 4))
-    items = layout(rng, count, (34, 48), edge, extent=(1.4, 1.0))
     grit = fbm(rng, 12, 3)
-    for bx, by, r in items:
-        outline = lumpy_outline(rng, 4, 0.1)
-        rx, ry = r * rng.uniform(1.0, 1.15), r * rng.uniform(1.05, 1.25)
-        cy = by - ry * 0.75  # the body rises above its base
-        ground_shadow(canvas, bx, by, rx * 1.05, ry * 0.45)
-        pixels = dome(bx, cy, rx, ry, outline, power=0.5)
-        tone = stone_palette(rng)
-        dark = tuple(c * 0.55 for c in tone)
-        warm = (tone[0] + 14, tone[1] + 6, tone[2] - 6)
-
-        def color(x, y, h, tone=tone, warm=warm):
+    lichen = fbm(rng, 18, 2)
+    family = boulder_palette(rng)  # one rock type per frame, varied per stone
+    owner = [-1] * (S * S)
+    rocks = place_rocks(rng, boulder_sizes(rng, edge), edge)
+    for k, (bx, by, r, kind) in enumerate(rocks):
+        squash = rng.uniform(0.72, 0.86)
+        cy = by - r * squash * 0.55  # the body rises above its base
+        ground_shadow(canvas, bx + r * 0.1, by, r * 1.05, r * squash * 0.42, 0.55)
+        j = rng.uniform(-9, 9)
+        tone = tuple(c + j + rng.uniform(-2, 2) for c in family)
+        face = (tone[0] * 0.5, tone[1] * 0.5, tone[2] * 0.52)
+        speck = random.Random(rng.random())
+        for i, alpha, nx, ny, nz, rim in facet_rock(rng, bx, cy, r, squash,
+                                                    0.7 if kind == "rubble" else 0.95):
+            x, y = i % S, i // S
+            lam = max(0.0, nx * LIGHT3[0] + ny * LIGHT3[1] + nz * LIGHT3[2])
             g = grit(x, y)
-            c = mix3(tone, warm, smoothstep(0.55, 0.8, g) * 0.6)
-            return tuple(v * (0.82 + 0.36 * g) for v in c)
-
-        shade_dome(canvas, pixels, color, light=0.65, rim=0.35, front=0.7, face_color=dark)
+            c = mix3(tone, face, smoothstep(0.25, 0.75, ny) * 0.6)
+            if nz > 0.8 and lichen(x, y) > 0.72:
+                c = mix3(c, (128, 128, 92), smoothstep(0.72, 0.82, lichen(x, y)) * 0.3)
+            value = (0.4 + 0.8 * lam) * (0.86 + 0.28 * g) * speck.uniform(0.96, 1.04)
+            # A dark line on the outline turned from the light separates stones.
+            away = clamp(0.5 + 0.5 * (nx * -LIGHT[0] + ny * -LIGHT[1]) / max(1e-6, math.hypot(nx, ny)))
+            value *= 1 - 0.35 * rim * away
+            canvas.over(i, tuple(v * value for v in c), alpha)
+            if alpha > 0.5:
+                owner[i] = k
+    # Crevices where stones meet, and each stone's shade on the others.
+    seam = Image.new("L", (S, S), 0)
+    seam.putdata([255 if o >= 0 and ((i % S + 1 < S and owner[i + 1] not in (-1, o)) or
+                                     (i + S < S * S and owner[i + S] not in (-1, o))) else 0
+                  for i, o in enumerate(owner)])
+    seam = list(seam.filter(ImageFilter.GaussianBlur(3.5)).getdata())
+    shade = [0.0] * (S * S)
+    for k, (bx, by, r, _) in enumerate(rocks):
+        mask = Image.new("L", (S, S), 0)
+        mask.putdata([255 if o == k else 0 for o in owner])
+        d = r * 0.3
+        mask = mask.transform(mask.size, Image.Transform.AFFINE,
+                              (1, 0, -d * SHADOW[0], 0, 1, -d * SHADOW[1]))
+        for i, v in enumerate(mask.filter(ImageFilter.GaussianBlur(r * 0.12)).getdata()):
+            if v and owner[i] not in (-1, k):
+                shade[i] = max(shade[i], v / 255)
+    for i in range(S * S):
+        if owner[i] >= 0:
+            canvas.darken(i, min(0.7, seam[i] / 255 * 2.2 * 0.6 + shade[i] * 0.35))
     return canvas
 
 
@@ -393,118 +519,228 @@ def render_thicket(rng, edge):
     return canvas
 
 
-def slab(rng, cx, cy, w, h, angle, jag):
-    """An angular slab outline: a jittered rotated quadrilateral-ish polygon."""
-    points = []
-    corners = [(-w, -h), (w, -h), (w, h), (-w, h)]
-    for k in range(4):
-        x0, y0 = corners[k]
-        x1, y1 = corners[(k + 1) % 4]
-        for t in (0.0, 0.35, 0.7):
-            x, y = lerp(x0, x1, t), lerp(y0, y1, t)
-            x += rng.uniform(-jag, jag)
-            y += rng.uniform(-jag, jag)
-            c, s = math.cos(angle), math.sin(angle)
-            points.append((cx + x * c - y * s, cy + x * s + y * c))
-    return points
+VIEW = (0.0, 0.7071, 0.7071)  # toward the viewer in the three-quarter view
 
 
-def render_rock_slabs(rng, edge, *, count, size, elongation, palette, lichen, strata, tall=1.0):
-    canvas = Canvas()
-    grit = fbm(rng, 14, 3)
-    items = layout(rng, count, size, edge, extent=(elongation * 1.15 + 0.6, 1.9))
-    for cx, cy, r in items:
-        w, h = r * elongation, r * rng.uniform(0.55, 0.8)
-        angle = rng.uniform(-0.7, 0.7)
-        thickness = r * rng.uniform(0.7, 1.1) * tall
-        top = slab(rng, cx, cy - thickness, w, h * 0.75, angle, r * 0.18)
-        side = [(x, y + thickness) for x, y in top]
-        top_mask = polygon_mask(top)
-        body_mask = polygon_mask(top + side[::-1])
-        hull = dict(body_mask)
-        for i, v in polygon_mask(side).items():
-            hull[i] = max(hull.get(i, 0), v)
-        for i, v in top_mask.items():
-            hull[i] = max(hull.get(i, 0), v)
-        ground_shadow(canvas, cx, cy + h * 0.2, w * 0.95, h * 0.55, 0.5)
-        tone = mix3(palette[0], palette[1], rng.random())
-        face = tuple(c * 0.55 for c in tone)
-        # Front faces first: everything of the hull below the top surface.
-        for i, v in hull.items():
-            x, y = i % S, i // S
-            g = grit(x, y)
-            band = 0.0
-            if strata:
-                band = 0.08 * math.sin((y + 0.4 * x) / 5.0 + g * 3)
-            canvas.over(i, tuple(c * (0.85 + 0.25 * g + band) for c in face), v)
-        # Lit top with a bevel: brighter near the upper-left rim.
-        blurred = Image.new("L", (S, S), 0)
-        blurred.putdata([int(top_mask.get(i, 0) * 255) for i in range(S * S)])
-        blurred = list(blurred.filter(ImageFilter.GaussianBlur(r * 0.12)).getdata())
-        for i, v in top_mask.items():
-            x, y = i % S, i // S
-            gx = (blurred[i + 1] if x + 1 < S else 0) - (blurred[i - 1] if x > 0 else 0)
-            gy = (blurred[i + S] if i + S < S * S else 0) - (blurred[i - S] if i >= S else 0)
-            slope = -(gx * LIGHT[0] + gy * LIGHT[1]) / 255
-            g = grit(x, y)
-            c = tuple(t * (0.74 + 0.42 * g + 1.1 * slope) for t in tone)
-            if lichen and g > 0.78:
-                c = mix3(c, (128, 134, 98), smoothstep(0.78, 0.9, g) * 0.35)
-            canvas.over(i, c, v)
+def face_mask(points, inset=0.0):
+    """Supersampled coverage of a polygon as {index: coverage}, cropped to its
+    bounding box; `inset` shrinks it toward its centroid by that many pixels."""
+    if inset:
+        mx = sum(p[0] for p in points) / len(points)
+        my = sum(p[1] for p in points) / len(points)
+        points = [(x + (mx - x) * min(0.9, inset / max(1e-6, math.hypot(mx - x, my - y))),
+                   y + (my - y) * min(0.9, inset / max(1e-6, math.hypot(mx - x, my - y)))) for x, y in points]
+    x0 = max(0, int(min(p[0] for p in points)) - 1)
+    y0 = max(0, int(min(p[1] for p in points)) - 1)
+    x1 = min(S, int(max(p[0] for p in points)) + 2)
+    y1 = min(S, int(max(p[1] for p in points)) + 2)
+    if x1 <= x0 or y1 <= y0:
+        return {}
+    w, h = x1 - x0, y1 - y0
+    img = Image.new("L", (w * 2, h * 2), 0)
+    ImageDraw.Draw(img).polygon([((x - x0) * 2, (y - y0) * 2) for x, y in points], fill=255)
+    data = img.resize((w, h), Image.Resampling.BOX).getdata()
+    return {(y0 + k // w) * S + x0 + k % w: v / 255 for k, v in enumerate(data) if v}
+
+
+def convex_hull(points):
+    pts = sorted(set(points))
+    if len(pts) < 3:
+        return pts
+
+    def cross(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    lower, upper = [], []
+    for p in pts:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
+            lower.pop()
+        lower.append(p)
+    for p in reversed(pts):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
+            upper.pop()
+        upper.append(p)
+    return lower[:-1] + upper[:-1]
+
+
+def normalize(v):
+    n = math.sqrt(sum(c * c for c in v)) or 1.0
+    return tuple(c / n for c in v)
+
+
+def facet_value(normal):
+    n = normalize(normal)
+    lam = sum(a * b for a, b in zip(n, normalize(LIGHT3)))
+    return 0.62 + 0.42 * lam
+
+
+@dataclass
+class Rock:
+    """A faceted rock: a convex ground ring raised into walls, each ring vertex
+    lifted a little more, and a fan of sloping top facets meeting at a peak.
+    Coordinates are ground positions in render pixels; z is height."""
+    ring: list    # [(x, y, z)] around the top of the walls
+    peak: tuple   # (x, y, z)
+    tone: tuple
+
+    def faces(self):
+        """Visible faces as (screen polygon, normal, kind), back to front."""
+        ring, (px, py, pz) = self.ring, self.peak
+        n = len(ring)
+        cx = sum(p[0] for p in ring) / n
+        cy = sum(p[1] for p in ring) / n
+        tops, sides = [], []
+        for k in range(n):
+            a, b = ring[k], ring[(k + 1) % n]
+            ux, uy, uz = b[0] - a[0], b[1] - a[1], b[2] - a[2]
+            vx, vy, vz = px - a[0], py - a[1], pz - a[2]
+            normal = (uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx)
+            if normal[2] < 0:
+                normal = tuple(-c for c in normal)
+            screen = [(a[0], a[1] - a[2]), (b[0], b[1] - b[2]), (px, py - pz)]
+            tops.append(((a[1] + b[1] + py) / 3, screen, normal))
+            # Outward wall normal in the ground plane.
+            ox, oy = uy, -ux
+            if ox * ((a[0] + b[0]) / 2 - cx) + oy * ((a[1] + b[1]) / 2 - cy) < 0:
+                ox, oy = -ox, -oy
+            if oy > 0.02 * math.hypot(ox, oy):
+                wall = [(a[0], a[1] - a[2]), (b[0], b[1] - b[2]), (b[0], b[1]), (a[0], a[1])]
+                sides.append(((a[1] + b[1]) / 2, wall, (ox, oy, 0.0)))
+        out = [(s, nrm, "top") for _, s, nrm in sorted(tops)
+               if sum(x * y for x, y in zip(normalize(nrm), VIEW)) > 0]
+        out += [(s, nrm, "side") for _, s, nrm in sorted(sides)]
+        return out
+
+    def silhouette(self):
+        pts = [(x, y - z) for x, y, z in self.ring] + [(x, y) for x, y, _ in self.ring]
+        pts.append((self.peak[0], self.peak[1] - self.peak[2]))
+        return convex_hull(pts)
+
+
+def make_rock(rng, gx, gy, rx, ry, angle, wall, lift, peak, tone, *, points=8, jag=0.22, peak_offset=0.3):
+    ring = []
+    c, s = math.cos(angle), math.sin(angle)
+    for k in range(points):
+        t = math.tau * (k + rng.uniform(-0.3, 0.3)) / points
+        r = rng.uniform(1 - jag, 1.0)
+        lx, ly = math.cos(t) * rx * r, math.sin(t) * ry * r
+        ring.append((gx + lx * c - ly * s, gy + lx * s * 0.6 + ly * c))
+    ring = convex_hull(ring)
+    ring = [(x, y, wall + rng.uniform(0, lift)) for x, y in ring]
+    px = gx + rng.uniform(-1, 1) * rx * peak_offset
+    py = gy + rng.uniform(-1, 1) * ry * peak_offset
+    return Rock(ring, (px, py, wall + peak), tone)
+
+
+def draw_rocks(canvas, rng, rocks, *, lichen=None, strata=0.0, shadow=0.45):
+    """Shadows first, then every rock back to front: a dark body fill that
+    closes any gaps between facets, flat-shaded facets with grit, wall
+    strata and a darker foot, and thin seams where facets meet."""
+    grit = fbm(rng, 18, 3)
+    fine = Noise(rng, 64)
+    moss = fbm(rng, 10, 2)
+    rocks = sorted(rocks, key=lambda r: sum(p[1] for p in r.ring) / len(r.ring))
+    for rock in rocks:
+        footprint = face_mask([(x, y) for x, y, _ in rock.ring])
+        height = max(z for _, _, z in rock.ring + [rock.peak])
+        cast_shadow(canvas, footprint, shadow, 3 + height * 0.04, 4 + height * 0.25)
+    for rock in rocks:
+        ground = max(y for _, y, _ in rock.ring)
+        height = max(z for _, _, z in rock.ring + [rock.peak])
+        for i, v in face_mask(rock.silhouette()).items():
+            canvas.over(i, tuple(c * 0.3 for c in rock.tone), v)
+        xs = [x for x, _, _ in rock.ring]
+        fissures = [rng.uniform(min(xs), max(xs)) for _ in range(rng.randint(1, 3))]
+        for poly, normal, kind in rock.faces():
+            value = facet_value(normal) * rng.uniform(0.94, 1.06)
+            inner = face_mask(poly, inset=1.6)
+            for i, v in face_mask(poly).items():
+                x, y = i % S, i // S
+                g = grit(x, y)
+                shade = value * (0.84 + 0.3 * g + 0.08 * (fine(x, y) - 0.5))
+                if kind == "side":
+                    # Darker toward the foot, faint bedding lines across the wall.
+                    foot = smoothstep(ground - height, ground + 4, y)
+                    shade *= 1 - 0.28 * foot * foot
+                    if strata:
+                        shade *= 1 - strata * smoothstep(0.75, 0.95, math.sin((y - 0.35 * x) / 4.5 + g * 4))
+                    # Vertical joints that wander a little down the face.
+                    if min(abs(x - f - (g - 0.5) * 10) for f in fissures) < 1.4:
+                        shade *= 0.72
+                color = tuple(c * shade for c in rock.tone)
+                if lichen and kind == "top":
+                    m = moss(x, y)
+                    color = mix3(color, lichen, smoothstep(0.68, 0.82, m) * 0.35 * (0.6 + 0.4 * value))
+                seam = (1 - inner.get(i, 0)) * (0.22 if kind == "side" else 0.05)
+                if seam > 0:
+                    color = tuple(c * (1 - seam) for c in color)
+                canvas.over(i, color, v)
     return canvas
 
 
-def render_fins(rng, edge, *, count, width, height, palette):
-    """Upright jagged rock fins: a lit left face, a shaded right face, a
-    ragged crest and vertical cracks, standing on the cell floor."""
-    canvas = Canvas()
-    grit = fbm(rng, 16, 3)
-    fins = []
-    for _ in range(count):
-        w = rng.uniform(*width) * (0.9 if edge else 1.0)
-        h = rng.uniform(*height) * (0.85 if edge else 1.0)
-        bx = clamp(S / 2 + rng.uniform(-1, 1) * CELL * (0.18 if edge else 0.3), w * 0.8 + 8, S - w * 0.8 - 8)
-        by = S / 2 + CELL * 0.3 + rng.uniform(-1, 1) * CELL * 0.08
-        fins.append((bx, by, w, h, rng.uniform(-0.25, 0.25)))
-    for bx, by, w, h, lean in sorted(fins, key=lambda f: f[1]):
-        ground_shadow(canvas, bx, by, w * 0.75, w * 0.3, 0.5)
-        # Outline: base, then a ragged crest from the left shoulder to the right.
-        steps = 7
-        crest = []
-        for k in range(steps + 1):
-            t = k / steps
-            peak = 1 - abs(t - rng.uniform(0.35, 0.65)) * 1.3
-            y = by - h * clamp(0.45 + 0.55 * peak + rng.uniform(-0.12, 0.12), 0.25, 1.0)
-            x = bx - w / 2 + w * t + lean * (by - y)
-            crest.append((x, y))
-        outline = [(bx - w / 2, by)] + crest + [(bx + w / 2, by + w * 0.12)]
-        mask = polygon_mask(outline)
-        tone = mix3(palette[0], palette[1], rng.random())
-        split = rng.uniform(0.35, 0.5)  # where the lit face turns into the shaded one
-        for i, v in mask.items():
-            x, y = i % S, i // S
-            u = (x - (bx - w / 2) - lean * (by - y)) / w
-            g = grit(x, y)
-            lit = 1.08 if u < split else 0.62
-            crack = 0.82 if abs(math.sin(x / 7.0 + g * 5)) < 0.08 else 1.0
-            height = clamp((by - y) / h)
-            c = tuple(t * lit * crack * (0.82 + 0.3 * g) * (0.86 + 0.18 * height) for t in tone)
-            canvas.over(i, c, v)
-    return canvas
+def outcrop_tone(rng):
+    base = mix3((146, 138, 124), (164, 156, 140), rng.random())
+    j = rng.uniform(-5, 5)
+    return tuple(c + j for c in base)
 
 
-@spec("ridge_rock", "upright jagged rock fins and shards")
+@spec("ridge_rock", "chunky faceted crags clustered along a shared grain")
 def render_ridge_rock(rng, edge):
-    return render_fins(rng, edge, count=rng.randint(1, 2) if edge else rng.randint(2, 3), width=(38, 60),
-                       height=(96, 140), palette=((124, 122, 118), (148, 144, 136)))
+    canvas = Canvas()
+    grain = -0.35 + rng.uniform(-0.25, 0.25)   # the shared strike every crag follows
+    gx, gy = S / 2 + rng.uniform(-6, 6), S / 2 + CELL * 0.2
+    rocks = []
+    count = rng.randint(1, 2) if edge else rng.randint(3, 4)
+    for k in range(count):
+        t = (k - (count - 1) / 2) / max(1, count - 1)
+        ox = t * (44 if edge else 96) + rng.uniform(-8, 8)
+        oy = t * (44 if edge else 96) * math.sin(grain) + rng.uniform(-12, 12)
+        scale = rng.uniform(0.7, 0.85) if edge else rng.uniform(0.85, 1.1)
+        tone = mix3((134, 134, 136), (156, 153, 148), rng.random())
+        peak = rng.uniform(56, 80) * scale
+        rocks.append(make_rock(rng, gx + ox, gy + oy, 44 * scale, 27 * scale, grain, rng.uniform(4, 8) * scale,
+                               peak * 0.4, peak, tone, points=7, jag=0.3, peak_offset=0.45))
+    return draw_rocks(canvas, rng, rocks, strata=0.12, shadow=0.42)
 
 
-@spec("outcrop", "one or two tall irregular bedrock massifs with sparse lichen")
+@spec("outcrop", "broad stepped bedrock blocks with faceted tops and sparse lichen")
 def render_outcrop(rng, edge):
-    return render_rock_slabs(rng, edge, count=1 if edge else rng.choice((1, 1, 2)),
-                             size=(40, 52) if not edge else (32, 40), elongation=rng.uniform(0.95, 1.2),
-                             palette=((134, 112, 92), (154, 132, 106)), lichen=True, strata=False,
-                             tall=1.5)
+    canvas = Canvas()
+    tone = outcrop_tone(rng)
+    gx, gy = S / 2 + rng.uniform(-8, 8), S / 2 + CELL * 0.15
+    rocks = []
+    if edge:
+        rx = rng.uniform(44, 54)
+        rocks.append(make_rock(rng, gx, gy, rx, rx * 0.72, rng.uniform(-0.5, 0.5), rng.uniform(24, 32), 8,
+                               rng.uniform(10, 16), tone, points=8, jag=0.3, peak_offset=0.5))
+    elif rng.random() < 0.3:
+        # Two blocks split by a joint, the rear one taller.
+        rx = rng.uniform(48, 56)
+        for k, side in enumerate((-1, 1)):
+            rocks.append(make_rock(rng, gx + side * rx * 0.75, gy - (6 if k == 0 else -6) + rng.uniform(-6, 6), rx,
+                                   rx * 0.8, rng.uniform(-0.4, 0.4), rng.uniform(30, 44), 8, rng.uniform(10, 16),
+                                   outcrop_tone(rng), points=7, jag=0.3, peak_offset=0.5))
+    else:
+        rx = rng.uniform(66, 86)
+        gx += rng.uniform(-10, 10)
+        wall = rng.uniform(30, 42)
+        rocks.append(make_rock(rng, gx, gy, rx, rx * 0.74, rng.uniform(-0.4, 0.4), wall, 10, rng.uniform(12, 20),
+                               tone, points=8, jag=0.3, peak_offset=0.5))
+        if rng.random() < 0.6:
+            # A smaller block stepped on top of the first, set back from its face.
+            rx2 = rx * rng.uniform(0.4, 0.55)
+            sx, sy = gx + rng.uniform(-0.3, 0.3) * rx, gy - rng.uniform(0.1, 0.3) * rx
+            rocks.append(make_rock(rng, sx, sy - wall, rx2, rx2 * 0.7, rng.uniform(-0.6, 0.6),
+                                   rng.uniform(14, 20), 5, rng.uniform(8, 12), outcrop_tone(rng), points=6, jag=0.3,
+                                   peak_offset=0.5))
+    for _ in range(rng.randint(0, 1) if edge else rng.randint(1, 2)):
+        # Fallen rubble at the foot of the face.
+        a = rng.uniform(-0.8, 0.8) * math.pi / 2 + math.pi / 2
+        d = rx * rng.uniform(0.85, 1.0)
+        r = rng.uniform(8, 13)
+        rocks.append(make_rock(rng, gx + math.cos(a) * d, gy + math.sin(a) * d * 0.62, r, r * 0.7,
+                               rng.uniform(0, math.tau), r * 0.5, 2, r * 0.45, outcrop_tone(rng), points=6))
+    return draw_rocks(canvas, rng, rocks, lichen=(118, 128, 76), strata=0.0, shadow=0.45)
 
 
 # --------------------------------------------------------------------------
