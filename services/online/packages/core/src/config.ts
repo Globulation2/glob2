@@ -249,7 +249,7 @@ export function loadConfig(options: LoadConfigOptions = {}): PlatformConfig {
     http: { host: env['HTTP_HOST'] ?? '0.0.0.0', port: integer(env, 'HTTP_PORT', 8080, 1) },
     blobs: {
       kind: blobKind,
-      directory: resolve(cwd, env['BLOB_DIR'] ?? 'content/data/blobs'),
+      directory: resolve(cwd, env['BLOB_DIR'] ?? 'data/blobs'),
       bucket: env['S3_BUCKET'],
       endpoint: env['S3_ENDPOINT'],
       region: env['S3_REGION'],

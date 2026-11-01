@@ -66,10 +66,16 @@ def key_at(root, revision, sim_version):
     """The sim version key of a revision of the tree, from its own files."""
     with tempfile.TemporaryDirectory() as scratch:
         tree = Path(scratch)
-        catalog_files = git(root, 'ls-tree', '-r', '--name-only', revision, 'content/data/buildings', 'content/data/resources', 'content/data/units', check=False)
-        dependencies = tuple(catalog_files.stdout.decode().splitlines()) if catalog_files.returncode == 0 else ()
-        for path in KEY_INPUTS + sim_version.SIM_DATA_FILES + dependencies:
-            content = file_at(root, revision, path)
+        # Revisions from before the content/ move hold data/ at the root. The
+        # scratch tree always uses the engine's virtual layout.
+        prefix = 'content/' if git(root, 'ls-tree', '--name-only', revision, 'content/data', check=False).stdout else ''
+        catalog_files = git(root, 'ls-tree', '-r', '--name-only', revision,
+                            *(prefix + d for d in ('data/buildings', 'data/resources', 'data/units')), check=False)
+        dependencies = tuple(path.removeprefix(prefix) for path in catalog_files.stdout.decode().splitlines()) \
+            if catalog_files.returncode == 0 else ()
+        for path, stored in [(path, path) for path in KEY_INPUTS] + \
+                [(path, prefix + path) for path in sim_version.SIM_DATA_FILES + dependencies]:
+            content = file_at(root, revision, stored)
             if content is not None:
                 (tree / path).parent.mkdir(parents=True, exist_ok=True)
                 (tree / path).write_bytes(content)

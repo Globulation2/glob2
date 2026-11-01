@@ -154,7 +154,7 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     STATIC.mkdir(parents=True, exist_ok=True)
 
-    # Hero: the live menu colony (content/data/gfx/menu-colony.png, the game's own menu backdrop).
+    # Hero: the live menu colony (data/gfx/menu-colony.png, the game's own menu backdrop).
     colony = Image.open(GFX / "menu-colony.png").convert("RGB")
     save_webp(colony, "colony-1600.webp", quality=60)
     save_webp(colony.resize((960, 540), Image.LANCZOS), "colony-960.webp", quality=62)

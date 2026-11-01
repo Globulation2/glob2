@@ -23,7 +23,7 @@ for (const width of [320, 390, 900, 1100, 1440, 1920]) {
           return root.scrollWidth - root.clientWidth;
         }),
       ).toBeLessThanOrEqual(0);
-      const directory = resolve('../artifacts/web-app/workspace');
+      const directory = resolve('../../artifacts/web-app/workspace');
       mkdirSync(directory, { recursive: true });
       await page.screenshot({
         path: resolve(directory, `maps-${width}-${scheme}.png`),

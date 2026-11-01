@@ -23,7 +23,7 @@ const cfg: TerrainStudioConfig = {
   maxOutputTokens: 16000,
   timeoutSeconds: 1800,
 };
-const root = resolve('..'),
+const root = resolve('../..'),
   python = process.env['TERRAIN_PYTHON'] ?? 'python3';
 const plan: TerrainPlan = {
   action: 'build',

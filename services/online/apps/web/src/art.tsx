@@ -1,7 +1,7 @@
 import { Wordmark as SharedWordmark } from '@glob2/design-system/react';
 import { t } from './i18n.tsx';
 import { useLocale } from './i18n.tsx';
-// The game's own artwork (content/data/gfx, content/data/highres), compressed by
+// The game's own artwork (data/gfx, data/highres), compressed by
 // art/build_art.py. Vite fingerprints these files, so they cache forever.
 import algae from '@glob2/design-system/assets/algae.webp';
 import clearingFlag from '@glob2/design-system/assets/clearing-flag.webp';

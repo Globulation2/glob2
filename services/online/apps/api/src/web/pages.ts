@@ -162,7 +162,7 @@ export async function pageAssetRoutes(app: FastifyInstance): Promise<void> {
         if (file === 'script-fonts.css') {
           body = Buffer.from(
             readFileSync(scriptFontsCss, 'utf8').replaceAll(
-              '../../../content/data/fonts/scripts/',
+              '../../../../content/data/fonts/scripts/',
               `${ASSETS}/`,
             ),
           );

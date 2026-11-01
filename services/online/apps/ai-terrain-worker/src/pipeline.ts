@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -28,6 +29,11 @@ import {
   type TerrainProvider,
 } from './provider.ts';
 import { imagePrompt, processArtwork, prepareArtwork, ArtworkError } from './artwork.ts';
+
+/** A checkout keeps the runtime tree under content/; installed trees hold data/ directly. */
+function runtimeTree(root: string): string {
+  return existsSync(join(root, 'content/data')) ? join(root, 'content') : root;
+}
 export interface Validator {
   validateSet(
     bytes: Uint8Array,
@@ -160,9 +166,9 @@ export class Pipeline {
         try {
           let image: Buffer;
           try {
-            image = await readFile(join(this.root, 'content/data/gfx', stem + '.png'));
+            image = await readFile(join(runtimeTree(this.root), 'data/gfx', stem + '.png'));
           } catch {
-            image = await readFile(join(this.root, 'content/data/gfx', stem + '.webp'));
+            image = await readFile(join(runtimeTree(this.root), 'data/gfx', stem + '.webp'));
           }
           references.push(await sharp(image).png().toBuffer());
         } catch {
@@ -196,7 +202,7 @@ export class Pipeline {
             entry.kind === 'terrain'
               ? row.input.base.assets.terrains[key]?.['sprite']
               : (oldEntry?.['presentation'] as { sprite?: string } | undefined)?.sprite;
-          const sheet = row.input.base.assets.sheets.find((s) => sprite === 'content/data/sets/' + s.hash);
+          const sheet = row.input.base.assets.sheets.find((s) => sprite === 'data/sets/' + s.hash);
           const imageReferences = sheet
             ? [Buffer.from(sheet.png, 'base64url'), ...references].slice(0, 4)
             : references;

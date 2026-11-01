@@ -34,7 +34,7 @@ describe('loadConfig', () => {
     expect(config.publicOrigin).toBe('http://localhost:8080');
     expect(config.instance.access.policy).toBe('allow-all');
     expect(config.instanceConfigPath).toBeUndefined();
-    expect(config.blobs.directory).toBe(join(cwd, 'content/data/blobs'));
+    expect(config.blobs.directory).toBe(join(cwd, 'data/blobs'));
   });
 
   it('loads and validates instance.yaml', () => {

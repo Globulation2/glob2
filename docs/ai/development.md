@@ -84,7 +84,7 @@ many games without flipping their eventual winners; looking only at outcomes
 throws that signal away. Standard reports include this score, seed-block
 intervals and paired ablation effects automatically. Custom scripts should read
 `probability_scores` or the compact per-team area/coverage summary, counting an
-alliance once. Use matched content/maps/seeds, seat rotations and held-out comparisons.
+alliance once. Use matched maps/seeds, seat rotations and held-out comparisons.
 Keep models and stopping rules identical; report missing or partial history as
 unavailable. Check actual outcomes and representative games as well: a fitted
 state model is a sensitive diagnostic, not a complete description of good play.

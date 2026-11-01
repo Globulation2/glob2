@@ -3097,7 +3097,7 @@ const BUILDING_PACKAGE_FIXTURE = {
   variants: [
     {
       key: 'b-11111111-1111-4111-8111-111111111111-kitchen',
-      properties: { width: 2, height: 2, gameSprite: 'content/data/gfx/inn0b' },
+      properties: { width: 2, height: 2, gameSprite: 'data/gfx/inn0b' },
       semantics: { placeable: true, instantPlacement: true },
     },
   ],

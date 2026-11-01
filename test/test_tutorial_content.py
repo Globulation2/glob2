@@ -19,8 +19,8 @@ class TutorialContentTest(unittest.TestCase):
         self.lesson=json.loads((ROOT/'content/scripts/tutorials/introduction.json').read_text())
     def test_catalog_bundles_are_current(self):
         for entry in json.loads((ROOT/'content/scripts/tutorials/catalog.json').read_text()):
-            definition=json.loads((ROOT/entry['definition']).read_text())
-            self.assertEqual(builder.bundle(definition),(ROOT/entry['script']).read_text())
+            definition=json.loads((ROOT/'content'/entry['definition']).read_text())
+            self.assertEqual(builder.bundle(definition),(ROOT/'content'/entry['script']).read_text())
 
     def test_shipped_lessons_have_no_unreachable_target_definitions(self):
         # Hooks may refer to targets through code; ordinary shipped definitions
@@ -75,7 +75,7 @@ class TutorialContentTest(unittest.TestCase):
         for target in ('dist','install'):
             packed=[];installed=[];old=Path.cwd()
             try:
-                os.chdir(ROOT/'scripts')
+                os.chdir(ROOT/'content/scripts')
                 runpy.run_path('SConscript',init_globals={'env':Environment(TARFILE='source.tar',INSTALLDIR='prefix'),
                     'Import':lambda *args:None,'PackTar':lambda archive,path:packed.append(Path(path).as_posix()),
                     'COMMAND_LINE_TARGETS':[target]})

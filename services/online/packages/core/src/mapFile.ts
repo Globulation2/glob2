@@ -1,5 +1,5 @@
 // Map and save files as players have them: the game writes maps gzip-compressed
-// (content/maps/*.map.gz, the editor's saves) or plain, and loads either. The platform
+// (maps/*.map.gz, the editor's saves) or plain, and loads either. The platform
 // stores, hashes and validates the decompressed bytes, because that is what
 // every client hashes after loading a file. These checks run before anything
 // is stored, so a file that is obviously not a map gets a plain-language

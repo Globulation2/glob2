@@ -25,7 +25,7 @@ import { hasRole } from '../auth/admin.ts';
 import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
-import { UUID } from '../content/maps/catalog.ts';
+import { UUID } from '../maps/catalog.ts';
 
 export async function buildingLibraryRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;

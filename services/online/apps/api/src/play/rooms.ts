@@ -53,7 +53,7 @@ import {
 import { apiError } from '../errors.ts';
 import type { ReplicaPresence } from '../realtime/presence.ts';
 import { catalogTitles, generatorLabel, uploadTitle } from '../history/summaries.ts';
-import { versionUrls } from '../content/maps/catalog.ts';
+import { versionUrls } from '../maps/catalog.ts';
 
 type Db = Kysely<Database>;
 

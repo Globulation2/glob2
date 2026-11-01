@@ -26,12 +26,14 @@ export async function stockReferences(root: string): Promise<ArtworkReference[]>
     const base = await readFirst([
       join(root, 'studio/building-references', stem + '.png'),
       join(root, 'content/data/gfx', stem + '.png'),
-      join(root, 'content/data/gfx', stem + '.webp'),
+      join(root, 'data/gfx', stem + '.png'),
+      join(root, 'data/gfx', stem + '.webp'),
     ]);
     if (!base) continue;
     const team = await readFirst([
       join(root, 'studio/building-references', stem + 'r.png'),
       join(root, 'content/data/gfx', stem + 'r.png'),
+      join(root, 'data/gfx', stem + 'r.png'),
     ]);
     const decoder = team ? sharp(base).composite([{ input: team }]) : sharp(base);
     references.push({

@@ -54,7 +54,7 @@ Online downloads check the API's SHA-256 before entering the same `Music::Import
 used by offline imports. Validation advances in short UI-frame slices and fully
 decodes each track. The installer stages all sets, checks metadata, identities,
 lengths and collisions, then renames complete directories under the writable
-`content/data/zik/community-<UUID>`. Identical installs are deduplicated; a conflicting
+`data/zik/community-<UUID>`. Identical installs are deduplicated; a conflicting
 release or bundled soundtrack is never overwritten. Existing untagged soundtrack
 directories keep their filename-derived labels; imported sets display the Calm
 file's embedded title and artwork.

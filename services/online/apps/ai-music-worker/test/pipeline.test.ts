@@ -133,7 +133,7 @@ function worker(provider: MusicProvider, runner: MusicRunner, config = cfg) {
     provider,
     runner,
     config,
-    resolve('../tools/music'),
+    resolve('../../tools/music'),
     'https://music.invalid',
   );
 }

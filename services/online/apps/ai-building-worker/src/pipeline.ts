@@ -1,5 +1,6 @@
 import sharp from 'sharp';
 import { isDeepStrictEqual } from 'node:util';
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -37,6 +38,11 @@ import {
 } from './provider.ts';
 import { imagePrompt, processArtwork } from './artwork.ts';
 import { stockReferences, referenceInstructions, type ArtworkReference } from './references.ts';
+
+/** A checkout keeps the runtime tree under content/; installed trees hold data/ directly. */
+function runtimeTree(root: string): string {
+  return existsSync(join(root, 'content/data')) ? join(root, 'content') : root;
+}
 export interface Validator {
   composeBuildings(
     packages: readonly BuildingPackage[],
@@ -131,7 +137,7 @@ export class Pipeline {
     ).join('\n\n');
     const examples = await Promise.all(
       ['inn', 'hospital', 'defencetower', 'swarm'].map((name) =>
-        readFile(join(this.root, 'content/data/buildings', name + '.json'), 'utf8'),
+        readFile(join(runtimeTree(this.root), 'data/buildings', name + '.json'), 'utf8'),
       ),
     );
     const prompt = plannerPrompt(

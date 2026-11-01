@@ -57,7 +57,7 @@ test('terrain creation workspace fits desktop and phone and submits one revision
         yields: { food: { capacity: 5, initial: 1, consumption: 'one' } },
         presentation: {
           name: 'Mushrooms',
-          sprite: 'content/data/gfx/ressource',
+          sprite: 'data/gfx/ressource',
           minimap: [70, 110, 60],
           levels: [{ stock: 0, variants: [{ frame: 10, weight: 1 }] }],
         },

@@ -36,7 +36,7 @@ For a deliberately asymmetric woodland island with biscuit-shaped bites, see
 `--output` writes a playable `.map.gz` using the normal engine serializer inside
 a gzip container. A `.gz` suffix is appended unless already present; the example
 above writes `artifacts/coral.map.gz`. Preview loading accepts both compressed
-files and legacy raw content/maps/saves, and a bare `.map` or `.game` path prefers an
+files and legacy raw maps/saves, and a bare `.map` or `.game` path prefers an
 existing `.gz` sibling.
 `--preview` writes a PNG. `--report-file FILE` writes a detailed map report. Supply any
 combination of these three outputs. See the [JSON format and metric definitions](report-format.md)
@@ -53,7 +53,7 @@ as the existing generators; a seed alone is not a cross-platform guarantee.
 ## Preview an existing map or save
 
 ```sh
-"$GLOB2_BIN" map preview content/maps/SomeMap.map --output artifacts/map.png
+"$GLOB2_BIN" map preview maps/SomeMap.map --output artifacts/map.png
 "$GLOB2_BIN" map preview /path/to/colony.game --output artifacts/save.png
 ```
 
@@ -151,7 +151,7 @@ Markers keep the widget's normal pixel size so larger exports reveal more terrai
 around them. The full map remains visible; export scale is not interactive zoom.
 
 ```sh
-"$GLOB2_BIN" map preview content/maps/SomeMap.map --output artifacts/map-4x.png --preview-scale 4
+"$GLOB2_BIN" map preview maps/SomeMap.map --output artifacts/map-4x.png --preview-scale 4
 "$GLOB2_BIN" map generate maze --seed 7 --preview artifacts/map-8x.png --preview-scale 8
 ```
 

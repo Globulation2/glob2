@@ -71,7 +71,7 @@ test('custom definitions and PNG mappings survive save and reload', async ({
     .setInputFiles({ name: 'moss.png', mimeType: 'image/png', buffer: png });
   const sheetOption = page
     .getByRole('combobox', { name: 'Spritesheet', exact: true })
-    .locator(`option[value="content/data/sets/${hash}"]`);
+    .locator(`option[value="data/sets/${hash}"]`);
   await expect(sheetOption).toContainText('16×16');
   await page.getByLabel('Frame width', { exact: true }).fill('32');
   await page.getByLabel('Frame height', { exact: true }).fill('32');
@@ -89,7 +89,7 @@ test('custom definitions and PNG mappings survive save and reload', async ({
   );
   await page
     .getByRole('combobox', { name: 'Spritesheet', exact: true })
-    .selectOption('content/data/sets/' + hash);
+    .selectOption('data/sets/' + hash);
 
   await page.getByRole('button', { name: 'Save draft', exact: true }).click();
   await expect(page).toHaveURL(/\/sets\/drafts\//);
@@ -97,7 +97,7 @@ test('custom definitions and PNG mappings survive save and reload', async ({
   await page.reload();
   await expect(page.getByLabel('Name', { exact: true })).toHaveValue('Library moss');
   await expect(page.getByRole('combobox', { name: 'Spritesheet', exact: true })).toHaveValue(
-    'content/data/sets/' + hash,
+    'data/sets/' + hash,
   );
   await page.getByRole('button', { name: 'Review & publish', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Publish this release' })).toBeDisabled();
@@ -108,7 +108,7 @@ test('custom definitions and PNG mappings survive save and reload', async ({
     await page.getByRole('button', { name: 'Add resource', exact: true }).click();
     await page
       .getByRole('combobox', { name: 'Spritesheet', exact: true })
-      .selectOption('content/data/sets/' + hash);
+      .selectOption('data/sets/' + hash);
     const resourceFrames = page.getByLabel('Frame', { exact: true });
     for (let i = 0; i < (await resourceFrames.count()); i++) await resourceFrames.nth(i).fill('0');
     await page.getByLabel('Animation Frames', { exact: true }).fill('1');

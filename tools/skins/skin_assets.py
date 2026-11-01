@@ -5,8 +5,8 @@
 The unit mesh formats are GSK1 (every posed vertex of every frame), GSR1 (a
 bone rig) and GSB1 (a blend-shape clip). Their binary layouts and the limits
 the native and Studio decoders enforce are collected here so the authoring
-scripts, installers and tests agree with libgag/src/SkinModel.cpp and
-libgag/src/SkinShapeModel.cpp. Only the clip readers need NumPy.
+scripts, installers and tests agree with libs/gag/src/SkinModel.cpp and
+libs/gag/src/SkinShapeModel.cpp. Only the clip readers need NumPy.
 """
 
 import hashlib

@@ -5,7 +5,7 @@ it('new releases preserve artwork and credit while remapping every custom depend
     key = namespace(p) + 'moss';
   p.terrains = [{ key, name: 'Moss', allowedResourceKeys: [namespace(p) + 'tree'] }];
   p.resources = [{ key: namespace(p) + 'tree' }];
-  p.assets.terrains[key] = { sprite: 'content/data/sets/' + 'ab'.repeat(32) };
+  p.assets.terrains[key] = { sprite: 'data/sets/' + 'ab'.repeat(32) };
   const next = newRelease(p);
   expect(next.setId).toBe(p.setId);
   expect(next.versionId).not.toBe(p.versionId);

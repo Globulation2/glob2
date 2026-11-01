@@ -749,7 +749,7 @@ export function SetEditor({
                     )}
                     onChange={(e) => {
                       const path = e.target.value;
-                      setSheet(path.replace('content/data/sets/', ''));
+                      setSheet(path.replace('data/sets/', ''));
                       if (!path && kind === 'terrain') {
                         const next = structuredClone(pack);
                         Reflect.deleteProperty(next.assets.terrains, String(entry['key']));
@@ -773,13 +773,13 @@ export function SetEditor({
                     </option>
                     {kind === 'resource' &&
                       typeof presentation['sprite'] === 'string' &&
-                      !presentation['sprite'].startsWith('content/data/sets/') && (
+                      !presentation['sprite'].startsWith('data/sets/') && (
                         <option value={presentation['sprite']}>
                           {t('Installed preset artwork')}
                         </option>
                       )}
                     {pack.assets.sheets.map((s) => (
-                      <option key={s.hash} value={'content/data/sets/' + s.hash}>
+                      <option key={s.hash} value={'data/sets/' + s.hash}>
                         <RichMessage
                           source={'{slot0} · {slot1}×{slot2}'}
                           slots={{
@@ -1066,7 +1066,7 @@ export function SetEditor({
                 <button
                   disabled={busy || published}
                   onClick={() => {
-                    const path = 'content/data/sets/' + activeSheet.hash;
+                    const path = 'data/sets/' + activeSheet.hash;
                     if (
                       JSON.stringify([
                         pack.terrains,

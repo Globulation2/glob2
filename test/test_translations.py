@@ -24,7 +24,7 @@ class TranslationAuditTest(unittest.TestCase):
         }
         self.assertTrue(keys)
         for name in checker.read_lines(root / 'content/data/texts.list.txt')[1:]:
-            table, errors = checker.read_table(root / name)
+            table, errors = checker.read_table(root / 'content' / name)
             self.assertEqual(errors, [])
             with self.subTest(catalog=name):
                 self.assertEqual(sorted(key for key in keys if not table.get(key, '').strip()), [])
@@ -35,9 +35,9 @@ class TranslationAuditTest(unittest.TestCase):
         english, errors = checker.read_table(root / 'content/data/texts.en.txt')
         self.assertEqual(errors, [])
         for name in checker.read_lines(root / 'content/data/texts.list.txt')[1:]:
-            if name == 'content/data/texts.en.txt':
+            if name == 'data/texts.en.txt':
                 continue
-            translated, errors = checker.read_table(root / name)
+            translated, errors = checker.read_table(root / 'content' / name)
             self.assertEqual(errors, [])
             vocabulary = set(allowed['standard_names_and_key_legends']) | set(
                 allowed['shared_vocabulary'][Path(name).name])
@@ -155,10 +155,10 @@ panel.actions = {{"id", "Untranslated action", [] {}}, {"ok", tr("[localized]"),
     def test_audit_finds_missing_key_and_bad_placeholder_in_context(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / 'data').mkdir()
+            (root / 'content/data').mkdir(parents=True)
             (root / 'src').mkdir()
             (root / 'src/test.cpp').write_text('getString("[missing lookup]");', encoding='utf-8')
-            (root / 'content/data/texts.list.txt').write_text('content/data/texts.keys.txt\ndata/texts.en.txt\ndata/texts.xx.txt\n', encoding='utf-8')
+            (root / 'content/data/texts.list.txt').write_text('data/texts.keys.txt\ndata/texts.en.txt\ndata/texts.xx.txt\n', encoding='utf-8')
             keys = ['[language-code]', '[language]', '[language incomplete]', '[language-tr]', '[%0 to %1]', '[inn explanation 2]', '[new control]', '[school explanation]', '[school explanation 2]', '[absent]']
             (root / 'content/data/texts.keys.txt').write_text('\n'.join(keys)+'\n', encoding='utf-8')
             english = ['en', 'English', 'English - Incomplete', 'Language', '%0 to %1', '', 'New control', 'Improves construction', 'for workers', 'Present in English']
@@ -167,31 +167,31 @@ panel.actions = {{"id", "Untranslated action", [] {}}, {"ok", tr("[localized]"),
                 (root / f'content/data/texts.{code}.txt').write_text(''.join(k+'\n'+v+'\n' for k,v in zip(keys, values)), encoding='utf-8')
             (root / 'content/scripts/tutorials').mkdir(parents=True)
             (root / 'content/scripts/tutorials/catalog.json').write_text(json.dumps([
-                {'definition': 'content/scripts/tutorials/sample.json'}]))
+                {'definition': 'scripts/tutorials/sample.json'}]))
             (root / 'content/scripts/tutorials/sample.json').write_text(json.dumps({
                 'title': '[new control]', 'steps': [{'help': '[absent]'}]}))
             (root / 'content/data/themes').mkdir()
             (root / 'content/data/themes/index.json').write_text('{"themes":["missing-theme"]}', encoding='utf-8')
             result = checker.audit(root)
-            self.assertEqual(result['coverage']['tutorials']['content/scripts/tutorials/sample.json'], {
+            self.assertEqual(result['coverage']['tutorials']['scripts/tutorials/sample.json'], {
                 'key_count': 2,
-                'display_catalog_gaps': {'content/data/texts.en.txt': [],
-                    'content/data/texts.xx.txt': ['[absent]', '[new control]']}})
+                'display_catalog_gaps': {'data/texts.en.txt': [],
+                    'data/texts.xx.txt': ['[absent]', '[new control]']}})
             self.assertTrue(any('unknown translation key [theme missing-theme]' in e for e in result['errors']))
             self.assertTrue(any('unknown translation key [missing lookup]' in e for e in result['errors']))
             self.assertTrue(any('invalid placeholders' in e for e in result['errors']))
-            self.assertEqual(result['languages']['content/data/texts.xx.txt']['untranslated'], ['[absent]', '[new control]'])
+            self.assertEqual(result['languages']['data/texts.xx.txt']['untranslated'], ['[absent]', '[new control]'])
             self.assertTrue(any('missing key [absent]' in e for e in result['errors']))
             self.assertTrue(any('would show an English second line' in e for e in result['errors']))
             # An approved fallback only affects completeness, never structural errors.
             (root / 'content/data/texts.pending.txt').write_text('[new control]\n[unknown]\n', encoding='utf-8')
             pending_result = checker.audit(root)
-            self.assertEqual(pending_result['languages']['content/data/texts.xx.txt']['pending'], ['[new control]'])
-            self.assertEqual(pending_result['languages']['content/data/texts.en.txt']['pending'], [])
+            self.assertEqual(pending_result['languages']['data/texts.xx.txt']['pending'], ['[new control]'])
+            self.assertEqual(pending_result['languages']['data/texts.en.txt']['pending'], [])
             self.assertTrue(any('unknown pending key [unknown]' in e for e in pending_result['errors']))
             self.assertTrue(any('invalid placeholders' in e for e in pending_result['errors']))
-            self.assertIn('[absent]', pending_result['languages']['content/data/texts.xx.txt']['untranslated'])
-            (root / 'content/data/texts.incomplete.txt').write_text('content/data/texts.xx.txt\ndata/texts.en.txt\n', encoding='utf-8')
+            self.assertIn('[absent]', pending_result['languages']['data/texts.xx.txt']['untranslated'])
+            (root / 'content/data/texts.incomplete.txt').write_text('data/texts.xx.txt\ndata/texts.en.txt\n', encoding='utf-8')
             self.assertTrue(any('must match texts.list.txt in order' in e for e in checker.audit(root)['errors']))
 
 

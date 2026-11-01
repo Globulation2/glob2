@@ -11,7 +11,7 @@ import { generatorStudioRoutes } from './generator-studio/routes.ts';
 import { aiLibraryRoutes } from './ais/routes.ts';
 import { musicRoutes } from './music/routes.ts';
 import { skinBillingRoutes } from './skins/billing/routes.ts';
-import { studioRoutes } from './content/maps/studio.ts';
+import { studioRoutes } from './maps/studio.ts';
 import { hiveRoutes } from './hive/routes.ts';
 // The HTTP application, built from injected services so tests can run it
 // against a test database without listening on a port.
@@ -56,7 +56,7 @@ import { internalRoutes } from './routes/internal.ts';
 import { engineAgentRoutes } from './routes/engine.ts';
 import { inviteRoutes } from './routes/invite.ts';
 import { playRoutes } from './routes/play.ts';
-import { mapCatalogRoutes } from './content/maps/routes.ts';
+import { mapCatalogRoutes } from './maps/routes.ts';
 import { historyRoutes } from './history/routes.ts';
 import { appLinkRoutes } from './web/appLinks.ts';
 import { pageAssetRoutes, setPageLocale } from './web/pages.ts';

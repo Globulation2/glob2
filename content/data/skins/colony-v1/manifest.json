@@ -183,7 +183,7 @@
     "swarm-crown.gsk": {
       "sha256": "b2a7cb72fa07e735a04123242578263468e0aca5945e9bffb53bc7e181eb88ba",
       "source": "tools/skins/generate_swarms.py",
-      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "sourceSha256": "863c8abf258c0e8659dcbed2785b33e5a217ec621fe6615a188617d401065716",
       "dependencies": {
         "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
       },
@@ -199,7 +199,7 @@
     "swarm-clutch.gsk": {
       "sha256": "0bb2d4debf835c5ca17f82a06ba8adb26389e3c64ca255bb743e17ba8d68df9d",
       "source": "tools/skins/generate_swarms.py",
-      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "sourceSha256": "863c8abf258c0e8659dcbed2785b33e5a217ec621fe6615a188617d401065716",
       "dependencies": {
         "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
       },
@@ -215,7 +215,7 @@
     "swarm-toadstool.gsk": {
       "sha256": "4e6478fb30b63c28607c03fdf32186af635b425132367fd8c9727a9e814a74ee",
       "source": "tools/skins/generate_swarms.py",
-      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "sourceSha256": "863c8abf258c0e8659dcbed2785b33e5a217ec621fe6615a188617d401065716",
       "dependencies": {
         "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
       },
@@ -231,7 +231,7 @@
     "swarm-coral.gsk": {
       "sha256": "ee28c327cc9ffc811627b1b1c9d821a18339af48f1f3df63e155b85f7788c954",
       "source": "tools/skins/generate_swarms.py",
-      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "sourceSha256": "863c8abf258c0e8659dcbed2785b33e5a217ec621fe6615a188617d401065716",
       "dependencies": {
         "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
       },
@@ -247,7 +247,7 @@
     "swarm-skep.gsk": {
       "sha256": "af142b7b61aadfa4dee5f4e2422f4be330d7c5502983e95f385bdfe6492cbfb3",
       "source": "tools/skins/generate_swarms.py",
-      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "sourceSha256": "863c8abf258c0e8659dcbed2785b33e5a217ec621fe6615a188617d401065716",
       "dependencies": {
         "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
       },
@@ -263,7 +263,7 @@
     "swarm-bloom.gsk": {
       "sha256": "287f035a5a94cf762bc70db3c6b03d3e48397b09775cc19c81cead3d9fc5b18a",
       "source": "tools/skins/generate_swarms.py",
-      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "sourceSha256": "863c8abf258c0e8659dcbed2785b33e5a217ec621fe6615a188617d401065716",
       "dependencies": {
         "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
       },
@@ -297,9 +297,9 @@
         "tools/skins/rig_scene.py": "2280da81cd8df806ea8be6cefb94eab4201d3dba4c96516999d8835c9a91251f",
         "tools/skins/export_rig.py": "4cfc6e81770c2639a5c468e969ca23c2e2ceb74f66e10ad65f1ef1afc18fcce6",
         "tools/skins/export_units.py": "7fc6a1a261221b400be3502406d8f5199c4f56ac3434dc248e9d92b4090832bb",
-        "tools/skins/skin_assets.py": "557c1c9a1db722eb3c391a3027cb3952339c585ee134357f3162ec7afb12f7f0",
-        "data/skins/colony-v1/explorer-fly.gsk": "1b46c97e0303b5317083d218414fa5c3c86654037f5a502c84b57a55ac3a5a49",
-        "data/skins/colony-v1/explorer-fly.view.json": "3774a18f1c409b826cac93b9bd7c7407a6add2d580854ef8c9190477f0013220",
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/explorer-fly.gsk": "1b46c97e0303b5317083d218414fa5c3c86654037f5a502c84b57a55ac3a5a49",
+        "content/data/skins/colony-v1/explorer-fly.view.json": "3774a18f1c409b826cac93b9bd7c7407a6add2d580854ef8c9190477f0013220",
         "content-src/gfx/originals/units/explorer.blend": "4d6913061c1e25861a12d45cea72f14d5c8bd8ab603158a2e1077cff70cd959d"
       },
       "accepted": true
@@ -322,13 +322,13 @@
       ],
       "sources": {
         "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
-        "tools/skins/skin_assets.py": "557c1c9a1db722eb3c391a3027cb3952339c585ee134357f3162ec7afb12f7f0",
-        "data/skins/colony-v1/worker-walk.gsk": "0e34bee54d15567b6a0fd0e024293e3097a94ad6343ccce1b79a572a6c83ef17",
-        "data/skins/colony-v1/worker-walk.view.json": "b1e9c7e91f71fe90901659403670148ce527854fc3be3e4b0b7f123b10e59d9b",
-        "data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
-        "data/skins/colony-v1/worker-swim.view.json": "0fc32d325864dd129baaba4acb1bc7f2796f02d4dcd5567ce6b41d3d0921681e",
-        "data/skins/colony-v1/worker-harvest.gsk": "ce14b8e276b5356ae093ed8507deffe66fe6ef42ce0472fc07b6f56615e69b0a",
-        "data/skins/colony-v1/worker-harvest.view.json": "984c4e5d42f745b649af94c912c56e22391fedf9def0e7fc60845770430179e1"
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/worker-walk.gsk": "0e34bee54d15567b6a0fd0e024293e3097a94ad6343ccce1b79a572a6c83ef17",
+        "content/data/skins/colony-v1/worker-walk.view.json": "b1e9c7e91f71fe90901659403670148ce527854fc3be3e4b0b7f123b10e59d9b",
+        "content/data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
+        "content/data/skins/colony-v1/worker-swim.view.json": "0fc32d325864dd129baaba4acb1bc7f2796f02d4dcd5567ce6b41d3d0921681e",
+        "content/data/skins/colony-v1/worker-harvest.gsk": "ce14b8e276b5356ae093ed8507deffe66fe6ef42ce0472fc07b6f56615e69b0a",
+        "content/data/skins/colony-v1/worker-harvest.view.json": "984c4e5d42f745b649af94c912c56e22391fedf9def0e7fc60845770430179e1"
       },
       "accepted": true
     },
@@ -348,13 +348,13 @@
       ],
       "sources": {
         "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
-        "tools/skins/skin_assets.py": "557c1c9a1db722eb3c391a3027cb3952339c585ee134357f3162ec7afb12f7f0",
-        "data/skins/colony-v1/worker-walk.gsk": "0e34bee54d15567b6a0fd0e024293e3097a94ad6343ccce1b79a572a6c83ef17",
-        "data/skins/colony-v1/worker-walk.view.json": "b1e9c7e91f71fe90901659403670148ce527854fc3be3e4b0b7f123b10e59d9b",
-        "data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
-        "data/skins/colony-v1/worker-swim.view.json": "0fc32d325864dd129baaba4acb1bc7f2796f02d4dcd5567ce6b41d3d0921681e",
-        "data/skins/colony-v1/worker-harvest.gsk": "ce14b8e276b5356ae093ed8507deffe66fe6ef42ce0472fc07b6f56615e69b0a",
-        "data/skins/colony-v1/worker-harvest.view.json": "984c4e5d42f745b649af94c912c56e22391fedf9def0e7fc60845770430179e1"
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/worker-walk.gsk": "0e34bee54d15567b6a0fd0e024293e3097a94ad6343ccce1b79a572a6c83ef17",
+        "content/data/skins/colony-v1/worker-walk.view.json": "b1e9c7e91f71fe90901659403670148ce527854fc3be3e4b0b7f123b10e59d9b",
+        "content/data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
+        "content/data/skins/colony-v1/worker-swim.view.json": "0fc32d325864dd129baaba4acb1bc7f2796f02d4dcd5567ce6b41d3d0921681e",
+        "content/data/skins/colony-v1/worker-harvest.gsk": "ce14b8e276b5356ae093ed8507deffe66fe6ef42ce0472fc07b6f56615e69b0a",
+        "content/data/skins/colony-v1/worker-harvest.view.json": "984c4e5d42f745b649af94c912c56e22391fedf9def0e7fc60845770430179e1"
       },
       "accepted": true
     },
@@ -374,13 +374,13 @@
       ],
       "sources": {
         "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
-        "tools/skins/skin_assets.py": "557c1c9a1db722eb3c391a3027cb3952339c585ee134357f3162ec7afb12f7f0",
-        "data/skins/colony-v1/worker-walk.gsk": "0e34bee54d15567b6a0fd0e024293e3097a94ad6343ccce1b79a572a6c83ef17",
-        "data/skins/colony-v1/worker-walk.view.json": "b1e9c7e91f71fe90901659403670148ce527854fc3be3e4b0b7f123b10e59d9b",
-        "data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
-        "data/skins/colony-v1/worker-swim.view.json": "0fc32d325864dd129baaba4acb1bc7f2796f02d4dcd5567ce6b41d3d0921681e",
-        "data/skins/colony-v1/worker-harvest.gsk": "ce14b8e276b5356ae093ed8507deffe66fe6ef42ce0472fc07b6f56615e69b0a",
-        "data/skins/colony-v1/worker-harvest.view.json": "984c4e5d42f745b649af94c912c56e22391fedf9def0e7fc60845770430179e1"
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/worker-walk.gsk": "0e34bee54d15567b6a0fd0e024293e3097a94ad6343ccce1b79a572a6c83ef17",
+        "content/data/skins/colony-v1/worker-walk.view.json": "b1e9c7e91f71fe90901659403670148ce527854fc3be3e4b0b7f123b10e59d9b",
+        "content/data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
+        "content/data/skins/colony-v1/worker-swim.view.json": "0fc32d325864dd129baaba4acb1bc7f2796f02d4dcd5567ce6b41d3d0921681e",
+        "content/data/skins/colony-v1/worker-harvest.gsk": "ce14b8e276b5356ae093ed8507deffe66fe6ef42ce0472fc07b6f56615e69b0a",
+        "content/data/skins/colony-v1/worker-harvest.view.json": "984c4e5d42f745b649af94c912c56e22391fedf9def0e7fc60845770430179e1"
       },
       "accepted": true
     },
@@ -400,13 +400,13 @@
       ],
       "sources": {
         "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
-        "tools/skins/skin_assets.py": "557c1c9a1db722eb3c391a3027cb3952339c585ee134357f3162ec7afb12f7f0",
-        "data/skins/colony-v1/warrior-walk.gsk": "a284a1de5163b6172d6b4344c1361e6c20fd6dda20b087c8ef44b08234a17130",
-        "data/skins/colony-v1/warrior-walk.view.json": "2e93d1ce99e4e70893246a8f124bd1466d7848cf58e82e57dd92dd27e6d61348",
-        "data/skins/colony-v1/warrior-swim.gsk": "989e22f6965c83f10f3facd071d8863c21efe56d4bd3f5cbb7607b74e6aa5aa6",
-        "data/skins/colony-v1/warrior-swim.view.json": "5f9f2cc372b639d80cd020112f423e48c037baf42392518faac770f5120ddd85",
-        "data/skins/colony-v1/warrior-fight.gsk": "7e34666a64a82144b512c3b1104b44f3f5b3ae907e4512cccbdcd1ffab091f60",
-        "data/skins/colony-v1/warrior-fight.view.json": "d47435578b56df1defde62405e820db108107648f78d2daee2ea1470b8d07063"
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/warrior-walk.gsk": "a284a1de5163b6172d6b4344c1361e6c20fd6dda20b087c8ef44b08234a17130",
+        "content/data/skins/colony-v1/warrior-walk.view.json": "2e93d1ce99e4e70893246a8f124bd1466d7848cf58e82e57dd92dd27e6d61348",
+        "content/data/skins/colony-v1/warrior-swim.gsk": "989e22f6965c83f10f3facd071d8863c21efe56d4bd3f5cbb7607b74e6aa5aa6",
+        "content/data/skins/colony-v1/warrior-swim.view.json": "5f9f2cc372b639d80cd020112f423e48c037baf42392518faac770f5120ddd85",
+        "content/data/skins/colony-v1/warrior-fight.gsk": "7e34666a64a82144b512c3b1104b44f3f5b3ae907e4512cccbdcd1ffab091f60",
+        "content/data/skins/colony-v1/warrior-fight.view.json": "d47435578b56df1defde62405e820db108107648f78d2daee2ea1470b8d07063"
       },
       "accepted": true
     },
@@ -426,13 +426,13 @@
       ],
       "sources": {
         "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
-        "tools/skins/skin_assets.py": "557c1c9a1db722eb3c391a3027cb3952339c585ee134357f3162ec7afb12f7f0",
-        "data/skins/colony-v1/warrior-walk.gsk": "a284a1de5163b6172d6b4344c1361e6c20fd6dda20b087c8ef44b08234a17130",
-        "data/skins/colony-v1/warrior-walk.view.json": "2e93d1ce99e4e70893246a8f124bd1466d7848cf58e82e57dd92dd27e6d61348",
-        "data/skins/colony-v1/warrior-swim.gsk": "989e22f6965c83f10f3facd071d8863c21efe56d4bd3f5cbb7607b74e6aa5aa6",
-        "data/skins/colony-v1/warrior-swim.view.json": "5f9f2cc372b639d80cd020112f423e48c037baf42392518faac770f5120ddd85",
-        "data/skins/colony-v1/warrior-fight.gsk": "7e34666a64a82144b512c3b1104b44f3f5b3ae907e4512cccbdcd1ffab091f60",
-        "data/skins/colony-v1/warrior-fight.view.json": "d47435578b56df1defde62405e820db108107648f78d2daee2ea1470b8d07063"
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/warrior-walk.gsk": "a284a1de5163b6172d6b4344c1361e6c20fd6dda20b087c8ef44b08234a17130",
+        "content/data/skins/colony-v1/warrior-walk.view.json": "2e93d1ce99e4e70893246a8f124bd1466d7848cf58e82e57dd92dd27e6d61348",
+        "content/data/skins/colony-v1/warrior-swim.gsk": "989e22f6965c83f10f3facd071d8863c21efe56d4bd3f5cbb7607b74e6aa5aa6",
+        "content/data/skins/colony-v1/warrior-swim.view.json": "5f9f2cc372b639d80cd020112f423e48c037baf42392518faac770f5120ddd85",
+        "content/data/skins/colony-v1/warrior-fight.gsk": "7e34666a64a82144b512c3b1104b44f3f5b3ae907e4512cccbdcd1ffab091f60",
+        "content/data/skins/colony-v1/warrior-fight.view.json": "d47435578b56df1defde62405e820db108107648f78d2daee2ea1470b8d07063"
       },
       "accepted": true
     },
@@ -452,13 +452,13 @@
       ],
       "sources": {
         "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
-        "tools/skins/skin_assets.py": "557c1c9a1db722eb3c391a3027cb3952339c585ee134357f3162ec7afb12f7f0",
-        "data/skins/colony-v1/warrior-walk.gsk": "a284a1de5163b6172d6b4344c1361e6c20fd6dda20b087c8ef44b08234a17130",
-        "data/skins/colony-v1/warrior-walk.view.json": "2e93d1ce99e4e70893246a8f124bd1466d7848cf58e82e57dd92dd27e6d61348",
-        "data/skins/colony-v1/warrior-swim.gsk": "989e22f6965c83f10f3facd071d8863c21efe56d4bd3f5cbb7607b74e6aa5aa6",
-        "data/skins/colony-v1/warrior-swim.view.json": "5f9f2cc372b639d80cd020112f423e48c037baf42392518faac770f5120ddd85",
-        "data/skins/colony-v1/warrior-fight.gsk": "7e34666a64a82144b512c3b1104b44f3f5b3ae907e4512cccbdcd1ffab091f60",
-        "data/skins/colony-v1/warrior-fight.view.json": "d47435578b56df1defde62405e820db108107648f78d2daee2ea1470b8d07063"
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/warrior-walk.gsk": "a284a1de5163b6172d6b4344c1361e6c20fd6dda20b087c8ef44b08234a17130",
+        "content/data/skins/colony-v1/warrior-walk.view.json": "2e93d1ce99e4e70893246a8f124bd1466d7848cf58e82e57dd92dd27e6d61348",
+        "content/data/skins/colony-v1/warrior-swim.gsk": "989e22f6965c83f10f3facd071d8863c21efe56d4bd3f5cbb7607b74e6aa5aa6",
+        "content/data/skins/colony-v1/warrior-swim.view.json": "5f9f2cc372b639d80cd020112f423e48c037baf42392518faac770f5120ddd85",
+        "content/data/skins/colony-v1/warrior-fight.gsk": "7e34666a64a82144b512c3b1104b44f3f5b3ae907e4512cccbdcd1ffab091f60",
+        "content/data/skins/colony-v1/warrior-fight.view.json": "d47435578b56df1defde62405e820db108107648f78d2daee2ea1470b8d07063"
       },
       "accepted": true
     }

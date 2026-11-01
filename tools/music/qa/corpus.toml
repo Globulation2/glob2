@@ -45,28 +45,28 @@ why = "Approved (ships as glass-garden)."
 id = "codex-seedling"
 verdict = "bad"
 git_ref = "270ccc38f21702757dd18e770a51a63173774f03"
-git_path = "content/data/zik/seedling"
+git_path = "data/zik/seedling"
 why = "Rejected: about 20 s of GM-rendered material repeated."
 
 [[set]]
 id = "codex-bramble-dance"
 verdict = "bad"
 git_ref = "270ccc38f21702757dd18e770a51a63173774f03"
-git_path = "content/data/zik/bramble-dance"
+git_path = "data/zik/bramble-dance"
 why = "Rejected: about 20 s of GM-rendered material repeated."
 
 [[set]]
 id = "codex-velvet-orbit"
 verdict = "bad"
 git_ref = "270ccc38f21702757dd18e770a51a63173774f03"
-git_path = "content/data/zik/velvet-orbit"
+git_path = "data/zik/velvet-orbit"
 why = "Rejected: about 20 s of GM-rendered material repeated."
 
 [[set]]
 id = "codex-tidepool"
 verdict = "bad"
 git_ref = "270ccc38f21702757dd18e770a51a63173774f03"
-git_path = "content/data/zik/tidepool"
+git_path = "data/zik/tidepool"
 why = "Rejected: about 20 s of GM-rendered material repeated."
 
 [[set]]

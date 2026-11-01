@@ -19,7 +19,7 @@ BUILTIN_NAMES = ROOT / "tools/terrain_builtin_names.json"
 
 
 def assets(root):
-    """The runtime tree, where catalog sprite paths such as content/data/gfx/... resolve."""
+    """The runtime tree, where catalog sprite paths such as data/gfx/... resolve."""
     return Path(root) / "content"
 
 
@@ -81,7 +81,7 @@ def integer(value, minimum, maximum, field):
 
 
 def data_path(value, field):
-    if not isinstance(value, str) or not value.startswith("content/data/") or "\\" in value or ":" in value:
+    if not isinstance(value, str) or not value.startswith("data/") or "\\" in value or ":" in value:
         raise ValueError(f"{field} must be a data-relative path")
     path = Path(value)
     if ".." in path.parts or len(path.parts) < 2 or value != path.as_posix() or "\0" in value:

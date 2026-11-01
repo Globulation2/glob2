@@ -220,7 +220,7 @@ export function assemble(
       if (images) {
         add(images.sheet);
         Object.assign(material, {
-          sprite: 'content/data/sets/' + images.sheet.hash,
+          sprite: 'data/sets/' + images.sheet.hash,
           profile: material['profile'] ?? 'soft',
           preview: images.color,
           minimap: images.color,
@@ -232,7 +232,7 @@ export function assemble(
         if (images.decor) {
           add(images.decor);
           material['decor'] = {
-            sprite: 'content/data/sets/' + images.decor.hash,
+            sprite: 'data/sets/' + images.decor.hash,
             full: [0, 1],
             edge: [2, 3],
           };
@@ -266,7 +266,7 @@ export function assemble(
           throw Error('Generated three-stage resources require total capacity of at least two.');
         const maximum = Math.min(65535, total);
         Object.assign(next['presentation'] as object, {
-          sprite: 'content/data/sets/' + images.sheet.hash,
+          sprite: 'data/sets/' + images.sheet.hash,
           minimap: images.color,
           levels: [0, Math.max(1, Math.floor(maximum / 2)), maximum].map((stock, i) => ({
             stock,
@@ -286,7 +286,7 @@ export function assemble(
   }
   // Drop only sheets no longer referenced; preserve immutable bytes for all retained artwork.
   const references = JSON.stringify({ terrains: pack.assets.terrains, resources: pack.resources });
-  pack.assets.sheets = pack.assets.sheets.filter((s) => references.includes('content/data/sets/' + s.hash));
+  pack.assets.sheets = pack.assets.sheets.filter((s) => references.includes('data/sets/' + s.hash));
   if (Buffer.byteLength(JSON.stringify(pack)) > SET_PACKAGE_MAX_BYTES)
     throw Error('Set exceeds 16 MiB.');
   return parse(SetPackage, pack, 'assembled set');

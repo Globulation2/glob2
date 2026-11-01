@@ -49,7 +49,7 @@ def stage_archive(archive, destination, expected_digest):
                 raise RuntimeError(f"Case-insensitive portable filename collision: {relative}")
             occupied.add(key)
             members.append((entry, relative))
-        required = {"glob2.exe", "copying", "content/data/icons/glob2-icon-128x128.webp"}
+        required = {"glob2.exe", "copying", "data/icons/glob2-icon-128x128.webp"}
         if not required <= occupied:
             raise RuntimeError("Portable release is missing executable, license or icon")
         # Read every member (including CRC checks) before replacing any output.
@@ -93,7 +93,7 @@ def main():
             urllib.request.urlretrieve(url, archive)
         stage_archive(archive, args.dest, release["sha256"])
     store.write_game_config(args.dest, args)
-    store.write_shell_images(args.dest / "content/data/icons/glob2-icon-128x128.webp", args.dest)
+    store.write_shell_images(args.dest / "data/icons/glob2-icon-128x128.webp", args.dest)
     (args.dest / "SOURCE.txt").write_text(
         "Globulation 2 is licensed under GPL version 3.\nCorresponding payload source:\n"
         f"https://github.com/Globulation2/glob2/archive/{release['commit']}.zip\n", encoding="utf-8")

@@ -23,7 +23,7 @@ function fixture() {
     variants: [
       {
         key: prefix + 'kitchen',
-        properties: { gameSprite: 'content/data/gfx/inn0b' },
+        properties: { gameSprite: 'data/gfx/inn0b' },
         semantics: {},
       },
     ],

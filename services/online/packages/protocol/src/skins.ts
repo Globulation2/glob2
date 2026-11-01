@@ -2,7 +2,7 @@ import { Type, type Static } from 'typebox';
 import { Open, Strict, Uuid, Sha256Hex, TeamIndex, Timestamp } from './common.ts';
 
 // Swarm meshes a design can be painted for, mirroring src/online/SwarmMeshCatalog.h
-// (the game ships each as content/data/skins/colony-v1/swarm[-<id>].gsk). 'classic' is the
+// (the game ships each as data/skins/colony-v1/swarm[-<id>].gsk). 'classic' is the
 // original swarm and the default; the swarm is always painted from the atlas's swarm quadrant.
 export const SwarmMesh = Type.Union([
   Type.Literal('classic'),

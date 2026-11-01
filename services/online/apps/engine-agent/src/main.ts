@@ -10,7 +10,7 @@ import { createAiValidator } from './aiValidation.ts';
 //   ENGINE_POLL_MS         wait between lease attempts when idle (default 1000)
 //   ENGINE_BINARY          path of the glob2 binary; without it every job kind is
 //                          reported unsupported and ENGINE_SIM_VERSION is required
-//   ENGINE_WORKDIR         working directory for the binary, holding content/data/ (default cwd)
+//   ENGINE_WORKDIR         working directory for the binary, holding data/ (default cwd)
 //   ENGINE_SCRATCH_DIR     parent of per-job scratch directories (default OS temp)
 //   ENGINE_DATA_HASH       sim data hash, until the binary reports it itself
 //   ENGINE_SIM_VERSION     full simVersionKey; checked against the binary

@@ -60,7 +60,7 @@ class CloudDraftTest(unittest.TestCase):
                          phase='bulk', pilot_reviewed=True, sleep=lambda _: None, **kwargs)
 
     def test_protected_tokens_roundtrip_and_damage_rejected(self):
-        source = r'Use %0 {count} <b>AI</b> https://example.org/a.json foo.js content/data/x.txt \n %s %%'
+        source = r'Use %0 {count} <b>AI</b> https://example.org/a.json foo.js data/x.txt \n %s %%'
         protected, tokens = CLOUD.protect(source)
         self.assertNotIn('%0', protected)
         self.assertNotIn('foo.js', protected)
@@ -157,7 +157,7 @@ class CloudDraftTest(unittest.TestCase):
 
     def test_formatting_only_values_are_not_sent_to_api(self):
         self.assertFalse(CLOUD.needs_translation('(%0) / {count}'))
-        self.assertFalse(CLOUD.needs_translation('content/data/game.js'))
+        self.assertFalse(CLOUD.needs_translation('data/game.js'))
         self.assertTrue(CLOUD.needs_translation('Value %0'))
 
     def test_partial_token_damage_caches_good_items_and_blocks_rebilling(self):

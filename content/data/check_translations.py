@@ -11,9 +11,9 @@ from pathlib import Path
 import re
 import sys
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
-from tutorials.content import CATALOG, catalog_lessons
+from tutorials.content import CATALOG, assets, catalog_lessons
 # Building descriptions occupy two separate rows. The second may be empty in
 # any language, even when English needs both rows (and vice versa).
 OPTIONAL_BLANKS = {
@@ -232,7 +232,7 @@ def invalid_percent(text):
 def lesson_translation_keys(root):
     """Translation keys used by the current JavaScript lesson catalog."""
     root = Path(root)
-    if not (root / CATALOG).exists():
+    if not (assets(root) / CATALOG).exists():
         return {}
     def keys(value):
         if isinstance(value, str):
@@ -243,11 +243,13 @@ def lesson_translation_keys(root):
 
 
 def audit(root=ROOT):
-    listing = read_lines(root / 'data/texts.list.txt')
+    # Catalogs live in the runtime tree; the source scan below uses the checkout.
+    runtime = assets(root)
+    listing = read_lines(runtime / 'data/texts.list.txt')
     errors = []
     if not listing or listing[0] != 'data/texts.keys.txt':
         return {'errors': ['texts.list.txt must start with data/texts.keys.txt'], 'languages': {}}
-    keys = read_lines(root / listing[0])
+    keys = read_lines(runtime / listing[0])
     for key, count in Counter(keys).items():
         if count > 1:
             errors.append(f'texts.keys.txt: duplicate key {key}')
@@ -258,13 +260,13 @@ def audit(root=ROOT):
     key_set = set(keys)
     # Explicitly accepted English fallbacks stay visible in coverage reports.
     # They do not exempt missing keys, malformed text or untranslated English.
-    pending_path = root / 'data/texts.pending.txt'
+    pending_path = runtime / 'data/texts.pending.txt'
     pending = set(read_lines(pending_path)) if pending_path.exists() else set()
     for key in sorted(pending - key_set):
         errors.append(f'texts.pending.txt: unknown pending key {key}')
     tables = {}
     for name in listing[1:]:
-        table, table_errors = read_table(root / name)
+        table, table_errors = read_table(runtime / name)
         errors.extend(table_errors)
         tables[name] = table
     english = tables.get('data/texts.en.txt', {})
@@ -301,7 +303,7 @@ def audit(root=ROOT):
             'same_as_english': sorted(k for k in key_set if table.get(k) and table.get(k) == english.get(k)) if name != 'data/texts.en.txt' else [],
             'placeholder_text': sorted(k for k,v in table.items() if '??' in v),
         }
-    incomplete_path = root / 'data/texts.incomplete.txt'
+    incomplete_path = runtime / 'data/texts.incomplete.txt'
     if incomplete_path.exists():
         incomplete = read_lines(incomplete_path)
         if [name.removeprefix('*') for name in incomplete] != listing[1:]:
@@ -312,7 +314,7 @@ def audit(root=ROOT):
     source_files = source_references = 0
     # Full literal tokens catch keys passed through wrappers, arrays, ternaries,
     # multiline calls and adjacent literals as well as direct getString calls.
-    for directory in ('src', 'libgag'):
+    for directory in ('src', 'libs/gag'):
         for path in sorted((root / directory).rglob('*')):
             if path.suffix not in ('.cpp', '.h', '.hpp', '.cc', '.cxx'):
                 continue
@@ -326,7 +328,7 @@ def audit(root=ROOT):
             for key, number in references:
                 if key not in key_set:
                     errors.append(f'{path.relative_to(root)}:{number}: unknown translation key {key}')
-    themes = root / 'data/themes/index.json'
+    themes = runtime / 'data/themes/index.json'
     if themes.exists():
         try:
             theme_ids = json.loads(themes.read_text(encoding='utf-8'))['themes']
@@ -337,7 +339,7 @@ def audit(root=ROOT):
         except (ValueError, KeyError, TypeError) as error:
             errors.append(f'data/themes/index.json: {error}')
     # Ruleset names and descriptions are keys looked up at runtime from the data file.
-    rulesets = root / 'data' / 'rulesets.json'
+    rulesets = runtime / 'data' / 'rulesets.json'
     if rulesets.exists():
         try:
             entries = json.loads(rulesets.read_text(encoding='utf-8')).get('rulesets', [])

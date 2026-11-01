@@ -149,7 +149,7 @@ test('authors both files, recovers invalid JSON, freezes previews and exports on
   await workspace.getByRole('button', { name: 'Download', exact: true }).click();
   const exported = await download;
   expect(exported.suggestedFilename()).toBe('generator.json');
-  const directory = resolve('../../../artifacts/generator-studio/ui-' + info.project.name);
+  const directory = resolve('../../../../artifacts/generator-studio/ui-' + info.project.name);
   mkdirSync(directory, { recursive: true });
   await exported.saveAs(resolve(directory, 'export.json'));
   expect(JSON.parse(generatorPackage(detail.current.source)).modules['generator.js']).toBeTruthy();

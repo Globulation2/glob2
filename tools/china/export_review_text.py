@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'data'))
+sys.path.insert(0, str(ROOT / 'content/data'))
 from check_translations import read_table, lesson_translation_keys  # noqa: E402
 
 

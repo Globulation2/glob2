@@ -141,20 +141,20 @@ class TerrainTileset(unittest.TestCase):
             lambda d: d.update(boundary_warp_q8=[0, 0, 129]),
             lambda d: d.update(pair_treatments={}),
             lambda d: d.update(bindings=[]),
-            lambda d: d.update(compiled_pack="content/data/terrain/wrong.json"),
-            lambda d: d.update(compiled_pack="content/data/atlas.json"),
+            lambda d: d.update(compiled_pack="data/terrain/wrong.json"),
+            lambda d: d.update(compiled_pack="data/atlas.json"),
             lambda d: d.update(compiled_pack=0),
             lambda d: d.update(profiles=[]),
             lambda d: d.update(materials={}),
             lambda d: d["bindings"].update(fixture="missing"),
             lambda d: d["materials"][0].update(ocean=1),
             lambda d: d["materials"][0].update(sprite=""),
-            lambda d: d["materials"][0].update(sprite="content/data/../secret"),
-            lambda d: d["materials"][0].update(sprite="content/data/terrain\\escape"),
+            lambda d: d["materials"][0].update(sprite="data/../secret"),
+            lambda d: d["materials"][0].update(sprite="data/terrain\\escape"),
             lambda d: d["materials"][0].update(minimap=[1, 2, True]),
-            lambda d: d["materials"][1].update(backdrop={"sprite": "content/data/gfx/terrain", "ticks": 1.5}),
-            lambda d: d["materials"][1].update(backdrop={"sprite": "content/data/gfx/terrain", "frames": True}),
-            lambda d: d["materials"][1].update(backdrop={"sprite": "content/data/gfx/terrain", "ticks": 2147483648}),
+            lambda d: d["materials"][1].update(backdrop={"sprite": "data/gfx/terrain", "ticks": 1.5}),
+            lambda d: d["materials"][1].update(backdrop={"sprite": "data/gfx/terrain", "frames": True}),
+            lambda d: d["materials"][1].update(backdrop={"sprite": "data/gfx/terrain", "ticks": 2147483648}),
             lambda d: d["materials"][0]["variants"][0].update(weight=0),
             lambda d: d["materials"][0]["variants"][0].update(frame=9999),
             lambda d: d["profiles"][0]["contours_q12"][0].__setitem__(0, 1),
@@ -192,9 +192,9 @@ class TerrainTileset(unittest.TestCase):
                     validate(d)
 
     def test_asset_paths_are_canonical_and_portable(self):
-        self.assertEqual(data_path("content/data/gfx/ice..cracked", "Sprite"), Path("content/data/gfx/ice..cracked"))
-        for path in ("content/data//gfx/ice", "content/data/gfx/./ice", "content/data/gfx/../ice", "content/data/gfx/ice/",
-                     "content/data/gfx/ice\\broken", "content/data/gfx/ice:broken", "content/data/gfx/ice\0broken"):
+        self.assertEqual(data_path("data/gfx/ice..cracked", "Sprite"), Path("data/gfx/ice..cracked"))
+        for path in ("data//gfx/ice", "data/gfx/./ice", "data/gfx/../ice", "data/gfx/ice/",
+                     "data/gfx/ice\\broken", "data/gfx/ice:broken", "data/gfx/ice\0broken"):
             with self.subTest(path=path), self.assertRaises(ValueError):
                 data_path(path, "Sprite")
 
@@ -227,12 +227,12 @@ class TerrainTileset(unittest.TestCase):
     def test_variant_borders_preserve_premultiplied_alpha_continuity(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "data").mkdir()
+            (root / "content/data").mkdir(parents=True)
             Image.new("RGBA", (32, 32), (40, 80, 120, 128)).save(root / "content/data/tile0.png")
             Image.new("RGBA", (32, 32), (250, 0, 0, 0)).save(root / "content/data/tile1.png")
-            document = {"materials": [{"sprite": "content/data/tile", "variants": [{"frame": 0}, {"frame": 1}]}]}
+            document = {"materials": [{"sprite": "data/tile", "variants": [{"frame": 0}, {"frame": 1}]}]}
             frames = seamless_sources(document, root)
-            first, second = frames["content/data/tile0.png"], frames["content/data/tile1.png"]
+            first, second = frames["data/tile0.png"], frames["data/tile1.png"]
             for offset in range(32):
                 for point in ((0, offset), (31, offset), (offset, 0), (offset, 31)):
                     self.assertEqual(first.getpixel(point), second.getpixel(point))

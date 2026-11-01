@@ -27,8 +27,8 @@ import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { authenticate, requireAccount, type Identity } from '../identity.ts';
 import { mapUrl } from '../play/assignments.ts';
 import type { RoomService } from '../play/rooms.ts';
-import { catalogAllowsMapBlob } from '../content/maps/catalog.ts';
-import { checkedUpload, newestSimVersion } from '../content/maps/upload.ts';
+import { catalogAllowsMapBlob } from '../maps/catalog.ts';
+import { checkedUpload, newestSimVersion } from '../maps/upload.ts';
 
 const SHA256 = /^[0-9a-f]{64}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;

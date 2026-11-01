@@ -3,7 +3,7 @@
   "method": "procedural",
   "generator_sha256": {
     "tools/artwork/terrain_synth.py": "59ec96672751a6567c5dcd1397deec4b149d77e03cde8e0ed0f20dfd981289bb",
-    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+    "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1"
   },
   "material": "ridge_rock",
   "group": "ridges",

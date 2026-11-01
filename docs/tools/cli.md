@@ -1263,7 +1263,7 @@ Platform: all.
 | `--runs` | integer; default 0; 0..2147483647 | Game count; 0 repeats forever. |
 | `--ticks` | integer; default 90000; ticks; 0..2147483647 | Tick cap per random game; 0 runs until game end; overrides GLOB2_TEST_MAX_TICKS. |
 | `--ai-types` | string | Comma-separated random AI pool. |
-| `--map` | string | Map name resolved as content/maps/NAME.map. |
+| `--map` | string | Map name resolved as maps/NAME.map. |
 | `--matchup` | string | Comma-separated per-team AIs; requires --map. |
 | `--save-game-as` | file | Write the initial game before running. |
 | `--building-catalog` | file | Building catalog manifest. |

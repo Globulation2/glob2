@@ -25,7 +25,7 @@ import {
   type BuildingProvider,
 } from '../src/provider.ts';
 let database: TestDatabase, studio: BuildingAiStudio, blobs: AgentBlobs, directory: string;
-const root = resolve('..'),
+const root = resolve('../..'),
   cfg: BuildingAiStudioConfig = {
     enabled: true,
     salesEnabled: false,
@@ -258,7 +258,7 @@ it('resumes a completed design stage after a restart', async () => {
     ).join('\n\n'),
     examples = await Promise.all(
       ['inn', 'hospital', 'defencetower', 'swarm'].map((name) =>
-        readFile(resolve(root, 'content/data/buildings', name + '.json'), 'utf8'),
+        readFile(resolve(root, 'data/buildings', name + '.json'), 'utf8'),
       ),
     );
   const prompt = plannerPrompt(

@@ -49,7 +49,7 @@ class AppleLocalizationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             directories = self.fixture(root)
-            for name in ('COPYING', 'content/data/javascript-licenses.txt', 'content/data/json-license.txt',
+            for name in ('COPYING', 'data/javascript-licenses.txt', 'data/json-license.txt',
                          'docs/assets/source-attribution.md', 'Info.plist', 'Glob2.icns'):
                 file = root / name
                 file.parent.mkdir(parents=True, exist_ok=True)
@@ -74,7 +74,7 @@ class AppleLocalizationTests(unittest.TestCase):
 
             def export(source, destination, **kwargs):
                 (destination / 'data').mkdir(parents=True)
-                (destination / 'content/data/test.txt').write_text('exported game data')
+                (destination / 'data/test.txt').write_text('exported game data')
 
             with contextlib.chdir(root), patch.object(bundle, 'run', side_effect=platform_command), \
                  patch.object(bundle, 'GetOption', return_value=1), \
@@ -85,7 +85,7 @@ class AppleLocalizationTests(unittest.TestCase):
             for directory in directories:
                 self.assertEqual((resources / directory.name / 'InfoPlist.strings').read_bytes(),
                                  (directory / 'InfoPlist.strings').read_bytes())
-            self.assertEqual((resources / 'content/data/test.txt').read_text(), 'exported game data')
+            self.assertEqual((resources / 'data/test.txt').read_text(), 'exported game data')
 
     def test_missing_declared_localization_is_not_silently_omitted(self):
         with tempfile.TemporaryDirectory() as temporary:

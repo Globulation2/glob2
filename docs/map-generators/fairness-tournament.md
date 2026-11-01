@@ -202,7 +202,7 @@ colony index (does the generator favour a colony it places early or late?) and w
 ## Cost
 
 Estimate wall time from `games × mean seconds per game / jobs` using a pilot on
-current hardware and the intended content/maps/controllers. Population, map size, tick cap
+current hardware and the intended maps/controllers. Population, map size, tick cap
 and simultaneous workloads can change cost substantially. At normal simulation
 speed, 90,000 ticks represent 50 minutes of game time; headless wall time differs.
 Inspect the cap share and raise the tick budget when adjudication dominates rather

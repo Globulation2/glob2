@@ -10,13 +10,13 @@ it.skipIf(process.env['MUSIC_SANDBOX_TEST'] !== '1')(
     const scratch = await mkdtemp((process.env['MUSIC_SCRATCH'] ?? '/dev/shm') + '/glob2-music-');
     try {
       const runner = await createRunner(
-        resolve('../tools/music'),
+        resolve('../../tools/music'),
         resolve(process.env['MUSIC_ASSETS'] ?? '../tools/music/cache'),
         scratch,
         resolve(process.env['MUSIC_PYTHON'] ?? '../tools/music/.venv/bin/python'),
       );
       const source = await readFile(
-        resolve('../tools/music/sets/moss-lanterns/composition.py'),
+        resolve('../../tools/music/sets/moss-lanterns/composition.py'),
         'utf8',
       );
       const metadata = {
@@ -89,7 +89,7 @@ it.skipIf(process.env['MUSIC_RENDER_TEST'] !== '1')(
     const scratch = await mkdtemp((process.env['MUSIC_SCRATCH'] ?? '/dev/shm') + '/glob2-music-');
     try {
       const runner = await createRunner(
-        resolve('../tools/music'),
+        resolve('../../tools/music'),
         resolve(process.env['MUSIC_ASSETS'] ?? '../tools/music/cache'),
         scratch,
         resolve(process.env['MUSIC_PYTHON'] ?? '../tools/music/.venv/bin/python'),
@@ -100,7 +100,7 @@ it.skipIf(process.env['MUSIC_RENDER_TEST'] !== '1')(
       ] as const) {
         const start = Date.now();
         const source = await readFile(
-          resolve('../tools/music/sets', set, 'composition.py'),
+          resolve('../../tools/music/sets', set, 'composition.py'),
           'utf8',
         );
         const result = await runner.run(
@@ -122,7 +122,7 @@ it.skipIf(process.env['MUSIC_RENDER_TEST'] !== '1')(
             aiGenerated: true,
           },
         );
-        const directory = resolve('../artifacts/music-studio-renders', pipeline);
+        const directory = resolve('../../artifacts/music-studio-renders', pipeline);
         await mkdir(directory, { recursive: true });
         await writeFile(
           resolve(directory, 'report.json'),
