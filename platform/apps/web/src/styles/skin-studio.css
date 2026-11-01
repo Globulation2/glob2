@@ -1572,7 +1572,7 @@
 }
 
 /* Thai marks and word boundaries need more room than the compact Latin swatch
-   captions. Keep four square cells so each label stays over its canvas sphere. */
+   captions. Keep two square cells so each label stays over its canvas sphere. */
 :root:lang(th) .skin-materials button {
   font-size: 13px;
   line-height: 1.6;
