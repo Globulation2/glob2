@@ -118,7 +118,7 @@ void SettingsScreen::buildCustomAIs()
 	}
 	catch (const std::exception &e)
 	{
-		info(Glob2UI::exceptionText(e));
+		info(aiConstructionError.exception(e));
 		return;
 	}
 	auto &s = *customAIs;

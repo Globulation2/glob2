@@ -363,6 +363,111 @@ class MachineDraftTest(TranslationProgramTest):
                     self.run_machine()
             network.assert_not_called()
 
+    def legacy_response(self, target):
+        def response(request, timeout):
+            from io import BytesIO
+            payload = json.loads(request.data)
+            self.assertEqual(timeout, 90)
+            self.assertEqual(payload['sourceLanguageCode'], 'en')
+            self.assertEqual(payload['targetLanguageCode'], target)
+            self.assertEqual(payload['model'], 'projects/test-project/locations/global/models/general/nmt')
+            self.assertEqual(request.get_header('Authorization'), 'Bearer fake-access-token')
+            return BytesIO(json.dumps({'translations': [{'translatedText': 'DRAFT ' + value}
+                                                        for value in payload['contents']]}).encode())
+        return response
+
+    def test_legacy_scope_is_opt_in_and_default_scope_is_unchanged(self):
+        self.assertEqual(PROGRAM.LOCALES, (
+            'hi', 'bn', 'ur', 'mr', 'te', 'sw', 'ha', 'ta', 'fil', 'th', 'gu',
+            'pa-Guru', 'pa-Arab', 'kn', 'am', 'yo', 'my', 'jv', 'ne', 'om',
+            'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'bg'))
+        self.assertEqual(self.manifest['locales'], list(PROGRAM.LOCALES))
+        selected = PROGRAM.prepare(self.output / 'legacy', 1, self.root, locales=('cs', 'pt-PT', 'sr-Cyrl'))
+        self.assertEqual(selected['locales'], ['cs', 'pt-PT', 'sr-Cyrl'])
+        self.assertEqual(set(PROGRAM.NMT_TARGETS), set(PROGRAM.LEGACY_NATIVE_LOCALES) | {'bg'})
+        # Game filenames are aliases, not canonical Intl/manifest language choices.
+        for invalid in ('br', 'cz', 'dk', 'gr', 'si', 'sr', 'pt', 'zh-cn', 'zh-tw'):
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'supported draft locales'):
+                PROGRAM.prepare(self.output / ('invalid-' + invalid), 1, self.root, locales=(invalid,))
+
+    def test_legacy_native_aliases_use_reviewed_explicit_nmt_targets(self):
+        cases = {'cs': ('cz', 'cs'), 'da': ('dk', 'da'), 'el': ('gr', 'el'),
+                 'sl': ('si', 'sl'), 'sr-Cyrl': ('sr', 'sr'),
+                 'zh-Hans': ('zh-cn', 'zh-CN'), 'zh-Hant': ('zh-tw', 'zh-TW'),
+                 'pt-PT': ('pt', 'pt-PT'), 'pt-BR': ('br', 'pt-BR')}
+        output = self.output / 'aliases'
+        PROGRAM.prepare(output, 1, self.root, locales=tuple(cases))
+        for locale, (native, target) in cases.items():
+            with self.subTest(locale=locale), patch.object(PROGRAM.urllib.request, 'urlopen',
+                                                         side_effect=self.legacy_response(target)) as request:
+                result = PROGRAM.machine_draft(output, locale, 'test-project', only_keys=['native:[hello]'])
+            self.assertEqual(result['filled'], 1)
+            self.assertEqual(result['paid_requests'], 1)
+            request.assert_called_once()
+            paths = PROGRAM.catalog_paths(output, locale)
+            self.assertEqual(paths['native'].name, 'texts.' + native + '.txt')
+            self.assertEqual(paths['online'].name, locale + '.json')
+            self.assertIn('DRAFT Hello', paths['native'].read_text())
+            saved = next((output / 'machine' / locale / 'raw').glob('*.request.json'))
+            payload = json.loads(saved.read_text())['payload']
+            self.assertEqual(payload['targetLanguageCode'], target)
+            self.assertEqual(payload['contents'], ['Hello'])
+        self.assertEqual(PROGRAM.game_code('fuc-Latn'), 'fuc')
+        self.assertEqual(PROGRAM.game_code('bg'), 'bg')
+
+    def test_native_br_metadata_is_brazilian_portuguese_not_breton(self):
+        # Native game codes are historical identifiers, not necessarily ISO codes.
+        metadata, errors = PROGRAM.CHECKER.read_table(PROGRAM.ROOT / 'data/texts.br.txt')
+        self.assertEqual(errors, [])
+        self.assertEqual(metadata['[language]'], 'Português do Brasil')
+        self.assertEqual(metadata['[language-code]'], 'br')
+        self.assertEqual(PROGRAM.game_code('pt-BR'), metadata['[language-code]'])
+        self.assertEqual(PROGRAM.NMT_TARGETS['pt-BR'], 'pt-BR')
+        self.assertIn('pt-BR', PROGRAM.LEGACY_NATIVE_LOCALES)
+        self.assertNotIn('br', PROGRAM.LEGACY_NATIVE_LOCALES)
+        self.assertNotIn('br', PROGRAM.SUPPORTED_DRAFT_LOCALES)
+        self.assertNotIn('br', PROGRAM.NMT_TARGETS)
+
+    def test_unreviewed_script_targets_fail_before_auth_or_network(self):
+        self.auth_mock.reset_mock()
+        with patch.object(PROGRAM.urllib.request, 'urlopen') as request:
+            for locale in ('br', 'pa-Arab', 'pa-Guru', 'sr-Latn', 'pt', 'zh', 'fuc-Latn'):
+                with self.subTest(locale=locale), self.assertRaisesRegex(ValueError, 'No reviewed Google NMT target'):
+                    PROGRAM.machine_draft(self.output, locale, 'test-project')
+            request.assert_not_called()
+        self.auth_mock.assert_not_called()
+
+    def test_cross_locale_ledger_cap_cache_identity_and_resume_are_shared(self):
+        output = self.output / 'shared-budget'
+        PROGRAM.prepare(output, 1, self.root, locales=('bg', 'cs'))
+        key = ['native:[hello]']
+        with patch.object(PROGRAM.urllib.request, 'urlopen', side_effect=self.legacy_response('bg')):
+            first = PROGRAM.machine_draft(output, 'bg', 'test-project', only_keys=key)
+        ledger_path = output / 'machine/spend-ledger.json'
+        ledger = json.loads(ledger_path.read_text())
+        spent = first['reserved_usd']
+        with patch.object(PROGRAM.urllib.request, 'urlopen') as request:
+            with self.assertRaisesRegex(ValueError, 'Cost cap would be exceeded'):
+                PROGRAM.machine_draft(output, 'cs', 'test-project', max_cost_usd=spent, only_keys=key)
+            request.assert_not_called()
+        self.assertEqual(len(json.loads(ledger_path.read_text())['reservations']), 1)
+        with patch.object(PROGRAM.urllib.request, 'urlopen', side_effect=self.legacy_response('cs')):
+            PROGRAM.machine_draft(output, 'cs', 'test-project', only_keys=key)
+        ledger = json.loads(ledger_path.read_text())
+        self.assertEqual([r['locale'] for r in ledger['reservations']], ['bg', 'cs'])
+        self.assertNotEqual(ledger['reservations'][0]['request_sha256'], ledger['reservations'][1]['request_sha256'])
+        total = sum(PROGRAM.Decimal(r['reserved_usd']) for r in ledger['reservations'])
+        # Restore a blank for a cache replay: target identity remains distinct, with no reservation.
+        native = PROGRAM.catalog_paths(output, 'bg')['native']
+        native.write_text(native.read_text().replace('DRAFT Hello', ''))
+        with patch.object(PROGRAM.urllib.request, 'urlopen') as request:
+            replay = PROGRAM.machine_draft(output, 'bg', 'test-project', only_keys=key)
+            self.assertEqual(replay['paid_requests'], 0)
+            self.assertEqual(replay['reserved_usd'], str(total))
+            request.assert_not_called()
+        self.assertEqual(len(json.loads(ledger_path.read_text())['reservations']), 2)
+        self.assertIn('DRAFT Hello', native.read_text())
+
     def test_bg_requires_adversarial_review_without_changing_existing_gates(self):
         record, paths = self.complete_record('bg')
         issues = PROGRAM.audit_review(self.manifest, record, paths)

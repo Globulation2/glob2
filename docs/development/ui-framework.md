@@ -158,7 +158,14 @@ boundary. Bulgarian shows an existing reviewed summary and logs the original
 diagnostic; other locales retain their previous message. Throw UI-only
 `PresentedError` for deliberately localized API or native messages so a catch
 preserves their specific wording. Its optional original diagnostic preserves
-logging and prior non-Bulgarian behavior. Keep this marker out of models,
+logging and prior non-Bulgarian behavior. Repeated display paths use a
+per-context `DiagnosticText` cache: exact existing native keys retain their
+wording, unknown Bulgarian diagnostics use the reviewed summary, and unchanged
+failures do not log again on every paint. Keep raw validation and readiness data
+separate from displayed summaries. Hive reports retain their public raw string
+history; only explicit local producer metadata permits application acknowledgments
+to be translated. Remote reports and user-authored order text are never classified
+by matching their contents. Keep `PresentedError` out of models,
 protocols, storage and CLI code, and retain cleanup and rollback handling.
 
 Bulgarian initially uses the already reviewed English/Bulgarian online catalogs.
@@ -206,6 +213,18 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+Bulgarian diagnostic surfaces keep raw errors in the diagnostic log and display
+an existing reviewed native message where available, otherwise the reviewed
+online summary. `Glob2UI::DiagnosticText` keeps a bounded cache per UI context;
+changing the diagnostic invalidates its display cache. It does not change model
+readiness, error codes, or transmitted values. Script-editor statuses, cursor
+coordinates and built-in Hive notices have explicit catalog keys. Hive's public
+string report history remains unchanged; a private companion records which
+messages were created locally. Remote reports and user text are never classified
+by matching their contents. Editor preview status retains its raw event and
+localizes it during rendering so changing language updates an existing notice
+without restarting the engine.
+
 For a Bulgarian Google Cloud draft, prepare a kit with `--locales bg`, then run:
 
 ```sh
@@ -228,6 +247,17 @@ monthly free credits are not assumed. The ledger covers this kit, not unrelated
 project usage. Reuse the same kit when resuming to retain its budget history.
 Damaged protected tokens or invalid responses stop drafting and retain evidence;
 review the affected entry before resuming rather than guessing a repair.
+
+The same explicit drafting command supports the legacy native locales when new
+shared keys need translations. Use canonical locale tags in `--locales` and
+`--locale`; native filename aliases are mapped separately. In particular,
+`pt-BR` writes `texts.br.txt` (Brazilian Portuguese), while `pt-PT` writes
+`texts.pt.txt`. Canonical `br` would mean Breton and is rejected. Inspect each
+catalog's language metadata before adding a mapping. This opt-in scope does not
+change the default release-language set or certify an unfinished online catalog.
+When a source expansion needs a fresh immutable kit, carry the complete cumulative
+cost ledger and provider evidence forward before any further request; a new
+output directory must not reset the task's spending budget.
 
 Bulgarian additionally requires an independent adversarial pass over every batch,
 after semantic review and editorial correction. Use standard Bulgarian Cyrillic
@@ -319,7 +349,13 @@ production map editor, terrain controls and menu on a blank map without stepping
 the simulation. Setup and menu navigation use controlled harness friend access;
 captures use the production editor drawing path. It uses the portable SDL renderer; set `GLOB2_MOBILE_UI=1` to
 inspect the phone presentation. These resized desktop captures do not establish
-rendering on an actual mobile device.
+rendering on an actual mobile device. `script-editor ROOT INPUT OUTPUT WIDTH HEIGHT`
+opens the production scenario editor and captures its localized cursor, successful
+JavaScript validation and a controlled syntax failure. It validates temporary
+source without confirming or saving the scenario and checks that map state is
+unchanged. Use a fresh profile with `textSizePercent=100` or `150` to exercise
+normal and enlarged text; record the profile, viewport and presentation settings
+with the captures.
 
 Capture evidence includes the executable hash and compiled build provenance,
 as well as current source, catalog and font hashes. Freeze sources during builds

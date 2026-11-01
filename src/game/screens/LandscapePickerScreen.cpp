@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/LibraryText.h"
 #include "LandscapePickerScreen.h"
@@ -88,12 +89,15 @@ std::vector<GenerationRequest> LandscapePickerScreen::requestsOf(const std::vect
 void LandscapePickerScreen::recomputeIncompatible()
 {
 	incompatible.assign(entries.size(), {});
+	incompatibleText.assign(entries.size(), {});
 	for (std::size_t i = 0; i < entries.size(); ++i)
 	{
 		const auto &entry = entries[i];
 		if (entry.method < 0)
 			continue;
 		incompatible[i] = validateGenerationRequest(entry.request, entry.request.definition());
+		Glob2UI::DiagnosticText presenter;
+		incompatibleText[i] = presenter(incompatible[i]);
 	}
 }
 
@@ -418,7 +422,7 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 		box.padding = p.pt(12);
 		// At least the preview's square, taller when the explanation needs it.
 		picture = fe::constrained({image, image, image, fe::Constraints::Unbounded},
-								  fe::card(fe::paragraph(incompatible[std::size_t(i)], {fe::FontRole::Support, true}), box));
+								  fe::card(fe::paragraph(incompatibleText[std::size_t(i)], {fe::FontRole::Support, true}), box));
 	}
 	else if (tileState.widget && tileState.widget->isThumbnailLoaded())
 	{

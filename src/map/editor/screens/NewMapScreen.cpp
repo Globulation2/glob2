@@ -175,7 +175,7 @@ Element NewMapScreen::build(const Presentation &p)
 				control(c);
 	}
 	if (!error.empty())
-		fields.push_back(fe::paragraph(error, {fe::FontRole::Support}));
+		fields.push_back(fe::paragraph(validationError(error), {fe::FontRole::Support}));
 	auto form = fe::column(std::move(fields), {p.pt(8)});
 	auto previewElement = fe::column(
 		{fe::center(fe::mapPreview("preview", *preview, 300)),

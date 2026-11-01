@@ -1,37 +1,5 @@
-[hub finish in browser, game continues]
-Завършете влизането в браузъра си. Играта продължава сама, след като приключите.
-[hub browser did not open]
-Вашият браузър не се отвори. Отворете страницата за вход, за да продължите.
-[hub compare code %0]
-Ако страницата го поиска, проверете дали на нея е изписан кодът %0.
-[hub code copied]
-Кодът е копиран
-[settings Finish in your browser. The game continues by itself.]
-Завършете в браузъра си. Играта продължава сама.
-[music set]
-Музикален комплект
-[random music set]
-Случаен за всеки мач
-[playing music set %0]
-В момента звучи: %0
-[music set failed]
-Не можа да се зареди този музикален комплект.
-[settings Edge scrolling]
-Превъртане при ръба
-[settings Edge scrolling in fullscreen]
-Превъртане при ръба на цял екран
-[settings Edge scrolling in windowed mode]
-Превъртане при ръба в прозорец
-[settings Move the game and editor maps when the mouse reaches the window edge.]
-Преместване на картите в играта и редактора, когато показалецът достигне ръба на прозореца.
 [%0 has left the game]
 %0 напусна играта.
-[start recording]
-Начало на запис
-[stop recording]
-Спиране на записа
-[finalizing recording]
-Финализиране на записа…
 [%0 level %1]
 %0 — ниво %1
 [%0 units can't access building]
@@ -406,6 +374,16 @@ f9
 Играта е пълна
 [game shortcuts]
 Клавишни комбинации за играта
+[game speed help]
+Само за един играч и повторения. Мултиплейърът работи с 1x.
+[music set]
+Музикален комплект
+[random music set]
+Случаен за всеки мач
+[playing music set %0]
+В момента звучи: %0
+[music set failed]
+Не можа да се зареди този музикален комплект.
 [game speed]
 Скорост на играта
 [Game]
@@ -556,6 +534,8 @@ bg
 Позволява обмен на
 [market]
 Пазар
+[maximum game speed]
+Максимално
 [medium priority]
 среден
 [meta %0]
@@ -564,6 +544,8 @@ Meta-%0
 Минимално необходимо ниво:
 [Minimum Level To Flag]
 Мин. ниво на единица
+[multiplayer game speed]
+Скорост на играта: 1x (мултиплейър)
 [Music volume]
 Сила на звука (музика)
 [Mute]
@@ -704,6 +686,8 @@ Print Screen
 Възстановяване на клавишни комбинации по подразбиране
 [return to editor]
 Връщане към редактора
+[Reroll terrain look]
+Нов случаен облик на терена
 [return to game]
 Връщане към играта
 [return to replay]
@@ -728,8 +712,6 @@ Enter
 Запазване на играта
 [save map]
 Запазване на картата
-[Reroll terrain look]
-Нов случаен облик на терена
 [save replay]
 Запазване на повторението
 [save script]
@@ -1012,6 +994,8 @@ Tab
 Общо натрупан престиж
 [Total]
 Общо
+[tutorial]
+Урок
 [tutorial text 1]
 Добре дошли в основния урок за Globulation 2! Този урок ще обхване всичко - от строежа на ханове, през изследването на зони, до унищожаването на врагове! Тук няма недостиг на полезни знания!
 [tutorial text 2]
@@ -1020,8 +1004,6 @@ Tab
 Справихте се добре дотук. Сега нека преминем към воините, казармите и подобренията.
 [tutorial text 4]
 Почти сте готови. Остават само флагове и атака. След това ще знаете достатъчно, за да изпробвате персонализирани игри и евентуално да играете онлайн срещу някои от най-добрите играчи на Globulation 2.
-[tutorial]
-Урок
 [Uncontrolled]
 Неконтролирано
 [undo]
@@ -1120,12 +1102,6 @@ Tab
 Вашият %0 е под атака
 [Your unit got converted to %0's team]
 Ваша единица се присъедини към отбора на %0
-[game speed help]
-Само за един играч и повторения. Мултиплейърът работи с 1x.
-[maximum game speed]
-Максимално
-[multiplayer game speed]
-Скорост на играта: 1x (мултиплейър)
 [Units still inside: %0]
 Все още вътре: %0
 [Units still working: %0]
@@ -2210,10 +2186,10 @@ OpenGL не е наличен в тази компилация.
 Статистика 1/3 >
 [Stats page two]
 Статистика 2/3 >
-[Stats page three]
-Статистика 3/3 >
 [Stats next page]
 Страница (P)
+[Stats page three]
+Статистика 3/3 >
 [Stats blocked units]
 Блокирани единици S/C
 [Stats blocked buildings]
@@ -2240,12 +2216,12 @@ OpenGL не е наличен в тази компилация.
 Растеж в рамките на 32 плочки
 [Stats low HP 25]
 Единици на 25% HP
-[Stats low food 25]
-Единици с 25% хранителен резерв
 [Stats low HP 50]
 Единици на 50% HP
 [Stats low HP 75]
 Единици на 75% HP
+[Stats low food 25]
+Единици с 25% хранителен резерв
 [Stats low food 50]
 Единици с 50% хранителен резерв
 [Stats low food 75]
@@ -3298,6 +3274,22 @@ CPU %0%
 Отскачане на списъците
 [Map momentum]
 Инерция на картата
+[lan pairing field]
+Низ за сдвояване на хост (или надежден WSS URL)
+[lan pairing connect]
+Сдвояване и свързване
+[lan discovery instructions]
+Изберете хост, след което поставете низа му за сдвояване, за да потвърдите неговата самоличност.
+[lan discovery unavailable]
+Откриването в LAN не е достъпно. Проверете разрешението за локалната мрежа или поставете низа за сдвояване с домакина.
+[lan discovered host %0]
+Открит хост %0 — сдвояване за преглед на игри
+[lan connection unavailable]
+Невъзможно е да се достигне до хоста LAN. Проверете разрешенията за локална мрежа и низа за сдвояване на хоста.
+[lan connection verification failed %0]
+Невъзможна проверка или свързване с хоста LAN: %0
+[lan lobby endpoint required]
+Използвайте крайната точка на лобито на хоста
 [settings Artwork]
 Графика
 [settings Original]
@@ -3364,22 +3356,6 @@ CPU %0%
 Размер на текста
 [settings Enlarge interface text without changing the map scale.]
 Уголемяване на текста на интерфейса без промяна на мащаба на картата.
-[lan pairing field]
-Низ за сдвояване на хост (или надежден WSS URL)
-[lan pairing connect]
-Сдвояване и свързване
-[lan discovery instructions]
-Изберете хост, след което поставете низа му за сдвояване, за да потвърдите неговата самоличност.
-[lan discovery unavailable]
-Откриването в LAN не е достъпно. Проверете разрешението за локалната мрежа или поставете низа за сдвояване с домакина.
-[lan discovered host %0]
-Открит хост %0 — сдвояване за преглед на игри
-[lan connection unavailable]
-Невъзможно е да се достигне до хоста LAN. Проверете разрешенията за локална мрежа и низа за сдвояване на хоста.
-[lan connection verification failed %0]
-Невъзможна проверка или свързване с хоста LAN: %0
-[lan lobby endpoint required]
-Използвайте крайната точка на лобито на хоста
 [turn reconnecting]
 Връзката с хоста е загубена. Възстановява се връзка...
 [turn waiting for players]
@@ -4628,6 +4604,12 @@ CPU %0%
 Отваряне на командира
 [stop commander]
 Спиране на командира
+[start recording]
+Начало на запис
+[stop recording]
+Спиране на записа
+[finalizing recording]
+Финализиране на записа…
 [settings Recording]
 Запис
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
@@ -5308,6 +5290,24 @@ FFmpeg не е наличен, така че записът е изключен.
 Музикален комплект
 [settings Random each match]
 Изберете „Случаен за всеки мач“ за автоматичен избор на музика в началото на всеки мач.
+[settings Edge scrolling]
+Превъртане при ръба
+[settings Edge scrolling in fullscreen]
+Превъртане при ръба на цял екран
+[settings Edge scrolling in windowed mode]
+Превъртане при ръба в прозорец
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+Преместване на картите в играта и редактора, когато показалецът достигне ръба на прозореца.
+[hub finish in browser, game continues]
+Завършете влизането в браузъра си. Играта продължава сама, след като приключите.
+[hub browser did not open]
+Вашият браузър не се отвори. Отворете страницата за вход, за да продължите.
+[hub compare code %0]
+Ако страницата го поиска, проверете дали на нея е изписан кодът %0.
+[hub code copied]
+Кодът е копиран
+[settings Finish in your browser. The game continues by itself.]
+Завършете в браузъра си. Играта продължава сама.
 [AI Library]
 Библиотека с ИИ
 [Authoring guide]
@@ -5767,7 +5767,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [editor map saved]
 Картата е запазена
 [editor map shared]
-Карта, споделена онлайн
+Картата е споделена онлайн
 [editor save needs fertility]
 За запазването е необходима картата на плодородието, така че запазването беше отменено. Натиснете „Добре“, за да опитате отново.
 [editor fertility stale]
@@ -5982,6 +5982,8 @@ Discord е отворен. Можете да се върнете в играта
 Discord не можа да се отвори. Копирайте линка за покана и го отворете в браузъра си.
 [discord link copied]
 Линкът за покана е копиран.
+[discord copy failed]
+Не можа да се копира линкът. Изберете поканата по-горе, за да я копирате ръчно.
 [settings CPU automatic]
 Автоматично чрез CPU
 [settings Scalar]
@@ -6054,8 +6056,6 @@ MCP сървър
 Лява ръка
 [Right hand]
 Дясна ръка
-[discord copy failed]
-Не можа да се копира линкът. Изберете поканата по-горе, за да я копирате ръчно.
 [stat ground movement]
 Наземно придвижване
 [stat ground movement about]
@@ -6442,6 +6442,8 @@ MCP сървър
 Показване на целта
 [intro scout destination]
 Разузнайте тук
+[intro attack destination]
+Атака тук
 [intro compact scout]
 Флагове → Разузнавателен флаг. Поставете го върху камъка; заявете 1 разузнавач.
 [intro compact build]
@@ -6757,7 +6759,7 @@ MCP сървър
 [lesson fortifications tower compact]
 Изграждане → Кула. Поставете я в маркираната зона.
 [lesson fortifications walls compact]
-Изградете 2 стени. Дръжте западната лента на кулата отворена.
+Изградете 2 стени. Оставете прохода западно от кулата свободен.
 [lesson fortifications supply compact]
 Изберете кула → снабдители. Изчакайте 2 камъка.
 [lesson fortifications hold compact]
@@ -6770,17 +6772,51 @@ MCP сървър
 Удържайте зоната за охрана. Поддържайте хановете снабдени.
 [lesson defensive-tactics counterattack compact]
 Боен флаг → вражески рояк. Заявете 3 воини; радиус ≤4.
-[intro attack destination]
-Атака тук
 [Grassland]
-Пасища
+Тревни площи
 [Kopjes]
-Копйес
+Скалисти хълмове
 [Game trails]
 Пътеки за дивеч
 [Fish amount]
 Количество риба
-[scenario messages]
-Съобщения ▸
 [Camp-site amount]
 Количество лагери
+[scenario messages]
+Съобщения ▸
+[script compilation success]
+Успешна компилация
+[script error at %0:%1: %2]
+Грешка на ред %0, колона %1: %2
+[script compilation failure %0:%1:(%2):%3]
+Неуспешна компилация: %0:%1:(%2): %3
+[script compilation failed %0]
+Неуспешна компилация: %0
+[script loading failed %0]
+Зареждането на скрипта от %0 не бе успешно
+[script saving failed %0]
+Запазването на скрипта в %0 не бе успешно
+[script line %0 column %1]
+Ред: %0 · колона: %1
+[game stopped %0]
+Играта е прекратена: %0
+[game stopped script help]
+Прегледайте вградения JavaScript код и потреблението му на ресурси, преди да стартирате тази игра отново.
+[missing map generator %0]
+Липсва генератор на карти: %0. Избран е вграден пейзаж.
+[hive standing order paused]
+Постоянна заповед изисква внимание и е поставена на пауза.
+[hive connection changed orders paused]
+Връзката се промени. Прегледайте постоянните си заповеди на пауза, преди да ги възобновите.
+[hive standing order fresh instruction]
+Постоянната заповед изисква ново указание след повторното свързване. Можете да я отмените или да помолите командира да я замени.
+[hive order confirmation failed]
+Една заповед не можа да бъде потвърдена. Прегледайте постоянните си заповеди, преди да ги възобновите.
+[hive previous order sending]
+Предишната ви заповед все още се изпраща. Това съобщение е запазено; отворете командира, за да го изпратите отново.
+[hive order received %0]
+Получена заповед: %0
+[hive order not confirmed]
+Заповедта не е потвърдена. Отворете командира, за да опитате отново; съобщението ви е запазено.
+[hive standing order update failed]
+Актуализирането на постоянната заповед не бе успешно. Заповедта ви е на пауза на това устройство; опитайте отново чрез съответната контрола.

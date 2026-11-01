@@ -6784,3 +6784,39 @@ MCP 伺服器
 訊息 ▸
 [Camp-site amount]
 營地數量
+[script compilation success]
+編譯成功
+[script error at %0:%1: %2]
+第 %0 行、第 %1 欄發生錯誤：%2
+[script compilation failure %0:%1:(%2):%3]
+編譯失敗：%0:%1:(%2):%3
+[script compilation failed %0]
+編譯失敗：%0
+[script loading failed %0]
+從 %0 載入腳本失敗
+[script saving failed %0]
+儲存腳本到 %0 失敗
+[script line %0 column %1]
+行：%0 欄：%1
+[game stopped %0]
+遊戲停止：%0
+[game stopped script help]
+在重新啟動遊戲之前，請檢查嵌入的 JavaScript 程式碼及其資源使用情況。
+[missing map generator %0]
+缺少地圖產生器：%0。已選取內建地形。
+[hive standing order paused]
+一項常駐指令需要處理，目前已暫停。
+[hive connection changed orders paused]
+連線已變更。請在恢復之前檢查已暫停的常駐指令。
+[hive standing order fresh instruction]
+重新連線後，一項常駐指令需要新的指示。您可以取消該指令，或請指揮官將其替換。
+[hive order confirmation failed]
+無法確認一項指令。請在恢復之前檢查您的常駐指令。
+[hive previous order sending]
+您先前的指令仍在傳送中。此訊息已儲存；請開啟指揮官重新傳送。
+[hive order received %0]
+已收到指令：%0
+[hive order not confirmed]
+指令未確認。請開啟指揮官重試；您的訊息已儲存。
+[hive standing order update failed]
+常駐指令更新失敗。您的指令已在此裝置上暫停；請使用對應的控制項重試。

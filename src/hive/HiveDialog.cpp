@@ -1,3 +1,4 @@
+#include "ui/HiveReportText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiveDialog.h"
 #include <utility>
@@ -117,12 +118,12 @@ Element Dialog::build(const Presentation &p)
 		const auto count = std::min<std::size_t>(10, client->reports.size());
 		for (std::size_t i = 0; i < count; ++i)
 			cards.push_back(card(
-				paragraph(controlStatusText(client->reports[client->reports.size() - 1 - i]), {FontRole::Caption}),
+				paragraph(Glob2UI::hiveReportText(client->reportPresentation(client->reports.size() - 1 - i)), {FontRole::Caption}),
 				compact));
 	}
 	else if (client->progress.empty() && !client->reports.empty())
 		cards.push_back(
-			card(paragraph(preview(controlStatusText(client->reports.back()), 180), {FontRole::Caption}), compact));
+			card(paragraph(preview(Glob2UI::hiveReportText(client->reportPresentation(client->reports.size() - 1)), 180), {FontRole::Caption}), compact));
 	for (auto &order : client->standingOrders())
 	{
 		const std::string id = order.at("id"), name = order.at("name"),

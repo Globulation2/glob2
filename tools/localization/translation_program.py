@@ -30,6 +30,33 @@ SPEC.loader.exec_module(CHECKER)
 LOCALES = ('hi', 'bn', 'ur', 'mr', 'te', 'sw', 'ha', 'ta', 'fil', 'th', 'gu',
            'pa-Guru', 'pa-Arab', 'kn', 'am', 'yo', 'my', 'jv', 'ne', 'om',
            'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'bg')
+# Existing registered native languages are opt-in compatibility drafting scopes.
+# LOCALES and prepare()'s default retain the original translation-program scope.
+LEGACY_NATIVE_LOCALES = (
+    'ar', 'pt-BR', 'ca', 'cs', 'da', 'de', 'eo', 'es', 'eu', 'fa', 'fi', 'fr',
+    'el', 'hi', 'hu', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-PT', 'ro', 'ru',
+    'sl', 'sk', 'sr-Cyrl', 'sv', 'sw', 'tr', 'uk', 'ur', 'vi', 'zh-Hans', 'zh-Hant',
+)
+SUPPORTED_DRAFT_LOCALES = tuple(dict.fromkeys(LOCALES + LEGACY_NATIVE_LOCALES))
+NATIVE_GAME_CODES = {
+    'fuc-Latn': 'fuc', 'cs': 'cz', 'da': 'dk', 'el': 'gr', 'sl': 'si',
+    'pt-BR': 'br', 'sr-Cyrl': 'sr', 'zh-Hans': 'zh-cn', 'zh-Hant': 'zh-tw', 'pt-PT': 'pt',
+}
+# Explicitly reviewed Google general/nmt targets only. Do not derive these from
+# BCP-47 prefixes: a valid draft locale can still have an unsupported script.
+# https://docs.cloud.google.com/translate/docs/languages#nmt
+# Serbian sr is the NMT target for native Cyrillic; Chinese uses API region codes.
+# Native br is Brazilian Portuguese (not Breton); native pt is European Portuguese.
+# Both Portuguese variants deliberately use their reviewed regional API targets.
+NMT_TARGETS = {
+    'bg': 'bg', 'ar': 'ar', 'pt-BR': 'pt-BR', 'ca': 'ca', 'cs': 'cs', 'da': 'da',
+    'de': 'de', 'eo': 'eo', 'es': 'es', 'eu': 'eu', 'fa': 'fa', 'fi': 'fi',
+    'fr': 'fr', 'el': 'el', 'hi': 'hi', 'hu': 'hu', 'id': 'id', 'it': 'it',
+    'ja': 'ja', 'ko': 'ko', 'nl': 'nl', 'pl': 'pl', 'pt-PT': 'pt-PT',
+    'ro': 'ro', 'ru': 'ru', 'sl': 'sl', 'sk': 'sk', 'sr-Cyrl': 'sr',
+    'sv': 'sv', 'sw': 'sw', 'tr': 'tr', 'uk': 'uk', 'ur': 'ur', 'vi': 'vi',
+    'zh-Hans': 'zh-CN', 'zh-Hant': 'zh-TW',
+}
 SOURCE_PATHS = ('data/texts.keys.txt', 'data/texts.en.txt',
                 'platform/packages/i18n/locales/en.json',
                 'platform/packages/i18n/plural-sources.json',
@@ -58,7 +85,7 @@ def write_json(path, value):
 
 
 def game_code(locale):
-    return 'fuc' if locale == 'fuc-Latn' else locale.lower()
+    return NATIVE_GAME_CODES.get(locale, locale.lower())
 
 
 def sources(root=ROOT):
@@ -89,7 +116,7 @@ def domain(surface, key):
 
 def prepare(output, batch_size=160, root=ROOT, locales=LOCALES):
     locales = tuple(locales)
-    if not locales or len(locales) != len(set(locales)) or set(locales) - set(LOCALES):
+    if not locales or len(locales) != len(set(locales)) or set(locales) - set(SUPPORTED_DRAFT_LOCALES):
         raise ValueError('Select distinct supported draft locales')
     keys, native, online, hashes, source_hash = sources(root)
     manifest_path = output / 'manifest.json'
@@ -416,8 +443,8 @@ def machine_draft(output, locale, project, max_cost_usd='10', rate_per_million='
     A reservation is never refunded, including HTTP errors, timeouts and crashes.
     The ledger is shared by all locales/projects in a kit. Cache hits are free.
     """
-    if locale != 'bg':
-        raise ValueError('machine-draft currently supports only bg')
+    if locale not in NMT_TARGETS:
+        raise ValueError('No reviewed Google NMT target for locale: ' + str(locale))
     if not project or not re.fullmatch(r'[a-z][a-z0-9-]{4,61}[a-z0-9]|[0-9]+', project):
         raise ValueError('A valid Google Cloud project ID or number is required')
     try:
@@ -508,7 +535,7 @@ def _machine_draft(output, locale, project, cap, rate, retries, limit_entries, o
     if batch:
         batches.append(batch)
     for batch in batches:
-        payload = {'sourceLanguageCode': 'en', 'targetLanguageCode': locale, 'mimeType': 'text/plain',
+        payload = {'sourceLanguageCode': 'en', 'targetLanguageCode': NMT_TARGETS[locale], 'mimeType': 'text/plain',
                    'model': f'projects/{project}/locations/global/models/general/nmt',
                    'contents': [item['protected'] for item in batch]}
         endpoint = f'https://translation.googleapis.com/v3/projects/{project}/locations/global:translateText'
@@ -608,8 +635,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=('prepare', 'draft', 'status', 'check-draft', 'machine-draft'))
     parser.add_argument('--output', type=Path, default=ROOT / 'artifacts/translation-program')
-    parser.add_argument('--locale', choices=LOCALES)
-    parser.add_argument('--locales', nargs='+', choices=LOCALES, help='limit a new prepare kit to these locales')
+    parser.add_argument('--locale', choices=SUPPORTED_DRAFT_LOCALES)
+    parser.add_argument('--locales', nargs='+', choices=SUPPORTED_DRAFT_LOCALES, help='limit a new prepare kit to these locales')
     parser.add_argument('--batch-size', type=int, default=160)
     parser.add_argument('--only-keys', type=Path, help='JSON list of source entry IDs for a representative pilot')
     parser.add_argument('--limit-entries', type=int, help='fill at most this many blank entries for a bounded pilot')

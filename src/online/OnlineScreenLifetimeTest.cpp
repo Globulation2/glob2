@@ -25,6 +25,8 @@
 #include "QuickMatchScreen.h"
 #include "SettingsScreen.h"
 #include "ui/ApiErrorText.h"
+#include "ui/DiagnosticText.h"
+#include "ui/HiveReportText.h"
 #include "ui/LibraryText.h"
 #include <FormatableString.h>
 
@@ -329,4 +331,34 @@ TEST_CASE("Bulgarian AI catalogue callback uses reviewed response errors and kee
 	platform.client.update();
 	CHECK(hasNotice(Glob2UI::apiErrorText(Online::errorFromJson(api, ""))));
 	CHECK_FALSE(hasNotice(Glob2UI::onlineProblemText("")));
+}
+
+TEST_CASE("Diagnostic UI preserves reviewed native summaries, raw values and explicit report provenance" *
+		  doctest::test_suite("OnlineScreenLifetime"))
+{
+	glob2test::GlobalsOptions options{.loadStrings = true};
+	options.beforeLoad = [](GlobalContainer &g) { g.settings.language = "bg"; };
+	glob2test::HeadlessGlobals globals(options);
+	Glob2UI::DiagnosticText diagnostic;
+	const std::string raw = "Unknown option preserved-id";
+	CHECK_EQ(diagnostic(raw), Glob2UI::onlineProblemText(""));
+	CHECK_EQ(diagnostic(raw), Glob2UI::onlineProblemText(""));
+	CHECK_EQ(raw, "Unknown option preserved-id");
+	CHECK_EQ(diagnostic("Give at least one terrain type a nonzero weight."),
+		Glob2UI::nativeSurfaceText("[Give at least one terrain type a nonzero weight.]", ""));
+	const Glob2UI::PresentedError deliberate("already presented detail", "raw transport");
+	CHECK_EQ(diagnostic.exception(deliberate), "already presented detail");
+	CHECK_EQ(Glob2UI::literalSurfaceFormat("%1 / %0 / %1", {"literal %1", "user {p0}"}),
+		"user {p0} / literal %1 / user {p0}");
+	const std::string text = "Order received: literal %0 {p0}";
+	CHECK_EQ(Glob2UI::hiveReportText(Hive::Report(text)), text);
+	const Hive::Report local("Order received: literal %0 {p0}", Hive::ReportSource::OrderReceived,
+		"literal %0 {p0}");
+	CHECK_EQ(Glob2UI::hiveReportText(local), Glob2UI::literalSurfaceFormat(
+		Glob2UI::nativeSurfaceText("[hive order received %0]", "Order received: %0"), {local.parameter}));
+	CHECK_EQ(local.text, text);
+	// The old status words in a remote report remain user/commander text.
+	CHECK_EQ(Glob2UI::hiveReportText(Hive::Report("Stopped")), "Stopped");
+	CHECK_EQ(Glob2UI::hiveReportText(Hive::Report("Stopped", Hive::ReportSource::Stopped)),
+		Glob2UI::nativeSurfaceText("[hive stopped]", "Stopped"));
 }

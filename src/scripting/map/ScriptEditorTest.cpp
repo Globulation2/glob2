@@ -2,6 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "ScriptEditorScreen.h"
+#include "ui/DiagnosticText.h"
+#include "UIRecordingCanvas.h"
+#include "FrontendTheme.h"
+#include "ScopedEnvironment.h"
 #include "MapEdit.h"
 #include "LoadSaveDialog.h"
 #include <Toolkit.h>
@@ -369,4 +373,67 @@ TEST_CASE("Script language dropdown selects JavaScript on desktop and phone [dis
 		gfx->nextFrame();
 	}
 	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+}
+
+TEST_CASE("Bulgarian script status distinguishes compilation success and failure without changing source" *
+		  doctest::test_suite("ScriptEditor"))
+{
+	glob2test::GlobalsOptions options{.loadStrings = true};
+	options.beforeLoad = [](GlobalContainer &g) { g.settings.language = "bg"; };
+	glob2test::HeadlessGlobals globals(options);
+	glob2test::HeadlessGame world;
+	ScriptEditorScreen editor(&world.game);
+	editor.selectLanguage(Language::JavaScript);
+	const auto previous = world.game.mapscript.getMapScript();
+	const std::string source = "function step(ctx) { return []; }";
+	editor.setScriptText(source);
+	REQUIRE(editor.compile());
+	CHECK_EQ(editor.compilationText(), Glob2UI::nativeSurfaceText("[script compilation success]", "Compilation success"));
+	CHECK_EQ(editor.scriptText(), source);
+	CHECK_EQ(world.game.mapscript.getMapScript(), previous);
+	editor.setScriptText("function step( {");
+	CHECK_FALSE(editor.compile());
+	CHECK_EQ(editor.compilationText(), Glob2UI::literalSurfaceFormat(
+		Glob2UI::nativeSurfaceText("[script compilation failed %0]", "Compilation failed: %0"),
+		{Glob2UI::onlineProblemText("")}));
+	CHECK_EQ(world.game.mapscript.getMapScript(), previous);
+}
+
+TEST_CASE("Bulgarian script cursor caption reserves measured localized coordinates [display][artifacts]" *
+		  doctest::test_suite("ScriptEditor"))
+{
+	glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "0");
+	glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+		.screenFlags = GAGCore::GraphicContext::RESIZABLE};
+	options.beforeLoad = [](GlobalContainer &g) { g.settings.language = "bg"; };
+	glob2test::HeadlessGlobals globals(options);
+	glob2test::HeadlessGame world;
+	struct RestoreText { double old = GAGCore::userTextScale; ~RestoreText() { GAGCore::userTextScale = old; } } restoreText;
+	for (const auto &[width, height, touch] : {std::tuple{800, 600, false}, {390, 844, true}})
+	for (const double growth : {1.0, 1.5})
+	{
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", touch ? "1" : "0", 1);
+		SDL_SetWindowSize(SDL_GetWindowFromID(globals->gfx->windowID()), width, height);
+		SDL_Event resized{}; resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+		GAGCore::GraphicContext::translateMouseEvent(&resized);
+		ScriptEditorScreen editor(&world.game);
+		editor.attach(*globals->gfx);
+		editor.selectLanguage(Language::JavaScript);
+		const std::string source = std::string(12344, '\n') + std::string(12344, ' ');
+		editor.setScriptText(source);
+		editor.host().state("script").cursor = source.size();
+		GAGCore::userTextScale = growth;
+		editor.draw(0);
+		const auto *caption = editor.host().find("script/cursor");
+		REQUIRE(caption);
+		CHECK_EQ(caption->accessibleText(), Glob2UI::literalSurfaceFormat(
+			Glob2UI::nativeSurfaceText("[script line %0 column %1]", "Line: %0 Col: %1"), {"12345", "12345"}));
+		CHECK(editor.host().presentation().dialog.contains(caption->bounds));
+		GAGGUI::ui::ToolkitTextMeasurer measure(editor.theme(), touch, editor.host().presentation().textUnit);
+		glob2test::RecordingCanvas canvas({width, height}, measure);
+		editor.host().paint(canvas, 0);
+		for (const auto &[at, text] : canvas.texts)
+			if (caption->bounds.contains(at))
+				CHECK(at.x + measure.width(GAGGUI::ui::FontRole::Caption, text) <= caption->bounds.right());
+	}
 }

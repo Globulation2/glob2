@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 #include "tutorial/TutorialModel.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameSessionScreen.h"
@@ -52,11 +53,15 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 		cancelScreenInputReceipt(); input.clear();
 		if (globalContainer->mix)
 			globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
-		stack.push(std::make_unique<MessageScreen>(std::string("Game stopped: ") + failure.what() +
-													   "\nReview the embedded JavaScript and its "
-													   "resource use before restarting this game.",
-												   std::vector<std::string>{"OK"}),
-				   [this](GAGGUI::Screen &, int) { endExecute(0); });
+		const std::string raw = failure.what();
+		Glob2UI::DiagnosticText presenter;
+		const auto message = Glob2UI::bulgarianErrorLocale()
+			? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[game stopped %0]", "Game stopped: %0"), {presenter(raw)}) + "\n" +
+				Glob2UI::nativeSurfaceText("[game stopped script help]", "Review the embedded JavaScript and its resource use before restarting this game.")
+			: "Game stopped: " + raw + "\nReview the embedded JavaScript and its resource use before restarting this game.";
+		stack.push(std::make_unique<MessageScreen>(message,
+			std::vector<std::string>{Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[ok]", "Ok") : "OK"}),
+			[this](GAGGUI::Screen &, int) { endExecute(0); });
 	}
 }
 

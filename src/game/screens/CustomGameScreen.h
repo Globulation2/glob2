@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "CustomGameRules.h"
@@ -79,7 +80,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	void loadCatalogMap(const Online::MapPlayRequest &request);
 	void launchFailed()
 	{
-		message = "Could not launch this map. Your setup is retained; try again.";
+		message = Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[Could not launch this map. Your setup is retained; try again.]", "Could not launch this map. Your setup is retained; try again.") : "Could not launch this map. Your setup is retained; try again.";
 		invalidate();
 	}
 	int selectedSpeed() const { return setup.speed; }
@@ -119,6 +120,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	void beginCatalogDownload();
 	MapHeader mapHeader;
 	GameHeader gameHeader;
+	Glob2UI::DiagnosticText validationError, mapDownloadError;
 	std::string username, source, message;
 	std::unique_ptr<Online::OnlineStorage> aiStorage;
 	std::unique_ptr<Script::Library> aiLibrary;

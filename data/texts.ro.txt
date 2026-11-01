@@ -6784,3 +6784,39 @@ Cantitate de pește
 Mesaje ▸
 [Camp-site amount]
 Număr de tabere
+[script compilation success]
+Compilare reușită
+[script error at %0:%1: %2]
+Eroare la %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Eroare de compilare: %0:%1:(%2):%3
+[script compilation failed %0]
+Compilarea a eșuat: %0
+[script loading failed %0]
+Încărcarea scriptului din %0 a eșuat.
+[script saving failed %0]
+Salvarea scriptului în %0 a eșuat.
+[script line %0 column %1]
+Linie: %0 Coloană: %1
+[game stopped %0]
+Joc oprit: %0
+[game stopped script help]
+Verificați codul JavaScript încorporat și utilizarea resurselor sale înainte de a reporni jocul.
+[missing map generator %0]
+Lipsește generatorul de hărți: %0. A fost selectat un peisaj integrat.
+[hive standing order paused]
+Un ordin permanent necesită atenție și a fost pus pe pauză.
+[hive connection changed orders paused]
+Conexiunea s-a modificat. Verificați ordinele permanente puse pe pauză înainte de a le relua.
+[hive standing order fresh instruction]
+Un ordin permanent necesită o instrucțiune nouă după reconectare. Îl puteți anula sau puteți solicita comandantului să îl înlocuiască.
+[hive order confirmation failed]
+Un ordin nu a putut fi confirmat. Verificați ordinele permanente înainte de a le relua.
+[hive previous order sending]
+Ordinul dvs. anterior este încă în curs de trimitere. Acest mesaj a fost păstrat; deschideți comandantul pentru a-l trimite din nou.
+[hive order received %0]
+Ordin primit: %0
+[hive order not confirmed]
+Ordinul nu a fost confirmat. Deschideți comandantul pentru a încerca din nou; mesajul dvs. a fost păstrat.
+[hive standing order update failed]
+Actualizarea ordinului permanent a eșuat. Ordinul dvs. este pus pe pauză pe acest dispozitiv; încercați din nou folosind controlul corespunzător.

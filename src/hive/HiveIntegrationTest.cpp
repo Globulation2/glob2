@@ -1,5 +1,6 @@
 #include "app/ClientFeatures.h"
 #include "hive/HiveClient.h"
+#include <type_traits>
 #include "online/InstanceConfig.h"
 #include "online/OnlineStorage.h"
 #include "online/PlatformClient.h"
@@ -679,4 +680,36 @@ TEST_CASE("Free client never starts Commander or changes its stored checkpoint" 
     std::string saved;
     REQUIRE(storage.read(checkpoint, saved));
     CHECK(saved == "existing checkpoint");
+}
+
+static_assert(std::is_same_v<decltype(Hive::Client::reports), std::vector<std::string>>);
+TEST_CASE("Hive report presentation metadata preserves raw API, bounded history and remote provenance" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	std::vector<std::string> raw;
+	Hive::ReportHistory history;
+	const std::string same = "A standing order needs attention and has been paused.";
+	history.append(raw, same, Hive::ReportSource::StandingOrderPaused);
+	history.append(raw, same); // Remote content is never identified by its bytes.
+	CHECK_EQ(history.at(raw, 0).source, Hive::ReportSource::StandingOrderPaused);
+	CHECK_EQ(history.at(raw, 1).source, Hive::ReportSource::Remote);
+	CHECK_EQ(raw[0], raw[1]);
+	for (int i = 0; i < 125; ++i)
+		history.append(raw, std::to_string(i), i % 2 ? Hive::ReportSource::Stopped : Hive::ReportSource::Remote);
+	REQUIRE_EQ(raw.size(), Hive::ReportHistory::Limit);
+	CHECK_EQ(raw.front(), "25");
+	for (std::size_t i = 0; i < raw.size(); ++i)
+	{
+		const auto report = history.at(raw, i);
+		CHECK_EQ(report.text, raw[i]);
+		CHECK_EQ(report.source, std::stoi(raw[i]) % 2 ? Hive::ReportSource::Stopped : Hive::ReportSource::Remote);
+	}
+	raw[0] = "Externally supplied report";
+	CHECK_EQ(history.at(raw, 0).source, Hive::ReportSource::Remote);
+	raw.push_back(same); // Public raw API writes carry no presentation metadata.
+	CHECK_EQ(history.at(raw, raw.size() - 1).source, Hive::ReportSource::Remote);
+	history.append(raw, "new local", Hive::ReportSource::ConnectionChanged);
+	CHECK_EQ(raw.size(), Hive::ReportHistory::Limit);
+	CHECK_EQ(history.at(raw, raw.size() - 2).source, Hive::ReportSource::Remote);
+	CHECK_EQ(history.at(raw, raw.size() - 1).source, Hive::ReportSource::ConnectionChanged);
 }

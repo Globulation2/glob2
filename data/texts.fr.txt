@@ -6784,3 +6784,39 @@ Quantité de poissons
 Messages ▸
 [Camp-site amount]
 Nombre de campements
+[script compilation success]
+Compilation réussie
+[script error at %0:%1: %2]
+Erreur à %0:%1 : %2
+[script compilation failure %0:%1:(%2):%3]
+Échec de la compilation : %0:%1:(%2):%3
+[script compilation failed %0]
+Échec de la compilation : %0
+[script loading failed %0]
+Le chargement du script depuis %0 a échoué.
+[script saving failed %0]
+L'enregistrement du script dans %0 a échoué.
+[script line %0 column %1]
+Ligne : %0 Colonne : %1
+[game stopped %0]
+Jeu arrêté : %0
+[game stopped script help]
+Vérifiez le code JavaScript intégré et son utilisation des ressources avant de redémarrer ce jeu.
+[missing map generator %0]
+Générateur de carte manquant : %0. Un paysage intégré a été sélectionné.
+[hive standing order paused]
+Un ordre permanent nécessite votre attention et a été suspendu.
+[hive connection changed orders paused]
+La connexion a changé. Vérifiez vos ordres permanents suspendus avant de les reprendre.
+[hive standing order fresh instruction]
+Un ordre permanent nécessite une nouvelle instruction après la reconnexion. Vous pouvez l'annuler ou demander au commandant de le remplacer.
+[hive order confirmation failed]
+Impossible de confirmer un ordre. Vérifiez vos ordres permanents avant de les reprendre.
+[hive previous order sending]
+Votre ordre précédent est toujours en cours d'envoi. Ce message a été conservé ; ouvrez le commandant pour le renvoyer.
+[hive order received %0]
+Ordre reçu : %0
+[hive order not confirmed]
+Ordre non confirmé. Ouvrez le commandant pour réessayer ; votre message a été conservé.
+[hive standing order update failed]
+La mise à jour de votre ordre permanent a échoué. Votre ordre est suspendu sur cet appareil ; réessayez avec la commande correspondante.

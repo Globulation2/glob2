@@ -362,7 +362,7 @@ Element BuildingLibraryScreen::build(const Presentation &p)
 	}
 	catch (const std::exception &e)
 	{
-		body.push_back(caption(Glob2UI::exceptionText(e, Glob2UI::libraryText("Invalid building library response"))));
+		body.push_back(caption(listingError.exception(e, Glob2UI::libraryText("Invalid building library response"))));
 	}
 	if (!status.empty())
 		body.push_back(caption(status));

@@ -80,6 +80,11 @@ struct TranslationPreviewAccess
         editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
         editor.preparePresentation();
     }
+    static ScriptEditorScreen &openScriptEditor(MapEdit &editor) {
+        editor.performAction("open scenario editor");
+        return *editor.scriptEditor;
+    }
+    static void closeScriptEditor(MapEdit &editor) { editor.performAction("close scenario editor"); }
     static void showEditorTerrain(MapEdit &editor) { editor.performAction("switch to terrain view"); }
     static void openEditorMenu(MapEdit &editor) { editor.performAction("open menu screen"); }
     static void closeEditorMenu(MapEdit &editor) { editor.performAction("close menu screen"); }
@@ -434,7 +439,7 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
             std::stoi(port) > 0 && std::stoi(port) <= 65535,
             "HTTP preview fixture requires a numeric loopback port");
     }
-    if (onlineSettings) services.get().client.start(origin);
+    if (onlineSettings && !httpFixture) services.get().client.start(origin);
     Json controls, actions = Json::array();
     {
         FrontendTheme theme;
@@ -456,6 +461,9 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
             preview.render();
             if (screen == "settings-ais") {
                 require(preview.hasControl("ai.browse"), "Community AI Library is available in this build");
+                // Native HTTP advances only when pumped. Start fixture timers after
+                // cold menu/font setup, immediately before the real Browse action.
+                if (httpFixture) services.get().client.start(origin);
                 preview.activateSetting("ai.browse");
                 preview.redraw();
                 actions.push_back(httpFixture ? "Opened AI Library through its production button; controlled localhost HTTP fixture." : "Opened AI Library through its production button; client uses unavailable loopback origin.");
@@ -504,7 +512,7 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
 }
 
 void editorPreview(const fs::path &root, const fs::path &pilot, const fs::path &output,
-                   int width, int height)
+                   int width, int height, bool scriptEditorMode = false)
 {
     GlobalContainer globals("glob2-translation-editor-preview");
     globalContainer = &globals;
@@ -521,7 +529,7 @@ void editorPreview(const fs::path &root, const fs::path &pilot, const fs::path &
     globals.gfx->setResponsiveViewport(true, 800, 600);
     const auto localized = installDraftOverlay(root, pilot, output);
     globals.settings.language = pilotLocale(pilot);
-    Json result = {{"kind", "production-editor-draft-overlay"}, {"pilot", pilot.string()},
+    Json result = {{"kind", scriptEditorMode ? "production-script-editor-draft-overlay" : "production-editor-draft-overlay"}, {"pilot", pilot.string()},
         {"evidence_identity", evidenceIdentity(root, pilot)}, {"native_keys_overridden", localized},
         {"width", width}, {"height", height}, {"renderer", "portable-sdl"},
         {"phone_presentation_requested", GAGCore::phonePresentationRequested()},
@@ -579,17 +587,51 @@ void editorPreview(const fs::path &root, const fs::path &pilot, const fs::path &
                 {"checksum_after_draw", after}, {"image_width", image->w}, {"image_height", image->h},
                 {"dialog_open", editor.hasDialog()}, {"controls", std::move(controls)}});
         };
-        capture("editor");
-        const auto beforeNavigation = editor.game.checkSum();
-        TranslationPreviewAccess::showEditorTerrain(editor);
-        capture("editor-terrain");
-        TranslationPreviewAccess::openEditorMenu(editor);
-        require(editor.hasDialog(), "Production editor menu opened");
-        capture("editor-dialog");
-        TranslationPreviewAccess::closeEditorMenu(editor);
-        require(beforeNavigation == editor.game.checkSum(), "Editor UI navigation must preserve simulation checksum");
+        if (scriptEditorMode) {
+            const auto beforeEditing = editor.game.checkSum();
+            auto &script = TranslationPreviewAccess::openScriptEditor(editor);
+            require(editor.activeDialog() == &script, "Production scenario editor is the active dialog");
+            script.selectLanguage(ScriptEditorScreen::Language::JavaScript);
+            const std::string valid = "// Translation preview: local validation only.\nfunction step(ctx) {\n  return [];\n}\n";
+            script.setScriptText(valid);
+            capture("script-editor-cursor");
+            auto recordStatus = [&](const std::string &name, bool expectedResult) {
+                const auto *cursor = script.host().find("script/cursor");
+                require(cursor != nullptr, "Production localized script cursor exists");
+                const auto r = cursor->bounds;
+                result["script_states"].push_back({{"name", name}, {"compile_result", expectedResult},
+                    {"compilation_text", script.compilationText()}, {"cursor_text", cursor->accessibleText()},
+                    {"cursor_bounds", {{"x", r.x}, {"y", r.y}, {"width", r.w}, {"height", r.h}}},
+                    {"source_sha256", [&] { Online::Sha256 hash; hash.update(script.scriptText().data(), script.scriptText().size()); return Online::Sha256::toHex(hash.finish()); }()}});
+            };
+            result["script_states"] = Json::array();
+            const bool success = script.compile();
+            require(success, "Production JavaScript validation accepts the controlled valid script");
+            require(!script.compilationText().empty(), "Production compile success has a visible status");
+            capture("script-editor-success");
+            recordStatus("success", success);
+            script.setScriptText("function step( {\n");
+            const bool failure = script.compile();
+            require(!failure, "Production JavaScript validation rejects the controlled syntax error");
+            require(!script.compilationText().empty(), "Production compile failure has a visible status");
+            capture("script-editor-failure");
+            recordStatus("failure", failure);
+            TranslationPreviewAccess::closeScriptEditor(editor);
+            require(beforeEditing == editor.game.checkSum(), "Validation and closing without confirmation preserve map state");
+            result["limits"].push_back("Script source is controlled harness input; compile validates through the production compiler, never confirms or saves the scenario.");
+        } else {
+            capture("editor");
+            const auto beforeNavigation = editor.game.checkSum();
+            TranslationPreviewAccess::showEditorTerrain(editor);
+            capture("editor-terrain");
+            TranslationPreviewAccess::openEditorMenu(editor);
+            require(editor.hasDialog(), "Production editor menu opened");
+            capture("editor-dialog");
+            TranslationPreviewAccess::closeEditorMenu(editor);
+            require(beforeNavigation == editor.game.checkSum(), "Editor UI navigation must preserve simulation checksum");
+        }
     }
-    writeJson(output / "editor.json", result);
+    writeJson(output / (scriptEditorMode ? "script-editor.json" : "editor.json"), result);
     globalContainer = nullptr;
 }
 
@@ -782,7 +824,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 int main(int argc, char **argv)
 {
     try {
-        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H [SIZE SCALE] | screen ROOT DRAFT OUTPUT W H SCREEN | editor ROOT DRAFT OUTPUT W H | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
+        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H [SIZE SCALE] | screen ROOT DRAFT OUTPUT W H SCREEN | editor|script-editor ROOT DRAFT OUTPUT W H | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
         executablePath = fs::absolute(argv[0]);
         const std::string mode = argv[1];
         const auto root = fs::absolute(argv[2]), pilot = fs::absolute(argv[3]), output = fs::absolute(argv[4]);
@@ -802,9 +844,9 @@ int main(int argc, char **argv)
             }
             fontMatrix(root, pilot, output, width, height, size, scale);
         }
-        else if (mode == "editor") {
-            require(argc == 7, "Editor mode takes ROOT DRAFT OUTPUT W H");
-            editorPreview(root, pilot, output, width, height);
+        else if (mode == "editor" || mode == "script-editor") {
+            require(argc == 7, "Editor modes take ROOT DRAFT OUTPUT W H");
+            editorPreview(root, pilot, output, width, height, mode == "script-editor");
         }
         else if (mode == "screen") {
             require(argc == 8, "Screen mode needs screen name");

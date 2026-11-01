@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/ApiErrorText.h"
 #include "app/ClientFeatures.h"
@@ -337,7 +338,7 @@ void PlatformRoom::systemLinesFor(const Json &previous, const Json &next)
 																		: std::string();
 	};
 	if (!startNotice(next).empty() && startNotice(next) != startNotice(previous))
-		notice(startNotice(next));
+		{ Glob2UI::DiagnosticText presenter; notice(presenter(startNotice(next))); }
 	if (choice(previous) != choice(next))
 		notice(formatted("[room map changed %0]", mapName()));
 	else if (previous.value("rules", Json()) != next.value("rules", Json()))

@@ -6784,3 +6784,39 @@ Quantidade de peixes
 Mensagens ▸
 [Camp-site amount]
 Quantidade de acampamentos
+[script compilation success]
+Compilação concluída com sucesso
+[script error at %0:%1: %2]
+Erro em %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Falha na compilação: %0:%1:(%2):%3
+[script compilation failed %0]
+Falha na compilação: %0
+[script loading failed %0]
+Falha ao carregar o script de %0
+[script saving failed %0]
+Falha ao salvar o script em %0
+[script line %0 column %1]
+Linha: %0 Coluna: %1
+[game stopped %0]
+Jogo interrompido: %0
+[game stopped script help]
+Antes de reiniciar este jogo, verifique o código JavaScript incorporado e seu uso de recursos.
+[missing map generator %0]
+Gerador de mapas ausente: %0. Uma paisagem integrada foi selecionada.
+[hive standing order paused]
+Uma ordem permanente precisa de atenção e foi pausada.
+[hive connection changed orders paused]
+A conexão foi alterada. Verifique suas ordens permanentes pausadas antes de retomá-las.
+[hive standing order fresh instruction]
+Uma ordem permanente precisa de uma nova instrução após a reconexão. Você pode cancelá-la ou pedir ao comandante para substituí-la.
+[hive order confirmation failed]
+Não foi possível confirmar uma ordem. Verifique suas ordens permanentes antes de retomá-las.
+[hive previous order sending]
+Sua ordem anterior ainda está sendo enviada. Esta mensagem foi salva; abra o comandante para enviá-la novamente.
+[hive order received %0]
+Ordem recebida: %0
+[hive order not confirmed]
+Ordem não confirmada. Abra o comandante para tentar novamente; sua mensagem foi salva.
+[hive standing order update failed]
+A atualização da ordem permanente falhou. Sua ordem está pausada neste dispositivo; tente novamente com o controle correspondente.
