@@ -669,9 +669,10 @@ Element InGameTextInput::build(const Presentation &p)
 {
 	fe::TextFieldOptions options;
 	options.maxLength = commander ? 2000 : 256;
-	// The legacy chat order reserves one byte for its terminator. Reject a
-	// whole oversized edit before serialization can cut a shaping cluster.
-	options.maxBytes = commander ? 0 : ORDER_TEXT_MESSAGE_MAX_LEN - 1;
+	// The legacy order's 8-bit length includes the terminator: at most254
+	// text bytes round-trip. Reject whole edits before serialization can cut
+	// a shaping cluster or overflow that length.
+	options.maxBytes = commander ? 0 : ORDER_TEXT_MESSAGE_MAX_LEN - 2;
 	options.autoFocus = true;
 	options.placeholder = commander
 		? fe::tr("[settings Command your colony without opening a menu.]") + " Enter: " + fe::tr("[Send]") + " · Esc: " + fe::tr("[Close]")
