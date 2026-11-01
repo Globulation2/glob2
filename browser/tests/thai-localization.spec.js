@@ -1,11 +1,12 @@
 const {test, expect} = require('@playwright/test');
-const {waitForMainMenu, gameURL, clickMainMenu, clickControl, clickSettingsDone, tapControl} = require('./main-menu');
+const {waitForMainMenu, gameURL, clickMainMenu, clickControl, clickSettingsDone, tapControl, clickByLabel} = require('./main-menu');
 const thai = require('../../platform/packages/i18n/locales/th.json');
 
 test.use({locale: 'th-TH'});
 
 for (const variant of ['serial', 'threaded']) {
   test(`${variant} Thai startup, composed input and refresh use the shipped catalog`, async ({page, context}, info) => {
+    test.setTimeout(180000);
     const url = new URL(gameURL(), String(info.project.use.baseURL || 'http://127.0.0.1:8770'));
     url.searchParams.set('threads', variant);
     url.searchParams.set('renderer', 'software');
@@ -47,12 +48,31 @@ for (const variant of ['serial', 'threaded']) {
     await expect(field).toHaveValue('ผู้เล่นไทย 123');
     await expect.poll(() => page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toContain('username=ผู้เล่นไทย 123');
     await page.screenshot({path: info.outputPath(`${variant}-thai-player-input.png`)});
+    await clickControl(page, 'player.language');
+    await clickByLabel(page, /^popup\/\d+$/, 'English');
+    await expect.poll(() => page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
+      .toMatch(/^language=en$/m);
     await clickSettingsDone(page);
     await waitForMainMenu(page);
+    await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().controls['menu/6']?.label)).toBe('Settings');
+    await page.screenshot({path: info.outputPath(`${variant}-english-after-thai.png`)});
+    await clickMainMenu(page, 'settings');
+    await clickControl(page, 'nav.5');
+    await clickControl(page, 'player.language');
+    await clickByLabel(page, /^popup\/\d+$/, 'ไทย');
+    await expect.poll(() => page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
+      .toMatch(/^language=th$/m);
+    await clickSettingsDone(page);
+    await waitForMainMenu(page);
+    await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().controls['menu/6']?.label.replace(/\u200b/g, '')))
+      .toBe('การตั้งค่า');
     await page.evaluate(() => Module.storage.flush());
     await page.reload();
     await waitForMainMenu(page);
+    await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().controls['menu/6']?.label.replace(/\u200b/g, '')))
+      .toBe('การตั้งค่า');
     expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toContain('username=ผู้เล่นไทย 123');
+    expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toMatch(/^language=th$/m);
     await expect(page.locator('html')).toHaveAttribute('lang', 'th');
   });
 }
@@ -127,6 +147,8 @@ test.describe('Thai touch phones', () => {
       expect(await page.evaluate(() => devicePixelRatio)).toBe(2);
       await waitForMainMenu(page);
       await expect(page.locator('html')).toHaveAttribute('lang', 'th');
+      expect(await page.evaluate(() => Object.values(glob2Diagnostics.snapshot().controls)
+        .some(control => /[\u0e00-\u0e7f]/.test(control.label)))).toBe(true);
       expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
         .toContain('username=ผู้เล่นไทย 123');
     });
