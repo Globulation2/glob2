@@ -1,0 +1,42 @@
+{
+  "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3",
+  "scope": "Exact input snapshots before later master integration, not a claim of newer producer.",
+  "files": [
+    {
+      "path": "artifacts/bulgarian/native-captures/producers/8db545/frozen-inputs/full/native.json",
+      "sha256": "51504dba90486d8cbf9315f636edd51392d73317d94bb2ffa96700564386fcb8"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/producers/8db545/frozen-inputs/full/online.json",
+      "sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/producers/8db545/frozen-inputs/full/metadata.json",
+      "sha256": "c2bf3bc30622844274a907478414e0e0a9bd0ca11089d87eeb61b77fc0a3ddd5"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/producers/8db545/frozen-inputs/Generated/native.json",
+      "sha256": "54db8e102dcc683312f7e8935e99a58a161dfe4a77765413def5d3a34432dd87"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/producers/8db545/frozen-inputs/Generated/online.json",
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/producers/8db545/frozen-inputs/Generated/metadata.json",
+      "sha256": "e9092b0687842fd43d500d022708749f3041f2f01f66fb8e0da398f819b42f81"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/producers/8db545/frozen-inputs/probe/native.json",
+      "sha256": "eaf473af504d490d8fd722a5b896505f41d5adf5e93d44d83f0b05cefd57ac9c"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/producers/8db545/frozen-inputs/probe/online.json",
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/producers/8db545/frozen-inputs/probe/metadata.json",
+      "sha256": "b206f565a82049be782223d31faa9daf4d3b1f717ed74f899057200b239a35a1"
+    }
+  ]
+}

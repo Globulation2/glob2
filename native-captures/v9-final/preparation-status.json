@@ -1,0 +1,335 @@
+{
+  "status": "PREPARATION ONLY; no freeze, binaries or actual captures executed",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "native_keys": 3430,
+  "online_keys": 2978,
+  "full_render_values": 6435,
+  "full_fresh_font_samples": 77220,
+  "font_combinations": 12,
+  "full_font_no_carry_policy": true,
+  "surface_jobs": 29,
+  "surface_shards": [
+    10,
+    10,
+    9
+  ],
+  "api_jobs": 4,
+  "optional_schools": 2,
+  "actual_PNG_count_not_assumed": true,
+  "incoming_harness_guidance_toggle_states_present": true,
+  "pending": [
+    "Final E2E-only source commit authorized closure",
+    "Actual input freeze with exact proof974fe1...",
+    "Root per-binary compiledEA0 stable ELF handoff",
+    "Complete final execution and independent image review"
+  ],
+  "plan": [
+    {
+      "tag": "desktop-100-script-editor",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "script-editor",
+      "arguments": []
+    },
+    {
+      "tag": "desktop-100-statistics",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "game",
+      "arguments": [
+        "statistics"
+      ]
+    },
+    {
+      "tag": "desktop-150-script-editor",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 150,
+      "mode": "script-editor",
+      "arguments": []
+    },
+    {
+      "tag": "desktop-150-statistics",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 150,
+      "mode": "game",
+      "arguments": [
+        "statistics"
+      ]
+    },
+    {
+      "tag": "phone-100-script-editor",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "script-editor",
+      "arguments": []
+    },
+    {
+      "tag": "phone-100-statistics",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "game",
+      "arguments": [
+        "statistics"
+      ]
+    },
+    {
+      "tag": "phone-150-script-editor",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 150,
+      "mode": "script-editor",
+      "arguments": []
+    },
+    {
+      "tag": "phone-150-statistics",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 150,
+      "mode": "game",
+      "arguments": [
+        "statistics"
+      ]
+    },
+    {
+      "tag": "desktop-main",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "main"
+      ]
+    },
+    {
+      "tag": "desktop-lobby",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "lobby"
+      ]
+    },
+    {
+      "tag": "desktop-lobby-players",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "lobby-players"
+      ]
+    },
+    {
+      "tag": "desktop-settings",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "settings"
+      ]
+    },
+    {
+      "tag": "desktop-settings-ais",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "settings-ais"
+      ]
+    },
+    {
+      "tag": "desktop-settings-online",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "settings-online"
+      ]
+    },
+    {
+      "tag": "desktop-settings-player",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "settings-player"
+      ]
+    },
+    {
+      "tag": "desktop-new-map",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "new-map"
+      ]
+    },
+    {
+      "tag": "desktop-editor",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "editor",
+      "arguments": []
+    },
+    {
+      "tag": "desktop-gameplay",
+      "view": "desktop",
+      "width": 1280,
+      "height": 1024,
+      "text_size_percent": 100,
+      "mode": "game",
+      "arguments": [
+        "gameplay"
+      ]
+    },
+    {
+      "tag": "phone-main",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "main"
+      ]
+    },
+    {
+      "tag": "phone-lobby",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "lobby"
+      ]
+    },
+    {
+      "tag": "phone-lobby-players",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "lobby-players"
+      ]
+    },
+    {
+      "tag": "phone-settings",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "settings"
+      ]
+    },
+    {
+      "tag": "phone-settings-ais",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "settings-ais"
+      ]
+    },
+    {
+      "tag": "phone-settings-online",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "settings-online"
+      ]
+    },
+    {
+      "tag": "phone-settings-player",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "settings-player"
+      ]
+    },
+    {
+      "tag": "phone-new-map",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "screen",
+      "arguments": [
+        "new-map"
+      ]
+    },
+    {
+      "tag": "phone-editor",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "editor",
+      "arguments": []
+    },
+    {
+      "tag": "phone-gameplay",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "game",
+      "arguments": [
+        "gameplay"
+      ]
+    },
+    {
+      "tag": "phone-fortifications",
+      "view": "phone",
+      "width": 390,
+      "height": 844,
+      "text_size_percent": 100,
+      "mode": "game",
+      "arguments": [
+        "tutorial:fortifications"
+      ]
+    }
+  ]
+}

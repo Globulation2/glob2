@@ -1,0 +1,32 @@
+{
+  "classification": "unchanged source component carry-forward; NOT final-bundle recaptures",
+  "reviewedProducer": "e96/pre-hook index-RJkE9YHk.js",
+  "laterProducer": "e96 plus one-hook default-name fix and lifecycle test; index-Rvwk0WYQ.js",
+  "currentImages": {
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-building-default.png": "586432b835913aaf11a4a49b7fc01e65ba830e278a844fca3004c6e02cb199f8",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/desktop-building-default.png": "c9244247326b0cee7baba0d00bf61d6a0b97ccf1d40a4c22e567fa108b09fb96",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-set-default.png": "7cd8b3f3b4a9f06e8a942814378fa220a4ba3139a9b34898be37ef3b2eedd6e7",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-add-terrain.png": "f40795177c64f871907b6709cd4c4994ba0396787164dddf34139cb5cb9384c8",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-add-resource.png": "63223d730f0d8e15bebbc856f2afdf733e4b2c4240fa0856863e785c567e2622",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-music-fields.png": "3bacda258b07fb8b792b9a404aa0f8ec51e983f510c4d3c2cea0d75ca619ff3c",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-map-visibility.png": "e25f5df2ecc61c5b52cf9a9c47813c23e9c704d365c35263492feed4126a30bc",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-ai-tags.png": "2f7b66426c99efd3860af93b25bc2001f8ec9ce4df6761a0abb72a6d2154efa5",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-accounts.png": "cf849bdb90e8c7d703bbd207fdc91b236c9257335fecfdb6f10fb30b2904e906",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-audit.png": "a307f4ac790dfbfdfc6dd9be696f5e346aadd3951cc8009694b460308fceb52b",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-finances.png": "6d9b7f0b9ddec97e52d110ea28b374e1628f888076499e4a68204e0a6181b48e",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-music-guidance-fixture.png": "9881e9becd19e970465da5f8d5436f3f469d432b0ff082d420b80483354aa1d1",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-accounts.png": "0309f33ef2d403946b8668152f56f6863308845c47af933aeff88f25598fca0d",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-audit.png": "9812d27aa54835cb52d8ae4670333698ed1a6b3f1834e03b11fa9115ca74d00c",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-finances.png": "4c6e9f074dc8a7fd044fa42e60b32461678921710ac645e55ae0b933114b5c39",
+    "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-music-guidance-fixture.png": "140c95a4c17fb80026aec19673a7e8e6b7f5689fcd8cd57792b92c68e9474335"
+  },
+  "all1637InputFilesCompared": true,
+  "onlyChangedFiles": [
+    "platform/apps/web/src/skins/useSkinDocument.ts",
+    "platform/apps/web/test/skin-document.test.tsx"
+  ],
+  "reason": "Changed hook runs only when Skins mounts. Requested16 show building/set/map/AI/music/admin routes; their code/catalogs/fonts/CSS remain byte-identical.",
+  "attachmentExtractionDisclosure": "5manualnew-domainPNGs were overwritten by second screenshots from SAME originalpage/test/bundle while extracting passattachments. Historicalpublishedhashes preserved in oldindex; exactdifferences attachment-extraction-image-differences.json. Currentindex frozen; supplementaleditorrecheck requested. Primary8/final2skin unchanged.",
+  "financeSourceRestoredSha256": "44c8b61a3e43dc774ac50321fdfdd874b88861b0f48ab9ece13185128745705f",
+  "finalAffectedSkinCaptureIndex": "after-ui-fixes/image-index.json"
+}

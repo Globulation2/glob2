@@ -1,0 +1,11 @@
+
+> test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/5a87/glob2/platform
+
+ ❯ apps/api/test/catalog.test.ts (0 test)
+ ❯ apps/api/test/matches.test.ts (0 test)
+ ❯ apps/api/test/avatars.test.ts (0 test)
+ ❯ apps/api/test/musicStudio.test.ts (0 test)

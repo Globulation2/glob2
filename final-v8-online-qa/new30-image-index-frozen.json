@@ -1,0 +1,106 @@
+{
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-admin-accounts-chart.png": {
+    "sha256": "5ff686bdc1111a02329dc7fe50bb81bda0709da69a4f1e0089a3d88b3d39eda2",
+    "bytes": 128470
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-admin-started-chart.png": {
+    "sha256": "5ff686bdc1111a02329dc7fe50bb81bda0709da69a4f1e0089a3d88b3d39eda2",
+    "bytes": 128470
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-map-pricing.png": {
+    "sha256": "bdec572ed159f326494b14c2dfb27d65536bc26cd9f2aec5321ddcad0ffaa4f9",
+    "bytes": 189327
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-music-generation-unavailable.png": {
+    "sha256": "0f28b82382073a7bd594300d18c226fdd9bb89b7d8b9b2e8908b83a69ea41872",
+    "bytes": 227369
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-music-ideas-pricing.png": {
+    "sha256": "e0aadba61eed81b38692ffbb7bd92ac120e84f07d0b60d2883733f6c0ee3b1a3",
+    "bytes": 222613
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-music-no-credit.png": {
+    "sha256": "9643f229ebe108e0b559df4ece70b67e30640d089fb535cfc5f6a629ba05c371",
+    "bytes": 224731
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-shop-stripes-spots.png": {
+    "sha256": "5ff82f3bb40847308caad636a58595a9b16209a72ee05c9ed06aa0d725fac793",
+    "bytes": 191873
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-skin-views-untitled.png": {
+    "sha256": "9a61891c0713f493923e80352ed1be81991c9dc6995cffcc73f9bd7162aa3020",
+    "bytes": 593352
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-swarm-static-branch.png": {
+    "sha256": "68fb9c5e0675f377a93d636bca71fd84bff3d5204580dcf4020822f629e6adc8",
+    "bytes": 476296
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-terrain-pricing.png": {
+    "sha256": "fc61536ee190be37b01c9191e833f210a354caf9a7634373d678258b0d49cf65",
+    "bytes": 94287
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-admin-accounts-chart.png": {
+    "sha256": "38ad7c902c18e0752cef1d21b79462ee4305610ba02587e6154c4b096c8edc4c",
+    "bytes": 64086
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-admin-started-chart.png": {
+    "sha256": "79e36082b01fcb80986afc1bbf0639dc5ef98836544cd50d73873c2bb574e92f",
+    "bytes": 62874
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-map-pricing.png": {
+    "sha256": "c531520bd7f313ce49df4023e3e28e6e3e1bf69cebe0e3ad92803022632b1b68",
+    "bytes": 53563
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-music-generation-unavailable.png": {
+    "sha256": "0e634905bb5f4d4e20a5bf5218d7569f3d5045e0cdab2acf3a9c1e4f16ef055d",
+    "bytes": 58165
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-music-ideas-pricing.png": {
+    "sha256": "cb5133455115c53b01c18fa6a4d0afcb8d76dfb538824f6d90b88ba1b20b8de1",
+    "bytes": 57730
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-music-no-credit.png": {
+    "sha256": "5c01a15625e61cda96098f64b6a35959726fcf7f374e3602fcbcf74e90a5e7b2",
+    "bytes": 59398
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-shop-stripes-spots.png": {
+    "sha256": "8431d69e7b3cc9fad2a91e1c1497320b29fa226fb8b9a3a8b4d2cfb197a7eb9b",
+    "bytes": 64949
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-skin-views-untitled.png": {
+    "sha256": "563b1a35d7a725b6fecc7fa9ce0de9144cf72511f91049c2fe3d7b03689ea7e0",
+    "bytes": 158133
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-swarm-static-branch.png": {
+    "sha256": "abff493922e8c36e1cfa69bec21ffc779262ef51cb839a4979dee90d3b2ba197",
+    "bytes": 155760
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-terrain-pricing.png": {
+    "sha256": "8bb6a2d835240568e52743d8c3cd7d5b538cc920552a7143eac7d3e478eaf689",
+    "bytes": 45582
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-desktop-new30-map-no-credit.png": {
+    "sha256": "590add4c93c307dc279340d057d0366da36611f9b3c09ff8255a5e71075ec3de",
+    "bytes": 191610
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-desktop-new30-map-unavailable.png": {
+    "sha256": "ff0a34c409ffe8446f77f60cbca0697eca083dfc2e5e06c813a45f90b917bf0c",
+    "bytes": 194312
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-desktop-new30-terrain-unavailable.png": {
+    "sha256": "b722b575d09801f43d60a54c091a11eecfe5d003a5f6c6063c4c2f33b14a8ec2",
+    "bytes": 99745
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-phone-new30-map-no-credit.png": {
+    "sha256": "e3b902d3710af7478a124c3b703f8eaa26fabf687e73443fbc2b5f7751cc08d5",
+    "bytes": 52674
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-phone-new30-map-unavailable.png": {
+    "sha256": "4fa5a9d677ae88771f30b6046d8cdccc429054e03dfeda5bb6d88718e25fb351",
+    "bytes": 53549
+  },
+  "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-phone-new30-terrain-unavailable.png": {
+    "sha256": "2e6ce8ebe3b0f3227ce8c0993f0a0b280d5b0489a6de91282b7839f7adb6c6cf",
+    "bytes": 50363
+  }
+}

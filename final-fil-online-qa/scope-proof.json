@@ -1,0 +1,33 @@
+{
+  "head": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "comparison": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "webProductionChanged": [
+    "platform/apps/web/src/styles/home.css"
+  ],
+  "unchangedReviewedComponents": {
+    "platform/apps/web/src/pages/MapStudio.tsx": {
+      "sha256": "f27223b724011150b88f291779b02641412d2f068b08bd27f84961086c436523",
+      "sameAsPrior": true
+    },
+    "platform/apps/web/src/pages/MusicStudio.tsx": {
+      "sha256": "e3349cdd836d07b4c9265d034475ed2ecb05c27d59a04f3c19ef9fdc1c9460aa",
+      "sameAsPrior": true
+    },
+    "platform/apps/web/src/music/Library.tsx": {
+      "sha256": "02cddd7945e6f1a432784febc549a70db8f8b25cc5e98e66774452cf68feb892",
+      "sameAsPrior": true
+    },
+    "platform/apps/web/src/components/studio/studio.css": {
+      "sha256": "ddf3ff609e55b1f510b2518b0de0f5b658184389d63bed580711bb27990f1cb6",
+      "sameAsPrior": true
+    },
+    "platform/apps/web/src/styles/skin-studio.css": {
+      "sha256": "ba624de12c8e72ef7a0123e2a5fb98842d300a6d5e6ccd07a49c4170208615a8",
+      "sameAsPrior": true
+    },
+    "platform/apps/web/src/styles/pages.css": {
+      "sha256": "039e5a5870dd7b82efd83d943081f5e628b7f5b82a2882b77d5d5c6d4950c6ae",
+      "sameAsPrior": true
+    }
+  }
+}

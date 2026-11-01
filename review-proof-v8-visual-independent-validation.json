@@ -1,0 +1,22 @@
+{
+  "result": "passed",
+  "scope": "Independent written-file binding verification only; no linguistic or rendering approval generated",
+  "total_keys": 6408,
+  "role_bindings": 19224,
+  "fresh_complete_batches": 2,
+  "actual_final_pairs_per_role": 320,
+  "exact_parent_pairs": 6088,
+  "accepted_english_exact_parent": 108,
+  "fresh_context_approvals": 0,
+  "parent_context_approvals_preserved": "Exact V7 lineage, including original V5 music-context records",
+  "all9_gates_pending": true,
+  "non_gate_core_audit_errors": [],
+  "proof_sha256": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7",
+  "record_sha256": "462fb8c6aed1d0cae874bcb3dd098d0c8b9fc5e12a5e7850d4c9057c03c97a3d",
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+  },
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "candidate_live_registration_not_inferred": true
+}

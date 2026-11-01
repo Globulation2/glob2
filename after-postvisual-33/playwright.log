@@ -1,0 +1,17 @@
+
+Running 8 tests using 1 worker
+
+(node:564771) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › artifacts/bulgarian/after-postvisual-33/music-like.spec.mjs:3:1 › Bulgarian music card Like and Unlike aria preserve authored titles and canonical toggle methods (1.6s)
+  ✓  2 [desktop] › artifacts/bulgarian/after-postvisual-33/skin-layout.spec.mjs:3:1 › merged skin CSS keeps Bulgarian material captions inside actual swatch and tool controls (5.7s)
+  ✓  3 [desktop] › artifacts/bulgarian/after-postvisual-33/wallets.spec.mjs:3:37 › Map wallet actual approved catalog counts match visible and accessible presentation (4.4s)
+  ✓  4 [desktop] › artifacts/bulgarian/after-postvisual-33/wallets.spec.mjs:3:37 › Music wallet actual approved catalog counts match visible and accessible presentation (4.2s)
+(node:565144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [phone] › artifacts/bulgarian/after-postvisual-33/music-like.spec.mjs:3:1 › Bulgarian music card Like and Unlike aria preserve authored titles and canonical toggle methods (1.6s)
+  ✓  6 [phone] › artifacts/bulgarian/after-postvisual-33/skin-layout.spec.mjs:3:1 › merged skin CSS keeps Bulgarian material captions inside actual swatch and tool controls (4.3s)
+  ✓  7 [phone] › artifacts/bulgarian/after-postvisual-33/wallets.spec.mjs:3:37 › Map wallet actual approved catalog counts match visible and accessible presentation (4.0s)
+  ✓  8 [phone] › artifacts/bulgarian/after-postvisual-33/wallets.spec.mjs:3:37 › Music wallet actual approved catalog counts match visible and accessible presentation (4.2s)
+
+  8 passed (31.7s)

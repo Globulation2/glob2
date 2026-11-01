@@ -1,0 +1,194 @@
+{
+  "root": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-fil-online-qa",
+  "exclude": "private seed/server log/test-results",
+  "files": {
+    "build.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    "build.log": {
+      "sha256": "d0bccb83ce9ba5f9dc5badef90668a7c05d520f4cfe35869ab128eebd82d4f62",
+      "bytes": 24427
+    },
+    "captures/desktop-home-metrics.json": {
+      "sha256": "8a5ac307812a13a4ac96c1a70ac727684eada664733e5a03e36cc1a0950a872a",
+      "bytes": 2011
+    },
+    "captures/desktop-home.png": {
+      "sha256": "e411bd6385f1260aaa7ab8413620479c9ebf28ee9d7a8d0941f7dc0f0536a28a",
+      "bytes": 839050
+    },
+    "captures/desktop-map-metrics.json": {
+      "sha256": "3b1b9e22bafae6e8840c46a77f65a5cfa31c57de8df50b34827f6909e2f9628b",
+      "bytes": 2176
+    },
+    "captures/desktop-map-wallet-balance-2.png": {
+      "sha256": "375d94ec384abf9145d8157cf3639c87baaa77bfefd56e786948b2cb77fce97f",
+      "bytes": 189923
+    },
+    "captures/desktop-map-wallet-dialog-category.png": {
+      "sha256": "708c282ee92ff6437fbcacd45a35083e0098bc98adad85bfee43c44ffd06ce24",
+      "bytes": 118245
+    },
+    "captures/desktop-music-metrics.json": {
+      "sha256": "f2a57d8147200683744018aac06204a9be2461c67d8832e7e86be000c51566fc",
+      "bytes": 2211
+    },
+    "captures/desktop-music-wallet-balance-2.png": {
+      "sha256": "616795a491afbbcc9288401455d842cd523c1b7eb217c9eea11ddae218cc13a7",
+      "bytes": 214222
+    },
+    "captures/desktop-music-wallet-dialog-category.png": {
+      "sha256": "9d3250cfe378e705f14159c0643f669c8b12a804110acf35af85008cce847dbf",
+      "bytes": 115999
+    },
+    "captures/phone-home-metrics.json": {
+      "sha256": "279c76a14c4d8e85583838d387155a8a66f19d796fa796a07e662a6b5b8e5ad1",
+      "bytes": 2517
+    },
+    "captures/phone-home.png": {
+      "sha256": "b451efa60b4a3d3e360100e4b639e5a736f16d36e228920cb08710b08b3a2d6c",
+      "bytes": 333565
+    },
+    "captures/phone-map-metrics.json": {
+      "sha256": "f2e80851f504f1114debbf7c37ee7bf594a7e0743d26325cc804ddff4d93bf5b",
+      "bytes": 2149
+    },
+    "captures/phone-map-wallet-balance-2.png": {
+      "sha256": "53f22c4364abd93c267ac738b4a132297da5dd738f165ba5ffa08bf718e1f65c",
+      "bytes": 55254
+    },
+    "captures/phone-map-wallet-dialog-category.png": {
+      "sha256": "c45dea86064ac3571e2e29ba9aa9cf8e2cea8249463c6fe19ff23c212cca2400",
+      "bytes": 20747
+    },
+    "captures/phone-music-metrics.json": {
+      "sha256": "a46b55a6bb84b14d95875b5df8c245d30615aa0af525548d2217a33524e9048c",
+      "bytes": 2184
+    },
+    "captures/phone-music-wallet-balance-2.png": {
+      "sha256": "5ef277a932c6329475c623ab4ba59cac9686d4f90135a6fba78de2d1e1a31bd2",
+      "bytes": 57117
+    },
+    "captures/phone-music-wallet-dialog-category.png": {
+      "sha256": "03221265f41bd213a1f2ba7dfd02e3303b1b6472b655c2b479c30cddd6f734fb",
+      "bytes": 21186
+    },
+    "checks-final.json": {
+      "sha256": "a8e844cc1cf69c322e0d8d686fc39403cbb6029c44318a75b459bf948d8d4640",
+      "bytes": 1019
+    },
+    "cleanup-api.json": {
+      "sha256": "9cd1fe95c64310bd45fd3192f08e5f525ba6fabb0b18058c0d4e68f522f0bf30",
+      "bytes": 103
+    },
+    "cleanup.json": {
+      "sha256": "04cb32e8ee4361483a01ff06b637b465670dc07c609c5b01d44dd7b26acf490a",
+      "bytes": 278
+    },
+    "desktop-contact.jpg": {
+      "sha256": "746bb110d1f228538ac36f3453e27e04a7cebf0acfb661a8c8d63f3ad3325ceb",
+      "bytes": 228040
+    },
+    "dist-after.json": {
+      "sha256": "8bba2c3ca0734a72ad7e81367edf5782af33c2ac9dbd288c8f70325952314d74",
+      "bytes": 60501
+    },
+    "dist-before.json": {
+      "sha256": "8bba2c3ca0734a72ad7e81367edf5782af33c2ac9dbd288c8f70325952314d74",
+      "bytes": 60501
+    },
+    "home-css.diff": {
+      "sha256": "f7eb65dd9b67a273a68ab3e1210acd8c8afb76429277405d127f1807282f1e19",
+      "bytes": 1117
+    },
+    "home.spec.mjs": {
+      "sha256": "d408058c774f13f94b198a5e860f6b42015d6477ed6f578e897c0b540f78856c",
+      "bytes": 1743
+    },
+    "image-index-frozen.json": {
+      "sha256": "ca6f2fdd4f8e9db98b6fd3a8f9498bf9cfd8ac03bd6591eaf4cc8bcb55eeb0e5",
+      "bytes": 2328
+    },
+    "inputs-after.json": {
+      "sha256": "c68b7da83ad3c5e6d98c8f417de6f2593c9cc40b36f8cd11747218b03318bf20",
+      "bytes": 210702
+    },
+    "inputs-before.json": {
+      "sha256": "c68b7da83ad3c5e6d98c8f417de6f2593c9cc40b36f8cd11747218b03318bf20",
+      "bytes": 210702
+    },
+    "network-during-matrix.json": {
+      "sha256": "59ca4ccc4df2fb81dc13be43de9d6660277dcea3281c22a2481196b0a24ce7e1",
+      "bytes": 5976
+    },
+    "network-final.json": {
+      "sha256": "81718db6e172287110e6041581a2d5380d941679877a5fe9776a551b075cbb5c",
+      "bytes": 5976
+    },
+    "network-final.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "network.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    "network.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "network.mjs": {
+      "sha256": "7b9b095932ddc9526525a4c4e0d7cc919d2f8ed42b7df9ff9186001d0abe2d1e",
+      "bytes": 1293
+    },
+    "phone-contact.jpg": {
+      "sha256": "ba78dac65a7b3715cb253abe7fa0fb62277bf17fb9154ea71eeaa7f2e34a35b2",
+      "bytes": 229689
+    },
+    "playwright.config.mjs": {
+      "sha256": "2c59f772daec380daa217930d492716f0b60083ee0d55f46a9025ed295bd37c3",
+      "bytes": 605
+    },
+    "playwright.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    "playwright.log": {
+      "sha256": "ba6a762c256e9db297bb26f60ce1697be7b95ad66ddc6d5236784bc7f6277d86",
+      "bytes": 1368
+    },
+    "scope-proof.json": {
+      "sha256": "d67247750c75ccd6b630126a45f85b30d36bbd1a8a0160f11f85db40843cedf4",
+      "bytes": 1250
+    },
+    "selector-proof.json": {
+      "sha256": "a679126547ec202ff3d00c417f939e7df72e587b8b1dea6f8ba0cb73bab4fb63",
+      "bytes": 316
+    },
+    "selector-proof.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "selector-proof.mjs": {
+      "sha256": "69d715dfe1e2a112a45f6fff1d2f198960b7a82946677f7e88a945f687ff90b7",
+      "bytes": 1049
+    },
+    "source-bundle-closure.json": {
+      "sha256": "d9457905e80a11a9fa51ba9b07d630535a170a76db8ddf41884ef05a8569547b",
+      "bytes": 938
+    },
+    "summary-final.md": {
+      "sha256": "1b3dc047a88f5605d08c7d7ad07c63bde825e82ba1f00b7a2ddeafe3d8d3b0c9",
+      "bytes": 1567
+    },
+    "tests.json": {
+      "sha256": "33ec6abe2ac0e06c9cbed181ee1afd75b19c70bf5d0928cb3479d562d7edee76",
+      "bytes": 2644639
+    },
+    "wallets.spec.mjs": {
+      "sha256": "0015d6b483eaee8d534f1b3e2f6ffd080cd588ce5f6487096438b3540b281f3b",
+      "bytes": 5499
+    }
+  }
+}

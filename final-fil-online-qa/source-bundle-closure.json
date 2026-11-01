@@ -1,0 +1,15 @@
+{
+  "head": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "cleanBefore": true,
+  "cleanAfter": true,
+  "inputCount": 1645,
+  "inputChangesDuringBuildAndCaptures": [],
+  "distUnchangedDuringCaptures": true,
+  "priorProducer": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "scopeProof": "scope-proof.json",
+  "selectorProof": "selector-proof.json; actual wallet assertions additionally verify .home-body/.stat absent with enabled fixtures",
+  "historicalPixelLimit": "Prior12 remain historical images. Reviewed caller/layout source bytes are unchanged except scoped home.css; generated sans-core.ttf changed from57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9 to466fb75762954c81cd683538f08c4e36773dc27cb5c11339e3e1a675777a6048; fresh home/wallet glyph checks apply to current asset. No claim of identical old pixels.",
+  "catalog": {
+    "bgOnline": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+  }
+}

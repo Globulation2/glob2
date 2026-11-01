@@ -1,0 +1,39 @@
+{
+  "actual_v9_producer": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "current_head_not_final": "2ac54f57479dc433dfd4f8a8aa71b367c4f29996",
+  "components": {
+    "libgag/src/TrueTypeFont.cpp": {
+      "v9_sha256": "1d7f033193cb507256b7af3e38046078ec5853c2458429a84f13a388b4d21011",
+      "current_sha256": "1d7f033193cb507256b7af3e38046078ec5853c2458429a84f13a388b4d21011"
+    },
+    "libgag/src/ui/TextLayout.cpp": {
+      "v9_sha256": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0",
+      "current_sha256": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0"
+    },
+    "libgag/include/ui/TextLayout.h": {
+      "v9_sha256": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f",
+      "current_sha256": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f"
+    },
+    "src/team/stats/TeamStatChart.cpp": {
+      "v9_sha256": "c9ad594fb8a24a9582bf40624aa66573b2c0531dd5f24a405b60ec71d04f4757",
+      "current_sha256": "c9ad594fb8a24a9582bf40624aa66573b2c0531dd5f24a405b60ec71d04f4757"
+    },
+    "src/hud/InGameStatistics.cpp": {
+      "v9_sha256": "aae23045a183dd4bf5aa45026e92566c751cd41f9f35ff61cb8c2ae0c66f6d89",
+      "current_sha256": "aae23045a183dd4bf5aa45026e92566c751cd41f9f35ff61cb8c2ae0c66f6d89"
+    },
+    "tools/TranslationPreviewHarness.cpp": {
+      "v9_sha256": "527f4613f3198ddf45bc673498d739b629bdbd04f0868a1394e9250e3e9305a3",
+      "current_sha256": "558ae123c431d5e74d8717af958ebed69167f8b872727d6c255756be8e27098d"
+    },
+    "data/fonts/sans.ttf": {
+      "v9_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "current_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+    },
+    "browser/assets/sans-core.ttf": {
+      "v9_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+      "current_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9"
+    }
+  },
+  "limit": "Exact same literal/font inputs justify historical font measurements only. Changed production controls and overlay rendering receive fresh captures; historical screenshots keep their actual EA0 identity and are not final producer captures."
+}

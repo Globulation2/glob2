@@ -1,0 +1,53 @@
+{
+  "output_label": "",
+  "shard": "1/1",
+  "total_planned_jobs": 2,
+  "assigned_jobs": 2,
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+  "binary_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+  "revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "phase": "schools",
+  "scope": "Actual production UI with final full catalog; only explicitly visible states are claimed.",
+  "jobs": [
+    {
+      "tag": "desktop-schools",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools",
+        "1280",
+        "1024",
+        "tutorial:schools"
+      ],
+      "returncode": 0,
+      "seconds": 23.09,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-schools",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/phone-schools",
+        "390",
+        "844",
+        "tutorial:schools"
+      ],
+      "returncode": 0,
+      "seconds": 17.81,
+      "text_size_percent": 100
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "scope": "Root-authorized scopedresults/limits inventory, not allgreen certification",
+  "current_native_focused": {
+    "UI_images_personally_approved": 25,
+    "focused_cases_passed": 44,
+    "golden115": "passed",
+    "focused_unit91": "passed",
+    "focused_unit_command": {
+      "path": "native-tests-v11-focused-unit/command.json",
+      "sha256": "e5efef9bc6afe4a55b35bf923bb0d772d41f43bea3f31e61a3ed5fc7ed04b2ff"
+    }
+  },
+  "browser_units": {
+    "total": 171,
+    "passed": 168,
+    "failed": 3,
+    "classification": "independently reproduced frozenmasterbaseline",
+    "identity": {
+      "path": "browser-final-v9/unit-master-baseline/identity.json",
+      "sha256": "54d3aa70abfbeb8e57689c86f97ce2902b669204e4ccbd4a500c0ccbc843a61c"
+    },
+    "results": {
+      "path": "browser-final-v9/unit-master-baseline/results.log",
+      "sha256": "0a82320fca47725029bd8a7371fd372f5061be47b877bd6f2ced104be9379340"
+    }
+  },
+  "old_engine_stress": {
+    "passed": 146,
+    "failed": 1,
+    "isolated_retry": "interrupted/uncompleted, unknownexitcode/noJUnit, not passed",
+    "scope_proof": {
+      "path": "native-v11-qa/picker-timeout-scope-proof.json",
+      "sha256": "32eb91130385437fdebbc5012021bbc2ff51e22f3f5774c8e69af6682618fdfe"
+    },
+    "master_runtime_baseline_executed": false
+  },
+  "incomplete_unrestricted_unit": {
+    "state": "incomplete",
+    "exit": 143,
+    "final_JUnit": false,
+    "cause": "unassessed",
+    "log": {
+      "path": "native-v11-qa/unit-final.log",
+      "sha256": "1f69f6c95143196636275c152589e44090169e232aa82a1c4a14af81b1e62a18"
+    }
+  },
+  "limits": [
+    "Agent-reviewed language and static visual inspection only; no native-human or physical-device certification.",
+    "Actual current coverage: native9jobs/25personallyapprovedPNGs+44focusedcases+golden115; focusedunit91; browserstrict4; customfontCDP3; browser37personallyapprovedvisibleframes; SPA6browsercases/10personallyapprovedPNGs.",
+    "Browserstartup3screenshots show translated FAILUREbranch and brokenimage minor, not normalsuccessscreenshots. Separate strict4actualgameboot/persistence and realserial/threadedWASM/VFS byteproofs establish their named execution scopes.",
+    "Browserphone150-settings.png isMAINMENU, notSettings; briefing/helpfilenames show compactobjectives, not actualhelpdialog; currentbrowserScriptEditor/compileflow not covered. Blank/generatingpreviews and unpopulatedhistory do not establish completed/populatedstates.",
+    "Only picturedSPAbalance2visuallyapproved;0/1/2visible+ARIA counts are separately exercised by sixactualbrowsercases. Hidden dropdowns/tooltips/ARIA/offscreencontent are not visually inspected.",
+    "Historicalfontmatrix6402unchangedvalues(actualEA0)+396samples33correctedvalues(actual3810) are carried by exactnamedcomponent/BGpredicate proofs; no newfullmatrix or wholecorefontbinaryidentity claimed. Newcore466fbselectedfont is separately proven by freshCDP/hash/MIME receipts.",
+    "BrowserJS171result is168pass/3fail, with all3failures independently reproduced on frozenmaster0b6baseline; no allgreen claim.",
+    "Old3810broadengine147 is146pass/1picker120sdeadlinefailure. Picker/test/worker source-equivalence supports separate scope disposition, not a masterruntimepassingbaseline. Isolatedretry was interrupted/uncompleted with unknownexitcode/noJUnit and is never passed.",
+    "Earlierunrestrictedunit-final.log is incompleteexit143 with partialdisplayfailures and nofinalJUnit; cause unassessed, not passed. Only separate currentfocusedunit91actual94021rc0 is claimed.",
+    "Phone evidence is emulatedviewport/staticrendering, notphysicalmobile execution or completeinteractiveaccessibility. Unseenstates,hit-testing,keyboard,touchdimensions andscrolloperations remain outside screenshotapproval.",
+    "Linuxnative/Blinktestedsubsets do not establish Windows/macOS/Android/iOS,allarchitectures,allbrowservariants or allphysicaldevices; threeaggregateplatformgates remain explicitly unavailable."
+  ]
+}

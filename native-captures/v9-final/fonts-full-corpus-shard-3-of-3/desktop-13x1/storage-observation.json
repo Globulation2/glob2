@@ -1,0 +1,19 @@
+{
+  "status": "Actual storage observation, never truncates a measurement into success",
+  "limit_bytes": 1073741824,
+  "peak_combined_font_output_bytes": 48575687,
+  "minimum_free_bytes": 582049714176,
+  "returncode": 0,
+  "command": [
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+    "matrix",
+    "/home/bradley/.codex/worktrees/5a87/glob2",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/desktop-13x1",
+    "1280",
+    "1024",
+    "13",
+    "1"
+  ],
+  "seconds": 23.07
+}

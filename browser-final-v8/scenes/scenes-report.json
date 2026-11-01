@@ -1,0 +1,980 @@
+[
+  {
+    "name": "desktop-dpr2-tutorial-catalog",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "N8Tutorial19LessonCatalogScreenE",
+        "screenClass": "N8Tutorial19LessonCatalogScreenE",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 428,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "tutorial/back": {
+            "enabled": true,
+            "h": 34,
+            "label": "Към главното меню",
+            "visible": {
+              "h": 34,
+              "w": 170,
+              "x": 740,
+              "y": 656
+            },
+            "w": 170,
+            "x": 740,
+            "y": 656,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Въведение",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 246
+            },
+            "w": 630,
+            "x": 280,
+            "y": 246,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Практика за снабдяване с храни",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 308
+            },
+            "w": 630,
+            "x": 280,
+            "y": 308,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/2": {
+            "enabled": true,
+            "h": 34,
+            "label": "Болници и лечение",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 386
+            },
+            "w": 630,
+            "x": 280,
+            "y": 386,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/3": {
+            "enabled": true,
+            "h": 34,
+            "label": "Тренировка по ходене",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 464
+            },
+            "w": 630,
+            "x": 280,
+            "y": 464,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/4": {
+            "enabled": true,
+            "h": 34,
+            "label": "Плуване и водни ресурси",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 526
+            },
+            "w": 630,
+            "x": 280,
+            "y": 526,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/5": {
+            "enabled": true,
+            "h": 34,
+            "label": "Училища и умения на работниците",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 588
+            },
+            "w": 630,
+            "x": 280,
+            "y": 588,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/6": {
+            "enabled": true,
+            "h": 34,
+            "label": "Подобряване на сгради",
+            "visible": {
+              "h": 0,
+              "w": 630,
+              "x": 280,
+              "y": 666
+            },
+            "w": 630,
+            "x": 280,
+            "y": 666,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/7": {
+            "enabled": true,
+            "h": 34,
+            "label": "Производство и обучение на воини",
+            "visible": {
+              "h": 0,
+              "w": 630,
+              "x": 280,
+              "y": 744
+            },
+            "w": 630,
+            "x": 280,
+            "y": 744,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/8": {
+            "enabled": true,
+            "h": 34,
+            "label": "Кули и защитни стени",
+            "visible": {
+              "h": 0,
+              "w": 630,
+              "x": 280,
+              "y": 806
+            },
+            "w": 630,
+            "x": 280,
+            "y": 806,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/9": {
+            "enabled": true,
+            "h": 34,
+            "label": "Зони за охрана и тактики с флагове",
+            "visible": {
+              "h": 0,
+              "w": 630,
+              "x": 280,
+              "y": 868
+            },
+            "w": 630,
+            "x": 280,
+            "y": 868,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-gameplay-before-objectives",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 32,
+        "frames": 16,
+        "loop": 468,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 192
+            },
+            "w": 420,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 234
+            },
+            "w": 420,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-tutorial-briefing",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 89,
+        "frames": 64,
+        "loop": 516,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 192
+            },
+            "w": 420,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 234
+            },
+            "w": 420,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "objectives/tab/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Брифинг",
+            "visible": {
+              "h": 34,
+              "w": 170,
+              "x": 336,
+              "y": 384
+            },
+            "w": 170,
+            "x": 336,
+            "y": 384,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 132,
+              "w": 528,
+              "x": 336,
+              "y": 384
+            }
+          },
+          "objectives/tab/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Цели",
+            "visible": {
+              "h": 34,
+              "w": 170,
+              "x": 514,
+              "y": 384
+            },
+            "w": 170,
+            "x": 514,
+            "y": 384,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 132,
+              "w": 528,
+              "x": 336,
+              "y": 384
+            }
+          },
+          "objectives/tab/2": {
+            "enabled": true,
+            "h": 34,
+            "label": "Съвети",
+            "visible": {
+              "h": 34,
+              "w": 172,
+              "x": 692,
+              "y": 384
+            },
+            "w": 172,
+            "x": 692,
+            "y": 384,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 132,
+              "w": 528,
+              "x": 336,
+              "y": 384
+            }
+          },
+          "ok": {
+            "enabled": true,
+            "h": 44,
+            "label": "Добре",
+            "visible": {
+              "h": 44,
+              "w": 528,
+              "x": 336,
+              "y": 472
+            },
+            "w": 528,
+            "x": 336,
+            "y": 472,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 132,
+              "w": 528,
+              "x": 336,
+              "y": 384
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-gameplay-hud",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 141,
+        "frames": 110,
+        "loop": 562,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 192
+            },
+            "w": 420,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 234
+            },
+            "w": 420,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-tutorial-help",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 194,
+        "frames": 157,
+        "loop": 609,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 410,
+              "x": 24,
+              "y": 192
+            },
+            "w": 410,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 410,
+              "x": 24,
+              "y": 234
+            },
+            "w": 410,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  }
+]

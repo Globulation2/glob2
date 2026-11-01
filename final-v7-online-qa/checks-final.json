@@ -1,0 +1,59 @@
+{
+  "unit": {
+    "originalRun": {
+      "passed": 1246,
+      "failed": 2,
+      "skipped": 15,
+      "total": 1263,
+      "files": 177,
+      "seconds": 876.72,
+      "failures": "2 explicit30000ms timeouts in skin-projection"
+    },
+    "targetedRecovery": {
+      "passed": 2,
+      "skippedNotSelected": 9,
+      "testTimeoutMs": 180000,
+      "seconds": 60.83,
+      "sourceChanged": false
+    }
+  },
+  "gates": {
+    "lint": 0,
+    "types": 0,
+    "i18n": 0,
+    "build": 0,
+    "skin-timeout-rerun": 0
+  },
+  "catalogCheck": "40 languages \u00d72948 messages passed",
+  "browserPending": false,
+  "sourceBinding": "1637files byte-identical start\u2192e96; clean-source-binding.json",
+  "browser": {
+    "originalMatrix": {
+      "passed": 27,
+      "failedFixtures": 4,
+      "skipped": 1,
+      "total": 32
+    },
+    "recovery": {
+      "skinFeatureFixture": 2,
+      "terrainCanonicalExpectation": 2
+    },
+    "baselineCaptureExit": 0
+  },
+  "finalSkinFix": {
+    "unitPassed": 9,
+    "focusedLint": 0,
+    "prettier": 0,
+    "webTypes": 0,
+    "build": 0,
+    "freshInitialBrowserCasesPassed": 2,
+    "sourceBinding": "after-ui-fixes/final-component-binding.json",
+    "images": "after-ui-fixes/image-index.json"
+  },
+  "limitations": [
+    "finance captions use intended keyboard-accessible horizontal table scrolling; minor wrapping limitation",
+    "browser-owned file/date captions",
+    "provider generation/payment/email/audio playback not exercised",
+    "browser-game Wasm runtime pending root handoff"
+  ]
+}

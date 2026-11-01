@@ -1,0 +1,23 @@
+{
+  "keys": [
+    "back",
+    "load-campaign",
+    "load-map",
+    "new-campaign",
+    "new-map",
+    "load",
+    "quit",
+    "resource/import",
+    "return",
+    "save",
+    "script",
+    "set/import",
+    "set/library",
+    "settings",
+    "share",
+    "teams",
+    "terrain/import",
+    "terrain/reroll"
+  ],
+  "method": "Actual Escape, then visible Menu button if menu return absent; no simulation injection"
+}

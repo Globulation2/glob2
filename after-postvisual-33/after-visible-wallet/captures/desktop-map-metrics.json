@@ -1,0 +1,91 @@
+{
+  "metrics": [
+    {
+      "count": 0,
+      "expected": "Кредити за карти: 0",
+      "visible": "\n  \n  \n  \n  Кредити за карти: 0",
+      "aria": "Кредити за карти: 0",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 195,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 1112,
+            "right": 1249,
+            "top": 22.25,
+            "bottom": 37.25
+          }
+        ],
+        "left": 1069,
+        "right": 1264,
+        "top": 8,
+        "bottom": 52
+      }
+    },
+    {
+      "count": 1,
+      "expected": "Кредити за карти: 1",
+      "visible": "\n  \n  \n  \n  Кредити за карти: 1",
+      "aria": "Кредити за карти: 1",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 195,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 1112,
+            "right": 1249,
+            "top": 22.25,
+            "bottom": 37.25
+          }
+        ],
+        "left": 1069,
+        "right": 1264,
+        "top": 8,
+        "bottom": 52
+      }
+    },
+    {
+      "count": 2,
+      "expected": "Кредити за карти: 2",
+      "visible": "\n  \n  \n  \n  Кредити за карти: 2",
+      "aria": "Кредити за карти: 2",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 195,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 1112,
+            "right": 1249,
+            "top": 22.25,
+            "bottom": 37.25
+          }
+        ],
+        "left": 1069,
+        "right": 1264,
+        "top": 8,
+        "bottom": 52
+      }
+    }
+  ],
+  "reads": [
+    {
+      "path": "/api/v1/map-studio/account",
+      "available": 0
+    },
+    {
+      "path": "/api/v1/map-studio/account",
+      "available": 1
+    },
+    {
+      "path": "/api/v1/map-studio/account",
+      "available": 2
+    }
+  ],
+  "writes": []
+}

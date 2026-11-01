@@ -1,0 +1,139 @@
+{
+  "labels": [
+    {
+      "text": "Четка",
+      "fits": true,
+      "height": 44
+    },
+    {
+      "text": "Гумичка",
+      "fits": true,
+      "height": 44
+    },
+    {
+      "text": "Пипетка",
+      "fits": true,
+      "height": 44
+    },
+    {
+      "text": "Завъртане",
+      "fits": true,
+      "height": 44
+    },
+    {
+      "text": "Шарки",
+      "fits": true,
+      "height": 44
+    },
+    {
+      "text": "Класически гланц",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Матово",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Мултипликационен стил",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Бонбони",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Занитен метал",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Хром",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Въглеродни влакна",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Кован метал",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Космат",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Люспи",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Кожа",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Кадифе",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Облак",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Тъкан плат",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Дърво",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Пчелна пита",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Стичаща се слуз",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Лава",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Слуз",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Камък",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Кристал",
+      "fits": true,
+      "height": 134
+    },
+    {
+      "text": "Лед",
+      "fits": true,
+      "height": 134
+    }
+  ]
+}

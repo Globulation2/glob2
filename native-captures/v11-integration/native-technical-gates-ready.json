@@ -1,0 +1,8 @@
+{
+  "revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "native_rendering_capture_gate": "9jobs25PNGpassed; visual agent review pending",
+  "native_test_gate": "44focusedPASS+finalgolden115PASS",
+  "font_gate": "Exact BG glyph/typography carryproof, not a newmatrix",
+  "source_and_runtime_receipts_ready": true,
+  "summary_sha256": "d220ff84094c41a6c7bd07bc21e7cc837cfb96481fca6a86dec6e4b6bb2690bb"
+}

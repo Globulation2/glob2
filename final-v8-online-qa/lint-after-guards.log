@@ -1,0 +1,15 @@
+
+> lint
+> eslint . && prettier --check .
+
+
+/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e/i18n.spec.ts
+  36:27  error  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  36:27  error  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  39:15  error  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  40:15  error  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  42:27  error  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  48:23  error  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+✖ 6 problems (6 errors, 0 warnings)
+

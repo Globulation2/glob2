@@ -1,0 +1,23 @@
+{
+  "node": "v24.22.1",
+  "build": {
+    "command": "npm run build -w @glob2/web",
+    "exit": 0
+  },
+  "browser": {
+    "command": "platform/node_modules/.bin/playwright test -c artifacts/bulgarian/final-fil-online-qa/playwright.config.mjs",
+    "passed": 6,
+    "failed": 0,
+    "seconds": 138,
+    "exit": 0
+  },
+  "scope": "Focused final source integration. Root owns already completed lint/types/i18n/units; no duplicate fullsuite.",
+  "coverage": "Actual production bundle; real seeded session/instance/home data; deterministic read-only wallet feature/account/thread fixtures. Counts0/1/2 visible and aria, minimum44px target, nonempty visible text bounds, dialog heading/no X overlap/Escape. Home stat/section text bounds and font readiness.",
+  "limits": [
+    "No provider generation/payment/email requests",
+    "No real music playback",
+    "Desktop and emulated390px phone Chromium, no physical device",
+    "No browser-game Wasm claim",
+    "Independent final home visual review remains root-owned"
+  ]
+}

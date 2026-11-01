@@ -1,0 +1,212 @@
+[
+  {
+    "name": "phone-building-default",
+    "url": "http://127.0.0.1:42769/building-studio/a2f08a4c-e8f2-467e-830d-923ddacc7a38",
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        "loaded"
+      ]
+    },
+    "labels": [
+      {
+        "text": "gameSprite",
+        "fits": true
+      },
+      {
+        "text": "height",
+        "fits": true
+      },
+      {
+        "text": "hpInit",
+        "fits": true
+      },
+      {
+        "text": "hpMax",
+        "fits": true
+      },
+      {
+        "text": "miniSprite",
+        "fits": true
+      },
+      {
+        "text": "width",
+        "fits": true
+      },
+      {
+        "text": "Допълнително поле",
+        "fits": true
+      },
+      {
+        "text": "instantPlacement",
+        "fits": true
+      },
+      {
+        "text": "placeable",
+        "fits": true
+      },
+      {
+        "text": "Допълнително поле",
+        "fits": true
+      },
+      {
+        "text": "Допълнително поле",
+        "fits": true
+      }
+    ],
+    "headings": [
+      "Редактор на семейство сгради"
+    ]
+  },
+  {
+    "name": "desktop-building-default",
+    "url": "http://127.0.0.1:42769/building-studio/a2f08a4c-e8f2-467e-830d-923ddacc7a38",
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        "loaded"
+      ]
+    },
+    "labels": [
+      {
+        "text": "gameSprite",
+        "fits": true
+      },
+      {
+        "text": "height",
+        "fits": true
+      },
+      {
+        "text": "hpInit",
+        "fits": true
+      },
+      {
+        "text": "hpMax",
+        "fits": true
+      },
+      {
+        "text": "miniSprite",
+        "fits": true
+      },
+      {
+        "text": "width",
+        "fits": true
+      },
+      {
+        "text": "Допълнително поле",
+        "fits": true
+      },
+      {
+        "text": "instantPlacement",
+        "fits": true
+      },
+      {
+        "text": "placeable",
+        "fits": true
+      },
+      {
+        "text": "Допълнително поле",
+        "fits": true
+      },
+      {
+        "text": "Допълнително поле",
+        "fits": true
+      }
+    ],
+    "headings": [
+      "Редактор на семейство сгради"
+    ]
+  },
+  {
+    "name": "phone-set-default",
+    "url": "http://127.0.0.1:42769/sets/new",
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        "loaded"
+      ]
+    },
+    "labels": [],
+    "headings": [
+      "Нов комплект"
+    ]
+  },
+  {
+    "name": "phone-add-terrain",
+    "url": "http://127.0.0.1:42769/sets/new",
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        "loaded"
+      ]
+    },
+    "labels": [],
+    "headings": [
+      "Нов комплект"
+    ]
+  },
+  {
+    "name": "phone-add-resource",
+    "url": "http://127.0.0.1:42769/sets/new",
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        "loaded"
+      ]
+    },
+    "labels": [],
+    "headings": [
+      "Нов комплект"
+    ]
+  },
+  {
+    "name": "phone-music-fields",
+    "url": "http://127.0.0.1:42769/music/new",
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        "loaded"
+      ]
+    },
+    "labels": [],
+    "headings": [
+      "Споделете саундтрак"
+    ]
+  },
+  {
+    "name": "phone-map-visibility",
+    "url": "http://127.0.0.1:42769/maps/new",
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        "loaded"
+      ]
+    },
+    "labels": [],
+    "headings": [
+      "Качване на карта"
+    ]
+  },
+  {
+    "name": "phone-ai-tags",
+    "url": "http://127.0.0.1:42769/ais",
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        "loaded"
+      ]
+    },
+    "labels": [],
+    "headings": [
+      "Библиотека с ИИ"
+    ]
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "sourceHead": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "focusedUnit": {
+    "passed": 61,
+    "files": 7,
+    "log": "../unit.log"
+  },
+  "focusedLint": "../lint.log pass",
+  "focusedWebTypes": "../types.log pass",
+  "finalCssPrettier": 0,
+  "finalBuild": 0,
+  "finalI18n": {
+    "exit": 0,
+    "locales": 43,
+    "messages": 2978
+  },
+  "finalActualBrowser": {
+    "passed": 8,
+    "skipped": 0,
+    "screenshots": 12
+  },
+  "nonvacuousChecks": [
+    "spanVisible",
+    "inViewport",
+    "textRectsNonempty",
+    "computedDisplayAndVisibility",
+    "textBoundsWithin44pxTarget",
+    "dialogCloseNoTextIntersection"
+  ],
+  "index": "image-index-frozen.json",
+  "indexSha256": "d7b21da9a3ad581d5ad5b6a4b4eae7e4ef27ae928c1ca0f988687d986c2c5278",
+  "sourceClosure": "source-bundle-closure.json",
+  "networkReceipt": "network-final.json",
+  "prior12Status": "preserved PROVISIONAL; phonefullmessageshidden andXoverlap",
+  "independentVisualReview": "root-owned pending12actualPNGs"
+}

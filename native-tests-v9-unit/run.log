@@ -1,0 +1,7 @@
+PASS glob2-unit-tests ApiErrorText (8 cases) (0.1s)
+PASS glob2-unit-tests UILayout (51 cases) (0.2s)
+PASS glob2-unit-tests PlatformClient (24 cases) (0.1s)
+PASS glob2-unit-tests PlatformProtocol (8 cases) (0.1s)
+
+4 passed, 0 failed, 0 skipped (0.4s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-tests-v9-unit/junit.xml (91 cases)

@@ -1,0 +1,51 @@
+
+> test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/5a87/glob2/platform
+
+ ❯ apps/web/test/skin-projection.test.ts (11 tests | 2 failed) 103721ms
+   ❯ skin projection (11)
+     × keeps every swarm angle inside the standardized frame 63284ms
+     × curated fill masks follow every model topology and stay fixed across views 32453ms
+Not implemented: Window's scrollTo() method
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/web/test/skin-projection.test.ts > skin projection > keeps every swarm angle inside the standardized frame
+Error: Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ apps/web/test/skin-projection.test.ts:222:3
+    220|     }
+    221|   });
+    222|   it('keeps every swarm angle inside the standardized frame', () => {
+       |   ^
+    223|     for (const shape of [
+    224|       'swarm',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  apps/web/test/skin-projection.test.ts > skin projection > curated fill masks follow every model topology and stay fixed across views
+Error: Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ apps/web/test/skin-projection.test.ts:242:3
+    240|     }
+    241|   });
+    242|   it('curated fill masks follow every model topology and stay fixed ac…
+       |   ^
+    243|     for (const name of [
+    244|       'worker-walk',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 171 passed | 5 skipped (177)
+      Tests  2 failed | 1246 passed | 15 skipped (1263)
+   Start at  06:06:17
+   Duration  876.72s (tests 68%, import 27%, environment 3%, transform 2%)
+
+     Import  684 modules were evaluated 1480 times · 451.03s total, 27% of tracked time
+             ~102.85s faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+             learn more: https://vitest.dev/guide/improving-performance#test-isolation
+

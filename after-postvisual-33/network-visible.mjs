@@ -1,0 +1,6 @@
+import {chromium} from '../../../platform/node_modules/@playwright/test/index.mjs';
+import {createHash} from 'node:crypto';import {writeFile} from 'node:fs/promises';
+const browser=await chromium.launch({headless:true}),context=await browser.newContext({locale:'bg-BG'}),page=await context.newPage(),pending=[],resources=[];
+await context.addCookies([{name:'glob2_locale',value:'bg',url:'http://127.0.0.1:42769'}]);
+page.on('response',r=>{if(/\.(?:js|css|ttf|woff2)(?:\?|$)/.test(r.url()))pending.push((async()=>{try{const body=await r.body();resources.push({url:r.url(),status:r.status(),contentType:r.headers()['content-type'],bytes:body.length,sha256:createHash('sha256').update(body).digest('hex')})}catch(error){resources.push({url:r.url(),error:String(error)})}})())});
+try{await page.goto('http://127.0.0.1:42769/',{waitUntil:'load',timeout:90000});await page.waitForFunction(()=>document.documentElement.lang==='bg');await page.evaluate(()=>document.fonts.ready);await Promise.all(pending);await writeFile(new URL('./after-visible-wallet/network-final.json',import.meta.url),JSON.stringify({timing:'actual final post-matrix browser navigation, unchanged production dist',browser:browser.version(),lang:await page.locator('html').getAttribute('lang'),resources},null,2)+'\n')}finally{await browser.close()}

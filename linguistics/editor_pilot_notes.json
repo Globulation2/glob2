@@ -1,0 +1,4 @@
+[
+ {"surface":"native","key":"[AIWarrush-Description]","value":"Бързи атаки, които изпитват защитата ви в началото.","reason":"Idiomatic Bulgarian uses singular collective защита; ранните ви защити is a literal English plural."},
+ {"surface":"native","key":"[AINone-Description]","value":"Няма — не прави нищо.","reason":"Sentence continuation after dash does not need English-style title capitalization; use Bulgarian typographic dash."}
+]

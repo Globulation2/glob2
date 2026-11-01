@@ -1,0 +1,30 @@
+diff --git a/platform/apps/web/src/components/studio/studio.css b/platform/apps/web/src/components/studio/studio.css
+index ac06967d23..840368720f 100644
+--- a/platform/apps/web/src/components/studio/studio.css
++++ b/platform/apps/web/src/components/studio/studio.css
+@@ -186,6 +186,13 @@
+ .studio-page .ms-credit-button {
+   white-space: normal;
+ }
++/* Full wallet messages include the balance, so compact layouts must retain them. */
++.studio-page .ms-credit-button > span:last-child {
++  display: inline;
++  min-inline-size: 0;
++  overflow-wrap: anywhere;
++}
++
+ .studio-page .studio-compose-actions > button {
+   flex-shrink: 0;
+   white-space: nowrap;
+@@ -247,6 +254,11 @@
+   padding: 0;
+   border: 0;
+ }
++.studio-dialog .ms-credit-panel > button {
++  position: static;
++  margin-block-start: var(--sp-3);
++}
++
+ .studio-page :is(button, select, input, textarea, summary, a):focus-visible,
+ .studio-separator:focus-visible,
+ .studio-log:focus-visible {

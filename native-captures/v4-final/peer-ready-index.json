@@ -1,0 +1,729 @@
+{
+  "scope": "Completed returncode0 jobs only; exact image hashes, no conclusions.",
+  "jobs": [
+    {
+      "phase": "surfaces",
+      "job": "desktop-100-script-editor",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor-cursor.png",
+          "sha256": "6840419bcf99cdc248bd24a9921bd92e680cd89eb08c0927f3fbabfa65eaf62c"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor-failure.png",
+          "sha256": "41065b96f2d826c4478e6f45d1535c46d4ed44a0861ae74ab34dcecf1f11ccbd"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor-success.png",
+          "sha256": "4c597a726165169b2be3616b654f1fec14377c11a1e72cf4820384629fe1ae6a"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "desktop-100-statistics",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics-dialog.png",
+          "sha256": "5651ff96be456b0b4138ce65e39919f2febdfb255cadb76e33b427692430c430"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics-economy.png",
+          "sha256": "1b3e36811b2ecaa1917f88d9c6e11f8dfc5a31d4c0c7f5f481e91f2ce0110499"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics-overview.png",
+          "sha256": "950fbbf8ea525d823458ee35dcb6faf9982db4cc40fd5105ef46231ef1311c46"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics-population-history-details.png",
+          "sha256": "713b4e4ac01b738c5d6688bec1f1148111bf76fa5968a658dbae7223d4e62773"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics-population-history.png",
+          "sha256": "7606eb4b251e8d89b8f69e847f5161d388e8778347b818d806634d1c8577fc3b"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics-world.png",
+          "sha256": "6b71cdb77e5c1c00901e01d7b1818ada3edc460825f5a9f03c848fa03cecdfd4"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "desktop-150-script-editor",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-script-editor/script-editor-cursor.png",
+          "sha256": "890a29bf82262750316e84619ee098cbfcc905778af395335df69eb694bf86df"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-script-editor/script-editor-failure.png",
+          "sha256": "b96572907fe29407d96239a6a1f8a63861119d8fde4919e67e15e851aa3b6acc"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-script-editor/script-editor-success.png",
+          "sha256": "f1fa90abd1171b7eaeec857b2d782291483f50ff92f087b8519e6b8a38d4249e"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "desktop-150-statistics",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics-dialog.png",
+          "sha256": "7ed88b91879d996c670ce9ee75bfd6246b5b7bc192b804647feb0792f0744ee6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics-economy.png",
+          "sha256": "eb2dd5b396a908ef4cff7b1453a5167be4b39360e0d4f375696eef61e12f5450"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics-overview.png",
+          "sha256": "73f3f9a55f2759511465ffd03fb452068debaa4e15e2653425077eadca833db9"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics-population-history-details.png",
+          "sha256": "d61a54e524b5432d3411e7f1d6fb3bfed58e7d415978f193bad4cf207e2da50e"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics-population-history.png",
+          "sha256": "bf49f60571b7e986708da8f4ceee12f5f3bd3656581aca13934a19b8f76bfea8"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics-world.png",
+          "sha256": "735b882f52875cf53897a5e41ec59969d124e79eed7c1b752759b8dd6831bbbe"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-100-script-editor",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor-cursor.png",
+          "sha256": "494ea43deea9f134973960ac399ce8f6e30a46bce5c0de14033f66bba724a995"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor-failure.png",
+          "sha256": "599fe56cf4a759e1ac86493b5b4efda723ea5a45f0cfcc6ebaffa27e89432edc"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor-success.png",
+          "sha256": "14006ab8da29138fe1c633f12faba7769f503d2194b08eec5f498da8e6f48923"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-100-statistics",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics-dialog.png",
+          "sha256": "30d1201da36d6701bff285a1c849b3f429c3f67ba29d0b571e1cb2cb45f554cd"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics-economy.png",
+          "sha256": "09477565b863d91af975f1fda63da6d661a9dad8b7bfab5da53fc49a6a7e17aa"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics-overview.png",
+          "sha256": "d8ecdd62262210f31fa54bbe36044f3aea3fd57d543a2ac38654359d54b3c76d"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics-population-history-details.png",
+          "sha256": "5f32b50d6d299fc50666c36d2e02ef2fbcd7e09f3c29a2f420ab9c64f4351411"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics-population-history.png",
+          "sha256": "222588287a48515e55014c8b65601eb0d58e97bde8d7d45dd0c0066e11de1b75"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics-world.png",
+          "sha256": "330ac4c107093baf19133eae5fa0b25571cf0335bd1bec3b41c83512eecff298"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-150-script-editor",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-script-editor/script-editor-cursor.png",
+          "sha256": "b645a5c72adf5333b9b94cfbe77395dbcd963520c00fc6cdf17b94c3c0d5f1bf"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-script-editor/script-editor-failure.png",
+          "sha256": "256758ffe99d5faae1585af7f1e31369e6522503252c26b677c3d956732b52aa"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-script-editor/script-editor-success.png",
+          "sha256": "e13c71499334a455d88ebeae3198147abff684c3e0e0cc41011487fef99a2c8e"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-150-statistics",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-dialog.png",
+          "sha256": "34c27550f521053da98cf1f92dbe8fc68a35ad3897bdd5e0cde5cf8f0ff27e05"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-economy.png",
+          "sha256": "523976cab73e9e792c1ba49b4dcca47d475816e64bdfebd4809bbac4097b0f1a"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-overview.png",
+          "sha256": "776169651224bb8ffaa113c13271e04aa809eccfee010338db1ba1f98245b378"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-population-history-details.png",
+          "sha256": "b90a44071a2a67245d41911fc923ff566cf803dde2db0108524a1fb3c1121f38"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-population-history.png",
+          "sha256": "ba5cb1b6fd591a5e260e30da865b51988de312347ebd18d2d0fc3424ed7b0076"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-world.png",
+          "sha256": "04d71dda598426a01b43f1ead8ab8fe84562e1419b71907faefd67571b1bf092"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "desktop-settings",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-settings/settings.png",
+          "sha256": "42546952c2eef8efe81fa58074c28ed11ada31cd176a4a16e4b5518c07f13637"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "desktop-settings-ais",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-settings-ais/settings-ais.png",
+          "sha256": "c008283fa93ff829cc52b01a87b01a30b0e3e27ee9f3dfb65fbb3843a9a60a06"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "desktop-settings-online",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-settings-online/settings-online.png",
+          "sha256": "152258a880763834f506f1bb018763841d1e2dc88cecb9e1ce7f59b7a86f3a16"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "desktop-settings-player",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-settings-player/settings-player.png",
+          "sha256": "f41ae7de489b289c1fe99d176bf368002816e7cdb0f7756918d5ee4efa0ab966"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "desktop-new-map",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-new-map/new-map.png",
+          "sha256": "97bcbecb00030c39cec3973bc83172eea1560e67f6571d12f6d775cfe9d9e0f9"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "desktop-editor",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-editor/editor-dialog.png",
+          "sha256": "b232d1e7496ebc88007fe1ebd3c2579da2d7ffd84a574adce7a306169c92a378"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-editor/editor-terrain.png",
+          "sha256": "a20fc393cb68c63172934ae7b675e4b048e885ca809dd4e8f3334323bf980054"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-editor/editor.png",
+          "sha256": "6ddfe242b4b6f80ab404ed5031d8cc7ebf7bbe44d6745edeade77e15d554fb7a"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-settings",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-settings/settings.png",
+          "sha256": "35cc41e5312e4044a40d8b9bca8d92e19168282439eecf6e3d6d4ee5021fd11d"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-settings-ais",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-settings-ais/settings-ais.png",
+          "sha256": "28c5c97898f437c085b5d1c01e78c6c427defb2e348aafc1ca020c3b2db22824"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-settings-online",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-settings-online/settings-online.png",
+          "sha256": "a9dedfab9cd583c9099ace8dd90c8dd669965887851f4a859d00bc6b98849fe2"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-settings-player",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-settings-player/settings-player.png",
+          "sha256": "494858150d0ef1e927f7aa8145e7c19ad8c93bd0e549113318a975243aeeb6f6"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-new-map",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-new-map/new-map.png",
+          "sha256": "a76173ae8183d688b9b9a74c4b9bbbbbc6973593a1702a06e1e98c5048cb3bbe"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-editor",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor-dialog.png",
+          "sha256": "0dbf1d9a19aa281a37da4ebe74f9ebd147e618d6dff7a37c774ca03cf725f38f"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor-terrain.png",
+          "sha256": "79a641bb6a0f2720ec12653f35c47355a2588d88f48385f1890c789aa55ec5ed"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor.png",
+          "sha256": "ce869f0c58f68f475195f7656ab18760c8576e35e192a8d36d7d9f564ac2005e"
+        }
+      ]
+    },
+    {
+      "phase": "surfaces",
+      "job": "phone-fortifications",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-fortifications/tutorial-fortifications-briefing.png",
+          "sha256": "4770bc8053346055cfb38881aba52ab64f5e3a26ee9d4c26fc7375f212012e72"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-fortifications/tutorial-fortifications-dialog.png",
+          "sha256": "281a698795a3b69906f368675a2fb8f678ba4b2c880da0dc69bfff63dbe764c5"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/surfaces/phone-fortifications/tutorial-fortifications.png",
+          "sha256": "a86042197ed07328108c5b50faf834bb3b1b9a92db324e48ee9f10442d9babad"
+        }
+      ]
+    },
+    {
+      "phase": "api",
+      "job": "desktop-api-known",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/desktop-api-known/settings-ais.png",
+          "sha256": "912cf6ef7d927a2f7bc1ccf864ad15993f0cc289e891ccde0f369fd21c18c765"
+        }
+      ]
+    },
+    {
+      "phase": "api",
+      "job": "desktop-api-unknown",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/desktop-api-unknown/settings-ais.png",
+          "sha256": "403e2cfbb80e81d8fab920056f895e0afd70b28a9b1766f23e153f1aa853ac3f"
+        }
+      ]
+    },
+    {
+      "phase": "api",
+      "job": "phone-api-known",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/phone-api-known/settings-ais.png",
+          "sha256": "8c7d43731d2f80cb4e3422cd5702e0e1b3cb7b98a60c564f999235c1f9a05b8d"
+        }
+      ]
+    },
+    {
+      "phase": "api",
+      "job": "phone-api-unknown",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/phone-api-unknown/settings-ais.png",
+          "sha256": "ca6d85b7d63778227df445bda4d978865e855f0911ad2c9c8902de5fea6fa81a"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "desktop-10x1",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-10x1/font-10-scale-1-page-001.png",
+          "sha256": "6b9c7d209a2fc6c700d9ad1397065417cf5633ab810fcc4c41a4910233d3c1aa"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-10x1/font-10-scale-1-page-002.png",
+          "sha256": "d8cb040960683c29368a4d519acc6846722862063e67bdb6faad86267cc8d2ab"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "desktop-10x2",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-10x2/font-10-scale-2-page-001.png",
+          "sha256": "598c0f0497aa5527e0f2e27b1418fb2fd6ec295ce04a2b730710fecace5181a6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-10x2/font-10-scale-2-page-002.png",
+          "sha256": "2733b19c1b79d8666b4f5e539fd94aad6455528e23a163a3fb1dbf78809e56eb"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "desktop-13x1",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-13x1/font-13-scale-1-page-001.png",
+          "sha256": "e6615ee738fed2e8ee3ec1e8dd0e7c89317152041c80d1d5792318a3976e6590"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-13x1/font-13-scale-1-page-002.png",
+          "sha256": "5fdb5aee3f409cdd583a68d37bbfe1a6bea8dd325571bc64d4f6d43bf3d01248"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "desktop-13x2",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-13x2/font-13-scale-2-page-001.png",
+          "sha256": "7ee2b20a5bd57ca34ec69a2dbb311fac85151a6dc41f601a3ceac1050861038a"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-13x2/font-13-scale-2-page-002.png",
+          "sha256": "d036748a4fb9bd206bb9b9478c98e434358d427d200b22e42ee7cee5af2cab83"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "desktop-20x1",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-20x1/font-20-scale-1-page-001.png",
+          "sha256": "0537bd039cb4445ef3027455fe8738fe2253d6c7ae2f05518d7a69b7bf61476f"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-20x1/font-20-scale-1-page-002.png",
+          "sha256": "f74e0e3ac29f948075ce61e96aeda420062a2a743a2268032f5e57f8da9720c5"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-20x1/font-20-scale-1-page-003.png",
+          "sha256": "b1d19b10a1eb5615f025afe3f67bc8dbaa33b6ab8c2cfd84eb7b5a13a57d2f55"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "desktop-20x2",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-20x2/font-20-scale-2-page-001.png",
+          "sha256": "1482c91142cd6a2396df8c0fa1442325054848f7816c67e6b6db2aab32f2a853"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-20x2/font-20-scale-2-page-002.png",
+          "sha256": "f11b83690b5dee1c6dee0ea938db0960d4fa8bc930e243f8c7e084ac8e7a59bc"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/desktop-20x2/font-20-scale-2-page-003.png",
+          "sha256": "a90bccfdfcb29058a2285e7523bd949158593df963840abbffc2f74d70417cde"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "phone-10x1",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-10x1/font-10-scale-1-page-001.png",
+          "sha256": "9d33f77cb59c64a31bcda3c922e861f207a7c3eb9f2183c536a612673d3a46de"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-10x1/font-10-scale-1-page-002.png",
+          "sha256": "c8cfd9c63dbba01f061eef17608af03408069f0cd30e37010a6822a1b086eb37"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "phone-10x2",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-10x2/font-10-scale-2-page-001.png",
+          "sha256": "e768f6d4c661c30becf0e53f5507df41031e1b044d30f921aeeac3b6bcf6c836"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-10x2/font-10-scale-2-page-002.png",
+          "sha256": "b07186fda279972c2773d5ca9d587218a9ca7ca08f657c7107a442e1f3e3ed06"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "phone-13x1",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-13x1/font-13-scale-1-page-001.png",
+          "sha256": "a91feee4255fc2d93275893c093c699886c1140a741f106727a5f9ccbdc95999"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-13x1/font-13-scale-1-page-002.png",
+          "sha256": "ff51818960d83e11dacf0f1167326c842e08a01aecbd6fe6a11743347db198f0"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "phone-13x2",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-13x2/font-13-scale-2-page-001.png",
+          "sha256": "22b745bac0b19e0cc2a284cd33f53bab7ee50051f4d86f2e140c3131b0bd7677"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-13x2/font-13-scale-2-page-002.png",
+          "sha256": "60e95a870ba333d8d63b18a6f5225b032d8938f8a700c2820af2ca8a44b1cab4"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "phone-20x1",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x1/font-20-scale-1-page-001.png",
+          "sha256": "e38ce06163bff784b5c23fd38aafb7767f38d8f4aa53d92693ed1efec34bc2ce"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x1/font-20-scale-1-page-002.png",
+          "sha256": "000fba4823b438fd63fbb01c8f8a87b51663f2e6c1a6eb206aa0df0ccfcf65a2"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x1/font-20-scale-1-page-003.png",
+          "sha256": "e732761e2f46951bed1c55b762cbcfc83b1950f7265ac56d0c569b3bf065dad6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x1/font-20-scale-1-page-004.png",
+          "sha256": "cc5c8cacd5e529e4f32274c64858fce8ca0354b67d7033f24e99c01c7869a3e4"
+        }
+      ]
+    },
+    {
+      "phase": "fonts",
+      "job": "phone-20x2",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x2/font-20-scale-2-page-001.png",
+          "sha256": "09d2b078d7d6ba6e5d1d9783b2ed8aecc35a32ac1d7849aef7265ba987ed9e2d"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x2/font-20-scale-2-page-002.png",
+          "sha256": "5f9475cdf8a30deba3b9cb4dd5d59715fda52b6a6efbe05718a17459961ca984"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x2/font-20-scale-2-page-003.png",
+          "sha256": "f41c832d395e4beaf66554c34d2f4b91cb2d6206eac16e4d1bdbe494f33f240e"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x2/font-20-scale-2-page-004.png",
+          "sha256": "319827030b3ef1b11fda632e1d264dcd21948a50a2f6ab522d2cc70c9e08f6cf"
+        }
+      ]
+    },
+    {
+      "phase": "probes",
+      "job": "desktop",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/desktop/font-10-scale-1-page-001.png",
+          "sha256": "69f1057a00ad35ceb609518574c730b3d80ddf15b4aa1f379ff81af78300f363"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/desktop/font-10-scale-2-page-001.png",
+          "sha256": "d13cc43acabdb458b2d7b1665c30c6ece0bce3dd4a7e9e0a132aeb2899eb66ba"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/desktop/font-13-scale-1-page-001.png",
+          "sha256": "6250d0f5eb8265e958651ef72e2f546b85088047be2a7278a174de7640996db8"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/desktop/font-13-scale-2-page-001.png",
+          "sha256": "186c261675bce364b88554659b3038c6e5bbd1dba095e6dd6a54ec497fcebf85"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/desktop/font-20-scale-1-page-001.png",
+          "sha256": "bc9b45f22cfabdc446c08befe44a664f897441b6aa1ff5db948f9c1700180da6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/desktop/font-20-scale-2-page-001.png",
+          "sha256": "4bdbd98b736ae872cd419a81f296546765de199d876d1551a3b44dd5b3243a1d"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/desktop/probe-contact.png",
+          "sha256": "fcbc70f8d8266e62b63ec836c421c14d9dbb1a8dab133c1c9ce9383ebbf1643d"
+        }
+      ]
+    },
+    {
+      "phase": "probes",
+      "job": "phone",
+      "returncode": 0,
+      "execution": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/execution.json",
+      "images": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/phone/font-10-scale-1-page-001.png",
+          "sha256": "6ca856f2a550a6f69d0d84a2bed126edb5222dc98bffa8281dbb547a563df102"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/phone/font-10-scale-2-page-001.png",
+          "sha256": "36b14cec31ab9136b379a1e7908ec04e855ab36289ae6a3aca0888fa6a1c99b3"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/phone/font-13-scale-1-page-001.png",
+          "sha256": "cf21e32663b8a0ccb687209504eac1dd5fcb703bc7ea22693994dc1e97d08702"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/phone/font-13-scale-2-page-001.png",
+          "sha256": "508362680bfc0a73ea995320791b190f2e62cf6e79f44d000fe0428362a079ed"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/phone/font-20-scale-1-page-001.png",
+          "sha256": "22e6631ff17eb2c5454ae51cfb382ff96da4aa8af9c8521ba2540a2a948036e6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/phone/font-20-scale-2-page-001.png",
+          "sha256": "867afba8221becf4e62d13aeae8f3891008d978cb212023dbcaeff1184bd0bd0"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/phone/probe-contact.png",
+          "sha256": "40305b578c0f237cf3cdfc472db5a2079f81ccfae4eb3e8e3a706d997e0874c5"
+        }
+      ]
+    }
+  ]
+}

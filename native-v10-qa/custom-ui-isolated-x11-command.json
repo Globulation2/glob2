@@ -1,0 +1,32 @@
+{
+  "actual_engine_sha256": "fcfaace2f8b0988e49dab47abd3a2c2eaabc0f713f313f79b99420a730cc6b47",
+  "actual_compiled_producer": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "current_source": "b14894809014d14baa25de28d63d775ffeb41331",
+  "source_closure": "../native-captures/v10-integration/3810-b148-test-harness-source-closure.json",
+  "exact_filter": "CustomGameSetup/custom game screens; captures and translated keys*",
+  "concurrency": 1,
+  "fresh_profile": "test/run_tests.py creates isolated profile",
+  "display": "xvfb-run1600x1400x24",
+  "explicit_environment": {
+    "XDG_SESSION_TYPE": "x11",
+    "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib"
+  },
+  "inherited_selected_environment": {
+    "WAYLAND_DISPLAY": "wayland-0",
+    "WAYLAND_SOCKET": null,
+    "SDL_VIDEODRIVER": null,
+    "SDL_VIDEO_DRIVER": null,
+    "XDG_SESSION_TYPE": "wayland"
+  },
+  "fixture_deadline_ms": 120000,
+  "runner_timeout_seconds": 600,
+  "reason": "Only actual observed failing case, authorized isolated triage; original147result retained.",
+  "explicit_unset_environment": [
+    "WAYLAND_DISPLAY",
+    "WAYLAND_SOCKET",
+    "SDL_VIDEODRIVER",
+    "SDL_VIDEO_DRIVER"
+  ],
+  "corrected_environment_reason": "Initial isolated invocation inherited Wayland and failed video initialization in1.7s, no fixturebody. This fresh retry matches original suite X11 environment.",
+  "output": "native-tests-v10-custom-ui-isolated-x11"
+}

@@ -1,0 +1,11 @@
+START desktop-100-script-editor
+END desktop-100-script-editor 0
+START desktop-100-statistics
+END desktop-100-statistics 0
+START desktop-150-script-editor
+END desktop-150-script-editor 0
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v5-qa/after_patch.py", line 28, in <module>
+    out=base/tag;assert not out.exists(),f'Never overwrite{out}';out.mkdir();env=environment(out/'profile',view=='phone',growth)
+                        ^^^^^^^^^^^^^^^^
+AssertionError: Never overwrite/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics

@@ -1,0 +1,9 @@
+{
+  "initialHead": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "currentHead": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "fileCount": 1642,
+  "changed": [
+    "platform/apps/web/e2e/i18n.spec.ts"
+  ],
+  "productionInputBytesUnchanged": true
+}

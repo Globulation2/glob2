@@ -1,0 +1,4 @@
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (3.5s)
+
+1 passed, 0 failed, 0 skipped (3.5s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sgsl-bg-compatibility-v11/golden-verify.xml (1 cases)

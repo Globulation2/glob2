@@ -1,0 +1,15 @@
+{
+  "status": "Actual source byte identities only; fresh runtime checks pending",
+  "files": {
+    "libgag/src/TrueTypeFont.cpp": "1d7f033193cb507256b7af3e38046078ec5853c2458429a84f13a388b4d21011",
+    "libgag/src/ui/TextLayout.cpp": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0",
+    "libgag/include/ui/TextLayout.h": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f",
+    "src/team/stats/TeamStatChart.cpp": "c9ad594fb8a24a9582bf40624aa66573b2c0531dd5f24a405b60ec71d04f4757",
+    "src/hud/InGameStatistics.cpp": "aae23045a183dd4bf5aa45026e92566c751cd41f9f35ff61cb8c2ae0c66f6d89",
+    "tools/TranslationPreviewHarness.cpp": "527f4613f3198ddf45bc673498d739b629bdbd04f0868a1394e9250e3e9305a3",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "browser/assets/sans-core.ttf": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9"
+  },
+  "historical_producer_records_preserved": true,
+  "renderer_policy": "Incoming status wrapping/responsive statistics and float matrix support require new complete execution; old bd2/8db captures are not relabelled."
+}

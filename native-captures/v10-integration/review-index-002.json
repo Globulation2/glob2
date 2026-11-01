@@ -1,0 +1,65 @@
+{
+  "scope": "Completed actual b148 corrected preview jobs only; excludes unfinished/failed attempts",
+  "images": [
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-results/statistics.png",
+      "sha256": "75292e76f4a42df52995fe0924d9f81b0f781607bbac87f06cd88afdfc3ee535",
+      "job": "desktop-results",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-navigation/statistics-economy.png",
+      "sha256": "e2a56d4247ac2b3ee9e5ef2df851fdc0eed4b350fd8a8dbf50cab31025bfcdd5",
+      "job": "desktop-navigation",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-navigation/statistics-navigation-dialog.png",
+      "sha256": "9f319a8c3fbbee83f1d9775f931a92fcbc5c3f749d750eeb7bdf67e964777825",
+      "job": "desktop-navigation",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-navigation/statistics-overview.png",
+      "sha256": "2bb4f0278dd3c5c5d448d202cdc68020426ad2dacd83c1cb741ba67baec6df39",
+      "job": "desktop-navigation",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-navigation/statistics-population-history-details.png",
+      "sha256": "aa3f9b6ccecaa70b7b9b08e761bb928224452fc2c816433b26a313c01c36b978",
+      "job": "desktop-navigation",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-navigation/statistics-population-history.png",
+      "sha256": "532065f0c4a15554a7e33ee0d679c7a995c2745989d893a9e6f9aca8e74630d4",
+      "job": "desktop-navigation",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-navigation/statistics-world.png",
+      "sha256": "48bc9857695b99ea3c6563fd74b620757d1ced5097a802d360a2a630ec248cbd",
+      "job": "desktop-navigation",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-script-editor/script-editor-cursor.png",
+      "sha256": "ef26c372704b291e9999cb2b6a18e86f9fc2b10e267f58136c90cc93b4c48b6e",
+      "job": "desktop-script-editor",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-script-editor/script-editor-failure.png",
+      "sha256": "1bebd49577b33aa7cfbcc6328be7363ef432362c477fde54e7263e667248d63e",
+      "job": "desktop-script-editor",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-script-editor/script-editor-success.png",
+      "sha256": "a20fb46fc6bf3dbc9df887d93073dfda683e1460674fcb273292b793bad4062b",
+      "job": "desktop-script-editor",
+      "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331"
+    }
+  ]
+}

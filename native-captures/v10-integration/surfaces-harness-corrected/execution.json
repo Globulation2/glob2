@@ -1,0 +1,201 @@
+{
+  "actual_revision": "b14894809014d14baa25de28d63d775ffeb41331",
+  "actual_binary_sha256": "e54bdfd987fdcd83e5f020167684a3c04bd1efe0eab3223a3b45210a968c76a4",
+  "input_files_sha256": {
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/manifest.json": "5d69556ab53f9798fe27c2e756b2cf346ca91af0428ee6b31a00a576c6e9aa18",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg/metadata.json": "f669c0e830cc521ea16c9a3a7bc7b17d7d8a595010e44417a7bce6b86c810b5f",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg/native.json": "8136af59a530fabf34d68098c2bdba1d00c03efed73b8b83c5636c1c7dcfb64b",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg/online.json": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+  },
+  "jobs": [
+    {
+      "tag": "desktop-results",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-results",
+        "1280",
+        "1024",
+        "statistics"
+      ],
+      "returncode": 0,
+      "seconds": 19.01
+    },
+    {
+      "tag": "desktop-navigation",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-navigation",
+        "1280",
+        "1024",
+        "statistics-navigation"
+      ],
+      "returncode": 0,
+      "seconds": 21.67
+    },
+    {
+      "tag": "desktop-script-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "script-editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-script-editor",
+        "1280",
+        "1024"
+      ],
+      "returncode": 0,
+      "seconds": 27.28
+    },
+    {
+      "tag": "desktop-fortifications",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/desktop-fortifications",
+        "1280",
+        "1024",
+        "tutorial:fortifications"
+      ],
+      "returncode": 0,
+      "seconds": 21.69
+    },
+    {
+      "tag": "phone-lobby",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/phone-lobby",
+        "390",
+        "844",
+        "lobby"
+      ],
+      "returncode": 0,
+      "seconds": 12.6
+    },
+    {
+      "tag": "phone-lobby-players",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/phone-lobby-players",
+        "390",
+        "844",
+        "lobby-players"
+      ],
+      "returncode": 0,
+      "seconds": 12.55
+    },
+    {
+      "tag": "phone-results",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/phone-results",
+        "390",
+        "844",
+        "statistics"
+      ],
+      "returncode": 0,
+      "seconds": 13.9
+    },
+    {
+      "tag": "phone-navigation",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/phone-navigation",
+        "390",
+        "844",
+        "statistics-navigation"
+      ],
+      "returncode": 0,
+      "seconds": 12.6
+    },
+    {
+      "tag": "phone-script-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "script-editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/phone-script-editor",
+        "390",
+        "844"
+      ],
+      "returncode": 0,
+      "seconds": 19.53
+    },
+    {
+      "tag": "phone-fortifications",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/phone-fortifications",
+        "390",
+        "844",
+        "tutorial:fortifications"
+      ],
+      "returncode": 0,
+      "seconds": 16.76
+    }
+  ],
+  "scope": "Fresh remaining actual native production scenarios; initial two desktop lobby captures retain actual3810 producer and closure."
+}

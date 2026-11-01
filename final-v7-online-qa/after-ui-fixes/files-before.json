@@ -1,0 +1,6 @@
+{
+  "platform/apps/web/src/skins/useSkinDocument.ts": "b837dd86ed34e11763616c82c26ab26a72052aab791f7c9ab985cc1ed0cf686a",
+  "platform/apps/web/src/admin/Finances.tsx": "44c8b61a3e43dc774ac50321fdfdd874b88861b0f48ab9ece13185128745705f",
+  "platform/apps/web/test/skin-document.test.tsx": "d9b8ff43f49ef813a73e39b2f974c07f7fca55084bc6444a8c8f20b7880bea0e",
+  "platform/apps/web/e2e/localized-layout.spec.ts": "4bae382c82e9e324857adf49939fae20e597fa8c633c635bfba9aed44756373c"
+}

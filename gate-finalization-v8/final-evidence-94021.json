@@ -1,0 +1,858 @@
+{
+  "schema_version": 1,
+  "mode": "scoped-verification",
+  "revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+  },
+  "scope": "Root-authorized scopedfinal94021/SIM115 Bulgarian localization verification: exact6408linguisticbindings, actualnamedLinux/browser/emulated-phone evidence and explicit historicalfontcarry; threeaggregateplatformgates unavailable. This configuration is read-only validated; root separately owns apply.",
+  "limits": [
+    "Agent-reviewed language and static visual inspection only; no native-human or physical-device certification.",
+    "Actual current coverage: native9jobs/25personallyapprovedPNGs+44focusedcases+golden115; focusedunit91; browserstrict4; customfontCDP3; browser37personallyapprovedvisibleframes; SPA6browsercases/10personallyapprovedPNGs.",
+    "Browserstartup3screenshots show translated FAILUREbranch and brokenimage minor, not normalsuccessscreenshots. Separate strict4actualgameboot/persistence and realserial/threadedWASM/VFS byteproofs establish their named execution scopes.",
+    "Browserphone150-settings.png isMAINMENU, notSettings; briefing/helpfilenames show compactobjectives, not actualhelpdialog; currentbrowserScriptEditor/compileflow not covered. Blank/generatingpreviews and unpopulatedhistory do not establish completed/populatedstates.",
+    "Only picturedSPAbalance2visuallyapproved;0/1/2visible+ARIA counts are separately exercised by sixactualbrowsercases. Hidden dropdowns/tooltips/ARIA/offscreencontent are not visually inspected.",
+    "Historicalfontmatrix6402unchangedvalues(actualEA0)+396samples33correctedvalues(actual3810) are carried by exactnamedcomponent/BGpredicate proofs; no newfullmatrix or wholecorefontbinaryidentity claimed. Newcore466fbselectedfont is separately proven by freshCDP/hash/MIME receipts.",
+    "BrowserJS171result is168pass/3fail, with all3failures independently reproduced on frozenmaster0b6baseline; no allgreen claim.",
+    "Old3810broadengine147 is146pass/1picker120sdeadlinefailure. Picker/test/worker source-equivalence supports separate scope disposition, not a masterruntimepassingbaseline. Isolatedretry was interrupted/uncompleted with unknownexitcode/noJUnit and is never passed.",
+    "Earlierunrestrictedunit-final.log is incompleteexit143 with partialdisplayfailures and nofinalJUnit; cause unassessed, not passed. Only separate currentfocusedunit91actual94021rc0 is claimed.",
+    "Phone evidence is emulatedviewport/staticrendering, notphysicalmobile execution or completeinteractiveaccessibility. Unseenstates,hit-testing,keyboard,touchdimensions andscrolloperations remain outside screenshotapproval.",
+    "Linuxnative/Blinktestedsubsets do not establish Windows/macOS/Android/iOS,allarchitectures,allbrowservariants or allphysicaldevices; threeaggregateplatformgates remain explicitly unavailable."
+  ],
+  "review_record": {
+    "path": "kit-v8/reviews/bg.json",
+    "sha256": "6fd41b6dc7c5929b43fb9d96e22bc7b007fa6d2578d0db0220c1e4fd856486df"
+  },
+  "reports": [
+    {
+      "path": "browser-final-v9/completed-image-index.json",
+      "sha256": "b7c5b62af95c1277ecae1d273f1c1776f4ec72567d385cd48f14c4606e7de2b4"
+    },
+    {
+      "path": "browser-final-v9/editor-visual-completed37-final.json",
+      "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+    },
+    {
+      "path": "browser-final-v9/http-catalog-runtime-traversal.json",
+      "sha256": "81109ee723661bb71634fcf0fc6ae640ee098f51e4b225921b9b381b4ea75ff1"
+    },
+    {
+      "path": "browser-final-v9/root-release-receipt.json",
+      "sha256": "8f31f6298373859c99dbdf9836b52fa2457e2ac970ddbca07e34a64fb692e573"
+    },
+    {
+      "path": "browser-final-v9/run-summary.json",
+      "sha256": "77e1b40c4c1fa6f18ad2a164725f8fbb4d2e0236a11c4a6e4d81d0ac3937fbb5"
+    },
+    {
+      "path": "browser-final-v9/startup-report.json",
+      "sha256": "248c15e6cbf4ca35bdb4853166c003ade15c8dffdc429618ddfb36eefab88aa1"
+    },
+    {
+      "path": "browser-final-v9/strict.log",
+      "sha256": "8a0422a667fb638928a35155bc90e9a1b3768a31cc1f11b68e6b7be9813e991e"
+    },
+    {
+      "path": "browser-final-v9/unit-master-baseline/identity.json",
+      "sha256": "54d3aa70abfbeb8e57689c86f97ce2902b669204e4ccbd4a500c0ccbc843a61c"
+    },
+    {
+      "path": "browser-final-v9/unit-master-baseline/results.log",
+      "sha256": "0a82320fca47725029bd8a7371fd372f5061be47b877bd6f2ced104be9379340"
+    },
+    {
+      "path": "browser-final-v9/variant-proof-serial.json",
+      "sha256": "1095387e1943b358bcf712f00f2bebfa5469f061ca01fe4f937d9619f91012a6"
+    },
+    {
+      "path": "browser-final-v9/variant-proof.json",
+      "sha256": "8b121b7b807f2c38a57d234376da02b9a42084d8ae2b8c5edc363f03061110bf"
+    },
+    {
+      "path": "filipino-compat-v8/compatibility-fil18-independent-validation.json",
+      "sha256": "dd126b8da9a940cad4971dadea22f250a54a98e73113ea299c6e80f57fa3b341"
+    },
+    {
+      "path": "filipino-compat-v8/compatibility-fil18-review-validation.json",
+      "sha256": "0cd08610807eb035126b919a6ee7e8e4cba38002cf8e02d2ba54558378402672"
+    },
+    {
+      "path": "final-fil-online-qa/checks-final.json",
+      "sha256": "a8e844cc1cf69c322e0d8d686fc39403cbb6029c44318a75b459bf948d8d4640"
+    },
+    {
+      "path": "final-fil-online-qa/image-index-frozen.json",
+      "sha256": "ca6f2fdd4f8e9db98b6fd3a8f9498bf9cfd8ac03bd6591eaf4cc8bcb55eeb0e5"
+    },
+    {
+      "path": "final-fil-online-qa/independent-visual-final.json",
+      "sha256": "8ed3c2c383d658ce88e4a969751aaffbb3fffc02bcb92688d740747a8fdfd988"
+    },
+    {
+      "path": "final-fil-online-qa/source-bundle-closure.json",
+      "sha256": "d9457905e80a11a9fa51ba9b07d630535a170a76db8ddf41884ef05a8569547b"
+    },
+    {
+      "path": "gate-finalization-v8/final-SPA-input-binding.json",
+      "sha256": "839e4c4f97ed8546759eaeccd17442bc219ed81b928b218264cf999f6678ce2c"
+    },
+    {
+      "path": "gate-finalization-v8/final-source-closure-94021.json",
+      "sha256": "f7f64ecc84f7b1f32bce0b58ce9b683899f7eed47ba1a47723a885066695e41c"
+    },
+    {
+      "path": "gate-finalization-v8/final-source-closure-validation.json",
+      "sha256": "de15657e8da0cc8a3ba58c50e06d83cf0bb10ca7ab3638bc9348ab78e988628c"
+    },
+    {
+      "path": "gate-finalization-v8/finalization-independent-validation.json",
+      "sha256": "0f2f5973c22cb65adb150273dfae3694d66e542d3ee00c0c004d5ea57d2d2c1f"
+    },
+    {
+      "path": "gate-finalization-v8/finalization-validation.json",
+      "sha256": "cab69d22bc834ce8105ff9c61d331f3acd96023653f2ba786725a5042421063a"
+    },
+    {
+      "path": "gate-finalization-v8/root-config.final-94021.json",
+      "sha256": "4de2b3b3a24df3c7518c994f47cdd278cae3fdce58f5933bb0db551ff4eb9992"
+    },
+    {
+      "path": "gate-finalization-v8/verification-status-and-limits.json",
+      "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+    },
+    {
+      "path": "kit-v8/compatibility-mr18-review-validation.json",
+      "sha256": "bbe426b91c666f3f4e7602d587828bac04b08c0ec16aa31c74f3a740d32413f3"
+    },
+    {
+      "path": "kit-v8/compatibility-ta18-review-validation.json",
+      "sha256": "839e17240ab7f211de909e72b18439b73cab4099c3761b6afa22e0aee88a141d"
+    },
+    {
+      "path": "kit-v8/review-proof-v8-visual-validation.json",
+      "sha256": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7"
+    },
+    {
+      "path": "kit-v8/reviews/bg.json",
+      "sha256": "6fd41b6dc7c5929b43fb9d96e22bc7b007fa6d2578d0db0220c1e4fd856486df"
+    },
+    {
+      "path": "linguistics/editor-language-references.md",
+      "sha256": "c3a573bf7bf4fbc1e4a295342efe7ff17f068f021ae3fe3d702b9d379c63ba1d"
+    },
+    {
+      "path": "linguistics/editor_pilot_notes.json",
+      "sha256": "5009d5adeacd2d272b86623efda6693ce389cc63884e526854258412a4c6ab46"
+    },
+    {
+      "path": "linguistics/semantic-language-brief.md",
+      "sha256": "208b1eb36739fc0ac9e10c149e95c47711d44713e0bcab25297a60a7fc7b078a"
+    },
+    {
+      "path": "linguistics/semantic-pilot-examined.json",
+      "sha256": "55f0ac5657de9a7dbef16bd8019328229f7a28224f4b4d28a6a0a2fbfc9bf988"
+    },
+    {
+      "path": "linguistics/semantic-pilot2-examined.json",
+      "sha256": "13be16126fd45bcbd77da62f58278b7e25116717c69fab488c6810da8430d609"
+    },
+    {
+      "path": "native-captures/v10-integration/font-delta-measurement-summary.json",
+      "sha256": "89746f4082559f6031c182c511de4699be9d06cd434a97b848fa5e906c351345"
+    },
+    {
+      "path": "native-captures/v10-integration/independent-visual-final.json",
+      "sha256": "c5ee037e1a93ae4c7714bf4b0b922b0a67074ba731a656c8cbfcad6dd9159f0f"
+    },
+    {
+      "path": "native-captures/v10-integration/source-component-comparison.json",
+      "sha256": "b38d048f393feab53ecc045bd228d0459bf56d672abb92d251fede199150e63c"
+    },
+    {
+      "path": "native-captures/v11-integration/independent-visual-final.json",
+      "sha256": "b36db5277d728f576a43625eacaf32d986586dd3bc7f137a96b978b8ccc4e387"
+    },
+    {
+      "path": "native-captures/v11-integration/native-runtime-summary.json",
+      "sha256": "d220ff84094c41a6c7bd07bc21e7cc837cfb96481fca6a86dec6e4b6bb2690bb"
+    },
+    {
+      "path": "native-captures/v11-integration/review-index-001.json",
+      "sha256": "6bd9b3803a66b2dd4eecf3b91a5f9baaa50d7d07f8b31275c9415bee6aa51f85"
+    },
+    {
+      "path": "native-captures/v11-integration/review-index-002.json",
+      "sha256": "fab19e5f09b4f5f357732f9a0e5b8e4e7c217e556aff4ff0b476ae746740c0f0"
+    },
+    {
+      "path": "native-captures/v11-integration/source-runtime-closure.json",
+      "sha256": "feaa9d4270c17e4545c5fb94b18c6eddb1430a989353c156f53b2d609bd00ff6"
+    },
+    {
+      "path": "native-captures/v9-final/independent-visual-final-supplement-001.json",
+      "sha256": "c449e5da8a3e7f710c8be7ae95eac2c385a26cc3b9288253f9f5209a36e28024"
+    },
+    {
+      "path": "native-captures/v9-final/independent-visual-final.json",
+      "sha256": "72f5e9aa56717757f58a8d6927f22eecb713296e05c72e016e9bd8fd7f37f587"
+    },
+    {
+      "path": "native-tests-v11-focused-unit/command.json",
+      "sha256": "e5efef9bc6afe4a55b35bf923bb0d772d41f43bea3f31e61a3ed5fc7ed04b2ff"
+    },
+    {
+      "path": "native-tests-v11-focused-unit/junit.xml",
+      "sha256": "aa89063a6edc792a96c722dc4ddd8fc5b1e8c59143ec93e39c316fa530d70832"
+    },
+    {
+      "path": "native-v11-qa/bg-font-carry-equivalence-proof.json",
+      "sha256": "09e1ec7d297e00e21d257a8fababfb4eb93f8e851a55973d3c0e385998afa0ea"
+    },
+    {
+      "path": "native-v11-qa/picker-timeout-scope-proof.json",
+      "sha256": "32eb91130385437fdebbc5012021bbc2ff51e22f3f5774c8e69af6682618fdfe"
+    },
+    {
+      "path": "platform-companion-v8/platform3-independent-validation.json",
+      "sha256": "a65426af6f73b507021450af39b91e95fabf90fe28be0273f26e9a125e9bcf76"
+    },
+    {
+      "path": "platform-companion-v8/platform3-review-validation.json",
+      "sha256": "c9e912b8f12be39f3122ff45037a53f4a8a92129467196ed8a19741c47c65ff9"
+    },
+    {
+      "path": "postvisual-i18n-check-final.log",
+      "sha256": "67fc4ab59d04d0db5bcb0bcda8d83f8e3e8eb3d084285917681959e587e09cbf"
+    },
+    {
+      "path": "review-proof-v8-visual-independent-validation.json",
+      "sha256": "2e30517167997cea2a28365c1111a354fc3363bfabbd24e0ffa65fd570bbbe77"
+    },
+    {
+      "path": "telugu-compat-v8/compatibility-te18-independent-validation.json",
+      "sha256": "d2b70ea07acef2c22b45d1470f7df2dd331ac4fbd67225da79f7a9190f40fc16"
+    },
+    {
+      "path": "telugu-compat-v8/compatibility-te18-review-validation.json",
+      "sha256": "3a7f59da23295fc063dd355a56540998a258888fce8e109fcb2b56f8f5c95288"
+    }
+  ],
+  "findings": [
+    {
+      "id": "native-v11-minor-1",
+      "severity": "minor",
+      "state": "accepted",
+      "reason": "Root accepts the actual independently approved namedscope with this explicitly retained minor; not claimed resolved.",
+      "description": "At phone result100 Save replay label still wraps inside повторението, leaving a lone final о. All letters and the entire action remain visible. Enlarged150 result uses full-width actions and clean whole-word wrapping.",
+      "source_report": {
+        "path": "native-captures/v11-integration/independent-visual-final.json",
+        "sha256": "b36db5277d728f576a43625eacaf32d986586dd3bc7f137a96b978b8ccc4e387"
+      },
+      "original_finding_id": "F1"
+    },
+    {
+      "id": "browser-v9-minor-1",
+      "severity": "minor",
+      "state": "accepted",
+      "reason": "Root accepts the actual independently approved namedscope with this explicitly retained minor; not claimed resolved.",
+      "description": "Broken image placeholder above readable translated download-failure text. No claim about why download failed or asset scope.",
+      "source_report": {
+        "path": "browser-final-v9/editor-visual-completed37-final.json",
+        "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+      },
+      "original_finding_id": null
+    },
+    {
+      "id": "browser-v9-minor-2",
+      "severity": "minor",
+      "state": "accepted",
+      "reason": "Root accepts the actual independently approved namedscope with this explicitly retained minor; not claimed resolved.",
+      "description": "Phone 150% enlarged labels sometimes wrap inside words (Rules, pre-made, Generated, Briefing, Tips). Text remains discernible, actions distinct; no missing Bulgarian glyphs observed.",
+      "source_report": {
+        "path": "browser-final-v9/editor-visual-completed37-final.json",
+        "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+      },
+      "original_finding_id": null
+    },
+    {
+      "id": "browser-v9-minor-3",
+      "severity": "minor",
+      "state": "accepted",
+      "reason": "Root accepts the actual independently approved namedscope with this explicitly retained minor; not claimed resolved.",
+      "description": "Small chart empty-state text and bottom editor controls are visually dense; scroll boundaries cut continuing content, and long selector value is ellipsized. Hidden content and expanded states are excluded.",
+      "source_report": {
+        "path": "browser-final-v9/editor-visual-completed37-final.json",
+        "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+      },
+      "original_finding_id": null
+    },
+    {
+      "id": "SPA-final-minor-1",
+      "severity": "minor",
+      "state": "accepted",
+      "reason": "Root accepts the actual independently approved namedscope with this explicitly retained minor; not claimed resolved.",
+      "description": "Upper welcome heading partly occluded by sticky navigation at the captured scroll position. Wallet, composer and instructions remain legible; this frame does not show a complete heading.",
+      "source_report": {
+        "path": "final-fil-online-qa/independent-visual-final.json",
+        "sha256": "8ed3c2c383d658ce88e4a969751aaffbb3fffc02bcb92688d740747a8fdfd988"
+      },
+      "original_finding_id": null
+    }
+  ],
+  "gates": {
+    "language_brief": {
+      "status": "passed",
+      "scope": "Bulgarian language variety/register/glossary and reference decisions, including actual final320freshreviews and complete unchanged-parent lineage.",
+      "evidence": [
+        {
+          "path": "linguistics/semantic-language-brief.md",
+          "sha256": "208b1eb36739fc0ac9e10c149e95c47711d44713e0bcab25297a60a7fc7b078a"
+        },
+        {
+          "path": "linguistics/editor-language-references.md",
+          "sha256": "c3a573bf7bf4fbc1e4a295342efe7ff17f068f021ae3fe3d702b9d379c63ba1d"
+        },
+        {
+          "path": "kit-v8/review-proof-v8-visual-validation.json",
+          "sha256": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7"
+        }
+      ]
+    },
+    "source_based_pilot": {
+      "status": "passed",
+      "scope": "Actual source-controlled pilot reviews preserved as historical process evidence; final6408pair coverage and source/target lineage checked independently.",
+      "evidence": [
+        {
+          "path": "linguistics/semantic-pilot-examined.json",
+          "sha256": "55f0ac5657de9a7dbef16bd8019328229f7a28224f4b4d28a6a0a2fbfc9bf988"
+        },
+        {
+          "path": "linguistics/semantic-pilot2-examined.json",
+          "sha256": "13be16126fd45bcbd77da62f58278b7e25116717c69fab488c6810da8430d609"
+        },
+        {
+          "path": "linguistics/editor_pilot_notes.json",
+          "sha256": "5009d5adeacd2d272b86623efda6693ce389cc63884e526854258412a4c6ab46"
+        },
+        {
+          "path": "review-proof-v8-visual-independent-validation.json",
+          "sha256": "2e30517167997cea2a28365c1111a354fc3363bfabbd24e0ffa65fd570bbbe77"
+        }
+      ]
+    },
+    "structural": {
+      "status": "passed",
+      "scope": "Exact current3d16source/e9fdnative/518eonline, all6408keys, placeholders/invariants/plurals,108individualEnglish exceptions, FIL18/TE18/MR18/TA18 and threeOSresources separately validated.",
+      "evidence": [
+        {
+          "path": "review-proof-v8-visual-independent-validation.json",
+          "sha256": "2e30517167997cea2a28365c1111a354fc3363bfabbd24e0ffa65fd570bbbe77"
+        },
+        {
+          "path": "telugu-compat-v8/compatibility-te18-independent-validation.json",
+          "sha256": "d2b70ea07acef2c22b45d1470f7df2dd331ac4fbd67225da79f7a9190f40fc16"
+        },
+        {
+          "path": "platform-companion-v8/platform3-independent-validation.json",
+          "sha256": "a65426af6f73b507021450af39b91e95fabf90fe28be0273f26e9a125e9bcf76"
+        },
+        {
+          "path": "postvisual-i18n-check-final.log",
+          "sha256": "67fc4ab59d04d0db5bcb0bcda8d83f8e3e8eb3d084285917681959e587e09cbf"
+        }
+      ]
+    },
+    "desktop_rendering": {
+      "status": "passed",
+      "scope": "Personallyapprovedactualnative25/browser37/SPA10visibleframes within nameddesktop/emulatedphoneviewports, plus source-bound V9/V10history and boundedfontcarry. No fullfeature/allpages/physicaldevice claim.",
+      "evidence": [
+        {
+          "path": "native-captures/v11-integration/native-runtime-summary.json",
+          "sha256": "d220ff84094c41a6c7bd07bc21e7cc837cfb96481fca6a86dec6e4b6bb2690bb"
+        },
+        {
+          "path": "native-captures/v11-integration/source-runtime-closure.json",
+          "sha256": "feaa9d4270c17e4545c5fb94b18c6eddb1430a989353c156f53b2d609bd00ff6"
+        },
+        {
+          "path": "native-captures/v11-integration/independent-visual-final.json",
+          "sha256": "b36db5277d728f576a43625eacaf32d986586dd3bc7f137a96b978b8ccc4e387"
+        },
+        {
+          "path": "native-captures/v11-integration/review-index-001.json",
+          "sha256": "6bd9b3803a66b2dd4eecf3b91a5f9baaa50d7d07f8b31275c9415bee6aa51f85"
+        },
+        {
+          "path": "native-captures/v11-integration/review-index-002.json",
+          "sha256": "fab19e5f09b4f5f357732f9a0e5b8e4e7c217e556aff4ff0b476ae746740c0f0"
+        },
+        {
+          "path": "browser-final-v9/run-summary.json",
+          "sha256": "77e1b40c4c1fa6f18ad2a164725f8fbb4d2e0236a11c4a6e4d81d0ac3937fbb5"
+        },
+        {
+          "path": "browser-final-v9/completed-image-index.json",
+          "sha256": "b7c5b62af95c1277ecae1d273f1c1776f4ec72567d385cd48f14c4606e7de2b4"
+        },
+        {
+          "path": "browser-final-v9/editor-visual-completed37-final.json",
+          "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+        },
+        {
+          "path": "final-fil-online-qa/checks-final.json",
+          "sha256": "a8e844cc1cf69c322e0d8d686fc39403cbb6029c44318a75b459bf948d8d4640"
+        },
+        {
+          "path": "final-fil-online-qa/source-bundle-closure.json",
+          "sha256": "d9457905e80a11a9fa51ba9b07d630535a170a76db8ddf41884ef05a8569547b"
+        },
+        {
+          "path": "final-fil-online-qa/image-index-frozen.json",
+          "sha256": "ca6f2fdd4f8e9db98b6fd3a8f9498bf9cfd8ac03bd6591eaf4cc8bcb55eeb0e5"
+        },
+        {
+          "path": "final-fil-online-qa/independent-visual-final.json",
+          "sha256": "8ed3c2c383d658ce88e4a969751aaffbb3fffc02bcb92688d740747a8fdfd988"
+        },
+        {
+          "path": "gate-finalization-v8/final-SPA-input-binding.json",
+          "sha256": "839e4c4f97ed8546759eaeccd17442bc219ed81b928b218264cf999f6678ce2c"
+        },
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ]
+    },
+    "phone_rendering": {
+      "status": "passed",
+      "scope": "Personallyapprovedactualnative25/browser37/SPA10visibleframes within nameddesktop/emulatedphoneviewports, plus source-bound V9/V10history and boundedfontcarry. No fullfeature/allpages/physicaldevice claim.",
+      "evidence": [
+        {
+          "path": "native-captures/v11-integration/native-runtime-summary.json",
+          "sha256": "d220ff84094c41a6c7bd07bc21e7cc837cfb96481fca6a86dec6e4b6bb2690bb"
+        },
+        {
+          "path": "native-captures/v11-integration/source-runtime-closure.json",
+          "sha256": "feaa9d4270c17e4545c5fb94b18c6eddb1430a989353c156f53b2d609bd00ff6"
+        },
+        {
+          "path": "native-captures/v11-integration/independent-visual-final.json",
+          "sha256": "b36db5277d728f576a43625eacaf32d986586dd3bc7f137a96b978b8ccc4e387"
+        },
+        {
+          "path": "native-captures/v11-integration/review-index-001.json",
+          "sha256": "6bd9b3803a66b2dd4eecf3b91a5f9baaa50d7d07f8b31275c9415bee6aa51f85"
+        },
+        {
+          "path": "native-captures/v11-integration/review-index-002.json",
+          "sha256": "fab19e5f09b4f5f357732f9a0e5b8e4e7c217e556aff4ff0b476ae746740c0f0"
+        },
+        {
+          "path": "browser-final-v9/run-summary.json",
+          "sha256": "77e1b40c4c1fa6f18ad2a164725f8fbb4d2e0236a11c4a6e4d81d0ac3937fbb5"
+        },
+        {
+          "path": "browser-final-v9/completed-image-index.json",
+          "sha256": "b7c5b62af95c1277ecae1d273f1c1776f4ec72567d385cd48f14c4606e7de2b4"
+        },
+        {
+          "path": "browser-final-v9/editor-visual-completed37-final.json",
+          "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+        },
+        {
+          "path": "final-fil-online-qa/checks-final.json",
+          "sha256": "a8e844cc1cf69c322e0d8d686fc39403cbb6029c44318a75b459bf948d8d4640"
+        },
+        {
+          "path": "final-fil-online-qa/source-bundle-closure.json",
+          "sha256": "d9457905e80a11a9fa51ba9b07d630535a170a76db8ddf41884ef05a8569547b"
+        },
+        {
+          "path": "final-fil-online-qa/image-index-frozen.json",
+          "sha256": "ca6f2fdd4f8e9db98b6fd3a8f9498bf9cfd8ac03bd6591eaf4cc8bcb55eeb0e5"
+        },
+        {
+          "path": "final-fil-online-qa/independent-visual-final.json",
+          "sha256": "8ed3c2c383d658ce88e4a969751aaffbb3fffc02bcb92688d740747a8fdfd988"
+        },
+        {
+          "path": "gate-finalization-v8/final-SPA-input-binding.json",
+          "sha256": "839e4c4f97ed8546759eaeccd17442bc219ed81b928b218264cf999f6678ce2c"
+        },
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ]
+    },
+    "browser_startup": {
+      "status": "passed",
+      "scope": "Actual94021strict4normalgameboot/persistence, realserial/threadedWASM+BGVFSbytes,44catalogtraversal and actualCDP3customfont466fb/hash/MIME checks; startupfailurebranchscreen rendering separately personally inspected.",
+      "evidence": [
+        {
+          "path": "browser-final-v9/run-summary.json",
+          "sha256": "77e1b40c4c1fa6f18ad2a164725f8fbb4d2e0236a11c4a6e4d81d0ac3937fbb5"
+        },
+        {
+          "path": "browser-final-v9/strict.log",
+          "sha256": "8a0422a667fb638928a35155bc90e9a1b3768a31cc1f11b68e6b7be9813e991e"
+        },
+        {
+          "path": "browser-final-v9/startup-report.json",
+          "sha256": "248c15e6cbf4ca35bdb4853166c003ade15c8dffdc429618ddfb36eefab88aa1"
+        },
+        {
+          "path": "browser-final-v9/http-catalog-runtime-traversal.json",
+          "sha256": "81109ee723661bb71634fcf0fc6ae640ee098f51e4b225921b9b381b4ea75ff1"
+        },
+        {
+          "path": "browser-final-v9/variant-proof.json",
+          "sha256": "8b121b7b807f2c38a57d234376da02b9a42084d8ae2b8c5edc363f03061110bf"
+        },
+        {
+          "path": "browser-final-v9/variant-proof-serial.json",
+          "sha256": "1095387e1943b358bcf712f00f2bebfa5469f061ca01fe4f937d9619f91012a6"
+        },
+        {
+          "path": "browser-final-v9/root-release-receipt.json",
+          "sha256": "8f31f6298373859c99dbdf9836b52fa2457e2ac970ddbca07e34a64fb692e573"
+        },
+        {
+          "path": "browser-final-v9/editor-visual-completed37-final.json",
+          "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+        }
+      ]
+    },
+    "native_platforms": {
+      "status": "unavailable",
+      "scope": "Aggregate cross-platform/physical coverage remains unavailable; actual named Linux/browser/emulated-phone subsets are recorded in the rendering/startup reports.",
+      "evidence": [
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ],
+      "reason": "No complete physical/platform-wide verification across all supported targets. Retain untested targets explicitly; do not count them as passed."
+    },
+    "browser_platforms": {
+      "status": "unavailable",
+      "scope": "Aggregate cross-platform/physical coverage remains unavailable; actual named Linux/browser/emulated-phone subsets are recorded in the rendering/startup reports.",
+      "evidence": [
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ],
+      "reason": "No complete physical/platform-wide verification across all supported targets. Retain untested targets explicitly; do not count them as passed."
+    },
+    "mobile_platforms": {
+      "status": "unavailable",
+      "scope": "Aggregate cross-platform/physical coverage remains unavailable; actual named Linux/browser/emulated-phone subsets are recorded in the rendering/startup reports.",
+      "evidence": [
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ],
+      "reason": "No complete physical/platform-wide verification across all supported targets. Retain untested targets explicitly; do not count them as passed."
+    }
+  },
+  "coverage": [
+    {
+      "id": "language_brief",
+      "gate_ids": [
+        "language_brief"
+      ],
+      "status": "verified",
+      "scope": "Bulgarian language variety/register/glossary and reference decisions, including actual final320freshreviews and complete unchanged-parent lineage.",
+      "evidence": [
+        {
+          "path": "linguistics/semantic-language-brief.md",
+          "sha256": "208b1eb36739fc0ac9e10c149e95c47711d44713e0bcab25297a60a7fc7b078a"
+        },
+        {
+          "path": "linguistics/editor-language-references.md",
+          "sha256": "c3a573bf7bf4fbc1e4a295342efe7ff17f068f021ae3fe3d702b9d379c63ba1d"
+        },
+        {
+          "path": "kit-v8/review-proof-v8-visual-validation.json",
+          "sha256": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7"
+        }
+      ]
+    },
+    {
+      "id": "source_based_pilot",
+      "gate_ids": [
+        "source_based_pilot"
+      ],
+      "status": "verified",
+      "scope": "Actual source-controlled pilot reviews preserved as historical process evidence; final6408pair coverage and source/target lineage checked independently.",
+      "evidence": [
+        {
+          "path": "linguistics/semantic-pilot-examined.json",
+          "sha256": "55f0ac5657de9a7dbef16bd8019328229f7a28224f4b4d28a6a0a2fbfc9bf988"
+        },
+        {
+          "path": "linguistics/semantic-pilot2-examined.json",
+          "sha256": "13be16126fd45bcbd77da62f58278b7e25116717c69fab488c6810da8430d609"
+        },
+        {
+          "path": "linguistics/editor_pilot_notes.json",
+          "sha256": "5009d5adeacd2d272b86623efda6693ce389cc63884e526854258412a4c6ab46"
+        },
+        {
+          "path": "review-proof-v8-visual-independent-validation.json",
+          "sha256": "2e30517167997cea2a28365c1111a354fc3363bfabbd24e0ffa65fd570bbbe77"
+        }
+      ]
+    },
+    {
+      "id": "structural",
+      "gate_ids": [
+        "structural"
+      ],
+      "status": "verified",
+      "scope": "Exact current3d16source/e9fdnative/518eonline, all6408keys, placeholders/invariants/plurals,108individualEnglish exceptions, FIL18/TE18/MR18/TA18 and threeOSresources separately validated.",
+      "evidence": [
+        {
+          "path": "review-proof-v8-visual-independent-validation.json",
+          "sha256": "2e30517167997cea2a28365c1111a354fc3363bfabbd24e0ffa65fd570bbbe77"
+        },
+        {
+          "path": "telugu-compat-v8/compatibility-te18-independent-validation.json",
+          "sha256": "d2b70ea07acef2c22b45d1470f7df2dd331ac4fbd67225da79f7a9190f40fc16"
+        },
+        {
+          "path": "platform-companion-v8/platform3-independent-validation.json",
+          "sha256": "a65426af6f73b507021450af39b91e95fabf90fe28be0273f26e9a125e9bcf76"
+        },
+        {
+          "path": "postvisual-i18n-check-final.log",
+          "sha256": "67fc4ab59d04d0db5bcb0bcda8d83f8e3e8eb3d084285917681959e587e09cbf"
+        }
+      ]
+    },
+    {
+      "id": "desktop_rendering",
+      "gate_ids": [
+        "desktop_rendering"
+      ],
+      "status": "verified",
+      "scope": "Personallyapprovedactualnative25/browser37/SPA10visibleframes within nameddesktop/emulatedphoneviewports, plus source-bound V9/V10history and boundedfontcarry. No fullfeature/allpages/physicaldevice claim.",
+      "evidence": [
+        {
+          "path": "native-captures/v11-integration/native-runtime-summary.json",
+          "sha256": "d220ff84094c41a6c7bd07bc21e7cc837cfb96481fca6a86dec6e4b6bb2690bb"
+        },
+        {
+          "path": "native-captures/v11-integration/source-runtime-closure.json",
+          "sha256": "feaa9d4270c17e4545c5fb94b18c6eddb1430a989353c156f53b2d609bd00ff6"
+        },
+        {
+          "path": "native-captures/v11-integration/independent-visual-final.json",
+          "sha256": "b36db5277d728f576a43625eacaf32d986586dd3bc7f137a96b978b8ccc4e387"
+        },
+        {
+          "path": "native-captures/v11-integration/review-index-001.json",
+          "sha256": "6bd9b3803a66b2dd4eecf3b91a5f9baaa50d7d07f8b31275c9415bee6aa51f85"
+        },
+        {
+          "path": "native-captures/v11-integration/review-index-002.json",
+          "sha256": "fab19e5f09b4f5f357732f9a0e5b8e4e7c217e556aff4ff0b476ae746740c0f0"
+        },
+        {
+          "path": "browser-final-v9/run-summary.json",
+          "sha256": "77e1b40c4c1fa6f18ad2a164725f8fbb4d2e0236a11c4a6e4d81d0ac3937fbb5"
+        },
+        {
+          "path": "browser-final-v9/completed-image-index.json",
+          "sha256": "b7c5b62af95c1277ecae1d273f1c1776f4ec72567d385cd48f14c4606e7de2b4"
+        },
+        {
+          "path": "browser-final-v9/editor-visual-completed37-final.json",
+          "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+        },
+        {
+          "path": "final-fil-online-qa/checks-final.json",
+          "sha256": "a8e844cc1cf69c322e0d8d686fc39403cbb6029c44318a75b459bf948d8d4640"
+        },
+        {
+          "path": "final-fil-online-qa/source-bundle-closure.json",
+          "sha256": "d9457905e80a11a9fa51ba9b07d630535a170a76db8ddf41884ef05a8569547b"
+        },
+        {
+          "path": "final-fil-online-qa/image-index-frozen.json",
+          "sha256": "ca6f2fdd4f8e9db98b6fd3a8f9498bf9cfd8ac03bd6591eaf4cc8bcb55eeb0e5"
+        },
+        {
+          "path": "final-fil-online-qa/independent-visual-final.json",
+          "sha256": "8ed3c2c383d658ce88e4a969751aaffbb3fffc02bcb92688d740747a8fdfd988"
+        },
+        {
+          "path": "gate-finalization-v8/final-SPA-input-binding.json",
+          "sha256": "839e4c4f97ed8546759eaeccd17442bc219ed81b928b218264cf999f6678ce2c"
+        },
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ]
+    },
+    {
+      "id": "phone_rendering",
+      "gate_ids": [
+        "phone_rendering"
+      ],
+      "status": "verified",
+      "scope": "Personallyapprovedactualnative25/browser37/SPA10visibleframes within nameddesktop/emulatedphoneviewports, plus source-bound V9/V10history and boundedfontcarry. No fullfeature/allpages/physicaldevice claim.",
+      "evidence": [
+        {
+          "path": "native-captures/v11-integration/native-runtime-summary.json",
+          "sha256": "d220ff84094c41a6c7bd07bc21e7cc837cfb96481fca6a86dec6e4b6bb2690bb"
+        },
+        {
+          "path": "native-captures/v11-integration/source-runtime-closure.json",
+          "sha256": "feaa9d4270c17e4545c5fb94b18c6eddb1430a989353c156f53b2d609bd00ff6"
+        },
+        {
+          "path": "native-captures/v11-integration/independent-visual-final.json",
+          "sha256": "b36db5277d728f576a43625eacaf32d986586dd3bc7f137a96b978b8ccc4e387"
+        },
+        {
+          "path": "native-captures/v11-integration/review-index-001.json",
+          "sha256": "6bd9b3803a66b2dd4eecf3b91a5f9baaa50d7d07f8b31275c9415bee6aa51f85"
+        },
+        {
+          "path": "native-captures/v11-integration/review-index-002.json",
+          "sha256": "fab19e5f09b4f5f357732f9a0e5b8e4e7c217e556aff4ff0b476ae746740c0f0"
+        },
+        {
+          "path": "browser-final-v9/run-summary.json",
+          "sha256": "77e1b40c4c1fa6f18ad2a164725f8fbb4d2e0236a11c4a6e4d81d0ac3937fbb5"
+        },
+        {
+          "path": "browser-final-v9/completed-image-index.json",
+          "sha256": "b7c5b62af95c1277ecae1d273f1c1776f4ec72567d385cd48f14c4606e7de2b4"
+        },
+        {
+          "path": "browser-final-v9/editor-visual-completed37-final.json",
+          "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+        },
+        {
+          "path": "final-fil-online-qa/checks-final.json",
+          "sha256": "a8e844cc1cf69c322e0d8d686fc39403cbb6029c44318a75b459bf948d8d4640"
+        },
+        {
+          "path": "final-fil-online-qa/source-bundle-closure.json",
+          "sha256": "d9457905e80a11a9fa51ba9b07d630535a170a76db8ddf41884ef05a8569547b"
+        },
+        {
+          "path": "final-fil-online-qa/image-index-frozen.json",
+          "sha256": "ca6f2fdd4f8e9db98b6fd3a8f9498bf9cfd8ac03bd6591eaf4cc8bcb55eeb0e5"
+        },
+        {
+          "path": "final-fil-online-qa/independent-visual-final.json",
+          "sha256": "8ed3c2c383d658ce88e4a969751aaffbb3fffc02bcb92688d740747a8fdfd988"
+        },
+        {
+          "path": "gate-finalization-v8/final-SPA-input-binding.json",
+          "sha256": "839e4c4f97ed8546759eaeccd17442bc219ed81b928b218264cf999f6678ce2c"
+        },
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ]
+    },
+    {
+      "id": "browser_startup",
+      "gate_ids": [
+        "browser_startup"
+      ],
+      "status": "verified",
+      "scope": "Actual94021strict4normalgameboot/persistence, realserial/threadedWASM+BGVFSbytes,44catalogtraversal and actualCDP3customfont466fb/hash/MIME checks; startupfailurebranchscreen rendering separately personally inspected.",
+      "evidence": [
+        {
+          "path": "browser-final-v9/run-summary.json",
+          "sha256": "77e1b40c4c1fa6f18ad2a164725f8fbb4d2e0236a11c4a6e4d81d0ac3937fbb5"
+        },
+        {
+          "path": "browser-final-v9/strict.log",
+          "sha256": "8a0422a667fb638928a35155bc90e9a1b3768a31cc1f11b68e6b7be9813e991e"
+        },
+        {
+          "path": "browser-final-v9/startup-report.json",
+          "sha256": "248c15e6cbf4ca35bdb4853166c003ade15c8dffdc429618ddfb36eefab88aa1"
+        },
+        {
+          "path": "browser-final-v9/http-catalog-runtime-traversal.json",
+          "sha256": "81109ee723661bb71634fcf0fc6ae640ee098f51e4b225921b9b381b4ea75ff1"
+        },
+        {
+          "path": "browser-final-v9/variant-proof.json",
+          "sha256": "8b121b7b807f2c38a57d234376da02b9a42084d8ae2b8c5edc363f03061110bf"
+        },
+        {
+          "path": "browser-final-v9/variant-proof-serial.json",
+          "sha256": "1095387e1943b358bcf712f00f2bebfa5469f061ca01fe4f937d9619f91012a6"
+        },
+        {
+          "path": "browser-final-v9/root-release-receipt.json",
+          "sha256": "8f31f6298373859c99dbdf9836b52fa2457e2ac970ddbca07e34a64fb692e573"
+        },
+        {
+          "path": "browser-final-v9/editor-visual-completed37-final.json",
+          "sha256": "5d65d436cf45174b50ac60c05e4a617c68b5804a7275c2eb48c1ac682df0940f"
+        }
+      ]
+    },
+    {
+      "id": "native_platforms",
+      "gate_ids": [
+        "native_platforms"
+      ],
+      "status": "unavailable",
+      "scope": "Aggregate cross-platform/physical coverage remains unavailable; actual named Linux/browser/emulated-phone subsets are recorded in the rendering/startup reports.",
+      "evidence": [
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ],
+      "reason": "No complete physical/platform-wide verification across all supported targets. Retain untested targets explicitly; do not count them as passed."
+    },
+    {
+      "id": "browser_platforms",
+      "gate_ids": [
+        "browser_platforms"
+      ],
+      "status": "unavailable",
+      "scope": "Aggregate cross-platform/physical coverage remains unavailable; actual named Linux/browser/emulated-phone subsets are recorded in the rendering/startup reports.",
+      "evidence": [
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ],
+      "reason": "No complete physical/platform-wide verification across all supported targets. Retain untested targets explicitly; do not count them as passed."
+    },
+    {
+      "id": "mobile_platforms",
+      "gate_ids": [
+        "mobile_platforms"
+      ],
+      "status": "unavailable",
+      "scope": "Aggregate cross-platform/physical coverage remains unavailable; actual named Linux/browser/emulated-phone subsets are recorded in the rendering/startup reports.",
+      "evidence": [
+        {
+          "path": "gate-finalization-v8/verification-status-and-limits.json",
+          "sha256": "4bb6571078af3b6ae50a6192d1b0ac90f36599045471a7bf6a0b2b54a4943d6c"
+        }
+      ],
+      "reason": "No complete physical/platform-wide verification across all supported targets. Retain untested targets explicitly; do not count them as passed."
+    }
+  ]
+}

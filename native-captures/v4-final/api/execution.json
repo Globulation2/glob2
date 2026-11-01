@@ -1,0 +1,90 @@
+{
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/f02b75/TranslationPreviewHarness.capture",
+  "binary_sha256": "e9d11b7be3ba210aaab65533541ea71fa4abea47038542f0bb055806d1fb42a8",
+  "jobs": [
+    {
+      "tag": "desktop-api-known",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/f02b75/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/desktop-api-known",
+        "1280",
+        "1024",
+        "settings-ais"
+      ],
+      "returncode": 0,
+      "seconds": 38.08,
+      "expected_notice": "ИИ preview-ai не е намерен",
+      "receipt": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/desktop-api-known/http-fixture-receipt.json"
+    },
+    {
+      "tag": "desktop-api-unknown",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/f02b75/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/desktop-api-unknown",
+        "1280",
+        "1024",
+        "settings-ais"
+      ],
+      "returncode": 0,
+      "seconds": 85.35,
+      "expected_notice": "Нещо се обърка. Моля, опитайте отново.",
+      "receipt": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/desktop-api-unknown/http-fixture-receipt.json"
+    },
+    {
+      "tag": "phone-api-known",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/f02b75/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/phone-api-known",
+        "480",
+        "960",
+        "settings-ais"
+      ],
+      "returncode": 0,
+      "seconds": 78.77,
+      "expected_notice": "ИИ preview-ai не е намерен",
+      "receipt": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/phone-api-known/http-fixture-receipt.json"
+    },
+    {
+      "tag": "phone-api-unknown",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/f02b75/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/phone-api-unknown",
+        "480",
+        "960",
+        "settings-ais"
+      ],
+      "returncode": 0,
+      "seconds": 108.86,
+      "expected_notice": "Нещо се обърка. Моля, опитайте отново.",
+      "receipt": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/api/phone-api-unknown/http-fixture-receipt.json"
+    }
+  ]
+}

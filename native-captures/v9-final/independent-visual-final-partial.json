@@ -1,0 +1,996 @@
+{
+  "status": "partial",
+  "personally_viewed_count": 99,
+  "images": [
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-cursor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-cursor.png",
+      "sha256": "ef26c372704b291e9999cb2b6a18e86f9fc2b10e267f58136c90cc93b4c48b6e",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-script-editor",
+      "personally_viewed": true,
+      "observation": "Script tabs, language and cursor indicator readable; full bottom action row visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-failure.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-failure.png",
+      "sha256": "1bebd49577b33aa7cfbcc6328be7363ef432362c477fde54e7263e667248d63e",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-script-editor",
+      "personally_viewed": true,
+      "observation": "Compilation failure Bulgarian sentence fits single status line; code preserved."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-success.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-success.png",
+      "sha256": "a20fb46fc6bf3dbc9df887d93073dfda683e1460674fcb273292b793bad4062b",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-script-editor",
+      "personally_viewed": true,
+      "observation": "Successful compilation status legible and controls unobscured."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-dialog.png",
+      "sha256": "4be026155b765dfe154a3cad879bc571c9e379c5f25069db8532ab7d93eaf068",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics",
+      "personally_viewed": true,
+      "observation": "Menu actions fit at 150%; sidebar scroll visible; economy tab splits within word (minor)."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-economy.png",
+      "sha256": "c4feff3f308094d2c54e69fbf39bca41006578c528f06a8267ef7e8d7c2fc983",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics",
+      "personally_viewed": true,
+      "observation": "Economy metric prose wraps legibly; vertical scrollbar indicates lower content."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-overview.png",
+      "sha256": "6ca73a98d6d486fa75840592ba81c398faffa56f26b365cd1b8915b3c4b4f4a9",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics",
+      "personally_viewed": true,
+      "observation": "Overview headings and waiting state readable; scrollable lower rows."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-population-history-details.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-population-history-details.png",
+      "sha256": "df2a21b8baf075504c6959487237b2c78a7efa0f4d284857ee4cdbf1a843e479",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics",
+      "personally_viewed": true,
+      "observation": "Population detail wording clear; expanded explanation fits; close button visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-population-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-population-history.png",
+      "sha256": "85a5910afd08ee3d86df3e46fea127f8255ef759a8551d2b1c6623be0c77d63b",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics",
+      "personally_viewed": true,
+      "observation": "Population history empty-state and detail/close controls fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-world.png",
+      "sha256": "8c82c2540e9bf986675097a6cd073ce08c144c4bbac6a0ab924e643613d4495b",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics",
+      "personally_viewed": true,
+      "observation": "World metric labels wrap clearly with explicit scrollbar; economy tab intraword wrap minor."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-cursor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-cursor.png",
+      "sha256": "7b9f5858ab82e517126ddd03f8cd1da0eb70fa3f3bd4675b31dd9ccba968273b",
+      "width": 389,
+      "height": 844,
+      "job": "phone-150-script-editor",
+      "personally_viewed": true,
+      "observation": "Phone150 script tabs wrap to two rows; cursor and all actions fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-failure.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-failure.png",
+      "sha256": "ff4c946fbb4d7083de4f40b78d4cc64409dca414129061682ed098fbcf837ced",
+      "width": 389,
+      "height": 844,
+      "job": "phone-150-script-editor",
+      "personally_viewed": true,
+      "observation": "Phone150 error wraps into three clean lines above action buttons."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-success.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-success.png",
+      "sha256": "0184994e340863ae95088961bc0a1f41087b9d92f8f35901ef92ff84894682c5",
+      "width": 389,
+      "height": 844,
+      "job": "phone-150-script-editor",
+      "personally_viewed": true,
+      "observation": "Phone150 success readable; buttons fully reachable in frame."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-lobby/lobby.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-lobby/lobby.png",
+      "sha256": "b5c3839435936ea531c5399503bc413515e2e4723c9ddfccdbd3b5ab2934e553",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-lobby",
+      "personally_viewed": true,
+      "observation": "Lobby configuration labels and play/back controls clear; preview explicitly generating."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-settings-ais/settings-ais.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-settings-ais/settings-ais.png",
+      "sha256": "3d9896ef19fbb2d97d38c1a424f65ece0aeda31f1cf5585938908b464c9aca9c",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-settings-ais",
+      "personally_viewed": true,
+      "observation": "AI library filters and loading text fit desktop; bottom actions readable."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-new-map/new-map.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-new-map/new-map.png",
+      "sha256": "cac227fcdb6889b4da94c7787a0170c1f3e9b2bd169718c87070cae0f3d9cd99",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-new-map",
+      "personally_viewed": true,
+      "observation": "Create map labels and preview prompt clear; create/cancel fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-main/main.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-main/main.png",
+      "sha256": "910a0bee7070c84abf4fe38f3cb04066f2feca453c665b5a30d34f9fb546c23e",
+      "width": 390,
+      "height": 844,
+      "job": "phone-main",
+      "personally_viewed": true,
+      "observation": "Phone main menu labels fit; vertical scroll affordance visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings/settings.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings/settings.png",
+      "sha256": "35cc41e5312e4044a40d8b9bca8d92e19168282439eecf6e3d6d4ee5021fd11d",
+      "width": 390,
+      "height": 844,
+      "job": "phone-settings",
+      "personally_viewed": true,
+      "observation": "Phone settings prose wraps cleanly; footer done fixed below scroll region."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-dialog.png",
+      "sha256": "cec95476ec194fbd08c2740a074745b5c53fd556119146859f1c61a50c1131cc",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics",
+      "personally_viewed": true,
+      "observation": "Desktop100 menu and sidebar readable; no overlap."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-economy.png",
+      "sha256": "e531f246870f447d7c9ba00f7a90b718b3b48f3d051e1371c4e0410c0cbd5c45",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics",
+      "personally_viewed": true,
+      "observation": "Desktop100 economy prose and history link readable within sidebar."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-overview.png",
+      "sha256": "44c75de472c1829f1dfa59a121b223df1d486e40b4d619aa99ce7838ce57b404",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics",
+      "personally_viewed": true,
+      "observation": "Desktop100 overview sections spaced and scroll visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-population-history-details.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-population-history-details.png",
+      "sha256": "cdbe692f49ea3ca0eaec7134e8b4328bffd298b22fa0dedf95af89b8d7d33ff1",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics",
+      "personally_viewed": true,
+      "observation": "Population details sentence fits expanded desktop100 dialog."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-population-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-population-history.png",
+      "sha256": "eadda03a5b41c3c51ce98430e667b8b086cc22002beb4f6a28315e326fec5b0e",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics",
+      "personally_viewed": true,
+      "observation": "Population collapsed detail control and close readable."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-world.png",
+      "sha256": "cb985f3e33911449ac636e82798e50309e4173a372060bb2f86151fc85e5426e",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics",
+      "personally_viewed": true,
+      "observation": "World metrics and explanatory no-value legend fit sidebar."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-cursor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-cursor.png",
+      "sha256": "6093784192fd629a2cc6c6b0143f0daca06ba38d7254738034268861a899db27",
+      "width": 389,
+      "height": 844,
+      "job": "phone-100-script-editor",
+      "personally_viewed": true,
+      "observation": "Phone100 script tabs/cursor/actions clear; code text wraps."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-failure.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-failure.png",
+      "sha256": "3139597d2be089bebcfbf6d3490c660cd6d628fd54ac56f594820c7a4787f4d7",
+      "width": 389,
+      "height": 844,
+      "job": "phone-100-script-editor",
+      "personally_viewed": true,
+      "observation": "Phone100 failure sentence wraps cleanly above cursor line."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-success.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-success.png",
+      "sha256": "707cc7818ef9c6d76bc4daf7403ced6707d17e6f3291c3dcb474f2ff3f063e50",
+      "width": 389,
+      "height": 844,
+      "job": "phone-100-script-editor",
+      "personally_viewed": true,
+      "observation": "Phone100 success status fits above action row."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-dialog.png",
+      "sha256": "db1ba143754fc50e5c0f2f377c0c811cdd01175903ac37954bc3007d55a8ed74",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics",
+      "personally_viewed": true,
+      "observation": "Phone150 menu ten actions fit, all labels fully legible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-economy.png",
+      "sha256": "a4eb22c9a86298338fa4335fd48e5e2f97e51ab8b4fb37bc3b97cebe46fab773",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics",
+      "personally_viewed": true,
+      "observation": "Phone150 economy text readable and scrollbar visible; bottom Tools label splits four lines (minor)."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-overview.png",
+      "sha256": "425bf058053abeca9a440ace7e1b98e00dfc1194ec15f05f07a785356f0bd577",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics",
+      "personally_viewed": true,
+      "observation": "Phone150 overview labels fit scroll area; lower chart clipped by scroll viewport with scrollbar."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-population-history-details.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-population-history-details.png",
+      "sha256": "e29eacc4a72925293d3a2861dc49fb10062c224def903ac84b19385af9383c59",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics",
+      "personally_viewed": true,
+      "observation": "Phone150 expanded population explanation wraps cleanly; close fully visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-population-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-population-history.png",
+      "sha256": "4ba639484c9a239fff2632126a92bc29f55a386a2cac849c9f7465da0a1c1eb2",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics",
+      "personally_viewed": true,
+      "observation": "Phone150 collapsed history dialog fits with detail and close actions."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-world.png",
+      "sha256": "ab227f51beebb35175b43b9dff4f368d5f511e867e23e4fee6df49b7f31dd73f",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics",
+      "personally_viewed": true,
+      "observation": "Phone150 world prose wraps clearly; bottom tool labels cramped (minor)."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-lobby-players/lobby-players.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-lobby-players/lobby-players.png",
+      "sha256": "397219157e52cc1f93adceaa8727b12352a4d378f4cc6519016ce0329c924794",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-lobby-players",
+      "personally_viewed": true,
+      "observation": "Desktop player/team controls and AI description fit; technical username preserved."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-settings-online/settings-online.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-settings-online/settings-online.png",
+      "sha256": "e2e3ee24e75abf4205214a35d44f0cde787aa81b43b7c8365a805b80ac057bc6",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-settings-online",
+      "personally_viewed": true,
+      "observation": "Online server prose and connecting status clear; sidebar scroll visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor-dialog.png",
+      "sha256": "bb41d5488e036d6974dda56682d9f04b995371178385c84412255a2a63205ea1",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-editor",
+      "personally_viewed": true,
+      "observation": "Editor menu uses ellipses on long import actions; main buttons fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor-terrain.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor-terrain.png",
+      "sha256": "c560045d5a8286fed75edd3cf322bb8012f7deb44e8e8a0d1142363459382483",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-editor",
+      "personally_viewed": true,
+      "observation": "Terrain palette headings/descriptions readable; intentionally ellipsized tile label minor."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor.png",
+      "sha256": "c8b1775138fafc0779df3b814a1af263e422a0ddb96615294c477559d518b1bc",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-editor",
+      "personally_viewed": true,
+      "observation": "Buildings palette labels readable; defence tile ellipsized minor."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-lobby/lobby.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-lobby/lobby.png",
+      "sha256": "d401c1758fc09bac4b6e9b3f806eb9343dbdde87d842fe3c8c90fd52640fb828",
+      "width": 390,
+      "height": 844,
+      "job": "phone-lobby",
+      "personally_viewed": true,
+      "observation": "Phone lobby instructions wrap naturally; scrollbar and next/back visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-settings-ais/settings-ais.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-settings-ais/settings-ais.png",
+      "sha256": "28c5c97898f437c085b5d1c01e78c6c427defb2e348aafc1ca020c3b2db22824",
+      "width": 390,
+      "height": 844,
+      "job": "phone-settings-ais",
+      "personally_viewed": true,
+      "observation": "Phone AI filters readable in scrolling pane; bottom explanatory/share/done actions fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-cursor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-cursor.png",
+      "sha256": "c2f3461129e6ede90deeb0a992a7d43220eca7bd468fd930a9156b7b932885a7",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-script-editor",
+      "personally_viewed": true,
+      "observation": "Desktop150 script labels and cursor actions all fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-failure.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-failure.png",
+      "sha256": "05796495cd1bc82f915fdefd969e5d3ca07a5962e266f5679de1671d0a9c8bea",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-script-editor",
+      "personally_viewed": true,
+      "observation": "Desktop150 failure prose fits status line above cursor."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-success.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-success.png",
+      "sha256": "74052180dc9f977ec1d3811eecf1baa7c2fa2e307cece467949fff51555223d8",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-script-editor",
+      "personally_viewed": true,
+      "observation": "Desktop150 successful status legible and action row clear."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-dialog.png",
+      "sha256": "75acf430c1b0a4b1c9e6c3d9baf5d18ae81d69b7749e3d42d0ac34a5fd6960f3",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics",
+      "personally_viewed": true,
+      "observation": "Phone100 menu labels fit all ten buttons."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-economy.png",
+      "sha256": "dae082e3a797d43ab7ed80d5592c4951830d7d84892a8959a043ae1558bd2a6f",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics",
+      "personally_viewed": true,
+      "observation": "Phone100 economy labels wrap naturally; scroll and close affordances visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-overview.png",
+      "sha256": "9b3dd86342a5c197518d9a1b94d10edd2659b8609bb5219ff061cb0c980730e8",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics",
+      "personally_viewed": true,
+      "observation": "Phone100 overview chart and metric headings readable."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-population-history-details.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-population-history-details.png",
+      "sha256": "f78e5f426c10338c495b4f7f43ddc14f1a541dcee6ca0d87c17a0c4dbc264ec6",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics",
+      "personally_viewed": true,
+      "observation": "Phone100 expanded population detail wraps without collision."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-population-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-population-history.png",
+      "sha256": "6aa503af4b8e04f3412532b1e306caca3ae7203bb7ff79cd34238d1456457c4b",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics",
+      "personally_viewed": true,
+      "observation": "Phone100 population collapsed dialog controls fully visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-world.png",
+      "sha256": "571342ea4ffe357b38bc555a21317355db8ef7c807b698252ae5c4440627eb45",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics",
+      "personally_viewed": true,
+      "observation": "Phone100 world metrics and percentages separated cleanly."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-main/main.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-main/main.png",
+      "sha256": "e1cca525bb46b7cb81feb1ed1b0588f446e80d387b0665c15c0b3c71d0ce492f",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-main",
+      "personally_viewed": true,
+      "observation": "Desktop main all primary and secondary labels fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings/settings.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings/settings.png",
+      "sha256": "472862913d5aae3161b26462586991cd2c658d6017a04886c89b324fd5d2fd20",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-settings",
+      "personally_viewed": true,
+      "observation": "Desktop settings explanations readable; scrollbars separate navigation and content."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings-player/settings-player.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings-player/settings-player.png",
+      "sha256": "82eddfaa97cbc7cb5cdec9afbab5526b57a5355629a174e840d723e12ca13a55",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-settings-player",
+      "personally_viewed": true,
+      "observation": "Desktop player language selection and name clear; Bulgarian selected."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-dialog.png",
+      "sha256": "ddd187cdbb2c8c113c618644639a966090a7f74fe487527c41693b8dc544454c",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Desktop gameplay menu actions readable and centered."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-colony.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-colony.png",
+      "sha256": "86112ca7275ce7fc1c508be308273316f7835772b6764eeea049006cb54f6f61",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Live colony statistics labels and missing history message readable."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-defence.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-defence.png",
+      "sha256": "edd88f1e908369e240f9cc86f190621977be7b7205f8c2f90106ef40c588e34c",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Defence-target frame shows overview defence section; readable within scroll pane."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-economy.png",
+      "sha256": "f63783555fc1efb68f833f67bccaa7065d987542d48764ed4627dfd619978bcf",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Live economy labels and history link fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-full-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-full-history.png",
+      "sha256": "6090de9f7956448016bdc57cbca8884d4ad6bad758769a17210dd4315173b02c",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Full history popup clear; expanded unit summary remains legible behind it."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-military.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-military.png",
+      "sha256": "8d0219eff7b310333caab3b19e5c70109d1ad624a55c754c4ae945244806f520",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Military metrics legible; values aligned separately."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-overview.png",
+      "sha256": "ac69b113ba30f190c8085979b8cd4acc98343c2819e5adbb02c35c301f06c9dc",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Live overview headings and waiting state clear."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-bottom.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-bottom.png",
+      "sha256": "8b1b836805774b565c9c1429dba0435001b412d898cd2c91b8f12457597d434d",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Unit detail bottom summary rows readable; attack speed value wraps one line (minor)."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-collapsed.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-collapsed.png",
+      "sha256": "14b3f6bbecfe27f4d8b2bfa3033d4a7fd2d8773c6184fec2711b0d09017ee963",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Collapsed unit detail button visible at bottom of scroll pane."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-expanded.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-expanded.png",
+      "sha256": "a67c2e7c7ff7aac9deddce0f93eabac4c12f1a637c0e743151583711e6ff1ea1",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Expanded unit detail full summary readable in narrow pane."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-work.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-work.png",
+      "sha256": "a8993951e68732cc50a7c0227c63986fd915cdf3605634306200f9139dc22040",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Work-target frame shows overview work/defence sections; labels fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-world.png",
+      "sha256": "dc9ab309950fdf53aad211141182136e96f68a95477f3cdae5d57cfc2ebd6883",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Live world metric and no-history explanations legible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-statistics.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-statistics.png",
+      "sha256": "db85be26af816a1a53f42b7aa74714ba76b7306d57b3e56f46a0699b698c4027",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Full statistics explanation and player selectors readable; exit/save replay actions clear."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-zoom-fit.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-zoom-fit.png",
+      "sha256": "2c564864e5990bd2ffca7e451e66fb9a7640a2a25f66726bcfd7e15e0c9f1f4f",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Zoom-fit gameplay has icon UI and numeric zoom; no localized prose fault observed."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-zoom-plus.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-zoom-plus.png",
+      "sha256": "1ac6c36934b6a0a007ca014745f607861467ff93684ffc613caaefa1ef5237b1",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Zoom-plus gameplay numeric zoom and icon controls clear."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.png",
+      "sha256": "ba0a55f1949ef5b14cbfab71db8722f960137ab933abc991d240ba418d87e779",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay",
+      "personally_viewed": true,
+      "observation": "Gameplay HUD/icon palette unobscured; fit zoom label readable."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-lobby-players/lobby-players.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-lobby-players/lobby-players.png",
+      "sha256": "96b835cd6fbe9e372356c7e66da46830cb5854e19f476390e3b76aeb970eff61",
+      "width": 390,
+      "height": 844,
+      "job": "phone-lobby-players",
+      "personally_viewed": true,
+      "observation": "Phone player lobby prose and AI/team controls fit scroll pane; next/back visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-settings-online/settings-online.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-settings-online/settings-online.png",
+      "sha256": "a9dedfab9cd583c9099ace8dd90c8dd669965887851f4a859d00bc6b98849fe2",
+      "width": 390,
+      "height": 844,
+      "job": "phone-settings-online",
+      "personally_viewed": true,
+      "observation": "Phone online prose wraps cleanly; server URL ellipsized within input, check/done visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings-player/settings-player.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings-player/settings-player.png",
+      "sha256": "494858150d0ef1e927f7aa8145e7c19ad8c93bd0e549113318a975243aeeb6f6",
+      "width": 390,
+      "height": 844,
+      "job": "phone-settings-player",
+      "personally_viewed": true,
+      "observation": "Phone player settings language/name clear, but no visible Done/footer/close in otherwise blank lower area; potential exit-access issue reported."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-dialog.png",
+      "sha256": "75acf430c1b0a4b1c9e6c3d9baf5d18ae81d69b7749e3d42d0ac34a5fd6960f3",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone gameplay menu labels fit all action rows."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-colony.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-colony.png",
+      "sha256": "1e641af162e46581edff5d96d97d23302431c34b43be7f45526ae9c1bbb3716e",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone live colony metrics legible; lower content within scrollbar."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-defence.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-defence.png",
+      "sha256": "506332080647b49478eccc966f6e9d3d9d4c278b22c7ec1acd59e8ca8e0cf25c",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone defence section scrolled; health/work/defence labels readable; clipped prior row belongs to scroll viewport."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-economy.png",
+      "sha256": "2cea5809be19b880eeb15793eae65eeb1fbd435044b3bd2bc30cd9822f1f6514",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone live economy prose wraps clearly; close/scroll controls visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-full-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-full-history.png",
+      "sha256": "9a1a1adbe7bdb9f19c0f1b9236f1370e637215c4dabc1c83beaca21d1ceaae5d",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone full history popup has readable title, empty-state and close/detail controls."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-military.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-military.png",
+      "sha256": "bc350807d1ed45279a5a8e2be3e98a594c2ad59c7c6cd6768112f02df399753b",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone military metrics and values readable with scrollbar."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-overview.png",
+      "sha256": "c22001581a22a4b8c47d03fa69d3cd9299ebda85284c81c1053d90572093ac2d",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone overview waiting state fits; visible close affordance."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-bottom.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-bottom.png",
+      "sha256": "ccff23a87b8e1207115db832d913346a70ba68900f7c5f7f8491c9cb4a26aba2",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone bottom unit rows/legend readable without horizontal clipping."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-collapsed.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-collapsed.png",
+      "sha256": "5fb11a6ce1eea2559f127927faa9e6020e9ea2950fe54404689d6a5a146a1cb9",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone collapsed detail action fits full width."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-expanded.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-expanded.png",
+      "sha256": "ea5102b33d18aefc8db492b6c1563b66f2dbda2ca4f3b9a9258a23748ef6c8fd",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone expanded detail labels readable; scrollbar allows lower summary."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-work.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-work.png",
+      "sha256": "d5ef4957d94a79706b27c5bad53b62a628c68dc535426eca2e213cf3c7c30bbd",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone work overview labels readable with clear section divisions."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-world.png",
+      "sha256": "c77cd0f8b3d565bf0807d60f9c13dc4f89481be02f7193a3b72e70c678d2a020",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone world metrics readable; values aligned separately."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-statistics-about.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-statistics-about.png",
+      "sha256": "83afc9f68f9f71385c7d435e7f4d45c01b6e2e8a0a7b6586790427ddf40b8114",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone probability description fully wraps in dropdown; replay-save button leaves final о alone (minor)."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-statistics.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-statistics.png",
+      "sha256": "787797352d46ac0758e7815446ec894dfe6ee39cd94cc18c728bc19e22ed0b84",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone full statistics controls readable; replay-save label awkward intraword wrap (minor)."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.png",
+      "sha256": "77eaed59d449793f897036915b220587ab7e8a69ba2196dec2dbd4a5a35de084",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay",
+      "personally_viewed": true,
+      "observation": "Phone gameplay icon toolbar labels legible though build/tools split across lines."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-new-map/new-map.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-new-map/new-map.png",
+      "sha256": "04c68f1e423ad7eb955c099ddbd6f67d88c6523279560da60804aca8374da989",
+      "width": 390,
+      "height": 844,
+      "job": "phone-new-map",
+      "personally_viewed": true,
+      "observation": "Phone create-map preview, parameters and create/cancel fit; create wraps at word boundary."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-briefing.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-briefing.png",
+      "sha256": "b6ac89c17f7a504f6aaaf4b6611668593266f677f224e7c997a2582dd3801b60",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications",
+      "personally_viewed": true,
+      "observation": "Fortifications briefing prose and tabs fit phone dialog."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-collapsed.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-collapsed.png",
+      "sha256": "ca4e8ce710b6cdd7bbc9de3c2628cd55a7dc3c10ab12219a6053a28197f04b1c",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications",
+      "personally_viewed": true,
+      "observation": "Collapsed fortifications guidance intentionally ellipsized; plus remains visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-dialog.png",
+      "sha256": "f80fb6b11cc68b4aa829ad935efdc6816ee7aefea4c01718148f0f59b7a1a7cf",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications",
+      "personally_viewed": true,
+      "observation": "Fortifications lesson menu includes restart; all rows fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-expanded.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-expanded.png",
+      "sha256": "d983c28930718b5d84b7954ae4ca68a6d92c540febbb8ba21023a7c30f523d1e",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications",
+      "personally_viewed": true,
+      "observation": "Expanded tower guidance readable; target/help icons and minus visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.png",
+      "sha256": "9e3cb70bb86e0d573244828c29954db1135e2bfa31638afbadf658b4b0956550",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications",
+      "personally_viewed": true,
+      "observation": "Fortifications gameplay expanded guidance fits above map."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor-dialog.png",
+      "sha256": "ea74940b0ba9f30879fd40951b18477278bd5490f006ae92060c0d7f423f374f",
+      "width": 389,
+      "height": 844,
+      "job": "phone-editor",
+      "personally_viewed": true,
+      "observation": "Phone editor menu import prose wraps cleanly; scrolling panel and fixed exit/return clear."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor-terrain.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor-terrain.png",
+      "sha256": "addc7e89ebf48d883e8864143fbb25dd2e5695d3b82f60464f5a8273b5f1ab3d",
+      "width": 389,
+      "height": 844,
+      "job": "phone-editor",
+      "personally_viewed": true,
+      "observation": "Phone terrain tabs horizontally clipped at right with bottom horizontal scroll indicator; visible labels legible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor.png",
+      "sha256": "ce869f0c58f68f475195f7656ab18760c8576e35e192a8d36d7d9f564ac2005e",
+      "width": 389,
+      "height": 844,
+      "job": "phone-editor",
+      "personally_viewed": true,
+      "observation": "Phone building editor horizontal palette shows more items to right with indicator; labels clear."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-briefing.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-briefing.png",
+      "sha256": "1f53da3330ac875b2a40f12d481360d7c39f57299a86b815e6046503817d44ad",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools",
+      "personally_viewed": true,
+      "observation": "Desktop school briefing prose fits three lines; all tabs/action visible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-collapsed.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-collapsed.png",
+      "sha256": "ef6f2ebcca364d481e6e4cca91c2dc4be2f1228a984fa35b157e6cf23124a818",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools",
+      "personally_viewed": true,
+      "observation": "Desktop collapsed school guidance title fully fits plus control."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-dialog.png",
+      "sha256": "d5fc8b434188d4e28058755fbae58988673363fa8e49076ffd4fc8a9e8843580",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools",
+      "personally_viewed": true,
+      "observation": "Desktop school menu restart and return actions fit."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-expanded.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-expanded.png",
+      "sha256": "5b5620b2c54a30749371fc513c93d007fa342bec0f69257927549282f2b73ec9",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools",
+      "personally_viewed": true,
+      "observation": "Desktop expanded school objective instruction, show target/help buttons legible."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.png",
+      "sha256": "8a47240f5026b7c06c9f7e5bf5f9537f540901a5208ca7be856a89bd8311cdea",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools",
+      "personally_viewed": true,
+      "observation": "Desktop school gameplay guidance remains readable and target label clear."
+    }
+  ]
+}

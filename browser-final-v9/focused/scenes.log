@@ -1,0 +1,30 @@
+ExpectError: control "objectives/tab/0" is not available
+
+control "objectives/tab/0" is not available
+
+expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+
+Call Log:
+- Timeout 30000ms exceeded while waiting on the predicate
+    at captureRawStack (/home/bradley/.codex/worktrees/5a87/glob2/browser/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/home/bradley/.codex/worktrees/5a87/glob2/browser/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBe (/home/bradley/.codex/worktrees/5a87/glob2/browser/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at control (/home/bradley/.codex/worktrees/5a87/glob2/browser/tests/main-menu.js:21:63)
+    at /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/browser-final-v9/focused/scenes.cjs:46:8 {
+  matcherResult: {
+    pass: false,
+    message: 'control "objectives/tab/0" is not available\n' +
+      '\n' +
+      'expect(received).toBe(expected) // Object.is equality\n' +
+      '\n' +
+      'Expected: true\n' +
+      'Received: false\n' +
+      '\n' +
+      'Call Log:\n' +
+      '- Timeout 30000ms exceeded while waiting on the predicate',
+    name: 'toBe'
+  }
+}

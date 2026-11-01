@@ -1,0 +1,27 @@
+{
+  "scope": "technicalvisibility/layoutonly; no wording/catalog values changed",
+  "files": {
+    "platform/apps/web/src/pages/MapStudio.tsx": "decf2944f45004fc9fcee39b8cf6bc47bd81bb2fabe7fd805c4d4b5d6e24afda",
+    "platform/apps/web/src/pages/MusicStudio.tsx": "599cd741cba39dc1e0d726e5cf08370a60b2abb998c9c2c93e12a565d03a4e33",
+    "platform/apps/web/src/components/studio/studio.css": "c43ab14ca79edb4624136c3a93fb842bead17ed721522f365b87cb6b1c93554c"
+  },
+  "changes": [
+    "Map/Music formatted full wallet spans gain ms-credit-message class",
+    "Scoped rule overrides obsolete mobile hiding only for full message spans",
+    "Secondary in-dialog credit close control placed in normal flow instead of overlapping text"
+  ],
+  "wordsUnchanged": [
+    "{value0} Map credits",
+    "{value0} Music credits",
+    "Map credits",
+    "Music credits"
+  ],
+  "callbacksUnchanged": [
+    "coinIcon",
+    "wallettoggle",
+    "aria-label",
+    "aria-expanded",
+    "closecreditscallback"
+  ],
+  "provisionalFailureEvidence": "../image-index-frozen.json phonewalleticononly; emptytextRectarrays provedoldtests vacuous"
+}

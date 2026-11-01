@@ -1,0 +1,11 @@
+
+Running 4 tests using 1 worker
+
+(node:429330) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/bulgarian.spec.js:12:1 › Bulgarian startup uses the packaged Cyrillic font before the game loads (2.2s)
+  ✓  2 [chromium] › browser/tests/bulgarian.spec.js:28:3 › serial game starts in Bulgarian with its complete catalog (27.0s)
+  ✓  3 [chromium] › browser/tests/bulgarian.spec.js:28:3 › threaded game starts in Bulgarian with its complete catalog (58.9s)
+  ✓  4 [chromium] › browser/tests/bulgarian.spec.js:52:3 › explicit Bulgarian language selection › selecting Bulgarian in Settings survives a reload (43.7s)
+
+  4 passed (2.2m)

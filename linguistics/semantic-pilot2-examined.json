@@ -1,0 +1,408 @@
+[
+  {
+    "surface": "native",
+    "key": "[hub finish in browser, game continues]",
+    "source": "Finish signing in in your browser. The game continues by itself once you are done.",
+    "target": "Завършете влизането в браузъра си. Играта продължава сама, след като приключите.",
+    "source_sha256": "dcc643db524b44b91fdf46534a6b7b5ab2f1c7568d02a0fc800382cc40076984",
+    "target_sha256": "9f9434a6c415c06aa4a714788bc136dc50336cfae32282ecdea3339895a9f4a5",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[hub compare code %0]",
+    "source": "If the page asks, check that it shows %0.",
+    "target": "Ако страницата го поиска, проверете дали на нея е изписан кодът %0.",
+    "source_sha256": "2a2429cb61d6c02f5ae27b53609f620c02f0a919e072ac15fe8555bc468c38cf",
+    "target_sha256": "375e58850c34998d02625c0dfd50339c4a36ce097c16a8ae99d857d42dbe8610",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[playing music set %0]",
+    "source": "Playing: %0",
+    "target": "В момента звучи: %0",
+    "source_sha256": "4bc2d0dbb3e6b188d698907f19bd575a0704bde6306a8b38b2a1b518bbc3510e",
+    "target_sha256": "7a1d048eb215de870ab5b374351b4045c6fcae302757b00f16d7096c92b0a265",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[%0 level %1]",
+    "source": "%0 Level %1",
+    "target": "%0 — ниво %1",
+    "source_sha256": "535bfefb08ff9c0c5a69f5d19abfbd417688c624bd0f8da77e755631640fe386",
+    "target_sha256": "0d0f68c64e62a434d69f28ea0e2058c2484aff5855eaf881a8ad68b4d76acd1a",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[%0 units can't access building]",
+    "source": "%0 units can't access building",
+    "target": "%0 единици нямат достъп до сградата",
+    "source_sha256": "2b3a016acd8ffd98f5cf8802aa831297ef20799358cacd99ff0ba76b3a90e7ea",
+    "target_sha256": "63267400636b001fb14319820ddafe90b3b9c8867072eeb30ea498622551125c",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[%0 units too low level]",
+    "source": "%0 units too low level",
+    "target": "%0 единици са с твърде ниско ниво",
+    "source_sha256": "b78350c1a1ec010802b55d2e4b0ec5c547b5daf02a5b7f1f1f7fee7b1f0c3c3c",
+    "target_sha256": "eb3f6ba4fc6e8092ce66b2cb82c6b425c551e57b395cac8abe3980cd283657e5",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[%0's team unit got converted to your team]",
+    "source": "A unit from %0's team has joined your team",
+    "target": "Единица от отбора на %0 се присъедини към вашия отбор",
+    "source_sha256": "4d9c3a99ca1c747f1edcbf917ce84f586592f5a96ee48aa2ac203d6f9914ff4f",
+    "target_sha256": "be760391cd47127496177e27368715925a1393c66f24a54582ce4f42d7244fb9",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[abreaviation explanation fV]",
+    "source": "fV: Show vision for Inn buildings (to steal units)",
+    "target": "fV: Споделяне на видимостта за хановете (за привличане на чужди единици)",
+    "source_sha256": "84e5425ee10c7b35e7b0c7f3f06339bed6134080098d9a111a859ca6966a813d",
+    "target_sha256": "12941833a4838e45eecf8f9b23524191fc03c62c1dc008a7bb1ca48c70e8afeb",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[AICastor]",
+    "source": "Castor",
+    "target": "Castor",
+    "source_sha256": "7dce595b16ae39e6d37cf81b100e008651fbaaaf237caebbfa77842c33c816ec",
+    "target_sha256": "7dce595b16ae39e6d37cf81b100e008651fbaaaf237caebbfa77842c33c816ec",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[AIMaxima-Description]",
+    "source": "Scouts, builds its food supply and gathers warrior waves.",
+    "target": "Разузнава, осигурява храна и събира вълни от воини.",
+    "source_sha256": "a26771619d3fe0304bc2e60e890aebc7544b9f089d2a72e1285b2c5d3549d251",
+    "target_sha256": "2a3aa7b8b44815e22167f91721e9083a7530dde2962eca25acbe723d9056f811",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[Worker]",
+    "source": "Worker",
+    "target": "Работник",
+    "source_sha256": "a67b04cd5c491d4d2a8cd5ab1600abc4adf4647dd4806a7f09b1e2d5a42249c0",
+    "target_sha256": "f984932bbc1a03fc303ba064f280cf2f729866d0f3dcaaf0c8386f340b156fdf",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[Explorer]",
+    "source": "Explorer",
+    "target": "Изследовател",
+    "source_sha256": "c39d646f10769b078ae82be4da7a0079ca91182b241e749be4276e08c215c654",
+    "target_sha256": "992e9133fae21acafdaad369e082de22ff34f6e752421ce384b072497df411d0",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[Warrior]",
+    "source": "Warrior",
+    "target": "Воин",
+    "source_sha256": "eaf0fe0a362b58490e9d73c9584a36ef7353872dd1663afef4e2099b88bf56bf",
+    "target_sha256": "3fa079527279f54a28d613bbd05565273d9d19a87054afd126e7c1c63dfce47d",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[swarm]",
+    "source": "Swarm",
+    "target": "Рояк",
+    "source_sha256": "8c13f73ba145c6268d87f4ca5499e61d189bece0085616d8488926f403646e8f",
+    "target_sha256": "0b96ea6ac5ec9836625bd843819191e49899a6cec6e3ec4f1d79f4a18fd18193",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[inn]",
+    "source": "Inn",
+    "target": "Хан",
+    "source_sha256": "c53b45b2d29163312be4685d46eaab45211d2543f5d6eb37e73ff2514a851c68",
+    "target_sha256": "a4ac8ad993faab036deba41ef3dacf5d5259d556c7864cb03f13b8cf65756c8a",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[swarm explanation]",
+    "source": "Creates new units",
+    "target": "Създава нови единици",
+    "source_sha256": "fb2d5861bd48d9f42a305013a7603edb2fc636a2716fd6e35e29a70d256ddf2d",
+    "target_sha256": "ab1df9c78929d6be3aacce4bcb0c1a965db3cf43fbe1faa0cf9ede3c3f491a3e",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[inn explanation]",
+    "source": "Feeds your units",
+    "target": "Захранва вашите единици",
+    "source_sha256": "2914deebcebd28f2e20e3a1f6690efbe1e2aca9f7221f2e0791fd0eeee6f3856",
+    "target_sha256": "0efc223ecec7bccc64579b247831f311fa0399392f180c0fe128e616a29956d9",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[clearingflag]",
+    "source": "Clearing Flag",
+    "target": "Флаг за клиринг",
+    "source_sha256": "07be370ae7edcb077fa0fcfe177e86e0d3999e9f0367f3bf544c274d3d3848bb",
+    "target_sha256": "ac55181ca49c6c06f31385ee514630e3f69827ccc7491a0c2f9de55688e2e1e7",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[explorationflag]",
+    "source": "Exploration Flag",
+    "target": "Флаг за изследване",
+    "source_sha256": "fb99f5b464c46d71c1f76a372e2207e341ca58d546b0a507094e545508088fa1",
+    "target_sha256": "1098ef73d5f11700273a01665aa89ae34ea95f619362d4f0ae2bee13aef311e2",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[warflag]",
+    "source": "War Flag",
+    "target": "Военно знаме",
+    "source_sha256": "ce0b27aaa5263d479baae751bb57907ec6e404da29a404c6a4f208fb79047fcf",
+    "target_sha256": "0d1f63240b42d14a663fbdec4967b93a39f6ca31c7a5a84618072229b5300773",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[Minimum Level To Flag]",
+    "source": "Min. unit level",
+    "target": "Мин. ниво на единица",
+    "source_sha256": "966779f055911d316ea82e6cf592eafcba8a0b1be58d5d48cb1a4d8dc06e67e8",
+    "target_sha256": "e81a52f4d222910d460484a82ad6ed0474d4dde8351e74267e550fbf48b931cf",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[intro preflight]",
+    "source": "Your globules act on their own. You choose their jobs through buildings and flags. In this short introduction, scout a landmark, expand food supply, grow your workforce, and direct a small attack.",
+    "target": "Вашите глобули действат самостоятелно. Вие избирате задачите им чрез сгради и знамена. В това кратко въведение, разузнайте забележителност, разширете доставките на храна, увеличете работната си сила и насочете малка атака.",
+    "source_sha256": "1b93b2f42cd4b366a28c13dad513419d99166c41f330198619d09d665fb592d5",
+    "target_sha256": "616ffb45c9c7a6e8a149938361559b693a4b1d4bb141fba0f74921b7ae5e2136",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[intro instruction scout]",
+    "source": "Open Flags and place an Exploration Flag over the stone patch east of your colony. Assign one explorer. Watch it travel to the flag.",
+    "target": "Отворете „Знамена“ и поставете Знаме за изследване върху каменното поле източно от вашата колония. Назначете един изследовател. Гледайте как той пътува до знамето.",
+    "source_sha256": "528523a93220058aa7a39e18a2fc3191c020ed635618bfe44e0ddb7bfd9c2ef0",
+    "target_sha256": "6edae301652635b4ea21b770c8ed12fb968d3241777ef3c27ebfac3c0bf9dfe9",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[intro instruction grow]",
+    "source": "Select the Swarm. Set its worker target to at least 2, and its production ratios to workers only. Keep both Inns supplied while a new worker is born.",
+    "target": "Изберете Рояка. Задайте целевия му брой работници на поне 2, а коефициентите му на производство - само на работници. Поддържайте и двата хана снабдени, докато се ражда нов работник.",
+    "source_sha256": "286bd2930a373864ed16a2e94d0e05896a1db0b2a2cf3c150270345889116b2b",
+    "target_sha256": "8df323753fc3f91c2f36d3c91a1dba11d308398bb1a863e9aaf48dc4e8e07157",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "[intro help supply]",
+    "source": "Construction and everyday supply have separate worker targets. Select the finished Inn and increase its operating target. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers will eventually run out. Keep the wheat patch accessible.",
+    "target": "Строителството и ежедневното снабдяване имат отделни цели за работници. Изберете завършения хан и увеличете оперативната му цел. Доставчик събира пшеница и я носи тук. Гладните глобули се хранят в хановете; сграда без доставчици в крайна сметка ще свърши. Поддържайте житната нива достъпна.",
+    "source_sha256": "f91ffe9d60007e2d98d7c1bd9fa908a5fa62f85f3e1655db30a5e9e3ca03aba5",
+    "target_sha256": "cb6f25729622ac24e7b91b17a34f488fc3f9d01ea20bab7dab54156a2def2d88",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "A Globulation 2 colony: globs at work around their swarm",
+    "source": "A Globulation 2 colony: globs at work around their swarm",
+    "target": "Колония от Глобулация 2: глобули, работещи около своя рояк",
+    "source_sha256": "26d1df7fa57e14e8fc18558180bc03d496e8314d7a0d86c26bebe0107b6662e4",
+    "target_sha256": "1220a50397209b644e4911d903a84dd3444ac016a2eb9a417cd065c94944dba1",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Choose a password of at least {p0} characters.",
+    "source": "Choose a password of at least {p0} characters.",
+    "target": "Изберете парола с поне {p0} символа.",
+    "source_sha256": "ac3cb2782523ea2061f9977fbe684578918c83820207c49ecc8f63c2ed7f5e54",
+    "target_sha256": "ffcff174a3b7d80c72c461673bfdd103c42f28efc03c1c4d60ec2f11aa253af9",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Wrong username or password.",
+    "source": "Wrong username or password.",
+    "target": "Грешно потребителско име или парола.",
+    "source_sha256": "f20814fd0914adf9daa8d378cfdc5a1f915758a63d82cc882367756dbde89db9",
+    "target_sha256": "a87b864b986290f0d5d23f791ffb064d46f993101a49a127ee24b067b9913a82",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Create your own room",
+    "source": "Create your own room",
+    "target": "Създай своя собствена стая",
+    "source_sha256": "6336990779c02f3cdd8b499c4e463903b2621c4c2a50320272616ee26f915d4f",
+    "target_sha256": "9e23cc45e36553a050ca287050f4ece850d084fcb483d9a6b77cfadf2c08545e",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Download replay",
+    "source": "Download replay",
+    "target": "Изтегляне на запис",
+    "source_sha256": "c684e18e41be708af566b4d23d4f105817ee46790d4f6e9b3a2f6c0a86acda45",
+    "target_sha256": "26789ba968c839fa5ff901f7df6856021976f76a2ceadb6191534c2735c9050d",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "The replay is available once the server has verified the match.",
+    "source": "The replay is available once the server has verified the match.",
+    "target": "Записът е достъпен, след като сървърът потвърди мача.",
+    "source_sha256": "ce8c7f4f3d03c3e4c9070adce63ae0ffe9e0711f3cb29442d91e06af746ee37d",
+    "target_sha256": "053b209d193501cc52bef08198d196548b86dfa5a20b65795bcaec5d68d2b121",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Licence",
+    "source": "Licence",
+    "target": "Лиценз",
+    "source_sha256": "f3ec8e880a46c8a6fb105396ee5400124f828934a9dd68c668f796cf6d47b1c8",
+    "target_sha256": "35c9aeac1e56163086865b2bf08c8e3ee304acce53dfaefbca9b8beee5be15bf",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Terrain & resource sets",
+    "source": "Terrain & resource sets",
+    "target": "Комплекти терен и ресурси",
+    "source_sha256": "2110f21dffae4b037c3644a40ec83132a7eea175fa7972d86328a57d7af787ec",
+    "target_sha256": "0bed6c5b8d2d85e231018d535a12bbf60af696d756c9644470d7f68736535935",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Create new release",
+    "source": "Create new release",
+    "target": "Създаване на нова версия",
+    "source_sha256": "9e9ee0e0d93eceb22d0d6f538b73ad5d11436758d1b9f0906daadda4b4c0179e",
+    "target_sha256": "d8eaaa58a6d07315bec7498369705cbb2f1c6b5401e374b95cba40ce2a250316",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Colors your buildings; painted units stay unchanged.",
+    "source": "Colors your buildings; painted units stay unchanged.",
+    "target": "Оцветява сградите ви; боядисаните единици остават непроменени.",
+    "source_sha256": "e2b335c6ca858378ff5ab9c55749874a751a31f6510594389638f5311be2cdb5",
+    "target_sha256": "20c6910d56b93a366393e19e86b226596a8429a0173ea39b2feccb325947e609",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Units can cross",
+    "source": "Units can cross",
+    "target": "Единиците могат да пресичат",
+    "source_sha256": "5219bffb7a0d600bbecf2784da02d7d22bac2a4fae523639a81a8ecfc03b1542",
+    "target_sha256": "c8fe6616c52f631e6d04b6e8cfaef70a0800198d9be6a18fb48fc6c4d4ae64fc",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+    "source": "After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+    "target": "След плащането балансът ви се актуализира, след като плащането бъде потвърдено. Можете да се върнете в колонията си, докато то се обработва.",
+    "source_sha256": "b4788377bc17c6cdfc01c71209e7af1617d4a5b46264be30fdfeb355aee8f0bb",
+    "target_sha256": "d40d088c3fb9015053d4a14434ab6fc810272d414de1b8712763cc79b22e10f5",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": " · {slot0} disconnect",
+    "source": {
+      "one": " · {slot0} disconnect",
+      "other": " · {slot0} disconnects"
+    },
+    "target": {
+      "one": "· {slot0} изключване",
+      "other": "· {slot0} се изключва"
+    },
+    "source_sha256": "f40c5ad0d19b08d232c922332e9a942c16da75f6ce6213df1f1a0ccd61622014",
+    "target_sha256": "a13755616cd907e8206cab1286901b693dfae1de72c763358e31a108363d0a23",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+    "source": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+    "target": "Поставете си целите и вашите глобуси се захващат за работа. Хранете колонията си, тренирайте бойните си единици и изследвайте заедно.",
+    "source_sha256": "0de08b74ec882a4d85402714f19e831e972dec274d366368cc27502ed7e676e9",
+    "target_sha256": "be782e267aa45157799e577a2df0e1608e4dc9ef043319c2a4aad2e674495393",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "online",
+    "key": "Password",
+    "source": "Password",
+    "target": "Парола",
+    "source_sha256": "e7cf3ef4f17c3999a94f2c6f612e8a888e5b1026878e4e19398b23bd38ec221a",
+    "target_sha256": "79f3ad96d61d06a1c60b44b8be5251a67704ffcc0f816f8082667eb066f81bd0",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  }
+]

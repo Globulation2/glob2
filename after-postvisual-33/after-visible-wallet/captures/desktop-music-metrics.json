@@ -1,0 +1,91 @@
+{
+  "metrics": [
+    {
+      "count": 0,
+      "expected": "Музикални кредити: 0",
+      "visible": "\n  \n  \n  \n  Музикални кредити: 0",
+      "aria": "Музикални кредити: 0",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 210,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 1097,
+            "right": 1249,
+            "top": 22.25,
+            "bottom": 37.25
+          }
+        ],
+        "left": 1054,
+        "right": 1264,
+        "top": 8,
+        "bottom": 52
+      }
+    },
+    {
+      "count": 1,
+      "expected": "Музикални кредити: 1",
+      "visible": "\n  \n  \n  \n  Музикални кредити: 1",
+      "aria": "Музикални кредити: 1",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 210,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 1097,
+            "right": 1249,
+            "top": 22.25,
+            "bottom": 37.25
+          }
+        ],
+        "left": 1054,
+        "right": 1264,
+        "top": 8,
+        "bottom": 52
+      }
+    },
+    {
+      "count": 2,
+      "expected": "Музикални кредити: 2",
+      "visible": "\n  \n  \n  \n  Музикални кредити: 2",
+      "aria": "Музикални кредити: 2",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 210,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 1097,
+            "right": 1249,
+            "top": 22.25,
+            "bottom": 37.25
+          }
+        ],
+        "left": 1054,
+        "right": 1264,
+        "top": 8,
+        "bottom": 52
+      }
+    }
+  ],
+  "reads": [
+    {
+      "path": "/api/v1/music-studio/account",
+      "available": 0
+    },
+    {
+      "path": "/api/v1/music-studio/account",
+      "available": 1
+    },
+    {
+      "path": "/api/v1/music-studio/account",
+      "available": 2
+    }
+  ],
+  "writes": []
+}

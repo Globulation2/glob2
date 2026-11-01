@@ -1,0 +1,18 @@
+START desktop-150-script-editor
+END desktop-150-script-editor 0
+START phone-100-statistics
+END phone-100-statistics 0
+START desktop-main
+END desktop-main 0
+START desktop-settings
+END desktop-settings 0
+START desktop-settings-player
+END desktop-settings-player 0
+START desktop-gameplay
+END desktop-gameplay 0
+START phone-lobby-players
+END phone-lobby-players 0
+START phone-settings-online
+END phone-settings-online 0
+START phone-editor
+END phone-editor 0

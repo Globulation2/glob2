@@ -1,0 +1,8 @@
+{
+  "unit": "npm test -- --maxWorkers=2",
+  "lint": "npm run lint",
+  "types": "npm run typecheck",
+  "i18n": "npm run i18n:check",
+  "build": "npm run build -w @glob2/web",
+  "node": "v24.22.1"
+}

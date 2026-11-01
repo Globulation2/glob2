@@ -1,0 +1,16 @@
+{
+  "result": "passed",
+  "scope": "Independent mechanical Filipino18 compatibility proof only; no whole-language or runtime approval generated",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "29ba1ca3419360c08b2b1c07a1c3e940b4a6e0f2ddeea3aa1c4d612920a8c8cc",
+    "online": "8e2b56f7bb554f51981f724f4f19636f887af5da63dac3c2ae16c3c776a467c9"
+  },
+  "actual_pairs_per_role": 18,
+  "locale": "fil",
+  "role_bindings": 54,
+  "unchanged_native_pairs": 3412,
+  "unchanged_online_pairs": 2978,
+  "proof_sha256": "0cd08610807eb035126b919a6ee7e8e4cba38002cf8e02d2ba54558378402672",
+  "runtime_platforms": "pending"
+}

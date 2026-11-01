@@ -1,0 +1,205 @@
+{
+  "revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3",
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+  "binary_sha256": "f3a86fb2950f31fa2129360f5c338b9bc9971977d068046c42e070b48c004df3",
+  "scope": "Actual after-patch UI",
+  "jobs": [
+    {
+      "tag": "desktop-100-script-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "script-editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-script-editor",
+        "1280",
+        "1024"
+      ],
+      "returncode": 0,
+      "seconds": 89.94,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-100-statistics",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics",
+        "1280",
+        "1024",
+        "statistics"
+      ],
+      "returncode": 0,
+      "seconds": 80.72,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-150-script-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "script-editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-script-editor",
+        "1280",
+        "1024"
+      ],
+      "returncode": 0,
+      "seconds": 91.55,
+      "text_size_percent": 150
+    },
+    {
+      "tag": "desktop-150-statistics",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics",
+        "1280",
+        "1024",
+        "statistics"
+      ],
+      "returncode": 0,
+      "seconds": 80.51,
+      "text_size_percent": 150
+    },
+    {
+      "tag": "desktop-new-map",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/desktop-new-map",
+        "1280",
+        "1024",
+        "new-map"
+      ],
+      "returncode": 0,
+      "seconds": 50.87,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-100-script-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "script-editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-100-script-editor",
+        "390",
+        "844"
+      ],
+      "returncode": 0,
+      "seconds": 90.72,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-100-statistics",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-100-statistics",
+        "390",
+        "844",
+        "statistics"
+      ],
+      "returncode": 0,
+      "seconds": 75.99,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-150-script-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "script-editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-150-script-editor",
+        "390",
+        "844"
+      ],
+      "returncode": 0,
+      "seconds": 77.55,
+      "text_size_percent": 150
+    },
+    {
+      "tag": "phone-150-statistics",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics",
+        "390",
+        "844",
+        "statistics"
+      ],
+      "returncode": 0,
+      "seconds": 68.32,
+      "text_size_percent": 150
+    },
+    {
+      "tag": "phone-new-map",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-new-map",
+        "390",
+        "844",
+        "new-map"
+      ],
+      "returncode": 0,
+      "seconds": 46.6,
+      "text_size_percent": 100
+    }
+  ],
+  "orchestration": "Sequential completed prefix plus bounded3 parallel remaining; see parallel-transition.json. Original next-output guard exit is expected and retained separately."
+}

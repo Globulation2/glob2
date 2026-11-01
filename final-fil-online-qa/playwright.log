@@ -1,0 +1,15 @@
+
+Running 6 tests using 1 worker
+
+(node:690481) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › artifacts/bulgarian/final-fil-online-qa/home.spec.mjs:3:1 › final home wrapping and Bulgarian glyphs (58.3s)
+  ✓  2 [desktop] › artifacts/bulgarian/final-fil-online-qa/wallets.spec.mjs:3:37 › Map wallet actual approved catalog counts match visible and accessible presentation (5.5s)
+  ✓  3 [desktop] › artifacts/bulgarian/final-fil-online-qa/wallets.spec.mjs:3:37 › Music wallet actual approved catalog counts match visible and accessible presentation (5.4s)
+(node:692180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [phone] › artifacts/bulgarian/final-fil-online-qa/home.spec.mjs:3:1 › final home wrapping and Bulgarian glyphs (58.2s)
+  ✓  5 [phone] › artifacts/bulgarian/final-fil-online-qa/wallets.spec.mjs:3:37 › Map wallet actual approved catalog counts match visible and accessible presentation (5.3s)
+  ✓  6 [phone] › artifacts/bulgarian/final-fil-online-qa/wallets.spec.mjs:3:37 › Music wallet actual approved catalog counts match visible and accessible presentation (5.1s)
+
+  6 passed (2.3m)

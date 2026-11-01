@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="91" failures="0" errors="0" skipped="0"><testsuite name="CommunityMusicUI"><testcase classname="CommunityMusicUI" name="API failures clear queued installs and preserve Bulgarian notices [display]" time="4.97712" status="run" />
+  </testsuite><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.032318" status="run" />
+  <testcase classname="FontKerning" name="Bulgarian scaled advances fit authored wrapping and locale switches preserve legacy geometry" time="0.044256" status="run" />
+  <testcase classname="FontKerning" name="Tamil vowels and pulli remain whole when a narrow label wraps" time="0.066327" status="run" />
+  <testcase classname="FontKerning" name="high-DPI Hindi wrapping width is preserved without cropping the raw raster" time="0.026299" status="run" />
+  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.060858" status="run" />
+  <testcase classname="FontKerning" name="language changes refresh default line height and Arabic shaping caches" time="0.389704" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.044335" status="run" />
+  <testcase classname="FontKerning" name="script fonts shape clusters and preserve measured raster sizes after reload" time="0.355827" status="run" />
+  <testcase classname="FontKerning" name="script run composition preserves straight-alpha antialiasing" time="0.027166" status="run" />
+  <testcase classname="FontKerning" name="shaping clusters keep conjuncts and combining marks together" time="0.030684" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.003086" status="run" />
+  </testsuite><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="Bulgarian building failure rows wrap inside the panel and remain scrollable [display][artifacts]" time="4.95439" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="Bulgarian empty statistics notices wrap without ink outside their chart [display][artifacts]" time="4.91744" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" time="10.8552" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="live statistics hide post-game probability across topics [display][artifacts]" time="6.8641" status="run" />
+  <testcase classname="GameGUITouch" name="phone navigation contains actual Urdu labels at normal and enlarged text sizes [display]" time="8.33874" status="run" />
+  </testsuite><testsuite name="HiveMindIntegration"><testcase classname="HiveMindIntegration" name="Free client never starts Commander or changes its stored checkpoint" time="0.000215" status="run" />
+  <testcase classname="HiveMindIntegration" name="Hive Mind copies the engine fog boundary and validates ownership" time="0.955504" status="run" />
+  <testcase classname="HiveMindIntegration" name="Hive report presentation metadata preserves raw API, bounded history and remote provenance" time="0.00122" status="run" />
+  <testcase classname="HiveMindIntegration" name="local Hive contains malformed worker responses and pauses affected programs" time="5.58379" status="run" />
+  <testcase classname="HiveMindIntegration" name="local Hive operation journal preflight cadence and teardown" time="1.55394" status="run" />
+  <testcase classname="HiveMindIntegration" name="local Hive publishes player API separately from local control rules" time="0.000227" status="run" />
+  <testcase classname="HiveMindIntegration" name="local Hive retires changed player context while a worker is pending" time="0.954145" status="run" />
+  <testcase classname="HiveMindIntegration" name="local Hive retires paused programs on an idle player context change" time="0.85363" status="run" />
+  </testsuite><testsuite name="HiveMindPresentation"><testcase classname="HiveMindPresentation" name="Hive Mind commander panel [display]" time="5.7808" status="run" />
+  <testcase classname="HiveMindPresentation" name="Hive cards remain inspectable and actionable above the text composer [display]" time="8.69839" status="run" />
+  <testcase classname="HiveMindPresentation" name="local Hive cards own finger sequences and relinquish cancelled captures [display]" time="4.64248" status="run" />
+  <testcase classname="HiveMindPresentation" name="local Hive cards retain native scroll ownership through momentum [display]" time="4.37779" status="run" />
+  </testsuite><testsuite name="HiveMindReliability"><testcase classname="HiveMindReliability" name="Hive Mind pending requests preserve drafts and stop feedback" time="0.762843" status="run" />
+  </testsuite><testsuite name="HiveMindScheduler"><testcase classname="HiveMindScheduler" name="Hive Mind cadence replacement cancellation and lost acknowledgements" time="3.28815" status="run" />
+  </testsuite><testsuite name="LegacyScriptCoverage"><testcase classname="LegacyScriptCoverage" name="Malay, Marathi and Bulgarian SGSL language tokens require their installed catalogs" time="12.5164" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Malay, Marathi and Bulgarian SGSL select their messages and retain an authored default" time="4.93274" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="adding Malay, Marathi or Bulgarian preserves legacy SGSL source bytes and saved program counters" time="21.5948" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="alliance levels preserve unrelated teams and apply vision masks" time="0.788732" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="area waits observe team alliance and negation instead of unrelated units" time="0.805995" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="authored flag aliases resolve game catalog IDs and respect missing definitions" time="1.18535" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="catalog languages and quoted locale names preserve suspended story continuation" time="6.80393" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="count waits evaluate all building classes exact levels and unit comparisons" time="5.45659" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="flag lifecycle and GUI commands change their real game objects" time="0.796311" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="independent stories timers space and saved suspension resume exactly" time="0.72164" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="invalid references and value boundaries report typed errors" time="0.662111" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="legacy resetAI tokens with invalid player or implementation leave players intact" time="0.715754" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="named highlights target distinct GUI elements and unhighlight restores state" time="0.688396" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="objectives and hints resolve script numbers and persist in game snapshots" time="1.36655" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="random legacy summons preserve story progress through full continuation" time="1.54737" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="resetAI authoring accepts valid slots before an editor map has a player header" time="0.470318" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="resetAI changes only the chosen player and rejects unsafe indices" time="0.800662" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="summons respect painted area capacity and unit attributes" time="0.737775" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="supported statements and wait forms compile" time="0.705964" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="truncated arguments fail without accepting incomplete statements" time="0.699095" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="unit and building highlights use map and panel channels independently" time="0.692383" status="run" />
+  </testsuite><testsuite name="OnlineScreenLifetime"><testcase classname="OnlineScreenLifetime" name="Bulgarian AI catalogue callback uses reviewed response errors and keeps API specificity" time="1.69614" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="Bulgarian library callbacks retain API messages and summarize malformed responses" time="1.82203" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="Diagnostic UI preserves reviewed native summaries, raw values and explicit report provenance" time="1.6366" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="generator examples with omitted controls use engine defaults when selecting a room" time="1.66364" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="generator installation clears pending state when restoring the library throws" time="1.75003" status="run" />
+  <testcase classname="OnlineScreenLifetime" name="online screens closed with platform calls in flight are never called back" time="1.58152" status="run" />
+  </testsuite><testsuite name="ScriptEditor"><testcase classname="ScriptEditor" name="Bulgarian script cursor caption reserves measured localized coordinates [display][artifacts]" time="4.75773" status="run" />
+  <testcase classname="ScriptEditor" name="Bulgarian script status distinguishes compilation success and failure without changing source" time="1.73952" status="run" />
+  <testcase classname="ScriptEditor" name="Cancelling script drafts preserves the source, globals and scenario text" time="1.90824" status="run" />
+  <testcase classname="ScriptEditor" name="Editing legacy SGSL retains the released USL and SGSL payload pairing" time="1.77922" status="run" />
+  <testcase classname="ScriptEditor" name="Editor saves and reloads the selected JavaScript map mode and source [display][artifacts]" time="7.01068" status="run" />
+  <testcase classname="ScriptEditor" name="JavaScript file loading preserves embedded NULs for validation" time="1.92336" status="run" />
+  <testcase classname="ScriptEditor" name="JavaScript maps reopen in the editor without resetting live globals" time="1.89466" status="run" />
+  <testcase classname="ScriptEditor" name="JavaScript script file dialogs use js and leave loading as a draft" time="1.94111" status="run" />
+  <testcase classname="ScriptEditor" name="JavaScript to SGSL prepares both runtimes before committing" time="1.71401" status="run" />
+  <testcase classname="ScriptEditor" name="Phone script editor keeps whole labels and full compiler notice with enlarged text [display]" time="4.80253" status="run" />
+  <testcase classname="ScriptEditor" name="Script language drafts survive switching and invalid JavaScript cannot commit" time="1.90957" status="run" />
+  <testcase classname="ScriptEditor" name="Script language dropdown selects JavaScript on desktop and phone [display][artifacts]" time="5.03898" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]" time="8.8002" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="32.2885" status="run" />
+  </testsuite><testsuite name="SettingsAILibrary"><testcase classname="SettingsAILibrary" name="AI library compact discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" time="8.80045" status="run" />
+  <testcase classname="SettingsAILibrary" name="AI library desktop discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" time="13.0878" status="run" />
+  </testsuite><testsuite name="SystemLanguage"><testcase classname="SystemLanguage" name="Bengali regions share the Bengali script catalog" time="0.000176" status="run" />
+  <testcase classname="SystemLanguage" name="Bengali startup respects the system and saved language" time="4.96601" status="run" />
+  <testcase classname="SystemLanguage" name="Bulgarian system preference and explicit profile choice" time="5.04405" status="run" />
+  <testcase classname="SystemLanguage" name="ISO locales map to the historical catalog codes" time="0.000212" status="run" />
+  <testcase classname="SystemLanguage" name="Malay selects Rumi without advertising Jawi coverage" time="0.000287" status="run" />
+  <testcase classname="SystemLanguage" name="Malay startup preserves an explicit saved choice" time="4.85451" status="run" />
+  <testcase classname="SystemLanguage" name="Marathi startup follows preferences and preserves a saved language" time="6.97426" status="run" />
+  <testcase classname="SystemLanguage" name="Norwegian Bokmaal accepts generic Norwegian but never Nynorsk" time="0.000206" status="run" />
+  <testcase classname="SystemLanguage" name="Norwegian startup follows preferences and preserves a saved language" time="4.53591" status="run" />
+  <testcase classname="SystemLanguage" name="Tamil accepts regional tags only in the supported written script" time="0.000235" status="run" />
+  <testcase classname="SystemLanguage" name="expanded locales distinguish scripts and the precise Pulaar variety" time="0.000269" status="run" />
+  <testcase classname="SystemLanguage" name="languages without a catalog are not confused with catalog codes" time="0.000179" status="run" />
+  <testcase classname="SystemLanguage" name="preferred locale fixture restores an existing hint" time="0" status="run" />
+  <testcase classname="SystemLanguage" name="regional and script variants pick the matching catalog" time="0.000202" status="run" />
+  <testcase classname="SystemLanguage" name="startup follows the system only when the profile has no usable language" time="4.64121" status="run" />
+  <testcase classname="SystemLanguage" name="startup selects installed Tamil and preserves an explicit saved choice" time="3.39842" status="run" />
+  <testcase classname="SystemLanguage" name="the first available preference wins, then English" time="0.000256" status="run" />
+  </testsuite></testsuites>

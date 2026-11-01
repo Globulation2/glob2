@@ -1,0 +1,2090 @@
+[doctest] listing all test case names
+===============================================================================
+software alpha blend stays accurate under stacked draws
+icon masks preserve resolution alpha and bounded recolours
+portable icon masks preserve resolution alpha and bounded recolours [display]
+script run composition preserves straight-alpha antialiasing
+shaping clusters keep conjuncts and combining marks together
+language changes refresh default line height and Arabic shaping caches
+high-DPI Hindi wrapping width is preserved without cropping the raw raster
+script fonts shape clusters and preserve measured raster sizes after reload
+Arabic and Persian visual-order text is not reordered again by SDL_ttf
+the bundled SDL3_ttf moves the pen for kerned pairs
+pair advances equal the glyph advances plus kerning
+kerned words have no gap wider than the same words unkerned
+presentation; clipping; captures and input translation in software rendering [display:1600x1400]
+presentation; clipping; captures and input translation in OpenGL [display:1600x1400]
+live scale retains portable viewport ownership [display]
+software targets resize and destroy safely during an active transform [display]
+each accelerated backend uploads surface revisions independently [display]
+zone boundaries; UI transforms and portable rendering paths [display]
+HD runtime pack: logical sizes in software rendering
+HD runtime pack: frames; team hues; bounded cache and session release [display][artifacts][slow]
+screen phases; completion; reuse; quit and compatibility host
+additional input follows human dispatch and reports an interrupted prefix
+cancelled buffered ranges preserve later human text and defer receipt completion
+a top screen with unsaved work can veto window close
+native software glyphs at fractional scale [display][artifacts]
+scaled and unscaled text rasterisation [display:1600x1400][artifacts]
+native display and live preferences in software [display]
+native display and live preferences in OpenGL [display]
+cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]
+cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]
+presentation benchmark [benchmark][display]
+software presentation benchmark [benchmark][display]
+all native controllers select renamed mixed providers and release missing demands
+Nicowar and Econo keep independent weighted material objectives and stone clearance
+shared runtime retirement distinguishes attraction and feeding and preserves mixed services
+Nicowar retained attraction retirement completes missions across save load
+production placement falls back from an obstructed preferred footprint
+Nicowar resolves one aggregate production demand per colony management pass
+six native strategies construct and use separate demanded production classes
+flag room queries borrow compact team records with sparse and empty teams
+shared runtime exact anchors support rectangular attractors across the torus
+Maxima exact anchors support rectangular footprints across the torus
+all native controllers continue deterministically with mixed permuted catalog
+Castor projects only its strategic demands and preserves mixed staffing
+Warrush staffing preserves intent priority population order and current stage limits
+Warrush mixed producer staffing respects zero and saturated assignment limits
+Castor bulk wheat reads preserve weighted distance rounding and sentinels
+AI source selectors discover renamed multi-material deposits and independent depletion
+historical farming reserves only propagating finite material donors
+keyed worker courses retain qualification grants and exclude unrelated recipients
+construction tier arithmetic excludes couriers without construction
+Castor swimming workforce excludes inactive carriers
+independent nonmonotonic worker clocks retain keyed course eligibility
+always airborne carriers retain keyed flight course planning and independent levels
+farm areas reuse each AI's forbidden wheat placement on an unchanged colony
+with the farm-areas experiment every farming AI farms its wheat with a farm area and survives save-load
+Cortex economy and food shortage survive save-load
+Cabino specialist modules survive save-load
+Warrush growth and attack preparation survive save-load
+Numbi growth and attack preparation survive save-load
+Nicowar shared runtime survives save-load
+Econo retains wheat-starved buildings
+Econo retains exploration flags after their enemy target disappears
+Econo adds new swarms as its colony grows
+Econo shared runtime survives save-load
+Castor and Maxima growth and shortage resume at early and active checkpoints
+long AI campaigns resume with identical orders state and game RNG [slow][artifacts]
+Nicowar dig-out rejects missing starts without allocating orders
+Nicowar dig-out validates frozen routes before committing clearing orders
+Cabino standard observation preserves decisions from the legacy narrow view
+Cortex shore harvest differs from inaccessible algae and swimming opens islands
+Cortex amphibious assessment distinguishes land water and blocked targets
+Cortex wheat protection emits real area orders and food burst releases only our paint
+Cortex farm checkerboard retires prototype paint and wheat blitz releases it
+Castor projects deduplicate replace and decline already satisfied requests
+Castor food lock backs off growth and boot projects wait for their cadence
+Nicowar defense flags materialize once and withdraw when the threat disappears
+Cabino defense records create assign deduplicate and retire actual flags
+Cabino pending upgrades survive delayed observation and release rejected reservations
+Cabino queued target identities survive saves and reject reused building slots
+owner and snapshot selection audits agree for rule constrained orders
+disabled training preserves independent services of mixed providers
+construction staffing uses separate site and completed capacities
+legacy queued staffing imports explicit 135 wire without weakening modern validation
+food population preserves migrated calibration and scales authored recipients
+Cabino strategy roles require effective clocks and mobile labor
+Cabino reservations match unit class and qualification instead of building level
+effective melee threats remain local while reserves require movement
+loaded Population counts effective own roles once per hybrid
+retained tournament replay contains no unavailable orders
+native controllers exclude disabled work and continue after reload [slow]
+engine prevents training and upgrades while retaining repairs and starting levels
+restored controller queues discard unavailable work and release prerequisites
+Cabino migrates legacy warrior reservations only when training is disabled
+rule parser and script observations use effective match values
+JavaScript profiles can inspect rules and issue useful orders
+no growth farms harvest their finite seed rather than waiting forever
+Maxima removes disabled reserves while retaining finite production supply
+Cortex excludes unavailable technology from scoring and feeding prerequisites
+renewable material potential survives saturation and honors yield policies
+prospective material supply combines mixed branch numerators without overflow
+runtime initialisation; area order serialisation and Maxima reserved telemetry
+Cortex economy and food shortage survive save-load
+Cabino specialist modules survive save-load
+Warrush growth and attack preparation survive save-load
+Numbi growth and attack preparation survive save-load
+Nicowar shared runtime survives save-load
+Econo shared runtime survives save-load
+all controllers continue alongside another AI and a shared-team controller [slow]
+Castor and Maxima active full games preserve decisions and RNG [slow]
+stock demand lookup distinguishes finished providers and placements
+fetching stock is not an exchange or supply service
+direct stock supply is independently available without market experiments
+lineage follows forward transitions without treating repair links as ancestry
+construction qualification grants are independent from building speed
+combat providers require learnable active abilities for custom hybrid recipients
+qualification-only courses retain raw learnability without construction or active ability
+construction and clearing jobs independently grant meaningful work training
+legacy cached ability policies retain training outside historical job capabilities
+combined providers retain independent admission and operation rule gates
+experiment gates apply to both initial placement and completion without rebuilding
+renamed families and reordered concrete IDs preserve capability membership
+concurrent first reads share one immutable catalog index
+Warrush timers and constructors round-trip at boundaries
+Numbi phase clock survives and advances on the original poll
+old layouts default omitted clocks without consuming the following field
+new timer records reject out-of-range missing and malformed values
+pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex
+Warrush wrapper preserves the next decision and its random stream
+Numbi wrapper preserves an active phase clock and the next decision
+Nicowar explorer phases and full construction counts survive
+Cabino saving leaves its pending FIFO intact
+Cabino construction polls preserve high material and combined source masks
+Cabino material mask placement resumes without changing RNG
+Cabino preserves stale gradients module latches and fruit memories
+Cortex saved policy and model supersede the current process selection
+shared runtime reload replaces queues and registrations in binary and text
+Castor waits for configured recovery rather than exhausted finite food
+crop habitat excludes sand transitions and new paved terrain
+Castor boot and active projects survive save-load
+Castor seeded boot and active decisions repeat exactly
+binary and text snapshots preserve project fields and cache history
+decisions keep assignments private and rejected requests can retry
+snapshot decisions ignore later live changes and release borrowed inputs
+historical timer-only AI saves remain readable
+idle polls preserve slow path timer and random state
+wheat discovery keeps first path depths and local fog boundaries
+placement reuses observation qualification without persisting stale worker levels
+Cortex observations stay isolated from later simulation changes
+bounded model channels preserve stock identity and ignore custom family metadata
+stock consumers are not exchange providers and hybrid attractors survive retirement
+inn capacity preserves historical clocks and scales authored food demand
+mixed renamed provider has multiple policy roles but one model and worker identity
+actual observation and policy build split overlay producers for requested classes
+actual production observation preserves positive weights and settles output transitions
+provider ranking uses construction materials independently of storage
+live capability upgrade eligibility and descriptor capacities drive construction
+build actions reject invalid slots and cooldown suppresses duplicate orders
+war flags create once reconcile force limits and retarget through real orders
+flag rediscovery excludes claimed flags and stale defense teardown is idempotent
+rally selection and bound warrior arrivals respect colony preference and toroidal range
+production clamps ratios applies orders and deduplicates finished swarms
+Cortex rejection receipts clear exact delayed upgrade and flag intents
+Cortex delayed staffing overlay respects entity incarnations
+snapshot distances preserve wrapped inputs and discovery never bypasses legality
+placement geometry matches the tile-scan oracle
+placement food snapshot matches scalar stock queries and refreshes per pass
+placement food snapshot matches toroidal scalar distances on thin maps
+lazy placement hard space matches canonical rectangles and refreshes per pass
+integer inference matches an independent two-signal oracle
+equal negative logits select the lowest eligible class
+worker caps mask impossible outputs and clamp depleted wheat
+truncated blobs and invalid header or layer contracts are rejected
+file loaders reject missing empty and wrong-net blobs
+learned policies load once retain feasibility masks and fall back on invalid files
+tech upgrades require trained units and decline below the boundary
+first tech buildings require prerequisites and feasible locations
+inn upgrades retain enough feeding capacity and hospitals scale with army
+worker tuning respects depletion floors settling and a shared construction budget
+combat prioritizes serious defense and respects attack hold and amphibious capacity
+protection hunger and bootstrap decisions honor observation validity
+all delays preserve every FIFO poll and fixed player ordered deadlines
+save drains computation and retains future outputs without recomputing
+saved repeated enrollments retain the first initialization tick
+same initialization identity cannot restore contradictory planes
+failure joins work and cannot partially publish or lose the original error
+legacy zero-delay pending output keeps its saved deadline
+cancellation joins the old controller generation before replacement
+all admitted work uses the executor and zero delay delivers at the next boundary
+a same-boundary first admission after delivery keeps its next-boundary deadline
+configuration rejects live work and submissions after a tick was dispatched
+restore refuses truncated duplicate and out of window pending requests
+Diagnostic captures do not change saved pending orders
+every shipped controller preserves orders and state across worker counts and all delays
+save continuation retains controller caches receipts and future commands at pipeline boundaries
+saving before the first observation initializes AI without admitting work
+pause and repeated boundary calls cannot execute a published command twice
+paused startup can resume on a stalled boundary after an empty delivery phase
+save between AI admission and delivery retains the original pending output
+legacy zero-delay real output and its execution receipt survive pipeline saves
+replacement cancels an old output without rejecting identical new wire bytes
+team death cancels submitted work and saves receipts for a revived controller
+a submitted deadline is delivered even when no new poll is eligible
+wrapper preemption preserves controller rejection feedback and pending release identity across save
+retained attraction completes saved missions
+retirement preserves independent training
+unavailable attraction has no placement
+fitted force uses only visible units
+fitted power controls attack gate
+fitted history survives save
+nearby warriors count as rallied
+rally rejects blocked ground
+rally assembles by movement
+wave assembly and pipeline
+wave delivery fallback
+wave assembly fallback
+streaming scales with army
+small wave keeps recruiting
+defense wraps building origins
+defense coverage
+warrior eligibility
+untrained warriors fight at level one
+minimum force gate
+lowered flag level survives review
+barracks are filled before attacking
+unusable training does not block attacks
+training reservations match different levels
+food posture does not veto combat
+sealed target opens route
+offense follows destroyed targets
+stalled target is quarantined
+raids outscore distant buildings
+economic recovery preserves military budget
+forbidden defense zones
+defense deadband preserves coverage
+offensive control switches
+unlearned combat estimates use configured tables at the shared strategy level
+custom melee remains a reference when built-in combat is disabled
+offense uses effective mobile recruits and preserves already assigned custom fighters
+active offense credits only returning recipients or continuing members
+stationary effective melee triggers local defense while inactive attacks do not
+historical combat calibration remains private to imported race tables
+replacement objectives favor the existing flag with wrapping and bounded preference
+new flag proximity cannot make an unreachable nearby building viable
+raid locations use the same preference for the current offensive flag
+format188 AI execution keeps ring40 without enabling the new proximity preference
+enemy commitment follows successive viable objectives and releases exhausted enemies
+arrival grace protects a partial delivery and still expires for waves and streaming
+recall telemetry emits numeric byte enums on one complete line
+forward support adds independent demands and honors hunger upgrades and peaceful rules
+names; descriptions and two seeded diagnostic runs
+tactical quarantine budget survives current and legacy execution loads
+reconnaissance waits for eighty percent
+fortification uses only spare labour
+unified hospital capacity
+cadence
+ally prestige
+third party tower
+flying defenders and nonexploring magic threats
+disconnected army
+proactive protection
+reused own id
+counted opponent records preserve slot fifteen and load the legacy twelve-record layout [save-format]
+labour continuation
+stranded algae keeps pool demand
+schools do not require known algae
+birth budget scales beyond twenty
+growing food funds capacity
+colony startup and affordability
+distant wheat funds recovery
+sole swarm staffs from its own stock
+new buildings start staffed
+nearby corn determines staffing
+corn pile interior is supply
+explorer target always gets production
+army demand funds training and birth mix
+barracks upgrades keep training open
+army births match platform checksums
+crisis production pause
+completion reallocates colony
+tracker logical cadence
+holiday harvest capacity
+service rate uses simulated visit ticks
+feeding estimate shares resources and seats across capability combinations
+sustained stock feeding reports capability estimates and historical strategy targets
+observed hunger expands feeding for an opening colony mix beyond nominal forecasts
+food pressure increases planned feeding capacity without a permanent queue ratchet
+operating estimates use one production clock and packet denominators
+parallel training budgets separate compatible recipients and disabled services
+projectile profiles reserve ammunition workers and cache nominal feeding
+feeding fallback uses enabled movement and retains compiled admissions
+legacy planner rebuild replaces feeding providers without duplicating capacity
+retained Maxima save compiles each feeding admission row once [save-format]
+feeding budget scaling handles maximum seats without overflowing intermediate products
+one training course credits independent movement and worker construction outcomes
+nominal service capacity uses unit feeding healing and training speeds
+feeding demand allocation conserves recipient classes and shared provider capacity
+feeding farm claims follow one cohort while hybrid operating demand stays independent
+upgrade batches reuse baseline claims without changing food appraisals
+feeding packet denominations preserve large stock rates and profile continuation
+feeding colonies join overlapping catchments transitively and preserve independent training
+recipient meal demand follows saved hunger and external action clocks
+mechanical production ceilings are separate from planned carrier throughput
+birth funding counts production packets without independent hybrid service costs
+feeding capacity preserves independently admitted recipient classes
+feeding flow agrees with the exhaustive three-recipient oracle
+service ceilings respect the engine action clock and crop funding avoids overflow
+food retirement preserves the only explorer feeder despite surplus worker seats
+aggregate feeding demand escapes a crop count cap during service shortage
+operating production claims preserve weighted recipe costs and shared carrier work
+production ledger uses requested staffing ratios and target stage with continuation
+production observation keeps planned work despite temporarily absent carriers
+producer candidates enforce local feasibility alongside strategic target caps
+feeding candidates transfer funded meal shares through cache reload and replacement
+Food reach crosses passable nonfood deposits but respects resource obstruction
+custom construction supply counts reachable mixed yields and shore access
+food allocation does not retire reachable production but exhausted sites remain retirable
+Colony food traversal preserves ordered scalar reachability
+farm zones use the final wheat protection plan including empty frontier cells
+permanent wheat layout
+firebreak management radius
+farm management radius
+coastal wheat crosses fertility dips
+seed survival
+initial flag staffing
+wood reserve survives wheat pincer
+wood reserve survives own farm protection
+expansion leaves harvest lanes open
+aligned pattern transitions
+maintenance protection agreement
+archipelago harvest does not seal wheat
+seed stability across maps
+farming respects discovery
+custom producers only reserve finite spreading seeds
+custom spreading frontier follows actual donor habitat
+mixed donor reserves its propagating wood without borrowing food renewal
+farming eligibility snapshot refreshes after stock and catalog changes
+indexed farm geometry matches scalar toroidal closing and seed adjacency
+farm boundary geometry reads depleted secondary Food stocks
+terrain travel fields serialize mode and retain stale snapshots
+gradient dependencies; payload round trips and cache expiry
+placement maintenance regressions
+upgrade clearing regressions
+rejected placement upgrade regressions
+preemptive scheduling regression
+maxima bootstrap regression
+integration regressions
+execution regressions
+fruit supply routes
+fruit strategy regressions
+review bug regressions
+mission force regressions
+economy staffing regressions
+execution state save regression
+food relocation executor regression
+explorer swarm staffing regressions
+completed swarm budget regressions
+economic resource access regressions
+repair labor contract regressions
+inn completion staffing regressions
+director upgrade priority regressions
+strategy and maintenance share the deterministic queue
+director execution regressions
+director upgrade regressions
+upgrade worker priority regressions
+category maintenance capacity regressions
+school population scaling regressions
+Maxima food catchments and carrier discounts follow trail and ice travel costs
+prepared resource obstacles match scalar entity gradients
+economic worker priorities rank each role and boost emergency inn sites
+names; descriptions and two seeded lifecycles
+sealed buildings are demolished and release their commitments
+sealed construction and diagonal access survive save loading
+access retains isolated workers and ignores forbidden zones
+wrapped and future swimming access remain usable
+deletion safety
+lost replacement
+deferred retry
+saved relationships
+formats; canonical values and version gates
+legacy strategy absence disables new tactical controls without masking missing old keys
+new games use the accepted ring40 policy in every format and saved values remain exact
+format188 strategies preserve ring40 and disable absent flag proximity
+zone boundaries; eight-way adjacency; wrap seams; discovery; protection and building clearance
+farm areas reuse wheat protection while wood keeps its existing forbidden and clearing rules
+edge donors expand fields and are released after growth
+private initial resource fields match live seeds costs and destination ties
+published aged resource fields survive changed resources without fresh reconstruction
+RoundTripCurrentVersion
+UnregisteredOrderRoundTrips
+Pre96StreamLeavesSentinel
+gradient manager state survives binary and text round trips [save-format]
+terrain weighted influence retains obstacles and sub-tile trail costs
+irrigation heuristics require a positive enabled fertility contribution
+position entities retain historical binary and text payloads
+recurring input tracking and provider lookup preserve composite membership
+runtime owner helpers and decisions release their full observation leases
+flat building relationships resolve captured unit incarnations
+queued orders preserve selection incarnations through save and slot replacement
+static material fields invalidate on source edits and preserve continuation
+target fields are declared in schema version 2
+Cortex flag targets carry the team that owns each building
+Cortex records its committed target until the offense stands down, across saves
+Numbi reports the highest-numbered enemy its attack searches
+target telemetry names only real enemies and leaves the simulation unchanged
+telemetry layout and painting stay bounded with full schemas
+telemetry selection filtering samples and access changes preserve safe state
+telemetry waits for touch coasting and scrolls long details independently
+telemetry full-game timings and desktop phone captures [display:1280x800] [artifacts]
+standard observation preserves decisions from the legacy narrow view
+snapshot influence and uphill destination preserve live query semantics
+pending assignments settle through immutable rejection receipts
+auto uses eligible logical fallback when physical topology is unknown
+explicit counts preserve owner-inclusive overrides and report known oversubscription
+threading unavailable forces serial while preserving the requested count
+resource setup preserves every resolved gradient configuration without backend admission
+setup provenance records automatic sizing separately from CPU eligibility
+platform discovery produces a usable setup with the platform threading capability
+physical cores size native auto and preserve explicit overrides
+small CPU auto counts give every core a worker plus the owner
+CPU list parsing is bounded and rejects malformed topology
+eligible sibling groups count cores once and reject incomplete or inconsistent data
+Windows core masks respect affinity and require complete disjoint topology
+ISO locales map to the historical catalog codes
+regional and script variants pick the matching catalog
+languages without a catalog are not confused with catalog codes
+Bengali regions share the Bengali script catalog
+Norwegian Bokmaal accepts generic Norwegian but never Nynorsk
+expanded locales distinguish scripts and the precise Pulaar variety
+Filipino aliases accept only the shipped Latin script
+the first available preference wins, then English
+Filipino startup accepts the Tagalog alias and preserves a saved language
+Bengali startup respects the system and saved language
+Norwegian startup follows preferences and preserves a saved language
+startup follows the system only when the profile has no usable language
+Malay selects Rumi without advertising Jawi coverage
+Malay startup preserves an explicit saved choice
+tournament probability defaults to 95 percent with an explicit zero opt-out
+registry describes every executable command and help is asset independent
+private save migration requires an explicit profile and input
+default launch groups URLs and help paths
+typed options equals ordered repeats and literal filenames
+Epic launcher metadata starts normal play without retaining credentials
+Epic metadata preserves real commands help URLs and literal filenames
+unknown or malformed launcher arguments fail without exposing values
+saved games can use the normal presentation loop with explicit display
+malformed input fails before handlers
+every leaf accepts a minimal request and rejects missing required inputs
+completion scripts contain all command options without running jobs
+gradient work stats is an independent game-run observer
+interval exploration requires explicit headless collection
+discovery atomic replacement queued moods and muted preferences [display][writes-preferences]
+computed fades preserve every entry of the original lookup table
+preview storage is bounded independently of track length
+archive parser rejects malformed and oversized archives
+archive offsets and sizes cannot wrap on 32-bit targets
+track selection while closed and queued mid-fade changes
+Opus trimmed timeline looping seeking and unavailable decoder
+buffered facade runs at ordinary priority and joins on shutdown
+muted preview controls and shutdown do not require a device callback
+native music supply under external CPU contention [benchmark][slow]
+dense fields measure steady pulses rebuilds and memory [benchmark]
+populated matches compare disabled and stationary aura tick cost [benchmark]
+catalog bounds identity and canonical absence
+strongest fields match reference across wrapped oversized and changed coverage
+upkeep is atomic pulses accumulate fractions and cap services
+combat uses live coverage and magic preserves armor bypass
+even footprints receive combat modifiers at the northwestern center
+ordinary building services discard positive aura fractions at their caps
+damage resolves death before healing and respects no permadeath
+turret snapshots attack at firing and reads target armor at impact
+magic and flying services use coverage without fruit bonuses
+fertility snapshots retain their captured modifiers and only land changes
+immediate growth obeys temporary land suppression and resumes afterward
+map replacement discards old dense planes before new tile queries
+ownership changes invalidate paid coverage and wait for the next pulse
+construction deletion and repair retain the intended funding boundaries
+saved funding and fractions reject values before compact storage narrowing [save-format]
+paid intervals and fractions preserve full save continuation [save-format][artifacts]
+unused definitions do not enlarge simulation work [benchmark]
+private stock routing measures warm fields invalidation and working sets [benchmark]
+ordinary building aliases never suppress sprite binding [display]
+retained seeded compositions preserve full simulation continuation [golden]
+format136 terrain snapshot imports frozen buildings and continues after resave
+retained split recipes conserve every charged resource through cancellation
+steps without any gradient
+destroyed inn expels everyone
+no room kills the surplus
+healing is kept pro rata
+generated fixtures round-trip through binary saves [save-format]
+the retained fixture loads [save-format]
+committed recipes reserve distinct resources and ratio changes choose the next job
+completed blocked job retains its budget and zero duration remains a producer
+idle producer sentinel survives binary and text continuation
+committed recipe survives binary and text continuation with its reservation
+rectangular hybrid shoots class-specific snapshots and regenerates without production
+hybrid attraction and service routes remain independent across save continuation
+stock suppliers route independently of fruit exchange with configured pickup cost
+overlay services and suppliers share a footprint without occupying ground
+combined attraction profiles independently require warrior level and explorer bombing
+physical combat attraction invalidates on enemy changes and mixed relocation resets routes
+direct stock withdrawal is independent of food and fruit exchange
+construction reserves independent costs beyond storage and survives continuation
+converging upgrades cancel to the instance origin and return real materials
+repair budgets use independent fruit costs and cancellation creates no material credits
+zero cost roots and upgrade stages complete without a delivery event
+version135 partial repair imports remaining work without material credits
+partial supplier packets preserve raw equivalents and save continuation
+repair earns only original damage and paid materials cannot be refunded after healing
+zero cost repair preserves damage received after the repair started
+shared repair sites restore each recorded origin and staffing cap
+unfunded new-site cooldown uses job state and counts fruit funding
+resource permissions separate storage replenishment and direct withdrawal
+bounded supply cache excludes the recipient and its shared inventory and resumes eviction
+combined stock routes include both provider modes and track direct overlay relocation
+shared ammunition consumption invalidates stock advertised by another building
+production transitions initialize new recipes and restore canceled preferences
+overlay transition and cancellation discard cached footprint routes
+mixed attraction borrows quota from an unavailable unit class
+late choice advances the common timer and selects ratios only at completion
+sole supplier demolition and cancellation preserve routing across save continuation
+current saves reject construction origins outside the explicit job graph
+demolition settles shared partial construction only when removal becomes final
+ground buildings with attraction radii remain melee targets
+building flag masks preserve neighboring flags and clear unused bits
+compact production preferences validate wide saved values before conversion [save-format]
+building saves retain capacity boundaries and reject invalid lifecycle values [save-format]
+mixed visits share capacity and inventory and settle once
+shared inventory cannot be committed twice by separate buildings
+completed feeding admission buffer ignores unrelated mixed services
+pending mixed visits restore reservations and cancellation releases only unpaid costs
+construction eligibility and work speed are independently trainable
+shared delivery never discards inventory above a recipient capacity
+parallel training waits for the slowest requested course
+save loading rejects a reservation detached from its visitor list
+canceling a service capable site restores each origin service exactly once
+zero duration parallel courses select the slowest inclusive action clock
+parallel training compares whole remaining ticks from the entry phase
+minimum service speed completes after diagonal entry
+long high speed healing retains bounded phase across save continuation
+stock tiny deficit healing completes without storing a post exit speed burst
+all fifteen private stock slots clamp wide save values before narrowing [save-format]
+clamped stock keeps affordable service commitments and cancels unfunded visits without benefits [save-format]
+canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]
+canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]
+canceled entering explorers wait for a free exit before medical rebound [save-format]
+funded explorers rebound to healing only after a blocked exit opens
+zero cost service admissions retain reservations through normal entry
+clamped stock trims construction funding while preserving wide budget and saved demand [save-format]
+clamped private stock cancels an unfunded committed production job [save-format]
+clamping inactive private inventory preserves wide shared stock and service funding [save-format]
+runtime stock updates saturate every slot with wide intermediate arithmetic
+delivery at the private cap records acceptance and retains exact cargo residual
+shared runtime reservations and consumption retain wide stock and inactive private inventory
+format167 warm consumer fields restore complete arrays and pool policy through current continuation [save-format][artifacts]
+site spreads its fetchers across both resources
+an empty handed unit wins all else equal
+a loaded unit far enough ahead is still hired
+hiring round is fair
+paused and waiting replicas retain the same pre-order hiring observation
+cold route generations publish only at the fixed deadline
+production traces and published candidates match across participant counts
+saving every delay phase retains outputs and pending identity without early publication
+whole game save and resume preserves every publication phase [save-format][artifacts]
+configuration changes keep suggestions and admission rechecks live eligibility
+missing lists do not synchronously scan or assign a worker
+transient unavailability and changed cargo are validated on every attempt
+all attraction jobs admit through the production candidate consumer
+a returning attraction worker does not wait another recruitment-clock cycle
+an owed attraction round retries for a bounded window
+whole-game continuation retains an outstanding attraction request
+an expired hybrid attraction request releases unused delivery seats
+imminent attraction peers receive alternatives without inactive peers claiming them
+food-unsafe high-skill workers cannot crowd a viable worker out
+cold shortlisted destinations are settled before suggestions publish
+prewarming reuses a dirty serving generation and its search
+a stale unreachable serving field keeps candidates for a live refresh
+primary-only prewarming leaves fallback cells lazy while retaining candidates
+a cold primary field survives binary and text saves without early publication [artifacts]
+historical fixture adapter omits only empty new hiring sections
+pre-174 formats load without gradient or proactive initialization records
+saving a primary-only job does not turn it into a proactive claim
+legacy proactive requests prepare busy units outside the hiring cohort
+creation upgrade and cancellation leave routes lazy
+legacy preparation and primary hiring seed one shared route
+queued and off-cohort pending initialization survive binary and text saves [artifacts]
+background ranking extends a lazy building frontier without completing unused cells
+distance bounds preserve exhaustive rankings for every job
+resource estimates borrow the normal snapshot plane without private builds
+shared resource planes retain ordered unreachable-neighbor admission estimates
+busy ground classes do not initialize unused hiring routes
+cold route observation suggests candidates while live admission remains Pending
+unrelated live route enrollment cannot change hiring inputs
+published resource estimates are used and missing planes remain recruitable
+missing shared planes do not suppress suggestions after visibility-rule changes
+worker demand uses immutable shared funding and staffing facts
+observed funding reproduces live material apportionment
+worker construction quotas match repair funding
+defense score uses frozen attack modifiers and saturated integer strength
+supplier membership survives waiting-for-construction observations
+snapshot planning skips busy workers without changing live units
+planning skips zero-demand and staffed buildings and resumes on vacancies
+job quotas bound each list to vacancies plus two
+diverse material offers cover peers without reserving live workers
+shared field survives replacement and proposals preserve owner demand
+missing building fields never trigger private construction
+ranking tie break follows unit identity
+bounded shortlists match sorted prefixes for every job
+fetch jobs reuse canonical resource estimates independently of live planes
+missing supplier planes retain fetch suggestions for live admission
+the later booker trades with the one it would cross
+custom types beyond narrow masks exchange feeding reservations
+flying guests exchange reservations without allocating air fields
+a good booking stays
+worker hiring reads construction qualification independently of speed training
+dense oracle covers generated private shared construction and repair states
+per material rounding differs from aggregate staffing and wishes can be negative
+division boundaries capacity clamps and authored multiplier bounds remain exact
+fresh queries see shared reservations releases consumption and other building deliveries
+maximum authored demand keeps ceiling and aggregate arithmetic in range
+reserved output slots are initialized and remain distinct from real material staffing
+sparse delivery accounting clears unused slots and still counts committed workers
+failed admission reuses only current operation demand across stock and budget changes
+failed live admission preserves route queries and a later successful attempt
+update boundaries keep wishes staffing and recruitment bucket order observable
+same priority reposition matches removal and insertion in unsorted buckets
+repair upgrade delivery completion and destruction refresh demand at their existing boundaries
+reference and frozen head match randomized ground air wrap and alliances
+indexed encounter order covers custom footprints repeated wraps and temporary chunks
+ground movement return suppresses air only in preferred fold
+empty range has one hundred armed turrets and no clearance work
+custom footprints blockers building offsets and frozen combat facts
+observing and shadow consumption preserve complete save bytes
+shared executor team jobs agree across participants and overlapping generations
+captured offense preserves glass cannon saturation and active area modifiers
+cooldown admission includes exact serving boundary and empty ammunition
+forecast refresh arrives before the first ready step after zero crossing
+shared completed boundary captures once and publishes only at deadlines
+overlapping publication preserves other sources through upgrade and incarnation changes
+overlapping generations reuse the previous logical index before publication
+published slot reuse replaces records by incarnation
+turret admission requires due teams and survives paused repeated boundaries
+engine-style stepping reuses admitted boundary after orders mutate occupancy
+shared turret worker failures are reported at publication after draining
+pinned large building keeps its original unwrapped aim offset
+saved target lists retain admissions deadlines and ordered entries
+historical saves start with a blank turret cache and retain current resave continuation [save-format]
+new cached saves roundtrip and unsupported formats are rejected
+bounded capacities are prefixes of uncapped tier ranking
+index shares unchanged chunks and refreshes changed occupancy
+consumer rechecks incarnation occupancy alliance movement and cooldown boundaries
+shipped JSON preserves frozen variants while production inherits unit costs
+snapshot roundtrip owns independent descriptors and ignores runtime gates
+invalid catalog reports the rejected field and preserves the active catalog
+manifest parsing identifies the broken definition file without publishing a catalog
+documented experimental field kitchen loads from its authored files
+renamed composite variant and added feature survive embedded snapshot
+experiment metadata obeys the same contract before startup and transport
+expanded canonical snapshots must fit transport before catalog publication
+assignment limits compile staffing capability independently for each stage
+stable keys need no compatibility family alias and defaults are bounded preferences
+compiled runtime rows are dense aligned value copies and refresh gates in place
+compact runtime traits preserve validated numeric boundaries
+new materials retain high bits through catalogs and compact runtime rows
+legacy inventory vocabulary imports and ambiguous material aliases fail atomically
+composition sorts packages and preserves the stock IDs and starting building
+rejected package composition preserves descriptors and canonical stock bytes
+artwork hashes bind catalog identity and custom frame indices are checked
+portable bundle verifies image bytes and catalog frame references
+portable custom artwork loads and draws its exact native frame [display] [artifacts]
+family links stay on the selected instance and normalize bounded IDs
+unlisted family detail uses the instance client and rejects changed identity
+installed families are explicitly selected and corrupt updates never replace a release
+configured unit costs inherit only when a producer omits its override
+late choice resolves mixed inherited and explicit equal costs before validating equality
+additional recipients compile stable keys into direct building interactions
+uniform projectile policies cover additional units and keyed overrides remain authoritative
+building interaction recruitment bytes remain distinct when semantic roles match
+building interaction interning shares identical rows and bounds unique storage
+buffered input receipts wait for GUI dispatch and cancel exact ranges [display]
+automatic GUI sessions poll asset finalizers on the presentation thread [display]
+eliminated prestige leaders cannot make every survivor lose
+disabled prestige victory cannot end automatic matches
+paused restore delivers pending AI orders before an unpause can advance
+observation players preserve seat order and spectator readiness
+paced sessions publish completed worlds before waiting and AI reuses them [display]
+new client requests replace completed pending frames without recapture
+camera refreshes cannot starve advancing presentation worlds
+paused selection history and debug requests reuse the complete graphical observation
+menu colony rendering consumes its shared boundary without recapture [display]
+native presentation fallback yields between expensive chunks
+a retained version-152 stock replay is rejected [save-format]
+external replay retains recorded simulation checksums [benchmark][artifacts]
+render ceilings preserve per tick simulation checksums [display][artifacts]
+snapshot client frame latency with and without forced parking [benchmark][display][artifacts]
+routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]
+momentum uses the SDL clock after session suspension [display][artifacts]
+serial sessions retain chat text across skipped GUI frames
+incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]
+client orders cross the producer consumer boundary once in FIFO order
+flag coalescing preserves incarnation and queue position
+LosslessQueue hands every item over once, in order
+queue callbacks can publish the next bounded batch
+cleared queues discard pending events and accept a fresh batch
+simultaneous producers retain their order without lost or duplicate events
+concurrent event delivery preserves every value and coherent pulses
+script queries observe commands before the client consumes them
+team events reach the GUI exactly once, in order, and age like Team::updateEvents
+scripts reach the client only through ClientCommandSink
+order side effects reach the GUI as events
+waiting masks update and clear while the same completed world remains retained
+map coverage follows recorded players independently of transport
+saved world and paused reporting clocks share simulation scheduler priorities
+save load preserves routine state while deep hashes cover world randomness
+a missed deadline waits for workers and never runs hashing on the owner
+canonical fields ignore padding addresses and presentation
+routine coverage does not expand to authored configuration or extra snapshot fields
+terrain rule interning order does not affect canonical terrain hashes
+resource stock compaction preserves hashes while logical stock changes are detected
+local games omit map sweeps and remote maps retain the original fields
+large map arrays are covered only on absolute secondary ticks
+one tick jobs agree with reference and flush terminal samples
+recycled work slots preserve the reference hash without configuration walks
+world replacement discards stale samples and worker failures propagate
+worker checksums match direct recomputation across live map publications
+map checksum follows values independently of capture stamps and geometry
+named views retain only their standard inputs
+detailed accounting is optional while exact map bytes remain available
+outcome reasons survive the read boundary without changing simulation state
+compact population ranges preserve append order and canonical ID lookup
+team record ranges preserve canonical addresses and empty teams
+snapshot capability tables share authoritative immutable catalog data
+on-demand construction feasibility matches live helpers and remains frozen
+unit snapshots share authoritative scalar state and remain frozen
+map snapshots bulk copy authoritative records without translation
+narrow component queries preserve combined tile values and projection defaults
+coordinate wrapping preserves signed edges for power of two and general dimensions
+AI boundary validates each captured map array before fast reads
+AI fast scalar reads preserve checked values and frozen lease isolation
+component leases and weak control blocks outlive the owning store
+worker final lease release synchronizes owner buffer reuse
+catalog refresh survives intervening projections and rules reuse independently
+projected terrain lease cannot retain unrelated world components
+component mutation generations preserve isolation and reuse unchanged arrays
+no-op map writes reuse components while changed values remain isolated
+ordinary boundaries always contain the complete simulation preset
+vertex changes preserve retained terrain and reuse unchanged versions
+warm component buffers stop allocating at a fixed population
+pooled captures never overwrite a held worker projection
+building snapshots copy shared scalar records and freeze selected stock
+flat relationship ranges preserve every building list in order
+farm paint queries match frozen growth and resource inputs
+statistics inputs and entity records reuse buffers without changing held generations
+memory metrics distinguish held epochs from reusable high water capacity
+reused buffers copy sparse chunks and refresh dense changes contiguously
+resource copy metrics include multi-material stock sidecars
+a retained consumer leaves the newest free buffer to absorb only later changes
+capture verification rejects writes that bypass the change trackers
+same boundary presentation additions reuse maps and remain outside simulation leases
+presentation upgrades refresh entities after each owner boundary change
+same boundary entity reuse is excluded from copied byte accounting
+explicit observation boundaries refresh paused state and retain old leases
+entity copy accounting is separate from map traffic and logical verification includes presentation
+entity verification rejects incomplete records and changed relationship sidecars
+core materialization counts empty worlds and explicit paused revisions
+optional additions preserve all established observation components
+owner observation survives acknowledgements stalls and live advancement
+an established owner observation rejects uncaptured optional components
+explicit paused edit establishes another owner observation at the same tick
+nonadvancing real orders revise observations while advancing orders wait for the next tick
+presets; bounds; legacy settings and persistence
+settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]
+desktop statistics spacing and speed hit target [display][artifacts][writes-preferences]
+live engine speed; pause; hard pause and replay playback [display][writes-preferences]
+background saves finish on a worker and remain readable after teardown
+resource catalog import drains admitted material work before replacing stocks
+pending gradient work survives a save and continues at the same deadlines
+direct steps and explicit owner phases agree across worker counts
+no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts]
+presentation borrows the published no-AI read boundary without recapture
+AI and pending gradients share the standard boundary with presentation
+real AI commands and presentation extensions materialize entities once per observation
+placement demolition and map edits first appear in the next completed observation
+reduced saved AI rosters retire trailing controllers and preserve continuation
+field reader rejects malformed counts and retains unsigned food values [artifacts]
+controller capture follows simulation cadence and preserves unsigned values
+private diagnostic reservation survives owner ticks and serialization [artifacts]
+pending diagnostic output does not block world advancement or alias later worker output [artifacts]
+diagnostic budget counts private captures across the delay horizon [artifacts]
+controllers sharing a team publish distinct complete captures and recover after failures [artifacts]
+capped scene export survives repeated graphics lifetimes and write failures [artifacts]
+portrait exports cover the whole map after dimension rounding [artifacts]
+offscreen pass restores transformed drawing after exceptions [display]
+GDS2 embeds the catalog, projects unique model counts and preserves wide concrete spatial IDs [artifacts]
+reader migration distinguishes the retained GDS1 cell layout
+per-game metric bands retain labels and count every finished ground variant exactly once
+Delayed diagnostic offers cover planner ticks without duplicate captures
+PNG diagnostics retain presentation requirements through repeated owner observations
+accounts exact intervals through travel contact and medical detachment [artifacts]
+flag moves ownership changes and recycled slots close distinct journeys [artifacts]
+identity replacing conversion is a disappearance without invented attribution [artifacts]
+arrival uses wrapped circular flag radius and survives combat state changes [artifacts]
+continuations are left censored and gaps never silently inflate durations [artifacts]
+effective melee capabilities and actual attachment determine inclusion [artifacts]
+service travel remains feeding or healing after the medical threshold clears [artifacts]
+window attrition counters use melee catalog classes and preserve cumulative history [artifacts]
+without the experiment the default game has a stable checksum trace [golden]
+workers on a farm worked down to its seed carry nothing away
+harvesting a farm takes from the ripest tile of the field, not the touched one
+an empty gap ends the field, so nothing is taken across it
+a worker out of reach of any wheat, or on an exhausted field, gets nothing
+a vanished harvest target requires retargeting before pooling the reachable field
+standing still flattens what the worker can reach down to the seed, then stops
+a farm gives up its surplus and keeps every tile, where the same unfarmed field loses its rim
+off a farm and for another team's farm harvesting depletes only the targeted stock
+wood is not farmed; algae are
+wood inside a farm is a clearing target and the crop never is
+clearing stays on the touched tile inside a farm
+growth ignores the farm mask
+the brush refuses ground that can never grow, and a refused tile connects nothing
+without the experiment the order is rejected and a painted mask is inert
+workers keep every tile of a farmed field alive
+a farm area survives a save and load [save-format]
+farm overlay beside the other zones at every zoom tier [display:1024x768][artifacts]
+without the experiment every warrior takes the nearest area; nobody leaves it; the checksum trace is stable [golden]
+crowding box sum matches brute force across the torus seam
+warriors split between a near and a far guard area at every refresh cadence
+an existing clump drains into a newly painted area at every refresh cadence
+two nearby patches count as one position
+a larger painted area takes the larger share
+three areas are all guarded
+erasing an area releases its warriors to the other one
+settled guards keep moving on every paint layout and stay around the area
+a saved game continues identically for 1000 ticks after loading [save-format]
+guard gradient rebuild timing [benchmark]
+unsupported capability orders are rejected while deleted entities remain harmless [orders]
+catalog stage limits independently bound construction and completed staffing [orders]
+built-in ratio orders preserve a producer's explicit custom preferences [orders]
+orders a client builds for its own team and buildings pass [orders]
+orders acting for another team, player or building are rejected [orders]
+fields outside what the user interface produces are rejected [orders]
+orders whose building is no longer in a state they apply to are stale [orders]
+every order type survives random payloads through decode, check and execution [orders]
+hostile orders do not stop a game that executes them unchecked [orders]
+executor reports actual admission for unchanged invalid and deferred commands
+construction admission reports rule rejection and repair acceptance
+OrderValidation/clearing material wire boundary
+map previews retain embedded experimental catalogs through cache hits
+local building experiments are filtered by the destination catalog while saves retain theirs
+catalog local launch loads the exact cached version and rejects invalid maps [writes-preferences]
+custom AI library identities and released preferences round trip
+preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences]
+generated map snapshot launches from memory
+experiments from settings are baked into a new game; a save keeps them; campaigns never take them
+preview queue priority and restart
+Comb preview fits a 512 KiB worker stack
+landscape preview performance [display][artifacts]
+landscape preview stays responsive [display][artifacts]
+controller help is localized with the current player capacity [display]
+custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]
+probability statistics fit sixteen colonies [display][artifacts]
+AI profile captures [display][artifacts][writes-preferences]
+player control widgets [display][artifacts][writes-preferences]
+AI strategy profiles in English [display][artifacts][writes-preferences]
+AI strategy profiles in English at the large layout [display:1024x768][artifacts][writes-preferences]
+preferences screen writes then reads back [display][writes-preferences]
+Hive Mind copies the engine fog boundary and validates ownership
+Hive Mind evaluation gameplay fixture
+Hive Mind cadence replacement cancellation and lost acknowledgements
+Hive Mind commander panel [display]
+Hive Mind pending requests preserve drafts and stop feedback
+Free client never starts Commander or changes its stored checkpoint
+in-game music selection uses readable phone popup rows [display][artifacts][writes-preferences]
+service progress horizon covers mixed visits and preserves stock horizons
+mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]
+construction choice displays recipe costs independently of storage [display][artifacts]
+mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]
+custom mixed building panels render without mutating simulation [display][artifacts]
+unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]
+desktop building menu clicks queue authoritative worker and priority orders [display]
+configured keyboard actions toggle presentation and queue pause without changing simulation [display]
+initial camera survives waiting for the first presentation [display]
+home keyboard action wraps the camera and script messages preserve history [display]
+local victory popup and results show the same deciding condition [display][artifacts]
+match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]
+match dialogs accept return and distinguish continuing from ending a game [display]
+resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]
+Scenario messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]
+statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]
+statistics sheet scroll stays open and fits phone rotations [display][artifacts]
+worker requests clamp deduplicate and retain newer pending changes
+priority and radius requests clamp and reconcile against real orders
+reconciliation is field-specific and replay clears superseded shadows
+selection cycles by ID after reused slots append out of ID order
+displayed actions cannot target a reused entity or replaced world
+selection clears once its entity is destroyed
+selection and failing-unit recording do not follow a reused gid
+a building destroyed by a tick clears its selection and pending shadow
+a converted unit stays selected
+compact Bengali tutorial yields to statistics and covers the minimap [display][artifacts]
+live statistics hide post-game probability across topics [display][artifacts]
+attack marks follow mobile minimaps without extra lifetime ticks [display][artifacts]
+tutorial wrapping preserves shaped clusters and refreshes font metrics [display]
+phone navigation contains actual Urdu labels at normal and enlarged text sizes [display]
+Filipino navigation keeps whole words and shared targets at enlarged text sizes [display][artifacts]
+notifications clear system gutters and HUD at mobile text sizes [display][artifacts]
+curved labels retain physical glyph detail and reuse their cache [display][artifacts]
+spectators inspect building controls without editing their configuration [display][artifacts]
+building inventory shows material stocks below the mobile title [display][artifacts]
+scaled gameplay dialog input is translated once [display]
+unit taps have a zoom independent halo and show unit stats [display][artifacts]
+a touch on or near a flag drags the flag; not the map [display]
+touch scroll momentum on the map; the HUD palette and the editor [display]
+actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]
+custom artwork properties and credits survive offline save and load [artifacts]
+invalid packages fail atomically and reimports preserve local edits
+selected terrain includes custom resources and explicit updates replace local copies
+custom sprites render from memory without installation [display] [artifacts]
+swatches remain textured when alternating inspected map bundles [display]
+copies colonies, painted areas and clearing settings [save-format]
+rejects invalid requests without mutating the source [save-format]
+writes a compressed source as a reloadable ordinary map [save-format]
+wraps swimmers, buildings and team areas together across the source seam [save-format]
+a repeated starting map has portable per-tick checksums [save-format][golden]
+advanced controls preview, reset and accept the repeated map on touch [display][artifacts]
+refuses over-capacity bases before replacing the source [save-format]
+player-free growth reconciles world stocks and team statistics
+generated landscapes preserve player-free growth accounting
+identical live and snapshot kernel inputs [benchmark][resources]
+paired legacy split and delayed growth component costs [benchmark][resources]
+twenty seed ecology comparison [benchmark][resources]
+controlled full-engine growth fixtures [benchmark][resources]
+source decisions cannot shift scan sampling or another source
+mature growth events oscillate and respect intervening harvests
+signed proposals use only current resource type and apply in order
+material growth events oscillate independently and create configured seed stocks
+proposal capacity grows safely and is retained for reuse
+legacy pending masks migrate and signed pending proposals validate on load
+kernel is immutable deterministic and responds to disabled growth and scarcity
+zero-worker and shared deadlines match and pending work survives saving
+setting the delay leaves reservations and unfinished work untouched
+pipeline waits at exact deadline and pause does not publish
+frozen input outlives terrain and resource edits and wrapping remains valid
+light checksums leave zero-worker work deferred and world replacement discards it
+publication accounts for proposals rejected by a different world
+later completed work cannot publish ahead of an earlier batch
+format 144 and 145 packed growth headers cannot alias artwork lengths
+text save layout probes are relative and preserve section state
+both format 144 and 145 lineages and compact growth saves retain continuation [save-format]
+configured seeds preserve rates variety collisions and saved output
+zero seed stocks use authoritative resource initialization
+typed proposal loading validates fields and preserves old queued units
+finishing admitted world work does not publish early
+historical growth payloads retain pending work after header preflight
+saved-map growth calibration [benchmark][slow]
+four growth opportunities preserve capped stacks and measured conservation
+empty and prohibited resource cells do not acquire bonus growth
+exclusive movement modes and bounded compile-time definitions
+Trail retains legacy identities and terrain behavior
+vertex terrain survives tiling and batches snapshot invalidation
+same-size map replacement and terrain edits refresh ecology
+terrain edits refresh escape costs after captured routes publish at their fixed deadline
+retired terrain flags load from old headers without becoming experiments
+ice exposure includes stationary units and preserves fractional health in saves
+explorers ignore ice damage and no-permadeath applies to ground hazards
+health modifiers clip healing and expose units that have found an exit
+terrain health profiles choose independent air and ground rates
+constrained explorer flag eligibility applies route accessibility and hunger distance
+projectile supercover tests intermediate cells corners and wrapped coordinates
+maps isolate registries and reject failed imports atomically
+custom capabilities drive map queries health ecology and immutable match definitions
+eager resumed and worker gradients agree on custom slow swimming
+production pipeline captures custom movement and discards fields after reimport
+unused distinct costs do not expand map movement setup
+large embedded registry crosses the stream string limit
+embedded registry restores custom state and pending gradients without source files
+format-137 saves with custom terrain load with remapped IDs and resave at the current format
+format-186 saves keep built-in IDs and move custom terrain behind the grass and sand looks
+grass and sand looks share every rule of grass and sand
+painted catalogue terrain survives save and reload with its checksum
+each catalogue type shares its group profile
+write equivalent custom maps for paired performance runs [benchmark][artifacts]
+water-only movement minima track fast water and retain optimal obstacle routes
+ice costs twenty recovery ticks per HP and remains traversable
+idle ground units avoid entering ice and escape a multi-cell patch
+custom air damage routes flyers and idle flyers escape it
+extreme authored hazards saturate and shared fields agree with point costs
+old hazard route caches rebuild while current saves retain routing state
+workers and warriors reuse escape fields and moving units do not invalidate them
+escape fields separate team permissions swimming and forbidden-area escape
+flyers share safety across teams and ignore forbidden paint and ground blockers
+escape fields respect runtime resource blocking and ignore stock-only edits
+escape fields charge destination terrain and choose a cheaper indirect exit
+escape cache evicts the least recently used profile and resets generations
+terrain strokes clear incompatible resources; buildings and units
+material harvesting consumes stock and never invents a delivery
+growth at capacity oscillates and persistent fruit depletes
+custom compound deposit has independent material stock and destructive harvest
+resource identities above byte range preserve compound stocks through save and continuation
+landscape scavenge sites start full, deplete per material and vanish when empty
+landscape dead trees, undergrowth and fish keep their habitats and obstruction
+a half-harvested scavenge site survives save and continues identically
+workers carry food from camp-sites to an inn and leave their other yields
+landscape showcase map places every landscape resource [artifacts]
+last finite source extinction and persistent source regrowth update material presence
+shared starting supply checks accept material sources above resource id 255
+starting crop guarantees and adjacent supply use live material yields
+bounded starter crop replacement uses surplus materials and respects clearability
+material frontage counts secondary stocks and prospective renewable supply
+start diagnostics distinguish configured renewal from spreading pressure
+fixed property ablations preserve harvest growth clearing and movement invariants
+editor catalog replacement preserves materials across layouts and rejects invalid imports atomically
+redefined builtin resource follows declarative habitat and terrain whitelist intersection
+destructive resources cannot bridge pooled farms even without reserves or regrowth
+infinite farm stocks remain harvestable at their seed reserve
+farm harvest uses the touched material policy before pooling neighboring stock
+embedded resource save starts with an invalid installed catalog
+renamed deposits and sprite variants preserve stochastic stock trajectories
+frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]
+frozen resource saves ignore reordered modified installed defaults in a fresh process
+custom ground and air obstruction independently govern routes across toroidal barriers
+released terrain-seed format 138 retains legacy resource and material continuation
+released observation format 139 imports legacy stocks and preserves current save continuation
+equal corners keep their terrain's exact rules
+mixed classic corners are exactly the retired shore profile
+grass directly against water is walkable and unbuildable
+every built-in pair combines into valid transition rules
+ground costs follow the walkable corners and hazards take the worst
+the rule table numbers uniform rules by terrain and interns mixed ones in order
+compiled CPU seed columns preserve frozen rules when mixed rules grow
+mixed cells take the shore habitat and intersect explicit resource lists
+a vertex write re-derives the four cells around it
+a cell's four corners paint it uniform and its neighbours mixed
+snapshots keep the rule table they were taken with
+old cell terrain moves onto the vertices it covers
+terrain IDs of older files skip the retired shores and follow the current built-ins
+vertex terrain round-trips through packed and text saves
+catalogue lists classic ground every catalogue member and every registry resource [display]
+imported terrain joins the custom group in natural order and refreshes the catalogue [display]
+every unlocked catalogue action selects the entry it belongs to [display]
+imported terrain names cannot take over resource or built-in actions [display]
+brush swatches are opaque and composed like the map [display][artifacts]
+rerolling the terrain look changes the map seed and marks the map modified [display]
+custom catalog editor exposes resources mixed controls and long upgrade paths [display][artifacts]
+editor material rows require configured capacity and natural or owned presence [display]
+editor selects and saves the sixteenth team [display][artifacts]
+unit placement selection and stat edits use the action dispatcher [display]
+building selection exposes matching editor controls and save retains edits [display]
+zone brush addition removal and seam wrapping preserve other team paint and saved masks [display][artifacts]
+farm brush is offered only with the farm-areas experiment and refuses ground that cannot grow [display][artifacts]
+resource brushes add erase and retain painted wheat through editor save-load [display]
+base terrain brush changes water sand and grass and saves the final terrain [display]
+terrain brushes are available without experiments [display]
+registered terrain stamps batch invalidation and reject invalid selector IDs [display]
+catalogue group selectors and the palette actions navigate the dock [display][artifacts]
+custom terrain imports reach the dock and saved maps work on desktop and phone [display][artifacts]
+dock controls fit inside the dock without overlapping at common window sizes [display][artifacts]
+a click one pixel left of the dock paints the map and a click inside does not [display]
+importing terrain and resource definitions adds dock cards without restarting [display]
+locked brushes are shown and one tap enables their experiment for the map [display][artifacts]
+palette actions switch tabs expand the group and scroll it to the top [display]
+selecting a building shows an inspector whose steppers edit it [display][artifacts]
+window close quits a clean editor and asks in the editor when it is dirty [display][artifacts]
+editor input receipts report skipped persistence and interrupted tails [display]
+menu quit with unsaved changes uses the in-editor card and save continues to quit [display][artifacts]
+cancelling fertility during a save keeps the save dialog with a message [display]
+sharing a never-saved map saves it first and then shares the saved file [display]
+loading another map asks about unsaved changes first [display]
+rerolling the terrain look from the menu asks first [display]
+teams scenario and area-name dialogs mark the map modified only for real changes [display]
+terrain strokes mark the fertility overlay stale until it is refreshed [display][artifacts]
+saving over an existing file asks inline, except for the document's own file [display]
+definition imports offer the device picker and explain an empty folder [display]
+software phones retain the tray with enlarged Filipino text [display][artifacts]
+legacy GL phone labels retain visible clipped ink away from the origin [display][artifacts]
+the editor presentation table follows room and overrides
+live presentation follows the resolved host and GLOB2_MOBILE_UI
+resizing mid-stroke switches presentation and keeps the brush [display]
+a small pointer window uses the tray and the wheel zooms over the map [display]
+decision cards fit the phone tray presentation in both orientations [display][artifacts]
+every terrain brush paints exactly the vertices its hover preview shows [display]
+the smallest brush paints one vertex and lays a beach around water [display]
+terrain strokes remove only what the new terrain disallows [display]
+Del reverts only vertices of the selected terrain to grass [display]
+a resource stroke that places nothing explains where the resource grows [display]
+contracts
+feeding courts
+natural shores
+cross-channel firing [artifacts]
+generation timing benchmark [benchmark][slow]
+starting layouts follow rectangular and overlay catalog footprints
+search domains preserve legal values and constrain deterministic rolls
+Design defaults and explicit Random resolve reproducibly without changing enums
+resource habitat distinguishes terrain permission from growth and occupancy
+shared route and wall contracts use terrain capabilities
+toolkit geometry; raster; resource and home contracts
+Random designs match explicit generated worlds on rectangles [slow]
+Explicit designs preserve topology across the runtime-resource RNG epoch
+Shattered Coast stocks expansion clumps with resource controls
+Braided Delta uses coherent fields quarries and mixed orchards
+Braided Delta retained generation and overgrowth contracts
+Glacis waterfront crops preserve gates and bare ground
+Locust finite food remains dry after home jitter
+Clearing landscape homes jitter independently while preserving their room
+Plantations populate every owned island with the starting workers
+Coral expansion courts have sealed grass and usable building room
+Honeycomb isle contracts [slow]
+Bastion Keys contracts
+Who Ate the Map contracts
+Drowned Forest circulation uses the configured starting definition
+Drowned Forest contracts [slow]
+Gauntlet shapes; request rejection and final-world corruption checks
+Hungry Marches contracts
+Faulted City contracts
+Portage Lakes wheat opens into neighboring meadows
+Portage Lakes contracts [slow]
+Last Treeline checks
+Last Treeline profile [benchmark]
+editor and lobby defaults contract [slow][map-generators]
+default generation repeatability rectangles and rejection [slow][map-generators]<fingerprint>
+default generation repeatability rectangles and rejection [slow][map-generators]<oldTown>
+default generation repeatability rectangles and rejection [slow][map-generators]<symmetricArena>
+default generation repeatability rectangles and rejection [slow][map-generators]<swamp>
+default generation repeatability rectangles and rejection [slow][map-generators]<tidalFlats>
+default generation repeatability rectangles and rejection [slow][map-generators]<river>
+default generation repeatability rectangles and rejection [slow][map-generators]<isles>
+default generation repeatability rectangles and rejection [slow][map-generators]<ringWorld>
+default generation repeatability rectangles and rejection [slow][map-generators]<amphitheatre>
+default generation repeatability rectangles and rejection [slow][map-generators]<shatteredCoast>
+default generation repeatability rectangles and rejection [slow][map-generators]<craterLakes>
+default generation repeatability rectangles and rejection [slow][map-generators]<fjordContinent>
+default generation repeatability rectangles and rejection [slow][map-generators]<spiderWeb>
+default generation repeatability rectangles and rejection [slow][map-generators]<concreteIslands>
+default generation repeatability rectangles and rejection [slow][map-generators]<watershed>
+default generation repeatability rectangles and rejection [slow][map-generators]<maze>
+default generation repeatability rectangles and rejection [slow][map-generators]<islands>
+default generation repeatability rectangles and rejection [slow][map-generators]<stoneHighlands>
+default generation repeatability rectangles and rejection [slow][map-generators]<switchbacks>
+default generation repeatability rectangles and rejection [slow][map-generators]<cityStates>
+default generation repeatability rectangles and rejection [slow][map-generators]<canals>
+default generation repeatability rectangles and rejection [slow][map-generators]<sierpinskiGardens>
+default generation repeatability rectangles and rejection [slow][map-generators]<hilbertRiver>
+default generation repeatability rectangles and rejection [slow][map-generators]<lavaShield>
+default generation repeatability rectangles and rejection [slow][map-generators]<honeycombIsle>
+default generation repeatability rectangles and rejection [slow][map-generators]<karstTowers>
+default generation repeatability rectangles and rejection [slow][map-generators]<bajada>
+default generation repeatability rectangles and rejection [slow][map-generators]<centralQuarry>
+default generation repeatability rectangles and rejection [slow][map-generators]<hiddenOasis>
+default generation repeatability rectangles and rejection [slow][map-generators]<drownedForest>
+default generation repeatability rectangles and rejection [slow][map-generators]<portageLakes>
+default generation repeatability rectangles and rejection [slow][map-generators]<orchardCommons>
+default generation repeatability rectangles and rejection [slow][map-generators]<lastTreeline>
+default generation repeatability rectangles and rejection [slow][map-generators]<gauntlet>
+default generation repeatability rectangles and rejection [slow][map-generators]<faultedCity>
+default generation repeatability rectangles and rejection [slow][map-generators]<comb>
+default generation repeatability rectangles and rejection [slow][map-generators]<encircledKingdom>
+default generation repeatability rectangles and rejection [slow][map-generators]<bastionKeys>
+default generation repeatability rectangles and rejection [slow][map-generators]<evenGround>
+default generation repeatability rectangles and rejection [slow][map-generators]<marchland>
+default generation repeatability rectangles and rejection [slow][map-generators]<whoAteTheMap>
+default generation repeatability rectangles and rejection [slow][map-generators]<ruggedArchipelago>
+default generation repeatability rectangles and rejection [slow][map-generators]<hungryMarches>
+default generation repeatability rectangles and rejection [slow][map-generators]<contestedCommons>
+default generation repeatability rectangles and rejection [slow][map-generators]<rainShadow>
+default generation repeatability rectangles and rejection [slow][map-generators]<everglades>
+default generation repeatability rectangles and rejection [slow][map-generators]<polder>
+default generation repeatability rectangles and rejection [slow][map-generators]<carousel>
+default generation repeatability rectangles and rejection [slow][map-generators]<oldGrowth>
+default generation repeatability rectangles and rejection [slow][map-generators]<anthill>
+default generation repeatability rectangles and rejection [slow][map-generators]<coral>
+default generation repeatability rectangles and rejection [slow][map-generators]<emoji>
+default generation repeatability rectangles and rejection [slow][map-generators]<forts>
+default generation repeatability rectangles and rejection [slow][map-generators]<braidedDelta>
+default generation repeatability rectangles and rejection [slow][map-generators]<breachableHighlands>
+default generation repeatability rectangles and rejection [slow][map-generators]<hedgerowCountry>
+default generation repeatability rectangles and rejection [slow][map-generators]<glacis>
+default generation repeatability rectangles and rejection [slow][map-generators]<allotments>
+default generation repeatability rectangles and rejection [slow][map-generators]<caravanserai>
+default generation repeatability rectangles and rejection [slow][map-generators]<braidedRiver>
+default generation repeatability rectangles and rejection [slow][map-generators]<drumlinField>
+default generation repeatability rectangles and rejection [slow][map-generators]<continents>
+default generation repeatability rectangles and rejection [slow][map-generators]<savannah>
+default generation repeatability rectangles and rejection [slow][map-generators]<hills>
+default generation repeatability rectangles and rejection [slow][map-generators]<riceTerraces>
+default generation repeatability rectangles and rejection [slow][map-generators]<locust>
+default generation repeatability rectangles and rejection [slow][map-generators]<plantations>
+default generation repeatability rectangles and rejection [slow][map-generators]<uniform>
+catalog generation contracts [slow][map-generators]
+framework contracts [slow][map-generators]
+landscape contracts [slow][map-generators]
+stress rejection and registration contracts [slow][map-generators]
+water algae distribution [slow][map-generators]
+contact costs follow custom deposit obstruction and removal properties
+contracts; feeding courts and fruit conversion scenarios [artifacts]
+generation timing benchmark [benchmark][slow]
+Fertility binding rejects incomplete fields and mismatched masks
+Fertility binding reserves native work and memory before rebuilding
+Toolkit consumers reject empty fertility arguments
+Script control mutations cannot bypass native domain contracts
+Site graphs share distance captures and account repeated graph copies
+Package identity controls modules and installation rollback
+Full toolkit records buffers geometry callbacks and solver
+Graph ownership optional callbacks and pointer outputs
+Native scratch tables respect the allocation budget
+Native work and interpreter resource failures are sticky
+Script terrain and colonies go through engine world validation
+Script resource placement uses the world catalog and bounded brushes
+Request immutability RNG streams and module isolation
+Custom preferences persist string identity and tolerate missing packages
+Optional JavaScript examples generate repeatable validated worlds [slow]
+Frozen controls survive package replacement and catalogs are released
+Conversion failures release intermediate QuickJS containers
+Installed generator library writes to a fresh user profile [writes-preferences]
+Frozen selections retain defaults and rules after package removal
+Library mutations retain memory and disk when storage throws
+Online generator installation verifies hashes and persists provenance transactionally
+Shared generated worlds continue identically without installed generator code [golden]
+Repeated point handles share one owned prototype
+Moved callback arguments retain their converted storage
+Owned classes preserve borrowed context and RNG expiration
+Every operation registration path shares the handle budget
+By value copies reserve native payloads before allocation
+Nested buffer get fill and set reserve before copying
+Nested buffer fills are accounted and returned rows own their data
+Boolean buffer proxies become JavaScript booleans
+All named stream consumers share creation limits and accounting
+Scenario creation validates options and cannot run in validators
+Initial training levels determine unit water placement before allocation
+building and resource preparation kernels [benchmark][pathfinding]
+fixed stock simulation without AI decisions [benchmark]
+footprint preparation diagnostic phases [benchmark][pathfinding]
+owner observation at tick zero publishes cold fields and access metadata at tick one
+synthetic runtime rejects resource-only adaptive layouts instead of dropping their state [save-format]
+released and building-draft format lineages select independent layouts [save-format]
+released173 and building drafts preserve queued and admitted building routes [save-format]
+empty building-draft174 runtime uses its widened queue count [save-format]
+observation phase is covered by both current checksum tiers
+released saves through format168 bootstrap only when their observation was not admitted
+world observation publication and admission survive save boundaries
+centre placed inside an existing ring
+ring placed around an existing field
+a rival teams ring cuts off a cached field
+a ring cuts off a virtual flags field
+a paused field keeps its original obstacles
+public reads resolve their inputs
+delayed fields
+idle field storage is reused without stale routes
+snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class
+a saturated team cannot block another team or borrow its unused quota
+mixed cold and warm deadlines preserve team FIFO without blocking other teams
+more than 255 pending building gradients survive binary and text saves [save-format]
+historical byte-sized pending building jobs retain their deadlines [save-format]
+scheduled building fields publish at fixed deadlines across worker counts and delays
+more than 64 building refreshes retain their FIFO without synchronous overflow across saves
+requests during team stepping are captured at the observation boundary
+partial scheduled fields resume on the owner from transferred buckets
+synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline
+pending building results survive save boundaries and cannot resurrect evicted fields
+a deleted building's pending result cannot replace a reused destination
+access metadata follows the newest capture across swim classes and saves
+area and team-wide resets keep stale walking fields serving with the pipeline on
+slow and failing workers never change the publication tick
+a pending result keeps the generation a team-local edit carries forward
+same-tick swim classes write access metadata in request order
+an empty building pipeline follows a changed header delay through save and load
+retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]
+material switches; declarative clearing; empty tiles; padding independence and swimming variants
+passable clearing sources respect forbidden paint buildings and immobile units
+empty persistent deposits remain clearing flag goals and worker targets
+private174 migration profile is explicit and does not replace published layouts
+map conversion preserves encoded construction until ordinary gameplay initializes it
+all shared families initialize without stats and remain idle without replacement work
+simultaneous demanded families refresh together and skipped families stay idle with explicit fixed research intervals
+optional total-work observation preserves state and records actual family admissions [artifacts]
+successful planning reads leave warm natural fields idle beyond query history
+stale forbidden natural reads demand recovery without material escape evidence [artifacts]
+episode movement reachability alternatives are separate from planning [artifacts]
+direct warm recovery retains demand but cannot bypass minimum32
+restored warm FIFO work waits32 while cold work behind it can initialize [save-format]
+capture anchored H128 outcome windows include offsets8 through127 only [artifacts]
+generic planning oracle preserves movement state and follows fresh route changes [artifacts]
+generic capture metadata publishes its original movement baseline and freezes episode inputs [artifacts]
+generic movement evidence excludes delegated escape from material labels and leaves RNG unchanged [artifacts]
+all five generic family oracles are private and use stable identities [artifacts]
+valid guard clearing and escaped forbidden arrivals never count as movement stalls
+direct flight alternatives use the live angular bearing wrap ties and traffic avoidance
+unreachable shared areas recover from actual target edits without periodic maintenance with explicit fixed research intervals
+production movement evidence needs no probe and excludes cold and absent observations but enrolls air
+recruitment-only demand recovers a published unreachable natural field after terrain opens with explicit fixed research intervals
+pending shared air fields continue through binary and text saves
+known-zero movement statistics retain first-use demand including air
+two demanded warm resources batch alongside one cold FIFO ticket at a shared deadline with explicit fixed research intervals
+cold queued and privately completed fields continue through binary and text saves [artifacts]
+cold material and area fields publish identical generations with one two four and eight participants [artifacts]
+ordinary terrain edits with markets disabled round-trip binary and text saves
+binary and text loads rebuild painted masks and subsequent erases remain exact [save-format]
+tiling and resizing remove per-team zone counts with their masks
+backend switch drains privately and preserves pending publication
+repeated backend requests coalesce without moving publication ticks
+CPU-only lifecycle owns no GPU service or backend session
+grandfathered repeated legacy field survives first publication and a second checkpoint
+real delivery updates zero to positive membership after stock mutation
+overlapping overlay sources count union rather than supplier transitions
+shared pool transition updates every eligible footprint and stock registration is observable
+map dimensions enforce power-of-two exponents before mutation
+material plane and cache keys retain legacy seven-class identity
+warm preparation keeps custom supplier unions exclusions penalties and overlays live
+supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields
+resource cache tracks cell writes and falls back through mutation bursts
+cached natural goals follow immobile occupancy and live overlays
+concurrent preparation owns buffers and serializes dirty cache refresh
+custom terrain and registry replacement preserve cached and direct seeds
+optional cache storage can be unavailable or over budget
+seed cells match scalar predicates across policies and changing overlays
+all supported team masks match the scalar fields
+explicit clearing overrides farm crop protection but never forbidden paint
+mutation and reset boundaries use current state
+concurrent lazy requests publish one complete resource field
+compound passable material goals track depletion visibility and overlapping suppliers
+legacy pending natural publication can be saved before any movement query
+unused catalog definitions allocate no material gradients and schedule no extra work
+seed cache allocates only live material bitsets and reuses them after depletion
+compact clearing traits preserve custom high-ID property combinations
+published plane registry matches a sweep of live material fields
+snapshot seeds preserve every periodic kind after the live world changes
+periodic supplier snapshots subtract reservations and retain overlay seeds
+snapshot material templates refresh changed chunks and accept older snapshots
+GradientPreparation/modified terrain costs remain exact when field obstacles change
+GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields
+GradientPreparation/minimal view pressure declines without moving original seeds
+compiled preparation tables preserve rule and catalog interpretation
+rejected corner identities preserve all compiled gradient tables
+movement profile rejection rolls back previously appended swim classes
+CPU snapshot dispatch preserves trivial fields and validates before its shortcut
+air shares preparation and lazy building fields while ignoring ground blockers
+air material planes and cache keys occupy an independent namespace
+authored air blockers constrain the common point router while forbidden paint only blocks ground
+unreleased routing draft formats are rejected before reading runtime state
+forbidden paint is ground-only for air material service guard and clearing queries
+ordinary air service choices keep geometric ranking without allocating fields
+pending escape guidance preserves a material assignment without consuming RNG
+material LRU retains a published result until its waiting reader observes it
+ground refreshes preserve warm air material seeds across edits
+ordinary air explorer recruitment does not create a combat field
+ordinary flying building jobs and warrior recruitment avoid route fields
+absent natural sources return shared negative guidance without enrolling rebuilds
+stock changes during shared market work retain dirty demand through its fixed deadline
+blocked live guidance and removed material goals deduplicate delayed refresh demand
+a locally blocked consumer field refreshes its stable supplier-cache destination
+the version-152 checksum adapter excludes newly introduced publication state
+consumer pool changes hard-supersede ground supplier fields at a stable identity
+released ground and air draft routing layouts remain independent
+weighted AIR market oracle follows live pickup and uses AIR cost buckets
+fresh map has no immobile units
+immobile unit blocks its own tile
+painting forbidden area refreshes gradients
+cold initialization publishes a resumable frontier at fixed deadlines across worker counts [artifacts]
+queued and privately completed cold initialization survives binary and text saves [artifacts]
+soft edits retain cold deadlines while a building reset supersedes its private result
+cold requests beyond the former FIFO limit never initialize synchronously
+forbidden painting delays complete routes across passable resources
+forbidden edits preserve published generations until delayed refresh
+explicit research demanded escape refresh publishes complete fields after every seed transition
+escape guidance recovers a depleted exit and does not rebuild on repeated blocked reads
+idle escape fields cross tick wrap without maintenance and explicit research demanded fields publish together
+empty painted areas produce no demand or cold jobs and first paint becomes eligible
+farm-only paint enables clearing requests only under the farming rules
+idle decisions at fixed origins across safe and trapped terrain [benchmark]
+shared terrain fields across ice coverage and custom profiles [benchmark]
+write mature game fixtures with controlled ice coverage [benchmark][artifacts]
+generator Studio freezes playable worlds and preserves save continuation
+threaded generator Studio finalizes its frozen report on the asset owner [artifacts]
+preview geometry
+thumbnail codec; envelope limits and corrupt input
+native widget events and custom lobby captures [display][artifacts]
+MCP/protocol adapters validate metadata and discover all tools
+MCP/HTTP restrictions bounded bodies restart and disconnect cancellation [network]
+MCP/leases input dispatch cancellation viewport and capture [network]
+MCP/input boundaries preserve observation and cancel truncated batches [network]
+MCP/staged release cancellation does not acknowledge undelivered cleanup [network]
+MCP/key events honor SDL keycode options for modifier chords [network]
+MCP/held input and drag clocks begin at actual dispatch [network]
+MCP/pending coordinates cancel when viewport changes before consumption [network]
+MCP/pending keys cancel when UI becomes unavailable before consumption [network]
+MCP/hidden suspension resolves buffered receipts before later work [network]
+MCP/preferences retain desktop defaults and reject malformed ports
+MCP/software capture dimensions orientation cancellation [display][artifacts]
+MCP/OpenGL capture dimensions orientation cancellation [display][artifacts]
+MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts]
+a scoped IPv6 LAN address has an unscoped certificate identity
+delayed samples compare source ticks rather than front orders
+explicit presence distinguishes zero hashes from missing startup samples
+single player executes the local order on the tick after it is submitted
+null local orders are not queued and a tick waits for every player
+mismatched checksums are reported
+flushAllOrders submits every queued local order without a checksum
+a reader that stops reading resumes with every message in order
+custom catalog transfer and execution enforce catalog identity [network][artifacts]
+LAN catalog messages fragment and reject malformed fragment streams
+LAN departure waits for asynchronous transport writes
+custom terrain survives LAN map transfer [network][artifacts]
+timeout diagnostics tolerate a destroyed guest room [network]
+LAN WSS drop, restart and host departure [network][slow][artifacts]
+an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts]
+LAN input delay on loopback and delayed links [network][slow][benchmark][artifacts]
+map checksum coverage survives the last human quitting [network-sim]
+AI-only turn recordings replay through their terminal checksum [network-sim][artifacts]
+embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]
+shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts]
+input delay and stalls of real engines per link profile [network-sim][benchmark][artifacts]
+two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]
+a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]
+four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]
+a player who quits leaves through the relay's quit order and the rest play on [network-sim]
+a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]
+closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]
+a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]
+a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]
+orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]
+a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]
+voice packets do not hold up a player's orders [network-sim][artifacts]
+a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]
+without a pause limit a pause lasts until someone resumes it [network-sim]
+one client claiming the game finished does not end it for a player who is reconnecting [network-sim]
+the committed match record verifies to the committed checksum trace [network-sim][golden]
+rejoin fast-forward time grows with game length and AI count [network-sim][benchmark][artifacts]
+engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]
+turn messages ride NetConnection framing
+New match rules default to eight tick AI decisions
+AI order delay is optional bounded integer data and round trips through headers
+Building gradient delay is optional bounded integer data and round trips through headers
+embedded catalogs carry dynamic experiments independently of installed definitions
+legacy resolved setup catalogs retain zero health privately and reject authoring escapes
+legacy turn setup validates recovered body catalogs before accepting the session [save-format]
+current files bind embedded migration catalogs as explicit authority [save-format]
+unit catalogs survive setup conversion and reject tampered identity
+catalog rules identity partitions ratings without changing the executable identity
+SHA-256 matches the FIPS 180-4 test vectors
+every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage
+the vendored fixtures match the protocol package when it is present
+valid setups become the GameHeader every client and the verifier run
+closed seats close their team and follow every player seat
+unknown experiments, JavaScript AIs and unexpressible headers are refused
+a map file is found and checked by the hash of its decompressed bytes
+the simulation data hash covers every data file the simulation loads
+Scripted map sources preserve exact provenance and enforce team count
+a result waits for the players, then for the verifier, and says when it is slow
+recent matches: the history page, refreshed and led by live summaries
+generator examples with omitted controls use engine defaults when selecting a room
+generator installation clears pending state when restoring the library throws
+online screens closed with platform calls in flight are never called back
+an owner's services are the ones services() returns, until the owner goes
+pump hooks run on update and stop once removed
+Bengali room names chat and uploaded filenames preserve complete UTF-8
+scripted launch pins a release and reroll retains that identity
+catalog launch creates the room with its map in the initial request
+a premade map is uploaded and chosen for the room, then named by the server
+the server's start notice is shown once in the room chat
+a map change is announced once; a status change is not
+a member without a seat is listed, and Ready says why it is unavailable
+a room's teams are named from their alliances, in team order
+frames split across and coalesced within messages arrive whole
+the transport frames what it sends and reconnects on demand
+a transport destroyed with frames still queued writes them before closing
+relay URLs are accepted WebSocket endpoints
+the reader refuses bytes beyond its limit and keeps what it had
+the reader hands out frames in place and stays bounded over a long stream
+frames carry at most 65535 bytes
+a unit entering a building renders like the same step walked onto the tile [display:1024x768][artifacts]
+units a building could not hire wear the reason marker [display:1024x768][artifacts]
+HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]
+HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]
+building sprites fade out while icons fade in across rendering backends [display]
+repeated map copies; settings and credits after resizing in software rendering
+repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]
+status-bar pixel bounds in software rendering
+status-bar pixel bounds in OpenGL rendering [display]
+all ordered gameplay and torus backend pairs preserve camera and simulation [display][isolated][writes-preferences][slow]
+native display scaling preserves direct pixels through lazy geometry and target rotation
+nearest blits retain sampling under destination clipping and restore source state
+fractional shared endpoints leave no seams; queued triangles obey direct writes
+opacity classification follows content revisions; opaque copy matches alpha blending
+opaque row copies retain SDL clipping and color modulation
+integer transformed primitives use portable blending and retain SDL coverage
+mixed packed pixel formats retain geometry modulation semantics
+large owned images retain SDL geometry sampling and overflow behavior
+translucent fills use portable source-over on targets without alpha
+presenter rotates full frames and preserves completed pixels during partial updates
+terrain cache matches integer-transformed coastlines and discovery across wraps and mutations [display][artifacts]
+recorded software segments freeze borrowed sources and preserve fallback ordering
+recorder capacity and overlapping backing views retain immediate draw semantics
+pending borrowed pixels survive destruction before flush and prove tiled execution
+failed raster batches preserve completed content and recover after owner discard
+non-sRGB textured quads retain SDL color conversion
+anonymous logical SDL blits retain untextured geometry semantics
+owner drawing errors abandon the frame before capture or presentation
+first frame discard establishes a blank base for partial updates
+shared rendering reservation pressure selects immediate software fallback
+very wide recorded targets retain bounded scratch and exact painter order
+render reservation rollback and commit preserve prior captures
+graphics context CPU pixel borrowing fences recorded main and offscreen drawing
+memory capture rejects failed raster output and resumes after owner discard
+clipped and transparent recorded draws retain no commands or source pixels
+narrow recorded commands preserve painter order on very wide targets
+dense translucent regions retain painter order without serializing the segment
+reference overflow completes ordered prefixes with bounded metadata
+fractional clipped transparent sprites use full destination sampling across tiles
+transparent source revisions and destruction freeze recorded content
+packed source normalization preserves channels and transparent scaling
+formerly SDL translucent rectangles retain fractional coverage and fixed-point samples
+isolated sprite alpha remains equivalent to SDL on translucent offscreen targets
+out of bounds textured sources retain SDL geometry and output scissors
+canceled executor raster batches retain completed pixels until owner recovery
+uniform tinted textured quads retain SDL alpha and portable channel arithmetic
+uniform screen quads ignore map transforms while retaining native display scale
+eligible quad runs fence intervening arbitrary geometry in painter order
+GPU terrain pages match CPU composition through edits wrapping recovery and live switches [display][isolated][artifacts][writes-preferences]
+overview palette follows detailed shore coverage across both wrapped axes [display] [artifacts]
+terrain seed survives save and load and stays out of the simulation checksum
+catalog palettes preserve distinct legacy shores and independent preview colors
+custom aliases share material recipes and keep whole-cell identity [display]
+custom thumbnail palettes retain embedded colors alongside catalog builtins
+whole-cell layers preserve software terrain caching [display][artifacts]
+whole-cell layers preserve OpenGL terrain caching [display]
+HD material pages and fractional zoom preserve cached pixels with missing optional atlas [display][artifacts]
+streaming pages match cached fractional pixels across wraps and small maps [display]
+emergency tiles remain deterministic and cover opaque fractional terrain [display]
+overview pages retain wrapped samples and invalidate edits, resources and visibility [display]
+generated terrain mip uploads stay uncompressed across animation updates [display]
+complete torus terrain working set survives repeated atlas sweeps [display]
+tiled capture keeps whole-map density and warm pages at narrow edges [display]
+portable texture limits reduce HD pages and admit only fitting fallback tiles [display]
+GPU terrain retains CPU pages when the visible textures exceed its budget [display]
+GPU terrain zoom round trips reuse pixels and refresh parked pages [display]
+zoomed-out GPU terrain retains pages across frames and wrapped views [display] [artifacts]
+offscreen terrain density follows the target and stays stable across capture tiles [display]
+undiscovered pages skip software submissions and refresh after discovery [display]
+image import reads each pixel as a terrain vertex [artifacts]
+every paintable built-in binds a material, has an editor icon and exports its own colour [display][artifacts]
+export uses registered whole-cell material colors [artifacts]
+connected foliage corners strips and filled patches [display][artifacts]
+shoreline surf animation frames around an island [display][artifacts]
+shore calm before and after along a coastline [display][artifacts]
+terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]
+catalogue materials load 4x HD frames and compose at 4x [display][artifacts]
+mixed terrain simulation trace and visual gallery [display][artifacts]
+superseded and retired frames promptly release all world leases
+map service indicators follow arbitrary and free recipes
+script area snapshots are opt-in and independent of later map edits
+retired map storage reuses masks without retaining a world or clearing its values
+same-tick map edits refresh overlays while retained frames remain immutable
+units and buildings resolve by gid with their drawn fields and the selection
+overlay maps match a direct computation and refresh per 25-tick window or type change
+published scene retains old entity fields while subsequent scenes reflect changes
+stale selection generation never selects a replacement occupying the same gid
+smooth unit motion advances the drawn delta within the current action only
+connected overlays use configured groups and scene retains its catalog
+building events preserve concrete catalog IDs and key-only display names
+building sprite frames honor damage effective maximum and connection precedence
+custom ground and overlay frames render connections and damage [display:1100x1100][artifacts]
+snapshot preparation retains definitions after the source game is destroyed
+snapshot preparation matches retained queries and survives later live mutations
+Serial hosts publish immutable Scenes through workers or explicit fallback
+client paint survives old Scenes and retires only with its execution revision
+order execution revisions are captured even without advancing the tick
+farm input eligibility is frozen with presentation inputs
+published catalog definitions remain immutable across owner reconfiguration
+statistics history is optional immutable and reused until a new sample
+ordinary captures reuse unchanged HUD samples
+large defence overlay preparation yields and finishes its kernel
+empty worlds and a view whose team disappeared prepare without live fallback
+session narrative payloads are immutable and reused until mutation
+connected foliage selects the requested corner mask and keeps legacy decor
+connected foliage rejects incomplete corner groups
+connected canopy ground leaves contact shadows to the foliage [display]
+contextual borders preserve seams and normalization across both wrapped axes
+contextual contours use their halo and leave ambiguous and sharp borders unchanged
+contextual cells retain every corner region at native and HD sample positions
+contextual interiors remain within twelve pixels of the marching contour
+straight contextual borders have seeded scallops without folding
+halo edits invalidate adjacent terrain pages including wrap and undo [display]
+natural border visual fixture and cold composition timings [display] [artifacts]
+terrain crossfade preserves endpoints midpoint loop and paused revisions [display]
+animation invalidates only pages using that material [display]
+unequal variant weights affect deterministic texture selection
+compiled pages validate metadata and stale catalogs use source fallback [artifacts]
+compositor preserves native artwork overridden before startup [display] [artifacts]
+an additional material and a 64-material catalog compose without renderer branches [display]
+seam treatment tones only the lower material beside a higher edge [display]
+surf washes a beach within eight pixels and repeats each period [display]
+shore calm quiets waves toward land without shifting the water's colour [display]
+mixed cells compose exactly as a direct per-pixel coverage blend [display]
+map seed reseeds variants and boundaries without breaking partitions or edges
+prepared coverage preserves native and HD contour geometry
+the Python validator's built-in name list mirrors the terrain table
+catalogue boundary profiles keep their reviewed geometry
+coverage partitions every binary shape and multi-material junction
+shared edges and wrapped samples have identical coverage
+diagonal contacts stay distinct and both torus axes share coverage
+organic contours agree across ordinary tile edges and both torus axes
+straight boundaries bend over multiple cells without moving their solid cores
+steep detailed contours retain one crossing on shared patch edges
+weighted choices are stable and all existing variants are reachable
+grid variants repeat one positional block independent of the map seed
+interchangeable grid blocks select one seeded layout for every cell in a block
+catalog rejects corrupt references and grows independently of gameplay IDs
+single vertices own their corner and animation does not reseed variants
+selected terrain preparation bounds pixels and preserves retained snapshots [display]
+owned prepared materials survive animation and share unchanged revisions [display]
+CPU terrain groups preserve incremental pages under serial and parallel schedules [display]
+failed CPU terrain groups retire invalid pages and recover on the next prepare [display]
+shared reservation pressure preserves serial terrain before readmitting jobs [display]
+CPU terrain retires coverage when cells leave discovery [display]
+sparse CPU terrain edits snapshot only changed materials [display]
+partial direct CPU terrain writes stay unpublished after a failed rebuild [display]
+programmable GL fatal torus fallback advances animation once [display][isolated]
+SDL GPU fatal torus fallback advances animation once [display][isolated]
+programmable GL retries a submitted final torus overlay coherently [display][isolated]
+SDL GPU retries a submitted final torus overlay coherently [display][isolated]
+programmable GL captures large logical maps beyond the window [display][isolated][artifacts]
+SDL GPU captures large logical maps beyond the window [display][isolated][artifacts]
+programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts]
+SDL GPU torus progresses under live terrain page pressure [display][isolated][artifacts]
+native tiled capture pixels and allocation fallback [display]
+HD tiled capture interiors and gutters match whole-map pixels [display]
+game rendering; picking and cache changes in software rendering [writes-preferences]
+game rendering; picking and cache changes in OpenGL [display][writes-preferences]
+game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]
+legacy bytes preserve duplicate fields NUL order schemas copy and move
+playback expands exact values stamps unavailability and reloaded history
+capture skips invalid fields and retains exact changes and disappearance
+duplicate players compare with prior capture and schemas can return
+stable capture descriptors retain changing payloads and stamps
+schema lookup distinguishes prefixes and each metadata component
+logical byte budget and frame limit retain legacy truncation points
+loader limits and incomplete-frame state keep the existing contract
+exported custom resource fixtures include the CLI save tail [resources]
+large eight-team sparse material and runtime catalog stress [benchmark][resources]
+JavaScript test environment scopes restore SDL and CRT readers
+JavaScript current text saves validate unused generation counters
+Current simulation rejects earlier replays and enforces acceptance boundaries
+JavaScript pass assigns valid identities to released saves
+JavaScript upgrade retains genuine master124 experiments and continuation
+JavaScript current saves reject truncated generation tables
+JavaScript compact population pagination preserves visibility and fixed query budgets
+JavaScript observations visibility memory pagination and stale references
+JavaScript orders execute and survive save load
+JavaScript scenario effects commit atomically and resume
+JavaScript AI state RNG and disabled state survive continuation
+JavaScript large world observations respect work limits
+JavaScript custom library atomic updates and frozen source
+JavaScript profile two spatial cache and queued save continuity
+JavaScript upgrade dispatch survives tracking record growth
+JavaScript telemetry scene permissions and replay diagnostic roundtrip
+JavaScript native distance fields match torus reference cold warm and reloaded [benchmark]
+JavaScript custom library and telemetry dialogs render [display:1280x800] [artifacts]
+JavaScript native spatial answers exclude hidden terrain resources and enemies
+JavaScript linked sources freeze once and removal retains external files
+JavaScript queued edits preserve fairness cancellation and stale targets
+JavaScript placement reserves footprints and explains impossible constraints
+JavaScript solid attraction placement keeps both radius and footprint reservation
+JavaScript services reject unsavable transactions without changing state
+JavaScript farm areas: experiments query, farmArea order and tile field
+Online AI installs verify bytes and preserve provenance on rollback
+JavaScript path fields use terrain travel costs and invalidate speed-only changes
+JavaScript path diagonals retain the neutral strategic metric
+JavaScript terrain registry exposes immutable property capabilities in both profiles
+JavaScript material metadata and remembered multi-yield sources survive both stream formats
+JavaScript legacy empty resource memories discard unused stock bytes
+JavaScript custom building descriptors and orders follow services
+JavaScript production updates retain developer recipes beyond the builtins
+JavaScript managed controls use capabilities and independent bombing filter
+JavaScript bound observations and order encoding remain isolated from live mutations
+JavaScript ordered observations keep the first view of each logical tick
+JavaScript projected boundary preserves history and spatial resources without ecology fields
+JavaScript terrain resource permissions follow both catalogs and charge full enumeration [display]
+JavaScript building clearing materials retain full fixed slots and legacy view
+JavaScript flag orders use explicit custom attraction roles
+JavaScript presentation publishes only changed localized messages
+JavaScript load restores presentation without a callback or history entry
+Leaving a JavaScript scenario resets choices before loading a legacy map
+JavaScript leaves stored SGSL execution and victory conditions dormant
+JavaScript does not advance or display a retained SGSL timer
+Failed prepared map replacements preserve active globals and language
+Prepared SGSL exchanges rebind stories in both runtimes
+JavaScript realistic economic planner and scenario survey
+JavaScript fatal failure tears down a live engine session
+JavaScript deterministic scenario failure ends the engine session
+JavaScript initialization errors reach headless and UI load diagnostics
+JavaScript original fixture executes, resumes and replays 256 ticks
+JavaScript economic planners and map survey execute, resume and replay 256 ticks
+JavaScript conversion boundary resumes globals RNG references and complete tick records
+JavaScript profile two actions fields telemetry and construction survive save resume and worker counts
+JavaScript maps reopen in the editor without resetting live globals
+Script language drafts survive switching and invalid JavaScript cannot commit
+Cancelling script drafts preserves the source, globals and scenario text
+Editor saves and reloads the selected JavaScript map mode and source [display][artifacts]
+JavaScript script file dialogs use js and leave loading as a draft
+JavaScript file loading preserves embedded NULs for validation
+Editing legacy SGSL retains the released USL and SGSL payload pairing
+JavaScript to SGSL prepares both runtimes before committing
+Script language dropdown selects JavaScript on desktop and phone [display][artifacts]
+legacy setArea waits retain the area name across team-selector tokens
+legacy area negation checks the selected team and wraps map edges
+Malay SGSL language tokens require the installed catalog
+Malay SGSL selects its message and retains an authored default for other locales
+adding Malay preserves legacy SGSL source bytes and saved program counters
+catalog languages and quoted locale names preserve suspended story continuation
+random legacy summons preserve story progress through full continuation
+supported statements and wait forms compile
+invalid references and value boundaries report typed errors
+truncated arguments fail without accepting incomplete statements
+summons respect painted area capacity and unit attributes
+alliance levels preserve unrelated teams and apply vision masks
+area waits observe team alliance and negation instead of unrelated units
+count waits evaluate all building classes exact levels and unit comparisons
+flag lifecycle and GUI commands change their real game objects
+authored flag aliases resolve game catalog IDs and respect missing definitions
+independent stories timers space and saved suspension resume exactly
+resetAI changes only the chosen player and rejects unsafe indices
+resetAI authoring accepts valid slots before an editor map has a player header
+legacy resetAI tokens with invalid player or implementation leave players intact
+objectives and hints resolve script numbers and persist in game snapshots
+named highlights target distinct GUI elements and unhighlight restores state
+unit and building highlights use map and panel channels independently
+population append unlink preserves survivor order and slot reuse appends
+mutable population walk repairs pending removals and retains original fence
+transfers repair nested cursors and destination captures arrivals by phase
+unlink repairs cursors before heap entities are destroyed
+editor lifecycle and death preserve append order and repair scheduler
+binary and text saves restore nonslot order scheduler and continuation
+formats164 through166 preserve population encoding and scheduler boundaries
+format166 pending jobs and append order survive an immediate upgrade before observation
+invalid population records fail without leaving broken membership
+entity GIDs round trip every slot in every live team
+sixteen controller slots survive binary and text headers [save-format]
+alliance and chat controls include the sixteenth controller
+enemy team searches terminate when every team slot is occupied
+growth bands attribute overlapping coverage to all sixteen teams
+sixteen team saves continue identically and preserve entity generations [save-format][artifacts]
+retained format126 Maxima save preserves identities and subsequent AI decisions [save-format][artifacts]
+script generation slot counts reject missing capacity and truncated planes [save-format]
+dense designed maps accept thirteen through sixteen only on the largest square
+every live worker-tick lands in exactly one labour bucket
+places: own buildings first, then enemies; allies, flags and new buildings do not count
+place lookup agrees with a brute-force scan of every building tile
+combat deaths are attributed by place and assignment
+defence snapshot counts warriors by place and enemy warriors at home
+labour, combat and defence measurements survive a save [save-format]
+older saves load with labour coverage starting at the loaded tick [save-format]
+place lookup cost against a scan of every building slot [benchmark]
+defender recruitment refusal excludes idle reserves while retaining combat and stock smoothing
+nonuniform combat levels retain per-unit defender recruitment eligibility
+movement classes count living ground units every sample including eliminated teams
+movement class demand follows delayed publication and persists pending transitions
+direct scalar checksums match canonical binary bytes
+routine statistics coverage excludes diagnostic ledgers and full checks retain them
+secondary statistics are periodic while verification and entity checks stay immediate
+remote map sweeps are periodic and explicit verification remains exhaustive
+raw snapshot samples retain synchronous aggregation and smoothing
+lagged windows include current samples and never feed approximations into the raw ring
+format 156 raw aggregate samples retain exact smoothing after loading and resaving
+format 157 pending measurement deltas migrate and resave without early publication
+complete frames preserve cumulative measurements and retained readers
+publication is fixed to source tick plus delay and boundaries are idempotent
+delayed statistics AI and presentation share one capture per boundary
+worker counts produce identical publication and pending sample checksums
+light checks do not execute jobs and full checks cover computed pending samples
+save drains work without moving deadlines and restores pending samples
+legacy zero-delay pending samples publish their original output before new delayed samples
+format 155 pending digests are discarded without losing samples
+inspection admits no work and paused or waiting frames reuse the initial observation
+failed computation or submission remains a failure at later owner barriers
+full game save preserves statistics across smoothing and history boundaries
+late workers are joined at the deadline without choosing publication time
+periodic snapshot places match live coverage at wrapped footprint boundaries
+clearing telemetry counts operations once by configured primary material
+probability save section preserves Maxima-era statistics layouts [save-format]
+probability history rejects samples beyond the saved game tick [save-format]
+probability text history and integral survive a team save [save-format]
+diagnostic probability history preserves replay acceptance boundaries [save-format]
+retained format152 magic levels count each explorer once through migration and current continuation [save-format]
+32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]
+legacy version 88 fixture replays the golden trace [save-format][golden]
+legacy version 84 fixture replays the golden trace [save-format][golden]
+measurement screenshots [display][artifacts]
+AI telemetry continues across a save [save-format]
+Scripting identity survives conversion and save load
+Scripting level reset preserves generation counters
+Scripting conversion allocates fresh identity in a reused destination slot
+Editor building deletion clears ability lists before save and slot reuse
+Scripting editor deletion and reuse never revive a reference
+Scripting building completion upgrade and repair preserve identity
+Scripting conversion back never resurrects the original reference
+Scripting normal death invalidates lookup before cleanup and slot reuse
+Compact telemetry retains every sample across chunk boundaries
+Compact identity tables preserve unused slots and reject invalid entries
+Compact team histories preserve samples across two batch boundaries
+Sparse variant snapshot reset clears vanished types without clearing history
+Sparse variant reset accepts refreshed diagnostics and restored snapshots
+Delayed observation telemetry saves remain readable
+result serialization requires owner-finalized probability history
+live chances and automatic history use the same scout-role counts
+automatic history records without telemetry, includes final partial ticks and shares alliance chances
+trapezoidal score uses actual ticks, survives saves and retains legacy coverage gaps
+an early victory retains the prediction which triggered it
+combat facilities count concrete providers once, including explicit construction targets
+equal alliances share chances and eliminated allies contribute nothing
+the rule waits for the minimum tick and sample boundary then ends all teams
+calling an early loser cannot change later teams' decision inputs
+rule serialization gates the new tag and rejects ambiguous thresholds
+enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]
+native arithmetic reproduces every published calibration sample
+packaged lesson maps embed their source and share geography
+training algae requires swimming and named regions survive loading
+training colonies remain supplied while a learner takes time
+real orders complete scouting construction supply growth and attack
+idle time and acknowledgments cannot complete the introduction
+recommendation migrates existing profiles and persists an explicit choice
+only published scenario presentation activates tutorial guidance
+second lesson completes and resumes with the shared runner
+prototype saves retain embedded source objectives and hints without special guidance
+tutorial metadata is validated atomically with scenario effects
+expanded lessons complete through player orders and saved continuation
+zone observations and scenario orders preserve map callback validation
+scenario area and queued-building orders need no local presentation player
+archived SGSL save retains embedded source and continuation
+scripted diplomacy is atomic and rejects invalid relationships
+guidance releases keyboard focus when returning to gameplay [display]
+mobile guidance announces recovery hints without opening Help [display]
+guidance preserves pointer ownership across map drags and concurrent touches [display]
+guidance adapts to desktop touch and large text without consuming map input [display][artifacts]
+first-run recommendation can be declined and stays dismissed [display][writes-preferences]
+retired tutorial progress stays on disk without appearing as a campaign [display]
+catalog and second lesson use generic guidance and restart navigation [display][artifacts]
+expanded lesson catalog and guidance fit both phone orientations [display][artifacts]
+shipped historical snapshot loads and advances without graphics [save-format]
+Bengali account avatar retains its complete first shaping cluster [display]
+queue names, durations and estimates read the same everywhere
+an unrated search shows no ratings; a ranked one explains its range [display]
+the room reads positively and hides seeds and pairing strings [display]
+an unserved version blames the side that is out of date [display]
+menus read larger on big desktop windows that follow the desktop scale
+a pairing link's fingerprint becomes a short code
+artwork overrides require WebP paths
+colours parse and print as #rrggbb[aa]
+shipped themes load, and light and dark match the compiled defaults
+every shipped theme keeps text readable
+inheritance, player themes and broken files
+shipped themes win over player files with the same id
+menu and in-game slots switch independently and keep their addresses
+theme choices persist in preferences
+all semantic icons have the pinned raster sizes
+aliases share live assets and the cache releases unused graphics resources
+every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow]
+desktop screens [display][artifacts]
+touch screens [display][artifacts]
+new catalogue filters replace pending results [display]
+catalog preferences isolate reused stock keys and persist assignment and radius
+version one preferences import only into known stock catalogs
+version two pre-material stock fingerprints retain preferences without crossing catalog identities
+known frozen stock fingerprints migrate to inherited costs with current preferences taking precedence
+per game assignment loads reject duplicate stable and legacy identities
+per game assignment overrides use stable keys and import old numeric saves
+catalog experiments use translated text when available and English metadata otherwise
+every experiment's label and help are in the string tables
+preferences keep the enabled experiments and drop unknown keys
+retired gradient verification preference is ignored and CLI options are rejected
+gradient settings preserve explicit variants and CLI precedence
+mobile audio startup requires an explicit saved choice
+audio choice saves before enabling the mixer and fails silently [writes-preferences]
+illustrated audio choices work on phones without implicit sound [display][writes-preferences][artifacts]
+first-launch hand choice persists and migrates existing side preferences
+hand-choice screen saves both sides and retains a choice after write failure [writes-preferences]
+illustrated hand choices activate through their phone overlay [display][writes-preferences]
+GPU local preference is opt-in for graphical and headless games
+renderer preference migrates flags and round trips without startup overrides
+render ceiling defaults migrates validates and round trips
+edge scrolling defaults migrate and independent modes round trip
+text size applies to desktop and touch independently of interface scale
+legacy preferences migrate and independent effects round trip
+large Filipino touch footers keep words whole [display][artifacts][writes-preferences]
+username byte limits reject whole Bengali edits without truncation
+all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]
+catalog building defaults in compact layout [display][artifacts][writes-preferences]
+render FPS dropdown in compact layout [display][artifacts][writes-preferences]
+layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]
+layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]
+layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]
+layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]
+layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]
+layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]
+AI library desktop discovery, favourite, installation and malformed responses [display:1280x900][artifacts]
+AI library compact discovery, favourite, installation and malformed responses [display:1280x900][artifacts]
+Settings categories follow the resolved client capabilities
+Controls render translated labels and help in every supported language [display:1400x1000][artifacts]
+generated fixtures round-trip through binary saves [save-format]
+authored catalogs reject unassigned indoor service membership [save-format]
+the retained fixture loads [save-format]
+world owners are isolated and their progress changes lockstep checksums
+world streams continue through binary and text saves without resume reseeding
+malformed new world RNG records fail rather than migrating
+story identities isolate extra draws and fixed domains differ
+entity operations consume only their own streams outside a tick
+gradient sidesteps draw from the moving unit rather than the target building
+team steps consume entity streams without consuming world randomness
+upgrades preserve streams and reused slots receive a fresh salt
+fresh header reseeds starting entities but resume header preserves progress
+snapshots freeze both unit and building RNG state
+binary and text saves preserve exact private state and subsequent draws
+format 150 text area saves retain funded services through current saves [save-format][artifacts]
+truncated binary RNG state and even increments are rejected
+missing malformed and even text RNG fields are rejected
+recruitment retains exact hunger boundaries and widened cached extremes
+carrying selection preserves saturated wide hunger ties without purpose writes
+carrying candidates preserve sparse slot ties without live writes
+a unit is judged on the walk to the resource
+the score estimates the whole fetch-and-carry trip
+healing defeat recovery survives a save with an occupied hospital
+healing reserves the last hospital place without eliminating the colony
+feeding reserves the last inn place and defeat controls hold
+a format-143 save with live round-trip fields plays on greedily [golden][save-format]
+MarketFetch/stocked markets are resource goals, depleted markets are not
+MarketFetch/deliverer stays attached and fetches the next market delivery
+MarketFetch/market fields and pending publications survive binary and text saves [save-format]
+MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format]
+disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts]
+legacy workers already travelling to markets continue after migration [golden][save-format]
+enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]
+world teardown and map reuse discard derived supplier ledgers
+identical market workloads report routing cost [benchmark]
+identical gradient refresh workloads report CPU and memory [benchmark]
+disabled gate blocks explicit fetch APIs and upgrade execution
+each market level accepts only its resources across all swim classes
+market routes respect forbidden ground and water across swim classes
+explicit market refresh publishes depletion and restocking after the minimum interval
+upgrading cancelling and completing preserve shared stock and gate
+market repair materials do not overwrite shared stock
+market panels show gated upgrades and shared stock [display][artifacts]
+a depleted target is refreshed after its gradient rebuild for every swim class
+trapped elimination; indoor survival; rescue; service; hatchery recovery; repeated seeds and save continuation
+a pending building route steers while retaining assignment and random state until publication
+pending steering tries flyer turns around occupied ground and waits when surrounded
+pending steering respects forbidden terrain and mobility and wraps toward flags
+pending flag and clearing routes preserve the working job and clearing claim
+movement chosen while pending survives binary and text save continuation [artifacts]
+medical abort clears every working purpose before idle or service continuation
+hazard routes and idle escape preserve per-tick state across save load
+five checkpoints replay 256 ticks with matching state and RNG
+water only patrol ignores less explored dry neighbours without changing walker or flyer RNG
+water only exploration rejects dry steering and takes a valid water alternative
+hybrid flag recruitment policies are independent of abilities and idle area policies [save-format]
+flag recruitment refusal does not disable painted clearing or defense areas
+idle painted clearing completes without permission to interrupt jobs [save-format]
+idle clearing permission does not interrupt a transport assignment
+disabling future flag recruitment preserves all existing job roles and memberships [save-format]
+stock capacity-one wide primary cargo survives unit and game continuation [save-format]
+catalog resizing rejects in-flight projectile rows without publishing state
+setup scaling preserves lethal extremes and zero-kind inventories refuse packets
+current saves reject invalid cached bounds and retain pending lethal state
+custom combat extremes preserve observer estimates and clamp lethal overkill
+maximum healing multiplier and health complete a diagonal service visit
+mixed melee and transport conserve multiple material kinds and rejected packets
+all locked capability ablations match fixed tick and RNG traces [golden][artifacts]
+extended cargo delivers one usable packet per completed work action
+documented bulk carrier setup enables an inherited-cost production recipe
+tiling anchors and starting positions recognize producers of additional units
+labor and defense statistics require usable clocks and recruitment mobility
+mobility statistics respect swimming only and stationary definitions
+survival eligibility is independent of movement and work capabilities
+conversion claim release preserves the stock policy and is configurable
+swim only fields avoid land and stationary zero hunger units keep making medical progress
+batch planning releases its own harvest obstacle for cold and warm fields without advancing clocks
+ground and airborne couriers collect mixed kinds and deliver through the engine
+game save resumes mixed cargo and per entity RNG at every tick
+passive healing and starvation damage are independent configured rates
+configured service multipliers shorten complete meals and healing visits
+airborne clearing and magic coexist with held cargo
+conversion cancels pending transport and transfers the complete cargo identity
+retained single packets and kind limits do not withdraw incompatible resources
+extreme hunger and experience saturate without changing valid stock arithmetic
+unit experiment gates control spawning and reject disabled live definitions
+fractional deliveries retain exact residuals across multipliers and reject overflow atomically
+legacy setup sentinel retains resolved map definitions and cached unit values
+migrated tables retain cached performance idle and contact policies
+an explicit producer creates stationary units on a legal birth cell
+high unit IDs spawn work and resume all indexed state
+concurrent catalogs keep independent live performance and continuation
+deleted units release wide cargo before a GID is reused
+mixed inventory and assigned purpose survive unit serialization
+setup cancels obsolete live work clocks and claims without losing cargo or RNG
+setup releases original parallel course reservations before disabling learnability
+transport capability with a zero delivery clock cannot be hired
+initial hiring respects retained packet capacity and material kind limits
+initial hiring finds a wanted material in overflow cargo and completes delivery
+unit loading rejects mismatched assigned purposes and over-capacity primary packets
+unusable retained fractional cargo releases its job and continues exactly after saving
+target search handles a defender whose effective melee strength saturates
+pending lethal scouts have bounded attraction ranking and resolve death
+construction qualification excludes higher-level couriers in live and captured queries
+zero-consumption patients heal without a rebound meal despite retained low hunger
+configured magic cooldown follows the magic level while imported tables retain legacy indexing
+setup rejects immobile interior patients without publishing partial catalog state
+current unit records require idle and service assignments to have no working purpose
+active water-only cargo preserves queued and pending gradient deadlines [save-format]
+custom carriers resume actual pickup and delivery including active water only fields
+custom feeding healing and training resume entry interior and exit with exact reservations
+mixed combat and fractional regeneration continue with cached clocks cargo and random streams
+custom starvation and pending conversion preserve complete phase continuation
+catalog derived vision cache preserves padding wire state and visibility continuation [save-format]
+migrated vision follows cached flight rather than presentation or saved Race tables [save-format]
+migrated vision changes with flight learned during a reserved service [save-format]
+training rejects loss of the last movement mode before reservation or direct mutation
+parallel movement transfer checks exit terrain but ignores temporary occupants and resumes atomically
+restored unsafe ongoing training exits without charging materials or changing levels
+imported movement tables retain historical course admission and direct grants
+parallel construction qualification captures all courses before grants and preserves immobile definitions
+parallel movement losses are assessed together before admission with a surviving mode alternative
+enemy tower live index matches full slot oracle across lifecycle and save continuation [save-format]
+enemy tower live index retains last slot and full occupied table oracle
+compact unit fields reject wide invalid values before conversion [save-format]
+learning mask updates preserve every neighboring flag
+cached performance caps preserve wide save validation and normalized continuation [save-format]
+HP rule arithmetic precedes the cached performance cap at creation rebind and training
+shared air routing stress exports a reproducible benchmark setup [artifacts]
+ordinary flyers retain angular steering and local avoidance without movement fields
+direct flight handles wrapped bearings arrival and fully occupied airspace
+air navigation ignores team paint and switches after terrain resource catalog and load changes
+flying carriers steer directly between shared destination queries
+direct flying clearers retain shared goals and clearing claims
+legacy flying targets retain direct angular steering through forbidden paint
+ordinary flying couriers export a deterministic direct flight setup [artifacts]
+direct flying carriers retain priced overlay and direct stock destinations
+empty direct flight guard queries preserve invalid target coordinates
+idle flyers wander inside forbidden paint instead of requesting ground escape
+shared images retain each owner's fresh appearance [display:64x64]
+expired and cancelled subscribers cannot affect another owner [display:64x64]
+HD layer mappings and fallbacks in software rendering
+HD layer mappings; fallbacks; zoom and shader cache behaviour [display]
+team colour cache stays bounded in software rendering
+team colour cache is bypassed by the shader and bounded without it [display]
+shader hue shifts match the CPU reference over every pose and hue [display]
+legacy signed cached performance normalizes without narrowing race tables [save-format]
+authored animation spans stay inside the stock atlas
+legacy presentation offsets survive migration without relaxing additional types
+optional recruitment policies preserve pre-policy snapshots and compact traits
+pre73 team race tables survive cached units training production and current resaves [save-format]
+retained format64 FourSquares map keeps its historical warrior tables and current continuation [save-format]
+installed definitions reproduce immutable embedded defaults
+new combinations retain appearance and preserve other games
+embedded experiments contribute allowed keys without global registration
+counted race tables survive both text and binary saves
+current race records cannot override the embedded catalog
+both header forms retain embedded unit properties and experiment gates
+converted legacy flight tables retain their authoritative exception
+legacy performance policies preserve tables and remain migration only
+legacy movement exception cannot relax additional definitions
+pre-race legacy headers receive cached-performance policies
+current header forms reject omitted embedded definitions
+malformed definitions fail before publication
+production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]
+shutdown drains a completed asynchronous screenshot before file services retire [display][artifacts]
+global recording shortcut toggles and shutdown awaits finalization [display][artifacts][writes-preferences]
+threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]
+the portable renderer loads and draws a complete 50-tick game scene
+autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]
+per-player AI configuration survives construction and partial headers
+voice payload bounds preserve recorder overshoot and reject excessive work
+every native AI accepts its initial saved state
+AI tags collection counts and recursive predicates are bounded
+untrusted names cannot escape the map output directory
+network state rejects invalid slots before queue indexing
+legacy create order reads only its twenty byte payload
+terrain loaders reject invalid resources occupants and sector dimensions [save-format]
+compressed file size is checked before allocation
+complete saved game rejects poisoned unit state and retains a reproducible fixture [save-format][artifacts]
+entity loaders reject malicious indices before using them [save-format]
+legacy saved instruction pointers must identify statement boundaries [save-format]
+map scripts cannot load local files
+invalid replay order references are ignored before indexing state
+Cabino inn history accepts append positions and rejects invalid ring bounds
+===============================================================================
+[doctest] unskipped test cases passing the current filters: 2086

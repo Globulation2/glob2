@@ -1,0 +1,27 @@
+{
+  "file": "platform/apps/web/src/pages/MapStudio.tsx",
+  "sha256": "f27223b724011150b88f291779b02641412d2f068b08bd27f84961086c436523",
+  "change": "Visible wallet uses same full formatted existing {value0} Map credits as aria-label; standalone Map credits remains dialog category.",
+  "formattedSource": "{value0} Map credits",
+  "formattedBulgarianCandidate": "Кредити за карти: {value0}",
+  "standaloneSource": "Map credits",
+  "standaloneBulgarianCandidate": "Кредити за карти",
+  "counts": [
+    0,
+    1,
+    2
+  ],
+  "preservation": [
+    "coinicon",
+    "onClick toggle",
+    "aria-label",
+    "aria-expanded",
+    "walletavailablewirevalue",
+    "authoredmaptitle"
+  ],
+  "catalogChanges": "rootowned, pendingreview/application",
+  "testFile": "platform/apps/web/test/studioCreditLocale.test.tsx",
+  "testSha256": "a19e2866aec5ac5b0d94029dc216feba4daeceaf3f9ae053c88a96e6366b114c",
+  "lifecycleCoverage": "Actual MapStudio header and dialog: BG visible/aria 0,1,2; toggle expanded; standalone category dialog/heading; hot EN; authored title retained; API reads only. Unrelated map body mocked.",
+  "snapshotHead": "f30e5164359621ce7bdcc0a588e3ad274431f16b"
+}

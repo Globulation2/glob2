@@ -1,0 +1,10 @@
+{
+  "captureProducerHead": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "finalHead": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "inputCount": 1642,
+  "inputsByteIdentical": true,
+  "distByteIdentical": true,
+  "frozen44ImagesByteIdentical": true,
+  "initialEA0toF30Delta": "only platform/apps/web/e2e/i18n.spec.ts explicitnullguards, seeguard-commit-input-binding.json",
+  "productionInputBytesUnchanged": true
+}

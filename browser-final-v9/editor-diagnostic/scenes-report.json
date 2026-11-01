@@ -1,0 +1,1184 @@
+[
+  {
+    "name": "phone150-editor-after-escape",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "15MapEditorScreen",
+        "screenClass": "15MapEditorScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 593,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "back": {
+            "enabled": true,
+            "h": 94,
+            "label": "Към главното меню",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 560
+            },
+            "w": 358,
+            "x": 16,
+            "y": 560,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "load-campaign": {
+            "enabled": true,
+            "h": 94,
+            "label": "Зареждане на кампания",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 458
+            },
+            "w": 358,
+            "x": 16,
+            "y": 458,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "load-map": {
+            "enabled": true,
+            "h": 94,
+            "label": "Зареждане на карта",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 299
+            },
+            "w": 358,
+            "x": 16,
+            "y": 299,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "new-campaign": {
+            "enabled": true,
+            "h": 49,
+            "label": "Нова кампания",
+            "visible": {
+              "h": 49,
+              "w": 358,
+              "x": 16,
+              "y": 401
+            },
+            "w": 358,
+            "x": 16,
+            "y": 401,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "new-map": {
+            "enabled": true,
+            "h": 49,
+            "label": "Нова карта",
+            "visible": {
+              "h": 49,
+              "w": 358,
+              "x": 16,
+              "y": 242
+            },
+            "w": 358,
+            "x": 16,
+            "y": 242,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "phone150-editor-visible-menu-button",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "15MapEditorScreen",
+        "screenClass": "15MapEditorScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 602,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "back": {
+            "enabled": true,
+            "h": 94,
+            "label": "Към главното меню",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 560
+            },
+            "w": 358,
+            "x": 16,
+            "y": 560,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "load-campaign": {
+            "enabled": true,
+            "h": 94,
+            "label": "Зареждане на кампания",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 458
+            },
+            "w": 358,
+            "x": 16,
+            "y": 458,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "load-map": {
+            "enabled": true,
+            "h": 94,
+            "label": "Зареждане на карта",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 299
+            },
+            "w": 358,
+            "x": 16,
+            "y": 299,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "new-campaign": {
+            "enabled": true,
+            "h": 49,
+            "label": "Нова кампания",
+            "visible": {
+              "h": 49,
+              "w": 358,
+              "x": 16,
+              "y": 401
+            },
+            "w": 358,
+            "x": 16,
+            "y": 401,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "new-map": {
+            "enabled": true,
+            "h": 49,
+            "label": "Нова карта",
+            "visible": {
+              "h": 49,
+              "w": 358,
+              "x": 16,
+              "y": 242
+            },
+            "w": 358,
+            "x": 16,
+            "y": 242,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "load": {
+            "enabled": true,
+            "h": 99,
+            "label": "Отваряне на карта…",
+            "visible": {
+              "h": 99,
+              "w": 705,
+              "x": 33,
+              "y": 355
+            },
+            "w": 705,
+            "x": 33,
+            "y": 355,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "quit": {
+            "enabled": true,
+            "h": 194,
+            "label": "Изход от редактора",
+            "visible": {
+              "h": 194,
+              "w": 734,
+              "x": 33,
+              "y": 1295
+            },
+            "w": 734,
+            "x": 33,
+            "y": 1295,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "resource/import": {
+            "enabled": true,
+            "h": 233,
+            "label": "Импортиране на дефиниции на ресурси…",
+            "visible": {
+              "h": 233,
+              "w": 705,
+              "x": 33,
+              "y": 834
+            },
+            "w": 705,
+            "x": 33,
+            "y": 834,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "return": {
+            "enabled": true,
+            "h": 194,
+            "label": "Връщане към редактора",
+            "visible": {
+              "h": 194,
+              "w": 734,
+              "x": 33,
+              "y": 1505
+            },
+            "w": 734,
+            "x": 33,
+            "y": 1505,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "save": {
+            "enabled": true,
+            "h": 99,
+            "label": "Запазване на картата",
+            "visible": {
+              "h": 99,
+              "w": 705,
+              "x": 33,
+              "y": 240
+            },
+            "w": 705,
+            "x": 33,
+            "y": 240,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "script": {
+            "enabled": true,
+            "h": 99,
+            "label": "Сценарий…",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1846
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1846,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "set/import": {
+            "enabled": true,
+            "h": 233,
+            "label": "Импортиране на комплект с терени и ресурси",
+            "visible": {
+              "h": 196,
+              "w": 705,
+              "x": 33,
+              "y": 1083
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1083,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "set/library": {
+            "enabled": true,
+            "h": 158,
+            "label": "Библиотека с комплекти",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1332
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1332,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "settings": {
+            "enabled": true,
+            "h": 99,
+            "label": "Настройки",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1616
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1616,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "share": {
+            "enabled": true,
+            "h": 99,
+            "label": "Споделяне онлайн…",
+            "visible": {
+              "h": 99,
+              "w": 705,
+              "x": 33,
+              "y": 470
+            },
+            "w": 705,
+            "x": 33,
+            "y": 470,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "teams": {
+            "enabled": true,
+            "h": 99,
+            "label": "Отбори…",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1731
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1731,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "terrain/import": {
+            "enabled": true,
+            "h": 233,
+            "label": "Импортиране на дефиниции на терени…",
+            "visible": {
+              "h": 233,
+              "w": 705,
+              "x": 33,
+              "y": 585
+            },
+            "w": 705,
+            "x": 33,
+            "y": 585,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "terrain/reroll": {
+            "enabled": true,
+            "h": 158,
+            "label": "Нов случаен облик на терена…",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1961
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1961,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "phone150-editor-menu-actual",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "15MapEditorScreen",
+        "screenClass": "15MapEditorScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 605,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "back": {
+            "enabled": true,
+            "h": 94,
+            "label": "Към главното меню",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 560
+            },
+            "w": 358,
+            "x": 16,
+            "y": 560,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "load-campaign": {
+            "enabled": true,
+            "h": 94,
+            "label": "Зареждане на кампания",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 458
+            },
+            "w": 358,
+            "x": 16,
+            "y": 458,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "load-map": {
+            "enabled": true,
+            "h": 94,
+            "label": "Зареждане на карта",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 299
+            },
+            "w": 358,
+            "x": 16,
+            "y": 299,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "new-campaign": {
+            "enabled": true,
+            "h": 49,
+            "label": "Нова кампания",
+            "visible": {
+              "h": 49,
+              "w": 358,
+              "x": 16,
+              "y": 401
+            },
+            "w": 358,
+            "x": 16,
+            "y": 401,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "new-map": {
+            "enabled": true,
+            "h": 49,
+            "label": "Нова карта",
+            "visible": {
+              "h": 49,
+              "w": 358,
+              "x": 16,
+              "y": 242
+            },
+            "w": 358,
+            "x": 16,
+            "y": 242,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "load": {
+            "enabled": true,
+            "h": 99,
+            "label": "Отваряне на карта…",
+            "visible": {
+              "h": 99,
+              "w": 705,
+              "x": 33,
+              "y": 355
+            },
+            "w": 705,
+            "x": 33,
+            "y": 355,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "quit": {
+            "enabled": true,
+            "h": 194,
+            "label": "Изход от редактора",
+            "visible": {
+              "h": 194,
+              "w": 734,
+              "x": 33,
+              "y": 1295
+            },
+            "w": 734,
+            "x": 33,
+            "y": 1295,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "resource/import": {
+            "enabled": true,
+            "h": 233,
+            "label": "Импортиране на дефиниции на ресурси…",
+            "visible": {
+              "h": 233,
+              "w": 705,
+              "x": 33,
+              "y": 834
+            },
+            "w": 705,
+            "x": 33,
+            "y": 834,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "return": {
+            "enabled": true,
+            "h": 194,
+            "label": "Връщане към редактора",
+            "visible": {
+              "h": 194,
+              "w": 734,
+              "x": 33,
+              "y": 1505
+            },
+            "w": 734,
+            "x": 33,
+            "y": 1505,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "save": {
+            "enabled": true,
+            "h": 99,
+            "label": "Запазване на картата",
+            "visible": {
+              "h": 99,
+              "w": 705,
+              "x": 33,
+              "y": 240
+            },
+            "w": 705,
+            "x": 33,
+            "y": 240,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "script": {
+            "enabled": true,
+            "h": 99,
+            "label": "Сценарий…",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1846
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1846,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "set/import": {
+            "enabled": true,
+            "h": 233,
+            "label": "Импортиране на комплект с терени и ресурси",
+            "visible": {
+              "h": 196,
+              "w": 705,
+              "x": 33,
+              "y": 1083
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1083,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "set/library": {
+            "enabled": true,
+            "h": 158,
+            "label": "Библиотека с комплекти",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1332
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1332,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "settings": {
+            "enabled": true,
+            "h": 99,
+            "label": "Настройки",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1616
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1616,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "share": {
+            "enabled": true,
+            "h": 99,
+            "label": "Споделяне онлайн…",
+            "visible": {
+              "h": 99,
+              "w": 705,
+              "x": 33,
+              "y": 470
+            },
+            "w": 705,
+            "x": 33,
+            "y": 470,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "teams": {
+            "enabled": true,
+            "h": 99,
+            "label": "Отбори…",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1731
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1731,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "terrain/import": {
+            "enabled": true,
+            "h": 233,
+            "label": "Импортиране на дефиниции на терени…",
+            "visible": {
+              "h": 233,
+              "w": 705,
+              "x": 33,
+              "y": 585
+            },
+            "w": 705,
+            "x": 33,
+            "y": 585,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          },
+          "terrain/reroll": {
+            "enabled": true,
+            "h": 158,
+            "label": "Нов случаен облик на терена…",
+            "visible": {
+              "h": 0,
+              "w": 705,
+              "x": 33,
+              "y": 1961
+            },
+            "w": 705,
+            "x": 33,
+            "y": 1961,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 1666,
+              "w": 734,
+              "x": 33,
+              "y": 33
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  }
+]

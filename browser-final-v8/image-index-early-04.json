@@ -1,0 +1,271 @@
+{
+  "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "source_closure_head": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "scope": "Actual completed immutable captures only; ongoing runtime jobs; no blanket visual approval",
+  "images": [
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/matrix/desktop-dpr2-serial-language.png",
+      "sha256": "bd830f4b53840ae7223969591e38c7f7905d7cd72c8ead286b9273842d473cc6",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/matrix/desktop-dpr2-serial-main.png",
+      "sha256": "776ff99bc17e54a12ea939bd166a670843ec2413312b4503077da1771bdef113",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/matrix/desktop-serial-language.png",
+      "sha256": "b4f215f673464fda72fe93a5530a976eaaed508d9888dd9fdb59199e7bfeef90",
+      "width": 1200,
+      "height": 900
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/matrix/desktop-serial-main.png",
+      "sha256": "c74861b4e2e7505fcd26a5905c5061b4277c3edab5e140e6c9684124d5a3b1ce",
+      "width": 1200,
+      "height": 900
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/matrix/phone-serial-language.png",
+      "sha256": "2b7f40fc52cda22ebec441fbd10a9f72a6a3f0c9f1a16fc5e0c0ad1c89fba109",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/matrix/phone-serial-main.png",
+      "sha256": "9cbfbefd8e6e755f30ed81800f338ced68168d22c15bcb5354d4dc223ad3ae5b",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-editor-map.png",
+      "sha256": "d513c6ab5ecc88dcecabdfa444ae8e7ac28b8872d7913dfdd0892ca974b901e9",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-editor-new-map.png",
+      "sha256": "33967c3248a92c480447593c1890d99938280f3af60173cc476c2130b6771f9e",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-gameplay-before-objectives.png",
+      "sha256": "8d0dee6f9f760a7631ae43d150b94d40832b309a1e3647daaea8bd5bd974e4d7",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-gameplay-hud.png",
+      "sha256": "265508f0088be7c86a2a0c270fc7d7e8fa4bbbd90aa9fc463dea8e9d2f1da09b",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-script-compile-error.png",
+      "sha256": "b27e75c188cc8e18aa284e67e44c80a82f671b8a25e9c9727890ec3441c5186f",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-script-compile-success.png",
+      "sha256": "9c5858a77d45d891bcf055e550ef1b2fbe73f42d90f1ed8bb03f9d9a3b1c2eb0",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-stats-overview.png",
+      "sha256": "5425c2e8435924e5819d2c3fe9676898e6dde114c04a0ab6ec1b03378ac25bc5",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-stats-population-history.png",
+      "sha256": "86004d96e27d73f049054be8bf3ed85587f914abe1ca7b6d63cda7648991067d",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-stats-world.png",
+      "sha256": "5ce0e2c9a2b6abbbc8f945826a2558ff9d2dfdfc1d69232b3b1d288128c5b23f",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-tutorial-briefing.png",
+      "sha256": "c6b6d92c7fcbf16947db0fc72d53c1dc09cbd7c40b7e526e8433caa558ae6a79",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-tutorial-catalog.png",
+      "sha256": "7c2d8488138600fb4d5e9b75254ae73837c0683f236c9a861b18c9b86fec6d4f",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-tutorial-help.png",
+      "sha256": "a0ead11911e457eadffde1ae0b7c39108a7abf3f7fe0324bff09db4075c4ee44",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-editor-map.png",
+      "sha256": "4447bbeb3d11d623f1ae48e7bdcfc55ade1090023f87ec87fa17f59e67145dd4",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-editor-new-map.png",
+      "sha256": "9d137d86460f8658b99076786dade4e9305814d4dec7a3d817ec361c96a46abc",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-gameplay-before-objectives.png",
+      "sha256": "d13fc519a2f7520410c2348348bff84455c7d70b2a9da36b40d318b9c60e679a",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-gameplay-hud.png",
+      "sha256": "d660d12d7ffcf54d9604c5365881281bfae9895fc2504437fd47101bf435af82",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-script-compile-error.png",
+      "sha256": "9eac97d2eed890acf62363ca125ca0672ed132e30f23b9929144343600aeeefa",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-script-compile-success.png",
+      "sha256": "c1b106c62a76c54a0027b4a564903409fff86e179dcfd4f08bc4a648dc17ce17",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-stats-overview.png",
+      "sha256": "4c28e7d0ae038870f4108183c9dace33e69a7a79aa5c9e9971e4481d9ce6182b",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-stats-population-history.png",
+      "sha256": "9db4d2ae8b7ce7c74e733dd35e3bd875e977c7f361b62620abfc0b5bd0268589",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-stats-tools.png",
+      "sha256": "fc53d6f3e6525bab5c88438a09c59e82c66891045b807028f59c6bfc00e94534",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-stats-world.png",
+      "sha256": "a503e1d29d694f3f968491b64cd37950a27fc1333a1e5e5d0113cadf2c0e9c74",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-tutorial-briefing.png",
+      "sha256": "2f8db5f0d2fcad4569e61837280487a706e1f53d5dcbedfbc3a4c6dad181a629",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-tutorial-catalog.png",
+      "sha256": "239ea5c3d3b0afe84dc24c33386adcf70159add11f1135107e367120d12efa6d",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone-tutorial-help.png",
+      "sha256": "dfe8e3f8c70477392f733ac2909040a9633ec8f55a9582c804fda8d5f41dde84",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-gameplay-before-objectives.png",
+      "sha256": "ea388b6d26d7ba6569f639ef8547c2ef2a3dac214987e34bc08f1d7b1366b65a",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-gameplay-hud.png",
+      "sha256": "c4753fda3c88c34b977de62eab68ad292d30250eba6884daa187e8f7c6eb6a0b",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-settings-text150.png",
+      "sha256": "db89223e8822c79ed83733afa36757c8716f13766b2a3a430b681ae60144fb43",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-stats-overview.png",
+      "sha256": "13fce24d22b7796173fba1868860c71bb8ea0f487384c345748dafab7b0ad321",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-stats-population-history.png",
+      "sha256": "8fa2fdffbb3bd4e06d0c0f71afb94bd2e8c60a2e59cf42fdb39b22b924513457",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-stats-tools.png",
+      "sha256": "86331edbab229d203fe9ef498f2c3e5299bd034fa1521b76b58125c69bb9fbc6",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-stats-world.png",
+      "sha256": "73f288ba49319ce66b8666f1027641fd55592af675869713ee8c6d2cc74b8d78",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-tutorial-briefing.png",
+      "sha256": "f98ffad4bdc353bfede066c02dabc39a2ce71061b6cada4c52b60c4abfb6b80b",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-tutorial-catalog.png",
+      "sha256": "34527ed47448a2aefd8e9c4367821a74a65c949e2e89c2cf983432aab0490dcc",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/phone150-tutorial-help.png",
+      "sha256": "dd9265806af6224fbabf4ee7a101f4aec2f088e89c47805a9f01e4ac5a377552",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/startup-desktop-dpr2.png",
+      "sha256": "b4344427045ab37a213599eb53bcf6e8f7bcca584ca3f617f85f8b8cff61d085",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/startup-desktop.png",
+      "sha256": "fac03e96e336f3f4c660adf789f192620f7f12c8d5509f0f8a68795e8d911d92",
+      "width": 1200,
+      "height": 900
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/startup-phone.png",
+      "sha256": "1d9472d023efb88f6c07c5bc8b615ed2c8f5067ed91dd3c01ad77efdcf8308a7",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "platform/apps/web/src/pages/MapStudio.tsx": "f27223b724011150b88f291779b02641412d2f068b08bd27f84961086c436523",
+  "platform/apps/web/src/pages/MusicStudio.tsx": "e3349cdd836d07b4c9265d034475ed2ecb05c27d59a04f3c19ef9fdc1c9460aa",
+  "platform/apps/web/src/music/Library.tsx": "02cddd7945e6f1a432784febc549a70db8f8b25cc5e98e66774452cf68feb892",
+  "platform/apps/web/test/studioCreditLocale.test.tsx": "8a2980603d36733f8766cf5549773a4ab5fd2051210f3ab75c34a6023daf0252",
+  "platform/apps/web/test/musicCatalogue.test.tsx": "816890a30eced60165a629b75816ba394668bc1372909191fa627c3da2a79934",
+  "platform/packages/i18n/locales/bg.json": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f",
+  "platform/apps/web/src/styles/skin-studio.css": "ba624de12c8e72ef7a0123e2a5fb98842d300a6d5e6ccd07a49c4170208615a8"
+}

@@ -1,0 +1,13 @@
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+response.body: Protocol error (Network.getResponseBody): Request content was evicted from inspector cache
+Response body is not available for a response that was navigated away from. Read response.body() before triggering any navigation.
+    at /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/browser-final-v8/variant-proof.cjs:5:307
+    at _Page.<anonymous> (/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/browser-final-v8/variant-proof.cjs:5:551) {
+  log: [],
+  name: 'Error'
+}
+
+Node.js v24.22.1

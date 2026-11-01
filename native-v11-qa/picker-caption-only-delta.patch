@@ -1,0 +1,51 @@
+diff --git a/src/game/screens/LandscapePickerScreen.cpp b/src/game/screens/LandscapePickerScreen.cpp
+index b935b916f00482e70c07fdb359d372738baf7628..6b9b7ba6f9f80a8ff7b60bb1b57fe6d22e433be7 100644
+--- a/src/game/screens/LandscapePickerScreen.cpp
++++ b/src/game/screens/LandscapePickerScreen.cpp
+@@ -1,3 +1,4 @@
++#include "ui/DiagnosticText.h"
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "ui/LibraryText.h"
+ #include "LandscapePickerScreen.h"
+@@ -88,12 +89,15 @@ std::vector<GenerationRequest> LandscapePickerScreen::requestsOf(const std::vect
+ void LandscapePickerScreen::recomputeIncompatible()
+ {
+ 	incompatible.assign(entries.size(), {});
++	incompatibleText.assign(entries.size(), {});
+ 	for (std::size_t i = 0; i < entries.size(); ++i)
+ 	{
+ 		const auto &entry = entries[i];
+ 		if (entry.method < 0)
+ 			continue;
+ 		incompatible[i] = validateGenerationRequest(entry.request, entry.request.definition());
++		Glob2UI::DiagnosticText presenter;
++		incompatibleText[i] = presenter(incompatible[i]);
+ 	}
+ }
+ 
+@@ -418,7 +422,7 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
+ 		box.padding = p.pt(12);
+ 		// At least the preview's square, taller when the explanation needs it.
+ 		picture = fe::constrained({image, image, image, fe::Constraints::Unbounded},
+-								  fe::card(fe::paragraph(incompatible[std::size_t(i)], {fe::FontRole::Support, true}), box));
++								  fe::card(fe::paragraph(incompatibleText[std::size_t(i)], {fe::FontRole::Support, true}), box));
+ 	}
+ 	else if (tileState.widget && tileState.widget->isThumbnailLoaded())
+ 	{
+diff --git a/src/game/screens/LandscapePickerScreen.h b/src/game/screens/LandscapePickerScreen.h
+index 0324b8d3b6f9e233586efbd713088bad20a8724d..5a2895aed34677e09527adb5722a4312155b8575 100644
+--- a/src/game/screens/LandscapePickerScreen.h
++++ b/src/game/screens/LandscapePickerScreen.h
+@@ -1,3 +1,4 @@
++#include "ui/DiagnosticText.h"
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #pragma once
+ #include "GenerationRequest.h"
+@@ -136,6 +137,7 @@ class LandscapePickerScreen : public Glob2UI::Screen
+ 	/// Parallel to entries[]: the live reason this entry cannot generate at the sheet's size and
+ 	/// colony count, or empty when it can. Recomputed at construction and by setShared() whenever
+ 	/// that size or count changes; a validateGenerationRequest check, so it costs no worker time.
++	std::vector<std::string> incompatibleText;
+ 	std::vector<std::string> incompatible;
+ 	/// Every tag category present across entries[]'s own tags (each generator's own
+ 	/// GeneratorDefinition::tags, carried in by the caller), fixed at construction in a stable

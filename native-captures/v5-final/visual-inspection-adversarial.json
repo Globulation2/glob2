@@ -1,0 +1,94 @@
+{
+  "reviewer_agent": "/root/adversarial_reviewer",
+  "scope": "Exact corrected8dbimages actually inspected; no later merged producer label.",
+  "images": [
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics/statistics-economy.png",
+      "sha256": "846f766c4429061756a8dfca53b0ecd5230413f3934a31d884c3faa4971ec35c",
+      "inspection": "individual full image",
+      "observations": "Full empty-history notice now wraps inside narrow chart; final word and punctuation visible. Topic/metric/action labels remain legible. No glyph loss or overlap observed.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics/statistics-world.png",
+      "sha256": "3f96d440394b6fdf3919528dc1008912b707acba4325bb73325710849bb42173",
+      "inspection": "individual full image",
+      "observations": "Full empty-history notice now wraps inside narrow chart; final word and punctuation visible. Topic/metric/action labels remain legible. No glyph loss or overlap observed.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-script-editor/script-editor-failure.png",
+      "sha256": "ddcdf291b25d7bdc768aa3ef24cc9bc34e878976e716e6425c5e3ac92b256687",
+      "inspection": "individual full image",
+      "observations": "Tabs and tool buttons keep complete words; map-script tab wraps at spaces. Full compiler status and localized cursor fit, including complete red failure/retry message at150%. Code editor retains visible multi-line space; footer controls fit.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-script-editor/script-editor-cursor.png",
+      "sha256": "7beadf6d883c8beaadc2bf15978d779ba5d055750d2ab22a78fbc1f2a3fa9c7a",
+      "inspection": "individual full image",
+      "observations": "Tabs and tool buttons keep complete words; map-script tab wraps at spaces. Full compiler status and localized cursor fit, including complete red failure/retry message at150%. Code editor retains visible multi-line space; footer controls fit.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-script-editor/script-editor-success.png",
+      "sha256": "9ba85aa2f6aca350bb65e19dcdf5938421dbd8a7c93a83a7b659d566a84fd695",
+      "inspection": "individual full image",
+      "observations": "Tabs and tool buttons keep complete words; map-script tab wraps at spaces. Full compiler status and localized cursor fit, including complete red failure/retry message at150%. Code editor retains visible multi-line space; footer controls fit.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-script-editor/script-editor-failure.png",
+      "sha256": "4cbba599a01c35ce98771fd0730365b798c8c7cf94e7ba8b1401dc07ae0280aa",
+      "inspection": "individual full image",
+      "observations": "Tabs and tool buttons keep complete words; map-script tab wraps at spaces. Full compiler status and localized cursor fit, including complete red failure/retry message at150%. Code editor retains visible multi-line space; footer controls fit.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-new-map/new-map.png",
+      "sha256": "498242ce3a003966ee9ab7f271815c82545c709e924e8753cc25877b2cda2734",
+      "inspection": "individual full image",
+      "observations": "Generated label now reads feminine Генерирана beside Празна карта and fits the same control. Remaining visible map controls fit; no actual closed Savannah parameter labels claimed.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-new-map/new-map.png",
+      "sha256": "35f265e043445a26814aea575f6781b3203ed9c5f6e5cc98de0c37be1c0d06de",
+      "inspection": "individual full image",
+      "observations": "Generated label now reads feminine Генерирана beside Празна карта and fits the same control. Remaining visible map controls fit; no actual closed Savannah parameter labels claimed.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics/statistics-world.png",
+      "sha256": "66c85071d7e6ada4007737ab4c6139c77c4db3f0d0b960365b9518efc5f4f86a",
+      "inspection": "individual full image",
+      "observations": "Enlarged topic and metric labels fit their scrolling sheet; hidden live win-probability metric remains unavailable. Existing bottom navigation labels wrap across lines under enlarged text.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics/statistics-population-history-details.png",
+      "sha256": "80bf682ac67a2002d79e349fef1a722d5209e10f3a667dcb7746dbed91564f45",
+      "inspection": "individual full image",
+      "observations": "Population history/details modal shows readable complete explanation and close control. Empty-history notice fits. No fabricated readings or full hidden win-probability coverage claim.",
+      "limits": "Visible sampled state only; no all-pages, physical mobile, hidden data or release-performance claim.",
+      "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3"
+    }
+  ],
+  "resolved_visual_findings": [
+    "Narrow-chart empty-history notice wrapping",
+    "Full compact/enlarged compiler failure text",
+    "Whole phone script tab/action words",
+    "Generated feminine singular map-mode label"
+  ],
+  "residual_findings": [],
+  "technical_limits": "Engine/unit binaries still await final fresh handoff. New master terrain labels are outside this fixed8dbscope and need later review/font/context delta."
+}

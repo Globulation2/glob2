@@ -1,0 +1,19 @@
+{
+  "classification": "current frozen V7 platform bytes; clean integration commit pending",
+  "head": "f7f6cc0ac563080459e5784dee0128693ea29b75",
+  "node": "v24.22.1",
+  "catalogs": {
+    "platform/packages/i18n/locales/en.json": "b71afcd707e1e9d72186be671d37e80daf3be1599be32b06e08c6ff8a3348b94",
+    "platform/packages/i18n/locales/bg.json": "1fb6db279e053eb4cc0d7cfba6eb87925eba7d0d44ad5788099fa337963d0203",
+    "data/texts.bg.txt": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d"
+  },
+  "commands": {
+    "unit": "npm test -- --maxWorkers=2",
+    "lint": "npm run lint",
+    "types": "npm run typecheck",
+    "i18n": "npm run i18n:check",
+    "build": "npm run build -w @glob2/web"
+  },
+  "ownPg": "glob2-bulgarian-platform-v5 localhost42770",
+  "coverageLimit": "no browser-game Wasm runtime handoff yet; no native build started here"
+}

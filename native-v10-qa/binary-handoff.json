@@ -1,0 +1,24 @@
+{
+  "revision": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "binaries": {
+    "TranslationPreviewHarness": {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+      "sha256": "a96c8525bf7e1363a0b7d32b890ffb6b1d4cfd9317acbc8ccf8d59a1be65765b"
+    },
+    "glob2-engine-tests": {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+      "sha256": "fcfaace2f8b0988e49dab47abd3a2c2eaabc0f713f313f79b99420a730cc6b47"
+    },
+    "glob2-unit-tests": {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-unit-tests",
+      "sha256": "9d9331ce5eb68fb2c5150e2a50f932115ab74d649373e7eae95b9ce75803f3dc"
+    },
+    "TranslationPreviewHarness.capture": {
+      "sha256": "3a831b7595bb528ee5b2006e95533ec2de6ac3d5e7efb69bc3a4e773f25fb4b1",
+      "source_sha256": "a96c8525bf7e1363a0b7d32b890ffb6b1d4cfd9317acbc8ccf8d59a1be65765b",
+      "copy_proof": "preview-copy-proof.json"
+    }
+  },
+  "source_clean": true,
+  "root_authorization": "Final native3570 complete rc0; no writer until QA complete"
+}

@@ -1,0 +1,37 @@
+{
+  "sim": {
+    "versionMinor": 125,
+    "netProtocol": 49,
+    "dataHash": "abababababababababababababababababababababababababababababababab"
+  },
+  "accounts": {
+    "kestrel": "0b11976a-cb86-4f0b-bef0-bdb826d87142",
+    "mirelle": "b486a927-2c53-478f-97cb-9b7153d36db7",
+    "ana": "adbc1abd-047d-419a-8cea-6f6d21a377c3",
+    "bradley": "d18d9a3f-59d3-4e25-9566-73fbd14488ed",
+    "guest": "eed74406-32d1-4cf4-9836-6b24c2e88835",
+    "banned": "862289c0-b66e-4417-b824-a16a2bf05f7f"
+  },
+  "rankedMatches": [
+    "ccf1c012-cee4-47bc-9879-9ef74422bd92",
+    "746a4d75-67f7-4df5-bca6-53b63430773c",
+    "427f1dff-a945-48ab-9314-15e9ca930db8",
+    "dc5923c3-122d-4bc3-8e98-221f04ac5313",
+    "5bbc305b-7c16-4f0b-9e34-654c37a26040",
+    "0d9fa707-9dcc-4b9f-9ab3-cf6c9f6a3f6b",
+    "9f7559b3-0f30-4990-9c46-e0513288147b",
+    "8d9ba96c-9a4c-4e38-bd0c-d5c2ff7c3b7b"
+  ],
+  "featuredMatch": "ccf1c012-cee4-47bc-9879-9ef74422bd92",
+  "vsAiMatch": "daf026c3-3b1b-47fc-96cc-6c11d10f0fc5",
+  "publicRoomMatch": "a4e226ed-d269-4ad1-8efe-1a0f14b3a7e0",
+  "linkRoomMatch": "a6bdec07-faba-41e9-bac3-312b68cd5475",
+  "pendingMatch": "115b9de6-94a1-40d1-8386-c27f847e9b58",
+  "runningMatch": "25c8e389-a9b6-4abe-ae1b-debb7aea0d4a",
+  "mapId": "7fd4429f-bccf-4126-aeed-e81f81570575",
+  "mapHash": "0b0ef317ecc7ee21364172ef752646d0f8cba7a899e7d1b3dbdc007b297e63b1",
+  "reportId": "51347632-29c6-4e56-b1b8-e37811669c9b",
+  "replaySha256": "b3a790e27500b8c6ab0765d961f7b4ace74d4fbbc86fee2fd98651c0e2a323cf",
+  "adminSession": "waSc-yybJg7-XjAzUjOPB5d6qEurovBRxR_70Tvc9bM",
+  "userSession": "LQXqF7o0sPe6dJ5D58r4Egq7ScpQggmnfAPdrcSRIlg"
+}

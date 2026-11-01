@@ -1,0 +1,23 @@
+{
+  "revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "binaries": {
+    "TranslationPreviewHarness": {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+      "sha256": "9ba596a69ccb1558475e8f3ffeabdc1e20f69ec845771f46b2280c2bf86caa7b"
+    },
+    "glob2-engine-tests": {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+      "sha256": "d77a39b919cbfe89303ec34d8eb60f1064755a4cb80317cef030d80de1ca1ff8"
+    },
+    "glob2-unit-tests": {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-unit-tests",
+      "sha256": "e4c3c7bfe328e58b2948b9feb7a3631f90ea4ebc39809f926ec822f2a8e92cd9"
+    },
+    "TranslationPreviewHarness.capture": {
+      "sha256": "7e53662f4dd211ca76a290ef1570f221b7813febbfc72f1aa7ce10ecd99a9937",
+      "source_sha256": "9ba596a69ccb1558475e8f3ffeabdc1e20f69ec845771f46b2280c2bf86caa7b",
+      "copy_proof": "preview-copy-proof.json"
+    }
+  },
+  "authorization": "Root native82351 completedrc0 clean94021; no writer or sourcechanges planned"
+}

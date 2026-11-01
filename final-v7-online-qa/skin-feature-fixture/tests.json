@@ -1,0 +1,205 @@
+{
+  "config": {
+    "argv": [
+      "/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "artifacts/bulgarian/final-v7-online-qa/skin-feature-fixture.config.mjs"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/skin-feature-fixture.config.mjs",
+    "rootDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/skin-feature-fixture/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "new-desktop",
+        "name": "new-desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "new-domains.spec.mjs"
+        ],
+        "timeout": 360000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/skin-feature-fixture/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "new-phone",
+        "name": "new-phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "new-domains.spec.mjs"
+        ],
+        "timeout": 360000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/skin-feature-fixture/tests.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "new-domains.spec.mjs",
+      "file": "new-domains.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "new skin model and material captions use Bulgarian catalog",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-desktop",
+              "projectName": "new-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 25638,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T11:23:19.964Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new-skin-materials",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v7-online-qa/skin-feature-fixture/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 640328,
+                        "sha256": "48c90d3b832222c720b2d29cf2cc8977af8fa136cdfb198d09db1acd00bcfc2c"
+                      }
+                    },
+                    {
+                      "name": "new-skin-materials-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9za2lucyIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMTI4MCwKICAgICJoZWlnaHQiOiA5MDAKICB9LAogICJvdmVyZmxvdyI6IDAsCiAgIm1hdGNoZWROZXdTb3VyY2VzIjogWwogICAgIkNsYXNzaWMgZ2xvc3N5IiwKICAgICJNYXR0ZSIsCiAgICAiUml2ZXRlZCBtZXRhbCIsCiAgICAiSGFpcnkiLAogICAgIkNhcnRvb24iLAogICAgIldvdmVuIGZhYnJpYyIsCiAgICAiT296eSBnb28iLAogICAgIldvb2QiLAogICAgIlN0b25lIiwKICAgICJTY2FsZXMiLAogICAgIkxlYXRoZXIiLAogICAgIkNyeXN0YWwiLAogICAgIkxhdmEiLAogICAgIkNocm9tZSIsCiAgICAiQ2FyYm9uIGZpYnJlIiwKICAgICJWZWx2ZXQiLAogICAgIkhvbmV5Y29tYiIsCiAgICAiSWNlIiwKICAgICJDbG91ZCIsCiAgICAiSGFtbWVyZWQgbWV0YWwiLAogICAgIkNhbmR5IiwKICAgICJTbGltZSIsCiAgICAiV29ya2VyIiwKICAgICJXYXJyaW9yIiwKICAgICJFeHBsb3JlciIsCiAgICAiU3dhcm0iLAogICAgIkNsYXNzaWMiLAogICAgIldhbGsiLAogICAgIlN3aW0iLAogICAgIkhhcnZlc3QiCiAgXQp9"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7121c0b6adf7d0712053-29292bbcf757abbdebee",
+          "file": "new-domains.spec.mjs",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "new skin model and material captions use Bulgarian catalog",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-phone",
+              "projectName": "new-phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 28719,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T11:23:48.794Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new-skin-materials",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v7-online-qa/skin-feature-fixture/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 166018,
+                        "sha256": "4e85332543c8aec39913b9fbbd6eaace683d79be2b9bea723430e04d4d41b412"
+                      }
+                    },
+                    {
+                      "name": "new-skin-materials-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9za2lucyIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMzkwLAogICAgImhlaWdodCI6IDg0NAogIH0sCiAgIm92ZXJmbG93IjogMCwKICAibWF0Y2hlZE5ld1NvdXJjZXMiOiBbCiAgICAiQ2xhc3NpYyBnbG9zc3kiLAogICAgIk1hdHRlIiwKICAgICJSaXZldGVkIG1ldGFsIiwKICAgICJIYWlyeSIsCiAgICAiQ2FydG9vbiIsCiAgICAiV292ZW4gZmFicmljIiwKICAgICJPb3p5IGdvbyIsCiAgICAiV29vZCIsCiAgICAiU3RvbmUiLAogICAgIlNjYWxlcyIsCiAgICAiTGVhdGhlciIsCiAgICAiQ3J5c3RhbCIsCiAgICAiTGF2YSIsCiAgICAiQ2hyb21lIiwKICAgICJDYXJib24gZmlicmUiLAogICAgIlZlbHZldCIsCiAgICAiSG9uZXljb21iIiwKICAgICJJY2UiLAogICAgIkNsb3VkIiwKICAgICJIYW1tZXJlZCBtZXRhbCIsCiAgICAiQ2FuZHkiLAogICAgIlNsaW1lIiwKICAgICJXb3JrZXIiLAogICAgIldhcnJpb3IiLAogICAgIkV4cGxvcmVyIiwKICAgICJTd2FybSIsCiAgICAiQ2xhc3NpYyIsCiAgICAiV2FsayIsCiAgICAiU3dpbSIsCiAgICAiSGFydmVzdCIKICBdCn0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7121c0b6adf7d0712053-4297221203c612d7a9a8",
+          "file": "new-domains.spec.mjs",
+          "line": 16,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T11:23:18.475Z",
+    "duration": 60149.109000000004,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

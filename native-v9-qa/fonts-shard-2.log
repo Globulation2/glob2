@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/run_phase.py", line 124, in <module>
+    if phase in ['fonts','surfaces','schools']:run_capture(binary,phase,revision)
+                                               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/run_phase.py", line 68, in run_capture
+    pilot=B/'v9-full-input/render-input/bg';delta={surf:json.loads((pilot/(surf+'.json')).read_text())for surf in ['native','online']};expected={(surf,k,branch)for surf,cat in delta.items()for k,v in cat.items()for branch in (v if isinstance(v,dict)else [''])};assert len(expected)==frozen['final_render_values']
+                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-input/render-input/bg/native.json'

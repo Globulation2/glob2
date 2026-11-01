@@ -1,0 +1,62 @@
+{
+  "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "scope": "Actual completed immutable PNGs only; capture production is separate from independent visual approval",
+  "images": [
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-custom-game.png",
+      "sha256": "1d27397d7e5e5ad9a1a8249c0c0b6eff6a00802508e613e805188b02b1d6a20c",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40"
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-gameplay-before-objectives.png",
+      "sha256": "7a41e34c7de7a747f3b4421ac8eecd706fd5533fc7893fdf428d3768fad90d0b",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40"
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-main.png",
+      "sha256": "10169415525131f81dd76de022dd6714133f222353c1f0281be2148b450fabe6",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40"
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-settings.png",
+      "sha256": "3fc467488ffba87905ce622abf3f1668ddd0328df84ce127c929754c547ade0d",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40"
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-tutorial-catalog.png",
+      "sha256": "f5f8129b2f15ab73f4b5fe1ca6659793f64c0babdf4ade5e1fa89903c6495970",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40"
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/startup-desktop-dpr2.png",
+      "sha256": "b4344427045ab37a213599eb53bcf6e8f7bcca584ca3f617f85f8b8cff61d085",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40"
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/startup-desktop.png",
+      "sha256": "fac03e96e336f3f4c660adf789f192620f7f12c8d5509f0f8a68795e8d911d92",
+      "width": 1200,
+      "height": 900,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40"
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/startup-phone.png",
+      "sha256": "1d9472d023efb88f6c07c5bc8b615ed2c8f5067ed91dd3c01ad77efdcf8308a7",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40"
+    }
+  ]
+}

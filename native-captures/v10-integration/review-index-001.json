@@ -1,0 +1,15 @@
+{
+  "scope": "Only completed actual3810 desktop lobby2 jobs; failed results attempt excluded",
+  "images": [
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces/desktop-lobby/lobby.png",
+      "sha256": "b5c3839435936ea531c5399503bc413515e2e4723c9ddfccdbd3b5ab2934e553",
+      "actual_revision": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces/desktop-lobby-players/lobby-players.png",
+      "sha256": "397219157e52cc1f93adceaa8727b12352a4d378f4cc6519016ce0329c924794",
+      "actual_revision": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "timing": "preparatory: current dirty merge; clean final commit pending SIM112 golden regeneration",
+  "head": "5f63be074ebf13afa995dda702657ae882bd817c",
+  "catalogs": {
+    "platform/packages/i18n/locales/en.json": {
+      "sha256": "b71afcd707e1e9d72186be671d37e80daf3be1599be32b06e08c6ff8a3348b94",
+      "bytes": 200431
+    },
+    "platform/packages/i18n/locales/bg.json": {
+      "sha256": "1fb6db279e053eb4cc0d7cfba6eb87925eba7d0d44ad5788099fa337963d0203",
+      "bytes": 301216
+    },
+    "data/texts.en.txt": {
+      "sha256": "818c7c0c28eff921274efdefa4e2fef6db4ca56ed923973c6c37d95a97c95add",
+      "bytes": 192231
+    },
+    "data/texts.bg.txt": {
+      "sha256": "63d5a5dd70208837583989c178851099ebc98a39344a2563811f59737448ef91",
+      "bytes": 321290
+    }
+  }
+}

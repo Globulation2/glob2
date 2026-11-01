@@ -1,0 +1,14 @@
+{
+  "sim_revision": 114,
+  "master_revision": "f36de73aea50901a93d0c931bdd0fdb64c9d864c",
+  "master_trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "trace_byte_identical_master": true,
+  "match_record_sha256": "36fe73f05594e7c6fa2d0f1a40f41a2efbd61100bdc3c9536052bfcba533cfa5",
+  "fixture_updates": [
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ],
+  "actual_dirty_producer_receipt": "command.json",
+  "update_returncode": 0,
+  "verify_returncode": 0
+}

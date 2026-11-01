@@ -1,0 +1,12 @@
+{
+  "actualCaptureProducerHead": "4b613c0c3b55f9a1506c430273c07bec567f299e",
+  "captureProducerDirtyStatus": [
+    " M platform/apps/web/src/skins/useSkinDocument.ts",
+    " M platform/apps/web/test/skin-document.test.tsx"
+  ],
+  "currentHead": "f3b568c8fdb3089efa2ee99acd3f77fef9965dd3",
+  "currentStatus": [],
+  "fileCount": 1637,
+  "sourceByteIdentical": true,
+  "changed": []
+}

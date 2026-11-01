@@ -1,0 +1,7050 @@
+[
+  {
+    "name": "desktop-dpr2-main",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "14MainMenuScreen",
+        "screenClass": "14MainMenuScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 387,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "menu/0": {
+            "enabled": true,
+            "h": 42,
+            "label": "Кампания",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 360
+            },
+            "w": 320,
+            "x": 84,
+            "y": 360,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/1": {
+            "enabled": true,
+            "h": 42,
+            "label": "Урок",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 456
+            },
+            "w": 320,
+            "x": 84,
+            "y": 456,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/2": {
+            "enabled": true,
+            "h": 42,
+            "label": "Зареждане на играта",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 408
+            },
+            "w": 320,
+            "x": 84,
+            "y": 408,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/3": {
+            "enabled": true,
+            "h": 48,
+            "label": "Персонализирана игра",
+            "visible": {
+              "h": 48,
+              "w": 320,
+              "x": 84,
+              "y": 258
+            },
+            "w": 320,
+            "x": 84,
+            "y": 258,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/4": {
+            "enabled": true,
+            "h": 42,
+            "label": "Игра онлайн",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 312
+            },
+            "w": 320,
+            "x": 84,
+            "y": 312,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/6": {
+            "enabled": true,
+            "h": 34,
+            "label": "Настройки",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 84,
+              "y": 540
+            },
+            "w": 156,
+            "x": 84,
+            "y": 540,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/7": {
+            "enabled": true,
+            "h": 34,
+            "label": "Редактор",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 248,
+              "y": 540
+            },
+            "w": 156,
+            "x": 248,
+            "y": 540,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/8": {
+            "enabled": true,
+            "h": 34,
+            "label": "Автори",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 84,
+              "y": 582
+            },
+            "w": 156,
+            "x": 84,
+            "y": 582,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/9": {
+            "enabled": true,
+            "h": 34,
+            "label": "Изход",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 84,
+              "y": 624
+            },
+            "w": 156,
+            "x": 84,
+            "y": 624,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/discord": {
+            "enabled": true,
+            "h": 34,
+            "label": "Общност в Discord",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 248,
+              "y": 582
+            },
+            "w": 156,
+            "x": 248,
+            "y": 582,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-settings",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "14SettingsScreen",
+        "screenClass": "14SettingsScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 408,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "display.gametheme": {
+            "enabled": true,
+            "h": 34,
+            "label": "Тъмна",
+            "visible": {
+              "h": 0,
+              "w": 140,
+              "x": 910,
+              "y": 941
+            },
+            "w": 140,
+            "x": 910,
+            "y": 941,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.menutheme": {
+            "enabled": true,
+            "h": 34,
+            "label": "Светла",
+            "visible": {
+              "h": 0,
+              "w": 140,
+              "x": 910,
+              "y": 884
+            },
+            "w": 140,
+            "x": 910,
+            "y": 884,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.mode": {
+            "enabled": true,
+            "h": 34,
+            "label": "В прозорец",
+            "visible": {
+              "h": 34,
+              "w": 140,
+              "x": 910,
+              "y": 217
+            },
+            "w": 140,
+            "x": 910,
+            "y": 217,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.presentation": {
+            "enabled": true,
+            "h": 34,
+            "label": "Автоматично",
+            "visible": {
+              "h": 0,
+              "w": 140,
+              "x": 910,
+              "y": 1120
+            },
+            "w": 140,
+            "x": 910,
+            "y": 1120,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.textsize": {
+            "enabled": true,
+            "h": 34,
+            "label": "100 %",
+            "visible": {
+              "h": 0,
+              "w": 140,
+              "x": 910,
+              "y": 1055
+            },
+            "w": 140,
+            "x": 910,
+            "y": 1055,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.uiscale": {
+            "enabled": true,
+            "h": 64,
+            "label": "Като работния плот (100 %)",
+            "visible": {
+              "h": 64,
+              "w": 140,
+              "x": 910,
+              "y": 273
+            },
+            "w": 140,
+            "x": 910,
+            "y": 273,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "done": {
+            "enabled": true,
+            "h": 34,
+            "label": "Готово",
+            "visible": {
+              "h": 34,
+              "w": 80,
+              "x": 970,
+              "y": 756
+            },
+            "w": 80,
+            "x": 970,
+            "y": 756,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.animation": {
+            "enabled": true,
+            "h": 36,
+            "label": "[ ] Декоративна анимация на интерфейса",
+            "visible": {
+              "h": 0,
+              "w": 718,
+              "x": 332,
+              "y": 1417
+            },
+            "w": 718,
+            "x": 332,
+            "y": 1417,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.artwork": {
+            "enabled": false,
+            "h": 44,
+            "label": "Висока резолюция",
+            "visible": {
+              "h": 20,
+              "w": 140,
+              "x": 910,
+              "y": 715
+            },
+            "w": 140,
+            "x": 910,
+            "y": 715,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.clouds": {
+            "enabled": true,
+            "h": 36,
+            "label": "[ ] Облаци",
+            "visible": {
+              "h": 36,
+              "w": 718,
+              "x": 332,
+              "y": 487
+            },
+            "w": 718,
+            "x": 332,
+            "y": 487,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.fps": {
+            "enabled": true,
+            "h": 34,
+            "label": "60 FPS",
+            "visible": {
+              "h": 0,
+              "w": 140,
+              "x": 910,
+              "y": 1239
+            },
+            "w": 140,
+            "x": 910,
+            "y": 1239,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.indicators": {
+            "enabled": true,
+            "h": 36,
+            "label": "[ ] Плавни индикатори за напредък",
+            "visible": {
+              "h": 0,
+              "w": 718,
+              "x": 332,
+              "y": 1360
+            },
+            "w": 718,
+            "x": 332,
+            "y": 1360,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.magic": {
+            "enabled": true,
+            "h": 34,
+            "label": "Просто",
+            "visible": {
+              "h": 34,
+              "w": 140,
+              "x": 910,
+              "y": 659
+            },
+            "w": 140,
+            "x": 910,
+            "y": 659,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.panels": {
+            "enabled": true,
+            "h": 34,
+            "label": "Непрозрачни",
+            "visible": {
+              "h": 0,
+              "w": 140,
+              "x": 910,
+              "y": 998
+            },
+            "w": 140,
+            "x": 910,
+            "y": 998,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.particles": {
+            "enabled": true,
+            "h": 36,
+            "label": "[ ] Частици от сградите",
+            "visible": {
+              "h": 36,
+              "w": 718,
+              "x": 332,
+              "y": 601
+            },
+            "w": 718,
+            "x": 332,
+            "y": 601,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.paths": {
+            "enabled": true,
+            "h": 34,
+            "label": "Непрозрачни",
+            "visible": {
+              "h": 0,
+              "w": 140,
+              "x": 910,
+              "y": 1304
+            },
+            "w": 140,
+            "x": 910,
+            "y": 1304,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.renderer": {
+            "enabled": true,
+            "h": 34,
+            "label": "Софтуер",
+            "visible": {
+              "h": 0,
+              "w": 140,
+              "x": 910,
+              "y": 1662
+            },
+            "w": 140,
+            "x": 910,
+            "y": 1662,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.shadows": {
+            "enabled": true,
+            "h": 36,
+            "label": "[ ] Сенки от облаци",
+            "visible": {
+              "h": 36,
+              "w": 718,
+              "x": 332,
+              "y": 544
+            },
+            "w": 718,
+            "x": 332,
+            "y": 544,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.skins": {
+            "enabled": true,
+            "h": 36,
+            "label": "[x] Показване на облиците на колониите",
+            "visible": {
+              "h": 36,
+              "w": 718,
+              "x": 332,
+              "y": 430
+            },
+            "w": 718,
+            "x": 332,
+            "y": 430,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.smoothfog": {
+            "enabled": true,
+            "h": 36,
+            "label": "[x] Гладка мъгла на войната",
+            "visible": {
+              "h": 0,
+              "w": 718,
+              "x": 332,
+              "y": 1604
+            },
+            "w": 718,
+            "x": 332,
+            "y": 1604,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.torus": {
+            "enabled": false,
+            "h": 36,
+            "label": "[ ] Автоматичен тороидален изглед",
+            "visible": {
+              "h": 0,
+              "w": 718,
+              "x": 332,
+              "y": 780
+            },
+            "w": 718,
+            "x": 332,
+            "y": 780,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.unitmotion": {
+            "enabled": true,
+            "h": 36,
+            "label": "[x] Плавно движение на единиците",
+            "visible": {
+              "h": 0,
+              "w": 718,
+              "x": 332,
+              "y": 1547
+            },
+            "w": 718,
+            "x": 332,
+            "y": 1547,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.zoomdetail": {
+            "enabled": true,
+            "h": 52,
+            "label": "[x] Детайлност според мащаба",
+            "visible": {
+              "h": 0,
+              "w": 718,
+              "x": 332,
+              "y": 1474
+            },
+            "w": 718,
+            "x": 332,
+            "y": 1474,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.0": {
+            "enabled": true,
+            "h": 42,
+            "label": "Дисплей и графика",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 144
+            },
+            "w": 176,
+            "x": 140,
+            "y": 144,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.1": {
+            "enabled": true,
+            "h": 42,
+            "label": "Аудио",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 190
+            },
+            "w": 176,
+            "x": 140,
+            "y": 190,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.10": {
+            "enabled": true,
+            "h": 44,
+            "label": "Персонализирани ИИ",
+            "visible": {
+              "h": 44,
+              "w": 176,
+              "x": 140,
+              "y": 560
+            },
+            "w": 176,
+            "x": 140,
+            "y": 560,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.11": {
+            "enabled": true,
+            "h": 44,
+            "label": "Генератори на карти",
+            "visible": {
+              "h": 44,
+              "w": 176,
+              "x": 140,
+              "y": 608
+            },
+            "w": 176,
+            "x": 140,
+            "y": 608,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.2": {
+            "enabled": true,
+            "h": 42,
+            "label": "Геймплей",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 236
+            },
+            "w": 176,
+            "x": 140,
+            "y": 236,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.3": {
+            "enabled": true,
+            "h": 44,
+            "label": "Сградни настройки по подразбиране",
+            "visible": {
+              "h": 44,
+              "w": 176,
+              "x": 140,
+              "y": 282
+            },
+            "w": 176,
+            "x": 140,
+            "y": 282,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.4": {
+            "enabled": true,
+            "h": 42,
+            "label": "Контроли",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 330
+            },
+            "w": 176,
+            "x": 140,
+            "y": 330,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.5": {
+            "enabled": true,
+            "h": 42,
+            "label": "Език и играч",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 376
+            },
+            "w": 176,
+            "x": 140,
+            "y": 376,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.6": {
+            "enabled": true,
+            "h": 42,
+            "label": "Онлайн",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 422
+            },
+            "w": 176,
+            "x": 140,
+            "y": 422,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.8": {
+            "enabled": true,
+            "h": 42,
+            "label": "Запис",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 468
+            },
+            "w": 176,
+            "x": 140,
+            "y": 468,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.9": {
+            "enabled": true,
+            "h": 42,
+            "label": "Експерименти",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 514
+            },
+            "w": 176,
+            "x": 140,
+            "y": 514,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-custom-game",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "16CustomGameScreen",
+        "screenClass": "16CustomGameScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 467,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "back": {
+            "enabled": true,
+            "h": 34,
+            "label": "Обратно",
+            "visible": {
+              "h": 34,
+              "w": 117,
+              "x": 786,
+              "y": 820
+            },
+            "w": 117,
+            "x": 786,
+            "y": 820,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/colonies": {
+            "enabled": true,
+            "h": 34,
+            "label": "4",
+            "visible": {
+              "h": 34,
+              "w": 160,
+              "x": 484,
+              "y": 300
+            },
+            "w": 160,
+            "x": 484,
+            "y": 300,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/height": {
+            "enabled": true,
+            "h": 34,
+            "label": "256",
+            "visible": {
+              "h": 34,
+              "w": 160,
+              "x": 484,
+              "y": 258
+            },
+            "w": 160,
+            "x": 484,
+            "y": 258,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/landscape": {
+            "enabled": true,
+            "h": 34,
+            "label": "Лавов щит",
+            "visible": {
+              "h": 34,
+              "w": 220,
+              "x": 424,
+              "y": 122
+            },
+            "w": 220,
+            "x": 424,
+            "y": 122,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/random": {
+            "enabled": true,
+            "h": 44,
+            "label": "Случайни параметри",
+            "visible": {
+              "h": 44,
+              "w": 285,
+              "x": 359,
+              "y": 164
+            },
+            "w": 285,
+            "x": 359,
+            "y": 164,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/reset": {
+            "enabled": false,
+            "h": 44,
+            "label": "Възстановяване на настройките по подразбиране",
+            "visible": {
+              "h": 44,
+              "w": 285,
+              "x": 66,
+              "y": 164
+            },
+            "w": 285,
+            "x": 66,
+            "y": 164,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/section/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Терен",
+            "visible": {
+              "h": 34,
+              "w": 578,
+              "x": 66,
+              "y": 362
+            },
+            "w": 578,
+            "x": 66,
+            "y": 362,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/section/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Ресурси",
+            "visible": {
+              "h": 34,
+              "w": 578,
+              "x": 66,
+              "y": 404
+            },
+            "w": 578,
+            "x": 66,
+            "y": 404,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/section/2": {
+            "enabled": true,
+            "h": 34,
+            "label": "Оформление",
+            "visible": {
+              "h": 34,
+              "w": 578,
+              "x": 66,
+              "y": 446
+            },
+            "w": 578,
+            "x": 66,
+            "y": 446,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/width": {
+            "enabled": true,
+            "h": 34,
+            "label": "256",
+            "visible": {
+              "h": 34,
+              "w": 160,
+              "x": 484,
+              "y": 216
+            },
+            "w": 160,
+            "x": 484,
+            "y": 216,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/buildings": {
+            "enabled": true,
+            "h": 34,
+            "label": "Семейства сгради",
+            "visible": {
+              "h": 34,
+              "w": 578,
+              "x": 66,
+              "y": 488
+            },
+            "w": 578,
+            "x": 66,
+            "y": 488,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/mode/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Предварително направени карти",
+            "visible": {
+              "h": 34,
+              "w": 289,
+              "x": 74,
+              "y": 80
+            },
+            "w": 289,
+            "x": 74,
+            "y": 80,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/mode/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Случайна карта",
+            "visible": {
+              "h": 34,
+              "w": 168,
+              "x": 387,
+              "y": 80
+            },
+            "w": 168,
+            "x": 387,
+            "y": 80,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/randomize": {
+            "enabled": false,
+            "h": 34,
+            "label": "Разбъркване",
+            "visible": {
+              "h": 34,
+              "w": 147,
+              "x": 823,
+              "y": 616
+            },
+            "w": 147,
+            "x": 823,
+            "y": 616,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "start": {
+            "enabled": true,
+            "h": 34,
+            "label": "Игра на тази карта",
+            "visible": {
+              "h": 34,
+              "w": 191,
+              "x": 933,
+              "y": 820
+            },
+            "w": 191,
+            "x": 933,
+            "y": 820,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tab/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Карта",
+            "visible": {
+              "h": 34,
+              "w": 352,
+              "x": 66,
+              "y": 24
+            },
+            "w": 352,
+            "x": 66,
+            "y": 24,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tab/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Играчи и отбори",
+            "visible": {
+              "h": 34,
+              "w": 352,
+              "x": 424,
+              "y": 24
+            },
+            "w": 352,
+            "x": 424,
+            "y": 24,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tab/2": {
+            "enabled": true,
+            "h": 34,
+            "label": "Правила на играта",
+            "visible": {
+              "h": 34,
+              "w": 352,
+              "x": 782,
+              "y": 24
+            },
+            "w": 352,
+            "x": 782,
+            "y": 24,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-tutorial-catalog",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "N8Tutorial19LessonCatalogScreenE",
+        "screenClass": "N8Tutorial19LessonCatalogScreenE",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 497,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "tutorial/back": {
+            "enabled": true,
+            "h": 34,
+            "label": "Към главното меню",
+            "visible": {
+              "h": 34,
+              "w": 170,
+              "x": 740,
+              "y": 656
+            },
+            "w": 170,
+            "x": 740,
+            "y": 656,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Въведение",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 246
+            },
+            "w": 630,
+            "x": 280,
+            "y": 246,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Практика за снабдяване с храни",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 308
+            },
+            "w": 630,
+            "x": 280,
+            "y": 308,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/2": {
+            "enabled": true,
+            "h": 34,
+            "label": "Болници и лечение",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 386
+            },
+            "w": 630,
+            "x": 280,
+            "y": 386,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/3": {
+            "enabled": true,
+            "h": 34,
+            "label": "Тренировка по ходене",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 464
+            },
+            "w": 630,
+            "x": 280,
+            "y": 464,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/4": {
+            "enabled": true,
+            "h": 34,
+            "label": "Плуване и водни ресурси",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 526
+            },
+            "w": 630,
+            "x": 280,
+            "y": 526,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/5": {
+            "enabled": true,
+            "h": 34,
+            "label": "Училища и умения на работниците",
+            "visible": {
+              "h": 34,
+              "w": 630,
+              "x": 280,
+              "y": 588
+            },
+            "w": 630,
+            "x": 280,
+            "y": 588,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/6": {
+            "enabled": true,
+            "h": 34,
+            "label": "Подобряване на сгради",
+            "visible": {
+              "h": 0,
+              "w": 630,
+              "x": 280,
+              "y": 666
+            },
+            "w": 630,
+            "x": 280,
+            "y": 666,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/7": {
+            "enabled": true,
+            "h": 34,
+            "label": "Производство и обучение на воини",
+            "visible": {
+              "h": 0,
+              "w": 630,
+              "x": 280,
+              "y": 744
+            },
+            "w": 630,
+            "x": 280,
+            "y": 744,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/8": {
+            "enabled": true,
+            "h": 34,
+            "label": "Кули и защитни стени",
+            "visible": {
+              "h": 0,
+              "w": 630,
+              "x": 280,
+              "y": 806
+            },
+            "w": 630,
+            "x": 280,
+            "y": 806,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/9": {
+            "enabled": true,
+            "h": 34,
+            "label": "Зони за охрана и тактики с флагове",
+            "visible": {
+              "h": 0,
+              "w": 630,
+              "x": 280,
+              "y": 868
+            },
+            "w": 630,
+            "x": 280,
+            "y": 868,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-gameplay-before-objectives",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 32,
+        "frames": 16,
+        "loop": 536,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 192
+            },
+            "w": 420,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 234
+            },
+            "w": 420,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-tutorial-briefing",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 89,
+        "frames": 64,
+        "loop": 584,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 192
+            },
+            "w": 420,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 234
+            },
+            "w": 420,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "objectives/tab/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Брифинг",
+            "visible": {
+              "h": 34,
+              "w": 170,
+              "x": 336,
+              "y": 384
+            },
+            "w": 170,
+            "x": 336,
+            "y": 384,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 132,
+              "w": 528,
+              "x": 336,
+              "y": 384
+            }
+          },
+          "objectives/tab/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Цели",
+            "visible": {
+              "h": 34,
+              "w": 170,
+              "x": 514,
+              "y": 384
+            },
+            "w": 170,
+            "x": 514,
+            "y": 384,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 132,
+              "w": 528,
+              "x": 336,
+              "y": 384
+            }
+          },
+          "objectives/tab/2": {
+            "enabled": true,
+            "h": 34,
+            "label": "Съвети",
+            "visible": {
+              "h": 34,
+              "w": 172,
+              "x": 692,
+              "y": 384
+            },
+            "w": 172,
+            "x": 692,
+            "y": 384,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 132,
+              "w": 528,
+              "x": 336,
+              "y": 384
+            }
+          },
+          "ok": {
+            "enabled": true,
+            "h": 44,
+            "label": "Добре",
+            "visible": {
+              "h": 44,
+              "w": 528,
+              "x": 336,
+              "y": 472
+            },
+            "w": 528,
+            "x": 336,
+            "y": 472,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 132,
+              "w": 528,
+              "x": 336,
+              "y": 384
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-gameplay-hud",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 142,
+        "frames": 110,
+        "loop": 630,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 192
+            },
+            "w": 420,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 234
+            },
+            "w": 420,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-tutorial-help",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 196,
+        "frames": 159,
+        "loop": 679,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 410,
+              "x": 24,
+              "y": 192
+            },
+            "w": 410,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 410,
+              "x": 24,
+              "y": 234
+            },
+            "w": 410,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-stats-overview",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 296,
+        "frames": 252,
+        "loop": 772,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 192
+            },
+            "w": 420,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 234
+            },
+            "w": 420,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "stats/full-history/population": {
+            "enabled": true,
+            "h": 34,
+            "label": "Отворете пълната история",
+            "visible": {
+              "h": 34,
+              "w": 178,
+              "x": 1006,
+              "y": 615
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 615,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/inline/chart": {
+            "enabled": true,
+            "h": 150,
+            "label": "Население: Преглед на историята",
+            "visible": {
+              "h": 150,
+              "w": 178,
+              "x": 1006,
+              "y": 461
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 461,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/blocked buildings": {
+            "enabled": true,
+            "h": 34,
+            "label": "Сгради без вход 0",
+            "visible": {
+              "h": 5,
+              "w": 178,
+              "x": 1006,
+              "y": 859
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 859,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/health": {
+            "enabled": true,
+            "h": 34,
+            "label": "Здраве 0%",
+            "visible": {
+              "h": 34,
+              "w": 178,
+              "x": 1006,
+              "y": 727
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 727,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/hunger": {
+            "enabled": true,
+            "h": 46,
+            "label": "Хранителни резерви 0%",
+            "visible": {
+              "h": 46,
+              "w": 178,
+              "x": 1006,
+              "y": 678
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 678,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/idle workers": {
+            "enabled": true,
+            "h": 66,
+            "label": "Бездействащи работници —",
+            "visible": {
+              "h": 66,
+              "w": 178,
+              "x": 1006,
+              "y": 790
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 790,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/intruders": {
+            "enabled": true,
+            "h": 66,
+            "label": "Вражески воини у дома 0",
+            "visible": {
+              "h": 0,
+              "w": 178,
+              "x": 1006,
+              "y": 959
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 959,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/net growth": {
+            "enabled": true,
+            "h": 66,
+            "label": "Растеж на населението —",
+            "visible": {
+              "h": 66,
+              "w": 178,
+              "x": 1006,
+              "y": 376
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 376,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/population": {
+            "enabled": true,
+            "h": 34,
+            "label": "Население 0",
+            "visible": {
+              "h": 34,
+              "w": 178,
+              "x": 1006,
+              "y": 339
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 339,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/warriors": {
+            "enabled": true,
+            "h": 34,
+            "label": "Воини 4",
+            "visible": {
+              "h": 0,
+              "w": 178,
+              "x": 1006,
+              "y": 922
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 922,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Общ преглед",
+            "visible": {
+              "h": 34,
+              "w": 188,
+              "x": 1006,
+              "y": 208
+            },
+            "w": 188,
+            "x": 1006,
+            "y": 208,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Колония",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1006,
+              "y": 246
+            },
+            "w": 92,
+            "x": 1006,
+            "y": 246,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/2": {
+            "enabled": true,
+            "h": 34,
+            "label": "Икономика",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1102,
+              "y": 246
+            },
+            "w": 92,
+            "x": 1102,
+            "y": 246,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/3": {
+            "enabled": true,
+            "h": 34,
+            "label": "Военни",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1006,
+              "y": 284
+            },
+            "w": 92,
+            "x": 1006,
+            "y": 284,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/4": {
+            "enabled": true,
+            "h": 34,
+            "label": "Свят",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1102,
+              "y": 284
+            },
+            "w": 92,
+            "x": 1102,
+            "y": 284,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-stats-population-history",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 357,
+        "frames": 299,
+        "loop": 819,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 192
+            },
+            "w": 420,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 234
+            },
+            "w": 420,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "stats/full-history/population": {
+            "enabled": true,
+            "h": 34,
+            "label": "Отворете пълната история",
+            "visible": {
+              "h": 34,
+              "w": 178,
+              "x": 1006,
+              "y": 615
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 615,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/inline/chart": {
+            "enabled": true,
+            "h": 150,
+            "label": "Население: Преглед на историята",
+            "visible": {
+              "h": 150,
+              "w": 178,
+              "x": 1006,
+              "y": 461
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 461,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/blocked buildings": {
+            "enabled": true,
+            "h": 34,
+            "label": "Сгради без вход 0",
+            "visible": {
+              "h": 5,
+              "w": 178,
+              "x": 1006,
+              "y": 859
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 859,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/health": {
+            "enabled": true,
+            "h": 34,
+            "label": "Здраве 0%",
+            "visible": {
+              "h": 34,
+              "w": 178,
+              "x": 1006,
+              "y": 727
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 727,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/hunger": {
+            "enabled": true,
+            "h": 46,
+            "label": "Хранителни резерви 0%",
+            "visible": {
+              "h": 46,
+              "w": 178,
+              "x": 1006,
+              "y": 678
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 678,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/idle workers": {
+            "enabled": true,
+            "h": 66,
+            "label": "Бездействащи работници —",
+            "visible": {
+              "h": 66,
+              "w": 178,
+              "x": 1006,
+              "y": 790
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 790,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/intruders": {
+            "enabled": true,
+            "h": 66,
+            "label": "Вражески воини у дома 0",
+            "visible": {
+              "h": 0,
+              "w": 178,
+              "x": 1006,
+              "y": 959
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 959,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/net growth": {
+            "enabled": true,
+            "h": 66,
+            "label": "Растеж на населението —",
+            "visible": {
+              "h": 66,
+              "w": 178,
+              "x": 1006,
+              "y": 376
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 376,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/population": {
+            "enabled": true,
+            "h": 34,
+            "label": "Население 0",
+            "visible": {
+              "h": 34,
+              "w": 178,
+              "x": 1006,
+              "y": 339
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 339,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/warriors": {
+            "enabled": true,
+            "h": 34,
+            "label": "Воини 4",
+            "visible": {
+              "h": 0,
+              "w": 178,
+              "x": 1006,
+              "y": 922
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 922,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Общ преглед",
+            "visible": {
+              "h": 34,
+              "w": 188,
+              "x": 1006,
+              "y": 208
+            },
+            "w": 188,
+            "x": 1006,
+            "y": 208,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Колония",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1006,
+              "y": 246
+            },
+            "w": 92,
+            "x": 1006,
+            "y": 246,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/2": {
+            "enabled": true,
+            "h": 34,
+            "label": "Икономика",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1102,
+              "y": 246
+            },
+            "w": 92,
+            "x": 1102,
+            "y": 246,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/3": {
+            "enabled": true,
+            "h": 34,
+            "label": "Военни",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1006,
+              "y": 284
+            },
+            "w": 92,
+            "x": 1006,
+            "y": 284,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/4": {
+            "enabled": true,
+            "h": 34,
+            "label": "Свят",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1102,
+              "y": 284
+            },
+            "w": 92,
+            "x": 1102,
+            "y": 284,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/history/chart": {
+            "enabled": true,
+            "h": 280,
+            "label": "Население: единици",
+            "visible": {
+              "h": 280,
+              "w": 560,
+              "x": 320,
+              "y": 300
+            },
+            "w": 560,
+            "x": 320,
+            "y": 300,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 428,
+              "w": 560,
+              "x": 320,
+              "y": 236
+            }
+          },
+          "stats/history/close": {
+            "enabled": true,
+            "h": 34,
+            "label": "Затваряне",
+            "visible": {
+              "h": 34,
+              "w": 105,
+              "x": 765,
+              "y": 630
+            },
+            "w": 105,
+            "x": 765,
+            "y": 630,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 428,
+              "w": 560,
+              "x": 320,
+              "y": 236
+            }
+          },
+          "stats/history/details": {
+            "enabled": true,
+            "h": 34,
+            "label": "Детайли",
+            "visible": {
+              "h": 34,
+              "w": 560,
+              "x": 320,
+              "y": 588
+            },
+            "w": 560,
+            "x": 320,
+            "y": 588,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 428,
+              "w": 560,
+              "x": 320,
+              "y": 236
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-stats-world",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 432,
+        "frames": 370,
+        "loop": 890,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 2400,
+        "height": 1800,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 44,
+            "label": "−",
+            "visible": {
+              "h": 44,
+              "w": 43,
+              "x": 401,
+              "y": 56
+            },
+            "w": 43,
+            "x": 401,
+            "y": 56,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 34,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 192
+            },
+            "w": 420,
+            "x": 24,
+            "y": 192,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 34,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 34,
+              "w": 420,
+              "x": 24,
+              "y": 234
+            },
+            "w": 420,
+            "x": 24,
+            "y": 234,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 212,
+              "w": 420,
+              "x": 24,
+              "y": 56
+            }
+          },
+          "stats/full-history/growth nearby": {
+            "enabled": true,
+            "h": 34,
+            "label": "Отворете пълната история",
+            "visible": {
+              "h": 34,
+              "w": 178,
+              "x": 1006,
+              "y": 769
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 769,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/inline/chart": {
+            "enabled": true,
+            "h": 150,
+            "label": "Растеж на ресурсите в близост до колонията: Преглед на историята",
+            "visible": {
+              "h": 150,
+              "w": 178,
+              "x": 1006,
+              "y": 615
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 615,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/cleared": {
+            "enabled": true,
+            "h": 34,
+            "label": "Разчистени ресурси —",
+            "visible": {
+              "h": 34,
+              "w": 178,
+              "x": 1006,
+              "y": 546
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 546,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/growth map": {
+            "enabled": true,
+            "h": 66,
+            "label": "Растеж на ресурсите по цялата карта —",
+            "visible": {
+              "h": 66,
+              "w": 178,
+              "x": 1006,
+              "y": 408
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 408,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/growth nearby": {
+            "enabled": true,
+            "h": 66,
+            "label": "Растеж на ресурсите в близост до колонията —",
+            "visible": {
+              "h": 66,
+              "w": 178,
+              "x": 1006,
+              "y": 339
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 339,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/prestige": {
+            "enabled": true,
+            "h": 34,
+            "label": "Престиж 0",
+            "visible": {
+              "h": 32,
+              "w": 178,
+              "x": 1006,
+              "y": 832
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 832,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/metric/stranded": {
+            "enabled": true,
+            "h": 66,
+            "label": "Единици, които не могат да се движат 0%",
+            "visible": {
+              "h": 66,
+              "w": 178,
+              "x": 1006,
+              "y": 477
+            },
+            "w": 178,
+            "x": 1006,
+            "y": 477,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/0": {
+            "enabled": true,
+            "h": 34,
+            "label": "Общ преглед",
+            "visible": {
+              "h": 34,
+              "w": 188,
+              "x": 1006,
+              "y": 208
+            },
+            "w": 188,
+            "x": 1006,
+            "y": 208,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/1": {
+            "enabled": true,
+            "h": 34,
+            "label": "Колония",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1006,
+              "y": 246
+            },
+            "w": 92,
+            "x": 1006,
+            "y": 246,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/2": {
+            "enabled": true,
+            "h": 34,
+            "label": "Икономика",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1102,
+              "y": 246
+            },
+            "w": 92,
+            "x": 1102,
+            "y": 246,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/3": {
+            "enabled": true,
+            "h": 34,
+            "label": "Военни",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1006,
+              "y": 284
+            },
+            "w": 92,
+            "x": 1006,
+            "y": 284,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          },
+          "stats/topic/4": {
+            "enabled": true,
+            "h": 34,
+            "label": "Свят",
+            "visible": {
+              "h": 34,
+              "w": 92,
+              "x": 1102,
+              "y": 284
+            },
+            "w": 92,
+            "x": 1102,
+            "y": 284,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 690,
+              "w": 200,
+              "x": 1000,
+              "y": 180
+            }
+          }
+        }
+      },
+      "dpr": 2,
+      "css": {
+        "width": 1200,
+        "height": 900
+      },
+      "canvas": [
+        {
+          "width": 2400,
+          "height": 1800,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "desktop-dpr2-statistics-policy",
+    "status": "actual live player UI only; hidden win-probability metric absent; no observer/profile flags modified"
+  },
+  {
+    "name": "phone150-main",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "14MainMenuScreen",
+        "screenClass": "14MainMenuScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 476,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "menu/0": {
+            "enabled": true,
+            "h": 56,
+            "label": "Кампания",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 424
+            },
+            "w": 328,
+            "x": 24,
+            "y": 424,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/1": {
+            "enabled": true,
+            "h": 56,
+            "label": "Урок",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 552
+            },
+            "w": 328,
+            "x": 24,
+            "y": 552,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/2": {
+            "enabled": true,
+            "h": 56,
+            "label": "Зареждане на играта",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 488
+            },
+            "w": 328,
+            "x": 24,
+            "y": 488,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/3": {
+            "enabled": true,
+            "h": 56,
+            "label": "Персонализирана игра",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 284
+            },
+            "w": 328,
+            "x": 24,
+            "y": 284,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/4": {
+            "enabled": true,
+            "h": 56,
+            "label": "Игра онлайн",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 348
+            },
+            "w": 328,
+            "x": 24,
+            "y": 348,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/more": {
+            "enabled": true,
+            "h": 48,
+            "label": "Още",
+            "visible": {
+              "h": 0,
+              "w": 328,
+              "x": 24,
+              "y": 628
+            },
+            "w": 328,
+            "x": 24,
+            "y": 628,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/settings": {
+            "enabled": true,
+            "h": 48,
+            "label": "Настройки",
+            "visible": {
+              "h": 48,
+              "w": 48,
+              "x": 318,
+              "y": 224
+            },
+            "w": 48,
+            "x": 318,
+            "y": 224,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "phone150-settings",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "14SettingsScreen",
+        "screenClass": "14SettingsScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 489,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "display.gametheme": {
+            "enabled": true,
+            "h": 48,
+            "label": "Тъмна",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1048
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1048,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.menutheme": {
+            "enabled": true,
+            "h": 48,
+            "label": "Светла",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 884
+            },
+            "w": 352,
+            "x": 12,
+            "y": 884,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.presentation": {
+            "enabled": true,
+            "h": 48,
+            "label": "Автоматично",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1516
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1516,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.textsize": {
+            "enabled": true,
+            "h": 48,
+            "label": "100 %",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1328
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1328,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.thumb": {
+            "enabled": true,
+            "h": 48,
+            "label": "Дясно",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 3092
+            },
+            "w": 352,
+            "x": 12,
+            "y": 3092,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.zoomdrag": {
+            "enabled": true,
+            "h": 56,
+            "label": "По подразбиране за платформата",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2944
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2944,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "done": {
+            "enabled": true,
+            "h": 48,
+            "label": "Готово",
+            "visible": {
+              "h": 48,
+              "w": 123,
+              "x": 255,
+              "y": 784
+            },
+            "w": 123,
+            "x": 255,
+            "y": 784,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.animation": {
+            "enabled": true,
+            "h": 148,
+            "label": "[ ] Декоративна анимация на интерфейса",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2134
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2134,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.clouds": {
+            "enabled": true,
+            "h": 74,
+            "label": "[ ] Облаци",
+            "visible": {
+              "h": 74,
+              "w": 352,
+              "x": 12,
+              "y": 336
+            },
+            "w": 352,
+            "x": 12,
+            "y": 336,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.fps": {
+            "enabled": true,
+            "h": 48,
+            "label": "60 FPS",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1778
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1778,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.indicators": {
+            "enabled": true,
+            "h": 124,
+            "label": "[ ] Плавни индикатори за напредък",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2000
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2000,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.magic": {
+            "enabled": true,
+            "h": 48,
+            "label": "Просто",
+            "visible": {
+              "h": 48,
+              "w": 352,
+              "x": 12,
+              "y": 694
+            },
+            "w": 352,
+            "x": 12,
+            "y": 694,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.panels": {
+            "enabled": true,
+            "h": 48,
+            "label": "Непрозрачни",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1188
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1188,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.particles": {
+            "enabled": true,
+            "h": 74,
+            "label": "[ ] Частици от сградите",
+            "visible": {
+              "h": 74,
+              "w": 352,
+              "x": 12,
+              "y": 528
+            },
+            "w": 352,
+            "x": 12,
+            "y": 528,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.paths": {
+            "enabled": true,
+            "h": 48,
+            "label": "Непрозрачни",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1942
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1942,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.renderer": {
+            "enabled": true,
+            "h": 48,
+            "label": "Софтуер",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2748
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2748,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.shadows": {
+            "enabled": true,
+            "h": 98,
+            "label": "[ ] Сенки от облаци",
+            "visible": {
+              "h": 98,
+              "w": 352,
+              "x": 12,
+              "y": 420
+            },
+            "w": 352,
+            "x": 12,
+            "y": 420,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.skins": {
+            "enabled": true,
+            "h": 148,
+            "label": "[x] Показване на облиците на колониите",
+            "visible": {
+              "h": 148,
+              "w": 352,
+              "x": 12,
+              "y": 178
+            },
+            "w": 352,
+            "x": 12,
+            "y": 178,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.smoothfog": {
+            "enabled": true,
+            "h": 74,
+            "label": "[x] Гладка мъгла на войната",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2582
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2582,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.unitmotion": {
+            "enabled": true,
+            "h": 124,
+            "label": "[x] Плавно движение на единиците",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2448
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2448,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.zoomdetail": {
+            "enabled": true,
+            "h": 146,
+            "label": "[x] Детайлност според мащаба",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2292
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2292,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.current": {
+            "enabled": true,
+            "h": 48,
+            "label": "Дисплей и графика",
+            "visible": {
+              "h": 48,
+              "w": 366,
+              "x": 12,
+              "y": 12
+            },
+            "w": 366,
+            "x": 12,
+            "y": 12,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "phone150-custom-game",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "16CustomGameScreen",
+        "screenClass": "16CustomGameScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 519,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "back": {
+            "enabled": true,
+            "h": 48,
+            "label": "Обратно",
+            "visible": {
+              "h": 48,
+              "w": 181,
+              "x": 10,
+              "y": 786
+            },
+            "w": 181,
+            "x": 10,
+            "y": 786,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/colonies": {
+            "enabled": true,
+            "h": 48,
+            "label": "4",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1106
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1106,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/height": {
+            "enabled": true,
+            "h": 48,
+            "label": "256",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1020
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1020,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/landscape": {
+            "enabled": true,
+            "h": 48,
+            "label": "Лавов щит",
+            "visible": {
+              "h": 39,
+              "w": 356,
+              "x": 10,
+              "y": 680
+            },
+            "w": 356,
+            "x": 10,
+            "y": 680,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/random": {
+            "enabled": true,
+            "h": 160,
+            "label": "Случайни параметри",
+            "visible": {
+              "h": 0,
+              "w": 174,
+              "x": 192,
+              "y": 736
+            },
+            "w": 174,
+            "x": 192,
+            "y": 736,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/reset": {
+            "enabled": false,
+            "h": 160,
+            "label": "Възстановяване на настройките по подразбиране",
+            "visible": {
+              "h": 0,
+              "w": 174,
+              "x": 10,
+              "y": 736
+            },
+            "w": 174,
+            "x": 10,
+            "y": 736,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/section/0": {
+            "enabled": true,
+            "h": 48,
+            "label": "Терен",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1214
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1214,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/section/1": {
+            "enabled": true,
+            "h": 48,
+            "label": "Ресурси",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1270
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1270,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/section/2": {
+            "enabled": true,
+            "h": 48,
+            "label": "Оформление",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1326
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1326,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/width": {
+            "enabled": true,
+            "h": 48,
+            "label": "256",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 934
+            },
+            "w": 356,
+            "x": 10,
+            "y": 934,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/buildings": {
+            "enabled": true,
+            "h": 48,
+            "label": "Семейства сгради",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1382
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1382,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/mode/0": {
+            "enabled": true,
+            "h": 82,
+            "label": "Предварително направени карти",
+            "visible": {
+              "h": 82,
+              "w": 174,
+              "x": 10,
+              "y": 66
+            },
+            "w": 174,
+            "x": 10,
+            "y": 66,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/mode/1": {
+            "enabled": true,
+            "h": 82,
+            "label": "Случайна карта",
+            "visible": {
+              "h": 82,
+              "w": 174,
+              "x": 192,
+              "y": 66
+            },
+            "w": 174,
+            "x": 192,
+            "y": 66,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/randomize": {
+            "enabled": false,
+            "h": 48,
+            "label": "Разбъркване",
+            "visible": {
+              "h": 48,
+              "w": 48,
+              "x": 164,
+              "y": 590
+            },
+            "w": 48,
+            "x": 164,
+            "y": 590,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "start": {
+            "enabled": true,
+            "h": 48,
+            "label": "Следващо",
+            "visible": {
+              "h": 48,
+              "w": 181,
+              "x": 199,
+              "y": 786
+            },
+            "w": 181,
+            "x": 199,
+            "y": 786,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tab/0": {
+            "enabled": true,
+            "h": 48,
+            "label": "Карта",
+            "visible": {
+              "h": 48,
+              "w": 119,
+              "x": 10,
+              "y": 10
+            },
+            "w": 119,
+            "x": 10,
+            "y": 10,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tab/1": {
+            "enabled": true,
+            "h": 48,
+            "label": "Играчи",
+            "visible": {
+              "h": 48,
+              "w": 119,
+              "x": 135,
+              "y": 10
+            },
+            "w": 119,
+            "x": 135,
+            "y": 10,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tab/2": {
+            "enabled": true,
+            "h": 48,
+            "label": "Правила",
+            "visible": {
+              "h": 48,
+              "w": 120,
+              "x": 260,
+              "y": 10
+            },
+            "w": 120,
+            "x": 260,
+            "y": 10,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "phone150-settings-text150",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "14SettingsScreen",
+        "screenClass": "14SettingsScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 588,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "display.gametheme": {
+            "enabled": true,
+            "h": 48,
+            "label": "Тъмна",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1202
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1202,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.menutheme": {
+            "enabled": true,
+            "h": 48,
+            "label": "Светла",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 967
+            },
+            "w": 352,
+            "x": 12,
+            "y": 967,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.presentation": {
+            "enabled": true,
+            "h": 48,
+            "label": "Автоматично",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1944
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1944,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.textsize": {
+            "enabled": true,
+            "h": 48,
+            "label": "150 %",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1606
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1606,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.thumb": {
+            "enabled": true,
+            "h": 48,
+            "label": "Дясно",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 4726
+            },
+            "w": 352,
+            "x": 12,
+            "y": 4726,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "display.zoomdrag": {
+            "enabled": true,
+            "h": 78,
+            "label": "По подразбиране за платформата",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 4494
+            },
+            "w": 352,
+            "x": 12,
+            "y": 4494,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "done": {
+            "enabled": true,
+            "h": 49,
+            "label": "Готово",
+            "visible": {
+              "h": 49,
+              "w": 366,
+              "x": 12,
+              "y": 783
+            },
+            "w": 366,
+            "x": 12,
+            "y": 783,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.animation": {
+            "enabled": true,
+            "h": 342,
+            "label": "[ ] Декоративна анимация на интерфейса",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2932
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2932,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.clouds": {
+            "enabled": true,
+            "h": 136,
+            "label": "[ ] Облаци",
+            "visible": {
+              "h": 104,
+              "w": 352,
+              "x": 12,
+              "y": 70
+            },
+            "w": 352,
+            "x": 12,
+            "y": 38,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.fps": {
+            "enabled": true,
+            "h": 48,
+            "label": "60 FPS",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2423
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2423,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.indicators": {
+            "enabled": true,
+            "h": 206,
+            "label": "[ ] Плавни индикатори за напредък",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2716
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2716,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.magic": {
+            "enabled": true,
+            "h": 48,
+            "label": "Просто",
+            "visible": {
+              "h": 2,
+              "w": 352,
+              "x": 12,
+              "y": 690
+            },
+            "w": 352,
+            "x": 12,
+            "y": 690,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.panels": {
+            "enabled": true,
+            "h": 48,
+            "label": "Непрозрачни",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 1404
+            },
+            "w": 352,
+            "x": 12,
+            "y": 1404,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.particles": {
+            "enabled": true,
+            "h": 173,
+            "label": "[ ] Частици от сградите",
+            "visible": {
+              "h": 173,
+              "w": 352,
+              "x": 12,
+              "y": 363
+            },
+            "w": 352,
+            "x": 12,
+            "y": 363,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.paths": {
+            "enabled": true,
+            "h": 48,
+            "label": "Непрозрачни",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 2658
+            },
+            "w": 352,
+            "x": 12,
+            "y": 2658,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.renderer": {
+            "enabled": true,
+            "h": 48,
+            "label": "Софтуер",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 4142
+            },
+            "w": 352,
+            "x": 12,
+            "y": 4142,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.shadows": {
+            "enabled": true,
+            "h": 169,
+            "label": "[ ] Сенки от облаци",
+            "visible": {
+              "h": 169,
+              "w": 352,
+              "x": 12,
+              "y": 184
+            },
+            "w": 352,
+            "x": 12,
+            "y": 184,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.skins": {
+            "enabled": true,
+            "h": 309,
+            "label": "[x] Показване на облиците на колониите",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 70
+            },
+            "w": 352,
+            "x": 12,
+            "y": -281,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.smoothfog": {
+            "enabled": true,
+            "h": 173,
+            "label": "[x] Гладка мъгла на войната",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 3815
+            },
+            "w": 352,
+            "x": 12,
+            "y": 3815,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.unitmotion": {
+            "enabled": true,
+            "h": 206,
+            "label": "[x] Плавно движение на единиците",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 3599
+            },
+            "w": 352,
+            "x": 12,
+            "y": 3599,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "graphics.zoomdetail": {
+            "enabled": true,
+            "h": 305,
+            "label": "[x] Детайлност според мащаба",
+            "visible": {
+              "h": 0,
+              "w": 352,
+              "x": 12,
+              "y": 3284
+            },
+            "w": 352,
+            "x": 12,
+            "y": 3284,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.current": {
+            "enabled": true,
+            "h": 48,
+            "label": "Дисплей и графика",
+            "visible": {
+              "h": 48,
+              "w": 366,
+              "x": 12,
+              "y": 12
+            },
+            "w": 366,
+            "x": 12,
+            "y": 12,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "phone150-custom-game-text150",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "16CustomGameScreen",
+        "screenClass": "16CustomGameScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 613,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "back": {
+            "enabled": true,
+            "h": 49,
+            "label": "Обратно",
+            "visible": {
+              "h": 49,
+              "w": 370,
+              "x": 10,
+              "y": 728
+            },
+            "w": 370,
+            "x": 10,
+            "y": 728,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/colonies": {
+            "enabled": true,
+            "h": 48,
+            "label": "4",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1476
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1476,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/height": {
+            "enabled": true,
+            "h": 48,
+            "label": "256",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1379
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1379,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/landscape": {
+            "enabled": true,
+            "h": 48,
+            "label": "Лавов щит",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 914
+            },
+            "w": 356,
+            "x": 10,
+            "y": 914,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/random": {
+            "enabled": true,
+            "h": 263,
+            "label": "Случайни параметри",
+            "visible": {
+              "h": 0,
+              "w": 174,
+              "x": 192,
+              "y": 970
+            },
+            "w": 174,
+            "x": 192,
+            "y": 970,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/reset": {
+            "enabled": false,
+            "h": 263,
+            "label": "Възстановяване на настройките по подразбиране",
+            "visible": {
+              "h": 0,
+              "w": 174,
+              "x": 10,
+              "y": 970
+            },
+            "w": 174,
+            "x": 10,
+            "y": 970,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/section/0": {
+            "enabled": true,
+            "h": 48,
+            "label": "Терен",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1635
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1635,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/section/1": {
+            "enabled": true,
+            "h": 48,
+            "label": "Ресурси",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1691
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1691,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/section/2": {
+            "enabled": true,
+            "h": 48,
+            "label": "Оформление",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1747
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1747,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "generator/width": {
+            "enabled": true,
+            "h": 48,
+            "label": "256",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1282
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1282,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/buildings": {
+            "enabled": true,
+            "h": 48,
+            "label": "Семейства сгради",
+            "visible": {
+              "h": 0,
+              "w": 356,
+              "x": 10,
+              "y": 1803
+            },
+            "w": 356,
+            "x": 10,
+            "y": 1803,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/mode/0": {
+            "enabled": true,
+            "h": 152,
+            "label": "Предварително направени карти",
+            "visible": {
+              "h": 152,
+              "w": 174,
+              "x": 10,
+              "y": 88
+            },
+            "w": 174,
+            "x": 10,
+            "y": 88,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/mode/1": {
+            "enabled": true,
+            "h": 152,
+            "label": "Случайна карта",
+            "visible": {
+              "h": 152,
+              "w": 174,
+              "x": 192,
+              "y": 88
+            },
+            "w": 174,
+            "x": 192,
+            "y": 88,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "map/randomize": {
+            "enabled": false,
+            "h": 48,
+            "label": "Разбъркване",
+            "visible": {
+              "h": 0,
+              "w": 48,
+              "x": 164,
+              "y": 813
+            },
+            "w": 48,
+            "x": 164,
+            "y": 813,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "start": {
+            "enabled": true,
+            "h": 49,
+            "label": "Следващо",
+            "visible": {
+              "h": 49,
+              "w": 370,
+              "x": 10,
+              "y": 785
+            },
+            "w": 370,
+            "x": 10,
+            "y": 785,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tab/0": {
+            "enabled": true,
+            "h": 70,
+            "label": "Карта",
+            "visible": {
+              "h": 70,
+              "w": 119,
+              "x": 10,
+              "y": 10
+            },
+            "w": 119,
+            "x": 10,
+            "y": 10,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tab/1": {
+            "enabled": true,
+            "h": 70,
+            "label": "Играчи",
+            "visible": {
+              "h": 70,
+              "w": 119,
+              "x": 135,
+              "y": 10
+            },
+            "w": 119,
+            "x": 135,
+            "y": 10,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tab/2": {
+            "enabled": true,
+            "h": 70,
+            "label": "Правила",
+            "visible": {
+              "h": 70,
+              "w": 120,
+              "x": 260,
+              "y": 10
+            },
+            "w": 120,
+            "x": 260,
+            "y": 10,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "phone150-tutorial-catalog",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "N8Tutorial19LessonCatalogScreenE",
+        "screenClass": "N8Tutorial19LessonCatalogScreenE",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 0,
+        "frames": 0,
+        "loop": 632,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 231997440,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "tutorial/back": {
+            "enabled": true,
+            "h": 94,
+            "label": "Към главното меню",
+            "visible": {
+              "h": 94,
+              "w": 358,
+              "x": 16,
+              "y": 734
+            },
+            "w": 358,
+            "x": 16,
+            "y": 734,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/0": {
+            "enabled": true,
+            "h": 48,
+            "label": "Въведение",
+            "visible": {
+              "h": 48,
+              "w": 344,
+              "x": 16,
+              "y": 69
+            },
+            "w": 344,
+            "x": 16,
+            "y": 69,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/1": {
+            "enabled": true,
+            "h": 78,
+            "label": "Практика за снабдяване с храни",
+            "visible": {
+              "h": 78,
+              "w": 344,
+              "x": 16,
+              "y": 294
+            },
+            "w": 344,
+            "x": 16,
+            "y": 294,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/2": {
+            "enabled": true,
+            "h": 48,
+            "label": "Болници и лечение",
+            "visible": {
+              "h": 48,
+              "w": 344,
+              "x": 16,
+              "y": 615
+            },
+            "w": 344,
+            "x": 16,
+            "y": 615,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/3": {
+            "enabled": true,
+            "h": 48,
+            "label": "Тренировка по ходене",
+            "visible": {
+              "h": 0,
+              "w": 344,
+              "x": 16,
+              "y": 873
+            },
+            "w": 344,
+            "x": 16,
+            "y": 873,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/4": {
+            "enabled": true,
+            "h": 78,
+            "label": "Плуване и водни ресурси",
+            "visible": {
+              "h": 0,
+              "w": 344,
+              "x": 16,
+              "y": 1065
+            },
+            "w": 344,
+            "x": 16,
+            "y": 1065,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/5": {
+            "enabled": true,
+            "h": 78,
+            "label": "Училища и умения на работниците",
+            "visible": {
+              "h": 0,
+              "w": 344,
+              "x": 16,
+              "y": 1287
+            },
+            "w": 344,
+            "x": 16,
+            "y": 1287,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/6": {
+            "enabled": true,
+            "h": 78,
+            "label": "Подобряване на сгради",
+            "visible": {
+              "h": 0,
+              "w": 344,
+              "x": 16,
+              "y": 1608
+            },
+            "w": 344,
+            "x": 16,
+            "y": 1608,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/7": {
+            "enabled": true,
+            "h": 78,
+            "label": "Производство и обучение на воини",
+            "visible": {
+              "h": 0,
+              "w": 344,
+              "x": 16,
+              "y": 1896
+            },
+            "w": 344,
+            "x": 16,
+            "y": 1896,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/8": {
+            "enabled": true,
+            "h": 48,
+            "label": "Кули и защитни стени",
+            "visible": {
+              "h": 0,
+              "w": 344,
+              "x": 16,
+              "y": 2085
+            },
+            "w": 344,
+            "x": 16,
+            "y": 2085,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "tutorial/lesson/9": {
+            "enabled": true,
+            "h": 78,
+            "label": "Зони за охрана и тактики с флагове",
+            "visible": {
+              "h": 0,
+              "w": 344,
+              "x": 16,
+              "y": 2277
+            },
+            "w": 344,
+            "x": 16,
+            "y": 2277,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "phone150-gameplay-before-objectives",
+    "state": {
+      "diagnostics": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "software",
+        "renderContext": null,
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 24,
+        "frames": 12,
+        "loop": 664,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 390,
+        "height": 844,
+        "heapBytes": 278396928,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": true,
+        "persistence": "writing",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "skipped"
+        },
+        "opened": [],
+        "controls": {
+          "intro/collapse": {
+            "enabled": true,
+            "h": 99,
+            "label": "−",
+            "visible": {
+              "h": 99,
+              "w": 90,
+              "x": 664,
+              "y": 405
+            },
+            "w": 90,
+            "x": 664,
+            "y": 405,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 536,
+              "w": 709,
+              "x": 45,
+              "y": 357
+            }
+          },
+          "intro/destination": {
+            "enabled": true,
+            "h": 99,
+            "label": "Показване на целта",
+            "visible": {
+              "h": 99,
+              "w": 90,
+              "x": 476,
+              "y": 405
+            },
+            "w": 90,
+            "x": 476,
+            "y": 405,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 536,
+              "w": 709,
+              "x": 45,
+              "y": 357
+            }
+          },
+          "intro/help": {
+            "enabled": true,
+            "h": 99,
+            "label": "Помощ / Защо?",
+            "visible": {
+              "h": 99,
+              "w": 90,
+              "x": 570,
+              "y": 405
+            },
+            "w": 90,
+            "x": 570,
+            "y": 405,
+            "surface": {
+              "h": 1732,
+              "w": 800
+            },
+            "root": {
+              "h": 536,
+              "w": 709,
+              "x": 45,
+              "y": 357
+            }
+          }
+        }
+      },
+      "dpr": 1,
+      "css": {
+        "width": 390,
+        "height": 844
+      },
+      "canvas": [
+        {
+          "width": 390,
+          "height": 844,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          }
+        }
+      ]
+    }
+  }
+]

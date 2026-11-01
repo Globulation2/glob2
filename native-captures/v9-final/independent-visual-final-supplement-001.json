@@ -1,0 +1,27 @@
+{
+  "status": "supplement_resolves_control_access_hold",
+  "reviewer": "independent agent /root/native_visual_final",
+  "original_report": "independent-visual-final.json",
+  "original_report_preserved": true,
+  "image": {
+    "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings-player/settings-player.png",
+    "sha256": "494858150d0ef1e927f7aa8145e7c19ad8c93bd0e549113318a975243aeeb6f6",
+    "width": 390,
+    "height": 844
+  },
+  "method": "Personally reopened exact full original PNG using tools.view_image; no crop or image change required. Metadata was read only as supporting bounds evidence.",
+  "personal_observation": "The full image visibly contains the gold Готово button at bottom right, within x255..378 and y784..832. The entire caption and button border are visible, with space below to the image bottom. The lower left footer also visibly says Промените се запазват автоматично. Language/name labels remain clear.",
+  "correction": "My initial observation that the footer/Done control was absent was incorrect. Reinspection resolves F1; it was a review oversight, not a capture or source defect.",
+  "disposition": "approve_static_visual_localization",
+  "aggregate_approval": {
+    "personally_viewed_pngs": 108,
+    "approved": 108,
+    "held": 0,
+    "confirmed_critical": 0,
+    "confirmed_major": 0,
+    "minor_notes": "Original report minor wrapping/ellipsis notes remain nonblocking."
+  },
+  "limits": "Agent static screenshot review only. This supplement establishes visible exit affordance, not an executed click, native-human review or physical-device certification. No source/image pixels changed.",
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b"
+}

@@ -1,0 +1,123 @@
+{
+  "reviewer": {
+    "identity": "OpenAI Codex agent /root/v7_editor",
+    "role": "Independent localization editorial and visual reviewer",
+    "native_human_certification": false
+  },
+  "status": "approved",
+  "final_approval": true,
+  "scope": "Only the ten exact personally viewed SPA PNGs listed below; no browser/native images included.",
+  "index_path": "artifacts/bulgarian/final-fil-online-qa/image-index-frozen.json",
+  "index_sha256": "ca6f2fdd4f8e9db98b6fd3a8f9498bf9cfd8ac03bd6591eaf4cc8bcb55eeb0e5",
+  "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "actual_fresh_visual_read": true,
+  "coverage": {
+    "listed": 10,
+    "personally_viewed": 10,
+    "critical": 0,
+    "major": 0
+  },
+  "findings": [
+    {
+      "severity": "minor",
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/phone-map-wallet-balance-2.png",
+      "description": "Upper welcome heading partly occluded by sticky navigation at the captured scroll position. Wallet, composer and instructions remain legible; this frame does not show a complete heading."
+    }
+  ],
+  "limits": [
+    "Agent screenshot inspection only, no physical device or interactive hit testing. Visible control bounds checked visually.",
+    "Only balance 2 is pictured; no screenshot claim for balances 0 or 1.",
+    "Authored names, canonical league identifiers and URLs are preserved data, not untranslated interface prose.",
+    "Full-page phone home screenshot extends beyond a single viewport. No claim that every element is simultaneously visible.",
+    "Hidden dropdowns, tooltips, ARIA strings and offscreen content are not visually approved."
+  ],
+  "images": [
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/desktop-home.png",
+      "sha256": "e411bd6385f1260aaa7ab8413620479c9ebf28ee9d7a8d0941f7dc0f0536a28a",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Welcome, navigation, invitation, statistics, match list, map cards and rankings are legible; home prose wraps within cards."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/desktop-map-wallet-balance-2.png",
+      "sha256": "375d94ec384abf9145d8157cf3639c87baaa77bfefd56e786948b2cb77fce97f",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Full Кредити за карти: 2 painted in header. Map instructions/composer and guidance legible."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/desktop-map-wallet-dialog-category.png",
+      "sha256": "708c282ee92ff6437fbcacd45a35083e0098bc98adad85bfee43c44ffd06ce24",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Кредити за карти, quantity 2, pricing/refund prose and both close controls visible, with no overlap."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/desktop-music-wallet-balance-2.png",
+      "sha256": "616795a491afbbcc9288401455d842cd523c1b7eb217c9eea11ddae218cc13a7",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Full Музикални кредити: 2 painted; preset titles, three mood labels and composer guidance legible."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/desktop-music-wallet-dialog-category.png",
+      "sha256": "9d3250cfe378e705f14159c0643f669c8b12a804110acf35af85008cce847dbf",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Музикални кредити, quantity 2 and complete cost/refund wording legible; both X controls separate from content."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/phone-home.png",
+      "sha256": "b451efa60b4a3d3e360100e4b639e5a736f16d36e228920cb08710b08b3a2d6c",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Full-page mobile capture: welcome, actions, invitation, statistics, cards and server details wrap inside columns. Long authored match/map names use ellipses; server URL wraps. No destructive clipping of translated prose."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/phone-map-wallet-balance-2.png",
+      "sha256": "53f22c4364abd93c267ac738b4a132297da5dd738f165ba5ffa08bf718e1f65c",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Full Кредити за карти: 2 painted; chat/composer/guidance wrap. Upper welcome heading partly behind sticky header at this captured scroll position; rest of content readable."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/phone-map-wallet-dialog-category.png",
+      "sha256": "c45dea86064ac3571e2e29ba9aa9cf8e2cea8249463c6fe19ff23c212cca2400",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Кредити за карти and pricing/refund prose wrap fully. Secondary X below content, primary X clear of title; no overlap."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/phone-music-wallet-balance-2.png",
+      "sha256": "5ef277a932c6329475c623ab4ba59cac9686d4f90135a6fba78de2d1e1a31bd2",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Full Музикални кредити: 2 painted. Presets, idea label and credit guidance wrap; textarea intentionally shows truncated example with ellipsis."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/captures/phone-music-wallet-dialog-category.png",
+      "sha256": "03221265f41bd213a1f2ba7dfd02e3303b1b6472b655c2b479c30cddd6f734fb",
+      "personally_viewed": true,
+      "verdict": "approve",
+      "observation": "Музикални кредити, quantity 2 and all visible cost/refund prose fit; both X controls clear, secondary below prose."
+    }
+  ],
+  "supporting_artifact_identity_only": [
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/source-bundle-closure.json",
+      "sha256": "d9457905e80a11a9fa51ba9b07d630535a170a76db8ddf41884ef05a8569547b",
+      "claim": "Identity binding only; not used as substitute for image inspection."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/inputs-before.json",
+      "sha256": "c68b7da83ad3c5e6d98c8f417de6f2593c9cc40b36f8cd11747218b03318bf20",
+      "claim": "Identity binding only; not used as substitute for image inspection."
+    },
+    {
+      "path": "artifacts/bulgarian/final-fil-online-qa/dist-before.json",
+      "sha256": "8bba2c3ca0734a72ad7e81367edf5782af33c2ac9dbd288c8f70325952314d74",
+      "claim": "Identity binding only; not used as substitute for image inspection."
+    }
+  ]
+}

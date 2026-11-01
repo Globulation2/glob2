@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="91" failures="0" errors="0" skipped="0"><testsuite name="ApiErrorText"><testcase classname="ApiErrorText" name="known metadata translates without rewriting diagnostics or details" time="0.055392" status="run" />
+    <testcase classname="ApiErrorText" name="exact literal fallback never guesses a translated or parameterized diagnostic" time="0" status="run" />
+    <testcase classname="ApiErrorText" name="parameters are scalar literal text in source order and substituted once" time="0.000157" status="run" />
+    <testcase classname="ApiErrorText" name="decoder rejects malformed localization metadata but leaves original fields intact" time="0.000195" status="run" />
+    <testcase classname="ApiErrorText" name="unknown source and malformed direct parameters use reviewed generic" time="0" status="run" />
+    <testcase classname="ApiErrorText" name="realtime decoding retains the same metadata as REST errors" time="0.000224" status="run" />
+    <testcase classname="ApiErrorText" name="embedded data exposes source hash metadata and portable chunks" time="0" status="run" />
+    <testcase classname="ApiErrorText" name="UI exception boundary preserves intentional messages and legacy diagnostics" time="0.000147" status="run" />
+  </testsuite><testsuite name="PlatformClient"><testcase classname="PlatformClient" name="first start creates a guest, keeps its credential and says hello with the token" time="0.002553" status="run" />
+    <testcase classname="PlatformClient" name="an unsupported sim version says which side is out of date" time="0.009664" status="run" />
+    <testcase classname="PlatformClient" name="a returning player signs in with the device credential or refresh token" time="0.000646" status="run" />
+    <testcase classname="PlatformClient" name="without consent to sign in, the socket connects anonymously" time="0.000594" status="run" />
+    <testcase classname="PlatformClient" name="responses reach their own requests; timeouts and events are delivered" time="0.002992" status="run" />
+    <testcase classname="PlatformClient" name="requests made before the socket is online wait for it" time="0.000739" status="run" />
+    <testcase classname="PlatformClient" name="lost connections retry with growing, jittered backoff" time="0.001209" status="run" />
+    <testcase classname="PlatformClient" name="a connection that never opens times out and retries" time="0.000366" status="run" />
+    <testcase classname="PlatformClient" name="tokens refresh before expiry, rotate the stored token and re-authenticate the socket" time="0.001278" status="run" />
+    <testcase classname="PlatformClient" name="a refused refresh token falls back to the device credential" time="0.000432" status="run" />
+    <testcase classname="PlatformClient" name="a refresh that fails on the network is retried while the token lasts" time="0.000819" status="run" />
+    <testcase classname="PlatformClient" name="a refused token at hello continues anonymously and signs in again" time="0.000701" status="run" />
+    <testcase classname="PlatformClient" name="update_required stops retrying" time="0.000544" status="run" />
+    <testcase classname="PlatformClient" name="an idle socket is checked with session.ping and replaced when silent" time="0.000887" status="run" />
+    <testcase classname="PlatformClient" name="browser sign-in opens the page, survives a reconnect and adopts the session" time="0.001948" status="run" />
+    <testcase classname="PlatformClient" name="browser sign-in failures, cancellation and expiry" time="0.006251" status="run" />
+    <testcase classname="PlatformClient" name="session.revoked signs out and stops automatic sign-in" time="0.000931" status="run" />
+    <testcase classname="PlatformClient" name="sign-out revokes the refresh token, reconnects anonymously and stays signed out" time="0.001455" status="run" />
+    <testcase classname="PlatformClient" name="stop cancels everything and credentials stay per instance" time="0.00097" status="run" />
+    <testcase classname="PlatformClient" name="rename patches the account" time="0.001038" status="run" />
+    <testcase classname="PlatformClient" name="REST calls return an id that cancels them; a cancelled call never calls back" time="0.001271" status="run" />
+    <testcase classname="PlatformClient" name="the instance description is fetched once per start and shared" time="0.000194" status="run" />
+    <testcase classname="PlatformClient" name="a scope cancels its owner's calls and listeners when the owner goes away" time="0.001362" status="run" />
+    <testcase classname="PlatformClient" name="a handler that destroys another owner in the same update does not reach it" time="0.000878" status="run" />
+  </testsuite><testsuite name="PlatformProtocol"><testcase classname="PlatformProtocol" name="requests encode as the realtime envelope" time="0.000211" status="run" />
+    <testcase classname="PlatformProtocol" name="responses and events decode; malformed frames are rejected" time="0.000379" status="run" />
+    <testcase classname="PlatformProtocol" name="RFC 3339 timestamps convert to epoch milliseconds" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="token lifetime comes from the JWT claims" time="0.000135" status="run" />
+    <testcase classname="PlatformProtocol" name="refreshes are scheduled well before expiry" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="backoff grows exponentially to a cap, with bounded jitter" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="SHA-256 matches the FIPS 180-4 vectors" time="0.027835" status="run" />
+    <testcase classname="PlatformProtocol" name="the local sim version carries this build's versions" time="0" status="run" />
+  </testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="typed snapshots preserve per-target revisions and reject stale consumption" time="0.000324" status="run" />
+    <testcase classname="UILayout" name="semantic values selection clipping and popup ownership" time="0.000875" status="run" />
+    <testcase classname="UILayout" name="icons and tooltips" time="0.00055" status="run" />
+    <testcase classname="UILayout" name="settings toggles keep captions left and the full row actionable" time="0.023745" status="run" />
+    <testcase classname="UILayout" name="geometry" time="0" status="run" />
+    <testcase classname="UILayout" name="text" time="0" status="run" />
+    <testcase classname="UILayout" name="wrap and ellipsis preserve shaping clusters" time="0.000675" status="run" />
+    <testcase classname="UILayout" name="column and flex" time="0" status="run" />
+    <testcase classname="UILayout" name="row cross align" time="0" status="run" />
+    <testcase classname="UILayout" name="paragraph wraps with width" time="0" status="run" />
+    <testcase classname="UILayout" name="text fields retain the touch target with compact control metrics" time="0" status="run" />
+    <testcase classname="UILayout" name="wrap columns" time="0" status="run" />
+    <testcase classname="UILayout" name="footer folds" time="0.000239" status="run" />
+    <testcase classname="UILayout" name="scroll clamp and wheel" time="0.000293" status="run" />
+    <testcase classname="UILayout" name="tap versus pan" time="0.000455" status="run" />
+    <testcase classname="UILayout" name="native gestures retain fractions ownership and survive rebuilds" time="0.0006" status="run" />
+    <testcase classname="UILayout" name="native gesture bounds settle and external jumps cancel the tail" time="0.002276" status="run" />
+    <testcase classname="UILayout" name="native nested capture does not transfer to parent and missing owners consume tails" time="0.000325" status="run" />
+    <testcase classname="UILayout" name="native popup scrolling owns its tail after dismissal" time="0.000923" status="run" />
+    <testcase classname="UILayout" name="fling continues after release" time="0.012208" status="run" />
+    <testcase classname="UILayout" name="overscroll springs back" time="0.00256" status="run" />
+    <testcase classname="UILayout" name="touch wheel and programmatic scroll stop a fling" time="0.002133" status="run" />
+    <testcase classname="UILayout" name="scrollbar press stops a fling" time="0.000923" status="run" />
+    <testcase classname="UILayout" name="mouse drag does not fling" time="0.000948" status="run" />
+    <testcase classname="UILayout" name="list and text overscroll" time="0.011351" status="run" />
+    <testcase classname="UILayout" name="press survives resize" time="0" status="run" />
+    <testcase classname="UILayout" name="focus and keyboard" time="0.000204" status="run" />
+    <testcase classname="UILayout" name="choice popup" time="0.00092" status="run" />
+    <testcase classname="UILayout" name="icon segments and choices" time="0.000357" status="run" />
+    <testcase classname="UILayout" name="text field" time="0" status="run" />
+    <testcase classname="UILayout" name="text field UTF-8 byte limit preserves Bengali edits" time="0" status="run" />
+    <testcase classname="UILayout" name="text field character limits preserve Bengali and non-BMP input" time="0.00021" status="run" />
+    <testcase classname="UILayout" name="list view" time="0" status="run" />
+    <testcase classname="UILayout" name="copy field" time="0" status="run" />
+    <testcase classname="UILayout" name="adaptive and field" time="0.000209" status="run" />
+    <testcase classname="UILayout" name="invariants" time="0" status="run" />
+    <testcase classname="UILayout" name="text stays inside its control at every size" time="0.022897" status="run" />
+    <testcase classname="UILayout" name="semantic text values retain draft commit and cancel" time="0.000231" status="run" />
+    <testcase classname="UILayout" name="semantic canvas scroll uses its normal wheel path" time="0" status="run" />
+    <testcase classname="UILayout" name="typed text preserves newlines and browser diagnostics retain legacy labels" time="0.000271" status="run" />
+    <testcase classname="UILayout" name="identical reopened popups reject an earlier lifetime target" time="0.000288" status="run" />
+    <testcase classname="UILayout" name="positioned custom controls share clipped human and semantic targets" time="0.000289" status="run" />
+    <testcase classname="UILayout" name="positioned callbacks refresh values revisions and subsequent actions" time="0.000315" status="run" />
+    <testcase classname="UILayout" name="positioned callbacks may retire their owning Host" time="0" status="run" />
+    <testcase classname="UILayout" name="higher hosts block only overlapping targets and cancel captured input" time="0.000227" status="run" />
+    <testcase classname="UILayout" name="external ownership preserves uncovered list rows and popup ownership" time="0.000398" status="run" />
+    <testcase classname="UILayout" name="blocked editor drafts suspend while keyboard focus reaches uncovered controls" time="0.000168" status="run" />
+    <testcase classname="UILayout" name="remote owner geometry changes preserve an uncovered press" time="0" status="run" />
+    <testcase classname="UILayout" name="keyed press survives a tree rebuild with unrelated blocked regions" time="0" status="run" />
+    <testcase classname="UILayout" name="indexed selections bind the full catalog without binding unrelated counters" time="0.001209" status="run" />
+    <testcase classname="UILayout" name="choice popups retain only the current owner meaning" time="0.00276" status="run" />
+  </testsuite></testsuites>

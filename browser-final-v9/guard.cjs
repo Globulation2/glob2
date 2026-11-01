@@ -1,0 +1,20 @@
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),cp=require('node:child_process');
+const root=path.resolve(__dirname,'../../..');
+const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+exports.guard=()=>{
+ const file=path.join(__dirname,'handoff.json');
+ if(!fs.existsSync(file))throw new Error('No explicit final root handoff; stale WASM execution forbidden');
+ const h=JSON.parse(fs.readFileSync(file));
+ if(h.authorized_by!=='/root'||h.execution_authorized!==true)throw new Error('Root execution authorization is pending');
+ const head=cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
+ const changes=cp.execFileSync('git',['diff',h.revision,'--name-only'],{cwd:root,encoding:'utf8'}).trim().split('\n').filter(Boolean);
+ const transition=h.authorized_source_transition;
+ const allowed=transition?.authorized_by==='/root'&&!transition.production_changes_allowed?transition.allowed_files:[];
+ if(changes.some(p=>!allowed.includes(p)))throw new Error('Source changed outside exact root-authorized test-only transition: '+changes.join(','));
+ if(head!==h.revision&&!transition)throw new Error('Source HEAD differs from authorized final handoff');
+ for(const [name,expected]of Object.entries(h.source_files))if(!allowed.includes(name)&&sha(path.join(root,name))!==expected)throw new Error('Source changed: '+name);
+ if(changes.length||head!==h.revision)fs.appendFileSync(path.join(__dirname,'source-transition-execution-receipts.jsonl'),JSON.stringify({pid:process.pid,actual_browser_producer:h.revision,current_head:head,changed_files:changes,allowed_test_file_hashes:Object.fromEntries(allowed.map(p=>[p,sha(path.join(root,p))])),statement:'Only explicitly authorized test-only changes; every other frozen source/package byte validated'})+'\n');
+ if(!h.package_verified||!h.package_files)throw new Error('Package verification/freeze is pending');
+ for(const [name,expected]of Object.entries(h.package_files))if(sha(path.join(__dirname,'static',name))!==expected)throw new Error('Package changed: '+name);
+ return h;
+};

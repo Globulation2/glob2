@@ -1,0 +1,175 @@
+{
+  "timing": "actual final post-matrix browser navigation, unchanged production dist",
+  "browser": "153.0.8010.12",
+  "lang": "bg",
+  "resources": [
+    {
+      "url": "http://127.0.0.1:42769/fonts/glob2-sans.woff2",
+      "status": 200,
+      "contentType": "font/woff2",
+      "bytes": 52088,
+      "sha256": "04c452fa8481ef3df8f806e358e99d0eda2a657ff9c736383ca2a033a48d4ef0"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/library-B7B4fvyy.css",
+      "status": 200,
+      "contentType": "text/css",
+      "bytes": 6278,
+      "sha256": "e48722afd6582512aefd80f19e59c1ec84be2ce65eee8dd2ef5f75f029d0fe73"
+    },
+    {
+      "url": "http://127.0.0.1:42769/theme.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 2228,
+      "sha256": "8445913b06d7b709c8629b532be0c4f01784d43b72616f8a525c1d7cc746666d"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/rolldown-runtime-hePW80VL.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 716,
+      "sha256": "580ad8c58061a4dde99bde0a56905e382f0568516ee2f5b84dbfb52085709021"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/index-BACxp-FI.css",
+      "status": 200,
+      "contentType": "text/css",
+      "bytes": 94537,
+      "sha256": "955b646f4cbd378b492c577e96beec18673bad36e5b2d9b2fe675559ba381ea5"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/preload-helper-DjzSQ1t3.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 1383,
+      "sha256": "66c990b6727d220a346b45d00ee48d433c8d59ef03fbf8b91c6cdadeeadfdf3f"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/en-CDdDCPkx.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 193595,
+      "sha256": "fd3c0dec7e51097cf62f2462f35acf6bb3756edece3d4c1026278f5e6c763668"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/react-DJytipbX.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 10970,
+      "sha256": "fefc516df5d5421bdfe7190325670013e56791d372d9c690e2ef7bdb1b9aaa94"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/i18n-7BTb9ple.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 22881,
+      "sha256": "6cb036e769b22048be557a2d51b612deb750a8f1760202bdb7abb729ed28f460"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/router-B1JxFwTp.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 7786,
+      "sha256": "4f43ff17010fc285f7f46918c5486ec914f3d1df3d12711d35a85e5839cfe6b3"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/generatorApi-DnMvO5LP.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 719,
+      "sha256": "56084e0c9cbc09064c3c919064e29640bf7e81869e957db5a3ca17d4aa04ba3a"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/common-DkTMxSJV.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 12776,
+      "sha256": "2f7852e947a0d6d408449f43ab050643a45bc9eda6a56894f7213adcd9fc9e18"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/art-tjftre1z.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 14218,
+      "sha256": "fc4185a06ae0fc178917e9cee4e55bd22cdd20a3f48564eb14c9bb239ba02f53"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/Generators-CveHYJBL.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 14158,
+      "sha256": "521ea1d7c24e2e530c3e6d1869ecae0ca229d22e509418eb3445e707385f026b"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/index-Rvwk0WYQ.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 362086,
+      "sha256": "02ed73a910c01f81dbc40868a02f86a37061371552f510fbaba90dc561089d9e"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/assetUrls-Bjg43JKQ.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 187,
+      "sha256": "93b85ac36f66666dfb60c1bb3c0b54a6df6ffba77da1f1251a44cb2cb65e5363"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/playerLinks-eFzDT1Wt.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 419,
+      "sha256": "fda5642ad1eaf740b1fb5b019e986969df295444f4ddc2dee27ec11648a0ec03"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/storage-BBLVdDu8.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 848,
+      "sha256": "3073c606d950b6c73d7be3aa5f7567a0c2ac94ea9b9781aec1abdb126ba39976"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/library-YvpIS8Ct.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 4112,
+      "sha256": "d286e062d565c8d5e3a21a2f3e8dafc4d67f9f574ab67fa34d37439eaadaf34e"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/theme-yXZvV-aP.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 578,
+      "sha256": "f88f4b12a65f6c3ddb8a47e03740ddae6c35e20014a94fdf23e23cb78187cf16"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/src-D128r05p.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 236697,
+      "sha256": "ec5425b64462d71a250add95d05818d8a0609646c18d4e9f004d7d77bfa9325f"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/bg-CnOWRwK4.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 296320,
+      "sha256": "42f8afc0268b8148bacc5cd2daa06035d8c2d96e056a6379afa6f898efbf3398"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/src-k6eDmBTJ.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 13244,
+      "sha256": "dc1c63e5ff455035373cd5c35db900ff99e8a37a6c3edbd1d9152b6e1618c651"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/sans-core-BpUcAg98.ttf",
+      "status": 200,
+      "contentType": "application/octet-stream",
+      "bytes": 597784,
+      "sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9"
+    }
+  ]
+}

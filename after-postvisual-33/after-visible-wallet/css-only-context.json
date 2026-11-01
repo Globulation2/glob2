@@ -1,0 +1,15 @@
+{
+  "scope": "CSSONLY; no caller/catalog/word changes",
+  "files": {
+    "platform/apps/web/src/pages/MapStudio.tsx": "f27223b724011150b88f291779b02641412d2f068b08bd27f84961086c436523",
+    "platform/apps/web/src/pages/MusicStudio.tsx": "e3349cdd836d07b4c9265d034475ed2ecb05c27d59a04f3c19ef9fdc1c9460aa",
+    "platform/apps/web/src/components/studio/studio.css": "ddf3ff609e55b1f510b2518b0de0f5b658184389d63bed580711bb27990f1cb6"
+  },
+  "callerAudit": "Only MapStudio/MusicStudio render ms-credit-button; both use fullformatted message inside their last span. All otherheaderbehavior retained.",
+  "fixes": [
+    "Scoped .studio-page .ms-credit-button > span:last-child display:inline overridesobsoletecompacthide",
+    "Secondary creditpanelcloseposition:static avoidsactualphoneparagraphintersection"
+  ],
+  "oldEvidence": "Parent12frozenprovisionalPNGs retained; oldphonewallettextRects=[] despitearia/textContent; nonvacuousregressionadded",
+  "catalogSha256": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+}

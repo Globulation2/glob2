@@ -1,0 +1,11 @@
+
+Running 2 tests using 1 worker
+
+(node:58576) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [new-desktop] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:16:1 › new skin model and material captions use Bulgarian catalog (25.6s)
+(node:61111) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [new-phone] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:16:1 › new skin model and material captions use Bulgarian catalog (28.7s)
+
+  2 passed (1.0m)

@@ -1,0 +1,77 @@
+{
+  "result": "passed",
+  "scope": "Eighteen compatibility additions only; not full locale linguistic review or platform readiness",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "71f33693c929c7cc12c43ef738cebfc657c0eab79068930fada8f34e7e606e1f",
+    "online": "e04603b1aaf330a414614ebb29222f40c758711b211fceabfac618c3b7c76bf1"
+  },
+  "packet": {
+    "path": "kit-v8/mr-after-editor-review-input.json",
+    "sha256": "dc40d0a3c6e47061b332342e7fe05a856ae6385d816a4d4f1f551b299eb494e6"
+  },
+  "entries": 18,
+  "locale": "mr",
+  "role_bindings": 54,
+  "actual_role_evidence": [
+    {
+      "role": "semantic",
+      "actual_agent": "/root/v7_meaning",
+      "path": "linguistics/v8-semantic-mr18-final.json",
+      "sha256": "e1eab8a6d8d6e27acb72f8869bb854a643177b61c301a7b694ce4e57170fe278",
+      "entries": 18,
+      "value_hash_schemes": [
+        "literal-utf8-with-json-objects"
+      ],
+      "reading_lineage": {
+        "actual-reading": 18,
+        "own-exact-carry": 0
+      },
+      "identity_hash_schemes": [
+        "canonical-locale-id-source-target"
+      ],
+      "original_report_binding": null
+    },
+    {
+      "role": "editor",
+      "actual_agent": "/root/v7_editor",
+      "path": "linguistics/v8-editor-mr18-final.json",
+      "sha256": "81c9500149319ffaf255ac1fd136e3503ae00b9e31d32ed5a16d07cdb9a27ee9",
+      "entries": 18,
+      "value_hash_schemes": [
+        "literal-utf8-with-json-objects"
+      ],
+      "reading_lineage": {
+        "actual-reading": 18,
+        "own-exact-carry": 0
+      },
+      "identity_hash_schemes": [
+        "canonical-id-source-target"
+      ],
+      "original_report_binding": null
+    },
+    {
+      "role": "adversarial",
+      "actual_agent": "/root/v7_adversary",
+      "path": "linguistics/v8-adversarial-mr18-final.json",
+      "sha256": "2813a94ae9bbc0b9b86566bd700c683c81bbc7c5ac7c1443b1e2ae4a85813f63",
+      "entries": 18,
+      "value_hash_schemes": [
+        "literal-utf8-with-json-objects"
+      ],
+      "reading_lineage": {
+        "actual-reading": 18,
+        "own-exact-carry": 0
+      },
+      "identity_hash_schemes": [
+        "canonical-id-source-target"
+      ],
+      "original_report_binding": null
+    }
+  ],
+  "unchanged_prior_native_pairs": 3412,
+  "unchanged_prior_online_pairs": 2978,
+  "new_english_matches": [],
+  "runtime_platform_gates": "pending, no approvals produced",
+  "candidate_only": true
+}

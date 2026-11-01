@@ -1,0 +1,15 @@
+{
+  "status": "Interrupted/uncompleted isolated retry, outcome unavailable; not PASS and not a proven600s timeout",
+  "tool_session": 43723,
+  "last_observed_pid": 643054,
+  "final_tool_poll_error": "write_stdin: Unknown process id43723",
+  "actual_returncode": null,
+  "final_JUnit_exists": false,
+  "final_log_empty": true,
+  "normal_configured_runner_deadline_seconds": 600,
+  "fixture_deadline_ms": 120000,
+  "last_observed": "Around7m30, process had progressed beyond initial picker settle and produced swipe captures",
+  "parent_observation": "PID later gone, no final JUnit/log outcome. No test exitcode or timing result can be recovered.",
+  "original_complete_attempt": "146passed1failed0skipped, exact120s landscape settle assertion preserved separately",
+  "source_deadline_or_binary_modified_during_retry": false
+}

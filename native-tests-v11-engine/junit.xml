@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="44" failures="0" errors="0" skipped="0"><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.029039" status="run" />
+  <testcase classname="FontKerning" name="Bulgarian scaled advances fit authored wrapping and locale switches preserve legacy geometry" time="0.037894" status="run" />
+  <testcase classname="FontKerning" name="Tamil vowels and pulli remain whole when a narrow label wraps" time="0.05427" status="run" />
+  <testcase classname="FontKerning" name="high-DPI Hindi wrapping width is preserved without cropping the raw raster" time="0.021277" status="run" />
+  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.055061" status="run" />
+  <testcase classname="FontKerning" name="language changes refresh default line height and Arabic shaping caches" time="0.465167" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.039002" status="run" />
+  <testcase classname="FontKerning" name="script fonts shape clusters and preserve measured raster sizes after reload" time="0.323575" status="run" />
+  <testcase classname="FontKerning" name="script run composition preserves straight-alpha antialiasing" time="0.014358" status="run" />
+  <testcase classname="FontKerning" name="shaping clusters keep conjuncts and combining marks together" time="0.020597" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.002063" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="Filipino navigation keeps whole words and shared targets at enlarged text sizes [display][artifacts]" time="5.06101" status="run" />
+  <testcase classname="GameGUITouch" name="localized phone editor interactions preserve contextual properties [display][artifacts]" time="14.8283" status="run" />
+  <testcase classname="GameGUITouch" name="notifications clear system gutters and HUD at mobile text sizes [display][artifacts]" time="6.60089" status="run" />
+  <testcase classname="GameGUITouch" name="tutorial wrapping preserves shaped clusters and refreshes font metrics [display]" time="6.88399" status="run" />
+  </testsuite><testsuite name="LegacyScriptCoverage"><testcase classname="LegacyScriptCoverage" name="Bulgarian SGSL language tokens require the installed catalog" time="5.8992" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Bulgarian SGSL selects its message and retains an authored default" time="3.90774" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Filipino SGSL language tokens require the installed catalog" time="6.71593" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Filipino SGSL selects its message and retains an authored default for other locales" time="2.69674" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="adding Bulgarian preserves legacy SGSL source bytes and saved program counters" time="9.88776" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="adding Filipino preserves legacy SGSL source bytes and saved program counters" time="9.16165" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="catalog languages and quoted locale names preserve suspended story continuation" time="26.8836" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="all categories with enlarged text in compact portrait [display][artifacts][writes-preferences]" time="7.86655" status="run" />
+  <testcase classname="Settings" name="large Filipino touch footers keep words whole [display][artifacts][writes-preferences]" time="4.55838" status="run" />
+  </testsuite><testsuite name="SystemLanguage"><testcase classname="SystemLanguage" name="Bengali regions share the Bengali script catalog" time="0.000171" status="run" />
+  <testcase classname="SystemLanguage" name="Bengali startup respects the system and saved language" time="4.44369" status="run" />
+  <testcase classname="SystemLanguage" name="Bulgarian system preference and explicit profile choice" time="4.49226" status="run" />
+  <testcase classname="SystemLanguage" name="Filipino aliases accept only the shipped Latin script" time="0.000268" status="run" />
+  <testcase classname="SystemLanguage" name="Filipino startup accepts the Tagalog alias and preserves a saved language" time="5.81539" status="run" />
+  <testcase classname="SystemLanguage" name="ISO locales map to the historical catalog codes" time="0.000144" status="run" />
+  <testcase classname="SystemLanguage" name="Malay selects Rumi without advertising Jawi coverage" time="0.000197" status="run" />
+  <testcase classname="SystemLanguage" name="Malay startup preserves an explicit saved choice" time="4.49008" status="run" />
+  <testcase classname="SystemLanguage" name="Marathi startup follows preferences and preserves a saved language" time="5.80568" status="run" />
+  <testcase classname="SystemLanguage" name="Norwegian Bokmaal accepts generic Norwegian but never Nynorsk" time="0.000187" status="run" />
+  <testcase classname="SystemLanguage" name="Norwegian startup follows preferences and preserves a saved language" time="4.6482" status="run" />
+  <testcase classname="SystemLanguage" name="Tamil accepts regional tags only in the supported written script" time="0.000165" status="run" />
+  <testcase classname="SystemLanguage" name="expanded locales distinguish scripts and the precise Pulaar variety" time="0.000302" status="run" />
+  <testcase classname="SystemLanguage" name="languages without a catalog are not confused with catalog codes" time="0.00015" status="run" />
+  <testcase classname="SystemLanguage" name="preferred locale fixture restores an existing hint" time="0" status="run" />
+  <testcase classname="SystemLanguage" name="regional and script variants pick the matching catalog" time="0.00018" status="run" />
+  <testcase classname="SystemLanguage" name="startup follows the system only when the profile has no usable language" time="4.60121" status="run" />
+  <testcase classname="SystemLanguage" name="startup selects installed Tamil and preserves an explicit saved choice" time="2.9051" status="run" />
+  <testcase classname="SystemLanguage" name="startup selects installed Telugu and preserves a saved language" time="4.48719" status="run" />
+  <testcase classname="SystemLanguage" name="the first available preference wins, then English" time="0.000155" status="run" />
+  </testsuite></testsuites>

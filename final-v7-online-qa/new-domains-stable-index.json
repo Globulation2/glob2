@@ -1,0 +1,42 @@
+{
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-accounts.png": {
+    "sha256": "08ad0083220b987312eaf90338ea8fbc90d20a438d945e53e92b2ce7b36a891d",
+    "bytes": 164952
+  },
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-audit.png": {
+    "sha256": "a307f4ac790dfbfdfc6dd9be696f5e346aadd3951cc8009694b460308fceb52b",
+    "bytes": 129149
+  },
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-finances.png": {
+    "sha256": "6d9b7f0b9ddec97e52d110ea28b374e1628f888076499e4a68204e0a6181b48e",
+    "bytes": 303083
+  },
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-music-guidance-fixture.png": {
+    "sha256": "9881e9becd19e970465da5f8d5436f3f469d432b0ff082d420b80483354aa1d1",
+    "bytes": 284518
+  },
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-skin-materials.png": {
+    "sha256": "48c90d3b832222c720b2d29cf2cc8977af8fa136cdfb198d09db1acd00bcfc2c",
+    "bytes": 640328
+  },
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-accounts.png": {
+    "sha256": "14402ad5229a4e02269056b1b9e5ec26a98834c4cd7a39d3183370215e6201a0",
+    "bytes": 141099
+  },
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-audit.png": {
+    "sha256": "c3fd6bed15bed15fd8f468b93f9a7261ae65a743b2c8bf1f5d90f7763b4ca5c2",
+    "bytes": 96021
+  },
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-finances.png": {
+    "sha256": "21671d96f0901a84402626b76736182ee02173eaaf3d68694a3009b9a6fb307b",
+    "bytes": 244213
+  },
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-music-guidance-fixture.png": {
+    "sha256": "fa2161e46974ac890732aa2f0fe5d81f564e47d71bfcff68467cb2f6f8caa2c8",
+    "bytes": 273305
+  },
+  "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-skin-materials.png": {
+    "sha256": "4e85332543c8aec39913b9fbbd6eaace683d79be2b9bea723430e04d4d41b412",
+    "bytes": 166018
+  }
+}

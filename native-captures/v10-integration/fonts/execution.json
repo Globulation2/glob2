@@ -1,0 +1,241 @@
+{
+  "output_label": "",
+  "shard": "1/1",
+  "total_planned_jobs": 12,
+  "assigned_jobs": 12,
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+  "binary_sha256": "3a831b7595bb528ee5b2006e95533ec2de6ac3d5e7efb69bc3a4e773f25fb4b1",
+  "revision": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "phase": "fonts",
+  "scope": "Exact 33 changed online literals, freshly measured in12 combinations; V9 carry retains its original producer.",
+  "jobs": [
+    {
+      "tag": "desktop-10x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-10x1",
+        "1280",
+        "1024",
+        "10",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 7.01,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "edda7f6f10e3702d4655f2c6ac7308e5ef21e1dfa2f3dd2ac27d72f9ca749c80",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-10x1/font-matrix.json.gz"
+    },
+    {
+      "tag": "desktop-10x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-10x2",
+        "1280",
+        "1024",
+        "10",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 7.01,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "e97ade12f1a922625dcff99715ebd6b12c642e270f6ae8a2f181ca40a77fe618",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-10x2/font-matrix.json.gz"
+    },
+    {
+      "tag": "desktop-13x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-13x1",
+        "1280",
+        "1024",
+        "13",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 7.01,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "d51c729602ec65bbedc316cf5daa20b9d6a8567825feabb95b10d0cecc0388be",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-13x1/font-matrix.json.gz"
+    },
+    {
+      "tag": "desktop-13x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-13x2",
+        "1280",
+        "1024",
+        "13",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 7.01,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "61692a631747e29a5e6dfc29d7c5856f4c310dcd1c7450741bbd008032d2dd95",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-13x2/font-matrix.json.gz"
+    },
+    {
+      "tag": "desktop-20x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-20x1",
+        "1280",
+        "1024",
+        "20",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 7.01,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "2a9c86a77640cc80768fe349bfb83814839933cbc4a43eee928317c88105da4d",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-20x1/font-matrix.json.gz"
+    },
+    {
+      "tag": "desktop-20x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-20x2",
+        "1280",
+        "1024",
+        "20",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 8.02,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "4a7d7c3ee03e49b51627ad22f3c8581df12d1701cc9a8480b420f4395fb19f75",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-20x2/font-matrix.json.gz"
+    },
+    {
+      "tag": "phone-10x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-10x1",
+        "480",
+        "960",
+        "10",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 7.02,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "d6d636887c5160b9029fd96880943c83bd6b22897df05c39fb15f301e22ced98",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-10x1/font-matrix.json.gz"
+    },
+    {
+      "tag": "phone-10x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-10x2",
+        "480",
+        "960",
+        "10",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 7.01,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "65db70cfc89913f8d744629cc60e42f0f2c2f2340292a2a3c7d733b4befa7eeb",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-10x2/font-matrix.json.gz"
+    },
+    {
+      "tag": "phone-13x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-13x1",
+        "480",
+        "960",
+        "13",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 7.02,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "56660a5924c502d7fe01704c44e5f9b3a01a5d28b4a63d107faeb5948fee6fdd",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-13x1/font-matrix.json.gz"
+    },
+    {
+      "tag": "phone-13x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-13x2",
+        "480",
+        "960",
+        "13",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 7.02,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "be3e79c8ecaf80866e147ba21ae0a0e44703d637bede3eaa92cbb90b05925b03",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-13x2/font-matrix.json.gz"
+    },
+    {
+      "tag": "phone-20x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-20x1",
+        "480",
+        "960",
+        "20",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 7.02,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "eed2d2c1a63debe7a58fdb486ec0a94c38fd7d35eea95e78f6b0f3e602d9a89f",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-20x1/font-matrix.json.gz"
+    },
+    {
+      "tag": "phone-20x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-20x2",
+        "480",
+        "960",
+        "20",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 8.02,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "a982818bc97e7ed40c16629d33abb5c153f3af5f9f2c31bc63349fb6a15d2a89",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/phone-20x2/font-matrix.json.gz"
+    }
+  ]
+}

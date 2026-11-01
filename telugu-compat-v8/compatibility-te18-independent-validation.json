@@ -1,0 +1,16 @@
+{
+  "result": "passed",
+  "scope": "Independent mechanical Telugu18 compatibility proof only; no whole-language or runtime approval generated",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "9719b1eab1e27c6c7bf2ce5779dd3be9461ebe12e282deaa3ec2a1d06dfe3c53",
+    "online": "d97c8871ed79806884220397c1087579a8281776faafbb2dd8e36da13f0d1c83"
+  },
+  "actual_pairs_per_role": 18,
+  "locale": "te",
+  "role_bindings": 54,
+  "unchanged_native_pairs": 3412,
+  "unchanged_online_pairs": 2978,
+  "proof_sha256": "3a7f59da23295fc063dd355a56540998a258888fce8e109fcb2b56f8f5c95288",
+  "runtime_platforms": "pending"
+}

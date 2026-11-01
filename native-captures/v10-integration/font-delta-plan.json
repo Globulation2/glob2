@@ -1,0 +1,215 @@
+{
+  "status": "Preparation only; actual binary and final input freeze pending",
+  "head": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+  },
+  "previous_plan_sha256": "81e1c8b7215ea28a3db584d6766baf35c22d05029b49a47f3059cadb67fd376b",
+  "total_final_literal_variants": 6435,
+  "unchanged_exact_literal_variants": 6402,
+  "changed_literal_variants": 33,
+  "fresh_combinations": 12,
+  "planned_fresh_samples": 396,
+  "old_measurement_identity": "EA0 actual V9 producer; carry is exact literal/font input proof only, not fresh final process measurements",
+  "changed_values": [
+    {
+      "surface": "online",
+      "key": "Invalid pagination.",
+      "branch": "",
+      "target": "Невалидни параметри за странициране."
+    },
+    {
+      "surface": "online",
+      "key": "Invalid range or payment mode.",
+      "branch": "",
+      "target": "Невалиден диапазон или режим на плащане."
+    },
+    {
+      "surface": "online",
+      "key": "Invalid webhook signature.",
+      "branch": "",
+      "target": "Невалиден подпис на уебхука."
+    },
+    {
+      "surface": "online",
+      "key": "Invalid {value0} normal camera",
+      "branch": "",
+      "target": "Невалидна трансформация на нормалите към камерата за {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "Keep the melody, but make calm more spacious…",
+      "branch": "",
+      "target": "Запазете мелодията, но направете настроението „Спокойствие“ по-просторно…"
+    },
+    {
+      "surface": "online",
+      "key": "Late",
+      "branch": "",
+      "target": "Закъснели"
+    },
+    {
+      "surface": "online",
+      "key": "Light",
+      "branch": "",
+      "target": "Ниска гъстота"
+    },
+    {
+      "surface": "online",
+      "key": "Loading the inspected version…",
+      "branch": "",
+      "target": "Зареждане на преглежданата версия…"
+    },
+    {
+      "surface": "online",
+      "key": "Loading your building workspace…",
+      "branch": "",
+      "target": "Зареждане на работното ви пространство за сгради…"
+    },
+    {
+      "surface": "online",
+      "key": "Lost",
+      "branch": "",
+      "target": "Загуба"
+    },
+    {
+      "surface": "online",
+      "key": "Manual blend · Calm → Building → Combat",
+      "branch": "",
+      "target": "Ръчно смесване · Спокойствие → Изграждане → Бой"
+    },
+    {
+      "surface": "online",
+      "key": "Map credits",
+      "branch": "",
+      "target": "Кредити за карти"
+    },
+    {
+      "surface": "online",
+      "key": "{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+      "branch": "",
+      "target": "{slot0}: начално количество {slot1}, капацитет {slot2}; {slot3}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} Map credits",
+      "branch": "",
+      "target": "Кредити за карти: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} Music credits",
+      "branch": "",
+      "target": "Музикални кредити: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} Stripe minor units",
+      "branch": "",
+      "target": "Най-малки парични единици в Stripe: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} conversation",
+      "branch": "",
+      "target": "Разговор: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} cover",
+      "branch": "",
+      "target": "Обложка: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} credits",
+      "branch": "",
+      "target": "Кредити: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} hue",
+      "branch": "",
+      "target": "Оттенък: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} rendered preview",
+      "branch": "",
+      "target": "Рендиран преглед: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} swatches",
+      "branch": "",
+      "target": "Цветови мостри: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} waveform",
+      "branch": "",
+      "target": "Вълнова форма: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "{value0} {value1} · {value2} likes",
+      "branch": "",
+      "target": "{value0} {value1} · Харесвания: {value2}"
+    },
+    {
+      "surface": "online",
+      "key": "↓ {slot0} downloads",
+      "branch": "",
+      "target": "↓ Изтегляния: {slot0}"
+    },
+    {
+      "surface": "online",
+      "key": "♥ {slot0} likes",
+      "branch": "",
+      "target": "♥ Харесвания: {slot0}"
+    },
+    {
+      "surface": "online",
+      "key": " (lost)",
+      "branch": "",
+      "target": " (загуба)"
+    },
+    {
+      "surface": "online",
+      "key": " (won)",
+      "branch": "",
+      "target": " (победа)"
+    },
+    {
+      "surface": "online",
+      "key": " · first at {value0}",
+      "branch": "",
+      "target": " · за първи път на {value0}"
+    },
+    {
+      "surface": "online",
+      "key": " · {count} recorded downloads",
+      "branch": "",
+      "target": " · Регистрирани изтегляния: {count}"
+    },
+    {
+      "surface": "online",
+      "key": " · {value0} unresolved",
+      "branch": "",
+      "target": " · Нерешени: {value0}"
+    },
+    {
+      "surface": "online",
+      "key": "Coding requests use up to {value0} {value1} credits. Manual editing and local playtests are free.",
+      "branch": "",
+      "target": "Заявките за програмиране използват кредити от категория „{value1}“ с лимит {value0}. Ръчното редактиране и локалните тестови игри са безплатни."
+    },
+    {
+      "surface": "online",
+      "key": "Coding requests use up to {value0} {value1} credits. Source acceptance does not mean engine checks passed.",
+      "branch": "",
+      "target": "Заявките за програмиране използват кредити от категория „{value1}“ с лимит {value0}. Приемането на изходния код не означава, че проверките в игровия двигател са преминали успешно."
+    }
+  ]
+}

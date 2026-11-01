@@ -1,0 +1,36 @@
+{
+  "final_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "old_producers_preserved": {
+    "V9": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+    "V10font33_unit_engine147": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+    "V10correctedUI": "b14894809014d14baa25de28d63d775ffeb41331"
+  },
+  "changed_native_paths_since_b148": {
+    "libgag/src/FontKerningTest.cpp": "185bb67520f259680ba403e53261d47721189c7e537e611598e4770dd5a5231c",
+    "libgag/src/TrueTypeFont.cpp": "0504eb2b4cc48145a55949b86d9e0f60658a30d0c3d77cda0d026cd40d09e26f",
+    "src/app/SystemLanguageTest.cpp": "13d789a3f7fb193d52b52101a8c7fc4f77c9ef24776d3f5be6b79995a38469b1",
+    "src/game/SimRevision.h": "5921dff3fc2e9353f8069db3928cb0ce45731fe1a7c7b007353c7bb0c3771689",
+    "src/hud/touch/GameGUITouch.cpp": "2ad6dbc5fc3fb2997ed1f785c933f4b9d3cddd557ae34bec80adc50c40c8c33c",
+    "src/hud/touch/GameGUITouch.h": "3cf208957aad16eadbac99ff74743e40bdc7a5ebd319b040c701210f83451fa4",
+    "src/hud/touch/GameGUITouchHarness.cpp": "f76dcfc9e4fcbb426ef642fed2a7cbf3303bce4c895d74805667e0b10fbfcf06",
+    "src/hud/touch/GameGUITouchInspection.cpp": "6b187d82d03a8226657a907d28e32d15329249b8684ee6a35c94e8283b79ee0d",
+    "src/hud/touch/GameGUITouchView.cpp": "21b1d4e4512e60acef4ee825b4c037cfda128db250484840e85258e62c264435",
+    "src/map/editor/EditorPresentationTest.cpp": "64ba5b06f7d069e9a9675fc36bd20a47cc36abb6b03cc7a77c647478404b6a11",
+    "src/map/editor/MapEditPresentation.cpp": "1ee518ab2b2a3484e8d134d55b70589ddf34d555a85439be62b8c6c6f02b41d5",
+    "src/map/editor/PhoneEditor.cpp": "0f1bf2251fd48ae71c344ed55bd080e9b9b54123aad5e86eec6a36c4c8e46904",
+    "src/map/editor/PhoneEditor.h": "86b06938a323d8f424c4946aaf7888534ba57ca9452086512fd8ea4685cae7b7",
+    "src/map/editor/PhoneEditorInspection.cpp": "9d887e55b44766797aa7c7def395dd521734541fb9ad5d8a2107a3cadb6b7291",
+    "src/map/editor/PhoneEditorTray.cpp": "3a9dfb95858036364dc99a21df0ca108c6ea5be7f0e31cddd0a6d2cdea69827c",
+    "src/map/editor/PhoneEditorView.cpp": "c5c2391540c8d03b5e017160f0da4f7d68d12b9da113be49333e170517e6694f",
+    "src/net/turn/TurnEngineHarness.cpp": "ada03d5ae83f5c8f8dcc5c3c3151a10e8ac7ba87178d1afef526f6603e3ebf0f",
+    "src/relay/RelayAdmissionTest.cpp": "ffaa44fcf76a49c29cf3e4161cf5a3933cd24b49c7de9dfc1bd65914dca71990",
+    "src/scripting/sgsl/LegacyScriptCoverageTest.cpp": "f37cf05bdb786bbc6e634fa402dd7c42313c92724bf1dfb1bbeb82640f56bf60",
+    "src/ui/FrontendUI.cpp": "efc33068c3b40f609f59f3e994d7cc8326b4e77709d8eb0ef8475302a4324dba",
+    "src/ui/settings/SettingsScreen.cpp": "373fa9628fff7afec53aa74e215932f67cbf5044d03ba62c013d546591a41037",
+    "src/ui/settings/SettingsScreenTest.cpp": "f7b93e7bdece209f22e49561f573a36175703363b664c61c88cf491b226b2f65"
+  },
+  "evidence_policy": "Historical outcomes retain their actual executable/source identities. Current9UI25PNG and44focusedtests+finalgolden115 are actual94021. Fullfont measurements are explicitly carried by exact BG typography/input equivalence proof; no fresh77220claim.",
+  "font_proof_path": "../../native-v11-qa/bg-font-carry-equivalence-proof.json",
+  "font_proof_sha256": "09e1ec7d297e00e21d257a8fababfb4eb93f8e851a55973d3c0e385998afa0ea",
+  "frozen_inputs_sha256": "2a7d8e3c97148e1eed372462d7e49a0d0b1c4ac6660f3ec52e615dec5aa29539"
+}

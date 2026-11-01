@@ -1,0 +1,53 @@
+{
+  "revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-unit-tests",
+  "binary_sha256": "c4331aee2c1dab84be157d1269337ed8c2bbb77cf38e7fe586b6e363aee5bd57",
+  "command": [
+    "xvfb-run",
+    "-a",
+    "-s",
+    "-screen 0 1600x1400x24",
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto",
+    "--binary",
+    "unit",
+    "-j",
+    "2",
+    "--display-jobs",
+    "1",
+    "--timeout",
+    "600",
+    "--junit",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-tests-v9-unit/junit.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-tests-v9-unit",
+    "--write-inventory",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-tests-v9-unit/inventory.json",
+    "--write-timings",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-tests-v9-unit/timings.json",
+    "--filter",
+    "ApiErrorText/*",
+    "--filter",
+    "PlatformProtocol/*",
+    "--filter",
+    "PlatformClient/*",
+    "--filter",
+    "UILayout/*"
+  ],
+  "filters": [
+    "ApiErrorText/*",
+    "PlatformProtocol/*",
+    "PlatformClient/*",
+    "UILayout/*"
+  ],
+  "returncode": 0,
+  "seconds": 0.64,
+  "matched_filters": {
+    "ApiErrorText/*": 8,
+    "PlatformProtocol/*": 8,
+    "PlatformClient/*": 24,
+    "UILayout/*": 51
+  }
+}

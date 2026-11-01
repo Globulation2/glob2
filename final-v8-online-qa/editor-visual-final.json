@@ -1,0 +1,620 @@
+{
+  "reviewer_identity": {
+    "agent": "/root/v7_editor",
+    "role": "Independent Bulgarian editorial online visual reviewer",
+    "assessment_kind": "agent-reviewed only",
+    "human_native_reviewer": false
+  },
+  "scope": "Exactly44frozen indexed PNGs plus3separate composer-notice PNGs, each personally viewed. No priorV7byte approvals inherited.",
+  "index_sha256": {
+    "artifacts/bulgarian/final-v8-online-qa/image-index-frozen.json": "fb555133438c12d5c27a7e03adbccabc8385288528832aa8cf81f547bb8f2590",
+    "artifacts/bulgarian/final-v8-online-qa/composer-scroll/index-frozen.json": "a9b1dfdf1e2faa2a0aece5731beeb40a4b617a274183c34aebb48b64d85d9699"
+  },
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "platform/packages/i18n/locales/en.json": "633a7022434673ed52b61c82bc2f4b6ee3ca519ae45402af3ad76ed0a20671d2",
+    "platform/packages/i18n/locales/bg.json": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f",
+    "data/texts.bg.txt": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d"
+  },
+  "capture_producer_source_binding": {
+    "captureProducerHead": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+    "finalHead": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+    "inputCount": 1642,
+    "inputsByteIdentical": true,
+    "distByteIdentical": true,
+    "frozen44ImagesByteIdentical": true,
+    "initialEA0toF30Delta": "only platform/apps/web/e2e/i18n.spec.ts explicitnullguards, seeguard-commit-input-binding.json",
+    "productionInputBytesUnchanged": true
+  },
+  "binding_evidence_sha256": {
+    "artifacts/bulgarian/final-v8-online-qa/producer.json": "7321b8d7cb42a28ecd872f1ca0cb714258eabab8006b27f2a5cb5cc29bdacd14",
+    "artifacts/bulgarian/final-v8-online-qa/final-source-bundle-closure.json": "3cfe913de82856bc600b900ec05baeb17e433509e74b19a18bc2f5e2712429de"
+  },
+  "coverage": {
+    "expected": 47,
+    "personally_viewed": 47,
+    "critical_observed": 0,
+    "major_unique_findings": 1,
+    "images_with_major_finding": 3,
+    "visible_subsets_without_major": 44
+  },
+  "final_approval": false,
+  "status": "changes_requested_map_credit_currency_label",
+  "major_findings": [
+    {
+      "severity": "major",
+      "source_key": "Map credits",
+      "current_target": "Автори на картата",
+      "proposed_target": "Кредити за карти",
+      "affected_images": [
+        "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-map-pricing.png",
+        "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-desktop-new30-map-no-credit.png",
+        "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-desktop-new30-map-unavailable.png"
+      ],
+      "requires": "Exact-key semantic/editorial/adversarial recheck and affected visual refresh after any correction."
+    }
+  ],
+  "caller_sha256": {
+    "platform/apps/web/src/pages/MapStudio.tsx": "3067c30589140816f6d5237ab501fbb1010e6d286427e0681190a1af1cfc3a53"
+  },
+  "scroll_evidence": {
+    "metrics_path": "artifacts/bulgarian/final-v8-online-qa/composer-scroll/metrics.json",
+    "sha256": "f93db9fad84721ee6abdb602906b15a1d0f1131b673fd4219085eef4b49c2a9f",
+    "personally_read": true,
+    "assessment": "Separate3images visibly contain full notices. Metrics show helpBottom832/822/832 within viewport/composer. Recorded scrollTop remains0 in all3 before/after; do not assert actual scroll movement or unseen text solely from wheel invocation."
+  },
+  "explicit_not_visible": [
+    "Static pose",
+    "Wait for the current request to finish.",
+    "Saving your project…"
+  ],
+  "additional_visual_limits": [
+    "Three music preset title buttons seen; screenshots show Waltz body prose, not other2prompt bodies.",
+    "Skin view direction arrows visible; four textual view-name tooltips not visible in these frames."
+  ],
+  "method": "Directly opened all47exact PNGs with view_image in12groups. Personally inspected glyphs, actual wording/context, wrapping, clipping, visible controls and scroll boundaries. No capture-worker conclusions or summary acceptance read. Narrow caller lookup confirmed the observed map-wallet wording issue.",
+  "limits": [
+    "Agent only; no native-human certification or physical-device proof.",
+    "Static PNGs show control separation, not actual hit testing/keyboard behavior.",
+    "Browser-owned date/file controls, identifiers and authored names distinguished from translated prose.",
+    "No source/catalog edits; allprior reports unchanged.",
+    "Approval withheld only for observed map-credit label error; remaining visible subsets have no critical/major issue observed."
+  ],
+  "entries": [
+    {
+      "index": 0,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/desktop-building-default.png",
+      "sha256": "9d3bd41ce9dd6c06d64d297cdfc4879ceb0f42ad88a3cff2dff1b87c2caeb7a7",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 1,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new-admin-accounts.png",
+      "sha256": "08ad0083220b987312eaf90338ea8fbc90d20a438d945e53e92b2ce7b36a891d",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 2,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new-admin-audit.png",
+      "sha256": "a307f4ac790dfbfdfc6dd9be696f5e346aadd3951cc8009694b460308fceb52b",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 3,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new-admin-finances.png",
+      "sha256": "18a4c99fca0456599d01107e360a477456fa82beb2f096ba5d2e951c530baaf1",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Finance captions and right columns extend within intended horizontal table scroll regions; initial capture clips right-side text. No hidden-column visual approval inferred."
+        }
+      ],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 4,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new-music-guidance-fixture.png",
+      "sha256": "9881e9becd19e970465da5f8d5436f3f469d432b0ff082d420b80483354aa1d1",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. All11 visible Bulgarian listening guidance cards personally reread; authored fixture metadata intentionally English.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 5,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new-skin-materials.png",
+      "sha256": "e9efc4a95a2fbc192a7ff4f70f117e44fc9bda95f741ed4804f57e191a4de253",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Material palette lower content extends below current tool viewport and phone footer gesture text is small; only visible labels inspected."
+        }
+      ],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 6,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-admin-accounts-chart.png",
+      "sha256": "5ff686bdc1111a02329dc7fe50bb81bda0709da69a4f1e0089a3d88b3d39eda2",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Account-axis/category terms and match-started legend inspected where visible; titles wrap on phone. A phone accounts frame does not show lower match legend, separate started frame does.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 7,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-admin-started-chart.png",
+      "sha256": "5ff686bdc1111a02329dc7fe50bb81bda0709da69a4f1e0089a3d88b3d39eda2",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Account-axis/category terms and match-started legend inspected where visible; titles wrap on phone. A phone accounts frame does not show lower match legend, separate started frame does.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 8,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-map-pricing.png",
+      "sha256": "bdec572ed159f326494b14c2dfb27d65536bc26cd9f2aec5321ddcad0ffaa4f9",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "major",
+          "kind": "currency_mislabeled_as_acknowledgments",
+          "observation": "Top-right coin wallet shows number followed by Автори на картата (map authors). Actual Map-credit currency context requires monetary credit wording.",
+          "source_key": "Map credits",
+          "current_target": "Автори на картата",
+          "proposed_target": "Кредити за карти",
+          "caller": "platform/apps/web/src/pages/MapStudio.tsx:309; same label used dialog title353",
+          "note": "Existing full {value0} Map credits template correctly uses {value0} кредита за карти and accessible aria-label305. Visible numeric agreement may use full template; no edit performed."
+        }
+      ],
+      "verdict": "changes_requested"
+    },
+    {
+      "index": 9,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-music-generation-unavailable.png",
+      "sha256": "0f28b82382073a7bd594300d18c226fdd9bb89b7d8b9b2e8908b83a69ea41872",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Preset titles visible where not scrolled away; textarea shows final Waltz prose. Other2preset descriptions not visually certified from this image.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 10,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-music-ideas-pricing.png",
+      "sha256": "e0aadba61eed81b38692ffbb7bd92ac120e84f07d0b60d2883733f6c0ee3b1a3",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Preset titles visible where not scrolled away; textarea shows final Waltz prose. Other2preset descriptions not visually certified from this image.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 11,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-music-no-credit.png",
+      "sha256": "9643f229ebe108e0b559df4ece70b67e30640d089fb535cfc5f6a629ba05c371",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Preset titles visible where not scrolled away; textarea shows final Waltz prose. Other2preset descriptions not visually certified from this image.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 12,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-shop-stripes-spots.png",
+      "sha256": "5ff82f3bb40847308caad636a58595a9b16209a72ee05c9ed06aa0d725fac793",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 13,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-skin-views-untitled.png",
+      "sha256": "9a61891c0713f493923e80352ed1be81991c9dc6995cffcc73f9bd7162aa3020",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Облик без заглавие visibly correct; direction control arrow/icon seen. No unshown textual direction tooltip assumed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 14,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-swarm-static-branch.png",
+      "sha256": "68fb9c5e0675f377a93d636bca71fd84bff3d5204580dcf4020822f629e6adc8",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Actual swarm final-view branch shows Окончателен изглед в играта. Статична поза is NOT visible and not approved as rendered.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 15,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-desktop-new30-terrain-pricing.png",
+      "sha256": "fc61536ee190be37b01c9191e833f210a354caf9a7634373d678258b0d49cf65",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 16,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new-admin-accounts.png",
+      "sha256": "14402ad5229a4e02269056b1b9e5ec26a98834c4cd7a39d3183370215e6201a0",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Long search placeholder truncated on phone; search/moderation buttons remain visible."
+        }
+      ],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 17,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new-admin-audit.png",
+      "sha256": "c3fd6bed15bed15fd8f468b93f9a7261ae65a743b2c8bf1f5d90f7763b4ca5c2",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 18,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new-admin-finances.png",
+      "sha256": "549970a029b2adbe9df6bb133b4cf1996533f09c4304cca3c0d5d66191a0073d",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Finance captions and right columns extend within intended horizontal table scroll regions; initial capture clips right-side text. No hidden-column visual approval inferred."
+        }
+      ],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 19,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new-music-guidance-fixture.png",
+      "sha256": "fa2161e46974ac890732aa2f0fe5d81f564e47d71bfcff68467cb2f6f8caa2c8",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. All11 visible Bulgarian listening guidance cards personally reread; authored fixture metadata intentionally English.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 20,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new-skin-materials.png",
+      "sha256": "5b41e469ef56b836de092bfd65b3f1e8b2c0201967c082b04fccc14001cd55ce",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Material palette lower content extends below current tool viewport and phone footer gesture text is small; only visible labels inspected."
+        }
+      ],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 21,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-admin-accounts-chart.png",
+      "sha256": "38ad7c902c18e0752cef1d21b79462ee4305610ba02587e6154c4b096c8edc4c",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Account-axis/category terms and match-started legend inspected where visible; titles wrap on phone. A phone accounts frame does not show lower match legend, separate started frame does.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 22,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-admin-started-chart.png",
+      "sha256": "79e36082b01fcb80986afc1bbf0639dc5ef98836544cd50d73873c2bb574e92f",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Account-axis/category terms and match-started legend inspected where visible; titles wrap on phone. A phone accounts frame does not show lower match legend, separate started frame does.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 23,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-map-pricing.png",
+      "sha256": "c531520bd7f313ce49df4023e3e28e6e3e1bf69cebe0e3ad92803022632b1b68",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 24,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-music-generation-unavailable.png",
+      "sha256": "0e634905bb5f4d4e20a5bf5218d7569f3d5045e0cdab2acf3a9c1e4f16ef055d",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Preset titles visible where not scrolled away; textarea shows final Waltz prose. Other2preset descriptions not visually certified from this image.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 25,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-music-ideas-pricing.png",
+      "sha256": "cb5133455115c53b01c18fa6a4d0afcb8d76dfb538824f6d90b88ba1b20b8de1",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Preset titles visible where not scrolled away; textarea shows final Waltz prose. Other2preset descriptions not visually certified from this image.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 26,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-music-no-credit.png",
+      "sha256": "5c01a15625e61cda96098f64b6a35959726fcf7f374e3602fcbcf74e90a5e7b2",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Preset titles visible where not scrolled away; textarea shows final Waltz prose. Other2preset descriptions not visually certified from this image.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 27,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-shop-stripes-spots.png",
+      "sha256": "8431d69e7b3cc9fad2a91e1c1497320b29fa226fb8b9a3a8b4d2cfb197a7eb9b",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 28,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-skin-views-untitled.png",
+      "sha256": "563b1a35d7a725b6fecc7fa9ce0de9144cf72511f91049c2fe3d7b03689ea7e0",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Облик без заглавие visibly correct; direction control arrow/icon seen. No unshown textual direction tooltip assumed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 29,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-swarm-static-branch.png",
+      "sha256": "abff493922e8c36e1cfa69bec21ffc779262ef51cb839a4979dee90d3b2ba197",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed. Actual swarm final-view branch shows Окончателен изглед в играта. Статична поза is NOT visible and not approved as rendered.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 30,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/new-phone-new30-terrain-pricing.png",
+      "sha256": "8bb6a2d835240568e52743d8c3cd7d5b538cc920552a7143eac7d3e478eaf689",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 31,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/phone-add-resource.png",
+      "sha256": "cd5e7890c65322ebf0b723d4ea8b7aae966e9db3f99489b3a27cfc716e9402f7",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 32,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/phone-add-terrain.png",
+      "sha256": "475a8d8ab2ec357477160957e5dff781b7d9496046e86845d732613ffc33b487",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 33,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/phone-ai-tags.png",
+      "sha256": "2f7b66426c99efd3860af93b25bc2001f8ec9ce4df6761a0abb72a6d2154efa5",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 34,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/phone-building-default.png",
+      "sha256": "8944c976a94c00c0eef29459346a363dee59dfa9034215f0b665229eb8928f02",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Допълнително labels break within word in narrow property columns; remain decipherable. Technical field names/values intentionally verbatim."
+        }
+      ],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 35,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/phone-map-visibility.png",
+      "sha256": "e25f5df2ecc61c5b52cf9a9c47813c23e9c704d365c35263492feed4126a30bc",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 36,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/phone-music-fields.png",
+      "sha256": "3bacda258b07fb8b792b9a404aa0f8ec51e983f510c4d3c2cea0d75ca619ff3c",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 37,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/phone-set-default.png",
+      "sha256": "7cd8b3f3b4a9f06e8a942814378fa220a4ba3139a9b34898be37ef3b2eedd6e7",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Native license select truncates long selected description; CC BY4.0 identifier visible. Browser popup contents not inspected."
+        }
+      ],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 38,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-desktop-new30-map-no-credit.png",
+      "sha256": "590add4c93c307dc279340d057d0366da36611f9b3c09ff8255a5e71075ec3de",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "major",
+          "kind": "currency_mislabeled_as_acknowledgments",
+          "observation": "Top-right coin wallet shows number followed by Автори на картата (map authors). Actual Map-credit currency context requires monetary credit wording.",
+          "source_key": "Map credits",
+          "current_target": "Автори на картата",
+          "proposed_target": "Кредити за карти",
+          "caller": "platform/apps/web/src/pages/MapStudio.tsx:309; same label used dialog title353",
+          "note": "Existing full {value0} Map credits template correctly uses {value0} кредита за карти and accessible aria-label305. Visible numeric agreement may use full template; no edit performed."
+        }
+      ],
+      "verdict": "changes_requested"
+    },
+    {
+      "index": 39,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-desktop-new30-map-unavailable.png",
+      "sha256": "ff0a34c409ffe8446f77f60cbca0697eca083dfc2e5e06c813a45f90b917bf0c",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [
+        {
+          "severity": "major",
+          "kind": "currency_mislabeled_as_acknowledgments",
+          "observation": "Top-right coin wallet shows number followed by Автори на картата (map authors). Actual Map-credit currency context requires monetary credit wording.",
+          "source_key": "Map credits",
+          "current_target": "Автори на картата",
+          "proposed_target": "Кредити за карти",
+          "caller": "platform/apps/web/src/pages/MapStudio.tsx:309; same label used dialog title353",
+          "note": "Existing full {value0} Map credits template correctly uses {value0} кредита за карти and accessible aria-label305. Visible numeric agreement may use full template; no edit performed."
+        }
+      ],
+      "verdict": "changes_requested"
+    },
+    {
+      "index": 40,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-desktop-new30-terrain-unavailable.png",
+      "sha256": "b722b575d09801f43d60a54c091a11eecfe5d003a5f6c6063c4c2f33b14a8ec2",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 41,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-phone-new30-map-no-credit.png",
+      "sha256": "e3b902d3710af7478a124c3b703f8eaa26fabf687e73443fbc2b5f7751cc08d5",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 42,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-phone-new30-map-unavailable.png",
+      "sha256": "4fa5a9d677ae88771f30b6046d8cdccc429054e03dfeda5bb6d88718e25fb351",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "index": 43,
+      "path": "artifacts/bulgarian/final-v8-online-qa/verified/screenshots/states-phone-new30-terrain-unavailable.png",
+      "sha256": "2e6ce8ebe3b0f3227ce8c0993f0a0b280d5b0489a6de91282b7839f7adb6c6cf",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "assessment": "Fresh actual PNG visually inspected: Bulgarian Cyrillic legible, visible application wording and context accepted, action rectangles separated. No missing glyphs observed. Only visible screenshot state assessed.",
+      "findings": [],
+      "verdict": "approve_visible_subset"
+    },
+    {
+      "path": "artifacts/bulgarian/final-v8-online-qa/composer-scroll/map-notice-phone.png",
+      "sha256": "bfaed1b760acb06a8307a682a4a8eb6de4b5790a78fc1fdc3af65fdcebc156cd",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "verdict": "approve_visible_subset",
+      "assessment": "Full Bulgarian pricing and disabled-reason notice personally read in separate current phone composer frame. Complete notice fits above bottom edge; no hidden text assumed.",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v8-online-qa/composer-scroll/music-notice-phone.png",
+      "sha256": "39557eeed991627320ac4b009b92e80c7a14dff64c1d5a7064b2746bb83f9b04",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "verdict": "approve_visible_subset",
+      "assessment": "Full Bulgarian pricing and disabled-reason notice personally read in separate current phone composer frame. Complete notice fits above bottom edge; no hidden text assumed.",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v8-online-qa/composer-scroll/terrain-notice-phone.png",
+      "sha256": "a72364cfb3368fc2f5633d3279d777f2099f8bb20dacf41e5d99e2cdb083b0f6",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "verdict": "approve_visible_subset",
+      "assessment": "Full Bulgarian pricing and disabled-reason notice personally read in separate current phone composer frame. Complete notice fits above bottom edge; no hidden text assumed.",
+      "findings": []
+    }
+  ]
+}

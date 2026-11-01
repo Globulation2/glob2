@@ -1,0 +1,3029 @@
+{
+  "browser": "153.0.8010.12",
+  "reports": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1200,
+        "height": 900
+      },
+      "deviceScaleFactor": 1,
+      "state": {
+        "mode": "serial",
+        "isolated": true,
+        "diagnostics": {
+          "version": 1,
+          "executionMode": "serial",
+          "threadFallback": "serial requested",
+          "workerCount": 0,
+          "renderer": "software",
+          "renderContext": null,
+          "contextLost": false,
+          "contextRestores": 0,
+          "screen": "14MainMenuScreen",
+          "screenClass": "14MainMenuScreen",
+          "roomCanStart": false,
+          "customGameReady": false,
+          "tick": 0,
+          "frames": 0,
+          "loop": 430,
+          "paused": false,
+          "torus": false,
+          "torusSettled": false,
+          "width": 1200,
+          "height": 900,
+          "heapBytes": 231997440,
+          "artworkReady": true,
+          "restore": "ready",
+          "watchReplay": "none",
+          "import": "idle",
+          "persisting": false,
+          "persistence": "persisted",
+          "audio": "inactive",
+          "assets": {
+            "core": "ready",
+            "game": "ready",
+            "skins": "idle",
+            "font-cjk": "ready",
+            "menu-music": "ready",
+            "translations": "ready",
+            "music": "ready",
+            "music-sets": "ready",
+            "hd": "skipped"
+          },
+          "opened": []
+        },
+        "dimensions": {
+          "dpr": 1,
+          "innerWidth": 1200,
+          "innerHeight": 900,
+          "canvas": [
+            {
+              "width": 1200,
+              "height": 900,
+              "cssWidth": 1200,
+              "cssHeight": 900
+            }
+          ]
+        },
+        "controls": {
+          "menu/0": {
+            "enabled": true,
+            "h": 42,
+            "label": "Кампания",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 360
+            },
+            "w": 320,
+            "x": 84,
+            "y": 360,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/1": {
+            "enabled": true,
+            "h": 42,
+            "label": "Урок",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 456
+            },
+            "w": 320,
+            "x": 84,
+            "y": 456,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/2": {
+            "enabled": true,
+            "h": 42,
+            "label": "Зареждане на играта",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 408
+            },
+            "w": 320,
+            "x": 84,
+            "y": 408,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/3": {
+            "enabled": true,
+            "h": 48,
+            "label": "Персонализирана игра",
+            "visible": {
+              "h": 48,
+              "w": 320,
+              "x": 84,
+              "y": 258
+            },
+            "w": 320,
+            "x": 84,
+            "y": 258,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/4": {
+            "enabled": true,
+            "h": 42,
+            "label": "Игра онлайн",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 312
+            },
+            "w": 320,
+            "x": 84,
+            "y": 312,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/6": {
+            "enabled": true,
+            "h": 34,
+            "label": "Настройки",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 84,
+              "y": 540
+            },
+            "w": 156,
+            "x": 84,
+            "y": 540,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/7": {
+            "enabled": true,
+            "h": 34,
+            "label": "Редактор",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 248,
+              "y": 540
+            },
+            "w": 156,
+            "x": 248,
+            "y": 540,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/8": {
+            "enabled": true,
+            "h": 34,
+            "label": "Автори",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 84,
+              "y": 582
+            },
+            "w": 156,
+            "x": 84,
+            "y": 582,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/9": {
+            "enabled": true,
+            "h": 34,
+            "label": "Изход",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 84,
+              "y": 624
+            },
+            "w": 156,
+            "x": 84,
+            "y": 624,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/discord": {
+            "enabled": true,
+            "h": 34,
+            "label": "Общност в Discord",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 248,
+              "y": 582
+            },
+            "w": 156,
+            "x": 248,
+            "y": 582,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        "nativeCatalogSha256": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+        "settingsLabel": "Настройки",
+        "nativeFontSha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+        "nativeFontIdentity": "data/fonts/sans.ttf",
+        "languageControls": {
+          "done": {
+            "enabled": true,
+            "h": 34,
+            "label": "Готово",
+            "visible": {
+              "h": 34,
+              "w": 80,
+              "x": 970,
+              "y": 756
+            },
+            "w": 80,
+            "x": 970,
+            "y": 756,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.0": {
+            "enabled": true,
+            "h": 42,
+            "label": "Дисплей и графика",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 144
+            },
+            "w": 176,
+            "x": 140,
+            "y": 144,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.1": {
+            "enabled": true,
+            "h": 42,
+            "label": "Аудио",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 190
+            },
+            "w": 176,
+            "x": 140,
+            "y": 190,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.10": {
+            "enabled": true,
+            "h": 44,
+            "label": "Персонализирани ИИ",
+            "visible": {
+              "h": 44,
+              "w": 176,
+              "x": 140,
+              "y": 560
+            },
+            "w": 176,
+            "x": 140,
+            "y": 560,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.11": {
+            "enabled": true,
+            "h": 44,
+            "label": "Генератори на карти",
+            "visible": {
+              "h": 44,
+              "w": 176,
+              "x": 140,
+              "y": 608
+            },
+            "w": 176,
+            "x": 140,
+            "y": 608,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.2": {
+            "enabled": true,
+            "h": 42,
+            "label": "Геймплей",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 236
+            },
+            "w": 176,
+            "x": 140,
+            "y": 236,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.3": {
+            "enabled": true,
+            "h": 44,
+            "label": "Сградни настройки по подразбиране",
+            "visible": {
+              "h": 44,
+              "w": 176,
+              "x": 140,
+              "y": 282
+            },
+            "w": 176,
+            "x": 140,
+            "y": 282,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.4": {
+            "enabled": true,
+            "h": 42,
+            "label": "Контроли",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 330
+            },
+            "w": 176,
+            "x": 140,
+            "y": 330,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.5": {
+            "enabled": true,
+            "h": 42,
+            "label": "Език и играч",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 376
+            },
+            "w": 176,
+            "x": 140,
+            "y": 376,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.6": {
+            "enabled": true,
+            "h": 42,
+            "label": "Онлайн",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 422
+            },
+            "w": 176,
+            "x": 140,
+            "y": 422,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.8": {
+            "enabled": true,
+            "h": 42,
+            "label": "Запис",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 468
+            },
+            "w": 176,
+            "x": 140,
+            "y": 468,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.9": {
+            "enabled": true,
+            "h": 42,
+            "label": "Експерименти",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 514
+            },
+            "w": 176,
+            "x": 140,
+            "y": 514,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "player.language": {
+            "enabled": true,
+            "h": 34,
+            "label": "Български",
+            "visible": {
+              "h": 34,
+              "w": 140,
+              "x": 920,
+              "y": 171
+            },
+            "w": 140,
+            "x": 920,
+            "y": 171,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "player.name": {
+            "enabled": true,
+            "h": 34,
+            "label": "web_user",
+            "visible": {
+              "h": 34,
+              "w": 140,
+              "x": 920,
+              "y": 228
+            },
+            "w": 140,
+            "x": 920,
+            "y": 228,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "errors": [],
+      "network": [
+        {
+          "url": "/",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "18911",
+            "content-type": "text/html",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:14 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/script-fonts.css",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "908",
+            "content-type": "text/css",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/presentation-2d5935618dc2c62f-surface.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1994",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/loader-2d5935618dc2c62f.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "2086",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/theme.js",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/i18n.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "44791",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/glob-64.png",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/wordmark-letters.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/wordmark-two.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/nunito.woff2",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:44 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/locales/bg.json",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "79378",
+            "content-type": "application/json",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:43 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 306031,
+          "decodedSha256": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+        },
+        {
+          "url": "/fonts/sans-core.ttf",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "328512",
+            "content-type": "font/ttf",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:44 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 597784,
+          "decodedSha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9"
+        },
+        {
+          "url": "/index-2d5935618dc2c62f.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "333250",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:44 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:14 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/index-2d5935618dc2c62f.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "11538",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:44 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 61178,
+          "decodedSha256": "ce5fa39acbe960ccb5735218d4f775f3bba6a79701bfdc7b0f4f421ad1f52032"
+        },
+        {
+          "url": "/assets/game-2.c528d2d4d914d336.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1751821",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:44 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:17 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 2204873,
+          "decodedSha256": "c528d2d4d914d3364c5ad4e877d7fc371e6d1f39ff3ef3973959b64b14a28b2d"
+        },
+        {
+          "url": "/assets/game-1.3469574f02166bac.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3777113",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:44 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:17 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4194068,
+          "decodedSha256": "3469574f02166bac2bd5439397ecc8a4e315a7812f7e8d9bd25335ad4a1af61e"
+        },
+        {
+          "url": "/index-2d5935618dc2c62f.wasm",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "8249186",
+            "content-type": "application/wasm",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:44 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:16 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "bodyError": "response.body: Protocol error (Network.getResponseBody): Request content was evicted from inspector cache\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        },
+        {
+          "url": "/assets/core.7b3a73cef5629ed2.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3966492",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:44 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:16 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 7642177,
+          "decodedSha256": "7b3a73cef5629ed2e99f62f1b3e36e9de0ca085861eb0a69f446d5fe4ad1ed0e"
+        },
+        {
+          "url": "/assets/translations-3.5b22f8919650e7a8.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "576673",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:45 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:24 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 2114075,
+          "decodedSha256": "5b22f8919650e7a8a84bec39e2cf69555e2bdd4656eb00aa310902ae59db32ed"
+        },
+        {
+          "url": "/assets/translations-2.63d94aa015b055e1.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1199527",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:45 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:24 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 3991395,
+          "decodedSha256": "63d94aa015b055e1702abf2f5966894a64d0362aac2071478a5d21a401e266ef"
+        },
+        {
+          "url": "/assets/translations-1.e855c51157228238.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1151405",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:45 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:24 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4110852,
+          "decodedSha256": "e855c511572282387e35552e07abca4a483bfd67f05dc3fff73ae6346167b183"
+        },
+        {
+          "url": "/assets/menu-music.5294ed91abf32cfe.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "263988",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:46 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:18 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 264097,
+          "decodedSha256": "5294ed91abf32cfea540641622fb6b0f21b5a5446f35b165e94ae75f9dddb70c"
+        },
+        {
+          "url": "/assets/font-cjk.5701af4422583342.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3103919",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:46 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:17 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 8137448,
+          "decodedSha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+        },
+        {
+          "url": "/assets/music.67f422aa69c5356d.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1251364",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:46 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 1252275,
+          "decodedSha256": "67f422aa69c5356d139763a490f1f6547030247951ef074034309f9f05e600b0"
+        },
+        {
+          "url": "/assets/music-sets-1.602de095eeed505a.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3998941",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:47 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4001177,
+          "decodedSha256": "602de095eeed505ac5065746be6b80f44ad30ccbbb471169eeb3877a06d91eb6"
+        },
+        {
+          "url": "/assets/music-sets-3.163578e1e9d60971.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "450014",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:47 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 450081,
+          "decodedSha256": "163578e1e9d60971b90813251c94502854b2ca4a42a658f2093c023a810363c2"
+        },
+        {
+          "url": "/assets/music-sets-2.be883b1c072a2166.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "4166982",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:25:47 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4168611,
+          "decodedSha256": "be883b1c072a2166e46a024fb8d306a0f07b7fddb186e287f2c3d8ca383218c1"
+        }
+      ]
+    },
+    {
+      "name": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 1,
+      "state": {
+        "mode": "serial",
+        "isolated": true,
+        "diagnostics": {
+          "version": 1,
+          "executionMode": "serial",
+          "threadFallback": "serial requested",
+          "workerCount": 0,
+          "renderer": "software",
+          "renderContext": null,
+          "contextLost": false,
+          "contextRestores": 0,
+          "screen": "14MainMenuScreen",
+          "screenClass": "14MainMenuScreen",
+          "roomCanStart": false,
+          "customGameReady": false,
+          "tick": 0,
+          "frames": 0,
+          "loop": 538,
+          "paused": false,
+          "torus": false,
+          "torusSettled": false,
+          "width": 390,
+          "height": 844,
+          "heapBytes": 231997440,
+          "artworkReady": true,
+          "restore": "ready",
+          "watchReplay": "none",
+          "import": "idle",
+          "persisting": false,
+          "persistence": "persisted",
+          "audio": "inactive",
+          "assets": {
+            "core": "ready",
+            "game": "ready",
+            "skins": "idle",
+            "font-cjk": "ready",
+            "menu-music": "ready",
+            "translations": "ready",
+            "music": "ready",
+            "music-sets": "ready",
+            "hd": "skipped"
+          },
+          "opened": []
+        },
+        "dimensions": {
+          "dpr": 1,
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "canvas": [
+            {
+              "width": 390,
+              "height": 844,
+              "cssWidth": 390,
+              "cssHeight": 844
+            }
+          ]
+        },
+        "controls": {
+          "menu/0": {
+            "enabled": true,
+            "h": 56,
+            "label": "Кампания",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 424
+            },
+            "w": 328,
+            "x": 24,
+            "y": 424,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/1": {
+            "enabled": true,
+            "h": 56,
+            "label": "Урок",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 552
+            },
+            "w": 328,
+            "x": 24,
+            "y": 552,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/2": {
+            "enabled": true,
+            "h": 56,
+            "label": "Зареждане на играта",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 488
+            },
+            "w": 328,
+            "x": 24,
+            "y": 488,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/3": {
+            "enabled": true,
+            "h": 56,
+            "label": "Персонализирана игра",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 284
+            },
+            "w": 328,
+            "x": 24,
+            "y": 284,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/4": {
+            "enabled": true,
+            "h": 56,
+            "label": "Игра онлайн",
+            "visible": {
+              "h": 56,
+              "w": 328,
+              "x": 24,
+              "y": 348
+            },
+            "w": 328,
+            "x": 24,
+            "y": 348,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/more": {
+            "enabled": true,
+            "h": 48,
+            "label": "Още",
+            "visible": {
+              "h": 0,
+              "w": 328,
+              "x": 24,
+              "y": 628
+            },
+            "w": 328,
+            "x": 24,
+            "y": 628,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/settings": {
+            "enabled": true,
+            "h": 48,
+            "label": "Настройки",
+            "visible": {
+              "h": 48,
+              "w": 48,
+              "x": 318,
+              "y": 224
+            },
+            "w": 48,
+            "x": 318,
+            "y": 224,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        "nativeCatalogSha256": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+        "settingsLabel": "Настройки",
+        "nativeFontSha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+        "nativeFontIdentity": "data/fonts/sans.ttf",
+        "languageControls": {
+          "done": {
+            "enabled": true,
+            "h": 48,
+            "label": "Готово",
+            "visible": {
+              "h": 48,
+              "w": 123,
+              "x": 255,
+              "y": 784
+            },
+            "w": 123,
+            "x": 255,
+            "y": 784,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.current": {
+            "enabled": true,
+            "h": 48,
+            "label": "Език и играч",
+            "visible": {
+              "h": 48,
+              "w": 366,
+              "x": 12,
+              "y": 12
+            },
+            "w": 366,
+            "x": 12,
+            "y": 12,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "player.language": {
+            "enabled": true,
+            "h": 48,
+            "label": "Български",
+            "visible": {
+              "h": 48,
+              "w": 366,
+              "x": 12,
+              "y": 160
+            },
+            "w": 366,
+            "x": 12,
+            "y": 160,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "player.name": {
+            "enabled": true,
+            "h": 48,
+            "label": "web_user",
+            "visible": {
+              "h": 48,
+              "w": 366,
+              "x": 12,
+              "y": 276
+            },
+            "w": 366,
+            "x": 12,
+            "y": 276,
+            "surface": {
+              "h": 844,
+              "w": 390
+            },
+            "root": {
+              "h": 844,
+              "w": 390,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "errors": [],
+      "network": [
+        {
+          "url": "/",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "18911",
+            "content-type": "text/html",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:14 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/script-fonts.css",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "908",
+            "content-type": "text/css",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/theme.js",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/loader-2d5935618dc2c62f.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "2086",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/presentation-2d5935618dc2c62f-surface.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1994",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/i18n.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "44791",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/glob-64.png",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/wordmark-letters.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/wordmark-two.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/nunito.woff2",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/locales/bg.json",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "79378",
+            "content-type": "application/json",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:52 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 306031,
+          "decodedSha256": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+        },
+        {
+          "url": "/fonts/sans-core.ttf",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "328512",
+            "content-type": "font/ttf",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:53 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 597784,
+          "decodedSha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9"
+        },
+        {
+          "url": "/index-2d5935618dc2c62f.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "333250",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:53 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:14 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/index-2d5935618dc2c62f.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "11538",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:53 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 61178,
+          "decodedSha256": "ce5fa39acbe960ccb5735218d4f775f3bba6a79701bfdc7b0f4f421ad1f52032"
+        },
+        {
+          "url": "/assets/game-2.c528d2d4d914d336.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1751821",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:53 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:17 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 2204873,
+          "decodedSha256": "c528d2d4d914d3364c5ad4e877d7fc371e6d1f39ff3ef3973959b64b14a28b2d"
+        },
+        {
+          "url": "/assets/game-1.3469574f02166bac.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3777113",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:53 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:17 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4194068,
+          "decodedSha256": "3469574f02166bac2bd5439397ecc8a4e315a7812f7e8d9bd25335ad4a1af61e"
+        },
+        {
+          "url": "/index-2d5935618dc2c62f.wasm",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "8249186",
+            "content-type": "application/wasm",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:53 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:16 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "bodyError": "response.body: Protocol error (Network.getResponseBody): Request content was evicted from inspector cache\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        },
+        {
+          "url": "/assets/core.7b3a73cef5629ed2.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3966492",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:53 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:16 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 7642177,
+          "decodedSha256": "7b3a73cef5629ed2e99f62f1b3e36e9de0ca085861eb0a69f446d5fe4ad1ed0e"
+        },
+        {
+          "url": "/assets/translations-1.e855c51157228238.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1151405",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:54 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:24 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4110852,
+          "decodedSha256": "e855c511572282387e35552e07abca4a483bfd67f05dc3fff73ae6346167b183"
+        },
+        {
+          "url": "/assets/translations-2.63d94aa015b055e1.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1199527",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:54 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:24 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 3991395,
+          "decodedSha256": "63d94aa015b055e1702abf2f5966894a64d0362aac2071478a5d21a401e266ef"
+        },
+        {
+          "url": "/assets/translations-3.5b22f8919650e7a8.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "576673",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:54 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:24 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 2114075,
+          "decodedSha256": "5b22f8919650e7a8a84bec39e2cf69555e2bdd4656eb00aa310902ae59db32ed"
+        },
+        {
+          "url": "/assets/menu-music.5294ed91abf32cfe.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "263988",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:55 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:18 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 264097,
+          "decodedSha256": "5294ed91abf32cfea540641622fb6b0f21b5a5446f35b165e94ae75f9dddb70c"
+        },
+        {
+          "url": "/assets/font-cjk.5701af4422583342.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3103919",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:55 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:17 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 8137448,
+          "decodedSha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+        },
+        {
+          "url": "/assets/music.67f422aa69c5356d.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1251364",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:55 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 1252275,
+          "decodedSha256": "67f422aa69c5356d139763a490f1f6547030247951ef074034309f9f05e600b0"
+        },
+        {
+          "url": "/assets/music-sets-3.163578e1e9d60971.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "450014",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:55 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 450081,
+          "decodedSha256": "163578e1e9d60971b90813251c94502854b2ca4a42a658f2093c023a810363c2"
+        },
+        {
+          "url": "/assets/music-sets-1.602de095eeed505a.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3998941",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:55 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4001177,
+          "decodedSha256": "602de095eeed505ac5065746be6b80f44ad30ccbbb471169eeb3877a06d91eb6"
+        },
+        {
+          "url": "/assets/music-sets-2.be883b1c072a2166.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "4166982",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:26:55 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4168611,
+          "decodedSha256": "be883b1c072a2166e46a024fb8d306a0f07b7fddb186e287f2c3d8ca383218c1"
+        }
+      ]
+    },
+    {
+      "name": "desktop-dpr2",
+      "viewport": {
+        "width": 1200,
+        "height": 900
+      },
+      "deviceScaleFactor": 2,
+      "state": {
+        "mode": "serial",
+        "isolated": true,
+        "diagnostics": {
+          "version": 1,
+          "executionMode": "serial",
+          "threadFallback": "serial requested",
+          "workerCount": 0,
+          "renderer": "software",
+          "renderContext": null,
+          "contextLost": false,
+          "contextRestores": 0,
+          "screen": "14MainMenuScreen",
+          "screenClass": "14MainMenuScreen",
+          "roomCanStart": false,
+          "customGameReady": false,
+          "tick": 0,
+          "frames": 0,
+          "loop": 378,
+          "paused": false,
+          "torus": false,
+          "torusSettled": false,
+          "width": 2400,
+          "height": 1800,
+          "heapBytes": 231997440,
+          "artworkReady": true,
+          "restore": "ready",
+          "watchReplay": "none",
+          "import": "idle",
+          "persisting": false,
+          "persistence": "persisted",
+          "audio": "inactive",
+          "assets": {
+            "core": "ready",
+            "game": "ready",
+            "skins": "idle",
+            "font-cjk": "ready",
+            "menu-music": "ready",
+            "translations": "ready",
+            "music": "ready",
+            "music-sets": "ready",
+            "hd": "skipped"
+          },
+          "opened": []
+        },
+        "dimensions": {
+          "dpr": 2,
+          "innerWidth": 1200,
+          "innerHeight": 900,
+          "canvas": [
+            {
+              "width": 2400,
+              "height": 1800,
+              "cssWidth": 1200,
+              "cssHeight": 900
+            }
+          ]
+        },
+        "controls": {
+          "menu/0": {
+            "enabled": true,
+            "h": 42,
+            "label": "Кампания",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 360
+            },
+            "w": 320,
+            "x": 84,
+            "y": 360,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/1": {
+            "enabled": true,
+            "h": 42,
+            "label": "Урок",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 456
+            },
+            "w": 320,
+            "x": 84,
+            "y": 456,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/2": {
+            "enabled": true,
+            "h": 42,
+            "label": "Зареждане на играта",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 408
+            },
+            "w": 320,
+            "x": 84,
+            "y": 408,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/3": {
+            "enabled": true,
+            "h": 48,
+            "label": "Персонализирана игра",
+            "visible": {
+              "h": 48,
+              "w": 320,
+              "x": 84,
+              "y": 258
+            },
+            "w": 320,
+            "x": 84,
+            "y": 258,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/4": {
+            "enabled": true,
+            "h": 42,
+            "label": "Игра онлайн",
+            "visible": {
+              "h": 42,
+              "w": 320,
+              "x": 84,
+              "y": 312
+            },
+            "w": 320,
+            "x": 84,
+            "y": 312,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/6": {
+            "enabled": true,
+            "h": 34,
+            "label": "Настройки",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 84,
+              "y": 540
+            },
+            "w": 156,
+            "x": 84,
+            "y": 540,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/7": {
+            "enabled": true,
+            "h": 34,
+            "label": "Редактор",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 248,
+              "y": 540
+            },
+            "w": 156,
+            "x": 248,
+            "y": 540,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/8": {
+            "enabled": true,
+            "h": 34,
+            "label": "Автори",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 84,
+              "y": 582
+            },
+            "w": 156,
+            "x": 84,
+            "y": 582,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/9": {
+            "enabled": true,
+            "h": 34,
+            "label": "Изход",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 84,
+              "y": 624
+            },
+            "w": 156,
+            "x": 84,
+            "y": 624,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "menu/discord": {
+            "enabled": true,
+            "h": 34,
+            "label": "Общност в Discord",
+            "visible": {
+              "h": 34,
+              "w": 156,
+              "x": 248,
+              "y": 582
+            },
+            "w": 156,
+            "x": 248,
+            "y": 582,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        "nativeCatalogSha256": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+        "settingsLabel": "Настройки",
+        "nativeFontSha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+        "nativeFontIdentity": "data/fonts/sans.ttf",
+        "languageControls": {
+          "done": {
+            "enabled": true,
+            "h": 34,
+            "label": "Готово",
+            "visible": {
+              "h": 34,
+              "w": 80,
+              "x": 970,
+              "y": 756
+            },
+            "w": 80,
+            "x": 970,
+            "y": 756,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.0": {
+            "enabled": true,
+            "h": 42,
+            "label": "Дисплей и графика",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 144
+            },
+            "w": 176,
+            "x": 140,
+            "y": 144,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.1": {
+            "enabled": true,
+            "h": 42,
+            "label": "Аудио",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 190
+            },
+            "w": 176,
+            "x": 140,
+            "y": 190,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.10": {
+            "enabled": true,
+            "h": 44,
+            "label": "Персонализирани ИИ",
+            "visible": {
+              "h": 44,
+              "w": 176,
+              "x": 140,
+              "y": 560
+            },
+            "w": 176,
+            "x": 140,
+            "y": 560,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.11": {
+            "enabled": true,
+            "h": 44,
+            "label": "Генератори на карти",
+            "visible": {
+              "h": 44,
+              "w": 176,
+              "x": 140,
+              "y": 608
+            },
+            "w": 176,
+            "x": 140,
+            "y": 608,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.2": {
+            "enabled": true,
+            "h": 42,
+            "label": "Геймплей",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 236
+            },
+            "w": 176,
+            "x": 140,
+            "y": 236,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.3": {
+            "enabled": true,
+            "h": 44,
+            "label": "Сградни настройки по подразбиране",
+            "visible": {
+              "h": 44,
+              "w": 176,
+              "x": 140,
+              "y": 282
+            },
+            "w": 176,
+            "x": 140,
+            "y": 282,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.4": {
+            "enabled": true,
+            "h": 42,
+            "label": "Контроли",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 330
+            },
+            "w": 176,
+            "x": 140,
+            "y": 330,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.5": {
+            "enabled": true,
+            "h": 42,
+            "label": "Език и играч",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 376
+            },
+            "w": 176,
+            "x": 140,
+            "y": 376,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.6": {
+            "enabled": true,
+            "h": 42,
+            "label": "Онлайн",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 422
+            },
+            "w": 176,
+            "x": 140,
+            "y": 422,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.8": {
+            "enabled": true,
+            "h": 42,
+            "label": "Запис",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 468
+            },
+            "w": 176,
+            "x": 140,
+            "y": 468,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "nav.9": {
+            "enabled": true,
+            "h": 42,
+            "label": "Експерименти",
+            "visible": {
+              "h": 42,
+              "w": 176,
+              "x": 140,
+              "y": 514
+            },
+            "w": 176,
+            "x": 140,
+            "y": 514,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "player.language": {
+            "enabled": true,
+            "h": 34,
+            "label": "Български",
+            "visible": {
+              "h": 34,
+              "w": 140,
+              "x": 920,
+              "y": 171
+            },
+            "w": 140,
+            "x": 920,
+            "y": 171,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          },
+          "player.name": {
+            "enabled": true,
+            "h": 34,
+            "label": "web_user",
+            "visible": {
+              "h": 34,
+              "w": 140,
+              "x": 920,
+              "y": 228
+            },
+            "w": 140,
+            "x": 920,
+            "y": 228,
+            "surface": {
+              "h": 900,
+              "w": 1200
+            },
+            "root": {
+              "h": 900,
+              "w": 1200,
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      "errors": [],
+      "network": [
+        {
+          "url": "/",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "18911",
+            "content-type": "text/html",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:14 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/script-fonts.css",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "908",
+            "content-type": "text/css",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/theme.js",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/presentation-2d5935618dc2c62f-surface.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1994",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/loader-2d5935618dc2c62f.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "2086",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/i18n.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "44791",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/glob-64.png",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/wordmark-letters.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/wordmark-two.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/signin/assets/nunito.woff2",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/locales/bg.json",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "79378",
+            "content-type": "application/json",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 306031,
+          "decodedSha256": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+        },
+        {
+          "url": "/fonts/sans-core.ttf",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "328512",
+            "content-type": "font/ttf",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 597784,
+          "decodedSha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9"
+        },
+        {
+          "url": "/index-2d5935618dc2c62f.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "333250",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:14 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          }
+        },
+        {
+          "url": "/index-2d5935618dc2c62f.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "11538",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 61178,
+          "decodedSha256": "ce5fa39acbe960ccb5735218d4f775f3bba6a79701bfdc7b0f4f421ad1f52032"
+        },
+        {
+          "url": "/assets/game-2.c528d2d4d914d336.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1751821",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:17 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 2204873,
+          "decodedSha256": "c528d2d4d914d3364c5ad4e877d7fc371e6d1f39ff3ef3973959b64b14a28b2d"
+        },
+        {
+          "url": "/index-2d5935618dc2c62f.wasm",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "8249186",
+            "content-type": "application/wasm",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:16 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "bodyError": "response.body: Protocol error (Network.getResponseBody): Request content was evicted from inspector cache\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        },
+        {
+          "url": "/assets/core.7b3a73cef5629ed2.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3966492",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:16 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 7642177,
+          "decodedSha256": "7b3a73cef5629ed2e99f62f1b3e36e9de0ca085861eb0a69f446d5fe4ad1ed0e"
+        },
+        {
+          "url": "/assets/game-1.3469574f02166bac.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3777113",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:27:59 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:17 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4194068,
+          "decodedSha256": "3469574f02166bac2bd5439397ecc8a4e315a7812f7e8d9bd25335ad4a1af61e"
+        },
+        {
+          "url": "/assets/translations-3.5b22f8919650e7a8.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "576673",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:28:00 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:24 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 2114075,
+          "decodedSha256": "5b22f8919650e7a8a84bec39e2cf69555e2bdd4656eb00aa310902ae59db32ed"
+        },
+        {
+          "url": "/assets/translations-1.e855c51157228238.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1151405",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:28:00 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:24 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4110852,
+          "decodedSha256": "e855c511572282387e35552e07abca4a483bfd67f05dc3fff73ae6346167b183"
+        },
+        {
+          "url": "/assets/translations-2.63d94aa015b055e1.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1199527",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:28:00 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:24 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 3991395,
+          "decodedSha256": "63d94aa015b055e1702abf2f5966894a64d0362aac2071478a5d21a401e266ef"
+        },
+        {
+          "url": "/assets/menu-music.5294ed91abf32cfe.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "263988",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:28:01 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:18 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 264097,
+          "decodedSha256": "5294ed91abf32cfea540641622fb6b0f21b5a5446f35b165e94ae75f9dddb70c"
+        },
+        {
+          "url": "/assets/font-cjk.5701af4422583342.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3103919",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:28:01 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:17 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 8137448,
+          "decodedSha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+        },
+        {
+          "url": "/assets/music.67f422aa69c5356d.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1251364",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:28:02 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 1252275,
+          "decodedSha256": "67f422aa69c5356d139763a490f1f6547030247951ef074034309f9f05e600b0"
+        },
+        {
+          "url": "/assets/music-sets-1.602de095eeed505a.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3998941",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:28:02 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4001177,
+          "decodedSha256": "602de095eeed505ac5065746be6b80f44ad30ccbbb471169eeb3877a06d91eb6"
+        },
+        {
+          "url": "/assets/music-sets-3.163578e1e9d60971.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "450014",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:28:02 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 450081,
+          "decodedSha256": "163578e1e9d60971b90813251c94502854b2ca4a42a658f2093c023a810363c2"
+        },
+        {
+          "url": "/assets/music-sets-2.be883b1c072a2166.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "4166982",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 13:28:02 GMT",
+            "last-modified": "Sun, 01 Nov 2026 13:24:19 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decodedBytes": 4168611,
+          "decodedSha256": "be883b1c072a2166e46a024fb8d306a0f07b7fddb186e287f2c3d8ca383218c1"
+        }
+      ]
+    }
+  ]
+}

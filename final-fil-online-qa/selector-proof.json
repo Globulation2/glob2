@@ -1,0 +1,18 @@
+[
+  {
+    "route": "/music",
+    "url": "http://127.0.0.1:42769/music",
+    "homeBody": 0,
+    "stat": 0,
+    "heading": [
+      "Музика за вашата колония"
+    ]
+  },
+  {
+    "route": "/skins",
+    "url": "http://127.0.0.1:42769/skins",
+    "homeBody": 0,
+    "stat": 0,
+    "heading": []
+  }
+]

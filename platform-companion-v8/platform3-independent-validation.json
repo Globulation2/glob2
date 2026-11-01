@@ -1,0 +1,12 @@
+{
+  "result": "passed",
+  "source_sha256": "8bd1608a51ec2ebabff37d4a0d861ff8d46fd1adda6c8e9ba766a06d11066329",
+  "main_source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "entries": 3,
+  "role_bindings": 9,
+  "proof_sha256": "c9e912b8f12be39f3122ff45037a53f4a8a92129467196ed8a19741c47c65ff9",
+  "exact_current_resource_bytes_and_parsed_values": true,
+  "exact_only_bg_packaging_delta": true,
+  "all_runtime_platform_gates": "pending",
+  "limits": "Mechanical independent binding check only; no linguistic or device execution approval created"
+}

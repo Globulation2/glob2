@@ -1,0 +1,2 @@
+Pending root handoff of BOTH final release Wasm variants. Do not duplicate SCons.
+After final commit/package identity: package-static.py source build/emscripten/client/release -> NEW V6 output; verify; own COOP/COEP gzip server42771; strict4 browser/tests/bulgarian.spec.js with new catalog3429/current hash; desktop/390phone/DPR2 menus+actual HUD/tutorial/ScriptEditor compile+controlled error/stats. Prepared scripts remain in ../browser-captures and need current expected identities before executing. No runtime acceptance yet.

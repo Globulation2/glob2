@@ -1,0 +1,20 @@
+{
+  "final_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "actual_source_frozen_not_yet_executed": true,
+  "previous_font_matrix_producers": {
+    "fullV9": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+    "corrected33literalV10": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4"
+  },
+  "unchanged_font_TextLayout_bytes": {
+    "libgag/src/ui/TextLayout.cpp": true,
+    "libgag/include/ui/TextLayout.h": true,
+    "data/fonts/sans.ttf": true
+  },
+  "TrueTypeFont_delta_exactly_new_fil_disjunct_and_comment": true,
+  "bg_authoredDrawWidth_predicate_unchanged": true,
+  "bg_language_property_unchanged": true,
+  "BG_full_native_catalog_sha256": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+  "BG_online_catalog_sha256": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f",
+  "scope": "Literal glyph/raster/fit measurements in existing native fullfont use unchanged BG typography path. New frontend action sizing/footer/editor/HUD layouts need and receive fresh9UIcaptures. Browserstartupfont and MIME/rendering proof owned separately by root tooling.",
+  "fresh_full_matrix_run": false
+}

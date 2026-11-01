@@ -1,0 +1,95 @@
+{
+  "metrics": [
+    {
+      "count": 0,
+      "expected": "Кредити за карти: 0",
+      "visible": "\n  \n  \n  \n  Кредити за карти: 0",
+      "aria": "Кредити за карти: 0",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 179,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 234,
+            "right": 363,
+            "top": 59,
+            "bottom": 73
+          }
+        ],
+        "left": 195,
+        "right": 374,
+        "top": 44,
+        "bottom": 88
+      }
+    },
+    {
+      "count": 1,
+      "expected": "Кредити за карти: 1",
+      "visible": "\n  \n  \n  \n  Кредити за карти: 1",
+      "aria": "Кредити за карти: 1",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 179,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 234,
+            "right": 363,
+            "top": 59,
+            "bottom": 73
+          }
+        ],
+        "left": 195,
+        "right": 374,
+        "top": 44,
+        "bottom": 88
+      }
+    },
+    {
+      "count": 2,
+      "expected": "Кредити за карти: 2",
+      "visible": "\n  \n  \n  \n  Кредити за карти: 2",
+      "aria": "Кредити за карти: 2",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 179,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 234,
+            "right": 363,
+            "top": 59,
+            "bottom": 73
+          }
+        ],
+        "left": 195,
+        "right": 374,
+        "top": 44,
+        "bottom": 88
+      }
+    }
+  ],
+  "reads": [
+    {
+      "path": "/api/v1/map-studio/account",
+      "available": 0
+    },
+    {
+      "path": "/api/v1/map-studio/account",
+      "available": 0
+    },
+    {
+      "path": "/api/v1/map-studio/account",
+      "available": 1
+    },
+    {
+      "path": "/api/v1/map-studio/account",
+      "available": 2
+    }
+  ],
+  "writes": []
+}

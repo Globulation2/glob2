@@ -1,0 +1,109 @@
+{
+  "result": "passed",
+  "scope": "Three Bulgarian OS resource strings only; not main-game/online-source or runtime/platform certification",
+  "source_sha256": "8bd1608a51ec2ebabff37d4a0d861ff8d46fd1adda6c8e9ba766a06d11066329",
+  "main_source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "packet": {
+    "path": "platform-companion-v8/bg-platform3-after-editor-review-input.json",
+    "sha256": "840dd4bfe689df09bab64205fbe869add8f948cac0994505c486e9f9c6341842"
+  },
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "c3a85ba612ddaa3ffe47ffd065cce072491aaaf74f4d29cc51d5d0aecc7ca17b"
+  },
+  "entries": 3,
+  "role_bindings": 9,
+  "actual_role_evidence": [
+    {
+      "role": "semantic",
+      "actual_agent": "/root/v7_meaning",
+      "path": "linguistics/v8-semantic-platform3-final.json",
+      "sha256": "f3307326ed2e2025618a20f786f62a4b5f34a81c63db54f19f7c02ff1e34e7f5",
+      "entries": 3,
+      "value_hash_schemes": [
+        "literal-utf8-with-json-objects"
+      ],
+      "reading_lineage": {
+        "actual-reading": 3,
+        "own-exact-carry": 0
+      },
+      "identity_hash_schemes": [
+        "canonical-locale-id-source-target"
+      ],
+      "original_report_binding": null
+    },
+    {
+      "role": "editor",
+      "actual_agent": "/root/v7_editor",
+      "path": "linguistics/v8-editor-platform3-final.json",
+      "sha256": "934aeca96f22fa8b936e0395bea7f8b2b048f24557a5fa7207fe72741585f2cf",
+      "entries": 3,
+      "value_hash_schemes": [
+        "literal-utf8-with-json-objects"
+      ],
+      "reading_lineage": {
+        "actual-reading": 3,
+        "own-exact-carry": 0
+      },
+      "identity_hash_schemes": [
+        "canonical-id-source-target"
+      ],
+      "original_report_binding": null
+    },
+    {
+      "role": "adversarial",
+      "actual_agent": "/root/v7_adversary",
+      "path": "linguistics/v8-adversarial-platform3-final.json",
+      "sha256": "a2268f422bd5f2b6a39446029e67bf772151435fc5e961ea4e89e4204e3bc8a5",
+      "entries": 3,
+      "value_hash_schemes": [
+        "literal-utf8-with-json-objects"
+      ],
+      "reading_lineage": {
+        "actual-reading": 3,
+        "own-exact-carry": 0
+      },
+      "identity_hash_schemes": [],
+      "original_report_binding": null
+    }
+  ],
+  "registered_application": {
+    "path": "platform-companion-v8/registered-resource-application.json",
+    "sha256": "51011f0a7ec44fdc9fe5760f396b86641e9ac19421e0632e6497403b2146e331"
+  },
+  "resources": [
+    {
+      "id": "online:platform.android.preparing_game",
+      "source_path": "mobile/android/app/src/main/res/values/strings.xml",
+      "source_sha256": "b5de8011685b6151ab2bc17b32ac5cef29a52e8631dc2c7f580a18ba292e5977",
+      "target_path": "mobile/android/app/src/main/res/values-bg/strings.xml",
+      "target_sha256": "a5c4630f16bdcab86fbd52272671c29d0e5a23cc8800d9c0f14f05fe4cc351f2",
+      "source": "Preparing game…",
+      "target": "Подготовка на играта…"
+    },
+    {
+      "id": "online:platform.darwin.NSLocalNetworkUsageDescription",
+      "source_path": "darwin/en.lproj/InfoPlist.strings",
+      "source_sha256": "817225378dcf3e56f660145571ff0e6d2cf15afd914a5600045b16a7152e10b5",
+      "target_path": "darwin/bg.lproj/InfoPlist.strings",
+      "target_sha256": "b93176f8d0eb7b79083ecbb1fa03e2ca12dda1c9dbd9d452c895db67bda1bcf2",
+      "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
+      "target": "Globulation 2 открива мрежови игри, хоствани в локалната ви мрежа, и се присъединява към тях."
+    },
+    {
+      "id": "online:platform.ios.NSLocalNetworkUsageDescription",
+      "source_path": "mobile/ios/en.lproj/InfoPlist.strings",
+      "source_sha256": "96bb9649e8e22ea694347a3851e94e7ce8282468c7b3a1590a41586e97d613e5",
+      "target_path": "mobile/ios/bg.lproj/InfoPlist.strings",
+      "target_sha256": "66eba298de638fd8596328eb0b90e3773c14997d2f0266061708f24f45367a46",
+      "source": "Connect to Globulation 2 games on your local network.",
+      "target": "Свържете се с игри на Globulation 2 в локалната си мрежа."
+    }
+  ],
+  "packaging_closure": {
+    "path": "v8-review-assembler/platform-packaging-closure.json",
+    "sha256": "f21b91dc1deb542300fb7a2e39cf40d3d129d9beb8b551e5f6fbad9d469543e7"
+  },
+  "all_runtime_platform_gates": "pending",
+  "main_source_unchanged": true
+}

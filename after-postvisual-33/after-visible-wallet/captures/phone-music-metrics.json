@@ -1,0 +1,91 @@
+{
+  "metrics": [
+    {
+      "count": 0,
+      "expected": "Музикални кредити: 0",
+      "visible": "\n  \n  \n  \n  Музикални кредити: 0",
+      "aria": "Музикални кредити: 0",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 192,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 221,
+            "right": 363,
+            "top": 59,
+            "bottom": 73
+          }
+        ],
+        "left": 182,
+        "right": 374,
+        "top": 44,
+        "bottom": 88
+      }
+    },
+    {
+      "count": 1,
+      "expected": "Музикални кредити: 1",
+      "visible": "\n  \n  \n  \n  Музикални кредити: 1",
+      "aria": "Музикални кредити: 1",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 192,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 221,
+            "right": 363,
+            "top": 59,
+            "bottom": 73
+          }
+        ],
+        "left": 182,
+        "right": 374,
+        "top": 44,
+        "bottom": 88
+      }
+    },
+    {
+      "count": 2,
+      "expected": "Музикални кредити: 2",
+      "visible": "\n  \n  \n  \n  Музикални кредити: 2",
+      "aria": "Музикални кредити: 2",
+      "bounds": {
+        "computedDisplay": "block",
+        "computedVisibility": "visible",
+        "width": 192,
+        "height": 44,
+        "textRects": [
+          {
+            "left": 221,
+            "right": 363,
+            "top": 59,
+            "bottom": 73
+          }
+        ],
+        "left": 182,
+        "right": 374,
+        "top": 44,
+        "bottom": 88
+      }
+    }
+  ],
+  "reads": [
+    {
+      "path": "/api/v1/music-studio/account",
+      "available": 0
+    },
+    {
+      "path": "/api/v1/music-studio/account",
+      "available": 1
+    },
+    {
+      "path": "/api/v1/music-studio/account",
+      "available": 2
+    }
+  ],
+  "writes": []
+}

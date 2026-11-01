@@ -1,0 +1,898 @@
+{
+  "producer": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "scope": "44actualcatalogs,bothreleaseWASM,fontandlicenses SHA matched; decorative missing assets recorded",
+  "responses": [
+    {
+      "path": "fonts/LICENSE-DejaVu.txt",
+      "status": 200,
+      "sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c",
+      "bytes": 4920,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "text/plain",
+        "Content-Length": "4920",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "fonts/LICENSE-Droid.txt",
+      "status": 200,
+      "sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d",
+      "bytes": 10769,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "text/plain",
+        "Content-Length": "10769",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "fonts/sans-core.ttf",
+      "status": 200,
+      "sha256": "466fb75762954c81cd683538f08c4e36773dc27cb5c11339e3e1a675777a6048",
+      "bytes": 597868,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "font/ttf",
+        "Content-Length": "597868",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "index-b91977b08bcb0e86.wasm",
+      "status": 200,
+      "sha256": "d61b15d9bf1b2cb1b13c156c0bfbf7778fdc5f95cf8c74b77f188a2e97d47bf9",
+      "bytes": 26088129,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/wasm",
+        "Content-Length": "26088129",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:32 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/ar.json",
+      "status": 200,
+      "sha256": "bdfeab7be19ebe9b9c99b146671150ad53469a35cb1ffc54160ce86c5f118247",
+      "bytes": 271671,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "271671",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/bg.json",
+      "status": 200,
+      "sha256": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f",
+      "bytes": 306248,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "306248",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/bn.json",
+      "status": 200,
+      "sha256": "ff72af6c2cff3658e4cb64006ee4d824adba91ab0fe85400ea122cc485cb568d",
+      "bytes": 373528,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "373528",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/ca.json",
+      "status": 200,
+      "sha256": "2725363bd50624d39b1f2cd90a959fa1c8458fd31a7cc72e636e5387e724bb82",
+      "bytes": 229069,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "229069",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/cs.json",
+      "status": 200,
+      "sha256": "d29821ba903f6e039a7781973b8a174b36c733e66927cf1044109ab78d661abe",
+      "bytes": 223274,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "223274",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/da.json",
+      "status": 200,
+      "sha256": "ae0bcdadafa0ad85a8a879a1f731cdb0a7d8e9cd64bcd10bcbec3fd3b917b08c",
+      "bytes": 212181,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "212181",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/de.json",
+      "status": 200,
+      "sha256": "eedf39056a2a2a7f8da8b69bbef48ba1b464fc7fb989877f2d453d6ee82fba3d",
+      "bytes": 226878,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "226878",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/el.json",
+      "status": 200,
+      "sha256": "8fa35ff293e54cfa2b307e60d2640719786fe3c98e4c56566091911a849ece3b",
+      "bytes": 315668,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "315668",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/en.json",
+      "status": 200,
+      "sha256": "633a7022434673ed52b61c82bc2f4b6ee3ca519ae45402af3ad76ed0a20671d2",
+      "bytes": 203495,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "203495",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/eo.json",
+      "status": 200,
+      "sha256": "6fa933cff0abf595dc3dab966c08d56682801b08b696c3377327ffd6a2325c9f",
+      "bytes": 214635,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "214635",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/es.json",
+      "status": 200,
+      "sha256": "da48063575971da822b54cc632d593551b12d90c04a66674a370c34f8895eba1",
+      "bytes": 228203,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "228203",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/eu.json",
+      "status": 200,
+      "sha256": "e8593394eae05582b5c866a5286c52b526001ec091445213beb777ed2ff9a102",
+      "bytes": 223402,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "223402",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/fa.json",
+      "status": 200,
+      "sha256": "3228004f1ff4a10cd2fa734de60221945dd889e50023f1c02bddf0d0c2f9acf2",
+      "bytes": 271448,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "271448",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/fi.json",
+      "status": 200,
+      "sha256": "be4ad67fb89eed963a37982b4f565133659c037625ed4fbba9e745898e3f1ffd",
+      "bytes": 218998,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "218998",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/fil.json",
+      "status": 200,
+      "sha256": "8e2b56f7bb554f51981f724f4f19636f887af5da63dac3c2ae16c3c776a467c9",
+      "bytes": 231814,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "231814",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/fr.json",
+      "status": 200,
+      "sha256": "91da689cfdfdad35071c1467ee4874e2c990e9fa2c7318e2e2bc5c191f2432be",
+      "bytes": 235673,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "235673",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/hi.json",
+      "status": 200,
+      "sha256": "e2b4255eec7f4daec3722ee2b1736b0bfe68c8d402d401eb75dd7cd1872a9a12",
+      "bytes": 339644,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "339644",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/hu.json",
+      "status": 200,
+      "sha256": "08f341165abf3b065b01e9301ac98496573fc02902eebd9f8a9986e6250cda70",
+      "bytes": 229398,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "229398",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/id.json",
+      "status": 200,
+      "sha256": "a6d3c6c5463558926b21f5dfec9ef3c1203f69a4105f723994a2dad1e2060761",
+      "bytes": 211416,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "211416",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/it.json",
+      "status": 200,
+      "sha256": "cb8c712846c01a7b9161d15f7113b85cbb63c5de91deaf1c02b00e3d24f3eaa9",
+      "bytes": 225967,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "225967",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/ja.json",
+      "status": 200,
+      "sha256": "ad0f04bf769d839db77c1040674390e204faa20c35c881434daf2296d71811c3",
+      "bytes": 250760,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "250760",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/ko.json",
+      "status": 200,
+      "sha256": "c7eb691e675d87bb699e36dda977a63f33625ea05958a47930aaa1080bd4bc87",
+      "bytes": 236004,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "236004",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/mr.json",
+      "status": 200,
+      "sha256": "e04603b1aaf330a414614ebb29222f40c758711b211fceabfac618c3b7c76bf1",
+      "bytes": 365751,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "365751",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/ms.json",
+      "status": 200,
+      "sha256": "a97cec6a9cc8dce9edb027b379be799c008160ffee08579484691e19b78d02bd",
+      "bytes": 216774,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "216774",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/nb.json",
+      "status": 200,
+      "sha256": "59b9824de8a64779cb7039dcc5ec02fade04518531ff2b2de7a8a470a4f2e587",
+      "bytes": 215698,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "215698",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/nl.json",
+      "status": 200,
+      "sha256": "7121668cd6ed4573f2013215b3f900c67976ae7e018359e5565f4ac6b1580384",
+      "bytes": 218534,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "218534",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/pl.json",
+      "status": 200,
+      "sha256": "758a00e01d68c2738ac6a3ceb2197acf259c9d4249bf0197d5e14f17c9548458",
+      "bytes": 224772,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "224772",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/pt-BR.json",
+      "status": 200,
+      "sha256": "e33ff742e3632ae210254930f9b2b5dff4566d96ad50775e95eb0e6dc398d593",
+      "bytes": 225900,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "225900",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/pt-PT.json",
+      "status": 200,
+      "sha256": "9c22ab0a288f1d59812fd7765f8bcb1d2c33ceab1d15bdad8e068a16c9ad36dd",
+      "bytes": 226148,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "226148",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/ro.json",
+      "status": 200,
+      "sha256": "745dc3e4e077f34a332591835193ff3499dfe2b550bdf19c50b55b2a2c70d111",
+      "bytes": 226980,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "226980",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/ru.json",
+      "status": 200,
+      "sha256": "2bf8492f61126e871cc9b50694cb93b0e32a71dafa84464224eaf2dbac02e96b",
+      "bytes": 308197,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "308197",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/sk.json",
+      "status": 200,
+      "sha256": "4d022c5497e822ac772dbb096d2f9a11f785b6189d11eb7998700d1e674ec2e3",
+      "bytes": 225335,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "225335",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/sl.json",
+      "status": 200,
+      "sha256": "d3dbee5064982bd041bbdcfa4f44279c85deea7fba5777a7c787226f5d01f8c9",
+      "bytes": 218351,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "218351",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/sr-Cyrl.json",
+      "status": 200,
+      "sha256": "d3964c9fcb3951d0bb8a1f3521cad211dcbb1779bb6e9b8ada94cbaac4a9e5fe",
+      "bytes": 284851,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "284851",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/sv.json",
+      "status": 200,
+      "sha256": "2a43f6c43ecd23e7fa09d2b1530f17640be41a6e69c52efedca213111a565457",
+      "bytes": 215176,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "215176",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/sw.json",
+      "status": 200,
+      "sha256": "1eab5f171423f5e119f8b8a8e69776d9472dbabcc816c097d16d3e8e38e640ca",
+      "bytes": 220353,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "220353",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/ta.json",
+      "status": 200,
+      "sha256": "f4dd7daf6662c324459eb9319766bfdb1db4791b4a1fdb061b01c2eac7bbcd73",
+      "bytes": 435752,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "435752",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/te.json",
+      "status": 200,
+      "sha256": "d97c8871ed79806884220397c1087579a8281776faafbb2dd8e36da13f0d1c83",
+      "bytes": 390465,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "390465",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/tr.json",
+      "status": 200,
+      "sha256": "a2cad9a43ce69b0bf5ad64c66f046a785b5e4761c8b973b96a701c086360dd2c",
+      "bytes": 220412,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "220412",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/uk.json",
+      "status": 200,
+      "sha256": "83a8b29f90aa9efa70e51e80b31f6186fd8166f15e5cbe0d24c6099e0c74c6e4",
+      "bytes": 305129,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "305129",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/ur.json",
+      "status": 200,
+      "sha256": "9faf2f92ed887ace8b532ff004726499d6e413dcf8bbf8ba40778cb86f97c2c4",
+      "bytes": 274686,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "274686",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/vi.json",
+      "status": 200,
+      "sha256": "aab269198fb04cbb2b78fd2748462369c4e58d08b030fb1c908a49d11be90d10",
+      "bytes": 249567,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "249567",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/zh-Hans.json",
+      "status": 200,
+      "sha256": "deea1f549fe95bba04be9d068f2981a4f4aa7fc8614ce80a6ed7a8fe15a7e916",
+      "bytes": 201522,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "201522",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "locales/zh-Hant.json",
+      "status": 200,
+      "sha256": "2d704fd02e5a14f438f720df590ea47df030505a330733ca194907eba5365c4f",
+      "bytes": 201886,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "201886",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "threaded/index-b91977b08bcb0e86.wasm",
+      "status": 200,
+      "sha256": "1da407214aa7c75aee20694cf5f70341e2913a63cd893b8c53637aa0e876541a",
+      "bytes": 26119417,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 15:20:35 GMT",
+        "Content-type": "application/wasm",
+        "Content-Length": "26119417",
+        "Last-Modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "matchesFrozenPackage": true
+    },
+    {
+      "path": "theme.js",
+      "status": 404,
+      "scope": "Inherited decorative standalone shell asset check"
+    },
+    {
+      "path": "signin/assets/glob-64.png",
+      "status": 404,
+      "scope": "Inherited decorative standalone shell asset check"
+    }
+  ]
+}

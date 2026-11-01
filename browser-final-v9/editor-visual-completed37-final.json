@@ -1,0 +1,457 @@
+{
+  "reviewer": {
+    "identity": "OpenAI Codex agent /root/v7_editor",
+    "role": "Independent Bulgarian editorial visual reviewer",
+    "native_human_certification": false
+  },
+  "status": "approved",
+  "final_approval": true,
+  "approval_scope": "Exact 37 completed-index PNGs only; observed visible text, glyphs and layout. No full browser feature or physical-device approval.",
+  "index_path": "artifacts/bulgarian/browser-final-v9/completed-image-index.json",
+  "index_sha256": "b7c5b62af95c1277ecae1d273f1c1776f4ec72567d385cd48f14c4606e7de2b4",
+  "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "actual_personal_image_inspection": true,
+  "coverage": {
+    "listed": 37,
+    "personally_viewed": 37,
+    "critical_findings": 0,
+    "major_findings": 0
+  },
+  "findings": [
+    {
+      "severity": "minor",
+      "images": [
+        "startup-desktop.png",
+        "startup-desktop-dpr2.png",
+        "startup-phone.png"
+      ],
+      "description": "Broken image placeholder above readable translated download-failure text. No claim about why download failed or asset scope."
+    },
+    {
+      "severity": "minor",
+      "description": "Phone 150% enlarged labels sometimes wrap inside words (Rules, pre-made, Generated, Briefing, Tips). Text remains discernible, actions distinct; no missing Bulgarian glyphs observed."
+    },
+    {
+      "severity": "minor",
+      "description": "Small chart empty-state text and bottom editor controls are visually dense; scroll boundaries cut continuing content, and long selector value is ellipsized. Hidden content and expanded states are excluded."
+    }
+  ],
+  "limits": [
+    "Every listed PNG was opened with view_image and personally inspected; automated font/network/test conclusions were not read or substituted for inspection.",
+    "Screenshot-only agent review; no physical device, live interaction, hit testing, scrolling operation or touch-target dimensions measured.",
+    "Names are not evidence of reached UI: focused phone150-settings shows main menu; desktop tutorial-briefing/help show compact objectives; actual editor diagnostic menus show File menu only. No script editor/compile flow approval.",
+    "Three startup screenshots show failure branch, not success. Actual running game is visible in separate completed focused frames.",
+    "Custom map previews are blank/generating in supplied frames; modal chart history is empty/unregistered. No populated preview/history approval.",
+    "This report does not approve images outside the exact completed index or assert complete application/catalog visual coverage.",
+    "No source, catalog or image edits performed."
+  ],
+  "images": [
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/editor-diagnostic/phone150-editor-after-escape.png",
+      "sha256": "0b1bf54c05c4cb91bbcc4d2b7cc66647923d41f704ce5bda75a44330fbf2a011",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual editor canvas, top Menu/Team/Level/Select and minimap/palette-show labels legible. Very small bottom edge controls are not a complete expanded palette view."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/editor-diagnostic/phone150-editor-menu-actual.png",
+      "sha256": "ae461b3835b7d53e6df7b476d1d0f186fb071e78a7038940f22b7f933ce69a61",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual editor File menu: save/open/share and import controls wrap, fixed exit/return buttons legible. Lower import entry continues beneath scroll boundary. No script editor/compile flow shown."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/editor-diagnostic/phone150-editor-visible-menu-button.png",
+      "sha256": "24e02a4b4297dc5bb6aef08e0ffb7c078b033f5511b4274c18ff826af50e4270",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual editor File menu: save/open/share and import controls wrap, fixed exit/return buttons legible. Lower import entry continues beneath scroll boundary. No script editor/compile flow shown."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-custom-game.png",
+      "sha256": "1d27397d7e5e5ad9a1a8249c0c0b6eff6a00802508e613e805188b02b1d6a20c",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual custom game map tab: titles, options, map identity and back/next or play controls legible. Preview is blank and generation status visible: no rendered map preview claimed. At phone150 text150, Rules and pre-made label break inside words; scrollbars and action controls remain distinct."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-gameplay-before-objectives.png",
+      "sha256": "7a41e34c7de7a747f3b4421ac8eecd706fd5533fc7893fdf428d3768fad90d0b",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual gameplay with compact scout objective: title, flag guidance and relevant visible controls readable. Help-named frame shows scrollable objective, not a distinct help dialog. Phone bottom HUD is visibly two columns by three rows; no overlap observed. Hidden objective/help content not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-gameplay-hud.png",
+      "sha256": "241d0b623caf7638c748c98229dc13db40d09e261cc5477a0ee0668500c10630",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual gameplay with compact scout objective: title, flag guidance and relevant visible controls readable. Help-named frame shows scrollable objective, not a distinct help dialog. Phone bottom HUD is visibly two columns by three rows; no overlap observed. Hidden objective/help content not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-main.png",
+      "sha256": "10169415525131f81dd76de022dd6714133f222353c1f0281be2148b450fabe6",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual main menu: Bulgarian action labels and icons legible and contained, scrolling indicated on phone."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-settings.png",
+      "sha256": "3fc467488ffba87905ce622abf3f1668ddd0328df84ce127c929754c547ade0d",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual display settings: glyphs legible, descriptions wrap, checkbox/control boundaries distinct. Capture is partial scroll position; offscreen settings not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-stats-overview.png",
+      "sha256": "3d3998ba984b2e184da56eb5c2b3a00844eec5fedd0dd385322aef04516793df",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual statistics overview: category buttons, population/growth labels and visible empty-history text legible. Phone chart status uses very small text; it remains readable in the PNG. Scroll panel continues beyond visible region."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-stats-population-history.png",
+      "sha256": "19f61472ba9aeface7e7f5c19bc9c07500bb1eaccf4961e4ed25afde31fe810d",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual population modal: title, value, unavailable/insufficient-history message, details and close controls legible. Empty chart is not populated-history rendering coverage."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-stats-world.png",
+      "sha256": "510340493c230cec8ac6a61900b6523dfaff812da59f01aa3397ca808529def6",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual World statistics: resource-growth labels and displayed values wrap within panel; scrolling indicated. Lower rows outside capture not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-tutorial-briefing.png",
+      "sha256": "731bb3b6cadc474db2b20a9c41759c75257eaf6cfcae027d29c759911c595dae",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual gameplay with compact scout objective: title, flag guidance and relevant visible controls readable. Help-named frame shows scrollable objective, not a distinct help dialog. Phone bottom HUD is visibly two columns by three rows; no overlap observed. Hidden objective/help content not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-tutorial-catalog.png",
+      "sha256": "f5f8129b2f15ab73f4b5fe1ca6659793f64c0babdf4ade5e1fa89903c6495970",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual lesson catalog: visible lesson titles/descriptions wrap legibly and return control fits. Last description continues beyond scroll viewport; unshown lessons not approved."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/desktop-dpr2-tutorial-help.png",
+      "sha256": "364befa82aa2d195b28cccd81440e0cfdfa866608fc7cb0200eb808fef0ceb3c",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual gameplay with compact scout objective: title, flag guidance and relevant visible controls readable. Help-named frame shows scrollable objective, not a distinct help dialog. Phone bottom HUD is visibly two columns by three rows; no overlap observed. Hidden objective/help content not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/phone150-custom-game-text150.png",
+      "sha256": "e0fc72946422294ff8841b18193e6278d196e0a6fe687520cc225f44cceb41f2",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual custom game map tab: titles, options, map identity and back/next or play controls legible. Preview is blank and generation status visible: no rendered map preview claimed. At phone150 text150, Rules and pre-made label break inside words; scrollbars and action controls remain distinct."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/phone150-custom-game.png",
+      "sha256": "1eec518906d940b2f1fb175c705a392dcceea5cf848364611cfc98d1af96b68f",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual custom game map tab: titles, options, map identity and back/next or play controls legible. Preview is blank and generation status visible: no rendered map preview claimed. At phone150 text150, Rules and pre-made label break inside words; scrollbars and action controls remain distinct."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/phone150-gameplay-before-objectives.png",
+      "sha256": "70262ce32e1429b73c29d9f73bc560fa476514e0183c6288cf48e8f768500e24",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual gameplay with compact scout objective: title, flag guidance and relevant visible controls readable. Help-named frame shows scrollable objective, not a distinct help dialog. Phone bottom HUD is visibly two columns by three rows; no overlap observed. Hidden objective/help content not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/phone150-main.png",
+      "sha256": "a018319efa97979c3ff3ba31f7712a3886276279bfd6d5603a236300884a9aae",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual main menu: Bulgarian action labels and icons legible and contained, scrolling indicated on phone."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/phone150-settings-text150.png",
+      "sha256": "624dfe4a5b9fd9fac8b3206621146c83ac1b5a0989ba91c0836e364d22560475",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual display settings: glyphs legible, descriptions wrap, checkbox/control boundaries distinct. Capture is partial scroll position; offscreen settings not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/phone150-settings.png",
+      "sha256": "bb25318198ee843d29380601f1447d2e3c482b40cf337f69abf1839e56818860",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual main menu despite filename: custom game, online, campaign, load and lesson controls fit. Settings content is not shown in this image."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/focused/phone150-tutorial-catalog.png",
+      "sha256": "a8fc924a272c1816b6239cfb4ed918a0562d103c8e6a823b8557e77c56944d3b",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual lesson catalog: visible lesson titles/descriptions wrap legibly and return control fits. Last description continues beyond scroll viewport; unshown lessons not approved."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-custom-game-text150.png",
+      "sha256": "e6d523d72fa950f8f984681c7f2c15d2f3a81592137607e1809c4e2f4113c131",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual custom game map tab: titles, options, map identity and back/next or play controls legible. Preview is blank and generation status visible: no rendered map preview claimed. At phone150 text150, Rules and pre-made label break inside words; scrollbars and action controls remain distinct."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-editor-map150.png",
+      "sha256": "7cdf03286ad84729b596a8901748a0f8b0edb0cad4a1e5d190c5ffd9dfdacda4",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual editor canvas: Menu, Team 1, Level 1, Select, minimap, terrain/resources/buildings/flags/teams and swarm/inn/hospital controls visible. Bulgarian glyphs and boundaries clear."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-editor-newmap150.png",
+      "sha256": "b6aa46c1d1fd4221b5102d9ed26115742e490260a7ebd2d35ca76a9078d4e1c0",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "New map dialog: title, preview label, empty/generated choices, landscape, create/cancel legible. Generated label breaks inside word at 150%; landscape value ellipsized. Scrollbar visible."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-gameplay-before-objectives.png",
+      "sha256": "14144a214ffd3c33152e1a3e3af0782f05ee7ff64b6744a02d79dc417e2b09de",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual gameplay with compact scout objective: title, flag guidance and relevant visible controls readable. Help-named frame shows scrollable objective, not a distinct help dialog. Phone bottom HUD is visibly two columns by three rows; no overlap observed. Hidden objective/help content not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-gameplay-hud.png",
+      "sha256": "b84949c651f8f1581b6d0f0b4d9de3a874571b1df9bef58c8644075065088d3b",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual gameplay with compact scout objective: title, flag guidance and relevant visible controls readable. Help-named frame shows scrollable objective, not a distinct help dialog. Phone bottom HUD is visibly two columns by three rows; no overlap observed. Hidden objective/help content not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-settings-text150.png",
+      "sha256": "5d75d04d607ddfe0c1f23b5dd4b38d167cb82558399f0380b5e602db833f80a5",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual display settings: glyphs legible, descriptions wrap, checkbox/control boundaries distinct. Capture is partial scroll position; offscreen settings not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-stats-overview.png",
+      "sha256": "ee3f096553e384ead67efa9392deae89afff0a80faaf4c15a92dbb336c29932d",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual statistics overview: category buttons, population/growth labels and visible empty-history text legible. Phone chart status uses very small text; it remains readable in the PNG. Scroll panel continues beyond visible region."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-stats-population-history.png",
+      "sha256": "219d14fbd0f1f0215eb356000fc0bcd564cb20ab8c7ae401a4ed2d0f809bd273",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual population modal: title, value, unavailable/insufficient-history message, details and close controls legible. Empty chart is not populated-history rendering coverage."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-stats-tools.png",
+      "sha256": "1ef53178ee5cb4dc065f0213b218e21c969a1d8de1aa0f6e93a1b3a7e2f2a36f",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual tools menu: history, minimap, stats, bars/overlays/chat/allied ping controls visible with wrapping; bottom allied-ping label reaches HUD boundary. No interaction or touch-target test claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-stats-world.png",
+      "sha256": "23bdb6b6036d190dca36f4e665d883d0c0512d0ee593857787d8c67188e2500d",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual World statistics: resource-growth labels and displayed values wrap within panel; scrolling indicated. Lower rows outside capture not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-tutorial-briefing.png",
+      "sha256": "0295d8a94df6ccd8bf784e9439f8e34cc10f8879444dd19bf0f7816c46e677d6",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual briefing dialog: briefing/goals/tips tabs, complete indirect-control summary and OK fit. Briefing and Tips tab words split at 150%; no glyph loss."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-tutorial-catalog.png",
+      "sha256": "34527ed47448a2aefd8e9c4367821a74a65c949e2e89c2cf983432aab0490dcc",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual lesson catalog: visible lesson titles/descriptions wrap legibly and return control fits. Last description continues beyond scroll viewport; unshown lessons not approved."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/phone-retry/phone150-tutorial-help.png",
+      "sha256": "c1dc9cfbc5e8e4bf22e293af8afdd8eaf309cce9bfd73ace9e5f462d5cc9ff83",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual gameplay with compact scout objective: title, flag guidance and relevant visible controls readable. Help-named frame shows scrollable objective, not a distinct help dialog. Phone bottom HUD is visibly two columns by three rows; no overlap observed. Hidden objective/help content not claimed."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/startup-desktop-dpr2.png",
+      "sha256": "b4344427045ab37a213599eb53bcf6e8f7bcca584ca3f617f85f8b8cff61d085",
+      "width": 2400,
+      "height": 1800,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual download-failure screen: failure sentence, connection guidance, Bulgarian selector and retry button legible and contained. Broken image placeholder visible above heading. This is not successful startup/loading coverage."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/startup-desktop.png",
+      "sha256": "fac03e96e336f3f4c660adf789f192620f7f12c8d5509f0f8a68795e8d911d92",
+      "width": 1200,
+      "height": 900,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual download-failure screen: failure sentence, connection guidance, Bulgarian selector and retry button legible and contained. Broken image placeholder visible above heading. This is not successful startup/loading coverage."
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v9/startup-phone.png",
+      "sha256": "1d9472d023efb88f6c07c5bc8b615ed2c8f5067ed91dd3c01ad77efdcf8308a7",
+      "width": 390,
+      "height": 844,
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "personally_viewed": true,
+      "actual_fresh_visual_read": true,
+      "verdict": "approve_with_minor_limits",
+      "observation": "Actual download-failure screen: failure sentence, connection guidance, Bulgarian selector and retry button legible and contained. Broken image placeholder visible above heading. This is not successful startup/loading coverage."
+    }
+  ]
+}

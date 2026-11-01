@@ -1,0 +1,153 @@
+{
+  "status": "Completed focused actual browser refresh; known master JS fixture failures retained",
+  "final_source_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "release_binding": "Root clean94021 ordinary both-variant SCons graph/package confirmation rc0, exact frozen source/package/artifact hashes; no embedded GitSHA claim",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "package_version": "b91977b08bcb0e86",
+  "catalogs": {
+    "native_keys": 3430,
+    "online_keys": 2978,
+    "total_keys": 6408,
+    "locale_catalogs": 44,
+    "native_sha256": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online_sha256": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+  },
+  "strict_suite": {
+    "single_combined_run": true,
+    "total": 4,
+    "pass": 4,
+    "fail": 0,
+    "skipped": 0,
+    "workers": 1,
+    "menu_timeout_seconds": 90,
+    "seconds": [
+      2.1,
+      24.7,
+      49.2,
+      39.0
+    ]
+  },
+  "javascript_units": {
+    "actual_current_total": 171,
+    "pass": 168,
+    "fail": 3,
+    "failure_test_file": "browser/unit/replay-fixture.test.js",
+    "classification": "Exact inherited master0b6a9fe67b regression, independently rerun all3 frozen baseline failures",
+    "diagnostics": "Replay fixture186 outside187..191; both Studio fixtures versionMinor186 vs191; fail before SIM revision check",
+    "baseline_identity": "unit-master-baseline/identity.json",
+    "baseline_results": "unit-master-baseline/results.log",
+    "no_repair_broadened": true
+  },
+  "startup": {
+    "actual_contexts": 3,
+    "actual_custom_font_status_glyphs_each": [
+      33,
+      33,
+      33
+    ],
+    "actual_downloaded_core_font_sha256": "466fb75762954c81cd683538f08c4e36773dc27cb5c11339e3e1a675777a6048",
+    "MIME": "font/ttf",
+    "encoding": "gzip"
+  },
+  "actual_byte_proofs": {
+    "serial": [
+      {
+        "path": "index-b91977b08bcb0e86.wasm",
+        "status": 200,
+        "headers": {
+          "server": "SimpleHTTP/0.6 Python/3.14.4",
+          "date": "Sun, 01 Nov 2026 15:22:41 GMT",
+          "content-type": "application/wasm",
+          "content-length": "8256179",
+          "last-modified": "Sun, 01 Nov 2026 15:18:34 GMT",
+          "content-encoding": "gzip",
+          "vary": "Accept-Encoding",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-embedder-policy": "require-corp",
+          "cache-control": "no-cache"
+        },
+        "bytes": 26088129,
+        "sha256": "d61b15d9bf1b2cb1b13c156c0bfbf7778fdc5f95cf8c74b77f188a2e97d47bf9",
+        "matchesFrozenPackage": true,
+        "mechanism": "Actual upstream WASM response bytes buffered and passed unchanged via route.fulfill"
+      }
+    ],
+    "threaded": [
+      {
+        "path": "threaded/index-b91977b08bcb0e86.wasm",
+        "status": 200,
+        "headers": {
+          "server": "SimpleHTTP/0.6 Python/3.14.4",
+          "date": "Sun, 01 Nov 2026 15:20:27 GMT",
+          "content-type": "application/wasm",
+          "content-length": "8271052",
+          "last-modified": "Sun, 01 Nov 2026 15:18:45 GMT",
+          "content-encoding": "gzip",
+          "vary": "Accept-Encoding",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-embedder-policy": "require-corp",
+          "cache-control": "no-cache"
+        },
+        "bytes": 26119417,
+        "sha256": "1da407214aa7c75aee20694cf5f70341e2913a63cd893b8c53637aa0e876541a",
+        "matchesFrozenPackage": true,
+        "mechanism": "Actual upstream WASM response bytes buffered and passed unchanged via route.fulfill"
+      }
+    ],
+    "catalog_VFS_SHA": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "font_VFS_SHA": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  "HTTP": "All44locale catalogs,both WASM,corefont/licenses200 SHA matched; inherited decorative assets404 recorded",
+  "capture_scope": {
+    "PNG_count": 37,
+    "contexts": [
+      "desktop1200x900DPR2",
+      "phone390x844100% custom/main/settings",
+      "phone390x844150%"
+    ],
+    "flows": [
+      "main/settings",
+      "CustomGame adaptive pills100/150",
+      "actual tutorial modal/HUD/help",
+      "normalStatistics overview/history/world",
+      "phoneeditor newmap/map150",
+      "phoneeditor actualmenu150"
+    ],
+    "no_broad39scene_repeat": true,
+    "no_game_visibility_or_simulation_flags_changed": true
+  },
+  "preserved_QA_failures": [
+    "focused/scenes.log: old single-row toolbar coordinates missed current2column3row phone150 Objectives; actual observed grid retry reached modal and Stats",
+    "phone-retry/scenes.log: touch Escape left editor unchanged so optional script lookup failed; actual visible Menu-button diagnostic opened real menu with script/return keys",
+    "editor-diagnostic/scenes.log: ignored QA script syntax error before browser execution, corrected driver executed rc0"
+  ],
+  "limitations": [
+    "Physical Windows/macOS/Android/iOS devices unavailable; browser emulation is not device rendering",
+    "Standalone inherited /theme.js and decorative /signin/assets/glob-64.png404 remain; not localization introduced",
+    "Some CustomGame screenshots show preview still generating; actual adaptive controls and wording are captured",
+    "No blanket visual approval from capture worker; independent review uses immutable37image index",
+    "HistoricalV8 EA0 images remain historical; no relabeling as current94021"
+  ],
+  "personally_viewed": [
+    "focused/phone150-custom-game-text150.png",
+    "focused/desktop-dpr2-tutorial-briefing.png",
+    "focused/phone150-gameplay-before-objectives.png",
+    "phone-retry/phone150-stats-tools.png",
+    "phone-retry/phone150-stats-world.png",
+    "phone-retry/phone150-editor-map150.png",
+    "editor-diagnostic/phone150-editor-menu-actual.png"
+  ],
+  "environment": {
+    "node": "24.22.1",
+    "chromium": "153.0.8010.12",
+    "OS": "Linux"
+  },
+  "cleanup": {
+    "server_pid": 693295,
+    "server_stopped": true,
+    "port42771_closed": true,
+    "remaining_v9_runtime_roots": [],
+    "scope": "Only own identified server stopped; own browser jobs exited naturally"
+  },
+  "final_guard": "final-guard.log PASS all frozen source/package inputs"
+}

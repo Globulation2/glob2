@@ -1,0 +1,13 @@
+{
+  "sim_revision": 115,
+  "master_revision": "0b6a9fe67bcf94b4b4bb7105b7e4727d9e7b081e",
+  "trace_byte_identical_master": true,
+  "trace_sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "match_record_sha256": "551906381a06c8bc60cf1593298747ac274b76bf2fa674317804eae6d32d11ba",
+  "fixture_changes": [
+    "test/fixtures/multiplayer/FourSquares1.g2mr"
+  ],
+  "update_pass": true,
+  "verify_pass": true,
+  "actual_producer": "Dirty precommit native34459 build bound by command.json+producer-header.txt; not final source revision certification"
+}

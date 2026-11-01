@@ -1,0 +1,5 @@
+import {chromium} from '../../../platform/node_modules/@playwright/test/index.mjs';
+import {writeFileSync} from 'node:fs';
+const browser=await chromium.launch(),page=await browser.newPage(),base='http://127.0.0.1:42769',rows=[];
+await page.context().addCookies([{name:'glob2_locale',value:'bg',url:base}]);
+try{for(const route of ['/music','/skins']){await page.goto(base+route,{waitUntil:'load'});await page.waitForFunction(()=>document.documentElement.lang==='bg');await page.evaluate(()=>document.fonts.ready);if(route==='/skins')await page.locator('input').first().waitFor({state:'visible'});else await page.locator('h1').waitFor({state:'visible'});rows.push({route,url:page.url(),homeBody:await page.locator('.home-body').count(),stat:await page.locator('.stat').count(),heading:await page.locator('h1').allTextContents()});}writeFileSync(new URL('./selector-proof.json',import.meta.url),JSON.stringify(rows,null,2)+'\n');if(rows.some(r=>r.homeBody||r.stat))throw Error('Incoming selector unexpectedly matches');}finally{await browser.close()}

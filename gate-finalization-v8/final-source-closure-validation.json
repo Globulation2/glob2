@@ -1,0 +1,140 @@
+{
+  "components": [
+    {
+      "id": "native-font-6402-historical",
+      "closure_kind": "scoped-components",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "final_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "scope": "Exactly6402unchanged final literal values use originalEA0matrix receipts with actual measured font/TextLayout/BGadvance-kernel identity; not all current UI layouts.",
+      "validated_component_identities": [
+        {
+          "path": "data/fonts/sans.ttf",
+          "classification": "scope-byte-identical",
+          "before_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+          "final_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+        },
+        {
+          "path": "libgag/src/ui/TextLayout.cpp",
+          "classification": "scope-byte-identical",
+          "before_sha256": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0",
+          "final_sha256": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0"
+        },
+        {
+          "path": "libgag/include/ui/TextLayout.h",
+          "classification": "scope-byte-identical",
+          "before_sha256": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f",
+          "final_sha256": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f"
+        },
+        {
+          "path": "libgag/src/TrueTypeFont.cpp",
+          "classification": "bg-predicate-equivalent",
+          "before_sha256": "1d7f033193cb507256b7af3e38046078ec5853c2458429a84f13a388b4d21011",
+          "final_sha256": "0504eb2b4cc48145a55949b86d9e0f60658a30d0c3d77cda0d026cd40d09e26f"
+        }
+      ],
+      "limitations": [
+        "No whole-source,wholefontcorebinary,UIscale,layout or runtime-platform equivalence inferred.",
+        "Newmaster frontend/action/footer/phone/HUD paths require fresh targeted94021captures; browserstarterfont requires freshselectedfontCDP466fbproof.",
+        "Only named components/measurements carry; actual EA0/3810producer identities remain."
+      ],
+      "no_whole_source_or_runtime_equivalence_inferred": true
+    },
+    {
+      "id": "native-font-33-corrected",
+      "closure_kind": "scoped-components",
+      "producer_revision": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+      "final_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "scope": "Exactly33corrected flatliteralvalues\u00d712combos=396actual3810measurements; no new fullmatrix execution at94021.",
+      "validated_component_identities": [
+        {
+          "path": "data/fonts/sans.ttf",
+          "classification": "scope-byte-identical",
+          "before_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+          "final_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+        },
+        {
+          "path": "libgag/src/ui/TextLayout.cpp",
+          "classification": "scope-byte-identical",
+          "before_sha256": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0",
+          "final_sha256": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0"
+        },
+        {
+          "path": "libgag/include/ui/TextLayout.h",
+          "classification": "scope-byte-identical",
+          "before_sha256": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f",
+          "final_sha256": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f"
+        },
+        {
+          "path": "libgag/src/TrueTypeFont.cpp",
+          "classification": "bg-predicate-equivalent",
+          "before_sha256": "1d7f033193cb507256b7af3e38046078ec5853c2458429a84f13a388b4d21011",
+          "final_sha256": "0504eb2b4cc48145a55949b86d9e0f60658a30d0c3d77cda0d026cd40d09e26f"
+        }
+      ],
+      "limitations": [
+        "No whole-source,wholefontcorebinary,UIscale,layout or runtime-platform equivalence inferred.",
+        "Newmaster frontend/action/footer/phone/HUD paths require fresh targeted94021captures; browserstarterfont requires freshselectedfontCDP466fbproof.",
+        "Only named components/measurements carry; actual EA0/3810producer identities remain."
+      ],
+      "no_whole_source_or_runtime_equivalence_inferred": true
+    },
+    {
+      "id": "native-current25",
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "comparison_anchor_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "closure_kind": "git-tree",
+      "frozen_input_validation": null,
+      "final_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "actual_changed_paths": [],
+      "producer_binding": {
+        "path": "native-captures/v11-integration/native-runtime-summary.json",
+        "sha256": "d220ff84094c41a6c7bd07bc21e7cc837cfb96481fca6a86dec6e4b6bb2690bb"
+      },
+      "limitations": [
+        "Actual clean94021producer; only named runtime/image report scope accepted, not allfeatures/platforms.",
+        "Historical producer results in separate receipts remain historical; no image filename used as proof of reached UI."
+      ]
+    },
+    {
+      "id": "browser-current37",
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "comparison_anchor_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "closure_kind": "git-tree",
+      "frozen_input_validation": null,
+      "final_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "actual_changed_paths": [],
+      "producer_binding": {
+        "path": "browser-final-v9/handoff.json",
+        "sha256": "ab4f430e06f150ebb834fe48a6292e530699ab69fa5bcaafa9ef0b1d75b5e551"
+      },
+      "limitations": [
+        "Actual clean94021producer; only named runtime/image report scope accepted, not allfeatures/platforms.",
+        "Historical producer results in separate receipts remain historical; no image filename used as proof of reached UI."
+      ]
+    },
+    {
+      "id": "SPA-current10",
+      "producer_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "comparison_anchor_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "closure_kind": "git-tree",
+      "frozen_input_validation": null,
+      "final_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "actual_changed_paths": [],
+      "producer_binding": {
+        "path": "final-fil-online-qa/source-bundle-closure.json",
+        "sha256": "d9457905e80a11a9fa51ba9b07d630535a170a76db8ddf41884ef05a8569547b"
+      },
+      "limitations": [
+        "Actual clean94021producer; only named runtime/image report scope accepted, not allfeatures/platforms.",
+        "Historical producer results in separate receipts remain historical; no image filename used as proof of reached UI."
+      ]
+    }
+  ],
+  "limits": [
+    "Root accepts only named actual Linux/browser/emulated-phone scopes, not fullplatform/physical coverage.",
+    "OldEA0/3810fontmeasurements retain actual producers; exact named typography/corpus relations support boundedcarry only.",
+    "Current native25/browser37/SPA10 carry actual94021producer identities. Browserstartup screenshots depictfailurebranch; normal boot/persistence are proven by separate strict4execution receipts."
+  ],
+  "producer_revisions_retained": true,
+  "no_unaffected_runtime_claim_inferred": true
+}

@@ -1,0 +1,91 @@
+{
+  "producer": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "package": {
+    "policy": "browser-static-gzip-v2",
+    "version": "2d5935618dc2c62f",
+    "threaded": true,
+    "music": true
+  },
+  "requests": [
+    {
+      "path": "fonts/sans-core.ttf",
+      "status": 200,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 13:25:04 GMT",
+        "Content-type": "font/ttf",
+        "Content-Length": "597784",
+        "Last-Modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "bytes": 597784,
+      "sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9"
+    },
+    {
+      "path": "fonts/LICENSE-DejaVu.txt",
+      "status": 200,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 13:25:04 GMT",
+        "Content-type": "text/plain",
+        "Content-Length": "4920",
+        "Last-Modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "bytes": 4920,
+      "sha256": "74cdc53c48d2c371d79d55503954482161753559360c4f92c867de743287d07c"
+    },
+    {
+      "path": "fonts/LICENSE-Droid.txt",
+      "status": 200,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 13:25:04 GMT",
+        "Content-type": "text/plain",
+        "Content-Length": "10769",
+        "Last-Modified": "Sun, 01 Nov 2026 13:24:26 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "bytes": 10769,
+      "sha256": "67eca5ca3eb92d4f5c63fb3a5600d8c16d80367fc2a0cfe358e299491d5f290d"
+    },
+    {
+      "path": "locales/bg.json",
+      "status": 200,
+      "headers": {
+        "Server": "SimpleHTTP/0.6 Python/3.14.4",
+        "Date": "Sun, 01 Nov 2026 13:25:04 GMT",
+        "Content-type": "application/json",
+        "Content-Length": "306031",
+        "Last-Modified": "Sun, 01 Nov 2026 13:24:25 GMT",
+        "Vary": "Accept-Encoding",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cache-Control": "no-cache"
+      },
+      "bytes": 306031,
+      "sha256": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+    },
+    {
+      "path": "asset-manifest.js",
+      "status": 404
+    },
+    {
+      "path": "/theme.js",
+      "status": 404
+    },
+    {
+      "path": "/signin/assets/glob-64.png",
+      "status": 404
+    }
+  ]
+}

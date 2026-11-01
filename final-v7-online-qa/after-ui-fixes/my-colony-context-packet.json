@@ -1,0 +1,24 @@
+{
+  "scope": "only fresh guest initial name; existing catalog key, no source/catalog additions",
+  "sourceFile": "platform/apps/web/src/skins/useSkinDocument.ts",
+  "sha256": "fe94249877b74c035ba229eba952b857b05cc78be764bd67aec132732d713c7c",
+  "newCall": "name: t('My colony')",
+  "source": "My colony",
+  "bulgarian": "Моята колония",
+  "existingParallelCall": "async function newDesign(name = t('My colony'), sourceSkinId?: string, keepCurrent = false)",
+  "preservation": "Only initialization changes. Recovery/saved/authored names and material/wire values untouched; lifecycle test persists authored bilingual name and reopens under English without rewrite. No new API calls.",
+  "productPatch": "diff --git a/platform/apps/web/src/skins/useSkinDocument.ts b/platform/apps/web/src/skins/useSkinDocument.ts\nindex baaa2679ab..a41f1c89de 100644\n--- a/platform/apps/web/src/skins/useSkinDocument.ts\n+++ b/platform/apps/web/src/skins/useSkinDocument.ts\n@@ -58,7 +58,7 @@ async function readColour(src: string) {\n export function useSkinDocument(accountId: string | undefined) {\n   const [canvas] = useState(() => paintCanvas());\n   const [initial] = useState<SkinData>(() => ({\n-    name: 'My colony',\n+    name: t('My colony'),\n     building: '#ed9252',\n     swarmMesh: 'classic',\n     swarmViewAngle: 0,\n",
+  "lifecycleTest": {
+    "file": "platform/apps/web/test/skin-document.test.tsx",
+    "sha256": "b067a94e04b37779e8796408081b3d833120cf1348f8558f5b1185e3f3d349e8",
+    "result": "9passed; freshBGguestdefault, authored bilingualname persisted and restored underEN, requestnotcalled"
+  },
+  "startupOrder": {
+    "main": "main.tsx awaits initialize() before createRoot.render",
+    "initialize": "loads initial cookie/browser resolved catalog then commitLocale before Promise resolves",
+    "sourceHashes": {
+      "platform/apps/web/src/main.tsx": "be44cea1f29f1c5f7229ef2fa200bdde8209a8862b78ff51153b987bbadd5eb4",
+      "platform/packages/i18n/src/index.ts": "3d5574ab6f149174723f1ff2db7d071d3b180b4bdb7f43e3c926fd147e1b7aa9"
+    }
+  }
+}

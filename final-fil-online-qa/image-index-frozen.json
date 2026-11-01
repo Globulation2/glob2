@@ -1,0 +1,56 @@
+{
+  "producerHead": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "viewports": {
+    "desktop": [
+      1280,
+      900
+    ],
+    "phone": [
+      390,
+      844
+    ]
+  },
+  "capturePolicy": "Captured once; identical PNG bytes written and attached. No prior evidence overwritten.",
+  "files": {
+    "artifacts/bulgarian/final-fil-online-qa/captures/desktop-home.png": {
+      "sha256": "e411bd6385f1260aaa7ab8413620479c9ebf28ee9d7a8d0941f7dc0f0536a28a",
+      "bytes": 839050
+    },
+    "artifacts/bulgarian/final-fil-online-qa/captures/desktop-map-wallet-balance-2.png": {
+      "sha256": "375d94ec384abf9145d8157cf3639c87baaa77bfefd56e786948b2cb77fce97f",
+      "bytes": 189923
+    },
+    "artifacts/bulgarian/final-fil-online-qa/captures/desktop-map-wallet-dialog-category.png": {
+      "sha256": "708c282ee92ff6437fbcacd45a35083e0098bc98adad85bfee43c44ffd06ce24",
+      "bytes": 118245
+    },
+    "artifacts/bulgarian/final-fil-online-qa/captures/desktop-music-wallet-balance-2.png": {
+      "sha256": "616795a491afbbcc9288401455d842cd523c1b7eb217c9eea11ddae218cc13a7",
+      "bytes": 214222
+    },
+    "artifacts/bulgarian/final-fil-online-qa/captures/desktop-music-wallet-dialog-category.png": {
+      "sha256": "9d3250cfe378e705f14159c0643f669c8b12a804110acf35af85008cce847dbf",
+      "bytes": 115999
+    },
+    "artifacts/bulgarian/final-fil-online-qa/captures/phone-home.png": {
+      "sha256": "b451efa60b4a3d3e360100e4b639e5a736f16d36e228920cb08710b08b3a2d6c",
+      "bytes": 333565
+    },
+    "artifacts/bulgarian/final-fil-online-qa/captures/phone-map-wallet-balance-2.png": {
+      "sha256": "53f22c4364abd93c267ac738b4a132297da5dd738f165ba5ffa08bf718e1f65c",
+      "bytes": 55254
+    },
+    "artifacts/bulgarian/final-fil-online-qa/captures/phone-map-wallet-dialog-category.png": {
+      "sha256": "c45dea86064ac3571e2e29ba9aa9cf8e2cea8249463c6fe19ff23c212cca2400",
+      "bytes": 20747
+    },
+    "artifacts/bulgarian/final-fil-online-qa/captures/phone-music-wallet-balance-2.png": {
+      "sha256": "5ef277a932c6329475c623ab4ba59cac9686d4f90135a6fba78de2d1e1a31bd2",
+      "bytes": 57117
+    },
+    "artifacts/bulgarian/final-fil-online-qa/captures/phone-music-wallet-dialog-category.png": {
+      "sha256": "03221265f41bd213a1f2ba7dfd02e3303b1b6472b655c2b479c30cddd6f734fb",
+      "bytes": 21186
+    }
+  }
+}

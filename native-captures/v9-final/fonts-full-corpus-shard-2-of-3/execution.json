@@ -1,0 +1,89 @@
+{
+  "output_label": "full-corpus",
+  "shard": "2/3",
+  "total_planned_jobs": 12,
+  "assigned_jobs": 4,
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+  "binary_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+  "revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "phase": "fonts",
+  "scope": "Full final native/online catalog corpus; every literal/plural variant freshly measured in all12 selected combinations, no carry-only measurement claim.",
+  "jobs": [
+    {
+      "tag": "desktop-10x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/desktop-10x2",
+        "1280",
+        "1024",
+        "10",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 50.31,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "34056c6d642f760e04f9fc32bafe8809169b761aad4b08418fbb25fbad6d1695",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/desktop-10x2/font-matrix.json.gz"
+    },
+    {
+      "tag": "desktop-20x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/desktop-20x1",
+        "1280",
+        "1024",
+        "20",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 26.41,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "508fb303297f0d369a6cde752863c5922b074c15440f09a58fe32b79f25a2f81",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/desktop-20x1/font-matrix.json.gz"
+    },
+    {
+      "tag": "phone-10x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/phone-10x2",
+        "480",
+        "960",
+        "10",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 28.57,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "98d07e0df90c86be96b5002225b2377878f64c76171aac0c089504597b5b2d37",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/phone-10x2/font-matrix.json.gz"
+    },
+    {
+      "tag": "phone-20x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/phone-20x1",
+        "480",
+        "960",
+        "20",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 19.59,
+      "text_size_percent": 100,
+      "diagnostics_sha256": "40e030dd0a2d2bd362a8344dba08b02ddbf877b54539cbecaf7b6a8bee019acd",
+      "complete_diagnostics_gzip": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/phone-20x1/font-matrix.json.gz"
+    }
+  ]
+}

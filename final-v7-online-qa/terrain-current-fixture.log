@@ -1,0 +1,11 @@
+
+Running 2 tests using 1 worker
+
+(node:61075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [new-desktop] › artifacts/bulgarian/final-v7-online-qa/context-wording-current.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (5.2s)
+(node:61614) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [new-phone] › artifacts/bulgarian/final-v7-online-qa/context-wording-current.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (4.6s)
+
+  2 passed (18.9s)

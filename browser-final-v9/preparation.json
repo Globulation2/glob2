@@ -1,0 +1,30 @@
+{
+  "status": "PREPARATION ONLY, no package/server/browser/WASM execution until explicit root new final build+source closure handoff",
+  "producer_pending": "Root release both variants session15288 ongoing",
+  "expected_source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "old_v8": "Historical EA0 48PNG immutable; never relabeled as new producer",
+  "expected_locale_count": 43,
+  "focused_contexts": [
+    "desktop1200x900DPR2",
+    "phone390x844150%"
+  ],
+  "coverage": [
+    "strict4 sequential",
+    "startupCDP3 customfont/network/MIME",
+    "43catalog HTTP hash traversal",
+    "both actualWASM buffered upstream byte+mode+BGVFS proof",
+    "main/settings2",
+    "CustomGame responsive pills2",
+    "tutorial actual modal/HUD/help2",
+    "Statistics normal navigation2"
+  ],
+  "full_39_scene_repeat": false,
+  "source_edits": false,
+  "required_handoff": [
+    "Both-variant release build rc0 and no writer",
+    "Final source commit and exact compiled dirty-source closure",
+    "Final BG online SHA518e full digest and stable stagedcatalog identity",
+    "Explicit package+execute authorization"
+  ],
+  "actual_execution_started": false
+}

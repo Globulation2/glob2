@@ -1,0 +1,107 @@
+{
+  "status": "Actual final V9 synthetic probes; sample equality only",
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "primary_1x_2x_pngs": [
+    {
+      "relative_path": "desktop/font-10-scale-1-page-001.png",
+      "final_sha256": "69f1057a00ad35ceb609518574c730b3d80ddf15b4aa1f379ff81af78300f363",
+      "historical_8db_sha256": "69f1057a00ad35ceb609518574c730b3d80ddf15b4aa1f379ff81af78300f363",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "desktop/font-10-scale-2-page-001.png",
+      "final_sha256": "d13cc43acabdb458b2d7b1665c30c6ece0bce3dd4a7e9e0a132aeb2899eb66ba",
+      "historical_8db_sha256": "d13cc43acabdb458b2d7b1665c30c6ece0bce3dd4a7e9e0a132aeb2899eb66ba",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "desktop/font-13-scale-1-page-001.png",
+      "final_sha256": "6250d0f5eb8265e958651ef72e2f546b85088047be2a7278a174de7640996db8",
+      "historical_8db_sha256": "6250d0f5eb8265e958651ef72e2f546b85088047be2a7278a174de7640996db8",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "desktop/font-13-scale-2-page-001.png",
+      "final_sha256": "186c261675bce364b88554659b3038c6e5bbd1dba095e6dd6a54ec497fcebf85",
+      "historical_8db_sha256": "186c261675bce364b88554659b3038c6e5bbd1dba095e6dd6a54ec497fcebf85",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "desktop/font-20-scale-1-page-001.png",
+      "final_sha256": "bc9b45f22cfabdc446c08befe44a664f897441b6aa1ff5db948f9c1700180da6",
+      "historical_8db_sha256": "bc9b45f22cfabdc446c08befe44a664f897441b6aa1ff5db948f9c1700180da6",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "desktop/font-20-scale-2-page-001.png",
+      "final_sha256": "4bdbd98b736ae872cd419a81f296546765de199d876d1551a3b44dd5b3243a1d",
+      "historical_8db_sha256": "4bdbd98b736ae872cd419a81f296546765de199d876d1551a3b44dd5b3243a1d",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "phone/font-10-scale-1-page-001.png",
+      "final_sha256": "6ca856f2a550a6f69d0d84a2bed126edb5222dc98bffa8281dbb547a563df102",
+      "historical_8db_sha256": "6ca856f2a550a6f69d0d84a2bed126edb5222dc98bffa8281dbb547a563df102",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "phone/font-10-scale-2-page-001.png",
+      "final_sha256": "36b14cec31ab9136b379a1e7908ec04e855ab36289ae6a3aca0888fa6a1c99b3",
+      "historical_8db_sha256": "36b14cec31ab9136b379a1e7908ec04e855ab36289ae6a3aca0888fa6a1c99b3",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "phone/font-13-scale-1-page-001.png",
+      "final_sha256": "cf21e32663b8a0ccb687209504eac1dd5fcb703bc7ea22693994dc1e97d08702",
+      "historical_8db_sha256": "cf21e32663b8a0ccb687209504eac1dd5fcb703bc7ea22693994dc1e97d08702",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "phone/font-13-scale-2-page-001.png",
+      "final_sha256": "508362680bfc0a73ea995320791b190f2e62cf6e79f44d000fe0428362a079ed",
+      "historical_8db_sha256": "508362680bfc0a73ea995320791b190f2e62cf6e79f44d000fe0428362a079ed",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "phone/font-20-scale-1-page-001.png",
+      "final_sha256": "22e6631ff17eb2c5454ae51cfb382ff96da4aa8af9c8521ba2540a2a948036e6",
+      "historical_8db_sha256": "22e6631ff17eb2c5454ae51cfb382ff96da4aa8af9c8521ba2540a2a948036e6",
+      "byte_identical": true
+    },
+    {
+      "relative_path": "phone/font-20-scale-2-page-001.png",
+      "final_sha256": "867afba8221becf4e62d13aeae8f3891008d978cb212023dbcaeff1184bd0bd0",
+      "historical_8db_sha256": "867afba8221becf4e62d13aeae8f3891008d978cb212023dbcaeff1184bd0bd0",
+      "byte_identical": true
+    }
+  ],
+  "all12_byte_identical_8db": true,
+  "additional_1_5x_diagnostic_pngs_without_historical_baseline": [
+    {
+      "relative_path": "desktop/font-10-scale-1.5-page-001.png",
+      "final_sha256": "3d14a6f276bc933a08ce05aaf1d42c7fdcf620f999ccf714dfe00e0909cfed10"
+    },
+    {
+      "relative_path": "desktop/font-13-scale-1.5-page-001.png",
+      "final_sha256": "8ae7a6e11710b4551d5c9c6ba970e3fc09c7b1eb76f05be34b10e3115fb410e5"
+    },
+    {
+      "relative_path": "desktop/font-20-scale-1.5-page-001.png",
+      "final_sha256": "7dc43e66f88eddbb6e2bbe2fd45b53c1b6c5e32a8b6f0881acaef197d35ff9a0"
+    },
+    {
+      "relative_path": "phone/font-10-scale-1.5-page-001.png",
+      "final_sha256": "4c87d4b77a61e5eda8cf18cd8eb4a26d36a4ffadb47a1731d13ca45b960e0735"
+    },
+    {
+      "relative_path": "phone/font-13-scale-1.5-page-001.png",
+      "final_sha256": "909c333a2a52a8c5cfaaceaaef09b36232cf1a4dbf20176fae140c48c81d86c1"
+    },
+    {
+      "relative_path": "phone/font-20-scale-1.5-page-001.png",
+      "final_sha256": "6bec89e521200c74cb792e3681f295a290efeff568b6a103ef81cbc7e062719a"
+    }
+  ],
+  "limits": "Only these12 corresponding PNG bytes are equal. Six fractional probes are new diagnostics. Full current77,220 font measurements are independent fresh execution; no broad UI equivalence inferred."
+}

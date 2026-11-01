@@ -1,0 +1,28 @@
+{
+  "compiled_producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "allowed_test_only_paths": [
+    "platform/apps/web/e2e/i18n.spec.ts"
+  ],
+  "all_other_tracked_blobs_identical": true,
+  "native_build_rc": 0,
+  "browser_build_rc": 0,
+  "binaries": {
+    "TranslationPreviewHarness": {
+      "sha256": "156665831688ddbedafdfbb7ba8cc7949cf96b4980498f206aec93e8375c2b7c",
+      "size": 337260808
+    },
+    "glob2-engine-tests": {
+      "sha256": "e6af424d4a71a88f89ed35550f3f96d8f7c82f86a410747dc25442e821abed37",
+      "size": 432853080
+    },
+    "glob2-unit-tests": {
+      "sha256": "c4331aee2c1dab84be157d1269337ed8c2bbb77cf38e7fe586b6e363aee5bd57",
+      "size": 116613240
+    }
+  },
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+  }
+}

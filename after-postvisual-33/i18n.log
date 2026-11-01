@@ -1,0 +1,13 @@
+
+> i18n:check
+> node packages/i18n/scripts/check.ts && node packages/i18n/scripts/build-browser.ts --check
+
+43 languages × 2978 messages: inventory, parameters and plural forms passed
+file:///home/bradley/.codex/worktrees/5a87/glob2/platform/packages/i18n/scripts/build-browser.ts:45
+    throw new Error('Browser localization runtime is stale: npm run i18n:browser');
+          ^
+
+Error: Browser localization runtime is stale: npm run i18n:browser
+    at file:///home/bradley/.codex/worktrees/5a87/glob2/platform/packages/i18n/scripts/build-browser.ts:45:11
+
+Node.js v24.22.1

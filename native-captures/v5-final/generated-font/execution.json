@@ -1,0 +1,212 @@
+{
+  "revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3",
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+  "binary_sha256": "f3a86fb2950f31fa2129360f5c338b9bc9971977d068046c42e070b48c004df3",
+  "scope": "Single changed label font diagnostic",
+  "jobs": [
+    {
+      "tag": "desktop-10x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/desktop-10x1",
+        "1280",
+        "1024",
+        "10",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 20.54,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-10x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/desktop-10x2",
+        "1280",
+        "1024",
+        "10",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 19.93,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-13x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/desktop-13x1",
+        "1280",
+        "1024",
+        "13",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 15.17,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-13x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/desktop-13x2",
+        "1280",
+        "1024",
+        "13",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 26.49,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-20x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/desktop-20x1",
+        "1280",
+        "1024",
+        "20",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 15.05,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-20x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/desktop-20x2",
+        "1280",
+        "1024",
+        "20",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 23.67,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-10x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/phone-10x1",
+        "480",
+        "960",
+        "10",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 32.0,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-10x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/phone-10x2",
+        "480",
+        "960",
+        "10",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 25.45,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-13x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/phone-13x1",
+        "480",
+        "960",
+        "13",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 32.39,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-13x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/phone-13x2",
+        "480",
+        "960",
+        "13",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 20.88,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-20x1",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/phone-20x1",
+        "480",
+        "960",
+        "20",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 28.01,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-20x2",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-visual-delta-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/generated-font/phone-20x2",
+        "480",
+        "960",
+        "20",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 29.08,
+      "text_size_percent": 100
+    }
+  ]
+}

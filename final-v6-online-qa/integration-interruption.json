@@ -1,0 +1,18 @@
+{
+  "classification": "transitional interrupted checks; files changed by master integration before completion; no pass claim",
+  "fullUnitExit": 130,
+  "lintChainExit": 143,
+  "ownApi": "stopped, not restarted",
+  "ownPg": "retained42770 for final suite",
+  "resolvedFiles": {
+    "platform/packages/i18n/src/index.ts": "3d5574ab6f149174723f1ff2db7d071d3b180b4bdb7f43e3c926fd147e1b7aa9",
+    "platform/packages/i18n/test/runtime.test.ts": "2d70e7bf8d17c8e7cd4a676ebda0f867bc7eb02512a42b8217dbbdb546be894e"
+  },
+  "review": "BGcyrl andBNbeng written-script rules, lazy loaders preserved; locales40/dynamic inventory; masterApp/layout icon rail and44px controls intact. No other tracked edits.",
+  "focusedChecks": {
+    "indexEslint": "pass",
+    "prettierIndexAndRuntime": "pass",
+    "runtimeScriptInventorySubset": "5 passed,54 skipped; not full runtime suite",
+    "stagedDiffCheck": "pass"
+  }
+}

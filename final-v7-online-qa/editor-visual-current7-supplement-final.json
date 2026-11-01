@@ -1,0 +1,108 @@
+{
+  "reviewer_identity": {
+    "agent": "/root/v7_editor",
+    "role": "Independent Bulgarian editorial visual reviewer",
+    "assessment_kind": "agent-reviewed only",
+    "human_native_reviewer": false
+  },
+  "scope": "Exactly7 PNGs personally viewed for this supplement:2after-fix skin captures and5replacement current admin/music captures. No all-pages or full-catalog visual claim.",
+  "previous_report": {
+    "path": "artifacts/bulgarian/final-v7-online-qa/editor-visual-primary16-final.json",
+    "sha256": "0e2a09822fa5426d034274e02b684994cf834e1c70cc1da7b4943ddf5e99da5f",
+    "preserved": true,
+    "identity_limit": "Old byte approval does not approve five overwritten files; current exact bytes freshly viewed here."
+  },
+  "evidence_indexes_sha256": {
+    "artifacts/bulgarian/final-v7-online-qa/after-ui-fixes/image-index.json": "e65252f32cc092c3c5dd24b9f960c9095b49cbe93bb3995066a7e5a729dbeb74",
+    "artifacts/bulgarian/final-v7-online-qa/attachment-extraction-image-differences.json": "0a8527bc1dc84c429e47582b3bd2a6f8d9cc09f90f4884b3711cec335d23a80d",
+    "artifacts/bulgarian/final-v7-online-qa/reviewed16-component-carry-forward.json": "8298f4634eb20d0936c41a4164f9a127deda53e241f69bd8605299052aebd37b",
+    "artifacts/bulgarian/final-v7-online-qa/reviewed16-current-index.json": "5baf6aad38d9fe07a8c37766f004ef8f37b49a937f55eb924a389016ce2b335b"
+  },
+  "online_bg_sha256": "1fb6db279e053eb4cc0d7cfba6eb87925eba7d0d44ad5788099fa337963d0203",
+  "coverage": {
+    "personally_viewed": 7,
+    "critical_observed": 0,
+    "major_observed": 0,
+    "wording_changes_requested": 0
+  },
+  "final_approval": true,
+  "status": "approved_exact7_screenshot_subset_with_minor_layout_observations",
+  "entries": [
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/after-ui-fixes/captures/new-desktop-new-skin-materials.png",
+      "sha256": "6e50d4d80117595eeea0ae3d23d0d59b4baa879acf045c2a22daa6bcf0152a25",
+      "personally_viewed_using": "tools.view_image",
+      "producer": "later one-hook-fix production bundle index-Rvwk0WYQ.js, per carry-forward disclosure",
+      "assessment": "Fresh Bulgarian title Моята колония visibly correct on actual after-fix capture. Cyrillic labels readable, named worker/warrior/explorer/swarm controls separated, sign-in action visible; no critical/major observed.",
+      "minor_observations": [
+        "Desktop material swatch labels are very small/dense, with long Мултипликационен стил wrapping across lines near swatch."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/after-ui-fixes/captures/new-phone-new-skin-materials.png",
+      "sha256": "ad4c701c736a11673706f43a00a2fec75654e4c13759cf7b72043e69b623ec53",
+      "personally_viewed_using": "tools.view_image",
+      "producer": "later one-hook-fix production bundle index-Rvwk0WYQ.js, per carry-forward disclosure",
+      "assessment": "Fresh Bulgarian title Моята колония visibly correct on actual after-fix capture. Cyrillic labels readable, named worker/warrior/explorer/swarm controls separated, sign-in action visible; no critical/major observed.",
+      "minor_observations": [
+        "Phone bottom gesture-help text is very small and its line extends beyond visible pane; primary material and animation controls remain readable."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-accounts.png",
+      "sha256": "cf849bdb90e8c7d703bbd207fdc91b236c9257335fecfdb6f10fb30b2904e906",
+      "superseded_published_sha256": "08ad0083220b987312eaf90338ea8fbc90d20a438d945e53e92b2ce7b36a891d",
+      "personally_viewed_using": "tools.view_image",
+      "producer": "original e96/pre-hook index-RJkE9YHk.js; second same-page/test/bundle capture extracted from attachment, per disclosure",
+      "assessment": "Fresh current replacement screenshot directly viewed. Bulgarian visible prose accepted; no glyph loss, blocked action or new major clipping observed.",
+      "minor_observations": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-accounts.png",
+      "sha256": "0309f33ef2d403946b8668152f56f6863308845c47af933aeff88f25598fca0d",
+      "superseded_published_sha256": "14402ad5229a4e02269056b1b9e5ec26a98834c4cd7a39d3183370215e6201a0",
+      "personally_viewed_using": "tools.view_image",
+      "producer": "original e96/pre-hook index-RJkE9YHk.js; second same-page/test/bundle capture extracted from attachment, per disclosure",
+      "assessment": "Fresh current replacement screenshot directly viewed. Bulgarian visible prose accepted; no glyph loss, blocked action or new major clipping observed.",
+      "minor_observations": [
+        "Search placeholder visibly truncated on phone, while search button and moderation actions readable."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-audit.png",
+      "sha256": "9812d27aa54835cb52d8ae4670333698ed1a6b3f1834e03b11fa9115ca74d00c",
+      "superseded_published_sha256": "c3fd6bed15bed15fd8f468b93f9a7261ae65a743b2c8bf1f5d90f7763b4ca5c2",
+      "personally_viewed_using": "tools.view_image",
+      "producer": "original e96/pre-hook index-RJkE9YHk.js; second same-page/test/bundle capture extracted from attachment, per disclosure",
+      "assessment": "Fresh current replacement screenshot directly viewed. Bulgarian visible prose accepted; no glyph loss, blocked action or new major clipping observed.",
+      "minor_observations": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-finances.png",
+      "sha256": "4c6e9f074dc8a7fd044fa42e60b32461678921710ac645e55ae0b933114b5c39",
+      "superseded_published_sha256": "21671d96f0901a84402626b76736182ee02173eaaf3d68694a3009b9a6fb307b",
+      "personally_viewed_using": "tools.view_image",
+      "producer": "original e96/pre-hook index-RJkE9YHk.js; second same-page/test/bundle capture extracted from attachment, per disclosure",
+      "assessment": "Fresh current replacement screenshot directly viewed. Bulgarian visible prose accepted; no glyph loss, blocked action or new major clipping observed.",
+      "minor_observations": [
+        "Finance table captions and right columns initially off-screen within previously DOM-confirmed horizontal scroll regions; caption reading requires horizontal scrolling."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-music-guidance-fixture.png",
+      "sha256": "140c95a4c17fb80026aec19673a7e8e6b7f5689fcd8cd57792b92c68e9474335",
+      "superseded_published_sha256": "fa2161e46974ac890732aa2f0fe5d81f564e47d71bfcff68467cb2f6f8caa2c8",
+      "personally_viewed_using": "tools.view_image",
+      "producer": "original e96/pre-hook index-RJkE9YHk.js; second same-page/test/bundle capture extracted from attachment, per disclosure",
+      "assessment": "Fresh current replacement screenshot directly viewed. Bulgarian visible prose accepted; no glyph loss, blocked action or new major clipping observed. All11 Bulgarian listening-guidance cards personally reread. Authored fixture metadata remains verbatim.",
+      "minor_observations": []
+    }
+  ],
+  "limits": [
+    "Static captures do not prove actual hit testing or keyboard behavior.",
+    "Browser-owned date/file captions, code identifiers and authored user names not mistaken for untranslated application prose.",
+    "Finance scroll classification uses earlier personally read DOM probe, not newly asserted interactive execution.",
+    "No source/catalog edits; no new wording decision. Original reports untouched.",
+    "Source component carry-forward and producer identities explicitly preserved; these five replacements are not falsely labeled later-bundle captures."
+  ]
+}

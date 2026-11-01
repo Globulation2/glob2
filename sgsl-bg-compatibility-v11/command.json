@@ -1,0 +1,41 @@
+{
+  "head": "b14894809014d14baa25de28d63d775ffeb41331",
+  "actual_dirty_git_status": "M  browser/assets/sans-core.ttf\nM  browser/assets/sources.json\nM  browser/derive_assets.py\nM  browser/i18n.js\nA  browser/tests/filipino.spec.js\nM  browser/unit/language.test.js\nAM data/texts.fil.txt\nM  data/texts.incomplete.txt\nM  data/texts.list.txt\nM  docs/development/ui-framework.md\nM  libgag/src/FontKerningTest.cpp\nM  libgag/src/TrueTypeFont.cpp\nM  platform/apps/web/e2e/i18n.spec.ts\nM  platform/apps/web/e2e/tamil.spec.ts\nM  platform/apps/web/src/styles/home.css\nA  platform/packages/i18n/locales/fil.json\nM  platform/packages/i18n/shared-values.json\nM  platform/packages/i18n/src/index.ts\nM  platform/packages/i18n/src/locales.ts\nM  platform/packages/i18n/test/runtime.test.ts\nM  src/app/SystemLanguageTest.cpp\n M src/game/SimRevision.h\nM  src/hud/touch/GameGUITouch.cpp\nM  src/hud/touch/GameGUITouch.h\nM  src/hud/touch/GameGUITouchHarness.cpp\nM  src/hud/touch/GameGUITouchInspection.cpp\nM  src/hud/touch/GameGUITouchView.cpp\nM  src/map/editor/EditorPresentationTest.cpp\nM  src/map/editor/MapEditPresentation.cpp\nM  src/map/editor/PhoneEditor.cpp\nM  src/map/editor/PhoneEditor.h\nM  src/map/editor/PhoneEditorInspection.cpp\nM  src/map/editor/PhoneEditorTray.cpp\nM  src/map/editor/PhoneEditorView.cpp\nM  src/net/turn/TurnEngineHarness.cpp\nM  src/relay/RelayAdmissionTest.cpp\nM  src/scripting/sgsl/LegacyScriptCoverageTest.cpp\nM  src/ui/FrontendUI.cpp\nM  src/ui/settings/SettingsScreen.cpp\nM  src/ui/settings/SettingsScreenTest.cpp\nM  test/test_font_coverage.py\nM  test/test_google_draft.py\nM  test/test_google_draft_segmented.py\n M test/test_translation_program.py\nM  test/translation_shared_values.json\nM  tools/localization/google_draft.py\nM  tools/localization/google_draft_segmented.py\n M tools/localization/translation_program.py\n",
+  "engine_binary_sha256": "bff7d1ce7649fc03500602fc88981c2785b665f89154b994693eac4d9310202b",
+  "embedded_provenance_header_sha256": "aa89df533801563b0129f699eb552daabcbebf4784f2b82d0c6dbdb2cede727f",
+  "source_sim_revision": "// SPDX-License-Identifier: GPL-3.0-or-later\n#pragma once\n\n// The simulation revision. Bump it in every change that can alter what the\n// simulation computes from the same MatchSetup and orders, even when the save\n// format (VERSION_MINOR) and the network protocol (NET_PROTOCOL_VERSION) stay\n// the same: game rules, units, buildings, pathfinding, AI code and parameters,\n// order validation, map loading, random number use, scripting (including the\n// installed catalog codes accepted as legacy SGSL language tokens).\n//\n// It feeds the sim version key (Online::SimVersion, see \"Simulation version\" in\n// docs/multiplayer/turn-protocol.md), which partitions rooms, queues, AI ratings\n// and verifiers, so builds that simulate differently never meet in one match.\n// A bump also needs a fresh test/fixtures/multiplayer/FourSquares1.g2mr (its\n// sim version must match); test/check_sim_revision.py and CI fail when the\n// committed verification trace or record changes without a bump.\n//\n// Kept apart from Version.h so a bump recompiles only the sim version code.\n// deploy/sim_version.py reads this line.\n#define SIM_REVISION 115\n",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto",
+        "--binary",
+        "engine",
+        "--filter",
+        "TurnEngineHarness/the committed match record verifies to the committed checksum trace*",
+        "--update-fixtures",
+        "--junit",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sgsl-bg-compatibility-v11/golden-update.xml"
+      ],
+      "returncode": 0
+    },
+    {
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto",
+        "--binary",
+        "engine",
+        "--filter",
+        "TurnEngineHarness/the committed match record verifies to the committed checksum trace*",
+        "--junit",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sgsl-bg-compatibility-v11/golden-verify.xml"
+      ],
+      "returncode": 0
+    }
+  ],
+  "claim": "Actual post-master compiled process; dirty producer, not final commit certification"
+}

@@ -1,0 +1,35 @@
+{
+  "identity": "Synthetic font diagnostic, not translated catalog",
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/f02b75/TranslationPreviewHarness.capture",
+  "binary_sha256": "e9d11b7be3ba210aaab65533541ea71fa4abea47038542f0bb055806d1fb42a8",
+  "jobs": [
+    {
+      "presentation": "desktop",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/f02b75/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v4-probe-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/desktop",
+        "1280",
+        "1024"
+      ],
+      "returncode": 0,
+      "seconds": 48.32
+    },
+    {
+      "presentation": "phone",
+      "command": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/f02b75/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v4-probe-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v4-final/probes/phone",
+        "480",
+        "960"
+      ],
+      "returncode": 0,
+      "seconds": 11.33
+    }
+  ]
+}

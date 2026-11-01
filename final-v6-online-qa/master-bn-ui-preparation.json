@@ -1,0 +1,13 @@
+{
+  "newMaster": "1801e6a832657e183557f225abecee35e23250c2",
+  "patchSha256": "d08445aad880cbba917caad2e511eba8869fbd41555305049a55eab81976705d",
+  "recommendations": [
+    "App: retain master sidebar-auth aria-label/title and icon+span wrappers for sign-in/sign-out; existing click callbacks, auth semantics and translated names unchanged.",
+    "layout: retain master 44px icon auth rail/hide redundant text and language picker only in collapsed rail; retain our existing localized content sizing rules elsewhere.",
+    "index: merge writtenScript bg\u2192cyrl and bn\u2192beng alongside hi\u2192deva,ur\u2192arab,sw/ms\u2192latn; retain BOTH bg and bn lazy loaders.",
+    "locales: retain BG,NB,MS and add BN once;40locales.",
+    "runtime: retain dynamic inventory/unique checks+explicit bg/nb/ms; add master bn resolution and all selectable default-loader cases."
+  ],
+  "sourceMutations": false,
+  "coverage": "read-only preparation; actual merge not owned"
+}

@@ -1,0 +1,32 @@
+{
+  "status": "unchanged component evidence carried forward without rerun",
+  "final_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3",
+  "source_checks": "checks.json",
+  "original_commit_binding": "82394c1563b8e324da54770d037d319b9f27c072",
+  "platform_input_count": 1211,
+  "platform_input_changes": [],
+  "versions_equal": {
+    "typescript": "6.0.3",
+    "vitest": "5.0.3",
+    "vite": "8.3.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "eslint": "10.11.0",
+    "prettier": "3.9.9"
+  },
+  "external_web_build_input_roots_unchanged": [
+    "data/fonts",
+    "tools/music",
+    "datasrc/icons",
+    "libgag/shaders",
+    "browser/assets",
+    "data/generators",
+    "data/zik"
+  ],
+  "native_catalog_sha256": "dfc3638b84e9d90272a093c7fe0f6e9112b3af0c8a6b3cca7d45ff26c69ca10c",
+  "native_catalog_keys": 3425,
+  "online_catalog_sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813",
+  "online_catalog_keys": 2843,
+  "utc": "2026-11-01T07:36:59Z",
+  "scope": "Existing actual webTS/lint/format4React/Vite checks only; native/browser runtime acceptance pending"
+}

@@ -1,0 +1,91 @@
+{
+  "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "source_closure_head": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "scope": "Actual completed immutable captures only; ongoing runtime jobs; no blanket visual approval",
+  "images": [
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/matrix/desktop-serial-language.png",
+      "sha256": "b4f215f673464fda72fe93a5530a976eaaed508d9888dd9fdb59199e7bfeef90",
+      "width": 1200,
+      "height": 900
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/matrix/desktop-serial-main.png",
+      "sha256": "c74861b4e2e7505fcd26a5905c5061b4277c3edab5e140e6c9684124d5a3b1ce",
+      "width": 1200,
+      "height": 900
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/matrix/phone-serial-main.png",
+      "sha256": "9cbfbefd8e6e755f30ed81800f338ced68168d22c15bcb5354d4dc223ad3ae5b",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-gameplay-before-objectives.png",
+      "sha256": "8d0dee6f9f760a7631ae43d150b94d40832b309a1e3647daaea8bd5bd974e4d7",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-gameplay-hud.png",
+      "sha256": "265508f0088be7c86a2a0c270fc7d7e8fa4bbbd90aa9fc463dea8e9d2f1da09b",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-stats-overview.png",
+      "sha256": "5425c2e8435924e5819d2c3fe9676898e6dde114c04a0ab6ec1b03378ac25bc5",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-stats-population-history.png",
+      "sha256": "86004d96e27d73f049054be8bf3ed85587f914abe1ca7b6d63cda7648991067d",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-stats-world.png",
+      "sha256": "5ce0e2c9a2b6abbbc8f945826a2558ff9d2dfdfc1d69232b3b1d288128c5b23f",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-tutorial-briefing.png",
+      "sha256": "c6b6d92c7fcbf16947db0fc72d53c1dc09cbd7c40b7e526e8433caa558ae6a79",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-tutorial-catalog.png",
+      "sha256": "7c2d8488138600fb4d5e9b75254ae73837c0683f236c9a861b18c9b86fec6d4f",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/scenes-retry/desktop-dpr2-tutorial-help.png",
+      "sha256": "a0ead11911e457eadffde1ae0b7c39108a7abf3f7fe0324bff09db4075c4ee44",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/startup-desktop-dpr2.png",
+      "sha256": "b4344427045ab37a213599eb53bcf6e8f7bcca584ca3f617f85f8b8cff61d085",
+      "width": 2400,
+      "height": 1800
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/startup-desktop.png",
+      "sha256": "fac03e96e336f3f4c660adf789f192620f7f12c8d5509f0f8a68795e8d911d92",
+      "width": 1200,
+      "height": 900
+    },
+    {
+      "path": "artifacts/bulgarian/browser-final-v8/startup-phone.png",
+      "sha256": "1d9472d023efb88f6c07c5bc8b615ed2c8f5067ed91dd3c01ad77efdcf8308a7",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

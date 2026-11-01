@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "family": null,
+  "seconds": {
+    "glob2-unit-tests ApiErrorText (8 cases)": 0.1169290789985098,
+    "glob2-unit-tests PlatformClient (24 cases)": 0.06504143399070017,
+    "glob2-unit-tests PlatformProtocol (8 cases)": 0.0647123569942778,
+    "glob2-unit-tests UILayout (51 cases)": 0.16689000400947407
+  }
+}

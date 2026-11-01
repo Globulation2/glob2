@@ -1,0 +1,239 @@
+{
+  "config": {
+    "argv": [
+      "/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "artifacts/bulgarian/final-v8-online-qa/conditional-notices.config.mjs"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/conditional-notices.config.mjs",
+    "rootDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/conditional-notices/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "states-desktop",
+        "name": "states-desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "conditional-notices.spec.mjs"
+        ],
+        "timeout": 360000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/conditional-notices/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "states-phone",
+        "name": "states-phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "conditional-notices.spec.mjs"
+        ],
+        "timeout": 360000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/conditional-notices/tests.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "conditional-notices.spec.mjs",
+      "file": "conditional-notices.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "map and terrain unavailable and credit notices use Bulgarian without dispatching work",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "states-desktop",
+              "projectName": "states-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3925,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:24:05.506Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "map-no-credit",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/conditional-notices/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 191610,
+                        "sha256": "590add4c93c307dc279340d057d0366da36611f9b3c09ff8255a5e71075ec3de"
+                      }
+                    },
+                    {
+                      "name": "map-unavailable",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/conditional-notices/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 194312,
+                        "sha256": "ff0a34c409ffe8446f77f60cbca0697eca083dfc2e5e06c813a45f90b917bf0c"
+                      }
+                    },
+                    {
+                      "name": "terrain-unavailable",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/conditional-notices/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 99745,
+                        "sha256": "b722b575d09801f43d60a54c091a11eecfe5d003a5f6c6063c4c2f33b14a8ec2"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7232b501a893c0377824-6b1f0daacaf6868edfb6",
+          "file": "conditional-notices.spec.mjs",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "map and terrain unavailable and credit notices use Bulgarian without dispatching work",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "states-phone",
+              "projectName": "states-phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3607,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:24:10.110Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "map-no-credit",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/conditional-notices/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 52674,
+                        "sha256": "e3b902d3710af7478a124c3b703f8eaa26fabf687e73443fbc2b5f7751cc08d5"
+                      }
+                    },
+                    {
+                      "name": "map-unavailable",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/conditional-notices/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 53549,
+                        "sha256": "4fa5a9d677ae88771f30b6046d8cdccc429054e03dfeda5bb6d88718e25fb351"
+                      }
+                    },
+                    {
+                      "name": "terrain-unavailable",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/conditional-notices/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 50363,
+                        "sha256": "2e6ce8ebe3b0f3227ce8c0993f0a0b280d5b0489a6de91282b7839f7adb6c6cf"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7232b501a893c0377824-fc8a2b8c28bbb07a75ac",
+          "file": "conditional-notices.spec.mjs",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T13:24:04.939Z",
+    "duration": 8986.292,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "node": "v24.22.1",
+  "packages": {
+    "typescript": "6.0.3",
+    "vitest": "5.0.3",
+    "react": "19.3.0",
+    "eslint": "10.11.0",
+    "prettier": "3.9.9",
+    "@playwright/test": "1.63.0",
+    "vite": "8.3.2"
+  },
+  "packageLockSha256": "97395497eef79bab58b489381e45056d25a6de1d2d1a553fc98c3aea74418392",
+  "workerBound": 2,
+  "database": "own isolated disposable Postgres42770",
+  "viewportMatrix": [
+    "desktop1280x900",
+    "phone390x844 mobile+touch"
+  ],
+  "browser": "Playwright Chromium; actual browser.version recorded during capture",
+  "uiTests": "actual production Vite bundle+seeded actual API; some explicit shape-matched preview/player fixtures, recorded percase"
+}

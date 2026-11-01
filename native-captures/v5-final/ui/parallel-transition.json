@@ -1,0 +1,169 @@
+{
+  "scope": "Bounded3 UI captures; current sequential child untouched; reserved next fresh output causes intentional launcher guard exit, not a product/storage failure.",
+  "original_pid": 3512258,
+  "completed_before_transition": [
+    "desktop-100-statistics",
+    "desktop-100-script-editor"
+  ],
+  "current_capture_untouched": "desktop-150-script-editor",
+  "reserved_pending": [
+    "desktop-150-statistics",
+    "desktop-new-map",
+    "phone-100-script-editor",
+    "phone-100-statistics",
+    "phone-150-script-editor",
+    "phone-150-statistics",
+    "phone-new-map"
+  ],
+  "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3",
+  "binary_sha256": "f3a86fb2950f31fa2129360f5c338b9bc9971977d068046c42e070b48c004df3",
+  "jobs": [
+    {
+      "tag": "desktop-new-map",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/desktop-new-map",
+        "1280",
+        "1024",
+        "new-map"
+      ],
+      "returncode": 0,
+      "seconds": 50.87,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-150-statistics",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics",
+        "1280",
+        "1024",
+        "statistics"
+      ],
+      "returncode": 0,
+      "seconds": 80.51,
+      "text_size_percent": 150
+    },
+    {
+      "tag": "phone-100-script-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "script-editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-100-script-editor",
+        "390",
+        "844"
+      ],
+      "returncode": 0,
+      "seconds": 90.72,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-100-statistics",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-100-statistics",
+        "390",
+        "844",
+        "statistics"
+      ],
+      "returncode": 0,
+      "seconds": 75.99,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "phone-150-script-editor",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "script-editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-150-script-editor",
+        "390",
+        "844"
+      ],
+      "returncode": 0,
+      "seconds": 77.55,
+      "text_size_percent": 150
+    },
+    {
+      "tag": "phone-150-statistics",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics",
+        "390",
+        "844",
+        "statistics"
+      ],
+      "returncode": 0,
+      "seconds": 68.32,
+      "text_size_percent": 150
+    },
+    {
+      "tag": "phone-new-map",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v4/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v5-final/ui/phone-new-map",
+        "390",
+        "844",
+        "new-map"
+      ],
+      "returncode": 0,
+      "seconds": 46.6,
+      "text_size_percent": 100
+    }
+  ],
+  "final_capture_jobs": 10,
+  "successful_capture_jobs": 10,
+  "original_launcher_result": {
+    "exit_code": 1,
+    "expected": true,
+    "reason": "Fresh-output guard stopped launcher at reserved next job, after its three successful capture children completed. No child was signaled or duplicated.",
+    "capture_failures": 0,
+    "preserved_log": "artifacts/bulgarian/native-v5-qa/ui.log"
+  }
+}

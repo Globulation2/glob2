@@ -1,0 +1,49 @@
+{
+  "status": "Actual completed-capture control bounds and source action evidence; no extra action/capture executed",
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "image": {
+    "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings-player/settings-player.png",
+    "sha256": "494858150d0ef1e927f7aa8145e7c19ad8c93bd0e549113318a975243aeeb6f6",
+    "dimensions": [
+      390,
+      844
+    ]
+  },
+  "capture_metadata": {
+    "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings-player/settings-player.json",
+    "sha256": "3f652dea06c064d292a1ca73a6837521a17a2a773fda12747ee7e243167735d8",
+    "actual_done_control": {
+      "key": "done",
+      "x": 255,
+      "y": 784,
+      "width": 123,
+      "height": 48,
+      "within_viewport": true
+    },
+    "screen_actions": []
+  },
+  "personal_full_image_observation": {
+    "visible_caption": "Готово",
+    "visible_gold_button_at_bottom": true,
+    "region": [
+      255,
+      784,
+      123,
+      48
+    ],
+    "button_bottom": 832,
+    "image_bottom": 844
+  },
+  "production_source": {
+    "path": "src/ui/settings/SettingsScreen.cpp",
+    "sha256": "a740e2b03c464968dacdfb4c21a176d5cd410377b86d5303e4ba2ac0d340d5ef",
+    "phone_done_added_lines": "734-737",
+    "fixed_footer_outside_expanded_body_lines": "764-769",
+    "button_callback": "[this] { done(); }",
+    "keyboard_back_handler": "SettingsScreen::onEscape invokes dismiss except nested building page",
+    "available_rect": "p.dialog; no synthetic keyboard editing was activated in captured state"
+  },
+  "conclusion": "The exit control is present and visibly within viewport in this exact capture; the screenshot does not demonstrate a missing-footer bug. Actual click completion is source-backed, not claimed executed by this capture.",
+  "independent_reviewer_action": "Reopen this exact full PNG and re-evaluate bottom784..832 pixels using the actual control bounds."
+}

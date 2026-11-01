@@ -1,0 +1,30 @@
+{
+  "unit": {
+    "originalRun": {
+      "passed": 1246,
+      "failed": 2,
+      "skipped": 15,
+      "total": 1263,
+      "files": 177,
+      "seconds": 876.72,
+      "failures": "2 explicit30000ms timeouts in skin-projection"
+    },
+    "targetedRecovery": {
+      "passed": 2,
+      "skippedNotSelected": 9,
+      "testTimeoutMs": 180000,
+      "seconds": 60.83,
+      "sourceChanged": false
+    }
+  },
+  "gates": {
+    "lint": 0,
+    "types": 0,
+    "i18n": 0,
+    "build": 0,
+    "skin-timeout-rerun": 0
+  },
+  "catalogCheck": "40 languages \u00d72948 messages passed",
+  "browserPending": true,
+  "sourceBinding": "1637files byte-identical start\u2192e96; clean-source-binding.json"
+}

@@ -1,0 +1,340 @@
+{
+  "kind": "production-screen-draft-overlay",
+  "screen": "lobby",
+  "pilot": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-corrected-full-render-input/render-input/bg",
+  "evidence_identity": {
+    "locale": "bg",
+    "source_revision": "b14894809014d14baa25de28d63d775ffeb41331",
+    "source_revision_origin": "Frozen translation kit; executable and code hashes identify the actual dirty build.",
+    "executable": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries-b148/TranslationPreviewHarness.capture",
+    "executable_sha256": "e54bdfd987fdcd83e5f020167684a3c04bd1efe0eab3223a3b45210a968c76a4",
+    "producer": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/5a87/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib -Wl,--enable-new-dtags"
+      },
+      "revision": "b14894809014d14baa25de28d63d775ffeb41331",
+      "sourceStatus": [],
+      "sourceTreeSha256": "eed2f0955a605412086e97c97362150d129e3bdd7733763a1635daf9eeb243f6"
+    },
+    "source_sha256": {
+      "data/texts.en.txt": "a4424f5a7ca77b77e4f768054ba27078f223ca7972b595697ca19c3820b961f7",
+      "data/texts.keys.txt": "9a0efaa645aa7920683b7923aa9cee90feb08e1cb5fc1afa069ad11552be3a91",
+      "platform/packages/i18n/locales/en.json": "633a7022434673ed52b61c82bc2f4b6ee3ca519ae45402af3ad76ed0a20671d2",
+      "libgag/src/TrueTypeFont.cpp": "1d7f033193cb507256b7af3e38046078ec5853c2458429a84f13a388b4d21011",
+      "libgag/src/BidiText.cpp": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+      "libgag/src/ui/TextLayout.cpp": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0",
+      "src/hud/InGameStatistics.cpp": "aae23045a183dd4bf5aa45026e92566c751cd41f9f35ff61cb8c2ae0c66f6d89",
+      "src/hud/InGameStatistics.h": "2706e5b5f73d7e43d1161d68b53d70d1c68ab01bf64d2810d55d16f1e8d98553",
+      "src/team/stats/MetricCatalog.cpp": "3b91e76dddddc46d36c1a2c315cb71394def304096075790698d2ca5ae5fae26",
+      "src/team/stats/MetricCatalog.h": "c881717c7af08c39d753ca175db22640c07720b98be74df77bdc633b12fb90c8",
+      "src/hud/draw/GameGUIDraw.cpp": "a91df611b2ba60edaf6bc6d5fc75fd656a84056aa2a797a1d335fd239bf48515",
+      "src/hud/touch/GameGUITouchView.cpp": "5146cd2588bd3b8472a7c1729a40a3a8cdf0187ef1de81d84f2c470df5f826d7",
+      "src/hud/touch/GameGUITouch.cpp": "76011b9558dc6be857edf3f0c0d3441455afd42ac6b0c897aa384257938a2046",
+      "src/hud/touch/GameGUITouch.h": "a6665ad9a58d42f381319e7cbde497b9f38fd5c27960b9e137d0af65273a68e5",
+      "libgag/include/TouchText.h": "71eb059abd12e090a6c0674cec761a7041339e89dcfadfdae8904f570c6d97cb",
+      "libgag/include/TrueTypeFont.h": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+      "libgag/include/ui/TextLayout.h": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f",
+      "libgag/src/DrawableSurfaceCompound.cpp": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810",
+      "libgag/include/ui/Inspection.h": "533e0efe748356da43356939c5ae3bf8b60f9ddd0db7e7359b529b45ccbf89cb",
+      "libgag/include/ui/PositionedControls.h": "4537049379744bbe58bb14e912f81cfee603c55771379540b36beb7baca6e099",
+      "libgag/include/ui/Controls.h": "f5096d5aaa93fe3eee2c3dbd7f4c24c36d264623be731b2f8ef49e4372c3303d",
+      "libgag/src/ui/Controls.cpp": "cf36e1bfe4580db0a814716e9d570e512fdab3077e64874239d139b36396595f",
+      "src/hud/GameGUIControls.cpp": "d8a9c984e3ea271ee07e91dcd97de7ba6bb5a6120d272ccd32f20d0de3f5f864",
+      "src/hud/touch/GameGUITouchInspection.cpp": "ead0f8805c10ca5fdae72a13ebbde87163d59745409eeab30887b46d07bd3dc7",
+      "browser/shell.html": "5ba84bdbb1571c436792b3608a772c72bad7d85fea49fd4a59bbf50c9ffc64dc",
+      "browser/ApplicationHost.cpp": "f28e0e8fe687caad12e21340a538f5c201c3f9eea1602065e5779c3e133e31ab",
+      "src/game/screens/CustomGameScreen.cpp": "0d60972cc6eebd2a060c2395820e9321c57a50508837ca2ee1f4de4efde6c502",
+      "src/render/overlay/MapZoomControls.h": "df3117b157e2585c2d025c0c83d2440ffb4ca91105fa75899bd4d1efc4bb97c7",
+      "src/map/editor/screens/NewMapScreen.cpp": "aad0c02b428d5e87447673076b459486305b3c136a508f260e85af58ee40073d",
+      "src/map/editor/MapEditIO.cpp": "e8f9c1e3929cbed3206f1e1ef0675dc94793ddb961af5b7726def64b7b28778a",
+      "src/map/editor/MapEditDraw.cpp": "12e06cf1962705464985e4e5ee27ef7f956b7afbab076a3e011d67c9dd26d218",
+      "src/map/editor/EditorDock.cpp": "c677c0edf48a92f67baa982bc2dc048f5d30525e10f020ca1f84217d554a3022",
+      "src/map/editor/PhoneEditor.cpp": "a667e57798113ec3bd4e964c63b852f76234bf41018e4527202e1434eedaefda",
+      "src/ui/settings/SettingsScreenGeneral.cpp": "3403bc06f5c5a4e8175086566f4b426e7e4aac3f18814b6503b03ae2dd48551a",
+      "src/ui/settings/SettingsScreenCustomAIs.cpp": "22d6eca1bfa6dc36b6c56c1ed2b9ec44c1738ee85a5fea5cb4dbe352afa72a47",
+      "src/ui/settings/SettingsScreenOnline.cpp": "4b660eec007f5d9d3b86344596b9d2c878e9324070d85279c1b7acefb7db034f",
+      "src/ui/settings/SettingsScreenKeyboard.cpp": "9bb9ea17b5ff60c529e6c1731bfd40ba8f9875603c5a4163468eb381bd0a521e",
+      "src/online/PlatformClient.cpp": "5070c5cba117cddfd64737ad89524f5d4de8f54650f8197711ed5190fa2ff0e9",
+      "src/online/PlatformProtocol.cpp": "dfcc3f60b94feb022ad2050ff589a13bd2936f71a7893e1a74c34106319ead47",
+      "src/online/PlatformProtocol.h": "f666ef46362c808b3c1717c55a19e01d7305a1b8298e82b9d988bc470aa77ad7",
+      "src/online/ApiErrorText.cpp": "9032c48ac1b863bd11bdd7178c9ee5fa43216bd1a0b807785ca74a1d2844fa06",
+      "src/online/ApiErrorText.h": "82d94be752a85d19b96836e93e506af15e07462dfc0deb7c8d53f462f7f2025a",
+      "src/ui/ApiErrorText.h": "b087887e8625bb5b51309e17e57052647f546bb7961b5ccbd7c226061ee4f9a6",
+      "src/game/screens/EndGameScreen.cpp": "a6be0cd693f3d408f72cd05aabfc550c3ac1f6924e5cb6ea0a88879500e5cdf1",
+      "src/team/stats/TeamStatChart.cpp": "c9ad594fb8a24a9582bf40624aa66573b2c0531dd5f24a405b60ec71d04f4757",
+      "src/app/SystemLanguage.cpp": "2d689ce28db79e519f1a92ab848ba698a878cfc33be4d43b7e37e9a5c06b56ac",
+      "src/app/Settings.cpp": "4809a8ec65bbd41262e01a78972c5b5da2750d296071e5f7ebf78f66c3571fc6",
+      "tools/TranslationPreviewHarness.cpp": "a87d3ca355c6b4ce5c5648541dd39750fdb4771982d12e7238fd9b3f8828770a"
+    },
+    "catalog_sha256": {
+      "native": "8136af59a530fabf34d68098c2bdba1d00c03efed73b8b83c5636c1c7dcfb64b",
+      "online": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+    },
+    "runtime_fonts": [
+      {
+        "virtual_path": "data/fonts/sans.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/sans.ttf",
+        "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+        "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+        "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+        "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+        "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansKannada-Regular.ttf",
+        "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+        "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+        "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansOriya-Regular.ttf",
+        "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTamil-Regular.ttf",
+        "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+        "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+        "path": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansThai-Regular.ttf",
+        "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+      }
+    ],
+    "runtime_search_paths": [
+      "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces-harness-corrected/phone-lobby/profile/user",
+      "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets",
+      ".",
+      "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/share/glob2",
+      "/usr/local/share",
+      "/home/bradley/.codex/worktrees/5a87/glob2",
+      "/home/bradley/.codex/worktrees/5a87/glob2"
+    ],
+    "input_metadata": {
+      "locale": "bg",
+      "source_revision": "b14894809014d14baa25de28d63d775ffeb41331",
+      "candidate_revision": "b14894809014d14baa25de28d63d775ffeb41331",
+      "compiled_runtime_revision": "b14894809014d14baa25de28d63d775ffeb41331",
+      "review_proof_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/review-proof-v8-visual-validation-snapshot.json",
+      "review_proof_sha256": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7",
+      "original_catalog_sha256": {
+        "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+        "online": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+      },
+      "scope": "full render corpus"
+    },
+    "sdl_library_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+    "sdl_ttf_library_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0",
+    "sdl_version": 3004016,
+    "sdl_ttf_version": 3002002,
+    "harfbuzz_version": [
+      10,
+      1,
+      0
+    ]
+  },
+  "native_keys_overridden": 3430,
+  "width": 390,
+  "height": 844,
+  "controls": [
+    {
+      "key": "tab/0",
+      "x": 10,
+      "y": 10,
+      "width": 119,
+      "height": 48,
+      "within_viewport": true
+    },
+    {
+      "key": "tab/1",
+      "x": 135,
+      "y": 10,
+      "width": 119,
+      "height": 48,
+      "within_viewport": true
+    },
+    {
+      "key": "tab/2",
+      "x": 260,
+      "y": 10,
+      "width": 120,
+      "height": 48,
+      "within_viewport": true
+    },
+    {
+      "key": "map/mode/0",
+      "x": 10,
+      "y": 66,
+      "width": 174,
+      "height": 82,
+      "within_viewport": true
+    },
+    {
+      "key": "map/mode/1",
+      "x": 192,
+      "y": 66,
+      "width": 174,
+      "height": 82,
+      "within_viewport": true
+    },
+    {
+      "key": "map/randomize",
+      "x": 164,
+      "y": 590,
+      "width": 48,
+      "height": 48,
+      "within_viewport": true
+    },
+    {
+      "key": "generator/landscape",
+      "x": 10,
+      "y": 680,
+      "width": 356,
+      "height": 48,
+      "within_viewport": true
+    },
+    {
+      "key": "generator/reset",
+      "x": 10,
+      "y": 736,
+      "width": 174,
+      "height": 160,
+      "within_viewport": false
+    },
+    {
+      "key": "generator/random",
+      "x": 192,
+      "y": 736,
+      "width": 174,
+      "height": 160,
+      "within_viewport": false
+    },
+    {
+      "key": "generator/width",
+      "x": 10,
+      "y": 934,
+      "width": 356,
+      "height": 48,
+      "within_viewport": false
+    },
+    {
+      "key": "generator/height",
+      "x": 10,
+      "y": 1020,
+      "width": 356,
+      "height": 48,
+      "within_viewport": false
+    },
+    {
+      "key": "generator/colonies",
+      "x": 10,
+      "y": 1106,
+      "width": 356,
+      "height": 48,
+      "within_viewport": false
+    },
+    {
+      "key": "generator/section/0",
+      "x": 10,
+      "y": 1214,
+      "width": 356,
+      "height": 48,
+      "within_viewport": false
+    },
+    {
+      "key": "generator/section/1",
+      "x": 10,
+      "y": 1270,
+      "width": 356,
+      "height": 48,
+      "within_viewport": false
+    },
+    {
+      "key": "generator/section/2",
+      "x": 10,
+      "y": 1326,
+      "width": 356,
+      "height": 48,
+      "within_viewport": false
+    },
+    {
+      "key": "map/buildings",
+      "x": 10,
+      "y": 1382,
+      "width": 356,
+      "height": 48,
+      "within_viewport": false
+    },
+    {
+      "key": "back",
+      "x": 10,
+      "y": 786,
+      "width": 181,
+      "height": 48,
+      "within_viewport": true
+    },
+    {
+      "key": "start",
+      "x": 199,
+      "y": 786,
+      "width": 181,
+      "height": 48,
+      "within_viewport": true
+    }
+  ],
+  "screen_actions": [],
+  "http_fixture_origin": null,
+  "expected_notice": null,
+  "online_environment": "Not exercised.",
+  "limits": [
+    "Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",
+    "Control bounds include scrollable content and do not independently prove text fitting.",
+    "Does not verify gameplay HUD, tutorial, dialogs, browser, mobile platform, or full locale."
+  ]
+}

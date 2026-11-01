@@ -1,0 +1,216 @@
+{
+  "reviewer_identity": {
+    "agent": "/root/v7_editor",
+    "role": "Independent Bulgarian editorial visual reviewer",
+    "assessment_kind": "agent-reviewed only",
+    "human_native_reviewer": false
+  },
+  "scope": "Exactly16 screenshots personally viewed, not all online pages or all2948keys. primary8 plus desktop/phone finances/accounts/audit/music-guidance.",
+  "source_binding": {
+    "producerHead": "f7f6cc0ac563080459e5784dee0128693ea29b75",
+    "cleanHead": "e96e4e1f4b5868cc1f082874c56e7853dad2bd09",
+    "fileCount": 1637,
+    "changed": [],
+    "added": [],
+    "byteIdentical": true
+  },
+  "online_bg_sha256": "1fb6db279e053eb4cc0d7cfba6eb87925eba7d0d44ad5788099fa337963d0203",
+  "index_sha256": {
+    "artifacts/bulgarian/final-v7-online-qa/primary-8-index.json": "8b74d2dedbed75834008cf80dae522a9af7d1fb7165160536920a4a53ae62293",
+    "artifacts/bulgarian/final-v7-online-qa/new-domains-stable-index.json": "6719ed85b7d88b07f72f95d661ba761e72a1728801cad943c12e89705c0517e3"
+  },
+  "coverage": {
+    "personally_viewed": 16,
+    "critical_observed": 0,
+    "confirmed_language_major": 0,
+    "major_visual_assessment": "0 major observed after scroll-container clarification",
+    "major_observed": 0
+  },
+  "final_approval": true,
+  "status": "approved_for_exact16_screenshot_subset_with_minor_layout_observations",
+  "limitations": [
+    "Static PNG inspection cannot establish actual hit testing, keyboard operation, browser option popup contents or hidden horizontal scroll accessibility.",
+    "No inherited prior visual approval. No live source/catalog edits.",
+    "Current observations apply only to these exact PNG hashes."
+  ],
+  "entries": [
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-building-default.png",
+      "sha256": "586432b835913aaf11a4a49b7fc01e65ba830e278a844fca3004c6e02cb199f8",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "Minor: narrow property columns break Допълнително across lines inside the word; still decipherable. Schema identifiers and editable value clipping are not untranslated prose."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/desktop-building-default.png",
+      "sha256": "c9244247326b0cee7baba0d00bf61d6a0b97ccf1d40a4c22e567fa108b09fb96",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-set-default.png",
+      "sha256": "7cd8b3f3b4a9f06e8a942814378fa220a4ba3139a9b34898be37ef3b2eedd6e7",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "Native license select displays truncated selected description; CC BY 4.0 remains visible; option popup not inspected."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-add-terrain.png",
+      "sha256": "f40795177c64f871907b6709cd4c4994ba0396787164dddf34139cb5cb9384c8",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-add-resource.png",
+      "sha256": "63223d730f0d8e15bebbc856f2afdf733e4b2c4240fa0856863e785c567e2622",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-music-fields.png",
+      "sha256": "3bacda258b07fb8b792b9a404aa0f8ec51e983f510c4d3c2cea0d75ca619ff3c",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-map-visibility.png",
+      "sha256": "e25f5df2ecc61c5b52cf9a9c47813c23e9c704d365c35263492feed4126a30bc",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/phone-ai-tags.png",
+      "sha256": "2f7b66426c99efd3860af93b25bc2001f8ec9ce4df6761a0abb72a6d2154efa5",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": []
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-accounts.png",
+      "sha256": "08ad0083220b987312eaf90338ea8fbc90d20a438d945e53e92b2ce7b36a891d",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "User names deliberately verbatim."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-audit.png",
+      "sha256": "a307f4ac790dfbfdfc6dd9be696f5e346aadd3951cc8009694b460308fceb52b",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "Date format mm/dd/yyyy browser-owned, distinct from Bulgarian application prose; labels readable."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-admin-finances.png",
+      "sha256": "6d9b7f0b9ddec97e52d110ea28b374e1628f888076499e4a68204e0a6181b48e",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "Visible right-edge clipping of provider explanation prose; phone confirmed-money prose also extends beyond visible right edge. Table right columns off-screen. DOM scroll accessibility awaiting surface_audit clarification; cannot infer hidden contents from PNG."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-desktop-new-music-guidance-fixture.png",
+      "sha256": "9881e9becd19e970465da5f8d5436f3f469d432b0ff082d420b80483354aa1d1",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "Shape-matched release fixture;11 Bulgarian guidance cards personally read. Fixture title/artist/description authored metadata deliberately verbatim."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-accounts.png",
+      "sha256": "14402ad5229a4e02269056b1b9e5ec26a98834c4cd7a39d3183370215e6201a0",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "User names deliberately verbatim.",
+        "Minor: phone search placeholder truncates after account identifier; search button fully visible."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-audit.png",
+      "sha256": "c3fd6bed15bed15fd8f468b93f9a7261ae65a743b2c8bf1f5d90f7763b4ca5c2",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "Date format mm/dd/yyyy browser-owned, distinct from Bulgarian application prose; labels readable."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-admin-finances.png",
+      "sha256": "21671d96f0901a84402626b76736182ee02173eaaf3d68694a3009b9a6fb307b",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "Visible right-edge clipping of provider explanation prose; phone confirmed-money prose also extends beyond visible right edge. Table right columns off-screen. DOM scroll accessibility awaiting surface_audit clarification; cannot infer hidden contents from PNG."
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/final-v7-online-qa/verified/screenshots/new-phone-new-music-guidance-fixture.png",
+      "sha256": "fa2161e46974ac890732aa2f0fe5d81f564e47d71bfcff68467cb2f6f8caa2c8",
+      "personally_viewed_using": "tools.view_image",
+      "glyphs": "Cyrillic rendered legibly; no missing glyphs observed",
+      "language": "Bulgarian displayed application prose accepted in actual context; no wording changes proposed",
+      "notes": [
+        "Shape-matched release fixture;11 Bulgarian guidance cards personally read. Fixture title/artist/description authored metadata deliberately verbatim."
+      ]
+    }
+  ],
+  "previous_report": {
+    "path": "artifacts/bulgarian/final-v7-online-qa/editor-visual-primary16-initial.json",
+    "sha256": "64d9a1ac95589b30a3e0b0a8804e34512e7ddd734292ef19bc11afb4ef4ea6ef",
+    "preserved": true
+  },
+  "finance_clarification": {
+    "evidence_path": "artifacts/bulgarian/final-v7-online-qa/finance-caption-probe.json",
+    "sha256": "78067c3546d42a695db765ca1f56200cc05157029bbff9f4ca0a56690f879f3f",
+    "evidence_kind": "DOM metrics produced by /root/surface_audit, personally read; not own interactive execution",
+    "result": "Clipped explanation is TABLE CAPTION within overflow-x:auto regions. Phone region286px, captions652/1174px; desktop region976px, provider caption1174px. Entire text retained and horizontally scrollable. Captions do not wrap to visible region.",
+    "classification": "Minor nonblocking layout concern: horizontal reading needed for captions, particularly on phone; no lost application prose or blocked control demonstrated."
+  },
+  "findings": [
+    {
+      "severity": "minor",
+      "surface": "phone-building-default",
+      "observation": "Допълнително field labels wrap inside word in narrow property columns. Text remains decipherable."
+    },
+    {
+      "severity": "minor",
+      "surface": "phone-admin-accounts",
+      "observation": "Long search placeholder truncates; search action remains visible."
+    },
+    {
+      "severity": "minor",
+      "surface": "admin-finances desktop/phone",
+      "observation": "Table captions inherit horizontally scrollable table width; complete explanations require horizontal scrolling rather than wrapping to visible region. No translation edit requested."
+    }
+  ]
+}

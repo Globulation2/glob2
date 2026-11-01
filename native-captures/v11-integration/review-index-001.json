@@ -1,0 +1,55 @@
+{
+  "scope": "Completed actual final94021 post-Filipino master UI jobs; unfinished jobs excluded",
+  "completed_jobs": 7,
+  "images": [
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v11-integration/surfaces-fil-master/desktop-main/main.png",
+      "sha256": "e1cca525bb46b7cb81feb1ed1b0588f446e80d387b0665c15c0b3c71d0ce492f",
+      "job": "desktop-main",
+      "actual_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "text_size_percent": 100
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v11-integration/surfaces-fil-master/phone-main/main.png",
+      "sha256": "910a0bee7070c84abf4fe38f3cb04066f2feca453c665b5a30d34f9fb546c23e",
+      "job": "phone-main",
+      "actual_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "text_size_percent": 100
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v11-integration/surfaces-fil-master/desktop-settings/settings.png",
+      "sha256": "472862913d5aae3161b26462586991cd2c658d6017a04886c89b324fd5d2fd20",
+      "job": "desktop-settings",
+      "actual_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "text_size_percent": 100
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v11-integration/surfaces-fil-master/phone-settings/settings.png",
+      "sha256": "35cc41e5312e4044a40d8b9bca8d92e19168282439eecf6e3d6d4ee5021fd11d",
+      "job": "phone-settings",
+      "actual_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "text_size_percent": 100
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v11-integration/surfaces-fil-master/phone-settings-enlarged/settings.png",
+      "sha256": "18fe165c6d94f14ede0aa34cf375ed17131cf831007008a8516c2088c4227005",
+      "job": "phone-settings-enlarged",
+      "actual_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "text_size_percent": 150
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v11-integration/surfaces-fil-master/phone-settings-player/settings-player.png",
+      "sha256": "494858150d0ef1e927f7aa8145e7c19ad8c93bd0e549113318a975243aeeb6f6",
+      "job": "phone-settings-player",
+      "actual_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "text_size_percent": 100
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v11-integration/surfaces-fil-master/phone-results/statistics.png",
+      "sha256": "4473c54974b3b0bf1d445ee25460cb3a20ecad4bf45bdb286c2a894878cd896d",
+      "job": "phone-results",
+      "actual_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+      "text_size_percent": 100
+    }
+  ]
+}

@@ -1,0 +1,716 @@
+{
+  "status": "Immutable completed actual V9 UI subset; independent visual review is separate",
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+  },
+  "binary_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+  "jobs": [
+    {
+      "tag": "desktop-100-script-editor",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 3
+    },
+    {
+      "tag": "desktop-150-statistics",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 6
+    },
+    {
+      "tag": "phone-150-script-editor",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 3
+    },
+    {
+      "tag": "desktop-lobby",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-settings-ais",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-new-map",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "phone-main",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "phone-settings",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-100-statistics",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 6
+    },
+    {
+      "tag": "phone-100-script-editor",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 3
+    },
+    {
+      "tag": "phone-150-statistics",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 6
+    },
+    {
+      "tag": "desktop-lobby-players",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-settings-online",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-editor",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 3
+    },
+    {
+      "tag": "phone-lobby",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "phone-settings-ais",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-150-script-editor",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-3-of-3.json",
+      "returncode": 0,
+      "images": 3
+    },
+    {
+      "tag": "phone-100-statistics",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-3-of-3.json",
+      "returncode": 0,
+      "images": 6
+    },
+    {
+      "tag": "desktop-main",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-3-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-settings",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-3-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-settings-player",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-3-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-gameplay",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-3-of-3.json",
+      "returncode": 0,
+      "images": 16
+    },
+    {
+      "tag": "phone-lobby-players",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-3-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "phone-settings-online",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-001/surfaces-shard-3-of-3.json",
+      "returncode": 0,
+      "images": 1
+    }
+  ],
+  "images": [
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-cursor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-cursor.png",
+      "sha256": "ef26c372704b291e9999cb2b6a18e86f9fc2b10e267f58136c90cc93b4c48b6e",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-failure.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-failure.png",
+      "sha256": "1bebd49577b33aa7cfbcc6328be7363ef432362c477fde54e7263e667248d63e",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-success.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor-success.png",
+      "sha256": "a20fb46fc6bf3dbc9df887d93073dfda683e1460674fcb273292b793bad4062b",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-dialog.png",
+      "sha256": "4be026155b765dfe154a3cad879bc571c9e379c5f25069db8532ab7d93eaf068",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-economy.png",
+      "sha256": "c4feff3f308094d2c54e69fbf39bca41006578c528f06a8267ef7e8d7c2fc983",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-overview.png",
+      "sha256": "6ca73a98d6d486fa75840592ba81c398faffa56f26b365cd1b8915b3c4b4f4a9",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-population-history-details.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-population-history-details.png",
+      "sha256": "df2a21b8baf075504c6959487237b2c78a7efa0f4d284857ee4cdbf1a843e479",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-population-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-population-history.png",
+      "sha256": "85a5910afd08ee3d86df3e46fea127f8255ef759a8551d2b1c6623be0c77d63b",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics-world.png",
+      "sha256": "8c82c2540e9bf986675097a6cd073ce08c144c4bbac6a0ab924e643613d4495b",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-cursor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-cursor.png",
+      "sha256": "7b9f5858ab82e517126ddd03f8cd1da0eb70fa3f3bd4675b31dd9ccba968273b",
+      "width": 389,
+      "height": 844,
+      "job": "phone-150-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-failure.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-failure.png",
+      "sha256": "ff4c946fbb4d7083de4f40b78d4cc64409dca414129061682ed098fbcf837ced",
+      "width": 389,
+      "height": 844,
+      "job": "phone-150-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-success.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor-success.png",
+      "sha256": "0184994e340863ae95088961bc0a1f41087b9d92f8f35901ef92ff84894682c5",
+      "width": 389,
+      "height": 844,
+      "job": "phone-150-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-lobby/lobby.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-lobby/lobby.png",
+      "sha256": "b5c3839435936ea531c5399503bc413515e2e4723c9ddfccdbd3b5ab2934e553",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-lobby"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-settings-ais/settings-ais.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-settings-ais/settings-ais.png",
+      "sha256": "3d9896ef19fbb2d97d38c1a424f65ece0aeda31f1cf5585938908b464c9aca9c",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-settings-ais"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-new-map/new-map.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-new-map/new-map.png",
+      "sha256": "cac227fcdb6889b4da94c7787a0170c1f3e9b2bd169718c87070cae0f3d9cd99",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-new-map"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-main/main.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-main/main.png",
+      "sha256": "910a0bee7070c84abf4fe38f3cb04066f2feca453c665b5a30d34f9fb546c23e",
+      "width": 390,
+      "height": 844,
+      "job": "phone-main"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings/settings.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings/settings.png",
+      "sha256": "35cc41e5312e4044a40d8b9bca8d92e19168282439eecf6e3d6d4ee5021fd11d",
+      "width": 390,
+      "height": 844,
+      "job": "phone-settings"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-dialog.png",
+      "sha256": "cec95476ec194fbd08c2740a074745b5c53fd556119146859f1c61a50c1131cc",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-economy.png",
+      "sha256": "e531f246870f447d7c9ba00f7a90b718b3b48f3d051e1371c4e0410c0cbd5c45",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-overview.png",
+      "sha256": "44c75de472c1829f1dfa59a121b223df1d486e40b4d619aa99ce7838ce57b404",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-population-history-details.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-population-history-details.png",
+      "sha256": "cdbe692f49ea3ca0eaec7134e8b4328bffd298b22fa0dedf95af89b8d7d33ff1",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-population-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-population-history.png",
+      "sha256": "eadda03a5b41c3c51ce98430e667b8b086cc22002beb4f6a28315e326fec5b0e",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics-world.png",
+      "sha256": "cb985f3e33911449ac636e82798e50309e4173a372060bb2f86151fc85e5426e",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-cursor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-cursor.png",
+      "sha256": "6093784192fd629a2cc6c6b0143f0daca06ba38d7254738034268861a899db27",
+      "width": 389,
+      "height": 844,
+      "job": "phone-100-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-failure.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-failure.png",
+      "sha256": "3139597d2be089bebcfbf6d3490c660cd6d628fd54ac56f594820c7a4787f4d7",
+      "width": 389,
+      "height": 844,
+      "job": "phone-100-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-success.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor-success.png",
+      "sha256": "707cc7818ef9c6d76bc4daf7403ced6707d17e6f3291c3dcb474f2ff3f063e50",
+      "width": 389,
+      "height": 844,
+      "job": "phone-100-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-dialog.png",
+      "sha256": "db1ba143754fc50e5c0f2f377c0c811cdd01175903ac37954bc3007d55a8ed74",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-economy.png",
+      "sha256": "a4eb22c9a86298338fa4335fd48e5e2f97e51ab8b4fb37bc3b97cebe46fab773",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-overview.png",
+      "sha256": "425bf058053abeca9a440ace7e1b98e00dfc1194ec15f05f07a785356f0bd577",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-population-history-details.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-population-history-details.png",
+      "sha256": "e29eacc4a72925293d3a2861dc49fb10062c224def903ac84b19385af9383c59",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-population-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-population-history.png",
+      "sha256": "4ba639484c9a239fff2632126a92bc29f55a386a2cac849c9f7465da0a1c1eb2",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics-world.png",
+      "sha256": "ab227f51beebb35175b43b9dff4f368d5f511e867e23e4fee6df49b7f31dd73f",
+      "width": 390,
+      "height": 844,
+      "job": "phone-150-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-lobby-players/lobby-players.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-lobby-players/lobby-players.png",
+      "sha256": "397219157e52cc1f93adceaa8727b12352a4d378f4cc6519016ce0329c924794",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-lobby-players"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-settings-online/settings-online.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-settings-online/settings-online.png",
+      "sha256": "e2e3ee24e75abf4205214a35d44f0cde787aa81b43b7c8365a805b80ac057bc6",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-settings-online"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor-dialog.png",
+      "sha256": "bb41d5488e036d6974dda56682d9f04b995371178385c84412255a2a63205ea1",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor-terrain.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor-terrain.png",
+      "sha256": "c560045d5a8286fed75edd3cf322bb8012f7deb44e8e8a0d1142363459382483",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor.png",
+      "sha256": "c8b1775138fafc0779df3b814a1af263e422a0ddb96615294c477559d518b1bc",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-lobby/lobby.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-lobby/lobby.png",
+      "sha256": "d401c1758fc09bac4b6e9b3f806eb9343dbdde87d842fe3c8c90fd52640fb828",
+      "width": 390,
+      "height": 844,
+      "job": "phone-lobby"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-settings-ais/settings-ais.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-settings-ais/settings-ais.png",
+      "sha256": "28c5c97898f437c085b5d1c01e78c6c427defb2e348aafc1ca020c3b2db22824",
+      "width": 390,
+      "height": 844,
+      "job": "phone-settings-ais"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-cursor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-cursor.png",
+      "sha256": "c2f3461129e6ede90deeb0a992a7d43220eca7bd468fd930a9156b7b932885a7",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-failure.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-failure.png",
+      "sha256": "05796495cd1bc82f915fdefd969e5d3ca07a5962e266f5679de1671d0a9c8bea",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-success.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor-success.png",
+      "sha256": "74052180dc9f977ec1d3811eecf1baa7c2fa2e307cece467949fff51555223d8",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-150-script-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-dialog.png",
+      "sha256": "75acf430c1b0a4b1c9e6c3d9baf5d18ae81d69b7749e3d42d0ac34a5fd6960f3",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-economy.png",
+      "sha256": "dae082e3a797d43ab7ed80d5592c4951830d7d84892a8959a043ae1558bd2a6f",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-overview.png",
+      "sha256": "9b3dd86342a5c197518d9a1b94d10edd2659b8609bb5219ff061cb0c980730e8",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-population-history-details.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-population-history-details.png",
+      "sha256": "f78e5f426c10338c495b4f7f43ddc14f1a541dcee6ca0d87c17a0c4dbc264ec6",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-population-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-population-history.png",
+      "sha256": "6aa503af4b8e04f3412532b1e306caca3ae7203bb7ff79cd34238d1456457c4b",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics-world.png",
+      "sha256": "571342ea4ffe357b38bc555a21317355db8ef7c807b698252ae5c4440627eb45",
+      "width": 390,
+      "height": 844,
+      "job": "phone-100-statistics"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-main/main.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-main/main.png",
+      "sha256": "e1cca525bb46b7cb81feb1ed1b0588f446e80d387b0665c15c0b3c71d0ce492f",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-main"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings/settings.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings/settings.png",
+      "sha256": "472862913d5aae3161b26462586991cd2c658d6017a04886c89b324fd5d2fd20",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-settings"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings-player/settings-player.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings-player/settings-player.png",
+      "sha256": "82eddfaa97cbc7cb5cdec9afbab5526b57a5355629a174e840d723e12ca13a55",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-settings-player"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-dialog.png",
+      "sha256": "ddd187cdbb2c8c113c618644639a966090a7f74fe487527c41693b8dc544454c",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-colony.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-colony.png",
+      "sha256": "86112ca7275ce7fc1c508be308273316f7835772b6764eeea049006cb54f6f61",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-defence.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-defence.png",
+      "sha256": "edd88f1e908369e240f9cc86f190621977be7b7205f8c2f90106ef40c588e34c",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-economy.png",
+      "sha256": "f63783555fc1efb68f833f67bccaa7065d987542d48764ed4627dfd619978bcf",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-full-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-full-history.png",
+      "sha256": "6090de9f7956448016bdc57cbca8884d4ad6bad758769a17210dd4315173b02c",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-military.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-military.png",
+      "sha256": "8d0219eff7b310333caab3b19e5c70109d1ad624a55c754c4ae945244806f520",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-overview.png",
+      "sha256": "ac69b113ba30f190c8085979b8cd4acc98343c2819e5adbb02c35c301f06c9dc",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-bottom.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-bottom.png",
+      "sha256": "8b1b836805774b565c9c1429dba0435001b412d898cd2c91b8f12457597d434d",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-collapsed.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-collapsed.png",
+      "sha256": "14b3f6bbecfe27f4d8b2bfa3033d4a7fd2d8773c6184fec2711b0d09017ee963",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-expanded.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-unit-details-expanded.png",
+      "sha256": "a67c2e7c7ff7aac9deddce0f93eabac4c12f1a637c0e743151583711e6ff1ea1",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-work.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-work.png",
+      "sha256": "a8993951e68732cc50a7c0227c63986fd915cdf3605634306200f9139dc22040",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-live-statistics-world.png",
+      "sha256": "dc9ab309950fdf53aad211141182136e96f68a95477f3cdae5d57cfc2ebd6883",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-statistics.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-statistics.png",
+      "sha256": "db85be26af816a1a53f42b7aa74714ba76b7306d57b3e56f46a0699b698c4027",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-zoom-fit.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-zoom-fit.png",
+      "sha256": "2c564864e5990bd2ffca7e451e66fb9a7640a2a25f66726bcfd7e15e0c9f1f4f",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-zoom-plus.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay-zoom-plus.png",
+      "sha256": "1ac6c36934b6a0a007ca014745f607861467ff93684ffc613caaefa1ef5237b1",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.png",
+      "sha256": "ba0a55f1949ef5b14cbfab71db8722f960137ab933abc991d240ba418d87e779",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-lobby-players/lobby-players.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-lobby-players/lobby-players.png",
+      "sha256": "96b835cd6fbe9e372356c7e66da46830cb5854e19f476390e3b76aeb970eff61",
+      "width": 390,
+      "height": 844,
+      "job": "phone-lobby-players"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-settings-online/settings-online.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-settings-online/settings-online.png",
+      "sha256": "a9dedfab9cd583c9099ace8dd90c8dd669965887851f4a859d00bc6b98849fe2",
+      "width": 390,
+      "height": 844,
+      "job": "phone-settings-online"
+    }
+  ],
+  "counts": {
+    "completed_jobs": 24,
+    "images": 69
+  },
+  "review_instruction": "Open actual PNGs, assess visible Bulgarian text/glyphs/clipping/wrapping/controls; record actual inspected image paths/hashes and findings. Do not infer physical-device rendering, hidden controls, or unvisited states."
+}

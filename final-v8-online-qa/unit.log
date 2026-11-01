@@ -1,0 +1,17 @@
+
+> test
+> vitest run --maxWorkers=2 --testTimeout=180000
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/5a87/glob2/platform
+
+Not implemented: Window's scrollTo() method
+
+ Test Files  173 passed | 5 skipped (178)
+      Tests  1260 passed | 15 skipped (1275)
+   Start at  08:14:49
+   Duration  254.80s (tests 70%, import 22%, environment 6%, transform 2%)
+
+    Isolate  178 workers spawned · ~300ms startup each (spawn + environment, per file)
+             at least ~26.40s faster with isolate: false — reuses workers across files instead of one per file
+

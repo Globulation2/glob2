@@ -1,0 +1,40 @@
+{
+  "actual_failed_test_producer": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "final_source_revision": "b14894809014d14baa25de28d63d775ffeb41331",
+  "master_revision": "f36de73aea50901a93d0c931bdd0fdb64c9d864c",
+  "outcome": "146passed1failed0skipped, no replacement pass fabricated",
+  "failure": "CustomGameSetupHarness.cpp1884: landscape picker busy wait exceeded120000ms; observed25ms beyonddeadline",
+  "fixture_scope": "every playable landscape preview on background threads, with four colonies at256x256; local fast-development debug code and concurrent workload",
+  "master_comparisons": [
+    {
+      "path": "src/game/screens/CustomGameSetupHarness.cpp",
+      "master_sha256": "f7ce92644dac2f6c11b7a844b26ceb65a2aa6dcfb77d90ab07cd6f710665b962",
+      "current_sha256": "f7ce92644dac2f6c11b7a844b26ceb65a2aa6dcfb77d90ab07cd6f710665b962",
+      "byte_identical": true
+    },
+    {
+      "path": "src/game/screens/LandscapePickerScreen.cpp",
+      "master_sha256": "9977ea6226b37e5868188137e941e40104c53d4ff9123da21e6e243d7a6200a7",
+      "current_sha256": "e2322a15f160143faf05e6431aa4ce4c77f73be9f5cb69afd7c564cda44dc0f4",
+      "byte_identical": false
+    },
+    {
+      "path": "src/game/screens/LandscapePickerScreen.h",
+      "master_sha256": "cd3930331748d21186464286bb70ce6bf8a192a03c2a7d8104cfa276a5c10dc0",
+      "current_sha256": "535a056ee6e43c5cd0ef2fd22908d0a06575b11032ceb46ad30bf72800f2f54f",
+      "byte_identical": false
+    },
+    {
+      "path": "src/map/preview/LobbyMapPreview.h",
+      "master_sha256": "f74e0e48a806941cae34f557a58ac33b75f27da6119fbdd7399fa59a9211e45f",
+      "current_sha256": "f74e0e48a806941cae34f557a58ac33b75f27da6119fbdd7399fa59a9211e45f",
+      "byte_identical": true
+    }
+  ],
+  "CustomGameScreen_diff_scope": "Bulgarian diagnostics and reviewed error rendering; raw worker scheduling/generator implementation paths unchanged. LandscapePickerScreen adds a parallel precomputed display-text vector; see explicit unequal file hashes.",
+  "runtime_baseline_reproduction": "Not yet executed; byte-identical source alone is not a separate master runtime result",
+  "source_diff_sha256": "3b0f3fb733d6b9a8943a7f007bf5aee97f058cfe304eb5e6ac774af661343f38",
+  "followup": "Parent to decide exact isolated retry or explicit unavailable timing coverage; no code change made.",
+  "landscape_picker_presentation_delta": "DiagnosticText prepares a parallel incompatibleText vector in recomputeIncompatible, used only for rendered validation explanations. Its cpp/h are explicitly NOT byte-identical master.",
+  "unchanged_worker_scheduling_proof": "Parent must inspect localized screen delta and retained exact deadline failure; no runtime master-baseline pass is claimed."
+}

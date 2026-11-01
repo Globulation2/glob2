@@ -1,0 +1,65 @@
+[
+  {
+    "route": "music",
+    "before": {
+      "top": 478.796875,
+      "bottom": 844,
+      "clientHeight": 364,
+      "scrollHeight": 364,
+      "overflow": "auto",
+      "scrollTop": 0
+    },
+    "after": {
+      "scrollTop": 0,
+      "helpText": "Обсъждането не изразходва кредити; необходим е 1 наличен кредит за музика. Заявките за създаване стартират генерирането автоматично · 1 кредит при получаване на резултата. Включени са и трите настроения. Необходим е наличен кредит за музика, за да чатите или да създавате.",
+      "helpTop": 715.9375,
+      "helpBottom": 832,
+      "composerTop": 478.796875,
+      "composerBottom": 844,
+      "withinViewport": true,
+      "withinComposer": true
+    }
+  },
+  {
+    "route": "map",
+    "before": {
+      "top": 494,
+      "bottom": 834,
+      "clientHeight": 339,
+      "scrollHeight": 339,
+      "overflow": "visible",
+      "scrollTop": 0
+    },
+    "after": {
+      "scrollTop": 0,
+      "helpText": "Обсъждането не изразходва кредити; необходим е 1 наличен кредит за карти. Заявките за създаване стартират генерирането автоматично · 1 кредит при получаване на резултата. Необходим е наличен кредит за карти, за да чатите или да създавате карта.",
+      "helpTop": 705.9375,
+      "helpBottom": 822,
+      "composerTop": 494,
+      "composerBottom": 834,
+      "withinViewport": true,
+      "withinComposer": true
+    }
+  },
+  {
+    "route": "terrain",
+    "before": {
+      "top": 523.484375,
+      "bottom": 844,
+      "clientHeight": 320,
+      "scrollHeight": 320,
+      "overflow": "auto",
+      "scrollTop": 0
+    },
+    "after": {
+      "scrollTop": 0,
+      "helpText": "Обсъждането не изразходва кредити; необходим е 1 наличен кредит за терен. Заявките за създаване стартират генерирането автоматично · 1 кредит при получаване на резултата. За чат или създаване е необходим наличен кредит за терени.",
+      "helpTop": 735.28125,
+      "helpBottom": 832,
+      "composerTop": 523.484375,
+      "composerBottom": 844,
+      "withinViewport": true,
+      "withinComposer": true
+    }
+  }
+]

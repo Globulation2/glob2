@@ -1,0 +1,156 @@
+{
+  "status": "Completed actual browser game QA, release artifacts EA0 bound to final clean F30 test-only closure",
+  "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_head": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "current_head": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "package_version": "2d5935618dc2c62f",
+  "catalogs": {
+    "native_keys": 3430,
+    "online_keys": 2978,
+    "total_keys": 6408,
+    "locale_catalog_count": 42,
+    "native_sha256": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online_sha256": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+  },
+  "environment": {
+    "node": "24.22.1",
+    "chromium": "153.0.8010.12",
+    "os": "Linux",
+    "renderer": "actual release software backend",
+    "physical_devices_tested": false
+  },
+  "strict_tracked_suite": {
+    "expected": 4,
+    "unexpected": 0,
+    "skipped": 0,
+    "single_combined_run": true,
+    "workers": 1,
+    "helper_menu_timeout_seconds": 90,
+    "report": "tests.json",
+    "log": "strict.log"
+  },
+  "startup": {
+    "contexts": 3,
+    "CDP_actual_customfont_glyphcount_each": [
+      33,
+      33,
+      33
+    ],
+    "startup_font_sha256": "57d78e495107ebe5c9b230e6fa4082ae7f2699a399d6d16dc2fa75319ecdcbb9",
+    "MIME": "font/ttf",
+    "encoding": "gzip"
+  },
+  "matrix": {
+    "contexts": [
+      "desktop",
+      "phone",
+      "desktop-dpr2"
+    ],
+    "page_errors": [
+      [],
+      [],
+      []
+    ],
+    "VFS_full_font_identity": [
+      "data/fonts/sans.ttf",
+      "data/fonts/sans.ttf",
+      "data/fonts/sans.ttf"
+    ]
+  },
+  "actual_scene_captures": {
+    "count": 39,
+    "contexts": [
+      "desktop1200x900DPR2",
+      "phone390x844100%",
+      "phone390x844150%"
+    ],
+    "flows": [
+      "tutorial catalog",
+      "briefing",
+      "gameplayHUD",
+      "tutorial help",
+      "Statistics overview/history/world",
+      "newmap/editor",
+      "script valid compile/cursor",
+      "script invalid compile/cursor"
+    ],
+    "navigation": "Actual keyboard/mouse/touch events; phoneStatistics lens coordinates recorded after actual-image inspection",
+    "no_visibility_or_simulation_flags_changed": true
+  },
+  "complete_PNG_count": 48,
+  "actual_WASM_bytes": {
+    "serial": [
+      {
+        "path": "index-2d5935618dc2c62f.wasm",
+        "status": 200,
+        "headers": {
+          "server": "SimpleHTTP/0.6 Python/3.14.4",
+          "date": "Sun, 01 Nov 2026 13:31:50 GMT",
+          "content-type": "application/wasm",
+          "content-length": "8249186",
+          "last-modified": "Sun, 01 Nov 2026 13:24:16 GMT",
+          "content-encoding": "gzip",
+          "vary": "Accept-Encoding",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-embedder-policy": "require-corp",
+          "cache-control": "no-cache"
+        },
+        "bytes": 26075906,
+        "sha256": "b959114c6128359f7317e785bc4a32b255cf42bc5173d64e8893bc0693a07ecf",
+        "matchesFrozenPackage": true,
+        "mechanism": "Actual upstream WASM response bytes buffered and passed unchanged via route.fulfill"
+      }
+    ],
+    "threaded": [
+      {
+        "path": "threaded/index-2d5935618dc2c62f.wasm",
+        "status": 200,
+        "headers": {
+          "server": "SimpleHTTP/0.6 Python/3.14.4",
+          "date": "Sun, 01 Nov 2026 13:30:12 GMT",
+          "content-type": "application/wasm",
+          "content-length": "8263830",
+          "last-modified": "Sun, 01 Nov 2026 13:24:28 GMT",
+          "content-encoding": "gzip",
+          "vary": "Accept-Encoding",
+          "cross-origin-opener-policy": "same-origin",
+          "cross-origin-embedder-policy": "require-corp",
+          "cache-control": "no-cache"
+        },
+        "bytes": 26107349,
+        "sha256": "10e7cc0f59f1dd2760da9269bf7a84364a8792b2084557e2e1f46433b3a4470f",
+        "matchesFrozenPackage": true,
+        "mechanism": "Actual upstream WASM response bytes buffered and passed unchanged via route.fulfill"
+      }
+    ]
+  },
+  "HTTP_inventory_proof": "http-catalog-runtime-traversal.json:42catalogs+2WASM actual200 SHA matches",
+  "source_package_guard_final": "Final original guard rechecked all frozen source/package inputs after actual runs; gitdiff EA0 limited to authorized platform E2E test file",
+  "failures_preserved": [
+    "scenes/scenes.log: absent game/panel/2 observer key; corrected normal rightclick driver passed",
+    "variant-proof.log: Chromium response body evicted; retry logs preserve related failure; exact unchanged upstream WASM buffer proof passed"
+  ],
+  "limitations": [
+    "Physical Windows/macOS/Android/iOS devices unavailable; no device rendering claim",
+    "Standalone inherited decorative branding and /theme.js404 remain; actual prose, buttons and webfont render correctly; no fake assets mounted",
+    "Readonly captions such as script cursor/status verified through actual PNGs, not fabricated diagnostic labels",
+    "Normal phone150 action labels wrap across lines; worker viewed every letter present on the viewed Tools screenshot; independent visual review still required for complete48images",
+    "No blanket visual approval asserted by capture worker; independent review uses immutable completed-image-index.json"
+  ],
+  "personally_viewed": [
+    "scenes-retry/desktop-dpr2-stats-world.png",
+    "scenes-retry/phone-stats-tools.png",
+    "scenes-retry/phone-stats-world.png",
+    "scenes-retry/phone150-stats-tools.png",
+    "scenes-retry/phone150-stats-world.png",
+    "scenes-retry/phone150-script-compile-error.png"
+  ],
+  "cleanup": {
+    "server_pid": 428879,
+    "server_stopped": true,
+    "port42771_closed": true,
+    "remaining_v8_runtime_roots": [],
+    "scope": "Only own explicitly identified server terminated; all own browser jobs exited naturally"
+  }
+}

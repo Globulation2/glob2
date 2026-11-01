@@ -1,0 +1,11 @@
+{
+  "sourceStableThroughFinalCaptures": true,
+  "changedSinceFullSuite": [
+    "platform/apps/web/src/skins/useSkinDocument.ts",
+    "platform/apps/web/test/skin-document.test.tsx"
+  ],
+  "distStableThroughFinalCaptures": true,
+  "fileCount": 478,
+  "finalHookSha256": "fe94249877b74c035ba229eba952b857b05cc78be764bd67aec132732d713c7c",
+  "finalTestSha256": "b067a94e04b37779e8796408081b3d833120cf1348f8558f5b1185e3f3d349e8"
+}

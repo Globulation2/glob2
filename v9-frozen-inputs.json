@@ -1,0 +1,44 @@
+{
+  "revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "source_closure": {
+    "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+    "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+    "changed_paths": [
+      "platform/apps/web/e2e/i18n.spec.ts"
+    ],
+    "allowed_test_only_paths": [
+      "platform/apps/web/e2e/i18n.spec.ts"
+    ],
+    "exact_patch_sha256": "32e852267eb9a997107c97fa2e33eaf3fe70f7ec0e9cc13eae530eae5d27e579",
+    "production_cpp_catalog_font_build_inputs_unchanged": true,
+    "claim": "Native executable keeps its actual compiled identity; only the explicitly authorized E2E test file may differ in final source."
+  },
+  "input_files_sha256": {
+    "data/texts.bg.txt": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "platform/packages/i18n/locales/bg.json": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f",
+    "artifacts/bulgarian/kit-v8/review-proof-v8-validation.json": "974fe1ddee961d1bdf0359a0c2e79d48df49bb23b4ee262640bebad4fa506567",
+    "artifacts/bulgarian/native-v9-qa/final-source-test-only-closure.json": "b37d49da63f1029edde122190655d2291dfb686f3414ed8dd0c94c548f885fe5",
+    "artifacts/bulgarian/native-v9-qa/final-source-test-only-closure.patch": "32e852267eb9a997107c97fa2e33eaf3fe70f7ec0e9cc13eae530eae5d27e579",
+    "artifacts/bulgarian/v9-full-render-input/manifest.json": "bef664c34e31e42f32a5d5327f3378e5f6cbb7f97959702ab20678ee086f59a7",
+    "artifacts/bulgarian/v9-full-render-input/render-input/bg/metadata.json": "b8c0c209e05102c136186c07d79e44f623f228e59c032d532a3f3d5c6986cf90",
+    "artifacts/bulgarian/v9-full-render-input/render-input/bg/native.json": "8136af59a530fabf34d68098c2bdba1d00c03efed73b8b83c5636c1c7dcfb64b",
+    "artifacts/bulgarian/v9-full-render-input/render-input/bg/online.json": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f",
+    "artifacts/bulgarian/v9-probe-input/manifest.json": "bef664c34e31e42f32a5d5327f3378e5f6cbb7f97959702ab20678ee086f59a7",
+    "artifacts/bulgarian/v9-probe-input/render-input/bg/metadata.json": "8f06e2a826f617ae05dada774bbb4eed83668b24328890ec90eabd94d50dd530",
+    "artifacts/bulgarian/v9-probe-input/render-input/bg/native.json": "eaf473af504d490d8fd722a5b896505f41d5adf5e93d44d83f0b05cefd57ac9c",
+    "artifacts/bulgarian/v9-probe-input/render-input/bg/online.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+  },
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+  },
+  "review_proof_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/kit-v8/review-proof-v8-validation.json",
+  "review_proof_sha256": "974fe1ddee961d1bdf0359a0c2e79d48df49bb23b4ee262640bebad4fa506567",
+  "final_render_values": 6435,
+  "fresh_render_values": 6435,
+  "expected_full_font_samples": 77220,
+  "scope": "Actual input freeze only; explicit root binary handoff and execution pending"
+}

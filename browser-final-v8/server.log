@@ -1,0 +1,820 @@
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:48] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /script-fonts.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:49] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /script-fonts.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:50] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:51] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /script-fonts.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:52] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:53] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:53] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:53] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:54] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:54] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:54] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:54] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:54] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:24:54] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:04] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:04] "GET /fonts/LICENSE-DejaVu.txt HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:04] "GET /fonts/LICENSE-Droid.txt HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:04] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:04] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:04] "GET /asset-manifest.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:04] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:04] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:04] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:04] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /?renderer=software&threads=serial HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /script-fonts.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /i18n.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /locales/bg.json HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /fonts/sans-core.ttf HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:09] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /?renderer=software&threads=threaded HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:19] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:19] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:20] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:20] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:20] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:23] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:23] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:23] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:23] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:23] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:23] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:43] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:43] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:44] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:44] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:44] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:44] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:44] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:44] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:44] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:44] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:44] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:45] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:45] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:45] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:46] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:46] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:46] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:47] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:47] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:47] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /?renderer=software&threads=threaded HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /i18n.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /script-fonts.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /locales/bg.json HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /fonts/sans-core.ttf HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.data HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:25:53] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:26:17] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:17] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:17] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:17] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:17] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:17] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:17] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:17] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:17] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:17] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:17] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:17] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:17] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:18] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:18] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:18] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:18] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:18] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:18] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:18] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:18] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:20] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:20] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:20] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:20] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:20] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:20] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:20] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:21] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:21] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /?renderer=software&threads=serial HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /i18n.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /script-fonts.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:26:47] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:52] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:26:52] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:26:53] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:53] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:53] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:53] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:53] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:53] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:53] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:54] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:54] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:54] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:55] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:55] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:55] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:55] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:55] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:26:55] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:04] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:04] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:05] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:07] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:07] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:07] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:07] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:07] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:07] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /?renderer=software&threads=threaded HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:40] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:40] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /?renderer=software&threads=serial HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /script-fonts.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /i18n.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /locales/bg.json HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /fonts/sans-core.ttf HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:27:41] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:59] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:27:59] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:00] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:00] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:00] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:01] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:01] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:02] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:02] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:02] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:02] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:11] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:12] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:12] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:12] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:12] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:12] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:12] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:12] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:12] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:12] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:13] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:13] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:14] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:14] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:14] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:14] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /?renderer=software&threads=threaded HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:37] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:28:38] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:38] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:38] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:41] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:41] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:41] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:41] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:41] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:28:41] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /?renderer=software&threads=serial HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /script-fonts.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /i18n.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /locales/bg.json HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:05] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /fonts/sans-core.ttf HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:29:05] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:34] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:35] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:35] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:36] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:37] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:37] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:37] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:37] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:29:37] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /?renderer=software&threads=threaded HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:12] "GET /threaded/index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:14] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:14] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:14] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:17] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:17] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:18] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:18] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:18] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:18] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:27] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/ar.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/bn.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/ca.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/cs.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/da.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/de.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/el.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/en.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/eo.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/es.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/eu.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/fa.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/fi.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/fr.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/hi.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/hu.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/id.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/it.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/ja.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/ko.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/mr.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/ms.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/nb.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/nl.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/pl.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/pt-BR.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/pt-PT.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/ro.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/ru.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/sk.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/sl.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/sr-Cyrl.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/sv.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/sw.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/ta.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/tr.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/uk.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/ur.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/vi.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/zh-Hans.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /locales/zh-Hant.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:28] "GET /threaded/index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /?renderer=software&threads=serial HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /script-fonts.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /i18n.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /locales/bg.json HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /fonts/sans-core.ttf HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 304 -
+127.0.0.1 - - [01/Nov/2026 08:30:53] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /presentation-2d5935618dc2c62f-surface.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /loader-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /script-fonts.css HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /theme.js HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /signin/assets/glob-64.png HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /signin/assets/nunito.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /locales/bg.json HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:31:49] code 404, message File not found
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /signin/assets/wordmark-letters.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /signin/assets/wordmark-two.webp HTTP/1.1" 404 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /index-2d5935618dc2c62f.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:49] "GET /fonts/sans-core.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:50] "GET /index-2d5935618dc2c62f.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:50] "GET /index-2d5935618dc2c62f.wasm HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:50] "GET /assets/game-1.3469574f02166bac.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:50] "GET /assets/core.7b3a73cef5629ed2.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:50] "GET /assets/game-2.c528d2d4d914d336.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:51] "GET /assets/translations-1.e855c51157228238.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:51] "GET /assets/translations-2.63d94aa015b055e1.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:51] "GET /assets/translations-3.5b22f8919650e7a8.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:52] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:52] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:52] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:53] "GET /assets/music-sets-1.602de095eeed505a.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:53] "GET /assets/music-sets-3.163578e1e9d60971.data HTTP/1.1" 200 -
+127.0.0.1 - - [01/Nov/2026 08:31:53] "GET /assets/music-sets-2.be883b1c072a2166.data HTTP/1.1" 200 -

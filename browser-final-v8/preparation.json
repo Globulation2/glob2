@@ -1,0 +1,14 @@
+{
+  "status": "PREPARATION ONLY; no package or WASM execution before explicit root handoff",
+  "expected_producer": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "source_transition_allowed": [
+    "platform/apps/web/e2e/i18n.spec.ts"
+  ],
+  "coverage": [
+    "strict4 sequential",
+    "startup3 CDP font proofs",
+    "desktopDPR2 phone100 phone150 normal scenes",
+    "main/settings3 contexts"
+  ],
+  "source_mutations": false
+}

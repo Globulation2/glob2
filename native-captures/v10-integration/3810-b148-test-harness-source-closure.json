@@ -1,0 +1,12 @@
+{
+  "actual_prior_producer": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "final_source_revision": "b14894809014d14baa25de28d63d775ffeb41331",
+  "exact_changed_paths": [
+    "platform/apps/web/test/teluguMetadata.test.tsx",
+    "tools/TranslationPreviewHarness.cpp"
+  ],
+  "exact_patch_sha256": "1aa8a7bc3b7f506c094f540dd56dc76070ef94d0ca88c0ec9099e69adceb306f",
+  "native_production_font_catalog_and_test_executable_sources_unchanged": true,
+  "preview_harness_changed": true,
+  "claim": "Prior engine/unit/golden/font396 and desktop lobby2 remain actual3810 results. Fresh corrected preview captures use their actual b148 executable. Existing V9 old captures remain actual EA0 and are not relabelled."
+}

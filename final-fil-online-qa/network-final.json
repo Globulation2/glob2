@@ -1,0 +1,175 @@
+{
+  "timing": "actual final post-matrix browser navigation, unchanged production dist",
+  "browser": "153.0.8010.12",
+  "lang": "bg",
+  "resources": [
+    {
+      "url": "http://127.0.0.1:42769/fonts/glob2-sans.woff2",
+      "status": 200,
+      "contentType": "font/woff2",
+      "bytes": 52088,
+      "sha256": "04c452fa8481ef3df8f806e358e99d0eda2a657ff9c736383ca2a033a48d4ef0"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/library-B7B4fvyy.css",
+      "status": 200,
+      "contentType": "text/css",
+      "bytes": 6278,
+      "sha256": "e48722afd6582512aefd80f19e59c1ec84be2ce65eee8dd2ef5f75f029d0fe73"
+    },
+    {
+      "url": "http://127.0.0.1:42769/theme.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 2228,
+      "sha256": "8445913b06d7b709c8629b532be0c4f01784d43b72616f8a525c1d7cc746666d"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/rolldown-runtime-hePW80VL.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 716,
+      "sha256": "580ad8c58061a4dde99bde0a56905e382f0568516ee2f5b84dbfb52085709021"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/preload-helper-DjzSQ1t3.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 1383,
+      "sha256": "66c990b6727d220a346b45d00ee48d433c8d59ef03fbf8b91c6cdadeeadfdf3f"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/index-B5yXaRdc.css",
+      "status": 200,
+      "contentType": "text/css",
+      "bytes": 98056,
+      "sha256": "e64753a9735a14d565a07b7fefeeb9ff28b5faed516b96f48f8ddd919821ff61"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/i18n-BnbUMzbQ.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 23828,
+      "sha256": "dec5ccfe8d52d42a53a230f8b824f1375eb4240eca0b2f6b11295aabb5e91d50"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/router-C_Z3JeRK.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 7786,
+      "sha256": "dc4b0c5f5b9e62a00b10714d423f3b94ffaf93754bb88bd95fd5683ebeb71a7b"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/en-DCSj7jFH.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 196552,
+      "sha256": "2aa8d3cf928a07e99620081f9db35543f3b14c283516ad143ed7236107af4bd4"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/react-kSnbnbFp.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 10970,
+      "sha256": "f87774a92e80983944620f7ad099fcbc5e0855bc658306e7a547ba255ee9a783"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/generatorApi-CPBN8fNU.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 719,
+      "sha256": "17f39cceb735be2cc9f6826a79ed4c731ef5a1d907798362daadb027bf132401"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/art-CZ4fdxsT.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 14218,
+      "sha256": "6e631760b88233fc521877f7d3ee614d3fe36548e0072b55487eeb34228de959"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/index-D6ECY2dq.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 363684,
+      "sha256": "ba7314f7bc5023ef0f0b8774b71c6b50f7a16578c20e6c6ae37de15b2a37e281"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/common-BvEEb0ac.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 12781,
+      "sha256": "7199ca82d623b25a347728120a9f70cdec2134385e130e559297985ae6e8ba74"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/src-D128r05p.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 236697,
+      "sha256": "ec5425b64462d71a250add95d05818d8a0609646c18d4e9f004d7d77bfa9325f"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/storage-Bj9hLgh2.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 848,
+      "sha256": "ae01081b50cd5d17148c4ded28ed35927b1be693d351c2f3e33d485a628b540f"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/playerLinks-Jp3u3Hnm.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 419,
+      "sha256": "10a95ebdcdf4cbfac1b2d065fadce8a71105825c413b274d63485d83a28878fe"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/assetUrls-Bjg43JKQ.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 187,
+      "sha256": "93b85ac36f66666dfb60c1bb3c0b54a6df6ffba77da1f1251a44cb2cb65e5363"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/theme-pjEt-4Dj.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 573,
+      "sha256": "43d7cab6bc2f8b698d53b703000bc5a5aeb12f0604d5caa877d038b300ec30d7"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/library-BerQSd2V.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 4107,
+      "sha256": "237847e389994cde2434ee37c8b4134a614f159865a8a0f0d1e09c8818935e32"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/Generators-C8OLiLXq.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 14158,
+      "sha256": "6a4d3329947f7fe15775995c7f15d597d5f48130e8b7c6747ead54839b9f56ca"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/bg-D44xcNfv.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 301250,
+      "sha256": "433bdcdfbbe3f24d435dea5e9b7acccb2b18939a7f4eb6078c968b5730efe089"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/src-k6eDmBTJ.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 13244,
+      "sha256": "dc1c63e5ff455035373cd5c35db900ff99e8a37a6c3edbd1d9152b6e1618c651"
+    },
+    {
+      "url": "http://127.0.0.1:42769/assets/sans-core-DzspRDRe.ttf",
+      "status": 200,
+      "contentType": "font/ttf",
+      "bytes": 597868,
+      "sha256": "466fb75762954c81cd683538f08c4e36773dc27cb5c11339e3e1a675777a6048"
+    }
+  ]
+}

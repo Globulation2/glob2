@@ -1,0 +1,602 @@
+[
+  {
+    "surface": "native",
+    "key": "hub finish in browser, game continues",
+    "source": "Finish signing in in your browser. The game continues by itself once you are done.",
+    "target": "Завършете влизането в браузъра си. Играта продължава сама, след като приключите.",
+    "source_sha256": "dcc643db524b44b91fdf46534a6b7b5ab2f1c7568d02a0fc800382cc40076984",
+    "target_sha256": "9f9434a6c415c06aa4a714788bc136dc50336cfae32282ecdea3339895a9f4a5",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "hub browser did not open",
+    "source": "Your browser did not open. Open the sign-in page to continue.",
+    "target": "Вашият браузър не се отвори. Отворете страницата за вход, за да продължите.",
+    "source_sha256": "83e4ea7729497ffb740efedf632f4a8846cd7d8401751013029546e2815bae95",
+    "target_sha256": "e31b14f936e694bf3413d181343d54bb005eb884ecba6289b97158a681d8472a",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "hub compare code %0",
+    "source": "If the page asks, check that it shows %0.",
+    "target": "Ако страницата пита, проверете дали показва %0.",
+    "source_sha256": "2a2429cb61d6c02f5ae27b53609f620c02f0a919e072ac15fe8555bc468c38cf",
+    "target_sha256": "f5d69f85c26f2722e796461f00c83bb283e06844b6ee3ff9e28f403050eb179d",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "hub code copied",
+    "source": "Code copied",
+    "target": "Кодът е копиран",
+    "source_sha256": "39868c869677162cc81783d5ca276de83fec7b8686b1f5a77d636fd548c8a97b",
+    "target_sha256": "95971ee9d4fc06e12f64fcaff4627a3fd7d060d4d67f4f3c622dc688bb60152e",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "settings Finish in your browser. The game continues by itself.",
+    "source": "Finish in your browser. The game continues by itself.",
+    "target": "Завършете в браузъра си. Играта продължава сама.",
+    "source_sha256": "73770fa2e25add1665a567754dce9062fb1eb1188da828e3e2a9bcc47a2a9973",
+    "target_sha256": "c60e5008256863b749b9949a138c31584205c7755fbe42776f22a8359fc9c8e6",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "music set",
+    "source": "Music set",
+    "target": "Музикален комплект",
+    "source_sha256": "26e6afd29bb0030993e25da57451a92e388c51dbf67c36898ea05eb027ce008e",
+    "target_sha256": "19e47e3161f00252f69c5b74e8fcd00de8b8afa8251de509fbecc77dad66315d",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "random music set",
+    "source": "Random each match",
+    "target": "Случайно всеки мач",
+    "source_sha256": "76afdc067efd6d2f88fc123fc563b50c5af4f1fe87d14f1ec4f3405e7c5662fc",
+    "target_sha256": "6f7c47d8bb752aa09352cba632f46674a2ac68948bbf47e646ba76afcc49141f",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "playing music set %0",
+    "source": "Playing: %0",
+    "target": "Играе: %0",
+    "source_sha256": "4bc2d0dbb3e6b188d698907f19bd575a0704bde6306a8b38b2a1b518bbc3510e",
+    "target_sha256": "850ed52caa9993e885f9f1828f061cb081ac30325fddd4a8416bdbff121d3a83",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "music set failed",
+    "source": "Could not load this music set.",
+    "target": "Не можа да се зареди този музикален комплект.",
+    "source_sha256": "7310689066f244b60f73cf4d40b74d6ebd8e2be19e929ab6a9fd524e4fd3c6c0",
+    "target_sha256": "be8bc54d14c250045b4e630fe5d5faf453a822170772a7ae1e1a2d0bf7a5c8b9",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "settings Edge scrolling",
+    "source": "Edge scrolling",
+    "target": "Скролиране по ръба",
+    "source_sha256": "dfb0ba3afde002ea1ae5ceeeca43da7c3904c5dc1219c551b900a82d92b98f40",
+    "target_sha256": "65bfcdb9739634dd9a64b9a14cbaea2fd1e6625e8948f0c69f9545176566c0bf",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "settings Edge scrolling in fullscreen",
+    "source": "Edge scrolling in fullscreen",
+    "target": "Скролиране по ръба на цял екран",
+    "source_sha256": "c53e27f79ed36260b303be6a1edbe0c1d805ec1d85120de5ad86688ee2304183",
+    "target_sha256": "20cf31e6771b194b363925342dc7c745c13d444d86c3dbd516ab66edfdc5346a",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "settings Edge scrolling in windowed mode",
+    "source": "Edge scrolling in windowed mode",
+    "target": "Скролиране по ръба в режим на прозорец",
+    "source_sha256": "abd7d5c6b39ec016198d5f9f330d14a2474f5a3ac985f20c90443f0641213d5f",
+    "target_sha256": "a94bf64c6de9e8b729f4088570035fd1975c774f0d6cda0b8a17aa5d55f09c31",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "settings Move the game and editor maps when the mouse reaches the window edge.",
+    "source": "Move the game and editor maps when the mouse reaches the window edge.",
+    "target": "Преместете картите на играта и редактора, когато мишката достигне ръба на прозореца.",
+    "source_sha256": "f9bfc9104b441a87c9f7178f0a86ce3636b500939a1d80e1b87613c535550623",
+    "target_sha256": "5a028471662842577645f4b07b76bf5e4b2477a5cebb8ecaee9c0af3f2020a75",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 has left the game",
+    "source": "%0 has quit the game.",
+    "target": "%0 напусна играта.",
+    "source_sha256": "d0d0351993c95ab707d17831a83d9fca613f7b7957b5bfe7b6557697b97cd705",
+    "target_sha256": "fa4017fab085148be5d3a753bfb7bbaa18d0b6ce56a8d1fb2992dc9aa2da7947",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "start recording",
+    "source": "Start recording",
+    "target": "Започнете запис",
+    "source_sha256": "30756af0134e4bf1194de8036cea400426deb5bc448211a6edd042e5249bca6b",
+    "target_sha256": "d7d79ae52da770cd311733ca4637f6f120533199468a00cf5f7aacff40062860",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "stop recording",
+    "source": "Stop recording",
+    "target": "Спиране на записа",
+    "source_sha256": "3d591e826d5459191fd5be2539bd138b17318f021ed3c687c6975e4089a0bcec",
+    "target_sha256": "2356522718e04b00ee4d612bd0369a76c9a7edd883243f6d22a8ef45f07349d1",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "finalizing recording",
+    "source": "Finalizing recording…",
+    "target": "Финализиране на записа…",
+    "source_sha256": "6db1250d6ccdcffaef9e862ea74f89927cfb700239d09d6e9ae7b1e1b3340591",
+    "target_sha256": "dd63609c7995da877b11e0ead31eac48a7b634804f43e2a20d04eade235dd911",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 level %1",
+    "source": "%0 Level %1",
+    "target": "Ниво %0 %1",
+    "source_sha256": "535bfefb08ff9c0c5a69f5d19abfbd417688c624bd0f8da77e755631640fe386",
+    "target_sha256": "d484ead94ba843a6f2c451cd0956238b8efaf6b0d44fd87dcd5cc99ed7b90ac9",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units can't access building",
+    "source": "%0 units can't access building",
+    "target": "Устройствата %0 нямат достъп до сградата",
+    "source_sha256": "2b3a016acd8ffd98f5cf8802aa831297ef20799358cacd99ff0ba76b3a90e7ea",
+    "target_sha256": "049b0ee91d9e94cce9b6bde59ca70f81d145aaf90fda8d77dc7a5f7417b102cf",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units can't access flag",
+    "source": "%0 units can't access flag",
+    "target": "Устройствата %0 нямат достъп до флага",
+    "source_sha256": "78e8efaa32c58c7e45b4712177776e85450c9ee023cefcbc6cb4f23adfbd72b0",
+    "target_sha256": "53de17897077117c41957188a9c11a98df602b52d160a155d8d7a19b5e9c5da5",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units can't access fruit",
+    "source": "%0 units can't access fruit",
+    "target": "Устройствата %0 нямат достъп до плодове",
+    "source_sha256": "f4f600e3bc48eb20f2b86758c36a88afb172e35eedd3ba5751263e972cf6c017",
+    "target_sha256": "4528ba1b920332514fbc1460c19c804c668b8dfb24950c184501c5de39df6505",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units can't access resource",
+    "source": "%0 units can't access needed materials",
+    "target": "Устройствата %0 нямат достъп до необходимите материали",
+    "source_sha256": "c71f1685dd0457a425bebab7a99f02c4f02df7473c3aa7543173af31236121a8",
+    "target_sha256": "b6f744a4228f8b8e71ed3ca14386fc0b9b10943dc877bfd52a84cc6301f57310",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units not available",
+    "source": "%0 units not available",
+    "target": "%0 устройства не са налични",
+    "source_sha256": "c98a0d3ee1d071c52b5d198fb92f8a89c9f78917df7ac9165ea528aa13d31886",
+    "target_sha256": "969b79af1326fcd02b397064785e3c4eb29dbf5e29334d3a31fcb008d849f44e",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units too far from building",
+    "source": "%0 units too far from building",
+    "target": "Устройствата %0 са твърде далеч от сградата",
+    "source_sha256": "ee6ac677341f74c0b091e99c3f7c35b3d59fcb49cbef84919d188f5ee340fbd8",
+    "target_sha256": "6460d11a5873cebec2587dd462180a83aa25bbbbf781edbbb56a7a8e9f00f466",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units too far from flag",
+    "source": "%0 units too far from flag",
+    "target": "%0 устройства са твърде далеч от флага",
+    "source_sha256": "422b43d7f5fee6164a6dfbf8a4c3aee8af1edc85076b46e2950c7d13185cb261",
+    "target_sha256": "7d7418f27c47c7f855d24a4293dd7e23240aea5a3b02bef2c97cd937097cfa61",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units too far from fruit",
+    "source": "%0 units too far from fruit",
+    "target": "Уредите %0 са твърде далеч от плодовете",
+    "source_sha256": "5e62db4aef7908b3bef8934216e8c41fa1a441cc8cca3ac6de4aa1ae84d961c6",
+    "target_sha256": "6405556d1329916c85d8bc3d5b8a027f6382eb617c649fcf21a09df962e56114",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units too far from resource",
+    "source": "%0 units too far from needed materials",
+    "target": "%0 устройствата са твърде далеч от необходимите материали",
+    "source_sha256": "2faee5be72ed8021fbd8658cb2541b907266b3dc46d455549d7b8ea2cb2f9b52",
+    "target_sha256": "4014a065e2e1937898d5a9b19ec36650818d0315895c562695459c700027162d",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0 units too low level",
+    "source": "%0 units too low level",
+    "target": "Нивото на устройствата %0 е твърде ниско",
+    "source_sha256": "b78350c1a1ec010802b55d2e4b0ec5c547b5daf02a5b7f1f1f7fee7b1f0c3c3c",
+    "target_sha256": "e6845a4acbe9240d86a84dc7c9a59721cb588152252a7f9c0980090af685fb44",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0% Uploaded",
+    "source": "%0% uploaded",
+    "target": "%0% качено",
+    "source_sha256": "4b5fdc57a8d6e33ccfc9c8827f1ca97e4ee098fd7ba3b4c9ab1fe519af31e799",
+    "target_sha256": "0360c1bb272174fbd16bc01ddc2013d44d8128cc6fb31224c19a3e4e4aa9ec42",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "%0's team unit got converted to your team",
+    "source": "A unit from %0's team has joined your team",
+    "target": "Единица от екипа на %0 се присъедини към вашия екип",
+    "source_sha256": "4d9c3a99ca1c747f1edcbf917ce84f586592f5a96ee48aa2ac203d6f9914ff4f",
+    "target_sha256": "36e1370514096cb8c355c45e5e7502d71af2bbb70add80343b2830af14584f2d",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "abreaviation explanation A",
+    "source": "A: Allies",
+    "target": "A: Съюзници",
+    "source_sha256": "868c8b4a40002c45d82ae8088b3af325b5e364729d85b468bed213936033e409",
+    "target_sha256": "131c84e0f5d087b783f252c3b30e23f408f4c615986489c764a0e225ee0cc822",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "abreaviation explanation C",
+    "source": "C: Send chat messages to",
+    "target": "C: Изпращане на чат съобщения до",
+    "source_sha256": "d5848ce8d9fe510b4da70306ed854e4bb001408b2686110327b9ddfe6f123fb3",
+    "target_sha256": "ceedba888f851a9e93f3f297526ae64bb71b04abf8f62f6386f2dd7f40aa01dc",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "abreaviation explanation fV",
+    "source": "fV: Show vision for Inn buildings (to steal units)",
+    "target": "fV: Покажете зрение за сградите на хановете (за кражба на единици)",
+    "source_sha256": "84e5425ee10c7b35e7b0c7f3f06339bed6134080098d9a111a859ca6966a813d",
+    "target_sha256": "77c8341e5a63b45c2eac14c8da04871b3ed9b28a34dcf367b5399284ec8b0833",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "abreaviation explanation mV",
+    "source": "mV: Show vision for Markets buildings (to exchange fruits)",
+    "target": "mV: Покажете визия за сгради на пазарите (за размяна на плодове)",
+    "source_sha256": "363f3581e78495232c7088f1b3207d3a57f27d0ea0ff4cc53487372569eab666",
+    "target_sha256": "9f3a9c3bb62b36bbfaf0e3cce0706ec4a85e803a5e196d88aee525c9dcb43a97",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "abreaviation explanation V",
+    "source": "V: Show vision for all buildings",
+    "target": "V: Покажете визия за всички сгради",
+    "source_sha256": "7e754e14727a6113401df661860625575c2c815ce072b30d4279c58215191b54",
+    "target_sha256": "9059257d5ec9faf33e63441ba98eadaba570a4268425855647c8dabf272d0a25",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "add map",
+    "source": "Add map",
+    "target": "Добавяне на карта",
+    "source_sha256": "a4279ed20bf061d2b7bcef01c3d7525b245a9595cd1f92f7654f6dfc40dfbc8d",
+    "target_sha256": "26327b517e9db939b1127908946ec12190e621924bc6614167815e6d2212c08e",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "add shortcut",
+    "source": "Add Shortcut",
+    "target": "Добавяне на пряк път",
+    "source_sha256": "352520caed7411c9a7a4101018bf7ce79a6f60980c24ce9d8dca4d7ea1f2dd2e",
+    "target_sha256": "bda0a526f0ef13b1e0b1c214a72ceb47b1a5f7fca0891773d325c1d2cd99da19",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AI Descriptions",
+    "source": "AI Descriptions",
+    "target": "Описания на AI",
+    "source_sha256": "1db394fe2d9f1350441b982ec154f045e73b0bc7395bfa31933070ccdff3d95f",
+    "target_sha256": "3400d0001f3729e629ed0bbf62d2df94f49a15081ab031d986b8ae539d90d4a1",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AI",
+    "source": "AI",
+    "target": "AI",
+    "source_sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c",
+    "target_sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "ai",
+    "source": "AI",
+    "target": "AI",
+    "source_sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c",
+    "target_sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AICastor-Description",
+    "source": "Builds and trains while keeping growth tied to food supply.",
+    "target": "Изгражда и тренира, като същевременно поддържа растежа обвързан с доставките на храна.",
+    "source_sha256": "e7ab588964119fa2f3f3bafa02de8b0ad3c30107a0c48ad9490d4af4668da4c5",
+    "target_sha256": "da53a627127b55a36e770f2b4010c6e03e93c3961bad7cbcc887e8071cf66044",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AICastor",
+    "source": "Castor",
+    "target": "Рициново",
+    "source_sha256": "7dce595b16ae39e6d37cf81b100e008651fbaaaf237caebbfa77842c33c816ec",
+    "target_sha256": "f808879292aa6ea5a861223fb7481c628a2c8e83a1529dae28f187abb69e1717",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AICortex-Description",
+    "source": "Gathered warrior waves with food and healing support.",
+    "target": "Събрани воински вълни с храна и лечебна подкрепа.",
+    "source_sha256": "32e6dc4e9afa60fce419895a2d7be17838c19c2ac8b3cabf74a25c49dc2b25ea",
+    "target_sha256": "2baf4bf050f3cb20f0bffdc6ab244e5c73e0a0a8779c007c99a67b7035140111",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AIMaxima-Description",
+    "source": "Scouts, builds its food supply and gathers warrior waves.",
+    "target": "Скаути, изгражда хранителните си запаси и събира воински вълни.",
+    "source_sha256": "a26771619d3fe0304bc2e60e890aebc7544b9f089d2a72e1285b2c5d3549d251",
+    "target_sha256": "370ede36dd88250a704e6f9b3eb98c2b6b30124c8cee98688abfb80bb1ab928c",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AIMaxima",
+    "source": "Maxima",
+    "target": "Максима",
+    "source_sha256": "fbd2ff2d479ee87d35c98e589ed4d03d48ff75e7148a9abf1ef3377c02876a9a",
+    "target_sha256": "ead28b54e999a62ab80f616fa4ffe1a3d76ee33267320f6172124ca4f51c0ee0",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AICortex",
+    "source": "Cortex",
+    "target": "Кортекс",
+    "source_sha256": "6693426190cb2316e7de23d467610f22b30a89f7fe6b6030d31a83c8845c1a5c",
+    "target_sha256": "8f3cc5bd58c43ad0f9ea49906cec0df06ad1e52e9bfe1a058b2eaa8da2a1a148",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AINicowar-Description",
+    "source": "Builds up its population, trains warriors, then attacks.",
+    "target": "Увеличава населението си, обучава воини, след което атакува.",
+    "source_sha256": "2cf37b4462ce31736d2d4e6ccdb0ed78760bb98092c9ca79081917fe706a5db0",
+    "target_sha256": "cc1ba6297de74ebe1d477e2e9de28b9cb04dc07c0dbe736b438b587b017fd0be",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AINicowar",
+    "source": "Nicowar",
+    "target": "Никовар",
+    "source_sha256": "7571ccc660666ec5e55c1acbeb0fa2a567afd4e91e4994c4532d74c26972f88a",
+    "target_sha256": "b4670edabb312bac34099fac86f6935006ab7eb22b013f3e14b083ec3e08dba4",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AINone-Description",
+    "source": "None - Doesn't do anything.",
+    "target": "Няма - Не прави нищо.",
+    "source_sha256": "d5830f6a2e322a7e8252c6ba24bd547f340f6a75989b1ef60c0eb1b244c8a938",
+    "target_sha256": "7aee9e8ae99dc9b45c8f80978c96ec0467a9edd15dfcaf3dd1d23f1ea04bd73b",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AINone",
+    "source": "None",
+    "target": "Няма",
+    "source_sha256": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "target_sha256": "16e072794c7174d008e4c9e9829736cbd2a393ddeedf71504f1775f4a72db7bc",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AINumbi-Description",
+    "source": "A forgiving opponent that still expands and attacks.",
+    "target": "Прощаващ противник, който все още се разширява и атакува.",
+    "source_sha256": "1e139a4b5a429df29e545cb7fa4b49501adb24f9810e22273dd8c68ba0a90e4d",
+    "target_sha256": "ec33fc32de66d1faf7fc4e261c8d6abe67e76e61ff947b8c8ffa9150daaeb182",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AINumbi",
+    "source": "Numbi",
+    "target": "Нумби",
+    "source_sha256": "472186662f46929bf822283b3ae760851511c49e3ac83ac18bd29f06ce3cdde5",
+    "target_sha256": "2c7367ccf5947a11498f600bc82b464d9fe99456ef29f110dfb770e7d9217042",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AIEcono-Description",
+    "source": "Expands and competes for converts without producing warriors.",
+    "target": "Разширява се и се конкурира за новопокръстени, без да произвежда воини.",
+    "source_sha256": "caa39dd7e46d1e9c82f76f0625bfe80d59c3bb1db6a7ffda011136574740e006",
+    "target_sha256": "23ed2690667b2aecf03152ee275d4844e5f995f70de3a32403ef7381dbd484a4",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AIEcono",
+    "source": "Econo",
+    "target": "Иконо",
+    "source_sha256": "713a73bb32b5827eab0ea5adcd0319fc5d4a044efc5bf2fcf005f4fbae63657f",
+    "target_sha256": "2545bc12ecedc514649773a769be9cd1dc1cd9bbbb053527b3cc15cf661d28b2",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AIWarrush-Description",
+    "source": "Fast attacks that test your early defenses.",
+    "target": "Бързи атаки, които тестват ранните ви защити.",
+    "source_sha256": "e3005c5f72694950401e580995434f1bcddcb647d800323190c7f61f0d41fb38",
+    "target_sha256": "eea542e3e011dcac0069a32b429106f6a71c594947b7ab5438cb2b5836e8a42c",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AIWarrush",
+    "source": "Warrush",
+    "target": "Уоръш",
+    "source_sha256": "99e6f44573093545fcbce656b81d763b3772454a8369c71852b16040ea864d7e",
+    "target_sha256": "0d77b41b0539d3160487cb6d2e51d49b3cca8869fdebcaf903fbeebebfc6d5e7",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AICabino-Description",
+    "source": "A strong builder that fields trained attacking forces.",
+    "target": "Силен строител, който е изправил на терен обучени атакуващи сили.",
+    "source_sha256": "a666db2efdd23ba88061aeef61588201a22f0a33a22524c280c44ceb8e076186",
+    "target_sha256": "4f594d05f9bd0eee3bc58e9ed0d6ffa19c433cfbc314615273e6fcc589610ede",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AICabino",
+    "source": "Cabino",
+    "target": "Кабино",
+    "source_sha256": "97bcec4264b516245c57ce0528fa3ec9d325da4368c3f5ed4db65c901ae87d70",
+    "target_sha256": "76a060d05f8048eb6ec06e9a21b6f1301672fb248af31b3f710e6e0986405027",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AIJavaScript",
+    "source": "JavaScript",
+    "target": "JavaScript",
+    "source_sha256": "b27ad06d123c6145fba7e9217a4cfbf2488b4743810ed8c8ff14ad01a5bbe515",
+    "target_sha256": "b27ad06d123c6145fba7e9217a4cfbf2488b4743810ed8c8ff14ad01a5bbe515",
+    "result": "acceptable",
+    "role": "semantic-gameplay"
+  },
+  {
+    "surface": "native",
+    "key": "AIJavaScript-Description",
+    "source": "A controller using an embedded JavaScript source module.",
+    "target": "Контролер, използващ вграден модул източник JavaScript.",
+    "source_sha256": "5d749dd2b519d88d561131267e882dd083139d40143019bec7f9e34c62a59fc0",
+    "target_sha256": "006418c76b2d18d07edf39d0273c012b8a953d1ab401763a9cb7100b15dc2743",
+    "result": "finding",
+    "role": "semantic-gameplay"
+  }
+]

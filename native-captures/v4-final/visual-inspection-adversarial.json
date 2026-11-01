@@ -1,0 +1,291 @@
+{
+  "reviewer": "/root/adversarial_reviewer",
+  "scope": "Actual image inspections listed below; separate from complete machine font measurements. Before-fixf02producer identities preserved.",
+  "images": [
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor-cursor.png",
+      "sha256": "6840419bcf99cdc248bd24a9921bd92e680cd89eb08c0927f3fbabfa65eaf62c",
+      "inspection": "individual full image",
+      "observations": "Bulgarian tabs, language, cursor coordinates, tool buttons and compilation status legible and fit desktop layout; controlled English JavaScript/comment is source fixture, not UI fallback.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor-success.png",
+      "sha256": "4c597a726165169b2be3616b654f1fec14377c11a1e72cf4820384629fe1ae6a",
+      "inspection": "individual full image",
+      "observations": "Bulgarian tabs, language, cursor coordinates, tool buttons and compilation status legible and fit desktop layout; controlled English JavaScript/comment is source fixture, not UI fallback.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor-failure.png",
+      "sha256": "41065b96f2d826c4478e6f45d1535c46d4ed44a0861ae74ab34dcecf1f11ccbd",
+      "inspection": "individual full image",
+      "observations": "Bulgarian tabs, language, cursor coordinates, tool buttons and compilation status legible and fit desktop layout; controlled English JavaScript/comment is source fixture, not UI fallback.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-script-editor/script-editor-failure.png",
+      "sha256": "b96572907fe29407d96239a6a1f8a63861119d8fde4919e67e15e851aa3b6acc",
+      "inspection": "individual full image",
+      "observations": "Complete compiler failure/retry status, cursor and tool controls visible at150%; no status clipping in this sampled desktop layout.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics-overview.png",
+      "sha256": "950fbbf8ea525d823458ee35dcb6faf9982db4cc40fd5105ef46231ef1311c46",
+      "inspection": "individual full image",
+      "observations": "Topic/action labels readable; economy/world empty-history chart status horizontally cut at narrow canvas boundary. Overview lower rows lie inside a scroll region.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics-economy.png",
+      "sha256": "1b3e36811b2ecaa1917f88d9c6e11f8dfc5a31d4c0c7f5f481e91f2ce0110499",
+      "inspection": "individual full image",
+      "observations": "Topic/action labels readable; economy/world empty-history chart status horizontally cut at narrow canvas boundary. Overview lower rows lie inside a scroll region.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics-world.png",
+      "sha256": "6b71cdb77e5c1c00901e01d7b1818ada3edc460825f5a9f03c848fa03cecdfd4",
+      "inspection": "individual full image",
+      "observations": "Topic/action labels readable; economy/world empty-history chart status horizontally cut at narrow canvas boundary. Overview lower rows lie inside a scroll region.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor-cursor.png",
+      "sha256": "494ea43deea9f134973960ac399ce8f6e30a46bce5c0de14033f66bba724a995",
+      "inspection": "individual full image",
+      "observations": "Cyrillic and localized cursor render correctly. Narrow tabs and Compile split words; failure status ellipsizes away its retry sentence. Source-only responsive/paragraph proposals staged; this image remains before-fix.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor-success.png",
+      "sha256": "14006ab8da29138fe1c633f12faba7769f503d2194b08eec5f498da8e6f48923",
+      "inspection": "individual full image",
+      "observations": "Cyrillic and localized cursor render correctly. Narrow tabs and Compile split words; failure status ellipsizes away its retry sentence. Source-only responsive/paragraph proposals staged; this image remains before-fix.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor-failure.png",
+      "sha256": "599fe56cf4a759e1ac86493b5b4efda723ea5a45f0cfcc6ebaffa27e89432edc",
+      "inspection": "individual full image",
+      "observations": "Cyrillic and localized cursor render correctly. Narrow tabs and Compile split words; failure status ellipsizes away its retry sentence. Source-only responsive/paragraph proposals staged; this image remains before-fix.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-script-editor/script-editor-cursor.png",
+      "sha256": "b645a5c72adf5333b9b94cfbe77395dbcd963520c00fc6cdf17b94c3c0d5f1bf",
+      "inspection": "individual full image",
+      "observations": "At150%, controls remain visible but tab/tool labels break within words and failure status is ellipsized to prefix. Before-fix evidence; no claim of full diagnostic readability.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-script-editor/script-editor-failure.png",
+      "sha256": "256758ffe99d5faae1585af7f1e31369e6522503252c26b677c3d956732b52aa",
+      "inspection": "individual full image",
+      "observations": "At150%, controls remain visible but tab/tool labels break within words and failure status is ellipsized to prefix. Before-fix evidence; no claim of full diagnostic readability.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-overview.png",
+      "sha256": "776169651224bb8ffaa113c13271e04aa809eccfee010338db1ba1f98245b378",
+      "inspection": "individual full image",
+      "observations": "Enlarged topic/metric labels fit and wrap naturally in a scrolling sheet. Actual population history-details modal shows full Bulgarian explanation; short real session has sparse/empty recorded history. Live win probability remains hidden. Existing enlarged phone bottom-navigation words wrap to multiple lines.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-economy.png",
+      "sha256": "523976cab73e9e792c1ba49b4dcca47d475816e64bdfebd4809bbac4097b0f1a",
+      "inspection": "individual full image",
+      "observations": "Enlarged topic/metric labels fit and wrap naturally in a scrolling sheet. Actual population history-details modal shows full Bulgarian explanation; short real session has sparse/empty recorded history. Live win probability remains hidden. Existing enlarged phone bottom-navigation words wrap to multiple lines.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-world.png",
+      "sha256": "04d71dda598426a01b43f1ead8ab8fe84562e1419b71907faefd67571b1bf092",
+      "inspection": "individual full image",
+      "observations": "Enlarged topic/metric labels fit and wrap naturally in a scrolling sheet. Actual population history-details modal shows full Bulgarian explanation; short real session has sparse/empty recorded history. Live win probability remains hidden. Existing enlarged phone bottom-navigation words wrap to multiple lines.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics-population-history-details.png",
+      "sha256": "b90a44071a2a67245d41911fc923ff566cf803dde2db0108524a1fb3c1121f38",
+      "inspection": "individual full image",
+      "observations": "Enlarged topic/metric labels fit and wrap naturally in a scrolling sheet. Actual population history-details modal shows full Bulgarian explanation; short real session has sparse/empty recorded history. Live win probability remains hidden. Existing enlarged phone bottom-navigation words wrap to multiple lines.",
+      "limits": "Exact displayed sample only; no claim that all pages, glyphs or hidden controls were visually inspected.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/api/desktop-api-known/settings-ais.png",
+      "sha256": "912cf6ef7d927a2f7bc1ccf864ad15993f0cc289e891ccde0f369fd21c18c765",
+      "inspection": "individual full image",
+      "observations": "Actual typed localHTTP503 notice shows ИИ preview-ai не е намерен; all7AI tag labels fit. preview-ai is intentionally exact fixture identifier.",
+      "limits": "Controlled127.0.0.1 HTTP fixture, not production-server/account/device coverage.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/probes/desktop/probe-contact.png",
+      "sha256": "fcbc70f8d8266e62b63ec836c421c14d9dbb1a8dab133c1c9ce9383ebbf1643d",
+      "inspection": "six original-pixel diagnostic crops normalized to2×logical",
+      "observations": "All six10/13/20px×1/2 samples show distinct uppercaseЍ/precomposedѝ/decomposed grave accents, Bulgarian quotes and punctuation without tofu/clipping.",
+      "limits": "Synthetic font diagnostic, not translated catalog. Original12 probe pages are byte-identical to3881probes; contact inspection is limited to displayed probe samples.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/probes/phone/probe-contact.png",
+      "sha256": "40305b578c0f237cf3cdfc472db5a2079f81ccfae4eb3e8e3a706d997e0874c5",
+      "inspection": "six original-pixel diagnostic crops normalized to2×logical",
+      "observations": "All six10/13/20px×1/2 samples show distinct uppercaseЍ/precomposedѝ/decomposed grave accents, Bulgarian quotes and punctuation without tofu/clipping.",
+      "limits": "Synthetic font diagnostic, not translated catalog. Original12 probe pages are byte-identical to3881probes; contact inspection is limited to displayed probe samples.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/fonts/desktop-20x2/font-20-scale-2-page-001.png",
+      "sha256": "1482c91142cd6a2396df8c0fa1442325054848f7816c67e6b6db2aab32f2a853",
+      "inspection": "individual full image",
+      "observations": "New/changed Bulgarian strings and long paragraphs render clear Cyrillic with intact line ends and glyphs in these sampled20px2×matrix pages. Continuation across page boundaries is the matrix paginator.",
+      "limits": "Font-only literal catalog values/placeholders, not an actual UI flow; no fresh blinded linguistic approval of v4 values implied.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/fonts/desktop-20x2/font-20-scale-2-page-003.png",
+      "sha256": "a90bccfdfcb29058a2285e7523bd949158593df963840abbffc2f74d70417cde",
+      "inspection": "individual full image",
+      "observations": "New/changed Bulgarian strings and long paragraphs render clear Cyrillic with intact line ends and glyphs in these sampled20px2×matrix pages. Continuation across page boundaries is the matrix paginator.",
+      "limits": "Font-only literal catalog values/placeholders, not an actual UI flow; no fresh blinded linguistic approval of v4 values implied.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x2/font-20-scale-2-page-001.png",
+      "sha256": "09d2b078d7d6ba6e5d1d9783b2ed8aecc35a32ac1d7849aef7265ba987ed9e2d",
+      "inspection": "individual full image",
+      "observations": "New/changed Bulgarian strings and long paragraphs render clear Cyrillic with intact line ends and glyphs in these sampled20px2×matrix pages. Continuation across page boundaries is the matrix paginator.",
+      "limits": "Font-only literal catalog values/placeholders, not an actual UI flow; no fresh blinded linguistic approval of v4 values implied.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/fonts/phone-20x2/font-20-scale-2-page-003.png",
+      "sha256": "f41c832d395e4beaf66554c34d2f4b91cb2d6206eac16e4d1bdbe494f33f240e",
+      "inspection": "individual full image",
+      "observations": "New/changed Bulgarian strings and long paragraphs render clear Cyrillic with intact line ends and glyphs in these sampled20px2×matrix pages. Continuation across page boundaries is the matrix paginator.",
+      "limits": "Font-only literal catalog values/placeholders, not an actual UI flow; no fresh blinded linguistic approval of v4 values implied.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/desktop-supplement-contact.png",
+      "sha256": "e186b37d839e8a5db99f7eee49413526d12f4994549cdf6a24d14ab80ecb6ea8",
+      "inspection": "Contact sheet of all delta matrix pages; broad geometry sampling only",
+      "observations": "Text blocks stay inside pages; no obvious raster crop/overlap in displayed thumbnails. Sample full pages are listed separately for glyph/line-end inspection.",
+      "limits": "Thumbnails do not establish reading every line or visually certifying all51values×12combinations.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/phone-supplement-contact.png",
+      "sha256": "d9b1bc7493fcfe5d461eba33bdf351d7d7128d5086a5773d8cd85bee91ee22a5",
+      "inspection": "Contact sheet of all delta matrix pages; broad geometry sampling only",
+      "observations": "Text blocks stay inside pages; no obvious raster crop/overlap in displayed thumbnails. Sample full pages are listed separately for glyph/line-end inspection.",
+      "limits": "Thumbnails do not establish reading every line or visually certifying all51values×12combinations.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-new-map/new-map.png",
+      "sha256": "97bcbecb00030c39cec3973bc83172eea1560e67f6571d12f6d775cfe9d9e0f9",
+      "inspection": "individual full image",
+      "observations": "New Map labels/actions fit; current frozen neuter Генерирано is the separately reviewed staged gender refinement, not yet applied. No Savannah parameter panel is open; no claim of Grassland/Kopjes actual-control fit.",
+      "limits": "Only visible viewport inspected; no physical mobile or all-controls coverage claim.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-editor/editor-dialog.png",
+      "sha256": "b232d1e7496ebc88007fe1ebd3c2579da2d7ffd84a574adce7a306169c92a378",
+      "inspection": "individual full image",
+      "observations": "Actual editor menu and terrain palette render readable Bulgarian. Long import labels ellipsize within their controls; viewport scroll regions intentionally hide lower entries.",
+      "limits": "Only visible viewport inspected; no physical mobile or all-controls coverage claim.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-settings/settings.png",
+      "sha256": "35cc41e5312e4044a40d8b9bca8d92e19168282439eecf6e3d6d4ee5021fd11d",
+      "inspection": "individual full image",
+      "observations": "Phone390 Settings display/effects viewport readable. Софтуер and display details wrap cleanly; choice labels/footer fit. Lower renderer controls lie outside this scrolled viewport, not visually claimed.",
+      "limits": "Only visible viewport inspected; no physical mobile or all-controls coverage claim.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-new-map/new-map.png",
+      "sha256": "a76173ae8183d688b9b9a74c4b9bbbbbc6973593a1702a06e1e98c5048cb3bbe",
+      "inspection": "individual full image",
+      "observations": "Phone390 New Map labels/actions fit without midword splitting; Generated gender refinement staged separately. Preview is a representative selection placeholder, not a claim of completed map generation.",
+      "limits": "Only visible viewport inspected; no physical mobile or all-controls coverage claim.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor.png",
+      "sha256": "ce869f0c58f68f475195f7656ab18760c8576e35e192a8d36d7d9f564ac2005e",
+      "inspection": "individual full image",
+      "observations": "Actual blank-map phone editor header, minimap toggle, palette and visible unit/building names are legible. Horizontal palette intentionally continues beyond the viewport.",
+      "limits": "Only visible viewport inspected; no physical mobile or all-controls coverage claim.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor-terrain.png",
+      "sha256": "79a641bb6a0f2720ec12653f35c47355a2588d88f48385f1890c789aa55ec5ed",
+      "inspection": "individual full image",
+      "observations": "Phone terrain tool/mode and visible terrain groups/brush names readable. Horizontal strip clips offscreen continuation as a scroll region; unseen groups not visually claimed.",
+      "limits": "Only visible viewport inspected; no physical mobile or all-controls coverage claim.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor-dialog.png",
+      "sha256": "0dbf1d9a19aa281a37da4ebe74f9ebd147e618d6dff7a37c774ca03cf725f38f",
+      "inspection": "individual full image",
+      "observations": "Phone editor menu wraps import-set and exit/return labels cleanly. Scroll region deliberately holds further map actions below viewport; no overlap or missing glyph observed.",
+      "limits": "Only visible viewport inspected; no physical mobile or all-controls coverage claim.",
+      "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545"
+    }
+  ],
+  "findings": [
+    {
+      "id": "chart-empty-status-wrap",
+      "severity": "major",
+      "status": "staged_proposal_pending",
+      "evidence": [
+        "surfaces/desktop-100-statistics/statistics-economy.png",
+        "surfaces/desktop-100-statistics/statistics-world.png"
+      ],
+      "issue": "Empty-history notice extends beyond narrow chart canvas and is clipped.",
+      "proposal": "artifacts/bulgarian/chart-status-wrap/chart-status-wrap.patch"
+    },
+    {
+      "id": "phone-script-status",
+      "severity": "major",
+      "status": "staged_proposal_pending",
+      "issue": "Single-line compiler notice ellipsizes actionable failure/retry text on390px phone.",
+      "proposal": "artifacts/bulgarian/script-status-wrap/script-responsive-layout.patch"
+    },
+    {
+      "id": "phone-script-word-splits",
+      "severity": "minor",
+      "status": "staged_proposal_pending",
+      "issue": "Four narrow tabs and fixed-minimum tool grid break words at normal and150%growth.",
+      "proposal": "artifacts/bulgarian/script-status-wrap/script-responsive-layout.patch"
+    }
+  ],
+  "catalog_edits": false,
+  "limits": "No native-human certification, physical mobile, cross-platform, release-performance or production-server coverage claim."
+}

@@ -1,0 +1,97 @@
+{
+  "old_producer": "3881c64e0d2b43b460a122422d2727c0cbd4d3ca",
+  "new_producer": "f02b75ccab66d3073f33ae865d2c8a731e546545",
+  "matching_recorded_runtime_fields": {
+    "sdl_library_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+    "sdl_ttf_library_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0",
+    "sdl_version": 3004016,
+    "sdl_ttf_version": 3002002,
+    "harfbuzz_version": [
+      10,
+      1,
+      0
+    ]
+  },
+  "current_freetype_version": [
+    2,
+    14,
+    2
+  ],
+  "compiler_and_flags_match": true,
+  "libraries": [
+    {
+      "soname": "libz.so.1",
+      "resolved_path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+      "sha256_current_file": "27fa6c6cb94fb5b099ead61758a300dbc392d1dbf307fff6c16a9b8e57fdc9de",
+      "bytes": 121272,
+      "mtime_utc": "2026-10-21T20:56:20+00:00",
+      "ctime_utc": "2026-10-23T10:56:22.328628+00:00",
+      "file_ctime_predates_old_matrix": true
+    },
+    {
+      "soname": "libfribidi.so.0",
+      "resolved_path": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+      "sha256_current_file": "c122a34c3e9cab264c9a07b21b75f16443a646cc8db4e84ac91e800daa7e03ce",
+      "bytes": 121112,
+      "mtime_utc": "2025-12-15T01:09:51+00:00",
+      "ctime_utc": "2026-06-06T18:12:12.870206+00:00",
+      "file_ctime_predates_old_matrix": true
+    },
+    {
+      "soname": "libSDL3_net.so.0",
+      "resolved_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+      "sha256_current_file": "caf4d4399bfd8cfb1f62866ba2717434a8674b31b9d4f75628baf8e6d180e7e6",
+      "bytes": 55792,
+      "mtime_utc": "2026-10-31T22:16:35+00:00",
+      "ctime_utc": "2026-10-31T22:16:35.461329+00:00",
+      "file_ctime_predates_old_matrix": true
+    },
+    {
+      "soname": "libSDL3_ttf.so.0",
+      "resolved_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+      "sha256_current_file": "c1a67b634bd5e798500d0ceb613ef987e9915d47b0a569ab2b48a2c9eecab8f0",
+      "bytes": 1562384,
+      "mtime_utc": "2026-10-31T22:16:17+00:00",
+      "ctime_utc": "2026-10-31T22:16:18.242150+00:00",
+      "file_ctime_predates_old_matrix": true
+    },
+    {
+      "soname": "libSDL3_image.so.0",
+      "resolved_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+      "sha256_current_file": "6a14a733bfbe3d9343b6ab1a568b78b3ca1cbfdcca02c0f1e8310ca07a381b5e",
+      "bytes": 1249552,
+      "mtime_utc": "2026-10-31T22:14:57+00:00",
+      "ctime_utc": "2026-10-31T22:14:58.179202+00:00",
+      "file_ctime_predates_old_matrix": true
+    },
+    {
+      "soname": "libSDL3.so.0",
+      "resolved_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+      "sha256_current_file": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09",
+      "bytes": 4649608,
+      "mtime_utc": "2026-10-31T22:13:45+00:00",
+      "ctime_utc": "2026-10-31T22:13:45.795070+00:00",
+      "file_ctime_predates_old_matrix": true
+    },
+    {
+      "soname": "libfreetype.so.6",
+      "resolved_path": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+      "sha256_current_file": "36be278a8138d3e5773eb3f8491ff3fe73122a3051a9b36d1f86457ce0fad22d",
+      "bytes": 870552,
+      "mtime_utc": "2026-10-05T14:42:42+00:00",
+      "ctime_utc": "2026-10-07T10:34:45.547333+00:00",
+      "file_ctime_predates_old_matrix": true
+    },
+    {
+      "soname": "libpng16.so.16",
+      "resolved_path": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+      "sha256_current_file": "2a570998f08a406b4083b06888e528fa0c5d6cc3bef77b40026d661c91cbfb90",
+      "bytes": 231648,
+      "mtime_utc": "2026-10-05T21:29:24+00:00",
+      "ctime_utc": "2026-10-09T10:50:54.473813+00:00",
+      "file_ctime_predates_old_matrix": true
+    }
+  ],
+  "scope": "Actual final executable ldd resolution and per-capture SDL/TTF/HarfBuzz APIs, current file hashes, and ordinary-filesystem ctimes predating old matrix support unchanged dependency inputs. HarfBuzz has no separate dynamic entry; version10.1.0 is reported through SDL_ttf.",
+  "limits": "Historical library byte hashes were not recorded in old capture metadata. Unchanged-library inference uses stable resolved paths/version/compiler flags and ctimes predating old captures; current hashes are not misrepresented as historical measurements. Fresh synthetic probe byte comparison is separate."
+}

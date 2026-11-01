@@ -1,0 +1,10 @@
+{
+  "revision": "b14894809014d14baa25de28d63d775ffeb41331",
+  "binaries": {
+    "TranslationPreviewHarness.capture": {
+      "sha256": "e54bdfd987fdcd83e5f020167684a3c04bd1efe0eab3223a3b45210a968c76a4",
+      "source_sha256": "f1852be5b8e6d621a0ac61cadf6f6a1b72a9ad56a1582100730a1d4442ed0c6f",
+      "copy_proof": "preview-copy-proof.json"
+    }
+  }
+}

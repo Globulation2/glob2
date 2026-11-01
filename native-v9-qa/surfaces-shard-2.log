@@ -1,0 +1,20 @@
+START desktop-100-statistics
+END desktop-100-statistics 0
+START phone-100-script-editor
+END phone-100-script-editor 0
+START phone-150-statistics
+END phone-150-statistics 0
+START desktop-lobby-players
+END desktop-lobby-players 0
+START desktop-settings-online
+END desktop-settings-online 0
+START desktop-editor
+END desktop-editor 0
+START phone-lobby
+END phone-lobby 0
+START phone-settings-ais
+END phone-settings-ais 0
+START phone-new-map
+END phone-new-map 0
+START phone-fortifications
+END phone-fortifications 0

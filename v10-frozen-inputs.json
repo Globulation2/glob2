@@ -1,0 +1,20 @@
+{
+  "revision": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "final_render_values": 6435,
+  "fresh_render_values": 33,
+  "carry_render_values": 6402,
+  "input_files_sha256": {
+    "data/texts.bg.txt": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "platform/packages/i18n/locales/bg.json": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f",
+    "artifacts/bulgarian/native-v10-qa/review-proof-v8-visual-validation-snapshot.json": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7",
+    "artifacts/bulgarian/v10-full-render-input/manifest.json": "63cd4752a3c6ba41661bc6f1ddafba489d85fe1a7566cb478df668b496d66353",
+    "artifacts/bulgarian/v10-full-render-input/render-input/bg/metadata.json": "a5d9542dcd8508d4355b2dfbe4aa6d040ccd24fc86c74ccef650888f2a97a524",
+    "artifacts/bulgarian/v10-full-render-input/render-input/bg/native.json": "8136af59a530fabf34d68098c2bdba1d00c03efed73b8b83c5636c1c7dcfb64b",
+    "artifacts/bulgarian/v10-full-render-input/render-input/bg/online.json": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f",
+    "artifacts/bulgarian/v10-delta-render-input/manifest.json": "63cd4752a3c6ba41661bc6f1ddafba489d85fe1a7566cb478df668b496d66353",
+    "artifacts/bulgarian/v10-delta-render-input/render-input/bg/metadata.json": "06c3a3ec1b13ab830926edf7cf543d2757f3346abe519c4a849aa4f9d5be9b48",
+    "artifacts/bulgarian/v10-delta-render-input/render-input/bg/native.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "artifacts/bulgarian/v10-delta-render-input/render-input/bg/online.json": "0fd7bf551fbde7136811ff29f23c5335aaa9967477ce67e06db44b99c138e1af"
+  },
+  "review_proof_sha256": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7"
+}

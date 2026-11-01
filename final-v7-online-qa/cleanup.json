@@ -1,0 +1,10 @@
+{
+  "containerId": "8518af8f71bc1b02816a639bc86d7f479171763ae0df649a3d458caa996ddc48",
+  "name": "glob2-bulgarian-platform-v5",
+  "hostPort": 42770,
+  "stopExit": 0,
+  "output": "Flag --time has been deprecated, use --timeout instead\nglob2-bulgarian-platform-v5",
+  "apiExited": true,
+  "apiWrapperExit": 0,
+  "otherServicesTouched": false
+}

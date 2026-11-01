@@ -1,0 +1,398 @@
+{
+  "status": "Immutable completed actual V9 UI subset; independent visual review is separate",
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+  },
+  "binary_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+  "jobs": [
+    {
+      "tag": "phone-settings-player",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "phone-gameplay",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/surfaces-shard-1-of-3.json",
+      "returncode": 0,
+      "images": 15
+    },
+    {
+      "tag": "phone-new-map",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "phone-fortifications",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/surfaces-shard-2-of-3.json",
+      "returncode": 0,
+      "images": 5
+    },
+    {
+      "tag": "phone-editor",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/surfaces-shard-3-of-3.json",
+      "returncode": 0,
+      "images": 3
+    },
+    {
+      "tag": "desktop-schools",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/schools.json",
+      "returncode": 0,
+      "images": 5
+    },
+    {
+      "tag": "phone-schools",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/schools.json",
+      "returncode": 0,
+      "images": 5
+    },
+    {
+      "tag": "desktop-api-known",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/api.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "desktop-api-unknown",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/api.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "phone-api-known",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/api.json",
+      "returncode": 0,
+      "images": 1
+    },
+    {
+      "tag": "phone-api-unknown",
+      "receipt_snapshot": "artifacts/bulgarian/native-captures/v9-final/review-receipts-002/api.json",
+      "returncode": 0,
+      "images": 1
+    }
+  ],
+  "images": [
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings-player/settings-player.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings-player/settings-player.png",
+      "sha256": "494858150d0ef1e927f7aa8145e7c19ad8c93bd0e549113318a975243aeeb6f6",
+      "width": 390,
+      "height": 844,
+      "job": "phone-settings-player"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-dialog.png",
+      "sha256": "75acf430c1b0a4b1c9e6c3d9baf5d18ae81d69b7749e3d42d0ac34a5fd6960f3",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-colony.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-colony.png",
+      "sha256": "1e641af162e46581edff5d96d97d23302431c34b43be7f45526ae9c1bbb3716e",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-defence.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-defence.png",
+      "sha256": "506332080647b49478eccc966f6e9d3d9d4c278b22c7ec1acd59e8ca8e0cf25c",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-economy.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-economy.png",
+      "sha256": "2cea5809be19b880eeb15793eae65eeb1fbd435044b3bd2bc30cd9822f1f6514",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-full-history.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-full-history.png",
+      "sha256": "9a1a1adbe7bdb9f19c0f1b9236f1370e637215c4dabc1c83beaca21d1ceaae5d",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-military.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-military.png",
+      "sha256": "bc350807d1ed45279a5a8e2be3e98a594c2ad59c7c6cd6768112f02df399753b",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-overview.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-overview.png",
+      "sha256": "c22001581a22a4b8c47d03fa69d3cd9299ebda85284c81c1053d90572093ac2d",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-bottom.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-bottom.png",
+      "sha256": "ccff23a87b8e1207115db832d913346a70ba68900f7c5f7f8491c9cb4a26aba2",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-collapsed.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-collapsed.png",
+      "sha256": "5fb11a6ce1eea2559f127927faa9e6020e9ea2950fe54404689d6a5a146a1cb9",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-expanded.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-unit-details-expanded.png",
+      "sha256": "ea5102b33d18aefc8db492b6c1563b66f2dbda2ca4f3b9a9258a23748ef6c8fd",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-work.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-work.png",
+      "sha256": "d5ef4957d94a79706b27c5bad53b62a628c68dc535426eca2e213cf3c7c30bbd",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-world.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-live-statistics-world.png",
+      "sha256": "c77cd0f8b3d565bf0807d60f9c13dc4f89481be02f7193a3b72e70c678d2a020",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-statistics-about.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-statistics-about.png",
+      "sha256": "83afc9f68f9f71385c7d435e7f4d45c01b6e2e8a0a7b6586790427ddf40b8114",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-statistics.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay-statistics.png",
+      "sha256": "787797352d46ac0758e7815446ec894dfe6ee39cd94cc18c728bc19e22ed0b84",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.png",
+      "sha256": "77eaed59d449793f897036915b220587ab7e8a69ba2196dec2dbd4a5a35de084",
+      "width": 390,
+      "height": 844,
+      "job": "phone-gameplay"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-new-map/new-map.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-new-map/new-map.png",
+      "sha256": "04c68f1e423ad7eb955c099ddbd6f67d88c6523279560da60804aca8374da989",
+      "width": 390,
+      "height": 844,
+      "job": "phone-new-map"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-briefing.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-briefing.png",
+      "sha256": "b6ac89c17f7a504f6aaaf4b6611668593266f677f224e7c997a2582dd3801b60",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-collapsed.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-collapsed.png",
+      "sha256": "ca4e8ce710b6cdd7bbc9de3c2628cd55a7dc3c10ab12219a6053a28197f04b1c",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-dialog.png",
+      "sha256": "f80fb6b11cc68b4aa829ad935efdc6816ee7aefea4c01718148f0f59b7a1a7cf",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-expanded.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications-expanded.png",
+      "sha256": "d983c28930718b5d84b7954ae4ca68a6d92c540febbb8ba21023a7c30f523d1e",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.png",
+      "sha256": "9e3cb70bb86e0d573244828c29954db1135e2bfa31638afbadf658b4b0956550",
+      "width": 390,
+      "height": 844,
+      "job": "phone-fortifications"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor-dialog.png",
+      "sha256": "ea74940b0ba9f30879fd40951b18477278bd5490f006ae92060c0d7f423f374f",
+      "width": 389,
+      "height": 844,
+      "job": "phone-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor-terrain.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor-terrain.png",
+      "sha256": "addc7e89ebf48d883e8864143fbb25dd2e5695d3b82f60464f5a8273b5f1ab3d",
+      "width": 389,
+      "height": 844,
+      "job": "phone-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor.png",
+      "sha256": "ce869f0c58f68f475195f7656ab18760c8576e35e192a8d36d7d9f564ac2005e",
+      "width": 389,
+      "height": 844,
+      "job": "phone-editor"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-briefing.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-briefing.png",
+      "sha256": "1f53da3330ac875b2a40f12d481360d7c39f57299a86b815e6046503817d44ad",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-collapsed.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-collapsed.png",
+      "sha256": "ef6f2ebcca364d481e6e4cca91c2dc4be2f1228a984fa35b157e6cf23124a818",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-dialog.png",
+      "sha256": "d5fc8b434188d4e28058755fbae58988673363fa8e49076ffd4fc8a9e8843580",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-expanded.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools-expanded.png",
+      "sha256": "5b5620b2c54a30749371fc513c93d007fa342bec0f69257927549282f2b73ec9",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.png",
+      "sha256": "8a47240f5026b7c06c9f7e5bf5f9537f540901a5208ca7be856a89bd8311cdea",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools-briefing.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools-briefing.png",
+      "sha256": "31380e99fa0442bfb4124736a6bbcc39643bbe6060b3823e147e40f352f74835",
+      "width": 390,
+      "height": 844,
+      "job": "phone-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools-collapsed.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools-collapsed.png",
+      "sha256": "fe1ee3134bee88fdbddebc51fba91c525a7b8022452fcccc1f6afd5eb3608e21",
+      "width": 390,
+      "height": 844,
+      "job": "phone-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools-dialog.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools-dialog.png",
+      "sha256": "c92341263a560bd0decdb1490706fe3e799e4b37f716ce41dc6dfefa660da8f7",
+      "width": 390,
+      "height": 844,
+      "job": "phone-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools-expanded.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools-expanded.png",
+      "sha256": "55987dab66526fd90bb49b12d495f6448135db042220242dfe53f5762af122ce",
+      "width": 390,
+      "height": 844,
+      "job": "phone-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools.png",
+      "sha256": "19df0cf69330e319833725ab3e4a5abba12afec3555d77d6f47ec996adce229a",
+      "width": 390,
+      "height": 844,
+      "job": "phone-schools"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/api/desktop-api-known/settings-ais.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/api/desktop-api-known/settings-ais.png",
+      "sha256": "b05f97d5534c45ae0be3641993fafff085a97f17823024b9d008d759ffade9da",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-api-known"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/api/desktop-api-unknown/settings-ais.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/api/desktop-api-unknown/settings-ais.png",
+      "sha256": "0fa4855cfbb34fea231b85074ca755a413ad4df62bce6234d538a19de78c887d",
+      "width": 1280,
+      "height": 1024,
+      "job": "desktop-api-unknown"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/api/phone-api-known/settings-ais.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/api/phone-api-known/settings-ais.png",
+      "sha256": "57d53ba188d555e92986b843a692adeb18814ae83266ffe9f33285117ba700d7",
+      "width": 480,
+      "height": 960,
+      "job": "phone-api-known"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/api/phone-api-unknown/settings-ais.png",
+      "repository_relative_path": "artifacts/bulgarian/native-captures/v9-final/api/phone-api-unknown/settings-ais.png",
+      "sha256": "743d8861db561b2424c8fa9370e36f4dfa5846c895a2bc7323ee7cdcd3663cb6",
+      "width": 480,
+      "height": 960,
+      "job": "phone-api-unknown"
+    }
+  ],
+  "counts": {
+    "completed_jobs": 11,
+    "images": 39
+  },
+  "review_instruction": "Open actual PNGs, assess visible Bulgarian text/glyphs/clipping/wrapping/controls; record actual inspected image paths/hashes and findings. Do not infer physical-device rendering, hidden controls, or unvisited states."
+}

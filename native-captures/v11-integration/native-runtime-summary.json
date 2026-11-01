@@ -1,0 +1,41 @@
+{
+  "status": "Actual final94021 bounded native integration PASS; independent25image review pending separately",
+  "final_revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "actual_native_build_log": "native-final-94021f77.log",
+  "actual_preview_original_sha256": "9ba596a69ccb1558475e8f3ffeabdc1e20f69ec845771f46b2280c2bf86caa7b",
+  "actual_capture_copy_sha256": "7e53662f4dd211ca76a290ef1570f221b7813febbfc72f1aa7ce10ecd99a9937",
+  "actual_engine_sha256": "d77a39b919cbfe89303ec34d8eb60f1064755a4cb80317cef030d80de1ca1ff8",
+  "UI_jobs_passed": 9,
+  "actual_UI_PNGs": 25,
+  "focused_engine_passed": 44,
+  "focused_engine_failed": 0,
+  "focused_engine_skipped": 0,
+  "golden115_final_verify_passed": true,
+  "runtime_ldd_files": 35,
+  "font_carry": {
+    "unchanged_literals_actualEA0": 6402,
+    "changed_literals_actual3810": 33,
+    "combinations": 12,
+    "actual3810_fresh_samples": 396,
+    "actual3810_fresh_failures": 0,
+    "total_final_values": 6435,
+    "new_final_full_matrix_executed": false,
+    "proof": "../../native-v11-qa/bg-font-carry-equivalence-proof.json"
+  },
+  "historical_broad_stress_result": {
+    "producer": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+    "passed": 146,
+    "failed": 1,
+    "failure": "Optional CustomGameSetup all-generator landscape picker120s settle deadline",
+    "isolated_retry": "Interrupted/uncompleted, unknown exitcode/noJUnit, never countedpassed",
+    "source_scope_proof": "../../native-v11-qa/picker-timeout-scope-proof.json",
+    "master_runtime_baseline_executed": false
+  },
+  "language_review_base_proof_sha256": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7",
+  "limits": [
+    "Actual Linux X11 software native harness, fastdevelopment build, emulated390x844phone viewport. No Android/iOS/macOS physical device or native high-DPI display certification.",
+    "Nine affected current screens and44focusedtests cover Filipino master layout/font predicate integration. No new147case run or fullfont matrix was performed.",
+    "Old25/34/108-image histories keep actualproducer identities. Independent final25image verdict will be a separate frozen receipt."
+  ],
+  "coverage_rationale": "Incoming action grid/footer/editor/HUD text scale receives fresh normal/enlargedphone captures and targeted tests. BG primary-font branch and textlayout/fullfontbytes remain equivalent, supporting historical literal measurements."
+}

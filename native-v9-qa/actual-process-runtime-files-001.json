@@ -1,0 +1,2602 @@
+{
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "binary_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+  "scope": "Actual final V9 process mappings observed during active final capture/font jobs; loaded file bytes hashed. Success is recorded later separately.",
+  "processes": [
+    {
+      "pid": 431733,
+      "arguments": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/desktop-10x2",
+        "1280",
+        "1024",
+        "10",
+        "2"
+      ],
+      "maps_sha256": "9ce387362de3763aad1ed0a397d8560054a5c192b77da4b3c00975c8aed9e11a",
+      "loaded_files": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "bytes": 154433816,
+          "sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "bytes": 4649608,
+          "sha256": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "bytes": 1249552,
+          "sha256": "6a14a733bfbe3d9343b6ab1a568b78b3ca1cbfdcca02c0f1e8310ca07a381b5e"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "bytes": 55792,
+          "sha256": "caf4d4399bfd8cfb1f62866ba2717434a8674b31b9d4f75628baf8e6d180e7e6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "bytes": 1562384,
+          "sha256": "c1a67b634bd5e798500d0ceb613ef987e9915d47b0a569ab2b48a2c9eecab8f0"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "bytes": 254864,
+          "sha256": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "bytes": 608512,
+          "sha256": "b7c1fe626e31e8c3ecb80d428ffb3a8824fd241ec55c6edc8b12437412206060"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "bytes": 35120,
+          "sha256": "eac440708f874c4d446671efb5353cebeaa829bd1f18cd8d5065cd6efefa387b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "bytes": 141712,
+          "sha256": "7f3acc17bffda6f12f7b022e9386514cfd83e77de67e71218bcbf19ec3577a99"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "bytes": 55688,
+          "sha256": "470ed7f6b9053163b65b83efebc53bb98ca0d7a5a30ead2b545a4e5574da9c91"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "bytes": 83120,
+          "sha256": "7138aeb748f73c150b1d34d67de69139a441910cd7b269076ba3c8b986dea9a7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "bytes": 2190608,
+          "sha256": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "bytes": 6386528,
+          "sha256": "5385f0436ac2e284ba8c5fb1488874057c29c04be72dea32add832694f381e28"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "bytes": 92272,
+          "sha256": "0e33bbae9bd7f62fd4172ac04d9088736defa499491aacae723732ce4e905f94"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "bytes": 92848,
+          "sha256": "c8be7d3863453898666977c12b0b392014a1c728d84215d885d574882d6e7b89"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "bytes": 1185600,
+          "sha256": "67533f0552bc23d90402a0df7bed6f4f40d8ec1946782b3f9d245c0e46a758ef"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "bytes": 870552,
+          "sha256": "36be278a8138d3e5773eb3f8491ff3fe73122a3051a9b36d1f86457ce0fad22d"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "bytes": 121112,
+          "sha256": "c122a34c3e9cab264c9a07b21b75f16443a646cc8db4e84ac91e800daa7e03ce"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "bytes": 187120,
+          "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "bytes": 1404616,
+          "sha256": "3cc1aeae827f436a296ec488b80e6c45c150dccfb4525e7db275cc08772d322f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "bytes": 149856,
+          "sha256": "3f1376e8965733a4d31386d5de99c829b7704beba3b07987da9220d53f192da2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "bytes": 1220816,
+          "sha256": "b330ca2b82b22fbce5e1a15dabfeffdd97e9976c3a3e48a2696628bfd34526d5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "bytes": 70576,
+          "sha256": "19ae16694b0f2c442b367fd9dfecf8da68c9b8ded0bc9029c1d53a9ba91a4151"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "bytes": 616592,
+          "sha256": "90a1eebead4d7c1abc46cf9c66c5392c60fc2c16f038af20fc7efbd0d8dd427f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "bytes": 215448,
+          "sha256": "515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "bytes": 1198376,
+          "sha256": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "bytes": 38984,
+          "sha256": "cb4b444d7f473530c04e31a70347bd572abd5e53a8b28e0f653fe76cf2255bc8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "bytes": 4282792,
+          "sha256": "5f01eaf11e7326d83f9c341a1d943851a0b00e3444668697dd663c14b138476e"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "bytes": 55600,
+          "sha256": "977c23c26f87f263af8404fe9772f923179c09feb9b97a2e6e46bbcbf5ab9cf4"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "bytes": 699056,
+          "sha256": "4a6b6b2078685b074869d75cb068664d7da6b3036df7bca0442b1bbbd4ac7e65"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "bytes": 231648,
+          "sha256": "2a570998f08a406b4083b06888e528fa0c5d6cc3bef77b40026d661c91cbfb90"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "bytes": 26888,
+          "sha256": "fced0bf76ec62fcce9b2cea1a91a9c61fbf6828e9e66b194cc6d779798907ff2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "bytes": 129176,
+          "sha256": "b33ab83259722f77ab70905816a96bd71987fbb1f0920bf238a27b77b5efe1f8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "bytes": 1114280,
+          "sha256": "63b47f444efa588e291e9b650a5ba2ab02f856356f2d50f13a2e477db9119e09"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "bytes": 2735712,
+          "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "bytes": 604400,
+          "sha256": "d65b506791e2469e886c716a7993b5e65ce40015aef1d15a678804a9fc3c4844"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "bytes": 14488,
+          "sha256": "c08daf7ae0bb66e575f8e717906490481caa3bfa20fdc8e63e98fec3b090ebeb"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "bytes": 227560,
+          "sha256": "4a6b851f244e5d3c0ca08ba6861106050f3caaa631721e3f87d621caeec34065"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "bytes": 592520,
+          "sha256": "0b477702bb43d90a1205813a9c211faa8dfef025a258b9d60663b37311b87c08"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "bytes": 121272,
+          "sha256": "27fa6c6cb94fb5b099ead61758a300dbc392d1dbf307fff6c16a9b8e57fdc9de"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "bytes": 796824,
+          "sha256": "060eeb79531d435306665fd78329d8a9dd579f95876c5960bb67937825362a80"
+        }
+      ]
+    },
+    {
+      "pid": 433064,
+      "arguments": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-main",
+        "1280",
+        "1024",
+        "main"
+      ],
+      "maps_sha256": "c03a06764057c98b7d3bb2251be3f5824def7e373c3980207590058ae8781fd4",
+      "loaded_files": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-main/profile/cache/mesa_shader_cache/index",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-main/profile/cache/mesa_shader_cache/index",
+          "bytes": 2097160,
+          "sha256": "5933fafd35b6510db7c94eed38f9c0fa21ee6c21b2b7bf4a548502186f7ee94d"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "bytes": 154433816,
+          "sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "bytes": 4649608,
+          "sha256": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "bytes": 1249552,
+          "sha256": "6a14a733bfbe3d9343b6ab1a568b78b3ca1cbfdcca02c0f1e8310ca07a381b5e"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "bytes": 55792,
+          "sha256": "caf4d4399bfd8cfb1f62866ba2717434a8674b31b9d4f75628baf8e6d180e7e6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "bytes": 1562384,
+          "sha256": "c1a67b634bd5e798500d0ceb613ef987e9915d47b0a569ab2b48a2c9eecab8f0"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_ADDRESS",
+          "realpath": "/usr/lib/locale/C.utf8/LC_ADDRESS",
+          "bytes": 127,
+          "sha256": "26e2800affab801cb36d4ff9625a95c3abceeda2b6553a7aecd0cfcf34c98099"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_COLLATE",
+          "realpath": "/usr/lib/locale/C.utf8/LC_COLLATE",
+          "bytes": 1406,
+          "sha256": "47a5f5359a8f324abc39d69a7f6241a2ac0e2fbbeae5b9c3a756e682b75d087b"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_CTYPE",
+          "realpath": "/usr/lib/locale/C.utf8/LC_CTYPE",
+          "bytes": 369120,
+          "sha256": "40680545df4f92443c15e7c6f51a7fdc9154ebedd9eff1ed5c48437039add365"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_IDENTIFICATION",
+          "realpath": "/usr/lib/locale/C.utf8/LC_IDENTIFICATION",
+          "bytes": 258,
+          "sha256": "38a1d8e5271c86f48910d9c684f64271955335736e71cec35eeac942f90eb091"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_MEASUREMENT",
+          "realpath": "/usr/lib/locale/C.utf8/LC_MEASUREMENT",
+          "bytes": 23,
+          "sha256": "bb14a6f2cbd5092a755e8f272079822d3e842620dd4542a8dfa1e5e72fc6115b"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES",
+          "realpath": "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES",
+          "bytes": 48,
+          "sha256": "f9ad02f1d8eba721d4cbd50c365b5c681c39aec008f90bfc2be2dc80bfbaddcb"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_MONETARY",
+          "realpath": "/usr/lib/locale/C.utf8/LC_MONETARY",
+          "bytes": 270,
+          "sha256": "bfd9e9975443b834582493fe9a8d7aefcd989376789c17470a1e548aee76fd55"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_NAME",
+          "realpath": "/usr/lib/locale/C.utf8/LC_NAME",
+          "bytes": 62,
+          "sha256": "14507aad9f806112e464b9ca94c93b2e4d759ddc612b5f87922d7cac7170697d"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_NUMERIC",
+          "realpath": "/usr/lib/locale/C.utf8/LC_NUMERIC",
+          "bytes": 50,
+          "sha256": "f5976e6b3e6b24dfe03caad6a5b98d894d8110d8bd15507e690fd60fd3e04ab2"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_PAPER",
+          "realpath": "/usr/lib/locale/C.utf8/LC_PAPER",
+          "bytes": 34,
+          "sha256": "cde048b81e2a026517cc707c906aebbd50f5ee3957b6f0c1c04699dffcb7c015"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_TELEPHONE",
+          "realpath": "/usr/lib/locale/C.utf8/LC_TELEPHONE",
+          "bytes": 47,
+          "sha256": "f4caf0d12844219b65ba42edc7ec2f5ac1b2fc36a3c88c28887457275daca1ee"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_TIME",
+          "realpath": "/usr/lib/locale/C.utf8/LC_TIME",
+          "bytes": 3360,
+          "sha256": "0910b595d1d5d4e52cc0f415bbb1ff07c015d6860d34aae02505dd9973a63154"
+        },
+        {
+          "path": "/usr/lib/locale/locale-archive",
+          "realpath": "/usr/lib/locale/locale-archive",
+          "bytes": 3064432,
+          "sha256": "74336f094157053703fe153f9fe4efa9efd7589bfc4e9695ac8195cf8d5fa4c4"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache",
+          "realpath": "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache",
+          "bytes": 27028,
+          "sha256": "52c227df9d53248238602c1ddaccd2c8ddc4cc6a61aa45d7c425af590b8806a5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "bytes": 254864,
+          "sha256": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGL.so.1.7.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGL.so.1.7.0",
+          "bytes": 538848,
+          "sha256": "ef85065ae96bff373db8ed59e1f4a77191cae4411f3dd7128d14a4c34af18a18"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGLX.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGLX.so.0.0.0",
+          "bytes": 141464,
+          "sha256": "0754505cc97c5c2251aebc10b5ab6ccbb9ad02d765bee07115bc9c09daf13002"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0.0.0",
+          "bytes": 389672,
+          "sha256": "864200bd459ead8a3027bedb768e1f7189b1526fc93ab5280b3edcad0cfc11fe"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGLdispatch.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGLdispatch.so.0.0.0",
+          "bytes": 719144,
+          "sha256": "8c3dbc80a9e435d15bb6394f609f90b823175a92e9ca41133294b5b8fcac50b2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libLLVM.so.21.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libLLVM.so.21.1",
+          "bytes": 138567144,
+          "sha256": "12dca1fc2d9f5d4ff35315fc2aa3a97b615b41ec6a71d3ce545efb62c075d902"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "bytes": 608512,
+          "sha256": "b7c1fe626e31e8c3ecb80d428ffb3a8824fd241ec55c6edc8b12437412206060"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libX11-xcb.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libX11-xcb.so.1.0.0",
+          "bytes": 14104,
+          "sha256": "6a9047ac83e4e1afb8032e62332aa449e7c6307c731f621054c9c0573a460899"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0",
+          "bytes": 1318648,
+          "sha256": "badd43566333da97d916ab365c61227751d49cd5c0df5d49dabdbd67b8c6fd19"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXau.so.6.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXau.so.6.0.0",
+          "bytes": 18776,
+          "sha256": "2b742de65acd00f154ed156720af66c0c0af9a58360ba041f25a41e2f775fab5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2",
+          "bytes": 47720,
+          "sha256": "0d8321ceafa73ca8f3921221055051be4e4a2ad75aa59f946578182e1ca45832"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0",
+          "bytes": 26856,
+          "sha256": "24beecbb0faf600d1a646b5edfc8c144da6f2965cb427598f4e17edc1285a733"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXext.so.6.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXext.so.6.4.0",
+          "bytes": 77592,
+          "sha256": "9e358938dc783704b75a8a27f07b9a2cc7dfb7ff73fd05cbcfe634b8c2afc74a"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0",
+          "bytes": 26880,
+          "sha256": "04f371370ab65d552b214c9d57ac8b05c8fd9127b1bd55e29bd297f417241de0"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXi.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXi.so.6.1.0",
+          "bytes": 80496,
+          "sha256": "05aeb2b462c5bd22e969a47c269c7fe0c77edd7bc1e89f3f0dead169f5df222c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0",
+          "bytes": 47584,
+          "sha256": "de834ac7818cdfd326ddea6859781780a20397ff5877508c203eb07b694a412c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0",
+          "bytes": 43712,
+          "sha256": "708d1c6a5d8aa5169d61e5b79973bf012047de0fb881d2836d44b3167a1a51a5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXss.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXss.so.1.0.0",
+          "bytes": 14728,
+          "sha256": "04e9f6b5706ffc0397fecce4aed3c23875346b9f770a029ecac575254219b312"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0",
+          "bytes": 27208,
+          "sha256": "4494cd499423eeae05077943a3c0e0adc6f6b68ce524d3b4d3c9a8c052eb52d5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXxf86vm.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXxf86vm.so.1.0.0",
+          "bytes": 22920,
+          "sha256": "ed342de4e4469f5192d5a570b1da0a7ba42fa580b0bdae98b31715de006b2c7c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "bytes": 35120,
+          "sha256": "eac440708f874c4d446671efb5353cebeaa829bd1f18cd8d5065cd6efefa387b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "bytes": 141712,
+          "sha256": "7f3acc17bffda6f12f7b022e9386514cfd83e77de67e71218bcbf19ec3577a99"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "bytes": 55688,
+          "sha256": "470ed7f6b9053163b65b83efebc53bb98ca0d7a5a30ead2b545a4e5574da9c91"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbsd.so.0.12.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbsd.so.0.12.2",
+          "bytes": 81048,
+          "sha256": "c71b8a0d7e94c5e34f6c328c5dd1ba7f325d3300c97a54a7c69ef9a6c2caa8b3"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "bytes": 83120,
+          "sha256": "7138aeb748f73c150b1d34d67de69139a441910cd7b269076ba3c8b986dea9a7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "bytes": 2190608,
+          "sha256": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "bytes": 6386528,
+          "sha256": "5385f0436ac2e284ba8c5fb1488874057c29c04be72dea32add832694f381e28"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.38.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.38.3",
+          "bytes": 321920,
+          "sha256": "bb0b37afa67c7b6d664ca189f63fb92e75a690a340c4c13a149cc4dfbd8249ff"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "bytes": 92272,
+          "sha256": "0e33bbae9bd7f62fd4172ac04d9088736defa499491aacae723732ce4e905f94"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "bytes": 92848,
+          "sha256": "c8be7d3863453898666977c12b0b392014a1c728d84215d885d574882d6e7b89"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm_amdgpu.so.1.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm_amdgpu.so.1.131.0",
+          "bytes": 47784,
+          "sha256": "edc5af5a40623befde7f1214950cb0046e04e9a39f925e6959e71f01d2d34d9c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm_intel.so.1.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm_intel.so.1.131.0",
+          "bytes": 150584,
+          "sha256": "b4efda864f3ff03ec175787fc83c330981cf3a50704127debb782c325055054e"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libedit.so.2.0.76",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libedit.so.2.0.76",
+          "bytes": 220544,
+          "sha256": "438090e1cd463d9f89c9259ce9e99f229eae56c857b5e525d581e338f61aa1ce"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libelf-0.194.so",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libelf-0.194.so",
+          "bytes": 133928,
+          "sha256": "f77db7b4cfa02c98aa5918caf1f02b6cf37a5998e2e5cc8e43e664dbb72c87fa"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "bytes": 1185600,
+          "sha256": "67533f0552bc23d90402a0df7bed6f4f40d8ec1946782b3f9d245c0e46a758ef"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.11.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.11.2",
+          "bytes": 186704,
+          "sha256": "2e5f66e2784c2746775567ff9916f6e7503182a8f1f2deb8ca729dfc1463849f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libffi.so.8.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libffi.so.8.2.0",
+          "bytes": 64184,
+          "sha256": "1a0dc86f787f73e025a6e521056360afcbe70f2a82cd808132fefc2b4ee95daa"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "bytes": 870552,
+          "sha256": "36be278a8138d3e5773eb3f8491ff3fe73122a3051a9b36d1f86457ce0fad22d"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "bytes": 121112,
+          "sha256": "c122a34c3e9cab264c9a07b21b75f16443a646cc8db4e84ac91e800daa7e03ce"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgallium-26.0.8-1ubuntu0.3.so",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgallium-26.0.8-1ubuntu0.3.so",
+          "bytes": 45621592,
+          "sha256": "64c5508bb7167947f932c950d5e2d2c314f631fc3919de82f757c3769758b79f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "bytes": 187120,
+          "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "bytes": 1404616,
+          "sha256": "3cc1aeae827f436a296ec488b80e6c45c150dccfb4525e7db275cc08772d322f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "bytes": 149856,
+          "sha256": "3f1376e8965733a4d31386d5de99c829b7704beba3b07987da9220d53f192da2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "bytes": 1220816,
+          "sha256": "b330ca2b82b22fbce5e1a15dabfeffdd97e9976c3a3e48a2696628bfd34526d5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "bytes": 70576,
+          "sha256": "19ae16694b0f2c442b367fd9dfecf8da68c9b8ded0bc9029c1d53a9ba91a4151"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "bytes": 616592,
+          "sha256": "90a1eebead4d7c1abc46cf9c66c5392c60fc2c16f038af20fc7efbd0d8dd427f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "bytes": 215448,
+          "sha256": "515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "bytes": 1198376,
+          "sha256": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libmd.so.0.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libmd.so.0.1.0",
+          "bytes": 55608,
+          "sha256": "f115fa619f586e47ddfbec21bfd50069fbe5d21f388f8d9a07a984cb075d7efa"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "bytes": 38984,
+          "sha256": "cb4b444d7f473530c04e31a70347bd572abd5e53a8b28e0f653fe76cf2255bc8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "bytes": 4282792,
+          "sha256": "5f01eaf11e7326d83f9c341a1d943851a0b00e3444668697dd663c14b138476e"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "bytes": 55600,
+          "sha256": "977c23c26f87f263af8404fe9772f923179c09feb9b97a2e6e46bbcbf5ab9cf4"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpciaccess.so.0.11.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpciaccess.so.0.11.1",
+          "bytes": 39472,
+          "sha256": "d8cabd96e1a585bb48e13e8447ba72c6fe48735ba60f7c8c46b2763d45a2c400"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "bytes": 699056,
+          "sha256": "4a6b6b2078685b074869d75cb068664d7da6b3036df7bca0442b1bbbd4ac7e65"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "bytes": 231648,
+          "sha256": "2a570998f08a406b4083b06888e528fa0c5d6cc3bef77b40026d661c91cbfb90"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsensors.so.5.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsensors.so.5.0.0",
+          "bytes": 67784,
+          "sha256": "ed2a8c4a99433a3f4203f26d863aa46bfa3a60a596cccc93955ca778fed56d7c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "bytes": 26888,
+          "sha256": "fced0bf76ec62fcce9b2cea1a91a9c61fbf6828e9e66b194cc6d779798907ff2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "bytes": 129176,
+          "sha256": "b33ab83259722f77ab70905816a96bd71987fbb1f0920bf238a27b77b5efe1f8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "bytes": 1114280,
+          "sha256": "63b47f444efa588e291e9b650a5ba2ab02f856356f2d50f13a2e477db9119e09"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "bytes": 2735712,
+          "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsystemd.so.0.42.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsystemd.so.0.42.0",
+          "bytes": 1127960,
+          "sha256": "7c8bd89f59b9f96fdb933eb1414f449c2db45fbb078c8d793cc46f9173be7934"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "bytes": 604400,
+          "sha256": "d65b506791e2469e886c716a7993b5e65ce40015aef1d15a678804a9fc3c4844"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.6",
+          "bytes": 212504,
+          "sha256": "085dbbe5dc38619276bdd0af37ae588969b1308baded09a2990ce8824a602912"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "bytes": 14488,
+          "sha256": "c08daf7ae0bb66e575f8e717906490481caa3bfa20fdc8e63e98fec3b090ebeb"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "bytes": 227560,
+          "sha256": "4a6b851f244e5d3c0ca08ba6861106050f3caaa631721e3f87d621caeec34065"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "bytes": 592520,
+          "sha256": "0b477702bb43d90a1205813a9c211faa8dfef025a258b9d60663b37311b87c08"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0",
+          "bytes": 22824,
+          "sha256": "d2f0488a28a351718192c01bba15f60556f514db555dfbce9a132dedd1401e98"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-glx.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-glx.so.0.0.0",
+          "bytes": 112920,
+          "sha256": "e58a788c3968ffd7e960451b9506054abfaf0deb0eab888955c9de948c2c7c7d"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-present.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-present.so.0.0.0",
+          "bytes": 14616,
+          "sha256": "085bc629d45125f8c3b0f09f9c37ee65d35b1ea55e1f047cffd6aef4ce218b5a"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-randr.so.0.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-randr.so.0.1.0",
+          "bytes": 67864,
+          "sha256": "a9444026ba3c927a917ff5a0ce47318bed09ab8f9382fe231c72b33da4ec8bbc"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0",
+          "bytes": 14632,
+          "sha256": "58fcb847e2009affbd7eeb1f6d39949f29ccc153f230e0b0d23de00d2b5c1353"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-sync.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-sync.so.1.0.0",
+          "bytes": 35112,
+          "sha256": "bf494083f05bc427135042b5cdaa5bf5fbe0886f34f611151dde0056257022c9"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-xfixes.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-xfixes.so.0.0.0",
+          "bytes": 35096,
+          "sha256": "37c933b3e89f66330a930207b3133ce5b2c7aade777c7711b70945cc7d4b2333"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0",
+          "bytes": 170680,
+          "sha256": "6af94be329e17e57f1cc0f5e4afb5bdfe669a5168accdc31b03274110b937b41"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxml2.so.16.1.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxml2.so.16.1.2",
+          "bytes": 1449112,
+          "sha256": "302dfa1295c6f917758243ef0f118f7144026b51a5f5cd1610fba849c968f73b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxshmfence.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxshmfence.so.1.0.0",
+          "bytes": 14592,
+          "sha256": "8b4406ff7f9f2b2830e6d135f9e7ffe991d32832b8fc3569fed189517b557d2b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "bytes": 121272,
+          "sha256": "27fa6c6cb94fb5b099ead61758a300dbc392d1dbf307fff6c16a9b8e57fdc9de"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "bytes": 796824,
+          "sha256": "060eeb79531d435306665fd78329d8a9dd579f95876c5960bb67937825362a80"
+        }
+      ]
+    },
+    {
+      "pid": 433361,
+      "arguments": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "script-editor",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor",
+        "390",
+        "844"
+      ],
+      "maps_sha256": "bebe2fb4c099d2f65e303e16288b2c0b26cf769423dced23888b6b028eaf953d",
+      "loaded_files": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/profile/cache/mesa_shader_cache/index",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/profile/cache/mesa_shader_cache/index",
+          "bytes": 2097160,
+          "sha256": "81fad32af65fc7f3f4ff26adb8f5bcb4bdf1d0cd960fc285fc17faff326d3a30"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "bytes": 154433816,
+          "sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "bytes": 4649608,
+          "sha256": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "bytes": 1249552,
+          "sha256": "6a14a733bfbe3d9343b6ab1a568b78b3ca1cbfdcca02c0f1e8310ca07a381b5e"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "bytes": 55792,
+          "sha256": "caf4d4399bfd8cfb1f62866ba2717434a8674b31b9d4f75628baf8e6d180e7e6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "bytes": 1562384,
+          "sha256": "c1a67b634bd5e798500d0ceb613ef987e9915d47b0a569ab2b48a2c9eecab8f0"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_ADDRESS",
+          "realpath": "/usr/lib/locale/C.utf8/LC_ADDRESS",
+          "bytes": 127,
+          "sha256": "26e2800affab801cb36d4ff9625a95c3abceeda2b6553a7aecd0cfcf34c98099"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_COLLATE",
+          "realpath": "/usr/lib/locale/C.utf8/LC_COLLATE",
+          "bytes": 1406,
+          "sha256": "47a5f5359a8f324abc39d69a7f6241a2ac0e2fbbeae5b9c3a756e682b75d087b"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_CTYPE",
+          "realpath": "/usr/lib/locale/C.utf8/LC_CTYPE",
+          "bytes": 369120,
+          "sha256": "40680545df4f92443c15e7c6f51a7fdc9154ebedd9eff1ed5c48437039add365"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_IDENTIFICATION",
+          "realpath": "/usr/lib/locale/C.utf8/LC_IDENTIFICATION",
+          "bytes": 258,
+          "sha256": "38a1d8e5271c86f48910d9c684f64271955335736e71cec35eeac942f90eb091"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_MEASUREMENT",
+          "realpath": "/usr/lib/locale/C.utf8/LC_MEASUREMENT",
+          "bytes": 23,
+          "sha256": "bb14a6f2cbd5092a755e8f272079822d3e842620dd4542a8dfa1e5e72fc6115b"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES",
+          "realpath": "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES",
+          "bytes": 48,
+          "sha256": "f9ad02f1d8eba721d4cbd50c365b5c681c39aec008f90bfc2be2dc80bfbaddcb"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_MONETARY",
+          "realpath": "/usr/lib/locale/C.utf8/LC_MONETARY",
+          "bytes": 270,
+          "sha256": "bfd9e9975443b834582493fe9a8d7aefcd989376789c17470a1e548aee76fd55"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_NAME",
+          "realpath": "/usr/lib/locale/C.utf8/LC_NAME",
+          "bytes": 62,
+          "sha256": "14507aad9f806112e464b9ca94c93b2e4d759ddc612b5f87922d7cac7170697d"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_NUMERIC",
+          "realpath": "/usr/lib/locale/C.utf8/LC_NUMERIC",
+          "bytes": 50,
+          "sha256": "f5976e6b3e6b24dfe03caad6a5b98d894d8110d8bd15507e690fd60fd3e04ab2"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_PAPER",
+          "realpath": "/usr/lib/locale/C.utf8/LC_PAPER",
+          "bytes": 34,
+          "sha256": "cde048b81e2a026517cc707c906aebbd50f5ee3957b6f0c1c04699dffcb7c015"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_TELEPHONE",
+          "realpath": "/usr/lib/locale/C.utf8/LC_TELEPHONE",
+          "bytes": 47,
+          "sha256": "f4caf0d12844219b65ba42edc7ec2f5ac1b2fc36a3c88c28887457275daca1ee"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_TIME",
+          "realpath": "/usr/lib/locale/C.utf8/LC_TIME",
+          "bytes": 3360,
+          "sha256": "0910b595d1d5d4e52cc0f415bbb1ff07c015d6860d34aae02505dd9973a63154"
+        },
+        {
+          "path": "/usr/lib/locale/locale-archive",
+          "realpath": "/usr/lib/locale/locale-archive",
+          "bytes": 3064432,
+          "sha256": "74336f094157053703fe153f9fe4efa9efd7589bfc4e9695ac8195cf8d5fa4c4"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache",
+          "realpath": "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache",
+          "bytes": 27028,
+          "sha256": "52c227df9d53248238602c1ddaccd2c8ddc4cc6a61aa45d7c425af590b8806a5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "bytes": 254864,
+          "sha256": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGL.so.1.7.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGL.so.1.7.0",
+          "bytes": 538848,
+          "sha256": "ef85065ae96bff373db8ed59e1f4a77191cae4411f3dd7128d14a4c34af18a18"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGLX.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGLX.so.0.0.0",
+          "bytes": 141464,
+          "sha256": "0754505cc97c5c2251aebc10b5ab6ccbb9ad02d765bee07115bc9c09daf13002"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0.0.0",
+          "bytes": 389672,
+          "sha256": "864200bd459ead8a3027bedb768e1f7189b1526fc93ab5280b3edcad0cfc11fe"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGLdispatch.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGLdispatch.so.0.0.0",
+          "bytes": 719144,
+          "sha256": "8c3dbc80a9e435d15bb6394f609f90b823175a92e9ca41133294b5b8fcac50b2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libLLVM.so.21.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libLLVM.so.21.1",
+          "bytes": 138567144,
+          "sha256": "12dca1fc2d9f5d4ff35315fc2aa3a97b615b41ec6a71d3ce545efb62c075d902"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "bytes": 608512,
+          "sha256": "b7c1fe626e31e8c3ecb80d428ffb3a8824fd241ec55c6edc8b12437412206060"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libX11-xcb.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libX11-xcb.so.1.0.0",
+          "bytes": 14104,
+          "sha256": "6a9047ac83e4e1afb8032e62332aa449e7c6307c731f621054c9c0573a460899"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0",
+          "bytes": 1318648,
+          "sha256": "badd43566333da97d916ab365c61227751d49cd5c0df5d49dabdbd67b8c6fd19"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXau.so.6.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXau.so.6.0.0",
+          "bytes": 18776,
+          "sha256": "2b742de65acd00f154ed156720af66c0c0af9a58360ba041f25a41e2f775fab5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2",
+          "bytes": 47720,
+          "sha256": "0d8321ceafa73ca8f3921221055051be4e4a2ad75aa59f946578182e1ca45832"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0",
+          "bytes": 26856,
+          "sha256": "24beecbb0faf600d1a646b5edfc8c144da6f2965cb427598f4e17edc1285a733"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXext.so.6.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXext.so.6.4.0",
+          "bytes": 77592,
+          "sha256": "9e358938dc783704b75a8a27f07b9a2cc7dfb7ff73fd05cbcfe634b8c2afc74a"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0",
+          "bytes": 26880,
+          "sha256": "04f371370ab65d552b214c9d57ac8b05c8fd9127b1bd55e29bd297f417241de0"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXi.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXi.so.6.1.0",
+          "bytes": 80496,
+          "sha256": "05aeb2b462c5bd22e969a47c269c7fe0c77edd7bc1e89f3f0dead169f5df222c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0",
+          "bytes": 47584,
+          "sha256": "de834ac7818cdfd326ddea6859781780a20397ff5877508c203eb07b694a412c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0",
+          "bytes": 43712,
+          "sha256": "708d1c6a5d8aa5169d61e5b79973bf012047de0fb881d2836d44b3167a1a51a5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXss.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXss.so.1.0.0",
+          "bytes": 14728,
+          "sha256": "04e9f6b5706ffc0397fecce4aed3c23875346b9f770a029ecac575254219b312"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0",
+          "bytes": 27208,
+          "sha256": "4494cd499423eeae05077943a3c0e0adc6f6b68ce524d3b4d3c9a8c052eb52d5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXxf86vm.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXxf86vm.so.1.0.0",
+          "bytes": 22920,
+          "sha256": "ed342de4e4469f5192d5a570b1da0a7ba42fa580b0bdae98b31715de006b2c7c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "bytes": 35120,
+          "sha256": "eac440708f874c4d446671efb5353cebeaa829bd1f18cd8d5065cd6efefa387b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "bytes": 141712,
+          "sha256": "7f3acc17bffda6f12f7b022e9386514cfd83e77de67e71218bcbf19ec3577a99"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "bytes": 55688,
+          "sha256": "470ed7f6b9053163b65b83efebc53bb98ca0d7a5a30ead2b545a4e5574da9c91"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbsd.so.0.12.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbsd.so.0.12.2",
+          "bytes": 81048,
+          "sha256": "c71b8a0d7e94c5e34f6c328c5dd1ba7f325d3300c97a54a7c69ef9a6c2caa8b3"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "bytes": 83120,
+          "sha256": "7138aeb748f73c150b1d34d67de69139a441910cd7b269076ba3c8b986dea9a7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "bytes": 2190608,
+          "sha256": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "bytes": 6386528,
+          "sha256": "5385f0436ac2e284ba8c5fb1488874057c29c04be72dea32add832694f381e28"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.38.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.38.3",
+          "bytes": 321920,
+          "sha256": "bb0b37afa67c7b6d664ca189f63fb92e75a690a340c4c13a149cc4dfbd8249ff"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "bytes": 92272,
+          "sha256": "0e33bbae9bd7f62fd4172ac04d9088736defa499491aacae723732ce4e905f94"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "bytes": 92848,
+          "sha256": "c8be7d3863453898666977c12b0b392014a1c728d84215d885d574882d6e7b89"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm_amdgpu.so.1.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm_amdgpu.so.1.131.0",
+          "bytes": 47784,
+          "sha256": "edc5af5a40623befde7f1214950cb0046e04e9a39f925e6959e71f01d2d34d9c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm_intel.so.1.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm_intel.so.1.131.0",
+          "bytes": 150584,
+          "sha256": "b4efda864f3ff03ec175787fc83c330981cf3a50704127debb782c325055054e"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libedit.so.2.0.76",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libedit.so.2.0.76",
+          "bytes": 220544,
+          "sha256": "438090e1cd463d9f89c9259ce9e99f229eae56c857b5e525d581e338f61aa1ce"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libelf-0.194.so",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libelf-0.194.so",
+          "bytes": 133928,
+          "sha256": "f77db7b4cfa02c98aa5918caf1f02b6cf37a5998e2e5cc8e43e664dbb72c87fa"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "bytes": 1185600,
+          "sha256": "67533f0552bc23d90402a0df7bed6f4f40d8ec1946782b3f9d245c0e46a758ef"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.11.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.11.2",
+          "bytes": 186704,
+          "sha256": "2e5f66e2784c2746775567ff9916f6e7503182a8f1f2deb8ca729dfc1463849f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libffi.so.8.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libffi.so.8.2.0",
+          "bytes": 64184,
+          "sha256": "1a0dc86f787f73e025a6e521056360afcbe70f2a82cd808132fefc2b4ee95daa"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "bytes": 870552,
+          "sha256": "36be278a8138d3e5773eb3f8491ff3fe73122a3051a9b36d1f86457ce0fad22d"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "bytes": 121112,
+          "sha256": "c122a34c3e9cab264c9a07b21b75f16443a646cc8db4e84ac91e800daa7e03ce"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgallium-26.0.8-1ubuntu0.3.so",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgallium-26.0.8-1ubuntu0.3.so",
+          "bytes": 45621592,
+          "sha256": "64c5508bb7167947f932c950d5e2d2c314f631fc3919de82f757c3769758b79f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "bytes": 187120,
+          "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "bytes": 1404616,
+          "sha256": "3cc1aeae827f436a296ec488b80e6c45c150dccfb4525e7db275cc08772d322f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "bytes": 149856,
+          "sha256": "3f1376e8965733a4d31386d5de99c829b7704beba3b07987da9220d53f192da2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "bytes": 1220816,
+          "sha256": "b330ca2b82b22fbce5e1a15dabfeffdd97e9976c3a3e48a2696628bfd34526d5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "bytes": 70576,
+          "sha256": "19ae16694b0f2c442b367fd9dfecf8da68c9b8ded0bc9029c1d53a9ba91a4151"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "bytes": 616592,
+          "sha256": "90a1eebead4d7c1abc46cf9c66c5392c60fc2c16f038af20fc7efbd0d8dd427f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "bytes": 215448,
+          "sha256": "515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "bytes": 1198376,
+          "sha256": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libmd.so.0.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libmd.so.0.1.0",
+          "bytes": 55608,
+          "sha256": "f115fa619f586e47ddfbec21bfd50069fbe5d21f388f8d9a07a984cb075d7efa"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "bytes": 38984,
+          "sha256": "cb4b444d7f473530c04e31a70347bd572abd5e53a8b28e0f653fe76cf2255bc8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "bytes": 4282792,
+          "sha256": "5f01eaf11e7326d83f9c341a1d943851a0b00e3444668697dd663c14b138476e"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "bytes": 55600,
+          "sha256": "977c23c26f87f263af8404fe9772f923179c09feb9b97a2e6e46bbcbf5ab9cf4"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpciaccess.so.0.11.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpciaccess.so.0.11.1",
+          "bytes": 39472,
+          "sha256": "d8cabd96e1a585bb48e13e8447ba72c6fe48735ba60f7c8c46b2763d45a2c400"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "bytes": 699056,
+          "sha256": "4a6b6b2078685b074869d75cb068664d7da6b3036df7bca0442b1bbbd4ac7e65"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "bytes": 231648,
+          "sha256": "2a570998f08a406b4083b06888e528fa0c5d6cc3bef77b40026d661c91cbfb90"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsensors.so.5.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsensors.so.5.0.0",
+          "bytes": 67784,
+          "sha256": "ed2a8c4a99433a3f4203f26d863aa46bfa3a60a596cccc93955ca778fed56d7c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "bytes": 26888,
+          "sha256": "fced0bf76ec62fcce9b2cea1a91a9c61fbf6828e9e66b194cc6d779798907ff2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "bytes": 129176,
+          "sha256": "b33ab83259722f77ab70905816a96bd71987fbb1f0920bf238a27b77b5efe1f8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "bytes": 1114280,
+          "sha256": "63b47f444efa588e291e9b650a5ba2ab02f856356f2d50f13a2e477db9119e09"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "bytes": 2735712,
+          "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsystemd.so.0.42.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsystemd.so.0.42.0",
+          "bytes": 1127960,
+          "sha256": "7c8bd89f59b9f96fdb933eb1414f449c2db45fbb078c8d793cc46f9173be7934"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "bytes": 604400,
+          "sha256": "d65b506791e2469e886c716a7993b5e65ce40015aef1d15a678804a9fc3c4844"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.6",
+          "bytes": 212504,
+          "sha256": "085dbbe5dc38619276bdd0af37ae588969b1308baded09a2990ce8824a602912"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "bytes": 14488,
+          "sha256": "c08daf7ae0bb66e575f8e717906490481caa3bfa20fdc8e63e98fec3b090ebeb"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "bytes": 227560,
+          "sha256": "4a6b851f244e5d3c0ca08ba6861106050f3caaa631721e3f87d621caeec34065"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "bytes": 592520,
+          "sha256": "0b477702bb43d90a1205813a9c211faa8dfef025a258b9d60663b37311b87c08"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0",
+          "bytes": 22824,
+          "sha256": "d2f0488a28a351718192c01bba15f60556f514db555dfbce9a132dedd1401e98"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-glx.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-glx.so.0.0.0",
+          "bytes": 112920,
+          "sha256": "e58a788c3968ffd7e960451b9506054abfaf0deb0eab888955c9de948c2c7c7d"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-present.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-present.so.0.0.0",
+          "bytes": 14616,
+          "sha256": "085bc629d45125f8c3b0f09f9c37ee65d35b1ea55e1f047cffd6aef4ce218b5a"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-randr.so.0.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-randr.so.0.1.0",
+          "bytes": 67864,
+          "sha256": "a9444026ba3c927a917ff5a0ce47318bed09ab8f9382fe231c72b33da4ec8bbc"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0",
+          "bytes": 14632,
+          "sha256": "58fcb847e2009affbd7eeb1f6d39949f29ccc153f230e0b0d23de00d2b5c1353"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-sync.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-sync.so.1.0.0",
+          "bytes": 35112,
+          "sha256": "bf494083f05bc427135042b5cdaa5bf5fbe0886f34f611151dde0056257022c9"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-xfixes.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-xfixes.so.0.0.0",
+          "bytes": 35096,
+          "sha256": "37c933b3e89f66330a930207b3133ce5b2c7aade777c7711b70945cc7d4b2333"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0",
+          "bytes": 170680,
+          "sha256": "6af94be329e17e57f1cc0f5e4afb5bdfe669a5168accdc31b03274110b937b41"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxml2.so.16.1.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxml2.so.16.1.2",
+          "bytes": 1449112,
+          "sha256": "302dfa1295c6f917758243ef0f118f7144026b51a5f5cd1610fba849c968f73b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxshmfence.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxshmfence.so.1.0.0",
+          "bytes": 14592,
+          "sha256": "8b4406ff7f9f2b2830e6d135f9e7ffe991d32832b8fc3569fed189517b557d2b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "bytes": 121272,
+          "sha256": "27fa6c6cb94fb5b099ead61758a300dbc392d1dbf307fff6c16a9b8e57fdc9de"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "bytes": 796824,
+          "sha256": "060eeb79531d435306665fd78329d8a9dd579f95876c5960bb67937825362a80"
+        }
+      ]
+    },
+    {
+      "pid": 433373,
+      "arguments": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-1-of-3/desktop-13x2",
+        "1280",
+        "1024",
+        "13",
+        "2"
+      ],
+      "maps_sha256": "b25f48f78b6055e4c482d947566a704b819b732e68477d3206d0584ee371e146",
+      "loaded_files": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "bytes": 154433816,
+          "sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "bytes": 4649608,
+          "sha256": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "bytes": 1249552,
+          "sha256": "6a14a733bfbe3d9343b6ab1a568b78b3ca1cbfdcca02c0f1e8310ca07a381b5e"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "bytes": 55792,
+          "sha256": "caf4d4399bfd8cfb1f62866ba2717434a8674b31b9d4f75628baf8e6d180e7e6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "bytes": 1562384,
+          "sha256": "c1a67b634bd5e798500d0ceb613ef987e9915d47b0a569ab2b48a2c9eecab8f0"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "bytes": 254864,
+          "sha256": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "bytes": 608512,
+          "sha256": "b7c1fe626e31e8c3ecb80d428ffb3a8824fd241ec55c6edc8b12437412206060"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "bytes": 35120,
+          "sha256": "eac440708f874c4d446671efb5353cebeaa829bd1f18cd8d5065cd6efefa387b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "bytes": 141712,
+          "sha256": "7f3acc17bffda6f12f7b022e9386514cfd83e77de67e71218bcbf19ec3577a99"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "bytes": 55688,
+          "sha256": "470ed7f6b9053163b65b83efebc53bb98ca0d7a5a30ead2b545a4e5574da9c91"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "bytes": 83120,
+          "sha256": "7138aeb748f73c150b1d34d67de69139a441910cd7b269076ba3c8b986dea9a7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "bytes": 2190608,
+          "sha256": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "bytes": 6386528,
+          "sha256": "5385f0436ac2e284ba8c5fb1488874057c29c04be72dea32add832694f381e28"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "bytes": 92272,
+          "sha256": "0e33bbae9bd7f62fd4172ac04d9088736defa499491aacae723732ce4e905f94"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "bytes": 92848,
+          "sha256": "c8be7d3863453898666977c12b0b392014a1c728d84215d885d574882d6e7b89"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "bytes": 1185600,
+          "sha256": "67533f0552bc23d90402a0df7bed6f4f40d8ec1946782b3f9d245c0e46a758ef"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "bytes": 870552,
+          "sha256": "36be278a8138d3e5773eb3f8491ff3fe73122a3051a9b36d1f86457ce0fad22d"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "bytes": 121112,
+          "sha256": "c122a34c3e9cab264c9a07b21b75f16443a646cc8db4e84ac91e800daa7e03ce"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "bytes": 187120,
+          "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "bytes": 1404616,
+          "sha256": "3cc1aeae827f436a296ec488b80e6c45c150dccfb4525e7db275cc08772d322f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "bytes": 149856,
+          "sha256": "3f1376e8965733a4d31386d5de99c829b7704beba3b07987da9220d53f192da2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "bytes": 1220816,
+          "sha256": "b330ca2b82b22fbce5e1a15dabfeffdd97e9976c3a3e48a2696628bfd34526d5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "bytes": 70576,
+          "sha256": "19ae16694b0f2c442b367fd9dfecf8da68c9b8ded0bc9029c1d53a9ba91a4151"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "bytes": 616592,
+          "sha256": "90a1eebead4d7c1abc46cf9c66c5392c60fc2c16f038af20fc7efbd0d8dd427f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "bytes": 215448,
+          "sha256": "515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "bytes": 1198376,
+          "sha256": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "bytes": 38984,
+          "sha256": "cb4b444d7f473530c04e31a70347bd572abd5e53a8b28e0f653fe76cf2255bc8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "bytes": 4282792,
+          "sha256": "5f01eaf11e7326d83f9c341a1d943851a0b00e3444668697dd663c14b138476e"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "bytes": 55600,
+          "sha256": "977c23c26f87f263af8404fe9772f923179c09feb9b97a2e6e46bbcbf5ab9cf4"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "bytes": 699056,
+          "sha256": "4a6b6b2078685b074869d75cb068664d7da6b3036df7bca0442b1bbbd4ac7e65"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "bytes": 231648,
+          "sha256": "2a570998f08a406b4083b06888e528fa0c5d6cc3bef77b40026d661c91cbfb90"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "bytes": 26888,
+          "sha256": "fced0bf76ec62fcce9b2cea1a91a9c61fbf6828e9e66b194cc6d779798907ff2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "bytes": 129176,
+          "sha256": "b33ab83259722f77ab70905816a96bd71987fbb1f0920bf238a27b77b5efe1f8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "bytes": 1114280,
+          "sha256": "63b47f444efa588e291e9b650a5ba2ab02f856356f2d50f13a2e477db9119e09"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "bytes": 2735712,
+          "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "bytes": 604400,
+          "sha256": "d65b506791e2469e886c716a7993b5e65ce40015aef1d15a678804a9fc3c4844"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "bytes": 14488,
+          "sha256": "c08daf7ae0bb66e575f8e717906490481caa3bfa20fdc8e63e98fec3b090ebeb"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "bytes": 227560,
+          "sha256": "4a6b851f244e5d3c0ca08ba6861106050f3caaa631721e3f87d621caeec34065"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "bytes": 592520,
+          "sha256": "0b477702bb43d90a1205813a9c211faa8dfef025a258b9d60663b37311b87c08"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "bytes": 121272,
+          "sha256": "27fa6c6cb94fb5b099ead61758a300dbc392d1dbf307fff6c16a9b8e57fdc9de"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "bytes": 796824,
+          "sha256": "060eeb79531d435306665fd78329d8a9dd579f95876c5960bb67937825362a80"
+        }
+      ]
+    },
+    {
+      "pid": 433524,
+      "arguments": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "matrix",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/desktop-20x2",
+        "1280",
+        "1024",
+        "20",
+        "2"
+      ],
+      "maps_sha256": "edeebc1081f4df6a731cfc8e60fcfebd4650ef4820c101ac74750258720e83f3",
+      "loaded_files": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "bytes": 154433816,
+          "sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "bytes": 4649608,
+          "sha256": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "bytes": 1249552,
+          "sha256": "6a14a733bfbe3d9343b6ab1a568b78b3ca1cbfdcca02c0f1e8310ca07a381b5e"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "bytes": 55792,
+          "sha256": "caf4d4399bfd8cfb1f62866ba2717434a8674b31b9d4f75628baf8e6d180e7e6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "bytes": 1562384,
+          "sha256": "c1a67b634bd5e798500d0ceb613ef987e9915d47b0a569ab2b48a2c9eecab8f0"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "bytes": 254864,
+          "sha256": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "bytes": 608512,
+          "sha256": "b7c1fe626e31e8c3ecb80d428ffb3a8824fd241ec55c6edc8b12437412206060"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "bytes": 35120,
+          "sha256": "eac440708f874c4d446671efb5353cebeaa829bd1f18cd8d5065cd6efefa387b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "bytes": 141712,
+          "sha256": "7f3acc17bffda6f12f7b022e9386514cfd83e77de67e71218bcbf19ec3577a99"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "bytes": 55688,
+          "sha256": "470ed7f6b9053163b65b83efebc53bb98ca0d7a5a30ead2b545a4e5574da9c91"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "bytes": 83120,
+          "sha256": "7138aeb748f73c150b1d34d67de69139a441910cd7b269076ba3c8b986dea9a7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "bytes": 2190608,
+          "sha256": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "bytes": 6386528,
+          "sha256": "5385f0436ac2e284ba8c5fb1488874057c29c04be72dea32add832694f381e28"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "bytes": 92272,
+          "sha256": "0e33bbae9bd7f62fd4172ac04d9088736defa499491aacae723732ce4e905f94"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "bytes": 92848,
+          "sha256": "c8be7d3863453898666977c12b0b392014a1c728d84215d885d574882d6e7b89"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "bytes": 1185600,
+          "sha256": "67533f0552bc23d90402a0df7bed6f4f40d8ec1946782b3f9d245c0e46a758ef"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "bytes": 870552,
+          "sha256": "36be278a8138d3e5773eb3f8491ff3fe73122a3051a9b36d1f86457ce0fad22d"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "bytes": 121112,
+          "sha256": "c122a34c3e9cab264c9a07b21b75f16443a646cc8db4e84ac91e800daa7e03ce"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "bytes": 187120,
+          "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "bytes": 1404616,
+          "sha256": "3cc1aeae827f436a296ec488b80e6c45c150dccfb4525e7db275cc08772d322f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "bytes": 149856,
+          "sha256": "3f1376e8965733a4d31386d5de99c829b7704beba3b07987da9220d53f192da2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "bytes": 1220816,
+          "sha256": "b330ca2b82b22fbce5e1a15dabfeffdd97e9976c3a3e48a2696628bfd34526d5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "bytes": 70576,
+          "sha256": "19ae16694b0f2c442b367fd9dfecf8da68c9b8ded0bc9029c1d53a9ba91a4151"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "bytes": 616592,
+          "sha256": "90a1eebead4d7c1abc46cf9c66c5392c60fc2c16f038af20fc7efbd0d8dd427f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "bytes": 215448,
+          "sha256": "515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "bytes": 1198376,
+          "sha256": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "bytes": 38984,
+          "sha256": "cb4b444d7f473530c04e31a70347bd572abd5e53a8b28e0f653fe76cf2255bc8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "bytes": 4282792,
+          "sha256": "5f01eaf11e7326d83f9c341a1d943851a0b00e3444668697dd663c14b138476e"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "bytes": 55600,
+          "sha256": "977c23c26f87f263af8404fe9772f923179c09feb9b97a2e6e46bbcbf5ab9cf4"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "bytes": 699056,
+          "sha256": "4a6b6b2078685b074869d75cb068664d7da6b3036df7bca0442b1bbbd4ac7e65"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "bytes": 231648,
+          "sha256": "2a570998f08a406b4083b06888e528fa0c5d6cc3bef77b40026d661c91cbfb90"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "bytes": 26888,
+          "sha256": "fced0bf76ec62fcce9b2cea1a91a9c61fbf6828e9e66b194cc6d779798907ff2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "bytes": 129176,
+          "sha256": "b33ab83259722f77ab70905816a96bd71987fbb1f0920bf238a27b77b5efe1f8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "bytes": 1114280,
+          "sha256": "63b47f444efa588e291e9b650a5ba2ab02f856356f2d50f13a2e477db9119e09"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "bytes": 2735712,
+          "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "bytes": 604400,
+          "sha256": "d65b506791e2469e886c716a7993b5e65ce40015aef1d15a678804a9fc3c4844"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "bytes": 14488,
+          "sha256": "c08daf7ae0bb66e575f8e717906490481caa3bfa20fdc8e63e98fec3b090ebeb"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "bytes": 227560,
+          "sha256": "4a6b851f244e5d3c0ca08ba6861106050f3caaa631721e3f87d621caeec34065"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "bytes": 592520,
+          "sha256": "0b477702bb43d90a1205813a9c211faa8dfef025a258b9d60663b37311b87c08"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "bytes": 121272,
+          "sha256": "27fa6c6cb94fb5b099ead61758a300dbc392d1dbf307fff6c16a9b8e57fdc9de"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "bytes": 796824,
+          "sha256": "060eeb79531d435306665fd78329d8a9dd579f95876c5960bb67937825362a80"
+        }
+      ]
+    },
+    {
+      "pid": 433797,
+      "arguments": [
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v9-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-lobby-players",
+        "1280",
+        "1024",
+        "lobby-players"
+      ],
+      "maps_sha256": "e25db19b9ab934251ed3240c91027282931f1b29899ea15307322ca0217f30e9",
+      "loaded_files": [
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v9-qa/binaries/TranslationPreviewHarness.capture",
+          "bytes": 154433816,
+          "sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0.4.16",
+          "bytes": 4649608,
+          "sha256": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_image.so.0.4.6",
+          "bytes": 1249552,
+          "sha256": "6a14a733bfbe3d9343b6ab1a568b78b3ca1cbfdcca02c0f1e8310ca07a381b5e"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_net.so.0.2.0",
+          "bytes": 55792,
+          "sha256": "caf4d4399bfd8cfb1f62866ba2717434a8674b31b9d4f75628baf8e6d180e7e6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "realpath": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2",
+          "bytes": 1562384,
+          "sha256": "c1a67b634bd5e798500d0ceb613ef987e9915d47b0a569ab2b48a2c9eecab8f0"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_ADDRESS",
+          "realpath": "/usr/lib/locale/C.utf8/LC_ADDRESS",
+          "bytes": 127,
+          "sha256": "26e2800affab801cb36d4ff9625a95c3abceeda2b6553a7aecd0cfcf34c98099"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_COLLATE",
+          "realpath": "/usr/lib/locale/C.utf8/LC_COLLATE",
+          "bytes": 1406,
+          "sha256": "47a5f5359a8f324abc39d69a7f6241a2ac0e2fbbeae5b9c3a756e682b75d087b"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_CTYPE",
+          "realpath": "/usr/lib/locale/C.utf8/LC_CTYPE",
+          "bytes": 369120,
+          "sha256": "40680545df4f92443c15e7c6f51a7fdc9154ebedd9eff1ed5c48437039add365"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_IDENTIFICATION",
+          "realpath": "/usr/lib/locale/C.utf8/LC_IDENTIFICATION",
+          "bytes": 258,
+          "sha256": "38a1d8e5271c86f48910d9c684f64271955335736e71cec35eeac942f90eb091"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_MEASUREMENT",
+          "realpath": "/usr/lib/locale/C.utf8/LC_MEASUREMENT",
+          "bytes": 23,
+          "sha256": "bb14a6f2cbd5092a755e8f272079822d3e842620dd4542a8dfa1e5e72fc6115b"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES",
+          "realpath": "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES",
+          "bytes": 48,
+          "sha256": "f9ad02f1d8eba721d4cbd50c365b5c681c39aec008f90bfc2be2dc80bfbaddcb"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_MONETARY",
+          "realpath": "/usr/lib/locale/C.utf8/LC_MONETARY",
+          "bytes": 270,
+          "sha256": "bfd9e9975443b834582493fe9a8d7aefcd989376789c17470a1e548aee76fd55"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_NAME",
+          "realpath": "/usr/lib/locale/C.utf8/LC_NAME",
+          "bytes": 62,
+          "sha256": "14507aad9f806112e464b9ca94c93b2e4d759ddc612b5f87922d7cac7170697d"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_NUMERIC",
+          "realpath": "/usr/lib/locale/C.utf8/LC_NUMERIC",
+          "bytes": 50,
+          "sha256": "f5976e6b3e6b24dfe03caad6a5b98d894d8110d8bd15507e690fd60fd3e04ab2"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_PAPER",
+          "realpath": "/usr/lib/locale/C.utf8/LC_PAPER",
+          "bytes": 34,
+          "sha256": "cde048b81e2a026517cc707c906aebbd50f5ee3957b6f0c1c04699dffcb7c015"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_TELEPHONE",
+          "realpath": "/usr/lib/locale/C.utf8/LC_TELEPHONE",
+          "bytes": 47,
+          "sha256": "f4caf0d12844219b65ba42edc7ec2f5ac1b2fc36a3c88c28887457275daca1ee"
+        },
+        {
+          "path": "/usr/lib/locale/C.utf8/LC_TIME",
+          "realpath": "/usr/lib/locale/C.utf8/LC_TIME",
+          "bytes": 3360,
+          "sha256": "0910b595d1d5d4e52cc0f415bbb1ff07c015d6860d34aae02505dd9973a63154"
+        },
+        {
+          "path": "/usr/lib/locale/locale-archive",
+          "realpath": "/usr/lib/locale/locale-archive",
+          "bytes": 3064432,
+          "sha256": "74336f094157053703fe153f9fe4efa9efd7589bfc4e9695ac8195cf8d5fa4c4"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache",
+          "realpath": "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache",
+          "bytes": 27028,
+          "sha256": "52c227df9d53248238602c1ddaccd2c8ddc4cc6a61aa45d7c425af590b8806a5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "bytes": 254864,
+          "sha256": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGL.so.1.7.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGL.so.1.7.0",
+          "bytes": 538848,
+          "sha256": "ef85065ae96bff373db8ed59e1f4a77191cae4411f3dd7128d14a4c34af18a18"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGLX.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGLX.so.0.0.0",
+          "bytes": 141464,
+          "sha256": "0754505cc97c5c2251aebc10b5ab6ccbb9ad02d765bee07115bc9c09daf13002"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0.0.0",
+          "bytes": 389672,
+          "sha256": "864200bd459ead8a3027bedb768e1f7189b1526fc93ab5280b3edcad0cfc11fe"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libGLdispatch.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libGLdispatch.so.0.0.0",
+          "bytes": 719144,
+          "sha256": "8c3dbc80a9e435d15bb6394f609f90b823175a92e9ca41133294b5b8fcac50b2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libLLVM.so.21.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libLLVM.so.21.1",
+          "bytes": 138567144,
+          "sha256": "12dca1fc2d9f5d4ff35315fc2aa3a97b615b41ec6a71d3ce545efb62c075d902"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libLerc.so.4",
+          "bytes": 608512,
+          "sha256": "b7c1fe626e31e8c3ecb80d428ffb3a8824fd241ec55c6edc8b12437412206060"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libX11-xcb.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libX11-xcb.so.1.0.0",
+          "bytes": 14104,
+          "sha256": "6a9047ac83e4e1afb8032e62332aa449e7c6307c731f621054c9c0573a460899"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0",
+          "bytes": 1318648,
+          "sha256": "badd43566333da97d916ab365c61227751d49cd5c0df5d49dabdbd67b8c6fd19"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXau.so.6.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXau.so.6.0.0",
+          "bytes": 18776,
+          "sha256": "2b742de65acd00f154ed156720af66c0c0af9a58360ba041f25a41e2f775fab5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXcursor.so.1.0.2",
+          "bytes": 47720,
+          "sha256": "0d8321ceafa73ca8f3921221055051be4e4a2ad75aa59f946578182e1ca45832"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0",
+          "bytes": 26856,
+          "sha256": "24beecbb0faf600d1a646b5edfc8c144da6f2965cb427598f4e17edc1285a733"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXext.so.6.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXext.so.6.4.0",
+          "bytes": 77592,
+          "sha256": "9e358938dc783704b75a8a27f07b9a2cc7dfb7ff73fd05cbcfe634b8c2afc74a"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0",
+          "bytes": 26880,
+          "sha256": "04f371370ab65d552b214c9d57ac8b05c8fd9127b1bd55e29bd297f417241de0"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXi.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXi.so.6.1.0",
+          "bytes": 80496,
+          "sha256": "05aeb2b462c5bd22e969a47c269c7fe0c77edd7bc1e89f3f0dead169f5df222c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0",
+          "bytes": 47584,
+          "sha256": "de834ac7818cdfd326ddea6859781780a20397ff5877508c203eb07b694a412c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0",
+          "bytes": 43712,
+          "sha256": "708d1c6a5d8aa5169d61e5b79973bf012047de0fb881d2836d44b3167a1a51a5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXss.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXss.so.1.0.0",
+          "bytes": 14728,
+          "sha256": "04e9f6b5706ffc0397fecce4aed3c23875346b9f770a029ecac575254219b312"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0",
+          "bytes": 27208,
+          "sha256": "4494cd499423eeae05077943a3c0e0adc6f6b68ce524d3b4d3c9a8c052eb52d5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libXxf86vm.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libXxf86vm.so.1.0.0",
+          "bytes": 22920,
+          "sha256": "ed342de4e4469f5192d5a570b1da0a7ba42fa580b0bdae98b31715de006b2c7c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+          "bytes": 35120,
+          "sha256": "eac440708f874c4d446671efb5353cebeaa829bd1f18cd8d5065cd6efefa387b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0",
+          "bytes": 141712,
+          "sha256": "7f3acc17bffda6f12f7b022e9386514cfd83e77de67e71218bcbf19ec3577a99"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0",
+          "bytes": 55688,
+          "sha256": "470ed7f6b9053163b65b83efebc53bb98ca0d7a5a30ead2b545a4e5574da9c91"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbsd.so.0.12.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbsd.so.0.12.2",
+          "bytes": 81048,
+          "sha256": "c71b8a0d7e94c5e34f6c328c5dd1ba7f325d3300c97a54a7c69ef9a6c2caa8b3"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+          "bytes": 83120,
+          "sha256": "7138aeb748f73c150b1d34d67de69139a441910cd7b269076ba3c8b986dea9a7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "bytes": 2190608,
+          "sha256": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+          "bytes": 6386528,
+          "sha256": "5385f0436ac2e284ba8c5fb1488874057c29c04be72dea32add832694f381e28"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.38.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.38.3",
+          "bytes": 321920,
+          "sha256": "bb0b37afa67c7b6d664ca189f63fb92e75a690a340c4c13a149cc4dfbd8249ff"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdeflate.so.0",
+          "bytes": 92272,
+          "sha256": "0e33bbae9bd7f62fd4172ac04d9088736defa499491aacae723732ce4e905f94"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0",
+          "bytes": 92848,
+          "sha256": "c8be7d3863453898666977c12b0b392014a1c728d84215d885d574882d6e7b89"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm_amdgpu.so.1.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm_amdgpu.so.1.131.0",
+          "bytes": 47784,
+          "sha256": "edc5af5a40623befde7f1214950cb0046e04e9a39f925e6959e71f01d2d34d9c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libdrm_intel.so.1.131.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libdrm_intel.so.1.131.0",
+          "bytes": 150584,
+          "sha256": "b4efda864f3ff03ec175787fc83c330981cf3a50704127debb782c325055054e"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libedit.so.2.0.76",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libedit.so.2.0.76",
+          "bytes": 220544,
+          "sha256": "438090e1cd463d9f89c9259ce9e99f229eae56c857b5e525d581e338f61aa1ce"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libelf-0.194.so",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libelf-0.194.so",
+          "bytes": 133928,
+          "sha256": "f77db7b4cfa02c98aa5918caf1f02b6cf37a5998e2e5cc8e43e664dbb72c87fa"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0",
+          "bytes": 1185600,
+          "sha256": "67533f0552bc23d90402a0df7bed6f4f40d8ec1946782b3f9d245c0e46a758ef"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.11.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.11.2",
+          "bytes": 186704,
+          "sha256": "2e5f66e2784c2746775567ff9916f6e7503182a8f1f2deb8ca729dfc1463849f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libffi.so.8.2.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libffi.so.8.2.0",
+          "bytes": 64184,
+          "sha256": "1a0dc86f787f73e025a6e521056360afcbe70f2a82cd808132fefc2b4ee95daa"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5",
+          "bytes": 870552,
+          "sha256": "36be278a8138d3e5773eb3f8491ff3fe73122a3051a9b36d1f86457ce0fad22d"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+          "bytes": 121112,
+          "sha256": "c122a34c3e9cab264c9a07b21b75f16443a646cc8db4e84ac91e800daa7e03ce"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgallium-26.0.8-1ubuntu0.3.so",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgallium-26.0.8-1ubuntu0.3.so",
+          "bytes": 45621592,
+          "sha256": "64c5508bb7167947f932c950d5e2d2c314f631fc3919de82f757c3769758b79f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "bytes": 187120,
+          "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8800.0",
+          "bytes": 1404616,
+          "sha256": "3cc1aeae827f436a296ec488b80e6c45c150dccfb4525e7db275cc08772d322f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+          "bytes": 149856,
+          "sha256": "3f1376e8965733a4d31386d5de99c829b7704beba3b07987da9220d53f192da2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.61232.0",
+          "bytes": 1220816,
+          "sha256": "b330ca2b82b22fbce5e1a15dabfeffdd97e9976c3a3e48a2696628bfd34526d5"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjbig.so.0",
+          "bytes": 70576,
+          "sha256": "19ae16694b0f2c442b367fd9dfecf8da68c9b8ded0bc9029c1d53a9ba91a4151"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2",
+          "bytes": 616592,
+          "sha256": "90a1eebead4d7c1abc46cf9c66c5392c60fc2c16f038af20fc7efbd0d8dd427f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3",
+          "bytes": 215448,
+          "sha256": "515749273a91ca5e3b273b4025dc2c1f8827f90005baea0ab85ffb594e74f72f"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "bytes": 1198376,
+          "sha256": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libmd.so.0.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libmd.so.0.1.0",
+          "bytes": 55608,
+          "sha256": "f115fa619f586e47ddfbec21bfd50069fbe5d21f388f8d9a07a984cb075d7efa"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6",
+          "bytes": 38984,
+          "sha256": "cb4b444d7f473530c04e31a70347bd572abd5e53a8b28e0f653fe76cf2255bc8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1",
+          "bytes": 4282792,
+          "sha256": "5f01eaf11e7326d83f9c341a1d943851a0b00e3444668697dd663c14b138476e"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5",
+          "bytes": 55600,
+          "sha256": "977c23c26f87f263af8404fe9772f923179c09feb9b97a2e6e46bbcbf5ab9cf4"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpciaccess.so.0.11.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpciaccess.so.0.11.1",
+          "bytes": 39472,
+          "sha256": "d8cabd96e1a585bb48e13e8447ba72c6fe48735ba60f7c8c46b2763d45a2c400"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.14.0",
+          "bytes": 699056,
+          "sha256": "4a6b6b2078685b074869d75cb068664d7da6b3036df7bca0442b1bbbd4ac7e65"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0",
+          "bytes": 231648,
+          "sha256": "2a570998f08a406b4083b06888e528fa0c5d6cc3bef77b40026d661c91cbfb90"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsensors.so.5.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsensors.so.5.0.0",
+          "bytes": 67784,
+          "sha256": "ed2a8c4a99433a3f4203f26d863aa46bfa3a60a596cccc93955ca778fed56d7c"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1",
+          "bytes": 26888,
+          "sha256": "fced0bf76ec62fcce9b2cea1a91a9c61fbf6828e9e66b194cc6d779798907ff2"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2",
+          "bytes": 129176,
+          "sha256": "b33ab83259722f77ab70905816a96bd71987fbb1f0920bf238a27b77b5efe1f8"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+          "bytes": 1114280,
+          "sha256": "63b47f444efa588e291e9b650a5ba2ab02f856356f2d50f13a2e477db9119e09"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "bytes": 2735712,
+          "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libsystemd.so.0.42.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libsystemd.so.0.42.0",
+          "bytes": 1127960,
+          "sha256": "7c8bd89f59b9f96fdb933eb1414f449c2db45fbb078c8d793cc46f9173be7934"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0",
+          "bytes": 604400,
+          "sha256": "d65b506791e2469e886c716a7993b5e65ce40015aef1d15a678804a9fc3c4844"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.6",
+          "bytes": 212504,
+          "sha256": "085dbbe5dc38619276bdd0af37ae588969b1308baded09a2990ce8824a602912"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0",
+          "bytes": 14488,
+          "sha256": "c08daf7ae0bb66e575f8e717906490481caa3bfa20fdc8e63e98fec3b090ebeb"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0",
+          "bytes": 227560,
+          "sha256": "4a6b851f244e5d3c0ca08ba6861106050f3caaa631721e3f87d621caeec34065"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10",
+          "bytes": 592520,
+          "sha256": "0b477702bb43d90a1205813a9c211faa8dfef025a258b9d60663b37311b87c08"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0.1.0",
+          "bytes": 22824,
+          "sha256": "d2f0488a28a351718192c01bba15f60556f514db555dfbce9a132dedd1401e98"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-glx.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-glx.so.0.0.0",
+          "bytes": 112920,
+          "sha256": "e58a788c3968ffd7e960451b9506054abfaf0deb0eab888955c9de948c2c7c7d"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-present.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-present.so.0.0.0",
+          "bytes": 14616,
+          "sha256": "085bc629d45125f8c3b0f09f9c37ee65d35b1ea55e1f047cffd6aef4ce218b5a"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-randr.so.0.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-randr.so.0.1.0",
+          "bytes": 67864,
+          "sha256": "a9444026ba3c927a917ff5a0ce47318bed09ab8f9382fe231c72b33da4ec8bbc"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0",
+          "bytes": 14632,
+          "sha256": "58fcb847e2009affbd7eeb1f6d39949f29ccc153f230e0b0d23de00d2b5c1353"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-sync.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-sync.so.1.0.0",
+          "bytes": 35112,
+          "sha256": "bf494083f05bc427135042b5cdaa5bf5fbe0886f34f611151dde0056257022c9"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb-xfixes.so.0.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb-xfixes.so.0.0.0",
+          "bytes": 35096,
+          "sha256": "37c933b3e89f66330a930207b3133ce5b2c7aade777c7711b70945cc7d4b2333"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0",
+          "bytes": 170680,
+          "sha256": "6af94be329e17e57f1cc0f5e4afb5bdfe669a5168accdc31b03274110b937b41"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxml2.so.16.1.2",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxml2.so.16.1.2",
+          "bytes": 1449112,
+          "sha256": "302dfa1295c6f917758243ef0f118f7144026b51a5f5cd1610fba849c968f73b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libxshmfence.so.1.0.0",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libxshmfence.so.1.0.0",
+          "bytes": 14592,
+          "sha256": "8b4406ff7f9f2b2830e6d135f9e7ffe991d32832b8fc3569fed189517b557d2b"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1",
+          "bytes": 121272,
+          "sha256": "27fa6c6cb94fb5b099ead61758a300dbc392d1dbf307fff6c16a9b8e57fdc9de"
+        },
+        {
+          "path": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7",
+          "bytes": 796824,
+          "sha256": "060eeb79531d435306665fd78329d8a9dd579f95876c5960bb67937825362a80"
+        }
+      ]
+    }
+  ]
+}

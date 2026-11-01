@@ -1,0 +1,10 @@
+{
+  "artifacts/bulgarian/final-v7-online-qa/after-ui-fixes/captures/new-desktop-new-skin-materials.png": {
+    "sha256": "6e50d4d80117595eeea0ae3d23d0d59b4baa879acf045c2a22daa6bcf0152a25",
+    "bytes": 640748
+  },
+  "artifacts/bulgarian/final-v7-online-qa/after-ui-fixes/captures/new-phone-new-skin-materials.png": {
+    "sha256": "ad4c701c736a11673706f43a00a2fec75654e4c13759cf7b72043e69b623ec53",
+    "bytes": 166395
+  }
+}

@@ -1,0 +1,4 @@
+
+> lint
+> eslint . && prettier --check .
+

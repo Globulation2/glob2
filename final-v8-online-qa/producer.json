@@ -1,0 +1,20 @@
+{
+  "head": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "node": "v24.22.1",
+  "commands": {
+    "unit": "npm test -- --maxWorkers=2 --testTimeout=180000",
+    "lint": "npm run lint",
+    "types": "npm run typecheck",
+    "i18n": "npm run i18n:check",
+    "build": "npm run build -w @glob2/web"
+  },
+  "timeoutRationale": "V7 exacttwo skinprojectioncases exceeded30s under sharedhostload andpassed with180s; explicitbound upfront avoids source-edits/recovery churn.",
+  "catalogs": {
+    "platform/packages/i18n/locales/en.json": "633a7022434673ed52b61c82bc2f4b6ee3ca519ae45402af3ad76ed0a20671d2",
+    "platform/packages/i18n/locales/bg.json": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f",
+    "data/texts.bg.txt": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d"
+  },
+  "ownedContainer": "69d604b373659ded063f3b18aec8083f521e77198b04f74b2070bbb6230028dd",
+  "inventory": "42locales,3430native+2978onlineBG=6408",
+  "capturingRule": "EachPNG capturedonce; attachedsamebuffer; publishindexes onlyafterallwrites; nooverwritesafterfreeze."
+}

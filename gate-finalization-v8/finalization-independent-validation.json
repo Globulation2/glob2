@@ -1,0 +1,15 @@
+{
+  "result": "passed",
+  "scope": "Independent allowed-field/gate/evidence identity check only; no new review or runtime judgment",
+  "pre_runtime_record_sha256": "462fb8c6aed1d0cae874bcb3dd098d0c8b9fc5e12a5e7850d4c9057c03c97a3d",
+  "record_sha256": "6fd41b6dc7c5929b43fb9d96e22bc7b007fa6d2578d0db0220c1e4fd856486df",
+  "config_sha256": "4de2b3b3a24df3c7518c994f47cdd278cae3fdce58f5933bb0db551ff4eb9992",
+  "finalization_proof_sha256": "cab69d22bc834ce8105ff9c61d331f3acd96023653f2ba786725a5042421063a",
+  "all_core_linguistic_fields_unchanged": true,
+  "unavailable_gates": [
+    "browser_platforms",
+    "mobile_platforms",
+    "native_platforms"
+  ],
+  "full_nine_gate_audit_passed": false
+}

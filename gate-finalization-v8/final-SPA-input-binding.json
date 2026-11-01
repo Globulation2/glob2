@@ -1,0 +1,13 @@
+{
+  "result": "passed",
+  "revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "input_files_before_after_identical": 1645,
+  "tracked_git_blobs_verified": 1642,
+  "historical_non_git_cache_metadata_only": [
+    "tools/music/glob2music/__pycache__/__init__.cpython-314.pyc",
+    "tools/music/glob2music/__pycache__/community.cpython-314.pyc",
+    "tools/music/glob2music/__pycache__/spec.cpython-314.pyc"
+  ],
+  "actual_dist_inventories_identical": true,
+  "limits": "No cache payload published and no cache record called a Git blob. Actual SPA source/artifact closure only; personal visual and runtime checks are separate."
+}

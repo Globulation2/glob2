@@ -1,0 +1,424 @@
+{
+  "status": "Completed f02 component evidence. Three source-layout fixes and one separately approved staged Generated-label revision still require integration/after-validation.",
+  "source_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545",
+  "original_binary_sha256": "408ba9874abbbc12c152eaa39085b58d91af55f3255be683284cd533a1415836",
+  "actual_capture_binary_sha256": "e9d11b7be3ba210aaab65533541ea71fa4abea47038542f0bb055806d1fb42a8",
+  "native_catalog_sha256": "24ee79586ba0e811c67958785623e0755602e2b075c767f7ee84e31677aa90bb",
+  "online_catalog_sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813",
+  "source_sha256": "2b396013f79c0bd68dd016a771fe48b8769ec856c5a5cb8f700f0e6ee2e845c7",
+  "native_keys": 3425,
+  "online_keys": 2843,
+  "render_values": 6295,
+  "surface_jobs_passed": 21,
+  "actual_surface_pngs": 55,
+  "api503_jobs_passed": 4,
+  "api_fixture_pngs": 4,
+  "draw_checksums_unchanged": 45,
+  "draw_checksum_evidence": [
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor.json",
+      "name": "script-editor-cursor",
+      "checksum": 2422238621
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor.json",
+      "name": "script-editor-success",
+      "checksum": 2422238621
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor.json",
+      "name": "script-editor-failure",
+      "checksum": 2422238621
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics.json",
+      "name": "statistics-overview",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics.json",
+      "name": "statistics-economy",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics.json",
+      "name": "statistics-world",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics.json",
+      "name": "statistics-population-history",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics.json",
+      "name": "statistics-population-history-details",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics.json",
+      "name": "statistics-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-script-editor/script-editor.json",
+      "name": "script-editor-cursor",
+      "checksum": 4124652271
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-script-editor/script-editor.json",
+      "name": "script-editor-success",
+      "checksum": 4124652271
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-script-editor/script-editor.json",
+      "name": "script-editor-failure",
+      "checksum": 4124652271
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics.json",
+      "name": "statistics-overview",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics.json",
+      "name": "statistics-economy",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics.json",
+      "name": "statistics-world",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics.json",
+      "name": "statistics-population-history",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics.json",
+      "name": "statistics-population-history-details",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics.json",
+      "name": "statistics-dialog",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-editor/editor.json",
+      "name": "editor",
+      "checksum": 932014895
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-editor/editor.json",
+      "name": "editor-terrain",
+      "checksum": 932014895
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-editor/editor.json",
+      "name": "editor-dialog",
+      "checksum": 932014895
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor.json",
+      "name": "script-editor-cursor",
+      "checksum": 2251266925
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor.json",
+      "name": "script-editor-success",
+      "checksum": 2251266925
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor.json",
+      "name": "script-editor-failure",
+      "checksum": 2251266925
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics.json",
+      "name": "statistics-overview",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics.json",
+      "name": "statistics-economy",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics.json",
+      "name": "statistics-world",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics.json",
+      "name": "statistics-population-history",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics.json",
+      "name": "statistics-population-history-details",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics.json",
+      "name": "statistics-dialog",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-script-editor/script-editor.json",
+      "name": "script-editor-cursor",
+      "checksum": 2839687826
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-script-editor/script-editor.json",
+      "name": "script-editor-success",
+      "checksum": 2839687826
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-script-editor/script-editor.json",
+      "name": "script-editor-failure",
+      "checksum": 2839687826
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics.json",
+      "name": "statistics-overview",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics.json",
+      "name": "statistics-economy",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics.json",
+      "name": "statistics-world",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics.json",
+      "name": "statistics-population-history",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics.json",
+      "name": "statistics-population-history-details",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics.json",
+      "name": "statistics-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor.json",
+      "name": "editor",
+      "checksum": 306568844
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor.json",
+      "name": "editor-terrain",
+      "checksum": 306568844
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor.json",
+      "name": "editor-dialog",
+      "checksum": 306568844
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-fortifications/tutorial-fortifications.json",
+      "name": "tutorial-fortifications-briefing",
+      "checksum": 1455014497
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-fortifications/tutorial-fortifications.json",
+      "name": "tutorial-fortifications",
+      "checksum": 1455014497
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-fortifications/tutorial-fortifications.json",
+      "name": "tutorial-fortifications-dialog",
+      "checksum": 1455014497
+    }
+  ],
+  "statistics_visibility": [
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics.json",
+      "views": 5,
+      "hidden_win_probability_respected": true
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics.json",
+      "views": 5,
+      "hidden_win_probability_respected": true
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics.json",
+      "views": 5,
+      "hidden_win_probability_respected": true
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics.json",
+      "views": 5,
+      "hidden_win_probability_respected": true
+    }
+  ],
+  "font_geometry": {
+    "fresh_delta_values": 51,
+    "fresh_combinations": 12,
+    "fresh_measurements": 612,
+    "retained3881values": 6244,
+    "combined_measurements": 75540,
+    "glyph_or_draw_canvas_failures": 0,
+    "new_raster_pages": 30,
+    "scope": "Exact same font/wrapper/source/target carryforward only; earlier images not relabeled."
+  },
+  "synthetic_probe_equivalence": {
+    "pages": 12,
+    "byte_identical_to3881": 12,
+    "glyph_or_draw_budget_failures": 0,
+    "not_translated_catalog": true
+  },
+  "manifests": [
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-script-editor/script-editor.json",
+      "sha256": "a9b1298e95e16106a5988015366e5e6ba4790f3da986cae9888224a1c07d082c",
+      "kind": "production-script-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-100-statistics/statistics.json",
+      "sha256": "0eb7f2e791b25a2e297654859c03044c4acf88dd26d54dacea6200e22ee7162e",
+      "kind": "production-game-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-script-editor/script-editor.json",
+      "sha256": "fe2a1da0993be608b89cca24caa5e405cc46c438cb3e3e28c9b2f75b9f9c4d4f",
+      "kind": "production-script-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-150-statistics/statistics.json",
+      "sha256": "3d06c0e81aa9362ea7f60af311680db1cf8dbebde8391e75f550992c5927daf7",
+      "kind": "production-game-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-editor/editor.json",
+      "sha256": "ac57c71bef94eea837208cf1d19a2f86dce9d679aa0b02681e331cc4d0954a5f",
+      "kind": "production-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-new-map/new-map.json",
+      "sha256": "0a96bae207b0757ed3ef1e2c03e9643f5b03507daf0b88a3c9504914e2db56fb",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-settings/settings.json",
+      "sha256": "29e80d81c8111dbee46e2b83eaaea19b86c6e75313cedbc6249fae009bfdadb8",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-settings-ais/settings-ais.json",
+      "sha256": "06a2429b2b89eb74762253e49723933f0dcbf849683fff00086f5b647dfc0d42",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-settings-online/settings-online.json",
+      "sha256": "a00c5f58a47dfab02ff62ab57bff6c8dd93c63f5a596118b3013bcfd6ac97f4c",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/desktop-settings-player/settings-player.json",
+      "sha256": "f247985d88425f582d1862d143c49e99a62c5bea0d9108c11272a7b3ec477ddc",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-script-editor/script-editor.json",
+      "sha256": "a577ed7a9e8579aab0c8d5d208dce38199a5398fd3001ae8fb126ccc90ce4cb5",
+      "kind": "production-script-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-100-statistics/statistics.json",
+      "sha256": "d57836c27a28228ca6d23ac024e64370e81dd5409ee6f620ec0711f702712a47",
+      "kind": "production-game-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-script-editor/script-editor.json",
+      "sha256": "fbd990b6c83ce5c60704157af76de99ee9bf5f50cff1893495fc772f1bee97b9",
+      "kind": "production-script-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-150-statistics/statistics.json",
+      "sha256": "1e4748f846f35c8cb61cfd9d95de64536277677488b6c5dd6659bdbde40741e2",
+      "kind": "production-game-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-editor/editor.json",
+      "sha256": "fe24a9bb6deb56b015c93e7477acf94e05c0a6caadc7e3428c4dba207eaad6f8",
+      "kind": "production-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-fortifications/tutorial-fortifications.json",
+      "sha256": "43bda5022b4d25349ab91dbf576880961a9105c04d5679aae5bba4e80c1b8052",
+      "kind": "production-game-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-new-map/new-map.json",
+      "sha256": "d03ddeb93a19439b3ee76a05f1366aed5c65651dbee3920e47d291b26362f68e",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-settings/settings.json",
+      "sha256": "e25c7420129e8a54cc66cc47b67b6ce0a5f842a9a52bd77a9d86969b21b836c0",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-settings-ais/settings-ais.json",
+      "sha256": "81ee946145d271b355eb96ef2aee87006e6a134d3caf3269e18415bedb9f8077",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-settings-online/settings-online.json",
+      "sha256": "16f2088a13a027dea32d9a81d926af264d22fbdd142216cc0ac3cdbd431231d8",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/surfaces/phone-settings-player/settings-player.json",
+      "sha256": "c8fe56e270bd3e53c8383e3ca7343236bc3c45342bd91db9c8338f18e63435ed",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/api/desktop-api-known/settings-ais.json",
+      "sha256": "f8b5860f0fea67ab86a2de1cfbcb618a2d8d9ab1308f2ca71f3245348e4b565f",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/api/desktop-api-unknown/settings-ais.json",
+      "sha256": "d15c9576c26dadfda762de6f7fa48262f2667556ccd80e8bd434e093071b6491",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/api/phone-api-known/settings-ais.json",
+      "sha256": "fea0854acf398192d018c76f99167410cf12684cbc7d7c76f9f787ef20d90bf6",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v4-final/api/phone-api-unknown/settings-ais.json",
+      "sha256": "aff6295b9eda2bc5eacfd231c1b17297a2733bf4edab99a3b3df52af5dc886a9",
+      "kind": "production-screen-draft-overlay"
+    }
+  ],
+  "pending": [
+    "Root reviewed chart empty-status wrap + pixel-boundary regression",
+    "Root reviewed compact/enlarged compiler paragraph + phone responsive tabs/tools + behavior regression",
+    "Approved Generated→Генерирана single-key revision must receive new raw catalog binding,12single-valuefont samples,NewMapaftercaptures",
+    "Fresh engine/unit binary handoff before any test execution; no old tests run",
+    "After-captures atdesktop1280 andphone390 normal/150; exact after-producer identity"
+  ],
+  "limits": [
+    "Only explicitly listed images visually inspected; other complete diagnostics are measured, not manually read page by page.",
+    "No physical mobile, Windows/macOS, release-native or production-server/account verification claim.",
+    "Live-player win-probability metric stays hidden; no synthetic history/readings added.",
+    "Some visible history displays are sparse/empty in the normal short local session.",
+    "No actual Savannah control fit claim: current NewMap capture keeps default landscape and parameter pane closed.",
+    "Literal placeholders remain literal in matrix; formatted parameters tested only by explicit fixtures/tests."
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "status": "PREPARED, NOT EXECUTED; awaits root final both-Wasm handoff",
+  "expectedNativeBgEntries": 3430,
+  "expectedNativeBgSha256": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+  "expectedOnlineBgEntries": 2948,
+  "expectedOnlineBgSha256": "1fb6db279e053eb4cc0d7cfba6eb87925eba7d0d44ad5788099fa337963d0203",
+  "scripts": {
+    "artifacts/bulgarian/browser-captures/capture.cjs": "28a68e1ab455dcf80c6f7ebeb28ed00f00a6ffaeff46607c07bfdcad6867d5ab",
+    "artifacts/bulgarian/browser-captures/scenes.cjs": "3c57d5cc7924dff3610fbbfb940bc1d23b20a0fcd5fb0d2f0a97862bc8995290",
+    "artifacts/bulgarian/browser-captures/gzip-server.py": "c0f5a480ba3c876c1ebb3621f18880a337c48d595590f2abc9e1cbf10c60a237",
+    "artifacts/bulgarian/browser-captures/playwright.config.cjs": "b67d220158a4b794fa9e5d8f116fdc235c911604d07ba40b6956086aad8245ab"
+  },
+  "steps": [
+    "Package both final release variants to newV7 static output; package-static.py --verify",
+    "Serve owned42771 through browser/serve.py COOP/COEP+gzip, assert fonts/licences/MIME/networkbytes",
+    "Run strict4 Bulgarian actualruntime tests, then desktop/390phone/DPR2 menu and real scene captures",
+    "Actual ScriptEditor successful compile,controlled validation error/cursor caption; stats notice and gameplay HUD/tutorial if reachable",
+    "Inspect actual PNGs; honest limits and identity binding; cleanup owned server"
+  ]
+}

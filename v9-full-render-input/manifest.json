@@ -1,0 +1,6 @@
+{
+  "revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "capture_wrapper": "Actual native compiled revision and explicit final test-only source closure; original immutable provider kit manifest is untouched."
+}

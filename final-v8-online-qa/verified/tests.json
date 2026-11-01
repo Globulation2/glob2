@@ -1,0 +1,2646 @@
+{
+  "config": {
+    "argv": [
+      "/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "artifacts/bulgarian/final-v8-online-qa/playwright.config.mjs"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/playwright.config.mjs",
+    "rootDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "bulgarian.spec.ts",
+          "localized-layout.spec.ts"
+        ],
+        "timeout": 360000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "phone",
+        "name": "phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "bulgarian.spec.ts",
+          "localized-layout.spec.ts"
+        ],
+        "timeout": 360000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "new-desktop",
+        "name": "new-desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "new-domains.spec.mjs",
+          "new30.spec.mjs"
+        ],
+        "timeout": 360000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "new-phone",
+        "name": "new-phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "new-domains.spec.mjs",
+          "new30.spec.mjs"
+        ],
+        "timeout": 360000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "controls-desktop",
+        "name": "controls-desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "translated-controls.spec.mjs",
+          "context-wording-current.spec.mjs",
+          "sets-caption.spec.mjs",
+          "readonly-caption.spec.mjs"
+        ],
+        "timeout": 360000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/verified/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "controls-phone",
+        "name": "controls-phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "translated-controls.spec.mjs",
+          "context-wording-current.spec.mjs",
+          "sets-caption.spec.mjs",
+          "readonly-caption.spec.mjs"
+        ],
+        "timeout": 360000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/verified/tests.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v8-online-qa/verified/html-report",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "../../../platform/apps/web/e2e/bulgarian.spec.ts",
+      "file": "../../../platform/apps/web/e2e/bulgarian.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Bulgarian loads its bundled font and persists an explicit language choice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2270,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:21:23.743Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "bulgarian-home",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 835837,
+                        "sha256": "a14ae58de97e5be1b5159ae092cf978511ae125f93bd11c407da24a9ba812650"
+                      }
+                    },
+                    {
+                      "name": "bulgarian-signin",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 1020969,
+                        "sha256": "de287042e7abc22458915c60f8bae0035aac337b99e44be881fd8e25de54515e"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "89d812a47996ce3f70ad-5addf2193a44fa775813",
+          "file": "../../../platform/apps/web/e2e/bulgarian.spec.ts",
+          "line": 9,
+          "column": 1
+        },
+        {
+          "title": "Bulgarian loads its bundled font and persists an explicit language choice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1339,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:21:49.046Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "bulgarian-home",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 332644,
+                        "sha256": "f6a214df9d570a1aac128428a0ede03be2941f97f556ddb41f64ae05529cd776"
+                      }
+                    },
+                    {
+                      "name": "bulgarian-signin",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 126877,
+                        "sha256": "abf1317d7d374535e6eeb05a69230185ff5475ce6fe4a0d5be0b626439aa3b2e"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "89d812a47996ce3f70ad-e96aefe61eb6bdb10441",
+          "file": "../../../platform/apps/web/e2e/bulgarian.spec.ts",
+          "line": 9,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+      "file": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "long localized controls fit phone columns and preserve desktop layout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 21403,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "steps": [
+                    {
+                      "title": "390px /players/4812028d-7fb8-43da-b328-6774ab4c2ed7",
+                      "duration": 1064
+                    },
+                    {
+                      "title": "390px /maps/8ac4a58d-77b5-4c9d-bb35-4e5fe0029f28",
+                      "duration": 995
+                    },
+                    {
+                      "title": "390px /buildings/b9be1e8e-80aa-489a-a1b5-d638fcdc326c",
+                      "duration": 1155
+                    },
+                    {
+                      "title": "390px /account",
+                      "duration": 948
+                    },
+                    {
+                      "title": "390px /maps/new",
+                      "duration": 1004
+                    },
+                    {
+                      "title": "390px /ais/new",
+                      "duration": 967
+                    },
+                    {
+                      "title": "390px /generators/new",
+                      "duration": 942
+                    },
+                    {
+                      "title": "390px /music/new",
+                      "duration": 860
+                    },
+                    {
+                      "title": "390px /sets/new",
+                      "duration": 1159
+                    },
+                    {
+                      "title": "390px /building-studio/5796b2b9-278d-454c-b3a0-5a0383b7dc66",
+                      "duration": 1474
+                    },
+                    {
+                      "title": "1280px /players/4812028d-7fb8-43da-b328-6774ab4c2ed7",
+                      "duration": 999
+                    },
+                    {
+                      "title": "1280px /maps/8ac4a58d-77b5-4c9d-bb35-4e5fe0029f28",
+                      "duration": 876
+                    },
+                    {
+                      "title": "1280px /buildings/b9be1e8e-80aa-489a-a1b5-d638fcdc326c",
+                      "duration": 904
+                    },
+                    {
+                      "title": "1280px /account",
+                      "duration": 904
+                    },
+                    {
+                      "title": "1280px /maps/new",
+                      "duration": 877
+                    },
+                    {
+                      "title": "1280px /ais/new",
+                      "duration": 984
+                    },
+                    {
+                      "title": "1280px /generators/new",
+                      "duration": 958
+                    },
+                    {
+                      "title": "1280px /music/new",
+                      "duration": 843
+                    },
+                    {
+                      "title": "1280px /sets/new",
+                      "duration": 1162
+                    },
+                    {
+                      "title": "1280px /building-studio/5796b2b9-278d-454c-b3a0-5a0383b7dc66",
+                      "duration": 1449
+                    }
+                  ],
+                  "startTime": "2026-11-01T13:21:26.179Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f16f9d5c140033279166-7da75f4cd1021a3f9950",
+          "file": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+          "line": 8,
+          "column": 1
+        },
+        {
+          "title": "Bulgarian music mood labels fit each hit area in phone and embedded players",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 828,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:21:47.597Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "music-legend-bounds-normal",
+                      "contentType": "application/json",
+                      "body": "ewogICJsYWJlbHMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgICAicmlnaHQiOiA0MDMKICAgIH0sCiAgICB7CiAgICAgICJ0ZXh0IjogItCY0LfQs9GA0LDQttC00LDQvdC1IiwKICAgICAgInJpZ2h0IjogNDAxCiAgICB9LAogICAgewogICAgICAidGV4dCI6ICLQkdC+0LkiLAogICAgICAicmlnaHQiOiAzNTAKICAgIH0KICBdLAogICJwbG90IjogewogICAgImxlZnQiOiA0MTUsCiAgICAicmlnaHQiOiAxMTkyCiAgfSwKICAic2VlayI6IHsKICAgICJ3aWR0aCI6IDc3NywKICAgICJoZWlnaHQiOiAxMDYKICB9LAogICJwYW5lbFJpZ2h0IjogMTE5Mgp9"
+                    },
+                    {
+                      "name": "music-legend-normal",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/1/specs/1/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 3688,
+                        "sha256": "350a890e17165d4fc4fc7eb7e865d51411af9a4e6eca1677330708a2c5096148"
+                      }
+                    },
+                    {
+                      "name": "music-mood-bounds-normal",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgImhpdCI6IHsKICAgICAgImxlZnQiOiAzMjgsCiAgICAgICJyaWdodCI6IDYxMC42NTYyNSwKICAgICAgImhlaWdodCI6IDY4CiAgICB9LAogICAgImZpdHMiOiB0cnVlCiAgfSwKICB7CiAgICAidGV4dCI6ICLQmNC30LPRgNCw0LbQtNCw0L3QtSIsCiAgICAiaGl0IjogewogICAgICAibGVmdCI6IDYxOC42NTYyNSwKICAgICAgInJpZ2h0IjogOTAxLjMyODEyNSwKICAgICAgImhlaWdodCI6IDY4CiAgICB9LAogICAgImZpdHMiOiB0cnVlCiAgfSwKICB7CiAgICAidGV4dCI6ICLQkdC+0LkiLAogICAgImhpdCI6IHsKICAgICAgImxlZnQiOiA5MDkuMzI4MTI1LAogICAgICAicmlnaHQiOiAxMTkxLjk4NDM3NSwKICAgICAgImhlaWdodCI6IDY4CiAgICB9LAogICAgImZpdHMiOiB0cnVlCiAgfQpd"
+                    },
+                    {
+                      "name": "music-moods-normal",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/1/specs/1/tests/0/results/0/attachments/3/body",
+                        "content_type": "image/png",
+                        "bytes": 11771,
+                        "sha256": "f31384891e343bcdf158532cdfd0ac73e5a002b6d21b9c750faadd2fc9519064"
+                      }
+                    },
+                    {
+                      "name": "music-legend-bounds-embedded",
+                      "contentType": "application/json",
+                      "body": "ewogICJsYWJlbHMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgICAicmlnaHQiOiA0MDMKICAgIH0sCiAgICB7CiAgICAgICJ0ZXh0IjogItCY0LfQs9GA0LDQttC00LDQvdC1IiwKICAgICAgInJpZ2h0IjogNDAxCiAgICB9LAogICAgewogICAgICAidGV4dCI6ICLQkdC+0LkiLAogICAgICAicmlnaHQiOiAzNTAKICAgIH0KICBdLAogICJwbG90IjogewogICAgImxlZnQiOiA0MTUsCiAgICAicmlnaHQiOiA1NDIKICB9LAogICJzZWVrIjogewogICAgIndpZHRoIjogMTI3LAogICAgImhlaWdodCI6IDEwNgogIH0sCiAgInBhbmVsUmlnaHQiOiA1NDIKfQ=="
+                    },
+                    {
+                      "name": "music-legend-embedded",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/1/specs/1/tests/0/results/0/attachments/5/body",
+                        "content_type": "image/png",
+                        "bytes": 3218,
+                        "sha256": "2cfe745221ab35dc751e8765beebad1459c57060b9cbe366238293e76b2702d0"
+                      }
+                    },
+                    {
+                      "name": "music-mood-bounds-embedded",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgImhpdCI6IHsKICAgICAgImxlZnQiOiAzMjgsCiAgICAgICJyaWdodCI6IDU0MiwKICAgICAgImhlaWdodCI6IDY4CiAgICB9LAogICAgImZpdHMiOiB0cnVlCiAgfSwKICB7CiAgICAidGV4dCI6ICLQmNC30LPRgNCw0LbQtNCw0L3QtSIsCiAgICAiaGl0IjogewogICAgICAibGVmdCI6IDMyOCwKICAgICAgInJpZ2h0IjogNTQyLAogICAgICAiaGVpZ2h0IjogNjgKICAgIH0sCiAgICAiZml0cyI6IHRydWUKICB9LAogIHsKICAgICJ0ZXh0IjogItCR0L7QuSIsCiAgICAiaGl0IjogewogICAgICAibGVmdCI6IDMyOCwKICAgICAgInJpZ2h0IjogNTQyLAogICAgICAiaGVpZ2h0IjogNjgKICAgIH0sCiAgICAiZml0cyI6IHRydWUKICB9Cl0="
+                    },
+                    {
+                      "name": "music-moods-embedded",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/1/specs/1/tests/0/results/0/attachments/7/body",
+                        "content_type": "image/png",
+                        "bytes": 12237,
+                        "sha256": "01f2528ae2f21267869577ea718713513f094eac4193448d164e8259248335cc"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f16f9d5c140033279166-b7628df708511c611ec7",
+          "file": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+          "line": 114,
+          "column": 1
+        },
+        {
+          "title": "long localized controls fit phone columns and preserve desktop layout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Both viewports are exercised explicitly.",
+                  "location": {
+                    "file": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e/localized-layout.spec.ts",
+                    "line": 14,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 65,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:21:50.534Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Both viewports are exercised explicitly.",
+                      "location": {
+                        "file": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e/localized-layout.spec.ts",
+                        "line": 14,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "f16f9d5c140033279166-a9681a4d793e2084d11e",
+          "file": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+          "line": 8,
+          "column": 1
+        },
+        {
+          "title": "Bulgarian music mood labels fit each hit area in phone and embedded players",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 880,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:21:50.612Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "music-legend-bounds-normal",
+                      "contentType": "application/json",
+                      "body": "ewogICJsYWJlbHMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgICAicmlnaHQiOiAxOTMKICAgIH0sCiAgICB7CiAgICAgICJ0ZXh0IjogItCY0LfQs9GA0LDQttC00LDQvdC1IiwKICAgICAgInJpZ2h0IjogMTkxCiAgICB9LAogICAgewogICAgICAidGV4dCI6ICLQkdC+0LkiLAogICAgICAicmlnaHQiOiAxNDAKICAgIH0KICBdLAogICJwbG90IjogewogICAgImxlZnQiOiAyMDEsCiAgICAicmlnaHQiOiAzNDQKICB9LAogICJzZWVrIjogewogICAgIndpZHRoIjogMTQzLAogICAgImhlaWdodCI6IDEwNgogIH0sCiAgInBhbmVsUmlnaHQiOiAzNDQKfQ=="
+                    },
+                    {
+                      "name": "music-legend-normal",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/1/specs/3/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 3243,
+                        "sha256": "f2bf8192a196aa27246693b5e055d35f0bf44a03c4c1144cfcecac46867c9a48"
+                      }
+                    },
+                    {
+                      "name": "music-mood-bounds-normal",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgImhpdCI6IHsKICAgICAgImxlZnQiOiAxMTgsCiAgICAgICJyaWdodCI6IDM0NCwKICAgICAgImhlaWdodCI6IDYyLjU5Mzc1CiAgICB9LAogICAgImZpdHMiOiB0cnVlCiAgfSwKICB7CiAgICAidGV4dCI6ICLQmNC30LPRgNCw0LbQtNCw0L3QtSIsCiAgICAiaGl0IjogewogICAgICAibGVmdCI6IDExOCwKICAgICAgInJpZ2h0IjogMzQ0LAogICAgICAiaGVpZ2h0IjogNjIuNTkzNzUKICAgIH0sCiAgICAiZml0cyI6IHRydWUKICB9LAogIHsKICAgICJ0ZXh0IjogItCR0L7QuSIsCiAgICAiaGl0IjogewogICAgICAibGVmdCI6IDExOCwKICAgICAgInJpZ2h0IjogMzQ0LAogICAgICAiaGVpZ2h0IjogNjIuNTkzNzUKICAgIH0sCiAgICAiZml0cyI6IHRydWUKICB9Cl0="
+                    },
+                    {
+                      "name": "music-moods-normal",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/1/specs/3/tests/0/results/0/attachments/3/body",
+                        "content_type": "image/png",
+                        "bytes": 7846,
+                        "sha256": "256cf6d45e238ca37710ae2be9c0db8ee9b8a4d39d50150ab623c186e64d5222"
+                      }
+                    },
+                    {
+                      "name": "music-legend-bounds-embedded",
+                      "contentType": "application/json",
+                      "body": "ewogICJsYWJlbHMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgICAicmlnaHQiOiAxOTMKICAgIH0sCiAgICB7CiAgICAgICJ0ZXh0IjogItCY0LfQs9GA0LDQttC00LDQvdC1IiwKICAgICAgInJpZ2h0IjogMTkxCiAgICB9LAogICAgewogICAgICAidGV4dCI6ICLQkdC+0LkiLAogICAgICAicmlnaHQiOiAxNDAKICAgIH0KICBdLAogICJwbG90IjogewogICAgImxlZnQiOiAyMDEsCiAgICAicmlnaHQiOiAzNDQKICB9LAogICJzZWVrIjogewogICAgIndpZHRoIjogMTQzLAogICAgImhlaWdodCI6IDEwNgogIH0sCiAgInBhbmVsUmlnaHQiOiAzNDQKfQ=="
+                    },
+                    {
+                      "name": "music-legend-embedded",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/1/specs/3/tests/0/results/0/attachments/5/body",
+                        "content_type": "image/png",
+                        "bytes": 3243,
+                        "sha256": "f2bf8192a196aa27246693b5e055d35f0bf44a03c4c1144cfcecac46867c9a48"
+                      }
+                    },
+                    {
+                      "name": "music-mood-bounds-embedded",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgImhpdCI6IHsKICAgICAgImxlZnQiOiAxMTgsCiAgICAgICJyaWdodCI6IDM0NCwKICAgICAgImhlaWdodCI6IDYyLjU5Mzc1CiAgICB9LAogICAgImZpdHMiOiB0cnVlCiAgfSwKICB7CiAgICAidGV4dCI6ICLQmNC30LPRgNCw0LbQtNCw0L3QtSIsCiAgICAiaGl0IjogewogICAgICAibGVmdCI6IDExOCwKICAgICAgInJpZ2h0IjogMzQ0LAogICAgICAiaGVpZ2h0IjogNjIuNTkzNzUKICAgIH0sCiAgICAiZml0cyI6IHRydWUKICB9LAogIHsKICAgICJ0ZXh0IjogItCR0L7QuSIsCiAgICAiaGl0IjogewogICAgICAibGVmdCI6IDExOCwKICAgICAgInJpZ2h0IjogMzQ0LAogICAgICAiaGVpZ2h0IjogNjIuNTkzNzUKICAgIH0sCiAgICAiZml0cyI6IHRydWUKICB9Cl0="
+                    },
+                    {
+                      "name": "music-moods-embedded",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/1/specs/3/tests/0/results/0/attachments/7/body",
+                        "content_type": "image/png",
+                        "bytes": 7846,
+                        "sha256": "256cf6d45e238ca37710ae2be9c0db8ee9b8a4d39d50150ab623c186e64d5222"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f16f9d5c140033279166-88af97a591f7702c1d77",
+          "file": "../../../platform/apps/web/e2e/localized-layout.spec.ts",
+          "line": 114,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "new-domains.spec.mjs",
+      "file": "new-domains.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "new skin model and material captions use Bulgarian catalog",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-desktop",
+              "projectName": "new-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5738,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:21:52.050Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new-skin-materials",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 630349,
+                        "sha256": "e9efc4a95a2fbc192a7ff4f70f117e44fc9bda95f741ed4804f57e191a4de253"
+                      }
+                    },
+                    {
+                      "name": "new-skin-materials-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9za2lucyIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMTI4MCwKICAgICJoZWlnaHQiOiA5MDAKICB9LAogICJvdmVyZmxvdyI6IDAsCiAgIm1hdGNoZWROZXdTb3VyY2VzIjogWwogICAgIkZyb250IHZpZXciLAogICAgIkJhY2sgdmlldyIsCiAgICAiTGVmdCB2aWV3IiwKICAgICJSaWdodCB2aWV3IgogIF0KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7121c0b6adf7d0712053-29292bbcf757abbdebee",
+          "file": "new-domains.spec.mjs",
+          "line": 17,
+          "column": 1
+        },
+        {
+          "title": "new administrative tabs and finance filters render Bulgarian on real seeded API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-desktop",
+              "projectName": "new-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3652,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:21:57.918Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new-admin-finances",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 303385,
+                        "sha256": "18a4c99fca0456599d01107e360a477456fa82beb2f096ba5d2e951c530baaf1"
+                      }
+                    },
+                    {
+                      "name": "new-admin-finances-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9hZG1pbi9maW5hbmNlcyIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMTI4MCwKICAgICJoZWlnaHQiOiA5MDAKICB9LAogICJvdmVyZmxvdyI6IDAsCiAgIm1hdGNoZWROZXdTb3VyY2VzIjogW10KfQ=="
+                    },
+                    {
+                      "name": "new-admin-accounts",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/1/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 164952,
+                        "sha256": "08ad0083220b987312eaf90338ea8fbc90d20a438d945e53e92b2ce7b36a891d"
+                      }
+                    },
+                    {
+                      "name": "new-admin-accounts-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9hZG1pbi9hY2NvdW50cyIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMTI4MCwKICAgICJoZWlnaHQiOiA5MDAKICB9LAogICJvdmVyZmxvdyI6IDAsCiAgIm1hdGNoZWROZXdTb3VyY2VzIjogW10KfQ=="
+                    },
+                    {
+                      "name": "new-admin-audit",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/1/tests/0/results/0/attachments/4/body",
+                        "content_type": "image/png",
+                        "bytes": 129149,
+                        "sha256": "a307f4ac790dfbfdfc6dd9be696f5e346aadd3951cc8009694b460308fceb52b"
+                      }
+                    },
+                    {
+                      "name": "new-admin-audit-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9hZG1pbi9hdWRpdCIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMTI4MCwKICAgICJoZWlnaHQiOiA5MDAKICB9LAogICJvdmVyZmxvdyI6IDAsCiAgIm1hdGNoZWROZXdTb3VyY2VzIjogW10KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7121c0b6adf7d0712053-91ed06a7616b5af6910b",
+          "file": "new-domains.spec.mjs",
+          "line": 31,
+          "column": 1
+        },
+        {
+          "title": "all new music listening guidance is localized in actual published player UI fixture",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-desktop",
+              "projectName": "new-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1489,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:01.592Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new-music-guidance-fixture",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/2/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 284518,
+                        "sha256": "9881e9becd19e970465da5f8d5436f3f469d432b0ff082d420b80483354aa1d1"
+                      }
+                    },
+                    {
+                      "name": "new-music-guidance-fixture-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9tdXNpYy8xMTExMTExMS0xMTExLTQxMTEtODExMS0xMTExMTExMTExMTEiLAogICJ2aWV3cG9ydCI6IHsKICAgICJ3aWR0aCI6IDEyODAsCiAgICAiaGVpZ2h0IjogOTAwCiAgfSwKICAib3ZlcmZsb3ciOiAwLAogICJtYXRjaGVkTmV3U291cmNlcyI6IFtdCn0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7121c0b6adf7d0712053-85def59a682a76f670ba",
+          "file": "new-domains.spec.mjs",
+          "line": 43,
+          "column": 1
+        },
+        {
+          "title": "new skin model and material captions use Bulgarian catalog",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-phone",
+              "projectName": "new-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4551,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:24.741Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new-skin-materials",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/3/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 165813,
+                        "sha256": "5b41e469ef56b836de092bfd65b3f1e8b2c0201967c082b04fccc14001cd55ce"
+                      }
+                    },
+                    {
+                      "name": "new-skin-materials-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9za2lucyIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMzkwLAogICAgImhlaWdodCI6IDg0NAogIH0sCiAgIm92ZXJmbG93IjogMCwKICAibWF0Y2hlZE5ld1NvdXJjZXMiOiBbCiAgICAiRnJvbnQgdmlldyIsCiAgICAiQmFjayB2aWV3IiwKICAgICJMZWZ0IHZpZXciLAogICAgIlJpZ2h0IHZpZXciCiAgXQp9"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7121c0b6adf7d0712053-4297221203c612d7a9a8",
+          "file": "new-domains.spec.mjs",
+          "line": 17,
+          "column": 1
+        },
+        {
+          "title": "new administrative tabs and finance filters render Bulgarian on real seeded API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-phone",
+              "projectName": "new-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3338,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:29.418Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new-admin-finances",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 245672,
+                        "sha256": "549970a029b2adbe9df6bb133b4cf1996533f09c4304cca3c0d5d66191a0073d"
+                      }
+                    },
+                    {
+                      "name": "new-admin-finances-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9hZG1pbi9maW5hbmNlcyIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMzkwLAogICAgImhlaWdodCI6IDg0NAogIH0sCiAgIm92ZXJmbG93IjogMCwKICAibWF0Y2hlZE5ld1NvdXJjZXMiOiBbXQp9"
+                    },
+                    {
+                      "name": "new-admin-accounts",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 141099,
+                        "sha256": "14402ad5229a4e02269056b1b9e5ec26a98834c4cd7a39d3183370215e6201a0"
+                      }
+                    },
+                    {
+                      "name": "new-admin-accounts-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9hZG1pbi9hY2NvdW50cyIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMzkwLAogICAgImhlaWdodCI6IDg0NAogIH0sCiAgIm92ZXJmbG93IjogMCwKICAibWF0Y2hlZE5ld1NvdXJjZXMiOiBbXQp9"
+                    },
+                    {
+                      "name": "new-admin-audit",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/4/tests/0/results/0/attachments/4/body",
+                        "content_type": "image/png",
+                        "bytes": 96021,
+                        "sha256": "c3fd6bed15bed15fd8f468b93f9a7261ae65a743b2c8bf1f5d90f7763b4ca5c2"
+                      }
+                    },
+                    {
+                      "name": "new-admin-audit-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9hZG1pbi9hdWRpdCIsCiAgInZpZXdwb3J0IjogewogICAgIndpZHRoIjogMzkwLAogICAgImhlaWdodCI6IDg0NAogIH0sCiAgIm92ZXJmbG93IjogMCwKICAibWF0Y2hlZE5ld1NvdXJjZXMiOiBbXQp9"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7121c0b6adf7d0712053-2fc9c232a53c96c7c1c3",
+          "file": "new-domains.spec.mjs",
+          "line": 31,
+          "column": 1
+        },
+        {
+          "title": "all new music listening guidance is localized in actual published player UI fixture",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-phone",
+              "projectName": "new-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1393,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:32.770Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new-music-guidance-fixture",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/2/specs/5/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 273305,
+                        "sha256": "fa2161e46974ac890732aa2f0fe5d81f564e47d71bfcff68467cb2f6f8caa2c8"
+                      }
+                    },
+                    {
+                      "name": "new-music-guidance-fixture-receipt",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0Mjc2OS9tdXNpYy8xMTExMTExMS0xMTExLTQxMTEtODExMS0xMTExMTExMTExMTEiLAogICJ2aWV3cG9ydCI6IHsKICAgICJ3aWR0aCI6IDM5MCwKICAgICJoZWlnaHQiOiA4NDQKICB9LAogICJvdmVyZmxvdyI6IDAsCiAgIm1hdGNoZWROZXdTb3VyY2VzIjogW10KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7121c0b6adf7d0712053-07ad155023316dcaf30a",
+          "file": "new-domains.spec.mjs",
+          "line": 43,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "new30.spec.mjs",
+      "file": "new30.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "new administrator chart labels preserve actual seeded activity facts",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-desktop",
+              "projectName": "new-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1701,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:03.110Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new30-admin-accounts-chart",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 128470,
+                        "sha256": "5ff686bdc1111a02329dc7fe50bb81bda0709da69a4f1e0089a3d88b3d39eda2"
+                      }
+                    },
+                    {
+                      "name": "new30-admin-started-chart",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 128470,
+                        "sha256": "5ff686bdc1111a02329dc7fe50bb81bda0709da69a4f1e0089a3d88b3d39eda2"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "24ef2717220949834917-74c85f16b2e0461d21f6",
+          "file": "new30.spec.mjs",
+          "line": 18,
+          "column": 1
+        },
+        {
+          "title": "skin view callbacks, blank generated name and shop names translate without purchasing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-desktop",
+              "projectName": "new-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12501,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:04.832Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new30-skin-views-untitled",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 593352,
+                        "sha256": "9a61891c0713f493923e80352ed1be81991c9dc6995cffcc73f9bd7162aa3020"
+                      }
+                    },
+                    {
+                      "name": "new30-swarm-static-branch",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/1/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 476296,
+                        "sha256": "68fb9c5e0675f377a93d636bca71fd84bff3d5204580dcf4020822f629e6adc8"
+                      }
+                    },
+                    {
+                      "name": "new30-shop-stripes-spots",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/1/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 191873,
+                        "sha256": "5ff82f3bb40847308caad636a58595a9b16209a72ee05c9ed06aa0d725fac793"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "24ef2717220949834917-476307f12404c79f5d9c",
+          "file": "new30.spec.mjs",
+          "line": 25,
+          "column": 1
+        },
+        {
+          "title": "studio ideas insert translated prose and all credit notices stay read-only",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-desktop",
+              "projectName": "new-desktop",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6629,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:17.349Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new30-music-ideas-pricing",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/2/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 222613,
+                        "sha256": "e0aadba61eed81b38692ffbb7bd92ac120e84f07d0b60d2883733f6c0ee3b1a3"
+                      }
+                    },
+                    {
+                      "name": "new30-music-no-credit",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/2/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 224731,
+                        "sha256": "9643f229ebe108e0b559df4ece70b67e30640d089fb535cfc5f6a629ba05c371"
+                      }
+                    },
+                    {
+                      "name": "new30-music-generation-unavailable",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/2/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 227369,
+                        "sha256": "0f28b82382073a7bd594300d18c226fdd9bb89b7d8b9b2e8908b83a69ea41872"
+                      }
+                    },
+                    {
+                      "name": "new30-map-pricing",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/2/tests/0/results/0/attachments/3/body",
+                        "content_type": "image/png",
+                        "bytes": 189327,
+                        "sha256": "bdec572ed159f326494b14c2dfb27d65536bc26cd9f2aec5321ddcad0ffaa4f9"
+                      }
+                    },
+                    {
+                      "name": "new30-terrain-pricing",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/2/tests/0/results/0/attachments/4/body",
+                        "content_type": "image/png",
+                        "bytes": 94287,
+                        "sha256": "fc61536ee190be37b01c9191e833f210a354caf9a7634373d678258b0d49cf65"
+                      }
+                    },
+                    {
+                      "name": "read-only-provider-boundary",
+                      "contentType": "application/json",
+                      "body": "eyJ3cml0ZXMiOltdLCJmaXh0dXJlIjoiaW5zdGFuY2VmZWF0dXJlcyBhbmR3YWxsZXQvcmVhZG1vZGVscyBvbmx5OyBubyBnZW5lcmF0aW9uL3BheW1lbnQgY2FsbHMifQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "24ef2717220949834917-fdfcbe09f3dbc3b7d491",
+          "file": "new30.spec.mjs",
+          "line": 41,
+          "column": 1
+        },
+        {
+          "title": "new administrator chart labels preserve actual seeded activity facts",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-phone",
+              "projectName": "new-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1280,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:34.204Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new30-admin-accounts-chart",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/3/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 64086,
+                        "sha256": "38ad7c902c18e0752cef1d21b79462ee4305610ba02587e6154c4b096c8edc4c"
+                      }
+                    },
+                    {
+                      "name": "new30-admin-started-chart",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/3/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 62874,
+                        "sha256": "79e36082b01fcb80986afc1bbf0639dc5ef98836544cd50d73873c2bb574e92f"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "24ef2717220949834917-cac27e1956c3dbaee1ac",
+          "file": "new30.spec.mjs",
+          "line": 18,
+          "column": 1
+        },
+        {
+          "title": "skin view callbacks, blank generated name and shop names translate without purchasing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-phone",
+              "projectName": "new-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8079,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:35.497Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new30-skin-views-untitled",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/4/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 158133,
+                        "sha256": "563b1a35d7a725b6fecc7fa9ce0de9144cf72511f91049c2fe3d7b03689ea7e0"
+                      }
+                    },
+                    {
+                      "name": "new30-swarm-static-branch",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/4/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 155760,
+                        "sha256": "abff493922e8c36e1cfa69bec21ffc779262ef51cb839a4979dee90d3b2ba197"
+                      }
+                    },
+                    {
+                      "name": "new30-shop-stripes-spots",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/4/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 64949,
+                        "sha256": "8431d69e7b3cc9fad2a91e1c1497320b29fa226fb8b9a3a8b4d2cfb197a7eb9b"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "24ef2717220949834917-9f325d3f584c96a9ad9a",
+          "file": "new30.spec.mjs",
+          "line": 25,
+          "column": 1
+        },
+        {
+          "title": "studio ideas insert translated prose and all credit notices stay read-only",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-phone",
+              "projectName": "new-phone",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6114,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:43.588Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "new30-music-ideas-pricing",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/5/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 57730,
+                        "sha256": "cb5133455115c53b01c18fa6a4d0afcb8d76dfb538824f6d90b88ba1b20b8de1"
+                      }
+                    },
+                    {
+                      "name": "new30-music-no-credit",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/5/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 59398,
+                        "sha256": "5c01a15625e61cda96098f64b6a35959726fcf7f374e3602fcbcf74e90a5e7b2"
+                      }
+                    },
+                    {
+                      "name": "new30-music-generation-unavailable",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/5/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 58165,
+                        "sha256": "0e634905bb5f4d4e20a5bf5218d7569f3d5045e0cdab2acf3a9c1e4f16ef055d"
+                      }
+                    },
+                    {
+                      "name": "new30-map-pricing",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/5/tests/0/results/0/attachments/3/body",
+                        "content_type": "image/png",
+                        "bytes": 53563,
+                        "sha256": "c531520bd7f313ce49df4023e3e28e6e3e1bf69cebe0e3ad92803022632b1b68"
+                      }
+                    },
+                    {
+                      "name": "new30-terrain-pricing",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/3/specs/5/tests/0/results/0/attachments/4/body",
+                        "content_type": "image/png",
+                        "bytes": 45582,
+                        "sha256": "8bb6a2d835240568e52743d8c3cd7d5b538cc920552a7143eac7d3e478eaf689"
+                      }
+                    },
+                    {
+                      "name": "read-only-provider-boundary",
+                      "contentType": "application/json",
+                      "body": "eyJ3cml0ZXMiOltdLCJmaXh0dXJlIjoiaW5zdGFuY2VmZWF0dXJlcyBhbmR3YWxsZXQvcmVhZG1vZGVscyBvbmx5OyBubyBnZW5lcmF0aW9uL3BheW1lbnQgY2FsbHMifQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "24ef2717220949834917-11caf9d7e835cfdaa903",
+          "file": "new30.spec.mjs",
+          "line": 41,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "context-wording-current.spec.mjs",
+      "file": "context-wording-current.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Bulgarian owner uploads a cover through real API and music phase uses Build in player fixture",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2410,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:50.323Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "real-owner-cover-upload-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/4/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 141433,
+                        "sha256": "8c4ce01da87848a131e507fa2778149e82efe621a5edacf4960819521268911e"
+                      }
+                    },
+                    {
+                      "name": "mood-label-bounds",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgImJ1dHRvbiI6IHsKICAgICAgImxlZnQiOiAzMjgsCiAgICAgICJyaWdodCI6IDYxMC42NTYyNSwKICAgICAgIndpZHRoIjogMjgyLjY1NjI1CiAgICB9LAogICAgInRleHRSZWN0cyI6IFsKICAgICAgewogICAgICAgICJsZWZ0IjogMzc0LAogICAgICAgICJyaWdodCI6IDQ4MiwKICAgICAgICAid2lkdGgiOiAxMDgKICAgICAgfQogICAgXSwKICAgICJmaXRzIjogdHJ1ZQogIH0sCiAgewogICAgInRleHQiOiAi0JjQt9Cz0YDQsNC20LTQsNC90LUiLAogICAgImJ1dHRvbiI6IHsKICAgICAgImxlZnQiOiA2MTguNjU2MjUsCiAgICAgICJyaWdodCI6IDkwMS4zMjgxMjUsCiAgICAgICJ3aWR0aCI6IDI4Mi42NzE4NzUKICAgIH0sCiAgICAidGV4dFJlY3RzIjogWwogICAgICB7CiAgICAgICAgImxlZnQiOiA2NjQuNjU2MjUsCiAgICAgICAgInJpZ2h0IjogNzY4LjY1NjI1LAogICAgICAgICJ3aWR0aCI6IDEwNAogICAgICB9CiAgICBdLAogICAgImZpdHMiOiB0cnVlCiAgfSwKICB7CiAgICAidGV4dCI6ICLQkdC+0LkiLAogICAgImJ1dHRvbiI6IHsKICAgICAgImxlZnQiOiA5MDkuMzI4MTI1LAogICAgICAicmlnaHQiOiAxMTkxLjk4NDM3NSwKICAgICAgIndpZHRoIjogMjgyLjY1NjI1CiAgICB9LAogICAgInRleHRSZWN0cyI6IFsKICAgICAgewogICAgICAgICJsZWZ0IjogOTU1LjMyODEyNSwKICAgICAgICAicmlnaHQiOiA5ODYuMzI4MTI1LAogICAgICAgICJ3aWR0aCI6IDMxCiAgICAgIH0KICAgIF0sCiAgICAiZml0cyI6IHRydWUKICB9Cl0="
+                    },
+                    {
+                      "name": "fixture-music-phase-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/4/specs/0/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 168867,
+                        "sha256": "2e6f83b76745a22afe4fe8b8a7ec8953882c87b253e73a3e415aff5e4f6ce777"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a7eb6f5bb1ffad9a62ba-aff40255055be6496517",
+          "file": "context-wording-current.spec.mjs",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1511,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:52.865Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "fixture-infinite-stock-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/4/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 143601,
+                        "sha256": "6a6c120a4d25e20c4137f8651cf862009ae82023a0023efdc40b1fd1b090e329"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a7eb6f5bb1ffad9a62ba-f0c950dad4eec5da6487",
+          "file": "context-wording-current.spec.mjs",
+          "line": 52,
+          "column": 1
+        },
+        {
+          "title": "Bulgarian owner uploads a cover through real API and music phase uses Build in player fixture",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2337,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:14.793Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "real-owner-cover-upload-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/4/specs/2/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 90293,
+                        "sha256": "544d2e9de69db9cbf416315f9d2a94bcc7e4db87a3c26e1d4934c8b20c15d8f7"
+                      }
+                    },
+                    {
+                      "name": "mood-label-bounds",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ0ZXh0IjogItCh0L/QvtC60L7QudGB0YLQstC40LUiLAogICAgImJ1dHRvbiI6IHsKICAgICAgImxlZnQiOiAxMTgsCiAgICAgICJyaWdodCI6IDM0NCwKICAgICAgIndpZHRoIjogMjI2CiAgICB9LAogICAgInRleHRSZWN0cyI6IFsKICAgICAgewogICAgICAgICJsZWZ0IjogMTg2LjUsCiAgICAgICAgInJpZ2h0IjogMjc1LjUsCiAgICAgICAgIndpZHRoIjogODkKICAgICAgfQogICAgXSwKICAgICJmaXRzIjogdHJ1ZQogIH0sCiAgewogICAgInRleHQiOiAi0JjQt9Cz0YDQsNC20LTQsNC90LUiLAogICAgImJ1dHRvbiI6IHsKICAgICAgImxlZnQiOiAxMTgsCiAgICAgICJyaWdodCI6IDM0NCwKICAgICAgIndpZHRoIjogMjI2CiAgICB9LAogICAgInRleHRSZWN0cyI6IFsKICAgICAgewogICAgICAgICJsZWZ0IjogMTg4LAogICAgICAgICJyaWdodCI6IDI3NCwKICAgICAgICAid2lkdGgiOiA4NgogICAgICB9CiAgICBdLAogICAgImZpdHMiOiB0cnVlCiAgfSwKICB7CiAgICAidGV4dCI6ICLQkdC+0LkiLAogICAgImJ1dHRvbiI6IHsKICAgICAgImxlZnQiOiAxMTgsCiAgICAgICJyaWdodCI6IDM0NCwKICAgICAgIndpZHRoIjogMjI2CiAgICB9LAogICAgInRleHRSZWN0cyI6IFsKICAgICAgewogICAgICAgICJsZWZ0IjogMjE4LjUsCiAgICAgICAgInJpZ2h0IjogMjQzLjUsCiAgICAgICAgIndpZHRoIjogMjUKICAgICAgfQogICAgXSwKICAgICJmaXRzIjogdHJ1ZQogIH0KXQ=="
+                    },
+                    {
+                      "name": "fixture-music-phase-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/4/specs/2/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 115685,
+                        "sha256": "e13c783e8d6143b6bff4485726f1041d35d5e1e900f8e0c0620d5cd6e8de1411"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a7eb6f5bb1ffad9a62ba-ffbaabf17d0ed3e64845",
+          "file": "context-wording-current.spec.mjs",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1563,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:17.263Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "fixture-infinite-stock-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/4/specs/3/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 54075,
+                        "sha256": "0804511401db57e5a3331a673f6a13eee71635360a803cc9f8b5fc1b6d06e906"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a7eb6f5bb1ffad9a62ba-bdb515dc707d8d151232",
+          "file": "context-wording-current.spec.mjs",
+          "line": 52,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "readonly-caption.spec.mjs",
+      "file": "readonly-caption.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1721,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:54.416Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "fixture-terrain-raw-identifiers",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/5/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 151167,
+                        "sha256": "071ae6aa0ef81772fb4be18f3b13b6a03cbd33564be9820040e551606d6b436c"
+                      }
+                    },
+                    {
+                      "name": "fixture-infinite-stock-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/5/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 151167,
+                        "sha256": "071ae6aa0ef81772fb4be18f3b13b6a03cbd33564be9820040e551606d6b436c"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ab537b82038df0469ed4-759d206fccb37e2f1f5d",
+          "file": "readonly-caption.spec.mjs",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "published set inspector presents exact serialized field IDs as code",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 780,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:56.153Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "fixture-set-readonly-identifiers",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/5/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 208662,
+                        "sha256": "fc10666e9f98896c3e46831ad8d7658c85b12311672c05ff2f2a7984acda8937"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ab537b82038df0469ed4-d30a958dbd5fdfeb7db0",
+          "file": "readonly-caption.spec.mjs",
+          "line": 45,
+          "column": 1
+        },
+        {
+          "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1679,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:18.885Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "fixture-terrain-raw-identifiers",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/5/specs/2/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 61514,
+                        "sha256": "9fadc54436d4f5eab32a2d8ed4c00a2a67a7173d1ea4dab2dc956f86933544d9"
+                      }
+                    },
+                    {
+                      "name": "fixture-infinite-stock-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/5/specs/2/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 54895,
+                        "sha256": "ca2aed3a48fed4c5422dadbf2987555e872e67fb3c7685e6c9aac2eff25a04e0"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ab537b82038df0469ed4-e453264f5f5c1a3f5615",
+          "file": "readonly-caption.spec.mjs",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "published set inspector presents exact serialized field IDs as code",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 863,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:20.579Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "fixture-set-readonly-identifiers",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/5/specs/3/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 126586,
+                        "sha256": "66d437044900d9b03e004bde6cfefbd8bd76273bb5eb616b4288fa38d739bea3"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ab537b82038df0469ed4-5058119a26b5a4b44c0c",
+          "file": "readonly-caption.spec.mjs",
+          "line": 45,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "sets-caption.spec.mjs",
+      "file": "sets-caption.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "schema captions translate only audited fields and preserve canonical terrain/resource values",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1640,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:56.959Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "terrain-schema-captions",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/6/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 170465,
+                        "sha256": "62d462006a4f2571012b76ec5bccbed483db7309dd7e8c1755dfcbb4065b0774"
+                      }
+                    },
+                    {
+                      "name": "resource-schema-captions",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/6/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 141958,
+                        "sha256": "751890e3739a979b5c3463e6cc2e47ca62fb46387e8a2df3b23056566097f135"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ea35f17280c8940036ca-8fa816576d000046f14a",
+          "file": "sets-caption.spec.mjs",
+          "line": 4,
+          "column": 1
+        },
+        {
+          "title": "schema captions translate only audited fields and preserve canonical terrain/resource values",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1692,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:21.467Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "terrain-schema-captions",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/6/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 64523,
+                        "sha256": "5cd8459ac12277aa0a3e328bdee1ce82e4199d61ccaa790c2565cce25083a6c3"
+                      }
+                    },
+                    {
+                      "name": "resource-schema-captions",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/6/specs/1/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 72293,
+                        "sha256": "f960ab2344cf27b21bcda3c3c802742199fc5035d2cbfae81d7a000aad6896c3"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ea35f17280c8940036ca-9a9be937c020e0b790b2",
+          "file": "sets-caption.spec.mjs",
+          "line": 4,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "translated-controls.spec.mjs",
+      "file": "translated-controls.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "AI filter, card, detail and publish labels translate while canonical tags stay stable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3452,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:22:58.631Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "ai-search-placeholder-fit",
+                      "contentType": "application/json",
+                      "body": "ewogICJ0ZXh0IjogItCY0LzQtdC90LAsINC+0L/QuNGB0LDQvdC40Y8sINCw0LLRgtC+0YDQuOKApiIsCiAgIndpZHRoIjogMjI3LAogICJhdmFpbGFibGUiOiAzOTAKfQ=="
+                    },
+                    {
+                      "name": "translated-ai-filter-card",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 155736,
+                        "sha256": "e66886fc11f942301d0120bc989a88c180e86d09071ff948c0388be57e53ed8e"
+                      }
+                    },
+                    {
+                      "name": "translated-ai-detail",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/0/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 144115,
+                        "sha256": "72b2894ecfaa822dc945889cb47a720ef60a0d987ba3f68f2c5103083f3331ff"
+                      }
+                    },
+                    {
+                      "name": "translated-ai-publish",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/0/tests/0/results/0/attachments/3/body",
+                        "content_type": "image/png",
+                        "bytes": 210029,
+                        "sha256": "79174eb5aad2d20e40e357ed97e1da47a11153615bc2822033a39f30140ec858"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-5e8ff55bc5f556bff25f",
+          "file": "translated-controls.spec.mjs",
+          "line": 34,
+          "column": 1
+        },
+        {
+          "title": "map visibility labels translate while protocol values remain public unlisted private",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1124,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:02.097Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "unlisted-default-fit",
+                      "contentType": "application/json",
+                      "body": "ewogICJ0ZXh0IjogItCh0LDQvNC+INGH0YDQtdC3INCy0YDRitC30LrQsCIsCiAgIndpZHRoIjogMTUwLAogICJhdmFpbGFibGUiOiA1NjAKfQ=="
+                    },
+                    {
+                      "name": "translated-map-visibility",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/1/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 122532,
+                        "sha256": "5221c5cabbe284b6b04c4fbfe53e329d255da7a597f8d970002e958876d73062"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-6830277120bc64fff31e",
+          "file": "translated-controls.spec.mjs",
+          "line": 54,
+          "column": 1
+        },
+        {
+          "title": "music author labels use Artist and attribution Credits and sources",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1113,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:03.234Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-music-attribution",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/2/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 130624,
+                        "sha256": "0edca22f48f4dad45860a50047475aa9a9fffc91f34a3d2338cba60e26406b4c"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-a4a4e95effaa068e3fac",
+          "file": "translated-controls.spec.mjs",
+          "line": 64,
+          "column": 1
+        },
+        {
+          "title": "new set and building drafts initialize localized names without rewriting stored metadata",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5188,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:04.364Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "localized-new-set-title",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/3/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 201244,
+                        "sha256": "b05a0f1e2ecb03bc2ec9d2c387a340212d360fb52e6a5996862488ab338a93cf"
+                      }
+                    },
+                    {
+                      "name": "always-available-fit",
+                      "contentType": "application/json",
+                      "body": "ewogICJ0ZXh0IjogItCd0LUg0YHQtSDQuNC30LjRgdC60LLQsCIsCiAgIndpZHRoIjogMTE4LAogICJhdmFpbGFibGUiOiA4NzgKfQ=="
+                    },
+                    {
+                      "name": "localized-new-building-title",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/3/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 243350,
+                        "sha256": "365c326524bc3c32552eab90b9590a7459a488f99fcfbda446757615f568c339"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-f65c08e8ef0f3f5bedfb",
+          "file": "translated-controls.spec.mjs",
+          "line": 72,
+          "column": 1
+        },
+        {
+          "title": "terrain and resource Add labels translate while package collections stay canonical",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-desktop",
+              "projectName": "controls-desktop",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4538,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:09.569Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-add-terrain",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/4/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 223971,
+                        "sha256": "57130ad105cfbd43c10d40baba7d9152b075f879b37dff2a0e5bb3525c88dfcf"
+                      }
+                    },
+                    {
+                      "name": "translated-add-resource",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/4/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 535534,
+                        "sha256": "0074fcf1b6e63d9042d5f29f20c5564f927b23f285b28fa3cb9b6f3a836c7edd"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-93f983a8bed3ff699128",
+          "file": "translated-controls.spec.mjs",
+          "line": 101,
+          "column": 1
+        },
+        {
+          "title": "AI filter, card, detail and publish labels translate while canonical tags stay stable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3359,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:23.184Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "ai-search-placeholder-fit",
+                      "contentType": "application/json",
+                      "body": "ewogICJ0ZXh0IjogItCY0LzQtdC90LAsINC+0L/QuNGB0LDQvdC40Y8sINCw0LLRgtC+0YDQuOKApiIsCiAgIndpZHRoIjogMjI3LAogICJhdmFpbGFibGUiOiAyNjAKfQ=="
+                    },
+                    {
+                      "name": "translated-ai-filter-card",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/5/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 122870,
+                        "sha256": "637ab5430e9690e6fa4b61414f49dcb4620869bd5c013a784dc5262de9bc150d"
+                      }
+                    },
+                    {
+                      "name": "translated-ai-detail",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/5/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 110927,
+                        "sha256": "13b48e11726894e3db25da720aa0b53b4c7e8307608d9596c933a540ebd5a13c"
+                      }
+                    },
+                    {
+                      "name": "translated-ai-publish",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/5/tests/0/results/0/attachments/3/body",
+                        "content_type": "image/png",
+                        "bytes": 171555,
+                        "sha256": "e74b4bb947b427c18548f3ce919209b54be00d1b930fd4cb9963ae275a9b2ea6"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-e85fbf2b8d3ec7864967",
+          "file": "translated-controls.spec.mjs",
+          "line": 34,
+          "column": 1
+        },
+        {
+          "title": "map visibility labels translate while protocol values remain public unlisted private",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1094,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:26.558Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "unlisted-default-fit",
+                      "contentType": "application/json",
+                      "body": "ewogICJ0ZXh0IjogItCh0LDQvNC+INGH0YDQtdC3INCy0YDRitC30LrQsCIsCiAgIndpZHRoIjogMTUwLAogICJhdmFpbGFibGUiOiAyMDYKfQ=="
+                    },
+                    {
+                      "name": "translated-map-visibility",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/6/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 81361,
+                        "sha256": "6fdfbc4081e5be1c996873ef18c9310cd15c45f6a8cfe0e1cd9a6ebc8bbbb77d"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-c22849ed05cb30a91139",
+          "file": "translated-controls.spec.mjs",
+          "line": 54,
+          "column": 1
+        },
+        {
+          "title": "music author labels use Artist and attribution Credits and sources",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 962,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:27.667Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-music-attribution",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/7/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 91055,
+                        "sha256": "3bacda258b07fb8b792b9a404aa0f8ec51e983f510c4d3c2cea0d75ca619ff3c"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-f5e55acaf5c8b35235b8",
+          "file": "translated-controls.spec.mjs",
+          "line": 64,
+          "column": 1
+        },
+        {
+          "title": "new set and building drafts initialize localized names without rewriting stored metadata",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5366,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:28.642Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "localized-new-set-title",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/8/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 151819,
+                        "sha256": "7cd8b3f3b4a9f06e8a942814378fa220a4ba3139a9b34898be37ef3b2eedd6e7"
+                      }
+                    },
+                    {
+                      "name": "always-available-fit",
+                      "contentType": "application/json",
+                      "body": "ewogICJ0ZXh0IjogItCd0LUg0YHQtSDQuNC30LjRgdC60LLQsCIsCiAgIndpZHRoIjogMTE4LAogICJhdmFpbGFibGUiOiAxODgKfQ=="
+                    },
+                    {
+                      "name": "localized-new-building-title",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/8/tests/0/results/0/attachments/2/body",
+                        "content_type": "image/png",
+                        "bytes": 217183,
+                        "sha256": "239d93f65c101f9cfdadf664166197b6411e1bde66f9c2fa630564e51d977d61"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-373385974f747a8aaa2d",
+          "file": "translated-controls.spec.mjs",
+          "line": 72,
+          "column": 1
+        },
+        {
+          "title": "terrain and resource Add labels translate while package collections stay canonical",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "controls-phone",
+              "projectName": "controls-phone",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4235,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T13:23:34.026Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "translated-add-terrain",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/9/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 181933,
+                        "sha256": "575460d4284f9e3c21fdc67eed927090eaadc1a639411339b8e9daf5b9dc9c31"
+                      }
+                    },
+                    {
+                      "name": "translated-add-resource",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v8-online-qa/verified/tests.json",
+                        "json_pointer": "/suites/7/specs/9/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 465056,
+                        "sha256": "65d1296756b470667c818d70892019bc5ed014f7db43927ac264b7fe1ff03bdb"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e3f45dc9ae92a998927-17eda92821541da7544c",
+          "file": "translated-controls.spec.mjs",
+          "line": 101,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T13:21:22.973Z",
+    "duration": 135445.492,
+    "expected": 37,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "stats": {
+    "startTime": "2026-11-01T11:20:11.260Z",
+    "duration": 271163.14300000004,
+    "expected": 27,
+    "skipped": 1,
+    "unexpected": 4,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "title": "Bulgarian loads its bundled font and persists an explicit language choice",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "Bulgarian loads its bundled font and persists an explicit language choice",
+      "project": "phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "long localized controls fit phone columns and preserve desktop layout",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "Bulgarian music mood labels fit each hit area in phone and embedded players",
+      "project": "desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "long localized controls fit phone columns and preserve desktop layout",
+      "project": "phone",
+      "status": "skipped",
+      "results": [
+        "skipped"
+      ]
+    },
+    {
+      "title": "Bulgarian music mood labels fit each hit area in phone and embedded players",
+      "project": "phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "new skin model and material captions use Bulgarian catalog",
+      "project": "new-desktop",
+      "status": "unexpected",
+      "results": [
+        "failed"
+      ]
+    },
+    {
+      "title": "new administrative tabs and finance filters render Bulgarian on real seeded API",
+      "project": "new-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "all new music listening guidance is localized in actual published player UI fixture",
+      "project": "new-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "new skin model and material captions use Bulgarian catalog",
+      "project": "new-phone",
+      "status": "unexpected",
+      "results": [
+        "failed"
+      ]
+    },
+    {
+      "title": "new administrative tabs and finance filters render Bulgarian on real seeded API",
+      "project": "new-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "all new music listening guidance is localized in actual published player UI fixture",
+      "project": "new-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "Bulgarian owner uploads a cover through real API and music phase uses Build in player fixture",
+      "project": "controls-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+      "project": "controls-desktop",
+      "status": "unexpected",
+      "results": [
+        "failed"
+      ]
+    },
+    {
+      "title": "Bulgarian owner uploads a cover through real API and music phase uses Build in player fixture",
+      "project": "controls-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+      "project": "controls-phone",
+      "status": "unexpected",
+      "results": [
+        "failed"
+      ]
+    },
+    {
+      "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+      "project": "controls-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "published set inspector presents exact serialized field IDs as code",
+      "project": "controls-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+      "project": "controls-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "published set inspector presents exact serialized field IDs as code",
+      "project": "controls-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "schema captions translate only audited fields and preserve canonical terrain/resource values",
+      "project": "controls-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "schema captions translate only audited fields and preserve canonical terrain/resource values",
+      "project": "controls-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "AI filter, card, detail and publish labels translate while canonical tags stay stable",
+      "project": "controls-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "map visibility labels translate while protocol values remain public unlisted private",
+      "project": "controls-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "music author labels use Artist and attribution Credits and sources",
+      "project": "controls-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "new set and building drafts initialize localized names without rewriting stored metadata",
+      "project": "controls-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "terrain and resource Add labels translate while package collections stay canonical",
+      "project": "controls-desktop",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "AI filter, card, detail and publish labels translate while canonical tags stay stable",
+      "project": "controls-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "map visibility labels translate while protocol values remain public unlisted private",
+      "project": "controls-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "music author labels use Artist and attribution Credits and sources",
+      "project": "controls-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "new set and building drafts initialize localized names without rewriting stored metadata",
+      "project": "controls-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "terrain and resource Add labels translate while package collections stay canonical",
+      "project": "controls-phone",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3",
+  "source": "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+  "source_sha256": "bba74153a1732b58db707f36419c13dd01c1e6673a5fab35f218b5dfb388ca15",
+  "bytes": 331107616,
+  "mtime_ns": 1793518911561071874,
+  "embedded_revision_found": true,
+  "old_f02_revision_absent": true,
+  "program_headers_bounded": 15,
+  "sections_bounded": 40,
+  "active_writers_to_exact_source_inode": [],
+  "scope": "Independent stable ELF and exact-inode writer inspection; sibling worktree linkers not modified."
+}

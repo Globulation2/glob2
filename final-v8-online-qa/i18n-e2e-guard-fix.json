@@ -1,0 +1,7 @@
+{
+  "file": "platform/apps/web/e2e/i18n.spec.ts",
+  "sha256": "40ea3fa239e83654a6008469db803eefee0d8bd1836a8ff9c108a75e9e964aab",
+  "patchSha256": "6ba7a88d98da4afbd91923017701469604c2b9567d5d700f95062f7101022470",
+  "scope": "test-only explicit nullguards; existinggeometry/text/selection assertions preserved",
+  "productionChange": false
+}

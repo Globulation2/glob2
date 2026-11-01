@@ -1,0 +1,30 @@
+diff --git a/platform/apps/web/test/teluguMetadata.test.tsx b/platform/apps/web/test/teluguMetadata.test.tsx
+index 3163f4d3ff9cfef11b9683ec2ab30f687fb7da6a..e8fce5c2e6a1c8ccceffd754b716048d159d33af 100644
+--- a/platform/apps/web/test/teluguMetadata.test.tsx
++++ b/platform/apps/web/test/teluguMetadata.test.tsx
+@@ -87,9 +87,9 @@ it('changes map visibility through translated options without translating policy
+   );
+   const visibility = screen.getByLabelText('దృశ్యమానత') as HTMLSelectElement;
+   expect([...visibility.options].map((option) => [option.value, option.textContent])).toEqual([
+-    ['public', 'బహిరంగం: కేటలాగ్‌లో కనిపిస్తుంది'],
+-    ['unlisted', 'జాబితాలో లేదు: లింక్ ఉన్నవారికి అందుబాటు'],
+-    ['private', 'ప్రైవేట్: మీకు మాత్రమే'],
++    ['public', 'పబ్లిక్ — అందరి కోసం జాబితా చేయబడింది'],
++    ['unlisted', 'జాబితాలో లేదు — లింక్ ద్వారా యాక్సెస్ చేయవచ్చు'],
++    ['private', 'ప్రైవేట్ — కేవలం మీరు'],
+   ]);
+   expect(visibility.value).toBe('unlisted');
+   fireEvent.change(visibility, { target: { value: 'private' } });
+diff --git a/tools/TranslationPreviewHarness.cpp b/tools/TranslationPreviewHarness.cpp
+index 7c986ac64915e0a407f18d036f8e6ad2c6b7a442..129a5f2048c6f27e84c8c87d9aaf0cbd982b0a6f 100644
+--- a/tools/TranslationPreviewHarness.cpp
++++ b/tools/TranslationPreviewHarness.cpp
+@@ -894,7 +894,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
+             const auto before = gui.game.checkSum();
+             const auto metrics = Stats::catalogForBuildings(gui.game.buildingsTypes);
+             const auto metric = std::find_if(metrics.begin(), metrics.end(), [](const auto &entry) {
+-                return entry.id == "win probability";
++                return std::string(entry.id) == "win probability";
+             });
+             require(metric != metrics.end(), "Production win probability metric exists");
+             FrontendTheme theme;

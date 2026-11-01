@@ -1,0 +1,1217 @@
+{
+  "browser": "153.0.8010.12",
+  "reports": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1200,
+        "height": 900
+      },
+      "deviceScaleFactor": 1,
+      "fonts": {
+        "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif",
+        "loaded": [
+          {
+            "family": "Glob2 Bulgarian",
+            "status": "loaded",
+            "unicodeRange": "U+0-10FFFF"
+          }
+        ],
+        "rect": {
+          "x": 448,
+          "y": 387.71875,
+          "width": 304,
+          "height": 22.390625,
+          "top": 387.71875,
+          "right": 752,
+          "bottom": 410.109375,
+          "left": 448
+        },
+        "scrollWidth": 304,
+        "clientWidth": 304,
+        "dpr": 1
+      },
+      "actual_platform_fonts": [
+        {
+          "familyName": "Glob2 Sans",
+          "postScriptName": "Glob2Sans",
+          "isCustomFont": true,
+          "glyphCount": 33
+        }
+      ],
+      "network": [
+        {
+          "path": "/",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "18911",
+            "content-type": "text/html",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:30 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 59600,
+          "decoded_sha256": "6603dd9eebeac2282c08cf790558aa36dbfd607a0b16ab590573532aed1f0f84"
+        },
+        {
+          "path": "/script-fonts.css",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "908",
+            "content-type": "text/css",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 4078,
+          "decoded_sha256": "d4b782622fc81a779d59f3ace3b9d8c21a2104fe365cd7de5e70da8ef003a3a8"
+        },
+        {
+          "path": "/theme.js",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/loader-b91977b08bcb0e86.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "2086",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 5767,
+          "decoded_sha256": "c06c9a252d1080d41cda582bd78aaaa3a5bda8ec36a4251b9255013d83fd43b1"
+        },
+        {
+          "path": "/presentation-b91977b08bcb0e86-surface.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1994",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 6238,
+          "decoded_sha256": "a0dc7dbde4cf5e29986174bc3ae4b6be0b2e90b62fe881a62794c7087bf50637"
+        },
+        {
+          "path": "/i18n.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "44853",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 199332,
+          "decoded_sha256": "c87d6a2879bc9be00c272ef3d4361b4ec0c80d42eb03328311f44239ee37d84f"
+        },
+        {
+          "path": "/signin/assets/glob-64.png",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 460,
+          "decoded_sha256": "b47a55e09e9d3af62b1d6a73975ca7f455b4a76cf3d39e552fef398a7bdba7a9"
+        },
+        {
+          "path": "/signin/assets/wordmark-letters.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 460,
+          "decoded_sha256": "b47a55e09e9d3af62b1d6a73975ca7f455b4a76cf3d39e552fef398a7bdba7a9"
+        },
+        {
+          "path": "/signin/assets/wordmark-two.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 460,
+          "decoded_sha256": "b47a55e09e9d3af62b1d6a73975ca7f455b4a76cf3d39e552fef398a7bdba7a9"
+        },
+        {
+          "path": "/locales/bg.json",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "79407",
+            "content-type": "application/json",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 306248,
+          "decoded_sha256": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+        },
+        {
+          "path": "/signin/assets/nunito.woff2",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/fonts/sans-core.ttf",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "328556",
+            "content-type": "font/ttf",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 597868,
+          "decoded_sha256": "466fb75762954c81cd683538f08c4e36773dc27cb5c11339e3e1a675777a6048"
+        },
+        {
+          "path": "/index-b91977b08bcb0e86.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "333334",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 1811896,
+          "decoded_sha256": "d6ad16acd30cc586dc17f2eae0395bc6bd48b3bbfca3878b63039c37a9666eb3"
+        },
+        {
+          "path": "/index-b91977b08bcb0e86.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "11538",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 61178,
+          "decoded_sha256": "ce5fa39acbe960ccb5735218d4f775f3bba6a79701bfdc7b0f4f421ad1f52032"
+        },
+        {
+          "path": "/index-b91977b08bcb0e86.wasm",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "8256179",
+            "content-type": "application/wasm",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:34 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "body_error": "response.body: Protocol error (Network.getResponseBody): Request content was evicted from inspector cache\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        },
+        {
+          "path": "/assets/core.ce5ebe7270eb0a76.data",
+          "status": 503,
+          "headers": {},
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/assets/game-2.c528d2d4d914d336.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1751821",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:35 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 2204873,
+          "decoded_sha256": "c528d2d4d914d3364c5ad4e877d7fc371e6d1f39ff3ef3973959b64b14a28b2d"
+        },
+        {
+          "path": "/assets/game-1.3469574f02166bac.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3777113",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:35 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 4194068,
+          "decoded_sha256": "3469574f02166bac2bd5439397ecc8a4e315a7812f7e8d9bd25335ad4a1af61e"
+        },
+        {
+          "path": "/assets/translations-2.7da7fc5ea22bf72c.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1211347",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "body_error": "response.body: Target page, context or browser has been closed"
+        },
+        {
+          "path": "/assets/translations-1.d943458969c2a854.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1142319",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:41 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "body_error": "response.body: Target page, context or browser has been closed"
+        },
+        {
+          "path": "/assets/translations-3.7a22e56e4dc343c5.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "728651",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:31 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "body_error": "response.body: Target page, context or browser has been closed"
+        }
+      ],
+      "png": "startup-desktop.png",
+      "png_sha256": "fac03e96e336f3f4c660adf789f192620f7f12c8d5509f0f8a68795e8d911d92",
+      "scope": "Intentional core503 before WASM; actual custom-font glyphs measured by Chromium CDP. No game runtime claimed."
+    },
+    {
+      "name": "desktop-dpr2",
+      "viewport": {
+        "width": 1200,
+        "height": 900
+      },
+      "deviceScaleFactor": 2,
+      "fonts": {
+        "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif",
+        "loaded": [
+          {
+            "family": "Glob2 Bulgarian",
+            "status": "loaded",
+            "unicodeRange": "U+0-10FFFF"
+          }
+        ],
+        "rect": {
+          "x": 448,
+          "y": 387.71875,
+          "width": 304,
+          "height": 22.390625,
+          "top": 387.71875,
+          "right": 752,
+          "bottom": 410.109375,
+          "left": 448
+        },
+        "scrollWidth": 304,
+        "clientWidth": 304,
+        "dpr": 2
+      },
+      "actual_platform_fonts": [
+        {
+          "familyName": "Glob2 Sans",
+          "postScriptName": "Glob2Sans",
+          "isCustomFont": true,
+          "glyphCount": 33
+        }
+      ],
+      "network": [
+        {
+          "path": "/",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "18911",
+            "content-type": "text/html",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 59600,
+          "decoded_sha256": "6603dd9eebeac2282c08cf790558aa36dbfd607a0b16ab590573532aed1f0f84"
+        },
+        {
+          "path": "/script-fonts.css",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "908",
+            "content-type": "text/css",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 4078,
+          "decoded_sha256": "d4b782622fc81a779d59f3ace3b9d8c21a2104fe365cd7de5e70da8ef003a3a8"
+        },
+        {
+          "path": "/theme.js",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/loader-b91977b08bcb0e86.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "2086",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 5767,
+          "decoded_sha256": "c06c9a252d1080d41cda582bd78aaaa3a5bda8ec36a4251b9255013d83fd43b1"
+        },
+        {
+          "path": "/presentation-b91977b08bcb0e86-surface.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1994",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 6238,
+          "decoded_sha256": "a0dc7dbde4cf5e29986174bc3ae4b6be0b2e90b62fe881a62794c7087bf50637"
+        },
+        {
+          "path": "/i18n.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "44853",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 199332,
+          "decoded_sha256": "c87d6a2879bc9be00c272ef3d4361b4ec0c80d42eb03328311f44239ee37d84f"
+        },
+        {
+          "path": "/signin/assets/glob-64.png",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 460,
+          "decoded_sha256": "b47a55e09e9d3af62b1d6a73975ca7f455b4a76cf3d39e552fef398a7bdba7a9"
+        },
+        {
+          "path": "/signin/assets/wordmark-letters.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 460,
+          "decoded_sha256": "b47a55e09e9d3af62b1d6a73975ca7f455b4a76cf3d39e552fef398a7bdba7a9"
+        },
+        {
+          "path": "/signin/assets/wordmark-two.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 460,
+          "decoded_sha256": "b47a55e09e9d3af62b1d6a73975ca7f455b4a76cf3d39e552fef398a7bdba7a9"
+        },
+        {
+          "path": "/signin/assets/nunito.woff2",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/locales/bg.json",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "79407",
+            "content-type": "application/json",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 306248,
+          "decoded_sha256": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+        },
+        {
+          "path": "/fonts/sans-core.ttf",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "328556",
+            "content-type": "font/ttf",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 597868,
+          "decoded_sha256": "466fb75762954c81cd683538f08c4e36773dc27cb5c11339e3e1a675777a6048"
+        },
+        {
+          "path": "/index-b91977b08bcb0e86.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "333334",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 1811896,
+          "decoded_sha256": "d6ad16acd30cc586dc17f2eae0395bc6bd48b3bbfca3878b63039c37a9666eb3"
+        },
+        {
+          "path": "/index-b91977b08bcb0e86.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "11538",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 61178,
+          "decoded_sha256": "ce5fa39acbe960ccb5735218d4f775f3bba6a79701bfdc7b0f4f421ad1f52032"
+        },
+        {
+          "path": "/index-b91977b08bcb0e86.wasm",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "8256179",
+            "content-type": "application/wasm",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:34 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "body_error": "response.body: Protocol error (Network.getResponseBody): Request content was evicted from inspector cache\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        },
+        {
+          "path": "/assets/core.ce5ebe7270eb0a76.data",
+          "status": 503,
+          "headers": {},
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/assets/game-2.c528d2d4d914d336.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1751821",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:35 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 2204873,
+          "decoded_sha256": "c528d2d4d914d3364c5ad4e877d7fc371e6d1f39ff3ef3973959b64b14a28b2d"
+        },
+        {
+          "path": "/assets/game-1.3469574f02166bac.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3777113",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:35 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 4194068,
+          "decoded_sha256": "3469574f02166bac2bd5439397ecc8a4e315a7812f7e8d9bd25335ad4a1af61e"
+        },
+        {
+          "path": "/assets/translations-1.d943458969c2a854.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1142319",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:41 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 3964345,
+          "decoded_sha256": "d943458969c2a85497c6cd78422dbf7da327db067a9a224bcd83eef7e8975860"
+        },
+        {
+          "path": "/assets/translations-3.7a22e56e4dc343c5.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "728651",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 2751682,
+          "decoded_sha256": "7a22e56e4dc343c5805e18d461b31c13787faacff04d1da331aa9d322b1aae52"
+        },
+        {
+          "path": "/assets/translations-2.7da7fc5ea22bf72c.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1211347",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:32 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 4167274,
+          "decoded_sha256": "7da7fc5ea22bf72ca915d3a2f2c6e3c082625e859e6012522b7624b857e64c04"
+        }
+      ],
+      "png": "startup-desktop-dpr2.png",
+      "png_sha256": "b4344427045ab37a213599eb53bcf6e8f7bcca584ca3f617f85f8b8cff61d085",
+      "scope": "Intentional core503 before WASM; actual custom-font glyphs measured by Chromium CDP. No game runtime claimed."
+    },
+    {
+      "name": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 1,
+      "fonts": {
+        "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif",
+        "loaded": [
+          {
+            "family": "Glob2 Bulgarian",
+            "status": "loaded",
+            "unicodeRange": "U+0-10FFFF"
+          }
+        ],
+        "rect": {
+          "x": 43,
+          "y": 359.578125,
+          "width": 304,
+          "height": 22.390625,
+          "top": 359.578125,
+          "right": 347,
+          "bottom": 381.96875,
+          "left": 43
+        },
+        "scrollWidth": 304,
+        "clientWidth": 304,
+        "dpr": 1
+      },
+      "actual_platform_fonts": [
+        {
+          "familyName": "Glob2 Sans",
+          "postScriptName": "Glob2Sans",
+          "isCustomFont": true,
+          "glyphCount": 33
+        }
+      ],
+      "network": [
+        {
+          "path": "/",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "18911",
+            "content-type": "text/html",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 59600,
+          "decoded_sha256": "6603dd9eebeac2282c08cf790558aa36dbfd607a0b16ab590573532aed1f0f84"
+        },
+        {
+          "path": "/theme.js",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/script-fonts.css",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "908",
+            "content-type": "text/css",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 4078,
+          "decoded_sha256": "d4b782622fc81a779d59f3ace3b9d8c21a2104fe365cd7de5e70da8ef003a3a8"
+        },
+        {
+          "path": "/presentation-b91977b08bcb0e86-surface.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1994",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 6238,
+          "decoded_sha256": "a0dc7dbde4cf5e29986174bc3ae4b6be0b2e90b62fe881a62794c7087bf50637"
+        },
+        {
+          "path": "/loader-b91977b08bcb0e86.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "2086",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 5767,
+          "decoded_sha256": "c06c9a252d1080d41cda582bd78aaaa3a5bda8ec36a4251b9255013d83fd43b1"
+        },
+        {
+          "path": "/i18n.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "44853",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 199332,
+          "decoded_sha256": "c87d6a2879bc9be00c272ef3d4361b4ec0c80d42eb03328311f44239ee37d84f"
+        },
+        {
+          "path": "/signin/assets/glob-64.png",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 460,
+          "decoded_sha256": "b47a55e09e9d3af62b1d6a73975ca7f455b4a76cf3d39e552fef398a7bdba7a9"
+        },
+        {
+          "path": "/signin/assets/wordmark-letters.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 460,
+          "decoded_sha256": "b47a55e09e9d3af62b1d6a73975ca7f455b4a76cf3d39e552fef398a7bdba7a9"
+        },
+        {
+          "path": "/signin/assets/wordmark-two.webp",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 460,
+          "decoded_sha256": "b47a55e09e9d3af62b1d6a73975ca7f455b4a76cf3d39e552fef398a7bdba7a9"
+        },
+        {
+          "path": "/signin/assets/nunito.woff2",
+          "status": 404,
+          "headers": {
+            "cache-control": "no-cache",
+            "connection": "close",
+            "content-length": "460",
+            "content-type": "text/html;charset=utf-8",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/locales/bg.json",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "79407",
+            "content-type": "application/json",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 306248,
+          "decoded_sha256": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+        },
+        {
+          "path": "/fonts/sans-core.ttf",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "328556",
+            "content-type": "font/ttf",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 597868,
+          "decoded_sha256": "466fb75762954c81cd683538f08c4e36773dc27cb5c11339e3e1a675777a6048"
+        },
+        {
+          "path": "/index-b91977b08bcb0e86.js",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "333334",
+            "content-type": "text/javascript",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:32 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 1811896,
+          "decoded_sha256": "d6ad16acd30cc586dc17f2eae0395bc6bd48b3bbfca3878b63039c37a9666eb3"
+        },
+        {
+          "path": "/index-b91977b08bcb0e86.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "11538",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:43 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 61178,
+          "decoded_sha256": "ce5fa39acbe960ccb5735218d4f775f3bba6a79701bfdc7b0f4f421ad1f52032"
+        },
+        {
+          "path": "/index-b91977b08bcb0e86.wasm",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "8256179",
+            "content-type": "application/wasm",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:33 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:34 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "body_error": "response.body: Protocol error (Network.getResponseBody): Request content was evicted from inspector cache\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        },
+        {
+          "path": "/assets/core.ce5ebe7270eb0a76.data",
+          "status": 503,
+          "headers": {},
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/assets/game-1.3469574f02166bac.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "3777113",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:34 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:35 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 4194068,
+          "decoded_sha256": "3469574f02166bac2bd5439397ecc8a4e315a7812f7e8d9bd25335ad4a1af61e"
+        },
+        {
+          "path": "/assets/game-2.c528d2d4d914d336.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1751821",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:34 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:35 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 2204873,
+          "decoded_sha256": "c528d2d4d914d3364c5ad4e877d7fc371e6d1f39ff3ef3973959b64b14a28b2d"
+        },
+        {
+          "path": "/assets/translations-3.7a22e56e4dc343c5.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "728651",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:34 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 2751682,
+          "decoded_sha256": "7a22e56e4dc343c5805e18d461b31c13787faacff04d1da331aa9d322b1aae52"
+        },
+        {
+          "path": "/assets/translations-1.d943458969c2a854.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1142319",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:34 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:41 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 3964345,
+          "decoded_sha256": "d943458969c2a85497c6cd78422dbf7da327db067a9a224bcd83eef7e8975860"
+        },
+        {
+          "path": "/assets/translations-2.7da7fc5ea22bf72c.data",
+          "status": 200,
+          "headers": {
+            "cache-control": "no-cache",
+            "content-encoding": "gzip",
+            "content-length": "1211347",
+            "content-type": "application/octet-stream",
+            "cross-origin-embedder-policy": "require-corp",
+            "cross-origin-opener-policy": "same-origin",
+            "date": "Sun, 01 Nov 2026 15:19:34 GMT",
+            "last-modified": "Sun, 01 Nov 2026 15:18:42 GMT",
+            "server": "SimpleHTTP/0.6 Python/3.14.4",
+            "vary": "Accept-Encoding"
+          },
+          "decoded_bytes": 4167274,
+          "decoded_sha256": "7da7fc5ea22bf72ca915d3a2f2c6e3c082625e859e6012522b7624b857e64c04"
+        }
+      ],
+      "png": "startup-phone.png",
+      "png_sha256": "1d9472d023efb88f6c07c5bc8b615ed2c8f5067ed91dd3c01ad77efdcf8308a7",
+      "scope": "Intentional core503 before WASM; actual custom-font glyphs measured by Chromium CDP. No game runtime claimed."
+    }
+  ]
+}

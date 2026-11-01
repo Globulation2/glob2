@@ -1,0 +1,272 @@
+{
+  "status": "Corrected8dbcapture component complete. Fresh engine/unit tests and later4terrain-key master delta remain pending; this is not newer merged-source approval.",
+  "producer_revision": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3",
+  "actual_capture_binary_sha256": "f3a86fb2950f31fa2129360f5c338b9bc9971977d068046c42e070b48c004df3",
+  "native_catalog_sha256": "dfc3638b84e9d90272a093c7fe0f6e9112b3af0c8a6b3cca7d45ff26c69ca10c",
+  "online_catalog_sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813",
+  "source_sha256": "2b396013f79c0bd68dd016a771fe48b8769ec856c5a5cb8f700f0e6ee2e845c7",
+  "actual_ui_jobs_passed": 10,
+  "actual_ui_pngs": 38,
+  "draw_checksums_unchanged": 36,
+  "draw_evidence": [
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-script-editor/script-editor.json",
+      "name": "script-editor-cursor",
+      "checksum": 962010996
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-script-editor/script-editor.json",
+      "name": "script-editor-success",
+      "checksum": 962010996
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-script-editor/script-editor.json",
+      "name": "script-editor-failure",
+      "checksum": 962010996
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics/statistics.json",
+      "name": "statistics-overview",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics/statistics.json",
+      "name": "statistics-economy",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics/statistics.json",
+      "name": "statistics-world",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics/statistics.json",
+      "name": "statistics-population-history",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics/statistics.json",
+      "name": "statistics-population-history-details",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics/statistics.json",
+      "name": "statistics-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-script-editor/script-editor.json",
+      "name": "script-editor-cursor",
+      "checksum": 2255880192
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-script-editor/script-editor.json",
+      "name": "script-editor-success",
+      "checksum": 2255880192
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-script-editor/script-editor.json",
+      "name": "script-editor-failure",
+      "checksum": 2255880192
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics/statistics.json",
+      "name": "statistics-overview",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics/statistics.json",
+      "name": "statistics-economy",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics/statistics.json",
+      "name": "statistics-world",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics/statistics.json",
+      "name": "statistics-population-history",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics/statistics.json",
+      "name": "statistics-population-history-details",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics/statistics.json",
+      "name": "statistics-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-script-editor/script-editor.json",
+      "name": "script-editor-cursor",
+      "checksum": 2774602434
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-script-editor/script-editor.json",
+      "name": "script-editor-success",
+      "checksum": 2774602434
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-script-editor/script-editor.json",
+      "name": "script-editor-failure",
+      "checksum": 2774602434
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-statistics/statistics.json",
+      "name": "statistics-overview",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-statistics/statistics.json",
+      "name": "statistics-economy",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-statistics/statistics.json",
+      "name": "statistics-world",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-statistics/statistics.json",
+      "name": "statistics-population-history",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-statistics/statistics.json",
+      "name": "statistics-population-history-details",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-statistics/statistics.json",
+      "name": "statistics-dialog",
+      "checksum": 2826819108
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-script-editor/script-editor.json",
+      "name": "script-editor-cursor",
+      "checksum": 64824851
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-script-editor/script-editor.json",
+      "name": "script-editor-success",
+      "checksum": 64824851
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-script-editor/script-editor.json",
+      "name": "script-editor-failure",
+      "checksum": 64824851
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics/statistics.json",
+      "name": "statistics-overview",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics/statistics.json",
+      "name": "statistics-economy",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics/statistics.json",
+      "name": "statistics-world",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics/statistics.json",
+      "name": "statistics-population-history",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics/statistics.json",
+      "name": "statistics-population-history-details",
+      "checksum": 3828636654
+    },
+    {
+      "manifest": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics/statistics.json",
+      "name": "statistics-dialog",
+      "checksum": 3828636654
+    }
+  ],
+  "manifests": [
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-script-editor/script-editor.json",
+      "sha256": "64716c7cc59d50d662bb1758b6bc2ac4de69841f64a35678b81b4ffc7a76ba27",
+      "kind": "production-script-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-100-statistics/statistics.json",
+      "sha256": "9c686fc1e72dbddf6762472440a2d6f29ceb8d32f90e8aac3a5b3be993728854",
+      "kind": "production-game-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-script-editor/script-editor.json",
+      "sha256": "80ba4a1d2b84f33d57270d740ab494f83cfefde27a0f3610912d92d1d5e7e4fc",
+      "kind": "production-script-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-150-statistics/statistics.json",
+      "sha256": "9896eedd6ddf924ef10e46246e24f5f6630acd1630ac5c37d261904851f77343",
+      "kind": "production-game-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/desktop-new-map/new-map.json",
+      "sha256": "549f7cc73fbb8518d0b69f5d9dfc8c8d01ff87f2d35d5e7d9b3169ad6c0741df",
+      "kind": "production-screen-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-script-editor/script-editor.json",
+      "sha256": "b3f71a17b09f0791bfa0f9807d1f58da7a1d9789288b75e3d135325ff04f788d",
+      "kind": "production-script-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-100-statistics/statistics.json",
+      "sha256": "9d7e4c8b6287835da1e9ed6f3acfd86dc9df6ed316e40118254c64713e5c230e",
+      "kind": "production-game-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-script-editor/script-editor.json",
+      "sha256": "09baf2d2f71e15561582e9d1000f095cfc41e3ebb655ed54edbc09c16d1ccf0f",
+      "kind": "production-script-editor-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-150-statistics/statistics.json",
+      "sha256": "d49447a37e78eab3d6e1e5b66dc154d9e34e70aa9848e946425199f5b33feb48",
+      "kind": "production-game-draft-overlay"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v5-final/ui/phone-new-map/new-map.json",
+      "sha256": "93090756a704b004f7ecd687f942fd87a44ba1a94c139b929f28dc6d2172f0bc",
+      "kind": "production-screen-draft-overlay"
+    }
+  ],
+  "font_component": "font-validation.json verifies6295render-values/75540measurements using6243unchanged3881+51unchangedf02+1fresh8dbGenerated. Earlier identities retained.",
+  "synthetic_probes": "12/12pages byte-identical to f02/3881; currentruntime libraries exactly match recorded f02 hashes/paths/API versions.",
+  "visual_fixes_observed": [
+    "Full narrow-chart empty-state notice wraps inside canvas",
+    "Full phone compiler failure/retry notice at100/150%",
+    "Whole phone tab/tool labels using measured adaptive grid",
+    "Correct feminine Generated map-mode label fits desktop/phone"
+  ],
+  "orchestration": {
+    "sequential_prefix_children_passed": 3,
+    "parallel_remaining_children_passed": 7,
+    "max_UI_captures": 3,
+    "sequential_launcher_exit": 1,
+    "launcher_exit_expected": true,
+    "reason": "Reserved fresh next-output stopped original launcher before duplicate dispatch. No active capture child signaled; exact commands/results retained.",
+    "parallel_coordinator_exit": 0
+  },
+  "pending": [
+    "Final fresh native engine/unit binary handoff and focused regressions/40unit cases",
+    "New master terrain-key linguistic/font/context delta with exact new source/catalog binding",
+    "Final aggregate publication/report refreshed after those actual results"
+  ],
+  "limits": [
+    "No release-native/performance, physical mobile or production-server claim.",
+    "Live win probability remains hidden; no history/readings synthesized.",
+    "Only exact listed images visually inspected; not all old matrix pages manually read."
+  ]
+}

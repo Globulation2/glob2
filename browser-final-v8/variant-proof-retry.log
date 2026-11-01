@@ -1,0 +1,4 @@
+TypeError: Cannot read properties of undefined (reading 'startsWith')
+    at /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/browser-final-v8/variant-proof-retry.cjs:5:1716
+    at Array.some (<anonymous>)
+    at /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/browser-final-v8/variant-proof-retry.cjs:5:1701

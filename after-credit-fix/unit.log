@@ -1,0 +1,39 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/5a87/glob2/platform
+
+ ❯ apps/web/test/studioCreditLocale.test.tsx (6 tests | 3 failed) 399ms
+   × renders the map-wallet balance 0 in Bulgarian visibly and accessibly while keeping its dialog category distinct 101ms
+   × renders the map-wallet balance 1 in Bulgarian visibly and accessibly while keeping its dialog category distinct 59ms
+   × renders the map-wallet balance 2 in Bulgarian visibly and accessibly while keeping its dialog category distinct 43ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/web/test/studioCreditLocale.test.tsx > renders the map-wallet balance 0 in Bulgarian visibly and accessibly while keeping its dialog category distinct
+ FAIL  apps/web/test/studioCreditLocale.test.tsx > renders the map-wallet balance 1 in Bulgarian visibly and accessibly while keeping its dialog category distinct
+ FAIL  apps/web/test/studioCreditLocale.test.tsx > renders the map-wallet balance 2 in Bulgarian visibly and accessibly while keeping its dialog category distinct
+TypeError: dialog?.showModal is not a function
+ ❯ apps/web/src/components/studio/Studio.tsx:621:15
+    619|     if (open && !dialog?.open) {
+    620|       trigger.current = document.activeElement as HTMLElement;
+    621|       dialog?.showModal();
+       |               ^
+    622|     } else if (!open && dialog?.open) dialog.close();
+    623|   }, [open]);
+ ❯ Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:28656:20
+ ❯ runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:1048:13
+ ❯ commitHookEffectListMount node_modules/react-dom/cjs/react-dom-client.development.js:13748:29
+ ❯ commitHookPassiveMountEffects node_modules/react-dom/cjs/react-dom-client.development.js:13835:11
+ ❯ commitPassiveMountOnFiber node_modules/react-dom/cjs/react-dom-client.development.js:16906:13
+ ❯ recursivelyTraversePassiveMountEffects node_modules/react-dom/cjs/react-dom-client.development.js:16851:13
+ ❯ commitPassiveMountOnFiber node_modules/react-dom/cjs/react-dom-client.development.js:17183:11
+ ❯ recursivelyTraversePassiveMountEffects node_modules/react-dom/cjs/react-dom-client.development.js:16851:13
+ ❯ commitPassiveMountOnFiber node_modules/react-dom/cjs/react-dom-client.development.js:16898:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 3 passed (6)
+   Start at  08:48:31
+   Duration  1.90s (environment 41%, tests 25%, transform 23%, import 11%)
+

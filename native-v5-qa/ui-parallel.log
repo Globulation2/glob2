@@ -1,0 +1,15 @@
+START parallel desktop-150-statistics
+START parallel desktop-new-map
+START parallel phone-100-script-editor
+END parallel desktop-new-map 0
+START parallel phone-100-statistics
+END parallel desktop-150-statistics 0
+START parallel phone-150-script-editor
+END parallel phone-100-script-editor 0
+START parallel phone-150-statistics
+END parallel phone-100-statistics 0
+START parallel phone-new-map
+END parallel phone-150-script-editor 0
+END parallel phone-150-statistics 0
+END parallel phone-new-map 0
+COMPLETE 10 /10

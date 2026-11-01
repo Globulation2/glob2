@@ -1,0 +1,41 @@
+{
+  "head": "2ac54f57479dc433dfd4f8a8aa71b367c4f29996",
+  "actual_dirty_git_status": "M  .github/workflows/browser-release.yml\nM  .github/workflows/build.yml\nM  SConstruct\nM  browser/assets/sources.json\nMM browser/i18n.js\nA  browser/publish-static.py\nA  darwin/te.lproj/InfoPlist.strings\nM  data/fonts/README.md\nM  data/texts.incomplete.txt\nM  data/texts.list.txt\nAM data/texts.te.txt\nM  docs/development/ui-framework.md\nM  docs/development/verification.md\nM  docs/releases/browser.md\nM  libgag/src/FontKerningTest.cpp\nM  mobile/android.py\nA  mobile/android/app/src/main/res/values-te/strings.xml\nM  mobile/android_release.py\nM  mobile/ios.py\nA  mobile/ios/te.lproj/InfoPlist.strings\nM  platform/apps/api/test/pages.test.ts\nM  platform/apps/web/e2e/i18n.spec.ts\nM  platform/apps/web/e2e/playwright.config.ts\nM  platform/apps/web/e2e/server.ts\n M platform/apps/web/src/components/studio/studio.css\n M platform/apps/web/src/music/Library.tsx\n M platform/apps/web/src/pages/MusicStudio.tsx\nM  platform/apps/web/src/styles/pages.css\nM  platform/apps/web/src/styles/skin-studio.css\n M platform/apps/web/test/musicCatalogue.test.tsx\n M platform/apps/web/test/studioCreditLocale.test.tsx\nA  platform/apps/web/test/teluguMetadata.test.tsx\n M platform/packages/i18n/locales/bg.json\nA  platform/packages/i18n/locales/te.json\nM  platform/packages/i18n/shared-values.json\nM  platform/packages/i18n/src/index.ts\nM  platform/packages/i18n/src/locales.ts\nM  platform/packages/i18n/test/runtime.test.ts\nM  scons/mobile_artifacts.py\nM  scons/mobile_build.py\nM  src/app/SystemLanguageTest.cpp\n M src/game/SimRevision.h\nM  src/game/screens/CustomGameScreen.cpp\nM  src/game/screens/CustomGameSetupHarness.cpp\nM  src/hud/draw/GameGUIDraw.cpp\nM  src/hud/touch/GameGUITouch.h\nM  src/map/gradient/DelayedGradientPublicationHarness.cpp\nM  src/scripting/javascript/ScriptCompatibilityTest.cpp\nMM src/scripting/sgsl/LegacyScriptCoverageTest.cpp\nM  src/ui/settings/SettingsGraphicsTest.cpp\nM  src/unit/EntityRandomLifecycleTest.cpp\nM  test/build_system/test_apple_localizations.py\nA  test/build_system/test_browser_publish.py\nA  test/build_system/test_mobile_recording_notices.py\nA  test/build_system/test_mobile_release_dependency_identity.py\nM  test/deployment/test_browser_font_types.py\nM  test/fixtures/resources/seeded-compositions-units.trace\nM  test/maxima/fixtures/save-continuation/expected-units-30000-30512.json\nM  test/support/LegacyPopulationOutput.h\nA  test/test_google_draft_telugu.py\n M test/test_translation_program.py\nM  test/translation_shared_values.json\nM  tools/TranslationPreviewHarness.cpp\nA  tools/localization/google_draft_telugu.py\n M tools/localization/translation_program.py\n",
+  "engine_binary_sha256": "48ff94160a88583963482bb32f1f39c2d36339b9f4be9e3c717c4a3b8607d0d2",
+  "embedded_provenance_header_sha256": "856bfe19404d00af42f9c1848ca01aa9867937c027678e7d7993789301e9ec30",
+  "source_sim_revision": "// SPDX-License-Identifier: GPL-3.0-or-later\n#pragma once\n\n// The simulation revision. Bump it in every change that can alter what the\n// simulation computes from the same MatchSetup and orders, even when the save\n// format (VERSION_MINOR) and the network protocol (NET_PROTOCOL_VERSION) stay\n// the same: game rules, units, buildings, pathfinding, AI code and parameters,\n// order validation, map loading, random number use, scripting (including the\n// installed catalog codes accepted as legacy SGSL language tokens).\n//\n// It feeds the sim version key (Online::SimVersion, see \"Simulation version\" in\n// docs/multiplayer/turn-protocol.md), which partitions rooms, queues, AI ratings\n// and verifiers, so builds that simulate differently never meet in one match.\n// A bump also needs a fresh test/fixtures/multiplayer/FourSquares1.g2mr (its\n// sim version must match); test/check_sim_revision.py and CI fail when the\n// committed verification trace or record changes without a bump.\n//\n// Kept apart from Version.h so a bump recompiles only the sim version code.\n// deploy/sim_version.py reads this line.\n#define SIM_REVISION 114\n",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto",
+        "--binary",
+        "engine",
+        "--filter",
+        "TurnEngineHarness/the committed match record verifies to the committed checksum trace*",
+        "--update-fixtures",
+        "--junit",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sgsl-bg-compatibility-v10/golden-update.xml"
+      ],
+      "returncode": 0
+    },
+    {
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "/home/bradley/.codex/worktrees/5a87/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto",
+        "--binary",
+        "engine",
+        "--filter",
+        "TurnEngineHarness/the committed match record verifies to the committed checksum trace*",
+        "--junit",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sgsl-bg-compatibility-v10/golden-verify.xml"
+      ],
+      "returncode": 0
+    }
+  ],
+  "claim": "Actual post-master compiled process; dirty producer, not final commit certification"
+}

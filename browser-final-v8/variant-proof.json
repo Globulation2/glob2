@@ -1,0 +1,315 @@
+{
+  "producer": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "state": {
+    "mode": "threaded",
+    "isolated": true,
+    "diagnostics": {
+      "version": 1,
+      "executionMode": "threaded",
+      "threadFallback": null,
+      "workerCount": 8,
+      "renderer": "software",
+      "renderContext": null,
+      "contextLost": false,
+      "contextRestores": 0,
+      "screen": "14MainMenuScreen",
+      "screenClass": "14MainMenuScreen",
+      "roomCanStart": false,
+      "customGameReady": false,
+      "tick": 0,
+      "frames": 0,
+      "loop": 1440,
+      "paused": false,
+      "torus": false,
+      "torusSettled": false,
+      "width": 1200,
+      "height": 900,
+      "heapBytes": 334102528,
+      "artworkReady": true,
+      "restore": "ready",
+      "watchReplay": "none",
+      "import": "idle",
+      "persisting": false,
+      "persistence": "persisted",
+      "audio": "inactive",
+      "assets": {
+        "core": "ready",
+        "game": "ready",
+        "skins": "idle",
+        "font-cjk": "ready",
+        "menu-music": "ready",
+        "translations": "ready",
+        "music": "ready",
+        "music-sets": "ready",
+        "hd": "skipped"
+      },
+      "opened": [],
+      "controls": {
+        "menu/0": {
+          "enabled": true,
+          "h": 42,
+          "label": "Кампания",
+          "visible": {
+            "h": 42,
+            "w": 320,
+            "x": 84,
+            "y": 360
+          },
+          "w": 320,
+          "x": 84,
+          "y": 360,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "menu/1": {
+          "enabled": true,
+          "h": 42,
+          "label": "Урок",
+          "visible": {
+            "h": 42,
+            "w": 320,
+            "x": 84,
+            "y": 456
+          },
+          "w": 320,
+          "x": 84,
+          "y": 456,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "menu/2": {
+          "enabled": true,
+          "h": 42,
+          "label": "Зареждане на играта",
+          "visible": {
+            "h": 42,
+            "w": 320,
+            "x": 84,
+            "y": 408
+          },
+          "w": 320,
+          "x": 84,
+          "y": 408,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "menu/3": {
+          "enabled": true,
+          "h": 48,
+          "label": "Персонализирана игра",
+          "visible": {
+            "h": 48,
+            "w": 320,
+            "x": 84,
+            "y": 258
+          },
+          "w": 320,
+          "x": 84,
+          "y": 258,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "menu/4": {
+          "enabled": true,
+          "h": 42,
+          "label": "Игра онлайн",
+          "visible": {
+            "h": 42,
+            "w": 320,
+            "x": 84,
+            "y": 312
+          },
+          "w": 320,
+          "x": 84,
+          "y": 312,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "menu/6": {
+          "enabled": true,
+          "h": 34,
+          "label": "Настройки",
+          "visible": {
+            "h": 34,
+            "w": 156,
+            "x": 84,
+            "y": 540
+          },
+          "w": 156,
+          "x": 84,
+          "y": 540,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "menu/7": {
+          "enabled": true,
+          "h": 34,
+          "label": "Редактор",
+          "visible": {
+            "h": 34,
+            "w": 156,
+            "x": 248,
+            "y": 540
+          },
+          "w": 156,
+          "x": 248,
+          "y": 540,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "menu/8": {
+          "enabled": true,
+          "h": 34,
+          "label": "Автори",
+          "visible": {
+            "h": 34,
+            "w": 156,
+            "x": 84,
+            "y": 582
+          },
+          "w": 156,
+          "x": 84,
+          "y": 582,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "menu/9": {
+          "enabled": true,
+          "h": 34,
+          "label": "Изход",
+          "visible": {
+            "h": 34,
+            "w": 156,
+            "x": 84,
+            "y": 624
+          },
+          "w": 156,
+          "x": 84,
+          "y": 624,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "menu/discord": {
+          "enabled": true,
+          "h": 34,
+          "label": "Общност в Discord",
+          "visible": {
+            "h": 34,
+            "w": 156,
+            "x": 248,
+            "y": 582
+          },
+          "w": 156,
+          "x": 248,
+          "y": 582,
+          "surface": {
+            "h": 900,
+            "w": 1200
+          },
+          "root": {
+            "h": 900,
+            "w": 1200,
+            "x": 0,
+            "y": 0
+          }
+        }
+      }
+    },
+    "catalogSha256": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "fontSha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+  },
+  "responses": [
+    {
+      "path": "threaded/index-2d5935618dc2c62f.wasm",
+      "status": 200,
+      "headers": {
+        "server": "SimpleHTTP/0.6 Python/3.14.4",
+        "date": "Sun, 01 Nov 2026 13:30:12 GMT",
+        "content-type": "application/wasm",
+        "content-length": "8263830",
+        "last-modified": "Sun, 01 Nov 2026 13:24:28 GMT",
+        "content-encoding": "gzip",
+        "vary": "Accept-Encoding",
+        "cross-origin-opener-policy": "same-origin",
+        "cross-origin-embedder-policy": "require-corp",
+        "cache-control": "no-cache"
+      },
+      "bytes": 26107349,
+      "sha256": "10e7cc0f59f1dd2760da9269bf7a84364a8792b2084557e2e1f46433b3a4470f",
+      "matchesFrozenPackage": true,
+      "mechanism": "Actual upstream WASM response bytes buffered and passed unchanged via route.fulfill"
+    }
+  ]
+}

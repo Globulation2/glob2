@@ -1,0 +1,229 @@
+{
+  "reviewer_identity": {
+    "agent": "/root/v7_editor",
+    "role": "Independent Bulgarian editorial visual reviewer",
+    "assessment_kind": "agent-reviewed only",
+    "human_native_reviewer": false
+  },
+  "scope": "Exactly12fresh FIXED immutable PNGs, all personally viewed. Provisional earlier12not approved or reused. No all-pages claim.",
+  "index_path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/image-index-frozen.json",
+  "index_sha256": "d7b21da9a3ad581d5ad5b6a4b4eae7e4ef27ae928c1ca0f988687d986c2c5278",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "online_bg_sha256": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f",
+  "caller_sha256": {
+    "platform/apps/web/src/pages/MapStudio.tsx": "f27223b724011150b88f291779b02641412d2f068b08bd27f84961086c436523",
+    "platform/apps/web/src/pages/MusicStudio.tsx": "e3349cdd836d07b4c9265d034475ed2ecb05c27d59a04f3c19ef9fdc1c9460aa",
+    "platform/apps/web/src/music/Library.tsx": "02cddd7945e6f1a432784febc549a70db8f8b25cc5e98e66774452cf68feb892"
+  },
+  "source_bundle_closure": {
+    "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/source-bundle-closure.json",
+    "sha256": "446cdaaf0b8611f090938ac2f4b3abbdc23f3e0591d43d672519641d2779c3a7",
+    "actual_capture_producer_head": "2ac54f57479dc433dfd4f8a8aa71b367c4f29996",
+    "actual_capture_producer_dirty": true,
+    "committed_equivalent_head": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+    "input_files": 1644,
+    "inputs_byte_identical": true,
+    "dist_byte_identical": true,
+    "css_sha256": "ddf3ff609e55b1f510b2518b0de0f5b658184389d63bed580711bb27990f1cb6"
+  },
+  "coverage": {
+    "expected": 12,
+    "personally_viewed": 12,
+    "critical_observed": 0,
+    "major_observed": 0,
+    "wording_changes_requested": 0
+  },
+  "resolution_of_prior_findings": {
+    "map_currency_as_authors": "Resolved: desktop+phone actual wallet shows Кредити за карти:2, correct standalone dialog category.",
+    "phone_coin_only": "Resolved: full Map and Music wallet text plus2 visibly painted on phone.",
+    "secondaryXparagraph_overlap": "Resolved in both phone dialogs: secondary close control now below explanatory content. Written and visual observations consistent."
+  },
+  "count_limits": "Only balance2shown in these PNGs. No claim0or1visually captured; source/context0/1/2tests separately owned and not executed by this reviewer.",
+  "method": "Direct fresh view_image inspection of all12exact PNGs in3groups. Read visible Bulgarian wording and inspected glyphs, wrapping, clipping, visible control spacing. Source-bundle closure and caller bytes read/verified; no capture-worker conclusions used as visual approval.",
+  "final_approval": true,
+  "status": "approved_exact12fixed_image_subset_with_minor_layout_observations",
+  "entries": [
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/desktop-map-wallet-balance-2.png",
+      "sha256": "f0e69fbdb038a25a6878ed99bbbe5e8fee98ecf92bddd3feb041248d0df59087",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Actual visible wallet reads Кредити за карти: 2 fully, with coin icon. Old Автори на картата mislabel absent. Phone text/count are visibly painted rather than coin-only."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/desktop-map-wallet-dialog-category.png",
+      "sha256": "7b58fa78271c59d944daf7ec239b245e4dcefc5d1eea3e1955c526a44e9892d6",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Standalone category Кредити за карти and full balance/pricing explanation readable. Both close controls visible; secondary circularX sits below content and no longer overlaps paragraph."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/desktop-music-like-unlike.png",
+      "sha256": "2bb2f9ad1f1c6adf6d85983d2266127ea06e4f1f66838127e4b14f8298da8623",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Two authored-title music cards visibly distinct; heart/count2 controls separate and readable. English authored names intentionally preserved; Bulgarian surrounding fields/filters/controls readable. ARIA labels are not painted in PNG; no visual certification of accessible Like/Unlike wording inferred from icon-only hearts."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Search placeholder clipped within input width; visible label Търсене remains clear."
+        }
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/desktop-music-wallet-balance-2.png",
+      "sha256": "2d5ae562b7b82e4e1665093c8c4fd3dd50dce39e86c0dc7608d1d46610303c7e",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Actual visible wallet reads Музикални кредити: 2 fully, with coin icon. Phone text/count are visibly painted rather than coin-only."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/desktop-music-wallet-dialog-category.png",
+      "sha256": "5046257a88ed345dcdb8a0e2feb34bb28c9da49a1465c136d8cc224ae42be15b",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Standalone category Музикални кредити and full balance/pricing explanation readable. Both close controls visible; secondary circularX below content without paragraph overlap."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/desktop-skin-responsive.png",
+      "sha256": "eaa70d1ab04d1fe6641f18ac8e971e6808c3b1d86e589b28974202c19b0010f0",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Bulgarian Моята колония title, role tabs, tool labels and animation controls readable; master responsive two-column swatch palette visible. Phone gesture footer wraps across lines within screen."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Long desktop material label Мултипликационен стил wraps within word; lower swatches continue beyond current tool viewport. Phone preview button text narrowly clipped; icon/control remains visible."
+        }
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/phone-map-wallet-balance-2.png",
+      "sha256": "53f22c4364abd93c267ac738b4a132297da5dd738f165ba5ffa08bf718e1f65c",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Actual visible wallet reads Кредити за карти: 2 fully, with coin icon. Old Автори на картата mislabel absent. Phone text/count are visibly painted rather than coin-only."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/phone-map-wallet-dialog-category.png",
+      "sha256": "c45dea86064ac3571e2e29ba9aa9cf8e2cea8249463c6fe19ff23c212cca2400",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Standalone category Кредити за карти and full balance/pricing explanation readable. Both close controls visible; secondary circularX sits below content and no longer overlaps paragraph."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/phone-music-like-unlike.png",
+      "sha256": "efb2be473da52d464caa30dcf60b9ae68e76d7317dc4f7cefbf8085d3bff2dcb",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Two authored-title music cards visibly distinct; heart/count2 controls separate and readable. English authored names intentionally preserved; Bulgarian surrounding fields/filters/controls readable. ARIA labels are not painted in PNG; no visual certification of accessible Like/Unlike wording inferred from icon-only hearts."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Search placeholder clipped within input width; visible label Търсене remains clear."
+        }
+      ]
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/phone-music-wallet-balance-2.png",
+      "sha256": "3e95181a21c58f29e9191ff338790f4aea7c96c7109891624afc7e0952043628",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Actual visible wallet reads Музикални кредити: 2 fully, with coin icon. Phone text/count are visibly painted rather than coin-only."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/phone-music-wallet-dialog-category.png",
+      "sha256": "03221265f41bd213a1f2ba7dfd02e3303b1b6472b655c2b479c30cddd6f734fb",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Standalone category Музикални кредити and full balance/pricing explanation readable. Both close controls visible; secondary circularX below content without paragraph overlap."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": []
+    },
+    {
+      "path": "artifacts/bulgarian/after-postvisual-33/after-visible-wallet/captures/phone-skin-responsive.png",
+      "sha256": "eb7013302e7851130dc1096e01cc45ff315be815f419e0524d8b8960e1728c82",
+      "personally_viewed": true,
+      "view_method": "tools.view_image",
+      "observations": [
+        "Bulgarian Моята колония title, role tabs, tool labels and animation controls readable; master responsive two-column swatch palette visible. Phone gesture footer wraps across lines within screen."
+      ],
+      "glyph_assessment": "Visible Bulgarian Cyrillic glyphs legible; no missing glyphs observed.",
+      "visible_controls_assessment": "Visible controls separated; no blocking overlap observed. Static frame does not establish actual hit testing.",
+      "verdict": "approve_visible_subset",
+      "findings": [
+        {
+          "severity": "minor",
+          "observation": "Long desktop material label Мултипликационен стил wraps within word; lower swatches continue beyond current tool viewport. Phone preview button text narrowly clipped; icon/control remains visible."
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Agent review only; no native-human or physical-device certification.",
+    "PNG icon-only heart controls do not expose ARIA text; prior source/context review remains separate from visible-image review.",
+    "Only current visible scroll/palette state assessed; no hidden rows, tooltip strings or unvisited flow approved.",
+    "No source/catalog edits or staging. PriorV7/V8/provisional evidence identities preserved."
+  ]
+}

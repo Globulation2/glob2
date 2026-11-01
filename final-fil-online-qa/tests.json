@@ -1,0 +1,453 @@
+{
+  "config": {
+    "argv": [
+      "/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "artifacts/bulgarian/final-fil-online-qa/playwright.config.mjs"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-fil-online-qa/playwright.config.mjs",
+    "rootDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-fil-online-qa",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-fil-online-qa/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-fil-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "wallets.spec.mjs",
+          "home.spec.mjs"
+        ],
+        "timeout": 180000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-fil-online-qa/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "phone",
+        "name": "phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-fil-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "wallets.spec.mjs",
+          "home.spec.mjs"
+        ],
+        "timeout": 180000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-fil-online-qa/tests.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "home.spec.mjs",
+      "file": "home.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "final home wrapping and Bulgarian glyphs",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 58296,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T15:17:10.065Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "home",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 839050,
+                        "sha256": "e411bd6385f1260aaa7ab8413620479c9ebf28ee9d7a8d0941f7dc0f0536a28a"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "af168a7cfde0bdfe0fe6-34a0a11ad9a469e22460",
+          "file": "home.spec.mjs",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "final home wrapping and Bulgarian glyphs",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 58169,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T15:18:19.960Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "home",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 333565,
+                        "sha256": "b451efa60b4a3d3e360100e4b639e5a736f16d36e228920cb08710b08b3a2d6c"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "af168a7cfde0bdfe0fe6-292e027360ccca0a2232",
+          "file": "home.spec.mjs",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "wallets.spec.mjs",
+      "file": "wallets.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Map wallet actual approved catalog counts match visible and accessible presentation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5481,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T15:18:08.509Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "wallet-balance-2",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/1/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 189923,
+                        "sha256": "375d94ec384abf9145d8157cf3639c87baaa77bfefd56e786948b2cb77fce97f"
+                      }
+                    },
+                    {
+                      "name": "wallet-dialog-category",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/1/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 118245,
+                        "sha256": "708c282ee92ff6437fbcacd45a35083e0098bc98adad85bfee43c44ffd06ce24"
+                      }
+                    },
+                    {
+                      "name": "wallet-counts-and-callbacks",
+                      "contentType": "application/json",
+                      "body": "ewogICJtZXRyaWNzIjogWwogICAgewogICAgICAiY291bnQiOiAwLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAwIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMCIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMCIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAxOTUsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMTExMiwKICAgICAgICAgICAgInJpZ2h0IjogMTI0OSwKICAgICAgICAgICAgInRvcCI6IDIyLjI1LAogICAgICAgICAgICAiYm90dG9tIjogMzcuMjUKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJsZWZ0IjogMTA2OSwKICAgICAgICAicmlnaHQiOiAxMjY0LAogICAgICAgICJ0b3AiOiA4LAogICAgICAgICJib3R0b20iOiA1MgogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAxLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAxIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMSIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMSIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAxOTUsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMTExMiwKICAgICAgICAgICAgInJpZ2h0IjogMTI0OSwKICAgICAgICAgICAgInRvcCI6IDIyLjI1LAogICAgICAgICAgICAiYm90dG9tIjogMzcuMjUKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJsZWZ0IjogMTA2OSwKICAgICAgICAicmlnaHQiOiAxMjY0LAogICAgICAgICJ0b3AiOiA4LAogICAgICAgICJib3R0b20iOiA1MgogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAyLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAyIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMiIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMiIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAxOTUsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMTExMiwKICAgICAgICAgICAgInJpZ2h0IjogMTI0OSwKICAgICAgICAgICAgInRvcCI6IDIyLjI1LAogICAgICAgICAgICAiYm90dG9tIjogMzcuMjUKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJsZWZ0IjogMTA2OSwKICAgICAgICAicmlnaHQiOiAxMjY0LAogICAgICAgICJ0b3AiOiA4LAogICAgICAgICJib3R0b20iOiA1MgogICAgICB9CiAgICB9CiAgXSwKICAicmVhZHMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDAKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDAKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDEKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDIKICAgIH0KICBdLAogICJ3cml0ZXMiOiBbXSwKICAic2NvcGUiOiAiYWN0dWFsIE1hcFN0dWRpbyBoZWFkZXIvZGlhbG9nLCByZWFsIHNlZWRlZCBzZXNzaW9uLCBleHBsaWNpdCByZWFkLW9ubHkgd2FsbGV0IGZlYXR1cmUgZml4dHVyZSIKfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "784b0247027e16286c70-33baa827431a9a648f86",
+          "file": "wallets.spec.mjs",
+          "line": 3,
+          "column": 37
+        },
+        {
+          "title": "Music wallet actual approved catalog counts match visible and accessible presentation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5366,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T15:18:14.009Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "wallet-balance-2",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/1/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 214222,
+                        "sha256": "616795a491afbbcc9288401455d842cd523c1b7eb217c9eea11ddae218cc13a7"
+                      }
+                    },
+                    {
+                      "name": "wallet-dialog-category",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/1/specs/1/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 115999,
+                        "sha256": "9d3250cfe378e705f14159c0643f669c8b12a804110acf35af85008cce847dbf"
+                      }
+                    },
+                    {
+                      "name": "wallet-counts-and-callbacks",
+                      "contentType": "application/json",
+                      "body": "ewogICJtZXRyaWNzIjogWwogICAgewogICAgICAiY291bnQiOiAwLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAwIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMCIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMCIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAyMTAsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMTA5NywKICAgICAgICAgICAgInJpZ2h0IjogMTI0OSwKICAgICAgICAgICAgInRvcCI6IDIyLjI1LAogICAgICAgICAgICAiYm90dG9tIjogMzcuMjUKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJsZWZ0IjogMTA1NCwKICAgICAgICAicmlnaHQiOiAxMjY0LAogICAgICAgICJ0b3AiOiA4LAogICAgICAgICJib3R0b20iOiA1MgogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAxLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAxIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMSIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMSIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAyMTAsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMTA5NywKICAgICAgICAgICAgInJpZ2h0IjogMTI0OSwKICAgICAgICAgICAgInRvcCI6IDIyLjI1LAogICAgICAgICAgICAiYm90dG9tIjogMzcuMjUKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJsZWZ0IjogMTA1NCwKICAgICAgICAicmlnaHQiOiAxMjY0LAogICAgICAgICJ0b3AiOiA4LAogICAgICAgICJib3R0b20iOiA1MgogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAyLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAyIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMiIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMiIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAyMTAsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMTA5NywKICAgICAgICAgICAgInJpZ2h0IjogMTI0OSwKICAgICAgICAgICAgInRvcCI6IDIyLjI1LAogICAgICAgICAgICAiYm90dG9tIjogMzcuMjUKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJsZWZ0IjogMTA1NCwKICAgICAgICAicmlnaHQiOiAxMjY0LAogICAgICAgICJ0b3AiOiA4LAogICAgICAgICJib3R0b20iOiA1MgogICAgICB9CiAgICB9CiAgXSwKICAicmVhZHMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbXVzaWMtc3R1ZGlvL2FjY291bnQiLAogICAgICAiYXZhaWxhYmxlIjogMAogICAgfSwKICAgIHsKICAgICAgInBhdGgiOiAiL2FwaS92MS9tdXNpYy1zdHVkaW8vYWNjb3VudCIsCiAgICAgICJhdmFpbGFibGUiOiAwCiAgICB9LAogICAgewogICAgICAicGF0aCI6ICIvYXBpL3YxL211c2ljLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDEKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbXVzaWMtc3R1ZGlvL2FjY291bnQiLAogICAgICAiYXZhaWxhYmxlIjogMgogICAgfQogIF0sCiAgIndyaXRlcyI6IFtdLAogICJzY29wZSI6ICJhY3R1YWwgTWFwU3R1ZGlvIGhlYWRlci9kaWFsb2csIHJlYWwgc2VlZGVkIHNlc3Npb24sIGV4cGxpY2l0IHJlYWQtb25seSB3YWxsZXQgZmVhdHVyZSBmaXh0dXJlIgp9"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "784b0247027e16286c70-30f68903f9fae6170c44",
+          "file": "wallets.spec.mjs",
+          "line": 3,
+          "column": 37
+        },
+        {
+          "title": "Map wallet actual approved catalog counts match visible and accessible presentation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5293,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T15:19:18.272Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "wallet-balance-2",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/1/specs/2/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 55254,
+                        "sha256": "53f22c4364abd93c267ac738b4a132297da5dd738f165ba5ffa08bf718e1f65c"
+                      }
+                    },
+                    {
+                      "name": "wallet-dialog-category",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/1/specs/2/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 20747,
+                        "sha256": "c45dea86064ac3571e2e29ba9aa9cf8e2cea8249463c6fe19ff23c212cca2400"
+                      }
+                    },
+                    {
+                      "name": "wallet-counts-and-callbacks",
+                      "contentType": "application/json",
+                      "body": "ewogICJtZXRyaWNzIjogWwogICAgewogICAgICAiY291bnQiOiAwLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAwIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMCIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMCIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAxNzksCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMjM0LAogICAgICAgICAgICAicmlnaHQiOiAzNjMsCiAgICAgICAgICAgICJ0b3AiOiA1OSwKICAgICAgICAgICAgImJvdHRvbSI6IDczCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAibGVmdCI6IDE5NSwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAxLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAxIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMSIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMSIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAxNzksCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMjM0LAogICAgICAgICAgICAicmlnaHQiOiAzNjMsCiAgICAgICAgICAgICJ0b3AiOiA1OSwKICAgICAgICAgICAgImJvdHRvbSI6IDczCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAibGVmdCI6IDE5NSwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAyLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAyIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMiIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMiIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAxNzksCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMjM0LAogICAgICAgICAgICAicmlnaHQiOiAzNjMsCiAgICAgICAgICAgICJ0b3AiOiA1OSwKICAgICAgICAgICAgImJvdHRvbSI6IDczCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAibGVmdCI6IDE5NSwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9CiAgXSwKICAicmVhZHMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDAKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDAKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDEKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDIKICAgIH0KICBdLAogICJ3cml0ZXMiOiBbXSwKICAic2NvcGUiOiAiYWN0dWFsIE1hcFN0dWRpbyBoZWFkZXIvZGlhbG9nLCByZWFsIHNlZWRlZCBzZXNzaW9uLCBleHBsaWNpdCByZWFkLW9ubHkgd2FsbGV0IGZlYXR1cmUgZml4dHVyZSIKfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "784b0247027e16286c70-cba95719c1612123baf4",
+          "file": "wallets.spec.mjs",
+          "line": 3,
+          "column": 37
+        },
+        {
+          "title": "Music wallet actual approved catalog counts match visible and accessible presentation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5119,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T15:19:23.578Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "wallet-balance-2",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/1/specs/3/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 57117,
+                        "sha256": "5ef277a932c6329475c623ab4ba59cac9686d4f90135a6fba78de2d1e1a31bd2"
+                      }
+                    },
+                    {
+                      "name": "wallet-dialog-category",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-fil-online-qa/tests.json",
+                        "json_pointer": "/suites/1/specs/3/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 21186,
+                        "sha256": "03221265f41bd213a1f2ba7dfd02e3303b1b6472b655c2b479c30cddd6f734fb"
+                      }
+                    },
+                    {
+                      "name": "wallet-counts-and-callbacks",
+                      "contentType": "application/json",
+                      "body": "ewogICJtZXRyaWNzIjogWwogICAgewogICAgICAiY291bnQiOiAwLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAwIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMCIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMCIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAxOTIsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMjIxLAogICAgICAgICAgICAicmlnaHQiOiAzNjMsCiAgICAgICAgICAgICJ0b3AiOiA1OSwKICAgICAgICAgICAgImJvdHRvbSI6IDczCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAibGVmdCI6IDE4MiwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAxLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAxIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMSIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMSIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAxOTIsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMjIxLAogICAgICAgICAgICAicmlnaHQiOiAzNjMsCiAgICAgICAgICAgICJ0b3AiOiA1OSwKICAgICAgICAgICAgImJvdHRvbSI6IDczCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAibGVmdCI6IDE4MiwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAyLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAyIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMiIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMiIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgImNvbXB1dGVkRGlzcGxheSI6ICJibG9jayIsCiAgICAgICAgImNvbXB1dGVkVmlzaWJpbGl0eSI6ICJ2aXNpYmxlIiwKICAgICAgICAid2lkdGgiOiAxOTIsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMjIxLAogICAgICAgICAgICAicmlnaHQiOiAzNjMsCiAgICAgICAgICAgICJ0b3AiOiA1OSwKICAgICAgICAgICAgImJvdHRvbSI6IDczCiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAibGVmdCI6IDE4MiwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9CiAgXSwKICAicmVhZHMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbXVzaWMtc3R1ZGlvL2FjY291bnQiLAogICAgICAiYXZhaWxhYmxlIjogMAogICAgfSwKICAgIHsKICAgICAgInBhdGgiOiAiL2FwaS92MS9tdXNpYy1zdHVkaW8vYWNjb3VudCIsCiAgICAgICJhdmFpbGFibGUiOiAwCiAgICB9LAogICAgewogICAgICAicGF0aCI6ICIvYXBpL3YxL211c2ljLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDEKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbXVzaWMtc3R1ZGlvL2FjY291bnQiLAogICAgICAiYXZhaWxhYmxlIjogMgogICAgfQogIF0sCiAgIndyaXRlcyI6IFtdLAogICJzY29wZSI6ICJhY3R1YWwgTWFwU3R1ZGlvIGhlYWRlci9kaWFsb2csIHJlYWwgc2VlZGVkIHNlc3Npb24sIGV4cGxpY2l0IHJlYWQtb25seSB3YWxsZXQgZmVhdHVyZSBmaXh0dXJlIgp9"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "784b0247027e16286c70-aa43940817e119ec55bf",
+          "file": "wallets.spec.mjs",
+          "line": 3,
+          "column": 37
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T15:17:09.413Z",
+    "duration": 139418.52,
+    "expected": 6,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

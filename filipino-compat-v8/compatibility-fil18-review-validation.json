@@ -1,0 +1,75 @@
+{
+  "result": "passed",
+  "scope": "Eighteen compatibility additions only; not full locale linguistic review or platform readiness",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "29ba1ca3419360c08b2b1c07a1c3e940b4a6e0f2ddeea3aa1c4d612920a8c8cc",
+    "online": "8e2b56f7bb554f51981f724f4f19636f887af5da63dac3c2ae16c3c776a467c9"
+  },
+  "packet": {
+    "path": "filipino-compat-v8/fil18-after-editor-review-input.json",
+    "sha256": "3834b1760869b9bf68a98e0abadb9215f37bd2049718d16b52ad0fde91fc2de2"
+  },
+  "entries": 18,
+  "locale": "fil",
+  "role_bindings": 54,
+  "actual_role_evidence": [
+    {
+      "role": "semantic",
+      "actual_agent": "/root/v7_meaning",
+      "path": "filipino-compat-v8/semantic-final-review.json",
+      "sha256": "3ddba416edba8282b6ca355f5dcf158969b66fe088cf9a2cc90ae8f8cf414374",
+      "entries": 18,
+      "value_hash_schemes": [
+        "literal-utf8-with-json-objects"
+      ],
+      "reading_lineage": {
+        "actual-reading": 18,
+        "own-exact-carry": 0
+      },
+      "identity_hash_schemes": [
+        "canonical-locale-id-source-target"
+      ],
+      "original_report_binding": null
+    },
+    {
+      "role": "editor",
+      "actual_agent": "/root/v7_editor",
+      "path": "filipino-compat-v8/editor-final-review.json",
+      "sha256": "e733c2ee0162ac61d2ea0efd5c8442a92517872d999a2f25bf9afee4f5e6007c",
+      "entries": 18,
+      "value_hash_schemes": [
+        "literal-utf8-with-json-objects"
+      ],
+      "reading_lineage": {
+        "actual-reading": 18,
+        "own-exact-carry": 0
+      },
+      "identity_hash_schemes": [
+        "canonical-id-source-target"
+      ],
+      "original_report_binding": null
+    },
+    {
+      "role": "adversarial",
+      "actual_agent": "/root/v7_adversary",
+      "path": "filipino-compat-v8/adversarial-final-review.json",
+      "sha256": "422eec2ccea201c287e6b56dd06773a28e3c133b0c4fa11f2a8126efaa018d8e",
+      "entries": 18,
+      "value_hash_schemes": [
+        "literal-utf8-with-json-objects"
+      ],
+      "reading_lineage": {
+        "actual-reading": 18,
+        "own-exact-carry": 0
+      },
+      "identity_hash_schemes": [],
+      "original_report_binding": null
+    }
+  ],
+  "unchanged_prior_native_pairs": 3412,
+  "unchanged_prior_online_pairs": 2978,
+  "new_english_matches": [],
+  "runtime_platform_gates": "pending, no approvals produced",
+  "candidate_only": true
+}

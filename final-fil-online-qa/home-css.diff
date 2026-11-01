@@ -1,0 +1,47 @@
+diff --git a/platform/apps/web/src/styles/home.css b/platform/apps/web/src/styles/home.css
+index 4725a95260..186a65f323 100644
+--- a/platform/apps/web/src/styles/home.css
++++ b/platform/apps/web/src/styles/home.css
+@@ -130,7 +130,7 @@
+ }
+ .stat {
+   display: grid;
+-  grid-template-columns: 34px 1fr;
++  grid-template-columns: 34px minmax(0, 1fr);
+   grid-template-rows: auto auto;
+   column-gap: var(--sp-2);
+   align-items: center;
+@@ -152,6 +152,7 @@
+   font-weight: 700;
+   color: var(--ink-2);
+   line-height: 1.2;
++  min-width: 0;
+   overflow-wrap: anywhere;
+ }
+ .stat .v {
+@@ -202,6 +203,16 @@
+   z-index: 1;
+   margin-top: var(--sp-5);
+ }
++.home-body .section-head {
++  flex-wrap: wrap;
++}
++.home-body .section-head h2 {
++  flex: 1 1 18rem;
++}
++.home-body .section-head a {
++  white-space: normal;
++  overflow-wrap: anywhere;
++}
+ 
+ .podium {
+   list-style: none;
+@@ -291,7 +302,7 @@
+   }
+   /* Three compact pebbles: icon and number on top, label below. */
+   .stat {
+-    grid-template-columns: 26px 1fr;
++    grid-template-columns: 26px minmax(0, 1fr);
+     padding: var(--sp-2);
+     column-gap: 6px;
+   }

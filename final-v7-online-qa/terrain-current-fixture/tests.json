@@ -1,0 +1,195 @@
+{
+  "config": {
+    "argv": [
+      "/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "artifacts/bulgarian/final-v7-online-qa/terrain-fixture.config.mjs"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/terrain-fixture.config.mjs",
+    "rootDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/terrain-current-fixture/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "new-desktop",
+        "name": "new-desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "context-wording-current.spec.mjs"
+        ],
+        "timeout": 360000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/terrain-current-fixture/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "new-phone",
+        "name": "new-phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa",
+        "testIgnore": [],
+        "testMatch": [
+          "context-wording-current.spec.mjs"
+        ],
+        "timeout": 360000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/terrain-current-fixture/tests.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "context-wording-current.spec.mjs",
+      "file": "context-wording-current.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-desktop",
+              "projectName": "new-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5156,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T11:23:48.649Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "fixture-infinite-stock-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v7-online-qa/terrain-current-fixture/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 143478,
+                        "sha256": "fb9122d442e88fc6d15b3586beebd1aa9ed891abbacd13903003d3bd05213208"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a7eb6f5bb1ffad9a62ba-92abd5a40215033a84f9",
+          "file": "context-wording-current.spec.mjs",
+          "line": 52,
+          "column": 1
+        },
+        {
+          "title": "Terrain Studio preview distinguishes infinite stock from harvested crop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "new-phone",
+              "projectName": "new-phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4645,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T11:23:58.513Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "fixture-infinite-stock-bg",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "final-v7-online-qa/terrain-current-fixture/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 55217,
+                        "sha256": "7cfd8d5adc8c0a3b7ad1c0b72719e817b741d53ae5ca44a429db0ba0ba0676bd"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a7eb6f5bb1ffad9a62ba-d0ec529e50dc2b37cafd",
+          "file": "context-wording-current.spec.mjs",
+          "line": 52,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T11:23:45.076Z",
+    "duration": 18940.578,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

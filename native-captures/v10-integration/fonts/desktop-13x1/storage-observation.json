@@ -1,0 +1,19 @@
+{
+  "status": "Actual storage observation, never truncates a measurement into success",
+  "limit_bytes": 1073741824,
+  "peak_combined_font_output_bytes": 966594,
+  "minimum_free_bytes": 563136151552,
+  "returncode": 0,
+  "command": [
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+    "matrix",
+    "/home/bradley/.codex/worktrees/5a87/glob2",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-delta-render-input/render-input/bg",
+    "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-13x1",
+    "1280",
+    "1024",
+    "13",
+    "1"
+  ],
+  "seconds": 7.01
+}

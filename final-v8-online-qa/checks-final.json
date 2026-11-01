@@ -1,0 +1,44 @@
+{
+  "head": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "unit": {
+    "passed": 1260,
+    "skipped": 15,
+    "total": 1275,
+    "filesPassed": 173,
+    "filesSkipped": 5,
+    "filesTotal": 178,
+    "seconds": 254.8,
+    "maxWorkers": 2,
+    "testTimeoutMs": 180000
+  },
+  "exits": {
+    "unit": 0,
+    "types": 0,
+    "i18n": 0,
+    "build": 0,
+    "lint-final-guards": 0,
+    "e2e-types-after-guards": 0,
+    "playwright": 0,
+    "conditional-notices": 0,
+    "capture": 0,
+    "network-final": 0,
+    "composer-scroll-probe": 0
+  },
+  "browser": {
+    "passed": 37,
+    "skipped": 1,
+    "additionalConditionalCasesPassed": 2
+  },
+  "catalogs": "42locales\u00d72978online;BG3430native+2978online=6408",
+  "untriggeredVisibleKeys": [
+    "Static pose",
+    "Wait for the current request to finish.",
+    "Saving your project\u2026"
+  ],
+  "sourceClosure": "final-source-bundle-closure.json",
+  "imageIndex": "image-index-frozen.json",
+  "frozenPngCount": 44,
+  "indexSha256": "fb555133438c12d5c27a7e03adbccabc8385288528832aa8cf81f547bb8f2590",
+  "independentVisualReview": "root-owned pending; actual44PNGhandoff",
+  "noProductionChangesByThisVerification": true
+}

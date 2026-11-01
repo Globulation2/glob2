@@ -1,0 +1,73 @@
+{
+  "output_label": "",
+  "shard": "1/1",
+  "total_planned_jobs": 12,
+  "assigned_jobs": 12,
+  "binary": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+  "binary_sha256": "3a831b7595bb528ee5b2006e95533ec2de6ac3d5e7efb69bc3a4e773f25fb4b1",
+  "revision": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "phase": "surfaces",
+  "scope": "Actual production UI with final full catalog; only explicitly visible states are claimed.",
+  "jobs": [
+    {
+      "tag": "desktop-lobby",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces/desktop-lobby",
+        "1280",
+        "1024",
+        "lobby"
+      ],
+      "returncode": 0,
+      "seconds": 14.06,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-lobby-players",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "screen",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces/desktop-lobby-players",
+        "1280",
+        "1024",
+        "lobby-players"
+      ],
+      "returncode": 0,
+      "seconds": 13.46,
+      "text_size_percent": 100
+    },
+    {
+      "tag": "desktop-results",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1600x1400x24",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-v10-qa/binaries/TranslationPreviewHarness.capture",
+        "game",
+        "/home/bradley/.codex/worktrees/5a87/glob2",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v10-full-render-input/render-input/bg",
+        "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/v10-integration/surfaces/desktop-results",
+        "1280",
+        "1024",
+        "statistics"
+      ],
+      "returncode": 2,
+      "seconds": 13.96,
+      "text_size_percent": 100
+    }
+  ]
+}

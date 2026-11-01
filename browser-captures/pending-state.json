@@ -1,8 +1,8 @@
 {
-  "status": "Prepared finalf02b metadata; await explicit root final Wasm artifact handoff. No runtime/server started.",
-  "final_source": "f02b75ccab66d3073f33ae865d2c8a731e546545",
-  "root_session": 17219,
-  "build_log": "artifacts/bulgarian/browser-release-f02b75.log",
+  "status": "Prepared final8db545 metadata; await explicit root finalWasm artifact handoff; no runtime/server started",
+  "final_source": "8db545e53d664af3bd4abcdec7cc29f5dc2dadf3",
+  "root_session": 86208,
+  "build_log": "artifacts/bulgarian/browser-release-8db545.log",
   "build_command": "CCACHE=1 CCACHE_MAXSIZE=12G scons release=1 target=web web_variant=both -j4 web-package",
   "next_commands": [
     "python3 browser/package-static.py --source build/emscripten/client/release --output artifacts/bulgarian/browser-static-release",
@@ -25,20 +25,15 @@
   "limitations": "No runtime acceptance yet. Exact currentmaster3fixture failures reproduced; old146passing browser-unit sweep is historical, not re-run or newly claimed.",
   "supplemental_scenes": [
     "actual tutorial catalog/briefing/HUD/help",
-    "new-map setup and real map editor"
+    "new-map setup and real map editor",
+    "phone150 390x844 actualSettings display.textsize popup/2 (150%) persisted before tutorial/editor; samecontrolIDs"
   ],
   "final_source_at_handoff": "d3f7ad00c8d4276967b8807e052d46a74d63be34",
-  "last_build": {
-    "utc": "03:04:53",
-    "serial_objects": 629,
-    "threaded_objects": 0,
-    "latest": "src/online/RelayProbe.cpp",
-    "errors": []
-  },
+  "last_build": "Root reported oldf02seriallinked, threaded~106objects; updated8db release is root-owned86208. No producer acceptance inferred.",
   "root_owns_build": true,
   "owned_background_services": [],
   "on_reactivation": [
-    "Receive root finalWasm artifact handoff; verify actual finalsource/runtime/package/font/catalog bytes against f02b before final testing.",
+    "Receive explicit root finalWasm artifact handoff; verify final8db545 and native3425/dfc3638b/online2843/69de source/runtime/package/font bytes before actual QA.",
     "Do not start duplicate SCons; root44886 owns existing release build",
     "Extend scenes.cjs to actual map ScriptEditor cursor caption, successful compile, controlled validation error at desktopDPR2 and390phone once new code/catalog integrated",
     "Run prepared final pipeline only after both release variants link/package",
@@ -49,13 +44,13 @@
   "interim_source": "82394c1563b8e324da54770d037d319b9f27c072",
   "native_catalog": {
     "keys": 3425,
-    "sha256": "24ee79586ba0e811c67958785623e0755602e2b075c767f7ee84e31677aa90bb"
+    "sha256": "dfc3638b84e9d90272a093c7fe0f6e9112b3af0c8a6b3cca7d45ff26c69ca10c"
   },
   "online_catalog": {
     "keys": 2843,
     "sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813"
   },
-  "platform_component_binding": "artifacts/bulgarian/final-web-preview-qa/final-f02b-binding.json",
+  "platform_component_binding": "artifacts/bulgarian/final-web-preview-qa/final-8db545-binding.json",
   "current_master_fixture_proof": "artifacts/bulgarian/browser-unit-master-e927/comparison.json",
   "engine_versions": {
     "version_minor": 190,
@@ -71,6 +66,13 @@
     "playwright.config.cjs": "b67d220158a4b794fa9e5d8f116fdc235c911604d07ba40b6956086aad8245ab",
     "gzip-server.py": "c0f5a480ba3c876c1ebb3621f18880a337c48d595590f2abc9e1cbf10c60a237",
     "capture.cjs": "28a68e1ab455dcf80c6f7ebeb28ed00f00a6ffaeff46607c07bfdcad6867d5ab",
-    "scenes.cjs": "17a801dc37612cf06bb2943bd6b1b32261433162643d94204bf5932ff7f15dea"
-  }
+    "scenes.cjs": "3c57d5cc7924dff3610fbbfb940bc1d23b20a0fcd5fb0d2f0a97862bc8995290"
+  },
+  "current_master_fixture_carry": "artifacts/bulgarian/browser-unit-master-e927/carry-8db545.json",
+  "postvisual_expectations": [
+    "ScriptEditor responsive geometry changed but samecontrolIDs: actual390x844100/150 captures must show whole tab/tool words, full compilecause ending and \u22653code lines",
+    "Statistics inlineempty notices now cluster-aware wrapped: capture same actualnative/browserstats views, verify readable noticeending insidechartbounds",
+    "One approvedBGGenerated change is \u0413\u0435\u043d\u0435\u0440\u0438\u0440\u0430\u043d\u0430; preserve exact wording",
+    "Known mobileToolbarP3 accepted with alllettersvisible; retain exact viewports/wording and do not alter source"
+  ]
 }

@@ -1,0 +1,32 @@
+{
+  "status": "Actual completed native integration checks; isolated timeout retry pending, never a full147pass claim",
+  "final_source_revision": "b14894809014d14baa25de28d63d775ffeb41331",
+  "engine_unit_font_actual_producer": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "corrected_UI_actual_producer": "b14894809014d14baa25de28d63d775ffeb41331",
+  "source_closure": "3810-b148-test-harness-source-closure.json",
+  "UI_jobs_passed": 12,
+  "UI_PNGs": 34,
+  "independent_visual_review_sha256": "c5ee037e1a93ae4c7714bf4b0b922b0a67074ba731a656c8cbfcad6dd9159f0f",
+  "visual_critical_major_findings": 0,
+  "visual_minor_findings": 1,
+  "fresh_font_samples": 396,
+  "fresh_font_rendered_lines": 452,
+  "font_failures": 0,
+  "unchanged_exact_literal_carry_values": 6402,
+  "carry_actual_producer": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "unit_passed": 91,
+  "engine_passed": 146,
+  "engine_failed": 1,
+  "engine_skipped": 0,
+  "engine_actual_failures": [
+    {
+      "classname": "CustomGameSetup",
+      "name": "custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]",
+      "message": "25 <  0",
+      "details": "\nsrc/game/screens/CustomGameSetupHarness.cpp:1884:\nREQUIRE( Sint32(SDL_GetTicks() - deadline) < 0 ) is NOT correct!\n  values: REQUIRE( 25 <  0 )\n\n      "
+    }
+  ],
+  "golden114_final3810_verify": true,
+  "isolated_timeout_retry": "Running separately under normal120s fixturedeadline, engine j1; original147result retained",
+  "physical_platform_limit": "Linux X11 software rendering/emulated phone viewport. Actual Android/iOS/macOS device rendering unavailable."
+}

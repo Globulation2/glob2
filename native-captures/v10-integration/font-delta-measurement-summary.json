@@ -1,0 +1,107 @@
+{
+  "revision": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "fresh_values": 33,
+  "combinations": 12,
+  "samples": 396,
+  "lines": 452,
+  "failures": [],
+  "unchanged_literal_carry": 6402,
+  "historical_carry_producer": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "font_and_TextLayout_byte_identical": true,
+  "bounded_storage_bytes": 1073741824,
+  "peak_bytes": 5311142,
+  "complete_gzip_diagnostics": true,
+  "generated_pages": [
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-10x1/font-10-scale-1-page-001.png",
+      "sha256": "0ea633400aa52010db61165c3d52e24524eff85d83401e75855f32d0dbb30246",
+      "bytes": 63240
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-10x2/font-10-scale-2-page-001.png",
+      "sha256": "3ae9de5c6ff80ceda561a5b82b84341993c6dad3372db4270b7db8f786319c9e",
+      "bytes": 298919
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-13x1/font-13-scale-1-page-001.png",
+      "sha256": "c804acfd1b3125bf9a74e7017a7a29be51543b30e2e516cb80733bd3c51039fa",
+      "bytes": 88158
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-13x2/font-13-scale-2-page-001.png",
+      "sha256": "a3f6a237dd06e1b0c45993ef06d147336ca4a63e6f55cb10dea2f334a488711c",
+      "bytes": 371041
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-20x1/font-20-scale-1-page-001.png",
+      "sha256": "9a657ce226f42b8403cc7e8c53316ac6db19a584988034fe3243c2901543d345",
+      "bytes": 116184
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-20x1/font-20-scale-1-page-002.png",
+      "sha256": "1bd34f7ebabf145c9198520745acfdbce9d002b7e29811ebc32a3a2c8628f16b",
+      "bytes": 42155
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-20x2/font-20-scale-2-page-001.png",
+      "sha256": "4d337bf6754fd17c4725cd56d5c2d3c9f2068bb93fb93c60e363b530dedc9f90",
+      "bytes": 450336
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/desktop-20x2/font-20-scale-2-page-002.png",
+      "sha256": "69fcbac35f8222ac7ead7e2eaba279578fc0b9e508e444c10e26d52ffc9ec322",
+      "bytes": 204652
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-10x1/font-10-scale-1-page-001.png",
+      "sha256": "5137dd037fc214dc8b3959e4a48d1ed0c02d6da249e42f8383b7bd1221362522",
+      "bytes": 57789
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-10x2/font-10-scale-2-page-001.png",
+      "sha256": "b1fc1159acd98815284ad26f9002be3730534002052778014c9637318446d13d",
+      "bytes": 276960
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-13x1/font-13-scale-1-page-001.png",
+      "sha256": "9d9740f9420e3470fa9556eeecd2ff8d7dc6397f3a73d55329748cda4cdeb3d5",
+      "bytes": 77478
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-13x1/font-13-scale-1-page-002.png",
+      "sha256": "d82c53860eb5d5dce2d0a29000dd7352c18e08a31a3f88ee0fb9726271b2f6e7",
+      "bytes": 13932
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-13x2/font-13-scale-2-page-001.png",
+      "sha256": "65c178350877c7c25504b560ef17461f30f69118a1759dc59b9e78add897e720",
+      "bytes": 322927
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-13x2/font-13-scale-2-page-002.png",
+      "sha256": "cfc2c303a4835597e737c602722b0bc23f48d95ad90594a26384262ac8cb461a",
+      "bytes": 52983
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-20x1/font-20-scale-1-page-001.png",
+      "sha256": "8db0659f7861bc55c9187f4d057807c751830fee1a79712bf695a799d4eade16",
+      "bytes": 89446
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-20x1/font-20-scale-1-page-002.png",
+      "sha256": "0f97f1ef68b23e2cd718a53f897c165695faec57d3eef09fb51f0a61299248aa",
+      "bytes": 77527
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-20x2/font-20-scale-2-page-001.png",
+      "sha256": "ee8f1fc008662283fec53b774bf0842afd5f0ec59d4f222ec663d69cec4b578a",
+      "bytes": 326534
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v10-integration/fonts/phone-20x2/font-20-scale-2-page-002.png",
+      "sha256": "699824f5f4bef654c0e2e4a02ccd404d8431ff35b194ce46c977043cf3951924",
+      "bytes": 269669
+    }
+  ],
+  "limits": "6402 unchanged values retain historical V9 measurement identities.396 samples are fresh3810 measurements; no physical native-device high-DPI certification."
+}

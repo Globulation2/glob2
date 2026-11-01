@@ -1,0 +1,13 @@
+{
+  "initial_attempt_actual_producer": "3810a26366675f6684cd2ac32f8f8a1ddcdfd4c4",
+  "failed_job": "surfaces/desktop-results",
+  "actual_failure": "Production win probability metric exists",
+  "cause": "Stats::Metric::id is const char*. Initial inherited harness branch compared pointer addresses across translation units rather than text.",
+  "source_fix_commit": "b14894809014d14baa25de28d63d775ffeb41331",
+  "source_fix": "std::string(entry.id) == \"win probability\"",
+  "scope": "Harness-only lookup fix; no production runtime/catalog/simulation change.",
+  "corrected_actual_producer": "b14894809014d14baa25de28d63d775ffeb41331",
+  "corrected_desktop_results_returncode": 0,
+  "corrected_phone_results_returncode": 0,
+  "initial_attempt_and_final_images_preserved_separately": true
+}

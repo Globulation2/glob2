@@ -1,0 +1,13 @@
+{
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "changed_paths": [
+    "platform/apps/web/e2e/i18n.spec.ts"
+  ],
+  "allowed_test_only_paths": [
+    "platform/apps/web/e2e/i18n.spec.ts"
+  ],
+  "exact_patch_sha256": "32e852267eb9a997107c97fa2e33eaf3fe70f7ec0e9cc13eae530eae5d27e579",
+  "production_cpp_catalog_font_build_inputs_unchanged": true,
+  "claim": "Native executable keeps its actual compiled identity; only the explicitly authorized E2E test file may differ in final source."
+}

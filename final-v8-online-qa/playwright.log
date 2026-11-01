@@ -1,0 +1,56 @@
+
+Running 38 tests using 1 worker
+
+(node:412904) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › platform/apps/web/e2e/bulgarian.spec.ts:9:1 › Bulgarian loads its bundled font and persists an explicit language choice (2.3s)
+  ✓   2 [desktop] › platform/apps/web/e2e/localized-layout.spec.ts:8:1 › long localized controls fit phone columns and preserve desktop layout (21.4s)
+  ✓   3 [desktop] › platform/apps/web/e2e/localized-layout.spec.ts:114:1 › Bulgarian music mood labels fit each hit area in phone and embedded players (828ms)
+(node:413720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [phone] › platform/apps/web/e2e/bulgarian.spec.ts:9:1 › Bulgarian loads its bundled font and persists an explicit language choice (1.3s)
+  -   5 [phone] › platform/apps/web/e2e/localized-layout.spec.ts:8:1 › long localized controls fit phone columns and preserve desktop layout
+  ✓   6 [phone] › platform/apps/web/e2e/localized-layout.spec.ts:114:1 › Bulgarian music mood labels fit each hit area in phone and embedded players (880ms)
+(node:413918) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [new-desktop] › artifacts/bulgarian/final-v8-online-qa/new-domains.spec.mjs:17:1 › new skin model and material captions use Bulgarian catalog (5.7s)
+  ✓   8 [new-desktop] › artifacts/bulgarian/final-v8-online-qa/new-domains.spec.mjs:31:1 › new administrative tabs and finance filters render Bulgarian on real seeded API (3.7s)
+  ✓   9 [new-desktop] › artifacts/bulgarian/final-v8-online-qa/new-domains.spec.mjs:43:1 › all new music listening guidance is localized in actual published player UI fixture (1.5s)
+  ✓  10 [new-desktop] › artifacts/bulgarian/final-v8-online-qa/new30.spec.mjs:18:1 › new administrator chart labels preserve actual seeded activity facts (1.7s)
+  ✓  11 [new-desktop] › artifacts/bulgarian/final-v8-online-qa/new30.spec.mjs:25:1 › skin view callbacks, blank generated name and shop names translate without purchasing (12.5s)
+  ✓  12 [new-desktop] › artifacts/bulgarian/final-v8-online-qa/new30.spec.mjs:41:1 › studio ideas insert translated prose and all credit notices stay read-only (6.6s)
+(node:419917) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [new-phone] › artifacts/bulgarian/final-v8-online-qa/new-domains.spec.mjs:17:1 › new skin model and material captions use Bulgarian catalog (4.6s)
+  ✓  14 [new-phone] › artifacts/bulgarian/final-v8-online-qa/new-domains.spec.mjs:31:1 › new administrative tabs and finance filters render Bulgarian on real seeded API (3.3s)
+  ✓  15 [new-phone] › artifacts/bulgarian/final-v8-online-qa/new-domains.spec.mjs:43:1 › all new music listening guidance is localized in actual published player UI fixture (1.4s)
+  ✓  16 [new-phone] › artifacts/bulgarian/final-v8-online-qa/new30.spec.mjs:18:1 › new administrator chart labels preserve actual seeded activity facts (1.3s)
+  ✓  17 [new-phone] › artifacts/bulgarian/final-v8-online-qa/new30.spec.mjs:25:1 › skin view callbacks, blank generated name and shop names translate without purchasing (8.1s)
+  ✓  18 [new-phone] › artifacts/bulgarian/final-v8-online-qa/new30.spec.mjs:41:1 › studio ideas insert translated prose and all credit notices stay read-only (6.1s)
+(node:422010) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  19 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/context-wording-current.spec.mjs:16:1 › Bulgarian owner uploads a cover through real API and music phase uses Build in player fixture (2.4s)
+  ✓  20 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/context-wording-current.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (1.5s)
+  ✓  21 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/readonly-caption.spec.mjs:16:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (1.7s)
+  ✓  22 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/readonly-caption.spec.mjs:45:1 › published set inspector presents exact serialized field IDs as code (780ms)
+  ✓  23 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/sets-caption.spec.mjs:4:1 › schema captions translate only audited fields and preserve canonical terrain/resource values (1.6s)
+  ✓  24 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:34:1 › AI filter, card, detail and publish labels translate while canonical tags stay stable (3.5s)
+  ✓  25 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:54:1 › map visibility labels translate while protocol values remain public unlisted private (1.1s)
+  ✓  26 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:64:1 › music author labels use Artist and attribution Credits and sources (1.1s)
+  ✓  27 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:72:1 › new set and building drafts initialize localized names without rewriting stored metadata (5.2s)
+  ✓  28 [controls-desktop] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:101:1 › terrain and resource Add labels translate while package collections stay canonical (4.5s)
+(node:424495) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  29 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/context-wording-current.spec.mjs:16:1 › Bulgarian owner uploads a cover through real API and music phase uses Build in player fixture (2.3s)
+  ✓  30 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/context-wording-current.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (1.6s)
+  ✓  31 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/readonly-caption.spec.mjs:16:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (1.7s)
+  ✓  32 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/readonly-caption.spec.mjs:45:1 › published set inspector presents exact serialized field IDs as code (863ms)
+  ✓  33 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/sets-caption.spec.mjs:4:1 › schema captions translate only audited fields and preserve canonical terrain/resource values (1.7s)
+  ✓  34 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:34:1 › AI filter, card, detail and publish labels translate while canonical tags stay stable (3.4s)
+  ✓  35 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:54:1 › map visibility labels translate while protocol values remain public unlisted private (1.1s)
+  ✓  36 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:64:1 › music author labels use Artist and attribution Credits and sources (962ms)
+  ✓  37 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:72:1 › new set and building drafts initialize localized names without rewriting stored metadata (5.4s)
+  ✓  38 [controls-phone] › artifacts/bulgarian/final-v8-online-qa/translated-controls.spec.mjs:101:1 › terrain and resource Add labels translate while package collections stay canonical (4.2s)
+
+  1 skipped
+  37 passed (2.3m)

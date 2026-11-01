@@ -1,0 +1,555 @@
+{
+  "config": {
+    "argv": [
+      "/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "artifacts/bulgarian/after-postvisual-33/playwright.config.mjs"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/after-postvisual-33/playwright.config.mjs",
+    "rootDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/after-postvisual-33",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/after-postvisual-33/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/after-postvisual-33",
+        "testIgnore": [],
+        "testMatch": [
+          "wallets.spec.mjs",
+          "music-like.spec.mjs",
+          "skin-layout.spec.mjs"
+        ],
+        "timeout": 180000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/after-postvisual-33/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "phone",
+        "name": "phone",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/after-postvisual-33",
+        "testIgnore": [],
+        "testMatch": [
+          "wallets.spec.mjs",
+          "music-like.spec.mjs",
+          "skin-layout.spec.mjs"
+        ],
+        "timeout": 180000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/after-postvisual-33/tests.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "music-like.spec.mjs",
+      "file": "music-like.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Bulgarian music card Like and Unlike aria preserve authored titles and canonical toggle methods",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1590,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T14:12:49.041Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "music-like-unlike",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/0/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 172442,
+                        "sha256": "2bb2f9ad1f1c6adf6d85983d2266127ea06e4f1f66838127e4b14f8298da8623"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ab08acdc48debf9a5693-1c7a9c2659ed97015718",
+          "file": "music-like.spec.mjs",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "Bulgarian music card Like and Unlike aria preserve authored titles and canonical toggle methods",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1550,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T14:13:05.769Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "music-like-unlike",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/0/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 142041,
+                        "sha256": "efb2be473da52d464caa30dcf60b9ae68e76d7317dc4f7cefbf8085d3bff2dcb"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ab08acdc48debf9a5693-6ce6fc818c6eda4ffd78",
+          "file": "music-like.spec.mjs",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "skin-layout.spec.mjs",
+      "file": "skin-layout.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "merged skin CSS keeps Bulgarian material captions inside actual swatch and tool controls",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5674,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T14:12:50.798Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "skin-responsive",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/1/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 630944,
+                        "sha256": "eaa70d1ab04d1fe6641f18ac8e971e6808c3b1d86e589b28974202c19b0010f0"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "9f2ed542706dd1aaeba4-77a0931c87cd20e27928",
+          "file": "skin-layout.spec.mjs",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "merged skin CSS keeps Bulgarian material captions inside actual swatch and tool controls",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4288,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T14:13:07.453Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "skin-responsive",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/1/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 168609,
+                        "sha256": "6b61d03440e0c31f0b0dd6b01e72eb005a8ecbcd8b9a80e8fc5e7a60870616d6"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "9f2ed542706dd1aaeba4-8c838eecd2357158c552",
+          "file": "skin-layout.spec.mjs",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "wallets.spec.mjs",
+      "file": "wallets.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Map wallet actual approved catalog counts match visible and accessible presentation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4387,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T14:12:56.504Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "wallet-balance-2",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 189638,
+                        "sha256": "f0e69fbdb038a25a6878ed99bbbe5e8fee98ecf92bddd3feb041248d0df59087"
+                      }
+                    },
+                    {
+                      "name": "wallet-dialog-category",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/2/specs/0/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 118075,
+                        "sha256": "4dc1e34976731d6ed306b0104cfa83df02c26c57bed49d28e2bdb5687e48e82a"
+                      }
+                    },
+                    {
+                      "name": "wallet-counts-and-callbacks",
+                      "contentType": "application/json",
+                      "body": "ewogICJtZXRyaWNzIjogWwogICAgewogICAgICAiY291bnQiOiAwLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAwIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMCIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMCIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgIndpZHRoIjogMTk1LAogICAgICAgICJoZWlnaHQiOiA0NCwKICAgICAgICAidGV4dFJlY3RzIjogWwogICAgICAgICAgewogICAgICAgICAgICAibGVmdCI6IDExMTIsCiAgICAgICAgICAgICJyaWdodCI6IDEyNDksCiAgICAgICAgICAgICJ0b3AiOiAyMi4yNSwKICAgICAgICAgICAgImJvdHRvbSI6IDM3LjI1CiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAibGVmdCI6IDEwNjksCiAgICAgICAgInJpZ2h0IjogMTI2NCwKICAgICAgICAidG9wIjogOCwKICAgICAgICAiYm90dG9tIjogNTIKICAgICAgfQogICAgfSwKICAgIHsKICAgICAgImNvdW50IjogMSwKICAgICAgImV4cGVjdGVkIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMSIsCiAgICAgICJ2aXNpYmxlIjogIlxuICBcbiAgXG4gIFxuICDQmtGA0LXQtNC40YLQuCDQt9CwINC60LDRgNGC0Lg6IDEiLAogICAgICAiYXJpYSI6ICLQmtGA0LXQtNC40YLQuCDQt9CwINC60LDRgNGC0Lg6IDEiLAogICAgICAiYm91bmRzIjogewogICAgICAgICJ3aWR0aCI6IDE5NSwKICAgICAgICAiaGVpZ2h0IjogNDQsCiAgICAgICAgInRleHRSZWN0cyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImxlZnQiOiAxMTEyLAogICAgICAgICAgICAicmlnaHQiOiAxMjQ5LAogICAgICAgICAgICAidG9wIjogMjIuMjUsCiAgICAgICAgICAgICJib3R0b20iOiAzNy4yNQogICAgICAgICAgfQogICAgICAgIF0sCiAgICAgICAgImxlZnQiOiAxMDY5LAogICAgICAgICJyaWdodCI6IDEyNjQsCiAgICAgICAgInRvcCI6IDgsCiAgICAgICAgImJvdHRvbSI6IDUyCiAgICAgIH0KICAgIH0sCiAgICB7CiAgICAgICJjb3VudCI6IDIsCiAgICAgICJleHBlY3RlZCI6ICLQmtGA0LXQtNC40YLQuCDQt9CwINC60LDRgNGC0Lg6IDIiLAogICAgICAidmlzaWJsZSI6ICJcbiAgXG4gIFxuICBcbiAg0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAyIiwKICAgICAgImFyaWEiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAyIiwKICAgICAgImJvdW5kcyI6IHsKICAgICAgICAid2lkdGgiOiAxOTUsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMTExMiwKICAgICAgICAgICAgInJpZ2h0IjogMTI0OSwKICAgICAgICAgICAgInRvcCI6IDIyLjI1LAogICAgICAgICAgICAiYm90dG9tIjogMzcuMjUKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJsZWZ0IjogMTA2OSwKICAgICAgICAicmlnaHQiOiAxMjY0LAogICAgICAgICJ0b3AiOiA4LAogICAgICAgICJib3R0b20iOiA1MgogICAgICB9CiAgICB9CiAgXSwKICAicmVhZHMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDAKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDEKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDIKICAgIH0KICBdLAogICJ3cml0ZXMiOiBbXSwKICAic2NvcGUiOiAiYWN0dWFsIE1hcFN0dWRpbyBoZWFkZXIvZGlhbG9nLCByZWFsIHNlZWRlZCBzZXNzaW9uLCBleHBsaWNpdCByZWFkLW9ubHkgd2FsbGV0IGZlYXR1cmUgZml4dHVyZSIKfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "784b0247027e16286c70-33baa827431a9a648f86",
+          "file": "wallets.spec.mjs",
+          "line": 3,
+          "column": 37
+        },
+        {
+          "title": "Music wallet actual approved catalog counts match visible and accessible presentation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4190,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T14:13:00.912Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "wallet-balance-2",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/2/specs/1/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 213738,
+                        "sha256": "2d5ae562b7b82e4e1665093c8c4fd3dd50dce39e86c0dc7608d1d46610303c7e"
+                      }
+                    },
+                    {
+                      "name": "wallet-dialog-category",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/2/specs/1/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 115746,
+                        "sha256": "a594e439e6183a3f02911f57f900746d6d22e419ea085c681a9635b7cd8400fa"
+                      }
+                    },
+                    {
+                      "name": "wallet-counts-and-callbacks",
+                      "contentType": "application/json",
+                      "body": "ewogICJtZXRyaWNzIjogWwogICAgewogICAgICAiY291bnQiOiAwLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAwIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMCIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMCIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgIndpZHRoIjogMjEwLAogICAgICAgICJoZWlnaHQiOiA0NCwKICAgICAgICAidGV4dFJlY3RzIjogWwogICAgICAgICAgewogICAgICAgICAgICAibGVmdCI6IDEwOTcsCiAgICAgICAgICAgICJyaWdodCI6IDEyNDksCiAgICAgICAgICAgICJ0b3AiOiAyMi4yNSwKICAgICAgICAgICAgImJvdHRvbSI6IDM3LjI1CiAgICAgICAgICB9CiAgICAgICAgXSwKICAgICAgICAibGVmdCI6IDEwNTQsCiAgICAgICAgInJpZ2h0IjogMTI2NCwKICAgICAgICAidG9wIjogOCwKICAgICAgICAiYm90dG9tIjogNTIKICAgICAgfQogICAgfSwKICAgIHsKICAgICAgImNvdW50IjogMSwKICAgICAgImV4cGVjdGVkIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMSIsCiAgICAgICJ2aXNpYmxlIjogIlxuICBcbiAgXG4gIFxuICDQnNGD0LfQuNC60LDQu9C90Lgg0LrRgNC10LTQuNGC0Lg6IDEiLAogICAgICAiYXJpYSI6ICLQnNGD0LfQuNC60LDQu9C90Lgg0LrRgNC10LTQuNGC0Lg6IDEiLAogICAgICAiYm91bmRzIjogewogICAgICAgICJ3aWR0aCI6IDIxMCwKICAgICAgICAiaGVpZ2h0IjogNDQsCiAgICAgICAgInRleHRSZWN0cyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImxlZnQiOiAxMDk3LAogICAgICAgICAgICAicmlnaHQiOiAxMjQ5LAogICAgICAgICAgICAidG9wIjogMjIuMjUsCiAgICAgICAgICAgICJib3R0b20iOiAzNy4yNQogICAgICAgICAgfQogICAgICAgIF0sCiAgICAgICAgImxlZnQiOiAxMDU0LAogICAgICAgICJyaWdodCI6IDEyNjQsCiAgICAgICAgInRvcCI6IDgsCiAgICAgICAgImJvdHRvbSI6IDUyCiAgICAgIH0KICAgIH0sCiAgICB7CiAgICAgICJjb3VudCI6IDIsCiAgICAgICJleHBlY3RlZCI6ICLQnNGD0LfQuNC60LDQu9C90Lgg0LrRgNC10LTQuNGC0Lg6IDIiLAogICAgICAidmlzaWJsZSI6ICJcbiAgXG4gIFxuICBcbiAg0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAyIiwKICAgICAgImFyaWEiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAyIiwKICAgICAgImJvdW5kcyI6IHsKICAgICAgICAid2lkdGgiOiAyMTAsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgICJsZWZ0IjogMTA5NywKICAgICAgICAgICAgInJpZ2h0IjogMTI0OSwKICAgICAgICAgICAgInRvcCI6IDIyLjI1LAogICAgICAgICAgICAiYm90dG9tIjogMzcuMjUKICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJsZWZ0IjogMTA1NCwKICAgICAgICAicmlnaHQiOiAxMjY0LAogICAgICAgICJ0b3AiOiA4LAogICAgICAgICJib3R0b20iOiA1MgogICAgICB9CiAgICB9CiAgXSwKICAicmVhZHMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbXVzaWMtc3R1ZGlvL2FjY291bnQiLAogICAgICAiYXZhaWxhYmxlIjogMAogICAgfSwKICAgIHsKICAgICAgInBhdGgiOiAiL2FwaS92MS9tdXNpYy1zdHVkaW8vYWNjb3VudCIsCiAgICAgICJhdmFpbGFibGUiOiAxCiAgICB9LAogICAgewogICAgICAicGF0aCI6ICIvYXBpL3YxL211c2ljLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDIKICAgIH0KICBdLAogICJ3cml0ZXMiOiBbXSwKICAic2NvcGUiOiAiYWN0dWFsIE1hcFN0dWRpbyBoZWFkZXIvZGlhbG9nLCByZWFsIHNlZWRlZCBzZXNzaW9uLCBleHBsaWNpdCByZWFkLW9ubHkgd2FsbGV0IGZlYXR1cmUgZml4dHVyZSIKfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "784b0247027e16286c70-30f68903f9fae6170c44",
+          "file": "wallets.spec.mjs",
+          "line": 3,
+          "column": 37
+        },
+        {
+          "title": "Map wallet actual approved catalog counts match visible and accessible presentation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3992,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T14:13:11.763Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "wallet-balance-2",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/2/specs/2/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 53269,
+                        "sha256": "ebd797102fb49249da8823506cb2d4a1c10d814567e3a36415d2c649d11f3767"
+                      }
+                    },
+                    {
+                      "name": "wallet-dialog-category",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/2/specs/2/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 20741,
+                        "sha256": "cdf13f22c392fac288a884df2014f07c11cd7d64cafb09a7549270ad872695bd"
+                      }
+                    },
+                    {
+                      "name": "wallet-counts-and-callbacks",
+                      "contentType": "application/json",
+                      "body": "ewogICJtZXRyaWNzIjogWwogICAgewogICAgICAiY291bnQiOiAwLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAwIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMCIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMCIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgIndpZHRoIjogNDQsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbXSwKICAgICAgICAibGVmdCI6IDMzMCwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAxLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAxIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMSIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMSIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgIndpZHRoIjogNDQsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbXSwKICAgICAgICAibGVmdCI6IDMzMCwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAyLAogICAgICAiZXhwZWN0ZWQiOiAi0JrRgNC10LTQuNGC0Lgg0LfQsCDQutCw0YDRgtC4OiAyIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMiIsCiAgICAgICJhcmlhIjogItCa0YDQtdC00LjRgtC4INC30LAg0LrQsNGA0YLQuDogMiIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgIndpZHRoIjogNDQsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbXSwKICAgICAgICAibGVmdCI6IDMzMCwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9CiAgXSwKICAicmVhZHMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDAKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDEKICAgIH0sCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbWFwLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDIKICAgIH0KICBdLAogICJ3cml0ZXMiOiBbXSwKICAic2NvcGUiOiAiYWN0dWFsIE1hcFN0dWRpbyBoZWFkZXIvZGlhbG9nLCByZWFsIHNlZWRlZCBzZXNzaW9uLCBleHBsaWNpdCByZWFkLW9ubHkgd2FsbGV0IGZlYXR1cmUgZml4dHVyZSIKfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "784b0247027e16286c70-cba95719c1612123baf4",
+          "file": "wallets.spec.mjs",
+          "line": 3,
+          "column": 37
+        },
+        {
+          "title": "Music wallet actual approved catalog counts match visible and accessible presentation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "phone",
+              "projectName": "phone",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4187,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T14:13:15.768Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "wallet-balance-2",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/2/specs/3/tests/0/results/0/attachments/0/body",
+                        "content_type": "image/png",
+                        "bytes": 54873,
+                        "sha256": "a27a453af899412f90b9c4e79944e072c74bd69f2679df11d9b8c583f8f1bf7b"
+                      }
+                    },
+                    {
+                      "name": "wallet-dialog-category",
+                      "contentType": "image/png",
+                      "omitted_embedded_image": {
+                        "source": "after-postvisual-33/tests.json",
+                        "json_pointer": "/suites/2/specs/3/tests/0/results/0/attachments/1/body",
+                        "content_type": "image/png",
+                        "bytes": 21067,
+                        "sha256": "e693675f0fc5824ad4d1f0286b497380980818af3e9977445d46f2f91a40ca44"
+                      }
+                    },
+                    {
+                      "name": "wallet-counts-and-callbacks",
+                      "contentType": "application/json",
+                      "body": "ewogICJtZXRyaWNzIjogWwogICAgewogICAgICAiY291bnQiOiAwLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAwIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMCIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMCIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgIndpZHRoIjogNDQsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbXSwKICAgICAgICAibGVmdCI6IDMzMCwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAxLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAxIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMSIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMSIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgIndpZHRoIjogNDQsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbXSwKICAgICAgICAibGVmdCI6IDMzMCwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9LAogICAgewogICAgICAiY291bnQiOiAyLAogICAgICAiZXhwZWN0ZWQiOiAi0JzRg9C30LjQutCw0LvQvdC4INC60YDQtdC00LjRgtC4OiAyIiwKICAgICAgInZpc2libGUiOiAiXG4gIFxuICBcbiAgXG4gINCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMiIsCiAgICAgICJhcmlhIjogItCc0YPQt9C40LrQsNC70L3QuCDQutGA0LXQtNC40YLQuDogMiIsCiAgICAgICJib3VuZHMiOiB7CiAgICAgICAgIndpZHRoIjogNDQsCiAgICAgICAgImhlaWdodCI6IDQ0LAogICAgICAgICJ0ZXh0UmVjdHMiOiBbXSwKICAgICAgICAibGVmdCI6IDMzMCwKICAgICAgICAicmlnaHQiOiAzNzQsCiAgICAgICAgInRvcCI6IDQ0LAogICAgICAgICJib3R0b20iOiA4OAogICAgICB9CiAgICB9CiAgXSwKICAicmVhZHMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogIi9hcGkvdjEvbXVzaWMtc3R1ZGlvL2FjY291bnQiLAogICAgICAiYXZhaWxhYmxlIjogMAogICAgfSwKICAgIHsKICAgICAgInBhdGgiOiAiL2FwaS92MS9tdXNpYy1zdHVkaW8vYWNjb3VudCIsCiAgICAgICJhdmFpbGFibGUiOiAxCiAgICB9LAogICAgewogICAgICAicGF0aCI6ICIvYXBpL3YxL211c2ljLXN0dWRpby9hY2NvdW50IiwKICAgICAgImF2YWlsYWJsZSI6IDIKICAgIH0KICBdLAogICJ3cml0ZXMiOiBbXSwKICAic2NvcGUiOiAiYWN0dWFsIE1hcFN0dWRpbyBoZWFkZXIvZGlhbG9nLCByZWFsIHNlZWRlZCBzZXNzaW9uLCBleHBsaWNpdCByZWFkLW9ubHkgd2FsbGV0IGZlYXR1cmUgZml4dHVyZSIKfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "784b0247027e16286c70-aa43940817e119ec55bf",
+          "file": "wallets.spec.mjs",
+          "line": 3,
+          "column": 37
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T14:12:48.391Z",
+    "duration": 31694.539,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

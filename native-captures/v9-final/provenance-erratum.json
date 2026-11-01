@@ -1,0 +1,398 @@
+{
+  "status": "Explicit evidence-provenance erratum; raw inputs/receipts/captures are unchanged",
+  "cause": "freeze_inputs.py copied a metadata template that already contained an8db capture_executable_postprocess block. That nested block was not replaced for V9 and is erroneous if interpreted as current.",
+  "classification": "Historical ancestor metadata only; disregard this one nested field for current executable identity. No claim that it was intentionally current or that the old executable produced V9.",
+  "ancestor_template": {
+    "path": "artifacts/bulgarian/kit-v4/render-input/bg/metadata.json",
+    "sha256": "c2bf3bc30622844274a907478414e0e0a9bd0ca11089d87eeb61b77fc0a3ddd5"
+  },
+  "ancestor_block": {
+    "action": "GNU strip --strip-debug on immutable capture copy; never active SCons output",
+    "original_sha256": "bba74153a1732b58db707f36419c13dd01c1e6673a5fab35f218b5dfb388ca15",
+    "actual_capture_file_sha256": "f3a86fb2950f31fa2129360f5c338b9bc9971977d068046c42e070b48c004df3",
+    "allocated_sections_verified_identical": 28,
+    "program_headers_identical": true,
+    "tool_version": "GNU strip (GNU Binutils for Ubuntu) 2.46",
+    "proof": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/native-captures/producers/8db545/strip-debug-proof.json",
+    "proof_sha256": "a8d3a558d8021a06c8c7892b7ccbcdd5d1eaece4c534c0b335898584d3cb81eb"
+  },
+  "verified_historical_proof": {
+    "path": "artifacts/bulgarian/native-captures/producers/8db545/strip-debug-proof.json",
+    "sha256": "a8d3a558d8021a06c8c7892b7ccbcdd5d1eaece4c534c0b335898584d3cb81eb"
+  },
+  "current_authoritative_copy_proof": {
+    "path": "artifacts/bulgarian/native-v9-qa/preview-copy-proof.json",
+    "sha256": "7a15ee0291e9e00e676167255436aeb8cfafacfdf54b7e6575c56bb8e719b089",
+    "actual_source_sha256": "156665831688ddbedafdfbb7ba8cc7949cf96b4980498f206aec93e8375c2b7c",
+    "actual_capture_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+    "program_headers_and_all28_alloc_sections_identical": true
+  },
+  "authoritative_runtime_identity_fields": [
+    "evidence_identity.executable_sha256",
+    "evidence_identity.producer.revision",
+    "evidence_identity.input_metadata.compiled_runtime_revision",
+    "native-v9-qa/preview-copy-proof.json",
+    "native-v9-qa/binary-handoff.json"
+  ],
+  "verified_actual_capture_font_manifests": 49,
+  "affected_raw_records": [
+    {
+      "path": "artifacts/bulgarian/v9-full-render-input/render-input/bg/metadata.json",
+      "raw_sha256": "b8c0c209e05102c136186c07d79e44f623f228e59c032d532a3f3d5c6986cf90",
+      "json_pointer": "/capture_executable_postprocess",
+      "classification": "Erroneously inherited historical8db copy metadata; not a current identity claim"
+    },
+    {
+      "path": "artifacts/bulgarian/v9-probe-input/render-input/bg/metadata.json",
+      "raw_sha256": "8f06e2a826f617ae05dada774bbb4eed83668b24328890ec90eabd94d50dd530",
+      "json_pointer": "/capture_executable_postprocess",
+      "classification": "Erroneously inherited historical8db copy metadata; not a current identity claim"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor.json",
+      "raw_sha256": "f8fa8d1600c7fb453d40483f87785fc31b15d2b5c9b55818d05bfc3011c98684",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics.json",
+      "raw_sha256": "63e908a7c15600c4759a0c51ce84d068ff1e19e9849598d74cdba859a91ff6a3",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor.json",
+      "raw_sha256": "3a3a536c5b170cbb1951635ffc95c548567ae720d9d022e143df66123e0e5eb6",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-lobby/lobby.json",
+      "raw_sha256": "43e285da14b8f77b90854107ffbf3e3358bf7bf5997d7e3851c9f1b95737f245",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-settings-ais/settings-ais.json",
+      "raw_sha256": "fc9d0784489439b54d8192950ac83403dee72b774a2e41288234e738b7957e48",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-new-map/new-map.json",
+      "raw_sha256": "92b2f55c8cb41e4014ea363d0db19c651825b44f0bd2ed49ed182cd05769e405",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-main/main.json",
+      "raw_sha256": "adc12e70fb04e1e094159416fdeed4826be196ec2391456b3c1f0a790d962bc3",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings/settings.json",
+      "raw_sha256": "4c82509027f3febb058fb79048824728eee5a17460a03e9cfd839880201a0181",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings-player/settings-player.json",
+      "raw_sha256": "3f652dea06c064d292a1ca73a6837521a17a2a773fda12747ee7e243167735d8",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "raw_sha256": "a7f6ce702ba18528d67f8f40217b2c5c3e6260b9de0b6c0b9daa1bd1fd6c054a",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics.json",
+      "raw_sha256": "5dcca0214fbf3982a28dcc0f34ff8668cc5d59e80a7e41d4eb25df7163bbae71",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor.json",
+      "raw_sha256": "d033e82d3d1e5bb6ddd001b581adc4f0afece04213b78090257ce821f48ffb8e",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics.json",
+      "raw_sha256": "b13749a51065619b16aa5d3187087cb53ba38047a5df6ba4f9b5882ee5bc2330",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-lobby-players/lobby-players.json",
+      "raw_sha256": "586d37a716791605f90ed24e670adb4ecf11b41807936fbad0c4c93a8167a543",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-settings-online/settings-online.json",
+      "raw_sha256": "50a3f25d1dd62b4cd000f8e7a1146a1ef4cb19a5d4aa329f840af8d00a5bf730",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor.json",
+      "raw_sha256": "a43fc98d832ac9b2beb17f724ad2b2dfcfd3dd0706f82cb8b5e760da57eb6535",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-lobby/lobby.json",
+      "raw_sha256": "8525f7a600e1156b21846cd60a11e8e6627b0611f0a6f072735d29a722760cd5",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-settings-ais/settings-ais.json",
+      "raw_sha256": "b3b6a2afbdf81c28b5b5e0649834341ceef29f445fe45ce3b20d45e87215cb44",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-new-map/new-map.json",
+      "raw_sha256": "14668987d89bf1973e1e71907fe6383e5f477e37969afee4f0ed50632bcf7021",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.json",
+      "raw_sha256": "aaf891ae4496d34e317e3064d9219097172b54be2f0f4f34099877fc0c18fc3a",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor.json",
+      "raw_sha256": "cc7ed9ed8805c0c468068965b3f14a91b93ecd3f668c6f7d1cbc7683924fe1b2",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics.json",
+      "raw_sha256": "cbb7a6a5f42b4e2180d2fe03c01d651d3abbbe4af1a22e7792c07e15cbff4a48",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-main/main.json",
+      "raw_sha256": "1fcb46da7c813bd043be1abfbff1255a9081c13f1ade554e5bd5684b133a16f9",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings/settings.json",
+      "raw_sha256": "dc5503dc6004ec5fc6734e5932547a9a72460227ae158ee7b131b578581a1336",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings-player/settings-player.json",
+      "raw_sha256": "548f3cbc1dfcbd0277cd88547836d3cb5c294f207c7ce54cb0efbbc599747cba",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "raw_sha256": "dca8f80986508b7eaf2f1110f0e31a87b3fb26cd5708724f6410e95c956e2f38",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-lobby-players/lobby-players.json",
+      "raw_sha256": "a5a0c0b2120cec7d7635ea79f042248fc3072e5422264ea44d6cc4be5758803a",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-settings-online/settings-online.json",
+      "raw_sha256": "549c344e29133aec9105f78da7f5a7af4b027845a0462e6e3c77267cc4125f1a",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor.json",
+      "raw_sha256": "f397369d0ad08cd1f8332978b7a555c3f84e25cb53d040003b970ba1d1a99dde",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/api/desktop-api-known/settings-ais.json",
+      "raw_sha256": "bc05af029c6fbd752a49e94b7d1f2b3c5bcbc6f9ff800d9506831313eebb69b4",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/api/desktop-api-unknown/settings-ais.json",
+      "raw_sha256": "3bfbdd6ebfd13adaf7ec25cd46be9350dbed737dcfa63950b9bd430a6d73dfb4",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/api/phone-api-known/settings-ais.json",
+      "raw_sha256": "8f4f0d7aecded61cb820675bc858793874087c1c697c65b59fa5eac5bb91adaf",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/api/phone-api-unknown/settings-ais.json",
+      "raw_sha256": "0cb5e63c5d9dc4a6e300e0d42c1a54a0a018eb7ee371fd2ef738123c61c0221e",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.json",
+      "raw_sha256": "5bcd9f76c40e64625076da452af67bc1e82e5e2419675253743fdc7eb3859ee1",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools.json",
+      "raw_sha256": "d571d7ce1a9ced70de4fa9bde23fa3b248d7fe590f4011c55a61239c116b9ba4",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/probes/desktop/font-matrix.json",
+      "raw_sha256": "2b6e6d0570cfd064cae0ee42493a467f1a405f85c042e10018df08c820128606",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/probes/phone/font-matrix.json",
+      "raw_sha256": "e2884e9f6492741b2cc157724c158c67c3d8285ec5cfb3c4d431809563a0882a",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/desktop-10x2/font-matrix.json.gz",
+      "raw_sha256": "3cd56c0805a878ca6f5a1c92a1bae561f17c25823e73350c16f179a29dacda02",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/desktop-20x1/font-matrix.json.gz",
+      "raw_sha256": "9ddb607d774c2231237bedaeda685285c17a9660ef8f401366bf0e048edf16ba",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/phone-10x2/font-matrix.json.gz",
+      "raw_sha256": "968751593d4e75653b28fc782991c5524cdb85214787ad4d460571f6fd54b15e",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/phone-20x1/font-matrix.json.gz",
+      "raw_sha256": "00f61c099abe5bec7284cc4e043bf0eb451a4bbc2a48ad36128ab1437b48b955",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/desktop-13x1/font-matrix.json.gz",
+      "raw_sha256": "b15e46414211d3d30612c80ee2aa38a140060dae08a4458f3360c88ad6b448b0",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/desktop-20x2/font-matrix.json.gz",
+      "raw_sha256": "d2fafc3361d38e8044ff7fbb873db34cceed05e75f7e2312eaf85d8c39028112",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/phone-13x1/font-matrix.json.gz",
+      "raw_sha256": "623ddc675b09b4be2e01d3ce4d2e34f198482502e86891643343049040ea1a02",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/phone-20x2/font-matrix.json.gz",
+      "raw_sha256": "f8439091a337faaed34d2e02fd52e23c722599de4e69aeecd888257a27a5d26e",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-1-of-3/desktop-10x1/font-matrix.json.gz",
+      "raw_sha256": "19e7cfb464cb1cf5a548ea53cc02227ec009c4d67bd8f41c76abd178d7665e17",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-1-of-3/desktop-13x2/font-matrix.json.gz",
+      "raw_sha256": "8fc488fc66b7efcab97d1585b08716b110fae3bd84ebe131481ed746c472209c",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-1-of-3/phone-10x1/font-matrix.json.gz",
+      "raw_sha256": "74d6168cdbd1b95bdb5fe463c20f1fc7ee192608f7307da3771becd6b4ad92e7",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-1-of-3/phone-13x2/font-matrix.json.gz",
+      "raw_sha256": "44e0ac57d89d6d83f781abaf13702750fbf8129b6c5ef0b5f95219039af19c5e",
+      "json_pointer": "/evidence_identity/input_metadata/capture_executable_postprocess",
+      "authoritative_actual_executable_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+      "authoritative_actual_compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6"
+    }
+  ],
+  "raw_records_rewritten": false,
+  "measurements_or_image_bytes_changed": false,
+  "future_helper_fix": "Remove ancestor capture_executable_postprocess from copied template before making new capture input metadata. Current frozen metadata is retained unchanged with this erratum."
+}

@@ -1,0 +1,36 @@
+{
+  "producer_revision": "f02b75ccab66d3073f33ae865d2c8a731e546545",
+  "scope": "Exact input JSON/metadata snapshot retained before any later source-only UI fixes; original capture manifests also embed their actual input metadata.",
+  "files": [
+    {
+      "kind": "full",
+      "file": "artifacts/bulgarian/native-captures/producers/f02b75/frozen-inputs/full/native.json",
+      "sha256": "3a8ea5e1306b86a014c4a4944b712c2e714fe353e3a7d5ba5ae3a998bd664a09"
+    },
+    {
+      "kind": "full",
+      "file": "artifacts/bulgarian/native-captures/producers/f02b75/frozen-inputs/full/online.json",
+      "sha256": "69de8f4cf769924db105fe166cf25a352967e5ca3263951dd1753c3d8f263813"
+    },
+    {
+      "kind": "full",
+      "file": "artifacts/bulgarian/native-captures/producers/f02b75/frozen-inputs/full/metadata.json",
+      "sha256": "333d46607fd98888748840169e66a683b2d48d507b06f763efe95178f455b82e"
+    },
+    {
+      "kind": "font-supplement",
+      "file": "artifacts/bulgarian/native-captures/producers/f02b75/frozen-inputs/font-supplement/native.json",
+      "sha256": "9d2932273ac21661b6cd52ffffa9d2a6caf6b83e20bd04d39a0326962a414b3b"
+    },
+    {
+      "kind": "font-supplement",
+      "file": "artifacts/bulgarian/native-captures/producers/f02b75/frozen-inputs/font-supplement/online.json",
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "kind": "font-supplement",
+      "file": "artifacts/bulgarian/native-captures/producers/f02b75/frozen-inputs/font-supplement/metadata.json",
+      "sha256": "28784b5ed7d71110c68f4c67218999ca03b80aa99f750937e9635b073d6634e7"
+    }
+  ]
+}

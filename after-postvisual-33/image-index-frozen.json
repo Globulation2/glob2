@@ -1,0 +1,50 @@
+{
+  "artifacts/bulgarian/after-postvisual-33/captures/desktop-map-wallet-balance-2.png": {
+    "sha256": "f0e69fbdb038a25a6878ed99bbbe5e8fee98ecf92bddd3feb041248d0df59087",
+    "bytes": 189638
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/desktop-map-wallet-dialog-category.png": {
+    "sha256": "4dc1e34976731d6ed306b0104cfa83df02c26c57bed49d28e2bdb5687e48e82a",
+    "bytes": 118075
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/desktop-music-like-unlike.png": {
+    "sha256": "2bb2f9ad1f1c6adf6d85983d2266127ea06e4f1f66838127e4b14f8298da8623",
+    "bytes": 172442
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/desktop-music-wallet-balance-2.png": {
+    "sha256": "2d5ae562b7b82e4e1665093c8c4fd3dd50dce39e86c0dc7608d1d46610303c7e",
+    "bytes": 213738
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/desktop-music-wallet-dialog-category.png": {
+    "sha256": "a594e439e6183a3f02911f57f900746d6d22e419ea085c681a9635b7cd8400fa",
+    "bytes": 115746
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/desktop-skin-responsive.png": {
+    "sha256": "eaa70d1ab04d1fe6641f18ac8e971e6808c3b1d86e589b28974202c19b0010f0",
+    "bytes": 630944
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/phone-map-wallet-balance-2.png": {
+    "sha256": "ebd797102fb49249da8823506cb2d4a1c10d814567e3a36415d2c649d11f3767",
+    "bytes": 53269
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/phone-map-wallet-dialog-category.png": {
+    "sha256": "cdf13f22c392fac288a884df2014f07c11cd7d64cafb09a7549270ad872695bd",
+    "bytes": 20741
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/phone-music-like-unlike.png": {
+    "sha256": "efb2be473da52d464caa30dcf60b9ae68e76d7317dc4f7cefbf8085d3bff2dcb",
+    "bytes": 142041
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/phone-music-wallet-balance-2.png": {
+    "sha256": "a27a453af899412f90b9c4e79944e072c74bd69f2679df11d9b8c583f8f1bf7b",
+    "bytes": 54873
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/phone-music-wallet-dialog-category.png": {
+    "sha256": "e693675f0fc5824ad4d1f0286b497380980818af3e9977445d46f2f91a40ca44",
+    "bytes": 21067
+  },
+  "artifacts/bulgarian/after-postvisual-33/captures/phone-skin-responsive.png": {
+    "sha256": "6b61d03440e0c31f0b0dd6b01e72eb005a8ecbcd8b9a80e8fc5e7a60870616d6",
+    "bytes": 168609
+  }
+}

@@ -1,0 +1,200 @@
+
+Running 32 tests using 1 worker
+
+(node:31718) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › platform/apps/web/e2e/bulgarian.spec.ts:9:1 › Bulgarian loads its bundled font and persists an explicit language choice (3.5s)
+  ✓   2 [desktop] › platform/apps/web/e2e/localized-layout.spec.ts:8:1 › long localized controls fit phone columns and preserve desktop layout (33.8s)
+  ✓   3 [desktop] › platform/apps/web/e2e/localized-layout.spec.ts:114:1 › Bulgarian music mood labels fit each hit area in phone and embedded players (1.8s)
+(node:34164) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [phone] › platform/apps/web/e2e/bulgarian.spec.ts:9:1 › Bulgarian loads its bundled font and persists an explicit language choice (3.0s)
+  -   5 [phone] › platform/apps/web/e2e/localized-layout.spec.ts:8:1 › long localized controls fit phone columns and preserve desktop layout
+  ✓   6 [phone] › platform/apps/web/e2e/localized-layout.spec.ts:114:1 › Bulgarian music mood labels fit each hit area in phone and embedded players (1.5s)
+(node:34974) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   7 [new-desktop] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:16:1 › new skin model and material captions use Bulgarian catalog (21.7s)
+(node:37570) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [new-desktop] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:27:1 › new administrative tabs and finance filters render Bulgarian on real seeded API (6.1s)
+  ✓   9 [new-desktop] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:39:1 › all new music listening guidance is localized in actual published player UI fixture (2.7s)
+(node:38886) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  10 [new-phone] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:16:1 › new skin model and material captions use Bulgarian catalog (21.4s)
+(node:43138) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [new-phone] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:27:1 › new administrative tabs and finance filters render Bulgarian on real seeded API (6.9s)
+  ✓  12 [new-phone] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:39:1 › all new music listening guidance is localized in actual published player UI fixture (3.2s)
+(node:44718) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:16:1 › Bulgarian owner uploads a cover through real API and music phase uses Build in player fixture (4.6s)
+  ✘  14 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (22.1s)
+(node:53184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/readonly-caption.spec.mjs:16:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (3.4s)
+  ✓  16 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/readonly-caption.spec.mjs:45:1 › published set inspector presents exact serialized field IDs as code (2.0s)
+  ✓  17 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/sets-caption.spec.mjs:4:1 › schema captions translate only audited fields and preserve canonical terrain/resource values (3.6s)
+  ✓  18 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:34:1 › AI filter, card, detail and publish labels translate while canonical tags stay stable (5.5s)
+  ✓  19 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:54:1 › map visibility labels translate while protocol values remain public unlisted private (1.9s)
+  ✓  20 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:64:1 › music author labels use Artist and attribution Credits and sources (1.8s)
+  ✓  21 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:72:1 › new set and building drafts initialize localized names without rewriting stored metadata (8.1s)
+  ✓  22 [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:101:1 › terrain and resource Add labels translate while package collections stay canonical (8.0s)
+(node:57758) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  23 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:16:1 › Bulgarian owner uploads a cover through real API and music phase uses Build in player fixture (4.3s)
+  ✘  24 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (22.9s)
+(node:60397) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  25 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/readonly-caption.spec.mjs:16:1 › Terrain Studio preview distinguishes infinite stock from harvested crop (6.8s)
+  ✓  26 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/readonly-caption.spec.mjs:45:1 › published set inspector presents exact serialized field IDs as code (4.1s)
+  ✓  27 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/sets-caption.spec.mjs:4:1 › schema captions translate only audited fields and preserve canonical terrain/resource values (8.9s)
+  ✓  28 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:34:1 › AI filter, card, detail and publish labels translate while canonical tags stay stable (10.0s)
+  ✓  29 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:54:1 › map visibility labels translate while protocol values remain public unlisted private (4.1s)
+  ✓  30 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:64:1 › music author labels use Artist and attribution Credits and sources (3.3s)
+  ✓  31 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:72:1 › new set and building drafts initialize localized names without rewriting stored metadata (10.8s)
+  ✓  32 [controls-phone] › artifacts/bulgarian/v5-final-online-qa/translated-controls.spec.mjs:101:1 › terrain and resource Add labels translate while package collections stay canonical (9.8s)
+
+
+  1) [new-desktop] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:16:1 › new skin model and material captions use Bulgarian catalog 
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator: getByLabel('Име на облика', { exact: true })
+    Expected: enabled
+    Timeout: 20000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeEnabled" getByLabel('Име на облика', { exact: true }) with timeout 20000ms
+      - waiting for getByLabel('Име на облика', { exact: true })
+
+
+      17 |  await page.context().addCookies([{name:'glob2_locale',value:'bg',url:baseURL}]);
+      18 |  await page.goto('/skins',{waitUntil:'networkidle'});
+    > 19 |  await expect(page.getByLabel(bg['Skin name'],{exact:true})).toBeEnabled();
+         |                                                              ^
+      20 |  await expect(page.locator('.sidebar-auth')).toHaveAttribute('aria-label',bg['Sign in']);
+      21 |  if(info.project.name.endsWith('phone')){const box=await page.locator('.sidebar-auth').boundingBox();expect(box.width).toBeGreaterThanOrEqual(44);expect(box.height).toBeGreaterThanOrEqual(44);}
+      22 |  for(const key of ['Worker','Warrior','Explorer','Swarm'])await expect(page.getByRole('button',{name:bg[key],exact:true})).toBeVisible();
+        at /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:19:62
+
+    Error Context: artifacts/bulgarian/final-v7-online-qa/verified/test-results/new-domains-new-skin-model-703e8-tions-use-Bulgarian-catalog-new-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/bulgarian/final-v7-online-qa/verified/test-results/new-domains-new-skin-model-703e8-tions-use-Bulgarian-catalog-new-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/bulgarian/final-v7-online-qa/verified/test-results/new-domains-new-skin-model-703e8-tions-use-Bulgarian-catalog-new-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [new-phone] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:16:1 › new skin model and material captions use Bulgarian catalog 
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator: getByLabel('Име на облика', { exact: true })
+    Expected: enabled
+    Timeout: 20000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeEnabled" getByLabel('Име на облика', { exact: true }) with timeout 20000ms
+      - waiting for getByLabel('Име на облика', { exact: true })
+
+
+      17 |  await page.context().addCookies([{name:'glob2_locale',value:'bg',url:baseURL}]);
+      18 |  await page.goto('/skins',{waitUntil:'networkidle'});
+    > 19 |  await expect(page.getByLabel(bg['Skin name'],{exact:true})).toBeEnabled();
+         |                                                              ^
+      20 |  await expect(page.locator('.sidebar-auth')).toHaveAttribute('aria-label',bg['Sign in']);
+      21 |  if(info.project.name.endsWith('phone')){const box=await page.locator('.sidebar-auth').boundingBox();expect(box.width).toBeGreaterThanOrEqual(44);expect(box.height).toBeGreaterThanOrEqual(44);}
+      22 |  for(const key of ['Worker','Warrior','Explorer','Swarm'])await expect(page.getByRole('button',{name:bg[key],exact:true})).toBeVisible();
+        at /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:19:62
+
+    Error Context: artifacts/bulgarian/final-v7-online-qa/verified/test-results/new-domains-new-skin-model-703e8-tions-use-Bulgarian-catalog-new-phone/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/bulgarian/final-v7-online-qa/verified/test-results/new-domains-new-skin-model-703e8-tions-use-Bulgarian-catalog-new-phone/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/bulgarian/final-v7-online-qa/verified/test-results/new-domains-new-skin-model-703e8-tions-use-Bulgarian-catalog-new-phone/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.ts-entries')
+    Expected substring: "Wood"
+    Received string:    "Fixture treesОсновен материалwoodТемп на растеж1.00× пшеницаСкорост на разпространение0.33× пшеницаМоже да се отглеждаДаwood: започва от 1, задържа 5; запасите остават налични след събиране"
+    Timeout: 20000ms
+
+    Call log:
+      - Expect "toContainText" locator('.ts-entries') with timeout 20000ms
+      - waiting for locator('.ts-entries')
+        43 × locator resolved to <div class="ts-entries">…</div>
+           - unexpected value "Fixture treesОсновен материалwoodТемп на растеж1.00× пшеницаСкорост на разпространение0.33× пшеницаМоже да се отглеждаДаwood: започва от 1, задържа 5; запасите остават налични след събиране"
+
+
+      70 |  await expect(page.locator('.studio-revisions')).not.toContainText('current saved draft');
+      71 |  await expect(page.locator('.ts-entries')).toContainText(bg['stock remains available after harvesting']);
+    > 72 |  await expect(page.locator('.ts-entries')).toContainText('Wood');
+         |                                            ^
+      73 |  await page.locator('.ts-entries').getByText(new RegExp(bg['stock remains available after harvesting'])).scrollIntoViewIfNeeded();
+      74 |  await capture(page,info,'fixture-infinite-stock-bg');
+      75 | });
+        at /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:72:44
+
+    Error Context: artifacts/bulgarian/final-v7-online-qa/verified/test-results/context-wording-Terrain-St-975a6-e-stock-from-harvested-crop-controls-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/bulgarian/final-v7-online-qa/verified/test-results/context-wording-Terrain-St-975a6-e-stock-from-harvested-crop-controls-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/bulgarian/final-v7-online-qa/verified/test-results/context-wording-Terrain-St-975a6-e-stock-from-harvested-crop-controls-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [controls-phone] › artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.ts-entries')
+    Expected substring: "Wood"
+    Received string:    "Fixture treesОсновен материалwoodТемп на растеж1.00× пшеницаСкорост на разпространение0.33× пшеницаМоже да се отглеждаДаwood: започва от 1, задържа 5; запасите остават налични след събиране"
+    Timeout: 20000ms
+
+    Call log:
+      - Expect "toContainText" locator('.ts-entries') with timeout 20000ms
+      - waiting for locator('.ts-entries')
+        42 × locator resolved to <div class="ts-entries">…</div>
+           - unexpected value "Fixture treesОсновен материалwoodТемп на растеж1.00× пшеницаСкорост на разпространение0.33× пшеницаМоже да се отглеждаДаwood: започва от 1, задържа 5; запасите остават налични след събиране"
+
+
+      70 |  await expect(page.locator('.studio-revisions')).not.toContainText('current saved draft');
+      71 |  await expect(page.locator('.ts-entries')).toContainText(bg['stock remains available after harvesting']);
+    > 72 |  await expect(page.locator('.ts-entries')).toContainText('Wood');
+         |                                            ^
+      73 |  await page.locator('.ts-entries').getByText(new RegExp(bg['stock remains available after harvesting'])).scrollIntoViewIfNeeded();
+      74 |  await capture(page,info,'fixture-infinite-stock-bg');
+      75 | });
+        at /home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:72:44
+
+    Error Context: artifacts/bulgarian/final-v7-online-qa/verified/test-results/context-wording-Terrain-St-975a6-e-stock-from-harvested-crop-controls-phone/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/bulgarian/final-v7-online-qa/verified/test-results/context-wording-Terrain-St-975a6-e-stock-from-harvested-crop-controls-phone/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/bulgarian/final-v7-online-qa/verified/test-results/context-wording-Terrain-St-975a6-e-stock-from-harvested-crop-controls-phone/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [new-desktop] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:16:1 › new skin model and material captions use Bulgarian catalog 
+    [new-phone] › artifacts/bulgarian/final-v7-online-qa/new-domains.spec.mjs:16:1 › new skin model and material captions use Bulgarian catalog 
+    [controls-desktop] › artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop 
+    [controls-phone] › artifacts/bulgarian/v5-final-online-qa/context-wording.spec.mjs:52:1 › Terrain Studio preview distinguishes infinite stock from harvested crop 
+  1 skipped
+  27 passed (4.5m)

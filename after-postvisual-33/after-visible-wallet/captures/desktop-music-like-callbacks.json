@@ -1,0 +1,66 @@
+{
+  "writes": [
+    {
+      "method": "PUT",
+      "path": "/api/v1/music/11111111-1111-4111-8111-111111111111/like"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/music/11111111-1111-4111-8111-111111111111/like"
+    }
+  ],
+  "first": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "ownerId": "0b11976a-cb86-4f0b-bef0-bdb826d87142",
+    "metadata": {
+      "title": "Authored music title",
+      "artist": "Fixture composer",
+      "description": "Authored fixture",
+      "license": "CC0-1.0",
+      "credits": "Fixture",
+      "sources": [],
+      "tags": [],
+      "aiGenerated": false
+    },
+    "status": "published",
+    "createdAt": "2026-10-01T12:00:00Z",
+    "frames": 480000,
+    "tracks": [],
+    "warnings": [],
+    "inspection": null,
+    "uploaded": [],
+    "coverUrl": null,
+    "likes": 2,
+    "downloads": 0,
+    "liked": false,
+    "hidden": false,
+    "error": null
+  },
+  "second": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "ownerId": "0b11976a-cb86-4f0b-bef0-bdb826d87142",
+    "metadata": {
+      "title": "Second authored title",
+      "artist": "Fixture composer",
+      "description": "Authored fixture",
+      "license": "CC0-1.0",
+      "credits": "Fixture",
+      "sources": [],
+      "tags": [],
+      "aiGenerated": false
+    },
+    "status": "published",
+    "createdAt": "2026-10-01T12:00:00Z",
+    "frames": 480000,
+    "tracks": [],
+    "warnings": [],
+    "inspection": null,
+    "uploaded": [],
+    "coverUrl": null,
+    "likes": 2,
+    "downloads": 0,
+    "liked": true,
+    "hidden": false,
+    "error": null
+  }
+}

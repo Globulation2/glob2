@@ -1,0 +1,19 @@
+{
+  "revision": "94021f77dab35b1d3603d74b7b9648bfdbedff40",
+  "review_proof_sha256": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7",
+  "input_files_sha256": {
+    "data/texts.bg.txt": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "platform/packages/i18n/locales/bg.json": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f",
+    "libgag/src/TrueTypeFont.cpp": "0504eb2b4cc48145a55949b86d9e0f60658a30d0c3d77cda0d026cd40d09e26f",
+    "libgag/src/ui/TextLayout.cpp": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "data/texts.list.txt": "0be3ed365c750d60bcd16914e6d02baf2a6a11439f0c7494f882839bc9c49f91",
+    "artifacts/bulgarian/native-v10-qa/review-proof-v8-visual-validation-snapshot.json": "5b6be55643eb72fb3ba21298ce8e6e43b310f225eb03b2181018b2d99461f5f7"
+  },
+  "scope": "Actual final source/input freeze; binaries pending explicit root completed-build handoff",
+  "unchanged_target_catalogs": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "518e85a188ab3ab9534e623f4ab5a7501bda9e3d218d21d69c83c134ab11089f"
+  },
+  "font_carry": "6402literalvalues actualEA0 V9 +33changedvalues\u00d712actual3810 V10; no full-matrix rerun claimed"
+}

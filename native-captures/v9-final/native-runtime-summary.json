@@ -1,0 +1,1020 @@
+{
+  "status": "Actual final V9 native execution passed; independent visual acceptance is separately recorded",
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "source_closure": {
+    "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+    "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+    "changed_paths": [
+      "platform/apps/web/e2e/i18n.spec.ts"
+    ],
+    "allowed_test_only_paths": [
+      "platform/apps/web/e2e/i18n.spec.ts"
+    ],
+    "exact_patch_sha256": "32e852267eb9a997107c97fa2e33eaf3fe70f7ec0e9cc13eae530eae5d27e579",
+    "production_cpp_catalog_font_build_inputs_unchanged": true,
+    "claim": "Native executable keeps its actual compiled identity; only the explicitly authorized E2E test file may differ in final source."
+  },
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+  },
+  "preview_capture_sha256": "d11085a0fff664475f149c5071e822e441660269ec35e4da6436b4d3bd63448f",
+  "captures": {
+    "surfaces": 29,
+    "API": 4,
+    "school_briefings": 2,
+    "jobs": 35,
+    "PNG_images": 108,
+    "all_returncodes_zero": true,
+    "equal_draw_checksum_pairs": 88
+  },
+  "font": {
+    "full_values": 6435,
+    "combinations": 12,
+    "fresh_samples": 77220,
+    "lines": 90542,
+    "missing_glyphs": 0,
+    "drawn_extent_failures": 0,
+    "peak_observed_combined_bytes": 593347527,
+    "budget_bytes": 1073741824,
+    "complete_measurements_truncated": false,
+    "generated_PNG_pages": 2606,
+    "selected_example_pages": 12
+  },
+  "probes": {
+    "historical_1x_2x_PNGs": 12,
+    "all12_byte_identical_8db": true,
+    "new_1_5x_diagnostic_PNGs": 6,
+    "total_synthetic_PNGs": 18
+  },
+  "focused_tests": {
+    "engine": {
+      "cases": 91,
+      "passed": 91,
+      "failed": 0,
+      "junit": "artifacts/bulgarian/native-tests-v9-engine/junit.xml"
+    },
+    "unit": {
+      "cases": 91,
+      "passed": 91,
+      "failed": 0,
+      "junit": "artifacts/bulgarian/native-tests-v9-unit/junit.xml"
+    }
+  },
+  "actual_runtime_identities": [
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-lobby/lobby.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-settings-ais/settings-ais.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-new-map/new-map.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-main/main.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings/settings.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-settings-player/settings-player.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-lobby-players/lobby-players.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-settings-online/settings-online.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-lobby/lobby.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-settings-ais/settings-ais.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-new-map/new-map.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-main/main.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings/settings.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-settings-player/settings-player.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-lobby-players/lobby-players.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-settings-online/settings-online.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/api/desktop-api-known/settings-ais.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/api/desktop-api-unknown/settings-ais.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/api/phone-api-known/settings-ais.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/api/phone-api-unknown/settings-ais.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools.json",
+      "producer_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "source_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+      "sdl": 3004016,
+      "ttf": 3002002,
+      "harfbuzz": [
+        10,
+        1,
+        0
+      ],
+      "SDL_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3.so.0",
+      "TTF_path": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/sdl3/prefix/lib/libSDL3_ttf.so.0"
+    }
+  ],
+  "draw_checksum_receipts": [
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor.json",
+      "capture": "script-editor-cursor",
+      "checksum": 4240945589
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor.json",
+      "capture": "script-editor-success",
+      "checksum": 4240945589
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-100-script-editor/script-editor.json",
+      "capture": "script-editor-failure",
+      "checksum": 4240945589
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics.json",
+      "capture": "statistics-overview",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics.json",
+      "capture": "statistics-economy",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics.json",
+      "capture": "statistics-world",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics.json",
+      "capture": "statistics-population-history",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics.json",
+      "capture": "statistics-population-history-details",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/desktop-150-statistics/statistics.json",
+      "capture": "statistics-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor.json",
+      "capture": "script-editor-cursor",
+      "checksum": 1334744086
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor.json",
+      "capture": "script-editor-success",
+      "checksum": 1334744086
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-150-script-editor/script-editor.json",
+      "capture": "script-editor-failure",
+      "checksum": 1334744086
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-dialog",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-statistics",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-statistics-about",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-overview",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-work",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-defence",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-colony",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-unit-details-collapsed",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-unit-details-expanded",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-unit-details-bottom",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-economy",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-military",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-world",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-1-of-3/phone-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-full-history",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics.json",
+      "capture": "statistics-overview",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics.json",
+      "capture": "statistics-economy",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics.json",
+      "capture": "statistics-world",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics.json",
+      "capture": "statistics-population-history",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics.json",
+      "capture": "statistics-population-history-details",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-100-statistics/statistics.json",
+      "capture": "statistics-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor.json",
+      "capture": "script-editor-cursor",
+      "checksum": 3058840030
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor.json",
+      "capture": "script-editor-success",
+      "checksum": 3058840030
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-100-script-editor/script-editor.json",
+      "capture": "script-editor-failure",
+      "checksum": 3058840030
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics.json",
+      "capture": "statistics-overview",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics.json",
+      "capture": "statistics-economy",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics.json",
+      "capture": "statistics-world",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics.json",
+      "capture": "statistics-population-history",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics.json",
+      "capture": "statistics-population-history-details",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-150-statistics/statistics.json",
+      "capture": "statistics-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor.json",
+      "capture": "editor",
+      "checksum": 209461347
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor.json",
+      "capture": "editor-terrain",
+      "checksum": 209461347
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/desktop-editor/editor.json",
+      "capture": "editor-dialog",
+      "checksum": 209461347
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.json",
+      "capture": "tutorial-fortifications-briefing",
+      "checksum": 3237625279
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.json",
+      "capture": "tutorial-fortifications",
+      "checksum": 3237625279
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.json",
+      "capture": "tutorial-fortifications-collapsed",
+      "checksum": 3237625279
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.json",
+      "capture": "tutorial-fortifications-expanded",
+      "checksum": 3237625279
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-2-of-3/phone-fortifications/tutorial-fortifications.json",
+      "capture": "tutorial-fortifications-dialog",
+      "checksum": 3237625279
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor.json",
+      "capture": "script-editor-cursor",
+      "checksum": 4240945589
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor.json",
+      "capture": "script-editor-success",
+      "checksum": 4240945589
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-150-script-editor/script-editor.json",
+      "capture": "script-editor-failure",
+      "checksum": 4240945589
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics.json",
+      "capture": "statistics-overview",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics.json",
+      "capture": "statistics-economy",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics.json",
+      "capture": "statistics-world",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics.json",
+      "capture": "statistics-population-history",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics.json",
+      "capture": "statistics-population-history-details",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-100-statistics/statistics.json",
+      "capture": "statistics-dialog",
+      "checksum": 2826819108
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-zoom-plus",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-zoom-fit",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-dialog",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-statistics",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-overview",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-work",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-defence",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-colony",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-unit-details-collapsed",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-unit-details-expanded",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-unit-details-bottom",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-economy",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-military",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-world",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/desktop-gameplay/gameplay.json",
+      "capture": "gameplay-live-statistics-full-history",
+      "checksum": 3828636654
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor.json",
+      "capture": "editor",
+      "checksum": 3454842477
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor.json",
+      "capture": "editor-terrain",
+      "checksum": 3454842477
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/surfaces-shard-3-of-3/phone-editor/editor.json",
+      "capture": "editor-dialog",
+      "checksum": 3454842477
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.json",
+      "capture": "tutorial-schools-briefing",
+      "checksum": 1021006953
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.json",
+      "capture": "tutorial-schools",
+      "checksum": 1021006953
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.json",
+      "capture": "tutorial-schools-collapsed",
+      "checksum": 1021006953
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.json",
+      "capture": "tutorial-schools-expanded",
+      "checksum": 1021006953
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/desktop-schools/tutorial-schools.json",
+      "capture": "tutorial-schools-dialog",
+      "checksum": 1021006953
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools.json",
+      "capture": "tutorial-schools-briefing",
+      "checksum": 1303168951
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools.json",
+      "capture": "tutorial-schools",
+      "checksum": 1303168951
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools.json",
+      "capture": "tutorial-schools-collapsed",
+      "checksum": 1303168951
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools.json",
+      "capture": "tutorial-schools-expanded",
+      "checksum": 1303168951
+    },
+    {
+      "path": "artifacts/bulgarian/native-captures/v9-final/schools/phone-schools/tutorial-schools.json",
+      "capture": "tutorial-schools-dialog",
+      "checksum": 1303168951
+    }
+  ],
+  "visual_indices": [
+    "review-index-001.json",
+    "review-index-002.json"
+  ],
+  "limits": [
+    "Linux SDL/Xvfb only; phone-size presentation does not certify physical mobile/Windows/macOS rendering",
+    "Full font samples use1x/2x raster scales; six additional1.5x probe samples are diagnostics, not a full fractional-scale corpus",
+    "Independent editor actual108-image review is separate; this worker personally opened only three bounded font example pages",
+    "Actual controlled localhost API fixtures do not certify production account/payment/provider flows",
+    "Native OS locale resources are independently reviewed and packaging checked separately; this Linux runtime does not execute physical mobile/macOS OS resources",
+    "Actual producer revision isEA0; final sourceF30 differs only in the exact bound E2E test-only patch. No old producer has been relabelled"
+  ],
+  "history": {
+    "earlierV8_bd2_producer_preserved": true,
+    "initialV9_font_preflight_path_typo_logs_retained": true,
+    "initial_font_preflight_executed_ELF": false
+  },
+  "provenance_erratum": "provenance-erratum.json",
+  "provenance_erratum_scope": "One inherited nested8db copy-metadata field was erroneous; all49 actual outer producer/executable identities verify EA0/d110. Raw records, inputs and images are untouched.",
+  "phone_player_exit_control_investigation": "phone-player-exit-control-investigation.json"
+}

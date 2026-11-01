@@ -1,0 +1,184 @@
+{
+  "status": "Actual FULL final font corpus; no old-measurement carry substituted",
+  "compiled_revision": "ea0f763fa84445c6dbe5527c966e1eeafc221bc6",
+  "final_source_revision": "f30e5164359621ce7bdcc0a588e3ad274431f16b",
+  "source_sha256": "3d16c1c3828c1a69924a3201f800f28f72b85ab6ba741dff39f637f4f836f42f",
+  "catalog_sha256": {
+    "native": "e9fdcb871fd76de47b60115bc6cf9cba8bc3bd506a62fbbd87d67a0b2e8a5a9d",
+    "online": "e30553969e0171c407e3741f1b1eaaa8d81a9e931de154fb176a5a904910d82f"
+  },
+  "values_per_combination": 6435,
+  "combinations": [
+    [
+      480,
+      10,
+      1.0
+    ],
+    [
+      480,
+      10,
+      2.0
+    ],
+    [
+      480,
+      13,
+      1.0
+    ],
+    [
+      480,
+      13,
+      2.0
+    ],
+    [
+      480,
+      20,
+      1.0
+    ],
+    [
+      480,
+      20,
+      2.0
+    ],
+    [
+      1280,
+      10,
+      1.0
+    ],
+    [
+      1280,
+      10,
+      2.0
+    ],
+    [
+      1280,
+      13,
+      1.0
+    ],
+    [
+      1280,
+      13,
+      2.0
+    ],
+    [
+      1280,
+      20,
+      1.0
+    ],
+    [
+      1280,
+      20,
+      2.0
+    ]
+  ],
+  "samples": 77220,
+  "lines": 90542,
+  "failures": [],
+  "all_glyphs_present": true,
+  "all_drawn_extents_fit": true,
+  "jobs": [
+    {
+      "tag": "desktop-10x1",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-1-of-3/desktop-10x1/font-matrix.json.gz",
+      "sha256": "19e7cfb464cb1cf5a548ea53cc02227ec009c4d67bd8f41c76abd178d7665e17",
+      "raw_sha256": "fbce7b4d60b1b442f9be2f64557ea8e73132d6b2ac27a136596913a3cb9eb165",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "desktop-13x2",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-1-of-3/desktop-13x2/font-matrix.json.gz",
+      "sha256": "8fc488fc66b7efcab97d1585b08716b110fae3bd84ebe131481ed746c472209c",
+      "raw_sha256": "877c6535be3e226d09daf50fc9597eb84b8770fd2b078f865e604dcbb466525c",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "phone-10x1",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-1-of-3/phone-10x1/font-matrix.json.gz",
+      "sha256": "74d6168cdbd1b95bdb5fe463c20f1fc7ee192608f7307da3771becd6b4ad92e7",
+      "raw_sha256": "4138db11c231c430f16494ab272adc9fcd00996223f60575929b5fecef016bbc",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "phone-13x2",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-1-of-3/phone-13x2/font-matrix.json.gz",
+      "sha256": "44e0ac57d89d6d83f781abaf13702750fbf8129b6c5ef0b5f95219039af19c5e",
+      "raw_sha256": "15c2c4f4538aa7adc01fce84de385a9933dea1cea3f1cd462c0c422719024a78",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "desktop-10x2",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/desktop-10x2/font-matrix.json.gz",
+      "sha256": "3cd56c0805a878ca6f5a1c92a1bae561f17c25823e73350c16f179a29dacda02",
+      "raw_sha256": "34056c6d642f760e04f9fc32bafe8809169b761aad4b08418fbb25fbad6d1695",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "desktop-20x1",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/desktop-20x1/font-matrix.json.gz",
+      "sha256": "9ddb607d774c2231237bedaeda685285c17a9660ef8f401366bf0e048edf16ba",
+      "raw_sha256": "508fb303297f0d369a6cde752863c5922b074c15440f09a58fe32b79f25a2f81",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "phone-10x2",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/phone-10x2/font-matrix.json.gz",
+      "sha256": "968751593d4e75653b28fc782991c5524cdb85214787ad4d460571f6fd54b15e",
+      "raw_sha256": "98d07e0df90c86be96b5002225b2377878f64c76171aac0c089504597b5b2d37",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "phone-20x1",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-2-of-3/phone-20x1/font-matrix.json.gz",
+      "sha256": "00f61c099abe5bec7284cc4e043bf0eb451a4bbc2a48ad36128ab1437b48b955",
+      "raw_sha256": "40e030dd0a2d2bd362a8344dba08b02ddbf877b54539cbecaf7b6a8bee019acd",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "desktop-13x1",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/desktop-13x1/font-matrix.json.gz",
+      "sha256": "b15e46414211d3d30612c80ee2aa38a140060dae08a4458f3360c88ad6b448b0",
+      "raw_sha256": "754ca634f289bc861d62799f2563bc1b03a629751b80242b29600c6bd5a92d71",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "desktop-20x2",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/desktop-20x2/font-matrix.json.gz",
+      "sha256": "d2fafc3361d38e8044ff7fbb873db34cceed05e75f7e2312eaf85d8c39028112",
+      "raw_sha256": "fc9c29652298714320dca446b3e066ca04c195c5a5238e40459b5dfc90613296",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "phone-13x1",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/phone-13x1/font-matrix.json.gz",
+      "sha256": "623ddc675b09b4be2e01d3ce4d2e34f198482502e86891643343049040ea1a02",
+      "raw_sha256": "fc4ece562420610ef149ce5cace0e2f6ac3915d230802f446287f6c771a6bb14",
+      "samples": 6435,
+      "storage_returncode": 0
+    },
+    {
+      "tag": "phone-20x2",
+      "path": "artifacts/bulgarian/native-captures/v9-final/fonts-full-corpus-shard-3-of-3/phone-20x2/font-matrix.json.gz",
+      "sha256": "f8439091a337faaed34d2e02fd52e23c722599de4e69aeecd888257a27a5d26e",
+      "raw_sha256": "9b36e0eedca7e52218ae4788ebf00c800dad363f40747f5000731d147b216247",
+      "samples": 6435,
+      "storage_returncode": 0
+    }
+  ],
+  "font_storage_limit_bytes": 1073741824,
+  "peak_observed_combined_output_bytes": 593347527,
+  "measurement_truncation": false,
+  "limits": [
+    "Raw raster overhang flags remain diagnostics; production drawn destination flags determine fitted displayed extents",
+    "Matrix shows literal placeholders/raw catalog escapes; representative formatted values and actual UI are checked separately",
+    "2x font raster scale is not certification of physical-device native-window high-DPI behavior"
+  ]
+}
