@@ -2969,5 +2969,11 @@
   "Clear filters": "Vymazať filtre",
   "No results match these filters.": "Týmto filtrom nezodpovedajú žiadne výsledky.",
   "Results: {value0}": "Výsledky: {value0}",
-  "Game text field": "Textové pole v hre"
+  "Game text field": "Textové pole v hre",
+  "Rush": "Rýchly útok",
+  "Defensive": "Obranná",
+  "Economy": "Ekonomika",
+  "Expansion": "Expanzia",
+  "Experimental": "Experimentálna",
+  "Beginner-friendly": "Vhodné pre začiatočníkov"
 }

@@ -2888,5 +2888,11 @@
   "Clear filters": "フィルターをクリア",
   "No results match these filters.": "これらのフィルターに一致する結果はありません。",
   "Results: {value0}": "結果: {value0}",
-  "Game text field": "ゲーム内のテキスト入力欄"
+  "Game text field": "ゲーム内のテキスト入力欄",
+  "Rush": "速攻",
+  "Defensive": "防御重視",
+  "Economy": "経済",
+  "Expansion": "拡張重視",
+  "Experimental": "実験的",
+  "Beginner-friendly": "初心者向け"
 }

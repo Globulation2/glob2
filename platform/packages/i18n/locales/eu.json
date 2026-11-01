@@ -2915,5 +2915,11 @@
   "Clear filters": "Garbitu iragazkiak",
   "No results match these filters.": "Ez dago iragazki hauekin bat datorren emaitzarik.",
   "Results: {value0}": "Emaitzak: {value0}",
-  "Game text field": "Jokoaren testu-eremua"
+  "Game text field": "Jokoaren testu-eremua",
+  "Rush": "Eraso azkarra",
+  "Defensive": "Defentsiboa",
+  "Economy": "Ekonomia",
+  "Expansion": "Hedapena",
+  "Experimental": "Esperimentala",
+  "Beginner-friendly": "Hasiberrientzat egokia"
 }

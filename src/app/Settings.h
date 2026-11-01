@@ -32,8 +32,7 @@ public:
 
 	/**
 	 * Sets the username in the settings object.
-	 * The provided new string is controlled so that is not to long before
-	 * the variable username is set with the new string.
+	 * Names exceeding MAX_NAME_LENGTH UTF-8 bytes leave the current name intact.
 	 * @param s The new username.
 	 */
 	void setUsername(std::string);

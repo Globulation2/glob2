@@ -2915,5 +2915,11 @@
   "Clear filters": "Clear filters",
   "No results match these filters.": "No results match these filters.",
   "Results: {value0}": "Results: {value0}",
-  "Game text field": "Game text field"
+  "Game text field": "Game text field",
+  "Rush": "Rush",
+  "Defensive": "Defensive",
+  "Economy": "Economy",
+  "Expansion": "Expansion",
+  "Experimental": "Experimental",
+  "Beginner-friendly": "Beginner-friendly"
 }

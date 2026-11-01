@@ -2969,5 +2969,11 @@
   "Clear filters": "Сбросить фильтры",
   "No results match these filters.": "Нет результатов, соответствующих этим фильтрам.",
   "Results: {value0}": "Результаты: {value0}",
-  "Game text field": "Поле ввода текста в игре"
+  "Game text field": "Поле ввода текста в игре",
+  "Rush": "Быстрая атака",
+  "Defensive": "Оборонительный",
+  "Economy": "Экономика",
+  "Expansion": "Развитие",
+  "Experimental": "Экспериментальный",
+  "Beginner-friendly": "Для начинающих"
 }
