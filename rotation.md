@@ -13,7 +13,18 @@ Each AI plays every seat once (four games per revision). Worker births per seat.
 
 Total births: 622
 
-## Revision 5 (final)
+## Revision 5 (final: simplified looks)
+
+| Seat | game r0 | r1 | r2 | r3 | total |
+|---|---|---|---|---|---|
+| 0 | nicowar 36 | cortex 9 | cabino 37 | maxima 109 | 191 |
+| 1 | cortex 15 | cabino 43 | maxima 52 | nicowar 41 | 151 |
+| 2 | cabino 23 | maxima 111 | nicowar 45 | cortex 16 | 195 |
+| 3 | maxima 163 | nicowar 59 | cortex 18 | cabino 25 | 265 |
+
+Total births: 802
+
+## Revision 5 (earlier: furrowed fields)
 
 | Seat | game r0 | r1 | r2 | r3 | total |
 |---|---|---|---|---|---|
