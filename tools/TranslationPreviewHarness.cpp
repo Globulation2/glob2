@@ -9,6 +9,7 @@
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
+#include "GameGUIDialog.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -53,6 +54,13 @@ struct TranslationPreviewAccess
     static void openMenu(GameGUI &gui) { gui.openMainMenu(); }
     static void closeMenu(GameGUI &gui) { gui.closeDialog(); }
     static bool initialBriefingOpen(const GameGUI &gui) { return gui.inGameMenu == GameGUI::IGM_OBJECTIVES; }
+    static void openBriefing(GameGUI &gui) {
+        gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, true));
+    }
+    static bool briefingTabShown(const GameGUI &gui) {
+        const auto *dialog = dynamic_cast<const InGameObjectivesScreen *>(gui.gameMenuScreen.get());
+        return dialog && dialog->tab() == InGameObjectivesScreen::BRIEFING;
+    }
     static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
     static Tutorial::Guidance *guidance(GameGUI &gui) { return gui.tutorialGuidance.get(); }
     static void rebaseViewport(GameGUI &gui) {
@@ -517,14 +525,19 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 
         if (tutorial) {
             // A tick-12 automatic briefing can cover the current lesson model.
-            // Preserve that real opening state, then expose the actual guidance.
+            // Preserve that real opening state. Other lessons still need their
+            // actual briefing tab captured before exposing the guidance.
             const bool briefing = TranslationPreviewAccess::initialBriefingOpen(gui);
-            if (briefing) capture(captureKind + "-briefing");
             const auto before = gui.game.checkSum();
-            if (briefing) TranslationPreviewAccess::closeMenu(gui);
+            if (!briefing) TranslationPreviewAccess::openBriefing(gui);
+            require(TranslationPreviewAccess::briefingTabShown(gui), "Actual tutorial briefing tab available");
+            require(before == gui.game.checkSum(), "Opening briefing must preserve simulation state");
+            capture(captureKind + "-briefing");
+            TranslationPreviewAccess::closeMenu(gui);
             require(!TranslationPreviewAccess::dialogOpen(gui), "Tutorial guidance capture must be dialog-free");
             require(before == gui.game.checkSum(), "Dismissing briefing must preserve simulation state");
             result["automatic_briefing_dismissed"] = briefing;
+            result["briefing_explicitly_opened"] = !briefing;
             result["tutorial_capture_dialog_free"] = true;
         }
         capture(captureKind);
@@ -532,6 +545,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             auto *card = TranslationPreviewAccess::guidance(gui);
             require(card != nullptr, "Actual tutorial guidance card available");
             const auto before = gui.game.checkSum();
+            const auto expandedHeight = card->panelBounds().h;
             auto toggleGuidance = [&] {
                 card->host().layoutIfNeeded();
                 const auto bounds = card->host().bounds("intro/collapse");
@@ -556,13 +570,15 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                 require(before == gui.game.checkSum(), "Guidance toggle preserves simulation checksum");
             };
             toggleGuidance();
-            require(card->host().find("intro/instruction") == nullptr, "Collapsed guidance hides instruction");
+            const auto collapsedHeight = card->panelBounds().h;
+            require(collapsedHeight < expandedHeight, "Collapsed guidance reduces card to its heading");
             capture(captureKind + "-collapsed");
             toggleGuidance();
-            require(card->host().find("intro/instruction") != nullptr, "Expanded guidance restores instruction");
+            require(card->panelBounds().h == expandedHeight, "Expanded guidance restores full card height");
             capture(captureKind + "-expanded");
             result["guidance_toggle_probe"] = {{"control", "intro/collapse"},
                 {"input", GAGCore::phonePresentationRequested() ? "finger" : "mouse"},
+                {"expanded_height", expandedHeight}, {"collapsed_height", collapsedHeight},
                 {"checksum_before_ui", before}, {"checksum_after_ui", gui.game.checkSum()},
                 {"limits", "Uses actual guidance hit bounds and public event handling; does not represent physical input hardware."}};
         }

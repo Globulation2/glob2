@@ -9,8 +9,15 @@ const catalog = JSON.parse(
 const welcome = catalog['Welcome to the colony'];
 if (!welcome) throw new Error('Missing Tamil welcome heading');
 
-async function capture(page: Page, info: TestInfo, path: string, name: string) {
+async function capture(
+  page: Page,
+  info: TestInfo,
+  path: string,
+  name: string,
+  ready?: () => Promise<void>,
+) {
   await page.goto(path);
+  await ready?.();
   await expect(page.locator('html')).toHaveAttribute('lang', 'ta');
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   await page.evaluate(() => document.fonts.ready);
@@ -130,6 +137,159 @@ test('Tamil fonts, navigation, server pages and saved language render together',
   await expect(page.locator('#hero-title')).toHaveText(welcome);
   const seed = (await (await page.request.get('/__seed')).json()) as { userSession: string };
   await context.addCookies([{ name: 'glob2_session', value: seed.userSession, url: base }]);
-  for (const path of ['/account', '/building-studio', '/map-studio'])
+  for (const path of [
+    '/account',
+    '/building-studio',
+    '/map-studio',
+    '/generator-studio',
+    '/music',
+    '/music-studio',
+    '/skins',
+  ])
     await capture(page, info, path, `registered-${path.slice(1)}`);
+});
+
+test('Tamil studio initial interfaces render with deterministic enabled fixtures', async ({
+  page,
+  context,
+}, info) => {
+  test.setTimeout(180_000);
+  const base = String(info.project.use.baseURL);
+  await context.addCookies([{ name: 'glob2_locale', value: 'ta', url: base }]);
+  const text = (source: string) => {
+    const value = catalog[source];
+    if (typeof value !== 'string') throw new Error(`Missing Tamil fixture label: ${source}`);
+    return value;
+  };
+  const features = [
+    'map-studio',
+    'music-studio',
+    'generator-studio',
+    'ai-studio',
+    'terrain-studio',
+    'ai-building-studio',
+    'skins.designer',
+  ];
+  const account = {
+    id: '11111111-1111-4111-8111-111111111111',
+    displayName: 'Tamil studio fixture',
+    kind: 'registered',
+    createdAt: '2026-01-01T00:00:00Z',
+    role: 'user',
+    status: 'active',
+    identities: [],
+    entitlements: [],
+  };
+  let localSkinDesigner = false;
+  const unexpected: string[] = [];
+  const mockedReads: string[] = [];
+  // Keep the seeded instance contract, explicitly enabling only these fixture features.
+  await page.route('**/api/v1/instance', async (route) => {
+    const response = await route.fetch();
+    await route.fulfill({ json: { ...(await response.json()), features } });
+  });
+  await page.route('**/api/v1/accounts/me', (route) =>
+    localSkinDesigner
+      ? route.fulfill({ status: 401, json: { message: 'Sign in required.' } })
+      : route.fulfill({ json: account }),
+  );
+  await page.route(
+    /\/api\/v1\/(?:map|music|generator|ai|terrain|ai-building)-studio\//,
+    (route) => {
+      const request = route.request();
+      const path = new URL(request.url()).pathname;
+      // No fixture operation can dispatch generation, checkout, or any other mutation.
+      if (request.method() !== 'GET') {
+        unexpected.push(`${request.method()} ${path}`);
+        return route.fulfill({ status: 405, json: { message: 'Fixture is read-only.' } });
+      }
+      mockedReads.push(path);
+      if (path.endsWith('/account'))
+        return route.fulfill({
+          json: {
+            enabled: true,
+            model: 'Deterministic fixture',
+            maxRequestCredits: 3,
+            balance: 3,
+            available: 3,
+            reserved: 0,
+            packs: [],
+            usage: [],
+            activeRequest: null,
+            rate: { input: 1, cachedInput: 1, output: 1 },
+          },
+        });
+      if (path.endsWith('/threads') || path.endsWith('/projects'))
+        return route.fulfill({ json: { items: [] } });
+      unexpected.push(`GET ${path}`);
+      return route.fulfill({ status: 404, json: { message: 'No such fixture.' } });
+    },
+  );
+  await page.route('**/api/v1/building-drafts', (route) => {
+    if (route.request().method() === 'GET') return route.fulfill({ json: { items: [] } });
+    unexpected.push(`${route.request().method()} building-drafts`);
+    return route.fulfill({ status: 405, json: { message: 'Fixture is read-only.' } });
+  });
+  for (const [path, heading, input] of [
+    ['/map-studio', 'AI Map Studio', 'Describe your map or discuss changes'],
+    ['/music-studio', 'AI Music Studio', 'Your idea or next change'],
+    ['/generator-studio', 'Generator Studio', 'Your first idea'],
+    ['/ai-studio', 'AI Colony Studio', 'Your first idea'],
+    ['/terrain-studio', 'AI Terrain Studio', 'Your first idea'],
+    ['/ai-building-studio', 'AI Building Studio', 'Your first idea'],
+  ] as const) {
+    await capture(page, info, path, `enabled-${path.slice(1)}`, async () => {
+      await expect(page.getByRole('heading', { name: text(heading), exact: true })).toBeVisible();
+      await expect(page.locator('.studio-workspace')).toBeVisible();
+      await expect(page.locator('.studio-header button').filter({ hasText: /3\s/ })).toBeVisible();
+      const prompt = page.getByRole('textbox', { name: text(input), exact: true });
+      await expect(prompt).toBeEnabled();
+      await prompt.fill(text('My colony'));
+      await expect(page.locator('.studio-compose-actions button')).toHaveAttribute(
+        'aria-disabled',
+        'false',
+      );
+      await expect(
+        page.getByRole('heading', { name: text('Unavailable'), exact: true }),
+      ).toHaveCount(0);
+      await expect(page.locator('.studio-compose-help')).not.toContainText(
+        'Generation is unavailable',
+      );
+      expect(mockedReads).toContain(`/api/v1${path}/account`);
+    });
+  }
+  await capture(page, info, '/building-studio', 'enabled-building-studio', async () => {
+    await expect(
+      page.getByRole('heading', { name: text('Building Studio'), exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: text('Create a family'), exact: true }),
+    ).toBeEnabled();
+  });
+  // The anonymous skin designer is the real local painting UI; no purchased skin,
+  // server-side design creation, remote atlas fixture, or model provider is needed.
+  localSkinDesigner = true;
+  await capture(page, info, '/skins', 'enabled-skin-designer', async () => {
+    await expect(page.getByRole('textbox', { name: text('Skin name'), exact: true })).toBeEnabled();
+    await expect(page.getByRole('complementary', { name: text('Paint tools') })).toBeVisible();
+    await expect(page.locator('.skin-stage > .skin-viewport')).toBeVisible();
+  });
+  expect(unexpected, 'Studio capture must not dispatch writes or unmocked studio reads').toEqual(
+    [],
+  );
+  await info.attach('tamil-studio-fixture-scope', {
+    body: Buffer.from(
+      JSON.stringify({
+        features,
+        account: 'Fixed registered account; anonymous local skin painter',
+        wallet: 'Enabled, 3 available credits, no pending request or purchase packs',
+        threadsAndProjects: 'Explicit empty lists: initial UI only',
+        mockedReads,
+        unexpected,
+        limits:
+          'No model dispatch, generated artifacts, paid operation, or production feature validation',
+      }),
+    ),
+    contentType: 'application/json',
+  });
 });
