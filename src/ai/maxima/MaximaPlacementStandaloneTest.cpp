@@ -1,5 +1,6 @@
 #include "Glob2Test.h"
 #include "AIMaximaContinuation.h"
+#include "AIMaximaForwardSupport.h"
 #include <vector>
 #include <string>
 #include <utility>
@@ -1493,4 +1494,211 @@ TEST_CASE("Dynamic template campuses and pending selection continue with identic
     CHECK(next.utility.total==resumed.utility.total);
     REQUIRE(original.reserve(world,next));REQUIRE(restored.reserve(world,resumed));
     CHECK(stateBytes(restored)==stateBytes(original));
+}
+
+TEST_SUITE("Maxima.Placement")
+{
+TEST_CASE("forward route diagnostics rejects the far side and routes with no friendly supply")
+{
+    using namespace AIMaxima::ForwardSupport;
+    WorldState world;world.reset(128,64);world.profiles=makeProfiles();
+    for(auto& tile:world.tiles){tile.discovered=true;tile.buildable=true;}
+    WorldBuilding home;home.id=10;home.buildingType=1;home.level=1;home.centerX=16;home.centerY=32;
+    world.buildings.push_back(home);
+    DevelopmentIntent intent;intent.purpose=ForwardSupport;
+    intent.supportX=72;intent.supportY=32;intent.supportDistance=24;
+    WorldBuilding swarm=home;swarm.id=11;swarm.buildingType=0;swarm.centerX=52;
+    world.buildings.push_back(swarm);
+    const auto policy=front(intent);const Routes routes(world,intent);
+    CHECK(routes.supportBuilding==home.id);
+    REQUIRE(routes.site(policy,{world.index(48,32)}).accepted);
+    CHECK(accepts(world,policy,96,32)); // geometric ring accepts both sides
+    CHECK_FALSE(routes.site(policy,{world.index(96,32)}).accepted);
+    world.buildings.pop_back();
+    world.buildings.front().centerX=32;intent.supportX=76;intent.supportDistance=40;
+    CHECK(accepts(world,front(intent),28,32));
+    CHECK_FALSE(Routes(world,intent).site(front(intent),{world.index(28,32)}).accepted);
+    world.buildings.clear();
+    CHECK_FALSE(Routes(world,intent).site(policy,{world.index(48,32)}).accepted);
+}
+TEST_CASE("forward route diagnostics uses walk distance rather than closeness through a wall")
+{
+    using namespace AIMaxima::ForwardSupport;
+    WorldState world;world.reset(128,64);world.profiles=makeProfiles();
+    for(auto& tile:world.tiles){tile.discovered=true;tile.buildable=true;}
+    WorldBuilding home;home.id=10;home.buildingType=1;home.level=1;home.centerX=16;home.centerY=32;
+    world.buildings.push_back(home);
+    DevelopmentIntent intent;intent.purpose=ForwardSupport;
+    intent.supportX=72;intent.supportY=32;intent.supportDistance=24;
+    for(int y=0;y<64;++y)if(y!=0)world.tile(60,y).resourceBlocksGround=true;
+    REQUIRE(accepts(world,front(intent),48,32));
+    CHECK_FALSE(Routes(world,intent).site(front(intent),{world.index(48,32)}).accepted);
+}
+TEST_CASE("forward route diagnostics requires a safe return route and respects movement capability")
+{
+    using namespace AIMaxima::ForwardSupport;
+    WorldState world;world.reset(128,64);world.profiles=makeProfiles();
+    for(auto& tile:world.tiles){tile.discovered=true;tile.buildable=true;}
+    WorldBuilding home;home.id=10;home.buildingType=1;home.level=1;home.centerX=16;home.centerY=32;
+    world.buildings.push_back(home);
+    DevelopmentIntent intent;intent.purpose=ForwardSupport;
+    intent.supportX=72;intent.supportY=32;intent.supportDistance=24;
+    const std::vector<int> apron{world.index(48,32)};
+    REQUIRE(Routes(world,intent).site(front(intent),apron).accepted);
+    for(int y=0;y<64;++y)world.tile(32,y).threat=1;
+    CHECK_FALSE(Routes(world,intent).site(front(intent),apron).accepted);
+    for(int y=0;y<64;++y){auto& tile=world.tile(32,y);tile.threat=0;tile.swimmable=true;tile.walkable=false;}
+    CHECK_FALSE(Routes(world,intent).site(front(intent),apron).accepted);
+    CHECK(Routes(world,intent,true).site(front(intent),apron).accepted);
+    for(int y=0;y<64;++y)world.tile(32,y).discovered=false;
+    CHECK_FALSE(Routes(world,intent,true).site(front(intent),apron).accepted);
+}
+TEST_CASE("forward route diagnostics wraps routes and selects the same tied approach deterministically")
+{
+    using namespace AIMaxima::ForwardSupport;
+    WorldState world;world.reset(128,64);world.profiles=makeProfiles();
+    for(auto& tile:world.tiles){tile.discovered=true;tile.buildable=true;}
+    WorldBuilding home;home.id=10;home.buildingType=1;home.level=1;home.centerX=96;home.centerY=32;
+    world.buildings.push_back(home);
+    DevelopmentIntent intent;intent.purpose=ForwardSupport;
+    intent.supportX=24;intent.supportY=32;intent.supportDistance=24;
+    const Routes routes(world,intent);const int a=world.index(0,31),b=world.index(0,32);
+    const auto first=routes.site(front(intent),{a,b}),second=routes.site(front(intent),{b,a});
+    REQUIRE(first.accepted);CHECK(first.approach==second.approach);
+    CHECK(first.objective<32);CHECK(first.support<40);
+}
+TEST_CASE("forward support has its own spatial pathway and leaves ordinary siting unchanged")
+{
+    using namespace AIMaximaPlacement;
+    WorldState world=makeWorld();DevelopmentLimits limits;limits.newConstruction=1;
+    DevelopmentIntent ordinary;ordinary.buildingType=2;ordinary.unmetCount=1;ordinary.priority=100;
+    const auto select=[&](DevelopmentIntent intent) {
+        Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+        DevelopmentAction action;REQUIRE(planner.selectAction(world,{intent},limits,action));return action;
+    };
+    const auto before=select(ordinary);
+    ordinary.supportX=16;ordinary.supportY=16;ordinary.supportDistance=12;
+    const auto after=select(ordinary);
+    CHECK(before.centerX==after.centerX);CHECK(before.centerY==after.centerY);
+    CHECK(before.templateId==after.templateId);CHECK(before.utility.total==after.utility.total);
+    ordinary.purpose=ForwardSupport;
+    const auto forward=select(ordinary);
+    CHECK(forward.purpose==ForwardSupport);CHECK(forward.type==BuildStandalone);
+    CHECK(AIMaxima::ForwardSupport::accepts(world,AIMaxima::ForwardSupport::front(ordinary),forward.centerX,forward.centerY));
+    Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+    CHECK(planner.revalidateSelection(world,{ordinary},limits,forward));
+    ordinary.supportX=forward.centerX;ordinary.supportY=forward.centerY;
+    RejectionReason reason=RejectedTerrain;
+    CHECK_FALSE(planner.revalidateSelection(world,{ordinary},limits,forward,&reason));
+    CHECK(reason==RejectedAuthorization);
+}
+TEST_CASE("forward support uses catalog roles with nonlegacy type identities")
+{
+    WorldState world=makeWorld();
+    world.profiles[2].buildingType=117;
+    DevelopmentIntent intent;intent.buildingType=117;intent.purpose=ForwardSupport;
+    intent.unmetCount=1;intent.priority=100;intent.supportX=intent.supportY=16;intent.supportDistance=12;
+    DevelopmentLimits limits;limits.newConstruction=1;
+    Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+    DevelopmentAction selected;
+    REQUIRE(planner.selectAction(world,{intent},limits,selected));
+    CHECK(selected.buildingType==117);CHECK(selected.type==BuildStandalone);
+    CHECK(planner.revalidateSelection(world,{intent},limits,selected));
+}
+TEST_CASE("forward support constraints survive an incremental selection save and resume")
+{
+    using namespace AIMaximaPlacement;
+    for(bool withOrdinary:{false,true})
+    {
+    WorldState world=makeWorld();DevelopmentLimits limits;limits.newConstruction=1;
+    DevelopmentIntent intent;intent.buildingType=2;intent.purpose=ForwardSupport;
+    intent.unmetCount=1;intent.priority=100;intent.supportX=intent.supportY=16;intent.supportDistance=12;
+    std::vector<DevelopmentIntent> intents{intent};
+    if(withOrdinary) {auto ordinary=intent;ordinary.purpose=CoreCapacity;intents.push_back(ordinary);}
+    Planner original;original.configure(world.profiles,1,2,6,5,7);
+    original.adoptStartingBuildings(world);
+    DevelopmentAction selected;
+    REQUIRE(original.selectActionIncremental(world,intents,limits,selected,world.computeSignature(),1)==SelectionPending);
+    const auto bytes=[](const Planner& planner) {
+        auto* memory=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(memory);
+        planner.save(&out);planner.saveExecutionState(&out);out.flush();return memory->takeContents();
+    };
+    const auto saved=bytes(original);Planner restored;restored.configure(world.profiles,1,2,6,5,7);
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));input.seekFromStart(0);
+    REQUIRE(restored.load(&input,VERSION_MINOR));restored.loadExecutionState(&input,VERSION_MINOR);
+    const auto& savedIntents=restored.selectionIntents();
+    REQUIRE(savedIntents.size()==intents.size());
+    const auto& savedForward=savedIntents.back();
+    CHECK(savedForward.purpose==ForwardSupport);
+    CHECK(savedForward.supportX==16);CHECK(savedForward.supportDistance==12);
+    DevelopmentAction resumed;SelectionProgress progress=SelectionPending;
+    for(int i=0;i<1000 && progress==SelectionPending;++i)
+    {
+        progress=original.selectActionIncremental(world,intents,limits,selected,world.computeSignature(),128);
+        CHECK(restored.selectActionIncremental(world,intents,limits,resumed,world.computeSignature(),128)==progress);
+        CHECK(bytes(original)==bytes(restored));
+    }
+    REQUIRE(progress==SelectionFound);CHECK(selected.centerX==resumed.centerX);CHECK(selected.centerY==resumed.centerY);
+    REQUIRE(original.reserve(world,selected));
+    const auto reserved=bytes(original);Planner loaded;loaded.configure(world.profiles,1,2,6,5,7);
+    GAGCore::BinaryInputStream again(new GAGCore::MemoryStreamBackend(reserved.data(),reserved.size()));again.seekFromStart(0);
+    REQUIRE(loaded.load(&again,VERSION_MINOR));loaded.loadExecutionState(&again,VERSION_MINOR);
+    CHECK(bytes(loaded)==reserved);
+    CHECK(loaded.actions().begin()->second.purpose==(withOrdinary ? CoreCapacity : ForwardSupport));
+    }
+}
+TEST_CASE("forward support never delays viable ordinary construction or maintenance")
+{
+    WorldState world=makeWorld();
+    DevelopmentIntent ordinary;ordinary.buildingType=2;ordinary.unmetCount=1;ordinary.priority=1;
+    DevelopmentIntent forward=ordinary;forward.purpose=ForwardSupport;forward.priority=1000;
+    forward.supportX=forward.supportY=16;forward.supportDistance=12;
+    DevelopmentLimits limits;limits.newConstruction=1;
+    for(bool feasible:{false,true})
+    {
+        if(!feasible)forward.supportX=-1;else forward.supportX=16;
+        for(int originBudget:{1,128})
+        {
+            int ordinaryPasses=0;DevelopmentAction expected;
+            for(bool enabled:{false,true})
+            {
+                Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+                const std::vector<DevelopmentIntent> intents=enabled
+                    ? std::vector<DevelopmentIntent>{forward,ordinary}
+                    : std::vector<DevelopmentIntent>{ordinary};
+                DevelopmentAction selected;SelectionProgress progress;int passes=0;
+                do {++passes;progress=planner.selectActionIncremental(world,intents,limits,
+                    selected,world.computeSignature(),originBudget);}while(progress==SelectionPending);
+                REQUIRE(progress==SelectionFound);CHECK(selected.purpose==CoreCapacity);
+                if(enabled)
+                {
+                    CHECK(passes==ordinaryPasses);CHECK(selected.centerX==expected.centerX);
+                    CHECK(selected.centerY==expected.centerY);CHECK(selected.utility.total==expected.utility.total);
+                    CHECK(selected.id==expected.id);
+                }
+                else {ordinaryPasses=passes;expected=selected;}
+            }
+        }
+        Planner synchronous;synchronous.configure(world.profiles,1,2,6,5,7);
+        DevelopmentAction selected;
+        REQUIRE(synchronous.selectAction(world,{forward,ordinary},limits,selected));
+        CHECK(selected.purpose==CoreCapacity);
+    }
+    // A forward site must not add a scan before an already authorized repair.
+    WorldBuilding hospital;hospital.id=91;hospital.buildingType=2;hospital.level=1;
+    hospital.centerX=10;hospital.centerY=12;hospital.hp=80;hospital.hpMax=100;
+    world.buildings.push_back(hospital);limits.allowRepairs=true;
+    int expectedPasses=0;
+    for(bool enabled:{false,true})
+    {
+        Planner planner;planner.configure(world.profiles,1,2,6,5,7);planner.adoptStartingBuildings(world);
+        DevelopmentAction selected;SelectionProgress progress;int passes=0;
+        const std::vector<DevelopmentIntent> intents=enabled
+            ? std::vector<DevelopmentIntent>{forward}:std::vector<DevelopmentIntent>{};
+        do {++passes;progress=planner.selectActionIncremental(world,intents,limits,
+            selected,world.computeSignature(),128);}while(progress==SelectionPending);
+        REQUIRE(progress==SelectionFound);CHECK(selected.type==RepairBuilding);
+        if(enabled)CHECK(passes==expectedPasses);else expectedPasses=passes;
+    }
+}
 }

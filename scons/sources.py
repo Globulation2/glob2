@@ -241,6 +241,7 @@ CLIENT_SOURCES = (
     'app/cli/MapCommand.cpp',
     'map/preview/MapRender.cpp',
     'game/diagnostics/GameDiagnostics.cpp',
+    'game/diagnostics/WarriorTacticsTrace.cpp',
     'map/tools/MapImage.cpp',
     'map/tools/MapReport.cpp',
     'ui/FrontendUI.cpp',

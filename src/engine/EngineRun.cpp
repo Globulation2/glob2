@@ -19,6 +19,7 @@
 #include "sim/snapshot/SnapshotChecksum.h"
 #include "hive/HiveClient.h"
 #include "GameDiagnostics.h"
+#include "WarriorTacticsTrace.h"
 #include <utility>
 #include "EngineTiming.h"
 #include "Game.h"
@@ -381,6 +382,7 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
         OwnerTickProfile::Scope ownerCapture(OwnerTickProfile::Phase::CaptureWorld);
         return gui.game.observeCompletedWorld(options);
     }();
+    if(warriorTactics) warriorTactics->capture(world);
     {
         OwnerTickProfile::Scope ownerSubmit(OwnerTickProfile::Phase::SubmitChecksum);
         checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
@@ -430,6 +432,7 @@ void Engine::flushChecksums()
     collectChecksums(true);
     // The normal stop path may leave its terminal completed world unobserved.
     const auto& world=gui.game.observeCompletedWorld();
+    if(warriorTactics) warriorTactics->capture(world);
     checksumPipeline->submit(world,turn ? turn->turn().executedTick() : world.tick,routineMapChecksums());
     collectChecksums(true);
 }

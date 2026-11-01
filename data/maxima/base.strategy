@@ -515,6 +515,15 @@ tactics.siege_flag_radius = 6
 tactics.flag_minimum_level = 2
 tactics.min_force = 4
 tactics.retarget_margin = 60
+# Attack continuity and dedicated forward services; ordinary colony siting is unchanged.
+tactics.enemy_commitment = 1
+tactics.arrival_grace_ticks = 4000
+# Prefer the army's current front; the distance penalty saturates at 32 tiles.
+tactics.flag_proximity_weight = 4
+forward_support.inns_enabled = true
+forward_support.hospitals_enabled = true
+forward_support.distance_tiles = 40
+forward_support.coverage_distance_tiles = 40
 tactics.dwell_ticks = 800
 tactics.stall_ticks = 3000
 tactics.target_swarm_value = 42

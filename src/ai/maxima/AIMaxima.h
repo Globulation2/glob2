@@ -476,6 +476,8 @@ private:
 		int clusterCandidates;
 		int viableClusters;
 		int bestScore;
+		int flagProximityDistance;
+		int flagProximityPenalty;
 		std::map<std::string, int> rejections;
 	};
 
@@ -649,7 +651,12 @@ private:
 	AIMaximaPlacement::DevelopmentLimits collect_development_limits(
 		AIMaximaRuntime::Context& runtime, int excludedAction=-1) const;
 	bool issue_development_action(AIMaximaRuntime::Context& runtime,
-		AIMaximaPlacement::DevelopmentAction& action);
+		AIMaximaPlacement::DevelopmentAction& action,
+        const AIMaximaPlacement::WorldState* placementWorld=nullptr);
+    bool forward_support_authorized(AIMaximaRuntime::Context& runtime,
+        const AIMaximaPlacement::DevelopmentAction& action) const;
+    void forward_support_constraints(const AIMaximaRuntime::Context& runtime,
+        AIMaximaPlacement::DevelopmentIntent& intent) const;
 	void emit_placement_diagnostics(AIMaximaRuntime::Context& runtime,
 		const char* outcome,
 		const AIMaximaPlacement::DevelopmentAction* action) const;

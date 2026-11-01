@@ -560,6 +560,9 @@ struct MaximaStrategy
 		int flag_minimum_level;
 		int min_force;
 		int retarget_margin;
+		int enemy_commitment;
+		int arrival_grace_ticks;
+		int flag_proximity_weight;
 		int dwell_ticks;
 		int stall_ticks;
 		int target_swarm_value;
@@ -573,6 +576,14 @@ struct MaximaStrategy
 		int route_distance_weight;
 		int failed_target_quarantine_ticks;
 	} tactics;
+
+    struct ForwardSupport
+    {
+        bool inns_enabled;
+        bool hospitals_enabled;
+        int distance_tiles;
+        int coverage_distance_tiles;
+    } forward_support;
 
 	struct Assault
 	{
@@ -839,6 +850,10 @@ public:
 	/// True when GLOB2_MAXIMA_TELEMETRY is set to anything but "0". Telemetry
 	/// only prints; it never changes a decision.
 	static bool telemetryEnabled();
+	/// Upgrade embedded configurations before constructing controllers from an
+	/// older save. Newly written headers then contain the current complete schema.
+	static bool upgradeSavedConfigurations(GameHeader& gameHeader, int versionMinor,
+		std::string& error);
 	/// Resolves the strategy for one player of `gameHeader`, adding that player's
 	/// GLOB2_MAXIMA_TEAM_OVERRIDES and GLOB2_MAXIMA_PLAYER_OVERRIDES entries
 	/// ("<number>:<assignments>|<number>:<assignments>") to environmentOptions().
