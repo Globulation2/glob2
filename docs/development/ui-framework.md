@@ -367,6 +367,8 @@ marks.
 Filipino uses the existing Latin font with authored drawing advances, so larger
 raster sizes retain the widths used for wrapping. Check both ordinary and
 high-density rendering when changing its font configuration.
+Check both catalog surfaces against the full font and browser startup subset,
+including shared UI symbols such as the fullwidth plus control.
 
 Use **manggagawa** for gathering/building workers, **mandirigma** for warriors,
 **tagapaggalugad** for explorers, **Pugad** for the unit-producing Swarm building,

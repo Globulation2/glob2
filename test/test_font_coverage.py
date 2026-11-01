@@ -60,9 +60,8 @@ class FontCoverageTest(unittest.TestCase):
                 self.assertTrue(font, 'Could not load Filipino font ' + path.name)
                 fonts.append(font)
                 with self.subTest(locale='fil', font=path.name):
-                    # The startup font serves game text. Online-only symbols use
-                    # the website's own font stack, not this subset.
-                    required = set(''.join(native)) if path.name == 'sans-core.ttf' else characters
+                    # Both catalog surfaces must render with the shipped startup subset.
+                    required = characters
                     missing = sorted(c for c in required if ord(c) > 32 and not ttf.TTF_FontHasGlyph(font, ord(c)))
                     self.assertEqual(missing, [], 'Missing Filipino glyphs: ' + repr(missing))
         finally:
