@@ -2370,10 +2370,13 @@ void Maxima::select_posture()
 }
 
 
-void Maxima::allocate_resources()
+void Maxima::allocate_resources(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_allocate_resources_calls);
 	budget=DirectorPlan();
+	// Assess against the fresh plan so selected prestige prerequisites survive
+	// arbitration and reach the ordinary development executor.
+	assess_prestige(runtime);
 	int largest_enemy_force=0;
 	for(int team=0; team<Team::MAX_COUNT; ++team)
 		if(opponents[team].alive)
@@ -2409,6 +2412,7 @@ const char* Maxima::policy_name(PolicyKind policy) const
 	{
 		case PolicySurvival: return "survival";
 		case PolicyGrowth: return "growth";
+        case PolicyPrestige: return "prestige";
 		case PolicyAccess: return "access";
 		case PolicyTechnology: return "technology";
 		case PolicyDefense: return "defense";
@@ -2716,6 +2720,39 @@ void Maxima::build_policy_bids()
 	offense.attack_flags=budget.attack_flags;
 	offense.attack_units=budget.attack_units;
 	offense.construction_sites=strategy.construction.policy_low_sites;
+    PolicyBid& prestige=policy_bids[PolicyPrestige];
+    prestige=PolicyBid();
+    if(prestige_race.state!=Prestige::Hold && prestige_enabled(context)) {
+        prestige.utility=prestige_race.priority;
+        prestige.request_upgrades=true;
+        // Add only the unfinished pipelines supported by qualified spare crews,
+        // crediting ordinary capacity and sites in the development intents.
+        int finished=0;
+        const auto& profiles=collect_building_profiles();
+        const auto profile=std::find_if(profiles.begin(),profiles.end(),[&](const auto& p){return p.buildingType==prestige_race.buildingType;});
+        if(profile!=profiles.end())for(const auto& [id,record]:context.get_building_register().found()) {
+            const auto* b=context.get_building_register().get_building(id);
+            if(b && std::any_of(profile->levels.begin(),profile->levels.end(),[&](const auto& v){
+                return v.completedType==b->typeNum && v.level>=budget.prestige_target_level;}))++finished;
+        }
+        Prestige::PipelineCapacity capacity;
+        const int pipelines=profile==profiles.end()?1:prestige_pipeline_allowance(*profile,&capacity);
+        budget.prestige_desired_buildings=std::min(finished+pipelines,int(Building::MAX_COUNT));
+        if(profile_serves(prestige_race.buildingType,AIMaximaBuildings::ConstructionTraining))
+            prestige.desired_schools=std::max(technology.desired_schools,budget.prestige_desired_buildings);
+        emit_telemetry(context,"prestige_capacity","\tconfigured="+std::to_string(strategy.prestige.max_pipelines)
+            +"\tsampled="+std::to_string(capacity.sampled)
+            +"\tqualified_idle="+std::to_string(capacity.qualifiedIdle)
+            +"\troot_assigned="+std::to_string(capacity.rootAssigned)
+            +"\ttraining_reserve="+std::to_string(capacity.trainingReserve)
+            +"\tordinary_unmet="+std::to_string(capacity.ordinaryUnmet)
+            +"\tunobserved_crews="+std::to_string(capacity.unobservedCrews)
+            +"\tcrew="+std::to_string(capacity.crew)
+            +"\tworker_limit="+std::to_string(capacity.workerLimit)
+            +"\tmaterial_limit="+std::to_string(capacity.materialLimit)
+            +"\tremaining_steps="+std::to_string(capacity.remainingSteps)
+            +"\tpipelines="+std::to_string(pipelines)+"\tdesired="+std::to_string(budget.prestige_desired_buildings));
+    }
 }
 
 
@@ -2727,6 +2764,7 @@ void Maxima::arbitrate_policy_bids()
 	if (rules.isUnitUpgradesDisabled())
 	{
 		policy_bids[PolicyTechnology]=PolicyBid();
+        policy_bids[PolicyPrestige]=PolicyBid();
 		policy_bids[PolicyAccess].desired_pools=0;
 		for (auto& bid:policy_bids) bid.request_upgrades=false;
 	}
@@ -2740,6 +2778,7 @@ void Maxima::arbitrate_policy_bids()
 	const PolicyBid& growth=policy_bids[PolicyGrowth];
 	const PolicyBid& access=policy_bids[PolicyAccess];
 	const PolicyBid& technology=policy_bids[PolicyTechnology];
+    const PolicyBid& prestige=policy_bids[PolicyPrestige];
 	const PolicyBid& defense=policy_bids[PolicyDefense];
 	const PolicyBid& offense=policy_bids[PolicyOffense];
 
@@ -2753,6 +2792,7 @@ void Maxima::arbitrate_policy_bids()
 		? access.desired_pools : 0;
 	result.desired_schools=technology.utility>=strategy.economy.school_bid_utility_min
 		? technology.desired_schools : 0;
+    result.desired_schools=std::max(result.desired_schools,prestige.desired_schools);
 	result.desired_racetracks=
 		technology.utility>=strategy.economy.racetrack_bid_utility_min
 		? technology.desired_racetracks : 0;
@@ -2851,7 +2891,7 @@ void Maxima::arbitrate_policy_bids()
 	// came from a batch that measured worse and was never justified on its own.
 	result.defense_reserve=defense.defense_reserve;
 	result.allow_upgrades=survival.request_upgrades
-		|| technology.request_upgrades;
+		|| technology.request_upgrades || prestige.request_upgrades;
 	result.allow_level2_upgrades=result.allow_upgrades
 		&& snapshot.population>=strategy.upgrades.level2_population_min;
 	result.attack_flags=!severe_colony_emergency() ? offense.attack_flags : 0;
@@ -2873,6 +2913,12 @@ void Maxima::arbitrate_policy_bids()
 			? strategy.scoring.priority_pool_network_bonus : 0);
 	result.priority_schools=technology.utility+(abundance_surge
 		? strategy.scoring.priority_abundance_school_bonus : 0);
+    result.priority_schools=std::max(result.priority_schools,prestige.utility);
+    result.prestige_priority=prestige.utility;
+    result.prestige_building_type=prestige_race.buildingType;
+    result.prestige_target_level=budget.prestige_target_level;
+    result.prestige_desired_buildings=budget.prestige_desired_buildings;
+    result.prestige_completion_allowed=prestige_race.state==Prestige::Invest || prestige_race.state==Prestige::Finish;
 	result.priority_racetracks=std::max(0,
 		technology.utility-strategy.scoring.priority_racetrack_penalty);
 	// Maxima used to buy a racetrack on a payback appraisal of walking speed,
@@ -3439,6 +3485,9 @@ void Maxima::emit_director_snapshot(Context& runtime) const
 		<<"\tdesired_barracks="<<budget.desired_barracks
 		<<"\tdesired_hospital_beds="<<budget.desired_hospital_beds
 		<<"\tdesired_schools="<<budget.desired_schools
+        <<"\tordinary_school_request="<<policy_bids[PolicyTechnology].desired_schools
+        <<"\tprestige_target_level="<<budget.prestige_target_level
+        <<"\tprestige_pipeline_request="<<budget.prestige_desired_buildings
 		<<"\tdesired_towers="<<budget.desired_towers
 		<<"\ttowers="<<snapshot.towers
 		<<"\ttower_stone="<<snapshot.tower_stone
@@ -3566,7 +3615,7 @@ void Maxima::evaluate_strategy(Context& runtime)
 	select_posture();
 	if (posture != previous_posture)
 		telemetry.count(AITrace::AI7::runtime_posture_changed);
-	allocate_resources();
+	allocate_resources(runtime);
 	finalize_director_plan(runtime);
 	plan_offense(runtime);
 	// Explorer strikes share the offensive target. Keep the existing strategic
@@ -4833,6 +4882,25 @@ Maxima::collect_development_intents(
             forward_support_constraints(context,support);result.push_back(support);
         }
     }
+    if(budget.prestige_priority>0 && budget.prestige_desired_buildings>0) {
+        const int root=budget.prestige_building_type;
+        const int current=development_planner.committedBuildingCount(world,root);
+        if(current<budget.prestige_desired_buildings) {
+            auto found=std::find_if(result.begin(),result.end(),[&](const auto& i){return i.buildingType==root && i.purpose==CoreCapacity;});
+            if(found!=result.end()) {
+                found->unmetCount=std::max(found->unmetCount,budget.prestige_desired_buildings-current);
+                found->priority=std::max(found->priority,budget.prestige_priority);
+            } else {
+                DevelopmentIntent intent;intent.buildingType=root;intent.purpose=CoreCapacity;
+                intent.unmetCount=budget.prestige_desired_buildings-current;intent.priority=budget.prestige_priority;
+                const auto* profile=profile_variant(root);
+                if(profile) {
+                    intent.workers=std::min(profile->assignmentLimit,strategy.staffing.construction_training_workers);
+                    result.push_back(intent);
+                }
+            }
+        }
+    }
 	// Once useful development is exhausted, idle builders fortify the colony.
 	// The planner ranks this purpose below every viable ordinary action.
 	const int spare=labour_observation.idle-labour_plan.trainingReserve;
@@ -4939,7 +5007,13 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(Context&
     ? trained>=budget.second_prestige_trained_workers && stat->totalUnit>=budget.second_prestige_population_min
     : trained>=budget.first_prestige_trained_workers;
    if(!prestigeAllowed)priority=0;
+   if(!prestige_action_allowed(runtime,p.buildingType,v.level,next->level,excludedAction))priority=0;
+   else if(prestigeAllowed && budget.prestige_completion_allowed && budget.prestige_priority>0 && p.buildingType==budget.prestige_building_type)
+       priority=std::max(priority,budget.prestige_priority);
   }
+  if(next && prestige_enabled(runtime) && p.buildingType==budget.prestige_building_type
+      && next->level<budget.prestige_target_level && budget.prestige_priority>0)
+      priority=std::max(priority,budget.prestige_priority);
   if(!next||!next->available||next->requiredWorkerLevel>qualification)priority=0;
   bool serviceLost=false;for(int role=0;role<RoleCount;++role)if((v.roles&roleBit(role))&&(role!=CombatTraining||combatTrainingNeeded)&&total[role]>=2&&operational[role]-1<(total[role]+1)/2)serviceLost=true;
   if(serviceLost){priority=0;limits.upgradePriorities[{p.buildingType,0}]=0;}
@@ -4985,6 +5059,7 @@ bool Maxima::issue_development_action(Context& runtime,
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
 	using namespace AIMaximaPlacement;int buildingId=-1;
+    if(!prestige_action_allowed(runtime,action.buildingType,action.fromLevel,action.targetLevel,action.id))return false;
     if(action.purpose==AIMaximaPlacement::ForwardSupport && !forward_support_authorized(runtime,action))
     {
         emit_telemetry(runtime,"forward_support_rejected","\treason=front_or_authority_changed\taction="+telemetryText(action.id));

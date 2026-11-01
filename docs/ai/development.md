@@ -77,17 +77,20 @@ well as standard comparisons. Its CLI and planners default to 95% probability
 victory, and cap adjudication uses final win probability. Every game records the
 probability trajectory automatically, without a verbose telemetry request.
 
-Treat **mean whole-match win probability** (trapezoidal area divided by observed
-duration) as the standard continuous score for AI effectiveness, alongside wins,
-losses and draws. A small change can improve the probability trajectory across
-many games without flipping their eventual winners; looking only at outcomes
-throws that signal away. Standard reports include this score, seed-block
-intervals and paired ablation effects automatically. Custom scripts should read
-`probability_scores` or the compact per-team area/coverage summary, counting an
-alliance once. Use matched maps/seeds, seat rotations and held-out comparisons.
-Keep models and stopping rules identical; report missing or partial history as
-unavailable. Check actual outcomes and representative games as well: a fitted
-state model is a sensitive diagnostic, not a complete description of good play.
+Treat the **adjusted win-probability trajectory score** (`log_time_outcome_v1`,
+`c=2`) as the standard continuous effectiveness score alongside wins, losses and
+draws. It weights earlier trajectory strength more heavily and credits completed
+outcomes through the fixed tick horizon. Probability-based early victories also
+receive full outcome credit, labelled predicted; caps receive no terminal tail.
+Standard reports include the score, coverage and paired seed-block intervals.
+Custom scripts should use `tools.tournaments.probability.group_score`, counting
+an alliance once. The raw linear AUC is retained as a legacy diagnostic and is
+no longer the standard score. Compact results preserve the required log integral;
+older compact payloads lacking it cannot reconstruct the new score.
+Use matched maps/seeds, rotations and held-out comparisons. Keep score version,
+coefficient, horizon, model and stopping rules identical. Report unavailable
+history explicitly and check actual wins, completion times and representative
+play: this is a trajectory score, not a calibrated probability of winning.
 See [whole-game scoring](../tools/tournaments.md#whole-game-probability-scores).
 
 ## Verify and review

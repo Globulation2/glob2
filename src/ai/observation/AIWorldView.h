@@ -83,6 +83,9 @@ public:
 	Uint32 tick = 0;
 	const int width, height;
 	int totalPrestige = 0;
+    bool prestigeWinCondition = false;
+    bool prestigeAlliesShareVictory = false;
+    int prestigeToReach = 0;
 	Uint64 terrainRevision = 0;
 	bool terrainMovementModifiers = false, airTerrainConstraints = false;
 	RuleView rules;

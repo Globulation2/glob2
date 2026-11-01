@@ -25,6 +25,7 @@ from collections import defaultdict
 import math
 
 from tools.tournaments.analysis import observations, rate, bootstrap_ratings, probability_scores, POLICIES
+from tools.tournaments.probability import SCORE_DEFINITION
 from tools.tournaments.results import Results
 from tools.tournaments.duel_ratings import report as duel_report
 
@@ -129,6 +130,8 @@ def main():
     ratings = rate(rows, args.k)
     total = len(rows)
     report = {
+        "schema_version": 2,
+        "score_definition": dict(SCORE_DEFINITION),
         "policy": args.policy,
         "probability_scores": probability_scores(rows, args.draws, args.seed),
         "k": args.k,
@@ -189,12 +192,13 @@ def main():
                 file=sys.stderr,
             )
 
-    print("\n| Format | Build | Variant | Competitor | Role | Stop (permille) | W / L / D | Mean win probability | 95% interval |", file=sys.stderr)
-    print("| --- | --- | --- | --- | --- | ---: | --- | ---: | --- |", file=sys.stderr)
+    print("\n| Format | Build | Variant | Competitor | Role | Horizon | Stop (permille) | W / L / D | Scored / games | Actual / predicted / cap endings | Mean adjusted score (c=2) | 95% interval |", file=sys.stderr)
+    print("| --- | --- | --- | --- | --- | ---: | ---: | --- | ---: | --- | ---: | --- |", file=sys.stderr)
     for score in sorted(report['probability_scores'], key=lambda s: (s['format'], s['build'], -(s['mean'] if s['mean'] is not None else -1))):
         mean = f"{score['mean']:.4f}" if score['mean'] is not None else 'unavailable'
-        print(f"| {score['format']} | {score['build'][:12]} | {score['variant']} | {score['competitor']} | {score['role']} | {score['win_probability_permille']} | "
-              f"{score['wins']} / {score['losses']} / {score['draws']} | {mean} | {score['interval']} |", file=sys.stderr)
+        print(f"| {score['format']} | {score['build'][:12]} | {score['variant']} | {score['competitor']} | {score['role']} | {score['horizon_ticks']} | {score['win_probability_permille']} | "
+              f"{score['wins']} / {score['losses']} / {score['draws']} | {score['scored_games']} / {score['games']} | "
+              f"{score['outcome_credit_sources'].get('engine',0)} / {score['outcome_credit_sources'].get('probability_stop',0)} / {score['outcome_credit_sources'].get('tick_cap',0)} | {mean} | {score['interval']} |", file=sys.stderr)
 
 
 if __name__ == "__main__":
