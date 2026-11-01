@@ -1865,8 +1865,8 @@ class CanvasNode : public Node
 	{
 		this->key = std::move(key);
 	}
-    std::vector<ActionKind> supportedActions() const override
-    {
+	std::vector<ActionKind> supportedActions() const override
+	{
 		std::vector<ActionKind> actions;
 		if (options.tap)
 			actions.push_back(ActionKind::Activate);

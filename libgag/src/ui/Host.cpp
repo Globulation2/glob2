@@ -97,11 +97,12 @@ void Host::refreshBlockedGeometry()
 		const auto *node = key.empty() ? nullptr : find(key);
 		return node && externallyBlocked(*node);
 	};
-    // pressedNode is an identity token for unkeyed nodes. Never dereference a
-    // retained pointer here: a layout rebuild may have replaced its tree.
-    const auto pressed=effectiveBounds.find(pressedNode);
+	// pressedNode is an identity token for unkeyed nodes. Never dereference a
+	// retained pointer here: a layout rebuild may have replaced its tree.
+	const auto pressed = effectiveBounds.find(pressedNode);
 	if (covered(capturedKey) || covered(pressedKey) || covered(panKey) ||
-        (pressed!=effectiveBounds.end() && obscures(pressed->second)) || (scrolling && covered(scrolling->key)))
+		(pressed != effectiveBounds.end() && obscures(pressed->second)) ||
+		(scrolling && covered(scrolling->key)))
 		cancelInput();
 }
 bool Host::externallyBlocked(const Node &node) const
@@ -1203,8 +1204,11 @@ bool Host::popupKey(const KeyEvent &key)
 	if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER || key.sym == SDLK_SPACE)
 	{
 		if (count && (popup->spec.enabled.empty() || popup->spec.enabled[popup->highlight]))
-            if(auto *target=popup->tree->find("popup/"+std::to_string(popup->highlight));target && !externallyBlocked(*target))
-			    pickPopup(popup->highlight);
+		{
+			auto *target = popup->tree->find("popup/" + std::to_string(popup->highlight));
+			if (target && !externallyBlocked(*target))
+				pickPopup(popup->highlight);
+		}
 		return true;
 	}
 	if (key.sym == SDLK_TAB)

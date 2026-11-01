@@ -123,13 +123,14 @@ class Host
 	const TextMeasurer *measurer = nullptr;
 	Presentation current;
 	Metrics metricsValue;
-    std::optional<ControlSnapshot> actionTarget(const std::string &key,ActionKind kind,std::string &error);
-    std::vector<Rect> blockedRegions;
-    std::unordered_map<const Node *,Rect> effectiveBounds;
-    void refreshBlockedGeometry();
-    bool obscures(Rect visible) const;
-    bool externallyBlocked(const Node &node) const;
-    bool externallyBlockedAt(const Node &node,Point point) const;
+	std::optional<ControlSnapshot> actionTarget(const std::string &key, ActionKind kind,
+											  std::string &error);
+	std::vector<Rect> blockedRegions;
+	std::unordered_map<const Node *, Rect> effectiveBounds;
+	void refreshBlockedGeometry();
+	bool obscures(Rect visible) const;
+	bool externallyBlocked(const Node &node) const;
+	bool externallyBlockedAt(const Node &node, Point point) const;
 	Available availableFn;
 	Placement placeFn;
 	std::function<void()> escape, layoutListener;
