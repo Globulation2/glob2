@@ -67,6 +67,9 @@ test.describe('Thai touch phones', () => {
       url.searchParams.set('renderer', 'software');
       await context.addCookies([{name: 'glob2_locale', value: 'th', url: url.origin}]);
       await page.goto(url.href);
+      // Firefox can lose emulated density during the COOP process replacement.
+      await page.setViewportSize(page.viewportSize());
+      expect(await page.evaluate(() => devicePixelRatio)).toBe(2);
       await expect.poll(async () => {
         const state = await page.evaluate(() => glob2Diagnostics.snapshot());
         const name = state.screen + ' ' + state.screenClass;
@@ -84,13 +87,17 @@ test.describe('Thai touch phones', () => {
       await expect.poll(() => page.evaluate(() => {
         const state = glob2Diagnostics.snapshot();
         return [state.width, state.height];
-      })).toEqual([390, 844]);
+      })).toEqual([780, 1688]);
+      expect(await page.evaluate(() => [Module.presentationMetrics.width, Module.presentationMetrics.height]))
+        .toEqual([390, 844]);
       expect(await page.evaluate(() => Object.values(glob2Diagnostics.snapshot().controls)
         .some(control => /[\u0e00-\u0e7f]/.test(control.label)))).toBe(true);
       await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-menu.png`)});
       await clickMainMenu(page, 'settings');
       await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-settings.png`)});
-      await tapControl(page, 'nav.5');
+      await tapControl(page, 'nav.current');
+      // The touch picker omits Controls: Player follows the first four categories.
+      await clickControl(page, 'popup/4');
       await tapControl(page, 'player.name');
       const field = page.locator('input[data-i18n-aria="Game text field"]');
       await expect(field).toHaveAttribute('aria-label', thai['Game text field']);
@@ -100,6 +107,12 @@ test.describe('Thai touch phones', () => {
         .toContain('username=ผู้เล่นไทย 123');
       await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-input.png`)});
       await page.setViewportSize({width: 844, height: 390});
+      await expect.poll(() => page.evaluate(() => {
+        const state = glob2Diagnostics.snapshot();
+        return [state.width, state.height];
+      })).toEqual([1688, 780]);
+      expect(await page.evaluate(() => [Module.presentationMetrics.width, Module.presentationMetrics.height]))
+        .toEqual([844, 390]);
       await expect(field).toHaveValue('ผู้เล่นไทย 123');
       await expect.poll(async () => {
         const box = await field.boundingBox();
@@ -110,6 +123,8 @@ test.describe('Thai touch phones', () => {
       await waitForMainMenu(page);
       await page.evaluate(() => Module.storage.flush());
       await page.reload();
+      await page.setViewportSize(page.viewportSize());
+      expect(await page.evaluate(() => devicePixelRatio)).toBe(2);
       await waitForMainMenu(page);
       await expect(page.locator('html')).toHaveAttribute('lang', 'th');
       expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
