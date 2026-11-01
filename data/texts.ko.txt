@@ -4884,6 +4884,10 @@ AI 원격 측정
 정리한 자원
 [stat cleared about]
 일꾼이 공간을 만들려고 정리 구역에서 제거한 자원입니다.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 명성
 [stat prestige about]

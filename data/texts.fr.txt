@@ -4884,6 +4884,10 @@ Unités coincées sans aucune case libre où avancer.
 Ressources défrichées
 [stat cleared about]
 Ressources retirées par les ouvrières dans les zones de défrichage pour faire de la place.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestige
 [stat prestige about]

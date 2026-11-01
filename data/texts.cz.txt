@@ -4884,6 +4884,10 @@ Uvězněné jednotky bez volného pole, na které by mohly vstoupit.
 Odstraněné suroviny
 [stat cleared about]
 Suroviny, které dělníci odstranili v oblastech čištění, aby uvolnili místo.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestiž
 [stat prestige about]

@@ -4884,6 +4884,10 @@ Inguratuta dauden unitateak, zapaltzeko lauki librerik gabe.
 Garbitutako baliabideak
 [stat cleared about]
 Langileek garbiketa-eremuetan lekua egiteko kendutako baliabideak.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Ospea
 [stat prestige about]

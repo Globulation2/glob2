@@ -4884,6 +4884,10 @@ Unidades encerradas sin ninguna casilla libre a la que moverse.
 Recursos despejados
 [stat cleared about]
 Recursos que los trabajadores retiraron en las áreas de limpieza para hacer sitio.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestigio
 [stat prestige about]

@@ -32,7 +32,7 @@ Do not infer identities from menu ordering.
 - [AI telemetry](telemetry.md): decision counters, fields and retained observations.
 - [Gameplay measurements](gameplay-statistics.md): population, food, production and presentation.
 - [Ratings](ratings.md): measured opponent strength and interpretation.
-- [Win probability](architecture/win-probability-model.md): fitted game-state predictions.
+- [Win probability](architecture/win-probability-model.md): automatic trajectories and the standard continuous score for AI comparisons, alongside outcomes.
 - [Building-field depth](architecture/building-gradient-depth-model.md): scheduled field-settling model.
 - [Tournaments](../tools/tournaments.md): reproducible distributed games and evidence.
 

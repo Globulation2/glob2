@@ -7,11 +7,14 @@ test/data/win-probability-engine-samples.txt and re-derives every number from
 the published header, so it fails if either side drifts.
 """
 import math
+import gzip
+import json
 from pathlib import Path
 import re
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -39,6 +42,38 @@ def published():
         value = float(re.search(constant + r' = ([-\d.e+]+);', text)[1])
         features.append({'name': name, 'transform': transform, 'coefficient': value})
     return {'intercept': intercept, 'features': features}, text
+
+
+class CalibrationLabels(unittest.TestCase):
+    def test_probability_adjudication_cannot_label_a_refit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory)/'dataset.json.gz'
+            with self.assertRaisesRegex(ValueError, 'independent outcome labels'):
+                W.build_dataset([], output, policy='win_probability')
+            self.assertFalse(output.exists())
+        data={'policy':'win_probability', 'games':[]}
+        for operation in (lambda: W.contests(data), lambda: W.screen(data),
+                          lambda: W.select(data, []), lambda: W.savings(data, []),
+                          lambda: W.calibration({}, data)):
+            with self.assertRaisesRegex(ValueError, 'independent outcome labels'):
+                operation()
+
+    def test_model_called_outcomes_are_rejected_even_in_old_caches(self):
+        result={'job_type':'game', 'termination':'win_probability', 'teams':[{'team':0}, {'team':1}]}
+        record={'accepted':True, 'job':{'id':'model-called'}, 'result':result,
+                'artifacts':[{'path':'stdout.log'}]}
+        with self.assertRaisesRegex(ValueError, '--win-probability 0'):
+            W.game_slices(None, record)
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory)/'dataset.json.gz'
+            with patch.object(W, 'Results', return_value=[record]):
+                with self.assertRaisesRegex(ValueError, '--win-probability 0'):
+                    W.build_dataset(['results'], output)
+            self.assertFalse(output.exists())
+            with gzip.open(output, 'wt') as stream:
+                json.dump({'policy':'prestige', 'games':[{'termination':'win_probability'}]}, stream)
+            with self.assertRaisesRegex(ValueError, '--win-probability 0'):
+                W.load_cache(output)
 
 
 class Arithmetic(unittest.TestCase):
