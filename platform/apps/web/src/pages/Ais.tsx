@@ -650,7 +650,9 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                   onChange={(e) => setVisibility(e.target.value as typeof visibility)}
                 >
                   {['public', 'unlisted', 'private'].map((x) => (
-                    <option key={x}>{x}</option>
+                    <option key={x} value={x}>
+                      {statusLabel(x)}
+                    </option>
                   ))}
                 </select>
               </label>

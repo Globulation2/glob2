@@ -232,7 +232,8 @@
   position: absolute;
   top: 120px;
   left: 50%;
-  transform: translateX(-50%);
+  /* Keep centering when the shared button pressed-state changes transform. */
+  translate: -50% 0;
   padding: 9px 18px !important;
   gap: 18px !important;
 }
@@ -1025,9 +1026,9 @@
     width: 75px;
   }
   .skin-shape-button {
-    top: 75px;
+    top: 132px;
     left: 12px;
-    transform: none;
+    translate: none;
     font-size: 11px !important;
     padding: 5px 8px !important;
   }

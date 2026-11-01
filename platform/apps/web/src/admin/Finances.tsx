@@ -1,11 +1,18 @@
-import { statusLabel } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import type { AdminFinances } from '@glob2/protocol';
 import { request } from '../api.ts';
 import { Loaded } from '../components/common.tsx';
 import { useLoad } from '../state.tsx';
 import { useAdminFilters } from './filters.tsx';
-import { downloadCsv, formatCash, productName, reportingPeriods } from './presentation.ts';
+import {
+  downloadCsv,
+  formatCash,
+  productName,
+  reportingPeriods,
+  paymentModeName,
+  reportingPeriodName,
+  financeKindName,
+} from './presentation.ts';
 import { dateTime } from '../format.ts';
 export function Finances() {
   useLocale();
@@ -37,7 +44,9 @@ export function Finances() {
           {t('Payment mode')}{' '}
           <select value={values['mode']} onChange={(e) => set({ mode: e.target.value })}>
             {['live', 'test', 'unclassified'].map((m) => (
-              <option key={m}>{m}</option>
+              <option key={m} value={m}>
+                {paymentModeName(m)}
+              </option>
             ))}
           </select>
         </label>
@@ -51,8 +60,8 @@ export function Finances() {
             <>
               <p>
                 <RichMessage
-                  source={'Updated {slot0} · UTC periods · {slot1} payments'}
-                  slots={{ slot0: dateTime(data.generatedAt), slot1: data.mode }}
+                  source={'Updated {slot0} · UTC days · {slot1}'}
+                  slots={{ slot0: dateTime(data.generatedAt), slot1: paymentModeName(data.mode) }}
                 />
               </p>
               <p className="notice">
@@ -102,9 +111,9 @@ export function Finances() {
                       }
                       slots={{
                         slot0: currency.toUpperCase(),
-                        slot1: formatCash(total(t('payment')), currency),
-                        slot2: formatCash(total(t('refund')), currency),
-                        slot3: formatCash(total(t('payment')) - total(t('refund')), currency),
+                        slot1: formatCash(total('payment'), currency),
+                        slot2: formatCash(total('refund'), currency),
+                        slot3: formatCash(total('payment') - total('refund'), currency),
                       }}
                     />
                   </p>
@@ -137,8 +146,8 @@ export function Finances() {
                       <tr key={i}>
                         <th>{productName(r.product)}</th>
                         <td>{r.currency.toUpperCase()}</td>
-                        <td>{r.period}</td>
-                        <td>{statusLabel(r.kind)}</td>
+                        <td>{reportingPeriodName(r.period)}</td>
+                        <td>{financeKindName(r.kind)}</td>
                         <td
                           className="numeric"
                           title={t('{value0} Stripe minor units', { value0: r.amount })}
@@ -175,7 +184,7 @@ export function Finances() {
                     {data.credits.map((r, i) => (
                       <tr key={i}>
                         <th>{productName(r.product)}</th>
-                        <td>{statusLabel(r.kind)}</td>
+                        <td>{financeKindName(r.kind)}</td>
                         <td className="numeric">{r.amount}</td>
                       </tr>
                     ))}
@@ -226,7 +235,7 @@ export function Finances() {
                             slots={{ slot0: productName(r.product), slot1: r.model }}
                           />
                         </th>
-                        <td>{r.period}</td>
+                        <td>{reportingPeriodName(r.period)}</td>
                         <td className="numeric">{r.attempts}</td>
                         <td className="numeric">{r.metered}</td>
                         <td className="numeric">{r.priced}</td>

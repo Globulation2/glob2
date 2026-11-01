@@ -3010,5 +3010,21 @@
   "Swim": "Swim",
   "Harvest": "Harvest",
   "Fight": "Fight",
-  "Fly": "Fly"
+  "Fly": "Fly",
+  "Live payments": "Live payments",
+  "Test payments": "Test payments",
+  "Unclassified payments": "Unclassified payments",
+  "Current period": "Current period",
+  "Previous period": "Previous period",
+  "Credit grant": "Credit grant",
+  "Returned credits": "Returned credits",
+  "Dispute": "Dispute",
+  "Dispute closed": "Dispute closed",
+  "Matches started": "Matches started",
+  "Matches completed": "Matches completed",
+  "Matches cancelled": "Matches cancelled",
+  "{value0} publications": "{value0} publications",
+  "{value0} recorded downloads": "{value0} recorded downloads",
+  "{value0} completion time (seconds)": "{value0} completion time (seconds)",
+  "{value0} completion samples": "{value0} completion samples"
 }
