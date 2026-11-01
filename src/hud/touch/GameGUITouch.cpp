@@ -1002,7 +1002,11 @@ void GameGUITouch::dragStatistics(double deltaPoints)
 {
 	if (!statsOpen) return;
 	statsDrag += deltaPoints;
-	if (statsDrag > InGameTouchTheme::target) statsOpen = false;
+	if (statsDrag > InGameTouchTheme::target)
+	{
+		statsOpen = false;
+		statsDrag = 0;
+	}
 }
 
 void GameGUITouch::actions(const std::vector<TouchAction> &changes)
