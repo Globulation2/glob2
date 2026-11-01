@@ -1059,10 +1059,9 @@
     width: 75px;
   }
   .skin-shape-button {
-    top: 75px;
+    top: 135px;
     left: 12px;
-    translate: none;
-    transform: none;
+    translate: 0 0;
     font-size: 11px !important;
     padding: 5px 8px !important;
   }

@@ -52,7 +52,9 @@ async function capture(
         elements.flatMap((element) => {
           const bounds = element.getBoundingClientRect();
           if (bounds.width === 0 || bounds.height === 0) return [];
-          const pane = element.closest('.studio-conversation')?.getBoundingClientRect();
+          const pane = element
+            .closest('.studio-conversation, .skin-stage')
+            ?.getBoundingClientRect();
           return element.scrollWidth > element.clientWidth + 1 ||
             bounds.right > document.documentElement.clientWidth + 1 ||
             (pane && (bounds.left < pane.left - 1 || bounds.right > pane.right + 1))
@@ -193,7 +195,7 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
   page,
   context,
 }, info) => {
-  // Eleven full navigations include font settling and actual painter controls.
+  // Twelve full navigations include font settling and actual painter controls.
   test.setTimeout(360_000);
   const base = String(info.project.use.baseURL);
   await context.addCookies([{ name: 'glob2_locale', value: 'ta', url: base }]);
@@ -431,6 +433,13 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
       });
   }
   await captureFixture('/skins', 'enabled-skin-materials', () => showMaterials(false));
+  await captureFixture('/skins', 'enabled-skin-materials-middle', async () => {
+    await showMaterials(false);
+    const swatch = page.getByRole('radio', { name: text('Riveted metal'), exact: true });
+    await swatch.scrollIntoViewIfNeeded();
+    await expect(swatch).toBeInViewport({ ratio: 0.9 });
+    await expect(swatch.locator('span')).toBeInViewport({ ratio: 0.99 });
+  });
   await captureFixture('/skins', 'enabled-skin-materials-bottom', () => showMaterials(true));
   await captureFixture('/skins', 'enabled-skin-shapes', async () => {
     await page
