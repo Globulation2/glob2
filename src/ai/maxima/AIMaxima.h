@@ -844,10 +844,13 @@ private:
 		// 1: live protected seed, 2: unprotected growing/harvesting cell.
 		std::vector<Uint8> cells;
 		int seeds;
+		// Offspring potential with the common eight-direction denominator retained.
+		Uint64 wheatCapacity=0, capacity=0, targetCapacity=0;
 		explicit WoodReserve(int size): cells(size,0), seeds(0) {}
 	};
 	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& runtime,
-        const std::vector<Uint8>* seedEligibility=nullptr) const;
+        const std::vector<Uint8>* seedEligibility=nullptr,
+        const std::vector<Uint8>* protectedWheat=nullptr) const;
 	bool wheat_invasion_clearing_required(AIMaximaRuntime::Context& runtime,
 		int index, const std::vector<Uint8>& protected_wheat,
 		const WoodReserve& wood_reserve) const;
@@ -856,7 +859,7 @@ private:
 		FarmProtectionPlan& plan);
 	void release_farming_protection(AIMaximaRuntime::Context& runtime);
 	FarmProtectionPlan build_farming_protection_plan(
-		AIMaximaRuntime::Context& runtime);
+		AIMaximaRuntime::Context& runtime, bool reserveWood=true) const;
 	void apply_farming_protection(AIMaximaRuntime::Context& runtime,
 		const FarmProtectionPlan& plan, int& added, int& removed);
 	Farming::ExactFertilityCache fertility_cache;

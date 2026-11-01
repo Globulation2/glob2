@@ -4,6 +4,7 @@
 #include "AIMaximaFarmGeometry.h"
 #include "ExperimentalFeatures.h"
 #include <algorithm>
+#include <nlohmann/json.hpp>
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "../../src/team/Team.h"
@@ -123,7 +124,8 @@ void coastalWheatCrossesFertilityDips()
 
 void seedSurvival()
 {
-    for(int resource:{WHEAT,WOOD}) for(int offset:{0,44})
+    constexpr int resource=WHEAT;
+    for(int offset:{0,44})
     {
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
@@ -151,13 +153,6 @@ void seedSurvival()
         map.setNoResource(growth%64,growth/64,0);
         ai.update_farming(ai.context);
         REQUIRE(ai.farm_protection_mask[second]);
-        if(resource==WOOD)
-        {
-            ai.budget.farming_wood_firebreak_enabled=true;
-            ai.wood_firebreak_mask[second]=1;
-            ai.update_farming(ai.context);
-            REQUIRE(!ai.farm_protection_mask[second]);
-        }
     }
 }
 
@@ -389,7 +384,7 @@ void woodReserveSurvivesWheatPincer()
         ai.budget.farming_protection_enabled=false;
         update();REQUIRE(ai.select_wood_reserve(ai.context).seeds==0);
         ai.budget.farming_protection_enabled=true;
-        // More eligible wood does not expand the reserve beyond two donors.
+        // More eligible wood does not expand a bootstrap with no renewable wheat.
         for(int x:{24,26})
         {
             int i=index(x,x);setYoungResource(map,i%64,i/64,WOOD);
@@ -398,14 +393,91 @@ void woodReserveSurvivesWheatPincer()
         }
         update();
         auto stable=ai.select_wood_reserve(ai.context);
-        REQUIRE(stable.seeds==2);
+        REQUIRE(stable.seeds==1);
         for(int cycle=0;cycle<3;++cycle)
         {update();REQUIRE(ai.select_wood_reserve(ai.context).cells==stable.cells);}
         map.setNoResource(seed%64,seed/64,0);
         update();
         auto replacement=ai.select_wood_reserve(ai.context);
-        REQUIRE((replacement.seeds==2 && !replacement.cells[seed]));
+        REQUIRE((replacement.seeds==1 && !replacement.cells[seed]));
     }
+}
+
+// Uniform, equally productive donors isolate the capacity split from fertility.
+void woodReserveTracksWheatCapacity(int woodSpreadRate)
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;auto& ai=*f.ai;auto& map=f.game.map;
+    using Json=nlohmann::json;
+    auto definitions=Json::parse(map.resourceRegistry().serialize());
+    Json resources=Json::array();
+    for(int resource:{WHEAT,WOOD})
+    {
+        auto spec=definitions["resources"][resource];
+        spec["key"]=resource==WHEAT?"fixture:ratio-wheat":"fixture:ratio-wood";
+        spec["properties"]["ecology"]="uniform";
+        spec["properties"]["stockDependentGrowth"]=true;
+        spec["properties"]["growthRate"]=65536;
+        spec["properties"]["spreadRate"]=resource==WOOD?woodSpreadRate:65536;
+        resources.push_back(spec);
+    }
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",resources}}.dump());
+    const auto food=map.resourceRegistry().find("fixture:ratio-wheat");REQUIRE(food);
+    const auto wood=map.resourceRegistry().find("fixture:ratio-wood");REQUIRE(wood);
+    REQUIRE(f.game.addUnit(1,1,0,WORKER,0,0,0,0));
+    configurePattern(f);ai.budget.farming_management_radius=0;
+    for(int y=1;y<30;y+=4)for(int x=33;x<62;x+=4)
+        map.setResource(x,y,*wood,0);
+    // No food capacity: keep only one viable bootstrap, regardless of forest size.
+    auto bootstrap=ai.select_wood_reserve(ai.context);
+    REQUIRE(bootstrap.seeds==1);
+    REQUIRE(bootstrap.wheatCapacity==0);
+    for(int y=5;y<=21;y+=4)for(int x=5;x<=21;x+=4)
+        map.setResource(x,y,*food,0);
+    ai.update_farming(ai.context);applyAreaContracts(f);
+    auto reserve=ai.select_wood_reserve(ai.context);
+    // Each isolated wheat donor has four harvestable cardinal outlets; the
+    // diagonal frontier cells are protected. 100 wheat outlets need 12 equal
+    // wood outlets, or four outlets producing wood three times as fast.
+    REQUIRE(reserve.seeds==(woodSpreadRate==65536?12:4));
+    REQUIRE(reserve.targetCapacity==(reserve.wheatCapacity+8)/9);
+    REQUIRE(reserve.capacity>=reserve.targetCapacity);
+    const auto onePair=bootstrap.capacity;
+    REQUIRE(reserve.capacity-reserve.targetCapacity<onePair);
+    REQUIRE(Uint64(reserve.seeds)==(reserve.targetCapacity+onePair-1)/onePair);
+    // All wood protection belongs to the quota, not an uncapped forest pattern.
+    for(int i=0;i<64*64;++i)
+        if(map.materialAmountAt(i,MaterialId::Wood))
+            REQUIRE(bool(ai.farm_protection_mask[i])==(reserve.cells[i]==1));
+    // Harvest amounts and filling an outlet do not move the protected donors.
+    for(int y=5;y<=21;y+=4)for(int x=5;x<=21;x+=4)
+        map.setResourceAmount(map.coordToIndex(x,y),5);
+    for(int i=0;i<64*64;++i)
+    {
+        if(reserve.cells[i]==1) map.setResourceAmount(i,5);
+        if(reserve.cells[i]==2) map.setResource(i%64,i/64,*wood,0);
+    }
+    ai.update_farming(ai.context);applyAreaContracts(f);
+    REQUIRE(ai.select_wood_reserve(ai.context).cells==reserve.cells);
+    // Rebuilding derived area caches, as on load, chooses the same reserve.
+    ai.applied_farm_protection_mask.clear();
+    ai.update_farming(ai.context);applyAreaContracts(f);
+    REQUIRE(ai.select_wood_reserve(ai.context).cells==reserve.cells);
+    // A shortage reports attainable capacity instead of inventing donors.
+    const int lastSeed=int(std::find(reserve.cells.begin(),reserve.cells.end(),Uint8(1))-reserve.cells.begin());
+    for(int i=0;i<64*64;++i)
+        if(i!=lastSeed && map.materialAmountAt(i,MaterialId::Wood)) map.setNoResource(i%64,i/64,0);
+    auto scarce=ai.select_wood_reserve(ai.context);
+    REQUIRE(scarce.seeds==1);
+    REQUIRE(scarce.capacity<scarce.targetCapacity);
+    f.game.gameHeader.setResourceGrowthDisabled(true);
+    REQUIRE(ai.select_wood_reserve(ai.context).seeds==0);
+    f.game.gameHeader.setResourceGrowthDisabled(false);
+    // Removing the food farm shrinks the reserve again.
+    for(int y=5;y<=21;y+=4)for(int x=5;x<=21;x+=4)
+        map.setNoResource(x,y,0);
+    ai.update_farming(ai.context);applyAreaContracts(f);
+    REQUIRE(ai.select_wood_reserve(ai.context).seeds==1);
 }
 
 void woodReserveSurvivesOwnFarmProtection()
@@ -429,7 +501,8 @@ void woodReserveSurvivesOwnFarmProtection()
 
 void alignedPatternTransitions()
 {
-    for(int resource:{WHEAT,WOOD}) for(int offset:{0,42})
+    constexpr int resource=WHEAT;
+    for(int offset:{0,42})
     {
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
@@ -550,6 +623,10 @@ void maintenanceProtectionAgreement()
         const int wheat=index(18,21),wood=index(18,22);
         setYoungResource(map,wheat%64,wheat/64,WHEAT);
         setYoungResource(map,wood%64,wood/64,WOOD);
+        const int primaryWood=index(16,16);
+        setYoungResource(map,primaryWood%64,primaryWood/64,WOOD);
+        const int worker=index(15,19);
+        REQUIRE(f.game.addUnit(worker%64,worker/64,0,WORKER,0,0,0,0));
         configurePattern(f);
         ai.budget.farming_maintenance_clearing_enabled=true;
         ai.budget.farming_wheat_invasion_clearing_enabled=true;
@@ -569,9 +646,11 @@ void maintenanceProtectionAgreement()
         ai.budget.farming_wheat_invasion_clearing_enabled=false;
         ai.update_farming(ai.context);applyAreaContracts(f);
         ai.update_maintenance_clearing_areas(ai.context);applyAreaContracts(f);
-        REQUIRE(ai.farm_protection_mask[wood]);
+        REQUIRE(!ai.farm_protection_mask[wood]);
         REQUIRE(!ai.maintenance_circulation_mask[wood]);
-        // Removing wheat must also revoke it; stale maintenance cannot latch it.
+        // Losing the selected donor transfers the quota here, overriding the
+        // wheat-invasion campaign rather than exposing the last renewable wood.
+        map.setNoResource(primaryWood%64,primaryWood/64,0);
         ai.budget.farming_wheat_invasion_clearing_enabled=true;
         map.setNoResource(wheat%64,wheat/64,0);
         ai.update_farming(ai.context);applyAreaContracts(f);
@@ -734,10 +813,14 @@ TEST_SUITE("Maxima.FarmingIntegration")
 	TEST_CASE("farming respects discovery") { glob2test::HeadlessGlobals globals; farmingRespectsDiscovery(); }
 }
 
-#include <nlohmann/json.hpp>
 
 TEST_SUITE("Maxima.FarmingIntegration")
 {
+    TEST_CASE("wood reserve tracks ten percent of renewable capacity")
+    {
+        for(int woodSpreadRate:{65536,196608})
+        { CAPTURE(woodSpreadRate); woodReserveTracksWheatCapacity(woodSpreadRate); }
+    }
     TEST_CASE("custom producers only reserve finite spreading seeds")
     {
         glob2test::HeadlessGlobals globals;
@@ -808,7 +891,7 @@ TEST_SUITE("Maxima.FarmingIntegration")
             }
     }
 
-    TEST_CASE("custom spreading frontier follows actual donor habitat")
+    TEST_CASE("wheat frontiers and wood outlets follow actual donor habitat")
     {
         glob2test::HeadlessGlobals globals;
         using Json=nlohmann::json;
@@ -826,6 +909,13 @@ TEST_SUITE("Maxima.FarmingIntegration")
             map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({other})}}.dump());
             const auto donor=map.resourceRegistry().find("fixture:actual-donor"); REQUIRE(donor);
             map.setResource(12,22,*donor,0);
+            const int targetY=material=="food"?21:22;
+            if(material=="wood")
+            {
+                REQUIRE(f.game.addUnit(14,22,0,WORKER,0,0,0,0));
+                for(int y=0;y<64;++y)for(int x=0;x<64;++x)map.setResourcesGrow(x,y,0);
+                map.setResourcesGrow(11,targetY,1);
+            }
             ai.budget.farming_enabled=true; ai.budget.farming_protection_enabled=true;
             ai.budget.farming_management_radius=0;
             const auto terrainSpec=[&](const char* key) {
@@ -840,12 +930,22 @@ TEST_SUITE("Maxima.FarmingIntegration")
             };
             importTerrain("fixture:other-donor");
             const auto terrain=map.terrainRegistry().find("fixture:target"); REQUIRE(terrain);
-            map.paintCell(11,21,*terrain);
+            map.paintCell(11,targetY,*terrain);
             ai.update_farming(ai.context);
-            CHECK_FALSE(ai.farm_protection_mask[21*64+11]);
+            CHECK_FALSE(ai.farm_protection_mask[targetY*64+11]);
+            if(material=="wood") CHECK(ai.select_wood_reserve(ai.context).seeds==0);
             importTerrain("fixture:actual-donor");
             ai.update_farming(ai.context);
-            CHECK(ai.farm_protection_mask[21*64+11]);
+            if(material=="food") CHECK(ai.farm_protection_mask[targetY*64+11]);
+            else
+            {
+                const auto reserve=ai.select_wood_reserve(ai.context);
+                CHECK(reserve.seeds==1);
+                CHECK(reserve.cells[22*64+12]==1);
+                CHECK(reserve.cells[targetY*64+11]==2);
+                CHECK(ai.farm_protection_mask[22*64+12]);
+                CHECK_FALSE(ai.farm_protection_mask[targetY*64+11]);
+            }
             if(material=="food")
             {
                 map.paintCell(11,21,GRASS);
