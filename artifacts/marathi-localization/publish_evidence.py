@@ -30,6 +30,8 @@ def main():
     # The inventory describes the payload and is added once after it is
     # regenerated. It cannot hash or count an inherited copy of itself.
     files.discard(BASE / 'published-inventory.json')
+    files = {p for p in files if not (p.name.startswith('publication-') and p.suffix == '.log')}
+
     # Build SDKs, dependency copies, executables, raw external reference pages,
     # environment dumps and profiles are deliberately outside this inventory.
     directories = ['checks', 'android-overlay-review', 'apple-permission-review',
@@ -49,6 +51,8 @@ def main():
             continue
         for path in (ROOT / BASE / directory).rglob('*'):
             relative = path.relative_to(ROOT)
+            if path.name.startswith('publication-') and path.suffix == '.log':
+                continue
             if (args.checkpoint or args.pending_browser) and str(relative).startswith(str(BASE / 'integration-refresh/native') + '/'):
                 continue
             if (path.is_file() and (path.suffix in extensions or path.name.endswith(('.json.gz', '.log.gz', '.txt.gz')))
