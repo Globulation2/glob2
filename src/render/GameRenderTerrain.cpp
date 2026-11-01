@@ -175,16 +175,21 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 												 x + viewportX + 1, y + viewportY + 1,
 												 visibleTeams);
 	};
+	std::vector<int> visibleColumns;
 	for (int y = top; y <= bot; ++y)
 	{
+		visibleColumns.clear();
 		// Keep canonical row layering identical to cached GPU geometry: all
 		// terrain decorations, then all resources, preserving cell order.
 		for (int x = left; x <= right; ++x)
 			if (visible(x, y))
 			{
+				visibleColumns.push_back(x);
 				auto *decorSprite = compositor.decorSprite(sceneMap, x + viewportX, y + viewportY);
+				if (!decorSprite)
+					continue;
 				const int frame = compositor.decorFrame(sceneMap, x + viewportX, y + viewportY);
-				if (!decorSprite || frame < 0)
+				if (frame < 0)
 					continue;
 				if (pendingSprite != decorSprite)
 				{
@@ -195,28 +200,36 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 												 (y << 5) - ((decorSprite->getH(frame) - 32) >> 1),
 												 decorSprite, frame);
 			}
-		for (int x = left; x <= right; ++x)
-			if (visible(x, y))
+		for (int x : visibleColumns)
+		{
+			const auto &r = sceneMap.getResource(x + viewportX, y + viewportY);
+			if (r.type != NO_RES_TYPE)
 			{
-				const auto& r = sceneMap.getResource(x+viewportX, y+viewportY);
-				if (r.type!=NO_RES_TYPE)
+				const auto &presentation =
+					sceneMap.resourceRegistry().presentation(static_cast<ResourceId>(r.type));
+				Sprite *sprite = catalog.sprites[r.type];
+				const int imgid =
+					presentation.frame(r.amount, (x + viewportX) & sceneMap.getMaskW(),
+									   (y + viewportY) & sceneMap.getMaskH(), sceneMap.tick);
+				if (!sprite || imgid >= sprite->getFrameCount())
 				{
-					const auto& presentation = sceneMap.resourceRegistry().presentation(static_cast<ResourceId>(r.type));
-					Sprite *sprite = catalog.sprites[r.type];
-					const int imgid = presentation.frame(r.amount, (x+viewportX)&sceneMap.getMaskW(), (y+viewportY)&sceneMap.getMaskH(), sceneMap.tick);
-					if (!sprite || imgid >= sprite->getFrameCount())
-					{
-						// Explicit missing-art marker; gameplay remains authoritative.
-						flush();
-						globalContainer->gfx->drawFilledRect((x<<5)+8, (y<<5)+8, 16, 16, 255, 0, 255);
-						globalContainer->gfx->drawFilledRect((x<<5)+12, (y<<5)+12, 8, 8, 0, 0, 0);
-						continue;
-					}
-					if (pendingSprite != sprite) { flush(); pendingSprite = sprite; }
-					const int dx=(sprite->getW(imgid)-32)>>1;
-					const int dy=(sprite->getH(imgid)-32)>>1;
-					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
+					// Explicit missing-art marker; gameplay remains authoritative.
+					flush();
+					globalContainer->gfx->drawFilledRect((x << 5) + 8, (y << 5) + 8, 16, 16, 255, 0,
+														 255);
+					globalContainer->gfx->drawFilledRect((x << 5) + 12, (y << 5) + 12, 8, 8, 0, 0,
+														 0);
+					continue;
 				}
+				if (pendingSprite != sprite)
+				{
+					flush();
+					pendingSprite = sprite;
+				}
+				const int dx = (sprite->getW(imgid) - 32) >> 1;
+				const int dy = (sprite->getH(imgid) - 32) >> 1;
+				globalContainer->gfx->drawSprite((x << 5) - dx, (y << 5) - dy, sprite, imgid);
+			}
 			}
 	}
 	flush();
