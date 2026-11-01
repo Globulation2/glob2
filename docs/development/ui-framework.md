@@ -138,8 +138,9 @@ Do not send presentation-form Arabic through the logical shaping route. The
 FontKerning suite checks raster sizes, reloads and language switching.
 
 Map visible captions from stable IDs to translated source strings instead of
-capitalizing the IDs. This includes skin views and poses, music metadata fields,
-and chart axes and legends. Preserve the IDs themselves: the swarm's empty pose
+capitalizing the IDs. This includes skin models, materials, shapes, views and
+poses, music metadata fields, and chart axes and legends. Preserve the IDs
+themselves: the swarm's empty pose
 ID is valid and needs a localized static-pose caption.
 
 Translate display text before passing it into shared component props, including
@@ -147,6 +148,8 @@ composer pricing, edit targets and disabled reasons. The extractor does not
 discover an untranslated string merely because a component renders that prop.
 Resolve example labels and their inserted prompts at render time so language
 switching updates both; retain stable identifiers separately from those labels.
+Keep protocol registries and stored custom names intact; localize fixed registry
+labels in the UI and translate system defaults when creating a new document.
 
 Legacy scenario-message panels use the active font’s measured line height. Desktop messages
 retain a 20-pixel minimum advance; touch instructions use the shared cluster-aware

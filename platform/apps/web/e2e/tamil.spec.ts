@@ -1,6 +1,7 @@
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
+import { COLONY_SKIN_MATERIALS, SWARM_MESHES } from '@glob2/protocol';
 import { INVITE_CODE } from './showcase.ts';
 
 const catalog = JSON.parse(
@@ -45,7 +46,7 @@ async function capture(
   expect(
     await page
       .locator(
-        '.ms-prompt-ideas button, .mu-prompt, .ms-credit-button, .mu-inspector-heading button, .studio-compose-actions button',
+        '.ms-prompt-ideas button, .mu-prompt, .ms-credit-button, .mu-inspector-heading button, .studio-compose-actions button, .skin-tools button, .skin-models button, .skin-materials button, .skin-shape-grid button',
       )
       .evaluateAll((elements) =>
         elements.flatMap((element) => {
@@ -60,6 +61,26 @@ async function capture(
         }),
       ),
     `clipped studio controls at ${path}`,
+  ).toEqual([]);
+  expect(
+    await page.locator('.skin-tools button').evaluateAll((buttons) => {
+      const bounds = buttons.map((button) => button.getBoundingClientRect());
+      return bounds.flatMap((a, index) =>
+        bounds
+          .slice(index + 1)
+          .flatMap((b) =>
+            a.width &&
+            b.width &&
+            a.left < b.right - 1 &&
+            a.right > b.left + 1 &&
+            a.top < b.bottom - 1 &&
+            a.bottom > b.top + 1
+              ? [index]
+              : [],
+          ),
+      );
+    }),
+    `overlapping painter tools at ${path}`,
   ).toEqual([]);
   expect(
     await page.getByTestId('language-selector').evaluateAll((selects) =>
@@ -202,19 +223,30 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
   let localSkinDesigner = false;
   const unexpected: string[] = [];
   const mockedReads: string[] = [];
+  let navigationPath = '';
+  const instanceReads: { path: string; url: string; features: string[] }[] = [];
   // Keep the seeded instance contract, explicitly enabling only these fixture features.
   const instanceResponse = await page.request.get('/api/v1/instance');
   expect(instanceResponse.ok()).toBe(true);
   const instance = await instanceResponse.json();
-  await page.route('**/api/v1/instance', (route) =>
-    route.fulfill({ json: { ...instance, features } }),
-  );
-  await page.route('**/api/v1/accounts/me', (route) =>
+  // Context routes survive the COOP process swaps made by full studio navigations.
+  await context.route('**/api/v1/instance', (route) => {
+    instanceReads.push({
+      path: navigationPath,
+      url: route.request().url(),
+      features: [...features],
+    });
+    return route.fulfill({
+      headers: { 'x-tamil-studio-fixture': 'enabled' },
+      json: { ...instance, features },
+    });
+  });
+  await context.route('**/api/v1/accounts/me', (route) =>
     localSkinDesigner
       ? route.fulfill({ status: 401, json: { message: 'Sign in required.' } })
       : route.fulfill({ json: account }),
   );
-  await page.route(
+  await context.route(
     /\/api\/v1\/(?:map|music|generator|ai|terrain|ai-building)-studio\//,
     (route) => {
       const request = route.request();
@@ -246,11 +278,43 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
       return route.fulfill({ status: 404, json: { message: 'No such fixture.' } });
     },
   );
-  await page.route('**/api/v1/building-drafts', (route) => {
+  await context.route('**/api/v1/building-drafts', (route) => {
     if (route.request().method() === 'GET') return route.fulfill({ json: { items: [] } });
     unexpected.push(`${route.request().method()} building-drafts`);
     return route.fulfill({ status: 405, json: { message: 'Fixture is read-only.' } });
   });
+  async function captureFixture(path: string, name: string, ready: () => Promise<void>) {
+    navigationPath = path;
+    const before = instanceReads.length;
+    // Observe the actual navigation response: a missed interception must fail explicitly,
+    // rather than appearing to be a slow or unavailable translated studio.
+    const responsePromise = page.waitForResponse(
+      (response) => new URL(response.url()).pathname === '/api/v1/instance',
+    );
+    await capture(page, info, path, name, async () => {
+      const response = await responsePromise;
+      const payload = await response.json();
+      await info.attach(`tamil-instance-${path.slice(1)}`, {
+        body: Buffer.from(
+          JSON.stringify({
+            path,
+            status: response.status(),
+            fixture: response.headers()['x-tamil-studio-fixture'] ?? null,
+            features: payload.features,
+            interceptedRequests: instanceReads.slice(before),
+          }),
+        ),
+        contentType: 'application/json',
+      });
+      expect(response.ok(), `instance response at ${path}`).toBe(true);
+      expect(response.headers()['x-tamil-studio-fixture'], `instance fixture at ${path}`).toBe(
+        'enabled',
+      );
+      expect(payload.features, `enabled features at ${path}`).toEqual(features);
+      expect(instanceReads.slice(before).some((read) => read.path === path)).toBe(true);
+      await ready();
+    });
+  }
   const pricingMessages = new Map<string, string>([
     [
       '/map-studio',
@@ -273,7 +337,7 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
     ['/terrain-studio', 'AI Terrain Studio', 'Your first idea'],
     ['/ai-building-studio', 'AI Building Studio', 'Your first idea'],
   ] as const) {
-    await capture(page, info, path, `enabled-${path.slice(1)}`, async () => {
+    await captureFixture(path, `enabled-${path.slice(1)}`, async () => {
       await expect(page.getByRole('heading', { name: text(heading), exact: true })).toBeVisible();
       await expect(page.locator('.studio-workspace')).toBeVisible();
       await expect(page.locator('.studio-header button').filter({ hasText: /3\s/ })).toBeVisible();
@@ -306,7 +370,7 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
       expect(mockedReads).toContain(`/api/v1${path}/account`);
     });
   }
-  await capture(page, info, '/building-studio', 'enabled-building-studio', async () => {
+  await captureFixture('/building-studio', 'enabled-building-studio', async () => {
     await expect(
       page.getByRole('heading', { name: text('Building Studio'), exact: true }),
     ).toBeVisible();
@@ -317,10 +381,51 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
   // The anonymous skin designer is the real local painting UI; no purchased skin,
   // server-side design creation, remote atlas fixture, or model provider is needed.
   localSkinDesigner = true;
-  await capture(page, info, '/skins', 'enabled-skin-designer', async () => {
-    await expect(page.getByRole('textbox', { name: text('Skin name'), exact: true })).toBeEnabled();
+  await captureFixture('/skins', 'enabled-skin-designer', async () => {
+    const skinName = page.getByRole('textbox', { name: text('Skin name'), exact: true });
+    await expect(skinName).toBeEnabled();
+    await expect(skinName).toHaveValue(text('My colony'));
+    await expect(
+      page.getByRole('group', { name: text('Model to paint'), exact: true }).getByRole('button'),
+    ).toHaveText(['Worker', 'Warrior', 'Explorer', 'Swarm'].map(text));
     await expect(page.getByRole('complementary', { name: text('Paint tools') })).toBeVisible();
     await expect(page.locator('.skin-stage > .skin-viewport')).toBeVisible();
+  });
+  async function showMaterials(bottom: boolean) {
+    const tools = page.getByRole('complementary', { name: text('Paint tools') });
+    const expand = tools.getByRole('button', { name: text('Expand toolbox'), exact: true });
+    if (await expand.isVisible()) await expand.click();
+    await tools
+      .getByRole('group', { name: text('Brush paints'), exact: true })
+      .getByRole('button', { name: text('Material'), exact: true })
+      .click();
+    const materials = tools.getByRole('radiogroup', { name: text('Material'), exact: true });
+    await expect(materials.getByRole('radio')).toHaveCount(COLONY_SKIN_MATERIALS.length);
+    for (const material of COLONY_SKIN_MATERIALS)
+      await expect(
+        materials.getByRole('radio', { name: text(material.name), exact: true }),
+      ).toHaveCount(1);
+    await page.locator('.skin-toolbox, .skin-tool-options').evaluateAll((elements) => {
+      for (const element of elements) element.scrollTop = 0;
+    });
+    if (bottom)
+      await page.locator('.skin-toolbox, .skin-tool-options').evaluateAll((elements) => {
+        for (const element of elements) element.scrollTop = element.scrollHeight;
+      });
+  }
+  await captureFixture('/skins', 'enabled-skin-materials', () => showMaterials(false));
+  await captureFixture('/skins', 'enabled-skin-materials-bottom', () => showMaterials(true));
+  await captureFixture('/skins', 'enabled-skin-shapes', async () => {
+    await page
+      .getByRole('group', { name: text('Model to paint'), exact: true })
+      .getByRole('button', { name: text('Swarm'), exact: true })
+      .click();
+    await page.locator('.skin-shape-button').click();
+    const shapes = page.getByRole('dialog', { name: text('Swarm shape'), exact: true });
+    await expect(shapes.locator('.skin-shape-grid button')).toHaveCount(SWARM_MESHES.length);
+    await expect(shapes.locator('.skin-shape-grid strong')).toHaveText(
+      ['Classic', 'Crown', 'Clutch', 'Toadstool', 'Coral', 'Skep', 'Bloom'].map(text),
+    );
   });
   expect(unexpected, 'Studio capture must not dispatch writes or unmocked studio reads').toEqual(
     [],
@@ -333,6 +438,9 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
         wallet: 'Enabled, 3 available credits, no pending request or purchase packs',
         threadsAndProjects: 'Explicit empty lists: initial UI only',
         mockedReads,
+        instanceReads,
+        interception:
+          'Browser-context routes with response marker and per-navigation feature assertions',
         unexpected,
         limits:
           'No model dispatch, generated artifacts, paid operation, or production feature validation',

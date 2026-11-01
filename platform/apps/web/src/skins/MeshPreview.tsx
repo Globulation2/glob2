@@ -1,3 +1,5 @@
+import { skinModelLabel } from './labels.ts';
+import { translateError } from '../i18n.tsx';
 import { MessageError } from '../i18n.tsx';
 import { message as sourceMessage } from '../i18n.tsx';
 import { t, useLocale } from '../i18n.tsx';
@@ -63,7 +65,7 @@ export function MeshPreview(props: ViewportProps) {
     latest = useRef(props),
     scene = useRef<SceneView | null>(null);
   const invalidate = useRef<() => void>(() => {});
-  const [error, setError] = useState(''),
+  const [error, setError] = useState<string | Error>(''),
     [attempt, setAttempt] = useState(0),
     [ready, setReady] = useState(false);
   const [cursor, setCursor] = useState<[number, number] | null>(null);
@@ -308,7 +310,7 @@ export function MeshPreview(props: ViewportProps) {
       requestDraw();
     }
     void start().catch((e: unknown) => {
-      if (!disposed) setError(e instanceof Error ? e.message : t('Preview unavailable.'));
+      if (!disposed) setError(e instanceof Error ? e : sourceMessage('Preview unavailable.'));
     });
     return () => {
       disposed = true;
@@ -378,7 +380,7 @@ export function MeshPreview(props: ViewportProps) {
         ref={canvas}
         aria-label={
           props.label ??
-          t('Paint directly on the 3D {value0} model', { value0: props.model.name.toLowerCase() })
+          t('Paint directly on the 3D {value0} model', { value0: skinModelLabel(props.model.id) })
         }
         onContextMenu={(e) => e.preventDefault()}
         onPointerDown={(e) => {
@@ -484,7 +486,15 @@ export function MeshPreview(props: ViewportProps) {
       )}
       {error && (
         <div className="skin-canvas-message" role="alert">
-          <p>{props.interactive === false ? t('Preview unavailable') : error}</p>
+          <p>
+            {props.interactive === false
+              ? t('Preview unavailable')
+              : typeof error === 'string'
+                ? t(error)
+                : error instanceof MessageError
+                  ? translateError(error)
+                  : error.message}
+          </p>
           {props.interactive !== false && (
             <button onClick={() => setAttempt((n) => n + 1)}>{t('Retry 3D canvas')}</button>
           )}
