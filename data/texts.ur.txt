@@ -6823,16 +6823,6 @@ MCP سرور چالو کریں
 [script cursor %0 %1]
 
 [lush_grass]
-
-[dry_grass]
-
-[dune_sand]
-
-[pale_sand]
-
-[scenario messages]
-پیغامات ▸
-[lush_grass]
 سرسبز گھاس
 [dry_grass]
 سوکھی گھاس
@@ -6840,3 +6830,5 @@ MCP سرور چالو کریں
 ٹیلے کی ریت
 [pale_sand]
 ہلکے رنگ کی ریت
+[scenario messages]
+پیغامات ▸

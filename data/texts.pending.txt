@@ -16,7 +16,6 @@
 [dry_grass]
 [dune_sand]
 [pale_sand]
-
 [script compile success]
 [script error at %0:%1: %2]
 [script compile failure %0:%1:(%2):%3]

@@ -6823,16 +6823,6 @@ MCP सर्वर चालू करें
 [script cursor %0 %1]
 
 [lush_grass]
-
-[dry_grass]
-
-[dune_sand]
-
-[pale_sand]
-
-[scenario messages]
-संदेश ▸
-[lush_grass]
 हरी-भरी घास
 [dry_grass]
 सूखी घास
@@ -6840,3 +6830,5 @@ MCP सर्वर चालू करें
 टीलों की रेत
 [pale_sand]
 हल्के रंग की रेत
+[scenario messages]
+संदेश ▸

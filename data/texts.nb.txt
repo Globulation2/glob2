@@ -6787,51 +6787,13 @@ Mengde fisk
 [Camp-site amount]
 Antall leirplasser
 [lush_grass]
-
+Frodig gress
 [dry_grass]
-
+Tørt gress
 [dune_sand]
-
+Dynesand
 [pale_sand]
-
-[stats topic overview]
-
-[stats topic economy]
-
-[stats topic world]
-
-[stats work construction]
-
-[stats defence]
-
-[stats history]
-
-[stats waiting]
-
-[stats unit details]
-
-[stats map overlays]
-
-[stats topic]
-
-[stats full history]
-
-[stats missing readings]
-
-[script compile success]
-
-[script error at %0:%1: %2]
-
-[script compile failure %0:%1:(%2):%3]
-
-[script load failed %0]
-
-[script save failed %0]
-
-[script cursor %0 %1]
-
-[scenario messages]
-Meldinger ▸
+Blek sand
 [stats topic overview]
 Oversikt
 [stats topic economy]
@@ -6856,11 +6818,17 @@ Emne
 Åpne hele historikken
 [stats missing readings]
 — Ingen registrert avlesning ennå. Velg en statistikk for detaljer.
-[lush_grass]
-Frodig gress
-[dry_grass]
-Tørt gress
-[dune_sand]
-Dynesand
-[pale_sand]
-Blek sand
+[script compile success]
+
+[script error at %0:%1: %2]
+
+[script compile failure %0:%1:(%2):%3]
+
+[script load failed %0]
+
+[script save failed %0]
+
+[script cursor %0 %1]
+
+[scenario messages]
+Meldinger ▸

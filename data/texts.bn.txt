@@ -6820,3 +6820,15 @@ MCP সার্ভার চালু করুন
 সম্পূর্ণ ইতিহাস খুলুন
 [stats missing readings]
 — এখনো কোনো পরিমাপ রেকর্ড হয়নি। বিস্তারিত দেখতে একটি পরিসংখ্যান বেছে নিন।
+[script compile success]
+
+[script error at %0:%1: %2]
+
+[script compile failure %0:%1:(%2):%3]
+
+[script load failed %0]
+
+[script save failed %0]
+
+[script cursor %0 %1]
+
