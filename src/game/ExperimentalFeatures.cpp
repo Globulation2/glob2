@@ -9,6 +9,7 @@
 #include <Toolkit.h>
 
 #include <iostream>
+#include <iterator>
 #include <algorithm>
 #include <sstream>
 #include <stdexcept>
@@ -20,30 +21,8 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others."},
 		{ExperimentId::FarmAreas, "farm-areas", "Farm areas",
 		 "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."},
-		{ExperimentId::IceTerrain, "ice-terrain", "Ice terrain",
-		 "Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources."},
-		{ExperimentId::TrailTerrain, "road-terrain", "Trail terrain",
-		 "Adds weathered trails to the map editor. Ground units move at double speed. Trails support buildings but no resources. Flying units are unaffected."},
 		{ExperimentId::MarketsV2, "markets-v2", "Markets V2",
 		 "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."},
-		{ExperimentId::ObstacleTerrain, "obstacle-terrain", "Obstacle terrain",
-		 "Adds boulders, hedges and thickets to the map editor. Ground units cannot cross them and they stop projectiles; flying units pass over. They hold neither buildings nor resources."},
-		{ExperimentId::RidgeTerrain, "ridge-terrain", "Ridge terrain",
-		 "Adds rock ridges and outcrops to the map editor. Ground units cannot cross them, but towers shoot over them and flying units pass. They hold neither buildings nor resources."},
-		{ExperimentId::BarrenTerrain, "barren-terrain", "Barren ground",
-		 "Adds dirt, clay, gravel and flower meadows to the map editor. Buildings can stand on them, nothing grows on or next to them, and they do not count as shoreline."},
-		{ExperimentId::RoughTerrain, "rough-terrain", "Rough ground",
-		 "Adds mud, marsh, deep snow and scree to the map editor. Ground units move at about two thirds speed. Rough ground holds neither buildings nor resources."},
-		{ExperimentId::PathTerrain, "path-terrain", "Path terrain",
-		 "Adds dirt tracks and boardwalks to the map editor. Like trails, ground units move at double speed and buildings are allowed, but nothing grows."},
-		{ExperimentId::LavaTerrain, "lava-terrain", "Lava terrain",
-		 "Adds lava and ember fields to the map editor. Ground units cannot enter them; flying units crossing them lose health quickly. Projectiles pass over."},
-		{ExperimentId::FertileTerrain, "fertile-terrain", "Fertile ground",
-		 "Adds loam, moss and spring meadows to the map editor. They support buildings and crops and irrigate the land around them more strongly than water does."},
-		{ExperimentId::DeepWaterTerrain, "deep-water-terrain", "Deep water",
-		 "Adds deep and dark water to the map editor. Swimmers cross them more slowly, no algae grows in them, and they still irrigate nearby fields."},
-		{ExperimentId::VoidTerrain, "void-terrain", "Void terrain",
-		 "Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge."},
 	};
 	return definitions;
 }
@@ -63,6 +42,17 @@ std::optional<ExperimentId> parseExperimentKey(const std::string &key)
 
 namespace
 {
+// Save formats since 134 carried terrain authoring flags. Terrain rules now
+// apply unconditionally; consume these keys even in strict map-header readers.
+bool retiredTerrainExperiment(const std::string &key)
+{
+	static constexpr const char *keys[] = {
+		"ice-terrain", "road-terrain", "obstacle-terrain", "ridge-terrain",
+		"barren-terrain", "rough-terrain", "path-terrain", "lava-terrain",
+		"fertile-terrain", "deep-water-terrain", "void-terrain"};
+	return std::find(std::begin(keys), std::end(keys), key) != std::end(keys);
+}
+
 CatalogExperimentRegistry &catalogRegistry()
 {
 	static CatalogExperimentRegistry registry;
@@ -306,6 +296,11 @@ bool ExperimentSet::load(GAGCore::InputStream *stream, Sint32 versionMinor, bool
 			stream->readLeaveSection();
 			return false;
 		}
+		// Catalogs may explicitly reuse a former built-in key. Retire only the
+		// authoring flag, not a gate declared by this game's embedded catalog.
+		if (retiredTerrainExperiment(key) &&
+			std::find(allowedKeys.begin(), allowedKeys.end(), key) == allowedKeys.end())
+			continue;
 		if (knownExperimentKey(key, allowedKeys))
 			set(key, true, allowedKeys);
 		else if (rejectUnknown)

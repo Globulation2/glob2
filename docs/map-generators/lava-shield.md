@@ -95,9 +95,7 @@ older previews.
 Short tongues leave broad green coastal gaps; long tongues seal the coast and are
 crossed at their fords. All colonies can meet on foot. Swimming adds ocean approaches
 and may shorten travel; it is not a prerequisite for crossing a seal. The generator
-uses only existing catalogue terrain and does not alter resource or movement rules;
-a generated map carries the lava, paths, barren, rough, fertile and deep-water
-terrain experiments in its header.
+uses only existing catalogue terrain and does not alter resource or movement rules.
 
 ### Controls and support envelope
 

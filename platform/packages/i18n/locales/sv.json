@@ -2914,5 +2914,6 @@
   "More filters": "Fler filter",
   "Clear filters": "Rensa filter",
   "No results match these filters.": "Inga resultat matchar dessa filter.",
-  "Results: {value0}": "Resultat: {value0}"
+  "Results: {value0}": "Resultat: {value0}",
+  "Game text field": "Textfält i spelet"
 }

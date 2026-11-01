@@ -38,8 +38,8 @@
     },
     {
       "id": "tutorial-missions",
-      "title": "Tutorial mission selection",
-      "description": "Bundled tutorial campaign; initially unlocked mission.",
+      "title": "Tutorial lessons",
+      "description": "Current JavaScript lesson catalog, with all ten lessons available.",
       "group": "Menus & campaigns"
     },
     {
@@ -226,9 +226,9 @@
       "group": "Gameplay"
     },
     {
-      "id": "game-tutorial",
-      "title": "Tutorial instruction panel",
-      "description": "Illustrative tutorial text over the same map fixture.",
+      "id": "game-scenario-message",
+      "title": "Scenario message panel",
+      "description": "General scripted-scenario message support; current tutorial lessons use their own guidance cards.",
       "group": "Gameplay"
     },
     {
@@ -526,7 +526,7 @@
     {
       "id": "campaign-editor",
       "title": "Campaign editor",
-      "description": "Bundled tutorial campaign opened for review; nothing is saved.",
+      "description": "Ordinary campaign test fixture opened for review; nothing is saved.",
       "group": "Map & campaign editor"
     },
     {
@@ -562,9 +562,9 @@
       "availability": "desktop"
     },
     {
-      "id": "editor-dock-locked",
-      "title": "Map editor \u00b7 dock locked group",
-      "description": "An experiment-gated terrain group opened by its palette action: dimmed cards with a lock and an Enable for this map action.",
+      "id": "editor-dock-obstacles",
+      "title": "Map editor \u00b7 dock obstacle terrain",
+      "description": "Obstacle terrain opened by its palette action: all brushes are immediately selectable.",
       "group": "Map & campaign editor",
       "availability": "desktop"
     },
@@ -628,7 +628,7 @@
     {
       "id": "campaign-map-entry",
       "title": "Campaign mission editor",
-      "description": "First mission of the bundled tutorial campaign.",
+      "description": "First mission of the ordinary campaign test fixture.",
       "group": "Map & campaign editor"
     },
     {

@@ -1,0 +1,26 @@
+{
+  "id": "glob2:training",
+  "name": "Training landscape",
+  "apiVersion": 1,
+  "revision": 1,
+  "description": "Fixed 256\u00d7256 teaching landscape with standalone lesson starts.",
+  "tags": [
+    "terrain:natural",
+    "feature:lake",
+    "style:training"
+  ],
+  "controls": [
+    {
+      "id": "lesson",
+      "label": "Lesson setup",
+      "minimum": 0,
+      "maximum": 9,
+      "step": 1,
+      "default": 0,
+      "searchRange": [
+        0,
+        9
+      ]
+    }
+  ]
+}

@@ -11,6 +11,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <utility>
 #ifdef HAVE_FRIBIDI
 #include <fribidi/fribidi.h>
 #endif
@@ -72,6 +73,61 @@ namespace
 
 TEST_SUITE("BidiText")
 {
+	TEST_CASE("logical shaping runs preserve Arabic codepoints and numeric ratios")
+	{
+		const auto runs = GAGCore::logicalBidiRuns("کھلاڑی 12 / 100 Glob2");
+		bool ratio = false, arabic = false;
+		for (const auto &run : runs)
+		{
+			if (run.text.find("12 / 100") != std::string::npos) { CHECK_FALSE(run.rtl); ratio = true; }
+			if (run.text.find("کھلاڑی") != std::string::npos) { CHECK(run.rtl); arabic = true; }
+		}
+		CHECK(ratio);
+		CHECK(arabic);
+		const auto ltr = GAGCore::logicalBidiRuns("क्षत्रिय खिलाड़ी 12 / 100");
+		REQUIRE(ltr.size() == 1);
+		CHECK(ltr.front().text == "क्षत्रिय खिलाड़ी 12 / 100");
+		CHECK_FALSE(ltr.front().rtl);
+		for (const char *ratio : {"12 / 100", "١٢ / ١٠٠", "۱۲ / ۱۰۰", "-12", "-١٢", "+۱۲"})
+		{
+			bool found = false;
+			for (const auto &run : GAGCore::logicalBidiRuns(std::string("کھلاڑی ") + ratio + " Glob2"))
+				if (run.text.find(ratio) != std::string::npos) { CHECK_FALSE(run.rtl); found = true; }
+			CHECK(found);
+		}
+		bool url = false, joinControl = false;
+		for (const auto &run : GAGCore::logicalBidiRuns("کھلاڑی https://glob2.org/play?q=12 پلیئر"))
+			if (run.text.find("https://glob2.org/play?q=12") != std::string::npos)
+			{ CHECK_FALSE(run.rtl); url = true; }
+		for (const auto &run : GAGCore::logicalBidiRuns("کھ\u200cلاڑی"))
+			if (run.text.find("\u200c") != std::string::npos) joinControl = true;
+		CHECK(url); CHECK(joinControl);
+		bool parentheses = false;
+		for (const auto &run : GAGCore::logicalBidiRuns("کھلاڑی (https://glob2.org/play?) پلیئر"))
+			if (run.text.find("(https://glob2.org/play?)") != std::string::npos)
+			{ CHECK_FALSE(run.rtl); parentheses = true; }
+		CHECK(parentheses);
+	}
+
+	TEST_CASE("logical shaping keeps both ends of spaced numeric brackets in one direction")
+	{
+		for (const auto &pair : {std::pair{'(', ')'}, std::pair{'[', ']'}, std::pair{'{', '}'}})
+		{
+			for (const char *number : {"100 %", "12 / 100", "100% اردو"})
+			{
+				const auto text = std::string("ڈیسک ٹاپ کے مطابق ") + pair.first + number + pair.second;
+				int opening = -1, closing = -1;
+				for (const auto &run : GAGCore::logicalBidiRuns(text))
+				{
+					if (run.text.find(pair.first) != std::string::npos) opening = int(run.rtl);
+					if (run.text.find(pair.second) != std::string::npos) closing = int(run.rtl);
+				}
+				REQUIRE(opening != -1);
+				CHECK(opening == closing);
+			}
+		}
+	}
+
 	TEST_CASE("left-to-right text is unchanged")
 	{
 		CHECK(visualOrder("Hello, world (2 vs 2)") == "Hello, world (2 vs 2)");

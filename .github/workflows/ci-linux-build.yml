@@ -316,6 +316,8 @@ jobs:
           python3 test/ci_run_commands.py \
             --check 'translation catalog' 'python3 data/check_translations.py --strict' \
             --check 'translation tests' 'python3 test/test_translations.py' \
+            --check 'translation review tooling' 'python3 test/test_translation_program.py' \
+            --check 'script support probe tooling' 'python3 test/test_script_support.py' \
             --check 'font coverage' 'GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 test/test_font_coverage.py'
       - name: Exercise production CLI and retain continuation traces
         if: ${{ !cancelled() }}
@@ -568,6 +570,7 @@ jobs:
             --check 'toolkit instrumentation' 'artifacts/map-generator-tools-venv/bin/python test/test_toolkit_instrumentation.py' \
             --check tournaments 'python3 test/test_tournaments.py' \
             --check 'tournament pipeline' 'python3 test/test_tournament_pipeline.py' \
+            --check 'tournament storage guardrails' 'python3 test/test_tournament_storage.py' \
             --check 'tournament CPU allocations' 'python3 test/test_tournament_resources.py' \
             --check 'tournament allocation CLI' 'python3 test/test_tournament_cli.py' \
             --check 'distributed map telemetry' 'python3 test/test_distributed_map_telemetry.py' \

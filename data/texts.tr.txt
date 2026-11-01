@@ -3102,8 +3102,6 @@ Sil
 Yerleştirmek için uygun arazide bırak
 [Paint on the map; two fingers move]
 Haritada boya; iki parmakla taşı
-[Tutorial ▸]
-Öğretici ▸
 [Back to tools]
 Araçlara dön
 [Starvation overlay]
@@ -4886,6 +4884,34 @@ Adım atacak boş karesi olmadan sıkışmış birimler.
 Temizlenen kaynaklar
 [stat cleared about]
 İşçilerin yer açmak için temizlik bölgelerinde kaldırdığı kaynaklar.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestij
 [stat prestige about]
@@ -5548,14 +5574,6 @@ Uygulamanın tamamında çizimi sınırlar. Daha düşük değerler çizim işin
 Buz
 [road]
 Patika
-[experiment ice-terrain]
-Buz arazisi
-[experiment ice-terrain help]
-Harita düzenleyicisine buz ekler. Kara birimleri yarı hızda hareket eder ve buz üzerinde geçen her 32 simülasyon adımında bir sağlık puanı kaybeder. Buz üzerinde bina veya kaynak bulunamaz.
-[experiment road-terrain]
-Patika arazisi
-[experiment road-terrain help]
-Harita düzenleyicisine aşınmış patikalar ekler. Kara birimleri iki kat hızla hareket eder. Patikalarda bina bulunabilir, ancak kaynak bulunamaz. Uçan birimler etkilenmez.
 [experiment markets-v2]
 Pazarlar V2
 [experiment markets-v2 help]
@@ -5704,42 +5722,6 @@ Verimli arazi
 Derin su
 [terrain group void]
 Boşluk
-[experiment obstacle-terrain]
-Engel arazisi
-[experiment obstacle-terrain help]
-Harita düzenleyicisine kaya blokları, bitki çitleri ve çalılıklar ekler. Kara birimleri bunları aşamaz ve bunlar mermileri durdurur; uçan birimler üzerinden geçer. Üzerlerinde bina veya kaynak bulunamaz.
-[experiment ridge-terrain]
-Sırt arazisi
-[experiment ridge-terrain help]
-Harita düzenleyicisine kayalık sırtlar ve kaya çıkıntıları ekler. Kara birimleri bunları aşamaz, ancak kuleler üzerlerinden ateş eder ve uçan birimler geçer. Üzerlerinde bina veya kaynak bulunamaz.
-[experiment barren-terrain]
-Çorak arazi
-[experiment barren-terrain help]
-Harita düzenleyicisine toprak, kil, çakıl ve çiçekli çayırlar ekler. Üzerlerine bina kurulabilir; üzerlerinde veya yanlarında hiçbir şey büyümez ve kıyı sayılmazlar.
-[experiment rough-terrain]
-Engebeli arazi
-[experiment rough-terrain help]
-Harita düzenleyicisine çamur, bataklık, derin kar ve taş döküntüsü ekler. Kara birimleri yaklaşık üçte iki hızla ilerler. Engebeli arazide bina veya kaynak bulunamaz.
-[experiment path-terrain]
-Yol arazisi
-[experiment path-terrain help]
-Harita düzenleyicisine toprak ve ahşap yollar ekler. Patikalar gibi, kara birimleri iki kat hızla ilerler ve bina kurulabilir, ancak hiçbir şey büyümez.
-[experiment lava-terrain]
-Lav arazisi
-[experiment lava-terrain help]
-Harita düzenleyicisine lav ve kor alanları ekler. Kara birimleri bunlara giremez; üzerinden geçen uçan birimler hızla sağlık kaybeder. Mermiler üzerinden geçer.
-[experiment fertile-terrain]
-Verimli arazi
-[experiment fertile-terrain help]
-Harita düzenleyicisine verimli toprak, yosun ve bahar çayırları ekler. Binaları ve ekinleri destekler, çevrelerindeki araziyi sudan daha güçlü sularlar.
-[experiment deep-water-terrain]
-Derin su
-[experiment deep-water-terrain help]
-Harita düzenleyicisine derin ve karanlık su ekler. Yüzücüler daha yavaş geçer, içlerinde alg büyümez ve yine de yakındaki tarlaları sularlar.
-[experiment void-terrain]
-Boşluk arazisi
-[experiment void-terrain help]
-Harita düzenleyicisine çukurlar ve uçurumlar ekler. Uçan birimler dâhil hiçbir şey bunları aşamaz ve mermiler kenarlarında durur.
 [terrain group custom]
 Özel
 [terrain group classic]
@@ -5772,8 +5754,6 @@ Uçanlara zarar verir
 Bir fırça seçin. Her grubun arazi türleri aynı kuralları paylaşır ve yalnızca görünüm bakımından farklıdır.
 [terrain rule algae grow]
 Algler büyür
-[terrain palette experiments hint]
-Bir fırça seçin. Ayarlar > Deneyler altında ilgili deneyler etkinleştirildiğinde burada daha fazla arazi grubu görünür.
 [brush valid on %0]
 Geçerli olduğu arazi: %0
 [brush valid nowhere]
@@ -6210,246 +6190,6 @@ Kayıt dışa aktarılamadı.
 Kaydı sil
 [recording refresh]
 Yenile
-[tutorial part1 message 1]
-Globulation 2'ye hoş geldiniz! Dört görevde koloni yönetimini öğreneceksiniz. İlerlemenizi oyun menüsünden kaydedip daha sonra ana menüden yükleyebilirsiniz. Devam etmek için Boşluk'a veya dokunmatik ekranda Tamam'a basın. Bazı iletiler kaybolur; bunları Mesaj geçmişinden yeniden okuyabilirsiniz.
-[tutorial part1 message 2]
-Bir Yuva ve bir işçiyle başlıyorsunuz. Birlikte nasıl çalıştıklarına bakalım.
-[tutorial part1 message 3]
-İşçiniz buğday biçip Yuvaya taşır. Yuva buğdayla yeni birimler üretir; bu yüzden koloninizin temelidir.
-[tutorial part1 message 4]
-Hareket eden birim olan globülünüzü sol tıklayarak veya dokunarak seçin.
-[tutorial part1 message 5]
-Birim bilgisinde besin düzeyinin zamanla azaldığını görebilirsiniz. Globülünüz acıkıyor. Besin çubukları görünürken birimin altındaki mavi çubuk kalan besini gösterir.
-[tutorial part1 message 6]
-Globüller Otellerde yemek yer. Sağ tıklayarak veya dokunmatik ekranda boş yere dokunarak seçimi kaldırın.
-[tutorial part1 message 7]
-Bina kontrollerinden Oteli seçip buğday yakınına yerleştirin. Buğdayı bulamazsanız işçinin hasat yolunu izleyin. Dokunmatikte İnşa et ile geçerli konumu onaylayın. Bitince sağ tıklayarak veya dokunmatik İptal ile yerleştirme modundan çıkın.
-[tutorial part1 message 8]
-Güzel! Otelin inşaat alanı hazır.
-[tutorial part1 message 9]
-Yuvadaki bir işçi artık Oteli yapabilir. Yakındaki ağaçlardan odun toplayıp inşaata taşır. İnşaatın bitmesini bekleyin.
-[tutorial part1 message 10]
-Tamamlanan Otelin buğdaya ihtiyacı vardır. Atanan işçi, Yuvayı besleyen işçi gibi buğday toplar.
-[tutorial part1 message 11]
-Buğday geldikçe Otelin sarı kaynak çubuğu yükselir. Depodaki buğday miktarını gösterir.
-[tutorial part1 message 12]
-Şimdi iş atamayı öğrenelim.
-[tutorial part1 message 13]
-Bir işçi Yuvaya, diğeri Otele malzeme sağlar. İkisi de yemek için Otelde mola verebilir. Bu normaldir.
-[tutorial part1 message 14]
-Yuvayı seçip işçi atama kontrolünü bulun. Masaüstünde Çalışıyor olarak etiketlenir; dokunmatikte atanmış işçiler ve hedef kontrolünü kullanın. Hedef, binada kaç işçi istediğinizdir.
-[tutorial part1 message 15]
-Yuvanın işçi hedefini 0 yapın. Ardından Oteli seçip onun hedefini de 0 yapın.
-[tutorial part1 message 16]
-İşçiler boşta ama hâlâ yemek yemelidir. İşçi atanmamış Otelin buğdayı sonunda tükenir.
-[tutorial part1 message 17]
-Yemek bulamayan globül sağlık kaybeder ve ölebilir. Hastane yaralıları iyileştirir, ancak Otellere besin sağlamayı da sürdürmelisiniz.
-[tutorial part1 message 18]
-Bina kontrollerinden Hastane yapın. Buğday gerekmez; odun yakınına veya Yuva yakınında merkezi bir yere koyun.
-[tutorial part1 message 19]
-Hastane inşaatını seçip işçi hedefini 2 yapın. İki işçi daha çabuk tamamlar.
-[tutorial part1 message 20]
-Hastane hazır. Yaralı globüller artık buraya gelip sağlıklarını yenileyebilir.
-[tutorial part1 message 21]
-Siyah alanlar keşfedilmemiştir. Birimler hareket ederken çevreyi açar. İşçiler işlerini takip ettiğinden keşfe uygun değildir. Kaşifler bu iş içindir.
-[tutorial part1 message 22]
-Yuvayı seçip işçi, kaşif ve savaşçı üretim oranlarını bulun. Kaşif oranını 1'e çıkarın.
-[tutorial part1 message 23]
-İşçi ve kaşif oranı 1 olduğunda Yuva zamanla ikisinden eşit sayıda üretir. Şimdilik yalnız kaşif üretmek için işçi oranını 0 yapın.
-[tutorial part1 message 24]
-Bir işçinin buğday getirebilmesi için Yuvanın işçi atama hedefini yeniden 1 yapın.
-[tutorial part1 message 25]
-Oteli seçip onun işçi hedefini de 1 yapın. Büyüyen koloninin düzenli besine ihtiyacı vardır.
-[tutorial part1 message 26]
-Yuvanın bir kaşif üretmesini bekleyin.
-[tutorial part1 message 27]
-Kaşif koloninin çevresinde uçarak daha fazla araziyi açar. Devam etmeden önce ikinci kaşifin üretilmesini bekleyin.
-[tutorial part1 message 28]
-Yuvayı yeniden seçin. Kaşif oranını 0, işçi oranını 1 yaparak işçi üretimine dönün.
-[tutorial part2 message 1]
-Üssün doğusunda taş var. Bu konumu hatırlayın; sonra gerekecek.
-[tutorial part2 message 2]
-Taşların güneyindeki ağaçlar portakal ağacıdır. Kaynak bilgisini görmek için seçin. Meyvelere sonra döneceğiz; şimdi Yuvaya odaklanın.
-[tutorial part2 message 3]
-Yuva yalnız işçi üretsin: işçi oranı 1, kaşif ve savaşçı oranları 0.
-[tutorial part2 message 4]
-Koloniyi hızla büyütelim. Yuvanın işçi atama hedefini 6 yapın. Henüz altı işçi olmasa da yenileri çıktıkça boş işleri doldurur.
-[tutorial part2 message 5]
-8 işçiniz olduğunda sonraki işlere geçeceğiz. Nüfus artarken Yuvayı ve Oteli beslemeyi sürdürün.
-[tutorial part2 message 6]
-Artık birkaç işçi Yuvaya buğday sağlıyor. Daha çok teslimat, daha hızlı birim üretimi demektir.
-[tutorial part2 message 7]
-Yeni bir işçi 5 birim buğdaya mal olur. Uzaktaki tarladan taşımak zaman aldığından Yuvanın çoğu zaman Otelden daha fazla tedarikçiye ihtiyacı olur. Besin kullanan binaları mümkünse buğday yakınına koyun.
-[tutorial part2 message 8]
-En az 8 işçiniz var. İnşaat sırasında nüfus artışını yavaşlatmak için Yuvanın işçi atama hedefini 1'e indirin.
-[tutorial part2 message 9]
-Daha fazla yemek kapasitesi gerekiyor. Mevcut Otelin kuzeyine ikinci bir Otel yapın.
-[tutorial part2 message 10]
-Boş işçileri yeni Otelin inşaatına atayın. Yalnız 3 odun gerektiğinden 3'ten çok inşaatçı pek fayda sağlamaz.
-[tutorial part2 message 11]
-Tamamlanan Otel işletme işçi hedefine, normalde 1'e döner. İnşaat ve günlük tedarik ayrı atama hedefleri kullanır.
-[tutorial part2 message 12]
-İşçiler daha hızlı hareket etmeyi öğrenebilir. Koşu Yolu bu eğitimi sağlar.
-[tutorial part2 message 13]
-Bina kontrollerinde Koşu Yolunu bulun. Masaüstünde açıklama ve maliyet için simge üzerinde durun. Dokunmatikte İnşa et menüsünden seçip yerleştirmeye hazırlanın. Henüz koymayın.
-[tutorial part2 message 14]
-Koşu Yolu çok odun ve biraz taş gerektirir. Birimlerin kolay ulaşacağı merkezi bir yer seçin.
-[tutorial part2 message 15]
-Örneğin Yuvanın güneyine Koşu Yolu yapın. Çevresinde boşluk bırakın; eğitim binaları yükseltilirken genişlemek zorundadır.
-[tutorial part2 message 16]
-Koşu Yolu inşaatının işçi hedefini 5–7 yapın. Toplam 7 inşaat malzemesi gerekir.
-[tutorial part2 message 17]
-Tamamlanınca Koşu Yolu, sürekli malzeme veya buğday verilmeden gelen birimleri eğitir.
-[tutorial part2 message 18]
-Globüller eğitim için Koşu Yoluna giriyor. Eğitilince daha hızlı koşarlar.
-[tutorial part2 message 19]
-Koşu Yolunu seçip eğitim ilerlemesini inceleyin. Göstergeler içeridekilerin bitirmeye ne kadar yakın olduğunu gösterir.
-[tutorial part2 message 20]
-Eğitimli işçiler hızlı yol alır ve kaynakları erken ulaştırır. Koloni büyürken besin stoklarını izleyin; hızlı teslimat ancak yeterli Otel besleniyorsa işe yarar.
-[tutorial part2 message 21]
-Oyun arayüzündeki işçi nüfusu sayacını bulun. Toplam nüfusu gösterir; kullanılabilir işçi sayısı boşta kalanları veya doldurulamayan işleri fark ettirir. Boş işçileri kullanın ama koloninin kaldırabileceğinden çok iş atamayın.
-[tutorial part2 message 22]
-Arayüz kaşif ve savaşçı sayılarını da gösterir. Üretim planlarken veya bayraklara birim atarken bakın.
-[tutorial part2 message 23]
-2 Oteliniz var. Her temel Otel aynı anda 4 birimi doyurur; toplam 8 yemek yeri vardır. 8'den fazla birim acıkabileceğinden kuyruklar için kapasite bırakın.
-[tutorial part2 message 24]
-İki Otel büyüyen koloniyi sonsuza dek beslemez. Kıtlık açlığa dönüşmeden yemek kapasitesini artırın.
-[tutorial part2 message 25]
-Buğday yakınında 3 Otel daha yapın. Aç işçiler çalışmaz; uzun süre aç kalırlarsa ölürler. Mevcut besin akışını koruyarak boş işçileri inşaata atayın.
-[tutorial part2 message 26]
-3 yeni Oteli tamamlayıp toplamı 5'e çıkarın.
-[tutorial part2 message 27]
-Yeni Oteller inşaat sonrası işletme hedefini kullanır; normalde her birinde 1 işçi olur. Tedarikçileri ve yeterli buğdayları olduğunu kontrol edin.
-[tutorial part2 message 28]
-Koşu Yolu karada ulaşımı geliştirdi. Şimdi koloniye yüzmeyi öğretelim.
-[tutorial part2 message 29]
-Yüzme havuzu birimlere yüzmeyi öğretir ve yapımı odun gerektirir. Üssün kuzeydoğusundaki geniş açıklığa, taşların kuzeyine yerleştirin. Yükseltmeler ve kaynakların büyümesi için çevresinde yer bırakın; boş işçileri inşaata atayın.
-[tutorial part2 message 30]
-Yüzme havuzu birimlere yüzmeyi öğretir ve yapımı odun gerektirir. Üssün kuzeydoğusundaki geniş açıklığa, taşların kuzeyine yerleştirin. Yükseltmeler ve kaynakların büyümesi için çevresinde yer bırakın; boş işçileri inşaata atayın.
-[tutorial part2 message 31]
-Yüzme havuzu hazır. Globüller artık girip yüzmeyi öğrenebilir.
-[tutorial part2 message 32]
-Yüzme havuzunu seçip eğitimi inceleyin. Temel havuz, temel Koşu Yolu gibi aynı anda 2 globül eğitir.
-[tutorial part2 message 33]
-Eğitimli globüller artık yüzebilir. Yakında onlara su geçmeyi gerektiren iş vereceğiz.
-[tutorial part2 message 34]
-Daha öğreneceklerimiz var. Mola gerekiyorsa oyun menüsünden kaydedip sonra dönün.
-[tutorial part2 message 35]
-Koloninin besini ve bedensel eğitimi var. Akademi, daha iyi binalar için gereken becerileri öğretir.
-[tutorial part2 message 36]
-Akademi hasat ve inşaat becerilerini geliştirir. Yapımı için suda yetişen yosun gerekir. Yüzebilen işçiler toplayabilir.
-[tutorial part2 message 37]
-Önemli eğitim binalarını koruyun. Akademi su kenarında olmak zorunda değildir; içeride korunaklı bir yer saldırıya karşı güvenli olabilir.
-[tutorial part2 message 38]
-Akademiyi havuzun arkası veya Yuvanın güneybatısında Koşu Yolunun yanı gibi korunaklı yere yapın. Boş işçileri inşaata atayın.
-[tutorial part2 message 39]
-Atanan işçileri görmek için binayı seçin. Masaüstünde ayarlanabilir Birim yollarını göster/gizle eylemi hedeflere uzanan çizgileri de gösterir; güncel kısayol için Ayarlar içindeki Oyun kontrolleri bölümüne bakın. Akademinin bitmesini bekleyin.
-[tutorial part3 message 1]
-Kolonide Oteller, Hastane, Koşu Yolu, Yüzme havuzu ve Akademi var. Savunma hazırlama zamanı.
-[tutorial part3 message 2]
-Henüz savaşçı üretmedik. Onlar olmadan koloni saldırıya karşı savunmasızdır.
-[tutorial part3 message 3]
-Yuvayı seçip savaşçı üretim oranını 2 yapın. İşçi üretimi de sürsün diye işçi oranını 1 bırakın.
-[tutorial part3 message 4]
-Yuva artık her işçiye karşı yaklaşık 2 savaşçı üretir. Hızlı üretim isterseniz daha fazla tedarikçi işçi atayın.
-[tutorial part3 message 5]
-İlk savaşçı hazır ve eğitime başlayacak. Devam etmeden önce ikinciyi bekleyin.
-[tutorial part3 message 6]
-Savaşçılar da Koşu Yolunu ve Yüzme havuzunu kullanır. Kışlada saldırı eğitimi de alabilirler.
-[tutorial part3 message 7]
-Kışla saldırı gücünü ve hızını geliştirir. Güç vuruş başına hasarı, hız saldırı sıklığını artırır. İyi eğitimli savaşçılar çok daha kalabalık eğitimsiz düşmanları yenebilir.
-[tutorial part3 message 8]
-İnşaatta gereken oduna yakın bir Kışla yapın.
-[tutorial part3 message 9]
-Boş işçileri Kışla inşaatına atayın. Besin tedarikine yeterli işçi bırakın ve doldurabileceklerinden çok iş açmayın.
-[tutorial part3 message 10]
-Kışla hazır. Savaşçılar orada saldırı becerilerini eğitebilir.
-[tutorial part3 message 11]
-Binaları yükseltmek koloniyi güçlendirir.
-[tutorial part3 message 12]
-Akademide eğitim almış işçiler yükseltmeleri inşa edebilir. Uygun binayı seçip kontrollerde Yükselt'i bulun. Hasarlı binalar önce Onar gerektirebilir.
-[tutorial part3 message 13]
-Önce neyi yükselteceğimizi seçelim. Otellerde boş kapasite var; bekleyebilirler.
-[tutorial part3 message 14]
-Hastanede de yer var. Akademi, Koşu Yolu, Yüzme havuzu veya Kışlaya odaklanabiliriz.
-[tutorial part3 message 15]
-Birimlerin daha da hızlı hareket etmesi için önce Koşu Yolunu yükseltin.
-[tutorial part3 message 16]
-Koşu Yolunu seçip bina kontrollerinden Yükselt'i seçin. İnşaattan önce içeridekiler çıkmalıdır; değişiklik hemen başlamayabilir.
-[tutorial part3 message 17]
-Boş işçileri Koşu Yolu yükseltmesine atayın. Yalnız gerekli Akademi eğitimini almış işçiler 2. seviye inşaatta çalışabilir.
-[tutorial part3 message 18]
-Koşu Yolu yükseltmesinin bitmesini bekleyin. Üst seviye binalar daha fazla kaynak ve zaman gerektirir.
-[tutorial part3 message 19]
-2. seviye Koşu Yolu tamamlandı. Öncekinden geniştir; boşluk bırakmamızın sebebi buydu. Yeterli genişleme alanı olmadan bina yükseltilemez.
-[tutorial part3 message 20]
-Şimdi Kışlayı ve Yüzme havuzunu 2. seviyeye yükseltin. İkisi de bitince devam edeceğiz.
-[tutorial part3 message 21]
-Yükseltilen binalar genellikle daha çok globüle hizmet verir veya daha iyi eğitim sunar. Örneğin 2. seviye Otelde 7 yemek yeri vardır ve birimler temel Otele göre daha hızlı doyar.
-[tutorial part3 message 22]
-Düşman yakında. Saldırıya hazırlanalım.
-[tutorial part3 message 23]
-Kuleler menzildeki düşmana ateş eder. Duvarlar onları korur. İkisiyle koloniye gelen dar yolu savunacağız.
-[tutorial part3 message 24]
-Yer varsa kuleleri çift yerleştirin. Duvarlar üç yönü koruyabilir ama işçilerin taş mühimmat getireceği yolu açık bırakın.
-[tutorial part3 message 25]
-Havuzun doğusuna, diğer meyve ağaçlarının kuzeyine bakın. Başka adaya giden dar geçit savunmaya uygundur.
-[tutorial part3 message 26]
-Ağaçlarla kıyı arasında 2 kulelik yer planlayın. Arkada taş teslimatı yolu, diğer yönlerde duvar yeri bırakın. İşçileri dışarıda bırakmayın.
-[tutorial part3 message 27]
-Oraya 2 kule yapın. Arayüzdeki kullanılabilir işçi sayısına göre her inşaata 2 veya 3 işçi atayın.
-[tutorial part3 message 28]
-Bina kontrolleriyle kulelerin dışa bakan üç tarafına duvar parçaları koyun. Koloniye bakan taraf işçilere açık kalsın.
-[tutorial part3 message 29]
-Her duvar parçası bir inşaat işi açar ve 1 taş ister. İşçiler hepsini aynı anda dolduramıyorsa sırayla tamamlarlar.
-[tutorial part3 message 30]
-İki kule ve birkaç duvar parçası bitene kadar bekleyin. Kulelere taş mühimmat da gerekir; uzak taş ocağı teslimatı yavaşlatır. Boş işçiler varsa hedefleri artırın.
-[tutorial part4 message 1]
-Koloninin besini, eğitimi ve savunması var. Binalar bir kez daha 3. seviyeye çıkabilir; eğitim ve kapasite artar. Kaynaklar ve işçi becerileri izin verdikçe geliştirin.
-[tutorial part4 message 2]
-Üssün kuzeybatısında düşman kolonisini bulun. Görünümü şimdi oraya taşıyın.
-[tutorial part4 message 3]
-Keşfedilmiş yerler savaş sisiyle gizlenebilir. Düşmanın güncel faaliyetini görmek için yakınlarda kaşif gerekir.
-[tutorial part4 message 4]
-Bayrakları açın. Bayrak ve bölgeler, her globülü ayrı ayrı kontrol etmeden birimleri yönlendirir.
-[tutorial part4 message 5]
-Uçurtma simgeli Keşif bayrağını seçin. Bayraklar kara, su, kaynak ve keşfedilmemiş yerlere konabilir.
-[tutorial part4 message 6]
-Düşman üssü olduğunu düşündüğünüz yere Keşif bayrağı koyun. Yaklaşık konum keşfe başlamak için yeterlidir. Sağ tıklayarak moddan çıkın veya dokunmatik kontrollerle yerleştirmeyi bitirin.
-[tutorial part4 message 7]
-Bayrak çevresi çalışma yarıçapını gösterir. Atanmış kaşif bölgeyi keşfeder. Gelmezse kaşif sayısını kontrol edip gerekirse Yuvada üretin. Ulaştığında Boşluk'a veya Tamam'a basın.
-[tutorial part4 message 8]
-Düşmanın çok işçisi ve toplanmış ordusu var. Saldırmadan önce savunmayı hazırlayalım.
-[tutorial part4 message 9]
-Bayraklardan mavi Nöbet bölgesini seçin. Arazi kaldırma değil ekleme modunu kullanın. Dokunmatikte Sil yerine Boya'yı seçin.
-[tutorial part4 message 10]
-Fırça şekli ve boyutunu seçin. Büyük kare, toplu savunma alanı çizmek için uygundur.
-[tutorial part4 message 11]
-Kulelerin hemen arkasına, düşmanın geleceği yere Nöbet bölgesi boyayın. Bir noktaya tıklayın veya dokunun; geniş alan için sürükleyin. Dokunmatikte boyarken görünümü taşımak için Kaydır'ı kullanın.
-[tutorial part4 message 12]
-Uygun savaşçılar Nöbet bölgesine gelir. Savunanlara yetecek kadar büyük ama geçitte toplanmalarını sağlayacak kadar küçük tutun. Şimdi saldırıyı bekleyin.
-[tutorial part4 message 13]
-Düşman geçide yaklaşıyor!
-[tutorial part4 message 14]
-Saldırı altındayız. Eğitimli savaşçıların ve kulelerin mevziyi nasıl savunduğunu izleyin.
-[tutorial part4 message 15]
-Dayandınız! Bayraklardan dikenli Savaş bayrağını seçip düşman Yuvasının üzerine koyun. Saldırıyı oraya yönlendirir.
-[tutorial part4 message 16]
-Yerleştirme modundan çıkıp Savaş bayrağını seçin. 1'den çok savaşçı atayın, ardından yarıçapı azaltıp saldırıyı Yuva çevresine yoğunlaştırın. Savaşçıların gelmesini bekleyin.
-[tutorial part4 message 17]
-Saldırı başladı. Savaşçılar Yuvaya ulaşmak için düşman kulelerini aşmalıdır.
-[tutorial part4 message 18]
-Savaşçılar düşman üssüne ulaştı. Saldırıyı Yuvada tutun.
-[tutorial part4 message 19]
-Düşman Yuvasını yok ettiniz. Tebrikler! Eğitimi tamamlayıp besin tedariki, atamalar, eğitim, yükseltme, keşif ve savaşın temellerini öğrendiniz.
-[tutorial mission basics]
-Giriş ve temeller
-[tutorial mission development]
-Binalar ve akademiler
-[tutorial mission training]
-Savaşçılar, eğitim ve yükseltmeler
-[tutorial mission flags]
-Bayraklar ve bitiriş
 [library  Could not restore the previous library: %0]
  Önceki kitaplık geri yüklenemedi: %0
 [library  The previous library is retained.]
@@ -6642,6 +6382,422 @@ Bunu istediğiniz zaman Ayarlar → Ses bölümünden değiştirebilirsiniz.
 Seçiminiz kaydedilemedi. Ses hâlâ kapalı. Lütfen tekrar deneyin.
 [audio choices description]
 Sessizlik: sessize alınmış hoparlör. Ses: ses dalgaları olan hoparlör.
+[intro menu]
+Giriş
+[intro briefing]
+Dolaylı yönetimi öğrenin: bayrakla keşif yapın, koloniyi besleyin ve saldırıyı yönetin.
+[intro try]
+Girişi başlat
+[intro preflight]
+Globülleriniz kendi başlarına hareket eder. Görevlerini binalar ve bayraklarla seçersiniz. Bu kısa girişte bir işareti keşfedecek, yiyecek arzını genişletecek, iş gücünü artıracak ve küçük bir saldırıyı yöneteceksiniz.
+[intro preflight save]
+Yaklaşık 10 dakika ayırın. Oyun menüsünden kaydedip Oyun yükle ile devam edebilirsiniz. Normal açlık ve savaş kuralları geçerlidir. Başka beceriler çalışmak için ana menüden Eğitim derslerini seçin.
+[intro preference failed]
+Seçiminiz kaydedilemedi. Oynamaya devam edebilirsiniz; bu öneri sonraki sefer yeniden görünebilir.
+[intro goal scout]
+Taşlık işareti keşfet
+[intro goal build]
+Bir Otel daha inşa et
+[intro goal supply]
+Yeni Otelin ikmalini sağla
+[intro goal grow]
+İş gücünü artır
+[intro goal attack]
+Düşman Yuvasını yok et
+[intro instruction scout]
+Bayrakları açıp koloninin doğusundaki taşlık alana bir Keşif bayrağı yerleştirin. Bir kâşif atayın. Bayrağa ilerleyişini izleyin.
+[intro instruction build]
+İnşa menüsünü açıp buğday yakınında bir Otel yerleştirin. Boştaki işçileri inşaata atayın. Mevcut Otelin ikmalini sürdürün.
+[intro instruction supply]
+Tamamlanan yeni Oteli seçip en az bir ikmalci atayın. Bir işçinin buğday getirmesini bekleyin.
+[intro instruction grow]
+Yuvayı seçin. İşçi hedefini en az 2, üretim oranlarını yalnızca işçi olarak ayarlayın. Yeni işçi doğarken iki Otelin de ikmalini sürdürün.
+[intro instruction attack]
+Daha doğudaki düşman Yuvasını bulun. Savaş bayrağıyla savaşçılarınızı ona yönlendirin. Hatırlatıcı gerekirse yardıma bakabilirsiniz.
+[intro help]
+Yardım / neden?
+[intro help scout]
+Küçük haritayla görünümü doğuya taşıyıp taşlık alanı bulun. Bayraklardan Keşif bayrağını seçip taşlara yerleştirin, ardından ikincil fare düğmesiyle yerleştirmeden çıkın. Bayrağı seçip 1 kâşif isteyin. Bayraklar birim talep eder; onları anında taşımaz. Kâşifler yemek için durabilir.
+[intro help build]
+İnşaat, işçilerin getirdiği odunu tüketir. Bina paletinden Oteli seçin, buğday yakınında açık araziye yerleştirin ve 2 inşaatçı isteyin. İşçi hedefi bir taleptir; orada bulunan işçi sayısı değildir. Mevcut Otel ve Yuvada ikmalci bulundurun. Geçerli her konum sayılır.
+[intro help supply]
+İnşaat ve günlük ikmalin işçi hedefleri ayrıdır. Tamamlanan Oteli seçip işletme hedefini artırın. İkmalci buğday toplayıp buraya taşır. Aç globüller Otellerde yer; ikmalcisiz binanın stoğu sonunda tükenir. Buğdaya erişimi açık tutun.
+[intro help grow]
+Yuva birim üretmek için buğday tüketir. İşçi üretimini 1, kâşif ve savaşçı üretimini 0 yapın. Yuvanın işçi hedefini en az 2'ye çıkarın. Daha fazla ikmalci buğdayı hızla getirir ama diğer işlerle iş gücü için yarışır. İki Otelin de yiyecek ikmalini sürdürün.
+[intro help attack]
+Bayraklardan Savaş bayrağını seçip taşların doğusundaki düşman Yuvasına yerleştirin. Bayrağı seçip en fazla 4 savaşçı isteyin. Küçük yarıçap onları bir arada tutar. Bayrağı seçmeden önce ikincil fare düğmesiyle yerleştirmeden çıkın. Savaşçı kalmadıysa Yuvada yenilerini üretin. Savaşçılar yemek için durabilir; Otelleri besleyin.
+[intro hint scout]
+Kâşifinizin doğudaki taşlıkta birim atanmış bir Keşif bayrağına ihtiyacı var. Hedefini ve kâşif sayısını kontrol edin.
+[intro hint build]
+Yeni Oteli kaldırdıysanız başka bir tane yapın. Aksi halde şantiyeyi ve işçi hedefini kontrol edin. Mevcut ikmal işleri işçilerinizi meşgul edebilir; yiyecek akışını koruyup inşaatçıları serbest bırakın.
+[intro hint supply]
+Tamamlanan yeni Oteli seçin. İşçi hedefini kontrol edip buğday teslimatını izleyin. İşçilerin yolculuk veya yemek için zamana ihtiyacı olabilir.
+[intro hint grow]
+Yuva ikmalini ve yalnızca işçi üretildiğini kontrol edin. Yeni işçiyi beklerken Otellerin ikmalini sürdürün.
+[intro hint attack]
+Savaş bayrağını, istenen savaşçı sayısını ve yiyecek ikmalini kontrol edin. Savaşçıların yolculuk ve saldırı için zamana ihtiyacı var.
+[intro hint no scout flag]
+Birim atanmış Keşif bayrağı bulunamadı. Üssün doğusundaki taşlara bir tane yerleştirip 1 kâşif isteyin.
+[intro hint no suppliers]
+Yeni Otelinizin veya şantiyenin işçi hedefi 0. Seçip işçi isteyin.
+[intro hint no war flag]
+Düşman üssünde birim atanmış Savaş bayrağı bulunamadı. Doğudaki düşman Yuvasına yerleştirip savaşçı isteyin.
+[intro hint retry]
+Bu ders için gereken bir birim veya bina kaybedildi. Eski bir kaydı yükleyin veya oyun menüsünden dersi yeniden başlatın.
+[intro complete]
+Giriş tamamlandı
+[intro complete body]
+Bağımsız globülleri yönettiniz, yiyecek ikmalini genişlettiniz, koloniyi büyüttünüz ve saldırı düzenlediniz. Antrenman, yükseltme ve savunma için Eğitim derslerine devam edin veya maç başlatmak için ana menüye dönün.
+[intro play again]
+Tekrar oyna
+[intro restart]
+Girişi yeniden başlat
+[intro restart body]
+Hazırlanmış koloniden yeniden başlatılsın mı? Bu girişteki kaydedilmemiş ilerleme kaybolacak.
+[intro help touch scout]
+Bayrak yerleştirmeden önce boş araziyi sürükleyerek görünümü taşıyın. Koloninin doğusundaki taşları bulun. Bayraklardan Keşif bayrağını seçip taşlara yerleştirin ve onaylayın. Bayrağı seçip atanan birim hedefinden 1 kâşif isteyin. Globüller kendi başlarına gider ve yemek için durabilir.
+[intro help touch build]
+İnşa menüsünden Oteli seçin. Buğday yakınındaki açık araziye yerleştirip onaylayın. Şantiyeyi seçip 2 inşaatçı isteyin. İşçi hedefi bir taleptir; mevcut işçi sayısı değildir. Mevcut Otel ve Yuvayı besleyin. Geçerli her konum sayılır.
+[intro help touch supply]
+Tamamlanan yeni Oteli seçip atanan işçi hedefini artırın. İnşaat ve günlük ikmal hedefleri ayrıdır. İkmalci buğday toplayıp getirir. Aç globüller Otellerde yer; ikmalcisiz binanın stoğu tükenir. Buğday erişimini koruyun.
+[intro help touch grow]
+Yuvayı seçin. İşçi üretimini 1, kâşif ve savaşçı üretimini 0 yapın. Atanan işçi hedefini en az 2'ye çıkarın. İkmalciler yeni birimler için buğday getirir ama diğer işlerle yarışır. İki Oteli de besleyin.
+[intro help touch attack]
+Bayraklardan Savaş bayrağını seçip taşların doğusundaki düşman Yuvasına yerleştirin ve onaylayın. Bayrağı seçip en fazla 4 savaşçı isteyin. Küçük yarıçap onları toplar. Kalmadıysa Yuvada savaşçı üretin. Savaşçılar yemek için durabilir; Otelleri besleyin.
+[intro show destination]
+Hedefi göster
+[intro scout destination]
+Burayı keşfet
+[intro attack destination]
+Buraya saldır
+[intro compact scout]
+Bayraklar → Keşif bayrağı. Taşlara yerleştirin; 1 kâşif atayın.
+[intro compact build]
+İnşa → Otel. Buğday yakınına yerleştirin; 2 inşaatçı atayın.
+[intro compact supply]
+Yeni Oteli seçin; en az 1 ikmalci atayın. Buğdayı bekleyin.
+[intro compact grow]
+Yuvayı seçin; 2 ikmalci atayın. Yalnızca işçi üretin.
+[intro compact attack]
+Bayraklar → Savaş bayrağı. Düşman Yuvasına yerleştirin; savaşçı atayın.
+[tutorial lessons]
+Eğitim dersleri
+[tutorial restart]
+Dersi yeniden başlat
+[tutorial restart body]
+Bu ders hazırlanmış koloniden yeniden başlatılsın mı? Kaydedilmemiş ilerleme kaybolacak.
+[tutorial complete]
+Ders tamamlandı
+[tutorial food title]
+Yiyecek ikmali alıştırması
+[tutorial food briefing]
+Yiyecek ikmalini genişletmeyi çalışın: başka bir Otel inşa edin, ikmalciler atayın ve buğday gelişini izleyin.
+[tutorial food complete]
+Bir Otel inşa edip buğday sağladınız. Başka bir ders deneyin veya ana menüye dönün.
+[tutorial unavailable]
+Eğitim dersleri yüklenemedi.
+[lesson healing title]
+Hastaneler ve iyileşme
+[lesson healing briefing]
+Bir Hastane inşa edip yaralı işçinin iyileşmesine yardım edin. Koloni tok başlar; bir işçi yaralıdır.
+[lesson healing complete]
+Hastaneniz yaralı globülü iyileştirdi. Otelleri besleyin: açlık birimleri yeniden yaralayabilir.
+[lesson healing build hint]
+Açık araziye bir Hastane inşa edin; 2 inşaatçı atayın. Globüllerin giriş çıkışı için yer bırakın. Hastaneler yaraları iyileştirir, Oteller yiyecek sağlar. Bu hasta zaten toktur.
+[lesson healing build title]
+Bir Hastane inşa et
+[lesson healing build instruction]
+Açık araziye bir Hastane inşa edin; 2 inşaatçı atayın.
+[lesson healing build help]
+Globüllerin giriş çıkışı için yer bırakın. Hastaneler yaraları iyileştirir, Oteller yiyecek sağlar. Bu hasta zaten toktur.
+[lesson healing build marker]
+Bir Hastane inşa et
+[lesson healing heal hint]
+Hastaneyi erişilebilir tutun. Yaralı işçinin iyileşmesini izleyin. Globüller kendiliğinden tedavi arar. Yeni doğan birimi değil, yaralı işçiyi takip edin. Ölürse yeniden başlatın veya kayıt yükleyin.
+[lesson healing heal title]
+Hastanın iyileşmesini bekle
+[lesson healing heal instruction]
+Hastaneyi erişilebilir tutun. Yaralı işçinin iyileşmesini izleyin.
+[lesson healing heal help]
+Globüller kendiliğinden tedavi arar. Yeni doğan birimi değil, yaralı işçiyi takip edin. Ölürse yeniden başlatın veya kayıt yükleyin.
+[lesson healing heal marker]
+Hastanın iyileşmesini bekle
+[lesson walking-training title]
+Yürüme eğitimi
+[lesson walking-training briefing]
+Bir Koşu Yolu inşa edip mevcut bir işçinin daha hızlı yürümeyi öğrenmesini izleyin.
+[lesson walking-training complete]
+İşçileriniz daha hızlı yürümeyi öğrendi. Eğitim mevcut işçileri geliştirir; koloninin yiyecek ikmalinin yerini tutmaz.
+[lesson walking-training build hint]
+İşaretli açıklığa bir Koşu Yolu inşa edin; inşaatçı atayın. Koşu Yolu odun ve taş gerektirir. Giriş, çıkış ve ileride genişleme için kenarlarda boşluk bırakın.
+[lesson walking-training build title]
+Bir Koşu Yolu inşa et
+[lesson walking-training build instruction]
+İşaretli açıklığa bir Koşu Yolu inşa edin; inşaatçı atayın.
+[lesson walking-training build help]
+Koşu Yolu odun ve taş gerektirir. Giriş, çıkış ve ileride genişleme için kenarlarda boşluk bırakın.
+[lesson walking-training build marker]
+Bir Koşu Yolu inşa et
+[lesson walking-training train hint]
+Koşu Yolunu erişilebilir tutup bir işçinin eğitimi bitirmesini bekleyin. Uygun globüller otomatik eğitilir. Bazı işçileri ikmal işlerinden serbest bırakın ve iki Oteli de dolu tutun.
+[lesson walking-training train title]
+Mevcut bir işçiyi eğit
+[lesson walking-training train instruction]
+Koşu Yolunu erişilebilir tutup bir işçinin eğitimi bitirmesini bekleyin.
+[lesson walking-training train help]
+Uygun globüller otomatik eğitilir. Bazı işçileri ikmal işlerinden serbest bırakın ve iki Oteli de dolu tutun.
+[lesson swimming title]
+Yüzme ve su kaynakları
+[lesson swimming briefing]
+Yüzücüler eğitin, ardından göletin yosunlarıyla bir Akademi inşa edin.
+[lesson swimming complete]
+Bir yüzücü Akademiniz için su kaynakları getirdi. Suya erişim koloninin yapabileceği işleri artırır.
+[lesson swimming build hint]
+Göletin batısına bir Yüzme havuzu inşa edin; inşaatçı atayın. Havuzun çevresinde boşluk bırakın. İşçi yüzmeyi öğrenmeden derin sudan yosun toplayamaz.
+[lesson swimming build title]
+Bir Yüzme havuzu inşa et
+[lesson swimming build instruction]
+Göletin batısına bir Yüzme havuzu inşa edin; inşaatçı atayın.
+[lesson swimming build help]
+Havuzun çevresinde boşluk bırakın. İşçi yüzmeyi öğrenmeden derin sudan yosun toplayamaz.
+[lesson swimming build marker]
+Bir Yüzme havuzu inşa et
+[lesson swimming train hint]
+Mevcut bir işçinin yüzme eğitimini bitirmesini bekleyin. Birimler eğitimi otomatik seçer. İkmali sürdürün ve boş işçilerin havuza ulaşmasına izin verin.
+[lesson swimming train title]
+Bir yüzücü eğit
+[lesson swimming train instruction]
+Mevcut bir işçinin yüzme eğitimini bitirmesini bekleyin.
+[lesson swimming train help]
+Birimler eğitimi otomatik seçer. İkmali sürdürün ve boş işçilerin havuza ulaşmasına izin verin.
+[lesson swimming water-job hint]
+Koloni yakınında bir Akademi inşa edin; odun ve yosun getirecek inşaatçılar atayın. Yosun gölette yetişir. Eğitimli yüzücü onu toplamak için suya girmelidir. Akademiyi ikmalcilerin ulaşabildiği açık araziye kurun.
+[lesson swimming water-job title]
+Göletin yosunlarını kullan
+[lesson swimming water-job instruction]
+Koloni yakınında bir Akademi inşa edin; odun ve yosun getirecek inşaatçılar atayın.
+[lesson swimming water-job help]
+Yosun gölette yetişir. Eğitimli yüzücü onu toplamak için suya girmelidir. Akademiyi ikmalcilerin ulaşabildiği açık araziye kurun.
+[lesson swimming water-job marker]
+Göletin yosunlarını kullan
+[lesson schools title]
+Akademiler ve işçi becerileri
+[lesson schools briefing]
+Hazır yüzücülerle Akademi inşa edin, ardından işçilerin inşaat ve hasat öğrenmesini izleyin.
+[lesson schools complete]
+Akademiniz işçi becerilerini geliştirdi. Yetenekli inşaatçılar yükseltmeleri açar; daha iyi hasat büyüyen ekonomiyi destekler.
+[lesson schools build hint]
+Açıklığa bir Akademi inşa edin; inşaatçı atayın. Kolonide yosun için yüzücüler zaten var. Oduna ve suya erişim bırakın. Meyve ağaçları prestij kaynağı sağlar; yiyecek hâlâ buğdaydan gelir.
+[lesson schools build title]
+Bir Akademi inşa et
+[lesson schools build instruction]
+Açıklığa bir Akademi inşa edin; inşaatçı atayın.
+[lesson schools build help]
+Kolonide yosun için yüzücüler zaten var. Oduna ve suya erişim bırakın. Meyve ağaçları prestij kaynağı sağlar; yiyecek hâlâ buğdaydan gelir.
+[lesson schools build marker]
+Bir Akademi inşa et
+[lesson schools learn hint]
+Mevcut bir işçinin Akademi eğitimini bitirmesini bekleyin. Akademi inşaatı ve hasadı birlikte öğretir. İşçileri hazır tutun; tek başına şantiye kimseyi eğitmez.
+[lesson schools learn title]
+İnşaat ve hasat öğret
+[lesson schools learn instruction]
+Mevcut bir işçinin Akademi eğitimini bitirmesini bekleyin.
+[lesson schools learn help]
+Akademi inşaatı ve hasadı birlikte öğretir. İşçileri hazır tutun; tek başına şantiye kimseyi eğitmez.
+[lesson upgrades title]
+Binaları yükseltme
+[lesson upgrades briefing]
+Hazır yetenekli işçilerle Koşu Yolunu yükseltin ve ilk seviyenin ötesinde eğitim verin.
+[lesson upgrades complete]
+Bir binayı yükseltip gelişmiş eğitimini kullandınız. Sonraki yükseltmeler daha iyi Akademi, beceri, malzeme ve alanla bu döngüyü 3. seviyeye kadar tekrarlar.
+[lesson upgrades upgrade hint]
+Koşu Yolunu seçin, Yükselt'i seçip yetenekli inşaatçılar atayın. Bu işçiler Akademinin birinci seviye becerilerini zaten öğrendi. Yükseltmeler ek alan ve malzeme ister, binanın hizmetini kesintiye uğratır. İptal edilen yükseltmeler sayılmaz.
+[lesson upgrades upgrade title]
+Koşu Yolunu yükselt
+[lesson upgrades upgrade instruction]
+Koşu Yolunu seçin, Yükselt'i seçip yetenekli inşaatçılar atayın.
+[lesson upgrades upgrade help]
+Bu işçiler Akademinin birinci seviye becerilerini zaten öğrendi. Yükseltmeler ek alan ve malzeme ister, binanın hizmetini kesintiye uğratır. İptal edilen yükseltmeler sayılmaz.
+[lesson upgrades upgrade marker]
+Koşu Yolunu yükselt
+[lesson upgrades train hint]
+Mevcut bir işçinin yükseltilmiş Koşu Yolunda daha hızlı yürümeyi öğrenmesini bekleyin. Tamamlanan yükseltme eğitimi geliştirir. Daha yüksek bina seviyeleri daha iyi inşaat becerisi ister; oyuncuya gösterilen seviye 1'den başlar.
+[lesson upgrades train title]
+Gelişmiş eğitimi kullan
+[lesson upgrades train instruction]
+Mevcut bir işçinin yükseltilmiş Koşu Yolunda daha hızlı yürümeyi öğrenmesini bekleyin.
+[lesson upgrades train help]
+Tamamlanan yükseltme eğitimi geliştirir. Daha yüksek bina seviyeleri daha iyi inşaat becerisi ister; oyuncuya gösterilen seviye 1'den başlar.
+[lesson warrior-training title]
+Savaşçı üretimi ve eğitimi
+[lesson warrior-training briefing]
+Yuvada savaşçı üretin, ardından Kışlada eğitin.
+[lesson warrior-training complete]
+Askerî üretimi yönetip savaşçıları eğittiniz. Yiyecek ikmalini sürdürün; savaş birimleri de yemek yer.
+[lesson warrior-training produce hint]
+Yuvayı yalnızca savaşçıya ayarlayın; ikmalciler atayıp 2 savaşçı bekleyin. İşçi ve kâşif oranlarını 0, savaşçı oranını 1 yapın. Yuva doğumlar için buğday tüketir. Oranlar üretilecek birimi seçer; ikmalciler üretimin çalışmasını sağlar.
+[lesson warrior-training produce title]
+İki savaşçı üret
+[lesson warrior-training produce instruction]
+Yuvayı yalnızca savaşçıya ayarlayın; ikmalciler atayıp 2 savaşçı bekleyin.
+[lesson warrior-training produce help]
+İşçi ve kâşif oranlarını 0, savaşçı oranını 1 yapın. Yuva doğumlar için buğday tüketir. Oranlar üretilecek birimi seçer; ikmalciler üretimin çalışmasını sağlar.
+[lesson warrior-training produce marker]
+İki savaşçı üret
+[lesson warrior-training build hint]
+Açıklığa bir Kışla inşa edin; inşaatçı atayın. Yeterince savaşçınız olduğunda üretimi durdurun veya azaltın. Kışlalar savaş becerileri öğretir; çevrelerinde boş alan gerekir.
+[lesson warrior-training build title]
+Bir Kışla inşa et
+[lesson warrior-training build instruction]
+Açıklığa bir Kışla inşa edin; inşaatçı atayın.
+[lesson warrior-training build help]
+Yeterince savaşçınız olduğunda üretimi durdurun veya azaltın. Kışlalar savaş becerileri öğretir; çevrelerinde boş alan gerekir.
+[lesson warrior-training build marker]
+Bir Kışla inşa et
+[lesson warrior-training train hint]
+Bir savaşçının Kışla alıştırmasını bitirmesini bekleyin. Savaşçılar otomatik eğitim arar. Otelleri besleyin, Kışlayı erişilebilir tutun. Yalnızca Kışla inşa etmek tamamlanmış eğitim sayılmaz.
+[lesson warrior-training train title]
+Savaşçılarını eğit
+[lesson warrior-training train instruction]
+Bir savaşçının Kışla alıştırmasını bitirmesini bekleyin.
+[lesson warrior-training train help]
+Savaşçılar otomatik eğitim arar. Otelleri besleyin, Kışlayı erişilebilir tutun. Yalnızca Kışla inşa etmek tamamlanmış eğitim sayılmaz.
+[lesson fortifications title]
+Kuleler ve koruyucu duvarlar
+[lesson fortifications briefing]
+İkmali sağlanan bir kule ve koruyucu duvarlar inşa edip küçük bir saldırıya karşı sınayın.
+[lesson fortifications complete]
+İkmali sağlanan savunmanız deneme saldırısını durdurdu. Kuleler taş ister; ikmalcilerin geçmesi için duvarlarda boşluk gerekir.
+[lesson fortifications tower hint]
+İşaretli alana bir kule inşa edin; inşaatçı atayın. Taş ocağına yakın yerleştirip ikmalcilere yol bırakın. Hazırlık hedefleri tamamlanmadan saldırı başlamaz.
+[lesson fortifications tower title]
+Bir Savunma Kulesi inşa et
+[lesson fortifications tower instruction]
+İşaretli alana bir kule inşa edin; inşaatçı atayın.
+[lesson fortifications tower help]
+Taş ocağına yakın yerleştirip ikmalcilere yol bırakın. Hazırlık hedefleri tamamlanmadan saldırı başlamaz.
+[lesson fortifications tower marker]
+Bir Savunma Kulesi inşa et
+[lesson fortifications walls hint]
+Kule yakınında en az 2 duvar bölümü inşa edin; batı erişim yolunu açık tutun. Duvarlar taş kullanır ve her şantiye işçi ister. Kuleyi tamamen kapatmayın: ikmalcilerin yola ihtiyacı var. İşaretli batı yolu açık kalmalıdır.
+[lesson fortifications walls title]
+Kuleyi duvarlarla koru
+[lesson fortifications walls instruction]
+Kule yakınında en az 2 duvar bölümü inşa edin; batı erişim yolunu açık tutun.
+[lesson fortifications walls help]
+Duvarlar taş kullanır ve her şantiye işçi ister. Kuleyi tamamen kapatmayın: ikmalcilerin yola ihtiyacı var. İşaretli batı yolu açık kalmalıdır.
+[lesson fortifications walls marker]
+Kuleyi duvarlarla koru
+[lesson fortifications supply hint]
+Kuleyi seçip ikmalci isteyin. En az 2 taş bekleyin. Tamamlanmış kule, cephane için işletme işçi hedefine ihtiyaç duyar. Bu, inşaat hedefinden ayrıdır.
+[lesson fortifications supply title]
+Cephane sağla
+[lesson fortifications supply instruction]
+Kuleyi seçip ikmalci isteyin. En az 2 taş bekleyin.
+[lesson fortifications supply help]
+Tamamlanmış kule, cephane için işletme işçi hedefine ihtiyaç duyar. Bu, inşaat hedefinden ayrıdır.
+[lesson fortifications supply marker]
+Cephane sağla
+[lesson fortifications hold hint]
+Bir deneme savaşçısı yaklaşıyor. Kuleyi ikmalli ve erişilebilir tutun. Saldırgan yenilene veya geri püskürtülene kadar dayanın. İkmalcileri engelleyen duvar kuleyi cephanesiz bırakabilir. Koloni düşerse yeniden başlatın veya eski kayıt yükleyin.
+[lesson fortifications hold title]
+Tahkimatı sına
+[lesson fortifications hold instruction]
+Bir deneme savaşçısı yaklaşıyor. Kuleyi ikmalli ve erişilebilir tutun.
+[lesson fortifications hold help]
+Saldırgan yenilene veya geri püskürtülene kadar dayanın. İkmalcileri engelleyen duvar kuleyi cephanesiz bırakabilir. Koloni düşerse yeniden başlatın veya eski kayıt yükleyin.
+[lesson fortifications hold marker]
+Tahkimatı sına
+[lesson defensive-tactics title]
+Nöbet bölgeleri ve bayrak taktikleri
+[lesson defensive-tactics briefing]
+Deneme düşmanını keşfedin, nöbet bölgesi hazırlayın, savunun ve karşı saldırı düzenleyin.
+[lesson defensive-tactics complete]
+Keşif yaptınız, nöbet bölgesini savundunuz ve karşı saldırıyı yönettiniz. Bayrak hedefleri birim ister; yarıçap çalışma alanını belirler.
+[lesson defensive-tactics scout hint]
+Düşman üssüne bir Keşif bayrağı yerleştirin; 1 kâşif atayın. Bayraklar otomatik birim talep eder. Kâşif savaş sisi altındaki güncel faaliyeti gösterir; yemek için durabilir.
+[lesson defensive-tactics scout title]
+Düşman üssünü keşfet
+[lesson defensive-tactics scout instruction]
+Düşman üssüne bir Keşif bayrağı yerleştirin; 1 kâşif atayın.
+[lesson defensive-tactics scout help]
+Bayraklar otomatik birim talep eder. Kâşif savaş sisi altındaki güncel faaliyeti gösterir; yemek için durabilir.
+[lesson defensive-tactics scout marker]
+Düşman üssünü keşfet
+[lesson defensive-tactics guard hint]
+İşaretli alana nöbet bölgesi boyayın ve 2 savaşçının ulaşmasını bekleyin. Bayrakları açıp Nöbet'i seçin ve alan içinde en az 4 kare boyayın. Nöbet bölgeleri boş savaşçıları çeker. Yasak bölgeler geçişi engeller; temizleme bölgeleri kaynakların kaldırılmasını ister.
+[lesson defensive-tactics guard title]
+Bir nöbet bölgesi hazırla
+[lesson defensive-tactics guard instruction]
+İşaretli alana nöbet bölgesi boyayın ve 2 savaşçının ulaşmasını bekleyin.
+[lesson defensive-tactics guard help]
+Bayrakları açıp Nöbet'i seçin ve alan içinde en az 4 kare boyayın. Nöbet bölgeleri boş savaşçıları çeker. Yasak bölgeler geçişi engeller; temizleme bölgeleri kaynakların kaldırılmasını ister.
+[lesson defensive-tactics guard marker]
+Bir nöbet bölgesi hazırla
+[lesson defensive-tactics repel hint]
+Düşman saldırıyor. Nöbet bölgesini savunun ve Otelleri besleyin. Küçük saldırı hazırlıklardan sonra başlar. İki baskıncıyı da yenin veya püskürtün; yaralı düşmanlar çekilebilir. Savaşçılar yemek için geçici ayrılabilir. Savunma çökerse eski kayıt yükleyin veya yeniden başlayın.
+[lesson defensive-tactics repel title]
+Deneme saldırısını püskürt
+[lesson defensive-tactics repel instruction]
+Düşman saldırıyor. Nöbet bölgesini savunun ve Otelleri besleyin.
+[lesson defensive-tactics repel help]
+Küçük saldırı hazırlıklardan sonra başlar. İki baskıncıyı da yenin veya püskürtün; yaralı düşmanlar çekilebilir. Savaşçılar yemek için geçici ayrılabilir. Savunma çökerse eski kayıt yükleyin veya yeniden başlayın.
+[lesson defensive-tactics repel marker]
+Deneme saldırısını püskürt
+[lesson defensive-tactics counterattack hint]
+Düşman Yuvasına bir Savaş bayrağı yerleştirin; 3 savaşçı isteyin ve yarıçapı en fazla 4 yapın. Nöbet bölgeleri ve Savaş bayrakları savaşçılar için yarışır. Orduyu tutuyorsa nöbet karelerini kaldırın. Savaşçılar ilerleyip saldırırken yiyecek bulundurun.
+[lesson defensive-tactics counterattack title]
+Odaklı bir karşı saldırı yönet
+[lesson defensive-tactics counterattack instruction]
+Düşman Yuvasına bir Savaş bayrağı yerleştirin; 3 savaşçı isteyin ve yarıçapı en fazla 4 yapın.
+[lesson defensive-tactics counterattack help]
+Nöbet bölgeleri ve Savaş bayrakları savaşçılar için yarışır. Orduyu tutuyorsa nöbet karelerini kaldırın. Savaşçılar ilerleyip saldırırken yiyecek bulundurun.
+[lesson defensive-tactics counterattack marker]
+Odaklı bir karşı saldırı yönet
+[lesson healing build compact]
+İnşa → Hastane. Erişim bırakın; inşaatçı atayın.
+[lesson healing heal compact]
+Yaralı işçinin Hastanede iyileşmesini bekleyin.
+[lesson walking-training build compact]
+İnşa → Koşu Yolu. Kenarlarda boşluk bırakın.
+[lesson walking-training train compact]
+İşçinin Koşu Yolu eğitimini bitirmesini bekleyin.
+[lesson swimming build compact]
+İnşa → Yüzme havuzu, göletin batısına.
+[lesson swimming train compact]
+Bir işçinin yüzmeyi öğrenmesini bekleyin.
+[lesson swimming water-job compact]
+İnşa → Akademi. Odun ve yosun için inşaatçı atayın.
+[lesson schools build compact]
+İnşa → Akademi. Odun ve yosun için inşaatçı atayın.
+[lesson schools learn compact]
+İşçinin Akademi eğitimini bitirmesini bekleyin.
+[lesson upgrades upgrade compact]
+Koşu Yolu → Yükselt. Yetenekli inşaatçı atayın.
+[lesson upgrades train compact]
+İşçiyi yükseltilmiş Koşu Yolunda eğitin.
+[lesson warrior-training produce compact]
+Yuva → Yalnızca savaşçı. 2 savaşçı için buğday sağlayın.
+[lesson warrior-training build compact]
+İnşa → Kışla. Kenarlarda boşluk bırakın.
+[lesson warrior-training train compact]
+Savaşçının Kışla alıştırmasını bitirmesini bekleyin.
+[lesson fortifications tower compact]
+İnşa → Kule. İşaretli alana yerleştirin.
+[lesson fortifications walls compact]
+2 duvar inşa edin. Kulenin batı yolunu açık tutun.
+[lesson fortifications supply compact]
+Kule → İkmalciler. 2 taş bekleyin.
+[lesson fortifications hold compact]
+Saldırgana karşı kulenin ikmalini sürdürün.
+[lesson defensive-tactics scout compact]
+Bayraklar → Keşif. Düşmana yerleştirin; 1 kâşif atayın.
+[lesson defensive-tactics guard compact]
+Bayraklar → Nöbet. 4 kare boyayın; 2 savaşçı gelsin.
+[lesson defensive-tactics repel compact]
+Nöbet bölgesini tutun. Otelleri besleyin.
+[lesson defensive-tactics counterattack compact]
+Savaş bayrağı → Düşman Yuvası. 3 savaşçı; yarıçap ≤4.
 [library GL only]
 Yalnız GL
 [Grassland]
@@ -6652,5 +6808,7 @@ Kayalık tepeler
 Hayvan patikaları
 [Fish amount]
 Balık miktarı
+[scenario messages]
+İletiler ▸
 [Camp-site amount]
 Kamp yeri sayısı

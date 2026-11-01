@@ -26,7 +26,14 @@ import {
   type Identity,
 } from '../identity.ts';
 import { localSignIn } from './auth.ts';
-import { html, pageHtml, pageText, sendPage, type Html } from '../web/pages.ts';
+import {
+  html,
+  isolateNumericRanges,
+  pageHtml,
+  pageText,
+  sendPage,
+  type Html,
+} from '../web/pages.ts';
 import { SharedLimit } from '../http/rateLimits.ts';
 
 type Attempt = Selectable<Database['signin_attempts']>;
@@ -198,7 +205,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         ${described ? html`aria-describedby="${described}"` : ''}
         ${options.error ? html`aria-invalid="true" autofocus` : ''}
         ${options.attrs}
-      />${options.hint ? pageHtml(reply)`<p class="hint" id="${options.id}-hint">${pageText(reply, options.hint)}</p>` : ''}${
+      />${options.hint ? pageHtml(reply)`<p class="hint" id="${options.id}-hint">${isolateNumericRanges(pageText(reply, options.hint))}</p>` : ''}${
         options.error
           ? pageHtml(
               reply,
@@ -808,7 +815,9 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         'username',
         pageText(reply, 'There is no account called {p0}. Check the spelling{p1}.', {
           p0: username,
-          p1: identity.localAuth.allowRegistration ? ', or create an account below' : '',
+          p1: identity.localAuth.allowRegistration
+            ? pageText(reply, ', or create an account below')
+            : '',
         }),
         401,
       );

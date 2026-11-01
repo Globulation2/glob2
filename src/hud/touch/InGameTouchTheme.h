@@ -43,11 +43,11 @@ inline constexpr double inspectorWide = 400;
 inline constexpr double inspectorPortraitWidth = 360;
 inline constexpr double inspectorLandscapeWidth = 480;
 inline constexpr double paletteWidth = 248;
-inline constexpr double tutorialLine = 24;
+inline constexpr double scenarioMessageLine = 24;
 // The player's text-size preference. HUD text is drawn at
 // gfx->textUnitsPerPoint(); rows sized by their text grow by this factor.
 inline double textGrowth() { return GAGCore::userTextScale > 0 ? GAGCore::userTextScale : 1; }
-inline double tutorialPitch() { return tutorialLine * textGrowth(); }
+inline double scenarioMessagePitch() { return scenarioMessageLine * textGrowth(); }
 inline constexpr double paletteCell = 56;
 inline constexpr double gap = 4;
 // The phone palette rail: columns in portrait (buildings, flags) and landscape,

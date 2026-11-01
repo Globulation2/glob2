@@ -13,6 +13,41 @@ actual gameplay. Use device-specific release-candidate captures for mobile
 screenshot slots. Listing updates and binary release/availability are separate
 operations; preserve each platform's existing release controls.
 
+## Canonical listing translations
+
+The [marketing translation repository](https://github.com/Globulation2/glob2-marketing/tree/main/translations)
+owns the approved English master, terminology, 32 translated catalogs, source
+fingerprints and independent AI review records. Change that source first when
+editing listing language; translations need renewed review when their English
+source or translated text changes. AI review is not native-speaker validation.
+
+In a checkout of the marketing repository, validate and generate merge inputs:
+
+```sh
+python3 translations/tools/storefront.py check --require-review
+python3 translations/tools/storefront.py export --out /tmp/glob2-storefront-export
+```
+
+Merge the generated Fastlane locale text into `fastlane/metadata/android/`,
+preserving existing changelogs and release metadata. This tree feeds F-Droid;
+its neutral locale directories are deliberate. The separate `google-play/`
+export uses Play locale identifiers and still requires console verification.
+Do not upload the F-Droid directory tree as ready Play metadata. Merge AppStream summary,
+description paragraphs and screenshot captions into the corresponding existing
+nodes in `data/org.globulation2.Globulation2.metainfo.xml`; the exported fragment
+is not a replacement component and its `source_role` hints are not AppStream
+attributes. Preserve release history, approved screenshot URLs and factual
+edition-specific qualifications. The desktop fragment supplies translated
+`Comment` values for `data/glob2.desktop`; preserve launcher settings and do not
+infer a new `GenericName` translation from a different marketing field.
+
+Console fields and locale availability require separate verification. Source
+metadata changes do not publish store listings. Reuse language-neutral approved
+artwork, preserve native gameplay UI and the product wordmark, and translate
+only actual marketing overlays from approved source images. Snap localization
+is unverified; keep its maintained approved English fields until native support
+is established. Never concatenate multiple languages into a single listing.
+
 ## Store setup
 
 ### Epic Games Store
@@ -39,6 +74,13 @@ active for Windows; newly uploaded binaries are inactive and scheduled for
 deletion until activated. Install and test that active Dev build through the
 Epic launcher, then move the candidate through Stage and review, and promote
 it to Live in the portal.
+
+The native CLI accepts the documented Epic Launcher `-KEY=VALUE` fields and
+`-EpicPortal` switch without treating them as game commands. Their values are
+discarded instead of copied into the parsed game request; this does not add EOS
+authentication or change the game's account flow. Unsupported arguments still
+fail validation. Test Launcher-style arguments as well as the headless smoke
+command when qualifying the candidate.
 
 In the release repository, set `EPIC_ORGANIZATION_ID`, `EPIC_PRODUCT_ID`,
 `EPIC_WINDOWS_ARTIFACT_ID`, `EPIC_BPT_CLIENT_ID`, and `EPIC_BPT_SHA256` as

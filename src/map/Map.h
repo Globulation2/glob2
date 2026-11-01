@@ -37,10 +37,10 @@ struct GradientTargetCell;
 #include "Team.h"
 #include "TerrainType.h"
 #include "FertilityField.h"
+#include "ExperimentalFeatures.h"
 #include "TerrainProperties.h"
 #include "TerrainRegistry.h"
 class MapAssetBundle;
-#include "TerrainExperiments.h"
 #include "BitArray.h"
 
 namespace SimulationSnapshot { struct Handle; }
@@ -686,7 +686,6 @@ public:
     bool hasAirRoutingConstraints() const;
 	bool hasProjectileBlockingTerrain() const { return projectileBlockingTerrain; }
 	bool projectilePathClear(Sint32 x0, Sint32 y0, Sint32 x1, Sint32 y1) const;
-	ExperimentSet requiredTerrainExperiments() const;
     ExperimentSet requiredResourceExperiments() const;
 	class TerrainEditBatch
 	{

@@ -6,7 +6,12 @@
   "dependencies": [
     "sdl3",
     "sdl3-net",
-    "sdl3-ttf",
+    {
+      "name": "sdl3-ttf",
+      "features": [
+        "harfbuzz"
+      ]
+    },
     {
       "name": "sdl3-image",
       "features": [

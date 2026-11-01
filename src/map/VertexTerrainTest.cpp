@@ -195,9 +195,7 @@ TEST_CASE("a vertex write re-derives the four cells around it")
 	// The torus wraps vertices too.
 	map.setVertexTerrain(0, 0, ICE);
 	CHECK(map.cellCorners(15, 15) == std::array{GRASS, GRASS, GRASS, ICE});
-	CHECK(map.requiredTerrainExperiments().has(ExperimentId::IceTerrain));
 	map.setVertexTerrain(0, 0, GRASS);
-	CHECK_FALSE(map.requiredTerrainExperiments().has(ExperimentId::IceTerrain));
 	map.fillTerrain(SAND);
 	CHECK(map.terrainCounts[SAND] == 256);
 	CHECK(map.terrainTypeAt(5, 5) == SAND);
@@ -318,7 +316,6 @@ TEST_CASE("vertex terrain round-trips through packed and text saves")
 				break;
 			}
 		CHECK(loaded.game.map.checkSum(true) == map.checkSum(true));
-		CHECK(loaded.game.map.requiredTerrainExperiments() == map.requiredTerrainExperiments());
 	}
 }
 }

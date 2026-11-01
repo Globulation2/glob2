@@ -378,7 +378,7 @@ struct ChartPainter
 	void paintLines(int y) const
 	{
 		// A share or percentage that fills most of the range reads best against 0-100.
-		const Stats::Axis axis = chart.percent && chart.high > 50 && chart.low >= 0
+		const Stats::Axis axis = chart.percent && (metric.winProbability || chart.high > 50) && chart.low >= 0
 									 ? Stats::Axis{0, 100, 25}
 									 : Stats::niceAxis(chart.low, chart.high, std::max(2, (top + height - y) / 44), !chart.decimals);
 		const int labelW = valueLabelWidth(text, axis, chart.percent, chart.decimals);
@@ -536,6 +536,7 @@ std::string TeamStatChart::about(const Stats::Metric &metric)
 
 std::string TeamStatChart::axisTitle(const Stats::Metric &metric, const Stats::View &requested)
 {
+	if (metric.winProbability) return tr("[stat win probability]") + " (%)";
 	const Stats::View view = Stats::validView(metric, requested);
 	const std::string unit = tr(metric.unitKey);
 	const bool rate = metric.kind == Stats::Metric::Counter && !view.total;

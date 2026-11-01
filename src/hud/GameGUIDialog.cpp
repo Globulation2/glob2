@@ -68,6 +68,7 @@ Element InGameMainScreen::build(const Presentation &p)
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
 	if (fe::recordingOffered())
 		buttons.push_back(fe::recordingControls());
+	if (tutorial) buttons.push_back(item("intro/restart", fe::tr("[tutorial restart]"), TUTORIAL_RESTART));
 	// Leaving ends the list, away from the everyday choices (it asks first).
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	// Return stays pinned below the list so it is always in reach.

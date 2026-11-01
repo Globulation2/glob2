@@ -89,6 +89,31 @@ When loading a format-115 save, already advancing waves are excluded because the
 launch force is unknown. This fallback does not detect attacks blocked before
 a rally is created.
 
+## Forward support
+
+`forward_support.inns_enabled` and `forward_support.hospitals_enabled` enable
+dedicated feeding and healing construction during an established attack. Both
+default to true for new games. This pathway uses its own placement purpose; ordinary inns,
+hospitals and their campus scores keep their existing criteria.
+
+A forward site lies within eight tiles of the configured
+`forward_support.distance_tiles` distance (40 tiles by default) from the current objective, measured
+with wrapped Chebyshev distance. The minimum distance is eight tiles. Its
+footprint must have no currently observed threat, and normal terrain, builder
+access, routes, food backing, reservations and construction limits still apply.
+The site is revalidated against the live objective before issue. This is an
+annulus around the objective, not a guarantee of placement on its home-facing
+side or of future safety.
+
+Forward requests require at least 12 warriors, 24 workers, an attack older than
+the dwell interval, and no economic recovery or severe colony emergency.
+Ordinary development and maintenance take precedence without waiting for a
+forward-site scan; forward support precedes spare-labour fortification. Existing
+nearby providers, pending requests and a limit of two completed forward providers
+per role constrain demand. Completed buildings use the normal staffing and
+service controllers. Hunger-disabled games omit feeding requests; peaceful games
+omit both. Building capabilities and availability govern the selected types.
+
 ## Fruit supply
 
 For each known fruit variety, Maxima searches for a reachable deposit from each
@@ -107,3 +132,31 @@ available. Fruit collection does not enable enemy mV. Disabling `fruit.enabled`
 removes these missions and their advertising.
 
 Related: [AI documentation](../README.md).
+
+`forward_support.coverage_distance_tiles` suppresses a new request when an
+existing provider is within 40 geometric tiles of the objective. It is independent
+of the proposed site's distance. A site around a 40-tile ring may be on any side
+of the objective and may require a much longer walking route. Route estimates in
+telemetry are diagnostic; they do not change the selected geometric policy.
+
+Target commitment gives objectives against the current enemy a bounded score
+bonus (`tactics.enemy_commitment = 1`), rather than locking the enemy choice.
+Arrival grace (`tactics.arrival_grace_ticks = 4000`) delays stall judgment while
+an effective force is still arriving, up to its configured limit. Existing home
+emergencies and invalid-target handling retain their authority.
+
+When an offensive flag already exists, objectives receive a penalty based on
+their wrapped Chebyshev distance from that primary flag's actual position.
+`tactics.flag_proximity_weight = 4` subtracts four score points per tile, up to
+32 tiles (128 points). This favors continuing through nearby buildings and raid
+locations without locking the objective: a sufficiently better distant target
+can still win. Existing reachability, quarantine, dwell and emergency checks
+remain authoritative. New attacks with no existing flag receive no penalty;
+zero weight disables it. This is a geometric preference, not a walking-route
+estimate.
+
+Saved games from before format 188 retain their stored tactical behavior. Missing
+forward-service and continuity controls restore the former disabled defaults;
+loading an older game does not silently opt it into the new policy.
+Format-188 strategies also retain their previous behavior when the proximity key
+is absent; format 189 writes that key explicitly.

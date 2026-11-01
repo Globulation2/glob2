@@ -487,9 +487,9 @@ export async function seedHistory(
           prestige: winner ? 180 + i * 5 : 40 + i * 3,
           eliminated_tick: winner ? null : ticks - 40,
           statistics: JSON.stringify({
-            unitsProduced: winner ? 140 + i : 90 + i,
-            buildingsBuilt: winner ? 42 : 25,
-            unitsLost: winner ? 30 : 80,
+            units: winner ? 140 + i : 90 + i,
+            buildings: winner ? 42 : 25,
+            warriors: winner ? 30 : 80,
           }),
           timeline: JSON.stringify(timeline(ticks, winner ? 1.2 + i * 0.05 : 0.9, seat.seat)),
         })

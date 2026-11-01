@@ -2887,5 +2887,6 @@
   "More filters": "Thêm bộ lọc",
   "Clear filters": "Xóa bộ lọc",
   "No results match these filters.": "Không có kết quả phù hợp với các bộ lọc này.",
-  "Results: {value0}": "Kết quả: {value0}"
+  "Results: {value0}": "Kết quả: {value0}",
+  "Game text field": "Ô nhập văn bản trong trò chơi"
 }

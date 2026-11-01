@@ -541,6 +541,7 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, cons
 			if (selBuild->hardSpaceForUpgrade)
 			{
 				drawBlueButton(btnX, primaryY, "[upgrade]");
+                if(highlights.count(HighlightUpgradeButton)) arrowPositions.push_back(HighlightArrowPosition(btnX-36,primaryY,38));
 			}
 		}
 	}

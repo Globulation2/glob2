@@ -6,11 +6,8 @@
 
 // A terrain group is one gameplay mechanic: every built-in type in a group shares
 // this exact property profile and differs only in artwork, name and colours.
-// Groups are also the unit the editor palette and the terrain experiments use.
-// Adding a mechanic means adding a group here and, if it needs an experiment, one
-// ExperimentId in TerrainExperiments.h; adding a look means adding a row to
-// TerrainTypeTable.h. This header stays free of ExperimentalFeatures.h so the
-// gradient kernels can include it.
+// Groups also organize the editor palette. Add a mechanic here and a visual
+// variant in TerrainTypeTable.h.
 enum class TerrainGroup : std::uint8_t
 {
 	Water,

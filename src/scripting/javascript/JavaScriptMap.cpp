@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "JavaScriptMap.h"
+#include "tutorial/TutorialModel.h"
 #include "ScriptObservations.h"
+#include "ScriptOrders.h"
+#include "Order.h"
+#include "OrderValidation.h"
+#include "Player.h"
 #include "sim/ClientCommandSink.h"
 #include "Game.h"
 #include "Stream.h"
@@ -62,7 +67,8 @@ enum class Action
 	Incomplete,
 	Failed,
 	Hidden,
-	Visible
+	Visible,
+    ScenarioOrder
 };
 struct WorldEffect
 {
@@ -73,12 +79,15 @@ struct PreparedEffects
 {
 	Value presentation;
 	std::vector<WorldEffect> world;
+    std::vector<std::shared_ptr<Order>> orders;
+    std::shared_ptr<const Tutorial::Model> tutorial;
 };
-PreparedEffects prepareEffects(const Value &effects, const Value &presentation, Game &game)
+PreparedEffects prepareEffects(const Value &effects, const Value &presentation, Game &game,
+    const AIEngine::AIWorldView &world, const std::shared_ptr<const Tutorial::Model> &tutorial)
 {
-	PreparedEffects prepared{presentation, {}};
+	PreparedEffects prepared{presentation, {}, {}, tutorial};
 	if (effects.kind == Value::Null)
-		return PreparedEffects{presentation, {}};
+		return prepared;
 	if (effects.kind != Value::Array || effects.items.size() > 256)
 		throw std::runtime_error("Map callback requires at most 256 effects");
 	Value &nextPresentation = prepared.presentation;
@@ -126,7 +135,33 @@ PreparedEffects prepareEffects(const Value &effects, const Value &presentation, 
 			elements.set(std::to_string(id), boolean(effect, "enabled"));
 			nextPresentation.set("elements", elements);
 		}
-		else if (type == "hint")
+		else if (type == "scenarioOrder")
+        {
+            if(prepared.orders.size()>=16) throw std::runtime_error("At most 16 scenario orders per callback");
+            const int owner=effect.integer("team",0,game.teamsCount()-1);
+            int sender=-1;
+            for(int i=0;i<game.gameHeader.getNumberOfPlayers();++i)
+                if(game.players[i] && game.players[i]->teamNumber==owner) {sender=i;break;}
+            if(sender<0) throw std::runtime_error("Scenario order requires a player for its team");
+            auto command=order(world,owner,effect.get("order"));
+            command->sender=sender;
+            if(OrderValidation::validate(game,sender,*command).verdict!=OrderValidation::Verdict::Accepted)
+                throw std::runtime_error("Scenario order failed ordinary order validation");
+            prepared.orders.push_back(std::move(command));
+            prepared.world.push_back({int(prepared.orders.size()-1),Action::ScenarioOrder});
+        }
+        else if (type == "tutorial")
+        {
+            const auto &view=effect.get("view");
+            auto parsed=Tutorial::parse(view);
+            // Every effect is validated, including an overwritten view. Keep
+            // identity for an unchanged final value without reparsing it after
+            // preparation, or serializing it on callbacks with no view effect.
+            prepared.tutorial=view.encode()==presentation.get("tutorial").encode()
+                ? tutorial : std::move(parsed);
+            nextPresentation.set("tutorial",view);
+        }
+        else if (type == "hint")
 		{
 			const int id = effect.integer("id", 0, game.gameHints.getNumberOfHints() - 1);
 			prepared.world.push_back(
@@ -153,14 +188,17 @@ PreparedEffects prepareEffects(const Value &effects, const Value &presentation, 
 	prepared.presentation.encode();
 	return prepared;
 }
-void commitEffects(const PreparedEffects &prepared, Game &game) noexcept
+void commitEffects(const PreparedEffects &prepared, Game &game)
 {
-	// All IDs/actions were validated and allocated before this stage. These
-	// engine setters only update existing boolean entries and cannot allocate.
+	// Validate the entire callback before issuing any command. Scenario orders
+    // use ordinary execution semantics; no client/network input is synthesized.
 	for (const auto &effect : prepared.world)
 	{
 		switch (effect.action)
 		{
+        case Action::ScenarioOrder:
+            game.executeOrder(prepared.orders[effect.id],-1,false);
+            break;
 		case Action::HintVisible:
 			game.gameHints.setHintVisible(effect.id);
 			break;
@@ -244,6 +282,7 @@ void JavaScriptMap::reset()
 	runtime->discard();
 	state = Value::object();
 	presentation = Value::object();
+    tutorial.reset();
 	initialized = false;
 	seeded = false;
 	random.seed();
@@ -286,13 +325,13 @@ void JavaScriptMap::step(const std::string &source, Game &game, ClientCommandSin
 			return observations.query(name, args, budget);
 		};
 		auto result = runtime->invoke(source, state, !initialized, host);
-		auto prepared = prepareEffects(result.effects, presentation, game);
+		auto prepared = prepareEffects(result.effects, presentation, game,observations.world(),tutorial);
 		auto shown = prepareInterface(prepared.presentation);
-		// No potentially allocating work follows: publish the entire accepted
-		// callback (effects, global snapshot, presentation and private RNG).
+		// Publish the validated callback through the ordinary simulation order path.
 		commitEffects(prepared, game);
 		state = std::move(result.state);
 		presentation = std::move(prepared.presentation);
+        tutorial=std::move(prepared.tutorial);
 		initialized = true;
 		applyInterface(std::move(shown), client, true);
 	}
@@ -337,6 +376,7 @@ void JavaScriptMap::load(GAGCore::InputStream *s)
 	runtime->discard();
 	state = Value::decode(s->readText("state"));
 	presentation = Value::decode(s->readText("presentation"));
+    tutorial=Tutorial::parse(presentation.get("tutorial"));
 	initialized = s->readUint8("initialized");
 	seeded = s->readUint8("seeded");
 	std::istringstream input(s->readText("random") + " ");

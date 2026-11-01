@@ -1,0 +1,52 @@
+[
+  {
+    "definition": "scripts/tutorials/introduction.json",
+    "script": "scripts/introduction.js",
+    "setup": 0
+  },
+  {
+    "definition": "scripts/tutorials/food-supply.json",
+    "script": "scripts/food-supply.js",
+    "setup": 1
+  },
+  {
+    "definition": "scripts/tutorials/healing.json",
+    "script": "scripts/healing.js",
+    "setup": 2
+  },
+  {
+    "definition": "scripts/tutorials/walking-training.json",
+    "script": "scripts/walking-training.js",
+    "setup": 3
+  },
+  {
+    "definition": "scripts/tutorials/swimming.json",
+    "script": "scripts/swimming.js",
+    "setup": 4
+  },
+  {
+    "definition": "scripts/tutorials/schools.json",
+    "script": "scripts/schools.js",
+    "setup": 5
+  },
+  {
+    "definition": "scripts/tutorials/upgrades.json",
+    "script": "scripts/upgrades.js",
+    "setup": 6
+  },
+  {
+    "definition": "scripts/tutorials/warrior-training.json",
+    "script": "scripts/warrior-training.js",
+    "setup": 7
+  },
+  {
+    "definition": "scripts/tutorials/fortifications.json",
+    "script": "scripts/fortifications.js",
+    "setup": 8
+  },
+  {
+    "definition": "scripts/tutorials/defensive-tactics.json",
+    "script": "scripts/defensive-tactics.js",
+    "setup": 9
+  }
+]

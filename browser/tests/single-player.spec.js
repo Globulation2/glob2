@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 const {clickCreateMap,clickCampaignFooter,chooseEditorLandscape}=require('./editor-controls');
 const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile,clickControl,clickListRow,controlBox,control}=require('./main-menu');
@@ -5,7 +6,7 @@ const {darkShare}=require('./pixels');
 const {test, expect} = require('@playwright/test');
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
-const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await state(page)).screen).toContain(name);
 
 // Hold the first scheduled turn after entering a loader. The real Escape event
 // can then reach a pending job without racing a fast machine's completed load.
@@ -77,17 +78,18 @@ test('campaign selector returns to its suspended parent and can reopen', async (
 
 test('tutorial sessions quit through the end screen and can restart', async ({page}) => {
   await clickMainMenu(page, 'tutorial');
-  await screen(page, 'CampaignMenuScreen');
+  await screen(page, 'LessonCatalogScreen');
   for (let attempt = 0; attempt < 2; ++attempt) {
-    await clickListRow(page, 'missions', 0);
-    await clickControl(page, 'start');
+    await clickControl(page, 'tutorial/lesson/0');
     await screen(page, 'match');
     await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
-    await page.locator('#canvas').press('Escape');
+    // Wait for the first HUD frame, then use its visible menu icon in CSS pixels.
+    const hud=await control(page,'intro/collapse'),size=page.viewportSize();
+    await page.mouse.click((hud.surface.w-160)*size.width/hud.surface.w,18*size.height/hud.surface.h);
     await clickControl(page, 'quit');
     await screen(page, 'EndGameScreen');
     await page.locator('#canvas').press('Enter');
-    await screen(page, 'CampaignMenuScreen');
+    await screen(page, 'LessonCatalogScreen');
   }
 });
 
@@ -287,13 +289,12 @@ test('custom and tutorial startup can be cancelled and retried', async ({page}) 
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page, 'MainMenuScreen');
   await clickMainMenu(page, 'tutorial');
-  await screen(page, 'CampaignMenuScreen');
-  await clickListRow(page, 'missions', 0);
+  await screen(page, 'LessonCatalogScreen');
   await holdLoader(page, 'GameLoadScreen');
-  await clickControl(page, 'start');
+  await clickControl(page, 'tutorial/lesson/0');
   await cancelHeldLoader(page, 'GameLoadScreen');
-  await screen(page, 'CampaignMenuScreen');
-  await clickControl(page, 'start'); // The same selected mission remains available.
+  await screen(page, 'LessonCatalogScreen');
+  await clickControl(page, 'tutorial/lesson/0'); // The lesson remains available after cancel.
   await screen(page, 'match');
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   expect(errors).toEqual([]);

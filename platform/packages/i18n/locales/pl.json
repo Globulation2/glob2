@@ -2968,5 +2968,6 @@
   "More filters": "Więcej filtrów",
   "Clear filters": "Wyczyść filtry",
   "No results match these filters.": "Brak wyników pasujących do tych filtrów.",
-  "Results: {value0}": "Wyniki: {value0}"
+  "Results: {value0}": "Wyniki: {value0}",
+  "Game text field": "Pole tekstowe w grze"
 }

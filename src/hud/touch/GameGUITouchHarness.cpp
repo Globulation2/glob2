@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
 #include <Environment.h>
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
 #include <nlohmann/json.hpp>
 #include <string>
 #include <memory>
@@ -55,6 +57,7 @@
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
+#include <source_location>
 
 static void require(bool condition, const char *message)
 {
@@ -1088,6 +1091,252 @@ class GameGUITouchHarness
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	}
 
+	static void tutorialTypography()
+	{
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Tutorial typography", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Tutorial typography fixture loads");
+		const auto checksum = gui.game.checkSum();
+		GAGCore::TrueTypeFont font("data/fonts/sans.ttf", 13);
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		struct Restore
+		{
+			GAGCore::Font *font = globalContainer->standardFont;
+			double text = GAGCore::userTextScale;
+			int language = GAGCore::Toolkit::getStringTable()->getLang();
+			bool stringsReplaced = false;
+			std::string mobile = SDL_getenv_unsafe("GLOB2_MOBILE_UI") ? SDL_getenv_unsafe("GLOB2_MOBILE_UI") : "";
+			~Restore() {
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", mobile.c_str(), 1);
+				globalContainer->standardFont = font;
+				GAGCore::userTextScale = text;
+				if (stringsReplaced) GAGCore::Toolkit::getStringTable()->load("data/texts.list.txt");
+				GAGCore::Toolkit::getStringTable()->setLang(language);
+			}
+		} restore;
+		globalContainer->standardFont = &font;
+		GAGCore::userTextScale = 1;
+		gui.scriptText = "alpha\n\nbeta";
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessageLines == std::vector<std::string>{"alpha", "", "beta"});
+		CHECK(gui.touch->scenarioMessageLineStep == 24);
+		gui.touch->scenarioMessageCollapsed = true;
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessageCollapsed); // unchanged content preserves player collapse
+		strings->setLang(strings->getLangCode("de"));
+		gui.touch->prepareScenarioMessage();
+		CHECK_FALSE(gui.touch->scenarioMessageCollapsed); // same text, different locale invalidates
+		strings->setLang(restore.language);
+
+		gui.scriptText = "क्षि";
+		gui.touch->prepareScenarioMessage();
+		const int small = gui.touch->scenarioMessageLineStep;
+		// An indivisible real-font conjunct wider than the slot must remain
+		// whole. Reload the SAME font object to expose metric-cache invalidation.
+		REQUIRE(font.load("data/fonts/sans.ttf", 1000));
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessageLines == std::vector<std::string>{"क्षि"});
+		CHECK(gui.touch->scenarioMessageLineStep > small);
+		CHECK(gui.touch->scenarioMessageLineStep >= font.getStringHeight("क्षि"));
+		CHECK(font.getStringWidth("क्षि") > gui.touch->scenarioMessageWidth);
+		GAGCore::userTextScale = 1.5;
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessagePitch() == doctest::Approx(gui.touch->scenarioMessageLineStep * 1.5));
+		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+		CHECK(gui.touch->scenarioMessageMaximum() == doctest::Approx(std::max(0.0,
+			gui.touch->scenarioMessageLines.size() * gui.touch->scenarioMessagePitch() - gui.touch->scenarioMessageRect().h / unit + 16)));
+		gui.swallowSpaceKey = true;
+		CHECK(gui.touch->scenarioMessageFooterHeight() >= gui.touch->scenarioMessageFontHeight * 1.5 + 16);
+		// Exercise real input separately from the large synthetic-extent check.
+		// A normal Latin26px font at1.5x gives a footer taller than the legacy
+		//48pt target, so tapping its upper area detects stale hit geometry.
+		REQUIRE(font.load("data/fonts/sans.ttf", 26));
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		gui.touch->panelOpen = false;
+		gui.scriptText.clear();
+		for (int line = 0; line < 20; ++line)
+			gui.scriptText += "Scroll this instruction without acknowledging it.\n";
+		gui.setIsSpaceSet(false);
+		glob2test::drawGUI(gui, 0);
+		const auto tutorial = gui.touch->scenarioMessageRect();
+		REQUIRE(tutorial.h > 0);
+		REQUIRE(gui.touch->scenarioMessageMaximum() > 0);
+		Uint64 now = 20000;
+		auto finger = [&](Uint32 type, double x, double y) {
+			SDL_Event event{};
+			event.type = type;
+			event.tfinger.timestamp = SDL_MS_TO_NS(now += 40);
+			event.tfinger.touchID = 7;
+			event.tfinger.fingerID = 1;
+			event.tfinger.x = float(x / globalContainer->gfx->getW());
+			event.tfinger.y = float(y / globalContainer->gfx->getH());
+			gui.processEvent(&event);
+		};
+		const double x = tutorial.x + 20 * unit, startY = tutorial.y + 40 * unit;
+		finger(SDL_EVENT_FINGER_DOWN, x, startY);
+		finger(SDL_EVENT_FINGER_MOTION, x, startY - 24 * unit);
+		finger(SDL_EVENT_FINGER_UP, x, startY - 24 * unit);
+		CHECK_FALSE(gui.isSpaceSet());
+		CHECK(gui.touch->scenarioMessageScroll > 0);
+		gui.touch->stopScrolling();
+		const double footer = gui.touch->scenarioMessageFooterHeight() * unit;
+		REQUIRE(footer > 48 * unit);
+		const double ackY = tutorial.y + tutorial.h - footer + 4 * unit;
+		REQUIRE(ackY < tutorial.y + tutorial.h - 48 * unit);
+		now += 500;
+		finger(SDL_EVENT_FINGER_DOWN, x, ackY);
+		finger(SDL_EVENT_FINGER_UP, x, ackY);
+		CHECK(gui.isSpaceSet());
+		// Activate Urdu in an isolated two-language fixture, without registering
+		// any unfinished catalog. Use the actual authored collapsed label.
+		glob2test::TempDir labels("tutorial-urdu");
+		GAGCore::Toolkit::getFileManager()->addDir(labels.path.string());
+		std::ofstream(labels.path / "tutorial.keys.txt") << "[language-code]\n[scenario messages]\n";
+		std::ofstream(labels.path / "tutorial.list.txt") << "tutorial.keys.txt\ntutorial.en.txt\ntutorial.ur.txt\n";
+		std::ofstream(labels.path / "tutorial.en.txt") << "[language-code]\nen\n[scenario messages]\nMessages ▸\n";
+		std::ofstream(labels.path / "tutorial.ur.txt") << "[language-code]\nur\n[scenario messages]\nپیغامات ▸\n";
+		restore.stringsReplaced = true;
+		REQUIRE(strings->load("tutorial.list.txt"));
+		strings->setLang(strings->getLangCode("ur"));
+		REQUIRE(font.load("data/fonts/sans.ttf", 13));
+		gui.scriptText = "instruction";
+		gui.touch->prepareScenarioMessage();
+		gui.touch->scenarioMessageCollapsed = true;
+		const auto collapsed = gui.touch->scenarioMessageRect();
+		const auto label = strings->getString("[scenario messages]");
+		const double labelHeight = font.getStringHeight(label) * 1.15 * 1.5 * unit;
+		CHECK(collapsed.h >= labelHeight + 16 * unit);
+		CHECK(collapsed.h >= 48 * unit);
+		CHECK(collapsed.contains({collapsed.x + 1, collapsed.y + labelHeight}));
+		CHECK(gui.game.checkSum() == checksum);
+	}
+
+	static void navigationTypography()
+	{
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Navigation typography", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Navigation fixture loads");
+		const auto checksum = gui.game.checkSum();
+		struct CountingFont : GAGCore::TrueTypeFont {
+			using TrueTypeFont::TrueTypeFont;
+			unsigned widthCalls = 0;
+			unsigned clusterCalls = 0;
+			int getStringWidth(const std::string text) override {
+				++widthCalls;
+				return TrueTypeFont::getStringWidth(text);
+			}
+			std::vector<std::size_t> getStringClusterEnds(const std::string &text) override {
+				++clusterCalls;
+				return TrueTypeFont::getStringClusterEnds(text);
+			}
+		} font("data/fonts/sans.ttf", 13);
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		struct Restore {
+			GAGCore::Font *font = globalContainer->standardFont;
+			double text = GAGCore::userTextScale;
+			int language = GAGCore::Toolkit::getStringTable()->getLang();
+			std::string mobile = SDL_getenv_unsafe("GLOB2_MOBILE_UI") ? SDL_getenv_unsafe("GLOB2_MOBILE_UI") : "";
+			~Restore() {
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", mobile.c_str(), 1);
+				globalContainer->standardFont = font;
+				GAGCore::userTextScale = text;
+				GAGCore::Toolkit::getStringTable()->load("data/texts.list.txt");
+				GAGCore::Toolkit::getStringTable()->setLang(language);
+			}
+		} restore;
+		glob2test::TempDir labels("navigation-urdu");
+		GAGCore::Toolkit::getFileManager()->addDir(labels.path.string());
+		const char *keys[] = {"[Build]", "[Flags]", "[Editor tools]", "[Goals]", "[Teams]", "[Menu]",
+			"[Pause]", "[Speed]"};
+		const char *urdu[] = {"تعمیر", "جھنڈے", "آلات", "اہداف", "ٹیمیں", "مینیو", "توقف", "رفتار"};
+		std::ofstream keyFile(labels.path / "navigation.keys.txt"),
+			en(labels.path / "navigation.en.txt"), ur(labels.path / "navigation.ur.txt");
+		keyFile << "[language-code]\n";
+		en << "[language-code]\nen\n";
+		ur << "[language-code]\nur\n";
+		for (int i = 0; i < 8; ++i) {
+			keyFile << keys[i] << '\n';
+			en << keys[i] << '\n' << std::string(keys[i]).substr(1, std::strlen(keys[i]) - 2) << '\n';
+			ur << keys[i] << '\n' << urdu[i] << '\n';
+		}
+		keyFile.close(); en.close(); ur.close();
+		std::ofstream(labels.path / "navigation.list.txt") <<
+			"navigation.keys.txt\nnavigation.en.txt\nnavigation.ur.txt\n";
+		REQUIRE(strings->load("navigation.list.txt"));
+		strings->setLang(strings->getLangCode("ur"));
+		globalContainer->standardFont = &font;
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		auto *gfx = globalContainer->gfx;
+		gfx->setResponsiveViewport(true, 390, 844);
+		CHECK(gfx->getW() == 390);
+		CHECK(gfx->getH() == 844);
+		const auto unit = gfx->logicalUnitsPerPoint();
+		for (double growth : {1.0, 1.5}) {
+			GAGCore::userTextScale = growth;
+			const auto ui = gui.touch->layout();
+			gui.touch->navigationLabelHeight(ui.actions.w / unit / 6 - 4);
+			const unsigned calls = font.widthCalls;
+			const unsigned clusters = font.clusterCalls;
+			REQUIRE(calls > 0);
+			for (int repeat = 0; repeat < 10; ++repeat)
+				gui.touch->navigationLabelHeight(ui.actions.w / unit / 6 - 4);
+			CHECK(font.widthCalls == calls + 10 * 6); // Only six whole-caption probes per cache hit.
+			CHECK(font.clusterCalls == clusters); // Wrapping/shaping is not repeated on a cache hit.
+			CHECK(ui.actions.h > 48 * unit);
+			CHECK(ui.actions.y + ui.actions.h == doctest::Approx(ui.safe.y + ui.safe.h));
+			CHECK(ui.world.y + ui.world.h == doctest::Approx(ui.actions.y));
+			for (int i = 0; i < 6; ++i) {
+				const auto rect = gui.touch->navigationLabelRect(ui, i);
+				const auto text = gui.touch->navigationLabel(i);
+				const auto lines = gui.touch->pointLines(text, rect.w, .86);
+				const int height = gui.touch->navigationLabelLineHeight(lines);
+				CHECK(rect.h + .001 >= lines.size() * height * .86 * gfx->textUnitsPerPoint());
+				CHECK(rect.y + rect.h + 4 * unit <= ui.safe.y + ui.safe.h + .001);
+				CHECK(gui.touch->interfaceRegion({rect.x + rect.w / 2, rect.y + rect.h / 2}) == 10 + i);
+				gui.touch->drawPointLabel(rect, text, .86, false, height);
+			}
+			gfx->nextFrame();
+			CHECK(gui.game.checkSum() == checksum);
+		}
+		// Real HarfBuzz cluster boundaries, not a codepoint-counting double:
+		// an Indic conjunct larger than the available slot must remain whole.
+		const std::string conjunct = "क्षि";
+		CHECK(font.getStringClusterEnds(conjunct) == std::vector<std::size_t>{conjunct.size()});
+		CHECK(font.getStringWidth(conjunct) > 1);
+		CHECK(gui.touch->pointLines(conjunct, 1, .86) == std::vector<std::string>{conjunct});
+		CHECK(gui.touch->pointLines(conjunct + "\n\n" + conjunct, 1, .86) ==
+			std::vector<std::string>{conjunct, "", conjunct});
+		CHECK(gui.touch->pointLines("alpha  beta\n\ngamma", 10000, .86) ==
+			std::vector<std::string>{"alpha  beta", "", "gamma"});
+		const auto oldHeight = gui.touch->layout().actions.h;
+		const auto beforeReload = font.widthCalls;
+		REQUIRE(font.load("data/fonts/sans.ttf", 20)); // Same pointer, changed metrics.
+		CHECK(gui.touch->layout().actions.h > oldHeight);
+		CHECK(font.widthCalls > beforeReload + 6);
+		const auto beforeResize = font.widthCalls;
+		gui.touch->navigationLabelHeight(40);
+		CHECK(font.widthCalls > beforeResize + 6);
+		const auto beforeReplay = font.widthCalls;
+		const bool replaying = globalContainer->replaying;
+		globalContainer->replaying = !replaying;
+		gui.touch->navigationLabelHeight(40);
+		globalContainer->replaying = replaying;
+		CHECK(font.widthCalls > beforeReplay + 6);
+		const auto beforeLanguage = font.widthCalls;
+		strings->setLang(strings->getLangCode("en"));
+		gui.touch->navigationLabelHeight(40);
+		CHECK(font.widthCalls > beforeLanguage + 6);
+		strings->setLang(strings->getLangCode("ur"));
+	}
+
 	static void notifications()
 	{
 		struct Restore
@@ -1208,7 +1457,10 @@ class GameGUITouchHarness
                 {"yields", {{"food", {{"capacity", 9}, {"initial", 2}, {"consumption", "one"}}},
                             {"paper", {{"capacity", 6}, {"initial", 4}, {"consumption", "one"}}}}},
                 {"presentation", {{"name", "Mixed resource without artwork"},
-                    {"sprite", "data/gfx/touch-fixture-missing-resource"}, {"minimap", {255, 0, 255}},
+                    // Only the highest ID needs missing-art coverage. Failed sprites are
+                    // retried synchronously, so repeating that path for all 300 IDs
+                    // needlessly stalls each registry switch in the rendering matrix.
+                    {"sprite", i == 299 ? "data/gfx/touch-fixture-missing-resource" : "data/gfx/ressource"}, {"minimap", {255, 0, 255}},
                     {"levels", Json::array({{{"stock", 0}, {"variants", Json::array({{{"frame", 0}, {"weight", 1}}})}}})}}}});
         }
         gui.game.map.installResourceDefinitions(Json{{"schemaVersion", 1}, {"resources", additions}}.dump());
@@ -1385,6 +1637,8 @@ class GameGUITouchHarness
 				if (flagHere) continue;
 				foundEmptyGround = true;
 				gui.camera.setZoom(1.7, x, y);
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				gui.mouseX = x; gui.mouseY = y;
 				gui.updateCamera();
 				const auto wheelAnchor = gui.camera.screenToWorld(x, y);
@@ -1727,29 +1981,41 @@ class GameGUITouchHarness
 				gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
 			}
 			// A visible map spot with nothing selectable around it.
-			auto emptyGround = [&]
+			auto emptyGround = [&](std::source_location at = std::source_location::current())
 			{
+                auto emptyTile = [&](int cx, int cy) {
+                    for (int dy = -1; dy <= 1; ++dy)
+                        for (int dx = -1; dx <= 1; ++dx) {
+                            const int mx=cx+dx, my=cy+dy;
+                            if (gui.game.map.getBuilding(mx,my)!=NOGBID || gui.game.map.isResource(mx,my) ||
+                                gui.game.map.getGroundUnit(mx,my)!=NOGUID || gui.game.map.getAirUnit(mx,my)!=NOGUID)
+                                return false;
+                        }
+                    return true;
+                };
+                std::optional<GAGCore::ViewPoint> mapSpot;
 				for (double y = world.y + 48 * unit; y < world.y + world.h - 24 * unit; y += 16 * unit)
 					for (double x = world.x + 24 * unit; x < world.x + world.w - 24 * unit; x += 16 * unit)
 					{
-						if (gui.touch->interfaceRegion({x, y}) != 0)
-							continue;
+						if (gui.touch->interfaceRegion({x, y}) != 0) continue;
+                        if (!mapSpot) mapSpot=GAGCore::ViewPoint{x,y};
 						const int cx = gui.mapMouseX(int(x)) / 32 + gui.viewportX,
 								  cy = gui.mapMouseY(int(y)) / 32 + gui.viewportY;
-						bool clear = true;
-						for (int dy = -1; dy <= 1; ++dy)
-							for (int dx = -1; dx <= 1; ++dx)
-							{
-								const int mx = cx + dx, my = cy + dy;
-								clear = clear && gui.game.map.getBuilding(mx, my) == NOGBID &&
-										!gui.game.map.isResource(mx, my) &&
-										gui.game.map.getGroundUnit(mx, my) == NOGUID &&
-										gui.game.map.getAirUnit(mx, my) == NOGUID;
-							}
-						if (clear)
-							return GAGCore::ViewPoint{x, y};
+                        if (emptyTile(cx,cy)) return GAGCore::ViewPoint{x,y};
 					}
-				throw std::runtime_error("No empty ground visible in the phone world");
+                // Earlier navigation and desktop framing can leave only occupied
+                // terrain outside an open phone sheet. Reframe this input fixture
+                // onto existing clear terrain, without changing the map or orders.
+                if (mapSpot) for (int cy=0;cy<gui.game.map.getH();++cy)
+                    for (int cx=0;cx<gui.game.map.getW();++cx) if (emptyTile(cx,cy)) {
+                        gui.camera.originX=cx*32+16-(mapSpot->x-gui.camera.offsetX)/gui.camera.zoom;
+                        gui.camera.originY=cy*32+16-(mapSpot->y-gui.camera.offsetY)/gui.camera.zoom;
+                        gui.camera.normalize();
+                        gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
+                        gui.prepareLocalPresentation();
+                        return *mapSpot;
+                    }
+                throw std::runtime_error("No empty ground visible in the phone world at line " + std::to_string(at.line()));
 			};
 			{
 				const auto checksum = gui.game.checkSum();
@@ -1888,6 +2154,8 @@ class GameGUITouchHarness
 				{
 					gui.camera = savedCamera;
 					gui.camera.setZoom(initial, spot.x, spot.y);
+					gui.viewportX = gui.camera.tileX();
+					gui.viewportY = gui.camera.tileY();
 					if (initial != 1.0)
 					{
 						gui.camera.originX = gui.camera.mapWidth - 8;
@@ -1934,6 +2202,8 @@ class GameGUITouchHarness
 				auto armedPress = [&]
 				{
 					gui.camera.setZoom(1, spot.x, spot.y);
+                    gui.viewportX = gui.camera.tileX();
+                    gui.viewportY = gui.camera.tileY();
 					quickTouches();
 					tap(spot.x, spot.y);
 					finger(SDL_EVENT_FINGER_DOWN, 1, spot.x, spot.y);
@@ -1997,7 +2267,10 @@ class GameGUITouchHarness
 				require(gui.viewportX != panX && std::abs(gui.camera.zoom - 1) < 1e-9,
 						"A sideways drag after a tap must pan, not zoom");
 				globalContainer->settings.oneFingerZoomDirection = Settings::ONE_FINGER_ZOOM_PLATFORM;
-				gui.camera.setZoom(1, spot.x, spot.y);
+                // Keep later gesture scenarios independent of the pan above.
+				gui.camera = savedCamera;
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				noOrder();
 			}
 			{
@@ -2022,6 +2295,8 @@ class GameGUITouchHarness
 				require(forbidden(), "A paint tap must land after the double-tap window");
 				drain();
 				gui.camera.setZoom(1.5, spot.x, spot.y);
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				quickTouches();
 				tap(spot.x, spot.y);
 				tap(spot.x, spot.y);
@@ -2293,15 +2568,18 @@ class GameGUITouchHarness
 				p = at(3);
 				tap(p.x, p.y);
 				require(gui.touch->statsOpen && !gui.touch->lensVisible(), "The statistics lens opens the sheet");
+                require(std::none_of(gui.statistics().metrics().begin(), gui.statistics().metrics().end(),
+                    [](const auto &m) { return m.winProbability; }), "Live players cannot see hidden-state win probabilities");
 				const auto stats = gui.touch->statsLayout();
-				require(stats.chart.h >= 100 * unit && stats.sheet.y + stats.sheet.h <= ui.actions.y + 0.5,
-						"The sheet sits above the toolbar with room for the chart");
-				tap(centre(stats.next).x, centre(stats.next).y);
-				require(gui.touch->statsMetric == 1, "The sheet's arrow shows the next metric");
-				tap(centre(stats.previous).x, centre(stats.previous).y);
-				tap(centre(stats.previous).x, centre(stats.previous).y);
-				require(gui.touch->statsMetric == int(Stats::catalog().size()) - 1, "Metrics wrap around");
-				gui.touch->statsMetric = 0;
+                require(stats.body.h >= 100 * unit && stats.sheet.y + stats.sheet.h <= ui.actions.y + 0.5,
+                        "The sheet sits above the toolbar with room for statistics");
+                glob2test::drawGUI(gui, 0);
+                auto &panel = gui.statistics();
+                require(panel.topic() == InGameStatisticsPanel::Topic::Overview, "Statistics starts on Overview");
+                panel.selectTopic(InGameStatisticsPanel::Topic::Economy);
+                glob2test::drawGUI(gui, 0);
+                require(panel.host().find("stats/metric/idle workers") != nullptr, "Economy exposes worker time");
+                panel.selectTopic(InGameStatisticsPanel::Topic::Overview);
 				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-stats-portrait.bmp" : "touch-stats-landscape.bmp");
 				gfx->nextFrame();
@@ -2336,6 +2614,8 @@ class GameGUITouchHarness
 				const auto buttons = gui.touch->peekButtons();
 				gui.updateCamera();
 				gui.camera.setZoom(1, gfx->getW() / 2, gfx->getH() / 2);
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
 				tap(centre(buttons[2]).x, centre(buttons[2]).y);
 				require(std::abs(gui.camera.zoom - InGameTouchTheme::peekZoomStep) < 0.01, "Peek + zooms in");
 				tap(centre(buttons[1]).x, centre(buttons[1]).y);
@@ -2395,16 +2675,16 @@ class GameGUITouchHarness
 			gui.swallowSpaceKey = true;
 			gui.setIsSpaceSet(false);
 			glob2test::drawGUI(gui,0);
-			gfx->printScreen(width < height ? "touch-tutorial-portrait.bmp"
-											: "touch-tutorial-landscape.bmp");
+			gfx->printScreen(width < height ? "touch-scenario-message-portrait.bmp"
+											: "touch-scenario-message-landscape.bmp");
 			gfx->nextFrame();
 			finger(SDL_EVENT_FINGER_DOWN, 1, 30 * unit, 80 * unit);
 			finger(SDL_EVENT_FINGER_MOTION, 1, 30 * unit, 60 * unit);
 			finger(SDL_EVENT_FINGER_UP, 1, 30 * unit, 60 * unit);
-			require(!gui.isSpaceSet(), "Scrolling tutorial text must not acknowledge it");
-			const auto tutorial = gui.touch->tutorialRect();
-			tap(tutorial.x + 20 * unit, tutorial.y + tutorial.h - 24 * unit);
-			require(gui.isSpaceSet(), "Tutorial touch acknowledgment uses the shared Space action");
+			require(!gui.isSpaceSet(), "Scrolling scenario text must not acknowledge it");
+			const auto message = gui.touch->scenarioMessageRect();
+			tap(message.x + 20 * unit, message.y + message.h - 24 * unit);
+			require(gui.isSpaceSet(), "Scenario message acknowledgment uses the shared Space action");
 			gui.scriptText.clear();
 			gui.swallowSpaceKey = false;
 		}
@@ -4178,10 +4458,10 @@ class GameGUITouchHarness
 			const auto bar = gui.touch->layout().actions;
 			tap(bar.x + bar.w * 4.5 / 6, bar.y + bar.h / 2);
 			glob2test::drawGUI(gui,0);
-			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->panelOpen &&
-				gui.displayMode == GameGUI::STAT_TEXT_VIEW && !gui.touch->restorePalette &&
-				!gui.touch->readOnlyPanelShown,
-				"Replay statistics replace every inspector and survive the next draw");
+			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->statsOpen &&
+                !gui.touch->panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW &&
+                !gui.touch->restorePalette && !gui.touch->readOnlyPanelShown,
+                "Replay statistics replace every inspector and survive the next draw");
 		}
 		gui.touch->dismissMapPanels();
 		gui.touch->select({center.x + 28, center.y});
@@ -4219,6 +4499,7 @@ class GameGUITouchHarness
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.adjustLocalTeam();
+		gui.prepareLocalPresentation();
 		auto *gfx = globalContainer->gfx;
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 		gfx->setResponsiveViewport(true, 800, 600);
@@ -5114,9 +5395,61 @@ class GameGUITouchHarness
 		gui.processEvent(&event);
 		REQUIRE(std::string(static_cast<LoadSaveDialog *>(dialog)->getName()) == "Scaled2");
 	}
+	static void liveStatisticsProbability()
+    {
+        glob2test::HeadlessGlobals globals({.display=true, .loadStrings=true, .width=360, .height=720,
+            .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        REQUIRE(NET_Init());
+        struct NetworkCleanup { ~NetworkCleanup() { NET_Quit(); } } network;
+        glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+        GameGUI gui;
+        auto map = Engine::loadMapHeader("maps/balanced.map");
+        GameHeader players;
+        players.setNumberOfPlayers(1);
+        players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
+        REQUIRE(gui.loadFromHeaders(map, players, true, true));
+        gui.localTeamNo=gui.localPlayer=0;
+        gui.adjustLocalTeam();
+        gui.localTeam->stats.recordWinProbability(0, 900, "visibility-test");
+        auto *gfx=globalContainer->gfx;
+        gfx->setResponsiveViewport(true,800,600);
+        for (auto [width,height] : {std::pair{360,720},std::pair{720,360}})
+        {
+            const int oldW=gfx->getW(),oldH=gfx->getH();
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+            SDL_Event resize{};resize.type=SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resize);
+            gui.viewportResized(oldW,oldH,gfx->getW(),gfx->getH());
+            gui.prepareLocalPresentation();
+            const auto checksum=gui.game.checkSum();
+            gui.touch->menuAction(3);
+            REQUIRE(gui.touch->statsOpen);
+            auto &panel = gui.statistics();
+            REQUIRE_FALSE(panel.metrics().empty());
+            CHECK(std::none_of(panel.metrics().begin(), panel.metrics().end(),
+                [](const auto &m){return m.winProbability;}));
+            panel.selectTopic(InGameStatisticsPanel::Topic::World);
+            panel.update(0);
+            CHECK_FALSE(panel.host().find("stats/metric/win probability"));
+            glob2test::drawGUI(gui,0);
+            CHECK(gui.game.checkSum()==checksum);
+            const auto screenshot="live-stats-"+std::to_string(width)+"x"+std::to_string(height)+".bmp";
+            gfx->printScreen(screenshot);
+            gfx->nextFrame();
+            REQUIRE(std::filesystem::exists(glob2test::profileDir()/screenshot));
+            gui.touch->statsOpen=false;
+        }
+        CHECK(glob2test::retainFromProfile(".bmp")==2);
+    }
 };
 TEST_SUITE("GameGUITouch")
 {
+    GLOB2_TEST_CASE("live statistics hide post-game probability across topics", "[display][artifacts]")
+    {
+        GameGUITouchHarness::liveStatisticsProbability();
+    }
+
 	GLOB2_TEST_CASE("attack marks follow mobile minimaps without extra lifetime ticks", "[display][artifacts]")
 	{
 		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
@@ -5126,6 +5459,26 @@ TEST_SUITE("GameGUITouch")
 		GameGUITouchHarness::minimapMarks();
 		NET_Quit();
 		glob2test::retainFromProfile(".bmp");
+	}
+
+	GLOB2_TEST_CASE("tutorial wrapping preserves shaped clusters and refreshes font metrics", "[display]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::tutorialTypography();
+		NET_Quit();
+	}
+
+	GLOB2_TEST_CASE("phone navigation contains actual Urdu labels at normal and enlarged text sizes", "[display]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 390, .height = 844,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::navigationTypography();
+		NET_Quit();
 	}
 
 	GLOB2_TEST_CASE("notifications clear system gutters and HUD at mobile text sizes", "[display][artifacts]")

@@ -1,5 +1,7 @@
+#include "tutorial/TutorialModel.h"
 #include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <iostream>
@@ -41,6 +43,7 @@ void GameGUI::openDialog(InGameMenu menu, std::unique_ptr<Glob2UI::InGameDialog>
     // Panel icons must not destroy an operation before durable persistence ends.
     if (inGameMenu == IGM_SAVE && gameMenuScreen &&
         static_cast<LoadSaveDialog*>(gameMenuScreen.get())->isPersisting()) return;
+	if (statisticsPanel) statisticsPanel->cancelEmbeddedInput();
 	if (touch)
 		touch->cancel(true);
 	inGameMenu = menu;
@@ -61,6 +64,7 @@ void GameGUI::openMainMenu()
 {
 	auto menu = std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused);
 	menu->setNetworked(networkMatch.active);
+    menu->setTutorial(bool(Tutorial::view(drawnScene().panels.hud.state())) && !globalContainer->replaying && !networkMatch.active);
 	if (networkMatch.active)
 	{
 		auto &strings = *Toolkit::getStringTable();
@@ -93,6 +97,8 @@ std::unique_ptr<Glob2UI::InGameDialog> GameGUI::makeLeaveConfirmation() const
 
 void GameGUI::openChat()
 {
+    if (inGameMenu == IGM_STATISTICS) closeDialog();
+    if (statisticsPanel) statisticsPanel->cancelEmbeddedInput();
 	if (typingInputScreen)
 		return;
 	if (touch)
@@ -104,6 +110,8 @@ void GameGUI::openChat()
 
 void GameGUI::openCommander()
 {
+    if (inGameMenu == IGM_STATISTICS) closeDialog();
+    if (statisticsPanel) statisticsPanel->cancelEmbeddedInput();
  if(!hive || !hive->available() || !globalContainer->settings.hiveMindEnabled || typingInputScreen)return;
  if(touch)touch->cancel(true);
  typingCommander=true;
@@ -120,6 +128,8 @@ void GameGUI::closeChat()
 
 void GameGUI::toggleHistory()
 {
+    if (inGameMenu == IGM_STATISTICS) closeDialog();
+    if (statisticsPanel) statisticsPanel->cancelEmbeddedInput();
 	if (scrollableText)
 	{
 		scrollableText.reset();
@@ -152,7 +162,7 @@ void GameGUI::saveGameTo(LoadSaveDialog &dialog)
 bool GameGUI::processGameMenu(SDL_Event *event)
 {
     bool boundaryResult=false;
-    if (gameMenuScreen && parkForClient([&]{boundaryResult=processGameMenu(event);})) return boundaryResult;
+    if (gameMenuScreen && inGameMenu != IGM_STATISTICS && parkForClient([&]{boundaryResult=processGameMenu(event);})) return boundaryResult;
 	if (!gameMenuScreen)
 		return false;
 	bool consumed = false;
@@ -167,7 +177,12 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (result)
 			{
-				case InGameMainScreen::HIVE_MIND:
+				case InGameMainScreen::TUTORIAL_RESTART:
+                    openDialog(IGM_TUTORIAL_RESTART,std::make_unique<InGameConfirmScreen>(
+                        Glob2UI::tr("[tutorial restart]"),Glob2UI::tr("[tutorial restart body]"),
+                        Glob2UI::tr("[tutorial restart]"),Glob2UI::tr("[Cancel]")));
+                    return true;
+                case InGameMainScreen::HIVE_MIND:
 					if(hive)openDialog(IGM_HIVE,std::make_unique<Hive::Dialog>(hive));
 					return true;
 				case InGameMainScreen::LOAD_GAME:
@@ -229,6 +244,14 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			}
 		}
 
+		case IGM_TUTORIAL_RESTART:
+            closeDialog();
+            if (result == InGameConfirmScreen::CONFIRM) {
+                if (auto lesson=Tutorial::view(drawnScene().panels.hud.state())) toLoadGameFileName=lesson->restartMap;
+                enqueueOrder(std::make_shared<PlayerQuitsGameOrder>(localPlayer));
+                flushOutgoingAndExit=true;
+            } else openMainMenu();
+            return true;
 		case IGM_CONFIRM_LEAVE:
 		{
 			closeDialog();
@@ -286,6 +309,11 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 		case IGM_HIVE:
 			closeDialog();return true;
+
+		case IGM_STATISTICS:
+            closeDialog();
+            if (statisticsPanel) statisticsPanel->restoreFocus();
+            return true;
 
 		case IGM_TELEMETRY:
 			closeDialog();

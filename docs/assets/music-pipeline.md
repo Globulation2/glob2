@@ -37,11 +37,15 @@ files load and validate becomes available.
 | Set | Method | Licence |
 |---|---|---|
 | `original` | The original soundtrack (reference only; not built by the pipeline) | GPL-3.0-or-later |
-| `woodland` | Adapted from the composer's stems (JC Sounds) | CC BY 4.0 |
-| `apple-cider` | Adapted with Demucs separation (Zane Little Music) | CC0 1.0 |
-| `curious-critters` | Adapted with Demucs separation plus synthesised percussion (Matthew Pablo) | CC BY 3.0 |
 | `moss-lanterns`, `thistle-waltz`, `bramble-jig`, `fennel-mist` | Composed scores rendered with CC0 samples | GPL-3.0-or-later |
 | `glass-garden` | Composed score rendered with Surge XT and custom DSP | GPL-3.0-or-later |
+
+New shipped sets use composed scores with explicit notes, instruments and timing
+for every mood. The original soundtrack remains the historical reference.
+Woodland, Apple Cider and Curious Critters were withdrawn because their transitions
+did not preserve the desired gameplay feel. Their assets, recipes and the unused recording-adaptation and full-song
+generation tools have been removed. They are not approved calibration examples. Improving numerical transition scores alone did not
+make these arrangements acceptable in play.
 
 Every set directory ships a `LICENSE.txt` that is generated from its `set.toml`,
 with credits, licence link, change notes and any AI disclosure. Third-party sources
@@ -55,13 +59,11 @@ tools/music/
   requirements.txt            core: numpy, scipy, soundfile, pyloudnorm, librosa, mido
   requirements-samples.txt    sample rendering (`fetch` downloads the locked samples and builds sfizz_render)
   requirements-synth.txt      Surge XT hosting (pedalboard 0.9.16; 0.9.25 crashes on Zen 1)
-  requirements-separation.txt Demucs and torch
-  requirements-genai.txt      ACE-Step 1.5 (optional; no shipped set needs it)
   glob2music/
     spec.py        the single source of every number: format, loudness, QA thresholds
     audio.py       Trio type, decoding, frame-exact Ogg encoding
     master.py      loop-aware filters, loudness normalisation, true-peak limiter
-    loop.py        seam crossfades, tail folding, loop-point search
+    loop.py        fold score render tails and early notes into the loop
     preview.py     calm → building → combat → calm listening files
     sources.py     pinned downloads (URL + SHA-256) into a local cache
     manifest.py    set.toml parsing, the recipe contract, build_set
@@ -69,8 +71,6 @@ tools/music/
     qa/            the automatic quality checks
     score/         symbolic music: notes, humanisation, MIDI, score checks
     backends/      renderers: sfizz (samples), Surge XT (synths), DSP voices
-    adapt/         adapting recordings: Demucs, stem remixing, beat grids, room, percussion
-    genai/         the ACE-Step wrapper
   sets/<set>/      set.toml + recipe.py (+ the score or patches the recipe uses)
   tests/           unit tests (synthetic audio; no network, no GPU)
 ```
@@ -92,7 +92,7 @@ Building a set also needs that method's extra requirements file, `ffmpeg` with
 libopus, and the set's pinned inputs. `fetch` downloads and verifies `[[sources]]`
 and, for sample sets, every file in `samples.lock` plus the pinned `sfizz_render`
 (cmake and a C++17 compiler are needed the first time). It says so when a set has
-nothing to fetch; generated sets need the approved generation from a maintainer:
+nothing to fetch.
 
 ```bash
 uv pip install --python .venv/bin/python -r requirements-samples.txt
@@ -104,7 +104,7 @@ uv pip install --python .venv/bin/python -r requirements-samples.txt
 
 `check` also accepts any directory holding `a1.opus`–`a3.opus`, which is useful for
 judging candidate music from elsewhere. It exits 0 on pass (warnings allowed), 1 on
-any failed check and 2 on a usage error. Add `--report-file` for a machine-readable report
+any failed check and 2 on a usage error. Add `--json` for a machine-readable report
 and `--verbose` to see every measure.
 
 ## Recipes
@@ -124,18 +124,24 @@ and the spec. `build_set` then applies the shared stages:
    and mood positions are unchanged (`[master] opus_seam_ms`).
 3. `preview.make` and the QA suite, which write `preview.opus` and `qa.json`.
 
+Listening previews use the gameplay smoothstep fade and its approximately 0.37 s
+duration, beginning at each mood-change event on the shared timeline. The
+`preview --crossfade SECONDS` option auditions a different duration with the same
+curve; use the default when judging how a set will behave in play. The preview
+models the gain curve and alignment, rather than final integer PCM quantization.
+
 `set.toml` holds everything that isn't code: title, method, licence, credits,
 whether the set ships, the seed, pinned sources, a description (including change
 notes for adaptations and the listening verdict), optional `[master]` options and
 `[qa.waivers]`. Its schema is documented in `glob2music/manifest.py`.
 
-Keep recipes thin. Shared logic belongs in `score/`, `backends/` or `adapt/`, and
+Keep recipes thin. Shared logic belongs in `score/` or `backends/`, and
 artistic choices (gains, filters, patterns) stay in the recipe, where a reader can
 see them. A set may move a mood off the shared loudness target only through
 `[master] loudness_offset_db`, which is limited to the QA tolerance. It may skip a
 check only through a waiver with a written reason.
 
-### The four methods
+### Score rendering methods
 
 - **Composed scores on samples** (`score/`, `backends/sfizz.py`). The piece is
   written as code: melody, counter-lines, harmony and form. Calm, building and
@@ -153,25 +159,10 @@ check only through a waiver with a written reason.
   and setting a filter type does not switch them on. The backend enables them
   explicitly, because unfiltered oscillators were the cause of the "scratchy"
   sound that got the first synth sets rejected.
-- **Adapting open-licensed recordings** (`adapt/`). Uses the composer's stems when
-  they are published (Woodland). Otherwise Demucs estimates them, and moods are
-  built as `mix + Σ (gain − 1) · stem` so the separator's residual stays in every
-  mood. When a source's drums are too faint for combat, the pipeline synthesises its
-  own percussion (taiko, timpani, frame drum, shaker) on a loop-locked beat grid.
-- **Generated audio** (`genai/`, `adapt/`). ACE-Step 1.5 generates one full piece,
-  and Demucs splits it into layers that become the three moods. Separate
-  generations drift in tempo and harmony, so they can't be crossfaded. The recipe
-  pins the model, prompt and seed, and records the generated audio's SHA-256.
-  Generation is not reproducible, not even with the same seed on the same GPU, so
-  the approved WAV is the set's real source. Maintainers hold it locally, and a build
-  with any other file fails unless `build --allow-regenerate` accepts a new,
-  unreviewed piece. Generated sets must set `ai_generated = true`; `install` then
-  writes the `[ai]` disclosure and the model, code and weights pins into their
-  `LICENSE.txt`.
 
 ## Quality checks
 
-`glob2music.qa` runs ten checks. Each produces named measures (`<check>.<item>`,
+`glob2music.qa` runs eleven checks. Each produces named measures (`<check>.<item>`,
 where the item is per mood such as `seam.calm.step`, per pair such as
 `alignment.calm_building.lag`, or whole-trio such as `loudness.ladder` and
 `contrast.escalation`) with a value, threshold and status (pass, warn, fail, waived
@@ -187,21 +178,25 @@ it measures, why it matters for the mixer and how its threshold was chosen.
 | repetition | Short material looped inside the file, the "AI slop" signature | best envelope self-similarity over lags; share of frames that are exact copies |
 | alignment | Moods that would clash when crossfaded | onset cross-correlation lag and drift between moods; shared harmony (chroma) |
 | contrast | Moods that sound too alike | level-matched log-mel distance between each pair of moods; combat's escalation over building, by onset rate or percussive share; combat at least as percussive as calm; a restrained calm |
+| transition | Local jumps hidden by whole-song mastering (warn only) | 95th-percentile absolute RMS difference between aligned moods over the gameplay fade, sampled every 100 ms; energy-normalized mel spectral shape distance (informational) |
 | noise | Hiss and scratchiness | high-frequency floor in quiet frames, spectral flatness above 6 kHz |
 | balance | Muddy or harsh mixes (warn only) | 150–500 Hz energy share, spectral centroid |
 | audibility | Calm passages that vanish under game sound | quietest 3 s against the file's mean |
 | dropout | Notes that cut out in sustained material | sudden silences inside held sound |
 
 Calibration (`calibrate`, which checks each corpus set with its own `set.toml` spec
-and waivers): every set the maintainer approved by ear passes, some with warnings.
+and waivers): the currently approved shipped sets pass, some with warnings.
 The original passes with written waivers: it predates the loudness ladder, its calm
-and building click at the loop point, and its combat is a different piece. Each
-rejected candidate trips the check that explains its rejection:
+and building click at the loop point, and its combat is a different piece. The
+rejected candidates below record the available evidence; some listening failures
+are not captured by automatic checks. Quantitative examples in the QA module
+docstrings include historical experiments, not just currently approved sets:
 
 | Rejected candidate | What the listener heard | What failed |
 |---|---|---|
 | The first generated sets (General MIDI note lists) | Loopy | `repetition`: envelope r 0.94–1.00; 52–91 % of frames exact copies in each set's worst mood; also `loudness` |
 | Unfiltered synth sets | Scratchy, background noise | `noise`: HF floor −26 to −30 dB; approved moods are at −38.8 dB or lower, except apple-cider combat (−33.5 dB, a warning) |
+| Woodland, Apple Cider and Curious Critters | Unacceptable mood transitions in gameplay | Listening rejection; passing other checks does not establish acceptable transitions |
 | Curious Critters, first adaptation | Too little difference between moods | `contrast.escalation` 0.54 (approved sets ≥ 1.33) |
 | ACE-Step folk prompts | Didn't fit the game | `noise` and `balance` caught real defects, but the verdict was taste |
 | Toy Soldiers | Busy and bright | `contrast` and `balance` warn only; one approved mood (apple-cider combat, 2910 Hz) is brighter |
@@ -215,7 +210,8 @@ person still listens to every set before it ships.
 
 ## Adding a set
 
-1. Read the [style guide](music-style-guide.md) and pick a method.
+1. Read the [style guide](music-style-guide.md). New shipped sets must be composed
+   scores, rendered with the sample or synth backend.
 2. Create `sets/<set>/set.toml` and `recipe.py`. Pin every downloaded source by
    SHA-256 and record its licence, author and credit line.
 3. Run `build` and then `check` until the set passes. Fix defects in the music rather
@@ -227,9 +223,9 @@ person still listens to every set before it ships.
    the credits to `data/authors.txt` and [source attribution](source-attribution.md),
    Native packaging discovers set directories automatically.
 
-Prefer human-authored material. Adapt AI-generated audio only when a maintainer
-explicitly accepts it, and disclose it (`ai_generated = true`). Steam and itch.io
-require that disclosure.
+New shipped sets must use the score methods above. Finished-song generation and
+stem separation are not supported authoring paths. Retain provenance and required
+AI disclosures when a score is authored with model assistance.
 
 ## Encoding and package size
 

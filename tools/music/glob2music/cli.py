@@ -6,7 +6,7 @@ Commands:
     list                      the sets under sets/, with method, licence and status
     fetch SET_ID...           download and verify a set's pinned sources, and for
                               sample sets its locked samples and sfizz_render
-    build SET_ID... [--seed N] [--offline] [--no-preview] [--allow-regenerate]
+    build SET_ID... [--seed N] [--offline] [--no-preview]
                               recipe -> master -> out/<id>/a1..a3.opus, preview, qa.json
     check DIR|SET_ID [--json] [--verbose] [--only a,b] [--manifest set.toml]
                               run the QA suite; exit 1 on any fail
@@ -31,8 +31,8 @@ import tempfile
 import sys
 
 from .manifest import OUT_DIR, REPO_ROOT, SETS_DIR, ManifestError, build_set, list_sets, load_manifest, set_spec
-from .genai.acestep import GenAIUnavailable, GenerationMismatch
 from .sources import SourceError, fetch_source
+from .preview import GAME_FADE_SECONDS
 from .spec import DEFAULT_SPEC, FILENAMES, MOODS
 
 # Installed next to each set's Oggs; installs a1/a2/a3.opus and LICENSE.txt.
@@ -149,17 +149,13 @@ def cmd_fetch(args):
             print(f'{set_id}: sfizz_render -> {sfizz.sfizz_render(offline=args.offline)}')
         if not m.sources and not lock.exists():
             print(f'{set_id}: nothing to fetch (no [[sources]] in set.toml and no samples.lock)')
-        if m.method == 'generated':
-            print(f'{set_id}: generated audio cannot be fetched; maintainers hold the approved generation '
-                  f'locally (see sets/{set_id}/recipe.py and glob2music/genai/acestep.py)')
     return 0
 
 
 def cmd_build(args):
     status = 0
     for set_id in args.sets:
-        _, report = build_set(set_id, seed=args.seed, offline=args.offline, preview=not args.no_preview,
-                              allow_regenerate=args.allow_regenerate)
+        _, report = build_set(set_id, seed=args.seed, offline=args.offline, preview=not args.no_preview)
         print(report.format_table())
         status |= int(report.failed)
     return status
@@ -275,9 +271,6 @@ def main(argv=None):
     p.add_argument('--seed', type=int)
     p.add_argument('--offline', action='store_true')
     p.add_argument('--no-preview', action='store_true')
-    p.add_argument('--allow-regenerate', action='store_true',
-                   help='accept generated audio whose SHA-256 differs from the recorded one '
-                        '(a new, unreviewed piece; see glob2music/genai/acestep.py)')
     p.set_defaults(fn=cmd_build)
     p = sub.add_parser('check', help='run the QA suite on a trio directory or set id')
     p.add_argument('target')
@@ -289,7 +282,8 @@ def main(argv=None):
     p = sub.add_parser('preview', help='write a listening preview')
     p.add_argument('target')
     p.add_argument('-o', '--output')
-    p.add_argument('--crossfade', type=float, default=3.0)
+    p.add_argument('--crossfade', type=float, default=GAME_FADE_SECONDS,
+                   help='smoothstep fade seconds (default: gameplay timing, about 0.37 s)')
     p.add_argument('--segment', type=float, default=40.0)
     p.set_defaults(fn=cmd_preview)
     p = sub.add_parser('install', help='install a built set into data/zik')
@@ -305,7 +299,7 @@ def main(argv=None):
     logging.basicConfig(level=logging.INFO if args.log else logging.WARNING, format='%(name)s: %(message)s')
     try:
         return args.fn(args)
-    except (FileNotFoundError, ManifestError, SourceError, GenAIUnavailable, GenerationMismatch) as e:
+    except (FileNotFoundError, ManifestError, SourceError) as e:
         print(f'error: {e}', file=sys.stderr)
         return 2
 

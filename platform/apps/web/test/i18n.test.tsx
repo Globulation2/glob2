@@ -96,6 +96,49 @@ describe('web localization', () => {
     const { container } = render(<RichMessage source="{constructor} {toString}" slots={{}} />);
     expect(container.textContent).toBe('{constructor} {toString}');
   });
+  it('omits explicit empty React slots while preserving genuinely missing placeholders', () => {
+    const { container } = render(
+      <RichMessage
+        source="A{empty}{optional}{missing}B"
+        slots={{ empty: null, optional: undefined }}
+      />,
+    );
+    expect(container.textContent).toBe('A{missing}B');
+  });
+  it('keeps complete numeric ratios and dimensions LTR inside translated RTL sentences', async () => {
+    registerCatalog('ar', {
+      '{first} / {total} passed': 'نجح {first} / {total}',
+      '{width}×{height}': '{width}×{height}',
+      '{wins}–{losses}': '{wins}–{losses}',
+    });
+    await setLocale('ar');
+    const { container } = render(
+      <div dir="rtl">
+        <RichMessage source="{first} / {total} passed" slots={{ first: 12, total: 100 }} />
+        <RichMessage source="{width}×{height}" slots={{ width: 64, height: 128 }} />
+        <RichMessage source="{wins}–{losses}" slots={{ wins: 5, losses: 3 }} />
+      </div>,
+    );
+    expect(container.textContent).toBe('نجح 12 / 10064×1285–3');
+    expect(
+      [...container.querySelectorAll('bdi[dir="ltr"]')].map((node) => node.textContent),
+    ).toEqual(['12 / 100', '64×128', '5–3']);
+  });
+  it('preserves authored identifiers and repeated slots around numeric expressions', async () => {
+    registerCatalog('ar', {});
+    await setLocale('ar');
+    const { container } = render(
+      <RichMessage
+        source="{n}/{n} · {model} / {stage}"
+        slots={{ n: 3, model: 'model-A', stage: 'draft' }}
+      />,
+    );
+    expect(container.textContent).toBe('3/3 · model-A / draft');
+    expect(container.querySelector('bdi[dir="ltr"]')?.textContent).toBe('3/3');
+    expect(
+      [...container.querySelectorAll('bdi[dir="auto"]')].map((node) => node.textContent),
+    ).toEqual(['model-A', 'draft']);
+  });
   it('preserves unknown enum labels that match Object prototype properties', () => {
     for (const value of ['constructor', 'toString', '__proto__']) {
       expect(statusLabel(value)).toBe(value);

@@ -1,0 +1,256 @@
+{
+  "schema": 1,
+  "id": "schools",
+  "version": 1,
+  "map": "campaigns/schools.map.gz",
+  "name": "Schools and worker skills",
+  "title": "[lesson schools title]",
+  "briefing": "[lesson schools briefing]",
+  "completionTitle": "[tutorial complete]",
+  "completionBody": "[lesson schools complete]",
+  "confirmTicks": 90,
+  "hintTicks": 1350,
+  "targets": {
+    "workers": {
+      "kind": "unit",
+      "team": 0,
+      "type": 0
+    },
+    "swarm": {
+      "kind": "building",
+      "team": 0,
+      "type": 0
+    },
+    "trainees": {
+      "kind": "unit",
+      "team": 0,
+      "type": 0,
+      "bind": "lesson"
+    },
+    "buildArea": {
+      "kind": "area",
+      "region": "home"
+    },
+    "school": {
+      "kind": "building",
+      "team": 0,
+      "type": 6,
+      "baseline": "lesson"
+    },
+    "schoolReady": {
+      "kind": "building",
+      "from": "school",
+      "filters": [
+        {
+          "field": "construction",
+          "op": "eq",
+          "value": 0
+        }
+      ]
+    }
+  },
+  "steps": [
+    {
+      "id": "build",
+      "title": "[lesson schools build title]",
+      "instruction": "[lesson schools build instruction]",
+      "touchInstruction": "[lesson schools build compact]",
+      "help": "[lesson schools build help]",
+      "touchHelp": "[lesson schools build help]",
+      "complete": {
+        "type": "exists",
+        "target": "schoolReady"
+      },
+      "activeOnly": true,
+      "highlights": [
+        "palette",
+        "build:school"
+      ],
+      "hint": 0,
+      "milestones": [
+        {
+          "condition": {
+            "type": "exists",
+            "target": "schoolReady"
+          }
+        }
+      ],
+      "destination": {
+        "target": "buildArea",
+        "label": "[lesson schools build marker]"
+      }
+    },
+    {
+      "id": "learn",
+      "title": "[lesson schools learn title]",
+      "instruction": "[lesson schools learn instruction]",
+      "touchInstruction": "[lesson schools learn compact]",
+      "help": "[lesson schools learn help]",
+      "touchHelp": "[lesson schools learn help]",
+      "complete": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "increased",
+            "target": "trainees",
+            "field": "levels.6",
+            "baseline": "lesson"
+          },
+          {
+            "type": "increased",
+            "target": "trainees",
+            "field": "levels.7",
+            "baseline": "lesson"
+          }
+        ]
+      },
+      "activeOnly": true,
+      "highlights": [
+        "build:school"
+      ],
+      "hint": 1,
+      "milestones": [
+        {
+          "condition": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "increased",
+                "target": "trainees",
+                "field": "levels.6",
+                "baseline": "lesson"
+              },
+              {
+                "type": "increased",
+                "target": "trainees",
+                "field": "levels.7",
+                "baseline": "lesson"
+              }
+            ]
+          }
+        }
+      ],
+      "recovery": [
+        {
+          "hint": 2,
+          "when": {
+            "type": "none",
+            "target": "trainees"
+          }
+        }
+      ]
+    }
+  ],
+  "hints": [
+    "[lesson schools build hint]",
+    "[lesson schools learn hint]",
+    "[intro hint retry]"
+  ],
+  "onStart": [
+    {
+      "type": "scenarioOrder",
+      "team": 0,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          0
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "scenarioOrder",
+      "team": 1,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          1
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swarm",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "inn",
+      "enabled": true
+    },
+    {
+      "type": "buildingChoice",
+      "name": "hospital",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "racetrack",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swimmingpool",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "barracks",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "school",
+      "enabled": true
+    },
+    {
+      "type": "buildingChoice",
+      "name": "defencetower",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "stonewall",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "market",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "explorationflag",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "warflag",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "clearingflag",
+      "enabled": false
+    }
+  ],
+  "recovery": [
+    {
+      "hint": 2,
+      "when": {
+        "type": "any",
+        "conditions": [
+          {
+            "type": "none",
+            "target": "swarm"
+          },
+          {
+            "type": "none",
+            "target": "workers"
+          }
+        ]
+      }
+    }
+  ]
+}

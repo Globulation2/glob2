@@ -3102,8 +3102,6 @@ CPU %0%
 在有效地形上松手以放置
 [Paint on the map; two fingers move]
 在地图上绘制；双指移动
-[Tutorial ▸]
-教程 ▸
 [Back to tools]
 返回工具
 [Starvation overlay]
@@ -4886,6 +4884,34 @@ AI 遥测
 清除的资源
 [stat cleared about]
 工人在清除区域中为腾出空间而移除的资源。
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 声望
 [stat prestige about]
@@ -5548,14 +5574,6 @@ AI 生成
 冰
 [road]
 小径
-[experiment ice-terrain]
-冰地形
-[experiment ice-terrain help]
-在地图编辑器中添加冰。地面单位以一半速度移动，在冰上每经过32个模拟步就损失1点生命值。冰上不能放置建筑或资源。
-[experiment road-terrain]
-小径地形
-[experiment road-terrain help]
-在地图编辑器中加入风化的小径。地面单位以两倍速度移动。小径允许建筑，但不允许资源。飞行单位不受影响。
 [experiment markets-v2]
 市场 V2
 [experiment markets-v2 help]
@@ -5704,42 +5722,6 @@ AI 生成
 深水
 [terrain group void]
 虚空
-[experiment obstacle-terrain]
-障碍地形
-[experiment obstacle-terrain help]
-向地图编辑器添加巨石、树篱和灌木丛。地面单位无法穿越，弹射物也会被阻挡；飞行单位可以通过。不能放置建筑或资源。
-[experiment ridge-terrain]
-岩脊地形
-[experiment ridge-terrain help]
-向地图编辑器添加岩脊和岩石露头。地面单位无法穿越，但防御塔的射击和飞行单位可以通过。不能放置建筑或资源。
-[experiment barren-terrain]
-贫瘠地面
-[experiment barren-terrain help]
-向地图编辑器添加泥土、黏土、砾石和花草地。可以放置建筑，但其上及周围不会生长任何东西，也不算作岸边。
-[experiment rough-terrain]
-崎岖地面
-[experiment rough-terrain help]
-向地图编辑器添加泥泞、沼泽、深雪和碎石坡。地面单位的移动速度约为正常速度的三分之二。不能放置建筑或资源。
-[experiment path-terrain]
-路径地形
-[experiment path-terrain help]
-向地图编辑器添加土路和木栈道。与小径一样，地面单位以双倍速度移动，并且可以放置建筑，但不会生长任何东西。
-[experiment lava-terrain]
-熔岩地形
-[experiment lava-terrain help]
-向地图编辑器添加熔岩和余烬地。地面单位无法进入；飞行单位穿越时会迅速损失生命值。弹射物可以通过。
-[experiment fertile-terrain]
-肥沃地面
-[experiment fertile-terrain help]
-向地图编辑器添加壤土、苔藓和春日草地。可以放置建筑并种植作物，对周围土地的灌溉效果比水更强。
-[experiment deep-water-terrain]
-深水
-[experiment deep-water-terrain help]
-向地图编辑器添加深水和暗水。游泳单位通过时较慢，其中不生长藻类，但仍可灌溉附近的田地。
-[experiment void-terrain]
-虚空地形
-[experiment void-terrain help]
-向地图编辑器添加坑洞和深渊。任何单位都无法穿越，包括飞行单位；弹射物会在边缘停止。
 [terrain group custom]
 自定义
 [terrain group classic]
@@ -5772,8 +5754,6 @@ AI 生成
 选择画笔。同组地形的规则相同，只在外观上有所区别。
 [terrain rule algae grow]
 藻类生长
-[terrain palette experiments hint]
-选择画笔。在“设置 > 实验功能”中启用对应实验后，这里会显示更多地形组。
 [brush valid on %0]
 可放置于：%0
 [brush valid nowhere]
@@ -6210,246 +6190,6 @@ MCP 服务器
 删除录像
 [recording refresh]
 刷新
-[tutorial part1 message 1]
-欢迎来到 Globulation 2！本教程通过四个任务介绍殖民地管理。你可以从游戏菜单保存进度，稍后从主菜单加载。按空格键继续，触摸屏则点击“确定”。部分消息会在继续后消失，可通过消息历史重新阅读。
-[tutorial part1 message 2]
-你一开始有一座孢子堆和一名工人。来看看他们如何配合。
-[tutorial part1 message 3]
-工人收割小麦并运往孢子堆。孢子堆用小麦生产新单位，是殖民地的核心。
-[tutorial part1 message 4]
-用鼠标左键或触摸点选你的球球，也就是正在移动的单位。
-[tutorial part1 message 5]
-单位信息显示食物存量随时间下降，代表球球正在变饿。开启食物条显示时，单位下方的蓝条表示剩余食物。
-[tutorial part1 message 6]
-球球在食堂进食。点击鼠标右键取消选择，触摸屏则点击空地。
-[tutorial part1 message 7]
-打开建筑控件，选择食堂并放在小麦附近。找不到小麦时，可以沿工人的采集路线寻找。触摸屏请使用“建造”，并确认有效的位置。完成后按右键或触控“取消”按钮，退出放置模式。
-[tutorial part1 message 8]
-很好！食堂工地已放置。
-[tutorial part1 message 9]
-孢子堆的一名工人现在可以建造食堂。工人从附近树木采集木材，送到工地。等待施工完成。
-[tutorial part1 message 10]
-完工的食堂需要小麦。分配的工人会去采集，就像为孢子堆供应小麦一样。
-[tutorial part1 message 11]
-小麦送达时，食堂的黄色资源条会上升，表示食堂的小麦库存。
-[tutorial part1 message 12]
-现在来学习如何分配工作。
-[tutorial part1 message 13]
-一名工人供应孢子堆，另一名供应食堂。他们都可能暂停工作，去食堂吃饭，这是正常现象。
-[tutorial part1 message 14]
-选择孢子堆，找到工人分配控件。桌面版标为“工作中”；触摸屏则使用已分配工人与目标数量控件。目标表示你希望这座建筑有多少工人。
-[tutorial part1 message 15]
-用分配控件将孢子堆的工人目标设为 0，再选择食堂，将其目标也设为 0。
-[tutorial part1 message 16]
-工人现在空闲了，但仍需要食物。没有分配工人的食堂，最终会耗尽小麦。
-[tutorial part1 message 17]
-找不到食物的球球会损失生命，甚至死亡。医院能治疗受伤的球球，但你也必须保持食堂供应。
-[tutorial part1 message 18]
-用建筑控件建造医院。它不需要小麦，可以放在木材附近，或孢子堆附近的中心位置。
-[tutorial part1 message 19]
-选择医院工地，将工人目标设为 2。两名工人能更快完工。
-[tutorial part1 message 20]
-医院建好了。受伤的球球现在可以来恢复生命。
-[tutorial part1 message 21]
-黑色区域尚未探索。单位移动时会揭示附近地形。工人跟着工作走，不适合侦察；探索者才是专门负责这项任务的单位。
-[tutorial part1 message 22]
-选择孢子堆，找到工人、探索者和战士的生产比例，将探索者比例提高到 1。
-[tutorial part1 message 23]
-工人和探索者比例都为 1 时，孢子堆长期下来会生产数量相等的两种单位。将工人比例设为 0，暂时只生产探索者。
-[tutorial part1 message 24]
-将孢子堆的工人分配目标恢复为 1，让一名工人运送小麦。
-[tutorial part1 message 25]
-选择食堂，也将工人目标设为 1。成长中的殖民地需要稳定的食物供应。
-[tutorial part1 message 26]
-现在等待孢子堆生产一名探索者。
-[tutorial part1 message 27]
-探索者在殖民地周围飞行，揭示更多地形。继续之前，先让孢子堆生产第二名探索者。
-[tutorial part1 message 28]
-再次选择孢子堆，将探索者比例设为 0、工人比例设为 1，恢复生产工人。
-[tutorial part2 message 1]
-基地东边有石头。记住这个位置，稍后会用到。
-[tutorial part2 message 2]
-石头南边的树是橘子树。选择它们可查看资源信息。稍后会介绍水果，现在先专注于孢子堆。
-[tutorial part2 message 3]
-让孢子堆只生产工人：工人比例为 1，探索者和战士比例为 0。
-[tutorial part2 message 4]
-让殖民地成长得更快些。选择孢子堆，将工人分配目标设为 6。现在不足六名也没关系，新工人出现后可以填补空缺。
-[tutorial part2 message 5]
-工人达到 8 名后，我们再开始下一项任务。人口增长期间，持续供应孢子堆和食堂。
-[tutorial part2 message 6]
-现在有几名工人在供应孢子堆。运来的小麦越多，生产单位就越快。
-[tutorial part2 message 7]
-生产一名工人需要 5 单位小麦。从远处农田运小麦需要时间，所以孢子堆通常比食堂需要更多供应工人。尽可能将依赖食物的建筑放在小麦附近。
-[tutorial part2 message 8]
-你已有至少 8 名工人。选择孢子堆，将工人分配目标降为 1，在建造期间减慢人口增长。
-[tutorial part2 message 9]
-殖民地需要更多用餐空间。在现有食堂北边再建一座食堂。
-[tutorial part2 message 10]
-将空闲工人分配到新食堂工地。它只需要 3 单位木材，所以超过 3 名建筑工人帮助不大。
-[tutorial part2 message 11]
-食堂完工后会恢复运营用的工人目标，通常为 1。建造与日常供应使用各自独立的分配目标。
-[tutorial part2 message 12]
-工人可以学会加快移动。跑道提供这种训练。
-[tutorial part2 message 13]
-打开建筑控件，找到跑道。桌面版可将鼠标悬停在图标上查看说明和成本；触摸屏则在“建造”中选择它，准备放置。先不要放置。
-[tutorial part2 message 14]
-跑道需要大量木材和少量石头。选择中心位置，便于单位到达。
-[tutorial part2 message 15]
-建造一座跑道，例如放在孢子堆南边。周围留出空地，训练建筑升级时需要扩建空间。
-[tutorial part2 message 16]
-将跑道工地的工人目标设为 5 到 7。它总共需要 7 单位建材。
-[tutorial part2 message 17]
-跑道完工后会训练来访的单位，不需要持续供应建材或小麦。
-[tutorial part2 message 18]
-球球正在进入跑道训练。训练完成后，它们就能跑得更快。
-[tutorial part2 message 19]
-选择跑道查看训练进度。进度指示会显示里面的单位距离完成还有多久。
-[tutorial part2 message 20]
-受训工人移动更快，能更早送达资源。殖民地成长时仍要注意食物库存；只有足够多的食堂保持供应，运送加速才有帮助。
-[tutorial part2 message 21]
-在游戏信息界面找到工人人口计数。总数显示人口；可用工人数能帮你发现空闲人力或未填补的工作。善用空闲工人，但不要分配超出殖民地负荷的工作。
-[tutorial part2 message 22]
-信息界面也显示探索者和战士数量。规划生产或给旗帜分配单位时，请查看这些数字。
-[tutorial part2 message 23]
-你有 2 座食堂。每座基础食堂可同时供 4 个单位进食，合计有 8 个用餐位置。但饥饿的单位可能超过 8 个，要为排队预留足够容量。
-[tutorial part2 message 24]
-两座食堂无法一直支撑成长中的殖民地。在食物短缺演变为饥荒前，增加用餐容量。
-[tutorial part2 message 25]
-在小麦附近再建 3 座食堂。饥饿的工人会停止工作，长期挨饿则会死亡。分配可用工人施工，同时保持现有食物供应。
-[tutorial part2 message 26]
-完成新增的 3 座食堂，让总数达到 5 座。
-[tutorial part2 message 27]
-新食堂完工后使用运营分配目标，通常每座 1 名工人。检查它们有供应工人和足够的小麦。
-[tutorial part2 message 28]
-跑道改善了陆上移动。现在教殖民地游泳。
-[tutorial part2 message 29]
-游泳池教单位游泳，建造需要木材。请放在基地东北方、石头北边的大片空地。周围预留升级和资源生长的空间，并分配可用工人施工。
-[tutorial part2 message 30]
-游泳池教单位游泳，建造需要木材。请放在基地东北方、石头北边的大片空地。周围预留升级和资源生长的空间，并分配可用工人施工。
-[tutorial part2 message 31]
-游泳池建好了。球球可以进入学习游泳。
-[tutorial part2 message 32]
-选择游泳池查看训练进度。基础游泳池和基础跑道一样，每次训练 2 个球球。
-[tutorial part2 message 33]
-受训的球球现在会游泳了。很快就会有需要渡水的工作。
-[tutorial part2 message 34]
-还有更多内容要学。需要休息时，可从游戏菜单保存进度，稍后再回来。
-[tutorial part2 message 35]
-殖民地已有食物和体能训练。学校将教工人建造更好建筑所需的技能。
-[tutorial part2 message 36]
-学校提高工人的采集和建造技能。建造学校需要水中生长的藻类，会游泳的工人可以采集。
-[tutorial part2 message 37]
-保护重要的训练建筑。学校不必紧靠水边，放在有掩护的内陆位置可以减少遭受攻击的风险。
-[tutorial part2 message 38]
-在受保护的位置建造学校，例如游泳池后方，或孢子堆西南方、跑道旁边。分配可用工人施工。
-[tutorial part2 message 39]
-选择建筑可查看分配给它的工人。桌面版还可用可配置的“切换单位路径显示”操作，显示单位通往目的地的连线；当前快捷键见“设置”的“控制”。等待学校完工。
-[tutorial part3 message 1]
-殖民地已有食堂、医院、跑道、游泳池和学校。该准备防御了。
-[tutorial part3 message 2]
-我们还没生产战士。没有战士，殖民地遭到攻击时就缺乏保护。
-[tutorial part3 message 3]
-选择孢子堆，将战士生产比例设为 2。工人比例保持 1，继续生产工人。
-[tutorial part3 message 4]
-孢子堆现在大致每生产一名工人，就会生产 2 名战士。想加快生产，可以分配更多工人供应它。
-[tutorial part3 message 5]
-第一名战士已就绪，即将开始训练。继续前，等待第二名战士。
-[tutorial part3 message 6]
-战士也使用跑道和游泳池，还可以在兵营训练攻击技能。
-[tutorial part3 message 7]
-兵营提升攻击力和攻击速度。攻击力增加每次命中的伤害；速度增加攻击频率。训练有素的战士可以击败数量远多于自己的未受训敌军。
-[tutorial part3 message 8]
-在木材附近建造兵营，因为施工需要木材。
-[tutorial part3 message 9]
-将可用工人分配到兵营工地。保留足够工人供应食物，避免创建超出人力负荷的工作。
-[tutorial part3 message 10]
-兵营建好了。战士现在可以在那里训练攻击技能。
-[tutorial part3 message 11]
-升级建筑可以让殖民地更强大。
-[tutorial part3 message 12]
-在学校受训的工人才能进行升级施工。选择可升级建筑，在建筑控件中找到“升级”。受损建筑可能需要先“修理”。
-[tutorial part3 message 13]
-先决定升级哪座建筑。食堂仍有空余容量，可以再等等。
-[tutorial part3 message 14]
-医院也还有空位。可以优先考虑学校、跑道、游泳池或兵营。
-[tutorial part3 message 15]
-先升级跑道，让单位学会移动得更快。
-[tutorial part3 message 16]
-选择跑道，在建筑控件中选择“升级”。里面的单位必须先离开才能施工，因此变化可能不会立即发生。
-[tutorial part3 message 17]
-分配可用工人升级跑道。只有在学校完成所需训练的工人，才能建造 2 级工地。
-[tutorial part3 message 18]
-等待跑道升级完成。等级越高的建筑，需要越多资源和建造时间。
-[tutorial part3 message 19]
-2 级跑道完工了。它比以前占地更大，这就是事先预留空隙的原因。没有足够扩建空间，建筑就无法升级。
-[tutorial part3 message 20]
-现在将兵营和游泳池升级到 2 级，两者都完成后再继续。
-[tutorial part3 message 21]
-升级后的建筑通常能服务更多球球，或提供更好的训练。例如 2 级食堂有 7 个用餐位置，进食速度也比基础食堂快。
-[tutorial part3 message 22]
-敌人就在附近。准备迎战吧。
-[tutorial part3 message 23]
-防御塔会向射程内的敌人射击，石墙可以保护它们。我们将用两者防守通往殖民地的狭窄通道。
-[tutorial part3 message 24]
-空间允许时，成对放置防御塔。墙可以保护三侧，但要留一条通路，让工人运送石头弹药。
-[tutorial part3 message 25]
-看看游泳池东边、其他果树北边。这里有一条通向另一座岛的狭窄通道，很适合防守。
-[tutorial part3 message 26]
-在树木与岸边之间预留 2 座塔的位置。后方留下运送石头的通路，其他侧面留给墙。别把工人挡在墙外。
-[tutorial part3 message 27]
-在那里建造 2 座塔。根据界面计数显示的可用工人数，每个工地分配 2 或 3 名工人。
-[tutorial part3 message 28]
-用建筑控件在塔朝外的三侧放置墙段。朝向殖民地的一侧保持开放，供工人通行。
-[tutorial part3 message 29]
-每段墙创建一项建造工作，并需要 1 单位石头。工人无法同时承担所有工作时，可以依次完成。
-[tutorial part3 message 30]
-等待两座塔和几段墙完工。塔还需要石头弹药，但采石处较远，运送缓慢。若有空闲工人，可提高塔的工人目标。
-[tutorial part4 message 1]
-殖民地已有食物、训练和防御。建筑还能再升到 3 级，提供更强训练和更大容量。根据资源与工人技能，继续改善它们。
-[tutorial part4 message 2]
-在基地西北方寻找敌方殖民地。现在把视野移过去。
-[tutorial part4 message 3]
-已探索的地形仍可能被战争迷雾遮住。要看见敌人当前的活动，需要附近有探索者。
-[tutorial part4 message 4]
-打开“令旗”。你可以用旗帜和区域引导单位，不必逐一控制球球。
-[tutorial part4 message 5]
-选择带风筝形符号的探索令旗。旗帜可以放在陆地、水域、资源和未探索地形上。
-[tutorial part4 message 6]
-在疑似敌方基地的位置放置探索令旗。大概的位置就足以开始侦察。按右键退出放置模式，或用触控控件完成放置。
-[tutorial part4 message 7]
-旗帜周围的轮廓表示工作半径。分配的探索者会侦察该区域。若没人前来，检查探索者数量，必要时在孢子堆再生产一名。探索者到达后，按空格键或点击“确定”。
-[tutorial part4 message 8]
-敌人有许多工人和集结的军队。在他们进攻前，先准备好防御。
-[tutorial part4 message 9]
-打开“令旗”，选择蓝色的守卫区域。使用添加区域的模式，不要移除。触摸屏请选择“绘制”，而非“擦除”。
-[tutorial part4 message 10]
-选择画笔形状和大小。大正方形适合涂出集中的防守区域。
-[tutorial part4 message 11]
-在塔的正后方、敌人可能接近的位置涂绘守卫区域。点按可涂一处，拖动可覆盖更多地形。触摸屏上，涂绘时若需移动视野，请使用“平移”。
-[tutorial part4 message 12]
-可用战士会移动到守卫区域。区域要能容纳守军，又足够小，让他们集中在通道口。现在等待进攻。
-[tutorial part4 message 13]
-敌人正在接近通道！
-[tutorial part4 message 14]
-我们遭到攻击了。看看受训战士和防御塔如何守住阵地。
-[tutorial part4 message 15]
-你守住了！现在打开“令旗”，选择带尖刺的战争令旗。放在敌方孢子堆上，引导进攻。
-[tutorial part4 message 16]
-退出放置模式，选择战争令旗。分配超过 1 名战士，再缩小半径，让攻击集中在敌方孢子堆周围。等待战士到达。
-[tutorial part4 message 17]
-进攻开始了。战士必须突破敌方防御塔，才能到达孢子堆。
-[tutorial part4 message 18]
-战士已到达敌方基地。继续集中攻击孢子堆。
-[tutorial part4 message 19]
-你摧毁了敌方孢子堆，恭喜！你完成了教程，学会了食物供应、工作分配、训练、升级、侦察和战斗的基础知识。
-[tutorial mission basics]
-入门与基础
-[tutorial mission development]
-建筑与学校
-[tutorial mission training]
-战士、训练与升级
-[tutorial mission flags]
-旗帜与结业
 [library  Could not restore the previous library: %0]
  无法恢复先前的库： %0
 [library  The previous library is retained.]
@@ -6642,6 +6382,422 @@ MCP 服务器
 无法保存您的选择。声音仍处于关闭状态。请重试。
 [audio choices description]
 静音：已静音的扬声器。声音：带有声波的扬声器。
+[intro menu]
+入门
+[intro briefing]
+学习间接控制：用令旗探索、为殖民地补给，并指挥进攻。
+[intro try]
+开始入门
+[intro preflight]
+你的球球会自主行动。你通过建筑和令旗选择它们的任务。在这个简短入门中，你将探索地标、扩充食物供应、增加工人，并指挥一次小规模进攻。
+[intro preflight save]
+请预留约10分钟。你可以通过游戏菜单保存，再通过载入游戏继续。正常的饥饿和战斗规则仍然适用。选择主菜单中的教学课程可练习更多技能。
+[intro preference failed]
+无法保存你的选择。你可以继续游戏；此建议可能在下次再次出现。
+[intro goal scout]
+探索石头地标
+[intro goal build]
+再建一座食堂
+[intro goal supply]
+为新食堂补给
+[intro goal grow]
+增加工人
+[intro goal attack]
+摧毁敌方孢子堆
+[intro instruction scout]
+打开令旗，在殖民地东侧的石头上放置探索令旗。分配一名探索者，观察它前往令旗。
+[intro instruction build]
+打开建造，在小麦附近放置食堂。分配空闲工人建造，同时保持原有食堂的补给。
+[intro instruction supply]
+选择建成的新食堂，至少分配一名补给工人。等待工人运来小麦。
+[intro instruction grow]
+选择孢子堆，将工人需求设为至少2，并将生产比例设为仅生产工人。在新工人出生期间，保持两座食堂的补给。
+[intro instruction attack]
+找到更东侧的敌方孢子堆。使用战争令旗指挥战士攻击。如需提示，可以查看帮助。
+[intro help]
+帮助／为什么？
+[intro help scout]
+使用小地图将视角移向东侧，找到石头。在令旗中选择探索令旗，将其放在石头上，然后用鼠标次要按键退出放置。选择令旗，需求设为1名探索者。令旗会请求单位，不会瞬间移动单位。探索者可能停下来吃饭。
+[intro help build]
+建造会消耗工人运来的木材。在建筑面板中选择食堂，放在小麦附近的空地上，并请求2名建造工人。工人需求是请求数量，不是已经到场的人数。原有食堂和孢子堆仍需保留补给工人。任何有效位置都算数。
+[intro help supply]
+建造和日常补给的工人需求分别设置。选择建成的食堂，提高其运营工人需求。补给工人会收集小麦并运到这里。饥饿的球球在食堂进食；没有补给工人的建筑最终会耗尽储粮。请保持通往小麦的道路畅通。
+[intro help grow]
+孢子堆消耗小麦来生产单位。将工人生产比例设为1，探索者和战士设为0。将孢子堆工人需求提高至至少2。更多补给工人能加快小麦运输，但也会占用其他任务的人力。请维持两座食堂的食物供应。
+[intro help attack]
+打开令旗，选择战争令旗，放在石头东侧的敌方孢子堆上。选择令旗，请求最多4名战士。小半径能让他们集中。选择令旗前，用鼠标次要按键退出放置。如果没有战士了，就在孢子堆生产更多。战士可能停下来吃饭；请保持食堂补给。
+[intro hint scout]
+探索者需要东侧石头上已分配单位的探索令旗。请检查令旗目标和探索者数量。
+[intro hint build]
+如果移除了新食堂，请再建一座。否则请检查工地及其工人需求。现有补给任务可能占用工人；在腾出建造工人的同时维持食物供应。
+[intro hint supply]
+选择建成的新食堂。检查工人需求，观察小麦运送。工人可能需要时间赶路或进食。
+[intro hint grow]
+检查孢子堆补给，并确认只生产工人。等待新工人期间，请保持食堂补给。
+[intro hint attack]
+检查战争令旗、请求的战士数量以及食物供应。战士需要时间赶路和进攻。
+[intro hint no scout flag]
+未找到已分配单位的探索令旗。请在基地东侧的石头上放置一面，并请求1名探索者。
+[intro hint no suppliers]
+新食堂或工地的工人需求为0。请选择它并请求工人。
+[intro hint no war flag]
+敌方基地没有已分配单位的战争令旗。请在东侧敌方孢子堆上放置一面，并请求战士。
+[intro hint retry]
+本课程所需的单位或建筑已损失。请载入较早的存档，或从游戏菜单重新开始课程。
+[intro complete]
+入门完成
+[intro complete body]
+你指挥了自主行动的球球，扩充食物供应、发展殖民地，并组织了进攻。继续教学课程，学习训练、升级和防御，或返回主菜单开始对局。
+[intro play again]
+再玩一次
+[intro restart]
+重新开始入门
+[intro restart body]
+从预设殖民地重新开始吗？本次入门尚未保存的进度将丢失。
+[intro help touch scout]
+放置令旗前，拖动空地移动视角。找到殖民地东侧的石头。打开令旗，选择探索令旗，放在石头上并确认。选择令旗，通过分配单位需求请求1名探索者。球球会自行移动，也可能停下来进食。
+[intro help touch build]
+在建造中选择食堂，放在小麦附近的空地上并确认。选择工地，请求2名建造工人。工人需求是请求数量，不是已经到场的人数。保持原有食堂和孢子堆的补给。任何有效位置都算数。
+[intro help touch supply]
+选择建成的新食堂，提高分配工人需求。建造和日常补给的需求分别设置。补给工人收集小麦并运到这里。饥饿的球球在食堂进食；没有补给工人的建筑最终会断粮。保持通往小麦的道路畅通。
+[intro help touch grow]
+选择孢子堆，将工人生产比例设为1，探索者和战士设为0。将分配工人需求提高至至少2。补给工人为新单位运来小麦，但也会占用其他任务的人力。请保持两座食堂的补给。
+[intro help touch attack]
+打开令旗，选择战争令旗，放在石头东侧的敌方孢子堆上并确认。选择令旗，请求最多4名战士。小半径能让他们集中。如果没有战士，就在孢子堆生产。战士可能停下来吃饭；请保持食堂补给。
+[intro show destination]
+显示目的地
+[intro scout destination]
+在此探索
+[intro attack destination]
+攻击此处
+[intro compact scout]
+令旗 → 探索令旗。放在石头上；分配1名探索者。
+[intro compact build]
+建造 → 食堂。放在小麦附近；分配2名建造工人。
+[intro compact supply]
+选择新食堂；至少分配1名补给工人。等待小麦。
+[intro compact grow]
+选择孢子堆；分配2名补给工人。仅生产工人。
+[intro compact attack]
+令旗 → 战争令旗。放在敌方孢子堆上；分配战士。
+[tutorial lessons]
+教学课程
+[tutorial restart]
+重新开始课程
+[tutorial restart body]
+从预设殖民地重新开始本课程吗？未保存的进度将丢失。
+[tutorial complete]
+课程完成
+[tutorial food title]
+食物补给练习
+[tutorial food briefing]
+练习扩充食物供应：再建一座食堂，分配补给工人，观察小麦运来。
+[tutorial food complete]
+你建造了食堂并为它供应小麦。试试其他课程，或返回主菜单。
+[tutorial unavailable]
+无法载入教学课程。
+[lesson healing title]
+医院与治疗
+[lesson healing briefing]
+建造医院，帮助受伤工人恢复。殖民地开始时已吃饱，有一名工人受伤。
+[lesson healing complete]
+医院治好了受伤的球球。保持食堂补给：饥饿会让单位再次受伤。
+[lesson healing build hint]
+在空地上建造医院；分配2名建造工人。 留出球球进出的空间。医院治疗伤势，食堂供应食物。这位伤员已经吃饱。
+[lesson healing build title]
+建造医院
+[lesson healing build instruction]
+在空地上建造医院；分配2名建造工人。
+[lesson healing build help]
+留出球球进出的空间。医院治疗伤势，食堂供应食物。这位伤员已经吃饱。
+[lesson healing build marker]
+建造医院
+[lesson healing heal hint]
+保持医院通道畅通，观察受伤工人恢复。 球球会自主寻求治疗。请跟踪受伤工人，而不是新出生的单位。如果它死亡，请重新开始或载入存档。
+[lesson healing heal title]
+让伤员恢复
+[lesson healing heal instruction]
+保持医院通道畅通，观察受伤工人恢复。
+[lesson healing heal help]
+球球会自主寻求治疗。请跟踪受伤工人，而不是新出生的单位。如果它死亡，请重新开始或载入存档。
+[lesson healing heal marker]
+让伤员恢复
+[lesson walking-training title]
+行走训练
+[lesson walking-training briefing]
+建造跑道，观察一名现有工人学会更快行走。
+[lesson walking-training complete]
+工人学会了更快行走。训练提升现有工人的能力，不能代替殖民地的食物供应。
+[lesson walking-training build hint]
+在标记空地建造跑道；分配建造工人。 跑道需要木材和石头。在四周留出空隙，方便进出和后续扩建。
+[lesson walking-training build title]
+建造跑道
+[lesson walking-training build instruction]
+在标记空地建造跑道；分配建造工人。
+[lesson walking-training build help]
+跑道需要木材和石头。在四周留出空隙，方便进出和后续扩建。
+[lesson walking-training build marker]
+建造跑道
+[lesson walking-training train hint]
+保持跑道通道畅通，让一名工人完成训练。 符合条件的球球会自动训练。留出一些不负责补给的工人，并让两座食堂保持储粮。
+[lesson walking-training train title]
+训练现有工人
+[lesson walking-training train instruction]
+保持跑道通道畅通，让一名工人完成训练。
+[lesson walking-training train help]
+符合条件的球球会自动训练。留出一些不负责补给的工人，并让两座食堂保持储粮。
+[lesson swimming title]
+游泳与水中资源
+[lesson swimming briefing]
+训练游泳者，再用池塘中的水藻建造学校。
+[lesson swimming complete]
+游泳者为学校运来了水中资源。进入水域能增加殖民地可从事的工作。
+[lesson swimming build hint]
+在池塘西侧建造游泳池；分配建造工人。 在游泳池四周留出空间。工人学会游泳后，才能在深水收集水藻。
+[lesson swimming build title]
+建造游泳池
+[lesson swimming build instruction]
+在池塘西侧建造游泳池；分配建造工人。
+[lesson swimming build help]
+在游泳池四周留出空间。工人学会游泳后，才能在深水收集水藻。
+[lesson swimming build marker]
+建造游泳池
+[lesson swimming train hint]
+让一名现有工人完成游泳训练。 单位会自动选择训练。保持补给，让空闲工人能够到达游泳池。
+[lesson swimming train title]
+训练游泳者
+[lesson swimming train instruction]
+让一名现有工人完成游泳训练。
+[lesson swimming train help]
+单位会自动选择训练。保持补给，让空闲工人能够到达游泳池。
+[lesson swimming water-job hint]
+在殖民地附近建造学校；分配建造工人获取木材和水藻。 水藻长在池塘中。受过训练的游泳者必须下水采集。请将学校放在空地上，确保补给工人能够到达。
+[lesson swimming water-job title]
+使用池塘水藻
+[lesson swimming water-job instruction]
+在殖民地附近建造学校；分配建造工人获取木材和水藻。
+[lesson swimming water-job help]
+水藻长在池塘中。受过训练的游泳者必须下水采集。请将学校放在空地上，确保补给工人能够到达。
+[lesson swimming water-job marker]
+使用池塘水藻
+[lesson schools title]
+学校与工人技能
+[lesson schools briefing]
+利用已有的游泳者建造学校，再观察工人学习建造和采集。
+[lesson schools complete]
+学校提高了工人技能。熟练建造工人可进行升级，更好的采集能力有助于维持不断扩大的经济。
+[lesson schools build hint]
+在空地上建造学校；分配建造工人。 殖民地已有可采集水藻的游泳者。保持通往木材和水域的道路畅通。果树提供声望资源；食物仍然来自小麦。
+[lesson schools build title]
+建造学校
+[lesson schools build instruction]
+在空地上建造学校；分配建造工人。
+[lesson schools build help]
+殖民地已有可采集水藻的游泳者。保持通往木材和水域的道路畅通。果树提供声望资源；食物仍然来自小麦。
+[lesson schools build marker]
+建造学校
+[lesson schools learn hint]
+让一名现有工人完成学校训练。 学校同时教授建造和采集。留出可用工人；仅有工地并不能训练任何人。
+[lesson schools learn title]
+学习建造与采集
+[lesson schools learn instruction]
+让一名现有工人完成学校训练。
+[lesson schools learn help]
+学校同时教授建造和采集。留出可用工人；仅有工地并不能训练任何人。
+[lesson upgrades title]
+升级建筑
+[lesson upgrades briefing]
+利用已有的熟练工人升级跑道，进行超过第一级的训练。
+[lesson upgrades complete]
+你升级了建筑并使用了更好的训练。后续升级会重复这一过程，需要更好的学校、技能、材料和空间，最高到第3级。
+[lesson upgrades upgrade hint]
+选择跑道，选择升级，并分配熟练建造工人。 这些工人已学会学校第一级技能。升级需要额外空间和材料，并会中断建筑服务。取消的升级不算数。
+[lesson upgrades upgrade title]
+升级跑道
+[lesson upgrades upgrade instruction]
+选择跑道，选择升级，并分配熟练建造工人。
+[lesson upgrades upgrade help]
+这些工人已学会学校第一级技能。升级需要额外空间和材料，并会中断建筑服务。取消的升级不算数。
+[lesson upgrades upgrade marker]
+升级跑道
+[lesson upgrades train hint]
+让一名现有工人在升级后的跑道学习更快行走。 完成升级会改善可用训练。更高级建筑需要更高建造技能；向玩家显示的等级从1开始。
+[lesson upgrades train title]
+使用升级后的训练
+[lesson upgrades train instruction]
+让一名现有工人在升级后的跑道学习更快行走。
+[lesson upgrades train help]
+完成升级会改善可用训练。更高级建筑需要更高建造技能；向玩家显示的等级从1开始。
+[lesson warrior-training title]
+生产与训练战士
+[lesson warrior-training briefing]
+在孢子堆生产战士，再到兵营训练。
+[lesson warrior-training complete]
+你控制了军事生产并训练了战士。请维持食物供应；战斗单位也需要进食。
+[lesson warrior-training produce hint]
+将孢子堆设为仅生产战士；分配补给工人，等待2名战士。 将工人和探索者比例设为0，战士比例设为1。孢子堆消耗小麦来诞生单位。比例决定生产什么，补给工人决定生产能否进行。
+[lesson warrior-training produce title]
+生产两名战士
+[lesson warrior-training produce instruction]
+将孢子堆设为仅生产战士；分配补给工人，等待2名战士。
+[lesson warrior-training produce help]
+将工人和探索者比例设为0，战士比例设为1。孢子堆消耗小麦来诞生单位。比例决定生产什么，补给工人决定生产能否进行。
+[lesson warrior-training produce marker]
+生产两名战士
+[lesson warrior-training build hint]
+在空地建造兵营；分配建造工人。 战士足够后，停止或减少战士生产。兵营教授战斗技能，四周需留出空间。
+[lesson warrior-training build title]
+建造兵营
+[lesson warrior-training build instruction]
+在空地建造兵营；分配建造工人。
+[lesson warrior-training build help]
+战士足够后，停止或减少战士生产。兵营教授战斗技能，四周需留出空间。
+[lesson warrior-training build marker]
+建造兵营
+[lesson warrior-training train hint]
+让一名战士完成兵营训练。 战士会自动寻求训练。保持食堂补给和兵营通道畅通。仅仅建成兵营不算完成训练。
+[lesson warrior-training train title]
+训练你的战士
+[lesson warrior-training train instruction]
+让一名战士完成兵营训练。
+[lesson warrior-training train help]
+战士会自动寻求训练。保持食堂补给和兵营通道畅通。仅仅建成兵营不算完成训练。
+[lesson fortifications title]
+防御塔与护墙
+[lesson fortifications briefing]
+建造有补给的防御塔和护墙，再用一次小规模攻击检验它们。
+[lesson fortifications complete]
+补给充足的防御设施挡住了练习攻击。防御塔需要石头，护墙需要留出缺口，让补给工人通行。
+[lesson fortifications tower hint]
+在标记区域建造防御塔；分配建造工人。 将它放在石矿附近，留出补给工人通道。准备目标全部完成后，攻击才会开始。
+[lesson fortifications tower title]
+建造防御塔
+[lesson fortifications tower instruction]
+在标记区域建造防御塔；分配建造工人。
+[lesson fortifications tower help]
+将它放在石矿附近，留出补给工人通道。准备目标全部完成后，攻击才会开始。
+[lesson fortifications tower marker]
+建造防御塔
+[lesson fortifications walls hint]
+在防御塔附近建造至少2段墙；保持西侧通道畅通。 墙需要石头，每个工地都会请求工人。不要将防御塔封死：补给工人需要通路。标记的西侧通道必须保持畅通。
+[lesson fortifications walls title]
+用护墙保护防御塔
+[lesson fortifications walls instruction]
+在防御塔附近建造至少2段墙；保持西侧通道畅通。
+[lesson fortifications walls help]
+墙需要石头，每个工地都会请求工人。不要将防御塔封死：补给工人需要通路。标记的西侧通道必须保持畅通。
+[lesson fortifications walls marker]
+用护墙保护防御塔
+[lesson fortifications supply hint]
+选择防御塔并请求补给工人。等待至少2块石头。 建成的防御塔需设置运营工人需求来运送弹药，这与建造工人需求是分开的。
+[lesson fortifications supply title]
+补给弹药
+[lesson fortifications supply instruction]
+选择防御塔并请求补给工人。等待至少2块石头。
+[lesson fortifications supply help]
+建成的防御塔需设置运营工人需求来运送弹药，这与建造工人需求是分开的。
+[lesson fortifications supply marker]
+补给弹药
+[lesson fortifications hold hint]
+一名练习战士正在接近。保持防御塔补给和通道畅通。 坚守直到击败或击退攻击者。堵住补给工人的墙会让防御塔缺乏弹药。如果殖民地失守，请重新开始或载入较早存档。
+[lesson fortifications hold title]
+检验防御工事
+[lesson fortifications hold instruction]
+一名练习战士正在接近。保持防御塔补给和通道畅通。
+[lesson fortifications hold help]
+坚守直到击败或击退攻击者。堵住补给工人的墙会让防御塔缺乏弹药。如果殖民地失守，请重新开始或载入较早存档。
+[lesson fortifications hold marker]
+检验防御工事
+[lesson defensive-tactics title]
+警戒区域与令旗战术
+[lesson defensive-tactics briefing]
+侦察练习敌军，布置警戒区域，进行防守，再组织反击。
+[lesson defensive-tactics complete]
+你完成了侦察、警戒区域防守和反击指挥。令旗需求会请求单位；半径决定单位的活动范围。
+[lesson defensive-tactics scout hint]
+在敌方基地放置探索令旗；分配1名探索者。 令旗会自动请求单位。探索者可揭示战争迷雾中的当前活动；它可能停下来吃饭。
+[lesson defensive-tactics scout title]
+侦察敌方基地
+[lesson defensive-tactics scout instruction]
+在敌方基地放置探索令旗；分配1名探索者。
+[lesson defensive-tactics scout help]
+令旗会自动请求单位。探索者可揭示战争迷雾中的当前活动；它可能停下来吃饭。
+[lesson defensive-tactics scout marker]
+侦察敌方基地
+[lesson defensive-tactics guard hint]
+在标记区域涂绘警戒区域，让2名战士到达。 打开令旗，选择警戒，在区域内涂绘至少4格。警戒区域吸引空闲战士。禁区阻止通行；清理区域请求移除资源。
+[lesson defensive-tactics guard title]
+布置警戒区域
+[lesson defensive-tactics guard instruction]
+在标记区域涂绘警戒区域，让2名战士到达。
+[lesson defensive-tactics guard help]
+打开令旗，选择警戒，在区域内涂绘至少4格。警戒区域吸引空闲战士。禁区阻止通行；清理区域请求移除资源。
+[lesson defensive-tactics guard marker]
+布置警戒区域
+[lesson defensive-tactics repel hint]
+敌军正在进攻。保持警戒区域有兵防守，并维持食堂补给。 准备完成后会开始小规模攻击。击败或击退两名袭击者；受伤敌军可能撤退。战士可能暂时离开去吃饭。如果防守失败，请载入较早存档或重新开始。
+[lesson defensive-tactics repel title]
+击退练习攻击
+[lesson defensive-tactics repel instruction]
+敌军正在进攻。保持警戒区域有兵防守，并维持食堂补给。
+[lesson defensive-tactics repel help]
+准备完成后会开始小规模攻击。击败或击退两名袭击者；受伤敌军可能撤退。战士可能暂时离开去吃饭。如果防守失败，请载入较早存档或重新开始。
+[lesson defensive-tactics repel marker]
+击退练习攻击
+[lesson defensive-tactics counterattack hint]
+在敌方孢子堆上放置战争令旗；请求3名战士，半径设为不超过4。 警戒区域和战争令旗会争用战士。如果警戒格留住了部队，请移除这些格子。战士行军和进攻时，请保持食物供应。
+[lesson defensive-tactics counterattack title]
+指挥集中反击
+[lesson defensive-tactics counterattack instruction]
+在敌方孢子堆上放置战争令旗；请求3名战士，半径设为不超过4。
+[lesson defensive-tactics counterattack help]
+警戒区域和战争令旗会争用战士。如果警戒格留住了部队，请移除这些格子。战士行军和进攻时，请保持食物供应。
+[lesson defensive-tactics counterattack marker]
+指挥集中反击
+[lesson healing build compact]
+建造 → 医院。保留通路；分配建造工人。
+[lesson healing heal compact]
+让受伤工人在医院治疗。
+[lesson walking-training build compact]
+建造 → 跑道。四周留出空间。
+[lesson walking-training train compact]
+让工人完成跑道训练。
+[lesson swimming build compact]
+建造 → 游泳池，放在池塘西侧。
+[lesson swimming train compact]
+让工人学会游泳。
+[lesson swimming water-job compact]
+建造 → 学校。分配建造工人获取木材和水藻。
+[lesson schools build compact]
+建造 → 学校。分配建造工人获取木材和水藻。
+[lesson schools learn compact]
+让工人完成学校训练。
+[lesson upgrades upgrade compact]
+选择跑道 → 升级。分配熟练建造工人。
+[lesson upgrades train compact]
+让工人在升级后的跑道训练。
+[lesson warrior-training produce compact]
+孢子堆 → 仅生产战士。供应足够诞生2名战士的小麦。
+[lesson warrior-training build compact]
+建造 → 兵营。四周留出空间。
+[lesson warrior-training train compact]
+让战士完成兵营训练。
+[lesson fortifications tower compact]
+建造 → 防御塔。放在标记区域。
+[lesson fortifications walls compact]
+建造2段墙。保持防御塔西侧通道畅通。
+[lesson fortifications supply compact]
+选择防御塔 → 补给工人。等待2块石头。
+[lesson fortifications hold compact]
+持续补给防御塔，抵御攻击者。
+[lesson defensive-tactics scout compact]
+令旗 → 探索。放在敌方基地；分配1名探索者。
+[lesson defensive-tactics guard compact]
+令旗 → 警戒。涂绘4格；让2名战士到达。
+[lesson defensive-tactics repel compact]
+守住警戒区域。保持食堂补给。
+[lesson defensive-tactics counterattack compact]
+战争令旗 → 敌方孢子堆。请求3名战士；半径≤4。
 [library GL only]
 仅限 GL
 [Grassland]
@@ -6652,5 +6808,7 @@ MCP 服务器
 兽径
 [Fish amount]
 鱼类数量
+[scenario messages]
+消息 ▸
 [Camp-site amount]
 营地数量

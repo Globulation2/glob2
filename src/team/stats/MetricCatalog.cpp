@@ -461,6 +461,7 @@ std::vector<Metric> build()
 
 	// Score
 	add({.id = "prestige", .group = Group::Score, .unitKey = "[stat unit prestige]", .sampled = EndOfGameStat::TYPE_PRESTIGE});
+    add({.id = "win probability", .group = Group::Score}).winProbability = true;
 	return all;
 }
 
@@ -616,7 +617,7 @@ Chart chartOf(const Metric &metric, const View &view, const std::vector<TeamHist
 	chart.ordered = view.split && metric.remainderKey;
 	// A split metric's ratio is its headline in text panels, not what is charted.
 	const bool ratio = metric.ratioOf && !view.split;
-	chart.percent = view.share || (ratio && !metric.mean) || (view.relative && (view.split || metric.kind == Metric::Gauge));
+	chart.percent = metric.winProbability || view.share || (ratio && !metric.mean) || (view.relative && (view.split || metric.kind == Metric::Gauge));
 	chart.decimals = chart.percent || ratio || view.relative || metric.smoothed || (metric.kind == Metric::Counter && !view.total);
 	if (view.split)
 	{
@@ -630,6 +631,22 @@ Chart chartOf(const Metric &metric, const View &view, const std::vector<TeamHist
 	}
 	for (const auto &history : teams)
 	{
+        if (metric.winProbability)
+        {
+            TeamSeries series;
+            series.team = history.team;
+            series.values.emplace_back();
+            for (const auto &sample : history.winProbability)
+            {
+                series.ticks.push_back(sample.tick);
+                series.values[0].push_back(sample.permille / 10.0);
+            }
+            // A recorded 0% chance is meaningful, including in a legacy save
+            // continued after a team's elimination. Do not call it missing data.
+            chart.any |= !series.ticks.empty();
+            chart.teams.push_back(std::move(series));
+            continue;
+        }
 		const Samples samples(metric, view, history);
 		TeamSeries series;
 		series.team = history.team;
@@ -788,6 +805,7 @@ TeamHistory historyOf(int team, const TeamStats &stats)
 	history.team = team;
 	history.extendedCoverageStartTick = stats.extendedCoverageStartTick;
 	history.labourCoverageStartTick = stats.labourCoverageStartTick;
+    history.winProbability = stats.getWinProbabilityHistory();
 	const auto &sampled = stats.getEndOfGameStats();
 	const auto &measured = stats.measurementHistory;
 	// Both are appended every sample interval, but measurements may start later

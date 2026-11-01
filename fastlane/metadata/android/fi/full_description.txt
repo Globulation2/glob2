@@ -1,0 +1,16 @@
+Rakenna kukoistava siirtokunta kiistellylle alueelle.
+
+Globulation 2 on reaaliaikainen strategiapeli, jossa ruoka, työntekijät ja tila muokkaavat laajentumistasi. Kasvata rönsyilevää siirtokuntaa, tasapainota sen kilpailevia tarpeita ja taistele kilpailijoiden kanssa maasta ja resursseista. Olentosi toimivat itsenäisesti, jolloin voit ohjata koko siirtokuntaa.
+
+Kasvata talous, joka pystyy tukemaan tavoitteitasi.
+Ruoka, rakentaminen ja koulutus kilpailevat työvoimastasi. Päätä, missä työntekijöitä tarvitaan, ja tasapainota uudet tavoitteet jo olemassa olevan siirtokuntasi tarpeiden kanssa.
+
+Tee kartasta osa strategiaasi.
+Eri kartat vaativat erilaisia strategioita. Sovita laajennuksesi maastoon, valitse mitä puolustetaan ja löydä siirtokuntasi tarvitsemat reitit ja resurssit.
+
+Puolusta sitä, mitä olet rakentanut.
+Taloutesi tukee sekä kasvua että puolustusta. Tasapainota siirtokuntasi tarpeet kilpailijoiden kilpaillessa maasta ja resursseista, ja valmistaudu konflikteihin, jotka voivat ratkaista ottelun.
+
+Globulation 2 on ilmainen ja avoimen lähdekoodin ohjelmisto.
+
+Tämä Android-versio tuo klassisen pöytäkonepelin kosketusnäyttöihin.

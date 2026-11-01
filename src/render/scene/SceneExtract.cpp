@@ -177,7 +177,7 @@ void preparePanels(const SceneInputs& input, PresentationFrame& scene, const std
         const auto& stat = t.statistics;
         slot.alive = true; slot.units += stat.totalUnit; slot.prestige += t.prestige;
         for (int id : providers) if (size_t(id) < stat.buildingCountByVariant.size()) slot.barracks += stat.buildingCountByVariant[id];
-        slot.explorers += stat.numberUnitPerType[EXPLORER]; slot.foodCritical += stat.needFoodCritical; slot.attack += stat.totalAttackPower;
+        slot.explorers += stat.scouts; slot.foodCritical += stat.needFoodCritical; slot.attack += stat.totalAttackPower;
     }
     const auto chances = WinProbability::permille(slots);
     panels.hud.winChances.clear();

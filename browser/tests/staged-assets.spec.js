@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {gameURL, clickMainMenu, clickCustomGameStart} = require('./main-menu');
 
@@ -5,7 +6,7 @@ const {gameURL, clickMainMenu, clickCustomGameStart} = require('./main-menu');
 // music. Native builds load all of it at startup.
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name, timeout = 60000) =>
-  expect.poll(async () => (await snapshot(page)).screen, {timeout}).toContain(name);
+  name==='MainMenuScreen' ? waitForMainMenu(page,{timeout}) :   expect.poll(async () => (await snapshot(page)).screen, {timeout}).toContain(name);
 // Hold a package's download until the returned function is called.
 async function hold(page, name) {
   let release;
@@ -128,8 +129,8 @@ for (const variant of ['serial', 'threaded']) {
     await screen(page, 'MainMenuScreen');
     for (const name of ['music', 'music-sets'])
       await expect.poll(async () => (await snapshot(page)).assets[name], {timeout:120000}).toBe('ready');
-    const sets = ['original', 'apple-cider', 'bramble-jig', 'curious-critters', 'fennel-mist',
-      'glass-garden', 'moss-lanterns', 'thistle-waltz', 'woodland'];
+    const sets = ['original', 'bramble-jig', 'fennel-mist',
+      'glass-garden', 'moss-lanterns', 'thistle-waltz'];
     const inventory = await page.evaluate(sets => sets.map(set => ({set,
       files:FS.readdir(`/data/zik/${set}`).filter(file => /\.(opus|ogg)$/.test(file)).sort()
     })), sets);

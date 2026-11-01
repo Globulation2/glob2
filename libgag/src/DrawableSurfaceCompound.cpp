@@ -492,6 +492,18 @@ namespace GAGCore
 
 	// Font
 
+	std::vector<std::size_t> Font::getStringClusterEnds(const std::string &text)
+	{
+		std::vector<std::size_t> ends;
+		for (std::size_t at = 0; at < text.size();)
+		{
+			++at;
+			while (at < text.size() && (static_cast<unsigned char>(text[at]) & 0xC0) == 0x80) ++at;
+			ends.push_back(at);
+		}
+		return ends;
+	}
+
 	int Font::getStringWidth(const int i)
 	{
 		std::ostringstream temp;

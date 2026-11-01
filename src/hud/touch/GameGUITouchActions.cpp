@@ -205,7 +205,11 @@ void GameGUITouch::drawBuildingActions()
 							row.kind == 4  ? Color(81, 36, 60, 235)
 							: row.selected ? InGameTouchTheme::selected()
 										   : InGameTouchTheme::field());
-		if (row.kind == 7)
+        if((row.kind==3 && gui.highlights.count(GameGUI::HighlightUpgradeButton)) ||
+           (row.kind==0 && gui.highlights.count(GameGUI::HighlightRatioBar)) ||
+           (row.kind==6 && gui.highlights.count(GameGUI::HighlightUnitsAssignedBar)))
+            gfx->drawRect(int(rect.x+2),int(rect.y+2),int(rect.w-4),int(rect.h-4),Color(255,220,80));
+        if (row.kind == 7)
 		{
 			const std::string labels[] = {Toolkit::getStringTable()->getString("[↓ Low]"),
 										  Toolkit::getStringTable()->getString("[= Normal]"),

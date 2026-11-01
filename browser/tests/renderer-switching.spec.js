@@ -1,10 +1,11 @@
+const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test,expect}=require('@playwright/test');
 const {gameURL,clickMainMenu,clickControl,clickByLabel,clickSettingsDone,clickCustomGameStart,controlBox}=require('./main-menu');
 const {clickCreateMap}=require('./editor-controls');
 const {hasDarkText}=require('./pixels');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>{const s=await state(page);return s.screen+' '+s.screenClass;},{timeout:120000}).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>{const s=await state(page);return s.screen+' '+s.screenClass;},{timeout:120000}).toContain(name);
 const generation=page=>page.evaluate(()=>Module.glob2PresentationSurface.generation);
 async function settingsPersisted(page) {
   // Software-backed GL can leave a settings write in flight after drawing

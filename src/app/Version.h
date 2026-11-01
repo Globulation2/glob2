@@ -7,7 +7,11 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 186
+#define VERSION_MINOR 190
+// version 190 adds automatic, explicitly timestamped win-probability history.
+// version 189 stores Maxima's current-flag proximity preference.
+// version 188 persists dedicated Maxima forward-support intent constraints.
+// version 187 graduates all terrains and removes terrain experiment observations.
 // version 186 admits four building gradients per team per tick and widens pending counts.
 // version 185 skips requests for unpainted Guard/Clear zones using derived tile counts.
 // Existing saves retain their masks and committed jobs; counts rebuild on load.
@@ -231,7 +235,8 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 72
+#define NET_PROTOCOL_VERSION 73
+// Protocol 73 omits retired terrain requirements from format-187 map headers.
 // Protocol 72 adds explicit presence and source ticks to order checksum envelopes.
 // Protocol 71 applies private-stock and cached-performance caps (format 160).
 // Protocol 70 transfers complete delayed measurement frames (format 158).

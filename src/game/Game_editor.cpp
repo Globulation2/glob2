@@ -171,30 +171,38 @@ void Game::regenerateDiscoveryMap(void)
 	}
 }
 
-Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta, int dx, int dy)
+Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta, int dx, int dy,
+    const std::array<int, NB_ABILITY>* initialLevels)
 {
 	if (team < 0 || team >= mapHeader.getNumberOfTeams() || !teams[team] ||
         !isUnitTypeAvailable(typeNum) || level < 0 || level >= NB_UNIT_LEVELS) return nullptr;
+    if (initialLevels)
+        for (const int training : *initialLevels)
+            if (training < 0 || training >= NB_UNIT_LEVELS) return nullptr;
 
-	if (teams[team]->stats.unitTypeCount != teams[team]->race.unitTypeCount())
-        teams[team]->stats.configureUnits(teams[team]->race.unitTypeCount());
 	const UnitType *ut=teams[team]->race.getUnitType(typeNum, level);
 
 	x = powerOfTwoRemainder(x + map.getW(), map.getW());
 	y = powerOfTwoRemainder(y + map.getH(), map.getH());
 
 	const auto& traits = teams[team]->race.getRuntime(typeNum);
-	bool fly=traits.has(UnitRuntimeTraits::Fly) && ut->performance[FLY];
+    const auto performance = [&](int ability) {
+        return initialLevels ? teams[team]->race.getUnitType(typeNum,(*initialLevels)[ability])->performance[ability]
+            : ut->performance[ability];
+    };
+	bool fly=traits.has(UnitRuntimeTraits::Fly) && performance(FLY);
 	bool free;
-    const bool walks=traits.has(UnitRuntimeTraits::Walk) && ut->performance[WALK];
-    const bool swims=traits.has(UnitRuntimeTraits::Swim) && ut->performance[SWIM];
+    const bool walks=traits.has(UnitRuntimeTraits::Walk) && performance(WALK);
+    const bool swims=traits.has(UnitRuntimeTraits::Swim) && performance(SWIM);
     if (!fly && !walks && swims && !map.terrainPropertiesAt(x,y).swimmable) return nullptr;
 	if (fly)
 		free=map.isFreeForAirUnit(x, y);
 	else
-		free=map.isFreeForGroundUnit(x, y, traits.has(UnitRuntimeTraits::Swim) && ut->performance[SWIM], Team::teamNumberToMask(team));
+		free=map.isFreeForGroundUnit(x, y, swims, Team::teamNumberToMask(team));
 	if (!free)
 		return NULL;
+	if (teams[team]->stats.unitTypeCount != teams[team]->race.unitTypeCount())
+        teams[team]->stats.configureUnits(teams[team]->race.unitTypeCount());
 
 	int id=SLOT_INDEX_NONE;
 	for (int i=0; i<Unit::MAX_COUNT; i++)//we search for a free place for a unit.
@@ -214,13 +222,18 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 		map.setGroundUnit(x, y, gid);
 
 	teams[team]->attachUnit(id, new Unit(x, y, gid, typeNum, teams[team], level));
+    auto *unit = teams[team]->myUnits[id];
+    if (initialLevels) {
+        for (int ability=0; ability<NB_ABILITY; ++ability) unit->level[ability]=(*initialLevels)[ability];
+        unit->constructionLevel=(*initialLevels)[BUILD];
+        unit->rebindDefinitionForSetup();
+    }
 	teams[team]->myUnits[id]->dx=dx;
 	teams[team]->myUnits[id]->dy=dy;
 	teams[team]->myUnits[id]->directionFromDxDy();
 	teams[team]->myUnits[id]->delta=delta;
 	teams[team]->myUnits[id]->selectPreferredMovement();
     const auto &terrain = map.terrainPropertiesAt(x,y);
-    auto *unit = teams[team]->myUnits[id];
     unit->speed = unitTerrainMovementSpeed(unit->speed,fly ? terrain.airSpeedQ8 : terrain.groundSpeedQ8);
 	snapshots().invalidateBoundary();
 	return teams[team]->myUnits[id];

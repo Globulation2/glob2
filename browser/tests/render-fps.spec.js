@@ -1,7 +1,8 @@
+const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test, expect} = require('@playwright/test');
 const {gameURL, clickMainMenu, clickControl, clickSettingsDone} = require('./main-menu');
-const screen = (page, name) => expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen)).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen)).toContain(name);
 const savedFps = page => page.evaluate(() => {
   const text = FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding:'utf8'});
   return Number(text.match(/^targetRenderFps=(\d+)$/m)?.[1]);

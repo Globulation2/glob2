@@ -103,9 +103,14 @@ publisher from `/api/v1/leaderboards/<queue>`.
    (comma-separated) before recreating the relays. Set
    `GLOB2_AUTH_REDIRECT_DOMAIN=app.glob2online.com` for Caddy: GET `/signin`,
    `/signin/*` and `/auth/*/start` then redirect temporarily to `GLOB2_PUBLIC_ORIGIN`
-   with their path and query intact. This starts OAuth on the same hostname that
-   receives its callback; the old API, realtime, browser client and mobile
-   association routes keep serving directly. Leave the setting unset outside
+   with their path and query intact, except the public `/signin/assets/` namespace.
+   API-rendered documents keep those assets on their original host so their
+   same-origin content security policy remains valid. Exact GET/HEAD requests for
+   `/signin/assets/bootstrap.js` use the qualified frontend's `/srv/web/theme.js`
+   with cache revalidation; the remaining assets and other methods still go to
+   the API. This starts OAuth on the same hostname that receives its callback;
+   the old API, realtime, browser client and mobile association routes keep
+   serving directly. Leave the setting unset outside
    the transition and never set it to the canonical hostname. Native access tokens issued
    for the old origin will need refreshing; opaque refresh tokens and guest
    device credentials remain valid in the same database. Do not mix active
