@@ -1915,6 +1915,41 @@ TEST_SUITE("Maxima.Implementation")
 	TEST_CASE("school population scaling regressions") { glob2test::HeadlessGlobals globals; schoolPopulationScalingRegressions(); }
 }
 
+TEST_CASE("terrain topology components wrap across both map seams" *
+		  doctest::test_suite("Maxima.Implementation"))
+{
+	glob2test::HeadlessGlobals globals;
+	for (int barrierAxis : {-1, 0, 1})
+	{
+		CAPTURE(barrierAxis);
+		Game game(nullptr);
+		game.map.setSize(6, 6, GRASS);
+		game.map.setGame(&game);
+		game.addTeam();
+		game.teams[0]->race.loadDefault();
+		Player player;
+		player.setTeam(game.teams[0]);
+		if (barrierAxis >= 0)
+			for (int p = 0; p < 64; ++p)
+				for (int barrier : {16, 32})
+					game.map.paintCell(barrierAxis == 0 ? barrier : p,
+									   barrierAxis == 0 ? p : barrier, WATER);
+		AIMaxima::Maxima ai(&player);
+		Context &runtime = ai.context;
+		runtime.initialize();
+		ai.initialize_topology_profile(runtime);
+		// With two parallel barriers, one component crosses the wrapped seam.
+		// An unbroken plain also exercises negative north/west neighbours.
+		CHECK(ai.global_land_components == (barrierAxis < 0 ? 1 : 2));
+		CHECK(ai.global_land_tiles > 0);
+		if (barrierAxis < 0)
+		{
+			CHECK(ai.global_land_tiles == 64 * 64);
+			CHECK(ai.global_largest_land_percent == 100);
+		}
+	}
+}
+
 TEST_CASE("Maxima food catchments and carrier discounts follow trail and ice travel costs" *
           doctest::test_suite("Maxima.Implementation"))
 {

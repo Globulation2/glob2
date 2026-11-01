@@ -131,7 +131,9 @@ fixed resource pass:
   belt. If that belt is full of the opposite crop, the opt-in backstop trades at most a radius-two
   patch of accessible surplus crop for the missing one. It scores the current walking flood, so
   the new patch has an immediately reachable gathering edge. It does not trade protected walls,
-  and maps that omit `allowedTopup` keep their former rescue behavior.
+  and wood rescue preserves one reachable food source. If the permitted farm is too small for
+  both crops, food takes priority rather than being traded back for wood.
+  Maps that omit `allowedTopup` keep their former rescue behavior.
   RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Braided river, Stone highlands, Ring world, City states,
   Tidal flats, Everglades, Spider web and Coral call this, as do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
   other than 100.

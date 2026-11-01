@@ -603,6 +603,70 @@ struct CropReplant
 	int placed = 0, cleared = 0;
 };
 
+// A bounded wood rescue must not erase or surround the food it just rescued.
+// Protect one current gathering route, including diagonal clearance, in the
+// placement mask. If the farm cannot hold both crops, food retains priority.
+void retainFoodAccess(Map &map, const ReachResult &reach, std::vector<unsigned char> &placement)
+{
+	const Torus t(map);
+	int food = -1, approach = -1, distance = INT_MAX;
+	for (int p = 0; p < t.size(); ++p)
+	{
+		::MapGeneration::generationCheckpoint();
+		const int d = reach.dist.at(p);
+		if (d < 0 || d >= distance)
+			continue;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				::MapGeneration::generationCheckpoint();
+				if (!dx && !dy)
+					continue;
+				const int i = t.at(t.remainderX(p) + dx, p / t.w + dy);
+				if (map.materialAmountAt(i, MaterialId::Food))
+				{
+					food = i;
+					approach = p;
+					distance = d;
+				}
+			}
+	}
+	if (food < 0)
+		return;
+	placement.at(food) = 0;
+	const auto open = groundUnitTiles(map);
+	for (int current = approach;;)
+	{
+		::MapGeneration::generationCheckpoint();
+		placement.at(current) = 0;
+		if (reach.dist.at(current) == 0)
+			break;
+		const int x = t.remainderX(current), y = current / t.w;
+		int predecessor = -1;
+		for (int dy = -1; dy <= 1 && predecessor < 0; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				::MapGeneration::generationCheckpoint();
+				if (!dx && !dy)
+					continue;
+				const int previous = t.at(x + dx, y + dy);
+				if (reach.dist.at(previous) != reach.dist.at(current) - 1 ||
+					!groundConnection(map, open, x + dx, y + dy, -dx, -dy))
+					continue;
+				if (dx && dy)
+				{
+					placement.at(t.at(x + dx, y)) = 0;
+					placement.at(t.at(x, y + dy)) = 0;
+				}
+				predecessor = previous;
+				break;
+			}
+		if (predecessor < 0)
+			throw GenerationFailure("Food rescue route no longer matches its walking flood");
+		current = predecessor;
+	}
+}
+
 // An opt-in last resort for a deliberately bounded farm. An extreme amount can
 // fill every eligible row with the *other* crop, leaving no free grass for a
 // missing starter crop. Planting in the town would technically satisfy the
@@ -769,13 +833,21 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 			int placed = 0;
 			bool triedFar = false;
 			CropReplant replanted;
+			std::vector<unsigned char> retainedFood;
+			const auto *placement = allowedTopup;
+			if (allowedTopup && material == MaterialId::Wood)
+			{
+				retainedFood = *allowedTopup;
+				retainFoodAccess(map, reach, retainedFood);
+				placement = &retainedFood;
+			}
 			if (!reach.closeGrass.empty())
 				placed = placeResourceClumpInArea(map, context, reach.closeGrass, resourceType, 2,
-												  allowedTopup);
+												  placement);
 			if (!placed && !reach.farGrass.empty())
 			{
 				placed = placeResourceClumpInArea(map, context, reach.farGrass, resourceType, 2,
-												  allowedTopup);
+												  placement);
 				triedFar = true;
 			}
 			if (!placed && allowedTopup)
@@ -783,7 +855,7 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 				replanted =
 					replantAccessibleCrop(map, context, reach, resourceType, material,
 										  material == MaterialId::Food ? wheatRange : woodRange,
-										  *allowedTopup, protectedWalls);
+										  *placement, protectedWalls);
 				placed = replanted.placed;
 			}
 			if (context.telemetry.enabled())
@@ -821,7 +893,18 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 			reach = floodReach(map, sources, exploreLimit, closeRange, clearRadius);
 		}
 		if (needsWood || reach.woodDist < 0 || reach.woodDist > woodRange)
+		{
+			const bool hadFood =
+				reach.foodSourceDistance >= 0 && reach.foodSourceDistance <= wheatRange;
 			placeReachable(WOOD, MaterialId::Wood);
+			if (allowedTopup && hadFood)
+			{
+				reach = floodReach(map, sources, exploreLimit, closeRange, clearRadius);
+				if (reach.foodSourceDistance < 0 || reach.foodSourceDistance > wheatRange)
+					throw GenerationFailure(
+						"Bounded wood rescue closed the retained food approach");
+			}
+		}
 	}
 }
 

@@ -888,8 +888,8 @@ void Maxima::initialize_topology_profile(Context& runtime)
 				const int cy=current/width;
 				for (const auto [dx, dy] : field::Cardinal)
 				{
-					const int nx = powerOfTwoRemainder(cx + dx, width);
-					const int ny = powerOfTwoRemainder(cy + dy, height);
+					const int nx = runtime.observation().normalizeX(cx + dx);
+					const int ny = runtime.observation().normalizeY(cy + dy);
 					const int next = ny * width + nx;
 					if (component[next] < 0 && landStep(cx, cy, dx, dy))
 					{

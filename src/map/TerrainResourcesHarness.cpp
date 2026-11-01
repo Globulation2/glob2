@@ -671,26 +671,75 @@ TEST_CASE("starting crop guarantees and adjacent supply use live material yields
 TEST_CASE("bounded starter crop replacement uses surplus materials and respects clearability")
 {
     glob2test::HeadlessGlobals globals;
-    for (bool clearable : {false,true})
-    {
-        CAPTURE(clearable);
-        glob2test::HeadlessGame fixture({.loadDefaultRace=true});
-        auto& map=fixture.game.map;
-        using Json=nlohmann::json;
-        auto custom=Json::parse(map.resourceRegistry().serialize())["resources"][WOOD];
-        custom["key"]="test:surplus-timber";
-        custom["properties"]["clearable"]=clearable;
-        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({custom})}}.dump());
-        const auto id=*map.resourceRegistry().find("test:surplus-timber");
-        map.setResource(9,8,id,1);
-        GenerationRequest request; request.nbTeams=1;
-        GenerationContext context(request); context.bootX[0]=8; context.bootY[0]=8;
-        std::vector<unsigned char> allowed(size_t(map.getW())*map.getH(),0);
-        allowed[map.coordToIndex(9,8)]=1;
-        MapGeneration::guaranteeStartingResources(fixture.game,context,12,12,0,nullptr,&allowed);
-        CHECK(map.hasMaterialSource(MaterialId::Food)==clearable);
-        CHECK((map.getResource(9,8).type==resourceIndex(id))==!clearable);
-    }
+	for (int cells : {1, 2})
+		for (bool clearable : {false, true})
+		{
+			CAPTURE(cells);
+			CAPTURE(clearable);
+			glob2test::HeadlessGame fixture({.loadDefaultRace = true});
+			auto &map = fixture.game.map;
+			using Json = nlohmann::json;
+			auto custom = Json::parse(map.resourceRegistry().serialize())["resources"][WOOD];
+			custom["key"] = "test:surplus-timber";
+			custom["properties"]["clearable"] = clearable;
+			map.installResourceDefinitions(
+				Json{{"schemaVersion", 1}, {"resources", Json::array({custom})}}.dump());
+			const auto id = *map.resourceRegistry().find("test:surplus-timber");
+			for (int x = 9; x < 9 + cells; ++x)
+				map.setResource(x, 8, id, 1);
+			GenerationRequest request;
+			request.nbTeams = 1;
+			GenerationContext context(request);
+			context.bootX[0] = 8;
+			context.bootY[0] = 8;
+			std::vector<unsigned char> allowed(size_t(map.getW()) * map.getH(), 0);
+			for (int x = 9; x < 9 + cells; ++x)
+				allowed[map.coordToIndex(x, 8)] = 1;
+			MapGeneration::guaranteeStartingResources(fixture.game, context, 12, 12, 0, nullptr,
+													  &allowed);
+			CHECK(map.hasMaterialSource(MaterialId::Food) == clearable);
+			CHECK((map.getResource(9, 8).type == resourceIndex(id)) == !clearable);
+			// A single permitted cell cannot hold both independent crops. Food
+			// remains the priority; a two-cell farm can retain food and add wood.
+			CHECK(map.hasMaterialSource(MaterialId::Wood) == (!clearable || cells == 2));
+			const MapGeneration::Torus torus(map);
+			const auto reach = MapGeneration::floodFrom(
+				map, MapGeneration::tileMask(torus, {int(map.coordToIndex(8, 8))}),
+				MapGeneration::groundUnitTiles(map), 12);
+			const auto crops = MapGeneration::cropsBesideReach(map, reach.steps);
+			CHECK(crops.food == clearable);
+			CHECK(crops.wood == (!clearable || cells == 2));
+		}
+}
+
+TEST_CASE("bounded wood rescue preserves the walking approach to existing food")
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame fixture({.loadDefaultRace = true});
+	auto &map = fixture.game.map;
+	const MapGeneration::Torus torus(map);
+	std::vector<unsigned char> walls(torus.size(), 1), allowed(torus.size(), 0);
+	for (int y = 0; y < map.getH(); ++y)
+		for (int x = 0; x < map.getW(); ++x)
+			if (y == 8 && x >= 8 && x <= 12)
+				walls[map.coordToIndex(x, y)] = 0;
+			else
+				map.setResourceByIndex(x, y, STONE, 1);
+	map.setResourceByIndex(12, 8, WHEAT, 1);
+	allowed[map.coordToIndex(10, 8)] = 1;
+	GenerationRequest request;
+	request.nbTeams = 1;
+	GenerationContext context(request);
+	context.bootX[0] = 8;
+	context.bootY[0] = 8;
+	MapGeneration::guaranteeStartingResources(fixture.game, context, 12, 12, 0, &walls, &allowed);
+	const auto reach =
+		MapGeneration::floodFrom(map, MapGeneration::tileMask(torus, {int(map.coordToIndex(8, 8))}),
+								 MapGeneration::groundUnitTiles(map), 12);
+	const auto crops = MapGeneration::cropsBesideReach(map, reach.steps);
+	CHECK(crops.food);
+	CHECK_FALSE(crops.wood);
+	CHECK(map.getResource(10, 8).type == NO_RES_TYPE);
 }
 
 TEST_CASE("starter guarantees use prospective boots only before workers exist")
