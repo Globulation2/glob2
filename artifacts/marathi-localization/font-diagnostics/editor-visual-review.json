@@ -1,0 +1,12 @@
+{
+  "reviewer": "/root/locale_integration",
+  "actual_image_viewed": "artifacts/marathi-localization/font-diagnostics/sizes.png",
+  "image_sha256": "ff0f269eb7f996a22c222905bc35355b5bc9662dcb65a225ed2e38876bb2eab2",
+  "probe": "मराठी — खेळाडूची प्रगती; ळ ऱ ऍ ऑ क्ष ज्ञ श्र; १२ / १०० · 12 / 100 · Glob2 · Ctrl+A",
+  "observations": [
+    "The three shown sizes render Marathi text with the headline, matras and conjuncts intact.",
+    "Distinctive ळ ऱ ऍ ऑ and क्ष ज्ञ श्र are present without missing-glyph boxes.",
+    "Devanagari and ASCII numeral readouts and Ctrl+A fit the shared baseline."
+  ],
+  "limits": "This review concerns the supplied diagnostic image only; it does not establish Android app rendering or lifecycle, which remain queued."
+}

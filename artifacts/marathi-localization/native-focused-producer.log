@@ -1,0 +1,21 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"}, "revision": "671894f2a43a677e15a71cb4d45c81b758943f1a", "sourceStatus": [], "sourceTreeSha256": "a7b3ef887b68290b5e244e9caf08c738554635452615b31fdbef8978b7caa666"}
+[doctest] listing all test case names
+===============================================================================
+script run composition preserves straight-alpha antialiasing
+shaping clusters keep conjuncts and combining marks together
+language changes refresh default line height and Arabic shaping caches
+high-DPI Hindi wrapping width is preserved without cropping the raw raster
+script fonts shape clusters and preserve measured raster sizes after reload
+Arabic and Persian visual-order text is not reordered again by SDL_ttf
+the bundled SDL3_ttf moves the pen for kerned pairs
+pair advances equal the glyph advances plus kerning
+kerned words have no gap wider than the same words unkerned
+ISO locales map to the historical catalog codes
+regional and script variants pick the matching catalog
+languages without a catalog are not confused with catalog codes
+expanded locales distinguish scripts and the precise Pulaar variety
+the first available preference wins, then English
+startup follows the system only when the profile has no usable language
+===============================================================================
+[doctest] unskipped test cases passing the current filters: 15

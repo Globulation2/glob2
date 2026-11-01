@@ -1,0 +1,32 @@
+test_archive_cannot_escape_depot_before_credentials_are_used (__main__.GOGReleaseTests.test_archive_cannot_escape_depot_before_credentials_are_used) ... ok
+test_changed_or_unlisted_files_are_rejected (__main__.GOGReleaseTests.test_changed_or_unlisted_files_are_rejected) ... ok
+test_every_catalog_lesson_is_required_not_just_introduction (__main__.GOGReleaseTests.test_every_catalog_lesson_is_required_not_just_introduction) ... ok
+test_linux_bundles_sdl3_from_original_dependency_paths (__main__.GOGReleaseTests.test_linux_bundles_sdl3_from_original_dependency_paths) ... ok
+test_linux_launch_permission_is_required (__main__.GOGReleaseTests.test_linux_launch_permission_is_required) ... ok
+test_mirror_localized_apple_resource_cannot_claim_public_tag_source (__main__.GOGReleaseTests.test_mirror_localized_apple_resource_cannot_claim_public_tag_source) ... ok
+test_project_has_one_primary_task_and_no_credentials (__main__.GOGReleaseTests.test_project_has_one_primary_task_and_no_credentials) ... ok
+test_public_tag_source_diff_blocks_release (__main__.GOGReleaseTests.test_public_tag_source_diff_blocks_release) ... ok
+test_retired_tutorial_assets_are_rejected_even_when_inventoried (__main__.GOGReleaseTests.test_retired_tutorial_assets_are_rejected_even_when_inventoried) ... ok
+test_separate_source_checkout_requires_tag_commit_clean_tree_and_version (__main__.GOGReleaseTests.test_separate_source_checkout_requires_tag_commit_clean_tree_and_version) ... ok
+test_upload_only_targets_staging_and_requires_credentials (__main__.GOGReleaseTests.test_upload_only_targets_staging_and_requires_credentials) ... ok
+test_verified_webp_artwork_can_replace_png (__main__.GOGReleaseTests.test_verified_webp_artwork_can_replace_png) ... ok
+test_common_licence_sentence_period_preserves_notice_and_real_missing_fails (__main__.ReleasedPayloadTests.test_common_licence_sentence_period_preserves_notice_and_real_missing_fails) ... ok
+test_digest_checked_before_extraction (__main__.ReleasedPayloadTests.test_digest_checked_before_extraction) ... ok
+test_linux_preserves_released_elf_assets_and_immutable_source_notices (__main__.ReleasedPayloadTests.test_linux_preserves_released_elf_assets_and_immutable_source_notices) ... ok
+test_missing_actual_runtime_copyright_blocks_candidate (__main__.ReleasedPayloadTests.test_missing_actual_runtime_copyright_blocks_candidate) ... ok
+test_pinned_version_must_not_be_relabelled (__main__.ReleasedPayloadTests.test_pinned_version_must_not_be_relabelled) ... ok
+test_preservation_includes_symlinks_and_modes (__main__.ReleasedPayloadTests.test_preservation_includes_symlinks_and_modes) ... ok
+test_released_mac_is_not_modified_or_resigned_and_source_stays_external (__main__.ReleasedPayloadTests.test_released_mac_is_not_modified_or_resigned_and_source_stays_external) ... ok
+test_reuse_cannot_enter_upload_or_unreviewed_tag (__main__.ReleasedPayloadTests.test_reuse_cannot_enter_upload_or_unreviewed_tag) ... ok
+test_reuse_preflight_rejects_moved_tag (__main__.ReleasedPayloadTests.test_reuse_preflight_rejects_moved_tag) ... ok
+test_runtime_provenance_copies_actual_notice_and_referenced_licence (__main__.ReleasedPayloadTests.test_runtime_provenance_copies_actual_notice_and_referenced_licence) ... ok
+test_tar_allows_internal_library_links_and_rejects_escape (__main__.ReleasedPayloadTests.test_tar_allows_internal_library_links_and_rejects_escape) ... ok
+test_unresolved_linked_library_fails_closed (__main__.ReleasedPayloadTests.test_unresolved_linked_library_fails_closed) ... ok
+test_windows_preserves_released_files_and_checks_inventory_after_rehash (__main__.ReleasedPayloadTests.test_windows_preserves_released_files_and_checks_inventory_after_rehash) ... ok
+test_workflow_released_jobs_have_no_build_or_upload_path (__main__.ReleasedPayloadTests.test_workflow_released_jobs_have_no_build_or_upload_path) ... ok
+test_zip_rejects_traversal_symlinks_and_case_collisions (__main__.ReleasedPayloadTests.test_zip_rejects_traversal_symlinks_and_case_collisions) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 3.426s
+
+OK

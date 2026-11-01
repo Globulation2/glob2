@@ -1,0 +1,12 @@
+{
+  "native_catalog_sha256": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+  "overlays": [
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/matrix/draft-overlay.txt",
+      "sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "keys": 3393,
+      "same_key_value_mapping_as_shipped_catalog": true
+    }
+  ],
+  "scope": "The production preview harness orders entries by current English catalog. The committed Marathi table uses canonical key order. Every parsed3393key/valuepair is identical; raw file hashes differ by ordering. Actual shipped package startup checks are separate."
+}

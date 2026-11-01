@@ -1,0 +1,14 @@
+{
+  "initial_native_revision": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+  "intermediate_resource_revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "approved_final_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "changed_paths": [
+    "test/build_system/test_apple_localizations.py"
+  ],
+  "actual_diff": "diff --git a/test/build_system/test_apple_localizations.py b/test/build_system/test_apple_localizations.py\nindex 76eeb3b77a..666979738f 100644\n--- a/test/build_system/test_apple_localizations.py\n+++ b/test/build_system/test_apple_localizations.py\n@@ -5,6 +5,7 @@ Apple's language selection or permission UI.\n \"\"\"\n import contextlib\n import ast\n+import importlib.util\n import json\n from pathlib import Path\n import plistlib\n@@ -22,9 +23,7 @@ sys.path.insert(0, str(ROOT))\n sys.path.insert(0, str(ROOT / 'mobile'))\n sys.path.insert(0, str(ROOT / 'scons'))\n import ios\n-import bundle\n from apple_localizations import localization_files\n-from SCons.Script import Environment\n \n \n def strings(path):\n@@ -43,6 +42,10 @@ class AppleLocalizationTests(unittest.TestCase):\n         return directories\n \n     def test_macos_bundle_copies_declared_localizations_and_tracks_them(self):\n+        if importlib.util.find_spec('SCons') is None:\n+            self.skipTest('SCons is required for the macOS bundle-copy contract')\n+        import bundle\n+        from SCons.Script import Environment\n         with tempfile.TemporaryDirectory() as temporary:\n             root = Path(temporary)\n             directories = self.fixture(root)",
+  "actual_diff_sha256": "49db555654e70f66054abd658bb87491ea6a8441989cb986fc78874822627843",
+  "production_blob_trees_identical": true,
+  "production_blob_trees": "100644 blob aafd0f766c39c47a27a6e5ec47a10ee2c97ca285\tSConstruct\n040000 tree 49cabccd1794739a84719a4d4f16bca85c5ac229\tbrowser\n040000 tree de68f9069b020b6879ef722dd70f5d1a40e52321\tdata\n040000 tree 33216bab3e196b4d207b6ce33d506fec80ce98b5\tlibgag\n040000 tree 2216123e02aa49910664a407b4c25a7f1ceb83f6\tlibusl\n040000 tree e1e8cd07699489c56d4e27eb0939716088f482e5\tmobile\n040000 tree 7862a2307d045fc2b8d63f36afe35061cdcb289e\tplatform\n040000 tree 0dc1578557cfce66b6066535dc1dd9df50f54a2f\tscons\n040000 tree f9f4b6ef20c26bbc0edaa4dcab0523f470d15a07\tsrc\n040000 tree b7725e164863bde4e27157033608b7a721aa9243\tthird_party\n100644 blob 7f83380ff0601dff3c7d71f9139e66d3a2e02390\tvcpkg.json",
+  "proof": "Exact repository diff changes only lazy SCons imports and skips only the SCons-dependent test when unavailable. All other tracked files, production code, build definitions, catalogs, fonts and resources are identical to671.",
+  "source_status": "clean"
+}

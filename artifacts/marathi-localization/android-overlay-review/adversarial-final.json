@@ -1,0 +1,18 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent adversarial final recheck",
+  "state": "approved",
+  "surface": "android-resource",
+  "key": "preparing_game",
+  "source": "Preparing game…",
+  "final_target": "खेळाची तयारी सुरू आहे…",
+  "target_path": "mobile/android/app/src/main/res/values-mr/strings.xml",
+  "target_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "source_sha256": {
+    "mobile/android/app/src/main/res/values/strings.xml": "b5de8011685b6151ab2bc17b32ac5cef29a52e8631dc2c7f580a18ba292e5977",
+    "mobile/android/app/src/main/java/org/globulation2/glob2/Glob2Activity.java": "1cfd5062e0ecae5bd75d9cd3120633b42550648078666ef60f37c1502c44e6fc"
+  },
+  "rationale": "Actually reread final XML, English source and setPreparingAssets indeterminate progress overlay. खेळाची तयारी सुरू आहे… naturally states that game preparation is underway; सुरू आहे supplies the ongoing action missing from the shorter nominal Google draft. It preserves the ellipsis and does not imply completion or ask the player to act. Editor wording resolves the adversarial proposal’s semantic intent; no remaining linguistic issue.",
+  "findings": [],
+  "limits": "Source/context linguistic review; no Android runtime screenshot claim."
+}

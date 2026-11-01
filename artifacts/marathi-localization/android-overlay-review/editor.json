@@ -1,0 +1,26 @@
+{
+  "editor": "/root/locale_integration",
+  "role": "independent Marathi editorial review",
+  "surface": "android-resource",
+  "reviewed_keys": [
+    "android-resource:preparing_game"
+  ],
+  "source_file": "mobile/android/app/src/main/res/values/strings.xml",
+  "source_file_sha256": "b5de8011685b6151ab2bc17b32ac5cef29a52e8631dc2c7f580a18ba292e5977",
+  "source_text_sha256": "e2beaba51133ef689999aaad46a5e4340f5a1748fbff4b2afad7398cc2d4e7ac",
+  "draft_file_sha256": "2ef8b2b09550b41911516ca93ebdbb3e97247edaa47b6006e6b3bfff97c17b1d",
+  "source": "Preparing game…",
+  "google_draft": "खेळाची तयारी…",
+  "proposed_final": "खेळाची तयारी सुरू आहे…",
+  "proposed_final_utf8_sha256": "42d33130bf7a43448f2f103dd596f687fe5666238a4a7f31672b8d9c508212ea",
+  "context_read": "Glob2Activity.setPreparingAssets shows an indeterminate progress spinner and centeredTextView while native startup prepares assets; this is an ongoing process status, not a menu heading or imperative.",
+  "references_read": {
+    "Hindi": "खेल तैयार हो रहा है…",
+    "Swahili": "Mchezo unaandaliwa…"
+  },
+  "disposition": "Improve terse Google nounphrase to explicit natural ongoing status.",
+  "reason": "खेळाची correctly marks preparation of the game; तयारी सुरू आहे explicitly says preparation is underway. Respectful instruction morphology is not needed for a status. Retain U+2026 ellipsis and avoid suggesting the game is already ready.",
+  "findings": [],
+  "certification": "Agent review, not native-human certification",
+  "resource_written": false
+}

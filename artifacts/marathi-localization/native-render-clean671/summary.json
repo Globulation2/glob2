@@ -1,0 +1,101 @@
+{
+  "state": "complete",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "successful_unique_jobs": 34,
+  "failed_attempts_in_final_run": [],
+  "matrix_sample_total": 75072,
+  "matrix_line_total": 83292,
+  "missing_glyphs": 0,
+  "drawn_bounds_failures": 0,
+  "raw_raster_width_diagnostics": 590,
+  "raw_diagnostic_disposition": "All raw flags concern raster bitmap width at scale2; every production draw destination fits. The entire bitmap is scaled into that destination, not cropped. Raw values retained rather than silently suppressed; representative flagged line pages inspected.",
+  "matrices": [
+    {
+      "viewport": "1280x900",
+      "samples": 37536,
+      "lines": 38202,
+      "missing_glyphs": 0,
+      "drawn_bounds_failures": 0,
+      "raw_raster_diagnostics": 87,
+      "report": "1280x900/matrix/matrix-diagnostics.json"
+    },
+    {
+      "viewport": "390x844",
+      "samples": 37536,
+      "lines": 45090,
+      "missing_glyphs": 0,
+      "drawn_bounds_failures": 0,
+      "raw_raster_diagnostics": 503,
+      "report": "390x844/matrix/matrix-diagnostics.json"
+    }
+  ],
+  "game_sessions": 22,
+  "tutorial_initial_step_sessions": 20,
+  "gameplay_and_tutorial_pngs": 57,
+  "automatic_briefing_pngs": 11,
+  "actual_screen_pngs": 10,
+  "render_checksum_changes": 0,
+  "actually_inspected_image_count": 34,
+  "visual_inspections": "visual-inspections.json",
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+    "sourceStatus": [],
+    "sourceTreeSha256": "a7b3ef887b68290b5e244e9caf08c738554635452615b31fdbef8978b7caa666"
+  },
+  "executed_binary_sha256": "b81cd2a4a37e8f1da227b281cb112f845ec2a588fb6f7d6d1daca0d1fcad5307",
+  "original_binary_sha256": "3a4d56b0449269c7a755b6d83e16e2b59130f403d1829573e1c17b58e933bf05",
+  "strip_equivalence_proof": "../native-strip-provenance.json",
+  "catalog_sha256_original": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "catalog_sha256_preview_json": {
+    "native": "7ecf6099aa43a96f2ed171641b282b32383ad3313f5e16475797726c08b3c364",
+    "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "native_overlay_equivalence": "overlay-equivalence.json",
+  "fonts": [
+    {
+      "virtual_path": "data/fonts/sans.ttf",
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/sans.ttf",
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+    }
+  ],
+  "sdl_version": 3004016,
+  "sdl_ttf_version": 3002002,
+  "harfbuzz_version": [
+    10,
+    1,
+    0
+  ],
+  "final_head_carry": "final-head-production-carry.json",
+  "focused_registered_tests": "../native-focused-provenance.json",
+  "validation_deadlines_seconds": {
+    "matrix": 3600,
+    "screen_and_game": 180
+  },
+  "limits": [
+    "Production desktop renderer and harness with complete draft overlays. Every overlay has the same 3393 parsed native keys and values as the committed catalog. This harness does not independently exercise normal registered or packaged startup.",
+    "The 390×844 captures exercise compact phone presentation on desktop with dummy audio. They do not establish Android/iOS device rendering or touch-hardware behavior.",
+    "All ten tutorials per viewport captured their real initial guidance and game menu. Automatic opening briefings were captured only when actually present: seven desktop and four compact. This is not a playthrough of every tutorial phase.",
+    "The matrix uses literal catalog placeholders and escaped paragraph controls. It does not establish fitting for every dynamic formatted-value combination.",
+    "Every matrix sample and line received structured glyph and draw-bounds checks. Only the 34 explicitly listed representative images were manually inspected; these include all ten compact tutorial guidance images.",
+    "Timing records bounded validation under shared-host contention, not a performance guarantee or benchmark.",
+    "Original unstripped and short-deadline partial runs are separately marked abandoned and are excluded from successful jobs."
+  ],
+  "evidence_stable": true,
+  "identity_consistency": "All 34 actual report identities have identical executed binary hash, compiled producer metadata, catalog hashes, source-code hashes and runtime font identities."
+}

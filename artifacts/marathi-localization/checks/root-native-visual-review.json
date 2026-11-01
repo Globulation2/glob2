@@ -1,0 +1,90 @@
+{
+  "reviewer": "/root",
+  "status": "Both fullfontmatrices and all34nativecapturejobs complete; explicitly listedrepresentativeimages inspected",
+  "observations": [
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/matrix/font-10-scale-1-page-001.png",
+      "sha256": "ebcaf8fa9f05923d914c4518f737caf93bdceb4784d7294f1bf9734ca0111716",
+      "finding": "Visually inspected the actual image. Readable shaped Devanagari, joined character forms and intact visible upper/lower marks; no visible tofu, overlap or clipping on this page."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/matrix/font-10-scale-2-page-075.png",
+      "sha256": "50cbaf5d75f9173e2ae2fc4c5cf9a52be252cc9bb338a62c6d724a0e1fb297f4",
+      "finding": "Visually inspected the actual image. Readable shaped Devanagari, joined character forms and intact visible upper/lower marks; no visible tofu, overlap or clipping on this page."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/matrix/font-20-scale-1-page-100.png",
+      "sha256": "0438bc3ecc0c7b63367209b3c4944a0909374ffc07bad1c19b4a49a4f254b181",
+      "finding": "Actually inspected20px matchmaking/status-text page. Devanagari is clear, joined forms and visible marks intact, with no visible tofu, overlap or clipping on the page."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/matrix/font-13-scale-2-page-020.png",
+      "sha256": "c00becd81856448d4912a57632e20d65326380f771b1d393a2e6669eb5b7192a",
+      "finding": "Actually inspected flagged13px scale2 AI-description page. Dense long Marathi text, conjuncts, vowel marks and Latin names remain intact. No visible tofu, overlap or bitmap cropping. Raw values display literal backslash-n tokens; actual formatted paragraphs require the separate UI captures."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/main/main.png",
+      "sha256": "74d8978290ca85b5d38e047806462983339e39bc877c1c5dd312729590fde9db",
+      "finding": "Actually inspected native main menu over live colony. Shaped Marathi labels are centered inside controls, with no visible tofu, clipped marks or overlap. The main-menu Discord community label was independently verified against menu/discord binding by all three reviewers after root initially misread the small image; correct text डिस्कॉर्ड समुदाय retained."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/settings/settings.png",
+      "sha256": "69e90bbf15a00b51b00e3841de50a4cde1b72ddf8cb060b743250da2d6acd002",
+      "finding": "Actually inspected native settings display/graphics panel. Sidebar category wrapping, body text, dropdown values and completion button fit visibly. Bottom content rows are intentionally partly outside the scroll viewport; that is separate from text raster clipping."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/gameplay/gameplay-dialog.png",
+      "sha256": "0f681bd4e08eecb626764ebab48313ff45def331913a8fee03491ac02b80d9d7",
+      "finding": "Actually inspected gameplay menu. Marathi heading and save/load, telemetry, pause, recording, quit and return controls fit inside their buttons. No visible tofu, clipped marks or overlapping controls."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/1280x900/tutorial-healing/tutorial-healing-briefing.png",
+      "sha256": "e2599bea08636db3b422b6ae07cf4b800eab0a7f706dd130d7753755137ac979",
+      "finding": "Actually inspected healing tutorial briefing: Marathi instructional paragraph wraps cleanly across two lines, with intact visible marks. Briefing/objective/hint tabs and confirmation button fit without visible clipping or overlap. This is an initial briefing capture, not lesson completion proof."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/390x844/matrix/font-20-scale-1-page-001.png",
+      "sha256": "d4235afceb286ff489059d97486dced947b6b6a3f0dadb307ebd292e5f238c29",
+      "finding": "Actually inspected compact390px-wide20px-font matrix page: clear joined Marathi, intact upper/lower marks and clean wrapping within the narrow page; no visible tofu or raster cropping. This is a production-font diagnostic rather than Android runtime proof."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/390x844/main/main.png",
+      "sha256": "4b577b3024f1b2ec7673695d9f29c702040457f5b17ec94250df3ef096b9738d",
+      "finding": "Actually inspected compact native main menu. Large shaped Marathi labels fit touch buttons with clear margins; title and gear action fit the390px viewport. Scrollable menu content is intentional."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/390x844/settings/settings.png",
+      "sha256": "a673e33049fa29f9261b3f5f2bd0b82b2a8d3d09476d62b302a61d3384ffecbe",
+      "finding": "Actually inspected compact display settings. Marathi descriptions wrap in the narrow panel, dropdowns fit, marks remain intact and sticky confirmation action stays visible. Partial lower descriptions belong to intentionally clipped scroll content. Desktop touch presentation is not an Android-runtime claim."
+    },
+    {
+      "path": "artifacts/marathi-localization/native-render-clean671/390x844/tutorial-introduction/tutorial-introduction.png",
+      "sha256": "6f0f2d8d870ffbd6438d27414c4dbc24fe4bbd02ba7140a84c794d7dc55f8582",
+      "finding": "Actually inspected compact introductory tutorial initial guidance. Marathi instruction, formatted step counter, and bottom build/flag/tool/objective/team/menu touch labels fit cleanly. Marks/conjuncts are intact and no visible tofu, overlap or cropping. Initial tutorial state only, not lesson completion."
+    }
+  ],
+  "limits": [
+    "Only the listed pages were inspected by this reviewer.",
+    "Raw matrix pages are font diagnostics, not screenshots of game controls.",
+    "Automated per-string glyph and extent results must come from completed matrix reports."
+  ],
+  "desktop_matrix_summary": {
+    "samples": 37536,
+    "wrapped_lines": 38202,
+    "missing_glyphs": 0,
+    "drawn_bounds_failures": 0,
+    "raw_raster_width_diagnostics": 87,
+    "scope": "Completed1280x900matrix from native-render-clean671; these are font diagnostics, not full game-control geometry checks."
+  },
+  "compact_matrix_summary": {
+    "samples": 37536,
+    "wrapped_lines": 45090,
+    "missing_glyphs": 0,
+    "drawn_bounds_failures": 0,
+    "raw_raster_width_diagnostics": 503,
+    "scope": "Completed390x844matrix; allactualproduction drawing destinationsfit."
+  },
+  "validation_head": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "runtime_producer": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "carry_proof": "artifacts/marathi-localization/native-render-clean671/final-head-production-carry.json"
+}

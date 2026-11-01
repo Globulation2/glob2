@@ -1,0 +1,103 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts i18n.spec.ts --grep renders mr|Marathi switching|changing the selected language
+
+[WebServer] (node:1517579) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:1519875) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/i18n.spec.ts:7:3 › home loads and renders mr (9.5s)
+(node:1521179) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop] › e2e/i18n.spec.ts:59:1 › changing the selected language updates the page without losing input (7.6s)
+  ✓  3 [desktop] › e2e/i18n.spec.ts:76:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (9.8s)
+(node:1523541) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [phone] › e2e/i18n.spec.ts:7:3 › home loads and renders mr (13.8s)
+(node:1525277) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [phone] › e2e/i18n.spec.ts:59:1 › changing the selected language updates the page without losing input (5.1s)
+  ✓  6 [phone] › e2e/i18n.spec.ts:76:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (7.9s)
+
+
+  1) [desktop] › e2e/i18n.spec.ts:7:3 › home loads and renders mr ──────────────────────────────────
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.app-sidebar .nav a')
+    Expected: 10
+    Received: 9
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.app-sidebar .nav a') with timeout 5000ms
+      - waiting for locator('.app-sidebar .nav a')
+        13 × locator resolved to 9 elements
+           - unexpected value "9"
+
+
+      31 |     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
+      32 |     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
+    > 33 |     await expect(page.locator('.app-sidebar .nav a')).toHaveCount(10);
+         |                                                       ^
+      34 |     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
+      35 |     await expect(signIn).toBeVisible();
+      36 |     expect(
+        at /home/bradley/.codex/worktrees/45cd/glob2/platform/apps/web/e2e/i18n.spec.ts:33:55
+
+    Error Context: ../../../artifacts/web-app/test-results/i18n-home-loads-and-renders-mr-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/i18n-home-loads-and-renders-mr-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/i18n-home-loads-and-renders-mr-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [phone] › e2e/i18n.spec.ts:7:3 › home loads and renders mr ────────────────────────────────────
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.app-sidebar .nav a')
+    Expected: 10
+    Received: 9
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.app-sidebar .nav a') with timeout 5000ms
+      - waiting for locator('.app-sidebar .nav a')
+        13 × locator resolved to 9 elements
+           - unexpected value "9"
+
+
+      31 |     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
+      32 |     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
+    > 33 |     await expect(page.locator('.app-sidebar .nav a')).toHaveCount(10);
+         |                                                       ^
+      34 |     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
+      35 |     await expect(signIn).toBeVisible();
+      36 |     expect(
+        at /home/bradley/.codex/worktrees/45cd/glob2/platform/apps/web/e2e/i18n.spec.ts:33:55
+
+    Error Context: ../../../artifacts/web-app/test-results/i18n-home-loads-and-renders-mr-phone/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/i18n-home-loads-and-renders-mr-phone/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/i18n-home-loads-and-renders-mr-phone/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › e2e/i18n.spec.ts:7:3 › home loads and renders mr ───────────────────────────────────
+    [phone] › e2e/i18n.spec.ts:7:3 › home loads and renders mr ─────────────────────────────────────
+  4 passed (2.2m)
+npm ERR! Lifecycle script `e2e` failed with error: 
+npm ERR! Error: command failed 
+npm ERR!   in workspace: @glob2/web@0.1.0 
+npm ERR!   at location: /home/bradley/.codex/worktrees/45cd/glob2/platform/apps/web 

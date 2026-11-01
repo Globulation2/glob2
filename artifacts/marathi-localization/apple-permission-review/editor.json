@@ -1,0 +1,43 @@
+{
+  "editor": "/root/locale_integration",
+  "role": "independent Marathi editorial review",
+  "draft_file_sha256": "114c0b2687d249bfc05d782a352e1f4e4967f534fc0740b5139b0be3ee6c205e",
+  "context_read": [
+    "Actual iOS Info.plist.in NSLocalNetworkUsageDescription OS permission-purpose placement",
+    "Actual macOS Info.plist NSLocalNetworkUsageDescription OS permission-purpose placement",
+    "LAN host/client discovery and game join context in src/net/lan/"
+  ],
+  "other_agent_proposals_read": false,
+  "entries": [
+    {
+      "surface": "ios",
+      "key": "NSLocalNetworkUsageDescription",
+      "source_path": "mobile/ios/Info.plist.in",
+      "frozen_source_file_sha256": "0dcfaeac9dd2a8399967399bb2d5b53f37e396c7fe761e87f39f569257401ddb",
+      "actual_source_file_sha256": "4141e2f7f9a87e24608922a06c6e5b7a89c6ae55408b4c46329309e4774dbc8e",
+      "source_text_equal": true,
+      "source": "Connect to Globulation 2 games on your local network.",
+      "google_draft": "तुमच्या स्थानिक नेटवर्कवर Globulation 2 गेम्सशी कनेक्ट करा.",
+      "proposed_final": "तुमच्या स्थानिक नेटवर्कवरील Globulation 2 खेळांमध्ये सामील होण्यासाठी.",
+      "proposed_final_utf8_sha256": "08f7603125b2d6e53d728c6d92aaacdb9f0b34f7f5e532d529c165f92d16b62d",
+      "reason": "A system permission purpose describes why network access is requested; replace Google imperative कनेक्ट करा with a purpose clause. In this context connecting to local games means joining them; retain local-network scope and exact product name. No claim that a connection has completed.",
+      "findings": []
+    },
+    {
+      "surface": "macos",
+      "key": "NSLocalNetworkUsageDescription",
+      "source_path": "darwin/Info.plist",
+      "frozen_source_file_sha256": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896",
+      "actual_source_file_sha256": "204b6950b0ecddac3cad9371048d3aefd6749a2a0b17ae54e2fad3866d435836",
+      "source_text_equal": true,
+      "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
+      "google_draft": "Globulation 2 तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले मल्टीप्लेअर गेम्स शोधतो आणि त्यात सामील होतो.",
+      "proposed_final": "तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले बहुखेळाडू खेळ शोधण्यासाठी आणि त्यांत सामील होण्यासाठी Globulation 2 स्थानिक नेटवर्कचा वापर करते.",
+      "proposed_final_utf8_sha256": "6573d9bead81e91258fd75e68ad770aeca128271525261e034872a956de25e24",
+      "reason": "Explain local-network use as a purpose rather than reporting a completed join. Explicitly preserve discovery, joining, multiplayer scope and games hosted on the player’s local network. Use native बहुखेळाडू खेळ rather than unnecessary English गेम्स; retain technical होस्ट and नेटवर्क plus exact protected brand. करते agrees with implicit application.",
+      "findings": []
+    }
+  ],
+  "certification": "Agent-reviewed, not native-human-certified",
+  "resource_written": false
+}

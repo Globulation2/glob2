@@ -1,0 +1,65 @@
+{
+  "revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "base": "ed4ac0901f85a8e13d11b741ad3dea1f0a31df54",
+  "canonical_catalogs": {
+    "data/texts.mr.txt": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "platform/packages/i18n/locales/mr.json": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "stable_evidence": [
+    {
+      "path": "artifacts/marathi-localization/checks/google-final-budget.json",
+      "sha256": "8827ad8eaca16cc8ee3a53c2b3dd5d7b9b8e887aa55ab1bc83bb2f4646f35b27"
+    },
+    {
+      "path": "artifacts/marathi-localization/checks/google-draft-tests-final.log",
+      "sha256": "859603908ee816878fc3f2ed35ebf312a87a459d97a6490aec559f9af15d0dce"
+    },
+    {
+      "path": "artifacts/marathi-localization/checks/translation-program-tests-final.log",
+      "sha256": "2ef945e4d4101b7ba08a66255b80a7e6262e8b862f0d81eca8481041a3dd67c5"
+    },
+    {
+      "path": "artifacts/marathi-localization/checks/apple-localization-contracts-final.log",
+      "sha256": "571b35bc90f82539a26b3b0e44fe7082e10969b761484ff50b6083931707a085"
+    },
+    {
+      "path": "artifacts/marathi-localization/checks/gog-release-tests-final.log",
+      "sha256": "93f6c99510fe6fd8ad68d2d578418379093aa499a086bd9b40b4d33dc2eb32d2"
+    },
+    {
+      "path": "artifacts/marathi-localization/checks/browser-unit-final.log",
+      "sha256": "e50c571f3e73ead634d28b641d9bf570c2eca069dea088ed6619d06f0820ca13"
+    },
+    {
+      "path": "artifacts/marathi-localization/checks/browser-baseline-failures-final.log",
+      "sha256": "f8ec82f7e30708a8cff2c401ee0e1eb50594886058dd3e77bbb7acd9b12bdb66"
+    },
+    {
+      "path": "artifacts/marathi-localization/checks/web-packaging-tests-final.log",
+      "sha256": "1588d32dccf6da5037b52f2c9c23bb84e2fde8f251cd209597e7072827f24f39"
+    },
+    {
+      "path": "artifacts/marathi-localization/registration-checks.json",
+      "sha256": "1f4d665cbd72b791392f03d0d062d73dca68fadb368b183ac618ce170d3f3f47"
+    },
+    {
+      "path": "artifacts/marathi-localization/web-visual-review.json",
+      "sha256": "d6b28c7098cf12d49a91d1c8ba54fb40c08ba1176186d8b8b2719fc6903303b6"
+    },
+    {
+      "path": "artifacts/marathi-localization/supplemental-review-summary.json",
+      "sha256": "ebd420485ffbcc4b24257915dfcc0b463a2c54f906dcffc02185a892415622a5"
+    }
+  ],
+  "pending": [
+    "native actual full matrix/screens and focused registered cases",
+    "both release WASM variants and actual browser UI",
+    "Android release package and emulator UI"
+  ],
+  "limits": [
+    "Agent reviewed, not native-human certified.",
+    "macOS, iOS and Windows runtime execution unverified.",
+    "Browser unit three baseline replay-fixture failures reproduced on exact unmodified base;147other cases pass.",
+    "No simulation/save/replay/network behavior changes; no simulation revision bump."
+  ]
+}

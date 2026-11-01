@@ -1,0 +1,78 @@
+{
+  "source_revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "author": "/root",
+  "resources": [
+    {
+      "resource": {
+        "path": "mobile/android/app/src/main/res/values-mr/strings.xml",
+        "sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a"
+      },
+      "final_independent_rechecks": [
+        {
+          "path": "artifacts/marathi-localization/android-overlay-review/semantic-final.json",
+          "sha256": "ba7bca8c3759c6c11ad352b5b44adedf35f0db1092c8586900df47b88267a8bc"
+        },
+        {
+          "path": "artifacts/marathi-localization/android-overlay-review/editor-final.json",
+          "sha256": "9ea1cef4d10fb47a509b17dfc783c2cb6a78186ffcd8dc7ec7ee9d1e0816f05a"
+        },
+        {
+          "path": "artifacts/marathi-localization/android-overlay-review/adversarial-final.json",
+          "sha256": "d19a21cea2fda89986a4fe74385be4820116b5379d16848aa79177651950045d"
+        }
+      ],
+      "status": "approved",
+      "scope": "Actual final file bytes reviewed by semantic, editorial and adversarial agents"
+    },
+    {
+      "resource": {
+        "path": "mobile/ios/mr.lproj/InfoPlist.strings",
+        "sha256": "0a2d7d0c43d0c2f12d3e6c2de39c52787d6e642b4e88080f26e1fa26c70873bd"
+      },
+      "final_independent_rechecks": [
+        {
+          "path": "artifacts/marathi-localization/apple-permission-review/semantic-final.json",
+          "sha256": "80a2f50fa48d8b53f1ba1b725fe9f5649aeb9faefbc153771e65d6ee98818eab"
+        },
+        {
+          "path": "artifacts/marathi-localization/apple-permission-review/editor-final.json",
+          "sha256": "ba2992920b1edd156dacedec4918cb6b5bcffb90d65439344bfdfcdd4643174f"
+        },
+        {
+          "path": "artifacts/marathi-localization/apple-permission-review/adversarial-final.json",
+          "sha256": "00ef0ac0524e6a570ec47f1f2ae787071313099758a5d634c0cac72c3ece1b73"
+        }
+      ],
+      "status": "approved",
+      "scope": "Actual final file bytes reviewed by semantic, editorial and adversarial agents"
+    },
+    {
+      "resource": {
+        "path": "darwin/mr.lproj/InfoPlist.strings",
+        "sha256": "bdaf10a127e280e83da01e543a511ac07b9b04571e988d72bb07d72578329f64"
+      },
+      "final_independent_rechecks": [
+        {
+          "path": "artifacts/marathi-localization/apple-permission-review/semantic-final.json",
+          "sha256": "80a2f50fa48d8b53f1ba1b725fe9f5649aeb9faefbc153771e65d6ee98818eab"
+        },
+        {
+          "path": "artifacts/marathi-localization/apple-permission-review/editor-final.json",
+          "sha256": "ba2992920b1edd156dacedec4918cb6b5bcffb90d65439344bfdfcdd4643174f"
+        },
+        {
+          "path": "artifacts/marathi-localization/apple-permission-review/adversarial-final.json",
+          "sha256": "00ef0ac0524e6a570ec47f1f2ae787071313099758a5d634c0cac72c3ece1b73"
+        }
+      ],
+      "status": "approved",
+      "scope": "Actual final file bytes reviewed by semantic, editorial and adversarial agents"
+    }
+  ],
+  "limits": [
+    "Agent review, not native-human certification.",
+    "These three native resources are additional to the6229 canonical catalog keys.",
+    "Apple packaging contracts execute onLinux; Apple language-selection and permissionUI execution unverified.",
+    "Android packagedresource/runtime verification recorded separately when available."
+  ]
+}

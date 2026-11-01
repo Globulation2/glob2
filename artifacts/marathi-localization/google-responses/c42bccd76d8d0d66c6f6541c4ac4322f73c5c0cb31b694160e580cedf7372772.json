@@ -1,0 +1,23 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Preparing game…"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "खेळाची तयारी…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "e5fdee10561137d5df7d475031504b02c34259b64b5df04ce5dc1253b858e532"
+}

@@ -1,0 +1,243 @@
+{
+  "inspections": [
+    {
+      "path": "1280x900/matrix/font-10-scale-1-page-001.png",
+      "sha256": "ebcaf8fa9f05923d914c4518f737caf93bdceb4784d7294f1bf9734ca0111716",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The 10px sample page shows intact Marathi conjuncts and vowel marks alongside ASCII placeholders and proper AI names. No visible tofu, overlap or cropping."
+    },
+    {
+      "path": "1280x900/matrix/font-10-scale-2-page-102.png",
+      "sha256": "b2f0d2dad277b17791c04b26654f4d139c9d129b92a0db3faf6d5682c1ff0ddf",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The scaled 10px page shows intact Marathi interface text, ळ/त्र/क्र clusters, braces, Latin placeholders and bullet fragments. No visible tofu or overlap."
+    },
+    {
+      "path": "1280x900/matrix/font-20-scale-1-page-066.png",
+      "sha256": "3b474bc4b749c835adb1b468940b4028870ba2352cbc92d2463c2215c3a045ab",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The 20px page contains terrain labels and long error sentences. क्ष/त्र/श्र/प्र and vowel marks remain legible; visible lines fit the page without overlapping."
+    },
+    {
+      "path": "1280x900/matrix/font-13-scale-2-page-020.png",
+      "sha256": "c00becd81856448d4912a57632e20d65326380f771b1d393a2e6669eb5b7192a",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The flagged 13px scale-2 AI-profile page preserves the whole bitmap within the measured draw destination. Visible line ends and Marathi marks are intact. Literal backslash-n separators remain visible in this raw-catalog matrix; actual UI formatting is separate."
+    },
+    {
+      "path": "1280x900/main/main.png",
+      "sha256": "74d8978290ca85b5d38e047806462983339e39bc877c1c5dd312729590fde9db",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The desktop main menu has centered Marathi action labels and legible settings, editor, credits, community and quit buttons. All visible text fits, with no tofu or clipping."
+    },
+    {
+      "path": "1280x900/settings/settings.png",
+      "sha256": "69e90bbf15a00b51b00e3841de50a4cde1b72ddf8cb060b743250da2d6acd002",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The desktop settings screen wraps the long navigation item into two lines within its row. Labels and explanatory copy fit. Partial bottom rows belong to intentional scroll viewports."
+    },
+    {
+      "path": "1280x900/settings-audio/settings-audio.png",
+      "sha256": "ddff91884f5ea95c2750d3a09b9a582ac447a6a8deb9811fb4e03143f62309bf",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The desktop audio settings screen shows fitting mute and music-set labels, a two-line selection, help text, percentage labels, sliders and Done button. No visible cluster or clipping defect."
+    },
+    {
+      "path": "1280x900/lobby/lobby.png",
+      "sha256": "1e0f982c29490433a29c4cc7d9e62cebf4126e4b1054640cd0d74bbe598f7fa3",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The desktop lobby map tab has fitting tab titles, terrain/resource/layout/building-set buttons, selectors, help text and navigation. The thumbnail is still pending asynchronous generation in this two-frame screen harness; no map-completion claim."
+    },
+    {
+      "path": "1280x900/lobby-players/lobby-players.png",
+      "sha256": "fe7c6d75b04453c6275a32a7bb537ab79eeac0c123667fac509f327f8f9bca58",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The desktop player tab has fitting player/team selectors, computer-player labels, AI difficulty names and descriptions. No visible overlap, cropping or broken clusters."
+    },
+    {
+      "path": "1280x900/gameplay/gameplay.png",
+      "sha256": "92d79393a84d3955ef7101284bf024168f9382b5e864c8be520851313ae331a1",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The desktop gameplay HUD shows the real world and status bar. The फिट zoom label fits the middle control. No visible text clipping."
+    },
+    {
+      "path": "1280x900/gameplay/gameplay-dialog.png",
+      "sha256": "0f681bd4e08eecb626764ebab48313ff45def331913a8fee03491ac02b80d9d7",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The desktop game menu title and all ten actions fit their button rows, including telemetry, recording and return labels. Marathi marks are intact."
+    },
+    {
+      "path": "1280x900/tutorial-introduction/tutorial-introduction-briefing.png",
+      "sha256": "9753b9c81a11460be65ec77430ace7fbac322ad9e5d4f100b72817f90721c25b",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The desktop introduction briefing has fitting tab labels, summary and OK button. No visible clipping or broken clusters."
+    },
+    {
+      "path": "1280x900/tutorial-introduction/tutorial-introduction.png",
+      "sha256": "0d012364011a7e3df66bbff98e0498607b593ba34acb3c6b2a11b1b92cce0711",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The desktop dialog-free introduction guidance has a fitting 1/5 goal, two-line instruction and destination/help buttons. Letters and marks are intact."
+    },
+    {
+      "path": "390x844/matrix/font-10-scale-1-page-107.png",
+      "sha256": "ac2eff650a0df60e2d24923a03a55357fccdb0a16c182fc64c5d3f538977c361",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The narrow 10px page wraps long map-editor, save and ordering messages within the page. Marathi conjuncts and vowel marks remain joined; no visible edge cropping or row overlap."
+    },
+    {
+      "path": "390x844/matrix/font-20-scale-2-page-058.png",
+      "sha256": "026b2c24c3f9a088d9843749fcfe18961da50fa56fa50390d7cae097bfb99cb7",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The narrow 20px scale-2 page wraps long terrain constraints cleanly. Marathi marks and conjuncts remain readable, without tofu or page-edge cropping."
+    },
+    {
+      "path": "390x844/main/main.png",
+      "sha256": "4b577b3024f1b2ec7673695d9f29c702040457f5b17ec94250df3ef096b9738d",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact main menu has five visible Marathi actions fitting their large buttons and a clear settings gear. Remaining actions are in the intentional vertical scroll viewport."
+    },
+    {
+      "path": "390x844/settings/settings.png",
+      "sha256": "a673e33049fa29f9261b3f5f2bd0b82b2a8d3d09476d62b302a61d3384ffecbe",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact settings screen has fitting category, window and scale choices, wrapped help text and checkbox rows. The Done footer fits. A lower description crosses the intentional scroll boundary."
+    },
+    {
+      "path": "390x844/settings-audio/settings-audio.png",
+      "sha256": "d237e4ddc0047f225cbc521c64414f3f1bbdd9b12f09d47d8c206b86702b98b0",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact audio settings screen wraps mute help and the music description cleanly. The selected option, percentage labels, sliders and Done footer remain separate and legible."
+    },
+    {
+      "path": "390x844/lobby/lobby.png",
+      "sha256": "57b8baaf2eb80427a4b48271ad524a224345232615b6ba0108c00d799af5afbc",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact lobby map tab fits its tabs, choices, captions, help, two-line reset button and bottom navigation. Content scrolls intentionally; the map thumbnail is still pending in this two-frame harness."
+    },
+    {
+      "path": "390x844/lobby-players/lobby-players.png",
+      "sha256": "0b94e39a633d7775c3df6808a77a0db7a5978ddbd6d55d6e7e14eb76cc788c13",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact player tab fits its computer-player selector, AI difficulty, two-line AI description and team controls. The next player is partly below the intentional scroll boundary; navigation remains legible."
+    },
+    {
+      "path": "390x844/gameplay/gameplay.png",
+      "sha256": "6ced00074a1c3732c2ecc5d8299e4f2333ca2991e9df84c94affbaed5dabb19e",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact gameplay HUD has fitting Marathi Build, Flags, Tools, Objectives, Team and Menu labels below the icons. The real world and status bar are present."
+    },
+    {
+      "path": "390x844/gameplay/gameplay-dialog.png",
+      "sha256": "1ce7d380b333e1254034d84c55eca34671b0a2a84d814e5051a9a8797c2b7c88",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact game menu title and all ten buttons fit the viewport, including long recording, telemetry and return actions. No visible clipping or broken marks."
+    },
+    {
+      "path": "390x844/tutorial-introduction/tutorial-introduction-briefing.png",
+      "sha256": "383e430e516e06471325109a4d97f2e243b8046d0373aefc2bf067bb79ba00fd",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact introduction briefing wraps the summary tab into two lines and fits the other tabs, two-line summary and OK button. Marathi marks remain intact."
+    },
+    {
+      "path": "390x844/tutorial-introduction/tutorial-introduction.png",
+      "sha256": "6f0f2d8d870ffbd6438d27414c4dbc24fe4bbd02ba7140a84c794d7dc55f8582",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact dialog-free introduction guidance fits its long 1/5 goal beside the map/help/minimize icons. The touch instruction fits, and the flag-category highlight is visible."
+    },
+    {
+      "path": "390x844/tutorial-introduction/tutorial-introduction-dialog.png",
+      "sha256": "ac88945815ac2c84426c6c41dc054d4e19c34f2d62f3b47f5418d737bcbec8c5",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected this image. The compact tutorial game menu fits eleven actions, including Restart lesson, within the viewport. Long labels and Marathi marks remain legible."
+    },
+    {
+      "path": "390x844/tutorial-food-supply/tutorial-food-supply.png",
+      "sha256": "a928bace4e49fccd33dce64024a7e39c0f01863672ffa987c111f843fbc0cea0",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected the real compact tutorial guidance. The 1/2 goal header and Inn construction instruction fit on single lines. Marks, conjunctions and the bottom Build label remain legible without clipping."
+    },
+    {
+      "path": "390x844/tutorial-healing/tutorial-healing.png",
+      "sha256": "8b78de0f3b8ebe6f794446dafcb59541034c79f94f8b1f5b0f2959aca31b41a9",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected the real compact tutorial guidance. The hospital goal header fits beside the icons. The longer touch instruction wraps to two lines inside the panel, with intact Marathi marks and no overlap."
+    },
+    {
+      "path": "390x844/tutorial-walking-training/tutorial-walking-training.png",
+      "sha256": "3ba5849b21ec9d41db137277081bebf6066acca0c03f2b3c2a9b7f611d328ba4",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected the real compact tutorial guidance. The racetrack goal and touch instruction fit within the panel. The corrected feminine reference तिच्या is visible; all letters and marks remain joined and legible."
+    },
+    {
+      "path": "390x844/tutorial-swimming/tutorial-swimming.png",
+      "sha256": "7b0ab057b68bf74c100fc6f1e032d37f0498660720d64bb7cdac8e7ad34ce0c6",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected the compact swimming tutorial. The 1/3 swimming-pool goal, touch instruction and world marker label fit their visible areas; Marathi clusters and vowel marks remain intact, without clipping or overlap."
+    },
+    {
+      "path": "390x844/tutorial-schools/tutorial-schools.png",
+      "sha256": "6f490cc207d8ed80b1ccf056a0aa746a20f748055ba2d4a159191cef0cbacf88",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected the compact schools tutorial. The 1/2 goal and two-line materials/builders instruction fit inside the panel, with intact Marathi marks, no clipping and no collision with the help/minimize icons."
+    },
+    {
+      "path": "390x844/tutorial-upgrades/tutorial-upgrades.png",
+      "sha256": "182e2fbfb26617056adffa4568114ed697781b5ffcd10674f828979301e659a8",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected the compact upgrades tutorial. The goal header and two-line skilled-builder instruction fit inside the panel; the arrow, Marathi conjuncts and vowel marks remain legible, without clipping or overlap."
+    },
+    {
+      "path": "390x844/tutorial-warrior-training/tutorial-warrior-training.png",
+      "sha256": "9193d936598a1165cc931bc163616c477e969db103ac2966a698156061a5fdca",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected the compact warrior-training tutorial. The 1/3 goal, wheat/warrior touch instruction and world marker label fit, with intact योद्धे/योद्ध्यांसाठी conjuncts and no visible clipping or overlap."
+    },
+    {
+      "path": "390x844/tutorial-fortifications/tutorial-fortifications.png",
+      "sha256": "70d9f68b9ff57b20941e6bb1988d1b3392adc54a75d7b8d5ac51cdfa3c977fcf",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected the compact fortifications tutorial. The 1/4 defensive-tower goal and marked-location instruction fit within the panel. Marathi marks and clusters remain intact, without overlap or clipping."
+    },
+    {
+      "path": "390x844/tutorial-defensive-tactics/tutorial-defensive-tactics.png",
+      "sha256": "7cad7275490dbdb52830c40c38c7e29e46f7a9e3a9c7f8ac08595b11b1f3a3e1",
+      "reviewer": "/root/draft_tool",
+      "finding": null,
+      "inspection": "Actually inspected the compact defensive-tactics tutorial. The long 1/4 scout-enemy-base goal fits before the icons, and the complete touch instruction fits inside the panel. Marathi marks and conjuncts remain intact, without clipping or overlap."
+    }
+  ],
+  "limits": "Representative images actually inspected, not all generated images. Full-catalog glyph/fit assertions will rely on completed structured diagnostics."
+}

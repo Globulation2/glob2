@@ -1,0 +1,39 @@
+{
+  "reviewer": "/root/semantic_review",
+  "rechecked_by": "/root/semantic_review",
+  "status": "approved",
+  "unresolved_uncertainty": [],
+  "entries": [
+    {
+      "surface": "ios",
+      "key": "NSLocalNetworkUsageDescription",
+      "source": "Connect to Globulation 2 games on your local network.",
+      "source_path": "mobile/ios/Info.plist.in",
+      "source_file_sha256": "4141e2f7f9a87e24608922a06c6e5b7a89c6ae55408b4c46329309e4774dbc8e",
+      "draft_source_file_sha256": "0dcfaeac9dd2a8399967399bb2d5b53f37e396c7fe761e87f39f569257401ddb",
+      "source_carry_proof": "Development-region metadata was added to the template; actual permission source value reread and verified identical to paid-draft source.",
+      "resource_path": "mobile/ios/mr.lproj/InfoPlist.strings",
+      "resource_sha256": "0a2d7d0c43d0c2f12d3e6c2de39c52787d6e642b4e88080f26e1fa26c70873bd",
+      "final_target": "तुमच्या स्थानिक नेटवर्कवरील Globulation 2 खेळांशी जोडणी करण्यासाठी.",
+      "status": "approved",
+      "finding_state": "resolved",
+      "rationale": "Actually read final InfoPlist.strings against actual base plist purpose: natural connection-purpose phrase; preserves local-network location and product name."
+    },
+    {
+      "surface": "macos",
+      "key": "NSLocalNetworkUsageDescription",
+      "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
+      "source_path": "darwin/Info.plist",
+      "source_file_sha256": "204b6950b0ecddac3cad9371048d3aefd6749a2a0b17ae54e2fad3866d435836",
+      "draft_source_file_sha256": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896",
+      "source_carry_proof": "Development-region metadata was added to the template; actual permission source value reread and verified identical to paid-draft source.",
+      "resource_path": "darwin/mr.lproj/InfoPlist.strings",
+      "resource_sha256": "bdaf10a127e280e83da01e543a511ac07b9b04571e988d72bb07d72578329f64",
+      "final_target": "Globulation 2 तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले अनेक खेळाडूंचे सामने शोधते आणि त्यांत सामील होते.",
+      "status": "approved",
+      "finding_state": "resolved",
+      "rationale": "Actually read final InfoPlist.strings against actual base plist: explicit discovery and joining of locally hosted multiplayer games. होस्ट is the established interface loanword; neuter app-oriented agreement शोधते/होते is consistent within this sentence. No networking capability added or omitted."
+    }
+  ],
+  "certification": "Agent semantic review, not native-human certification; no Apple device execution claimed."
+}

@@ -1,0 +1,45 @@
+{
+  "reviewer": "/root/semantic_review",
+  "read_by": "/root/semantic_review",
+  "status": "proposals_ready",
+  "entries": [
+    {
+      "surface": "ios",
+      "key": "NSLocalNetworkUsageDescription",
+      "source": "Connect to Globulation 2 games on your local network.",
+      "source_path": "mobile/ios/Info.plist.in",
+      "source_file_sha256": "0dcfaeac9dd2a8399967399bb2d5b53f37e396c7fe761e87f39f569257401ddb",
+      "google_draft": "तुमच्या स्थानिक नेटवर्कवर Globulation 2 गेम्सशी कनेक्ट करा.",
+      "proposed_final": "तुमच्या स्थानिक नेटवर्कवरील Globulation 2 खेळांशी जोडणी करण्यासाठी.",
+      "rationale": "Permission explanation for joining LAN games; use a purpose phrase rather than a command to the player. जोडणी preserves connecting and networkवरील correctly locates the games.",
+      "state": "revision_requested",
+      "severity": "minor"
+    },
+    {
+      "surface": "macos",
+      "key": "NSLocalNetworkUsageDescription",
+      "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
+      "source_path": "darwin/Info.plist",
+      "source_file_sha256": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896",
+      "google_draft": "Globulation 2 तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले मल्टीप्लेअर गेम्स शोधतो आणि त्यात सामील होतो.",
+      "proposed_final": "Globulation 2 मध्ये तुमच्या स्थानिक नेटवर्कवर आयोजित केलेले अनेक खेळाडूंचे सामने शोधून त्यांत सामील होता येते.",
+      "rationale": "Preserve both discovering and joining locally hosted multiplayer games. अनेक खेळाडूंचे सामने expresses multiplayer without a raw English loan; a neutral capability phrase avoids assigning an arbitrary grammatical gender to the product name.",
+      "state": "revision_requested",
+      "severity": "minor"
+    }
+  ],
+  "unresolved_uncertainty": [],
+  "consulted_apple_sources": [
+    {
+      "url": "https://developer.apple.com/library/archive/qa/qa1828/_index.html",
+      "passage": "Steps2–3, lines20–27: matching lproj support, then the declared development region if no supported user language matches.",
+      "interpretation": "Package en.lproj and mr.lproj with development region en so unsupported preferences retain English fallback."
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/AboutInformationPropertyListFiles.html",
+      "passage": "Localizing Property List Values, lines35–39.",
+      "interpretation": "Localized human-readable values belong in InfoPlist.strings inside the matching language project; base Info.plist is fallback."
+    }
+  ],
+  "superseded_by": "semantic-final.json"
+}

@@ -1,0 +1,33 @@
+{
+  "editor": "/root/locale_integration",
+  "role": "independent final editorial recheck",
+  "entries": [
+    {
+      "surface": "ios",
+      "resource_path": "mobile/ios/mr.lproj/InfoPlist.strings",
+      "resource_sha256": "0a2d7d0c43d0c2f12d3e6c2de39c52787d6e642b4e88080f26e1fa26c70873bd",
+      "actual_final_value": "तुमच्या स्थानिक नेटवर्कवरील Globulation 2 खेळांशी जोडणी करण्यासाठी.",
+      "source": "Connect to Globulation 2 games on your local network.",
+      "source_text_unchanged": true,
+      "disposition": "accepted after actual final resource reread",
+      "rationale": "Final जोडणी करण्यासाठी directly retains connection purpose without an imperative or completed-join claim; this is more literal than my initial join-focused proposal and reads naturally in a permission explanation.",
+      "findings": []
+    },
+    {
+      "surface": "macos",
+      "resource_path": "darwin/mr.lproj/InfoPlist.strings",
+      "resource_sha256": "bdaf10a127e280e83da01e543a511ac07b9b04571e988d72bb07d72578329f64",
+      "actual_final_value": "Globulation 2 तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले अनेक खेळाडूंचे सामने शोधते आणि त्यांत सामील होते.",
+      "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
+      "source_text_unchanged": true,
+      "disposition": "accepted after actual final resource reread",
+      "rationale": "Final descriptive present शोधते आणि...सामील होते agrees with implicit app and states app capability, not completed access. अनेक खेळाडूंचे सामने clearly conveys multiplayer; locally hosted scope and protected brand remain exact. Accept concise direct source wording over my longer purpose expansion.",
+      "findings": []
+    }
+  ],
+  "reviewed_keys": [
+    "ios:NSLocalNetworkUsageDescription",
+    "macos:NSLocalNetworkUsageDescription"
+  ],
+  "certification": "Agent-reviewed, not native-human-certified"
+}

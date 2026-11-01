@@ -1,0 +1,19 @@
+{
+  "entries": [
+    {
+      "surface": "ios",
+      "resource_path": "mobile/ios/mr.lproj/InfoPlist.strings",
+      "resource_sha256": "0a2d7d0c43d0c2f12d3e6c2de39c52787d6e642b4e88080f26e1fa26c70873bd",
+      "resource_text": "\"NSLocalNetworkUsageDescription\" = \"तुमच्या स्थानिक नेटवर्कवरील Globulation 2 खेळांशी जोडणी करण्यासाठी.\";\n",
+      "author": "/root"
+    },
+    {
+      "surface": "macos",
+      "resource_path": "darwin/mr.lproj/InfoPlist.strings",
+      "resource_sha256": "bdaf10a127e280e83da01e543a511ac07b9b04571e988d72bb07d72578329f64",
+      "resource_text": "\"NSLocalNetworkUsageDescription\" = \"Globulation 2 तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले अनेक खेळाडूंचे सामने शोधते आणि त्यांत सामील होते.\";\n",
+      "author": "/root"
+    }
+  ],
+  "rationale": "iOS retains connection purpose without command; macOS retains discovery, joining and locally hosted multiplayer. Product name unchanged. Final actual resource rechecks pending."
+}

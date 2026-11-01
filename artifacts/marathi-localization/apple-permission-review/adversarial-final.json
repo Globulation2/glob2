@@ -1,0 +1,34 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent adversarial final recheck",
+  "state": "approved",
+  "entries": [
+    {
+      "surface": "ios",
+      "key": "NSLocalNetworkUsageDescription",
+      "source": "Connect to Globulation 2 games on your local network.",
+      "source_path": "mobile/ios/Info.plist.in",
+      "source_sha256": "4141e2f7f9a87e24608922a06c6e5b7a89c6ae55408b4c46329309e4774dbc8e",
+      "target": "तुमच्या स्थानिक नेटवर्कवरील Globulation 2 खेळांशी जोडणी करण्यासाठी.",
+      "target_path": "mobile/ios/mr.lproj/InfoPlist.strings",
+      "target_sha256": "0a2d7d0c43d0c2f12d3e6c2de39c52787d6e642b4e88080f26e1fa26c70873bd",
+      "disposition": "accepted",
+      "rationale": "Purpose fragment जोडणी करण्यासाठी correctly explains why access is requested; खेळांशी faithfully preserves generic games and avoids an imperative. Exact product name and your local network retained."
+    },
+    {
+      "surface": "macos",
+      "key": "NSLocalNetworkUsageDescription",
+      "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
+      "source_path": "darwin/Info.plist",
+      "source_sha256": "204b6950b0ecddac3cad9371048d3aefd6749a2a0b17ae54e2fad3866d435836",
+      "target": "Globulation 2 तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले अनेक खेळाडूंचे सामने शोधते आणि त्यांत सामील होते.",
+      "target_path": "darwin/mr.lproj/InfoPlist.strings",
+      "target_sha256": "bdaf10a127e280e83da01e543a511ac07b9b04571e988d72bb07d72578329f64",
+      "disposition": "accepted",
+      "rationale": "Consistent neuter application agreement and plural त्यांत. Both discovery and joining of locally hosted multiplayer matches are explicit. Exact product name and local network retained."
+    }
+  ],
+  "method": "Actual final InfoPlist.strings values reread against both English plist sources; purpose wording and local-network discovery/joining inspected.",
+  "findings": [],
+  "limits": "Source and resource linguistic recheck; no Apple runtime dialog screenshot claim."
+}

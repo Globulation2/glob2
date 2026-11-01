@@ -1,0 +1,22 @@
+{
+  "producer_revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "final_validation_revision": "ba890db53e67617fb3cb1033c157ca578781196e",
+  "changed_paths": [
+    "test/build_system/test_apple_localizations.py"
+  ],
+  "excluded_test_only_path": "test/build_system/test_apple_localizations.py",
+  "production_comparison_command": [
+    "git",
+    "diff",
+    "--exit-code",
+    "671894f2a43a677e15a71cb4d45c81b758943f1a",
+    "ba890db53e67617fb3cb1033c157ca578781196e",
+    "--",
+    ".",
+    ":(exclude)test/build_system/test_apple_localizations.py"
+  ],
+  "comparison_exit_code": 0,
+  "production_diff_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "conclusion": "Every tracked input outside this sole optional-SCons test-import follow-up is byte-identical. Native source, fonts, catalogs, resources and runtime packaging unchanged; existing and active671 producer evidence is carried forward without relabeling or rerendering.",
+  "limits": "This is explicit unchanged-production-input carry proof; the executed producer remains671."
+}

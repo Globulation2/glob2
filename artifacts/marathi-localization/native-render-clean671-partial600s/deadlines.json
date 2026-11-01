@@ -1,0 +1,5 @@
+{
+  "matrix_seconds": 600,
+  "screen_and_game_seconds": 90,
+  "interpretation": "Validation deadlines only; no performance claim. Contention timeout will be retained as failed attempt and retried with180seconds as needed."
+}

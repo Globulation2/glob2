@@ -1,0 +1,9 @@
+test_ios_generated_cmake_preserves_language_subdirectories (__main__.AppleLocalizationTests.test_ios_generated_cmake_preserves_language_subdirectories) ... ok
+test_macos_bundle_copies_declared_localizations_and_tracks_them (__main__.AppleLocalizationTests.test_macos_bundle_copies_declared_localizations_and_tracks_them) ... ok
+test_missing_declared_localization_is_not_silently_omitted (__main__.AppleLocalizationTests.test_missing_declared_localization_is_not_silently_omitted) ... ok
+test_shipped_sources_keep_english_development_fallback_and_key_parity (__main__.AppleLocalizationTests.test_shipped_sources_keep_english_development_fallback_and_key_parity) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.006s
+
+OK

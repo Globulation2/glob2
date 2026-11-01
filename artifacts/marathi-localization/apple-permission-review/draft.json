@@ -1,0 +1,35 @@
+{
+  "entries": [
+    {
+      "surface": "ios",
+      "key": "NSLocalNetworkUsageDescription",
+      "source_path": "mobile/ios/Info.plist.in",
+      "source_file_sha256": "0dcfaeac9dd2a8399967399bb2d5b53f37e396c7fe761e87f39f569257401ddb",
+      "source": "Connect to Globulation 2 games on your local network.",
+      "protected": [
+        [
+          "ZXQPH0QXZ",
+          "Globulation 2"
+        ]
+      ],
+      "google_draft": "तुमच्या स्थानिक नेटवर्कवर Globulation 2 गेम्सशी कनेक्ट करा."
+    },
+    {
+      "surface": "macos",
+      "key": "NSLocalNetworkUsageDescription",
+      "source_path": "darwin/Info.plist",
+      "source_file_sha256": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896",
+      "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
+      "protected": [
+        [
+          "ZXQPH0QXZ",
+          "Globulation 2"
+        ]
+      ],
+      "google_draft": "Globulation 2 तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले मल्टीप्लेअर गेम्स शोधतो आणि त्यात सामील होतो."
+    }
+  ],
+  "project": "bradley-personal-20261027",
+  "budget_reserved_usd": "3.8723",
+  "status": "draft; independent source review pending"
+}

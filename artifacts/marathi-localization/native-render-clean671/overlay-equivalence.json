@@ -1,0 +1,212 @@
+{
+  "registered_catalog": "data/texts.mr.txt",
+  "registered_catalog_sha256": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+  "completed_jobs": 34,
+  "overlays": [
+    {
+      "job": "1280x900/matrix",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/main",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/settings",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/settings-audio",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/lobby",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/lobby-players",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/gameplay",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-introduction",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-food-supply",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-healing",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-walking-training",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-swimming",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-schools",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-upgrades",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-warrior-training",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-fortifications",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "1280x900/tutorial-defensive-tactics",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/matrix",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/main",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/settings",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/settings-audio",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/lobby",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/lobby-players",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/gameplay",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-introduction",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-food-supply",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-healing",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-walking-training",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-swimming",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-schools",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-upgrades",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-warrior-training",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-fortifications",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    },
+    {
+      "job": "390x844/tutorial-defensive-tactics",
+      "overlay_sha256": "e5ec442fc8b7203800cfa8e0ac2fbe0d66c0a09ff750bd2f7588c463fcd98d91",
+      "parsed_keys": 3393,
+      "matches_registered_catalog": true
+    }
+  ],
+  "interpretation": "Exact parsed key/value equality for each successful capture overlay. Raw file hashes can differ because overlays follow English insertion order and the committed Marathi catalog uses canonical order. These are still draft-overlay harness captures; actual packaged/registered startup is verified separately."
+}

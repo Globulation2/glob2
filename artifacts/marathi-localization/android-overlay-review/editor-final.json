@@ -1,0 +1,12 @@
+{
+  "editor": "/root/locale_integration",
+  "surface": "android-resource",
+  "key": "preparing_game",
+  "source": "Preparing game…",
+  "actual_final": "खेळाची तयारी सुरू आहे…",
+  "actual_final_xml_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "source_sha256": "b5de8011685b6151ab2bc17b32ac5cef29a52e8631dc2c7f580a18ba292e5977",
+  "disposition": "Read actual final XML; accept natural ongoing preparation status with correct genitive, explicit ongoing verb and original U+2026 ellipsis. Matches independently proposed final.",
+  "findings": [],
+  "certification": "Agent-reviewed, not native-human-certified"
+}

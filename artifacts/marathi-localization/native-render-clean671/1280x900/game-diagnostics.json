@@ -1,0 +1,414 @@
+{
+  "successful_sessions": 11,
+  "tutorial_lessons": 10,
+  "initial_briefings_captured": 7,
+  "render_checksum_changes": 0,
+  "reports": [
+    {
+      "report": "gameplay/gameplay.json",
+      "sha256": "ac09225d255c66e867c31717bca16d7197fefc4cd85aef652568bcdf24d21d1a",
+      "lesson": null,
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 20,
+      "captures": [
+        {
+          "name": "gameplay",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "gameplay-zoom-plus",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "gameplay-zoom-fit",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "gameplay-dialog",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": null,
+      "dialog_free_guidance": null,
+      "tutorial_instruction": null,
+      "tutorial_touch_instruction": null
+    },
+    {
+      "report": "tutorial-defensive-tactics/tutorial-defensive-tactics.json",
+      "sha256": "7f73770a340aeefc6a5775ce3883d67bfbd61bb5ec3533be687bb6e5f392647d",
+      "lesson": "defensive-tactics",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 20,
+      "captures": [
+        {
+          "name": "tutorial-defensive-tactics",
+          "checksum_before_draw": 2870547155,
+          "checksum_after_draw": 2870547155,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-defensive-tactics-dialog",
+          "checksum_before_draw": 2870547155,
+          "checksum_after_draw": 2870547155,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": false,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[lesson defensive-tactics scout instruction]",
+      "tutorial_touch_instruction": "[lesson defensive-tactics scout compact]"
+    },
+    {
+      "report": "tutorial-food-supply/tutorial-food-supply.json",
+      "sha256": "d785ccf44dfc26bd0f0ba372f43447474d9400c41549249990b7235379add4b9",
+      "lesson": "food-supply",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 20,
+      "captures": [
+        {
+          "name": "tutorial-food-supply",
+          "checksum_before_draw": 3319321240,
+          "checksum_after_draw": 3319321240,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-food-supply-dialog",
+          "checksum_before_draw": 3319321240,
+          "checksum_after_draw": 3319321240,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": false,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[intro instruction build]",
+      "tutorial_touch_instruction": "[intro compact build]"
+    },
+    {
+      "report": "tutorial-fortifications/tutorial-fortifications.json",
+      "sha256": "41a4a8d1fa77b411bf2ba2d89bccacf475efd20d8b0de9c3b9b1e2887bc406b9",
+      "lesson": "fortifications",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 21,
+      "captures": [
+        {
+          "name": "tutorial-fortifications-briefing",
+          "checksum_before_draw": 3237625279,
+          "checksum_after_draw": 3237625279,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-fortifications",
+          "checksum_before_draw": 3237625279,
+          "checksum_after_draw": 3237625279,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-fortifications-dialog",
+          "checksum_before_draw": 3237625279,
+          "checksum_after_draw": 3237625279,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": true,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[lesson fortifications tower instruction]",
+      "tutorial_touch_instruction": "[lesson fortifications tower compact]"
+    },
+    {
+      "report": "tutorial-healing/tutorial-healing.json",
+      "sha256": "a7f6a857c75a2a806df4e67811172399670db4417125022e11491a2c6c940838",
+      "lesson": "healing",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 20,
+      "captures": [
+        {
+          "name": "tutorial-healing-briefing",
+          "checksum_before_draw": 2596514378,
+          "checksum_after_draw": 2596514378,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-healing",
+          "checksum_before_draw": 2596514378,
+          "checksum_after_draw": 2596514378,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-healing-dialog",
+          "checksum_before_draw": 2596514378,
+          "checksum_after_draw": 2596514378,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": true,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[lesson healing build instruction]",
+      "tutorial_touch_instruction": "[lesson healing build compact]"
+    },
+    {
+      "report": "tutorial-introduction/tutorial-introduction.json",
+      "sha256": "acfcc8c26d91c570df62c13d152bb0aeadf5f50a846fb0a7fc96e77a4d5c998c",
+      "lesson": "introduction",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 21,
+      "captures": [
+        {
+          "name": "tutorial-introduction-briefing",
+          "checksum_before_draw": 1079571871,
+          "checksum_after_draw": 1079571871,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-introduction",
+          "checksum_before_draw": 1079571871,
+          "checksum_after_draw": 1079571871,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-introduction-dialog",
+          "checksum_before_draw": 1079571871,
+          "checksum_after_draw": 1079571871,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": true,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[intro instruction scout]",
+      "tutorial_touch_instruction": "[intro compact scout]"
+    },
+    {
+      "report": "tutorial-schools/tutorial-schools.json",
+      "sha256": "892d31fa0030be66d9f0c30cd69f7237b7b83adc5edb70bb697bc46a853bc798",
+      "lesson": "schools",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 20,
+      "captures": [
+        {
+          "name": "tutorial-schools-briefing",
+          "checksum_before_draw": 1303168951,
+          "checksum_after_draw": 1303168951,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-schools",
+          "checksum_before_draw": 1303168951,
+          "checksum_after_draw": 1303168951,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-schools-dialog",
+          "checksum_before_draw": 1303168951,
+          "checksum_after_draw": 1303168951,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": true,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[lesson schools build instruction]",
+      "tutorial_touch_instruction": "[lesson schools build compact]"
+    },
+    {
+      "report": "tutorial-swimming/tutorial-swimming.json",
+      "sha256": "206b68967bc84cfb111199e528eaa4769b6992ff759cdd1d9868d92955661fcb",
+      "lesson": "swimming",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 20,
+      "captures": [
+        {
+          "name": "tutorial-swimming-briefing",
+          "checksum_before_draw": 2814019762,
+          "checksum_after_draw": 2814019762,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-swimming",
+          "checksum_before_draw": 2814019762,
+          "checksum_after_draw": 2814019762,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-swimming-dialog",
+          "checksum_before_draw": 2814019762,
+          "checksum_after_draw": 2814019762,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": true,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[lesson swimming build instruction]",
+      "tutorial_touch_instruction": "[lesson swimming build compact]"
+    },
+    {
+      "report": "tutorial-upgrades/tutorial-upgrades.json",
+      "sha256": "48f9337c97bf95fd099ccd31f234d3d12f0c0ae0a6d878b135bc35daa065dc83",
+      "lesson": "upgrades",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 21,
+      "captures": [
+        {
+          "name": "tutorial-upgrades-briefing",
+          "checksum_before_draw": 3097072314,
+          "checksum_after_draw": 3097072314,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-upgrades",
+          "checksum_before_draw": 3097072314,
+          "checksum_after_draw": 3097072314,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-upgrades-dialog",
+          "checksum_before_draw": 3097072314,
+          "checksum_after_draw": 3097072314,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": true,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[lesson upgrades upgrade instruction]",
+      "tutorial_touch_instruction": "[lesson upgrades upgrade compact]"
+    },
+    {
+      "report": "tutorial-walking-training/tutorial-walking-training.json",
+      "sha256": "e8ca85aec7f2132d0a7c85f79d79dc0779885aaf73e2aeec25c505564b3ee5da",
+      "lesson": "walking-training",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 20,
+      "captures": [
+        {
+          "name": "tutorial-walking-training-briefing",
+          "checksum_before_draw": 1707143331,
+          "checksum_after_draw": 1707143331,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-walking-training",
+          "checksum_before_draw": 1707143331,
+          "checksum_after_draw": 1707143331,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-walking-training-dialog",
+          "checksum_before_draw": 1707143331,
+          "checksum_after_draw": 1707143331,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": true,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[lesson walking-training build instruction]",
+      "tutorial_touch_instruction": "[lesson walking-training build compact]"
+    },
+    {
+      "report": "tutorial-warrior-training/tutorial-warrior-training.json",
+      "sha256": "5eacde87da42b8f1238eada262f569bbe51e1251f6cf15605db341c5051daa35",
+      "lesson": "warrior-training",
+      "viewport": [
+        1280,
+        900
+      ],
+      "phone_presentation_requested": false,
+      "published_tick": 21,
+      "captures": [
+        {
+          "name": "tutorial-warrior-training",
+          "checksum_before_draw": 2083749844,
+          "checksum_after_draw": 2083749844,
+          "image_width": 1280,
+          "image_height": 900
+        },
+        {
+          "name": "tutorial-warrior-training-dialog",
+          "checksum_before_draw": 2083749844,
+          "checksum_after_draw": 2083749844,
+          "image_width": 1280,
+          "image_height": 900
+        }
+      ],
+      "initial_briefing_present": false,
+      "dialog_free_guidance": true,
+      "tutorial_instruction": "[lesson warrior-training produce instruction]",
+      "tutorial_touch_instruction": "[lesson warrior-training produce compact]"
+    }
+  ],
+  "limits": "Initial real tutorial step/guidance plus actual automatic opening briefing when present and real game menu. Not a complete playthrough of every tutorial phase. Desktop harness at compact viewport is not an Android/iOS runtime assertion.",
+  "capture_count": 31
+}

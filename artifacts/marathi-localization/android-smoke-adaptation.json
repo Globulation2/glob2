@@ -1,0 +1,24 @@
+{
+  "original_script": "mobile/smoke.py",
+  "original_sha256": "f8f6d9240a0bd1bffbfe7c74dc460e3bd8c9a8cb21baff534d942ba968e545bd",
+  "adapted_script": "artifacts/marathi-localization/android_smoke_task.py",
+  "adapted_sha256": "577f1891518f2366d8188d5156e4162453bd7e08ffcc943efed2a1a58a8729ec",
+  "modifications": [
+    "Only tasklocalcopy; explicitworkspace ROOT/import path",
+    "Use ro.boot.qemu.avd_name equivalent ownership property because emu console replies are empty on isolatedserver",
+    "Require system locale mr-IN and saved native profile language=mr",
+    "Increase actualscreen wait90to180 seconds for first-run assetpreparation under hostcontention"
+  ],
+  "intended_command": [
+    "python3",
+    "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/android_smoke_task.py",
+    "--serial",
+    "emulator-5678",
+    "--avd",
+    "glob2-api35-x64",
+    "--adb-port",
+    "15187",
+    "--output",
+    "build/mobile-smoke-marathi"
+  ]
+}

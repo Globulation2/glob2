@@ -1,0 +1,26 @@
+{
+  "executed_binary": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-focused-tests",
+  "binary_sha256": "a5b31c603424942a8db3199ca8d4a9ce62549e12c2299e37c63b8ae2545f0578",
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/45cd/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/45cd/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+    "sourceStatus": [],
+    "sourceTreeSha256": "a7b3ef887b68290b5e244e9caf08c738554635452615b31fdbef8978b7caa666"
+  },
+  "registered_inventory": [
+    "FontKerning",
+    "SystemLanguage"
+  ],
+  "case_count": 15,
+  "result": "15passed0failed0skipped",
+  "commands_evidence": "native-focused-build-commands.json",
+  "run_evidence": "native-focused-run.log",
+  "junit": "native-focused-results/junit.xml"
+}

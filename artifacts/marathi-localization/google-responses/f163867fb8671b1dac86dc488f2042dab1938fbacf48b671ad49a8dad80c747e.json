@@ -1,0 +1,28 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Connect to ZXQPH0QXZ games on your local network.",
+        "ZXQPH0QXZ discovers and joins multiplayer games hosted on your local network."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "तुमच्या स्थानिक नेटवर्कवर ZXQPH0QXZ गेम्सशी कनेक्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले मल्टीप्लेअर गेम्स शोधतो आणि त्यात सामील होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "dde2bd8d024d4c9aa51bc21e4c94875554af9210e70606456c2b90d1b2471eb5"
+}

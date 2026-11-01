@@ -1,0 +1,40 @@
+Google response damaged protected tokens; inspect cached response
+Google response damaged protected tokens; inspect cached response
+{
+  "locale": "mr",
+  "project": "bradley-personal-20261027",
+  "pending_variants": 4845,
+  "request_count": 63,
+  "payload_characters": 150240,
+  "estimated_uncached_usd": "3.0048",
+  "reserved_usd": "3.86948",
+  "ceiling_usd": "9",
+  "dry_run": false,
+  "rejected_entries": [
+    {
+      "id": "native:[room close body %0]",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    },
+    {
+      "id": "native:[settings you were %0 there]",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    },
+    {
+      "id": "online:A \u00b7 V{slot0}",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    },
+    {
+      "id": "online:AI JavaScript source",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    },
+    {
+      "id": "online:{slot0} within {slot1} minutes",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    }
+  ]
+}

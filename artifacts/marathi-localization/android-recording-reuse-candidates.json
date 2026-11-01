@@ -1,0 +1,260 @@
+{
+  "current_revision": "6e376b299948b57e3d4e6f22673b4b0acc0730c4",
+  "toolchain": {
+    "cc": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang",
+    "cxx": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang++",
+    "ar": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+    "cflags": "['-fPIC']",
+    "ldflags": "['-Wl,--no-undefined', '-Wl,--build-id=sha1', '-Wl,-z,max-page-size=16384']",
+    "fingerprint": "ad828a0b54137c813fcbb45de02dd65a16e7339be0b56767a339d231407e59a5",
+    "compiler": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: x86_64-unknown-linux-android24\nThread model: posix\nInstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin",
+    "sdk": "28.2.13676358"
+  },
+  "expected_recording_identity": {
+    "configuration": 1,
+    "versions": {
+      "ffmpeg": {
+        "url": "https://ffmpeg.org/releases/ffmpeg-8.0.tar.xz",
+        "archive": "ffmpeg-8.0.tar.xz",
+        "directory": "ffmpeg-8.0",
+        "sha256": "b2751fccb6cc4c77708113cd78b561059b6fa904b24162fa0be2d60273d27b8e"
+      },
+      "nv-codec-headers": {
+        "url": "https://codeload.github.com/FFmpeg/nv-codec-headers/tar.gz/refs/tags/n13.0.19.0",
+        "archive": "nv-codec-headers-13.0.19.0.tar.gz",
+        "directory": "nv-codec-headers-n13.0.19.0",
+        "sha256": "86d15d1a7c0ac73a0eafdfc57bebfeba7da8264595bf531cf4d8db1c22940116"
+      },
+      "x264": {
+        "url": "https://codeload.github.com/mirror/x264/tar.gz/0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee",
+        "archive": "x264-0480cb05.tar.gz",
+        "directory": "x264-0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee",
+        "sha256": "d0967a1348c85dfde363bb52610403be898171493100561efa0dd05d5fd1ae50"
+      }
+    },
+    "target": "android",
+    "arch": "x86_64",
+    "compiler": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: x86_64-unknown-linux-android24\nThread model: posix\nInstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin\n",
+    "cc": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang",
+    "ar": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+    "flags": [
+      [
+        "-fPIC"
+      ],
+      [
+        "-Wl,--no-undefined",
+        "-Wl,--build-id=sha1",
+        "-Wl,-z,max-page-size=16384"
+      ]
+    ],
+    "vaapi_api": null,
+    "assembler": "NASM version 3.01",
+    "sdk": "ad828a0b54137c813fcbb45de02dd65a16e7339be0b56767a339d231407e59a5",
+    "environment": {
+      "CFLAGS": "",
+      "CXXFLAGS": "",
+      "CPPFLAGS": "",
+      "LDFLAGS": "",
+      "SDKROOT": "",
+      "MACOSX_DEPLOYMENT_TARGET": "",
+      "DEVELOPER_DIR": ""
+    },
+    "recipe": "c4663701d5073dfa8a2518d7fa4d8965e05b3953ed0ed1bcc3b8f3e349f61066"
+  },
+  "candidates": [
+    {
+      "prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-9281c17f8c6954032b470266/prefix",
+      "identity_equal": false,
+      "differences": {
+        "sdk": {
+          "installed": "a88b62b00344883053574849bdc5d30986c6cb7ade60cd7c2a2d6067c7bdabb1",
+          "expected": "ad828a0b54137c813fcbb45de02dd65a16e7339be0b56767a339d231407e59a5"
+        }
+      },
+      "archives_sha256": {
+        "libavformat.a": "8ff2a9ce6ff2e8a57ac2c3f2851d844c586e134fa071b0d8bbfcf7c011373424",
+        "libavcodec.a": "d16a739455d8366175a20d4915eddddaf9b0f7aecc9e61a948d1dad0a64a5217",
+        "libswscale.a": "cb5c2f2814140d0735ee97390d1fa0032d4d8f14c522412d91b6f7b4ff94bd0d",
+        "libswresample.a": "344ac40d0987d63b27936531b89227207eda8fabe4598c08c98195649eab2db0",
+        "libavutil.a": "888ab76bad50cf70bcf1fff74f076af38f7357bd2e2ef71535daf81fda71bbc1",
+        "libx264.a": "423bb828e48787a6465548e28fd1972c0497930b4c2ee8df5bf73f08b2eb555b"
+      },
+      "archive_hashes_valid": true,
+      "shared_receipt_valid": true
+    },
+    {
+      "prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-f373a94f29339e2e1c6e832e/prefix",
+      "identity_equal": false,
+      "differences": {
+        "sdk": {
+          "installed": "a88b62b00344883053574849bdc5d30986c6cb7ade60cd7c2a2d6067c7bdabb1",
+          "expected": "ad828a0b54137c813fcbb45de02dd65a16e7339be0b56767a339d231407e59a5"
+        }
+      },
+      "archives_sha256": {
+        "libavformat.a": "a9e1f873fe8c8aaf7ff57b74e0be691c0aca890261999a1bfd2e54ddd469f21f",
+        "libavcodec.a": "8a0bfe1a4ffe65b9d0261e79567d3eabeaef3106f0534f4d15e43f1efb285b16",
+        "libswscale.a": "55e12b7f557904e9cfaa553c88bbd868cd207ed3ceda619ea9b296a9e8d0dd94",
+        "libswresample.a": "e9a98c5c9950df2bff653657aa3b42236b4eb11d876567a7c9c8708a60e5f584",
+        "libavutil.a": "d1d3595d767221f2f34cd98028b3a2ca9314457d1ab69d9cb4a97bf8e0d0cadd",
+        "libx264.a": "423bb828e48787a6465548e28fd1972c0497930b4c2ee8df5bf73f08b2eb555b"
+      },
+      "archive_hashes_valid": true,
+      "shared_receipt_valid": true
+    }
+  ],
+  "sdk_fingerprint_explanation": {
+    "reproduced_current_debug": {
+      "identity": {
+        "target": "android",
+        "role": "client",
+        "toolchain": "android",
+        "mode": "debug",
+        "arch": "x86_64",
+        "environment": "device",
+        "api": "24"
+      },
+      "fingerprint": "a88b62b00344883053574849bdc5d30986c6cb7ade60cd7c2a2d6067c7bdabb1",
+      "cc": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang",
+      "cxx": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang++",
+      "ar": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+      "cflags": [
+        "-fPIC"
+      ],
+      "ldflags": [
+        "-Wl,--no-undefined",
+        "-Wl,--build-id=sha1",
+        "-Wl,-z,max-page-size=16384"
+      ],
+      "sdk": "28.2.13676358",
+      "compiler": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: x86_64-unknown-linux-android24\nThread model: posix\nInstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin"
+    },
+    "reproduced_current_release": {
+      "identity": {
+        "target": "android",
+        "role": "client",
+        "toolchain": "android",
+        "mode": "release",
+        "arch": "x86_64",
+        "environment": "device",
+        "api": "24"
+      },
+      "fingerprint": "ad828a0b54137c813fcbb45de02dd65a16e7339be0b56767a339d231407e59a5",
+      "cc": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang",
+      "cxx": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang++",
+      "ar": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+      "cflags": [
+        "-fPIC"
+      ],
+      "ldflags": [
+        "-Wl,--no-undefined",
+        "-Wl,--build-id=sha1",
+        "-Wl,-z,max-page-size=16384"
+      ],
+      "sdk": "28.2.13676358",
+      "compiler": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: x86_64-unknown-linux-android24\nThread model: posix\nInstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin"
+    },
+    "only_identity_difference": "mode:debug -> release; compiler commands/binary versions, SDKrevision, API24, target arch, C/C++/linkflags identical. Current recording builder alwayschooses its own pinned optimization flags; builder manifest still binds SDKfingerprint and therefore will reject a debug receipt unchanged.",
+    "conclusion": "No EXACT current-release recording manifest found; do not silently relabel existing debug receipt."
+  },
+  "reuse_decision": "Rejected: no exact current-release SDKfingerprint in available official builder manifests. Existing debug-manifest identity must not be rewritten or bypassed. Continue own active freshrelease recording build.",
+  "running_builder": {
+    "scons_pid": 1590244,
+    "temporary_prefix": "/tmp/glob2-dependency-0wwll32l/entry/prefix",
+    "temporary_work": "/tmp/glob2-dependency-0wwll32l/sources",
+    "jobs": 2,
+    "status": "x264finished; FFmpeg configureactive"
+  },
+  "toolchain_command_files_sha256": {
+    "cc": "2657210ebc03bd7db9208c3d6453d91851431053be94e9422628475bc2efde0a",
+    "cxx": "b8afd37069ea2ea606ee2cd4674df0bae6118ea89f88d99f1c796d2a220b0c67",
+    "ar": "fca4e66c591578b67dbd10e17e1112dc06fc02b202753bf91b4d2460083ab09e"
+  },
+  "expected_shared_identity": {
+    "builder": "recording_dependencies",
+    "environment": {
+      "CFLAGS": "",
+      "CPPFLAGS": "",
+      "CXXFLAGS": "",
+      "DEVELOPER_DIR": "",
+      "LDFLAGS": "",
+      "MACOSX_DEPLOYMENT_TARGET": "",
+      "PKG_CONFIG_LIBDIR": "",
+      "PKG_CONFIG_PATH": "",
+      "SDKROOT": ""
+    },
+    "host": [
+      "Linux",
+      "x86_64"
+    ],
+    "options": {
+      "ar": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+      "arch": "x86_64",
+      "cc": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang",
+      "cflags": [
+        "-fPIC"
+      ],
+      "cxx": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang++",
+      "ldflags": [
+        "-Wl,--no-undefined",
+        "-Wl,--build-id=sha1",
+        "-Wl,-z,max-page-size=16384"
+      ],
+      "ranlib": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib",
+      "sdk_identity": "ad828a0b54137c813fcbb45de02dd65a16e7339be0b56767a339d231407e59a5",
+      "target": "android"
+    },
+    "platform": {},
+    "recipes": {
+      "fix-freebsd.patch": "b48ed962d22873d896f1f09800b3a781428a8425d912631a477f8669408b9d15",
+      "kerning-moves-pen.patch": "40885a6f8dd3018cd01721197b263b363bbb26c4b55ef21e0ad919823ac7bd4c",
+      "mingw-io-names.patch": "5cc1182280611f5a96f8660090bca054fa5a79b1f047a3a8ba4e65a650debb2f",
+      "opus-versions.json": "f66e4ab6c795dcaec89c269ca4e06a3394ec9f0ecf5184a5d91902948bc252e0",
+      "png16-preserve-channels.patch": "cfa402516b9692a8e50394e5f1dc659e5a7443cd99a4cbb59af2ac5d0fc05aee",
+      "recording-versions.json": "264d868e3eb117595546456250ccfefd99203355ac74d0dbd68eab53d5db5629",
+      "recording_dependencies.py": "c4663701d5073dfa8a2518d7fa4d8965e05b3953ed0ed1bcc3b8f3e349f61066",
+      "sdl3-vendored.json": "98dbcf0823dcc0c059a331f8edcb04a3dff06d8943f8bdf58c68531a9ed6f8bc",
+      "sdl3-versions.json": "ed0147398a0a5c107b6cd16e178345deaf90b820484692850c44368c0e57fa9c",
+      "sdl3_dependencies.py": "588839d0ce3e6acdddeac5d2100b44ad2ea4e40d8017c330ec5fab841fb6750d",
+      "shared_dependencies.py": "e28844ec93ad52e1a2dc82d61e92eaa95e90b4dcd7cc73210ab594412397161e",
+      "x11-map-notify.patch": "a7ce2e7bc6773243ccda0282926ea92a9cce3023efa9289c81cc9dad0937f202",
+      "x11-reparent-race.patch": "7ebad866971a36c2c833d6d91977d2628f13c82a0eeae11fd917e5ee8f7dcfab"
+    },
+    "schema": 1,
+    "tools": {
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar": {
+        "binary": "fca4e66c591578b67dbd10e17e1112dc06fc02b202753bf91b4d2460083ab09e",
+        "version": "LLVM (http://llvm.org/):\n  LLVM version 19.0.1 (/mnt/disks/build-disk/src/android/llvm-r530567/out/llvm-project/llvm 97a699bf4812a18fb657c2779f5296a4ab2694d2)\n  Optimized build.\n"
+      },
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib": {
+        "binary": "fca4e66c591578b67dbd10e17e1112dc06fc02b202753bf91b4d2460083ab09e",
+        "version": "LLVM (http://llvm.org/):\n  LLVM version 19.0.1 (/mnt/disks/build-disk/src/android/llvm-r530567/out/llvm-project/llvm 97a699bf4812a18fb657c2779f5296a4ab2694d2)\n  Optimized build.\n"
+      },
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang": {
+        "binary": "2657210ebc03bd7db9208c3d6453d91851431053be94e9422628475bc2efde0a",
+        "version": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: x86_64-unknown-linux-android24\nThread model: posix\nInstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin\n"
+      },
+      "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android24-clang++": {
+        "binary": "b8afd37069ea2ea606ee2cd4674df0bae6118ea89f88d99f1c796d2a220b0c67",
+        "version": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: x86_64-unknown-linux-android24\nThread model: posix\nInstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin\n"
+      },
+      "cmake": {
+        "binary": "6e1dccda39845415d68eabb934c598998949c99ec4668625d571aee1827b05c7",
+        "version": "cmake version 4.2.3\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n"
+      },
+      "make": {
+        "binary": "27c9f6d806aee15882b01c2c61848f7aa75caa14bc7b6f608ba422f9e46a7d49",
+        "version": "GNU Make 4.4.1\nBuilt for x86_64-pc-linux-gnu\nCopyright (C) 1988-2023 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n"
+      },
+      "nasm": {
+        "binary": "57b8fc5957237b0d9b1ff48c8f5823780fb8ce968d9b8434850c06941ad5d5f5",
+        "version": "NASM version 3.01\n"
+      },
+      "pkg-config": {
+        "binary": "33fe3cef13ad2e476c13416867bf0ba152423738ce299e03cdd3859aff780a91",
+        "version": "2.5.1\n"
+      }
+    }
+  },
+  "expected_release_prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-21a7b3edb8fa00934855eb1c/prefix"
+}

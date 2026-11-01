@@ -1,0 +1,34 @@
+{
+  "reviewer": "/root/semantic_review",
+  "read_by": "/root/semantic_review",
+  "surface": "android-resource",
+  "key": "preparing_game",
+  "source": "Preparing game…",
+  "source_path": "mobile/android/app/src/main/res/values/strings.xml",
+  "source_sha256": "b5de8011685b6151ab2bc17b32ac5cef29a52e8631dc2c7f580a18ba292e5977",
+  "draft": "खेळाची तयारी…",
+  "proposed_final": "खेळाची तयारी होत आहे…",
+  "status": "revision_requested",
+  "severity": "minor",
+  "rationale": "Actual Java context is an indeterminate progress overlay shown while preparing assets before the game opens, with a TextView and polite accessibility live region. The Google noun phrase खेळाची तयारी… names the process but does not explicitly state that it is ongoing. खेळाची तयारी होत आहे… is a respectful neutral Marathi ongoing status, preserves the ellipsis and avoids implying completion or asking the player to act. Existing Hindi खेल तैयार हो रहा है… and Urdu کھیل تیار ہو رہا ہے… both likewise express ongoing preparation; they are contextual references, not independent Marathi attestation.",
+  "consulted_context": {
+    "path": "mobile/android/app/src/main/java/org/globulation2/glob2/Glob2Activity.java",
+    "sha256": "1cfd5062e0ecae5bd75d9cd3120633b42550648078666ef60f37c1502c44e6fc",
+    "passage": "setIndeterminate(true); label.setText(R.string.preparing_game); setAccessibilityLiveRegion(ACCESSIBILITY_LIVE_REGION_POLITE)"
+  },
+  "consulted_references": [
+    {
+      "path": "mobile/android/app/src/main/res/values-hi/strings.xml",
+      "sha256": "aba3732e14e6c62804ba1703834826f57208cc1709001c4974133b117554e088",
+      "text": "खेल तैयार हो रहा है…"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/values-ur/strings.xml",
+      "sha256": "da1d1379850d6f4fe6dcbdc24035aa70687e3894e761cbd8f0d509cff732f26b",
+      "text": "کھیل تیار ہو رہا ہے…"
+    }
+  ],
+  "unresolved_uncertainty": [],
+  "certification": "Independent agent semantic review; not native-human certification.",
+  "superseded_by": "semantic-final.json"
+}

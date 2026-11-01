@@ -1,0 +1,23 @@
+{
+  "reviewer": "/root",
+  "revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "tests": {
+    "passed": 8,
+    "failed": 0,
+    "scope": "Existing Marathi home and switching cases, Firefox/WebKit ×1280x900desktop/390x844phone",
+    "report": "checks/online-cross-browser-results.json",
+    "report_sha256": "bcadf9c1bbcdfa8eeba12138b5657fd06cc12f4cac0bb7cd51460a04a4fca0e3"
+  },
+  "inspected_images": [
+    {
+      "path": "artifacts/marathi-localization/web-cross-browser-screenshots/webkit-phone/mr-home.png",
+      "sha256": "5cef6f6a0c9912259037911c1680713078c295ee98c8bcc0f9edaf0463550d92",
+      "finding": "Actually inspected WebKit phone fullpage: clear Devanagari with intact marks, readable MR compact language control, wrapped body/call-to-action labels and no visible horizontal overflow. English user/map/queue identifiers are data. Offscreen lazy map thumbnail placeholders are not a locale-rendering assertion."
+    }
+  ],
+  "limits": [
+    "Playwright WebKit onLinux is not a macOS/iOS Safari device claim.",
+    "Only the explicitly listed screenshot was manually inspected by root; automated assertions cover all8cases.",
+    "Previous6Chromiumdesktop/phone cases and their transient screenshot failure/recheck remain separately recorded."
+  ]
+}

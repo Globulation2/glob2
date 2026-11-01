@@ -1,0 +1,409 @@
+{
+  "binary": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/TranslationPreviewHarness-stripped",
+  "binary_sha256": "b81cd2a4a37e8f1da227b281cb112f845ec2a588fb6f7d6d1daca0d1fcad5307",
+  "git_revision": "671894f2a43a677e15a71cb4d45c81b758943f1a",
+  "git_status": "",
+  "preview_metadata": {
+    "locale": "mr",
+    "name": "मराठी",
+    "direction": "ltr",
+    "source_revision": "e67cba82e7ff1738efdfc65bf3a7c47dc8f7dcd1",
+    "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+    "original_catalog_sha256": {
+      "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+      "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+    },
+    "catalog_status": {
+      "native": "Complete semantic, editorial and adversarial independent reviews; final rechecks approved",
+      "online": "Complete semantic, editorial and adversarial independent reviews; final rechecks approved"
+    },
+    "preview_catalog_sha256": {
+      "native": "7ecf6099aa43a96f2ed171641b282b32383ad3313f5e16475797726c08b3c364",
+      "online": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+    },
+    "integration_base_revision": "ed4ac0901f85a8e13d11b741ad3dea1f0a31df54"
+  },
+  "jobs": [
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "matrix",
+      "kind": null,
+      "returncode": 0,
+      "seconds": 1485.27,
+      "output": "1280x900/matrix"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "main",
+      "returncode": 0,
+      "seconds": 48.5,
+      "output": "1280x900/main"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "settings",
+      "returncode": 0,
+      "seconds": 42.52,
+      "output": "1280x900/settings"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "settings-audio",
+      "returncode": 0,
+      "seconds": 95.83,
+      "output": "1280x900/settings-audio"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "lobby",
+      "returncode": 0,
+      "seconds": 59.98,
+      "output": "1280x900/lobby"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "screen",
+      "kind": "lobby-players",
+      "returncode": 0,
+      "seconds": 62.63,
+      "output": "1280x900/lobby-players"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "gameplay",
+      "returncode": 0,
+      "seconds": 49.64,
+      "output": "1280x900/gameplay"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:introduction",
+      "returncode": 0,
+      "seconds": 98.53,
+      "output": "1280x900/tutorial-introduction"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:food-supply",
+      "returncode": 0,
+      "seconds": 37.07,
+      "output": "1280x900/tutorial-food-supply"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:healing",
+      "returncode": 0,
+      "seconds": 60.16,
+      "output": "1280x900/tutorial-healing"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:walking-training",
+      "returncode": 0,
+      "seconds": 73.86,
+      "output": "1280x900/tutorial-walking-training"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:swimming",
+      "returncode": 0,
+      "seconds": 82.66,
+      "output": "1280x900/tutorial-swimming"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:schools",
+      "returncode": 0,
+      "seconds": 29.91,
+      "output": "1280x900/tutorial-schools"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:upgrades",
+      "returncode": 0,
+      "seconds": 62.27,
+      "output": "1280x900/tutorial-upgrades"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:warrior-training",
+      "returncode": 0,
+      "seconds": 141.52,
+      "output": "1280x900/tutorial-warrior-training"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:fortifications",
+      "returncode": 0,
+      "seconds": 118.01,
+      "output": "1280x900/tutorial-fortifications"
+    },
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "mode": "game",
+      "kind": "tutorial:defensive-tactics",
+      "returncode": 0,
+      "seconds": 33.35,
+      "output": "1280x900/tutorial-defensive-tactics"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "matrix",
+      "kind": null,
+      "returncode": 0,
+      "seconds": 600.89,
+      "output": "390x844/matrix"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "main",
+      "returncode": 0,
+      "seconds": 23.52,
+      "output": "390x844/main"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "settings",
+      "returncode": 0,
+      "seconds": 62.13,
+      "output": "390x844/settings"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "settings-audio",
+      "returncode": 0,
+      "seconds": 51.37,
+      "output": "390x844/settings-audio"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "lobby",
+      "returncode": 0,
+      "seconds": 34.76,
+      "output": "390x844/lobby"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "screen",
+      "kind": "lobby-players",
+      "returncode": 0,
+      "seconds": 42.28,
+      "output": "390x844/lobby-players"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "gameplay",
+      "returncode": 0,
+      "seconds": 52.42,
+      "output": "390x844/gameplay"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:introduction",
+      "returncode": 0,
+      "seconds": 73.97,
+      "output": "390x844/tutorial-introduction"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:food-supply",
+      "returncode": 0,
+      "seconds": 125.47,
+      "output": "390x844/tutorial-food-supply"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:healing",
+      "returncode": 0,
+      "seconds": 79.45,
+      "output": "390x844/tutorial-healing"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:walking-training",
+      "returncode": 0,
+      "seconds": 39.0,
+      "output": "390x844/tutorial-walking-training"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:swimming",
+      "returncode": 0,
+      "seconds": 92.67,
+      "output": "390x844/tutorial-swimming"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:schools",
+      "returncode": 0,
+      "seconds": 87.82,
+      "output": "390x844/tutorial-schools"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:upgrades",
+      "returncode": 0,
+      "seconds": 97.23,
+      "output": "390x844/tutorial-upgrades"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:warrior-training",
+      "returncode": 0,
+      "seconds": 71.04,
+      "output": "390x844/tutorial-warrior-training"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:fortifications",
+      "returncode": 0,
+      "seconds": 110.54,
+      "output": "390x844/tutorial-fortifications"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "mode": "game",
+      "kind": "tutorial:defensive-tactics",
+      "returncode": 0,
+      "seconds": 126.08,
+      "output": "390x844/tutorial-defensive-tactics"
+    }
+  ],
+  "validation_deadlines_seconds": {
+    "matrix": 3600,
+    "screen_and_game": 180
+  },
+  "deadline_interpretation": "Bounded validation duration; not a performance guarantee or measurement.",
+  "maximum_evidence_bytes": 2147483648,
+  "minimum_free_bytes": 1073741824
+}

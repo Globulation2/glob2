@@ -1,0 +1,17 @@
+{
+  "environment": {
+    "GLOB2_DEV_HOME": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/private-web-store",
+    "GLOB2_RECORDING_PREFIX": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/web-recording-prefix",
+    "EMSDK": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39"
+  },
+  "command": [
+    "scons",
+    "target=web",
+    "release=1",
+    "web-package",
+    "-j2",
+    "emsdk=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39"
+  ],
+  "dependencies": 4,
+  "caches": 2
+}

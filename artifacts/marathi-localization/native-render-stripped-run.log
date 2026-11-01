@@ -1,0 +1,9 @@
+{'viewport': [1280, 900], 'mode': 'matrix', 'kind': None, 'returncode': -15, 'seconds': 152.43, 'output': '1280x900/matrix'}
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native_qa_runner.py", line 73, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native_qa_runner.py", line 70, in main
+    if r.returncode:raise RuntimeError('Capture failed; inspect '+str(dest/'capture.log'))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Capture failed; inspect /home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-render-clean671/1280x900/matrix/capture.log

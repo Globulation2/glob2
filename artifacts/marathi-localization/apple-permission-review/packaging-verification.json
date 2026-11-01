@@ -1,0 +1,63 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "test/build_system/test_apple_localizations.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "source_hashes": {
+    "SConstruct": "7f1839436185ce716df6be9f9057e44287a127c3b0e785303bdb04d4e9c13644",
+    "scons/bundle.py": "6dbd9491afb2b4ca3b41f2bba2a4759d91910d8947da42a5943520e79c4a9dc4",
+    "scons/apple_localizations.py": "ef148337ff8cef7c294f5e7cf71562028919a6c3b674eae472bbdacb8e727c80",
+    "mobile/ios.py": "fe9872387139e85452b6dc5952e019ef6c25bbb41baa53b1051b24d018a199fb",
+    "test/build_system/test_apple_localizations.py": "8fc3411970ef6c913ced5504e74b5eaf4163b4d215f21f845282ef4ad3c13d19",
+    "mobile/ios/Info.plist.in": "4141e2f7f9a87e24608922a06c6e5b7a89c6ae55408b4c46329309e4774dbc8e",
+    "darwin/Info.plist": "204b6950b0ecddac3cad9371048d3aefd6749a2a0b17ae54e2fad3866d435836",
+    "mobile/ios/en.lproj/InfoPlist.strings": "96bb9649e8e22ea694347a3851e94e7ce8282468c7b3a1590a41586e97d613e5",
+    "darwin/en.lproj/InfoPlist.strings": "817225378dcf3e56f660145571ff0e6d2cf15afd914a5600045b16a7152e10b5",
+    "mobile/ios/mr.lproj/InfoPlist.strings": "0a2d7d0c43d0c2f12d3e6c2de39c52787d6e642b4e88080f26e1fa26c70873bd",
+    "darwin/mr.lproj/InfoPlist.strings": "bdaf10a127e280e83da01e543a511ac07b9b04571e988d72bb07d72578329f64",
+    "tools/gog_release.py": "e41ced8cbbc210f27f3076cd8dc681dbd79233eb57cc42d3f443f461c18cc090",
+    "test/test_gog_release.py": "06485a0b9585146effb12a9b7142988cd111c4fe1a26496146d92d597270630c"
+  },
+  "coverage": "Linux execution of actual bundle resource copy/emitter and CMake resource command parse; English development fallback and source-key parity. Apple platform commands mocked; no Apple permission UI execution claimed.",
+  "log": "packaging-tests.log",
+  "gog_source_guard": {
+    "command": [
+      "python3",
+      "test/test_gog_release.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 27,
+    "log": "gog-tests.log",
+    "coverage": "Real temporary Git history: unchanged public-tag source passes; committed mirror edit to darwin/mr.lproj/InfoPlist.strings is rejected as game source differing from tag. No publication or credentials."
+  },
+  "optional_scons_followup": {
+    "reason": "Cheap CI intentionally omits SCons; defer SCons/bundle imports to only the bundle-copy test and skip only that test if unavailable.",
+    "normal": {
+      "command": [
+        "python3",
+        "test/build_system/test_apple_localizations.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "passed": 4,
+      "skipped": 0,
+      "log": "packaging-tests-optional-scons.log"
+    },
+    "dependency_isolated": {
+      "command": [
+        "python3",
+        "-S",
+        "test/build_system/test_apple_localizations.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "passed": 3,
+      "skipped": 1,
+      "log": "packaging-tests-no-site.log"
+    }
+  }
+}

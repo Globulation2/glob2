@@ -1,0 +1,16 @@
+{
+  "reviewer": "/root/draft_tool",
+  "image": "1280x900/main/main.png",
+  "image_sha256": "74d8978290ca85b5d38e047806462983339e39bc877c1c5dd312729590fde9db",
+  "control": "menu/discord",
+  "bounds": [
+    252,
+    622,
+    156,
+    34
+  ],
+  "source_key": "[Discord community]",
+  "actual_target": "डिस्कॉर्ड समुदाय",
+  "source_usage": "src/ui/screens/MainMenuScreen.cpp:254 tr([Discord community]) opens community dialog",
+  "disposition": "Correct product-name transliteration and community noun; no translation defect. Actual screenshot and key/control mapping read. No source/catalog/producer change."
+}

@@ -1,0 +1,12 @@
+{
+  "project": "bradley-personal-20261027",
+  "model": "general/nmt",
+  "attempts_including_uncertain_dispatches": 87,
+  "reserved_characters": 193615,
+  "usd_per_million_input_codepoints": "20",
+  "conservative_usd_before_credits": "3.8723",
+  "ceiling_usd": "9",
+  "pricing_source": "https://cloud.google.com/products/translate/pricing",
+  "pricing_consulted_utc": "2026-11-01",
+  "method": "Count every reserved request payload code point, including whitespace and token sentinels; ignore monthly credits and discounts. Not an exported billing invoice."
+}

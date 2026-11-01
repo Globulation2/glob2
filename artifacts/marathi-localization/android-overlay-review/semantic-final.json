@@ -1,0 +1,18 @@
+{
+  "reviewer": "/root/semantic_review",
+  "rechecked_by": "/root/semantic_review",
+  "source_path": "mobile/android/app/src/main/res/values/strings.xml",
+  "source_sha256": "b5de8011685b6151ab2bc17b32ac5cef29a52e8631dc2c7f580a18ba292e5977",
+  "source": "Preparing game…",
+  "resource_path": "mobile/android/app/src/main/res/values-mr/strings.xml",
+  "resource_sha256": "c819d250c1c1c6f7153059a3c5a7782bc71f85fea3b22e207617e1894670c29a",
+  "rechecked_keys": [
+    "android-resource:preparing_game"
+  ],
+  "final_target": "खेळाची तयारी सुरू आहे…",
+  "status": "approved",
+  "finding_state": "resolved",
+  "rationale": "Actually reread final Marathi XML and source against setPreparingAssets(boolean) Java lifecycle: preparing=true shows an indeterminate spinner/status; false removes the overlay. तयारी सुरू आहे clearly expresses preparation in progress. It is idiomatic and equivalent in meaning to my earlier होत आहे proposal; it neither claims completion nor commands the player. Ellipsis is preserved.",
+  "unresolved_uncertainty": [],
+  "certification": "Agent semantic review; not native-human certification."
+}

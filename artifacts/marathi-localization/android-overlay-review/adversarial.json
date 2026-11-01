@@ -1,0 +1,20 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent adversarial reviewer",
+  "surface": "android-resource",
+  "key": "preparing_game",
+  "source": "Preparing game…",
+  "source_sha256": {
+    "mobile/android/app/src/main/res/values/strings.xml": "b5de8011685b6151ab2bc17b32ac5cef29a52e8631dc2c7f580a18ba292e5977",
+    "mobile/android/app/src/main/java/org/globulation2/glob2/Glob2Activity.java": "1cfd5062e0ecae5bd75d9cd3120633b42550648078666ef60f37c1502c44e6fc"
+  },
+  "draft_sha256": "2ef8b2b09550b41911516ca93ebdbb3e97247edaa47b6006e6b3bfff97c17b1d",
+  "google_draft": "खेळाची तयारी…",
+  "proposal": "खेळाची तयारी करत आहे…",
+  "rationale": "The indeterminate progress indicator is shown while native startup prepares assets and disappears when preparation finishes. Google’s खेळाची तयारी… conveys the noun phrase game preparation acceptably but leaves the ongoing action implicit. खेळाची तयारी करत आहे… makes the continuing startup action explicit, preserves the ellipsis, uses established खेळ terminology, and reads naturally as a status rather than an instruction. No variables, markup, or controls occur here. Android TextView centers a 20sp label in a padded MATCH_PARENT overlay; the proposed short sentence is suitable for wrapping and needs no font changes.",
+  "references_consulted": [
+    "English resource and actual Glob2Activity.setPreparingAssets context; existing Hindi/Urdu/Swahili resource counterparts read after independent Marathi judgment."
+  ],
+  "state": "minor editorial improvement proposed; no tracked resource writes",
+  "limits": "Linguistic/context review only; Android runtime rendering still requires platform verification."
+}

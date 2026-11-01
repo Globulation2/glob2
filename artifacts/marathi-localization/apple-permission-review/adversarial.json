@@ -1,0 +1,30 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent adversarial review",
+  "draft_sha256": "114c0b2687d249bfc05d782a352e1f4e4967f534fc0740b5139b0be3ee6c205e",
+  "entries": [
+    {
+      "surface": "ios",
+      "key": "NSLocalNetworkUsageDescription",
+      "source": "Connect to Globulation 2 games on your local network.",
+      "source_path": "mobile/ios/Info.plist.in",
+      "source_sha256": "0dcfaeac9dd2a8399967399bb2d5b53f37e396c7fe761e87f39f569257401ddb",
+      "google_draft": "तुमच्या स्थानिक नेटवर्कवर Globulation 2 गेम्सशी कनेक्ट करा.",
+      "proposal": "तुमच्या स्थानिक नेटवर्कवरील Globulation 2 सामन्यांशी जोडणी करण्यासाठी.",
+      "rationale": "The OS displays a permission-purpose explanation, not a button telling the user to connect. Google कनेक्ट करा is an imperative. The purpose fragment जोडणी करण्यासाठी states why network access is needed, preserves your/local network and the exact product name, and uses सामन्यांशी for game sessions.",
+      "state": "editorial change proposed"
+    },
+    {
+      "surface": "macos",
+      "key": "NSLocalNetworkUsageDescription",
+      "source": "Globulation 2 discovers and joins multiplayer games hosted on your local network.",
+      "source_path": "darwin/Info.plist",
+      "source_sha256": "127528b62b62fd947d13b5b32307c5a578e55b33b342150bf5c14a36fc41f896",
+      "google_draft": "Globulation 2 तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले मल्टीप्लेअर गेम्स शोधतो आणि त्यात सामील होतो.",
+      "proposal": "Globulation 2 तुमच्या स्थानिक नेटवर्कवर होस्ट केलेले अनेक खेळाडूंचे सामने शोधते आणि त्यांत सामील होते.",
+      "rationale": "Google conveys discovery and joining but mixes plural games with singular त्यात and anthropomorphic masculine शोधतो. The proposal uses consistent neuter agreement for the application, explicit अनेक खेळाडूंचे for multiplayer, plural त्यांत, and retains both discovery and joining of locally hosted games. Product spelling is unchanged.",
+      "state": "editorial change proposed"
+    }
+  ],
+  "review_method": "Read both actual app-owned plists and exact usage-description key, then independently evaluated the Google drafts without reading other new reviewer results. No tracked writes."
+}
