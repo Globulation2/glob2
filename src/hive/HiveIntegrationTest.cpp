@@ -9,6 +9,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "hive/HiveObservation.h"
+#include "hive/LocalCommander.h"
 #include "scripting/javascript/ScriptObservations.h"
 #include "scripting/javascript/ScriptOrders.h"
 #include "Order.h"
@@ -402,6 +403,8 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 #include "hive/HiveDialog.h"
 #include "Engine.h"
 #include "GameGUIKeyActions.h"
+#include "GameGUIDialog.h"
+#include <algorithm>
 #include <ScreenStack.h>
 TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindPresentation"))
 {
@@ -679,4 +682,497 @@ TEST_CASE("Free client never starts Commander or changes its stored checkpoint" 
     std::string saved;
     REQUIRE(storage.read(checkpoint, saved));
     CHECK(saved == "existing checkpoint");
+}
+
+#include "hive/LocalCommander.h"
+#include "Player.h"
+TEST_CASE("local Hive operation journal preflight cadence and teardown" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::HeadlessGame world({.teams = 2, .loadDefaultRace = true, .header = true});
+	world.addBuilding("swarm", 4, 4);
+	world.gui.localPlayer = 0;
+	world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	auto worker = [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	};
+	Hive::LocalCommander commander(world.gui, worker);
+	const auto session = commander.status().at("session");
+	auto run = Json{{"session", session},
+					{"operation_key", "once"},
+					{"source", "function step(ctx){return {output:{tick:ctx.tick},orders:[]}}"}};
+	CHECK(commander.call("hive_run", run).at("status") == "queued");
+	CHECK(commander.call("hive_run", run).at("status") == "queued");
+	CHECK_THROWS(commander.call(
+		"hive_run",
+		Json{{"session", session}, {"operation_key", "once"}, {"source", "function step(ctx){}"}}));
+	commander.update();
+	commander.update();
+	const auto result =
+		commander.call("hive_result", {{"session", session}, {"operation_key", "once"}});
+	CHECK(result.at("status") == "completed");
+	CHECK(result.at("submitted") == false);
+	CHECK(commander.call("hive_run", run) == result);
+	auto install = Json{{"session", session},
+						{"operation_key", "install"},
+						{"action", "install"},
+						{"name", "count"},
+						{"interval_ticks", 25},
+						{"source", "let n=0;function step(ctx){return {output:++n,orders:[]}}"}};
+	commander.call("hive_program", install);
+	commander.update();
+	commander.update();
+	auto standing = commander.standingOrders();
+	REQUIRE(standing.size() == 1);
+	CHECK(standing[0].at("revision") == 1);
+	world.game.stepCounter += 25;
+	commander.update();
+	commander.update();
+	standing = commander.standingOrders();
+	CHECK(standing[0]["recent"]["output"] == 1);
+	commander.update();
+	CHECK(commander.standingOrders()[0]["recent"]["output"] == 1);
+	auto replace = install;
+	replace["action"] = "replace";
+	replace["operation_key"] = "bad-replace";
+	replace["expected_revision"] = 1;
+	replace["source"] = "invalid javascript !";
+	commander.call("hive_program", replace);
+	commander.update();
+	commander.update();
+	CHECK(commander.call("hive_result", {{"session", session}, {"operation_key", "bad-replace"}})
+			  .at("status") == "failed");
+	CHECK(commander.standingOrders()[0].at("revision") == 1);
+	commander.change("count", "pause");
+	CHECK(commander.standingOrders()[0].at("paused") == true);
+	replace["operation_key"] = "paused-replace";
+	replace["source"] = install["source"];
+	commander.call("hive_program", replace);
+	commander.update();
+	commander.update();
+	CHECK(commander.standingOrders()[0].at("paused") == true);
+	CHECK(commander.standingOrders()[0].at("revision") == 2);
+	const auto reportsBeforePause = commander.reports.size();
+	commander.change("count", "resume");
+	world.game.stepCounter += 25;
+	commander.update();
+	commander.change("count", "pause");
+	commander.update();
+	CHECK(commander.reports.size() == reportsBeforePause);
+	commander.change("count", "resume");
+	CHECK(commander.standingOrders()[0].at("paused") == false);
+	commander.change("count", "cancel");
+	CHECK(commander.standingOrders().empty());
+	install["operation_key"] = "reinstall";
+	commander.call("hive_program", install);
+	commander.update();
+	commander.update();
+	CHECK(commander.standingOrders()[0].at("revision") == 3);
+	replace["operation_key"] = "stale-replace";
+	replace["expected_revision"] = 2;
+	commander.call("hive_program", replace);
+	commander.update();
+	commander.update();
+	CHECK(commander.call("hive_result", {{"session", session}, {"operation_key", "stale-replace"}})
+			  .at("status") == "failed");
+	CHECK(commander.standingOrders()[0].at("revision") == 3);
+	commander.change("count", "cancel");
+	auto oversized = run;
+	oversized["operation_key"] = "oversized";
+	oversized["source"] = std::string(131073, ' ');
+	CHECK_THROWS(commander.call("hive_run", oversized));
+	auto invalidBatch = run;
+	invalidBatch["operation_key"] = "invalid-batch";
+	invalidBatch["source"] =
+		"function step(ctx){const b=ctx.game.buildings({team:ctx.myTeam})[0];return "
+		"{orders:[{type:'workers',building:{id:b.id,generation:b.generation},workers:3},{type:'"
+		"workers',building:{id:999999,generation:1},workers:3}]}}";
+	commander.call("hive_run", invalidBatch);
+	commander.update();
+	commander.update();
+	CHECK(commander.call("hive_result", {{"session", session}, {"operation_key", "invalid-batch"}})
+			  .at("submitted") == false);
+	CHECK(world.gui.getOrder()->getOrderType() == ORDER_NULL);
+	for (int mode = 0; mode < 5; ++mode)
+	{
+		Hive::LocalCommander probe(world.gui, worker);
+		CHECK(probe.call("hive_status", Json::object()).at("available").get<bool>());
+		const auto otherType = world.game.gameHeader.getBasePlayer(1).type;
+		if (mode == 0) world.gui.networkMatch.active = true;
+		if (mode == 1) globalContainer->replaying = true;
+		if (mode == 2) globalContainer->liveSpectating = true;
+		if (mode == 3) world.game.players[0]->type = BasePlayer::P_AI;
+		if (mode == 4) world.game.gameHeader.getBasePlayer(1).type = BasePlayer::P_IP;
+		CHECK_FALSE(probe.call("hive_status", Json::object()).at("available").get<bool>());
+		CHECK_THROWS(probe.call("hive_run", run));
+		world.gui.networkMatch.active = false;
+		globalContainer->replaying = false;
+		globalContainer->liveSpectating = false;
+		world.game.players[0]->type = BasePlayer::P_LOCAL;
+		world.game.gameHeader.getBasePlayer(1).type = otherType;
+	}
+	commander.clear();
+	CHECK_FALSE(commander.available());
+	CHECK_THROWS(commander.call("hive_run", run));
+}
+
+TEST_CASE("local Hive contains malformed worker responses and pauses affected programs" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+	world.addBuilding("swarm", 4, 4);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	const std::vector<Json> malformed{
+		Json::array(), nullptr, true, "bad", {{"ok", "bad"}},
+		{{"ok", false}, {"error", 1}}, {{"ok", false}, {"diagnostic", Json::object()}},
+		{{"ok", true}, {"orders", Json::object()}}, {{"ok", true}, {"wakes", "bad"}},
+		{{"ok", true}, {"installedInitialized", "bad"}}, {{"ok", true}, {"random", "bad"}},
+		{{"ok", true}, {"random", -1}}, {{"ok", false}}};
+	for (const auto &bad : malformed)
+	{
+		CAPTURE(bad.dump());
+		bool fail = true;
+		Hive::LocalCommander commander(world.gui, [&](Json input)
+		{
+			std::promise<Json> ready;
+			ready.set_value(fail ? bad : Hive::invoke(input));
+			return ready.get_future();
+		});
+		const auto session = commander.status().at("session");
+		const std::string source = "function step(){return {output:'healthy',orders:[]}}";
+		commander.call("hive_run", {{"session", session}, {"operation_key", "bad"}, {"source", source}});
+		CHECK_NOTHROW(commander.update());
+		CHECK_NOTHROW(commander.update());
+		const auto result = commander.call("hive_result", {{"session", session}, {"operation_key", "bad"}});
+		CHECK(result.at("status") == "failed");
+		CHECK_FALSE(result.at("error").get<std::string>().empty());
+		CHECK(result.at("submitted") == false);
+		CHECK(world.gui.getOrder()->getOrderType() == ORDER_NULL);
+		fail = false;
+		commander.call("hive_program", {{"session", session}, {"operation_key", "install"},
+			{"action", "install"}, {"name", "guard"}, {"source", source}});
+		commander.update(); commander.update();
+		REQUIRE(commander.standingOrders().size() == 1);
+		fail = true;
+		world.game.stepCounter += 25;
+		CHECK_NOTHROW(commander.update());
+		CHECK_NOTHROW(commander.update());
+		const auto program = commander.standingOrders().at(0);
+		CHECK(program.at("paused") == true);
+		CHECK(program.at("recent").at("status") == "failed");
+		CHECK_FALSE(program.at("recent").at("error").get<std::string>().empty());
+		CHECK(world.gui.getOrder()->getOrderType() == ORDER_NULL);
+		fail = false;
+		commander.call("hive_run", {{"session", session}, {"operation_key", "recovery"}, {"source", source}});
+		commander.update(); commander.update();
+		CHECK(commander.call("hive_result", {{"session", session}, {"operation_key", "recovery"}}).at("output") == "healthy");
+	}
+	// A late malformed RNG field must not publish an otherwise valid order or
+	// commit the invocation's globals before pausing the program.
+	bool corruptRandom = false;
+	Hive::LocalCommander commander(world.gui, [&](Json input)
+	{
+		auto result = Hive::invoke(input);
+		if (corruptRandom) result["random"] = "bad";
+		std::promise<Json> ready; ready.set_value(std::move(result));
+		return ready.get_future();
+	});
+	const auto session = commander.status().at("session");
+	commander.call("hive_program", {{"session", session}, {"operation_key", "atomic-install"},
+		{"action", "install"}, {"name", "atomic"},
+		{"source", "let n=0;function step(ctx){n++;const b=ctx.game.buildings({team:ctx.myTeam})[0];"
+		 "return {output:n,orders:[{type:'workers',building:b,workers:3}]}}"}});
+	commander.update(); commander.update();
+	REQUIRE(commander.standingOrders().size() == 1);
+	corruptRandom = true;
+	world.game.stepCounter += 25;
+	commander.update();
+	CHECK_NOTHROW(commander.update());
+	CHECK(commander.standingOrders()[0].at("paused") == true);
+	CHECK(world.gui.getOrder()->getOrderType() == ORDER_NULL);
+	corruptRandom = false;
+	commander.change("atomic", "resume");
+	world.game.stepCounter += 25;
+	commander.update(); commander.update();
+	CHECK(commander.standingOrders()[0].at("recent").at("output") == 1);
+	CHECK(world.gui.getOrder()->getOrderType() == ORDER_MODIFY_BUILDING);
+	CHECK(world.gui.getOrder()->getOrderType() == ORDER_NULL);
+
+}
+
+TEST_CASE("local Hive retires changed player context while a worker is pending" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::HeadlessGame world({.teams = 2, .loadDefaultRace = true, .header = true});
+	world.addBuilding("swarm", 4, 4);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	std::promise<Json> pending;
+	Json input;
+	Hive::LocalCommander commander(world.gui, [&](Json request)
+	{
+		input = std::move(request);
+		return pending.get_future();
+	});
+	const auto session = commander.status().at("session");
+	commander.call("hive_run", {{"session", session}, {"operation_key", "late"},
+		{"source", "function step(ctx){const b=ctx.game.buildings({team:ctx.myTeam})[0];"
+		 "return {orders:[{type:'workers',building:b,workers:3}]}}"}});
+	commander.update();
+	REQUIRE_FALSE(input.is_null());
+	world.gui.localTeamNo = 1;
+	commander.update();
+	CHECK_FALSE(commander.available());
+	world.gui.localTeamNo = 0;
+	pending.set_value(Hive::invoke(input));
+	commander.update();
+	CHECK_FALSE(commander.available());
+	CHECK(world.gui.getOrder()->getOrderType() == ORDER_NULL);
+	CHECK_THROWS(commander.call("hive_result", {{"session", session}, {"operation_key", "late"}}));
+}
+
+TEST_CASE("local Hive retires paused programs on an idle player context change" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::HeadlessGame world({.teams = 2, .loadDefaultRace = true, .header = true});
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> result;
+		result.set_value(Hive::invoke(input));
+		return result.get_future();
+	});
+	const auto session = commander.status().at("session");
+	commander.call("hive_program", {{"session", session}, {"operation_key", "install"},
+		{"action", "install"}, {"name", "paused"}, {"source", "function step(ctx){return {orders:[]}}"}});
+	commander.update();
+	commander.update();
+	REQUIRE(commander.call("hive_result", {{"session", session}, {"operation_key", "install"}}).at("status") == "completed");
+	commander.change("paused", "pause");
+	REQUIRE(commander.standingOrders().size() == 1);
+	world.gui.localPlayer = 1;
+	commander.update();
+	CHECK_FALSE(commander.available());
+	CHECK(commander.standingOrders().empty());
+	world.gui.localPlayer = 0;
+	commander.update();
+	CHECK_FALSE(commander.available());
+}
+
+TEST_CASE("local Hive cards own finger sequences and relinquish cancelled captures [display]" *
+		  doctest::test_suite("HiveMindPresentation"))
+{
+	glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 640, .height = 480});
+	struct View final : Hive::CommanderView
+	{
+		int stops = 0;
+		bool available() const override { return true; }
+		bool local() const override { return true; }
+		Json standingOrders() const override { return Json::array(); }
+		void stop() override { ++stops; }
+		void change(const std::string &, const std::string &) override {}
+	};
+	auto view = std::make_shared<View>();
+	Hive::Dialog dialog(view);
+	dialog.attach(*globals->gfx);
+	dialog.update(0);
+	const auto stop = dialog.host().bounds("hive/stop").center();
+	const GAGGUI::ui::Point outside{639, 0};
+	Uint64 clock = SDL_MS_TO_NS(1000);
+	auto finger = [&](Uint32 type, GAGGUI::ui::Point p)
+	{
+		SDL_Event event{};
+		event.type = type;
+		event.tfinger.timestamp = clock += SDL_MS_TO_NS(16);
+		event.tfinger.touchID = 7;
+		event.tfinger.fingerID = 11;
+		event.tfinger.x = float(p.x) / 640;
+		event.tfinger.y = float(p.y) / 480;
+		return dialog.handle(event);
+	};
+	CHECK(finger(SDL_EVENT_FINGER_DOWN, stop));
+	CHECK(finger(SDL_EVENT_FINGER_MOTION, outside));
+	CHECK(finger(SDL_EVENT_FINGER_UP, outside));
+	CHECK(view->stops == 0);
+	// A drag starts the Host's ordinary elastic/coasting motion. Its next
+	// contact stops that motion rather than activating a button. Retire the
+	// first gesture before testing an independent tap/capture sequence.
+	CHECK(dialog.host().animating());
+	dialog.cancelInput();
+	dialog.host().layoutIfNeeded();
+	CHECK(finger(SDL_EVENT_FINGER_DOWN, stop));
+	CHECK(finger(SDL_EVENT_FINGER_UP, stop));
+	CHECK(view->stops == 1);
+	dialog.update(1);
+	CHECK(finger(SDL_EVENT_FINGER_DOWN, stop));
+	dialog.cancelInput(); // A higher-priority card or modal took ownership.
+	CHECK_FALSE(finger(SDL_EVENT_FINGER_MOTION, outside));
+	CHECK_FALSE(finger(SDL_EVENT_FINGER_UP, stop));
+	CHECK(view->stops == 1);
+
+	CHECK(finger(SDL_EVENT_FINGER_DOWN, stop));
+	CHECK_FALSE(finger(SDL_EVENT_FINGER_DOWN, outside)); // Reused device ID, missed old UP.
+	CHECK_FALSE(finger(SDL_EVENT_FINGER_UP, stop));
+	CHECK(view->stops == 1);
+	CHECK(finger(SDL_EVENT_FINGER_DOWN, stop));
+	SDL_Event lost{};
+	lost.type = SDL_EVENT_WINDOW_FOCUS_LOST;
+	CHECK_FALSE(dialog.handle(lost));
+	CHECK_FALSE(finger(SDL_EVENT_FINGER_UP, stop));
+	CHECK(view->stops == 1);
+}
+
+TEST_CASE("local Hive cards retain native scroll ownership through momentum [display]" *
+		  doctest::test_suite("HiveMindPresentation"))
+{
+	glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 640, .height = 480});
+	struct View final : Hive::CommanderView
+	{
+		bool available() const override { return true; }
+		bool local() const override { return true; }
+		Json standingOrders() const override { return Json::array(); }
+		void stop() override {}
+		void change(const std::string &, const std::string &) override {}
+	};
+	Hive::Dialog dialog(std::make_shared<View>());
+	dialog.attach(*globals->gfx);
+	dialog.update(0);
+	const auto point = dialog.host().bounds("hive/stop").center();
+	GAGCore::GestureScrollEvent scroll;
+	scroll.sequence = 17;
+	scroll.x = point.x;
+	scroll.y = point.y;
+	scroll.phase = GAGCore::ScrollGesturePhase::Began;
+	CHECK(dialog.handle(GAGCore::gestureScrollEvent(scroll)));
+	scroll.x = 639; scroll.y = 0;
+	scroll.phase = GAGCore::ScrollGesturePhase::Changed; scroll.dy = -8;
+	CHECK(dialog.handle(GAGCore::gestureScrollEvent(scroll)));
+	scroll.phase = GAGCore::ScrollGesturePhase::Ended;
+	CHECK(dialog.handle(GAGCore::gestureScrollEvent(scroll)));
+	scroll.phase = GAGCore::ScrollGesturePhase::None;
+	scroll.momentum = GAGCore::ScrollGesturePhase::Began;
+	CHECK(dialog.handle(GAGCore::gestureScrollEvent(scroll)));
+	scroll.momentum = GAGCore::ScrollGesturePhase::Ended;
+	CHECK(dialog.handle(GAGCore::gestureScrollEvent(scroll)));
+	++scroll.sequence;
+	scroll.phase = GAGCore::ScrollGesturePhase::Began;
+	scroll.momentum = GAGCore::ScrollGesturePhase::None;
+	CHECK_FALSE(dialog.handle(GAGCore::gestureScrollEvent(scroll)));
+	scroll.x = point.x; scroll.y = point.y;
+	++scroll.sequence;
+	CHECK(dialog.handle(GAGCore::gestureScrollEvent(scroll)));
+	dialog.cancelInput();
+	scroll.phase = GAGCore::ScrollGesturePhase::Changed;
+	CHECK_FALSE(dialog.handle(GAGCore::gestureScrollEvent(scroll)));
+}
+
+TEST_CASE("Hive cards remain inspectable and actionable above the text composer [display]" *
+		  doctest::test_suite("HiveMindPresentation"))
+{
+	glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 1000, .height = 800});
+	glob2test::HeadlessGame world({.discovered = true, .loadDefaultRace = true, .header = true});
+	auto &gui = world.gui;
+	// HeadlessGame deliberately skips client initialization; this fixture paints
+	// the full desktop HUD and needs the same initialized presentation as loading.
+	gui.init();
+	gui.localPlayer = gui.localTeamNo = 0;
+	gui.adjustLocalTeam();
+	gui.prepareLocalPresentation();
+	struct View final : Hive::CommanderView
+	{
+		int stops = 0;
+		bool available() const override { return true; }
+		bool local() const override { return true; }
+		Json standingOrders() const override { return Json::array(); }
+		void stop() override { ++stops; }
+		void change(const std::string &, const std::string &) override {}
+	};
+	auto view = std::make_shared<View>();
+	gui.hiveCards = std::make_unique<Hive::Dialog>(view);
+	gui.hiveCards->attach(*globals->gfx);
+	SDL_Event key{};
+	key.type = SDL_EVENT_KEY_DOWN;
+	key.key.key = SDLK_RETURN;
+	gui.processEvent(&key);
+	glob2test::drawGUI(gui, 0);
+	const auto owners = gui.inspectionHosts();
+	REQUIRE(owners.size() == 2);
+	const auto composer = std::find_if(owners.begin(), owners.end(), [](auto *host) { return host->find("chat"); });
+	REQUIRE(composer != owners.end());
+	auto *composerHost = *composer;
+	auto composerPresent = [&]
+	{
+		const auto current = gui.inspectionHosts();
+		return std::find(current.begin(), current.end(), composerHost) != current.end();
+	};
+	CHECK(std::find(owners.begin(), owners.end(), &gui.hiveCards->host()) != owners.end());
+	auto snapshot = gui.hiveCards->host().inspect();
+	auto command = GAGGUI::ui::semanticDispatch();
+	command->surface = snapshot.instance;
+	command->key = "hive/stop";
+	std::function<void(const std::vector<GAGGUI::ui::ControlSnapshot> &)> find = [&](const auto &nodes)
+	{
+		for (const auto &node : nodes)
+		{
+			if (node.key == command->key) command->revision = node.revision;
+			find(node.children);
+		}
+	};
+	find(snapshot.controls);
+	REQUIRE(command->revision > 0);
+	auto semantic = command->event();
+	gui.processEvent(&semantic);
+	CHECK(command->consumed);
+	CHECK(command->error.empty());
+	CHECK(view->stops == 1);
+	CHECK(composerPresent());
+
+	const auto point = gui.hiveCards->host().bounds("hive/stop").center();
+	SDL_Event click{};
+	click.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+	click.button.button = SDL_BUTTON_LEFT;
+	click.button.x = point.x;
+	click.button.y = point.y;
+	gui.processEvent(&click);
+	click.type = SDL_EVENT_MOUSE_BUTTON_UP;
+	gui.processEvent(&click);
+	CHECK(view->stops == 2);
+	CHECK(composerPresent());
+
+	key.type = SDL_EVENT_KEY_DOWN;
+	key.key.key = SDLK_ESCAPE;
+	gui.processEvent(&key); // Close chat.
+	key.type = SDL_EVENT_KEY_UP;
+	gui.processEvent(&key);
+	key.type = SDL_EVENT_KEY_DOWN;
+	gui.processEvent(&key); // Open the game menu.
+	CHECK_FALSE(gui.hiveCardsVisible());
+	const auto modalOwners = gui.inspectionHosts();
+	REQUIRE(modalOwners.size() == 1);
+	CHECK(modalOwners.front() != &gui.hiveCards->host());
+}
+
+TEST_CASE("local Hive publishes player API separately from local control rules" *
+          doctest::test_suite("HiveMindIntegration"))
+{
+    const auto api = Hive::playerAPI();
+    const auto player = api.at("contract").get<std::string>();
+    const auto control = api.at("local_control_contract").get<std::string>();
+    CHECK(player.find("ctx.game.units") != std::string::npos);
+    CHECK(player.find("new UUID") == std::string::npos);
+    CHECK(player.find("paid follow-up") == std::string::npos);
+    CHECK(control.find("hive_run") != std::string::npos);
+    CHECK(control.find("expected_revision") != std::string::npos);
+    CHECK(control.find("Replacement resets globals") != std::string::npos);
+    CHECK(control.find("local_events") != std::string::npos);
 }

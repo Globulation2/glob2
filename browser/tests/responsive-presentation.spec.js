@@ -128,12 +128,11 @@ test.describe('responsive mixed input',()=>{
     await expect.poll(tray).toBe(false);
     expect((await snapshot(page)).screen).toContain('MapEditorScreen');
   });
-  // TODO(WS-C merge): EditorDock publishes its brush cards as brush/<catalogue id>
-  // (EditorDock.h); enable this once the dock is on this branch.
-  test.fixme('touch tablet dock publishes its brush cards',async({page})=>{
+  test('touch tablet dock publishes its brush cards',async({page})=>{
     await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
     await clickControl(page,'new-map');await screen(page,'NewMapScreen');
     await clickCreateMap(page);await screen(page,'MapEditorScreen');
+    await tapControl(page,'dock/tab/terrain');
     await control(page,'brush/terrain/grass');
     expect(await page.evaluate(()=>Object.keys(glob2Diagnostics.snapshot().controls).some(key=>key.startsWith('tray/')))).toBe(false);
   });

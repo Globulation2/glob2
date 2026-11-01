@@ -53,11 +53,18 @@ Brush tools use the same rail as zone painting (Paint/Erase only where it applie
 Pan, sizes). Zone, script-area and no-growth strokes offer Undo for six seconds,
 restoring the covered tiles and displayed zone bits exactly; terrain, resource
 and delete strokes remove units, buildings and resources, so they offer none.
+The editor fits this rail inside the map canvas and reserves the Map button's
+space. Short layouts use more columns while retaining minimum touch targets;
+Undo uses spare footer cells in wider grids. If no supported grid fits, tap the
+selected palette tab to hide the tray and free more canvas space; Show palette
+restores the tray. Painting, labels, the magnified preview, hit testing and
+semantic controls share the canvas clip, keeping the header operable.
 The editor does not pan while a stroke is held at an edge: its strokes are
 replayed in screen coordinates on release, so use Pan instead. A Map button in
 the content's bottom corner away from the thumb opens the same map peek as in
 gameplay (buttons below it in portrait, beside it in landscape) over the editor's
-own minimap; it only moves the view. The brush rail chooses the mask. Pending
+own minimap; it only moves the view. The Map button is hidden when its full target
+cannot fit inside the map canvas. The brush rail chooses the mask. Pending
 strokes draw their coverage before release without changing the map. Presentation measurements and drag thresholds are point-based
 policies at the top of `PhoneEditor.cpp`.
 

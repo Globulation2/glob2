@@ -43,6 +43,7 @@ struct InspectorModel
 	// Changes when another object is selected: the building GID, or 65536 plus
 	// the unit GID.
 	int identity = -1;
+	std::uint32_t generation = 0;
 	// Translated object name and "Team n / Level m".
 	std::string title, detail;
 	SimulationSnapshot::Handle world;

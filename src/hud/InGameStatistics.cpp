@@ -7,6 +7,7 @@
 #include <GraphicContext.h>
 #include <FormatableString.h>
 #include <GestureScroll.h>
+#include <ui/PositionedControls.h>
 #include <algorithm>
 #include <cmath>
 #include <sstream>
@@ -84,6 +85,7 @@ void InGameStatisticsPanel::selectMetric(const std::string &id)
 }
 void InGameStatisticsPanel::setBounds(fe::Rect value)
 {
+    refreshPresentation();
     if (bounds.x == value.x && bounds.y == value.y && bounds.w == value.w && bounds.h == value.h) return;
     bounds = value;
     host().relayout();
@@ -372,7 +374,11 @@ fe::Element InGameStatisticsPanel::build(const fe::Presentation &p)
     if (missing) body.push_back(fe::hint(fe::tr("[stats missing readings]")));
     content.push_back(fe::expanded(fe::scroll("stats/scroll/" + std::to_string(int(selectedTopic)),
         fe::column(std::move(body), {p.pt(3)}), {.shrinkToContent = false})));
-    return fe::pad(p.pt(6), fe::column(std::move(content), {p.pt(6)}));
+    // A retained target belongs to the watched team and catalog context.
+    return GAGGUI::ui::semanticContext(
+        fe::pad(p.pt(6), fe::column(std::move(content), {p.pt(6)})),
+        "statistics:" + std::to_string(teamId) + ":" + std::to_string(watching) +
+            ":" + std::to_string(showChances));
 }
 
 InGameStatisticsHistory::InGameStatisticsHistory(InGameStatisticsPanel &owner, std::string metricId) : panel(owner), id(std::move(metricId))

@@ -9,7 +9,10 @@ import argparse
 from collections import Counter
 from contextlib import contextmanager
 from datetime import datetime, timezone
-import fcntl
+try:
+    import fcntl
+except ImportError:  # Windows: preserve the incoming portable tool entry point.
+    import msvcrt
 from html import escape
 from html.parser import HTMLParser
 from urllib.error import HTTPError, URLError
@@ -57,9 +60,24 @@ def atomic_json(path, value):
 @contextmanager
 def locked(folder):
     folder.mkdir(parents=True, exist_ok=True)
-    with (folder / '.lock').open('a') as stream:
-        fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        yield
+    with (folder / '.lock').open('a+b') as stream:
+        if os.name == 'nt':
+            stream.seek(0, os.SEEK_END)
+            if not stream.tell():
+                stream.write(b'0')
+                stream.flush()
+            stream.seek(0)
+            msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        try:
+            yield
+        finally:
+            if os.name == 'nt':
+                stream.seek(0)
+                msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
 
 
 def protect(text, literals=()):
@@ -192,6 +210,9 @@ def request_api(project, payload):
 
 def assert_backend_budget(output, mode):
     """Do not silently reset accounting by switching paid cache formats."""
+    segmented_ledger = output / 'google-budget.json'
+    if segmented_ledger.exists() and json.loads(segmented_ledger.read_text()).get('attempts'):
+        raise ValueError('This kit has a paid ledger for the other protection mode; retain the original segmented backend. Ledgers are never merged or reset.')
     plain_ledger = output / 'google-nmt' / 'ledger.json'
     plain_spent = plain_ledger.exists() and bool(json.loads(plain_ledger.read_text())['attempts'])
     html_spent = any((output / 'google').glob('*/attempts/*.json'))
@@ -552,6 +573,19 @@ def translate_html(plan, output, client, target, max_characters, retries=2, retr
 
 
 def main():
+    # Keep paid campaign formats explicit: the segmented upstream workflow has
+    # its own shared ledger/cache and never migrates an existing Tamil campaign.
+    import sys
+    segmented_flags = ('--run', '--pilot', '--limit', '--surface', '--budget-usd')
+    arguments = sys.argv[1:]
+    mode = next((value.split('=', 1)[1] for value in arguments if value.startswith('--mode=')), None)
+    if '--mode' in arguments:
+        mode = arguments[arguments.index('--mode') + 1]
+    if mode in ('plan', 'blank-fill') or any(value.split('=', 1)[0] in segmented_flags for value in arguments):
+        spec = importlib.util.spec_from_file_location('google_draft_segmented', Path(__file__).with_name('google_draft_segmented.py'))
+        backend = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(backend)
+        return backend.main()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True, help='Existing translation-program kit')
     parser.add_argument('--locale', default='nb', choices=PROGRAM.LOCALES)

@@ -628,3 +628,57 @@ main:focus {
   border-inline-start: 0;
   border-inline-end: 1px solid var(--line);
 }
+
+/* Compact rails show a readable locale code while the native popup and
+   expanded drawer keep the complete language names. */
+.language-preference-control {
+  position: relative;
+  display: block;
+}
+.language-preference-compact {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font:
+    600 var(--text-sm) / 1 system-ui,
+    sans-serif;
+}
+.sidebar-collapsed .app-sidebar .language-preference-label {
+  display: none;
+}
+.sidebar-collapsed .app-sidebar .language-preference select {
+  appearance: none;
+  background-image: none;
+  color: transparent;
+  padding: 0;
+  height: 44px;
+}
+.sidebar-collapsed .app-sidebar .language-preference option {
+  color: var(--ink);
+  background: var(--surface);
+}
+.sidebar-collapsed .app-sidebar .language-preference-compact {
+  display: flex;
+}
+@media (max-width: 1099px) {
+  .app-sidebar .language-preference-label {
+    display: none;
+  }
+  .app-sidebar .language-preference select {
+    appearance: none;
+    background-image: none;
+    color: transparent;
+    padding: 0;
+    height: 44px;
+  }
+  .app-sidebar .language-preference option {
+    color: var(--ink);
+    background: var(--surface);
+  }
+  .app-sidebar .language-preference-compact {
+    display: flex;
+  }
+}

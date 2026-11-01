@@ -32,9 +32,14 @@ struct Layout
 };
 //! `area` bounds the rail: its thumb-side edge, bottom and top.
 Layout layout(GAGCore::ViewRect area, bool left, double unit, bool withMode, bool withPan, bool withUndo);
+//! Preserve minimum targets, widening beyond two columns when needed. Empty
+//! means no supported thumb-rail grid fits; closing a palette exposes more map area.
+Layout boundedLayout(GAGCore::ViewRect area, bool left, double unit, bool withMode, bool withPan, bool withUndo);
 Hit hit(const Layout &layout, GAGCore::ViewPoint point);
 //! Detent nearest the point's height, for scrubbing along the rail; -1 if none.
 int detentAt(const Layout &layout, GAGCore::ViewPoint point);
+//! Scrubbing a bounded rail cannot select a detent through another surface.
+int detentAt(const Layout &layout, GAGCore::ViewPoint point, GAGCore::ViewRect clip);
 struct State
 {
 	unsigned figure = 0;
@@ -43,4 +48,6 @@ struct State
 	std::string modeLabel, panLabel, undoLabel;
 };
 void draw(const Layout &layout, const State &state);
+//! Bound the rail, labels and magnified preview to their owning canvas.
+void draw(const Layout &layout, const State &state, GAGCore::ViewRect clip);
 } // namespace BrushHUD

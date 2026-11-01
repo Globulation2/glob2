@@ -189,6 +189,23 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+Audit platform startup text outside these two catalogs as well. Android shows
+`preparing_game` from `mobile/android/app/src/main/res/values/strings.xml` while
+staging assets, before the native catalog can load. Add the reviewed counterpart
+in the locale's Android resource directory (for example `values-mr/strings.xml`),
+retain separate source/value hashes and independent review records, and check
+the actual first-run overlay in the packaged application. The catalog inventory
+checks alone do not establish that this startup text is translated.
+
+Apple's local-network permission explanations also live outside the engine
+catalog: `darwin/Info.plist` and `mobile/ios/Info.plist.in` have distinct source
+purposes. Review their localized `InfoPlist.strings` separately. macOS bundles
+copy the declared `.lproj` directories into `Contents/Resources`; iOS CMake
+resources use `Resources/<language>.lproj` (CMake removes the `Resources` prefix
+for the flat iOS bundle). Keep `en.lproj` and `CFBundleDevelopmentRegion=en` as
+the fallback. Packaging contract tests verify copied files and resource paths;
+they do not establish Apple permission-dialog behavior on a device.
+
 For a Tamil plain-text Google Cloud NMT comparison draft, authenticate with `gcloud` and use the
 budget-limited development helper on an existing kit. Pass an explicit project;
 preflight does not dispatch requests. `--keys` accepts a JSON array of exact
@@ -198,7 +215,7 @@ Linux, macOS or WSL. `python3 test/test_translation_program.py` also exercises
 its mocked budget and resumption contracts.
 
 ```sh
-python3 tools/localization/google_draft.py --output artifacts/localization-ta \
+python3 tools/localization/google_draft.py --backend plain --output artifacts/localization-ta \
   --project PROJECT_ID --locale ta --keys artifacts/localization-ta/pilot-keys.json
 # Add --execute only after checking the preflight estimate.
 ```
@@ -249,7 +266,7 @@ For Norwegian Bokmål HTML comparison drafts, prepare a scoped kit (for example,
 network access:
 
 ```sh
-python3 tools/localization/google_draft.py --output artifacts/norwegian/kit --locale nb
+python3 tools/localization/google_draft.py --backend html --output artifacts/norwegian/kit --locale nb
 ```
 
 Authenticate `gcloud` to an existing project with Cloud Translation enabled. Pass
@@ -277,13 +294,45 @@ counts the protected HTML payload and persists across resumed invocations. Run
 one writer per kit. Authentication tokens are cached in memory and never written
 to evidence. Requests use bounded retries. Invalid responses remain inspectable;
 `--retry-invalid-responses` archives them under `rejected/` before another paid
-attempt within the same allowance. Raising the allowance is an explicit budget
-change. Provider output remains a machine draft, never a linguistic sign-off.
+attempt within the same allowance. Allowances remain subject to the campaign’s US$8 hard ceiling and existing
+ledger guards. Provider output remains a machine draft, never a linguistic sign-off.
 
-The optional `--mode plain|html` selects either backend explicitly. Each keeps
+The optional `--backend plain|html` selects either backend explicitly. Each keeps
 its existing request/cache formats. A shared campaign lock and ledger guard reject
 switching backends after paid or reserved work; use the original mode to resume
 that campaign, without deleting or resetting its ledger.
+
+The Marathi blank-fill workflow is selected explicitly and uses its own runner
+and accounting format:
+
+```sh
+python3 tools/localization/google_draft.py --mode blank-fill \
+  --output artifacts/localization-mr --locale mr --project PROJECT_ID --pilot
+# Add --run only after checking the estimate and reviewing the pilot.
+```
+
+Without `--run`, this workflow estimates without sending translation requests.
+Omit `--pilot` after review to process the remaining blank entries. It preserves
+nonempty reviewed values, protects format tokens and literal invariants, segments
+authored newlines, rejects damaged responses and retains valid siblings and cached
+paid responses. Keep the helper as the exclusive catalog writer while it runs:
+it checks draft hashes before replacement and aborts on external edits. Independent
+editors do not participate in its lock.
+
+Blank-fill uses the kit’s `google-budget.json` and an exclusive writer lock. Its
+`--budget-usd` defaults to 9 and cannot exceed US$9. It reserves every submitted
+protected payload code point at US$20 per million before dispatch, including
+uncertain failures and retries, without assuming free credit. POSIX reservations
+flush the file and directory after atomic replacement; durability errors stop
+dispatch. Windows flushes file contents but has no portable directory-flush
+equivalent. Text is UTF-8, and authentication tokens remain in memory.
+
+The blank-fill ledger is distinct from the legacy plain/HTML campaign ledger
+described above. Keep one accounting format and ledger for each campaign across
+refreshed source kits; do not switch workflows or discard ledgers to bypass an
+authorized ceiling. The Tamil campaign retains its US$8 ceiling. These are
+accounted API-request limits, not guarantees about unrelated project spending or
+an exported billing invoice. Provider output is never a linguistic sign-off.
 
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
@@ -454,21 +503,25 @@ Keep building names consistent in lessons and HUD text. The Inn supplies food,
 the Swarm produces units, and flags assign work or military attention. Music
 playback uses **Sedang dimainkan**, rather than the verb for playing a game.
 
-### Hindi, Urdu and Swahili terminology
+### Hindi, Marathi, Urdu and Swahili terminology
+
 
 Use these concept anchors across the game, lessons and online messages. Inflect
 words naturally in sentences rather than substituting labels mechanically.
 Hindi uses contemporary Devanagari, Urdu uses Arabic script with logical text
-order, and Swahili uses standard Latin-script Kiswahili.
+order, Marathi uses contemporary standard Marathi in Devanagari, and Swahili
+uses standard Latin-script Kiswahili. Marathi instructions use respectful plural
+imperatives such as करा and निवडा; shared script does not justify copying Hindi
+grammar. Inns feed units, while Swarms are the hive buildings that create units.
 
-| Concept  | Hindi (`hi`) | Urdu (`ur`) | Swahili (`sw`)   |
-| -------- | ------------ | ----------- | ---------------- |
-| Worker   | श्रमिक       | کارکن       | Mfanyakazi       |
-| Explorer | खोजी         | کھوجی       | Mgunduzi         |
-| Warrior  | योद्धा       | جنگجو       | Shujaa           |
-| Inn      | सराय         | سرائے       | Nyumba ya wageni |
-| Swarm    | छत्ता        | چھتہ        | Kiota            |
-| Market   | बाज़ार       | بازار       | Soko             |
+| Concept | Hindi (`hi`) | Marathi (`mr`) | Urdu (`ur`) | Swahili (`sw`) |
+| --- | --- | --- | --- | --- |
+| Worker | श्रमिक | कामगार | کارکن | Mfanyakazi |
+| Explorer | खोजी | शोधक | کھوجی | Mgunduzi |
+| Warrior | योद्धा | योद्धा | جنگجو | Shujaa |
+| Inn | सराय | खानावळ | سرائے | Nyumba ya wageni |
+| Swarm | छत्ता | पोळे | چھتہ | Kiota |
+| Market | बाज़ार | बाजार | بازار | Soko |
 
 An assigned worker target requests workers; it does not count workers already
 present. Construction and operating supply use separate targets. Keep those
@@ -1036,6 +1089,72 @@ preference fields or simulation state are introduced.
    `tools/MobileGalleryHarness.cpp` and `tools/mobile_gallery/catalog.json`.
 4. Expose semantic entry points for interaction tests instead of coordinates.
 
+## Typed inspection and semantic actions
+
+`ui/Inspection.h` defines transport-independent `SurfaceSnapshot`, `ControlSnapshot`,
+`ControlValue` and `SemanticAction` types. `Host::inspect()` describes the tree and
+popup, including clipped bounds, roles, labels, values, selection, focus and supported
+actions. Coordinates are logical pixels. A popup blocks its underlying tree. The
+screen receiving input supplies `Screen::inspectionHosts()`; modal owners expose
+only the active dialog. Native file pickers are outside this interface.
+
+`Host::act(key, action, error)` validates visibility, enablement and popup ownership.
+Standard buttons/toggles activate, choices/lists select an integer index, numeric
+controls set an integer value, text controls set a string, and scrollable nodes scroll
+by a signed logical-pixel delta. Draft text fields retain their usual Enter/blur commit
+and Escape cancellation. Password values remain masked. Custom nodes extend
+`controlValue()`, `supportedActions()` and `perform()` alongside ordinary input.
+Callbacks must remain application-thread work.
+
+Surface instances are lifetime identities. Each keyed control has a monotonic target
+revision that changes when its own description, geometry, value or availability changes,
+or when it disappears and returns. Focus and unrelated children do not change that
+control's revision. Surface revisions include changes to the hierarchy. The browser's
+flattened diagnostic JSON comes from `diagnosticJSON()` over this same snapshot.
+
+`SemanticDispatch` carries an owned command through ordinary additional input using
+an opaque event ID. The host checks the instance and target revision when it consumes
+the event. Retired commands cannot leave borrowed pointers in deferred event queues.
+Screen owners must route semantic events to the same dialog/host that owns human
+input. Returning a host from inspection without routing its events is incomplete.
+
+Custom-rendered controls use `ui::PositionedControl` and `positionedControls`: the
+domain model supplies logical bounds, clipping, state, supported actions and shared
+callbacks before painting or hit testing. Paint and human input consume the same
+geometry; inspection is not a second coordinate map. Build a fresh model at action
+consumption, and read gameplay presentation from the published Scene. A paint scope
+may retain one immutable model for the duration of a draw to avoid rebuilding every
+control's callbacks for every field.
+
+Compound building edits read the same pending presentation values for human and
+semantic input. An execution receipt does not imply that the displayed Scene already
+contains its result: retain the pending field until `executedOrderRevision` reaches
+that receipt. Reconcile only fields with pending values, and retire their receipts
+on building removal or session initialization.
+
+Stable keys alone do not distinguish a reused entity slot or a changed construction
+preview. Override `Node::semanticIdentity()` or wrap a subtree with `semanticContext`
+using the domain's object generation and relevant action context. That identity is
+inherited by descendants and participates in their revisions without being exposed
+as transport data. Include context that changes the meaning of a callback; do not
+include frame ticks or unrelated counters. Host assigns popup lifetimes automatically,
+so closing and reopening an identical popup invalidates its earlier targets. Surface
+owners must enforce popup/modal ownership across separate hosts at consumption as
+well as inspection; an inspectable covered control must never receive input.
+Choices bind their full catalog identity and enabled state. Owned popups also bind
+their opener's semantic context; changing or retiring the opener closes the popup
+before a stale selection can reach a replacement callback.
+
+Surface owners can set `Host::setBlockedRegions` from higher surfaces' visible
+panels. Blocks affect inspection, semantic dispatch, pointer acquisition and keyboard
+actions. Rectangular occlusion conservatively blocks an entire target on any visible
+overlap; shaped or partly covered controls can require dismissing the covering panel.
+Uncovered sibling rows remain actionable. Changing a blocker cancels only newly
+covered gestures, preserving unrelated presses and scrolling. Suspended text drafts
+are retained, and Tab can move focus to uncovered controls. Legacy compact keyboard
+focus is mirrored into the Host so typed focused state and actual keyboard targeting
+agree.
+
 ### In-game statistics
 
 The Statistics view shares visible topic buttons and a scrollable metric list
@@ -1057,6 +1176,11 @@ catalog's capabilities and defaults. Topic, per-topic scrolling and per-metric
 history choices last for the current match; they are not saved as preferences.
 Closing history restores focus to its metric. The former graph view is now Map
 overlays, retaining its tab position and the four overlay toggles.
+
+`GameGUI::statisticsHost()` exposes the panel's embedded Host for painting, human
+input, typed inspection and semantic dispatch. `statisticsBounds()` supplies shared
+desktop and compact geometry. Team and viewing context participate in target
+revisions, so a command cannot act on a replacement watched team.
 
 `InGameStatisticsPanel` holds immutable statistics/history leases rather than
 live simulation pointers. Visible statistics and history request the history

@@ -263,5 +263,5 @@ void GameGUITouch::drawStats()
     gfx->drawHorzLine(int(l.sheet.x), int(l.sheet.y), int(l.sheet.w), InGameTouchTheme::border());
     drawPointLabel(l.close, "×", 1.3);
     drawPointLabel(l.title, Toolkit::getStringTable()->getString("[Statistics]"), 1.0);
-    gui.drawStatisticsPanel({int(l.body.x), int(l.body.y), int(l.body.w), int(l.body.h)});
+    gui.drawStatisticsPanel();
 }

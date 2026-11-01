@@ -6812,6 +6812,8 @@ MCP सर्वर चालू करें
 पड़ावों की मात्रा
 [scenario messages]
 संदेश ▸
+[AI for all computer colonies]
+सभी कंप्यूटर कॉलोनियों के लिए एआई
 [lush_grass]
 हरी-भरी घास
 [dry_grass]
@@ -6820,5 +6822,3 @@ MCP सर्वर चालू करें
 टीलों की रेत
 [pale_sand]
 हल्के रंग की रेत
-[AI for all computer colonies]
-सभी कंप्यूटर कॉलोनियों के लिए एआई

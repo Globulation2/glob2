@@ -264,6 +264,7 @@ class WebAssetPackageTests(unittest.TestCase):
                              sorted(part['url'].split('/')[1] for entry in manifest['packages'] for part in entry['parts']))
             hd = next(entry for entry in manifest['packages'] if entry['name'] == 'hd')
             self.assertGreater(len(hd['parts']), 1)
+            derived = web_assets.derived_assets(ROOT)
             for entry in manifest['packages']:
                 self.assertEqual(entry['optional'], entry['name'] not in ('core', 'game'))
                 self.assertEqual(entry['size'], sum(part['size'] for part in entry['parts']))
@@ -274,7 +275,7 @@ class WebAssetPackageTests(unittest.TestCase):
                         self.assertLessEqual(part['size'], web_assets.PART_BYTES + 2_000_000)
                     for path, start, end in part['files'][:50]:
                         self.assertEqual(blob[start:end], web_assets.contents(ROOT, entry['name'], path.lstrip('/'),
-                                                                              web_assets.derived_assets(ROOT)), path)
+                                                                              derived), path)
             script = (output / 'asset-manifest.js').read_text()
             self.assertIn('Module["glob2AssetManifest"] ??= ', script)
             # A rebuild without changes writes the same names.

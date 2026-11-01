@@ -322,5 +322,27 @@ class HtmlGoogleDraftTest(unittest.TestCase):
         self.assertEqual(self.client.calls, [])
 
 
+class BackendIsolationTest(unittest.TestCase):
+    def test_plain_cannot_reset_segmented_paid_ledger(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            (output / 'google-budget.json').write_text('{"attempts":[{"state":"dispatched_or_uncertain"}]}')
+            with self.assertRaisesRegex(ValueError, 'other protection mode'):
+                DRAFT.assert_backend_budget(output, 'plain')
+
+    def test_segmented_cannot_reset_plain_paid_ledger(self):
+        import test_google_draft_segmented as segmented
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            (output / 'google-nmt').mkdir()
+            (output / 'google-nmt' / 'ledger.json').write_text('{"attempts":[{"characters_reserved":10}]}')
+            with self.assertRaisesRegex(ValueError, 'other protection mode'):
+                with segmented.DRAFT.kit_lock(output):
+                    self.fail('Cannot acquire paid writer for another backend')
+
+
+from test_google_draft_segmented import SegmentedGoogleDraftTest
+
+
 if __name__ == '__main__':
     unittest.main()
