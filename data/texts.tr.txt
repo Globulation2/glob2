@@ -6820,5 +6820,41 @@ Balık miktarı
 İletiler ▸
 [Camp-site amount]
 Kamp yeri sayısı
+[script compilation success]
+Derleme başarılı
+[script error at %0:%1: %2]
+%0. satır, %1. sütunda hata: %2
+[script compilation failure %0:%1:(%2):%3]
+Derleme hatası: %0:%1:(%2):%3
+[script compilation failed %0]
+Derleme başarısız oldu: %0
+[script loading failed %0]
+%0 dosyasından betik yüklenemedi.
+[script saving failed %0]
+Betik %0 dosyasına kaydedilemedi.
+[script line %0 column %1]
+Satır: %0 Sütun: %1
+[game stopped %0]
+Oyun durduruldu: %0
+[game stopped script help]
+Bu oyunu yeniden başlatmadan önce gömülü JavaScript kodunu ve kaynak kullanımını inceleyin.
+[missing map generator %0]
+Harita oluşturucu eksik: %0. Oyuna yerleşik bir manzara seçildi.
+[hive standing order paused]
+Bir kalıcı emir dikkat gerektiriyor ve duraklatıldı.
+[hive connection changed orders paused]
+Bağlantı değişti. Devam etmeden önce duraklatılmış kalıcı emirlerinizi gözden geçirin.
+[hive standing order fresh instruction]
+Yeniden bağlandıktan sonra bir kalıcı emir için yeni bir talimat gerekiyor. Emri iptal edebilir veya komutandan yerine yenisini koymasını isteyebilirsiniz.
+[hive order confirmation failed]
+Bir emir onaylanamadı. Devam etmeden önce kalıcı emirlerinizi gözden geçirin.
+[hive previous order sending]
+Önceki emriniz hâlâ gönderiliyor. Bu mesaj saklandı; tekrar göndermek için komutanı açın.
+[hive order received %0]
+Emir alındı: %0
+[hive order not confirmed]
+Emir onaylanmadı. Tekrar denemek için komutanı açın; mesajınız saklandı.
+[hive standing order update failed]
+Kalıcı emir güncellenemedi. Emriniz bu cihazda duraklatıldı; ilgili denetimi kullanarak tekrar deneyin.
 [AI for all computer colonies]
 Bilgisayar kontrollü tüm koloniler için yapay zekâ

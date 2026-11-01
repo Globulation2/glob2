@@ -12,6 +12,7 @@
 #include "SettingsScreen.h"
 #include "SoundMixer.h"
 #include "FrontendTheme.h"
+#include "ui/FrontendUI.h"
 #include "UIRecordingCanvas.h"
 #include <set>
 #include "GameGUIKeyActions.h"
@@ -39,6 +40,11 @@ struct NativeSettings : SettingsScreen {
         return SettingsScreen::applyDisplayMode(w,h,flags);
     }
     Row row(const std::string& id){for(auto r:rows())if(r.id==id)return r;REQUIRE_MESSAGE(false, "no settings row "<<id);return {};}
+    void activateSetting(const std::string& id){
+        // Match a real activation: popup owners must be visible before opening.
+        host().scrollIntoView(id);
+        SettingsScreen::activateSetting(id);
+    }
     void event(SDL_Event e){handleExecutionEvent(e);}
     void key(SDL_Keycode k,Uint16 modifiers=0){SDL_Event e{};e.type=SDL_EVENT_KEY_DOWN;e.key.key=k;e.key.mod=modifiers;handleExecutionEvent(e);}
     void click(const std::string& id){auto r=row(id);host().tapAt({r.control.x+10,r.control.y+10});}
@@ -138,6 +144,7 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE_FALSE(screen.restartRequired());
         const auto windowMode=screen.row("display.mode").number;
         screen.activateSetting("display.mode");
+        REQUIRE(screen.host().popupOpen());
         REQUIRE(screen.row("graphics.torus").kind==SettingsScreen::Kind::Toggle);
         screen.capture(output+"/window-mode-dropdown.bmp");
         screen.key(SDLK_DOWN);screen.key(SDLK_ESCAPE);
@@ -386,6 +393,50 @@ static void run(int width,int height,bool gl,bool expanded)
 // sizes, one software renderer and the expanded English wording.
 TEST_SUITE("Settings")
 {
+    TEST_CASE("large Filipino touch footers keep words whole [display][artifacts][writes-preferences]")
+    {
+        glob2test::ScopedEnvironment compact("GLOB2_MOBILE_UI", "1");
+        glob2test::GlobalsOptions options{.display=true,.loadStrings=true,.width=390,.height=844,.screenFlags=0};
+        options.beforeLoad=[](GlobalContainer& globals){globals.settings.language="fil";globals.settings.setTextSizePercent(150);};
+        glob2test::HeadlessGlobals globals(options);
+        FrontendTheme theme; FrontendScope frontend; NativeSettings screen;
+        screen.paintFrame(SDL_GetTicks());
+        auto& host=screen.host();
+        host.layoutIfNeeded();
+        const std::string status=Toolkit::getStringTable()->getString("[settings Changes saved automatically]");
+        std::function<GAGGUI::ui::Node*(GAGGUI::ui::Node*)> findStatus = [&](GAGGUI::ui::Node* node) -> GAGGUI::ui::Node* {
+            if(!node) return nullptr;
+            if(node->accessibleText()==status) return node;
+            for(auto& child:node->children) if(auto* found=findStatus(child.get())) return found;
+            return nullptr;
+        };
+        auto* note=findStatus(host.root());
+        REQUIRE(note);
+        const auto& p=host.presentation();
+        REQUIRE(p.touch);
+        GAGGUI::ui::ToolkitTextMeasurer text(host.theme(),p.touch,p.textUnit);
+        CHECK(note->bounds.w>=text.width(GAGGUI::ui::FontRole::Support,"Awtomatikong"));
+        CHECK(note->bounds.bottom()<=host.bounds("done").y);
+        screen.capture((glob2test::artifactDir()/"filipino-large-settings-footer.bmp").string());
+
+        const std::string cancel=Toolkit::getStringTable()->getString("[Cancel]");
+        const std::string create=Toolkit::getStringTable()->getString("[create map]");
+        GAGGUI::ui::Host footer(host.theme(),[cancel,create](const GAGGUI::ui::Presentation& presentation){
+            return Glob2UI::actions({{"create",create,{},true},{"cancel",cancel,{}}},presentation);
+        });
+        auto actionPresentation=p;
+        actionPresentation.viewport=actionPresentation.safe=actionPresentation.dialog={0,0,366,200};
+        footer.setPresentation(actionPresentation);
+        footer.setMeasurer(&text);
+        footer.layoutIfNeeded();
+        glob2test::RecordingCanvas canvas({366,200},text);
+        footer.paint(canvas,0);
+        CHECK(footer.bounds("cancel").w>=text.width(GAGGUI::ui::FontRole::Heading,cancel)+2*footer.metrics().padding);
+        CHECK(std::any_of(canvas.texts.begin(),canvas.texts.end(),[&](const auto& line){return line.second==cancel;}));
+        screen.done();
+    }
+
+
     TEST_CASE("username byte limits reject whole Bengali edits without truncation")
     {
         Settings settings;

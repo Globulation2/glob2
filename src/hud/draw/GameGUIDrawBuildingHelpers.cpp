@@ -7,6 +7,7 @@
 #include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <TouchText.h>
 
 #include "BuildingFailureDisplay.h"
 #include "BuildingPresentation.h"
@@ -486,8 +487,18 @@ void GameGUI::drawBuildingFailureReasons(const SceneBuildingPanel* selBuild, con
 			const int shapeX = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10;
 			if (reason != Building::UnitNotAvailable)
 				drawFailureShape(globalContainer->gfx, shapeX+FAILURE_SHAPE_HALF, ypos+FAILURE_SHAPE_HALF+1, FAILURE_SHAPE_HALF, reason, failureShapeColor());
-			globalContainer->gfx->drawString(shapeX+2*FAILURE_SHAPE_HALF+6, ypos, globalContainer->littleFont, s.c_str());
-			ypos += YOFFSET_RESOURCE_LINE;
+			// Keep translated reasons inside the narrow panel. The outer building
+			// panel clips and scrolls using the complete height returned in ypos.
+			const int textX = shapeX+2*FAILURE_SHAPE_HALF+6;
+			auto* font = globalContainer->littleFont;
+			const auto lines = GAGCore::wrapTouchText(font, s, globalContainer->gfx->getW()-4-textX);
+			if (lines.empty())
+				ypos += YOFFSET_RESOURCE_LINE;
+			for (const auto& line : lines)
+			{
+				globalContainer->gfx->drawString(textX, ypos, font, line);
+				ypos += std::max(YOFFSET_RESOURCE_LINE, font->getStringHeight(line));
+			}
 		}
 	}
 }

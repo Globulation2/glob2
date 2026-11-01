@@ -6820,5 +6820,41 @@ Ilość ryb
 Wiadomości ▸
 [Camp-site amount]
 Liczba obozowisk
+[script compilation success]
+Kompilacja zakończona sukcesem
+[script error at %0:%1: %2]
+Błąd w %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Błąd kompilacji: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompilacja nie powiodła się: %0
+[script loading failed %0]
+Ładowanie skryptu z %0 nie powiodło się
+[script saving failed %0]
+Zapisywanie skryptu do %0 nie powiodło się
+[script line %0 column %1]
+Linia: %0 Kolumna: %1
+[game stopped %0]
+Gra zatrzymana: %0
+[game stopped script help]
+Przed ponownym uruchomieniem tej gry sprawdź osadzony kod JavaScript i jego wykorzystanie zasobów.
+[missing map generator %0]
+Brak generatora map: %0. Wybrano wbudowany krajobraz.
+[hive standing order paused]
+Stały rozkaz wymaga uwagi i został wstrzymany.
+[hive connection changed orders paused]
+Połączenie się zmieniło. Sprawdź swoje wstrzymane stałe rozkazy przed ich wznowieniem.
+[hive standing order fresh instruction]
+Stały rozkaz wymaga nowej instrukcji po ponownym połączeniu. Możesz go anulować lub poprosić dowódcę o jego zastąpienie.
+[hive order confirmation failed]
+Nie udało się potwierdzić rozkazu. Sprawdź swoje stałe rozkazy przed ich wznowieniem.
+[hive previous order sending]
+Twój poprzedni rozkaz jest nadal wysyłany. Ta wiadomość została zachowana; otwórz dowódcę, aby wysłać ją ponownie.
+[hive order received %0]
+Otrzymano rozkaz: %0
+[hive order not confirmed]
+Rozkaz niepotwierdzony. Otwórz dowódcę, aby spróbować ponownie. Twoja wiadomość została zachowana.
+[hive standing order update failed]
+Aktualizacja stałego rozkazu nie powiodła się. Twój rozkaz jest wstrzymany na tym urządzeniu. Spróbuj ponownie za pomocą odpowiedniej kontrolki.
 [AI for all computer colonies]
 SI dla wszystkich kolonii sterowanych przez komputer

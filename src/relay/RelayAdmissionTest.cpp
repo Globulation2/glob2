@@ -91,6 +91,33 @@ TEST_SUITE("RelayAdmission")
             CHECK(directory.check(first, false, 10) == Admission::Join);
         }
     }
+    TEST_CASE("Filipino catalog registration separates revision 113 and 114 match admission")
+    {
+        // Real simulation keys immediately before/after the registration: the
+        // data inputs and 191/73 save/network versions are identical. Only
+        // SIM_REVISION changes. Keep these historical boundary fixtures fixed.
+        const SimVersion before{191, 73,
+            "289bec536583fdb3508350732d433c2aab519de883507b9af486b120b1cea81d"};
+        const SimVersion after{191, 73,
+            "cb71317a961766ae7d249e039c3f6ea8fcc6fb3b6d620e1cb69ae0cbae014e7a"};
+        CHECK(before.key() != after.key());
+        for (const bool newMatch : {false, true})
+        {
+            CAPTURE(newMatch);
+            auto first = claims(A, 0);
+            first.simVersion = newMatch ? after : before;
+            MatchDirectory directory;
+            REQUIRE(directory.check(first, false, 10) == Admission::Create);
+            directory.create(first);
+            auto same = first;
+            same.seat = 1;
+            CHECK(directory.check(same, false, 10) == Admission::Join);
+            auto incompatible = same;
+            incompatible.simVersion = newMatch ? before : after;
+            CHECK(directory.check(incompatible, false, 10) == Admission::SimVersionDiffers);
+            CHECK(directory.check(first, false, 10) == Admission::Join);
+        }
+    }
 
 	TEST_CASE("an ended match cannot be restarted by a late ticket until every ticket has expired")
 	{

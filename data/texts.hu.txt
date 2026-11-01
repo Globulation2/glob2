@@ -6820,5 +6820,41 @@ Halak mennyisége
 Üzenetek ▸
 [Camp-site amount]
 Táborhelyek száma
+[script compilation success]
+Sikeres fordítás
+[script error at %0:%1: %2]
+Hiba a(z) %0. sor %1. oszlopában: %2
+[script compilation failure %0:%1:(%2):%3]
+Fordítási hiba: %0:%1:(%2):%3
+[script compilation failed %0]
+Fordítási hiba: %0
+[script loading failed %0]
+Nem sikerült betölteni a szkriptet ebből a fájlból: %0
+[script saving failed %0]
+Nem sikerült a szkriptet ide menteni: %0
+[script line %0 column %1]
+Sor: %0 Oszlop: %1
+[game stopped %0]
+Játék leállítva: %0
+[game stopped script help]
+A játék újraindítása előtt tekintsd át a beágyazott JavaScript-kódot és annak erőforrás-használatát.
+[missing map generator %0]
+Hiányzó térképgenerátor: %0. A játékba beépített táj lett kiválasztva.
+[hive standing order paused]
+Egy állandó parancs figyelmet igényel, és szüneteltetve lett.
+[hive connection changed orders paused]
+A kapcsolat megváltozott. A folytatás előtt tekintsd át a szüneteltetett állandó parancsaidat.
+[hive standing order fresh instruction]
+Az újracsatlakozás után egy állandó parancshoz új utasítás szükséges. Törölheted, vagy megkérheted a parancsnokot, hogy cserélje le.
+[hive order confirmation failed]
+Nem sikerült megerősíteni egy parancsot. A folytatás előtt tekintsd át az állandó parancsaidat.
+[hive previous order sending]
+Az előző parancsod küldése folyamatban van. Ez az üzenet megmaradt; nyisd meg a parancsnokot az újbóli elküldéshez.
+[hive order received %0]
+Parancs fogadva: %0
+[hive order not confirmed]
+A parancs nincs megerősítve. Nyisd meg a parancsnokot az újrapróbálkozáshoz; az üzeneted megmaradt.
+[hive standing order update failed]
+Az állandó parancs frissítése sikertelen. A parancsod ezen az eszközön szünetel; próbáld újra a megfelelő vezérlőelemmel.
 [AI for all computer colonies]
 MI minden számítógép vezérelte kolóniához

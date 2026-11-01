@@ -35,19 +35,23 @@ for (const locale of locales) {
         .evaluate((element) => {
           const select = element as HTMLSelectElement;
           const style = getComputedStyle(select);
-          const compact = select.parentElement!.querySelector('.language-preference-compact')!;
+          const compact = select.parentElement?.querySelector('.language-preference-compact');
+          if (!compact) throw new Error('Expected the compact language label.');
+          const selected = select.selectedOptions[0];
+          if (!selected) throw new Error('Expected a selected language option.');
+          const compactText = compact.textContent;
+          if (compactText === null) throw new Error('Expected compact language text.');
           const compactVisible = getComputedStyle(compact).display !== 'none';
-          const label = compactVisible
-            ? compact.textContent!.trim()
-            : select.selectedOptions[0]!.text;
+          const label = compactVisible ? compactText.trim() : selected.text;
           const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d')!;
+          const context = canvas.getContext('2d');
+          if (!context) throw new Error('Expected a 2D context for language text measurement.');
           context.font = compactVisible ? getComputedStyle(compact).font : style.font;
           const available =
             select.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
           return {
             label,
-            fullName: select.selectedOptions[0]!.text,
+            fullName: selected.text,
             textWidth: context.measureText(label).width,
             available,
           };
@@ -105,6 +109,43 @@ for (const locale of locales) {
       }
     }
     await page.evaluate(() => document.fonts.ready);
+    const statLabelsFit = await page
+      .getByTestId('live-stats')
+      .locator('.stat .k')
+      .evaluateAll(
+        (labels) =>
+          labels.length === 3 &&
+          labels.every((label) => {
+            const parent = label.closest('.stat');
+            if (!parent) return false;
+            const card = parent.getBoundingClientRect();
+            const text = document.createRange();
+            text.selectNodeContents(label);
+            return (
+              label.scrollWidth <= label.clientWidth + 1 &&
+              Array.from(text.getClientRects()).every(
+                (rect) =>
+                  rect.left >= card.left - 1 &&
+                  rect.right <= card.right + 1 &&
+                  rect.bottom <= card.bottom + 1,
+              )
+            );
+          }),
+      );
+    expect(statLabelsFit).toBe(true);
+    if (info.project.name === 'phone') {
+      const title = await page.locator('#maps-title').boundingBox();
+      const browse = await page
+        .locator('#maps-title')
+        .locator('..')
+        .getByRole('link')
+        .boundingBox();
+      expect(title).not.toBeNull();
+      expect(browse).not.toBeNull();
+      if (!title || !browse)
+        throw new Error('Map section heading and browse link must have bounds');
+      expect(browse.y).toBeGreaterThanOrEqual(title.y + title.height - 1);
+    }
     if (locale.code === 'bn') {
       // Prove that the packaged Bengali face loaded, even on a host that also
       // happens to have a Bengali system font. Screenshots alone can hide that.
@@ -256,67 +297,78 @@ for (const locale of locales) {
   });
 }
 
-test('Bengali libraries, account and room invitations fit the viewport', async ({
-  page,
-  context,
-}, info) => {
-  await page.route('glob2://**', (route) => route.abort());
-  await page.route('**/api/v1/accounts/me', (route) =>
-    route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
-  );
-  const base = String(info.project.use.baseURL ?? 'http://127.0.0.1:4280');
-  await context.addCookies([{ name: 'glob2_locale', value: 'bn', url: base }]);
-  const catalog = JSON.parse(
-    readFileSync(new URL('../../../packages/i18n/locales/bn.json', import.meta.url), 'utf8'),
-  ) as Record<string, string>;
-  const translated = (source: string): string => {
-    const value = catalog[source];
-    if (!value) throw new Error(`Missing Bengali message: ${source}`);
-    return value;
-  };
-  for (const [path, heading, name] of [
-    ['/maps', 'Maps', 'maps'],
-    ['/ais', 'AI Library', 'ais'],
-    ['/buildings', 'Building library', 'buildings'],
-    ['/sets', 'Terrain & resource sets', 'sets'],
-    ['/account', 'Your account', 'account'],
-    ['/signin', 'Sign in', 'signin'],
-    ['/j/GLOBJOIN', 'You’re invited', 'invite'],
-  ] as const) {
-    await page.goto(path);
-    await expect(page.locator('html')).toHaveAttribute('lang', 'bn');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(translated(heading));
-    if (path === '/ais') {
-      const tags = page.getByRole('group', { name: translated('AI tags'), exact: true });
-      for (const tag of AI_TAGS)
-        await expect(
-          tags.getByRole('button', { name: translated(tag), exact: true }),
-        ).toBeVisible();
-    }
-    const search = page.locator('main input[type="search"]').first();
-    if (await search.count()) {
-      await search.fill('নদী');
-      await expect(search).toHaveValue('নদী');
-    }
-    await page.evaluate(() => document.fonts.ready);
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      ),
-    ).toBeLessThanOrEqual(1);
-    const directory = process.env.SCREENSHOT_DIR
-      ? resolve(process.env.SCREENSHOT_DIR, info.project.name)
-      : undefined;
-    if (directory) mkdirSync(directory, { recursive: true });
-    await info.attach(`bn-${name}`, {
-      body: await page.screenshot({
-        fullPage: true,
-        path: directory ? resolve(directory, `bn-${name}.png`) : undefined,
+for (const { locale, languageName, searchTerm } of [
+  { locale: 'bn', languageName: 'Bengali', searchTerm: 'নদী' },
+  { locale: 'fil', languageName: 'Filipino', searchTerm: 'ilog' },
+] as const) {
+  test(`${languageName} libraries, account and room invitations fit the viewport`, async ({
+    page,
+    context,
+  }, info) => {
+    await page.route('glob2://**', (route) => route.abort());
+    await page.route('**/api/v1/accounts/me', (route) =>
+      route.fulfill({
+        status: 401,
+        json: { code: 'unauthenticated', message: 'Sign in required.' },
       }),
-      contentType: 'image/png',
-    });
-  }
-});
+    );
+    const base = String(info.project.use.baseURL ?? 'http://127.0.0.1:4280');
+    await context.addCookies([{ name: 'glob2_locale', value: locale, url: base }]);
+    const catalog = JSON.parse(
+      readFileSync(
+        new URL(`../../../packages/i18n/locales/${locale}.json`, import.meta.url),
+        'utf8',
+      ),
+    ) as Record<string, string>;
+    const translated = (source: string): string => {
+      const value = catalog[source];
+      if (!value) throw new Error(`Missing ${languageName} message: ${source}`);
+      return value;
+    };
+    for (const [path, heading, name] of [
+      ['/maps', 'Maps', 'maps'],
+      ['/ais', 'AI Library', 'ais'],
+      ['/buildings', 'Building library', 'buildings'],
+      ['/sets', 'Terrain & resource sets', 'sets'],
+      ['/account', 'Your account', 'account'],
+      ['/signin', 'Sign in', 'signin'],
+      ['/j/GLOBJOIN', 'You’re invited', 'invite'],
+    ] as const) {
+      await page.goto(path);
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(translated(heading));
+      if (path === '/ais') {
+        const tags = page.getByRole('group', { name: translated('AI tags'), exact: true });
+        for (const tag of AI_TAGS)
+          await expect(
+            tags.getByRole('button', { name: translated(tag), exact: true }),
+          ).toBeVisible();
+      }
+      const search = page.locator('main input[type="search"]').first();
+      if (await search.count()) {
+        await search.fill(searchTerm);
+        await expect(search).toHaveValue(searchTerm);
+      }
+      await page.evaluate(() => document.fonts.ready);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        ),
+      ).toBeLessThanOrEqual(1);
+      const directory = process.env.SCREENSHOT_DIR
+        ? resolve(process.env.SCREENSHOT_DIR, info.project.name)
+        : undefined;
+      if (directory) mkdirSync(directory, { recursive: true });
+      await info.attach(`${locale}-${name}`, {
+        body: await page.screenshot({
+          fullPage: true,
+          path: directory ? resolve(directory, `${locale}-${name}.png`) : undefined,
+        }),
+        contentType: 'image/png',
+      });
+    }
+  });
+}
 
 test('changing to Norwegian preserves input and persists across app and sign-in pages', async ({
   page,
@@ -439,6 +491,78 @@ for (const language of ['fr', 'bn']) {
     await expect(page.locator('html')).toHaveAttribute('lang', language);
   });
 }
+
+test.describe('Filipino browser preference', () => {
+  test.use({ locale: 'tl-PH' });
+  test('sign-in and saved choice agree', async ({ page, context }, info) => {
+    const catalog = JSON.parse(
+      readFileSync(new URL('../../../packages/i18n/locales/fil.json', import.meta.url), 'utf8'),
+    ) as Record<string, string>;
+    const captureDirectory = process.env.SCREENSHOT_DIR
+      ? resolve(process.env.SCREENSHOT_DIR, info.project.name)
+      : info.outputPath('captures');
+    mkdirSync(captureDirectory, { recursive: true });
+    await context.clearCookies();
+    await page.route('**/api/v1/accounts/me', (route) =>
+      route.fulfill({
+        status: 401,
+        json: { code: 'unauthenticated', message: 'Sign in required.' },
+      }),
+    );
+    await page.goto('/signin');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    await expect(page.locator('label[for="signin-username"]')).toContainText(
+      catalog['Username'] ?? 'Username',
+    );
+    await expect(page.locator('label[for="signin-password"]')).toContainText(
+      catalog['Password'] ?? 'Password',
+    );
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    await info.attach('fil-signin', {
+      body: await page.screenshot({
+        fullPage: true,
+        path: resolve(captureDirectory, 'fil-signin.png'),
+      }),
+      contentType: 'image/png',
+    });
+
+    await page.goto('/');
+    await expect(page.locator('#hero-title')).toHaveText(
+      catalog['Welcome to the colony'] ?? 'Welcome to the colony',
+    );
+    if (!(await page.getByTestId('language-selector').first().isVisible()))
+      await page.locator('.rail-expand').click();
+    const selector = page.locator('[data-testid="language-selector"]:visible').first();
+    await selector.selectOption('en');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    if (!(await page.getByTestId('language-selector').first().isVisible()))
+      await page.locator('.rail-expand').click();
+    await page.locator('[data-testid="language-selector"]:visible').first().selectOption('fil');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    await page.goto('/maps');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    await info.attach('fil-maps', {
+      body: await page.screenshot({
+        fullPage: true,
+        path: resolve(captureDirectory, 'fil-maps.png'),
+      }),
+      contentType: 'image/png',
+    });
+  });
+});
 
 test('changing to Telugu and back preserves input', async ({ page }) => {
   await page.route('**/api/v1/accounts/me', (route) =>

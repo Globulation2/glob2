@@ -208,7 +208,7 @@ std::vector<ui::PositionedControl> GameGUITouch::describeControls()
 				add(std::string("navigation/") + keys[i],
 					globalContainer->replaying && i < 2 ? (i ? "Fast forward" : "Pause playback")
 														: labels[i],
-					{l.actions.x + i * l.actions.w / 6, l.actions.y, l.actions.w / 6, l.actions.h},
+					navigationButtonRect(l, i),
 					[this, i](ViewPoint) { activateNavigation(i); });
 			control.selected =
 				i == 0   ? (globalContainer->replaying
@@ -435,6 +435,9 @@ std::vector<ui::PositionedControl> GameGUITouch::describeControls()
 		const ViewRect header{stats.sheet.x, stats.sheet.y, stats.sheet.w,
             std::max(0., stats.body.y - stats.sheet.y)};
 		auto &sheet = add("statistics/sheet", "Statistics sheet; pull header down to close", header);
+		// Match the embedded panel's integer top edge. Outward rounding must
+		// not overlap it by one pixel and block the entire draggable header.
+		sheet.bounds.h = std::max(0, int(stats.body.y) - sheet.bounds.y);
 		sheet.role = "canvas";
 		sheet.actions = {ui::ActionKind::Scroll};
 		sheet.perform = [this, u](const ui::SemanticAction &action)

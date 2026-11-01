@@ -144,6 +144,23 @@ ApiError errorFromJson(const Json &body, const std::string &fallbackCode)
 		error.message = stringField(body, "message");
 		if (auto details = body.find("details"); details != body.end())
 			error.details = *details;
+		if (auto key = body.find("messageKey"); key != body.end())
+		{
+			if (key->is_string() && !key->get_ref<const std::string &>().empty())
+				error.messageKey = key->get<std::string>();
+			else
+				error.invalidLocalization = true;
+		}
+		if (auto params = body.find("messageParams"); params != body.end())
+		{
+			bool valid = params->is_object();
+			if (valid)
+				for (const auto &value : *params)
+					if (!(value.is_string() || value.is_number() || value.is_boolean() || value.is_null()))
+						valid = false;
+			if (valid) error.messageParams = *params;
+			else error.invalidLocalization = true;
+		}
 	}
 	if (error.code.empty())
 		error.code = fallbackCode;

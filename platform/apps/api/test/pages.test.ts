@@ -41,6 +41,22 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
     const scriptCss = await app.inject('/signin/assets/script-fonts.css');
     expect(scriptCss.statusCode).toBe(200);
     expect(scriptCss.body).not.toContain('../../../data/');
+    expect(scriptCss.body).not.toContain('../../../browser/');
+    expect(scriptCss.body).toContain('/signin/assets/sans-core.ttf');
+    expect(scriptCss.body).toContain(':root:lang(bg)');
+    expect(scriptCss.body).toContain('option:lang(bg)');
+    const coreFont = await app.inject('/signin/assets/sans-core.ttf');
+    expect(coreFont.statusCode).toBe(200);
+    expect(coreFont.headers['content-type']).toContain('font/ttf');
+    expect(coreFont.rawPayload).toEqual(
+      readFileSync(new URL('../../../../browser/assets/sans-core.ttf', import.meta.url)),
+    );
+    const dejavuLicence = await app.inject('/signin/assets/LICENSE-DejaVu.txt');
+    expect(dejavuLicence.statusCode).toBe(200);
+    expect(dejavuLicence.headers['content-type']).toContain('text/plain');
+    expect(dejavuLicence.rawPayload).toEqual(
+      readFileSync(new URL('../../../../data/fonts/LICENSE-DejaVu.txt', import.meta.url)),
+    );
     const manifest = JSON.parse(
       readFileSync(
         new URL('../../../../data/fonts/scripts/manifest.json', import.meta.url),
@@ -56,6 +72,11 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
       expect(response.rawPayload.length).toBe(font.bytes);
       expect(createHash('sha256').update(response.rawPayload).digest('hex')).toBe(font.sha256);
     }
+    const droidLicence = await app.inject('/signin/assets/LICENSE-Droid.txt');
+    expect(droidLicence.statusCode).toBe(200);
+    expect(droidLicence.rawPayload).toEqual(
+      readFileSync(new URL('../../../../data/fonts/LICENSE-Droid.txt', import.meta.url)),
+    );
     const licence = await app.inject('/signin/assets/LICENSE-Noto.txt');
     expect(licence.statusCode).toBe(200);
     expect(licence.body).toContain('SIL OPEN FONT LICENSE');

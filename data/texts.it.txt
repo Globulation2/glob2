@@ -6820,5 +6820,41 @@ Quantità di pesci
 Messaggi ▸
 [Camp-site amount]
 Numero di accampamenti
+[script compilation success]
+Compilazione riuscita
+[script error at %0:%1: %2]
+Errore in %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Errore di compilazione: %0:%1:(%2):%3
+[script compilation failed %0]
+Compilazione non riuscita: %0
+[script loading failed %0]
+Impossibile caricare lo script da %0
+[script saving failed %0]
+Impossibile salvare lo script in %0
+[script line %0 column %1]
+Riga: %0 Colonna: %1
+[game stopped %0]
+Gioco interrotto: %0
+[game stopped script help]
+Prima di riavviare questo gioco, esamina il codice JavaScript incorporato e il suo utilizzo delle risorse.
+[missing map generator %0]
+Generatore di mappe mancante: %0. È stato selezionato un paesaggio integrato.
+[hive standing order paused]
+Un ordine permanente necessita di attenzione ed è stato sospeso.
+[hive connection changed orders paused]
+La connessione è cambiata. Verifica gli ordini permanenti sospesi prima di riattivarli.
+[hive standing order fresh instruction]
+Un ordine permanente necessita di una nuova istruzione dopo la riconnessione. Puoi annullarlo o chiedere al comandante di sostituirlo.
+[hive order confirmation failed]
+Impossibile confermare un ordine. Verifica gli ordini permanenti prima di riattivarli.
+[hive previous order sending]
+Il tuo ordine precedente è ancora in fase di invio. Questo messaggio è stato conservato; apri il comandante per inviarlo nuovamente.
+[hive order received %0]
+Ordine ricevuto: %0
+[hive order not confirmed]
+Ordine non confermato. Apri il comandante per riprovare; il tuo messaggio è stato conservato.
+[hive standing order update failed]
+Aggiornamento dell'ordine permanente non riuscito. Il tuo ordine è sospeso su questo dispositivo; riprova con il controllo corrispondente.
 [AI for all computer colonies]
 IA per tutte le colonie controllate dal computer

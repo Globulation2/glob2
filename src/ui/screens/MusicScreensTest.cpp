@@ -11,6 +11,7 @@
 #include "GlobalContainer.h"
 #include <ScreenStack.h>
 #include <Toolkit.h>
+#include <StringTable.h>
 #include <FileManager.h>
 #include <filesystem>
 namespace
@@ -26,6 +27,18 @@ class PendingCatalogue final : public HttpFetch::Fetch
 	const HttpFetch::Response &response() const override { return value; }
 	std::string error() const override { return {}; }
 	void cancel() override { cancelled = true; }
+};
+class FailedMusicRequest final : public HttpFetch::Fetch
+{
+	HttpFetch::Response value{503, {}, nlohmann::json({
+		{"code", "unavailable"}, {"message", "private server diagnostic"},
+		{"messageKey", "Sign in first (session.authenticate)."}}).dump()};
+
+  public:
+	HttpFetch::State state() override { return HttpFetch::State::Done; }
+	const HttpFetch::Response &response() const override { return value; }
+	std::string error() const override { return {}; }
+	void cancel() override {}
 };
 void capture(Glob2UI::Screen &screen, const std::string &name)
 {
@@ -80,6 +93,41 @@ void views(int width, int height)
 } // namespace
 TEST_SUITE("CommunityMusicUI")
 {
+	TEST_CASE("technical errors use localized catalog messages")
+	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		strings->setLang(strings->getLangCode("fr"));
+		const auto fallback = musicText("Music request failed.");
+		CHECK(fallback != "Music request failed.");
+		CHECK(musicError("Invalid music catalogue.") == fallback);
+		CHECK(musicError("Music download checksum failed.") == fallback);
+		CHECK(musicError("Music download failed.") == musicText("Music download failed."));
+	}
+	TEST_CASE("API failures clear queued installs and preserve Bulgarian notices [display]")
+	{
+		glob2test::ScopedEnvironment audio("SDL_AUDIODRIVER", "dummy");
+		glob2test::HeadlessGlobals globals(
+			glob2test::GlobalsOptions{.display = true, .loadStrings = true});
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		for (const auto *locale : {"bg", "en"})
+		{
+			CAPTURE(locale);
+			strings->setLang(strings->getLangCode(locale));
+			MusicLibraryScreen screen(stack);
+			screen.requested = true;
+			screen.kind = MusicLibraryScreen::FetchKind::Track;
+			screen.queue.push_back({{"id", "pending bulk download"}});
+			screen.fetch = std::make_unique<FailedMusicRequest>();
+			screen.onTimer(0);
+			CHECK_FALSE(screen.fetch);
+			CHECK(screen.queue.empty());
+			CHECK(screen.notice == (std::string(locale) == "bg"
+				? "Първо влезте (session.authenticate)." : musicText("Music request failed.")));
+			CHECK(screen.notice.find("private server diagnostic") == std::string::npos);
+		}
+	}
 	TEST_CASE("desktop screens [display][artifacts]")
 	{
 		views(1280, 800);

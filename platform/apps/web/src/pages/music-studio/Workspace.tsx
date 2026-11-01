@@ -1,7 +1,7 @@
 import { artifactLabel } from '../../i18n.tsx';
 import { statusLabel } from '../../i18n.tsx';
 import { displayMessage } from '../../i18n.tsx';
-import { t, tp, useLocale, RichMessage } from '../../i18n.tsx';
+import { t, tp, useLocale, RichMessage, musicMoodLabel } from '../../i18n.tsx';
 import { cancellationReason } from '../../components/studio/adapters.ts';
 import { Icon } from '../../icons.tsx';
 import {
@@ -448,7 +448,7 @@ export function MusicWorkspace(p: Props) {
                 </p>
                 <div className="mu-mood-labels">
                   <span>{t('Calm')}</span>
-                  <span>{t('Building')}</span>
+                  <span>{musicMoodLabel('Building')}</span>
                   <span>{t('Combat')}</span>
                 </div>
               </div>

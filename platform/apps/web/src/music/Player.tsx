@@ -1,4 +1,4 @@
-import { t, useLocale, RichMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage, musicMoodLabel } from '../i18n.tsx';
 import { useEffect, type CSSProperties } from 'react';
 import type { MusicRelease } from '@glob2/protocol';
 import {
@@ -167,11 +167,11 @@ export function MusicPlayer({
             onClick={() => player.selectMood(i)}
             className={`mood-${i}`}
             aria-pressed={player.mode !== 'manual' && player.mood === i}
-            aria-label={t('Crossfade to {value0}', { value0: t(mood) })}
+            aria-label={t('Crossfade to {value0}', { value0: musicMoodLabel(mood) })}
           >
             <MoodIcon mood={i} />
             <span>
-              <strong>{t(mood)}</strong>
+              <strong>{musicMoodLabel(mood)}</strong>
               <small>{t(MOOD_DESCRIPTIONS[i])}</small>
             </span>
             <span className="music-mood-mark" aria-hidden="true">
@@ -184,15 +184,15 @@ export function MusicPlayer({
         {player.mode === 'manual'
           ? t('Custom mood blend')
           : transitioning
-            ? t('Transitioning to {value0}…', { value0: t(MOODS[player.mood]) })
+            ? t('Transitioning to {value0}…', { value0: musicMoodLabel(MOODS[player.mood]) })
             : player.status === 'playing'
-              ? t('{value0} playing', { value0: t(MOODS[player.mood]) })
-              : t('{value0} selected', { value0: t(MOODS[player.mood]) })}
+              ? t('{value0} playing', { value0: musicMoodLabel(MOODS[player.mood]) })
+              : t('{value0} selected', { value0: musicMoodLabel(MOODS[player.mood]) })}
       </div>
       <div className="music-timeline">
         <div className="music-waveform-labels" aria-hidden="true">
           {MOODS.map((mood) => (
-            <span key={mood}>{t(mood)}</span>
+            <span key={mood}>{musicMoodLabel(mood)}</span>
           ))}
         </div>
         <div
@@ -205,7 +205,7 @@ export function MusicPlayer({
               className={`mood-${i}`}
               viewBox={`0 0 ${Math.max(1, track.waveform.length)} 40`}
               preserveAspectRatio="none"
-              aria-label={t('{value0} waveform', { value0: t(MOODS[i]) })}
+              aria-label={t('{value0} waveform', { value0: musicMoodLabel(MOODS[i]) })}
               style={{ opacity: 0.35 + (player.weights[i] ?? 0) * 0.65 }}
             >
               {track.waveform.map((peak, x) => (
@@ -262,7 +262,7 @@ export function MusicPlayer({
         <p className="music-preview-status" role="status">
           <RichMessage
             source={'Previewing game transitions · {slot0} · game fade timing'}
-            slots={{ slot0: t(MOODS[player.mood]) }}
+            slots={{ slot0: musicMoodLabel(MOODS[player.mood]) }}
           />
         </p>
       )}
@@ -299,7 +299,7 @@ export function MusicPlayer({
         <div className="music-mix-readout">
           {MOODS.map((mood, i) => (
             <span key={mood}>
-              {t(mood)}{' '}
+              {musicMoodLabel(mood)}{' '}
               <strong>
                 <RichMessage
                   source={'{slot0}%'}

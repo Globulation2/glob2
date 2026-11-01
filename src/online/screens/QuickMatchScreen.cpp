@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "QuickMatchScreen.h"
 
 #include "FormatableString.h"
@@ -79,7 +80,7 @@ std::string errorText(const Online::ApiError &error, std::optional<std::int64_t>
 		return FormattableString(tr("[qm cooldown %0]"))
 			.arg(clockText(std::max<std::int64_t>(0, (*cooldown - wallClockMs()) / 1000)));
 	if (error.code == "forbidden")
-		return error.message.empty() ? tr("[qm sign in to play ranked]") : error.message;
+		return error.message.empty() ? tr("[qm sign in to play ranked]") : apiErrorText(error);
 	if (error.code == "update_required")
 		switch (Online::services().client.simMismatch())
 		{
@@ -92,7 +93,7 @@ std::string errorText(const Online::ApiError &error, std::optional<std::int64_t>
 		}
 	if (error.code == "conflict")
 		return tr("[qm already searching]");
-	return error.message.empty() ? tr("[online connection problem]") : error.message;
+	return error.message.empty() ? tr("[online connection problem]") : apiErrorText(error);
 }
 
 struct PresenterState

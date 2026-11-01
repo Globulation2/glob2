@@ -86,7 +86,10 @@ async function controlOnScreen(page, key, options) {
       bounds = again;
       continue;
     }
-    const root = css(page, bounds, {x: bounds.root.x + bounds.root.w / 2, y: bounds.root.y + bounds.root.h / 2});
+    // Popup rows share the window's root bounds; wheel inside the popup,
+    // rather than over an unrelated control at the window's horizontal center.
+    const root = css(page, bounds, {x: key.startsWith('popup/') ? bounds.x + bounds.w / 2 : bounds.root.x + bounds.root.w / 2,
+      y: bounds.root.y + bounds.root.h / 2});
     await page.mouse.move(root.x, root.y);
     const distance = bounds.y + bounds.h / 2 - (bounds.root.y + bounds.root.h / 2);
     // SDL's browser wheel converts 100 CSS pixels into one scroll step. A

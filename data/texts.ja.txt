@@ -6820,5 +6820,41 @@ GL のみ
 メッセージ ▸
 [Camp-site amount]
 野営地の数
+[script compilation success]
+コンパイル成功
+[script error at %0:%1: %2]
+%0:%1 でエラーが発生しました: %2
+[script compilation failure %0:%1:(%2):%3]
+コンパイルエラー: %0:%1:(%2):%3
+[script compilation failed %0]
+コンパイルに失敗しました: %0
+[script loading failed %0]
+%0 からのスクリプトの読み込みに失敗しました
+[script saving failed %0]
+スクリプトを %0 に保存できませんでした
+[script line %0 column %1]
+行番号: %0 列番号: %1
+[game stopped %0]
+ゲームが停止しました: %0
+[game stopped script help]
+このゲームを再起動する前に、埋め込まれた JavaScript コードとそのリソース使用状況を確認してください。
+[missing map generator %0]
+マップ生成器が見つかりません: %0。内蔵の地形が選択されました。
+[hive standing order paused]
+継続命令に対応が必要なため、一時停止されました。
+[hive connection changed orders paused]
+接続が変更されました。再開する前に、一時停止中の継続命令を確認してください。
+[hive standing order fresh instruction]
+継続命令には、再接続後に新たな指示が必要です。命令をキャンセルするか、コマンダーに置き換えを依頼できます。
+[hive order confirmation failed]
+命令を確認できませんでした。再開する前に、継続命令を確認してください。
+[hive previous order sending]
+前の命令はまだ送信中です。このメッセージは保存されています。再送信するには、コマンダーを開いてください。
+[hive order received %0]
+命令を受信しました: %0
+[hive order not confirmed]
+命令を確認できませんでした。再試行するには、コマンダーを開いてください。メッセージは保存されています。
+[hive standing order update failed]
+継続命令の更新に失敗しました。命令はこのデバイス上で一時停止されています。該当するコントロールで再試行してください。
 [AI for all computer colonies]
 すべてのコンピューター操作コロニーのAI

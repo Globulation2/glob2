@@ -6820,5 +6820,41 @@ Kvanto da fiŝoj
 Mesaĝoj ▸
 [Camp-site amount]
 Nombro de kampadejoj
+[script compilation success]
+Kompilo sukcesis
+[script error at %0:%1: %2]
+Eraro ĉe %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Kompila malsukceso: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompilo malsukcesis: %0
+[script loading failed %0]
+Malsukcesis ŝargi la skripton el %0
+[script saving failed %0]
+Malsukcesis konservi la skripton al %0
+[script line %0 column %1]
+Linio: %0 Kolumno: %1
+[game stopped %0]
+Ludo haltigita: %0
+[game stopped script help]
+Kontrolu la enigitan JavaScript-kodon kaj ĝian rimeduzon antaŭ ol rekomenci ĉi tiun ludon.
+[missing map generator %0]
+Mankas mapgenerilo: %0. Enkonstruita pejzaĝo estis elektita.
+[hive standing order paused]
+Daŭra ordono bezonas atenton kaj estis paŭzita.
+[hive connection changed orders paused]
+La konekto ŝanĝiĝis. Kontrolu viajn paŭzitajn daŭrajn ordonojn antaŭ ol rekomenci ilin.
+[hive standing order fresh instruction]
+Daŭra ordono bezonas novan instrukcion post rekonekto. Vi povas nuligi ĝin aŭ peti la komandanton anstataŭigi ĝin.
+[hive order confirmation failed]
+Ordono ne povis esti konfirmita. Kontrolu viajn daŭrajn ordonojn antaŭ ol rekomenci ilin.
+[hive previous order sending]
+Via antaŭa ordono ankoraŭ estas sendata. Ĉi tiu mesaĝo estas konservita; malfermu la komandanton por sendi ĝin denove.
+[hive order received %0]
+Ordono ricevita: %0
+[hive order not confirmed]
+Ordono ne konfirmita. Malfermu la komandanton por reprovi; via mesaĝo estas konservita.
+[hive standing order update failed]
+Ĝisdatigo de daŭra ordono malsukcesis. Via ordono estas paŭzita sur ĉi tiu aparato; reprovu per la koncerna regilo.
 [AI for all computer colonies]
 AI por ĉiuj komputile regataj kolonioj

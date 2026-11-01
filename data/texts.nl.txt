@@ -6820,5 +6820,41 @@ Hoeveelheid vis
 Berichten ▸
 [Camp-site amount]
 Aantal kampeerplaatsen
+[script compilation success]
+Compilatie geslaagd
+[script error at %0:%1: %2]
+Fout bij %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Compilatie mislukt: %0:%1:(%2):%3
+[script compilation failed %0]
+Compilatie mislukt: %0
+[script loading failed %0]
+Het laden van het script van %0 is mislukt.
+[script saving failed %0]
+Het opslaan van het script naar %0 is mislukt.
+[script line %0 column %1]
+Regel: %0 Kolom: %1
+[game stopped %0]
+Spel gestopt: %0
+[game stopped script help]
+Controleer de ingebouwde JavaScript-code en het bijbehorende resourcegebruik voordat u dit spel opnieuw start.
+[missing map generator %0]
+Kaartgenerator ontbreekt: %0. Er is een ingebouwd landschap geselecteerd.
+[hive standing order paused]
+Een vast bevel vereist aandacht en is gepauzeerd.
+[hive connection changed orders paused]
+De verbinding is gewijzigd. Controleer uw gepauzeerde vaste bevelen voordat u ze hervat.
+[hive standing order fresh instruction]
+Een vast bevel vereist na het opnieuw verbinden een nieuwe instructie. U kunt het annuleren of de commandant vragen het te vervangen.
+[hive order confirmation failed]
+Een bevel kon niet worden bevestigd. Controleer uw vaste bevelen voordat u ze hervat.
+[hive previous order sending]
+Uw vorige bevel wordt nog steeds verzonden. Dit bericht is bewaard; open de commandant om het opnieuw te verzenden.
+[hive order received %0]
+Bevel ontvangen: %0
+[hive order not confirmed]
+Bevel niet bevestigd. Open de commandant om het opnieuw te proberen; uw bericht is bewaard.
+[hive standing order update failed]
+Het bijwerken van het vaste bevel is mislukt. Uw bevel is op dit apparaat gepauzeerd; probeer het opnieuw met het betreffende bedieningselement.
 [AI for all computer colonies]
 AI voor alle computergestuurde kolonies

@@ -465,7 +465,9 @@ export function SetDetail({ id }: { id: string }) {
                     {Object.entries((entry['properties'] ?? {}) as Record<string, unknown>).map(
                       ([key, value]) => (
                         <div key={key}>
-                          <dt>{key.replace(/([A-Z])/g, ' $1')}</dt>
+                          <dt>
+                            <code>{key}</code>
+                          </dt>
                           <dd>
                             {typeof value === 'object' ? JSON.stringify(value) : String(value)}
                           </dd>

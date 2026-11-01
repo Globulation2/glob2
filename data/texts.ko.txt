@@ -6820,5 +6820,41 @@ GL 전용
 메시지 ▸
 [Camp-site amount]
 야영지 수
+[script compilation success]
+컴파일 성공
+[script error at %0:%1: %2]
+%0:%1에서 오류 발생: %2
+[script compilation failure %0:%1:(%2):%3]
+컴파일 실패: %0:%1:(%2):%3
+[script compilation failed %0]
+컴파일 실패: %0
+[script loading failed %0]
+%0에서 스크립트를 불러오는 데 실패했습니다.
+[script saving failed %0]
+스크립트를 %0에 저장하는 데 실패했습니다.
+[script line %0 column %1]
+행: %0 열: %1
+[game stopped %0]
+게임 중지됨: %0
+[game stopped script help]
+이 게임을 다시 시작하기 전에 내장된 JavaScript 코드와 해당 코드의 리소스 사용량을 확인하세요.
+[missing map generator %0]
+지도 생성기를 찾을 수 없습니다: %0. 내장 지형이 선택되었습니다.
+[hive standing order paused]
+상시 명령에 주의가 필요하여 일시 중지되었습니다.
+[hive connection changed orders paused]
+연결이 변경되었습니다. 재개하기 전에 일시 중지된 상시 명령을 확인하세요.
+[hive standing order fresh instruction]
+상시 명령은 다시 연결한 후 새 지시가 필요합니다. 명령을 취소하거나 지휘관에게 교체를 요청할 수 있습니다.
+[hive order confirmation failed]
+명령을 확인할 수 없습니다. 재개하기 전에 상시 명령을 확인하세요.
+[hive previous order sending]
+이전 명령이 아직 전송 중입니다. 이 메시지는 저장되었습니다. 다시 전송하려면 지휘관을 여세요.
+[hive order received %0]
+명령 수신: %0
+[hive order not confirmed]
+명령이 확인되지 않았습니다. 다시 시도하려면 지휘관을 여세요. 메시지는 저장되었습니다.
+[hive standing order update failed]
+상시 명령 업데이트에 실패했습니다. 명령은 이 장치에서 일시 중지되었습니다. 해당 컨트롤을 사용하여 다시 시도하세요.
 [AI for all computer colonies]
 모든 컴퓨터 제어 식민지의 AI

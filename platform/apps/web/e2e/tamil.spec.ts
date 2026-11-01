@@ -1,12 +1,15 @@
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { expect, test, type Page, type TestInfo } from '@playwright/test';
+import { expect, test, type BrowserContext, type Page, type TestInfo } from '@playwright/test';
 import { COLONY_SKIN_MATERIALS, SWARM_MESHES } from '@glob2/protocol';
 import { INVITE_CODE } from './showcase.ts';
 
-const catalog = JSON.parse(
-  readFileSync(new URL('../../../packages/i18n/locales/ta.json', import.meta.url), 'utf8'),
-) as Record<string, string>;
+function readCatalog(locale: 'ta' | 'fil') {
+  return JSON.parse(
+    readFileSync(new URL(`../../../packages/i18n/locales/${locale}.json`, import.meta.url), 'utf8'),
+  ) as Record<string, string>;
+}
+const catalog = readCatalog('ta');
 const welcome = catalog['Welcome to the colony'];
 if (!welcome) throw new Error('Missing Tamil welcome heading');
 
@@ -16,18 +19,21 @@ async function capture(
   path: string,
   name: string,
   ready?: () => Promise<void>,
+  locale: 'ta' | 'fil' = 'ta',
 ) {
   await page.goto(path);
   await ready?.();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'ta');
+  await expect(page.locator('html')).toHaveAttribute('lang', locale);
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   await page.evaluate(() => document.fonts.ready);
-  expect(
-    await page.evaluate(() => document.fonts.check('16px "Glob2 Scripts"', 'தமிழ் கொடி கூடு')),
-  ).toBe(true);
-  expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain(
-    'Glob2 Scripts',
-  );
+  if (locale === 'ta') {
+    expect(
+      await page.evaluate(() => document.fonts.check('16px "Glob2 Scripts"', 'தமிழ் கொடி கூடு')),
+    ).toBe(true);
+    expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain(
+      'Glob2 Scripts',
+    );
+  }
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -124,9 +130,9 @@ async function capture(
   if (process.env.SCREENSHOT_DIR) {
     const directory = resolve(process.env.SCREENSHOT_DIR, info.project.name);
     mkdirSync(directory, { recursive: true });
-    screenshotPath = resolve(directory, `ta-${name}.png`);
+    screenshotPath = resolve(directory, `${locale}-${name}.png`);
   }
-  await info.attach(`ta-${name}`, {
+  await info.attach(`${locale}-${name}`, {
     body: await page.screenshot({ fullPage: true, path: screenshotPath }),
     contentType: 'image/png',
   });
@@ -191,14 +197,18 @@ test('Tamil fonts, navigation, server pages and saved language render together',
     await capture(page, info, path, `registered-${path.slice(1)}`);
 });
 
-test('Tamil studio initial interfaces render with deterministic enabled fixtures', async ({
-  page,
-  context,
-}, info) => {
+async function studioInitialInterfaces(
+  locale: 'ta' | 'fil',
+  page: Page,
+  context: BrowserContext,
+  info: TestInfo,
+) {
+  const languageName = locale === 'ta' ? 'Tamil' : 'Filipino';
   // Twelve full navigations include font settling and actual painter controls.
   test.setTimeout(360_000);
+  const catalog = readCatalog(locale);
   const base = String(info.project.use.baseURL);
-  await context.addCookies([{ name: 'glob2_locale', value: 'ta', url: base }]);
+  await context.addCookies([{ name: 'glob2_locale', value: locale, url: base }]);
   const text = (source: string) => {
     const value = catalog[source];
     if (typeof value !== 'string') throw new Error(`Missing Tamil fixture label: ${source}`);
@@ -215,7 +225,7 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
   ];
   const account = {
     id: '11111111-1111-4111-8111-111111111111',
-    displayName: 'Tamil studio fixture',
+    displayName: `${languageName} studio fixture`,
     kind: 'registered',
     createdAt: '2026-01-01T00:00:00Z',
     role: 'user',
@@ -294,29 +304,36 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
     const responsePromise = page.waitForResponse(
       (response) => new URL(response.url()).pathname === '/api/v1/instance',
     );
-    await capture(page, info, path, name, async () => {
-      const response = await responsePromise;
-      const payload = await response.json();
-      await info.attach(`tamil-instance-${path.slice(1)}`, {
-        body: Buffer.from(
-          JSON.stringify({
-            path,
-            status: response.status(),
-            fixture: response.headers()['x-tamil-studio-fixture'] ?? null,
-            features: payload.features,
-            interceptedRequests: instanceReads.slice(before),
-          }),
-        ),
-        contentType: 'application/json',
-      });
-      expect(response.ok(), `instance response at ${path}`).toBe(true);
-      expect(response.headers()['x-tamil-studio-fixture'], `instance fixture at ${path}`).toBe(
-        'enabled',
-      );
-      expect(payload.features, `enabled features at ${path}`).toEqual(features);
-      expect(instanceReads.slice(before).some((read) => read.path === path)).toBe(true);
-      await ready();
-    });
+    await capture(
+      page,
+      info,
+      path,
+      name,
+      async () => {
+        const response = await responsePromise;
+        const payload = await response.json();
+        await info.attach(`tamil-instance-${path.slice(1)}`, {
+          body: Buffer.from(
+            JSON.stringify({
+              path,
+              status: response.status(),
+              fixture: response.headers()['x-tamil-studio-fixture'] ?? null,
+              features: payload.features,
+              interceptedRequests: instanceReads.slice(before),
+            }),
+          ),
+          contentType: 'application/json',
+        });
+        expect(response.ok(), `instance response at ${path}`).toBe(true);
+        expect(response.headers()['x-tamil-studio-fixture'], `instance fixture at ${path}`).toBe(
+          'enabled',
+        );
+        expect(payload.features, `enabled features at ${path}`).toEqual(features);
+        expect(instanceReads.slice(before).some((read) => read.path === path)).toBe(true);
+        await ready();
+      },
+      locale,
+    );
   }
   const pricingMessages = new Map<string, string>([
     [
@@ -474,4 +491,14 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
     ),
     contentType: 'application/json',
   });
-});
+}
+
+for (const locale of ['ta', 'fil'] as const) {
+  const languageName = locale === 'ta' ? 'Tamil' : 'Filipino';
+  test(`${languageName} studio initial interfaces render with deterministic enabled fixtures`, async ({
+    page,
+    context,
+  }, info) => {
+    await studioInitialInterfaces(locale, page, context, info);
+  });
+}
