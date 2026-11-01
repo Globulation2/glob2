@@ -3,7 +3,7 @@ import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState } from 'react';
 import { MeshPreview } from './MeshPreview.tsx';
 import { ACTIONS, DEFAULT_CAMERA } from './geometry.ts';
-import { MODELS, type Model } from './atlas.ts';
+import { MODELS, modelSentenceName, type Model } from './atlas.ts';
 import { StudioDialog } from './StudioControls.tsx';
 import { cloneSkin, paintCanvas, type SkinData } from './useSkinDocument.ts';
 
@@ -41,7 +41,7 @@ export function CopyPaintDialog({
           source={
             'Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.'
           }
-          slots={{ slot0: skinModelLabel(model.id) }}
+          slots={{ slot0: modelSentenceName(model) }}
         />
       </p>
       <div className="skin-copy-grid">

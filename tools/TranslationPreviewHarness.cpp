@@ -421,9 +421,10 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
         GAGGUI::ScreenStack stack(*globals.gfx);
         if (screen == "main") {
             Preview<MainMenuScreen> preview; preview.render(); controls = preview.bounds();
-        } else if (screen == "settings" || screen == "settings-audio") {
+        } else if (screen == "settings" || screen == "settings-audio" || screen == "settings-player") {
             Preview<SettingsScreen> preview;
             if (screen == "settings-audio") preview.selectCategory(SettingsScreen::Category::Audio);
+            if (screen == "settings-player") preview.selectCategory(SettingsScreen::Category::Player);
             preview.render(); controls = preview.bounds();
         } else if (screen == "lobby" || screen == "lobby-players") {
             Preview<CustomGameScreen> preview(stack);

@@ -83,6 +83,13 @@ describe('online locale resolution', () => {
     expect(resolveLocale(['ta-Latn', 'fr'])).toBe('fr');
     expect(localeFromCookie('glob2_locale=ta')).toBe('ta');
   });
+  it('selects Malay Rumi and skips explicit Jawi requests', () => {
+    for (const tag of ['ms', 'ms-MY', 'ms-Latn-MY', 'ms_MY', 'ms-u-nu-arab', 'ms-x-arab'])
+      expect(resolveLocale(tag)).toBe('ms');
+    expect(resolveLocale(['ms-Arab-MY', 'fr'])).toBe('fr');
+    expect(resolveLocale(['ms-Latn-Arab', 'fr'])).toBe('fr');
+    expect(localeFromCookie('glob2_locale=ms')).toBe('ms');
+  });
 });
 describe('message presentation', () => {
   it('interpolates safely as text and falls back to source', async () => {
@@ -149,10 +156,23 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 38 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(38);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(38);
-    expect(new Set(locales.map((l) => l.code)).size).toBe(38);
+  it('contains 39 unique game catalog mappings including Tamil and Malay', () => {
+    expect(locales).toHaveLength(39);
+    expect(locales).toContainEqual({ code: 'ta', gameCode: 'ta', name: 'தமிழ்', dir: 'ltr' });
+    expect(locales).toContainEqual({
+      code: 'nb',
+      gameCode: 'nb',
+      name: 'Norsk bokmål',
+      dir: 'ltr',
+    });
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(locales.length);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
+    expect(locales).toContainEqual({
+      code: 'ms',
+      gameCode: 'ms',
+      name: 'Bahasa Melayu',
+      dir: 'ltr',
+    });
   });
 });
 

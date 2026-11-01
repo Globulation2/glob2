@@ -1,4 +1,4 @@
-import { MessageError } from '../messages.ts';
+import { MessageError, getLocale, t } from '../messages.ts';
 
 import { COLONY_SKIN_MATERIALS, type ColonySkinMaterial } from '@glob2/protocol';
 
@@ -13,6 +13,11 @@ export const MODELS = [
   { id: 'swarm', name: 'Swarm', mesh: 'swarm', x: 256, y: 256 },
 ] as const;
 export type Model = (typeof MODELS)[number];
+
+/** Keep English sentence casing; translated model labels control their own capitalization. */
+export function modelSentenceName(model: Model): string {
+  return getLocale() === 'en' ? model.name.toLowerCase() : t(model.name);
+}
 
 // Ids are stored in the material map; the game shades each id differently.
 export const MATERIALS = COLONY_SKIN_MATERIALS;

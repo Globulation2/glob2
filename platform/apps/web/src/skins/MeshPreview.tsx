@@ -1,4 +1,3 @@
-import { skinModelLabel } from './labels.ts';
 import { translateError } from '../i18n.tsx';
 import { MessageError } from '../i18n.tsx';
 import { message as sourceMessage } from '../i18n.tsx';
@@ -11,7 +10,7 @@ import {
   COLONY_SKIN_SHELL_DEPTH,
   type SwarmMeshId,
 } from '@glob2/protocol';
-import { type Model, ATLAS_SIZE, regionHasShells } from './atlas.ts';
+import { type Model, ATLAS_SIZE, regionHasShells, modelSentenceName } from './atlas.ts';
 import { swarmModel } from './swarmShapes.ts';
 import {
   furScale,
@@ -380,7 +379,7 @@ export function MeshPreview(props: ViewportProps) {
         ref={canvas}
         aria-label={
           props.label ??
-          t('Paint directly on the 3D {value0} model', { value0: skinModelLabel(props.model.id) })
+          t('Paint directly on the 3D {value0} model', { value0: modelSentenceName(props.model) })
         }
         onContextMenu={(e) => e.preventDefault()}
         onPointerDown={(e) => {

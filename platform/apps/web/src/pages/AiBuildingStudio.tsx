@@ -591,6 +591,7 @@ function BuildingWorkspace({ id }: { id?: string }) {
               )}
               <StudioTabs
                 label={t('Artifact view')}
+                idPrefix="studio-tab-artifact-view"
                 panels={{
                   preview: 'studio-panel-artifact-view-preview',
                   edit: 'studio-panel-artifact-view-edit',
