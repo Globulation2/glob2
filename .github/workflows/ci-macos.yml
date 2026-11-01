@@ -84,6 +84,11 @@ jobs:
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 $preview_target \
             build/darwin/client/release/src/glob2 unit-tests $test_targets \
             CXXFLAGS="-I$openssl/include" LINKFLAGS="-L$openssl/lib"
+      - name: Verify deterministic replay and match traces on the release client
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build.outcome == 'success' }}
+        run: |
+          export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
+          python3 test/run-browser-determinism.py build/darwin/client/release/src/glob2 artifacts/localization-macos-tests/determinism
       - name: Check focused native layout bidi and text metrics cases
         if: ${{ !cancelled() && inputs.desktop_localization && steps.build.outcome == 'success' }}
         run: |

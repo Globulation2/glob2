@@ -141,6 +141,9 @@ jobs:
         run: |
           mkdir -p artifacts/localization-windows-tests
           env -u GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy build/mingw/client/release/src/glob2.exe info version --format json > artifacts/localization-windows-tests/client-version.json
+      - name: Verify deterministic replay and match traces on the Windows release client
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        run: env -u GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS python3 test/run-browser-determinism.py build/mingw/client/release/src/glob2.exe artifacts/localization-windows-tests/determinism
       - name: Check focused native layout bidi and text metrics cases
         if: ${{ !cancelled() && inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
         run: >-
