@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
-        ref: 06f093ff0e5ce59367991cd87d6932cff09d6e04
+        ref: 942d138b609ad8e0c425d974042b6e3983a717a4
         persist-credentials: false
     - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
       with:
@@ -56,9 +56,15 @@ jobs:
                 raise RuntimeError(str(record))
             return b''.join(lines).decode(errors='replace')
         def sim(label,*args,timeout=300):return run(label,['xcrun','simctl','--set',str(device_set),*args],timeout)
-        summary={'passed':False,'source':'06f093ff0e5ce59367991cd87d6932cff09d6e04','workflow_commit':os.environ['GITHUB_SHA'],'scope':'actual iOS arm64 Simulator release build; seeded Bengali profile; startup/background/resume/relaunch; no physical-device, first-visit-onboarding, keyboard, comprehensive gameplay or determinism claim'}
+        summary={'passed':False,'source':'942d138b609ad8e0c425d974042b6e3983a717a4','workflow_commit':os.environ['GITHUB_SHA'],'scope':'actual iOS arm64 Simulator release build; seeded Bengali profile; startup/background/resume/relaunch; no physical-device, first-visit-onboarding, keyboard, comprehensive gameplay or determinism claim'}
         try:
             actual=run('source',['git','rev-parse','HEAD']).strip(); assert actual==summary['source']
+            source_catalogs={}
+            for name,expected in [('data/texts.bn.txt','3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054'),('platform/packages/i18n/locales/bn.json','5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29')]:
+                content=(root/name).read_bytes(); digest=hashlib.sha256(content).hexdigest();assert digest==expected,name
+                source_catalogs[name]={'sha256':digest,'keys':len(content.decode().splitlines())//2 if name.endswith('.txt') else len(json.loads(content))}
+            assert [v['keys'] for v in source_catalogs.values()]==[3395,2842]
+            (proof/'source-catalogs.json').write_text(json.dumps(source_catalogs,indent=2))
             assert run('architecture',['uname','-m']).strip()=='arm64'
             candidates=[]
             for candidate in sorted(Path('/Applications').glob('Xcode*.app/Contents/Developer')):
@@ -104,8 +110,17 @@ jobs:
                 assert source.is_file() and bundled.is_file(),name
                 a=hashlib.sha256(source.read_bytes()).hexdigest();b=hashlib.sha256(bundled.read_bytes()).hexdigest();assert a==b,name
                 identities.append({'path':name,'source_sha256':a,'app_sha256':b})
-            assert next(x['app_sha256'] for x in identities if x['path']=='data/texts.bn.txt')=='142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604'
+            assert next(x['app_sha256'] for x in identities if x['path']=='data/texts.bn.txt')=='3b9a6d23a436c12c0d95ee64d3bf74536187c46f7d110268e58325e85e618054'
             (proof/'critical-bundle-identities.json').write_text(json.dumps(identities,indent=2))
+            font_closure=[]
+            for bundled in sorted((app/'data/fonts').rglob('*')):
+                if not bundled.is_file():continue
+                name=str(bundled.relative_to(app)); source=root/name
+                assert source.is_file(),name
+                a=hashlib.sha256(source.read_bytes()).hexdigest(); b=hashlib.sha256(bundled.read_bytes()).hexdigest();assert a==b,name
+                font_closure.append({'path':name,'bytes':bundled.stat().st_size,'source_sha256':a,'app_sha256':b})
+            assert font_closure
+            (proof/'font-bundle-closure.json').write_text(json.dumps(font_closure,indent=2))
             manifests=[]
             for path in (root/'build').rglob('manifest.json'):
                 if path.stat().st_size<4*1024*1024:
@@ -160,7 +175,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: bengali-ios-simulator-integration-06f093f
+        name: bengali-ios-simulator-final-v3-942d138
         path: build/ios-bengali-proof/
         if-no-files-found: error
         retention-days: 14
