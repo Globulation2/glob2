@@ -894,7 +894,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             const auto before = gui.game.checkSum();
             const auto metrics = Stats::catalogForBuildings(gui.game.buildingsTypes);
             const auto metric = std::find_if(metrics.begin(), metrics.end(), [](const auto &entry) {
-                return entry.id == "win probability";
+                return std::string(entry.id) == "win probability";
             });
             require(metric != metrics.end(), "Production win probability metric exists");
             FrontendTheme theme;

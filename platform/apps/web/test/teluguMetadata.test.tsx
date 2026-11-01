@@ -87,9 +87,9 @@ it('changes map visibility through translated options without translating policy
   );
   const visibility = screen.getByLabelText('దృశ్యమానత') as HTMLSelectElement;
   expect([...visibility.options].map((option) => [option.value, option.textContent])).toEqual([
-    ['public', 'బహిరంగం: కేటలాగ్‌లో కనిపిస్తుంది'],
-    ['unlisted', 'జాబితాలో లేదు: లింక్ ఉన్నవారికి అందుబాటు'],
-    ['private', 'ప్రైవేట్: మీకు మాత్రమే'],
+    ['public', 'పబ్లిక్ — అందరి కోసం జాబితా చేయబడింది'],
+    ['unlisted', 'జాబితాలో లేదు — లింక్ ద్వారా యాక్సెస్ చేయవచ్చు'],
+    ['private', 'ప్రైవేట్ — కేవలం మీరు'],
   ]);
   expect(visibility.value).toBe('unlisted');
   fireEvent.change(visibility, { target: { value: 'private' } });
