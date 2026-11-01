@@ -4894,6 +4894,30 @@ Units boxed in with no free square to step onto.
 Resources cleared
 [stat cleared about]
 Resources removed by workers in clearing areas to make room.
+[stats topic overview]
+Overview
+[stats topic economy]
+Economy
+[stats topic world]
+World
+[stats work construction]
+Work & construction
+[stats defence]
+Defence
+[stats history]
+View history
+[stats waiting]
+Waiting for statistics…
+[stats unit details]
+Unit details
+[stats map overlays]
+Map overlays
+[stats topic]
+Topic
+[stats full history]
+Open full history
+[stats missing readings]
+— No recorded reading yet. Select a statistic for details.
 [stat win probability]
 Win probability
 [stat win probability about]

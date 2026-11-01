@@ -656,8 +656,9 @@ bytes, including leases held by queued submissions and retiring devices; bounded
 lookup and shared-ownership bookkeeping is accounted separately. Exhausted
 admission falls back to CPU composition. GPU coverage allocations retain their
 independent 32 MiB budget. `terrain-compose` reads four straight RGBA materials,
-RGBA16_UINT coverage weights/margin and R8_UINT palette selectors. Its 144-byte
-fragment block holds composition parameters and per-material seam constants.
+RGBA16_UINT coverage weights/margin and R8_UINT palette selectors. Its 352-byte
+fragment block holds composition parameters, per-material seam and surf constants,
+and the cell's world origin and animation time for surf.
 `terrain-reduce` performs the reference alpha-weighted box reduction for divisors
 1, 2, 4, 8, 16 and 32 with a 16-byte parameter block. Straight intermediates
 retain packed-ARGB wrapping; final premultiplied targets apply the same byte

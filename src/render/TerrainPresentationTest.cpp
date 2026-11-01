@@ -35,6 +35,8 @@
 #endif
 #endif
 #include <algorithm>
+#include <cstdio>
+#include <filesystem>
 #include <cstring>
 #include <cmath>
 #include <string_view>
@@ -261,6 +263,10 @@ std::filesystem::path highResolutionFixture()
 	frames << "GLOB2_HIGHRES 1\n";
 	for (int variant = 0; variant < 16; ++variant)
 		frames << "terrain" << variant << " 32 32 4 grass.webp -\n";
+	// Catalogue grass, sand and ice draw from their own 8x8-block banks.
+	for (const char *bank : {"terrain-grass", "terrain-sand", "terrain-ice"})
+		for (int variant = 0; variant < 256; ++variant)
+			frames << bank << variant << " 32 32 4 grass.webp -\n";
 	return directory;
 }
 
@@ -307,6 +313,18 @@ void layeredCache(bool gpu, bool hd = false)
 	bool memoryRecorded = false;
 	const auto compare = [&]
 	{
+		// Each path declares its visible HD window on a draw; stream it, then
+		// draw once more so both have adopted the published frames before the
+		// measured draws (the game path adopts them a frame later).
+		const auto drawBoth = [&]
+		{
+			clear();
+			game.drawMapTerrain(0, 0, 19, 14, 29, 30, 0, Game::DRAW_WHOLE_MAP, scene);
+			cache.prepare(scene, *globals->terrain, 0, 0, 19, 14, 29, 30, fixture.team->me, true);
+		};
+		drawBoth();
+		GAGCore::Sprite::finishHighResolution();
+		drawBoth();
 		clear();
 		game.drawMapTerrain(0, 0, 19, 14, 29, 30, 0, Game::DRAW_WHOLE_MAP, scene);
 		const auto expected = terrainPixels(gpu);
@@ -410,6 +428,8 @@ TEST_SUITE("TerrainPresentation")
         glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.discovered=true});auto &map=fixture.game.map;
         for(int y=0;y<32;++y)for(int x=0;x<32;++x)
             map.setVertexTerrain(x,y,((x+y)%5==0)?WATER:((x*3+y)%7==0)?SAND:GRASS);
+        // Dark water's surf advances in steps; times 19 and 25 fall inside one.
+        for(int y=10;y<14;++y)for(int x=20;x<24;++x)map.setVertexTerrain(x,y,DARK_WATER);
         SceneMap scene;glob2test::observeMap(map,scene);
         SoftwareTerrainCache retained;
         unsigned comparisons=0;
@@ -1031,6 +1051,9 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(fixture.game.map,scene);
 		// An independently sized strip fits HD pages, unlike its whole capture.
 		SoftwareTerrainCache independent;
+		// Interactive pages show native art until the declared HD window streams.
+		independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me, true);
+		GAGCore::Sprite::finishHighResolution();
 		REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me,
 									true));
 		CHECK(globals->terrainCompositor().scale() == 4);
@@ -1072,6 +1095,8 @@ TEST_SUITE("TerrainPresentation")
 			backend.largestTexture = 0;
 			CHECK(globals->gfx->maximumTextureSize() == limit);
 			SoftwareTerrainCache cache;
+			cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true);
+			GAGCore::Sprite::finishHighResolution();
 			const bool admitted =
 				cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true);
 			CHECK(globals->terrainCompositor().scale() == 4);
@@ -1653,6 +1678,152 @@ TEST_SUITE("TerrainPresentation")
 #include <chrono>
 TEST_SUITE("TerrainValidation")
 {
+	TEST_CASE("connected foliage corners strips and filled patches [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 1024, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true,
+			.loadDefaultRace = true, .header = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		for (int panel = 0; panel < 2; ++panel)
+		{
+			const auto type = panel ? THICKET : HEDGE;
+			for (unsigned mask = 0; mask < 16; ++mask)
+			{
+				const int x = panel * 16 + 1 + int(mask % 4) * 3, y = 1 + int(mask / 4) * 3;
+				for (unsigned k = 0; k < 4; ++k)
+					map.setVertexTerrain(x + (k & 1), y + (k >> 1), mask & (1u << k) ? type : GRASS);
+			}
+			for (int y = 14; y < 23; ++y)
+				for (int x = 1; x < 15; ++x)
+					if (y == 14 || (y >= 16 && !(x >= 6 && x <= 8 && y >= 18 && y <= 20)))
+						map.setVertexTerrain(panel * 16 + x, y, type);
+		}
+		// A connected patch crossing both toroidal seams uses the same masks.
+		for (int y : {31, 0})
+			for (int x : {31, 0}) map.setVertexTerrain(x, y, HEDGE);
+		for (int y = 26; y <= 29; ++y)
+			for (int x = 4; x <= 27; ++x) map.setVertexTerrain(x, y, x < 16 ? HEDGE : THICKET);
+
+		for (int panel = 0; panel < 2; ++panel)
+		{
+			map.setResourceByIndex(panel * 16 + 7, 19, WOOD, 0);
+			for (int x : {5, 7, 9}) map.setResourceByIndex(panel * 16 + x, 24, WOOD, 0);
+		}
+
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor();
+		const auto &catalog = compositor.catalog();
+		for (int panel = 0; panel < 2; ++panel)
+			for (unsigned mask = 0; mask < 16; ++mask)
+			{
+				const int x = panel * 16 + 1 + int(mask % 4) * 3, y = 1 + int(mask / 4) * 3;
+				const auto id = catalog.find(panel ? "thicket" : "hedge");
+				CHECK(compositor.decorFrame(scene, x, y) ==
+					catalog.decorFrame(id, x, y, mask != 15, scene.terrainSeed(), mask,
+						TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed())));
+			}
+		for (const auto [x, y] : {std::pair{31, 31}, std::pair{15, 27}})
+			CHECK(compositor.decorFrame(scene, x, y) ==
+				catalog.decorFrame(catalog.find("hedge"), x, y, false, scene.terrainSeed(), 15,
+					TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed())));
+
+		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
+			(glob2test::artifactDir() / "connected-foliage-ground.png").string().c_str()));
+
+		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
+		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
+			(glob2test::artifactDir() / "connected-foliage.png").string().c_str()));
+	}
+
+	TEST_CASE("shoreline surf animation frames around an island [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 768, .seed = 7331});
+		auto &compositor = globals->terrainCompositor();
+		compositor.prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5,
+										 .hDec = 5,
+										 .discovered = true,
+										 .loadDefaultRace = true,
+										 .header = true,
+										 .seed = 7331});
+		auto &map = fixture.game.map;
+		// A sand-rimmed grass island with an irregular coast, a deep-water
+		// channel and a dark-water pool, all in open water.
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+			{
+				const double dx = x - 15.5, dy = (y - 11.5) * 1.3;
+				const double angle = std::atan2(dy, dx), distance = std::sqrt(dx * dx + dy * dy);
+				const double coast = 9 + 1.6 * std::sin(3 * angle) + 0.9 * std::cos(5 * angle + 1);
+				map.paintCell(x, y, distance < coast ? (distance < coast - 3 ? GRASS : SAND)
+													 : x > 27 ? DEEP_WATER : WATER);
+				if (x >= 2 && x < 5 && y >= 17 && y < 21)
+					map.paintCell(x, y, DARK_WATER);
+				if (x >= 5 && x < 7 && y >= 17 && y < 21)
+					map.paintCell(x, y, SAND);
+			}
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		const auto &catalog = compositor.catalog();
+		const int period = catalog.materials[catalog.find("water")].surf.period;
+		REQUIRE(period > 0);
+		const auto directory = glob2test::artifactDir() / "surf";
+		std::filesystem::create_directories(directory);
+		constexpr int frames = 24;
+		for (int frame = 0; frame < frames; ++frame)
+		{
+			fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene,
+										frame * period / frames);
+			char name[32];
+			std::snprintf(name, sizeof name, "surf-%02d.png", frame);
+			REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(), (directory / name).string().c_str()));
+		}
+	}
+	TEST_CASE("shore calm before and after along a coastline [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 768, .seed = 7331});
+		auto &compositor = globals->terrainCompositor();
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+			{
+				const double coast = 11 + 2.5 * std::sin(y * 0.45) + 1.2 * std::cos(y * 1.3);
+				map.paintCell(x, y, x < coast - 3 ? GRASS : x < coast ? SAND : x > 24 ? DEEP_WATER : WATER);
+			}
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		const auto directory = glob2test::artifactDir() / "shore-calm";
+		std::filesystem::create_directories(directory);
+		// HD cells, as accelerated renderers draw them, over a stretch of coast.
+		constexpr int scale = 4, x0 = 6, y0 = 4, w = 14, h = 9, n = 32 * scale;
+		const int time = 77;
+		compositor.prepare(true, time);
+		unsigned calmed = 0;
+		for (bool calm : {false, true})
+		{
+			GAGCore::DrawableSurface image(w * n, h * n);
+			for (int y = 0; y < h; ++y)
+				for (int x = 0; x < w; ++x)
+				{
+					auto recipe = compositor.describe(scene, x0 + x, y0 + y);
+					calmed += calm && recipe.calmed();
+					if (!calm)
+						recipe.calm = {};
+					compositor.compose(recipe, image.getSDLSurface(), x * n, y * n, scale);
+				}
+			REQUIRE(IMG_SavePNG(image.getSDLSurface(),
+								(directory / (calm ? "after.png" : "before.png")).string().c_str()));
+		}
+		CHECK(calmed > 0);
+	}
 	TEST_CASE("terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(
@@ -1710,8 +1881,8 @@ TEST_SUITE("TerrainValidation")
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "terrain-catalogue-gallery.png").string().c_str()));
-		// Obstacle islands carry decor: cells with four obstacle corners use full
-		// frames, cells with two or three the smaller edge frames; open ground has none.
+		// Obstacle islands carry decor: connected foliage follows corner masks;
+		// other obstacles choose full/edge clusters. Open ground has none.
 		auto &compositor = globals->terrainCompositor();
 		REQUIRE(compositor.decorSprite());
 		const auto &catalog = compositor.catalog();
@@ -1728,11 +1899,15 @@ TEST_SUITE("TerrainValidation")
 				CHECK(compositor.decorFrame(scene, ox + 1, oy + 1) == -1);
 				continue;
 			}
-			CHECK(contains(decor.full, compositor.decorFrame(scene, ox + 1, oy + 1)));
+			// Filled connected cells may also choose an alternative interior.
+			auto full = decor.connected.empty() ? decor.full : decor.connected;
+			full.insert(full.end(), decor.connectedInterior.begin(), decor.connectedInterior.end());
+			const auto &edge = decor.connected.empty() ? decor.edge : decor.connected;
+			CHECK(contains(full, compositor.decorFrame(scene, ox + 1, oy + 1)));
 			// Painted cells cover vertices ox..ox+3, so the cells just outside
 			// the island have two of its corners.
-			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox - 1, oy + 1)));
-			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox + 3, oy + 1)));
+			CHECK(contains(edge, compositor.decorFrame(scene, ox - 1, oy + 1)));
+			CHECK(contains(edge, compositor.decorFrame(scene, ox + 3, oy + 1)));
 		}
 		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
 		// Painted islands keep their identity.
@@ -1775,6 +1950,21 @@ TEST_SUITE("TerrainValidation")
 				REQUIRE(hd);
 				CHECK(hd->getW() == 128);
 				CHECK(hd->getH() == 128);
+			}
+			if (!material.decor.connected.empty())
+			{
+				auto *decor = GAGCore::Toolkit::getSprite(material.decor.sprite);
+				REQUIRE(decor);
+				auto frames = material.decor.connected;
+				frames.insert(frames.end(), material.decor.connectedInterior.begin(),
+					material.decor.connectedInterior.end());
+				for (int frame : frames)
+				{
+					auto *hd = decor->baseFrame(frame);
+					REQUIRE(hd);
+					CHECK(hd->getW() == 128);
+					CHECK(hd->getH() == 192);
+				}
 			}
 			TerrainVisual::Recipe recipe;
 			recipe.corners.fill(id);

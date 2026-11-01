@@ -40,13 +40,10 @@ class TeamStatChart
 	static std::string axisTitle(const Stats::Metric &metric, const Stats::View &view);
 	//! A reading as text, with its percent sign.
 	static std::string readingText(const Stats::Reading &reading);
-	//! The metrics of one group as lines of text, name left and current value
-	//! right: the in-game statistics panel. Counters read as their rate per minute.
+	//! Compact text readout retained for measurement capture fixtures. The in-game
+	//! topic panel uses declarative controls and readingText().
 	static void paintReadings(GAGCore::DrawableSurface &surface, int left, int top, int width, const TeamStats &stats,
 							  Stats::Group group);
-	//! Number of groups the in-game panel pages through: every group before the
-	//! score, whose one metric (prestige) is on the top bar.
-	static constexpr int readingGroups = int(Stats::Group::Score);
 	//! Colour of band `index` of a split chart.
 	static GAGCore::Color bandColor(const Stats::Chart &chart, std::size_t index);
 	//! The plot background the line and band colours are chosen for.

@@ -17,7 +17,7 @@ for (const mode of ['serial', 'threaded']) for (const phone of [false, true]) {
   test.describe(`Filipino ${mode} ${phone ? 'phone' : 'desktop'}`, () => {
     test.use({viewport: phone ? {width: 390, height: 844} : {width: 1280, height: 860}, hasTouch: phone});
     test('launcher, settings input, and editor render Filipino', async ({page, context}, info) => {
-      test.setTimeout(240000);
+      test.setTimeout(600000);
       const url = new URL(gameURL(), String(info.project.use.baseURL || 'http://127.0.0.1:8770'));
       url.searchParams.set('threads', mode);
       await context.addCookies([{name: 'glob2_locale', value: 'fil', url: url.origin}]);

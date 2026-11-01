@@ -1,5 +1,37 @@
+[hub finish in browser, game continues]
+Tapusin ang pag-sign in sa iyong browser. Magpapatuloy nang mag-isa ang laro kapag tapos ka na.
+[hub browser did not open]
+Hindi bumukas ang iyong browser. Buksan ang pahina ng pag-sign-in upang magpatuloy.
+[hub compare code %0]
+Kung hihilingin ng pahina, tiyaking %0 ang ipinapakita nito.
+[hub code copied]
+Nakopya ang code
+[settings Finish in your browser. The game continues by itself.]
+Tapusin sa iyong browser. Magpapatuloy ang laro nang mag-isa.
+[music set]
+Set ng musika
+[random music set]
+Random bawat laban
+[playing music set %0]
+Nagpe-play: %0
+[music set failed]
+Hindi ma-load ang set ng musikang ito.
+[settings Edge scrolling]
+Pag-scroll sa gilid
+[settings Edge scrolling in fullscreen]
+Pag-scroll sa gilid sa fullscreen
+[settings Edge scrolling in windowed mode]
+Pag-scroll sa gilid sa windowed mode
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+Igalaw ang mga mapa ng laro at editor kapag naabot na ng mouse ang gilid ng window.
 [%0 has left the game]
 Umalis na si %0 sa laro.
+[start recording]
+Simulan ang pagre-record
+[stop recording]
+Itigil ang pagre-record
+[finalizing recording]
+Tinatapos ang pagre-record…
 [%0 level %1]
 %0 Antas %1
 [%0 units can't access building]
@@ -374,16 +406,6 @@ Buong screen
 Puno na ang laro
 [game shortcuts]
 Mga Shortcut sa Laro
-[game speed help]
-Para sa single player at replays lamang. Para sa multiplayer, 1x lang ang laro.
-[music set]
-Set ng musika
-[random music set]
-Random bawat laban
-[playing music set %0]
-Nagpe-play: %0
-[music set failed]
-Hindi ma-load ang set ng musikang ito.
 [game speed]
 Bilis ng laro
 [Game]
@@ -534,8 +556,6 @@ prutas sa ibang koponan
 Nagpapahintulot ng palitan ng
 [market]
 Pamilihan
-[maximum game speed]
-Pinakamataas
 [medium priority]
 katamtaman
 [meta %0]
@@ -544,8 +564,6 @@ meta-%0
 Minimum na kinakailangang antas:
 [Minimum Level To Flag]
 Minimum na antas ng yunit
-[multiplayer game speed]
-Bilis ng laro: 1x (multiplayer)
 [Music volume]
 Lakas ng musika
 [Mute]
@@ -686,8 +704,6 @@ Tapos na ang Pag-replay
 Ibalik ang mga Default na Shortcut sa Keyboard
 [return to editor]
 Bumalik sa editor
-[Reroll terrain look]
-I-reroll ang hitsura ng lupain
 [return to game]
 Bumalik sa laro
 [return to replay]
@@ -712,6 +728,8 @@ I-save bago lumabas?
 I-save ang laro
 [save map]
 I-save ang Mapa
+[Reroll terrain look]
+I-reroll ang hitsura ng lupain
 [save replay]
 I-save ang replay
 [save script]
@@ -994,8 +1012,6 @@ Kabuuang mga Hitpoint
 Kabuuang prestihiyong naabot
 [Total]
 Kabuuan
-[tutorial]
-Pagsasanay
 [tutorial text 1]
 Maligayang pagdating sa pangunahing pagsasanay ng Globulation 2! Matututuhan mo rito ang pagtatayo ng mga panuluyan, paggalugad ng mga lugar, at pagpuksa sa mga kalaban. Marami kang matututuhan dito!
 [tutorial text 2]
@@ -1004,6 +1020,8 @@ Ngayong natutunan mo na ang mga pangunahing kaalaman, oras na para masanay sa ib
 Magaling ang nagawa mo para makarating dito. Ngayon, dumako naman tayo sa mga Mandirigma, Kuwartel, at mga Pag-upgrade.
 [tutorial text 4]
 Malapit ka nang matapos. Mga bandila at pag-atake na lang ang natitira. Pagkatapos, sapat na ang alam mo para subukan ang pasadyang laro at kalaunan ay maglaro online laban sa ilan sa pinakamahuhusay na manlalaro ng Globulation 2.
+[tutorial]
+Pagsasanay
 [Uncontrolled]
 Hindi kontrolado
 [undo]
@@ -1102,6 +1120,12 @@ Tinanggal ka sa laro
 Ang iyong %0 ay inaatake
 [Your unit got converted to %0's team]
 Sumali na ang iyong yunit sa koponan ng %0
+[game speed help]
+Para sa single player at replays lamang. Para sa multiplayer, 1x lang ang laro.
+[maximum game speed]
+Pinakamataas
+[multiplayer game speed]
+Bilis ng laro: 1x (multiplayer)
 [Units still inside: %0]
 Nasa loob pa rin: %0
 [Units still working: %0]
@@ -2186,10 +2210,10 @@ Pagpapakain / paggagamot
 Mga Estadistika 1/3 >
 [Stats page two]
 Mga Estadistika 2/3 >
-[Stats next page]
-Pahina (P)
 [Stats page three]
 Mga Estadistika 3/3 >
+[Stats next page]
+Pahina (P)
 [Stats blocked units]
 Mga yunit na hinarang S/C
 [Stats blocked buildings]
@@ -2216,12 +2240,12 @@ Paglago sa loob ng 16 na tile
 Paglago sa loob ng 32 tile
 [Stats low HP 25]
 Mga Yunit sa 25% HP
+[Stats low food 25]
+Mga yunit na may 25% na reserbang pagkain
 [Stats low HP 50]
 Mga Yunit sa 50% HP
 [Stats low HP 75]
 Mga Yunit sa 75% HP
-[Stats low food 25]
-Mga yunit na may 25% na reserbang pagkain
 [Stats low food 50]
 Mga yunit na may 50% na reserbang pagkain
 [Stats low food 75]
@@ -3274,22 +3298,6 @@ Momentum ng listahan
 Pagtalbog sa listahan
 [Map momentum]
 Momentum ng mapa
-[lan pairing field]
-String ng pagpapares ng Host (o pinagkakatiwalaang WSS URL)
-[lan pairing connect]
-Ipares at ikonekta
-[lan discovery instructions]
-Pumili ng host, pagkatapos ay i-paste ang pairing string nito upang mapatunayan ang pagkakakilanlan nito.
-[lan discovery unavailable]
-Hindi magagamit ang LAN discovery. Suriin ang pahintulot ng lokal na network o i-paste ang host pairing string.
-[lan discovered host %0]
-Natuklasan ang host %0 — ipares para matingnan ang mga laro
-[lan connection unavailable]
-Hindi maabot ang LAN host. Suriin ang pahintulot ng lokal na network at ang string ng pagpapares ng host.
-[lan connection verification failed %0]
-Hindi ma-verify o makakonekta sa LAN host: %0
-[lan lobby endpoint required]
-Gamitin ang endpoint ng host lobby
 [settings Artwork]
 Likhang sining
 [settings Original]
@@ -3356,6 +3364,22 @@ Pasimplehin ang mga bar, sona, lupain at yunit kapag naka-zoom out ang mapa, at 
 Laki ng teksto
 [settings Enlarge interface text without changing the map scale.]
 Palakihin ang teksto ng interface nang hindi binabago ang iskala ng mapa.
+[lan pairing field]
+String ng pagpapares ng Host (o pinagkakatiwalaang WSS URL)
+[lan pairing connect]
+Ipares at ikonekta
+[lan discovery instructions]
+Pumili ng host, pagkatapos ay i-paste ang pairing string nito upang mapatunayan ang pagkakakilanlan nito.
+[lan discovery unavailable]
+Hindi magagamit ang LAN discovery. Suriin ang pahintulot ng lokal na network o i-paste ang host pairing string.
+[lan discovered host %0]
+Natuklasan ang host %0 — ipares para matingnan ang mga laro
+[lan connection unavailable]
+Hindi maabot ang LAN host. Suriin ang pahintulot ng lokal na network at ang string ng pagpapares ng host.
+[lan connection verification failed %0]
+Hindi ma-verify o makakonekta sa LAN host: %0
+[lan lobby endpoint required]
+Gamitin ang endpoint ng host lobby
 [turn reconnecting]
 Nawala ang koneksyon sa host. Muling kumokonekta...
 [turn waiting for players]
@@ -4604,12 +4628,6 @@ Pamahalaan ang mga kredito at mga binili sa iyong browser. Pinapayagan ang tulon
 Buksan ang kumander
 [stop commander]
 Ihinto ang kumander
-[start recording]
-Simulan ang pagre-record
-[stop recording]
-Itigil ang pagre-record
-[finalizing recording]
-Tinatapos ang pagre-record…
 [settings Recording]
 Pagre-record
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
@@ -4876,6 +4894,30 @@ Mga yunit na napapaligiran ng sagabal at walang bakanteng parisukat na malipatan
 Na-clear na ang mga mapagkukunan
 [stat cleared about]
 Mga materyales na inalis ng mga manggagawa sa mga lugar ng paglilinis para magbigay ng espasyo.
+[stats topic overview]
+Buod
+[stats topic economy]
+Ekonomiya
+[stats topic world]
+Mundo
+[stats work construction]
+Trabaho at konstruksyon
+[stats defence]
+Depensa
+[stats history]
+Tingnan ang kasaysayan
+[stats waiting]
+Naghihintay ng istatistika…
+[stats unit details]
+Mga detalye ng yunit
+[stats map overlays]
+Mga overlay ng mapa
+[stats topic]
+Paksa
+[stats full history]
+Buong kasaysayan
+[stats missing readings]
+— Wala pang naitalang datos. Pumili ng istatistika para sa mga detalye.
 [stat win probability]
 Tsansang manalo
 [stat win probability about]
@@ -5294,24 +5336,6 @@ Ayon sa lugar
 Set ng musika
 [settings Random each match]
 Piliin ang Random para pumili ng soundtrack sa bawat pagsisimula ng laban.
-[settings Edge scrolling]
-Pag-scroll sa gilid
-[settings Edge scrolling in fullscreen]
-Pag-scroll sa gilid sa fullscreen
-[settings Edge scrolling in windowed mode]
-Pag-scroll sa gilid sa windowed mode
-[settings Move the game and editor maps when the mouse reaches the window edge.]
-Igalaw ang mga mapa ng laro at editor kapag naabot na ng mouse ang gilid ng window.
-[hub finish in browser, game continues]
-Tapusin ang pag-sign in sa iyong browser. Magpapatuloy nang mag-isa ang laro kapag tapos ka na.
-[hub browser did not open]
-Hindi bumukas ang iyong browser. Buksan ang pahina ng pag-sign-in upang magpatuloy.
-[hub compare code %0]
-Kung hihilingin ng pahina, tiyaking %0 ang ipinapakita nito.
-[hub code copied]
-Nakopya ang code
-[settings Finish in your browser. The game continues by itself.]
-Tapusin sa iyong browser. Magpapatuloy ang laro nang mag-isa.
 [AI Library]
 Aklatan ng AI
 [Authoring guide]
@@ -5986,8 +6010,6 @@ Binuksan na ang Discord. Maaari kang bumalik sa laro anumang oras.
 Hindi mabuksan ang Discord. Kopyahin ang link ng imbitasyon at buksan ito sa iyong browser.
 [discord link copied]
 Nakopya na ang link ng imbitasyon.
-[discord copy failed]
-Hindi makopya ang link. Piliin ang imbitasyon sa itaas para manu-manong kopyahin ito.
 [settings CPU automatic]
 Awtomatiko ang CPU
 [settings Scalar]
@@ -6060,6 +6082,8 @@ Hindi ma-save ang iyong napili. Pakisubukang muli.
 Kaliwang kamay
 [Right hand]
 Kanang kamay
+[discord copy failed]
+Hindi makopya ang link. Piliin ang imbitasyon sa itaas para manu-manong kopyahin ito.
 [stat ground movement]
 Paggalaw sa lupa
 [stat ground movement about]
@@ -6446,8 +6470,6 @@ Buksan ang Mga Bandila, piliin ang Bandila ng Digmaan, ilagay ito sa Pugad ng ka
 Ipakita ang destinasyon
 [intro scout destination]
 Magmanman dito
-[intro attack destination]
-Atakihin dito
 [intro compact scout]
 Mga Bandila → Bandila ng Paggalugad. Ilagay ito sa bato; magtalaga ng 1 tagapaggalugad.
 [intro compact build]
@@ -6776,6 +6798,8 @@ Mga Bandila → Bantay. Kulayan ang 4 na tile; hayaang dumating ang 2 mandirigma
 Panatilihing nababantayan ang sona ng bantay at may suplay ang mga Panuluyan.
 [lesson defensive-tactics counterattack compact]
 Bandila ng Digmaan → Pugad ng Kalaban. Humiling ng 3 mandirigma; radius ≤4.
+[intro attack destination]
+Atakihin dito
 [Grassland]
 Damuhan
 [Kopjes]
@@ -6784,7 +6808,7 @@ Kopjes
 Mga daanan ng hayop
 [Fish amount]
 Dami ng isda
-[Camp-site amount]
-Dami ng lugar ng kampo
 [scenario messages]
 Mga Mensahe ▸
+[Camp-site amount]
+Dami ng lugar ng kampo
