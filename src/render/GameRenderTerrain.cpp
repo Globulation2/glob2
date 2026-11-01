@@ -230,7 +230,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 				const int dy = (sprite->getH(imgid) - 32) >> 1;
 				globalContainer->gfx->drawSprite((x << 5) - dx, (y << 5) - dy, sprite, imgid);
 			}
-			}
+		}
 	}
 	flush();
 }
