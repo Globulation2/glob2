@@ -434,7 +434,8 @@ void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigne
 					   surfBump((wx + wy) >> 6 & 1023);
 	const int u = (phase + offset) & 1023;
 	// The wash rushes up over the first 30% of its period and drains slowly.
-	const int rise = u < 320 ? u * 512 / 320 : 512 + (u - 320) * 512 / 704;
+	constexpr int in = SurfWashInQ10;
+	const int rise = u < in ? u * 512 / in : 512 + (u - in) * 512 / (1024 - in);
 	const int run = s.reach * surfBump(rise) / 256;
 	for (int k = 0; k < 3; ++k)
 		value[k] = std::min(value[k], 255u);

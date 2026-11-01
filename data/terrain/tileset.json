@@ -805,12 +805,12 @@
       "surf": {
         "period": 300,
         "reach_q8": 1280,
-        "shallow_q8": 176,
+        "shallow_q8": 110,
         "shallow_width_q8": 1792,
         "shallow": [88, 178, 204],
         "wet_q8": 80,
         "wet_width_q8": 1792,
-        "foam_q8": 240,
+        "foam_q8": 150,
         "foam_width_q8": 512,
         "foam": [236, 244, 248]
       }
@@ -24383,12 +24383,12 @@
       "surf": {
         "period": 300,
         "reach_q8": 1152,
-        "shallow_q8": 160,
+        "shallow_q8": 100,
         "shallow_width_q8": 1792,
         "shallow": [76, 150, 196],
         "wet_q8": 80,
         "wet_width_q8": 1792,
-        "foam_q8": 232,
+        "foam_q8": 145,
         "foam_width_q8": 480,
         "foam": [236, 244, 248]
       }
@@ -25437,12 +25437,12 @@
         "period": 340,
         "ticks": 6,
         "reach_q8": 896,
-        "shallow_q8": 112,
+        "shallow_q8": 70,
         "shallow_width_q8": 1536,
         "shallow": [64, 104, 150],
         "wet_q8": 88,
         "wet_width_q8": 1792,
-        "foam_q8": 176,
+        "foam_q8": 110,
         "foam_width_q8": 400,
         "foam": [236, 244, 248]
       }

@@ -64,7 +64,8 @@ uvec3 terrainSurf(uint slot, bool surfSide, int margin, ivec2 world, uvec3 value
     int offset = terrainSurfBump((world.x >> 7) & 1023) + terrainSurfBump((world.y >> 7) & 1023) +
         terrainSurfBump(((world.x + world.y) >> 6) & 1023);
     int u = (phase + offset) & 1023;
-    int rise = u < 320 ? u * 512 / 320 : 512 + (u - 320) * 512 / 704;
+    const int washIn = 224; // TerrainVisual::SurfWashInQ10
+    int rise = u < washIn ? u * 512 / washIn : 512 + (u - washIn) * 512 / (1024 - washIn);
     int run = shape.y * terrainSurfBump(rise) / 256;
     value = min(value, uvec3(255u));
     int front;

@@ -59,6 +59,9 @@ struct Surf
 // libgag/shaders/terrain-compose-fragment.glsl.
 void applySurf(const Surf &, bool surfSide, int margin, int wx, int wy, unsigned time,
 			   unsigned value[3]);
+// Share of each wash (of 1024) spent rushing up the beach; the rest drains back
+// more slowly. Mirrored as washIn in libgag/shaders/terrain-compose-fragment.glsl.
+constexpr int SurfWashInQ10 = 224;
 // Shore calm: animated surf liquids fade from their full waves to a quiet
 // shimmer toward land, so the surf is the only motion at the beach. The fade
 // ends ShoreCalmReachQ8 (Q8 cells) from the shoreline, which lies halfway
