@@ -277,6 +277,16 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 	// Input issues orders against the live building (see allocationBuilding for drawing).
 	const auto* building = allocationBuilding() ? gui.inputBuildingPanel() : nullptr;
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	auto reject = [&]
+	{
+		allocation.reset();
+		if (event.type != SDL_EVENT_FINGER_UP)
+		{
+			fingers = {pointer};
+			ignoreTouchSequence = true;
+		}
+		return true;
+	};
 	if (!allocation)
 	{
 		if (event.type != SDL_EVENT_FINGER_DOWN || !fingers.empty() || placement || activeDialog() ||
@@ -289,6 +299,7 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 			if (!region || region->part != DialRegion::Arc ||
 				(region->action.kind != 6 && region->action.kind != 8))
 				return false;
+			if (!buildingControlAllowed(region->action, region->part)) return reject();
 			TouchAllocationSession session{pointer, {}, building->state().gid, gui.localTeamNo};
 			session.generation = building->state().scriptIdentity;
 			session.kind = region->action.kind;
@@ -314,6 +325,7 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 		if (!row || row->kind != 6 || point.x < content.x + 48 * unit ||
 			point.x >= content.x + content.w - 48 * unit)
 			return false;
+		if (!buildingControlAllowed(*row)) return reject();
 		allocation = TouchAllocationSession{
 			pointer,
 			{content.x + 56 * unit, point.y - 24 * unit, content.w - 112 * unit, 48 * unit},
@@ -338,6 +350,8 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 		allocation.reset();
 		return true;
 	}
+	const BuildingAction offered{"", allocation->kind, allocation->value};
+	if (!buildingControlAllowed(offered, allocation->polar ? std::optional(DialRegion::Arc) : std::nullopt)) return reject();
 	if (allocation->polar)
 	{
 		const auto g = dialLayout(layout()).geometry;
@@ -404,6 +418,7 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
 	if (usesDial())
 	{
 		const auto region = dialRegionAt(point);
+		if (region && !buildingControlAllowed(region->action, region->part)) return;
 		if (!region || region->action.kind != heldActionKind || region->action.value != heldActionValue ||
 			heldActionConfirmation != confirmDestroy ||
 			(region->action.kind == 3 && (region->action.label != heldActionLabel ||
@@ -413,6 +428,7 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
 		return;
 	}
 	const auto picked = actionAt(point);
+	if (picked && !buildingControlAllowed(*picked)) return;
 	if (!picked || picked->kind != heldActionKind || picked->value != heldActionValue ||
 		heldActionConfirmation != confirmDestroy)
 		return;
@@ -530,4 +546,50 @@ void GameGUITouch::applyDiscreteAction(const SceneBuildingPanel &building, const
 			gui.requestBuildingDestruction(*b);
 		confirmDestroy = false;
 	}
+}
+
+bool GameGUITouch::performBuildingAction(const BuildingAction &row, const GAGGUI::ui::SemanticAction &action)
+{
+	using namespace GAGGUI::ui;
+	gui.checkSelection();
+	const auto *shown = inspectedBuilding();
+	const auto *live = shown ? gui.inputBuildingPanel() : nullptr;
+	if (!shown || !live || globalContainer->isViewingGame() || live->owner().number != gui.localTeamNo ||
+		live->state().gid != shown->state().gid || live->state().scriptIdentity != shown->state().scriptIdentity)
+		return false;
+	// Validate the offered operation against current input state as the ordinary
+	// release path does. In particular, repair/upgrade labels can become obsolete
+	// while a prior action waits at the additional-input boundary.
+	if (row.kind == 3 && constructionActionLabel(live->state().constructionResultState,
+		live->state().buildingState, live->type, live->state().hp, live->hardSpaceForRepair,
+		live->hardSpaceForUpgrade, live->state().maxHp) != row.label) return false;
+	if (row.kind == 0 || row.kind == 6 || row.kind == 7 || row.kind == 8)
+	{
+		if (row.kind == 0 && action.kind == ActionKind::Activate)
+		{
+			cycleRatio(*live, row.value);
+			return true;
+		}
+		const auto *value = std::get_if<int>(&action.value);
+		if (!value || action.kind != (row.kind == 7 ? ActionKind::Select : ActionKind::SetValue)) return false;
+		const int maximum = row.kind == 0 ? int(MAX_RATIO_RANGE) : row.kind == 6 ? live->type->semantics.assignmentLimit :
+			row.kind == 7 ? 1 : live->type->maxUnitStayRange;
+		if (*value < (row.kind == 7 ? -1 : 0) || *value > maximum) return false;
+		if (row.kind == 0) setRatio(*live, row.value, *value);
+		else if (row.kind == 6) gui.requestWorkerAllocation(*live, *value);
+		else if (row.kind == 7) gui.requestBuildingPriority(*live, *value);
+		else gui.requestFlagRange(*live, *value);
+		return true;
+	}
+	if (action.kind != ActionKind::Activate) return false;
+	applyDiscreteAction(*live, row);
+	return true;
+}
+
+void GameGUITouch::cycleRatio(const SceneBuildingPanel &building, int type)
+{
+	const int current = gui.displayedRatio(building)[type];
+	const std::array<int, 5> presets{0, 1, 2, 3, 5};
+	const auto next = std::upper_bound(presets.begin(), presets.end(), current);
+	setRatio(building, type, next == presets.end() ? 0 : *next);
 }

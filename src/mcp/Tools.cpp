@@ -150,8 +150,17 @@ void registerUITools(ToolRegistry &registry)
 			required.push_back("token");
 			properties["capture_after"] = {{"type", "boolean"}, {"default", false}};
 		}
+		if (input || std::string(name) == "ui_screenshot" || std::string(name) == "ui_inspect")
+		{
+			properties["max_width"] = {{"type", "integer"}, {"minimum", 1}, {"maximum", 16384}};
+			properties["max_height"] = {{"type", "integer"}, {"minimum", 1}, {"maximum", 16384}};
+		}
 		if (coordinates)
+		{
 			properties["viewport_id"] = {{"type", "integer"}, {"minimum", 0}};
+			properties["capture_id"] = {{"type", "integer"}, {"minimum", 1},
+				{"description", "Use this capture's returned image-pixel coordinates. Omit for native-resolution pixels. Expires on viewport changes."}};
+		}
 		Json output = {{"type", "object"},
 					   {"properties",
 						{{"width", {{"type", "integer"}, {"minimum", 0}}},
@@ -174,7 +183,10 @@ void registerUITools(ToolRegistry &registry)
 			 description,
 			 object(properties, required),
 			 std::move(output),
-			 {{"readOnlyHint", !input && std::string(name) != "ui_acquire_control" &&
+			 {{"readOnlyHint", !input && std::string(name) != "hive_run" &&
+								   std::string(name) != "hive_program" &&
+								   std::string(name) != "ui_renew_control" &&
+								   std::string(name) != "ui_acquire_control" &&
 								   std::string(name) != "ui_release_control"},
 			  {"destructiveHint", input},
 			  {"idempotentHint", false},
@@ -183,6 +195,38 @@ void registerUITools(ToolRegistry &registry)
 			 { return context.submit(name, std::move(args), std::move(client)); },
 			 [name = std::string(name), scancodeNames](const Json &args)
 			 {
+				 if (name == "ui_wait")
+				 {
+					 const auto &condition = args.at("condition");
+					 if (condition.empty())
+						 throw std::invalid_argument("Provide a wait condition");
+					 for (const char *state :
+						  {"enabled", "selected", "focused", "blocked", "visible", "value"})
+						 if (condition.contains(state) && !condition.contains("key"))
+							 throw std::invalid_argument("Control-state waits require key");
+				 }
+				 if (name == "hive_program")
+				 {
+					 const auto action = args.at("action").get<std::string>();
+					 auto require = [&](const char *key)
+					 {
+						 if (!args.contains(key))
+							 throw std::invalid_argument(std::string("Missing argument: ") + key);
+					 };
+					 if (action != "list")
+						 require("name");
+					 if (action != "list" && action != "inspect")
+					 {
+						 for (const char *key : {"token", "session", "operation_key"})
+							 require(key);
+						 if (args.at("name").get_ref<const std::string &>().empty())
+							 throw std::invalid_argument("Program name must not be empty");
+					 }
+					 if (action == "install" || action == "replace")
+						 require("source");
+					 if (action == "replace")
+						 require("expected_revision");
+				 }
 				 if (name == "ui_type_text")
 				 {
 					 const auto &text = args["text"].get_ref<const std::string &>();
@@ -211,15 +255,92 @@ void registerUITools(ToolRegistry &registry)
 	add("ui_status", "Game viewport, frame and controller status. Does not require control.", {},
 		{}, false);
 	add("ui_screenshot",
-		"Return the next rendered game frame as an inline PNG. Coordinates are image pixels from "
-		"the top left.",
-		{}, {}, false);
+		"Return the next rendered game frame as an inline PNG, native resolution by default. "
+		"max_width/max_height scale it down; use its capture_id for image-pixel input coordinates.",
+		{{"token", token}}, {}, false);
 	add("ui_acquire_control",
-		"Acquire exclusive MCP input control. Returns a token with a 60 second idle lease. Human "
-		"input stays active.",
-		{}, {}, false);
+		"Acquire exclusive MCP input control. Returns a token with a 300 second idle lease. Human "
+		"input stays active. Set inspect=true to include the current typed hierarchy with the token.",
+		{{"inspect", {{"type", "boolean"}, {"default", false}}}}, {}, false);
 	add("ui_release_control", "Release control and all remote-held inputs.", {{"token", token}},
 		{"token"}, false);
+	add("ui_renew_control", "Renew the current controller's five-minute idle lease.",
+		{{"token", token}}, {"token"}, false);
+	const Json identity = {{"type", "integer"}, {"minimum", 1}};
+	Json filter = {{"surface", identity},
+				   {"subtree", {{"type", "string"}, {"maxLength", 512}}},
+				   {"token", token}};
+	auto inspect = filter;
+	inspect["screenshot"] = {{"type", "boolean"}, {"default", false}};
+	add("ui_inspect",
+		"Inspect the active screen's typed control hierarchy. A valid token renews control; "
+		"anonymous reads do not. Bounds are in each surface's logical viewport; prefer ui_act "
+		"for controls and capture_id image coordinates for spatial gestures.",
+		inspect, {}, false);
+	auto act = Json{{"surface", identity},
+					{"key", {{"type", "string"}, {"maxLength", 512}}},
+					{"revision", identity},
+					{"action", enumeration({"activate", "select", "set_value", "scroll"})},
+					{"value", Json::object()}};
+	add("ui_act",
+		"Perform a semantic action on an inspected target. Revalidated at actual input "
+		"consumption; returns the current inspection after consumption. Pending screen "
+		"transitions may still require ui_wait. select value is a zero-based integer index; "
+		"scroll value is a signed integer in logical pixels; set_value uses the inspected "
+		"control's value type. Never retry mutations automatically.",
+		act, {"surface", "key", "revision", "action"}, true);
+	auto wait = filter;
+	wait["timeout_ms"] = {
+		{"type", "integer"}, {"minimum", 1}, {"maximum", 30000}, {"default", 10000}};
+	wait["condition"] = object({{"screen", {{"type", "string"}, {"maxLength", 128}}},
+								{"key", {{"type", "string"}, {"maxLength", 512}}},
+								{"enabled", {{"type", "boolean"}}},
+								{"selected", {{"type", "boolean"}}},
+								{"focused", {{"type", "boolean"}}},
+								{"blocked", {{"type", "boolean"}}},
+								{"visible", {{"type", "boolean"}}},
+								{"value", Json::object()},
+								{"revision_after", {{"type", "integer"}, {"minimum", 0}}}});
+	add("ui_wait",
+		"Observe a structured condition without blocking input. Returns the latest relevant "
+		"snapshot on timeout. Screen names must match inspection.screen exactly: game_session "
+		"for matches, map_editor for the editor.",
+		wait, {"condition"}, false);
+
+	add("hive_status", "Availability and session identity for local human Hive scripting.", {}, {},
+		false);
+	add("hive_api", "Supported player-only synchronous JavaScript contract and execution limits.",
+		{}, {}, false);
+	const Json operationKey = {{"type", "string"}, {"maxLength", 128}};
+	const Json source = {{"type", "string"}, {"maxLength", 131072}};
+	const Json session = {{"type", "string"}, {"maxLength", 128}};
+	add("hive_run",
+		"Queue one local player script. Requires control, session and a unique operation key. "
+		"Queued is not gameplay success; query hive_result.",
+		{{"token", token},
+		 {"session", session},
+		 {"operation_key", operationKey},
+		 {"source", source}},
+		{"token", "session", "operation_key", "source"}, false);
+	add("hive_result", "Read a match-session operation result without re-executing it.",
+		{{"session", session}, {"operation_key", operationKey}}, {"session", "operation_key"},
+		false);
+	add("hive_program",
+		"List/inspect or install/replace/pause/resume/cancel session-only standing orders. "
+		"Mutations require token, session and operation_key; replacements require "
+		"expected_revision.",
+		{{"action",
+		  enumeration({"list", "inspect", "install", "replace", "pause", "resume", "cancel"})},
+		 {"token", token},
+		 {"session", session},
+		 {"operation_key", operationKey},
+		 {"name", {{"type", "string"}, {"maxLength", 128}}},
+		 {"source", source},
+		 {"description", {{"type", "string"}, {"maxLength", 2048}}},
+		 {"expected_revision", {{"type", "integer"}, {"minimum", 1}}},
+		 {"interval_ticks", {{"type", "integer"}, {"minimum", 25}, {"maximum", 1000000}}}},
+		{"action"}, false);
+
 	Json xy = {{"x", coordinate}, {"y", coordinate}};
 	add("ui_move", "Move the game pointer in screenshot pixels.", xy, {"x", "y"}, true, true);
 	auto click = xy;

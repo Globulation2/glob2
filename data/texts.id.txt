@@ -6820,3 +6820,5 @@ Jumlah ikan
 Pesan ▸
 [Camp-site amount]
 Jumlah perkemahan
+[AI for all computer colonies]
+AI untuk semua koloni yang dikendalikan komputer

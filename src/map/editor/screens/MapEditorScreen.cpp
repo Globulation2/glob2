@@ -142,3 +142,8 @@ void MapEditorScreen::suspendExecution()
 	editor->suspendInput();
 	input.clear();
 }
+
+std::vector<GAGGUI::ui::Host *> MapEditorScreen::inspectionHosts()
+{
+	return editor ? editor->inspectionHosts() : std::vector<GAGGUI::ui::Host *>{};
+}

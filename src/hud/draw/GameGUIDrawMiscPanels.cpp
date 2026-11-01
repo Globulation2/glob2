@@ -60,6 +60,7 @@ void GameGUI::drawResourceInfos(void)
 
 void GameGUI::drawReplayPanel(void)
 {
+	HudControlPaint controls(*this);
 	Font *font=globalContainer->littleFont;
 
 	int x = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + REPLAY_PANEL_XOFFSET;
@@ -68,17 +69,22 @@ void GameGUI::drawReplayPanel(void)
 
 	globalContainer->gfx->drawString(x, y, font, FormattableString("%0:").arg(Toolkit::getStringTable()->getString("[Options]")));
 
-	drawCheckButton(x, y + 1*inc, Toolkit::getStringTable()->getString("[fog of war]"), globalContainer->replayShowFog);
-	drawCheckButton(x, y + 2*inc, Toolkit::getStringTable()->getString("[combined vision]"), (globalContainer->replayVisibleTeams == 0xFFFFFFFF));
-	drawCheckButton(x, y + 3*inc, Toolkit::getStringTable()->getString("[show areas]"), (globalContainer->replayShowAreas));
-	drawCheckButton(x, y + 4*inc, Toolkit::getStringTable()->getString("[show flags]"), (globalContainer->replayShowFlags));
+	const auto fog=hudControlBounds("spectator/fog",{x,y+1*inc,20,20});
+	drawCheckButton(fog.x,fog.y,Toolkit::getStringTable()->getString("[fog of war]"),globalContainer->replayShowFog);
+	const auto vision=hudControlBounds("spectator/vision",{x,y+2*inc,20,20});
+	drawCheckButton(vision.x,vision.y,Toolkit::getStringTable()->getString("[combined vision]"),(globalContainer->replayVisibleTeams == 0xFFFFFFFF));
+	const auto areas=hudControlBounds("spectator/areas",{x,y+3*inc,20,20});
+	drawCheckButton(areas.x,areas.y,Toolkit::getStringTable()->getString("[show areas]"),(globalContainer->replayShowAreas));
+	const auto flags=hudControlBounds("spectator/flags",{x,y+4*inc,20,20});
+	drawCheckButton(flags.x,flags.y,Toolkit::getStringTable()->getString("[show flags]"),(globalContainer->replayShowFlags));
 
 	globalContainer->gfx->drawString(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET, font, FormattableString("%0:").arg(Toolkit::getStringTable()->getString("[players]")));
 
 	for (int i = 0; i < drawnScene().entities.teamCount; i++)
 	{
 		// I know this is a matter of taste, but I prefer checkboxes here. Radio buttons are a totally different style
-		drawRadioButton(x + 1, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc + 1, localTeamNo == i);
+		const auto control=hudControlBounds("spectator/team/"+std::to_string(i),{x,y+REPLAY_PANEL_PLAYERLIST_YOFFSET+(i+1)*inc,20,20});
+		drawRadioButton(control.x+1,control.y+1,localTeamNo==i);
 		globalContainer->gfx->drawString(x + 20, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, font, displayPlayerName(drawnScene().entities.teams[i].firstPlayerName).c_str());
 	}
 }
@@ -121,13 +127,12 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 		globalContainer->gamegui,
 		REPLAY_BAR_RIGHT_CAP_SPRITE);
 
-	// Draw the buttons for play, pause and fast-forward
-	int x = REPLAY_BAR_WIDTH - REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_CAP_WIDTH;
-	int inc = REPLAY_PROGRESS_BAR_BUTTON_WIDTH;
-
-	globalContainer->gfx->drawSprite( x - inc*3, y, globalContainer->gamegui, (!gamePaused && !globalContainer->replayFastForward ? REPLAY_BAR_PLAY_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_PLAY_BUTTON_SPRITE));
-	globalContainer->gfx->drawSprite( x - inc*2, y, globalContainer->gamegui, (gamePaused ? REPLAY_BAR_PAUSE_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_PAUSE_BUTTON_SPRITE));
-	globalContainer->gfx->drawSprite( x - inc*1, y, globalContainer->gamegui, (!gamePaused && globalContainer->replayFastForward ? REPLAY_BAR_FAST_FORWARD_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_FAST_FORWARD_BUTTON_SPRITE));
+	// Shared positioned controls retain the replay's existing actions and art.
+    const auto playback=replayPlaybackControlBounds();
+    const int sprites[]={!gamePaused&&!globalContainer->replayFastForward?REPLAY_BAR_PLAY_BUTTON_ACTIVE_SPRITE:REPLAY_BAR_PLAY_BUTTON_SPRITE,
+        gamePaused?REPLAY_BAR_PAUSE_BUTTON_ACTIVE_SPRITE:REPLAY_BAR_PAUSE_BUTTON_SPRITE,
+        !gamePaused&&globalContainer->replayFastForward?REPLAY_BAR_FAST_FORWARD_BUTTON_ACTIVE_SPRITE:REPLAY_BAR_FAST_FORWARD_BUTTON_SPRITE};
+    for(int i=0;i<3;++i)globalContainer->gfx->drawSprite(playback[i].x,playback[i].y,globalContainer->gamegui,sprites[i]);
 
 	// Calculate the time
 	// This is based on normal simulation tick rate, not the actual Engine's speed

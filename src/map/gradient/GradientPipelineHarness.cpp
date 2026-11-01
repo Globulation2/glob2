@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "ScopedEnvironment.h"
+#include "JoiningThread.h"
 #include <algorithm>
 #include <memory>
 #include <utility>
@@ -422,7 +423,7 @@ TEST_CASE("building pipeline admits several jobs per tick, publishes in reservat
             }
             pipeline.prepare(staged);
             for (unsigned i=1; i<delay; ++i) { pipeline.advance(); CHECK(published.empty()); }
-            std::jthread opener([&] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); release.set_value(); });
+            glob2test::JoiningThread opener([&] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); release.set_value(); });
             pipeline.advance(); // Waits for the gated job, then publishes all four.
             opener.join();
             CHECK(published==std::vector<unsigned>{0,1,2,3});

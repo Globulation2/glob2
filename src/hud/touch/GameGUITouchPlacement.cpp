@@ -31,6 +31,16 @@ bool GameGUITouch::commitPlacement()
 bool GameGUITouch::processPalettePointer(const SDL_Event &event, ViewPoint point)
 {
 	const TouchPlacementSession::Pointer pointer{event.tfinger.touchID, event.tfinger.fingerID};
+	auto reject = [&]
+	{
+		placement.reset();
+		if (event.type != SDL_EVENT_FINGER_UP)
+		{
+			fingers = {pointer};
+			ignoreTouchSequence = true;
+		}
+		return true;
+	};
 	if (!placement)
 	{
 		if (event.type != SDL_EVENT_FINGER_DOWN || !fingers.empty() || activeDialog())
@@ -38,6 +48,7 @@ bool GameGUITouch::processPalettePointer(const SDL_Event &event, ViewPoint point
 		const auto item = paletteItemAt(point);
 		if (!item || !item->enabled || item->name.starts_with("zone:"))
 			return false;
+		if (!controlAllowed("touch/palette/" + item->name, GAGGUI::ui::ActionKind::Activate)) return reject();
 		placement = TouchPlacementSession{pointer,        point, item->name,       false,
 										  layout().panel, point, SDL_GetTicks(), gui.localTeamNo};
 		return true;
@@ -57,6 +68,7 @@ bool GameGUITouch::processPalettePointer(const SDL_Event &event, ViewPoint point
 		ignoreTouchSequence = true;
 		return true;
 	}
+	if (!placement->dragging && !controlAllowed("touch/palette/" + placement->building, GAGGUI::ui::ActionKind::Activate)) return reject();
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	if (!placement->dragging &&
 		std::hypot(point.x - placement->origin.x, point.y - placement->origin.y) >=
@@ -97,6 +109,7 @@ bool GameGUITouch::processPalettePointer(const SDL_Event &event, ViewPoint point
 // camera moved.
 bool GameGUITouch::edgePan(ViewPoint point, std::uint64_t &lastUpdate)
 {
+	if (inputBlocked(point)) return false;
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	const auto bounds = world();
 	const auto now = SDL_GetTicks();
@@ -131,6 +144,7 @@ void GameGUITouch::advancePlacement()
 	auto &session = placement ? placement : placementHold;
 	const bool lifted = bool(placement);
 	const auto point = session->pointerPosition;
+	if (inputBlocked(point)) { session.reset(); preview.reset(); return; }
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	if (session->dragging)
 	{
@@ -218,6 +232,7 @@ void GameGUITouch::advanceFlagDrag()
 		return;
 	}
 	const auto point = flagDrag->position;
+	if (inputBlocked(point)) { releaseFlagDrag(true); return; }
 	edgePan(point, flagDrag->lastUpdate);
 	if (interfaceRegion(point) != 0 || !world().contains(point))
 		return;

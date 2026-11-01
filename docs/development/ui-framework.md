@@ -952,6 +952,72 @@ preference fields or simulation state are introduced.
    `tools/MobileGalleryHarness.cpp` and `tools/mobile_gallery/catalog.json`.
 4. Expose semantic entry points for interaction tests instead of coordinates.
 
+## Typed inspection and semantic actions
+
+`ui/Inspection.h` defines transport-independent `SurfaceSnapshot`, `ControlSnapshot`,
+`ControlValue` and `SemanticAction` types. `Host::inspect()` describes the tree and
+popup, including clipped bounds, roles, labels, values, selection, focus and supported
+actions. Coordinates are logical pixels. A popup blocks its underlying tree. The
+screen receiving input supplies `Screen::inspectionHosts()`; modal owners expose
+only the active dialog. Native file pickers are outside this interface.
+
+`Host::act(key, action, error)` validates visibility, enablement and popup ownership.
+Standard buttons/toggles activate, choices/lists select an integer index, numeric
+controls set an integer value, text controls set a string, and scrollable nodes scroll
+by a signed logical-pixel delta. Draft text fields retain their usual Enter/blur commit
+and Escape cancellation. Password values remain masked. Custom nodes extend
+`controlValue()`, `supportedActions()` and `perform()` alongside ordinary input.
+Callbacks must remain application-thread work.
+
+Surface instances are lifetime identities. Each keyed control has a monotonic target
+revision that changes when its own description, geometry, value or availability changes,
+or when it disappears and returns. Focus and unrelated children do not change that
+control's revision. Surface revisions include changes to the hierarchy. The browser's
+flattened diagnostic JSON comes from `diagnosticJSON()` over this same snapshot.
+
+`SemanticDispatch` carries an owned command through ordinary additional input using
+an opaque event ID. The host checks the instance and target revision when it consumes
+the event. Retired commands cannot leave borrowed pointers in deferred event queues.
+Screen owners must route semantic events to the same dialog/host that owns human
+input. Returning a host from inspection without routing its events is incomplete.
+
+Custom-rendered controls use `ui::PositionedControl` and `positionedControls`: the
+domain model supplies logical bounds, clipping, state, supported actions and shared
+callbacks before painting or hit testing. Paint and human input consume the same
+geometry; inspection is not a second coordinate map. Build a fresh model at action
+consumption, and read gameplay presentation from the published Scene. A paint scope
+may retain one immutable model for the duration of a draw to avoid rebuilding every
+control's callbacks for every field.
+
+Compound building edits read the same pending presentation values for human and
+semantic input. An execution receipt does not imply that the displayed Scene already
+contains its result: retain the pending field until `executedOrderRevision` reaches
+that receipt. Reconcile only fields with pending values, and retire their receipts
+on building removal or session initialization.
+
+Stable keys alone do not distinguish a reused entity slot or a changed construction
+preview. Override `Node::semanticIdentity()` or wrap a subtree with `semanticContext`
+using the domain's object generation and relevant action context. That identity is
+inherited by descendants and participates in their revisions without being exposed
+as transport data. Include context that changes the meaning of a callback; do not
+include frame ticks or unrelated counters. Host assigns popup lifetimes automatically,
+so closing and reopening an identical popup invalidates its earlier targets. Surface
+owners must enforce popup/modal ownership across separate hosts at consumption as
+well as inspection; an inspectable covered control must never receive input.
+Choices bind their full catalog identity and enabled state. Owned popups also bind
+their opener's semantic context; changing or retiring the opener closes the popup
+before a stale selection can reach a replacement callback.
+
+Surface owners can set `Host::setBlockedRegions` from higher surfaces' visible
+panels. Blocks affect inspection, semantic dispatch, pointer acquisition and keyboard
+actions. Rectangular occlusion conservatively blocks an entire target on any visible
+overlap; shaped or partly covered controls can require dismissing the covering panel.
+Uncovered sibling rows remain actionable. Changing a blocker cancels only newly
+covered gestures, preserving unrelated presses and scrolling. Suspended text drafts
+are retained, and Tab can move focus to uncovered controls. Legacy compact keyboard
+focus is mirrored into the Host so typed focused state and actual keyboard targeting
+agree.
+
 ### In-game statistics
 
 The Statistics view shares visible topic buttons and a scrollable metric list
@@ -973,6 +1039,11 @@ catalog's capabilities and defaults. Topic, per-topic scrolling and per-metric
 history choices last for the current match; they are not saved as preferences.
 Closing history restores focus to its metric. The former graph view is now Map
 overlays, retaining its tab position and the four overlay toggles.
+
+`GameGUI::statisticsHost()` exposes the panel's embedded Host for painting, human
+input, typed inspection and semantic dispatch. `statisticsBounds()` supplies shared
+desktop and compact geometry. Team and viewing context participate in target
+revisions, so a command cannot act on a replacement watched team.
 
 `InGameStatisticsPanel` holds immutable statistics/history leases rather than
 live simulation pointers. Visible statistics and history request the history

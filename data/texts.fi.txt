@@ -6820,3 +6820,5 @@ Kalojen määrä
 Viestit ▸
 [Camp-site amount]
 Leiripaikkojen määrä
+[AI for all computer colonies]
+Tekoäly kaikille tietokoneen ohjaamille siirtokunnille

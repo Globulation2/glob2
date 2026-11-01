@@ -8,6 +8,8 @@
 #include <ui/Containers.h>
 #include <ui/Controls.h>
 #include <ui/Host.h>
+#include <ui/PositionedControls.h>
+#include <nlohmann/json.hpp>
 #include "UIRecordingCanvas.h"
 #include <BrowserTextInput.h>
 #include <cstdio>
@@ -1073,6 +1075,112 @@ void checkInvariants()
 }
 } // namespace
 
+namespace
+{
+const ControlSnapshot *control(const SurfaceSnapshot &surface, const std::string &key)
+{
+	const ControlSnapshot *result = nullptr;
+	auto find = [&](auto &&self, const std::vector<ControlSnapshot> &items) -> void
+	{
+		for (const auto &item : items)
+		{
+			if (item.key == key)
+				result = &item;
+			self(self, item.children);
+		}
+	};
+	find(find, surface.controls);
+	return result;
+}
+} // namespace
+TEST_CASE("typed snapshots preserve per-target revisions and reject stale consumption" *
+		  doctest::test_suite("UILayout"))
+{
+	int clicks = 0, counter = 0;
+	bool present = true, enabled = true;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			ButtonOptions options;
+			options.enabled = enabled;
+			return column(
+				{label(std::to_string(counter)),
+				 present ? button("action", "Act", [&] { ++clicks; }, options) : empty()});
+		},
+		400, 200);
+	auto first = f.host.inspect();
+	REQUIRE(control(first, "action"));
+	const auto revision = control(first, "action")->revision;
+	++counter;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	auto second = f.host.inspect();
+	CHECK(control(second, "action")->revision == revision);
+	CHECK(first.instance == second.instance);
+	auto dispatch = semanticDispatch();
+	dispatch->surface = first.instance;
+	dispatch->revision = revision;
+	dispatch->key = "action";
+	enabled = false;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK(f.host.event(dispatch->event()));
+	CHECK(dispatch->consumed);
+	CHECK_FALSE(dispatch->error.empty());
+	CHECK(clicks == 0);
+	enabled = true;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	std::string error;
+	CHECK(f.host.act("action", {}, error));
+	CHECK(clicks == 1);
+	f.host.tapAt(f.host.bounds("action").center());
+	CHECK(clicks == 2);
+	present = false;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	(void)f.host.inspect();
+	present = true;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	const auto restored = f.host.inspect();
+	CHECK(control(restored, "action")->revision != revision);
+}
+TEST_CASE("semantic values selection clipping and popup ownership" *
+		  doctest::test_suite("UILayout"))
+{
+	int selected = 0, amount = 1;
+	bool on = false;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			return column(
+				{toggle("toggle", "Toggle", on, [&](bool next) { on = next; }),
+				 choice("choice", {"One", "Two"}, selected, [&](int next) { selected = next; }),
+				 slider("slider", amount, 0, 10, [&](int next) { amount = next; }),
+				 button("disabled", "Disabled", [] {}, {.enabled = false})});
+		},
+		400, 400);
+	std::string error;
+	CHECK(f.host.act("toggle", {ActionKind::SetValue, true}, error));
+	CHECK(on);
+	f.host.layoutIfNeeded();
+	CHECK(f.host.act("choice", {ActionKind::Select, 1}, error));
+	CHECK(selected == 1);
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.act("slider", {ActionKind::SetValue, 11}, error));
+	CHECK(amount == 1);
+	CHECK(f.host.act("slider", {ActionKind::SetValue, 7}, error));
+	CHECK(amount == 7);
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.act("disabled", {}, error));
+	CHECK(f.host.act("choice", {}, error));
+	f.host.layoutIfNeeded();
+	auto popup = f.host.inspect();
+	REQUIRE(control(popup, "toggle"));
+	CHECK(control(popup, "toggle")->blocked);
+	CHECK_FALSE(f.host.act("toggle", {}, error));
+}
 TEST_SUITE("UILayout")
 {
 	TEST_CASE("icons and tooltips")
@@ -1270,4 +1378,475 @@ TEST_SUITE("UILayout")
 	TEST_CASE("adaptive and field") { checkAdaptiveAndField(); }
 	TEST_CASE("invariants") { checkInvariants(); }
 	TEST_CASE("text stays inside its control at every size") { checkTextStaysInControls(); }
+}
+
+TEST_CASE("semantic text values retain draft commit and cancel" * doctest::test_suite("UILayout"))
+{
+	std::string model = "original";
+	int commits = 0;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			TextFieldOptions options;
+			options.commitOnSubmit = true;
+			return column({textField(
+							   "draft", model,
+							   [&](const std::string &v)
+							   {
+								   model = v;
+								   ++commits;
+							   },
+							   options),
+						   slider("other", 1, 0, 10, [](int) {})});
+		},
+		400, 200);
+	std::string error;
+	CHECK(f.host.act("draft", {ActionKind::SetValue, std::string("cancelled")}, error));
+	CHECK(model == "original");
+	CHECK(commits == 0);
+	f.key(SDLK_ESCAPE);
+	f.host.layoutIfNeeded();
+	CHECK(model == "original");
+	CHECK(commits == 0);
+	CHECK(f.host.act("draft", {ActionKind::SetValue, std::string("committed")}, error));
+	f.key(SDLK_RETURN);
+	f.host.layoutIfNeeded();
+	CHECK(model == "committed");
+	CHECK(commits == 1);
+	CHECK(f.host.act("draft", {ActionKind::SetValue, std::string("focus committed")}, error));
+	CHECK(f.host.act("other", {ActionKind::SetValue, 5}, error));
+	CHECK(model == "focus committed");
+	CHECK(commits == 2);
+	CHECK(f.host.editing().empty());
+}
+
+TEST_CASE("semantic canvas scroll uses its normal wheel path" * doctest::test_suite("UILayout"))
+{
+	int turns = 0;
+	Point point;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			CanvasOptions options;
+			options.wheel = [&](int direction, Point local)
+			{
+				turns += direction;
+				point = local;
+			};
+			return canvas("canvas", {200, 100}, [](Canvas &, Rect, const Frame &) {}, options);
+		},
+		200, 100);
+	std::string error;
+	CHECK(f.host.act("canvas", {ActionKind::Scroll, -15}, error));
+	CHECK(turns == 1);
+	CHECK(point == Point{100, 50});
+	CHECK(f.host.act("canvas", {ActionKind::Scroll, 0}, error));
+	CHECK(turns == 1);
+	CHECK_FALSE(f.host.act("canvas", {ActionKind::Activate, {}}, error));
+}
+
+TEST_CASE("typed text preserves newlines and browser diagnostics retain legacy labels" *
+		  doctest::test_suite("UILayout"))
+{
+	Fixture f([](const Presentation &) { return textEditor("editor", "first\nsecond", [](const auto &) {}); }, 400, 200);
+    auto snapshot = f.host.inspect();
+    REQUIRE(control(snapshot, "editor"));
+    CHECK(std::get<std::string>(control(snapshot, "editor")->value) == "first\nsecond");
+    auto legacy = nlohmann::json::parse(diagnosticJSON(snapshot));
+    CHECK(legacy["controls"]["editor"]["label"] == "first second");
+}
+
+TEST_CASE("identical reopened popups reject an earlier lifetime target" * doctest::test_suite("UILayout"))
+{
+	Fixture f([](const Presentation &) { return button("base", "Base", [] {}); }, 400, 200);
+	int firstPicks = 0, secondPicks = 0;
+	PopupSpec popup;
+	popup.anchor = {20, 20, 100, 20};
+	popup.options = {"Same option"};
+	popup.pick = [&](int) { ++firstPicks; };
+	f.host.openPopup(popup);
+	auto snapshot = f.host.inspect();
+	const auto *row = control(snapshot, "popup/0");
+	REQUIRE(row);
+	auto pending = semanticDispatch();
+	pending->surface = snapshot.instance;
+	pending->key = row->key;
+	pending->revision = row->revision;
+	pending->action = {ActionKind::Activate, {}};
+	f.host.closePopup();
+	popup.pick = [&](int) { ++secondPicks; };
+	f.host.openPopup(popup);
+	CHECK(f.host.event(pending->event()));
+	CHECK(pending->error.find("Stale") != std::string::npos);
+	CHECK(firstPicks == 0);
+	CHECK(secondPicks == 0);
+	CHECK(f.host.popupOpen());
+	std::string error;
+	CHECK(f.host.act("popup/0", {ActionKind::Activate, {}}, error));
+	CHECK(secondPicks == 1);
+}
+
+TEST_CASE("positioned custom controls share clipped human and semantic targets" * doctest::test_suite("UILayout"))
+{
+    int taps=0,scroll=0;bool enabled=true;std::string context="first";
+    Fixture f([&](const Presentation &)
+    {
+        PositionedControl action;
+        action.key="domain/action";action.identity=context;action.label="Action";
+        action.bounds={35,45,100,30};action.clip=Rect{30,40,50,60};action.enabled=enabled;
+        action.tap=[&](Point){++taps;};
+        PositionedControl wheel;
+        wheel.key="domain/scroll";wheel.role="scroll";wheel.bounds={90,100,80,50};
+        wheel.actions={ActionKind::Scroll};
+        wheel.perform=[&](const SemanticAction &a)
+        {
+            if(a.kind!=ActionKind::Scroll)return false;
+            const auto *d=std::get_if<int>(&a.value);if(!d)return false;scroll+=*d;return true;
+        };
+        return positionedControls({action,wheel});
+    },240,180);
+    // Absolute domain bounds do not acquire the host root's inset origin.
+    f.host.setAvailable([](const Presentation &,const Metrics &){return Rect{20,25,190,140};});
+    f.host.relayout();f.host.layoutIfNeeded();
+    CHECK(f.host.bounds("domain/action")==Rect{35,45,100,30});
+    auto first=f.host.inspect();const auto *snapshot=control(first,"domain/action");REQUIRE(snapshot);
+    CHECK(snapshot->visible==Rect{35,45,45,30});
+    f.click({100,55});CHECK(taps==0);
+    f.click({50,55});CHECK(taps==1);
+    std::string error;
+    CHECK(f.host.act("domain/action",{},error));CHECK(taps==2);
+    f.click({110,120});CHECK(scroll==0); // scroll-only is never Activate
+    f.mouse(SDL_EVENT_MOUSE_MOTION,{110,120});
+    SDL_Event wheel{};wheel.type=SDL_EVENT_MOUSE_WHEEL;wheel.wheel.y=-1;
+    CHECK(f.host.event(wheel));CHECK(scroll==f.host.metrics().control);
+    CHECK(f.host.act("domain/scroll",{ActionKind::Scroll,-f.host.metrics().control},error));CHECK(scroll==0);
+    auto pending=semanticDispatch();pending->surface=first.instance;pending->key="domain/action";pending->revision=snapshot->revision;
+    context="replacement";f.host.invalidate();f.host.layoutIfNeeded();
+    CHECK(f.host.event(pending->event()));CHECK_FALSE(pending->error.empty());CHECK(taps==2);
+    enabled=false;f.host.invalidate();f.host.layoutIfNeeded();
+    f.click({50,55});CHECK(taps==2);
+    CHECK_FALSE(f.host.act("domain/action",{},error));
+}
+
+TEST_CASE("positioned callbacks refresh values revisions and subsequent actions" * doctest::test_suite("UILayout"))
+{
+    bool selected = false;
+    int offset = 0;
+    Fixture f([&](const Presentation &)
+    {
+        PositionedControl toggle;
+        toggle.key = "toggle"; toggle.bounds = {10,10,80,30};
+        toggle.value = toggle.selected = selected;
+        toggle.perform = [&, current=selected](const SemanticAction &) { selected = !current; return true; };
+        PositionedControl scroll;
+        scroll.key = "scroll"; scroll.bounds = {10,60,80,60};
+        scroll.value = offset; scroll.actions = {ActionKind::Scroll};
+        scroll.perform = [&, current=offset](const SemanticAction &a)
+        { const auto* delta=std::get_if<int>(&a.value); if(!delta)return false; offset=current+*delta; return true; };
+        return positionedControls({toggle,scroll});
+    },200,160);
+    const auto before=f.host.inspect();
+    std::string error;
+    REQUIRE(f.host.act("toggle", {}, error));
+    f.host.layoutIfNeeded();
+    const auto after=f.host.inspect();
+    CHECK(control(after,"toggle")->selected);
+    CHECK(control(after,"toggle")->revision > control(before,"toggle")->revision);
+    REQUIRE(f.host.act("toggle", {}, error));
+    CHECK_FALSE(selected);
+    f.click({30,20}); CHECK(selected);
+    f.click({30,20}); CHECK_FALSE(selected);
+    REQUIRE(f.host.act("scroll", {ActionKind::Scroll, 5}, error));
+    REQUIRE(f.host.act("scroll", {ActionKind::Scroll, 7}, error));
+    CHECK(offset == 12);
+    f.host.layoutIfNeeded();
+    CHECK(std::get<int>(control(f.host.inspect(),"scroll")->value) == 12);
+}
+
+TEST_CASE("positioned callbacks may retire their owning Host" * doctest::test_suite("UILayout"))
+{
+    for (bool semantic : {false,true})
+    {
+        std::unique_ptr<Host> owner;
+        int calls=0;
+        owner=std::make_unique<Host>(theme,[&](const Presentation &)
+        {
+            PositionedControl close;
+            close.key="close"; close.bounds={10,10,80,30};
+            if(semantic)close.perform=[&](const SemanticAction &){owner.reset();++calls;return true;};
+            else close.tap=[&](Point){owner.reset();++calls;};
+            return positionedControls({close});
+        });
+        owner->setMeasurer(&measurer);
+        owner->setPresentation(Presentation::forSurface(200,160,1,false));
+        std::string error;
+        REQUIRE(owner->act("close",{},error));
+        CHECK_FALSE(owner);
+        CHECK(calls==1);
+    }
+}
+
+TEST_CASE("higher hosts block only overlapping targets and cancel captured input" * doctest::test_suite("UILayout"))
+{
+    int covered=0,free=0,hive=0;
+    Fixture lower([&](const Presentation &)
+    {
+        return row({button("covered","Covered",[&]{++covered;}),button("free","Free",[&]{++free;})});
+    },400,160);
+    const auto bounds=lower.host.bounds("covered");
+    const auto point=Point{bounds.x+2,bounds.y+2};
+    const auto initial=lower.host.inspect();
+    const auto freeRevision=control(initial,"free")->revision;
+    auto queued=semanticDispatch();queued->surface=initial.instance;queued->key="covered";queued->revision=control(initial,"covered")->revision;
+    const Rect owner{bounds.x+bounds.w/2,bounds.y,bounds.w-bounds.w/2,bounds.h};
+    Fixture higher([&](const Presentation &)
+    {
+        PositionedControl c;c.key="hive";c.label="Hive";c.bounds=owner;c.tap=[&](Point){++hive;};
+        return positionedControls({c});
+    },400,160);
+    lower.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN,point);
+    lower.host.setBlockedRegions({owner});
+    lower.mouse(SDL_EVENT_MOUSE_BUTTON_UP,point);
+    CHECK(covered==0);
+    const auto obscured=lower.host.inspect();
+    CHECK(control(obscured,"covered")->blocked);
+    CHECK_FALSE(control(obscured,"free")->blocked);
+    CHECK(control(obscured,"free")->revision==freeRevision);
+    CHECK(lower.host.event(queued->event()));CHECK_FALSE(queued->error.empty());
+    lower.click(point);CHECK(covered==0); // conservative for partially covered targets
+    lower.host.focus("covered",true);lower.key(SDLK_RETURN);CHECK(covered==0);
+    std::string error;
+    CHECK_FALSE(lower.host.act("covered",{},error));
+    CHECK(lower.host.act("free",{},error));CHECK(free==1);
+    CHECK(higher.host.act("hive",{},error));CHECK(hive==1);
+    lower.host.setBlockedRegions({});
+    lower.click(point);CHECK(covered==1);
+}
+
+TEST_CASE("external ownership preserves uncovered list rows and popup ownership" * doctest::test_suite("UILayout"))
+{
+    int selected=0;
+    Fixture list([&](const Presentation &){return listView("rows",{"One","Two","Three"},selected,[&](int i){selected=i;});},240,180);
+    auto before=list.host.inspect();const auto *first=control(before,"rows/0");const auto *second=control(before,"rows/1");
+    REQUIRE(first);REQUIRE(second);
+    list.host.setBlockedRegions({first->visible});
+    const auto blocked=list.host.inspect();
+    CHECK(control(blocked,"rows")->blocked);
+    CHECK(control(blocked,"rows/0")->blocked);
+    CHECK_FALSE(control(blocked,"rows/1")->blocked);
+    list.click(second->visible.center());CHECK(selected==1);
+    std::string error;
+    CHECK(list.host.act("rows/2",{},error));CHECK(selected==2);
+    int base=0,picked=0;
+    Fixture popup([&](const Presentation &)
+    {
+        PositionedControl c;c.key="base";c.bounds={0,180,80,30};c.tap=[&](Point){++base;};
+        return positionedControls({c});
+    },400,320);
+    PopupSpec spec;spec.anchor={20,20,120,24};spec.options={"One","Two"};spec.pick=[&](int){++picked;};
+    popup.host.openPopup(spec);
+    popup.host.setBlockedRegions({popup.host.bounds("base")});
+    CHECK(popup.host.popupOpen());
+    const auto current=popup.host.inspect();CHECK(control(current,"base")->blocked);
+    CHECK_FALSE(control(current,"popup/1")->blocked);
+    CHECK_FALSE(popup.host.act("base",{},error));CHECK(base==0);
+    CHECK(popup.host.act("popup/1",{},error));CHECK(picked==1);
+}
+
+TEST_CASE("blocked editor drafts suspend while keyboard focus reaches uncovered controls" * doctest::test_suite("UILayout"))
+{
+    std::string model="Original";int commits=0,clicks=0;
+    Fixture f([&](const Presentation &)
+    {
+        TextFieldOptions options;options.commitOnSubmit=true;
+        return column({textField("field",model,[&](const std::string &v){model=v;++commits;},options),button("free","Free",[&]{++clicks;})});
+    },400,200);
+    std::string error;
+    REQUIRE(f.host.act("field",{ActionKind::SetValue,std::string("Draft")},error));
+    f.host.setBlockedRegions({f.host.bounds("field")});
+    SDL_Event enter{};enter.type=SDL_EVENT_KEY_DOWN;enter.key.key=SDLK_RETURN;
+    CHECK(f.host.event(enter));CHECK(commits==0);CHECK(clicks==0);
+    f.key(SDLK_TAB);CHECK(f.host.focused()=="free");
+    f.key(SDLK_RETURN);CHECK(clicks==1);CHECK(commits==0);CHECK(model=="Original");
+    f.host.setBlockedRegions({});
+    CHECK(std::get<std::string>(f.host.find("field")->controlValue())=="Draft");
+    f.key(SDLK_RETURN);CHECK(clicks==2);CHECK(commits==0);
+    CHECK(f.host.act("field",{},error));
+    f.key(SDLK_ESCAPE);CHECK(commits==0);CHECK(model=="Original");
+}
+
+TEST_CASE("remote owner geometry changes preserve an uncovered press" * doctest::test_suite("UILayout"))
+{
+    int clicks=0;
+    Fixture f([&](const Presentation &)
+    {
+        PositionedControl c;c.key="free";c.bounds={10,10,80,30};c.tap=[&](Point){++clicks;};return positionedControls({c});
+    },400,200);
+    f.host.setBlockedRegions({{200,20,80,40}});
+    f.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN,{30,25});
+    f.host.setBlockedRegions({{200,20,100,60}});
+    f.mouse(SDL_EVENT_MOUSE_BUTTON_UP,{30,25});CHECK(clicks==1);
+}
+
+TEST_CASE("keyed press survives a tree rebuild with unrelated blocked regions" * doctest::test_suite("UILayout"))
+{
+    int clicks=0;
+    Fixture f([&](const Presentation &)
+    {
+        PositionedControl c;c.key="stable";c.bounds={10,10,80,30};c.tap=[&](Point){++clicks;};return positionedControls({c});
+    },400,200);
+    f.host.setBlockedRegions({{200,20,100,60}});
+    f.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN,{30,25});
+    f.host.invalidate();f.host.layoutIfNeeded();
+    f.mouse(SDL_EVENT_MOUSE_BUTTON_UP,{30,25});CHECK(clicks==1);
+}
+
+TEST_CASE("indexed selections bind the full catalog without binding unrelated counters" *
+		  doctest::test_suite("UILayout"))
+{
+	for (int kind = 0; kind < 3; ++kind)
+	{
+		CAPTURE(kind);
+		std::vector<std::string> catalog{"A", "B", "C"};
+		std::vector<bool> enabled{true, true, true};
+		int counter = 0, chosen = -1;
+		Fixture f(
+			[&](const Presentation &)
+			{
+				Element selection;
+				if (kind == 0)
+				{
+					ChoiceOptions options;
+					options.enabled = enabled;
+					selection =
+						choice("selection", catalog, 0, [&](int i) { chosen = i; }, options);
+				}
+				else if (kind == 1)
+				{
+					ListOptions options;
+					options.enabled = enabled;
+					selection =
+						listView("selection", catalog, 0, [&](int i) { chosen = i; }, options);
+				}
+				else
+					selection =
+						segments("selection", catalog, 0, [&](int i) { chosen = i; }, enabled);
+				return column({selection, button("counter", std::to_string(counter), [] {})});
+			},
+			400, 300);
+		const std::string key = kind == 2 ? "selection/0" : "selection";
+		auto snapshot = f.host.inspect();
+		const auto originalRevision = control(snapshot, key)->revision;
+		const auto unchangedCounterRevision = control(snapshot, "counter")->revision;
+		auto queued = semanticDispatch();
+		queued->surface = snapshot.instance;
+		queued->key = key;
+		queued->revision = originalRevision;
+		queued->action = kind == 2 ? SemanticAction{} : SemanticAction{ActionKind::Select, 1};
+		auto queuedRow = semanticDispatch();
+		if (kind == 1)
+		{
+			queuedRow->surface = snapshot.instance;
+			queuedRow->key = "selection/0";
+			queuedRow->revision = control(snapshot, "selection/0")->revision;
+		}
+		std::swap(catalog[1], catalog[2]);
+		f.host.invalidate();
+		f.host.layoutIfNeeded();
+		snapshot = f.host.inspect();
+		CHECK(control(snapshot, "counter")->revision == unchangedCounterRevision);
+		CHECK(control(snapshot, key)->revision != originalRevision);
+		CHECK(f.host.event(queued->event()));
+		CHECK(queued->error.find("Stale") != std::string::npos);
+		if (kind == 1)
+		{
+			CHECK(f.host.event(queuedRow->event()));
+			CHECK(queuedRow->error.find("Stale") != std::string::npos);
+		}
+		CHECK(chosen == -1);
+		const auto reorderedRevision = control(snapshot, key)->revision;
+		++counter;
+		f.host.invalidate();
+		f.host.layoutIfNeeded();
+		snapshot = f.host.inspect();
+		CHECK(control(snapshot, key)->revision == reorderedRevision);
+		enabled[1] = false;
+		f.host.invalidate();
+		f.host.layoutIfNeeded();
+		snapshot = f.host.inspect();
+		CHECK(control(snapshot, key)->revision != reorderedRevision);
+	}
+}
+
+TEST_CASE("choice popups retain only the current owner meaning" * doctest::test_suite("UILayout"))
+{
+	std::string ownerContext = "first-object";
+	std::vector<std::string> catalog{"A", "B", "C"};
+	int counter = 0, picked = -1;
+	bool enabled = true, present = true;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			ChoiceOptions options;
+			options.controlEnabled = enabled;
+			auto selection = present ? semanticContext(choice(
+														   "choice", catalog, 0,
+														   [&](int i) { picked = i; }, options),
+													   ownerContext)
+									 : empty();
+			return column({selection, button("counter", std::to_string(counter), [] {})});
+		},
+		400, 300);
+	std::string error;
+	auto queueRow = [&]
+	{
+		REQUIRE(f.host.act("choice", {}, error));
+		REQUIRE(f.host.popupOpen());
+		const auto snapshot = f.host.inspect();
+		auto queued = semanticDispatch();
+		queued->surface = snapshot.instance;
+		queued->key = "popup/1";
+		queued->revision = control(snapshot, queued->key)->revision;
+		return queued;
+	};
+	// Unchanged labels and indices can nevertheless address a different domain object.
+	auto old = queueRow();
+	ownerContext = "second-object";
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.popupOpen());
+	CHECK(f.host.event(old->event()));
+	CHECK_FALSE(old->error.empty());
+	CHECK(picked == -1);
+	// The full unselected catalog also owns the popup, not just its selected label.
+	old = queueRow();
+	std::swap(catalog[1], catalog[2]);
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.popupOpen());
+	CHECK(f.host.event(old->event()));
+	CHECK_FALSE(old->error.empty());
+	CHECK(picked == -1);
+	// A rebuild caused by an unrelated value preserves the popup and pending action.
+	old = queueRow();
+	++counter;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK(f.host.popupOpen());
+	CHECK(f.host.event(old->event()));
+	CHECK(old->error.empty());
+	CHECK(picked == 1);
+	old = queueRow();
+	enabled = false;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.popupOpen());
+	enabled = true;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	old = queueRow();
+	present = false;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.popupOpen());
 }

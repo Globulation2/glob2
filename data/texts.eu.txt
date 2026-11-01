@@ -6820,3 +6820,5 @@ Arrain kopurua
 Mezuak ▸
 [Camp-site amount]
 Kanpaleku kopurua
+[AI for all computer colonies]
+AA ordenagailuak kontrolatutako kolonia guztientzat

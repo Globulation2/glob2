@@ -14,6 +14,12 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include "LoadSaveDialog.h"
+#include "ConnectionOverlay.h"
+#include "hive/HiveDialog.h"
+#include "tutorial/TutorialGuidance.h"
+#include "render/overlay/MapZoomControls.h"
+#include "Engine.h"
+#include "GameSpeedControl.h"
 #include "MapEditDialog.h"
 #include <SDLGraphicContext.h>
 #include <SDL3/SDL.h>
@@ -524,6 +530,8 @@ TEST_SUITE("GUIInteractionCoverage")
             gui.executeOrder(order);
         }
         CHECK(inn->maxUnitWorking==original+1); CHECK(inn->priority==-1);
+        gui.game.finishOrderPhase(false);
+        gui.prepareLocalPresentation();
         CHECK_FALSE(gui.pendingFor(inn->gid).pendingMaxUnitWorking.has_value());
         CHECK_FALSE(gui.pendingFor(inn->gid).pendingPriority.has_value());
         globalContainer->liveSpectating=true;
@@ -773,6 +781,497 @@ TEST_CASE("Scenario messages wrap unspaced UTF-8 text and continuation indents w
     CHECK(world.gui.orderQueue.empty());
 }
 
+
+TEST_CASE("desktop HUD descriptions share human orders and reject selection replacement [display]" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .loadStrings = true, .width = 1024, .height = 768});
+	glob2test::HeadlessGame world(
+		{.discovered = true, .clearImmobile = true, .loadDefaultRace = true, .header = true});
+	auto &gui = world.gui;
+	gui.localTeamNo = 0;
+	gui.localPlayer = 0;
+	gui.localTeam = world.team;
+	auto *first = world.addBuilding("swarm", 4, 4);
+	auto *second = world.addBuilding("swarm", 20, 20);
+	REQUIRE(first);
+	REQUIRE(second);
+	gui.setSelection(GameGUI::BUILDING_SELECTION, first);
+	gui.prepareLocalPresentation(gui.frameScene);
+	auto descriptors = gui.describeHudControls();
+	auto worker = std::find_if(descriptors.begin(), descriptors.end(),
+							   [](const auto &c) { return c.key.ends_with("/workers"); });
+	REQUIRE(worker != descriptors.end());
+	REQUIRE(worker->enabled);
+	const auto key = worker->key;
+	const auto original = first->maxUnitWorking;
+	const int requested = original == 3 ? 2 : 3;
+	const int secondOriginal = second->maxUnitWorking;
+	auto &host = gui.hudInspectionHost();
+	const auto before = host.inspect();
+	auto target = host.find(key);
+	REQUIRE(target);
+	std::string error;
+	// Setting the current value is valid even though human request helpers
+	// deliberately deduplicate it; no command should be submitted.
+	CHECK(host.act(key, {GAGGUI::ui::ActionKind::SetValue, original}, error));
+	CHECK(error.empty());
+	CHECK(gui.orderQueue.empty());
+	const auto retainedWorkerAction = worker->perform;
+	const auto ratio = std::find_if(descriptors.begin(), descriptors.end(),
+		[](const auto &c) { return c.key.ends_with("/production/0"); });
+	REQUIRE(ratio != descriptors.end());
+	CHECK(host.act(ratio->key, {GAGGUI::ui::ActionKind::SetValue, std::get<int>(ratio->value)}, error));
+	CHECK(gui.orderQueue.empty());
+	CHECK_FALSE(host.act(key, {GAGGUI::ui::ActionKind::SetValue, -1}, error));
+	CHECK_FALSE(host.act(key, {GAGGUI::ui::ActionKind::SetValue, std::string("invalid")}, error));
+	CHECK(gui.orderQueue.empty());
+	error.clear();
+	CHECK(host.act(key, {GAGGUI::ui::ActionKind::SetValue, requested}, error));
+	CHECK(gui.displayedMaxUnitWorking(*first) == requested);
+	CHECK(first->maxUnitWorking == original);
+	CHECK(gui.orderQueue.size() == 1);
+	CHECK(gui.hudInspectionHost().act(key, {GAGGUI::ui::ActionKind::SetValue, requested}, error));
+	CHECK(error.empty());
+	CHECK(gui.orderQueue.size() == 1); // The pending UI value also deduplicates successfully.
+
+	gui.handleMenuClickBuildingSelection(RIGHT_MENU_OFFSET + SCROLLBOX_BAR_WIDTH - 1,
+										 worker->bounds.y + 8, SDL_BUTTON_LEFT);
+	CHECK(gui.displayedMaxUnitWorking(*first) == requested + 1);
+	CHECK(gui.orderQueue.size() == 2);
+	globals->liveSpectating = true;
+	CHECK_FALSE(retainedWorkerAction({GAGGUI::ui::ActionKind::SetValue, requested + 1}));
+	CHECK(gui.orderQueue.size() == 2); // A matching value must not bypass ownership.
+	globals->liveSpectating = false;
+	// In-flight commands bind the selection's entity generation, not just its slot.
+	auto findRevision = [&](auto &&self, const auto &nodes) -> std::uint64_t
+	{
+		for (const auto &c : nodes)
+		{
+			if (c.key == key)
+				return c.revision;
+			if (auto r = self(self, c.children))
+				return r;
+		}
+		return 0;
+	};
+	auto pending = GAGGUI::ui::semanticDispatch();
+	pending->surface = before.instance;
+	pending->key = key;
+	pending->revision = findRevision(findRevision, before.controls);
+	pending->action = {GAGGUI::ui::ActionKind::SetValue, 7};
+	gui.setSelection(GameGUI::BUILDING_SELECTION, second);
+	gui.prepareLocalPresentation(gui.frameScene);
+	auto &updated = gui.hudInspectionHost();
+	CHECK(updated.event(pending->event()));
+	CHECK_FALSE(pending->error.empty());
+	CHECK(gui.orderQueue.size() == 2);
+	CHECK(second->maxUnitWorking == secondOriginal);
+	CHECK_FALSE(retainedWorkerAction({GAGGUI::ui::ActionKind::SetValue, secondOriginal}));
+	gui.orderQueue.clear();
+	auto *flag = world.addBuilding("warflag", 30, 30);
+	REQUIRE(flag);
+	gui.game.snapshots().invalidateBoundary(); // A new entity was attached outside a simulation step.
+	gui.setSelection(GameGUI::BUILDING_SELECTION, flag);
+	gui.prepareLocalPresentation(gui.frameScene);
+	const auto flagControls = gui.describeHudControls();
+	const auto range = std::find_if(flagControls.begin(), flagControls.end(),
+		[](const auto &c) { return c.key.ends_with("/range"); });
+	REQUIRE(range != flagControls.end());
+	error.clear();
+	CHECK(gui.hudInspectionHost().act(range->key,
+		{GAGGUI::ui::ActionKind::SetValue, std::get<int>(range->value)}, error));
+	CHECK(error.empty());
+	CHECK(gui.orderQueue.empty());
+
+	gui.clearSelection();
+	gui.prepareLocalPresentation(gui.frameScene);
+}
+
+TEST_CASE("spectator descriptions expose toggles and prohibit building orders [display]" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .loadStrings = true, .width = 1024, .height = 768});
+	glob2test::HeadlessGame world({.teams = 2,
+								   .discovered = true,
+								   .clearImmobile = true,
+								   .loadDefaultRace = true,
+								   .header = true});
+	auto &gui = world.gui;
+	gui.localTeamNo = 0;
+	gui.localPlayer = 0;
+	gui.localTeam = world.team;
+	struct Restore
+	{
+		bool old;
+		~Restore() { globalContainer->liveSpectating = old; }
+	} restore{globals->liveSpectating};
+	globals->liveSpectating = true;
+	gui.replayDisplayMode = GameGUI::RDM_REPLAY_VIEW;
+	gui.prepareLocalPresentation(gui.frameScene);
+	std::string error;
+	auto &host = gui.hudInspectionHost();
+	CHECK(host.act("spectator/flags", {GAGGUI::ui::ActionKind::SetValue, false}, error));
+	CHECK_FALSE(globals->replayShowFlags);
+	CHECK(host.act("spectator/flags", {GAGGUI::ui::ActionKind::Activate, {}}, error));
+	CHECK(globals->replayShowFlags);
+	CHECK(gui.orderQueue.empty());
+	const auto descriptions = gui.describeHudControls();
+	CHECK(std::count_if(descriptions.begin(), descriptions.end(),
+						[](const auto &c) { return c.key.starts_with("spectator/team/"); }) == 2);
+}
+
+TEST_CASE("connection controls share layout and modal ownership with gameplay input [display]" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .loadStrings = true, .width = 1024, .height = 768});
+	glob2test::HeadlessGame world(
+		{.discovered = true, .clearImmobile = true, .loadDefaultRace = true, .header = true});
+	auto &gui = world.gui;
+	gui.prepareLocalPresentation(gui.frameScene);
+	ConnectionSnapshot state;
+	int leaves = 0;
+	state.rows.push_back({.seat = 0, .name = "Player", .pingMs = 42, .local = true});
+	gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
+	gui.connectionOverlay->source = [&] { return state; };
+	gui.connectionOverlay->leave = [&] { ++leaves; };
+	auto &host = gui.hudInspectionHost();
+	std::string error;
+	CHECK(host.act("connection/details", {}, error));
+	REQUIRE(gui.connectionOverlay->blocksGameplay());
+	const auto modal = gui.describeHudControls();
+	CHECK(std::none_of(modal.begin(), modal.end(),
+					   [](const auto &c) { return c.key == "game/menu"; }));
+	CHECK(gui.hudInspectionHost().act("connection/close", {}, error));
+	CHECK_FALSE(gui.connectionOverlay->blocksGameplay());
+	const auto initial = gui.hudInspectionHost().inspect();
+	auto revision = [&](auto &&self, const auto &nodes) -> std::uint64_t
+	{
+		for (const auto &c : nodes)
+		{
+			if (c.key == "game/menu")
+				return c.revision;
+			if (const auto value = self(self, c.children))
+				return value;
+		}
+		return 0;
+	};
+	auto pending = GAGGUI::ui::semanticDispatch();
+	pending->surface = initial.instance;
+	pending->key = "game/menu";
+	pending->revision = revision(revision, initial.controls);
+	REQUIRE(pending->revision != 0);
+	// The network source changes after inspection, before actual consumption.
+	state.card = ConnectionSnapshot::Card::Reconnecting;
+	auto event = pending->event();
+	gui.processEvent(&event);
+	CHECK(pending->consumed);
+	CHECK_FALSE(pending->error.empty());
+	CHECK(gui.activeDialog() == nullptr);
+	CHECK(gui.hudInspectionHost().act("connection/leave", {}, error));
+	CHECK(leaves == 1);
+	SDL_Event motion{};
+	motion.type = SDL_EVENT_MOUSE_MOTION;
+	CHECK(gui.connectionOverlay->handle(motion));
+	SDL_Event quit{};
+	quit.type = SDL_EVENT_QUIT;
+	CHECK_FALSE(gui.connectionOverlay->handle(quit));
+	CHECK(gui.orderQueue.empty());
+}
+
+TEST_CASE("connection card refresh precedes Hive semantic and human ownership [display]" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .loadStrings = true, .width = 1024, .height = 768});
+	glob2test::HeadlessGame world(
+		{.discovered = true, .clearImmobile = true, .loadDefaultRace = true, .header = true});
+	auto &gui = world.gui;
+	gui.prepareLocalPresentation(gui.frameScene);
+	struct View final : Hive::CommanderView
+	{
+		int stops = 0;
+		bool available() const override { return true; }
+		bool local() const override { return true; }
+		Hive::Json standingOrders() const override { return Hive::Json::array(); }
+		void stop() override { ++stops; }
+		void change(const std::string &, const std::string &) override {}
+	};
+	auto view = std::make_shared<View>();
+	gui.hiveCards = std::make_unique<Hive::Dialog>(view);
+	gui.hiveCards->attach(*globals->gfx);
+	gui.hiveCards->update(0);
+	const auto before = gui.hiveCards->host().inspect();
+	auto revision = [&](auto &&self, const auto &nodes) -> std::uint64_t
+	{
+		for (const auto &c : nodes)
+		{
+			if (c.key == "hive/stop")
+				return c.revision;
+			if (const auto value = self(self, c.children))
+				return value;
+		}
+		return 0;
+	};
+	auto pending = GAGGUI::ui::semanticDispatch();
+	pending->surface = before.instance;
+	pending->key = "hive/stop";
+	pending->revision = revision(revision, before.controls);
+	REQUIRE(pending->revision != 0);
+	const auto hit = gui.hiveCards->host().bounds("hive/stop").center();
+	ConnectionSnapshot state;
+	int reads = 0;
+	gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
+	gui.connectionOverlay->source = [&]
+	{
+		++reads;
+		return state;
+	};
+	(void)gui.hudInspectionHost();
+	const int prior = reads;
+	state.card = ConnectionSnapshot::Card::Reconnecting;
+	auto event = pending->event();
+	gui.processEvent(&event);
+	CHECK_FALSE(pending->consumed);
+	CHECK(view->stops == 0);
+	CHECK(reads == prior + 1);
+	SDL_Event mouse{};
+	mouse.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+	mouse.button.button = SDL_BUTTON_LEFT;
+	mouse.button.x = hit.x;
+	mouse.button.y = hit.y;
+	gui.processEvent(&mouse);
+	CHECK(view->stops == 0);
+}
+
+TEST_CASE("tutorial semantic controls bind lesson step and destination [display]" * doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
+    int navigations=0;
+    Tutorial::Guidance guidance([&](int){++navigations;});
+    auto lesson=std::make_shared<Tutorial::Model>();
+    lesson->lessonId="test";lesson->stepId="first";lesson->count=2;lesson->index=0;
+    lesson->title="[intro help]";lesson->destination=Tutorial::Destination{8,8,"Target"};
+    guidance.model(lesson);guidance.attach(*globals->gfx);guidance.update(0);
+    const auto initial=guidance.host().inspect();
+    auto revision=[&](auto &&self,const auto &nodes,const std::string &key)->std::uint64_t
+    {
+        for(const auto &c:nodes){if(c.key==key)return c.revision;if(const auto value=self(self,c.children,key))return value;}return 0;
+    };
+    auto pending=GAGGUI::ui::semanticDispatch();pending->surface=initial.instance;
+    pending->key="intro/destination";pending->revision=revision(revision,initial.controls,pending->key);
+    REQUIRE(pending->revision!=0);
+    auto next=std::make_shared<Tutorial::Model>(*lesson);next->destination->x=12;
+    guidance.model(next);guidance.update(0);
+    CHECK(guidance.host().event(pending->event()));CHECK_FALSE(pending->error.empty());CHECK(navigations==0);
+    const auto second=guidance.host().inspect();
+    auto oldHelp=GAGGUI::ui::semanticDispatch();oldHelp->surface=second.instance;
+    oldHelp->key="intro/help";oldHelp->revision=revision(revision,second.controls,oldHelp->key);
+    REQUIRE(oldHelp->revision!=0);
+    auto step=std::make_shared<Tutorial::Model>(*next);step->stepId="second";
+    guidance.model(step);guidance.update(0);
+    CHECK(guidance.host().event(oldHelp->event()));CHECK_FALSE(oldHelp->error.empty());
+}
+
+TEST_CASE("desktop zoom speed and events share higher-surface ownership for semantic and human input [display][writes-preferences]" *
+          doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 1024, .height = 768,
+        .beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::Software; }});
+    glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "0");
+    GameGUI gui;
+    auto map = Engine::loadMapHeader("maps/balanced.map");
+    GameHeader players;
+    players.setNumberOfPlayers(1);
+    players.getBasePlayer(0) = BasePlayer(0, "Zoom ownership", 0, BasePlayer::P_LOCAL);
+    REQUIRE(gui.loadFromHeaders(map, players, true, true));
+    gui.localPlayer = gui.localTeamNo = 0;
+    gui.adjustLocalTeam();
+    gui.prepareLocalPresentation();
+    gui.updateCamera();
+    gui.camera.setZoom(1, gui.camera.width / 2, gui.camera.height / 2);
+    auto findControl = [&](auto &&self, const auto &nodes, const std::string &key) -> const GAGGUI::ui::ControlSnapshot * {
+        for (const auto &node : nodes) {
+            if (node.key == key) return &node;
+            if (const auto *child = self(self, node.children, key)) return child;
+        }
+        return nullptr;
+    };
+    {
+        const auto initial = gui.hudInspectionHost().inspect();
+        const auto *middle = findControl(findControl, initial.controls, "game/zoom/fit");
+        const auto *zoomIn = findControl(findControl, initial.controls, "game/zoom/in");
+        REQUIRE(middle); REQUIRE(zoomIn);
+        CHECK(middle->label == Glob2UI::libraryText("Fit"));
+        auto pending = GAGGUI::ui::semanticDispatch();
+        pending->surface = initial.instance; pending->key = middle->key; pending->revision = middle->revision;
+        gui.camera.setZoom(1.25, gui.camera.width / 2, gui.camera.height / 2);
+        const auto changed = gui.hudInspectionHost().inspect();
+        const auto *current = findControl(findControl, changed.controls, pending->key);
+        const auto *sameZoomIn = findControl(findControl, changed.controls, "game/zoom/in");
+        REQUIRE(current); REQUIRE(sameZoomIn);
+        CHECK(current->label == "100%");
+        CHECK(current->revision != middle->revision);
+        CHECK(sameZoomIn->revision == zoomIn->revision); // Its action and geometry did not change.
+        auto stale = pending->event();
+        CHECK(gui.hudInspectionHost().event(stale));
+        CHECK_FALSE(pending->error.empty());
+        CHECK(gui.camera.zoom == doctest::Approx(1.25));
+        const auto *speed = findControl(findControl, changed.controls, "game/speed");
+        REQUIRE(speed);
+        const int oldSpeed = globals->settings.gameSpeed;
+        globals->settings.gameSpeed = GameSpeedControl::faster(oldSpeed);
+        const auto unrelated = gui.hudInspectionHost().inspect();
+        const auto *afterSpeed = findControl(findControl, unrelated.controls, "game/speed");
+        const auto *afterMiddle = findControl(findControl, unrelated.controls, pending->key);
+        REQUIRE(afterSpeed); REQUIRE(afterMiddle);
+        CHECK(afterSpeed->value != speed->value);
+        CHECK(afterMiddle->revision == current->revision);
+        globals->settings.gameSpeed = oldSpeed;
+        gui.camera.setZoom(1, gui.camera.width / 2, gui.camera.height / 2);
+    }
+    const auto button = mapZoomControlBounds(gui.camera, true, true)[2];
+    REQUIRE(button.w >= 4);
+    REQUIRE(button.h > 0);
+    const GAGGUI::ui::Rect requestedCover{button.x, button.y, button.w / 2, button.h};
+    const GAGGUI::ui::Point exposed{button.x + button.w * 3 / 4, button.center().y};
+    auto cover = [&](GAGGUI::ui::Rect area) {
+        auto model = std::make_shared<Tutorial::Model>();
+        model->lessonId = "zoom-ownership"; model->stepId = "covered"; model->count = 1;
+        model->title = model->instruction = model->touchInstruction = "[intro help]";
+        gui.tutorialGuidance = std::make_unique<Tutorial::Guidance>([](int) {});
+        gui.tutorialGuidance->model(model);
+        gui.tutorialGuidance->attach(*globals->gfx);
+        auto &guide = gui.tutorialGuidance->host();
+        guide.layoutIfNeeded();
+        // A dialog Host lays out its content; panelBounds adds the painted
+        // padding. Place that actual outer right edge halfway across the target.
+        const int padding = guide.metrics().padding;
+        const int width = std::max(1, std::min(240, area.right() - 2 * padding));
+        const GAGGUI::ui::Rect inner{area.right() - padding - width,
+            area.y + padding, width, 120};
+        guide.setAvailable([inner](const auto &, const auto &) { return inner; });
+        guide.setPlacement([](GAGGUI::ui::Size, GAGGUI::ui::Rect bounds) { return bounds; });
+        guide.invalidate(); guide.layoutIfNeeded();
+        const auto panel = gui.tutorialGuidance->panelBounds();
+        REQUIRE(panel == inner.inset(-padding));
+        REQUIRE(panel.right() == area.right());
+        return panel;
+    };
+    const auto covered = cover(requestedCover);
+    const auto overlap = button.intersect(covered);
+    REQUIRE(overlap.w > 0);
+    REQUIRE(overlap.h > 0);
+    REQUIRE(overlap.w < button.w);
+    REQUIRE(button.contains(exposed));
+    REQUIRE_FALSE(covered.contains(exposed));
+    const auto inspected = gui.hudInspectionHost().inspect();
+    const auto *target = findControl(findControl, inspected.controls, "game/zoom/in");
+    REQUIRE(target);
+    CHECK(target->bounds == button);
+    CHECK(target->enabled);
+    CHECK(target->blocked);
+    std::string error;
+    const double before = gui.camera.zoom;
+    CHECK_FALSE(gui.hudInspectionHost().act("game/zoom/in", {}, error));
+    CHECK(error.find("blocked") != std::string::npos);
+    CHECK(gui.camera.zoom == before);
+    auto click = [&](GAGGUI::ui::Point point, Uint8 mouseButton = SDL_BUTTON_LEFT) {
+        SDL_MouseButtonEvent event{};
+        event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+        event.button = mouseButton;
+        event.x = point.x; event.y = point.y;
+        // Enter the ordinary human handler after the higher-surface hit route;
+        // this point is outside Guide, so production routing reaches it too.
+        gui.handleMouseButtonDown(event);
+        event.type = SDL_EVENT_MOUSE_BUTTON_UP;
+        gui.handleMouseButtonUp(event);
+    };
+    click(exposed);
+    CHECK(gui.camera.zoom == before);
+    CHECK(gui.orderQueue.empty());
+    gui.tutorialGuidance.reset();
+    click(exposed);
+    const double humanZoom = gui.camera.zoom;
+    CHECK(humanZoom > before);
+    gui.camera.setZoom(before, gui.camera.width / 2, gui.camera.height / 2);
+    error.clear();
+    REQUIRE(gui.hudInspectionHost().act("game/zoom/in", {}, error));
+    CHECK(gui.camera.zoom == doctest::Approx(humanZoom));
+    const auto box = mapZoomControlsLayout(gui.camera, true, true);
+    REQUIRE(box.readout() < box.width);
+    const double priorReadout = gui.camera.zoom;
+    click({box.x + (box.readout() + box.width) / 2, box.y + box.height / 2});
+    CHECK(gui.camera.zoom == priorReadout);
+    globals->settings.gameSpeed = GameSpeedControl::presets.front();
+    const auto speed = gui.hudInspectionHost().bounds("game/speed");
+    REQUIRE(speed.w > 4);
+    const GAGGUI::ui::Rect speedCover{speed.x, speed.y, speed.w / 2, speed.h};
+    const GAGGUI::ui::Point speedHit{speed.x + speed.w * 3 / 4, speed.center().y};
+    const auto speedCoverPanel = cover(speedCover);
+    const auto speedCoverOverlap = speed.intersect(speedCoverPanel);
+    REQUIRE(speedCoverOverlap.w > 0);
+    REQUIRE(speedCoverOverlap.h > 0);
+    REQUIRE(speedCoverOverlap.w < speed.w);
+    REQUIRE(speed.contains(speedHit));
+    REQUIRE_FALSE(gui.tutorialGuidance->panelBounds().contains(speedHit));
+    const auto speedSnapshot = gui.hudInspectionHost().inspect();
+    const auto *blockedSpeed = findControl(findControl, speedSnapshot.controls, "game/speed");
+    REQUIRE(blockedSpeed); CHECK(blockedSpeed->enabled); CHECK(blockedSpeed->blocked);
+    const int oldSpeed = globals->settings.gameSpeed;
+    const int nextSpeed = GameSpeedControl::faster(oldSpeed);
+    error.clear();
+    CHECK_FALSE(gui.hudInspectionHost().act("game/speed", {GAGGUI::ui::ActionKind::SetValue, nextSpeed}, error));
+    CHECK(error.find("blocked") != std::string::npos);
+    click(speedHit);
+    click(speedHit, SDL_BUTTON_RIGHT);
+    CHECK(globals->settings.gameSpeed == oldSpeed);
+    gui.tutorialGuidance.reset();
+    click(speedHit);
+    CHECK(globals->settings.gameSpeed == nextSpeed);
+    click(speedHit, SDL_BUTTON_RIGHT);
+    CHECK(globals->settings.gameSpeed == oldSpeed);
+    gui.eventFeed.clear();
+    gui.eventFeed.ingest({GEUnitUnderAttack, WORKER, 0, 20, 25, "Ownership event", GAGCore::Color(255, 255, 255)},
+        SDL_GetTicks(), [](int, int, int, int) { return std::int64_t(0); });
+    const auto eventRows = gui.describeEventControls();
+    REQUIRE(eventRows.size() == 1);
+    const auto row = eventRows.front();
+    REQUIRE(row.bounds.w > 4);
+    const GAGGUI::ui::Rect rowCover{row.bounds.x, row.bounds.y, row.bounds.w / 2, row.bounds.h};
+    const GAGGUI::ui::Point rowHit{row.bounds.x + row.bounds.w * 3 / 4, row.bounds.center().y};
+    const auto rowCoverPanel = cover(rowCover);
+    const auto rowCoverOverlap = row.bounds.intersect(rowCoverPanel);
+    REQUIRE(rowCoverOverlap.w > 0);
+    REQUIRE(rowCoverOverlap.h > 0);
+    REQUIRE(rowCoverOverlap.w < row.bounds.w);
+    REQUIRE(row.bounds.contains(rowHit));
+    REQUIRE_FALSE(gui.tutorialGuidance->panelBounds().contains(rowHit));
+    const auto rowSnapshot = gui.hudInspectionHost().inspect();
+    const auto *blockedRow = findControl(findControl, rowSnapshot.controls, row.key);
+    REQUIRE(blockedRow); CHECK(blockedRow->enabled); CHECK(blockedRow->blocked);
+    const auto origin = std::pair{gui.viewportX, gui.viewportY};
+    error.clear();
+    CHECK_FALSE(gui.hudInspectionHost().act(row.key, {}, error));
+    CHECK(error.find("blocked") != std::string::npos);
+    click(rowHit);
+    CHECK((std::pair{gui.viewportX, gui.viewportY} == origin));
+    gui.tutorialGuidance.reset();
+    click(rowHit);
+    const auto humanOrigin = std::pair{gui.viewportX, gui.viewportY};
+    CHECK(humanOrigin != origin);
+    gui.viewportX = origin.first; gui.viewportY = origin.second;
+    gui.updateCamera();
+    error.clear();
+    REQUIRE(gui.hudInspectionHost().act(row.key, {}, error));
+    CHECK((std::pair{gui.viewportX, gui.viewportY} == humanOrigin));
+
+    CHECK(gui.orderQueue.empty());
+}
+
 TEST_CASE("statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" * doctest::test_suite("GUIInteractionCoverage"))
 {
     glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
@@ -796,8 +1295,38 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
     CHECK(panel.host().find("stats/metric/population")->accessibleText().find("124") != std::string::npos);
     REQUIRE(panel.host().find("stats/metric/blocked buildings"));
     CHECK(panel.host().find("stats/metric/blocked buildings")->accessibleText().ends_with("\n0"));
+    const auto hosts = gui.inspectionHosts();
+    REQUIRE(std::find(hosts.begin(), hosts.end(), &panel.host()) != hosts.end());
+    auto revisionFor = [&](auto &&self, const auto &controls, const std::string &key) -> std::uint64_t {
+        for (const auto &control : controls) {
+            if (control.key == key) return control.revision;
+            if (const auto revision = self(self, control.children, key)) return revision;
+        }
+        return 0;
+    };
+    auto pending = GAGGUI::ui::semanticDispatch();
+    auto inspected = panel.host().inspect();
+    pending->surface = inspected.instance;
+    pending->key = "stats/topic/1";
+    pending->revision = revisionFor(revisionFor, inspected.controls, pending->key);
+    REQUIRE(pending->revision);
+    auto event = pending->event();
+    gui.processEvent(&event);
+    CHECK(pending->consumed);
+    CHECK(pending->error.empty());
+    CHECK(panel.topic()==InGameStatisticsPanel::Topic::Colony);
+    panel.selectTopic(InGameStatisticsPanel::Topic::Overview); panel.update(0);
     panel.host().tapAt(panel.host().bounds("stats/topic/1").center());
     CHECK(panel.topic()==InGameStatisticsPanel::Topic::Colony);
+    // An unchanged topic label is still a different target after a team switch.
+    inspected = panel.host().inspect();
+    auto stale = GAGGUI::ui::semanticDispatch();
+    stale->surface = inspected.instance; stale->key = "stats/topic/1";
+    stale->revision = revisionFor(revisionFor, inspected.controls, stale->key);
+    panel.sync(fixture, 1, false, false); panel.update(0);
+    event = stale->event(); panel.host().event(event);
+    CHECK(stale->consumed); CHECK_FALSE(stale->error.empty());
+    gui.statistics(); panel.update(0);
     panel.selectTopic(InGameStatisticsPanel::Topic::Overview);panel.update(0);
     CHECK(gui.sceneRequest(false).includeHistory);
     auto waiting = gui.drawnScene();
