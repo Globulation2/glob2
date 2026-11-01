@@ -237,6 +237,7 @@ void MusicLibraryScreen::onTimer(Uint32)
 				const auto problem = Online::errorFromJson(json, "http_" + std::to_string(response.status));
 				std::clog << "Music library API: " << problem.message << '\n';
 				notice = apiErrorText(problem);
+				queue.clear();
 				invalidate();
 				return;
 			}
