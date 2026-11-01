@@ -336,6 +336,28 @@ class GameGUITouchHarness
 		}
 		CHECK_FALSE(touch.statsOpen);
 		CHECK(touch.statsDrag == 0);
+		// A popup opened after the header press still interrupts its capture.
+		touch.statsOpen = true;
+		touch.cancel();
+		SDL_Event interrupted{}; interrupted.type = SDL_EVENT_FINGER_DOWN;
+		interrupted.tfinger.touchID = 84; interrupted.tfinger.fingerID = 1;
+		interrupted.tfinger.x = float(start.x + start.w / 2) / gfx->getW();
+		interrupted.tfinger.y = float(start.y + start.h / 2) / gfx->getH();
+		CHECK(touch.process(interrupted));
+		REQUIRE(touch.fingers.size() == 1);
+		auto &statisticsHost = gui.statisticsHost();
+		statisticsHost.openPopup({.anchor = gui.statisticsBounds(), .options = {"Keep open"}});
+		REQUIRE(statisticsHost.popupOpen());
+		interrupted.type = SDL_EVENT_FINGER_MOTION;
+		interrupted.tfinger.y += float(80 * gfx->logicalUnitsPerPoint()) / gfx->getH();
+		CHECK(touch.process(interrupted));
+		CHECK(touch.statsOpen);
+		CHECK(touch.statsDrag == 0);
+		CHECK(touch.ignoreTouchSequence);
+		interrupted.type = SDL_EVENT_FINGER_UP;
+		CHECK(touch.process(interrupted));
+		CHECK(statisticsHost.popupOpen());
+		statisticsHost.closePopup();
 		touch.statsOpen = false;
 		touch.cancel();
 		gui.tutorialGuidance.reset();

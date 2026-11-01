@@ -6,6 +6,7 @@
 #include <InterfacePresentation.h>
 #include "MobileSafeArea.h"
 #include <HostViewport.h>
+#include <ui/Host.h>
 #include "ThumbSide.h"
 #include "BrushCoverage.h"
 #include <map>
@@ -694,7 +695,17 @@ bool GameGUITouch::process(SDL_Event &event)
 		return false;
 	const ViewPoint pointerPoint{event.tfinger.x * globalContainer->gfx->getW(),
 								 event.tfinger.y * globalContainer->gfx->getH()};
-	if (usesHUD() && (inputBlocked(pointerPoint) ||
+	const bool blocked = usesHUD() && inputBlocked(pointerPoint);
+	const GAGGUI::ui::Point pixel{int(pointerPoint.x), int(pointerPoint.y)};
+	// Keep a captured header pull when it enters its own statistics body.
+	// The header and body hosts must still permit it: popups, modals and
+	// higher overlays retain their normal ability to interrupt the gesture.
+	const bool ownStatisticsBody = blocked && statsOpen && ownerRegion == 48 &&
+		!ignoreTouchSequence && event.type != SDL_EVENT_FINGER_DOWN && fingers.size() == 1 &&
+		fingers.front() == std::make_pair(event.tfinger.touchID, event.tfinger.fingerID) &&
+		controlAllowed("touch/statistics/sheet", GAGGUI::ui::ActionKind::Scroll) &&
+		gui.statisticsBounds().contains(pixel) && !gui.statisticsHost().inputBlockedAt(pixel);
+	if (usesHUD() && ((blocked && !ownStatisticsBody) ||
 		(event.type == SDL_EVENT_FINGER_DOWN && !pointerControlAllowed(pointerPoint))))
 	{
 		cancel();
