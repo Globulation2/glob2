@@ -618,6 +618,7 @@ farming.normal_interval_ticks = 512
 farming.urgent_interval_ticks = 64
 farming.management_radius = 16
 farming.wheat_fertility_min = 3276
+# Legacy diagnostic values; wood protection now uses the renewable-capacity quota.
 farming.wood_fertility_base_percent = 15
 farming.wood_fertility_pressure_percent = 10
 farming.wood_firebreak_fertility_min_percent = 5
