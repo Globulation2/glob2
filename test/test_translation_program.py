@@ -184,5 +184,5 @@ class TranslationProgramTest(unittest.TestCase):
 if __name__ == '__main__':
     # Hosted Linux verification runs this workflow entry point. Include the
     # provider's budget/resumption contracts; discovery imports its file itself.
-    from test_google_draft import GoogleDraftTest
+    from test_google_draft import HtmlGoogleDraftTest, PlainGoogleDraftTest
     unittest.main()
