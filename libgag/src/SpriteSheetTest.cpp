@@ -198,8 +198,10 @@ static void checkShippedWaterHD(bool programmable) {
     GAGCore::Sprite::deferHighResolution("data/gfx/terrain-water");
     GAGCore::Sprite sprite;
     REQUIRE(sprite.load("data/gfx/terrain-water"));
-    REQUIRE(sprite.getFrameCount() == 4096);
-    for (unsigned frame = 0; frame < 4096; ++frame) {
+    // Water is one 4x4 wave block: 16 variants in each of 16 phases.
+    constexpr unsigned variants = 16, frames = variants * 16;
+    REQUIRE(sprite.getFrameCount() == frames);
+    for (unsigned frame = 0; frame < frames; ++frame) {
         REQUIRE(sprite.nativeFrame(frame));
         CHECK(sprite.nativeFrame(frame)->getW() == 32);
         CHECK(sprite.nativeFrame(frame)->getH() == 32);
@@ -214,7 +216,7 @@ static void checkShippedWaterHD(bool programmable) {
         REQUIRE(GAGCore::Sprite::pollHighResolution(1));
     };
     CHECK(resident() == 0);
-    const std::array<unsigned, 2> loopEndpoints{4095, 255};
+    const std::array<unsigned, 2> loopEndpoints{frames - 1, variants - 1};
     sprite.setHighResolutionFrames(loopEndpoints);
     wait();
     REQUIRE(resident() == 2);
@@ -223,20 +225,20 @@ static void checkShippedWaterHD(bool programmable) {
         CHECK(sprite.baseFrame(frame)->getW() == 128);
         CHECK(sprite.baseFrame(frame)->getH() == 128);
     }
-    const auto retained = sprite.baseFrame(255)->lifetimeIdentity();
-    const std::array<unsigned, 2> nextEndpoints{255, 511};
+    const auto retained = sprite.baseFrame(variants - 1)->lifetimeIdentity();
+    const std::array<unsigned, 2> nextEndpoints{variants - 1, 2 * variants - 1};
     sprite.setHighResolutionFrames(nextEndpoints);
-    CHECK(sprite.experimentImages[4095] == nullptr);
-    CHECK(sprite.baseFrame(255)->lifetimeIdentity() == retained);
+    CHECK(sprite.experimentImages[frames - 1] == nullptr);
+    CHECK(sprite.baseFrame(variants - 1)->lifetimeIdentity() == retained);
     wait();
     REQUIRE(resident() == 2);
-    CHECK(sprite.baseFrame(255)->lifetimeIdentity() == retained);
-    CHECK(sprite.baseFrame(511)->getW() == 128);
-    CHECK(sprite.baseFrame(511)->getH() == 128);
-    CHECK(sprite.nativeFrame(4095)->getW() == 32);
-    CHECK(sprite.experimentImages[255]->preparedMips.empty());
+    CHECK(sprite.baseFrame(variants - 1)->lifetimeIdentity() == retained);
+    CHECK(sprite.baseFrame(2 * variants - 1)->getW() == 128);
+    CHECK(sprite.baseFrame(2 * variants - 1)->getH() == 128);
+    CHECK(sprite.nativeFrame(frames - 1)->getW() == 32);
+    CHECK(sprite.experimentImages[variants - 1]->preparedMips.empty());
     context->drawFilledRect(0, 0, 64, 64, GAGCore::Color(0, 0, 0));
-    auto *native = sprite.nativeFrame(0), *hd = sprite.baseFrame(255);
+    auto *native = sprite.nativeFrame(0), *hd = sprite.baseFrame(variants - 1);
     context->drawSurface(0, 0, 32, 32, native, 0, 0, 32, 32);
     context->drawSurface(32, 0, 32, 32, hd, 0, 0, 128, 128);
     std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(nullptr, SDL_DestroySurface);
@@ -256,12 +258,12 @@ static void checkShippedWaterHD(bool programmable) {
     // A complete current/next bank must eventually resolve under the ordinary
     // polling budget, even when no animation time is allowed for warm-up.
     std::vector<unsigned> fullWindow;
-    for (unsigned variant = 0; variant < 256; ++variant) {
-        fullWindow.push_back(variant); fullWindow.push_back(256 + variant);
+    for (unsigned variant = 0; variant < variants; ++variant) {
+        fullWindow.push_back(variant); fullWindow.push_back(variants + variant);
     }
     sprite.setHighResolutionFrames(fullWindow);
     wait();
-    REQUIRE(resident() == 512);
+    REQUIRE(resident() == 2 * variants);
     for (unsigned frame : fullWindow) {
         REQUIRE(sprite.experimentImages[frame]);
         CHECK(sprite.baseFrame(frame)->getW() == 128);
@@ -269,7 +271,7 @@ static void checkShippedWaterHD(bool programmable) {
     sprite.setHighResolutionFrames({});
     wait();
     CHECK(resident() == 0);
-    CHECK(sprite.nativeFrame(4095)->getW() == 32);
+    CHECK(sprite.nativeFrame(frames - 1)->getW() == 32);
 }
 
 TEST_CASE("shipped animated water bank streams only requested HD endpoints [display]") {
@@ -290,8 +292,8 @@ TEST_CASE("shipped water HD keeps up with moving full-variant animation windows 
     GAGCore::Sprite::deferHighResolution("data/gfx/terrain-water");
     GAGCore::Sprite sprite;
     REQUIRE(sprite.load("data/gfx/terrain-water"));
-    REQUIRE(sprite.getFrameCount() == 4096);
-    constexpr unsigned variants = 256, phases = 16, ticks = 6;
+    constexpr unsigned variants = 16, phases = 16, ticks = 6;
+    REQUIRE(sprite.getFrameCount() == variants * phases);
     std::vector<unsigned> window;
     window.reserve(variants * 2);
     std::size_t readySum = 0, samples = 0, peak = 0, peakResident = 0;
