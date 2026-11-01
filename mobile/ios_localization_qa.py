@@ -14,6 +14,7 @@ import time
 import uuid
 
 BUNDLE = 'org.globulation2.glob2'
+SIMULATOR_PHONE_NAME = 'iPhone 16'
 FILES = ('data/texts.th.txt', 'data/fonts/scripts/NotoSansThai-Regular.ttf',
          'data/fonts/LICENSE-Noto.txt', 'data/fonts/LICENSE-HarfBuzz.txt')
 
@@ -26,15 +27,18 @@ def select_device(runtimes, device_types):
     available = [r for r in runtimes if r.get('isAvailable') and '.iOS-' in r['identifier']]
     if not available:
         raise ValueError('No installed available iOS simulator runtime; install the pinned Xcode iOS platform')
-    runtime = max(available, key=lambda r: tuple(int(x) for x in r['version'].split('.')))
-    supported = {d['identifier'] for d in runtime.get('supportedDeviceTypes', [])}
-    phones = [d for d in device_types if d.get('productFamily') == 'iPhone' or d['name'].startswith('iPhone')]
-    if supported:
-        phones = [d for d in phones if d['identifier'] in supported]
-    if not phones:
-        raise ValueError('Installed iOS runtime has no compatible iPhone device type')
-    # Inventory IDs are authoritative; create fails rather than changing the runtime silently.
-    return runtime, sorted(phones, key=lambda d: d['name'])[-1]
+    phones = [d for d in device_types if d['name'] == SIMULATOR_PHONE_NAME]
+    if len(phones) != 1:
+        raise ValueError('No unambiguous compatible conventional '+SIMULATOR_PHONE_NAME+' device type')
+    phone = phones[0]
+    # The newest runtime can support only a foldable device whose default
+    # screenshot display differs. Qualify a fixed conventional phone instead
+    # of selecting an arbitrary model by name. Inventory IDs remain authoritative.
+    for runtime in sorted(available, key=lambda r: tuple(int(x) for x in r['version'].split('.')), reverse=True):
+        supported = {d['identifier'] for d in runtime.get('supportedDeviceTypes', [])}
+        if not supported or phone['identifier'] in supported:
+            return runtime, phone
+    raise ValueError('No available iOS runtime compatible with conventional '+SIMULATOR_PHONE_NAME)
 
 
 def localized_strings_path(app):
@@ -143,6 +147,10 @@ def run_qa(root, output, locale):
         types = json.loads(sim('list', 'devicetypes', '--json'))
         (output/'runtimes.json').write_text(json.dumps(runtimes, indent=2)+'\n')
         (output/'device-types.json').write_text(json.dumps(types, indent=2)+'\n')
+        summary['simulator_selection_policy'] = {
+            'device_name': SIMULATOR_PHONE_NAME,
+            'runtime': 'Newest installed available iOS runtime compatible with the fixed conventional phone; no arbitrary device substitution',
+        }
         runtime, phone = select_device(runtimes['runtimes'], types['devicetypes'])
         summary['runtime'] = runtime; summary['device_type'] = phone
         device = sim('create', 'Glob2-Mobile', phone['identifier'], runtime['identifier'])

@@ -17,7 +17,7 @@ qa = importlib.util.module_from_spec(spec); spec.loader.exec_module(qa)
 
 class SimulatorSelection(unittest.TestCase):
     def test_newest_available_ios_and_compatible_phone_only(self):
-        phone = {'identifier':'phone-a','name':'iPhone A','productFamily':'iPhone'}
+        phone = {'identifier':'phone-a','name':'iPhone 16','productFamily':'iPhone'}
         incompatible = {'identifier':'phone-z','name':'iPhone Z','productFamily':'iPhone'}
         runtimes = [dict(identifier='com.apple.iOS-26',version='26.0',isAvailable=True),
                     dict(identifier='com.apple.iOS-27',version='27.0',isAvailable=True,supportedDeviceTypes=[phone]),
@@ -25,6 +25,20 @@ class SimulatorSelection(unittest.TestCase):
                     dict(identifier='com.apple.tvOS-99',version='99',isAvailable=True)]
         runtime, selected = qa.select_device(runtimes,[phone,incompatible])
         self.assertEqual(runtime['version'],'27.0'); self.assertEqual(selected,phone)
+
+    def test_newer_duo_only_runtime_cannot_displace_conventional_phone(self):
+        # Actual run41278144043 reached MainMenu on iPhone Duo / iOS27.1,
+        # then both screenshots failed22. iOS27.0 supports iPhone16.
+        phone = dict(identifier='phone-16', name='iPhone 16', productFamily='iPhone')
+        duo = dict(identifier='phone-duo', name='iPhone Duo', productFamily='iPhone')
+        standard = dict(identifier='com.apple.iOS-27-0', version='27.0', isAvailable=True,
+                        supportedDeviceTypes=[phone, duo])
+        newer = dict(identifier='com.apple.iOS-27-1', version='27.1', isAvailable=True,
+                     supportedDeviceTypes=[duo])
+        runtime, selected = qa.select_device([standard,newer],[phone,duo])
+        self.assertEqual(runtime,standard); self.assertEqual(selected,phone)
+        with self.assertRaisesRegex(ValueError,'compatible with conventional iPhone 16'):
+            qa.select_device([newer],[phone,duo])
 
     def test_missing_runtime_or_compatible_phone_cannot_pass(self):
         with self.assertRaisesRegex(ValueError,'runtime'):qa.select_device([],[])
@@ -116,7 +130,7 @@ class FailureEvidence(unittest.TestCase):
                     self.assertTrue(Path(parts[parts.index('--set')+1]).is_dir())
                 if parts[:3]==['git','rev-parse','HEAD']:text='abc123'
                 elif 'runtimes' in parts:text=json.dumps({'runtimes':[dict(identifier='com.apple.iOS-27',version='27',isAvailable=True)]})
-                elif 'devicetypes' in parts:text=json.dumps({'devicetypes':[dict(identifier='phone',name='iPhone A')]})
+                elif 'devicetypes' in parts:text=json.dumps({'devicetypes':[dict(identifier='phone',name='iPhone 16')]})
                 elif 'create' in parts:text='owned-uuid'
                 elif 'get_app_container' in parts:text=str(container)
                 elif 'mobile/ios_smoke.py' in parts:
