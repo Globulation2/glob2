@@ -87,6 +87,21 @@ class MaximaStrategyConfigTest(unittest.TestCase):
             "tactics.min_force=6,tactics.retarget_margin=90"))
         self.assertEqual([6, 90], [changed[key] for key in keys])
 
+    def test_prestige_defaults_to_adaptive_and_remains_configurable(self) -> None:
+        defaults = self.values(self.resolved)
+        self.assertTrue(defaults["prestige.enabled"])
+        self.assertEqual(4, defaults["prestige.max_pipelines"])
+        self.assertFalse(self.values(self.resolve(
+            "--maxima-overrides", "prestige.enabled=false"))["prestige.enabled"])
+        for cap in range(1, 5):
+            changed = self.values(self.resolve(
+                "--maxima-overrides", f"prestige.enabled=true,prestige.max_pipelines={cap}"))
+            self.assertTrue(changed["prestige.enabled"])
+            self.assertEqual(cap, changed["prestige.max_pipelines"])
+        for cap in (0, 5):
+            with self.assertRaises(subprocess.CalledProcessError):
+                self.resolve("--maxima-overrides", f"prestige.max_pipelines={cap}")
+
     def test_schema_base_and_round_trip_are_bijective(self) -> None:
         self.assertEqual(self.schema["schemaVersion"], 2)
         self.assertEqual(self.resolved["schemaVersion"], 2)

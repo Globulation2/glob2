@@ -64,3 +64,30 @@ It validates the midpoint save/reload before writing the expectation. Then run
 without that flag in both default and `--parallel-ai` modes. The legacy checkpoint
 and historical expectations remain unchanged. `--output artifacts/NAME` retains
 commands, logs, traces, saves and a hash manifest.
+
+## Ground-looks 191 compatibility
+
+`maxima-groundlooks-v191.game.gz` was written by the unmodified production
+save writers at `f36de73aea50901a93d0c931bdd0fdb64c9d864c` (format 191,
+simulation revision 113, 33 built-in terrains), using a temporary fixture-only
+test. The 32×32 map contains one Maxima player, a school, inn, swarm and
+level-2 worker. It paints all four grass/sand looks plus custom bog and mud
+at saved IDs 33 and 34. The fixture sets explicit AI continuation markers:
+timer 1234, tactical quarantine budget 2468, and pending development and
+maintenance-clearing work. Its canonical strategy predates prestige controls.
+
+The director regression loads the complete historical game, checks terrain
+identity/properties and retained work, refreshes prestige migration through
+`getOrder()`, then saves and reloads the current format. It checks the migration
+before and after normal dispatch; it does not relabel current-format bytes as
+historical output. The original writer verified both binary and text roundtrips.
+Only the compressed binary is retained here; temporary creator/build evidence
+belongs outside committed documentation.
+
+Writer SHA-256 values at the producing revision:
+
+- `src/ai/maxima/AIMaximaState.cpp`: `e61530ec56767fbcc1e3f4d5fae97c51dbbb80ec839c3cee60bc7f390ebb63b9`
+- `src/map/io/MapIO.cpp`: `c4d752461550a3c99bd31be73c78f16dd46f62a392a1996464e1997b7c2f5b08`
+
+The uncompressed fixture SHA-256 is
+`40755760232451f26caca10a3ae6749555b5b6c63e8a83947cfb051240157b59`.

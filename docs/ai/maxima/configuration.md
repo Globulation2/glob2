@@ -50,7 +50,7 @@ The executable is built from `src/ai/maxima/MaximaStrategyDump.cpp` by the
 | Parameter groups | Decisions |
 | --- | --- |
 | `model`, `environment`, `trends`, `demands` | Capacity estimates, observations and demand |
-| `economy`, `staffing`, `upgrades`, `construction` | Production, worker requests and development |
+| `economy`, `staffing`, `upgrades`, `construction`, `prestige` | Production, worker requests and development |
 | `food`, `farming` | Renewable supply, capacity claims and clearing |
 | `military`, `postures`, `emergencies` | Army demand, service capacity and strategic priorities |
 | `placement`, `scoring` | Sites, routes, candidate utility and switching margins |
@@ -62,6 +62,25 @@ All clients simulating a new multiplayer match must use identical resolved
 settings. Resuming a saved game uses its stored strategy rather than the local
 files. `GLOB2_MAXIMA_TELEMETRY=1` emits `MAXIMA_TELEMETRY` decision records;
 [AI telemetry](../telemetry.md) describes the common telemetry interface.
+
+`prestige.enabled` enables economic prestige racing and completion guards only
+when normal prestige victory is active. New matches default to `true`, with the
+adaptive allowance enabled; opt out with `prestige.enabled=false`. The investment
+floor defaults
+to 45, the urgency weight to 35 and the winning-finish priority to 100. Preparation
+uses ordinary technology priority; investment takes the greater of that priority
+and the floor plus urgency scaled by global threshold progress.
+`prestige.max_pipelines` defaults to 4 (range 1–4). It bounds adaptive preparation
+from spare qualified builders after ordinary work and the training reserve; it
+does not order that many schools unconditionally. A value of 1 keeps the
+conservative control. Winning finishes and the number of remaining prestige
+increments further restrict it. Only one prestige-producing completion is
+committed at a time. Saves older than format 193 missing this setting receive 1.
+All scores are bounded to 0–100. Food and colony emergencies suspend additional
+investment.
+Supported older saves without these controls explicitly receive `enabled=true`
+and the same weights on load, preserving the requested older-save activation.
+See [prestige economics](economy.md#prestige-race) for outcome and cancellation rules.
 
 Related: [AI documentation](../README.md).
 

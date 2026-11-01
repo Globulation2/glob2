@@ -14,6 +14,7 @@ CLIENT_SOURCES = (
     'ai/castor/Projects.cpp',
     'ai/castor/State.cpp',
     'ai/maxima/AIMaxima.cpp',
+    'ai/maxima/AIMaximaPrestige.cpp',
     'ai/maxima/AIMaximaState.cpp',
     'ai/maxima/AIMaximaCombat.cpp',
     'ai/maxima/AIMaximaDefense.cpp',
