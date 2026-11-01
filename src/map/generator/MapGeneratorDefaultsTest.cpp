@@ -995,9 +995,9 @@ TEST_SUITE("MapGeneratorDefaults")
 #endif
         // Sprite selection ceased consuming simulation RNG in resource epoch1.
         // Current full references also include SIM40's map-owned placement
-        // stock stream; the historical topology references stay unchanged.
-        // Deposit stocks therefore need new full hashes; topology is checked
-        // independently against maps produced by the archived pre-epoch engine.
+        // stock stream. Historical topology references are retained except
+        // Caravanserai's explicit walking-access repair; its current platform
+        // references include the resulting resource-placement changes.
         const char* baselineDirectory=std::getenv("GLOB2_RECORD_RESOURCE_DESIGN_GOLDENS");
 #if defined(__APPLE__)
         const std::string platform="macos-arm64";

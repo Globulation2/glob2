@@ -248,7 +248,7 @@ GeneratorDefinition hilbertRiverDefinition()
 			"hilbert-river",
 			50,
 			"Hilbert River",
-			9,
+			10,
 			false,
 			controls,
 			generate,

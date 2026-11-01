@@ -1003,7 +1003,7 @@ GeneratorDefinition shatteredCoastDefinition()
 		"shattered-coast",
 		7,
 		"Old random",
-		7,
+		8,
 		false,
 		// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
 		// before sand control adds the beaches); smoothing is the number of passes, which sets the

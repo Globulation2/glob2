@@ -1982,9 +1982,9 @@ TEST_SUITE("TurnEngineHarness")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
         Online::SimVersion before;
-		// Exact upstream revision-116 identity, before the terrain traversal upgrade.
+		// Exact upstream revision-119 identity, before the terrain traversal upgrade.
 		REQUIRE(Online::SimVersion::parseKey(
-			"191-73-073ef28125370208bf905617952c192cff54c21ca8a0d6c38465e5affeae607c", before));
+			"191-73-8ec4c87b308683f0206eb29ac44fc4b4e9d605c0108afd76ab54588f2cea1c9a", before));
 		const auto current = Online::currentSimVersion();
 		REQUIRE(before != current);
         const auto committed = Turn::MatchRecord::readFile(

@@ -54,14 +54,14 @@ constexpr bool sameTerrainProperties(const TerrainProperties& a, const TerrainPr
 		a.allowedResources == b.allowedResources && a.farmMaterial == b.farmMaterial;
 }
 
-// A cell's rules come from its four corner terrains. Corners with equal
-// profiles keep that exact profile, so members of one terrain group still
-// combine into their group's mechanic. Otherwise the cell is a transition:
-// walkable when any corner is, never swimmable or buildable, and otherwise as
-// permissive as its weakest corner. Ground speed and health only consider the
-// walkable corners (all of them when none is walkable), since a unit crossing
-// the cell walks on those. Grass with sand, or sand with water, therefore gives
-// the classic shore: walkable, a shoreline, and nothing else.
+// Aggregate ecology and placement properties, separate from ground movement.
+// Equal corner profiles keep that exact profile, including different looks of
+// the same terrain group. Otherwise this is a transition: the historical
+// walkable/swimmable flags describe the aggregate, and building is disallowed.
+// Ground speed and health consider walkable corners, or all corners when none
+// is walkable. Resource habitats and projectile rules retain this combination.
+// CellRule compiles ground access separately; source-to-destination connections
+// also inspect the original vertices rather than these aggregate flags.
 constexpr TerrainProperties combineCornerRules(const TerrainProperties& a, const TerrainProperties& b,
 	const TerrainProperties& c, const TerrainProperties& d)
 {

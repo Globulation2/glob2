@@ -693,6 +693,39 @@ TEST_CASE("bounded starter crop replacement uses surplus materials and respects 
     }
 }
 
+TEST_CASE("starter guarantees use prospective boots only before workers exist")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool populated : {false,true})
+    {
+        CAPTURE(populated);
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true});
+        auto& map=fixture.game.map;
+        {
+            auto edit=map.editTerrain();
+            for (int y=0;y<map.getH();++y)
+                for (int x=0;x<map.getW();++x)
+                    if (x<4 || (x>=16 && x<20)) map.setVertexTerrain(x,y,WATER);
+        }
+        // Two disconnected islands: the prospective boot is served already,
+        // but a populated colony's workers are on the other island.
+        map.setResourceByIndex(9,8,WHEAT,1);
+        map.setResourceByIndex(9,9,WOOD,1);
+        if (populated) REQUIRE(fixture.addUnit(WORKER,24,8));
+        GenerationRequest request; request.nbTeams=1;
+        GenerationContext context(request); context.bootX[0]=8; context.bootY[0]=8;
+        MapGeneration::guaranteeStartingResources(fixture.game,context,12,12,0);
+        const MapGeneration::Torus torus(map);
+        const int source=map.coordToIndex(populated ? 24 : 8,8);
+        const auto reach=MapGeneration::floodFrom(map,MapGeneration::tileMask(torus,{source}),
+                                                 MapGeneration::groundUnitTiles(map),12);
+        const auto crops=MapGeneration::cropsBesideReach(map,reach.steps);
+        CHECK(crops.food);
+        CHECK(crops.wood);
+        if (!populated) CHECK(context.namedStreams().empty());
+    }
+}
+
 TEST_CASE("material frontage counts secondary stocks and prospective renewable supply")
 {
     glob2test::HeadlessGlobals globals;

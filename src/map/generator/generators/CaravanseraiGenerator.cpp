@@ -839,7 +839,7 @@ GeneratorDefinition caravanseraiDefinition()
 	return {"caravanserai",
 			41,
 			"Caravanserai",
-			4,
+			5,
 			false,
 			// Home oasis size is the town's radius: 24 holds a lake, its field ring and a town of
 			// 60-odd build sites. Two caravanserais per colony: one to each of its two nearest

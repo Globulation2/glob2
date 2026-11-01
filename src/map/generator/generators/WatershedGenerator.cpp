@@ -1937,7 +1937,7 @@ GeneratorDefinition watershedDefinition()
 		"watershed",
 		13,
 		"Watershed",
-		2,
+		3,
 		false,
 		{// Springs per area of land; each one that finds its way to the network is a tributary.
 		 GeneratorControl{"river-density", "River density", 1, 10, 1, 5, ControlGroup::Terrain}

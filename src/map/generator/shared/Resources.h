@@ -57,9 +57,9 @@ int placeResourceClumpInArea(Map &, GenerationContext &, const std::vector<MapGe
 // nearest its centre, placed in setResource's own order, so 100 is exactly that call.
 void setScaledResource(Map &, int x, int y, int resourceType, int size, int percent);
 void scatterResources(Game &, GenerationContext &, const ResourceDensities &);
-// Ensures every team has wheat within wheatRange and wood within woodRange of its boot tile,
-// walking through the same reachable-space flood used to measure that distance (so anything
-// placed is actually reachable, not just straight-line nearby). Teams already served within
+// Ensures every team has wheat within wheatRange and wood within woodRange of its workers,
+// or its declared boot tile before population. Both use the same physical walking connections
+// (so anything placed is actually reachable, not just straight-line nearby). Teams served within
 // range are left untouched. clearRadius skips a ring around the boot tile that a caller still
 // has to carve out for the swarm/workers after this runs (StartingPositions.cpp's setNoResource
 // calls) — pass 0 when this runs after that carving has already happened.

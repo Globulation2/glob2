@@ -379,8 +379,8 @@ GeneratorDefinition sierpinskiGardensDefinition()
 			"sierpinski-gardens",
 			49,
 			"Sierpiński Gardens",
-			// Revision 8: one of four home garden designs per map (FractalMapSupport.h).
-			9,
+			// Physical route clearance follows the shared terrain connections.
+			10,
 			false,
 			controls,
 			generate,

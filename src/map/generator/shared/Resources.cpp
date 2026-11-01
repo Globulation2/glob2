@@ -721,9 +721,12 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
 		::MapGeneration::generationCheckpoint();
-		// Supply must be reachable by the actual starting workers, not by a
-		// geometric flood beginning inside the occupied swarm footprint.
-		const auto &sources = workers.at(team);
+		// Before population, the declared boot tile is the prospective start.
+		// Once workers exist, use their actual positions instead of an occupied
+		// swarm footprint. Both cases use the same physical terrain connections.
+		auto sources = workers.at(team);
+		if (sources.empty())
+			sources.push_back(map.coordToIndex(context.bootX.at(team), context.bootY.at(team)));
 		ReachResult reach = floodReach(map, sources, exploreLimit, closeRange, clearRadius);
 		context.telemetry.measure("resources.starting_wheat.before_distance",
 								  reach.foodSourceDistance, team);

@@ -248,7 +248,7 @@ GeneratorDefinition locustDefinition()
 	return {"locust",
 			47,
 			"Locust",
-			6,
+			7,
 			false,
 			{GeneratorControl{"home-size", "Home size", 16, 30, 1, 24, ControlGroup::Layout}
 				 .withSearchRange(24, 30),

@@ -115,7 +115,9 @@ fixed resource pass:
 - `guaranteeStartingResources(game, context, wheatRange, woodRange, clearRadius=0,
   protectedWalls=nullptr, allowedTopup=nullptr)` is a
   reachability backstop, not a placement pass: it compares a resource-respecting flood from each
-  boot tile against the same flood with resources ignored, and where the two disagree — a
+  team's actual workers against the same flood with resources ignored. Before population, it
+  uses the declared boot tile instead. Both floods use physical walking connections, including
+  diagonal clearance. Where the two disagree — a
   colony's own tile is on well-connected land, just walled off from wheat or wood by a resource
   tile a ground unit can't stand on — it clears exactly the wall tiles responsible before topping
   up whichever resource is still out of range. A colony genuinely isolated on its own small spot

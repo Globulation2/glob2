@@ -1,6 +1,6 @@
 {
   "resource_epoch": 1,
-  "description": "Full map hashes for resource epoch 1 at simulation revision 40, after placement stocks moved to map-owned ResourcePlacement RNG. Topology hashes exclude stock quantities but include vertex terrain, source identities and colony starts. Historical full and topology references are unchanged; all five topology checks passed on GCC 11 and GCC 13, with identical current full hashes. These five checks do not establish historical topology equivalence for every generator golden row. macOS full rows await a macOS run.",
+  "description": "Full map references originating in resource epoch 1 at simulation revision 40, after placement stocks moved to map-owned ResourcePlacement RNG. Topology hashes exclude stock quantities but include vertex terrain, source identities and colony starts. The conservative traversal upgrade intentionally changes Caravanserai resource placement to retain physical walking access; its Linux reference was measured with GCC 13. Other historical topology references are retained. Platform-specific rows require independent measurements and do not establish historical topology equivalence for every generator golden row.",
   "platforms": {
     "linux-x86_64": {
       "canals": {
@@ -10,8 +10,8 @@
       },
       "caravanserai": {
         "historical_full": 6244602504248136250,
-        "topology": 3089921906549973481,
-        "full": 3708140998014682865
+        "topology": 409747030978769546,
+        "full": 9430946254498983565
       },
       "fingerprint": {
         "historical_full": 5648058033288605271,
@@ -60,7 +60,6 @@
   "portable_topology": {
     "maze": 8061784440331878678,
     "canals": 6348996818089081022,
-    "caravanserai": 3089921906549973481,
     "honeycomb-isle": 10716426061597934434
   },
   "simulation_revision": 40

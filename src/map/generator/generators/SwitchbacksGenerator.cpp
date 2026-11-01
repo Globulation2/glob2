@@ -879,7 +879,7 @@ GeneratorDefinition switchbacksDefinition()
 		"switchbacks",
 		24,
 		"Switchbacks",
-		5,
+		6,
 		false,
 		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
 		// share of the half side (the mountains fill the rest with as many legs as fit); each home's
