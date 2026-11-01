@@ -527,6 +527,11 @@ bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
 
+Malay and Swahili draw high-DPI Latin text at its authored advance, matching the
+width used by wrapping, alignment and hit testing. Preserve the full hinted
+raster when scaling it into that destination; cropping it to the measured width
+would remove glyphs. Legacy Latin locales retain their existing geometry.
+
 Offscreen text that will be transformed must use `Font::rasterizeString` with an
 explicit physical scale; ordinary offscreen `drawString` retains the authored
 resolution. The touch inspector's curved labels rasterize their source at twice
