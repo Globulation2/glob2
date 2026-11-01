@@ -789,6 +789,10 @@
 }
 .skin-shape-grid button {
   flex-direction: column;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
   padding: 12px;
   border-color: var(--line);
 }
@@ -1100,6 +1104,7 @@
     padding: 6px 12px 10px;
     gap: 6px 14px;
   }
+  .skin-tool-options > .skin-material-groups,
   .skin-tool-options > details,
   .skin-tool-options > .skin-check {
     grid-column: 1 / -1;
