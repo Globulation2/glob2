@@ -127,13 +127,16 @@ ARG GLOB2_WEBSITE_URL=
 ARG GLOB2_DOWNLOAD_URL=
 COPY services/online/ ./
 COPY examples/javascript /app/examples/javascript
-COPY content/data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
-COPY content/data/fonts/scripts /app/data/fonts/scripts
-COPY content/data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
+COPY content/data/generators/toolkit.d.ts /app/content/data/generators/toolkit.d.ts
+COPY content/data/fonts/scripts /app/content/data/fonts/scripts
+COPY content/data/fonts/LICENSE-Noto.txt /app/content/data/fonts/LICENSE-Noto.txt
+COPY content/data/fonts/LICENSE-DejaVu.txt /app/content/data/fonts/LICENSE-DejaVu.txt
+COPY content/data/fonts/LICENSE-Droid.txt /app/content/data/fonts/LICENSE-Droid.txt
+COPY platforms/web/assets/sans-core.ttf /app/platforms/web/assets/sans-core.ttf
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libs/gag/shaders /app/libs/gag/shaders
 # Set authoring and Terrain Studio import the shared resource registry.
-COPY content/data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/content/data/resources/registry.json
 COPY --from=music-web-build /source/services/online/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
 COPY --from=music-web-build /source/services/online/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
 RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL" \
@@ -153,8 +156,11 @@ COPY services/online/apps/ai-music-worker apps/ai-music-worker
 COPY services/online/apps/ai-terrain-worker apps/ai-terrain-worker
 COPY services/online/apps/ai-building-worker apps/ai-building-worker
 # Server-rendered account and invite pages use the approved script fonts.
-COPY content/data/fonts/scripts /app/data/fonts/scripts
-COPY content/data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
+COPY content/data/fonts/scripts /app/content/data/fonts/scripts
+COPY content/data/fonts/LICENSE-Noto.txt /app/content/data/fonts/LICENSE-Noto.txt
+COPY content/data/fonts/LICENSE-DejaVu.txt /app/content/data/fonts/LICENSE-DejaVu.txt
+COPY content/data/fonts/LICENSE-Droid.txt /app/content/data/fonts/LICENSE-Droid.txt
+COPY platforms/web/assets/sans-core.ttf /app/platforms/web/assets/sans-core.ttf
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -172,13 +178,14 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
     chown -R 10001:10001 /var/lib/glob2 && \
     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
 COPY --from=platform-runtime-deps /app/services/online /app/services/online
-COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
+COPY --from=platform-runtime-deps /app/content/data/fonts /app/content/data/fonts
+COPY --from=platform-runtime-deps /app/platforms/web/assets /app/platforms/web/assets
 COPY examples/javascript /app/examples/javascript
-COPY content/data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/content/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
 COPY docs/map-generators/javascript.md /app/docs/map-generators/javascript.md
-COPY content/data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
-COPY content/data/generators/examples/swamp /app/data/generators/examples/swamp
+COPY content/data/generators/toolkit.d.ts /app/content/data/generators/toolkit.d.ts
+COPY content/data/generators/examples/swamp /app/content/data/generators/examples/swamp
 COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
 RUN printf '#!/bin/sh\nexec node /app/services/online/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform && \
     chmod 755 /usr/local/bin/platform /usr/local/bin/glob2-platform-init
@@ -222,9 +229,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     && chmod 700 /var/lib/glob2/engine-agent
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/services/online /app/services/online
-COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
+COPY --from=platform-runtime-deps /app/content/data/fonts /app/content/data/fonts
+COPY --from=platform-runtime-deps /app/platforms/web/assets /app/platforms/web/assets
 COPY examples/javascript /app/examples/javascript
-COPY content/data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/content/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
 COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
@@ -341,9 +349,10 @@ COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
     mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs
 COPY --from=platform-runtime-deps /app/services/online /app/services/online
-COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
+COPY --from=platform-runtime-deps /app/content/data/fonts /app/content/data/fonts
+COPY --from=platform-runtime-deps /app/platforms/web/assets /app/platforms/web/assets
 # Shared protocol set-authoring imports the registry when the worker starts.
-COPY content/data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/content/data/resources/registry.json
 ENV NODE_ENV=production BLOB_STORE=fs BLOB_DIR=/var/lib/glob2/blobs
 WORKDIR /app/services/online
 USER 10001:10001

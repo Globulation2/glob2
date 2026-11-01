@@ -41,6 +41,22 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
     const scriptCss = await app.inject('/signin/assets/script-fonts.css');
     expect(scriptCss.statusCode).toBe(200);
     expect(scriptCss.body).not.toContain('content/data/');
+    expect(scriptCss.body).not.toContain('platforms/web/');
+    expect(scriptCss.body).toContain('/signin/assets/sans-core.ttf');
+    expect(scriptCss.body).toContain(':root:lang(bg)');
+    expect(scriptCss.body).toContain('option:lang(bg)');
+    const coreFont = await app.inject('/signin/assets/sans-core.ttf');
+    expect(coreFont.statusCode).toBe(200);
+    expect(coreFont.headers['content-type']).toContain('font/ttf');
+    expect(coreFont.rawPayload).toEqual(
+      readFileSync(new URL('../../../../../platforms/web/assets/sans-core.ttf', import.meta.url)),
+    );
+    const dejavuLicence = await app.inject('/signin/assets/LICENSE-DejaVu.txt');
+    expect(dejavuLicence.statusCode).toBe(200);
+    expect(dejavuLicence.headers['content-type']).toContain('text/plain');
+    expect(dejavuLicence.rawPayload).toEqual(
+      readFileSync(new URL('../../../../../content/data/fonts/LICENSE-DejaVu.txt', import.meta.url)),
+    );
     const manifest = JSON.parse(
       readFileSync(
         new URL('../../../../../content/data/fonts/scripts/manifest.json', import.meta.url),
@@ -56,6 +72,11 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
       expect(response.rawPayload.length).toBe(font.bytes);
       expect(createHash('sha256').update(response.rawPayload).digest('hex')).toBe(font.sha256);
     }
+    const droidLicence = await app.inject('/signin/assets/LICENSE-Droid.txt');
+    expect(droidLicence.statusCode).toBe(200);
+    expect(droidLicence.rawPayload).toEqual(
+      readFileSync(new URL('../../../../data/fonts/LICENSE-Droid.txt', import.meta.url)),
+    );
     const licence = await app.inject('/signin/assets/LICENSE-Noto.txt');
     expect(licence.statusCode).toBe(200);
     expect(licence.body).toContain('SIL OPEN FONT LICENSE');
@@ -121,6 +142,20 @@ describe('localized server pages', () => {
     sendPage(french.reply, 'Sign in', pageHtml(french.reply)`<p>Sign in</p>`);
     expect(arabic.body()).toContain('<html lang="ar" dir="rtl">');
     expect(french.body()).toContain('<html lang="fr" dir="ltr">');
+  });
+  it('renders Telugu server pages selected by browser preferences', () => {
+    const telugu = response();
+    setPageLocale(
+      { headers: { 'accept-language': 'te-Telu-IN,en;q=0.5' } } as FastifyRequest,
+      telugu.reply,
+    );
+    sendPage(telugu.reply, 'Sign in', pageHtml(telugu.reply)`<p>Sign in</p>`);
+    const catalog = JSON.parse(
+      readFileSync(new URL('../../../packages/i18n/locales/te.json', import.meta.url), 'utf8'),
+    ) as Record<string, string>;
+    expect(telugu.body()).toContain('<html lang="te" dir="ltr">');
+    expect(catalog['Sign in']).toMatch(/[\u0c00-\u0c7f]/);
+    expect(telugu.body()).toContain(`<p>${catalog['Sign in']}</p>`);
   });
   it.each([
     ['Globulation 2', ''],

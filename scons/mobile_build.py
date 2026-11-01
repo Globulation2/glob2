@@ -9,11 +9,12 @@ from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
 import ccache
 from build_timing import record
 from mobile_toolchain import discover, LOCK
-from mobile_artifacts import verify_android_library, archive_object_name
+from mobile_artifacts import verify_android_library, archive_object_name, stage_recording_notices
 from javascript import javascript_objects, numeric_guard, strict_numeric_source, guarded_numeric_source
 import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 import skin_materials
+from online_error_catalog import configure as configure_online_error_catalog, bind_objects as bind_online_error_objects, bind_consumer as bind_online_error_consumer
 
 
 def build_mobile(directory, identity, arguments):
@@ -92,6 +93,7 @@ def build_mobile(directory, identity, arguments):
         target=identity['target'], arch=identity['arch'], cflags=toolchain['cflags'],
         ldflags=toolchain['ldflags'], environment=environment)
     attach_recording(env, recording_prefix, identity['target'])
+    recording_notices = stage_recording_notices(env, recording_prefix, output) if identity['target'] == 'android' else []
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
@@ -102,6 +104,7 @@ def build_mobile(directory, identity, arguments):
         from dev_build import cache_flags
         cache_flags(env)
     env.Alias("dev-dependencies", [])
+    online_error_catalog = configure_online_error_catalog(env, output / 'include')
     strict = env.Clone()
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     script_objects = javascript_objects(env, object_root / 'third_party', identity['mode'] == 'release', shared=identity['target'] == 'android')
@@ -121,6 +124,7 @@ def build_mobile(directory, identity, arguments):
         by_source = {}
         for compile_env, subset in ((strict, [f for f in files if strict_numeric_source(f)]), (env, [f for f in files if not strict_numeric_source(f)])):
             by_source.update(development_objects(compile_env, subset, lambda name: str(object_root / (name + '.o')), shared=True))
+        bind_online_error_objects(env, by_source, online_error_catalog)
         objects = unique([by_source[name] for name in files]) + script_objects
         numeric_guard(strict, [by_source[name] for name in files if guarded_numeric_source(name)])
         program = record(env, env.SharedLibrary(str(output / 'lib/main'), objects), 'link')
@@ -163,6 +167,7 @@ def build_mobile(directory, identity, arguments):
                     path = registry.source_path(source)
                     name = prefix + path.replace('/', '_').rsplit('.', 1)[0]
                     targets = compile_env.Object(str(object_root / 'tests' / (name + '.o')), path)
+                    bind_online_error_consumer(compile_env, targets, source, online_error_catalog)
                     if source.endswith('TestMain.cpp'):
                         compile_env.Depends(targets, provenance_header)
                     out += targets
@@ -191,7 +196,9 @@ def build_mobile(directory, identity, arguments):
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
-        objects = [(objc if name == 'platforms/mobile/ios/Documents.mm' else strict if strict_numeric_source(name) else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
+        by_source = {name: (objc if name == 'platforms/mobile/ios/Documents.mm' else strict if strict_numeric_source(name) else env).Object(str(object_root / archive_object_name(name)), name) for name in files}
+        bind_online_error_objects(env, by_source, online_error_catalog)
+        objects = [obj for name in files for obj in by_source[name]] + script_objects
         numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])
         # ar replaces matching members but otherwise retains obsolete names.
         # Recreate this owned output so renamed/removed sources cannot survive.
@@ -204,7 +211,7 @@ def build_mobile(directory, identity, arguments):
             tests = env.Clone()
             tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
             test_objects = []
-            for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries():
+            for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp']:
                 source, options = (entry, {}) if isinstance(entry, str) else entry
                 local = tests.Clone()
                 local.Append(CXXFLAGS=options.get('cxxflags', []))
@@ -213,6 +220,7 @@ def build_mobile(directory, identity, arguments):
                     local.Append(CPPDEFINES=[('main', 'glob2ScriptTestMain')])
                 path = registry.source_path(source)
                 targets = local.Object(str(object_root / 'tests' / archive_object_name(path)), path)
+                bind_online_error_consumer(local, targets, source, online_error_catalog)
                 if source.endswith('TestMain.cpp'):
                     local.Depends(targets, provenance_header)
                 test_objects += targets
@@ -222,5 +230,5 @@ def build_mobile(directory, identity, arguments):
     env.Depends(objects, [str(config), str(LOCK), str(manifest)])
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))
     env.Alias('compile_commands.json', database)
-    Default(program, database)
+    Default(program, database, recording_notices)
     write_if_changed(output / 'toolchain.json', json.dumps(toolchain, indent=2, sort_keys=True) + '\n')

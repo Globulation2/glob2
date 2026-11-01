@@ -1,8 +1,11 @@
 // @vitest-environment jsdom
 import { StrictMode } from 'react';
-import { cleanup, fireEvent, render, screen, waitFor, act } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, act, within } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { MusicPlayer } from '../src/music/Player.tsx';
+import { getLocale, registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
+import bg from '../../../packages/i18n/locales/bg.json';
+import { LocaleProvider } from '../src/i18n.tsx';
+import { MusicPlayer, MOODS } from '../src/music/Player.tsx';
 import type { MusicRelease } from '@glob2/protocol';
 import { GAME_FADE_SECONDS } from '../src/music/useMusicPlayback.ts';
 let hidden: boolean;
@@ -243,4 +246,51 @@ it('keeps the audible mood selected when stopping a guided transition', async ()
     screen.getByRole('button', { name: 'Crossfade to Building' }).getAttribute('aria-pressed'),
   ).toBe('true');
   expect(screen.getByRole('button', { name: 'Pause' })).toBeTruthy();
+});
+
+it('renders Bulgarian construction mood and accessible waveforms while selecting the canonical audio index', async () => {
+  const previousLocale = getLocale();
+  registerCatalog('bg', bg);
+  try {
+    await setLocale('bg');
+    const tracks = ['calm', 'building', 'combat'] as const;
+    const soundtrack: MusicRelease = {
+      ...release,
+      tracks: tracks.map((mood) => ({
+        mood,
+        sha256: 'a'.repeat(64),
+        bytes: 100,
+        url: `/music/${mood}.opus`,
+        waveform: [0.2, 0.5],
+      })),
+    };
+    render(
+      <LocaleProvider>
+        <MusicPlayer release={soundtrack} />
+      </LocaleProvider>,
+    );
+    const building = screen.getByRole('button', { name: 'Преливане към Изграждане' });
+    expect(within(building).getByText('Изграждане').tagName).toBe('STRONG');
+    expect(screen.queryByRole('button', { name: 'Преливане към Сграда' })).toBeNull();
+    expect(
+      screen.getByLabelText(bg['{value0} waveform'].replace('{value0}', 'Изграждане')),
+    ).toBeTruthy();
+    fireEvent.click(building);
+    expect(building.getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByRole('status').textContent).toContain('Изграждане');
+    fireEvent.click(screen.getByRole('button', { name: bg['Play music'] }));
+    await waitFor(() => expect(workers).toHaveLength(1));
+    act(() => workers[0]?.onmessage?.({ data: { ready: true } }));
+    expect(workers[0]?.postMessage).toHaveBeenCalledWith({ command: 4, value: 1 });
+    expect(MOODS).toEqual(['Calm', 'Building', 'Combat']);
+    expect(soundtrack.tracks.map((track) => track.mood)).toEqual(['calm', 'building', 'combat']);
+    await act(() => setLocale('en'));
+    expect(
+      screen.getByRole('button', { name: 'Crossfade to Building' }).getAttribute('aria-pressed'),
+    ).toBe('true');
+    expect(workers).toHaveLength(1);
+  } finally {
+    cleanup();
+    await setLocale(previousLocale);
+  }
 });

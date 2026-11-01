@@ -209,7 +209,7 @@ export function BuildingStudio({ id }: { id?: string }) {
               setError(undefined);
               try {
                 const draft = await request<BuildingDraft>('POST', '/api/v1/building-drafts', {
-                  body: {},
+                  body: { name: t('New building family') },
                 });
                 navigate('/building-studio/' + draft.id);
               } catch (e) {

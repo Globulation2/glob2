@@ -30,6 +30,16 @@ class WebAssetPlanTests(unittest.TestCase):
             web_assets.launcher_script_fonts(ROOT, output)
             css = (output / 'script-fonts.css').read_text()
             self.assertNotIn('content/data/', css)
+            self.assertNotIn('platforms/web/', css)
+            self.assertIn('fonts/sans-core.ttf', css)
+            self.assertIn(':root:lang(bg)', css)
+            self.assertIn('option:lang(bg)', css)
+            self.assertEqual((output / 'fonts/sans-core.ttf').read_bytes(),
+                             (ROOT / 'platforms/web/assets/sans-core.ttf').read_bytes())
+            self.assertEqual((output / 'fonts/LICENSE-DejaVu.txt').read_bytes(),
+                             (ROOT / 'content/data/fonts/LICENSE-DejaVu.txt').read_bytes())
+            self.assertEqual((output / 'fonts/LICENSE-Droid.txt').read_bytes(),
+                             (ROOT / 'content/data/fonts/LICENSE-Droid.txt').read_bytes())
             manifest = json.loads((ROOT / 'content/data/fonts/scripts/manifest.json').read_text())
             for font in manifest['fonts']:
                 name = font['name'] + '-Regular.ttf'
@@ -38,6 +48,21 @@ class WebAssetPlanTests(unittest.TestCase):
                 self.assertIn('fonts/' + name, css)
             self.assertEqual((output / 'fonts/LICENSE-Noto.txt').read_bytes(),
                              (ROOT / 'content/data/fonts/LICENSE-Noto.txt').read_bytes())
+
+    def test_bulgarian_launcher_font_is_tracked_and_packaged_for_api_images(self):
+        build = (ROOT / 'scons/web_build.py').read_text()
+        self.assertIn("str(Path(directory) / 'fonts/sans-core.ttf')", build)
+        self.assertIn("str(Path(directory) / 'fonts/LICENSE-DejaVu.txt')", build)
+        self.assertIn("'platforms/web/assets/sans-core.ttf'", build)
+        self.assertIn("'content/data/fonts/LICENSE-DejaVu.txt'", build)
+        docker = (ROOT / 'deploy/Dockerfile').read_text()
+        for stage in ('web-build', 'platform-runtime-deps'):
+            section = docker.split(' AS ' + stage + '\n', 1)[1].split('\nFROM ', 1)[0]
+            self.assertIn('COPY platforms/web/assets/sans-core.ttf /app/platforms/web/assets/sans-core.ttf', section)
+            self.assertIn('COPY content/data/fonts/LICENSE-DejaVu.txt /app/content/data/fonts/LICENSE-DejaVu.txt', section)
+        for stage in ('platform', 'ai-music-worker'):
+            section = docker.split(' AS ' + stage + '\n', 1)[1].split('\nFROM ', 1)[0]
+            self.assertIn('COPY --from=platform-runtime-deps /app/platforms/web/assets /app/platforms/web/assets', section)
 
     def test_skin_meshes_are_only_in_the_on_demand_package(self):
         meshes = list((ROOT / 'content/data/skins/colony-v1').glob('*.gsk'))
@@ -351,6 +376,8 @@ class BrowserCopyTests(unittest.TestCase):
         full = TTFont(ROOT / 'content/data/fonts/sans.ttf', lazy=True)
         core = TTFont(ROOT / 'platforms/web/assets/sans-core.ttf', lazy=True)
         full_map, core_map = full.getBestCmap(), core.getBestCmap()
+        bulgarian = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯабвгдежзийклмнопрстуфхцчшщъьюяЍѝ'
+        self.assertLessEqual(set(map(ord, bulgarian)), set(core_map))
         original = {cp for cp, name in full_map.items() if not name.startswith('cjk')}
         self.assertLessEqual(original, set(core_map))
         # Outlines and advances of the original glyphs are unchanged.

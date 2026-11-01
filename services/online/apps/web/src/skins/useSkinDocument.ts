@@ -1,3 +1,4 @@
+import { skinCopyName } from './labels.ts';
 import { MessageError, translateError } from '../messages.ts';
 import { message as sourceMessage } from '../messages.ts';
 import { t } from '../messages.ts';
@@ -58,7 +59,7 @@ async function readColour(src: string) {
 export function useSkinDocument(accountId: string | undefined) {
   const [canvas] = useState(() => paintCanvas());
   const [initial] = useState<SkinData>(() => ({
-    name: 'My colony',
+    name: t('My colony'),
     building: '#ed9252',
     swarmMesh: 'classic',
     swarmViewAngle: 0,
@@ -323,7 +324,7 @@ export function useSkinDocument(accountId: string | undefined) {
     const d = current.current;
     return {
       revision: draftRevision.current,
-      name: d.name.trim() || 'Untitled skin',
+      name: d.name.trim() || t('Untitled skin'),
       buildingColor: parseInt(d.building.slice(1), 16),
       swarmMesh: d.swarmMesh,
       swarmViewAngle: d.swarmViewAngle,
@@ -494,7 +495,10 @@ export function useSkinDocument(accountId: string | undefined) {
     await run(async () => {
       const local = cloneSkin(current.current);
       const { design } = await request<{ design: SkinDesign }>('POST', '/api/v1/skins/designs', {
-        body: { id: crypto.randomUUID(), name: `${local.name.slice(0, 59)} copy` },
+        body: {
+          id: crypto.randomUUID(),
+          name: skinCopyName(local.name),
+        },
       });
       draftRevision.current = design.revision;
       current.current = { ...local, skinId: design.skinId, name: design.name };

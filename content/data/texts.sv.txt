@@ -6820,5 +6820,41 @@ Mängd fisk
 Meddelanden ▸
 [Camp-site amount]
 Antal lägerplatser
+[script compilation success]
+Kompileringen lyckades
+[script error at %0:%1: %2]
+Fel vid %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Kompileringsfel: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompileringen misslyckades: %0
+[script loading failed %0]
+Misslyckades med att ladda skriptet från %0
+[script saving failed %0]
+Misslyckades med att spara skriptet till %0
+[script line %0 column %1]
+Rad: %0 Kolumn: %1
+[game stopped %0]
+Spelet stoppat: %0
+[game stopped script help]
+Granska den inbäddade JavaScript-koden och dess resursanvändning innan du startar om det här spelet.
+[missing map generator %0]
+Kartgenerator saknas: %0. Ett inbyggt landskap valdes.
+[hive standing order paused]
+En stående order behöver åtgärdas och har pausats.
+[hive connection changed orders paused]
+Anslutningen har ändrats. Granska dina pausade stående order innan du återupptar dem.
+[hive standing order fresh instruction]
+En stående order behöver en ny instruktion efter återanslutning. Du kan avbryta den eller be befälhavaren att ersätta den.
+[hive order confirmation failed]
+En order kunde inte bekräftas. Granska dina stående order innan du återupptar dem.
+[hive previous order sending]
+Din tidigare order skickas fortfarande. Meddelandet har sparats; öppna befälhavaren för att skicka det igen.
+[hive order received %0]
+Order mottagen: %0
+[hive order not confirmed]
+Ordern har inte bekräftats. Öppna befälhavaren för att försöka igen; ditt meddelande har sparats.
+[hive standing order update failed]
+Uppdateringen av den stående ordern misslyckades. Din order är pausad på den här enheten; försök igen med motsvarande kontroll.
 [AI for all computer colonies]
 AI för alla datorstyrda kolonier

@@ -6,6 +6,7 @@
 #include <InterfacePresentation.h>
 #include "MobileSafeArea.h"
 #include <HostViewport.h>
+#include <ui/Host.h>
 #include "ThumbSide.h"
 #include "BrushCoverage.h"
 #include <map>
@@ -64,8 +65,10 @@ MobileLayout GameGUITouch::layout() const
 	// Keep the icon band, then reserve the actual wrapped label height and
 	// bottom padding. Tall scripts and accessibility text grow upward into
 	// the world; drawing and hit regions share the resulting action strip.
-	const double labelHeight = navigationLabelHeight(result.actions.w / 6 - 4);
-	result.actions.h = std::max(result.actions.h, 32 + labelHeight + (labelHeight > 16 ? 4 : 0));
+	const auto &navigation = measureNavigation(result.actions.w);
+	const double labelHeight = navigation.height;
+	result.actions.h = std::max(result.actions.h, 32 + labelHeight + (labelHeight > 16 ? 4 : 0)) *
+		(6 / navigation.columns);
 	result.actions.y = result.safe.y + result.safe.h - result.actions.h;
 	// Persistent palettes float too: the map remains visible below their last
 	// icon, and opening an inspector never changes the camera's framing.
@@ -428,8 +431,9 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 			return 8;
 		if (speedRect().contains(point))
 			return 49;
-		if (layout().actions.contains(point))
-			return 10 + std::min(5, int((point.x - layout().actions.x) / (layout().actions.w / 6)));
+		const auto navigation = layout();
+		if (navigation.actions.contains(point))
+			return 10 + navigationButtonAt(navigation, point);
 		const auto header = allocationRect();
 		if (header.contains(point) &&
 			point.x >= header.x + header.w - 48 * globalContainer->gfx->logicalUnitsPerPoint())
@@ -465,8 +469,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 		return targets;
 	const auto ui = layout();
 	for (int i = 0; i < 6; ++i)
-		targets.push_back(
-			{ui.actions.x + i * ui.actions.w / 6, ui.actions.y, ui.actions.w / 6, ui.actions.h});
+		targets.push_back(navigationButtonRect(ui, i));
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION)
 	{
 		targets = {confirmRect(), cancelRect()};
@@ -692,7 +695,17 @@ bool GameGUITouch::process(SDL_Event &event)
 		return false;
 	const ViewPoint pointerPoint{event.tfinger.x * globalContainer->gfx->getW(),
 								 event.tfinger.y * globalContainer->gfx->getH()};
-	if (usesHUD() && (inputBlocked(pointerPoint) ||
+	const bool blocked = usesHUD() && inputBlocked(pointerPoint);
+	const GAGGUI::ui::Point pixel{int(pointerPoint.x), int(pointerPoint.y)};
+	// Keep a captured header pull when it enters its own statistics body.
+	// The header and body hosts must still permit it: popups, modals and
+	// higher overlays retain their normal ability to interrupt the gesture.
+	const bool ownStatisticsBody = blocked && statsOpen && ownerRegion == 48 &&
+		!ignoreTouchSequence && event.type != SDL_EVENT_FINGER_DOWN && fingers.size() == 1 &&
+		fingers.front() == std::make_pair(event.tfinger.touchID, event.tfinger.fingerID) &&
+		controlAllowed("touch/statistics/sheet", GAGGUI::ui::ActionKind::Scroll) &&
+		gui.statisticsBounds().contains(pixel) && !gui.statisticsHost().inputBlockedAt(pixel);
+	if (usesHUD() && ((blocked && !ownStatisticsBody) ||
 		(event.type == SDL_EVENT_FINGER_DOWN && !pointerControlAllowed(pointerPoint))))
 	{
 		cancel();
@@ -989,7 +1002,11 @@ void GameGUITouch::dragStatistics(double deltaPoints)
 {
 	if (!statsOpen) return;
 	statsDrag += deltaPoints;
-	if (statsDrag > InGameTouchTheme::target) statsOpen = false;
+	if (statsDrag > InGameTouchTheme::target)
+	{
+		statsOpen = false;
+		statsDrag = 0;
+	}
 }
 
 void GameGUITouch::actions(const std::vector<TouchAction> &changes)

@@ -1,7 +1,7 @@
 import { artifactLabel } from '../../i18n.tsx';
 import { statusLabel } from '../../i18n.tsx';
 import { displayMessage } from '../../i18n.tsx';
-import { t, tp, useLocale, RichMessage } from '../../i18n.tsx';
+import { t, tp, useLocale, RichMessage, musicMoodLabel } from '../../i18n.tsx';
 import { cancellationReason } from '../../components/studio/adapters.ts';
 import { Icon } from '../../icons.tsx';
 import {
@@ -18,7 +18,7 @@ import { Cover } from '../../music/Cover.tsx';
 import type { PlaybackSettings, PlaybackSnapshot } from '../../music/useMusicPlayback.ts';
 import { MusicValidation, MusicCheckDetails } from '../../music/Validation.tsx';
 import { useDeliveryCelebration } from '../studio/useDeliveryCelebration.ts';
-import { MUSIC_IDEAS } from './ideas.ts';
+import { musicIdeas } from './ideas.ts';
 import { ROOT, type Thread, type Wallet, type Delivered } from './types.ts';
 interface Props {
   id?: string;
@@ -201,8 +201,8 @@ export function MusicWorkspace(p: Props) {
                     'Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.',
                   )}
                 </p>
-                {MUSIC_IDEAS.map(([title, text]) => (
-                  <button key={title} className="mu-prompt" onClick={() => p.setDraft(text)}>
+                {musicIdeas().map(([key, title, text]) => (
+                  <button key={key} className="mu-prompt" onClick={() => p.setDraft(text)}>
                     <RichMessage source={'{slot0} ↗'} slots={{ slot0: title }} />
                   </button>
                 ))}
@@ -238,18 +238,20 @@ export function MusicWorkspace(p: Props) {
                 ? t('Editing version {value0}', {
                     value0: generations.findIndex((v) => v.id === p.parent) + 1,
                   })
-                : 'New soundtrack'
+                : t('New soundtrack')
             }
             disabledReason={
               !canSend
                 ? active || p.busy
-                  ? 'Wait for the current request to finish.'
+                  ? t('Wait for the current request to finish.')
                   : !p.wallet?.enabled
-                    ? 'Generation is unavailable. Saved music remains accessible.'
-                    : 'An available Music credit is needed to chat or build.'
+                    ? t('Generation is unavailable. Saved music remains accessible.')
+                    : t('An available Music credit is needed to chat or build.')
                 : undefined
             }
-            pricing="Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods."
+            pricing={t(
+              'Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.',
+            )}
             tools={
               <>
                 {p.parent && (
@@ -446,7 +448,7 @@ export function MusicWorkspace(p: Props) {
                 </p>
                 <div className="mu-mood-labels">
                   <span>{t('Calm')}</span>
-                  <span>{t('Building')}</span>
+                  <span>{musicMoodLabel('Building')}</span>
                   <span>{t('Combat')}</span>
                 </div>
               </div>

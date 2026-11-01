@@ -6820,5 +6820,41 @@ Množství ryb
 Zprávy ▸
 [Camp-site amount]
 Počet tábořišť
+[script compilation success]
+Úspěšná kompilace
+[script error at %0:%1: %2]
+Chyba na řádku %0, ve sloupci %1: %2
+[script compilation failure %0:%1:(%2):%3]
+Chyba kompilace: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompilace selhala: %0
+[script loading failed %0]
+Načtení skriptu z %0 se nezdařilo.
+[script saving failed %0]
+Uložení skriptu do %0 se nezdařilo.
+[script line %0 column %1]
+Řádek: %0 Sloupec: %1
+[game stopped %0]
+Hra zastavena: %0
+[game stopped script help]
+Před opětovným spuštěním této hry zkontrolujte vložený kód JavaScript a jeho využití prostředků.
+[missing map generator %0]
+Chybí generátor map: %0. Byla vybrána vestavěná krajina.
+[hive standing order paused]
+Trvalý rozkaz vyžaduje pozornost a byl pozastaven.
+[hive connection changed orders paused]
+Spojení se změnilo. Před obnovením zkontrolujte své pozastavené trvalé rozkazy.
+[hive standing order fresh instruction]
+Trvalý rozkaz vyžaduje po opětovném připojení nový pokyn. Můžete jej zrušit nebo požádat velitele o jeho nahrazení.
+[hive order confirmation failed]
+Rozkaz se nepodařilo potvrdit. Před obnovením zkontrolujte své trvalé rozkazy.
+[hive previous order sending]
+Váš předchozí rozkaz se stále odesílá. Tato zpráva byla uložena; otevřete velitele a odešlete ji znovu.
+[hive order received %0]
+Rozkaz přijat: %0
+[hive order not confirmed]
+Rozkaz nebyl potvrzen. Otevřete velitele a zkuste to znovu; vaše zpráva byla uložena.
+[hive standing order update failed]
+Aktualizace trvalého rozkazu selhala. Váš rozkaz je na tomto zařízení pozastaven; zkuste to znovu pomocí příslušného ovládacího prvku.
 [AI for all computer colonies]
 AI pro všechny počítačem řízené kolonie

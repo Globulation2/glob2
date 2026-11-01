@@ -2,6 +2,7 @@
 """Check bundled font coverage through the game's SDL3_ttf library."""
 import ctypes
 import ctypes.util
+import json
 import os
 from pathlib import Path
 import unittest
@@ -47,6 +48,38 @@ class FontCoverageTest(unittest.TestCase):
                     ord(c) > 0xFFFF or not any(ttf.TTF_FontHasGlyph(font, ord(c)) for font in fonts)))
                 with self.subTest(catalog=path.name):
                     self.assertEqual(missing, [], 'Missing glyphs: ' + repr(missing))
+            # Bulgarian must work with the default font alone, including the
+            # reduced font used before optional browser downloads arrive.
+            native = (ROOT / 'content/data/texts.bg.txt').read_text(encoding='utf-8').splitlines()[1::2]
+            online = json.loads((ROOT / 'services/online/packages/i18n/locales/bg.json').read_text())
+            values = native + [text for value in online.values()
+                               for text in (value.values() if isinstance(value, dict) else [value])]
+            characters = set(''.join(values) + 'ѝЍ„“”’–—…и\u0300И\u0300')
+            core = ttf.TTF_OpenFont(str(ROOT / 'platforms/web/assets/sans-core.ttf').encode(), 13)
+            self.assertTrue(core, 'Could not load browser starter font')
+            fonts.append(core)
+            for name, font in [('native Bulgarian', fonts[0]), ('browser Bulgarian', core)]:
+                missing = sorted(c for c in characters if ord(c) > 32 and
+                                 c not in '\u200c\u200d\u200e\u200f' and
+                                 not ttf.TTF_FontHasGlyph(font, ord(c)))
+                with self.subTest(font=name):
+                    self.assertEqual(missing, [], 'Missing Bulgarian glyphs: ' + repr(missing))
+            # Filipino must work before the browser downloads supplemental fonts,
+            # and without silently relying on another script's fallback font.
+            native = (ROOT / 'content/data/texts.fil.txt').read_text(encoding='utf-8').splitlines()[1::2]
+            online = json.loads((ROOT / 'services/online/packages/i18n/locales/fil.json').read_text(encoding='utf-8'))
+            values = native + [text for value in online.values()
+                               for text in (value.values() if isinstance(value, dict) else [value])]
+            characters = set(''.join(values))
+            for path in (ROOT / 'content/data/fonts/sans.ttf', ROOT / 'platforms/web/assets/sans-core.ttf'):
+                font = ttf.TTF_OpenFont(str(path).encode(), 13)
+                self.assertTrue(font, 'Could not load Filipino font ' + path.name)
+                fonts.append(font)
+                with self.subTest(locale='fil', font=path.name):
+                    # Both catalog surfaces must render with the shipped startup subset.
+                    required = characters
+                    missing = sorted(c for c in required if ord(c) > 32 and not ttf.TTF_FontHasGlyph(font, ord(c)))
+                    self.assertEqual(missing, [], 'Missing Filipino glyphs: ' + repr(missing))
         finally:
             for font in fonts:
                 ttf.TTF_CloseFont(font)

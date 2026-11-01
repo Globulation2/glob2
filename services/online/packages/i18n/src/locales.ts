@@ -210,15 +210,33 @@ export const locales = [
     dir: 'rtl',
   },
   {
+    code: 'te',
+    gameCode: 'te',
+    name: 'తెలుగు',
+    dir: 'ltr',
+  },
+  {
     code: 'sw',
     gameCode: 'sw',
     name: 'Kiswahili',
     dir: 'ltr',
   },
   {
+    code: 'ta',
+    gameCode: 'ta',
+    name: 'தமிழ்',
+    dir: 'ltr',
+  },
+  {
     code: 'bn',
     gameCode: 'bn',
     name: 'বাংলা',
+    dir: 'ltr',
+  },
+  {
+    code: 'fil',
+    gameCode: 'fil',
+    name: 'Filipino',
     dir: 'ltr',
   },
   {
@@ -231,6 +249,12 @@ export const locales = [
     code: 'ms',
     gameCode: 'ms',
     name: 'Bahasa Melayu',
+    dir: 'ltr',
+  },
+  {
+    code: 'bg',
+    gameCode: 'bg',
+    name: 'Български',
     dir: 'ltr',
   },
   {

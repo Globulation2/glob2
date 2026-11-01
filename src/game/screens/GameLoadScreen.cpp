@@ -41,6 +41,11 @@ std::unique_ptr<Engine> GameLoadScreen::takeEngine()
 }
 std::string GameLoadScreen::failureMessage() const
 {
+	if (Glob2UI::bulgarianErrorLocale())
+	{
+		loadFailure(failureDiagnostic);
+		return Glob2UI::nativeSurfaceText("[Could not load this map. Choose another map or retry.]", "Could not load this map. Choose another map or retry.");
+	}
 	auto message = Glob2UI::tr("[ERROR_CANT_LOAD_MAP]");
 	if (!failureDiagnostic.empty())
 		message += "\n\n" + failureDiagnostic;

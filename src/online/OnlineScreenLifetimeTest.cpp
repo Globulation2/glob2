@@ -24,10 +24,16 @@
 #include "PlatformClient.h"
 #include "QuickMatchScreen.h"
 #include "SettingsScreen.h"
+#include "ui/ApiErrorText.h"
+#include "ui/DiagnosticText.h"
+#include "ui/HiveReportText.h"
+#include "ui/LibraryText.h"
+#include <FormatableString.h>
 
 #include <ScreenStack.h>
 
 #include <functional>
+#include <algorithm>
 #include <memory>
 
 using OnlineFakes::Json;
@@ -234,4 +240,125 @@ TEST_SUITE("OnlineScreenLifetime")
 		QuickMatchPresenter::detach(stack);
 		platform.client.stop();
 	}
+}
+
+TEST_CASE("Bulgarian library callbacks retain API messages and summarize malformed responses" *
+		  doctest::test_suite("OnlineScreenLifetime"))
+{
+	glob2test::GlobalsOptions options{.loadStrings = true};
+	options.beforeLoad = [](GlobalContainer &g) { g.settings.language = "bg"; };
+	glob2test::HeadlessGlobals globals(options);
+	ScriptedPlatform platform;
+	GAGGUI::ScreenStack stack(*globalContainer->gfx);
+	OnlineGeneratorsScreen screen(stack);
+	// Find the pending catalogue without depending on the default filter preference.
+	auto catalogue = [&]() {
+		for (const auto &request : platform.world.http.exchanges)
+			if (request->state == HttpFetch::State::Pending &&
+				request->request.url.find("/api/v1/generators?") != std::string::npos)
+				return request;
+		return decltype(platform.world.http.exchanges)::value_type{};
+	};
+	auto request = catalogue();
+	REQUIRE(request);
+	request->reply(200, Json{{"items", Json::array()}, {"nextCursor", Json::object()}});
+	platform.client.update();
+	CHECK_FALSE(screen.loading);
+	CHECK_EQ(screen.status, Glob2UI::onlineProblemText(""));
+	screen.fetch();
+	request = catalogue();
+	REQUIRE(request);
+	const Json api = {{"code", "unauthenticated"}, {"message", "raw provider auth detail"},
+		{"messageKey", "Sign in first (session.authenticate)."}};
+	request->reply(400, api);
+	platform.client.update();
+	CHECK_FALSE(screen.loading);
+	CHECK_EQ(screen.status, Glob2UI::apiErrorText(Online::errorFromJson(api, "")));
+	CHECK_NE(screen.status, Glob2UI::onlineProblemText(""));
+	// A failed rollback must not report that the previous library was retained.
+	screen.before = "not valid JSON";
+	screen.replacing = "pending-replacement";
+	screen.failInstallation(Glob2UI::libraryText("Storage failed."));
+	CHECK(screen.before.empty());
+	CHECK(screen.replacing.empty());
+	CHECK_FALSE(screen.persistence);
+	CHECK_EQ(screen.status, Glob2UI::libraryText("Storage failed.") +
+		GAGCore::FormattableString(Glob2UI::libraryText(" Could not restore the previous library: %0"))
+			.arg(Glob2UI::onlineProblemText("")));
+	CHECK(screen.status.find(Glob2UI::libraryText(" The previous library is retained.")) == std::string::npos);
+	// Only a successful rollback may append the retained-state notice.
+	screen.before = screen.library.checkpoint();
+	screen.failInstallation(Glob2UI::libraryText("Storage failed."));
+	CHECK_EQ(screen.status, Glob2UI::libraryText("Storage failed.") +
+		Glob2UI::libraryText(" The previous library is retained."));
+}
+
+TEST_CASE("Bulgarian AI catalogue callback uses reviewed response errors and keeps API specificity" *
+		  doctest::test_suite("OnlineScreenLifetime"))
+{
+	glob2test::GlobalsOptions options{.loadStrings = true};
+	options.beforeLoad = [](GlobalContainer &g) { g.settings.language = "bg"; };
+	glob2test::HeadlessGlobals globals(options);
+	ScriptedPlatform platform;
+	SettingsScreen screen;
+	screen.selectCategory(SettingsScreen::Category::CustomAIs);
+	screen.buildCustomAIs();
+	screen.openCustomAILibrary();
+	const std::string path = "/api/v1/ais?limit=24&sort=likes&q=&tags=";
+	auto hasNotice = [&](const std::string &text)
+	{
+		screen.form.clear();
+		screen.buildCustomAIs();
+		return std::any_of(screen.form.begin(), screen.form.end(),
+			[&](const auto &row) { return row.label == text; });
+	};
+	for (const auto &malformed : {
+		Json{{"items", false}}, Json{{"items", Json::array({{{"name", false}}})}},
+		Json::object(), Json{{"items", Json::array()}, {"nextCursor", Json::object()}}})
+	{
+		auto request = platform.world.http.pending(path);
+		REQUIRE(request);
+		request->reply(200, malformed);
+		platform.client.update();
+		CHECK(hasNotice(Glob2UI::tr("[Invalid AI catalogue response]")));
+		screen.fetchCustomAIs();
+	}
+	auto request = platform.world.http.pending(path);
+	REQUIRE(request);
+	const Json api = {{"code", "unauthenticated"}, {"message", "raw auth reason"},
+		{"messageKey", "Sign in first (session.authenticate)."}};
+	request->reply(400, api);
+	platform.client.update();
+	CHECK(hasNotice(Glob2UI::apiErrorText(Online::errorFromJson(api, ""))));
+	CHECK_FALSE(hasNotice(Glob2UI::onlineProblemText("")));
+}
+
+TEST_CASE("Diagnostic UI preserves reviewed native summaries, raw values and explicit report provenance" *
+		  doctest::test_suite("OnlineScreenLifetime"))
+{
+	glob2test::GlobalsOptions options{.loadStrings = true};
+	options.beforeLoad = [](GlobalContainer &g) { g.settings.language = "bg"; };
+	glob2test::HeadlessGlobals globals(options);
+	Glob2UI::DiagnosticText diagnostic;
+	const std::string raw = "Unknown option preserved-id";
+	CHECK_EQ(diagnostic(raw), Glob2UI::onlineProblemText(""));
+	CHECK_EQ(diagnostic(raw), Glob2UI::onlineProblemText(""));
+	CHECK_EQ(raw, "Unknown option preserved-id");
+	CHECK_EQ(diagnostic("Give at least one terrain type a nonzero weight."),
+		Glob2UI::nativeSurfaceText("[Give at least one terrain type a nonzero weight.]", ""));
+	const Glob2UI::PresentedError deliberate("already presented detail", "raw transport");
+	CHECK_EQ(diagnostic.exception(deliberate), "already presented detail");
+	CHECK_EQ(Glob2UI::literalSurfaceFormat("%1 / %0 / %1", {"literal %1", "user {p0}"}),
+		"user {p0} / literal %1 / user {p0}");
+	const std::string text = "Order received: literal %0 {p0}";
+	CHECK_EQ(Glob2UI::hiveReportText(Hive::Report(text)), text);
+	const Hive::Report local("Order received: literal %0 {p0}", Hive::ReportSource::OrderReceived,
+		"literal %0 {p0}");
+	CHECK_EQ(Glob2UI::hiveReportText(local), Glob2UI::literalSurfaceFormat(
+		Glob2UI::nativeSurfaceText("[hive order received %0]", "Order received: %0"), {local.parameter}));
+	CHECK_EQ(local.text, text);
+	// The old status words in a remote report remain user/commander text.
+	CHECK_EQ(Glob2UI::hiveReportText(Hive::Report("Stopped")), "Stopped");
+	CHECK_EQ(Glob2UI::hiveReportText(Hive::Report("Stopped", Hive::ReportSource::Stopped)),
+		Glob2UI::nativeSurfaceText("[hive stopped]", "Stopped"));
 }

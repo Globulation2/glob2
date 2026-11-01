@@ -6820,5 +6820,41 @@ Fischmenge
 Nachrichten ▸
 [Camp-site amount]
 Anzahl der Lagerplätze
+[script compilation success]
+Kompilierung erfolgreich
+[script error at %0:%1: %2]
+Fehler bei %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Kompilierungsfehler: %0:%1:(%2):%3
+[script compilation failed %0]
+Kompilierung fehlgeschlagen: %0
+[script loading failed %0]
+Das Laden des Skripts von %0 ist fehlgeschlagen.
+[script saving failed %0]
+Das Speichern des Skripts unter %0 ist fehlgeschlagen.
+[script line %0 column %1]
+Zeile: %0 Spalte: %1
+[game stopped %0]
+Spiel beendet: %0
+[game stopped script help]
+Überprüfen Sie den eingebetteten JavaScript-Code und dessen Ressourcenverbrauch, bevor Sie dieses Spiel neu starten.
+[missing map generator %0]
+Kartengenerator fehlt: %0. Eine integrierte Landschaft wurde ausgewählt.
+[hive standing order paused]
+Ein Dauerauftrag erfordert Aufmerksamkeit und wurde pausiert.
+[hive connection changed orders paused]
+Die Verbindung hat sich geändert. Überprüfen Sie Ihre pausierten Daueraufträge, bevor Sie diese fortsetzen.
+[hive standing order fresh instruction]
+Ein Dauerauftrag benötigt nach dem Wiederverbinden eine neue Anweisung. Sie können ihn abbrechen oder den Kommandanten bitten, ihn zu ersetzen.
+[hive order confirmation failed]
+Ein Befehl konnte nicht bestätigt werden. Überprüfen Sie Ihre Daueraufträge, bevor Sie diese fortsetzen.
+[hive previous order sending]
+Ihr vorheriger Befehl wird noch gesendet. Diese Nachricht wurde gespeichert; öffnen Sie den Kommandanten, um sie erneut zu senden.
+[hive order received %0]
+Befehl empfangen: %0
+[hive order not confirmed]
+Befehl nicht bestätigt. Öffnen Sie den Kommandanten, um es erneut zu versuchen; Ihre Nachricht wurde gespeichert.
+[hive standing order update failed]
+Die Aktualisierung Ihres Dauerauftrags ist fehlgeschlagen. Ihr Auftrag ist auf diesem Gerät pausiert; versuchen Sie es mit dem entsprechenden Bedienelement erneut.
 [AI for all computer colonies]
 KI für alle computergesteuerten Kolonien

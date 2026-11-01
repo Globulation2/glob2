@@ -585,7 +585,7 @@ def main():
             BUNDLE_SYMBOL_DIR=bdir+"/symbols",
             BUNDLE_BINARIES=[bdir+"/src/glob2"],
             BUNDLE_RESOURCEDIRS=["data","maps", "campaigns", "scripts",
-                                 "platforms/macos/en.lproj", "platforms/macos/mr.lproj"],
+                                 "platforms/macos/en.lproj", "platforms/macos/mr.lproj", "platforms/macos/ta.lproj", "platforms/macos/te.lproj", "platforms/macos/bg.lproj"],
             BUNDLE_PLIST="platforms/macos/Info.plist",
             BUNDLE_ICON="platforms/macos/Glob2.icns" )
         # Go through the builders rather than calling their actions directly.

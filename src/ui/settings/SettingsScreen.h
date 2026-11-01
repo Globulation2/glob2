@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -108,6 +109,7 @@ class SettingsScreen : public Glob2UI::Screen
 	Category current = Category::Display;
     Uint32 gradientStatusAt=0;
 	Modal modal = Modal::None;
+	Glob2UI::DiagnosticText gradientError, mcpError, generatorConstructionError, aiConstructionError;
 	std::vector<Row> form;
 	int selectedBuilding = -1;
 	int buildingTab = 0;

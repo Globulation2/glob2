@@ -323,7 +323,7 @@ struct CustomGameSetupHarness
         globalContainer->liveSpectating = true;
         world.gui.statistics().selectTopic(InGameStatisticsPanel::Topic::World);
         globalContainer->gfx->drawFilledRect(0, 0, 640, 480, 0, 0, 32);
-        world.gui.drawStatisticsPage(195);
+        world.gui.drawStatisticsPanel();
         const auto path = glob2test::artifactDir() / "probability-sixteen-colonies.png";
         REQUIRE(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), path.string().c_str()));
         globalContainer->liveSpectating = false;
@@ -394,7 +394,6 @@ struct CustomGameSetupHarness
 		original.librarySelection[0] = "maps/FourSquares1.map";
 		original.librarySelection[1] = original.setup.premadeMap;
 		original.expanded[0] = original.expanded[2] = true;
-		original.landscapeSortOrder = 1;
 		// Crater Lakes is one of the four modern height-map generators that
 		// still exposes a "repeat landscape" control; Old Islands (the prior
 		// choice) has no repeat option in the modular registry, so it would
@@ -416,7 +415,13 @@ struct CustomGameSetupHarness
 		REQUIRE((restored.decode(encoded) && restored.encode() == encoded));
 		checkExtraRules(restored.setup);
 		REQUIRE(restored.setup.mapRevision == 0);
-		REQUIRE(restored.landscapeSortOrder == 1);
+		// A retired Random preference still loads without changing the rest of the draft.
+		auto randomSorted = encoded;
+		const auto pickerAt = randomSorted.find("picker 1\n");
+		REQUIRE(pickerAt != std::string::npos);
+		randomSorted.replace(pickerAt, 9, "picker 0\n");
+		REQUIRE(restored.decode(randomSorted));
+		REQUIRE(restored.encode() == encoded);
 		// Versions 1–7 predate the custom-generator identity row. Synthesized
 		// historical fixtures must omit it, rather than only changing the header.
 		const auto previousFormat = [&](int version)
@@ -482,7 +487,7 @@ struct CustomGameSetupHarness
 				old.replace(old.find("nbTeams 16"), 10, "nbTeams 12");
 			}
 			CustomGamePreferences fromOld;
-			REQUIRE((fromOld.decode(old) && fromOld.landscapeSortOrder == (version == 1 ? 0 : 1)));
+			REQUIRE(fromOld.decode(old));
 			REQUIRE(fromOld.setup.winProbabilityPermille == 0);
 			REQUIRE(fromOld.setup.premadeMap == original.setup.premadeMap);
 			REQUIRE(fromOld.setup.colonies[3].aiLibraryId.empty());
@@ -627,54 +632,50 @@ struct CustomGameSetupHarness
 								encoded.substr(end)));
 		std::cout << "PASS preferences keep every generator option, and older files still load\n";
 	}
-	// FEEDBACK 2026-09-17, in two parts. First: "'random' isn't actually randomizing the order...
-	// I want it to be dynamically random" - Random must not be a fixed order that looks shuffled
-	// once (the registry's own catalog order, which used to be exactly what Random fell through
-	// to) and then repeats identically forever. Second, refining that fix once it was tried in
-	// the UI: "I don't like how the random order changes sometimes while I'm using the UI...
-	// randomized once when the app starts and then stays consistent for the duration of
-	// execution" - so the permutation itself must be a real shuffle (not the untouched catalog
-	// order), but two sheets built in the same process run must land on the SAME order as each
-	// other, not a fresh one each time; only a relaunch (a new process) draws again.
-	static void landscapeRandomOrder()
+	static void landscapeAlphabeticalOrder(bool display = false)
 	{
-		std::vector<LandscapePickerScreen::Entry> shown;
-		for (int method : GeneratorRegistry::builtins().methods(false))
-		{
-			GenerationRequest request;
-			request.setMethodDefaults(method);
-			shown.push_back({GenerationRequest::methodName(method), request, method});
-		}
-		std::vector<int> identity(shown.size());
-		std::iota(identity.begin(), identity.end(), 0);
-		LandscapePickerScreen first("Landscape", shown, 0);
-		LandscapePickerScreen second("Landscape", shown, 0);
-		REQUIRE((first.sortOrder == LandscapePickerScreen::SortOrder::Random &&
-			  second.sortOrder == LandscapePickerScreen::SortOrder::Random));
-		// A real shuffle, not the untouched catalog order left alone...
-		REQUIRE(first.visible != identity);
-		// ...but the SAME shuffle every time within this one process run, however many sheets are
-		// opened - the process-lifetime permutation this fix's refinement asked for.
+		GenerationRequest request;
+		request.method = -1; // These checks do not need generated previews.
+		// Display names can differ from catalog IDs and input order, including translations.
+		std::vector<LandscapePickerScreen::Entry> shown = {
+			{"Zulu", request, -1, {"terrain:dry"}},
+			{"Alpha", request, -1, {"terrain:wet"}},
+			{"Beta", request, -1, {"terrain:dry"}},
+			{"Alpha", request, -1, {"terrain:dry"}}};
+		LandscapePickerScreen first("Landscape", shown, 2);
+		LandscapePickerScreen second("Landscape", shown, 2);
+		REQUIRE(first.visible == std::vector<int>({1, 3, 2, 0}));
 		REQUIRE(first.visible == second.visible);
-		// Touching a filter must not redraw it either: narrowing still respects the one order
-		// this run drew, just with the excluded entries missing from it.
-		LandscapePickerScreen third("Landscape", shown, 0);
-		if (!third.filterCategories.empty())
+		REQUIRE(first.selection() == 2);
+		first.filters[0] = "dry";
+		first.rebuild();
+		REQUIRE(first.visible == std::vector<int>({3, 2, 0}));
+		REQUIRE(first.selection() == 2);
+		first.filters[0].clear();
+		first.rebuild();
+		REQUIRE(first.visible == second.visible);
+		if (display)
 		{
-			third.filters[0] = "does-not-exist";
-			third.rebuild();
-			third.filters[0].clear();
-			third.rebuild();
+			first.beginExecution(globalContainer->gfx);
+			first.paintFrame(SDL_GetTicks());
+			REQUIRE(!first.host().find("landscape/sort"));
+			SDL_Event event{};
+			event.type = SDL_EVENT_KEY_DOWN;
+			event.key.key = SDLK_RIGHT;
+			first.handleExecutionEvent(event);
+			REQUIRE(first.selection() == 0); // Beta -> Zulu in display order.
+			event.key.key = SDLK_LEFT;
+			first.handleExecutionEvent(event);
+			REQUIRE(first.selection() == 2);
+			first.paintFrame(SDL_GetTicks());
+			const auto path = glob2test::artifactDir() / "alphabetical-picker.bmp";
+			globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/alphabetical-picker.bmp");
+			globalContainer->gfx->nextFrame();
+			REQUIRE(std::filesystem::exists(path));
+			first.endExecute(0);
+			first.finishExecution();
 		}
-		REQUIRE(third.visible == first.visible);
-		// Alphabetical stays the deterministic alternative: same entries, same order, every time.
-		LandscapePickerScreen sortedA("Landscape", shown, 0,
-									  LandscapePickerScreen::SortOrder::Alphabetical);
-		LandscapePickerScreen sortedB("Landscape", shown, 0,
-									  LandscapePickerScreen::SortOrder::Alphabetical);
-		REQUIRE(sortedA.visible == sortedB.visible);
-		std::cout << "PASS landscape picker Random order is a real shuffle drawn once per process "
-					 "run, Alphabetical stays stable\n";
+		std::cout << "PASS landscape picker sorts display names consistently and preserves selection through filtering\n";
 	}
 	static void previewPriority()
 	{
@@ -785,8 +786,7 @@ struct CustomGameSetupHarness
 			request.method = -1; // Finish cheaply; results are replaced with the fixture below.
 			entries.push_back({"Landscape " + std::to_string(100 + i), request});
 		}
-		LandscapePickerScreen picker("Landscape", entries, 0,
-									 LandscapePickerScreen::SortOrder::Alphabetical);
+		LandscapePickerScreen picker("Landscape", entries, 0);
 		picker.beginExecution(globalContainer->gfx);
 		picker.paintFrame(0);
 		while (picker.busy())
@@ -860,6 +860,29 @@ struct CustomGameSetupHarness
 		}
 		picker.endExecute(0);
 		picker.finishExecution();
+	}
+
+	static void translatedMapModesFit()
+	{
+		GAGGUI::ScreenStack screens(*globalContainer->gfx);
+		CustomGameScreen screen(screens);
+		screen.beginExecution(globalContainer->gfx);
+		for (bool random : {true, false})
+		{
+			screen.setMapMode(random);
+			screen.paintFrame(SDL_GetTicks());
+			const auto pane = screen.host().bounds("lobby/map");
+			CHECK(pane.w > 0);
+			for (const char *key : {"map/mode/0", "map/mode/1"})
+			{
+				const auto button = screen.host().bounds(key);
+				CHECK(button.w > 0);
+				CHECK(button.x >= pane.x);
+				CHECK(button.x + button.w <= pane.x + pane.w);
+			}
+		}
+		screen.endExecute(0);
+		screen.finishExecution();
 	}
 
 	static void preferencesScreen(bool write)
@@ -1836,6 +1859,7 @@ struct CustomGameSetupHarness
       auto pickerPaint = [&] { picker.paintFrame(SDL_GetTicks()); };
       REQUIRE((picker.previewer.threadCount() == 2 && picker.busy()));
       pickerPaint(); // placeholders while every tile is still pending
+      REQUIRE(!pickerHost.find("landscape/sort"));
       globalContainer->gfx->printScreen(output + "/landscape-picker-pending.bmp");
       // Cards in view roll first, and scrolling the grid moves that eligible set with it.
       picker.updatePreviewPriority();
@@ -1996,7 +2020,7 @@ struct CustomGameSetupHarness
         REQUIRE(scrolled);
       }
       // Keyboard navigation follows the displayed sort/filter order, not the
-      // registry identity of a landscape (these differ in Random order).
+      // registry identity of a landscape.
       const auto position = std::find(picker.visible.begin(), picker.visible.end(), other);
       REQUIRE(position != picker.visible.end());
       const int left = std::max(0, int(position - picker.visible.begin()) - 1);
@@ -2691,13 +2715,33 @@ static void commonChecks()
 	Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
 	CustomGameSetupHarness::preferencesModel();
 	CustomGameSetupHarness::preferencesOptions();
-	CustomGameSetupHarness::landscapeRandomOrder();
+	CustomGameSetupHarness::landscapeAlphabeticalOrder();
 	CustomGameSetupHarness::previewPriority();
 	REQUIRE(NET_Init());
 }
 
 TEST_SUITE("CustomGameSetup")
 {
+	TEST_CASE("landscape alphabetical layout and navigation [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true));
+		CustomGameSetupHarness::landscapeAlphabeticalOrder(true);
+	}
+	TEST_CASE("landscape alphabetical order and retired sorting preferences")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		CustomGameSetupHarness::preferencesModel();
+		CustomGameSetupHarness::landscapeAlphabeticalOrder();
+	}
+
+	TEST_CASE("Telugu map mode buttons fit the desktop map pane [display:800x600][writes-preferences]")
+	{
+		auto options = setupOptions(true, false, "te");
+		options.width = 800;
+		options.height = 600;
+		glob2test::HeadlessGlobals globals(options);
+		CustomGameSetupHarness::translatedMapModesFit();
+	}
     TEST_CASE("bulk AI choice shares semantic and human behavior and preserves excluded colonies")
     {
         glob2test::HeadlessGlobals globals(setupOptions(false));

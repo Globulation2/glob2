@@ -1,4 +1,7 @@
 // @vitest-environment jsdom
+import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
+import tamil from '../../../packages/i18n/locales/ta.json';
+import french from '../../../packages/i18n/locales/fr.json';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { act, cleanup, renderHook, waitFor } from '@testing-library/react';
 import type * as ApiModule from '../src/api.ts';
@@ -195,4 +198,76 @@ it('paints the current document after a same-event gesture cancellation', async 
   act(() => result.current.history(true));
   expect(result.current.data.colour[1]).toBe(255);
   expect(result.current.canUndo).toBe(false);
+});
+
+it('localizes only a new default name and preserves a restored custom name across locales', async () => {
+  registerCatalog('ta', tamil);
+  await setLocale('ta');
+  try {
+    const first = renderHook(() => useSkinDocument(undefined));
+    await waitFor(() => expect(first.result.current.hydrated).toBe(true));
+    expect(first.result.current.data.name).toBe(tamil['My colony']);
+    act(() => first.result.current.edit({ name: 'Worker' }));
+    expect(first.result.current.saveLocal()).toBe(true);
+    first.unmount();
+    await setLocale('en');
+    const restored = renderHook(() => useSkinDocument(undefined));
+    await waitFor(() => expect(restored.result.current.hydrated).toBe(true));
+    expect(restored.result.current.data.name).toBe('Worker');
+  } finally {
+    await setLocale('en');
+  }
+});
+
+it('keeps a long localized copy template and whole graphemes without changing the original design', async () => {
+  const prefix = 'Copie sauvegardée de ';
+  const suffix = ' — version longue';
+  registerCatalog('fr', { ...french, '{value0} copy': `${prefix}{value0}${suffix}` });
+  await setLocale('fr');
+  try {
+    const grapheme = '👩🏽‍🌾';
+    const originalName = grapheme.repeat(8);
+    const { result } = await documentHook();
+    await act(() => result.current.openDesign({ ...draft, name: originalName }));
+    vi.mocked(request).mockRejectedValueOnce(new TypeError('Offline copy request'));
+    await act(() => result.current.keepAsCopy());
+    const [method, url, options] = vi.mocked(request).mock.calls[0]!;
+    expect([method, url]).toEqual(['POST', '/api/v1/skins/designs']);
+    const submitted = (options?.body as { name: string }).name;
+    expect(submitted.length).toBeLessThanOrEqual(64);
+    expect(submitted.startsWith(prefix)).toBe(true);
+    expect(submitted.endsWith(suffix)).toBe(true);
+    const base = submitted.slice(prefix.length, -suffix.length);
+    expect(base.length).toBeGreaterThan(0);
+    const segments = [...new Intl.Segmenter('fr', { granularity: 'grapheme' }).segment(base)];
+    expect(segments.every(({ segment }) => segment === grapheme)).toBe(true);
+    expect(originalName.startsWith(base)).toBe(true);
+    expect(prefix.length + base.length + grapheme.length + suffix.length).toBeGreaterThan(64);
+    expect(result.current.data.name).toBe(originalName);
+    expect(result.current.data.skinId).toBe(draft.skinId);
+    expect(vi.mocked(request).mock.calls).toHaveLength(1);
+  } finally {
+    registerCatalog('fr', french);
+    await setLocale('en');
+  }
+});
+
+it('localizes only a fresh guest name and restores authored guest names unchanged', async () => {
+  registerCatalog('bg', { 'My colony': 'Моята колония' });
+  await setLocale('bg');
+  try {
+    const first = renderHook(() => useSkinDocument(undefined));
+    await waitFor(() => expect(first.result.current.hydrated).toBe(true));
+    expect(first.result.current.data.name).toBe('Моята колония');
+    act(() => first.result.current.edit({ name: 'My colony / авторски избор' }));
+    act(() => first.result.current.saveLocal());
+    first.unmount();
+    await setLocale('en');
+    const restored = renderHook(() => useSkinDocument(undefined));
+    await waitFor(() => expect(restored.result.current.hydrated).toBe(true));
+    expect(restored.result.current.data.name).toBe('My colony / авторски избор');
+    expect(request).not.toHaveBeenCalled();
+  } finally {
+    await setLocale('en');
+  }
 });

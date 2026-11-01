@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/LibraryText.h"
 #include "CustomGameScreen.h"
@@ -145,9 +146,8 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 	if (preferences.load(*files))
 	{
 		setup = preferences.setup;
-        if(!preferences.missingGeneratorId.empty())message="Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
+        if(!preferences.missingGeneratorId.empty())message=Glob2UI::bulgarianErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[missing map generator %0]", "Missing map generator: %0. A native landscape was selected."), {preferences.missingGeneratorId}) : "Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
 		userMaps = preferences.userMaps && separateMapLibraries;
-		landscapeSortOrder = preferences.landscapeSortOrder;
 		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
 		listMaps();
 		if (setup.random)
@@ -239,7 +239,7 @@ void CustomGameScreen::launch()
 		}
 		catch (const std::exception &e)
 		{
-			message = e.what();
+			message = Glob2UI::exceptionText(e);
 			invalidate();
 			return;
 		}
@@ -324,7 +324,6 @@ void CustomGameScreen::savePreferences()
 	CustomGamePreferences preferences;
 	preferences.setup = setup;
 	preferences.userMaps = userMaps;
-	preferences.landscapeSortOrder = landscapeSortOrder;
 	std::copy(std::begin(librarySelection), std::end(librarySelection),
 			  preferences.librarySelection);
 	std::copy(std::begin(expanded), std::end(expanded), preferences.expanded);
@@ -365,18 +364,15 @@ LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 		shown.push_back(std::move(entry));
 	}
 	auto picker = std::make_unique<LandscapePickerScreen>(
-		tr("Landscape"), std::move(shown), selected,
-		LandscapePickerScreen::SortOrder(landscapeSortOrder));
+		tr("Landscape"), std::move(shown), selected);
 	auto *result = picker.get(); // Non-owning; ScreenStack retains ownership through completion.
 	screens.push(std::move(picker),
 				 [this, entries](GAGGUI::Screen &screen, int result)
 				 {
 					 auto &picker = static_cast<LandscapePickerScreen &>(screen);
-					 // Persisted the next time preferences save, the way any other lobby choice on this screen is.
-					 landscapeSortOrder = int(picker.currentSortOrder());
 					 // Size and colony count are shared lobby settings the picker can also change (FEEDBACK
 					 // 2026-09-17); bring them back whether or not a landscape was actually picked, so backing
-					 // out still keeps what was chosen there, the same two-way relationship the sort order has.
+					 // out still keeps what was chosen there.
 					 if (picker.sharedWDec() != setup.generator.wDec ||
 						 picker.sharedHDec() != setup.generator.hDec ||
 						 picker.sharedTeams() != setup.capacity)
@@ -664,7 +660,9 @@ bool CustomGameScreen::generateMap()
 	previewPending = false;
 	if (!setup.validation().empty())
 	{
-		message = tr(setup.validation());
+		message = Glob2UI::bulgarianErrorLocale() ? validationError(setup.validation()) : tr(setup.validation());
+		if (setup.validation() == "Shared control needs a free controller slot (maximum %0).")
+			message = FormattableString(message).arg(Team::MAX_COUNT);
 		invalidate();
 		return false;
 	}
@@ -841,7 +839,7 @@ void CustomGameScreen::onTimer(Uint32 tick)
 			loadMap(path.string());
 		}
 		else
-			message = catalogDownload->error().empty() ? tr("maps download failed") : catalogDownload->error();
+			message = catalogDownload->error().empty() ? tr("maps download failed") : mapDownloadError(catalogDownload->error());
 		catalogDownload.reset();
 		invalidate();
 	}
@@ -987,7 +985,7 @@ void CustomGameScreen::showAIProfile(int colony)
 			}
 			catch (const std::exception &e)
 			{
-				message = e.what();
+				message = Glob2UI::exceptionText(e);
 			}
 		}
 		invalidate();
@@ -1026,7 +1024,7 @@ Element CustomGameScreen::build(const Presentation &p)
 		}
 		catch (const std::exception &e)
 		{
-			message = e.what();
+			message = Glob2UI::exceptionText(e);
 		}
 	}
 	GAGCore::ApplicationHost::customGameReady(validMap && !previewBusy() && setup.validation().empty());
@@ -1069,8 +1067,10 @@ Element CustomGameScreen::build(const Presentation &p)
 									? tr("Game speed") + " " + speed.getGameSpeedText()
 									: teamsLabel(setup.teamLayout()) + "  /  " + std::to_string(setup.activeColonies()) + " " +
 										  tr("colonies") + "  /  " + rulesetTitle + "  /  " + speed.getGameSpeedText();
-	const std::string note = !setup.random && !validMap && !message.empty() ? message
-		: error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : tr(error);
+	std::string note = !setup.random && !validMap && !message.empty() ? message
+		: error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : (Glob2UI::bulgarianErrorLocale() ? validationError(error) : tr(error));
+	if (Glob2UI::bulgarianErrorLocale() && error == "Shared control needs a free controller slot (maximum %0).")
+		note = FormattableString(note).arg(Team::MAX_COUNT);
 	bool ready = error.empty();
 	if (forRoom)
 		ready = setup.validation().empty() && (setup.random || validMap);
@@ -1133,7 +1133,7 @@ Element CustomGameScreen::build(const Presentation &p)
 Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 {
 	std::vector<Element> left;
-	// Narrow pointer windows need the same bounded segments as touch layouts.
+	// The map pane can be narrow even when the window uses the desktop layout.
 	auto pills = [&](const std::string &key, const std::vector<std::string> &labels, const std::vector<fe::UIIcon> &icons,
 					 int selected, std::function<void(int)> change)
 	{
@@ -1152,7 +1152,13 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 											  fe::padding(fe::Insets::symmetric(p.pt(8), 0),
 														  fe::button(key + "/" + std::to_string(i), labels[std::size_t(i)], [change, i] { change(i); }, options))));
 		}
-		return fe::row(std::move(buttons), {p.pt(8), fe::CrossAlign::Center, fe::MainAlign::Start});
+		auto row = fe::row(std::move(buttons), {p.pt(8), fe::CrossAlign::Center, fe::MainAlign::Start});
+		return fe::adaptive([row, key, labels, selected, change, iconRefs](const fe::LayoutContext &ctx, fe::Size available)
+							{
+								if (row->measure(ctx, {}).w > available.w)
+									return fe::segments(key, labels, selected, change, {}, iconRefs);
+								return row;
+							});
 	};
 	left.push_back(pills("map/mode", localized({"Premade maps", "Random map"}), {fe::UIIcon::Map, fe::UIIcon::Dice}, setup.random, [this](int value) { setMapMode(value); }));
 	if (!setup.random)

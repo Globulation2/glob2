@@ -897,8 +897,10 @@ void GameGUI::drawAll(int team)
     // Painting follows the same ownership order as input: base HUD, guidance,
     // connection panel, Hive cards, then modal dialogs and text input.
     if ((torusView.enabled() || !torusView.active()) && !touch->usesHUD()) drawMapZoomControls(camera,true,true);
-    for(const auto &arrow:arrowPositions)
-        globalContainer->gfx->drawSprite(arrow.x,arrow.y,globalContainer->gamegui,arrow.sprite);
+    // Translucent modal panels must not reveal tutorial arrows underneath.
+    if(!activeDialog())
+        for(const auto &arrow:arrowPositions)
+            globalContainer->gfx->drawSprite(arrow.x,arrow.y,globalContainer->gamegui,arrow.sprite);
     if(touch){touch->drawControls();touch->drawKeyboardFocus();}
     const bool connectionModal=connectionOverlay && connectionOverlay->blocksGameplay();
     const bool foregroundTools = touch && touch->obscuresTutorial();

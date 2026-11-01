@@ -1,5 +1,24 @@
-/* Reuse the game's pinned, unmodified Noto fonts. Vite emits the source files
+/* Reuse the game's pinned fonts. Vite emits the source files
    with content hashes; no operating-system font installation is required. */
+@font-face {
+  font-family: 'Glob2 Bulgarian';
+  src: url('../../../../platforms/web/assets/sans-core.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* Use one font for Cyrillic and Latin within Bulgarian text. The existing
+   display and body subsets contain Latin only. */
+:root:lang(bg) {
+  --glob2-script-body: 'Glob2 Bulgarian', 'DejaVu Sans', Verdana, sans-serif;
+  --glob2-script-display: 'Glob2 Bulgarian', 'DejaVu Sans', Verdana, sans-serif;
+  --font-body: var(--glob2-script-body);
+  --font-display: var(--glob2-script-display);
+}
+
+option:lang(bg) {
+  font-family: 'Glob2 Bulgarian', 'DejaVu Sans', Verdana, sans-serif;
+}
+
 @font-face {
   font-family: 'Glob2 Scripts';
   src: url('../../../../content/data/fonts/scripts/NotoSansDevanagari-Regular.ttf') format('truetype');

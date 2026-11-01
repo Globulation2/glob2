@@ -8,6 +8,7 @@
 #include "GlobalContainer.h"
 #include "SystemLanguage.h"
 #include <SDL3/SDL_hints.h>
+#include <optional>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <string>
@@ -22,8 +23,17 @@ namespace
 	// Restores SDL's preferred-locale override, which is process-wide.
 	struct PreferredLocales
 	{
-		explicit PreferredLocales(const char *locales) { SDL_SetHint(SDL_HINT_PREFERRED_LOCALES, locales); }
-		~PreferredLocales() { SDL_ResetHint(SDL_HINT_PREFERRED_LOCALES); }
+		std::optional<std::string> previous;
+		explicit PreferredLocales(const char *locales)
+		{
+			if (const auto *value = SDL_GetHint(SDL_HINT_PREFERRED_LOCALES)) previous = value;
+			SDL_SetHint(SDL_HINT_PREFERRED_LOCALES, locales);
+		}
+		~PreferredLocales()
+		{
+			if (previous) SDL_SetHint(SDL_HINT_PREFERRED_LOCALES, previous->c_str());
+			else SDL_ResetHint(SDL_HINT_PREFERRED_LOCALES);
+		}
 	};
 
 	std::string startupLanguage(const std::string &saved)
@@ -39,6 +49,15 @@ namespace
 
 TEST_SUITE("SystemLanguage")
 {
+	TEST_CASE("preferred locale fixture restores an existing hint")
+	{
+		PreferredLocales outer("bg_BG");
+		{
+			PreferredLocales inner("fr_FR");
+			CHECK(std::string(SDL_GetHint(SDL_HINT_PREFERRED_LOCALES)) == "fr_FR");
+		}
+		CHECK(std::string(SDL_GetHint(SDL_HINT_PREFERRED_LOCALES)) == "bg_BG");
+	}
 	TEST_CASE("ISO locales map to the historical catalog codes")
 	{
 		CHECK(code("cs") == "cz");
@@ -52,6 +71,12 @@ TEST_SUITE("SystemLanguage")
 
 	TEST_CASE("regional and script variants pick the matching catalog")
 	{
+		CHECK(code("bg") == "bg");
+		CHECK(code("bg", "BG") == "bg");
+		CHECK(code("bg_BG") == "bg");
+		CHECK(code("bg-Cyrl-BG") == "bg");
+		CHECK(code("bg-Latn").empty());
+		CHECK(code("bg-u-nu-latn") == "bg");
 		CHECK(code("pt", "BR") == "br");
 		CHECK(code("pt_BR") == "br");
 		CHECK(code("pt", "PT") == "pt");
@@ -108,6 +133,10 @@ TEST_SUITE("SystemLanguage")
 	TEST_CASE("expanded locales distinguish scripts and the precise Pulaar variety")
 	{
 		CHECK(code("hi", "IN") == "hi");
+		CHECK(code("te", "IN") == "te");
+		CHECK(code("te-Telu-IN") == "te");
+		CHECK(code("te-Latn").empty());
+		CHECK(code("te-u-nu-latn") == "te");
 		CHECK(code("mr", "IN") == "mr");
 		CHECK(code("mr-Deva-IN") == "mr");
 		CHECK(code("mr-Latn").empty());
@@ -141,6 +170,42 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("sd-Deva").empty());
 	}
 
+	TEST_CASE("Filipino aliases accept only the shipped Latin script")
+	{
+		CHECK(code("fil") == "fil");
+		CHECK(code("fil-PH") == "fil");
+		CHECK(code("tl") == "fil");
+		CHECK(code("tl-PH") == "fil");
+		CHECK(code("fil-Latn-PH") == "fil");
+		CHECK(code("tl-Latn", "PH") == "fil");
+		CHECK(code("fil-Tglg").empty());
+		CHECK(code("tl-Tglg", "PH").empty());
+		CHECK(code("fil-Arab").empty());
+		CHECK(code("tl-Cyrl").empty());
+		CHECK(code("fil-Latn-Tglg").empty());
+		CHECK(code("tl-Latn-Arab").empty());
+		CHECK(code("fil-u-nu-latn") == "fil");
+		CHECK(code("tl-x-arab") == "fil");
+		CHECK(code("en", "PH") == "en");
+		CHECK(code("ceb", "PH").empty());
+		auto latinOnly = [](const std::string &c) { return c == "fil"; };
+		CHECK(SystemLanguage::choose({{"tl", "PH"}, {"de", ""}}, latinOnly) == "fil");
+		CHECK(SystemLanguage::choose({{"fil", "PH"}}, [](const std::string &) { return false; }) == "en");
+	}
+
+	TEST_CASE("Tamil accepts regional tags only in the supported written script")
+	{
+		CHECK(code("ta") == "ta");
+		CHECK(code("ta", "IN") == "ta");
+		CHECK(code("ta-LK") == "ta");
+		CHECK(code("ta-Taml-IN") == "ta");
+		CHECK(code("ta-Latn").empty());
+		CHECK(code("ta-Taml-Latn").empty());
+		CHECK(code("ta-u-nu-latn") == "ta");
+		CHECK(SystemLanguage::choose({{"ta-IN", ""}, {"en", ""}}, [](const std::string &c) { return c == "ta"; }) == "ta");
+		CHECK(SystemLanguage::choose({{"ta-IN", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
+	}
+
 	TEST_CASE("the first available preference wins, then English")
 	{
 		auto all = [](const std::string &) { return true; };
@@ -149,6 +214,21 @@ TEST_SUITE("SystemLanguage")
 		CHECK(SystemLanguage::choose({{"hi", "IN"}, {"de", "DE"}}, [](const std::string &c) { return c == "de"; }) == "de");
 		CHECK(SystemLanguage::choose({}, all) == "en");
 		CHECK(SystemLanguage::choose({{"de", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
+	}
+
+	TEST_CASE("Filipino startup accepts the Tagalog alias and preserves a saved language")
+	{
+		PreferredLocales locales("tl_PH,en_US");
+		CHECK(startupLanguage("") == "fil");
+		CHECK(startupLanguage("no-such-language") == "fil");
+		CHECK(startupLanguage("fr") == "fr");
+		CHECK(startupLanguage("fil") == "fil");
+	}
+	TEST_CASE("startup selects installed Tamil and preserves an explicit saved choice")
+	{
+		PreferredLocales locales("ta_LK,en_US");
+		CHECK(startupLanguage("") == "ta");
+		CHECK(startupLanguage("en") == "en");
 	}
 
 	TEST_CASE("Bengali startup respects the system and saved language")
@@ -175,7 +255,7 @@ TEST_SUITE("SystemLanguage")
 	TEST_CASE("startup follows the system only when the profile has no usable language")
 	{
 		// The first preference must stay unsupported as new catalogs are added.
-		PreferredLocales locales("xx_XX,pt_BR,en_US");
+		PreferredLocales locales("xx_XX,te-Latn-IN,pt_BR,en_US");
 		CHECK(startupLanguage("") == "br");
 		CHECK(startupLanguage("no-such-language") == "br");
 		CHECK(startupLanguage("fr") == "fr");
@@ -204,6 +284,15 @@ TEST_SUITE("SystemLanguage")
 	}
 
 
+
+	TEST_CASE("Bulgarian system preference and explicit profile choice")
+	{
+		PreferredLocales locales("bg_BG,en_US");
+		CHECK(startupLanguage("") == "bg");
+		CHECK(startupLanguage("unsupported") == "bg");
+		CHECK(startupLanguage("fr") == "fr");
+	}
+
 	TEST_CASE("Marathi startup follows preferences and preserves a saved language")
 	{
 		PreferredLocales locales("mr_IN,hi_IN,pt_BR,en_US");
@@ -212,4 +301,12 @@ TEST_SUITE("SystemLanguage")
 		CHECK(startupLanguage("fr") == "fr");
 		CHECK(startupLanguage("mr") == "mr");
 	}
+	TEST_CASE("startup selects installed Telugu and preserves a saved language")
+	{
+		PreferredLocales locales("te_IN,en_US");
+		CHECK(startupLanguage("") == "te");
+		CHECK(startupLanguage("fr") == "fr");
+		CHECK(startupLanguage("te") == "te");
+	}
+
 }

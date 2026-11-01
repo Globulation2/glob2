@@ -6812,8 +6812,42 @@ Kiasi cha samaki
 Idadi ya maeneo ya kambi
 [scenario messages]
 Ujumbe ▸
-[AI for all computer colonies]
-AI kwa makoloni yote ya kompyuta
+[script compilation success]
+Ukusanyaji wa msimbo umefaulu
+[script error at %0:%1: %2]
+Hitilafu katika %0:%1: %2
+[script compilation failure %0:%1:(%2):%3]
+Ukusanyaji wa msimbo umeshindwa: %0:%1:(%2):%3
+[script compilation failed %0]
+Ukusanyaji wa msimbo umeshindwa: %0
+[script loading failed %0]
+Imeshindwa kupakia hati kutoka %0
+[script saving failed %0]
+Kuhifadhi hati kwenye %0 hakukufaulu
+[script line %0 column %1]
+Mstari: %0 Safu: %1
+[game stopped %0]
+Mchezo umesimama: %0
+[game stopped script help]
+Kagua msimbo wa JavaScript uliopachikwa na matumizi yake ya rasilimali kabla ya kuanzisha upya mchezo huu.
+[missing map generator %0]
+Jenereta ya ramani haipo: %0. Mandhari iliyojengewa ndani ya mchezo imechaguliwa.
+[hive standing order paused]
+Amri inayoendelea inahitaji kushughulikiwa na imesitishwa kwa muda.
+[hive connection changed orders paused]
+Muunganisho umebadilika. Kagua amri zako zinazoendelea zilizositishwa kwa muda kabla ya kuziendeleza.
+[hive standing order fresh instruction]
+Amri inayoendelea inahitaji maelekezo mapya baada ya kuunganishwa tena. Unaweza kuighairi au kumwomba kamanda aiweke nyingine badala yake.
+[hive order confirmation failed]
+Amri haikuweza kuthibitishwa. Kagua amri zako zinazoendelea kabla ya kuziendeleza.
+[hive previous order sending]
+Amri yako ya awali bado inatumwa. Ujumbe huu umehifadhiwa; fungua kamanda ili uutume tena.
+[hive order received %0]
+Amri imepokelewa: %0
+[hive order not confirmed]
+Amri haijathibitishwa. Fungua kamanda ili ujaribu tena; ujumbe wako umehifadhiwa.
+[hive standing order update failed]
+Usasishaji wa amri inayoendelea umeshindwa. Amri yako imesitishwa kwa muda kwenye kifaa hiki; jaribu tena kwa kutumia kidhibiti husika.
 [lush_grass]
 Nyasi mbichi
 [dry_grass]
@@ -6821,4 +6855,6 @@ Nyasi kavu
 [dune_sand]
 Mchanga wa matuta
 [pale_sand]
-Mchanga wa rangi hafifu
+Mchanga wenye rangi hafifu
+[AI for all computer colonies]
+AI kwa makoloni yote ya kompyuta

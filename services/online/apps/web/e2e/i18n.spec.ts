@@ -3,6 +3,8 @@ import { resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
 import { AI_TAGS } from '@glob2/protocol';
 import { locales } from '../../../packages/i18n/src/locales.ts';
+import type { SeededHistory } from '../../api/test/historySeed.ts';
+import { INVITE_CODE } from './showcase.ts';
 
 for (const locale of locales) {
   test(`home loads and renders ${locale.code}`, async ({ page, context }, info) => {
@@ -33,19 +35,23 @@ for (const locale of locales) {
         .evaluate((element) => {
           const select = element as HTMLSelectElement;
           const style = getComputedStyle(select);
-          const compact = select.parentElement!.querySelector('.language-preference-compact')!;
+          const compact = select.parentElement?.querySelector('.language-preference-compact');
+          if (!compact) throw new Error('Expected the compact language label.');
+          const selected = select.selectedOptions[0];
+          if (!selected) throw new Error('Expected a selected language option.');
+          const compactText = compact.textContent;
+          if (compactText === null) throw new Error('Expected compact language text.');
           const compactVisible = getComputedStyle(compact).display !== 'none';
-          const label = compactVisible
-            ? compact.textContent!.trim()
-            : select.selectedOptions[0]!.text;
+          const label = compactVisible ? compactText.trim() : selected.text;
           const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d')!;
+          const context = canvas.getContext('2d');
+          if (!context) throw new Error('Expected a 2D context for language text measurement.');
           context.font = compactVisible ? getComputedStyle(compact).font : style.font;
           const available =
             select.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
           return {
             label,
-            fullName: select.selectedOptions[0]!.text,
+            fullName: selected.text,
             textWidth: context.measureText(label).width,
             available,
           };
@@ -69,7 +75,77 @@ for (const locale of locales) {
     const heading = catalog['Welcome to the colony'] ?? 'Welcome to the colony';
     if (locale.code !== 'en') expect(heading).not.toBe('Welcome to the colony');
     await expect(page.locator('#hero-title')).toHaveText(heading);
+    if (locale.code === 'te') {
+      const font = await page.locator('#hero-title').evaluate(async (element) => {
+        const loaded = await document.fonts.load('24px "Glob2 Scripts"', 'తెలుగు');
+        await document.fonts.ready;
+        return {
+          family: getComputedStyle(element).fontFamily,
+          faces: loaded.map((face) => ({ family: face.family, status: face.status })),
+        };
+      });
+      expect(font.family).toContain('Glob2 Scripts');
+      expect(font.faces).toEqual(
+        expect.arrayContaining([expect.objectContaining({ status: 'loaded' })]),
+      );
+      if ((page.viewportSize()?.width ?? 1280) < 1100) {
+        await expect(page.locator('.app-sidebar .language-preference')).toBeHidden();
+        await page.locator('.rail-expand').click();
+        const selector = page.locator('.drawer-content [data-testid="language-selector"]');
+        await selector.scrollIntoViewIfNeeded();
+        await expect(selector).toBeVisible();
+        await expect(selector.locator('option:checked')).toHaveText(locale.name);
+        expect((await selector.boundingBox())?.width ?? 0).toBeGreaterThan(180);
+        const directory = process.env.SCREENSHOT_DIR;
+        const path = directory
+          ? resolve(directory, info.project.name, 'te-language-drawer.png')
+          : undefined;
+        if (directory) mkdirSync(resolve(directory, info.project.name), { recursive: true });
+        await info.attach('te-language-drawer', {
+          body: await page.screenshot({ path }),
+          contentType: 'image/png',
+        });
+        await page.locator('.sidebar-close').click();
+      }
+    }
     await page.evaluate(() => document.fonts.ready);
+    const statLabelsFit = await page
+      .getByTestId('live-stats')
+      .locator('.stat .k')
+      .evaluateAll(
+        (labels) =>
+          labels.length === 3 &&
+          labels.every((label) => {
+            const parent = label.closest('.stat');
+            if (!parent) return false;
+            const card = parent.getBoundingClientRect();
+            const text = document.createRange();
+            text.selectNodeContents(label);
+            return (
+              label.scrollWidth <= label.clientWidth + 1 &&
+              Array.from(text.getClientRects()).every(
+                (rect) =>
+                  rect.left >= card.left - 1 &&
+                  rect.right <= card.right + 1 &&
+                  rect.bottom <= card.bottom + 1,
+              )
+            );
+          }),
+      );
+    expect(statLabelsFit).toBe(true);
+    if (info.project.name === 'phone') {
+      const title = await page.locator('#maps-title').boundingBox();
+      const browse = await page
+        .locator('#maps-title')
+        .locator('..')
+        .getByRole('link')
+        .boundingBox();
+      expect(title).not.toBeNull();
+      expect(browse).not.toBeNull();
+      if (!title || !browse)
+        throw new Error('Map section heading and browse link must have bounds');
+      expect(browse.y).toBeGreaterThanOrEqual(title.y + title.height - 1);
+    }
     if (locale.code === 'bn') {
       // Prove that the packaged Bengali face loaded, even on a host that also
       // happens to have a Bengali system font. Screenshots alone can hide that.
@@ -93,7 +169,8 @@ for (const locale of locales) {
     }
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    // The guest fixture has no skins.designer feature or moderation role.
+    // The maintained fixture enables the skin designer with sales disabled.
+    // The guest still has no moderation role.
     // Assert destinations so a missing translated navigation item cannot pass.
     expect(
       await page
@@ -109,6 +186,7 @@ for (const locale of locales) {
       '/ais',
       '/buildings',
       '/music',
+      '/skins',
     ]);
     const themeChangeLabel = catalog['{value0}. Change theme'];
     const defaultThemeLabel = catalog['Theme: same as this device'];
@@ -164,6 +242,7 @@ for (const locale of locales) {
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(overflow).toBeLessThanOrEqual(1);
+    await page.evaluate(() => document.fonts.ready);
     if (locale.code === 'nb') {
       const inviteCode = page.locator('input[name="code"]');
       await expect(inviteCode).toHaveAttribute('placeholder', 'Kode eller lenke');
@@ -218,67 +297,78 @@ for (const locale of locales) {
   });
 }
 
-test('Bengali libraries, account and room invitations fit the viewport', async ({
-  page,
-  context,
-}, info) => {
-  await page.route('glob2://**', (route) => route.abort());
-  await page.route('**/api/v1/accounts/me', (route) =>
-    route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
-  );
-  const base = String(info.project.use.baseURL ?? 'http://127.0.0.1:4280');
-  await context.addCookies([{ name: 'glob2_locale', value: 'bn', url: base }]);
-  const catalog = JSON.parse(
-    readFileSync(new URL('../../../packages/i18n/locales/bn.json', import.meta.url), 'utf8'),
-  ) as Record<string, string>;
-  const translated = (source: string): string => {
-    const value = catalog[source];
-    if (!value) throw new Error(`Missing Bengali message: ${source}`);
-    return value;
-  };
-  for (const [path, heading, name] of [
-    ['/maps', 'Maps', 'maps'],
-    ['/ais', 'AI Library', 'ais'],
-    ['/buildings', 'Building library', 'buildings'],
-    ['/sets', 'Terrain & resource sets', 'sets'],
-    ['/account', 'Your account', 'account'],
-    ['/signin', 'Sign in', 'signin'],
-    ['/j/GLOBJOIN', 'You’re invited', 'invite'],
-  ] as const) {
-    await page.goto(path);
-    await expect(page.locator('html')).toHaveAttribute('lang', 'bn');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(translated(heading));
-    if (path === '/ais') {
-      const tags = page.getByRole('group', { name: translated('AI tags'), exact: true });
-      for (const tag of AI_TAGS)
-        await expect(
-          tags.getByRole('button', { name: translated(tag), exact: true }),
-        ).toBeVisible();
-    }
-    const search = page.locator('main input[type="search"]').first();
-    if (await search.count()) {
-      await search.fill('নদী');
-      await expect(search).toHaveValue('নদী');
-    }
-    await page.evaluate(() => document.fonts.ready);
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      ),
-    ).toBeLessThanOrEqual(1);
-    const directory = process.env.SCREENSHOT_DIR
-      ? resolve(process.env.SCREENSHOT_DIR, info.project.name)
-      : undefined;
-    if (directory) mkdirSync(directory, { recursive: true });
-    await info.attach(`bn-${name}`, {
-      body: await page.screenshot({
-        fullPage: true,
-        path: directory ? resolve(directory, `bn-${name}.png`) : undefined,
+for (const { locale, languageName, searchTerm } of [
+  { locale: 'bn', languageName: 'Bengali', searchTerm: 'নদী' },
+  { locale: 'fil', languageName: 'Filipino', searchTerm: 'ilog' },
+] as const) {
+  test(`${languageName} libraries, account and room invitations fit the viewport`, async ({
+    page,
+    context,
+  }, info) => {
+    await page.route('glob2://**', (route) => route.abort());
+    await page.route('**/api/v1/accounts/me', (route) =>
+      route.fulfill({
+        status: 401,
+        json: { code: 'unauthenticated', message: 'Sign in required.' },
       }),
-      contentType: 'image/png',
-    });
-  }
-});
+    );
+    const base = String(info.project.use.baseURL ?? 'http://127.0.0.1:4280');
+    await context.addCookies([{ name: 'glob2_locale', value: locale, url: base }]);
+    const catalog = JSON.parse(
+      readFileSync(
+        new URL(`../../../packages/i18n/locales/${locale}.json`, import.meta.url),
+        'utf8',
+      ),
+    ) as Record<string, string>;
+    const translated = (source: string): string => {
+      const value = catalog[source];
+      if (!value) throw new Error(`Missing ${languageName} message: ${source}`);
+      return value;
+    };
+    for (const [path, heading, name] of [
+      ['/maps', 'Maps', 'maps'],
+      ['/ais', 'AI Library', 'ais'],
+      ['/buildings', 'Building library', 'buildings'],
+      ['/sets', 'Terrain & resource sets', 'sets'],
+      ['/account', 'Your account', 'account'],
+      ['/signin', 'Sign in', 'signin'],
+      ['/j/GLOBJOIN', 'You’re invited', 'invite'],
+    ] as const) {
+      await page.goto(path);
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(translated(heading));
+      if (path === '/ais') {
+        const tags = page.getByRole('group', { name: translated('AI tags'), exact: true });
+        for (const tag of AI_TAGS)
+          await expect(
+            tags.getByRole('button', { name: translated(tag), exact: true }),
+          ).toBeVisible();
+      }
+      const search = page.locator('main input[type="search"]').first();
+      if (await search.count()) {
+        await search.fill(searchTerm);
+        await expect(search).toHaveValue(searchTerm);
+      }
+      await page.evaluate(() => document.fonts.ready);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        ),
+      ).toBeLessThanOrEqual(1);
+      const directory = process.env.SCREENSHOT_DIR
+        ? resolve(process.env.SCREENSHOT_DIR, info.project.name)
+        : undefined;
+      if (directory) mkdirSync(directory, { recursive: true });
+      await info.attach(`${locale}-${name}`, {
+        body: await page.screenshot({
+          fullPage: true,
+          path: directory ? resolve(directory, `${locale}-${name}.png`) : undefined,
+        }),
+        contentType: 'image/png',
+      });
+    }
+  });
+}
 
 test('changing to Norwegian preserves input and persists across app and sign-in pages', async ({
   page,
@@ -401,6 +491,209 @@ for (const language of ['fr', 'bn']) {
     await expect(page.locator('html')).toHaveAttribute('lang', language);
   });
 }
+
+test.describe('Filipino browser preference', () => {
+  test.use({ locale: 'tl-PH' });
+  test('sign-in and saved choice agree', async ({ page, context }, info) => {
+    const catalog = JSON.parse(
+      readFileSync(new URL('../../../packages/i18n/locales/fil.json', import.meta.url), 'utf8'),
+    ) as Record<string, string>;
+    const captureDirectory = process.env.SCREENSHOT_DIR
+      ? resolve(process.env.SCREENSHOT_DIR, info.project.name)
+      : info.outputPath('captures');
+    mkdirSync(captureDirectory, { recursive: true });
+    await context.clearCookies();
+    await page.route('**/api/v1/accounts/me', (route) =>
+      route.fulfill({
+        status: 401,
+        json: { code: 'unauthenticated', message: 'Sign in required.' },
+      }),
+    );
+    await page.goto('/signin');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    await expect(page.locator('label[for="signin-username"]')).toContainText(
+      catalog['Username'] ?? 'Username',
+    );
+    await expect(page.locator('label[for="signin-password"]')).toContainText(
+      catalog['Password'] ?? 'Password',
+    );
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    await info.attach('fil-signin', {
+      body: await page.screenshot({
+        fullPage: true,
+        path: resolve(captureDirectory, 'fil-signin.png'),
+      }),
+      contentType: 'image/png',
+    });
+
+    await page.goto('/');
+    await expect(page.locator('#hero-title')).toHaveText(
+      catalog['Welcome to the colony'] ?? 'Welcome to the colony',
+    );
+    if (!(await page.getByTestId('language-selector').first().isVisible()))
+      await page.locator('.rail-expand').click();
+    const selector = page.locator('[data-testid="language-selector"]:visible').first();
+    await selector.selectOption('en');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    if (!(await page.getByTestId('language-selector').first().isVisible()))
+      await page.locator('.rail-expand').click();
+    await page.locator('[data-testid="language-selector"]:visible').first().selectOption('fil');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    await page.goto('/maps');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    await info.attach('fil-maps', {
+      body: await page.screenshot({
+        fullPage: true,
+        path: resolve(captureDirectory, 'fil-maps.png'),
+      }),
+      contentType: 'image/png',
+    });
+  });
+});
+
+test('changing to Telugu and back preserves input', async ({ page }) => {
+  await page.route('**/api/v1/accounts/me', (route) =>
+    route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
+  );
+  await page.goto('/');
+  const code = page.locator('input[name="code"]');
+  await code.fill('ABCD');
+  if (!(await page.getByTestId('language-selector').first().isVisible()))
+    await page.locator('.rail-expand').click();
+  const selector = page.locator('[data-testid="language-selector"]:visible').first();
+  for (const language of ['fr', 'te', 'en']) {
+    await selector.selectOption(language);
+    await expect(page.locator('html')).toHaveAttribute('lang', language);
+    await expect(code).toHaveValue('ABCD');
+    await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
+  }
+});
+
+test('Telugu renders shared online pages, authentication, invites and errors', async ({
+  page,
+  context,
+  request,
+}, info) => {
+  const base = String(info.project.use.baseURL ?? 'http://127.0.0.1:4280');
+  const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
+  await context.addCookies([{ name: 'glob2_locale', value: 'te', url: base }]);
+  await page.route('glob2://**', (route) => route.abort());
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const catalog = JSON.parse(
+    readFileSync(new URL('../../../packages/i18n/locales/te.json', import.meta.url), 'utf8'),
+  ) as Record<string, string>;
+  const capture = async (path: string, name: string, heading?: string) => {
+    const response = await page.goto(path);
+    expect(response?.status()).toBeLessThan(500);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'te');
+    if (heading) {
+      const translated = catalog[heading];
+      expect(translated).toBeTruthy();
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(translated ?? '');
+    }
+    const loaded = await page.evaluate(async () => {
+      const faces = await document.fonts.load('20px "Glob2 Scripts"', 'తెలుగు');
+      await document.fonts.ready;
+      return faces.some((face) => face.status === 'loaded');
+    });
+    expect(loaded).toBe(true);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+      path,
+    ).toBeLessThanOrEqual(1);
+    const directory = process.env.SCREENSHOT_DIR;
+    const screenshotPath = directory
+      ? resolve(directory, info.project.name, `te-${name}.png`)
+      : undefined;
+    if (directory) mkdirSync(resolve(directory, info.project.name), { recursive: true });
+    await info.attach(`te-${name}`, {
+      body: await page.screenshot({ fullPage: true, path: screenshotPath }),
+      contentType: 'image/png',
+    });
+  };
+  await capture('/signin', 'signin');
+  await expect(page.locator('#signin-username')).toBeVisible();
+  await capture(`/j/${INVITE_CODE}`, 'invite');
+  await expect(page.locator('.room')).toHaveText('Saturday night colony');
+  await capture('/j/NOSUCHCODE', 'invite-error', 'Invite not found');
+  await capture('/maps', 'maps');
+  await expect(page.getByTestId('map-card').first()).toBeVisible();
+  await context.addCookies([{ name: 'glob2_session', value: seed.userSession, url: base }]);
+  await capture('/account', 'account', 'Your account');
+  await expect(page.locator('main')).toContainText('Kestrel');
+  await capture('/maps/new', 'upload', 'Upload a map');
+  const visibility = catalog['Unlisted: anyone with the link'];
+  expect(visibility).toBeTruthy();
+  await expect(page.locator('.upload-form option[value="unlisted"]')).toHaveText(visibility ?? '');
+
+  // Exercise the actual long instruction after opening a real, locally enabled
+  // designer. Checking text ranges catches clipping hidden by stage overflow.
+  await page.goto('/skins');
+  await page.getByRole('button', { name: catalog['New skin'] ?? '', exact: true }).click();
+  const hint = page.locator('.skin-stage-hint');
+  await hint.waitFor({ state: 'visible' });
+  await expect(hint).toHaveText(
+    catalog['Drag to paint · Rotate tool to turn · scroll or pinch to zoom'] ?? '',
+  );
+  await page.evaluate(() => document.fonts.ready);
+  const bounds = await hint.evaluate((element) => {
+    const stage = element.closest('.skin-stage');
+    const pose = stage?.querySelector('.skin-pose-strip');
+    if (!stage || !pose)
+      throw new Error('The actual designer stage and pose controls are required');
+    const rectangle = (r: DOMRect) => ({
+      left: r.left,
+      right: r.right,
+      top: r.top,
+      bottom: r.bottom,
+    });
+    const stageBox = stage.getBoundingClientRect();
+    const hintBox = element.getBoundingClientRect();
+    const poseBox = pose.getBoundingClientRect();
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    return {
+      stage: rectangle(stageBox),
+      text: [...range.getClientRects()].map(rectangle),
+      fontSize: parseFloat(getComputedStyle(element).fontSize),
+      overlap:
+        Math.max(0, Math.min(hintBox.right, poseBox.right) - Math.max(hintBox.left, poseBox.left)) *
+        Math.max(0, Math.min(hintBox.bottom, poseBox.bottom) - Math.max(hintBox.top, poseBox.top)),
+    };
+  });
+  expect(bounds.text.length).toBeGreaterThan(0);
+  expect(bounds.fontSize).toBeGreaterThanOrEqual(10);
+  expect(bounds.overlap, 'The full hint must stay separate from pose controls').toBe(0);
+  for (const row of bounds.text) {
+    expect(row.left).toBeGreaterThanOrEqual(bounds.stage.left - 1);
+    expect(row.right).toBeLessThanOrEqual(bounds.stage.right + 1);
+    expect(row.top).toBeGreaterThanOrEqual(bounds.stage.top - 1);
+    expect(row.bottom).toBeLessThanOrEqual(bounds.stage.bottom + 1);
+  }
+  const directory = process.env.SCREENSHOT_DIR;
+  await info.attach('te-skin-hint', {
+    body: await page.screenshot({
+      fullPage: true,
+      path: directory ? resolve(directory, info.project.name, 'te-skin-hint.png') : undefined,
+    }),
+    contentType: 'image/png',
+  });
+});
 
 // Exercise script-font loading and an explicit saved choice, beyond inventory smoke tests.
 test('Marathi switching restores LTR, loads the bundled font and keeps the chosen locale', async ({

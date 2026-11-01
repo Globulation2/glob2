@@ -16,6 +16,7 @@ from shared_dependencies import ensure as ensure_dependency
 from dev_compile import objects as development_objects, unique
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 import web_assets
+from online_error_catalog import configure as configure_online_error_catalog, bind_objects as bind_online_error_objects, bind_consumer as bind_online_error_consumer
 import skin_materials
 
 PORTS = ['--use-port=zlib']
@@ -175,6 +176,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
     env['BUILDDIR'] = str(output)
+    online_error_catalog = configure_online_error_catalog(env, output / 'include')
     from hive_api import configure as configure_hive_api
     hive_contract = configure_hive_api(env, output)
     configure_development(env, identity)
@@ -189,6 +191,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     entry = env.Clone()
     entry.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
     by_source.update(development_objects(entry, ['src/app/Glob2.cpp'], lambda name: str(output / 'obj' / (name + '.o'))))
+    bind_online_error_objects(env, by_source, online_error_catalog)
     objects = unique([by_source[f] for f in files])
     numeric_guard(strict, [by_source[name] for name in files if guarded_numeric_source(name)])
     script_objects = javascript_objects(env, output / "obj/third_party", identity["mode"] == "release")
@@ -217,7 +220,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                                '--preload-file', 'examples/javascript@/examples/javascript',
                                '--preload-file', 'content/games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
-        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/EntityRandomTest.cpp', '#src/unit/EntityRandomLifecycleTest.cpp', ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])), '#src/common/ComputeExecutorHarness.cpp', '#src/field/WebGPUGradientTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp', '#src/replay/ReplayTelemetryTest.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
+        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp', '#src/common/EntityRandomTest.cpp', '#src/unit/EntityRandomLifecycleTest.cpp', ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])), '#src/common/ComputeExecutorHarness.cpp', '#src/field/WebGPUGradientTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp', '#src/replay/ReplayTelemetryTest.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp',
                 ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/map/gradient/InitialBuildingGradientHarness.cpp',
@@ -247,6 +250,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             if source.endswith('TestMain.cpp'):
                 local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
             targets = local.Object(str(output / 'obj/tests' / (path + '.o')), path)
+            bind_online_error_consumer(local, targets, source, online_error_catalog)
             if source.endswith('TestMain.cpp'):
                 local.Depends(targets, provenance_header)
             test_objects += targets
@@ -390,6 +394,9 @@ def build_web(directory, identity, arguments):
     script_font_files = ['content/data/fonts/scripts/' + font['name'] + '-Regular.ttf'
                          for font in script_font_manifest['fonts']]
     script_font_targets = [str(Path(directory) / 'script-fonts.css'),
+                           str(Path(directory) / 'fonts/sans-core.ttf'),
+                           str(Path(directory) / 'fonts/LICENSE-DejaVu.txt'),
+                           str(Path(directory) / 'fonts/LICENSE-Droid.txt'),
                            str(Path(directory) / 'fonts/LICENSE-Noto.txt')] + [
         str(Path(directory) / 'fonts' / Path(name).name) for name in script_font_files]
     def launcher_fonts(target, source, env):
@@ -397,7 +404,8 @@ def build_web(directory, identity, arguments):
         return 0
     script_fonts = env.Command(script_font_targets,
         ['services/online/packages/i18n/script-fonts.css', 'content/data/fonts/scripts/manifest.json',
-         'content/data/fonts/LICENSE-Noto.txt', 'scons/web_assets.py'] + script_font_files,
+         'content/data/fonts/LICENSE-Noto.txt', 'content/data/fonts/LICENSE-DejaVu.txt', 'content/data/fonts/LICENSE-Droid.txt',
+         'platforms/web/assets/sans-core.ttf', 'scons/web_assets.py'] + script_font_files,
         Action(launcher_fonts, 'Packaging launcher script fonts'))
     env.Depends(page, [loader, presentation_surface, localization, script_fonts])
     env.Alias('web-package', [page, loader, presentation_surface])

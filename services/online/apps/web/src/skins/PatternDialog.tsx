@@ -1,3 +1,4 @@
+import { skinMaterialLabel, skinMaterialGroupLabel, skinModelLabel } from './labels.ts';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 /* Canvas creation validates the 2D context. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -324,10 +325,10 @@ export function PatternDialog({
                   onChange={(e) => setSecondMaterial(Number(e.target.value))}
                 >
                   {MATERIAL_GROUPS.map((group) => (
-                    <optgroup key={group.name} label={t(group.name)}>
+                    <optgroup key={group.name} label={skinMaterialGroupLabel(group.name)}>
                       {group.materials.map((m) => (
                         <option key={m.id} value={m.id}>
-                          {t(m.name)}
+                          {skinMaterialLabel(m.key)}
                         </option>
                       ))}
                     </optgroup>
@@ -354,7 +355,7 @@ export function PatternDialog({
           disabled={!cameraReady || completedKey !== buildKey}
           onClick={() => onApply(candidate)}
         >
-          <RichMessage source={'Apply to {slot0}'} slots={{ slot0: t(model.name) }} />
+          <RichMessage source={'Apply to {slot0}'} slots={{ slot0: skinModelLabel(model.id) }} />
         </button>
       </footer>
     </StudioDialog>

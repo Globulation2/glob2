@@ -21,10 +21,19 @@ existing package. The isolated publication job verifies the artifact before usin
 Google Cloud Workload Identity Federation through the `browser-release`
 GitHub environment; the build job has no cloud identity permission.
 
+Both generated runtime variants must reference the versioned Wasm filename,
+whether Emscripten emits single or double quotes. Changes to these rewriting
+rules bump the static packaging policy so changed output receives a new cache
+identity even when the build inputs are unchanged.
+
 The destination is `gs://glob2-browser-pharaoh-418820-20260909` in project
 `bradley-personal-20261027`. Versioned JavaScript, WebAssembly and data objects receive
-explicit content types and immutable one-year caching. They are uploaded before
-`index.html`, which requires cache revalidation. Older assets remain available
+explicit content types and immutable one-year caching. Publication uses
+`platforms/web/publish-static.py` to verify the complete package and upload its gzip
+representations, including translation catalogs, launcher font CSS, pinned fonts
+and licences. Stable assets such as `i18n.js`, catalogs and font CSS require cache
+revalidation. All assets are uploaded before `index.html`, which is published last
+and also requires revalidation. Older assets remain available
 for open sessions and rollback; publication never synchronizes with deletion.
 The public entry point is
 <https://storage.googleapis.com/glob2-browser-pharaoh-418820-20260909/index.html>.

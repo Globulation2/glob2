@@ -61,8 +61,12 @@ def launcher_script_fonts(root, output):
             raise ValueError('Launcher font checksum mismatch: ' + name)
         shutil.copyfile(source, destination / name)
     shutil.copyfile(font_root / 'LICENSE-Noto.txt', destination / 'LICENSE-Noto.txt')
+    shutil.copyfile(root / 'platforms/web/assets/sans-core.ttf', destination / 'sans-core.ttf')
+    shutil.copyfile(font_root / 'LICENSE-DejaVu.txt', destination / 'LICENSE-DejaVu.txt')
+    shutil.copyfile(font_root / 'LICENSE-Droid.txt', destination / 'LICENSE-Droid.txt')
     css = (root / 'services/online/packages/i18n/script-fonts.css').read_text()
-    (output / 'script-fonts.css').write_text(css.replace('../../../../content/data/fonts/scripts/', 'fonts/'))
+    (output / 'script-fonts.css').write_text(css.replace('../../../../content/data/fonts/scripts/', 'fonts/')
+                                            .replace('../../../../platforms/web/assets/', 'fonts/'))
 # Never read by the game: build and packaging files, documentation, store metadata,
 # desktop icons, release screenshots and files no code path refers to.
 EXCLUDED_NAMES = {'SConscript'}

@@ -17,6 +17,12 @@
 .music-heading h1 {
   margin: 0;
 }
+.music-library button {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
 .music-filters {
   display: flex;
   flex-wrap: wrap;
@@ -30,6 +36,7 @@
 .music-detail label,
 .music-create label {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 6px;
   font-weight: 600;
 }
@@ -243,7 +250,7 @@
 }
 .music-moods {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   gap: 8px;
 }
 .music-moods button {
@@ -308,7 +315,7 @@
 }
 .music-waveform-labels {
   display: grid;
-  width: 58px;
+  width: max-content;
   flex: none;
   grid-template-rows: repeat(3, 32px);
   gap: 5px;
@@ -318,7 +325,7 @@
 }
 .music-waveforms {
   position: relative;
-  min-width: 0;
+  min-width: 44px;
   flex: 1;
   display: grid;
   gap: 5px;
@@ -575,6 +582,7 @@
 .music-upload,
 .music-create form {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
   max-width: 720px;
   margin: 24px 0;

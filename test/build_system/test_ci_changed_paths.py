@@ -1,10 +1,12 @@
 """Guard the CI path rules against accidental gaps in platform coverage."""
 
 import importlib.util
+import os
 from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 from types import SimpleNamespace
 import unittest
 
@@ -17,6 +19,45 @@ SPEC.loader.exec_module(ci_changed_paths)
 
 
 class ChangedPathsTest(unittest.TestCase):
+    def test_build_contract_environment_uses_encoder_only_to_create_child(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / '.github/workflows/build.yml').read_text()
+        block = workflow.split('      - name: Test shared build-system contracts once\n', 1)[1]
+        block = block.split('      - name:', 1)[0]
+        self.assertTrue(block.startswith('        run: |\n'))
+        script = '\n'.join(line[10:] for line in block.splitlines()[1:])
+        with tempfile.TemporaryDirectory() as temporary:
+            work = Path(temporary)
+            (work / 'bin').mkdir()
+            encoder = work / 'encoder with spaces'
+            encoder.write_text('#!/bin/sh\n'
+                               'printf "encoder:%s\\n" "$*" >> calls\n'
+                               '[ "$1 $2" = "-m venv" ] || exit 7\n'
+                               'mkdir -p "$3/bin"\n'
+                               'printf \'#!/bin/sh\\nprintf "child:%%s\\\\n" "$*" >> calls\\n\' > "$3/bin/python"\n'
+                               'chmod +x "$3/bin/python"\n')
+            encoder.chmod(0o755)
+            python = work / 'bin/python3'
+            python.write_text('#!/bin/sh\n'
+                              '[ "$*" = "tools/package_assets.py --encoder-python" ] || exit 8\n'
+                              'printf "%s\\n" "$TEST_ENCODER"\n')
+            python.chmod(0o755)
+            subprocess.run(['bash', '-eu', '-c', script], cwd=work, check=True,
+                           env={**os.environ, 'PATH': str(work / 'bin') + os.pathsep + os.environ['PATH'],
+                                'TEST_ENCODER': str(encoder)})
+            self.assertEqual((work / 'calls').read_text().splitlines(), [
+                'encoder:-m venv artifacts/build-contract-venv',
+                'child:-m pip install -r test/build_system/requirements.txt',
+                'child:-m unittest discover -s test/build_system -v'])
+        requirements = root / 'test/build_system/requirements.txt'
+        lines = requirements.read_text().splitlines()
+        self.assertIn('scons==4.11.1', lines)
+        include = next(line[3:] for line in lines if line.startswith('-r '))
+        self.assertEqual((requirements.parent / include).resolve(), root / 'tools/asset-requirements.txt')
+        development = (root / 'requirements-dev.txt').read_text()
+        self.assertIn('-r test/build_system/requirements.txt', development)
+        self.assertNotRegex(development, r'(?m)^scons==')
+
     def assert_jobs(self, paths, platform=None, platform_stack=None, music=None, **expected):
         # The TypeScript platform job runs on services/online/ changes and with full CI.
         if platform is None:

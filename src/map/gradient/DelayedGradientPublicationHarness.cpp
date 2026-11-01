@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "LegacyPopulationOutput.h"
 #include "GradientFixture.h"
 #include "GradientExecutionAudit.h"
 #include "GradientRuntime.h"
@@ -61,9 +62,10 @@ TEST_SUITE("DelayedGradientPublication")
 {
 TEST_CASE("private174 migration profile is explicit and does not replace published layouts")
 {
-    class HeaderVersionOutput final : public GAGCore::BinaryOutputStream {
+    class HeaderVersionOutput final : public glob2test::LegacyPopulationOutput {
     public:
-        using BinaryOutputStream::BinaryOutputStream;
+        explicit HeaderVersionOutput(GAGCore::MemoryStreamBackend* backend)
+            : LegacyPopulationOutput(backend,nullptr,174) {}
         void writeSint32(Sint32 value,std::string_view name) override {
             BinaryOutputStream::writeSint32(name=="versionMinor" ? 174 : value,name);
         }

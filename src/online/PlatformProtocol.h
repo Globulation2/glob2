@@ -35,6 +35,10 @@ struct ApiError
 	std::string code;
 	std::string message;
 	Json details;
+	// Optional presentation metadata; never replaces raw diagnostic fields.
+	std::optional<std::string> messageKey = std::nullopt;
+	Json messageParams = Json::object();
+	bool invalidLocalization = false;
 };
 
 // One server -> client frame.
