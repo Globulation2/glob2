@@ -825,17 +825,18 @@ inline void rebuiltLandscapeContracts()
 
 // Honeycomb isle: its envelope (every shape with the colonies it promises, the refusal only a
 // crowded smallest map gets), design variety, resource extremes, unattended growth that stays inside
-// every street-sealed block, a design cache that never changes a map or its telemetry, and a colony
+// every road-sealed hex, a design cache that never changes a map or its telemetry, and a colony
 // whose starter wheat is taken away failing the validator.
 inline void honeycombIsleContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("honeycomb-isle"));
-	assert(definition.legacyId == 53 && definition.revision == 4);
+	assert(definition.legacyId == 53 && definition.revision == 5);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("block-shape") == 1 && request.option("river-width") == 12 &&
-		   request.option("blocks-per-colony") == 11 && request.option("crater-gardens") == 1);
+		   request.option("blocks-per-colony") == 11 && request.option("lakes") == 1 &&
+		   request.option("mountains") == 1);
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{
@@ -874,7 +875,8 @@ inline void honeycombIsleContracts()
 		std::vector<unsigned char> grass(g.map.getW() * g.map.getH(), 0);
 		for (int y = 0; y < g.map.getH(); ++y)
 			for (int x = 0; x < g.map.getW(); ++x)
-				grass[y * g.map.getW() + x] = g.map.isGrass(x, y);
+				grass[y * g.map.getW() + x] = g.map.terrainPropertiesAt(x, y).resourcesGrow &&
+											  g.map.terrainPropertiesAt(x, y).walkable;
 		const auto cells = connectedRegions(grass, g.map.getW(), g.map.getH(), true,
 										   GridNeighbors::Eight);
 		std::set<int> fruitCells;
@@ -895,8 +897,8 @@ inline void honeycombIsleContracts()
 		}
 	}
 	assert(homeDesigns.size() == 2);
-	// Every remaining stone deposit is optional masonry/statue stock. At zero
-	// stone, no home border or orchard enclosure may remain on either tiling.
+	// All stone is quarry stock at the mountains and hills: at zero stone there is
+	// none on either tiling.
 	for (int shape : {0, 1})
 		for (unsigned seed : {1u, 7u, 29u})
 		{
@@ -935,8 +937,8 @@ inline void honeycombIsleContracts()
 	assert(service.generate(abundant, r));
 	GenerationContext context(r);
 	setSyncRandSeed(4211);
-	// Full-map growth with nobody harvesting: every field, garden and ruin near water grows, and
-	// the paved streets must keep each inside its own block.
+	// Full-map growth with nobody harvesting: every field, garden and forest grows, and the roads
+	// must keep each inside its own hex.
 	for (int tick = 0; tick < 4096; ++tick)
 		abundant.map.growResources();
 	const std::string growthError = definition.validateWorld(abundant, context);
