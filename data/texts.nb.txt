@@ -6820,3 +6820,5 @@ Tørt gress
 Dynesand
 [pale_sand]
 Blek sand
+[AI for all computer colonies]
+KI for alle datastyrte kolonier
