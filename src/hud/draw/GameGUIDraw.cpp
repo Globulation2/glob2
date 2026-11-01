@@ -12,6 +12,8 @@
 
 #include "../render/MapCopies.h"
 #include <iostream>
+#include <algorithm>
+#include <cmath>
 
 #include <ApplicationHost.h>
 #include <FormatableString.h>
@@ -247,10 +249,48 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 	}
 }
 
+GameGUI::TopBarLayout GameGUI::topBarLayout() const
+{
+	TopBarLayout layout;
+	for (int i = 0; i < 3; ++i)
+		layout.values[i] = std::to_string(teamStats->getFreeUnits(i) -
+			(i == 0 ? teamStats->getWorkersNeeded() : 0)) + "/" +
+			std::to_string(teamStats->getTotalUnits(i));
+	const auto &colony = drawnScene().panels.local.state();
+	layout.values[3] = std::to_string(colony.prestige);
+	layout.values[4] = std::to_string(colony.unitConversionGained);
+	layout.values[5] = std::to_string(colony.unitConversionLost);
+	const auto rate = tickRate.rate();
+	layout.values[6] = rate ? TickRateMeter::format(*rate) : "-";
+	// Measure complete icon/value groups. Keep real gutters even when large
+	// counters require the compact bar's contents to shrink to fit.
+	auto *font = globalContainer->littleFont;
+	std::array<double, 7> widths;
+	double total = 0;
+	for (int i = 0; i < 7; ++i)
+	{
+		const double icon = i < 4 ? 16 : i < 6 ? 36 : 0;
+		const double text = i == 6 ? std::max(font->getStringWidth(layout.values[i]),
+			font->getStringWidth("999.9")) : font->getStringWidth(layout.values[i]);
+		widths[i] = icon + (icon ? 6 : 0) + text;
+		total += widths[i];
+	}
+	const double speed = canChangeGameSpeed() ? TOP_BAR_SPEED_WIDTH : 0;
+	const double available = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH - 20;
+	constexpr double gutter = 14;
+	layout.scale = std::clamp((available - 6 * gutter - speed) / total, .1, 1.);
+	double x = 10 + std::max(0., (available - total * layout.scale - 6 * gutter - speed) / 2);
+	for (int i = 0; i < 7; ++i)
+	{
+		layout.x[i] = std::round(x);
+		x += widths[i] * layout.scale + gutter;
+	}
+	return layout;
+}
+
 int GameGUI::topBarSpeedX() const
 {
-	// After the three unit counters, prestige and conversions.
-	return ((globalContainer->gfx->getW()-640)>>2) + 10 + 3*70 + 90 + TOP_BAR_CONVERSION_WIDTH;
+	return int(topBarLayout().x[6]);
 }
 
 void GameGUI::drawTopScreenBar(void)
@@ -268,19 +308,29 @@ void GameGUI::drawTopScreenBar(void)
 	Uint8 whiteC[]={200, 200, 200};
 	Uint8 yellowC[]={200, 200, 0};
 	Uint8 actC[3];
-	int free, tot;
+	int free;
 
-	int dec = (globalContainer->gfx->getW()-640)>>2;
-	dec += 10;
+	const auto layout = topBarLayout();
+	auto *gfx = globalContainer->gfx;
+	auto *font = globalContainer->littleFont;
+	const auto &colony = drawnScene().panels.local.state();
+	const double scale = layout.scale;
+	const auto drawValue = [&](int index, double x) {
+		SDL_Rect clip{0, 0, gfx->getW() - RIGHT_MENU_WIDTH, 16};
+		gfx->setUITransform(scale, x, (16 - font->getStringHeight("Ag") * scale) / 2, &clip);
+		gfx->drawString(0, 0, font, layout.values[index]);
+		gfx->setUITransform(); gfx->setClipRect();
+	};
+	int dec;
 
 	globalContainer->unitmini->setBaseColor(presentationColor(drawnScene().panels.local.state().color));
 	for (int i=0; i<3; i++)
 	{
+		dec = int(layout.x[i]);
 		free = teamStats->getFreeUnits(i);
 		// worker is a special case
 		if (i==0)
 			free -= teamStats->getWorkersNeeded();
-		tot = teamStats->getTotalUnits(i);
 		if (free<0)
 			memcpy(actC, redC, sizeof(redC));
 		else if (free>0)
@@ -288,9 +338,14 @@ void GameGUI::drawTopScreenBar(void)
 		else
 			memcpy(actC, whiteC, sizeof(whiteC));
 
-		globalContainer->gfx->drawSprite(dec+2, -1, globalContainer->unitmini, i);
+		const double spriteScale = 16 * scale / std::max(globalContainer->unitmini->getW(i), globalContainer->unitmini->getH(i));
+		SDL_Rect iconClip{dec, 0, int(std::ceil(16 * scale)), 16};
+		gfx->setUITransform(spriteScale, dec + (16 * scale - globalContainer->unitmini->getW(i) * spriteScale) / 2,
+			(16 - globalContainer->unitmini->getH(i) * spriteScale) / 2, &iconClip);
+		gfx->drawSprite(0, 0, globalContainer->unitmini, i);
+		gfx->setUITransform(); gfx->setClipRect();
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
-		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, FormattableString("%0 / %1").arg(free).arg(tot).c_str());
+		drawValue(i, dec + 22 * scale);
 		globalContainer->littleFont->popStyle();
 
 		// Tutorial highlight arrow for this counter. The sprite, the free/total
@@ -307,43 +362,32 @@ void GameGUI::drawTopScreenBar(void)
 		};
 		if(highlights.find(highlightForUnitType[i]) != highlights.end())
 		{
-			arrowPositions.push_back(HighlightArrowPosition(dec+22, 32, 39));
+			arrowPositions.push_back(HighlightArrowPosition(int(dec + 22 * scale), 32, 39));
 		}
 
-		dec += 70;
 	}
 
-	// draw prestige stats
-	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormattableString("%0 / %1 / %2").arg(drawnScene().panels.local.state().prestige).arg(drawnScene().panels.hud.totalPrestige()).arg(drawnScene().panels.hud.state().prestigeToReach).c_str());
-
-	dec += 90;
-
-	// Match the touch HUD: team-coloured Globs on either side of an arrow,
-	// followed by a left-aligned total. Centre each complete group in its cell.
-	auto *gfx = globalContainer->gfx;
-	auto *font = globalContainer->littleFont;
-	const auto &colony = drawnScene().panels.local.state();
-	const std::array<std::string, 2> conversions{
-		std::to_string(colony.unitConversionGained), std::to_string(colony.unitConversionLost)};
-	const double cellWidth = TOP_BAR_CONVERSION_WIDTH / 2., gap = 6;
-	const double maxTextWidth = std::max(font->getStringWidth(conversions[0]), font->getStringWidth(conversions[1]));
-	const double scale = std::min(1., (cellWidth - 8 - 4 - gap) / (32 + maxTextWidth));
-	const double iconHeight = 16 * scale, iconWidth = 2 * iconHeight + 4;
+	// Same primary prestige value and secondary victory progress as touch.
+	touch->drawPrestigeIcon({layout.x[3] + 8 * scale, 8}, 16 * scale);
+	drawValue(3, layout.x[3] + 22 * scale);
+	const auto &match = drawnScene().panels.hud;
+	if (match.state().prestigeWinCondition && match.state().prestigeToReach > 0)
+	{
+		const double width = (22 + font->getStringWidth(layout.values[3])) * scale;
+		const double progress = std::clamp(double(match.totalPrestige()) / match.state().prestigeToReach, 0., 1.);
+		gfx->drawFilledRect(int(layout.x[3]), 14, int(width), 2, Color(80, 70, 55));
+		gfx->drawFilledRect(int(layout.x[3]), 14, int(width * progress), 2, Color(232, 194, 107));
+	}
 	for (int side = 0; side < 2; ++side)
 	{
-		const double x = dec + side * cellWidth;
-		const double left = x + (cellWidth - iconWidth - gap - font->getStringWidth(conversions[side]) * scale) / 2;
+		const double x = layout.x[4 + side];
 		unitConversionIcon->draw(gfx, globalContainer->unitmini,
-			{left, (16 - iconHeight) / 2, iconWidth, iconHeight}, presentationColor(colony.color), side == 0);
-		SDL_Rect clip{int(x), 0, int(cellWidth), 16};
-		gfx->setUITransform(scale, left + iconWidth + gap,
-			(16 - font->getStringHeight("Ag") * scale) / 2, &clip);
-		gfx->drawString(0, 0, font, conversions[side]);
-		gfx->setUITransform(); gfx->setClipRect();
+			{x, (16 - 16 * scale) / 2, 36 * scale, 16 * scale}, presentationColor(colony.color), side == 0);
+		drawValue(4 + side, x + 42 * scale);
 	}
 
 	// draw the speed control and the simulation tick rate
-	dec = topBarSpeedX();
+	dec = int(layout.x[6]);
 	if (canChangeGameSpeed())
 	{
 		const int lit = litSpeedChevrons();
@@ -361,9 +405,8 @@ void GameGUI::drawTopScreenBar(void)
 	}
 	const int shortfall = tickRateShortfall();
 	memcpy(actC, shortfall==0 ? whiteC : shortfall==1 ? yellowC : redC, sizeof(actC));
-	const auto rate = tickRate.rate();
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
-	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, rate ? TickRateMeter::format(*rate).c_str() : "-");
+	drawValue(6, dec);
 	globalContainer->littleFont->popStyle();
 
 	// draw window bar

@@ -4884,6 +4884,10 @@ Inguratuta dauden unitateak, zapaltzeko lauki librerik gabe.
 Garbitutako baliabideak
 [stat cleared about]
 Langileek garbiketa-eremuetan lekua egiteko kendutako baliabideak.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Ospea
 [stat prestige about]
@@ -6355,421 +6359,421 @@ Ezin izan da zure aukera gorde. Soinua itzalita dago oraindik. Saiatu berriro.
 [audio choices description]
 Isiltasuna: bozgorailu isildua. Soinua: soinu-uhinak dituen bozgorailua.
 [intro menu]
-
+Sarrera
 [intro briefing]
-
+Ikasi zeharkako kontrola: esploratu bandera batekin, hornitu kolonia eta zuzendu eraso bat.
 [intro try]
-
+Hasi sarrera
 [intro preflight]
-
+Zure globuluek beren kabuz jarduten dute. Eraikinen eta banderen bidez aukeratzen dituzu haien lanak. Sarrera labur honetan, esploratu erreferentzia-puntu bat, zabaldu elikagaien hornidura, handitu langile kopurua eta zuzendu eraso txiki bat.
 [intro preflight save]
-
+Hartu 10 minutu inguru. Jokoaren menutik gorde dezakezu, eta Kargatu jokoa aukerarekin jarraitu. Gosearen eta borrokaren ohiko arauak aplikatzen dira. Aukeratu Tutorialeko ikasgaiak menu nagusian trebetasun gehiago lantzeko.
 [intro preference failed]
-
+Ezin izan da zure aukera gorde. Jokatzen jarrai dezakezu; gomendio hau hurrengoan berriz ager daiteke.
 [intro goal scout]
-
+Esploratu harrizko erreferentzia-puntua
 [intro goal build]
-
+Eraiki beste Ostatu bat
 [intro goal supply]
-
+Hornitu Ostatu berria
 [intro goal grow]
-
+Handitu langile kopurua
 [intro goal attack]
-
+Suntsitu etsaiaren Kofoina
 [intro instruction scout]
-
+Ireki banderak eta jarri Miatze-bandera koloniaren ekialdeko harrien gainean. Esleitu miatzaile bat. Ikusi nola doan banderaraino.
 [intro instruction build]
-
+Ireki eraikuntza eta jarri Ostatu bat gariaren ondoan. Esleitu langile libreak eraikitzeko. Mantendu lehengo Ostatua hornituta.
 [intro instruction supply]
-
+Hautatu amaitutako Ostatu berria eta esleitu gutxienez hornitzaile bat. Itxaron langile batek garia ekarri arte.
 [intro instruction grow]
-
+Hautatu Kofoina. Ezarri eskatutako langile kopurua gutxienez 2an, eta ekoizpen-proportzioak langileak soilik sortzeko. Mantendu bi Ostatuak hornituta langile berria jaio bitartean.
 [intro instruction attack]
-
+Aurkitu etsaiaren Kofoina ekialderago. Erabili Gerra-bandera zure gerlariak haren aurka zuzentzeko. Laguntza eskura duzu urratsak gogoratzeko.
 [intro help]
-
+Laguntza / zergatik?
 [intro help scout]
-
+Mugitu ikuspegia ekialdera minimaparekin harriak aurkitzeko. Aukeratu Miatze-bandera banderetan, jarri harrien gainean, eta amaitu kokapena saguaren bigarren botoiarekin. Hautatu bandera eta eskatu 1 miatzaile. Banderek unitateak eskatzen dituzte; ez dituzte berehala mugitzen. Miatzaileak jateko gelditu daitezke.
 [intro help build]
-
+Eraikuntzak langileek ekarritako egurra kontsumitzen du. Aukeratu Ostatua eraikinen panelean, jarri lur librean gariaren ondoan, eta eskatu 2 eraikitzaile. Eskatutako kopurua ez da dagoeneko bertan dauden langileen kopurua. Mantendu hornitzaileak lehengo Ostatuan eta Kofoinean. Edozein kokaleku baliozkok balio du.
 [intro help supply]
-
+Eraikuntzak eta eguneroko hornidurak langile kopuru bereiziak dituzte. Hautatu amaitutako Ostatua eta handitu funtzionamendurako eskatutako kopurua. Hornitzaile batek garia biltzen du eta hona dakar. Globulu gosetiek Ostatuetan jaten dute; hornitzailerik gabe, erreserbak agortzen dira. Mantendu gariaren sarbidea libre.
 [intro help grow]
-
+Kofoinak garia kontsumitzen du unitateak sortzeko. Ezarri langileen ekoizpena 1ean, eta miatzaileena eta gerlariena 0an. Eskatu gutxienez 2 langile Kofoinean. Hornitzaile gehiagok azkarrago dakarte garia, baina beste lanekin lehiatzen dira. Mantendu bi Ostatuak hornituta.
 [intro help attack]
-
+Ireki banderak, aukeratu Gerra-bandera eta jarri harrien ekialdeko etsaiaren Kofoinaren gainean. Hautatu bandera eta eskatu gehienez 4 gerlari. Erradio txikiak bilduta mantentzen ditu. Amaitu kokapena saguaren bigarren botoiarekin bandera hautatu aurretik. Gerlaririk ez badago, sortu gehiago Kofoinean. Jateko gelditu daitezke; hornitu Ostatuak.
 [intro hint scout]
-
+Miatzaileak unitateak eskatzen dituen Miatze-bandera behar du ekialdeko harrietan. Egiaztatu helmuga eta eskatutako miatzaile kopurua.
 [intro hint build]
-
+Ostatu berria kendu baduzu, eraiki beste bat. Bestela, egiaztatu obra eta eskatutako langile kopurua. Lehengo hornidura-lanek langileak okupatuta eduki ditzakete; mantendu janaria eraikitzaileak libre uzten dituzun bitartean.
 [intro hint supply]
-
+Hautatu amaitutako Ostatu berria. Egiaztatu eskatutako langile kopurua eta gariaren entregak. Langileek denbora behar dezakete mugitzeko edo jateko.
 [intro hint grow]
-
+Egiaztatu Kofoinaren hornidura eta langileak soilik sortzen dituela. Hornitu Ostatuak beste langile baten zain zauden bitartean.
 [intro hint attack]
-
+Egiaztatu Gerra-bandera, eskatutako gerlari kopurua eta janari-hornidura. Gerlariek denbora behar dute mugitzeko eta erasotzeko.
 [intro hint no scout flag]
-
+Ez da aurkitu unitateak eskatzen dituen Miatze-banderarik. Jarri bat oinarriaren ekialdeko harrietan eta eskatu 1 miatzaile.
 [intro hint no suppliers]
-
+Ostatu berriak edo haren obrak 0 langile eskatzen ditu. Hautatu eta eskatu langileak.
 [intro hint no war flag]
-
+Ez da aurkitu unitateak eskatzen dituen Gerra-banderarik etsaiaren oinarrian. Jarri bat ekialdeko etsaiaren Kofoinaren gainean eta eskatu gerlariak.
 [intro hint retry]
-
+Ikasgai honetarako beharrezko unitate edo eraikin bat galdu da. Kargatu lehenago gordetako joko bat edo berrabiarazi ikasgaia jokoaren menutik.
 [intro complete]
-
+Sarrera amaituta
 [intro complete body]
-
+Globulu autonomoak zuzendu dituzu, elikagaien hornidura eta kolonia handitu dituzu, eta eraso bat antolatu duzu. Jarraitu tutorialeko ikasgaiekin entrenamendua, hobekuntzak eta defentsa lantzeko, edo itzuli menu nagusira partida hasteko.
 [intro play again]
-
+Jokatu berriz
 [intro restart]
-
+Berrabiarazi sarrera
 [intro restart body]
-
+Berriz hasi prestatutako koloniatik? Sarrera honetako gorde gabeko aurrerapena galduko da.
 [intro help touch scout]
-
+Arrastatu lur hutsa ikuspegia mugitzeko bandera jarri aurretik. Aurkitu koloniaren ekialdeko harriak. Ireki banderak, aukeratu Miatze-bandera, jarri harrietan eta berretsi. Hautatu bandera eta eskatu 1 miatzaile esleitutako unitate kopuruaren kontrolarekin. Globuluak beren kabuz mugitzen dira eta jateko geldi daitezke.
 [intro help touch build]
-
+Aukeratu Ostatua eraikuntzan. Jarri lur librean gariaren ondoan eta berretsi. Hautatu obra eta eskatu 2 eraikitzaile. Eskatutako kopurua ez da bertan dauden langileen kopurua. Hornitu lehengo Ostatua eta Kofoina. Edozein kokaleku baliozkok balio du.
 [intro help touch supply]
-
+Hautatu amaitutako Ostatu berria eta handitu eskatutako langile kopurua. Eraikuntzak eta hornidurak kontrol bereiziak dituzte. Hornitzaile batek garia biltzen du eta hona dakar. Globulu gosetiek Ostatuetan jaten dute; hornitzailerik gabe, erreserbak agortzen dira. Mantendu garia eskuragarri.
 [intro help touch grow]
-
+Hautatu Kofoina. Ezarri langileen ekoizpena 1ean eta miatzaileena eta gerlariena 0an. Eskatu gutxienez 2 langile. Hornitzaileek unitate berrientzako garia dakarte, baina beste lanekin lehiatzen dira. Hornitu bi Ostatuak.
 [intro help touch attack]
-
+Ireki banderak, aukeratu Gerra-bandera, jarri harrien ekialdeko etsaiaren Kofoinaren gainean eta berretsi. Hautatu bandera eta eskatu gehienez 4 gerlari. Erradio txikiak biltzen ditu. Gerlaririk geratzen ez bada, sortu Kofoinean. Jateko geldi daitezke; hornitu Ostatuak.
 [intro show destination]
-
+Erakutsi helmuga
 [intro scout destination]
-
+Esploratu hemen
 [intro attack destination]
-
+Eraso hemen
 [intro compact scout]
-
+Banderak → Miatze-bandera. Jarri harrietan; esleitu 1 miatzaile.
 [intro compact build]
-
+Eraiki → Ostatua. Jarri gariaren ondoan; esleitu 2 eraikitzaile.
 [intro compact supply]
-
+Hautatu Ostatu berria; esleitu gutxienez 1 hornitzaile. Itxaron gariari.
 [intro compact grow]
-
+Hautatu Kofoina; esleitu 2 hornitzaile. Sortu langileak soilik.
 [intro compact attack]
-
+Banderak → Gerra-bandera. Jarri etsaiaren Kofoinaren gainean; esleitu gerlariak.
 [tutorial lessons]
-
+Tutorialeko ikasgaiak
 [tutorial restart]
-
+Berrabiarazi ikasgaia
 [tutorial restart body]
-
+Berrabiarazi ikasgai hau prestatutako koloniatik? Gorde gabeko aurrerapena galduko da.
 [tutorial complete]
-
+Ikasgaia amaituta
 [tutorial food title]
-
+Elikagaien horniduraren praktika
 [tutorial food briefing]
-
+Landu elikagaien horniduraren hedapena: eraiki beste Ostatu bat, esleitu hornitzaileak eta ikusi garia iristen.
 [tutorial food complete]
-
+Ostatu bat eraiki eta gariz hornitu duzu. Probatu beste ikasgai bat edo itzuli menu nagusira.
 [tutorial unavailable]
-
+Ezin izan dira tutorialeko ikasgaiak kargatu.
 [lesson healing title]
-
+Ospitaleak eta sendatzea
 [lesson healing briefing]
-
+Eraiki Ospitale bat eta lagundu zauritutako langile bati sendatzen. Kolonia asetuta hasten da, zauritutako langile batekin.
 [lesson healing complete]
-
+Ospitaleak zauritutako globulu bat sendatu du. Hornitu Ostatuak: goseak berriro zauri ditzake unitateak.
 [lesson healing build hint]
-
+Eraiki Ospitale bat lur librean; esleitu 2 eraikitzaile. Utzi lekua globuluak sartzeko eta ateratzeko. Ospitaleek zauriak sendatzen dituzte; Ostatuek janaria ematen dute. Gaixo hau asetuta dago jada.
 [lesson healing build title]
-
+Eraiki Ospitale bat
 [lesson healing build instruction]
-
+Eraiki Ospitale bat lur librean; esleitu 2 eraikitzaile.
 [lesson healing build help]
-
+Utzi lekua globuluak sartzeko eta ateratzeko. Ospitaleek zauriak sendatzen dituzte; Ostatuek janaria ematen dute. Gaixo hau asetuta dago jada.
 [lesson healing build marker]
-
+Eraiki Ospitale bat
 [lesson healing heal hint]
-
+Mantendu Ospitalerako sarbidea libre. Ikusi zauritutako langilea sendatzen. Globuluek beren kabuz bilatzen dute sendabidea. Jarraitu zauritutako langileari, ez jaioberri bati. Hiltzen bada, berrabiarazi edo kargatu gordetako joko bat.
 [lesson healing heal title]
-
+Utzi gaixoa sendatzen
 [lesson healing heal instruction]
-
+Mantendu Ospitalerako sarbidea libre. Ikusi zauritutako langilea sendatzen.
 [lesson healing heal help]
-
+Globuluek beren kabuz bilatzen dute sendabidea. Jarraitu zauritutako langileari, ez jaioberri bati. Hiltzen bada, berrabiarazi edo kargatu gordetako joko bat.
 [lesson healing heal marker]
-
+Utzi gaixoa sendatzen
 [lesson walking-training title]
-
+Ibiltzeko entrenamendua
 [lesson walking-training briefing]
-
+Eraiki Zirkuitu bat eta ikusi lehendik dagoen langile bat azkarrago ibiltzen ikasten.
 [lesson walking-training complete]
-
+Langileek azkarrago ibiltzen ikasi dute. Entrenamenduak dituzun langileak hobetzen ditu; ez du koloniaren janari-hornidura ordezten.
 [lesson walking-training build hint]
-
+Eraiki Zirkuitu bat markatutako soilgunean; esleitu eraikitzaileak. Zirkuituak egurra eta harria behar ditu. Utzi tartea inguruan sartzeko, ateratzeko eta gero handitzeko.
 [lesson walking-training build title]
-
+Eraiki Zirkuitu bat
 [lesson walking-training build instruction]
-
+Eraiki Zirkuitu bat markatutako soilgunean; esleitu eraikitzaileak.
 [lesson walking-training build help]
-
+Zirkuituak egurra eta harria behar ditu. Utzi tartea inguruan sartzeko, ateratzeko eta gero handitzeko.
 [lesson walking-training build marker]
-
+Eraiki Zirkuitu bat
 [lesson walking-training train hint]
-
+Mantendu Zirkuiturako sarbidea libre eta utzi langile bati entrenamendua amaitzen. Globulu egokiek automatikoki entrenatzen dute. Utzi langile batzuk hornidura-lanetatik libre eta mantendu bi Ostatuak hornituta.
 [lesson walking-training train title]
-
+Entrenatu lehendik dagoen langile bat
 [lesson walking-training train instruction]
-
+Mantendu Zirkuiturako sarbidea libre eta utzi langile bati entrenamendua amaitzen.
 [lesson walking-training train help]
-
+Globulu egokiek automatikoki entrenatzen dute. Utzi langile batzuk hornidura-lanetatik libre eta mantendu bi Ostatuak hornituta.
 [lesson swimming title]
-
+Igeriketa eta uretako baliabideak
 [lesson swimming briefing]
-
+Entrenatu igerilariak, eta erabili putzuko algak Eskola bat eraikitzeko.
 [lesson swimming complete]
-
+Igerilari batek uretako baliabideak ekarri ditu Eskolarako. Uretarako sarbideak koloniaren lan-aukerak zabaltzen ditu.
 [lesson swimming build hint]
-
+Eraiki Igerileku bat putzuaren mendebaldean; esleitu eraikitzaileak. Utzi lekua Igerilekuaren inguruan. Langileak ezin ditu ur sakoneko algak bildu igeri egiten ikasi arte.
 [lesson swimming build title]
-
+Eraiki Igerileku bat
 [lesson swimming build instruction]
-
+Eraiki Igerileku bat putzuaren mendebaldean; esleitu eraikitzaileak.
 [lesson swimming build help]
-
+Utzi lekua Igerilekuaren inguruan. Langileak ezin ditu ur sakoneko algak bildu igeri egiten ikasi arte.
 [lesson swimming build marker]
-
+Eraiki Igerileku bat
 [lesson swimming train hint]
-
+Utzi lehendik dagoen langile bati igeriketa-entrenamendua amaitzen. Unitateek entrenamendua automatikoki aukeratzen dute. Mantendu hornidura eta utzi langile libreek Igerilekura iristen.
 [lesson swimming train title]
-
+Entrenatu igerilari bat
 [lesson swimming train instruction]
-
+Utzi lehendik dagoen langile bati igeriketa-entrenamendua amaitzen.
 [lesson swimming train help]
-
+Unitateek entrenamendua automatikoki aukeratzen dute. Mantendu hornidura eta utzi langile libreek Igerilekura iristen.
 [lesson swimming water-job hint]
-
+Eraiki Eskola bat koloniaren ondoan; esleitu eraikitzaileak egurra eta algak ekartzeko. Algak putzuan hazten dira. Igerilari trebatu batek uretan sartu behar du biltzeko. Jarri Eskola lur irekian, hornitzaileentzako sarbidearekin.
 [lesson swimming water-job title]
-
+Erabili putzuko algak
 [lesson swimming water-job instruction]
-
+Eraiki Eskola bat koloniaren ondoan; esleitu eraikitzaileak egurra eta algak ekartzeko.
 [lesson swimming water-job help]
-
+Algak putzuan hazten dira. Igerilari trebatu batek uretan sartu behar du biltzeko. Jarri Eskola lur irekian, hornitzaileentzako sarbidearekin.
 [lesson swimming water-job marker]
-
+Erabili putzuko algak
 [lesson schools title]
-
+Eskolak eta langileen trebetasunak
 [lesson schools briefing]
-
+Erabili prestatutako igerilariak Eskola eraikitzeko, eta ikusi langileak eraikitzen eta uzta biltzen ikasten.
 [lesson schools complete]
-
+Eskolak langileen trebetasunak hobetu ditu. Eraikitzaile trebatuek hobekuntzak ahalbidetzen dituzte; uzta hobeak hazten ari den ekonomia sostengatzen laguntzen du.
 [lesson schools build hint]
-
+Eraiki Eskola bat soilgunean; esleitu eraikitzaileak. Koloniak baditu igerilariak algak biltzeko. Utzi egurrerako eta uretarako sarbidea. Fruta-arbolek ospe-baliabideak ematen dituzte; janaria garitik dator oraindik.
 [lesson schools build title]
-
+Eraiki Eskola bat
 [lesson schools build instruction]
-
+Eraiki Eskola bat soilgunean; esleitu eraikitzaileak.
 [lesson schools build help]
-
+Koloniak baditu igerilariak algak biltzeko. Utzi egurrerako eta uretarako sarbidea. Fruta-arbolek ospe-baliabideak ematen dituzte; janaria garitik dator oraindik.
 [lesson schools build marker]
-
+Eraiki Eskola bat
 [lesson schools learn hint]
-
+Utzi lehendik dagoen langile bati Eskolako prestakuntza amaitzen. Eskolak eraikuntza eta uzta-bilketa batera irakasten ditu. Mantendu langileak libre; obra batek bakarrik ez du inor trebatzen.
 [lesson schools learn title]
-
+Irakatsi eraikuntza eta uzta-bilketa
 [lesson schools learn instruction]
-
+Utzi lehendik dagoen langile bati Eskolako prestakuntza amaitzen.
 [lesson schools learn help]
-
+Eskolak eraikuntza eta uzta-bilketa batera irakasten ditu. Mantendu langileak libre; obra batek bakarrik ez du inor trebatzen.
 [lesson upgrades title]
-
+Eraikinak hobetzea
 [lesson upgrades briefing]
-
+Erabili prestatutako langile trebatuak Zirkuitua hobetzeko eta lehen mailatik harago entrenatzeko.
 [lesson upgrades complete]
-
+Eraikin bat hobetu duzu eta haren entrenamendu hobea erabili duzu. Hurrengo hobekuntzek zikloa errepikatzen dute Eskola, trebetasun eta material hobeekin eta leku gehiagorekin, 3. mailara arte.
 [lesson upgrades upgrade hint]
-
+Hautatu Zirkuitua, aukeratu hobekuntza eta esleitu eraikitzaile trebatuak. Langile hauek dagoeneko ikasi dituzte lehen mailako Eskolaren trebetasunak. Hobekuntzek leku eta material gehiago behar dituzte eta eraikinaren zerbitzua eteten dute. Bertan behera utzitako hobekuntzek ez dute balio.
 [lesson upgrades upgrade title]
-
+Hobetu Zirkuitua
 [lesson upgrades upgrade instruction]
-
+Hautatu Zirkuitua, aukeratu hobekuntza eta esleitu eraikitzaile trebatuak.
 [lesson upgrades upgrade help]
-
+Langile hauek dagoeneko ikasi dituzte lehen mailako Eskolaren trebetasunak. Hobekuntzek leku eta material gehiago behar dituzte eta eraikinaren zerbitzua eteten dute. Bertan behera utzitako hobekuntzek ez dute balio.
 [lesson upgrades upgrade marker]
-
+Hobetu Zirkuitua
 [lesson upgrades train hint]
-
+Utzi lehendik dagoen langile bati Zirkuitu hobetuaren bidez azkarrago ibiltzen ikasten. Amaitutako hobekuntzak entrenamendua hobetzen du. Eraikin-maila altuagoek eraikuntza-trebetasun handiagoa behar dute; erakutsitako maila 1ean hasten da.
 [lesson upgrades train title]
-
+Erabili entrenamendu hobetua
 [lesson upgrades train instruction]
-
+Utzi lehendik dagoen langile bati Zirkuitu hobetuaren bidez azkarrago ibiltzen ikasten.
 [lesson upgrades train help]
-
+Amaitutako hobekuntzak entrenamendua hobetzen du. Eraikin-maila altuagoek eraikuntza-trebetasun handiagoa behar dute; erakutsitako maila 1ean hasten da.
 [lesson warrior-training title]
-
+Gerlariak sortzea eta entrenatzea
 [lesson warrior-training briefing]
-
+Sortu gerlariak Kofoinean, eta entrenatu Barrakoian.
 [lesson warrior-training complete]
-
+Ekoizpen militarra kontrolatu duzu eta gerlariak entrenatu dituzu. Mantendu haien janari-hornidura; borroka-unitateek ere jan behar dute.
 [lesson warrior-training produce hint]
-
+Ezarri Kofoina gerlariak soilik sortzeko; esleitu hornitzaileak eta itxaron 2 gerlariri. Ezarri langileen eta miatzaileen proportzioak 0an eta gerlariena 1ean. Kofoinak garia kontsumitzen du jaiotzetarako. Proportzioek zer sortu erabakitzen dute; hornitzaileek ekoizpena ahalbidetzen dute.
 [lesson warrior-training produce title]
-
+Sortu bi gerlari
 [lesson warrior-training produce instruction]
-
+Ezarri Kofoina gerlariak soilik sortzeko; esleitu hornitzaileak eta itxaron 2 gerlariri.
 [lesson warrior-training produce help]
-
+Ezarri langileen eta miatzaileen proportzioak 0an eta gerlariena 1ean. Kofoinak garia kontsumitzen du jaiotzetarako. Proportzioek zer sortu erabakitzen dute; hornitzaileek ekoizpena ahalbidetzen dute.
 [lesson warrior-training produce marker]
-
+Sortu bi gerlari
 [lesson warrior-training build hint]
-
+Eraiki Barrakoi bat soilgunean; esleitu eraikitzaileak. Gelditu edo murriztu gerlarien ekoizpena nahikoa dituzunean. Barrakoiek borrokarako trebetasunak irakasten dituzte eta leku librea behar dute inguruan.
 [lesson warrior-training build title]
-
+Eraiki Barrakoi bat
 [lesson warrior-training build instruction]
-
+Eraiki Barrakoi bat soilgunean; esleitu eraikitzaileak.
 [lesson warrior-training build help]
-
+Gelditu edo murriztu gerlarien ekoizpena nahikoa dituzunean. Barrakoiek borrokarako trebetasunak irakasten dituzte eta leku librea behar dute inguruan.
 [lesson warrior-training build marker]
-
+Eraiki Barrakoi bat
 [lesson warrior-training train hint]
-
+Utzi gerlari bati Barrakoiko praktika amaitzen. Gerlariek entrenamendua automatikoki bilatzen dute. Hornitu Ostatuak eta mantendu Barrakoirako sarbidea libre. Barrakoia eraikitzeak bakarrik ez du entrenamendu-saioa osatzen.
 [lesson warrior-training train title]
-
+Entrenatu gerlariak
 [lesson warrior-training train instruction]
-
+Utzi gerlari bati Barrakoiko praktika amaitzen.
 [lesson warrior-training train help]
-
+Gerlariek entrenamendua automatikoki bilatzen dute. Hornitu Ostatuak eta mantendu Barrakoirako sarbidea libre. Barrakoia eraikitzeak bakarrik ez du entrenamendu-saioa osatzen.
 [lesson fortifications title]
-
+Dorreak eta babes-hormak
 [lesson fortifications briefing]
-
+Eraiki hornitutako dorre bat eta babes-hormak, eta probatu eraso txiki baten aurka.
 [lesson fortifications complete]
-
+Hornitutako defentsek praktikako erasoa geldiarazi dute. Dorreek harria behar dute eta hormek pasabideak behar dituzte hornitzaileentzat.
 [lesson fortifications tower hint]
-
+Eraiki dorre bat markatutako eremuan; esleitu eraikitzaileak. Jarri harrobiaren ondoan eta utzi hornitzaileentzako sarbidea. Ez da erasorik hasten prestaketa-helburuak bete arte.
 [lesson fortifications tower title]
-
+Eraiki Babes-dorre bat
 [lesson fortifications tower instruction]
-
+Eraiki dorre bat markatutako eremuan; esleitu eraikitzaileak.
 [lesson fortifications tower help]
-
+Jarri harrobiaren ondoan eta utzi hornitzaileentzako sarbidea. Ez da erasorik hasten prestaketa-helburuak bete arte.
 [lesson fortifications tower marker]
-
+Eraiki Babes-dorre bat
 [lesson fortifications walls hint]
-
+Eraiki gutxienez 2 horma-zati dorrearen ondoan; mantendu mendebaldeko sarbidea irekita. Hormek harria erabiltzen dute eta obra bakoitzak langileak eskatzen ditu. Ez itxi dorrea: hornitzaileek bide bat behar dute. Markatutako mendebaldeko pasabideak libre egon behar du.
 [lesson fortifications walls title]
-
+Babestu dorrea hormekin
 [lesson fortifications walls instruction]
-
+Eraiki gutxienez 2 horma-zati dorrearen ondoan; mantendu mendebaldeko sarbidea irekita.
 [lesson fortifications walls help]
-
+Hormek harria erabiltzen dute eta obra bakoitzak langileak eskatzen ditu. Ez itxi dorrea: hornitzaileek bide bat behar dute. Markatutako mendebaldeko pasabideak libre egon behar du.
 [lesson fortifications walls marker]
-
+Babestu dorrea hormekin
 [lesson fortifications supply hint]
-
+Hautatu dorrea eta eskatu hornitzaileak. Itxaron gutxienez 2 harri izan arte. Amaitutako dorreak funtzionamendurako langile kopurua behar du munizioa ekartzeko. Eraikuntzako kopurutik bereizita dago.
 [lesson fortifications supply title]
-
+Hornitu munizioa
 [lesson fortifications supply instruction]
-
+Hautatu dorrea eta eskatu hornitzaileak. Itxaron gutxienez 2 harri izan arte.
 [lesson fortifications supply help]
-
+Amaitutako dorreak funtzionamendurako langile kopurua behar du munizioa ekartzeko. Eraikuntzako kopurutik bereizita dago.
 [lesson fortifications supply marker]
-
+Hornitu munizioa
 [lesson fortifications hold hint]
-
+Praktikako gerlari bat hurbiltzen ari da. Mantendu dorrea hornituta eta sarbidea libre. Eutsi erasotzailea garaitu edo atzera bota arte. Hornitzaileak blokeatzen dituen hormak dorrerako munizioa eten dezake. Koloniak huts egiten badu, berrabiarazi edo kargatu lehenago gordetako joko bat.
 [lesson fortifications hold title]
-
+Probatu gotorlekuak
 [lesson fortifications hold instruction]
-
+Praktikako gerlari bat hurbiltzen ari da. Mantendu dorrea hornituta eta sarbidea libre.
 [lesson fortifications hold help]
-
+Eutsi erasotzailea garaitu edo atzera bota arte. Hornitzaileak blokeatzen dituen hormak dorrerako munizioa eten dezake. Koloniak huts egiten badu, berrabiarazi edo kargatu lehenago gordetako joko bat.
 [lesson fortifications hold marker]
-
+Probatu gotorlekuak
 [lesson defensive-tactics title]
-
+Babes-zonaldeak eta banderen taktikak
 [lesson defensive-tactics briefing]
-
+Esploratu praktikako etsaia, prestatu babes-zonalde bat, defendatu eta antolatu kontraerasoa.
 [lesson defensive-tactics complete]
-
+Esploratu duzu, babes-zonalde bat defendatu duzu eta kontraerasoa zuzendu duzu. Banderen kopuruek unitateak eskatzen dituzte; erradioak non lan egiten duten zehazten du.
 [lesson defensive-tactics scout hint]
-
+Jarri Miatze-bandera etsaiaren oinarrian; esleitu 1 miatzaile. Banderek automatikoki eskatzen dituzte unitateak. Miatzaileak uneko jarduera erakusten du gerra-lainoaren bidez; jateko geldi daiteke.
 [lesson defensive-tactics scout title]
-
+Esploratu etsaiaren oinarria
 [lesson defensive-tactics scout instruction]
-
+Jarri Miatze-bandera etsaiaren oinarrian; esleitu 1 miatzaile.
 [lesson defensive-tactics scout help]
-
+Banderek automatikoki eskatzen dituzte unitateak. Miatzaileak uneko jarduera erakusten du gerra-lainoaren bidez; jateko geldi daiteke.
 [lesson defensive-tactics scout marker]
-
+Esploratu etsaiaren oinarria
 [lesson defensive-tactics guard hint]
-
+Margotu babes-zonalde bat markatutako eremuan eta utzi 2 gerlari bertara iristen. Ireki banderak, aukeratu babesa eta margotu gutxienez 4 lauki eremuaren barruan. Babes-zonaldeek gerlari libreak erakartzen dituzte. Debekatutako eremuek igarotzea oztopatzen dute; garbiketa-eremuek baliabideak kentzea eskatzen dute.
 [lesson defensive-tactics guard title]
-
+Prestatu babes-zonalde bat
 [lesson defensive-tactics guard instruction]
-
+Margotu babes-zonalde bat markatutako eremuan eta utzi 2 gerlari bertara iristen.
 [lesson defensive-tactics guard help]
-
+Ireki banderak, aukeratu babesa eta margotu gutxienez 4 lauki eremuaren barruan. Babes-zonaldeek gerlari libreak erakartzen dituzte. Debekatutako eremuek igarotzea oztopatzen dute; garbiketa-eremuek baliabideak kentzea eskatzen dute.
 [lesson defensive-tactics guard marker]
-
+Prestatu babes-zonalde bat
 [lesson defensive-tactics repel hint]
-
+Etsaia erasotzen ari da. Mantendu gerlariak babes-zonaldean eta Ostatuak hornituta. Eraso txikia prestaketen ondoren hasten da. Garaitu edo atzera bota bi erasotzaileak; etsai zaurituek atzera egin dezakete. Gerlariak aldi baterako joan daitezke jatera. Defentsak huts egiten badu, kargatu lehenago gordetako joko bat edo berrabiarazi.
 [lesson defensive-tactics repel title]
-
+Uxatu praktikako erasoa
 [lesson defensive-tactics repel instruction]
-
+Etsaia erasotzen ari da. Mantendu gerlariak babes-zonaldean eta Ostatuak hornituta.
 [lesson defensive-tactics repel help]
-
+Eraso txikia prestaketen ondoren hasten da. Garaitu edo atzera bota bi erasotzaileak; etsai zaurituek atzera egin dezakete. Gerlariak aldi baterako joan daitezke jatera. Defentsak huts egiten badu, kargatu lehenago gordetako joko bat edo berrabiarazi.
 [lesson defensive-tactics repel marker]
-
+Uxatu praktikako erasoa
 [lesson defensive-tactics counterattack hint]
-
+Jarri Gerra-bandera etsaiaren Kofoinaren gainean; eskatu 3 gerlari eta erabili gehienez 4ko erradioa. Babes-zonaldeak eta Gerra-banderak gerlariengatik lehiatzen dira. Kendu babes-laukiak armada atxikitzen badute. Mantendu janaria eskuragarri gerlariak mugitzen eta erasotzen diren bitartean.
 [lesson defensive-tactics counterattack title]
-
+Zuzendu kontraeraso kontzentratua
 [lesson defensive-tactics counterattack instruction]
-
+Jarri Gerra-bandera etsaiaren Kofoinaren gainean; eskatu 3 gerlari eta erabili gehienez 4ko erradioa.
 [lesson defensive-tactics counterattack help]
-
+Babes-zonaldeak eta Gerra-banderak gerlariengatik lehiatzen dira. Kendu babes-laukiak armada atxikitzen badute. Mantendu janaria eskuragarri gerlariak mugitzen eta erasotzen diren bitartean.
 [lesson defensive-tactics counterattack marker]
-
+Zuzendu kontraeraso kontzentratua
 [lesson healing build compact]
-
+Eraiki → Ospitalea. Utzi sarbidea; esleitu eraikitzaileak.
 [lesson healing heal compact]
-
+Utzi zauritutako langilea Ospitalean sendatzen.
 [lesson walking-training build compact]
-
+Eraiki → Zirkuitua. Utzi lekua inguruan.
 [lesson walking-training train compact]
-
+Utzi langile bati Zirkuituko entrenamendua amaitzen.
 [lesson swimming build compact]
-
+Eraiki → Igerilekua, putzuaren mendebaldean.
 [lesson swimming train compact]
-
+Utzi langile bati igeri egiten ikasten.
 [lesson swimming water-job compact]
-
+Eraiki → Eskola. Esleitu eraikitzaileak egurra eta algak ekartzeko.
 [lesson schools build compact]
-
+Eraiki → Eskola. Esleitu eraikitzaileak egurra eta algak ekartzeko.
 [lesson schools learn compact]
-
+Utzi langile bati Eskolako prestakuntza amaitzen.
 [lesson upgrades upgrade compact]
-
+Zirkuitua → Hobetu. Esleitu eraikitzaile trebatuak.
 [lesson upgrades train compact]
-
+Utzi langile bati Zirkuitu hobetu batean entrenatzen.
 [lesson warrior-training produce compact]
-
+Kofoina → gerlariak soilik. Hornitu garia 2 gerlarirentzat.
 [lesson warrior-training build compact]
-
+Eraiki → Barrakoia. Utzi lekua inguruan.
 [lesson warrior-training train compact]
-
+Utzi gerlari bati Barrakoiko praktika amaitzen.
 [lesson fortifications tower compact]
-
+Eraiki → Dorrea. Jarri markatutako eremuan.
 [lesson fortifications walls compact]
-
+Eraiki 2 horma. Mantendu dorrearen mendebaldeko pasabidea irekita.
 [lesson fortifications supply compact]
-
+Dorrea → hornitzaileak. Itxaron 2 harriri.
 [lesson fortifications hold compact]
-
+Mantendu dorrea hornituta erasotzailearen aurka.
 [lesson defensive-tactics scout compact]
-
+Banderak → Miatzea. Jarri etsaiaren ondoan; esleitu 1 miatzaile.
 [lesson defensive-tactics guard compact]
-
+Banderak → Babesa. Margotu 4 lauki; itxaron 2 gerlariri.
 [lesson defensive-tactics repel compact]
-
+Eutsi babes-zonaldeari. Hornitu Ostatuak.
 [lesson defensive-tactics counterattack compact]
-
+Gerra-bandera → etsaiaren Kofoina. Eskatu 3 gerlari; erradioa ≤4.
 [library %0 · revision %1]
 %0 · %1 berrikuspena
 [Grassland]
@@ -6781,6 +6785,6 @@ Animalien bidexkak
 [Fish amount]
 Arrain kopurua
 [scenario messages]
-
+Mezuak ▸
 [Camp-site amount]
 Kanpaleku kopurua

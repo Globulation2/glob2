@@ -4884,6 +4884,10 @@ Jednotky uzavreté bez voľného políčka, na ktoré by mohli vstúpiť.
 Vyčistené suroviny
 [stat cleared about]
 Suroviny, ktoré robotníci odstránili v oblastiach čistenia, aby uvoľnili miesto.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestíž
 [stat prestige about]
@@ -6355,421 +6359,421 @@ Voľbu sa nepodarilo uložiť. Zvuk je stále vypnutý. Skúste to znova.
 [audio choices description]
 Ticho: stíšený reproduktor. Zvuk: reproduktor so zvukovými vlnami.
 [intro menu]
-
+Úvod
 [intro briefing]
-
+Naučte sa nepriame ovládanie: pátrajte s vlajkou, zásobujte svoju kolóniu a nasmerujte útok.
 [intro try]
-
+Spustiť úvod
 [intro preflight]
-
+Vaše guľôčky konajú samostatne. Ich úlohy určujete pomocou budov a vlajok. V tomto krátkom úvode preskúmajte orientačný bod, rozšírte zásobovanie potravinami, zvýšte počet pracovníkov a nasmerujte malý útok.
 [intro preflight save]
-
+Plánujte asi 10 minút. Môžete uložiť z ponuky hry a pokračovať výberom položky Načítať hru. Platia bežné pravidlá o hlade a boji. Ak si chcete precvičiť viac zručností, vyberte si lekcie tutoriálu z hlavného menu.
 [intro preference failed]
-
+Váš výber sa nepodarilo uložiť. Môžete pokračovať v hre; toto odporúčanie sa môže objaviť aj nabudúce.
 [intro goal scout]
-
+Preskúmajte kamenný orientačný bod
 [intro goal build]
-
+Postavte ďalšiu jedáleň
 [intro goal supply]
-
+Zásobte svoju novú jedáleň
 [intro goal grow]
-
+Zvýšte počet pracovníkov
 [intro goal attack]
-
+Zničte nepriateľské hniezdo
 [intro instruction scout]
-
+Otvorte vlajky a umiestnite vlajku prieskumu na kamennú plochu východne od vašej kolónie. Priraďte jedného prieskumníka. Sledujte, ako cestuje k vlajke.
 [intro instruction build]
-
+Otvorte Stavba a umiestnite jedáleň blízko pšenice. Prideľte dostupných pracovníkov na výstavbu jedálne. Udržujte svoju existujúcu jedáleň zásobenú jedlom.
 [intro instruction supply]
-
+Vyberte si hotovú novú jedáleň a dajte jej aspoň jedného dodávateľa. Počkajte, kým pracovník doručí pšenicu.
 [intro instruction grow]
-
+Vyberte Hniezdo. Prideľte aspoň 2 pracovníkov na zásobovanie a nastavte výrobu iba na pracovníkov. Kým sa narodí nový pracovník, udržujte obe Jedálne zásobené.
 [intro instruction attack]
-
+Nájdite nepriateľské hniezdo ďalej na východ. Pomocou vlajky vojny proti nemu nasmerujte bojovníkov. Ak potrebujete pripomenúť postup, je k dispozícii pomoc.
 [intro help]
-
+Pomoc / prečo?
 [intro help scout]
-
+Pomocou minimapy posuňte pohľad na východ a nájdite ložisko kameňa. Vo Vlajkách vyberte Vlajku prieskumu a položte ju na kameň. Sekundárnym tlačidlom myši ukončite umiestňovanie. Vyberte vlajku a prideľte 1 prieskumníka. Vlajky žiadajú jednotky; nepremiestňujú ich okamžite. Prieskumníci sa môžu zastaviť, aby sa najedli.
 [intro help build]
-
+Stavba spotrebuje drevo dodané robotníkmi. Vyberte jedáleň z ovládacích prvkov budovy (paleta budov), umiestnite ju na čistú pôdu blízko pšenice a požiadajte o 2 staviteľov. Požadovaný počet pracovníkov je požiadavka, nie počet už prítomných pracovníkov. Udržujte dodávateľov vo svojej existujúcej jedálni a hniezde. Každá platná poloha sa počíta.
 [intro help supply]
-
+Výstavba a každodenné zásobovanie majú oddelené požadované počty pracovníkov. Vyberte hotovú jedáleň a zvýšte požadovaný počet prevádzkových pracovníkov. Dodávateľ zbiera pšenicu a nosí ju sem. Hladné guľôčky jedia v jedálňach; budove bez dodávateľov nakoniec dôjdu zásoby. Zachovajte prístup k pšenici.
 [intro help grow]
-
+Hniezdo spotrebúva pšenicu na výrobu jednotiek. Nastavte produkciu pracovníkov na 1 a produkciu prieskumníkov a bojovníkov na 0. Zvýšte požadovaný počet pracovníkov hniezda na 2 alebo viac. Viac dodávateľov môže priniesť pšenicu rýchlejšie, ale súperia s inými úlohami o pracovníkov. Zásobujte obe jedálne potravinami.
 [intro help attack]
-
+Otvorte Vlajky, vyberte Vlajku vojny a umiestnite ju nad nepriateľské hniezdo východne od kameňa. Vyberte vlajku a požiadajte až o 4 bojovníkov. Malý polomer ich udrží pokope. Pred výberom vlajky ukončite umiestňovanie sekundárnym tlačidlom myši. Ak nezostanú žiadni bojovníci, vyrobte ďalších v hniezde. Bojovníci sa môžu zastaviť na jedlo; zásobujte jedálne.
 [intro hint scout]
-
+Prieskumník potrebuje vlajku prieskumu s pridelenými jednotkami na východnom ložisku kameňa. Skontrolujte polohu vlajky a požadovaný počet prieskumníkov.
 [intro hint build]
-
+Ak ste odstránili novú jedáleň, postavte ďalšiu. Inak skontrolujte stavenisko a požadovaný počet pracovníkov. Zásobovacie úlohy môžu zamestnávať vašich pracovníkov; zachovajte prísun jedla a uvoľnite staviteľov.
 [intro hint supply]
-
+Vyberte hotovú novú jedáleň. Skontrolujte požadovaný počet pracovníkov a sledujte dodávky pšenice. Pracovníci môžu potrebovať čas na cestovanie alebo jedlo.
 [intro hint grow]
-
+Skontrolujte, či je Hniezdo zásobované pšenicou a produkuje iba pracovníkov. Počas čakania na iného pracovníka udržujte zásobovanie jedální jedlom.
 [intro hint attack]
-
+Skontrolujte svoju vlajku vojny, požadovaný počet bojovníkov a zásoby jedla. Vaši bojovníci potrebujú čas na cestovanie a útok.
 [intro hint no scout flag]
-
+Nenašla sa žiadna priradená vlajka prieskumu. Položte jednu na kameň východne od svojej základne a požiadajte o 1 prieskumníka.
 [intro hint no suppliers]
-
+Vaša nová jedáleň alebo stavenisko má požadovaný počet pracovníkov 0. Vyberte ho a požiadajte o pracovníkov.
 [intro hint no war flag]
-
+Na nepriateľskej základni sa nenašla žiadna pridelená vlajka vojny. Umiestnite jednu nad východné nepriateľské hniezdo a požiadajte o bojovníkov.
 [intro hint retry]
-
+Jednotka alebo budova potrebná pre túto lekciu sa stratila. Načítajte predchádzajúce uloženie alebo reštartujte túto lekciu z ponuky hry.
 [intro complete]
-
+Úvod dokončený
 [intro complete body]
-
+Riadili ste autonómne globule, rozširovali ste zásoby potravín, rozširovali kolóniu a organizovali útok. Pokračujte výučbovými lekciami pre tréning, vylepšenia a obranu alebo sa vráťte do hlavného menu a začnite zápas.
 [intro play again]
-
+Hrajte znova
 [intro restart]
-
+Reštartujte úvod
 [intro restart body]
-
+Reštartovať z pripravenej kolónie? Neuložený postup v tomto úvode sa stratí.
 [intro help touch scout]
-
+Pred umiestnením vlajky potiahnite prázdnu zem a posuňte pohľad. Nájdite ložisko kameňa východne od kolónie. Otvorte Vlajky, zvoľte Vlajku prieskumu, položte ju na kameň a potvrďte. Vyberte vlajku a pomocou požadovaného počtu pridelených jednotiek požiadajte o 1 prieskumníka. Guľôčky sa pohybujú samy a môžu sa zastaviť na jedlo.
 [intro help touch build]
-
+V ponuke stavieb vyberte Jedáleň. Umiestnite ju na voľnú pôdu pri pšenici a potvrďte. Vyberte stavenisko a prideľte 2 staviteľov. Požadovaný počet pracovníkov nie je počet už prítomných pracovníkov. Udržujte existujúcu Jedáleň a Hniezdo zásobené. Počíta sa akékoľvek platné miesto.
 [intro help touch supply]
-
+Vyberte hotovú novú jedáleň a zvýšte požadovaný počet pridelených pracovníkov. Výstavba a každodenné zásobovanie majú samostatné nastavenia. Dodávateľ zbiera pšenicu a nosí ju sem. Hladné guľôčky jedia v jedálňach; budove bez dodávateľov nakoniec dôjdu zásoby. Zachovajte prístup k pšenici.
 [intro help touch grow]
-
+Vyberte hniezdo. Nastavte produkciu pracovníkov na 1, prieskumníkov a bojovníkov na 0. Zvýšte požadovaný počet pridelených pracovníkov aspoň na 2. Dodávatelia prinášajú pšenicu pre nové jednotky, ale súperia s inými úlohami o pracovníkov. Zásobujte obe jedálne.
 [intro help touch attack]
-
+Otvorte Vlajky, vyberte Vlajka vojny, umiestnite ju nad nepriateľské hniezdo východne od kameňa a potvrďte. Vyberte vlajku a požiadajte až o 4 bojovníkov. Sústreďuje ich malý polomer. Ak nikto nezostane, vyrobte si vo svojom hniezde bojovníkov. Bojovníci sa môžu zastaviť, aby sa najedli; majte zásobené jedálne.
 [intro show destination]
-
+Zobraziť cieľ
 [intro scout destination]
-
+Preskúmajte tu
 [intro attack destination]
-
+Zaútočte tu
 [intro compact scout]
-
+Vlajky → Vlajka prieskumu. Položte ju na kameň; prideľte 1 prieskumníka.
 [intro compact build]
-
+Stavba → Jedáleň. Umiestnite pri pšenici; prideľte 2 staviteľov.
 [intro compact supply]
-
+Vyberte si svoju novú jedáleň; prideľte aspoň 1 dodávateľa. Počkajte na pšenicu.
 [intro compact grow]
-
+Vyberte hniezdo; prideľte 2 dodávateľov. Vyrábajte iba robotníkov.
 [intro compact attack]
-
+Vlajky → Vlajka vojny. Umiestnite nad nepriateľské hniezdo; prideľte bojovníkov.
 [tutorial lessons]
-
+Výukové lekcie
 [tutorial restart]
-
+Reštartujte lekciu
 [tutorial restart body]
-
+Znovu začať túto lekciu z pripravenej kolónie? Neuložený postup sa stratí.
 [tutorial complete]
-
+Lekcia dokončená
 [tutorial food title]
-
+Cvičenie zásobovania potravinami
 [tutorial food briefing]
-
+Precvičte si rozširovanie zásobovania potravinami: postavte ďalšiu jedáleň, prideľte dodávateľov a sledujte prísun pšenice.
 [tutorial food complete]
-
+Postavili ste jedáleň a zásobili ste ju pšenicou. Skúste inú lekciu alebo sa vráťte do hlavného menu.
 [tutorial unavailable]
-
+Lekcie výučby sa nepodarilo načítať.
 [lesson healing title]
-
+Nemocnice a liečenie
 [lesson healing briefing]
-
+Postavte nemocnicu a pomôžte zranenému pracovníkovi zotaviť sa. Na začiatku sa kolónia už najedla a jeden robotník je zranený.
 [lesson healing complete]
-
+Nemocnica vyliečila zranenú guľôčku. Zásobujte jedálne jedlom: hlad môže jednotky znova zraniť.
 [lesson healing build hint]
-
+Postavte nemocnicu na čistej pôde; prideľte 2 staviteľov. Ponechajte priestor pre globule na vstup a výstup. Nemocnice liečia zranenia; Jedálne dodávajú jedlo. Tento pacient je už nakŕmený.
 [lesson healing build title]
-
+Postavte nemocnicu
 [lesson healing build instruction]
-
+Postavte nemocnicu na čistej pôde; prideľte 2 staviteľov.
 [lesson healing build help]
-
+Ponechajte priestor pre globule na vstup a výstup. Nemocnice liečia zranenia; Jedálne dodávajú jedlo. Tento pacient je už nakŕmený.
 [lesson healing build marker]
-
+Postavte nemocnicu
 [lesson healing heal hint]
-
+Udržujte nemocnicu prístupnú. Sledujte, ako sa zranený pracovník zotavuje. Guľôčky samostatne vyhľadávajú liečenie. Sledujte zraneného pracovníka, nie novonarodenú jednotku. Ak zomrie, začnite znova alebo načítajte uloženú hru.
 [lesson healing heal title]
-
+Nechajte pacienta zotaviť sa
 [lesson healing heal instruction]
-
+Udržujte nemocnicu prístupnú. Sledujte, ako sa zranený pracovník zotavuje.
 [lesson healing heal help]
-
+Guľôčky samostatne vyhľadávajú liečenie. Sledujte zraneného pracovníka, nie novonarodenú jednotku. Ak zomrie, začnite znova alebo načítajte uloženú hru.
 [lesson healing heal marker]
-
+Nechajte pacienta zotaviť sa
 [lesson walking-training title]
-
+Tréning na rýchlejšiu chôdzu
 [lesson walking-training briefing]
-
+Postavte si bežeckú dráhu a sledujte, ako sa existujúci pracovník učí chodiť rýchlejšie.
 [lesson walking-training complete]
-
+Pracovníci sa naučili chodiť rýchlejšie. Tréning zlepšuje existujúcich pracovníkov; nenahrádza zásobovanie kolónie potravinami.
 [lesson walking-training build hint]
-
+Na vyznačenej čistinke postavte bežeckú dráhu; prideľte staviteľov. Bežecká dráha potrebuje drevo a kameň. Nechajte okolo budovy priestor pre vstup, výstup a neskoršie rozšírenie.
 [lesson walking-training build title]
-
+Postavte si bežeckú dráhu
 [lesson walking-training build instruction]
-
+Na vyznačenej čistinke postavte bežeckú dráhu; prideľte staviteľov.
 [lesson walking-training build help]
-
+Bežecká dráha potrebuje drevo a kameň. Nechajte okolo budovy priestor pre vstup, výstup a neskoršie rozšírenie.
 [lesson walking-training build marker]
-
+Postavte si bežeckú dráhu
 [lesson walking-training train hint]
-
+Udržujte bežeckú dráhu prístupnú a nechajte pracovníka dokončiť tréning. Tréning je automatický pre vhodné guľôčky. Zabezpečte, aby niektorí pracovníci nemali prácu v zásobovaní a aby boli obe jedálne zásobené.
 [lesson walking-training train title]
-
+Vyškolte existujúceho pracovníka
 [lesson walking-training train instruction]
-
+Udržujte bežeckú dráhu prístupnú a nechajte pracovníka dokončiť tréning.
 [lesson walking-training train help]
-
+Tréning je automatický pre vhodné guľôčky. Zabezpečte, aby niektorí pracovníci nemali prácu v zásobovaní a aby boli obe jedálne zásobené.
 [lesson swimming title]
-
+Plávanie a zdroje vo vode
 [lesson swimming briefing]
-
+Trénujte plavcov a potom použite riasy z jazierka na stavbu školy.
 [lesson swimming complete]
-
+Plavec dodal zdroje z vody na stavbu vašej školy. Prístup k vode umožňuje vašej kolónii vykonávať viacero druhov prác.
 [lesson swimming build hint]
-
+Postavte bazén západne od rybníka; prideľte staviteľov. Okolo bazéna nechajte priestor. Robotník nemôže zbierať riasy v hlbokej vode, kým sa nenaučí plávať.
 [lesson swimming build title]
-
+Postavte si bazén
 [lesson swimming build instruction]
-
+Postavte bazén západne od rybníka; prideľte staviteľov.
 [lesson swimming build help]
-
+Okolo bazéna nechajte priestor. Robotník nemôže zbierať riasy v hlbokej vode, kým sa nenaučí plávať.
 [lesson swimming build marker]
-
+Postavte si bazén
 [lesson swimming train hint]
-
+Nechajte existujúceho pracovníka dokončiť plavecký výcvik. Jednotky si automaticky vyberajú tréning. Udržujte zásobovanie v chode a umožnite voľným pracovníkom dostať sa k bazénu.
 [lesson swimming train title]
-
+Trénujte plavca
 [lesson swimming train instruction]
-
+Nechajte existujúceho pracovníka dokončiť plavecký výcvik.
 [lesson swimming train help]
-
+Jednotky si automaticky vyberajú tréning. Udržujte zásobovanie v chode a umožnite voľným pracovníkom dostať sa k bazénu.
 [lesson swimming water-job hint]
-
+Postavte školu blízko kolónie; prideľte staviteľov na prinesenie dreva a rias. Riasy rastú v jazierku. Vyškolený plavec musí vstúpiť do vody, aby ich nazbieral. Školu umiestnite na otvorené priestranstvo s prístupom pre dodávateľov.
 [lesson swimming water-job title]
-
+Použite riasy z jazierka
 [lesson swimming water-job instruction]
-
+Postavte školu blízko kolónie; prideľte staviteľov na prinesenie dreva a rias.
 [lesson swimming water-job help]
-
+Riasy rastú v jazierku. Vyškolený plavec musí vstúpiť do vody, aby ich nazbieral. Školu umiestnite na otvorené priestranstvo s prístupom pre dodávateľov.
 [lesson swimming water-job marker]
-
+Použite riasy z jazierka
 [lesson schools title]
-
+Školy a zručnosti pracovníkov
 [lesson schools briefing]
-
+Pomocou pripravených plavcov postavte školu a potom sledujte, ako sa robotníci učia stavať a zbierať úrodu.
 [lesson schools complete]
-
+Vaša škola zlepšila zručnosti pracovníkov. Zruční stavitelia odomknú vylepšenia; lepšia úroda pomáha udržiavať rastúcu ekonomiku.
 [lesson schools build hint]
-
+Postavte školu na čistinke; prideľte staviteľov. Kolónia už má plavcov pre riasy. Nechajte prístup k drevu a vode. Ovocné stromy poskytujú zdroje prestíže; potraviny stále pochádzajú z pšenice.
 [lesson schools build title]
-
+Postavte školu
 [lesson schools build instruction]
-
+Postavte školu na čistinke; prideľte staviteľov.
 [lesson schools build help]
-
+Kolónia už má plavcov pre riasy. Nechajte prístup k drevu a vode. Ovocné stromy poskytujú zdroje prestíže; potraviny stále pochádzajú z pšenice.
 [lesson schools build marker]
-
+Postavte školu
 [lesson schools learn hint]
-
+Nechajte existujúceho pracovníka absolvovať školenie v škole. Škola vyučuje stavbu a zber spoločne. Udržujte pracovníkov k dispozícii; samotné stavenisko nikoho nevyškolí.
 [lesson schools learn title]
-
+Učte stavbu a zber
 [lesson schools learn instruction]
-
+Nechajte existujúceho pracovníka absolvovať školenie v škole.
 [lesson schools learn help]
-
+Škola vyučuje stavbu a zber spoločne. Udržujte pracovníkov k dispozícii; samotné stavenisko nikoho nevyškolí.
 [lesson upgrades title]
-
+Vylepšenia budov
 [lesson upgrades briefing]
-
+Použite pripravených kvalifikovaných pracovníkov na vylepšenie bežeckej dráhy a trénujte nad rámec prvej úrovne.
 [lesson upgrades complete]
-
+Vylepšili ste budovu a použili ste jej vylepšený výcvik. Ďalšie vylepšenia opakujú tento cyklus s lepšími školami, zručnosťami, materiálmi a priestorom až do úrovne 3.
 [lesson upgrades upgrade hint]
-
+Vyberte Bežeckú dráhu, zvoľte Vylepšiť a prideľte zručných staviteľov. Títo pracovníci sa už naučili zručnosti školy prvého stupňa. Vylepšenia vyžadujú ďalší priestor a materiály a prerušujú prevádzku budovy. Zrušené vylepšenia sa nepočítajú.
 [lesson upgrades upgrade title]
-
+Vylepšite bežeckú dráhu
 [lesson upgrades upgrade instruction]
-
+Vyberte Bežeckú dráhu, zvoľte Vylepšiť a prideľte zručných staviteľov.
 [lesson upgrades upgrade help]
-
+Títo pracovníci sa už naučili zručnosti školy prvého stupňa. Vylepšenia vyžadujú ďalší priestor a materiály a prerušujú prevádzku budovy. Zrušené vylepšenia sa nepočítajú.
 [lesson upgrades upgrade marker]
-
+Vylepšite bežeckú dráhu
 [lesson upgrades train hint]
-
+Nechajte existujúceho pracovníka naučiť sa rýchlejšiu chôdzu na vylepšenej bežeckej dráhe. Dokončené vylepšenie zlepšuje dostupný tréning. Vyššie úrovne budov vyžadujú vyššie stavebné zručnosti; úroveň zobrazovaná hráčom začína na 1.
 [lesson upgrades train title]
-
+Použite vylepšený tréning
 [lesson upgrades train instruction]
-
+Nechajte existujúceho pracovníka naučiť sa rýchlejšiu chôdzu na vylepšenej bežeckej dráhe.
 [lesson upgrades train help]
-
+Dokončené vylepšenie zlepšuje dostupný tréning. Vyššie úrovne budov vyžadujú vyššie stavebné zručnosti; úroveň zobrazovaná hráčom začína na 1.
 [lesson warrior-training title]
-
+Výroba a výcvik bojovníkov
 [lesson warrior-training briefing]
-
+Vyrobte bojovníkov v Hniezde a potom ich vycvičte v kasárňach.
 [lesson warrior-training complete]
-
+Ovládali ste vojenskú výrobu a cvičili bojovníkov. Udržujte ich zásobovanie potravinami v chode; bojové jednotky ešte potrebujú jesť.
 [lesson warrior-training produce hint]
-
+Nastavte Hniezdo iba na bojovníkov; prideľte dodávateľov a počkajte na 2 bojovníkov. Nastavte pomery robotníkov a prieskumníkov na 0 a pomer bojovníkov na 1. Hniezdo konzumuje pšenicu na zrod jednotiek. Pomery vyberajú, čo sa vyrába; dodávatelia určujú, či môže fungovať.
 [lesson warrior-training produce title]
-
+Vyrobte dvoch bojovníkov
 [lesson warrior-training produce instruction]
-
+Nastavte Hniezdo iba na bojovníkov; prideľte dodávateľov a počkajte na 2 bojovníkov.
 [lesson warrior-training produce help]
-
+Nastavte pomery robotníkov a prieskumníkov na 0 a pomer bojovníkov na 1. Hniezdo konzumuje pšenicu na zrod jednotiek. Pomery vyberajú, čo sa vyrába; dodávatelia určujú, či môže fungovať.
 [lesson warrior-training produce marker]
-
+Vyrobte dvoch bojovníkov
 [lesson warrior-training build hint]
-
+Postavte na čistinke kasárne; prideľte staviteľov. Zastavte alebo znížte produkciu bojovníkov, keď budete mať dosť. Kasárne učia bojové zručnosti; potrebujú voľný priestor okolo svojich okrajov.
 [lesson warrior-training build title]
-
+Postavte kasárne
 [lesson warrior-training build instruction]
-
+Postavte na čistinke kasárne; prideľte staviteľov.
 [lesson warrior-training build help]
-
+Zastavte alebo znížte produkciu bojovníkov, keď budete mať dosť. Kasárne učia bojové zručnosti; potrebujú voľný priestor okolo svojich okrajov.
 [lesson warrior-training build marker]
-
+Postavte kasárne
 [lesson warrior-training train hint]
-
+Nechajte bojovníka dokončiť cvičenie v kasárňach. Bojovníci automaticky vyhľadávajú tréning. Udržujte jedálne zásobené potravinami a kasárne prístupné. Postaviť kasárne nestačí: bojovník tam musí absolvovať výcvik.
 [lesson warrior-training train title]
-
+Trénujte svojich bojovníkov
 [lesson warrior-training train instruction]
-
+Nechajte bojovníka dokončiť cvičenie v kasárňach.
 [lesson warrior-training train help]
-
+Bojovníci automaticky vyhľadávajú tréning. Udržujte jedálne zásobené potravinami a kasárne prístupné. Postaviť kasárne nestačí: bojovník tam musí absolvovať výcvik.
 [lesson fortifications title]
-
+Veže a ochranné múry
 [lesson fortifications briefing]
-
+Postavte vežu, zásobte ju muníciou a postavte ochranné múry. Potom otestujte svoju obranu proti jednému malému útoku.
 [lesson fortifications complete]
-
+Vaša obrana mala dostatok munície na zastavenie cvičného útoku. Veže potrebujú kameň. Nechajte medzery v stenách, aby sa dodávatelia dostali k vežiam.
 [lesson fortifications tower hint]
-
+Postavte vežu v označenej oblasti; prideľte staviteľov. Umiestnite ju blízko kameňolomu a ponechajte prístup dodávateľom. Útok nezačne, kým nie sú splnené prípravné ciele.
 [lesson fortifications tower title]
-
+Postavte obrannú vežu
 [lesson fortifications tower instruction]
-
+Postavte vežu v označenej oblasti; prideľte staviteľov.
 [lesson fortifications tower help]
-
+Umiestnite ju blízko kameňolomu a ponechajte prístup dodávateľom. Útok nezačne, kým nie sú splnené prípravné ciele.
 [lesson fortifications tower marker]
-
+Postavte obrannú vežu
 [lesson fortifications walls hint]
-
+Postavte aspoň 2 časti múru pri veži; zachovajte jej západný prístup otvorený. Múry spotrebúvajú kameň a každé stavenisko žiada pracovníkov. Vežu neuzatvárajte: dodávatelia potrebujú cestu. Vyznačený západný priechod musí zostať voľný.
 [lesson fortifications walls title]
-
+Chráňte vežu múrmi
 [lesson fortifications walls instruction]
-
+Postavte aspoň 2 časti múru pri veži; zachovajte jej západný prístup otvorený.
 [lesson fortifications walls help]
-
+Múry spotrebúvajú kameň a každé stavenisko žiada pracovníkov. Vežu neuzatvárajte: dodávatelia potrebujú cestu. Vyznačený západný priechod musí zostať voľný.
 [lesson fortifications walls marker]
-
+Chráňte vežu múrmi
 [lesson fortifications supply hint]
-
+Vyberte vežu a požiadajte dodávateľov. Počkajte, kým bude mať veža aspoň 2 jednotky kameňa. Keď je veža postavená, požiadajte robotníkov, aby priniesli muníciu. Toto číslo musíte nastaviť oddelene od počtu pracovníkov požadovaných na výstavbu.
 [lesson fortifications supply title]
-
+Zásobovanie muníciou
 [lesson fortifications supply instruction]
-
+Vyberte vežu a požiadajte dodávateľov. Počkajte, kým bude mať veža aspoň 2 jednotky kameňa.
 [lesson fortifications supply help]
-
+Keď je veža postavená, požiadajte robotníkov, aby priniesli muníciu. Toto číslo musíte nastaviť oddelene od počtu pracovníkov požadovaných na výstavbu.
 [lesson fortifications supply marker]
-
+Zásobovanie muníciou
 [lesson fortifications hold hint]
-
+Nepriateľský bojovník vyslaný na toto cvičenie sa blíži. Udržujte vežu zásobenú muníciou a nechajte ju prístupnú. Bráňte sa, kým útočníka neporazíte alebo nezaženiete. Múr blokujúci zásobovačov môže nechať vežu bez munície. Ak kolónia padne, reštartujte lekciu alebo načítajte skoršie uloženie.
 [lesson fortifications hold title]
-
+Otestujte opevnenia
 [lesson fortifications hold instruction]
-
+Nepriateľský bojovník vyslaný na toto cvičenie sa blíži. Udržujte vežu zásobenú muníciou a nechajte ju prístupnú.
 [lesson fortifications hold help]
-
+Bráňte sa, kým útočníka neporazíte alebo nezaženiete. Múr blokujúci zásobovačov môže nechať vežu bez munície. Ak kolónia padne, reštartujte lekciu alebo načítajte skoršie uloženie.
 [lesson fortifications hold marker]
-
+Otestujte opevnenia
 [lesson defensive-tactics title]
-
+Strážne zóny a vlajková taktika
 [lesson defensive-tactics briefing]
-
+Preskúmajte cvičného nepriateľa, pripravte strážnu zónu, bráňte sa a potom zorganizujte protiútok.
 [lesson defensive-tactics complete]
-
+Skúmali ste nepriateľa, bránili ste strážnu zónu a viedli protiútok. Číslo, ktoré nastavíte pre vlajku, určuje, koľko jednotiek sa požaduje. Polomer určuje, kde tieto jednotky pracujú.
 [lesson defensive-tactics scout hint]
-
+Umiestnite vlajku prieskumu na nepriateľskú základňu; prideľte 1 prieskumníka. Vlajky vyžadujú jednotky, ktoré sa pohybujú autonómne. Prieskumník odhalí súčasnú aktivitu ukrytú vo vojnovej hmle. Prieskumník sa môže zastaviť na jedenie.
 [lesson defensive-tactics scout title]
-
+Preskúmajte nepriateľskú základňu
 [lesson defensive-tactics scout instruction]
-
+Umiestnite vlajku prieskumu na nepriateľskú základňu; prideľte 1 prieskumníka.
 [lesson defensive-tactics scout help]
-
+Vlajky vyžadujú jednotky, ktoré sa pohybujú autonómne. Prieskumník odhalí súčasnú aktivitu ukrytú vo vojnovej hmle. Prieskumník sa môže zastaviť na jedenie.
 [lesson defensive-tactics scout marker]
-
+Preskúmajte nepriateľskú základňu
 [lesson defensive-tactics guard hint]
-
+Nakreslite strážnu zónu v označenej oblasti a nechajte 2 bojovníkov, aby ju dosiahli. Otvorte Vlajky, vyberte Stráž a vymaľujte aspoň 4 polia v oblasti. Strážne zóny priťahujú nečinných bojovníkov. Zakázané zóny blokujú priechod; čistiace zóny žiadajú odstránenie surovín.
 [lesson defensive-tactics guard title]
-
+Pripravte si strážnu zónu
 [lesson defensive-tactics guard instruction]
-
+Nakreslite strážnu zónu v označenej oblasti a nechajte 2 bojovníkov, aby ju dosiahli.
 [lesson defensive-tactics guard help]
-
+Otvorte Vlajky, vyberte Stráž a vymaľujte aspoň 4 polia v oblasti. Strážne zóny priťahujú nečinných bojovníkov. Zakázané zóny blokujú priechod; čistiace zóny žiadajú odstránenie surovín.
 [lesson defensive-tactics guard marker]
-
+Pripravte si strážnu zónu
 [lesson defensive-tactics repel hint]
-
+Nepriateľ útočí. Udržujte bojovníkov v strážnej zóne a Jedálne zásobené. Malý útok začína po vašich prípravách. Porazte alebo zažeňte oboch nájazdníkov; zranení nepriatelia môžu ustúpiť. Bojovníci môžu dočasne odísť jesť. Ak obrana zlyhá, použite skoršie uloženie alebo reštart.
 [lesson defensive-tactics repel title]
-
+Odrazte cvičný útok
 [lesson defensive-tactics repel instruction]
-
+Nepriateľ útočí. Udržujte bojovníkov v strážnej zóne a Jedálne zásobené.
 [lesson defensive-tactics repel help]
-
+Malý útok začína po vašich prípravách. Porazte alebo zažeňte oboch nájazdníkov; zranení nepriatelia môžu ustúpiť. Bojovníci môžu dočasne odísť jesť. Ak obrana zlyhá, použite skoršie uloženie alebo reštart.
 [lesson defensive-tactics repel marker]
-
+Odrazte cvičný útok
 [lesson defensive-tactics counterattack hint]
-
+Umiestnite vlajku vojny nad nepriateľské hniezdo; vyžiadajte si 3 bojovníkov a použite polomer 4 alebo menší. Strážne zóny a vlajky vojny súťažia o bojovníkov. Odstráňte strážne polia, ak držia vašu armádu späť. Majte k dispozícii jedlo, kým bojovníci cestujú a útočia.
 [lesson defensive-tactics counterattack title]
-
+Smerujte sústredený protiútok
 [lesson defensive-tactics counterattack instruction]
-
+Umiestnite vlajku vojny nad nepriateľské hniezdo; vyžiadajte si 3 bojovníkov a použite polomer 4 alebo menší.
 [lesson defensive-tactics counterattack help]
-
+Strážne zóny a vlajky vojny súťažia o bojovníkov. Odstráňte strážne polia, ak držia vašu armádu späť. Majte k dispozícii jedlo, kým bojovníci cestujú a útočia.
 [lesson defensive-tactics counterattack marker]
-
+Smerujte sústredený protiútok
 [lesson healing build compact]
-
+Stavba → Nemocnica. Ponechajte prístup; prideľte staviteľov.
 [lesson healing heal compact]
-
+Nechajte zraneného pracovníka vyliečiť sa v nemocnici.
 [lesson walking-training build compact]
-
+Stavba → Bežecká dráha. Okolo nej ponechajte priestor.
 [lesson walking-training train compact]
-
+Nechajte pracovníka absolvovať školenie na Bežeckej dráhe.
 [lesson swimming build compact]
-
+Stavba → Bazén, západne od jazierka.
 [lesson swimming train compact]
-
+Nechajte pracovníka naučiť sa plávať.
 [lesson swimming water-job compact]
-
+Stavba → Škola. Prideľte staviteľov na drevo a riasy.
 [lesson schools build compact]
-
+Stavba → Škola. Prideľte staviteľov na drevo a riasy.
 [lesson schools learn compact]
-
+Nechajte pracovníka absolvovať školenie v škole.
 [lesson upgrades upgrade compact]
-
+Bežecká dráha → Vylepšiť. Prideľte zručných staviteľov.
 [lesson upgrades train compact]
-
+Nechajte pracovníka trénovať na modernizovanej bežeckej dráhe.
 [lesson warrior-training produce compact]
-
+Hniezdo → len bojovníci. Dodajte pšenicu na výrobu 2 bojovníkov.
 [lesson warrior-training build compact]
-
+Stavba → Kasárne. Okolo nich ponechajte priestor.
 [lesson warrior-training train compact]
-
+Nechajte bojovníka dokončiť cvičenie v kasárňach.
 [lesson fortifications tower compact]
-
+Stavba → Veža. Umiestnite do označenej oblasti.
 [lesson fortifications walls compact]
-
+Postavte 2 múry. Západný prístup k veži nechajte otvorený.
 [lesson fortifications supply compact]
-
+Vyberte vežu → dodávateľov. Počkajte na 2 kamene.
 [lesson fortifications hold compact]
-
+Udržujte vežu zásobenú muníciou proti útočníkovi.
 [lesson defensive-tactics scout compact]
-
+Vlajky → Prieskum. Umiestnite vlajku na nepriateľskú základňu; prideľte 1 prieskumníka.
 [lesson defensive-tactics guard compact]
-
+Vlajky → Stráž. Maľujte 4 polia; nech prídu 2 bojovníci.
 [lesson defensive-tactics repel compact]
-
+Držte strážnu zónu. Majte zásobené jedálne.
 [lesson defensive-tactics counterattack compact]
-
+Vlajka vojny → nepriateľské hniezdo. Požiadajte o 3 bojovníkov; polomer ≤4.
 [library GL only]
 Len GL
 [Grassland]
@@ -6781,6 +6785,6 @@ Zvieracie chodníky
 [Fish amount]
 Množstvo rýb
 [scenario messages]
-
+Správy ▸
 [Camp-site amount]
 Počet táborísk

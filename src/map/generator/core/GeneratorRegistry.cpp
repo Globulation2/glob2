@@ -150,6 +150,16 @@ std::vector<int> GeneratorRegistry::methods(bool editor) const
 			result.push_back(d.legacyId);
 	return result;
 }
+int GeneratorRegistry::defaultMethod(bool editor) const
+{
+	const auto ids = methods(editor);
+	if (ids.empty())
+		throw std::invalid_argument("No available map generators");
+	for (int id : ids)
+		if (std::string(at(id).id) == "lava-shield")
+			return id;
+	return ids.front();
+}
 int GeneratorRegistry::selectionIndex(int id, bool editor) const
 {
 	auto ids = methods(editor);

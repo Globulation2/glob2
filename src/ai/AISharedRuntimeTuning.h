@@ -209,18 +209,6 @@ namespace AISharedRuntime
 	static constexpr int AI_SHARED_RUNTIME_RTI_UPGRADE_TARGET_LEVEL_3 = 3;
 
 
-	// ---- Farming-area pattern -----------------------------------------------
-	// The forbidden-farming-area scan applies a brush only on a checker
-	// pattern (every 4th tile) to leave aisles between rows.
-	// (Econo.cpp:816, 830.)
-
-	/// Stride modulus for the farming pattern: brush only on (x % STRIDE == 1
-	/// && y % STRIDE == 1) tiles.
-	static constexpr int AI_SHARED_RUNTIME_RTI_FARMING_PATTERN_STRIDE = 2;
-	/// Max distance from water for forbidden-farming-area placement.
-	static constexpr int AI_SHARED_RUNTIME_RTI_FARMING_WATER_MAX_DIST = 10;
-
-
 	// ---- GradientManager / pending-building timing ---------------------------
 	// (Gradient.cpp:265, 297, 308, 326, 329; Construction.cpp:802.)
 

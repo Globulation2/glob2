@@ -111,6 +111,11 @@ void GameGUITouch::drawNavigationIcon(int icon, ViewPoint center, bool selected,
 		float(points * unit), navigationIcons[icon].get());
 }
 
+void GameGUITouch::drawPrestigeIcon(ViewPoint center, double logicalSize)
+{
+	drawNavigationIcon(9, center, false, logicalSize / globalContainer->gfx->logicalUnitsPerPoint());
+}
+
 void GameGUITouch::drawControls()
 {
 	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION && !activeDialog())

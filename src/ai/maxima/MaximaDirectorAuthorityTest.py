@@ -80,9 +80,11 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             executor = function(source, start)
             permitted = {
                 "void Maxima::update_fruit_flags": ("strategy.fruit.units_per_flag",),
-                # Per-flag sizing is mechanical; the director still owns the
-                # target and total attack force, as it does for fruit flags.
-                "void Maxima::control_offense(": ("strategy.military.attack_unit_cap",),
+                # Per-flag sizing and a fixed arrival grace are mechanical; the
+                # director still owns targets, total force and stall thresholds.
+                # Each constant is read once; all other policy comes from budget.
+                "void Maxima::control_offense(": ("strategy.military.attack_unit_cap",
+                                                  "strategy.tactics.arrival_grace_ticks"),
             }
             for setting in permitted.get(start, ()):
                 self.assertEqual(executor.count(setting), 1, setting)

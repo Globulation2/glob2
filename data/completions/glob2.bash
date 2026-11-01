@@ -254,7 +254,7 @@ _glob2_complete() {
     'game run|--resource-growth-delay') kind='integer'; values='';;
     'game run|--ai-order-delay') kind='integer'; values='';;
     'game run|--save') kind='string'; values='';;
-    'game run|--telemetry') kind='enum'; values='checksums team-timeline maxima';;
+    'game run|--telemetry') kind='enum'; values='checksums team-timeline maxima warrior-tactics';;
     'game run|--benchmark-warmup') kind='integer'; values='';;
     'game run|--owner-profile-min-ms') kind='integer'; values='';;
     'game run|--owner-profile-from-tick') kind='integer'; values='';;

@@ -398,6 +398,13 @@ public:
 	/// Whether the menus offer Pause to this player now.
 	bool pauseAvailable() const;
 private:
+	struct TopBarLayout
+	{
+		std::array<std::string, 7> values;
+		std::array<double, 7> x;
+		double scale;
+	};
+	TopBarLayout topBarLayout() const;
 	friend class GameGUISelectionHarness;
 	friend class SavegameSafetyHarness;
 	friend class TorusRenderIntegrationTest;
