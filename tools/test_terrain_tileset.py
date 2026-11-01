@@ -107,6 +107,24 @@ class TerrainTileset(unittest.TestCase):
             self.assertIn(record["method"], ("procedural", "image-generator", "hybrid"), key)
             self.assertTrue((ROOT / record["source"]).is_file(), key)
 
+    def test_connected_decor_requires_complete_corner_groups(self):
+        hedge = next(m for m in self.document["materials"] if m["key"] == "hedge")
+        original = hedge["decor"]["connected"]
+        for frames in ([], [0], [0] * 15, [0] * 17, [0] * 272, [True] * 16):
+            hedge["decor"]["connected"] = frames
+            with self.assertRaises(ValueError):
+                validate(self.document)
+        hedge["decor"]["connected"] = original
+        hedge["decor"]["connected_corners"] = 1
+        with self.assertRaises(ValueError):
+            validate(self.document)
+        hedge["decor"]["connected"] = original[:128]
+        hedge["decor"]["connected_corners"] = True
+        with self.assertRaises(ValueError):
+            validate(self.document)
+        hedge["decor"]["connected"] = original
+        validate(self.document)
+
     def test_invalid_catalogs(self):
         mutations = [
             lambda d: d.update(version=9),

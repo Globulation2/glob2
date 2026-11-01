@@ -47,7 +47,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			auto *decor = customSprites.resolve(m.decor.sprite);
 			if (!decor)
 				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
-			for (const auto &frames : {m.decor.full, m.decor.edge})
+			for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior})
 				for (int frame : frames)
 					if (frame >= decor->getFrameCount() || decor->getW(frame) > 64 ||
 						decor->getH(frame) > 64)
@@ -395,9 +395,15 @@ int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 	x &= map.getMaskW();
 	y &= map.getMaskH();
 	const auto [best, count] = decorMaterial(map, x, y);
-	if (count < 2)
-		return -1;
-	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed());
+	const auto &decor = definitions.materials[best].decor;
+	if (count == 0 || (count < 2 && decor.connected.empty())) return -1;
+	unsigned mask = 0;
+	const auto corners = map.cellCorners(x, y);
+	for (unsigned k = 0; k < corners.size(); ++k)
+		if (const auto id = materialFor(map, corners[k]); id == best ||
+			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty())) mask |= 1u << k;
+	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed(), mask,
+		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
@@ -490,7 +496,8 @@ std::size_t Compositor::cpuMaterialBytesSelected(std::span<const MaterialId> nee
     for (const auto &material : definitions.materials)
         bytes += material.key.capacity() + material.sprite.capacity() +
                  material.variants.capacity() * sizeof(Variant) + material.decor.sprite.capacity() +
-                 (material.decor.full.capacity() + material.decor.edge.capacity()) * sizeof(int) +
+                 (material.decor.full.capacity() + material.decor.edge.capacity() + material.decor.connected.capacity() +
+                  material.decor.connectedInterior.capacity()) * sizeof(int) +
                  256;
     for (const auto &binding : definitions.bindings)
         bytes += sizeof(binding) + binding.first.capacity() + 128;
@@ -723,7 +730,11 @@ void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_
 			int shade = 256, tint = 0;
 			if (neighbor != dominant)
 			{
-				if (other.cast && other.height > self.height && margin < other.castWidth)
+				// Connected canopies supply their own raised edge and contact shadow.
+				// Casting again from the rough undergrowth contour makes teeth and
+				// hairlines protrude beyond the foliage.
+				if (definitions.materials[neighbor].decor.connected.empty() && other.cast &&
+					other.height > self.height && margin < other.castWidth)
 					shade = 256 - other.cast * (other.castWidth - margin) / other.castWidth;
 				if (other.fringe && margin < other.fringeWidth)
 					tint = other.fringe * (other.fringeWidth - margin) / other.fringeWidth;
