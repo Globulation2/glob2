@@ -291,17 +291,19 @@ class GameGUITouch
 						bool leading = false, int lineHeight = 0);
 	std::string navigationLabel(int index) const;
 	int navigationLabelLineHeight(const std::vector<std::string> &lines) const;
-	double navigationLabelHeight(double width) const;
 	GAGCore::ViewRect navigationLabelRect(const GAGCore::MobileLayout &ui, int index) const;
 	struct NavigationMeasurement
 	{
 		const GAGCore::Font *font = nullptr;
 		double width = 0, unit = 0, growth = 0, height = 0;
-		int language = -1, lineHeight = 0;
+		int language = -1, lineHeight = 0, columns = 6;
 		bool replay = false;
 		std::array<std::string, 6> labels;
 		std::array<std::pair<int, int>, 6> metrics;
 	};
+	const NavigationMeasurement &measureNavigation(double width) const;
+	GAGCore::ViewRect navigationButtonRect(const GAGCore::MobileLayout &ui, int index) const;
+	int navigationButtonAt(const GAGCore::MobileLayout &ui, GAGCore::ViewPoint point) const;
 	mutable std::optional<NavigationMeasurement> navigationMeasurement;
 	BuildingRef ownerBuilding;
 	const void *ownerDialog = nullptr;

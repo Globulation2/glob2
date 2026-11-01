@@ -48,6 +48,9 @@ as matches and the editor; see [render pacing](../architecture/rendering.md#targ
    not use raw pixel constants. The framework sizes text from the player's
    text size (in points on touch hosts), so a screen never scales fonts itself
    (see [Text size](#text-size)).
+   Use `p.textPt()` for widths that must grow with text, such as touch action
+   grids. Settings places its save-status note above the actions when the
+   available width cannot hold both comfortably at the chosen text size.
 6. **Text wraps or ellipsizes; it is never clipped silently.** Use
    `paragraph()` for wrapping text and `label()` for single lines that
    ellipsize. Controls shrink or wrap their labels within the framework's
@@ -485,6 +488,57 @@ not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
 
+### Google NMT draft preparation
+
+After preparing a frozen kit and blank draft, use
+`python3 tools/localization/google_draft.py --mode editorial --output artifacts/translation-program --locale fil --pilot 42`
+for a pilot spanning source domains and both surfaces. Omit `--pilot` to resume
+the remaining entries. The runner uses the existing `gcloud` login and defaults
+to the Bradley Personal project; `--project` selects another explicitly authorized
+project. It uses the NMT model with English as the source language.
+
+The runner protects tokens and invariants, retains raw responses, and caches
+identical requests. Nonblank draft values are retained so resuming cannot undo
+editorial work. Inspect rejected entries rather than repeatedly requesting them.
+The local attempt ledger reserves estimated charges before each request, including
+failed attempts, without assuming monthly credits. `--max-usd` bounds cumulative
+estimated charges, including HTML protection overhead; recheck provider pricing
+before use. Interrupted runs retain their evidence and may leave a lock that must
+be inspected before removal. These drafts still require the independent review
+and rendering gates above.
+
+### Filipino terminology
+
+Filipino (`fil`, including the `tl` system-language alias) uses contemporary
+standard Filipino in the Latin script. Use direct, respectful instructions and
+recognizable technical loanwords rather than awkward literal translations.
+Follow the [KWF orthography guide](https://kwfdiksiyonaryo.ph/gabay) for retained
+foreign spellings and affixes; ordinary UI text does not need dictionary stress
+marks.
+
+Filipino uses the existing Latin font with authored drawing advances, so larger
+raster sizes retain the widths used for wrapping. Check both ordinary and
+high-density rendering when changing its font configuration.
+Check both catalog surfaces against the full font and browser startup subset,
+including shared UI symbols such as the fullwidth plus control.
+
+Use **manggagawa** for gathering/building workers, **mandirigma** for warriors,
+**tagapaggalugad** for explorers, **Pugad** for the unit-producing Swarm building,
+**Panuluyan** for Inns, **Pamilihan** for Markets, and **bandila** for flags.
+Explain unit conversion as joining another team. Distinguish credits acknowledging
+contributors from spendable studio credits, and computing workers from colony
+units. Consult gameplay context when these terms occur in other senses.
+
+For classic terrain looks, use **Mayabong na damo**, **Tuyong damo**,
+**Buhangin ng burol**, and **Maputlang buhangin**. The dune label follows the
+existing **Burol ng buhangin** theme name; these looks retain ordinary grass or
+sand rules and do not imply an elevation mechanic.
+
+Review complete sentences and assembled browser fragments. Preserve necessary
+boundary spaces, but avoid spaces introduced around protected placeholders before
+punctuation. Numeric counts usually take an unchanged noun; do not mechanically
+add `mga` or assume the runtime's `one` plural category means exactly one.
+
 ### Cloud Translation drafts
 
 Prepare a Bengali kit with `prepare --locales bn --output
@@ -852,7 +906,7 @@ bitmaps nor evicts rendered text. Use bounded `listView` controls for large
 fixed-height data lists, with full text in a separate details area when needed;
 wrapping every entry in a `scroll` still measures all entries during layout.
 
-Script-layout locales, Swahili, Norwegian Bokmål and Malay draw high-DPI text
+Script-layout locales, Filipino, Swahili, Norwegian Bokmål and Malay draw high-DPI text
 at the authored width used by wrapping and hit testing. The complete
 high-resolution bitmap is resampled into that destination; font hinting at a
 larger raster size must not make a fitted line overflow its layout. Legacy
@@ -867,7 +921,10 @@ button fitting and display-density textures for the finished labels.
 The phone HUD's bottom navigation reserves its icon band and measures every
 translated, wrapped caption using the active font and text-size preference.
 Captions taller than the original 16-point slot expand the action strip upward
-with bottom padding; world bounds and hit regions use that same strip geometry.
+with bottom padding. When whole words cannot fit across six buttons, navigation
+uses balanced rows of three, two or one button. Normal-size captions retain the
+six-button row when they fit. Drawing, pointer input and keyboard targets share
+the same button rectangles; world bounds end above the resulting strip.
 Do not shorten a translation to compensate for a fixed-height caption clip.
 Touch text wrapping preserves the active font's shaped clusters, including an
 indivisible cluster wider than its slot, and retains explicit blank lines.

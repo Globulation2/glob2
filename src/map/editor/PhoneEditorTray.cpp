@@ -642,7 +642,7 @@ GAGGUI::ui::SurfaceSnapshot PhoneEditor::browserControls()
 	};
 	for (int i = 0; i < modeCount; ++i)
 	{
-		const ViewRect r{modeBar.x + i * modeBar.w / modeCount, modeBar.y, modeBar.w / modeCount, modeBar.h};
+		const auto r = modeRect(i);
 		append("tray/mode/" + std::to_string(i), r, r, "");
 	}
 	for (size_t i = 0; i < chips.size(); ++i)
