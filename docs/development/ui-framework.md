@@ -822,3 +822,32 @@ preference fields or simulation state are introduced.
    `src/ui/UIPresentationHarness.cpp` and, for a reviewable capture, to
    `tools/MobileGalleryHarness.cpp` and `tools/mobile_gallery/catalog.json`.
 4. Expose semantic entry points for interaction tests instead of coordinates.
+
+### In-game statistics
+
+The Statistics view shares visible topic buttons and a scrollable metric list
+between the 200-pixel desktop sidebar and the mobile bottom sheet.
+The desktop minimap stays 128 pixels wide and is centered within the sidebar.
+Overview highlights population, growth, hunger, health, worker idleness, blocked
+buildings, warriors and intruders. Colony contains Population and Food; Economy
+contains Work, Materials and Buildings; Military contains Military; World contains
+Map and Score. Colony also retains the snapshot-only Unit details. Live spectators
+retain their existing win-chance display under World.
+
+Selecting a metric shows its current or watched team's history below that group.
+Labels and values use separate aligned columns; unavailable readings use a dash
+and one shared explanation. Larger text uses fewer topic buttons per row and
+puts readings below full-width labels. Open full history expands the chart into an in-game
+dialog while the match continues. Its Details disclosure explains the metric;
+short landscape layouts put the chart before its controls. Rate/total and averaging controls use the metric
+catalog's capabilities and defaults. Topic, per-topic scrolling and per-metric
+history choices last for the current match; they are not saved as preferences.
+Closing history restores focus to its metric. The former graph view is now Map
+overlays, retaining its tab position and the four overlay toggles.
+
+`InGameStatisticsPanel` holds immutable statistics/history leases rather than
+live simulation pointers. Visible statistics and history request the history
+component explicitly; hidden views release it. Waiting for publication, insufficient
+history and statistics not recorded in older saves have distinct messages, while
+recorded zeros remain numeric. The mobile sheet header handles downward dismissal;
+the embedded framework host handles scrolling so a content drag cannot dismiss it.

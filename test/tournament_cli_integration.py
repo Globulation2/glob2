@@ -107,14 +107,27 @@ def main():
             '--ai-param','0:expandDebounceCycles=3','--ai-param','1:expandDebounceCycles=5']
     value,original=run('configured',base+params+['--save','initial','--save','final','--save','every:512'])
     assert value['termination']=='tick_cap' and value['unresolved'] and value['winning_teams']==[]
+    assert value['resolved']['rules']['winProbabilityPermille'] == 950
     assert 'swarmWorkerCap=4' in value['players'][0]['runtime_values']
     assert 'swarmWorkerCap=7' in value['players'][1]['runtime_values']
     assert all('standard_statistics' in t and 'history' in t for t in value['teams'])
+    for team in value['teams']:
+        probability = team['win_probability']
+        history = team['win_probability_history']
+        assert history[0][0] == 0 and history[-1][0] == value['ticks']
+        assert probability['end_tick'] == value['ticks'] and probability['start_tick'] == 0
+        assert probability['permille'] == history[-1][1]
+        area = sum((b[0]-a[0])*(a[1]+b[1]) for a,b in zip(history,history[1:]))
+        assert probability['area_twice_permille_ticks'] == area
+        assert abs(probability['mean'] - area / (2000*value['ticks'])) < .000001
     original_ticks=tick_records(original/'game.replay.checksums')
     for name,save in [('initial-reload','initial.game.gz'),('continuation','checkpoint-512.game.gz')]:
         restored,target=run(name,['game', 'run','--load-game',str(original/save),'--ticks',str(args.ticks),'--telemetry','checksums','--save','final'],
                             environment={'GLOB2_CORTEX_TUNING':'/nonexistent/ambient','GLOB2_MAXIMA_OVERRIDES':'invalid=1','GLOB2_CORTEX_POLICY':'ml'})
         trace=tick_records(target/'game.replay.checksums')
+        for before, after in zip(value['teams'], restored['teams']):
+            assert before['win_probability'] == after['win_probability']
+            assert before['win_probability_history'] == after['win_probability_history']
         assert trace and all(original_ticks[t]==record for t,record in trace.items()),name
         assert restored['players']==value['players']
     _,normal=run('defaults',base)

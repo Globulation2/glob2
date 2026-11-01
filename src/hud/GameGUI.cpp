@@ -3,6 +3,7 @@
 #include "hive/HiveClient.h"
 #include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "InGameStatistics.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdio.h>
@@ -44,7 +45,7 @@ GameGUI::GameGUI(bool persistPreferences)
 	  minimap(globalContainer->runNoX,
 	         RIGHT_MENU_WIDTH, // width of the menu
 	         (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()), // width of the screen
-	         20, // x offset
+	         RIGHT_MENU_OFFSET, // center the 128px minimap in the desktop sidebar
 	         10, // y offset
 	         128, // width
 	         128, //height
@@ -99,6 +100,7 @@ std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) cons
 
 void GameGUI::init()
 {
+    statisticsPanel.reset();
     pendingSettings = false;
     tutorialGuidance.reset();
     tutorialHighlights.clear();

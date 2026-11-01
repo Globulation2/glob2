@@ -4884,6 +4884,34 @@ Unidades cercadas, sem nenhuma casa livre para onde ir.
 Recursos limpos
 [stat cleared about]
 Recursos removidos pelos trabalhadores em áreas de limpeza para abrir espaço.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestígio
 [stat prestige about]

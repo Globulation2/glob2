@@ -34,8 +34,8 @@ Runtime image codecs:
 SDL_image (zlib license) and libwebp (BSD license and patent grant).
 See data/image-codec-licenses.txt for notices shipped with runtime assets.
 
-Generated terrain materials (data/gfx/terrain-<name>0….png for the catalogue
-materials listed in tools/terrain_builtin_names.json):
+Generated terrain materials (data/gfx/terrain-<name>0….png for the 29 catalogue
+materials, including grass, sand, ice, road and water):
 Original procedural synthesis by tools/artwork/terrain_synth.py (noise fields,
 Worley cells, stamps and palette ramps; no pixels derived from other artwork),
 GPL-3.0-or-later like the rest of the project. Materials later replaced through

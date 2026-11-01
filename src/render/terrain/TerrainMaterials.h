@@ -41,10 +41,21 @@ struct Seam
 // row order, so they overlap neighbouring cells (boulders, hedges, rock).
 // `full` frames are for cells surrounded by the same material, `edge` frames
 // (smaller, pulled toward the cell centre) for cells with an open neighbour.
+// Connected foliage instead selects its surface using the painted corner mask.
 struct Decor
 {
 	std::string sprite;
 	std::vector<int> full, edge;
+	// Optional mask-major frames: TL=1, TR=2, BL=4, BR=8. Equal numbers
+	// of variants for each of the 16 masks; mask zero is never drawn.
+	std::vector<int> connected;
+	// Corner tiles ("connected_corners"): each mask holds 16 variants indexed by
+	// the colour bits of the cell's four vertices (see cornerColours), so a
+	// texture continues across every cell edge without repeating periodically.
+	bool connectedCorners = false;
+	// Optional extra filled-mask frames ("connected_interior"), colour-major with
+	// the same count per colour: alternative interiors picked by a cell hash.
+	std::vector<int> connectedInterior;
 };
 struct Material
 {
@@ -52,6 +63,7 @@ struct Material
 	std::vector<Variant> variants;
 	unsigned totalWeight = 0;
 	std::uint32_t salt = 0;
+	std::uint32_t blockSalt = 0;
 	unsigned profile = 0;
 	int animationFrames = 1, animationTicks = 1, animationStride = 0;
 	// Variants share one periodic edge band and join without the runtime's
@@ -62,6 +74,8 @@ struct Material
 	// periodic field larger than a cell continues across every cell edge.
 	// Zero picks variants by hash.
 	int variantGrid = 0;
+	// Interchangeable blocks share boundary geometry; choose one per map block.
+	int variantBlocks = 1;
 	Decor decor;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
@@ -90,9 +104,14 @@ class Catalog
 	unsigned variantIndex(MaterialId material, int x, int y, std::uint32_t seed = 0) const;
 	int frame(MaterialId material, int x, int y, int time, std::uint32_t seed = 0) const;
 	// Decor frame for a cell of this material, or -1 when it has no decor.
-	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0) const;
+	// cornerColours selects the variant of corner-tiled connected decor.
+	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0,
+		unsigned cornerMask = 15, unsigned cornerColours = 0) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
+// One seeded bit per map vertex, packed for a cell in corner-mask order. It is
+// shared by all materials, so adjacent connected foliage joins the same shapes.
+unsigned cornerColours(int x, int y, unsigned maskW, unsigned maskH, std::uint32_t seed);
 struct Recipe
 {
 	// Materials of the cell's corner vertices: top-left, top-right, bottom-left,
