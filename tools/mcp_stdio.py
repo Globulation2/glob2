@@ -10,6 +10,7 @@ import argparse
 import http.client
 import json
 import os
+import socket
 import subprocess
 import sys
 import time
@@ -37,17 +38,51 @@ class Bridge:
         self.timeout = timeout
         self.protocol = PROTOCOL
 
-    def forward(self, message):
+    def forward(self, message, deadline=None):
         wire = json.dumps(message, ensure_ascii=False).encode('utf-8')
         if len(wire) > MAX_REQUEST:
             raise ValueError('Request exceeds 1 MiB')
-        connection = http.client.HTTPConnection(self.host, self.port, timeout=self.timeout)
+        remaining = None if deadline is None else deadline - time.monotonic()
+        if remaining is not None and remaining <= 0:
+            raise TimeoutError('Glob2 MCP readiness deadline exceeded')
+        connection = http.client.HTTPConnection(
+            self.host, self.port, timeout=self.timeout if remaining is None else remaining)
+        expired = threading.Event()
+        connected_socket = None
+
+        def expire():
+            expired.set()
+            # Closing alone can leave the response's buffered reader holding the
+            # descriptor. Shutdown also interrupts trickled headers/body reads.
+            stream = connected_socket or connection.sock
+            if stream is not None:
+                try:
+                    stream.shutdown(socket.SHUT_RDWR)
+                except OSError:
+                    pass
+            connection.close()
+
+        timer = None if remaining is None else threading.Timer(remaining, expire)
+        if timer is not None:
+            timer.daemon = True
+            timer.start()
         headers = {'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream',
                    'MCP-Protocol-Version': self.protocol}
         try:
+            if deadline is not None:
+                connection.connect()
+                connected_socket = connection.sock
+                # Deadline shutdown must not make HTTPConnection reopen a socket.
+                connection.auto_open = 0
+                if expired.is_set():
+                    raise TimeoutError('Glob2 MCP readiness deadline exceeded')
             connection.request('POST', self.path, wire, headers)
+            if expired.is_set():
+                raise TimeoutError('Glob2 MCP readiness deadline exceeded')
             response = connection.getresponse()
             data = response.read(64 * 1024 * 1024 + 1)
+            if expired.is_set():
+                raise TimeoutError('Glob2 MCP readiness deadline exceeded')
             if response.status == 202 and not data:
                 return None
             if response.status != 200:
@@ -55,19 +90,31 @@ class Bridge:
             if len(data) > 64 * 1024 * 1024:
                 raise RuntimeError('Glob2 response exceeds 64 MiB')
             result = json.loads(data)
+            if expired.is_set():
+                raise TimeoutError('Glob2 MCP readiness deadline exceeded')
             if message.get('method') == 'initialize' and 'result' in result:
                 self.protocol = result['result'].get('protocolVersion', self.protocol)
             return result
+        except Exception as error:
+            if expired.is_set():
+                raise TimeoutError('Glob2 MCP readiness deadline exceeded') from error
+            raise
         finally:
+            if timer is not None:
+                timer.cancel()
             connection.close()
 
-    def ready(self):
+    def ready(self, deadline=None):
         reply = self.forward({'jsonrpc': '2.0', 'id': 'launcher-readiness', 'method': 'initialize',
                               'params': {'protocolVersion': PROTOCOL, 'capabilities': {},
-                                         'clientInfo': {'name': 'glob2-launcher', 'version': '1'}}})
+                                         'clientInfo': {'name': 'glob2-launcher', 'version': '1'}}}, deadline=deadline)
         if not reply or 'result' not in reply or reply['result'].get('serverInfo', {}).get('name') != 'globulation2-ui':
             raise RuntimeError('Endpoint is not a compatible Globulation 2 MCP server')
-        discovery = self.forward({'jsonrpc': '2.0', 'id': 'launcher-capabilities', 'method': 'tools/list'})
+        try:
+            discovery = self.forward({'jsonrpc': '2.0', 'id': 'launcher-capabilities',
+                                      'method': 'tools/list'}, deadline=deadline)
+        except ConnectionRefusedError as error:
+            raise RuntimeError('Glob2 listener disappeared during discovery; no second game was started') from error
         names = {tool.get('name') for tool in discovery.get('result', {}).get('tools', [])}
         missing = REQUIRED_TOOLS - names
         if missing:
@@ -76,25 +123,27 @@ class Bridge:
 
 
 def ensure_running(bridge, executable, arguments, cwd, startup_timeout):
+    deadline = time.monotonic() + startup_timeout
     try:
-        bridge.ready()
+        bridge.ready(deadline=deadline)
         print('Glob2 MCP: reusing running game', file=sys.stderr)
         return None
-    except (ConnectionRefusedError, ConnectionResetError, TimeoutError, OSError):
-        pass
+    except ConnectionRefusedError:
+        pass  # Only an absent listener authorizes starting another game.
+    if time.monotonic() >= deadline:
+        raise TimeoutError('Glob2 MCP readiness deadline exceeded')
     # No shell, environment rewriting, pipe ownership, or termination on disconnect.
     print('Glob2 MCP: starting configured game', file=sys.stderr)
     process = subprocess.Popen([executable, *arguments], cwd=cwd, stdin=subprocess.DEVNULL,
                                stdout=sys.stderr, stderr=sys.stderr, start_new_session=True,
                                env=os.environ.copy(), close_fds=True, restore_signals=False)
-    deadline = time.monotonic() + startup_timeout
     while time.monotonic() < deadline:
         if process.poll() is not None:
             raise RuntimeError(f'Game exited during startup (exit {process.returncode})')
         try:
-            bridge.ready()
+            bridge.ready(deadline=deadline)
             return process
-        except (ConnectionRefusedError, ConnectionResetError, TimeoutError, OSError):
+        except ConnectionRefusedError:
             time.sleep(min(0.1, max(0, deadline - time.monotonic())))
     raise RuntimeError('Glob2 MCP startup timed out. Enable Settings > MCP server and verify the URL. The game was left running.')
 
@@ -111,7 +160,7 @@ def main(argv=None):
         parser.error('--startup-timeout must be greater than zero and at most 120 seconds')
     game_args = args.game_args[1:] if args.game_args[:1] == ['--'] else args.game_args
     try:
-        bridge = Bridge(args.url, timeout=min(2, args.startup_timeout))
+        bridge = Bridge(args.url)
         ensure_running(bridge, args.executable, game_args, args.cwd, args.startup_timeout)
         bridge.timeout = 35
         output_lock = threading.Lock()
@@ -173,7 +222,7 @@ def main(argv=None):
                 return 0
             except Exception as error:
                 fail(message, error, -32700 if message is None else -32600)
-    except (OSError, RuntimeError, ValueError) as error:
+    except (OSError, RuntimeError, ValueError, http.client.HTTPException) as error:
         print(f'Glob2 MCP: {error}', file=sys.stderr)
         return 1
 

@@ -1,9 +1,9 @@
 """Transport and lifecycle contracts for the standard-library MCP launcher."""
 import importlib.util
-import io
 import json
 from pathlib import Path
 import threading
+import time
 import subprocess
 import sys
 import select
@@ -21,6 +21,8 @@ class BridgeTests(unittest.TestCase):
         self.received = []
         received = self.received
         action_received = threading.Event()
+        self.behavior = {}
+        behavior = self.behavior
         self.capabilities = [
             'ui_status', 'ui_screenshot', 'ui_acquire_control', 'ui_release_control',
             'ui_move', 'ui_click', 'ui_mouse_button', 'ui_scroll', 'ui_drag', 'ui_key',
@@ -47,10 +49,38 @@ class BridgeTests(unittest.TestCase):
                 if message.get('method') == 'tools/list':
                     result = {'tools': [{'name': name} for name in capabilities]}
                 body = json.dumps({'jsonrpc': '2.0', 'id': message['id'], 'result': result}).encode()
+                mode = behavior.get(message.get('method'))
+                if isinstance(mode, float):
+                    time.sleep(mode)
+                if mode == 'headers':
+                    try:
+                        self.wfile.write(b'HTTP/1.0 200 OK\r\nX-Trickle: ')
+                        for _ in range(100):
+                            self.wfile.write(b'x')
+                            self.wfile.flush()
+                            time.sleep(0.02)
+                    except OSError:
+                        pass
+                    return
+                if mode == 'body':
+                    self.send_response(200)
+                    self.send_header('Content-Length', str(len(body)))
+                    self.end_headers()
+                    try:
+                        for byte in body:
+                            self.wfile.write(bytes([byte]))
+                            self.wfile.flush()
+                            time.sleep(0.02)
+                    except OSError:
+                        pass
+                    return
                 self.send_response(200)
                 self.send_header('Content-Length', str(len(body)))
                 self.end_headers()
-                self.wfile.write(body)
+                try:
+                    self.wfile.write(body)
+                except OSError:
+                    pass
 
             def log_message(self, *_):
                 pass
@@ -113,6 +143,45 @@ class BridgeTests(unittest.TestCase):
             process.wait(timeout=5)
             process.stdout.close()
             process.stderr.close()
+
+    def test_listening_endpoint_timeout_does_not_start_another_game(self):
+        for mode in ('headers', 'body'):
+            with self.subTest(mode=mode):
+                self.behavior['initialize'] = mode
+                started = time.monotonic()
+                with patch.object(launcher.subprocess, 'Popen') as popen:
+                    with self.assertRaises(TimeoutError):
+                        launcher.ensure_running(self.bridge, 'glob2', [], None, 0.15)
+                    popen.assert_not_called()
+                self.assertLess(time.monotonic() - started, 0.8)
+
+    def test_initialization_and_discovery_share_one_startup_deadline(self):
+        self.behavior.update({'initialize': 0.15, 'tools/list': 0.15})
+        started = time.monotonic()
+        with patch.object(launcher.subprocess, 'Popen') as popen:
+            with self.assertRaises(TimeoutError):
+                launcher.ensure_running(self.bridge, 'glob2', [], None, 0.22)
+            popen.assert_not_called()
+        self.assertLess(time.monotonic() - started, 0.7)
+
+    def test_listener_disappearing_during_discovery_does_not_start_another_game(self):
+        initialized = {'result': {'serverInfo': {'name': 'globulation2-ui'}}}
+        with patch.object(self.bridge, 'forward', side_effect=[initialized, ConnectionRefusedError()]):
+            with patch.object(launcher.subprocess, 'Popen') as popen:
+                with self.assertRaisesRegex(RuntimeError, 'disappeared'):
+                    launcher.ensure_running(self.bridge, 'glob2', [], None, 0.2)
+                popen.assert_not_called()
+
+    def test_spawn_and_readiness_use_the_original_probe_deadline(self):
+        fake = Mock()
+        fake.ready.side_effect = [ConnectionRefusedError(), None]
+        process = Mock()
+        process.poll.return_value = None
+        with patch.object(launcher.subprocess, 'Popen', return_value=process):
+            launcher.ensure_running(fake, 'glob2', [], None, 1)
+        deadlines = [call.kwargs['deadline'] for call in fake.ready.call_args_list]
+        self.assertEqual(len(deadlines), 2)
+        self.assertEqual(deadlines[0], deadlines[1])
 
     def test_url_is_confined_to_loopback_and_mcp_path(self):
         for url in ['https://127.0.0.1/mcp', 'http://evil.example/mcp',

@@ -76,6 +76,18 @@ not depend on the OS pointer position.
 | ui_key | SDL scancode name; press (default), down or up; optional modifier scancode names. |
 | ui_type_text | UTF-8 via the focused game's text-input path, up to 65536 bytes. |
 | ui_release_inputs | Release remote-held mouse buttons and keys. |
+| ui_inspect | Typed hierarchy; optional surface/subtree filters and bounded screenshot. |
+| ui_act | Activate, select, set a value or scroll an inspected control; target revision required. |
+| ui_wait | Observe a screen, control state or revision; default 10 seconds, maximum 30. |
+| ui_renew_control | Renew the current token's five-minute control lease. |
+| hive_status | Local scripting availability, match-session identity and limits. |
+| hive_api | Shared player JavaScript API and authoritative local control contract. |
+| hive_run | Queue one bounded script invocation with a deduplicated operation key. |
+| hive_result | Inspect an operation's output, errors and order-submission result. |
+| hive_program | List/inspect/install/replace/pause/resume/cancel local standing orders. |
+
+The [local Hive guide](../multiplayer/hive-mind.md#local-human-match-scripting-through-mcp)
+describes script ownership, lifecycle and standing-order management.
 
 Input tools accept capture_after (default false). Success means the actual input
 consumer dispatched the operation; it does not establish that loading or other
@@ -228,7 +240,10 @@ records. Native OS dialogs remain outside this interface.
 
 `python3 tools/mcp_stdio.py` connects to the default loopback endpoint, reusing a
 compatible running game or starting `glob2` from `PATH`. Enable Settings → MCP server
-in the game profile first. Startup defaults to 30 seconds (maximum 120). Override the
+in the game profile first. Startup defaults to one 30-second budget (maximum 120),
+including the initial probe and capability discovery. A listening but unresponsive or
+incompatible endpoint fails without starting a second game; only connection refusal
+starts the configured executable. Override the
 executable, working directory, URL and argument list explicitly:
 
 ```sh

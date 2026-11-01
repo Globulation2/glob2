@@ -18,11 +18,21 @@ class HiveAPITests(unittest.TestCase):
     def test_header_retains_the_exact_player_contract(self):
         contract = (ROOT / 'platform/packages/hive/src/commander-api.txt').read_text()
         header = api.render(contract)
-        self.assertIn('R"GLOB2_API(' + contract + ')GLOB2_API"', header)
+        player = api.player_contract(contract)
+        self.assertIn('R"GLOB2_API(' + player + ')GLOB2_API"', header)
+        self.assertIn('A step returns', player)
+        self.assertIn('ctx.game.units', player)
+        self.assertNotIn('new UUID', player)
+        self.assertNotIn('paid follow-up', player)
+        self.assertIn('new UUID', contract)  # Online clients retain their control contract.
+
+    def test_missing_section_markers_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, 'separate online management'):
+            api.render('unstructured contract')
 
     def test_bad_delimiter_is_rejected(self):
         with self.assertRaises(ValueError):
-            api.render(')GLOB2_API"')
+            api.render(')GLOB2_API"\n## Online program management\nOnline\n## Player API\nPlayer')
 
     def test_native_variant_cwd_generates_in_the_project_build_include_directory(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -31,7 +41,7 @@ class HiveAPITests(unittest.TestCase):
             nested.mkdir(parents=True)
             contract = root / 'platform/packages/hive/src/commander-api.txt'
             contract.parent.mkdir(parents=True)
-            contract.write_text('Player contract\n')
+            contract.write_text('Shared\n## Online program management\nOnline\n## Player API\nPlayer\n')
             script = types.ModuleType('SCons.Script')
             script.Action = lambda function, _: function
             package = types.ModuleType('SCons')

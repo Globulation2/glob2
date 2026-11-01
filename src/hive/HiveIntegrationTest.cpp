@@ -9,6 +9,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "hive/HiveObservation.h"
+#include "hive/LocalCommander.h"
 #include "scripting/javascript/ScriptObservations.h"
 #include "scripting/javascript/ScriptOrders.h"
 #include "Order.h"
@@ -1159,4 +1160,19 @@ TEST_CASE("Hive cards remain inspectable and actionable above the text composer 
 	const auto modalOwners = gui.inspectionHosts();
 	REQUIRE(modalOwners.size() == 1);
 	CHECK(modalOwners.front() != &gui.hiveCards->host());
+}
+
+TEST_CASE("local Hive publishes player API separately from local control rules" *
+          doctest::test_suite("HiveMindIntegration"))
+{
+    const auto api = Hive::playerAPI();
+    const auto player = api.at("contract").get<std::string>();
+    const auto control = api.at("local_control_contract").get<std::string>();
+    CHECK(player.find("ctx.game.units") != std::string::npos);
+    CHECK(player.find("new UUID") == std::string::npos);
+    CHECK(player.find("paid follow-up") == std::string::npos);
+    CHECK(control.find("hive_run") != std::string::npos);
+    CHECK(control.find("expected_revision") != std::string::npos);
+    CHECK(control.find("Replacement resets globals") != std::string::npos);
+    CHECK(control.find("local_events") != std::string::npos);
 }

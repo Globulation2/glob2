@@ -26,10 +26,24 @@ Json playerAPI()
 	return {
 		{"entrypoint", "function step(ctx) { return {output: {}, orders: []}; }"},
 		{"contract", PlayerAPIContract},
-		{"local_overrides",
-		 "There is no authentication, billing, supervision or model access. Names identify local "
-		 "programs; expected_revision protects replacement. wakeAgent records local_events only. "
-		 "Programs and globals are discarded on load/exit and are never saved."},
+		{"local_control_contract",
+		 "Acquire an MCP control token and get the current session from hive_status. "
+		 "hive_run accepts token, session, operation_key and source for one invocation; globals "
+		 "do not persist between one-shot calls. Poll hive_result with session and operation_key. "
+		 "hive_program action is list, inspect, install, replace, pause, resume or cancel. "
+		 "inspect requires name; mutations require token, session, operation_key and name. "
+		 "install/replace additionally require source and accept description and interval_ticks "
+		 "(default/minimum 25). replace requires expected_revision from inspect. Programs use "
+		 "names, with server-assigned monotonic revisions; there are no UUIDs, caller-assigned "
+		 "revisions or migration source. Install/replacement preflight validates without effects. "
+		 "Replacement resets globals and retains pause state; failure preserves the old program. "
+		 "Use a unique operation_key per mutation; repeating identical arguments returns the same "
+		 "operation result without re-execution. Queued means admission, not gameplay success. "
+		 "Standing-order globals persist across successful invocations only. Programs continue "
+		 "after MCP disconnect or lease expiry, but programs/globals are discarded on load/exit "
+		 "and are never saved. wakeAgent records local_events only: no authentication, billing, "
+		 "supervision, model access or paid work. Reads are fixed to the current human player's "
+		 "team. tools/list supplies the authoritative argument schemas."},
 		{"declarations", "examples/hive-mind/hive.d.ts"},
 		{"limits",
 		 {{"source_bytes", 131072},

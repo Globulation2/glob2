@@ -209,8 +209,10 @@ and run capabilities are excluded.
 
 Desktop local matches can run the same synchronous `step(ctx)` player scripts without
 an account, credits or supervision. `hive_status` returns availability, limits and a
-match-session identity; `hive_api` returns the existing player contract and local
-overrides. Online/LAN games, replays, spectators and AI takeover reject local execution.
+match-session identity; `hive_api` returns the shared player JavaScript `contract`
+and a separate authoritative `local_control_contract`. Online UUID, migration and
+program-management instructions are excluded from the local API. Online/LAN games,
+replays, spectators and AI takeover reject local execution.
 All observations use the player's existing fog/ownership filter. Capturing observations
 and validating completed order batches use the parked simulation access boundary.
 
@@ -225,7 +227,9 @@ queue; submission does not guarantee the later gameplay outcome.
 use `name`, `source`, optional `description` and `interval_ticks` (minimum 25).
 Replacement additionally requires `expected_revision`. Replacement preflight validates
 returned orders without submitting them or publishing wake effects; failure preserves
-the old program. Pause state survives replacement. Name revisions remain monotonic after
+the old program. Successful replacement resets the program's globals; migration
+source is unsupported locally. One-shot invocations do not share globals. Pause state
+survives replacement. Name revisions remain monotonic after
 cancellation/reinstallation, and local card keys include that revision so a stale action
 cannot target a new definition. `inspect` returns source, revision, pause state and recent result.
 
