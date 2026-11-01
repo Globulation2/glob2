@@ -75,10 +75,13 @@ jobs:
             types=json.loads(sim('device-types','list','devicetypes','--json'))['devicetypes']
             available=[x for x in runtimes if x.get('isAvailable') and '.iOS-' in x['identifier']]
             assert available,'No installed available iOS Simulator runtime'
-            runtime=sorted(available,key=lambda x:tuple(int(t) for t in x['version'].split('.')))[-1]
-            phones=[x for x in types if x['name'].startswith('iPhone')]
+            sdk_version=json.loads(doctor)['toolchain']['sdk']
+            available=[x for x in available if 'arm64' in x.get('supportedArchitectures',[]) and any(t['name'].startswith('iPhone') for t in x.get('supportedDeviceTypes',[]))]
+            assert available,'No arm64 iOS runtime with explicitly supported iPhone types'
+            runtime=sorted(available,key=lambda x:(x['version']==sdk_version,tuple(int(t) for t in x['version'].split('.'))))[-1]
+            phones=[x for x in runtime['supportedDeviceTypes'] if x['name'].startswith('iPhone')]
             assert phones
-            device_type=phones[-1]
+            device_type=next(x for x in types if x['identifier']==phones[0]['identifier'])
             device_set.mkdir(parents=True,exist_ok=True)
             selected=sim('create','create','Glob2-Mobile',device_type['identifier'],runtime['identifier']).strip()
             summary['simulator']={'uuid':selected,'runtime':runtime,'device_type':device_type}
