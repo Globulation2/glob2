@@ -625,78 +625,76 @@ describe it as agent-reviewed and keep unverified platforms explicit.
 
 Build `translation-preview-harness` for unregistered catalog captures. Its
 `matrix ROOT INPUT OUTPUT WIDTH HEIGHT` mode uses the actual game font and shared
-wrapper at authored sizes 10, 13 and 20 and raster scales 1 and 2. Optional
-`SIZE SCALE` arguments select exactly one of these combinations for independently
-resumable batches; omitting both runs all six. Each batch has its own complete
-manifest and uses the same wrapping and rasterization. `screen` adds a screen name
-(`main`, `settings`, `settings-audio`, `settings-ais`, `settings-online`,
-`settings-player`, desktop-only `settings-controls`, `lobby`, `lobby-players` or
-`new-map`). The AI library capture uses its real buttons and an unavailable
-loopback server, so it verifies local labels without remote account or provider
-actions. For controlled API-error captures, `settings-ais` also accepts
+wrapper at authored sizes 10, 13 and 20 and raster scales 1, 1.5 and 2. Optional
+`SIZE SCALE` arguments select one combination for independently resumable batches;
+omitting both runs all nine. Each batch has its own complete manifest and uses
+the same wrapping and rasterization. Matrix placeholders are displayed literally;
+formatted-message coverage needs the corresponding UI capture.
+
+`screen ROOT INPUT OUTPUT WIDTH HEIGHT SCREEN` accepts `main`, `settings`,
+`settings-audio`, `settings-ais`, `settings-online`, `settings-player`, desktop-only
+`settings-controls`, `lobby`, `lobby-players`, `new-map`, `campaign-editor-new`,
+`campaign-editor-loaded`, `script-editor-success` or `script-editor-failure`.
+The AI library capture uses its real buttons and an unavailable loopback server,
+so it verifies local labels without remote account or provider actions. For
+controlled API-error captures, `settings-ais` also accepts
 `GLOB2_TRANSLATION_PREVIEW_HTTP_ORIGIN=http://127.0.0.1:PORT` together with
 `GLOB2_TRANSLATION_PREVIEW_EXPECT_NOTICE`. It pumps the production client and
 requires that exact notice in the screen's accessible text before capturing.
 Record the local fixture response and request receipts separately; these captures
-do not verify a production server. `game` adds
-`gameplay`, `statistics`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
-the real engine and menu dialog. Statistics captures navigate the real Overview, Economy and World topics and available metric history/details. They retain live-player visibility rules and never synthesize history or expose hidden win probabilities. Tutorial IDs must belong to the current shipped
-lesson catalog. When a lesson opens its automatic briefing, the harness saves
-that state separately, dismisses it and captures the uncovered guidance panel.
-Each gameplay capture checks that drawing leaves the simulation checksum intact.
-A published tutorial model alone does not prove that its text is visible. Inputs are
-`native.json` and `online.json` key/value objects plus `metadata.json` identifying
-the locale. Preserve the original text-catalog hashes in that metadata when
-converting formats. A small pilot is a font diagnostic, not evidence that the
-whole catalog was displayed. `editor ROOT INPUT OUTPUT WIDTH HEIGHT` captures the
-production map editor, terrain controls and menu on a blank map without stepping
-the simulation. Setup and menu navigation use controlled harness friend access;
-captures use the production editor drawing path. It uses the portable SDL renderer; set `GLOB2_MOBILE_UI=1` to
-inspect the phone presentation. These resized desktop captures do not establish
-rendering on an actual mobile device. `script-editor ROOT INPUT OUTPUT WIDTH HEIGHT`
-opens the production scenario editor and captures its localized cursor, successful
-JavaScript validation and a controlled syntax failure. It validates temporary
-source without confirming or saving the scenario and checks that map state is
-unchanged. Use a fresh profile with `textSizePercent=100` or `150` to exercise
-normal and enlarged text; record the profile, viewport and presentation settings
-with the captures.
+do not verify a production server.
 
-wrapper at several authored sizes and raster scales. `screen` adds a screen name
-(`main`, `settings`, `settings-audio`, `settings-player`, `lobby` or `lobby-players`); `game` adds
-`gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
-the real engine and menu dialog. `statistics` selects the win-probability metric
-on the real results screen for the current local map; it does not represent a
-completed match or validate prediction accuracy. `ingame-statistics:TOPIC` captures
-the actual live sidebar or compact sheet for `overview`, `colony`, `economy`,
-`military` or `world`, with published local-game history.
-`ingame-statistics-history` opens the real population-history dialog;
-`map-overlays` captures the desktop overlay-tools view. These modes use ordinary
-presentation navigation and preserve the simulation checksum while drawing.
-Tutorial IDs must belong to the current shipped
-lesson catalog. For a nonempty current mission briefing, the harness captures
-the real dialog separately, opening it for preview if scene admission skipped
-the automatic opening. It records preview-opened and automatic origins separately,
-then dismisses the dialog and captures the uncovered guidance panel.
-Legacy tutorial highlight arrows wait while a modal is open, then resume after
-dismissal so they cannot cover briefing text. The desktop `tutorial:swimming`
-preview at 800×600 also toggles a real highlight and compares the actual modal's
-pixels before, during and after the probe, preserving the simulation checksum.
-It retains the initial presented frame and requires two unchanged baseline frames
-before changing the highlight, distinguishing first-frame composition from arrow
-interference.
-The gameplay preview also captures the win-probability statistics screen and its
-metric explanation, checking that drawing leaves the simulation checksum intact.
+`game ROOT INPUT OUTPUT WIDTH HEIGHT MODE` accepts `gameplay`, `statistics`,
+`statistics-navigation`, `ingame-statistics:TOPIC`, `ingame-statistics-history`,
+`map-overlays`, `tutorial` (the introduction) or `tutorial:LESSON-ID`.
+`statistics` selects the win-probability metric on the real results screen for
+the current local map; it does not represent a completed match or validate
+prediction accuracy. `statistics-navigation` selects Overview, Economy and World
+on the production live panel and opens available metric history/details.
+`ingame-statistics:TOPIC` captures the actual live sidebar or compact sheet for
+`overview`, `colony`, `economy`, `military` or `world`;
+`ingame-statistics-history` opens its population-history dialog, and
+`map-overlays` captures the desktop overlay tools. These modes use real published
+session data and production drawing, with setup through harness access or public
+panel methods. They never synthesize readings or expose hidden live-player win
+probabilities. `gameplay` additionally captures all five statistics topics,
+history, unit details, missing-reading help, and the results metric explanation.
+Its explicitly named phone-component images isolate the production panel at its
+real bounds without touch navigation. The separate live-panel sequence uses the
+production Tools keyboard route on phones and shared UI actions; this is not
+physical-touch coverage. All navigation and drawing preserve the simulation
+checksum.
 
-> > > > > > > A published tutorial model alone does not prove that its text is visible. Inputs are
-> > > > > > > `native.json` and `online.json` key/value objects plus `metadata.json` identifying
-> > > > > > > the locale. Preserve the original text-catalog hashes in that metadata when
-> > > > > > > converting formats. A small pilot is a font diagnostic, not evidence that the
-> > > > > > > whole catalog was displayed.
+Tutorial IDs must belong to the current shipped lesson catalog. For a nonempty
+current mission briefing, the harness captures the real dialog separately,
+opening it for preview if scene admission skipped the automatic opening. It
+records preview-opened and automatic origins separately, then dismisses the
+dialog and captures the uncovered guidance panel. Legacy tutorial highlight
+arrows wait while a modal is open, then resume after dismissal so they cannot
+cover briefing text. The desktop `tutorial:swimming` preview at 800×600 also
+toggles a real highlight and compares the actual modal's pixels before, during
+and after the probe, preserving the simulation checksum. It retains the initial
+presented frame and requires two unchanged baseline frames before changing the
+highlight, distinguishing first-frame composition from arrow interference.
+Tutorial captures also activate the actual guidance controls to record collapsed
+and re-expanded instructions. Those UI actions preserve the simulation checksum.
+A published tutorial model alone does not prove that its text is visible.
 
-Tutorial captures also click the actual guidance controls to record the collapsed
-control and re-expanded instructions. Those UI actions and draws must leave the
-simulation checksum unchanged; offscreen phone presentation does not establish
-mobile-platform or physical-touch hardware coverage.
+Inputs are `native.json` and `online.json` key/value objects plus `metadata.json`
+identifying the locale. Preserve the original text-catalog hashes in that metadata
+when converting formats. A small pilot is a font diagnostic, not evidence that
+the whole catalog was displayed. `editor ROOT INPUT OUTPUT WIDTH HEIGHT` captures
+the production map editor, terrain controls and menu on a blank map without
+stepping the simulation. Setup and menu navigation use controlled harness friend
+access; captures use the production editor drawing path and portable SDL renderer.
+Set `GLOB2_MOBILE_UI=1` to inspect phone presentation. `script-editor ROOT INPUT
+OUTPUT WIDTH HEIGHT` captures the production scenario editor's localized cursor,
+successful JavaScript validation and a controlled syntax failure. It validates
+temporary source without confirming or saving the scenario and checks that map
+state is unchanged. Use a fresh profile with `textSizePercent=100` or `150` to
+exercise normal and enlarged text; record the profile, viewport and presentation
+settings. Offscreen phone presentation does not establish rendering on a mobile
+OS or physical-touch hardware coverage.
 
 Capture evidence includes the executable hash and compiled build provenance,
 as well as current source, catalog and font hashes. Freeze sources during builds
