@@ -1,0 +1,4673 @@
+{
+  "scope": "Final191 screenshots plus exact review-cited historical pixels; older fullnative capture manifests/hashes remain, with only reviewed historical pixels selected. Gallery keeps first/middle/last and statistics/tool states per job; full capture-run manifests retain all measured/captured hashes. Omitted gallery pixels are not claimed as visually inspected or published.",
+  "gallery_inventory": [
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-alliances.png",
+      "bytes": 741554,
+      "sha256": "555a3b95dbb2463f4c9ed40ab08fb8875129e1ec5c713934614d736321379438",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-briefing.png",
+      "bytes": 823130,
+      "sha256": "ce918466eab3d94b21fc9e510575597258b7edbd2e335a0cfb3bff27761f2c6b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-build-bottom.png",
+      "bytes": 904518,
+      "sha256": "176b715ccc5b865cc9e248d68f0923db420d3916c264b1426d33ebe5f0a1ba39",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-build.png",
+      "bytes": 904563,
+      "sha256": "7ab9973785588f7db02804e19942471ce41975d4360ba5c229f381a86f6a1e24",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-catching-up.png",
+      "bytes": 790866,
+      "sha256": "35cdc205a0b08f24d6e94c0a900682777b83ba54de2120e2b49fe23a8546312c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-chat.png",
+      "bytes": 883072,
+      "sha256": "95a86e3bad21008d884e5eaec0ab8baa18fc4a9a855ea923c3c9b272280fa12d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-connection-details.png",
+      "bytes": 854582,
+      "sha256": "d553cde6d181f9aaee2edcb519060ed900afb72dc5094c36c67f9ffdbd1b3a47",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-connection-grid-details.png",
+      "bytes": 850792,
+      "sha256": "4939c6a3f1fec1dfc2d006e810bbef588f210c559fe70f4b0c5e4a4681ae0f14",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-connection-grid.png",
+      "bytes": 909296,
+      "sha256": "2ed00e37f7f37fca6ab9c599e78b4dfcbfda942dbf28b5f4964f94bca92d632e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-connection-left.png",
+      "bytes": 908298,
+      "sha256": "8ae747a348ea63a05d587e1abbe7f5b12073dc87a13d73affbdad2e76bc0a835",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-connection-lost.png",
+      "bytes": 797086,
+      "sha256": "7aa48a833265e69186e6a240cefc6e03c4a96ee029610589d3fc579a3a660604",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-connection-own-details.png",
+      "bytes": 854149,
+      "sha256": "bf7229e68f5105283ddade3ad23578eb83c67e199119f1a4890460a2b7cf176b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-connection-own.png",
+      "bytes": 907299,
+      "sha256": "2ff66cc407abd2a984c912c2bfeaf6a20c9b082188aca161e45abd45647af483",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-connection-trouble.png",
+      "bytes": 905552,
+      "sha256": "c4d7abe5f8a40a00aaa1bc3236cde413a7fbd84ee5ce4abff954d217642b4ef3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-connection.png",
+      "bytes": 905057,
+      "sha256": "5d077b44a7acbf063f6044bb5c10c15997e8490b80293b9ebed139bc1c80f609",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-draw.png",
+      "bytes": 755026,
+      "sha256": "d9101692371409d24b2e16828a8aaf1a46cc9ce915293162a2e1eff5c3bebf10",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-flags.png",
+      "bytes": 892414,
+      "sha256": "de2a70102ec9a5d3d1a78f628a4d12753ba03a094dce916f400dfdcc12e3fcc9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-0.png",
+      "bytes": 896259,
+      "sha256": "a92a50ca213d0bd15933b0552f66ad72fceeecb7411cf0e0de2b4e19ac6a29f5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-1.png",
+      "bytes": 896168,
+      "sha256": "a53fca686d438a62bfb9b487130c302062a9e43503417e9efae3b7ff8bdebae1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-3.png",
+      "bytes": 896235,
+      "sha256": "1fa0ab1b4cb75a1d8636f71e2f2507a9c0cb3611988fd16f99628f38b01fa0c9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-4.png",
+      "bytes": 896442,
+      "sha256": "8c60bc40587e2dd2b5b0f19af9da9ca0200ff8e7e10bdb794e20bb01c5212a53",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-barracks-construction.png",
+      "bytes": 893817,
+      "sha256": "cd23d7a5370554cdced0ceaf086c70e6f8c650ee5e739945799f234178f3971d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-barracks.png",
+      "bytes": 889610,
+      "sha256": "468ef6d77262f201b9c12538e450e5caa7995c29d88abe4afaa7765554509e77",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-clearingflag.png",
+      "bytes": 904676,
+      "sha256": "24f3cc39859598723bb1210839b420c7a6684bc9df40630b6925bb921932dd13",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-damaged.png",
+      "bytes": 898289,
+      "sha256": "2a96892b1dc9621c85ee98f780a44c70d7a1d44619b9240cccb478a2930b97bd",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-defencetower.png",
+      "bytes": 896508,
+      "sha256": "2f6fcd08d4d1e2dc1c78b6cc4f1a2ba812b6a9448c47172f68ef18073eb23757",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-destroy-confirmation.png",
+      "bytes": 904605,
+      "sha256": "8a0143141211f921a3ed70311f83eaed842cb55330dccbe98eeac91ef24a8a96",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-enemy.png",
+      "bytes": 885230,
+      "sha256": "7e429360e59d30f95e43799eb294a6a8ea27296f0fdd1d2ff6939163f798654e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-explorationflag.png",
+      "bytes": 899464,
+      "sha256": "7f557852b9df4e243d9165d94f651ce40a10bd295f9963431ca0ecfb8a1895d2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-hospital-construction.png",
+      "bytes": 894345,
+      "sha256": "6003a7da52e73a567fb77eb98de786646e2d2bd7fc2fa258d405fca28d2c6514",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-hospital.png",
+      "bytes": 889257,
+      "sha256": "058acdbb99cbe01cedace89caa8e2ecffaf68d13ee27322ca5e107d23fb1c391",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-inn.png",
+      "bytes": 896890,
+      "sha256": "1dc503d4d7b62655859a216170589b80dbcf2fda765d404eafb82b7422e99a10",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-market.png",
+      "bytes": 896489,
+      "sha256": "a3983357ea7d0c80e9219fa56aa72d458bcfb7abd1fdba5a69389589fac55ae3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-production.png",
+      "bytes": 905465,
+      "sha256": "27ab7316391b654c21c12c7534e4298458e07ae9396ebdebca47e60282e53bd2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-racetrack-construction.png",
+      "bytes": 894732,
+      "sha256": "e2ad98ad79d62e444b7745a7dd2db937358ba1fe20796bf58a8f8c1a6efc33e3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-racetrack.png",
+      "bytes": 889757,
+      "sha256": "265b37a279be1c40f748bb8004e0002c8385cfa07ba058f466b3460e2dc3ac44",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-school-construction.png",
+      "bytes": 894739,
+      "sha256": "f38aabaeba4ffb7c692d0871f5a4929e5f4f91f026591853942fe907c5eab751",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-school.png",
+      "bytes": 889948,
+      "sha256": "41592ebf7b61a002a2415997c4fa3663e0c266f32ec8f8f54e52eb7b5924eda1",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-stonewall-construction.png",
+      "bytes": 893426,
+      "sha256": "63c5dc6a8880e89f401b63a5b5c8ba23a07c475004577bc1161e16fa3e67341e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-stonewall.png",
+      "bytes": 888000,
+      "sha256": "1ee8b871841a375c995b56cd4c37e72cbd9dbbc1246a4f7dcc3986ff51ccad0c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-swimmingpool-construction.png",
+      "bytes": 893485,
+      "sha256": "8de9268fb07d882861638d3b4e96beff97e62cff0a0e0bd5f6ee15e8703f326b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-swimmingpool.png",
+      "bytes": 889261,
+      "sha256": "c009b5b5625b3798718fd3f51c44fde5442977256835bc82afe4d28492027125",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-unit.png",
+      "bytes": 890430,
+      "sha256": "d5a1cb4f88b4a30a64c82b23673c4367c5fc8c2676b6329030698eba3a02d78e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-inspector-warflag.png",
+      "bytes": 898766,
+      "sha256": "d4c024b64f8109cc50046a93acea8ec73ce0566efe6740e31aaeadf49091321b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-load.png",
+      "bytes": 444562,
+      "sha256": "34f3ef7c42b6746054833c3cbd5c8b446730332ca32be310b2370cbfc0afa4f0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-map.png",
+      "bytes": 904584,
+      "sha256": "f40d79d7c381ec31d060783de1f49c35592d6980f6aa0a58ae8fc99f551d1a47",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-menu-online.png",
+      "bytes": 644533,
+      "sha256": "01e67739581dead23f11df09e1e92e58f370f3f2fd2838e16459e016354a16c8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-objectives.png",
+      "bytes": 762690,
+      "sha256": "8a26b8ce4c45843f6aaba5bed49b2768d5818d09966510609dc8a61929609be3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-options.png",
+      "bytes": 709938,
+      "sha256": "fabb002a5ee5e2d340ef855989669181eb7e0dfd5dd4ca91babeb165ba1b0802",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-out-of-sync.png",
+      "bytes": 791044,
+      "sha256": "eb699c49f2656ab9a753cf53a00721698a856abf7883f45f6e2b604db9b11929",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-pause.png",
+      "bytes": 575996,
+      "sha256": "b49dd11a6e1792feaa574917dcdbb6ee9a16905d7b6865ceaf659aed35cbdca3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-paused-online.png",
+      "bytes": 910753,
+      "sha256": "9cbac3c944dc9898042671fea4c6c277753804fc1f81b874151d45f079893b46",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-placement.png",
+      "bytes": 902600,
+      "sha256": "67a525ae2af597f346c247468110a7827d2a461f71f368f0b333fcfd5e1a8b00",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-results-filters.png",
+      "bytes": 75886,
+      "sha256": "524e184e18d31633cf72d18cbd5c5a797ab6bc969463a8a1c6168c5cbdaf8f16",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-results-left.png",
+      "bytes": 84368,
+      "sha256": "d45757ccae55105086eb319b0ad2b89cb5dc81911e36dc48886066c07db1a367",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-results-opponent-left.png",
+      "bytes": 86479,
+      "sha256": "e33b89dad62bf96513374338727106b7895d79bed152e31b1fe51eda30b81f68",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-results-room.png",
+      "bytes": 80187,
+      "sha256": "2e87316b129a4be9aa9683ff5114b58edfab1661609486d71f93e934036d0b29",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-results-value.png",
+      "bytes": 80446,
+      "sha256": "3f5c55b0fd9e1d3bea9085b592a106fbfad3e60c38f866488376d610ab1c2c2a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-results-verified.png",
+      "bytes": 84830,
+      "sha256": "fd29a5e203ef6bb8105f1477c17ab438d96e867195cbbb96c799ee4c185176b9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-results-verifying.png",
+      "bytes": 88467,
+      "sha256": "e4c1fcc181a9a95f9922cfe886897cdba2c47fdfda5d2b64f6968370fcc86a24",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-results-win-probability.png",
+      "bytes": 77941,
+      "sha256": "bd5a010dca3409666034145a73c61d0578e6ace5d94fe4f1fa1a2c2402ba2e3e",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-results.png",
+      "bytes": 74067,
+      "sha256": "e8f191b0256c042dfc8aff671a5b6a89a5756d6e5439c787d2c18db9d17d1495",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-save.png",
+      "bytes": 447574,
+      "sha256": "c41db7c143cff7fef0445bb69fe8c0715ea75866c711667479f3ccc00c98d57e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-scenario-message.png",
+      "bytes": 907275,
+      "sha256": "20c03c7ece462a20fd90184e47917f5d59c022bea3df590bcb34df15aa4057c0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-statistics-topic-colony.png",
+      "bytes": 902830,
+      "sha256": "938c130982bbee081b92f0b6c54b5b17690c038e0ad8a9ec01387ef26c00f406",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-statistics-topic-economy.png",
+      "bytes": 909217,
+      "sha256": "3fe3f70a2d212d89accb56537874c36f06eb907e2b7ead954f0057147ff44848",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-statistics-topic-military.png",
+      "bytes": 907652,
+      "sha256": "d98755fa4a208fc5017e24728e8193a96fc73991929963f1ab4818af74e2afb5",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-statistics-topic-overview.png",
+      "bytes": 901064,
+      "sha256": "fa7e8f19e26109f0678de87ae2c5c8f8ab67e6aa9162ff2c1887b7f99d417370",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-statistics-topic-world.png",
+      "bytes": 905001,
+      "sha256": "68970d6d21bf5f62e983a5f94afec0892fd776d40b809056de865c04074279bb",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-tactical-tools.png",
+      "bytes": 901079,
+      "sha256": "e31f79fcff334891937ff6d7d2a213435f3d734429eea1cc98abbeffcff4e17d",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-victory.png",
+      "bytes": 753197,
+      "sha256": "b908859e0ac59a812966bee841dc61b482827bf2a3d36e35bc4047ba52f687e0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/game-zone-paint.png",
+      "bytes": 894000,
+      "sha256": "16505e3872e12e8bbe73a67a5bfbd4e985c115dd0472c1ad219a234bc8f1baf7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/replay-controls.png",
+      "bytes": 880337,
+      "sha256": "5df31ec1014cec9f94f08cf7cdd4f2046b2d3cc887cab8e095c033af082b08fc",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-desktop/replay-menu.png",
+      "bytes": 582756,
+      "sha256": "880cffe73c35350740cd220108bfbebb70294944aebf4e028f91ea11a5d61361",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-alliances.png",
+      "bytes": 144493,
+      "sha256": "80366a7ce3b9e608d5dce4433239b94d848aa02a99aa10374485f86446b674ba",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-briefing.png",
+      "bytes": 217762,
+      "sha256": "6986c91c8d7488f5841efaeae84ecd981b61f0b5eed00c30744e438b83acaa70",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-brush-rail.png",
+      "bytes": 315735,
+      "sha256": "ff4f60438e70e113ceedfaa6829b32fb69ab52e4e601b0cd41c316423b210285",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-brush-undo.png",
+      "bytes": 317944,
+      "sha256": "7d214917c20ecd588d4f767c84786bd5320cba650ba38c005c4d7f10942d50d7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-build-bottom.png",
+      "bytes": 336535,
+      "sha256": "aed47c737690e81e8b260617ec86095317924d1f5b7681538c9b7d37c5bb3be6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-build-left-thumb.png",
+      "bytes": 307434,
+      "sha256": "0cb332cb23ee9e4878d9d2b10e0832bba8416ea239195d90fb6601f769c3c2c4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-build.png",
+      "bytes": 336503,
+      "sha256": "6868e99043fd01a855b62a95bf4b0610ee207a008f114653ad45bd8d7100c73e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-chat.png",
+      "bytes": 309373,
+      "sha256": "127b6848f15b2f3dbb7060d33b6bcaab3ee8b36e0fb72aa7992c3285f9d03450",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-draw.png",
+      "bytes": 148732,
+      "sha256": "fe3043138fa49c0a632b230c7e4569fd2eb933d3be5548dafea1fb5c892db02e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-flags.png",
+      "bytes": 319163,
+      "sha256": "22b4b4873b7f0c0671d459049480eb2ed55d7b3374acb5c742bb21c8c12edd59",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-0.png",
+      "bytes": 291863,
+      "sha256": "f42066a82a8e1c8e3bcd55fb0e5374ca995b3e95433592fe5e405f26a0e65785",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-1.png",
+      "bytes": 291801,
+      "sha256": "e696c0ea5b14e4642975b0308e0d47ed92dfe52fbe2a0e7fb3d05db69c0047b4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-3.png",
+      "bytes": 291704,
+      "sha256": "35fb67f1c260c306c3b9b9f9c6754fc4bb4668dfc70579ffcbd7669223d92259",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-4.png",
+      "bytes": 291624,
+      "sha256": "e632fcd5f763bacc517867baa0c9f6ff1866c128d2156d62f6a112ce5a112e1d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-barracks-construction.png",
+      "bytes": 291137,
+      "sha256": "d5aa7c41267cbda4f416f94e6d40ff9f6073709ab566f484393792f3e2ef5e39",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-barracks.png",
+      "bytes": 306288,
+      "sha256": "70455bed87e2701cfef6c5c3ef8106d120cc776ba03af2a998d0158873cde1e6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-clearingflag.png",
+      "bytes": 313251,
+      "sha256": "7b892c54c3cb646fd78a56e621f51077a2997353f1e0324476492d783522e21a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-damaged.png",
+      "bytes": 292983,
+      "sha256": "de19011a2462269f73c43418f62a88dc51fab91bc5b0d7857dd2bf5d6da30acf",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-defencetower.png",
+      "bytes": 291853,
+      "sha256": "cb974efafe23b9bf76fa60d9491dab371961599fc4225e7b4a9fc1fff79a83c9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-destroy-confirmation.png",
+      "bytes": 311052,
+      "sha256": "4b7e888a1048df21f8db77240b2761d86b1aa40af096fae8825249c61ce61564",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-dial-drag.png",
+      "bytes": 293890,
+      "sha256": "040df22b03dfaa0fb2fd6d1eb8fb8b3884581b28d4f2cff9b0015cf0f7aac38d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-enemy.png",
+      "bytes": 296099,
+      "sha256": "75d8d1d1bc5bd56b9914076db954050b7e2ba90a17e3dc9c16a0d0fa014953b7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-explorationflag.png",
+      "bytes": 310734,
+      "sha256": "9365a656499bc1aba348b4ba26645bf940beecd86c080323dddcdfbc6f5ab3dd",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-hospital-construction.png",
+      "bytes": 291507,
+      "sha256": "276eb8da6d858b7d3c34e4c5305b035a08c5da5907a190a83c2aea5d4278bf9c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-hospital.png",
+      "bytes": 306291,
+      "sha256": "1c88737fd45043105f348254a078e9010920ebf8e3229eb862e104c95558b405",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-inn.png",
+      "bytes": 293911,
+      "sha256": "e67db3bcb116dcaa7525fee4fce22967d7d4fd80730adf8a2234a5de62f396ef",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-left-thumb.png",
+      "bytes": 311153,
+      "sha256": "a5f1338a0583b0d7bb6050e79943316bf25a275845bd5e60f44b5e1d730eb295",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-market.png",
+      "bytes": 292901,
+      "sha256": "85a2241779bfb3a1e1ec0451dec97243d56c61b99161699c07123b6901d9a2b4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-production.png",
+      "bytes": 293758,
+      "sha256": "58eb1e1d8bed7c8ca49ccc696326c4867858f8a2e8ca17afc0c30312d04c16db",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-racetrack-construction.png",
+      "bytes": 292280,
+      "sha256": "5bd60b68e4b2cdc3e6c4833babce89ed4de13da8d6abbc5fac0ea65f871bff0d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-racetrack.png",
+      "bytes": 306562,
+      "sha256": "39aeec53b8592b675c6bc0d9dd689b100eb5ad54c0e4e1a31c991db9e65e5ecf",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-school-construction.png",
+      "bytes": 292286,
+      "sha256": "912dd6fd9f3b785d4924ec6452e50c028283ec9d01107e3154b8a632a93ddbd5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-school.png",
+      "bytes": 306779,
+      "sha256": "30f3e21e7fd601c826d8cd5feb3d28dbc5db05fbfe7217d427774c1ee454917a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-stonewall-construction.png",
+      "bytes": 291760,
+      "sha256": "6e4847ece60ab31449075a331b4f7fac49ae82e1fc4522672fe74fdcab727047",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-stonewall.png",
+      "bytes": 306660,
+      "sha256": "19f7b780b142cc5b19a971314537404915514610349c37cf854bfd3364143307",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-swimmingpool-construction.png",
+      "bytes": 291282,
+      "sha256": "2c85eaeae2cbdecca3df1b2b602ac0e5db078e99a09aea5728d4e2a3c262bc75",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-swimmingpool.png",
+      "bytes": 306333,
+      "sha256": "e4b47ceeda00d3cb5a2f5ef2b0ca4675b7252ad63929d24a0d5d8e3c116d85ce",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-unit.png",
+      "bytes": 263424,
+      "sha256": "b9b568962085df7fad9c8fe8786aa9d79d5b54b85a501e64db3275f9eb96fa0a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-inspector-warflag.png",
+      "bytes": 310188,
+      "sha256": "abbfd0229b469a8be7b9cdd022a83c2467b068db22e75c9902770be721af70de",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-lens-legend.png",
+      "bytes": 319348,
+      "sha256": "9e9703556f5ad1c552fa38f73c7b851e3ce48c2aa1f81bdb6e129d8b66084a3d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-load.png",
+      "bytes": 95281,
+      "sha256": "f8f1d36357c37060c5a8ad1471a8c2f1c8e013ab72553a9d10a51bde81bfd14c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-map-peek.png",
+      "bytes": 169431,
+      "sha256": "1476d2f0da091f56df43f01271fd6321a07f56abf37765399b81c280a4f3fc11",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-map.png",
+      "bytes": 323075,
+      "sha256": "c2544aa9da4822c0d0c8490db7e236d3b019870956637231c120286466434be4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-objectives.png",
+      "bytes": 162978,
+      "sha256": "af3baf38d9715555954132ab62c32a14594e9ee689f472a2d4a2143ea2431bb0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-options.png",
+      "bytes": 124003,
+      "sha256": "0ebff4dfc946dd1d8921bbbd488d8dea017c5b08b68950d7df716fe70b20c875",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-pause.png",
+      "bytes": 101580,
+      "sha256": "b954bb7723fc09279f78a5c3164cbc3dfd8878d677518d2e3a68dbfb6364c9a2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-placement.png",
+      "bytes": 321376,
+      "sha256": "6a49f21da03fefb61ec1eab22d959936d264329a869c52f62e4ceac87ac7e7ca",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-save.png",
+      "bytes": 102077,
+      "sha256": "eb2d47a0a6f5b593fc4ee059c78b48eb0ab11e5d7ecca1a0a346655c24e2df22",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-scenario-message.png",
+      "bytes": 313092,
+      "sha256": "d13befc4c962473b89870ad9cb644dd35e829e5896635b71d30bb2c537a04390",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-statistics-topic-colony.png",
+      "bytes": 76465,
+      "sha256": "3647f2cc64fb7400bf7e216ced3d77ce2bbf7ce27b9477bb79c327ee7ed71157",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-statistics-topic-economy.png",
+      "bytes": 81149,
+      "sha256": "a27d4bb5e935795456b5d4b1bdff6797420dc659f12b03a2cd0f259657f69274",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-statistics-topic-military.png",
+      "bytes": 76392,
+      "sha256": "3598c10caeef6b1742e91e30df7df761b4efe78d48fed1e46ed066feefe16622",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-statistics-topic-overview.png",
+      "bytes": 74607,
+      "sha256": "ab050bd67f0497c24e87cb494e7ef0cf2ab7b758cc62b79a38203fdd38cf525c",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-statistics-topic-world.png",
+      "bytes": 79207,
+      "sha256": "91ffd54d553566ab17ce8f4070aeab3ae454def07b93be97b14d2321c3222976",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-stats-sheet.png",
+      "bytes": 74612,
+      "sha256": "9fd432d29898df4031db4e493774af4e3db4f7aba50abc692ca8fb0feaac6d63",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-tactical-tools.png",
+      "bytes": 302198,
+      "sha256": "d48b985ad9cf14145295b063a4907ee7b0cdbf19198ac849d1258e170c6a61f1",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-victory.png",
+      "bytes": 146860,
+      "sha256": "5fb8f38e737cf953960d39b237bd45eb3a46682422099a1459cea3113d565684",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-zone-paint.png",
+      "bytes": 317330,
+      "sha256": "f3cf118d462160b695f4a8dc6ef9b7d9d2eaa8d7a16ccb8e475a1b151b017487",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/game-zoom-drag.png",
+      "bytes": 345376,
+      "sha256": "d710785e0be44ac6d949634a4dd42488b0e88e281dbf80b3e38a0572be89aafb",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-00.png",
+      "bytes": 336997,
+      "sha256": "b223e249f6c0ffea0ddfe7062bdcfb26607cc01d3476df7ef0be8cfe74842bb6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-01.png",
+      "bytes": 336953,
+      "sha256": "b5a781310557bd190e88da041bbf3a536a5a2359ae9817292101596fabd7e9c5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-02.png",
+      "bytes": 336976,
+      "sha256": "08080dc6bb730f9213ad12d2e53d6d39cbf4abd81e5e22dc7df2ec073eadb041",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-03.png",
+      "bytes": 336888,
+      "sha256": "460a435b6a54b72c1ff27187093580c6e791c1a10c93c8b31718759630e2dbb2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-04.png",
+      "bytes": 336840,
+      "sha256": "142de665df979dab6ea91dad0d6d6f7d657a4b7975c0cdf95828cb9901837b5b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-05.png",
+      "bytes": 336635,
+      "sha256": "7275a8fb226ed26670f0d92dfd588345dac2d8ffe413a40aee9f41f2dcb48816",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-06.png",
+      "bytes": 336480,
+      "sha256": "243075529ae4cefd34a285ae209d7ce23f953e75cd165c9fc6f7121724486e70",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-07.png",
+      "bytes": 336384,
+      "sha256": "11c622243ae37a0724d165262b58a70754e055b3e773d77516a059932c1810d1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-08.png",
+      "bytes": 335805,
+      "sha256": "de700a2e7e36ac85e056c2e410afef3d8f67cf1be0096dcdadc3d6357b4aa2d8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-09.png",
+      "bytes": 335445,
+      "sha256": "de16f783937ab7185085f33e38e3e9f653678cfb5175e04fab1a2085f3df0492",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-10.png",
+      "bytes": 335087,
+      "sha256": "3d221fa137589cec2e6d4f48e36a21beb41b3fff06c9b088e3dd70bc2a7ade64",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-build-11.png",
+      "bytes": 334627,
+      "sha256": "2830ba9156aebbb2b2a15eb1846067e17d22722491ab70909220377125cc7f3b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-zone-00.png",
+      "bytes": 315928,
+      "sha256": "6047b25f0342ece1b2ad3620a57a8cee982633bfd9fe6bb535d03b84c74d93e0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-zone-01.png",
+      "bytes": 316170,
+      "sha256": "b7a728ad260a07bab8b528cd5e0ae66d197838082a05558ff7e2fe2d667fb7a6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-zone-02.png",
+      "bytes": 316258,
+      "sha256": "9e7eab67ee7fb3086b1a1e1a2d6afa5bcfdbbc7b5f0d07487bbc14f876e8c220",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-zone-03.png",
+      "bytes": 316357,
+      "sha256": "3c049b7c550cac306110cad431a29b56ff5ba1f59840e02c82807292ee6797b9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-zone-04.png",
+      "bytes": 316679,
+      "sha256": "6952b09a33407a12724a19fa0aac57897aea3ada6e0fcac9c0a2c0044932bb2d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-zone-05.png",
+      "bytes": 317165,
+      "sha256": "a9fc9fd0a6a2ace55a2567ece996a975a529515618a9307831cdc0f6b4ab30c7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-zone-06.png",
+      "bytes": 317215,
+      "sha256": "6af9300f4f9a5f59fae3ff8155adcd04da1a22099c906ae89d2175767043df52",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-zone-07.png",
+      "bytes": 317274,
+      "sha256": "d9332cefe3e0452d5320ca9235a263e610538479a5ca3050d9ed3bfd5c651414",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/gesture-zone-08.png",
+      "bytes": 317330,
+      "sha256": "ad66b18b962444f4aeeff2e2672ff698000679b752ad0ab2405468175005f30b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/replay-controls.png",
+      "bytes": 255228,
+      "sha256": "8b158fcf6766db9de0e2f909a33e9f11d64b9f06e596f5787cb55687e1dc5e81",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191/game-phone/replay-menu.png",
+      "bytes": 102202,
+      "sha256": "2f4d2fb6eb96311cba793347aab8d6195ad93250280ced7c274d31ef26cf1929",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-alliances.png",
+      "bytes": 711270,
+      "sha256": "c4c29b1786ea5314acaa432aeb7dfb715590ccde75245ee6d40a8113919f9aa3",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-briefing.png",
+      "bytes": 814777,
+      "sha256": "c8bf485dd4ec016f22ab5dc1e01c17b0e7614f6c8031720d9c089fbb7b82ee31",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-build-bottom.png",
+      "bytes": 904518,
+      "sha256": "176b715ccc5b865cc9e248d68f0923db420d3916c264b1426d33ebe5f0a1ba39",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-build.png",
+      "bytes": 904563,
+      "sha256": "7ab9973785588f7db02804e19942471ce41975d4360ba5c229f381a86f6a1e24",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-catching-up.png",
+      "bytes": 792612,
+      "sha256": "f57b176b22b937b6565bb880b5a6fd35000677d7ba321692240655c810abefe8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-chat.png",
+      "bytes": 888607,
+      "sha256": "938fc9349758f86ad5d98ae2f6ff6aa28728cea72b54eea541face30c1afca75",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-connection-details.png",
+      "bytes": 856382,
+      "sha256": "2c3f80ab90021e962a1f59401941635853b516d9b3a5beddb8ce2d9cbc5c3af3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-connection-grid-details.png",
+      "bytes": 852411,
+      "sha256": "247318a5ad0578d865363b8e8ef8aefc0f3482e9f2f96bcebc53411200fa6e9b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-connection-grid.png",
+      "bytes": 911543,
+      "sha256": "17d060fb32bdf57e8493b4bb6841bdd8d25377a722d505c7072cd41b146990d2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-connection-left.png",
+      "bytes": 910544,
+      "sha256": "bb5e05f99b59f22cc4ce3f428278d705cd0618ee4d0caf56ddb2931cafd0424a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-connection-lost.png",
+      "bytes": 798968,
+      "sha256": "bf639f149ab1244d982de7204303f81cbcede2d1565d2842d104392888705119",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-connection-own-details.png",
+      "bytes": 856035,
+      "sha256": "5030ae2a5cfbbca524fd174dcbcf84dc3284cc3a17b5475fbb646c2644456663",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-connection-own.png",
+      "bytes": 909555,
+      "sha256": "8299d08e8d0952e38ae91869ba52337e7f7a100a3b0574a14043077798eb9fa4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-connection-trouble.png",
+      "bytes": 907743,
+      "sha256": "78de41bbe5a7b5a8b8f719d84e6d904cd1804d1bac23c6396f05e9cdf10b2cf4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-connection.png",
+      "bytes": 907206,
+      "sha256": "1f156ed6a8ad8f07ac05a8c41cb8bc80636ad1c9469d26694cce8ae1d12d3676",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-draw.png",
+      "bytes": 746010,
+      "sha256": "c85a7e70e37f114b58bd413243fd67797e2f7d2c28d42799b3651aec10cec8a0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-flags.png",
+      "bytes": 892414,
+      "sha256": "de2a70102ec9a5d3d1a78f628a4d12753ba03a094dce916f400dfdcc12e3fcc9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-0.png",
+      "bytes": 896259,
+      "sha256": "a92a50ca213d0bd15933b0552f66ad72fceeecb7411cf0e0de2b4e19ac6a29f5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-1.png",
+      "bytes": 896168,
+      "sha256": "a53fca686d438a62bfb9b487130c302062a9e43503417e9efae3b7ff8bdebae1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-3.png",
+      "bytes": 896235,
+      "sha256": "1fa0ab1b4cb75a1d8636f71e2f2507a9c0cb3611988fd16f99628f38b01fa0c9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-4.png",
+      "bytes": 896442,
+      "sha256": "8c60bc40587e2dd2b5b0f19af9da9ca0200ff8e7e10bdb794e20bb01c5212a53",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-barracks-construction.png",
+      "bytes": 893817,
+      "sha256": "cd23d7a5370554cdced0ceaf086c70e6f8c650ee5e739945799f234178f3971d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-barracks.png",
+      "bytes": 889610,
+      "sha256": "468ef6d77262f201b9c12538e450e5caa7995c29d88abe4afaa7765554509e77",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-clearingflag.png",
+      "bytes": 904676,
+      "sha256": "24f3cc39859598723bb1210839b420c7a6684bc9df40630b6925bb921932dd13",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-damaged.png",
+      "bytes": 898289,
+      "sha256": "2a96892b1dc9621c85ee98f780a44c70d7a1d44619b9240cccb478a2930b97bd",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-defencetower.png",
+      "bytes": 896508,
+      "sha256": "2f6fcd08d4d1e2dc1c78b6cc4f1a2ba812b6a9448c47172f68ef18073eb23757",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-destroy-confirmation.png",
+      "bytes": 904605,
+      "sha256": "8a0143141211f921a3ed70311f83eaed842cb55330dccbe98eeac91ef24a8a96",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-enemy.png",
+      "bytes": 885230,
+      "sha256": "7e429360e59d30f95e43799eb294a6a8ea27296f0fdd1d2ff6939163f798654e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-explorationflag.png",
+      "bytes": 899464,
+      "sha256": "7f557852b9df4e243d9165d94f651ce40a10bd295f9963431ca0ecfb8a1895d2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-hospital-construction.png",
+      "bytes": 894345,
+      "sha256": "6003a7da52e73a567fb77eb98de786646e2d2bd7fc2fa258d405fca28d2c6514",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-hospital.png",
+      "bytes": 889257,
+      "sha256": "058acdbb99cbe01cedace89caa8e2ecffaf68d13ee27322ca5e107d23fb1c391",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-inn.png",
+      "bytes": 896890,
+      "sha256": "1dc503d4d7b62655859a216170589b80dbcf2fda765d404eafb82b7422e99a10",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-market.png",
+      "bytes": 896489,
+      "sha256": "a3983357ea7d0c80e9219fa56aa72d458bcfb7abd1fdba5a69389589fac55ae3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-production.png",
+      "bytes": 905465,
+      "sha256": "27ab7316391b654c21c12c7534e4298458e07ae9396ebdebca47e60282e53bd2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-racetrack-construction.png",
+      "bytes": 894732,
+      "sha256": "e2ad98ad79d62e444b7745a7dd2db937358ba1fe20796bf58a8f8c1a6efc33e3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-racetrack.png",
+      "bytes": 889757,
+      "sha256": "265b37a279be1c40f748bb8004e0002c8385cfa07ba058f466b3460e2dc3ac44",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-school-construction.png",
+      "bytes": 894739,
+      "sha256": "f38aabaeba4ffb7c692d0871f5a4929e5f4f91f026591853942fe907c5eab751",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-school.png",
+      "bytes": 889948,
+      "sha256": "41592ebf7b61a002a2415997c4fa3663e0c266f32ec8f8f54e52eb7b5924eda1",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-stonewall-construction.png",
+      "bytes": 893426,
+      "sha256": "63c5dc6a8880e89f401b63a5b5c8ba23a07c475004577bc1161e16fa3e67341e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-stonewall.png",
+      "bytes": 888000,
+      "sha256": "1ee8b871841a375c995b56cd4c37e72cbd9dbbc1246a4f7dcc3986ff51ccad0c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-swimmingpool-construction.png",
+      "bytes": 893485,
+      "sha256": "8de9268fb07d882861638d3b4e96beff97e62cff0a0e0bd5f6ee15e8703f326b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-swimmingpool.png",
+      "bytes": 889261,
+      "sha256": "c009b5b5625b3798718fd3f51c44fde5442977256835bc82afe4d28492027125",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-unit.png",
+      "bytes": 890430,
+      "sha256": "d5a1cb4f88b4a30a64c82b23673c4367c5fc8c2676b6329030698eba3a02d78e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-inspector-warflag.png",
+      "bytes": 898766,
+      "sha256": "d4c024b64f8109cc50046a93acea8ec73ce0566efe6740e31aaeadf49091321b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-load.png",
+      "bytes": 452929,
+      "sha256": "7e52c188a967e1ed4647bd4c337fb43da88c0c848de6b9f2a58a60d7954c7853",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-map.png",
+      "bytes": 904584,
+      "sha256": "f40d79d7c381ec31d060783de1f49c35592d6980f6aa0a58ae8fc99f551d1a47",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-menu-online.png",
+      "bytes": 648713,
+      "sha256": "da09e137d55f082a07d3a05cabb9fb1958eae6f27173478aada1c54d0f36ff70",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-objectives.png",
+      "bytes": 752048,
+      "sha256": "9482510d2e242b7854e12b3eed286603d8f90bcfe42fd4d43c007ae1f5109f10",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-options.png",
+      "bytes": 699742,
+      "sha256": "f8f68139488e8213d1316a32de8014e303e3c5b08fa2a59fd6f43cc4a206d7a7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-out-of-sync.png",
+      "bytes": 792791,
+      "sha256": "8d27c44dc6b43598e56f94300a284d470e201bf3e095d63061914d83317b7a2b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-pause.png",
+      "bytes": 579479,
+      "sha256": "f715c8d74287dae48dc178c51f70658db4c599bc33cd75ef1a38ca86e9f494fc",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-paused-online.png",
+      "bytes": 912482,
+      "sha256": "b07b6e0e1c997d74cb7dcf8218b21a7837fccdd2078050046e562b00a4b6ab0a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-placement.png",
+      "bytes": 902600,
+      "sha256": "67a525ae2af597f346c247468110a7827d2a461f71f368f0b333fcfd5e1a8b00",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-results-filters.png",
+      "bytes": 96608,
+      "sha256": "c5687af63102d0793d1ce06ddbf31a146724c5db7a4adc15621a646533458ca7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-results-left.png",
+      "bytes": 108813,
+      "sha256": "786e4dd644e6c4ce2a323bc1374a577efc4a1ae54209e77fee24d47c9ecb8d27",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-results-opponent-left.png",
+      "bytes": 113399,
+      "sha256": "e82783cbebb429fa371eedf6e44059054fcb277fd5da45a5690517111b6dc019",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-results-room.png",
+      "bytes": 103947,
+      "sha256": "c8bbaeb7f88826e778a4d9c1b92ffeced81a3e298073d30f76632991a80e786a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-results-value.png",
+      "bytes": 101030,
+      "sha256": "8ade923ddc56421d28e99f2ded72aa1f56c486a037986b1ab75bfc507f6dded7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-results-verified.png",
+      "bytes": 109438,
+      "sha256": "881855fbc55dfc13aa478c77c1df95160f1756ab948890d2db45ef9fa98a72de",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-results-verifying.png",
+      "bytes": 114164,
+      "sha256": "125c43ba0de5a6f38448a6e63f7b06f5366f75a07aa0f8deb30ff682f7e3d349",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-results-win-probability.png",
+      "bytes": 102746,
+      "sha256": "3de4e8cc3ee943aa05071096438767bdddef1dbbd971ff7864a41d47e9e01064",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-results.png",
+      "bytes": 101189,
+      "sha256": "d341839175326468f0c4e776d785757579737106ec5c30c175538b6647e140ba",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-save.png",
+      "bytes": 457824,
+      "sha256": "ff634f5d789faa4f2189fd268317133d052171b71f256e5c3683f55319353bc3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-scenario-message.png",
+      "bytes": 907275,
+      "sha256": "20c03c7ece462a20fd90184e47917f5d59c022bea3df590bcb34df15aa4057c0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-statistics-topic-colony.png",
+      "bytes": 908973,
+      "sha256": "32ea7bd97bb8e234b49bd9b8468ac0366d710a350912f5846008ad014f57e94e",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-statistics-topic-economy.png",
+      "bytes": 914659,
+      "sha256": "bc7dd915b6ad75b8cea8ade816394c0890a0d22bb58e5380c012882e08d785fb",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-statistics-topic-military.png",
+      "bytes": 909048,
+      "sha256": "7202329ff32f820a35c945ff552dfb133fab3db30958b30ce7e21bae6e93a7c8",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-statistics-topic-overview.png",
+      "bytes": 903217,
+      "sha256": "37a3d62bb01a8105105cdb94a96be4564ca061625a89ad28053e86d955cabcfa",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-statistics-topic-world.png",
+      "bytes": 911983,
+      "sha256": "12723a5c343cb57da38ee1016b4a9f67c7007308652d7e3c44cb0ecde959d499",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-tactical-tools.png",
+      "bytes": 903368,
+      "sha256": "c67e345e38a8ff5087c31c02f8f312522ab2981cda2ed94d1cc021f22c09cc52",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-victory.png",
+      "bytes": 743328,
+      "sha256": "0106288075265d34e82a3d447445a5b97b268813817b057bf6ccafa647de48fe",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/game-zone-paint.png",
+      "bytes": 894000,
+      "sha256": "16505e3872e12e8bbe73a67a5bfbd4e985c115dd0472c1ad219a234bc8f1baf7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/replay-controls.png",
+      "bytes": 882340,
+      "sha256": "186a1705dbd05a2ce99ad8cb1c80dbed9d01bbaba4e9ffb69cadeccaefa5f6e8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-desktop/replay-menu.png",
+      "bytes": 584433,
+      "sha256": "8b9766a33e4b23951c5a44ba650bb266abaff6419d5b17a68b9913f9b0dd616a",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-alliances.png",
+      "bytes": 139401,
+      "sha256": "061d27e74ced71bf796b26b282905da534455ad4832ac634988dc03cda1b509a",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-briefing.png",
+      "bytes": 183755,
+      "sha256": "ca9c881065eea21ff8f1c19c41972abd0c27981a5f1790c981f9514bcc746aa2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-brush-rail.png",
+      "bytes": 311020,
+      "sha256": "ced4f73b595bc18dbf55492bb7daf46e1964b77fff375c01e77dfc905281aba5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-brush-undo.png",
+      "bytes": 313183,
+      "sha256": "a4df2580d8776f57edf69d71cc75d5e7967a05f779027addb4266707a64dab10",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-build-bottom.png",
+      "bytes": 329127,
+      "sha256": "41c5a4df2c974439123489907c3a1e309efb402f2cbc8eb0934f7054a550155f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-build-left-thumb.png",
+      "bytes": 301206,
+      "sha256": "38011daee77675ce563513104e59667cee0daeba37c982893ac225ca68a53ec0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-build.png",
+      "bytes": 328911,
+      "sha256": "28139748c5194cc73d2ba6d93304862884700018ad9dd8d3cad28b626e124896",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-chat.png",
+      "bytes": 309328,
+      "sha256": "e22c4ba95d58b40029bd8a7e451df7efdf88ac38f6455e9611721d5a7caf4074",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-draw.png",
+      "bytes": 131081,
+      "sha256": "499c487e43e9ca092a556ebedd8e87c0ef6b844ba1c6734bdc248b4c728d8103",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-flags.png",
+      "bytes": 313516,
+      "sha256": "a43584800e226d5d5ef672909072f8dcc032a5ab374cdc1808168767b9aa5999",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-0.png",
+      "bytes": 240618,
+      "sha256": "f0a9743c4334e6a77e0453c161992e09234b4b96c39ceecb148a66f06997c34e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-1.png",
+      "bytes": 240557,
+      "sha256": "4ae77669af3b511f0ed09923b78f8e94e1456b0ab2d6383570794817e60ace37",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-3.png",
+      "bytes": 240497,
+      "sha256": "5b09ef9a5cfca866ca9c373ef0554fc278804a6562c73a91f8855d535b00848d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-4.png",
+      "bytes": 240475,
+      "sha256": "7f94714272dd53a11a8f3ed34068b9260d4db18a91044c934dd101fd77fe2482",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-barracks-construction.png",
+      "bytes": 239479,
+      "sha256": "7f84ffbc9c3f2294bb63a1494af0438149d614f20adbdeee8caaabb49287fee8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-barracks.png",
+      "bytes": 301298,
+      "sha256": "0c6ab3da470cefd83ab79493f5c6c6f8e59aed7c47a14b0bd064a9f6d79107d7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-clearingflag.png",
+      "bytes": 308737,
+      "sha256": "1d49ed3c735047a06556d1cec545721fa6e9129930016d0b5ec16635a45ed123",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-damaged.png",
+      "bytes": 242397,
+      "sha256": "98647dc2e012aa26cb29cdb8e67671bdd62819fa3b5344d3c3c7d133ba68ba41",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-defencetower.png",
+      "bytes": 240661,
+      "sha256": "03b6fa6393a3726263785ea7f6781cc7118dcf67b9a6cdf1b6f95550f4b4b12f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-destroy-confirmation.png",
+      "bytes": 308137,
+      "sha256": "9d441bbf46d5840796c20da197cf016fee9f74739fc2f27626634d0229eab28d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-dial-drag.png",
+      "bytes": 211259,
+      "sha256": "daba7d1ff987d2815c3e51135c9afe9d1788747aa2452fce8f8500a5717b7e9a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-enemy.png",
+      "bytes": 291077,
+      "sha256": "adf4d3c2d790fe3e54246b8f5a23a98c53a6285125c3b4f0722632064e956e9c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-explorationflag.png",
+      "bytes": 305946,
+      "sha256": "41ee34023b76da85c13d8d7e70421846fb2c1cc3e7b5ce6cdf9eab8b22d420ea",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-hospital-construction.png",
+      "bytes": 240082,
+      "sha256": "b58e9f62c427be5557f075b0408c468160a20ce7152f2b85560b40fc9666fc5d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-hospital.png",
+      "bytes": 301491,
+      "sha256": "fe617bab3c544e60db40482aa52161e5369f9b03c2cf4e6da6c71b90ea477878",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-inn.png",
+      "bytes": 243854,
+      "sha256": "7b6dfaaeb1aef17221857c742a08ebd46753ace1f3dcb9cd3123702bf20bd87a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-left-thumb.png",
+      "bytes": 211272,
+      "sha256": "78cdf643096213c2b7a2059e5f2709214b257f04279823a6f23105922e8d3f5e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-market.png",
+      "bytes": 242540,
+      "sha256": "8e150d4a08ace785e630a5d280796cc49b5ed39c60d64d4c0aba0d3a9d76e26e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-production.png",
+      "bytes": 211249,
+      "sha256": "634480b2cd0d5cdd16c4760c587fa51931f90d66f90b5ad2e0f1c2c06c3c492d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-racetrack-construction.png",
+      "bytes": 240840,
+      "sha256": "e4d2e2e732d40c9474f53c89ef4ab1888baa018b48224173deb96ffdc79f72d9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-racetrack.png",
+      "bytes": 301542,
+      "sha256": "51b4af00cd49df490b627348faea6bcbe09d603bed176155ab202801d662af6c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-school-construction.png",
+      "bytes": 241207,
+      "sha256": "d7a666502e1a54e31d80adfef04b889be946950982c097b88e586b7f7a6cb26d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-school.png",
+      "bytes": 302077,
+      "sha256": "b80b09df777b0dbfe3176c19a4dab7a14345187bd429e11dfefb6f6b7d2d5b91",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-stonewall-construction.png",
+      "bytes": 240103,
+      "sha256": "59b38898e04356138251acbf72cef281ce9923717fdc46a7f546d303d8341d62",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-stonewall.png",
+      "bytes": 301989,
+      "sha256": "9f591155333ceb29e1e84dfdd05861e2e3bc955b98d93e064de2437a4a143c01",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-swimmingpool-construction.png",
+      "bytes": 240044,
+      "sha256": "11651453bc6409deaefa1d4fa3af0bece9611432d68270eced7c536f94b11d6a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-swimmingpool.png",
+      "bytes": 301747,
+      "sha256": "b4b550f17a2d818f89d636c28164ed29b478dc690058b0cbbf27102951ee947a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-unit.png",
+      "bytes": 261973,
+      "sha256": "58d119a37a26625174905ca2b0956123fe15cf38a2219913871525e5a249f8b1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-inspector-warflag.png",
+      "bytes": 305909,
+      "sha256": "139a1dbcc39f387c654135c00853d731b4019705c34c7838d72ba87c71f9b145",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-lens-legend.png",
+      "bytes": 313310,
+      "sha256": "e8fd9fccfa5becf5b320135d4965b2fe17c296c2822fb4add48726c66d10a629",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-load.png",
+      "bytes": 102875,
+      "sha256": "e41ad86f9d9dd06222d49527886f617e330414564db0217361772f734d1a5bff",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-map-peek.png",
+      "bytes": 165446,
+      "sha256": "9201cbfccc3f5d467b9a549a24533c93352c8241d59422b882862d0db2ff5bd4",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-map.png",
+      "bytes": 315899,
+      "sha256": "a52c43deee6b4d6fb1aada85627df74caaf0f90fed8598125f1a40f42d786684",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-objectives.png",
+      "bytes": 166230,
+      "sha256": "2cc723f75bfdbc62983ca606ed7cde179d1391270108d83acfcd2244f768981d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-options.png",
+      "bytes": 129396,
+      "sha256": "d1c538d3fc8379b15b85f3cceca0667e56bf02ab4ff78f7d9e59602ceee5227c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-pause.png",
+      "bytes": 108520,
+      "sha256": "a9e198c5a193727e69ea1c0d858053c91ded6907a27607d29466a850a06adf33",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-placement.png",
+      "bytes": 313077,
+      "sha256": "6f61560c53a7c0f995a1dbe1c98cd1018ad4e88657ede59c3a4f1b69123d311f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-save.png",
+      "bytes": 109612,
+      "sha256": "e72b61422821a5304c4c656978e3b7ae9655ff8c16af2a0e43d798cdc8ea2163",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-scenario-message.png",
+      "bytes": 296819,
+      "sha256": "f40376813e2affc117adc6ad171b8039ec1bd46348f38a061eb7d46c3012b668",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-statistics-topic-colony.png",
+      "bytes": 80067,
+      "sha256": "62e1a3284b65089b7d8e814371f9a434a6bdfbdc172e5e91fb26c7950541a100",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-statistics-topic-economy.png",
+      "bytes": 81199,
+      "sha256": "4f43f7900c6ca9be9c1261093a889b48156e6c6adb19fb86936ce3703696eb3f",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-statistics-topic-military.png",
+      "bytes": 81069,
+      "sha256": "06cca7728bbd413b9e107225447b23e2e7433cb9c670b9a78111b5053d2110c9",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-statistics-topic-overview.png",
+      "bytes": 79713,
+      "sha256": "6c46f28def9d86e3c0a471dda8786bb24f8011d7005475d972d97f15bc37b795",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-statistics-topic-world.png",
+      "bytes": 78463,
+      "sha256": "55289c5c8a6a8260f221da2b072326d1fd96702d93bae5ea8276ca9251e6e6ff",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-stats-sheet.png",
+      "bytes": 79719,
+      "sha256": "78dd72047fb3272c6afc9271bec38f80ee37aaefe83bbccf6558064b5f72d67c",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-tactical-tools.png",
+      "bytes": 302384,
+      "sha256": "a86a05deb986e15e2709ae2aa1f9a66169dab9761cce1eddbe56ecfdc4d78687",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-victory.png",
+      "bytes": 128572,
+      "sha256": "60cf6281438f3a09c76eda1a7e146e7e4c0b6b3b10d68ca2eaa953aa8ddd917d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-zone-paint.png",
+      "bytes": 312243,
+      "sha256": "47ebb0bfe6d0f78a914cc8118414d397ccd50f621eab102cbd25110ff76c54a1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/game-zoom-drag.png",
+      "bytes": 331912,
+      "sha256": "9654788d32e35317251e7cec3deb055b9074b2d26d31af12dba975f70f0131be",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-00.png",
+      "bytes": 329531,
+      "sha256": "bc34ce49cee72f39db3b079baab1959583706b292f2b252287d576f8fa40a788",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-01.png",
+      "bytes": 329372,
+      "sha256": "4216f59822c770ac0701997dd0d181e2377736746da79b6692131bd92f9f0889",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-02.png",
+      "bytes": 329268,
+      "sha256": "363332948b1832504d1fa76ccc3d169919d7097840332c03cc676eae71a45aae",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-03.png",
+      "bytes": 329135,
+      "sha256": "3fc30f7d340f25ab1211e9621412c9b0e6a776076ea1ebddd5f7ce367aef7cfa",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-04.png",
+      "bytes": 329332,
+      "sha256": "8276d491a151df97857404fd19f450865728bd5970848f40925071f9ec7a3bc7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-05.png",
+      "bytes": 329375,
+      "sha256": "3f1d2eb88f8eb95453bd767a86353947c1e0c882633cc5caecf6e585d6a98a2e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-06.png",
+      "bytes": 329158,
+      "sha256": "8b7e3136725138b6096897bb84f98bb357c92b52b72dc6640c1f8eea50f301ea",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-07.png",
+      "bytes": 328842,
+      "sha256": "0eda226706bc3d4b86ae9f6f3f792c494f6245f2a01c5b70b09091abc2b6963e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-08.png",
+      "bytes": 328580,
+      "sha256": "c0ee15987ed00ab77d502bbacdcf2e37bd321bc6796023ddbb347d202bef0894",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-09.png",
+      "bytes": 327900,
+      "sha256": "8575b64c04163801e1e7e714e31437db00e195240da658d7245f902315ae18fa",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-10.png",
+      "bytes": 327463,
+      "sha256": "327ed5593c20922cccdc52b5461b54ee606eb7c9a7e40c22aafbe012e5fbdbf8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-build-11.png",
+      "bytes": 327222,
+      "sha256": "a5638060a292f88e8137767abe451b07037c1513568e84ce57fef2c34a632da8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-zone-00.png",
+      "bytes": 311077,
+      "sha256": "8b168a590348f0c369e0127ed1d8fe27b6a61cf725e66d21f3687d838879b31c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-zone-01.png",
+      "bytes": 311294,
+      "sha256": "6ad0dd5d4c30e49187731eb6cec824140c0e2ce809ac7323b33fdd7752becc8f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-zone-02.png",
+      "bytes": 311350,
+      "sha256": "96f17a83f84b38d4609ce675e9c34b41870f31714323a06d248b42c5d39c00e5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-zone-03.png",
+      "bytes": 311468,
+      "sha256": "b68f1ab1f1df86cc91fe9fa477398103684a3f83e99d1006ce1425460974337c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-zone-04.png",
+      "bytes": 311729,
+      "sha256": "689b388908848245ad428edf5e2b950875f7b57d4aba30c948b9e709ce3b3944",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-zone-05.png",
+      "bytes": 312174,
+      "sha256": "235b43bc76b210058427425b1a7c22876b118149e8de055b642156723953cb1c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-zone-06.png",
+      "bytes": 312240,
+      "sha256": "5fc1a6c1054accdfc6420eca1d146f5c34046fb792392cbf4d4e1ee6bbd7f4f3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-zone-07.png",
+      "bytes": 312180,
+      "sha256": "9ed1602f01540bfce888bc3d45a770b926423b2e6256ac5d40930833564a3878",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/gesture-zone-08.png",
+      "bytes": 312273,
+      "sha256": "e8ddedd08b974bdffede806438be5dc6874cf00b0a95e4f80cafa068ed05abb6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/replay-controls.png",
+      "bytes": 254948,
+      "sha256": "85d422ad473da8da54e790f1cadaaa0c961f33caf54d03c138d10b87b397e43b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-191-large/game-phone/replay-menu.png",
+      "bytes": 108867,
+      "sha256": "6c6e32fab641620cf3f12dddb6faa9c97a6bdd10fa15ce939b40e96b25f038b2",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/editor-desktop/editor-menu.png",
+      "bytes": 1141341,
+      "sha256": "e0896f8256519e89f68c0b2f49778b0cae90355183c57f6a71db8599f99d2914",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/editor-desktop/new-map-generated.png",
+      "bytes": 698532,
+      "sha256": "d324f7a873749f9155339b3a60c0ece81ef6b335d8b62c1d2ade002d44b655e4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/editor-desktop/new-map-parameters.png",
+      "bytes": 708454,
+      "sha256": "8b9432a8309b7340bc56bde9b8a4f8cdb3664a4135f1c907571d5a3158c49830",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/editor-desktop/new-map.png",
+      "bytes": 697489,
+      "sha256": "f3187ab39149addb7772bebe6132f171d8eba30a57a876d5d564e583999183a8",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/editor-phone/editor-menu.png",
+      "bytes": 301344,
+      "sha256": "878889132b8f76237c4fa972700219dac3a4c674c8f9e7fed3a2b2d65659f7c0",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/editor-phone/new-map-generated.png",
+      "bytes": 100921,
+      "sha256": "4669f6fdc421b5f7b867a6222a52f1591fd99a2e6f343bd8c7fd0612e33db550",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/editor-phone/new-map-parameters.png",
+      "bytes": 26820,
+      "sha256": "7a9f3a5199f83fe9d016010c3d91e2aa00ce7d3e518482febbe07d05068703ad",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/editor-phone/new-map.png",
+      "bytes": 100933,
+      "sha256": "355015ca36201fbd9d7c925c7000451616795ff04d4d605664f7baceeaf69407",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-alliances.png",
+      "bytes": 637108,
+      "sha256": "e6fbbbcd118b4e7331cbee3a415a1cfb8e61f1bb4760c54452d761e4aea32e09",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-briefing.png",
+      "bytes": 704396,
+      "sha256": "aad6db58430f610b3db367e467d33789ce1186dd76443e73ff8319453b5246f1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-build-bottom.png",
+      "bytes": 782520,
+      "sha256": "c3b5e340e72f949ca0364b28c3d368fdb34932d8a62f38c340a1befbe3588922",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-build.png",
+      "bytes": 782371,
+      "sha256": "f65412da3b692b6ad9c4e3f003419fae250ff20dcf972a0beadcd01fdc507995",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-catching-up.png",
+      "bytes": 676115,
+      "sha256": "b99de98f9f471abaffdad552d49c58adfa6ca576fe9ec32497d5d462f32cfae5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-chat.png",
+      "bytes": 772967,
+      "sha256": "589a6a00a0ed391dcf8c68fd4849dc58b26fa0fe812ef118f49df164f3aaa456",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-connection-details.png",
+      "bytes": 737331,
+      "sha256": "cd7f730f94d022b52add6a0945b04f52be7be4c6a8a00012d5a12426bff37bf0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-connection-grid-details.png",
+      "bytes": 742992,
+      "sha256": "4b9ff70f1be674d03ffa7900579323d9c58ceed658a1f4688d1516741d4ec56f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-connection-grid.png",
+      "bytes": 793449,
+      "sha256": "f5123672d10eaa7b3486329754be7e94cee9762696f4148e75d70bebb33baaea",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-connection-left.png",
+      "bytes": 790214,
+      "sha256": "f3db0531b87249e3573eada331fa786cd3ac56e59e6bba88c55691b3f3a82cb2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-connection-lost.png",
+      "bytes": 681946,
+      "sha256": "adc7c8e172c9b5190d7fdf11d9c839538c72328638d8593313afd155eb94c5b3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-connection-own-details.png",
+      "bytes": 739013,
+      "sha256": "bf6636463d8815ab3376d15120a85703e1663a0ca71d99540527fb581f901809",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-connection-own.png",
+      "bytes": 788335,
+      "sha256": "3b09f31f12fcd8eeb90788734bf53cd09b4d7f380ccba48131d040b8f4c67043",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-connection-trouble.png",
+      "bytes": 785636,
+      "sha256": "63d3fd19af806cc1231fe62cd543aac17ddfa5d94333585c30214b1bd0015fbd",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-connection.png",
+      "bytes": 785005,
+      "sha256": "a73066d5360a2f28c4369db75923d0a593900ebb894caeaa1eccbc3c695429b3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-draw.png",
+      "bytes": 642956,
+      "sha256": "5087fa38b603e43f2c3b0da550658412c0117cba308e589dce7eff55c761c75d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-flags.png",
+      "bytes": 768477,
+      "sha256": "4a13024c950b38f77fbee55c8daf07a52f907a67ed4ffa3e6a67509a80e95c9c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-0.png",
+      "bytes": 771745,
+      "sha256": "24c5c0c766244d53c10d61068ac8846bab74ba31d00d00e517fccf27867319e8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-1.png",
+      "bytes": 771724,
+      "sha256": "39527e66d8861f2519ebed1af47725555266540d83e392af62baacd862fc011d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-3.png",
+      "bytes": 771910,
+      "sha256": "358b695a02b0a3bac7b1738fb93b763a2079d2732f9d9e09b6ca527bd5a4dbd9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-4.png",
+      "bytes": 771762,
+      "sha256": "c49f4756e2bc100abae47c470a6339ac2f3be1ecd11cd091928b93bc8062279f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-barracks-construction.png",
+      "bytes": 769518,
+      "sha256": "4ce45ea222bbe590fd798ed7c0ac0fe593428851cf811c49aa6ed5b0a1041d07",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-barracks.png",
+      "bytes": 764980,
+      "sha256": "5db5eef1c50747e2e7112e76f259baf514a8a8d450774b95cd2e7f423143b656",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-clearingflag.png",
+      "bytes": 779075,
+      "sha256": "621893941bb4b845cd4abc4c5d47a39d0132518a926ad9bc183a3a6dbf1107a5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-damaged.png",
+      "bytes": 773536,
+      "sha256": "0fb49c447f7fb3dc883ac73e2e41fbbdb13d2a07022a43640bcd7d197b24f9da",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-defencetower.png",
+      "bytes": 772110,
+      "sha256": "3c2f312d989520068ada7b7b35d28b16f1992dc889ba353a80b017c372f5e179",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-destroy-confirmation.png",
+      "bytes": 779293,
+      "sha256": "2defb201c5abd57901bd9d705b61a44bd773935e075cdf17d11f38dbc17ed99f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-enemy.png",
+      "bytes": 761009,
+      "sha256": "21a99655a9f6d19c3289ecc969b57ff597c461da48f8927594e4cd0e5ee6fbb7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-explorationflag.png",
+      "bytes": 774372,
+      "sha256": "a2b5a899c09ba0f0a3c87f4ae0185cf70ba9866bfab3b4351d21ddd0a7a8ee2c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-hospital-construction.png",
+      "bytes": 770076,
+      "sha256": "a2655d49c7fcfed5512f37944e2f633131a7857eddd69268b07d50aed17b8e43",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-hospital.png",
+      "bytes": 764405,
+      "sha256": "fefff182919ac7b45a1457e75b57cef067537ac2bbaa9d1bfe2b97d86463919f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-inn.png",
+      "bytes": 772709,
+      "sha256": "e4356d946196a0afb9c5bec6da06c9af33015ca872d0da5f0430e8c8fe67c639",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-market.png",
+      "bytes": 771946,
+      "sha256": "0d63fa0c95239633a385ad11396e223fc5228a410828a5a37592e39021d66585",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-production.png",
+      "bytes": 779997,
+      "sha256": "d665661f62b21248707aacd3914335370bc3364939408e7da2cf34917835932a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-racetrack-construction.png",
+      "bytes": 770291,
+      "sha256": "8ce225500b89f3e41f6f4f08e5c18d92a20121961a803510f768d209da0d718a",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-racetrack.png",
+      "bytes": 765011,
+      "sha256": "823731db4c5a9199b89f630361526f2399dc3fd90667f2a9d5d9e1bc7d4c10ac",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-school-construction.png",
+      "bytes": 770536,
+      "sha256": "cf172f1b7a7b9c5ab515371b73a508546e8e9b62ca0efe3ad11d316af9163ba2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-school.png",
+      "bytes": 765553,
+      "sha256": "4a660df891e1fb6018050275e1dd6d5400fda7824192bc2304af65aea026dae5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-stonewall-construction.png",
+      "bytes": 769207,
+      "sha256": "09d46b5217a4cdc84f721bf0933f8e3d351e8500e8881ab17a81c05ab4dece83",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-stonewall.png",
+      "bytes": 763392,
+      "sha256": "139d27c50c1201ee095e442ef9111566bcc20f4fb801f8e6686f360a7cd3df3c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-swimmingpool-construction.png",
+      "bytes": 769423,
+      "sha256": "9cddb62bea4062f2a7c73812a67928bff142707db1ebe78260fa7399007689aa",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-swimmingpool.png",
+      "bytes": 764743,
+      "sha256": "3c372fed835912648b39de66c64244d83cb962d5a0c36263b89be47d085971e1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-unit.png",
+      "bytes": 766103,
+      "sha256": "306ad11ef2a377e44ce3f67a96cb0eeb751df5c481e75652fce16811e42203bb",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-inspector-warflag.png",
+      "bytes": 773559,
+      "sha256": "4e668010a7252ec9f28c21eedec0c60ff8ceb01e72c453b1055b7c62d9ac4d1a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-load.png",
+      "bytes": 396496,
+      "sha256": "f73f913b25f0b50fdb9bd1caedd819b24d990baf2633687711fe7df810f65072",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-map.png",
+      "bytes": 782475,
+      "sha256": "462af129c9238884d81893d9e573ec48a31f7122779177c62252ec57c2c6cea7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-menu-online.png",
+      "bytes": 566720,
+      "sha256": "12439e7c9355c57c75464648e961bd5c099fe0b3ee1a79427ba0677149f9556c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-objectives.png",
+      "bytes": 653137,
+      "sha256": "5673e550b9fd5ea7f88e30602512655d88d97feca1953d78a20e5a4b75f71137",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-options.png",
+      "bytes": 609054,
+      "sha256": "823f027c7bf8d63d1a4afd718f902b69f8884fce7a0a5cf56cf55c44ea7ee3de",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-out-of-sync.png",
+      "bytes": 676093,
+      "sha256": "477f6f3714b338434b6f1d0f1d9a94cfab0bf8c480caa5e8d39813c264718be2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-pause.png",
+      "bytes": 504031,
+      "sha256": "47cbd29fcdf4f953a1e5d54d1408c39a1f7476e51e7908101a9626e562f20d76",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-paused-online.png",
+      "bytes": 791899,
+      "sha256": "77a4bd6a5bfc1d2e6745e03c73d645569d33887134b3f1a12b6dde18780a5607",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-placement.png",
+      "bytes": 777632,
+      "sha256": "4639460c1b128b8f33d372647c5462689aca12b80e2cb074addbb1fee6f0b35d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-results-filters.png",
+      "bytes": 71158,
+      "sha256": "3054505ab5f088f381c8199aff4c8fc849db27c629279eb5f58f9a6b8fec91ca",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-results-left.png",
+      "bytes": 79362,
+      "sha256": "d82b06e6e76a0816725d71c82aee31f81aa760b3b8a3e85c9a617523b3b9e07f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-results-opponent-left.png",
+      "bytes": 81650,
+      "sha256": "5c83eb7d3492feb0ba07a96cd6094106760a91c01347e8f0796b8b1c83212021",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-results-room.png",
+      "bytes": 75279,
+      "sha256": "4180d26e8c0e49785cc6b074cb2792e5756bedd6675beac34228e226d242b6c3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-results-value.png",
+      "bytes": 75554,
+      "sha256": "5a09d3473a9da480e9442236bba560c11cc81c9f4990878901345e6cfed1e0ce",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-results-verified.png",
+      "bytes": 80004,
+      "sha256": "6a7dc3449c0f9b5b116c72445689d479492cb39e4faf82135300a24cfbfdc89a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-results-verifying.png",
+      "bytes": 83440,
+      "sha256": "6b65186412fb2a5cc393308da29f13da892aed197c242301a955fc0bfabde450",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-results-win-probability.png",
+      "bytes": 72944,
+      "sha256": "850162c21edc84cd12ecf61debe973a90848910c3e9ff48ca9d3a64014b075cf",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-results.png",
+      "bytes": 69513,
+      "sha256": "184332a67955cb2b16e857a3229513fabe1ad05e4f5fd6156cba15777a4232f1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-save.png",
+      "bytes": 399544,
+      "sha256": "35b8ba6b66c7611730fa0b473a2add2032135cbf65306e2214da96f5f0290f64",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-scenario-message.png",
+      "bytes": 784649,
+      "sha256": "fe4e1e0d5afc69eaf148b9a1d7834e5dc1c67a81b7f93bc527805ad4ff99d954",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-tactical-tools.png",
+      "bytes": 781562,
+      "sha256": "390110cb855558aa135f2f654e9bc8fdcdcf46488b9a50a44aebd8684584d0dc",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-victory.png",
+      "bytes": 641277,
+      "sha256": "d71c477ecfb40e52fd07f12bcf6e54ffd89ad7e3a379307e1273d362b5416ad3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/game-zone-paint.png",
+      "bytes": 769926,
+      "sha256": "71ad53ce7a5b9c7601edb9642a77ef4d3b9eef043313922af55ed77ceb86c2a4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/replay-controls.png",
+      "bytes": 766340,
+      "sha256": "07544557d32cd7063a44147ab1ba8db6b27d5d3eaa622c450a74509621b3264d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-desktop/replay-menu.png",
+      "bytes": 507175,
+      "sha256": "45365343bfb6f5891ced211aaa268a64c1614ca507cc2b6b49059d886173823e",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-alliances.png",
+      "bytes": 143210,
+      "sha256": "a1189448c8ab6681f5af795baae94c1db88fce339036547a350398c85f9cbd47",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-briefing.png",
+      "bytes": 216451,
+      "sha256": "e7fbb7e27a15061ae6857e737a787c894730d58788141e402e3d59004339dd8f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-brush-rail.png",
+      "bytes": 315640,
+      "sha256": "b19e763aa8b98953ca20813a0f25dbe99f04b01f11bc0670678850c392998a2a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-brush-undo.png",
+      "bytes": 320631,
+      "sha256": "cbf82e5f02ca9699b8b38e3bfe149f3b802ed8f86583492a4defab57fc9c016d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-build-bottom.png",
+      "bytes": 335142,
+      "sha256": "e7978ef625aee2140961b92c310d87e834096012acd56937fb063dd614112cfa",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-build-left-thumb.png",
+      "bytes": 326518,
+      "sha256": "65a57fb076c0bbb04d9f27523892b4ce6b5d9e9f6895c5da82c6c121decad6ec",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-build.png",
+      "bytes": 335026,
+      "sha256": "aaa2a70e82a064e42a4053e760e568c6075b47b441d7ae248693a4d28645d9b2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-chat.png",
+      "bytes": 319033,
+      "sha256": "cc1d14de1fb36bc6d230789571dcd39748f210e01326b11f077900c19ba202d0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-draw.png",
+      "bytes": 148931,
+      "sha256": "7619c95748321df581c2bb2d7bb3e5da45ada4a8e3c24c939276231ea91f05ca",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-flags.png",
+      "bytes": 326836,
+      "sha256": "d52090080814307e819d22024cae6e7c8fc6c1085c141e6945a9321d90938913",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-0.png",
+      "bytes": 301490,
+      "sha256": "02d497712d20770c2cb54de9c84a0c8c9be8e56ea307df1572739ed416f606b1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-1.png",
+      "bytes": 301448,
+      "sha256": "e9055d073426cc9e1907f64b6b297d6b90977eed9aa580ffa94f2bd9613abffc",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-3.png",
+      "bytes": 301427,
+      "sha256": "11121176054cafc44d26966ac24e24b4e95e5ce98995f7c3ca4fb11fabfa1928",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-4.png",
+      "bytes": 301441,
+      "sha256": "b8a0491bce6d795be2aedb25d32ebbec7535439c94498d8cf6997db07218cc23",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-barracks-construction.png",
+      "bytes": 300761,
+      "sha256": "accef9f23b73c3e9ec049f183cb2973efd641e92f4ba73aa31753f640c3d381f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-barracks.png",
+      "bytes": 316876,
+      "sha256": "582db94b55b93194b97725842d86170919f46cd4076be6292045da8f34bbb95e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-clearingflag.png",
+      "bytes": 326183,
+      "sha256": "59a8f8056f0b611e38faafbbf534784ad3b5b1218b808437325ce23584d85293",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-damaged.png",
+      "bytes": 303587,
+      "sha256": "0fe10dd6aefc987d75874293d0b6e78263f4a323dca33245ef9267b2045edf49",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-defencetower.png",
+      "bytes": 301568,
+      "sha256": "0024dc60d7cac30b8c7a5c4a7f32a301b0e74f584578bd5fc16a4e42cc8f67d7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-destroy-confirmation.png",
+      "bytes": 320890,
+      "sha256": "09194212b658b8e3208b7eb499b821b99b9e78de7029d316c6910936435d0e6c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-dial-drag.png",
+      "bytes": 303359,
+      "sha256": "566a0f6bd046da92814f49ef41f78a8f530dd62aa8cf538b3a682d13338d622c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-enemy.png",
+      "bytes": 306011,
+      "sha256": "9163abbbbda6c3ed71481748550c854662ec6036ce096200b3a8183e3c54509d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-explorationflag.png",
+      "bytes": 322834,
+      "sha256": "403ec5540f286bce30af4ffc18da6a21f46d157cd1689d42b5577f05381c83f1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-hospital-construction.png",
+      "bytes": 301224,
+      "sha256": "c64384eab71d0ea8b3c708846c6b2b7421e1f643d482b6eb7ef45287a3a0f5af",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-hospital.png",
+      "bytes": 317015,
+      "sha256": "7d9e5735cd57b9b24cc4d7cc82c8c8c453eea1a3eb1a55c1d4a21aa1ef12d724",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-inn.png",
+      "bytes": 303682,
+      "sha256": "13213d669f8559f2fa3a116a27766923b2cb285f0a7b0f9675f53aae4f0d23dd",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-left-thumb.png",
+      "bytes": 313164,
+      "sha256": "b4a66e3cf1e04794c61fe71cd752a595b9ef686bd5d453a69b9e184a9e1830a6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-market.png",
+      "bytes": 302598,
+      "sha256": "45bb958073f30f9f5d73d7aff9b1652a55e4ca7da2342118acd015c0dfdd9242",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-production.png",
+      "bytes": 303396,
+      "sha256": "80441679ae117d54b7c14d4df40913f6098f2d70b5b89c1265d6bceda80a9acf",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-racetrack-construction.png",
+      "bytes": 301714,
+      "sha256": "b5609dd34fba1024ddc2c9bc8edd025692aef76328a96d77869134da3b0ba591",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-racetrack.png",
+      "bytes": 317016,
+      "sha256": "b575a0739859ebf34a4dde32f4f57397c396c7e8d5a674a5eb874fd4b6770a44",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-school-construction.png",
+      "bytes": 301809,
+      "sha256": "7e8b123c52f3d0d477826ccbd4059a1eb99f4ab8dc5e0146dda346f8bed8251b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-school.png",
+      "bytes": 317191,
+      "sha256": "194a2c3d655dff5d558baa325593d62d117216cad36c886c85f0c4a0c0c7d9e7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-stonewall-construction.png",
+      "bytes": 301255,
+      "sha256": "7887e32a1feb01e19933fe908e278b5fb6c42096d3eaa8b463c8a4b48af220c7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-stonewall.png",
+      "bytes": 317256,
+      "sha256": "e809b1cfa0b7d89fc08468517d75fbe05bf1d1a57ba3f5f47219cdca78c73a1c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-swimmingpool-construction.png",
+      "bytes": 300983,
+      "sha256": "4042f2820049b583e5a24efebbc24f02f636889d5a4c121a09f41f2d5ff06a84",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-swimmingpool.png",
+      "bytes": 316898,
+      "sha256": "ab488222b80ed302bc29b4c965abc48ba219d4d99aa71e7a2700e465b279526c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-unit.png",
+      "bytes": 258777,
+      "sha256": "00f42b203e57651eae04d6dfe3ec2819dfb214e43b4529af897ab2b249806c98",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-inspector-warflag.png",
+      "bytes": 321937,
+      "sha256": "f8678f3feaf78091da2858d10d86541eb9ad8c9e959c60a81733f4462b697dbb",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-lens-legend.png",
+      "bytes": 332310,
+      "sha256": "e817982ee41afb37c1c1989b79e021acc0778e13186095024ecd1f000c994f5f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-load.png",
+      "bytes": 93694,
+      "sha256": "837c213bc2ee730ec119e4d99e0b2f70f70867d98511392a82f6d1f8ec15f7dc",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-map-peek.png",
+      "bytes": 164346,
+      "sha256": "863950f727ee7b8b3a847532ef6a098383df0498d7bf20b4a77901f75be6a81f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-map.png",
+      "bytes": 334585,
+      "sha256": "e008530bc05cef37e9c2ecd9b12f25528cb17c64b0b3a7b6ab7cde429551f47e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-objectives.png",
+      "bytes": 158548,
+      "sha256": "3e417dd834a2d891ff30b33b4792a3aefd68e632ff746b9cb7827402d40e60a7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-options.png",
+      "bytes": 123612,
+      "sha256": "3b40f11ada97498be4c647246c2eda13358a5660b69cd08a4d074fa79e75244c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-pause.png",
+      "bytes": 100418,
+      "sha256": "83e4495e8fd4878f6530c03585c6e5629dd4d3467bc20dfae6c25ae0148d4a87",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-placement.png",
+      "bytes": 332748,
+      "sha256": "e62bcd421b80ee1f5ba58b7526641358de982c141cf0dfdf0f14f7b0fa2685f0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-save.png",
+      "bytes": 100788,
+      "sha256": "3c794467ef01700acdefb20ecf801fde752f01c00e720516cdd9adbb707b0ac9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-scenario-message.png",
+      "bytes": 319145,
+      "sha256": "27a907a2d62fc9166f95d7efecb2a844c518ed09fcca929d15e3e30cac3691db",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-stats-sheet.png",
+      "bytes": 152054,
+      "sha256": "57bf15a3bd73c0f11c858405d658faa8f7103b851a1216ed1f2d65d81b20d243",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-tactical-tools.png",
+      "bytes": 301950,
+      "sha256": "31944a50f2e87fdfabc968f021a793f0df942fa6012785ff63335757321b473b",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-victory.png",
+      "bytes": 147336,
+      "sha256": "7895081db9032a96a311a245dd3f141065b953333e1b21c1cd71b1f36110de6f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-zone-paint.png",
+      "bytes": 321063,
+      "sha256": "b6fc9d2e231142120d65b01229e5a473b0820adbd03f6ff5f60171766d281e01",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/game-zoom-drag.png",
+      "bytes": 321352,
+      "sha256": "428b0520ce9dde7bbbb13577774ee25004f474c8be5a2628a84ee63d388d2e3f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-00.png",
+      "bytes": 335524,
+      "sha256": "7d0eb576c20f5ed9e1c93c3db3a6638020da363663063876eea5d2f20ee15869",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-01.png",
+      "bytes": 335940,
+      "sha256": "01050bf89a6bf5f8e452c0e5e382a49f18ac25f78228bc544cb03c5702668cd0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-02.png",
+      "bytes": 335543,
+      "sha256": "eb19123d680a60ae9283bc059f7ac56a860f31d582b38b9e1f9a16eeda3d8c1a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-03.png",
+      "bytes": 335204,
+      "sha256": "eeb48526b815d6ed54dee1b25fdbe891304dfed369d0077b7eac2263250eef12",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-04.png",
+      "bytes": 335933,
+      "sha256": "40d53f7cded96febd9249f7bda6dde9ab4aa3a1ed632501f88d0025a72de9db0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-05.png",
+      "bytes": 335377,
+      "sha256": "071ef556d3117a61948bfabef826a1ebffb345e788c223c8a5fd7775e1b09c98",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-06.png",
+      "bytes": 335197,
+      "sha256": "6b60c9447f07942a885d03254d368e483e95d20e4515a81153bb21ddccc23f9e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-07.png",
+      "bytes": 335003,
+      "sha256": "5b20cf890f1d9fecdcdf282c64e571c422ec34ecad40fa6585f14458336f5a2e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-08.png",
+      "bytes": 334462,
+      "sha256": "522e59e9273ee639f1f4908c665b64dfb0f21b8c7b1bfd1c28027519d220f9a2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-09.png",
+      "bytes": 334476,
+      "sha256": "d3c736162a4567c5f0e9a32128a5a0a90501a8a8b9828c22a437ec9a15e7b123",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-10.png",
+      "bytes": 334693,
+      "sha256": "824052512f751a994865ea4ed51e24dd0dde9002a20319668687c29b2266b095",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-build-11.png",
+      "bytes": 334662,
+      "sha256": "12fa95116cfe2f97f0671a0fd88c4845a3941c08e32a955d6ac793bafd2ec549",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-zone-00.png",
+      "bytes": 321447,
+      "sha256": "0de728308c2f581faede9b8750c25dcddb3ef212f58e81072bff29593ac0c396",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-zone-01.png",
+      "bytes": 321423,
+      "sha256": "43f21c1c8bde9e1e48f6d2331eaa1f893c9cee924d96b7ce794dc2bf27f886e2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-zone-02.png",
+      "bytes": 321306,
+      "sha256": "60e169a58cd7928b78361dcd527b82fefff9eff7168793a47ced81b5b05d4ccb",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-zone-03.png",
+      "bytes": 321386,
+      "sha256": "af3aa1f9e1a74d7e8603b2da318b01ed30ba7ffb0e41175bf9b37e71edd64a36",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-zone-04.png",
+      "bytes": 321428,
+      "sha256": "3dc9e07b968e9f3a7830820fb1cc85fd15c2f63a61fd5b426ed3f5ce38b3c6f3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-zone-05.png",
+      "bytes": 321325,
+      "sha256": "085d8994b4e8fbfe0748212035dca519b1187c4e33c28997791c104887d17546",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-zone-06.png",
+      "bytes": 321285,
+      "sha256": "33be7024777f705e2d164902779c8c2bb2feb98af751dca3eac8b97086692b75",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-zone-07.png",
+      "bytes": 321225,
+      "sha256": "b678733051b0aa61ea6c4011ca1e0755631335847b7a9829ea1bda83db7713b2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/gesture-zone-08.png",
+      "bytes": 320977,
+      "sha256": "bbb6829954525fc06b8b9202100125b0f7d3ca732c1b8e57d808c36a3b05c124",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/replay-controls.png",
+      "bytes": 275461,
+      "sha256": "58cf7a3a54b4810e1dd847171ad88e78f57456d909a6345ca7037d8d44f1bf9e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final/game-phone/replay-menu.png",
+      "bytes": 100878,
+      "sha256": "2b237f29f18af41b8259b38fb76e129f4011195c6283af4a0b885a7b0d4978ff",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-alliances.png",
+      "bytes": 741554,
+      "sha256": "555a3b95dbb2463f4c9ed40ab08fb8875129e1ec5c713934614d736321379438",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-briefing.png",
+      "bytes": 823130,
+      "sha256": "ce918466eab3d94b21fc9e510575597258b7edbd2e335a0cfb3bff27761f2c6b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-build-bottom.png",
+      "bytes": 904518,
+      "sha256": "176b715ccc5b865cc9e248d68f0923db420d3916c264b1426d33ebe5f0a1ba39",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-build.png",
+      "bytes": 904563,
+      "sha256": "7ab9973785588f7db02804e19942471ce41975d4360ba5c229f381a86f6a1e24",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-catching-up.png",
+      "bytes": 790060,
+      "sha256": "0ec02e4b9b209e58636c6b250092d5aa88b9c343b4c9f221802ff1924dad9bd0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-chat.png",
+      "bytes": 882484,
+      "sha256": "c41ffea1f5a006ac8a97a66afeb374bc5c6900508d1753267a40c3a1762ee079",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-connection-details.png",
+      "bytes": 854039,
+      "sha256": "21c875be00cf7a92eca2b413420049dfe73233a7e29f1206ed433d97172efc87",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-connection-grid-details.png",
+      "bytes": 850152,
+      "sha256": "49dc14afeb9cb6e43d5d7dd335f2f18df7b3cf214cec78edc17d91311d0d48b4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-connection-grid.png",
+      "bytes": 908806,
+      "sha256": "db92c8de754935715c848fea6952b3be71862aa9abd6214921a37c922e50cfc0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-connection-left.png",
+      "bytes": 907751,
+      "sha256": "08c2d533d5bf3b8c49a45a632cfed904d6c658d3688bd724802906984e41b5ec",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-connection-lost.png",
+      "bytes": 796159,
+      "sha256": "a7cb625e160d5e56fae96f8cc279ca89ae4e8cde2a95bea1df134bbf567c0fd9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-connection-own-details.png",
+      "bytes": 853270,
+      "sha256": "bb532b6ccfb2e8c162e852d956cf4f90403806a4d282abd2d54bab4a15f84914",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-connection-own.png",
+      "bytes": 906763,
+      "sha256": "ef2dbd18519156da0a24d5f9643026b17b2706fd33156738fa46e2ce82c0e3bc",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-connection-trouble.png",
+      "bytes": 905008,
+      "sha256": "61a332bf8719ab51461c747ca8f527381c89229cdf9021811540c46b7adf41b6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-connection.png",
+      "bytes": 904502,
+      "sha256": "7296a089b6ceac13b780832463262923860644a93aeb75a2af693852a35cbd30",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-draw.png",
+      "bytes": 754963,
+      "sha256": "496a11a654395884d03b783b9082a63ca9c782ba65cd9cbd7703a92ab55e3542",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-flags.png",
+      "bytes": 892414,
+      "sha256": "de2a70102ec9a5d3d1a78f628a4d12753ba03a094dce916f400dfdcc12e3fcc9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-0.png",
+      "bytes": 896259,
+      "sha256": "a92a50ca213d0bd15933b0552f66ad72fceeecb7411cf0e0de2b4e19ac6a29f5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-1.png",
+      "bytes": 896168,
+      "sha256": "a53fca686d438a62bfb9b487130c302062a9e43503417e9efae3b7ff8bdebae1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-3.png",
+      "bytes": 896235,
+      "sha256": "1fa0ab1b4cb75a1d8636f71e2f2507a9c0cb3611988fd16f99628f38b01fa0c9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-4.png",
+      "bytes": 896442,
+      "sha256": "8c60bc40587e2dd2b5b0f19af9da9ca0200ff8e7e10bdb794e20bb01c5212a53",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-barracks-construction.png",
+      "bytes": 893817,
+      "sha256": "cd23d7a5370554cdced0ceaf086c70e6f8c650ee5e739945799f234178f3971d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-barracks.png",
+      "bytes": 889610,
+      "sha256": "468ef6d77262f201b9c12538e450e5caa7995c29d88abe4afaa7765554509e77",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-clearingflag.png",
+      "bytes": 904676,
+      "sha256": "24f3cc39859598723bb1210839b420c7a6684bc9df40630b6925bb921932dd13",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-damaged.png",
+      "bytes": 898289,
+      "sha256": "2a96892b1dc9621c85ee98f780a44c70d7a1d44619b9240cccb478a2930b97bd",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-defencetower.png",
+      "bytes": 896508,
+      "sha256": "2f6fcd08d4d1e2dc1c78b6cc4f1a2ba812b6a9448c47172f68ef18073eb23757",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-destroy-confirmation.png",
+      "bytes": 904605,
+      "sha256": "8a0143141211f921a3ed70311f83eaed842cb55330dccbe98eeac91ef24a8a96",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-enemy.png",
+      "bytes": 885230,
+      "sha256": "7e429360e59d30f95e43799eb294a6a8ea27296f0fdd1d2ff6939163f798654e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-explorationflag.png",
+      "bytes": 899464,
+      "sha256": "7f557852b9df4e243d9165d94f651ce40a10bd295f9963431ca0ecfb8a1895d2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-hospital-construction.png",
+      "bytes": 894345,
+      "sha256": "6003a7da52e73a567fb77eb98de786646e2d2bd7fc2fa258d405fca28d2c6514",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-hospital.png",
+      "bytes": 889257,
+      "sha256": "058acdbb99cbe01cedace89caa8e2ecffaf68d13ee27322ca5e107d23fb1c391",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-inn.png",
+      "bytes": 896890,
+      "sha256": "1dc503d4d7b62655859a216170589b80dbcf2fda765d404eafb82b7422e99a10",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-market.png",
+      "bytes": 896489,
+      "sha256": "a3983357ea7d0c80e9219fa56aa72d458bcfb7abd1fdba5a69389589fac55ae3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-production.png",
+      "bytes": 905465,
+      "sha256": "27ab7316391b654c21c12c7534e4298458e07ae9396ebdebca47e60282e53bd2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-racetrack-construction.png",
+      "bytes": 894732,
+      "sha256": "e2ad98ad79d62e444b7745a7dd2db937358ba1fe20796bf58a8f8c1a6efc33e3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-racetrack.png",
+      "bytes": 889757,
+      "sha256": "265b37a279be1c40f748bb8004e0002c8385cfa07ba058f466b3460e2dc3ac44",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-school-construction.png",
+      "bytes": 894739,
+      "sha256": "f38aabaeba4ffb7c692d0871f5a4929e5f4f91f026591853942fe907c5eab751",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-school.png",
+      "bytes": 889948,
+      "sha256": "41592ebf7b61a002a2415997c4fa3663e0c266f32ec8f8f54e52eb7b5924eda1",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-stonewall-construction.png",
+      "bytes": 893426,
+      "sha256": "63c5dc6a8880e89f401b63a5b5c8ba23a07c475004577bc1161e16fa3e67341e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-stonewall.png",
+      "bytes": 888000,
+      "sha256": "1ee8b871841a375c995b56cd4c37e72cbd9dbbc1246a4f7dcc3986ff51ccad0c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-swimmingpool-construction.png",
+      "bytes": 893485,
+      "sha256": "8de9268fb07d882861638d3b4e96beff97e62cff0a0e0bd5f6ee15e8703f326b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-swimmingpool.png",
+      "bytes": 889261,
+      "sha256": "c009b5b5625b3798718fd3f51c44fde5442977256835bc82afe4d28492027125",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-unit.png",
+      "bytes": 890430,
+      "sha256": "d5a1cb4f88b4a30a64c82b23673c4367c5fc8c2676b6329030698eba3a02d78e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-inspector-warflag.png",
+      "bytes": 898766,
+      "sha256": "d4c024b64f8109cc50046a93acea8ec73ce0566efe6740e31aaeadf49091321b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-load.png",
+      "bytes": 444562,
+      "sha256": "34f3ef7c42b6746054833c3cbd5c8b446730332ca32be310b2370cbfc0afa4f0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-map.png",
+      "bytes": 904584,
+      "sha256": "f40d79d7c381ec31d060783de1f49c35592d6980f6aa0a58ae8fc99f551d1a47",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-menu-online.png",
+      "bytes": 644030,
+      "sha256": "3b2e5ad8a23363b51788e6cb7e8ea8330ad61d0e1515fab8cd511a877503dd80",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-objectives.png",
+      "bytes": 762690,
+      "sha256": "8a26b8ce4c45843f6aaba5bed49b2768d5818d09966510609dc8a61929609be3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-options.png",
+      "bytes": 709938,
+      "sha256": "fabb002a5ee5e2d340ef855989669181eb7e0dfd5dd4ca91babeb165ba1b0802",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-out-of-sync.png",
+      "bytes": 789917,
+      "sha256": "43b5b471e4b85f06f75dbad475e73d887d6beb02086c8c1cf82ae0017480155c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-pause.png",
+      "bytes": 575996,
+      "sha256": "b49dd11a6e1792feaa574917dcdbb6ee9a16905d7b6865ceaf659aed35cbdca3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-paused-online.png",
+      "bytes": 909946,
+      "sha256": "cfac9985c3f66a54bcf311c444d9b7ebad8869a754264b686284c77f218b7978",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-placement.png",
+      "bytes": 902600,
+      "sha256": "67a525ae2af597f346c247468110a7827d2a461f71f368f0b333fcfd5e1a8b00",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-results-filters.png",
+      "bytes": 75886,
+      "sha256": "524e184e18d31633cf72d18cbd5c5a797ab6bc969463a8a1c6168c5cbdaf8f16",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-results-left.png",
+      "bytes": 84350,
+      "sha256": "9354e425dd644245502cffb72de9ec971ef57434d75c8a8a1e1ea9fa536b7e5f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-results-opponent-left.png",
+      "bytes": 86422,
+      "sha256": "bd2110621aa9de644adf3454002f7cd39c614703acbf2541771ddfeee8ff5253",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-results-room.png",
+      "bytes": 80254,
+      "sha256": "cf2fa39f1444bba41c28cbc8cf463990a3b593460ad2fefa4a6cfbf4fe5a8b03",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-results-value.png",
+      "bytes": 80495,
+      "sha256": "8b0f48ebf9f1669b26990bdde35cf65ff3985e6d566e38111ba022af18336804",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-results-verified.png",
+      "bytes": 84826,
+      "sha256": "4ec0a9e11eb61423b1e2b20c2d62ba5fabe60c869bd5ee655ce4626f7e9af976",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-results-verifying.png",
+      "bytes": 88396,
+      "sha256": "12f7d9dfc5a7e9255d7e653d69178624dc28bb201aff03840bbadfe4ca567582",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-results-win-probability.png",
+      "bytes": 77948,
+      "sha256": "d96fcb3e25690a23d0421e82df32ad8531f760a311dcf41e6793dfa740dabc2e",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-results.png",
+      "bytes": 74067,
+      "sha256": "e8f191b0256c042dfc8aff671a5b6a89a5756d6e5439c787d2c18db9d17d1495",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-save.png",
+      "bytes": 447574,
+      "sha256": "c41db7c143cff7fef0445bb69fe8c0715ea75866c711667479f3ccc00c98d57e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-scenario-message.png",
+      "bytes": 907275,
+      "sha256": "20c03c7ece462a20fd90184e47917f5d59c022bea3df590bcb34df15aa4057c0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-statistics-topic-colony.png",
+      "bytes": 902692,
+      "sha256": "540b47f216edd771983c659a14c1f897960d7fd662fafde3f352c56333bb815c",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-statistics-topic-economy.png",
+      "bytes": 909067,
+      "sha256": "7926414ee239694ae6717dc28dcb1adf9c309db4224d648f8e4694cf6e7890aa",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-statistics-topic-military.png",
+      "bytes": 907435,
+      "sha256": "42505268890018d8d566fb194573f0a23f55b5df495ccdcfce5b4541a78395f2",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-statistics-topic-overview.png",
+      "bytes": 900464,
+      "sha256": "573ec73236312a2c7c3954d84c48c6aa8bde77f083447f627483aed9bee5814b",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-statistics-topic-world.png",
+      "bytes": 905093,
+      "sha256": "8fbc00804b12201889494d5effd350e3fd281099cc8bbe57d573f9f9f1f13bc8",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-tactical-tools.png",
+      "bytes": 900578,
+      "sha256": "dd0a4305c954a1797ebab96ed7f1372a8c4cce788d33e68b11a3a0a44db6ea06",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-victory.png",
+      "bytes": 753133,
+      "sha256": "7dbe37d509569d25e8cebcfd8e7ae904f3f8c051c35cd5684ee2872049d7b1fd",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/game-zone-paint.png",
+      "bytes": 894000,
+      "sha256": "16505e3872e12e8bbe73a67a5bfbd4e985c115dd0472c1ad219a234bc8f1baf7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/replay-controls.png",
+      "bytes": 879868,
+      "sha256": "394a4bbb27228a832ecafcb1436d7125f7fc925e13e1afd1ea9a85875234caec",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-desktop/replay-menu.png",
+      "bytes": 582756,
+      "sha256": "880cffe73c35350740cd220108bfbebb70294944aebf4e028f91ea11a5d61361",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-alliances.png",
+      "bytes": 144493,
+      "sha256": "80366a7ce3b9e608d5dce4433239b94d848aa02a99aa10374485f86446b674ba",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-briefing.png",
+      "bytes": 217762,
+      "sha256": "6986c91c8d7488f5841efaeae84ecd981b61f0b5eed00c30744e438b83acaa70",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-brush-rail.png",
+      "bytes": 315728,
+      "sha256": "7b4a26c89c2deb78a63c0849debed0362e699bd4f8f34986bf61766ed7bb39dc",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-brush-undo.png",
+      "bytes": 317935,
+      "sha256": "17102bc1b7ff42c5db3f825026f44b3bdfc0d31e9099846c32b57451e04821f3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-build-bottom.png",
+      "bytes": 336535,
+      "sha256": "aed47c737690e81e8b260617ec86095317924d1f5b7681538c9b7d37c5bb3be6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-build-left-thumb.png",
+      "bytes": 307434,
+      "sha256": "0cb332cb23ee9e4878d9d2b10e0832bba8416ea239195d90fb6601f769c3c2c4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-build.png",
+      "bytes": 336503,
+      "sha256": "6868e99043fd01a855b62a95bf4b0610ee207a008f114653ad45bd8d7100c73e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-chat.png",
+      "bytes": 309373,
+      "sha256": "127b6848f15b2f3dbb7060d33b6bcaab3ee8b36e0fb72aa7992c3285f9d03450",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-draw.png",
+      "bytes": 148775,
+      "sha256": "4897f088fec28ae16ac6bc9fc3e5c7a85b03a6a2c282dac56d2adc90ab8eb665",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-flags.png",
+      "bytes": 319163,
+      "sha256": "22b4b4873b7f0c0671d459049480eb2ed55d7b3374acb5c742bb21c8c12edd59",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-0.png",
+      "bytes": 291863,
+      "sha256": "f42066a82a8e1c8e3bcd55fb0e5374ca995b3e95433592fe5e405f26a0e65785",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-1.png",
+      "bytes": 291801,
+      "sha256": "e696c0ea5b14e4642975b0308e0d47ed92dfe52fbe2a0e7fb3d05db69c0047b4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-3.png",
+      "bytes": 291704,
+      "sha256": "35fb67f1c260c306c3b9b9f9c6754fc4bb4668dfc70579ffcbd7669223d92259",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-4.png",
+      "bytes": 291624,
+      "sha256": "e632fcd5f763bacc517867baa0c9f6ff1866c128d2156d62f6a112ce5a112e1d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-barracks-construction.png",
+      "bytes": 291137,
+      "sha256": "d5aa7c41267cbda4f416f94e6d40ff9f6073709ab566f484393792f3e2ef5e39",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-barracks.png",
+      "bytes": 306288,
+      "sha256": "70455bed87e2701cfef6c5c3ef8106d120cc776ba03af2a998d0158873cde1e6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-clearingflag.png",
+      "bytes": 313251,
+      "sha256": "7b892c54c3cb646fd78a56e621f51077a2997353f1e0324476492d783522e21a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-damaged.png",
+      "bytes": 292983,
+      "sha256": "de19011a2462269f73c43418f62a88dc51fab91bc5b0d7857dd2bf5d6da30acf",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-defencetower.png",
+      "bytes": 291853,
+      "sha256": "cb974efafe23b9bf76fa60d9491dab371961599fc4225e7b4a9fc1fff79a83c9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-destroy-confirmation.png",
+      "bytes": 311052,
+      "sha256": "4b7e888a1048df21f8db77240b2761d86b1aa40af096fae8825249c61ce61564",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-dial-drag.png",
+      "bytes": 293890,
+      "sha256": "040df22b03dfaa0fb2fd6d1eb8fb8b3884581b28d4f2cff9b0015cf0f7aac38d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-enemy.png",
+      "bytes": 296099,
+      "sha256": "75d8d1d1bc5bd56b9914076db954050b7e2ba90a17e3dc9c16a0d0fa014953b7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-explorationflag.png",
+      "bytes": 310734,
+      "sha256": "9365a656499bc1aba348b4ba26645bf940beecd86c080323dddcdfbc6f5ab3dd",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-hospital-construction.png",
+      "bytes": 291507,
+      "sha256": "276eb8da6d858b7d3c34e4c5305b035a08c5da5907a190a83c2aea5d4278bf9c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-hospital.png",
+      "bytes": 306291,
+      "sha256": "1c88737fd45043105f348254a078e9010920ebf8e3229eb862e104c95558b405",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-inn.png",
+      "bytes": 293911,
+      "sha256": "e67db3bcb116dcaa7525fee4fce22967d7d4fd80730adf8a2234a5de62f396ef",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-left-thumb.png",
+      "bytes": 311153,
+      "sha256": "a5f1338a0583b0d7bb6050e79943316bf25a275845bd5e60f44b5e1d730eb295",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-market.png",
+      "bytes": 292901,
+      "sha256": "85a2241779bfb3a1e1ec0451dec97243d56c61b99161699c07123b6901d9a2b4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-production.png",
+      "bytes": 293758,
+      "sha256": "58eb1e1d8bed7c8ca49ccc696326c4867858f8a2e8ca17afc0c30312d04c16db",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-racetrack-construction.png",
+      "bytes": 292280,
+      "sha256": "5bd60b68e4b2cdc3e6c4833babce89ed4de13da8d6abbc5fac0ea65f871bff0d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-racetrack.png",
+      "bytes": 306562,
+      "sha256": "39aeec53b8592b675c6bc0d9dd689b100eb5ad54c0e4e1a31c991db9e65e5ecf",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-school-construction.png",
+      "bytes": 292286,
+      "sha256": "912dd6fd9f3b785d4924ec6452e50c028283ec9d01107e3154b8a632a93ddbd5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-school.png",
+      "bytes": 306779,
+      "sha256": "30f3e21e7fd601c826d8cd5feb3d28dbc5db05fbfe7217d427774c1ee454917a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-stonewall-construction.png",
+      "bytes": 291760,
+      "sha256": "6e4847ece60ab31449075a331b4f7fac49ae82e1fc4522672fe74fdcab727047",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-stonewall.png",
+      "bytes": 306660,
+      "sha256": "19f7b780b142cc5b19a971314537404915514610349c37cf854bfd3364143307",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-swimmingpool-construction.png",
+      "bytes": 291282,
+      "sha256": "2c85eaeae2cbdecca3df1b2b602ac0e5db078e99a09aea5728d4e2a3c262bc75",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-swimmingpool.png",
+      "bytes": 306333,
+      "sha256": "e4b47ceeda00d3cb5a2f5ef2b0ca4675b7252ad63929d24a0d5d8e3c116d85ce",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-unit.png",
+      "bytes": 263424,
+      "sha256": "b9b568962085df7fad9c8fe8786aa9d79d5b54b85a501e64db3275f9eb96fa0a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-inspector-warflag.png",
+      "bytes": 310188,
+      "sha256": "abbfd0229b469a8be7b9cdd022a83c2467b068db22e75c9902770be721af70de",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-lens-legend.png",
+      "bytes": 319348,
+      "sha256": "9e9703556f5ad1c552fa38f73c7b851e3ce48c2aa1f81bdb6e129d8b66084a3d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-load.png",
+      "bytes": 95281,
+      "sha256": "f8f1d36357c37060c5a8ad1471a8c2f1c8e013ab72553a9d10a51bde81bfd14c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-map-peek.png",
+      "bytes": 169431,
+      "sha256": "1476d2f0da091f56df43f01271fd6321a07f56abf37765399b81c280a4f3fc11",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-map.png",
+      "bytes": 323075,
+      "sha256": "c2544aa9da4822c0d0c8490db7e236d3b019870956637231c120286466434be4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-objectives.png",
+      "bytes": 162978,
+      "sha256": "af3baf38d9715555954132ab62c32a14594e9ee689f472a2d4a2143ea2431bb0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-options.png",
+      "bytes": 124003,
+      "sha256": "0ebff4dfc946dd1d8921bbbd488d8dea017c5b08b68950d7df716fe70b20c875",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-pause.png",
+      "bytes": 101580,
+      "sha256": "b954bb7723fc09279f78a5c3164cbc3dfd8878d677518d2e3a68dbfb6364c9a2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-placement.png",
+      "bytes": 321376,
+      "sha256": "6a49f21da03fefb61ec1eab22d959936d264329a869c52f62e4ceac87ac7e7ca",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-save.png",
+      "bytes": 102077,
+      "sha256": "eb2d47a0a6f5b593fc4ee059c78b48eb0ab11e5d7ecca1a0a346655c24e2df22",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-scenario-message.png",
+      "bytes": 313092,
+      "sha256": "d13befc4c962473b89870ad9cb644dd35e829e5896635b71d30bb2c537a04390",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-statistics-topic-colony.png",
+      "bytes": 76465,
+      "sha256": "3647f2cc64fb7400bf7e216ced3d77ce2bbf7ce27b9477bb79c327ee7ed71157",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-statistics-topic-economy.png",
+      "bytes": 81149,
+      "sha256": "a27d4bb5e935795456b5d4b1bdff6797420dc659f12b03a2cd0f259657f69274",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-statistics-topic-military.png",
+      "bytes": 76392,
+      "sha256": "3598c10caeef6b1742e91e30df7df761b4efe78d48fed1e46ed066feefe16622",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-statistics-topic-overview.png",
+      "bytes": 74571,
+      "sha256": "dec55181decaa5b8960363b33b0c56c8e19f55d5f4c4882a8f159991a1c6c5c2",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-statistics-topic-world.png",
+      "bytes": 79207,
+      "sha256": "91ffd54d553566ab17ce8f4070aeab3ae454def07b93be97b14d2321c3222976",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-stats-sheet.png",
+      "bytes": 74612,
+      "sha256": "9fd432d29898df4031db4e493774af4e3db4f7aba50abc692ca8fb0feaac6d63",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-tactical-tools.png",
+      "bytes": 302188,
+      "sha256": "e99de44afc94469460e1515f78963f8574152ba36ac4e1cb5d5e7735ce43bd20",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-victory.png",
+      "bytes": 146892,
+      "sha256": "e48021b43c311d33c77da66389d692704e8e306c36f250f6d3d8bd7f52eb2948",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-zone-paint.png",
+      "bytes": 317330,
+      "sha256": "f3cf118d462160b695f4a8dc6ef9b7d9d2eaa8d7a16ccb8e475a1b151b017487",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/game-zoom-drag.png",
+      "bytes": 345369,
+      "sha256": "d7a42e5c9456357ebabad7415289dfc52c4baf4e5422c3c558d654e121582578",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-00.png",
+      "bytes": 336997,
+      "sha256": "b223e249f6c0ffea0ddfe7062bdcfb26607cc01d3476df7ef0be8cfe74842bb6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-01.png",
+      "bytes": 336953,
+      "sha256": "b5a781310557bd190e88da041bbf3a536a5a2359ae9817292101596fabd7e9c5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-02.png",
+      "bytes": 336976,
+      "sha256": "08080dc6bb730f9213ad12d2e53d6d39cbf4abd81e5e22dc7df2ec073eadb041",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-03.png",
+      "bytes": 336888,
+      "sha256": "460a435b6a54b72c1ff27187093580c6e791c1a10c93c8b31718759630e2dbb2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-04.png",
+      "bytes": 336840,
+      "sha256": "142de665df979dab6ea91dad0d6d6f7d657a4b7975c0cdf95828cb9901837b5b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-05.png",
+      "bytes": 336635,
+      "sha256": "7275a8fb226ed26670f0d92dfd588345dac2d8ffe413a40aee9f41f2dcb48816",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-06.png",
+      "bytes": 336480,
+      "sha256": "243075529ae4cefd34a285ae209d7ce23f953e75cd165c9fc6f7121724486e70",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-07.png",
+      "bytes": 336384,
+      "sha256": "11c622243ae37a0724d165262b58a70754e055b3e773d77516a059932c1810d1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-08.png",
+      "bytes": 335805,
+      "sha256": "de700a2e7e36ac85e056c2e410afef3d8f67cf1be0096dcdadc3d6357b4aa2d8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-09.png",
+      "bytes": 335445,
+      "sha256": "de16f783937ab7185085f33e38e3e9f653678cfb5175e04fab1a2085f3df0492",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-10.png",
+      "bytes": 335087,
+      "sha256": "3d221fa137589cec2e6d4f48e36a21beb41b3fff06c9b088e3dd70bc2a7ade64",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-build-11.png",
+      "bytes": 334627,
+      "sha256": "2830ba9156aebbb2b2a15eb1846067e17d22722491ab70909220377125cc7f3b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-zone-00.png",
+      "bytes": 315928,
+      "sha256": "6047b25f0342ece1b2ad3620a57a8cee982633bfd9fe6bb535d03b84c74d93e0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-zone-01.png",
+      "bytes": 316170,
+      "sha256": "b7a728ad260a07bab8b528cd5e0ae66d197838082a05558ff7e2fe2d667fb7a6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-zone-02.png",
+      "bytes": 316258,
+      "sha256": "9e7eab67ee7fb3086b1a1e1a2d6afa5bcfdbbc7b5f0d07487bbc14f876e8c220",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-zone-03.png",
+      "bytes": 316357,
+      "sha256": "3c049b7c550cac306110cad431a29b56ff5ba1f59840e02c82807292ee6797b9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-zone-04.png",
+      "bytes": 316679,
+      "sha256": "6952b09a33407a12724a19fa0aac57897aea3ada6e0fcac9c0a2c0044932bb2d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-zone-05.png",
+      "bytes": 317165,
+      "sha256": "a9fc9fd0a6a2ace55a2567ece996a975a529515618a9307831cdc0f6b4ab30c7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-zone-06.png",
+      "bytes": 317215,
+      "sha256": "6af9300f4f9a5f59fae3ff8155adcd04da1a22099c906ae89d2175767043df52",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-zone-07.png",
+      "bytes": 317274,
+      "sha256": "d9332cefe3e0452d5320ca9235a263e610538479a5ca3050d9ed3bfd5c651414",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/gesture-zone-08.png",
+      "bytes": 317330,
+      "sha256": "ad66b18b962444f4aeeff2e2672ff698000679b752ad0ab2405468175005f30b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/replay-controls.png",
+      "bytes": 255228,
+      "sha256": "8b158fcf6766db9de0e2f909a33e9f11d64b9f06e596f5787cb55687e1dc5e81",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout/game-phone/replay-menu.png",
+      "bytes": 102202,
+      "sha256": "2f4d2fb6eb96311cba793347aab8d6195ad93250280ced7c274d31ef26cf1929",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-alliances.png",
+      "bytes": 711270,
+      "sha256": "c4c29b1786ea5314acaa432aeb7dfb715590ccde75245ee6d40a8113919f9aa3",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-briefing.png",
+      "bytes": 814777,
+      "sha256": "c8bf485dd4ec016f22ab5dc1e01c17b0e7614f6c8031720d9c089fbb7b82ee31",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-build-bottom.png",
+      "bytes": 904518,
+      "sha256": "176b715ccc5b865cc9e248d68f0923db420d3916c264b1426d33ebe5f0a1ba39",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-build.png",
+      "bytes": 904563,
+      "sha256": "7ab9973785588f7db02804e19942471ce41975d4360ba5c229f381a86f6a1e24",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-catching-up.png",
+      "bytes": 794499,
+      "sha256": "1e3b8d7d08df4ed6c625dfaa04731f16f006202329d29ec17c714c68ba2e5a62",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-chat.png",
+      "bytes": 890619,
+      "sha256": "6de4b1180d283f6236962bf80457853bec3831620fd0fb0f5402896aada569d3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-connection-details.png",
+      "bytes": 858120,
+      "sha256": "42cf748877d2dac07d42402ac6bc8f5e60d5f774ecac08565cd5dbeeb1a38195",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-connection-grid-details.png",
+      "bytes": 853842,
+      "sha256": "f0df82c882ce69eea9abb58b9c1fc2d2a25dbc60b16432604093caec9b491071",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-connection-grid.png",
+      "bytes": 913294,
+      "sha256": "041e183ef1a90e536f06ba7d3f6cf6bdd91b509654d9285eecc760b927c6242e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-connection-left.png",
+      "bytes": 912311,
+      "sha256": "0f12253ba6a5d0052f589ceb33264de63d4175f45c312f0fb9987eca005c03b5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-connection-lost.png",
+      "bytes": 800766,
+      "sha256": "25fd0ecb5cd1f8d9395cc7eb14a4c29254225dce96af7ce898a352b29c64ae5b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-connection-own-details.png",
+      "bytes": 857975,
+      "sha256": "1050ac9d76ba676d543b9339aa12395a9b35930a54a14aeef4d84cd7f428b98d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-connection-own.png",
+      "bytes": 911326,
+      "sha256": "603640b6cdbcd2fde28bcd2cbfb522fbfe8eaa189b1e133d3b4277a9f1f39054",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-connection-trouble.png",
+      "bytes": 909528,
+      "sha256": "0375c2aeb11f498992933d0b9e994f69204d9d9d8524b6765a8d4b5815308e1b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-connection.png",
+      "bytes": 908986,
+      "sha256": "89f18d694c0c73969f42086a1833f8edef148501d61e9e8131bd32a8b472a508",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-draw.png",
+      "bytes": 746038,
+      "sha256": "d1db7e6d1cd0078bcc36dd15068cd2d39b1ca3b5baf60722a6444b8a01bac069",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-flags.png",
+      "bytes": 892414,
+      "sha256": "de2a70102ec9a5d3d1a78f628a4d12753ba03a094dce916f400dfdcc12e3fcc9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-0.png",
+      "bytes": 896259,
+      "sha256": "a92a50ca213d0bd15933b0552f66ad72fceeecb7411cf0e0de2b4e19ac6a29f5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-1.png",
+      "bytes": 896168,
+      "sha256": "a53fca686d438a62bfb9b487130c302062a9e43503417e9efae3b7ff8bdebae1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-3.png",
+      "bytes": 896235,
+      "sha256": "1fa0ab1b4cb75a1d8636f71e2f2507a9c0cb3611988fd16f99628f38b01fa0c9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-4.png",
+      "bytes": 896442,
+      "sha256": "8c60bc40587e2dd2b5b0f19af9da9ca0200ff8e7e10bdb794e20bb01c5212a53",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-barracks-construction.png",
+      "bytes": 893817,
+      "sha256": "cd23d7a5370554cdced0ceaf086c70e6f8c650ee5e739945799f234178f3971d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-barracks.png",
+      "bytes": 889610,
+      "sha256": "468ef6d77262f201b9c12538e450e5caa7995c29d88abe4afaa7765554509e77",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-clearingflag.png",
+      "bytes": 904676,
+      "sha256": "24f3cc39859598723bb1210839b420c7a6684bc9df40630b6925bb921932dd13",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-damaged.png",
+      "bytes": 898289,
+      "sha256": "2a96892b1dc9621c85ee98f780a44c70d7a1d44619b9240cccb478a2930b97bd",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-defencetower.png",
+      "bytes": 896508,
+      "sha256": "2f6fcd08d4d1e2dc1c78b6cc4f1a2ba812b6a9448c47172f68ef18073eb23757",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-destroy-confirmation.png",
+      "bytes": 904605,
+      "sha256": "8a0143141211f921a3ed70311f83eaed842cb55330dccbe98eeac91ef24a8a96",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-enemy.png",
+      "bytes": 885230,
+      "sha256": "7e429360e59d30f95e43799eb294a6a8ea27296f0fdd1d2ff6939163f798654e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-explorationflag.png",
+      "bytes": 899464,
+      "sha256": "7f557852b9df4e243d9165d94f651ce40a10bd295f9963431ca0ecfb8a1895d2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-hospital-construction.png",
+      "bytes": 894345,
+      "sha256": "6003a7da52e73a567fb77eb98de786646e2d2bd7fc2fa258d405fca28d2c6514",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-hospital.png",
+      "bytes": 889257,
+      "sha256": "058acdbb99cbe01cedace89caa8e2ecffaf68d13ee27322ca5e107d23fb1c391",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-inn.png",
+      "bytes": 896890,
+      "sha256": "1dc503d4d7b62655859a216170589b80dbcf2fda765d404eafb82b7422e99a10",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-market.png",
+      "bytes": 896489,
+      "sha256": "a3983357ea7d0c80e9219fa56aa72d458bcfb7abd1fdba5a69389589fac55ae3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-production.png",
+      "bytes": 905465,
+      "sha256": "27ab7316391b654c21c12c7534e4298458e07ae9396ebdebca47e60282e53bd2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-racetrack-construction.png",
+      "bytes": 894732,
+      "sha256": "e2ad98ad79d62e444b7745a7dd2db937358ba1fe20796bf58a8f8c1a6efc33e3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-racetrack.png",
+      "bytes": 889757,
+      "sha256": "265b37a279be1c40f748bb8004e0002c8385cfa07ba058f466b3460e2dc3ac44",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-school-construction.png",
+      "bytes": 894739,
+      "sha256": "f38aabaeba4ffb7c692d0871f5a4929e5f4f91f026591853942fe907c5eab751",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-school.png",
+      "bytes": 889948,
+      "sha256": "41592ebf7b61a002a2415997c4fa3663e0c266f32ec8f8f54e52eb7b5924eda1",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-stonewall-construction.png",
+      "bytes": 893426,
+      "sha256": "63c5dc6a8880e89f401b63a5b5c8ba23a07c475004577bc1161e16fa3e67341e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-stonewall.png",
+      "bytes": 888000,
+      "sha256": "1ee8b871841a375c995b56cd4c37e72cbd9dbbc1246a4f7dcc3986ff51ccad0c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-swimmingpool-construction.png",
+      "bytes": 893485,
+      "sha256": "8de9268fb07d882861638d3b4e96beff97e62cff0a0e0bd5f6ee15e8703f326b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-swimmingpool.png",
+      "bytes": 889261,
+      "sha256": "c009b5b5625b3798718fd3f51c44fde5442977256835bc82afe4d28492027125",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-unit.png",
+      "bytes": 890430,
+      "sha256": "d5a1cb4f88b4a30a64c82b23673c4367c5fc8c2676b6329030698eba3a02d78e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-inspector-warflag.png",
+      "bytes": 898766,
+      "sha256": "d4c024b64f8109cc50046a93acea8ec73ce0566efe6740e31aaeadf49091321b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-load.png",
+      "bytes": 452929,
+      "sha256": "7e52c188a967e1ed4647bd4c337fb43da88c0c848de6b9f2a58a60d7954c7853",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-map.png",
+      "bytes": 904584,
+      "sha256": "f40d79d7c381ec31d060783de1f49c35592d6980f6aa0a58ae8fc99f551d1a47",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-menu-online.png",
+      "bytes": 651007,
+      "sha256": "6d201bfee15c91b54d0df2dc753f1cfef34c24680345aee0f1b71834aaf3ec93",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-objectives.png",
+      "bytes": 752048,
+      "sha256": "9482510d2e242b7854e12b3eed286603d8f90bcfe42fd4d43c007ae1f5109f10",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-options.png",
+      "bytes": 699742,
+      "sha256": "f8f68139488e8213d1316a32de8014e303e3c5b08fa2a59fd6f43cc4a206d7a7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-out-of-sync.png",
+      "bytes": 794539,
+      "sha256": "4ee98a9f794110c6ac7e12f1c89363621fafc2c75e3689ffc83e0fafc3ea5179",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-pause.png",
+      "bytes": 579479,
+      "sha256": "f715c8d74287dae48dc178c51f70658db4c599bc33cd75ef1a38ca86e9f494fc",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-paused-online.png",
+      "bytes": 914322,
+      "sha256": "1d1fac8bcfc643f0d67e0a3c4174e9c8fb641ae0572ac8a5fb03cdbd02893787",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-placement.png",
+      "bytes": 902600,
+      "sha256": "67a525ae2af597f346c247468110a7827d2a461f71f368f0b333fcfd5e1a8b00",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-results-filters.png",
+      "bytes": 96608,
+      "sha256": "c5687af63102d0793d1ce06ddbf31a146724c5db7a4adc15621a646533458ca7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-results-left.png",
+      "bytes": 108668,
+      "sha256": "dfe6dc3dad773370ab79b7b8e65c54440c47c114c89f67f7f995e8705d11c4cf",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-results-opponent-left.png",
+      "bytes": 113427,
+      "sha256": "11594a032cbb604bda1a70c4027e899720db84b83f0ddab44fd0ea358eb97c06",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-results-room.png",
+      "bytes": 104029,
+      "sha256": "ed160d73b2e903582f6d90cace62306f6c5c01f5975133e1a56015c0a56d560e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-results-value.png",
+      "bytes": 101012,
+      "sha256": "9345a6435012ef25594c073b6205ada2bf5196d6912fbe3a25b30ac2978e3d34",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-results-verified.png",
+      "bytes": 109438,
+      "sha256": "881855fbc55dfc13aa478c77c1df95160f1756ab948890d2db45ef9fa98a72de",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-results-verifying.png",
+      "bytes": 114164,
+      "sha256": "125c43ba0de5a6f38448a6e63f7b06f5366f75a07aa0f8deb30ff682f7e3d349",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-results-win-probability.png",
+      "bytes": 102746,
+      "sha256": "3de4e8cc3ee943aa05071096438767bdddef1dbbd971ff7864a41d47e9e01064",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-results.png",
+      "bytes": 101189,
+      "sha256": "d341839175326468f0c4e776d785757579737106ec5c30c175538b6647e140ba",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-save.png",
+      "bytes": 457824,
+      "sha256": "ff634f5d789faa4f2189fd268317133d052171b71f256e5c3683f55319353bc3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-scenario-message.png",
+      "bytes": 907275,
+      "sha256": "20c03c7ece462a20fd90184e47917f5d59c022bea3df590bcb34df15aa4057c0",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-statistics-topic-colony.png",
+      "bytes": 911729,
+      "sha256": "078fa83ad057bae90928c05e89ad57754c059b3601dd79b7343c1608deb73da1",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-statistics-topic-economy.png",
+      "bytes": 915345,
+      "sha256": "6463ce6a42b65843c14419108764dcd077dc598edea158dc4bde2262ef875e2a",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-statistics-topic-military.png",
+      "bytes": 910812,
+      "sha256": "12ada3d0313083d3352558b8a93d455223d9eeac31a0f3673c5cb55a091b56ba",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-statistics-topic-overview.png",
+      "bytes": 905008,
+      "sha256": "20fe087019305d3d4440c87ef96461d470c85b76efa29c59f898b6f6ac584e14",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-statistics-topic-world.png",
+      "bytes": 914913,
+      "sha256": "c2c101186d6a14d3529ba81948eee49852ee82de37abd5636795d8c0ebd791a8",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-tactical-tools.png",
+      "bytes": 904979,
+      "sha256": "194c8fe412919f92abab4ae6fbbcbe81e37dbfb674cc56be776811b4a609fa22",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-victory.png",
+      "bytes": 743372,
+      "sha256": "bd91f66b303f2d642c03b155dd21ec38b9f0d000e60df5418e8b8a6d8d18acae",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/game-zone-paint.png",
+      "bytes": 894000,
+      "sha256": "16505e3872e12e8bbe73a67a5bfbd4e985c115dd0472c1ad219a234bc8f1baf7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/replay-controls.png",
+      "bytes": 884245,
+      "sha256": "fa94652621fe95ce89294d48a9dff8d5e91dbe94294db3d08eeae83c68eb8c82",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-desktop/replay-menu.png",
+      "bytes": 584433,
+      "sha256": "8b9766a33e4b23951c5a44ba650bb266abaff6419d5b17a68b9913f9b0dd616a",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-alliances.png",
+      "bytes": 139401,
+      "sha256": "061d27e74ced71bf796b26b282905da534455ad4832ac634988dc03cda1b509a",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-briefing.png",
+      "bytes": 183755,
+      "sha256": "ca9c881065eea21ff8f1c19c41972abd0c27981a5f1790c981f9514bcc746aa2",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-brush-rail.png",
+      "bytes": 311020,
+      "sha256": "ced4f73b595bc18dbf55492bb7daf46e1964b77fff375c01e77dfc905281aba5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-brush-undo.png",
+      "bytes": 313183,
+      "sha256": "a4df2580d8776f57edf69d71cc75d5e7967a05f779027addb4266707a64dab10",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-build-bottom.png",
+      "bytes": 329010,
+      "sha256": "f40a6ffd2ad08d06cef481e89e9f132add4bdbffbb14fb11ef71f37691890608",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-build-left-thumb.png",
+      "bytes": 301089,
+      "sha256": "8ae8add853416e52566b6e7ea6c6512953494103ecba9e361d40260d495e0ff4",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-build.png",
+      "bytes": 328911,
+      "sha256": "28139748c5194cc73d2ba6d93304862884700018ad9dd8d3cad28b626e124896",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-chat.png",
+      "bytes": 309311,
+      "sha256": "f7c6ded41c765748c40ead30832c6786be3fa3f9e894ed859d152d982027c66a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-draw.png",
+      "bytes": 131050,
+      "sha256": "2873560f17914d9744699bde852a9ba509308186ee9b2118b37e8bc542db064b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-flags.png",
+      "bytes": 313397,
+      "sha256": "32758af7589a8806bea041150d2f03971b6c481c14bc910979d2b532bcdbe929",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-0.png",
+      "bytes": 240618,
+      "sha256": "f0a9743c4334e6a77e0453c161992e09234b4b96c39ceecb148a66f06997c34e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-1.png",
+      "bytes": 240557,
+      "sha256": "4ae77669af3b511f0ed09923b78f8e94e1456b0ab2d6383570794817e60ace37",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-3.png",
+      "bytes": 240497,
+      "sha256": "5b09ef9a5cfca866ca9c373ef0554fc278804a6562c73a91f8855d535b00848d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-4.png",
+      "bytes": 240475,
+      "sha256": "7f94714272dd53a11a8f3ed34068b9260d4db18a91044c934dd101fd77fe2482",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-barracks-construction.png",
+      "bytes": 239479,
+      "sha256": "7f84ffbc9c3f2294bb63a1494af0438149d614f20adbdeee8caaabb49287fee8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-barracks.png",
+      "bytes": 301298,
+      "sha256": "0c6ab3da470cefd83ab79493f5c6c6f8e59aed7c47a14b0bd064a9f6d79107d7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-clearingflag.png",
+      "bytes": 308737,
+      "sha256": "1d49ed3c735047a06556d1cec545721fa6e9129930016d0b5ec16635a45ed123",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-damaged.png",
+      "bytes": 242397,
+      "sha256": "98647dc2e012aa26cb29cdb8e67671bdd62819fa3b5344d3c3c7d133ba68ba41",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-defencetower.png",
+      "bytes": 240661,
+      "sha256": "03b6fa6393a3726263785ea7f6781cc7118dcf67b9a6cdf1b6f95550f4b4b12f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-destroy-confirmation.png",
+      "bytes": 308137,
+      "sha256": "9d441bbf46d5840796c20da197cf016fee9f74739fc2f27626634d0229eab28d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-dial-drag.png",
+      "bytes": 211259,
+      "sha256": "daba7d1ff987d2815c3e51135c9afe9d1788747aa2452fce8f8500a5717b7e9a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-enemy.png",
+      "bytes": 291077,
+      "sha256": "adf4d3c2d790fe3e54246b8f5a23a98c53a6285125c3b4f0722632064e956e9c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-explorationflag.png",
+      "bytes": 305946,
+      "sha256": "41ee34023b76da85c13d8d7e70421846fb2c1cc3e7b5ce6cdf9eab8b22d420ea",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-hospital-construction.png",
+      "bytes": 240082,
+      "sha256": "b58e9f62c427be5557f075b0408c468160a20ce7152f2b85560b40fc9666fc5d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-hospital.png",
+      "bytes": 301491,
+      "sha256": "fe617bab3c544e60db40482aa52161e5369f9b03c2cf4e6da6c71b90ea477878",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-inn.png",
+      "bytes": 243854,
+      "sha256": "7b6dfaaeb1aef17221857c742a08ebd46753ace1f3dcb9cd3123702bf20bd87a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-left-thumb.png",
+      "bytes": 211272,
+      "sha256": "78cdf643096213c2b7a2059e5f2709214b257f04279823a6f23105922e8d3f5e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-market.png",
+      "bytes": 242540,
+      "sha256": "8e150d4a08ace785e630a5d280796cc49b5ed39c60d64d4c0aba0d3a9d76e26e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-production.png",
+      "bytes": 211249,
+      "sha256": "634480b2cd0d5cdd16c4760c587fa51931f90d66f90b5ad2e0f1c2c06c3c492d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-racetrack-construction.png",
+      "bytes": 240840,
+      "sha256": "e4d2e2e732d40c9474f53c89ef4ab1888baa018b48224173deb96ffdc79f72d9",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-racetrack.png",
+      "bytes": 301542,
+      "sha256": "51b4af00cd49df490b627348faea6bcbe09d603bed176155ab202801d662af6c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-school-construction.png",
+      "bytes": 241207,
+      "sha256": "d7a666502e1a54e31d80adfef04b889be946950982c097b88e586b7f7a6cb26d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-school.png",
+      "bytes": 302077,
+      "sha256": "b80b09df777b0dbfe3176c19a4dab7a14345187bd429e11dfefb6f6b7d2d5b91",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-stonewall-construction.png",
+      "bytes": 240103,
+      "sha256": "59b38898e04356138251acbf72cef281ce9923717fdc46a7f546d303d8341d62",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-stonewall.png",
+      "bytes": 301989,
+      "sha256": "9f591155333ceb29e1e84dfdd05861e2e3bc955b98d93e064de2437a4a143c01",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-swimmingpool-construction.png",
+      "bytes": 240044,
+      "sha256": "11651453bc6409deaefa1d4fa3af0bece9611432d68270eced7c536f94b11d6a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-swimmingpool.png",
+      "bytes": 301747,
+      "sha256": "b4b550f17a2d818f89d636c28164ed29b478dc690058b0cbbf27102951ee947a",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-unit.png",
+      "bytes": 261973,
+      "sha256": "58d119a37a26625174905ca2b0956123fe15cf38a2219913871525e5a249f8b1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-inspector-warflag.png",
+      "bytes": 305909,
+      "sha256": "139a1dbcc39f387c654135c00853d731b4019705c34c7838d72ba87c71f9b145",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-lens-legend.png",
+      "bytes": 313310,
+      "sha256": "e8fd9fccfa5becf5b320135d4965b2fe17c296c2822fb4add48726c66d10a629",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-load.png",
+      "bytes": 102875,
+      "sha256": "e41ad86f9d9dd06222d49527886f617e330414564db0217361772f734d1a5bff",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-map-peek.png",
+      "bytes": 165446,
+      "sha256": "9201cbfccc3f5d467b9a549a24533c93352c8241d59422b882862d0db2ff5bd4",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-map.png",
+      "bytes": 315899,
+      "sha256": "a52c43deee6b4d6fb1aada85627df74caaf0f90fed8598125f1a40f42d786684",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-objectives.png",
+      "bytes": 166230,
+      "sha256": "2cc723f75bfdbc62983ca606ed7cde179d1391270108d83acfcd2244f768981d",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-options.png",
+      "bytes": 129396,
+      "sha256": "d1c538d3fc8379b15b85f3cceca0667e56bf02ab4ff78f7d9e59602ceee5227c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-pause.png",
+      "bytes": 108520,
+      "sha256": "a9e198c5a193727e69ea1c0d858053c91ded6907a27607d29466a850a06adf33",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-placement.png",
+      "bytes": 313077,
+      "sha256": "6f61560c53a7c0f995a1dbe1c98cd1018ad4e88657ede59c3a4f1b69123d311f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-save.png",
+      "bytes": 109612,
+      "sha256": "e72b61422821a5304c4c656978e3b7ae9655ff8c16af2a0e43d798cdc8ea2163",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-scenario-message.png",
+      "bytes": 296819,
+      "sha256": "f40376813e2affc117adc6ad171b8039ec1bd46348f38a061eb7d46c3012b668",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-statistics-topic-colony.png",
+      "bytes": 80067,
+      "sha256": "62e1a3284b65089b7d8e814371f9a434a6bdfbdc172e5e91fb26c7950541a100",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-statistics-topic-economy.png",
+      "bytes": 81199,
+      "sha256": "4f43f7900c6ca9be9c1261093a889b48156e6c6adb19fb86936ce3703696eb3f",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-statistics-topic-military.png",
+      "bytes": 81069,
+      "sha256": "06cca7728bbd413b9e107225447b23e2e7433cb9c670b9a78111b5053d2110c9",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-statistics-topic-overview.png",
+      "bytes": 79713,
+      "sha256": "6c46f28def9d86e3c0a471dda8786bb24f8011d7005475d972d97f15bc37b795",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-statistics-topic-world.png",
+      "bytes": 78463,
+      "sha256": "55289c5c8a6a8260f221da2b072326d1fd96702d93bae5ea8276ca9251e6e6ff",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-stats-sheet.png",
+      "bytes": 79719,
+      "sha256": "78dd72047fb3272c6afc9271bec38f80ee37aaefe83bbccf6558064b5f72d67c",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-tactical-tools.png",
+      "bytes": 302384,
+      "sha256": "a86a05deb986e15e2709ae2aa1f9a66169dab9761cce1eddbe56ecfdc4d78687",
+      "selected": true
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-victory.png",
+      "bytes": 128611,
+      "sha256": "80de646738039ab526a6b6c785b5812e185590479a453cd0ed0b791b896d7f7c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-zone-paint.png",
+      "bytes": 312243,
+      "sha256": "47ebb0bfe6d0f78a914cc8118414d397ccd50f621eab102cbd25110ff76c54a1",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/game-zoom-drag.png",
+      "bytes": 331912,
+      "sha256": "9654788d32e35317251e7cec3deb055b9074b2d26d31af12dba975f70f0131be",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-00.png",
+      "bytes": 329531,
+      "sha256": "bc34ce49cee72f39db3b079baab1959583706b292f2b252287d576f8fa40a788",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-01.png",
+      "bytes": 329372,
+      "sha256": "4216f59822c770ac0701997dd0d181e2377736746da79b6692131bd92f9f0889",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-02.png",
+      "bytes": 329268,
+      "sha256": "363332948b1832504d1fa76ccc3d169919d7097840332c03cc676eae71a45aae",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-03.png",
+      "bytes": 329135,
+      "sha256": "3fc30f7d340f25ab1211e9621412c9b0e6a776076ea1ebddd5f7ce367aef7cfa",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-04.png",
+      "bytes": 329332,
+      "sha256": "8276d491a151df97857404fd19f450865728bd5970848f40925071f9ec7a3bc7",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-05.png",
+      "bytes": 329375,
+      "sha256": "3f1d2eb88f8eb95453bd767a86353947c1e0c882633cc5caecf6e585d6a98a2e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-06.png",
+      "bytes": 329158,
+      "sha256": "8b7e3136725138b6096897bb84f98bb357c92b52b72dc6640c1f8eea50f301ea",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-07.png",
+      "bytes": 328842,
+      "sha256": "0eda226706bc3d4b86ae9f6f3f792c494f6245f2a01c5b70b09091abc2b6963e",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-08.png",
+      "bytes": 328580,
+      "sha256": "c0ee15987ed00ab77d502bbacdcf2e37bd321bc6796023ddbb347d202bef0894",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-09.png",
+      "bytes": 327900,
+      "sha256": "8575b64c04163801e1e7e714e31437db00e195240da658d7245f902315ae18fa",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-10.png",
+      "bytes": 327463,
+      "sha256": "327ed5593c20922cccdc52b5461b54ee606eb7c9a7e40c22aafbe012e5fbdbf8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-build-11.png",
+      "bytes": 327222,
+      "sha256": "a5638060a292f88e8137767abe451b07037c1513568e84ce57fef2c34a632da8",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-zone-00.png",
+      "bytes": 310961,
+      "sha256": "63a70ebfad9328b059d0c2d653454de1a7f0cc8cdfcb238623b7ff265c2e5d72",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-zone-01.png",
+      "bytes": 311294,
+      "sha256": "6ad0dd5d4c30e49187731eb6cec824140c0e2ce809ac7323b33fdd7752becc8f",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-zone-02.png",
+      "bytes": 311350,
+      "sha256": "96f17a83f84b38d4609ce675e9c34b41870f31714323a06d248b42c5d39c00e5",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-zone-03.png",
+      "bytes": 311468,
+      "sha256": "b68f1ab1f1df86cc91fe9fa477398103684a3f83e99d1006ce1425460974337c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-zone-04.png",
+      "bytes": 311729,
+      "sha256": "689b388908848245ad428edf5e2b950875f7b57d4aba30c948b9e709ce3b3944",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-zone-05.png",
+      "bytes": 312174,
+      "sha256": "235b43bc76b210058427425b1a7c22876b118149e8de055b642156723953cb1c",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-zone-06.png",
+      "bytes": 312240,
+      "sha256": "5fc1a6c1054accdfc6420eca1d146f5c34046fb792392cbf4d4e1ee6bbd7f4f3",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-zone-07.png",
+      "bytes": 312180,
+      "sha256": "9ed1602f01540bfce888bc3d45a770b926423b2e6256ac5d40930833564a3878",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/gesture-zone-08.png",
+      "bytes": 312273,
+      "sha256": "e8ddedd08b974bdffede806438be5dc6874cf00b0a95e4f80cafa068ed05abb6",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/replay-controls.png",
+      "bytes": 254948,
+      "sha256": "85d422ad473da8da54e790f1cadaaa0c961f33caf54d03c138d10b87b397e43b",
+      "selected": false
+    },
+    {
+      "path": "localization-ms/validation/gallery-final-layout-large/game-phone/replay-menu.png",
+      "bytes": 108867,
+      "sha256": "6c6e32fab641620cf3f12dddb6faa9c97a6bdd10fa15ce939b40e96b25f038b2",
+      "selected": true
+    }
+  ]
+}

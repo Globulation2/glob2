@@ -1,0 +1,32 @@
+[
+  {
+    "file": "native-phone-settings.png",
+    "source": "artifacts/localization-ms/validation/native-191/phone-screen-settings-player/settings-player.png",
+    "sha256": "bce09b5c198da85ab15e39083988df14a48b65672411241e84a237f91d9fbe22",
+    "scope": "Actual11d producer; complete final Malay text; unaffected by final statistics-only layout change."
+  },
+  {
+    "file": "native-statistics-150.png",
+    "source": "artifacts/localization-ms/validation/gallery-final-layout-large/game-desktop/game-statistics-topic-overview.png",
+    "sha256": "20fe087019305d3d4440c87ef96461d470c85b76efa29c59f898b6f6ac584e14",
+    "scope": "Actual final e18 producer, Malay150% live statistics with corrected full-width Overview row."
+  },
+  {
+    "file": "browser-malay-persisted.png",
+    "source": "artifacts/localization-ms/validation/browser-master191-persistence-results/malay-persisted-Malay-natu-1f06b-ish-launcher-reload-serial--chromium/ms-serial-persisted.png",
+    "sha256": "c030a144a601198a62c6138f0691f8668cff2e6dc00da17a6a3b47854c476e4f",
+    "scope": "Actual final e18 Chromium serial release after native Settings save and English-launcher reload."
+  },
+  {
+    "file": "browser-phone-dpr2.png",
+    "source": "artifacts/localization-ms/validation/browser-master191-phone-final-results/malay-phone-phone-Malay-se-46ba2-ers-the-actual-game-at-DPR2-chromium/ms-phone-dpr2-settings.png",
+    "sha256": "3da55da64d43cab83ef4fcd4837973ae8358f1b51a4a1a977a3f8ceae35f7668",
+    "scope": "Actual final e18 Chromium390x844 DPR2, navigator ms-MY, no initial locale cookie, real mobile audio/hand/intro onboarding into Settings."
+  },
+  {
+    "file": "firefox-threaded-software.png",
+    "source": "artifacts/localization-ms/validation/browser-master191-visual-extra-results/firefox-threaded-Firefox-t-b9c3c-tware-Settings-presentation-firefox/ms-firefox-threaded-settings-settled-7s.png",
+    "sha256": "ff0d09e90ff7b903d51a0b25c8a9c852fb429299e70c5a5ecf6a2912cc027623",
+    "scope": "Actual final e18 Firefox effective threaded/software Malay Settings. Shared English/Malay worker-WebGL2 blank capture is separately retained."
+  }
+]

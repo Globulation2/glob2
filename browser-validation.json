@@ -1,0 +1,714 @@
+{
+  "owner": "cloud_tooling",
+  "finished_utc": "2026-11-01T09:00:20.927126+00:00",
+  "tested_revision": "e18cb7223f2784ff0c952260b26b01fc89af34c2",
+  "working_tree_clean": true,
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "status": "completed; supported release paths pass, explicit shared headless worker-WebGL visual limit retained",
+  "release_package": {
+    "receipt": "artifacts/localization-ms/validation/browser-master191-package.json",
+    "sha256": "730b99a67a5cf3525a519396ed35ab6ca2024488b189d66ba46e508c7a9f1e1c",
+    "file_count": 126,
+    "bytes": 269804616,
+    "all_file_hashes_rechecked_after_qa": true,
+    "initial_producer_revision": "11d72bf8c881b5db07c33feaa251aef326c15c84",
+    "final_refresh": "artifacts/localization-ms/validation/browser-master191-refresh-result.json",
+    "final_refresh_sha256": "06e8bd53480a529ae4c17c1710e0c7ccd93de52a52743650ced9a41958f83fd7",
+    "ui_cpp_changed_and_explicitly_rebuilt_both_variants": true
+  },
+  "groups": {
+    "staged": {
+      "report": "artifacts/localization-ms/validation/browser-master191-staged-results.json",
+      "sha256": "a3aad6572d7194f780a1509d99002f74c522ad5c8c8561001d9af117087fd035",
+      "stats": {
+        "startTime": "2026-11-01T08:35:19.448Z",
+        "duration": 279399.963,
+        "expected": 8,
+        "skipped": 1,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "Malay first visit loads translated controls in the serial runtime",
+          "project": "chromium",
+          "status": "passed",
+          "durationMs": 17586,
+          "errors": []
+        },
+        {
+          "title": "Malay first visit loads translated controls in the threaded runtime",
+          "project": "chromium",
+          "status": "passed",
+          "durationMs": 32055,
+          "errors": []
+        },
+        {
+          "title": "ms downloads its translations before the game starts",
+          "project": "chromium",
+          "status": "passed",
+          "durationMs": 69323,
+          "errors": []
+        },
+        {
+          "title": "Malay first visit loads translated controls in the serial runtime",
+          "project": "firefox",
+          "status": "passed",
+          "durationMs": 20323,
+          "errors": []
+        },
+        {
+          "title": "Malay first visit loads translated controls in the threaded runtime",
+          "project": "firefox",
+          "status": "passed",
+          "durationMs": 54761,
+          "errors": []
+        },
+        {
+          "title": "ms downloads its translations before the game starts",
+          "project": "firefox",
+          "status": "skipped",
+          "durationMs": 370,
+          "errors": []
+        },
+        {
+          "title": "Malay first visit loads translated controls in the serial runtime",
+          "project": "webkit",
+          "status": "passed",
+          "durationMs": 17379,
+          "errors": []
+        },
+        {
+          "title": "Malay first visit loads translated controls in the threaded runtime",
+          "project": "webkit",
+          "status": "passed",
+          "durationMs": 18811,
+          "errors": []
+        },
+        {
+          "title": "ms downloads its translations before the game starts",
+          "project": "webkit",
+          "status": "passed",
+          "durationMs": 39763,
+          "errors": []
+        }
+      ]
+    },
+    "original_persistence": {
+      "report": "artifacts/localization-ms/validation/browser-master191-persistence-results.json",
+      "sha256": "d228368dc8956eac175eb1ea572888317caa935c83fef5625c6af8049ba550e3",
+      "stats": {
+        "startTime": "2026-11-01T08:40:00.024Z",
+        "duration": 374739.976,
+        "expected": 5,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "Malay natural saved preference survives English launcher reload (serial)",
+          "project": "chromium",
+          "status": "passed",
+          "durationMs": 51376,
+          "errors": []
+        },
+        {
+          "title": "Malay natural saved preference survives English launcher reload (threaded)",
+          "project": "chromium",
+          "status": "passed",
+          "durationMs": 96833,
+          "errors": []
+        },
+        {
+          "title": "Malay natural saved preference survives English launcher reload (serial)",
+          "project": "firefox",
+          "status": "passed",
+          "durationMs": 51613,
+          "errors": []
+        },
+        {
+          "title": "Malay natural saved preference survives English launcher reload (threaded)",
+          "project": "firefox",
+          "status": "passed",
+          "durationMs": 98919,
+          "errors": []
+        },
+        {
+          "title": "Malay natural saved preference survives English launcher reload (serial)",
+          "project": "webkit",
+          "status": "passed",
+          "durationMs": 37330,
+          "errors": []
+        },
+        {
+          "title": "Malay natural saved preference survives English launcher reload (threaded)",
+          "project": "webkit",
+          "status": "failed",
+          "durationMs": 21162,
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"threaded\"\u001b[39m\nReceived: \u001b[31m\"serial\"\u001b[39m\n\n  13 |     await page.goto(url.pathname+url.search);\n  14 |     await waitForMainMenu(page,{timeout:120000});\n> 15 |     expect(await page.evaluate(()=>Module.executionMode)).toBe(variant);\n     |                                                           ^\n  16 |     const expectedNative=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'data/texts.ms.txt'))).digest('hex');\n  17 |     const runtimeNative=await page.evaluate(()=>FS.readFile('/data/texts.ms.txt',{encoding:'utf8'}));\n  18 |     const actualNative=crypto.createHash('sha256').update(runtimeNative,'utf8').digest('hex');\n    at /home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/browser-extra/malay-persisted.spec.cjs:15:59"
+          ]
+        }
+      ]
+    },
+    "webkit_supported_software": {
+      "report": "artifacts/localization-ms/validation/browser-master191-webkit-software-results.json",
+      "sha256": "b83ef245d9aa39318aba0c7e9ac8ab8d96ace4d22a8d56ade7686f313b482791",
+      "stats": {
+        "startTime": "2026-11-01T08:47:53.185Z",
+        "duration": 118978.883,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "WebKit actual threaded request capability diagnosis",
+          "project": "webkit",
+          "status": "passed",
+          "durationMs": 16781,
+          "errors": []
+        },
+        {
+          "title": "Malay natural saved preference survives English launcher reload (threaded)",
+          "project": "webkit",
+          "status": "passed",
+          "durationMs": 100614,
+          "errors": []
+        }
+      ]
+    },
+    "phone_final": {
+      "report": "artifacts/localization-ms/validation/browser-master191-phone-final-results.json",
+      "sha256": "7e7a76ea659aeb54acfe3c0880c0751952d33f331270f55aa607556ce18ccacb",
+      "stats": {
+        "startTime": "2026-11-01T08:55:22.520Z",
+        "duration": 19908.826,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "phone Malay settings renders the actual game at DPR2",
+          "project": "chromium",
+          "status": "passed",
+          "durationMs": 18914,
+          "errors": []
+        }
+      ]
+    },
+    "canonical": {
+      "report": "artifacts/localization-ms/validation/browser-master191-determinism-results.json",
+      "sha256": "5ddf131b13bf9b9ef777bed1b3bbab2fd980ad771d3fa7b24045ab2eade88782",
+      "stats": {
+        "startTime": "2026-11-01T08:52:41.219Z",
+        "duration": 28467.623,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "WebAssembly verifies the committed match record (serial)",
+          "project": "chromium",
+          "status": "passed",
+          "durationMs": 4640,
+          "errors": []
+        },
+        {
+          "title": "WebAssembly verifies the committed match record (threaded)",
+          "project": "chromium",
+          "status": "passed",
+          "durationMs": 4703,
+          "errors": []
+        },
+        {
+          "title": "WebAssembly verifies the committed match record (serial)",
+          "project": "firefox",
+          "status": "passed",
+          "durationMs": 3868,
+          "errors": []
+        },
+        {
+          "title": "WebAssembly verifies the committed match record (threaded)",
+          "project": "firefox",
+          "status": "passed",
+          "durationMs": 3902,
+          "errors": []
+        },
+        {
+          "title": "WebAssembly verifies the committed match record (serial)",
+          "project": "webkit",
+          "status": "passed",
+          "durationMs": 3626,
+          "errors": []
+        },
+        {
+          "title": "WebAssembly verifies the committed match record (threaded)",
+          "project": "webkit",
+          "status": "passed",
+          "durationMs": 3873,
+          "errors": []
+        }
+      ]
+    },
+    "firefox_visual_controls": {
+      "report": "artifacts/localization-ms/validation/browser-master191-visual-extra-results.json",
+      "sha256": "862bd241ef0a9cddabe868332e1b9c7092edc34018a9d325241fd04fc8f754d0",
+      "stats": {
+        "startTime": "2026-11-01T08:55:03.824Z",
+        "duration": 250056.38100000002,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 2,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "Firefox threaded settled ms webgl2 Settings presentation",
+          "project": "firefox",
+          "status": "failed",
+          "durationMs": 89480,
+          "errors": [
+            "Error: actual presented Settings screenshot must contain diverse rendered pixels\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m32\u001b[39m\nReceived:   \u001b[31m1\u001b[39m\n\n  16 |  const final=await capture(locale+'-firefox-threaded-settings-settled-7s',5000);\n  17 |  fs.writeFileSync(info.outputPath('presentation.json'),JSON.stringify({locale,renderer,browserVersion:browser.version(),errors,captures},null,2)+'\\n');\n> 18 |  expect(final.colors,'actual presented Settings screenshot must contain diverse rendered pixels').toBeGreaterThan(32);\n     |                                                                                                   ^\n  19 | });\n  20 |\n    at /home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/browser-visual-extra/firefox-threaded.spec.cjs:18:99"
+          ]
+        },
+        {
+          "title": "Firefox threaded settled en webgl2 Settings presentation",
+          "project": "firefox",
+          "status": "failed",
+          "durationMs": 93603,
+          "errors": [
+            "Error: actual presented Settings screenshot must contain diverse rendered pixels\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m32\u001b[39m\nReceived:   \u001b[31m1\u001b[39m\n\n  16 |  const final=await capture(locale+'-firefox-threaded-settings-settled-7s',5000);\n  17 |  fs.writeFileSync(info.outputPath('presentation.json'),JSON.stringify({locale,renderer,browserVersion:browser.version(),errors,captures},null,2)+'\\n');\n> 18 |  expect(final.colors,'actual presented Settings screenshot must contain diverse rendered pixels').toBeGreaterThan(32);\n     |                                                                                                   ^\n  19 | });\n  20 |\n    at /home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/browser-visual-extra/firefox-threaded.spec.cjs:18:99"
+          ]
+        },
+        {
+          "title": "Firefox threaded settled ms software Settings presentation",
+          "project": "firefox",
+          "status": "passed",
+          "durationMs": 43882,
+          "errors": []
+        }
+      ]
+    }
+  },
+  "actual_persistence": {
+    "tested_revision": "e18cb7223f2784ff0c952260b26b01fc89af34c2",
+    "cases": [
+      {
+        "path": "artifacts/localization-ms/validation/browser-master191-persistence-results/malay-persisted-Malay-natu-1f06b-ish-launcher-reload-serial--chromium/natural-persistence.json",
+        "sha256": "d88b39565bf2738d2bee3c34379d8e34960ba6da04bc4343d36b83ae39440686",
+        "browser": "chromium",
+        "version": "153.0.8010.12",
+        "mode": "serial",
+        "renderer": "software",
+        "nativeMalaySha256": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+        "launcherLocaleAfterReload": "en",
+        "savedMalayLanguage": true,
+        "tetapan": true
+      },
+      {
+        "path": "artifacts/localization-ms/validation/browser-master191-persistence-results/malay-persisted-Malay-natu-1f06b-ish-launcher-reload-serial--firefox/natural-persistence.json",
+        "sha256": "d9ac9ee711ac2bdf4bf1be936d6844092e36424427fd936b6efacb9c1a453487",
+        "browser": "firefox",
+        "version": "155.0",
+        "mode": "serial",
+        "renderer": "webgl2",
+        "nativeMalaySha256": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+        "launcherLocaleAfterReload": "en",
+        "savedMalayLanguage": true,
+        "tetapan": true
+      },
+      {
+        "path": "artifacts/localization-ms/validation/browser-master191-persistence-results/malay-persisted-Malay-natu-1f06b-ish-launcher-reload-serial--webkit/natural-persistence.json",
+        "sha256": "781e1000279b4eb59f7d9f537a0264091b167cab360d0710c698b2d1cd7a1041",
+        "browser": "webkit",
+        "version": "26.6",
+        "mode": "serial",
+        "renderer": "webgl2",
+        "nativeMalaySha256": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+        "launcherLocaleAfterReload": "en",
+        "savedMalayLanguage": true,
+        "tetapan": true
+      },
+      {
+        "path": "artifacts/localization-ms/validation/browser-master191-persistence-results/malay-persisted-Malay-natu-6852d-h-launcher-reload-threaded--chromium/natural-persistence.json",
+        "sha256": "f30b16e770c0d9a8ab8f35be169a24c95dfd75210d58762af4711efd3b787760",
+        "browser": "chromium",
+        "version": "153.0.8010.12",
+        "mode": "threaded",
+        "renderer": "software",
+        "nativeMalaySha256": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+        "launcherLocaleAfterReload": "en",
+        "savedMalayLanguage": true,
+        "tetapan": true
+      },
+      {
+        "path": "artifacts/localization-ms/validation/browser-master191-persistence-results/malay-persisted-Malay-natu-6852d-h-launcher-reload-threaded--firefox/natural-persistence.json",
+        "sha256": "0762ad4790cdf9f16502e417b6e36cbf5939f0825bad104ef29a6df1b41c45db",
+        "browser": "firefox",
+        "version": "155.0",
+        "mode": "threaded",
+        "renderer": "webgl2",
+        "nativeMalaySha256": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+        "launcherLocaleAfterReload": "en",
+        "savedMalayLanguage": true,
+        "tetapan": true
+      },
+      {
+        "path": "artifacts/localization-ms/validation/browser-master191-webkit-software-results/malay-persisted-Malay-natu-6852d-h-launcher-reload-threaded--webkit/natural-persistence.json",
+        "sha256": "1e1c67941c0d03e81c21335969b6f42a829693eb2c5e89d395b1572d390fc505",
+        "browser": "webkit",
+        "version": "26.6",
+        "mode": "threaded",
+        "renderer": "software",
+        "nativeMalaySha256": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+        "launcherLocaleAfterReload": "en",
+        "savedMalayLanguage": true,
+        "tetapan": true
+      }
+    ],
+    "coverage": "Actual game Settings save path; cookie removal; English-launcher reload; exact native Malay VFS hash; effective modes asserted. WebKit threaded uses supported software renderer. Original default-WebKit serial fallback assertion failure retained separately."
+  },
+  "canonical_six_cases": [
+    {
+      "test": "WebAssembly verifies the committed match record (serial)",
+      "project": "chromium",
+      "variant": "serial",
+      "status": "passed",
+      "durationMs": 4640,
+      "fixtureSha256": "a7f8d0d3f220c1d51980ea213fb45c8b3d7dc8e99be8e3fcc887578a9ed7cd10",
+      "canonicalTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "packageReceiptSha256": "730b99a67a5cf3525a519396ed35ab6ca2024488b189d66ba46e508c7a9f1e1c",
+      "nodeVersion": "v24.22.1",
+      "files": [
+        {
+          "file": "verify-match.checksums.txt",
+          "bytes": 10914,
+          "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+        },
+        {
+          "file": "verify-match.verdict.json",
+          "bytes": 430,
+          "sha256": "d78d86eb04606502b3f5ad3445d0755e4c621813a19b4a997461cc4ab3a9426f"
+        },
+        {
+          "file": "verify-match.log",
+          "bytes": 152,
+          "sha256": "ccb0f9672468d3eb48d18a020cc36a66a543307eedf4d13eb95050c28a55145d"
+        }
+      ],
+      "errors": [],
+      "actualTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "exactCanonicalTraceMatch": true,
+      "provenance": "artifacts/localization-ms/validation/browser-master191-match-evidence/chromium/serial/provenance.json",
+      "provenanceSha256": "bf7ebe9075972c2c97af9622d23f50657d5b970508db51040118d44ccd098839"
+    },
+    {
+      "test": "WebAssembly verifies the committed match record (threaded)",
+      "project": "chromium",
+      "variant": "threaded",
+      "status": "passed",
+      "durationMs": 4703,
+      "fixtureSha256": "a7f8d0d3f220c1d51980ea213fb45c8b3d7dc8e99be8e3fcc887578a9ed7cd10",
+      "canonicalTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "packageReceiptSha256": "730b99a67a5cf3525a519396ed35ab6ca2024488b189d66ba46e508c7a9f1e1c",
+      "nodeVersion": "v24.22.1",
+      "files": [
+        {
+          "file": "verify-match.checksums.txt",
+          "bytes": 10914,
+          "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+        },
+        {
+          "file": "verify-match.verdict.json",
+          "bytes": 430,
+          "sha256": "d78d86eb04606502b3f5ad3445d0755e4c621813a19b4a997461cc4ab3a9426f"
+        },
+        {
+          "file": "verify-match.log",
+          "bytes": 152,
+          "sha256": "b0efe770a9add3acfa90bb532bfd00a342446943e455aa13075c4223cd2a4e71"
+        }
+      ],
+      "errors": [],
+      "actualTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "exactCanonicalTraceMatch": true,
+      "provenance": "artifacts/localization-ms/validation/browser-master191-match-evidence/chromium/threaded/provenance.json",
+      "provenanceSha256": "136cb907476702b6ecc859ee9a7b9c95ca3e92cf9f096d8733367f3f3484fd66"
+    },
+    {
+      "test": "WebAssembly verifies the committed match record (serial)",
+      "project": "firefox",
+      "variant": "serial",
+      "status": "passed",
+      "durationMs": 3868,
+      "fixtureSha256": "a7f8d0d3f220c1d51980ea213fb45c8b3d7dc8e99be8e3fcc887578a9ed7cd10",
+      "canonicalTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "packageReceiptSha256": "730b99a67a5cf3525a519396ed35ab6ca2024488b189d66ba46e508c7a9f1e1c",
+      "nodeVersion": "v24.22.1",
+      "files": [
+        {
+          "file": "verify-match.checksums.txt",
+          "bytes": 10914,
+          "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+        },
+        {
+          "file": "verify-match.verdict.json",
+          "bytes": 430,
+          "sha256": "d78d86eb04606502b3f5ad3445d0755e4c621813a19b4a997461cc4ab3a9426f"
+        },
+        {
+          "file": "verify-match.log",
+          "bytes": 151,
+          "sha256": "a9f17650821ddd9be52eda17d04df2cca0061b49ebd58d35b538d38c28b7b0c5"
+        }
+      ],
+      "errors": [],
+      "actualTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "exactCanonicalTraceMatch": true,
+      "provenance": "artifacts/localization-ms/validation/browser-master191-match-evidence/firefox/serial/provenance.json",
+      "provenanceSha256": "432b8da24678d379605c7d837449101120d8535571018ecd6cfe5345004b6ce5"
+    },
+    {
+      "test": "WebAssembly verifies the committed match record (threaded)",
+      "project": "firefox",
+      "variant": "threaded",
+      "status": "passed",
+      "durationMs": 3902,
+      "fixtureSha256": "a7f8d0d3f220c1d51980ea213fb45c8b3d7dc8e99be8e3fcc887578a9ed7cd10",
+      "canonicalTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "packageReceiptSha256": "730b99a67a5cf3525a519396ed35ab6ca2024488b189d66ba46e508c7a9f1e1c",
+      "nodeVersion": "v24.22.1",
+      "files": [
+        {
+          "file": "verify-match.checksums.txt",
+          "bytes": 10914,
+          "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+        },
+        {
+          "file": "verify-match.verdict.json",
+          "bytes": 430,
+          "sha256": "d78d86eb04606502b3f5ad3445d0755e4c621813a19b4a997461cc4ab3a9426f"
+        },
+        {
+          "file": "verify-match.log",
+          "bytes": 151,
+          "sha256": "e25b76e55e63a7a490a84c33ef7c0fbd4fec12fcb4d533b7ab69f1e9ea573d9c"
+        }
+      ],
+      "errors": [],
+      "actualTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "exactCanonicalTraceMatch": true,
+      "provenance": "artifacts/localization-ms/validation/browser-master191-match-evidence/firefox/threaded/provenance.json",
+      "provenanceSha256": "2d86e4f97935d4bc5ec455f31e1e99dca08b4d515df49ca169b969a900c9e13a"
+    },
+    {
+      "test": "WebAssembly verifies the committed match record (serial)",
+      "project": "webkit",
+      "variant": "serial",
+      "status": "passed",
+      "durationMs": 3626,
+      "fixtureSha256": "a7f8d0d3f220c1d51980ea213fb45c8b3d7dc8e99be8e3fcc887578a9ed7cd10",
+      "canonicalTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "packageReceiptSha256": "730b99a67a5cf3525a519396ed35ab6ca2024488b189d66ba46e508c7a9f1e1c",
+      "nodeVersion": "v24.22.1",
+      "files": [
+        {
+          "file": "verify-match.checksums.txt",
+          "bytes": 10914,
+          "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+        },
+        {
+          "file": "verify-match.verdict.json",
+          "bytes": 430,
+          "sha256": "d78d86eb04606502b3f5ad3445d0755e4c621813a19b4a997461cc4ab3a9426f"
+        },
+        {
+          "file": "verify-match.log",
+          "bytes": 151,
+          "sha256": "1c11894ba4000bf5f8352132bc107e1197e63286821e3264fe2b1bf0af7edda7"
+        }
+      ],
+      "errors": [],
+      "actualTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "exactCanonicalTraceMatch": true,
+      "provenance": "artifacts/localization-ms/validation/browser-master191-match-evidence/webkit/serial/provenance.json",
+      "provenanceSha256": "9c07b51346281ad602578ee8b20032a730608a26191e813c767f53bdb9a97100"
+    },
+    {
+      "test": "WebAssembly verifies the committed match record (threaded)",
+      "project": "webkit",
+      "variant": "threaded",
+      "status": "passed",
+      "durationMs": 3873,
+      "fixtureSha256": "a7f8d0d3f220c1d51980ea213fb45c8b3d7dc8e99be8e3fcc887578a9ed7cd10",
+      "canonicalTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "packageReceiptSha256": "730b99a67a5cf3525a519396ed35ab6ca2024488b189d66ba46e508c7a9f1e1c",
+      "nodeVersion": "v24.22.1",
+      "files": [
+        {
+          "file": "verify-match.checksums.txt",
+          "bytes": 10914,
+          "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c"
+        },
+        {
+          "file": "verify-match.verdict.json",
+          "bytes": 430,
+          "sha256": "d78d86eb04606502b3f5ad3445d0755e4c621813a19b4a997461cc4ab3a9426f"
+        },
+        {
+          "file": "verify-match.log",
+          "bytes": 152,
+          "sha256": "5507ae55104cc762e5a2818ebf1aaa4ae852753cf9c8baa31b738ac56ceff522"
+        }
+      ],
+      "errors": [],
+      "actualTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+      "exactCanonicalTraceMatch": true,
+      "provenance": "artifacts/localization-ms/validation/browser-master191-match-evidence/webkit/threaded/provenance.json",
+      "provenanceSha256": "ab3bf873cdc5f114cc3d4ed3b774da46ac8b00b17e36d09893204d8559966554"
+    }
+  ],
+  "phone": {
+    "provenance": "artifacts/localization-ms/validation/browser-master191-phone-provenance.json",
+    "sha256": "5aaef80709e7e90427d928d49dc1b43c8294f326a45387f053fb44d47b3cdd8f",
+    "screenshot": "artifacts/localization-ms/validation/browser-master191-phone-dpr2-settings.png",
+    "screenshot_sha256": "3da55da64d43cab83ef4fcd4837973ae8358f1b51a4a1a977a3f8ceae35f7668",
+    "visual_inspection": "Actual 390x844 DPR2 Settings canvas: readable Malay wrapping, controls and Selesai footer visible; normal vertical scroll-region clipping; no missing glyphs or horizontal overflow. Audio and hand preference screens driven by real taps before introduction/menu; navigator ms-MY selected Malay without cookie."
+  },
+  "firefox_visual_controls": [
+    {
+      "locale": "en",
+      "renderer": "webgl2",
+      "record": "artifacts/localization-ms/validation/browser-master191-visual-extra-results/firefox-threaded-Firefox-t-2af37-ebgl2-Settings-presentation-firefox/presentation.json",
+      "sha256": "c40270839ba3bf522f37761c68a87adaca6e0a928fb14eede1b08d14b2e63dc2",
+      "captures": [
+        {
+          "name": "en-firefox-threaded-menu-settled-2s",
+          "colors": 1,
+          "waitMs": 2000,
+          "elapsedMs": 12234,
+          "effectiveMode": "threaded",
+          "effectiveRenderer": "webgl2"
+        },
+        {
+          "name": "en-firefox-threaded-settings-settled-2s",
+          "colors": 1,
+          "waitMs": 2000,
+          "elapsedMs": 12216,
+          "effectiveMode": "threaded",
+          "effectiveRenderer": "webgl2"
+        },
+        {
+          "name": "en-firefox-threaded-settings-settled-7s",
+          "colors": 1,
+          "waitMs": 5000,
+          "elapsedMs": 15193,
+          "effectiveMode": "threaded",
+          "effectiveRenderer": "webgl2"
+        }
+      ]
+    },
+    {
+      "locale": "ms",
+      "renderer": "software",
+      "record": "artifacts/localization-ms/validation/browser-master191-visual-extra-results/firefox-threaded-Firefox-t-b9c3c-tware-Settings-presentation-firefox/presentation.json",
+      "sha256": "d8557f58c3940387295be083dd933b1fbcaed348f1979f964db1e7af2128b462",
+      "captures": [
+        {
+          "name": "ms-firefox-threaded-menu-settled-2s",
+          "colors": 73943,
+          "waitMs": 2000,
+          "elapsedMs": 2375,
+          "effectiveMode": "threaded",
+          "effectiveRenderer": "software"
+        },
+        {
+          "name": "ms-firefox-threaded-settings-settled-2s",
+          "colors": 40301,
+          "waitMs": 2000,
+          "elapsedMs": 2288,
+          "effectiveMode": "threaded",
+          "effectiveRenderer": "software"
+        },
+        {
+          "name": "ms-firefox-threaded-settings-settled-7s",
+          "colors": 40315,
+          "waitMs": 5000,
+          "elapsedMs": 5310,
+          "effectiveMode": "threaded",
+          "effectiveRenderer": "software"
+        }
+      ]
+    },
+    {
+      "locale": "ms",
+      "renderer": "webgl2",
+      "record": "artifacts/localization-ms/validation/browser-master191-visual-extra-results/firefox-threaded-Firefox-t-da4fc-ebgl2-Settings-presentation-firefox/presentation.json",
+      "sha256": "f1c363eb3ff24fa2638d66c5214091650ca1549d49486595fcb33b4dce1192b8",
+      "captures": [
+        {
+          "name": "ms-firefox-threaded-menu-settled-2s",
+          "colors": 1,
+          "waitMs": 2000,
+          "elapsedMs": 12210,
+          "effectiveMode": "threaded",
+          "effectiveRenderer": "webgl2"
+        },
+        {
+          "name": "ms-firefox-threaded-settings-settled-2s",
+          "colors": 1,
+          "waitMs": 2000,
+          "elapsedMs": 12184,
+          "effectiveMode": "threaded",
+          "effectiveRenderer": "webgl2"
+        },
+        {
+          "name": "ms-firefox-threaded-settings-settled-7s",
+          "colors": 1,
+          "waitMs": 5000,
+          "elapsedMs": 15186,
+          "effectiveMode": "threaded",
+          "effectiveRenderer": "webgl2"
+        }
+      ]
+    }
+  ],
+  "firefox_supported_visual": {
+    "screenshot": "artifacts/localization-ms/validation/browser-master191-firefox-threaded-software-settings.png",
+    "sha256": "ff0d09e90ff7b903d51a0b25c8a9c852fb429299e70c5a5ecf6a2912cc027623",
+    "inspection": "Actual threaded software renderer Malay Settings is visibly readable, control captions and descriptions fit, no missing glyphs or horizontal text clipping."
+  },
+  "limitations_and_preserved_failures": [
+    "Firefox155 headless threaded WebGL2 screenshots remain uniform background after real Settings interaction and bounded7s waits, both Malay and exact same-source/binary English control. These two pixel assertions failed and are retained; no claim that default worker-WebGL visual output was verified. Actual threaded software Malay Settings pixels pass. Precise compositor/rendering cause not established.",
+    "WebKit26.6 default threaded route falls back to serial with literal reason worker shared memory unavailable. Isolated/SAB/OffscreenCanvas available; webgl2 worker probe fails, software probe passes. Actual supported software-threaded UI-save/reload passed with strict effective-mode guard. Stock staged names indicate requested variants only.",
+    "One stock Firefox direct-preference-write download-gate test intentionally skipped; actual game Settings durable-save/reload tests passed in both effective variants.",
+    "Two older0ab Chromium cold-start readiness timeouts retained under MASTER191-before-overview-fix as genuine failures. Final e18 first-visits passed with a bounded120s local helper budget and unchanged stock input/assertions; per-call actual timings logged.",
+    "Initial copied-test module-scope configuration failure retained under MASTER191-harness-module-scope-failure; no product tests executed in that attempt.",
+    "Original phone intro-only harness timed out on legitimate Malay audio onboarding, retained under MASTER191-phone-unhandled-audio-onboarding. Audio-only replacement was explicitly interrupted when next hand-preference state was identified. Final actual audio+hand+intro flow passed; no shipping change needed.",
+    "Browser testing covers Linux headless installed Chromium153/Firefox155/WebKit26.6 releases and browser engine Wasm variants, not physical mobile devices or other host operating systems."
+  ],
+  "readiness_adaptation": "artifacts/localization-ms/validation/browser-master191-readiness-adaptation.json",
+  "additional_root_evidence": [
+    {
+      "path": "artifacts/localization-ms/validation/browser-master191-root-visual-review.json",
+      "sha256": "084ef7104072a61a3846319a800f85f49f00a1b9683c2252769029409cc877b8"
+    },
+    {
+      "path": "artifacts/localization-ms/validation/browser-master191-renderer-source-proof.json",
+      "sha256": "62f5aad491a08a960b534709991c0eaf7eee0325113c00f6bd49fa4505f22045"
+    }
+  ],
+  "ownership_closed": {
+    "all_owned_build_and_test_sessions_completed": true,
+    "owned_ports_8897_8898_servers_stopped": true,
+    "final_git_head": "e18cb7223f2784ff0c952260b26b01fc89af34c2",
+    "final_git_status": ""
+  }
+}

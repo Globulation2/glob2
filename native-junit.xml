@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites><testsuite name="FontKerning"><testcase classname="FontKerning" name="Arabic and Persian visual-order text is not reordered again by SDL_ttf" time="0.045934" status="run" />
+  <testcase classname="FontKerning" name="high-DPI Hindi wrapping width is preserved without cropping the raw raster" time="0.091755" status="run" />
+  <testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.142621" status="run" />
+  <testcase classname="FontKerning" name="language changes refresh default line height and Arabic shaping caches" time="0.415744" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.086554" status="run" />
+  <testcase classname="FontKerning" name="script fonts shape clusters and preserve measured raster sizes after reload" time="0.626246" status="run" />
+  <testcase classname="FontKerning" name="script run composition preserves straight-alpha antialiasing" time="0.028404" status="run" />
+  <testcase classname="FontKerning" name="shaping clusters keep conjuncts and combining marks together" time="0.077397" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.004438" status="run" />
+  </testsuite><testsuite name="SystemLanguage"><testcase classname="SystemLanguage" name="ISO locales map to the historical catalog codes" time="0.004233" status="run" />
+  <testcase classname="SystemLanguage" name="Malay selects Rumi without advertising Jawi coverage" time="0.000377" status="run" />
+  <testcase classname="SystemLanguage" name="Malay startup preserves an explicit saved choice" time="7.10373" status="run" />
+  <testcase classname="SystemLanguage" name="Norwegian Bokmaal accepts generic Norwegian but never Nynorsk" time="0.000415" status="run" />
+  <testcase classname="SystemLanguage" name="Norwegian startup follows preferences and preserves a saved language" time="6.92836" status="run" />
+  <testcase classname="SystemLanguage" name="expanded locales distinguish scripts and the precise Pulaar variety" time="0.000355" status="run" />
+  <testcase classname="SystemLanguage" name="languages without a catalog are not confused with catalog codes" time="0.000176" status="run" />
+  <testcase classname="SystemLanguage" name="regional and script variants pick the matching catalog" time="0.000139" status="run" />
+  <testcase classname="SystemLanguage" name="startup follows the system only when the profile has no usable language" time="7.53485" status="run" />
+  <testcase classname="SystemLanguage" name="the first available preference wins, then English" time="0.00026" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="6.10952" status="run" />
+  </testsuite><testsuite name="TextMetrics"><testcase classname="TextMetrics" name="offscreen transformed text rasterizes at the requested resolution" time="0.034408" status="run" />
+    <testcase classname="TextMetrics" name="font metrics do not rasterize or evict rendered text" time="1.58545" status="run" />
+  </testsuite><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="statistics sheet scroll stays open and fits phone rotations [display][artifacts]" time="13.3642" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" time="18.1593" status="run" />
+  </testsuite></testsuites>

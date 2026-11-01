@@ -1,0 +1,54 @@
+{
+  "source_sha256": "822cf8613451177b0e2fa803451eaf2308168f21f4d04b7af2aa36cfe64bc3fc",
+  "catalog_sha256": {
+    "native": "089342b616992ec2bad3328083a8e0061b6fe96321547422aac96e5235acc153",
+    "online": "eb18efdc85988b0379ad0c33affd880e4be83651d9955be9b0f3d772a5d03064"
+  },
+  "coverage": [
+    {
+      "viewport": "desktop",
+      "old6342_manifest": "artifacts/localization-ms/validation/catalog-font-matrix-final/desktop-matrix-all/font-matrix.json",
+      "old_manifest_sha256": "2f2ab0f1d1d73f5fe8354995bfd7c08f27bbdf8a31f21d4d4f0db6a2078e3e32",
+      "old_producer_revision": "c2b3cd5a71af2cfa52345e245c063475003c4577",
+      "new16_manifest": "artifacts/localization-ms/validation/catalog-font-matrix191-supplement/desktop-matrix-all/font-matrix.json",
+      "new_manifest_sha256": "ab23d0f9b982af90b3d4500d730a978edc36acb60400d4a28d70b656e68205f2",
+      "new_producer_revision": "11d72bf8c881b5db07c33feaa251aef326c15c84",
+      "distinct_keys_union": 6358,
+      "samples_total": 38148,
+      "no_duplicate_keys_between_stages": true,
+      "all14runtime_font_hashes_identical": true,
+      "SDL_TTF_HarfBuzz_versions_identical": true,
+      "missing_glyph_samples": 0,
+      "drawn_overflow_lines": 0
+    },
+    {
+      "viewport": "phone",
+      "old6342_manifest": "artifacts/localization-ms/validation/catalog-font-matrix-final/phone-matrix-all/font-matrix.json",
+      "old_manifest_sha256": "b181717784e510a5c51adef03050254e0cb4972f44275fe38bd1500c4ea8c272",
+      "old_producer_revision": "c2b3cd5a71af2cfa52345e245c063475003c4577",
+      "new16_manifest": "artifacts/localization-ms/validation/catalog-font-matrix191-supplement/phone-matrix-all/font-matrix.json",
+      "new_manifest_sha256": "f55817e365e6648078b5994bc31ac0abe4a8fd014c38b0a042e440323b188329",
+      "new_producer_revision": "11d72bf8c881b5db07c33feaa251aef326c15c84",
+      "distinct_keys_union": 6358,
+      "samples_total": 38148,
+      "no_duplicate_keys_between_stages": true,
+      "all14runtime_font_hashes_identical": true,
+      "SDL_TTF_HarfBuzz_versions_identical": true,
+      "missing_glyph_samples": 0,
+      "drawn_overflow_lines": 0
+    }
+  ],
+  "font_policy_proof": {
+    "path": "artifacts/localization-ms/master191-supplement/font-policy-carryforward.json",
+    "sha256": "4601e1f5a7db1c270b38df5ec44847fadb1e32f50968ea1bc5a932eb8a028c45"
+  },
+  "text_proof": {
+    "path": "artifacts/localization-ms-final-191/linguistic-normalization-proof.json",
+    "sha256": "8b85cb579b4784c8b588c78900035fb4cf67e2a528335f42cdc1931b1cd92da2"
+  },
+  "limits": [
+    "38,148 samples per viewport are covered across two explicit producer stages. This is not a claim that all6,358 keys were freshly re-rendered by the191 executable.",
+    "The6342 unchanged source/target entries retain prior full font-matrix measurements. The191 font implementation differs only by the additional Norwegian condition/comment; Malay behavior is exactly preserved. New16 entries have96 fresh samples perviewport.",
+    "Numeric full coverage is separate from selected actual pixel reviews and production-screen captures."
+  ]
+}

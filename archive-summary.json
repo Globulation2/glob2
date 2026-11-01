@@ -1,0 +1,43 @@
+{
+  "files": 2282,
+  "uncompressed_bytes": 470968682,
+  "archives": [
+    {
+      "path": "malay-browser-pixels.tar.gz",
+      "files": 32,
+      "bytes": 28334592,
+      "sha256": "446fd668c71aab109f8d350f22a00134ea96a75c22a27339d49b2ce9352f88a9"
+    },
+    {
+      "path": "malay-font-matrices.tar.gz",
+      "files": 117,
+      "bytes": 14981353,
+      "sha256": "dbee730c67534000156903ad35919c56aec888c3f79e8c986f404be3995e3ce1"
+    },
+    {
+      "path": "malay-native-final-pixels.tar.gz",
+      "files": 121,
+      "bytes": 51159035,
+      "sha256": "661da2887df9c555611ea9fb7ec5798add5ce96e0862cf9a1026fa5d3833dfef"
+    },
+    {
+      "path": "malay-native-historical-pixels.tar.gz",
+      "files": 97,
+      "bytes": 36628473,
+      "sha256": "6e6e65961f4a7ae027b8dc2c25edfd94f994f73b9cee58398cacd197a47d12f8"
+    },
+    {
+      "path": "malay-online-pixels.tar.gz",
+      "files": 131,
+      "bytes": 34025207,
+      "sha256": "8ae5baf01483ada76059312fe6650dcb83b20d505d2d649649bf97dc36e02fd9"
+    },
+    {
+      "path": "malay-records.tar.gz",
+      "files": 1784,
+      "bytes": 18982537,
+      "sha256": "5378bf850b919f3f7ef21c8c50795422752d9cc64578f3b208ddde9c610f0d61"
+    }
+  ],
+  "partition_policy": "All selected files are present exactly once across natural records/font/native-final/native-historical/online/browser archives; each archive is bounded to80MiB. Raw provider caches and intermediate editorial working files remain local."
+}

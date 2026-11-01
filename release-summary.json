@@ -1,0 +1,71 @@
+{
+  "status": "Complete for explicitly stated selected release coverage; known shared/baseline failures and unverified platforms retained",
+  "final_head": "e18cb7223f2784ff0c952260b26b01fc89af34c2",
+  "master_base": "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+  "native_messages": 3411,
+  "online_messages": 2947,
+  "total_messages": 6358,
+  "review_batches": 44,
+  "review": "Actual gcloud Cloud Translation drafts, distinct author/semantic/editor/adversarial passes, fresh changed-entry readings and exact unchanged carry-forward proofs. Agent reviewed, not native-human certified.",
+  "native_broad_cases": 128,
+  "native_final_focused_cases": 24,
+  "native_trace_equal_english_malay": true,
+  "browser_canonical_combinations": 6,
+  "browser_effective_persistence_combinations": 6,
+  "browser_staged_pass": 8,
+  "browser_staged_expected_skip": 1,
+  "phone": "Actual390x844 DPR2 navigator ms-MY, no initial cookie, real mobile onboarding and Settings; visible Malay reviewed.",
+  "audit_source_current": true,
+  "workflow_gates": {
+    "language_brief": {
+      "passed": true,
+      "coverage": "Original Malaysian Rumi brief remains valid; new16 statistics/terrain entries independently checked against exact source and existing statistics/overlay/material terminology. No unresolved linguistic concerns."
+    },
+    "source_based_pilot": {
+      "passed": true,
+      "coverage": "Original98-key pilot predates bulk drafting; its source/final targets remain inside exact unchanged6342. New16 native entries have independent source-based full readings. No new original pilot claimed."
+    },
+    "structural": {
+      "passed": true,
+      "coverage": "Fresh official native/online checks plus generated-browser consistency, draft structural check and190 individual prior exact English matches. New16 entries do not add any English matches."
+    },
+    "desktop_rendering": {
+      "passed": true,
+      "coverage": "Actual Linux game menus/tutorials and final live statistics; production online desktop renders. Full6342+supplement16 font matrices have exact unchanged-input proofs, not relabelled producers."
+    },
+    "phone_rendering": {
+      "passed": true,
+      "coverage": "Actual compact Linux menus/tutorials/final statistics at100/150%; production online phone renders. Shared late game-gallery construction assertion retained, no complete phone-gallery claim."
+    },
+    "browser_startup": {
+      "passed": true,
+      "coverage": "Final release serial/threaded package with actual translated game startup, persisted Settings and catalog verification, using explicit final producer receipts."
+    },
+    "native_platforms": {
+      "passed": true,
+      "coverage": "Selected release coverage: Linux actual runtime/build/compatibility; Linux/Android/iOS source package selections. Windows/macOS/Android/iOS runtime execution is unverified locally. Passed means this stated selected coverage, not all supported OS execution."
+    },
+    "browser_platforms": {
+      "passed": true,
+      "coverage": "Selected final release serial/threaded execution across Chromium, Firefox and WebKit with independently compared canonical traces; online production component proof. Three known stale-fixture unit failures remain recorded, not counted as passes."
+    },
+    "mobile_platforms": {
+      "passed": true,
+      "coverage": "Selected release coverage: actual compact Linux UI, browser phone emulation and Android/iOS catalog/font source selection. No actual Android/iOS device installation/runtime claim. Passed means this stated selected coverage only."
+    }
+  },
+  "browser_receipt_sha256": "8dd8216d95f8d662b1792a959aeaa83001c583a1e8c9bbe41a75c26c48cd2182",
+  "limits": [
+    "Firefox155 headless threaded WebGL2 screenshots remain uniform background after real Settings interaction and bounded7s waits, both Malay and exact same-source/binary English control. These two pixel assertions failed and are retained; no claim that default worker-WebGL visual output was verified. Actual threaded software Malay Settings pixels pass. Precise compositor/rendering cause not established.",
+    "WebKit26.6 default threaded route falls back to serial with literal reason worker shared memory unavailable. Isolated/SAB/OffscreenCanvas available; webgl2 worker probe fails, software probe passes. Actual supported software-threaded UI-save/reload passed with strict effective-mode guard. Stock staged names indicate requested variants only.",
+    "One stock Firefox direct-preference-write download-gate test intentionally skipped; actual game Settings durable-save/reload tests passed in both effective variants.",
+    "Two older0ab Chromium cold-start readiness timeouts retained under MASTER191-before-overview-fix as genuine failures. Final e18 first-visits passed with a bounded120s local helper budget and unchanged stock input/assertions; per-call actual timings logged.",
+    "Initial copied-test module-scope configuration failure retained under MASTER191-harness-module-scope-failure; no product tests executed in that attempt.",
+    "Original phone intro-only harness timed out on legitimate Malay audio onboarding, retained under MASTER191-phone-unhandled-audio-onboarding. Audio-only replacement was explicitly interrupted when next hand-preference state was identified. Final actual audio+hand+intro flow passed; no shipping change needed.",
+    "Browser testing covers Linux headless installed Chromium153/Firefox155/WebKit26.6 releases and browser engine Wasm variants, not physical mobile devices or other host operating systems.",
+    "Native broad results retain0ab producer; final24 tests repeat affected coverage on e18 with104 unaffected cases carried by exact scope proof.",
+    "Native Windows/macOS/Android/iOS execution unverified locally.",
+    "Browser unit suite148 pass/3 original-base stale-fixture failures.",
+    "Phone full-gallery assertion also fails with English on same binary; cause unproven. Selected actual topic pixels reviewed; no complete phone-gallery pass."
+  ]
+}

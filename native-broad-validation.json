@@ -1,0 +1,726 @@
+{
+  "status": "PASS: all128 relevant correctness cases and both real native CLI traces; original inventory-only wrapper mismatch preserved",
+  "source": {
+    "revision": "0ab1c502952e3d81416ab985d9ff235e13683735",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "840827398757d2197432f10ac222a7cb1deed19a5143191235aaf0a89614ec7d"
+  },
+  "simRevision": 111,
+  "saveVersion": 191,
+  "minimumSaveVersion": 58,
+  "replayFloor": 187,
+  "integrationBase": "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+  "actualInventory": "final191/inventory/actual-inventory.json",
+  "selectedUniqueCases": 128,
+  "headlessCasesPassed": 124,
+  "displayCasesPassed": 4,
+  "filterCoverage": {
+    "SystemLanguage/*": 10,
+    "LegacyScriptCoverage/*": 21,
+    "SettingsLocalization/*": 1,
+    "ReplayStepCounter/*": 11,
+    "FontKerning/*": 9,
+    "TextMetrics/*": 2,
+    "TurnEngineHarness/the committed*": 1,
+    "MatchSetup/every MatchSetup and SimVersion*": 1,
+    "MatchSetup/the simulation data hash*": 1,
+    "PlatformProtocol/the local sim version*": 1,
+    "PlatformClient/an unsupported sim version*": 1,
+    "WinProbability/*": 12,
+    "TeamStatsSave/*": 26,
+    "MetricSeries*/*": 9,
+    "MetricCatalog/Win probability*": 1,
+    "MetricCatalog/Every metric*": 1,
+    "GUIInteractionCoverage/statistics*": 2,
+    "VertexTerrain/*": 14,
+    "TerrainRuntime/format-137*": 1,
+    "TerrainRuntime/format-186*": 1,
+    "TerrainRegistry/appearance presets*": 1,
+    "TerrainRegistry/catalogue groups*": 1
+  },
+  "allSelectedCasesPassed": true,
+  "consolidatedJunit": "final191/consolidated-junit.xml",
+  "caseEvidence": {
+    "FontKerning/Arabic and Persian visual-order text is not reordered again by SDL_ttf": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.167791",
+      "passed": true
+    },
+    "FontKerning/high-DPI Hindi wrapping width is preserved without cropping the raw raster": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.124858",
+      "passed": true
+    },
+    "FontKerning/kerned words have no gap wider than the same words unkerned": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.18637",
+      "passed": true
+    },
+    "FontKerning/language changes refresh default line height and Arabic shaping caches": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.04346",
+      "passed": true
+    },
+    "FontKerning/pair advances equal the glyph advances plus kerning": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.096848",
+      "passed": true
+    },
+    "FontKerning/script fonts shape clusters and preserve measured raster sizes after reload": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.20068",
+      "passed": true
+    },
+    "FontKerning/script run composition preserves straight-alpha antialiasing": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.062385",
+      "passed": true
+    },
+    "FontKerning/shaping clusters keep conjuncts and combining marks together": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.094721",
+      "passed": true
+    },
+    "FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.015981",
+      "passed": true
+    },
+    "LegacyScriptCoverage/Malay SGSL language tokens require the installed catalog": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "14.9718",
+      "passed": true
+    },
+    "LegacyScriptCoverage/Malay SGSL selects its message and retains an authored default for other locales": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "9.65663",
+      "passed": true
+    },
+    "LegacyScriptCoverage/adding Malay preserves legacy SGSL source bytes and saved program counters": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "17.8506",
+      "passed": true
+    },
+    "LegacyScriptCoverage/alliance levels preserve unrelated teams and apply vision masks": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.0725",
+      "passed": true
+    },
+    "LegacyScriptCoverage/area waits observe team alliance and negation instead of unrelated units": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.51154",
+      "passed": true
+    },
+    "LegacyScriptCoverage/authored flag aliases resolve game catalog IDs and respect missing definitions": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.73712",
+      "passed": true
+    },
+    "LegacyScriptCoverage/catalog languages and quoted locale names preserve suspended story continuation": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "11.1703",
+      "passed": true
+    },
+    "LegacyScriptCoverage/count waits evaluate all building classes exact levels and unit comparisons": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "12.7592",
+      "passed": true
+    },
+    "LegacyScriptCoverage/flag lifecycle and GUI commands change their real game objects": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.5985",
+      "passed": true
+    },
+    "LegacyScriptCoverage/independent stories timers space and saved suspension resume exactly": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.08132",
+      "passed": true
+    },
+    "LegacyScriptCoverage/invalid references and value boundaries report typed errors": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.49988",
+      "passed": true
+    },
+    "LegacyScriptCoverage/legacy resetAI tokens with invalid player or implementation leave players intact": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.58294",
+      "passed": true
+    },
+    "LegacyScriptCoverage/named highlights target distinct GUI elements and unhighlight restores state": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.60082",
+      "passed": true
+    },
+    "LegacyScriptCoverage/objectives and hints resolve script numbers and persist in game snapshots": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "5.13131",
+      "passed": true
+    },
+    "LegacyScriptCoverage/random legacy summons preserve story progress through full continuation": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "6.2016",
+      "passed": true
+    },
+    "LegacyScriptCoverage/resetAI authoring accepts valid slots before an editor map has a player header": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.69422",
+      "passed": true
+    },
+    "LegacyScriptCoverage/resetAI changes only the chosen player and rejects unsafe indices": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "3.066",
+      "passed": true
+    },
+    "LegacyScriptCoverage/summons respect painted area capacity and unit attributes": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "3.10081",
+      "passed": true
+    },
+    "LegacyScriptCoverage/supported statements and wait forms compile": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.42934",
+      "passed": true
+    },
+    "LegacyScriptCoverage/truncated arguments fail without accepting incomplete statements": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "3.23028",
+      "passed": true
+    },
+    "LegacyScriptCoverage/unit and building highlights use map and panel channels independently": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.53413",
+      "passed": true
+    },
+    "MatchSetup/every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.83229",
+      "passed": true
+    },
+    "MatchSetup/the simulation data hash covers every data file the simulation loads": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.709149",
+      "passed": true
+    },
+    "SystemLanguage/ISO locales map to the historical catalog codes": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000292",
+      "passed": true
+    },
+    "SystemLanguage/Malay selects Rumi without advertising Jawi coverage": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000273",
+      "passed": true
+    },
+    "SystemLanguage/Malay startup preserves an explicit saved choice": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "20.3859",
+      "passed": true
+    },
+    "SystemLanguage/Norwegian Bokmaal accepts generic Norwegian but never Nynorsk": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000314",
+      "passed": true
+    },
+    "SystemLanguage/Norwegian startup follows preferences and preserves a saved language": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "20.3222",
+      "passed": true
+    },
+    "SystemLanguage/expanded locales distinguish scripts and the precise Pulaar variety": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000346",
+      "passed": true
+    },
+    "SystemLanguage/languages without a catalog are not confused with catalog codes": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.005973",
+      "passed": true
+    },
+    "SystemLanguage/regional and script variants pick the matching catalog": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000124",
+      "passed": true
+    },
+    "SystemLanguage/startup follows the system only when the profile has no usable language": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "20.3985",
+      "passed": true
+    },
+    "SystemLanguage/the first available preference wins, then English": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000268",
+      "passed": true
+    },
+    "TeamStatsSave/32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "180.563",
+      "passed": true
+    },
+    "TeamStatsSave/AI telemetry continues across a save [save-format]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "89.5611",
+      "passed": true
+    },
+    "TeamStatsSave/Compact team histories preserve samples across two batch boundaries": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "11.1933",
+      "passed": true
+    },
+    "TeamStatsSave/Compact telemetry retains every sample across chunk boundaries": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "21.5316",
+      "passed": true
+    },
+    "TeamStatsSave/Delayed observation telemetry saves remain readable": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.0917",
+      "passed": true
+    },
+    "TeamStatsSave/Editor building deletion clears ability lists before save and slot reuse": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "7.64857",
+      "passed": true
+    },
+    "TeamStatsSave/Sparse variant reset accepts refreshed diagnostics and restored snapshots": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "28.6997",
+      "passed": true
+    },
+    "TeamStatsSave/Sparse variant snapshot reset clears vanished types without clearing history": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "6.56495",
+      "passed": true
+    },
+    "TeamStatsSave/clearing telemetry counts operations once by configured primary material": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.87165",
+      "passed": true
+    },
+    "TeamStatsSave/combat deaths are attributed by place and assignment": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.51347",
+      "passed": true
+    },
+    "TeamStatsSave/defence snapshot counts warriors by place and enemy warriors at home": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.11534",
+      "passed": true
+    },
+    "TeamStatsSave/defender recruitment refusal excludes idle reserves while retaining combat and stock smoothing": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.21934",
+      "passed": true
+    },
+    "TeamStatsSave/diagnostic probability history preserves replay acceptance boundaries [save-format]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.23083",
+      "passed": true
+    },
+    "TeamStatsSave/every live worker-tick lands in exactly one labour bucket": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.5414",
+      "passed": true
+    },
+    "TeamStatsSave/labour, combat and defence measurements survive a save [save-format]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "6.2408",
+      "passed": true
+    },
+    "TeamStatsSave/legacy version 84 fixture replays the golden trace [save-format][golden]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.29961",
+      "passed": true
+    },
+    "TeamStatsSave/legacy version 88 fixture replays the golden trace [save-format][golden]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.65185",
+      "passed": true
+    },
+    "TeamStatsSave/nonuniform combat levels retain per-unit defender recruitment eligibility": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.17619",
+      "passed": true
+    },
+    "TeamStatsSave/older saves load with labour coverage starting at the loaded tick [save-format]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "3.61715",
+      "passed": true
+    },
+    "TeamStatsSave/place lookup agrees with a brute-force scan of every building tile": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.06426",
+      "passed": true
+    },
+    "TeamStatsSave/places: own buildings first, then enemies; allies, flags and new buildings do not count": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.09424",
+      "passed": true
+    },
+    "TeamStatsSave/probability history rejects samples beyond the saved game tick [save-format]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "5.63321",
+      "passed": true
+    },
+    "TeamStatsSave/probability save section preserves Maxima-era statistics layouts [save-format]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.08188",
+      "passed": true
+    },
+    "TeamStatsSave/probability text history and integral survive a team save [save-format]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "5.37763",
+      "passed": true
+    },
+    "TeamStatsSave/retained format152 magic levels count each explorer once through migration and current continuation [save-format]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "22.1818",
+      "passed": true
+    },
+    "TerrainRuntime/format-137 saves with custom terrain load with remapped IDs and resave at the current format": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "7.98456",
+      "passed": true
+    },
+    "TerrainRuntime/format-186 saves keep built-in IDs and move custom terrain behind the grass and sand looks": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "5.06285",
+      "passed": true
+    },
+    "TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "15.4416",
+      "passed": true
+    },
+    "VertexTerrain/a cell's four corners paint it uniform and its neighbours mixed": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.81288",
+      "passed": true
+    },
+    "VertexTerrain/a vertex write re-derives the four cells around it": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.737206",
+      "passed": true
+    },
+    "VertexTerrain/compiled CPU seed columns preserve frozen rules when mixed rules grow": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.608691",
+      "passed": true
+    },
+    "VertexTerrain/equal corners keep their terrain's exact rules": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "VertexTerrain/every built-in pair combines into valid transition rules": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.002997",
+      "passed": true
+    },
+    "VertexTerrain/grass directly against water is walkable and unbuildable": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "VertexTerrain/ground costs follow the walkable corners and hazards take the worst": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "VertexTerrain/mixed cells take the shore habitat and intersect explicit resource lists": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.32865",
+      "passed": true
+    },
+    "VertexTerrain/mixed classic corners are exactly the retired shore profile": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "VertexTerrain/old cell terrain moves onto the vertices it covers": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.76088",
+      "passed": true
+    },
+    "VertexTerrain/snapshots keep the rule table they were taken with": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.5152",
+      "passed": true
+    },
+    "VertexTerrain/terrain IDs of older files skip the retired shores and follow the current built-ins": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "VertexTerrain/the rule table numbers uniform rules by terrain and interns mixed ones in order": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.61922",
+      "passed": true
+    },
+    "VertexTerrain/vertex terrain round-trips through packed and text saves": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "20.7798",
+      "passed": true
+    },
+    "WinProbability/an early victory retains the prediction which triggered it": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.26479",
+      "passed": true
+    },
+    "WinProbability/automatic history records without telemetry, includes final partial ticks and shares alliance chances": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.93357",
+      "passed": true
+    },
+    "WinProbability/calling an early loser cannot change later teams' decision inputs": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.71748",
+      "passed": true
+    },
+    "WinProbability/combat facilities count concrete providers once, including explicit construction targets": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "6.46484",
+      "passed": true
+    },
+    "WinProbability/enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.7366",
+      "passed": true
+    },
+    "WinProbability/equal alliances share chances and eliminated allies contribute nothing": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.32848",
+      "passed": true
+    },
+    "WinProbability/live chances and automatic history use the same scout-role counts": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "3.07922",
+      "passed": true
+    },
+    "WinProbability/native arithmetic reproduces every published calibration sample": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.004802",
+      "passed": true
+    },
+    "WinProbability/result serialization requires owner-finalized probability history": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.60618",
+      "passed": true
+    },
+    "WinProbability/rule serialization gates the new tag and rejects ambiguous thresholds": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000138",
+      "passed": true
+    },
+    "WinProbability/the rule waits for the minimum tick and sample boundary then ends all teams": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.6996",
+      "passed": true
+    },
+    "WinProbability/trapezoidal score uses actual ticks, survives saves and retains legacy coverage gaps": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "2.4557",
+      "passed": true
+    },
+    "MetricCatalog/Win probability charts retain explicit coverage, zero chances and fractional percentages": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000368",
+      "passed": true
+    },
+    "MetricCatalog/Every metric has a unique id, a group and a source for its value": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000414",
+      "passed": true
+    },
+    "MetricSeries/A counter's rate per minute follows its slope and shortens its window at the start": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "MetricSeries/Nested thresholds become disjoint bands that add up to the whole": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "MetricSeries/Percentages stay within 0-100 when the part outruns its whole": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "MetricSeries/Bands of unequal length and negative values normalise without reading past the end": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "MetricSeries/Axes use round steps and include zero": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "MetricSeries/Texts switch form at their boundaries": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "MetricSeries views/Averaged levels, ratios with nothing to measure, and whole-number axes": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000112",
+      "passed": true
+    },
+    "MetricSeries views/Metrics open in the view that reads best for them": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.005856",
+      "passed": true
+    },
+    "MetricSeries views/A chart knows when it has nothing to show, and leaves gaps out of its range": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000157",
+      "passed": true
+    },
+    "PlatformClient/an unsupported sim version says which side is out of date": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.042759",
+      "passed": true
+    },
+    "PlatformProtocol/the local sim version carries this build's versions": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000147",
+      "passed": true
+    },
+    "ReplayStepCounter/truncated replay bodies never become zero-filled orders": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.010559",
+      "passed": true
+    },
+    "ReplayStepCounter/step totals cannot wrap": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "ReplayStepCounter/paused turns retain the first snapshot for their shared simulation tick": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000239",
+      "passed": true
+    },
+    "ReplayStepCounter/delayed replay checks validate their original source tick": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.00213",
+      "passed": true
+    },
+    "ReplayStepCounter/delayed replay mismatch and missing terminal work fail validation": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000222",
+      "passed": true
+    },
+    "ReplayStepCounter/zero is a valid delayed checksum when explicitly present": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "ReplayStepCounter/checksum mismatch closes playback safely": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000103",
+      "passed": true
+    },
+    "ReplayStepCounter/legacy create decoder respects both historical payload lengths": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "ReplayStepCounter/WideRoundTrip": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.000896",
+      "passed": true
+    },
+    "ReplayStepCounter/VersionBounds": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.00039",
+      "passed": true
+    },
+    "ReplayStepCounter/DecodeVersionPlumbing": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0",
+      "passed": true
+    },
+    "TerrainRegistry/appearance presets preserve snapshot names and resolved saved metadata": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.037931",
+      "passed": true
+    },
+    "TerrainRegistry/catalogue groups share one profile, every paintable built-in is a preset and format-136 saved IDs remap behind the current built-ins": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.377693",
+      "passed": true
+    },
+    "TextMetrics/offscreen transformed text rasterizes at the requested resolution": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "0.06969",
+      "passed": true
+    },
+    "TextMetrics/font metrics do not rasterize or evict rendered text": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/headless/junit.xml",
+      "seconds": "1.42459",
+      "passed": true
+    },
+    "GUIInteractionCoverage/statistics sheet scroll stays open and fits phone rotations [display][artifacts]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/display-x11/junit.xml",
+      "seconds": "22.1474",
+      "passed": true
+    },
+    "GUIInteractionCoverage/statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/display-x11/junit.xml",
+      "seconds": "24.5735",
+      "passed": true
+    },
+    "SettingsLocalization/Controls render translated labels and help in every supported language [display:1400x1000][artifacts]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/display-x11/junit.xml",
+      "seconds": "74.3289",
+      "passed": true
+    },
+    "TeamStatsSave/measurement screenshots [display][artifacts]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/final191/all/display-x11/junit.xml",
+      "seconds": "18.7718",
+      "passed": true
+    }
+  },
+  "binarySha256StableBeforeAfter": {
+    "preview": "20f959255cc7d42768d9e5af1586d6b5418f01eb57b3719876a1a1acf69bfe80",
+    "engine": "99fc777ef4ef969672b4520b937b36dd1707a4f8df7f446b003bf3492fdd161c",
+    "unit": "ea0b09fdb12744abd528287111c6e19ee6bc53e63306428496f9a64805a7c97b",
+    "gallery": "d3c76b245fb4c367b48ed35f9e4d6e2ddb1abcd201bbfc68199a68386a995aa6",
+    "glob2": "1f9518e78acdd60a8bd6e29dd5e4e048098454c6d813ad8d6294edd6fb4bd33f"
+  },
+  "sourceAndAllFiveBinariesStable": true,
+  "simKey": "191-73-be0cfb6de27ede2ccf532696a24fe30af46f1f6e825019b75072d91081b3cee9",
+  "recordSha256": "a7f8d0d3f220c1d51980ea213fb45c8b3d7dc8e99be8e3fcc887578a9ed7cd10",
+  "allTraceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "cliResult": "final191/all/cli-result.json",
+  "cliEnMsAllPassed": true,
+  "controlsLocaleScreenshots": 38,
+  "timeoutPolicy": {
+    "seconds": 600,
+    "reason": "Prior fast-development stress case needed227s wall; no source/test assertion changes",
+    "currentStressCaseSeconds": "180.563"
+  },
+  "displayPolicy": "Owned Xvfb/Openbox with explicit SDL_VIDEO_DRIVER=x11; display-jobs1; headless pass separately excludes display and uses normal runner dummy video",
+  "initialInventoryMismatch": {
+    "originalWrapperExit": 1,
+    "originalReceipt": "final191/all/result.json",
+    "rawListedCases": 129,
+    "actualCorrectnessCases": 128,
+    "standardPolicyExcludedCase": "TeamStatsSave/place lookup cost against a scan of every building slot [benchmark]",
+    "reason": "Preparer initially omitted standard run_tests benchmark exclusion; all behavior commands returned0. Only corrected native enumeration rerun (exit0); no behavior cases repeated. Original runner and correction hashes retained in master191-supplement/final191-validation/benchmark-inventory-correction.json"
+  },
+  "checkSimRevision": {
+    "command": "python3 test/check_sim_revision.py --base bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+    "exitCode": 0,
+    "log": "final191-check-sim-revision.log"
+  },
+  "coverageLimits": [
+    "Linux x86_64 GCC15 fast-development correctness checks; no native shipping-release/package or performance claim",
+    "Oldest58 scripting test verifies SGSL payload continuity, not an entire format58 saved game; full legacy84/88 and retained terrain137/186/current191 cases also executed",
+    "Browser release/cross-browser evidence is separate root/cloud ownership",
+    "No actual Windows/macOS/Android/iOS device execution from this native evidence",
+    "OS/store descriptive metadata outside translation scope"
+  ]
+}

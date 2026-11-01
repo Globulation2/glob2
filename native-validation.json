@@ -1,0 +1,184 @@
+{
+  "status": "PASS",
+  "source": {
+    "revision": "e18cb7223f2784ff0c952260b26b01fc89af34c2",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "add58d6d6d445890cb36591ca576233c74fe440e5e4d16443c4e5a875f5a06c7"
+  },
+  "focusedCasesPassed": 24,
+  "headlessCasesPassed": 22,
+  "displayCasesPassed": 2,
+  "filterCoverage": {
+    "SystemLanguage/*": 10,
+    "FontKerning/*": 9,
+    "TextMetrics/*": 2,
+    "GUIInteractionCoverage/statistics*": 2,
+    "TurnEngineHarness/the committed*": 1
+  },
+  "nativeRefresh": "native-final-layout-refresh-result.json",
+  "nativeRefreshExitCode": 0,
+  "fiveTargetRefreshCompileCommands": 5,
+  "validationWrapperExitCode": 0,
+  "caseEvidence": {
+    "FontKerning/Arabic and Persian visual-order text is not reordered again by SDL_ttf": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.045934",
+      "passed": true
+    },
+    "FontKerning/high-DPI Hindi wrapping width is preserved without cropping the raw raster": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.091755",
+      "passed": true
+    },
+    "FontKerning/kerned words have no gap wider than the same words unkerned": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.142621",
+      "passed": true
+    },
+    "FontKerning/language changes refresh default line height and Arabic shaping caches": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.415744",
+      "passed": true
+    },
+    "FontKerning/pair advances equal the glyph advances plus kerning": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.086554",
+      "passed": true
+    },
+    "FontKerning/script fonts shape clusters and preserve measured raster sizes after reload": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.626246",
+      "passed": true
+    },
+    "FontKerning/script run composition preserves straight-alpha antialiasing": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.028404",
+      "passed": true
+    },
+    "FontKerning/shaping clusters keep conjuncts and combining marks together": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.077397",
+      "passed": true
+    },
+    "FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.004438",
+      "passed": true
+    },
+    "SystemLanguage/ISO locales map to the historical catalog codes": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.004233",
+      "passed": true
+    },
+    "SystemLanguage/Malay selects Rumi without advertising Jawi coverage": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.000377",
+      "passed": true
+    },
+    "SystemLanguage/Malay startup preserves an explicit saved choice": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "7.10373",
+      "passed": true
+    },
+    "SystemLanguage/Norwegian Bokmaal accepts generic Norwegian but never Nynorsk": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.000415",
+      "passed": true
+    },
+    "SystemLanguage/Norwegian startup follows preferences and preserves a saved language": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "6.92836",
+      "passed": true
+    },
+    "SystemLanguage/expanded locales distinguish scripts and the precise Pulaar variety": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.000355",
+      "passed": true
+    },
+    "SystemLanguage/languages without a catalog are not confused with catalog codes": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.000176",
+      "passed": true
+    },
+    "SystemLanguage/regional and script variants pick the matching catalog": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.000139",
+      "passed": true
+    },
+    "SystemLanguage/startup follows the system only when the profile has no usable language": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "7.53485",
+      "passed": true
+    },
+    "SystemLanguage/the first available preference wins, then English": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.00026",
+      "passed": true
+    },
+    "TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "6.10952",
+      "passed": true
+    },
+    "TextMetrics/offscreen transformed text rasterizes at the requested resolution": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "0.034408",
+      "passed": true
+    },
+    "TextMetrics/font metrics do not rasterize or evict rendered text": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/headless/junit.xml",
+      "seconds": "1.58545",
+      "passed": true
+    },
+    "GUIInteractionCoverage/statistics sheet scroll stays open and fits phone rotations [display][artifacts]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/display-x11/junit.xml",
+      "seconds": "13.3642",
+      "passed": true
+    },
+    "GUIInteractionCoverage/statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]": {
+      "junit": "/home/bradley/.codex/worktrees/545f/glob2/artifacts/localization-ms/validation/native-final-layout-checks/all/display-x11/junit.xml",
+      "seconds": "18.1593",
+      "passed": true
+    }
+  },
+  "sourceAndAll5BinaryHashesStable": true,
+  "binarySha256": {
+    "preview": "11ad8982ab5972ba0add906bc1d292c9dc7273d8e62fd8ab3b139fdf486c3172",
+    "engine": "41a90fae81ede8536c7ebee2a7819835543e8c29a6d573be53793f9b82c73615",
+    "unit": "64fea8d71f04b82fd2505d1976edc172ad7b7470682d0a517fc5f43a0b246889",
+    "gallery": "f556a7c99e436591972e940d67a84453f7fa9bd4ab617145c9efdf6c9cc5301f",
+    "glob2": "0f227fb7a527ea6498f2fb103eb2b4adc0fd85a2f42fb42fef22dbe5ed614401"
+  },
+  "simRevision": 111,
+  "saveVersion": 191,
+  "simKey": "191-73-be0cfb6de27ede2ccf532696a24fe30af46f1f6e825019b75072d91081b3cee9",
+  "recordSha256": "a7f8d0d3f220c1d51980ea213fb45c8b3d7dc8e99be8e3fcc887578a9ed7cd10",
+  "traceSha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+  "cli": "native-final-layout-checks/all/cli-result.json",
+  "cliEnMsAllPassed": true,
+  "scopeProof": "native-final-layout-scope-proof.json",
+  "priorUnchangedEvidence": "final191-native-validation-result.json at0ab;104 unaffected correctness cases and catalog/font/render inputs carried by exact two-file diff, retaining original provenance",
+  "supersededEvidence": "Prior live-statistics visuals; final root e18 galleries supersede them",
+  "regressionImage": "artifacts/localization-ms/validation/native-final-layout-checks/all/display-x11/artifacts/GUIInteractionCoverage/statistics_topics_history_and_overlays_preserve_gameplay_state_display_1024x768_artifacts/statistics-desktop-large-malay.png",
+  "regressionImageSha256": "2bd545f1b275cfe3d3d6810b5ad6f97e61708d60692eb96cd45500b54f051786",
+  "regressionVisualInspection": "Actual Malay150% overview label now appears on one complete readable line; German150% and phone rotation cases passed too",
+  "checkSimRevision": {
+    "exitCode": 0,
+    "base": "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb",
+    "log": "native-final-layout-check-sim-revision.log",
+    "command": [
+      "python3",
+      "test/check_sim_revision.py",
+      "--base",
+      "bc8fb2c2bda69af14a7a6c5ed5ca1dfed7575ddb"
+    ]
+  },
+  "timeoutPolicy": "Normal native defaults120s headless/300s display; long save stress not repeated",
+  "limits": [
+    "Linux GCC15 fast-development correctness validation, not a native release/package/performance claim",
+    "Actual mobile/other-OS device execution not provided by these native checks",
+    "Broader gallery late phone assertion remains separate root-owned evidence; not reclassified by these focused passes"
+  ],
+  "activeChildProcesses": []
+}
