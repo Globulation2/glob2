@@ -165,6 +165,7 @@ class Compositor
 	bool hasContextualProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
+    void describeShoreCalm(const SceneMap&, Recipe &) const;
     std::pair<MaterialId, unsigned> decorMaterial(const SceneMap&, int x, int y) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;

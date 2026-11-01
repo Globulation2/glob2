@@ -927,6 +927,87 @@ TEST_SUITE("TerrainMaterials")
 		}
 		CHECK(moved);
 	}
+	TEST_CASE("shore calm quiets waves toward land without shifting the water's colour [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		using TerrainVisual::shoreCalmAt;
+		// Full calm at the shoreline, fading out within the reach and smoothly.
+		CHECK(shoreCalmAt(0) == 0);
+		CHECK(shoreCalmAt(1) > shoreCalmAt(2));
+		CHECK(shoreCalmAt(2) > shoreCalmAt(4));
+		const int beyond = (TerrainVisual::ShoreCalmReachQ8 + 128) / 256 + 1;
+		CHECK(shoreCalmAt((beyond - 1) * (beyond - 1)) > 0);
+		CHECK(shoreCalmAt(beyond * beyond) == 0);
+		CHECK(TerrainVisual::ShoreCalmSearch >= beyond - 1);
+		CHECK(TerrainVisual::shoreCalm({255, 255, 255, 255}, 37, 200) == 255);
+		CHECK(TerrainVisual::shoreCalm({}, 37, 200) == 0);
+		CHECK(TerrainVisual::shoreCalm({200, 0, 200, 0}, 0, 128) == 200);
+		CHECK(TerrainVisual::shoreCalm({200, 0, 200, 0}, 256, 128) == 0);
+
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		TerrainVisual::Compositor compositor(definitions);
+		const auto &materials = compositor.catalog().materials;
+		const auto water = definitions.find("water"), deep = definitions.find("deep_water");
+		CHECK(materials[water].shoreCalm);
+		CHECK(materials[deep].shoreCalm);
+		CHECK_FALSE(materials[definitions.find("dark_water")].shoreCalm); // Its surface is still.
+		CHECK_FALSE(materials[definitions.find("sand")].shoreCalm);
+		// Calm keeps the colour and cuts the wave contrast, at every phase.
+		for (const auto id : {water, deep})
+			for (int time : {0, 37, 211})
+			{
+				CAPTURE(time);
+				compositor.prepare(false, time);
+				TerrainVisual::Recipe r;
+				r.width = r.height = 64;
+				r.x = 9;
+				r.y = 13;
+				r.corners = {id, id, id, id};
+				const auto statistics = [&](const TerrainVisual::Recipe &recipe)
+				{
+					GAGCore::DrawableSurface result(32, 32);
+					compositor.compose(recipe, result.getSDLSurface(), 0, 0, 1);
+					double sum[3] = {}, luma = 0, luma2 = 0;
+					for (int y = 0; y < 32; ++y)
+						for (int x = 0; x < 32; ++x)
+						{
+							const auto pixel = reinterpret_cast<const Uint32 *>(
+								static_cast<const unsigned char *>(result.getSDLSurface()->pixels) +
+								y * result.getSDLSurface()->pitch)[x];
+							const double rgb[3] = {double(pixel >> 16 & 255), double(pixel >> 8 & 255),
+												   double(pixel & 255)};
+							for (int k = 0; k < 3; ++k)
+								sum[k] += rgb[k] / 1024;
+							const double l = 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2];
+							luma += l / 1024;
+							luma2 += l * l / 1024;
+						}
+					return std::array<double, 4>{sum[0], sum[1], sum[2], std::sqrt(luma2 - luma * luma)};
+				};
+				const auto open = statistics(r);
+				r.calm = {255, 255, 255, 255};
+				const auto shore = statistics(r);
+				for (int k = 0; k < 3; ++k)
+					CHECK(std::abs(shore[k] - (open[k] + (materials[id].calmMean[k] - open[k]) * 0.75)) < 1.5);
+				CHECK(shore[3] < open[3] * 0.35);
+			}
+
+		// describe() derives the calm from the distance to land.
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .terrain = WATER, .discovered = true});
+		for (int y = 0; y < 32; ++y)
+			fixture.game.map.setVertexTerrain(16, y, SAND);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		auto &game = globals->terrainCompositor();
+		const auto at = [&](int x) { return game.describe(scene, x, 7); };
+		CHECK_FALSE(at(4).calmed()); // Open water keeps its waves.
+		CHECK(at(15).calm == std::array<std::uint8_t, 4>{at(15).calm[0], 255, at(15).calm[0], 255});
+		CHECK(at(15).calm[0] == shoreCalmAt(1));
+		CHECK(at(14).calm[1] == at(15).calm[0]); // Corners are shared, so the fade is continuous.
+		CHECK(at(14).calm[0] == shoreCalmAt(4));
+		CHECK(at(16).calm == std::array<std::uint8_t, 4>{255, at(15).calm[0], 255, at(15).calm[0]});
+	}
 	TEST_CASE("mixed cells compose exactly as a direct per-pixel coverage blend [display]")
 	{
 		// The reference is the blend before cell masks: sample coverage per pixel

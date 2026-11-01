@@ -2215,6 +2215,9 @@ def grass_fields(rng, size):
     return height, lattice_noise(rng, 48, size=size)
 
 
+SAND_GRAINS, SAND_DUNES, SAND_BEVEL = 160, 0.25, 0.15
+
+
 @recipe(name='sand', group="legacy", label='Sand', profile='sand',
         seam={'height': 1}, palette={'dark': (141, 130, 33), 'mid': (183, 169, 47), 'light': (225, 209, 67)}, style=Style(luma=160.1, std=27.0, grain_max=36.3),
         periodic=True, grid=8, blocks=4, preview=(182, 168, 48), minimap=(170, 170, 0))
@@ -2223,8 +2226,19 @@ def render_sand(ctx):
     p = RECIPES["sand"].palette
     common, common_flecks = sand_fields(ctx.shared_rng, ctx.size)
     own, own_flecks = sand_fields(ctx.rng, ctx.size)
-    height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
+    # Lit grains two or three native pixels across, as the original tiles
+    # have, rather than independent single-pixel noise.
+    count = SAND_GRAINS
+    first, second, ids, common_first, common_second, common_ids = block_worley(ctx, count)
+    tones = [ctx.shared_rng.random() for _ in range(count * ctx.area_scale)]
+    def grains(f1, f2, cells):
+        return [smoothstep(0.0, 0.35, b - a) * (0.55 + 0.45 * tones[i]) for a, b, i in zip(f1, f2, cells)]
+    own_grains, common_grains = grains(first, second, ids), grains(common_first, common_second, common_ids)
+    surface = [SAND_DUNES * s + (1 - SAND_DUNES) * g for s, g in zip(blend_fields(common, own, ctx.interior_mask), own_grains)]
+    reference = [SAND_DUNES * s + (1 - SAND_DUNES) * g for s, g in zip(common, common_grains)]
+    height = normalize_like(surface, reference, 0.02, 0.98)
     rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rgb = shade(rgb, own_grains, SAND_BEVEL, reference_height=common_grains)
     # The tiny brown mineral flecks remain part of the scalar surface, with
     # no plants or large deposits introduced into the legacy sand identity.
     flecks = blend_fields(common_flecks, own_flecks, ctx.interior_mask)
