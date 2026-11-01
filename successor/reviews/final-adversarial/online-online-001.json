@@ -1,8 +1,8 @@
 {
-  "adversarial_reviewer": "online_adversarial",
   "id": "online-online-001",
+  "adversarial_reviewer": "online_adversarial",
   "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
-  "target_sha256": "c608fcd0f07571c8c855effb54c1ceb05bfc557a83e21b21bab7470ac1ae28c0",
+  "target_sha256": "f71a921dfdc6447532748e775670e7382ad22877894878d314130cc2f2f562a8",
   "approved_keys": [
     "online: (provisional)",
     "online: ({slot0})",
@@ -165,7 +165,9 @@
     "online:All music",
     "online:All open licences"
   ],
-  "fresh_reviewed_keys": [],
+  "fresh_reviewed_keys": [
+    "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it."
+  ],
   "carried_keys": [
     "online: (provisional)",
     "online: ({slot0})",
@@ -222,7 +224,6 @@
     "online:/ais/favourites",
     "online:/ais/mine",
     "online:1.0.0",
-    "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
     "online:95%: {slot0}",
     "online:: ",
     "online:: create a room and invite your friends, or find a quick match.",
@@ -328,21 +329,23 @@
     "online:All music",
     "online:All open licences"
   ],
-  "carried_subset_sha256": "c608fcd0f07571c8c855effb54c1ceb05bfc557a83e21b21bab7470ac1ae28c0",
+  "carried_subset_sha256": "772962d42e5bb08f13083e196785adee315a402b7b711de1e3b3831f211923be",
   "carry_proof": {
-    "prior_review_path": "artifacts/thai-localization/reviews/final-adversarial/online-online-001.json",
-    "prior_record_sha256": "4c3293478f54c7f1ab0ac3ad99b03a026ec1aefa71c553145f9ae1d7ecabf603",
-    "prior_target_sha256": "c608fcd0f07571c8c855effb54c1ceb05bfc557a83e21b21bab7470ac1ae28c0",
-    "prior_source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
-    "prior_source_batch_path": "artifacts/thai-localization/batches/online-online-001.json",
-    "prior_source_batch_sha256": "7cd4a636833a86e7f263ec880d70104533dc8c7e3879fd7399b59df6e2a2de9b",
+    "prior_review_path": "artifacts/thai-localization-final/reviews/pre-username/final-adversarial/online-online-001.json",
+    "prior_record_sha256": "d9f8f0d3073dc5ce475ff0a49df6c03e9bd26afa3281fd94b2d45578fc68157e",
+    "prior_online_path": "artifacts/thai-localization-final/reviews/pre-username/online.json",
+    "prior_online_sha256": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680",
     "source_values_unchanged": true,
-    "target_values_unchanged": true,
-    "approved_round3_batch_path": "artifacts/thai-localization/round3-online/batches/online-online-001.json",
-    "approved_round3_batch_sha256": "abbcdb66f950c28cedbcbce4e7c96e9ba9cd5a917c763ec4791ba353116c7f66",
-    "owner_independently_verified": true
+    "target_values_unchanged_for_carried_subset": true,
+    "owner_independently_verified": true,
+    "prior_source_batch_path": "artifacts/thai-localization-final/reviews/pre-username/online-online-001.json",
+    "prior_source_batch_sha256": "2270e8370729255441eb4336a148b46115f62f2e95186ad347dbbc695f17fc13",
+    "current_source_batch_path": "artifacts/thai-localization-final/batches/online-online-001.json",
+    "current_source_batch_sha256": "80c215e76686e8d19ec258ac3e0763f69d86ce6876a1a23430c2ec2f169d7825"
   },
+  "fresh_approval_path": "artifacts/thai-localization-final/reviews/username-hint-final-adversarial.json",
   "findings": [],
+  "status": "approved",
   "accepted_english": [
     {
       "id": "online: ({slot0})",
@@ -401,6 +404,6 @@
       "reason": "Canonical AI/product name, licence identifier, technical notation, placeholder or nonlinguistic separator intentionally preserved."
     }
   ],
-  "status": "approved-owning-agent-exact-equality-carry",
-  "review_basis": "Online adversarial reviewer independently verified every source value against predecessor source batch, every target value against approved round3-online batch, predecessor review file hash, approval membership and canonical target/subset hashes. Exact unchanged carry of previous approval; no fresh main-catalog reading claimed."
+  "review_basis": "Fresh one-key approval for final ASCII username hint, independently read and bound to f941f0e2 target hash; 159 unchanged keys carried after exact per-key source/target equality, predecessor review and catalog file hashes, approved membership, canonical target/subset hash verification. Actual updated batch, draft and live username target checked equal. No fresh whole-batch reading claimed.",
+  "fresh_approval_sha256": "7708efa7f07d3691c3d16f2ba187870cb5f3a45bedc92cabb002b7b993a61414"
 }

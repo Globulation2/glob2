@@ -1,0 +1,15 @@
+{
+  "adversarial_reviewer": "online_adversarial",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "target_sha256": "92aa33950f5d6aaed21e5425f9b249f573afeef1aabb3a3607134210557c239e",
+  "approved_keys": [
+    "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it."
+  ],
+  "fresh_reviewed_keys": [
+    "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it."
+  ],
+  "carried_keys": [],
+  "findings": [],
+  "accepted_english": [],
+  "review_basis": "Fresh independent adversarial reading of actual edited Thai source/target pair, verified against LocalUsername ASCII regex in platform/packages/protocol/src/resources.ts:305. Correctly clarifies English letters and username visibility; no misleading instruction or idiom defect found."
+}

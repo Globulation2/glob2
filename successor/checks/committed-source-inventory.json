@@ -1,5 +1,5 @@
 {
-  "revision": "e100fe68d435784f98d0f51d62331d1ba74febea",
+  "revision": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
   "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
   "source_files": {
     "data/texts.keys.txt": "1fd115cb8324008d2e2611d6c0e03a4f943366680ccdb6d9f4445d87f1b20247",
@@ -10,5 +10,9 @@
   },
   "native_entries": 3393,
   "online_entries": 2852,
-  "dirty": false
+  "dirty": false,
+  "catalog_sha256": {
+    "native": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
+    "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
+  }
 }

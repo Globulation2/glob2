@@ -56,7 +56,7 @@
   "/ais/favourites": "/ais/favourites",
   "/ais/mine": "/ais/mine",
   "1.0.0": "1.0.0",
-  "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.": "ประกอบด้วยตัวอักษร ตัวเลข จุด ขีด หรือขีดล่าง จำนวน 3 ถึง 32 ตัว ผู้เล่นคนอื่นจะเห็นข้อความนี้",
+  "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.": "ใช้ตัวอักษรภาษาอังกฤษ ตัวเลข 0–9 จุด ขีดกลาง หรือขีดล่าง 3 ถึง 32 ตัว ผู้เล่นคนอื่นจะเห็นชื่อนี้",
   "95%: {slot0}": "95% : {slot0}",
   ": ": ": ",
   ": create a room and invite your friends, or find a quick match.": ": สร้างห้องและเชิญเพื่อน หรือหาคู่แข่งด่วน",

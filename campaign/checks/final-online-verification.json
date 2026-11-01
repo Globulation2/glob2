@@ -1,0 +1,44 @@
+{
+  "revision": "e100fe68d435784f98d0f51d62331d1ba74febea",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "recorded_utc": "2026-10-31T23:44:28.871271+00:00",
+  "results": {
+    "online_release_build": "pass",
+    "inventory": "37x2852pass",
+    "focused_i18n": "5files44testspass",
+    "platform_typecheck": "exit0",
+    "platform_eslint_prettier": "exit0",
+    "thai_desktop_phone_e2e": "4pass",
+    "studio_mocked_workflow": "20viewsThaiEnglishdesktopphonepass;no paidrequests;allsettingscontrolsreachable"
+  },
+  "evidence": [
+    {
+      "path": "checks/final-supplement-online-build.log",
+      "sha256": "c7994399ac53e9f3f419c7cb7de7b4c26d0154f054ca3ae7db550780fcfa0d85"
+    },
+    {
+      "path": "checks/final-supplement-i18n-check.log",
+      "sha256": "199575579bbe949d5bb73cb68a597b324070094f480ff0aa239d6b47a6db77f3"
+    },
+    {
+      "path": "checks/final-supplement-all-i18n-tests.log",
+      "sha256": "98a52e66547152a9f8cc95eef76c1e155d365cdb104b116ece33a89013f668d7"
+    },
+    {
+      "path": "checks/final-supplement-platform-typecheck.log",
+      "sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd"
+    },
+    {
+      "path": "checks/final-supplement-platform-lint.log",
+      "sha256": "27db8120787d818efa12af0c97d73f156b2ee2cc178a19e247a77222062a2fe9"
+    },
+    {
+      "path": "checks/final-supplement-thai-e2e.log",
+      "sha256": "db2518d03068379361e73352c5b59b9ff77054977e81d77836442832837e8b8b"
+    },
+    {
+      "path": "browser-qa/postbuild-studio-verification.json",
+      "sha256": "820b809362cb8462935d2cff973ff7fdd6f3297a730b1694ca6d095ff324675c"
+    }
+  ]
+}

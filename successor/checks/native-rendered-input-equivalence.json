@@ -1,0 +1,15 @@
+{
+  "current_revision": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+  "comparison_revision": "3e5aa1a7518df50145001de239f384f283a9e82f",
+  "changed_files": [
+    "platform/packages/i18n/locales/th.json"
+  ],
+  "changed_online_keys": [
+    "3 to 32 letters, digits, dots, dashes or underscores. Other players see it."
+  ],
+  "native_catalog_and_all_native_runtime_sources_unchanged": true,
+  "native40_online20_rendered_matrix_sample_values_unchanged": true,
+  "online_sample_values_sha256": "ecb89cf6413788c16bc8b1170b4b2f1ca2eb438fa426f873a64ca70550fce81c",
+  "scope": "Allows actual3e5native-platform build/capture evidence to cover unchanged native runtime, catalogs and rendered sample text. Actual producer revisions remain explicit; does not claim those binaries were built at laterSHA or cover the revised sign-in hint.",
+  "separate_revised_hint_evidence": "artifacts/thai-localization/browser-qa/username-hint-final-report.json"
+}

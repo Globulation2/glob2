@@ -1,8 +1,8 @@
 # Thai localization evidence
 
-Source revision: `e100fe68d435784f98d0f51d62331d1ba74febea`.
+Source revision: `fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9`.
 
-[Browse exact committed implementation](https://github.com/Globulation2/glob2/commit/e100fe68d435784f98d0f51d62331d1ba74febea).
+[Browse exact committed implementation](https://github.com/Globulation2/glob2/commit/fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9).
 
 This dedicated evidence snapshot contains frozen sources/catalogs, actual Google responses and budget ledger, independent agent review history (including exact-hash carry dependencies), focused checks, and available screenshots. Review the manifest for exact file hashes and collection scope.
 
@@ -19,4 +19,4 @@ Approval records report agent review, not native-human certification.
 - [Focused checks](campaign/checks) and [rendering evidence](campaign/rendering)
 - [Browser report](campaign/browser-qa/report.json) and [capture provenance](campaign/browser-qa/provenance.json) (if included)
 
-Browser captures in this partial snapshot are **interim**: inspect their recorded served-build hashes. The latest committed source and finished capture collection do not establish final visual or platform approval.
+Capture scope is explicit: the original28-view collection remains interim;20 e100 studio views cover unchanged studio components; [Two fresh username-hint SSR views](campaign/browser-qa/username-hint-final-report.json) cover the revised auth text. [Native input equality](successor/checks/native-rendered-input-equivalence.json) permits unchanged3e5 native capture evidence only. Inspect each report and actual build provenance; pending platform gates remain open.

@@ -1,0 +1,14 @@
+{
+  "editor": "thai_rendering",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "target_sha256": "f941f0e2c1611ef64615829727f5c026da3d2fbac29dd67be84cc51499a8c9ba",
+  "fresh_reviewed_keys": [
+    "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it."
+  ],
+  "approved_keys": [
+    "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it."
+  ],
+  "findings": [],
+  "usage_file_sha256": "9ff467c8f8eee59f1422ce22ddab1ec5d7d809c88bf6dde6343133f0585e1c97",
+  "rationale": "Fresh actual final text checked against English and ASCII A-Z/a-z0-9._- regex. English letters and0–9 explicitly exclude Thai characters/digits; ชื่อนี้ correctly refers to username visible to others. Thai idiom/register concise and clear. Earlier minor finding resolved exactly. Agent-reviewed, not native-human-certified."
+}

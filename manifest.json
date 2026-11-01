@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "branch": "codex/thai-localization-evidence",
-  "source_revision": "e100fe68d435784f98d0f51d62331d1ba74febea",
-  "collection_time_utc": "2026-10-31T23:37:17.015056+00:00",
+  "source_revision": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+  "collection_time_utc": "2026-11-01T00:18:34.523020+00:00",
   "status": "snapshot for coordinator review; platform captures and release evidence may still be incomplete",
   "limits": {
     "total_bytes": 100663296,
     "single_source_file_bytes": 12582912
   },
-  "total_bytes": 61221594,
+  "total_bytes": 63754111,
   "files": [
     {
       "source": "artifacts/thai-localization/manifest.json",
@@ -1845,6 +1845,15 @@
       "source_sha256": "27c108fc6ee0ab0841575404acb5853cb49548ab9e567c2306779887268aeeec",
       "bytes": 21353,
       "sha256": "27c108fc6ee0ab0841575404acb5853cb49548ab9e567c2306779887268aeeec"
+    },
+    {
+      "source": "artifacts/thai-localization/reviews/display-scope-audit.json",
+      "destination": "campaign/reviews/display-scope-audit.json",
+      "category": "review-proof-history",
+      "source_bytes": 129243,
+      "source_sha256": "cd9a9974d2870ac812cfb2cec17d54616bbad4f8fabd4ee5c39bd7fd07f0a261",
+      "bytes": 129243,
+      "sha256": "cd9a9974d2870ac812cfb2cec17d54616bbad4f8fabd4ee5c39bd7fd07f0a261"
     },
     {
       "source": "artifacts/thai-localization/reviews/editor/native-colony-001.json",
@@ -7832,6 +7841,15 @@
       "sha256": "c822172f0bd5867e312319877d443d2adc183f81bda921114c900dcedae3d279"
     },
     {
+      "source": "artifacts/thai-localization/checks/final-online-verification.json",
+      "destination": "campaign/checks/final-online-verification.json",
+      "category": "focused-checks",
+      "source_bytes": 1664,
+      "source_sha256": "9b8ccdc294baaed4cb847eab38f26d190f8f53db0ec68159a62fefe8481dc51e",
+      "bytes": 1664,
+      "sha256": "9b8ccdc294baaed4cb847eab38f26d190f8f53db0ec68159a62fefe8481dc51e"
+    },
+    {
       "source": "artifacts/thai-localization/checks/final-translation-audit.json",
       "destination": "campaign/checks/final-translation-audit.json",
       "category": "focused-checks",
@@ -8003,6 +8021,15 @@
       "sha256": "8a1d7fb2ca2e443bab32d7a7f1c56b6dbfaef62186ee13f6e1e6a4d447875637"
     },
     {
+      "source": "artifacts/thai-localization/checks/desktop-capture-contracts.log",
+      "destination": "campaign/checks/desktop-capture-contracts.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 101,
+      "source_sha256": "9e3618c465353a9e4a6828d5e621fa61c3754bf90d19d768cd975a69fc4289e2",
+      "bytes": 54,
+      "sha256": "543fd986a6d420fc8eb98e383bbe734887c3607fd680e28c6ca2c0e0ed64e629"
+    },
+    {
       "source": "artifacts/thai-localization/checks/final-break-tests.log",
       "destination": "campaign/checks/final-break-tests.log.gz",
       "category": "focused-checks",
@@ -8132,10 +8159,10 @@
       "source": "artifacts/thai-localization/checks/final-supplement-platform-lint.log",
       "destination": "campaign/checks/final-supplement-platform-lint.log.gz",
       "category": "focused-checks",
-      "source_bytes": 42,
-      "source_sha256": "9db84a5d286b989c6f9188c1b5eb67b3ce310301bfc1e964b4acf1c447e18ad2",
-      "bytes": 59,
-      "sha256": "6ff9faca81b13a4a8171832fd0f848795aa36db7a6d01f7b26968dc8f68778f2"
+      "source_bytes": 108,
+      "source_sha256": "27db8120787d818efa12af0c97d73f156b2ee2cc178a19e247a77222062a2fe9",
+      "bytes": 109,
+      "sha256": "186138e4712beb4eb32f395c5dfa1232ed87302a71c512a2bce4532c9f4ef7c7"
     },
     {
       "source": "artifacts/thai-localization/checks/final-supplement-platform-typecheck.log",
@@ -8381,13 +8408,58 @@
       "sha256": "902a21a0c3f6b6a844d4b661904e835fc79ff9339f5fe5d2be810bddbd8a5ecf"
     },
     {
+      "source": "artifacts/thai-localization/checks/username-hint-browser-generate.log",
+      "destination": "campaign/checks/username-hint-browser-generate.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 102,
+      "source_sha256": "a506ea053a4480a9670ab17da6fd9f6ac620843f6e4c691f3564c39b3d860ce5",
+      "bytes": 110,
+      "sha256": "07376cb9c14c37f8b51533fd4604843d4e0f960a62593cf8c14d54473151256d"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/username-hint-focused-sdk-tests.log",
+      "destination": "campaign/checks/username-hint-focused-sdk-tests.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 231,
+      "source_sha256": "2070556256049fe0b9165bcb82edaebce5d51b8462054eeaeee9f1fea9191db8",
+      "bytes": 192,
+      "sha256": "655b38c1c0d062163a6fa114ded10c0a180c17ce4e1841cb89a544e7f33e7147"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/username-hint-focused-tests.log",
+      "destination": "campaign/checks/username-hint-focused-tests.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 230,
+      "source_sha256": "9cf0a7a4d09cc55dd0c355f4321c692a3063fe2d814b82a39b941657149ad0d6",
+      "bytes": 190,
+      "sha256": "5f815c745df82c5c42562b153aea9964708af4c10fdd9e0fe51146683731be89"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/username-hint-i18n-check.log",
+      "destination": "campaign/checks/username-hint-i18n-check.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 224,
+      "source_sha256": "199575579bbe949d5bb73cb68a597b324070094f480ff0aa239d6b47a6db77f3",
+      "bytes": 174,
+      "sha256": "27c3c285af8605f31dd08d7d8d5eac998bc4e42bb964998feab3a0840912579e"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/username-hint-online-build.log",
+      "destination": "campaign/checks/username-hint-online-build.log.gz",
+      "category": "focused-checks",
+      "source_bytes": 23099,
+      "source_sha256": "96f62c3cd19921276d2af23f7ddbed9769d32b85281f00b669061f6a66df3301",
+      "bytes": 5830,
+      "sha256": "978bb87ebc4fe82b3fb1eab099dde890eaaec0d35db6bb3e4a1ddd42c5adf366"
+    },
+    {
       "source": "artifacts/thai-localization/checks/wasm-integrated-release-build.log",
       "destination": "campaign/checks/wasm-integrated-release-build.log.gz",
       "category": "focused-checks",
-      "source_bytes": 161590,
-      "source_sha256": "d953f7dc178a1922e974951cd30dd84785627c914e9ae2d02b787284dbfa6d0c",
-      "bytes": 16895,
-      "sha256": "27a2553b590f244f762da883bdaa5601696a041acc43c94d610111c29e80a5f8"
+      "source_bytes": 366281,
+      "source_sha256": "51c77c63b7dfb9979e309e454a8273e6de10ec34fd89a84ad49ecca238365458",
+      "bytes": 39064,
+      "sha256": "87ea34aaa9bd181235f57d4a1370cad6e0e765a7b951e7d546044185779e632f"
     },
     {
       "source": "artifacts/thai-localization/checks/wasm-release-build.log",
@@ -8397,6 +8469,15 @@
       "source_sha256": "6a1e4ce122a3274c97e0a51530e3ad102acdb9b00d178fd683e9ddc996e540e1",
       "bytes": 33227,
       "sha256": "26e3b4bff964eebe1ddf827991c78ab122b094640e53a1ab8ddbcf9924f2feb2"
+    },
+    {
+      "source": "artifacts/thai-localization/checks/evidence-credential-scan.txt",
+      "destination": "campaign/checks/evidence-credential-scan.txt",
+      "category": "focused-checks",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "source": "artifacts/thai-localization/checks/integrated-replay-baseline-diff.txt",
@@ -8696,6 +8777,60 @@
       "sha256": "80788cbcae7994291bebe69d82dcb0e26d33d34216041c5958abf0c751a97ce1"
     },
     {
+      "source": "artifacts/thai-localization/rendering/interim-font-unit-inventory.json",
+      "destination": "campaign/rendering/interim-font-unit-inventory.json",
+      "category": "rendering-evidence",
+      "source_bytes": 101635,
+      "source_sha256": "f6cef95b10ebeb6fad695cce553f25dcd841c8b0e1838073ac68c4cff24a5c6a",
+      "bytes": 101635,
+      "sha256": "f6cef95b10ebeb6fad695cce553f25dcd841c8b0e1838073ac68c4cff24a5c6a"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-font-unit-tests/build-provenance.json",
+      "destination": "campaign/rendering/interim-font-unit-tests/build-provenance.json",
+      "category": "rendering-evidence",
+      "source_bytes": 3161,
+      "source_sha256": "8a3fecf5766adfefa6d630d8afac4317988ba0aa4000e5cb983ea32f8b4a5f6f",
+      "bytes": 3161,
+      "sha256": "8a3fecf5766adfefa6d630d8afac4317988ba0aa4000e5cb983ea32f8b4a5f6f"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-text-metrics-inventory.json",
+      "destination": "campaign/rendering/interim-text-metrics-inventory.json",
+      "category": "rendering-evidence",
+      "source_bytes": 101352,
+      "source_sha256": "bd467dcb387a5bac7269a6e96cc333377d65dc52271ab063a7485cbfcb6832db",
+      "bytes": 101352,
+      "sha256": "bd467dcb387a5bac7269a6e96cc333377d65dc52271ab063a7485cbfcb6832db"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-text-metrics-tests/build-provenance.json",
+      "destination": "campaign/rendering/interim-text-metrics-tests/build-provenance.json",
+      "category": "rendering-evidence",
+      "source_bytes": 3161,
+      "source_sha256": "8a3fecf5766adfefa6d630d8afac4317988ba0aa4000e5cb983ea32f8b4a5f6f",
+      "bytes": 3161,
+      "sha256": "8a3fecf5766adfefa6d630d8afac4317988ba0aa4000e5cb983ea32f8b4a5f6f"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-ui-layout-inventory.json",
+      "destination": "campaign/rendering/interim-ui-layout-inventory.json",
+      "category": "rendering-evidence",
+      "source_bytes": 102684,
+      "source_sha256": "abf6b6bcf86f3c4dc4459f60c03dc0f2e2b4ab5427c65447855d632fb79bf8e5",
+      "bytes": 102684,
+      "sha256": "abf6b6bcf86f3c4dc4459f60c03dc0f2e2b4ab5427c65447855d632fb79bf8e5"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-ui-layout-tests/build-provenance.json",
+      "destination": "campaign/rendering/interim-ui-layout-tests/build-provenance.json",
+      "category": "rendering-evidence",
+      "source_bytes": 3161,
+      "source_sha256": "8a3fecf5766adfefa6d630d8afac4317988ba0aa4000e5cb983ea32f8b4a5f6f",
+      "bytes": 3161,
+      "sha256": "8a3fecf5766adfefa6d630d8afac4317988ba0aa4000e5cb983ea32f8b4a5f6f"
+    },
+    {
       "source": "artifacts/thai-localization/rendering/native-build-initial-evidence.json",
       "destination": "campaign/rendering/native-build-initial-evidence.json",
       "category": "rendering-evidence",
@@ -8969,10 +9104,10 @@
       "source": "artifacts/thai-localization/rendering/final-unit-build.log",
       "destination": "campaign/rendering/final-unit-build.log.gz",
       "category": "rendering-evidence",
-      "source_bytes": 644492,
-      "source_sha256": "7c7c355ba48e992f99e0e19252465c88cddd3f88ef46a893fa1d12eacc7b00b3",
-      "bytes": 20934,
-      "sha256": "f5effc6961cb1212d1703bf291243bd3951693122850d0120b9a3958e8d8dbdd"
+      "source_bytes": 988563,
+      "source_sha256": "c87ef169e8d6b7421dd26e51b97142efd99aead70bc32fe474f029f645c3ab6f",
+      "bytes": 32294,
+      "sha256": "be4c2b756ad99373744407a3cceea3da83834ec147484dbdf77760a12a0b5b89"
     },
     {
       "source": "artifacts/thai-localization/rendering/font-test-syntax.log",
@@ -8982,6 +9117,33 @@
       "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "bytes": 20,
       "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-font-unit-tests.log",
+      "destination": "campaign/rendering/interim-font-unit-tests.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 201,
+      "source_sha256": "1eb47b080632b45a8bdd4fb30603aba6960e6772d33c7f1ac58057ee00afb3ae",
+      "bytes": 176,
+      "sha256": "bfb151410cd14e5aa1c420b02f8fee339a2d7b71c7e5ac70348fc9889630ca4e"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-text-metrics-tests.log",
+      "destination": "campaign/rendering/interim-text-metrics-tests.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 207,
+      "source_sha256": "fa84bf076758d41c6cb33f616b67af01480db15b926c50df2410f9b4e2f5e2a6",
+      "bytes": 177,
+      "sha256": "e53af129d4dd4ca14ad7963e1df3f3c308e8ffd09ad9d02914d3a50d167e0849"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/interim-ui-layout-tests.log",
+      "destination": "campaign/rendering/interim-ui-layout-tests.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 203,
+      "source_sha256": "f345837d3d2fe09e60706704ea9a9696c960c3065ab4800046edfe3e01ec4d1e",
+      "bytes": 178,
+      "sha256": "35348ae354242f11941d8a1866a6725c6baec0a417894ebca62e950b66650de5"
     },
     {
       "source": "artifacts/thai-localization/rendering/merged-priority-build.log",
@@ -9000,6 +9162,15 @@
       "source_sha256": "96b2222d30cbca51f6fcc506e2fc485b442d56bd9719d18af735aea3f9ca83ea",
       "bytes": 34854,
       "sha256": "6209de4de1f22a8f5ad19e1e4ca1711f45416d094343455139660ae1574747f3"
+    },
+    {
+      "source": "artifacts/thai-localization/rendering/preview-engine-build.log",
+      "destination": "campaign/rendering/preview-engine-build.log.gz",
+      "category": "rendering-evidence",
+      "source_bytes": 752727,
+      "source_sha256": "0342c6c81234b9f5d53f568a359fee431bbc83fb728b86aa49b91d4da449e562",
+      "bytes": 25575,
+      "sha256": "9dfbc3192f7d3456fb5ca6a1e5b2e94c21aa03b8a6bbf20c906e8dc0deaff0c6"
     },
     {
       "source": "artifacts/thai-localization/rendering/sdl-build.log",
@@ -9245,6 +9416,15 @@
       "sha256": "b0953b99dfd5a75c48714438cc78ca23e1d229fc2a1e2e7553e0cb62a7da7ecb"
     },
     {
+      "source": "artifacts/thai-localization/browser-qa/desktop-username-hint-final.png",
+      "destination": "campaign/browser-qa/desktop-username-hint-final.png",
+      "category": "browser-evidence",
+      "source_bytes": 971603,
+      "source_sha256": "54cbd0b6131a849fdc5f22f71b0727834bb3006bc9cb85cd8e39f99bfc962d82",
+      "bytes": 971603,
+      "sha256": "54cbd0b6131a849fdc5f22f71b0727834bb3006bc9cb85cd8e39f99bfc962d82"
+    },
+    {
       "source": "artifacts/thai-localization/browser-qa/phone-EN-BASELINE-MOCKED-map-studio-chat.png",
       "destination": "campaign/browser-qa/phone-EN-BASELINE-MOCKED-map-studio-chat.png",
       "category": "browser-evidence",
@@ -9479,6 +9659,15 @@
       "sha256": "d7fababa0446aebe63e340a065c850a7e41c48736eac274c0f9194f551a36e6d"
     },
     {
+      "source": "artifacts/thai-localization/browser-qa/phone-username-hint-final.png",
+      "destination": "campaign/browser-qa/phone-username-hint-final.png",
+      "category": "browser-evidence",
+      "source_bytes": 517327,
+      "source_sha256": "eea4c40666c0fa5b3627d4016077a6e552f9a4719def11034527e17cc8acddb3",
+      "bytes": 517327,
+      "sha256": "eea4c40666c0fa5b3627d4016077a6e552f9a4719def11034527e17cc8acddb3"
+    },
+    {
       "source": "artifacts/thai-localization/browser-qa/final-probes.json",
       "destination": "campaign/browser-qa/final-probes.json",
       "category": "browser-evidence",
@@ -9551,6 +9740,15 @@
       "sha256": "af45082c40f44965065f10bcd6433dcd76be889fb133e21b22681e87da285958"
     },
     {
+      "source": "artifacts/thai-localization/browser-qa/username-hint-final-report.json",
+      "destination": "campaign/browser-qa/username-hint-final-report.json",
+      "category": "browser-evidence",
+      "source_bytes": 9104,
+      "source_sha256": "ab6e2333dba8f123ebbffcfbd0ce38ab2a131575abc2d19b1c772e86d882bda1",
+      "bytes": 9104,
+      "sha256": "ab6e2333dba8f123ebbffcfbd0ce38ab2a131575abc2d19b1c772e86d882bda1"
+    },
+    {
       "source": "artifacts/thai-localization/browser-qa/visual-review.json",
       "destination": "campaign/browser-qa/visual-review.json",
       "category": "browser-evidence",
@@ -9560,22 +9758,121 @@
       "sha256": "099b33922ee47a3f7f5fb5d1f05046e422bef8685b4862504bf8998988ad60d8"
     },
     {
+      "source": "artifacts/thai-localization/browser-qa/capture.log",
+      "destination": "campaign/browser-qa/capture.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 46,
+      "source_sha256": "bcfcc72e50858b85f9fee49801ab7b58b12b7ec098851b92b1e64bb94bd68df3",
+      "bytes": 59,
+      "sha256": "78af0f4b8c92c31b49f176c566f6231c4735542fe671239691ef1bacf9a25d4c"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/final-probes-postbuild.log",
+      "destination": "campaign/browser-qa/final-probes-postbuild.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 6235,
+      "source_sha256": "19facd23ba5c1c9e07a25c2d7a396ddc3501eddccdaaffbd930d05ae0d5dc107",
+      "bytes": 1639,
+      "sha256": "8ab1fa13482d391f26ec084d0170604d18fdd264e33c1b3b7822841cc1a6b482"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/final-probes.log",
+      "destination": "campaign/browser-qa/final-probes.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 6235,
+      "source_sha256": "19facd23ba5c1c9e07a25c2d7a396ddc3501eddccdaaffbd930d05ae0d5dc107",
+      "bytes": 1639,
+      "sha256": "8ab1fa13482d391f26ec084d0170604d18fdd264e33c1b3b7822841cc1a6b482"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/studio-geometry-en.log",
+      "destination": "campaign/browser-qa/studio-geometry-en.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 3984,
+      "source_sha256": "7f342d517a8db68f111ae1995a584c8b573a64eccb5ad402754bd33a358b438e",
+      "bytes": 754,
+      "sha256": "06a467a5e76d3b568a11119b0b3a73a5f3c4062bed934f7c7c2459883898908f"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/studio-geometry-th.log",
+      "destination": "campaign/browser-qa/studio-geometry-th.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 4311,
+      "source_sha256": "550b4dde35c486e12a8c7b5debb4aed62aeeb38b809b8145162fac64f633c62c",
+      "bytes": 826,
+      "sha256": "2f1067294ef88402021c309b15cb00e69aafece0fc6aecbabc573669bf890d38"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/studio-mock-corrected.log",
+      "destination": "campaign/browser-qa/studio-mock-corrected.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 1085,
+      "source_sha256": "052a9db16e6e3214ec89098bd61971edf28d47e9385bf443afb4f943fc1bb6a0",
+      "bytes": 328,
+      "sha256": "0bb8aff2467627551dda069cd4aa54ab61e0e6a5d967dec35b1c8d57fd60defb"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/studio-mock-final.log",
+      "destination": "campaign/browser-qa/studio-mock-final.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 1085,
+      "source_sha256": "052a9db16e6e3214ec89098bd61971edf28d47e9385bf443afb4f943fc1bb6a0",
+      "bytes": 328,
+      "sha256": "0bb8aff2467627551dda069cd4aa54ab61e0e6a5d967dec35b1c8d57fd60defb"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/studio-mock.log",
+      "destination": "campaign/browser-qa/studio-mock.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 553,
+      "source_sha256": "3f84fd7adf8807940259182ce343255f440728a39a3d01ffb0afeac6a0367be2",
+      "bytes": 302,
+      "sha256": "d2b997263c4bd90e68a5be500e7b036907e92197df98af2a544efb8a01f74168"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/studio-postbuild-en.log",
+      "destination": "campaign/browser-qa/studio-postbuild-en.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 24950,
+      "source_sha256": "ed92b1870531283d6bf3ebd239878a5ab385fe21fc4156ee3264511d37ef9a09",
+      "bytes": 2524,
+      "sha256": "3a437fc474ea9c85eb62c4f1b1152479e0cf7905ceaa916c2ea23995b90b2d9d"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/studio-postbuild-th.log",
+      "destination": "campaign/browser-qa/studio-postbuild-th.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 36063,
+      "source_sha256": "de96751ee971e222b235c9f520e7324d0ff9ac3e8fb3255880f647a098975c49",
+      "bytes": 2995,
+      "sha256": "b62aad849d12ec15521c85e6904d08865cf822caefe8b89b0dc6f619dc4cbb65"
+    },
+    {
+      "source": "artifacts/thai-localization/browser-qa/username-hint-final.log",
+      "destination": "campaign/browser-qa/username-hint-final.log.gz",
+      "category": "browser-evidence",
+      "source_bytes": 2156,
+      "source_sha256": "533bb349214078bcc0fd1720f77460470fb93b820345c326abff4a869f863c8e",
+      "bytes": 846,
+      "sha256": "67d5c74ecf3424091f1626020d487ea88a25eafd26bea8b31d9c99856df6b043"
+    },
+    {
       "source": "artifacts/thai-localization-final/manifest.json",
       "destination": "successor/manifest.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 286522,
-      "source_sha256": "db22b024cc2fe118bf6724c3cd768538716fe36905ff764747881d656d8c66db",
-      "bytes": 286522,
-      "sha256": "db22b024cc2fe118bf6724c3cd768538716fe36905ff764747881d656d8c66db"
+      "source_bytes": 286559,
+      "source_sha256": "d4c625b0bc75aa9033247ee52adf7050bf60385c772c319a4d4a45a2819deb98",
+      "bytes": 286559,
+      "sha256": "d4c625b0bc75aa9033247ee52adf7050bf60385c772c319a4d4a45a2819deb98"
     },
     {
       "source": "artifacts/thai-localization-final/successor-proof.json",
       "destination": "successor/successor-proof.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 844,
-      "source_sha256": "9b065dcc06381665d1e8784474b321b105b6ce6757b3d6e44957c2061ba00e43",
-      "bytes": 844,
-      "sha256": "9b065dcc06381665d1e8784474b321b105b6ce6757b3d6e44957c2061ba00e43"
+      "source_bytes": 877,
+      "source_sha256": "707c987508fa6351c3b2b0a184901835293f3057b43178fd55be4cef1a8d8990",
+      "bytes": 877,
+      "sha256": "707c987508fa6351c3b2b0a184901835293f3057b43178fd55be4cef1a8d8990"
     },
     {
       "source": "artifacts/thai-localization-final/source/native.json",
@@ -9833,10 +10130,10 @@
       "source": "artifacts/thai-localization-final/batches/online-online-001.json",
       "destination": "successor/batches/online-online-001.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 39460,
-      "source_sha256": "2270e8370729255441eb4336a148b46115f62f2e95186ad347dbbc695f17fc13",
-      "bytes": 39460,
-      "sha256": "2270e8370729255441eb4336a148b46115f62f2e95186ad347dbbc695f17fc13"
+      "source_bytes": 39462,
+      "source_sha256": "80c215e76686e8d19ec258ac3e0763f69d86ce6876a1a23430c2ec2f169d7825",
+      "bytes": 39462,
+      "sha256": "80c215e76686e8d19ec258ac3e0763f69d86ce6876a1a23430c2ec2f169d7825"
     },
     {
       "source": "artifacts/thai-localization-final/batches/online-online-002.json",
@@ -10004,10 +10301,10 @@
       "source": "artifacts/thai-localization-final/drafts/th/th.json",
       "destination": "successor/drafts/th/th.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 349860,
-      "source_sha256": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680",
-      "bytes": 349860,
-      "sha256": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680"
+      "source_bytes": 349862,
+      "source_sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
+      "bytes": 349862,
+      "sha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
     },
     {
       "source": "artifacts/thai-localization-final/drafts/th/texts.th.txt",
@@ -11435,10 +11732,10 @@
       "source": "artifacts/thai-localization-final/reviews/final-adversarial/online-online-001.json",
       "destination": "successor/reviews/final-adversarial/online-online-001.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 17553,
-      "source_sha256": "d9f8f0d3073dc5ce475ff0a49df6c03e9bd26afa3281fd94b2d45578fc68157e",
-      "bytes": 17553,
-      "sha256": "d9f8f0d3073dc5ce475ff0a49df6c03e9bd26afa3281fd94b2d45578fc68157e"
+      "source_bytes": 17833,
+      "source_sha256": "9c4650a331b12329591e953afd24c76508d2a4f312383261d4f517f3707f6758",
+      "bytes": 17833,
+      "sha256": "9c4650a331b12329591e953afd24c76508d2a4f312383261d4f517f3707f6758"
     },
     {
       "source": "artifacts/thai-localization-final/reviews/final-adversarial/online-online-002.json",
@@ -11831,10 +12128,10 @@
       "source": "artifacts/thai-localization-final/reviews/final-editor/online-online-001.json",
       "destination": "successor/reviews/final-editor/online-online-001.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 16007,
-      "source_sha256": "7c0c1dd0a63fd0b583f9376b48ade51d8849ed20fe72cd21f1b919f64f16239e",
-      "bytes": 16007,
-      "sha256": "7c0c1dd0a63fd0b583f9376b48ade51d8849ed20fe72cd21f1b919f64f16239e"
+      "source_bytes": 21867,
+      "source_sha256": "b532a16c638ee32be4fc31181d2783b2900f6059e89c2d664b75d0ec4a9036dd",
+      "bytes": 21867,
+      "sha256": "b532a16c638ee32be4fc31181d2783b2900f6059e89c2d664b75d0ec4a9036dd"
     },
     {
       "source": "artifacts/thai-localization-final/reviews/final-editor/online-online-002.json",
@@ -12227,10 +12524,10 @@
       "source": "artifacts/thai-localization-final/reviews/final-meaning/online-online-001.json",
       "destination": "successor/reviews/final-meaning/online-online-001.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 24966,
-      "source_sha256": "1d22d72aebc97aaaad16d41929e9032574c8fad63b6e3899849493930dfef0e7",
-      "bytes": 24966,
-      "sha256": "1d22d72aebc97aaaad16d41929e9032574c8fad63b6e3899849493930dfef0e7"
+      "source_bytes": 24126,
+      "source_sha256": "76f88a9194356a2e6f9b4a21546c44b84caa1d24abed290ce991290e0424a428",
+      "bytes": 24126,
+      "sha256": "76f88a9194356a2e6f9b4a21546c44b84caa1d24abed290ce991290e0424a428"
     },
     {
       "source": "artifacts/thai-localization-final/reviews/final-meaning/online-online-002.json",
@@ -12404,22 +12701,166 @@
       "sha256": "88dae4be92e68da7549c5f69d9666bb3560085b6f1af09647ec27fb13a9d3879"
     },
     {
+      "source": "artifacts/thai-localization-final/reviews/pre-username/final-adversarial/online-online-001.json",
+      "destination": "successor/reviews/pre-username/final-adversarial/online-online-001.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 17553,
+      "source_sha256": "d9f8f0d3073dc5ce475ff0a49df6c03e9bd26afa3281fd94b2d45578fc68157e",
+      "bytes": 17553,
+      "sha256": "d9f8f0d3073dc5ce475ff0a49df6c03e9bd26afa3281fd94b2d45578fc68157e"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/pre-username/final-editor/online-online-001.json",
+      "destination": "successor/reviews/pre-username/final-editor/online-online-001.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 16007,
+      "source_sha256": "7c0c1dd0a63fd0b583f9376b48ade51d8849ed20fe72cd21f1b919f64f16239e",
+      "bytes": 16007,
+      "sha256": "7c0c1dd0a63fd0b583f9376b48ade51d8849ed20fe72cd21f1b919f64f16239e"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/pre-username/final-meaning/online-online-001.json",
+      "destination": "successor/reviews/pre-username/final-meaning/online-online-001.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 24966,
+      "source_sha256": "1d22d72aebc97aaaad16d41929e9032574c8fad63b6e3899849493930dfef0e7",
+      "bytes": 24966,
+      "sha256": "1d22d72aebc97aaaad16d41929e9032574c8fad63b6e3899849493930dfef0e7"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/pre-username/online-online-001.json",
+      "destination": "successor/reviews/pre-username/online-online-001.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 39460,
+      "source_sha256": "2270e8370729255441eb4336a148b46115f62f2e95186ad347dbbc695f17fc13",
+      "bytes": 39460,
+      "sha256": "2270e8370729255441eb4336a148b46115f62f2e95186ad347dbbc695f17fc13"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/pre-username/online.json",
+      "destination": "successor/reviews/pre-username/online.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 349860,
+      "source_sha256": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680",
+      "bytes": 349860,
+      "sha256": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/pre-username/successor-proof.json",
+      "destination": "successor/reviews/pre-username/successor-proof.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 844,
+      "source_sha256": "9b065dcc06381665d1e8784474b321b105b6ce6757b3d6e44957c2061ba00e43",
+      "bytes": 844,
+      "sha256": "9b065dcc06381665d1e8784474b321b105b6ce6757b3d6e44957c2061ba00e43"
+    },
+    {
       "source": "artifacts/thai-localization-final/reviews/th.json",
       "destination": "successor/reviews/th.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 1224510,
-      "source_sha256": "70af3f9a5178802239312db206424085b78abfa36fd0dab56f6c5738be644f14",
-      "bytes": 1224510,
-      "sha256": "70af3f9a5178802239312db206424085b78abfa36fd0dab56f6c5738be644f14"
+      "source_bytes": 1225425,
+      "source_sha256": "b6272e2c6b7b0ea2f86e4433e2f69b22f4773e115cc930bf815596a3dfa29f07",
+      "bytes": 1225425,
+      "sha256": "b6272e2c6b7b0ea2f86e4433e2f69b22f4773e115cc930bf815596a3dfa29f07"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-carry-candidates/final-adversarial/online-online-001.json",
+      "destination": "successor/reviews/username-carry-candidates/final-adversarial/online-online-001.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 14221,
+      "source_sha256": "4564b67662a6cd11d071d49a41ebc455140b2fe6a726c06733b939f7a3698243",
+      "bytes": 14221,
+      "sha256": "4564b67662a6cd11d071d49a41ebc455140b2fe6a726c06733b939f7a3698243"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-carry-candidates/final-editor/online-online-001.json",
+      "destination": "successor/reviews/username-carry-candidates/final-editor/online-online-001.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 14193,
+      "source_sha256": "d770f5730b912d6122c7f6696b2fef87bab82ac2374b393de1e7f5c8e880c7bc",
+      "bytes": 14193,
+      "sha256": "d770f5730b912d6122c7f6696b2fef87bab82ac2374b393de1e7f5c8e880c7bc"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-carry-candidates/final-meaning/online-online-001.json",
+      "destination": "successor/reviews/username-carry-candidates/final-meaning/online-online-001.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 14193,
+      "source_sha256": "b2f3df6c338d69a4469f4dee39487beb06aa72eb9540c20b786e7a0be396b3b2",
+      "bytes": 14193,
+      "sha256": "b2f3df6c338d69a4469f4dee39487beb06aa72eb9540c20b786e7a0be396b3b2"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-hint-adversarial.json",
+      "destination": "successor/reviews/username-hint-adversarial.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 833,
+      "source_sha256": "2ebccacd94a9815c29389475de93ea4884363c9d4e2c1357023922e9c0f91412",
+      "bytes": 833,
+      "sha256": "2ebccacd94a9815c29389475de93ea4884363c9d4e2c1357023922e9c0f91412"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-hint-editor.json",
+      "destination": "successor/reviews/username-hint-editor.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 1333,
+      "source_sha256": "2deee848d3706055b8877f5a8ce0d10fb1b867f19834fd0c624349ce1381a7b3",
+      "bytes": 1333,
+      "sha256": "2deee848d3706055b8877f5a8ce0d10fb1b867f19834fd0c624349ce1381a7b3"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-hint-final-adversarial.json",
+      "destination": "successor/reviews/username-hint-final-adversarial.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 851,
+      "source_sha256": "7708efa7f07d3691c3d16f2ba187870cb5f3a45bedc92cabb002b7b993a61414",
+      "bytes": 851,
+      "sha256": "7708efa7f07d3691c3d16f2ba187870cb5f3a45bedc92cabb002b7b993a61414"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-hint-final-editor.json",
+      "destination": "successor/reviews/username-hint-final-editor.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 910,
+      "source_sha256": "821705d693d95233890692869c9d67a75f4f202a1fb1bb53b95f3582dde0eb72",
+      "bytes": 910,
+      "sha256": "821705d693d95233890692869c9d67a75f4f202a1fb1bb53b95f3582dde0eb72"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-hint-final-meaning.json",
+      "destination": "successor/reviews/username-hint-final-meaning.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 1738,
+      "source_sha256": "8bd8c41281e583fb9c3bd45e8a0954a4cd0822a850f094d493e6677b9ce286d0",
+      "bytes": 1738,
+      "sha256": "8bd8c41281e583fb9c3bd45e8a0954a4cd0822a850f094d493e6677b9ce286d0"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-hint-r1-adversarial.json",
+      "destination": "successor/reviews/username-hint-r1-adversarial.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 833,
+      "source_sha256": "2ebccacd94a9815c29389475de93ea4884363c9d4e2c1357023922e9c0f91412",
+      "bytes": 833,
+      "sha256": "2ebccacd94a9815c29389475de93ea4884363c9d4e2c1357023922e9c0f91412"
+    },
+    {
+      "source": "artifacts/thai-localization-final/reviews/username-hint-r1-final-meaning.json",
+      "destination": "successor/reviews/username-hint-r1-final-meaning.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 1704,
+      "source_sha256": "dea6ae994c3d643df9b242085cec80d62d5525208a719ab8217cbab254660269",
+      "bytes": 1704,
+      "sha256": "dea6ae994c3d643df9b242085cec80d62d5525208a719ab8217cbab254660269"
     },
     {
       "source": "artifacts/thai-localization-final/checks/committed-source-inventory.json",
       "destination": "successor/checks/committed-source-inventory.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 776,
-      "source_sha256": "6726d985c0fb6222c20d15b117ba6553da52d656ecb34ddf52a287ac109bc730",
-      "bytes": 776,
-      "sha256": "6726d985c0fb6222c20d15b117ba6553da52d656ecb34ddf52a287ac109bc730"
+      "source_bytes": 966,
+      "source_sha256": "34a3a4208b479b0b7535fd96b8ea20c3881180bd191a0dca13ba5658661c4185",
+      "bytes": 966,
+      "sha256": "34a3a4208b479b0b7535fd96b8ea20c3881180bd191a0dca13ba5658661c4185"
     },
     {
       "source": "artifacts/thai-localization-final/checks/draft.json",
@@ -12434,10 +12875,19 @@
       "source": "artifacts/thai-localization-final/checks/independent-final-approvals.json",
       "destination": "successor/checks/independent-final-approvals.json",
       "category": "successor-source-current-proof",
-      "source_bytes": 11513,
-      "source_sha256": "75a704a0a23ed95adc6b56e4f674af359030a96bd93d90bd07a40cadd563bbfd",
-      "bytes": 11513,
-      "sha256": "75a704a0a23ed95adc6b56e4f674af359030a96bd93d90bd07a40cadd563bbfd"
+      "source_bytes": 11613,
+      "source_sha256": "6d421fc626636e51d470c06b92622f055f848c8bd8bf8f9029994fe66fd70af8",
+      "bytes": 11613,
+      "sha256": "6d421fc626636e51d470c06b92622f055f848c8bd8bf8f9029994fe66fd70af8"
+    },
+    {
+      "source": "artifacts/thai-localization-final/checks/native-rendered-input-equivalence.json",
+      "destination": "successor/checks/native-rendered-input-equivalence.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 940,
+      "source_sha256": "346cd5de60cfc2f83066ec0861ccd4b67e266c4985ba19abd58d7d52cc0a92fd",
+      "bytes": 940,
+      "sha256": "346cd5de60cfc2f83066ec0861ccd4b67e266c4985ba19abd58d7d52cc0a92fd"
     },
     {
       "source": "artifacts/thai-localization-final/checks/native-strict.json",
@@ -12474,6 +12924,24 @@
       "source_sha256": "dce34655831df2aa2a37860572d377238f2221a46a20f79d8b1848ec85c5be14",
       "bytes": 55,
       "sha256": "793a68527665512281d82cfe68a3bbb99c26e9b9c8e5a534754f0e950bb207d0"
+    },
+    {
+      "source": "artifacts/thai-localization-final/username-hint-candidate-r1.json",
+      "destination": "successor/username-hint-candidate-r1.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 1401,
+      "source_sha256": "d2a51b0b2a4516ac9492a2ea4e6af8828790c8a71e3eebbc8955ef2c9af88670",
+      "bytes": 1401,
+      "sha256": "d2a51b0b2a4516ac9492a2ea4e6af8828790c8a71e3eebbc8955ef2c9af88670"
+    },
+    {
+      "source": "artifacts/thai-localization-final/username-hint-candidate.json",
+      "destination": "successor/username-hint-candidate.json",
+      "category": "successor-source-current-proof",
+      "source_bytes": 1528,
+      "source_sha256": "ac330c99961f9d8053a742f85b8bd8d7146d8f6290ed9ca98ef2a6ada8b3080d",
+      "bytes": 1528,
+      "sha256": "ac330c99961f9d8053a742f85b8bd8d7146d8f6290ed9ca98ef2a6ada8b3080d"
     }
   ],
   "source_revision_file_sha256": {
@@ -12481,7 +12949,7 @@
     "data/texts.th.txt": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
     "data/texts.keys.txt": "1fd115cb8324008d2e2611d6c0e03a4f943366680ccdb6d9f4445d87f1b20247",
     "platform/packages/i18n/locales/en.json": "3e45620e7a1efe15f107ca851f968bee20f3c4cc331bbc2399ff36e95d71fb3b",
-    "platform/packages/i18n/locales/th.json": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680",
+    "platform/packages/i18n/locales/th.json": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
     "data/fonts/scripts/NotoSansThai-Regular.ttf": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
     "libgag/src/TrueTypeFont.cpp": "438e35da75aebde01efdb725647d0b7bafbb37ddf75f2d0d8872b1156575b383",
     "libgag/include/TextBreaks.h": "ef909748d4d718596bcb066a2b3a323cd3879cd3c38e9ca2c82575f391ea3a3d",
@@ -12500,7 +12968,14 @@
     "platform/apps/web/src/pages/TerrainStudio.tsx": "cfa3955a72b80c13e8c7d2513a9e713fbda8754871b2f667d895841ad64a48bb",
     "platform/apps/web/src/pages/CodingStudio.tsx": "300befca0b02a2613ac234db38efbcad6145193830e524b1b34c14705d1ce3f9",
     "platform/apps/web/src/components/studio/Studio.tsx": "7930c7836b6df38b21e93fae5f65b80410f0297fd6a84dc9ec30b32fd46523dd",
-    "platform/packages/i18n/scripts/source-contract.ts": "931bb132ff8083afa768176a0728bcb5493cef74d624b428515105abfbe6eb95"
+    "platform/packages/i18n/scripts/source-contract.ts": "931bb132ff8083afa768176a0728bcb5493cef74d624b428515105abfbe6eb95",
+    "platform/apps/api/src/routes/signin.ts": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+    "tools/capture_localization_platform.py": "7648ee37cdf0747124fcdea77b7590b16817625aa5ef9f30fcacfab05e4dd851",
+    "test/test_capture_localization_platform.py": "367d7064f61cfb4ccfbc76a34d881a97fa8d211d1c411b8e400ee66f50d42822",
+    ".github/workflows/build.yml": "c50a63d85cb22d38aecd4c489a54064271d1665ef91c710b1bbbe55dfdf74304",
+    ".github/workflows/ci-macos.yml": "2cf206ca1441b44bc872596e7dd83ac836ff6509e6ad8f55af60179c1be71bcc",
+    ".github/workflows/ci-linux-build.yml": "367e36e2f4cd6c55d2f2a898f9e476dd4cc77a22c24f3d8a01c0e7d7c2458d25",
+    "browser/tests/thai-localization.spec.js": "0daae786182c4f6443c68652793f6c120d18a24ec4d6464125bad17be5995b3a"
   },
   "exclusions": [
     "SDKs and dependency trees",
@@ -12512,7 +12987,7 @@
   ],
   "publishing": "No ref update or network operation performed. Coordinator must review this manifest before publishing.",
   "repository_url": "https://github.com/Globulation2/glob2",
-  "source_url": "https://github.com/Globulation2/glob2/commit/e100fe68d435784f98d0f51d62331d1ba74febea",
+  "source_url": "https://github.com/Globulation2/glob2/commit/fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
   "provider_usage": {
     "actual_response_cache_files": 97,
     "attempts": 97,
@@ -12526,16 +13001,23 @@
     "source-context": 43,
     "provider-ledger": 2,
     "actual-provider-response": 97,
-    "review-proof-history": 511,
+    "review-proof-history": 512,
     "primary-terminology": 4,
     "reviewed-catalog-snapshot": 179,
     "catalog-reconciliation": 14,
-    "focused-checks": 67,
-    "rendering-evidence": 67,
-    "browser-evidence": 60,
-    "successor-source-current-proof": 324
+    "focused-checks": 75,
+    "rendering-evidence": 77,
+    "browser-evidence": 74,
+    "successor-source-current-proof": 343
   },
-  "browser_capture_status": "Completed interim collection; legacy UI issues and final-source recheck remain explicitly open. Inspect captured build/catalog hashes in campaign/browser-qa/provenance.json; latest source revision is not a claim these captures used that binary.",
+  "browser_capture_status": "Mixed explicitly scoped captures: original28-view collection is interim;20 e100 studio views cover unchanged studio components only;2 fresh fa57 username-hint SSR views have exact revised-target hashes and visual review. Inspect each report for its own source/build/scope; no claim all captures used the latest binary.",
+  "evidence_scope_links": {
+    "fresh_username_hint_SSR": "campaign/browser-qa/username-hint-final-report.json",
+    "unchanged_native_rendered_inputs": "successor/checks/native-rendered-input-equivalence.json",
+    "display_scope_inventory": "campaign/reviews/display-scope-audit.json",
+    "exact_source_and_target_approvals": "successor/checks/independent-final-approvals.json",
+    "prior_username_approval_history": "successor/reviews/pre-username"
+  },
   "pending_release_gates": [
     "desktop_rendering",
     "phone_rendering",

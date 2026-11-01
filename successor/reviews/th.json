@@ -3,7 +3,7 @@
   "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
   "catalog_sha256": {
     "native": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
-    "online": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680"
+    "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
   },
   "batches": [
     {
@@ -14406,7 +14406,7 @@
     {
       "id": "online-online-001",
       "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
-      "target_sha256": "c608fcd0f07571c8c855effb54c1ceb05bfc557a83e21b21bab7470ac1ae28c0",
+      "target_sha256": "f71a921dfdc6447532748e775670e7382ad22877894878d314130cc2f2f562a8",
       "author": "google-cloud-v3/root-integration",
       "reviewer": "thai_brief",
       "editor": "thai_rendering",
@@ -15063,18 +15063,18 @@
       "evidence": [
         {
           "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/reviews/final-meaning/online-online-001.json",
-          "sha256": "1d22d72aebc97aaaad16d41929e9032574c8fad63b6e3899849493930dfef0e7"
+          "sha256": "76f88a9194356a2e6f9b4a21546c44b84caa1d24abed290ce991290e0424a428"
         },
         {
           "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/reviews/final-editor/online-online-001.json",
-          "sha256": "7c0c1dd0a63fd0b583f9376b48ade51d8849ed20fe72cd21f1b919f64f16239e"
+          "sha256": "b532a16c638ee32be4fc31181d2783b2900f6059e89c2d664b75d0ec4a9036dd"
         },
         {
           "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/reviews/final-adversarial/online-online-001.json",
-          "sha256": "d9f8f0d3073dc5ce475ff0a49df6c03e9bd26afa3281fd94b2d45578fc68157e"
+          "sha256": "9c4650a331b12329591e953afd24c76508d2a4f312383261d4f517f3707f6758"
         }
       ],
-      "approval_basis": "Owning reviewer exact source/target carry from linked immutable prior approvals; not a fresh wholecatalog reading."
+      "approval_basis": "One username hint freshly reviewed against actualASCIIvalidator;159other entries independently carried by exact source/target/prior-approved membership proofs."
     },
     {
       "id": "online-online-002",
@@ -26793,7 +26793,7 @@
       "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
       "catalog_sha256": {
         "native": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
-        "online": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680"
+        "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
       },
       "scope": "Original brief inherited by exact unchanged source/target proofs;16newsoftware/credit messages fully reviewed against usage and canonical terms.",
       "evidence": [
@@ -26811,7 +26811,7 @@
         },
         {
           "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/successor-proof.json",
-          "sha256": "9b065dcc06381665d1e8784474b321b105b6ce6757b3d6e44957c2061ba00e43"
+          "sha256": "707c987508fa6351c3b2b0a184901835293f3057b43178fd55be4cef1a8d8990"
         }
       ]
     },
@@ -26820,7 +26820,7 @@
       "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
       "catalog_sha256": {
         "native": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
-        "online": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680"
+        "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
       },
       "scope": "Representative actual Google pilot preceded bulk drafting; original source values retained, with full fresh review of16later-discovered messages.",
       "evidence": [
@@ -26838,7 +26838,7 @@
         },
         {
           "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/checks/independent-final-approvals.json",
-          "sha256": "75a704a0a23ed95adc6b56e4f674af359030a96bd93d90bd07a40cadd563bbfd"
+          "sha256": "6d421fc626636e51d470c06b92622f055f848c8bd8bf8f9029994fe66fd70af8"
         }
       ]
     },
@@ -26847,13 +26847,13 @@
       "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
       "catalog_sha256": {
         "native": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
-        "online": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680"
+        "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
       },
       "scope": "Complete3393native+2852online keys/tokens/plurals/invariants and native glyph coverage. Native bytes unchanged from coverage test;16newonline entries checked in final2852inventory.",
       "evidence": [
         {
           "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/checks/committed-source-inventory.json",
-          "sha256": "6726d985c0fb6222c20d15b117ba6553da52d656ecb34ddf52a287ac109bc730"
+          "sha256": "34a3a4208b479b0b7535fd96b8ea20c3881180bd191a0dca13ba5658661c4185"
         },
         {
           "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/checks/draft.json",
@@ -26877,11 +26877,23 @@
         },
         {
           "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization-final/checks/independent-final-approvals.json",
-          "sha256": "75a704a0a23ed95adc6b56e4f674af359030a96bd93d90bd07a40cadd563bbfd"
+          "sha256": "6d421fc626636e51d470c06b92622f055f848c8bd8bf8f9029994fe66fd70af8"
         },
         {
           "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/checks/shell-independent-approvals.json",
           "sha256": "93a471116f355885699a904d773ebfb64532242dde627aacde81f79661cfa860"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/checks/username-hint-i18n-check.log",
+          "sha256": "199575579bbe949d5bb73cb68a597b324070094f480ff0aa239d6b47a6db77f3"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/checks/username-hint-focused-sdk-tests.log",
+          "sha256": "2070556256049fe0b9165bcb82edaebce5d51b8462054eeaeee9f1fea9191db8"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/0ec0/glob2/artifacts/thai-localization/browser-qa/username-hint-final-report.json",
+          "sha256": "ab6e2333dba8f123ebbffcfbd0ce38ab2a131575abc2d19b1c772e86d882bda1"
         }
       ]
     },
@@ -27302,6 +27314,6 @@
   ],
   "review_policy": {
     "certification": "Agent-reviewed; not native-human-certified",
-    "history": "Original6229 independently read and refined; successor exact-source+target carries independently confirmed by original owners.16newstudioentries independently drafted/edited/adversariallychecked/finalmeaningrechecked."
+    "history": "Original6229 independently read and refined; successor exact-source+target carries independently confirmed by original owners.16newstudioentries independently drafted/edited/adversariallychecked/finalmeaningrechecked. Finalusernamehint received a fresh meaning/editor/adversarial round including explicitASCII0–9; other159batchentries unchanged and equality carried."
   }
 }

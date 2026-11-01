@@ -344,7 +344,7 @@
       "id": "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
       "key": "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
       "source": "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
-      "target": "ประกอบด้วยตัวอักษร ตัวเลข จุด ขีด หรือขีดล่าง จำนวน 3 ถึง 32 ตัว ผู้เล่นคนอื่นจะเห็นข้อความนี้"
+      "target": "ใช้ตัวอักษรภาษาอังกฤษ ตัวเลข 0–9 จุด ขีดกลาง หรือขีดล่าง 3 ถึง 32 ตัว ผู้เล่นคนอื่นจะเห็นชื่อนี้"
     },
     {
       "id": "online:95%: {slot0}",

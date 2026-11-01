@@ -1,0 +1,228 @@
+{
+  "revision": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+  "rawThaiCatalogSha256": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e",
+  "approvedHint": "ใช้ตัวอักษรภาษาอังกฤษ ตัวเลข 0–9 จุด ขีดกลาง หรือขีดล่าง 3 ถึง 32 ตัว ผู้เล่นคนอื่นจะเห็นชื่อนี้",
+  "approvedHintTargetHash": "f941f0e2c1611ef64615829727f5c026da3d2fbac29dd67be84cc51499a8c9ba",
+  "views": [
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin",
+      "lang": "th",
+      "actualHint": "ใช้ตัวอักษรภาษาอังกฤษ ตัวเลข 0–9 จุด ขีดกลาง หรือขีดล่าง 3 ถึง 32 ตัว ผู้เล่นคนอื่นจะเห็นชื่อนี้",
+      "hintGeometry": {
+        "x": 441,
+        "y": 596.265625,
+        "width": 398,
+        "height": 42.125,
+        "font": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "fontSize": "13.6px",
+        "lineHeight": "21.08px",
+        "overflow": 0
+      },
+      "ariaDescribedBy": "register-username-hint",
+      "actualFonts": [
+        {
+          "familyName": "Noto Sans Thai",
+          "postScriptName": "NotoSansThai-Regular",
+          "isCustomFont": true,
+          "glyphCount": 80
+        },
+        {
+          "familyName": "Nunito ExtraLight",
+          "postScriptName": "Nunito-ExtraLight",
+          "isCustomFont": true,
+          "glyphCount": 15
+        }
+      ],
+      "overflow": 0,
+      "file": "desktop-username-hint-final.png",
+      "sha256": "54cbd0b6131a849fdc5f22f71b0727834bb3006bc9cb85cd8e39f99bfc962d82"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin",
+      "lang": "th",
+      "actualHint": "ใช้ตัวอักษรภาษาอังกฤษ ตัวเลข 0–9 จุด ขีดกลาง หรือขีดล่าง 3 ถึง 32 ตัว ผู้เล่นคนอื่นจะเห็นชื่อนี้",
+      "hintGeometry": {
+        "x": 51,
+        "y": 586.609375,
+        "width": 310,
+        "height": 42.125,
+        "font": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "fontSize": "13.6px",
+        "lineHeight": "21.08px",
+        "overflow": 0
+      },
+      "ariaDescribedBy": "register-username-hint",
+      "actualFonts": [
+        {
+          "familyName": "Noto Sans Thai",
+          "postScriptName": "NotoSansThai-Regular",
+          "isCustomFont": true,
+          "glyphCount": 80
+        },
+        {
+          "familyName": "Nunito ExtraLight",
+          "postScriptName": "Nunito-ExtraLight",
+          "isCustomFont": true,
+          "glyphCount": 16
+        }
+      ],
+      "overflow": 0,
+      "file": "phone-username-hint-final.png",
+      "sha256": "eea4c40666c0fa5b3627d4016077a6e552f9a4719def11034527e17cc8acddb3"
+    }
+  ],
+  "servedAssets": [
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/bootstrap.js",
+      "status": 200,
+      "mime": "text/javascript; charset=utf-8",
+      "sha256": "8445913b06d7b709c8629b532be0c4f01784d43b72616f8a525c1d7cc746666d"
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/tokens.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "be1c8c978b98431fbfac4bc496ee198de3edb5f4efb397b3bf62ac51264e0bf5"
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/brand.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "1b920a5b19daac531567232b9d708052a7c781901c4a25689390c617f04bf507"
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/fonts.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "e5019f94aef840c593b6264c88cd78ae1771b0d8e318369b852d2a578ba9ffe3"
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/base.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "87baa6c1d8dce2dd2e2785d5672bbcd70a65b7f864742fe853be5e5e0518d217"
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/components.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "4d297a3f560351a643c35caae881ae7e2efafe59906332dbc29d629f78dbb690"
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/script-fonts.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "3f95cf81d1b462fbc75cb77020e0be60fcac3c849e36590f2a4a1c1fbd203595"
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/NotoSansThai-Regular.ttf",
+      "status": 200,
+      "mime": "font/ttf",
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/nunito.woff2",
+      "status": 200,
+      "mime": "font/woff2",
+      "sha256": "ba344451eab25b217a165363b1982048a5e5830a0daf36577973955a04cac793"
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/glob2-sans.woff2",
+      "status": 200,
+      "mime": "font/woff2",
+      "sha256": "04c452fa8481ef3df8f806e358e99d0eda2a657ff9c736383ca2a033a48d4ef0"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/bootstrap.js",
+      "status": 200,
+      "mime": "text/javascript; charset=utf-8",
+      "sha256": "8445913b06d7b709c8629b532be0c4f01784d43b72616f8a525c1d7cc746666d"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/fonts.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "e5019f94aef840c593b6264c88cd78ae1771b0d8e318369b852d2a578ba9ffe3"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/tokens.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "be1c8c978b98431fbfac4bc496ee198de3edb5f4efb397b3bf62ac51264e0bf5"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/base.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "87baa6c1d8dce2dd2e2785d5672bbcd70a65b7f864742fe853be5e5e0518d217"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/components.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "4d297a3f560351a643c35caae881ae7e2efafe59906332dbc29d629f78dbb690"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/brand.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "1b920a5b19daac531567232b9d708052a7c781901c4a25689390c617f04bf507"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/script-fonts.css",
+      "status": 200,
+      "mime": "text/css; charset=utf-8",
+      "sha256": "3f95cf81d1b462fbc75cb77020e0be60fcac3c849e36590f2a4a1c1fbd203595"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/NotoSansThai-Regular.ttf",
+      "status": 200,
+      "mime": "font/ttf",
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/nunito.woff2",
+      "status": 200,
+      "mime": "font/woff2",
+      "sha256": "ba344451eab25b217a165363b1982048a5e5830a0daf36577973955a04cac793"
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/glob2-sans.woff2",
+      "status": 200,
+      "mime": "font/woff2",
+      "sha256": "04c452fa8481ef3df8f806e358e99d0eda2a657ff9c736383ca2a033a48d4ef0"
+    }
+  ],
+  "scope": "Fresh actual server-rendered sign-in/register Thai hint, desktop and phone. No form submitted/provider requests. Previous20 studio captures remain scoped to unchanged studio code/e100; not rerun for one auth hint. SPA has no equivalent literal caller: only source caller platform/apps/api/src/routes/signin.ts:279.",
+  "visual_review": {
+    "reviewer": "thai_brief",
+    "viewed_files": [
+      "desktop-username-hint-final.png",
+      "phone-username-hint-final.png"
+    ],
+    "finding": "Actual desktop and phone screenshots viewed. Correct final hint visible in registration card; Thai tone/vowel marks readable with no clipping. Browser wraps the hint to2lines naturally; no reduced font size or horizontal overflow. All fixed signin/register labels translated.",
+    "scope": "Only these2 fresh SSR views visually reviewed for this one catalog-row change. Earlier20 mocked studio views remain valid at unchanged studio implementation; not rerun."
+  }
+}

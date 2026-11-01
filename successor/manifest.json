@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "revision": "e100fe68d435784f98d0f51d62331d1ba74febea",
+  "revision": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
   "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
   "source_files": {
     "data/texts.keys.txt": "1fd115cb8324008d2e2611d6c0e03a4f943366680ccdb6d9f4445d87f1b20247",
@@ -6530,7 +6530,8 @@
     "kit": "artifacts/thai-localization",
     "manifest_sha256": "959d41beb7c9cd0364a3c2880284a7cd5ff19187e15ee362ec195a1d8f9c7474",
     "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
-    "unchanged_main_entries": 6229
+    "unchanged_main_entries": 6228,
+    "fresh_revised_main_entries": 1
   },
   "revision_dirty": false,
   "revision_note": "Prepared source bytes independently verified identical to this clean committed revision; historical preparation snapshot retained.",

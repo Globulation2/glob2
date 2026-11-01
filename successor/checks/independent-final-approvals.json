@@ -2,7 +2,7 @@
   "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
   "catalog_sha256": {
     "native": "f4c1426f58c8469d8ea3bbc06ecb971b4a0d9b00867be1dc8acc7be769a169f9",
-    "online": "31f4f92ca565f8aa0fb64dacec21bb7f35b8cdac754c3e6ae7cdb9f5d24ab680"
+    "online": "02d7fd1d81c9cda010e97f687adb8401dc5f1dfcf52a7cbfb59e16cfe06db82e"
   },
   "batches": [
     {
@@ -182,7 +182,7 @@
     },
     {
       "id": "online-online-001",
-      "target_sha256": "c608fcd0f07571c8c855effb54c1ceb05bfc557a83e21b21bab7470ac1ae28c0",
+      "target_sha256": "f71a921dfdc6447532748e775670e7382ad22877894878d314130cc2f2f562a8",
       "reviewer": "thai_brief",
       "editor": "thai_rendering",
       "adversarial_reviewer": "online_adversarial"
@@ -317,5 +317,6 @@
   "native_entries": 3393,
   "online_entries": 2852,
   "open_linguistic_findings": 0,
-  "revision": "e100fe68d435784f98d0f51d62331d1ba74febea"
+  "revision": "fa57a20ddfc2f96f3cd1ac322c3e2e6dff5580d9",
+  "fresh_username_hint_sha256": "f941f0e2c1611ef64615829727f5c026da3d2fbac29dd67be84cc51499a8c9ba"
 }
