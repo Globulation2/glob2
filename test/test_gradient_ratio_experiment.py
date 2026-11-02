@@ -1,8 +1,11 @@
 """Independent-seed planning, required evidence, and statistical unit contracts."""
 import copy
 import unittest
+import tempfile,time
+from pathlib import Path
+from unittest.mock import patch
 from collections import Counter, defaultdict
-from tools.gradient_ratio_experiment import ARMS, NAMED, compare, plan, add_observer_calibration, finalists
+from tools.gradient_ratio_experiment import ARMS, NAMED, compare, plan, add_observer_calibration, finalists, _resume_pilot
 from tools.tournaments.jobs import EngineJob, routing_ratio_outputs
 
 
@@ -75,6 +78,26 @@ class RatioExperiment(unittest.TestCase):
         result=compare(games,draws=100)['mode']
         self.assertEqual(result['effect'],-2)
         self.assertEqual(result['ci95'],[-2,-2])
+
+    def test_recording_recovery_preserves_original_experiment_and_deadline(self):
+        from tools.tournaments.common import atomic_json
+        original=plan(bundle(),phase='pilot',deadline=time.time()+18000)
+        old=copy.deepcopy(original);started=time.time()-600;deadline=started+48*3600
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);(root/'pilot').mkdir()
+            atomic_json(root/'pilot/experiment.json',original)
+            atomic_json(root/'campaign.json',dict(cpu_ids=list(range(12,24)),started=started,deadline=deadline))
+            with patch('tools.gradient_ratio_experiment.os.sched_setaffinity'),patch('tools.gradient_ratio_experiment.inspect_bundle',return_value=bundle()),patch('tools.gradient_ratio_experiment.run_phase',return_value=root/'pilot-recovery') as run,patch('tools.gradient_ratio_experiment.summarize',return_value={'games':[]}),patch('tools.gradient_ratio_experiment._finish_campaign') as finish:
+                _resume_pilot('/bundle',root,list(range(12,24)))
+            amended=run.call_args.args[2]
+            self.assertEqual(run.call_args.args[4],started+6*3600)
+            for before,after in zip(old['jobs'],amended['jobs']):
+                self.assertEqual(before['config'],after['config'])
+                self.assertEqual(before['seeds'],after['seeds'])
+                self.assertEqual(dict(before['limits'],log_bytes=128*1024**2),after['limits'])
+                self.assertEqual(after['outputs']['log_mode'],'research')
+                self.assertNotEqual(before['id'],after['id'])
+            self.assertEqual(finish.call_args.args[-3:-1],(started,deadline))
 
     def test_replication_cannot_be_sacrificed_to_more_setups(self):
         with self.assertRaises(ValueError):plan(bundle(),phase='pilot',replicates=3)

@@ -941,6 +941,21 @@ Game jobs accept a `routing_ratio` configuration with `policy`
 `work`, `kernels`, and `quality` controls. Required outputs must explicitly retain its CSVs.
 Saved games retain their policy; research options do not override it.
 
+Research plans use the explicit `research` log mode: retain gameplay measurements,
+win-probability, economy and performance records plus player identities, while
+omitting verbose per-AI implementation samples. Stderr remains fully retained.
+Filtering happens during compressed capture, and the decoded-log and attempt
+storage limits still apply to retained measurements. Research jobs allow 128 MiB
+of decoded log data within the unchanged 512 MiB attempt storage cap. This differs from the
+`telemetry` mode, which does not retain the complete gameplay/performance streams.
+
+If a pilot needs a recording-only correction, `campaign --resume-pilot` creates a
+new immutable recording cohort with the original seeds, policies, horizons and
+phase deadline. Stop and drain the old controller first. Its results and failed
+attempts remain evidence; the superseding cohort alone enters policy comparisons.
+The original 48-hour receipt and watchdog deadline must not be reset.
+
+
 Run `python3 -m tools.gradient_ratio_experiment campaign --bundle BUNDLE
 --directory artifacts/ratio-campaign --cpu-ids 12,13,14,15,16,17,18,19,20,21,22,23`
 only after checking ownership of those example CPU IDs and validating the frozen

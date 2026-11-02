@@ -77,6 +77,20 @@ class StreamTests(unittest.TestCase):
             self.assertEqual(len(lines),4)
             self.assertTrue(lines[0].startswith(b'MAXIMA_TELEMETRY'))
 
+    def test_research_filter_keeps_all_measurements_across_long_lines(self):
+        kept=(b'GLOB2_MEASURE team=0 values='+b'1'*80000+b'\n'
+              b'GLOB2_WINPROB alliance=0 tick=512 permille=600\n'
+              b'GLOB2_PERF_SAMPLE calls=512 total_ns=123456\n'
+              b'GLOB2_ECON team=0 workers=20\nGLOB2_AI_PLAYER team=0 name="castor"\n')
+        text=b'GLOB2_AI_SAMPLE '+b'x'*200000+b'\n'+kept+b'ordinary noise\n'
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'stdout.log.gz'
+            capture=CompressedLog(io.BytesIO(text),path,len(kept),'research');meta=capture.finish()
+            self.assertIsNone(meta['error'])
+            self.assertEqual(gzip.decompress(path.read_bytes()),kept)
+            self.assertEqual(meta['received_bytes'],len(text))
+            self.assertEqual(meta['raw_bytes'],len(kept))
+
     def test_overflow_drains_and_closes_valid_bounded_gzip(self):
         source=io.BytesIO(b'x'*1000000)
         with tempfile.TemporaryDirectory() as folder:

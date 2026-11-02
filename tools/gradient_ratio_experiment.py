@@ -98,10 +98,10 @@ def plan(bundle, *, phase, setups=12, replicates=4, seed=20261102, arms=ARMS,
             config=dict(generator=setup['generator'],params=setup['params'],candidates=5,players=players,ticks=ticks,
                         win_probability_permille=950,routing_ratio=ratio)
             if setup['format']=='2v2':config['alliances']=[1,1,2,2]
-            limits=dict(timeout_seconds=1800,artifact_bytes=512*1024**2,log_bytes=64*1024**2)
+            limits=dict(timeout_seconds=1800,artifact_bytes=512*1024**2,log_bytes=128*1024**2)
             if deadline is not None:limits['deadline_unix']=deadline
             jobs.append(job('game',bundle['id'],seeds={'map':rng.randrange(2**32),'game':rng.randrange(2**32)},
-                config=config,outputs=dict(telemetry=['team-timeline'],log_mode='full',result='full',
+                config=config,outputs=dict(telemetry=['team-timeline'],log_mode='research',result='full',
                     required=routing_ratio_outputs(ratio),saves=['initial','final'] if diagnostic and replicate==(0 if diagnostics==1 else replicates) and setup['generator_id'] in NAMED else [],
                     replay=diagnostic and replicate==(0 if diagnostics==1 else replicates) and setup['generator_id'] in NAMED),
                 limits=limits,labels=dict(phase=phase,setup=setup['id'],replicate=replicate,block=block_index,
@@ -132,7 +132,7 @@ def add_observer_calibration(manifest):
             config['routing_ratio']=dict(policy='baseline',study=mode,work=mode!='off',quality=mode=='routes',kernels=mode=='routes')
             labels=dict(original['labels'],diagnostic=True,observer_mode=mode)
             calibration.append(job('game',original['build'],seeds=original['seeds'],config=config,
-                outputs=dict(telemetry=['team-timeline'],log_mode='full',result='full',required=routing_ratio_outputs(config['routing_ratio'])),
+                outputs=dict(telemetry=['team-timeline'],log_mode='research',result='full',required=routing_ratio_outputs(config['routing_ratio'])),
                 limits=original['limits'],labels=labels))
     manifest['jobs']=calibration+manifest['jobs']
     return manifest
@@ -532,7 +532,7 @@ def run_phase(root, bundle_path, manifest, cpu_ids, deadline):
     host=dict(name='ratio-local',transport='local',directory=str((root/'worker').resolve()),slots=3,
         cpu_ids=cpu_ids,participants_per_game=4,collect_slots=1,prefetch=0,
         disk_reserve_bytes=10*GIB,spool_budget_bytes=4*GIB,cache_budget_bytes=4*GIB,
-        attempt_budget_bytes=512*1024**2,log_budget_bytes=64*1024**2)
+        attempt_budget_bytes=512*1024**2,log_budget_bytes=128*1024**2)
     host.pop('prefetch') # Coordinator-only setting.
     hosts=root/'hosts.json';atomic_json(hosts,[host])
     coordinator=Coordinator.submit(directory,manifest,[bundle_path]);coordinator.close()
@@ -597,6 +597,38 @@ def _campaign(bundle_path, directory, cpu_ids, hours=48):
     pilot=add_observer_calibration(plan(bundle,phase='pilot',deadline=pilot_end))
     pilot_dir=run_phase(root,bundle_path,pilot,cpu_ids,pilot_end)
     pilot_report=summarize(pilot_dir,root/'pilot-report.json')
+    _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,work_end)
+
+
+def _resume_pilot(bundle_path,directory,cpu_ids):
+    root=Path(directory).resolve();receipt=read_json(root/'campaign.json')
+    if cpu_ids!=receipt['cpu_ids']:raise ValueError('resume must preserve the original CPU allocation')
+    os.sched_setaffinity(0,cpu_ids)
+    started,end=receipt['started'],receipt['deadline'];pilot_end=min(end,started+6*3600)
+    if time.time()>=pilot_end-1815:raise ValueError('original pilot admission window has expired')
+    if (root/'stages.json').exists():raise ValueError('pilot recovery is unavailable after stage freezing')
+    manifest=read_json(root/'pilot/experiment.json');manifest.pop('package_id',None)
+    original_id=manifest['id'];manifest['id']+='-recording-v2';manifest['metadata']['phase']='pilot-recovery'
+    manifest['metadata']['recording_amendment']='Retain required gameplay/probability/performance logs; omit verbose per-AI implementation samples. Simulation inputs unchanged. Original cohort superseded, never pooled.'
+    amended=[]
+    for old in manifest['jobs']:
+        outputs=dict(old['outputs'],log_mode='research')
+        amended.append(job(old['type'],old['build'],inputs=old['inputs'],seeds=old['seeds'],config=old['config'],outputs=outputs,
+            limits=dict(old['limits'],log_bytes=128*1024**2),labels=dict(old['labels'],supersedes_job=old['id'],recording_revision=2),depends_on=old['depends_on']))
+    manifest['jobs']=amended
+    atomic_json(root/'recording-amendment.json',dict(original_cohort=original_id,replacement_cohort=manifest['id'],
+        reason='Verbose AI samples exceeded the decoded log cap. Explicit research filtering retains requested streams, with a 128 MiB decoded-log allowance inside the unchanged 512 MiB attempt cap.',
+        original_started=started,original_deadline=end,applied=time.time(),superseded_results='pilot',primary_results='pilot-recovery',
+        unchanged=['executable','policies','seeds','model','horizon','stopping rule','CPU allocation','per-attempt and campaign storage limits']))
+    bundle=inspect_bundle(bundle_path)
+    pilot_dir=run_phase(root,bundle_path,manifest,cpu_ids,pilot_end)
+    pilot_report=summarize(pilot_dir,root/'pilot-report.json')
+    pilot_report['superseded_cohort']='pilot; retained as recording-repair evidence, excluded from policy comparisons'
+    atomic_json(root/'pilot-report.json',pilot_report)
+    _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,end-min(900,(end-started)*.1))
+
+
+def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,work_end):
     if not any(g['arm']=='baseline' and g['high_diversity_with_extra_builds'] for g in pilot_report['games']):
         raise RuntimeError('Pilot did not verify diverse amphibious query demand with duplicated ratio builds; revise workload coverage within the original remaining budget before screening')
     stages=pilot_report['stages'];atomic_json(root/'stages.json',stages)
@@ -663,9 +695,10 @@ def decision_package(root, error=None):
     (root/'decision-package.md').write_text('\n'.join(lines)+'\n')
 
 
-def campaign(bundle_path, directory, cpu_ids, hours=48):
+def campaign(bundle_path, directory, cpu_ids, hours=48, resume_pilot=False):
     try:
-        _campaign(bundle_path,directory,cpu_ids,hours)
+        if resume_pilot:_resume_pilot(bundle_path,directory,cpu_ids)
+        else:_campaign(bundle_path,directory,cpu_ids,hours)
     except Exception as error:
         if Path(directory).is_dir():
             atomic_json(Path(directory)/'attention.json',dict(error=str(error),time=time.time()))
@@ -686,10 +719,10 @@ def main():
     p=sub.add_parser('analyze');p.add_argument('directory');p.add_argument('--output',required=True);p.add_argument('--stages')
     p=sub.add_parser('freeze-stages');p.add_argument('directory');p.add_argument('--output',required=True)
     p=sub.add_parser('campaign');p.add_argument('--bundle',required=True);p.add_argument('--directory',required=True)
-    p.add_argument('--cpu-ids',required=True);p.add_argument('--hours',type=float,default=48)
+    p.add_argument('--cpu-ids',required=True);p.add_argument('--hours',type=float,default=48);p.add_argument('--resume-pilot',action='store_true')
     args=parser.parse_args()
     if args.command=='plan':atomic_json(args.output,plan(inspect_bundle(args.bundle),phase=args.phase,setups=args.setups,replicates=args.replicates,seed=args.seed,arms=args.arms,ticks=args.ticks,diagnostics=args.diagnostics))
-    elif args.command=='campaign':campaign(args.bundle,args.directory,[int(v) for v in args.cpu_ids.split(',')],args.hours)
+    elif args.command=='campaign':campaign(args.bundle,args.directory,[int(v) for v in args.cpu_ids.split(',')],args.hours,args.resume_pilot)
     elif args.command=='freeze-stages':atomic_json(args.output,freeze_stages(Results(args.directory)))
     else:summarize(args.directory,args.output,read_json(args.stages) if args.stages else None)
 
