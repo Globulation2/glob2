@@ -216,7 +216,7 @@ def export_games(source, stages):
         states=rows(source,record,'state');queries=rows(source,record,'queries');work=rows(source,record,'work');kernel=rows(source,record,'kernel')
         query_windows=defaultdict(Counter)
         for row in queries:
-            if row['planning']=='0' and 1<=int(row['physical'])<=6:
+            if row['planning']=='0' and int(row['family'])<7 and 1<=int(row['physical'])<=6:
                 query_windows[int(row['window']),int(row['team'])][int(row['physical'])]+=int(row['queries'])
         diverse=set()
         for row in states:
@@ -332,6 +332,9 @@ def export_games(source, stages):
                 if team is not None and values.get('tick',-1)>=latest.get(team,{}).get('tick',-1):latest[team]=values
         entry['gameplay']={str(team):{k:v for k,v in values.items() if k.startswith(('deaths_','completed_','harvested_','delivered_','harvestDistance_','harvestSamples_','eatWalkDistance_','eatWalkSamples_','labour_','filling_')) or k in ('tick','hungry','critical','trappedUnits','trappedBuildings','meals','trainingVisits')} for team,values in latest.items()}
         entry['starvation_deaths']=sum(v for values in entry['gameplay'].values() for k,v in values.items() if k.startswith('deaths_') and k.endswith('_1') and isinstance(v,(int,float))) if latest else None
+        amphibious_queries=[r for r in queries if r['planning']=='0' and int(r['family'])<7 and 1<=int(r['physical'])<=6]
+        amphibious_count=sum(int(r['queries']) for r in amphibious_queries)
+        entry['selected_class_query_coverage']=sum(int(r['queries']) for r in amphibious_queries if r['physical']==r['selected'])/amphibious_count if amphibious_count else None
         entry['route_mean_time_penalty']=entry['route_time_penalty']['mean']
         entry['route_p99_time_penalty']=entry['route_time_penalty']['p99']
         entry['route_mean_extra_ticks']=entry['route_extra_ticks']['mean']
