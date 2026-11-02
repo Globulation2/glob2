@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 const { test, expect } = require('@playwright/test');
-const { gameURL, clickMainMenu, clickControl, clickByLabel, control } = require('./main-menu');
+const { gameURL, clickMainMenu, clickControl, clickByLabel, control, waitForMainMenu } = require('./main-menu');
 const archive = process.env.GLOB2_MUSIC_TEST_ARCHIVE;
 async function start(page, runtime) {
   const url = new URL(gameURL(), 'http://localhost');
   url.searchParams.set('threads', runtime);
   url.searchParams.set('renderer', 'software');
   await page.goto(url.pathname + url.search);
-  await expect
-    .poll(() => page.evaluate(() => globalThis.glob2Diagnostics?.snapshot().screen))
-    .toContain('MainMenuScreen');
+  await waitForMainMenu(page);
   test.skip(
     runtime === 'threaded' && (await page.evaluate(() => Module.executionMode)) !== 'threaded',
     'Browser cannot run the threaded game.',
