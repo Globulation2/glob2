@@ -169,6 +169,11 @@ async function match(page) {
   let receipt;
   try {
     await clickMainMenu(page,'custom');
+    // Keep the renderer fixture independent of the lobby's default landscape.
+    await clickControl(page,'generator/landscape');await screen(page,'LandscapePickerScreen');
+    await clickByLabel(page,/^landscape\/\d+$/,'Fingerprint');
+    await clickControl(page,'landscape/use',{timeout:60000});
+    await screen(page,'CustomGameScreen');
     await clickControl(page,'generator/colonies');await clickByLabel(page,/popup/,'2');
     for(const dimension of ['width','height']) {
       await clickControl(page,'generator/'+dimension);await clickByLabel(page,/popup/,'128');
