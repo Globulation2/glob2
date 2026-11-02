@@ -1,0 +1,21 @@
+{
+  "historical_revision": "8d5293c436c1a65e8ad47459e738152644fcf137",
+  "ticks": 512,
+  "mismatch_ticks": 0,
+  "first": [],
+  "command": [
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/pre-maxima-reserve/build/diagnostic/src/glob2",
+    "game",
+    "run",
+    "--load-game",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/test/maxima/fixtures/save-continuation/checkpoint-30000-v115.game.gz",
+    "--ticks",
+    "30512",
+    "--compute-threads",
+    "1",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/pre-maxima-run"
+  ]
+}
