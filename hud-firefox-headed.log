@@ -1,0 +1,33 @@
+
+Running 2 tests using 1 worker
+
+(node:1881695) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [firefox] › browser/tests/team-colors.spec.js:40:3 › software preserves the red tutorial team before and after resize (22.6s)
+  ✘  2 [firefox] › browser/tests/team-colors.spec.js:40:3 › webgl2 preserves the red tutorial team before and after resize (39.8s)
+
+
+  1) [firefox] › browser/tests/team-colors.spec.js:40:3 › webgl2 preserves the red tutorial team before and after resize 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 10
+    Received:   0
+
+    Call Log:
+    - Timeout 15000ms exceeded while waiting on the predicate
+
+      57 |         colors = await workerColors(page,width);
+      58 |         return colors.red;
+    > 59 |       }, {timeout:15000}).toBeGreaterThan(10);
+         |                           ^
+      60 |       expect(colors.purple, JSON.stringify(colors)).toBe(0);
+      61 |     }
+      62 |     await page.screenshot({path:info.outputPath('red-tutorial-team.png')});
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/browser/tests/team-colors.spec.js:59:27
+
+    Error Context: build/browser-test-results/team-colors-webgl2-preserv-4ca64-eam-before-and-after-resize-firefox/error-context.md
+
+  1 failed
+    [firefox] › browser/tests/team-colors.spec.js:40:3 › webgl2 preserves the red tutorial team before and after resize 
+  1 passed (1.1m)

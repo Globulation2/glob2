@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:1886575) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/single-player.spec.js:81:1 › tutorial sessions quit through the end screen and can restart (20.5s)
+  ✓  2 [chromium] › browser/tests/team-colors.spec.js:40:3 › software preserves the red tutorial team before and after resize (16.9s)
+  ✓  3 [chromium] › browser/tests/team-colors.spec.js:40:3 › webgl2 preserves the red tutorial team before and after resize (19.2s)
+
+  3 passed (57.2s)

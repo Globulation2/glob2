@@ -1,0 +1,40 @@
+{
+  "pid": 1877767,
+  "revision": "e6051178a997af5d52b39c92c6c20446b5e33e61",
+  "runtime_revision": "9ace5c5bb7fa36a7d1dee9f61727acd1f2dff709",
+  "results": [
+    {
+      "project": "firefox",
+      "command": [
+        "node",
+        "browser/node_modules/@playwright/test/cli.js",
+        "test",
+        "team-colors.spec.js",
+        "single-player.spec.js",
+        "--grep=preserves the red tutorial team|tutorial sessions quit",
+        "--config=browser/playwright.config.js",
+        "--project=firefox",
+        "--workers=1",
+        "--trace=off"
+      ],
+      "exit_code": 1
+    },
+    {
+      "project": "webkit",
+      "command": [
+        "node",
+        "browser/node_modules/@playwright/test/cli.js",
+        "test",
+        "team-colors.spec.js",
+        "single-player.spec.js",
+        "--grep=preserves the red tutorial team|tutorial sessions quit",
+        "--config=browser/playwright.config.js",
+        "--project=webkit",
+        "--workers=1",
+        "--trace=off"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "phase": "finished"
+}

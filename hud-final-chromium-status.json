@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    "browser/node_modules/@playwright/test/cli.js",
+    "test",
+    "team-colors.spec.js",
+    "single-player.spec.js",
+    "--grep=preserves the red tutorial team|tutorial sessions quit",
+    "--config=browser/playwright.config.js",
+    "--project=chromium",
+    "--workers=1",
+    "--trace=off"
+  ],
+  "exit_code": 0,
+  "runtime_revision": "9ace5c5bb7",
+  "native_helper_revision": "9ace5c5bb7"
+}

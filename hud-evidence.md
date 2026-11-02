@@ -1,0 +1,5 @@
+Browser HUD fixture repair at e6051178a997af5d52b39c92c6c20446b5e33e61, base d9ec807052. Current-source runtime 9ace5c5bb7; later master changes affect browser tests and Android smoke tooling only.
+
+Final checks: Chromium 3 passed; Firefox 2 passed and WebGL color capture still fails with 0 red pixels; WebKit 3 passed. The Firefox WebGL case also fails with headed Xvfb. An instrumented same-source case captures a uniform background across the complete top bar (first saturated pixel -1); software captures pass. This existing Firefox display/capture failure remains unresolved, with no assertion removed or skipped. The old fixed-coordinate worker check failed in all six browser/renderer combinations.
+
+The tutorial case now dismisses its tick-12 briefing if present before clicking the menu, uses the shared native sidebar width, and still checks two complete quit/end-screen/restart cycles. Worker color limits remain >10 red and zero purple in the first sprite, located independently of its hue.
