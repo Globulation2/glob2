@@ -12,6 +12,7 @@
 #include "MapEdit.h"
 #include "SettingsScreen.h"
 #include "Order.h"
+#include "render/overlay/MapZoomControls.h"
 #include "Unit.h"
 #include <SDL3_image/SDL_image.h>
 #include <FileManager.h>
@@ -274,7 +275,9 @@ public:
                 gui.ghostManager.removeBuilding(x,y);gui.toolManager.deactivateTool();gui.selectionMode=GameGUI::NO_SELECTION;
             }
             // Reset button must act only on press, and must not place a building on release.
-            const auto orders=gui.orderQueue.size();SDL_MouseButtonEvent button{};button.button=SDL_BUTTON_LEFT;button.x=gfx->getW()-160+8+44;button.y=gfx->getH()-15;
+            const auto orders=gui.orderQueue.size();
+            const auto reset = mapZoomControlBounds(gui.camera, true, true)[1].center();
+            SDL_MouseButtonEvent button{};button.button=SDL_BUTTON_LEFT;button.x=reset.x;button.y=reset.y;
             gui.handleMouseButtonDown(button);double after=gui.camera.zoom;gui.handleMouseButtonUp(button);
             REQUIRE((after==1&&gui.camera.zoom==after&&gui.orderQueue.size()==orders));
             if (glob2test::fullscreenEnabled())
