@@ -37,6 +37,13 @@ void productionCatalog(Game& game, bool instant = false)
     game.buildingsTypes.loadSnapshotJson(json.dump());
     game.configureBuildingCatalog();
 }
+void finishDeliveryStep(Unit& courier)
+{
+    courier.movement=Unit::MOV_FILLING; courier.action=BUILD;
+    courier.speed=courier.performance[BUILD]; courier.delta=255;
+    courier.dx=1; courier.dy=0;
+    courier.syncStep();
+}
 std::string saveProductionGame(Game& game, bool text)
 {
     auto* bytes = new GAGCore::MemoryStreamBackend;
@@ -1181,4 +1188,186 @@ TEST_SUITE("BuildingProductionCombat")
             } else CHECK_THROWS_AS(building->loadCrossRef(&input,&world.game.buildingsTypes,world.team,VERSION_MINOR),std::runtime_error);
         }
     }
+}
+
+TEST_SUITE("ReplenishmentStaffing")
+{
+TEST_CASE("inventory caps preserve trips but prevent new hires")
+{
+    glob2test::HeadlessGlobals globals;
+    for(const char* family:{"inn","swarm","defencetower"}) {
+        CAPTURE(family);
+        glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+        auto* b=world.addBuilding(family,8,8); b->maxUnitWorking=20;
+        int material=0;
+        while(!(b->runtime->replenishMaterialMask&(1u<<material))) ++material;
+        b->setMaterial(material,0); b->update();
+        auto* courier=world.addUnit(WORKER,7,8);
+        courier->destinationPurpose=material; courier->subscriptionSuccess(b,false);
+        b->unitsWorking.push_back(courier);
+        for(int r=0;r<int(MaterialCount);++r) b->setMaterial(r,b->type->maxMaterial[r]);
+        b->update();
+        REQUIRE(b->desiredMaxUnitWorking==0);
+        REQUIRE(courier->attachedBuilding==b);
+        CHECK(b->unitsWorking.size()==1);
+        world.addUnit(WORKER,15,9);
+        glob2test::publishCurrentHiringSuggestions(world.game);
+        CHECK_FALSE(b->subscribeToBringMaterialsStep());
+        courier->receiveCarriedMaterial(material,{});
+        courier->setTargetBuilding(b); courier->displacement=Unit::DIS_FILLING_BUILDING;
+        finishDeliveryStep(*courier);
+        CHECK(courier->attachedBuilding==nullptr);
+        CHECK(b->unitsWorking.empty());
+    }
+}
+
+TEST_CASE("consumption can restore demand before a courier arrives")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    auto* b=world.addBuilding("swarm",8,8); b->maxUnitWorking=20;
+    b->setMaterial(WHEAT,0); b->update();
+    auto* courier=world.addUnit(WORKER,7,8);
+    courier->destinationPurpose=WHEAT; courier->subscriptionSuccess(b,false);
+    b->unitsWorking.push_back(courier);
+    b->setMaterial(WHEAT,b->type->maxMaterial[WHEAT]); b->update();
+    REQUIRE(courier->attachedBuilding==b);
+    b->setMaterial(WHEAT,0); b->update();
+    world.game.map.setResourceByIndex(16,8,WHEAT,4);
+    materialFixture(world.game,WHEAT,b);
+    courier->receiveCarriedMaterial(WHEAT,{});
+    courier->setTargetBuilding(b); courier->displacement=Unit::DIS_FILLING_BUILDING;
+    finishDeliveryStep(*courier);
+    CHECK(b->material(WHEAT)>0);
+    CHECK(courier->attachedBuilding==b);
+    CHECK(courier->displacement==Unit::DIS_GOING_TO_RESOURCE);
+}
+
+TEST_CASE("player reductions remain immediate while trips are protected")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    auto* b=world.addBuilding("swarm",8,8); b->maxUnitWorking=20;
+    b->setMaterial(WHEAT,0); b->update();
+    for(int y:{8,9}) {
+        auto* courier=world.addUnit(WORKER,15,y); courier->destinationPurpose=WHEAT;
+        courier->subscriptionSuccess(b,false); b->unitsWorking.push_back(courier);
+    }
+    b->setMaterial(WHEAT,b->type->maxMaterial[WHEAT]); b->update();
+    REQUIRE(b->unitsWorking.size()==2);
+    b->maxUnitWorking=1; b->update(); CHECK(b->unitsWorking.size()==1);
+    b->maxUnitWorking=0; b->update(); CHECK(b->unitsWorking.empty());
+}
+
+TEST_CASE("construction repair and upgrade keep finite demand staffing")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    auto* site=world.game.addBuilding(8,8,world.game.buildingsTypes.getTypeNum("inn",0,true),0);
+    REQUIRE(site); CHECK_FALSE(site->finishesDeliveryTrips());
+    int material=0;
+    while(material<int(MaterialCount) && !site->neededMaterial(material)) ++material;
+    REQUIRE(material<int(MaterialCount));
+    auto* courier=world.addUnit(WORKER,7,8); courier->destinationPurpose=material;
+    courier->subscriptionSuccess(site,false); site->unitsWorking.push_back(courier);
+    site->maxUnitWorking=2; site->desiredMaxUnitWorking=0; site->updateUnitsWorking();
+    CHECK(site->unitsWorking.empty());
+    auto* tower=world.addBuilding("defencetower",16,16);
+    REQUIRE(tower->finishesDeliveryTrips()); tower->hp=tower->getEffectiveMaxHp()/2;
+    REQUIRE(tower->launchConstruction(2,2)); CHECK_FALSE(tower->finishesDeliveryTrips());
+    if(tower->buildingState!=Building::ALIVE) REQUIRE(tower->tryToBuildingSiteRoom());
+    CHECK(tower->constructionResultState==Building::REPAIR); CHECK_FALSE(tower->finishesDeliveryTrips());
+    auto* inn=world.addBuilding("inn",24,24); inn->hp=inn->getEffectiveMaxHp();
+    REQUIRE(inn->launchConstruction(2,2)); CHECK_FALSE(inn->finishesDeliveryTrips());
+    if(inn->buildingState!=Building::ALIVE) REQUIRE(inn->tryToBuildingSiteRoom());
+    CHECK(inn->constructionResultState==Building::UPGRADE); CHECK_FALSE(inn->finishesDeliveryTrips());
+}
+
+TEST_CASE("multi packet loads finish unloading before excess couriers leave")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+    units["units"][WORKER]["behaviors"]["cargoCapacity"]=3;
+    units["units"][WORKER]["behaviors"]["cargoKinds"]=2;
+    auto catalog=UnitCatalog::deserialize(units.dump());
+    world.game.gameHeader.setUnitCatalog(catalog); world.team->race.setCatalog(catalog);
+    auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& swarm=buildings["variants"][world.game.buildingsTypes.getTypeNum("swarm",0,false)];
+    swarm["properties"]["maxMaterial"][WOOD]=2;
+    swarm["semantics"]["replenishMaterials"]={"food","wood"};
+    world.game.buildingsTypes.loadSnapshotJson(buildings.dump());
+    world.game.configureBuildingCatalog();
+    auto* b=world.addBuilding("swarm",8,8); b->maxUnitWorking=20;
+    b->setMaterial(WHEAT,0); b->update();
+    auto* courier=world.addUnit(WORKER,7,8); courier->destinationPurpose=WHEAT;
+    courier->subscriptionSuccess(b,false); b->unitsWorking.push_back(courier);
+    auto* other=world.addUnit(WORKER,15,9); other->destinationPurpose=WHEAT;
+    other->subscriptionSuccess(b,false); b->unitsWorking.push_back(other);
+    courier->receiveCargoPacket(WHEAT,{1,1}); courier->receiveCargoPacket(WOOD,{1,1});
+    b->setMaterial(WHEAT,b->type->maxMaterial[WHEAT]-1);
+    b->setMaterial(WOOD,b->type->maxMaterial[WOOD]-1); b->update();
+    courier->setTargetBuilding(b); courier->displacement=Unit::DIS_FILLING_BUILDING;
+    finishDeliveryStep(*courier);
+    CHECK(courier->carriedPacketCount()==1); REQUIRE(courier->attachedBuilding==b);
+    REQUIRE(b->unitsWorking.size()>unsigned(b->desiredMaxUnitWorking));
+    finishDeliveryStep(*courier);
+    CHECK(courier->carriedPacketCount()==0);
+    CHECK(b->material(WHEAT)==b->type->maxMaterial[WHEAT]);
+    CHECK(courier->attachedBuilding==nullptr);
+    CHECK(b->material(WOOD)==b->type->maxMaterial[WOOD]);
+}
+TEST_CASE("active deliveries preserve save continuation checksums [save-format][artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    std::ostringstream trace;
+    trace<<"extended,tick,checksum\n";
+    for(bool extended:{false,true}) {
+        glob2test::HeadlessGame w({.wDec=6,.hDec=6,.loadDefaultRace=true,.header=true,.seed=4921});
+        w.game.gameHeader.getWinningConditions().clear();
+        if(extended) {
+            auto units=nlohmann::json::parse(w.game.unitCatalog().serialize());
+            units["units"][WORKER]["behaviors"]["cargoCapacity"]=3;
+            units["units"][WORKER]["behaviors"]["cargoKinds"]=2;
+            auto catalog=UnitCatalog::deserialize(units.dump());
+            w.game.gameHeader.setUnitCatalog(catalog);w.team->race.setCatalog(catalog);
+            auto buildings=nlohmann::json::parse(w.game.buildingsTypes.snapshotJson());
+            auto& swarm=buildings["variants"][w.game.buildingsTypes.getTypeNum("swarm",0,false)];
+            swarm["properties"]["maxMaterial"][WOOD]=10;
+            swarm["semantics"]["replenishMaterials"]={"food","wood"};
+            swarm["semantics"]["market"]["sharedStock"]=true;
+            for(const auto* unit:{"worker","explorer","warrior"})
+                swarm["semantics"]["production"]["recipes"][unit]["cost"]={{"food",1},{"wood",1}};
+            w.game.buildingsTypes.loadSnapshotJson(buildings.dump());w.game.configureBuildingCatalog();
+        }
+
+        auto* swarm=w.addBuilding("swarm",8,8);swarm->maxUnitWorking=20;swarm->ratio[WORKER]=1;
+        swarm->setMaterial(WHEAT,15);if(extended)swarm->setMaterial(WOOD,8);swarm->update();
+        auto* inn=w.addBuilding("inn",8,14);inn->maxUnitWorking=4;
+        for(int r=0;r<int(MaterialCount);++r) inn->setMaterial(r,inn->type->maxMaterial[r]);
+        inn->update();
+        for(int i=0;i<24;++i)w.addUnit(WORKER,20+i%8,20+i/8);
+        for(int y=4;y<12;++y)for(int x=40;x<44;++x)w.game.map.setResourceByIndex(x,y,WHEAT,4);
+        w.team->createLists();
+        REQUIRE(swarm->runtime->produces(WORKER));
+        REQUIRE(swarm->canAffordProduction(WORKER));
+        if(extended) for(int y=13;y<16;++y)for(int x=40;x<44;++x)w.game.map.setResourceByIndex(x,y,WOOD,4);
+        std::unique_ptr<glob2test::HeadlessGame> resumed;
+        for(int tick=0;tick<2048;++tick) {
+            if(tick==1024) {
+                REQUIRE(std::any_of(swarm->unitsWorking.begin(),swarm->unitsWorking.end(),
+                    [](const Unit* unit) { return unit->activity==Unit::ACT_FILLING; }));
+                const auto bytes=saveProductionGame(w.game,extended);
+                resumed=std::make_unique<glob2test::HeadlessGame>(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
+                REQUIRE(loadProductionGame(resumed->game,bytes,extended));
+            }
+            w.game.step(-1);
+            const auto checksum=w.game.checkSum();
+            if(resumed) {resumed->game.step(-1);REQUIRE(resumed->game.checkSum()==checksum);}
+            trace<<extended<<','<<w.game.stepCounter<<','<<checksum<<'\n';
+        }
+        CHECK(w.game.teams[0]->stats.measurements().births[WORKER]>0);
+    }
+    glob2test::writeFile(glob2test::artifactDir()/"staffing.trace",trace.str());
+}
 }

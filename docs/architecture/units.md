@@ -226,6 +226,15 @@ count as ability training.
 
 ## Cargo and production
 
+Completed replenishing buildings, including inns, swarms and towers, keep assigned
+couriers on their current delivery trips when inventory demand falls. Recruitment
+still uses the current material-demand cap, so an excess crew does not trigger
+new hires. After unloading, a courier leaves if the crew still exceeds that cap;
+if consumption has restored demand, it can make another trip. Multi-packet loads
+finish their useful unloading before this check. Player staffing reductions take
+effect immediately. Construction, repair and upgrades retain finite-demand
+staffing, and medical departures and route failures keep their usual behavior.
+
 Cargo capacity counts raw transport packets, including fractional supplier
 packets. Default workers carry one inline packet. Larger inventories use a
 game-owned sidecar keyed by unit identity; snapshots copy its values. Additional
