@@ -1,0 +1,54 @@
+{
+  "verified_scores": 3432,
+  "primary_equal_format_aggregate": {
+    "mean": 0.002785873916788244,
+    "clusters": 94,
+    "hierarchical_95": [
+      -0.0009462922156548963,
+      0.006907173491369501
+    ],
+    "fixed_generator_95": [
+      0.0005545733231597548,
+      0.004979277410348132
+    ]
+  },
+  "policy_contrasts": {
+    "inn8-swarm8 minus baseline": {
+      "mean": 0.0033644034036322272,
+      "clusters": 94,
+      "hierarchical_95": [
+        -0.0027578793816349445,
+        0.01043266706934672
+      ],
+      "fixed_generator_95": [
+        -0.001045579792910045,
+        0.007949907380435125
+      ]
+    },
+    "inn8-swarm12 minus baseline": {
+      "mean": 0.0027858739167882438,
+      "clusters": 94,
+      "hierarchical_95": [
+        -0.0009569426121516099,
+        0.006831615470841515
+      ],
+      "fixed_generator_95": [
+        0.0005878283012054463,
+        0.005007264095749326
+      ]
+    },
+    "inn8-swarm12 minus inn8-swarm8": {
+      "mean": -0.0005785294868439832,
+      "clusters": 94,
+      "hierarchical_95": [
+        -0.007600493772952388,
+        0.00592701384969869
+      ],
+      "fixed_generator_95": [
+        -0.005281318704461748,
+        0.0038466296221606163
+      ]
+    }
+  },
+  "official_scoring_module": "/tmp/maxima-staffing-cap-evidence/provenance/worker.pyz/tournaments/analysis.py"
+}

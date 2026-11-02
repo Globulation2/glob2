@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "validated": "2026-11-02T03:23:06.138371+00:00",
+  "pure_contracts": [
+    "constant hierarchical effects andintervals",
+    "missingcounterfamily unavailable",
+    "missingmetric unavailable",
+    "missingplannedformat aggregate unavailable"
+  ],
+  "real_pilot": {
+    "expected_triplets": 48,
+    "joint_complete": 46,
+    "missing_excluded_not_zero": 2,
+    "scope_triplets_checked": 61,
+    "three_contrast_additivity": "passed",
+    "joint_counter_timestamp_same_all3contrasts": "passed",
+    "population_not_forward_filled": "passed",
+    "actual_worker_exposures_retained": "passed",
+    "output_bytes": 905779
+  },
+  "zero_threshold_empty_cohort": {
+    "expected_triplets": 144,
+    "observed": 0,
+    "estimates": 0,
+    "cohort_key_explicit0": true
+  },
+  "scope": "analysis fixtures/retainedlogs only; no newenginegames",
+  "helper_sha256": "c4be6f204adb17b78065d5ec90c484ddd00bfba88e96ac54172eb546af5e1beb"
+}

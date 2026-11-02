@@ -1,0 +1,17 @@
+[
+  "/home/bradley/.codex/worktrees/b60a/glob2/build/linux/client/release/src/glob2",
+  "game",
+  "run",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b60a/glob2/test/maxima/fixtures/save-continuation/checkpoint-30000-v115.game.gz",
+  "--ticks",
+  "30512",
+  "--compute-threads",
+  "1",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/tmp/maxima-official-validation/qualified-save-serial/run",
+  "--save",
+  "every:30256"
+]

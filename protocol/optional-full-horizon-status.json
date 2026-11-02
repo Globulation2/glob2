@@ -1,0 +1,10 @@
+{
+  "planned_games": 432,
+  "planned_generation": 24,
+  "executed_attempts": 0,
+  "coordinator_states": {
+    "pending": 456
+  },
+  "experimental_results_available": false,
+  "not_pooled_with_confirmatory": true
+}

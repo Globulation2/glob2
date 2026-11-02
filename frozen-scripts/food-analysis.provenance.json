@@ -1,0 +1,27 @@
+{
+  "copied": "2026-11-02T03:21:26.220820+00:00",
+  "helper_sha256": "c4be6f204adb17b78065d5ec90c484ddd00bfba88e96ac54172eb546af5e1beb",
+  "source_path": "/home/bradley/.codex/worktrees/b60a/glob2/docs/.work/generic-maxima-food-analysis.py",
+  "separate_postfreeze_analysis": true,
+  "frozen_manifest_unchanged_sha256": "f253caeb323dfc5fbe7ba11dbe972daef47e82652efbd1aaffe4a8ec92d629f7",
+  "frozen_script_hashes_observed": {
+    "analyze.py": "3fd63955cbbc59d10619d9429cd1f4f5da65d00c1e59980533cf978b3f2bec2b",
+    "control.py": "3adcce41f6fd7cb27e814ea742695060aa3b4364f7491c937b090dcbe4d53dbe",
+    "supervise.py": "90c7e9f40b0699df24582aaf37a2a5e5217759888fa99da2052c7a5aab720e4f"
+  },
+  "worker_archive_sha256": "f0821f950ac30df4c2f9aae8d71b097ca5596bcb7d8bf186b07efff9f26afc8a",
+  "command": [
+    "python3",
+    "/home/bradley/.codex/worktrees/b60a/glob2/artifacts/maxima-food-fixes/broad-confirmatory-20261102/scripts/food-analysis.py",
+    "--directory",
+    "/home/bradley/.codex/worktrees/b60a/glob2/artifacts/maxima-food-fixes/broad-confirmatory-20261102"
+  ],
+  "all_case_joint_three_arm": true,
+  "counter_interpolation": "none",
+  "missing_counter_fields": "unavailable,neverzero",
+  "output_budget_bytes": 268435456,
+  "pure_validation": "constant hierarchicaleffects;missingfamily/metric unavailable;missingformat not reweighted:passed",
+  "real_pilot_validation": "passed:48designed/46complete,missingnotzero,3contrastsadditive,jointwindows,workerexposure",
+  "zero_threshold_validation": "passed:144expected/0observed,estimatesunavailable",
+  "validation_file": "scripts/food-analysis.validation.json"
+}

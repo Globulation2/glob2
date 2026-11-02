@@ -1,0 +1,22 @@
+{
+  "engine_bundle_id": "7758e379d2bcdfc64e0f9a42bbadee792c65d679c1dd924bd8701424af04a03b",
+  "engine_source_revision": "726b37f573d2b1401033b5536562c7ee92b4050d",
+  "engine_dirty_identity": "e46b3251c55a9d8cd1e33c7f4cbab6604ac4280a03c7c4d05a4586815afe20a3",
+  "frozen_source_file_sha256": "e46b3251c55a9d8cd1e33c7f4cbab6604ac4280a03c7c4d05a4586815afe20a3",
+  "engine_options": {
+    "compiler": "GCC15",
+    "release": true,
+    "server": false,
+    "sim_revision": 121
+  },
+  "platform": {
+    "arch": "x86_64",
+    "os": "linux"
+  },
+  "engine_executable_sha256": "6ba5746a3cf003d05563756b2437d39da20ee20bcbd2c2b206007458cf363e68",
+  "worker_archive_sha256": "f0821f950ac30df4c2f9aae8d71b097ca5596bcb7d8bf186b07efff9f26afc8a",
+  "framework_package_id": "39ce10fdacb267405d6aab1e2d677a43d4f1c7b76f5f448c79ae7a5dfd5bd311",
+  "manifest_sha256": "f253caeb323dfc5fbe7ba11dbe972daef47e82652efbd1aaffe4a8ec92d629f7",
+  "original_experiment_root": "/home/bradley/.codex/worktrees/b60a/glob2/artifacts/maxima-food-fixes/broad-confirmatory-20261102",
+  "source_snapshot_exact_dirty_identity_match": true
+}

@@ -1,0 +1,39 @@
+{
+  "source_revision": "dd38ad2902d3860669c42992a994bd288e96719b",
+  "base_revision": "9ece139a26b84caec0045dc688817315b19fe08b",
+  "source_tree_clean": true,
+  "native_junit": {
+    "tests": "364",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "python_tests": 77,
+  "cli_cases": 25,
+  "legacy_save": {
+    "format": 115,
+    "golden_tick_records": 512,
+    "midpoint_reload_records": 256,
+    "compute_participants": [
+      1,
+      4
+    ],
+    "all_passed": true
+  },
+  "sim_revision_guard": "passed",
+  "independent_review": "no actionable findings",
+  "platform": "Linux x86_64, GCC15.2.0, release O3",
+  "simulation_revision": 121,
+  "save_format": 193,
+  "network_protocol": 75,
+  "hosted_cross_platform": "requested ci:full; pending, not claimed as passed",
+  "build_environment": {
+    "GLOB2_SDL3_PREFIX": "/home/bradley/.cache/glob2/native-sdl3-3.4.16-image3.4.6-ttf3.2.2-net3.2.0",
+    "GLOB2_RECORDING_PREFIX": "/home/bradley/.local/share/glob2/development/dependencies/build-a3a8fc397766ecbe44e3ffd0/prefix"
+  },
+  "native_binaries_sha256": {
+    "build/linux/client/release/src/glob2": "61c2dcaefe82d6bad1a8690f449848be79f3c15349b13ffaac3ad2224f4d17f0",
+    "build/linux/client/release/test/glob2-engine-tests": "95397f1829ac6504b096abe3a19dc3899459f8a7f49a89ec748b78ff3c666877",
+    "build/linux/client/release/test/glob2-unit-tests": "798d0a3f5440b2ba0a3d9011eb42cb6832c028a446e410ff795caf622360eb2a"
+  }
+}

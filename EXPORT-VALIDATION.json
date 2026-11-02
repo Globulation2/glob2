@@ -1,0 +1,21 @@
+{
+  "successful_games": 3432,
+  "official_scores_recomputed_from_exported_compact_curves_and_match_report": 3432,
+  "planned_jobs": 3648,
+  "generated_map_requests": 192,
+  "successful_map_requests": 190,
+  "map_artifacts": 572,
+  "preserved_worker_archive_byte_identical": true,
+  "frozen_source_snapshot_matches_bundle_dirty_identity": true,
+  "no_original_files_changed_or_deleted": true,
+  "excluded": [
+    "engine executable/assets bundle",
+    "all replay/save files",
+    "all raw stdout/stderr logs",
+    "worker cache/spool",
+    "coordinator database",
+    "raw development/hypothesis notes"
+  ],
+  "score_reproduction": "Run recompute_scores.py from this directory using the preserved archive; no engine or raw logs required.",
+  "food_reproduction_limit": "Per-case common-window measurements and original summary/coverage are retained. Aggregates can be checked from these measured sufficient data; raw stdout extraction cannot be rerun after raw logs are deleted."
+}

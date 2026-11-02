@@ -1,0 +1,26 @@
+[
+  [
+    "qualified-native",
+    "python3 test/run_tests.py --filter 'Maxima*' --filter 'Replay*' --filter 'GameHeader*' --filter 'PlatformProtocol*' --filter 'MatchSetup*' --filter 'AISavePortability*' --filter 'TurnEngineHarness/*' -j12 --junit /tmp/maxima-official-validation/qualified-native.xml > /tmp/maxima-official-validation/qualified-native.log 2>&1"
+  ],
+  [
+    "qualified-python",
+    "python3 -m unittest discover -s src/ai/maxima -p '*Test.py' > /tmp/maxima-official-validation/qualified-python.log 2>&1"
+  ],
+  [
+    "qualified-cli",
+    "python3 test/tournament_cli_integration.py --ticks 1024 --output /tmp/maxima-official-validation/qualified-cli > /tmp/maxima-official-validation/qualified-cli.log 2>&1"
+  ],
+  [
+    "qualified-save-serial",
+    "python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2 --output /tmp/maxima-official-validation/qualified-save-serial > /tmp/maxima-official-validation/qualified-save-serial.log 2>&1"
+  ],
+  [
+    "qualified-save-parallel",
+    "python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2 --parallel-ai --output /tmp/maxima-official-validation/qualified-save-parallel > /tmp/maxima-official-validation/qualified-save-parallel.log 2>&1"
+  ],
+  [
+    "qualified-sim-revision",
+    "python3 test/check_sim_revision.py --base origin/master > /tmp/maxima-official-validation/qualified-sim-revision.log 2>&1"
+  ]
+]

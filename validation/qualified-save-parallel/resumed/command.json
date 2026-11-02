@@ -1,0 +1,15 @@
+[
+  "/home/bradley/.codex/worktrees/b60a/glob2/build/linux/client/release/src/glob2",
+  "game",
+  "run",
+  "--load-game",
+  "/tmp/maxima-official-validation/qualified-save-parallel/run/checkpoint-30256.game.gz",
+  "--ticks",
+  "30512",
+  "--compute-threads",
+  "4",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/tmp/maxima-official-validation/qualified-save-parallel/resumed"
+]
