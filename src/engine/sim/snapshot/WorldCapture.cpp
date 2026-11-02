@@ -112,6 +112,7 @@ Handle capture(const Game& game,
 		const bool sameTerrain = previous->terrain && previous->terrain->revision == game.map.terrainGeneration() && generations[0] == old[0];
 		reuse(Component::Terrain, result->terrain, previous->terrain, sameTerrain);
 		reuse(Component::Resources, result->resources, previous->resources, sameTerrain && generations[1] == old[1]);
+		reuse(Component::Claims, result->claims, previous->claims, generations[5] == old[5]);
 		reuse(Component::Occupancy, result->occupancy, previous->occupancy, generations[2] == old[2]);
 		reuse(Component::Areas, result->areas, previous->areas, generations[3] == old[3] && previous->configurationRevision == result->configurationRevision);
 		reuse(Component::Annotations, result->annotations, previous->annotations, generations[3] == old[3]);
@@ -271,6 +272,16 @@ Handle capture(const Game& game,
 		stamps.worldIdentity = identity; stamps.width = geometry.width; stamps.height = geometry.height;
 		stamps.filledTick = game.stepCounter;
 	};
+    if (needs(requirements, Component::Claims)) {
+        auto owner = acquireStamped(&Storage::claims, Component::Claims);
+        const auto& source = game.map.materialClaimState();
+        const bool resized = prepare(owner->counts.cells, source.cells.size());
+        refresh(owner->stamps, game.map.changes(MapState::TrackedArray::Claims), resized,
+            [&](size_t start, size_t length) { copyCells(owner->counts.cells, std::span<const std::uint8_t>(source.cells), start, length); });
+        owner->counts.overflow = source.overflow;
+        if (storage) storage->bytesCopied += source.overflow.size() * sizeof(decltype(source.overflow)::value_type);
+        result->claims = std::move(owner);
+    }
     if (needs(requirements, Component::Annotations)) {
         auto annotations=storage ? storage->annotations.acquire(storage->allocations, [](const Annotations& a) { return a.stamps.filledTick; }) : std::make_shared<Annotations>();
         annotations->areaNames = game.map.areaNames;
@@ -581,11 +592,13 @@ Handle capture(const Game& game,
 		for (const auto &plane : game.map.publishedResourceFields())
 		{
 			if (storage && fields->planes.size() == fields->planes.capacity()) ++storage->allocations;
-			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation) { fields->add(*same); continue; }
+            const auto destinations=game.map.materialGradientDestinations(*plane.slot);
+            const auto destinationGeneration=game.map.materialGradientDestinationGeneration(plane.slot);
+			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation && same->destinationGeneration==destinationGeneration) { fields->add(*same); continue; }
 			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
 			if (storage && values->capacity() < planeCells) ++storage->allocations;
 			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
-			fields->add(ResourceField{plane.key, plane.generation, std::move(values)});
+			fields->add(ResourceField{plane.key, plane.generation, std::move(values),destinations,destinationGeneration});
 		}
 		result->resourceFields = std::move(fields);
 	}
@@ -647,6 +660,11 @@ void verifyCapture(const Game& game, const Handle& handle)
 		if (handle.resources->staticMaterialSourceGeneration != game.map.staticMaterialSourceGeneration())
 			throw std::logic_error("snapshot verification: static material source generation differs from the live map");
 	}
+	if (handle.claims) {
+        compare("claims", handle.claims->counts.cells, std::span<const std::uint8_t>(game.map.materialClaimState().cells));
+        if (handle.claims->counts.overflow != game.map.materialClaimState().overflow)
+            throw std::logic_error("snapshot verification: claim overflow differs from the live map");
+    }
 	if (handle.occupancy) compare("occupancy", handle.occupancy->cells, game.map.occupancyState());
 	if (handle.areas) compare("areas", handle.areas->cells, game.map.areaState());
 	if (handle.visibility)

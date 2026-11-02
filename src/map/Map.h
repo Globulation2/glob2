@@ -3,7 +3,10 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include "ResourceClaims.h"
+#include "field/GradientDestinationPlanes.h"
 struct GradientTargetCell;
+namespace ResourceClaims { class Probe; }
 #include "OwnerRandom.h"
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
@@ -140,7 +143,14 @@ class Map
 	void markOccupancy(size_t index) { occupancyChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markArea(size_t index) { areaChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markVisibility(size_t index) { visibilityChanges.mark(chunkGeometry.chunkOf(index)); }
-	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); }
+	MapState::ChangeTracker claimChanges;
+	ResourceClaims::Ledger materialClaims;
+    bool materialClaimTracking = false;
+    std::shared_ptr<ResourceClaims::Probe> materialClaimProbe;
+    std::array<Uint64,4> materialClaimFarmEpoch{};
+    std::map<std::array<Uint32,5>,std::optional<size_t>> materialClaimFarmCache;
+	void markClaim(size_t index) { claimChanges.mark(chunkGeometry.chunkOf(index)); }
+	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); claimChanges.markAll(); }
 	//! For fixtures that assign the cell arrays directly instead of calling
 	//! setSize: size the change trackers and bind the live view to the arrays.
 	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); rebuildPaintedAreaCounts(); }
@@ -150,7 +160,8 @@ class Map
 		chunkGeometry.reset(w, h, unsigned(wDec), Uint32(wMask));
 		const auto count = chunkGeometry.count();
 		terrainChanges.reset(count); resourceChanges.reset(count); occupancyChanges.reset(count);
-		areaChanges.reset(count); visibilityChanges.reset(count);
+		areaChanges.reset(count); visibilityChanges.reset(count); claimChanges.reset(count);
+		materialClaims.reset(std::size_t(w) * h);
 	}
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
@@ -233,8 +244,8 @@ class Map
 public:
 	WorldRandomStreams worldRandom;
 	EntityRandom& privateRandom(RandomDomain domain);
-	std::array<Uint64, 5> snapshotGenerations() const
-	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation}; }
+	std::array<Uint64, 6> snapshotGenerations() const
+	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation, claimChanges.generation}; }
 	const MapState::ChunkGeometry& chunks() const { return chunkGeometry; }
 	const MapState::ChangeTracker& changes(MapState::TrackedArray array) const
 	{
@@ -244,6 +255,7 @@ public:
 		case MapState::TrackedArray::Resources: return resourceChanges;
 		case MapState::TrackedArray::Occupancy: return occupancyChanges;
 		case MapState::TrackedArray::Areas: return areaChanges;
+		case MapState::TrackedArray::Claims: return claimChanges;
 		default: return visibilityChanges;
 		}
 	}
@@ -758,6 +770,31 @@ public:
 	// derived seed data coherent. Reads never invalidate preparation caches.
 	size_t cellCount() const { return resourceCells.size(); }
 	std::span<const MapState::ResourceCell> resourceState() const { return resourceCells; }
+    // Temporary shadow collection: rebuilt after load, never used by gameplay.
+    bool materialClaimTrackingEnabled() const { return materialClaimTracking; }
+    void setMaterialClaimTrackingEnabled(bool enabled);
+    void reconcileMaterialClaims();
+    void setMaterialClaimProbe(std::shared_ptr<ResourceClaims::Probe> probe) { materialClaimProbe=std::move(probe); }
+    const ResourceClaims::Probe* resourceClaimProbe() const { return materialClaimProbe.get(); }
+    void observeMaterialClaimDecision(const Unit&, const Uint16* field);
+    void observeMaterialClaimPickupDecision(const Unit&, int x, int y);
+    void finishMaterialClaimProbe();
+    struct MaterialClaimTelemetry {
+        Uint64 reconciliations=0, changed=0, released=0, overcommittedSelections=0, peakActive=0;
+        Uint64 unitReconcileNs=0, sweepNs=0, sweeps=0, farmQueries=0, farmCacheHits=0, farmFloodCells=0;
+    } materialClaimTelemetry;
+	const ResourceClaims::Counts& materialClaimState() const { return materialClaims.counts(); }
+	const ResourceClaims::Ledger& materialClaimLedger() const { return materialClaims; }
+	bool observeMaterialClaim(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim)
+	{ return materialClaims.observe(owner, claim, [this](size_t index) { markClaim(index); }); }
+	bool acquireMaterialClaim(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim, Uint32 capacity, bool infinite = false)
+	{ return materialClaims.acquire(owner, claim, capacity, infinite, [this](size_t index) { markClaim(index); }); }
+	bool releaseMaterialClaim(ResourceClaims::Owner owner)
+	{
+        const bool changed=materialClaims.release(owner, [this](size_t index) { markClaim(index); });
+        if (changed && materialClaimTracking) ++materialClaimTelemetry.released;
+        return changed;
+    }
 	std::span<const MapState::OccupancyCell> occupancyState() const { return occupancyCells; }
 	std::span<const MapState::AreaCell> areaState() const { return areaCells; }
 	const Tile getTile(size_t index) const
@@ -922,7 +959,8 @@ public:
 	//! in the team's farm area. Flood 8-connected sources from the unit's 3x3;
 	//! empty gaps stop pooling. Choose the highest stock above that source's
 	//! configured reserve, then shortest distance, then tile index.
-	std::optional<size_t> pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask);
+	std::optional<size_t> pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry = std::nullopt);
+    std::optional<size_t> pickClaimFarmHarvestTileSlot(int x, int y, int material, Uint32 teamMask, std::optional<size_t> entry = std::nullopt);
 
 	//! Revalidate the touched target's requested stock before delivery. Eligible
 	//! farm yields pool from the connected field; destructive or nonfarmable
@@ -1128,8 +1166,17 @@ public:
 	unsigned materialSupplyModesSlot(const Building* consumer, int resource) const;
 	const Uint16 *cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes);
 	bool stockSupplierEligibleSlot(const Building* supplier, const Building* consumer, int resource, unsigned modes) const;
+    bool materialDestinationValidSlot(int team, int material, int movement, int x, int y, bool markets = false, const Building* consumer = nullptr) const;
+    // Current weighted pursuit projection; future occupancy/field changes can retarget it.
+    bool projectMaterialDestination(const Uint16* field, int team, int material, int movement, int x, int y,
+        Sint32* targetX, Sint32* targetY, bool markets = false, const Building* consumer = nullptr) const;
 	void setMaterialRoutingCacheBudget(Uint64 bytes);
 	Uint64 materialRoutingCacheBytes() const;
+    // Opt-in until backend, persistence and gameplay experiments are complete.
+    void setMaterialDestinationsEnabled(bool enabled);
+    bool materialDestinationsEnabled() const;
+    std::shared_ptr<const gradient_kernel::OwnedDestinations> materialGradientDestinations(const Uint16* field) const;
+    Uint64 materialGradientDestinationGeneration(Uint16* const* slot) const;
 	void saveMaterialRoutingCache(GAGCore::OutputStream* stream) const;
 	void loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, int versionMinor);
     unsigned gradientDestination(Uint16* const*) const;
@@ -1152,7 +1199,8 @@ public:
     void gradientMovementDemand(GradientFieldKey);
     void gradientMovementOutcome(const GradientQueryContext&,const Uint16*,const GradientQueryResult&);
     bool requestGradientField(Uint16** slot, int kind, int team, int material, int swim, int consumer = -1, unsigned modes = 1, int refreshReason = -1);
-    StepResult queryMaterialStep(EntityRandom&, int, Uint8, int, int, int, int*, int*, bool*, Building*, bool = false);
+    StepResult queryMaterialStep(EntityRandom&, int, Uint8, int, int, int, int*, int*, bool*, Building*, bool = false,
+        Sint32* projectedX = nullptr, Sint32* projectedY = nullptr, bool* projectedValid = nullptr, const Unit* observer = nullptr);
 
     StepResult queryForbiddenStep(const Uint16*, int, int, int, int, int*, int*);
 	const Uint16 *getForbiddenGradient(int teamNumber, int swimClass);

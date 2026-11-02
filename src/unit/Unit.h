@@ -84,6 +84,11 @@ public:
 
 	bool findMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
 		bool withMarkets=false, const Building* consumer=nullptr);
+    void reconcileMaterialClaim();
+    struct MaterialClaimObservation {
+        Unit& unit;
+        ~MaterialClaimObservation() { unit.reconcileMaterialClaim(); }
+    };
 	void syncStep(void);
 	
 	void directionFromDxDy(void);

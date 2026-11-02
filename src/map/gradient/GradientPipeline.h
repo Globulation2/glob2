@@ -16,6 +16,7 @@
 #include <utility>
 #include <type_traits>
 #include <vector>
+#include <unordered_map>
 
 // Owner reserves and publishes at fixed ticks. Workers own private outputs and
 // immutable inputs until join; physical completion never selects publication.
@@ -33,6 +34,7 @@ class GradientPipeline
 		std::optional<SimulationSnapshot::Handle> snapshotLease;
 		std::uint16_t **slot = nullptr;
 		std::unique_ptr<std::uint16_t[]> data;
+		std::shared_ptr<gradient_kernel::OwnedDestinations> destinations;
 		int swim = 0;
 		std::uint64_t due = 0, executorDue = 0;
 		bool superseded = false, done = false;
@@ -60,6 +62,7 @@ class GradientPipeline
         AdaptiveGradientState::Capture adaptiveCapture;
         std::uint64_t preparedGoalCount=0; // Worker output; read only after join.
         bool legacyAssociation=false; // Only imported pre178 queues may overlap one logical key.
+        std::shared_ptr<const gradient_kernel::OwnedDestinations> destinations;
 	};
 	struct RestoredSnapshot
 	{
@@ -72,6 +75,7 @@ class GradientPipeline
         AdaptiveGradientState::Capture adaptiveCapture;
         std::uint64_t preparedGoalCount=0; // Worker output; read only after join.
         bool legacyAssociation=false; // Only imported pre178 queues may overlap one logical key.
+        std::shared_ptr<gradient_kernel::OwnedDestinations> destinations;
 	};
 	using Work = std::function<void(Job &, GradientWorkspace &)>;
 	using AsyncWork = std::function<std::shared_ptr<gradient_kernel::OwnedGradientField>(
@@ -98,6 +102,14 @@ class GradientPipeline
 	std::deque<std::unique_ptr<Job>> pending;
 	std::vector<std::unique_ptr<Job>> spare;
 	std::vector<Workspace> workspaces;
+    struct PublishedDestinations {
+        const std::uint16_t* costs;
+        std::shared_ptr<const gradient_kernel::OwnedDestinations> destinations;
+        std::uint64_t generation = 0;
+    };
+    std::unordered_map<std::uint16_t* const*, PublishedDestinations> publishedDestinations;
+    std::unordered_map<const std::uint16_t*, std::uint16_t* const*> destinationCostSlots;
+    std::uint64_t destinationSequence = 0;
 	ComputeExecutor *executor = nullptr;
 	std::shared_ptr<gradient_kernel::BackendSession> backendSession;
 	std::shared_ptr<gradient_kernel::GradientDeviceService> deviceService;
@@ -127,6 +139,8 @@ class GradientPipeline
 		job.crowding = &scratch.crowding;
 		try
 		{
+			if (job.request.destinations)
+				job.destinations = std::make_shared<gradient_kernel::OwnedDestinations>(self.cells);
 			if (job.seed)
 				job.seed(job);
 			self.work(job, scratch.propagation);
@@ -149,6 +163,8 @@ class GradientPipeline
 		{
 			const auto decision = self.backendSession->choose(
 				gradient_preparation::backendFamily(job.request.kind), 1, self.selected);
+			if (job.request.destinations)
+				job.destinations = std::make_shared<gradient_kernel::OwnedDestinations>(self.cells);
 			if (job.seed)
 				job.seed(job);
 			if (decision.plan != gradient_kernel::Plan::CPU && self.asyncWork)
@@ -207,6 +223,7 @@ class GradientPipeline
 		{
 			auto field = std::move(job.device->field);
 			job.data = field->takeData();
+			job.destinations = std::move(field->destinations);
 			if (field->error)
 				job.error = field->error;
 		}
@@ -243,6 +260,8 @@ class GradientPipeline
 			}
 		pending.clear();
 		spare.clear();
+		publishedDestinations.clear();
+		destinationCostSlots.clear(); destinationSequence=0;
 		workspaces.clear();
 		delay = 0;
 		admitted=0;
@@ -291,6 +310,61 @@ class GradientPipeline
 		selectExecution();
 	}
 	std::shared_ptr<gradient_kernel::BackendSession> session() const { return backendSession; }
+    // A lease is useful only with the exact cost publication it accompanies.
+    // Consumers must not pair a retained label lease with a newer cost pointer.
+    std::shared_ptr<const gradient_kernel::OwnedDestinations> destinationField(std::uint16_t* const* slot) const
+    {
+        const auto found = publishedDestinations.find(slot);
+        return found != publishedDestinations.end() && found->second.costs == *slot
+            ? found->second.destinations : nullptr;
+    }
+    std::shared_ptr<const gradient_kernel::OwnedDestinations> destinationFieldForCosts(const std::uint16_t* costs) const
+    {
+        const auto found=destinationCostSlots.find(costs);
+        return found==destinationCostSlots.end() ? nullptr : destinationField(found->second);
+    }
+    std::uint64_t destinationGeneration(std::uint16_t* const* slot) const
+    {
+        const auto found=publishedDestinations.find(slot);
+        return found!=publishedDestinations.end() && found->second.costs==*slot ? found->second.generation : 0;
+    }
+    std::uint64_t destinationPublicationSequence() const { return destinationSequence; }
+    void restoreDestinationSequence(std::uint64_t value) { destinationSequence=value; }
+    void forgetDestinations(std::uint16_t* const* slot)
+    {
+        if (const auto found=publishedDestinations.find(slot);found!=publishedDestinations.end()) {
+            destinationCostSlots.erase(found->second.costs);
+            publishedDestinations.erase(found);
+        }
+    }
+    void restorePublishedDestinations(std::uint16_t* const* slot,
+        std::shared_ptr<const gradient_kernel::OwnedDestinations> output,std::uint64_t generation)
+    {
+        if (!slot || !*slot || !output || output->cells!=cells || !generation || generation>destinationSequence)
+            throw std::invalid_argument("Invalid published gradient destinations");
+        forgetDestinations(slot);
+        destinationCostSlots.insert_or_assign(*slot,slot);
+        publishedDestinations.insert_or_assign(slot,PublishedDestinations{*slot,std::move(output),generation});
+    }
+    template<class Visitor> void visitPublishedDestinations(Visitor visit) const
+    {
+        for (const auto& [slot,field]:publishedDestinations)
+            if (*slot==field.costs) visit(slot,field.destinations,field.generation);
+    }
+    struct DestinationMemory {
+        std::size_t publishedBytes = 0, pendingReservedBytes = 0;
+    };
+    DestinationMemory destinationMemory() const
+    {
+        DestinationMemory result;
+        for (const auto& [slot, field] : publishedDestinations)
+            result.publishedBytes += field.destinations->bytes();
+        // Requests are immutable during execution. Do not read worker-written
+        // output pointers just to inspect memory while a job is running.
+        for (const auto& job : pending) if (job->request.destinations)
+            result.pendingReservedBytes += cells * 2 * sizeof(std::uint16_t);
+        return result;
+    }
 	void resizeWorkspaces()
 	{
 		workspaces.resize(executor ? executor->threadCount() : 1);
@@ -305,11 +379,12 @@ class GradientPipeline
 		finish({JoinReason::Save, ComputeTelemetry::NoTick});
 		for (const auto &job : pending)
 			visitor(PendingSnapshot{job->slot, job->data.get(), unsigned(job->due - tick),
-									job->superseded, job->adaptiveKey,job->adaptiveCapture,job->preparedGoalCount,job->legacyAssociation});
+									job->superseded, job->adaptiveKey,job->adaptiveCapture,job->preparedGoalCount,job->legacyAssociation,job->destinations});
 	}
 	void restoreCompleted(RestoredSnapshot value)
 	{
 		if (!enabled() || !value.slot || !value.data || !value.remaining ||
+			(value.destinations && value.destinations->cells != cells) ||
 			value.remaining > delay || pending.size() >= delay*MaxJobsPerTick ||
 			(!pending.empty() && pending.back()->due > tick + value.remaining))
 			throw std::runtime_error("Invalid saved gradient deadline or destination");
@@ -321,6 +396,8 @@ class GradientPipeline
 		job->done = true;
         job->adaptiveKey=value.adaptiveKey;job->adaptiveCapture=value.adaptiveCapture;job->preparedGoalCount=value.preparedGoalCount;job->legacyAssociation=value.legacyAssociation;
 		job->data = std::move(value.data);
+		job->destinations = std::move(value.destinations);
+		job->request.destinations = bool(job->destinations);
 		pending.push_back(std::move(job));
 	}
 	void advance()
@@ -337,12 +414,19 @@ class GradientPipeline
 				auto *old = *job.slot;
 				*job.slot = job.data.release();
 				job.data.reset(old);
+                forgetDestinations(job.slot);
+                if (job.destinations) {
+                    if (destinationSequence==std::numeric_limits<std::uint64_t>::max())
+                        throw std::overflow_error("Gradient destination publication sequence exhausted");
+                    restorePublishedDestinations(job.slot,job.destinations,++destinationSequence);
+                }
                 if(job.adaptiveKey) job.adaptiveCapture.goalCount=job.preparedGoalCount;
                 if (onPublished) onPublished(job);
 				++metrics.published;
 			}
 			else
 				++metrics.discarded;
+			job.destinations.reset();
 			spare.push_back(std::move(pending.front()));
 			pending.pop_front();
 		}
@@ -365,6 +449,7 @@ class GradientPipeline
     { for (const auto& job:pending) if (!job->superseded) visitor(job->slot); }
 	void invalidate(std::uint16_t **slot)
 	{
+		forgetDestinations(slot);
 		for (auto &job : pending)
 			if (job->slot == slot && !job->superseded) {
                 job->superseded=true;
@@ -392,6 +477,7 @@ class GradientPipeline
 		if (callback.invoke == runGPU)
 			job->device = std::make_unique<DeviceJob>();
         job->adaptiveKey.reset();job->adaptiveCapture={};job->preparedGoalCount=0;job->legacyAssociation=false;job->workReason=255;
+        job->destinations.reset();job->request.destinations=false;
         job->slot = slot;
 		job->swim = swim;
 		job->due = tick + delay;

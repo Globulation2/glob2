@@ -51,6 +51,7 @@ bool Unit::isUnitHungry(void)
 
 void Unit::standardRandomActivity()
 {
+    if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(scriptIdentity);
 	if (attachedBuilding) attachedBuilding->releaseService(this);
 	attachedBuilding=NULL;
 	setTargetBuilding(NULL);
@@ -64,6 +65,7 @@ void Unit::standardRandomActivity()
 
 void Unit::stopAttachedForBuilding(bool goingInside)
 {
+    if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(scriptIdentity);
 	if (verbose)
 		printf("guid=(%d) stopAttachedForBuilding()\n", gid);
 	assert(attachedBuilding);
@@ -232,6 +234,7 @@ void Unit::resolveDeath()
 
 	if (hp<UNIT_HP_DEATH_THRESHOLD)
 	{
+        if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(scriptIdentity);
 		if (!isDead)
 		{
             // Guard crowding excludes dead units immediately, before the

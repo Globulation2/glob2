@@ -52,6 +52,7 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
 	};
 	account(next.terrain, previous.terrain, 0);
 	account(next.resources, previous.resources, 0);
+	account(next.claims, previous.claims, 0);
 	account(next.occupancy, previous.occupancy, 0);
 	account(next.areas, previous.areas, 0);
 	account(next.visibility, previous.visibility, 0);

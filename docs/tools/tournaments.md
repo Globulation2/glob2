@@ -546,6 +546,17 @@ unsupported combinations remain reported failures rather than being filtered out
   failed generator with another one. A single-generator cohort is a specialized experiment and must not
   be presented as general AI strength.
 
+  Sampled studies can set `ffa_colonies: [4, 8, 16]` to draw the FFA colony
+  count independently (integers 2–16; the default remains four). Duels and 2v2
+  retain two and four colonies. Set `seat_sampling: "with_replacement"` for
+  independent AI draws, allowing repeated AI implementations even when the pool
+  contains enough distinct entries. The default `"distinct"` samples without
+  replacement when possible and falls back to replacement for smaller pools.
+  In 2v2, the two team AIs are sampled, preserving homogeneous pairs. These two
+  controls require `sample_games` and cannot be combined with `balanced_duels`.
+  Explicit `ffa_colonies` requires an `ffa` entry in `formats`. Counts above four
+  need the same generator/size preflight as any other nonstandard cohort.
+
   Set `balanced_duels: true` for a balanced 1v1 sample: `sample_games` must be
   even, with one map size and at least two AIs. Each block plays the same map and
   game seed twice, swapping the AI starting sides. Generator quotas differ by at
@@ -648,6 +659,108 @@ Engine compatibility requires actual identical initial states/seeds/orders and
 per-tick checksums across platforms; passing transport tests or builds is insufficient.
 Keep measured coverage, command output and other run-specific evidence in the
 ignored `artifacts/` workspace or in pull-request attachments.
+
+## Resource-claim experiment preparation
+
+`tools/resource_claim_patterns.py` is temporary offline experiment tooling. It
+does not enable claims, run games, or select a shipping policy. Keep its generated
+catalogs under `artifacts/`; remove the experimental generator and its tests when
+the final claim policy is selected. Its default small grid is a preparation
+smoke check, not the full requested search:
+
+```sh
+python3 tools/resource_claim_patterns.py --output artifacts/claim-pattern-pilot \
+  --radii 0 1 2 3 4 6 8 --strides 1 2 3 4 --origins unit resource midpoint interleaved \
+  --directions 0 1 2 3 4 5 6 7 --headers
+```
+
+For full grids, the radius and positive sparsity scales are
+`0,1,2,3,4,6,8,12,16,24,32,48,64,96,128,192,256`; omit zero for sparsity.
+Split large grids into explicit catalogs by family/radius rather than removing
+the default 256 MiB payload and 100,000-variant bounds. A failed limit leaves
+`summary.json` marked incomplete. Existing output directories are never replaced.
+Each JSONL manifest entry records its full parameter choice and SHA-256 array
+identity; equivalent arrays share one packed binary and optional C++ header.
+Headers contain separate signed 16-bit X/Y and byte origin arrays. Directions are
+the eight compass octants starting at positive X; cones cover 90 degrees, and
+perpendicular cones include both sides. All shapes are clipped to a Euclidean
+disk. Every pattern starts with the unit's zero-offset probe. Resource/midpoint
+origins follow it, and interleaving checks all three origins per offset. Reverse
+and shuffle variants preserve that initial probe. Random-block sparsity samples
+one offset from each consecutive block of the same dense ordering. Geometry is
+cached across origin and sparsity variants; seeds and enumeration order do not
+consume or alter the simulation RNG.
+
+A pilot cohort can use the normal `ai_comparison plan` path with
+`sample_games: 32`, an explicit farming-AI pool, `formats: ["ffa"]`,
+`ffa_colonies: [4,8,16]`, `seat_sampling: "with_replacement"`, and
+`sizes: [{"width":8,"height":8},{"width":9,"height":9}]` (map exponents).
+Preflight generators for those sizes/counts, freeze the resulting requests, and
+use `win_probability_permille: 0` only for the deliberately late-game cohort.
+Retain the usual 950 threshold in the separately labeled representative cohort.
+Add requested claim telemetry only after the instrumented engine advertises it;
+a planner manifest alone does not produce claim-policy measurements. Use the
+shared storage/CPU allocation controls above and estimate campaign volume from
+the pilot before launching broad runs.
+
+The temporary integrated planner freezes a 32-game pilot (16 broad, 16 farming
+stress) or a 1,000-game round (500 each) using those same sampling APIs:
+
+```sh
+python3 -m tools.tournaments.resource_claims plan --bundle BUNDLE --games 32 \
+  --seed 1 --output artifacts/claim-pilot.json
+python3 -m tools.tournaments.resource_claims analyze RESULTS \
+  --output artifacts/claim-pilot-analysis.json
+```
+
+Planning does not dispatch jobs. Preflight every sampled generator/count/size;
+retain failed requests and apply explicit `--generator-overrides` where needed.
+Broad games draw native AIs, formats and 128/256/512 square sizes independently;
+stress games draw Nicowar/Econo/Maxima/Cortex/Cabino from the pinned catalog,
+4/8/16 colonies and 256/512 square sizes. The six stress size/count strata each
+have design probability 1/6, not guaranteed equal observed counts. Broad and
+stress use 950 and zero early-victory thresholds, respectively. The manifest
+freezes sampling, stopping rules, limits and 50/50 cohort weights; reports retain
+cohorts separately. The resource-claim job adapter requires a complete compressed
+trace whose limits and completed counts match the engine's result.
+
+The pilot header has 240 logical pattern profiles with precomputed views for all
+eight nearest-resource bearings. Cone/ray direction offsets are relative to that
+bearing. Runtime selection uses wrapped integer deltas: a component at least
+twice the other selects a cardinal direction, otherwise a diagonal. No runtime
+rotation or rounding changes the arrays. Regenerate the temporary header with
+`tools/resource_claim_patterns.py --pilot-header OUTPUT`; it refuses to replace
+an existing output. This pilot omits most large radii and is not policy-selection
+evidence for the full requested grid.
+
+Analysis reports source-choice lower-bound regret separately from the cost to
+the pattern's selected pickup access; these differ for pooled farms. Exact costs
+label heuristic decisions but never choose their candidates. An unreachable
+selection is distinct from falling back without selecting a resource. Missing
+oracles, zero-cost optima, failed/incomplete games and sampling exclusions remain
+explicit. Summaries weight per-game means equally, with deterministic bootstrap
+intervals over games (unavailable below five games), rather than pretending
+individual unit decisions are independent observations.
+
+The post-pilot coverage audit requires five distinct games and 100 sampled
+events per required scenario, using actual material, stock, farm, yield and late
+game features. Missing strata produce supplemental allocation requests. Infinite
+fruit/stone have no finite-capacity contention by design; verify their routing
+and delivery behavior separately, rather than demanding impossible contested
+samples. Protected-farm classification is explicitly an observational proxy;
+controlled fixture intent and gameplay review remain necessary.
+
+Freeze supplemental snapshots for uncovered sparse/dense, protected/pooled,
+exhausted-farm, algae, finite-persistent, compound or destructive cases. Supply a
+JSON list of `{ "path": "SAVE", "strata": ["water_algae"], "start_tick": 150000,
+"window_ticks": 30000 }` records to `resource_claims supplement --bundle BUNDLE
+--fixtures FILE --artifacts RESULTS/artifacts --output MANIFEST`. It retains
+embedded AIs, rules and RNG state, freezes content-addressed inputs, rejects
+identical states counted twice, and caps input capture at 256 MiB per save and
+2 GiB total with an 8 GiB reserve. Distinct seeds/states must be prepared before
+planning; repeating one save is not additional independent evidence. Scenario
+labels alone never satisfy the coverage audit. Supplemental sampling rates differ
+from the representative campaign, so analyze those frozen cohorts separately.
 
 ## Map-generation telemetry
 

@@ -19,7 +19,7 @@ TEST_CASE("natural and clearing goals precede route obstacles but respect forbid
     CHECK(cell.goal(key(GradientFieldFamily::Clear)));
     cell.forbidden=1;
     CHECK_FALSE(cell.goal(key(GradientFieldFamily::Clear)));
-    CHECK(cell.goal(key(GradientFieldFamily::Materials,AIR_MOVEMENT_CLASS)));
+    CHECK_FALSE(cell.goal(key(GradientFieldFamily::Materials,AIR_MOVEMENT_CLASS)));
     CHECK(cell.goal(key(GradientFieldFamily::Clear,AIR_MOVEMENT_CLASS)));
 }
 TEST_CASE("market destinations are the natural and supplier tile union") {

@@ -4,7 +4,7 @@
 addToLibrary({
   $Glob2GradientGPU: {
     device: null, pipelines: null, lost: null, adapterInfo: null,
-    async prepare(frozen, jacobi) {
+    async prepare(frozen, jacobi, frozenDestinations, jacobiDestinations) {
       if (this.device) return;
       if (!navigator.gpu) throw Error('WebGPU unavailable');
       const adapter = await navigator.gpu.requestAdapter();
@@ -16,7 +16,7 @@ addToLibrary({
       // A failed compilation or device loss owns cleanup before signaling C++.
       try {
         const pipelines = [];
-        for (const code of [frozen, jacobi]) {
+        for (const code of [frozen, jacobi, frozenDestinations, jacobiDestinations].filter(Boolean)) {
           const module = device.createShaderModule({code});
           const info = await Promise.race([module.getCompilationInfo(), loss]);
           if (info.messages.some(m => m.type === 'error')) throw Error(info.messages.map(m => m.message).join('\n'));
@@ -31,24 +31,25 @@ addToLibrary({
     finish(signal, result) {
       Atomics.store(HEAP32, signal >> 2, result); Atomics.notify(HEAP32, signal >> 2);
     },
-    async execute(signal, seeds, costs, output, width, height, cap, frozen) {
+    async execute(signal, seeds, costs, output, width, height, cap, frozen, destinations = false) {
       const device = this.device, cells = width * height, pitch = Math.ceil(width / 16), rows = Math.ceil(height / 16), tiles = pitch * rows;
-      if (!device || cells * 4 > device.limits.maxStorageBufferBindingSize) throw Error('WebGPU gradient buffer limit');
+      const stride = destinations ? 2 : 1, fieldBytes = cells * stride * 4;
+      if (!device || fieldBytes > device.limits.maxStorageBufferBindingSize) throw Error('WebGPU gradient buffer limit');
       const x = frozen ? pitch : Math.ceil(cells / 128), y = frozen ? rows : 1;
       if (x > device.limits.maxComputeWorkgroupsPerDimension || y > device.limits.maxComputeWorkgroupsPerDimension) throw Error('WebGPU gradient dispatch limit');
       const buffers = [], make = (size, usage) => { const b = device.createBuffer({size, usage}); buffers.push(b); return b; };
       device.pushErrorScope('validation'); device.pushErrorScope('out-of-memory');
       try {
         const storage = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC;
-        const a = make(cells * 4, storage), b = make(cells * 4, storage), c = make(cells * 4, storage);
+        const a = make(fieldBytes, storage), b = make(fieldBytes, storage), c = make(cells * 4, storage);
         const changed = make(4, storage), params = make(16, storage), active = make(tiles * 4, storage), next = make(tiles * 4, storage);
-        const read = make(Math.max(4, cells * 4), GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST);
+        const read = make(Math.max(4, fieldBytes), GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST);
         // Copies do not retain views of shared Wasm memory across await points.
-        device.queue.writeBuffer(a, 0, new Uint32Array(HEAPU32.subarray(seeds >> 2, (seeds >> 2) + cells)));
+        device.queue.writeBuffer(a, 0, new Uint32Array(HEAPU32.subarray(seeds >> 2, (seeds >> 2) + cells * stride)));
         device.queue.writeBuffer(c, 0, new Uint32Array(HEAPU32.subarray(costs >> 2, (costs >> 2) + cells)));
         device.queue.writeBuffer(params, 0, new Uint32Array([width, height, cap, pitch]));
         device.queue.writeBuffer(active, 0, new Uint32Array(tiles).fill(1));
-        const pipeline = this.pipelines[frozen ? 0 : 1];
+        const pipeline = this.pipelines[(destinations ? 2 : 0) + (frozen ? 0 : 1)];
         const groups = [[a,b,c,changed,params,active,next], [b,a,c,changed,params,next,active]].map(list => device.createBindGroup({layout: pipeline.getBindGroupLayout(0), entries: list.slice(0, frozen ? 7 : 5).map((buffer,binding) => ({binding,resource:{buffer}}))}));
         let current = 0;
         for (let round = 0; round <= 65535; ++round) {
@@ -61,9 +62,9 @@ addToLibrary({
           current = 1 - current;
           HEAP32[(signal >> 2) + 3]++;
           if (!modified) {
-            const final = device.createCommandEncoder(); final.copyBufferToBuffer(current ? b : a,0,read,0,cells*4); device.queue.submit([final.finish()]);
-            await Promise.race([read.mapAsync(GPUMapMode.READ,0,cells*4), this.lost]);
-            HEAPU32.set(new Uint32Array(read.getMappedRange(0,cells*4)), output >> 2); read.unmap();
+            const final = device.createCommandEncoder(); final.copyBufferToBuffer(current ? b : a,0,read,0,fieldBytes); device.queue.submit([final.finish()]);
+            await Promise.race([read.mapAsync(GPUMapMode.READ,0,fieldBytes), this.lost]);
+            HEAPU32.set(new Uint32Array(read.getMappedRange(0,fieldBytes)), output >> 2); read.unmap();
             return true;
           }
         }
@@ -84,14 +85,14 @@ addToLibrary({
   },
   glob2_gradient_prepare__deps: ['$Glob2GradientGPU', '$stringToUTF8'],
   glob2_gradient_prepare__proxy: 'async',
-  glob2_gradient_prepare(signal, frozen, jacobi, metadata) {
+  glob2_gradient_prepare(signal, frozen, jacobi, metadata, frozenDestinations, jacobiDestinations) {
     const f = UTF8ToString(frozen), j = UTF8ToString(jacobi);
-    Glob2GradientGPU.prepare(f,j).then(() => {const info = Glob2GradientGPU.adapterInfo;stringToUTF8(info ? [info.vendor,info.architecture,info.device,info.description].filter(Boolean).join(" / ") : "WebGPU compute adapter",metadata,512);Glob2GradientGPU.finish(signal,1);}, error => { console.error(error); Glob2GradientGPU.finish(signal,-1); });
+    Glob2GradientGPU.prepare(f,j,frozenDestinations ? UTF8ToString(frozenDestinations) : null,jacobiDestinations ? UTF8ToString(jacobiDestinations) : null).then(() => {const info = Glob2GradientGPU.adapterInfo;stringToUTF8(info ? [info.vendor,info.architecture,info.device,info.description].filter(Boolean).join(" / ") : "WebGPU compute adapter",metadata,512);Glob2GradientGPU.finish(signal,1);}, error => { console.error(error); Glob2GradientGPU.finish(signal,-1); });
   },
   glob2_gradient_execute__deps: ['$Glob2GradientGPU'],
   glob2_gradient_execute__proxy: 'async',
-  glob2_gradient_execute(signal,seeds,costs,output,width,height,cap,frozen) {
-    Glob2GradientGPU.execute(signal,seeds,costs,output,width,height,cap,frozen).then(ok => Glob2GradientGPU.finish(signal,ok ? 1 : -2), error => { console.error(error); Glob2GradientGPU.finish(signal,-1); });
+  glob2_gradient_execute(signal,seeds,costs,output,width,height,cap,frozen,destinations = false) {
+    Glob2GradientGPU.execute(signal,seeds,costs,output,width,height,cap,frozen,destinations).then(ok => Glob2GradientGPU.finish(signal,ok ? 1 : -2), error => { console.error(error); Glob2GradientGPU.finish(signal,-1); });
   },
   glob2_gradient_shutdown__deps: ['$Glob2GradientGPU'],
   glob2_gradient_shutdown__proxy: 'async',

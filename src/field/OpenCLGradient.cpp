@@ -208,8 +208,17 @@ constexpr const char *source = R"CL(
 // Storage padding only: logical geometry and lane assignment are unchanged.
 #define LOCAL_X (FROZEN_HALO?(CORE_X+8):SIDE_X)
 #define LOCAL_PATCH (LOCAL_X*SIDE_Y)
+#ifdef DESTINATIONS
+// The high word is the cost value; the low word reverses the row-major
+// source index. Unsigned maximum is therefore the canonical cost/source tie.
+typedef ulong Cell;
+typedef ulong WorkCell;
+#else
+typedef ushort Cell;
+typedef uint WorkCell;
+#endif
 inline int wrap(int x,uint size){if((size&(size-1))==0)return x&(size-1);x%=(int)size;return x<0?x+size:x;}
-__kernel void propagate(__global const ushort *a,__global ushort *b,
+__kernel void propagate(__global const Cell *a,__global Cell *b,
  __global const uint *c0,__global const uint *c1,__global const uint *c2,__global const uint *c3,
  __global const uint *c4,__global const uint *c5,__global const uint *c6,__global const uint *c7,
  __global uint *changed,__global const uint *desc,
@@ -234,7 +243,7 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
   if(x<w&&y<h){uint i=base+y*w+x;b[i]=a[i];}}return;
  }
  __local uint c[LOCAL_PATCH],flags[WG];
- __local ushort v[LOCAL_PATCH];
+ __local Cell v[LOCAL_PATCH];
  __local uint firstSweepChanged;
  for(uint j=lid;j<PATCH;j+=WG){
   int sx=wrap(gx*CORE_X+(int)(j%SIDE_X)-HALO,w),sy=wrap(gy*CORE_Y+(int)(j/SIDE_X)-HALO,h);
@@ -249,7 +258,16 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
  for(uint round=0;round<STEPS;round++){
  uint localChanged=0;
  for(uint color=0;color<4;color++){
-  for(uint q=lid;q<UPDATE_X*UPDATE_Y/4;q+=WG){int sx=FIRST_CELL+(q%(UPDATE_X/2))*2+(color&1),sy=FIRST_CELL+(q/(UPDATE_X/2))*2+(color>>1);uint j=sy*LOCAL_X+sx;uint val=v[j];
+  for(uint q=lid;q<UPDATE_X*UPDATE_Y/4;q+=WG){int sx=FIRST_CELL+(q%(UPDATE_X/2))*2+(color&1),sy=FIRST_CELL+(q/(UPDATE_X/2))*2+(color>>1);uint j=sy*LOCAL_X+sx;WorkCell val=v[j];
+#ifdef DESTINATIONS
+   if(val>>32)for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){
+    if((dx||dy)&&(FROZEN_HALO||(sx+dx>=0&&sx+dx<SIDE_X&&sy+dy>=0&&sy+dy<SIDE_Y))){
+     uint k=j+dy*LOCAL_X+dx,step=(dx&&dy)?(uniform?diagonal:c[k]>>16):(uniform?cardinal:c[k]&65535);
+     Cell src=v[k];int candidate=(int)(src>>32)-(int)step;
+     if(candidate>=threshold)val=max(val,((Cell)candidate<<32)|(src&0xffffffffUL));
+    }
+   }
+#else
    int best=0; if(val)for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){
     if((dx||dy)&&(FROZEN_HALO||(sx+dx>=0&&sx+dx<SIDE_X&&sy+dy>=0&&sy+dy<SIDE_Y))){
      uint k=j+dy*LOCAL_X+dx,src=v[k],step=(dx&&dy)?(uniform?diagonal:c[k]>>16):(uniform?cardinal:c[k]&65535);
@@ -257,6 +275,7 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
     }
    }
    if(best>=threshold)val=max(val,(uint)best);
+#endif
    localChanged|=(v[j]!=val);v[j]=val;
   }
   barrier(CLK_LOCAL_MEM_FENCE);
@@ -303,15 +322,17 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
 struct KernelVariant : ExecutionPlan
 {
     Handle program = nullptr, kernel = nullptr;
+    bool destinations = false;
 };
 static_assert(PLANS[1].id==Plan::Frozen8 && PLANS[1].steps==8 &&
     PLANS[1].threads==128 && PLANS[1].tileWidth==16 && PLANS[1].tileHeight==16 &&
     PLANS[1].colored && PLANS[1].frozen);
 constexpr auto kernelVariants()
 {
-    std::array<KernelVariant, 1> variants{};
+    std::array<KernelVariant, 2> variants{};
     for (std::size_t i = 0; i < variants.size(); ++i)
-        static_cast<ExecutionPlan&>(variants[i]) = PLANS[i + 1];
+        static_cast<ExecutionPlan&>(variants[i]) = PLANS[1];
+    variants[1].destinations = true;
     return variants;
 }
 
@@ -333,7 +354,7 @@ struct Device
     MemoryBudget& deviceBudget=globalDeviceBudget;
     Handle device = nullptr, context = nullptr;
     OpenCLStatus status;
-    std::array<KernelVariant, 1> variants = kernelVariants();
+    std::array<KernelVariant, 2> variants = kernelVariants();
     std::size_t selectedVariant = 0;
     Handle kernel = nullptr;
     struct Plane
@@ -504,7 +525,7 @@ struct Device
                 const char *text = source;
                 variant.program = api.CreateProgramWithSource(context, 1, &text, nullptr, &error);
                 check(error);
-                constexpr const char* options="-cl-std=CL1.2";
+                const char* options=variant.destinations ? "-cl-std=CL1.2 -DDESTINATIONS=1" : "-cl-std=CL1.2";
                 const auto built =
                     api.BuildProgram(variant.program, 1, &device, options, nullptr, nullptr);
                 if (built != 0)
@@ -590,16 +611,19 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     OpenCLStatus status;
     bool probed = false;
     Handle device = nullptr, context = nullptr, queue = nullptr;
-    std::array<KernelVariant, 1> variants = kernelVariants();
+    std::array<KernelVariant, 2> variants = kernelVariants();
     std::size_t selectedVariant = 0;
     Handle kernel = nullptr;
     Handle first = nullptr, second = nullptr, changed = nullptr, descriptors = nullptr;
     std::size_t capacity = 0, tileCapacity = 0;
+    std::size_t valueBytes = sizeof(std::uint16_t);
     Handle tilesFirst = nullptr, tilesSecond = nullptr;
     // Each lane retains its accounting through concurrent status snapshots.
     BudgetLease valuesLease{hostBudget}, blockedLease{hostBudget};
+    BudgetLease destinationValuesLease{hostBudget};
     BudgetLease deviceLease{shared->deviceBudget};
     std::vector<std::uint16_t> values;
+    std::vector<std::uint64_t> destinationValues;
     std::vector<std::uint8_t> blocked;
     struct RequiredTransaction {
         struct Admission {
@@ -965,10 +989,12 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             throw;
         }
     }
-    void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging)
+    template<class Word>
+    void computeBatch(std::span<const BackendRequest *const> requests,std::span<Word> staging)
     {
 
         if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
+        if (valueBytes != sizeof(Word)) { buffers(); valueBytes = sizeof(Word); }
         std::size_t total = 0;
         UInt width = 0, height = 0;
         for (auto *r : requests)
@@ -978,18 +1004,18 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             height = std::max(height, UInt(r->grid.height()));
         }
         if (total > std::numeric_limits<UInt>::max() ||
-            total > (std::numeric_limits<std::size_t>::max()-288) / (2 * sizeof(std::uint16_t)))
+            total > (std::numeric_limits<std::size_t>::max()-288) / (2 * sizeof(Word)))
             throw std::runtime_error("Gradient batch exceeds OpenCL index range");
         if (total > capacity)
         {
 
             buffers();
-            try {deviceLease.resize(total*2*sizeof(std::uint16_t)+288);}
-            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();deviceLease.resize(total*2*sizeof(std::uint16_t)+288);}
+            try {deviceLease.resize(total*2*sizeof(Word)+288);}
+            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();deviceLease.resize(total*2*sizeof(Word)+288);}
             Int error = 0;
             for (auto *buffer : {&first, &second})
             {
-                *buffer = api.CreateBuffer(context, 1, total * sizeof(std::uint16_t), nullptr, &error);
+                *buffer = api.CreateBuffer(context, 1, total * sizeof(Word), nullptr, &error);
                 check(error);
             }
             changed = api.CreateBuffer(context, 1, 8 * sizeof(UInt), nullptr, &error);
@@ -1008,7 +1034,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         std::size_t offset=0, field=0;
         for(auto* r:requests) {
             const auto n=r->grid.cells();
-            std::copy(r->gradient,r->gradient+n,staging.begin()+offset);
+            if constexpr (sizeof(Word) == sizeof(std::uint16_t))
+                std::copy(r->gradient,r->gradient+n,staging.begin()+offset);
+            else for (std::size_t i=0;i<n;++i)
+                staging[offset+i]=(std::uint64_t(r->gradient[i])<<32)
+                    | (r->gradient[i]>1 ? std::uint32_t(~std::uint32_t(i)) : 0u);
             blocked.clear();
             if(!r->identity.allCells) {
                 resizeStaging(blocked,n,blockedLease);
@@ -1026,7 +1056,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         }
         // Polling uploads always use retained staging. Original seeds stay
         // untouched and unborrowed until commit, including failed drain paths.
-        const auto seedBytes=total*sizeof(std::uint16_t);
+        const auto seedBytes=total*sizeof(Word);
         write(first,staging.data(),seedBytes);
         write(descriptors, desc.data(), requests.size()*8*sizeof(UInt));
         Handle a = first, b = second;
@@ -1040,9 +1070,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         {
 
             for(auto* mask:{&tilesFirst,&tilesSecond}) {if(*mask) api.ReleaseMemObject(*mask);*mask=nullptr;}
-            deviceLease.resize(capacity*2*sizeof(std::uint16_t)+288);
+            deviceLease.resize(capacity*2*sizeof(Word)+288);
             tileCapacity=0;
-            deviceLease.resize(capacity*2*sizeof(std::uint16_t)+288+tileCount*2*sizeof(UInt));
+            deviceLease.resize(capacity*2*sizeof(Word)+288+tileCount*2*sizeof(UInt));
             for (auto *mask : {&tilesFirst, &tilesSecond})
             {
                 if (*mask)
@@ -1124,7 +1154,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             if (std::none_of(flags.begin(), flags.begin() + requests.size(), [](UInt v) { return v != 0; }))
             {
 
-                read(a,staging.data(),total*sizeof(std::uint16_t),true);
+                read(a,staging.data(),total*sizeof(Word),true);
 
                 return;
             }
@@ -1165,7 +1195,15 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         if(std::any_of(input.begin(),input.end(),[](const auto& r) {
             return r.session.failed.load() || r.operation!=Operation::CompleteField || r.limit<0;
         })) return false;
-        if(std::all_of(input.begin(),input.end(),alreadyFixed)) {shared->noopFields+=input.size();return true;}
+        const bool withDestinations = bool(input.front().destinations);
+        if (std::any_of(input.begin(),input.end(),[&](const auto& r) {
+            return bool(r.destinations)!=withDestinations || bool(r.destinations.x)!=bool(r.destinations.y)
+                || (withDestinations && (r.grid.width()>DestinationPlanes::Invalid || r.grid.height()>DestinationPlanes::Invalid));
+        })) return false;
+        if(std::all_of(input.begin(),input.end(),alreadyFixed)) {
+            for (const auto& r : input) initializeDestinationSeeds({r.gradient,r.grid.cells()},r.destinations,r.grid.width());
+            shared->noopFields+=input.size();return true;
+        }
         if(!execution) {
             try { return lane().batch(input,plan); }
             catch(const BudgetExceeded&) {++shared->laneBudgetDeclines;return false;}
@@ -1195,8 +1233,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             for(std::size_t i=0;i<std::min<std::size_t>(8,input.size());++i)transaction->controls[i]=input[i].requiredControl;
             if(transaction->canceled())throw RequiredCanceled();
             probe(); // Lane buffers/queue only. Compilation must already be complete.
-            if(!variants[unsigned(plan)-1].kernel) return false;
-            selectVariant(unsigned(plan)-1);
+            const unsigned variantIndex = withDestinations ? 1u : 0u;
+            if(!variants[variantIndex].kernel) return false;
+            selectVariant(variantIndex);
             // Stage ALL output before commit; even a failure in the last chunk
             // leaves every caller's original seeds intact for exact CPU recovery.
             std::size_t total=0;
@@ -1204,9 +1243,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 if(request.grid.cells()>std::numeric_limits<std::size_t>::max()-total) throw BudgetExceeded();
                 total+=request.grid.cells();
             }
-            if(total>OpenCLHostBudget/sizeof(std::uint16_t)) throw BudgetExceeded();
-            try {resizeStaging(values,total,valuesLease);}
-            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();resizeStaging(values,total,valuesLease);}
+            const auto executeStaged = [&](auto& staged, auto& stagingLease) {
+                using Word = typename std::remove_reference_t<decltype(staged)>::value_type;
+            if(total>OpenCLHostBudget/sizeof(Word)) throw BudgetExceeded();
+            try {resizeStaging(staged,total,stagingLease);}
+            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();resizeStaging(staged,total,stagingLease);}
 
             std::size_t outputOffset=0;
             for(std::size_t begin=0;begin<input.size();begin+=8) {
@@ -1215,7 +1256,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 for(std::size_t i=0;i<count;++i){pointers[i]=&input[begin+i];transaction->controls[i]=input[begin+i].requiredControl;}
                 if(transaction->canceled())throw RequiredCanceled();
                 std::size_t chunkCells=0;for(std::size_t i=0;i<count;++i) chunkCells+=pointers[i]->grid.cells();
-                computeBatch(std::span(pointers.data(),count),std::span(values.data()+outputOffset,chunkCells));
+                computeBatch(std::span(pointers.data(),count),std::span(staged.data()+outputOffset,chunkCells));
                 outputOffset+=chunkCells;
                 status.fields+=count;
             }
@@ -1225,12 +1266,23 @@ struct Runtime : std::enable_shared_from_this<Runtime>
 
             outputOffset=0;
             for(const auto& r:input) {
-                std::copy_n(values.data()+outputOffset,r.grid.cells(),r.gradient);
+                if constexpr (sizeof(Word) == sizeof(std::uint16_t))
+                    std::copy_n(staged.data()+outputOffset,r.grid.cells(),r.gradient);
+                else for (std::size_t i=0;i<r.grid.cells();++i) {
+                    const auto packed=staged[outputOffset+i];
+                    r.gradient[i]=std::uint16_t(packed>>32);
+                    const auto source=~std::uint32_t(packed);
+                    r.destinations.x[i]=r.gradient[i]>1 ? std::uint16_t(source%r.grid.width()) : DestinationPlanes::Invalid;
+                    r.destinations.y[i]=r.gradient[i]>1 ? std::uint16_t(source/r.grid.width()) : DestinationPlanes::Invalid;
+                }
                 if(r.executedOnDevice) *r.executedOnDevice=true;
                 ++status.committedFields;
 
                 outputOffset+=r.grid.cells();
             }
+            };
+            if (withDestinations) executeStaged(destinationValues, destinationValuesLease);
+            else executeStaged(values, valuesLease);
             ++status.schedulerBatches;
             return true;
         } catch(const RequiredCanceled&) {

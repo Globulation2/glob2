@@ -1,5 +1,6 @@
 """Job-type adapters; scheduling and transport have no experiment-specific logic."""
 import csv
+import gzip
 import re
 from pathlib import Path
 from .common import read_json
@@ -113,12 +114,24 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille', 'resource_gradient_collection'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
             raise ValueError('saved games retain their seeds')
+        if self.kind == 'game' and 'resource_claims_shadow' in config:
+            claims = config['resource_claims_shadow']
+            bounds = {'sample_every': (1, 1000000000), 'max_samples': (1, 1000000), 'max_bytes': (1024, 2147483647)}
+            if not isinstance(claims, dict) or set(claims) != set(bounds):
+                raise ValueError('resource_claims_shadow requires sample_every, max_samples and max_bytes')
+            for key, (low, high) in bounds.items():
+                if type(claims[key]) is not int or not low <= claims[key] <= high:
+                    raise ValueError('invalid resource_claims_shadow ' + key)
+            if 'resource-claims-shadow.jsonl.gz' not in job['outputs'].get('required', []):
+                raise ValueError('resource_claims_shadow requires its compressed JSONL artifact')
+            if job['outputs'].get('result', 'full') != 'full':
+                raise ValueError('resource_claims_shadow requires full result provenance')
         if self.kind == 'game' and 'resource_gradient_collection' in config:
             collection = config['resource_gradient_collection']
             _validate_resource_gradient_collection(collection)
@@ -219,6 +232,13 @@ class EngineJob:
             for telemetry in outputs.get('telemetry', []):
                 add('--telemetry', telemetry)
             if outputs.get('replay', False): args.append('--write-replay')
+            if 'resource_claims_shadow' in config:
+                claims = config['resource_claims_shadow']
+                args.append('--resource-claims-shadow')
+                for key, flag in (('sample_every', '--resource-claims-sample-every'),
+                                  ('max_samples', '--resource-claims-max-samples'),
+                                  ('max_bytes', '--resource-claims-max-bytes')):
+                    add(flag, claims[key])
             if 'resource_gradient_collection' in config:
                 collection = config['resource_gradient_collection']
                 args.append('--resource-gradient-probe')
@@ -253,6 +273,21 @@ class EngineJob:
             raise ValueError('unsupported engine result schema')
         if result.get('status') not in ('completed', 'invalid_request', 'generation_failed', 'artifact_failure'):
             raise ValueError('invalid engine completion status')
+        if result.get('status') == 'completed' and 'resource_claims_shadow' in job['config']:
+            from .resource_claims import ARTIFACT, trace_rows
+            attestation = result.get('resource_claims_shadow', {})
+            if attestation.get('schema_version') != 1 or attestation.get('enforced') is not False:
+                raise ValueError('engine did not attest shadow-only resource claims')
+            with gzip.open(path.parent / ARTIFACT, 'rt') as stream:
+                rows = trace_rows(stream)
+                schema = next(rows)
+                for config_key, schema_key in (('sample_every', 'sample_every'), ('max_samples', 'max_samples'), ('max_bytes', 'max_output_bytes')):
+                    if job['config']['resource_claims_shadow'][config_key] != schema.get(schema_key):
+                        raise ValueError('resource claim sampling limits changed')
+                for row in rows:
+                    pass
+                if row['submitted'] != attestation.get('submitted') or row['completed'] != attestation.get('completed'):
+                    raise ValueError('resource claim summary differs from engine result')
         if result.get('status') == 'completed' and 'resource_gradient_collection' in job['config']:
             collection=job['config']['resource_gradient_collection']
             if collection.get('contract') in _UNIFIED_COLLECTORS and result.get('adaptive_gradient_policy',{}).get('collector_contract')!=collection['contract']:

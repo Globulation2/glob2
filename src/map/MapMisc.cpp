@@ -11,6 +11,8 @@
 #include "MapInternal.h"
 
 #include <FileManager.h>
+#include <algorithm>
+#include <tuple>
 
 
 
@@ -72,6 +74,20 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
         if (heavy && entry.published) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.published[i];
 	}
 
+    if (!legacy152 && gradientRuntime->materialDestinationsEnabled) {
+        mix64(0x4d4154455249414cULL);
+        mix64(gradientRuntime->pipeline.destinationPublicationSequence());
+        std::vector<std::tuple<unsigned,std::shared_ptr<const gradient_kernel::OwnedDestinations>,Uint64>> outputs;
+        gradientRuntime->pipeline.visitPublishedDestinations([&](auto* slot,auto planes,auto generation) {
+            outputs.emplace_back(gradientDestination(slot),std::move(planes),generation);
+        });
+        std::sort(outputs.begin(),outputs.end(),[](const auto& a,const auto& b){return std::get<0>(a)<std::get<0>(b);});
+        for (const auto& [id,planes,generation]:outputs) {
+            mix64(id); mix64(generation);
+            if (heavy) for (size_t i=0;i<size;++i) mix64(Uint32(planes->x[i])|(Uint32(planes->y[i])<<16));
+        }
+    }
+
     // The explicit historical representation predates delayed publication.
     // Keep its checksum layout stable even when the new queues are empty.
     if (!legacy152) {
@@ -81,7 +97,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
             // Hash stored request metadata without reverse-looking up its slot
             // in the destination registry on every tick.
             cs=rotl1(cs)^unsigned(request.kind)^unsigned(request.team<<8)^unsigned(request.material<<16)^unsigned(request.swim<<24);
-            cs=rotl1(cs)^Uint32(request.consumer)^request.modes^Uint32(request.excludesShared);
+            cs=rotl1(cs)^Uint32(request.consumer)^request.modes^Uint32(request.excludesShared)^Uint32(request.destinations<<1);
         }
         if (includePending) gradientRuntime->pipeline.visitLogical([&](auto* slot, unsigned remaining, bool superseded) {
             cs=rotl1(cs)^gradientDestination(slot)^remaining^Uint32(superseded);

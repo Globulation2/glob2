@@ -58,6 +58,7 @@ const SimulationSnapshot::Handle& Game::observeCompletedWorld(SimulationSnapshot
         hiringPipeline->publishDue(stepCounter);
         statsPipeline->publishDue(*this);
         turretTargetingPipeline->publish(*this);
+        map.reconcileMaterialClaims();
         completedObservation = worldSnapshots.captureBoundary(*this, options);
     }
     else

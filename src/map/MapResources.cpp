@@ -7,6 +7,10 @@
 #include "Utilities.h"
 #include "ExperimentalFeatures.h"
 #include "Game.h"
+#include "Building.h"
+#include "Team.h"
+#include "Unit.h"
+#include "claims/ResourceClaimProbe.h"
 #include "GlobalContainer.h"
 #include "MapInternal.h"
 #include "TerrainResourceProperties.h"
@@ -17,6 +21,7 @@
 #include <map>
 #include <cstdlib>
 #include <limits>
+#include <chrono>
 
 
 
@@ -52,7 +57,7 @@ bool Map::isFarmableResourceByIndex(int resourceType) const
     return MapState::isFarmableResource(liveCells,resourceType);
 }
 
-std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask)
+std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry)
 {
 	if (resourceType < 0 || resourceType >= int(MaterialCount)) return std::nullopt;
 
@@ -85,7 +90,13 @@ std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceTyp
 	// the 3x3 seeds, which a map narrow enough to wrap can contribute twice.
 	std::vector<size_t>& frontier = farmFloodQueue;
 	frontier.clear();
-	for (int tdy = -1; tdy <= 1; tdy++)
+    // Shadow travel observations enter the projected field at its target tile;
+    // real harvesting still starts from all touched tiles around the unit.
+    if (entry && inField(*entry)) {
+        farmFloodStamps[*entry]=farmFloodGeneration;
+        frontier.push_back(*entry);
+    }
+	for (int tdy = -1; !entry && tdy <= 1; tdy++)
 		for (int tdx = -1; tdx <= 1; tdx++)
 		{
 			const size_t index = coordToIndex(x + tdx, y + tdy);
@@ -326,11 +337,67 @@ bool Map::materialAvailableUpdateSlot(int team, int material, int swim, int x, i
 {
 	if (queryMaterialDistance(team,material,swim,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
 	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
-	// Supplier seeds include a pickup penalty, so their valid local peak can
-	// sit below GRADIENT_AT_GOAL. Availability comes from the complete field;
-	// ascent selects its pickup coordinate without redefining reachability.
-	getGlobalGradientDestination(field,x,y,targetX,targetY);
-	return true;
+    if (materialGradientDestinations(field)) return projectMaterialDestination(field,team,material,swim,x,y,targetX,targetY,markets,consumer);
+    // Planning adapters retain their historical ascent semantics. Workers use
+    // projectMaterialDestination to track their weighted movement decisions.
+    getGlobalGradientDestination(field,x,y,targetX,targetY);
+    return true;
+}
+
+bool Map::materialDestinationValidSlot(int team, int material, int movement, int x, int y, bool markets, const Building* consumer) const
+{
+    if (movement!=AIR_MOVEMENT_CLASS && isForbidden(x,y,Team::teamNumberToMask(team))) return false;
+    if (isMaterialTakeableSlot(x,y,material) && !isForbidden(x,y,Team::teamNumberToMask(team))) return true;
+    if (!game) return false;
+    const unsigned modes=consumer ? materialSupplyModesSlot(consumer,material) : (markets && marketsV2Enabled() ? 1u : 0u);
+    if (!modes) return false;
+    const Team& owner=*game->teams[team];
+    const auto eligible=[&](const Building* b) { return stockSupplierEligibleSlot(b,consumer,material,modes); };
+    const Uint16 id=getBuilding(x,y);
+    if (id!=NOGBID && Building::GIDtoTeam(id)==team && eligible(owner.myBuildings[Building::GIDtoID(id)])) return true;
+    const auto overlay=[&](const Building* b) {
+        return !b->type->semantics.occupiesGround && ((x-b->posX)&wMask)<b->type->width
+            && ((y-b->posY)&hMask)<b->type->height && eligible(b);
+    };
+    if (modes&1) for (const Building* b:owner.stockSuppliers) if (overlay(b)) return true;
+    if (modes&2) for (const Building* b:owner.directStockSuppliers) if (overlay(b)) return true;
+    return false;
+}
+
+bool Map::projectMaterialDestination(const Uint16* field, int team, int material, int movement, int x, int y,
+    Sint32* targetX, Sint32* targetY, bool markets, const Building* consumer) const
+{
+    if (!field) return false;
+    x&=wMask; y&=hMask;
+    Uint16 here=field[coordToIndex(x,y)];
+    if (here<=GRADIENT_UNREACHABLE) return false;
+    if (const auto destinations=materialGradientDestinations(field)) {
+        const size_t index=coordToIndex(x,y);
+        const unsigned dx=destinations->x[index],dy=destinations->y[index];
+        if (dx>=unsigned(w) || dy>=unsigned(h) || !materialDestinationValidSlot(team,material,movement,dx,dy,markets,consumer)) return false;
+        *targetX=dx; *targetY=dy;
+        return true;
+    }
+    // Match directionByGradient's cost and tie order. The actual first step
+    // already accounts for traffic; projection ignores future moving units and
+    // never draws random sidesteps. Strict improvement bounds this traversal.
+    while (here!=GRADIENT_AT_GOAL) {
+        int best=-1, direction=-1;
+        for (int d=0;d<8;++d) {
+            const int dx=tabClose[d][0], dy=tabClose[d][1];
+            const size_t next=coordToIndex(x+dx,y+dy);
+            if (field[next]<=here) continue;
+            const int score=field[next]-stepCost(dx,dy,next,movement);
+            if (score>best) { best=score; direction=d; }
+        }
+        if (direction<0) break;
+        x=(x+tabClose[direction][0])&wMask;
+        y=(y+tabClose[direction][1])&hMask;
+        here=field[coordToIndex(x,y)];
+    }
+    if (!materialDestinationValidSlot(team,material,movement,x,y,markets,consumer)) return false;
+    *targetX=x; *targetY=y;
+    return true;
 }
 
 template<typename T>
@@ -410,3 +477,57 @@ bool Map::isGradientPeak(const T *gradient, int x, int y) const
 template bool Map::isGradientPeak<Uint8>(const Uint8 *gradient, int x, int y) const;
 template bool Map::isGradientPeak<Uint16>(const Uint16 *gradient, int x, int y) const;
 
+
+void Map::setMaterialClaimTrackingEnabled(bool enabled)
+{
+    materialClaimTracking=enabled;
+    materialClaimTelemetry={};
+    materialClaimFarmCache.clear(); materialClaimFarmEpoch={};
+    materialClaims.reset(cellCount());
+    claimChanges.markAll();
+    if (enabled) reconcileMaterialClaims();
+}
+
+void Map::reconcileMaterialClaims()
+{
+    if (!materialClaimTracking || !game) return;
+    if (materialClaimProbe) materialClaimProbe->publish(game->stepCounter);
+    const auto start=std::chrono::steady_clock::now();
+    for (int team=0;team<game->teamsCount();++team)
+        for (Unit* unit:game->teams[team]->liveUnits) unit->reconcileMaterialClaim();
+    ++materialClaimTelemetry.sweeps;
+    materialClaimTelemetry.sweepNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+}
+
+void Map::observeMaterialClaimDecision(const Unit& unit,const Uint16* field)
+{
+    if (materialClaimTracking && materialClaimProbe && game) materialClaimProbe->decision(*game,unit,field);
+}
+void Map::finishMaterialClaimProbe()
+{
+    if (materialClaimProbe) materialClaimProbe->finish();
+}
+
+void Map::observeMaterialClaimPickupDecision(const Unit& unit,int x,int y)
+{
+    if (!materialClaimTracking || !materialClaimProbe || !game) return;
+    const auto* field=lookupMaterialGradientSlot(unit.owner->teamNumber,unit.destinationPurpose,unit.movementClass(),
+        unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets(),unit.attachedBuilding);
+    materialClaimProbe->decision(*game,unit,field,Uint32(coordToIndex(x,y)));
+}
+
+std::optional<size_t> Map::pickClaimFarmHarvestTileSlot(int x,int y,int material,Uint32 teamMask,std::optional<size_t> entry)
+{
+    ++materialClaimTelemetry.farmQueries;
+    const std::array<Uint64,4> epoch{resourceChanges.generation,areaChanges.generation,
+        game?game->gameHeader.observationRevision():0,identity()};
+    if (epoch!=materialClaimFarmEpoch) { materialClaimFarmCache.clear(); materialClaimFarmEpoch=epoch; }
+    const std::array<Uint32,5> key{teamMask,Uint32(material),Uint32(x&wMask),Uint32(y&hMask),entry?Uint32(*entry):UINT32_MAX};
+    const auto found=materialClaimFarmCache.find(key);
+    if (found!=materialClaimFarmCache.end()) { ++materialClaimTelemetry.farmCacheHits; return found->second; }
+    const auto result=pickFarmHarvestTileSlot(x,y,material,teamMask,entry);
+    materialClaimTelemetry.farmFloodCells+=farmFloodQueue.size();
+    if (materialClaimFarmCache.size()>=4096) materialClaimFarmCache.clear();
+    materialClaimFarmCache.emplace(key,result);
+    return result;
+}

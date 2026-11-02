@@ -1339,6 +1339,68 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 
 TEST_SUITE("BuildingGradientInvalidation")
 {
+    TEST_CASE("pre194 material gradients load with destination metadata disabled [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        World original(5),restored(5);
+        original.game.map.configureGradientPipeline(0,2);
+        restored.game.map.configureGradientPipeline(0,2);
+        restored.game.map.setMaterialDestinationsEnabled(true);
+        const auto bytes=saveLegacyRuntime(original.game.map,191);
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
+        GAGCore::BinaryInputStream input(backend);
+        restored.game.map.loadRuntimeState(&input,191);
+        CHECK_FALSE(restored.game.map.materialDestinationsEnabled());
+        CHECK(input.readUint32("followingSection")==RuntimeSentinel);
+    }
+
+    TEST_CASE("material destination planes retain published and pending generations across binary and text saves [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool text : {false,true}) for (unsigned workers : {0u,2u}) {
+            World original(5), restored(5);
+            auto& map=original.game.map;
+            for (World* world : {&original,&restored}) {
+                world->game.map.setResourceByIndex(12,12,WHEAT,1);
+                world->game.map.configureGradientPipeline(workers,2);
+                world->game.map.setMaterialDestinationsEnabled(true);
+            }
+            const auto* field=glob2test::awaitGradient(original.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,0);});
+            auto published=map.materialGradientDestinations(field);
+            REQUIRE(published);
+            CHECK(published->x[map.coordToIndex(4,4)]==12);
+            CHECK(published->y[map.coordToIndex(4,4)]==12);
+            REQUIRE(map.getMaterialGradientSlot(0,WHEAT,1)==nullptr);
+            preparePeriodic(map);
+            REQUIRE(map.gradientPipelineStatus().pending>0);
+            restored.game.stepCounter=original.game.stepCounter;
+            const auto bytes=saveRuntime(map,text);
+            loadRuntime(restored.game.map,bytes,text);
+            auto compare=[&] {
+                const auto* a=map.getMaterialGradientSlot(0,WHEAT,0);
+                const auto* b=restored.game.map.getMaterialGradientSlot(0,WHEAT,0);
+                REQUIRE(a); REQUIRE(b);
+                auto da=map.materialGradientDestinations(a),db=restored.game.map.materialGradientDestinations(b);
+                REQUIRE(da); REQUIRE(db);
+                CHECK(std::equal(a,a+published->cells,b));
+                CHECK(std::equal(da->x.get(),da->x.get()+da->cells,db->x.get()));
+                CHECK(std::equal(da->y.get(),da->y.get()+da->cells,db->y.get()));
+                CHECK(map.checkSum(true,true)==restored.game.map.checkSum(true,true));
+            };
+            REQUIRE(restored.game.map.materialDestinationsEnabled());
+            compare();
+            for (unsigned tick=0;tick<4;++tick) {
+                ++original.game.stepCounter; ++restored.game.stepCounter;
+                map.advanceGradientPipeline(); restored.game.map.advanceGradientPipeline();
+                compare();
+            }
+            const auto* alternate=restored.game.map.getMaterialGradientSlot(0,WHEAT,1);
+            REQUIRE(alternate);
+            REQUIRE(restored.game.map.materialGradientDestinations(alternate));
+        }
+    }
+
     TEST_CASE("owner observation at tick zero publishes cold fields and access metadata at tick one")
     {
         glob2test::HeadlessGlobals globals;

@@ -33,6 +33,7 @@ struct GuardCostEligibility {
 
 void Unit::handleDisplacement(void)
 {
+    const MaterialClaimObservation claimObservation{*this};
     const GuardCostEligibility guardCostEligibility(*this);
 	switch (activity)
 	{
@@ -65,8 +66,13 @@ void Unit::handleDisplacement(void)
 			{
 				if (auto off = owner->map->doesUnitTouchMaterialSource(this, static_cast<MaterialId>(destinationPurpose)))
 				{
+                    owner->map->observeMaterialClaimPickupDecision(*this,posX+off->dx,posY+off->dy);
 					dx = off->dx;
 					dy = off->dy;
+                    // During harvesting these coordinates identify the touched
+                    // pickup tile, which can differ from the projected goal.
+                    targetX=(posX+dx)&(owner->map->getW()-1);
+                    targetY=(posY+dy)&(owner->map->getH()-1);
 					displacement=DIS_HARVESTING;
 					setValidTarget(false);
 				}
@@ -270,8 +276,11 @@ void Unit::handleDisplacement(void)
 									int dummyDist;
 									if (auto off = owner->map->doesUnitTouchMaterialSource(this, static_cast<MaterialId>(destinationPurpose)))
 									{
+                                        owner->map->observeMaterialClaimPickupDecision(*this,posX+off->dx,posY+off->dy);
 										dx = off->dx;
 										dy = off->dy;
+                                        targetX=(posX+dx)&(owner->map->getW()-1);
+                                        targetY=(posY+dy)&(owner->map->getH()-1);
 										displacement=DIS_HARVESTING;
 										setValidTarget(false);
 									}

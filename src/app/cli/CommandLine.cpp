@@ -370,6 +370,9 @@ void constraints(const Request &r)
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
         requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
+        requireParent("--resource-claims-sample-every", "--resource-claims-shadow");
+        requireParent("--resource-claims-max-samples", "--resource-claims-shadow");
+        requireParent("--resource-claims-max-bytes", "--resource-claims-shadow");
         if (r.has("--resource-gradient-exploration")) {
             const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
             if (!AdaptiveGradientModel::Trained && std::find(intervals.begin(),intervals.end(),0)!=intervals.end())
@@ -563,6 +566,10 @@ const std::vector<Command> &commands()
 			 integer("--ai-profile-from-tick", "First observed tick to profile", 0, 2147483647, "0"),
 			 value("--ai-profile-gate", "player:observed-tick", "Hold one decision until ai-profile-release exists in output-dir; diagnostic sampling only"),
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
+             flag("--resource-claims-shadow", "Observe worker material claims without enforcing capacity; rebuild diagnostic state after load"),
+             integer("--resource-claims-sample-every", "Sample one in N material movement/pickup decisions using diagnostic hashing", 1, 1000000000, "1000"),
+             integer("--resource-claims-max-samples", "Maximum submitted shadow oracle samples (excluded events are counted)", 1, 1000000, "10000"),
+             integer("--resource-claims-max-bytes", "Maximum compressed shadow dataset bytes; exhaustion fails collection", 1024, 2147483647, "67108864"),
              flag("--resource-gradient-probe", "Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias)"),
              value("--resource-gradient-exploration", "intervals", "All-family collection: seeded per-field intervals32..65536;0=adaptive only after unified model training"),
              integer("--resource-gradient-exploration-seed", "Seed for deterministic per-field collection assignment", 0, 4294967295LL),

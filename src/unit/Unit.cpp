@@ -19,6 +19,7 @@
 #include <stdexcept>
 #include <limits>
 #include <numeric>
+#include <chrono>
 #include "field/TerrainMovementCosts.h"
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
@@ -38,6 +39,7 @@ Unit::~Unit()
 {
 	assert(!populationMembership && !populationPrevious && !populationNext);
 	if (owner && owner->game) {
+        if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(scriptIdentity);
 		if (hasCapability(UnitRuntimeTraits::ReleaseClearingClaims) && previousClearingArea && owner->map->getW()>0 && owner->map->isClearingAreaClaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber)==gid)
 			owner->map->setClearingAreaUnclaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber);
 		owner->game->unitCargo.erase(gid);
@@ -68,6 +70,7 @@ void Unit::refreshEffectiveAbilities()
 
 void Unit::rebindDefinitionForSetup()
 {
+    const MaterialClaimObservation claimObservation{*this};
 	// Parallel training derives its reservation from the original learnability.
 	// Capture that amount before replacing flags and cached abilities.
 	const auto oldServiceCost=serviceResourcesReserved() && attachedBuilding
@@ -271,6 +274,7 @@ void Unit::setTargetBuilding(Building * b)
 
 void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction, UnitJobPurpose purpose)
 {
+    const MaterialClaimObservation claimObservation{*this};
 	Building* b=building;
 	if (attraction && !inside) {
 		jobPurpose=purpose;
@@ -455,6 +459,7 @@ void Unit::applyAreaServices()
 
 void Unit::syncStep(void)
 {
+    const MaterialClaimObservation claimObservation{*this};
 	if (owner->map->hasTerrainHealthEffects()) applyTerrainHealth();
 	if (isDead) return;
 	//warrior attacks?
@@ -560,6 +565,7 @@ void Unit::syncStep(void)
 
 void Unit::resetAtLevel(Sint32 newLevel)
 {
+    if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(scriptIdentity);
 	// Reset abilities and activity without changing this entity's identity.
 	clearCargo();
 	init(posX, posY, gid, typeNum, owner, newLevel);
@@ -567,6 +573,7 @@ void Unit::resetAtLevel(Sint32 newLevel)
 
 void Unit::setWorkerLevel(Sint32 newLevel)
 {
+    const MaterialClaimObservation claimObservation{*this};
 	constructionLevel = newLevel;
 	for (int ability : {(int)BUILD, (int)HARVEST})
 	{
@@ -619,6 +626,7 @@ bool Unit::applyTraining(const BuildingTrainingSpec& training,int ability)
 
 void Unit::applyTrainingUnchecked(const BuildingTrainingSpec& training, int ability)
 {
+    const MaterialClaimObservation claimObservation{*this};
 	if (level[ability] < training.targetLevel)
 	{
 		level[ability] = training.targetLevel;
@@ -777,9 +785,10 @@ bool Unit::continueExtendedCargoCollection()
 bool Unit::findMaterialDestination(int material,Sint32* x,Sint32* y,int* distance,bool withMarkets,const Building* consumer)
 {
 	Map& map=*owner->map;
-    if (!x || !y) return distance ? map.materialAvailableSlot(owner->teamNumber,material,movementClass(),posX,posY,distance,withMarkets,consumer)
-        : map.materialAvailableSlot(owner->teamNumber,material,movementClass(),posX,posY,withMarkets,consumer);
-    return map.materialAvailableUpdateSlot(owner->teamNumber,material,movementClass(),posX,posY,x,y,distance,withMarkets,consumer);
+    if (map.queryMaterialDistance(owner->teamNumber,material,movementClass(),posX,posY,distance,withMarkets,consumer)!=RouteResult::Reachable) return false;
+    if (!x || !y) return true;
+    const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementClass(),withMarkets,consumer);
+    return map.projectMaterialDestination(field,owner->teamNumber,material,movementClass(),posX,posY,x,y,withMarkets,consumer);
 
 }
 
@@ -789,6 +798,54 @@ RouteResult Unit::queryMaterialDestination(int material,Sint32* x,Sint32* y,int*
     if (performance[FLY]) return findMaterialDestination(material,x,y,distance,withMarkets,consumer) ? RouteResult::Reachable : RouteResult::Unreachable;
     const auto result=map.queryMaterialDistance(owner->teamNumber,material,movementClass(),posX,posY,distance,withMarkets,consumer);
     if (result!=RouteResult::Reachable || !x || !y) return result;
-    return map.materialAvailableUpdateSlot(owner->teamNumber,material,movementClass(),posX,posY,x,y,distance,withMarkets,consumer) ? RouteResult::Reachable : RouteResult::Unreachable;
+    const auto* field=map.getMaterialGradientSlot(owner->teamNumber,material,movementClass(),withMarkets,consumer);
+    return map.projectMaterialDestination(field,owner->teamNumber,material,movementClass(),posX,posY,x,y,withMarkets,consumer)
+        ? RouteResult::Reachable : RouteResult::Unreachable;
 
+}
+
+void Unit::reconcileMaterialClaim()
+{
+    if (!owner || !owner->map || !owner->map->materialClaimTrackingEnabled()) return;
+    Map& map=*owner->map;
+    struct ReconcileTiming {
+        Map& map;
+        std::chrono::steady_clock::time_point start=std::chrono::steady_clock::now();
+        ~ReconcileTiming() { map.materialClaimTelemetry.unitReconcileNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count(); }
+    } timing{map};
+    ++map.materialClaimTelemetry.reconciliations;
+    const auto release=[&] { map.releaseMaterialClaim(scriptIdentity); };
+    if (isDead || hp<UNIT_HP_DEATH_THRESHOLD || medical!=MED_FREE || !attachedBuilding
+        || activity!=ACT_FILLING || !validMaterial(destinationPurpose)
+        || (!performance[WALK] && !performance[SWIM] && !performance[FLY])
+        || !performance[HARVEST] || !canCarryMaterial(destinationPurpose)) { release(); return; }
+    const bool harvesting=displacement==DIS_HARVESTING;
+    if (!harvesting && (displacement!=DIS_GOING_TO_RESOURCE || !validTarget())) { release(); return; }
+    const auto access=map.coordToIndex(harvesting?posX+dx:targetX,harvesting?posY+dy:targetY);
+    const int x=int(access%map.getW()), y=int(access/map.getW());
+    if (!map.isMaterialTakeableSlot(x,y,destinationPurpose)
+        || map.isForbidden(x,y,owner->me)) { release(); return; }
+    auto source=access;
+    const auto& yield=map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(access).type))[destinationPurpose];
+    const bool exclusive=yield.consumption==ResourceConsumption::All || yield.destroysDeposit;
+    const bool pooledHarvest=!exclusive && map.farmAreasEnabled() && map.isFarmArea(x,y,owner->me)
+        && map.isFarmableResourceByIndex(map.getResource(access).type);
+    if (pooledHarvest) {
+        const auto pooled=map.pickClaimFarmHarvestTileSlot(posX,posY,destinationPurpose,owner->me,
+            harvesting?std::nullopt:std::optional<size_t>(access));
+        if (!pooled) { release(); return; }
+        source=*pooled;
+    }
+    const ResourceClaims::Claim claim{Uint32(source),Uint32(access),Uint8(destinationPurpose),map.getResource(source).type,exclusive};
+    if (map.observeMaterialClaim(scriptIdentity,claim)) {
+        ++map.materialClaimTelemetry.changed;
+        const auto& sourceYield=map.resourceRegistry().yields(static_cast<ResourceId>(claim.resource))[destinationPurpose];
+        const Uint32 amount=map.materialAmountAtSlot(source,destinationPurpose);
+        const Uint32 reserve=pooledHarvest && !owner->game->gameHeader.isResourceGrowthDisabled()?sourceYield.seedReserve:0;
+        const Uint32 capacity=amount>reserve?amount-reserve:0;
+        if (sourceYield.consumption!=ResourceConsumption::Infinite
+            && map.materialClaimLedger().materialCount(claim.source,claim.material)>capacity)
+            ++map.materialClaimTelemetry.overcommittedSelections;
+        map.materialClaimTelemetry.peakActive=std::max<Uint64>(map.materialClaimTelemetry.peakActive,map.materialClaimLedger().size());
+    }
 }

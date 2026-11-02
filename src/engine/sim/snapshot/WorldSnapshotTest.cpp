@@ -25,6 +25,98 @@ constexpr SimulationSnapshot::CaptureOptions allOptions{
 
 TEST_SUITE("WorldSnapshot")
 {
+    TEST_CASE("material source coordinates stay immutable with their captured publication")
+    {
+        using Frozen = const gradient_kernel::OwnedDestinations&;
+        static_assert(std::is_same_v<decltype(std::declval<Frozen>().x[0]), const Uint16&>);
+        static_assert(std::is_same_v<decltype(std::declval<Frozen>().x.get()), const Uint16*>);
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+        auto& map = fixture.game.map;
+        map.configureGradientPipeline(0, 1);
+        map.setMaterialDestinationsEnabled(true);
+        map.setResourceByIndex(12, 12, WHEAT, 1);
+        const auto* live = glob2test::awaitGradient(fixture.game, [&] { return map.getMaterialGradientSlot(0, WHEAT, 0); });
+        REQUIRE(map.materialGradientDestinations(live));
+        SimulationSnapshot::Store store;
+        const auto before = store.captureBoundary(fixture.game);
+        const auto key = MapState::planeKey(0, WHEAT, 0, false);
+        const auto* field = before.resourceFields->find(key);
+        REQUIRE(field); REQUIRE(field->destinations);
+        const auto index = map.coordToIndex(4, 4);
+        CHECK(field->destinations->x[index] == 12); CHECK(field->destinations->y[index] == 12);
+        CHECK(field->destinationGeneration > 0);
+        // Dropping the live metadata must not revoke or mutate an older lease.
+        map.setMaterialDestinationsEnabled(false);
+        store.invalidateBoundary(); // This fixture's private store is outside Game's invalidation hook.
+        const auto after = store.captureBoundary(fixture.game);
+        const auto* replaced = after.resourceFields->find(key);
+        REQUIRE(replaced); CHECK_FALSE(replaced->destinations);
+        CHECK(replaced->destinationGeneration == 0);
+        CHECK(field->destinations->x[index] == 12); CHECK(field->destinations->y[index] == 12);
+    }
+
+    TEST_CASE("claims have immutable exact counts and independent dirty chunks")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        auto& map = fixture.game.map;
+        SimulationSnapshot::Store store;
+        store.setVerification(true);
+        const auto before = store.captureBoundary(fixture.game);
+        REQUIRE(before.claims);
+        const auto index = map.coordToIndex(4, 4);
+        CHECK(before.materialClaimCountAt(index) == 0);
+        const auto copied = store.metrics.mapBytesCopied;
+        map.observeMaterialClaim(10, {Uint32(index), Uint32(index), 0, 0});
+        const auto after = store.captureBoundary(fixture.game);
+        CHECK(after.resources == before.resources);
+        CHECK(after.claims != before.claims);
+        CHECK(before.materialClaimCountAt(index) == 0);
+        CHECK(after.materialClaimCountAt(index) == 1);
+        CHECK(after.view().materialClaimCount(index) == 1);
+        CHECK(after.tileAt(index).materialClaims == 1);
+        const auto& geometry = map.chunks();
+        size_t chunkCells = 0;
+        geometry.forEachRow(geometry.chunkOf(index), [&](size_t, size_t n) { chunkCells += n; });
+        // A new buffer needs its initial fill. Once warmed, only changed
+        // one-byte claim chunks are copied, never resource stock arrays.
+        CHECK(store.metrics.mapBytesCopied - copied == map.cellCount());
+        CHECK(chunkCells <= map.cellCount());
+        auto narrow = after.project(SimulationSnapshot::bit(SimulationSnapshot::Component::Resources));
+        CHECK_FALSE(narrow.claims); CHECK(narrow.materialClaimCountAt(index) == 0);
+        for (unsigned owner = 11; owner < 310; ++owner)
+            map.observeMaterialClaim(owner, {Uint32(index), Uint32(index), 0, 0});
+        const auto overflow = store.captureBoundary(fixture.game);
+        CHECK(overflow.materialClaimCountAt(index) == 300);
+        CHECK(overflow.claims->counts.cells[index] == 255);
+        CHECK(after.materialClaimCountAt(index) == 1);
+        for (unsigned owner = 10; owner < 310; ++owner) map.releaseMaterialClaim(owner);
+        const auto released = store.captureBoundary(fixture.game);
+        CHECK(released.materialClaimCountAt(index) == 0);
+        CHECK(overflow.materialClaimCountAt(index) == 300);
+        CHECK_THROWS_AS(released.materialClaimCountAt(map.cellCount()), std::out_of_range);
+    }
+
+    TEST_CASE("warmed claim captures copy only the changed byte plane chunk")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        auto& map = fixture.game.map;
+        SimulationSnapshot::Store store; store.setVerification(true);
+        const auto index = map.coordToIndex(4, 4);
+        store.captureBoundary(fixture.game);
+        map.observeMaterialClaim(1, {Uint32(index), Uint32(index), 0, 0});
+        store.captureBoundary(fixture.game);
+        const auto copied = store.metrics.mapBytesCopied;
+        map.releaseMaterialClaim(1);
+        const auto changed = store.captureBoundary(fixture.game);
+        size_t expected = 0;
+        map.chunks().forEachRow(map.chunks().chunkOf(index), [&](size_t, size_t n) { expected += n; });
+        CHECK(store.metrics.mapBytesCopied - copied == expected);
+        CHECK(changed.materialClaimCountAt(index) == 0);
+    }
+
     TEST_CASE("named views retain only their standard inputs")
     {
         glob2test::HeadlessGlobals globals;

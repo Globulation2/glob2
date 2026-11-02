@@ -198,7 +198,7 @@ const Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int reso
     }
     if (found==runtime.materialFields.end())
     {
-        const Uint64 fieldBytes=Uint64(size)*sizeof(Uint16);
+        const Uint64 fieldBytes=Uint64(size)*sizeof(Uint16)*(runtime.materialDestinationsEnabled?3:1);
         const Uint64 limit=std::max(fieldBytes,runtime.materialCacheBudget);
         while (!runtime.materialLru.empty() && (runtime.materialFields.size()+1)*fieldBytes>limit)
         {
@@ -208,6 +208,7 @@ const Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int reso
                 if (!retainedMaterialField(runtime,old,game)) { victim=candidate; break; }
             }
             if (victim==runtime.materialLru.end()) return nullptr;
+            runtime.pipeline.forgetDestinations(&runtime.materialFields.at(*victim).published);
             runtime.materialFields.erase(*victim); runtime.materialLru.erase(victim);
         }
         found=runtime.materialFields.try_emplace(key).first;
@@ -263,7 +264,8 @@ const Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int reso
 void Map::setMaterialRoutingCacheBudget(Uint64 bytes)
 {
     auto& runtime=*gradientRuntime;
-    const auto target=std::clamp<Uint64>(bytes,sizeof(Uint16)*size,std::max<Uint64>(sizeof(Uint16)*size,64ull*1024*1024));
+    const Uint64 fieldBytes=sizeof(Uint16)*size*(runtime.materialDestinationsEnabled?3:1);
+    const auto target=std::clamp<Uint64>(bytes,fieldBytes,std::max<Uint64>(fieldBytes,64ull*1024*1024));
     while (materialRoutingCacheBytes()>target) {
         auto victim=runtime.materialLru.end();
         for (auto it=runtime.materialLru.begin();it!=runtime.materialLru.end();++it) {
@@ -271,6 +273,7 @@ void Map::setMaterialRoutingCacheBudget(Uint64 bytes)
             if (!retainedMaterialField(runtime,entry,game)) { victim=it; break; }
         }
         if (victim==runtime.materialLru.end()) break;
+        runtime.pipeline.forgetDestinations(&runtime.materialFields.at(*victim).published);
         runtime.materialFields.erase(*victim); runtime.materialLru.erase(victim);
     }
     // Configuration cannot destroy an admitted destination. A shrink takes the
@@ -279,8 +282,29 @@ void Map::setMaterialRoutingCacheBudget(Uint64 bytes)
 }
 Uint64 Map::materialRoutingCacheBytes() const
 {
-    return Uint64(gradientRuntime->materialFields.size())*size*sizeof(Uint16);
+    return Uint64(gradientRuntime->materialFields.size())*size*sizeof(Uint16)*(gradientRuntime->materialDestinationsEnabled?3:1);
 }
+
+void Map::setMaterialDestinationsEnabled(bool enabled)
+{
+    auto& runtime=*gradientRuntime;
+    if (runtime.materialDestinationsEnabled==enabled) return;
+    if (runtime.pipeline.pendingCount() || !runtime.preparations.empty() || !runtime.fieldRequests.empty())
+        throw std::logic_error("Change destination policy only at a drained gradient boundary");
+    // Old fields can still serve cost-only queries until their next refresh.
+    // Clear metadata on a policy change so disabling never retains an old
+    // destination interpretation or undercounts a labeled consumer cache.
+    for (const auto& plane:publishedPlanes) runtime.pipeline.forgetDestinations(plane.slot);
+    for (auto& [key,field]:runtime.materialFields) runtime.pipeline.forgetDestinations(&field.published);
+    runtime.materialDestinationsEnabled=enabled;
+    setMaterialRoutingCacheBudget(runtime.materialCacheBudget);
+    if (game) game->invalidateObservation();
+}
+bool Map::materialDestinationsEnabled() const { return gradientRuntime->materialDestinationsEnabled; }
+std::shared_ptr<const gradient_kernel::OwnedDestinations> Map::materialGradientDestinations(const Uint16* field) const
+{ return gradientRuntime->pipeline.destinationFieldForCosts(field); }
+Uint64 Map::materialGradientDestinationGeneration(Uint16* const* slot) const
+{ return gradientRuntime->pipeline.destinationGeneration(slot); }
 
 unsigned Map::materialSupplyModesSlot(const Building* consumer, int resource) const
 {

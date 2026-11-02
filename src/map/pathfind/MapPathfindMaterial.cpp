@@ -164,14 +164,19 @@ void Map::pathfindRandom(Unit *unit)
 	}
 }
 
-StepResult Map::queryMaterialStep(EntityRandom& random, int team, Uint8 material, int swim, int x, int y, int* dx, int* dy, bool* stopWork, Building* target, bool markets)
+StepResult Map::queryMaterialStep(EntityRandom& random, int team, Uint8 material, int swim, int x, int y, int* dx, int* dy, bool* stopWork, Building* target, bool markets, Sint32* projectedX, Sint32* projectedY, bool* projectedValid, const Unit* observer)
 {
+    if (projectedValid) *projectedValid=false;
     std::optional<GradientFieldKey> key;
     const auto* field=getMaterialGradientSlot(team,material,swim,markets,target,&key);
     if (!field) {if(key)gradientMovementDemand(*key);*stopWork=false;return StepResult::Pending;}
     if (field[coordToIndex(x,y)]==GRADIENT_FORBIDDEN && !getForbiddenGradient(team,swim)) { *stopWork=false; return StepResult::Pending; }
     const bool atGoal=field[coordToIndex(x,y)]==GRADIENT_AT_GOAL;
+    if (observer) observeMaterialClaimDecision(*observer,field);
     const bool stepped=pathfindMaterial(random,team,material,swim,x,y,dx,dy,stopWork,target,markets);
+    if (projectedX && projectedY && projectedValid)
+        *projectedValid=projectMaterialDestination(field,team,material,swim,
+            x+(stepped?*dx:0),y+(stepped?*dy:0),projectedX,projectedY,markets,target);
     if (atGoal) return StepResult::AtGoal;
     return stepped ? StepResult::Step : StepResult::Blocked;
 }

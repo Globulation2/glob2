@@ -536,6 +536,12 @@ void Map::configureCompute(unsigned threads)
 
 void Map::clear()
 {
+    materialClaimProbe.reset();
+    materialClaimFarmCache.clear();
+    materialClaimFarmEpoch = {};
+    materialClaimTracking = false;
+    materialClaimTelemetry = {};
+    materialClaims.reset(0);
 	if (game) game->areaEffects.reset();
 	loadedHistoricalGrowthVersion = 0;
 	loadedLegacyGrowth144 = false;
@@ -555,6 +561,7 @@ void Map::clear()
     }
     gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
+    gradientRuntime->materialDestinationsEnabled = false;
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();

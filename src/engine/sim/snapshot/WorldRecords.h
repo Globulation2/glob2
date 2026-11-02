@@ -89,6 +89,7 @@ struct TileView
 	Uint16 cellRule = GRASS;
 	Uint8 immobileUnit = 255;
 	Resource resource;
+	Uint32 materialClaims = 0;
 	Uint16 building = 0xffff, groundUnit = 0xffff, airUnit = 0xffff;
 	Uint32 forbidden = 0, guard = 0, clear = 0, farm = 0;
 	Uint32 discovered = 0, visible = 0;

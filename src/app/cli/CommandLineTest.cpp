@@ -259,3 +259,9 @@ TEST_CASE("interval exploration requires explicit headless collection") {
             "--resource-gradient-exploration",invalid}));
 }
 }
+
+TEST_CASE("resource claim shadow collection is an explicit game-run observer" * doctest::test_suite("ResourceClaimsCommandLine")) {
+    const auto request=Cli::parse({"game","run","--output-dir","artifacts/claims-cli-test","--load-game","checkpoint.game.gz","--resource-claims-shadow"});
+    CHECK(request.get("--resource-claims-shadow")=="true");
+    CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--resource-claims-shadow"}));
+}

@@ -252,14 +252,16 @@ namespace
 		{
 			u->displacement = Unit::DIS_GOING_TO_BUILDING;
 			u->setTargetBuilding(b);
+            u->setValidTarget(true);
 		}
 		else
 		{
 			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
 			u->setTargetBuilding(NULL);
-			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->movementClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
+            u->setValidTarget(u->queryMaterialDestination(resource,&u->targetX,&u->targetY,nullptr,
+                b->fetchesFromMarkets(),b)==RouteResult::Reachable);
 		}
-		u->setValidTarget(true);
+        u->reconcileMaterialClaim();
 	}
 }
 

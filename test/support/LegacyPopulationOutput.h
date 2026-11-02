@@ -158,6 +158,11 @@ public:
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
+        if (formatVersion<194 && (name=="materialDestinations" ||
+            (name=="destinations" && std::find(sections.begin(),sections.end(),"gradientPipeline")!=sections.end()))) {
+            suppressedAt=sections.size();
+            return;
+        }
         if (formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY && name=="winProbability") {
             suppressedAt=sections.size();
             return;
@@ -338,6 +343,9 @@ public:
     }
     void writeUint8(Uint8 value,std::string_view name) override
     {
+        if (formatVersion<194 && name=="destinations" &&
+            std::find(sections.begin(),sections.end(),"queuedRequests")!=sections.end()) return;
+
         if(suppressed()) return;
         if(formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
             && (name=="hasAdaptiveKey" || name=="legacyAssociation")) return;

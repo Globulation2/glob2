@@ -62,11 +62,16 @@ class Planner:
         config = self.config
         fmt = rng.choice(formats)
         n = 2 if fmt == '1v1' else 4
+        if fmt == 'ffa' and 'ffa_colonies' in config:
+            n = rng.choice(config['ffa_colonies'])
+        replacement = config.get('seat_sampling', 'distinct') == 'with_replacement'
         if fmt == '2v2':
-            a, b = rng.sample(ais, 2) if len(ais) >= 2 else (ais[0], ais[0])
+            a, b = ([rng.choice(ais), rng.choice(ais)] if replacement else
+                    rng.sample(ais, 2) if len(ais) >= 2 else (ais[0], ais[0]))
             players, alliances = [a, a, b, b], [1, 1, 2, 2]
         else:
-            players = rng.sample(ais, n) if len(ais) >= n else [rng.choice(ais) for _ in range(n)]
+            players = (rng.sample(ais, n) if not replacement and len(ais) >= n else
+                       [rng.choice(ais) for _ in range(n)])
             alliances = None
         method = rng.choice(methods)
         map_seed, game_seed = rng.getrandbits(32), rng.getrandbits(32)
@@ -85,6 +90,7 @@ class Planner:
                     config={'generator': method, 'params': params, 'candidates': config.get('candidates', 5),
                             'players': players, 'ticks': config.get('ticks', DEFAULT_GAME_TICKS), 'ai_params': {},
                             **({'rules': config['rules']} if 'rules' in config else {}),
+                            **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
@@ -133,6 +139,7 @@ class Planner:
                     config={'players': players, 'ticks': config.get('ticks', DEFAULT_GAME_TICKS),
                             'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
                             **({'rules': config['rules']} if 'rules' in config else {}),
+                            **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
@@ -202,6 +209,20 @@ class Planner:
             formats = config.get('formats',['1v1'])
             for fmt in formats:
                 if fmt not in ('1v1','2v2','ffa'): raise ValueError('unknown format')
+            if 'ffa_colonies' in config or 'seat_sampling' in config:
+                if 'sample_games' not in config:
+                    raise ValueError('ffa_colonies and seat_sampling require sample_games')
+                if config.get('balanced_duels'):
+                    raise ValueError('balanced_duels does not accept ffa_colonies or seat_sampling')
+                if config.get('seat_sampling', 'distinct') not in ('distinct', 'with_replacement'):
+                    raise ValueError('seat_sampling must be distinct or with_replacement')
+                if 'ffa_colonies' in config:
+                    counts = config['ffa_colonies']
+                    if (not isinstance(counts, list) or not counts or
+                            any(type(n) is not int or not 2 <= n <= 16 for n in counts)):
+                        raise ValueError('ffa_colonies must be a nonempty list of integers in 2..16')
+                    if 'ffa' not in formats:
+                        raise ValueError('ffa_colonies requires an ffa format')
             if 'sample_games' in config:
                 if type(config['sample_games']) is not int or config['sample_games'] <= 0:
                     raise ValueError('sample_games must be a positive integer')

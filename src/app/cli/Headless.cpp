@@ -40,6 +40,7 @@
 #include "ReplayWriter.h"
 #include "SimVersion.h"
 #include <nlohmann/json.hpp>
+#include "map/claims/ResourceClaimProbe.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include "GameGUI.h"
@@ -726,6 +727,15 @@ struct HeadlessRunner
                 integer(one(options,"--resource-gradient-exploration-seed","0"),0,UINT32_MAX),
                 (output/"gradient-decisions.csv").string());
         }
+        engine.gui.game.map.setMaterialClaimTrackingEnabled(one(options,"--resource-claims-shadow","false")=="true");
+        if (engine.gui.game.map.materialClaimTrackingEnabled()) {
+            ResourceClaims::Probe::Config probe;
+            probe.sampleEvery=integer(one(options,"--resource-claims-sample-every","1000"),1,1000000000);
+            probe.maxSamples=integer(one(options,"--resource-claims-max-samples","10000"),1,1000000);
+            probe.maxOutputBytes=integer(one(options,"--resource-claims-max-bytes","67108864"),1024,2147483647);
+            engine.gui.game.map.setMaterialClaimProbe(std::make_shared<ResourceClaims::Probe>(engine.gui.game.map.computeExecutor(),
+                (output/"resource-claims-shadow.jsonl.gz").string(),probe));
+        }
 		globals.headlessReplay=recordReplay;
 		if(recordReplay) {
 			globals.replayWriter=std::make_unique<ReplayWriter>();
@@ -800,6 +810,7 @@ struct HeadlessRunner
         const auto initialChecksum=initialSamples.front().sample.value;
         if (engine.diagnostics) engine.diagnostics->finish();
         if (engine.warriorTactics) engine.warriorTactics->finish();
+        engine.gui.game.map.finishMaterialClaimProbe();
         const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
@@ -985,6 +996,28 @@ struct HeadlessRunner
         }
 		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
+        if (game.map.materialClaimTrackingEnabled()) {
+            const auto& claims=game.map.materialClaimTelemetry;
+            result << ",\"resource_claims_shadow\":{\"schema_version\":1,\"enforced\":false"
+                << ",\"continuation_policy\":\"rebuild-observational-state-after-load\""
+                << ",\"reconciliations\":" << claims.reconciliations
+                << ",\"changed\":" << claims.changed << ",\"released\":" << claims.released
+                << ",\"overcommitted_selections\":" << claims.overcommittedSelections
+                << ",\"unit_reconcile_ns\":" << claims.unitReconcileNs << ",\"sweep_ns\":" << claims.sweepNs
+                << ",\"sweeps\":" << claims.sweeps << ",\"farm_queries\":" << claims.farmQueries
+                << ",\"farm_cache_hits\":" << claims.farmCacheHits << ",\"farm_flood_cells\":" << claims.farmFloodCells
+                << ",\"peak_active\":" << claims.peakActive
+                << ",\"active\":" << game.map.materialClaimLedger().size();
+            if (const auto* probe=game.map.resourceClaimProbe()) {
+                const auto& m=probe->metrics();
+                result << ",\"decisions\":" << m.decisions << ",\"sampled\":" << m.sampled
+                    << ",\"contested\":" << m.contested << ",\"submitted\":" << m.submitted << ",\"completed\":" << m.completed
+                    << ",\"excluded_sample_limit\":" << m.excludedSampleLimit << ",\"excluded_queue_limit\":" << m.excludedQueueLimit
+                    << ",\"excluded_missing_field\":" << m.excludedMissingField
+                    << ",\"capture_bytes\":" << m.captureBytes << ",\"output_bytes\":" << m.outputBytes;
+            }
+            result << '}';
+        }
 		result << ",\"javascriptControllers\":[";
 		bool scriptComma = false;
 		for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
