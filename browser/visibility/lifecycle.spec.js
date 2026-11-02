@@ -3,7 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const {spawn} = require('node:child_process');
-const {clickMainMenu, clickCustomGameStart, clickControl, controlBox, gameURL} = require('../tests/main-menu');
+const {waitForMainMenu, clickMainMenu, clickCustomGameStart, clickControl, controlBox, gameURL} = require('../tests/main-menu');
 
 // Playwright's normal focus override keeps background documents visible.
 // Use a real browser window and the default context without that override.
@@ -40,7 +40,7 @@ test('background single-player suspends and returns without catching up', async 
     const snapshot=()=>page.evaluate(()=>glob2Diagnostics.snapshot());
     const screen=name=>expect.poll(async ()=>(await snapshot()).screen).toContain(name);
     await page.bringToFront();
-    await page.goto(new URL(gameURL(), baseURL).href); await screen('MainMenuScreen');
+    await page.goto(new URL(gameURL(), baseURL).href); await waitForMainMenu(page);
     await page.evaluate(()=>{
       window.visibilityInputs=[];
       for (const type of ['mousedown','mouseup','keydown','keyup'])
