@@ -1,0 +1,25 @@
+{
+  "pid": 2124580,
+  "revision": "5298d624690d8853a0ab37d46b81751b6a4ea352",
+  "phase": "finished",
+  "affinity": "0,1",
+  "command": [
+    "taskset",
+    "-c",
+    "0,1",
+    "xvfb-run",
+    "-a",
+    "node",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-repair/browser/node_modules/@playwright/test/cli.js",
+    "test",
+    "viewport.spec.js",
+    "--grep=high density display",
+    "--config=/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-repair/browser/playwright.config.js",
+    "--project=chromium",
+    "--workers=1",
+    "--trace=off",
+    "--reporter=list,junit",
+    "--output=/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-final-viewport-results"
+  ],
+  "exit_code": 0
+}

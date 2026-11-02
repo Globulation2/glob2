@@ -1,0 +1,9 @@
+{
+  "pid": 1968615,
+  "phase": "finished",
+  "artifact": 13127946510,
+  "revision": "d9ec8070527dab838f602332c6c9221eed78a58e",
+  "test_source_revision": "c688790991f08bc439ef586983758b167c5a1bdc",
+  "affinity": "0,1",
+  "exit_code": 1
+}

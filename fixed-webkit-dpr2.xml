@@ -1,0 +1,6 @@
+<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="27.380906">
+<testsuite name="viewport.spec.js" timestamp="2026-11-02T11:33:38.604Z" hostname="webkit" tests="1" failures="0" skipped="0" time="26.395" errors="0">
+<testcase name="high density display › uses the renderer-appropriate backing resolution" classname="viewport.spec.js" time="26.395">
+</testcase>
+</testsuite>
+</testsuites>

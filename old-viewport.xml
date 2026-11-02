@@ -1,0 +1,62 @@
+<testsuites id="" name="" tests="8" failures="1" skipped="1" errors="0" time="362.98642799999993">
+<testsuite name="viewport.spec.js" timestamp="2026-11-02T10:02:33.863Z" hostname="chromium" tests="8" failures="1" skipped="1" time="361.008" errors="0">
+<testcase name="menus follow the viewport and keep their controls clickable" classname="viewport.spec.js" time="41.011">
+</testcase>
+<testcase name="a running match survives resize and its open menu follows the new center" classname="viewport.spec.js" time="58.196">
+</testcase>
+<testcase name="editor dialogs and discard controls follow viewport changes" classname="viewport.spec.js" time="57.525">
+</testcase>
+<testcase name="small viewports retain the active screen and continue rendering" classname="viewport.spec.js" time="41.99">
+</testcase>
+<testcase name="initial small viewport › starts at the actual browser dimensions" classname="viewport.spec.js" time="26.775">
+</testcase>
+<testcase name="initial wide viewport › fills the page before any resize" classname="viewport.spec.js" time="29.619">
+</testcase>
+<testcase name="high density display › uses the renderer-appropriate backing resolution" classname="viewport.spec.js" time="70.334">
+<system-out>
+<![CDATA[STARTUP_FAILURE_STATE {"state":{"version":1,"executionMode":"threaded","threadFallback":null,"workerCount":1,"renderer":"webgl2","renderContext":{"width":2400,"height":1800,"error":null},"contextLost":false,"contextRestores":0,"screen":"loading","screenClass":"","roomCanStart":false,"customGameReady":false,"tick":0,"frames":0,"loop":535,"paused":false,"torus":false,"torusSettled":false,"width":2400,"height":1800,"heapBytes":134217728,"artworkReady":false,"restore":"ready","watchReplay":"none","import":"idle","persisting":false,"persistence":"persisted","audio":"inactive","assets":{"core":"ready","game":"ready","skins":"idle","font-cjk":"ready","menu-music":"ready","translations":"ready","music":"ready","music-sets":"ready","hd":"ready"},"opened":[],"controls":{}},"hidden":false,"focused":true,"hostHidden":false,"visibilityEvents":[]}
+STARTUP_AFTER_FOCUS {"state":{"version":1,"executionMode":"threaded","threadFallback":null,"workerCount":1,"renderer":"webgl2","renderContext":{"width":2400,"height":1800,"error":null},"contextLost":false,"contextRestores":0,"screen":"loading","screenClass":"","roomCanStart":false,"customGameReady":false,"tick":0,"frames":0,"loop":630,"paused":false,"torus":false,"torusSettled":false,"width":2400,"height":1800,"heapBytes":134217728,"artworkReady":false,"restore":"ready","watchReplay":"none","import":"idle","persisting":false,"persistence":"persisted","audio":"inactive","assets":{"core":"ready","game":"ready","skins":"idle","font-cjk":"ready","menu-music":"ready","translations":"ready","music":"ready","music-sets":"ready","hd":"ready"},"opened":[],"controls":{}},"hidden":false,"focused":true,"hostHidden":false,"visibilityEvents":[]}
+
+[[ATTACHMENT|results/viewport-high-density-disp-b2dd1-ropriate-backing-resolution-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|results/viewport-high-density-disp-b2dd1-ropriate-backing-resolution-chromium/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(received).toMatch(expected)" type="expect.toMatch">
+<![CDATA[  [chromium] › viewport.spec.js:97:3 › high density display › uses the renderer-appropriate backing resolution 
+
+    Error: expect(received).toMatch(expected)
+
+    Expected pattern: /MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen|IntroductionOfferScreen/
+    Received string:  "loading"
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      14 | test.beforeEach(async ({page}) => {
+      15 |   await page.goto(gameURL());
+    > 16 |   await expect.poll(async () => (await snapshot(page)).screen).toMatch(/MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen|IntroductionOfferScreen/);
+         |                                                                ^
+      17 |   if ((await snapshot(page)).screen.includes('AudioPreferenceScreen')) {
+      18 |     await clickControl(page,'audio.silence');
+      19 |     await screen(page,'HandPreferenceScreen');
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:16:64
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    results/viewport-high-density-disp-b2dd1-ropriate-backing-resolution-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: results/viewport-high-density-disp-b2dd1-ropriate-backing-resolution-chromium/error-context.md
+]]>
+</failure>
+</testcase>
+<testcase name="interface scale survives resizing and keeps settings controls clickable" classname="viewport.spec.js">
+<properties>
+<property name="skip" value="">
+</property>
+</properties>
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+</testsuites>

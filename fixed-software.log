@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:2127046) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium-visibility] › browser/visibility/lifecycle.spec.js:11:1 › background single-player suspends and returns without catching up (26.3s)
+  ✓  2 [chromium-visibility] › browser/visibility/startup.spec.js:26:3 › serial asset startup advances between infrequent display callbacks (16.8s)
+  ✓  3 [chromium-visibility] › browser/visibility/startup.spec.js:26:3 › threaded asset startup advances between infrequent display callbacks (20.3s)
+
+  3 passed (1.1m)

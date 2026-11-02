@@ -1,0 +1,48 @@
+
+Running 8 tests using 1 worker
+
+(node:1978987) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:24:1 › menus follow the viewport and keep their controls clickable (41.0s)
+  ✓  2 [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:33:1 › a running match survives resize and its open menu follows the new center (58.2s)
+  ✓  3 [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:55:1 › editor dialogs and discard controls follow viewport changes (57.5s)
+  ✓  4 [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:68:1 › small viewports retain the active screen and continue rendering (42.0s)
+  ✓  5 [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:78:3 › initial small viewport › starts at the actual browser dimensions (26.8s)
+  ✓  6 [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:88:3 › initial wide viewport › fills the page before any resize (29.6s)
+STARTUP_FAILURE_STATE {"state":{"version":1,"executionMode":"threaded","threadFallback":null,"workerCount":1,"renderer":"webgl2","renderContext":{"width":2400,"height":1800,"error":null},"contextLost":false,"contextRestores":0,"screen":"loading","screenClass":"","roomCanStart":false,"customGameReady":false,"tick":0,"frames":0,"loop":535,"paused":false,"torus":false,"torusSettled":false,"width":2400,"height":1800,"heapBytes":134217728,"artworkReady":false,"restore":"ready","watchReplay":"none","import":"idle","persisting":false,"persistence":"persisted","audio":"inactive","assets":{"core":"ready","game":"ready","skins":"idle","font-cjk":"ready","menu-music":"ready","translations":"ready","music":"ready","music-sets":"ready","hd":"ready"},"opened":[],"controls":{}},"hidden":false,"focused":true,"hostHidden":false,"visibilityEvents":[]}
+STARTUP_AFTER_FOCUS {"state":{"version":1,"executionMode":"threaded","threadFallback":null,"workerCount":1,"renderer":"webgl2","renderContext":{"width":2400,"height":1800,"error":null},"contextLost":false,"contextRestores":0,"screen":"loading","screenClass":"","roomCanStart":false,"customGameReady":false,"tick":0,"frames":0,"loop":630,"paused":false,"torus":false,"torusSettled":false,"width":2400,"height":1800,"heapBytes":134217728,"artworkReady":false,"restore":"ready","watchReplay":"none","import":"idle","persisting":false,"persistence":"persisted","audio":"inactive","assets":{"core":"ready","game":"ready","skins":"idle","font-cjk":"ready","menu-music":"ready","translations":"ready","music":"ready","music-sets":"ready","hd":"ready"},"opened":[],"controls":{}},"hidden":false,"focused":true,"hostHidden":false,"visibilityEvents":[]}
+  ✘  7 [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:97:3 › high density display › uses the renderer-appropriate backing resolution (1.2m)
+(node:1987553) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  8 [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:110:1 › interface scale survives resizing and keeps settings controls clickable
+
+
+  1) [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:97:3 › high density display › uses the renderer-appropriate backing resolution 
+
+    Error: expect(received).toMatch(expected)
+
+    Expected pattern: /MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen|IntroductionOfferScreen/
+    Received string:  "loading"
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      14 | test.beforeEach(async ({page}) => {
+      15 |   await page.goto(gameURL());
+    > 16 |   await expect.poll(async () => (await snapshot(page)).screen).toMatch(/MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen|IntroductionOfferScreen/);
+         |                                                                ^
+      17 |   if ((await snapshot(page)).screen.includes('AudioPreferenceScreen')) {
+      18 |     await clickControl(page,'audio.silence');
+      19 |     await screen(page,'HandPreferenceScreen');
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:16:64
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-recovery/hosted-viewport-diagnostic/results/viewport-high-density-disp-b2dd1-ropriate-backing-resolution-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-recovery/hosted-viewport-diagnostic/results/viewport-high-density-disp-b2dd1-ropriate-backing-resolution-chromium/error-context.md
+
+  1 failed
+    [chromium] › artifacts/ci-recovery/hosted-viewport-diagnostic/viewport.spec.js:97:3 › high density display › uses the renderer-appropriate backing resolution 
+  1 skipped
+  6 passed (6.0m)

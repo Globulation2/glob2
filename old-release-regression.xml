@@ -1,0 +1,46 @@
+<testsuites id="" name="" tests="1" failures="1" skipped="0" errors="0" time="60.33484899999999">
+<testsuite name="startup.spec.js" timestamp="2026-11-02T11:18:53.054Z" hostname="chromium-visibility" tests="1" failures="1" skipped="0" time="59.732" errors="0">
+<testcase name="threaded asset startup advances between infrequent display callbacks" classname="startup.spec.js" time="59.732">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|startup-old-release-regression-results/startup-threaded-asset-sta-47e35-nfrequent-display-callbacks-chromium-visibility/test-failed-1.png]]
+
+[[ATTACHMENT|startup-old-release-regression-results/startup-threaded-asset-sta-47e35-nfrequent-display-callbacks-chromium-visibility/error-context.md]]
+]]>
+</system-out>
+<failure message="main menu is not showing after declining the introduction" type="expect.toBe">
+<![CDATA[  [chromium-visibility] › startup.spec.js:26:3 › threaded asset startup advances between infrequent display callbacks 
+
+    Error: main menu is not showing after declining the introduction
+
+    main menu is not showing after declining the introduction
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+       at ../tests/main-menu.js:258
+
+      256 |       await exports.clickControl(page,'intro/continue');
+      257 |     return false;
+    > 258 |   }, {timeout,message:'main menu is not showing after declining the introduction'}).toBe(true);
+          |                                                                                     ^
+      259 | };
+      260 |
+        at waitForMainMenu (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-repair/browser/tests/main-menu.js:258:85)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-repair/browser/visibility/startup.spec.js:34:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../startup-old-release-regression-results/startup-threaded-asset-sta-47e35-nfrequent-display-callbacks-chromium-visibility/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../startup-old-release-regression-results/startup-threaded-asset-sta-47e35-nfrequent-display-callbacks-chromium-visibility/error-context.md
+]]>
+</failure>
+</testcase>
+</testsuite>
+</testsuites>

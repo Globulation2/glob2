@@ -1,0 +1,39 @@
+{
+  "pid": 2124579,
+  "revision": "5298d624690d8853a0ab37d46b81751b6a4ea352",
+  "phase": "finished",
+  "results": [
+    {
+      "name": "release-web-build",
+      "exit_code": 0
+    },
+    {
+      "name": "software",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "node",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-repair/browser/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config=/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-repair/browser/visibility.config.js",
+        "--workers=1",
+        "--trace=off"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "webgl2",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "node",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-repair/browser/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config=/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-repair/browser/visibility.config.js",
+        "--workers=1",
+        "--trace=off"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

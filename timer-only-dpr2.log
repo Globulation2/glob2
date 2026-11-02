@@ -1,0 +1,35 @@
+
+Running 1 test using 1 worker
+
+(node:2109146) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › browser/tests/viewport.spec.js:97:3 › high density display › uses the renderer-appropriate backing resolution (1.0m)
+
+
+  1) [chromium] › browser/tests/viewport.spec.js:97:3 › high density display › uses the renderer-appropriate backing resolution 
+
+    Error: expect(received).toMatch(expected)
+
+    Expected pattern: /MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen|IntroductionOfferScreen/
+    Received string:  "loading"
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      14 | test.beforeEach(async ({page}) => {
+      15 |   await page.goto(gameURL());
+    > 16 |   await expect.poll(async () => (await snapshot(page)).screen).toMatch(/MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen|IntroductionOfferScreen/);
+         |                                                                ^
+      17 |   if ((await snapshot(page)).screen.includes('AudioPreferenceScreen')) {
+      18 |     await clickControl(page,'audio.silence');
+      19 |     await screen(page,'HandPreferenceScreen');
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/startup-repair/browser/tests/viewport.spec.js:16:64
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../startup-final-viewport-results/viewport-high-density-disp-b2dd1-ropriate-backing-resolution-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../startup-final-viewport-results/viewport-high-density-disp-b2dd1-ropriate-backing-resolution-chromium/error-context.md
+
+  1 failed
+    [chromium] › browser/tests/viewport.spec.js:97:3 › high density display › uses the renderer-appropriate backing resolution 
