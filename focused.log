@@ -1,0 +1,19 @@
+
+Running 12 tests using 1 worker
+
+(node:2340349) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [firefox] › browser/tests/campaign-editor-storage.spec.js:38:1 › campaign authoring retains the editor on quota failure and can retry (45.7s)
+  ✓   2 [firefox] › browser/tests/input.spec.js:35:1 › click coordinates stay correct when browser motion delivery is missing (24.7s)
+  ✓   3 [firefox] › browser/tests/input.spec.js:52:1 › desktop right-click cancels a selection and cycles sidebar views without a browser menu (23.1s)
+  ✓   4 [firefox] › browser/tests/menu-presentation.spec.js:17:1 › custom setup leaves the colony visible around its own panel (15.4s)
+  ✓   5 [firefox] › browser/tests/menu-presentation.spec.js:23:1 › menu presentation survives a match and nested menus (27.4s)
+  ✓   6 [firefox] › browser/tests/responsive-presentation.spec.js:51:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (41.3s)
+  ✓   7 [firefox] › browser/tests/settings-storage.spec.js:30:54 › settings survive quota with visible failure and durable retry (47.7s)
+  ✓   8 [firefox] › browser/tests/settings-storage.spec.js:30:54 › settings survive aborted transaction with visible failure and durable retry (46.5s)
+  ✓   9 [firefox] › browser/tests/shutdown-storage.spec.js:46:1 › quit offers visible retry after a failed final save (25.5s)
+  ✓  10 [firefox] › browser/tests/single-player.spec.js:321:1 › the custom game preview draws the selected map (33.2s)
+  ✓  11 [firefox] › browser/tests/team-colors.spec.js:40:3 › software preserves the red tutorial team before and after resize (24.0s)
+  ✓  12 [firefox] › browser/tests/team-colors.spec.js:40:3 › webgl2 preserves the red tutorial team before and after resize (25.9s)
+
+  12 passed (6.4m)

@@ -1,0 +1,11 @@
+{
+  "pid": 2354938,
+  "base": "ac8fd6d2fdc76651d99108de06600ca6b31908bb",
+  "phase": "finished",
+  "results": [
+    {
+      "name": "actual-visual-cases",
+      "exit_code": 0
+    }
+  ]
+}

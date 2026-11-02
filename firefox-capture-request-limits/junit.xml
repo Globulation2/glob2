@@ -1,0 +1,8 @@
+<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="5.237067">
+<testsuite name="probe.spec.js" timestamp="2026-11-02T13:25:07.852Z" hostname="firefox" tests="2" failures="0" skipped="0" time="2.914" errors="0">
+<testcase name="capture identifies the intended page when another page exists" classname="probe.spec.js" time="2.151">
+</testcase>
+<testcase name="full document outside the viewport fails explicitly" classname="probe.spec.js" time="0.763">
+</testcase>
+</testsuite>
+</testsuites>

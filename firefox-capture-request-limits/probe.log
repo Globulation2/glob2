@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:2355015) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [firefox] › artifacts/ci-recovery/firefox-capture-request-limits/probe.spec.js:2:1 › capture identifies the intended page when another page exists (2.2s)
+  ✓  2 [firefox] › artifacts/ci-recovery/firefox-capture-request-limits/probe.spec.js:7:1 › full document outside the viewport fails explicitly (763ms)
+
+  2 passed (5.2s)

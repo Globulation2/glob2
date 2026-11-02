@@ -1,0 +1,44 @@
+
+Running 2 tests using 1 worker
+
+(node:2351324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [firefox] › artifacts/ci-recovery/firefox-capture-request-limits/probe.spec.js:2:1 › background tabs fail instead of capturing another tab (2.1s)
+(node:2351810) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [firefox] › artifacts/ci-recovery/firefox-capture-request-limits/probe.spec.js:7:1 › full document outside the viewport fails explicitly (1.6s)
+
+
+  1) [firefox] › artifacts/ci-recovery/firefox-capture-request-limits/probe.spec.js:2:1 › background tabs fail instead of capturing another tab 
+
+    Error: expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"data": [137, 80, 78, 71, 13, 10, 26, 10, 0, 0, …], "type": "Buffer"}
+
+      2 | test('background tabs fail instead of capturing another tab',async({page,context})=>{
+      3 |  await page.setContent('<body style="background:red">first</body>');const second=await context.newPage();await second.setContent('<body style="background:blue">second</body>');
+    > 4 |  try{await expect(page.screenshot()).rejects.toThrow(/foreground tab/);}finally{await second.close();}
+        |                                              ^
+      5 |  await page.bringToFront();expect((await page.screenshot()).length).toBeGreaterThan(100);
+      6 | });
+      7 | test('full document outside the viewport fails explicitly',async({page})=>{
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/firefox-capture-request-limits/probe.spec.js:4:46
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-recovery/firefox-capture-request-limits/results/probe-background-tabs-fail-instead-of-capturing-another-tab-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-recovery/firefox-capture-request-limits/results/probe-background-tabs-fail-instead-of-capturing-another-tab-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/ci-recovery/firefox-capture-request-limits/results/probe-background-tabs-fail-instead-of-capturing-another-tab-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/ci-recovery/firefox-capture-request-limits/results/probe-background-tabs-fail-instead-of-capturing-another-tab-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [firefox] › artifacts/ci-recovery/firefox-capture-request-limits/probe.spec.js:2:1 › background tabs fail instead of capturing another tab 
+  1 passed (7.4s)

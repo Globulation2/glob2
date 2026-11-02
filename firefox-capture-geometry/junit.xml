@@ -1,0 +1,10 @@
+<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="6.757731">
+<testsuite name="probe.spec.js" timestamp="2026-11-02T13:20:30.228Z" hostname="scale1" tests="1" failures="0" skipped="0" time="1.519" errors="0">
+<testcase name="compositor capture preserves clip coordinates and device scale for worker WebGL" classname="probe.spec.js" time="1.519">
+</testcase>
+</testsuite>
+<testsuite name="probe.spec.js" timestamp="2026-11-02T13:20:30.228Z" hostname="scale2" tests="1" failures="0" skipped="0" time="1.722" errors="0">
+<testcase name="compositor capture preserves clip coordinates and device scale for worker WebGL" classname="probe.spec.js" time="1.722">
+</testcase>
+</testsuite>
+</testsuites>

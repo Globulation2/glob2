@@ -1,0 +1,18 @@
+<testsuites id="" name="" tests="4" failures="0" skipped="0" errors="0" time="70.12019599999999">
+<testsuite name="input.spec.js" timestamp="2026-11-02T13:25:08.032Z" hostname="firefox" tests="1" failures="0" skipped="0" time="36.28" errors="0">
+<testcase name="desktop right-click cancels a selection and cycles sidebar views without a browser menu" classname="input.spec.js" time="36.28">
+</testcase>
+</testsuite>
+<testsuite name="menu-presentation.spec.js" timestamp="2026-11-02T13:25:08.032Z" hostname="firefox" tests="1" failures="0" skipped="0" time="23.935" errors="0">
+<testcase name="custom setup leaves the colony visible around its own panel" classname="menu-presentation.spec.js" time="23.935">
+</testcase>
+</testsuite>
+<testsuite name="settings-storage.spec.js" timestamp="2026-11-02T13:25:08.032Z" hostname="firefox" tests="1" failures="0" skipped="0" time="67.569" errors="0">
+<testcase name="settings survive quota with visible failure and durable retry" classname="settings-storage.spec.js" time="67.569">
+</testcase>
+</testsuite>
+<testsuite name="team-colors.spec.js" timestamp="2026-11-02T13:25:08.032Z" hostname="firefox" tests="1" failures="0" skipped="0" time="35.791" errors="0">
+<testcase name="webgl2 preserves the red tutorial team before and after resize" classname="team-colors.spec.js" time="35.791">
+</testcase>
+</testsuite>
+</testsuites>

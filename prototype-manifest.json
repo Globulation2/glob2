@@ -1,0 +1,8 @@
+{
+  "source": "/home/bradley/.cache/ms-playwright/firefox-1543/firefox",
+  "target": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/firefox-compositor-browser",
+  "module": "chrome/juggler/content/protocol/PageHandler.js",
+  "original_sha256": "53769b6f2e0307969d6dcb69216fd755ee019004d5b4f35126db726424ff3d74",
+  "patched_sha256": "6cb37609e2b92f5088b334929f178b8ce3a38e278132feb1d84206aa9cdaa68f",
+  "patch": "compositor drawWindow in place of document drawSnapshot; prototype only; headedLinux"
+}

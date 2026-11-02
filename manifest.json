@@ -1,0 +1,35 @@
+{
+  "tested_revision": "ac8fd6d2fdc76651d99108de06600ca6b31908bb",
+  "base": "9ece139a26b84caec0045dc688817315b19fe08b",
+  "runtime_revision": "f7828c4b6a85a336d40164a0c362aa8f1da52b29",
+  "runtime_source_equivalence": "9ece adds only browser/tests/main-menu.js; capture branch changes only development browser/config/docs/contracts; no game/runtime source changed.",
+  "tests": "12 unchanged visual cases one worker,4 unchanged visual cases3workers;2 clip/DPR cases;2 request-boundary cases;5 preparation and32 package contracts",
+  "capture_manifests": [
+    {
+      "source": "/home/bradley/.cache/ms-playwright/firefox-1543/firefox",
+      "version": "155.0",
+      "machine": "x86_64",
+      "source_module_sha256": "53769b6f2e0307969d6dcb69216fd755ee019004d5b4f35126db726424ff3d74",
+      "patched_module_sha256": "6cb37609e2b92f5088b334929f178b8ce3a38e278132feb1d84206aa9cdaa68f",
+      "recipe_sha256": "781acc1af87d3ac8dfb53e17b6180badf067ecb06ac58114b4ea8a60d9045513"
+    },
+    {
+      "source": "/home/bradley/.cache/ms-playwright/firefox-1543/firefox",
+      "version": "155.0",
+      "machine": "x86_64",
+      "source_module_sha256": "53769b6f2e0307969d6dcb69216fd755ee019004d5b4f35126db726424ff3d74",
+      "patched_module_sha256": "bfe1d053481a942d4cc2578e765774fa6ed23175c24d976a85c6f67566de5d0a",
+      "recipe_sha256": "45f07fcacc60bdc71faee461aadf78fd1f56c8668a3eaf3cab41844c7954c70f"
+    }
+  ],
+  "source_files": [
+    "browser/README.md",
+    "browser/firefox-capture.js",
+    "browser/firefox_capture.py",
+    "browser/playwright.config.js",
+    "test/build_system/test_firefox_capture.py"
+  ],
+  "active_capture_module_sha256": "bfe1d053481a942d4cc2578e765774fa6ed23175c24d976a85c6f67566de5d0a",
+  "original_shared_cache_module_sha256": "53769b6f2e0307969d6dcb69216fd755ee019004d5b4f35126db726424ff3d74",
+  "shared_cache_unmodified": true
+}

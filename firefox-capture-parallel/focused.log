@@ -1,0 +1,15 @@
+
+Running 4 tests using 3 workers
+
+(node:2355029) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2355023) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2355022) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [firefox] › browser/tests/menu-presentation.spec.js:17:1 › custom setup leaves the colony visible around its own panel (23.9s)
+  ✓  2 [firefox] › browser/tests/input.spec.js:52:1 › desktop right-click cancels a selection and cycles sidebar views without a browser menu (36.3s)
+  ✓  4 [firefox] › browser/tests/team-colors.spec.js:40:3 › webgl2 preserves the red tutorial team before and after resize (35.8s)
+  ✓  3 [firefox] › browser/tests/settings-storage.spec.js:30:54 › settings survive quota with visible failure and durable retry (1.1m)
+
+  4 passed (1.2m)

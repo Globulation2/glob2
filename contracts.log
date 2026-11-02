@@ -1,0 +1,10 @@
+test_only_capture_body_changes_and_clip_scale_encoding_remain (test_firefox_capture.CaptureAdapterTests.test_only_capture_body_changes_and_clip_scale_encoding_remain) ... ok
+test_platform_is_explicit (test_firefox_capture.CaptureAdapterTests.test_platform_is_explicit) ... ok
+test_private_copy_is_immutable_and_preserves_other_files (test_firefox_capture.CaptureAdapterTests.test_private_copy_is_immutable_and_preserves_other_files) ... ok
+test_unknown_screenshot_source_is_rejected (test_firefox_capture.CaptureAdapterTests.test_unknown_screenshot_source_is_rejected) ... ok
+test_version_mismatch_is_rejected_before_copy (test_firefox_capture.CaptureAdapterTests.test_version_mismatch_is_rejected_before_copy) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.006s
+
+OK

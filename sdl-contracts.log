@@ -1,0 +1,16 @@
+test_dns_and_server_failure_retry_exact_url_then_verify_bytes (test_sdl3_dependencies.DownloadTests.test_dns_and_server_failure_retry_exact_url_then_verify_bytes) ... ok
+test_exhausted_transient_failure_never_installs_archive (test_sdl3_dependencies.DownloadTests.test_exhausted_transient_failure_never_installs_archive) ... ok
+test_existing_archive_is_verified_without_network (test_sdl3_dependencies.DownloadTests.test_existing_archive_is_verified_without_network) ... ok
+test_invalid_final_bytes_are_not_installed_or_retried (test_sdl3_dependencies.DownloadTests.test_invalid_final_bytes_are_not_installed_or_retried) ... ok
+test_permanent_http_failure_is_not_retried (test_sdl3_dependencies.DownloadTests.test_permanent_http_failure_is_not_retried) ... ok
+test_emscripten_c_and_cxx_agree_on_wasm_longjmp (test_sdl3_dependencies.ShapingBuildTests.test_emscripten_c_and_cxx_agree_on_wasm_longjmp) ... ok
+test_native_shaper_can_link_into_shared_sdl_ttf (test_sdl3_dependencies.ShapingBuildTests.test_native_shaper_can_link_into_shared_sdl_ttf) ... ok
+test_shaper_is_built_before_sdl_ttf (test_sdl3_dependencies.ShapingBuildTests.test_shaper_is_built_before_sdl_ttf) ... ok
+test_patches_apply_once_and_reject_changed_sources (test_sdl3_dependencies.SourcePatchTests.test_patches_apply_once_and_reject_changed_sources) ... ok
+test_the_kerning_patch_applies_to_the_pinned_archive (test_sdl3_dependencies.TtfKerningPatchTests.test_the_kerning_patch_applies_to_the_pinned_archive) ... ok
+test_the_kerning_patch_is_part_of_every_pinned_build (test_sdl3_dependencies.TtfKerningPatchTests.test_the_kerning_patch_is_part_of_every_pinned_build) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.204s
+
+OK

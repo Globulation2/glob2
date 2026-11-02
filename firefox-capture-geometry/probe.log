@@ -1,0 +1,11 @@
+
+Running 2 tests using 1 worker
+
+(node:2340342) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [scale1] › artifacts/ci-recovery/firefox-capture-geometry/probe.spec.js:2:1 › compositor capture preserves clip coordinates and device scale for worker WebGL (1.5s)
+(node:2340974) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [scale2] › artifacts/ci-recovery/firefox-capture-geometry/probe.spec.js:2:1 › compositor capture preserves clip coordinates and device scale for worker WebGL (1.7s)
+
+  2 passed (6.8s)

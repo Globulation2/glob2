@@ -1,0 +1,42 @@
+<testsuites id="" name="" tests="12" failures="0" skipped="0" errors="0" time="382.935204">
+<testsuite name="campaign-editor-storage.spec.js" timestamp="2026-11-02T13:20:30.399Z" hostname="firefox" tests="1" failures="0" skipped="0" time="45.706" errors="0">
+<testcase name="campaign authoring retains the editor on quota failure and can retry" classname="campaign-editor-storage.spec.js" time="45.706">
+</testcase>
+</testsuite>
+<testsuite name="input.spec.js" timestamp="2026-11-02T13:20:30.399Z" hostname="firefox" tests="2" failures="0" skipped="0" time="47.796" errors="0">
+<testcase name="click coordinates stay correct when browser motion delivery is missing" classname="input.spec.js" time="24.668">
+</testcase>
+<testcase name="desktop right-click cancels a selection and cycles sidebar views without a browser menu" classname="input.spec.js" time="23.128">
+</testcase>
+</testsuite>
+<testsuite name="menu-presentation.spec.js" timestamp="2026-11-02T13:20:30.399Z" hostname="firefox" tests="2" failures="0" skipped="0" time="42.843" errors="0">
+<testcase name="custom setup leaves the colony visible around its own panel" classname="menu-presentation.spec.js" time="15.448">
+</testcase>
+<testcase name="menu presentation survives a match and nested menus" classname="menu-presentation.spec.js" time="27.395">
+</testcase>
+</testsuite>
+<testsuite name="responsive-presentation.spec.js" timestamp="2026-11-02T13:20:30.399Z" hostname="firefox" tests="1" failures="0" skipped="0" time="41.327" errors="0">
+<testcase name="responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached" classname="responsive-presentation.spec.js" time="41.327">
+</testcase>
+</testsuite>
+<testsuite name="settings-storage.spec.js" timestamp="2026-11-02T13:20:30.399Z" hostname="firefox" tests="2" failures="0" skipped="0" time="94.277" errors="0">
+<testcase name="settings survive quota with visible failure and durable retry" classname="settings-storage.spec.js" time="47.734">
+</testcase>
+<testcase name="settings survive aborted transaction with visible failure and durable retry" classname="settings-storage.spec.js" time="46.543">
+</testcase>
+</testsuite>
+<testsuite name="shutdown-storage.spec.js" timestamp="2026-11-02T13:20:30.399Z" hostname="firefox" tests="1" failures="0" skipped="0" time="25.481" errors="0">
+<testcase name="quit offers visible retry after a failed final save" classname="shutdown-storage.spec.js" time="25.481">
+</testcase>
+</testsuite>
+<testsuite name="single-player.spec.js" timestamp="2026-11-02T13:20:30.399Z" hostname="firefox" tests="1" failures="0" skipped="0" time="33.172" errors="0">
+<testcase name="the custom game preview draws the selected map" classname="single-player.spec.js" time="33.172">
+</testcase>
+</testsuite>
+<testsuite name="team-colors.spec.js" timestamp="2026-11-02T13:20:30.399Z" hostname="firefox" tests="2" failures="0" skipped="0" time="49.87" errors="0">
+<testcase name="software preserves the red tutorial team before and after resize" classname="team-colors.spec.js" time="23.998">
+</testcase>
+<testcase name="webgl2 preserves the red tutorial team before and after resize" classname="team-colors.spec.js" time="25.872">
+</testcase>
+</testsuite>
+</testsuites>
