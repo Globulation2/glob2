@@ -349,7 +349,7 @@ class EngineJob:
                 if row['submitted'] != attestation.get('submitted') or row['completed'] != attestation.get('completed'):
                     raise ValueError('resource claim summary differs from engine result')
         if result.get('status') == 'completed' and 'resource_claims_deep_context' in job['config']:
-            from tools.resource_claim_deep import read_event, DESIGN, validate_manifest
+            from .claim_capture import read_capture, DESIGN, validate_manifest
             deep = path.parent / 'resource-claims-deep'
             if (deep / 'manifest.json').stat().st_size > 65536:
                 raise ValueError('oversized deep manifest')
@@ -363,7 +363,7 @@ class EngineJob:
             if type(manifest.get('eligible')) is not int or manifest['eligible'] < 0:
                 raise ValueError('invalid deep eligible count')
             if manifest['eligible']:
-                metadata = read_event(deep / 'event.bin', manifest, expected_provenance={k:v for k,v in context.items() if k != 'game_id'}, validate_only=True)
+                metadata, _, _ = read_capture(deep / 'event.bin', manifest, expected_provenance={k:v for k,v in context.items() if k != 'game_id'})
                 if metadata.get('game_id') != context['game_id']:
                     raise ValueError('deep game identity mismatch')
             elif (deep / 'event.bin').exists():

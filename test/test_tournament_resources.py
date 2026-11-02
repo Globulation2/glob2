@@ -10,12 +10,12 @@ from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools.tournaments.bundles import package_identity, register_bundle
-from tools.tournaments.common import read_json
+from tools.tournaments.common import read_json, lock, locked
 from tools.tournaments.coordinator import Coordinator
 from tools.tournaments.model import job
 from tools.tournaments.resources import (Allocation, AllocationPlan, plan_allocations,
     plan_from_record, validate_frozen_attempt, validate_game_participants)
-from tools.tournaments.worker import Worker, execute, outcome_only
+from tools.tournaments.worker import Worker, execute, pack, outcome_only
 from test_tournaments import FAKE
 
 
@@ -161,13 +161,46 @@ class FrozenAdmission(unittest.TestCase):
             self.assertEqual(self.mask, {3, 4})
             self.assertEqual(args[-2:], ['--compute-threads', '2'])
             return process
+        def initialize(root):
+            # Slow bundle probes and DB opening are protected from recovery.
+            self.assertTrue(locked(Path(root) / 'attempts' / attempt['id'] / 'execute.lock'))
+            return Worker(root)
         with patch('tools.tournaments.worker.subprocess.Popen', side_effect=launch), \
+             patch('tools.tournaments.worker.Worker', side_effect=initialize), \
              patch('tools.tournaments.jobs.EngineJob.collect', return_value={
                  'status': 'completed', 'compute_threads': 2, 'compute_resolved_threads': 2}):
             execute(self.worker.root, attempt['id'])
         record = read_json(self.worker.root / 'attempts' / attempt['id'] / 'execution.json')
         self.assertEqual(record['category'], 'success')
         self.assertEqual(record['cpu_affinity_proof']['actual_cpu_ids'], [3, 4])
+
+    def test_interrupted_recovery_preserves_allocation_and_allows_retry(self):
+        attempt = self.coordinator.dispatch('host', self.worker.status(), now=1)[0]
+        self.worker.enqueue(attempt)
+        self.worker.db.execute("UPDATE queue SET state='running',started=1,updated=1 WHERE id=?", (attempt['id'],))
+        with patch('tools.tournaments.worker.time.time', return_value=7), patch.object(self.worker, 'launch'):
+            self.worker.tick()
+        directory = self.worker.root / 'attempts' / attempt['id']
+        execution = read_json(directory / 'execution.json')
+        self.assertEqual(execution['category'], 'interrupted')
+        self.assertEqual(execution['execution_allocation'], attempt['execution_allocation'])
+        pack(self.worker.root, attempt['id'])
+        record = read_json(directory / 'record.json')
+        self.assertFalse(self.coordinator.accept(record, now=8))  # Recorded failure, not an accepted terminal outcome.
+        self.worker.db.execute("UPDATE queue SET state='done' WHERE id=?", (attempt['id'],))
+        retries = self.coordinator.dispatch('host', self.worker.status(), now=9)
+        retry = next(a for a in retries if a['job']['id'] == attempt['job']['id'])
+        self.assertNotEqual(retry['id'], attempt['id'])
+        self.assertEqual(retry['execution_allocation']['slot'], attempt['execution_allocation']['slot'])
+
+    def test_live_supervisor_lock_prevents_interruption_recovery(self):
+        attempt = self.coordinator.dispatch('host', self.worker.status(), now=1)[0]
+        self.worker.enqueue(attempt)
+        self.worker.db.execute("UPDATE queue SET state='running',started=1,updated=1 WHERE id=?", (attempt['id'],))
+        directory = self.worker.root / 'attempts' / attempt['id']
+        with lock(directory / 'execute.lock'), patch('tools.tournaments.worker.time.time', return_value=7), patch.object(self.worker, 'launch'):
+            self.worker.tick()
+        self.assertFalse((directory / 'execution.json').exists())
 
     def test_failed_affinity_enforcement_never_launches_game(self):
         attempt = self.coordinator.dispatch('host', self.worker.status(), now=1)[0]
