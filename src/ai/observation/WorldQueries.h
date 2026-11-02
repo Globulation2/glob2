@@ -166,6 +166,7 @@ public:
  }
  std::span<const Uint16> resourceGradient(int owner,int resource,int swim)
  {
+  swim=world.routingClass(owner,swim);
   const int key=(owner*MaterialSlotCount+resource)*7+swim;
   auto published=world.resourceGradient(owner,resource,swim);
   std::span<const Uint16> gradient=published;

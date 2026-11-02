@@ -226,10 +226,14 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std
 }
 
 
-void Map::configureGradientWorkStats(const std::string& path)
+void Map::configureGradientWorkStats(const std::string& path,bool aggregate,bool kernels)
 {
     gradientRuntime->workStats.reset();
-    gradientRuntime->workStats=std::make_unique<GradientWorkStats>(path);
+    gradientRuntime->workStats=std::make_unique<GradientWorkStats>(path,aggregate);
+    if(kernels) {
+        GradientKernelWork::enabled.store(true,std::memory_order_relaxed);
+        if(!gradientRuntime->workSink)gradientRuntime->workSink=std::make_shared<GradientKernelWork::Sink>();
+    }
 }
 
 bool Map::gradientPipelineEnabled() const { return gradientRuntime->pipeline.enabled(); }
@@ -355,7 +359,10 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
         }
         if(auto& stats=gradientRuntime->workStats)
             if(const auto key=gradientWorkIdentity(*this,job.adaptiveKey,int(job.request.kind),job.request.team,job.request.material,job.request.swim,job.request.consumer,job.request.modes))
+            {
+                stats->kernel(unsigned(key->family),job.workReason,job.work.queued,job.work.expanded);
                 stats->published(*key,game->stepCounter,job.workReason,size);
+            }
         if (const auto key=planeKeyForSlot(slot)) {
             const auto id=MapState::decodePlaneKey(*key);
             (id.market ? marketMaterialGradientStale[id.team][id.resource][id.swim]
@@ -387,6 +394,10 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	};
 	gradientRuntime->pipeline.configure(compute, delay, size,
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
+            job.work={};
+            const auto key=GradientKernelWork::key(job.adaptiveKey?unsigned(job.adaptiveKey->family):job.request.kind==gradient_preparation::Kind::Markets?5:unsigned(job.request.kind),job.request.team,job.request.swim);
+            if(job.workSink){++job.workSink->fields[key].builds;job.workSink->fields[key].initializedCells+=std::size_t(job.snapshotLease->width)*job.snapshotLease->height;}
+            GradientKernelWork::Scope workScope(job.work,job.workSink,key);
             gradient_preparation::propagateCPU(job.request,*job.snapshotLease,job.data.get(),scratch);
         });
     gradientRuntime->pipeline.setAsyncWork([](GradientPipeline::Job& job,gradient_kernel::PlanDecision decision) {
@@ -425,6 +436,7 @@ void Map::stagePeriodicGradientPreparation()
     const auto admit=[&](const GradientRuntime::FieldRequest& request) {
         auto* job=pipeline.reserve(request.slot,request.request.swim);
         job->request=request.request;
+        job->workSink=gradientRuntime->workSink;
         job->adaptiveKey=gradientFieldKey(request.slot);
         if(job->adaptiveKey) {
             policy.enroll(*job->adaptiveKey).admitted(game->stepCounter);
@@ -452,8 +464,10 @@ void Map::stagePeriodicGradientPreparation()
         auto** slot=gradientFieldDestination(key);
         if(!slot)continue;
         const auto interval=gradientRuntime->exploration?gradientRuntime->exploration->intervalFor(key.packed()):0;
-        const auto prediction=[family=static_cast<unsigned>(key.family)](const auto& inputs,const auto& counts) {
-            return AdaptiveGradientModel::predict(inputs,counts,family);
+        const auto prediction=[this,key](const auto& inputs,const auto& counts) {
+            const auto result=AdaptiveGradientModel::predict(inputs,counts,unsigned(key.family));
+            if(auto& study=gradientRuntime->ratioStudy)study->modelPrediction(game->stepCounter,key,inputs,counts,result,AdaptiveGradientState::Threshold);
+            return result;
         };
         const auto evaluation=field.evaluate(game->stepCounter,policy.currentTargets(key),*slot!=nullptr,
             prediction,interval);

@@ -23,6 +23,10 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."},
 		{ExperimentId::MarketsV2, "markets-v2", "Markets V2",
 		 "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."},
+        {ExperimentId::GradientRatioMode, "gradient-ratio-mode", "Gradient ratio mode", "Research: share amphibious routing using the team's most common ratio class."},
+        {ExperimentId::GradientSpeedModes, "gradient-speed-modes", "Gradient speed modes", "Research: share amphibious routing using the team's modal walking and swimming speeds."},
+        {ExperimentId::GradientRatioMedian, "gradient-ratio-median", "Gradient ratio median", "Research: share amphibious routing using the team's median ratio class."},
+        {ExperimentId::GradientRatioEqual, "gradient-ratio-equal", "Gradient equal ratio", "Research: share amphibious routing using equal walking and swimming costs."},
 	};
 	return definitions;
 }
@@ -178,6 +182,10 @@ void ExperimentSet::set(ExperimentId id, bool on)
 {
 	if (on && !has(id) && size() >= MAX_STORED)
 		throw std::length_error("Too many enabled experiments");
+    if (on && id>=ExperimentId::GradientRatioMode && id<=ExperimentId::GradientRatioEqual)
+        for (unsigned other=unsigned(ExperimentId::GradientRatioMode); other<=unsigned(ExperimentId::GradientRatioEqual); ++other)
+            if (other!=unsigned(id) && bits.test(other))
+                throw std::invalid_argument("Gradient ratio policies are mutually exclusive");
 	bits.set(static_cast<std::size_t>(id), on);
 }
 

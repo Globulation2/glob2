@@ -59,6 +59,14 @@ TEST_SUITE("SettingsExperiments")
 		ExperimentSet all;
 		for (const auto& definition : experimentDefinitions())
 		{
+            if(definition.id>=ExperimentId::GradientRatioMode && definition.id<=ExperimentId::GradientRatioEqual) {
+                // CLI-only research policies have English metadata and cannot
+                // all be enabled together like independent UI experiments.
+                const CatalogExperimentDefinition research{definition.key,definition.label,definition.help};
+                CHECK(experimentLabel(research)==definition.label);
+                CHECK(experimentHelp(research)==definition.help);
+                continue;
+            }
 			const std::string label = "[experiment " + std::string(definition.key) + "]";
 			const std::string help = "[experiment " + std::string(definition.key) + " help]";
 			GLOB2_CHECK(listed.count(label), label + " is listed in data/texts.keys.txt");

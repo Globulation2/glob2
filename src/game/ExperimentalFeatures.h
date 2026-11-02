@@ -41,6 +41,10 @@ enum class ExperimentId : Uint8
 	// the connected field and keeps one grain on every tile as seed.
 	FarmAreas = 1,
 	MarketsV2 = 2,
+	GradientRatioMode = 3,
+	GradientSpeedModes = 4,
+	GradientRatioMedian = 5,
+	GradientRatioEqual = 6,
 	Count
 };
 

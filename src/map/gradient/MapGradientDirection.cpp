@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "Game.h"
 #include "MapInternal.h"
 #include "Utilities.h"
 #include "field/TerrainMovementCosts.h"
@@ -95,4 +96,14 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimCla
 	*dx = tabClose[pick][0];
 	*dy = tabClose[pick][1];
 	return true;
+}
+
+int Map::routingClass(int team,int physical) const
+{
+    if(!game || !RoutingRatioState::amphibious(physical))return physical;
+    const auto& state=game->teams[team]->routingRatio;
+    // Baseline games and already-canonical nested adapters avoid repeatedly
+    // checking experiment bits in the hot query path.
+    if(!state.known || state.selected==unsigned(physical))return physical;
+    return sharedRoutingRatios(static_cast<const GameHeader&>(game->gameHeader).getExperiments()) ? int(state.selected) : physical;
 }

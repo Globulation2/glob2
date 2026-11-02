@@ -23,10 +23,12 @@ namespace {
 constexpr Uint32 STUCK_REBUILD_TICKS = 128;
 
 
+
 } // namespace
 
 FieldReadiness Map::requestBuildingField(Building* building,int swimClass,BuildingRoute route)
 {
+    swimClass=routingClass(building->owner->teamNumber,swimClass);
     assert(building);
     ensureBuildingGradientPipeline();
     const int slot=building->routeSlot(swimClass,route);
@@ -48,26 +50,33 @@ FieldReadiness Map::requestBuildingField(Building* building,int swimClass,Buildi
 }
 bool Map::prepareBuildingGradient(Building* building,int swimClass,BuildingRoute route)
 {
+    swimClass=routingClass(building->owner->teamNumber,swimClass);
     return requestBuildingField(building,swimClass,route)==FieldReadiness::Ready
         && !building->isLocked(building->routeAccess(swimClass,route));
 }
 const Uint16* Map::lookupBuildingField(const Building* building,int swim,BuildingRoute route) const
 {
+    swim=routingClass(building->owner->teamNumber,swim);
     return building->globalGradient[building->routeSlot(swim,route)];
 }
 RouteResult Map::queryBuildingDistance(Building* building,int swim,int x,int y,int* distance,BuildingRoute route)
 {
+    observeRoutingRatioQuery(6,building->owner->teamNumber,swim,x,y,true,0,building,route);
+    swim=routingClass(building->owner->teamNumber,swim);
     if (requestBuildingField(building,swim,route)==FieldReadiness::Pending) return RouteResult::Pending;
     return buildingAvailable(building,swim,x,y,distance,route) ? RouteResult::Reachable : RouteResult::Unreachable;
 }
 StepResult Map::queryBuildingStep(EntityRandom& random,Building* building,int swim,int x,int y,int* dx,int* dy,BuildingRoute route)
 {
+    observeRoutingRatioQuery(6,building->owner->teamNumber,swim,x,y,false,0,building,route);
+    swim=routingClass(building->owner->teamNumber,swim);
     if (requestBuildingField(building,swim,route)==FieldReadiness::Pending) return StepResult::Pending;
     return pathfindBuilding(random,building,swim,x,y,dx,dy,route) ? StepResult::Step : StepResult::Blocked;
 }
 
 const Uint16 *Map::buildingGradient(Building *building, int swimClass, BuildingRoute route)
 {
+    swimClass=routingClass(building->owner->teamNumber,swimClass);
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	if (!prepareBuildingGradient(building, swimClass, route)) return NULL;
@@ -77,6 +86,7 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass, BuildingR
 
 std::shared_ptr<SharedBuildingGradient> Map::leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route)
 {
+    swimClass=routingClass(building->owner->teamNumber,swimClass);
 	const int slot = building->routeSlot(swimClass, route);
 	// Observation borrows a usable generation without enrolling, allocating,
 	// seeding or refreshing a field. Live admission owns normal preparation.
@@ -90,6 +100,7 @@ std::shared_ptr<SharedBuildingGradient> Map::leaseBuildingRoute(Building *buildi
 
 Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route) const
 {
+    swimClass=routingClass(building->owner->teamNumber,swimClass);
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	assert(building->globalGradient[slot]);
@@ -97,7 +108,9 @@ Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell
     if(auto& search=building->globalGradientSearch[slot]) {
         if(auto& stats=gradientRuntime->workStats) {
             const auto before=search->settledCost();const bool complete=search->complete();
+            const auto work=search->work;
             search->resolve(cell);
+            stats->kernel(6,GradientWorkStats::Unknown,search->work.queued-work.queued,search->work.expanded-work.expanded);
             if(before!=search->settledCost() || complete!=search->complete())
                 stats->partial(GradientWorkStats::buildingKey(building->owner->teamNumber,swimClass,Building::GIDtoID(building->gid),building->scriptIdentity,unsigned(building->resolveRoute(route))),game->stepCounter,before,search->settledCost());
         } else search->resolve(cell);
@@ -108,6 +121,7 @@ Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell
 bool Map::buildingGradientDirection(EntityRandom& random, Building *building, int swimClass, int x, int y,
 	int *dx, int *dy, bool strict, BuildingRoute route) const
 {
+    swimClass=routingClass(building->owner->teamNumber,swimClass);
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	// Settling this layer also settles all equal/better neighbors the generic
@@ -119,6 +133,7 @@ bool Map::buildingGradientDirection(EntityRandom& random, Building *building, in
 
 bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route)
 {
+    swimClass=routingClass(building->owner->teamNumber,swimClass);
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	PERF_SCOPE_TIME(PathBuilding);
@@ -139,6 +154,7 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 
 bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route)
 {
+    swimClass=routingClass(building->owner->teamNumber,swimClass);
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	PERF_SCOPE_TIME(PathBuilding);

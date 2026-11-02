@@ -497,7 +497,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 					++output.metrics.distanceBoundSkips;
 					continue;
 				}
-				const int swim = swimClass(u);
+				const int swim = world.routingClass(team,swimClass(u));
 				const int budget = food(u);
 				const bool immobile =
 					!u.performance[FLY] && !u.performance[WALK] && !u.performance[SWIM];

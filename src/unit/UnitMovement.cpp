@@ -584,14 +584,14 @@ void Unit::handleMovementRandom()
 		const Uint16 *clearAreasGradient = owner->map->getClearAreasGradient(owner->teamNumber, movementClass());
         if(!clearAreasGradient) {
             if(medical==MED_FREE && foodStepsLeft(trigHungry)>0)
-                map->gradientMovementDemand({GradientFieldFamily::Clear,Uint8(owner->teamNumber),Uint8(movementClass())});
+                map->gradientMovementDemand({GradientFieldFamily::Clear,Uint8(owner->teamNumber),Uint8(owner->map->routingClass(owner->teamNumber,movementClass()))});
             waitForGradient();return;
         }
 
 		Uint16 g = clearAreasGradient[owner->map->coordToIndex(posX, posY)];
 		int distance = gradientTiles(g);
         if(g<=GRADIENT_UNREACHABLE && medical==MED_FREE && foodStepsLeft(trigHungry)>0) {
-            const GradientFieldKey key{GradientFieldFamily::Clear,Uint8(owner->teamNumber),Uint8(movementClass())};
+            const GradientFieldKey key{GradientFieldFamily::Clear,Uint8(owner->teamNumber),Uint8(owner->map->routingClass(owner->teamNumber,movementClass()))};
             map->gradientMovementDemand(key);
             map->gradientMovementOutcome({key,posX,posY,entityRandom},clearAreasGradient,{});
         }
@@ -613,7 +613,7 @@ void Unit::handleMovementRandom()
 				dy=0;
                 const bool direct=performance[FLY] && !map->hasAirRoutingConstraints();
                 if(direct) {
-                    directGradientDecision=GradientFieldKey{GradientFieldFamily::Clear,Uint8(owner->teamNumber),Uint8(movementClass())};
+                    directGradientDecision=GradientFieldKey{GradientFieldFamily::Clear,Uint8(owner->teamNumber),Uint8(owner->map->routingClass(owner->teamNumber,movementClass()))};
                     map->gradientMovementDemand(*directGradientDecision);
                 }
                 if (!direct)

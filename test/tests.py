@@ -163,6 +163,7 @@ ENGINE_TESTS = [
     '#src/map/generator/OrchardCommonsConversionTest.cpp',
     'PortableGameHarness.cpp',
     ('#src/team/stats/TeamStatsPipelineTest.cpp', {}),
+    '#src/team/RoutingRatioPolicyTest.cpp',
     ('#src/team/stats/TeamStatsSaveHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/team/stats/TeamLabourStatsTest.cpp',
     ('#src/engine/EngineSessionHarness.cpp', dict(cxxflags=['-fno-access-control'])),

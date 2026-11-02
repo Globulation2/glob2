@@ -74,3 +74,5 @@ void ResourceGrowth::Pipeline::reset() noexcept {
 // Standalone map tests never attach a Game; satisfy Map::clear's optional
 // simulation-owned sidecar reset without linking the complete game.
 void BuildingAreaEffects::Runtime::reset() { std::abort(); }
+
+void Map::observeRoutingRatioQuery(unsigned,int,int,int,int,bool,int,Building*,BuildingRoute) { std::abort(); }

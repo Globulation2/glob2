@@ -32,3 +32,10 @@ void ResourceGradientProbe::stageEpisodes(Map&) { throw std::logic_error("Resour
 
 void ResourceGradientProbe::finishStudy(unsigned) {}
 void ResourceGradientProbe::writeMovementTotals() {}
+
+// Lightweight Map fixtures never instantiate movement-ratio observers. Keep
+// their optional owner lifetime linkable without pulling in the live engine.
+#include "gradient/RoutingRatioStudy.h"
+RoutingRatioStudy::~RoutingRatioStudy() = default;
+
+void RoutingRatioStudy::flush() { throw std::logic_error("Routing ratio studies require the engine binary"); }

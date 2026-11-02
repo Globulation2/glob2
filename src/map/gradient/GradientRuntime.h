@@ -13,6 +13,7 @@
 #include "ResourceGradientProbe.h"
 #include "ResourceGradientExploration.h"
 #include "GradientWorkStats.h"
+#include "RoutingRatioStudy.h"
 #include "GradientMarketTargets.h"
 #include <cstdlib>
 #include "field/GradientWorkspace.h"
@@ -30,6 +31,8 @@
 
 struct GradientRuntime
 {
+    std::unique_ptr<RoutingRatioStudy> ratioStudy;
+    std::shared_ptr<GradientKernelWork::Sink> workSink;
     std::unique_ptr<ResourceGradientProbe> qualityProbe;
     AdaptiveGradientState adaptive;
     std::unique_ptr<GradientWorkStats> workStats;

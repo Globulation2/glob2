@@ -2,6 +2,9 @@
 // Point-to-point movement searches share Map scratch but require no area fields.
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "Game.h"
+#include "gradient/GradientRuntime.h"
+#include <bit>
 #include "MapInternal.h"
 #include "Utilities.h"
 #include "field/TerrainMovementCosts.h"
@@ -10,6 +13,16 @@
 
 bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, int swimClass, Uint32 teamMask, int maximumLength)
 {
+    const int physical=swimClass;
+    const int readerTeam=game && std::has_single_bit(teamMask)?int(std::countr_zero(teamMask)):-1;
+    if(readerTeam>=0) {
+        observeRoutingRatioQuery(RoutingRatioStudy::Point,readerTeam,physical,x,y);
+        swimClass=routingClass(readerTeam,physical);
+    }
+    const auto observed=[&](bool reachable) {
+        if(readerTeam>=0 && gradientRuntime->ratioStudy)gradientRuntime->ratioStudy->pointResult(game->stepCounter,readerTeam,physical,swimClass,reachable);
+        return reachable;
+    };
 	PERF_SCOPE_TIME(PathPoint);
 	*dx = *dy = 0;
 	//This implements a fairly standard A* algorithm, except that each node does not store the location
@@ -22,7 +35,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	// Step costs and the heuristic are in gradient units (see MapInternal.h).
     const int heuristicStep=hasMovementCostModifiers(swimClass) ? minStepCost(swimClass)
         : (gradient_kernel::weightedClass(swimClass) ? std::min(GRADIENT_STEP,gradient_kernel::WATER_STEP[swimClass]) : GRADIENT_STEP);
-    if(maximumLength<0) return false;
+    if(maximumLength<0) return observed(false);
     const int maximumCost=int(std::min<std::int64_t>(GRADIENT_COST_LIMIT,std::int64_t(maximumLength)*GRADIENT_STEP));
     const bool air=swimClass==AIR_MOVEMENT_CLASS;
     const auto blockedAirGoal=[&] {
@@ -126,12 +139,12 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 
 	//It was never examined, thus there is no paths
 	if(final.x == -1 || !final.isClosed || final.moveCost > unsigned(maximumCost))
-		return false;
+		return observed(false);
 
 	//Input direction of the final square to the unit
 	*dx = final.dx;
 	*dy = final.dy;
-	return true;
+	return observed(true);
 }
 
 // Compatibility entry point for existing callers. All movement uses the same A*.

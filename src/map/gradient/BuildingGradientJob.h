@@ -14,6 +14,7 @@ namespace building_gradient
 // against the live building.
 struct Job
 {
+    std::shared_ptr<GradientKernelWork::Sink> workSink;
 	// Destination.
 	int team = 0;
 	std::uint16_t buildingId = 0;

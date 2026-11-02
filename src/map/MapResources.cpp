@@ -295,6 +295,7 @@ void Map::setAreaName(int n, std::string name)
 
 RouteResult Map::queryMaterialDistance(int team, int material, int swim, int x, int y, int* distance, bool markets, const Building* consumer)
 {
+    observeRoutingRatioQuery(consumer?5:markets?1:0,team,swim,x,y,true,material,const_cast<Building*>(consumer));
 	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
 	if (!field) return RouteResult::Pending;
 	const auto value=field[coordToIndex(x,y)];

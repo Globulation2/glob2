@@ -239,3 +239,36 @@ int Team::maxBuildLevel(void)
 	}
 	return maxLevel;
 }
+
+void Team::updateRoutingRatio()
+{
+    const auto& experiments=static_cast<const GameHeader&>(game->gameHeader).getExperiments();
+    if (!sharedRoutingRatios(experiments)) return;
+    const unsigned now=game->stepCounter;
+    if (routingRatio.known && ((now & 511u)!=0 || routingRatio.tick==now)) return;
+    std::map<unsigned,unsigned> classes,walks,swims;
+    for (const Unit* unit:liveUnits.entries()) {
+        if(unit->isDead || unit->performance[FLY]>0 || unit->performance[WALK]<=0 || unit->performance[SWIM]<=0) continue;
+        ++classes[unit->swimClass()]; ++walks[unit->performance[WALK]]; ++swims[unit->performance[SWIM]];
+    }
+    unsigned selected=Map::SWIM_CLASS_EVEN;
+    routingRatio.walk=RoutingRatioState::mode(walks,routingRatio.walk);
+    routingRatio.swim=RoutingRatioState::mode(swims,routingRatio.swim);
+    if (!classes.empty()) {
+        if (experiments.has(ExperimentId::GradientRatioMode)) selected=RoutingRatioState::mode(classes,routingRatio.selected);
+        else if (experiments.has(ExperimentId::GradientSpeedModes)) selected=Map::swimClass(routingRatio.walk,routingRatio.swim);
+        else if (experiments.has(ExperimentId::GradientRatioMedian)) {
+            unsigned total=0,cumulative=0;
+            for(const auto& [c,n]:classes)total+=n;
+            unsigned lower=0,upper=0;
+            for(const auto& [c,n]:classes) {
+                cumulative+=n;
+                if(!lower && cumulative>=(total+1)/2)lower=c;
+                if(cumulative>=total/2+1){upper=c;break;}
+            }
+            selected=lower;
+            if(routingRatio.known && routingRatio.selected>=lower && routingRatio.selected<=upper) selected=routingRatio.selected;
+        }
+    }
+    routingRatio.selected=selected; routingRatio.tick=now; routingRatio.known=true;
+}

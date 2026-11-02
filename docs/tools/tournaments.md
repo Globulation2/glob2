@@ -922,3 +922,42 @@ See [AI evaluation](../ai/README.md), [map-generator verification](../map-genera
 ## Related guides
 
 See [AI evaluation](../ai/README.md), [map-generator verification](../map-generators/verification.md), and the [tools index](README.md).
+
+### Movement-ratio research campaign
+
+`python3 -m tools.gradient_ratio_experiment plan --bundle BUNDLE --phase pilot
+--output artifacts/ratio-pilot.json` freezes independently seeded baseline,
+class-mode, separate-speed-mode, median and equal-cost games. It gives half the
+setups to Bastion Keys, Plantations, Lava Shield, City-States, Canals and Braided
+River, and half to stratified catalog draws. Each setup/arm has at least four
+lightweight replicates; diagnostic replicates are additional. Arms are interleaved in randomized setup blocks; the analysis does
+not match game seeds across policies.
+
+Game jobs accept a `routing_ratio` configuration with `policy`
+(`baseline|mode|speed-modes|median|equal`), `study` (`off|counts|routes`), and boolean
+`work`, `kernels`, and `quality` controls. Required outputs must explicitly retain its CSVs.
+Saved games retain their policy; research options do not override it.
+
+Run `python3 -m tools.gradient_ratio_experiment campaign --bundle BUNDLE
+--directory artifacts/ratio-campaign --cpu-ids 12,13,14,15,16,17,18,19,20,21,22,23`
+only after checking ownership of those example CPU IDs and validating the frozen
+release build. The controller pins itself and its descendants to exactly twelve
+logical CPUs and uses three four-participant game shares. The default maximum is
+48 hours, with pilot, screening, and held-out confirmation phases. It freezes
+baseline-pilot workload stage boundaries and selects two screening finalists;
+insufficient screening evidence stops the campaign instead of inventing a choice.
+The existing adaptive model and 95% early-victory rule stay fixed.
+
+The controller reserves 10 GiB free space, limits attempts to 512 MiB, stops
+admission at a 37 GiB campaign footprint, and reserves the remaining space beneath
+40 GiB for draining work. Each game also carries an absolute deadline in
+`limits.deadline_unix`. Deadline/storage failures remain failures. Result receipts
+record unfinished jobs and missing coverage. Analysis uses the repository's
+pinned NumPy development dependency; control BLAS thread counts within the CPU
+allocation when running it.
+
+`analyze RESULTS --output REPORT.json --stages artifacts/ratio-campaign/stages.json`
+exports independent-game confidence intervals and raw game/interval summaries.
+Per-map intervals, actual outcomes and AI/seat trajectory scores remain separate.
+See [movement-ratio diagnostics](../development/resource-gradient-model.md#movement-ratio-sharing-research)
+for counterfactual and memory accounting limits.

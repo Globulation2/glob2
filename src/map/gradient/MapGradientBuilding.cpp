@@ -22,7 +22,10 @@ void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRout
 {
 	const int slot=building->routeSlot(swimClass,route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
-    if (auto &search = building->globalGradientSearch[slot]) search->finish();
+    if (auto &search = building->globalGradientSearch[slot]) {
+        const auto before=search->work;search->finish();
+        if(auto& stats=gradientRuntime->workStats)stats->kernel(6,GradientWorkStats::Unknown,search->work.queued-before.queued,search->work.expanded-before.expanded);
+    }
 }
 
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a
@@ -70,7 +73,10 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
         [&](auto fn) { initializeGradientCells(fn); });
     if(seeded.resourceState) building->anyResourceToClear[swimAccessVariant(swimClass)]=seeded.resourceState;
 
-	const auto routeInputs = BuildingGradientSearch::Inputs::of(*this, swimClass);
+	auto routeInputs = BuildingGradientSearch::Inputs::of(*this, swimClass);
+    routeInputs.workSink=gradientRuntime->workSink;
+    routeInputs.workKey=GradientKernelWork::key(6,building->owner->teamNumber,swimClass);
+    if(routeInputs.workSink){auto& counter=routeInputs.workSink->fields[routeInputs.workKey];++counter.builds;counter.initializedCells+=size;}
 
 	if (route == BuildingRoute::Footprint)
 	{

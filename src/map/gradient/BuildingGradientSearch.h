@@ -2,6 +2,7 @@
 #pragma once
 
 #include <array>
+#include "field/GradientKernelWork.h"
 #include <cstddef>
 #include <cstdint>
 #include <memory>
@@ -23,10 +24,15 @@ namespace SimulationSnapshot { struct Handle; }
 class BuildingGradientSearch
 {
   public:
+    GradientKernelWork work;
+    std::shared_ptr<GradientKernelWork::Sink> workSink;
+    unsigned workKey=0;
 	// The immutable cost planes a search reads. The owner takes them from the
 	// Map's frozen snapshots in O(1); a worker search never touches the Map.
 	struct Inputs
 	{
+        std::shared_ptr<GradientKernelWork::Sink> workSink;
+        unsigned workKey=0;
 		std::shared_ptr<const TerrainRegistry> registry;
 		std::shared_ptr<const TerrainMovementSnapshot> profiles;
 		std::shared_ptr<const std::vector<std::uint8_t>> water;
@@ -74,6 +80,14 @@ class BuildingGradientSearch
 	bool complete() const { return pending == 0; }
 	bool resolved(std::size_t target) const;
 	std::size_t retainedBytes() const;
+    template<class Visitor> void visitRetainedTerrain(Visitor visitor) const {
+        if(water)visitor(water.get(),sizeof(*water)+water->capacity()*sizeof(std::uint8_t));
+        if(profiles) {
+            const auto& m=profiles->movement;
+            visitor(profiles.get(),sizeof(*profiles)+profiles->cells.capacity()+m.entries.capacity()*sizeof(m.entries[0])+
+                m.profiles.capacity()*sizeof(m.profiles[0])+m.profileIds.capacity()+m.steps.capacity()*sizeof(unsigned));
+        }
+    }
 	void clearForReuse();
 };
 

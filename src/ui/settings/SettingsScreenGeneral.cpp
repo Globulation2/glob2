@@ -409,6 +409,10 @@ void SettingsScreen::buildGeneral()
 			info(tr("No experiments in this build."));
 		for (const auto &definition : definitions)
 		{
+            // Routing policies are controlled research arms, selected by CLI
+            // manifests rather than independent preference toggles.
+            const auto id=parseExperimentKey(definition.key);
+            if(id && *id>=ExperimentId::GradientRatioMode && *id<=ExperimentId::GradientRatioEqual)continue;
 			// Labels come from the experiment's own keys rather than the
 			// "[settings ...]" prefix, so the lobby and this page share them.
 			const std::string key = definition.key;

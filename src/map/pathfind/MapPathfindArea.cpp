@@ -10,6 +10,7 @@
 
 void Map::gradientMovementDemand(GradientFieldKey key)
 {
+    key.swim=routingClass(key.team,key.swim);
     if(game && !compute.insideJob())gradientRuntime->adaptive.queried(key,game->stepCounter);
 }
 void Map::gradientMovementOutcome(const GradientQueryContext& context,const Uint16* cells,const GradientQueryResult& result)
@@ -116,6 +117,7 @@ GradientQueryResult Map::selectGradientQueryImpl(GradientQueryContext& context,c
 
 bool Map::pathfindForbidden(const Uint16* option,int team,int swim,int x,int y,int* dx,int* dy)
 {
+    swim=routingClass(team,swim);
     PERF_SCOPE_TIME(PathArea);
     const GradientFieldKey key{GradientFieldFamily::Forbidden,Uint8(team),Uint8(swim)};
     gradientMovementDemand(key);
@@ -131,6 +133,7 @@ bool Map::pathfindForbidden(const Uint16* option,int team,int swim,int x,int y,i
 }
 bool Map::pathfindArea(EntityRandom& random,AreaKind kind,int team,int swim,int x,int y,int* dx,int* dy)
 {
+    swim=routingClass(team,swim);
     PERF_SCOPE_TIME(PathArea);
     if (kind==AreaKind::Guard ? !paintedAreaTileCount(GuardArea,team) : !hasClearingArea(team)) return false;
     const GradientFieldKey key{kind==AreaKind::Guard?GradientFieldFamily::Guard:GradientFieldFamily::Clear,Uint8(team),Uint8(swim)};
@@ -150,6 +153,8 @@ bool Map::pathfindArea(EntityRandom& random,AreaKind kind,int team,int swim,int 
 }
 StepResult Map::queryForbiddenStep(const Uint16* option,int team,int swim,int x,int y,int* dx,int* dy)
 {
+    observeRoutingRatioQuery(4,team,swim,x,y);
+    swim=routingClass(team,swim);
     if(!getForbiddenGradient(team,swim)) {
         gradientMovementDemand({GradientFieldFamily::Forbidden,Uint8(team),Uint8(swim)});
         return StepResult::Pending;
@@ -158,6 +163,8 @@ StepResult Map::queryForbiddenStep(const Uint16* option,int team,int swim,int x,
 }
 StepResult Map::queryAreaStep(EntityRandom& random,AreaKind kind,int team,int swim,int x,int y,int* dx,int* dy)
 {
+    observeRoutingRatioQuery(kind==AreaKind::Guard?2:3,team,swim,x,y);
+    swim=routingClass(team,swim);
     if (kind==AreaKind::Guard ? !paintedAreaTileCount(GuardArea,team) : !hasClearingArea(team)) return StepResult::Blocked;
     const auto* cells=kind==AreaKind::Guard?getGuardAreasGradient(team,swim):getClearAreasGradient(team,swim);
     if(!cells) {

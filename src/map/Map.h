@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include "field/GradientKernelWork.h"
 struct GradientTargetCell;
 #include "OwnerRandom.h"
 #include "gradient/FieldReadiness.h"
@@ -111,6 +112,7 @@ class Map
 {
 	friend class ResourceSeedCache;
 	friend struct ResourceGradientProbe;
+    friend struct RoutingRatioStudy;
 	void resourceSeedChanged(size_t index, unsigned flags);
 	void invalidateResourceSeeds();
 	void seedMaterialGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
@@ -290,7 +292,7 @@ public:
 	void resetGradientPipeline(bool replacingWorld=false) noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
-    void configureGradientWorkStats(const std::string& csvPath);
+    void configureGradientWorkStats(const std::string& csvPath,bool aggregate=false,bool kernels=false);
     void configureResourceGradientExploration(const std::string& intervals, Uint32 seed,
         const std::string& decisionPath);
     void applyGradientBackendRequest();
@@ -1102,6 +1104,14 @@ public:
 	
 	//! Swim class of a unit with these walk and swim speeds (0 = cannot swim).
 	static int swimClass(int walkSpeed, int swimSpeed);
+    int routingClass(int team,int physical) const;
+    void configureRoutingRatioStudy(const std::string& prefix,bool routes);
+    void sampleRoutingRatioStudy();
+    std::shared_ptr<GradientKernelWork::Sink> gradientWorkSink() const;
+    void beginRoutingRatioTick();
+    void endRoutingRatioTick();
+    void observeRoutingRatioQuery(unsigned family,int team,int physical,int x,int y,bool planning=false,
+        int material=0,Building* building=nullptr,BuildingRoute route=BuildingRoute::Automatic);
 	//! Swim class used where no unit is at hand: water costs the same as land.
 	static constexpr int SWIM_CLASS_EVEN = 3;
 	//! Cheapest possible step for a class, the A* heuristic unit.

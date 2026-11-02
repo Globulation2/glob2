@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Unit.h"
+#include "map/gradient/RoutingRatioStudy.h"
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -455,6 +456,7 @@ void Unit::applyAreaServices()
 
 void Unit::syncStep(void)
 {
+    RoutingRatioReader ratioReader(this);
 	if (owner->map->hasTerrainHealthEffects()) applyTerrainHealth();
 	if (isDead) return;
 	//warrior attacks?

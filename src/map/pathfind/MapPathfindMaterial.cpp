@@ -15,6 +15,7 @@
 
 std::optional<GradientFieldKey> Map::materialGradientFieldKey(int team,int material,int swim,const Uint16* cells) const
 {
+    swim=routingClass(team,swim);
     if(!cells)return std::nullopt;
     if(cells==materialGradients[team][material][swim])return GradientFieldKey{GradientFieldFamily::Materials,Uint8(team),Uint8(swim),Uint8(material)};
     if(cells==marketMaterialGradients[team][material][swim])return GradientFieldKey{GradientFieldFamily::Markets,Uint8(team),Uint8(swim),Uint8(material)};
@@ -23,6 +24,7 @@ std::optional<GradientFieldKey> Map::materialGradientFieldKey(int team,int mater
 
 bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
 {
+    swimClass=routingClass(teamNumber,swimClass);
 	PERF_SCOPE_TIME(PathResource);
 	assert(resourceType<MaterialCount);
     std::optional<GradientFieldKey> key;
@@ -166,6 +168,8 @@ void Map::pathfindRandom(Unit *unit)
 
 StepResult Map::queryMaterialStep(EntityRandom& random, int team, Uint8 material, int swim, int x, int y, int* dx, int* dy, bool* stopWork, Building* target, bool markets)
 {
+    observeRoutingRatioQuery(target?5:markets?1:0,team,swim,x,y,false,material,target);
+    swim=routingClass(team,swim);
     std::optional<GradientFieldKey> key;
     const auto* field=getMaterialGradientSlot(team,material,swim,markets,target,&key);
     if (!field) {if(key)gradientMovementDemand(*key);*stopWork=false;return StepResult::Pending;}

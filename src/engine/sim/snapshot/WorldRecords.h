@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "RoutingRatioPolicy.h"
 
 #include "BuildingCatalog.h"
 #include "BuildingState.h"
@@ -48,6 +49,8 @@ struct UnitView : UnitState
 struct ColorRecord { Uint8 r = 0, g = 0, b = 0, a = 255; };
 struct TeamView
 {
+    RoutingRatioState routingRatio;
+    int amphibiousRoutingClass=0; // zero means class-specific baseline
 	int number = 0, prestige = 0, startX = 0, startY = 0;
 	bool alive = false, won = false, lost = false;
 	ColorRecord color;

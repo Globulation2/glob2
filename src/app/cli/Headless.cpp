@@ -713,10 +713,15 @@ struct HeadlessRunner
 			}
 			engine.gui.game.map.setGradientWorkerCount(1);
 		}
+        if (options.count("--routing-ratio-study")) {
+            const auto mode=one(options,"--routing-ratio-study");
+            if(mode!="counts" && mode!="routes")throw std::invalid_argument("Routing ratio study expects counts or routes");
+            engine.gui.game.map.configureRoutingRatioStudy((output/"routing-ratio").string(),mode=="routes");
+        }
         if (options.count("--gradient-work-stats")) {
             const auto path=fs::absolute(one(options,"--gradient-work-stats"));
             fs::create_directories(path.parent_path());
-            engine.gui.game.map.configureGradientWorkStats(path.string());
+            engine.gui.game.map.configureGradientWorkStats(path.string(),options.count("--gradient-work-aggregate")!=0,options.count("--gradient-work-kernels")!=0);
         }
         if (options.count("--resource-gradient-exploration")) {
             if (one(options,"--resource-gradient-probe","false")!="true" || recordReplay)
@@ -802,6 +807,7 @@ struct HeadlessRunner
         if (engine.warriorTactics) engine.warriorTactics->finish();
         const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
+        engine.gui.game.map.sampleRoutingRatioStudy();
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
 		const auto saveCpu=benchmark?processCpuNs()-saveCpuStart:0;
 		PerformanceTelemetry::collector().capture(engine.gui.game.stepCounter, true, true);

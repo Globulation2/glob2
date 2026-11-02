@@ -67,7 +67,7 @@ def validate_job(value):
     for seed in value['seeds'].values():
         if type(seed) is not int or not 0 <= seed <= 2**32 - 1:
             raise ValueError('seeds must be uint32 integers')
-    for key in ('timeout_seconds', 'memory_mb', 'estimated_seconds'):
+    for key in ('timeout_seconds', 'memory_mb', 'estimated_seconds', 'deadline_unix'):
         if key in value['limits'] and (not isinstance(value['limits'][key], (int, float)) or value['limits'][key] <= 0):
             raise ValueError(f'{key} must be positive')
     for key in ('artifact_bytes', 'log_bytes'):

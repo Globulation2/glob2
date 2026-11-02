@@ -435,7 +435,7 @@ def execute(root, identity):
             stderr = CompressedLog(process.stderr, directory / 'stderr.log.gz', log_limit)
             deadline = time.monotonic() + job['limits'].get('timeout_seconds', 3600)
             while process.poll() is None:
-                if time.monotonic() >= deadline:
+                if time.monotonic() >= deadline or time.time() >= job['limits'].get('deadline_unix', float('inf')):
                     record['category'] = 'timeout'
                     process.kill()
                     break

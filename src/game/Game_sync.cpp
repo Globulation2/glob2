@@ -232,6 +232,7 @@ void Game::advanceLiveSimulation(Sint32 localTeam)
 	if (!anyPlayerWaited)
 	{
 		PERF_SCOPE_TIME(Tick);
+        map.beginRoutingRatioTick();
 		if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 		{
 			globalContainer->replayWriter->advanceStep();
@@ -287,6 +288,8 @@ void Game::advanceLiveSimulation(Sint32 localTeam)
 		ticksGameSum[stepCounter&(TICK_PROFILE_BUF_LEN-1)]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		publishTickEvents();
 		map.computeExecutor().advancingTick(stepCounter);
+        map.endRoutingRatioTick();
+        if ((stepCounter & 511u)==511u) map.sampleRoutingRatioStudy();
 		stepCounter++;
         orderEditedWorld = false;
 

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "field/GradientWorkspace.h"
+#include "field/GradientKernelWork.h"
 #include "field/GradientDeviceService.h"
 #include "sim/snapshot/WorldSnapshot.h"
 #include "SnapshotGradient.h"
@@ -30,6 +31,8 @@ class GradientPipeline
 	};
 	struct Job
 	{
+        GradientKernelWork work;
+        std::shared_ptr<GradientKernelWork::Sink> workSink;
 		std::optional<SimulationSnapshot::Handle> snapshotLease;
 		std::uint16_t **slot = nullptr;
 		std::unique_ptr<std::uint16_t[]> data;

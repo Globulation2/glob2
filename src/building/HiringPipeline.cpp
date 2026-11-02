@@ -187,8 +187,11 @@ struct HiringPlanner::PreparedRoute
 		field->height = snapshot.height;
 		job.data.reset(new Uint16[std::size_t(snapshot.width) * snapshot.height]);
 		job.search = acquireBuildingGradientSearch();
+        auto inputs=BuildingGradientSearch::Inputs::ofSnapshot(snapshot,job.swim);
+        inputs.workSink=job.workSink;inputs.workKey=GradientKernelWork::key(6,Building::GIDtoTeam(building.gid),job.swim);
+        if(job.workSink){auto& counter=job.workSink->fields[inputs.workKey];++counter.builds;counter.initializedCells+=std::size_t(snapshot.width)*snapshot.height;}
 		const auto result = gradient_preparation::buildBuilding(
-			job.seed, snapshot, BuildingGradientSearch::Inputs::ofSnapshot(snapshot, job.swim),
+			job.seed, snapshot, inputs,
 			job.data.get(), *job.search, BuildingGradientDepth::MIN_DEPTH);
 		job.locked = result.locked;
 		job.resourceState = result.resourceState;
@@ -772,7 +775,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 				for (const auto &unit : view.unitsForTeam(team))
 					if (!unit->isDead)
 						movementClasses[team] |=
-							1u << (unit->performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(unit->performance[WALK], unit->performance[SWIM]));
+							1u << game.map.routingClass(team,unit->performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(unit->performance[WALK], unit->performance[SWIM]));
 	}
 	for (const auto &b : inputs.world.entities->buildings)
 	{
@@ -826,6 +829,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						prepared->building = b.identity;
 						prepared->proactive = initialize;
 						auto &job = prepared->job;
+                        job.workSink=game.map.gradientWorkSink();
 						job.slot = slot;
 						job.swim = c;
 						job.route = route;

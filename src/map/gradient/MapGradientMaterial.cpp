@@ -38,6 +38,7 @@ bool retainedMaterialField(const GradientRuntime& runtime, const GradientRuntime
 
 const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets, const Building* consumer, std::optional<GradientFieldKey>* selectedKey)
 {
+    swimClass=routingClass(teamNumber,swimClass);
     if(selectedKey)selectedKey->reset();
 	if (consumer)
 	{
@@ -78,6 +79,7 @@ const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int
 
 void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets)
 {
+    swimClass=routingClass(teamNumber,swimClass);
     if (game) {
         auto& field=withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
         requestGradientField(&field, int(withMarkets ? gradient_preparation::Kind::Markets : gradient_preparation::Kind::Materials), teamNumber, resourceType, swimClass); return;
@@ -181,6 +183,7 @@ bool Map::stockSupplierEligibleSlot(const Building* supplier, const Building* co
 
 const Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes)
 {
+    swim=routingClass(consumer->owner->teamNumber,swim);
     std::lock_guard<std::mutex> lock(materialGradientMutex);
     auto& runtime=*gradientRuntime;
     const int team=consumer->owner->teamNumber;
@@ -344,6 +347,7 @@ void Map::rebuildPlaneRegistry()
 
 const Uint16* Map::lookupMaterialGradientSlot(int team, int material, int swim, bool markets, const Building* consumer) const
 {
+    swim=routingClass(team,swim);
     if (consumer) {
         const auto modes=materialSupplyModesSlot(consumer,material);
         markets=modes&1;
