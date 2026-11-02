@@ -134,10 +134,10 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	// Mainline terrain identities require the current replay acceptance floor.
+	// Replenishment staffing changes require the current replay acceptance floor.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 187);
-	CHECK(VERSION_MINOR == 193);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 194);
+	CHECK(VERSION_MINOR == 194);
 
 	CHECK(NET_PROTOCOL_VERSION == 75);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);

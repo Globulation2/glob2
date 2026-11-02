@@ -453,7 +453,7 @@ Selection uses living amphibious ground units at the initial completed-world
 boundary and every 512 ticks thereafter. Class and speed modes retain a previous
 value on a tie, otherwise choosing the smaller value. An even-population median
 retains the previous class when it lies in the median interval, otherwise using
-the lower median. Empty populations select equal cost. Format 194 saves the
+the lower median. Empty populations select equal cost. Format 195 saves the
 selection, last selection tick, and separate speed-mode tie history; older saves
 start without research state. These policies can change routing and therefore
 carry a new simulation revision.

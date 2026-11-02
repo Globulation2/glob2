@@ -541,8 +541,8 @@ def _campaign(bundle_path, directory, cpu_ids, hours=48):
     receipt=root/'campaign.json'
     if receipt.exists():raise ValueError('campaign directory already has a receipt; preserve it and use a new directory')
     bundle=inspect_bundle(bundle_path)
-    if bundle['capabilities'].get('save_version',0)<194 or bundle['build_options'].get('routing_ratio_contract')!='routing-ratio-study-v1':
-        raise ValueError('campaign requires a validated format-194 research release bundle with routing_ratio_contract attestation')
+    if bundle['capabilities'].get('save_version',0)<195 or bundle['build_options'].get('routing_ratio_contract')!='routing-ratio-study-v1':
+        raise ValueError('campaign requires a validated format-195 research release bundle with routing_ratio_contract attestation')
     started=time.time();end=started+hours*3600
     atomic_json(receipt,dict(contract='routing-ratio-campaign-v1',started=started,deadline=end,cpu_ids=cpu_ids,
         bundle=bundle['id'],simulation_version=bundle['capabilities'].get('sim_version'),

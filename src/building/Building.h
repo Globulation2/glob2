@@ -198,8 +198,10 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	///Updates the construction state when undergoing construction. If the construction materials are fully funded,
 	///construction has completed.
 	void updateBuildingSite(void);
-	///This function updates the units working at this building. If there are too many units, it
-	///fires some.
+	///Whether material-demand reductions wait until a courier finishes unloading.
+	bool finishesDeliveryTrips() const;
+
+	///Releases excess workers immediately for staffing limits and finite construction demand.
 	void updateUnitsWorking(void);
 
 	///This function is called after important events in order to update the building
