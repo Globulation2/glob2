@@ -1,0 +1,449 @@
+In file included from src/building/BuildingProductionCombatTest.cpp:3:
+In file included from test/support/EngineFixtures.h:8:
+In file included from src/building/Building.h:23:
+In file included from src/team/Team.h:18:
+In file included from src/game/GameEvent.h:9:
+In file included from libgag/include/GraphicContext.h:6:
+libgag/include/SDLGraphicContext.h:668:16: warning: 'setRes' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  668 |                 virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
+      |                              ^
+libgag/include/SDLGraphicContext.h:266:16: note: overridden virtual function is here
+  266 |                 virtual void setRes(int w, int h);
+      |                              ^
+libgag/include/SDLGraphicContext.h:762:16: warning: 'setClipRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  762 |                 virtual void setClipRect(int x, int y, int w, int h);
+      |                              ^
+libgag/include/SDLGraphicContext.h:268:16: note: overridden virtual function is here
+  268 |                 virtual void setClipRect(int x, int y, int w, int h);
+      |                              ^
+libgag/include/SDLGraphicContext.h:763:16: warning: 'setClipRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  763 |                 virtual void setClipRect(void);
+      |                              ^
+libgag/include/SDLGraphicContext.h:269:16: note: overridden virtual function is here
+  269 |                 virtual void setClipRect(void);
+      |                              ^
+libgag/include/SDLGraphicContext.h:769:22: warning: 'nextFrame' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  769 |         virtual void nextFrame(void);
+      |                      ^
+libgag/include/SDLGraphicContext.h:270:16: note: overridden virtual function is here
+  270 |                 virtual void nextFrame(void) { flushTextPictures(); }
+      |                              ^
+libgag/include/SDLGraphicContext.h:771:16: warning: 'loadImage' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  771 |                 virtual bool loadImage(const std::string name) { return false; }
+      |                              ^
+libgag/include/SDLGraphicContext.h:271:16: note: overridden virtual function is here
+  271 |                 virtual bool loadImage(const std::string name);
+      |                              ^
+libgag/include/SDLGraphicContext.h:775:16: warning: 'shiftHSV' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  775 |                 virtual void shiftHSV(float hue, float sat, float lum) { }
+      |                              ^
+libgag/include/SDLGraphicContext.h:272:16: note: overridden virtual function is here
+  272 |                 virtual void shiftHSV(float hue, float sat, float lum);
+      |                              ^
+libgag/include/SDLGraphicContext.h:778:16: warning: 'canDrawStretchedSprite' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  778 |                 virtual bool canDrawStretchedSprite(void) { return hasPortableRenderer() || (optionFlags & USEGPU) != 0; }
+      |                              ^
+libgag/include/SDLGraphicContext.h:290:16: note: overridden virtual function is here
+  290 |                 virtual bool canDrawStretchedSprite(void) { return false; }
+      |                              ^
+libgag/include/SDLGraphicContext.h:780:16: warning: 'drawPixel' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  780 |                 virtual void drawPixel(int x, int y, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:293:16: note: overridden virtual function is here
+  293 |                 virtual void drawPixel(int x, int y, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:781:16: warning: 'drawPixel' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  781 |                 virtual void drawPixel(float x, float y, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:294:16: note: overridden virtual function is here
+  294 |                 virtual void drawPixel(float x, float y, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:783:16: warning: 'drawRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  783 |                 virtual void drawRect(int x, int y, int w, int h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:296:16: note: overridden virtual function is here
+  296 |                 virtual void drawRect(int x, int y, int w, int h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:784:16: warning: 'drawRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  784 |                 virtual void drawRect(float x, float y, float w, float h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:297:16: note: overridden virtual function is here
+  297 |                 virtual void drawRect(float x, float y, float w, float h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:786:16: warning: 'drawFilledRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  786 |                 virtual void drawFilledRect(int x, int y, int w, int h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:299:16: note: overridden virtual function is here
+  299 |                 virtual void drawFilledRect(int x, int y, int w, int h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:787:16: warning: 'drawFilledRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  787 |                 virtual void drawFilledRect(float x, float y, float w, float h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:300:16: note: overridden virtual function is here
+  300 |                 virtual void drawFilledRect(float x, float y, float w, float h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:789:16: warning: 'drawLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  789 |                 virtual void drawLine(int x1, int y1, int x2, int y2, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:302:16: note: overridden virtual function is here
+  302 |                 virtual void drawLine(int x1, int y1, int x2, int y2, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:790:16: warning: 'drawLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  790 |                 virtual void drawLine(float x1, float y1, float x2, float y2, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:303:16: note: overridden virtual function is here
+  303 |                 virtual void drawLine(float x1, float y1, float x2, float y2, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:792:16: warning: 'drawCircle' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  792 |                 virtual void drawCircle(int x, int y, int radius, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:305:16: note: overridden virtual function is here
+  305 |                 virtual void drawCircle(int x, int y, int radius, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:793:16: warning: 'drawCircle' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  793 |                 virtual void drawCircle(float x, float y, float radius, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:306:16: note: overridden virtual function is here
+  306 |                 virtual void drawCircle(float x, float y, float radius, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:795:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  795 |                 virtual void drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:308:16: note: overridden virtual function is here
+  308 |                 virtual void drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:796:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  796 |                 virtual void drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:309:16: note: overridden virtual function is here
+  309 |                 virtual void drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:798:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  798 |                 virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:311:16: note: overridden virtual function is here
+  311 |                 virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:799:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  799 |                 virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:312:16: note: overridden virtual function is here
+  312 |                 virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:801:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  801 |                 virtual void drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:314:16: note: overridden virtual function is here
+  314 |                 virtual void drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:802:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  802 |                 virtual void drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:315:16: note: overridden virtual function is here
+  315 |                 virtual void drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:804:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  804 |                 virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:317:16: note: overridden virtual function is here
+  317 |                 virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:805:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  805 |                 virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:318:16: note: overridden virtual function is here
+  318 |                 virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:836:16: warning: 'drawAlphaMap' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  836 |                 virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:331:16: note: overridden virtual function is here
+  331 |                 virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:837:16: warning: 'drawAlphaMap' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  837 |                 virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:332:16: note: overridden virtual function is here
+  332 |                 virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:840:16: warning: 'drawPixel' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  840 |                 virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:335:16: note: overridden virtual function is here
+  335 |                 virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:841:16: warning: 'drawRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  841 |                 virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:336:16: note: overridden virtual function is here
+  336 |                 virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:842:16: warning: 'drawFilledRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  842 |                 virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:337:16: note: overridden virtual function is here
+  337 |                 virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:843:16: warning: 'drawVertLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  843 |                 virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:338:16: note: overridden virtual function is here
+  338 |                 virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:844:16: warning: 'drawVertLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  844 |                 virtual void drawVertLine(int x, int y, int l, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:339:16: note: overridden virtual function is here
+  339 |                 virtual void drawVertLine(int x, int y, int l, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:845:16: warning: 'drawHorzLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  845 |                 virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:340:16: note: overridden virtual function is here
+  340 |                 virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:846:16: warning: 'drawHorzLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  846 |                 virtual void drawHorzLine(int x, int y, int l, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:341:16: note: overridden virtual function is here
+  341 |                 virtual void drawHorzLine(int x, int y, int l, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:847:16: warning: 'drawLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  847 |                 virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:342:16: note: overridden virtual function is here
+  342 |                 virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:848:16: warning: 'drawCircle' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  848 |                 virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:343:16: note: overridden virtual function is here
+  343 |                 virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+36 warnings generated.
+file_packager: warning: file packager is creating an asset bundle of 337 MB. this is very large, and browsers might have trouble loading it. see https://hacks.mozilla.org/2015/02/synchronous-execution-and-filesystem-access-in-emscripten/
+In file included from src/building/BuildingProductionCombatTest.cpp:3:
+In file included from test/support/EngineFixtures.h:8:
+In file included from src/building/Building.h:23:
+In file included from src/team/Team.h:18:
+In file included from src/game/GameEvent.h:9:
+In file included from libgag/include/GraphicContext.h:6:
+libgag/include/SDLGraphicContext.h:668:16: warning: 'setRes' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  668 |                 virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
+      |                              ^
+libgag/include/SDLGraphicContext.h:266:16: note: overridden virtual function is here
+  266 |                 virtual void setRes(int w, int h);
+      |                              ^
+libgag/include/SDLGraphicContext.h:762:16: warning: 'setClipRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  762 |                 virtual void setClipRect(int x, int y, int w, int h);
+      |                              ^
+libgag/include/SDLGraphicContext.h:268:16: note: overridden virtual function is here
+  268 |                 virtual void setClipRect(int x, int y, int w, int h);
+      |                              ^
+libgag/include/SDLGraphicContext.h:763:16: warning: 'setClipRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  763 |                 virtual void setClipRect(void);
+      |                              ^
+libgag/include/SDLGraphicContext.h:269:16: note: overridden virtual function is here
+  269 |                 virtual void setClipRect(void);
+      |                              ^
+libgag/include/SDLGraphicContext.h:769:22: warning: 'nextFrame' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  769 |         virtual void nextFrame(void);
+      |                      ^
+libgag/include/SDLGraphicContext.h:270:16: note: overridden virtual function is here
+  270 |                 virtual void nextFrame(void) { flushTextPictures(); }
+      |                              ^
+libgag/include/SDLGraphicContext.h:771:16: warning: 'loadImage' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  771 |                 virtual bool loadImage(const std::string name) { return false; }
+      |                              ^
+libgag/include/SDLGraphicContext.h:271:16: note: overridden virtual function is here
+  271 |                 virtual bool loadImage(const std::string name);
+      |                              ^
+libgag/include/SDLGraphicContext.h:775:16: warning: 'shiftHSV' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  775 |                 virtual void shiftHSV(float hue, float sat, float lum) { }
+      |                              ^
+libgag/include/SDLGraphicContext.h:272:16: note: overridden virtual function is here
+  272 |                 virtual void shiftHSV(float hue, float sat, float lum);
+      |                              ^
+libgag/include/SDLGraphicContext.h:778:16: warning: 'canDrawStretchedSprite' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  778 |                 virtual bool canDrawStretchedSprite(void) { return hasPortableRenderer() || (optionFlags & USEGPU) != 0; }
+      |                              ^
+libgag/include/SDLGraphicContext.h:290:16: note: overridden virtual function is here
+  290 |                 virtual bool canDrawStretchedSprite(void) { return false; }
+      |                              ^
+libgag/include/SDLGraphicContext.h:780:16: warning: 'drawPixel' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  780 |                 virtual void drawPixel(int x, int y, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:293:16: note: overridden virtual function is here
+  293 |                 virtual void drawPixel(int x, int y, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:781:16: warning: 'drawPixel' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  781 |                 virtual void drawPixel(float x, float y, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:294:16: note: overridden virtual function is here
+  294 |                 virtual void drawPixel(float x, float y, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:783:16: warning: 'drawRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  783 |                 virtual void drawRect(int x, int y, int w, int h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:296:16: note: overridden virtual function is here
+  296 |                 virtual void drawRect(int x, int y, int w, int h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:784:16: warning: 'drawRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  784 |                 virtual void drawRect(float x, float y, float w, float h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:297:16: note: overridden virtual function is here
+  297 |                 virtual void drawRect(float x, float y, float w, float h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:786:16: warning: 'drawFilledRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  786 |                 virtual void drawFilledRect(int x, int y, int w, int h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:299:16: note: overridden virtual function is here
+  299 |                 virtual void drawFilledRect(int x, int y, int w, int h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:787:16: warning: 'drawFilledRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  787 |                 virtual void drawFilledRect(float x, float y, float w, float h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:300:16: note: overridden virtual function is here
+  300 |                 virtual void drawFilledRect(float x, float y, float w, float h, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:789:16: warning: 'drawLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  789 |                 virtual void drawLine(int x1, int y1, int x2, int y2, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:302:16: note: overridden virtual function is here
+  302 |                 virtual void drawLine(int x1, int y1, int x2, int y2, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:790:16: warning: 'drawLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  790 |                 virtual void drawLine(float x1, float y1, float x2, float y2, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:303:16: note: overridden virtual function is here
+  303 |                 virtual void drawLine(float x1, float y1, float x2, float y2, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:792:16: warning: 'drawCircle' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  792 |                 virtual void drawCircle(int x, int y, int radius, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:305:16: note: overridden virtual function is here
+  305 |                 virtual void drawCircle(int x, int y, int radius, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:793:16: warning: 'drawCircle' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  793 |                 virtual void drawCircle(float x, float y, float radius, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:306:16: note: overridden virtual function is here
+  306 |                 virtual void drawCircle(float x, float y, float radius, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:795:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  795 |                 virtual void drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:308:16: note: overridden virtual function is here
+  308 |                 virtual void drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:796:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  796 |                 virtual void drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:309:16: note: overridden virtual function is here
+  309 |                 virtual void drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:798:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  798 |                 virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:311:16: note: overridden virtual function is here
+  311 |                 virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:799:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  799 |                 virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:312:16: note: overridden virtual function is here
+  312 |                 virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:801:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  801 |                 virtual void drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:314:16: note: overridden virtual function is here
+  314 |                 virtual void drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:802:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  802 |                 virtual void drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:315:16: note: overridden virtual function is here
+  315 |                 virtual void drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:804:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  804 |                 virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:317:16: note: overridden virtual function is here
+  317 |                 virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:805:16: warning: 'drawSurface' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  805 |                 virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:318:16: note: overridden virtual function is here
+  318 |                 virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:836:16: warning: 'drawAlphaMap' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  836 |                 virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:331:16: note: overridden virtual function is here
+  331 |                 virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:837:16: warning: 'drawAlphaMap' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  837 |                 virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:332:16: note: overridden virtual function is here
+  332 |                 virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:840:16: warning: 'drawPixel' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  840 |                 virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:335:16: note: overridden virtual function is here
+  335 |                 virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:841:16: warning: 'drawRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  841 |                 virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:336:16: note: overridden virtual function is here
+  336 |                 virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:842:16: warning: 'drawFilledRect' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  842 |                 virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:337:16: note: overridden virtual function is here
+  337 |                 virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:843:16: warning: 'drawVertLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  843 |                 virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:338:16: note: overridden virtual function is here
+  338 |                 virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:844:16: warning: 'drawVertLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  844 |                 virtual void drawVertLine(int x, int y, int l, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:339:16: note: overridden virtual function is here
+  339 |                 virtual void drawVertLine(int x, int y, int l, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:845:16: warning: 'drawHorzLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  845 |                 virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:340:16: note: overridden virtual function is here
+  340 |                 virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:846:16: warning: 'drawHorzLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  846 |                 virtual void drawHorzLine(int x, int y, int l, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:341:16: note: overridden virtual function is here
+  341 |                 virtual void drawHorzLine(int x, int y, int l, const Color& color);
+      |                              ^
+libgag/include/SDLGraphicContext.h:847:16: warning: 'drawLine' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  847 |                 virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:342:16: note: overridden virtual function is here
+  342 |                 virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:848:16: warning: 'drawCircle' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  848 |                 virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+libgag/include/SDLGraphicContext.h:343:16: note: overridden virtual function is here
+  343 |                 virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+      |                              ^
+36 warnings generated.
+em++: warning: -pthread + ALLOW_MEMORY_GROWTH may run non-wasm code slowly, see https://github.com/WebAssembly/design/issues/1271 [-Wpthreads-mem-growth]
+file_packager: warning: file packager is creating an asset bundle of 337 MB. this is very large, and browsers might have trouble loading it. see https://hacks.mozilla.org/2015/02/synchronous-execution-and-filesystem-access-in-emscripten/

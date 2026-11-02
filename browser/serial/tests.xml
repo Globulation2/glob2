@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="./this.program" errors="0" failures="0" tests="2209" time="19.867" timestamp="2026-11-02T20:35:01Z" doctest_version="2.4.11">
+    <testcase classname="src/building/BuildingProductionCombatTest.cpp" name="inventory caps preserve trips but prevent new hires" time="2.006" status="run"/>
+    <testcase classname="src/building/BuildingProductionCombatTest.cpp" name="consumption can restore demand before a courier arrives" time="0.701" status="run"/>
+    <testcase classname="src/building/BuildingProductionCombatTest.cpp" name="player reductions remain immediate while trips are protected" time="0.641" status="run"/>
+    <testcase classname="src/building/BuildingProductionCombatTest.cpp" name="construction repair and upgrade keep finite demand staffing" time="0.686" status="run"/>
+    <testcase classname="src/building/BuildingProductionCombatTest.cpp" name="multi packet loads finish unloading before excess couriers leave" time="0.815" status="run"/>
+    <testcase classname="src/building/BuildingProductionCombatTest.cpp" name="active deliveries preserve save continuation checksums [save-format][artifacts]" time="15.018" status="run"/>
+  </testsuite>
+</testsuites>

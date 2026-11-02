@@ -1,0 +1,4 @@
+src/building/BuildingProductionCombatTest.cpp: In function 'void DOCTEST_ANON_SUITE_5::DOCTEST_ANON_FUNC_16()':
+src/building/BuildingProductionCombatTest.cpp:217:34: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+  217 |     for (int resource=0; resource<MaterialCount; ++resource) b->setMaterial(resource, b->type->maxMaterial[resource]);
+      |                          ~~~~~~~~^~~~~~~~~~~~~~

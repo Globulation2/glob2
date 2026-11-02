@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="83" failures="0" errors="0" skipped="0"><testsuite name="BuildingMaterialDemand"><testcase classname="BuildingMaterialDemand" name="dense oracle covers generated private shared construction and repair states" time="0.977921" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="division boundaries capacity clamps and authored multiplier bounds remain exact" time="0.890431" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="failed admission reuses only current operation demand across stock and budget changes" time="2.05377" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="failed live admission preserves route queries and a later successful attempt" time="0.907147" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="fresh queries see shared reservations releases consumption and other building deliveries" time="1.23569" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="maximum authored demand keeps ceiling and aggregate arithmetic in range" time="0.916727" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="per material rounding differs from aggregate staffing and wishes can be negative" time="0.772022" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="repair upgrade delivery completion and destruction refresh demand at their existing boundaries" time="0.949989" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="reserved output slots are initialized and remain distinct from real material staffing" time="1.0688" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="same priority reposition matches removal and insertion in unsorted buckets" time="0.868788" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="sparse delivery accounting clears unused slots and still counts committed workers" time="0.661815" status="run" />
+  <testcase classname="BuildingMaterialDemand" name="update boundaries keep wishes staffing and recruitment bucket order observable" time="0.678699" status="run" />
+  </testsuite><testsuite name="BuildingProductionCombat"><testcase classname="BuildingProductionCombat" name="bounded supply cache excludes the recipient and its shared inventory and resumes eviction" time="2.68458" status="run" />
+  <testcase classname="BuildingProductionCombat" name="building flag masks preserve neighboring flags and clear unused bits" time="0.000139" status="run" />
+  <testcase classname="BuildingProductionCombat" name="building saves retain capacity boundaries and reject invalid lifecycle values [save-format]" time="1.07218" status="run" />
+  <testcase classname="BuildingProductionCombat" name="combined attraction profiles independently require warrior level and explorer bombing" time="0.606862" status="run" />
+  <testcase classname="BuildingProductionCombat" name="combined stock routes include both provider modes and track direct overlay relocation" time="1.52197" status="run" />
+  <testcase classname="BuildingProductionCombat" name="committed recipe survives binary and text continuation with its reservation" time="5.8381" status="run" />
+  <testcase classname="BuildingProductionCombat" name="committed recipes reserve distinct resources and ratio changes choose the next job" time="0.620918" status="run" />
+  <testcase classname="BuildingProductionCombat" name="compact production preferences validate wide saved values before conversion [save-format]" time="1.3005" status="run" />
+  <testcase classname="BuildingProductionCombat" name="completed blocked job retains its budget and zero duration remains a producer" time="0.593183" status="run" />
+  <testcase classname="BuildingProductionCombat" name="construction reserves independent costs beyond storage and survives continuation" time="1.29803" status="run" />
+  <testcase classname="BuildingProductionCombat" name="converging upgrades cancel to the instance origin and return real materials" time="0.847724" status="run" />
+  <testcase classname="BuildingProductionCombat" name="current saves reject construction origins outside the explicit job graph" time="14.1955" status="run" />
+  <testcase classname="BuildingProductionCombat" name="demolition settles shared partial construction only when removal becomes final" time="6.45018" status="run" />
+  <testcase classname="BuildingProductionCombat" name="direct stock withdrawal is independent of food and fruit exchange" time="0.6062" status="run" />
+  <testcase classname="BuildingProductionCombat" name="ground buildings with attraction radii remain melee targets" time="1.71427" status="run" />
+  <testcase classname="BuildingProductionCombat" name="hybrid attraction and service routes remain independent across save continuation" time="5.09071" status="run" />
+  <testcase classname="BuildingProductionCombat" name="idle producer sentinel survives binary and text continuation" time="5.26835" status="run" />
+  <testcase classname="BuildingProductionCombat" name="late choice advances the common timer and selects ratios only at completion" time="1.44664" status="run" />
+  <testcase classname="BuildingProductionCombat" name="mixed attraction borrows quota from an unavailable unit class" time="1.32884" status="run" />
+  <testcase classname="BuildingProductionCombat" name="overlay services and suppliers share a footprint without occupying ground" time="0.596928" status="run" />
+  <testcase classname="BuildingProductionCombat" name="overlay transition and cancellation discard cached footprint routes" time="1.17593" status="run" />
+  <testcase classname="BuildingProductionCombat" name="partial supplier packets preserve raw equivalents and save continuation" time="1.92048" status="run" />
+  <testcase classname="BuildingProductionCombat" name="physical combat attraction invalidates on enemy changes and mixed relocation resets routes" time="0.811323" status="run" />
+  <testcase classname="BuildingProductionCombat" name="production transitions initialize new recipes and restore canceled preferences" time="2.68847" status="run" />
+  <testcase classname="BuildingProductionCombat" name="rectangular hybrid shoots class-specific snapshots and regenerates without production" time="0.660388" status="run" />
+  <testcase classname="BuildingProductionCombat" name="repair budgets use independent fruit costs and cancellation creates no material credits" time="0.705274" status="run" />
+  <testcase classname="BuildingProductionCombat" name="repair earns only original damage and paid materials cannot be refunded after healing" time="1.37387" status="run" />
+  <testcase classname="BuildingProductionCombat" name="resource permissions separate storage replenishment and direct withdrawal" time="1.68335" status="run" />
+  <testcase classname="BuildingProductionCombat" name="shared ammunition consumption invalidates stock advertised by another building" time="1.19758" status="run" />
+  <testcase classname="BuildingProductionCombat" name="shared repair sites restore each recorded origin and staffing cap" time="2.20663" status="run" />
+  <testcase classname="BuildingProductionCombat" name="sole supplier demolition and cancellation preserve routing across save continuation" time="5.21114" status="run" />
+  <testcase classname="BuildingProductionCombat" name="stock suppliers route independently of fruit exchange with configured pickup cost" time="0.589232" status="run" />
+  <testcase classname="BuildingProductionCombat" name="unfunded new-site cooldown uses job state and counts fruit funding" time="1.40649" status="run" />
+  <testcase classname="BuildingProductionCombat" name="version135 partial repair imports remaining work without material credits" time="2.39218" status="run" />
+  <testcase classname="BuildingProductionCombat" name="zero cost repair preserves damage received after the repair started" time="0.635721" status="run" />
+  <testcase classname="BuildingProductionCombat" name="zero cost roots and upgrade stages complete without a delivery event" time="0.854071" status="run" />
+  </testsuite><testsuite name="BuildingStock"><testcase classname="BuildingStock" name="all fifteen private stock slots clamp wide save values before narrowing [save-format]" time="1.21458" status="run" />
+  <testcase classname="BuildingStock" name="canceled entering explorers wait for a free exit before medical rebound [save-format]" time="5.00453" status="run" />
+  <testcase classname="BuildingStock" name="canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]" time="25.2861" status="run" />
+  <testcase classname="BuildingStock" name="canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]" time="18.6623" status="run" />
+  <testcase classname="BuildingStock" name="clamped private stock cancels an unfunded committed production job [save-format]" time="2.92095" status="run" />
+  <testcase classname="BuildingStock" name="clamped stock keeps affordable service commitments and cancels unfunded visits without benefits [save-format]" time="3.30118" status="run" />
+  <testcase classname="BuildingStock" name="clamped stock trims construction funding while preserving wide budget and saved demand [save-format]" time="3.50018" status="run" />
+  <testcase classname="BuildingStock" name="clamping inactive private inventory preserves wide shared stock and service funding [save-format]" time="3.00029" status="run" />
+  <testcase classname="BuildingStock" name="delivery at the private cap records acceptance and retains exact cargo residual" time="1.47286" status="run" />
+  <testcase classname="BuildingStock" name="format167 warm consumer fields restore complete arrays and pool policy through current continuation [save-format][artifacts]" time="9.50272" status="run" />
+  <testcase classname="BuildingStock" name="funded explorers rebound to healing only after a blocked exit opens" time="1.42942" status="run" />
+  <testcase classname="BuildingStock" name="runtime stock updates saturate every slot with wide intermediate arithmetic" time="1.18675" status="run" />
+  <testcase classname="BuildingStock" name="shared runtime reservations and consumption retain wide stock and inactive private inventory" time="1.22428" status="run" />
+  <testcase classname="BuildingStock" name="zero cost service admissions retain reservations through normal entry" time="1.40354" status="run" />
+  </testsuite><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Compact identity tables preserve unused slots and reject invalid entries" time="3.49049" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="Current simulation rejects earlier replays and enforces acceptance boundaries" time="3.78749" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="6.43094" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="46.1713" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="3.08508" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0.000118" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="2.37601" status="run" />
+  </testsuite><testsuite name="LegacyRoundTripSave"><testcase classname="LegacyRoundTripSave" name="a format-143 save with live round-trip fields plays on greedily [golden][save-format]" time="14.6207" status="run" />
+  </testsuite><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts]" time="15.7118" status="run" />
+  <testcase classname="MarketsV2" name="disabled gate blocks explicit fetch APIs and upgrade execution" time="0.94439" status="run" />
+  <testcase classname="MarketsV2" name="each market level accepts only its resources across all swim classes" time="3.52754" status="run" />
+  <testcase classname="MarketsV2" name="enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]" time="29.3901" status="run" />
+  <testcase classname="MarketsV2" name="explicit market refresh publishes depletion and restocking after the minimum interval" time="0.714683" status="run" />
+  <testcase classname="MarketsV2" name="legacy workers already travelling to markets continue after migration [golden][save-format]" time="1.09321" status="run" />
+  <testcase classname="MarketsV2" name="market repair materials do not overwrite shared stock" time="1.2274" status="run" />
+  <testcase classname="MarketsV2" name="market routes respect forbidden ground and water across swim classes" time="1.46856" status="run" />
+  <testcase classname="MarketsV2" name="upgrading cancelling and completing preserve shared stock and gate" time="6.30661" status="run" />
+  <testcase classname="MarketsV2" name="world teardown and map reuse discard derived supplier ledgers" time="0.885992" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="diagnostic probability history preserves replay acceptance boundaries [save-format]" time="0.336815" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.785725" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.970502" status="run" />
+  </testsuite></testsuites>

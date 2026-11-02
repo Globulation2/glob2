@@ -1,0 +1,9 @@
+PASS TurnEngineHarness/AI-only turn recordings replay through their terminal checksum [network-sim][artifacts] (8.4s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (6.7s)
+PASS TurnEngineHarness/two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts] (28.9s)
+PASS TurnEngineHarness/Marathi registration rejects earlier match identities without changing replay file floors [network-sim][artifacts] (17.4s)
+PASS TurnEngineHarness/Filipino registration rejects earlier match identities without changing replay file floors [network-sim][artifacts] (15.0s)
+PASS TurnEngineHarness/Thai registration rejects earlier match identities without changing replay file floors [network-sim][artifacts] (14.3s)
+
+6 passed, 0 failed, 0 skipped (90.7s of test time)
+[run_tests] JUnit report: artifacts/finish-trips/network.xml (6 cases)

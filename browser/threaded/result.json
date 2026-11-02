@@ -1,0 +1,9 @@
+{
+  "files": [
+    "cases/build-provenance.json",
+    "cases/ReplenishmentStaffing/active_deliveries_preserve_save_continuation_checksums__save-format__artifacts/staffing.trace",
+    "tests.xml"
+  ],
+  "threaded": true,
+  "exit": 0
+}

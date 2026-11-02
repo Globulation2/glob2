@@ -1,0 +1,58 @@
+{
+  "head": "912823e185d9f99f9b6e6c813abf69f0e0f57443",
+  "base": "b3c4e225b3cfa1fc214a29e4e4e6a85f948ba395",
+  "files": [
+    {
+      "path": "docs/architecture/units.md",
+      "sha256": "a7107e455387c774d01a42dcc8ce0b9855640d631eb051a1c9f369affe506311"
+    },
+    {
+      "path": "docs/development/headless-replays.md",
+      "sha256": "be5cc4a24a30c660ad292294e48f902b90ef16c7fd54dba580556c617d7fd7a2"
+    },
+    {
+      "path": "src/app/Version.h",
+      "sha256": "953054f82eff824012ea0b2a77292d9062af53fb05e076d042d1cbb7a914bb41"
+    },
+    {
+      "path": "src/building/Building.h",
+      "sha256": "698b687cd630e230ad04964c1316ceca92e01f0b9c59a7c577b26adae9d495a9"
+    },
+    {
+      "path": "src/building/BuildingProductionCombatTest.cpp",
+      "sha256": "a1cf8fa5f32f26a8b90b920e1428d9148b6158152abe1eed2d6ebe9d8d7d54a3"
+    },
+    {
+      "path": "src/building/Update.cpp",
+      "sha256": "118e73a52623d641f7e464eda683afc93e7b9b3d7ee1848ae8ec0b5e77cce755"
+    },
+    {
+      "path": "src/game/SimRevision.h",
+      "sha256": "854cc446af2b0a2d470ee2391c0972b3a127950de76c5f50b28cf6f7d8706945"
+    },
+    {
+      "path": "src/replay/ReplayReader.h",
+      "sha256": "9e346d396c03765beb826e561ccadc05c61034fe2a3dee3a022332c65db2eee1"
+    },
+    {
+      "path": "src/replay/ReplayStepCounterTest.cpp",
+      "sha256": "3e4e708b7961852ab1aca49741bc4465b55a2d4cd19401af4e2c416e3b5a81c3"
+    },
+    {
+      "path": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+      "sha256": "dd6d32a23a44071084f7ae354c0b6aef61a7086fb9a0e74e6a245ee53752b0b4"
+    },
+    {
+      "path": "src/team/stats/TeamStatsSaveHarness.cpp",
+      "sha256": "9f15fef3054b496d14ceba3d6ccc64456e7dbb39084b951c97b4c9f894eb570e"
+    },
+    {
+      "path": "src/unit/UnitDisplacement.cpp",
+      "sha256": "4c5877c6c154a5c39f89ae670c3f97019bccdc52e9a7725530edd32d9edff332"
+    },
+    {
+      "path": "test/fixtures/multiplayer/FourSquares1.g2mr",
+      "sha256": "8a3f2a730e0555396bce2406edfa7178f35d0a8061dfb0cf8003c32755785056"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="AI-only turn recordings replay through their terminal checksum [network-sim][artifacts]" time="8.29709" status="run" />
+  <testcase classname="TurnEngineHarness" name="Filipino registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="14.9059" status="run" />
+  <testcase classname="TurnEngineHarness" name="Marathi registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="17.3716" status="run" />
+  <testcase classname="TurnEngineHarness" name="Thai registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="14.2047" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="6.61787" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="28.7884" status="run" />
+  </testsuite></testsuites>

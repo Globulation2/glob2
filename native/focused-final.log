@@ -1,0 +1,10 @@
+PASS glob2-unit-tests ReplayStepCounter (11 cases) (0.0s)
+PASS ReplenishmentStaffing/consumption can restore demand before a courier arrives (0.7s)
+PASS ReplenishmentStaffing/inventory caps preserve trips but prevent new hires (1.4s)
+PASS ReplenishmentStaffing/player reductions remain immediate while trips are protected (0.7s)
+PASS ReplenishmentStaffing/construction repair and upgrade keep finite demand staffing (0.7s)
+PASS ReplenishmentStaffing/multi packet loads finish unloading before excess couriers leave (0.9s)
+PASS ReplenishmentStaffing/active deliveries preserve save continuation checksums [save-format][artifacts] (9.3s)
+
+7 passed, 0 failed, 0 skipped (13.7s of test time)
+[run_tests] JUnit report: artifacts/finish-trips/focused-final.xml (17 cases)

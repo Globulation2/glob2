@@ -1,0 +1,39 @@
+{
+  "base": "b3c4e225b3cfa1fc214a29e4e4e6a85f948ba395",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "cpu_ceiling": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "native_build_cpu_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "browser_build_cpu_ids": [
+    8,
+    9,
+    10,
+    11
+  ],
+  "native_flags": "tools/dev_build.py dev_fast=1 linker=auto; -O0 -g1",
+  "browser_flags": "tools/dev_build.py target=web web_variant=both web-tests; serial and threaded",
+  "sdl_prefix": "native-sdl3-3.4.16-image3.4.6-ttf3.2.2-net3.2.0",
+  "runtime_dependency_changes": false
+}

@@ -1,0 +1,327 @@
+{
+  "stage": "controlled only; whole-game pilot/held-out study stopped at user request to finalize the fix",
+  "runs": 192,
+  "tick_limit": 30000,
+  "baseline_exposure": [
+    {
+      "ai": "local",
+      "blocks": 48,
+      "exposed_blocks": 19,
+      "high_exposed_blocks": 16,
+      "high_staffing_blocks": 24
+    }
+  ],
+  "causal_chains": [
+    {
+      "building": 1,
+      "delivery": {
+        "accepted": 1,
+        "building": 1,
+        "desired": 4,
+        "event": "delivery",
+        "material": 1,
+        "schema": 1,
+        "stock": 18,
+        "team": 0,
+        "tick": 752
+      },
+      "dismissal": {
+        "building": 1,
+        "cargo": 1,
+        "cargo_packets": 1,
+        "desired": 2,
+        "duration": 295,
+        "event": "leave",
+        "material": 1,
+        "reason": 1,
+        "request_revision": 0,
+        "requested": 20,
+        "schema": 1,
+        "stock": 18,
+        "team": 0,
+        "tick": 752,
+        "travel": 2,
+        "unit": 11
+      },
+      "job": "1d910aa8b9d12a140093541898fae0a8",
+      "recruitment": {
+        "building": 1,
+        "desired": 9,
+        "event": "hire",
+        "request_revision": 0,
+        "requested": 20,
+        "schema": 1,
+        "stock": 13,
+        "team": 0,
+        "tick": 757,
+        "unit": 11
+      },
+      "team": 0
+    }
+  ],
+  "paired_effects": [
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        0.15789473684210525,
+        1.2105263157894737
+      ],
+      "mean": 0.631578947368421,
+      "metric": "births",
+      "stratum": "baseline_exposed",
+      "variant": "finish-trips"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -0.5263157894736842,
+        0.42105263157894735
+      ],
+      "mean": 0.0,
+      "metric": "starvation",
+      "stratum": "baseline_exposed",
+      "variant": "finish-trips"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -92.94736842105263,
+        -16.31578947368421
+      ],
+      "mean": -52.89473684210526,
+      "metric": "wasted_travel",
+      "stratum": "baseline_exposed",
+      "variant": "finish-trips"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -5.8843601902059605e-05,
+        4.234896148414275e-05
+      ],
+      "mean": -6.555831098294985e-06,
+      "metric": "delivery_per_worker_tick",
+      "stratum": "baseline_exposed",
+      "variant": "finish-trips"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "metric": "waiting_fraction",
+      "stratum": "baseline_exposed",
+      "variant": "finish-trips"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -170.6315789473684,
+        -20.210526315789473
+      ],
+      "mean": -87.94736842105263,
+      "metric": "production_blocked_ticks",
+      "stratum": "baseline_exposed",
+      "variant": "finish-trips"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -2.526315789473684,
+        -0.3157894736842105
+      ],
+      "mean": -1.263157894736842,
+      "metric": "births",
+      "stratum": "baseline_exposed",
+      "variant": "hysteresis"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -1.4736842105263157,
+        2.789473684210526
+      ],
+      "mean": 0.7894736842105263,
+      "metric": "starvation",
+      "stratum": "baseline_exposed",
+      "variant": "hysteresis"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -73.52631578947368,
+        25.68421052631579
+      ],
+      "mean": -24.0,
+      "metric": "wasted_travel",
+      "stratum": "baseline_exposed",
+      "variant": "hysteresis"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -0.0004498348677917017,
+        1.149157435739464e-05
+      ],
+      "mean": -0.00022246196575354538,
+      "metric": "delivery_per_worker_tick",
+      "stratum": "baseline_exposed",
+      "variant": "hysteresis"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "metric": "waiting_fraction",
+      "stratum": "baseline_exposed",
+      "variant": "hysteresis"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        53.94736842105263,
+        408.63157894736844
+      ],
+      "mean": 202.89473684210526,
+      "metric": "production_blocked_ticks",
+      "stratum": "baseline_exposed",
+      "variant": "hysteresis"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -2.9473684210526314,
+        -0.2631578947368421
+      ],
+      "mean": -1.4210526315789473,
+      "metric": "births",
+      "stratum": "baseline_exposed",
+      "variant": "persistent"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        3.1578947368421053,
+        15.578947368421053
+      ],
+      "mean": 9.31578947368421,
+      "metric": "starvation",
+      "stratum": "baseline_exposed",
+      "variant": "persistent"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        1047.2105263157894,
+        2925.8947368421054
+      ],
+      "mean": 1908.842105263158,
+      "metric": "wasted_travel",
+      "stratum": "baseline_exposed",
+      "variant": "persistent"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        -0.004388345413176498,
+        -0.0016268926324765625
+      ],
+      "mean": -0.0029515206758303106,
+      "metric": "delivery_per_worker_tick",
+      "stratum": "baseline_exposed",
+      "variant": "persistent"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        0.3272665825070853,
+        0.5783984397705264
+      ],
+      "mean": 0.4521832428615066,
+      "metric": "waiting_fraction",
+      "stratum": "baseline_exposed",
+      "variant": "persistent"
+    },
+    {
+      "ai": "local",
+      "blocks": 19,
+      "ci95": [
+        31.0,
+        458.1578947368421
+      ],
+      "mean": 215.10526315789474,
+      "metric": "production_blocked_ticks",
+      "stratum": "baseline_exposed",
+      "variant": "persistent"
+    }
+  ],
+  "totals": {
+    "current": {
+      "leave_demand": 368,
+      "wasted_demand_travel": 1586,
+      "wasted_travel": 22936,
+      "delivered": 14317,
+      "worker_ticks": 7147559,
+      "waiting_ticks": 0,
+      "births": 1459,
+      "starvation": 2847
+    },
+    "finish-trips": {
+      "leave_demand": 0,
+      "wasted_demand_travel": 0,
+      "wasted_travel": 21931,
+      "delivered": 14228,
+      "worker_ticks": 7152527,
+      "waiting_ticks": 0,
+      "births": 1471,
+      "starvation": 2847
+    },
+    "hysteresis": {
+      "leave_demand": 0,
+      "wasted_demand_travel": 0,
+      "wasted_travel": 22489,
+      "delivered": 11529,
+      "worker_ticks": 6513801,
+      "waiting_ticks": 0,
+      "births": 1430,
+      "starvation": 2866
+    },
+    "persistent": {
+      "leave_demand": 0,
+      "wasted_demand_travel": 0,
+      "wasted_travel": 71511,
+      "delivered": 10705,
+      "worker_ticks": 7888959,
+      "waiting_ticks": 1700867,
+      "births": 1425,
+      "starvation": 3047
+    }
+  },
+  "limitations": [
+    "Fixed controlled fixture grid, not held-out whole-game effectiveness evidence.",
+    "Movement counts position changes, not elapsed journey duration.",
+    "Measurements came from the frozen experimental build; final default implementation is validated separately."
+  ]
+}

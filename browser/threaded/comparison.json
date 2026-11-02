@@ -1,0 +1,8 @@
+{
+  "variant": "threaded",
+  "threaded": true,
+  "identical": true,
+  "ticks": 4096,
+  "sha256": "da450e131df7e6263f063838b5fd2a840920492cd97d1da078b6bcd0d8b09111",
+  "browser": "153.0.8010.12"
+}
