@@ -49,7 +49,7 @@ class AppleLocalizationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             directories = self.fixture(root)
-            for name in ('COPYING', 'data/javascript-licenses.txt', 'data/json-license.txt',
+            for name in ('COPYING', 'content/data/javascript-licenses.txt', 'content/data/json-license.txt',
                          'docs/assets/source-attribution.md', 'Info.plist', 'Glob2.icns'):
                 file = root / name
                 file.parent.mkdir(parents=True, exist_ok=True)

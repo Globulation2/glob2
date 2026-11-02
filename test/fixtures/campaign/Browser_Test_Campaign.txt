@@ -6,7 +6,7 @@ maps
  mapNum = 2;
  0 { CampaignMap {
   mapName = "First mission";
-  mapFileName = "content/maps/SmallForTwo.map";
+  mapFileName = "maps/SmallForTwo.map";
   isLocked = 0;
   unlockedBy { size = 0; }
   description = "First mission";
@@ -14,7 +14,7 @@ maps
  } }
  1 { CampaignMap {
   mapName = "Second mission";
-  mapFileName = "content/maps/SmallForTwo.map";
+  mapFileName = "maps/SmallForTwo.map";
   isLocked = 1;
   unlockedBy { size = 1; 0 { unlockedBy = "First mission"; } }
   description = "Second mission";

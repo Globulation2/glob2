@@ -82,7 +82,7 @@ struct RestoreLanguageInventory
     {
         globals.settings.language = settingsLanguage;
         auto* strings = GAGCore::Toolkit::getStringTable();
-        const bool loaded = strings->load((glob2test::sourceRoot() / "data/texts.list.txt").string());
+        const bool loaded = strings->load((glob2test::contentRoot() / "data/texts.list.txt").string());
         CHECK(loaded);
         if (loaded)
         {

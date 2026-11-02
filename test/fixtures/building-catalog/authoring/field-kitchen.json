@@ -27,8 +27,8 @@
           0,
           0
         ],
-        "gameSprite": "content/data/gfx/inn0b",
-        "miniSprite": "content/data/gfx/miniinn0b"
+        "gameSprite": "data/gfx/inn0b",
+        "miniSprite": "data/gfx/miniinn0b"
       },
       "semantics": {
         "placeable": true,

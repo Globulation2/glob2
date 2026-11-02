@@ -699,7 +699,7 @@ TEST_SUITE("MatchSetup")
 		glob2test::HeadlessGlobals globals;
 		// The list is complete: every strategy, Nicowar and USL runtime file.
 		std::set<std::string> onDisk;
-		const fs::path root = glob2test::sourceRoot();
+		const fs::path root = glob2test::contentRoot();
 		for (const char* directory : {"data/maxima", "data/usl/Language/Runtime", "data/usl/Glob2/Runtime"})
 			for (const auto& entry : fs::directory_iterator(root / directory))
 			{

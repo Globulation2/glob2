@@ -222,7 +222,11 @@ namespace glob2test
 	{
 		std::filesystem::path source = relativeGz;
 		if (source.is_relative() && !std::filesystem::exists(source))
-			source = std::filesystem::exists(fixture(relativeGz)) ? fixture(relativeGz) : contentRoot() / relativeGz;
+			// Runtime-tree paths (games/...) resolve under contentRoot(); repository
+			// paths (test/fixtures/...) under sourceRoot().
+			source = std::filesystem::exists(fixture(relativeGz)) ? fixture(relativeGz)
+				: std::filesystem::exists(contentRoot() / relativeGz) ? contentRoot() / relativeGz
+				: sourceRoot() / relativeGz;
 		REQUIRE_MESSAGE(std::filesystem::exists(source), "missing compressed fixture " << source.string());
 		std::filesystem::path target = profileDir() / "inflated" / source.filename();
 		if (target.extension() == ".gz") target.replace_extension();
