@@ -11,6 +11,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "claims/ResourceClaimProbe.h"
+#include "claims/ActiveRouteRuntime.h"
 #include "GlobalContainer.h"
 #include "MapInternal.h"
 #include "TerrainResourceProperties.h"
@@ -57,7 +58,7 @@ bool Map::isFarmableResourceByIndex(int resourceType) const
     return MapState::isFarmableResource(liveCells,resourceType);
 }
 
-std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry)
+std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry, std::optional<ResourceClaims::Owner> availableOwner)
 {
 	if (resourceType < 0 || resourceType >= int(MaterialCount)) return std::nullopt;
 
@@ -132,7 +133,11 @@ std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceTyp
         const auto& harvest=resourceRegistry().yields(static_cast<ResourceId>(resourceCells[index].resource.type))[resourceType];
         const int seedAmount=game && game->gameHeader.isResourceGrowthDisabled() ? 0 : harvest.seedReserve;
 		// Infinite harvests leave the reserve intact even at the reserve level.
-		if ((amount > seedAmount || harvest.consumption == ResourceConsumption::Infinite)
+        const Uint16 claimReserve=harvest.consumption==ResourceConsumption::Infinite?0:seedAmount;
+        const ResourceClaims::Claim candidate{Uint32(index),Uint32(entry.value_or(index)),Uint8(resourceType),resourceCells[index].resource.type,false,claimReserve};
+        const bool unclaimed=!availableOwner || materialClaims.available(*availableOwner,candidate,
+            amount>claimReserve?amount-claimReserve:0,harvest.consumption==ResourceConsumption::Infinite);
+		if (unclaimed && (amount > seedAmount || harvest.consumption == ResourceConsumption::Infinite)
 			&& (amount > bestAmount
 				|| (amount == bestAmount && distance < bestDistance)
 				|| (amount == bestAmount && distance == bestDistance && index < best)))
@@ -486,6 +491,10 @@ template bool Map::isGradientPeak<Uint16>(const Uint16 *gradient, int x, int y) 
 
 void Map::setMaterialClaimTrackingEnabled(bool enabled)
 {
+    if(activeClaimsEnabled()) {
+        if(enabled)throw std::invalid_argument("active claims and shadow tracking are separate modes");
+        return;
+    }
     materialClaimTracking=enabled;
     materialClaimTelemetry={};
     materialClaimFarmCache.clear(); materialClaimFarmEpoch={};
@@ -496,8 +505,9 @@ void Map::setMaterialClaimTrackingEnabled(bool enabled)
 
 void Map::reconcileMaterialClaims()
 {
-    if (!materialClaimTracking || !game) return;
+    if (!game) return;
     if (materialClaimProbe) materialClaimProbe->publish(game->stepCounter);
+    if (!materialClaimTracking) return;
     const auto start=std::chrono::steady_clock::now();
     for (int team=0;team<game->teamsCount();++team)
         for (Unit* unit:game->teams[team]->liveUnits) unit->reconcileMaterialClaim();
@@ -507,7 +517,7 @@ void Map::reconcileMaterialClaims()
 
 void Map::observeMaterialClaimDecision(const Unit& unit,const Uint16* field)
 {
-    if (materialClaimTracking && materialClaimProbe && game) materialClaimProbe->decision(*game,unit,field);
+    if ((materialClaimTracking || activeClaimsEnabled()) && materialClaimProbe && game) materialClaimProbe->decision(*game,unit,field);
 }
 void Map::finishMaterialClaimProbe()
 {
@@ -516,7 +526,7 @@ void Map::finishMaterialClaimProbe()
 
 void Map::observeMaterialClaimPickupDecision(const Unit& unit,int x,int y)
 {
-    if (!materialClaimTracking || !materialClaimProbe || !game) return;
+    if ((!materialClaimTracking && !activeClaimsEnabled()) || !materialClaimProbe || !game) return;
     const auto* field=lookupMaterialGradientSlot(unit.owner->teamNumber,unit.destinationPurpose,unit.movementClass(),
         unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets(),unit.attachedBuilding);
     materialClaimProbe->decision(*game,unit,field,Uint32(coordToIndex(x,y)));
@@ -536,4 +546,83 @@ std::optional<size_t> Map::pickClaimFarmHarvestTileSlot(int x,int y,int material
     if (materialClaimFarmCache.size()>=4096) materialClaimFarmCache.clear();
     materialClaimFarmCache.emplace(key,result);
     return result;
+}
+
+void Map::setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy)
+{
+    if(policy!=ResourceClaims::ActiveClaimPolicy::Disabled && policy!=ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1)
+        throw std::invalid_argument("unknown active claim research policy");
+    if(policy==activeClaimPolicy)return;
+    if(policy!=ResourceClaims::ActiveClaimPolicy::Disabled && (!materialDestinationsEnabled() || materialClaimTracking))
+        throw std::invalid_argument("active claims require material destinations and exclude shadow tracking");
+    if(game && game->stepCounter)throw std::logic_error("active claim policy changes require new game setup");
+    if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
+        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;
+    }
+    materialClaimRoutes.reset();activeClaimRules.reset();
+    activeClaimPolicy=policy;
+    materialClaims.reset(cellCount());claimChanges.markAll();
+    checkActiveClaimRules();
+    if(game)game->invalidateObservation();
+}
+
+void Map::rebuildActiveMaterialClaims()
+{
+    const std::array<Uint64,3> currentRules{Uint64(farmAreasEnabled()),Uint64(game && game->gameHeader.isResourceGrowthDisabled()),resourceRegistry().checksum()};
+    const bool rulesMismatch=activeClaimRules && *activeClaimRules!=currentRules;
+    materialClaims.reset(cellCount());claimChanges.markAll();
+    for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
+        if(!activeClaimsEnabled() && (unit->activeMaterialClaim || unit->materialClaimTask))
+            throw std::runtime_error("disabled active claims contain unit state");
+        if(unit->activeMaterialClaim) {
+            const auto& saved=*unit->activeMaterialClaim;
+            if(saved.source>=cellCount() || saved.access>=cellCount() || !validMaterial(saved.material) || !unit->materialClaimTask)
+                throw std::runtime_error("invalid saved active claim structure");
+            if(rulesMismatch) {
+                observeMaterialClaim(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity),saved);
+                continue; // Preserve the scheduled rule-change invalidation for next publication.
+            }
+            if(!resourceRegistry().valid(static_cast<ResourceId>(saved.resource))
+                || !unit->activeMaterialClaimValid() || !activeClaimFarmConnected(*unit->activeMaterialClaim,unit->owner->me))
+                throw std::runtime_error("invalid saved active claim ownership");
+            const auto& c=*unit->activeMaterialClaim;
+            const auto& yield=resourceRegistry().yields(static_cast<ResourceId>(c.resource))[c.material];
+            const bool exclusive=yield.consumption==ResourceConsumption::All || yield.destroysDeposit;
+            const bool pooled=!exclusive && farmAreasEnabled() && isFarmArea(int(c.access%getW()),int(c.access/getW()),unit->owner->me)
+                && isFarmableResourceByIndex(c.resource);
+            const unsigned reserve=pooled && yield.consumption!=ResourceConsumption::Infinite && !game->gameHeader.isResourceGrowthDisabled()?yield.seedReserve:0;
+            const auto amount=materialAmountAtSlot(c.source,c.material);
+            if(c.exclusive!=exclusive || c.reserve!=reserve || !acquireMaterialClaim(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity),c,
+                amount>reserve?amount-reserve:0,yield.consumption==ResourceConsumption::Infinite))
+                throw std::runtime_error("saved active claims exceed source capacity");
+        }
+    }
+    if(materialClaimRoutes)for(const auto& [owner,state]:materialClaimRoutes->states) {
+        const auto gid=Uint16(owner);const auto team=Unit::GIDtoTeam(gid),slot=Unit::GIDtoID(gid);
+        if(team>=game->teamsCount() || !game->teams[team])throw std::runtime_error("invalid saved claim route owner");
+        const auto* unit=game->teams[team]->myUnits[slot];
+        if(!unit || ResourceClaims::unitOwner(gid,unit->scriptIdentity)!=owner || !unit->activeMaterialClaim
+            || unit->materialClaimTask!=state.identity.task || unit->activeMaterialClaim->access!=state.target)
+            throw std::runtime_error("saved claim route does not match unit claim");
+    }
+
+}
+
+bool Map::activeClaimFarmConnected(const ResourceClaims::Claim& claim,Uint32 teamMask)
+{
+    if(claim.source==claim.access)return true;
+    if(claim.source>=cellCount() || claim.access>=cellCount() || !farmAreasEnabled())return false;
+    pickFarmHarvestTileSlot(int(claim.access%getW()),int(claim.access/getW()),claim.material,teamMask,claim.access);
+    return farmFloodStamps.size()==cellCount() && farmFloodStamps[claim.source]==farmFloodGeneration;
+}
+
+bool Map::takeClaimedMaterial(const ResourceClaims::Claim& claim,Uint32 teamMask)
+{
+    if(claim.source>=cellCount() || claim.access>=cellCount() || !validMaterial(claim.material)
+        || getResource(claim.source).type!=claim.resource || !materialAmountAtSlot(claim.source,claim.material)
+        || isForbidden(int(claim.access%getW()),int(claim.access/getW()),teamMask)
+        || !activeClaimFarmConnected(claim,teamMask))return false;
+    const auto& yield=resourceRegistry().yields(static_cast<ResourceId>(claim.resource))[claim.material];
+    if(yield.consumption!=ResourceConsumption::Infinite && materialAmountAtSlot(claim.source,claim.material)<=claim.reserve)return false;
+    return harvestMaterial(claim.source,claim.material);
 }

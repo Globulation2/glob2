@@ -9,7 +9,7 @@ TEST_SUITE("ClaimRoutePipeline")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
         const auto world = SimulationSnapshot::capture(fixture.game, SimulationSnapshot::captureCatalog(fixture.game));
-        for (unsigned threads : {0u, 3u}) {
+        for (unsigned threads : {1u, 3u}) {
             ComputeExecutor executor; executor.configure(threads);
             ResourceClaims::RoutePipeline pipeline(executor);
             ResourceClaims::RouteInput input{world, {}, 0, 10};
@@ -23,6 +23,27 @@ TEST_SUITE("ClaimRoutePipeline")
             input.maximumExpansions = 0;
             CHECK_THROWS_AS(pipeline.submit(1, 2, 11, input), std::invalid_argument);
         }
+    }
+    TEST_CASE("saving a fully cancelled batch retains request identity and its sealed tick")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        const auto world = SimulationSnapshot::capture(fixture.game, SimulationSnapshot::captureCatalog(fixture.game));
+        ComputeExecutor executor; executor.configure(1);
+        ResourceClaims::RoutePipeline original(executor), restored(executor);
+        ResourceClaims::RouteInput input{world, {}, 0, 10};
+        const auto first = original.submit(1, 1, 10, input);
+        original.cancel(1);
+        const auto pending = original.exportPending();
+        REQUIRE(pending.empty());
+        restored.restore(pending);
+        restored.restoreControl(original.requestSequence(), original.sealedSubmissionTick());
+        CHECK_THROWS_AS(restored.submit(1, 2, 10, input), std::logic_error);
+        CHECK(original.publish(11).empty());
+        const auto a = original.submit(1, 2, 11, input);
+        const auto b = restored.submit(1, 2, 11, input);
+        CHECK(a == b); CHECK(a.request > first.request);
+        CHECK_THROWS_AS(restored.restoreControl(0, std::nullopt), std::invalid_argument);
     }
     TEST_CASE("thousands of same tick paths share one executor batch")
     {

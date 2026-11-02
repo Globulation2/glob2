@@ -139,6 +139,23 @@ TEST_SUITE("ResourceClaimOracle")
         result=fixture.run({{8,claim}});
         CHECK_FALSE(result.best); CHECK(result.candidates[0].exclusive);
     }
+    TEST_CASE("oracle respects another owner's reserve for direct and pooled candidates")
+    {
+        Fixture fixture;fixture.resource(4,0,WHEAT,2);
+        const Claim pooled{fixture.index(4,0),fixture.index(4,0),WHEAT,WHEAT,false,1};
+        auto result=fixture.run({{8,pooled}});
+        REQUIRE(result.candidates.size()==1);
+        CHECK_FALSE(result.candidates[0].available); // Direct access cannot spend the other owner's seed.
+        result=fixture.run({{7,pooled}});
+        CHECK(result.best.has_value()); // This owner may lower its own reserve by retargeting.
+        fixture.areas->farmEnabled=true;
+        fixture.areas->cells[fixture.index(4,0)].farm=1;
+        fixture.resource(4,0,WHEAT,3);
+        result=fixture.run({{8,pooled}});
+        REQUIRE(result.best);
+        CHECK(result.candidates[*result.best].capacity==2);
+        CHECK(result.candidates[*result.best].available); // Both reservations fit above the shared seed.
+    }
     TEST_CASE("multi-yield material claims never substitute aggregate tile counts")
     {
         Fixture fixture;

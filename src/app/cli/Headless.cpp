@@ -553,7 +553,7 @@ struct HeadlessRunner
 		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
-			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay","--material-destinations"})
+			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay","--material-destinations","--resource-claims-active"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
@@ -678,6 +678,11 @@ struct HeadlessRunner
                 // Fresh map initialization has not admitted simulation field requests.
                 // The setter enforces the drained boundary; never silently discard work.
                 engine.gui.game.map.setMaterialDestinationsEnabled(true);
+                if(options.count("--resource-claims-active")) {
+                    if(one(options,"--resource-claims-active")!="prototype-stationary-v1" || one(options,"--resource-claims-shadow","false")=="true")
+                        throw std::invalid_argument("invalid active claim prototype selection");
+                    engine.gui.game.map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+                }
             }
 		}
 		if(options.count("--map-script"))
@@ -734,9 +739,12 @@ struct HeadlessRunner
                 (output/"gradient-decisions.csv").string());
         }
         engine.gui.game.map.setMaterialClaimTrackingEnabled(one(options,"--resource-claims-shadow","false")=="true");
-        if (engine.gui.game.map.materialClaimTrackingEnabled()) {
+        if (engine.gui.game.map.materialClaimTrackingEnabled() || options.count("--resource-claims-probe")) {
+            if(!engine.gui.game.map.materialClaimTrackingEnabled() && !engine.gui.game.map.activeClaimsEnabled())
+                throw std::invalid_argument("claim probe requires active or shadow ledger mode");
             ResourceClaims::Probe::Config probe;
             probe.sampleEvery=integer(one(options,"--resource-claims-sample-every","1000"),1,1000000000);
+            probe.deepContext=one(options,"--resource-claims-deep-context","");
             probe.maxSamples=integer(one(options,"--resource-claims-max-samples","10000"),1,1000000);
             probe.maxOutputBytes=integer(one(options,"--resource-claims-max-bytes","67108864"),1024,2147483647);
             engine.gui.game.map.setMaterialClaimProbe(std::make_shared<ResourceClaims::Probe>(engine.gui.game.map.computeExecutor(),
@@ -994,6 +1002,7 @@ struct HeadlessRunner
 			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
 			result << ']';
 		}
+        result << ",\"active_claim_policy\":" << quote(engine.gui.game.map.activeClaimsEnabled()?"prototype-stationary-v1":"disabled");
         result << ",\"material_destinations_enabled\":" << (engine.gui.game.map.materialDestinationsEnabled()?"true":"false");
         if (options.count("--resource-gradient-exploration")) {
             result << ",\"resource_gradient_collection\":{\"intervals\":" << quote(one(options,"--resource-gradient-exploration"))
@@ -1003,10 +1012,11 @@ struct HeadlessRunner
         }
 		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
-        if (game.map.materialClaimTrackingEnabled()) {
+        if (game.map.materialClaimTrackingEnabled() || game.map.resourceClaimProbe()) {
             const auto& claims=game.map.materialClaimTelemetry;
-            result << ",\"resource_claims_shadow\":{\"schema_version\":1,\"enforced\":false"
-                << ",\"continuation_policy\":\"rebuild-observational-state-after-load\""
+            result << ",\"resource_claims_shadow\":{\"schema_version\":1,\"enforced\":" << (game.map.activeClaimsEnabled()?"true":"false")
+                << ",\"ledger_mode\":" << quote(game.map.activeClaimsEnabled()?"active":"shadow")
+                << ",\"continuation_policy\":" << quote(game.map.activeClaimsEnabled()?"persist-authoritative-claims-and-routes":"rebuild-observational-state-after-load")
                 << ",\"reconciliations\":" << claims.reconciliations
                 << ",\"changed\":" << claims.changed << ",\"released\":" << claims.released
                 << ",\"overcommitted_selections\":" << claims.overcommittedSelections
@@ -1147,7 +1157,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_shadow_version\":1,\"material_destinations_version\":1,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_shadow_version\":1,\"material_destinations_version\":1,\"resource_claims_deep_version\":1,\"resource_claims_probe_version\":1,\"resource_claims_active_policies\":[\"prototype-stationary-v1\"],\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

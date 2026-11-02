@@ -126,7 +126,7 @@ Result evaluate(const SimulationSnapshot::Handle& snapshot, const Query& query,
         const auto& yield = view.resourceRegistry->yields(static_cast<ResourceId>(candidate.resource))[query.material];
         candidate.infinite = yield.consumption == ResourceConsumption::Infinite;
         candidate.exclusive = yield.consumption == ResourceConsumption::All || yield.destroysDeposit;
-        const unsigned reserve = candidate.pooled && !view.resourceGrowthDisabled ? yield.seedReserve : 0;
+        const unsigned reserve = candidate.pooled && !candidate.infinite && !view.resourceGrowthDisabled ? yield.seedReserve : 0;
         candidate.capacity = candidate.exclusive ? 1u : amount > reserve ? amount-reserve : 0u;
         candidate.claimed = ledger.materialCount(index, query.material) -
             unsigned(own && own->source == index && own->material == query.material);
@@ -135,7 +135,7 @@ Result evaluate(const SimulationSnapshot::Handle& snapshot, const Query& query,
         candidate.access = destination.access;
         candidate.stance = destination.stance;
         candidate.available = ledger.available(query.owner,
-            {index, index, query.material, candidate.resource, candidate.exclusive}, candidate.capacity, candidate.infinite);
+            {index, index, query.material, candidate.resource, candidate.exclusive,Uint16(reserve)}, candidate.capacity, candidate.infinite);
         result.candidates.push_back(candidate);
         if (!candidate.available || candidate.distance == Unreachable) continue;
         if (!result.best || std::tie(candidate.distance, candidate.source, candidate.stance, candidate.access) <

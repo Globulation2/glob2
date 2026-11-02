@@ -1,6 +1,7 @@
 """Job-type adapters; scheduling and transport have no experiment-specific logic."""
 import csv
 import gzip
+import json
 import re
 from pathlib import Path
 from .common import read_json
@@ -114,7 +115,7 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'material_destinations'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_active', 'resource_claims_deep_context', 'material_destinations'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
@@ -125,8 +126,28 @@ class EngineJob:
                 raise ValueError('material_destinations must be a boolean')
             if config['material_destinations'] and job['outputs'].get('replay'):
                 raise ValueError('material destinations cannot record replay output')
-        if self.kind == 'game' and 'resource_claims_shadow' in config:
-            claims = config['resource_claims_shadow']
+        if self.kind == 'game' and 'resource_claims_active' in config:
+            if config['resource_claims_active'] != 'prototype-stationary-v1' or config.get('material_destinations') is not True:
+                raise ValueError('active claims require known prototype and material destinations')
+            if 'resource_claims_shadow' in config or job['outputs'].get('replay'):
+                raise ValueError('active claims exclude shadow and replay')
+        if 'resource_claims_shadow' in config and 'resource_claims_probe' in config:
+            raise ValueError('choose shadow or active probe')
+        if 'resource_claims_probe' in config and 'resource_claims_active' not in config and 'save' not in job['inputs']:
+            raise ValueError('active probe requires active new game or saved state')
+        if 'resource_claims_deep_context' in config:
+            context = config['resource_claims_deep_context']
+            keys = {'source_revision', 'bundle_id', 'cohort_id', 'game_id'}
+            if not isinstance(context, dict) or set(context) != keys or any(not isinstance(v, str) or not 1 <= len(v) <= 256 for v in context.values()):
+                raise ValueError('deep context requires bounded source/bundle/cohort/game identities')
+            if context['bundle_id'] != job['build']:
+                raise ValueError('deep context bundle differs from frozen job build')
+            if not ('resource_claims_shadow' in config or 'resource_claims_probe' in config):
+                raise ValueError('deep capture requires claim observation')
+            if 'resource-claims-deep/manifest.json' not in job['outputs'].get('required', []):
+                raise ValueError('deep capture requires final manifest artifact')
+        if self.kind == 'game' and ('resource_claims_shadow' in config or 'resource_claims_probe' in config):
+            claims = config.get('resource_claims_shadow', config.get('resource_claims_probe'))
             bounds = {'sample_every': (1, 1000000000), 'max_samples': (1, 1000000), 'max_bytes': (1024, 2147483647)}
             if not isinstance(claims, dict) or set(claims) != set(bounds):
                 raise ValueError('resource_claims_shadow requires sample_every, max_samples and max_bytes')
@@ -166,7 +187,7 @@ class EngineJob:
                     raise ValueError('new game requires players and game seed')
             if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
                 raise ValueError('new game requires players and game seed')
-            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'experiments', 'material_destinations', 'win_probability_permille')):
+            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'experiments', 'material_destinations', 'resource_claims_active', 'win_probability_permille')):
                 raise ValueError('cannot override a saved game configuration')
             experiments = config.get('experiments', [])
             if (not isinstance(experiments, list) or len(experiments) > 64 or
@@ -204,6 +225,8 @@ class EngineJob:
                 *(['game', 'run'] if self.kind == 'game' else ['map', 'study', str(job['config']['generator'])]),
                 '--output-dir', str(out), '--profile', 'glob2-tournament-' + Path(attempt_dir).name]
         config, outputs = job['config'], job['outputs']
+        if 'resource_claims_deep_context' in config and config['resource_claims_deep_context']['source_revision'] != bundle.get('source_revision'):
+            raise ValueError('deep source revision differs from frozen bundle')
         for key,path in sorted(inputs.items()):
             if key=='generator-package' or key.startswith('generator-package-'):
                 args += ['--generator-package',str(path)]
@@ -246,9 +269,13 @@ class EngineJob:
             for telemetry in outputs.get('telemetry', []):
                 add('--telemetry', telemetry)
             if outputs.get('replay', False): args.append('--write-replay')
-            if 'resource_claims_shadow' in config:
-                claims = config['resource_claims_shadow']
-                args.append('--resource-claims-shadow')
+            if 'resource_claims_deep_context' in config:
+                add('--resource-claims-deep-context', json.dumps(config['resource_claims_deep_context'], separators=(',', ':')))
+            if 'resource_claims_active' in config:
+                add('--resource-claims-active', config['resource_claims_active'])
+            if 'resource_claims_shadow' in config or 'resource_claims_probe' in config:
+                claims = config.get('resource_claims_shadow', config.get('resource_claims_probe'))
+                args.append('--resource-claims-shadow' if 'resource_claims_shadow' in config else '--resource-claims-probe')
                 for key, flag in (('sample_every', '--resource-claims-sample-every'),
                                   ('max_samples', '--resource-claims-max-samples'),
                                   ('max_bytes', '--resource-claims-max-bytes')):
@@ -287,26 +314,60 @@ class EngineJob:
             raise ValueError('unsupported engine result schema')
         if result.get('status') not in ('completed', 'invalid_request', 'generation_failed', 'artifact_failure'):
             raise ValueError('invalid engine completion status')
-        if result.get('status') == 'completed' and 'resource_claims_shadow' in job['config']:
+        if result.get('status') == 'completed':
+            if 'material_destinations' in job['config'] and result.get('resolved', {}).get('material_destinations_enabled') is not job['config']['material_destinations']:
+                raise ValueError('engine material destination mode differs from frozen request')
+            if 'resource_claims_active' in job['config'] and result.get('resolved', {}).get('active_claim_policy') != job['config']['resource_claims_active']:
+                raise ValueError('engine active claim policy differs from frozen request')
+        if result.get('status') == 'completed' and ('resource_claims_shadow' in job['config'] or 'resource_claims_probe' in job['config']):
             from .resource_claims import ARTIFACT, trace_rows
-            mode = result.get('config', {}).get('material_destinations_enabled')
+            mode = result.get('resolved', {}).get('material_destinations_enabled')
             if type(mode) is not bool:
                 raise ValueError('engine did not attest saved/new material destination mode')
             if 'material_destinations' in job['config'] and mode != job['config']['material_destinations']:
                 raise ValueError('engine material destination mode differs from frozen request')
             attestation = result.get('resource_claims_shadow', {})
-            if attestation.get('schema_version') != 1 or attestation.get('enforced') is not False:
-                raise ValueError('engine did not attest shadow-only resource claims')
+            active = 'resource_claims_probe' in job['config']
+            if attestation.get('schema_version') != 1 or attestation.get('enforced') is not active:
+                raise ValueError('engine did not attest requested claim enforcement mode')
+            if active and result.get('resolved', {}).get('active_claim_policy') != job['config'].get('resource_claims_active', 'prototype-stationary-v1'):
+                raise ValueError('engine active claim policy differs from frozen request')
+            sampling = job['config'].get('resource_claims_shadow', job['config'].get('resource_claims_probe'))
             with gzip.open(path.parent / ARTIFACT, 'rt') as stream:
                 rows = trace_rows(stream)
                 schema = next(rows)
                 for config_key, schema_key in (('sample_every', 'sample_every'), ('max_samples', 'max_samples'), ('max_bytes', 'max_output_bytes')):
-                    if job['config']['resource_claims_shadow'][config_key] != schema.get(schema_key):
+                    if sampling[config_key] != schema.get(schema_key):
                         raise ValueError('resource claim sampling limits changed')
                 for row in rows:
-                    pass
+                    if row['kind'] == 'decision':
+                        enforced = row.get('claims_enforced', schema.get('claims_enforced', False))
+                        if enforced is not active:
+                            raise ValueError('claim event enforcement differs from requested mode')
+                        if active and row.get('active_policy') != result['resolved']['active_claim_policy']:
+                            raise ValueError('claim event policy differs from engine result')
                 if row['submitted'] != attestation.get('submitted') or row['completed'] != attestation.get('completed'):
                     raise ValueError('resource claim summary differs from engine result')
+        if result.get('status') == 'completed' and 'resource_claims_deep_context' in job['config']:
+            from tools.resource_claim_deep import read_event, DESIGN, validate_manifest
+            deep = path.parent / 'resource-claims-deep'
+            if (deep / 'manifest.json').stat().st_size > 65536:
+                raise ValueError('oversized deep manifest')
+            manifest = json.loads((deep / 'manifest.json').read_text())
+            context = job['config']['resource_claims_deep_context']
+            validate_manifest(manifest)
+            if manifest.get('complete') is not True or manifest.get('context') != context or manifest.get('design') != DESIGN:
+                raise ValueError('deep completion/context attestation mismatch')
+            if manifest.get('censored') is not False:
+                raise ValueError('censored deep reservoir cannot enter policy dataset')
+            if type(manifest.get('eligible')) is not int or manifest['eligible'] < 0:
+                raise ValueError('invalid deep eligible count')
+            if manifest['eligible']:
+                metadata = read_event(deep / 'event.bin', manifest, expected_provenance={k:v for k,v in context.items() if k != 'game_id'}, validate_only=True)
+                if metadata.get('game_id') != context['game_id']:
+                    raise ValueError('deep game identity mismatch')
+            elif (deep / 'event.bin').exists():
+                raise ValueError('zero-eligible deep capture has event')
         if result.get('status') == 'completed' and 'resource_gradient_collection' in job['config']:
             collection=job['config']['resource_gradient_collection']
             if collection.get('contract') in _UNIFIED_COLLECTORS and result.get('adaptive_gradient_policy',{}).get('collector_contract')!=collection['contract']:

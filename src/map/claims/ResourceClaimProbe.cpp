@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ResourceClaimProbe.h"
 #include "ResourceClaimOracle.h"
+#include "ResourceClaimDeepEvent.h"
 #include "ResourceClaimPatternEvaluation.h"
 #include "ResourceClaimPilotPatterns.h"
 #include "ResourceClaimRouteExperiment.h"
@@ -36,7 +37,12 @@ struct Probe::Impl
         std::vector<std::pair<Owner,Claim>> owners;
         std::vector<Uint16> field;
         std::shared_ptr<const gradient_kernel::OwnedDestinations> destinations;
+        bool deepSelected=false;
+        Uint64 deepPriority=0;
+        Json deepContext;
+        std::vector<Uint8> deepBytes;
         bool metadataEnabled=false;
+        bool claimsEnforced=false;
         const char* reason="fully_claimed";
         Oracle::Query query;
         Uint32 tick=0, seed=0, nearest=0, capacity=0, claimed=0;
@@ -58,6 +64,21 @@ struct Probe::Impl
     SimulationSnapshot::Storage storage;
     std::deque<std::unique_ptr<Work>> pending;
     bool finished=false;
+    Json deepContext;
+    Experiment::DeepReservoir deep;
+    Uint64 deepIneligibleNoXY=0;
+    std::string deepDigest;
+    std::filesystem::path deepDirectory;
+
+    void deepManifest(bool complete)
+    {
+        if(config.deepContext.empty())return;
+        const bool censored=deep.censored();
+        const auto value=Json{{"version",1},{"complete",complete},{"censored",bool(censored)},{"design",Experiment::DeepDesign},
+            {"eligible",deep.eligible},{"excluded_eligible_admission",deep.excludedSampleCap+deep.excludedQueueCap},{"excluded_eligible_sample_cap",deep.excludedSampleCap},{"excluded_eligible_queue_cap",deep.excludedQueueCap},{"ineligible_contested_no_xy",deepIneligibleNoXY},{"ordinary_missing_field",metrics.excludedMissingField},{"priority",deep.priority},{"ordinal",deep.ordinal},{"captured_ordinal",deep.writtenOrdinal},
+            {"replacements",deep.replacements},{"file_sha256",deepDigest},{"context",deepContext}}.dump();
+        Experiment::replaceDeepFile(deepDirectory/"manifest.json",std::span(reinterpret_cast<const Uint8*>(value.data()),value.size()));
+    }
 
     Impl(ComputeExecutor& executor,std::string path,Config config):executor(executor),config(config),path(std::move(path))
     {
@@ -66,6 +87,15 @@ struct Probe::Impl
         if (std::filesystem::exists(this->path)) throw std::runtime_error("resource claim probe output already exists");
         if (std::filesystem::space(std::filesystem::path(this->path).parent_path()).available<16ull*1024*1024)
             throw std::runtime_error("insufficient free space for resource claim probe");
+        if(!config.deepContext.empty()) {
+            deepContext=Json::parse(config.deepContext);
+            for(const auto* key:{"source_revision","bundle_id","cohort_id","game_id"})
+                if(!deepContext.contains(key) || !deepContext[key].is_string() || deepContext[key].get<std::string>().empty() || deepContext[key].get<std::string>().size()>256)
+                    throw std::invalid_argument("deep context requires bounded source/bundle/cohort/game identities");
+            deepDirectory=std::filesystem::path(this->path).parent_path()/"resource-claims-deep";
+            if(!std::filesystem::create_directory(deepDirectory))throw std::runtime_error("deep output already exists");
+            deepManifest(false);
+        }
         file=gzopen(this->path.c_str(),"wb6");
         if (!file) throw std::runtime_error("cannot open resource claim probe output");
     }
@@ -149,7 +179,7 @@ struct Probe::Impl
             Json routeRows=Json::array();
             const auto measurement=[](const Experiment::RouteMeasurement& r) {
                 return Json{{"status",r.status},{"cost",distanceJson(r.cost)},{"expansions",r.expansions},
-                    {"cpu_ns",r.ns},{"continuation_steps",r.continuationSteps}};
+                    {"elapsed_ns",r.ns},{"continuation_steps",r.continuationSteps}};
             };
             const auto routeStart=std::chrono::steady_clock::now();
             for(std::size_t i=0;i<std::min(ranked.size(),std::size_t(Experiment::StaticRoutes::OutcomeLimit));++i) {
@@ -165,16 +195,32 @@ struct Probe::Impl
                 const auto& chosen=oracle.candidates[*oracle.best];
                 best={{"source",chosen.source},{"access",chosen.access},{"stance",chosen.stance},{"distance",chosen.distance}};
             }
-            Json row={{"kind","decision"},{"reason",work.reason},{"phase",work.pickup?"pickup":"movement"},{"tick",work.tick},{"ordinal",work.ordinal},{"seed",work.seed},
+            Json row={{"kind","decision"},{"claims_enforced",work.claimsEnforced},{"active_policy",work.claimsEnforced?"prototype-stationary-v1":"disabled"},
+                {"decision_kind",work.claimsEnforced?"new_claim_acquisition":"legacy_resource_decision"},{"reason",work.reason},{"phase",work.pickup?"pickup":"movement"},{"tick",work.tick},{"ordinal",work.ordinal},{"seed",work.seed},
                 {"width",view.width},{"height",view.height},{"owner",work.query.owner},{"gid",work.query.route.unitGid},{"team_mask",work.query.route.teamMask},
                 {"movement",work.query.route.movement},{"material",work.query.material},{"origin",work.query.origin},
                 {"nearest",work.nearest},{"capacity",work.capacity},{"claimed",work.claimed},
                 {"destination_lookup",work.destinations?"published-xy":"weighted-scalar-projection"},
                 {"material_destinations_enabled",work.metadataEnabled},{"destination_xy_missing",!work.destinations},
-                {"occupancy","static"},{"nearest_octant",evaluator.closestOctant()},{"oracle_expanded",oracle.expanded},{"oracle_ns",oracleNs},
+                {"occupancy","static"},{"nearest_octant",evaluator.closestOctant()},{"oracle_expanded",oracle.expanded},{"oracle_elapsed_ns",oracleNs},
                 {"static_routes",std::move(routeRows)},{"static_route_unique",ranked.size()},
                 {"static_route_excluded_limit",ranked.size()>Experiment::StaticRoutes::OutcomeLimit?ranked.size()-Experiment::StaticRoutes::OutcomeLimit:0},
-                {"static_route_cpu_ns",routeNs},{"source_count",oracle.candidates.size()},{"optimal",best},{"features",work.features},{"patterns",std::move(outcomes)}};
+                {"static_route_elapsed_ns",routeNs},{"source_count",oracle.candidates.size()},{"optimal",best},{"features",work.features},{"patterns",std::move(outcomes)}};
+            if(work.deepSelected) {
+                auto metadata=row;
+                metadata.erase("static_routes");
+                metadata.erase("features"); // Feature row remains in ordinary trace, joined by ordinal.
+                metadata["game_id"]=work.deepContext.at("game_id");
+                metadata["event_id"]=std::to_string(work.seed)+":"+std::to_string(work.ordinal);
+                metadata["priority"]=work.deepPriority;
+                metadata["optimum"]=oracle.best?distanceJson(oracle.candidates[*oracle.best].distance):Json(nullptr);
+                auto provenance=work.deepContext;provenance.erase("game_id");
+                provenance["metadata_mode"]="published-xy";provenance["censored"]=false;
+                metadata["provenance"]=std::move(provenance);
+                std::vector<Uint32> plane(view.width*view.height);
+                for(Uint32 tile=0;tile<plane.size();++tile)plane[tile]=destination(tile);
+                work.deepBytes=Experiment::encodeDeepEvent(metadata,plane,oracle.candidates);
+            }
             work.line=row.dump()+"\n";
         } catch (...) { work.error=std::current_exception(); }
         work.world={}; work.owners.clear(); work.field.clear(); work.destinations.reset();
@@ -185,7 +231,13 @@ struct Probe::Impl
             auto& work=*pending.front();
             executor.join(work.batch,{all?JoinReason::Save:JoinReason::TickDeadline,Uint32(tick)});
             if(work.error) std::rethrow_exception(work.error);
-            write(work.line); ++metrics.completed; pending.pop_front();
+            write(work.line);
+            if(work.deepSelected) {
+                Experiment::replaceDeepFile(deepDirectory/"event.bin",work.deepBytes);
+                deepDigest=Online::Sha256::toHex(Online::Sha256::of(work.deepBytes));
+                deep.written(work.ordinal);
+            }
+            ++metrics.completed; pending.pop_front();
         }
     }
 };
@@ -194,9 +246,10 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
 {
     Json patterns=Json::array();
     for (const auto& pattern:Experiment::pilotPatterns()) patterns.push_back(pattern.name);
-    impl->write(Json{{"kind","schema"},{"version",1},{"cohort","sampled-material-movement-and-pickup-decisions-before-choice"},
+    impl->write(Json{{"kind","schema"},{"version",1},{"timing_clock","worker-steady-clock-elapsed"},{"cohort","sampled-material-movement-and-pickup-decisions-before-choice"},
+        {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
         {"sample_every",config.sampleEvery},{"max_samples",config.maxSamples},{"max_pending",config.maxPending},
-        {"max_output_bytes",config.maxOutputBytes},{"claims_enforced",false},{"destination_lookup","per-event-published-xy-or-scalar-fallback"},
+        {"max_output_bytes",config.maxOutputBytes},{"claims_enforced",nullptr},{"mode_source","decision.claims_enforced and decision.active_policy"},{"destination_lookup","per-event-published-xy-or-scalar-fallback"},
         {"continuation_policy","diagnostic-ordinal-resets-after-load"},{"patterns",patterns},
         {"new_destination_reads_semantics","marginal shared event-cache misses in pattern order; instrumentation amortization only, not standalone policy cost"},
         {"stale_goal_eligibility","published XY from natural-only field; failed scalar projection and mixed supplier fields excluded"},
@@ -225,6 +278,7 @@ void Probe::finish()
     const auto file=impl->file; impl->file=nullptr;
     if(gzclose(file)!=Z_OK) throw std::runtime_error("resource claim probe close failed; dataset is incomplete");
     impl->metrics.outputBytes=std::filesystem::file_size(impl->path);
+    impl->deepManifest(true);
     impl->finished=true;
 }
 
@@ -275,17 +329,26 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
     const bool hasResource=map.resourceRegistry().valid(static_cast<ResourceId>(map.getResource(source).type));
     const auto yield=hasResource?map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(source).type))[unit.destinationPurpose]:YieldProperties{};
     const Uint32 amount=map.materialAmountAtSlot(source,unit.destinationPurpose);
-    const Uint32 reserve=pooled && !game.gameHeader.isResourceGrowthDisabled()?yield.seedReserve:0;
+    const Uint32 reserve=pooled && yield.consumption!=ResourceConsumption::Infinite && !game.gameHeader.isResourceGrowthDisabled()?yield.seedReserve:0;
     const Uint32 capacity=!staleGoal && amount>reserve?amount-reserve:0;
-    const Claim desired{Uint32(source),Uint32(access),Uint8(unit.destinationPurpose),map.getResource(source).type,exclusive};
+    const Claim desired{Uint32(source),Uint32(access),Uint8(unit.destinationPurpose),map.getResource(source).type,exclusive,Uint16(reserve)};
     impl->sampledInfinite+=yield.consumption==ResourceConsumption::Infinite;
     impl->sampledPooled+=pooled; impl->sampledExhaustedPools+=exhaustedPool;
     if(!staleGoal && map.materialClaimLedger().available(unitOwner(unit.gid,unit.scriptIdentity),desired,capacity,yield.consumption==ResourceConsumption::Infinite))return;
     ++metrics.contested;
     ++impl->materialContested.at(unit.destinationPurpose);
-    if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;return;}
-    if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;return;}
+    bool deepSelected=false;
+    Uint64 deepPriority=0;
+    if(!impl->config.deepContext.empty() && destinations) {
+        deepPriority=mix(0xD33FC1A17A93B561ull ^ mix(seed) ^ mix(game.stepCounter) ^ mix(unitOwner(unit.gid,unit.scriptIdentity)) ^ mix(ordinal));
+        deepSelected=impl->deep.consider(deepPriority,ordinal);
+    }
+    if(!impl->config.deepContext.empty() && !destinations)++impl->deepIneligibleNoXY;
+    if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;if(!impl->config.deepContext.empty() && destinations)impl->deep.excluded(false);return;}
+    if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;if(!impl->config.deepContext.empty() && destinations)impl->deep.excluded(true);return;}
     auto work=std::make_unique<Impl::Work>();
+    work->deepSelected=deepSelected;work->deepPriority=deepPriority;
+    if(deepSelected)work->deepContext=impl->deepContext;
     using C=SimulationSnapshot::Component;
     const auto mask=SimulationSnapshot::bit(C::Catalogs)|SimulationSnapshot::bit(C::Terrain)|SimulationSnapshot::bit(C::Resources)
         |SimulationSnapshot::bit(C::Occupancy)|SimulationSnapshot::bit(C::Areas)|SimulationSnapshot::bit(C::Visibility)|SimulationSnapshot::bit(C::Rules);
@@ -298,6 +361,7 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
     work->destinations=destinations;
     work->reason=staleGoal?"stale_goal":exhaustedPool?"farm_reserve":"fully_claimed";
     work->metadataEnabled=map.materialDestinationsEnabled();
+    work->claimsEnforced=map.activeClaimsEnabled();
     if(work->destinations && work->destinations->cells!=map.cellCount())
         throw std::logic_error("claim probe destination publication shape mismatch");
     work->query={unitOwner(unit.gid,unit.scriptIdentity),Uint32(map.coordToIndex(unit.posX,unit.posY)),Uint8(unit.destinationPurpose),
@@ -313,6 +377,12 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
     unsigned forbiddenNeighbors=0;
     for (int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
         forbiddenNeighbors+=map.isForbidden(x+dx,y+dy,unit.owner->me);
+    Uint32 effectiveReserve=reserve;
+    for(const auto claimant:map.materialClaimLedger().ownersAtSource(Uint32(source))) {
+        if(claimant==unitOwner(unit.gid,unit.scriptIdentity))continue;
+        const auto* existing=map.materialClaimLedger().find(claimant);
+        if(existing && existing->material==unit.destinationPurpose)effectiveReserve=std::max<Uint32>(effectiveReserve,existing->reserve);
+    }
     work->features={{"resource_material_mask",hasResource?Json(properties.materialMask):Json(nullptr)},{"farm_areas_enabled",map.farmAreasEnabled()},
         {"nearby_forbidden_count",forbiddenNeighbors},{"resource_persists_when_empty",hasResource?Json(properties.persistsWhenEmpty):Json(nullptr)},
         {"resource_growth_rate",hasResource?Json(properties.growthRate):Json(nullptr)},{"team_units",unit.owner->liveUnits.size()},{"team_buildings",unit.owner->liveBuildings.size()},
@@ -324,7 +394,8 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
         {"swim_speed",unit.performance[SWIM]},{"fly_speed",unit.performance[FLY]},
         {"pooled_farm",pooled},{"exhausted_pool",exhaustedPool},{"source",source},{"resource_type",hasResource?Json(map.getResource(source).type):Json(nullptr)},
         {"yield_consumption",hasResource?Json(int(yield.consumption)):Json(nullptr)},{"infinite",hasResource?Json(yield.consumption==ResourceConsumption::Infinite):Json(nullptr)},
-        {"destroys_deposit",hasResource?Json(yield.destroysDeposit):Json(nullptr)},{"stock_amount",amount},{"stock_reserve",reserve},
+        {"destroys_deposit",hasResource?Json(yield.destroysDeposit):Json(nullptr)},{"stock_amount",amount},{"stock_reserve",reserve},{"effective_seed_floor",effectiveReserve},
+        {"effective_capacity",!staleGoal && amount>effectiveReserve?amount-effectiveReserve:0},
         {"origin_field_value",field[work->query.origin]},{"nearest_field_value",field[access]},
         {"field_key",fieldKey},{"field_generation",fieldGeneration},
         {"consumer_gid",unit.attachedBuilding?Json(unit.attachedBuilding->gid):Json(nullptr)},

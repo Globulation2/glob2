@@ -6,6 +6,12 @@ function fixture(navigator={}){
   vm.runInContext(fs.readFileSync(path.join(__dirname,'../gradient-compute.js'),'utf8'),context);context.Glob2GradientGPU=entries.$Glob2GradientGPU;
   return{g:context.Glob2GradientGPU,entries,heap};
 }
+test('async proxy signatures retain their complete C ABI arity',()=>{
+  const {entries}=fixture();
+  assert.equal(entries.glob2_gradient_prepare.length,6);
+  assert.equal(entries.glob2_gradient_execute.length,9);
+  assert.equal(entries.glob2_gradient_shutdown.length,0);
+});
 test('missing WebGPU resolves initialization failure without retaining a device',async()=>{
   const f=fixture();f.entries.glob2_gradient_prepare(0,0,0);await new Promise(resolve=>setImmediate(resolve));assert.equal(Atomics.load(f.heap,0),-1);assert.equal(f.g.device,null);
 });

@@ -243,6 +243,7 @@ namespace
 
 	void assignTask(Unit *u, Building *b, int resource)
 	{
+        if(u->owner->map->activeClaimsEnabled())u->releaseActiveMaterialClaim();
 		u->attachedBuilding->removeUnitFromWorking(u);
 		u->attachedBuilding = b;
 		u->destinationPurpose = resource;

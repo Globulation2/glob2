@@ -26,6 +26,13 @@ class Planner:
         self.jobs, self.maps = [], {}
         if config.get('parameter_domain', 'search') not in ('search', 'legal'):
             raise ValueError('parameter_domain must be search or legal')
+        if 'resource_claims_active' in config:
+            if any(config['resource_claims_active'] not in self.bundles[build]['capabilities'].get('resource_claims_active_policies', []) for build in self.builds):
+                raise ValueError('active policy absent from pinned build catalog')
+        if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') != 1 for build in self.builds):
+            raise ValueError('build does not advertise active claim probe version 1')
+        if 'resource_claims_deep_context' in config and any(self.bundles[build]['capabilities'].get('resource_claims_deep_version') != 1 for build in self.builds):
+            raise ValueError('build does not advertise deep claim capture version 1')
         if 'material_destinations' in config:
             if type(config['material_destinations']) is not bool:
                 raise ValueError('material_destinations must be a boolean')
@@ -107,6 +114,7 @@ class Planner:
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
+                            **({key: config[key] for key in ('resource_claims_probe', 'resource_claims_active', 'resource_claims_deep_context') if key in config}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
@@ -158,6 +166,7 @@ class Planner:
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
+                            **({key: config[key] for key in ('resource_claims_probe', 'resource_claims_active', 'resource_claims_deep_context') if key in config}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)

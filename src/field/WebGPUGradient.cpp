@@ -227,6 +227,10 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 			return false;
 		}		tasks.push_back(std::move(task));
 	}
+	// All results remain private until every member passes the commit gate.
+	for (const auto& request : requests)
+		if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
+			return false;
 	for (std::size_t i = 0; i < tasks.size(); ++i)
 	{
 		const auto& request = requests[i];

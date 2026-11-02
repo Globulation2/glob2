@@ -436,6 +436,8 @@ Handle capture(const Game& game,
 			auto& v = entities->units[unitRecordCount++];
 			std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
 			if (storage) storage->entityBytesCopied += sizeof(UnitState);
+            v.activeClaimsEnabled=game.map.activeClaimsEnabled();
+            v.activeMaterialClaim=u->activeMaterialClaim;v.materialClaimTask=u->materialClaimTask;
 			v.identity = Game::refOf(u); v.team = t;
 			v.realAttackStrength = u->getRealAttackStrength();
                 if(!v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableMovementClasses[t]|=Uint16(1u<<(v.performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(v.performance[WALK],v.performance[SWIM])));
@@ -715,6 +717,8 @@ void verifyCapture(const Game& game, const Handle& handle)
                 const auto& unit = entities.units[unitIndex++];
                 if (unit.identity != Game::refOf(live) || unit.team != t)
                     throw std::logic_error("snapshot verification: unit identity or order differs from the game");
+                if(unit.activeClaimsEnabled!=game.map.activeClaimsEnabled() || unit.activeMaterialClaim!=live->activeMaterialClaim
+                    || unit.materialClaimTask!=live->materialClaimTask)throw std::logic_error("active material claim snapshot mismatch");
                 if (static_cast<const UnitState&>(unit) != static_cast<const UnitState&>(*live))
                     throw std::logic_error("snapshot verification: unit state differs from the game");
                 if (unit.realAttackStrength != live->getRealAttackStrength())

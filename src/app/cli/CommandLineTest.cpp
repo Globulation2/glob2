@@ -275,3 +275,20 @@ TEST_CASE("material destination experiment is explicit new game only" * doctest:
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/metadata-cli-test","--load-game","test.game","--material-destinations"}));
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/metadata-cli-test","--load-game","test.game","--resource-claims-shadow"}));
 }
+
+TEST_CASE("active material claim prototype requires explicit isolated metadata mode" * doctest::test_suite("CommandLine"))
+{
+    std::vector<std::string> args={"game","run","--output-dir","artifacts/active-claims-cli","--map-file","test.map","--game-seed","42","--player","castor","--material-destinations","--resource-claims-active","prototype-stationary-v1"};
+    CHECK_NOTHROW(Cli::parse(args));
+    auto shadow=args;shadow.push_back("--resource-claims-shadow");CHECK_THROWS(Cli::parse(shadow));
+    auto replay=args;replay.push_back("--write-replay");CHECK_THROWS(Cli::parse(replay));
+    args.back()="unapproved-policy";CHECK_THROWS(Cli::parse(args));
+    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/active-claims-cli","--load-game","test.game","--resource-claims-active","prototype-stationary-v1"}));
+}
+
+TEST_CASE("active claim observer is independent of shadow tracking" * doctest::test_suite("CommandLine"))
+{
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--load-game","active.game","--resource-claims-probe","--resource-claims-sample-every","1"}));
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--material-destinations","--resource-claims-active","prototype-stationary-v1","--resource-claims-probe"}));
+    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims-probe"}));
+}

@@ -714,6 +714,8 @@ struct Runtime
 				const auto *out =
 					static_cast<const std::uint32_t *>(work->buffers[Transfer].mapped);
 
+				if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
+					return false;
 				if (destinations) {
                     for (std::size_t i = 0; i < cells; ++i) {
                         request.gradient[i] = std::uint16_t(out[2*i]);
@@ -935,6 +937,12 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 				break;
 			}
 		}
+		// Earlier fields may be canceled while a later field executes.
+		// Singleton output already crossed its commit boundary inside execute.
+		if (success && !singleton)
+			for (const auto& request : requests)
+				if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
+					success = false;
 		if (success)
 		{
 

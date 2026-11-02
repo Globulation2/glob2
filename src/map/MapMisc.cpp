@@ -29,6 +29,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
           | (gradientRuntime->worldWorkSubmittedTick == game->stepCounter ? 2u : 0u)
         : 0u;
     Uint32 cs = (legacy152 ? 0 : gradientRuntime->adaptive.checksum()) ^ worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
+    if (!legacy152 && activeClaimsEnabled()) cs ^= activeClaimRouteChecksum(heavy && includePending);
 	if (heavy)
 	{
 		for (size_t index = 0; index < cellCount(); ++index)

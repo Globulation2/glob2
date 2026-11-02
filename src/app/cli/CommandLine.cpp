@@ -370,11 +370,18 @@ void constraints(const Request &r)
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
         requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
+        if(r.has("--resource-claims-active")) {
+            if(r.get("--resource-claims-active")!="prototype-stationary-v1" || !r.has("--material-destinations")
+                || r.has("--resource-claims-shadow") || r.has("--load-game") || r.has("--write-replay"))
+                throw std::invalid_argument("active claim prototype requires new-game material destinations, excludes shadow/replay");
+        }
         if (r.has("--material-destinations") && (r.has("--load-game") || r.has("--write-replay")))
             throw std::invalid_argument("Material destination research mode requires a new game and cannot record a replay");
-        requireParent("--resource-claims-sample-every", "--resource-claims-shadow");
-        requireParent("--resource-claims-max-samples", "--resource-claims-shadow");
-        requireParent("--resource-claims-max-bytes", "--resource-claims-shadow");
+        for(const auto* option:{"--resource-claims-sample-every","--resource-claims-max-samples","--resource-claims-max-bytes","--resource-claims-deep-context"})
+            if(r.has(option) && !r.has("--resource-claims-shadow") && !r.has("--resource-claims-probe"))
+                throw std::invalid_argument("claim sample options require shadow or explicit probe");
+        if(r.has("--resource-claims-probe") && !r.has("--resource-claims-shadow") && !r.has("--resource-claims-active") && !r.has("--load-game"))
+            throw std::invalid_argument("claim probe requires active or shadow ledger mode");
         if (r.has("--resource-gradient-exploration")) {
             const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
             if (!AdaptiveGradientModel::Trained && std::find(intervals.begin(),intervals.end(),0)!=intervals.end())
@@ -568,6 +575,9 @@ const std::vector<Command> &commands()
 			 integer("--ai-profile-from-tick", "First observed tick to profile", 0, 2147483647, "0"),
 			 value("--ai-profile-gate", "player:observed-tick", "Hold one decision until ai-profile-release exists in output-dir; diagnostic sampling only"),
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
+             value("--resource-claims-deep-context", "json", "Temporary bounded min-hash capture provenance: source_revision,bundle_id,cohort_id,game_id"),
+             flag("--resource-claims-probe", "Collect diagnostic claim decisions from an active-policy game without a shadow ledger"),
+             value("--resource-claims-active", "policy", "Experimental active policy: prototype-stationary-v1; requires material destinations"),
              flag("--material-destinations", "Enable experimental material destination metadata for a new game; excludes replay recording"),
              flag("--resource-claims-shadow", "Observe worker material claims without enforcing capacity; rebuild diagnostic state after load"),
              integer("--resource-claims-sample-every", "Sample one in N material movement/pickup decisions using diagnostic hashing", 1, 1000000000, "1000"),

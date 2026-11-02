@@ -93,6 +93,15 @@ class RoutePipeline
         work.input.world = {}; // Drop the immutable lease after computation.
     }
 public:
+    std::uint64_t requestSequence() const { return nextRequest; }
+    std::optional<std::uint64_t> sealedSubmissionTick() const { return sealedTick; }
+    void restoreControl(std::uint64_t value, std::optional<std::uint64_t> tick)
+    {
+        if (value < nextRequest || bool(value) != tick.has_value() ||
+            (tick && (*tick >= std::numeric_limits<std::uint64_t>::max() / 2 || (sealedTick && *tick != *sealedTick))))
+            throw std::invalid_argument("invalid saved route control state");
+        nextRequest = value; sealedTick = tick; lastSubmission = tick;
+    }
     explicit RoutePipeline(ComputeExecutor& value, std::size_t capacity = 4096) : executor(value), maximumPending(capacity)
     { if (!capacity) throw std::invalid_argument("claim route capacity must be positive"); }
     RoutePipeline(const RoutePipeline&) = delete;

@@ -4,6 +4,7 @@
 
 #pragma once
 #include "ResourceClaims.h"
+#include "claims/ActiveMaterialClaims.h"
 #include "field/GradientDestinationPlanes.h"
 struct GradientTargetCell;
 namespace ResourceClaims { class Probe; }
@@ -146,6 +147,9 @@ class Map
 	MapState::ChangeTracker claimChanges;
 	ResourceClaims::Ledger materialClaims;
     bool materialClaimTracking = false;
+    ResourceClaims::ActiveClaimPolicy activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Disabled;
+    std::optional<std::array<Uint64,3>> activeClaimRules;
+    std::unique_ptr<ResourceClaims::ActiveRouteRuntime> materialClaimRoutes;
     std::shared_ptr<ResourceClaims::Probe> materialClaimProbe;
     std::array<Uint64,4> materialClaimFarmEpoch{};
     std::map<std::array<Uint32,5>,std::optional<size_t>> materialClaimFarmCache;
@@ -771,6 +775,25 @@ public:
 	size_t cellCount() const { return resourceCells.size(); }
 	std::span<const MapState::ResourceCell> resourceState() const { return resourceCells; }
     // Temporary shadow collection: rebuilt after load, never used by gameplay.
+    bool activeClaimsEnabled() const { return activeClaimPolicy!=ResourceClaims::ActiveClaimPolicy::Disabled; }
+    ResourceClaims::ActiveClaimPolicy materialClaimPolicy() const { return activeClaimPolicy; }
+    void setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy);
+    ResourceClaims::StepResult nextClaimRouteStep(Unit&, int*, int*);
+    void cancelClaimRoute(ResourceClaims::Owner);
+    void flushClaimRoutes();
+    void publishClaimRoutes();
+    Uint32 activeClaimRouteChecksum(bool includePending) const;
+    void saveActiveClaimRoutes(GAGCore::OutputStream*) const;
+    void loadActiveClaimRoutes(GAGCore::InputStream*, Sint32 versionMinor);
+    void rebuildActiveMaterialClaims();
+    void invalidateMaterialClaimOwners(std::vector<ResourceClaims::Owner>,Uint32 teams=~Uint32(0));
+    void invalidateMaterialClaimsAt(size_t,bool source=true,bool access=true,Uint32 teams=~Uint32(0));
+    std::vector<ResourceClaims::Owner> farmMaterialClaimOwners(size_t,Uint32 teams=~Uint32(0),MaterialMask materials=~MaterialMask(0));
+    void revalidateMaterialClaimOwners(std::vector<ResourceClaims::Owner>,bool checkFarmConnectivity=true);
+    void invalidateAllActiveMaterialClaims();
+    void checkActiveClaimRules();
+    bool activeClaimFarmConnected(const ResourceClaims::Claim&, Uint32 teamMask);
+    bool takeClaimedMaterial(const ResourceClaims::Claim&, Uint32 teamMask);
     bool materialClaimTrackingEnabled() const { return materialClaimTracking; }
     void setMaterialClaimTrackingEnabled(bool enabled);
     void reconcileMaterialClaims();
@@ -959,7 +982,7 @@ public:
 	//! in the team's farm area. Flood 8-connected sources from the unit's 3x3;
 	//! empty gaps stop pooling. Choose the highest stock above that source's
 	//! configured reserve, then shortest distance, then tile index.
-	std::optional<size_t> pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry = std::nullopt);
+	std::optional<size_t> pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry = std::nullopt, std::optional<ResourceClaims::Owner> availableOwner = std::nullopt);
     std::optional<size_t> pickClaimFarmHarvestTileSlot(int x, int y, int material, Uint32 teamMask, std::optional<size_t> entry = std::nullopt);
 
 	//! Revalidate the touched target's requested stock before delivery. Eligible

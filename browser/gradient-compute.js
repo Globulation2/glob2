@@ -91,7 +91,8 @@ addToLibrary({
   },
   glob2_gradient_execute__deps: ['$Glob2GradientGPU'],
   glob2_gradient_execute__proxy: 'async',
-  glob2_gradient_execute(signal,seeds,costs,output,width,height,cap,frozen,destinations = false) {
+  // Async proxy dispatch validates Function.length against the C ABI arity.
+  glob2_gradient_execute(signal,seeds,costs,output,width,height,cap,frozen,destinations) {
     Glob2GradientGPU.execute(signal,seeds,costs,output,width,height,cap,frozen,destinations).then(ok => Glob2GradientGPU.finish(signal,ok ? 1 : -2), error => { console.error(error); Glob2GradientGPU.finish(signal,-1); });
   },
   glob2_gradient_shutdown__deps: ['$Glob2GradientGPU'],

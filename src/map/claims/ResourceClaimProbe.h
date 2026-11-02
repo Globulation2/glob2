@@ -18,6 +18,7 @@ public:
         Uint32 sampleEvery=1000, maxSamples=10000;
         Uint64 maxOutputBytes=64ull*1024*1024;
         unsigned maxPending=8;
+        std::string deepContext; // Diagnostic JSON: source_revision,bundle_id,cohort_id,game_id.
     };
     struct Metrics {
         Uint64 decisions=0, sampled=0, contested=0, submitted=0, completed=0;

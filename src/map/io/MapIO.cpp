@@ -1157,6 +1157,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
         }
         stream->writeLeaveSection();
     }
+    if (VERSION_MINOR >= ResourceClaims::ActiveClaimsFormat) saveActiveClaimRoutes(stream);
 	stream->writeLeaveSection();
 }
 
@@ -1592,7 +1593,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         if(field.inflight!=pendingKeys.contains(key) || field.queued!=queuedKeys.contains(key) || field.serving.goalCount>size)
             throw std::runtime_error("Invalid adaptive field association");
     }
-
+    loadActiveClaimRoutes(stream, versionMinor);
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
         // Consume the complete old state first, then discard only route caches.

@@ -718,7 +718,18 @@ python3 -m tools.tournaments.resource_claims analyze RESULTS \
   --output artifacts/claim-pilot-analysis.json
 ```
 
-Planning does not dispatch jobs. Preflight every sampled generator/count/size;
+Planning does not dispatch jobs. For the next policy cohort, use the conditional
+pool/selector in `tools.tournaments.resource_claims`: draw complete tuples with
+replacement from each frozen seeded family, preflight them, and retain the first
+valid tuples until the requested 16/8/8 (or 500/250/250) counts are met. The
+attempt cap is ten times the target; insufficient valid draws fail selection.
+Keep rejected tuples and reasons. Missing preflights and infrastructure failures
+block selection instead of being counted as invalid map draws. Report realized
+valid distributions and rejection rates; proposal weights do not describe the
+conditioned accepted distribution. Freeze identical valid inputs across policies.
+Map-size repairs in initial calibration are diagnostics only, not policy data.
+
+Preflight every sampled generator/count/size;
 retain failed requests and apply explicit `--generator-overrides` where needed.
 Broad games draw native AIs, formats and 128/256/512 square sizes independently;
 stress games draw Nicowar/Econo/Maxima/Cortex/Cabino from the pinned catalog,
@@ -733,6 +744,44 @@ freezes sampling, stopping rules, limits and 50/50 cohort weights; reports retai
 cohorts separately. The resource-claim job adapter requires a complete compressed
 trace whose limits and completed counts match the engine's result.
 
+`tools/resource_claim_offline.py` provides the next-stage offline kernel. It
+writes exact packed arrays into bounded shards (64 MiB by default) with a
+SQLite deduplication/alias index, a 2 GiB total allowance and a free-space reserve.
+Incomplete or modified catalogs cannot be scored. Relative directional aliases
+select precomputed views using each frozen event's nearest octant. The scorer
+resolves published destinations once, computes both policies with vectorized
+tails and a bounded shared-prefix cache, and emits per-game aggregates rather
+than per-event full-grid outcomes. Its source/cohort-pinned splits use whole
+game IDs. Pure fixture tests cover all 240 pilot profiles against an independent
+scalar reference; native frozen-event parity and capture are separate gates,
+not established by those Python tests. Full-grid CPU/space budgets must be
+measured before choosing a deep capture rate. The kernel selects no policy.
+
+Offline full-grid reduction groups a game's frozen events by nearest bearing,
+scores each distinct physical array once for that group, then maps results into
+logical alias indices. Compact integer/float game matrices feed global sums and
+valid-game counts; unobserved means remain unavailable and no bootstrap interval
+is invented from those global sums. Retain per-event data only for a later
+shortlist re-score on held-out games/features. `deep_budget` must pass before any
+deep-capture dispatch: it reserves the actual catalog bytes, a worst-case frozen
+input allowance (including all candidate rows), aggregate output, and free-space
+reserve. Compression is not assumed. These allowances are separate from ordinary
+tournament telemetry and must be included in the overall campaign allocation.
+
+Temporary deep capture uses `resource_claims_deep_context` with source revision,
+bundle, cohort and game identities and requires capability
+`resource_claims_deep_version: 1`. It forwards `--resource-claims-deep-context`;
+require `resource-claims-deep/manifest.json` in retained outputs. One independent
+minimum-hash event is retained per game among sampled contested published-XY
+events, with priority chosen before admission limits. Existing oracle results
+supply the binary; no additional Dijkstra runs. Missing fields/XY are population
+exclusions, while dropped eligible events censor the reservoir. The collector
+rejects censored or incomplete captures and checks final priority and SHA256.
+The binary has a 10 MiB ceiling, its replacement directory a 24 MiB ceiling,
+and an 8 GiB free-space reserve. A completed zero-eligible game has no binary;
+it remains missing policy evidence. Native roundtrip parity with the 240 pilot
+outcomes must pass on real captured events before full-grid scoring.
+
 New-game claim cohorts explicitly freeze `material_destinations: true` and require
 the bundle's `material_destinations_version: 1` capability. This temporary mode
 forwards `--material-destinations` and cannot record replay output. Saved-state
@@ -740,6 +789,16 @@ jobs retain their embedded mode and reject an override. Reports distinguish
 published XY decisions from missing XY or scalar projection; scalar data is
 throughput calibration only, never policy-selection evidence. Hold the metadata
 mode equal when comparing shadow diagnostics on versus off.
+
+Later active-policy cohorts use `resource_claims_active: "prototype-stationary-v1"`
+with material destinations enabled and a `resource_claims_probe` sampling object
+in place of `resource_claims_shadow`. Pinned catalogs must advertise the active
+policy and probe capability. Active policy overrides are forbidden on saves;
+saved probes retain their authoritative mode. Collectors verify the canonical
+`resolved.material_destinations_enabled` and `resolved.active_claim_policy`
+fields, result enforcement, and each event's enforcement/policy. New nullable
+schema-level enforcement is resolved per event; historical shadow traces remain
+supported. Different enforcement modes are never silently pooled in analysis.
 
 The pilot header has 240 logical pattern profiles with precomputed views for all
 eight nearest-resource bearings. Cone/ray direction offsets are relative to that
@@ -751,7 +810,14 @@ an existing output. This pilot omits most large radii and is not policy-selectio
 evidence for the full requested grid.
 
 Analysis reports source-choice lower-bound regret separately from the cost to
-the pattern's selected pickup access; these differ for pooled farms. Exact costs
+the pattern's selected pickup access; these differ for pooled farms. The
+selected-access prototype must use `mean_access_regret` and `mean_access_ratio`
+as its travel proxies, alongside access-unreachable and fallback rates. Source
+`mean_regret`/`mean_ratio` are component-best lower bounds, appropriate only for a
+route that can finish at any access in the component. The diagnostic evaluator
+chooses the smallest available stock index, while live harvesting chooses
+ripest-first; identical availability/access/path labels do not establish identical
+physical stock selection. Exact costs
 label heuristic decisions but never choose their candidates. An unreachable
 selection is distinct from falling back without selecting a resource. Missing
 oracles, zero-cost optima, failed/incomplete games and sampling exclusions remain
@@ -774,7 +840,11 @@ Static route samples compare a direct route to the source component against its
 component optimum, and a route through the selected probe against that access's
 optimum. Reports retain unreachable, budget-limited and contradiction failures
 without assigning them zero regret. Cached per-route CPU labels are not summed;
-the event-level `static_route_cpu_ns` is the measured aggregate. These frozen
+the event-level `static_route_elapsed_ns` is the measured aggregate. Readers also
+accept the historical names `static_route_cpu_ns` and `oracle_ns` as elapsed
+timings. New traces identify `worker-steady-clock-elapsed` and use
+`oracle_elapsed_ns`. These values include scheduling delays and are not thread
+CPU measurements; missing timing coverage is reported separately. These frozen
 comparisons do not establish live refresh cadence, pending movement or fallback
 effects.
 
@@ -791,14 +861,17 @@ automatically.
 
 The post-pilot coverage audit requires five distinct games and 100 sampled
 events per required scenario, using actual material, stock, farm, yield and late
-game features. Missing strata produce supplemental allocation requests. Infinite
-fruit/stone have no finite-capacity contention by design; verify their routing
+game features. Missing strata produce supplemental allocation requests. Ordinary
+cherry, orange and prune trees retain their deposit but have finite fruit stock
+that regenerates; they require explicit fruit and finite-persistent coverage.
+Trees grow/spread and their wood harvest destroys the deposit. Ordinary rocks
+yield infinite stone and have no finite-capacity contention by design; verify their routing
 and delivery behavior separately, rather than demanding impossible contested
 samples. Protected-farm classification is explicitly an observational proxy;
 controlled fixture intent and gameplay review remain necessary.
 
 Freeze supplemental snapshots for uncovered sparse/dense, protected/pooled,
-exhausted-farm, algae, finite-persistent, compound or destructive cases. Supply a
+exhausted-farm, algae, ordinary-fruit, finite-persistent, compound or destructive cases. Supply a
 JSON list of `{ "path": "SAVE", "strata": ["water_algae"], "start_tick": 150000,
 "window_ticks": 30000 }` records to `resource_claims supplement --bundle BUNDLE
 --fixtures FILE --artifacts RESULTS/artifacts --output MANIFEST`. It retains

@@ -28,6 +28,15 @@ void Map::rebuildPaintedAreaCounts()
 
 void Map::resourceSeedChanged(size_t index, unsigned flags)
 {
+    // Revalidate endpoints after mutation. A pooled source can remain usable
+    // behind forbidden paint or obstacles: workers approach its separate access
+    // tile. Moving traffic never cancels the reservation.
+    if (activeClaimsEnabled() && flags&(ResourceSeedCache::Terrain|ResourceSeedCache::Building|ResourceSeedCache::Forbidden)) {
+        auto owners=materialClaims.ownersAtSource(Uint32(index));
+        const auto access=materialClaims.ownersAtAccess(Uint32(index));
+        owners.insert(owners.end(),access.begin(),access.end());
+        revalidateMaterialClaimOwners(std::move(owners),false);
+    }
 	gradientRuntime->resourceSeeds.changed(index, flags);
     if (flags & ResourceSeedCache::Terrain)
         gradientRuntime->directFlight.valid = false;
@@ -47,6 +56,12 @@ void Map::invalidateResourceSeeds()
 
 void Map::replaceResource(size_t index, const Resource &resource, const std::array<Uint16, MaterialCount> *stocks)
 {
+    auto claimOwners=farmMaterialClaimOwners(index);
+    if (activeClaimsEnabled()) {
+        const auto source=materialClaims.ownersAtSource(Uint32(index)),access=materialClaims.ownersAtAccess(Uint32(index));
+        claimOwners.insert(claimOwners.end(),source.begin(),source.end());
+        claimOwners.insert(claimOwners.end(),access.begin(),access.end());
+    }
 	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
 		: std::optional{captureGradientTargetCell(index)};
 	const bool blockedGround = resourceBlocksGround(index);
@@ -62,11 +77,13 @@ void Map::replaceResource(size_t index, const Resource &resource, const std::arr
 	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
 	                                   blockedAir != resourceBlocksAir(index));
 	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+    revalidateMaterialClaimOwners(std::move(claimOwners));
 }
 
 void Map::replaceTile(size_t index, const Tile &tile)
 {
 	const Tile old = getTile(index);
+    auto claimOwners=(old.farmArea&~tile.farmArea) ? farmMaterialClaimOwners(index,old.farmArea&~tile.farmArea) : std::vector<ResourceClaims::Owner>{};
 	// Sprite changes do not replace a deposit's independently stored stocks.
 	// Explicit replaceResource retains its reset-to-definition semantics.
 	if (old.resource.type!=tile.resource.type || old.resource.amount!=tile.resource.amount)
@@ -96,6 +113,7 @@ void Map::replaceTile(size_t index, const Tile &tile)
 	markTerrain(index); markResource(index); markOccupancy(index); markArea(index);
 	if (changes) resourceSeedChanged(index, changes);
 	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+    revalidateMaterialClaimOwners(std::move(claimOwners));
 }
 
 void Map::setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value)
@@ -107,6 +125,7 @@ void Map::setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value)
 	else { assert(field == &Tile::farmArea); storedField = &MapState::AreaCell::farm; }
 	auto &stored = areaCells[index].*storedField;
 	if (stored == value) return;
+    auto claimOwners=field==&Tile::farmArea && (stored&~value) ? farmMaterialClaimOwners(index,stored&~value) : std::vector<ResourceClaims::Owner>{};
 	const auto targetBefore=gradientRuntime->adaptive.fields.empty() ? std::optional<GradientTargetCell>{}
 		: std::optional{captureGradientTargetCell(index)};
 	const auto kind=field==&Tile::forbidden ? ForbiddenArea : field==&Tile::guardArea ? GuardArea
@@ -116,6 +135,7 @@ void Map::setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value)
 	markArea(index);
 	if (field == &Tile::forbidden) resourceSeedChanged(index, ResourceSeedCache::Forbidden);
 	if(targetBefore) gradientTargetCellChanged(index,*targetBefore);
+    revalidateMaterialClaimOwners(std::move(claimOwners));
 }
 
 void Map::addForbidden(int x, int y, Uint32 team)

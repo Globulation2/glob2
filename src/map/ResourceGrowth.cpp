@@ -556,6 +556,8 @@ void Map::publishWorldResultsDue()
 {
     const auto tick = game->stepCounter;
     if (gradientRuntime->worldResultsPublishedTick == tick) return;
+    checkActiveClaimRules();
+    publishClaimRoutes();
     if (!gradientPipelineEnabled()) configureGradientPipeline(2, 8);
     advanceGradientPipeline();
     gradientRuntime->growth.publish(*this, tick);

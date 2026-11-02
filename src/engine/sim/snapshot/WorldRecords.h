@@ -8,6 +8,7 @@
 #include "TerrainRegistry.h"
 #include "TeamStat.h"
 #include "UnitState.h"
+#include "ResourceClaims.h"
 #include "sim/EntityRef.h"
 #include <array>
 #include <memory>
@@ -39,6 +40,9 @@ struct BuildingView : BuildingStateRecord
 
 struct UnitView : UnitState
 {
+    bool activeClaimsEnabled=false;
+    std::optional<ResourceClaims::Claim> activeMaterialClaim;
+    Uint64 materialClaimTask=0;
     int realAttackStrength = 0;
 	UnitRef identity;
 	int team = 0;

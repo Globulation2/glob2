@@ -84,7 +84,8 @@ void Unit::handleActivity(void)
 	}
 	else if (needToRecheckMedical())
 	{
-        if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
+        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
+        else if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 		// disconnect from building
 		if (attachedBuilding)
 		{
@@ -159,7 +160,8 @@ void Unit::handleActivity(void)
 						// A client selection follows the unit across the conversion.
 						owner->game->publishClientEvent(ClientEvent::UnitConverted{
 							UnitRef{gid, scriptIdentity}, UnitRef{targetGID, identity}});
-                        if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
+                        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
+        else if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 						scriptIdentity = identity;
 						owner->game->unitCargo.transfer(gid,targetGID);
 						gid=targetGID;

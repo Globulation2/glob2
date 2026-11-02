@@ -77,8 +77,11 @@ struct World
 
 	World(int exponent = 6)
 	{
+        // Independent fixture worlds must not pick different wall-clock seeds.
+        game.gameHeader.setRandomSeed(5489);
 		game.map.setSize(exponent, exponent, GRASS);
 		game.map.setGame(&game);
+        game.map.worldRandom.initialize(game.gameHeader.getRandomSeed());
 		game.addTeam(0);
 		game.addTeam(1);
 		team = game.teams[0];
@@ -1362,6 +1365,7 @@ TEST_SUITE("BuildingGradientInvalidation")
     {
         glob2test::HeadlessGlobals globals;
         for (bool text : {false,true}) for (unsigned workers : {0u,2u}) {
+            CAPTURE(text); CAPTURE(workers);
             World original(5), restored(5);
             auto& map=original.game.map;
             for (World* world : {&original,&restored}) {
@@ -1369,6 +1373,9 @@ TEST_SUITE("BuildingGradientInvalidation")
                 world->game.map.configureGradientPipeline(workers,2);
                 world->game.map.setMaterialDestinationsEnabled(true);
             }
+            REQUIRE(map.worldRandom.streams==restored.game.map.worldRandom.streams);
+            REQUIRE(map.materialAmountAtSlot(map.coordToIndex(12,12),WHEAT)==
+                restored.game.map.materialAmountAtSlot(map.coordToIndex(12,12),WHEAT));
             const auto* field=glob2test::awaitGradient(original.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,0);});
             auto published=map.materialGradientDestinations(field);
             REQUIRE(published);
@@ -1381,6 +1388,7 @@ TEST_SUITE("BuildingGradientInvalidation")
             const auto bytes=saveRuntime(map,text);
             loadRuntime(restored.game.map,bytes,text);
             auto compare=[&] {
+                CAPTURE(original.game.stepCounter);
                 const auto* a=map.getMaterialGradientSlot(0,WHEAT,0);
                 const auto* b=restored.game.map.getMaterialGradientSlot(0,WHEAT,0);
                 REQUIRE(a); REQUIRE(b);

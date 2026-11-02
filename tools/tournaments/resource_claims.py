@@ -33,7 +33,8 @@ SCENARIOS = {
     'pooled_farming': 'An actual pooled-farm decision.',
     'exhausted_pool': 'A connected farm with no surplus above its seed reserve.',
     'water_algae': 'An actual algae material decision.',
-    'finite_persistent_yield': 'A finite yield on a deposit that persists when empty (custom-resource stress).',
+    'finite_persistent_yield': 'A finite yield on a deposit that persists when empty, including ordinary renewable fruit.',
+    'ordinary_fruit': 'Finite renewable cherry/orange/prune material (5/6/7) on a persistent deposit.',
     'compound_yield': 'A deposit with more than one material yield.',
     'destructive_yield': 'An all-stock or deposit-destroying yield.',
 }
@@ -50,8 +51,12 @@ def scenario_hits(row):
     if features.get('pooled_farm'): hits.add('pooled_farming')
     if features.get('exhausted_pool'): hits.add('exhausted_pool')
     if row['material'] == 4: hits.add('water_algae')
-    if features.get('resource_persists_when_empty') and features.get('infinite') is False: hits.add('finite_persistent_yield')
-    if int(features.get('resource_material_mask', 0)).bit_count() > 1: hits.add('compound_yield')
+    if features.get('resource_persists_when_empty') and features.get('infinite') is False:
+        hits.add('finite_persistent_yield')
+        if row['material'] in (5,6,7) and isinstance(features.get('resource_growth_rate'),int) and features['resource_growth_rate']>0:
+            hits.add('ordinary_fruit')
+    material_mask=features.get('resource_material_mask')
+    if isinstance(material_mask,int) and material_mask.bit_count()>1: hits.add('compound_yield')
     if features.get('destroys_deposit') or features.get('yield_consumption') in (1, 'all'): hits.add('destructive_yield')
     return hits
 
@@ -75,7 +80,7 @@ def coverage_audit(games, *, min_games=5, min_events=100):
     return {'ready_for_policy_selection': bool(games) and not missing and not censored_games,
             'censored_games': censored_games, 'strata': rows,
             'supplemental_required': missing,
-            'not_contested_by_design': ['Infinite yields (ordinary fruit/stone) do not exhaust claim capacity. Verify their source/kernel routing and delivery behavior separately; destructive conflicts are exceptional.'],
+            'not_contested_by_design': ['Infinite yields (ordinary rocks/stone) do not exhaust claim capacity. Verify their source/kernel routing and delivery behavior separately; destructive conflicts are exceptional.'],
             'note': 'Coverage requires uncensored samples. Dropping censored games is not a correction for contention-correlated missingness; rerun calibrated cohorts or supply an explicit weighting design. Labels alone do not establish coverage.'}
 
 
@@ -174,6 +179,90 @@ def plan(bundle, *, games=32, seed=1, generators=None, generator_overrides=None)
     return validate_experiment(manifest)
 
 
+def map_input_identity(request):
+    config=request['config']
+    return digest([request['build'], config['generator'], config['params'],
+                   config.get('candidates',5), request['seeds']['map']])
+
+
+def conditional_pool(bundle, *, games=32, seed=1, attempt_multiplier=10, sample_every=256,
+                     max_samples=32768, stress_timeout_seconds=21600):
+    """Freeze complete tuple draws before preflight, never repair sampled tuples."""
+    if type(games) is not int or games<4 or games%4:
+        raise ValueError('conditional games must be a positive multiple of four')
+    if type(attempt_multiplier) is not int or not 1<=attempt_multiplier<=10:
+        raise ValueError('conditional attempt multiplier must be in1..10')
+    if type(sample_every) is not int or not 1<=sample_every<=1000000000:
+        raise ValueError('invalid conditional sampling rate')
+    if type(max_samples) is not int or not 1<=max_samples<=1000000:
+        raise ValueError('invalid conditional sample cap')
+    if type(stress_timeout_seconds) is not int or not 1<=stress_timeout_seconds<=86400:
+        raise ValueError('invalid conditional stress timeout')
+    sampling={'sample_every':sample_every,'max_samples':max_samples,'max_bytes':128*1024**2}
+    pool=plan(bundle,games=games*attempt_multiplier,seed=seed)
+    ordinals=defaultdict(int);requests=[]
+    for old in pool['jobs']:
+        mode=old['labels']['farm_mode'];ordinal=ordinals[mode];ordinals[mode]+=1
+        config=old['config']|{'resource_claims_shadow':dict(sampling)}
+        labels=old['labels']|{'conditional_draw':ordinal,'map_input_identity':map_input_identity(old)}
+        requests.append(job(old['type'],old['build'],inputs=old['inputs'],seeds=old['seeds'],config=config,
+            outputs=old['outputs'],limits=old['limits']|{'artifact_bytes':192*1024**2,
+                'timeout_seconds':stress_timeout_seconds if mode!='default' else old['limits']['timeout_seconds']},labels=labels,depends_on=old['depends_on']))
+    pool['jobs']=requests;pool['id']=f'claims-conditional-pool-{games}-{seed}'
+    for cohort in pool['design']['cohorts']:
+        cohort['resource_claims_shadow']=dict(sampling)
+        if cohort['id']!='claims-broad-default':cohort['timeout_seconds']=stress_timeout_seconds
+    pool['design']['pilot_sampling']=sampling
+    pool['labels']['purpose']='preflight-candidate-pool-do-not-dispatch-games'
+    pool['design']['distribution_conditioning']='Listed family/format/size weights describe proposals; accepted joint distribution is conditional on map validity and reported empirically.'
+    pool['design']['conditional_selection']={'targets':{'default':games//2,'protected':games//4,'pooled':games//4},
+        'attempt_multiplier':attempt_multiplier,'maximum_attempts':games*attempt_multiplier,
+        'policy':'First valid full-tuple draws in each frozen seeded family sequence; retain invalid draws and reasons; never repair size/count/generator.'}
+    return validate_experiment(pool)
+
+
+def select_conditional_pool(pool, outcomes):
+    """Outcomes map frozen map-input identity to category and rejection reason.
+
+    Missing or infrastructure-failed preflights block selection. They are not
+    treated as invalid random draws or silently skipped to convenient successes.
+    """
+    design=pool['design']['conditional_selection'];targets=design['targets']
+    selected=[];rejected=[];pending=[];infrastructure=[];exhausted=[];attempted=defaultdict(int)
+    for mode,target in targets.items():
+        accepted=0
+        for request in (j for j in pool['jobs'] if j['labels']['farm_mode']==mode):
+            if accepted==target:break
+            key=request['labels']['map_input_identity'];outcome=outcomes.get(key)
+            if outcome is None:pending.append(key);break
+            category=outcome.get('category')
+            if category not in ('success','invalid_request','generation_failed'):
+                infrastructure.append({'map_input_identity':key,'category':category});break
+            attempted[mode]+=1
+            if category=='success':selected.append(request);accepted+=1
+            else:
+                if not outcome.get('diagnostic'):raise ValueError('rejected draw requires retained reason')
+                rejected.append({'job':request['id'],'map_input_identity':key,'family':mode,
+                    'draw':request['labels']['conditional_draw'],'category':category,'diagnostic':outcome['diagnostic']})
+        if accepted<target and not any(j['labels']['farm_mode']==mode and j['labels']['map_input_identity'] in pending for j in pool['jobs']) and not infrastructure:
+            exhausted.append(mode)
+    ready=not pending and not infrastructure and not exhausted and len(selected)==sum(targets.values())
+    report={'ready':ready,'selected':len(selected),'pending_preflights':pending,'infrastructure_failures':infrastructure,
+        'attempt_cap_exhausted':exhausted,'rejections':rejected,'attempted_by_family':dict(attempted),
+        'rejection_rate':len(rejected)/sum(attempted.values()) if attempted else None,
+        'realized_distribution':dict(__import__('collections').Counter(
+            str((j['labels']['farm_mode'],j['labels']['format'],j['config']['generator'],j['config']['params']['width'],len(j['config']['players']))) for j in selected))}
+    if not ready:return None,report
+    manifest=json.loads(json.dumps(pool))
+    manifest['jobs']=[job(j['type'],j['build'],inputs=j['inputs'],seeds=j['seeds'],config=j['config'],
+        outputs=j['outputs'],limits=j['limits'],labels=j['labels']|{'preflight_required':False},depends_on=j['depends_on']) for j in selected]
+    manifest['id']=pool['id'].replace('conditional-pool','conditional-valid')
+    manifest['labels']['purpose']='resource-claims-conditional-valid-pilot'
+    manifest['design']['preflight_selection']=report
+    manifest['design']['paired_inputs']='Reuse this exact valid cohort across policies; no policy-dependent resampling.'
+    return validate_experiment(manifest),report
+
+
 def trace_rows(stream):
     """Validate complete stream framing while yielding decisions and the schema."""
     schema = json.loads(next(stream, 'null'))
@@ -198,6 +287,14 @@ def trace_rows(stream):
             if type(row.get('ordinal')) is not int or row['ordinal'] <= previous:
                 raise ValueError('duplicate or unordered claim event')
             previous = row['ordinal']
+            if 'claims_enforced' in schema:
+                enforced = row.get('claims_enforced', schema['claims_enforced'])
+                if type(enforced) is not bool or schema['claims_enforced'] is not None and enforced is not schema['claims_enforced']:
+                    raise ValueError('missing or inconsistent per-event claim mode')
+                if enforced and row.get('active_policy') != 'prototype-stationary-v1':
+                    raise ValueError('unknown active claim policy')
+                if not enforced and row.get('active_policy', 'disabled') != 'disabled':
+                    raise ValueError('inactive event advertises an active policy')
             outcomes = row.get('patterns')
             if not isinstance(outcomes, list) or len(outcomes) != len(schema['patterns'])*len(schema['policies']):
                 raise ValueError('missing pattern outcomes')
@@ -225,12 +322,14 @@ def read_game(stream, labels):
     sums = defaultdict(lambda: defaultdict(float))
     route_sums = defaultdict(lambda: defaultdict(float))
     scenario_counts = defaultdict(int)
-    diagnostics = {'events': 0, 'oracle_ns': 0, 'static_route_cpu_ns': 0, 'published_xy_events': 0, 'missing_xy_events': 0, 'first_sample_tick': None, 'last_sample_tick': None, 'late_sample_events': 0}
+    diagnostics = {'events': 0, 'oracle_elapsed_ns': 0, 'static_route_elapsed_ns': 0, 'oracle_timing_missing': 0, 'route_timing_missing': 0, 'timing_clock': schema.get('timing_clock', 'legacy_steady_clock_elapsed'), 'published_xy_events': 0, 'missing_xy_events': 0, 'first_sample_tick': None, 'last_sample_tick': None, 'late_sample_events': 0}
     summary = None
+    modes = set()
     for row in rows:
         if row['kind'] == 'summary':
             summary = row
             continue
+        modes.add((row.get('claims_enforced', schema.get('claims_enforced', False)), row.get('active_policy', 'disabled')))
         for scenario in scenario_hits(row):
             scenario_counts[scenario] += 1
         diagnostics['events'] += 1
@@ -240,8 +339,12 @@ def read_game(stream, labels):
         published_xy = row.get('destination_lookup') == 'published-xy' and row.get('destination_xy_missing') is False
         diagnostics['published_xy_events'] += published_xy
         diagnostics['missing_xy_events'] += not published_xy
-        diagnostics['oracle_ns'] += row.get('oracle_ns', 0)
-        diagnostics['static_route_cpu_ns'] += row.get('static_route_cpu_ns', 0)
+        for canonical, legacy, missing in (('oracle_elapsed_ns','oracle_ns','oracle_timing_missing'),
+                                            ('static_route_elapsed_ns','static_route_cpu_ns','route_timing_missing')):
+            value=row.get(canonical,row.get(legacy))
+            if value is None:diagnostics[missing]+=1
+            elif type(value) is not int or value<0:raise ValueError('invalid elapsed timing')
+            else:diagnostics[canonical]+=value
         optimum = row.get('optimal')
         optimum = None if optimum is None else optimum.get('distance')
         if optimum is not None and (type(optimum) is not int or optimum < 0):
@@ -252,6 +355,9 @@ def read_game(stream, labels):
                   ('map', f"{row['width']}x{row['height']}"),
                   ('colonies', str(labels.get('colonies', 'unknown'))),
                   ('decision_phase', row.get('phase', 'unknown')),
+                  ('active_policy', row.get('active_policy', 'disabled')),
+                  ('decision_reason', row.get('reason', 'unknown')),
+                  ('decision_kind', row.get('decision_kind', 'legacy_resource_decision')),
                   ('destination_lookup', row.get('destination_lookup', 'unknown')),
                   ('game_phase', 'early' if row['tick'] < 30000 else 'middle' if row['tick'] < 90000 else 'late'),
                   ('sources', 'sparse' if row['source_count'] < 32 else 'medium' if row['source_count'] < 256 else 'dense')]
@@ -285,6 +391,9 @@ def read_game(stream, labels):
                         value['zero_optimum_positive_cost'] += 1
                 if access_cost is not None:
                     value['access_compared'] += 1; value['access_regret'] += access_cost-optimum
+                    if optimum>0 or access_cost==0:
+                        value['access_ratios']+=1;value['access_ratio']+=access_cost/optimum if optimum else 1
+                    else:value['zero_optimum_positive_access_cost']+=1
         for route in row.get('static_routes', []):
             for strategy, optimum_key in (('direct_source_component', 'source_optimal_cost'),
                                           ('via_probe_selected_access', 'access_optimal_cost')):
@@ -315,6 +424,8 @@ def read_game(stream, labels):
             'mean_regret': value['regret']/value['compared'] if value['compared'] else None,
             'mean_access_regret': value['access_regret']/value['access_compared'] if value['access_compared'] else None,
             'mean_ratio': value['ratio']/value['ratios'] if value['ratios'] else None,
+            'mean_access_ratio': value['access_ratio']/value['access_ratios'] if value['access_ratios'] else None,
+            'zero_optimum_positive_access_cost': int(value['zero_optimum_positive_access_cost']),
             'fallback_rate': value['fallback']/value['events'],
             'unreachable_rate': value['unreachable']/value['events'],
             'access_unreachable_rate': value['access_unreachable']/value['events'],
@@ -339,7 +450,7 @@ def read_game(stream, labels):
     sampling = {'censored': bool(reasons), 'reasons': reasons, 'exclusions': exclusions,
         'exclusion_coverage_known': all(count is not None for count in exclusions.values()),
         'complete_framing_is_unbiased_coverage': False}
-    return {'schema': schema, 'summary': summary, 'sampling': sampling, 'metrics': metrics, 'scenario_counts': dict(scenario_counts),
+    return {'schema': schema, 'summary': summary, 'sampling': sampling, 'claim_modes': sorted(modes), 'metrics': metrics, 'scenario_counts': dict(scenario_counts),
             'route_metrics': route_metrics, 'diagnostics': diagnostics}
 
 
@@ -395,7 +506,7 @@ def summarize(games, *, draws=500, seed=1, routes=False):
                'zero_optimum_positive_cost': sum(v['zero_optimum_positive_cost'] for _, v in values)}
         metrics = (('mean_regret', 'mean_ratio', 'failure_rate', 'unreachable_rate', 'limited_rate',
                     'contradiction_rate', 'mean_expansions', 'mean_continuation_steps') if routes else
-                   ('mean_regret', 'mean_access_regret', 'mean_ratio', 'fallback_rate', 'unreachable_rate',
+                   ('mean_regret', 'mean_access_regret', 'mean_ratio', 'mean_access_ratio', 'fallback_rate', 'unreachable_rate',
                     'access_unreachable_rate', 'oracle_missing_rate', 'mean_probes'))
         for metric in metrics:
             samples = [(game_id, v[metric]) for game_id, v in values if v[metric] is not None]
@@ -411,7 +522,7 @@ def summarize(games, *, draws=500, seed=1, routes=False):
 def analyze(directory, *, draws=500, seed=1):
     source = Results(directory)
     expected = {j['id']: j for j in source.manifest['jobs'] if j['type'] == 'game'}
-    games, coverage, schemas = [], [], set()
+    games, coverage, schemas, claim_modes = [], [], set(), set()
     for record in source:
         game = record['job']; game_id = game['id']
         if game_id not in expected:
@@ -427,6 +538,7 @@ def analyze(directory, *, draws=500, seed=1):
                     with io.TextIOWrapper(decompressed) as stream:
                         measured = read_game(stream, game.get('labels', {}))
             schemas.add(digest(measured['schema']))
+            claim_modes.update(tuple(mode) for mode in measured['claim_modes'])
             games.append((game_id, measured))
             entry.update({'measured': True, 'summary': measured['summary'], 'sampling': measured['sampling'], 'diagnostics': measured['diagnostics']})
         except (OSError, EOFError, ValueError, StopIteration, KeyError, TypeError) as error:
@@ -434,7 +546,7 @@ def analyze(directory, *, draws=500, seed=1):
         coverage.append(entry)
     coverage.extend({'game': game_id, 'category': 'missing', 'measured': False} for game_id in expected)
     # Differing sample rates/pattern sets/claim modes cannot be pooled silently.
-    if len(schemas) > 1:
+    if len(schemas) > 1 or len(claim_modes) > 1:
         raise ValueError('mixed claim trace schemas; analyze frozen cohorts separately')
     groups = summarize(games, draws=draws, seed=seed)
     route_groups = summarize(games, draws=draws, seed=seed, routes=True)
@@ -445,7 +557,8 @@ def analyze(directory, *, draws=500, seed=1):
             'static_route_groups': route_groups,
             'canonical_xy_coverage': {'published_events': sum(g['diagnostics']['published_xy_events'] for _, g in games),
                 'missing_events': sum(g['diagnostics']['missing_xy_events'] for _, g in games),
-                'eligible_for_policy_selection': bool(games) and all(g['diagnostics']['events'] > 0 and not g['diagnostics']['missing_xy_events'] for _, g in games),
+                'eligible_for_policy_selection': bool(games) and all(g['diagnostics']['events'] > 0 and not g['diagnostics']['missing_xy_events'] and g['summary'].get('excluded_missing_field') == 0 for _, g in games),
+                'missing_field_exclusions': [{'game': game_id, 'count': g['summary'].get('excluded_missing_field')} for game_id,g in games],
                 'note': 'Scalar-projection traces support throughput calibration only; keep destination mode equal in shadow parity comparisons.'},
             'analysis_environment': {'python': sys.version, 'numpy': getattr(sys.modules.get('numpy'), '__version__', None)},
             'scenario_coverage': coverage_audit(games),
@@ -453,10 +566,14 @@ def analyze(directory, *, draws=500, seed=1):
                 'uncensored_games': sum(not g['sampling']['censored'] for _, g in games),
                 'eligible_for_policy_selection': bool(games) and len(games) == len(coverage) and all(not g['sampling']['censored'] for _, g in games),
                 'action': 'Tune sample_every and sample/output budgets from pilot volume and late-tick retention before freezing a full round. Prefix caps and queue drops can correlate with contention; no automatic weighting correction is applied.'},
+            'primary_travel_metric': 'mean_access_regret (and mean_access_ratio) for the selected-access route prototype; inspect access-unreachable and fallback rates alongside it',
             'measurement_semantics': {
+                'mean_regret': 'Component-best source cost lower bound; not actual selected-access travel for pooled farms.',
+                'mean_access_regret': 'Chosen access cost minus globally optimal available source cost; current selected-access route travel proxy.',
+                'pool_source_identity': 'Offline evaluator chooses smallest available source index; live harvest picker chooses ripest-first. Availability/access/path labels agree within a component, but physical stock IDs need not.',
                 'mean_probes': 'Raw pattern entries examined; independent of cross-pattern cache history.',
                 'new_destination_reads': 'Marginal shared-event cache misses, dependent on evaluation order; instrumentation amortization only, never standalone policy runtime.',
-                'static_route_cpu_ns': 'Event aggregate counted once; per-route CPU includes cached attribution and must not be summed or used as isolated policy timing.',
+                'static_route_elapsed_ns': 'Steady-clock elapsed nanoseconds, not thread CPU; accepts historical static_route_cpu_ns. Event aggregate counted once; per-route elapsed_ns (historical cpu_ns) includes cached attribution and must not be summed or used as isolated policy timing.',
                 'policy_timing': 'Requires later isolated native measurements; shared-event CPU cannot rank individual policies.'},
             'limits': 'Shadow labels do not measure downstream economy or live path cost; no automatic winner selection.'}
 

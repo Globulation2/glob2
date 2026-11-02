@@ -735,6 +735,16 @@ void Unit::handleMovementExitingBuilding()
 
 void Unit::handleMovementGoingToResource()
 {
+    if(owner->map->activeClaimsEnabled()) {
+        bool supplier=false;
+        if(!activeMaterialClaim && attachedBuilding) {
+            const auto* field=owner->map->getMaterialGradientSlot(owner->teamNumber,destinationPurpose,movementClass(),attachedBuilding->fetchesFromMarkets(),attachedBuilding);
+            Sint32 x=0,y=0;
+            supplier=field && owner->map->projectMaterialDestination(field,owner->teamNumber,destinationPurpose,movementClass(),posX,posY,&x,&y,
+                attachedBuilding->fetchesFromMarkets(),attachedBuilding) && !owner->map->materialAmountAtSlot(owner->map->coordToIndex(x,y),destinationPurpose);
+        }
+        if(!supplier){handleActiveMaterialMovement();return;}
+    }
     const MaterialClaimObservation claimObservation{*this};
 	Map *map=owner->map;
 

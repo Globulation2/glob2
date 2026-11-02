@@ -483,6 +483,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 
 	}
 	gameSection.commit();
+    map.rebuildActiveMaterialClaims();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
 	///compute it now

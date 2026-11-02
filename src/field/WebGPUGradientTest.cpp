@@ -106,6 +106,48 @@ TEST_CASE("owned worker bridge commits exact retained fields and recovers cancel
     }
     CHECK(service->metrics().executed == 30);
     CHECK(service->metrics().fallbacks == 10);
+    // Cancel the completed first member from the second member's cost callback.
+    // This deterministically exercises the aggregate commit gate on a real worker.
+    for (auto plan : {Plan::WebGPUFrozen8, Plan::WebGPUJacobi}) {
+        const field::Grid small{17,19};
+        std::vector<std::uint16_t> seeds(small.cells(),1); seeds[0]=65535;
+        auto first=seeds, second=seeds;
+        OwnedDestinations firstXY(small.cells()), secondXY(small.cells());
+        for (auto* xy : {&firstXY,&secondXY}) {
+            std::fill_n(xy->x.get(),small.cells(),123);
+            std::fill_n(xy->y.get(),small.cells(),456);
+        }
+        auto control=std::make_shared<OpenCLRequiredControl>();
+        std::array<BackendRequest,2> requests{
+            BackendRequest{first.data(),COST_LIMIT,small,*session,nullptr,
+                [](void*,auto){return LAND_STEPS;},nullptr},
+            BackendRequest{second.data(),COST_LIMIT,small,*session,control.get(),
+                [](void* p,auto){static_cast<OpenCLRequiredControl*>(p)->requestCancel();return LAND_STEPS;},nullptr}};
+        requests[0].requiredControl=control;
+        requests[0].destinations=firstXY.planes(); requests[1].destinations=secondXY.planes();
+        std::array<bool,2> committed{}, observed{};
+        for (unsigned i=0;i<2;++i) {
+            requests[i].executedOnDevice=&committed[i];
+            requests[i].deviceExecutionObserved=&observed[i];
+        }
+        struct Batch { std::span<const BackendRequest> requests; Plan plan; bool result=true; } batch{requests,plan};
+        const ComputeExecutor::Group group{1,{[](void* p,std::size_t){
+            auto& batch=*static_cast<Batch*>(p);
+            batch.result=executeWebGPUGradient(batch.requests,batch.plan);
+        },&batch}};
+        const auto fields=webGPUGradientStatus().fields;
+        auto batchTicket=executor.submit(std::span(&group,1));
+        executor.join(batchTicket);
+        CHECK_FALSE(batch.result);
+        CHECK(observed[0]); CHECK(observed[1]);
+        CHECK_FALSE(committed[0]); CHECK_FALSE(committed[1]);
+        CHECK(first==seeds); CHECK(second==seeds);
+        for (auto* xy : {&firstXY,&secondXY}) {
+            CHECK(std::all_of(xy->x.get(),xy->x.get()+small.cells(),[](auto v){return v==123;}));
+            CHECK(std::all_of(xy->y.get(),xy->y.get()+small.cells(),[](auto v){return v==456;}));
+        }
+        CHECK(webGPUGradientStatus().fields==fields);
+    }
     service->stop();
 }
 #endif

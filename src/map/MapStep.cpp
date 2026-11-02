@@ -477,7 +477,7 @@ void Map::switchFogOfWar(void)
 	PERF_SCOPE_TIME(Fog);
 	auto* previous=fogOfWar;
 	auto* next=previous==fogOfWarA.data() ? fogOfWarB.data() : fogOfWarA.data();
-	if(gradientRuntime->adaptive.fields.empty()) {
+	if(gradientRuntime->adaptive.fields.empty() && !activeClaimsEnabled()) {
 		memset(previous,0,size*sizeof(Uint32));
 		fogOfWar=next;
 	} else {
@@ -490,9 +490,14 @@ void Map::switchFogOfWar(void)
 			const auto type=resourceCells[index].resource.type;
 			if(old==next[index] || type==NO_RES_TYPE
 				|| !resourcePropertiesByIndex(type).visibleToHarvest || !materialMaskAt(index)) continue;
-			auto before=captureGradientTargetCell(index);
-			before.visibleTeams=old;
-			gradientTargetCellChanged(index,before);
+
+            // Pooling reads remote stock through its claimed access tile.
+            if (old&~next[index]) invalidateMaterialClaimsAt(index,false,true,old&~next[index]);
+            if (!gradientRuntime->adaptive.fields.empty()) {
+                auto before=captureGradientTargetCell(index);
+                before.visibleTeams=old;
+                gradientTargetCellChanged(index,before);
+            }
 		}
 	}
 }

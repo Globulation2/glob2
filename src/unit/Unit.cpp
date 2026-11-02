@@ -39,7 +39,8 @@ Unit::~Unit()
 {
 	assert(!populationMembership && !populationPrevious && !populationNext);
 	if (owner && owner->game) {
-        if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
+        if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
+        else if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 		if (hasCapability(UnitRuntimeTraits::ReleaseClearingClaims) && previousClearingArea && owner->map->getW()>0 && owner->map->isClearingAreaClaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber)==gid)
 			owner->map->setClearingAreaUnclaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber);
 		owner->game->unitCargo.erase(gid);
@@ -274,6 +275,7 @@ void Unit::setTargetBuilding(Building * b)
 
 void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction, UnitJobPurpose purpose)
 {
+    if(owner->map->activeClaimsEnabled())releaseActiveMaterialClaim();
     const MaterialClaimObservation claimObservation{*this};
 	Building* b=building;
 	if (attraction && !inside) {
@@ -565,7 +567,8 @@ void Unit::syncStep(void)
 
 void Unit::resetAtLevel(Sint32 newLevel)
 {
-    if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
+    if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
+        else if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 	// Reset abilities and activity without changing this entity's identity.
 	clearCargo();
 	init(posX, posY, gid, typeNum, owner, newLevel);
@@ -639,8 +642,14 @@ void Unit::applyTrainingUnchecked(const BuildingTrainingSpec& training, int abil
 
 void Unit::recordLethalDamage(int damage, int cause)
 {
-	if (hp >= UNIT_HP_DEATH_THRESHOLD && Sint64(hp) - damage < UNIT_HP_DEATH_THRESHOLD)
+	if (hp >= UNIT_HP_DEATH_THRESHOLD && Sint64(hp) - damage < UNIT_HP_DEATH_THRESHOLD) {
 		diagnosticDeathCause = cause;
+        // Other units and projectiles can hit this unit after its own tick.
+        // Release before the damage write so an end-of-tick save cannot retain
+        // ownership for a worker already unable to finish the pickup.
+        if(owner->map->activeClaimsEnabled())
+            releaseActiveMaterialClaim();
+    }
 }
 
 unsigned Unit::carriedPacketCount() const
@@ -806,6 +815,10 @@ RouteResult Unit::queryMaterialDestination(int material,Sint32* x,Sint32* y,int*
 
 void Unit::reconcileMaterialClaim()
 {
+    if(owner && owner->map && owner->map->activeClaimsEnabled()) {
+        if(activeMaterialClaim && !activeMaterialClaimValid())releaseActiveMaterialClaim();
+        return;
+    }
     if (!owner || !owner->map || !owner->map->materialClaimTrackingEnabled()) return;
     Map& map=*owner->map;
     struct ReconcileTiming {
@@ -836,15 +849,15 @@ void Unit::reconcileMaterialClaim()
         if (!pooled) { release(); return; }
         source=*pooled;
     }
-    const ResourceClaims::Claim claim{Uint32(source),Uint32(access),Uint8(destinationPurpose),map.getResource(source).type,exclusive};
+    const auto& sourceYield=map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(source).type))[destinationPurpose];
+    const Uint16 reserve=pooledHarvest && sourceYield.consumption!=ResourceConsumption::Infinite && !owner->game->gameHeader.isResourceGrowthDisabled()?sourceYield.seedReserve:0;
+    const ResourceClaims::Claim claim{Uint32(source),Uint32(access),Uint8(destinationPurpose),map.getResource(source).type,exclusive,reserve};
     if (map.observeMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity),claim)) {
         ++map.materialClaimTelemetry.changed;
-        const auto& sourceYield=map.resourceRegistry().yields(static_cast<ResourceId>(claim.resource))[destinationPurpose];
         const Uint32 amount=map.materialAmountAtSlot(source,destinationPurpose);
-        const Uint32 reserve=pooledHarvest && !owner->game->gameHeader.isResourceGrowthDisabled()?sourceYield.seedReserve:0;
         const Uint32 capacity=amount>reserve?amount-reserve:0;
-        if (sourceYield.consumption!=ResourceConsumption::Infinite
-            && map.materialClaimLedger().materialCount(claim.source,claim.material)>capacity)
+        if (!map.materialClaimLedger().available(ResourceClaims::unitOwner(gid,scriptIdentity),claim,capacity,
+            sourceYield.consumption==ResourceConsumption::Infinite))
             ++map.materialClaimTelemetry.overcommittedSelections;
         map.materialClaimTelemetry.peakActive=std::max<Uint64>(map.materialClaimTelemetry.peakActive,map.materialClaimLedger().size());
     }

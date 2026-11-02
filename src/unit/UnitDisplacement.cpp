@@ -17,6 +17,23 @@
 #include "GlobalContainer.h"
 
 namespace {
+std::optional<Offset> materialPickup(Unit& unit)
+{
+    auto& map=*unit.owner->map;
+    if(!map.activeClaimsEnabled())return map.doesUnitTouchMaterialSource(&unit,static_cast<MaterialId>(unit.destinationPurpose));
+    if(unit.activeMaterialClaim && !unit.activeMaterialClaimValid())unit.releaseActiveMaterialClaim();
+    bool observed=false;
+    for(int dx=-1;dx<=1;++dx)for(int dy=-1;dy<=1;++dy)
+        if(map.isMaterialTakeableSlot(unit.posX+dx,unit.posY+dy,unit.destinationPurpose)
+            && !map.isForbidden(unit.posX+dx,unit.posY+dy,unit.owner->me)) {
+            if(!unit.activeMaterialClaim && !observed) {
+                map.observeMaterialClaimPickupDecision(unit,unit.posX+dx,unit.posY+dy);observed=true;
+            }
+            if(unit.prepareActiveMaterialPickup(unit.posX+dx,unit.posY+dy))return Offset{dx,dy};
+        }
+    return std::nullopt;
+}
+
 // Crowding eligibility changes independently of tile movement when a warrior
 // enters/leaves a building or finishes a capability upgrade. Stack-only and
 // owner-thread; this records a conservative event, not a weighted seed change.
@@ -64,9 +81,9 @@ void Unit::handleDisplacement(void)
 
 			if (displacement==DIS_GOING_TO_RESOURCE)
 			{
-				if (auto off = owner->map->doesUnitTouchMaterialSource(this, static_cast<MaterialId>(destinationPurpose)))
+				if (auto off = materialPickup(*this))
 				{
-                    owner->map->observeMaterialClaimPickupDecision(*this,posX+off->dx,posY+off->dy);
+                    if(!owner->map->activeClaimsEnabled())owner->map->observeMaterialClaimPickupDecision(*this,posX+off->dx,posY+off->dy);
 					dx = off->dx;
 					dy = off->dy;
                     // During harvesting these coordinates identify the touched
@@ -105,7 +122,7 @@ void Unit::handleDisplacement(void)
 					movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
 					stopAttachedForBuilding(false); break;
 				}
-				const bool gotResource = owner->map->takeHarvest(posX, posY, dx, dy,
+				const bool gotResource = owner->map->activeClaimsEnabled()?takeActiveMaterialClaim():owner->map->takeHarvest(posX, posY, dx, dy,
 					static_cast<MaterialId>(destinationPurpose), owner->me);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.
@@ -274,9 +291,9 @@ void Unit::handleDisplacement(void)
 								assert(activity==ACT_FILLING);
 								{
 									int dummyDist;
-									if (auto off = owner->map->doesUnitTouchMaterialSource(this, static_cast<MaterialId>(destinationPurpose)))
+									if (auto off = materialPickup(*this))
 									{
-                                        owner->map->observeMaterialClaimPickupDecision(*this,posX+off->dx,posY+off->dy);
+                                        if(!owner->map->activeClaimsEnabled())owner->map->observeMaterialClaimPickupDecision(*this,posX+off->dx,posY+off->dy);
 										dx = off->dx;
 										dy = off->dy;
                                         targetX=(posX+dx)&(owner->map->getW()-1);

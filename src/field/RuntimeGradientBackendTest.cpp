@@ -712,6 +712,48 @@ TEST_SUITE("RuntimeGradientBackend")
 			CHECK(vulkanGradientStatus().fields == before.fields);
 		}
 	}
+    TEST_CASE("Vulkan late batch cancellation preserves costs and destination planes")
+    {
+        using namespace gradient_kernel;
+        if (!initializeVulkanGradient()) {
+            if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
+            return;
+        }
+        BackendSession session;
+        for (auto plan : {Plan::VulkanFrozen8, Plan::VulkanJacobi}) {
+            const field::Grid grid{17,19};
+            std::vector<std::uint16_t> seeds(grid.cells(),1); seeds[0]=65535;
+            auto first=seeds, second=seeds;
+            OwnedDestinations firstXY(grid.cells()), secondXY(grid.cells());
+            for (auto* xy : {&firstXY,&secondXY}) {
+                std::fill_n(xy->x.get(),grid.cells(),123);
+                std::fill_n(xy->y.get(),grid.cells(),456);
+            }
+            auto control=std::make_shared<OpenCLRequiredControl>();
+            std::array<BackendRequest,2> requests{
+                BackendRequest{first.data(),COST_LIMIT,grid,session,nullptr,
+                    [](void*,auto){return LAND_STEPS;},nullptr},
+                BackendRequest{second.data(),COST_LIMIT,grid,session,control.get(),
+                    [](void* p,auto){static_cast<OpenCLRequiredControl*>(p)->requestCancel();return LAND_STEPS;},nullptr}};
+            requests[0].requiredControl=control;
+            requests[0].destinations=firstXY.planes(); requests[1].destinations=secondXY.planes();
+            std::array<bool,2> committed{}, observed{};
+            for (unsigned i=0;i<2;++i) {
+                requests[i].executedOnDevice=&committed[i];
+                requests[i].deviceExecutionObserved=&observed[i];
+            }
+            const auto fields=vulkanGradientStatus().fields;
+            CHECK_FALSE(executeVulkanGradient(requests,plan));
+            CHECK(observed[0]); CHECK(observed[1]);
+            CHECK_FALSE(committed[0]); CHECK_FALSE(committed[1]);
+            CHECK(first==seeds); CHECK(second==seeds);
+            for (auto* xy : {&firstXY,&secondXY}) {
+                CHECK(std::all_of(xy->x.get(),xy->x.get()+grid.cells(),[](auto v){return v==123;}));
+                CHECK(std::all_of(xy->y.get(),xy->y.get()+grid.cells(),[](auto v){return v==456;}));
+            }
+            CHECK(vulkanGradientStatus().fields==fields);
+        }
+    }
 	TEST_CASE("Vulkan cancellation leaves original seeds untouched")
 	{
 		using namespace gradient_kernel;

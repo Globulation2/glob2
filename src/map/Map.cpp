@@ -7,6 +7,7 @@
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
+#include "claims/ActiveRouteRuntime.h"
 #include "gradient/GradientTargetCell.h"
 #include "gradient/GradientExecutionAudit.h"
 #include "Game.h"
@@ -525,6 +526,8 @@ void Map::applyGradientBackendRequest()
 void Map::configureCompute(unsigned threads)
 {
     if(game){game->drainTeamStats();game->drainHiring();}
+    // Retire our executor handles without publishing their future results.
+    if (materialClaimRoutes) (void)materialClaimRoutes->pipeline.exportPending();
 	finishGradientPipeline({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	finishResourceGrowth({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	compute.configure(threads);
@@ -536,10 +539,13 @@ void Map::configureCompute(unsigned threads)
 
 void Map::clear()
 {
+    materialClaimRoutes.reset();
     materialClaimProbe.reset();
     materialClaimFarmCache.clear();
     materialClaimFarmEpoch = {};
     materialClaimTracking = false;
+    activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Disabled;
+    activeClaimRules.reset();
     materialClaimTelemetry = {};
     materialClaims.reset(0);
 	if (game) game->areaEffects.reset();
