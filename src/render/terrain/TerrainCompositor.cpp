@@ -395,44 +395,46 @@ MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const 
 }
 std::pair<MaterialId, unsigned> Compositor::decorMaterial(const SceneMap &map, int x, int y) const
 {
-	// The decorated material most corners share: all four draw its full decor,
-	// two or three its edge decor, a single corner none.
-	MaterialId best = 0;
-	unsigned count = 0;
-	const auto corners = map.cellCorners(x & map.getMaskW(), y & map.getMaskH());
+	x &= map.getMaskW();
+	y &= map.getMaskH();
+	const auto corners = map.cellCorners(x, y);
 	std::array<MaterialId, 4> materials;
 	for (unsigned k = 0; k < corners.size(); ++k)
-		materials[k] = materialFor(map, corners[k]);
-	for (const auto id : materials)
 	{
-		if (definitions.materials[id].decor.full.empty())
-			continue;
-		const auto same = unsigned(std::count(materials.begin(), materials.end(), id));
-		if (same > count)
-		{
-			best = id;
-			count = same;
-		}
+		materials[k] = materialFor(map, corners[k]);
+		if (!decorSprites[materials[k]] || definitions.materials[materials[k]].decor.full.empty())
+			return {0, 0};
 	}
-	return {best, count};
+	if (materials[0] == materials[1] && materials[0] == materials[2] &&
+		materials[0] == materials[3])
+		return {materials[0], 4};
+	// Choosing one of four corners gives 2+2 borders equal odds and 3+1
+	// borders a three-to-one split. Presentation hashing never consumes game RNG.
+	const auto chosen = materials[hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0xd3c04a71u) & 3u];
+	return {chosen, unsigned(std::count(materials.begin(), materials.end(), chosen))};
 }
 GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const
 {
-    return decorSprites[decorMaterial(map, x, y).first];
+	const auto [material, count] = decorMaterial(map, x, y);
+	return count ? decorSprites[material] : nullptr;
 }
 int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
-	const auto [best, count] = decorMaterial(map, x, y);
-	const auto &decor = definitions.materials[best].decor;
-	if (count == 0 || (count < 2 && decor.connected.empty())) return -1;
+	const auto [material, count] = decorMaterial(map, x, y);
+	if (!count)
+		return -1;
+	const auto &decor = definitions.materials[material].decor;
 	unsigned mask = 0;
 	const auto corners = map.cellCorners(x, y);
 	for (unsigned k = 0; k < corners.size(); ++k)
-		if (const auto id = materialFor(map, corners[k]); id == best ||
-			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty())) mask |= 1u << k;
-	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed(), mask,
+		if (const auto id = materialFor(map, corners[k]);
+			id == material ||
+			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty()))
+			mask |= 1u << k;
+	return definitions.decorFrame(
+		material, x, y, count < 4, map.terrainSeed(), mask,
 		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
