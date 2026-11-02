@@ -546,6 +546,11 @@ def encoding_executor(jobs):
     # Spawn avoids inheriting SCons threads/leases and works on every host OS.
     if jobs == 1:
         return ThreadPoolExecutor(max_workers=1)
+    # Spawned workers unpickle tasks as tools.package_assets.* using the parent's
+    # sys.path at worker start. SCons restores sys.path after reading SConstruct,
+    # dropping the repository root its build scripts added before importing us.
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
     return ProcessPoolExecutor(max_workers=jobs, mp_context=multiprocessing.get_context("spawn"))
 
 
