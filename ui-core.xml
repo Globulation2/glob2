@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="27" failures="0" errors="0" skipped="0"><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="Bulgarian building failure rows wrap inside the panel and remain scrollable [display][artifacts]" time="0.855385" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="Bulgarian empty statistics notices wrap without ink outside their chart [display][artifacts]" time="0.807939" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="configured keyboard actions toggle presentation and queue pause without changing simulation [display]" time="1.05003" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="connection card refresh precedes Hive semantic and human ownership [display]" time="1.0466" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="connection controls share layout and modal ownership with gameplay input [display]" time="1.04634" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="construction choice displays recipe costs independently of storage [display][artifacts]" time="1.09142" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="custom mixed building panels render without mutating simulation [display][artifacts]" time="0.96231" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="desktop HUD descriptions share human orders and reject selection replacement [display]" time="1.07384" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="desktop building menu clicks queue authoritative worker and priority orders [display]" time="1.7036" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="desktop zoom speed and events share higher-surface ownership for semantic and human input [display][writes-preferences]" time="1.0953" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="home keyboard action wraps the camera and script messages preserve history [display]" time="1.05649" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="in-game music selection uses readable phone popup rows [display][artifacts][writes-preferences]" time="1.07526" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="initial camera survives waiting for the first presentation [display]" time="0.870328" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="local victory popup and results show the same deciding condition [display][artifacts]" time="1.80985" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]" time="1.05425" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match dialogs accept return and distinguish continuing from ending a game [display]" time="0.923476" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]" time="1.41007" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]" time="1.21654" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]" time="1.73266" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="service progress horizon covers mixed visits and preserves stock horizons" time="0.02736" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="spectator descriptions expose toggles and prohibit building orders [display]" time="1.13919" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="statistics sheet scroll stays open and fits phone rotations [display][artifacts]" time="1.35241" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" time="3.57426" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="tutorial semantic controls bind lesson step and destination [display]" time="0.916258" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]" time="1.18633" status="run" />
+  </testsuite><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="45.7986" status="run" />
+  <testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]" time="1.11138" status="run" />
+  </testsuite></testsuites>
