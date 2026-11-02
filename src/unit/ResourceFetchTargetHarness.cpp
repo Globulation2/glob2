@@ -360,6 +360,8 @@ TEST_SUITE("ResourceClaimLifecycle")
             return unit;
         };
         auto* a=make(0); auto* b=make(1);
+        REQUIRE(a->scriptIdentity==b->scriptIdentity); // Per-slot generations intentionally match.
+        REQUIRE(ResourceClaims::unitOwner(a->gid,a->scriptIdentity)!=ResourceClaims::unitOwner(b->gid,b->scriptIdentity));
         a->reconcileMaterialClaim(); CHECK(map.materialClaimLedger().size()==0);
         const auto checksum=game.checkSum(); const auto random=a->entityRandom;
         map.setMaterialClaimTrackingEnabled(true);
@@ -373,7 +375,7 @@ TEST_SUITE("ResourceClaimLifecycle")
         map.replaceResource(15,12,Resource{}); map.reconcileMaterialClaims(); CHECK(map.materialClaimLedger().size()==0);
         b->targetX=12; b->setValidTarget(true); b->reconcileMaterialClaim();
         REQUIRE(map.materialClaimState().at(first)==1);
-        const auto owner=b->scriptIdentity;
+        const auto owner=ResourceClaims::unitOwner(b->gid,b->scriptIdentity);
         delete team->detachUnit(1); CHECK(map.materialClaimLedger().find(owner)==nullptr);
         CHECK(map.materialClaimState().at(first)==0);
         a->attachedBuilding=inn; a->activity=Unit::ACT_FILLING; a->displacement=Unit::DIS_GOING_TO_RESOURCE;
@@ -399,7 +401,7 @@ TEST_SUITE("ResourceClaimLifecycle")
         map.setMaterialClaimTrackingEnabled(true);
         unit->stepDisplacement(); REQUIRE(unit->displacement==Unit::DIS_HARVESTING);
         REQUIRE_FALSE(unit->validTarget());
-        const auto* claim=map.materialClaimLedger().find(unit->scriptIdentity); REQUIRE(claim);
+        const auto* claim=map.materialClaimLedger().find(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity)); REQUIRE(claim);
         CHECK(claim->source==map.coordToIndex(9,8)); CHECK(claim->access==claim->source);
         unit->displacement=Unit::DIS_GOING_TO_BUILDING; unit->reconcileMaterialClaim();
         CHECK(map.materialClaimLedger().size()==0);
@@ -425,18 +427,18 @@ TEST_SUITE("ResourceClaimLifecycle")
         unit->attachedBuilding=inn; unit->activity=Unit::ACT_FILLING; unit->destinationPurpose=WHEAT;
         unit->displacement=Unit::DIS_HARVESTING; unit->dx=1; unit->dy=0; unit->setValidTarget(false);
         map.setMaterialClaimTrackingEnabled(true);
-        const auto* claim=map.materialClaimLedger().find(unit->scriptIdentity); REQUIRE(claim);
+        const auto* claim=map.materialClaimLedger().find(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity)); REQUIRE(claim);
         CHECK(claim->access==map.coordToIndex(9,8)); CHECK(claim->source==map.coordToIndex(11,8));
         const auto hits=map.materialClaimTelemetry.farmCacheHits;
         unit->reconcileMaterialClaim(); CHECK(map.materialClaimTelemetry.farmCacheHits==hits+1);
         map.setMaterialAmountSlot(map.coordToIndex(11,8),WHEAT,1);
         unit->reconcileMaterialClaim();
-        claim=map.materialClaimLedger().find(unit->scriptIdentity); REQUIRE(claim);
+        claim=map.materialClaimLedger().find(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity)); REQUIRE(claim);
         CHECK(claim->source==map.coordToIndex(9,8)); // Stock mutations invalidate the memo.
         map.setMaterialAmountSlot(map.coordToIndex(11,8),WHEAT,4);
         unit->displacement=Unit::DIS_GOING_TO_RESOURCE; unit->targetX=9; unit->targetY=8;
         unit->posX=4; unit->setValidTarget(true); unit->reconcileMaterialClaim();
-        claim=map.materialClaimLedger().find(unit->scriptIdentity); REQUIRE(claim);
+        claim=map.materialClaimLedger().find(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity)); REQUIRE(claim);
         CHECK(claim->source==map.coordToIndex(11,8));
     }
 }
@@ -444,8 +446,12 @@ TEST_SUITE("ResourceClaimLifecycle")
 TEST_CASE("sampled claim oracle freezes the actual decision and leaves checksums and RNG untouched" * doctest::test_suite("ResourceClaimProbe"))
 {
     glob2test::HeadlessGlobals globals;
+    for(bool metadata:{false,true}) for(bool depleted:{false,true}) {
+    if(depleted && !metadata)continue;
+    CAPTURE(metadata);CAPTURE(depleted);
     glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
     auto& game=fixture.game; auto& map=game.map; auto* team=game.teams[0];
+    map.setMaterialDestinationsEnabled(metadata);
     auto* inn=fixture.addBuilding("inn",20,20); REQUIRE(inn);
     REQUIRE(map.incResourceByIndex(12,12,WHEAT,0));
     REQUIRE(map.incResourceByIndex(15,12,WHEAT,0));
@@ -457,12 +463,17 @@ TEST_CASE("sampled claim oracle freezes the actual decision and leaves checksums
         unit->targetX=12; unit->targetY=12; unit->setValidTarget(true);
     }
     const auto* field=glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,team->myUnits[0]->movementClass());});
+    if(metadata)REQUIRE(map.materialGradientDestinations(field));
     map.setMaterialClaimTrackingEnabled(true);
-    const auto path=(glob2test::artifactDir()/"resource-claim-probe-test.jsonl.gz").string();
+    const auto path=(glob2test::artifactDir()/(std::string("resource-claim-probe-")+(metadata?"xy":"scalar")+(depleted?"-depleted":"")+".jsonl.gz")).string();
     std::filesystem::remove(path);
     ResourceClaims::Probe::Config config; config.sampleEvery=1; config.maxPending=1; config.maxSamples=2;
     auto probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);
     map.setMaterialClaimProbe(probe);
+    if(depleted) {
+        map.replaceResource(12,12,Resource{}); // Publication is deliberately still stale.
+        REQUIRE(map.materialAmountAtSlot(map.coordToIndex(12,12),WHEAT)==0);
+    }
     const auto before=game.checkSum(); const auto random=team->myUnits[0]->entityRandom;
     map.observeMaterialClaimDecision(*team->myUnits[0],field);
     REQUIRE(probe->metrics().submitted==1);
@@ -482,20 +493,34 @@ TEST_CASE("sampled claim oracle freezes the actual decision and leaves checksums
     while (std::getline(lines,line)) {
         const auto row=nlohmann::json::parse(line);
         if (row["kind"]=="decision") {
+            CHECK(row["reason"]==(depleted?"stale_goal":"fully_claimed"));
+            if(depleted) {
+                CHECK(row["capacity"]==0);
+                CHECK(row["features"]["resource_type"].is_null());
+                CHECK(row["features"]["yield_consumption"].is_null());
+            }
+            CHECK(row["material_destinations_enabled"]==metadata);
+            CHECK(row["destination_xy_missing"]==!metadata);
+            CHECK(row["destination_lookup"]==(metadata?"published-xy":"weighted-scalar-projection"));
             ++decisions; REQUIRE_FALSE(row["optimal"].is_null());
             CHECK(row["optimal"]["source"]==map.coordToIndex(15,12));
             CHECK(row["patterns"].size()==480);
         }
     }
     CHECK(decisions==1);
+    }
 }
 
 TEST_CASE("shadow collection preserves every tick of a real worker fetch trace" * doctest::test_suite("ResourceClaimProbe"))
 {
     glob2test::HeadlessGlobals globals;
+    for(bool metadata:{false,true}) {
+    CAPTURE(metadata);
     const auto run=[&](bool shadow) {
         glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=7183});
         auto& game=fixture.game; auto& map=game.map; auto* team=game.teams[0];
+        map.setMaterialDestinationsEnabled(metadata);
+        CHECK(map.materialDestinationsEnabled()==metadata);
         auto* inn=fixture.addBuilding("inn",20,20); REQUIRE(inn);
         REQUIRE(map.incResourceByIndex(12,12,WHEAT,0));
         REQUIRE(map.incResourceByIndex(15,12,WHEAT,0));
@@ -510,7 +535,7 @@ TEST_CASE("shadow collection preserves every tick of a real worker fetch trace" 
         std::shared_ptr<ResourceClaims::Probe> probe;
         if(shadow) {
             map.setMaterialClaimTrackingEnabled(true);
-            const auto path=(glob2test::artifactDir()/"resource-claim-shadow-trace.jsonl.gz").string();
+            const auto path=(glob2test::artifactDir()/(metadata?"resource-claim-shadow-trace-xy.jsonl.gz":"resource-claim-shadow-trace-scalar.jsonl.gz")).string();
             std::filesystem::remove(path);
             ResourceClaims::Probe::Config config; config.sampleEvery=1; config.maxSamples=256;
             probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);
@@ -534,6 +559,7 @@ TEST_CASE("shadow collection preserves every tick of a real worker fetch trace" 
     for(std::size_t tick=0;tick<with.size();++tick) {
         CAPTURE(tick);
         REQUIRE(with[tick]==without[tick]);
+    }
     }
 }
 

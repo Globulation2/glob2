@@ -4,6 +4,49 @@
 
 TEST_SUITE("ClaimRoutePipeline")
 {
+    TEST_CASE("background requests enforce their deterministic expansion budget")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        const auto world = SimulationSnapshot::capture(fixture.game, SimulationSnapshot::captureCatalog(fixture.game));
+        for (unsigned threads : {0u, 3u}) {
+            ComputeExecutor executor; executor.configure(threads);
+            ResourceClaims::RoutePipeline pipeline(executor);
+            ResourceClaims::RouteInput input{world, {}, 0, 10};
+            input.maximumExpansions = 1;
+            pipeline.submit(1, 1, 10, input);
+            const auto ready = pipeline.publish(11);
+            REQUIRE(ready.size() == 1);
+            CHECK(ready[0].route.status == ResourceClaims::RouteStatus::ExpansionLimit);
+            CHECK(ready[0].route.expansions == 1);
+            CHECK(ready[0].route.cells.empty());
+            input.maximumExpansions = 0;
+            CHECK_THROWS_AS(pipeline.submit(1, 2, 11, input), std::invalid_argument);
+        }
+    }
+    TEST_CASE("thousands of same tick paths share one executor batch")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        const auto world = SimulationSnapshot::capture(fixture.game, SimulationSnapshot::captureCatalog(fixture.game));
+        ComputeExecutor executor; executor.configure(3);
+        ResourceClaims::RoutePipeline pipeline(executor);
+        ResourceClaims::RouteInput input{world, {}, 0, 0};
+        for (unsigned unit = 0; unit < 2000; ++unit) pipeline.submit(unit, 1, 10, input);
+        CHECK(executor.liveBatches() == 0);
+        pipeline.flush();
+        CHECK(executor.liveBatches() == 1);
+        CHECK_THROWS_AS(pipeline.submit(3000, 1, 10, input), std::logic_error);
+        CHECK_THROWS_AS(pipeline.submit(3000, 1, 11, input), std::logic_error);
+        CHECK(pipeline.publish(10).empty());
+        const auto ready = pipeline.publish(11);
+        REQUIRE(ready.size() == 2000);
+        for (unsigned i = 0; i < ready.size(); ++i) {
+            CHECK(ready[i].identity.unit == i);
+            CHECK(ready[i].route.status == ResourceClaims::RouteStatus::Found);
+        }
+        CHECK(executor.liveBatches() == 0);
+    }
     TEST_CASE("worker count does not change fixed publication or saved pending paths")
     {
         glob2test::HeadlessGlobals globals;
@@ -37,6 +80,36 @@ TEST_SUITE("ClaimRoutePipeline")
             REQUIRE(resumed.size() == 1); CHECK(resumed[0].route.cells == completed[0].route.cells);
             CHECK(resumed[0].identity == identity);
         }
+    }
+    TEST_CASE("partially canceled groups retain only surviving saved results")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        const auto world = SimulationSnapshot::capture(fixture.game, SimulationSnapshot::captureCatalog(fixture.game));
+        ComputeExecutor executor; executor.configure(3);
+        ResourceClaims::RoutePipeline pipeline(executor);
+        ResourceClaims::RouteInput input{world, {}, 0, 10};
+        for (unsigned unit : {1u, 2u, 3u}) pipeline.submit(unit, 1, 10, input);
+        pipeline.flush(); pipeline.cancel(2);
+        const auto saved = pipeline.exportPending();
+        REQUIRE(saved.size() == 2);
+        CHECK(saved[0].identity.unit == 1); CHECK(saved[1].identity.unit == 3);
+        ResourceClaims::RoutePipeline restored(executor); restored.restore(saved);
+        CHECK(restored.publish(10).empty());
+        const auto actual = restored.publish(11); REQUIRE(actual.size() == 2);
+        CHECK(actual[0].identity.unit == 1); CHECK(actual[1].identity.unit == 3);
+        REQUIRE(pipeline.publish(11).size() == 2);
+        {
+            ResourceClaims::RoutePipeline abandoned(executor);
+            abandoned.submit(4, 1, 12, input); // Never flushed: no live worker borrows it.
+            CHECK(executor.liveBatches() == 0);
+        }
+        {
+            ResourceClaims::RoutePipeline abandoned(executor);
+            abandoned.submit(4, 1, 12, input); abandoned.flush();
+            CHECK(executor.liveBatches() == 1);
+        }
+        CHECK(executor.liveBatches() == 0);
     }
     TEST_CASE("cancelled task results cannot publish and invalid inputs fail before submission")
     {

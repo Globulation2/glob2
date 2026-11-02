@@ -370,6 +370,8 @@ void constraints(const Request &r)
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
         requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
+        if (r.has("--material-destinations") && (r.has("--load-game") || r.has("--write-replay")))
+            throw std::invalid_argument("Material destination research mode requires a new game and cannot record a replay");
         requireParent("--resource-claims-sample-every", "--resource-claims-shadow");
         requireParent("--resource-claims-max-samples", "--resource-claims-shadow");
         requireParent("--resource-claims-max-bytes", "--resource-claims-shadow");
@@ -566,6 +568,7 @@ const std::vector<Command> &commands()
 			 integer("--ai-profile-from-tick", "First observed tick to profile", 0, 2147483647, "0"),
 			 value("--ai-profile-gate", "player:observed-tick", "Hold one decision until ai-profile-release exists in output-dir; diagnostic sampling only"),
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
+             flag("--material-destinations", "Enable experimental material destination metadata for a new game; excludes replay recording"),
              flag("--resource-claims-shadow", "Observe worker material claims without enforcing capacity; rebuild diagnostic state after load"),
              integer("--resource-claims-sample-every", "Sample one in N material movement/pickup decisions using diagnostic hashing", 1, 1000000000, "1000"),
              integer("--resource-claims-max-samples", "Maximum submitted shadow oracle samples (excluded events are counted)", 1, 1000000, "10000"),

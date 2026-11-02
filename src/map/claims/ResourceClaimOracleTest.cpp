@@ -111,6 +111,7 @@ TEST_SUITE("ResourceClaimOracle")
         CHECK(ripe.pooled); CHECK(ripe.capacity==3); CHECK(ripe.available);
         CHECK(ripe.distance==20); CHECK(ripe.access==fixture.index(3,0));
         CHECK(ripe.stance==fixture.index(2,0));
+        CHECK(ripe.accessDistance==34); // Touching this exact source costs more than entering its farm.
         CHECK_FALSE(candidate(result,fixture.index(3,0)).available);
         fixture.resources->cells[fixture.index(3,0)].resource.clear();
         result=fixture.run(); REQUIRE(result.best);
@@ -196,7 +197,7 @@ TEST_SUITE("ResourceClaimOracle")
     {
         using namespace ResourceClaims::Experiment;
         Result oracle;
-        Candidate seed; seed.source=3; seed.component=0; seed.accessEligible=true;
+        Candidate seed; seed.source=3; seed.component=0; seed.accessEligible=true; seed.accessDistance=30;
         Candidate ripe; ripe.source=4; ripe.component=0; ripe.available=true; ripe.distance=20;
         oracle.candidates={seed,ripe};
         PatternEvaluator evaluator(oracle,8,8,1,7);
@@ -206,5 +207,6 @@ TEST_SUITE("ResourceClaimOracle")
             [&](Uint32 probe){ CHECK(probe==0); return 3u; });
         CHECK_FALSE(outcome.fallback); CHECK(outcome.source==4); CHECK(outcome.access==3);
         CHECK(outcome.distance==20);
+        CHECK(outcome.accessDistance==30);
     }
 }

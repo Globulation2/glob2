@@ -39,7 +39,7 @@ Unit::~Unit()
 {
 	assert(!populationMembership && !populationPrevious && !populationNext);
 	if (owner && owner->game) {
-        if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(scriptIdentity);
+        if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 		if (hasCapability(UnitRuntimeTraits::ReleaseClearingClaims) && previousClearingArea && owner->map->getW()>0 && owner->map->isClearingAreaClaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber)==gid)
 			owner->map->setClearingAreaUnclaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber);
 		owner->game->unitCargo.erase(gid);
@@ -565,7 +565,7 @@ void Unit::syncStep(void)
 
 void Unit::resetAtLevel(Sint32 newLevel)
 {
-    if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(scriptIdentity);
+    if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 	// Reset abilities and activity without changing this entity's identity.
 	clearCargo();
 	init(posX, posY, gid, typeNum, owner, newLevel);
@@ -814,7 +814,7 @@ void Unit::reconcileMaterialClaim()
         ~ReconcileTiming() { map.materialClaimTelemetry.unitReconcileNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count(); }
     } timing{map};
     ++map.materialClaimTelemetry.reconciliations;
-    const auto release=[&] { map.releaseMaterialClaim(scriptIdentity); };
+    const auto release=[&] { map.releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity)); };
     if (isDead || hp<UNIT_HP_DEATH_THRESHOLD || medical!=MED_FREE || !attachedBuilding
         || activity!=ACT_FILLING || !validMaterial(destinationPurpose)
         || (!performance[WALK] && !performance[SWIM] && !performance[FLY])
@@ -837,7 +837,7 @@ void Unit::reconcileMaterialClaim()
         source=*pooled;
     }
     const ResourceClaims::Claim claim{Uint32(source),Uint32(access),Uint8(destinationPurpose),map.getResource(source).type,exclusive};
-    if (map.observeMaterialClaim(scriptIdentity,claim)) {
+    if (map.observeMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity),claim)) {
         ++map.materialClaimTelemetry.changed;
         const auto& sourceYield=map.resourceRegistry().yields(static_cast<ResourceId>(claim.resource))[destinationPurpose];
         const Uint32 amount=map.materialAmountAtSlot(source,destinationPurpose);

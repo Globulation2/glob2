@@ -114,12 +114,17 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'material_destinations'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
             raise ValueError('saved games retain their seeds')
+        if self.kind == 'game' and 'material_destinations' in config:
+            if type(config['material_destinations']) is not bool:
+                raise ValueError('material_destinations must be a boolean')
+            if config['material_destinations'] and job['outputs'].get('replay'):
+                raise ValueError('material destinations cannot record replay output')
         if self.kind == 'game' and 'resource_claims_shadow' in config:
             claims = config['resource_claims_shadow']
             bounds = {'sample_every': (1, 1000000000), 'max_samples': (1, 1000000), 'max_bytes': (1024, 2147483647)}
@@ -161,8 +166,13 @@ class EngineJob:
                     raise ValueError('new game requires players and game seed')
             if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
                 raise ValueError('new game requires players and game seed')
-            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'win_probability_permille')):
+            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'experiments', 'material_destinations', 'win_probability_permille')):
                 raise ValueError('cannot override a saved game configuration')
+            experiments = config.get('experiments', [])
+            if (not isinstance(experiments, list) or len(experiments) > 64 or
+                    any(not isinstance(key, str) or not key or len(key) > 128 for key in experiments) or
+                    len(experiments) != len(set(experiments))):
+                raise ValueError('experiments must be a unique list of at most 64 nonempty experiment keys')
             if not isinstance(config.get('rules', {}), dict) or any(
                     not isinstance(k, str) or type(v) is not int for k, v in config.get('rules', {}).items()):
                 raise ValueError('rules must map names to integer values')
@@ -223,6 +233,10 @@ class EngineJob:
                 add('--win-condition', condition)
             for name, value in sorted(config.get('rules', {}).items()):
                 add('--rule', f'{name}={value}')
+            if config.get('material_destinations', False):
+                args.append('--material-destinations')
+            for experiment in config.get('experiments', []):
+                add('--experiment', experiment)
             # Planners freeze the threshold in the job. Low-level requests keep
             # CLI defaults (95% on new games); an explicit zero disables it.
             if 'win_probability_permille' in config:
@@ -275,6 +289,11 @@ class EngineJob:
             raise ValueError('invalid engine completion status')
         if result.get('status') == 'completed' and 'resource_claims_shadow' in job['config']:
             from .resource_claims import ARTIFACT, trace_rows
+            mode = result.get('config', {}).get('material_destinations_enabled')
+            if type(mode) is not bool:
+                raise ValueError('engine did not attest saved/new material destination mode')
+            if 'material_destinations' in job['config'] and mode != job['config']['material_destinations']:
+                raise ValueError('engine material destination mode differs from frozen request')
             attestation = result.get('resource_claims_shadow', {})
             if attestation.get('schema_version') != 1 or attestation.get('enforced') is not False:
                 raise ValueError('engine did not attest shadow-only resource claims')

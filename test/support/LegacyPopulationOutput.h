@@ -41,7 +41,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY || formatVersion<FILE_FORMAT_VERSION_MAINLINE_TERRAINS || formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
+    bool tracking() const { return formatVersion<194 || formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY || formatVersion<FILE_FORMAT_VERSION_MAINLINE_TERRAINS || formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");

@@ -26,6 +26,20 @@ class Planner:
         self.jobs, self.maps = [], {}
         if config.get('parameter_domain', 'search') not in ('search', 'legal'):
             raise ValueError('parameter_domain must be search or legal')
+        if 'material_destinations' in config:
+            if type(config['material_destinations']) is not bool:
+                raise ValueError('material_destinations must be a boolean')
+            if config['material_destinations'] and any(
+                    self.bundles[build]['capabilities'].get('material_destinations_version') != 1 for build in self.builds):
+                raise ValueError('build does not advertise material destinations version 1')
+        experiments = config.get('experiments', [])
+        if not isinstance(experiments, list) or any(not isinstance(key, str) or not key for key in experiments):
+            raise ValueError('experiments must be a list of experiment keys')
+        if experiments:
+            for build in self.builds:
+                known = self.bundles[build]['capabilities'].get('experiments')
+                if not isinstance(known, list) or set(experiments)-set(known):
+                    raise ValueError('requested experiments must exist in each pinned build catalog')
 
     def parameter_samples(self, build, method, count, seed):
         return generator_samples(self.bundles[build]['capabilities'], method, count, seed,
@@ -90,6 +104,8 @@ class Planner:
                     config={'generator': method, 'params': params, 'candidates': config.get('candidates', 5),
                             'players': players, 'ticks': config.get('ticks', DEFAULT_GAME_TICKS), 'ai_params': {},
                             **({'rules': config['rules']} if 'rules' in config else {}),
+                            **({'experiments': config['experiments']} if 'experiments' in config else {}),
+                            **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
@@ -139,6 +155,8 @@ class Planner:
                     config={'players': players, 'ticks': config.get('ticks', DEFAULT_GAME_TICKS),
                             'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
                             **({'rules': config['rules']} if 'rules' in config else {}),
+                            **({'experiments': config['experiments']} if 'experiments' in config else {}),
+                            **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},

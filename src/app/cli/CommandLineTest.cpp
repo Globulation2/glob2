@@ -265,3 +265,13 @@ TEST_CASE("resource claim shadow collection is an explicit game-run observer" * 
     CHECK(request.get("--resource-claims-shadow")=="true");
     CHECK_THROWS(Cli::parse({"game","repeat","checkpoint.game.gz","--resource-claims-shadow"}));
 }
+
+TEST_CASE("material destination experiment is explicit new game only" * doctest::test_suite("CommandLine"))
+{
+    const std::vector<std::string> base={"game","run","--output-dir","artifacts/metadata-cli-test","--map-file","test.map","--game-seed","42","--player","castor","--material-destinations"};
+    CHECK_NOTHROW(Cli::parse(base));
+    auto replay=base;replay.push_back("--write-replay");CHECK_THROWS(Cli::parse(replay));
+    CHECK_THROWS(Cli::parse({"game","repeat","test.game","--material-destinations"}));
+    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/metadata-cli-test","--load-game","test.game","--material-destinations"}));
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/metadata-cli-test","--load-game","test.game","--resource-claims-shadow"}));
+}

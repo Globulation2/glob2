@@ -14,7 +14,11 @@
 
 namespace ResourceClaims
 {
-using Owner = std::uint64_t; // Unit script identity, not its reusable slot.
+using Owner = std::uint64_t;
+// Script identities are generations local to a reusable GID, not global IDs.
+// Include both so different live slots and successive occupants never alias.
+constexpr Owner unitOwner(std::uint16_t gid, std::uint32_t generation)
+{ return (Owner(generation) << 16) | gid; }
 struct Claim
 {
     std::uint32_t source = 0, access = 0;

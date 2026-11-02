@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Frozen claim campaign and clustered missing-data analysis contracts."""
 import gzip
+import importlib.util
 import io
 import json
 from pathlib import Path
@@ -13,7 +14,7 @@ from tools.tournaments.jobs import EngineJob
 from tools.tournaments.common import store_artifact
 from tools.tournaments.model import validate_job
 from tools.tournaments.resource_claims import (ARTIFACT, COLUMNS, analyze, coverage_audit, plan,
-    read_game, scenario_hits, supplemental_plan, summarize, trace_rows)
+    MeanIntervals, read_game, scenario_hits, supplemental_plan, summarize, trace_rows)
 
 
 def trace(count=1, *, optimum=10, cost=15, access_cost=15, fallback=False):
@@ -37,7 +38,8 @@ def stream(rows):
 class ResourceClaimExperiments(unittest.TestCase):
     def bundle(self):
         return {'id': 'a'*64, 'capabilities': {
-            'resource_claims_shadow_version': 1,
+            'resource_claims_shadow_version': 1, 'material_destinations_version': 1,
+            'experiments': ['farm-areas', 'markets-v2'],
             'ais': [{'id': i+1, 'name': name} for i, name in enumerate(
                 ['numbi', 'castor', 'warrush', 'nicowar', 'econo', 'maxima', 'cortex', 'cabino'])],
             'generators': [{'method': n, 'editorOnly': False} for n in (15, 21)]}}
@@ -57,16 +59,71 @@ class ResourceClaimExperiments(unittest.TestCase):
         self.assertTrue(all(j['config']['win_probability_permille'] == 950 for j in broad))
         self.assertFalse({'numbi', 'castor', 'warrush'} & {p for j in stress for p in j['config']['players']})
         self.assertEqual(manifest['design']['cohort_weights'], {'broad': 0.5, 'farming_stress': 0.5})
-        self.assertEqual(len(manifest['design']['stress_strata']), 6)
+        self.assertEqual(len(manifest['design']['stress_strata']), 12)
+        self.assertEqual(manifest['design']['family_weights'], {'broad': 0.5, 'protected_farming': 0.25, 'pooled_farming': 0.25})
+        self.assertEqual(sum(j['labels']['farm_mode'] == 'pooled' for j in stress), 8)
+        self.assertEqual(sum(j['labels']['farm_mode'] == 'protected' for j in stress), 8)
         for job in manifest['jobs']:
             validate_job(job)
             command = EngineJob('game').command(job, {'directory': '/bundle', 'executable': 'glob2'}, '/attempt', {})
             self.assertIn('--resource-claims-shadow', command)
+            self.assertIn('--material-destinations', command)
+            self.assertIs(job['labels']['material_destinations'], True)
             self.assertEqual(command[command.index('--resource-claims-max-samples')+1], '512')
             self.assertGreater(job['limits']['artifact_bytes'], job['config']['resource_claims_shadow']['max_bytes'])
+            if job['labels']['farm_mode'] == 'pooled':
+                self.assertEqual(job['config']['experiments'], ['farm-areas'])
+                self.assertEqual(command[command.index('--experiment')+1], 'farm-areas')
+            else:
+                self.assertNotIn('--experiment', command)
         large = plan(self.bundle(), games=1000, seed=19)
         self.assertEqual(len(large['jobs']), 1000)
         self.assertEqual(sum(j['labels']['claim_cohort'] == 'farming_stress' for j in large['jobs']), 500)
+        self.assertEqual(sum(j['labels']['farm_mode'] == 'pooled' for j in large['jobs']), 250)
+
+    def test_experiment_keys_are_catalog_checked_and_saves_cannot_override_them(self):
+        from tools.tournaments.experiments import Planner
+        missing = self.bundle(); missing['capabilities']['experiments'] = []
+        with self.assertRaisesRegex(ValueError, 'pinned build catalog'):
+            plan(missing)
+        for keys in ('farm-areas', ['unknown']):
+            with self.assertRaises(ValueError):
+                Planner('ai_comparison', {'id': 'bad', 'sample_games': 1, 'experiments': keys}, [self.bundle()]).plan()
+        request = plan(self.bundle())['jobs'][0]
+        for keys in ('farm-areas', ['farm-areas', 'farm-areas'], [''], [1]):
+            with self.assertRaisesRegex(ValueError, 'experiments'):
+                validate_job(request | {'config': request['config'] | {'experiments': keys}})
+        saved = request | {'inputs': {'save': {'job': 'frozen', 'artifact': 'save.game.gz'}}, 'seeds': {},
+                           'depends_on': ['frozen'], 'config': {'ticks': 1000, 'experiments': []}}
+        with self.assertRaisesRegex(ValueError, 'saved game'):
+            validate_job(saved)
+
+    def test_material_destinations_are_frozen_boolean_new_game_only(self):
+        bundle = self.bundle()
+        del bundle['capabilities']['material_destinations_version']
+        with self.assertRaisesRegex(ValueError, 'material destinations'):
+            plan(bundle)
+        item = plan(self.bundle())['jobs'][0]
+        item['config']['material_destinations'] = 1
+        with self.assertRaisesRegex(ValueError, 'boolean'):
+            EngineJob('game').validate(item)
+        item['config']['material_destinations'] = True
+        item['outputs']['replay'] = True
+        with self.assertRaisesRegex(ValueError, 'replay'):
+            EngineJob('game').validate(item)
+        item['outputs']['replay'] = False
+        item['inputs'] = {'save': {'sha256': 'a'*64}}
+        item['seeds'] = {}
+        item['config'] = {'material_destinations': False}
+        with self.assertRaisesRegex(ValueError, 'saved game'):
+            EngineJob('game').validate(item)
+        rows = trace()
+        old = read_game(stream(rows), {})
+        self.assertEqual(old['diagnostics']['missing_xy_events'], 1)
+        rows[1].update(destination_lookup='published-xy', destination_xy_missing=False)
+        new = read_game(stream(rows), {})
+        self.assertEqual(new['diagnostics']['published_xy_events'], 1)
+        self.assertEqual(new['diagnostics']['missing_xy_events'], 0)
 
     def test_game_means_not_decision_counts_are_interval_units(self):
         first = read_game(stream(trace(10, cost=10, access_cost=10)), {'claim_cohort': 'broad'})
@@ -80,6 +137,36 @@ class ResourceClaimExperiments(unittest.TestCase):
         many = [(str(i), first if i < 3 else second) for i in range(6)]
         self.assertEqual(summarize(many, draws=20, seed=7), summarize(many, draws=20, seed=7))
         self.assertIsNotNone(summarize(many, draws=20)[0]['mean_regret']['ci95'])
+
+    @unittest.skipUnless(importlib.util.find_spec('numpy'), 'NumPy is a contributor development dependency')
+    def test_static_routes_use_strategy_optimum_and_count_event_cpu_once(self):
+        rows = trace()
+        rows[1].update(oracle_ns=123, static_route_cpu_ns=456, static_routes=[{
+            'source_optimal_cost': 10, 'access_optimal_cost': 30,
+            'direct_source_component': {'status': 'reached', 'cost': 10, 'expansions': 5, 'cpu_ns': 999},
+            'via_probe_selected_access': {'status': 'reached', 'cost': 40, 'expansions': 8, 'cpu_ns': 999},
+        }])
+        game = read_game(stream(rows), {})
+        self.assertEqual(game['diagnostics']['static_route_cpu_ns'], 456)
+        summary = {x['strategy']: x for x in summarize([('game', game)], routes=True) if x['stratum'] == 'all'}
+        self.assertEqual(summary['direct_source_component']['mean_regret']['mean'], 0)
+        self.assertEqual(summary['via_probe_selected_access']['mean_regret']['mean'], 10)
+        rows[1]['static_routes'][0]['via_probe_selected_access'].update(status='continuation_limit', cost=None)
+        failed = read_game(stream(rows), {})['route_metrics'][('via_probe_selected_access', 'static', 'all', 'all')]
+        self.assertIsNone(failed['mean_regret'])
+        self.assertEqual(failed['limited_rate'], 1)
+
+    def test_vectorized_game_bootstrap_reuses_paired_weights_and_is_bounded(self):
+        intervals = MeanIntervals(100, 7)
+        samples = [(str(i), float(i)) for i in range(32)]
+        lower, upper = intervals.interval(samples)
+        shifted = intervals.interval([(identity, value+100) for identity, value in samples])
+        self.assertEqual(shifted, [lower+100, upper+100])
+        self.assertEqual(len(intervals.weights), 1)
+        self.assertEqual(intervals.interval([(identity, 7.0) for identity, value in samples]), [7, 7])
+        limited = MeanIntervals(100, 7); limited.max_bytes = 100
+        with self.assertRaisesRegex(ValueError, '64 MiB'):
+            limited.interval(samples)
 
     def test_missing_optimum_and_zero_denominator_are_never_zero_regret(self):
         missing = read_game(stream(trace(optimum=None, cost=None, access_cost=None, fallback=True)), {})
@@ -112,16 +199,43 @@ class ResourceClaimExperiments(unittest.TestCase):
         job = plan(self.bundle())['jobs'][0]
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)/'output'; output.mkdir()
-            result = {'schema_version': 1, 'status': 'completed', 'resource_claims_shadow': {
+            result = {'schema_version': 1, 'status': 'completed', 'config': {'material_destinations_enabled': True}, 'resource_claims_shadow': {
                 'schema_version': 1, 'enforced': False, 'submitted': 1, 'completed': 1}}
             (output/'result.json').write_text(json.dumps(result))
             with gzip.open(output/ARTIFACT, 'wt') as out:
                 out.write(stream(trace()).getvalue())
             self.assertEqual(EngineJob('game').collect(job, directory), result)
+            result['config']['material_destinations_enabled'] = False
+            (output/'result.json').write_text(json.dumps(result))
+            with self.assertRaisesRegex(ValueError, 'mode differs'):
+                EngineJob('game').collect(job, directory)
+            result['config']['material_destinations_enabled'] = True
+            (output/'result.json').write_text(json.dumps(result))
             with gzip.open(output/ARTIFACT, 'wt') as out:
                 out.write(stream(trace()[:-1]).getvalue())
             with self.assertRaisesRegex(ValueError, 'incomplete'):
                 EngineJob('game').collect(job, directory)
+
+    def test_complete_capped_or_queue_excluded_traces_are_censored(self):
+        rows = trace()
+        for excluded in ('excluded_sample_limit', 'excluded_queue_limit'):
+            rows[-1][excluded] = 3
+            measured = read_game(stream(rows), {})
+            self.assertTrue(measured['sampling']['censored'])
+            self.assertIn(excluded, measured['sampling']['reasons'])
+            self.assertEqual(measured['diagnostics']['last_sample_tick'], 100000)
+            self.assertEqual(measured['diagnostics']['late_sample_events'], 1)
+            audit = coverage_audit([('game', measured)], min_games=1, min_events=1)
+            sparse = next(r for r in audit['strata'] if r['scenario'] == 'sparse_material')
+            self.assertEqual(sparse['games'], 1)
+            self.assertEqual(sparse['uncensored_games'], 0)
+            self.assertFalse(sparse['covered'])
+            self.assertFalse(audit['ready_for_policy_selection'])
+            rows[-1][excluded] = 0
+        del rows[-1]['excluded_queue_limit']
+        missing = read_game(stream(rows), {})
+        self.assertTrue(missing['sampling']['censored'])
+        self.assertFalse(missing['sampling']['exclusion_coverage_known'])
 
     def test_actual_sample_coverage_demands_missing_supplementals(self):
         rows = trace()
@@ -171,6 +285,7 @@ class ResourceClaimExperiments(unittest.TestCase):
             self.assertEqual(report['coverage'][1]['category'], 'missing')
             overall = next(r for r in report['groups'] if r['stratum'] == 'all')
             self.assertEqual(overall['mean_regret']['mean'], 5)
+            self.assertIn('evaluation order', report['measurement_semantics']['new_destination_reads'])
             self.assertEqual(overall['games'], 1)
             self.assertFalse(report['scenario_coverage']['ready_for_policy_selection'])
 

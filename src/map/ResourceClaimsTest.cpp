@@ -4,6 +4,15 @@
 
 TEST_SUITE("ResourceClaims")
 {
+    TEST_CASE("owner keys distinguish equal generations in different slots and slot reuse")
+    {
+        const auto first=ResourceClaims::unitOwner(0,1);
+        const auto neighbor=ResourceClaims::unitOwner(1,1);
+        const auto replaced=ResourceClaims::unitOwner(0,2);
+        CHECK(first!=neighbor);CHECK(first!=replaced);CHECK(neighbor!=replaced);
+        CHECK(ResourceClaims::unitOwner(65535,UINT32_MAX)==0xffffffffffffull);
+    }
+
     TEST_CASE("finite packets transfer atomically and release idempotently")
     {
         ResourceClaims::Ledger claims; claims.reset(16);

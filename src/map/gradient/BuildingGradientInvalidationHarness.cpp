@@ -1342,17 +1342,20 @@ TEST_SUITE("BuildingGradientInvalidation")
     TEST_CASE("pre194 material gradients load with destination metadata disabled [save-format]")
     {
         glob2test::HeadlessGlobals globals;
+        for (int version : {191,192,193}) {
+        CAPTURE(version);
         World original(5),restored(5);
         original.game.map.configureGradientPipeline(0,2);
         restored.game.map.configureGradientPipeline(0,2);
         restored.game.map.setMaterialDestinationsEnabled(true);
-        const auto bytes=saveLegacyRuntime(original.game.map,191);
+        const auto bytes=saveLegacyRuntime(original.game.map,version);
         auto* backend=new GAGCore::MemoryStreamBackend;
         backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
         GAGCore::BinaryInputStream input(backend);
-        restored.game.map.loadRuntimeState(&input,191);
+        restored.game.map.loadRuntimeState(&input,version);
         CHECK_FALSE(restored.game.map.materialDestinationsEnabled());
         CHECK(input.readUint32("followingSection")==RuntimeSentinel);
+        }
     }
 
     TEST_CASE("material destination planes retain published and pending generations across binary and text saves [save-format]")

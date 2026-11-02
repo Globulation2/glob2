@@ -11,7 +11,7 @@
 
 namespace ResourceClaims
 {
-enum class RouteStatus { Found, Unreachable, CostLimit };
+enum class RouteStatus { Found, Unreachable, CostLimit, ExpansionLimit };
 struct Route
 {
     RouteStatus status = RouteStatus::Unreachable;
@@ -33,7 +33,8 @@ public:
     // route, including reopening nodes if a supplied heuristic is inconsistent.
     template<class Passable, class StepCost, class Goal, class Heuristic>
     Route find(field::Grid grid, std::uint32_t start, std::uint32_t maximumCost,
-        Passable passable, StepCost stepCost, Goal goal, Heuristic heuristic)
+        Passable passable, StepCost stepCost, Goal goal, Heuristic heuristic,
+        std::uint32_t maximumExpansions = std::numeric_limits<std::uint32_t>::max())
     {
         if (start >= grid.cells()) throw std::out_of_range("claim route start");
         if (nodes.size() != grid.cells()) { nodes.assign(grid.cells(), {}); generation = 0; }
@@ -50,6 +51,7 @@ public:
             std::pop_heap(open.begin(), open.end(), std::greater<Entry>{});
             const auto [estimate, cost, index] = open.back(); open.pop_back();
             if (nodes[index].stamp != generation || nodes[index].cost != cost) continue;
+            if (result.expansions >= maximumExpansions) { result.status = RouteStatus::ExpansionLimit; return result; }
             ++result.expansions;
             if (goal(index)) {
                 result.status = RouteStatus::Found; result.cost = cost;

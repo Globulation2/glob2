@@ -53,6 +53,19 @@ TEST_SUITE("ClaimRouteSearch")
             CHECK(sum == actual.cost);
         }
     }
+    TEST_CASE("expansion budgets never report partial paths as reached")
+    {
+        ResourceClaims::RouteSearch search;
+        const field::Grid grid(8,8);
+        const auto route=search.find(grid,0,1000,[](unsigned){return true;},
+            [](unsigned,bool){return 10u;},[](unsigned i){return i==27;},[](unsigned){return 0u;},2);
+        CHECK(route.status==ResourceClaims::RouteStatus::ExpansionLimit);
+        CHECK(route.expansions==2); CHECK(route.cells.empty());
+        const auto zero=search.find(grid,0,1000,[](unsigned){return true;},
+            [](unsigned,bool){return 10u;},[](unsigned i){return i==0;},[](unsigned){return 0u;},0);
+        CHECK(zero.status==ResourceClaims::RouteStatus::ExpansionLimit);
+        CHECK(zero.expansions==0);
+    }
     TEST_CASE("failure cost limits and empty routes are explicit")
     {
         ResourceClaims::RouteSearch search;

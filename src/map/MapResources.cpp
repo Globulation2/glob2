@@ -337,7 +337,13 @@ bool Map::materialAvailableUpdateSlot(int team, int material, int swim, int x, i
 {
 	if (queryMaterialDistance(team,material,swim,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
 	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
-    if (materialGradientDestinations(field)) return projectMaterialDestination(field,team,material,swim,x,y,targetX,targetY,markets,consumer);
+    if (const auto destinations=materialGradientDestinations(field)) {
+        // Planning intentionally observes the published field's age. Workers
+        // separately validate current stock in projectMaterialDestination.
+        const size_t index=coordToIndex(x,y);
+        *targetX=destinations->x[index]; *targetY=destinations->y[index];
+        return true;
+    }
     // Planning adapters retain their historical ascent semantics. Workers use
     // projectMaterialDestination to track their weighted movement decisions.
     getGlobalGradientDestination(field,x,y,targetX,targetY);

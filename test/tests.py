@@ -287,6 +287,7 @@ UNIT_TESTS = [
     '#src/field/FieldTraversalTest.cpp',
     '#src/map/ResourceClaimsTest.cpp',
     '#src/map/claims/ResourceClaimOracleTest.cpp',
+    '#src/map/claims/ResourceClaimRouteExperimentTest.cpp',
     '#src/map/claims/ClaimRouteSearchTest.cpp',
     '#src/field/OpenCLGradientTest.cpp',
     '#src/field/RuntimeGradientBackendTest.cpp',

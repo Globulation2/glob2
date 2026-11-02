@@ -3,6 +3,7 @@
 #include "ResourceClaimOracle.h"
 #include "ResourceClaimPatternEvaluation.h"
 #include "ResourceClaimPilotPatterns.h"
+#include "ResourceClaimRouteExperiment.h"
 #include "Game.h"
 #include "Map.h"
 #include "Unit.h"
@@ -34,6 +35,9 @@ struct Probe::Impl
         SimulationSnapshot::Handle world;
         std::vector<std::pair<Owner,Claim>> owners;
         std::vector<Uint16> field;
+        std::shared_ptr<const gradient_kernel::OwnedDestinations> destinations;
+        bool metadataEnabled=false;
+        const char* reason="fully_claimed";
         Oracle::Query query;
         Uint32 tick=0, seed=0, nearest=0, capacity=0, claimed=0;
         Uint64 ordinal=0;
@@ -46,6 +50,9 @@ struct Probe::Impl
     ComputeExecutor& executor;
     Config config;
     Metrics metrics;
+    std::array<Uint64,MaterialCount> materialDecisions{}, materialSampled{}, materialContested{};
+    Uint64 sampledInfinite=0, sampledPooled=0, sampledExhaustedPools=0;
+    Uint64 staleScalarIneligible=0, staleMixedFieldIneligible=0, staleInvalidXY=0;
     std::string path;
     gzFile file=nullptr;
     SimulationSnapshot::Storage storage;
@@ -90,10 +97,14 @@ struct Probe::Impl
             const auto oracle=Oracle::evaluate(work.world,work.query,work.owners);
             const auto oracleNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
             const auto view=work.world.view();
-            // Temporary shared lookup cache in PatternEvaluator avoids repeating
-            // weighted ascents. This callback is replaced by published XY planes
-            // when those planes are wired into material snapshots.
+            // The immutable XY lease and copied cost plane come from the same
+            // publication. Older/warming fields explicitly use scalar fallback.
             const auto destination=[&](Uint32 cell) {
+                if(work.destinations) {
+                    const auto x=work.destinations->x[cell],y=work.destinations->y[cell];
+                    if(x>=view.width || y>=view.height)return Oracle::NoTile;
+                    return Uint32(y*view.width+x);
+                }
                 Uint16 here=work.field[cell];
                 if (here<=GRADIENT_UNREACHABLE) return Oracle::NoTile;
                 while (here!=GRADIENT_AT_GOAL) {
@@ -113,28 +124,60 @@ struct Probe::Impl
             };
             Experiment::PatternEvaluator evaluator(oracle,view.width,view.height,work.query.origin,work.nearest);
             Json outcomes=Json::array();
+            std::map<std::tuple<Uint32,Uint32,Uint32>,Experiment::PatternOutcome> uniqueRoutes;
             unsigned patternIndex=0;
             for (const auto& pattern:Experiment::pilotPatterns()) {
                 for (unsigned policy=0;policy<2;++policy) {
                     const auto outcome=evaluator.evaluate(pattern.viewForDirection(evaluator.closestOctant()),policy?Experiment::PatternSelection::ClosestGeometric:Experiment::PatternSelection::FirstAvailable,destination);
+                    if(!outcome.fallback)uniqueRoutes.try_emplace(std::tuple{outcome.source,outcome.access,outcome.probe},outcome);
                     outcomes.push_back({patternIndex,policy,outcome.source,outcome.access,outcome.probe,distanceJson(outcome.distance),outcome.probes,outcome.destinationReads,outcome.fallback,distanceJson(outcome.accessDistance)});
                 }
                 ++patternIndex;
             }
+            // Hash-rank distinct routes, independent of pattern enumeration order.
+            // This is an explicit bounded subset, not a per-pattern performance census.
+            std::vector<std::pair<Uint64,Experiment::PatternOutcome>> ranked;
+            for(const auto& [key,outcome]:uniqueRoutes) {
+                const auto hash=mix(mix(work.ordinal ^ (Uint64(work.seed)<<32)) ^ mix(outcome.source) ^
+                    mix(Uint64(outcome.access)+0x100000000ull) ^ mix(Uint64(outcome.probe)+0x200000000ull));
+                ranked.emplace_back(hash,outcome);
+            }
+            std::sort(ranked.begin(),ranked.end(),[](const auto& a,const auto& b){
+                return std::tie(a.first,a.second.source,a.second.access,a.second.probe)<
+                    std::tie(b.first,b.second.source,b.second.access,b.second.probe);});
+            Experiment::StaticRoutes routes(view,work.query,oracle,work.field);
+            Json routeRows=Json::array();
+            const auto measurement=[](const Experiment::RouteMeasurement& r) {
+                return Json{{"status",r.status},{"cost",distanceJson(r.cost)},{"expansions",r.expansions},
+                    {"cpu_ns",r.ns},{"continuation_steps",r.continuationSteps}};
+            };
+            const auto routeStart=std::chrono::steady_clock::now();
+            for(std::size_t i=0;i<std::min(ranked.size(),std::size_t(Experiment::StaticRoutes::OutcomeLimit));++i) {
+                const auto& outcome=ranked[i].second;
+                routeRows.push_back({{"source",outcome.source},{"access",outcome.access},{"probe",outcome.probe},
+                    {"source_optimal_cost",distanceJson(outcome.distance)},{"access_optimal_cost",distanceJson(outcome.accessDistance)},
+                    {"direct_source_component",measurement(routes.direct(outcome.source))},
+                    {"via_probe_selected_access",measurement(routes.via(outcome.access,outcome.probe))}});
+            }
+            const auto routeNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-routeStart).count();
             Json best=nullptr;
             if (oracle.best) {
                 const auto& chosen=oracle.candidates[*oracle.best];
                 best={{"source",chosen.source},{"access",chosen.access},{"stance",chosen.stance},{"distance",chosen.distance}};
             }
-            Json row={{"kind","decision"},{"phase",work.pickup?"pickup":"movement"},{"tick",work.tick},{"ordinal",work.ordinal},{"seed",work.seed},
+            Json row={{"kind","decision"},{"reason",work.reason},{"phase",work.pickup?"pickup":"movement"},{"tick",work.tick},{"ordinal",work.ordinal},{"seed",work.seed},
                 {"width",view.width},{"height",view.height},{"owner",work.query.owner},{"gid",work.query.route.unitGid},{"team_mask",work.query.route.teamMask},
                 {"movement",work.query.route.movement},{"material",work.query.material},{"origin",work.query.origin},
                 {"nearest",work.nearest},{"capacity",work.capacity},{"claimed",work.claimed},
+                {"destination_lookup",work.destinations?"published-xy":"weighted-scalar-projection"},
+                {"material_destinations_enabled",work.metadataEnabled},{"destination_xy_missing",!work.destinations},
                 {"occupancy","static"},{"nearest_octant",evaluator.closestOctant()},{"oracle_expanded",oracle.expanded},{"oracle_ns",oracleNs},
-                {"source_count",oracle.candidates.size()},{"optimal",best},{"features",work.features},{"patterns",std::move(outcomes)}};
+                {"static_routes",std::move(routeRows)},{"static_route_unique",ranked.size()},
+                {"static_route_excluded_limit",ranked.size()>Experiment::StaticRoutes::OutcomeLimit?ranked.size()-Experiment::StaticRoutes::OutcomeLimit:0},
+                {"static_route_cpu_ns",routeNs},{"source_count",oracle.candidates.size()},{"optimal",best},{"features",work.features},{"patterns",std::move(outcomes)}};
             work.line=row.dump()+"\n";
         } catch (...) { work.error=std::current_exception(); }
-        work.world={}; work.owners.clear(); work.field.clear();
+        work.world={}; work.owners.clear(); work.field.clear(); work.destinations.reset();
     }
     void publish(Uint64 tick,bool all=false)
     {
@@ -153,9 +196,14 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
     for (const auto& pattern:Experiment::pilotPatterns()) patterns.push_back(pattern.name);
     impl->write(Json{{"kind","schema"},{"version",1},{"cohort","sampled-material-movement-and-pickup-decisions-before-choice"},
         {"sample_every",config.sampleEvery},{"max_samples",config.maxSamples},{"max_pending",config.maxPending},
-        {"max_output_bytes",config.maxOutputBytes},{"claims_enforced",false},{"destination_lookup","weighted-scalar-projection"},
+        {"max_output_bytes",config.maxOutputBytes},{"claims_enforced",false},{"destination_lookup","per-event-published-xy-or-scalar-fallback"},
         {"continuation_policy","diagnostic-ordinal-resets-after-load"},{"patterns",patterns},
+        {"new_destination_reads_semantics","marginal shared event-cache misses in pattern order; instrumentation amortization only, not standalone policy cost"},
+        {"stale_goal_eligibility","published XY from natural-only field; failed scalar projection and mixed supplier fields excluded"},
         {"outcome_columns",{"pattern","policy","source","access","probe","weighted_cost","probes","new_destination_reads","fallback","access_weighted_cost"}},
+        {"static_route_limits",{{"unique_outcomes",Experiment::StaticRoutes::OutcomeLimit},{"expansions_per_search",Experiment::StaticRoutes::ExpansionLimit},
+            {"continuation_steps",Experiment::StaticRoutes::ContinuationLimit},{"selection","diagnostic_hash_without_replacement"},
+            {"heuristic","minimum_rule_entry_chebyshev; zero_for_farm_goal_sets"}}},
         {"policies",{"first_available","closest_geometric"}}}.dump()+"\n");
 }
 Probe::~Probe()=default;
@@ -169,7 +217,11 @@ void Probe::finish()
     impl->write(Json{{"kind","summary"},{"complete",true},{"decisions",m.decisions},{"sampled",m.sampled},
         {"contested",m.contested},{"submitted",m.submitted},{"completed",m.completed},
         {"excluded_sample_limit",m.excludedSampleLimit},{"excluded_queue_limit",m.excludedQueueLimit},{"excluded_missing_field",m.excludedMissingField},
-        {"capture_bytes",m.captureBytes}}.dump()+"\n");
+        {"material_decisions",impl->materialDecisions},{"material_sampled",impl->materialSampled},
+        {"material_contested",impl->materialContested},{"sampled_infinite",impl->sampledInfinite},
+        {"sampled_pooled",impl->sampledPooled},{"sampled_exhausted_pools",impl->sampledExhaustedPools},
+        {"stale_scalar_ineligible",impl->staleScalarIneligible},{"stale_mixed_field_ineligible",impl->staleMixedFieldIneligible},
+        {"stale_invalid_xy",impl->staleInvalidXY},{"capture_bytes",m.captureBytes}}.dump()+"\n");
     const auto file=impl->file; impl->file=nullptr;
     if(gzclose(file)!=Z_OK) throw std::runtime_error("resource claim probe close failed; dataset is incomplete");
     impl->metrics.outputBytes=std::filesystem::file_size(impl->path);
@@ -181,22 +233,38 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
     if(impl->finished)return;
     auto& metrics=impl->metrics;
     const Uint64 ordinal=++metrics.decisions;
+    ++impl->materialDecisions.at(unit.destinationPurpose);
     const auto seed=game.gameHeader.getRandomSeed();
-    if(mix(mix(seed)^mix(game.stepCounter)^mix(unit.scriptIdentity)^mix(ordinal))%impl->config.sampleEvery)return;
+    if(mix(mix(seed)^mix(game.stepCounter)^mix(unitOwner(unit.gid,unit.scriptIdentity))^mix(ordinal))%impl->config.sampleEvery)return;
     ++metrics.sampled;
+    ++impl->materialSampled.at(unit.destinationPurpose);
     if(!field){++metrics.excludedMissingField;return;}
     auto& map=game.map;
     map.reconcileMaterialClaims();
     Sint32 x=0,y=0;
+    bool staleGoal=false;
+    const auto destinations=map.materialGradientDestinations(field);
+    if(destinations && destinations->cells!=map.cellCount())
+        throw std::logic_error("claim probe destination publication shape mismatch");
     if(pickupAccess!=UINT32_MAX) { x=int(pickupAccess%map.getW()); y=int(pickupAccess/map.getW()); }
     else if(!map.projectMaterialDestination(field,unit.owner->teamNumber,unit.destinationPurpose,unit.movementClass(),unit.posX,unit.posY,&x,&y,
-        unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets(),unit.attachedBuilding))return;
+        unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets(),unit.attachedBuilding)) {
+        if(!destinations){++impl->staleScalarIneligible;return;}
+        if(field!=map.lookupMaterialGradientSlot(unit.owner->teamNumber,unit.destinationPurpose,unit.movementClass(),false,nullptr)) {
+            ++impl->staleMixedFieldIneligible;return;
+        }
+        const auto origin=map.coordToIndex(unit.posX,unit.posY);
+        x=destinations->x[origin]; y=destinations->y[origin];
+        if(x>=map.getW() || y>=map.getH()) {++impl->staleInvalidXY;return;}
+        staleGoal=true;
+    }
     const auto access=map.coordToIndex(x,y);
-    if(!map.materialAmountAtSlot(access,unit.destinationPurpose))return; // Supplier contention is a separate cohort.
+    if(!staleGoal && !map.materialAmountAtSlot(access,unit.destinationPurpose))return; // Supplier cohort.
     auto source=access;
-    const auto& accessYield=map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(access).type))[unit.destinationPurpose];
-    const bool exclusive=accessYield.consumption==ResourceConsumption::All || accessYield.destroysDeposit;
-    const bool pooled=!exclusive && map.farmAreasEnabled() && map.isFarmArea(x,y,unit.owner->me) && map.isFarmableResourceByIndex(map.getResource(access).type);
+    const bool accessResource=map.resourceRegistry().valid(static_cast<ResourceId>(map.getResource(access).type));
+    const auto accessYield=accessResource?map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(access).type))[unit.destinationPurpose]:YieldProperties{};
+    const bool exclusive=accessResource && (accessYield.consumption==ResourceConsumption::All || accessYield.destroysDeposit);
+    const bool pooled=!staleGoal && !exclusive && map.farmAreasEnabled() && map.isFarmArea(x,y,unit.owner->me) && map.isFarmableResourceByIndex(map.getResource(access).type);
     bool exhaustedPool=false;
     if(pooled) {
         const auto selected=map.pickClaimFarmHarvestTileSlot(unit.posX,unit.posY,unit.destinationPurpose,unit.owner->me,
@@ -204,13 +272,17 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
         if(selected) source=*selected;
         else exhaustedPool=true; // The seed-only field is itself a contested failure case.
     }
-    const auto& yield=map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(source).type))[unit.destinationPurpose];
+    const bool hasResource=map.resourceRegistry().valid(static_cast<ResourceId>(map.getResource(source).type));
+    const auto yield=hasResource?map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(source).type))[unit.destinationPurpose]:YieldProperties{};
     const Uint32 amount=map.materialAmountAtSlot(source,unit.destinationPurpose);
     const Uint32 reserve=pooled && !game.gameHeader.isResourceGrowthDisabled()?yield.seedReserve:0;
-    const Uint32 capacity=amount>reserve?amount-reserve:0;
+    const Uint32 capacity=!staleGoal && amount>reserve?amount-reserve:0;
     const Claim desired{Uint32(source),Uint32(access),Uint8(unit.destinationPurpose),map.getResource(source).type,exclusive};
-    if(map.materialClaimLedger().available(unit.scriptIdentity,desired,capacity,yield.consumption==ResourceConsumption::Infinite))return;
+    impl->sampledInfinite+=yield.consumption==ResourceConsumption::Infinite;
+    impl->sampledPooled+=pooled; impl->sampledExhaustedPools+=exhaustedPool;
+    if(!staleGoal && map.materialClaimLedger().available(unitOwner(unit.gid,unit.scriptIdentity),desired,capacity,yield.consumption==ResourceConsumption::Infinite))return;
     ++metrics.contested;
+    ++impl->materialContested.at(unit.destinationPurpose);
     if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;return;}
     if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;return;}
     auto work=std::make_unique<Impl::Work>();
@@ -223,7 +295,12 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
     metrics.captureBytes+=impl->storage.bytesCopied-bytes;
     work->owners=map.materialClaimLedger().entries();
     work->field.assign(field,field+map.cellCount());
-    work->query={unit.scriptIdentity,Uint32(map.coordToIndex(unit.posX,unit.posY)),Uint8(unit.destinationPurpose),
+    work->destinations=destinations;
+    work->reason=staleGoal?"stale_goal":exhaustedPool?"farm_reserve":"fully_claimed";
+    work->metadataEnabled=map.materialDestinationsEnabled();
+    if(work->destinations && work->destinations->cells!=map.cellCount())
+        throw std::logic_error("claim probe destination publication shape mismatch");
+    work->query={unitOwner(unit.gid,unit.scriptIdentity),Uint32(map.coordToIndex(unit.posX,unit.posY)),Uint8(unit.destinationPurpose),
         {unit.movementClass(),unit.owner->me,unit.gid,OccupancyPolicy::Static}};
     work->pickup=pickupAccess!=UINT32_MAX;
     work->tick=game.stepCounter; work->seed=seed; work->ordinal=ordinal; work->nearest=Uint32(access);
@@ -232,22 +309,22 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
     for (const auto& plane:map.publishedResourceFields()) if (*plane.slot==field) {
         fieldKey=plane.key; fieldGeneration=plane.generation; break;
     }
-    const auto& properties=map.resourcePropertiesByIndex(map.getResource(source).type);
+    const auto properties=hasResource?map.resourcePropertiesByIndex(map.getResource(source).type):ResourceProperties{};
     unsigned forbiddenNeighbors=0;
     for (int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
         forbiddenNeighbors+=map.isForbidden(x+dx,y+dy,unit.owner->me);
-    work->features={{"resource_material_mask",properties.materialMask},{"farm_areas_enabled",map.farmAreasEnabled()},
-        {"nearby_forbidden_count",forbiddenNeighbors},{"resource_persists_when_empty",properties.persistsWhenEmpty},
-        {"resource_growth_rate",properties.growthRate},{"team_units",unit.owner->liveUnits.size()},{"team_buildings",unit.owner->liveBuildings.size()},
+    work->features={{"resource_material_mask",hasResource?Json(properties.materialMask):Json(nullptr)},{"farm_areas_enabled",map.farmAreasEnabled()},
+        {"nearby_forbidden_count",forbiddenNeighbors},{"resource_persists_when_empty",hasResource?Json(properties.persistsWhenEmpty):Json(nullptr)},
+        {"resource_growth_rate",hasResource?Json(properties.growthRate):Json(nullptr)},{"team_units",unit.owner->liveUnits.size()},{"team_buildings",unit.owner->liveBuildings.size()},
         {"colony_count",game.teamsCount()},{"unit_type",unit.typeNum},{"hp",unit.hp},{"max_hp",unit.performance[HP]},
         {"hunger",unit.hungry},{"food_capacity",unit.foodCapacity()},{"medical",int(unit.medical)},
         {"activity",int(unit.activity)},{"displacement",int(unit.displacement)},{"job_purpose",int(unit.jobPurpose)},
         {"cargo_packets",unit.carriedPacketCount()},{"carried_material",unit.carriedMaterial},
         {"harvest_level",unit.level[HARVEST]},{"walk_speed",unit.performance[WALK]},
         {"swim_speed",unit.performance[SWIM]},{"fly_speed",unit.performance[FLY]},
-        {"pooled_farm",pooled},{"exhausted_pool",exhaustedPool},{"source",source},{"resource_type",map.getResource(source).type},
-        {"yield_consumption",int(yield.consumption)},{"infinite",yield.consumption==ResourceConsumption::Infinite},
-        {"destroys_deposit",yield.destroysDeposit},{"stock_amount",amount},{"stock_reserve",reserve},
+        {"pooled_farm",pooled},{"exhausted_pool",exhaustedPool},{"source",source},{"resource_type",hasResource?Json(map.getResource(source).type):Json(nullptr)},
+        {"yield_consumption",hasResource?Json(int(yield.consumption)):Json(nullptr)},{"infinite",hasResource?Json(yield.consumption==ResourceConsumption::Infinite):Json(nullptr)},
+        {"destroys_deposit",hasResource?Json(yield.destroysDeposit):Json(nullptr)},{"stock_amount",amount},{"stock_reserve",reserve},
         {"origin_field_value",field[work->query.origin]},{"nearest_field_value",field[access]},
         {"field_key",fieldKey},{"field_generation",fieldGeneration},
         {"consumer_gid",unit.attachedBuilding?Json(unit.attachedBuilding->gid):Json(nullptr)},

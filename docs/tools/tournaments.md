@@ -557,6 +557,11 @@ unsupported combinations remain reported failures rather than being filtered out
   Explicit `ffa_colonies` requires an `ffa` entry in `formats`. Counts above four
   need the same generator/size preflight as any other nonstandard cohort.
 
+  New-game designs may provide `experiments: ["farm-areas"]`; each requested
+  key must exist in every pinned build's `experiments` catalog. The job adapter
+  forwards one `--experiment KEY` per entry. Saved games retain their embedded
+  experiment set and reject overrides, including an explicit empty list.
+
   Set `balanced_duels: true` for a balanced 1v1 sample: `sample_games` must be
   even, with one map size and at least two AIs. Each block plays the same map and
   game seed twice, swapping the AI starting sides. Generator quotas differ by at
@@ -717,12 +722,24 @@ Planning does not dispatch jobs. Preflight every sampled generator/count/size;
 retain failed requests and apply explicit `--generator-overrides` where needed.
 Broad games draw native AIs, formats and 128/256/512 square sizes independently;
 stress games draw Nicowar/Econo/Maxima/Cortex/Cabino from the pinned catalog,
-4/8/16 colonies and 256/512 square sizes. The six stress size/count strata each
-have design probability 1/6, not guaranteed equal observed counts. Broad and
+4/8/16 colonies and 256/512 square sizes. Half the stress games explicitly enable
+`farm-areas` for pooled farms; the other half retain protected farming with no
+experiments enabled. Thus the pilot has 16 broad, eight protected and eight
+pooled games; a full round has 500/250/250. Within stress, the twelve
+farm-mode/size/count strata each have design probability 1/12; only the farm-mode
+counts are fixed, while size/counts are sampled. Broad and
 stress use 950 and zero early-victory thresholds, respectively. The manifest
 freezes sampling, stopping rules, limits and 50/50 cohort weights; reports retain
 cohorts separately. The resource-claim job adapter requires a complete compressed
 trace whose limits and completed counts match the engine's result.
+
+New-game claim cohorts explicitly freeze `material_destinations: true` and require
+the bundle's `material_destinations_version: 1` capability. This temporary mode
+forwards `--material-destinations` and cannot record replay output. Saved-state
+jobs retain their embedded mode and reject an override. Reports distinguish
+published XY decisions from missing XY or scalar projection; scalar data is
+throughput calibration only, never policy-selection evidence. Hold the metadata
+mode equal when comparing shadow diagnostics on versus off.
 
 The pilot header has 240 logical pattern profiles with precomputed views for all
 eight nearest-resource bearings. Cone/ray direction offsets are relative to that
@@ -740,7 +757,37 @@ selection is distinct from falling back without selecting a resource. Missing
 oracles, zero-cost optima, failed/incomplete games and sampling exclusions remain
 explicit. Summaries weight per-game means equally, with deterministic bootstrap
 intervals over games (unavailable below five games), rather than pretending
-individual unit decisions are independent observations.
+individual unit decisions are independent observations. Analysis of 16 or more
+games uses the NumPy development dependency already pinned in
+`requirements-dev.txt`. It reuses multinomial game-resampling weights across
+policies with matching coverage, with a 64 MiB cache bound. Reports identify the
+tool package and analysis environment; no dependency is added to the game.
+
+`mean_probes` counts the raw entries each pattern examines. In contrast,
+`new_destination_reads` counts marginal misses in a cache shared across the
+entire event; it depends on which patterns ran earlier. It describes telemetry
+amortization, not a pattern's standalone runtime cost. Shared event CPU also
+cannot rank individual patterns. Compare native policy timing later in isolated
+runs, retaining identical inputs and metadata mode.
+
+Static route samples compare a direct route to the source component against its
+component optimum, and a route through the selected probe against that access's
+optimum. Reports retain unreachable, budget-limited and contradiction failures
+without assigning them zero regret. Cached per-route CPU labels are not summed;
+the event-level `static_route_cpu_ns` is the measured aggregate. These frozen
+comparisons do not establish live refresh cadence, pending movement or fallback
+effects.
+
+A complete trace footer establishes framing, not unbiased sampling. Reports mark
+sample-cap or queue-cap exclusions as censored; unknown exclusion counts also
+remain censored. Scenario coverage counts uncensored games separately and blocks
+policy selection when any measured game was censored. Simply dropping those
+games does not correct contention-correlated missingness. Inspect first/last
+sample ticks and retained late events during the pilot, then tune `sample_every`
+and sample/output budgets before freezing a full round. The initial 512-sample
+cap is a calibration setting, not an approved full-campaign sampling design.
+An alternative weighting design requires explicit justification; none is applied
+automatically.
 
 The post-pilot coverage audit requires five distinct games and 100 sampled
 events per required scenario, using actual material, stock, farm, yield and late
