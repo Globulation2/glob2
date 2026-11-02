@@ -460,7 +460,9 @@ def execute(root, identity):
             import resource
             measured = resource.getrusage(resource.RUSAGE_CHILDREN)
             record['resource_usage'] = {'user_seconds': measured.ru_utime, 'system_seconds': measured.ru_stime,
-                                         'peak_rss_bytes': measured.ru_maxrss * (1 if sys.platform == 'darwin' else 1024)}
+                                         'peak_rss_bytes': measured.ru_maxrss * (1 if sys.platform == 'darwin' else 1024),
+                                         'voluntary_context_switches': getattr(measured,'ru_nvcsw',None),
+                                         'involuntary_context_switches': getattr(measured,'ru_nivcsw',None)}
             if record['category'] not in ('timeout', 'disk_pressure', 'storage_limit'):
                 code = record['exit_code']
                 record['category'] = 'crash' if code < 0 else 'invalid_request' if code == 2 else 'process_failure' if code else 'success'

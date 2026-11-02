@@ -67,6 +67,8 @@ def plan(bundle, *, phase, setups=12, replicates=4, seed=20261102, arms=ARMS,
         sizes = [v for v in controls['width']['values'] if 7 <= v <= 9 and v in controls['height']['values']]
         if not sizes: raise ValueError('generator lacks a supported campaign size')
         size = sizes[(i//3) % len(sizes)]
+        if g['id']=='lava-shield' and teams>2 and size==7:
+            size=next(v for v in sizes if v>=8)
         params = generator_samples(catalog,g['method'],1,rng.randrange(2**32))[0]
         params.update(width=size,height=size,teams=teams)
         # Catalog scalar domains do not encode cross-control restrictions.
@@ -108,6 +110,8 @@ def plan(bundle, *, phase, setups=12, replicates=4, seed=20261102, arms=ARMS,
         settings=dict(artifact_budget_bytes=30*GIB,disk_reserve_bytes=10*GIB,prefetch=0),jobs=jobs,
         metadata=dict(contract='routing-ratio-study-v1',phase=phase,setups=setup_rows,seed=seed,
             independent_seeds=True,minimum_replicates=replicates,stopping_permille=950,
+            routing_observer=dict(query_hash_denominator=1024,window_ticks=512,routes_per_window=8,routes_per_game=2048),
+            adaptive_model_sha256=bundle.get('build_options',{}).get('adaptive_model_sha256'),
             category_source='predeclared generator strata; measure realized terrain separately'))
     validate_experiment(manifest)
     return manifest
@@ -133,17 +137,20 @@ def add_observer_calibration(manifest):
 
 
 def observer_overhead(source):
-    groups=defaultdict(dict)
+    groups=defaultdict(dict);checksums=defaultdict(dict)
     for r in source:
         label=r['job']['labels']
         if r['category']!='success' or 'observer_mode' not in label:continue
         result=r['result'];ticks=result.get('benchmark_measured_ticks',0)
         if ticks:groups[label['setup'],label['replicate']][label['observer_mode']]=result['benchmark_run_cpu_ns']/1e9/ticks
+        checksums[label['setup'],label['replicate']][label['observer_mode']]=result.get('finalChecksum')
+    mismatches=[str(k) for k,v in checksums.items() if len({str(c) for c in v.values()})>1]
+    if mismatches:raise RuntimeError('observer calibration checksum mismatch: '+', '.join(mismatches))
     output={}
     for mode in ('counts','routes'):
         penalties=[v[mode]/v['off']-1 for v in groups.values() if mode in v and v.get('off',0)>0]
         output[mode]=describe(penalties)
-    return dict(relative_cpu_overhead=output,scope='8192-tick calibration on two pilot setups; same seeds isolate observers, separate from independent policy comparisons')
+    return dict(relative_cpu_overhead=output,checksum_groups=len(checksums),checksum_mismatches=mismatches,scope='8192-tick calibration on two pilot setups; same seeds isolate observers, separate from independent policy comparisons')
 
 
 def rows(source, record, suffix):
@@ -238,10 +245,12 @@ def export_games(source, stages):
         usage=record.get('resource_usage',{})
         entry=dict(job_id=job['id'],phase=labels['phase'],setup=labels['setup'],arm=labels['variant'],slot=(record.get('execution_allocation') or {}).get('slot'),
             block=labels['block'],generator=labels['generator_id'],format=labels['format'],diagnostic=labels['diagnostic'],
+            termination=result.get('termination'),outcomes=dict(Counter(t['outcome'] for t in result.get('teams',[]))),
             width=job['config']['params']['width'],teams=len(job['config']['players']),ticks=result['ticks'],
+            involuntary_context_switches=usage.get('involuntary_context_switches'),voluntary_context_switches=usage.get('voluntary_context_switches'),
             process_cpu_seconds=usage.get('user_seconds',0)+usage.get('system_seconds',0),wall_seconds=record['finished']-record['started'],
             simulation_cpu_seconds=cpu,simulation_wall_seconds=elapsed,simulation_sampled_rss_peak=rss,tick_p50_ns=result.get('tick_p50_ns'),tick_p95_ns=result.get('tick_p95_ns'),tick_p99_ns=result.get('tick_p99_ns'),route_sampling_capped=max((int(r.get('route_capped',0)) for r in process),default=0),peak_rss_bytes=usage.get('peak_rss_bytes'),
-            high_diversity_team_windows=len(diverse),confirmed_extra_ratio_slots=overlap,high_diversity_with_extra_builds=len(diverse&computed_windows),observed_team_windows=len(states),route_time_penalty=describe(penalties),
+            high_diversity_team_windows=len(diverse),confirmed_extra_ratio_slots=overlap,high_diversity_with_extra_builds=len(diverse&computed_windows),observed_team_windows=len({(int(r['tick'])//512,int(r['team'])) for r in states}),route_time_penalty=describe(penalties),
             correctness_failures=sum(r['baseline_status']=='goal' and r['shared_status']=='unreachable' for r in route_rows),
             route_failures=dict(Counter(r['shared_status'] for r in route_rows if r['shared_status']!='goal')),
             direction_changed=describe([int(r['first_direction_changed']) for r in route_rows]),
@@ -267,7 +276,7 @@ def export_games(source, stages):
         previous_selection={};switch_ticks=[]
         for row in sorted(states,key=lambda r:(int(r['tick']),int(r['team']))):
             team=int(row['team']);selected=int(row['selected'])
-            if row['known']=='1' and team in previous_selection and previous_selection[team]!=selected:switch_ticks.append(int(row['tick']))
+            if row['known']=='1' and team in previous_selection and previous_selection[team]!=selected:switch_ticks.append((team,int(row['tick'])))
             previous_selection[team]=selected
         identity_name='gradient-work.csv.identity.csv'
         identities=[]
@@ -284,7 +293,10 @@ def export_games(source, stages):
         n=sum(int(r['count']) for r in intervals)
         entry['refresh_interval_mean_ticks']=sum(int(r['interval'])*int(r['count']) for r in intervals)/n if n else None
         entry['policy_switches']=len(switch_ticks)
-        entry['cold_admissions_in_switch_windows']=sum(int(r['admissions']) for r in work if r['reason']=='1' and any(0<=int(r['tick'])-t<512 for t in switch_ticks))
+        entry['cold_admissions_in_switch_windows']=sum(int(r['count']) for r in identities if r['event']=='admission' and r['reason']=='1'
+            and any(int(r['team'])==team and int(r['window'])==tick//512 for team,tick in switch_ticks))
+        entry['expanded_cells_in_switch_windows']=sum(int(r['expanded_cells']) for r in kernel
+            if any(int(r['team'])==team and 0<=int(r['tick'])-tick<512 for team,tick in switch_ticks)) if kernel_collected else None
         model_counts=defaultdict(Counter)
         for row in rows(source,record,'model'):
             counter=model_counts[row['family']]
@@ -298,6 +310,8 @@ def export_games(source, stages):
         entry['route_extra_distance']=describe([float(r['shared_distance'])-float(r['baseline_distance']) for r in valid])
         entry['route_extra_ticks']=describe([float(r['shared_ticks'])-float(r['baseline_ticks']) for r in valid])
         entry['route_affected_fraction']=describe([float(r['shared_ticks'])>float(r['baseline_ticks'])+1e-9 for r in valid])
+        entry['equal_cost_direction_changes']=sum(r['first_direction_changed']=='1' and r['equal_first_direction_cost']=='1' for r in route_rows)
+        entry['non_tied_direction_changes']=sum(r['first_direction_changed']=='1' and r['equal_first_direction_cost']=='0' for r in route_rows)
         entry['target_changed']=describe([int(r['target_changed']) for r in valid])
         entry['oracle_time_penalty']=describe([float(r['shared_ticks'])/float(r['actual_shortest_ticks'])-1 for r in valid if r['actual_shortest_ticks'] and 0<float(r['actual_shortest_ticks'])<math.inf])
         entry['uniform_direction_disagreement']=sum(int(r['uniform_different']) for r in route_rows)/max(1,sum(int(r['uniform_comparable']) for r in route_rows))
@@ -350,14 +364,21 @@ def export_games(source, stages):
                 work_by_tick[int(row['tick'])][metric]+=int(row[metric])
         for sample in process:
             if not sample['process_cpu_seconds']:continue
-            tick=int(sample['tick']);current_cpu=float(sample['process_cpu_seconds']);dt=tick-previous_tick
-            if dt<=0:continue
+            tick=int(sample['tick']);completed=int(sample.get('completed_ticks',tick));current_cpu=float(sample['process_cpu_seconds']);dt=completed-previous_tick
+            if dt<=0:
+                if entry['intervals'] and current_cpu>previous_cpu:entry['intervals'][-1]['cpu_seconds']+=current_cpu-previous_cpu
+                previous_cpu=current_cpu
+                continue
             state=[r for r in states if int(r['tick'])==tick]
-            entry['intervals'].append(dict(tick=tick,stage=stage_for(job,tick,stages),ticks=dt,
+            entry['intervals'].append(dict(active_teams=sum(int(r['population'])+int(r['buildings'])>0 for r in state),tick=tick,stage=stage_for(job,tick,stages),ticks=dt,
                 cpu_seconds=current_cpu-previous_cpu,population=sum(int(r['population']) for r in state),
                 buildings=sum(int(r['buildings']) for r in state),high_diversity=any((tick//512,int(r['team'])) in diverse for r in state),
                 **work_by_tick[tick]))
-            previous_cpu=current_cpu;previous_tick=tick
+            previous_cpu=current_cpu;previous_tick=completed
+        diverse_intervals=[r for r in entry['intervals'] if r['high_diversity']]
+        entry['diverse_ticks']=sum(r['ticks'] for r in diverse_intervals)
+        entry['cpu_per_diverse_tick']=sum(r['cpu_seconds'] for r in diverse_intervals)/entry['diverse_ticks'] if entry['diverse_ticks'] else None
+        entry['active_team_ticks']=sum(r['ticks']*r['active_teams'] for r in entry['intervals'])
         for stage in ('early','mid','late','unclassified'):
             selected=[r for r in entry['intervals'] if r['stage']==stage]
             entry['cpu_per_tick_'+stage]=sum(r['cpu_seconds'] for r in selected)/sum(r['ticks'] for r in selected) if selected else None
@@ -410,16 +431,21 @@ def regression(games):
     import numpy as np
     games=[g for g in games if not g['diagnostic'] and g['cpu_per_tick'] is not None]
     if not games:return None
-    arms=sorted({g['arm'] for g in games}-{'baseline'});setups=sorted({g['setup'] for g in games});blocks=sorted({g['block'] for g in games})
-    names=['intercept']+['arm:'+a for a in arms]+['block:'+str(b) for b in blocks[1:]]+['units','buildings','diversity_windows']
-    x=[];y=[]
+    arms=sorted({g['arm'] for g in games}-{'baseline'})
+    names=['arm:'+a for a in arms]+['units','buildings','active_teams','diversity_fraction']
+    blocks=defaultdict(list)
     for g in games:
-        x.append([1]+[int(g['arm']==a) for a in arms]+
-                 [int(g['block']==b) for b in blocks[1:]]+[g['unit_ticks']/max(1,g['ticks']),g['building_ticks']/max(1,g['ticks']),g['high_diversity_team_windows']])
-        y.append(g['cpu_per_tick'])
+        values=[int(g['arm']==a) for a in arms]+[g['unit_ticks']/max(1,g['ticks']),g['building_ticks']/max(1,g['ticks']),
+            g['active_team_ticks']/max(1,g['ticks']),g['diverse_ticks']/max(1,g['ticks'])]
+        blocks[g['setup'],g['block']].append((values,g['cpu_per_tick']))
+    x=[];y=[]
+    for values in blocks.values():
+        bx=np.asarray([v[0] for v in values],dtype=float);by=np.asarray([v[1] for v in values],dtype=float)
+        x.extend(bx-bx.mean(axis=0));y.extend(by-by.mean())
     coefficients,_,rank,_=np.linalg.lstsq(x,y,rcond=None)
     return dict(n=len(games),rank=int(rank),columns=len(names),identifiable=int(rank)==len(names),coefficients=dict(zip(names,map(float,coefficients))),
-        interpretation='secondary workload-adjusted association; population and duration may be treatment mediators; rank deficiency is reported')
+        absorbed_covariates=['setup','randomized time block','map area','initial team count','AI composition'],
+        interpretation='secondary within-block workload-adjusted association; population and duration may be treatment mediators; rank deficiency is reported')
 
 
 def summarize(directory, output, stages=None):
@@ -429,17 +455,27 @@ def summarize(directory, output, stages=None):
     metrics=('simulation_cpu_seconds','wall_seconds','duration_ticks','cpu_per_unit_tick','cpu_per_building_tick','cpu_per_routing_query','admissions_per_tick','publications_per_tick','starvation_deaths','refresh_interval_mean_ticks',
         'memory_field_arrays_bytes','memory_search_queue_bytes','memory_shared_terrain_bytes','memory_pending_output_reservation_bytes')
     routing_metrics=('route_mean_time_penalty','route_p99_time_penalty','route_mean_extra_ticks','expanded_cells_per_tick')
+    effectiveness={}
+    identities=sorted({(score['ai'],score['team']) for g in games for score in g['scores']},key=str)
+    for ai,seat in identities:
+        observations=[]
+        for game in games:
+            value=next((s['trajectory'].get('score') for s in game['scores'] if s['ai']==ai and s['team']==seat),None)
+            if value is not None:observations.append(dict(game,score=value))
+        effectiveness[str(ai)+':seat'+str(seat)]=compare(observations,'score')
     report=dict(contract='routing-ratio-independent-analysis-v1',planned=len(source.manifest['jobs']),
         committed=sum(r['category']=='success' for r in records),terminal_records=len(records),observer_calibration=observer_overhead(source),failed_attempts=dict(Counter(r['category'] for r in source.attempts() if r['category']!='success')),
         missing_jobs=len(source.manifest['jobs'])-sum(r['category']=='success' for r in records),stages=stages,
-        cpu_per_tick=compare(games),total_and_normalized_effects={m:compare(games,m) for m in metrics},
+        score_by_ai_seat=effectiveness,cpu_per_tick=compare(games),total_and_normalized_effects={m:compare(games,m) for m in metrics},
         routing_effects={m:compare(games,m,diagnostic=True) for m in routing_metrics},
         routing_by_generator={name:{m:compare([g for g in games if g['generator']==name],m,diagnostic=True) for m in routing_metrics}
-            for name in sorted({g['generator'] for g in games})},memory=compare(games,'peak_rss_bytes'),sampled_simulation_memory=compare(games,'simulation_sampled_rss_peak'),stages_cpu={s:compare(games,'cpu_per_tick_'+s) for s in ('early','mid','late')},adjusted=regression(games),
+            for name in sorted({g['generator'] for g in games})},high_diversity_cpu_descriptive=compare(games,'cpu_per_diverse_tick'),memory=compare(games,'peak_rss_bytes'),sampled_simulation_memory=compare(games,'simulation_sampled_rss_peak'),stages_cpu={s:compare(games,'cpu_per_tick_'+s) for s in ('early','mid','late')},adjusted=regression(games),
         by_generator={name:compare([g for g in games if g['generator']==name]) for name in sorted({g['generator'] for g in games})},games=games,
         limitations=['Routing traces follow fresh static fields, excluding congestion, changing goals and forbidden secondary ranking.',
+            'Point-to-point searches have policy/reachability counters; frozen route-regret traces cover gradient-backed movement queries, not point A-star queries.',
             'Actual-speed oracle measures expected movement ticks with engine terrain/diagonal quantization; it excludes hazard utility and pickup penalties.',
             'Memory components include attached fields/queues and retained terrain plus output reservations; RSS also includes detached leases, pools, and other engine storage.',
+            'Unit-tick and building-tick denominators are sampled population integrals, not exact per-tick censuses.',
             'Whole-game tick percentiles use the existing exact benchmark counters; stage percentiles have powers-of-two histogram bounds.',
             'Game-level confidence intervals do not treat queries, teams, or ticks as independent replications.',
             'Work collection starts after setup; initialization jobs reserved before observer attachment may not have kernel attribution.',
@@ -511,6 +547,8 @@ def run_phase(root, bundle_path, manifest, cpu_ids, deadline):
                         coordinator.control('draining');draining=True
                     if now-last_monitor>=30:
                         monitor.write(json.dumps(dict(time=now,load=os.getloadavg(),affinity=sorted(os.sched_getaffinity(0)),
+                            cpu_pressure=Path('/proc/pressure/cpu').read_text() if Path('/proc/pressure/cpu').exists() else None,
+                            cpu_times=[line for line in Path('/proc/stat').read_text().splitlines() if line.split()[0] in {'cpu'+str(c) for c in cpu_ids}] if Path('/proc/stat').exists() else None,
                             stored_bytes=used,free_bytes=shutil.disk_usage(root).free,jobs=jobs,reason=reason))+'\n')
                         monitor.flush();last_monitor=now
                     if not jobs.get('active',0) and (draining or not jobs.get('pending',0)):
@@ -544,6 +582,9 @@ def _campaign(bundle_path, directory, cpu_ids, hours=48):
     if bundle['capabilities'].get('save_version',0)<195 or bundle['build_options'].get('routing_ratio_contract')!='routing-ratio-study-v1':
         raise ValueError('campaign requires a validated format-195 research release bundle with routing_ratio_contract attestation')
     started=time.time();end=started+hours*3600
+    # Keep final analysis inside the campaign budget. Worker deadlines are
+    # earlier; no simulation work is admitted into this closing reserve.
+    work_end=end-min(900,hours*3600*.1)
     atomic_json(receipt,dict(contract='routing-ratio-campaign-v1',started=started,deadline=end,cpu_ids=cpu_ids,
         bundle=bundle['id'],simulation_version=bundle['capabilities'].get('sim_version'),
         model_sha256=bundle['build_options'].get('adaptive_model_sha256'),slots=3,participants=4))
@@ -551,6 +592,8 @@ def _campaign(bundle_path, directory, cpu_ids, hours=48):
     pilot=add_observer_calibration(plan(bundle,phase='pilot',deadline=pilot_end))
     pilot_dir=run_phase(root,bundle_path,pilot,cpu_ids,pilot_end)
     pilot_report=summarize(pilot_dir,root/'pilot-report.json')
+    if not any(g['arm']=='baseline' and g['high_diversity_with_extra_builds'] for g in pilot_report['games']):
+        raise RuntimeError('Pilot did not verify diverse amphibious query demand with duplicated ratio builds; revise workload coverage within the original remaining budget before screening')
     stages=pilot_report['stages'];atomic_json(root/'stages.json',stages)
     durations=[g['wall_seconds'] for g in pilot_report['games'] if not g['diagnostic']]
     if not durations:raise RuntimeError('pilot produced no valid lightweight games')
@@ -562,7 +605,7 @@ def _campaign(bundle_path, directory, cpu_ids, hours=48):
     screen_dir=run_phase(root,bundle_path,screen,cpu_ids,screen_end)
     screen_report=summarize(screen_dir,root/'screening-report.json',stages)
     chosen=finalists(screen_report);atomic_json(root/'finalists.json',dict(arms=chosen,rule='retain mode and fastest measured CPU/route-quality Pareto alternative',source=digest(screen_report)))
-    remaining=end-time.time()
+    remaining=work_end-time.time()
     if remaining<=3600:raise RuntimeError('insufficient remaining campaign time for confirmation')
     perf_end=time.time()+remaining*.8
     count=int(3*(perf_end-time.time())*.85/median/(len(chosen)*4));setups=min(300,max(2,count-count%2))
@@ -571,11 +614,11 @@ def _campaign(bundle_path, directory, cpu_ids, hours=48):
     summarize(confirm_dir,root/'confirmation-report.json',stages)
     diagnostic_durations=[g['wall_seconds'] for g in pilot_report['games'] if g['diagnostic']]
     diagnostic_median=statistics.median(diagnostic_durations) if diagnostic_durations else median*4
-    count=int(3*max(0,end-time.time())*.75/diagnostic_median/(len(chosen)*4));setups=min(120,max(2,count-count%2))
-    diagnostic=plan(bundle,phase='confirmation',setups=setups,seed=20261105,arms=chosen,diagnostics=1,deadline=end)
+    count=int(3*max(0,work_end-time.time())*.75/diagnostic_median/(len(chosen)*4));setups=min(120,max(2,count-count%2))
+    diagnostic=plan(bundle,phase='confirmation',setups=setups,seed=20261105,arms=chosen,diagnostics=1,deadline=work_end)
     diagnostic['metadata']['phase']='diagnostic-confirmation'
     diagnostic['id']+='-diagnostic'
-    diagnostic_dir=run_phase(root,bundle_path,diagnostic,cpu_ids,end)
+    diagnostic_dir=run_phase(root,bundle_path,diagnostic,cpu_ids,work_end)
     summarize(diagnostic_dir,root/'diagnostic-confirmation-report.json',stages)
     atomic_json(root/'completed.json',dict(finished=time.time(),started=started,arms=chosen,
         decision='Evidence ready for maintainer decision; no production policy changed'))

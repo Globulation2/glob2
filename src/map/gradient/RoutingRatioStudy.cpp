@@ -54,7 +54,7 @@ double edgeTime(const Map& map,std::size_t target,int dx,int dy,int walk,int swi
     return advance>0 ? 256.0/advance : std::numeric_limits<double>::infinity();
 }
 int direction(const Map& map,const std::vector<Uint16>& seed,const std::vector<Uint16>& field,std::size_t at,int movement,EntityRandom* random=nullptr) {
-    if(field[at]<=GRADIENT_UNREACHABLE || seed[at]>GRADIENT_UNREACHABLE)return -1;
+    if(field[at]<=GRADIENT_UNREACHABLE || (seed[at]>GRADIENT_UNREACHABLE && seed[at]==field[at]))return -1;
     const int x=at%map.getW(),y=at/map.getW();int best=-1,score=-1,sidesteps[8],sidestepCount=0;
     for(int d=0;d<8;++d) {
         const int dx=tabClose[d][0],dy=tabClose[d][1];const auto next=map.coordToIndex(x+dx,y+dy);
@@ -72,7 +72,7 @@ Trace trace(const Map& map,const std::vector<Uint16>& seed,const std::vector<Uin
     Trace out;std::set<std::size_t> visited;
     if(field[at]<=GRADIENT_UNREACHABLE){out.status="unreachable";return out;}
     for(unsigned step=0;step<8192;++step) {
-        if(seed[at]>GRADIENT_UNREACHABLE){out.target=at;out.status="goal";return out;}
+        if(seed[at]>GRADIENT_UNREACHABLE && seed[at]==field[at]){out.target=at;out.status="goal";return out;}
         if(!visited.insert(at).second){out.status="loop";return out;}
         const int d=direction(map,seed,field,at,movement,&random);
         if(d<0){out.status="no_direction";return out;}
@@ -106,7 +106,7 @@ RoutingRatioStudy::RoutingRatioStudy(const std::string& prefix,bool routeCollect
  counts(prefix+".queries.csv"),state(prefix+".state.csv"),routes(prefix+".routes.csv"),process(prefix+".process.csv"),work(prefix+".work.csv"),ticks(prefix+".ticks.csv"),kernel(prefix+".kernel.csv"),model(prefix+".model.csv"),points(prefix+".points.csv"),collectRoutes(routeCollection) {
     cpuStarted=processCpuSeconds();
     if(!counts || !state || !routes || !process || !work || !ticks || !kernel || !model || !points)throw std::runtime_error("Cannot open routing ratio study");
-    process<<"tick,process_cpu_seconds,elapsed_seconds,rss_bytes,peak_rss_bytes,route_eligible,route_candidates,route_capped\n";
+    process<<"tick,completed_ticks,process_cpu_seconds,elapsed_seconds,rss_bytes,peak_rss_bytes,route_eligible,route_candidates,route_capped\n";
     work<<"tick,family,reason,requests,duplicates,admissions,publications,initialized_cells,prepared_searches,owner_resumes,queue_entries,expanded_cells\n";
     points<<"window,team,physical,selected,queries,reachable\n";
     model<<"window,family,team,selected,evaluations,above_threshold,prediction_sum,age_sum,q32_sum,q128_sum,added_sum,removed_sum,added_fraction_sum,removed_fraction_sum,invalid_goal_sum,no_move_sum,movement_queries_sum\n";
@@ -121,6 +121,7 @@ RoutingRatioStudy::RoutingRatioStudy(const std::string& prefix,bool routeCollect
 }
 RoutingRatioStudy::~RoutingRatioStudy(){flush();}
 void RoutingRatioStudy::endTick() {
+    ++completedTicks;
     const auto elapsed=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStarted).count();
     const auto bin=std::min<unsigned>(63,std::bit_width(std::uint64_t(std::max<std::int64_t>(0,elapsed))));
     ++tickHistogram[bin];
@@ -149,9 +150,9 @@ void RoutingRatioStudy::flush() {
 }
 void RoutingRatioStudy::sample(Map& map) {
     const unsigned tick=map.game->stepCounter;
-    if(window!=tick/512){flush();window=tick/512;windowSamples.fill(0);}
+    if(window!=tick/512){flush();window=tick/512;windowSamples.fill(0);windowRouteSamples=0;}
     const double elapsed=std::chrono::duration<double>(std::chrono::steady_clock::now()-started).count();
-    process<<tick<<',';
+    process<<tick<<','<<completedTicks<<',';
     const auto cpu=processCpuSeconds()-cpuStarted;if(std::isfinite(cpu))process<<cpu;
     process<<','<<elapsed<<',';
 #if defined(__linux__)
@@ -219,7 +220,7 @@ void RoutingRatioStudy::sample(Map& map) {
 void RoutingRatioStudy::observe(Map& map,unsigned family,int team,int physical,int x,int y,bool planning,
                                int material,Building* building,BuildingRoute route) {
     const unsigned tick=map.game->stepCounter;
-    if(window!=tick/512){flush();window=tick/512;windowSamples.fill(0);}
+    if(window!=tick/512){flush();window=tick/512;windowSamples.fill(0);windowRouteSamples=0;}
     if(family==Consumer && building) {
         const auto modes=map.materialSupplyModesSlot(building,material);
         const unsigned supplied=((modes&1)?building->runtime->suppliesStockMask:0)|((modes&2)?building->runtime->suppliesDirectStockMask:0);
@@ -237,8 +238,8 @@ void RoutingRatioStudy::observe(Map& map,unsigned family,int team,int physical,i
     hash=(hash^(hash>>27))*0x94d049bb133111ebull;hash^=hash>>31;
     if((hash&1023)!=0)return;
     ++candidates;
-    if(windowSamples[family]>=64 || routeSamples>=2048){++capped;return;}
-    ++windowSamples[family];++routeSamples;
+    if(windowSamples[family]>=64 || windowRouteSamples>=8 || routeSamples>=2048){++capped;return;}
+    ++windowSamples[family];++windowRouteSamples;++routeSamples;
     constexpr auto requirements=SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs)|SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain)|SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)|SimulationSnapshot::bit(SimulationSnapshot::Component::Occupancy)|SimulationSnapshot::bit(SimulationSnapshot::Component::Areas)|SimulationSnapshot::bit(SimulationSnapshot::Component::Visibility)|SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)|SimulationSnapshot::bit(SimulationSnapshot::Component::Teams)|SimulationSnapshot::bit(SimulationSnapshot::Component::Rules);
     const auto snapshot=SimulationSnapshot::capture(*map.game,SimulationSnapshot::captureCatalog(*map.game),requirements);
     gradient_preparation::CrowdingScratch seeds;seeds.materials.disabled=true;

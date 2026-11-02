@@ -2,7 +2,7 @@
 import copy
 import unittest
 from collections import Counter, defaultdict
-from tools.gradient_ratio_experiment import ARMS, NAMED, compare, plan, add_observer_calibration
+from tools.gradient_ratio_experiment import ARMS, NAMED, compare, plan, add_observer_calibration, finalists
 from tools.tournaments.jobs import EngineJob, routing_ratio_outputs
 
 
@@ -57,6 +57,19 @@ class RatioExperiment(unittest.TestCase):
         self.assertEqual(command[command.index('--gpu')+1],'off')
         request['config']['routing_ratio']['policy']='unknown'
         with self.assertRaisesRegex(ValueError,'unknown routing'):adapter.validate(request)
+
+    def test_invalid_mode_is_excluded_and_two_valid_alternatives_remain(self):
+        report=dict(cpu_per_tick={a:dict(effect=v) for a,v in [('mode',-4),('speed-modes',-3),('median',-2),('equal',-1)]},
+            games=[dict(arm=a,correctness_failures=int(a=='mode'),route_time_penalty=dict(n=10,mean=v))
+                   for a,v in [('mode',0),('speed-modes',0),('median',.01),('equal',.02)]])
+        self.assertEqual(finalists(report),['baseline','speed-modes','median'])
+
+    def test_time_block_adjustment_removes_interleaved_host_load(self):
+        games=[dict(setup='one',arm=arm,diagnostic=False,block=block,cpu_per_tick=100*block+value)
+               for block in range(4) for arm,value in [('baseline',10),('mode',8)]]
+        result=compare(games,draws=100)['mode']
+        self.assertEqual(result['effect'],-2)
+        self.assertEqual(result['ci95'],[-2,-2])
 
     def test_replication_cannot_be_sacrificed_to_more_setups(self):
         with self.assertRaises(ValueError):plan(bundle(),phase='pilot',replicates=3)

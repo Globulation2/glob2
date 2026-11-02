@@ -53,6 +53,10 @@ TEST_CASE("mode excludes dead flying and access-only units and preserves ties") 
     CHECK(world.team->routingRatio.selected==slow->swimClass());
     slow->isDead=true; world.game.stepCounter=1024;world.team->updateRoutingRatio();
     CHECK(world.team->routingRatio.selected==even->swimClass());
+    // A movement upgrade changes the next boundary's population directly.
+    even->performance[WALK]=30;even->performance[SWIM]=10;
+    world.game.stepCounter=1536;world.team->updateRoutingRatio();
+    CHECK(world.team->routingRatio.selected==6);
 }
 TEST_CASE("speed modes quantize independently and median retains an even-population tie") {
     glob2test::HeadlessGlobals globals;

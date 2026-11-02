@@ -447,7 +447,12 @@ building owner’s selected ratio, including allied services, so cross-team acce
 shares the same field. The default continues to use class-specific fields. Land-only, water-only and air access remain separate;
 actual unit movement speeds are unchanged. Building fields use their owner's
 selection. Single-team point queries and snapshot-backed resource/hiring queries
-use the same selection.
+use the same selection. Multi-team-mask point searches retain their explicit
+caller-supplied cost because they have no single team policy. Maxima's independent
+`TerrainTravel` fields and land/amphibious defense topology already use access
+modes and neutral strategic distances rather than six ratio-specific costs;
+those distinct semantics are unchanged. Castor's engine-backed material fields
+pass through the shared snapshot query adapter.
 
 Selection uses living amphibious ground units at the initial completed-world
 boundary and every 512 ticks thereafter. Class and speed modes retain a previous
@@ -478,8 +483,9 @@ of its selector RNG for plateau sidesteps. These are frozen-field
 counterfactuals: congestion, future world changes, supplier pickup penalties and
 forbidden secondary ranking are not modeled as journey time. Live first-direction
 comparisons are separately available for material/market/guard/clear fields.
-A bounded subset also runs a shortest expected-travel-time oracle. Sampling caps
-and their dropped candidates are exported; capped samples cannot establish an
+A bounded subset also runs a shortest expected-travel-time oracle. An eight-query budget per 512-tick window reserves
+coverage throughout a 90,000-tick game rather than exhausting the global budget
+early. Sampling caps and their dropped candidates are exported; capped samples cannot establish an
 unqualified whole-game route distribution. Diagnostic CPU is never production
 policy CPU.
 

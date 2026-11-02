@@ -37,12 +37,12 @@ struct RoutingRatioStudy {
     std::map<unsigned,ModelTotals> modelTotals;
     std::map<std::tuple<unsigned,unsigned,unsigned>,std::pair<std::uint64_t,std::uint64_t>> pointTotals;
     void pointResult(unsigned tick,unsigned team,unsigned physical,unsigned selected,bool reachable) {
-        if(window!=tick/512){flush();window=tick/512;windowSamples.fill(0);}
+        if(window!=tick/512){flush();window=tick/512;windowSamples.fill(0);windowRouteSamples=0;}
         auto& n=pointTotals[{team,physical,selected}];++n.first;n.second+=reachable;
     }
     void modelPrediction(unsigned tick,GradientFieldKey key,const AdaptiveGradientFeatures::Base& input,
         const AdaptiveGradientFeatures::Counts& counts,int prediction,std::int64_t threshold) {
-        if(window!=tick/512){flush();window=tick/512;windowSamples.fill(0);}
+        if(window!=tick/512){flush();window=tick/512;windowSamples.fill(0);windowRouteSamples=0;}
         auto& n=modelTotals[(unsigned(key.family)*32+key.team)*9+key.swim];
         ++n.evaluations;n.above+=prediction>=threshold;n.predictionSum+=prediction;
         for(unsigned i=0;i<input.size();++i)n.inputSum[i]+=input[i];
@@ -55,9 +55,9 @@ struct RoutingRatioStudy {
     void beginTick(){tickStarted=std::chrono::steady_clock::now();}
     void endTick();
     bool collectRoutes=false;
-    unsigned window=0,routeSamples=0;
+    unsigned window=0,routeSamples=0,windowRouteSamples=0;
     std::array<unsigned,8> windowSamples{};
-    std::uint64_t ordinal=0,eligible=0,candidates=0,capped=0;
+    std::uint64_t ordinal=0,eligible=0,candidates=0,capped=0,completedTicks=0;
     explicit RoutingRatioStudy(const std::string& prefix,bool routeCollection);
     ~RoutingRatioStudy();
     void flush();
