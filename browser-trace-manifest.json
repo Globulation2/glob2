@@ -1,0 +1,116 @@
+{
+  "runtime_source_revision": "67d7e038d3a7043840b9206fd64cbb5c8b64788f",
+  "native_build": "Ubuntu24.04 x86_64 GCC13.3 release=1 dev_fast=0",
+  "wasm_build": "Hosted web-client artifact13113216073 from run41374212942, same source67d7e038d3",
+  "current_branch_base": "9997e2394d11ea2282d149b740c100e8f75fcb9f; only Android Gradle config/docs differ from runtime source",
+  "traces": [
+    {
+      "kind": "ai",
+      "path": "artifacts/ai-studio/chromium-serial/game.replay.checksums",
+      "bytes": 2083950,
+      "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+    },
+    {
+      "kind": "ai",
+      "path": "artifacts/ai-studio/chromium-threaded/game.replay.checksums",
+      "bytes": 2083950,
+      "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+    },
+    {
+      "kind": "ai",
+      "path": "artifacts/ai-studio/firefox-serial/game.replay.checksums",
+      "bytes": 2083950,
+      "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+    },
+    {
+      "kind": "ai",
+      "path": "artifacts/ai-studio/firefox-threaded/game.replay.checksums",
+      "bytes": 2083950,
+      "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+    },
+    {
+      "kind": "ai",
+      "path": "artifacts/ai-studio/webkit-serial/game.replay.checksums",
+      "bytes": 2083950,
+      "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+    },
+    {
+      "kind": "ai",
+      "path": "artifacts/ai-studio/webkit-threaded/game.replay.checksums",
+      "bytes": 2083950,
+      "sha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/chromium-serial/generated.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/chromium-serial/loaded.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/chromium-threaded/generated.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/chromium-threaded/loaded.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/firefox-serial/generated.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/firefox-serial/loaded.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/firefox-threaded/generated.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/firefox-threaded/loaded.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/webkit-serial/generated.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/webkit-serial/loaded.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/webkit-threaded/generated.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    },
+    {
+      "kind": "generator",
+      "path": "artifacts/generator-studio/webkit-threaded/loaded.checksums",
+      "bytes": 230420,
+      "sha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b"
+    }
+  ]
+}
