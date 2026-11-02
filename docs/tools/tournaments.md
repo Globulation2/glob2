@@ -929,7 +929,10 @@ See [AI evaluation](../ai/README.md), [map-generator verification](../map-genera
 --output artifacts/ratio-pilot.json` freezes independently seeded baseline,
 class-mode, separate-speed-mode, median and equal-cost games. It gives half the
 setups to Bastion Keys, Plantations, Lava Shield, City-States, Canals and Braided
-River, and half to stratified catalog draws. Each setup/arm has at least four
+River, and half to stratified catalog draws. Layout controls use the frozen
+catalog defaults; map seeds, supported sizes, formats and AI compositions vary.
+Known joint size/density restrictions are enforced before admission. Each
+setup/arm has at least four
 lightweight replicates; diagnostic replicates are additional. Arms are interleaved in randomized setup blocks; the analysis does
 not match game seeds across policies.
 

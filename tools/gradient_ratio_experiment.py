@@ -19,7 +19,7 @@ import time
 from tools.tournaments.bundles import inspect_bundle
 from tools.tournaments.common import atomic_json, digest, read_json
 from tools.tournaments.jobs import routing_ratio_outputs
-from tools.tournaments.model import generator_samples, job, validate_experiment
+from tools.tournaments.model import job, validate_experiment
 from tools.tournaments.results import Results
 from tools.tournaments.coordinator import Coordinator
 from tools.tournaments.storage import directory_bytes
@@ -67,14 +67,15 @@ def plan(bundle, *, phase, setups=12, replicates=4, seed=20261102, arms=ARMS,
         sizes = [v for v in controls['width']['values'] if 7 <= v <= 9 and v in controls['height']['values']]
         if not sizes: raise ValueError('generator lacks a supported campaign size')
         size = sizes[(i//3) % len(sizes)]
-        if g['id']=='lava-shield' and teams>2 and size==7:
-            size=next(v for v in sizes if v>=8)
-        params = generator_samples(catalog,g['method'],1,rng.randrange(2**32))[0]
+        # Scalar catalog ranges do not describe joint density restrictions.
+        # Use normal generator layouts; vary seeds, sizes, formats and AIs.
+        # Reserve 128-square setups for two teams, and respect estate/court space.
+        size=next(v for v in sizes if v>=size and (teams<=2 or v>=8)
+            and (g['id']!='bastion-keys' or teams<=(2**v//128)**2)
+            and (g['id']!='hilbert-river' or v>=8))
+        params={c['id']:c.get('default',c['values'][0]) for c in g['controls']
+                if c['id'] not in ('width','height','teams','workers')}
         params.update(width=size,height=size,teams=teams)
-        # Catalog scalar domains do not encode cross-control restrictions.
-        if g['id']=='lava-shield' and (size==7 or size==8 and teams>4):
-            params['tongue-count']=min(params.get('tongue-count',5),5)
-            params['rim-width']=min(params.get('rim-width',8),8)
         # Alternate homogeneous and mixed AI lineups; rotate seats by replicate.
         players = [rng.choice(ais)]*teams if i % 3==0 else [rng.choice(ais) for _ in range(teams)]
         setup_rows.append(dict(id=digest([phase,i,g['method'],params,players])[:16],generator=g['method'],
@@ -112,6 +113,7 @@ def plan(bundle, *, phase, setups=12, replicates=4, seed=20261102, arms=ARMS,
             independent_seeds=True,minimum_replicates=replicates,stopping_permille=950,
             routing_observer=dict(query_hash_denominator=1024,window_ticks=512,routes_per_window=8,routes_per_game=2048),
             adaptive_model_sha256=bundle.get('build_options',{}).get('adaptive_model_sha256'),
+            layout_controls='pinned catalog defaults with legal size/density constraints',
             category_source='predeclared generator strata; measure realized terrain separately'))
     validate_experiment(manifest)
     return manifest

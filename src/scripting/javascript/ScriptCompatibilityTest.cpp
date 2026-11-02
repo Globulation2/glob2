@@ -137,7 +137,8 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	// Replenishment staffing changes require the current replay acceptance floor.
 	// Script save-format milestones remain independent of these current gates.
 	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 194);
-	CHECK(VERSION_MINOR == 194);
+	CHECK(VERSION_MINOR >= REPLAY_MINIMUM_VERSION_MINOR);
+	CHECK(FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY == 195);
 
 	CHECK(NET_PROTOCOL_VERSION == 75);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);

@@ -18,6 +18,11 @@ class RatioExperiment(unittest.TestCase):
         self.assertEqual(len(first['jobs']),12*5*5)
         setups=first['metadata']['setups']
         self.assertEqual(sum(s['generator_id'] in NAMED for s in setups),6)
+        for setup in setups:
+            size=setup['params']['width'];teams=setup['params']['teams']
+            if teams>2:self.assertGreaterEqual(size,8)
+            if setup['generator_id']=='bastion-keys':self.assertLessEqual(teams,(2**size//128)**2)
+            if setup['generator_id']=='hilbert-river':self.assertGreaterEqual(size,8)
         self.assertEqual(set(s['generator_id'] for s in setups)&set(NAMED),set(NAMED))
         seeds=[(j['seeds']['map'],j['seeds']['game']) for j in first['jobs']]
         self.assertEqual(len(seeds),len(set(seeds)))
