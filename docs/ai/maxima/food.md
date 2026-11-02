@@ -29,11 +29,19 @@ claims during a shortage. Free services consume no hauling allowance.
 Completed providers use their requested staffing after the controller's shared
 producer allowance, and their active output ratios. Empty stores and temporarily
 absent workers do not erase demand. New providers and upgrade targets use the
-strategy's initial staffing request, clamped to the target's assignment limit;
+strategy's initial staffing request, clamped to the target's carrier ceiling;
 a presentation default is only a fallback where the strategy has no request.
 A separate planned hauling estimate bounds usable feeding throughput. Neither
 that forecast nor the operating farm claim changes the mechanical capability
 ceiling used to compare recipes.
+
+Operating carrier requests remain adaptive, with ceilings of **8 for inns** and
+**12 for swarms**. Providers combining feeding and production use the swarm
+ceiling. The engine assignment limit and any lower
+`staffing.control_maximum_workers` still apply. Initial requests, planner food
+claims and subsequent control passes use the same ceiling. Saved controllers
+adopt it on their next staffing update. Construction and upgrade crews are
+separate.
 
 A nominal production mix gives each permitted output equal job weight and uses
 the sum of complete job durations. Training forecasts separate recipient classes

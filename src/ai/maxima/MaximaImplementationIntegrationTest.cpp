@@ -1082,6 +1082,61 @@ static void foodRelocationExecutorRegression()
     REQUIRE((ai.relocation_target_building==-1&&ai.relocation_since.empty()));
 }
 
+static void operatingStaffingCeilings()
+{
+    for(int level=0;level<3;++level)
+    {
+        Game game(nullptr);game.map.setSize(6,6,GRASS);game.map.setGame(&game);
+        game.addTeam();game.teams[0]->race.loadDefault();
+        Player player;player.setTeam(game.teams[0]);
+        // Swarms have one tier; inns exercise all three completed variants.
+        Building* swarm=game.addBuilding(8,8,
+            globalContainer->buildingsTypes.getTypeNum("swarm",0,false),0);
+        Building* inn=game.addBuilding(32,32,
+            globalContainer->buildingsTypes.getTypeNum("inn",level,false),0);
+        REQUIRE(swarm);REQUIRE(inn);
+        AIMaxima::Maxima ai(&player);ai.ensure_strategy();auto& c=ai.context;c.initialize();
+        ai.strategy.staffing.new_inn_workers=20;
+        ai.strategy.staffing.new_swarm_workers=20;
+        glob2test::withMaximaObservation(c,[&]{ai.configure_development_planner();});
+        ai.budget.staffing_window_samples=1;ai.budget.staffing_cooldown_passes=0;
+        ai.budget.staffing_minimum_workers=1;ai.budget.staffing_maximum_workers=20;
+        ai.budget.staffing_slack=20;
+        const auto request=[&](int id) {
+            return glob2test::withMaximaObservation(c,[&]{return ai.update_staffing_request(c,id);});
+        };
+        // Saved requests and initial planner demand obey the same operating caps.
+        ai.staffing_control[0].request=ai.staffing_control[1].request=20;
+        auto world=ai.collect_development_world(c);
+        REQUIRE(world.buildings.size()==2);
+        REQUIRE(world.buildings[0].plannedCarriers==12);
+        REQUIRE(world.buildings[1].plannedCarriers==8);
+        REQUIRE(request(0)==12);REQUIRE(request(1)==8);
+        ai.staffing_control.clear();
+        world=ai.collect_development_world(c);
+        REQUIRE(world.buildings[0].plannedCarriers==12);
+        REQUIRE(world.buildings[1].plannedCarriers==8);
+        // Staffing remains dynamic: empty stores grow to their ceiling, while
+        // full stores release carriers instead of treating the cap as a target.
+        for(int pass=0;pass<40;++pass)
+        {
+            REQUIRE(request(0)<=12);REQUIRE(request(1)<=8);
+        }
+        REQUIRE(ai.staffing_control[0].request==12);
+        REQUIRE(ai.staffing_control[1].request==8);
+        for(Building* building:{swarm,inn})
+            for(int r=0;r<int(MaterialCount);++r)
+                building->setMaterial(r,building->type->maxMaterial[r]);
+        for(int pass=0;pass<40;++pass){request(0);request(1);}
+        REQUIRE(ai.staffing_control[0].request==1);
+        REQUIRE(ai.staffing_control[1].request==1);
+        // An explicitly lower common ceiling still wins over either role cap.
+        ai.strategy.staffing.control_maximum_workers=6;
+        ai.staffing_control[0].request=ai.staffing_control[1].request=20;
+        REQUIRE(request(0)==6);REQUIRE(request(1)==6);
+    }
+}
+
 static void innCompletionStaffingRegressions()
 {
     Game game(NULL); game.map.setSize(6,6,GRASS); game.map.setGame(&game);
@@ -1865,6 +1920,7 @@ TEST_SUITE("Maxima.Implementation")
 	TEST_CASE("mission force regressions") { glob2test::HeadlessGlobals globals; missionForceRegressions(); }
 	TEST_CASE("economy staffing regressions") { glob2test::HeadlessGlobals globals; economyStaffingRegressions(); }
 	TEST_CASE("execution state save regression") { glob2test::HeadlessGlobals globals; executionStateSaveRegression(); }
+	TEST_CASE("operating staffing ceilings") { glob2test::HeadlessGlobals globals; operatingStaffingCeilings(); }
 	TEST_CASE("food relocation executor regression") { glob2test::HeadlessGlobals globals; foodRelocationExecutorRegression(); }
 	TEST_CASE("explorer swarm staffing regressions") { glob2test::HeadlessGlobals globals; explorerSwarmStaffingRegressions(); }
 	TEST_CASE("completed swarm budget regressions") { glob2test::HeadlessGlobals globals; completedSwarmBudgetRegressions(); }
