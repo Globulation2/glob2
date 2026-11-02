@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:2182921) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [firefox] › artifacts/ci-recovery/menu-readiness-firefox-baseline/probe.spec.js:39:38 › a failed core download says so and offers to try again (46.5s)
+
+  1 passed (50.8s)

@@ -1,0 +1,6 @@
+<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="3.05999">
+<testsuite name="boundary.spec.js" timestamp="2026-11-02T12:02:44.674Z" hostname="chromium" tests="1" failures="0" skipped="0" time="2.269" errors="0">
+<testcase name="readiness polls through missing startup diagnostics without masking the main menu assertion" classname="boundary.spec.js" time="2.269">
+</testcase>
+</testsuite>
+</testsuites>

@@ -1,0 +1,6 @@
+<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="50.790777999999996">
+<testsuite name="probe.spec.js" timestamp="2026-11-02T11:59:26.282Z" hostname="firefox" tests="1" failures="0" skipped="0" time="46.509" errors="0">
+<testcase name="a failed core download says so and offers to try again" classname="probe.spec.js" time="46.509">
+</testcase>
+</testsuite>
+</testsuites>

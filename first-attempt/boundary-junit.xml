@@ -1,0 +1,47 @@
+<testsuites id="" name="" tests="1" failures="1" skipped="0" errors="0" time="27.803151000000003">
+<testsuite name="boundary.spec.js" timestamp="2026-11-02T12:00:03.032Z" hostname="chromium" tests="1" failures="1" skipped="0" time="24.649" errors="0">
+<testcase name="readiness polls through missing startup diagnostics without masking the main menu assertion" classname="boundary.spec.js" time="24.649">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/error-context.md]]
+
+[[ATTACHMENT|boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(received).rejects.toThrow()" type="expect.rejects">
+<![CDATA[  [chromium] › boundary.spec.js:4:1 › readiness polls through missing startup diagnostics without masking the main menu assertion 
+
+    Error: expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: undefined
+
+       5 |  await page.goto(fixed.gameURL());await old.waitForMainMenu(page);
+       6 |  await page.evaluate(()=>{const diagnostics=globalThis.glob2Diagnostics;globalThis.glob2Diagnostics=undefined;setTimeout(()=>{globalThis.glob2Diagnostics=diagnostics;},1000);});
+    >  7 |  await expect(old.waitForMainMenu(page)).rejects.toThrow(/glob2Diagnostics|snapshot/);
+         |                                                  ^
+       8 |  await fixed.waitForMainMenu(page);
+       9 |  expect((await page.evaluate(()=>glob2Diagnostics.snapshot())).screenClass).toContain('MainMenuScreen');
+      10 | });
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-readiness-validation/boundary.spec.js:7:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+</testsuite>
+</testsuites>

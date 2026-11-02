@@ -1,0 +1,61 @@
+
+Running 6 tests using 1 worker
+
+(node:2173263) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/asset-loading.spec.js:39:38 › a failed core download says so and offers to try again (18.4s)
+  ✓  2 [chromium] › browser/tests/asset-loading.spec.js:39:38 › a failed game download says so and offers to try again (19.7s)
+(node:2177219) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [firefox] › browser/tests/asset-loading.spec.js:39:38 › a failed core download says so and offers to try again (1.1m)
+(node:2180171) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [firefox] › browser/tests/asset-loading.spec.js:39:38 › a failed game download says so and offers to try again (29.3s)
+(node:2181389) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [webkit] › browser/tests/asset-loading.spec.js:39:38 › a failed core download says so and offers to try again (28.9s)
+  ✓  6 [webkit] › browser/tests/asset-loading.spec.js:39:38 › a failed game download says so and offers to try again (45.2s)
+
+
+  1) [firefox] › browser/tests/asset-loading.spec.js:39:38 › a failed core download says so and offers to try again 
+
+    Error: main menu is not showing after declining the introduction
+
+    main menu is not showing after declining the introduction
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+       at main-menu.js:260
+
+      258 |       await exports.clickControl(page,'intro/continue');
+      259 |     return false;
+    > 260 |   }, {timeout,message:'main menu is not showing after declining the introduction'}).toBe(true);
+          |                                                                                     ^
+      261 | };
+      262 |
+        at waitForMainMenu (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/replay-save-repair/browser/tests/main-menu.js:260:85)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/replay-save-repair/browser/tests/asset-loading.spec.js:51:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../menu-readiness-validation/results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../menu-readiness-validation/results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../menu-readiness-validation/results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../menu-readiness-validation/results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [firefox] › browser/tests/asset-loading.spec.js:39:38 › a failed core download says so and offers to try again 
+  5 passed (3.6m)

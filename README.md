@@ -1,0 +1,13 @@
+# Download-retry menu readiness evidence
+
+Repair commit 11ecc198f9bd35723eac1038edbcc640608d263d; base and unchanged runtime source f7828c4b6a85a336d40164a0c362aa8f1da52b29. See manifest.json for runtime SHA256s, exact source diff, Node version and physical two-CPU affinity (0,1).
+
+The archived c688 complete 744-case browser run threw ReferenceError in Chromium and WebKit core-download retry before the new page installed glob2Diagnostics (original-full-suite-errors.json). The fix returns false during that interval inside the existing polling predicate. It preserves the deadline and every menu, introduction and package failure assertion; no shipped code changes.
+
+Final existing retry coverage: both core/game cases pass in Chromium (18.4s/19.7s), WebKit (28.9s/see first-attempt/retry.log) and Firefox (36.3s/32.1s). First attempt was 5 passed, 1 Firefox core-retry startup timeout (native loop remained 0, workerCount8, software renderer, all packages ready). Original unchanged Firefox baseline then passed46.5s; both final fixed Firefox cases passed. The initial failure is retained and is not claimed fixed by a helper guard. Recheck was justified by this unresolved startup flakiness.
+
+Boundary diagnostic: a fresh blank browser realm publishes diagnostics after1second. The old helper rejects before publication, while the fixed helper waits and requires the menu. boundary-junit.xml:1pass. The first boundary attempt mistakenly assigned to the application's readonly diagnostics property, so it did not remove diagnostics and failed its negative expectation; preserved first-attempt/boundary.log is an invalid diagnostic, not a product regression. The corrected fresh-realm diagnostic passes without altering application state.
+
+Commands: taskset -c0,1 xvfb-run -a node browser/node_modules/@playwright/test/cli.js test --config=<recorded config> --trace=retain-on-failure. GLOB2_TEST_RENDERER=software, CI=1. The fixture config selects the existing core/game retry checks, one worker; first attempt all three browsers, final recheck Firefox. A separate readonly server served exact f782 release payload; no sources, binaries, dependencies or output directories of concurrent complete suites were changed.
+
+Scope: helper-only change; native simulation/save/replay/network behavior and browser runtime bytes are unchanged. Complete native and 744-case browser suites continue separately at f782, not green. Known browser failures remain. No cross-platform engine or hosted full-green claim, and no runner-minute savings claim. Large traces/screenshots remain local under artifacts/ci-recovery/menu-readiness-validation.

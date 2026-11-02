@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:2191482) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › ../menu-readiness-validation/boundary.spec.js:4:1 › readiness polls through missing startup diagnostics without masking the main menu assertion (2.3s)
+
+  1 passed (3.1s)

@@ -1,0 +1,14 @@
+{
+  "tested_revision": "11ecc198f9bd35723eac1038edbcc640608d263d",
+  "base": "f7828c4b6a85a336d40164a0c362aa8f1da52b29",
+  "runtime_revision": "f7828c4b6a85a336d40164a0c362aa8f1da52b29",
+  "cpu_affinity": "0,1",
+  "node": "v22.18.0",
+  "runtime_files": {
+    "index.js": "81495f9f53396fe77dbb0dac664619f8151590581fde0c75a19b0e032379b290",
+    "index.wasm": "820f84520e6737d420229c8aa259813566090eec3f25d1cb7bebbf7cb7a28a5b",
+    "threaded/index.js": "5deab38a6d34ad39bf561ebe8417df6d14a7af2b79996fa15c8e56acfcfce414",
+    "threaded/index.wasm": "a69c82404b5a286e274c35029995f19491cfa93050e86b2cdd453dfc6b7b0ea2"
+  },
+  "source_diff": "diff --git a/browser/tests/main-menu.js b/browser/tests/main-menu.js\nindex b513fc4185..d6778df971 100644\n--- a/browser/tests/main-menu.js\n+++ b/browser/tests/main-menu.js\n@@ -248,7 +248,9 @@ exports.readBrowserFile = async (page,path) => Buffer.from(await page.evaluate(p\n // they ask for the main menu. Tests of onboarding itself drive its controls.\n exports.waitForMainMenu = async (page, {timeout = 60000} = {}) => {\n   await expect.poll(async () => {\n-    const state=await page.evaluate(()=>glob2Diagnostics.snapshot());\n+    // A retry can navigate before the new document installs its diagnostics.\n+    const state=await page.evaluate(()=>globalThis.glob2Diagnostics?.snapshot());\n+    if (!state) return false;\n     if ((state.screen+' '+state.screenClass).includes('MainMenuScreen')) return true;\n     if ((state.screen+' '+state.screenClass).includes('IntroductionOfferScreen') && state.controls['intro/menu']?.enabled)\n       await exports.clickControl(page,'intro/menu');\n"
+}

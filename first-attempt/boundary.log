@@ -1,0 +1,40 @@
+
+Running 1 test using 1 worker
+
+(node:2184317) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › ../menu-readiness-validation/boundary.spec.js:4:1 › readiness polls through missing startup diagnostics without masking the main menu assertion (24.6s)
+
+
+  1) [chromium] › ../menu-readiness-validation/boundary.spec.js:4:1 › readiness polls through missing startup diagnostics without masking the main menu assertion 
+
+    Error: expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: undefined
+
+       5 |  await page.goto(fixed.gameURL());await old.waitForMainMenu(page);
+       6 |  await page.evaluate(()=>{const diagnostics=globalThis.glob2Diagnostics;globalThis.glob2Diagnostics=undefined;setTimeout(()=>{globalThis.glob2Diagnostics=diagnostics;},1000);});
+    >  7 |  await expect(old.waitForMainMenu(page)).rejects.toThrow(/glob2Diagnostics|snapshot/);
+         |                                                  ^
+       8 |  await fixed.waitForMainMenu(page);
+       9 |  expect((await page.evaluate(()=>glob2Diagnostics.snapshot())).screenClass).toContain('MainMenuScreen');
+      10 | });
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-readiness-validation/boundary.spec.js:7:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../menu-readiness-validation/boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../menu-readiness-validation/boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../menu-readiness-validation/boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../menu-readiness-validation/boundary-results/boundary-readiness-polls-t-3a206-ing-the-main-menu-assertion-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › ../menu-readiness-validation/boundary.spec.js:4:1 › readiness polls through missing startup diagnostics without masking the main menu assertion 

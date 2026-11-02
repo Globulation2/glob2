@@ -1,0 +1,15 @@
+{
+  "pid": 2172996,
+  "base": "f7828c4b6a85a336d40164a0c362aa8f1da52b29",
+  "phase": "finished",
+  "results": [
+    {
+      "name": "retry",
+      "exit_code": 1
+    },
+    {
+      "name": "boundary",
+      "exit_code": 1
+    }
+  ]
+}

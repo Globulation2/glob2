@@ -1,0 +1,70 @@
+<testsuites id="" name="" tests="6" failures="1" skipped="0" errors="0" time="215.70216699999997">
+<testsuite name="asset-loading.spec.js" timestamp="2026-11-02T11:56:27.588Z" hostname="chromium" tests="2" failures="0" skipped="0" time="38.069" errors="0">
+<testcase name="a failed core download says so and offers to try again" classname="asset-loading.spec.js" time="18.395">
+</testcase>
+<testcase name="a failed game download says so and offers to try again" classname="asset-loading.spec.js" time="19.674">
+</testcase>
+</testsuite>
+<testsuite name="asset-loading.spec.js" timestamp="2026-11-02T11:56:27.588Z" hostname="firefox" tests="2" failures="1" skipped="0" time="95.862" errors="0">
+<testcase name="a failed core download says so and offers to try again" classname="asset-loading.spec.js" time="66.607">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/error-context.md]]
+
+[[ATTACHMENT|results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/trace.zip]]
+]]>
+</system-out>
+<failure message="main menu is not showing after declining the introduction" type="expect.toBe">
+<![CDATA[  [firefox] › asset-loading.spec.js:39:38 › a failed core download says so and offers to try again ─
+
+    Error: main menu is not showing after declining the introduction
+
+    main menu is not showing after declining the introduction
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+       at main-menu.js:260
+
+      258 |       await exports.clickControl(page,'intro/continue');
+      259 |     return false;
+    > 260 |   }, {timeout,message:'main menu is not showing after declining the introduction'}).toBe(true);
+          |                                                                                     ^
+      261 | };
+      262 |
+        at waitForMainMenu (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/replay-save-repair/browser/tests/main-menu.js:260:85)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/replay-save-repair/browser/tests/asset-loading.spec.js:51:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../menu-readiness-validation/results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../menu-readiness-validation/results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../menu-readiness-validation/results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../menu-readiness-validation/results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="a failed game download says so and offers to try again" classname="asset-loading.spec.js" time="29.255">
+</testcase>
+</testsuite>
+<testsuite name="asset-loading.spec.js" timestamp="2026-11-02T11:56:27.588Z" hostname="webkit" tests="2" failures="0" skipped="0" time="74.088" errors="0">
+<testcase name="a failed core download says so and offers to try again" classname="asset-loading.spec.js" time="28.922">
+</testcase>
+<testcase name="a failed game download says so and offers to try again" classname="asset-loading.spec.js" time="45.166">
+</testcase>
+</testsuite>
+</testsuites>

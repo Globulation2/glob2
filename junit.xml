@@ -1,0 +1,8 @@
+<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="70.534509">
+<testsuite name="asset-loading.spec.js" timestamp="2026-11-02T12:01:33.410Z" hostname="firefox" tests="2" failures="0" skipped="0" time="68.379" errors="0">
+<testcase name="a failed core download says so and offers to try again" classname="asset-loading.spec.js" time="36.256">
+</testcase>
+<testcase name="a failed game download says so and offers to try again" classname="asset-loading.spec.js" time="32.123">
+</testcase>
+</testsuite>
+</testsuites>
