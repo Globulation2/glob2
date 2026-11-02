@@ -5,7 +5,8 @@
 JSON maps each of the 512 ticks from 30000 through 30511 to the SHA-256 of its
 complete checksum record (tick, aggregate, and ordered team/entity fields) when
 continuing that retained checkpoint with the current unit-property simulation and AI policy.
-`expected-units-30000-30512.json` is the active trajectory;
+`expected-units-30000-30512.json` is the active trajectory.
+It includes renewable farming-capacity Wood reserves and adaptive prestige policy.
 `expected-resources-30000-30512.json` retains the simulation-revision-40 trajectory;
 `expected-terrain-30000-30512.json` retains the simulation-revision-20 baseline;
 `expected-scoped-gradients-30000-30512.json` and earlier expectations retain the
