@@ -1357,6 +1357,11 @@ TEST_CASE("active deliveries preserve save continuation checksums [save-format][
             if(tick==1024) {
                 REQUIRE(std::any_of(swarm->unitsWorking.begin(),swarm->unitsWorking.end(),
                     [](const Unit* unit) { return unit->activity==Unit::ACT_FILLING; }));
+                // Save the newly valid state: couriers in flight above the inventory cap.
+                swarm->setMaterial(WHEAT,swarm->type->maxMaterial[WHEAT]);
+                if(extended) swarm->setMaterial(WOOD,swarm->type->maxMaterial[WOOD]);
+                swarm->update();
+                REQUIRE(swarm->unitsWorking.size()>unsigned(swarm->desiredMaxUnitWorking));
                 const auto bytes=saveProductionGame(w.game,extended);
                 resumed=std::make_unique<glob2test::HeadlessGame>(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
                 REQUIRE(loadProductionGame(resumed->game,bytes,extended));
