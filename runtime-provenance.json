@@ -1,0 +1,42 @@
+{
+  "compiled_git_revision": "7b594e5ec769c52d74c5fb33c2ba1b1555b79409",
+  "fixture_revision": "a6d07caaa0606747fad4bedd925d039aa40be976",
+  "identity": {
+    "client_features": {
+      "authoring_links": false,
+      "commander": false,
+      "community_ai": true,
+      "community_generators": true
+    },
+    "client_profile": "free",
+    "distribution": "browser",
+    "mode": "release",
+    "native_wss": false,
+    "role": "client",
+    "target": "web",
+    "toolchain": "emscripten"
+  },
+  "files": {
+    "identity.json": {
+      "bytes": 313,
+      "sha256": "f0f3f6d0751d001187c6a39e157d50b4130d2bf1bf423104ac855e4fbe307915"
+    },
+    "index.wasm": {
+      "bytes": 26770173,
+      "sha256": "2047f4b3f3752464de361e53b91bbb0bd57be14a6d94aa275b5f1477ec347544"
+    },
+    "threaded/index.wasm": {
+      "bytes": 26802783,
+      "sha256": "55f4bc45726314e9356344d7d6afc56311ef10c2bc970c2192e1578262609cad"
+    },
+    "script-tests.wasm": {
+      "bytes": 28491261,
+      "sha256": "03ad735920a669c119836ebe8436574784b20e50c4b57f57e48ebeead90f7e88"
+    },
+    "threaded/script-tests.wasm": {
+      "bytes": 28730160,
+      "sha256": "7620c87c78b5ec751e4b6cd074d7e22387485c6a3a8b9b51667c9891d80eefe6"
+    }
+  },
+  "build_log": "artifacts/ci-recovery/browser-build.log; source checkout frozen on 7b throughout build"
+}

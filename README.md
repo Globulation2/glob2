@@ -21,3 +21,5 @@ Byte-identical payloads are stored as tar hard links. Every original trace path 
 available after extraction, without storing duplicate GCC11/GCC13 and serial/parallel records.
 
 Archive SHA-256: 5b0ddab57ebb3f039d82e8ac898664031b0a410a23b990b428bd41bb10a63b1d
+
+Additional evidence: all 150 actual resource records emitted by the failed master macOS job match the refreshed golden exactly. See macos-qualification.json and macos-resource-compositions.trace. Full browser inventory is unchanged: all 747 project/file/title/tag identities match (inventory-comparison.json). Runtime file digests and the frozen build source are recorded in runtime-provenance.json.

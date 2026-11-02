@@ -1,0 +1,10 @@
+{
+  "compiled_revision": "7b594e5ec769c52d74c5fb33c2ba1b1555b79409",
+  "artifact_id": 13185114580,
+  "job_id": 125564471006,
+  "trace_file": "tests/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation_golden/seeded-compositions.trace",
+  "rows": 150,
+  "sha256": "3518076aa285b75cd400533d36890c5ab736b004480a6f5e141131d59b94bdbe",
+  "matches_refreshed_golden": true,
+  "coverage": "Actual failed master macOS job emitted all 150 resource composition records. They match the refreshed golden exactly; no local macOS execution claim."
+}

@@ -1,0 +1,7 @@
+{
+  "base_revision": "7b594e5",
+  "final_revision": "a6d07caaa0",
+  "cases": 747,
+  "identical_projects_files_titles_tags": true,
+  "note": "Full default inventory listed with each checkout own Playwright CLI and package instance."
+}
