@@ -26,12 +26,14 @@ The primary metric is `log_time_outcome_v1`, coefficient 2, horizon 90,000 ticks
 
 `provenance/identity.json` identifies native Linux/GCC15 release bundle `7758e379d2bcdfc64e0f9a42bbadee792c65d679c1dd924bd8701424af04a03b`, simulation revision 121, source commit `726b37f573d2b1401033b5536562c7ee92b4050d` plus its exact experimental dirty source snapshot. The decompressed `frozen-experimental-source.json.gz` SHA256 equals the bundle's declared dirty identity. It contains the tracked patch and complete untracked source contents needed to identify that benchmark build. This historical snapshot is **not** the production PR patch.
 
-The full bundle manifest and byte-identical framework archive are retained. Huge engine/assets bundles, replay/save files, worker caches, databases, raw stdout/stderr and raw development notes are omitted. Statistical reproduction needs none of them. Exact simulation reruns require rebuilding the recorded historical engine/assets from the preserved source identity; this export does not claim to contain a runnable engine bundle.
+The full bundle manifest and byte-identical framework archive are retained. Benchmark engine/assets bundles, worker caches, databases, raw stdout/stderr and raw development notes are omitted. Selected final-production regression saves and checksum traces are retained under `validation/`. Statistical reproduction needs none of them. Exact simulation reruns require rebuilding the recorded historical engine/assets from the preserved source identity; this export does not claim to contain a runnable engine bundle.
 
 The generated map transport artifacts are small and retained under `maps/`. `maps/index.json` identifies generator revision, seed, colony count, rotation, hashes and transport encoding, including failures. If transport encoding is gzip, decode that outer layer to materialize the engine `.map.gz` bytes. Do not confuse transport compression with map-file compression.
 
-## Review and cleanup
+## Final production validation and cleanup
 
-`EXPORT-VALIDATION.json` records export checks. `INVENTORY.json` lists retained paths, sizes and hashes; run `write_inventory.py` again after adding final-production validation logs. Root will add final revision/platform/save/replay test results separately: the historical benchmark source is deliberately distinct from the focused official-policy revision.
+`validation/README.md`, `RESULTS.json` and `final-independent-review.md` identify the final production revision and its passing local qualification. Retained logs, JUnit, commands, saves and per-tick checksum traces support those claims. The historical benchmark source elsewhere in this archive is distinct from the official-policy revision; it is retained solely for reproducibility.
 
-`CLEANUP-INVENTORY.json` is a proposed cleanup list only. Nothing in the worktree, existing campaigns or other `/tmp` paths was deleted by this export. In particular, the currently used `artifacts/maxima-food/native-prefix` must be retained until root relocates it and confirms the build no longer uses it. Keep this export until evidence publication is verified.
+`validation/CLEANUP.md` records the completed experiment cleanup. Experiment implementations, runners, raw campaign output and worker caches are removed from the production checkout. The permanent audit data remain on this separate evidence branch.
+
+`EXPORT-VALIDATION.json` records the assessment export checks. `INVENTORY.json` lists retained paths, sizes and hashes; `SHA256SUMS` permits independent verification. These two index files exclude themselves from their content inventory.

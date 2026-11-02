@@ -6,8 +6,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 4756,
-    "sha256": "3b57d1254ec320823988fb7c3ab649a7a9212d2e7b88b706c912772eba780a8f"
+    "bytes": 5012,
+    "sha256": "15e4d18c5baa63182a269db3b515410a510067bd19927a1bbdd6aa83a143cd4a"
   },
   {
     "path": "RECOMPUTATION-RESULT.json",
@@ -3026,8 +3026,8 @@
   },
   {
     "path": "reports/final-review/FULL-ANALYSIS.md",
-    "bytes": 11142,
-    "sha256": "48f81a85328cfb9b142eb240e83bfa46b54753e013fbc5760f7cf30aecb6f8ea"
+    "bytes": 11154,
+    "sha256": "e0c6b41dfc6b209b28425d1adf1e2450a6b7672e7cf9206915cbd98cc6da486f"
   },
   {
     "path": "reports/final-review/strength-and-worker-allocation.png",
@@ -3088,6 +3088,11 @@
     "path": "reports/overnight/summary.json.gz",
     "bytes": 996474,
     "sha256": "7dfdab99bdda686423a1acf5a0625e8d3b9679423c589622f071cbefd3dd9e6a"
+  },
+  {
+    "path": "validation/CLEANUP.md",
+    "bytes": 1012,
+    "sha256": "58c668de163fe076c731c01b87cfeff0b6c7c3d662babd12661829b28fb2f1a0"
   },
   {
     "path": "validation/README.md",

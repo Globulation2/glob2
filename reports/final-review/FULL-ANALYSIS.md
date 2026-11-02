@@ -85,7 +85,7 @@ The practical result:8/12 is a gentler operational limit than8/8, preserves birt
 
 ## Evidence
 
-- [Frozen primary results](../overnight/SUMMARY.md) and [machine-readable scores/coverage](../overnight/summary.json).
-- [All-case three-arm telemetry](../food-common-window/SUMMARY.md), [estimates/CIs](../food-common-window/balanced-estimates.csv), [case deltas](../food-common-window/joint-common-case-deltas.csv), and [checkpoint coverage](../food-common-window/fixed-checkpoint-coverage-and-means.csv).
+- [Frozen primary results](../overnight/SUMMARY.md) and [machine-readable scores/coverage](../overnight/summary.json.gz).
+- [All-case three-arm telemetry](../food-common-window/SUMMARY.md), [estimates/CIs](../food-common-window/balanced-estimates.csv.gz), [case deltas](../food-common-window/joint-common-case-deltas.csv.gz), and [checkpoint coverage](../food-common-window/fixed-checkpoint-coverage-and-means.csv.gz).
 - Source/bundle/framework and worker-release evidence:../../freeze-validation.json,../../root-launch-validation.json,../../completion-verification.json; helper provenance and validation in../../scripts/food-analysis.*.json.
 - All parse/observation error lists are empty. Native Linux only; this review does not establish cross-platform simulation checksum equivalence.
