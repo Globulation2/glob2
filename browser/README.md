@@ -282,6 +282,18 @@ the tests still require actual WebGL2 and audio activation. It does not bypass
 assertions or select the software game renderer. Other environments retain the
 default headless browser configuration.
 
+On Linux this headed configuration also prepares a private copy of the locked
+Playwright Firefox browser under `build/browser-testing/firefox-compositor/`.
+Its screenshot adapter reads the compositor instead of re-rendering the document:
+the bundled Juggler `drawSnapshot` capture omits worker WebGL canvases that are
+visible on the display. This preserves the pixel assertions and requested clip
+regions. Capture requires the foreground tab and a clip within the viewport;
+unsupported requests fail explicitly. The adapter verifies the exact Firefox version and screenshot-module
+hash, and rejects unfamiliar versions for review. It never changes the shared
+Playwright installation, the game runtime, or an existing browser-cache entry.
+See [Firefox compositor capture](https://firefox-source-docs.mozilla.org/gfx/DebuggingWebRenderScreenshots.html).
+This adapter is development tooling; it is not included in the game package.
+
 For the separate real-window visibility suite in a Linux container, set `CI=1`
 and run `xvfb-run -a npx playwright test --config visibility.config.js`. Its local
 test browser then uses `--no-sandbox` and SwiftShader; these settings affect only
