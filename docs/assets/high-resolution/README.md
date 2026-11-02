@@ -1,6 +1,6 @@
 # High-resolution artwork pack
 
-The current [manifest](../../../data/highres/v1/manifest.json) registers 3,665 frames.
+The current [manifest](../../../content/data/highres/v1/manifest.json) registers 3,665 frames.
 The pack contains the organized artist originals, 60 verified original-derived
 world frames, and 2,016 unit animation poses rendered from the original Blender
 rigs. The pack also includes reviewed AI-enhanced sprites, original-based terrain and generated water,
@@ -9,7 +9,7 @@ All overlapping original-derived frames remain byte-identical.
 
 World artwork includes both hives, 3 flags, 5 construction frames, 10 trees, 8 wheat, 5 papyrus,
 completed middle school, first two racetracks and 24 area markers, plus the
-hand-authored farm-area marker (8 frames drawn as SVG in `datasrc/gfx/authored`).
+hand-authored farm-area marker (8 frames drawn as SVG in `content-src/gfx/authored`).
 
 Assemble approved PNG sources: `python3 tools/artwork/package_runtime.py`.
 Client builds encode those sources with the shared WebP pipeline. For a complete
@@ -18,7 +18,7 @@ artifacts/ai-runtime`; add `--lossless-images` for exact RGBA comparisons.
 Release exports use the shared Q90/lossless size-selection policy.
 Validate: `python3 tools/artwork/validate_runtime.py` and the original family
 validators under tools/artwork. Sources and staging exports are preserved in
-datasrc/gfx; production/original-derived contains approved final layers.
+content-src/gfx; production/original-derived contains approved final layers.
 Validate the built WebP layers, atlases and index with
 `python3 tools/artwork/validate_runtime.py --export artifacts/ai-runtime`.
 The HD terrain atlas covers 272 legacy connected tiles. The catalogue materials
@@ -36,7 +36,7 @@ periodic interpolation, connected grain and a soft pull toward each original
 pixel's color. It preserves the original palette and broad patches while adding
 detail at 128px; downscaling stays close rather than requiring exact pixels.
 The selected materials, tuning parameters and retained transition masks live in
-`datasrc/gfx/derived/terrain-materials-v1`. Grass/sand weights were recovered from
+`content-src/gfx/derived/terrain-materials-v1`. Grass/sand weights were recovered from
 the previous approved composites. Sand/water masks are their exact shoreline
 alpha channels; shoreline alpha also stays unchanged at every atlas mip. The
 historical revision and input hashes are recorded in `recipe.json`. Pure water
@@ -51,7 +51,7 @@ stay exact. The selected material's interior stays unchanged. This recipe uses
 Pillow and NumPy, with no AI inference. Changing the reference material requires
 an explicit new selection and matching source hashes. Approved references are
 `grass.png` and `sand.png`; each variant uses its own classic tile as the color
-target. Production finals live under `datasrc/gfx/production/original-materials`.
+target. Production finals live under `content-src/gfx/production/original-materials`.
 
 The shared controls in `recipe.json` are:
 
@@ -74,7 +74,7 @@ Recipe regression checks run with
 
 Unit textures render onto a fixed 128×128 pixel canvas (4× for the 32px-native
 explorer set, ~3.37× and 3.2× for the 38px/40px-native worker and warrior sets),
-while the native 32-pose sprites remain in `data/gfx`. This preserves logical sprite size,
+while the native 32-pose sprites remain in `content/data/gfx`. This preserves logical sprite size,
 32 poses per direction. Normal simulation speed is 30 ticks per second
 ([engine timing](../../../src/engine/EngineTiming.h)); pose count does not set
 the display refresh rate. The seven sets

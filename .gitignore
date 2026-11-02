@@ -42,7 +42,7 @@ Glob2-*.dmg
 /build-*-support.log
 /test/build/
 /build-*.log
-/browser/node_modules
+/platforms/web/node_modules
 gha-creds-*.json
 
 # Deployment TLS keys are local secrets, never release assets.
@@ -53,8 +53,8 @@ gha-creds-*.json
 /deploy/compose.override.yaml
 
 # Generated website music decoder (tools/music/build_web.py).
-/platform/apps/web/public/music/decoder.js
-/platform/apps/web/public/music/decoder.wasm
+/services/online/apps/web/public/music/decoder.js
+/services/online/apps/web/public/music/decoder.wasm
 
 # Browser development copies of the canonical online translation catalogs.
-/browser/locales/
+/platforms/web/locales/

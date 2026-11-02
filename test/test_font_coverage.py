@@ -30,7 +30,7 @@ class FontCoverageTest(unittest.TestCase):
         ttf.TTF_FontHasGlyph.restype = ctypes.c_bool
         ttf.TTF_Init.restype = ctypes.c_bool
         self.assertTrue(ttf.TTF_Init())
-        font_paths = [ROOT / 'data/fonts/sans.ttf', *sorted((ROOT / 'data/fonts/scripts').glob('*.ttf'))]
+        font_paths = [ROOT / 'content/data/fonts/sans.ttf', *sorted((ROOT / 'content/data/fonts/scripts').glob('*.ttf'))]
         fonts = []
         try:
             for path in font_paths:
@@ -50,12 +50,12 @@ class FontCoverageTest(unittest.TestCase):
                     self.assertEqual(missing, [], 'Missing glyphs: ' + repr(missing))
             # Bulgarian must work with the default font alone, including the
             # reduced font used before optional browser downloads arrive.
-            native = (ROOT / 'data/texts.bg.txt').read_text(encoding='utf-8').splitlines()[1::2]
-            online = json.loads((ROOT / 'platform/packages/i18n/locales/bg.json').read_text())
+            native = (ROOT / 'content/data/texts.bg.txt').read_text(encoding='utf-8').splitlines()[1::2]
+            online = json.loads((ROOT / 'services/online/packages/i18n/locales/bg.json').read_text())
             values = native + [text for value in online.values()
                                for text in (value.values() if isinstance(value, dict) else [value])]
             characters = set(''.join(values) + 'ѝЍ„“”’–—…и\u0300И\u0300')
-            core = ttf.TTF_OpenFont(str(ROOT / 'browser/assets/sans-core.ttf').encode(), 13)
+            core = ttf.TTF_OpenFont(str(ROOT / 'platforms/web/assets/sans-core.ttf').encode(), 13)
             self.assertTrue(core, 'Could not load browser starter font')
             fonts.append(core)
             for name, font in [('native Bulgarian', fonts[0]), ('browser Bulgarian', core)]:
@@ -66,12 +66,12 @@ class FontCoverageTest(unittest.TestCase):
                     self.assertEqual(missing, [], 'Missing Bulgarian glyphs: ' + repr(missing))
             # Filipino must work before the browser downloads supplemental fonts,
             # and without silently relying on another script's fallback font.
-            native = (ROOT / 'data/texts.fil.txt').read_text(encoding='utf-8').splitlines()[1::2]
-            online = json.loads((ROOT / 'platform/packages/i18n/locales/fil.json').read_text(encoding='utf-8'))
+            native = (ROOT / 'content/data/texts.fil.txt').read_text(encoding='utf-8').splitlines()[1::2]
+            online = json.loads((ROOT / 'services/online/packages/i18n/locales/fil.json').read_text(encoding='utf-8'))
             values = native + [text for value in online.values()
                                for text in (value.values() if isinstance(value, dict) else [value])]
             characters = set(''.join(values))
-            for path in (ROOT / 'data/fonts/sans.ttf', ROOT / 'browser/assets/sans-core.ttf'):
+            for path in (ROOT / 'content/data/fonts/sans.ttf', ROOT / 'platforms/web/assets/sans-core.ttf'):
                 font = ttf.TTF_OpenFont(str(path).encode(), 13)
                 self.assertTrue(font, 'Could not load Filipino font ' + path.name)
                 fonts.append(font)

@@ -5,17 +5,17 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
-DERIVED=ROOT/'datasrc/gfx/derived/markers-v1'
+DERIVED=ROOT/'content-src/gfx/derived/markers-v1'
 frames=json.loads((DERIVED/'manifest.json').read_text())['frames']
 assert {f['id'] for f in frames}=={'area-%s%d'%(family,i) for family in ['guard','clearing','forbidden'] for i in range(8)}
 for frame in frames:
     source=frame['sources'][0];path=ROOT/source['path']
     assert hashlib.sha256(path.read_bytes()).hexdigest()==source['sha256']
     native=Image.open(path).convert('RGBA')
-    image=Image.open(ROOT/'data/highres/v1'/(frame['id']+'.png')).convert('RGBA')
+    image=Image.open(ROOT/'content/data/highres/v1'/(frame['id']+'.png')).convert('RGBA')
     assert image.size==(128,128) and image.tobytes()==native.tobytes()
     assert image.tobytes()==Image.open(DERIVED/(frame['id']+'.png')).tobytes()
-    classic=Image.open(ROOT/'data/gfx'/(frame['id']+'.png')).convert('RGBA')
+    classic=Image.open(ROOT/'content/data/gfx'/(frame['id']+'.png')).convert('RGBA')
     assert classic.size==(frame['width'],frame['height'])==(32,32)
     a=np.asarray(classic,dtype=float)/255
     b=np.asarray(image.resize((32,32),Image.Resampling.LANCZOS),dtype=float)/255

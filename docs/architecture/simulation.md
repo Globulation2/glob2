@@ -168,7 +168,7 @@ checksum adapter remains available for diagnostic fixtures.
   requires the format-128 compact save reader. Older saves load into the current
   simulation.
 - `.map`/`.game` files are gzip level 6 by default (`FileManager::writeGzipAtomic`/
-  `writeGzipAtomically` in `libgag/src/FileManagerGzip.cpp`; the gzip header carries
+  `writeGzipAtomically` in `libs/gag/src/FileManagerGzip.cpp`; the gzip header carries
   a zero timestamp and OS=unknown, producing deterministic bytes with the same
   zlib encoder). This is a container change, not a save-format schema change: the bytes
   inside the gzip stream are exactly what today's serializer already writes, so it
@@ -228,7 +228,7 @@ checksum adapter remains available for diagnostic fixtures.
   frames are skipped.
 - Detailed terrain rendering resolves shipped appearances through a
   presentation-only material catalog, corner coverage resolver and CPU compositor.
-  `data/terrain/tileset.json` defines those materials independently of gameplay
+  `content/data/terrain/tileset.json` defines those materials independently of gameplay
   IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
   metadata. See [terrain material authoring](../assets/terrain-materials.md) for
   variants, boundary profiles, asset validation and cache behavior. Visual catalog

@@ -61,9 +61,9 @@ class TerrainSynth(unittest.TestCase):
 
     def test_every_catalogue_sprite_frame_has_registered_hd(self):
         """Native-only terrain is limited to legacy art without an HD source."""
-        catalog = json.loads((ROOT / "data/terrain/tileset.json").read_text())
-        rows = {line.split()[0] for line in (ROOT / "data/highres/v1/frames.txt").read_text().splitlines()[1:]}
-        native_only = {"data/gfx/terrain", "data/gfx/terrain-cobblestone"}
+        catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
+        rows = {line.split()[0] for line in (ROOT / "content/data/highres/v1/frames.txt").read_text().splitlines()[1:]}
+        native_only = {"content/data/gfx/terrain", "content/data/gfx/terrain-cobblestone"}
         for material in catalog["materials"]:
             sprite = material["sprite"]
             if sprite in native_only:
@@ -71,10 +71,10 @@ class TerrainSynth(unittest.TestCase):
             decor = material.get("decor")
             if decor:
                 for frame in decor["full"] + decor["edge"]:
-                    name = f"{decor['sprite'].removeprefix('data/gfx/')}{frame}"
+                    name = f"{decor['sprite'].removeprefix('content/data/gfx/')}{frame}"
                     with self.subTest(frame=name):
                         self.assertIn(name, rows)
-            stem = sprite.removeprefix("data/gfx/")
+            stem = sprite.removeprefix("content/data/gfx/")
             phases = material.get("animation_frames", 1)
             stride = material.get("animation_stride", 0)
             for variant in material["variants"]:
@@ -82,7 +82,7 @@ class TerrainSynth(unittest.TestCase):
                     frame = f"{stem}{variant['frame'] + phase * stride}"
                     with self.subTest(frame=frame):
                         self.assertIn(frame, rows)
-                        self.assertTrue((ROOT / "data/highres/v1" / f"{frame}.png").is_file())
+                        self.assertTrue((ROOT / "content/data/highres/v1" / f"{frame}.png").is_file())
 
     def test_hd_frames_match_their_classic_downsample(self):
         """HD frames are the 4x source of the classic tiles, not a separate look."""
@@ -248,12 +248,12 @@ class TerrainSynth(unittest.TestCase):
         from material_tiles import runtime_blend
 
         for name in ("gravel", "deep_water"):
-            document = {"materials": [{"sprite": f"data/gfx/terrain-{name}",
+            document = {"materials": [{"sprite": f"content/data/gfx/terrain-{name}",
                                        "variants": [{"frame": i} for i in range(synth.VARIANTS)]}]}
             prepared = seamless_sources(document, ROOT)
-            tiles = [Image.open(ROOT / f"data/gfx/terrain-{name}{i}.png").convert("RGBA") for i in range(synth.VARIANTS)]
+            tiles = [Image.open(ROOT / f"content/data/gfx/terrain-{name}{i}.png").convert("RGBA") for i in range(synth.VARIANTS)]
             for i, blended in enumerate(runtime_blend(tiles)):
-                self.assertEqual(blended.tobytes(), prepared[f"data/gfx/terrain-{name}{i}.png"].tobytes(), (name, i))
+                self.assertEqual(blended.tobytes(), prepared[f"content/data/gfx/terrain-{name}{i}.png"].tobytes(), (name, i))
 
     def test_periodic_materials_share_their_outer_ring_and_wrap(self):
         """Periodic variants join any variant: identical outer ring, and each
@@ -345,7 +345,7 @@ class TerrainSynth(unittest.TestCase):
         self.assertEqual([m["key"] for m in fragment["materials"]], synth.SYNTH_ORDER)
         self.assertEqual(fragment["bindings"], {name: name for name in synth.SYNTH_ORDER})
         for block in fragment["materials"]:
-            self.assertEqual(block["sprite"], f"data/gfx/terrain-{block['key']}")
+            self.assertEqual(block["sprite"], f"content/data/gfx/terrain-{block['key']}")
             recipe = synth.RECIPES[block["key"]]
             self.assertEqual(len(block["variants"]), (recipe.grid ** 2 or synth.VARIANTS) * recipe.blocks)
             self.assertNotIn("ocean", block)
@@ -363,7 +363,7 @@ class TerrainSynth(unittest.TestCase):
 
     def test_provenance_records_statistics_only_references(self):
         for name in synth.SYNTH_ORDER:
-            document = json.loads((ROOT / "datasrc/gfx" / name / "provenance.json").read_text())
+            document = json.loads((ROOT / "content-src/gfx" / name / "provenance.json").read_text())
             recipe = synth.RECIPES[name]
             with self.subTest(material=name):
                 self.assertEqual(document["pillow"], synth.PILLOW_VERSION)
@@ -535,7 +535,7 @@ class TerrainBlockContracts(unittest.TestCase):
                     validate_grid_joins("deep_snow", 0, tiles[:cells] * 2, grid)
 
     def test_committed_catalog_keeps_recipe_edge_contracts(self):
-        catalog = json.loads((ROOT / "data/terrain/tileset.json").read_text())
+        catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
         materials = {material["key"]: material for material in catalog["materials"]}
         for name, recipe in synth.RECIPES.items():
             with self.subTest(material=name):

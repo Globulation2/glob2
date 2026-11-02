@@ -180,7 +180,7 @@ def mobile_tools(root, lease=True):
         return Path(root) / "build/mobile-tools"
     identity = key(
         root,
-        ["mobile/toolchain.json", "mobile/android-tools.json", "mobile/emulator.json"],
+        ["platforms/mobile/toolchain.json", "platforms/mobile/android-tools.json", "platforms/mobile/emulator.json"],
     )
     return managed(home() / "toolchains/mobile" / identity, lease)
 
@@ -196,7 +196,7 @@ def browser_sdk(root, explicit=None, lease=True):
     if isolated():
         return Path(root) / "tools/browser-emsdk"
     return managed(
-        home() / "toolchains/emscripten" / key(root, ["browser/toolchain.json"]), lease
+        home() / "toolchains/emscripten" / key(root, ["platforms/web/toolchain.json"]), lease
     )
 
 
@@ -207,7 +207,7 @@ def cache(root, name, lease=True):
 
 
 def gradle_home(root):
-    version = json.loads((Path(root) / "mobile/toolchain.json").read_text())["android"][
+    version = json.loads((Path(root) / "platforms/mobile/toolchain.json").read_text())["android"][
         "gradle"
     ]
     if isolated():
@@ -230,10 +230,10 @@ def gradle_home(root):
 
 
 def dependency_key(root, identity, fingerprint):
-    files = ["mobile/vcpkg.json", "mobile/toolchain.json", "mobile/sdl-java.json"]
+    files = ["platforms/mobile/vcpkg.json", "platforms/mobile/toolchain.json", "platforms/mobile/sdl-java.json"]
     files += [
         str(p.relative_to(root))
-        for p in (Path(root) / "mobile/triplets").rglob("*.cmake")
+        for p in (Path(root) / "platforms/mobile/triplets").rglob("*.cmake")
     ]
     files += [
         str(p.relative_to(root))
@@ -291,7 +291,7 @@ def android_java_command(sdk, tool, env):
 
 def paths(root):
     tools = mobile_tools(root, False)
-    lock = json.loads((Path(root) / "mobile/android-tools.json").read_text())
+    lock = json.loads((Path(root) / "platforms/mobile/android-tools.json").read_text())
     jdk = lock.get("jdk-" + platform.system() + "-" + platform.machine())
     return {
         "home": str(home()),

@@ -17,10 +17,10 @@ build isolation, artifact
 validation, rendering and input geometry; they do not replace device gameplay,
 background recovery, document-picker or cross-platform simulation checks.
 
-`mobile/ios_smoke.py` checks startup, background/resume and fresh-process relaunch
+`platforms/mobile/ios_smoke.py` checks startup, background/resume and fresh-process relaunch
 on a booted simulator named `Glob2-Mobile` in the isolated device set. Pass its
 UUID with `--device`; diagnostics default to `build/mobile-smoke-ios`.
-`mobile/smoke.py` and `mobile/android_trust_test.py` provide Android diagnostics;
+`platforms/mobile/smoke.py` and `platforms/mobile/android_trust_test.py` provide Android diagnostics;
 the startup smoke selects a hand preference on fresh profiles before checking
 the main menu, settings input, lifecycle and persisted profile. Their UI sequences
 may require updating as the shared interface evolves.
@@ -157,9 +157,9 @@ only the reusable tool and its documentation in Git.
 Multiplayer uses native WSS listeners and verified TLS on desktop and mobile.
 LAN hosts share a session certificate fingerprint in the waiting room; guests
 paste that pairing string before exchanging game details. See
-[secure multiplayer](../browser/gateway.md) for trust, framing, and compatibility.
+[secure multiplayer](../platforms/web/gateway.md) for trust, framing, and compatibility.
 
-The iOS project includes `mobile/ios/Glob2.entitlements` for UDP broadcast LAN
+The iOS project includes `platforms/mobile/ios/Glob2.entitlements` for UDP broadcast LAN
 discovery. Device signing requires a provisioning profile approved for Apple's
 multicast entitlement, in addition to the existing local-network usage
 explanation. Manual pairing remains available when discovery cannot run.

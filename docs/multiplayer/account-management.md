@@ -7,7 +7,7 @@ Administrator endpoints, self-service export/deletion and retention guarantees. 
 The first administrator is granted on the server:
 
 ```sh
-cd platform
+cd services/online
 npm run platform -- admin grant <account id or exact display name>   # admin
 npm run platform -- admin grant <account> --role moderator
 npm run platform -- admin revoke <account>                           # back to user

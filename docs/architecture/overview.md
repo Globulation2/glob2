@@ -41,6 +41,27 @@ Save capture preserves state and outstanding work at a simulation barrier. Backg
 
 Online accounts, rooms, ratings and match history live in the TypeScript platform. The relay sequences turns; clients compute their local simulation using an admitted sim version. See [platform architecture](../multiplayer/architecture.md) and [turn protocol](../multiplayer/turn-protocol.md).
 
+## Repository layout
+
+| Directory | Holds |
+| --- | --- |
+| `src/` | The game and engine |
+| `libs/` | The project's own libraries: `gag/` (graphics, UI, files) and `usl/` (scripting language) |
+| `third_party/` | Vendored code |
+| `content/` | The runtime tree: `data/`, `maps/`, `campaigns/`, `scripts/`, `games/` |
+| `content-src/` | Source art and provenance for generated content |
+| `platforms/` | Platform shells and packaging: `web/`, `mobile/`, `macos/`, `windows/`, `linux/`, `stores/` |
+| `services/online/` | The TypeScript online platform; `deploy/` holds its hosting scripts |
+| `tools/`, `scons/`, `test/` | Contributor tools, build helpers and cross-domain tests |
+
+The game names its files by paths relative to the runtime tree (`data/gfx/...`,
+`maps/...`). In a checkout that tree is `content/`: the file manager adds it beside
+any search root that holds it, so running from the repository needs no setup.
+Installed packages and exported asset trees hold those directories at their root.
+Saves, replays and online sim-data hashes use the virtual paths, so the layout of
+the repository does not affect them. `debian/`, `snap/` and `fastlane/` stay at the
+root because dpkg, snapcraft and F-Droid look for them there.
+
 ## Changing a boundary
 
 Extend the owning domain, update capture/query contracts and test doubles, and build affected harnesses. Verify determinism, continuation and admission boundaries through [simulation verification](../development/simulation-verification.md). Keep presentation caches and diagnostics bounded; never rely on thread scheduling, pointer order or unspecified collection iteration for game outcomes.

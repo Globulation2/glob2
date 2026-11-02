@@ -11,7 +11,7 @@ in separate TypeScript projects; the latter includes DOM types for code evaluate
 in the browser without adding browser globals to server checks.
 
 ```sh
-cd platform
+cd services/online
 npm ci
 docker run -d --name glob2-pg -p 127.0.0.1:55432:5432 \
   -e POSTGRES_USER=glob2 -e POSTGRES_PASSWORD=glob2 postgres:16
@@ -36,8 +36,8 @@ own one-command test; see
 
 ## Online interface languages
 
-The online interface supports the same language inventory as `data/texts.list.txt`.
-`platform/packages/i18n` owns the canonical English messages, translated JSON
+The online interface supports the same language inventory as `content/data/texts.list.txt`.
+`services/online/packages/i18n` owns the canonical English messages, translated JSON
 catalogs, browser locale mappings, interpolation, plurals and formatters. Game
 catalog aliases are mapped explicitly: browser language tags must never interpret
 `br` as Brazilian Portuguese or `si` as Slovenian. Arabic and Persian use RTL.
@@ -56,11 +56,11 @@ variants selected by `Intl.PluralRules`. API errors retain their English `messag
 and machine `code`, with optional `messageKey` and `messageParams` for translated
 presentation. Unknown diagnostics use a generic localized explanation.
 System-generated studio artifact and validation captions are normalized in
-`platform/apps/web/src/messages.ts`; changing a producer caption requires updating
+`services/online/apps/web/src/messages.ts`; changing a producer caption requires updating
 its presentation mapping and all catalogs. Preserve authored titles and diagnostic
 details.
 
-Update every catalog when adding a message. From `platform/`, run
+Update every catalog when adding a message. From `services/online/`, run
 `npm run i18n:check` to validate language coverage, message keys, parameters,
 plural forms, literal API identifiers and source coverage. `shared-values.json`
 records reviewed messages intentionally identical to English, such as brands,
@@ -81,7 +81,7 @@ Reusable tokens, CSS, icons, fonts, brand imagery, accessible primitives and the
 persistence live there. Application layouts, translations and workflows remain here.
 The native game and `/play/` runtime retain their own styling and assets.
 
-After `npm ci` in `platform/`, run `npm run design:sync`. Vite also bootstraps this
+After `npm ci` in `services/online/`, run `npm run design:sync`. Vite also bootstraps this
 at the start of development/builds. Each invocation resolves design-system `main`
 once and installs that exact commit in isolation, preserving other locked dependencies.
 For coordinated verification, set `GLOB2_DESIGN_SYSTEM_SHA` to a full published commit

@@ -1,0 +1,44 @@
+{
+  "platforms/web/assets/menu-colony.webp": {
+    "image_recipe": {
+      "conversion": "16-bit-rgba-to-renderer-8-bit; reject-other-high-depth",
+      "exact": true,
+      "image_recipe": "bundled-images-v3-webp-only",
+      "lossless_quality": 75,
+      "lossy": true,
+      "lossy_method": 6,
+      "lossy_quality": 90,
+      "method": 4,
+      "pillow": "12.2.0",
+      "webp": "1.6.0"
+    },
+    "lossy": true,
+    "output_sha256": "023396c34c24377fb64ef8dc65a251a3eb1c734390cb55cbaf64b1204091fd68",
+    "sha256": "42af3e40fdb860aa3ca67cb212944a8768948786b4d5ce15cc1adf5dcad8bfe7",
+    "source": "content/data/gfx/menu-colony.png"
+  },
+  "platforms/web/assets/menu-wordmark.webp": {
+    "image_recipe": {
+      "conversion": "16-bit-rgba-to-renderer-8-bit; reject-other-high-depth",
+      "exact": true,
+      "image_recipe": "bundled-images-v3-webp-only",
+      "lossless_quality": 75,
+      "lossy": true,
+      "lossy_method": 6,
+      "lossy_quality": 90,
+      "method": 4,
+      "pillow": "12.2.0",
+      "webp": "1.6.0"
+    },
+    "lossy": true,
+    "output_sha256": "68abf86d324b56bc967083386439da85cb5c8d41b63d6db2ab8b47ba813f50e7",
+    "sha256": "020f34e218f137b34f9af53c85532662a9efebcf7b4b8f955b761b07528cd32d",
+    "source": "content/data/gfx/menu-wordmark.png"
+  },
+  "platforms/web/assets/sans-core.ttf": {
+    "languageNames": "369c1910974f6b0db1517307a4faf8c3ac2acdc814a2fb55af8096a94938e9d6",
+    "output_sha256": "466fb75762954c81cd683538f08c4e36773dc27cb5c11339e3e1a675777a6048",
+    "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "source": "content/data/fonts/sans.ttf"
+  }
+}

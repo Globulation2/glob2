@@ -43,7 +43,7 @@ def git(*args):
 
 def validate(tag=None):
     current = version()
-    spec = (ROOT / "fedora" / "glob2.spec").read_text()
+    spec = (ROOT / "platforms/linux/fedora" / "glob2.spec").read_text()
     spec_version = re.search(r"^Version:\s*(\S+)\s*$", spec, re.MULTILINE)
     if spec_version is None or spec_version.group(1) != current:
         raise SystemExit(f"Fedora spec Version must match PACKAGE_VERSION {current}")
@@ -123,11 +123,11 @@ def archive(destination, tag=None):
     with tarfile.open(target, "r:gz") as packed:
         names = set(packed.getnames())
         required = {prefix + name for name in (
-            "SConstruct", "scons/build_layout.py", "debian/glob2.6", "data/glob2.desktop",
-            "data/org.globulation2.Globulation2.metainfo.xml",
-            "data/screenshots/globulation2-gameplay.png",
-            "data/usl/Language/Runtime/Control.usl",
-            "data/fonts/sans.ttf", "maps/SmallForTwo.map.gz")}
+            "SConstruct", "scons/build_layout.py", "debian/glob2.6", "content/data/glob2.desktop",
+            "content/data/org.globulation2.Globulation2.metainfo.xml",
+            "content/data/screenshots/globulation2-gameplay.png",
+            "content/data/usl/Language/Runtime/Control.usl",
+            "content/data/fonts/sans.ttf", "content/maps/SmallForTwo.map.gz")}
         missing = required - names
         if missing:
             raise SystemExit(f"source archive is missing {sorted(missing)}")

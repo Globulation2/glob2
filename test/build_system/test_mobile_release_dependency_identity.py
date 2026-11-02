@@ -9,7 +9,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scons'))
-sys.path.insert(0, str(ROOT / 'mobile'))
+sys.path.insert(0, str(ROOT / 'platforms/mobile'))
 import android_release
 from build_layout import build_identity
 from dev_build import dependency_identity
@@ -19,8 +19,8 @@ class MobileReleaseDependencyIdentityTests(unittest.TestCase):
     def verify_fixture(self, arch, manifest):
         with tempfile.TemporaryDirectory() as task:
             root = Path(task)
-            (root / 'mobile').mkdir()
-            (root / 'mobile/toolchain.json').write_text(json.dumps({'android': {'min_api': 24}}))
+            (root / 'platforms/mobile').mkdir(parents=True)
+            (root / 'platforms/mobile/toolchain.json').write_text(json.dumps({'android': {'min_api': 24}}))
             apk = root / 'client.apk'
             with zipfile.ZipFile(apk, 'w') as archive:
                 archive.writestr('lib/' + arch + '/libmain.so', b'not inspected before library-set check')

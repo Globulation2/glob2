@@ -90,7 +90,7 @@ No speedup is assumed before measuring matching source and toolchain inputs.
 ### Shared renderer shader assets
 
 The build generates shader layouts and GLSL variants from
-`libgag/shaders/renderer-manifest.json` and the authoritative material sources.
+`libs/gag/shaders/renderer-manifest.json` and the authoritative material sources.
 `GLOB2_GLSLANG` can point to pinned glslang 15.1.0 for offline Vulkan SPIR-V generation;
 without the platform’s offline binaries the experimental SDL GPU family is unavailable.
 `GLOB2_NAGA` selects pinned Naga 27.0.0 for browser WGSL. Optional

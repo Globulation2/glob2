@@ -81,7 +81,7 @@ void views(int width, int height)
 	meta.license = "CC0-1.0";
 	meta.frames = 4800000;
 	meta.description = "Three arrangements for a forest colony.";
-	auto root = glob2test::sourceRoot() / "data/zik/original";
+	auto root = glob2test::contentRoot() / "data/zik/original";
 	std::array<std::string, 3> paths{(root / "a1.opus").string(), (root / "a2.opus").string(),
 									 (root / "a3.opus").string()};
 	MusicSetScreen detail(meta, paths, musicText("Install"));

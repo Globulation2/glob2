@@ -21,7 +21,7 @@ def catalog_frame_count(document):
 
 class TerrainTileset(unittest.TestCase):
     def setUp(self):
-        self.document = json.loads((ROOT / "data/terrain/tileset.json").read_text())
+        self.document = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
 
     def test_boundary_shapes_are_explicit_and_version_gated(self):
         validate(self.document)
@@ -227,9 +227,9 @@ class TerrainTileset(unittest.TestCase):
     def test_variant_borders_preserve_premultiplied_alpha_continuity(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "data").mkdir()
-            Image.new("RGBA", (32, 32), (40, 80, 120, 128)).save(root / "data/tile0.png")
-            Image.new("RGBA", (32, 32), (250, 0, 0, 0)).save(root / "data/tile1.png")
+            (root / "content/data").mkdir(parents=True)
+            Image.new("RGBA", (32, 32), (40, 80, 120, 128)).save(root / "content/data/tile0.png")
+            Image.new("RGBA", (32, 32), (250, 0, 0, 0)).save(root / "content/data/tile1.png")
             document = {"materials": [{"sprite": "data/tile", "variants": [{"frame": 0}, {"frame": 1}]}]}
             frames = seamless_sources(document, root)
             first, second = frames["data/tile0.png"], frames["data/tile1.png"]

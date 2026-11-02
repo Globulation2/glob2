@@ -4,7 +4,7 @@ Players see three connection quantities, each with its own name, unit and thresh
 table. Every surface uses the same names, units, words and limits: the in-game
 connection panel (desktop and phone), the match-start checklist, the quick-match card,
 room seats and the match page in the web app. The thresholds come from one table,
-`platform/packages/protocol/src/connectionQuality.ts`, and the game has a checked copy
+`services/online/packages/protocol/src/connectionQuality.ts`, and the game has a checked copy
 of it. All three quantities are presentation only. Nothing simulated, rated or
 verified reads them.
 
@@ -51,7 +51,7 @@ seconds as `1.4 s` (one decimal below 10 s, then whole seconds).
 The match page rates each player's *typical* (median) Ping and Behind with the same
 table. Its overall **Quality** is the worst of those two ratings and of the
 reconnect, offline-time, delayed-order and rejoin rules in
-`platform/apps/api/src/history/network.ts`.
+`services/online/apps/api/src/history/network.ts`.
 
 ## In-game panel
 
@@ -89,8 +89,8 @@ extra time counts as lag, so a silent client still turns *slow* after two second
 
 ## Changing a threshold
 
-1. Edit `CONNECTION_METRICS` in `platform/packages/protocol/src/connectionQuality.ts`
-   and run `npm run fixtures` in `platform/`. This regenerates
+1. Edit `CONNECTION_METRICS` in `services/online/packages/protocol/src/connectionQuality.ts`
+   and run `npm run fixtures` in `services/online/`. This regenerates
    `fixtures/connection-quality.json` with its sample cases.
 2. Copy that file to `test/fixtures/protocol/connection-quality.json` and update
    `limits()` in `src/net/ConnectionQuality.h`.

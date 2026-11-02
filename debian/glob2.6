@@ -430,7 +430,7 @@ Choose at most one: \-\-output, \-\-preview
 Choose at most one: \-\-preview\-scale, \-\-preview\-size
 .PP
 .nf
-glob2 map preview maps/FourSquares1.map.gz \-\-output artifacts/map.png
+glob2 map preview content/maps/FourSquares1.map.gz \-\-output artifacts/map.png
 .fi
 .PP
 Outputs: Overview PNG and/or map report
@@ -465,7 +465,7 @@ Show this command's help (also \-h) Default: false.
 \-\-field\-color requires \-\-render\-field
 .PP
 .nf
-glob2 map render maps/FourSquares1.map.gz \-\-output artifacts/game\-view.png
+glob2 map render content/maps/FourSquares1.map.gz \-\-output artifacts/game\-view.png
 .fi
 .PP
 Outputs: PNG; requires installed game graphics
@@ -548,7 +548,7 @@ Categorical PNG output Type: file. Required.
 Show this command's help (also \-h) Default: false.
 .PP
 .nf
-glob2 map export\-image maps/FourSquares1.map.gz \-\-output artifacts/terrain.png
+glob2 map export\-image content/maps/FourSquares1.map.gz \-\-output artifacts/terrain.png
 .fi
 .PP
 Outputs: Categorical PNG; not an exact save\-state interchange
@@ -827,7 +827,7 @@ Structured jobs isolate engine tuning and diagnostic environment variables
 \-\-set requires \-\-generator
 .PP
 .nf
-glob2 game run \-\-map\-file maps/FourSquares1.map.gz \-\-game\-seed 713 \-\-player castor \-\-player cortex \-\-player castor \-\-player cortex \-\-ticks 64 \-\-telemetry checksums \-\-output\-dir artifacts/game
+glob2 game run \-\-map\-file content/maps/FourSquares1.map.gz \-\-game\-seed 713 \-\-player castor \-\-player cortex \-\-player castor \-\-player cortex \-\-ticks 64 \-\-telemetry checksums \-\-output\-dir artifacts/game
 .fi
 .PP
 Outputs: result.json, progress.json, artifacts.json; requested saves, replay and telemetry
@@ -980,7 +980,7 @@ Recorded match's map Type: file. Required.
 Show this command's help (also \-h) Default: false.
 .PP
 .nf
-glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr \-\-map\-file maps/FourSquares1.map.gz \-\-output\-dir artifacts/verified
+glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr \-\-map\-file content/maps/FourSquares1.map.gz \-\-output\-dir artifacts/verified
 .fi
 .PP
 Outputs: result.json, verdict.json, checksums.txt, match.replay, compute.json, artifacts.json; verdict is in JSON
@@ -1439,7 +1439,7 @@ Load a custom generator package or directory Type: file. Repeatable.
 Show this command's help (also \-h) Default: false.
 .PP
 .nf
-glob2 script attach maps/FourSquares1.map.gz examples/javascript/scenario.js artifacts/scripted.map.gz
+glob2 script attach content/maps/FourSquares1.map.gz examples/javascript/scenario.js artifacts/scripted.map.gz
 .fi
 .PP
 Outputs: Playable .map.gz; refuses existing destination
@@ -1814,7 +1814,7 @@ Load a custom generator package or directory Type: file. Repeatable.
 Show this command's help (also \-h) Default: false.
 .PP
 .nf
-glob2 dev dump\-resources maps/FourSquares1.map.gz
+glob2 dev dump\-resources content/maps/FourSquares1.map.gz
 .fi
 .PP
 Outputs: Resource counts on stdout
@@ -1838,7 +1838,7 @@ Team index Default: 0. Type: integer. Range: 0..15.
 Show this command's help (also \-h) Default: false.
 .PP
 .nf
-glob2 dev dump\-wheat maps/FourSquares1.map.gz \-\-team 0
+glob2 dev dump\-wheat content/maps/FourSquares1.map.gz \-\-team 0
 .fi
 .PP
 Outputs: Wheat\-plan diagnostics on stdout
@@ -1871,7 +1871,7 @@ Swarms per tile Default: 0. Type: integer. Range: 0..32.
 Show this command's help (also \-h) Default: false.
 .PP
 .nf
-glob2 dev dump\-tiled maps/FourSquares1.map.gz \-\-repeat\-x 2 \-\-repeat\-y 2
+glob2 dev dump\-tiled content/maps/FourSquares1.map.gz \-\-repeat\-x 2 \-\-repeat\-y 2
 .fi
 .PP
 Outputs: Tiled\-map diagnostics on stdout

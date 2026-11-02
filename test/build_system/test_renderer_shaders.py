@@ -186,7 +186,7 @@ class RendererShaderTest(unittest.TestCase):
     def test_rejects_overlapping_vertex_attributes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for p in (shader.MANIFEST, Path('libgag/shaders/skin-material.glsl'), Path('libgag/shaders/skin-materials.json')):
+            for p in (shader.MANIFEST, Path('libs/gag/shaders/skin-material.glsl'), Path('libs/gag/shaders/skin-materials.json')):
                 (root / p).parent.mkdir(parents=True, exist_ok=True)
                 (root / p).write_bytes((ROOT / p).read_bytes())
             manifest = json.loads((root / shader.MANIFEST).read_text())
@@ -224,7 +224,7 @@ class RendererShaderTest(unittest.TestCase):
             receipt = {'path': source.name, 'entrypoint': 'main0', 'sha256': source_hash}
             meta = {'variants': ['primitive'], 'license': 'GPL-3.0-or-later', 'nativeTranslationReceipt': {'metalSources': {'primitive': {'vertex': receipt, 'fragment': receipt}}}}
             metadata = output / 'metadata.json';metadata.write_text(json.dumps(meta))
-            xcode = 'Xcode ' + json.loads((ROOT / 'mobile/toolchain.json').read_text())['ios']['xcode'] + '\nBuild version example'
+            xcode = 'Xcode ' + json.loads((ROOT / 'platforms/mobile/toolchain.json').read_text())['ios']['xcode'] + '\nBuild version example'
             lock = {'xcodeVersion': xcode, 'sdk': 'macosx', 'sdkVersion': 'example', 'metalSha256': hashlib.sha256(metal.read_bytes()).hexdigest(), 'metallibSha256': hashlib.sha256(metallib.read_bytes()).hexdigest()}
             lockfile = output / 'tool-lock.json';lockfile.write_text(json.dumps(lock))
             commands = []

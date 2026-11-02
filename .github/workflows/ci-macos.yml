@@ -168,18 +168,18 @@ jobs:
           brew install autoconf automake libtool nasm pkgconf
       - name: Select and verify the existing pinned Xcode
         id: ios_toolchain
-        run: python3 mobile/ios_localization_qa.py select-xcode
+        run: python3 platforms/mobile/ios_localization_qa.py select-xcode
       - name: Restore validated simulator dependencies
         id: ios_dependencies
         uses: actions/cache/restore@v4
         with:
           path: build/ios/simulator/arm64/15.0/client/release/vcpkg-installed
-          key: ios-simulator-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.ios_toolchain.outputs.fingerprint }}-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/dependencies.py', 'mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+          key: ios-simulator-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.ios_toolchain.outputs.fingerprint }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/dependencies.py', 'platforms/mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
       - name: Build and validate pinned simulator dependencies
         run: |
           set -euo pipefail
           mkdir -p artifacts/ios-localization
-          python3 mobile/dependencies.py --target ios --environment simulator --release --jobs 2 2>&1 | tee artifacts/ios-localization/dependencies.log
+          python3 platforms/mobile/dependencies.py --target ios --environment simulator --release --jobs 2 2>&1 | tee artifacts/ios-localization/dependencies.log
       # Save only the checksum-validated dependency prefix, before app/QA failures.
       # No game objects or app binaries are reused across source revisions.
       - name: Save validated simulator dependencies
@@ -191,14 +191,14 @@ jobs:
       - name: Build unsigned release app at the checked-out revision
         run: |
           set -euo pipefail
-          python3 mobile/ios.py build --environment simulator --release --jobs 2 2>&1 | tee artifacts/ios-localization/build.log
+          python3 platforms/mobile/ios.py build --environment simulator --release --jobs 2 2>&1 | tee artifacts/ios-localization/build.log
       - name: Qualify actual simulator bundle and native lifecycle
         env:
           QA_LOCALE: ${{ inputs.locale }}
-        run: python3 mobile/ios_localization_qa.py run --locale "$QA_LOCALE"
+        run: python3 platforms/mobile/ios_localization_qa.py run --locale "$QA_LOCALE"
       - name: Clean up only the recorded owned simulator
         if: ${{ always() && steps.checkout.outcome == 'success' }}
-        run: python3 mobile/ios_localization_qa.py cleanup
+        run: python3 platforms/mobile/ios_localization_qa.py cleanup
       - name: Preserve the tested app and symbols
         if: ${{ !cancelled() }}
         run: |

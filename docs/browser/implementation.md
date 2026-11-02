@@ -41,7 +41,7 @@ whose certificate it already trusts (see [secure network transports](gateway.md)
   does not participate in simulation.
 
 The pinned SDL port creates its WebGL context through EGL. The threaded build
-uses `browser/threaded-egl.js` to keep the SDK's EGL calls and state on the
+uses `platforms/web/threaded-egl.js` to keep the SDK's EGL calls and state on the
 application pthread instead of proxying them to the UI, where the transferred
 canvas cannot create a context. This adapter is included only in the threaded
 runtime and must be checked when upgrading the SDK or SDL port.
@@ -69,7 +69,7 @@ out artwork and game state on many-core devices. Explicit `--compute-threads`
 overrides remain available. Pool sizing changes work placement, not match rules
 or simulation deadlines. Native automatic sizing continues to follow hardware.
 
-Both runtimes include `browser/canvas-size.js`. It preserves software canvas
+Both runtimes include `platforms/web/canvas-size.js`. It preserves software canvas
 pixels when SDL repeats an unchanged size request, while retaining SDK viewport,
 context-loss and offscreen ownership handling. Threaded startup and gameplay
 share one application worker: completing the asset startup loop transfers its
@@ -103,13 +103,13 @@ ownership, and generated configuration is written to
 Existing native commands retain their roles. For example, `scons release=1`
 builds the desktop client, while `scons target=web release=1` writes the browser
 application to `build/emscripten/client/release`. The compatibility command
-`python3 browser/build.py` delegates to SCons.
+`python3 platforms/web/build.py` delegates to SCons.
 
 The served release is `index.html`, `index.js`, `index.wasm` and the
 content-addressed data packages in `assets/` (`<package>[-<part>].<hash>.data`),
 whose file table is compiled into `index.js`. Serve `assets/*.data` as immutable
 and the other files with revalidation. The
-[browser README](../../browser/README.md#game-data-and-loading) describes the core
+[browser README](../../platforms/web/README.md#game-data-and-loading) describes the core
 and optional packages and how the page loads them.
 
 Deployments also install both runtime variants, the music/recording/Hive worker
@@ -131,15 +131,15 @@ platform and relay check it at admission (see the
 
 ## Verification
 
-Build and run the [browser test suite](../../browser/README.md#automated-tests). Native harnesses cover screen/session ownership, cooperative cancellation, save continuation and transports; browser tests cover actual host integration. Chromium, Firefox and WebKit coverage complements manual qualification on shipping browsers and physical devices.
+Build and run the [browser test suite](../../platforms/web/README.md#automated-tests). Native harnesses cover screen/session ownership, cooperative cancellation, save continuation and transports; browser tests cover actual host integration. Chromium, Firefox and WebKit coverage complements manual qualification on shipping browsers and physical devices.
 
-Hosted coverage follows the [CI selection policy](../development/verification.md#hosted-verification-and-regression-detection); a cheap-only PR result does not establish engine or browser verification. Compare per-tick traces across affected native and serial/threaded Wasm configurations for simulation changes. The retained seed-42 fixture runs for 1,500 ticks using `test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`. That scenario establishes equivalence for its inputs, not all maps or games.
+Hosted coverage follows the [CI selection policy](../development/verification.md#hosted-verification-and-regression-detection); a cheap-only PR result does not establish engine or browser verification. Compare per-tick traces across affected native and serial/threaded Wasm configurations for simulation changes. The retained seed-42 fixture runs for 1,500 ticks using `test/run-browser-determinism.py` and `platforms/web/tests/determinism.spec.js`. That scenario establishes equivalence for its inputs, not all maps or games.
 
 ## Compressed release assets
 
 The release build preloads the shared verified runtime export, including WebP
 support. The shared dependency helper in `scons/sdl3_dependencies.py` builds SDL3_image and its pinned WebP dependency. Versions and archive hashes live in `scons/sdl3-versions.json`; browser builds do not use the SDL2 image port. Source artwork remains PNG; the runtime export uses WebP. Codec notices ship with runtime data.
-`browser/package-static.py` creates deterministic gzip sidecars for the
+`platforms/web/package-static.py` creates deterministic gzip sidecars for the
 versioned serial and threaded JS/WASM, the capability loader, content-addressed data packages,
 and HTML entry point. Both runtime binaries and the loader participate in the
 package identity; the loader selects versioned URLs from the entry point.
@@ -171,7 +171,7 @@ files alone do not establish deployed behavior.
 
 ### Live presentation surface replacement
 
-The shell's canvas reference is managed by `browser/presentation-surface.js`.
+The shell's canvas reference is managed by `platforms/web/presentation-surface.js`.
 Backend changes first call `glob2_surface_retire()` on the presentation owner
 to preserve fullscreen and invalidate the retiring SDL resize callback. Retire
 the SDL window and graphics context next, then call
@@ -227,13 +227,13 @@ a backend to the platform default.
 
 ### Gradient compute
 
-Threaded builds include `browser/gradient-compute.js`, whose WebGPU compute device
+Threaded builds include `platforms/web/gradient-compute.js`, whose WebGPU compute device
 is independent of presentation. Owned seeds/costs are copied out of shared Wasm
 memory before asynchronous work; atomic completion signals return private output
 to the coordinator. Simulation workers can wait while the browser owner services
 callbacks. Canceled storage remains retained until completion. Serial builds expose
 CPU gradients only. Frozen8/Jacobi WGSL is translated from the same GLSL as Vulkan;
 CPU shadow checks are optional. Backend changes preserve publication deadlines.
-`browser/GradientCompute.cpp` owns the browser thread check and bounded futex wait;
+`platforms/web/GradientCompute.cpp` owns the browser thread check and bounded futex wait;
 shared field code uses this platform interface without importing Emscripten APIs.
 Browser-owner execution is declined before submitting callbacks or reserving tasks.

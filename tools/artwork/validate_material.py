@@ -91,7 +91,7 @@ def validate_grid_joins(name, phase, tiles, grid):
 def validate(name, root=ROOT):
     recipe = terrain_synth.RECIPES.get(name)
     require(recipe is not None, f"{name}: no recipe in terrain_synth.py")
-    source_dir = root / "datasrc/gfx" / name
+    source_dir = root / "content-src/gfx" / name
     provenance_path = source_dir / "provenance.json"
     require(provenance_path.is_file(), f"{name}: missing {provenance_path.relative_to(root)}")
     record = json.loads(provenance_path.read_text())
@@ -185,7 +185,7 @@ def main(argv=None):
     parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args(argv)
     root = args.root.resolve()
-    names = args.name or [n for n in terrain_synth.SYNTH_ORDER if (root / "datasrc/gfx" / n / "provenance.json").is_file()]
+    names = args.name or [n for n in terrain_synth.SYNTH_ORDER if (root / "content-src/gfx" / n / "provenance.json").is_file()]
     failures = 0
     for name in names:
         try:

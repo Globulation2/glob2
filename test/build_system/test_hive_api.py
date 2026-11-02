@@ -16,7 +16,7 @@ spec.loader.exec_module(api)
 
 class HiveAPITests(unittest.TestCase):
     def test_header_retains_the_exact_player_contract(self):
-        contract = (ROOT / 'platform/packages/hive/src/commander-api.txt').read_text()
+        contract = (ROOT / 'services/online/packages/hive/src/commander-api.txt').read_text()
         header = api.render(contract)
         player = api.player_contract(contract)
         self.assertIn('R"GLOB2_API(' + player + ')GLOB2_API"', header)
@@ -39,7 +39,7 @@ class HiveAPITests(unittest.TestCase):
             root = Path(temporary)
             nested = root / 'build/client/src'
             nested.mkdir(parents=True)
-            contract = root / 'platform/packages/hive/src/commander-api.txt'
+            contract = root / 'services/online/packages/hive/src/commander-api.txt'
             contract.parent.mkdir(parents=True)
             contract.write_text('Shared\n## Online program management\nOnline\n## Player API\nPlayer\n')
             script = types.ModuleType('SCons.Script')

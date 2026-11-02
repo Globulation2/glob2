@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def export(output, turn=0):
     if bpy.app.version[:3] != (3, 6, 23):
         raise ValueError('Use Blender 3.6.23')
-    source = ROOT / 'datasrc/gfx/buildings/swarm-trellis.glb'
+    source = ROOT / 'content-src/gfx/buildings/swarm-trellis.glb'
     bpy.ops.object.select_all(action='SELECT')
     bpy.ops.object.delete(use_global=False)
     bpy.ops.import_scene.gltf(filepath=str(source))

@@ -8,25 +8,25 @@ from SCons.Scanner import Scanner
 def configure(env):
     root = Path(env.Dir('#').abspath)
     inputs = [root / 'tools/image_encoding.json',
-              root / 'libgag/src/GraphicContextSkinMesh.cpp',
+              root / 'libs/gag/src/GraphicContextSkinMesh.cpp',
               root / 'src/app/cli/RenderSkin.cpp',
               root / 'src/online/SkinSpriteManifest.cpp',
               root / 'src/online/SkinSpriteManifest.h',
-              root / 'libgag/src/SkinMesh.cpp',
-              root / 'libgag/include/SkinMesh.h',
-              root / 'libgag/include/SkinModel.h',
-              root / 'libgag/src/SkinModel.cpp',
-              root / 'libgag/include/SkinShapeModel.h',
-              root / 'libgag/src/SkinShapeModel.cpp',
-              root / 'libgag/include/SkinDeformation.h',
+              root / 'libs/gag/src/SkinMesh.cpp',
+              root / 'libs/gag/include/SkinMesh.h',
+              root / 'libs/gag/include/SkinModel.h',
+              root / 'libs/gag/src/SkinModel.cpp',
+              root / 'libs/gag/include/SkinShapeModel.h',
+              root / 'libs/gag/src/SkinShapeModel.cpp',
+              root / 'libs/gag/include/SkinDeformation.h',
               root / 'src/online/SkinViewTransforms.h',
               root / 'src/online/SwarmMeshCatalog.h',
               root / 'src/unit/render/UnitAnimation.h',
               root / 'src/unit/render/ColonySkinPreview.cpp',
-              root / 'libgag/shaders/skin-materials.json',
-              root / 'libgag/shaders/skin-material.glsl']
+              root / 'libs/gag/shaders/skin-materials.json',
+              root / 'libs/gag/shaders/skin-material.glsl']
     for pattern in ('*.gsk', '*.gsr', '*.gsb', '*.guv', '*.view.json'):
-        inputs += sorted((root / 'data/skins/colony-v1').glob(pattern))
+        inputs += sorted((root / 'content/data/skins/colony-v1').glob(pattern))
 
     def generate(target, source, env):
         recipe = json.loads(inputs[0].read_text())

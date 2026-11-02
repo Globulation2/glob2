@@ -147,7 +147,7 @@ def main() -> None:
     stage_dlls(args.exe, args.dll_dir, destination, args.sdl_runtime)
     normalize_store_license_filenames(destination)
 
-    icon = args.root / "data/icons/glob2-icon-128x128.png"
+    icon = args.root / "content/data/icons/glob2-icon-128x128.png"
     write_shell_images(icon, destination)
     write_game_config(destination, args)
     print(f"Staged {destination} with {len(list(destination.glob('*.dll')))} DLLs")

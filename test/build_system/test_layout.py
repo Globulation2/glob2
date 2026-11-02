@@ -84,7 +84,7 @@ class BuildLayoutTests(unittest.TestCase):
 
     def test_shared_manifests_are_valid_and_unique(self):
         root=Path(__file__).resolve().parents[2]
-        for prefix,files in [('src',CLIENT_SOURCES),('libgag/src',GAG_SOURCES),('libusl/src',USL_SOURCES),('src',RELAY_SOURCES),('libgag/src',RELAY_GAG_SOURCES)]:
+        for prefix,files in [('src',CLIENT_SOURCES),('libs/gag/src',GAG_SOURCES),('libs/usl/src',USL_SOURCES),('src',RELAY_SOURCES),('libs/gag/src',RELAY_GAG_SOURCES)]:
             self.assertEqual(len(files),len(set(files)))
             for filename in files:
                 self.assertTrue((root/prefix/filename).is_file(),filename)

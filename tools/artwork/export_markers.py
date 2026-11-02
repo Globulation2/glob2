@@ -4,8 +4,8 @@ import hashlib,json
 from pathlib import Path
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
-SOURCE=ROOT/'datasrc/gfx/reference-exports/overlays'
-OUTPUT=ROOT/'datasrc/gfx/derived/markers-v1'
+SOURCE=ROOT/'content-src/gfx/reference-exports/overlays'
+OUTPUT=ROOT/'content-src/gfx/derived/markers-v1'
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def main():
@@ -21,7 +21,7 @@ def main():
                 source=SOURCE/'i4.png'
             filename='area-%s%d.png'%(family,index)
             image=Image.open(source).convert('RGBA')
-            size=Image.open(ROOT/'data/gfx'/filename).size
+            size=Image.open(ROOT/'content/data/gfx'/filename).size
             assert image.size==(size[0]*4,size[1]*4)
             image.save(OUTPUT/filename)
             frames.append(dict(id=Path(filename).stem,width=size[0],height=size[1],scale=4,

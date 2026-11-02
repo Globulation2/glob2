@@ -16,7 +16,7 @@ would check it: against that set's spec (``manifest.set_spec``, e.g. a loudness
 offset) and with that manifest's waivers. Rejected sets have no manifest and are
 checked against the default spec with no waivers.
 
-Corpus sets are shipped files under ``data/zik`` or files read from pinned git
+Corpus sets are shipped files under ``content/data/zik`` or files read from pinned git
 commits (``git_ref`` + ``git_path``), extracted on demand into the git-ignored
 ``tools/music/build/calibration/<id>``. Missing sets are reported and skipped.
 """

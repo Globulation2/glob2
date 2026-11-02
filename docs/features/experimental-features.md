@@ -107,7 +107,7 @@ external terrain name `road`. Existing maps, saves, scripts, map
 reports and `select road` editor actions keep working. The Trail artwork replaces
 the former cobblestone frames without changing movement, ecology or building
 rules. Its generated source and classic-frame recipe are recorded in
-[`datasrc/gfx/trail/`](../../datasrc/gfx/trail).
+[`content-src/gfx/trail/`](../../content-src/gfx/trail).
 
 ## Adding an experiment
 
@@ -141,11 +141,11 @@ For a built-in engine experiment:
    checksum fixtures under `test/maxima/fixtures/` guard this. Consuming
    the owning object's private RNG differently under the experiment is fine, because the set is baked
    into the game.
-3. Add `[experiment <key>]` and `[experiment <key> help]` to `data/texts.keys.txt`
-   and to every catalog in `data/texts.list.txt`, with the English text equal to the
+3. Add `[experiment <key>]` and `[experiment <key> help]` to `content/data/texts.keys.txt`
+   and to every catalog in `content/data/texts.list.txt`, with the English text equal to the
    definition's label and help. The `SettingsExperiments` test fails when a registry
    entry's keys are missing from `texts.keys.txt` or the English table differs, and
-   `python3 data/check_translations.py --strict` then requires every catalog to
+   `python3 content/data/check_translations.py --strict` then requires every catalog to
    translate them.
 4. Cover both sides of the gate in a doctest case (`test/README.md`): the
    `GuardAreaBalance` suite is the pattern. It starts its games with

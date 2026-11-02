@@ -42,6 +42,11 @@ namespace glob2test
 	// GLOB2_TEST_SOURCE_ROOT when the binary runs on another machine.
 	std::filesystem::path sourceRoot();
 
+	// The runtime tree holding data/, maps/, campaigns/, scripts/ and games/:
+	// sourceRoot()/content in a checkout, or sourceRoot() itself when a runner
+	// staged those directories there directly.
+	std::filesystem::path contentRoot();
+
 	// test/fixtures/<relative>.
 	std::filesystem::path fixture(const std::string& relative);
 

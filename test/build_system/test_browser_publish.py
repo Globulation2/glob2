@@ -10,7 +10,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).parent))
 import test_browser_package as fixtures
 
-spec = importlib.util.spec_from_file_location('publish_static', fixtures.module.ROOT / 'browser/publish-static.py')
+spec = importlib.util.spec_from_file_location('publish_static', fixtures.module.ROOT / 'platforms/web/publish-static.py')
 publisher = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(publisher)
 
@@ -27,7 +27,7 @@ class BrowserPublishTests(unittest.TestCase):
         html.write_text(html.read_text().replace('<script src="index.js">', '<script src="loader.js">')
                         + '<link rel="stylesheet" href="script-fonts.css">')
         (fixture.source / 'locales/te.json').write_bytes(
-            (fixtures.module.ROOT / 'platform/packages/i18n/locales/te.json').read_bytes())
+            (fixtures.module.ROOT / 'services/online/packages/i18n/locales/te.json').read_bytes())
         sys.path.insert(0, str(fixtures.module.ROOT / 'scons'))
         import web_assets
         web_assets.launcher_script_fonts(fixtures.module.ROOT, fixture.source)
@@ -69,7 +69,7 @@ class BrowserPublishTests(unittest.TestCase):
         workflow = (fixtures.module.ROOT / '.github/workflows/browser-release.yml').read_text()
         publish_job = workflow.split('\n  publish:\n', 1)[1]
         self.assertLess(publish_job.index('uses: actions/checkout@'), publish_job.index('google-github-actions/auth@'))
-        self.assertIn('run: python3 browser/publish-static.py candidate "$BUCKET"', publish_job)
+        self.assertIn('run: python3 platforms/web/publish-static.py candidate "$BUCKET"', publish_job)
 
     def test_corrupt_candidate_is_rejected_before_any_upload(self):
         (self.output / 'locales/te.json').write_text('{}')

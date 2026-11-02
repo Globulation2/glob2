@@ -10,9 +10,9 @@ remain authoritative; this page does not replace them.
   SPDX headers identify the license applying to individual files.
 - [Vendored dependency inventory](../../third_party/README.md) records retained
   libraries, versions, licenses, and local patches.
-- [Shipped JavaScript notices](../../data/javascript-licenses.txt),
-  [JSON notice](../../data/json-license.txt), and
-  [image-codec notices](../../data/image-codec-licenses.txt) accompany runtime assets.
+- [Shipped JavaScript notices](../../content/data/javascript-licenses.txt),
+  [JSON notice](../../content/data/json-license.txt), and
+  [image-codec notices](../../content/data/image-codec-licenses.txt) accompany runtime assets.
 
 - [AUTHORS](../../AUTHORS) retains core author attribution; Git history records
   ongoing contributors.
@@ -20,11 +20,11 @@ remain authoritative; this page does not replace them.
 ## Assets
 
 - [Third-party asset attribution](../assets/source-attribution.md) records asset sources.
-- [Font sources and notices](../../data/fonts/README.md) explains the combined font.
+- [Font sources and notices](../../content/data/fonts/README.md) explains the combined font.
 - [High-resolution asset provenance](../assets/high-resolution/README.md) explains
   source preservation and generated inventories.
 - [Music pipeline](../assets/music-pipeline.md) describes soundtrack production;
-  individual directories under `data/zik/` retain their own license notices.
+  individual directories under `content/data/zik/` retain their own license notices.
 
 ## Contributions and releases
 

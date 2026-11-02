@@ -97,7 +97,7 @@ def validate_installed(root, repository):
         "generated swarm file names follow their id"
     )
     # The platform contract and the generator name the same meshes in the same order.
-    protocol = (repository / "platform/packages/protocol/src/skins.ts").read_text()
+    protocol = (repository / "services/online/packages/protocol/src/skins.ts").read_text()
     union = protocol[protocol.index("export const SwarmMesh = Type.Union([") :]
     assert re.findall(
         r"Type\.Literal\('([a-z]+)'\)", union[: union.index("]);")]
@@ -129,7 +129,7 @@ def validate_installed(root, repository):
                     == digest
                 ), (name + ": " + dependency + " changed")
         else:
-            assert source.is_relative_to((repository / "datasrc/gfx").resolve())
+            assert source.is_relative_to((repository / "content-src/gfx").resolve())
         assert (
             hashlib.sha256(source.read_bytes()).hexdigest() == record["sourceSha256"]
         ), (name + ": source changed")
@@ -204,7 +204,7 @@ def validate_installed(root, repository):
         print(
             name + ": installed bytes, source, UV identity, bounds and normals verified"
         )
-    previews = repository / "platform/apps/web/public/skins/models"
+    previews = repository / "services/online/apps/web/public/skins/models"
     for name in sorted(expected):
         assert (
             hashlib.sha256((previews / name).read_bytes()).hexdigest()

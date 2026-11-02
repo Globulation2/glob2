@@ -1,5 +1,5 @@
 #!/bin/sh
-# The image's data hash (computed from its data/ at build time) until the
+# The image's data hash (computed from its content/data/ at build time) until the
 # binary reports its own with info sim-version --format json; the agent refuses to start if the
 # two ever disagree.
 set -eu

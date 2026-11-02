@@ -444,7 +444,7 @@ class MachineDraftTest(TranslationProgramTest):
 
     def test_native_br_metadata_is_brazilian_portuguese_not_breton(self):
         # Native game codes are historical identifiers, not necessarily ISO codes.
-        metadata, errors = PROGRAM.CHECKER.read_table(PROGRAM.ROOT / 'data/texts.br.txt')
+        metadata, errors = PROGRAM.CHECKER.read_table(PROGRAM.ROOT / 'content/data/texts.br.txt')
         self.assertEqual(errors, [])
         self.assertEqual(metadata['[language]'], 'Português do Brasil')
         self.assertEqual(metadata['[language-code]'], 'br')

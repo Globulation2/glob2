@@ -49,7 +49,7 @@ def main():
         for definition in catalog:
             if definition['method'] in frozen:
                 assert [[c[k] for k in keys] for c in definition['controls']] == [[c[k] for k in keys] for c in frozen[definition['method']]['controls']], f"Controls changed for {definition['id']}"
-    lines = (ROOT/'data/texts.en.txt').read_text().splitlines()
+    lines = (ROOT/'content/data/texts.en.txt').read_text().splitlines()
     strings = {line[1:-1]: lines[i+1] for i, line in enumerate(lines[:-1]) if line.startswith('[') and line.endswith(']')}
     rows = list(csv.DictReader(args.csv.open()))
     baseline = {r['method']: r for r in json.loads(args.baseline.read_text()) if r['config'].startswith('tuned-')}

@@ -488,7 +488,7 @@ def main():
                         help='queue mode: seconds to wait for the proposal and match.start (includes map generation)')
     parser.add_argument('--client-seconds', type=float, nargs=2, metavar=('A', 'B'),
                         help='per-client --max-seconds (queue mode default: 40 70)')
-    parser.add_argument('--engine-workdir', default=str(ROOT), help='directory with data/ (default: repository)')
+    parser.add_argument('--engine-workdir', default=str(ROOT), help='directory with content/data/ (default: repository)')
     parser.add_argument('--out', required=True, help='fresh directory for assignments, logs and results')
     parser.add_argument('--psql', help='command running psql on the deployment, reading SQL from stdin')
     parser.add_argument('--ais', type=int, default=2, help='AI seats besides the two guests (default 2)')

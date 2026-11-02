@@ -44,7 +44,7 @@ top-right, explorer bottom-left, swarm bottom-right.
   an opaque sRGB lossless WebP without metadata.
 - `materialBase64`, the material map, is at most 256 KiB. Every pixel is grey
   (R = G = B), opaque, and a material id below the count registered in
-  `libgag/shaders/skin-materials.json` (mirrored as `COLONY_SKIN_MATERIALS` in
+  `libs/gag/shaders/skin-materials.json` (mirrored as `COLONY_SKIN_MATERIALS` in
   the protocol package). Anything else is a 400. The server re-encodes it as an
   8-bit lossless WebP. Native clients built with the registry shade ids beyond
   their own catalogue as matte, so later materials degrade gracefully; clients
@@ -215,7 +215,7 @@ and a local hide control before this provides complete in-match moderation.
 
 Stripe-hosted checkout uses three server-defined products: `designer`, `stripes`,
 and `spots`. The API seeds two immutable presets (colour atlas and material map
-from `platform/apps/api/assets/skins/`) with stable IDs;
+from `services/online/apps/api/assets/skins/`) with stable IDs;
 existing versions and moderation decisions are never overwritten at startup.
 The web designer includes the store, account purchase history, and explicit
 payment reconciliation after returning from Checkout. Configure `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and the
@@ -350,7 +350,7 @@ renderer recipe queues fresh derivatives at startup. Existing match pins and
 immutable bundles remain valid.
 See [unit rigs](../../tools/unit-animation/README.md#unit-rigs-gsb1-blend-shapes-and-gsr1-bone-rigs).
 
-Skin meshes are installed under `data/skins/colony-v1`; they share the web
+Skin meshes are installed under `content/data/skins/colony-v1`; they share the web
 designer's UV layout, each model sampling its own `colony-v2` quadrant. The browser ships them in an on-demand `skins` package
 requested when visible paint is available. Classic rendering continues during
 the download; hidden or unskinned colonies do not initiate it. Failed package requests retry at most every ten

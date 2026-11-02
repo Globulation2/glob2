@@ -17,21 +17,21 @@ class TerrainRuntimeFingerprintTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp:
             root, stage = Path(tmp) / "source", Path(tmp) / "stage"
-            (root / "data/gfx").mkdir(parents=True)
+            (root / "content/data/gfx").mkdir(parents=True)
             (stage / "data/gfx").mkdir(parents=True)
             names = [f"data/gfx/fixture{i}.png" for i in range(2)]
             images = [Image.frombytes("RGB", (32, 32), random.Random(i).randbytes(32 * 32 * 3))
                       for i in range(2)]
             for name, image in zip(names, images):
-                image.save(root / name)
+                image.save(root / "content" / name)
             images[0].save(stage / "data/gfx/fixture0.webp", quality=25)
             sheet = Image.new("RGB", (32 * package_assets.SHEET_COLUMNS, 32))
             sheet.paste(images[1], (32, 0))
             sheet.save(stage / "data/gfx/test-sheet-0.webp", quality=25)
             plan = {"data/gfx/test": [{"name": "test-sheet-0.png", "size": (32, 32),
-                                      "frames": [root / "unused.png", root / names[1]]}]}
+                                      "frames": [root / "content/unused.png", root / "content" / names[1]]}]}
             fingerprints = package_assets.terrain_runtime_fingerprints(
-                terrain_tileset, names, root, stage, plan
+                terrain_tileset, names, root / "content", stage, plan
             )
             with Image.open(stage / "data/gfx/fixture0.webp") as decoded:
                 self.assertEqual(fingerprints[names[0]], terrain_tileset.pixel_fingerprint(decoded))
@@ -52,12 +52,12 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "source"
-            (root / "data/gfx").mkdir(parents=True)
-            (root / "data/terrain").mkdir()
+            (root / "content/data/gfx").mkdir(parents=True)
+            (root / "content/data/terrain").mkdir()
             (root / "tools").mkdir()
             shutil.copyfile(Path(package_assets.__file__).with_name("terrain_tileset.py"),
                             root / "tools/terrain_tileset.py")
-            Image.new("RGBA", (32, 32), (20, 80, 130, 255)).save(root / "data/gfx/tile0.png")
+            Image.new("RGBA", (32, 32), (20, 80, 130, 255)).save(root / "content/data/gfx/tile0.png")
             document = {
                 "version": 1, "compiled_pack": "data/terrain/compiled/atlas.json",
                 "profiles": [{"key": "flat", "roughness_q8": 0,
@@ -67,7 +67,7 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                                "variants": [{"frame": 0, "weight": 1}]}],
                 "bindings": {key: "water" for key in terrain_tileset.BINDINGS},
             }
-            (root / "data/terrain/tileset.json").write_text(json.dumps(document))
+            (root / "content/data/terrain/tileset.json").write_text(json.dumps(document))
             script = (
                 "import importlib.util,sys; "
                 "assert importlib.util.find_spec('PIL') is None; "
@@ -88,7 +88,7 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                     self.assertTrue((output / document["compiled_pack"]).is_file())
                     if not optimized:
                         self.assertEqual((output / "data/gfx/tile0.png").read_bytes(),
-                                         (root / "data/gfx/tile0.png").read_bytes())
+                                         (root / "content/data/gfx/tile0.png").read_bytes())
 
 
 class AssetExportTests(unittest.TestCase):
@@ -105,13 +105,13 @@ class AssetExportTests(unittest.TestCase):
         self.root.mkdir()
         self.output = Path(self.temp.name) / "output"
         self.cache = Path(self.temp.name) / "cache"
-        self.image = self.root / "data/gfx/frame0.png"
+        self.image = self.root / "content/data/gfx/frame0.png"
         self.image.parent.mkdir(parents=True)
         im = Image.new("RGBA", (64, 64), (20, 80, 130, 0))
         im.putpixel((0, 0), (200, 40, 30, 255))
         im.save(self.image)
-        (self.root / "data/fonts").mkdir()
-        (self.root / "data/fonts/LICENSE.txt").write_text("notice")
+        (self.root / "content/data/fonts").mkdir()
+        (self.root / "content/data/fonts/LICENSE.txt").write_text("notice")
 
     def export(self, **kwargs):
         kwargs.setdefault("jobs", 1)
@@ -246,7 +246,7 @@ class AssetExportTests(unittest.TestCase):
 
     def test_refuses_source_and_unowned_output(self):
         with self.assertRaises(ValueError):
-            export_assets(self.root, self.root / "data")
+            export_assets(self.root, self.root / "content/data")
         self.output.mkdir()
         (self.output / "precious").write_text("retain")
         with self.assertRaises(ValueError):
@@ -328,7 +328,7 @@ class AssetExportTests(unittest.TestCase):
         self.assertEqual(self.image.read_bytes(), original)
 
     def test_linux_screenshots_keep_their_png_representation(self):
-        folder = self.root / "data/screenshots"
+        folder = self.root / "content/data/screenshots"
         folder.mkdir()
         screenshot = folder / "game.png"
         screenshot.write_bytes(self.image.read_bytes())
@@ -354,7 +354,7 @@ class AssetExportTests(unittest.TestCase):
             self.assertTrue(record["lossy"])
             self.assertEqual(record["recipe"]["lossy_quality"], 90)
             self.assertEqual(record["recipe"]["lossy_method"], 6)
-            original = Image.open(self.root / record["source"]).convert("RGBA")
+            original = Image.open(self.root / "content" / record["source"]).convert("RGBA")
             decoded = Image.open(self.output / record["output"]).convert("RGBA")
             self.assertEqual(original.size, decoded.size)
             self.assertEqual(original.getchannel("A").tobytes(), decoded.getchannel("A").tobytes())
@@ -363,10 +363,10 @@ class AssetExportTests(unittest.TestCase):
 
     def test_png_cannot_win_even_when_smaller_and_hd_index_uses_webp(self):
         # This artwork's optimized PNG is smaller than either WebP encoding.
-        source = self.root / "data/gfx/gamegui47.png"
-        actual = package_assets.ROOT / "data/gfx/gamegui47.png"
+        source = self.root / "content/data/gfx/gamegui47.png"
+        actual = package_assets.ROOT / "content/data/gfx/gamegui47.png"
         source.write_bytes(actual.read_bytes())
-        hd = self.root / "data/highres/v1"
+        hd = self.root / "content/data/highres/v1"
         hd.mkdir(parents=True)
         text = "glob2-highres 1\nframe0 64 64 4 base.png team.png\n"
         (hd / "frames.txt").write_text(text)
@@ -378,7 +378,7 @@ class AssetExportTests(unittest.TestCase):
                          text.replace(".png", ".webp"))
 
     def test_source_hd_atlas_placement_is_verified_before_encoding(self):
-        directory = self.root / "data/highres/v1"
+        directory = self.root / "content/data/highres/v1"
         directory.mkdir(parents=True)
         frame = Image.new("RGBA", (8, 8), (37, 53, 83, 177))
         frame.save(directory / "terrain0.png")
@@ -481,7 +481,7 @@ class SpriteSheetExportTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / "source"
-        self.gfx = self.root / "data/gfx"
+        self.gfx = self.root / "content/data/gfx"
         self.gfx.mkdir(parents=True)
         self.output = Path(self.temp.name) / "output"
         self.cache = Path(self.temp.name) / "cache"

@@ -32,8 +32,8 @@ class WindowsPackageTests(unittest.TestCase):
             dll = (root if dependencies == "adjacent" else runtime) / "SDL3.dll"
             dll.write_bytes(b"runtime")
             for name in ("data", "maps", "campaigns", "scripts"):
-                folder = root / name
-                folder.mkdir()
+                folder = root / "content" / name
+                folder.mkdir(parents=True)
                 (folder / "asset.txt").write_text(name)
             (root / "COPYING").write_text("GPL")
             (root / "docs/assets").mkdir(parents=True)

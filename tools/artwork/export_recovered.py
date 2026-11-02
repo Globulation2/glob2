@@ -8,8 +8,8 @@ from PIL import Image
 from scipy import ndimage
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / 'datasrc/gfx/reference-exports/buildings'
-OUTPUT = ROOT / 'datasrc/gfx/derived/recovered-v1'
+SOURCE = ROOT / 'content-src/gfx/reference-exports/buildings'
+OUTPUT = ROOT / 'content-src/gfx/derived/recovered-v1'
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 def read(path): return np.asarray(Image.open(path).convert('RGBA'), dtype=float) / 255
@@ -45,7 +45,7 @@ def export():
     OUTPUT.mkdir(parents=True, exist_ok=True)
     records = []
     def save(frame, arrays, sources, method):
-        classic = ROOT / 'data/gfx' / (frame + '.png')
+        classic = ROOT / 'content/data/gfx' / (frame + '.png')
         if not classic.exists(): classic = classic.with_name(frame + 'r.png')
         size = Image.open(classic).size
         layers = []

@@ -39,17 +39,17 @@ def main():
     p.add_argument('--output',type=Path,required=True);p.add_argument('--locale',choices=['th'],default='th');args=p.parse_args()
     root=Path(__file__).resolve().parents[1];binary=args.binary.resolve();output=args.output.resolve()
     if not output.is_relative_to(root/'artifacts') or output.exists():raise ValueError('Use a fresh capture directory under checkout artifacts')
-    native=read_native(root/'data/texts.th.txt')
-    if set(native)!=set(read_native(root/'data/texts.en.txt')):raise ValueError('Native Thai key coverage differs from English')
-    online=json.loads((root/'platform/packages/i18n/locales/th.json').read_text(encoding='utf-8'))
-    online_source=json.loads((root/'platform/packages/i18n/locales/en.json').read_text(encoding='utf-8'))
+    native=read_native(root/'content/data/texts.th.txt')
+    if set(native)!=set(read_native(root/'content/data/texts.en.txt')):raise ValueError('Native Thai key coverage differs from English')
+    online=json.loads((root/'services/online/packages/i18n/locales/th.json').read_text(encoding='utf-8'))
+    online_source=json.loads((root/'services/online/packages/i18n/locales/en.json').read_text(encoding='utf-8'))
     if set(online)!=set(online_source):raise ValueError('Online Thai key coverage differs from English')
     output.mkdir(parents=True);inputs=output/'inputs';inputs.mkdir();full=inputs/'full';matrix=inputs/'matrix'
     revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True,encoding='utf-8').strip()
-    source_paths=['data/texts.en.txt','data/texts.th.txt','data/texts.keys.txt',
-                  'platform/packages/i18n/locales/en.json','platform/packages/i18n/locales/th.json',
-                  'data/fonts/scripts/NotoSansThai-Regular.ttf','libgag/src/TrueTypeFont.cpp',
-                  'libgag/include/TextBreaks.h','libgag/src/ui/TextLayout.cpp',
+    source_paths=['content/data/texts.en.txt','content/data/texts.th.txt','content/data/texts.keys.txt',
+                  'services/online/packages/i18n/locales/en.json','services/online/packages/i18n/locales/th.json',
+                  'content/data/fonts/scripts/NotoSansThai-Regular.ttf','libs/gag/src/TrueTypeFont.cpp',
+                  'libs/gag/include/TextBreaks.h','libs/gag/src/ui/TextLayout.cpp',
                   'tools/TranslationPreviewHarness.cpp','src/campaign/Campaign.cpp','src/campaign/Campaign.h',
                   'src/campaign/screens/CampaignEditor.cpp','src/campaign/screens/CampaignEditor.h',
                   'src/hud/InGameStatistics.cpp','src/hud/InGameStatistics.h',
@@ -58,7 +58,7 @@ def main():
     committed_hashes={name:hashlib.sha256(subprocess.check_output(['git','show',revision+':'+name],cwd=root)).hexdigest() for name in source_paths}
     checkout_hashes={name:sha(root/name) for name in source_paths}
     metadata={'locale':'th','revision':revision,'committed_source_file_sha256':committed_hashes,'checkout_source_file_sha256':checkout_hashes,'kind':'Exact registered catalogs, not a draft/pilot translation claim',
-              'native_catalog_sha256':sha(root/'data/texts.th.txt'),'online_catalog_sha256':sha(root/'platform/packages/i18n/locales/th.json')}
+              'native_catalog_sha256':sha(root/'content/data/texts.th.txt'),'online_catalog_sha256':sha(root/'services/online/packages/i18n/locales/th.json')}
     samples=['[language]','[language incomplete]','[guard area]','[settings]','[inn]','[Confirm %0]',
              '[swimmingpool explanation]','[lesson swimming briefing]','[settings Display name]',
              '[lesson defensive-tactics guard hint]','[lesson healing briefing]','[lesson upgrades briefing]',

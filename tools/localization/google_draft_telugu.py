@@ -189,7 +189,7 @@ def _run(output, project, execute=False, expected_name='Bradley personal', pilot
     if 'te' not in manifest['locales'] or manifest['source_sha256'] != program.sources()[4]:
         raise ValueError('Telugu kit is absent or source snapshot is stale')
     online_source = json.loads((output / 'source/online.json').read_text())
-    invariants = json.loads((program.ROOT / 'platform/packages/i18n/invariants.json').read_text())
+    invariants = json.loads((program.ROOT / 'services/online/packages/i18n/invariants.json').read_text())
     native_source = json.loads((output / 'source/native.json').read_text())
     paths = program.catalog_paths(output, 'te')
     native, errors = program.CHECKER.read_table(paths['native'])

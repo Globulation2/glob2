@@ -25,23 +25,23 @@ def main():
     parser.add_argument('--compiler', default='g++')
     args = parser.parse_args()
     prefix, shaders, core, output = [p.resolve() for p in (args.sdl_prefix, args.shader_directory, args.core_root, args.output)]
-    inputs = [ROOT / 'libgag/src/SDLGPUDevice.cpp', ROOT / 'libgag/src/SDLGPUDeviceTest.cpp',
-              core / 'libgag/src/RenderDevice.cpp', core / 'libgag/src/RenderFrame.cpp',
-              core / 'libgag/src/RenderResources.cpp', ROOT / 'libgag/src/SoftwareRenderBackend.cpp',
-              ROOT / 'libgag/src/RenderBackend.cpp', ROOT / 'libgag/src/SurfaceRaster.cpp']
+    inputs = [ROOT / 'libs/gag/src/SDLGPUDevice.cpp', ROOT / 'libs/gag/src/SDLGPUDeviceTest.cpp',
+              core / 'libs/gag/src/RenderDevice.cpp', core / 'libs/gag/src/RenderFrame.cpp',
+              core / 'libs/gag/src/RenderResources.cpp', ROOT / 'libs/gag/src/SoftwareRenderBackend.cpp',
+              ROOT / 'libs/gag/src/RenderBackend.cpp', ROOT / 'libs/gag/src/SurfaceRaster.cpp']
     if args.desktop_gl:
-        inputs.append(core / 'libgag/src/ProgrammableGLDevice.cpp')
+        inputs.append(core / 'libs/gag/src/ProgrammableGLDevice.cpp')
     assets = [shaders / 'metadata.json', shaders / 'RendererShaderLayouts.h'] + [shaders / 'vulkan' / (name + '.' + stage + '.spv') for name in ('primitive', 'world', 'cloud', 'point', 'skin', 'skin-rig') for stage in ('vert', 'frag')]
     for path in inputs + assets + [prefix / 'include/SDL3/SDL.h']:
         if not path.is_file():
             parser.error(f'Missing input: {path}')
     assets += sorted(path for path in (shaders / 'vulkan').glob('*.spv') if path not in assets)
     assets += [shaders / name for name in ('webgl-skin-vertices.f32','webgl-rig-vertices.f32') if (shaders / name).is_file()]
-    assets += [core / 'libgag/include' / name for name in ('RenderDevice.h','RenderFrame.h','RenderResources.h')]
+    assets += [core / 'libs/gag/include' / name for name in ('RenderDevice.h','RenderFrame.h','RenderResources.h')]
     output.mkdir(parents=True, exist_ok=True)
     overlay=output / 'include'
     overlay.mkdir(exist_ok=True)
-    native_header=ROOT / 'libgag/include/SDLGPUDevice.h'
+    native_header=ROOT / 'libs/gag/include/SDLGPUDevice.h'
     (overlay / native_header.name).write_bytes(native_header.read_bytes())
     assets.append(native_header)
     entry = output / 'sdl-gpu-test-main.cpp'
@@ -50,7 +50,7 @@ def main():
     command = [args.compiler, '-std=c++20', '-O0', '-g', '-Wall', '-Wextra']
     if args.desktop_gl:
         command += ['-DGLOB2_PROGRAMMABLE_GL=1', '-DGLOB2_TEST_COMPARE_GL=1']
-    for directory in [overlay, core / 'libgag/include', ROOT / 'libgag/include', ROOT / 'test/support', ROOT / 'third_party/nlohmann-json/include', shaders, prefix / 'include']:
+    for directory in [overlay, core / 'libs/gag/include', ROOT / 'libs/gag/include', ROOT / 'test/support', ROOT / 'third_party/nlohmann-json/include', shaders, prefix / 'include']:
         command.append('-I' + str(directory))
     command += [str(path) for path in inputs] + [str(entry), '-L' + str(prefix / 'lib'),
                 '-Wl,-rpath,' + str(prefix / 'lib'), '-lSDL3', '-o', str(binary)]

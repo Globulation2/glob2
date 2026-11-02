@@ -7,7 +7,7 @@ import tempfile
 import unittest
 import zipfile
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'mobile'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'platforms/mobile'))
 from asset_bundle import include_asset, restore_gzip_assets, verify_apk_assets
 
 

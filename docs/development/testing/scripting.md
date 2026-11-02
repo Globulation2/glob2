@@ -62,17 +62,17 @@ committed revision; `--allow-dirty` is for development evidence only. Use fresh
 output directories and compare identical final revisions across platforms.
 
 Android: build `android-tests` for API 24 and the selected ABI, then run
-`python3 mobile/android_device_tests.py --android-sdk SDK --serial SERIAL --arch ABI --suite 'JavaScript*' --output artifacts/js-android`.
+`python3 platforms/mobile/android_device_tests.py --android-sdk SDK --serial SERIAL --arch ABI --suite 'JavaScript*' --output artifacts/js-android`.
 The runner uses disposable shell directories, retrieves artifacts even after
 failure and never accesses installed game data. Use a fresh Android output
 directory; failed artifact transfers fail the run and retain its remote evidence
 for recovery. iOS: build the separate app with
-`python3 mobile/ios.py build --environment simulator --release --script-tests`;
+`python3 platforms/mobile/ios.py build --environment simulator --release --script-tests`;
 for a device use `--environment device --team TEAM`. Its bundle identifier is
 `org.globulation2.glob2.script-tests`, and evidence is exported in its own
 Documents/ScriptingEvidence directory. Simulator evidence does not satisfy the
 physical-device gate. Browser: build `web-tests` and run the shared corpus case in
-`browser/tests/determinism.spec.js`; evidence is under
+`platforms/web/tests/determinism.spec.js`; evidence is under
 `artifacts/browser-determinism/script-corpus/`.
 
 Cross-platform acceptance requires identical numeric/data results and complete
@@ -101,7 +101,7 @@ compares shared numeric/data values, complete traces and decoded save payloads,
 requiring the same artifact inventory. It excludes only MapHeader SHA1 from save
 payloads. Review each runner manifest to establish matching source revisions and
 successful execution before treating matching hashes as acceptance evidence.
-Use `mobile/ios_script_tests.py` with an explicit device identifier and, for a
+Use `platforms/mobile/ios_script_tests.py` with an explicit device identifier and, for a
 simulator, an owned `--simulator-set` to install, run and retrieve the separate app.
 
 To retain released simulation compatibility traces, replays, commands, and logs,
@@ -123,7 +123,7 @@ provenance failures; those comparisons do not satisfy the final acceptance gate.
 catalog, validated lesson definitions and shared runner. `python3
 test/test_tutorial_content.py` checks malformed definitions, dangling/cyclic
 targets and content-only expansion. `node --test
-browser/unit/tutorial-lessons.test.js` covers shared target resolution, markers,
+platforms/web/unit/tutorial-lessons.test.js` covers shared target resolution, markers,
 entity generations, persistent step IDs and custom-condition hooks.
 
 `python3 test/run_tests.py --filter 'Introduction/*'` loads the shipped maps and verifies shared terrain/resources/regions, all ten real-order lessons, saved continuation at each stage, legacy
@@ -136,9 +136,9 @@ The prototype compatibility fixture must not be regenerated as new lesson data.
 It checks embedded source, objectives, hints and saved continuation through the
 ordinary scenario interfaces, without a prototype-specific guidance adapter.
 
-`browser/tests/introduction.spec.js` runs this same suite in serial and threaded
+`platforms/web/tests/introduction.spec.js` runs this same suite in serial and threaded
 WebAssembly. Set `GLOB2_TEST_BUILD_DIR` and `GLOB2_TEST_URL` for a development
-build served with `browser/serve.py`, then run Playwright against this file. Set
+build served with `platforms/web/serve.py`, then run Playwright against this file. Set
 `GLOB2_INTRODUCTION_NATIVE_TRACE` to a native `introduction.trace`; place native
 `food-supply.trace`, `prototype.trace`, `expanded.trace` and
 `legacy-campaign.trace`, `water-access.trace`, `sustainability.trace` and

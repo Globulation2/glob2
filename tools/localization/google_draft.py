@@ -135,7 +135,7 @@ def load_kit(output, locale):
     if errors:
         raise ValueError('; '.join(errors))
     targets = {'native': native, 'online': json.loads(paths['online'].read_text())}
-    invariants = json.loads((PROGRAM.ROOT / 'platform/packages/i18n/invariants.json').read_text())
+    invariants = json.loads((PROGRAM.ROOT / 'services/online/packages/i18n/invariants.json').read_text())
     return manifest, source, targets, paths, invariants
 
 

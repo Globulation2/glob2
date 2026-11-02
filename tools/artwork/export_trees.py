@@ -6,8 +6,8 @@ from pathlib import Path
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[2]
-NATIVE=ROOT/'datasrc/gfx/derived/tree-native'
-OUTPUT=ROOT/'datasrc/gfx/derived/trees-v1'
+NATIVE=ROOT/'content-src/gfx/derived/tree-native'
+OUTPUT=ROOT/'content-src/gfx/derived/trees-v1'
 # The two five-frame sequences share their later growth stages in classic art.
 SOURCE_NAMES=['trees_1_1','trees_2_1','trees_3_1','trees_4_1','trees_4_1',
               'trees_1_2','trees_2_1','trees_3_1','trees_4_1','trees_4_1']
@@ -23,7 +23,7 @@ def main():
         image=Image.open(native).convert('RGBA')
         assert list(image.size)==src['native_size']
         filename='ressource%d.png'%index
-        size=Image.open(ROOT/'data/gfx'/filename).size
+        size=Image.open(ROOT/'content/data/gfx'/filename).size
         image.resize((size[0]*4,size[1]*4),Image.Resampling.LANCZOS).save(OUTPUT/filename)
         frames.append(dict(id=Path(filename).stem,width=size[0],height=size[1],scale=4,
             recipe='recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize',

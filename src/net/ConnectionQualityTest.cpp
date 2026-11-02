@@ -2,7 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 //
 // The game's connection-quality table (src/net/ConnectionQuality.h) against the
-// platform's (platform/packages/protocol/src/connectionQuality.ts), through the JSON
+// platform's (services/online/packages/protocol/src/connectionQuality.ts), through the JSON
 // the protocol package generates. test/fixtures/protocol holds a copy so the test runs
 // without the platform workspace; when the workspace is present the copy must match it.
 
@@ -81,7 +81,7 @@ TEST_SUITE("connection quality")
 
 	TEST_CASE("the vendored copy matches the protocol package when it is present")
 	{
-		const fs::path source = glob2test::sourceRoot() / "platform/packages/protocol/fixtures/connection-quality.json";
+		const fs::path source = glob2test::sourceRoot() / "services/online/packages/protocol/fixtures/connection-quality.json";
 		if (!fs::exists(source))
 			return;
 		CHECK(glob2test::readFile(source) == glob2test::readFile(glob2test::fixture("protocol/connection-quality.json")));

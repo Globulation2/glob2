@@ -75,7 +75,7 @@ limits when their homes, resources or routes need more room.
 - All-AI matches launch live watching, with whole-map visibility, optional colony
   viewpoints, pause/speed/inspection, and no gameplay orders from the viewer.
 - Game Rules starts from a ruleset (Standard, Quick clash, Blitz, Sandbox and the
-  others in `data/rulesets.json`) and lets the player tweak any rule from there.
+  others in `content/data/rulesets.json`) and lets the player tweak any rule from there.
   - The tab names the ruleset and how many rules differ from it ("Blitz + 2
     changes"). Each changed rule says, in words, what the ruleset had ("Changed from
     Blitz: 8") and has a Reset; a second Reset restores the whole ruleset. Undoing an
@@ -191,7 +191,7 @@ stale saved commitment, alongside authoritative engine checks.
 
 ## Adding or tweaking a ruleset
 
-Rulesets live in `data/rulesets.json`, in display order. Each entry lists only the
+Rulesets live in `content/data/rulesets.json`, in display order. Each entry lists only the
 rules it changes from Standard; every other rule keeps its Standard value. Blitz,
 abridged:
 
@@ -206,10 +206,10 @@ abridged:
 
 - `id` is stable: preferences store it, so renaming one resets players who chose it
   to Standard. `standard` must exist, change nothing, and is always listed first.
-- `name` and `description` are text keys. Add each to `data/texts.keys.txt`, with
-  English in `data/texts.en.txt`, a blank line in every other catalog and the key in
-  `data/texts.pending.txt` (see the [UI framework](../../development/ui-framework.md)).
-  `data/check_translations.py` fails on a key the file uses but the catalogs lack.
+- `name` and `description` are text keys. Add each to `content/data/texts.keys.txt`, with
+  English in `content/data/texts.en.txt`, a blank line in every other catalog and the key in
+  `content/data/texts.pending.txt` (see the [UI framework](../../development/ui-framework.md)).
+  `content/data/check_translations.py` fails on a key the file uses but the catalogs lack.
 - Rule ids and values come from the registry in `src/game/rules/CustomGameRules.cpp`. Toggles
   take only `true`/`false` (`combat`, `hunger`, `revealTerrain`, `alliancesChange`,
   `instantConstruction`, `woundedRetreat`, `unitsCanDie`, `unitTraining`); `workers`
@@ -250,7 +250,7 @@ Run from the repository root on a machine with the native dependencies:
 scons -j8 release=1 engine-tests build/src/glob2
 python3 test/run_tests.py --filter 'CustomGameSetup/*'
 python3 test/run_tests.py --filter 'GameSpeed/*'
-python3 data/check_translations.py --strict
+python3 content/data/check_translations.py --strict
 python3 test/test_translations.py
 python3 test/test_font_coverage.py
 ```

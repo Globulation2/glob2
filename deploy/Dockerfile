@@ -56,7 +56,7 @@ RUN --mount=type=cache,id=glob2-relay-build-${TARGETARCH},target=/source/build,s
 FROM source AS engine-source
 
 # The headless engine is the ordinary client binary run with SDL's dummy
-# drivers. Its data/ is what the sim version's data hash covers, computed with
+# drivers. Its content/data/ is what the sim version's data hash covers, computed with
 # this repository's deploy/sim_version.py.
 FROM cpp-deps AS engine-build
 ARG JOBS=4
@@ -88,32 +88,32 @@ ARG GLOB2_DESIGN_SYSTEM_SHA
 ENV GLOB2_DESIGN_SYSTEM_SHA=${GLOB2_DESIGN_SYSTEM_SHA}
 LABEL org.glob2.design-system-revision=${GLOB2_DESIGN_SYSTEM_SHA}
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
-WORKDIR /app/platform
+WORKDIR /app/services/online
 # Manifests first, so dependency layers survive source edits.
-COPY platform/package.json platform/package-lock.json ./
-COPY platform/scripts/design-system.mjs scripts/design-system.mjs
-COPY platform/packages/protocol/package.json packages/protocol/
-COPY platform/packages/db/package.json packages/db/
-COPY platform/packages/core/package.json packages/core/
-COPY platform/packages/play/package.json packages/play/
-COPY platform/packages/engine/package.json packages/engine/
-COPY platform/packages/hive/package.json packages/hive/
-COPY platform/packages/billing/package.json packages/billing/
-COPY platform/packages/map-studio/package.json packages/map-studio/
-COPY platform/packages/music/package.json packages/music/
-COPY platform/packages/music-studio/package.json packages/music-studio/
-COPY platform/packages/terrain-studio/package.json packages/terrain-studio/
-COPY platform/packages/building-studio/package.json packages/building-studio/
-COPY platform/apps/ai-building-worker/package.json apps/ai-building-worker/
-COPY platform/apps/ai-terrain-worker/package.json apps/ai-terrain-worker/
-COPY platform/apps/ai-music-worker/package.json apps/ai-music-worker/
-COPY platform/apps/music-worker/package.json apps/music-worker/
-COPY platform/apps/skin-render-worker/package.json apps/skin-render-worker/
-COPY platform/apps/ai-map-worker/package.json apps/ai-map-worker/
-COPY platform/apps/api/package.json apps/api/
-COPY platform/apps/worker/package.json apps/worker/
-COPY platform/apps/engine-agent/package.json apps/engine-agent/
-COPY platform/apps/web/package.json apps/web/
+COPY services/online/package.json services/online/package-lock.json ./
+COPY services/online/scripts/design-system.mjs scripts/design-system.mjs
+COPY services/online/packages/protocol/package.json packages/protocol/
+COPY services/online/packages/db/package.json packages/db/
+COPY services/online/packages/core/package.json packages/core/
+COPY services/online/packages/play/package.json packages/play/
+COPY services/online/packages/engine/package.json packages/engine/
+COPY services/online/packages/hive/package.json packages/hive/
+COPY services/online/packages/billing/package.json packages/billing/
+COPY services/online/packages/map-studio/package.json packages/map-studio/
+COPY services/online/packages/music/package.json packages/music/
+COPY services/online/packages/music-studio/package.json packages/music-studio/
+COPY services/online/packages/terrain-studio/package.json packages/terrain-studio/
+COPY services/online/packages/building-studio/package.json packages/building-studio/
+COPY services/online/apps/ai-building-worker/package.json apps/ai-building-worker/
+COPY services/online/apps/ai-terrain-worker/package.json apps/ai-terrain-worker/
+COPY services/online/apps/ai-music-worker/package.json apps/ai-music-worker/
+COPY services/online/apps/music-worker/package.json apps/music-worker/
+COPY services/online/apps/skin-render-worker/package.json apps/skin-render-worker/
+COPY services/online/apps/ai-map-worker/package.json apps/ai-map-worker/
+COPY services/online/apps/api/package.json apps/api/
+COPY services/online/apps/worker/package.json apps/worker/
+COPY services/online/apps/engine-agent/package.json apps/engine-agent/
+COPY services/online/apps/web/package.json apps/web/
 RUN --mount=type=cache,id=glob2-npm,target=/root/.npm test -n "$GLOB2_DESIGN_SYSTEM_SHA" && npm ci --no-audit --no-fund && node scripts/design-system.mjs
 
 FROM cpp-base AS music-web-build
@@ -125,42 +125,42 @@ FROM node-deps AS web-build
 # download page (docs/hosting/README.md); empty keeps the defaults.
 ARG GLOB2_WEBSITE_URL=
 ARG GLOB2_DOWNLOAD_URL=
-COPY platform/ ./
+COPY services/online/ ./
 COPY examples/javascript /app/examples/javascript
-COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
-COPY data/fonts/scripts /app/data/fonts/scripts
-COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
-COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt
-COPY data/fonts/LICENSE-Droid.txt /app/data/fonts/LICENSE-Droid.txt
-COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf
+COPY content/data/generators/toolkit.d.ts /app/content/data/generators/toolkit.d.ts
+COPY content/data/fonts/scripts /app/content/data/fonts/scripts
+COPY content/data/fonts/LICENSE-Noto.txt /app/content/data/fonts/LICENSE-Noto.txt
+COPY content/data/fonts/LICENSE-DejaVu.txt /app/content/data/fonts/LICENSE-DejaVu.txt
+COPY content/data/fonts/LICENSE-Droid.txt /app/content/data/fonts/LICENSE-Droid.txt
+COPY platforms/web/assets/sans-core.ttf /app/platforms/web/assets/sans-core.ttf
 # Colony Studio imports the game's material shader raw (materialShader.ts).
-COPY libgag/shaders /app/libgag/shaders
+COPY libs/gag/shaders /app/libs/gag/shaders
 # Set authoring and Terrain Studio import the shared resource registry.
-COPY data/resources/registry.json /app/data/resources/registry.json
-COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
-COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
+COPY content/data/resources/registry.json /app/content/data/resources/registry.json
+COPY --from=music-web-build /source/services/online/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
+COPY --from=music-web-build /source/services/online/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
 RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL" \
     npm exec --workspace @glob2/web -- vite build
 
 FROM node-deps AS platform-runtime-deps
 RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --omit=dev --no-audit --no-fund && node scripts/design-system.mjs
-COPY platform/tsconfig.base.json platform/tsconfig.json ./
-COPY platform/packages packages
-COPY platform/apps/api apps/api
-COPY platform/apps/worker apps/worker
-COPY platform/apps/music-worker apps/music-worker
-COPY platform/apps/skin-render-worker apps/skin-render-worker
-COPY platform/apps/engine-agent apps/engine-agent
-COPY platform/apps/ai-map-worker apps/ai-map-worker
-COPY platform/apps/ai-music-worker apps/ai-music-worker
-COPY platform/apps/ai-terrain-worker apps/ai-terrain-worker
-COPY platform/apps/ai-building-worker apps/ai-building-worker
+COPY services/online/tsconfig.base.json services/online/tsconfig.json ./
+COPY services/online/packages packages
+COPY services/online/apps/api apps/api
+COPY services/online/apps/worker apps/worker
+COPY services/online/apps/music-worker apps/music-worker
+COPY services/online/apps/skin-render-worker apps/skin-render-worker
+COPY services/online/apps/engine-agent apps/engine-agent
+COPY services/online/apps/ai-map-worker apps/ai-map-worker
+COPY services/online/apps/ai-music-worker apps/ai-music-worker
+COPY services/online/apps/ai-terrain-worker apps/ai-terrain-worker
+COPY services/online/apps/ai-building-worker apps/ai-building-worker
 # Server-rendered account and invite pages use the approved script fonts.
-COPY data/fonts/scripts /app/data/fonts/scripts
-COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
-COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt
-COPY data/fonts/LICENSE-Droid.txt /app/data/fonts/LICENSE-Droid.txt
-COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf
+COPY content/data/fonts/scripts /app/content/data/fonts/scripts
+COPY content/data/fonts/LICENSE-Noto.txt /app/content/data/fonts/LICENSE-Noto.txt
+COPY content/data/fonts/LICENSE-DejaVu.txt /app/content/data/fonts/LICENSE-DejaVu.txt
+COPY content/data/fonts/LICENSE-Droid.txt /app/content/data/fonts/LICENSE-Droid.txt
+COPY platforms/web/assets/sans-core.ttf /app/platforms/web/assets/sans-core.ttf
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -177,17 +177,17 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
       /var/lib/glob2/db/migrator /var/lib/glob2/db/api /var/lib/glob2/db/worker /etc/glob2 && \
     chown -R 10001:10001 /var/lib/glob2 && \
     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
-COPY --from=platform-runtime-deps /app/platform /app/platform
-COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
-COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets
+COPY --from=platform-runtime-deps /app/services/online /app/services/online
+COPY --from=platform-runtime-deps /app/content/data/fonts /app/content/data/fonts
+COPY --from=platform-runtime-deps /app/platforms/web/assets /app/platforms/web/assets
 COPY examples/javascript /app/examples/javascript
-COPY data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/content/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
 COPY docs/map-generators/javascript.md /app/docs/map-generators/javascript.md
-COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
-COPY data/generators/examples/swamp /app/data/generators/examples/swamp
+COPY content/data/generators/toolkit.d.ts /app/content/data/generators/toolkit.d.ts
+COPY content/data/generators/examples/swamp /app/content/data/generators/examples/swamp
 COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
-RUN printf '#!/bin/sh\nexec node /app/platform/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform && \
+RUN printf '#!/bin/sh\nexec node /app/services/online/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform && \
     chmod 755 /usr/local/bin/platform /usr/local/bin/glob2-platform-init
 ENV NODE_ENV=production \
     HTTP_HOST=0.0.0.0 \
@@ -195,7 +195,7 @@ ENV NODE_ENV=production \
     BLOB_STORE=fs \
     BLOB_DIR=/var/lib/glob2/blobs \
     JWT_KEYS_DIR=/var/lib/glob2/keys
-WORKDIR /app/platform
+WORKDIR /app/services/online
 USER 10001:10001
 EXPOSE 8080
 CMD ["node", "apps/api/src/main.ts"]
@@ -228,11 +228,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     && mkdir -p /var/lib/glob2/engine-agent && chown 10001:10001 /var/lib/glob2/engine-agent \
     && chmod 700 /var/lib/glob2/engine-agent
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
-COPY --from=platform-runtime-deps /app/platform /app/platform
-COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
-COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets
+COPY --from=platform-runtime-deps /app/services/online /app/services/online
+COPY --from=platform-runtime-deps /app/content/data/fonts /app/content/data/fonts
+COPY --from=platform-runtime-deps /app/platforms/web/assets /app/platforms/web/assets
 COPY examples/javascript /app/examples/javascript
-COPY data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/content/data/resources/registry.json
 COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
 COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
@@ -245,7 +245,7 @@ ENV NODE_ENV=production \
     ENGINE_BINARY=/opt/glob2/bin/glob2 \
     ENGINE_WORKDIR=/opt/glob2/share \
     ENGINE_SCRATCH_DIR=/tmp
-WORKDIR /app/platform
+WORKDIR /app/services/online
 USER 10001:10001
 ENTRYPOINT ["/usr/local/bin/glob2-engine-agent-entrypoint"]
 CMD ["node", "apps/engine-agent/src/main.ts"]
@@ -279,7 +279,7 @@ CMD ["node", "apps/ai-terrain-worker/src/main.ts"]
 FROM engine-agent AS ai-building-worker
 USER root
 COPY docs/features/building-catalogs.md docs/features/building-semantics.md docs/features/building-authoring.md docs/features/resource-catalogs.md /opt/glob2/share/docs/features/
-COPY data/gfx/inn0b0.png data/gfx/inn0b0r.png data/gfx/hosp0b0.png data/gfx/hosp0b0r.png data/gfx/defencetower0b0.png data/gfx/defencetower0b0r.png /opt/glob2/share/studio/building-references/
+COPY content/data/gfx/inn0b0.png content/data/gfx/inn0b0r.png content/data/gfx/hosp0b0.png content/data/gfx/hosp0b0r.png content/data/gfx/defencetower0b0.png content/data/gfx/defencetower0b0r.png /opt/glob2/share/studio/building-references/
 ENV GLOB2_SOURCE_DIR=/opt/glob2/share
 USER 10001:10001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-ai-building-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
@@ -291,7 +291,7 @@ LABEL org.glob2.design-system-revision=${GLOB2_DESIGN_SYSTEM_SHA}
 RUN setcap -r /usr/bin/caddy && chown -R 10001:10001 /data /config
 USER 10001:10001
 COPY deploy/Caddyfile /etc/caddy/Caddyfile
-COPY --from=web-build /app/platform/apps/web/dist /srv/web
+COPY --from=web-build /app/services/online/apps/web/dist /srv/web
 # The WebAssembly client is mounted at /srv/play (see docs/hosting/README.md).
 
 # Community music conversion runs independently of simulation-version agents.
@@ -348,13 +348,13 @@ LABEL org.glob2.design-system-revision=${GLOB2_DESIGN_SYSTEM_SHA}
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
     mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs
-COPY --from=platform-runtime-deps /app/platform /app/platform
-COPY --from=platform-runtime-deps /app/data/fonts /app/data/fonts
-COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets
+COPY --from=platform-runtime-deps /app/services/online /app/services/online
+COPY --from=platform-runtime-deps /app/content/data/fonts /app/content/data/fonts
+COPY --from=platform-runtime-deps /app/platforms/web/assets /app/platforms/web/assets
 # Shared protocol set-authoring imports the registry when the worker starts.
-COPY data/resources/registry.json /app/data/resources/registry.json
+COPY content/data/resources/registry.json /app/content/data/resources/registry.json
 ENV NODE_ENV=production BLOB_STORE=fs BLOB_DIR=/var/lib/glob2/blobs
-WORKDIR /app/platform
+WORKDIR /app/services/online
 USER 10001:10001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=120s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-ai-music-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
 CMD ["node", "apps/ai-music-worker/src/main.ts"]

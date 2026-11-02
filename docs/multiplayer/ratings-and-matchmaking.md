@@ -1,8 +1,8 @@
 # Ratings and matchmaking
 
 Quick-match queues group players into matches, and engine-verified results of rated
-queue matches update a ladder per queue. Both run in the worker (`platform/apps/worker`), on
-the shared match domain in `platform/packages/play`; the
+queue matches update a ladder per queue. Both run in the worker (`services/online/apps/worker`), on
+the shared match domain in `services/online/packages/play`; the
 contracts they share with the API, the match starter and clients are listed at the
 end. The platform's overall design is in [architecture](architecture.md).
 
@@ -173,7 +173,7 @@ AI entities are then rated from real games like players.
 
 ## Queues
 
-Queues are defined in `instance.yaml` (see `platform/instance.example.yaml`).
+Queues are defined in `instance.yaml` (see `services/online/instance.example.yaml`).
 `resolveQueue()` in `packages/core/src/queueConfig.ts` fills defaults. It also
 rejects map pools whose team count does not fit the mode.
 
@@ -369,8 +369,8 @@ both fields.
 
 ## Tests
 
-`platform/packages/play/test/ratings.test.ts` and
-`platform/apps/worker/test/matchmaker.test.ts` run against a
+`services/online/packages/play/test/ratings.test.ts` and
+`services/online/apps/worker/test/matchmaker.test.ts` run against a
 real Postgres; see [architecture](platform-development.md#working-on-the-platform) for the
 test database. They cover:
 

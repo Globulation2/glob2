@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scons'))
 import skin_materials
 
-MANIFEST = Path('libgag/shaders/renderer-manifest.json')
+MANIFEST = Path('libs/gag/shaders/renderer-manifest.json')
 TYPES = {'float': (4, 4), 'vec2': (8, 8), 'vec4': (16, 16), 'ivec4': (16, 16), 'uvec4': (16, 16), 'mat3': (16, 48), 'mat4': (16, 64)}
 
 
@@ -376,7 +376,7 @@ def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None):
     binaries fail closed; source translation alone never advertises Metal.
     """
     lock = json.loads(Path(tool_lock).read_text())
-    xcode_pin = json.loads((root / 'mobile/toolchain.json').read_text())['ios']['xcode']
+    xcode_pin = json.loads((root / 'platforms/mobile/toolchain.json').read_text())['ios']['xcode']
     prefix = ['/usr/bin/env', 'DEVELOPER_DIR=' + developer_dir] if developer_dir else []
     xcrun = prefix + ['xcrun', '--sdk', sdk]
     xcode = subprocess.check_output(prefix + ['xcodebuild', '-version'], text=True).strip()

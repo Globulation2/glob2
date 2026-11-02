@@ -51,8 +51,8 @@ class WindowsLocalizationWorkflow(unittest.TestCase):
         registry = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(registry)
         expected = {
-            'ENGINE_TESTS': {'FontKerning': '#libgag/src/FontKerningTest.cpp', 'SystemLanguage': '#src/app/SystemLanguageTest.cpp'},
-            'UNIT_TESTS': {'UILayout': '#libgag/src/ui/UILayoutHarness.cpp', 'BidiText': '#libgag/src/BidiTextTest.cpp', 'TextMetrics': '#libgag/src/FontMetricsTest.cpp'},
+            'ENGINE_TESTS': {'FontKerning': '#libs/gag/src/FontKerningTest.cpp', 'SystemLanguage': '#src/app/SystemLanguageTest.cpp'},
+            'UNIT_TESTS': {'UILayout': '#libs/gag/src/ui/UILayoutHarness.cpp', 'BidiText': '#libs/gag/src/BidiTextTest.cpp', 'TextMetrics': '#libs/gag/src/FontMetricsTest.cpp'},
         }
         for binary, suites in expected.items():
             entries = {entry if isinstance(entry, str) else entry[0]: {} if isinstance(entry, str) else entry[1]

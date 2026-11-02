@@ -28,7 +28,7 @@ paths move under the identity directory. macOS packaging is an explicit
 `package` target rather than a side effect of compiling release objects.
 
 The browser SDK revision and version are recorded in
-`browser/toolchain.json`. Emscripten verifies port archive checksums. Release reproducibility also depends on native dependencies and packaging inputs; SDK pinning alone does not establish it.
+`platforms/web/toolchain.json`. Emscripten verifies port archive checksums. Release reproducibility also depends on native dependencies and packaging inputs; SDK pinning alone does not establish it.
 
 CI validates the identity rules directly and builds native and WebAssembly
 outputs in their own jobs. `test/build_system/coexistence.py` remains an

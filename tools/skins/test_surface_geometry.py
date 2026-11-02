@@ -48,7 +48,7 @@ def read_shapes(path):
 
 def audit(root, fitted=False, models=('worker', 'warrior')):
     reports = {}
-    authored = json.loads((ROOT / 'datasrc/gfx/authored/skins/limb-paint-charts.json').read_text())
+    authored = json.loads((ROOT / 'content-src/gfx/authored/skins/limb-paint-charts.json').read_text())
     for model in models:
         contract = json.loads((root / (model + '-surface.json')).read_text())
         welds = np.array(contract['welds'])

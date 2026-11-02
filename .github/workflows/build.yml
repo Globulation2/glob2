@@ -850,15 +850,15 @@ jobs:
           sudo apt-get install -y python3-venv scons nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
         id: install_pinned_emscripten
-        run: python3 browser/setup.py
+        run: python3 platforms/web/setup.py
       - name: Restore WebAssembly compiler cache
         id: restore_webassembly_compiler_cache
         continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-
+          key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-
       - name: Restore WebAssembly object tree
         id: restore_webassembly_object_tree
         continue-on-error: true
@@ -872,8 +872,8 @@ jobs:
             build/emscripten/client/release/threaded/obj
             build/emscripten/client/release/threaded/include
             build/emscripten/client/release/threaded/identity.json
-          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-
+          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-
       - name: Restore pinned WebAssembly dependencies
         id: wasm_dependencies
         uses: actions/cache/restore@v4
@@ -881,10 +881,10 @@ jobs:
           path: |
             build/emscripten/client/release/sdl3/prefix
             build/emscripten/client/release/threaded/sdl3/prefix
-          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
       - name: Verify restored WebAssembly dependency prefixes
         env:
-          DEPENDENCY_KEY: ${{ hashFiles('browser/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
         run: |
           for prefix in build/emscripten/client/release/sdl3/prefix build/emscripten/client/release/threaded/sdl3/prefix; do
             python3 .github/scripts/ci_dependency_cache.py verify --prefix "$prefix" --key "$DEPENDENCY_KEY"
@@ -904,7 +904,7 @@ jobs:
           ccache -s -v
       - name: Seal built WebAssembly dependency prefixes
         env:
-          DEPENDENCY_KEY: ${{ hashFiles('browser/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          DEPENDENCY_KEY: ${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
         run: |
           for prefix in build/emscripten/client/release/sdl3/prefix build/emscripten/client/release/threaded/sdl3/prefix; do
             python3 .github/scripts/ci_dependency_cache.py seal --prefix "$prefix" --key "$DEPENDENCY_KEY"
@@ -916,7 +916,7 @@ jobs:
           path: |
             build/emscripten/client/release/sdl3/prefix
             build/emscripten/client/release/threaded/sdl3/prefix
-          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
       - name: Save WebAssembly object tree
         id: save_webassembly_object_tree
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
@@ -931,7 +931,7 @@ jobs:
             build/emscripten/client/release/threaded/obj
             build/emscripten/client/release/threaded/include
             build/emscripten/client/release/threaded/identity.json
-          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Prune WebAssembly compiler cache
         id: prune_webassembly_compiler_cache
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
@@ -942,7 +942,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/web/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
       # Serve the game and scripting harness; retain compiler identity for the
       # scripting evidence collected by the browser test jobs.
       - uses: actions/upload-artifact@v4
@@ -1221,8 +1221,8 @@ jobs:
         id: test_self_hosting_with_real_tls_and_persistent_volumes
         continue-on-error: true
         run: |
-          python3 browser/package-static.py
-          python3 browser/package-static.py --verify build/browser-static
+          python3 platforms/web/package-static.py
+          python3 platforms/web/package-static.py --verify build/browser-static
           python3 -m unittest discover -s test/deployment -v
 
       - name: Summarize CI failures
@@ -1280,12 +1280,12 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: browser/package-lock.json
+          cache-dependency-path: platforms/web/package-lock.json
       - name: Restore Playwright browser installations
         uses: actions/cache/restore@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.browsers }}-${{ hashFiles('browser/package-lock.json') }}
+          key: playwright-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.browsers }}-${{ hashFiles('platforms/web/package-lock.json') }}
       - name: Install browser test dependencies
         id: install_browser_test_dependencies
         working-directory: browser
@@ -1297,7 +1297,7 @@ jobs:
         if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && (matrix.name == 'chromium 1/5' || matrix.name == 'firefox' || matrix.name == 'webkit') }}
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.browsers }}-${{ hashFiles('browser/package-lock.json') }}
+          key: playwright-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.browsers }}-${{ hashFiles('platforms/web/package-lock.json') }}
       # Firefox needs an X display and an audio service. A null sink is silent.
       - name: Start a silent audio service
         id: start_a_silent_audio_service
@@ -1415,7 +1415,7 @@ jobs:
           path: artifacts/ci-observation/
           if-no-files-found: ignore
 
-  # The TypeScript platform (platform/): lint, type checks, the web build, and
+  # The TypeScript platform (services/online/): lint, type checks, the web build, and
   # unit and integration tests against a real Postgres.
   platform:
     name: platform (TypeScript)
@@ -1441,7 +1441,7 @@ jobs:
       TERRAIN_PYTHON: /usr/bin/python3
     defaults:
       run:
-        working-directory: platform
+        working-directory: services/online
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -1452,7 +1452,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: platform/package-lock.json
+          cache-dependency-path: services/online/package-lock.json
       - name: Install music and terrain artwork processing tools
         id: install_music_upload_processing_tools
         run: |

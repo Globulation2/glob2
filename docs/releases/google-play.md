@@ -10,7 +10,7 @@ alongside the pinned NDK and build tools. The [Android APK commands](../mobile/a
 useful for direct device testing. To build the bundle:
 
 ```sh
-python3 mobile/android.py bundle --arch arm64-v8a --release --version-code 1
+python3 platforms/mobile/android.py bundle --arch arm64-v8a --release --version-code 1
 ```
 
 Each subsequent Play upload needs a higher `--version-code`. The bundle command
@@ -24,7 +24,7 @@ Create the key with Android Studio's **Generate Signed Bundle/APK** flow or
 environment using your password manager, then sign the verified bundle:
 
 ```sh
-python3 mobile/android.py sign-bundle --arch arm64-v8a --release \
+python3 platforms/mobile/android.py sign-bundle --arch arm64-v8a --release \
   --keystore /path/to/private-upload.keystore --key-alias YOUR_ALIAS
 ```
 
@@ -150,7 +150,7 @@ path independently; build and release jobs then skip. Successful preflight prove
 app/track API access, while production rollout permissions, listing acceptance
 and installed-device qualification remain separate checks.
 The Play API client and its transitive Python packages are locked to reviewed
-wheel hashes in `mobile/play-api-requirements.txt`; update the lock deliberately
+wheel hashes in `platforms/mobile/play-api-requirements.txt`; update the lock deliberately
 when upgrading them.
 
 On the mirror, keep the owner as the sole collaborator, protect `master` against

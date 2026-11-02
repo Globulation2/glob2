@@ -290,7 +290,7 @@ TEST_SUITE("UnitCatalog")
         glob2test::HeadlessGlobals globals;
         GameGUI world;
         GAGCore::BinaryInputStream historical(globals.globals.fileManager->openInflatingInputStreamBackend(
-            (glob2test::sourceRoot()/"maps/FourSquares1.map.gz").string()));
+            (glob2test::contentRoot()/"maps/FourSquares1.map.gz").string()));
         REQUIRE(world.game.load(&historical));
         REQUIRE(world.game.mapHeader.getVersionMinor()==64);
         REQUIRE(world.game.mapHeader.getNumberOfTeams()==4);
@@ -345,7 +345,7 @@ TEST_SUITE("UnitCatalog")
     TEST_CASE("installed definitions reproduce immutable embedded defaults")
     {
         glob2test::HeadlessGlobals globals;
-        auto catalog = UnitCatalog::loadFile((glob2test::sourceRoot() / "data/units/registry.json").string());
+        auto catalog = UnitCatalog::loadFile((glob2test::contentRoot() / "data/units/registry.json").string());
         auto defaults = UnitCatalog::builtins();
         REQUIRE(catalog->size() == BuiltinUnitCount);
         CHECK(catalog->serialize() == defaults->serialize());

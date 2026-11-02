@@ -2,9 +2,9 @@
 from gimpfu import *
 import os,json,hashlib
 root=os.environ.get('GLOB2_ART_ROOT',os.getcwd())
-out=os.path.join(root,'datasrc/gfx/derived/building-native')
+out=os.path.join(root,'content-src/gfx/derived/building-native')
 if not os.path.isdir(out):os.makedirs(out)
-config=os.path.join(root,'datasrc/gfx/provenance/building-runtime-recipes.json')
+config=os.path.join(root,'content-src/gfx/provenance/building-runtime-recipes.json')
 recipes=json.load(open(config))
 records=[]
 for recipe in recipes['frames']:

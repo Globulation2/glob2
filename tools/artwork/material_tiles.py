@@ -26,11 +26,11 @@ ROOT = Path(__file__).resolve().parents[2]
 # only ever measured (luma mean/std, neighbour grain, saturation); no pixel of
 # them is read into any output.
 STYLE_REFERENCES = {
-    "grass": ("data/gfx/terrain", 0),
-    "sand": ("data/gfx/terrain", 128),
-    "water": ("data/gfx/terrain", 256),
-    "ice": ("data/gfx/terrain", 272),
-    "trail": ("data/gfx/terrain", 288),
+    "grass": ("content/data/gfx/terrain", 0),
+    "sand": ("content/data/gfx/terrain", 128),
+    "water": ("content/data/gfx/terrain", 256),
+    "ice": ("content/data/gfx/terrain", 272),
+    "trail": ("content/data/gfx/terrain", 288),
 }
 
 

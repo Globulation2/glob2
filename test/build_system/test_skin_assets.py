@@ -12,8 +12,8 @@ import tempfile
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-FOLDER = ROOT / 'data/skins/colony-v1'
-DESIGNER = ROOT / 'platform/apps/web/public/skins/models'
+FOLDER = ROOT / 'content/data/skins/colony-v1'
+DESIGNER = ROOT / 'services/online/apps/web/public/skins/models'
 # Which fitted format animates each unit clip by default, and its header size.
 UNIT_FORMATS = {
     'worker-walk': ('shapes', 'GSB1', 32), 'worker-swim': ('shapes', 'GSB1', 32),
@@ -50,7 +50,7 @@ class ColonySkinAssetsTest(unittest.TestCase):
         spec.loader.exec_module(module)
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            folder = root / 'data/skins/colony-v1'
+            folder = root / 'content/data/skins/colony-v1'
             folder.mkdir(parents=True)
             mesh = b'camera-bound mesh'
             (folder / 'swarm.gsk').write_bytes(mesh)

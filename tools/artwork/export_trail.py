@@ -15,7 +15,7 @@ FIRST_FRAME = 288
 
 
 def frames():
-    with Image.open(ROOT / "datasrc/gfx/trail/material.png") as image:
+    with Image.open(ROOT / "content-src/gfx/trail/material.png") as image:
         source = image.convert("RGB")
     # One 4x4 material sheet supplies sixteen non-directional variants. BOX
     # averages the native grit into the coarse classic 32px texture.
@@ -49,7 +49,7 @@ def frames():
 
 def main():
     for slot, tile in enumerate(frames(), start=FIRST_FRAME):
-        tile.save(ROOT / f"data/gfx/terrain{slot}.png")
+        tile.save(ROOT / f"content/data/gfx/terrain{slot}.png")
     print("Exported sixteen 32x32 opaque Trail frames (288–303)")
 
 

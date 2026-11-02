@@ -32,7 +32,7 @@ def localization_files(release):
     """Check localized launchers before changing any files in the served release."""
     if 'src="i18n.js"' not in (release / 'index.html').read_text():
         return ()
-    catalogs = Path(__file__).resolve().parents[1] / 'platform/packages/i18n/locales'
+    catalogs = Path(__file__).resolve().parents[1] / 'services/online/packages/i18n/locales'
     expected = {'locales/' + path.name for path in catalogs.glob('*.json')}
     actual = {'locales/' + path.name for path in (release / 'locales').glob('*.json')}
     if not expected or actual != expected:

@@ -21,7 +21,7 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
         cls.state = (ROOT / "src/ai/maxima/AIMaximaState.cpp").read_text()
         cls.farming_policy = (ROOT / "src/ai/maxima/AIMaximaFarmingPolicy.cpp").read_text()
         cls.strategy = (ROOT / "src/ai/maxima/AIMaximaStrategy.cpp").read_text()
-        cls.base = (ROOT / "data/maxima/base.strategy").read_text()
+        cls.base = (ROOT / "content/data/maxima/base.strategy").read_text()
 
     def test_director_and_immutable_plan_are_explicit_boundaries(self) -> None:
         self.assertIn("class StrategyDirector", self.header)

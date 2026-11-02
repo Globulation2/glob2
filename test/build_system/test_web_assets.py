@@ -29,47 +29,47 @@ class WebAssetPlanTests(unittest.TestCase):
             output = Path(folder)
             web_assets.launcher_script_fonts(ROOT, output)
             css = (output / 'script-fonts.css').read_text()
-            self.assertNotIn('../../../data/', css)
-            self.assertNotIn('../../../browser/', css)
+            self.assertNotIn('content/data/', css)
+            self.assertNotIn('platforms/web/', css)
             self.assertIn('fonts/sans-core.ttf', css)
             self.assertIn(':root:lang(bg)', css)
             self.assertIn('option:lang(bg)', css)
             self.assertEqual((output / 'fonts/sans-core.ttf').read_bytes(),
-                             (ROOT / 'browser/assets/sans-core.ttf').read_bytes())
+                             (ROOT / 'platforms/web/assets/sans-core.ttf').read_bytes())
             self.assertEqual((output / 'fonts/LICENSE-DejaVu.txt').read_bytes(),
-                             (ROOT / 'data/fonts/LICENSE-DejaVu.txt').read_bytes())
+                             (ROOT / 'content/data/fonts/LICENSE-DejaVu.txt').read_bytes())
             self.assertEqual((output / 'fonts/LICENSE-Droid.txt').read_bytes(),
-                             (ROOT / 'data/fonts/LICENSE-Droid.txt').read_bytes())
-            manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+                             (ROOT / 'content/data/fonts/LICENSE-Droid.txt').read_bytes())
+            manifest = json.loads((ROOT / 'content/data/fonts/scripts/manifest.json').read_text())
             for font in manifest['fonts']:
                 name = font['name'] + '-Regular.ttf'
                 data = (output / 'fonts' / name).read_bytes()
                 self.assertEqual(hashlib.sha256(data).hexdigest(), font['sha256'])
                 self.assertIn('fonts/' + name, css)
             self.assertEqual((output / 'fonts/LICENSE-Noto.txt').read_bytes(),
-                             (ROOT / 'data/fonts/LICENSE-Noto.txt').read_bytes())
+                             (ROOT / 'content/data/fonts/LICENSE-Noto.txt').read_bytes())
 
     def test_bulgarian_launcher_font_is_tracked_and_packaged_for_api_images(self):
         build = (ROOT / 'scons/web_build.py').read_text()
         self.assertIn("str(Path(directory) / 'fonts/sans-core.ttf')", build)
         self.assertIn("str(Path(directory) / 'fonts/LICENSE-DejaVu.txt')", build)
-        self.assertIn("'browser/assets/sans-core.ttf'", build)
-        self.assertIn("'data/fonts/LICENSE-DejaVu.txt'", build)
+        self.assertIn("'platforms/web/assets/sans-core.ttf'", build)
+        self.assertIn("'content/data/fonts/LICENSE-DejaVu.txt'", build)
         docker = (ROOT / 'deploy/Dockerfile').read_text()
         for stage in ('web-build', 'platform-runtime-deps'):
             section = docker.split(' AS ' + stage + '\n', 1)[1].split('\nFROM ', 1)[0]
-            self.assertIn('COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf', section)
-            self.assertIn('COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt', section)
+            self.assertIn('COPY platforms/web/assets/sans-core.ttf /app/platforms/web/assets/sans-core.ttf', section)
+            self.assertIn('COPY content/data/fonts/LICENSE-DejaVu.txt /app/content/data/fonts/LICENSE-DejaVu.txt', section)
         for stage in ('platform', 'ai-music-worker'):
             section = docker.split(' AS ' + stage + '\n', 1)[1].split('\nFROM ', 1)[0]
-            self.assertIn('COPY --from=platform-runtime-deps /app/browser/assets /app/browser/assets', section)
+            self.assertIn('COPY --from=platform-runtime-deps /app/platforms/web/assets /app/platforms/web/assets', section)
 
     def test_skin_meshes_are_only_in_the_on_demand_package(self):
-        meshes = list((ROOT / 'data/skins/colony-v1').glob('*.gsk'))
-        manifest = json.loads((ROOT / 'data/skins/colony-v1/manifest.json').read_text())
+        meshes = list((ROOT / 'content/data/skins/colony-v1').glob('*.gsk'))
+        manifest = json.loads((ROOT / 'content/data/skins/colony-v1/manifest.json').read_text())
         self.assertEqual(sorted(p.name for p in meshes), sorted(manifest['meshes']))
         for path in meshes:
-            self.assertEqual(self.owner[path.relative_to(ROOT).as_posix()], 'skins')
+            self.assertEqual(self.owner[path.relative_to(ROOT / 'content').as_posix()], 'skins')
         self.assertNotIn('data/skins/colony-v1/manifest.json', self.packages['core'])
 
     def test_simulation_data_starts_with_the_game(self):
@@ -85,19 +85,19 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertFalse([p for p in self.owner if p.endswith(('SConscript', '.py', '.md'))])
 
     def test_script_fonts_are_available_before_optional_downloads(self):
-        fonts = sorted((ROOT / 'data/fonts/scripts').glob('*.ttf'))
+        fonts = sorted((ROOT / 'content/data/fonts/scripts').glob('*.ttf'))
         self.assertEqual(len(fonts), 13, 'All approved shaping fonts must ship')
         for font in fonts:
-            path = font.relative_to(ROOT).as_posix()
+            path = font.relative_to(ROOT / 'content').as_posix()
             self.assertEqual(self.owner.get(path), 'core', path)
             self.assertNotIn(path, self.packages.get('font-cjk', []))
             self.assertEqual(web_assets.contents(ROOT, 'core', path, {}), font.read_bytes())
 
     def test_only_current_tutorial_assets_ship(self):
-        catalog = json.loads((ROOT / 'scripts/tutorials/catalog.json').read_text())
+        catalog = json.loads((ROOT / 'content/scripts/tutorials/catalog.json').read_text())
         self.assertEqual(self.owner.get('scripts/tutorials/catalog.json'), 'core')
         for entry in catalog:
-            lesson = json.loads((ROOT / entry['definition']).read_text())
+            lesson = json.loads((ROOT / 'content' / entry['definition']).read_text())
             for path in (entry['definition'], entry['script'], lesson['map']):
                 self.assertEqual(self.owner.get(path), 'core', path)
         self.assertNotIn('campaigns/Tutorial_Campaign.txt', self.owner)
@@ -144,8 +144,8 @@ class WebAssetPlanTests(unittest.TestCase):
             (root / 'src/map/TerrainPresentation.h').write_text(
                 'constexpr auto atlas = "data/gfx/future-terrain";\n'
                 'constexpr auto backdrop = "data/gfx/future-backdrop";\n')
-            (root / 'data/terrain').mkdir(parents=True)
-            (root / 'data/terrain/tileset.json').write_text(json.dumps({'materials': [
+            (root / 'content/data/terrain').mkdir(parents=True)
+            (root / 'content/data/terrain/tileset.json').write_text(json.dumps({'materials': [
                 {'sprite': 'data/materials/rock', 'decor': {'sprite': 'data/gfx/glow'}}]}))
             names = web_assets.game_sprites(root)
             self.assertEqual(names, {'unit', 'terrain', 'gamegui', 'swarm0b',
@@ -164,7 +164,7 @@ class WebAssetPlanTests(unittest.TestCase):
                 'sprite("data/gfx/unit"); sprite("data/gfx/terrain");\n'
                 'sprite("data/gfx/gamegui"); sprite("data/gfx/swarm0b");\n}\n')
             (root / 'src/map/TerrainPresentation.h').write_text('')
-            definitions = root / 'data/buildings/experimental'
+            definitions = root / 'content/data/buildings/experimental'
             definitions.mkdir(parents=True)
             (definitions / 'manifest.json').write_text('{"files":["refuge.json"]}')
             (definitions / 'refuge.json').write_text(json.dumps({'variants': [{
@@ -178,14 +178,14 @@ class WebAssetPlanTests(unittest.TestCase):
                 {'data/custom/refuge0.png', 'data/gfx/refuge-icon3r.png'})
 
     def test_resource_catalog_artwork_is_in_game_package(self):
-        for resource in json.loads((ROOT / 'data/resources/registry.json').read_text())['resources']:
+        for resource in json.loads((ROOT / 'content/data/resources/registry.json').read_text())['resources']:
             prefix = resource['presentation']['sprite']
             self.assertIn(prefix.removeprefix('data/gfx/'), web_assets.game_sprites(ROOT))
             if prefix != 'data/gfx/ressource':
-                frames = sorted((ROOT / 'data/gfx').glob(Path(prefix).name + '[0-9]*.png'))
+                frames = sorted((ROOT / 'content/data/gfx').glob(Path(prefix).name + '[0-9]*.png'))
                 self.assertTrue(frames, prefix)
                 for frame in frames:
-                    self.assertEqual(self.owner[frame.relative_to(ROOT).as_posix()], 'game')
+                    self.assertEqual(self.owner[frame.relative_to(ROOT / 'content').as_posix()], 'game')
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'src/app').mkdir(parents=True)
@@ -195,8 +195,8 @@ class WebAssetPlanTests(unittest.TestCase):
                 'sprite("data/gfx/unit"); sprite("data/gfx/terrain");\n'
                 'sprite("data/gfx/gamegui"); sprite("data/gfx/swarm0b");\n}\n')
             (root / 'src/map/TerrainPresentation.h').write_text('')
-            (root / 'data/resources').mkdir(parents=True)
-            (root / 'data/resources/custom.json').write_text(json.dumps({'resources': [
+            (root / 'content/data/resources').mkdir(parents=True)
+            (root / 'content/data/resources/custom.json').write_text(json.dumps({'resources': [
                 {'presentation': {'sprite': 'data/custom/ore'}}]}))
             names = web_assets.game_sprites(root)
             self.assertIn('data/custom/ore', names)
@@ -209,14 +209,14 @@ class WebAssetPlanTests(unittest.TestCase):
                   and any(isinstance(target, ast.Name) and target.id == 'plan_inputs'
                           for target in node.targets)]
         self.assertEqual(len(inputs), 1)
-        self.assertIn('data/terrain/tileset.json', ast.literal_eval(inputs[0]))
-        self.assertIn('data/resources/registry.json', ast.literal_eval(inputs[0]))
+        self.assertIn('content/data/terrain/tileset.json', ast.literal_eval(inputs[0]))
+        self.assertIn('content/data/resources/registry.json', ast.literal_eval(inputs[0]))
         self.assertEqual(self.owner['data/terrain/tileset.json'], 'core')
 
     def test_core_ships_the_browser_copies_and_font_cjk_the_full_font(self):
         self.assertEqual(sorted(self.substitutes), ['data/fonts/sans.ttf', 'data/gfx/menu-colony.png',
                                                     'data/gfx/menu-wordmark.png'],
-                         'browser/assets is stale: run python3 browser/derive_assets.py')
+                         'platforms/web/assets is stale: run python3 platforms/web/derive_assets.py')
         self.assertEqual(self.packages['font-cjk'], ['data/fonts/sans.ttf'])
         self.assertIn('data/fonts/sans.ttf', self.packages['core'])
 
@@ -226,7 +226,7 @@ class WebAssetPlanTests(unittest.TestCase):
         # Every selectable catalog must be discoverable before optional downloads,
         # then arrive intact in translations. Exercise the installed inventory so
         # newly registered languages cannot silently miss either package.
-        catalogs = (ROOT / 'data/texts.list.txt').read_text().splitlines()[1:]
+        catalogs = (ROOT / 'content/data/texts.list.txt').read_text().splitlines()[1:]
         for path in catalogs:
             if path == 'data/texts.en.txt':
                 continue
@@ -236,13 +236,13 @@ class WebAssetPlanTests(unittest.TestCase):
                 stub = web_assets.contents(ROOT, 'core', path, {}).decode()
                 lines = stub.split('\n')
                 pairs = dict(zip(lines[0::2], lines[1::2]))
-                source = (ROOT / path).read_text().split('\n')
+                source = (ROOT / 'content' / path).read_text().split('\n')
                 original = dict(zip(source[0::2], source[1::2]))
                 self.assertEqual(set(pairs) - {''}, set(web_assets.STUB_KEYS))
                 self.assertEqual({key: pairs[key] for key in web_assets.STUB_KEYS},
                                  {key: original[key] for key in web_assets.STUB_KEYS})
                 full = web_assets.contents(ROOT, 'translations', path, {})
-                self.assertEqual(full, (ROOT / path).read_bytes())
+                self.assertEqual(full, (ROOT / 'content' / path).read_bytes())
 
     def test_music_and_artwork_the_game_reloads_per_match_are_optional(self):
         self.assertEqual(self.owner['data/zik/intro.opus'], 'menu-music')
@@ -253,7 +253,7 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))
 
     def test_every_installed_music_set_is_owned_and_opus_only(self):
-        sets = [p for p in (ROOT / 'data/zik').iterdir() if p.is_dir()]
+        sets = [p for p in (ROOT / 'content/data/zik').iterdir() if p.is_dir()]
         catalogue = {'original'}
         for manifest in (ROOT / 'tools/music/sets').glob('*/set.toml'):
             with manifest.open('rb') as source:
@@ -312,14 +312,14 @@ class BrowserCopyTests(unittest.TestCase):
     def test_a_stale_copy_falls_back_to_the_original(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            texts = [p.relative_to(ROOT).as_posix() for p in (ROOT / 'data').glob('texts.*.txt')]
-            for path in texts + ['browser/derive_assets.py', 'tools/package_assets.py', 'browser/assets/sources.json',
-                         'data/gfx/menu-colony.png', 'data/gfx/menu-wordmark.png', 'data/fonts/sans.ttf',
-                         'browser/assets/sans-core.ttf', 'browser/assets/menu-colony.webp', 'browser/assets/menu-wordmark.webp']:
+            texts = [p.relative_to(ROOT).as_posix() for p in (ROOT / 'content/data').glob('texts.*.txt')]
+            for path in texts + ['platforms/web/derive_assets.py', 'tools/package_assets.py', 'platforms/web/assets/sources.json',
+                         'content/data/gfx/menu-colony.png', 'content/data/gfx/menu-wordmark.png', 'content/data/fonts/sans.ttf',
+                         'platforms/web/assets/sans-core.ttf', 'platforms/web/assets/menu-colony.webp', 'platforms/web/assets/menu-wordmark.webp']:
                 (root / path).parent.mkdir(parents=True, exist_ok=True)
                 (root / path).write_bytes((ROOT / path).read_bytes())
             self.assertEqual(len(web_assets.derived_assets(root)), 3)
-            (root / 'data/gfx/menu-colony.png').write_bytes(b'changed')
+            (root / 'content/data/gfx/menu-colony.png').write_bytes(b'changed')
             self.assertEqual(sorted(web_assets.derived_assets(root)), ['data/fonts/sans.ttf', 'data/gfx/menu-wordmark.png'])
 
     def test_a_copy_stands_in_for_a_re_encoded_export_when_smaller(self):
@@ -331,21 +331,21 @@ class BrowserCopyTests(unittest.TestCase):
             files = ['data/gfx/menu-wordmark.webp', 'data/gfx/menu-colony.webp', 'data/fonts/sans.ttf']
             derived = web_assets.derived_assets(ROOT)
             self.assertEqual(web_assets.exported_substitutes(ROOT, source, files, derived),
-                             {'data/gfx/menu-wordmark.webp': 'browser/assets/menu-wordmark.webp',
-                              'data/fonts/sans.ttf': 'browser/assets/sans-core.ttf'})
+                             {'data/gfx/menu-wordmark.webp': 'platforms/web/assets/menu-wordmark.webp',
+                              'data/fonts/sans.ttf': 'platforms/web/assets/sans-core.ttf'})
 
     def test_png_derivative_is_rejected_and_original_profile_keeps_font(self):
         from unittest.mock import patch
-        current = json.loads((ROOT / 'browser/assets/sources.json').read_text())
-        entry = current.pop('browser/assets/menu-colony.webp')
-        current['browser/assets/menu-colony.png'] = entry
+        current = json.loads((ROOT / 'platforms/web/assets/sources.json').read_text())
+        entry = current.pop('platforms/web/assets/menu-colony.webp')
+        current['platforms/web/assets/menu-colony.png'] = entry
         exists = Path.is_file
         def selected_file(path):
-            return str(path).endswith('browser/assets/menu-colony.png') or exists(path)
-        derive = web_assets.load_module(ROOT, 'selected_derive', 'browser/derive_assets.py')
+            return str(path).endswith('platforms/web/assets/menu-colony.png') or exists(path)
+        derive = web_assets.load_module(ROOT, 'selected_derive', 'platforms/web/derive_assets.py')
         digest = derive.digest
         def selected_digest(path):
-            return entry['output_sha256'] if str(path).endswith('browser/assets/menu-colony.png') else digest(path)
+            return entry['output_sha256'] if str(path).endswith('platforms/web/assets/menu-colony.png') else digest(path)
         with patch.object(web_assets.json, 'loads', return_value=current), \
                 patch.object(Path, 'is_file', selected_file), \
                 patch.object(derive, 'digest', selected_digest), \
@@ -355,15 +355,15 @@ class BrowserCopyTests(unittest.TestCase):
 
     def test_q85_or_corrupt_derivatives_are_rejected(self):
         import json
-        current = json.loads((ROOT / 'browser/assets/sources.json').read_text())
+        current = json.loads((ROOT / 'platforms/web/assets/sources.json').read_text())
         stale = json.loads(json.dumps(current))
-        stale['browser/assets/menu-colony.webp']['image_recipe']['lossy_quality'] = 85
+        stale['platforms/web/assets/menu-colony.webp']['image_recipe']['lossy_quality'] = 85
         from unittest.mock import patch
         with patch.object(web_assets.json, 'loads', return_value=stale):
             self.assertNotIn('data/gfx/menu-colony.png', web_assets.derived_assets(ROOT))
         self.assertNotIn('data/gfx/menu-colony.png', web_assets.derived_assets(ROOT, lossy=False))
         stale = json.loads(json.dumps(current))
-        stale['browser/assets/menu-colony.webp']['output_sha256'] = 'bad'
+        stale['platforms/web/assets/menu-colony.webp']['output_sha256'] = 'bad'
         with patch.object(web_assets.json, 'loads', return_value=stale):
             self.assertNotIn('data/gfx/menu-colony.png', web_assets.derived_assets(ROOT))
 
@@ -373,8 +373,8 @@ class BrowserCopyTests(unittest.TestCase):
             from fontTools.ttLib import TTFont
         except ImportError:
             self.skipTest('fontTools is not installed')
-        full = TTFont(ROOT / 'data/fonts/sans.ttf', lazy=True)
-        core = TTFont(ROOT / 'browser/assets/sans-core.ttf', lazy=True)
+        full = TTFont(ROOT / 'content/data/fonts/sans.ttf', lazy=True)
+        core = TTFont(ROOT / 'platforms/web/assets/sans-core.ttf', lazy=True)
         full_map, core_map = full.getBestCmap(), core.getBestCmap()
         bulgarian = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯабвгдежзийклмнопрстуфхцчшщъьюяЍѝ'
         self.assertLessEqual(set(map(ord, bulgarian)), set(core_map))
@@ -405,7 +405,7 @@ class InstallWebClientTests(unittest.TestCase):
                      'threaded/index.js', 'threaded/index.wasm', 'i18n.js'):
             (release / name).write_text('new ' + name)
         (release / 'index.html').write_text('<script src="i18n.js"></script>')
-        for catalog in (ROOT / 'platform/packages/i18n/locales').glob('*.json'):
+        for catalog in (ROOT / 'services/online/packages/i18n/locales').glob('*.json'):
             (release / 'locales' / catalog.name).write_bytes(catalog.read_bytes())
         return release
 

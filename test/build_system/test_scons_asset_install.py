@@ -17,7 +17,7 @@ class SConsAssetInstallTests(unittest.TestCase):
             root = Path(temporary)
             (root / "tools").symlink_to(ROOT / "tools", target_is_directory=True)
             (root / "scons").symlink_to(ROOT / "scons", target_is_directory=True)
-            folder = root / "data/gfx"
+            folder = root / "content/data/gfx"
             folder.mkdir(parents=True)
             original = folder / "frame0.png"
             Image.new("RGBA", (8, 8), (20, 80, 130, 17)).save(original)
@@ -43,7 +43,7 @@ class SConsAssetInstallTests(unittest.TestCase):
             root = Path(temporary)
             (root / "tools").symlink_to(ROOT / "tools", target_is_directory=True)
             (root / "scons").symlink_to(ROOT / "scons", target_is_directory=True)
-            folder = root / "data/gfx"
+            folder = root / "content/data/gfx"
             folder.mkdir(parents=True)
             original = folder / "frame0.png"
             Image.new("RGBA", (64, 64), (20, 80, 130, 255)).save(original)

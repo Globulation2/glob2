@@ -1,6 +1,6 @@
 # Terrain materials
 
-Detailed terrain rendering uses `data/terrain/tileset.json`. Gameplay continues to
+Detailed terrain rendering uses `content/data/terrain/tileset.json`. Gameplay continues to
 use stable `TerrainType` identities and properties. Visual material handles, masks,
 texture choices and composed pages are transient; they never enter saves, orders,
 checksums or the synchronized random stream.
@@ -28,7 +28,7 @@ used by the compositor.
 
 Each material supplies:
 
-- `key`, a stable authoring name, and `sprite`, a `data/`-relative sprite prefix;
+- `key`, a stable authoring name, and `sprite`, a `content/data/`-relative sprite prefix;
 - `variants`, an array of `{ "frame": 272, "weight": 1 }` entries;
 - `profile`, the key of its boundary family, and `preview`, three overview RGB channels;
 - optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
@@ -59,23 +59,23 @@ material. To replace its appearance, add a material and change the corresponding
 binding. These edits require no new renderer switch statement or save migration.
 The shipped catalog reuses the existing sixteen interior variants per terrain. The
 `road` binding is terrain ID 4, now named Trail by the engine. This pack retains
-the requested cobblestone appearance in `data/gfx/terrain-cobblestone0…15.png`,
+the requested cobblestone appearance in `content/data/gfx/terrain-cobblestone0…15.png`,
 copied unchanged from frames 288–303 at revision
 `e1634ecda9a2a2d31f47dfe766ddbcb40e364791`. The engine's newer dirt Trail textures
 remain in those original saved-frame slots. To use them visually, set the `road`
-material's sprite back to `data/gfx/terrain` and its variants to frames 288–303;
+material's sprite back to `content/data/gfx/terrain` and its variants to frames 288–303;
 no engine, save or renderer change is needed.
 
 ### Example: change ice artwork without adding gameplay rules
 
-Add `data/gfx/tundra0.png` and `data/gfx/tundra1.png`, both 32×32 RGBA images.
+Add `content/data/gfx/tundra0.png` and `content/data/gfx/tundra1.png`, both 32×32 RGBA images.
 Append this entry to the catalog's `materials` array, reusing the existing
 `fractured` profile key:
 
 ```json
 {
   "key": "tundra",
-  "sprite": "data/gfx/tundra",
+  "sprite": "content/data/gfx/tundra",
   "profile": "fractured",
   "preview": [155, 205, 220],
   "minimap": [170, 210, 225],
@@ -98,7 +98,7 @@ Material keys and profile keys must be nonempty and unique in their respective
 arrays. Frame indices are 0–65535; individual weights are 1–1,000,000 and their sum
 must not exceed 1,000,000,000. RGB channels are integers 0–255. The compiler checks
 all required and additional bindings against the registered materials. Paths must
-remain under `data/`, with forward slashes, canonical segments (no empty, `.` or
+remain under `content/data/`, with forward slashes, canonical segments (no empty, `.` or
 `..` segments), and no drive prefixes.
 
 For animation, a variant's effective frame is `frame + phase * animation_stride`.
@@ -147,7 +147,7 @@ The pipeline has three responsibilities:
    own GPU mipmaps and respect the device texture limit.
 
 `compiled_pack` names `atlas.json` in its own data subdirectory, such as
-`data/terrain/my-pack/atlas.json`. An absent pack,
+`content/data/terrain/my-pack/atlas.json`. An absent pack,
 an edited catalog, a pack without source fingerprints, or native source pixels
 that differ from the recorded runtime export use normal sprite preparation.
 This includes user artwork overrides already loaded when the renderer starts.

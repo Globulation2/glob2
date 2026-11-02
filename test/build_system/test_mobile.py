@@ -12,7 +12,7 @@ from mobile_toolchain import discover
 
 class EmulatorSmokeTests(unittest.TestCase):
     def test_smoke_completes_hand_preference_and_waits_for_current_menu(self):
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import smoke
         for initial in ((), ('HandPreferenceScreen',), ('AudioPreferenceScreen',),
                         ('AudioPreferenceScreen', 'HandPreferenceScreen')):
@@ -58,16 +58,16 @@ class EmulatorSmokeTests(unittest.TestCase):
 
     def test_pinned_java_home_is_host_specific_and_preserves_override(self):
         import json
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import developer_apk
         root = Path(__file__).resolve().parents[2]
-        lock = json.loads((root/'mobile/android-tools.json').read_text())
+        lock = json.loads((root/'platforms/mobile/android-tools.json').read_text())
         scratch = root/'build/test-profiles'
         scratch.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=scratch) as temporary:
             task = Path(temporary)
-            (task/'mobile').mkdir()
-            (task/'mobile/android-tools.json').write_text(json.dumps(lock))
+            (task/'platforms/mobile').mkdir(parents=True)
+            (task/'platforms/mobile/android-tools.json').write_text(json.dumps(lock))
             for system, machine in [('Darwin', 'arm64'), ('Linux', 'x86_64')]:
                 artifact = lock['jdk-' + system + '-' + machine]
                 home = task/'build/mobile-tools'/artifact['directory']/artifact['java_home']
@@ -80,7 +80,7 @@ class EmulatorSmokeTests(unittest.TestCase):
                         self.assertEqual(developer_apk.java_environment(task)['JAVA_HOME'], '/explicit/jdk')
 
     def test_smoke_rejects_physical_devices_and_shared_servers(self):
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import smoke
         for serial, port, avd in [('USB-device', 15037, 'glob2-api35-arm64'),
                                    ('emulator-5580', 5037, 'glob2-api35-arm64'),
@@ -92,10 +92,10 @@ class EmulatorSmokeTests(unittest.TestCase):
     def test_extracted_emulator_is_registered_without_changing_licenses(self):
         import json
         import xml.etree.ElementTree as ET
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import setup_tools
         root = Path(__file__).resolve().parents[2]
-        lock = json.loads((root / 'mobile/emulator.json').read_text())
+        lock = json.loads((root / 'platforms/mobile/emulator.json').read_text())
         scratch = root / 'build/test-profiles'
         scratch.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=scratch) as temporary:
@@ -115,7 +115,7 @@ class EmulatorSmokeTests(unittest.TestCase):
     def test_emulator_archives_match_configured_package_versions(self):
         import json
         root = Path(__file__).resolve().parents[2]
-        lock = json.loads((root / 'mobile/emulator.json').read_text())
+        lock = json.loads((root / 'platforms/mobile/emulator.json').read_text())
         for arch in ('arm64-v8a', 'x86_64'):
             artifact = lock['archives'][arch]
             self.assertEqual(artifact['directory'], f"android-sdk/system-images/android-{lock['api']}/{lock['tag']}/{arch}")
@@ -127,7 +127,7 @@ class DeveloperSigningTests(unittest.TestCase):
     def test_install_rejects_stale_or_modified_signed_apk(self):
         import hashlib
         import json
-        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'platforms/mobile'))
         import developer_apk
         scratch=Path(__file__).resolve().parents[2]/'build/test-profiles'
         scratch.mkdir(parents=True,exist_ok=True)
@@ -152,7 +152,7 @@ class DeveloperSigningTests(unittest.TestCase):
 class PlayBundleAssetTests(unittest.TestCase):
     def test_signing_rejects_changed_bundle_before_using_key(self):
         import json
-        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'platforms/mobile'))
         import android
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)
@@ -171,7 +171,7 @@ class PlayBundleAssetTests(unittest.TestCase):
         import gzip
         import hashlib
         import zipfile
-        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'platforms/mobile'))
         from asset_bundle import restore_gzip_assets, verify_apk_assets
         prefix='base/assets/glob2-bundle/'
         with tempfile.TemporaryDirectory() as directory:
@@ -197,7 +197,7 @@ class PlayBundleAssetTests(unittest.TestCase):
 
 class IOSCommandTests(unittest.TestCase):
     def test_incomplete_device_requests_fail_before_sdk_or_build(self):
-        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'platforms/mobile'))
         import ios
         cases = [
             (['build','--environment','device'], 'Device packaging needs'),
@@ -215,7 +215,7 @@ class IOSCommandTests(unittest.TestCase):
             run.assert_not_called()
 
     def test_simulator_install_uses_task_device_set(self):
-        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'platforms/mobile'))
         import ios
         arguments=['ios.py','install','--device','test-udid','--simulator-set','build/test-simulators']
         with patch.object(sys,'argv',arguments), patch('ios.discover'), patch('ios.subprocess.run') as run:
@@ -228,7 +228,7 @@ class MobileBuildTests(unittest.TestCase):
     def test_android_seven_is_the_default_minimum(self):
         import json
         root = Path(__file__).resolve().parents[2]
-        minimum = json.loads((root/'mobile/toolchain.json').read_text())['android']['min_api']
+        minimum = json.loads((root/'platforms/mobile/toolchain.json').read_text())['android']['min_api']
         self.assertEqual(minimum, 24)
         self.assertEqual(build_identity({'target':'android'})['api'], str(minimum))
         self.assertEqual(build_identity({'target':'android', 'api':'24'})['api'], '24')
@@ -345,7 +345,7 @@ class ArchiveSymbolTests(unittest.TestCase):
     def test_archive_member_names_distinguish_same_basename_sources(self):
         from mobile_artifacts import archive_object_name
         from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES
-        sources = ['src/' + name for name in CLIENT_SOURCES] + ['libgag/src/' + name for name in GAG_SOURCES] + ['libusl/src/' + name for name in USL_SOURCES]
+        sources = ['src/' + name for name in CLIENT_SOURCES] + ['libs/gag/src/' + name for name in GAG_SOURCES] + ['libs/usl/src/' + name for name in USL_SOURCES]
         names = [archive_object_name(source).name for source in sources]
         self.assertEqual(len(names), len(set(names)))
         self.assertEqual(archive_object_name('src/ai/castor/Lifecycle.cpp'), archive_object_name('src/ai/castor/Lifecycle.cpp'))
@@ -358,17 +358,17 @@ class EmulatorEnvironmentTests(unittest.TestCase):
         import json
         import os
         import shutil
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import emulator
         root = Path(__file__).resolve().parents[2]
         scratch = root / 'build/test-profiles'
         scratch.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=scratch) as temporary:
             task = Path(temporary)
-            (task/'mobile').mkdir()
-            shutil.copyfile(root/'mobile/emulator.json', task/'mobile/emulator.json')
-            shutil.copyfile(root/'mobile/android-tools.json', task/'mobile/android-tools.json')
-            lock = json.loads((task/'mobile/emulator.json').read_text())
+            (task/'platforms/mobile').mkdir(parents=True)
+            shutil.copyfile(root/'platforms/mobile/emulator.json', task/'platforms/mobile/emulator.json')
+            shutil.copyfile(root/'platforms/mobile/android-tools.json', task/'platforms/mobile/android-tools.json')
+            lock = json.loads((task/'platforms/mobile/emulator.json').read_text())
             sdk = task/'build/mobile-tools/android-sdk'
             for path, version in [('emulator', lock['emulator_revision']), ('system-images/android-35/default/x86_64', lock['image_revision'])]:
                 directory = sdk/path
@@ -425,7 +425,7 @@ class IOSSmokeFailureTests(unittest.TestCase):
 
     def test_unified_log_readiness_is_scoped_to_each_launched_process(self):
         import json
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import ios_smoke
         root = Path(__file__).resolve().parents[2]
         scratch = root/'build/test-profiles'
@@ -458,7 +458,7 @@ class IOSSmokeFailureTests(unittest.TestCase):
             self.assertTrue((output/'startup-readiness-system.log').exists())
 
     def test_main_menu_readiness_requires_one_complete_message(self):
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import ios_smoke
         self.assertFalse(ios_smoke.main_menu_ready('Glob2 screen ready: SettingsScreen\nOld MainMenuScreen'))
         self.assertTrue(ios_smoke.main_menu_ready('Glob2 screen ready: 14MainMenuScreen'))
@@ -466,7 +466,7 @@ class IOSSmokeFailureTests(unittest.TestCase):
     def test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps(self):
         import json
         import subprocess
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import ios_smoke
         root = Path(__file__).resolve().parents[2]
         scratch = root/'build/test-profiles'
@@ -547,7 +547,7 @@ class IOSNumericGuardTests(unittest.TestCase):
         namespace = {}
         exec(compile(ast.Module(body=[predicate], type_ignores=[]), '<numeric-selection>', 'exec'), namespace)
         files = ['src/app/Main.cpp', 'src/scripting/javascript/Runtime.cpp',
-                 'mobile/ios/Documents.mm', 'src/ai/javascript/AIJavaScript.cpp',
+                 'platforms/mobile/ios/Documents.mm', 'src/ai/javascript/AIJavaScript.cpp',
                  'src/map/generator/javascript/ToolkitBinding.cpp']
         objects = [object() for _ in files]
         script = object()

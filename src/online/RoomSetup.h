@@ -6,7 +6,7 @@
 // Converts between the custom-game lobby's draft (CustomGameSetup, which the Room
 // screen reuses to edit a room's map and rules) and the JSON a platform room holds:
 // RoomMapSelection {kind: "generated", generator}, MatchRules and SetupTeam
-// alliances (platform/packages/protocol, matchSetup.ts and resources.ts).
+// alliances (services/online/packages/protocol, matchSetup.ts and resources.ts).
 //
 // Only generated maps go through here: a generator descriptor is what the platform's
 // engine agents produce the same bytes from for every client. Premade maps from the

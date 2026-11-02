@@ -11,12 +11,12 @@ class BundleResources(unittest.TestCase):
     def fixture(self,root):
         bundle=root/'build/Glob2.app';resources=bundle/'Contents/Resources'
         for name in qa.ASSETS:
-            for base in (root,resources):
+            for base in (root/'content',resources):
                 path=base/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(name.encode())
         purpose='Discover and join local games.'
-        for path in (root/'darwin/Info.plist',bundle/'Contents/Info.plist'):
+        for path in (root/'platforms/macos/Info.plist',bundle/'Contents/Info.plist'):
             path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(plistlib.dumps({'NSLocalNetworkUsageDescription':purpose}))
-        for path in (root/'darwin/th.lproj/InfoPlist.strings',resources/'th.lproj/InfoPlist.strings'):
+        for path in (root/'platforms/macos/th.lproj/InfoPlist.strings',resources/'th.lproj/InfoPlist.strings'):
             path.parent.mkdir(parents=True,exist_ok=True);path.write_text('"NSLocalNetworkUsageDescription" = "ค้นหาและเข้าร่วมเกม";',encoding='utf-8')
         binary=bundle/'Contents/MacOS/glob2';binary.parent.mkdir();binary.write_bytes(b'packaged binary')
         return bundle

@@ -127,7 +127,7 @@ Default outputs live under `build/<toolchain>/<role>/<mode>`; native toolchains 
 
 ## Platform guides
 
-- [Browser build and testing](../../browser/README.md).
+- [Browser build and testing](../../platforms/web/README.md).
 - [Android and iOS development](../mobile/development.md).
 - [Shared SDK storage](development-storage.md).
 

@@ -89,8 +89,8 @@ def preflight(tag, upstream_ref, source_root=None, reuse_released=False, mode="b
                 "workflow_commit": head}
     # The mirror may carry release workflows, but game source must be identical
     # to the public tag selected for this release.
-    game_paths = ("SConstruct", "scons", "src", "libgag", "libusl", "data",
-                  "maps", "campaigns", "scripts", "darwin", "vcpkg.json")
+    game_paths = ("SConstruct", "scons", "src", "libs", "third_party", "content",
+                  "platforms/macos", "vcpkg.json")
     changed = command("git", "diff", "--name-only", upstream, head, "--", *game_paths)
     if changed:
         raise ValueError(f"game source differs from public tag:\n{changed}")

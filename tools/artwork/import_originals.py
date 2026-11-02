@@ -9,7 +9,7 @@ import struct
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
-ART = ROOT / 'datasrc/gfx'
+ART = ROOT / 'content-src/gfx'
 MANIFEST = ART / 'provenance/stephane-2026-09-08.json'
 
 def digest(data):
@@ -106,7 +106,7 @@ def import_archive(archive):
                 target.write_bytes(data)
                 existing[sha] = target
             size, kind = dimensions(data)
-            candidate = ROOT / 'data/gfx' / PurePosixPath(item.filename).name
+            candidate = ROOT / 'content/data/gfx' / PurePosixPath(item.filename).name
             runtime_size, _ = dimensions(candidate.read_bytes()) if candidate.is_file() else (None, None)
             records.append(dict(archive_path=item.filename, path=str(target.relative_to(ROOT)),
                 bytes=len(data), sha256=sha, archive_modified=list(item.date_time),

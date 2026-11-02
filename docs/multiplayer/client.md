@@ -92,9 +92,9 @@ the browser. In the browser `openUrl` and `copyText` run on the page's thread
 `window`, `document` or clipboard. They run synchronously, while the click
 still grants transient activation; a browser that refuses the new tab anyway
 (Safari counts only the DOM event itself) gets a real link at the bottom of
-the page (`glob2OpenUrl` in `browser/shell.html`), which the player taps.
+the page (`glob2OpenUrl` in `platforms/web/shell.html`), which the player taps.
 `glob2Diagnostics.snapshot().opened` lists what opened and how
-(`browser/tests/online-links.spec.js`). The sign-in page's address only
+(`platforms/web/tests/online-links.spec.js`). The sign-in page's address only
 arrives with the server's reply, after the click has run out, so the hub and
 Settings call `prepareUrlWindow()` during the click. In the browser that opens
 an empty tab (`glob2PrepareWindow`), and the next `openUrl` loads the page there;
@@ -448,7 +448,7 @@ when needed, connects to the instance and sends `room.join`. Links arrive:
   stream);
 - on Android through `Glob2Activity.takeLaunchLink()` (`onCreate` and
   `onNewIntent`; the activity is `singleTask`), polled by `Online::pump()`;
-- for iOS universal links through `mobile/ios/LaunchLinks.mm`, which adds
+- for iOS universal links through `platforms/mobile/ios/LaunchLinks.mm`, which adds
   `application:continueUserActivity:restorationHandler:` to SDL's app delegate.
 
 A running desktop game is not handed links from a second launch in v1: the
@@ -458,16 +458,16 @@ second launch joins directly. In-client "Join by code" covers the rest.
 
 | Platform | Where |
 | --- | --- |
-| Windows installer | `windows/win32_installer.nsi`: `HKCR\glob2` URL protocol → `glob2.exe "%1"` |
-| macOS | `darwin/Info.plist` `CFBundleURLTypes` |
-| Linux (deb, rpm, Flatpak, Snap) | `data/glob2.desktop`: `Exec=glob2 %u`, `MimeType=x-scheme-handler/glob2` |
+| Windows installer | `platforms/windows/win32_installer.nsi`: `HKCR\glob2` URL protocol → `glob2.exe "%1"` |
+| macOS | `platforms/macos/Info.plist` `CFBundleURLTypes` |
+| Linux (deb, rpm, Flatpak, Snap) | `content/data/glob2.desktop`: `Exec=glob2 %u`, `MimeType=x-scheme-handler/glob2` |
 | Android | intent filter for `glob2://join` and a verified App Link for `https://<official host>/j/` (`officialInstanceHost` placeholder) |
-| iOS | `CFBundleURLTypes` and `applinks:<official host>` (written by `mobile/ios.py`) |
+| iOS | `CFBundleURLTypes` and `applinks:<official host>` (written by `platforms/mobile/ios.py`) |
 
 App Links and universal links cover the official domain only; self-hosted
 instances use `glob2://`. The Amazon and China editions have no online play and
-declare none of these (`mobile/android.py` strips the invite intent filters,
-`mobile/ios.py` the associated domain and URL scheme). They need the instance to serve
+declare none of these (`platforms/mobile/android.py` strips the invite intent filters,
+`platforms/mobile/ios.py` the associated domain and URL scheme). They need the instance to serve
 `/.well-known/assetlinks.json` (the release signing certificate's SHA-256) and
 `/.well-known/apple-app-site-association` (team id plus
 `org.globulation2.glob2`, path `/j/*`). For the official instance that is
@@ -510,7 +510,7 @@ process that never initialized the Toolkit file system (some unit tests) reports
   `session.hello`, request correlation and errors, REST, a dropped connection,
   a scheduled refresh, `auth.handoff.begin`/`cancel`, a returning launch,
   refresh-token reuse revoking the sign-in with fallback to the device
-  credential, and sign-out. It needs `GLOB2_PLATFORM_DIR` (a `platform/`
+  credential, and sign-out. It needs `GLOB2_PLATFORM_DIR` (a `services/online/`
   checkout with dependencies installed) and `GLOB2_PLATFORM_DATABASE_URL` (a
   Postgres role that may create databases); see the file's docstring.
 

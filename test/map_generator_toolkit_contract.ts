@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Compile with tsc --strict --noEmit to verify authoring declarations against
 // the native-handle contracts. The expect-error cases must remain rejected.
-import type { GeneratorContext } from "../data/generators/toolkit";
+import type { GeneratorContext } from "../content/data/generators/toolkit";
 
 declare const c: GeneratorContext;
 const t = c.toolkit.Grid.Torus(2, 2);

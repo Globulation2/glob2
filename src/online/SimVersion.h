@@ -6,7 +6,7 @@
 // The identity of a deterministic simulation build (docs/multiplayer/turn-protocol.md,
 // "Simulation version"). Two builds with the same SimVersion must produce identical
 // games from the same MatchSetup and orders; rooms, queues, AI ratings and verifiers
-// are partitioned by it. The JSON shape is SimVersion in platform/packages/protocol.
+// are partitioned by it. The JSON shape is SimVersion in services/online/packages/protocol.
 
 #include "SimRevision.h"
 

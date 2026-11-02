@@ -1,5 +1,5 @@
 {
-  "source": "Copied from platform/packages/protocol/fixtures (the tickets section of manifest.json, tickets/*, and valid/MatchTicketClaims/player-ticket.json as expected-claims.json). That package is the source of truth: regenerate there and copy again rather than editing these files.",
+  "source": "Copied from services/online/packages/protocol/fixtures (the tickets section of manifest.json, tickets/*, and valid/MatchTicketClaims/player-ticket.json as expected-claims.json). That package is the source of truth: regenerate there and copy again rather than editing these files.",
   "tickets": {
     "jwks": "jwks.json",
     "verifyAt": 1790000060,

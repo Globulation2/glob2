@@ -4,7 +4,7 @@ build-*
 artifacts
 docs/.work
 tools/browser-emsdk
-browser/node_modules
+platforms/web/node_modules
 .codex
 **/__pycache__
 *.o
@@ -19,12 +19,12 @@ deploy/secrets
 **/*.pem
 
 **/node_modules
-platform/apps/web/dist
+services/online/apps/web/dist
 deploy/instance.yaml
 deploy/.env
 
-platform/.cache
-platform/apps/web/public/brand
-platform/apps/web/public/fonts
-platform/apps/web/public/theme.js
-platform/apps/web/public/design-system.json
+services/online/.cache
+services/online/apps/web/public/brand
+services/online/apps/web/public/fonts
+services/online/apps/web/public/theme.js
+services/online/apps/web/public/design-system.json

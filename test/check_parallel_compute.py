@@ -72,7 +72,7 @@ def main():
                            ('castor-new', ('castor',) * 4),
                            ('numbi-new', ('numbi',) * 4)):
         fixture = output / f'{label}-fixture'
-        setup = ['--map-file', str(ROOT / 'maps/FourSquares1.map.gz'),
+        setup = ['--map-file', str(ROOT / 'content/maps/FourSquares1.map.gz'),
                  '--game-seed', '123']
         for ai in players: setup += ['--player', ai]
         execute(binary, setup + ['--ticks', '1', '--save', 'initial'], fixture)

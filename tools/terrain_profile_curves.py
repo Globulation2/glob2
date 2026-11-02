@@ -50,7 +50,7 @@ def trace_sand(root, count):
     for group, side in STRAIGHT_GROUPS:
         for variant in range(8):
             frame = 16 + group * 8 + variant
-            with Image.open(root / f"data/gfx/terrain{frame}.png") as image:
+            with Image.open(root / f"content/data/gfx/terrain{frame}.png") as image:
                 tile = image.convert("RGBA")
                 positions = []
                 for i in range(32):
@@ -136,7 +136,7 @@ def dump_catalog(document):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=ROOT / "data/terrain/tileset.json")
+    parser.add_argument("--manifest", type=Path, default=ROOT / "content/data/terrain/tileset.json")
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
     document = json.loads(args.manifest.read_text())

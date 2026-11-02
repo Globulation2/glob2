@@ -1,0 +1,40 @@
+import { fileURLToPath } from 'node:url';
+import { copyFileSync } from 'node:fs';
+import { defineConfig, searchForWorkspaceRoot } from 'vite';
+import react from '@vitejs/plugin-react';
+import { syncDesignSystem, stageDesignAssets } from '../../scripts/design-system.mjs';
+
+const designSystem = syncDesignSystem();
+stageDesignAssets(fileURLToPath(new URL('./public', import.meta.url)), designSystem, false);
+for (const notice of ['LICENSE-Noto.txt', 'LICENSE-DejaVu.txt', 'LICENSE-Droid.txt']) {
+  copyFileSync(
+    fileURLToPath(new URL(`../../../../content/data/fonts/${notice}`, import.meta.url)),
+    fileURLToPath(new URL(`./public/fonts/${notice}`, import.meta.url)),
+  );
+}
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    fs: {
+      // Share native shader and icon sources without exposing the rest of the checkout.
+      allow: [
+        searchForWorkspaceRoot(fileURLToPath(new URL('.', import.meta.url))),
+        fileURLToPath(new URL('../../../../libs/gag/shaders', import.meta.url)),
+        fileURLToPath(new URL('../../../../content-src/icons/tabler', import.meta.url)),
+        fileURLToPath(new URL('../../../../content/data/fonts/scripts', import.meta.url)),
+      ],
+    },
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
+    // `npm run dev -w @glob2/web` against a local api on :8080.
+    proxy: {
+      '/play': { target: 'http://localhost:8765', rewrite: (path) => path.replace(/^\/play/, '') },
+      '/api': 'http://localhost:8080',
+      '/realtime': { target: 'ws://localhost:8080', ws: true },
+    },
+  },
+  build: { outDir: 'dist', sourcemap: true },
+});

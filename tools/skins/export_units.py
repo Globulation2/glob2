@@ -35,7 +35,7 @@ MODELS = {
 def open_source(model, clip):
     path = (
         ROOT
-        / "datasrc/gfx/originals/units"
+        / "content-src/gfx/originals/units"
         / (
             "explorer.blend"
             if model == "explorer"
@@ -213,7 +213,7 @@ def export_model(output, model):
     size, clips = MODELS[model]
     _, scene = open_source(model, clips[0])
     surface = None
-    definition_path = ROOT / "datasrc/gfx/authored/skins/limb-surfaces.json"
+    definition_path = ROOT / "content-src/gfx/authored/skins/limb-surfaces.json"
     if model in ("worker", "warrior"):
         surface = LimbSurface(json.loads(definition_path.read_text())[model])
         triangles, uvs = surface.triangles, surface.uv

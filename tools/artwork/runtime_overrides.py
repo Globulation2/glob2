@@ -7,7 +7,7 @@ import shutil
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
-DERIVED = ROOT / 'datasrc/gfx/derived/recovered-v1'
+DERIVED = ROOT / 'content-src/gfx/derived/recovered-v1'
 def digest(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def apply(records, output, derived=None):

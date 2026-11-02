@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def install(staged):
-    destination = ROOT / "data/skins/colony-v1"
-    designer = ROOT / "platform/apps/web/public/skins/models"
+    destination = ROOT / "content/data/skins/colony-v1"
+    designer = ROOT / "services/online/apps/web/public/skins/models"
     manifest = json.loads((destination / "manifest.json").read_text())
     # Validate the complete set and provenance before replacing any assets.
     exports = {}
@@ -34,7 +34,7 @@ def install(staged):
                 raise ValueError("Unexpected staged mesh name")
             source = ROOT / record["source"]
             assert source.resolve().is_relative_to(
-                (ROOT / "datasrc/gfx/originals/units").resolve()
+                (ROOT / "content-src/gfx/originals/units").resolve()
             )
             assert (
                 hashlib.sha256(source.read_bytes()).hexdigest()

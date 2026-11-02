@@ -13,23 +13,23 @@ Install Python, SCons, Git, make, autotools and pkg-config. Bootstrap the pinned
 NDK and packaging tools, then build target dependencies and stage the project:
 
 ```sh
-python3 mobile/setup_ndk.py
-python3 mobile/setup_tools.py
+python3 platforms/mobile/setup_ndk.py
+python3 platforms/mobile/setup_tools.py
 sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
 python3 tools/dev_environment.py sdkmanager -- --licenses
-python3 mobile/setup_tools.py --sdk-packages
-python3 mobile/dependencies.py --arch arm64-v8a --release
-python3 mobile/android.py configure --arch arm64-v8a --release
+python3 platforms/mobile/setup_tools.py --sdk-packages
+python3 platforms/mobile/dependencies.py --arch arm64-v8a --release
+python3 platforms/mobile/android.py configure --arch arm64-v8a --release
 ```
 
 Install the Android SDK platform and build-tools versions listed in the toolchain
 manifest using `sdkmanager`, accepting the SDK license yourself. Then package:
 
 ```sh
-python3 mobile/android.py build --arch arm64-v8a --release
-python3 mobile/android.py sign --arch arm64-v8a --release
-python3 mobile/android.py install --arch arm64-v8a --release --serial DEVICE_SERIAL
-python3 mobile/android.py launch --arch arm64-v8a --release --serial DEVICE_SERIAL
+python3 platforms/mobile/android.py build --arch arm64-v8a --release
+python3 platforms/mobile/android.py sign --arch arm64-v8a --release
+python3 platforms/mobile/android.py install --arch arm64-v8a --release --serial DEVICE_SERIAL
+python3 platforms/mobile/android.py launch --arch arm64-v8a --release --serial DEVICE_SERIAL
 ```
 
 Release builds start unsigned. `sign` uses a local developer key and validates
@@ -38,11 +38,11 @@ signing arrangements. Use `armeabi-v7a` or `x86_64` for other supported targets.
 The F-Droid build mode adds `--fdroid` to the Android build, sign, install, and
 launch commands. Both F-Droid and Play use `org.globulation2.glob2`. The
 F-Droid release uses
-`mobile/android-release.json` for its static version
+`platforms/mobile/android-release.json` for its static version
 name and base code. The three single-ABI APKs have codes `10 * base + 1` for
 `armeabi-v7a`, `+ 2` for `arm64-v8a`, and `+ 3` for `x86_64`. `build --fdroid` checks the
 APK's package name, version, ABI, alignment, native symbols, and indexed assets.
-`mobile/android_release.py check` verifies the release manifest against the
+`platforms/mobile/android_release.py check` verifies the release manifest against the
 desktop package version and requires the current version's tag, if it exists, to
 point at the checked-out commit. Pull-request CI adds `--development`, which
 accepts a version that was already tagged at an earlier commit (master keeps the
@@ -81,9 +81,9 @@ After configuring the pinned [Android toolchain](toolchains.md), cross-compile t
 binaries (`glob2-unit-tests` and `glob2-engine-tests`, from `test/tests.py`):
 
 ```sh
-python3 mobile/dependencies.py --arch arm64-v8a --release
+python3 platforms/mobile/dependencies.py --arch arm64-v8a --release
 scons target=android arch=arm64-v8a release=1 android-tests -j4
-python3 mobile/android_device_tests.py --serial DEVICE_SERIAL \
+python3 platforms/mobile/android_device_tests.py --serial DEVICE_SERIAL \
   --android-sdk "$ANDROID_SDK_ROOT" --output artifacts/android/device-tests
 ```
 
@@ -95,7 +95,7 @@ an isolated `/data/local/tmp` directory, runs every case except the `[display]`
 ones in-process, and records each exit code, log and JUnit report. It retains
 those fixtures for diagnosis and never clears the installed app's data.
 
-The engine binary reuses the production client objects. `mobile/NativeTestMain.cpp` supplies only the
+The engine binary reuses the production client objects. `platforms/mobile/NativeTestMain.cpp` supplies only the
 shell platform bridges: filesystem assets, SDL main readiness, explicit app
 metadata and absent Activity. Audio uses SDL's real dummy driver. Its event poll drains SDL's
 queue without pumping the absent Java lifecycle queue. SDL3 renderer creation

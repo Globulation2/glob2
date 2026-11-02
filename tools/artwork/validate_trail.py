@@ -8,7 +8,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "datasrc/gfx/trail"
+SOURCE = ROOT / "content-src/gfx/trail"
 
 
 def require(condition, message):
@@ -17,7 +17,7 @@ def require(condition, message):
 
 
 def load_frame(slot):
-    path = ROOT / f"data/gfx/terrain{slot}.png"
+    path = ROOT / f"content/data/gfx/terrain{slot}.png"
     with Image.open(path) as image:
         require(image.size == (32, 32), f"{path.name}: expected 32x32")
         require(image.mode == "RGBA", f"{path.name}: expected RGBA")
@@ -29,7 +29,7 @@ def main():
     source = SOURCE / provenance["source"]
     require(hashlib.sha256(source.read_bytes()).hexdigest() ==
             provenance["source_sha256"], "Source hash differs from provenance")
-    expected = {f"data/gfx/terrain{slot}.png"
+    expected = {f"content/data/gfx/terrain{slot}.png"
                 for slot in (*range(288, 304), *range(319, 334))}
     require(set(provenance["runtime_sha256"]) == expected,
             "Provenance must cover exactly the 16 bases and 15 edge masks")

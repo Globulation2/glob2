@@ -5,7 +5,7 @@ How the shared asset pipeline prepares runtime data and how to measure package c
 ## Release asset and bundle sizes
 
 Release packagers share `tools/package_assets.py`. Original artwork stays in
-`data/` and `datasrc/`; generated runtime trees and per-image caches stay under
+`content/data/` and `content-src/`; generated runtime trees and per-image caches stay under
 `build/`. Runtime artwork is WebP in every client build: units, buildings,
 terrain, resources, effects, UI, icons, wordmarks and browser menu art. Release
 bundles choose the smaller of lossless WebP Q75/method 4 and lossy WebP
@@ -130,7 +130,7 @@ Use an external RSS
 measurement and distinguish warm filesystem cache from cold reads.
 
 Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
-(currently `data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
+(currently `content/data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
 consecutive frames of one layer and size, sixteen tiles to a row, each encoded like
 any other image. `<name>.sheet` beside them lists each sheet's file, layer
 (`image` or `rotated`), first frame, frame count and tile size. When that index

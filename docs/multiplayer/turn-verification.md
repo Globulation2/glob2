@@ -140,7 +140,7 @@ executes hostile orders unchecked to show the executor guards.
 
 `src/online/MatchSetupTest.cpp` runs every MatchSetup and SimVersion contract fixture: valid
 ones must parse and round-trip, invalid ones must fail at the stage the manifest names.
-It reads `platform/packages/protocol/fixtures` when that directory exists; until the
+It reads `services/online/packages/protocol/fixtures` when that directory exists; until the
 platform workspace is on the branch it reads the copy in `test/fixtures/protocol`, and
 once both exist it requires the copy to equal the source.
 

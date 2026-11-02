@@ -107,12 +107,12 @@ def schema_and_scene(data):
 
 
 def prepare(out, render_root, samples, resolution_scale=1, fixed_size=None):
-    if out.resolve() == (ROOT / 'datasrc/gfx/originals/units').resolve():
+    if out.resolve() == (ROOT / 'content-src/gfx/originals/units').resolve():
         raise ValueError('Prepared scenes must not overwrite the original Blender sources')
     out.mkdir(parents=True, exist_ok=True)
     manifest = []
     for name, source, base, size, shadow in SETS:
-        source_path = ROOT / 'datasrc/gfx/originals/units' / source
+        source_path = ROOT / 'content-src/gfx/originals/units' / source
         data = bytearray(source_path.read_bytes())
         original = bytes(data)
         structures, blocks, render_offset = schema_and_scene(data)
@@ -268,7 +268,7 @@ def collect_highres(rendered, destination, reference):
     destination.mkdir(parents=True, exist_ok=True)
     comparisons, metadata = [], []
     for name, source, base, size, shadow in SETS:
-        source_path = ROOT / 'datasrc/gfx/originals/units' / source
+        source_path = ROOT / 'content-src/gfx/originals/units' / source
         source_hash = hashlib.sha256(source_path.read_bytes()).hexdigest()
         for index in range(256):
             layers = []
@@ -367,16 +367,16 @@ def install_highres(staged, destination):
     for path in destination.glob('unit*.png'):
         if re.fullmatch(r'unit\d+r?\.png', path.name) and path.name not in files and not is_turn_frame(path.stem.rstrip('r')):
             path.unlink()
-    if destination.resolve() == (ROOT / 'data/highres/v1').resolve():
+    if destination.resolve() == (ROOT / 'content/data/highres/v1').resolve():
         (destination / 'README.md').write_text(
             '# High-resolution runtime pack\n\n'
             + str(len(metadata['frames'])) + ' registered frames, including movement and stationary-turn unit poses across seven animation sets.\n'
             'Unit textures render onto a fixed 128x128 pixel canvas from the preserved Blender originals, without AI\n'
             '(4x for the 32px-native explorer set, ~3.37x for the 38px-native worker sets, 3.2x for the 40px-native warrior sets).\n'
-            'Native-resolution sprites remain in `data/gfx`; logical geometry, team colors and animation timing are preserved.\n\n'
-            'Approved inputs live in `datasrc/gfx/production`; package them with `tools/artwork/package_runtime.py`.\n'
+            'Native-resolution sprites remain in `content/data/gfx`; logical geometry, team colors and animation timing are preserved.\n\n'
+            'Approved inputs live in `content-src/gfx/production`; package them with `tools/artwork/package_runtime.py`.\n'
             'See `manifest.json` for all frame/layer/source hashes, `tools/unit-animation/README.md` for unit render recipes,\n'
-            'and `datasrc/gfx/RECOVERED-RUNTIME.md` for world-art exports.\n')
+            'and `content-src/gfx/RECOVERED-RUNTIME.md` for world-art exports.\n')
         # The established packaging pipeline owns production categories and hashes.
         import importlib.util
         specification = importlib.util.spec_from_file_location('package_runtime', ROOT / 'tools/artwork/package_runtime.py')
@@ -401,18 +401,18 @@ def main():
     coll = sub.add_parser('collect')
     coll.add_argument('--rendered', type=Path, required=True)
     coll.add_argument('--output', type=Path, required=True)
-    coll.add_argument('--reference', type=Path, default=ROOT / 'data/gfx')
+    coll.add_argument('--reference', type=Path, default=ROOT / 'content/data/gfx')
     coll.add_argument('--samples', type=int, choices=[1, 4], default=4)
     inst = sub.add_parser('install')
     inst.add_argument('--staged', type=Path, required=True)
-    inst.add_argument('--destination', type=Path, default=ROOT / 'data/gfx')
+    inst.add_argument('--destination', type=Path, default=ROOT / 'content/data/gfx')
     hd = sub.add_parser('collect-highres')
     hd.add_argument('--rendered', type=Path, required=True)
     hd.add_argument('--output', type=Path, required=True)
-    hd.add_argument('--reference', type=Path, default=ROOT / 'data/gfx')
+    hd.add_argument('--reference', type=Path, default=ROOT / 'content/data/gfx')
     hi = sub.add_parser('install-highres')
     hi.add_argument('--staged', type=Path, required=True)
-    hi.add_argument('--destination', type=Path, default=ROOT / 'data/highres/v1')
+    hi.add_argument('--destination', type=Path, default=ROOT / 'content/data/highres/v1')
     args = parser.parse_args()
     if args.command == 'prepare':
         prepare(args.output, args.render_root, args.samples, args.resolution_scale, args.highres_pixel_size)

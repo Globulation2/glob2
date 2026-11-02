@@ -18,6 +18,11 @@ LEGACY_BINDINGS = ("water", "sand", "grass", "ice", "road")
 BUILTIN_NAMES = ROOT / "tools/terrain_builtin_names.json"
 
 
+def assets(root):
+    """The runtime tree, where catalog sprite paths such as data/gfx/... resolve."""
+    return Path(root) / "content"
+
+
 def required_bindings(root=ROOT):
     """The five legacy names plus every paintable built-in presentation name.
 
@@ -37,14 +42,14 @@ BINDINGS = required_bindings()
 
 
 def material_provenance(document, root=ROOT):
-    """Per-material provenance summaries from datasrc/gfx/<key>/provenance.json.
+    """Per-material provenance summaries from content-src/gfx/<key>/provenance.json.
 
     Materials without a provenance file are existing terrain artwork with
     shared periodic variant borders and no AI-generated imagery.
     """
     result = {}
     for material in document["materials"]:
-        path = Path(root) / "datasrc/gfx" / material["key"] / "provenance.json"
+        path = Path(root) / "content-src/gfx" / material["key"] / "provenance.json"
         if not path.is_file():
             result[material["key"]] = dict(method="existing", source="Existing terrain artwork")
             continue
@@ -248,7 +253,7 @@ def _validate(document, root):
                 if not 0 <= frame < 65536:
                     raise ValueError("Invalid frame")
                 relative = f"{sprite.as_posix()}{frame}.png"
-                source = root / relative
+                source = assets(root) / relative
                 with Image.open(source) as image:
                     if image.size != (32, 32):
                         raise ValueError(f"Invalid logical frame dimensions: {source}")
@@ -277,7 +282,7 @@ def _validate(document, root):
                     raise ValueError("Connected decor needs equal variants for all 16 masks")
                 for frame in frames:
                     integer(frame, 0, 65535, "Decor frame")
-                    source = root / f"{decor_sprite.as_posix()}{frame}.png"
+                    source = assets(root) / f"{decor_sprite.as_posix()}{frame}.png"
                     with Image.open(source) as image:
                         if image.width > 64 or image.height > 64:
                             raise ValueError(f"Decor frame larger than 64x64: {source}")
@@ -329,9 +334,9 @@ def seamless_sources(document, root):
                 f"{material['sprite']}{v['frame']+phase*material.get('animation_stride',0)}.png"
                 for v in material["variants"]
             ]
-            master = Image.open(root / names[0]).convert("RGBA")
+            master = Image.open(assets(root) / names[0]).convert("RGBA")
             for name in names:
-                image = Image.open(root / name).convert("RGBA")
+                image = Image.open(assets(root) / name).convert("RGBA")
                 # Periodic materials already share one periodic edge band.
                 for y in range(0 if periodic else 32):
                     for x in range(32):
@@ -410,7 +415,7 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
             x, y = (i % columns) * tile, (i // columns) * tile
             page.paste(padded(image, border), (x, y))
             if runtime_fingerprints is None:
-                with Image.open(root / name) as native:
+                with Image.open(assets(root) / name) as native:
                     fingerprint = pixel_fingerprint(native)
             else:
                 fingerprint = runtime_fingerprints[name]
@@ -472,7 +477,7 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--manifest", type=Path, default=ROOT / "data/terrain/tileset.json")
+    ap.add_argument("--manifest", type=Path, default=ROOT / "content/data/terrain/tileset.json")
     ap.add_argument("--output", type=Path)
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--page-size", type=int, default=1024)

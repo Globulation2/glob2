@@ -415,8 +415,8 @@ jobs:
           sha256sum -c "artifacts/fdroid/glob2-$ARCH-unsigned.sha256"
       - name: Install pinned Android tools
         run: |
-          python3 mobile/setup_ndk.py
-          python3 mobile/setup_tools.py
+          python3 platforms/mobile/setup_ndk.py
+          python3 platforms/mobile/setup_tools.py
 
       - name: Accept SDK licenses and install Android packages
         run: |
@@ -427,7 +427,7 @@ jobs:
           from dev_store import paths
           dev=paths(root)
           sdk=pathlib.Path(dev['android_sdk'])
-          lock = json.loads((root / 'mobile/toolchain.json').read_text())['android']
+          lock = json.loads((root / 'platforms/mobile/toolchain.json').read_text())['android']
           java=pathlib.Path(dev['java_home'])
           env = dict(os.environ, JAVA_HOME=str(java), ANDROID_HOME=str(sdk), ANDROID_SDK_ROOT=str(sdk))
           manager = sdk / 'cmdline-tools/19.0/bin/sdkmanager'
@@ -457,7 +457,7 @@ jobs:
           CERTIFICATE: ${{ vars.GLOB2_SIDELOAD_CERTIFICATE_SHA256 }}
           ARCH: ${{ matrix.arch }}
         run: |
-          python3 mobile/sideload_release.py --original "artifacts/unsigned/artifacts/fdroid/glob2-$ARCH-unsigned.apk"             --output "artifacts/release-output/glob2-$VERSION-android-$ARCH.apk" --arch "$ARCH"             --keystore "$RUNNER_TEMP/glob2-sideload.p12" --alias "$ALIAS" --expected-certificate "$CERTIFICATE"
+          python3 platforms/mobile/sideload_release.py --original "artifacts/unsigned/artifacts/fdroid/glob2-$ARCH-unsigned.apk"             --output "artifacts/release-output/glob2-$VERSION-android-$ARCH.apk" --arch "$ARCH"             --keystore "$RUNNER_TEMP/glob2-sideload.p12" --alias "$ALIAS" --expected-certificate "$CERTIFICATE"
       - name: Remove private sideload key
         if: always()
         run: rm -f "$RUNNER_TEMP/glob2-sideload.p12"
