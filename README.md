@@ -37,3 +37,5 @@ The generated map transport artifacts are small and retained under `maps/`. `map
 `validation/CLEANUP.md` records the completed experiment cleanup. Experiment implementations, runners, raw campaign output and worker caches are removed from the production checkout. The permanent audit data remain on this separate evidence branch.
 
 `EXPORT-VALIDATION.json` records the assessment export checks. `INVENTORY.json` lists retained paths, sizes and hashes; `SHA256SUMS` permits independent verification. These two index files exclude themselves from their content inventory.
+
+The final source boundary is now4563ce85ce (three JSONmetadata fields across two Studio fixtures), while native/Python/CLI/save qualification remains attributed todd38ad2902. `validation/browser-reference/` proves fresh native references and174Nodecontracts; `validation/hosted-ci/` retains the exact hosted audit and compressed verification/failure excerpts without claiming full CI passed.

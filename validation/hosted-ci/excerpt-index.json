@@ -1,0 +1,77 @@
+{
+  "scope": "authenticated GitHub joblog excerpts, not fullrawlogs; exact oldhead/merge andcoverage limits inaudit",
+  "files": [
+    {
+      "path": "browser-125302825952-failures.txt.gz",
+      "raw_source": "browser-125302825952-failures.txt",
+      "raw_bytes": 5066,
+      "raw_sha256": "871c8938f7e638f948bdf16e97cb4b003dab2ae350c75f4309267e3a8ef99be9"
+    },
+    {
+      "path": "browser-125302826060-failures.txt.gz",
+      "raw_source": "browser-125302826060-failures.txt",
+      "raw_bytes": 8978,
+      "raw_sha256": "05529e6e5d7b4baa152bc1331e858ca37e92493230598f72d04b3beaa4a41573"
+    },
+    {
+      "path": "browser-125302826139-failures.txt.gz",
+      "raw_source": "browser-125302826139-failures.txt",
+      "raw_bytes": 5839,
+      "raw_sha256": "dc670f4769685cbeaf6b6008a53287b1abb90f43ad99626ffba1794dd826f353"
+    },
+    {
+      "path": "browser-125302826178-failures.txt.gz",
+      "raw_source": "browser-125302826178-failures.txt",
+      "raw_bytes": 4027,
+      "raw_sha256": "302f109d59162bf886485341eeb3dbd3a2a10667b6ccb49a5b9d14410bc63085"
+    },
+    {
+      "path": "browser-125302826255-failures.txt.gz",
+      "raw_source": "browser-125302826255-failures.txt",
+      "raw_bytes": 8854,
+      "raw_sha256": "3463976f8533741281aadcfbd8b6806d02c414f1f3c9415d32fa5971685610d5"
+    },
+    {
+      "path": "browser-125302828494-failures.txt.gz",
+      "raw_source": "browser-125302828494-failures.txt",
+      "raw_bytes": 2598,
+      "raw_sha256": "518b0eece33b7bd9e17f955a2be6f7fd86af1d3dc48f477f319f3332f1ba57ca"
+    },
+    {
+      "path": "other-125284414531-failures.txt.gz",
+      "raw_source": "other-125284414531-failures.txt",
+      "raw_bytes": 2985,
+      "raw_sha256": "954bc9e881621b8cb432e12f449a43ac474544a21b497cfb7eb0aba3fb908fd9"
+    },
+    {
+      "path": "other-125284414805-failures.txt.gz",
+      "raw_source": "other-125284414805-failures.txt",
+      "raw_bytes": 10927,
+      "raw_sha256": "be1926b8eb822b364bfb0c5aea22ae918b220fabe4023dbad6629217291b2489"
+    },
+    {
+      "path": "platform-125284414565-evidence.txt.gz",
+      "raw_source": "platform-125284414565-evidence.txt",
+      "raw_bytes": 232756,
+      "raw_sha256": "feb5ea1f6bf3d27d0254dd1cfceb4e0c63b7ae0d49e792d2483ed97284a36011"
+    },
+    {
+      "path": "platform-125284415489-evidence.txt.gz",
+      "raw_source": "platform-125284415489-evidence.txt",
+      "raw_bytes": 191550,
+      "raw_sha256": "a5300938acaafbb646aff66d2523ea47c478855ae3fbb76317f1ff88653d9e61"
+    },
+    {
+      "path": "platform-125302828743-evidence.txt.gz",
+      "raw_source": "platform-125302828743-evidence.txt",
+      "raw_bytes": 634,
+      "raw_sha256": "52021ff89b68a9c706f4a1408c1f582f4d8200d32aa7982442a56b7d0df58fd5"
+    },
+    {
+      "path": "platform-125302828874-evidence.txt.gz",
+      "raw_source": "platform-125302828874-evidence.txt",
+      "raw_bytes": 966,
+      "raw_sha256": "d7a651000fd56c422d1ba86ee914ea84f12c5da85821baa868e76684e7bc9895"
+    }
+  ]
+}

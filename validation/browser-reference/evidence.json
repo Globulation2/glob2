@@ -1,0 +1,133 @@
+{
+  "revision": "dd38ad2902d3860669c42992a994bd288e96719b",
+  "before_files": {
+    "browser/tests/fixtures/studio-trace.json": {
+      "sha256": "361e104566e095cfbcfeac5cf3f8f6c92247dea41f0d48d4ce1107d8981d8b26",
+      "bytes": 497
+    },
+    "browser/tests/fixtures/generator-studio-trace.json": {
+      "sha256": "3fc4615f09ff7056bab9817a4ead662c35e7eff1def0768cd595cbc5bd0eeed7",
+      "bytes": 609
+    },
+    "build/linux/client/release/src/glob2": {
+      "sha256": "61c2dcaefe82d6bad1a8690f449848be79f3c15349b13ffaac3ad2224f4d17f0",
+      "bytes": 53419392
+    },
+    "build/linux/client/release/test/glob2-engine-tests": {
+      "sha256": "95397f1829ac6504b096abe3a19dc3899459f8a7f49a89ec748b78ff3c666877",
+      "bytes": 93288808
+    },
+    "examples/javascript/studio-starter.js": {
+      "sha256": "f5f099760dc5085746c4112a3a91a3aad7075457895d44cfb5f8e949a7253d80",
+      "bytes": 1036
+    },
+    "platform/apps/engine-agent/fixtures/ais/two.map.gz": {
+      "sha256": "b3cba13a66f18eb2680df431c4e5b0b7bf594b9ada759283af981f3cc15f4a39",
+      "bytes": 12344
+    },
+    "data/generators/examples/swamp/generator.js": {
+      "sha256": "59ab5aed48c48786ac451073426b74d4325ceb5f0781eaf96c02952ae00289ee",
+      "bytes": 747
+    }
+  },
+  "after_files": {
+    "browser/tests/fixtures/studio-trace.json": {
+      "sha256": "569643542cad71729b491ca36401de2ede36640badf7fcf2d1a30bd32e2fa3f0",
+      "bytes": 497
+    },
+    "browser/tests/fixtures/generator-studio-trace.json": {
+      "sha256": "b7c0857e960ec45112843af9c853292140ab994cb41f49de33351972ef066bbe",
+      "bytes": 609
+    },
+    "build/linux/client/release/src/glob2": {
+      "sha256": "61c2dcaefe82d6bad1a8690f449848be79f3c15349b13ffaac3ad2224f4d17f0",
+      "bytes": 53419392
+    },
+    "build/linux/client/release/test/glob2-engine-tests": {
+      "sha256": "95397f1829ac6504b096abe3a19dc3899459f8a7f49a89ec748b78ff3c666877",
+      "bytes": 93288808
+    },
+    "examples/javascript/studio-starter.js": {
+      "sha256": "f5f099760dc5085746c4112a3a91a3aad7075457895d44cfb5f8e949a7253d80",
+      "bytes": 1036
+    },
+    "platform/apps/engine-agent/fixtures/ais/two.map.gz": {
+      "sha256": "b3cba13a66f18eb2680df431c4e5b0b7bf594b9ada759283af981f3cc15f4a39",
+      "bytes": 12344
+    },
+    "data/generators/examples/swamp/generator.js": {
+      "sha256": "59ab5aed48c48786ac451073426b74d4325ceb5f0781eaf96c02952ae00289ee",
+      "bytes": 747
+    }
+  },
+  "native_reports": {
+    "studio-result": {
+      "ticks": 1024,
+      "initialChecksum": 2430373389,
+      "finalChecksum": 3369141452,
+      "traceSha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c",
+      "traceBytes": 2083950,
+      "save_version": 193
+    },
+    "studio-load-result": {
+      "ticks": 1024,
+      "initialChecksum": 2430373389,
+      "finalChecksum": 3369141452,
+      "traceSha256": "c2a113ba974307ed3d85a1305ac09aaa094e7ec8085e2453f49149aff8e4b9dc",
+      "traceBytes": 2083950,
+      "save_version": 193
+    },
+    "generator-result": {
+      "ticks": 64,
+      "initialChecksum": 1156587787,
+      "finalChecksum": 1492769692,
+      "traceSha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b",
+      "traceBytes": 230420,
+      "save_version": 193
+    },
+    "generator-load-result": {
+      "ticks": 64,
+      "initialChecksum": 1156587787,
+      "finalChecksum": 1492769692,
+      "traceSha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b",
+      "traceBytes": 230420,
+      "save_version": 193
+    }
+  },
+  "generator_preview": {
+    "checksum": 2460135757,
+    "worldFingerprint": "b9a9c9492074bd8ef00f61a32571b20658b0fe82be9329be2cfa8acfdade75e0",
+    "packageHash": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+    "versionMinor": 193,
+    "simRevision": 121,
+    "simVersion": "193-75-23d5ff7842acc05bb69d46e60556b52b3d59b1432014f4f64b13cbdd380e374f"
+  },
+  "generator_snapshot_sha256": "b9a9c9492074bd8ef00f61a32571b20658b0fe82be9329be2cfa8acfdade75e0",
+  "generator_full_trace_reload_byte_identical": true,
+  "pinned_fresh_native_hashes_reproduced_unchanged": true,
+  "node_units": {
+    "passed": 174,
+    "failed": 0,
+    "skipped": 0,
+    "log": "/tmp/maxima-official-browser-reference/node-unit.log"
+  },
+  "native_harness": {
+    "passed": 1,
+    "failed": 0,
+    "junit": "/tmp/maxima-official-browser-reference/harness-junit.xml"
+  },
+  "supplemental_studio_reload": {
+    "all_1024_team_entity_tick_records_identical": true,
+    "aggregate_only_difference": true,
+    "input_map_format": 133,
+    "saved_format": 193,
+    "constant_aggregate_xor": "0x8800000",
+    "explanation": "MapHeader::checkSum includes save version; for2teams/2players its version delta is rotated11times through Game::checkSum. Not the pinned fresh-map Studio contract."
+  },
+  "coverage_limit": "Native Linux release reference refresh and cheapNode contracts only; rebuilt serial/threaded browser runtime comparison not run inthis task.",
+  "commands": "/tmp/maxima-official-browser-reference/commands.sh",
+  "only_repository_changes": [
+    "browser/tests/fixtures/studio-trace.json",
+    "browser/tests/fixtures/generator-studio-trace.json"
+  ]
+}

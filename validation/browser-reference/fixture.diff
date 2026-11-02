@@ -1,0 +1,24 @@
+diff --git a/browser/tests/fixtures/generator-studio-trace.json b/browser/tests/fixtures/generator-studio-trace.json
+index 16afc35935..833b9968a3 100644
+--- a/browser/tests/fixtures/generator-studio-trace.json
++++ b/browser/tests/fixtures/generator-studio-trace.json
+@@ -8,6 +8,6 @@
+   "traceSha256": "791f3c0ff4e2e8f5f9a0c6ca88fd9669469a417a28f3d12f2d999be47df4f30b",
+   "traceBytes": 230420,
+   "versionMinor": 193,
+-  "simRevision": 120,
+-  "simVersion": "193-75-8d12fdc7040b17fd022b688a62aeef411fc0adc46fe07c2b16d3dcf39a42d27a"
++  "simRevision": 121,
++  "simVersion": "193-75-23d5ff7842acc05bb69d46e60556b52b3d59b1432014f4f64b13cbdd380e374f"
+ }
+diff --git a/browser/tests/fixtures/studio-trace.json b/browser/tests/fixtures/studio-trace.json
+index f42c9ec710..d37d3f5513 100644
+--- a/browser/tests/fixtures/studio-trace.json
++++ b/browser/tests/fixtures/studio-trace.json
+@@ -9,5 +9,5 @@
+   "traceBytes": 2083950,
+   "traceSha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c",
+   "versionMinor": 193,
+-  "simRevision": 120
++  "simRevision": 121
+ }

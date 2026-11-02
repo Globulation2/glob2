@@ -26,7 +26,7 @@
   "simulation_revision": 121,
   "save_format": 193,
   "network_protocol": 75,
-  "hosted_cross_platform": "requested ci:full; pending, not claimed as passed",
+  "hosted_cross_platform": "Partial old-head hosted evidence reviewed: Windows/macOS native successes; eight failed jobs and three cancelled checks remain explicit. Later fullCIrun pending, not claimedpassed.",
   "build_environment": {
     "GLOB2_SDL3_PREFIX": "/home/bradley/.cache/glob2/native-sdl3-3.4.16-image3.4.6-ttf3.2.2-net3.2.0",
     "GLOB2_RECORDING_PREFIX": "/home/bradley/.local/share/glob2/development/dependencies/build-a3a8fc397766ecbe44e3ffd0/prefix"
@@ -35,5 +35,72 @@
     "build/linux/client/release/src/glob2": "61c2dcaefe82d6bad1a8690f449848be79f3c15349b13ffaac3ad2224f4d17f0",
     "build/linux/client/release/test/glob2-engine-tests": "95397f1829ac6504b096abe3a19dc3899459f8a7f49a89ec748b78ff3c666877",
     "build/linux/client/release/test/glob2-unit-tests": "798d0a3f5440b2ba0a3d9011eb42cb6832c028a446e410ff795caf622360eb2a"
+  },
+  "final_source_revision": "4563ce85cea1f39ca1d9ba776057427eb2cc602b",
+  "revision_mapping": {
+    "native_python_cli_save_qualified_revision": "dd38ad2902d3860669c42992a994bd288e96719b",
+    "final_source_revision": "4563ce85cea1f39ca1d9ba776057427eb2cc602b",
+    "runtime_code_delta": "none; exactlythreeJSONmetadatafieldchanges in two browserfixture files",
+    "delta": [
+      {
+        "path": "browser/tests/fixtures/generator-studio-trace.json",
+        "field": "simVersion",
+        "before": "193-75-8d12fdc7040b17fd022b688a62aeef411fc0adc46fe07c2b16d3dcf39a42d27a",
+        "after": "193-75-23d5ff7842acc05bb69d46e60556b52b3d59b1432014f4f64b13cbdd380e374f"
+      },
+      {
+        "path": "browser/tests/fixtures/generator-studio-trace.json",
+        "field": "simRevision",
+        "before": 120,
+        "after": 121
+      },
+      {
+        "path": "browser/tests/fixtures/studio-trace.json",
+        "field": "simRevision",
+        "before": 120,
+        "after": 121
+      }
+    ],
+    "native_validation_reuse": "364native,77Python,25CLI and retained-savequalification remain attributed todd38. Runtimecode andqualified nativebinary hashes unchanged by4563. No claim these suites were rerun at4563.",
+    "browser_reference_validation": "NativeStudio+generatorreference traces regenerated and174Nodeunits run after metadata edits beforecommit; finalfixturebytes verified identical to4563.",
+    "evidence_revision_field": "evidence.json revisiondd38 correctly identifies thecheckout HEADduringnative regeneration; it is not relabelled4563.",
+    "node_units": {
+      "passed": 174,
+      "failed": 0,
+      "skipped": 0
+    },
+    "generator_harness": {
+      "passed": 1,
+      "failed": 0
+    },
+    "browser_runtime_coverage": "Rebuiltserial/threaded browserruntime matrix not run locally in thisrefresh; hosted evidence recordedseparately."
+  },
+  "browser_reference_refresh": {
+    "path": "validation/browser-reference",
+    "native_traces_reproduced_unchanged": true,
+    "preview_snapshot_fingerprint_reproduced_unchanged": true,
+    "generator_initial_reload_full_trace_byte_identical": true,
+    "native_generator_harness_cases": 1,
+    "node_unit_cases": 174,
+    "node_failures": 0,
+    "node_skips": 0,
+    "final_fixture_bytes_match_commit": "4563ce85cea1f39ca1d9ba776057427eb2cc602b",
+    "source_identity": "native regeneration atdd38 plus exactmetadata edits latercommittedas4563"
+  },
+  "hosted_ci_audit": {
+    "report": "validation/hosted-ci/hosted-ci-audit.md",
+    "run_id": 41446477947,
+    "tested_pr_head": "dd38ad2902d3860669c42992a994bd288e96719b",
+    "tested_merge": "9c8fc892581feeafe65e11a10c5ef99e63a25091",
+    "windows_native_job": 125284414565,
+    "macos_native_job": 125284415489,
+    "failed_jobs": 8,
+    "cancelled_unavailable_checks": [
+      "serial renderer1/3",
+      "serial renderer2/3",
+      "browser/native simulationequivalence"
+    ],
+    "later_full_run": 41459623621,
+    "later_full_run_coverage": "not claimed; audit snapshot only"
   }
 }

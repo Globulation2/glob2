@@ -1,0 +1,7 @@
+cli_version: 2
+compiled: Nov  2 2026 07:32:40
+minimum_save_version: 58
+network_protocol: 75
+save_version: 193
+sdl: 3.4.16
+version: 0.11.4.0
