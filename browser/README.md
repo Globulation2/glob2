@@ -460,7 +460,10 @@ uses no Asyncify, shared-memory requirement or main-thread codec proxy.
 
 Run `recording.spec.js` in Chromium, Firefox and WebKit for both runtime transports,
 resize segmentation, exports, missing WebCodecs and unavailable storage. Independent
-media decoding requires an external validator; recording itself does not. See
+media decoding requires an external validator; recording itself does not. Tests
+that read recording files use `tests/recording-context.js`: WebKit gets a temporary
+persistent profile because its ephemeral contexts disable OPFS. The profile is
+removed after each test; other browsers retain their ordinary isolated contexts. See
 [gameplay footage](../docs/features/gameplay-recording.md) for defaults and limits.
 
 ## Embedded AI Studio tests
