@@ -6818,12 +6818,12 @@ CPU (αυτόματα)
 Ποσότητα ψαριών
 [scenario messages]
 Μηνύματα ▸
+[script error at %0:%1: %2]
+Σφάλμα στο %0:%1: %2
 [Camp-site amount]
 Αριθμός καταυλισμών
 [script compilation success]
 Επιτυχής μεταγλώττιση
-[script error at %0:%1: %2]
-Σφάλμα στο %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Αποτυχία μεταγλώττισης: %0:%1:(%2):%3
 [script compilation failed %0]

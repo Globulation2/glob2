@@ -6818,12 +6818,12 @@ Dyrestier
 Fiskemængde
 [scenario messages]
 Beskeder ▸
+[script error at %0:%1: %2]
+Fejl ved %0:%1: %2
 [Camp-site amount]
 Antal lejrpladser
 [script compilation success]
 Kompilering lykkedes
-[script error at %0:%1: %2]
-Fejl ved %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Kompileringsfejl: %0:%1:(%2):%3
 [script compilation failed %0]

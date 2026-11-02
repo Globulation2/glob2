@@ -180,6 +180,26 @@ class TranslationProgramTest(unittest.TestCase):
                 batch['adversarial_reviewed_keys'] = batch['reviewed_keys']
             self.assertEqual(PROGRAM.audit_review(self.manifest, record, paths), [])
 
+    def test_bulgarian_and_thai_require_complete_independent_adversarial_coverage(self):
+        for locale in ('bg', 'th'):
+            with self.subTest(locale=locale):
+                record, paths = self.complete_record(locale)
+                self.assertTrue(any('adversarial' in issue for issue in
+                                    PROGRAM.audit_review(self.manifest, record, paths)))
+                for batch in record['batches']:
+                    batch['adversarial_reviewer'] = batch['reviewer']
+                    batch['adversarial_reviewed_keys'] = batch['reviewed_keys']
+                self.assertTrue(any('independent' in issue for issue in
+                                    PROGRAM.audit_review(self.manifest, record, paths)))
+                for batch in record['batches']:
+                    batch['adversarial_reviewer'] = 'agent-d'
+                    batch['adversarial_reviewed_keys'] = []
+                self.assertTrue(any('cover every key' in issue for issue in
+                                    PROGRAM.audit_review(self.manifest, record, paths)))
+                for batch in record['batches']:
+                    batch['adversarial_reviewed_keys'] = batch['reviewed_keys']
+                self.assertEqual(PROGRAM.audit_review(self.manifest, record, paths), [])
+
 
 class MachineDraftTest(TranslationProgramTest):
     def setUp(self):
@@ -489,4 +509,5 @@ if __name__ == '__main__':
     # Hosted Linux verification runs this workflow entry point. Include the
     # provider's budget/resumption contracts; discovery imports its file itself.
     from test_google_draft import HtmlGoogleDraftTest, PlainGoogleDraftTest
+    from test_google_draft_thai import CampaignTest, DraftIntegrationTest, ProtectionTest
     unittest.main()

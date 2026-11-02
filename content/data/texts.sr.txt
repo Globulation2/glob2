@@ -6818,12 +6818,12 @@ MCP сервер није доступан у овој апликацији
 Количина рибе
 [scenario messages]
 Поруке ▸
+[script error at %0:%1: %2]
+Грешка на %0:%1: %2
 [Camp-site amount]
 Број кампова
 [script compilation success]
 Успешна компилација
-[script error at %0:%1: %2]
-Грешка на %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Грешка при компилацији: %0:%1:(%2):%3
 [script compilation failed %0]

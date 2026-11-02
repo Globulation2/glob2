@@ -547,7 +547,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               <button
                 disabled={busy}
                 onClick={() => {
-                  const reason = ai.hidden ? '' : window.prompt('Reason for hiding this AI');
+                  const reason = ai.hidden ? '' : window.prompt(t('Reason for hiding this AI'));
                   if (reason !== null) void run(() => aiApi.hide(ai.id, !ai.hidden, reason));
                 }}
               >
@@ -679,7 +679,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                   className="danger"
                   disabled={busy}
                   onClick={() => {
-                    if (window.confirm('Delete this AI and its published versions?'))
+                    if (window.confirm(t('Delete this AI and its published versions?')))
                       void run(async () => {
                         await aiApi.remove(ai.id);
                         navigate('/ais/mine');

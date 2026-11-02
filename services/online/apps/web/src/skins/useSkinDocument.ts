@@ -324,7 +324,7 @@ export function useSkinDocument(accountId: string | undefined) {
     const d = current.current;
     return {
       revision: draftRevision.current,
-      name: d.name.trim() || t('Untitled skin'),
+      name: d.name.trim() || t('New skin'),
       buildingColor: parseInt(d.building.slice(1), 16),
       swarmMesh: d.swarmMesh,
       swarmViewAngle: d.swarmViewAngle,

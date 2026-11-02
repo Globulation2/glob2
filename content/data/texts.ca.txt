@@ -6818,12 +6818,12 @@ Corriols d’animals
 Quantitat de peixos
 [scenario messages]
 Missatges ▸
+[script error at %0:%1: %2]
+Error a %0:%1: %2
 [Camp-site amount]
 Nombre de campaments
 [script compilation success]
 Compilació correcta
-[script error at %0:%1: %2]
-Error a %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Error de compilació: %0:%1:(%2):%3
 [script compilation failed %0]

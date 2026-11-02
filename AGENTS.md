@@ -19,7 +19,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Network and multiplayer client | `src/net/` (turn netcode in `src/net/turn/`, LAN in `src/net/lan/`), online client in `src/online/` ([client](docs/multiplayer/client.md)), match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
 | Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `services/online/`, [platform architecture](docs/multiplayer/architecture.md); hosting and deployment scripts in `deploy/` |
 | Game content (the runtime tree) | `content/` holds `data/`, `maps/`, `campaigns/`, `scripts/` and `games/` under the names the game loads them by: the file manager adds a checkout's `content/` as a search root, packages install its directories at their root, and online sim-data hashes use the paths relative to it. Source art and provenance live in `content-src/` |
-| Platform shells and packaging | `platforms/` (`web/`, `mobile/`, `macos/`, `windows/`, `linux/`, `stores/`); `debian/`, `snap/` and `fastlane/` stay at the root because dpkg, snapcraft and F-Droid expect them there |
+| Platform shells and packaging | `platforms/` (`web/`, `platforms/mobile/`, `macos/`, `platforms/windows/`, `linux/`, `stores/`); `debian/`, `snap/` and `fastlane/` stay at the root because dpkg, snapcraft and F-Droid expect them there |
 | Soundtrack sets and the music pipeline | `content/data/zik/` (one directory per set), `tools/music/` (build and QA), [music pipeline](docs/assets/music-pipeline.md), [style guide](docs/assets/music-style-guide.md); playback in `src/audio/SoundMixer.cpp` |
 | Graphics/UI and scripting libraries | `libs/gag/`, `libs/usl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
@@ -172,17 +172,22 @@ freeze the threshold in the cohort and use an explicit zero only when playing
 out complete end games is part of the assessment. Resolve tick-cap survivors by
 final win probability rather than the historical economic calculation.
 
-Use **integrated whole-match win probability**, normalized by observed game time,
-as the primary continuous effectiveness metric alongside wins, losses and draws.
-It captures improvements in the strength and duration of an AI's position that
-can leave discrete match outcomes unchanged, making small changes easier to
-measure. Standard reports collect and analyze it automatically; custom scripts
-should use the retained integer area/coverage summary rather than count samples
-or infer it from the final chance. Compare paired seeds and seat rotations, report
-confidence intervals and missing coverage, and keep model identities, stopping
-rules, opponents and map distributions comparable. Retain actual outcomes as a
-check against improving the model score without improving play. Old or partial
-history is unavailable, never zero. See [tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
+Use the **adjusted win-probability trajectory score** (`log_time_outcome_v1`,
+log curvature `c=2`) as the primary continuous effectiveness metric alongside
+wins, losses and draws. It integrates the retained probability curve on a log
+clock through the fixed game tick limit, then credits a declared win with 1 and
+a loss with 0 for the remaining horizon. Probability-based early stops receive
+the same outcome credit, explicitly labelled predicted rather than actual.
+Tick caps receive no invented terminal tail. Shared winners each receive full
+credit; count an alliance once. Use `tools.tournaments.probability.group_score`
+or the standard reports, not the legacy linear area/observed-time mean. Compact
+results retain a versioned log integral before dropping curves; old compact
+records without that integral are unavailable, never silently approximated.
+Compare paired seeds and seat rotations, report confidence intervals and missing
+coverage, and keep metric version, horizon, model, stopping rules, opponents and
+map distributions comparable. Retain actual outcomes and completion times as
+checks against improving a model score without improving play. See
+[tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
 
 ## Review and merge ownership
 

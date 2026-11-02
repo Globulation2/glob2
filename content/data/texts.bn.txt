@@ -6818,14 +6818,14 @@ MCP সার্ভার চালু করুন
 বিষয়
 [stats full history]
 সম্পূর্ণ ইতিহাস খুলুন
+[script error at %0:%1: %2]
+লাইন %0, কলাম %1-এ ত্রুটি: %2
 [stats missing readings]
 — এখনো কোনো পরিমাপ রেকর্ড হয়নি। বিস্তারিত দেখতে একটি পরিসংখ্যান বেছে নিন।
 [AI for all computer colonies]
 সব কম্পিউটার উপনিবেশের জন্য এআই
 [script compilation success]
 সংকলন সফল
-[script error at %0:%1: %2]
-লাইন %0, কলাম %1-এ ত্রুটি: %2
 [script compilation failure %0:%1:(%2):%3]
 সংকলন ব্যর্থ: %0:%1:(%2):%3
 [script compilation failed %0]

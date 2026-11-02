@@ -2143,6 +2143,13 @@
 .map-studio .ms-settings-popover legend {
   font-size: 12px;
 }
+/* The shared composer scrolls. Keep its settings inside that scroll region so
+   longer translated labels remain visible and reachable on phones. */
+.studio-page.map-studio .ms-settings-popover fieldset {
+  position: static;
+  min-width: 0;
+  max-width: 100%;
+}
 .map-studio .ms-settings-grid {
   gap: 10px;
 }

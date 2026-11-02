@@ -95,6 +95,66 @@ ordinary PRs restore them. The cleanup sweep removes closed-PR caches and retain
 three generations per master compiler/object family. Cache timings and quota
 pressure must be measured before expanding retained cache data.
 
+## Native localization captures
+
+The manual `build.yml` input `desktop_localization=true` adds the production
+translation preview harness to the existing primary Linux, Mac and Windows release builds and
+uploads their native PNG/JSON evidence. `ci-macos.yml` accepts the same optional
+input for a Mac-only run. All defaults are false; normal native targets,
+regression cases and the full master inventory remain unchanged. Dependencies
+and game objects use the existing compiler/cache paths. This mode adds the
+harness and captures, plus the actual macOS app package described below.
+
+For a focused Windows run independent of the main build workflow, dispatch
+`windows-generator-diagnostics.yml` with an explicit final committed revision:
+
+```sh
+gh workflow run windows-generator-diagnostics.yml --ref <branch-containing-workflow> \
+  -f revision=<final-commit-sha> -F desktop_localization=true
+```
+
+This optional mode uses the existing Windows release build and dependencies,
+adds the preview harness and production client, checks client startup, and runs
+the `FontKerning` and `SystemLanguage` engine suites plus the `UILayout`,
+`BidiText` and `TextMetrics` unit suites. It replaces the unrelated generator teardown
+execution for that dispatch and uploads `localization-windows` with native
+captures, provenance and focused JUnit results. Display-tagged cases remain
+unsupported by the Windows test runner; the dedicated capture helper uses SDL's
+software renderer. With the input omitted or false, the generator diagnostics
+and their inventory are unchanged. This focused result is not a complete Windows
+CI checkpoint. Dispatch only after all intended source changes are committed;
+the workflow ref must contain this optional mode, while `revision` selects the
+exact source checkout to build.
+
+`tools/capture_localization_platform.py` derives its full screen input from the
+registered Thai game/online catalogs and retains source, executable, font and
+catalog provenance. It captures main/settings/lobby/player settings, gameplay
+and the introduction at desktop and explicit 390×844 touch presentation. Four
+additional editor views check the localized new-campaign name and an authored
+campaign saved and loaded through the real campaign format. Its title, mission
+names, map paths and prerequisite identities remain unchanged; native word-break
+hints are excluded from newly authored default names. These views use ignored,
+isolated profiles and add no shipped campaign fixtures. Four script-editor views also
+exercise the actual JavaScript validator with valid and invalid source; technical
+diagnostic payloads remain unchanged. Gameplay captures cover all five statistics
+topics and their actual history dialogs. Phone statistics panels are explicitly
+marked component-only: they use the real session data and production bounds but
+do not demonstrate navigation through the touch lens. Captures include a bounded
+76-native/20-online (864 measured cases) sample matrix at 10, 13 and 20 pixels and
+1×/1.5×/2× raster scale.
+Review the actual PNGs before accepting visual quality. These are native-platform
+CPU/HarfBuzz/software-SDL captures, not physical-screen, GPU or mobile-OS tests.
+The same helper can capture a separately built Linux release harness; keep each
+platform and build configuration's evidence distinct. Fixture profiles remain
+under the output's `profiles/` and must not be published as review evidence.
+
+The optional macOS localization mode builds the existing ad hoc `bundle`
+target in the initial SCons invocation. Its package check verifies actual Thai
+and English catalogs, font files and notices, the localized permission purpose,
+the signature seal, and packaged CLI startup without inherited build-library
+paths. It uses no Apple credentials or notarization. The package report
+accompanies the localization captures.
+
 ## Reviewed native shard timing profiles
 
 Native runners optionally accept `--timing-profile` and `--auxiliary-jobs`.

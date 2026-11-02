@@ -1,4 +1,4 @@
-import { displayMessage } from '../i18n.tsx';
+import { displayMessage, message as sourceMessage } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { ReleaseDialog } from '../components/studio/Studio.tsx';
 import { Icon } from '../icons.tsx';
@@ -263,8 +263,9 @@ export function SetEditor({
       if (account) {
         const abort = new AbortController();
         queueMicrotask(() => {
-          if (!abort.signal.aborted)
+          if (!abort.signal.aborted) {
             setPack({ ...newPackage(account.displayName), title: t('New set') });
+          }
         });
         return () => abort.abort();
       }
@@ -396,20 +397,24 @@ export function SetEditor({
     const key = prefix + suffix;
     const source = RESOURCE_PRESETS.find((r) => r.key === resourcePreset) ?? RESOURCE_PRESETS[0];
     if (!source) return;
+    // Localize only new editable display names; stable keys and loaded names stay authored.
+    const label = kind === 'terrain' ? t('Terrain') : t('Resource');
+    const usedNames = new Set(
+      entries.map((existing) =>
+        String(kind === 'terrain' ? existing['name'] : object(existing['presentation'])['name']),
+      ),
+    );
+    let displaySuffix = 1;
+    while (usedNames.has(`${label} ${displaySuffix}`)) displaySuffix++;
+    const displayName = `${label} ${displaySuffix}`;
     const added: Entry =
       kind === 'terrain'
-        ? {
-            key,
-            name: t('Terrain') + ': ' + preset,
-            base: preset,
-            appearance: preset,
-            properties: {},
-          }
+        ? { key, name: displayName, base: preset, appearance: preset, properties: {} }
         : {
             ...structuredClone(source),
             key,
             requiredExperiment: '',
-            presentation: { ...source.presentation, name: t('Resource') + ': ' + resourcePreset },
+            presentation: { ...source.presentation, name: displayName },
           };
     change({ ...pack, [kind === 'terrain' ? 'terrains' : 'resources']: [...entries, added] });
     setSelected(entries.length);
@@ -1117,7 +1122,9 @@ export function SetEditor({
                       ]).includes(path)
                     ) {
                       setError(
-                        'This sheet is used by an entry. Change its spritesheet or remove that entry before removing the sheet.',
+                        sourceMessage(
+                          'This sheet is used by an entry. Change its spritesheet or remove that entry before removing the sheet.',
+                        ),
                       );
                       return;
                     }

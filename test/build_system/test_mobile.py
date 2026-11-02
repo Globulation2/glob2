@@ -36,6 +36,26 @@ class EmulatorSmokeTests(unittest.TestCase):
                 self.assertEqual([command[-1] for command in commands],
                                  ['KEYCODE_TAB', 'KEYCODE_ENTER'] * len(initial))
 
+    def test_smoke_dismisses_recorded_android_first_run_introduction(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import smoke
+        # Actual run41252859958: native reached these screens in2seconds and
+        # then waited90seconds at the introduction; no crash or slow startup.
+        recorded = ['21AudioPreferenceScreen', '20HandPreferenceScreen',
+                    '23IntroductionOfferScreen', '14MainMenuScreen']
+        for initial in (recorded, recorded[2:]):
+            with self.subTest(initial=initial):
+                pending=list(initial);history=['Glob2 screen ready: '+pending[0]];commands=[]
+                def run(*command):
+                    commands.append(command[-1])
+                    if command[-1] in ('KEYCODE_ENTER','KEYCODE_ESCAPE'):
+                        pending.pop(0);history.append('Glob2 screen ready: '+pending[0])
+                def wait_for(predicate,description):
+                    self.assertTrue(predicate(),description)
+                smoke.wait_for_main_menu(run,lambda:'\n'.join(history),wait_for)
+                self.assertEqual(pending,['14MainMenuScreen'])
+                self.assertEqual(commands,(['KEYCODE_TAB','KEYCODE_ENTER']*2 if len(initial)==4 else [])+['KEYCODE_ESCAPE'])
+
     def test_pinned_java_home_is_host_specific_and_preserves_override(self):
         import json
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
@@ -366,6 +386,43 @@ class EmulatorEnvironmentTests(unittest.TestCase):
 
 
 class IOSSmokeFailureTests(unittest.TestCase):
+    def test_screenshot_failure_retains_display_inventory_and_actual_error_output(self):
+        import json
+        import subprocess
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import ios_smoke
+        root = Path(__file__).resolve().parents[2]
+        scratch = root/'build/test-profiles'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            output = Path(temporary)/'diagnostics'
+            def command(argv, **kwargs):
+                arguments = argv[4:]
+                if arguments[:2] == ['list', 'devices']:
+                    return json.dumps({'devices': {'runtime': [{'udid': 'owned-test', 'name': 'Glob2-Mobile', 'state': 'Booted'}]}})
+                if arguments[0] == 'launch': return ios_smoke.PACKAGE+': 123'
+                if arguments[:4] == ['spawn', 'owned-test', 'log', 'show']:
+                    return 'Glob2 screen ready: 14MainMenuScreen\n'
+                if arguments == ['help','io']: return 'screenshot --display=<id>\n'
+                if arguments == ['io','owned-test','enumerate']: return 'Display inventory from actual simulator\n'
+                if arguments[:3] == ['io','owned-test','screenshot']:
+                    raise subprocess.CalledProcessError(22,argv,output='Screenshot failed: Invalid display 0\n')
+                return ''
+            with patch.object(sys,'argv',['ios_smoke.py','--device','owned-test','--output',str(output)]), patch.object(ios_smoke.subprocess,'check_output',side_effect=command):
+                with self.assertRaises(subprocess.CalledProcessError) as failure:
+                    ios_smoke.main()
+            self.assertEqual(failure.exception.returncode,22)
+            self.assertEqual((output/'display-io-enumerate.txt').read_text(),'Display inventory from actual simulator\n')
+            self.assertIn('--display=<id>',(output/'display-io-help.txt').read_text())
+            history = json.loads((output/'commands.json').read_text())
+            screenshots = [c for c in history if c['arguments'][:3] == ['io','owned-test','screenshot']]
+            self.assertEqual(len(screenshots),2)  # Startup and best-effort failure capture.
+            for attempt in screenshots:
+                self.assertFalse(attempt['success']); self.assertEqual(attempt['returncode'],22)
+                self.assertEqual((output/attempt['output_file']).read_text(),'Screenshot failed: Invalid display 0\n')
+            result=json.loads((output/'result.json').read_text())
+            self.assertFalse(result['passed']); self.assertEqual(result['checks'],[])
+
     def test_unified_log_readiness_is_scoped_to_each_launched_process(self):
         import json
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))

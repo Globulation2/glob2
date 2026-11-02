@@ -33,3 +33,6 @@ PyYAML==6.0.3
 
 # Map toolkit binding generation; pair with the system libclang 18 library.
 clang==18.1.8
+
+# Development-only Thai catalog word-break suggestions; no runtime dictionary.
+pythainlp==5.4.0

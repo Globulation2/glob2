@@ -6,6 +6,11 @@ on:
         description: Exact source revision to build and diagnose
         required: true
         type: string
+      desktop_localization:
+        description: Capture registered Thai native UI instead of generator teardown diagnostics
+        required: false
+        type: boolean
+        default: false
 concurrency:
   group: windows-generator-diagnostics-${{ github.ref }}-${{ inputs.revision }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
@@ -121,7 +126,9 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           cygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 engine-tests
+          preview_target=""
+          if test "${{ inputs.desktop_localization }}" = true; then preview_target="translation-preview-harness unit-tests build/mingw/client/release/src/glob2.exe"; fi
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 engine-tests $preview_target
           # MSYS2 starts each step with its own PATH; colocate the pinned
           # SDL DLLs so Windows can load the client and every harness directly.
           for directory in build/mingw/client/release/src build/mingw/client/release/test; do
@@ -129,21 +136,57 @@ jobs:
             cp build/sdl3-ci/prefix/bin/*.dll "$directory/"
           done
 
+      - name: Check the actual Windows release client
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        run: |
+          mkdir -p artifacts/localization-windows-tests
+          env -u GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy build/mingw/client/release/src/glob2.exe info version --format json > artifacts/localization-windows-tests/client-version.json
+      - name: Check focused native layout bidi and text metrics cases
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        run: >-
+          env -u GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS python3 test/run_tests.py
+          --binary unit --build-dir build/mingw/client/release
+          --filter 'UILayout/*' --filter 'BidiText/*' --filter 'TextMetrics/*'
+          --jobs 1 --timeout 180
+          --junit artifacts/localization-windows-tests/unit-junit.xml
+      - name: Check focused native font layout and system language cases
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        run: >-
+          env -u GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS python3 test/run_tests.py
+          --binary engine --build-dir build/mingw/client/release
+          --filter 'FontKerning/*' --filter 'SystemLanguage/*'
+          --jobs 1 --timeout 180
+          --junit artifacts/localization-windows-tests/engine-junit.xml
+      - name: Capture actual registered Thai menus and gameplay on Windows
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        run: python3 tools/capture_localization_platform.py --binary build/mingw/client/release/test/TranslationPreviewHarness.exe --output artifacts/localization-windows
+      - name: Retain Windows localization evidence
+        uses: actions/upload-artifact@v4
+        if: ${{ always() && inputs.desktop_localization }}
+        with:
+          name: localization-windows
+          path: |
+            artifacts/localization-windows/
+            !artifacts/localization-windows/profiles/**
+            artifacts/localization-windows-tests/
+            artifacts/windows-source/
+          if-no-files-found: error
+
       # This focused failure replay is not a complete Windows/full-CI checkpoint.
       - name: Reproduce optional generator teardown
-        if: ${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        if: ${{ !cancelled() && !inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
         run: >-
           python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release
           --filter 'ScriptGenerator/*' --jobs 1 --timeout 180
           --junit artifacts/tests/engine-junit.xml
       - name: Capture teardown leaks and live stack
-        if: ${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        if: ${{ !cancelled() && !inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
         run: >-
           python3 test/windows_crash_diagnostics.py
           --binary build/mingw/client/release/test/glob2-engine-tests.exe
           --junit artifacts/tests/engine-junit.xml --output artifacts/tests/crash-diagnostics
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && !inputs.desktop_localization }}
         with:
           name: windows-generator-teardown-diagnostics
           path: |

@@ -1,4 +1,3 @@
-import { message as sourceMessage } from '../../i18n.tsx';
 import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { GeneratorSettings } from '@glob2/protocol';
@@ -20,7 +19,7 @@ function primaryStatus(status: PreviewStatus, locale: string): string {
     case 'loading':
       return t('Loading engine…');
     case 'timeout':
-      return sourceMessage('Engine launch timed out. Stop and retry the preview.');
+      return t('Engine launch timed out. Stop and retry the preview.');
     case 'generated':
       return t('Revision {value0} · seed {value1} · {value2} seconds', {
         value0: status.revision,
@@ -34,9 +33,11 @@ function primaryStatus(status: PreviewStatus, locale: string): string {
       });
     case 'failure':
     case 'error':
-      return locale === 'bg' ? t('Something went wrong. Please try again.') : status.raw;
+      return locale === 'bg' || locale === 'th'
+        ? t('Something went wrong. Please try again.')
+        : status.raw;
     case 'complete':
-      return locale === 'bg' ? t('Finished') : status.raw;
+      return locale === 'bg' || locale === 'th' ? t('Finished') : status.raw;
   }
 }
 
@@ -205,7 +206,8 @@ export default function Preview({
   // Derive display from retained event data so locale changes never restart the
   // engine and never leave a previous locale's primary diagnostic on screen.
   const terminal = status.kind === 'error' || status.kind === 'complete';
-  const displayLogs = locale === 'bg' && terminal ? [...logs, status.raw] : logs;
+  const displayLogs =
+    (locale === 'bg' || locale === 'th') && terminal ? [...logs, status.raw] : logs;
   return (
     <div className="as-playtest">
       <p role="status">{primaryStatus(status, locale)}</p>

@@ -6818,12 +6818,12 @@ MCP 服务器
 鱼类数量
 [scenario messages]
 消息 ▸
+[script error at %0:%1: %2]
+第 %0 行、第 %1 列出错：%2
 [Camp-site amount]
 营地数量
 [script compilation success]
 编译成功
-[script error at %0:%1: %2]
-第 %0 行、第 %1 列出错：%2
 [script compilation failure %0:%1:(%2):%3]
 编译失败：%0:%1:(%2):%3
 [script compilation failed %0]

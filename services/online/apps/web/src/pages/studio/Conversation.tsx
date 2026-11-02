@@ -148,7 +148,7 @@ export function Conversation({
                       ? t('Queued')
                       : checking || r.status === 'importing'
                         ? t('Checking')
-                        : t('Building');
+                        : t('Building (generation progress)');
             return (
               <article
                 key={r.id}

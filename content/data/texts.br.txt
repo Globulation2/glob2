@@ -6818,12 +6818,12 @@ Trilhas de animais
 Quantidade de peixes
 [scenario messages]
 Mensagens ▸
+[script error at %0:%1: %2]
+Erro em %0:%1: %2
 [Camp-site amount]
 Quantidade de acampamentos
 [script compilation success]
 Compilação concluída com sucesso
-[script error at %0:%1: %2]
-Erro em %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Falha na compilação: %0:%1:(%2):%3
 [script compilation failed %0]

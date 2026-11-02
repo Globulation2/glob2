@@ -87,6 +87,21 @@ class MaximaStrategyConfigTest(unittest.TestCase):
             "tactics.min_force=6,tactics.retarget_margin=90"))
         self.assertEqual([6, 90], [changed[key] for key in keys])
 
+    def test_prestige_defaults_to_adaptive_and_remains_configurable(self) -> None:
+        defaults = self.values(self.resolved)
+        self.assertTrue(defaults["prestige.enabled"])
+        self.assertEqual(4, defaults["prestige.max_pipelines"])
+        self.assertFalse(self.values(self.resolve(
+            "--maxima-overrides", "prestige.enabled=false"))["prestige.enabled"])
+        for cap in range(1, 5):
+            changed = self.values(self.resolve(
+                "--maxima-overrides", f"prestige.enabled=true,prestige.max_pipelines={cap}"))
+            self.assertTrue(changed["prestige.enabled"])
+            self.assertEqual(cap, changed["prestige.max_pipelines"])
+        for cap in (0, 5):
+            with self.assertRaises(subprocess.CalledProcessError):
+                self.resolve("--maxima-overrides", f"prestige.max_pipelines={cap}")
+
     def test_schema_base_and_round_trip_are_bijective(self) -> None:
         self.assertEqual(self.schema["schemaVersion"], 2)
         self.assertEqual(self.resolved["schemaVersion"], 2)
@@ -204,6 +219,17 @@ class MaximaStrategyConfigTest(unittest.TestCase):
         switched = self.values(self.resolve("--maxima-overrides", overrides))
         self.assertTrue(all(switched[key] is False for key in disabled))
         self.assertTrue(switched["postures.recover_enabled"])
+
+    def test_legacy_wood_fertility_parameters_are_diagnostic(self) -> None:
+        metadata = {item["key"]: item for item in self.schema["parameters"]}
+        keys = ("farming.wood_fertility_base_percent", "farming.wood_fertility_pressure_percent")
+        for key in keys:
+            self.assertEqual(metadata[key]["group"], "compatibility")
+            self.assertEqual(metadata[key]["impact"], "low")
+            self.assertIn("no effect on wood protection", metadata[key]["description"])
+        # Retained keys still accept overrides and survive canonical strategy output.
+        values = self.values(self.resolve("--maxima-overrides", ",".join(f"{key}=37" for key in keys)))
+        self.assertTrue(all(values[key] == 37 for key in keys))
 
     def test_at_least_one_posture_must_remain_enabled(self) -> None:
         posture_keys = (

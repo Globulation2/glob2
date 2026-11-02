@@ -6818,12 +6818,12 @@ MCP 伺服器
 魚類數量
 [scenario messages]
 訊息 ▸
+[script error at %0:%1: %2]
+第 %0 行、第 %1 欄發生錯誤：%2
 [Camp-site amount]
 營地數量
 [script compilation success]
 編譯成功
-[script error at %0:%1: %2]
-第 %0 行、第 %1 欄發生錯誤：%2
 [script compilation failure %0:%1:(%2):%3]
 編譯失敗：%0:%1:(%2):%3
 [script compilation failed %0]

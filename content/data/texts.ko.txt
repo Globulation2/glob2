@@ -6818,12 +6818,12 @@ GL 전용
 물고기 양
 [scenario messages]
 메시지 ▸
+[script error at %0:%1: %2]
+%0:%1에서 오류 발생: %2
 [Camp-site amount]
 야영지 수
 [script compilation success]
 컴파일 성공
-[script error at %0:%1: %2]
-%0:%1에서 오류 발생: %2
 [script compilation failure %0:%1:(%2):%3]
 컴파일 실패: %0:%1:(%2):%3
 [script compilation failed %0]

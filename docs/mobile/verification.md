@@ -31,6 +31,45 @@ compatibility must be checked with the shared replay-verification workflow befor
 shipping a mobile client.
 
 
+## Focused iOS localization qualification
+
+The existing `ci-macos.yml` manual workflow offers `ios_localization=true` and
+`locale=th` for a committed revision. This selects an unsigned simulator build
+and lifecycle smoke rather than the normal macOS native job. Workflow calls and
+ordinary manual runs retain native coverage. The job validates the existing
+pinned Xcode, reuses content-validated simulator dependencies, checks the actual
+Thai catalog/font/notices and localized permission-purpose string in the built
+bundle, and retains app symbols, logs, hashes and screenshots as an artifact.
+It uses no Apple signing credentials or release operations. The dependency cache
+is saved immediately after checksum validation, so a later app or simulator
+failure does not discard that work. Cache keys retain the pinned toolchain and
+dependency inputs; app binaries and game objects are rebuilt for the checked-out
+revision.
+
+The fixture marks the initial hand and audio choices complete (silence selected)
+and the introduction as offered, then forces Thai through
+`SDL_PREFERRED_LOCALES` plus the simulator language defaults. The setup fixture
+is written to the actual pinned SDL application-support profile, because mobile
+startup replaces environment profile overrides. It leaves the saved
+game language unset, so startup exercises locale selection.
+Review the actual screenshots before accepting visual quality. This fixture
+establishes simulator startup, background/resume and fresh-process relaunch;
+it does not establish the OS permission popup, Thai IME interaction or physical
+device behavior. The helper only shuts down and deletes its recorded private
+simulator. Build and platform failures retain their actual diagnostics.
+
+The existing `mobile.yml` workflow also accepts the optional manual input
+`android_localization=true` with `locale=th`. That mode builds and tests x86_64
+only, verifies the actual APK catalog/font/notices and Thai Android startup
+resource, and selects Thai with Android's per-app locale API before the existing
+startup/settings/rotation/lifecycle smoke. The startup smoke completes audio and
+hand choices and takes the introduction offer’s Return to main menu action
+through real keyboard input. Ordinary runs and workflow calls keep
+their original architecture selection. Review retained screenshots for actual
+Thai rendering; the transient unpack label is checked in compiled resources,
+not guaranteed to appear in the screenshots. Physical devices and Thai IME
+interaction remain separate checks.
+
 ## Mobile design review gallery
 
 The offline gallery captures production screen classes at ten logical viewport
@@ -118,7 +157,7 @@ only the reusable tool and its documentation in Git.
 Multiplayer uses native WSS listeners and verified TLS on desktop and mobile.
 LAN hosts share a session certificate fingerprint in the waiting room; guests
 paste that pairing string before exchanging game details. See
-[secure multiplayer](../browser/gateway.md) for trust, framing, and compatibility.
+[secure multiplayer](../platforms/web/gateway.md) for trust, framing, and compatibility.
 
 The iOS project includes `platforms/mobile/ios/Glob2.entitlements` for UDP broadcast LAN
 discovery. Device signing requires a provisioning profile approved for Apple's

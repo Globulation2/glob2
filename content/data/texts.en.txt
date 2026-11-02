@@ -1,37 +1,5 @@
-[hub finish in browser, game continues]
-Finish signing in in your browser. The game continues by itself once you are done.
-[hub browser did not open]
-Your browser did not open. Open the sign-in page to continue.
-[hub compare code %0]
-If the page asks, check that it shows %0.
-[hub code copied]
-Code copied
-[settings Finish in your browser. The game continues by itself.]
-Finish in your browser. The game continues by itself.
-[music set]
-Music set
-[random music set]
-Random each match
-[playing music set %0]
-Playing: %0
-[music set failed]
-Could not load this music set.
-[settings Edge scrolling]
-Edge scrolling
-[settings Edge scrolling in fullscreen]
-Edge scrolling in fullscreen
-[settings Edge scrolling in windowed mode]
-Edge scrolling in windowed mode
-[settings Move the game and editor maps when the mouse reaches the window edge.]
-Move the game and editor maps when the mouse reaches the window edge.
 [%0 has left the game]
 %0 has quit the game.
-[start recording]
-Start recording
-[stop recording]
-Stop recording
-[finalizing recording]
-Finalizing recording…
 [%0 level %1]
 %0 Level %1
 [%0 units can't access building]
@@ -406,6 +374,16 @@ Fullscreen
 Game full
 [game shortcuts]
 Game Shortcuts
+[game speed help]
+Single-player and replays only. Multiplayer runs at 1x.
+[music set]
+Music set
+[random music set]
+Random each match
+[playing music set %0]
+Playing: %0
+[music set failed]
+Could not load this music set.
 [game speed]
 Game speed
 [Game]
@@ -556,6 +534,8 @@ fruits with others
 Allows the exchange of
 [market]
 Market
+[maximum game speed]
+Maximum
 [medium priority]
 mid
 [meta %0]
@@ -564,6 +544,8 @@ meta-%0
 Minimum required level:
 [Minimum Level To Flag]
 Min. unit level
+[multiplayer game speed]
+Game speed: 1x (multiplayer)
 [Music volume]
 Volume (music)
 [Mute]
@@ -704,6 +686,8 @@ Replay Ended
 Restore Default Keyboard Shortcuts
 [return to editor]
 Return to the editor
+[Reroll terrain look]
+Reroll terrain look
 [return to game]
 Return to game
 [return to replay]
@@ -728,8 +712,6 @@ Do you want to save before quitting?
 Save game
 [save map]
 Save Map
-[Reroll terrain look]
-Reroll terrain look
 [save replay]
 Save Replay
 [save script]
@@ -1012,6 +994,8 @@ Total Hitpoints
 Total prestige reached
 [Total]
 Total
+[tutorial]
+Tutorial
 [tutorial text 1]
 Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!
 [tutorial text 2]
@@ -1020,8 +1004,6 @@ Now that you have mastered the basics, it's time to get used to other buildings 
 You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades.
 [tutorial text 4]
 You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players.
-[tutorial]
-Tutorial
 [Uncontrolled]
 Uncontrolled
 [undo]
@@ -1120,12 +1102,6 @@ You were kicked from the game
 Your %0 is under attack
 [Your unit got converted to %0's team]
 Your unit has joined %0's team
-[game speed help]
-Single-player and replays only. Multiplayer runs at 1x.
-[maximum game speed]
-Maximum
-[multiplayer game speed]
-Game speed: 1x (multiplayer)
 [Units still inside: %0]
 Still inside: %0
 [Units still working: %0]
@@ -2210,10 +2186,10 @@ Feed / heal
 Statistics 1/3  >
 [Stats page two]
 Statistics 2/3  >
-[Stats page three]
-Statistics 3/3  >
 [Stats next page]
 Page (P)
+[Stats page three]
+Statistics 3/3  >
 [Stats blocked units]
 Units blocked S/C
 [Stats blocked buildings]
@@ -2240,12 +2216,12 @@ Growth within 16 tiles
 Growth within 32 tiles
 [Stats low HP 25]
 Units at 25% HP
-[Stats low food 25]
-Units at 25% food reserve
 [Stats low HP 50]
 Units at 50% HP
 [Stats low HP 75]
 Units at 75% HP
+[Stats low food 25]
+Units at 25% food reserve
 [Stats low food 50]
 Units at 50% food reserve
 [Stats low food 75]
@@ -3298,6 +3274,22 @@ List momentum
 List bounce
 [Map momentum]
 Map momentum
+[lan pairing field]
+Host pairing string (or trusted WSS URL)
+[lan pairing connect]
+Pair and connect
+[lan discovery instructions]
+Select a host, then paste its pairing string to verify its identity.
+[lan discovery unavailable]
+LAN discovery is unavailable. Check local network permission or paste a host pairing string.
+[lan discovered host %0]
+Discovered host %0 — pair to view games
+[lan connection unavailable]
+Unable to reach the LAN host. Check local network permission and the host pairing string.
+[lan connection verification failed %0]
+Unable to verify or connect to the LAN host: %0
+[lan lobby endpoint required]
+Use the host lobby endpoint
 [settings Artwork]
 Artwork
 [settings Original]
@@ -3364,22 +3356,6 @@ Simplify bars, zones, terrain and units as the map zooms out, and keep them smal
 Text size
 [settings Enlarge interface text without changing the map scale.]
 Enlarge interface text without changing the map scale.
-[lan pairing field]
-Host pairing string (or trusted WSS URL)
-[lan pairing connect]
-Pair and connect
-[lan discovery instructions]
-Select a host, then paste its pairing string to verify its identity.
-[lan discovery unavailable]
-LAN discovery is unavailable. Check local network permission or paste a host pairing string.
-[lan discovered host %0]
-Discovered host %0 — pair to view games
-[lan connection unavailable]
-Unable to reach the LAN host. Check local network permission and the host pairing string.
-[lan connection verification failed %0]
-Unable to verify or connect to the LAN host: %0
-[lan lobby endpoint required]
-Use the host lobby endpoint
 [turn reconnecting]
 Connection to the host lost. Reconnecting...
 [turn waiting for players]
@@ -4628,6 +4604,12 @@ Manage credits and purchases in your browser. Commander assistance is permitted 
 Open commander
 [stop commander]
 Stop commander
+[start recording]
+Start recording
+[stop recording]
+Stop recording
+[finalizing recording]
+Finalizing recording…
 [settings Recording]
 Recording
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
@@ -4894,30 +4876,6 @@ Units boxed in with no free square to step onto.
 Resources cleared
 [stat cleared about]
 Resources removed by workers in clearing areas to make room.
-[stats topic overview]
-Overview
-[stats topic economy]
-Economy
-[stats topic world]
-World
-[stats work construction]
-Work & construction
-[stats defence]
-Defence
-[stats history]
-View history
-[stats waiting]
-Waiting for statistics…
-[stats unit details]
-Unit details
-[stats map overlays]
-Map overlays
-[stats topic]
-Topic
-[stats full history]
-Open full history
-[stats missing readings]
-— No recorded reading yet. Select a statistic for details.
 [stat win probability]
 Win probability
 [stat win probability about]
@@ -5336,6 +5294,24 @@ By place
 Music set
 [settings Random each match]
 Choose Random to select a soundtrack at each match start.
+[settings Edge scrolling]
+Edge scrolling
+[settings Edge scrolling in fullscreen]
+Edge scrolling in fullscreen
+[settings Edge scrolling in windowed mode]
+Edge scrolling in windowed mode
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+Move the game and editor maps when the mouse reaches the window edge.
+[hub finish in browser, game continues]
+Finish signing in in your browser. The game continues by itself once you are done.
+[hub browser did not open]
+Your browser did not open. Open the sign-in page to continue.
+[hub compare code %0]
+If the page asks, check that it shows %0.
+[hub code copied]
+Code copied
+[settings Finish in your browser. The game continues by itself.]
+Finish in your browser. The game continues by itself.
 [AI Library]
 AI Library
 [Authoring guide]
@@ -6018,6 +5994,8 @@ Discord opened. You can return to the game at any time.
 Could not open Discord. Copy the invitation link and open it in your browser.
 [discord link copied]
 Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.
 [settings CPU automatic]
 CPU automatic
 [settings Scalar]
@@ -6090,8 +6068,6 @@ Could not save your choice. Please try again.
 Left hand
 [Right hand]
 Right hand
-[discord copy failed]
-Could not copy the link. Select the invitation above to copy it manually.
 [stat ground movement]
 Ground movement
 [stat ground movement about]
@@ -6478,6 +6454,8 @@ Open Flags, choose War Flag, place it over the enemy Swarm east of the stone and
 Show destination
 [intro scout destination]
 Scout here
+[intro attack destination]
+Attack here
 [intro compact scout]
 Flags → Exploration Flag. Place it on the stone; assign 1 explorer.
 [intro compact build]
@@ -6806,8 +6784,6 @@ Flags → Guard. Paint 4 tiles; let 2 warriors arrive.
 Hold the guard zone. Keep Inns supplied.
 [lesson defensive-tactics counterattack compact]
 War Flag → enemy Swarm. Request 3 warriors; radius ≤4.
-[intro attack destination]
-Attack here
 [Grassland]
 Grassland
 [Kopjes]
@@ -6816,14 +6792,40 @@ Kopjes
 Game trails
 [Fish amount]
 Fish amount
-[scenario messages]
-Messages ▸
 [Camp-site amount]
 Camp-site amount
-[script compilation success]
-Compilation success
+[scenario messages]
+Messages ▸
+[AI for all computer colonies]
+AI for all computer colonies
+[stats topic overview]
+Overview
+[stats topic economy]
+Economy
+[stats topic world]
+World
+[stats work construction]
+Work & construction
+[stats defence]
+Defence
+[stats history]
+View history
+[stats waiting]
+Waiting for statistics…
+[stats unit details]
+Unit details
+[stats map overlays]
+Map overlays
+[stats topic]
+Topic
+[stats full history]
+Open full history
+[stats missing readings]
+— No recorded reading yet. Select a statistic for details.
 [script error at %0:%1: %2]
 Error at %0:%1: %2
+[script compilation success]
+Compilation success
 [script compilation failure %0:%1:(%2):%3]
 Compilation failure : %0:%1:(%2):%3
 [script compilation failed %0]
@@ -6856,5 +6858,3 @@ Order received: %0
 Order not confirmed. Open the commander to retry; your message has been kept.
 [hive standing order update failed]
 Standing order update failed. Your order is paused locally; retry the control.
-[AI for all computer colonies]
-AI for all computer colonies

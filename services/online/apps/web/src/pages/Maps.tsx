@@ -1,3 +1,4 @@
+import { displayMessage, MessageError, message as sourceMessage } from '../i18n.tsx';
 import { statusLabel } from '../i18n.tsx';
 import { t, tp, useLocale, RichMessage } from '../i18n.tsx';
 import {
@@ -482,12 +483,12 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
     }
   };
   return (
-    <div className="grid2" style={{ marginTop: 12 }}>
+    <div className="grid2 map-owner-tools" style={{ marginTop: 12 }}>
       <form
         className="card"
         onSubmit={(e) => {
           e.preventDefault();
-          void run(() => api.updateMap(map.id, { title, description, visibility }), 'Saved.');
+          void run(() => api.updateMap(map.id, { title, description, visibility }), 'Saved');
         }}
       >
         <h3>{t('Edit')}</h3>
@@ -560,7 +561,9 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
             if (file) {
               void run(
                 () => api.uploadVersion(map.id, file, notes),
-                'Uploaded. The server checks the file and draws a preview; this takes a moment.',
+                sourceMessage(
+                  'Uploaded. The server checks the file and draws a preview; this takes a moment.',
+                ),
               );
             }
           }}
@@ -585,7 +588,7 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
       )}
       {(message || error) && (
         <div style={{ gridColumn: '1 / -1' }}>
-          {message && <div className="notice">{message}</div>}
+          {message && <div className="notice">{displayMessage(message)}</div>}
           {error && <ErrorNotice error={error} />}
         </div>
       )}
@@ -956,7 +959,7 @@ export function MapUpload() {
       const started = Date.now();
       while (checked.status === 'pending') {
         if (Date.now() - started > CHECK_TIMEOUT_MS) {
-          throw new Error(
+          throw new MessageError(
             'Checking the map is taking longer than usual. Nothing was created; please try again in a few minutes.',
           );
         }
@@ -964,7 +967,7 @@ export function MapUpload() {
         checked = await api.checkedFile(checked.id);
       }
       if (checked.status !== 'valid') {
-        fileProblem(checked.reason ?? "The game couldn't load this map.");
+        fileProblem(checked.reason ?? sourceMessage("The game couldn't load this map."));
         return;
       }
       // 2. Only now: the map page and its first version (the same, already checked file).
@@ -1008,7 +1011,7 @@ export function MapUpload() {
           />
         </label>
         <p id="map-file-error" className="field-error" role="alert">
-          {fileError}
+          {fileError && displayMessage(fileError)}
         </p>
         <label className="field">
           {t('Title')}

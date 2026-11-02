@@ -56,10 +56,50 @@ describe('localized source contract', () => {
     ).toHaveLength(1);
     expect(check('<span>{count && `${count} players`}</span>')).toHaveLength(1);
   });
+  it('checks visible and accessible chart axes while allowing authored series values', () => {
+    expect(
+      check('<LineChart xLabel="UTC day" yLabel="Accounts per day" series={authoredSeries} />'),
+    ).toHaveLength(2);
+    expect(
+      check(`<LineChart xLabel={t('Sign in')} yLabel={label} series={authoredSeries} />`),
+    ).toEqual([]);
+  });
+  it('checks native dialog messages without translating entered values or raw diagnostics', () => {
+    expect(
+      check(`window.confirm('Delete this project?'); prompt(\`Hide \${name}?\`, name);`),
+    ).toHaveLength(2);
+    expect(
+      check(
+        `window.confirm(t('Sign in')); window.prompt(t('Sign in'), authoredReason); alert(runtimeError);`,
+      ),
+    ).toEqual([]);
+  });
+  it('checks directly rendered lookup labels without translating lookup IDs or authored values', () => {
+    expect(
+      check(`<span>{({cacheWrite: 'Cache creation/write tokens'})[kind]}</span>`),
+    ).toHaveLength(1);
+    expect(check(`<span>{({owner: authoredName, label: t('Sign in')})[kind]}</span>`)).toEqual([]);
+    expect(
+      check(`const technical = {field: 'cacheWrite'}; <input value={technical.field} />;`),
+    ).toEqual([]);
+  });
   it('requires catalog keys for deferred user-facing error messages', () => {
     expect(check("throw new MessageError('Recovery warning');")).toHaveLength(1);
     expect(check("throw new MessageError('Sign in');")).toEqual([]);
     expect(check("throw new Error('Private diagnostic');")).toEqual([]);
+  });
+  it('checks caller-owned studio copy and announcements without translating user content or URLs', () => {
+    const errors = check(`
+      <ChatComposer target="New soundtrack" disabledReason={busy ? 'Wait for completion' : undefined} pricing="One credit" />;
+      <RevisionControls viewed={title ?? 'Current draft'} target={t('Sign in')} />;
+      <SharedWorkspace attention={busy ? 'Working' : undefined} result={done ? {id: 'technical-id', status: 'ready', text: 'Build ready'} : undefined} />;
+      <ConversationPane label={t('Sign in')} completion={{id: 'technical-id', text: t('Sign in')}} />;
+      <a target="_blank" href="/api/private">{title}</a>;
+      <StudioTabs items={[{id: 'preview', label: 'Preview'}]} />;
+    `);
+    expect(errors).toHaveLength(6);
+    expect(errors.every((error) => error.includes('unlocalized JSX text'))).toBe(true);
+    expect(errors.some((error) => error.includes('technical-id'))).toBe(false);
   });
   it('allows localized labels, dynamic slots and technical editor syntax', () => {
     expect(

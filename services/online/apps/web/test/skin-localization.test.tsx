@@ -60,7 +60,7 @@ it('translates every fixed registry label lazily without changing registry ident
   }
   expect(JSON.stringify({ MODELS, COLONY_SKIN_MATERIALS, SWARM_SHAPES })).toBe(original);
   expect(skinProductLabel('custom-product', 'User product title')).toBe('User product title');
-  expect(skinPresetLabel('A user-chosen name')).toBe('A user-chosen name');
+  expect(skinPresetLabel('custom-preset-id', 'A user-chosen name')).toBe('A user-chosen name');
 });
 
 it('keeps a failed 3D preview translatable when the open page changes language', async () => {

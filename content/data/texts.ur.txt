@@ -4876,30 +4876,6 @@ AI کی قابلِ رسائی ٹیلی میٹری نہیں۔
 صاف کیے گئے وسائل
 [stat cleared about]
 جگہ بنانے کے لیے کارکنوں کے صفائی کے علاقوں میں ہٹائے ہوئے وسائل۔
-[stats topic overview]
-
-[stats topic economy]
-
-[stats topic world]
-
-[stats work construction]
-
-[stats defence]
-
-[stats history]
-
-[stats waiting]
-
-[stats unit details]
-
-[stats map overlays]
-
-[stats topic]
-
-[stats full history]
-
-[stats missing readings]
-
 [stat win probability]
 
 [stat win probability about]
@@ -5696,6 +5672,14 @@ AI کی بنائی ہوئی نہیں
 سوراخ
 [chasm]
 گہری کھائی
+[lush_grass]
+سرسبز گھاس
+[dry_grass]
+سوکھی گھاس
+[dune_sand]
+ٹیلے کی ریت
+[pale_sand]
+ہلکے رنگ کی ریت
 [terrain group water]
 پانی
 [terrain group sand]
@@ -6812,10 +6796,36 @@ MCP سرور چالو کریں
 خیمہ گاہوں کی تعداد
 [scenario messages]
 پیغامات ▸
-[script compilation success]
-کمپائل کرنا کامیاب رہا
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [script error at %0:%1: %2]
 سطر %0، کالم %1 پر خرابی: %2
+[AI for all computer colonies]
+تمام کمپیوٹر کالونیوں کے لیے اے آئی
+[script compilation success]
+کمپائل کرنا کامیاب رہا
 [script compilation failure %0:%1:(%2):%3]
 کمپائل کرنا ناکام رہا: %0:%1:(%2):%3
 [script compilation failed %0]
@@ -6848,13 +6858,3 @@ MCP سرور چالو کریں
 حکم کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کرنے کے لیے کمانڈر کھولیں؛ آپ کا پیغام محفوظ ہے۔
 [hive standing order update failed]
 مستقل حکم کو اپ ڈیٹ کرنا ناکام رہا۔ آپ کا حکم اس ڈیوائس پر عارضی طور پر روکا گیا ہے؛ متعلقہ کنٹرول استعمال کرکے دوبارہ کوشش کریں۔
-[lush_grass]
-سرسبز گھاس
-[dry_grass]
-سوکھی گھاس
-[dune_sand]
-ٹیلے کی ریت
-[pale_sand]
-ہلکے رنگ کی ریت
-[AI for all computer colonies]
-تمام کمپیوٹر کالونیوں کے لیے اے آئی

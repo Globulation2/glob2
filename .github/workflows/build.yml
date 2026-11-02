@@ -16,6 +16,10 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
+      desktop_localization:
+        description: Add native Mac/Windows Thai preview captures to selected builds
+        type: boolean
+        default: false
       browser_only:
         description: Run only browser, transport and deployment checks
         required: false
@@ -166,6 +170,7 @@ jobs:
     if: ${{ !cancelled() && needs.changes.outputs.run_macos == 'true' }}
     uses: ./.github/workflows/ci-macos.yml
     with:
+      desktop_localization: ${{ github.event_name == 'workflow_dispatch' && inputs.desktop_localization }}
       revision: ${{ inputs.revision || github.sha }}
       coverage_profile: ${{ needs.changes.outputs.secondary_profile }}
 
@@ -248,6 +253,7 @@ jobs:
     if: ${{ !cancelled() && needs.changes.outputs.run_linux_gcc13_producer == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
+      desktop_localization: ${{ github.event_name == 'workflow_dispatch' && inputs.desktop_localization }}
       revision: ${{ inputs.revision || github.sha }}
       image: ubuntu:24.04
       runner: ubuntu-24.04
@@ -622,7 +628,9 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           cygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe \
+          preview_target=""
+          if test "${{ github.event_name == 'workflow_dispatch' && inputs.desktop_localization }}" = true; then preview_target=translation-preview-harness; fi
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 $preview_target build/mingw/client/release/src/glob2.exe \
             unit-tests \
             engine-tests \
             software-render-benchmark \
@@ -633,6 +641,15 @@ jobs:
             cp build/sdl3-ci/prefix/bin/*.dll "$directory/"
           done
 
+      - name: Capture actual registered Thai menus and gameplay on Windows
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.desktop_localization && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        run: python3 tools/capture_localization_platform.py --binary build/mingw/client/release/test/TranslationPreviewHarness.exe --output artifacts/localization-windows
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.desktop_localization }}
+        with:
+          name: localization-windows
+          path: artifacts/localization-windows/
+          if-no-files-found: error
       - name: Exercise production CLI and retain continuation traces
         if: ${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
         run: python3 test/test_cli_smoke.py --binary build/mingw/client/release/src/glob2.exe --artifacts artifacts/cli-smoke --junit artifacts/cli-smoke.xml

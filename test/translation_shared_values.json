@@ -484,7 +484,13 @@
       "HP ≤25/50/75%",
       "Hive Mind",
       "P %0/%1/%2",
-      "–"
+      "–",
+      "Compilation success",
+      "Error at %0:%1: %2",
+      "Compilation failure : %0:%1:(%2):%3",
+      "Loading script from %0 failed",
+      "Saving script to %0 failed",
+      "Line: %0 Col: %1"
     ],
     "texts.ms.txt": [
       "%0 / %1 HP · %2",
@@ -844,7 +850,13 @@
       "Globulation 2 Discord",
       "Hive Mind",
       "P %0/%1/%2",
-      "–"
+      "–",
+      "Compilation success",
+      "Error at %0:%1: %2",
+      "Compilation failure : %0:%1:(%2):%3",
+      "Loading script from %0 failed",
+      "Saving script to %0 failed",
+      "Line: %0 Col: %1"
     ],
     "texts.tr.txt": [
       "%0 KB",
@@ -947,14 +959,15 @@
       "vs AI",
       "–"
     ],
-    "texts.bg.txt": [
+    "texts.th.txt": [
       "%0 / %1 HP · %2",
       "%0 KB",
-      "%0 s",
       "256 × 256",
       "CPU %0%",
+      "Delete",
       "FFA",
       "HP ≤25/50/75%",
+      "Hive Mind",
       "P %0/%1/%2",
       "–"
     ],
@@ -1037,6 +1050,17 @@
       "host %0",
       "release %0",
       "sim %0",
+      "–"
+    ],
+    "texts.bg.txt": [
+      "%0 / %1 HP · %2",
+      "%0 KB",
+      "%0 s",
+      "256 × 256",
+      "CPU %0%",
+      "FFA",
+      "HP ≤25/50/75%",
+      "P %0/%1/%2",
       "–"
     ]
   },

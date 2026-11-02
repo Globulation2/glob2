@@ -7,6 +7,8 @@ import {
   type PlaybackSnapshot,
 } from './useMusicPlayback.ts';
 export const MOODS = ['Calm', 'Building', 'Combat'];
+// Display context is separate from the stable mood and upload identifiers.
+export { musicMoodLabel };
 const MOOD_DESCRIPTIONS = ['Room to breathe', 'A colony takes shape', 'Into the fray'];
 export function MoodIcon({ mood }: { mood: number }) {
   useLocale();

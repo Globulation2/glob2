@@ -6818,12 +6818,12 @@ Chỉ GL
 Lượng cá
 [scenario messages]
 Thông điệp ▸
+[script error at %0:%1: %2]
+Lỗi tại %0:%1: %2
 [Camp-site amount]
 Số khu cắm trại
 [script compilation success]
 Biên dịch thành công
-[script error at %0:%1: %2]
-Lỗi tại %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Lỗi biên dịch: %0:%1:(%2):%3
 [script compilation failed %0]

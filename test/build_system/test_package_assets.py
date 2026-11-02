@@ -195,6 +195,41 @@ class AssetExportTests(unittest.TestCase):
             metadata.write_text("{bad json")
         self.assertEqual(first, self.export())
 
+    def test_shared_cache_publication_accepts_only_identical_concurrent_writers(self):
+        import hashlib
+        import json
+        import os
+
+        replace = os.replace
+        for blocked in ("image.webp", "selection.json"):
+            for identical in (True, False):
+                with self.subTest(blocked=blocked, identical=identical):
+                    cache = self.cache / blocked / str(identical)
+
+                    def reader_blocks_replacement(source, destination):
+                        destination = Path(destination)
+                        if destination.name == blocked:
+                            # Another exporter published before this worker,
+                            # and a Windows reader now prevents replacement.
+                            destination.write_bytes(Path(source).read_bytes() if identical else b"conflicting")
+                            raise PermissionError("Concurrent cache reader")
+                        return replace(source, destination)
+
+                    with patch("tools.package_assets.os.replace", side_effect=reader_blocks_replacement):
+                        if identical:
+                            blob, record = package_assets.encode_image(self.image, "data/gfx/frame0.png", cache, False)
+                            self.assertEqual(hashlib.sha256(blob.read_bytes()).hexdigest(), record["sha256"])
+                            self.assertEqual(json.loads(blob.with_name("selection.json").read_text()), record)
+                        else:
+                            with self.assertRaises(PermissionError):
+                                package_assets.encode_image(self.image, "data/gfx/frame0.png", cache, False)
+                    entry, = cache.iterdir()
+                    self.assertTrue(all(p.name in ("image.webp", "selection.json") for p in entry.iterdir()))
+                    # A conflicting publication remains an error and is
+                    # repaired by an ordinary subsequent cache validation.
+                    blob, record = package_assets.encode_image(self.image, "data/gfx/frame0.png", cache, False)
+                    self.assertEqual(hashlib.sha256(blob.read_bytes()).hexdigest(), record["sha256"])
+
     def test_source_change_invalidates_cache(self):
         first = self.export()
         Image.new("RGBA", (64, 64), (60, 80, 130, 255)).save(self.image)

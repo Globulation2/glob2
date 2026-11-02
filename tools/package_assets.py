@@ -230,6 +230,25 @@ def decoded_rgba(raw):
     return Image.frombytes("RGBA", image.size, bytes(pixels))
 
 
+def publish_cache_file(temporary, destination):
+    """Publish an immutable cache file, tolerating an identical racing writer."""
+    try:
+        try:
+            os.replace(temporary, destination)
+        except PermissionError:
+            # Windows readers can deny replacement after another exporter has
+            # already published this content-addressed entry. Accept only the
+            # exact bytes we were about to publish; real conflicts still fail.
+            try:
+                identical = destination.read_bytes() == temporary.read_bytes()
+            except OSError:
+                identical = False
+            if not identical:
+                raise
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def encode_image(source, relative, cache, lossy):
     """Cache the smallest allowed encoding after validating dimensions and pixels."""
     from PIL import Image, features
@@ -319,11 +338,11 @@ def encode_image(source, relative, cache, lossy):
         f.write(data)
         temp = Path(f.name)
     blob = entry / ("image" + suffix)
-    os.replace(temp, blob)
+    publish_cache_file(temp, blob)
     with tempfile.NamedTemporaryFile(dir=entry, mode="w", delete=False) as f:
         json.dump(record, f, sort_keys=True)
         temp = Path(f.name)
-    os.replace(temp, metadata)
+    publish_cache_file(temp, metadata)
     return blob, record
 
 

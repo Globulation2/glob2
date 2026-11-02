@@ -6822,10 +6822,10 @@ GL మాత్రమే
 పూర్తి చరిత్రను తెరవండి
 [stats missing readings]
 — ఇంకా విలువ నమోదు కాలేదు. వివరాల కోసం ఒక గణాంకాన్ని ఎంచుకోండి.
-[script compilation success]
-సంకలనం విజయవంతమైంది
 [script error at %0:%1: %2]
 లైన్ %0, కాలమ్ %1 వద్ద లోపం: %2
+[script compilation success]
+సంకలనం విజయవంతమైంది
 [script compilation failure %0:%1:(%2):%3]
 సంకలనం విఫలమైంది: %0:%1:(%2):%3
 [script compilation failed %0]

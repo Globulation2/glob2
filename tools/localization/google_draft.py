@@ -592,6 +592,15 @@ def main():
     mode = next((value.split('=', 1)[1] for value in arguments if value.startswith('--mode=')), None)
     if '--mode' in arguments:
         mode = arguments[arguments.index('--mode') + 1]
+    if mode == 'thai':
+        spec = importlib.util.spec_from_file_location('google_draft_thai', Path(__file__).with_name('google_draft_thai.py'))
+        backend = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(backend)
+        sys.argv = [sys.argv[0], *[value for value in arguments if value != '--mode=thai']]
+        if '--mode' in sys.argv:
+            position = sys.argv.index('--mode')
+            del sys.argv[position:position + 2]
+        return backend.main()
     legacy_editorial_flags = ('--max-usd', '--batch-characters')
     if mode in ('plan', 'blank-fill', 'editorial') or any(value.split('=', 1)[0] in segmented_flags + legacy_editorial_flags for value in arguments):
         spec = importlib.util.spec_from_file_location('google_draft_segmented', Path(__file__).with_name('google_draft_segmented.py'))

@@ -35,6 +35,11 @@ describe('online locale resolution', () => {
     expect(resolveLocale('zh')).toBe('zh-Hans');
     expect(resolveLocale('sr-RS')).toBe('sr-Cyrl');
     expect(resolveLocale('in-ID')).toBe('id');
+    expect(resolveLocale('th')).toBe('th');
+    expect(resolveLocale('th-TH')).toBe('th');
+    expect(resolveLocale('th-Thai-TH')).toBe('th');
+    expect(resolveLocale(['th-Latn', 'en'])).toBe('en');
+    expect(resolveLocale('th-u-nu-latn')).toBe('th');
     expect(resolveLocale('bg')).toBe('bg');
     expect(resolveLocale('bg_BG')).toBe('bg');
     expect(resolveLocale('bg-Cyrl-BG')).toBe('bg');
@@ -264,7 +269,8 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains unique game catalog mappings including Bulgarian, Tamil, Bengali, Bokmål, Malay and Marathi', () => {
+  it('contains 45 unique game catalog mappings including Thai, Bulgarian, Filipino, Tamil, Bengali, Malay, Marathi and Telugu', () => {
+    expect(locales).toHaveLength(45);
     expect(locales).toContainEqual({ code: 'ta', gameCode: 'ta', name: 'தமிழ்', dir: 'ltr' });
     expect(locales).toContainEqual({ code: 'bn', gameCode: 'bn', name: 'বাংলা', dir: 'ltr' });
     expect(locales).toContainEqual({ code: 'mr', gameCode: 'mr', name: 'मराठी', dir: 'ltr' });
@@ -276,15 +282,17 @@ describe('message presentation', () => {
     });
     expect(new Set(locales.map((l) => l.gameCode)).size).toBe(locales.length);
     expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
-    expect(locales).toContainEqual({
-      code: 'ms',
-      gameCode: 'ms',
-      name: 'Bahasa Melayu',
-      dir: 'ltr',
-    });
-    expect(locales).toContainEqual({ code: 'bg', gameCode: 'bg', name: 'Български', dir: 'ltr' });
-    expect(locales).toContainEqual({ code: 'fil', gameCode: 'fil', name: 'Filipino', dir: 'ltr' });
-    expect(locales).toContainEqual({ code: 'te', gameCode: 'te', name: 'తెలుగు', dir: 'ltr' });
+    for (const [code, name] of [
+      ['th', 'ไทย'],
+      ['bg', 'Български'],
+      ['fil', 'Filipino'],
+      ['te', 'తెలుగు'],
+      ['mr', 'मराठी'],
+      ['bn', 'বাংলা'],
+      ['ms', 'Bahasa Melayu'],
+      ['nb', 'Norsk bokmål'],
+    ])
+      expect(locales).toContainEqual({ code, gameCode: code, name, dir: 'ltr' });
   });
 });
 

@@ -320,7 +320,7 @@ def audit_review(manifest, record, catalogs, evidence_root=None):
                 issues.append(f'{name}: {field} must cover every key exactly once')
         if batch.get('rechecked_by') != batch.get('reviewer'):
             issues.append(f'{name}: independent reviewer must recheck the final edit')
-    if record.get('locale') in LOW_RESOURCE or record.get('locale') == 'bg':
+    if record.get('locale') in LOW_RESOURCE or record.get('locale') in ('bg', 'th'):
         for batch in records:
             adversary = batch.get('adversarial_reviewer')
             if not adversary or adversary in [batch.get(role) for role in ('author', 'reviewer', 'editor')]:

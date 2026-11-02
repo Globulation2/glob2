@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ui/TextLayout.h>
 #include <algorithm>
+#include <TextBreaks.h>
 
 namespace GAGGUI::ui
 {
@@ -78,6 +79,7 @@ std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 	width = std::max(1, width);
 	std::vector<std::string> lines;
 	std::string line, word;
+	bool pendingSpace = true;
 	auto flush = [&]
 	{
 		lines.push_back(line);
@@ -112,17 +114,18 @@ std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 	{
 		if (word.empty())
 			return;
-		if (!line.empty() && measurer.width(role, line + " " + word) > width)
+		const std::string separator = pendingSpace ? " " : "";
+		if (!line.empty() && measurer.width(role, line + separator + word) > width)
 			flush();
 		if (!line.empty())
-			line += ' ';
+			line += separator;
 		if (measurer.width(role, word) <= width && (line.empty() || measurer.width(role, line + word) <= width))
 			line += word;
 		else
 		{
 			if (!line.empty() && line.back() == ' ')
 				line.pop_back();
-			if (!line.empty() && measurer.width(role, line + " ") <= width)
+			if (pendingSpace && !line.empty() && measurer.width(role, line + " ") <= width)
 				line += ' ';
 			appendClusters(word);
 		}
@@ -130,10 +133,21 @@ std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 	};
 	for (std::size_t i = 0; i <= text.size(); ++i)
 	{
+		if (text.compare(i, 3, GAGCore::softWordBreak) == 0)
+		{
+			if (!word.empty())
+			{
+				placeWord();
+				pendingSpace = false;
+			}
+			i += 2;
+			continue;
+		}
 		const char c = i < text.size() ? text[i] : '\n';
 		if (c == ' ' || c == '\n')
 		{
 			placeWord();
+			pendingSpace = true;
 			if (c == '\n' && i < text.size())
 				flush();
 		}
@@ -148,6 +162,8 @@ std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 std::string ellipsize(const TextMeasurer &measurer, FontRole role, const std::string &text,
 					  int width)
 {
+	if (text.find(GAGCore::softWordBreak) != std::string::npos)
+		return ellipsize(measurer, role, GAGCore::withoutSoftWordBreaks(text), width);
 	if (measurer.width(role, text) <= width)
 		return text;
 	static const std::string ellipsis = "…";

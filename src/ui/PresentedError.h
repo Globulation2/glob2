@@ -26,7 +26,7 @@ inline std::string presentException(const std::exception &error, std::string_vie
 	const auto *raw = presented && !presented->diagnostic.empty()
 		? presented->diagnostic.c_str() : error.what();
 	std::fprintf(stderr, "UI operation failed: %s\n", raw);
-	if (locale != "bg" && locale != "bg-BG") return raw;
+	if (locale != "bg" && locale != "bg-BG" && locale != "th" && locale != "th-TH") return raw;
 	if (presented) return error.what();
 	return summary;
 }

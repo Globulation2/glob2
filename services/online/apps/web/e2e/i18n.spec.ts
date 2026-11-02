@@ -169,14 +169,11 @@ for (const locale of locales) {
     }
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    // The maintained fixture enables the skin designer with sales disabled.
-    // The guest still has no moderation role.
-    // Assert destinations so a missing translated navigation item cannot pass.
-    expect(
-      await page
-        .locator('.app-sidebar .nav a')
-        .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
-    ).toEqual([
+    const instanceResponse = await page.request.get('/api/v1/instance');
+    expect(instanceResponse.ok()).toBe(true);
+    const instance = (await instanceResponse.json()) as { features?: string[] };
+    // Retain exact destination coverage while respecting optional designer navigation.
+    const destinations = [
       '/',
       '/leaderboard',
       '/players',
@@ -186,16 +183,26 @@ for (const locale of locales) {
       '/ais',
       '/buildings',
       '/music',
-      '/skins',
-    ]);
+      ...(instance.features?.includes('skins.designer') ? ['/skins'] : []),
+    ];
+    // Core navigation must survive locale changes regardless of optional capabilities.
+    expect(
+      await page
+        .locator('.app-sidebar .nav a')
+        .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
+    ).toEqual(destinations);
+
     const themeChangeLabel = catalog['{value0}. Change theme'];
     const defaultThemeLabel = catalog['Theme: same as this device'];
     if (!themeChangeLabel || !defaultThemeLabel) {
       throw new Error(`Missing theme labels for ${locale.code}`);
     }
+    // The translation runtime isolates interpolated values in RTL messages.
+    const interpolatedThemeLabel =
+      locale.dir === 'rtl' ? `\u2068${defaultThemeLabel}\u2069` : defaultThemeLabel;
     await expect(page.getByTestId('theme-toggle')).toHaveAttribute(
       'aria-label',
-      themeChangeLabel.replace('{value0}', defaultThemeLabel),
+      themeChangeLabel.replace('{value0}', interpolatedThemeLabel),
     );
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();

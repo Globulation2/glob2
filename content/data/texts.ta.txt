@@ -6822,10 +6822,10 @@ GL மட்டும்
 வெளிர்நிற மணல்
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
-[script compilation success]
-தொகுத்தல் வெற்றியடைந்தது
 [script error at %0:%1: %2]
 வரி %0, நெடுவரிசை %1-இல் பிழை: %2
+[script compilation success]
+தொகுத்தல் வெற்றியடைந்தது
 [script compilation failure %0:%1:(%2):%3]
 தொகுத்தல் தோல்வியடைந்தது: %0:%1:(%2):%3
 [script compilation failed %0]
