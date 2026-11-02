@@ -1,0 +1,478 @@
+{
+  "build-final.log.gz": {
+    "bytes": 13474,
+    "sha256": "c250dee3965263cad828002ee26cfaafcfdeba23442577d6977a0bb59033907c"
+  },
+  "run_mac_validation.py": {
+    "bytes": 3033,
+    "sha256": "5a49eee39d4733ab66e86d01427e9ca6366cc3ae97ddc8cb4c87e145c23b531d"
+  },
+  "cross-native-comparison.json": {
+    "bytes": 564,
+    "sha256": "8a895a1f3866b2127cec9b955e39750330ab96c951d535db7b67a9cf44280aee"
+  },
+  "mac-checksum-command.json": {
+    "bytes": 500,
+    "sha256": "427c68f8151b88245476214468b7ad7ab591426668133bec8867575bebb29014"
+  },
+  "scope-and-review.json": {
+    "bytes": 691,
+    "sha256": "5f45f2698de5a6199da020fe49821360a3ad9c73ef14fa7df4afc18fd231139e"
+  },
+  "mac-validation-status.json": {
+    "bytes": 15,
+    "sha256": "7daa5896b75a3bb763519d651741d371c16968df8bd6c2eab309ead39e217d4e"
+  },
+  "mac-command.json": {
+    "bytes": 933,
+    "sha256": "454dc2f127f7a08eaed40ae021b00acf6ab8e694fbdf0c71f2855cd33a5aa3df"
+  },
+  "EVIDENCE.md": {
+    "bytes": 2665,
+    "sha256": "12b0dd5045177880ffaf1fb281f4cf7308f4e2a75bac29e7a087d849bbefc6c6"
+  },
+  "mac-manifest.json": {
+    "bytes": 492,
+    "sha256": "0665245b11ce58ae811c43f9995c201e68237b1b031b9e643da7640c59999354"
+  },
+  "mac-tests.log.gz": {
+    "bytes": 2760,
+    "sha256": "7d417058daaf34ec8cc97c6599cc0e93f79455281e3df1ad5855bf1c42654612"
+  },
+  "mac-checksums.log.gz": {
+    "bytes": 5485,
+    "sha256": "d0b4944846653ea86bd40389951ca089eab0f8c830cac024714e4e275c394d9d"
+  },
+  "initial191.game.gz": {
+    "bytes": 97457,
+    "sha256": "adb162448c5a51ad29f3339579fa4485870aa030243dd4e3d5e3eee0b3449af2"
+  },
+  "mac-tests.xml": {
+    "bytes": 8847,
+    "sha256": "3daffb8af29255068b41693c0da1b256d8336b0c941349babdbff99940e4a514"
+  },
+  "format-row.log.gz": {
+    "bytes": 67,
+    "sha256": "5d40a51f1205631d9e72fb524e9c0ddd9646402c8593d4a0671eb08eb7486c99"
+  },
+  "format-evidence.log.gz": {
+    "bytes": 76,
+    "sha256": "10ebe93dcfac03455933ac3d5751501127620873f87df930f11e30380680c6c4"
+  },
+  "mac-checksums-status.json": {
+    "bytes": 101,
+    "sha256": "b49ff20849b4936a3e6071a3eef0fcfcd12b977fefcfa594d40771fdce406602"
+  },
+  "fetch-final-base.log.gz": {
+    "bytes": 87,
+    "sha256": "36df141a7d337b9d7ddcefc38c6587d777586877c43771acfc53fd5f452defbe"
+  },
+  "mac-checksums/result.json": {
+    "bytes": 35639,
+    "sha256": "10d64ed16d6f6a5fb8f4493750e6f7edbf746f293b9455e21e7bb652cbfc2538"
+  },
+  "mac-checksums/snapshot.checksums": {
+    "bytes": 82620,
+    "sha256": "d32dd9e4c75d14a1497337f2975699b49332f94a591f12f37846fc90f824e8f9"
+  },
+  "mac-checksums/world.checksums": {
+    "bytes": 63341,
+    "sha256": "912e93b427935c9811c72a446174f43ca1b4e5fb04d5554f753c432ac783872c"
+  },
+  "mac-checksums/artifacts.json": {
+    "bytes": 245,
+    "sha256": "122b05c9f700e36f8f18405755d6f50038000d8046e3568ef4b0573fc54412bb"
+  },
+  "linux/visual-659.json": {
+    "bytes": 1264,
+    "sha256": "f4da0b1d684d3bc84346ccf9e0dbf036053652c4542a01f7711d98533aa18fdd"
+  },
+  "linux/base726-resource-golden.json": {
+    "bytes": 1221,
+    "sha256": "329d26bbcb0c6e1d855a6f66303bbf29e92a30175273c3f6d2baa74232cc8e7b"
+  },
+  "linux/restore-render-build.log.gz": {
+    "bytes": 18795,
+    "sha256": "7f8ad2240d4a799b47f9471d0824b424468b17d6a4f57903134c7249a2923d2b"
+  },
+  "linux/base726-resource-golden.xml": {
+    "bytes": 989,
+    "sha256": "41c28085a08c9629aaf682655067898f29626e594a931da2074b44df3fe36845"
+  },
+  "linux/base726-build.log.gz": {
+    "bytes": 16939,
+    "sha256": "afbd58823572e8d7c760ce708cb63b5e8a173e8b016fa015f820dd6fa06fc7af"
+  },
+  "linux/materials-659.log.gz": {
+    "bytes": 1679,
+    "sha256": "01bb96b3956bb752ef4926d9b9aa5cbfb31533178fe75603fde4946f735ab56a"
+  },
+  "linux/run_bounded.py": {
+    "bytes": 2132,
+    "sha256": "1b46b9416d40ac50cbd516497cc751903d5fe307321f322689cf3a170acf7f4a"
+  },
+  "linux/materials-659.xml": {
+    "bytes": 6770,
+    "sha256": "652e93d555217c870e3b524ad1d443c01778e25bc66e88ad9ee15899276581f5"
+  },
+  "linux/goldens-0be5.xml": {
+    "bytes": 1206,
+    "sha256": "04a133aebe083e0587c6ac49552c69f97657a5e110bc8ffe8b1f71a949395c5c"
+  },
+  "linux/border-659.xml": {
+    "bytes": 342,
+    "sha256": "e480e9fb908ab20638f072aa16a833e831007134b64918826aa4770aa3795ee0"
+  },
+  "linux/early-render-checksums.json": {
+    "bytes": 959,
+    "sha256": "cf57c03093931dcb770933c9dfed9cb879cc2a1dd7dcafb7fd9c5c1bf402808f"
+  },
+  "linux/render0be5-checksums.json": {
+    "bytes": 1205,
+    "sha256": "1514180082bdb9292fe6441001b0646c30d5d062d68133848fb0e25936b4aaa5"
+  },
+  "linux/goldens-0be5.json": {
+    "bytes": 1145,
+    "sha256": "7639c213711ad9fd3c5e51b40127360e05d38afa9198cb04b32c0822d387f1b2"
+  },
+  "linux/qualification-summary.json": {
+    "bytes": 1389,
+    "sha256": "02fa2d3340a66f2f86d2e59cb3c4cfaa0a67b75df3935b7ad002e42fa2142d90"
+  },
+  "linux/run_render_659.py": {
+    "bytes": 2159,
+    "sha256": "46b25c466f03cd64e8a047d84fa2f6b558fe5e6b870aa15e2e17f04dbd97184a"
+  },
+  "linux/render0be5-checksums.log.gz": {
+    "bytes": 5510,
+    "sha256": "03ccd93469bb5d43d7964b0eaac859c300f11df6745f3fea475a19a159445ee5"
+  },
+  "linux/finalize659.py": {
+    "bytes": 1100,
+    "sha256": "af792de53d3f4159a25d9818639a858ea967a5b01808a5e72761762d2dcc41c1"
+  },
+  "linux/materials-0be5.xml": {
+    "bytes": 6770,
+    "sha256": "a877bd5777b70cd601725088b229f61c210f4fc16f64a55dc846b78f8cde430f"
+  },
+  "linux/border-659.log.gz": {
+    "bytes": 266,
+    "sha256": "45c2bf6216c985dc29ebfc360cbd4dca372007734541db87486b4581504ab1e8"
+  },
+  "linux/current-base-comparison.json": {
+    "bytes": 670,
+    "sha256": "398a908b89aa2f4294303bdbaa24d28039c88b6695cfe5a40f8038d917624121"
+  },
+  "linux/compare_current_base.py": {
+    "bytes": 3498,
+    "sha256": "8607d33d61cb96d8f3e24b413f8b6f34b6be76e0c76b43b264b0be4af12034ae"
+  },
+  "linux/provenance-0be5.json": {
+    "bytes": 2929,
+    "sha256": "401349c1372b2edce149bdd11464f530f32c0f2b05391424de8cd07907b9c4af"
+  },
+  "linux/render-0be5-results.json": {
+    "bytes": 81,
+    "sha256": "40f316fb8cbc628ab7bbfe2c455fe4daddc3e5df1d3d83288648b3f1fecb765c"
+  },
+  "linux/border-0be5.xml": {
+    "bytes": 343,
+    "sha256": "7bf027c61f441b30028b6051baa310a047a686c07f375ef8357e7076122470e0"
+  },
+  "linux/final659-qualification.json": {
+    "bytes": 643,
+    "sha256": "c47904df0440ab39ba078cc9d49cb65bd9353a180735d7ccc9c3f9f97d78e085"
+  },
+  "linux/base726-checksums.log.gz": {
+    "bytes": 5507,
+    "sha256": "739ddf08ee8045620123e88a68f6786f3e440fbdc917d80767d6c7710debc175"
+  },
+  "linux/base726-build.json": {
+    "bytes": 847,
+    "sha256": "351c9d9aa61417ffdd2d2cf5d692fd9a1192a3d20247c46bd71230fe97fd7e83"
+  },
+  "linux/base726-checksums.json": {
+    "bytes": 1203,
+    "sha256": "22285398dc598b6a2a3f822bdb9ac28832a2cfd4501700e086b6c9b5b9cf2d52"
+  },
+  "linux/visual-659.xml": {
+    "bytes": 1105,
+    "sha256": "98794380c73445aabae1e5bdd7295d84ced35ac2bf1a263f6b5bb348b42bb0e5"
+  },
+  "linux/render-build-0be5.log.gz": {
+    "bytes": 105968,
+    "sha256": "57621ee73b20ef4074bc0fe27c0ae7fb6d00a11d8339978d8c59ae0bd8f20a01"
+  },
+  "linux/visual-0be5.json": {
+    "bytes": 1267,
+    "sha256": "94ee33b2e238318ea0d9a30921a1bc29cb6eea69c322a1658181ac4152d87981"
+  },
+  "linux/materials-659.json": {
+    "bytes": 1059,
+    "sha256": "64e273467a22a1899ba91c99b3cdc9a2f918eaba0dff5f888f79bf53306166b3"
+  },
+  "linux/border-659.json": {
+    "bytes": 1074,
+    "sha256": "4ccbf531655ec79f0fa304480b6a4902785033526e5e2c111a508ebea18d883c"
+  },
+  "linux/run_render_0be5.py": {
+    "bytes": 2163,
+    "sha256": "5d5f740ddb046a53c2627927d7281618310a47fcd9c206e60ba02a71e971fb3a"
+  },
+  "linux/goldens-659.log.gz": {
+    "bytes": 1009,
+    "sha256": "a4ca1885818465e0d3470ab1760d0b12bfa1bb3ee1565792d2e6727857f5dc6d"
+  },
+  "linux/render-build-0be5.json": {
+    "bytes": 870,
+    "sha256": "44c60c4180b66543d1bccd7726ccb1b82ee8478753f4a1da2d2a4dc7163953c7"
+  },
+  "linux/materials-0be5.log.gz": {
+    "bytes": 1692,
+    "sha256": "f79b08194fda2f3717e393ba49d5718053ca3ac89c82e5e0170416560358e470"
+  },
+  "linux/visual-0be5.xml": {
+    "bytes": 1106,
+    "sha256": "4e924ac4559255368f931105982137033a55abd8b15c18df103f9baa1cfcaa49"
+  },
+  "linux/goldens-0be5.log.gz": {
+    "bytes": 1008,
+    "sha256": "641f7e1918dc9bf8163a8304812c50cb9741d6eb06b697837934cf22991028c7"
+  },
+  "linux/base726-resource-golden.log.gz": {
+    "bytes": 958,
+    "sha256": "6962dbc3ca20c952c2348c7099610c64822c3f02445962f6e2392308ad90bd02"
+  },
+  "linux/goldens-659.xml": {
+    "bytes": 1207,
+    "sha256": "309bc6713ce2ab6df527b6e88bd9cb787519107d78e6c38983a628b96362d22c"
+  },
+  "linux/visual-0be5.log.gz": {
+    "bytes": 460,
+    "sha256": "b1facf0e6b2c6a121220b0b369f077eba9340a70f26689d173425503e52e798e"
+  },
+  "linux/provenance-659.json": {
+    "bytes": 2910,
+    "sha256": "cdafb7d68b4c065fbc443fe558df84cc71528bff5a2a18e10dd3ab3a449735a4"
+  },
+  "linux/visual-659.log.gz": {
+    "bytes": 459,
+    "sha256": "12bbc07299de5c30b5e6481ecd80ee97c39670f1fad0c0b0c7d78884db4a8cfa"
+  },
+  "linux/device-mesa.json": {
+    "bytes": 378,
+    "sha256": "50d9682941857f31310375dd20eddb116cdb452475d218863ddb1a28dd35509b"
+  },
+  "linux/restore-render-build.json": {
+    "bytes": 871,
+    "sha256": "d70a07e3e725683210c6abff7171015a73a4d2a5534d1936e16e7413ba184ca3"
+  },
+  "linux/border-0be5.json": {
+    "bytes": 1078,
+    "sha256": "247a7cd3bdb5ecdf087c933912b9c3fa282099b327e59184b3dc285e405c80bb"
+  },
+  "linux/goldens-659.json": {
+    "bytes": 1142,
+    "sha256": "e99e65c476ef4752930ab5405b6bb876940800ae17e284a7950f39016ff0c5e3"
+  },
+  "linux/base-comparison-steps.json": {
+    "bytes": 114,
+    "sha256": "1f4d7c30aff822e6afd792c9ad9f961f67c6f87b733a67d144fb7cdd3b2f4063"
+  },
+  "linux/render-659-results.json": {
+    "bytes": 78,
+    "sha256": "8ff25aa033aa9debb99c7554dbc0552d93d1bc2bb351fb30692717eef2934ecd"
+  },
+  "linux/renderer-shader-tool.json": {
+    "bytes": 1073,
+    "sha256": "db2d2da36dcfdc11abe8ed36892fece66000b947e9616c70c8feb5ffc4fabcb2"
+  },
+  "linux/materials-0be5.json": {
+    "bytes": 1063,
+    "sha256": "f3a500f8f76f016a7b09b5ec2a4862c1fe06b6b2ffeede89355c10b6d3082a5a"
+  },
+  "inputs/initial191.game.gz": {
+    "bytes": 97457,
+    "sha256": "adb162448c5a51ad29f3339579fa4485870aa030243dd4e3d5e3eee0b3449af2"
+  },
+  "linux/render0be5-checksums/result.json": {
+    "bytes": 35640,
+    "sha256": "9d72a20424af33f84268f68faa498e49c3fdf49671c13994f26bcc5e9929df4c"
+  },
+  "linux/render0be5-checksums/snapshot.checksums": {
+    "bytes": 82620,
+    "sha256": "d32dd9e4c75d14a1497337f2975699b49332f94a591f12f37846fc90f824e8f9"
+  },
+  "linux/render0be5-checksums/world.checksums": {
+    "bytes": 63341,
+    "sha256": "912e93b427935c9811c72a446174f43ca1b4e5fb04d5554f753c432ac783872c"
+  },
+  "linux/base726-checksums/result.json": {
+    "bytes": 35639,
+    "sha256": "bd3908ceb7b379e8b5292e7afc704018f756bce7e8000cac5081c9c6d8564dd3"
+  },
+  "linux/base726-checksums/snapshot.checksums": {
+    "bytes": 82620,
+    "sha256": "d32dd9e4c75d14a1497337f2975699b49332f94a591f12f37846fc90f824e8f9"
+  },
+  "linux/base726-checksums/world.checksums": {
+    "bytes": 63341,
+    "sha256": "912e93b427935c9811c72a446174f43ca1b4e5fb04d5554f753c432ac783872c"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-sdl-gpu-1x-view0.png": {
+    "bytes": 581703,
+    "sha256": "837c428d7b45294fd27c967459d141ac6d273525d3854bcdd40ce8ab1ab846b7"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-sdl-gpu-3x-view3.png": {
+    "bytes": 182794,
+    "sha256": "2d8effdf9d124f9601c6940fe1106cab1742d76aff6faffa0d3e78427eefa284"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-programmable-gl-1x-view15.png": {
+    "bytes": 645783,
+    "sha256": "9832815393b8a5615c746bdab4f3929644a93652bab8ee091774bdfbe7989e2e"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/rendering-backends.txt": {
+    "bytes": 410,
+    "sha256": "8924285968e5f87858492b62a174be65ce3351896ac09a858c3a311e5e1cfa86"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-programmable-gl-3x-view3.png": {
+    "bytes": 182794,
+    "sha256": "2d8effdf9d124f9601c6940fe1106cab1742d76aff6faffa0d3e78427eefa284"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-software-3x-view3.png": {
+    "bytes": 70494,
+    "sha256": "f5da3cb8559cc6c5d092756d94b94e6d4932d300cbd448bfd1c058e1f9d69f87"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-software-1x-view0.png": {
+    "bytes": 538998,
+    "sha256": "431860623f3632a2134ec06e7fdfa85974dec598660cdbf78e0e3e8bb65726f3"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-programmable-gl-1x-view0.png": {
+    "bytes": 581703,
+    "sha256": "837c428d7b45294fd27c967459d141ac6d273525d3854bcdd40ce8ab1ab846b7"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-sdl-gpu-1x-view15.png": {
+    "bytes": 645783,
+    "sha256": "9832815393b8a5615c746bdab4f3929644a93652bab8ee091774bdfbe7989e2e"
+  },
+  "linux/border-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-software-1x-view15.png": {
+    "bytes": 536450,
+    "sha256": "c9edcc699016ad2f75c63122b1f6bc14a4a6a121c37bfbe84f820c6022095176"
+  },
+  "linux/border-0be5/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/rendering-backends.txt": {
+    "bytes": 410,
+    "sha256": "8924285968e5f87858492b62a174be65ce3351896ac09a858c3a311e5e1cfa86"
+  },
+  "linux/visual-659/TerrainValidation/connected_foliage_corners_strips_and_filled_patches_display_artifacts/connected-foliage-ground.png": {
+    "bytes": 1431293,
+    "sha256": "8933fd6f84ea13cb1c381c761948f1a74546072ba3677b50eac1933f7538842c"
+  },
+  "linux/visual-659/TerrainValidation/connected_foliage_corners_strips_and_filled_patches_display_artifacts/connected-foliage.png": {
+    "bytes": 1786157,
+    "sha256": "dc656a5c3bc0d7a0d32d0e8adb13de46a678d5f30f74a2d4d65aee179f49ceba"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-sdl-gpu-1x-view0.png": {
+    "bytes": 581703,
+    "sha256": "837c428d7b45294fd27c967459d141ac6d273525d3854bcdd40ce8ab1ab846b7"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-sdl-gpu-3x-view3.png": {
+    "bytes": 182794,
+    "sha256": "2d8effdf9d124f9601c6940fe1106cab1742d76aff6faffa0d3e78427eefa284"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-programmable-gl-1x-view15.png": {
+    "bytes": 645783,
+    "sha256": "9832815393b8a5615c746bdab4f3929644a93652bab8ee091774bdfbe7989e2e"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/rendering-backends.txt": {
+    "bytes": 410,
+    "sha256": "8924285968e5f87858492b62a174be65ce3351896ac09a858c3a311e5e1cfa86"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-programmable-gl-3x-view3.png": {
+    "bytes": 182794,
+    "sha256": "2d8effdf9d124f9601c6940fe1106cab1742d76aff6faffa0d3e78427eefa284"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-software-3x-view3.png": {
+    "bytes": 70494,
+    "sha256": "f5da3cb8559cc6c5d092756d94b94e6d4932d300cbd448bfd1c058e1f9d69f87"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-software-1x-view0.png": {
+    "bytes": 538998,
+    "sha256": "431860623f3632a2134ec06e7fdfa85974dec598660cdbf78e0e3e8bb65726f3"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-programmable-gl-1x-view0.png": {
+    "bytes": 581703,
+    "sha256": "837c428d7b45294fd27c967459d141ac6d273525d3854bcdd40ce8ab1ab846b7"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-sdl-gpu-1x-view15.png": {
+    "bytes": 645783,
+    "sha256": "9832815393b8a5615c746bdab4f3929644a93652bab8ee091774bdfbe7989e2e"
+  },
+  "linux/visual-659/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-software-1x-view15.png": {
+    "bytes": 536450,
+    "sha256": "c9edcc699016ad2f75c63122b1f6bc14a4a6a121c37bfbe84f820c6022095176"
+  },
+  "linux/visual-0be5/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/rendering-backends.txt": {
+    "bytes": 410,
+    "sha256": "8924285968e5f87858492b62a174be65ce3351896ac09a858c3a311e5e1cfa86"
+  },
+  "mac-checksums/profile/keyboard-mapedit.txt": {
+    "bytes": 708,
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+  },
+  "mac-checksums/profile/keyboard-gui.txt": {
+    "bytes": 1811,
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+  },
+  "mac-checksums/profile/preferences.txt": {
+    "bytes": 1084,
+    "sha256": "63d93bacc6c0f83ee38089ef877a0551b7203535e28ea1e4df96f336d55a83f5"
+  },
+  "mac-tests/TerrainPresentation/GPU_terrain_pages_match_CPU_composition_through_edits_wrapping_recovery_and_live_switches_display_isolated_artifacts_writes-preferences/gpu-terrain-integration.txt": {
+    "bytes": 25,
+    "sha256": "2cd3d919f78dc9e8bdb4c6bb5e93510123dde5d526332e55d7527546b2864c66"
+  },
+  "mac-tests/TerrainValidation/connected_foliage_corners_strips_and_filled_patches_display_artifacts/connected-foliage-ground.png": {
+    "bytes": 1633050,
+    "sha256": "2213c98f6b79c8098c2aa7a102f55278532ba5ae75cd99dfe3f805b74c7b5f42"
+  },
+  "mac-tests/TerrainValidation/connected_foliage_corners_strips_and_filled_patches_display_artifacts/connected-foliage.png": {
+    "bytes": 1910259,
+    "sha256": "69b46c51036002af9048b2b91ecb6f5e4fa20f97165094d32684ddf1b0073d35"
+  },
+  "mac-tests/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-programmable-gl-1x-view15.png": {
+    "bytes": 720048,
+    "sha256": "f4ae06f0b2e0bf468336d4f3a329ff01b928ab6570651d443de9ed6359fff2b8"
+  },
+  "mac-tests/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/rendering-backends.txt": {
+    "bytes": 393,
+    "sha256": "354671fe5c2cff6d96e47870d3b86b9a0d94edfb7241f0b9077b79d684adad24"
+  },
+  "mac-tests/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-programmable-gl-3x-view3.png": {
+    "bytes": 231477,
+    "sha256": "35897979f9fd75cd920ae34e040c7cda273fe276e420eb2d157d66f33ecf07a0"
+  },
+  "mac-tests/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-software-3x-view3.png": {
+    "bytes": 90894,
+    "sha256": "b4da48dae76d5e5edd8c9d523595688c1ebb5212f2a3e2e6b6e73913399abdd8"
+  },
+  "mac-tests/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-software-1x-view0.png": {
+    "bytes": 598328,
+    "sha256": "2de620620cb481ec6ccca3953b377ba7af95207b92076c291d61592ed0fa693a"
+  },
+  "mac-tests/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-programmable-gl-1x-view0.png": {
+    "bytes": 677462,
+    "sha256": "63219c0aeb2143cf03cd128048fd855813f7746c3091ca9fb3ed78638a4693d8"
+  },
+  "mac-tests/TerrainValidation/decorated_borders_match_cached_and_ordinary_rendering_display_isolated_artifacts_writes-preferences/decorated-borders-software-1x-view15.png": {
+    "bytes": 595150,
+    "sha256": "1f7e2096989234857723be5b3b22a54cc9615f3db6c864d825668e130131e781"
+  },
+  "mac-tests/TerrainMaterials/natural_border_visual_fixture_and_cold_composition_timings_display_artifacts/composition.txt": {
+    "bytes": 552,
+    "sha256": "65e66f0a3cfdac5650513e392a60b183fb220b5280a8ad25d42560799286cc51"
+  },
+  "mac-tests/TerrainMaterials/compositor_preserves_native_artwork_overridden_before_startup_display_artifacts/data/terrain/startup-override/atlas.json": {
+    "bytes": 245268,
+    "sha256": "a19406b1aa2f03b09b064edd28128df860a4abe59651796bbb3dfde12e163cab"
+  }
+}

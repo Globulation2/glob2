@@ -1,0 +1,15 @@
+{
+  "source": "659ae9c9560f4759283ee0edd24c5924ebac09fd",
+  "base": "726b37f573d2b1401033b5536562c7ee92b4050d",
+  "files": [
+    "docs/assets/terrain-production.md",
+    "docs/features/terrain-resource-sets.md",
+    "src/render/GameRenderTerrain.cpp",
+    "src/render/TerrainPresentationTest.cpp",
+    "src/render/terrain/TerrainCompositor.cpp",
+    "src/render/terrain/TerrainCompositor.h",
+    "src/render/terrain/TerrainMaterials.h"
+  ],
+  "independent_review": "No actionable findings; read-only final review at659ae9c956; no movement or simulation coupling.",
+  "sim_revision_check": "test/check_sim_revision.py --base726b37f573 passed; key and committed record unchanged from master"
+}

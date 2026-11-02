@@ -1,0 +1,32 @@
+{
+  "label": "base726-checksums",
+  "revision": "726b37f573d2b1401033b5536562c7ee92b4050d",
+  "command": [
+    "/home/bradley/glob2-terrain-base-985b78d7d4/artifacts/terrain-decoration-pr/linux/frozen-base726/src/glob2",
+    "game",
+    "run",
+    "--load-game",
+    "/home/bradley/glob2-terrain-base-985b78d7d4/artifacts/terrain-decoration-pr/linux/inputs/initial191.game.gz",
+    "--compute-threads",
+    "8",
+    "--ticks",
+    "4096",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/glob2-terrain-base-985b78d7d4/artifacts/terrain-decoration-pr/linux/base726-checksums"
+  ],
+  "cwd": "/home/bradley/glob2-terrain-base-985b78d7d4",
+  "timeout_seconds": 600,
+  "environment": {
+    "GLOB2_SDL3_PREFIX": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk",
+    "PKG_CONFIG_PATH": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk/lib/pkgconfig",
+    "LD_LIBRARY_PATH": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk/lib",
+    "GLOB2_REQUIRE_OPENCL": null,
+    "GLOB2_REQUIRE_VULKAN": null
+  },
+  "exit": 0,
+  "elapsed_seconds": 10.657260754000163,
+  "output_bytes": 23621,
+  "termination": []
+}

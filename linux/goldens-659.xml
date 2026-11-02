@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="1" errors="0" skipped="0"><testsuite name="RuntimeResources"><testcase classname="RuntimeResources" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="1.52076" status="run">
+      <failure message="golden mismatch against resources/seeded-compositions-units.trace at line 1   expected: 410362371 0 3431125405 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1   actual:   410362371 0 4085436829 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1" type="FAIL">
+test/support/Glob2Test.cpp:205:
+golden mismatch against resources/seeded-compositions-units.trace at line 1
+  expected: 410362371 0 3431125405 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+  actual:   410362371 0 4085436829 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="1.26669" status="run" />
+  </testsuite></testsuites>

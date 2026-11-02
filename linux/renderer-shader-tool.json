@@ -1,0 +1,22 @@
+{
+  "label": "renderer-shader-tool",
+  "revision": "14a7a746cceaa0b9314a00be77a51cf8b8648ecc",
+  "command": [
+    "bash",
+    "-c",
+    "set -e\nsource_dir=\"$PWD/artifacts/terrain-decoration-pr/linux/glslang-source\"\ntool_dir=\"$PWD/artifacts/terrain-decoration-pr/linux/glslang-tools\"\ngit init \"$source_dir\"\ngit -C \"$source_dir\" fetch --depth 1 https://github.com/KhronosGroup/glslang.git 1062752a891c95b2bfeed9e356562d88f9df84ac\ngit -C \"$source_dir\" checkout --detach FETCH_HEAD\ncmake -S \"$source_dir\" -B \"$tool_dir\" -DCMAKE_BUILD_TYPE=Release -DENABLE_OPT=OFF -DENABLE_GLSLANG_BINARIES=ON -DENABLE_HLSL=OFF\ncmake --build \"$tool_dir\" -j16\n\"$tool_dir/StandAlone/glslang\" --version\n"
+  ],
+  "cwd": "/home/bradley/glob2-terrain-base-985b78d7d4",
+  "timeout_seconds": 900,
+  "environment": {
+    "GLOB2_SDL3_PREFIX": null,
+    "PKG_CONFIG_PATH": null,
+    "LD_LIBRARY_PATH": null,
+    "GLOB2_REQUIRE_OPENCL": null,
+    "GLOB2_REQUIRE_VULKAN": null
+  },
+  "exit": 0,
+  "elapsed_seconds": 53.3181940610084,
+  "output_bytes": 7881,
+  "termination": []
+}

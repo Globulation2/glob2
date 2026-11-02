@@ -1,0 +1,26 @@
+{
+  "label": "base726-build",
+  "revision": "726b37f573d2b1401033b5536562c7ee92b4050d",
+  "command": [
+    "scons",
+    "release=1",
+    "CXX=g++-13",
+    "CC=gcc-13",
+    "-j16",
+    "build/linux/client/release/src/glob2",
+    "engine-tests"
+  ],
+  "cwd": "/home/bradley/glob2-terrain-base-985b78d7d4",
+  "timeout_seconds": 1800,
+  "environment": {
+    "GLOB2_SDL3_PREFIX": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk",
+    "PKG_CONFIG_PATH": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk/lib/pkgconfig",
+    "LD_LIBRARY_PATH": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk/lib",
+    "GLOB2_REQUIRE_OPENCL": null,
+    "GLOB2_REQUIRE_VULKAN": null
+  },
+  "exit": 0,
+  "elapsed_seconds": 100.47609690099489,
+  "output_bytes": 164321,
+  "termination": []
+}

@@ -1,0 +1,15 @@
+[
+  "/Users/bradley/.codex/worktrees/terrain-decoration-borders/glob2/artifacts/terrain-decoration-pr/mac-build/src/glob2",
+  "game",
+  "run",
+  "--load-game",
+  "/Users/bradley/.codex/worktrees/terrain-decoration-borders/glob2/artifacts/terrain-decoration-pr/initial191.game.gz",
+  "--compute-threads",
+  "8",
+  "--ticks",
+  "4096",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/Users/bradley/.codex/worktrees/terrain-decoration-borders/glob2/artifacts/terrain-decoration-pr/mac-checksums"
+]

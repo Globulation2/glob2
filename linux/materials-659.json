@@ -1,0 +1,34 @@
+{
+  "label": "materials-659",
+  "revision": "659ae9c9560f4759283ee0edd24c5924ebac09fd",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "/home/bradley/glob2-terrain-base-985b78d7d4/artifacts/terrain-decoration-pr/linux/frozen-659",
+    "--binary",
+    "engine",
+    "--timeout",
+    "300",
+    "-j1",
+    "--junit",
+    "/home/bradley/glob2-terrain-base-985b78d7d4/artifacts/terrain-decoration-pr/linux/materials-659.xml",
+    "--artifacts",
+    "/home/bradley/glob2-terrain-base-985b78d7d4/artifacts/terrain-decoration-pr/linux/materials-659",
+    "--filter",
+    "TerrainMaterials/*"
+  ],
+  "cwd": "/home/bradley/glob2-terrain-base-985b78d7d4",
+  "timeout_seconds": 1200,
+  "environment": {
+    "GLOB2_SDL3_PREFIX": null,
+    "PKG_CONFIG_PATH": null,
+    "LD_LIBRARY_PATH": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk/lib",
+    "GLOB2_REQUIRE_OPENCL": null,
+    "GLOB2_REQUIRE_VULKAN": null
+  },
+  "exit": 0,
+  "elapsed_seconds": 87.10395150299883,
+  "output_bytes": 4634,
+  "termination": []
+}

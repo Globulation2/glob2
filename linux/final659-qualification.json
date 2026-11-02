@@ -1,0 +1,20 @@
+{
+  "source": "659ae9c9560f4759283ee0edd24c5924ebac09fd",
+  "status": "",
+  "whitespace_ignored_diff": "",
+  "binaries": {
+    "src/glob2": {
+      "sha256": "7d62fb6629770b85110990e0ad6dd5d4e2f35b4446b7c75bfeab9a228c95d072",
+      "byte_identical_to_tested_0be5": true
+    },
+    "test/glob2-engine-tests": {
+      "sha256": "e4bdda6c00115654f350f702ce811eedc44c2b21521d24f496149009fc55dba4",
+      "byte_identical_to_tested_0be5": false
+    },
+    "test/glob2-unit-tests": {
+      "sha256": "da60d2df0ecc67e886132ab640804e47a27e00260983dd43f7ccbcb53dcdb890",
+      "byte_identical_to_tested_0be5": false
+    }
+  },
+  "all_identical": false
+}

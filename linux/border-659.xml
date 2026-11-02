@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="TerrainValidation"><testcase classname="TerrainValidation" name="decorated borders match cached and ordinary rendering [display][isolated][artifacts][writes-preferences]" time="22.076" status="run" />
+  </testsuite></testsuites>

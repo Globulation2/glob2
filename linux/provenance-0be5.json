@@ -1,0 +1,30 @@
+{
+  "source": "0be5f6a9f2c32b9d35c0370ee8b3a3b8136be1e6",
+  "status": "",
+  "compiler": "g++-13 (Ubuntu 13.4.0-10ubuntu1) 13.4.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "build": "scons release=1 CXX=g++-13 CC=gcc-13 -j16 build/linux/client/release/src/glob2 engine-tests unit-tests",
+  "optimization": "-O3; ordinary release, no dev_fast/PCH/unity",
+  "device_coverage": "Xvfb; GL and SDL-GPU Vulkan via Mesa llvmpipe software adapters",
+  "sha256": {
+    "frozen-0be5/shaders/vulkan/cloud.frag.spv": "0e7590f6689244e71d1f80f0ba5bd8b996d0a648458eda80a06560c893d6d6a8",
+    "frozen-0be5/shaders/vulkan/cloud.vert.spv": "b584491abfa91e23865bffc1703c2fb15cbb8d076157de0c7a28132bda165a59",
+    "frozen-0be5/shaders/vulkan/point.frag.spv": "f3e98a737f77714bb8efb4598709065c95558232b7b5d4cff783e90b6e2e8ce0",
+    "frozen-0be5/shaders/vulkan/point.vert.spv": "36045e4827a946b407c9bb26631c5457fa42b38cc3d6de5693c17f2a77f7be6f",
+    "frozen-0be5/shaders/vulkan/primitive.frag.spv": "cf8612fadd644ab619a4b160fcb4843cf1cd7404758863ad909393ffdc2c822d",
+    "frozen-0be5/shaders/vulkan/primitive.vert.spv": "36045e4827a946b407c9bb26631c5457fa42b38cc3d6de5693c17f2a77f7be6f",
+    "frozen-0be5/shaders/vulkan/skin-rig.frag.spv": "361bb00925fc89eeceb1006b16f819f9c90d9b5cae9d3a8a0da15e5826f0dc2a",
+    "frozen-0be5/shaders/vulkan/skin-rig.vert.spv": "fe1a77b0212d116e280a62c66c55ab2744c41db081c62b8b38cde56528aea97e",
+    "frozen-0be5/shaders/vulkan/skin.frag.spv": "361bb00925fc89eeceb1006b16f819f9c90d9b5cae9d3a8a0da15e5826f0dc2a",
+    "frozen-0be5/shaders/vulkan/skin.vert.spv": "5082cf34e3e42071e9f0fd66dd36cc75c388d914c12286247355cb9a7028bf7d",
+    "frozen-0be5/shaders/vulkan/terrain-compose.frag.spv": "c1ea429f219c63a079a26a3aad3da76afcffd525731fce8e2ffea53f1d62844c",
+    "frozen-0be5/shaders/vulkan/terrain-compose.vert.spv": "36045e4827a946b407c9bb26631c5457fa42b38cc3d6de5693c17f2a77f7be6f",
+    "frozen-0be5/shaders/vulkan/terrain-reduce.frag.spv": "0e69823ba9ceaa066f6539e2010daf4b5db8ef9cde36e852af44e78ddc8c9f9b",
+    "frozen-0be5/shaders/vulkan/terrain-reduce.vert.spv": "36045e4827a946b407c9bb26631c5457fa42b38cc3d6de5693c17f2a77f7be6f",
+    "frozen-0be5/shaders/vulkan/world.frag.spv": "f2f0b9a324cb90b7639755c814b68628c026bfa7acc48372810fa2d60cee2f7d",
+    "frozen-0be5/shaders/vulkan/world.vert.spv": "b584491abfa91e23865bffc1703c2fb15cbb8d076157de0c7a28132bda165a59",
+    "frozen-0be5/src/glob2": "7d62fb6629770b85110990e0ad6dd5d4e2f35b4446b7c75bfeab9a228c95d072",
+    "frozen-0be5/test/glob2-engine-tests": "aedd2218d128bdca7c67b79386d38680bbdb327fe30c9b82462e02bc4b891c8b",
+    "frozen-0be5/test/glob2-unit-tests": "2cece5b05c23f9ec29b10dbf32769d33a5a2d8385cf4e902b6c45a4653a96421"
+  }
+}

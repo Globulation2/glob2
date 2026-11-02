@@ -1,0 +1,12 @@
+{
+  "GL_renderer": "llvmpipe (LLVM 21.1.8, 256 bits)",
+  "GL_vendor": "Mesa",
+  "GL_version": "4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3",
+  "GPU_backend": "vulkan",
+  "GPU_driver": "llvmpipe",
+  "GPU_info": "Mesa 26.0.8-1ubuntu0.3 (LLVM 21.1.8)",
+  "GPU_name": "llvmpipe (LLVM 21.1.8, 256 bits)",
+  "GPU_version": "26.0.8",
+  "SDL_version": 3004016,
+  "window_claimed": true
+}

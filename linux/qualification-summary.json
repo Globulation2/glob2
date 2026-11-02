@@ -1,0 +1,40 @@
+{
+  "source": "659ae9c9560f4759283ee0edd24c5924ebac09fd",
+  "base": "726b37f573d2b1401033b5536562c7ee92b4050d",
+  "results": {
+    "border-659.xml": {
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "visual-659.xml": {
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "materials-659.xml": {
+      "tests": "43",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "goldens-659.xml": {
+      "tests": "2",
+      "failures": "1",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "base726-resource-golden.xml": {
+      "tests": "1",
+      "failures": "1",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  "simulation_comparison": "4096 world and4097 snapshot rows byte-identical to current master726; final659 game binary byte-identical to compared0be5",
+  "known_preexisting_failure": "RuntimeResources frozen seeded resource compositions expected3431125405 actual4085436829 at tick0, identical failure on current master726; fixture not updated",
+  "backends": "Software, ProgrammableGL4.5 and SDL-GPU Vulkan via Mesa llvmpipe26.0.8, Xvfb. GL/Vulkan are software devices, hardware GPU rendering not claimed. WebGPU unavailable in this build.",
+  "coverage": "Focused rendering qualification, not full native/unit suites. Movement verification remains on hold."
+}

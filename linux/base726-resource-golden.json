@@ -1,0 +1,35 @@
+{
+  "label": "base726-resource-golden",
+  "revision": "726b37f573d2b1401033b5536562c7ee92b4050d",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/linux/client/release",
+    "--binary",
+    "engine",
+    "--no-display",
+    "--timeout",
+    "300",
+    "-j1",
+    "--filter",
+    "RuntimeResources/frozen seeded resource*",
+    "--junit",
+    "/home/bradley/glob2-terrain-base-985b78d7d4/artifacts/terrain-decoration-pr/linux/base726-resource-golden.xml",
+    "--artifacts",
+    "/home/bradley/glob2-terrain-base-985b78d7d4/artifacts/terrain-decoration-pr/linux/base726-resource-golden"
+  ],
+  "cwd": "/home/bradley/glob2-terrain-base-985b78d7d4",
+  "timeout_seconds": 600,
+  "environment": {
+    "GLOB2_SDL3_PREFIX": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk",
+    "PKG_CONFIG_PATH": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk/lib/pkgconfig",
+    "LD_LIBRARY_PATH": "/home/bradley/glob2-terrain-review-05fb152deb/artifacts/terrain-review/sdk/lib",
+    "GLOB2_REQUIRE_OPENCL": null,
+    "GLOB2_REQUIRE_VULKAN": null
+  },
+  "exit": 1,
+  "elapsed_seconds": 1.74596660300449,
+  "output_bytes": 2026,
+  "termination": []
+}

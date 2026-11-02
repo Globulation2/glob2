@@ -1,0 +1,10 @@
+auto available=1 reason=
+sdl-gpu available=1 reason=
+programmable-gl available=1 reason=
+webgpu available=0 reason=This backend is not implemented in this build.
+portable-sdl available=1 reason=
+software available=1 reason=
+legacy-gl available=1 reason=
+tested=software glVendor= glRenderer=
+tested=sdl-gpu glVendor= glRenderer=
+tested=programmable-gl glVendor=Mesa glRenderer=llvmpipe (LLVM 21.1.8, 256 bits)

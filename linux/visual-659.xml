@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="0" errors="0" skipped="0"><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="GPU terrain pages match CPU composition through edits wrapping recovery and live switches [display][isolated][artifacts][writes-preferences]" time="74.432" status="run" />
+  </testsuite><testsuite name="TerrainValidation"><testcase classname="TerrainValidation" name="connected foliage corners strips and filled patches [display][artifacts]" time="5.76266" status="run" />
+  <testcase classname="TerrainValidation" name="decorated borders choose one material and suppress undecorated corners [display]" time="2.73242" status="run" />
+  <testcase classname="TerrainValidation" name="decorated borders match cached and ordinary rendering [display][isolated][artifacts][writes-preferences]" time="24.4379" status="run" />
+  <testcase classname="TerrainValidation" name="terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]" time="4.18802" status="run" />
+  </testsuite></testsuites>

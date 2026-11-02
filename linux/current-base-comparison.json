@@ -1,0 +1,24 @@
+{
+  "base": "726b37f573d2b1401033b5536562c7ee92b4050d",
+  "render": "0be5f6a9f2c32b9d35c0370ee8b3a3b8136be1e6",
+  "input_sha256": "adb162448c5a51ad29f3339579fa4485870aa030243dd4e3d5e3eee0b3449af2",
+  "traces": {
+    "world.checksums": {
+      "identical": true,
+      "rows": 4096,
+      "sha256": "912e93b427935c9811c72a446174f43ca1b4e5fb04d5554f753c432ac783872c"
+    },
+    "snapshot.checksums": {
+      "identical": true,
+      "rows": 4097,
+      "sha256": "d32dd9e4c75d14a1497337f2975699b49332f94a591f12f37846fc90f824e8f9"
+    }
+  },
+  "identical": true,
+  "results": {
+    "base-build": 0,
+    "base-resource-golden": 1,
+    "base726": 0,
+    "render0be5": 0
+  }
+}

@@ -1,0 +1,9 @@
+Panels row-major: diagonal, headland, bay, S gully, water channel, land strip, island, checkerboard, three-material junction.
+Before disables contextual profiles; textures, seeds and source vertices are identical.
+before scale=1 cold_ms=163.535 median_of=5
+before scale=4 cold_ms=2294.94 median_of=5
+before warm_frame_ms=16.8825 median_of=5x100 frames
+after scale=1 cold_ms=265.426 median_of=5
+after scale=4 cold_ms=3868.44 median_of=5
+after warm_frame_ms=16.2429 median_of=5x100 frames
+simulation_checksum=873924601 unchanged after both presentations

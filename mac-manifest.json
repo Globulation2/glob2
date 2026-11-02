@@ -1,0 +1,10 @@
+{
+  "source": "659ae9c9560f4759283ee0edd24c5924ebac09fd",
+  "base": "726b37f573",
+  "configuration": "native macOS development dev_fast=1 -O0 -g1 linker=auto; not a performance measurement",
+  "binaries": {
+    "src/glob2": "456a14d049a3ebb4fe40a59918c44f0f91e8faa35e6211c4ce01271611a91f4d",
+    "test/glob2-engine-tests": "0184b4c72529a67db74be01d94f3223c10b61c4da798c62e78e1f19fc25fdc55",
+    "test/glob2-unit-tests": "cb01eeff6498167c986fc6a1a53f89ee86c566ef2bb0f3a906403bf5877e8d33"
+  }
+}

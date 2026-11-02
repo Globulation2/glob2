@@ -1,0 +1,19 @@
+{
+  "mac_source": "659ae9c9560f4759283ee0edd24c5924ebac09fd",
+  "linux_game_identity": "Linux final659 game is byte-identical to tested0be5",
+  "traces": {
+    "world.checksums": {
+      "identical": true,
+      "mac_rows": 4096,
+      "linux_rows": 4096,
+      "sha256": "912e93b427935c9811c72a446174f43ca1b4e5fb04d5554f753c432ac783872c"
+    },
+    "snapshot.checksums": {
+      "identical": true,
+      "mac_rows": 4097,
+      "linux_rows": 4097,
+      "sha256": "d32dd9e4c75d14a1497337f2975699b49332f94a591f12f37846fc90f824e8f9"
+    }
+  },
+  "identical": true
+}
