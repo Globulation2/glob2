@@ -23,8 +23,10 @@ Native: `python3 tools/dev_build.py -Q -s -j8 engine-tests unit-tests`, followed
 
 Golden update: `test/run_tests.py --filter 'TurnEngineHarness/the committed match record*' --update-fixtures`; then normal verification and `python3 test/check_sim_revision.py`.
 
-Release: `scons -Q -s -j8 release=1`; `glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz --output-dir ...`; compare emitted checksums to the committed trace; `glob2 game repeat games/cross-replay.game.gz --ticks1500 --runs1` (space-separated CLI flags in the actual invocation).
+Release: `scons -Q -s -j8 release=1`; `glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz --output-dir ...`; compare emitted checksums to the committed trace; `glob2 game repeat games/cross-replay.game.gz --ticks 1500 --runs 1`.
 
 Browser: `python3 tools/dev_build.py target=web web_variant=both -Q -s web-tests`; execute ReplenishmentStaffing via Module.start in Chromium, retain XML and staffing.trace, compare native bytes. Initial build used 4 allocated cores while native work ran, then 12 after native completion; final incremental refresh used 4. All task CPU affinity stayed within CPUs0–11.
 
 Environment/compiler/configuration and source/binary hashes are recorded alongside this file. No runtime dependency changes.
+
+See commands.txt for the command inventory. Final focused tests and both browser traces were refreshed on the final commit.

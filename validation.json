@@ -1,0 +1,45 @@
+{
+  "source": "912823e185d9f99f9b6e6c813abf69f0e0f57443",
+  "native_cases": 106,
+  "checks": {
+    "focused-final": {
+      "tests": "17",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "regressions": {
+      "tests": "83",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "network": {
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "serial": {
+      "cases": 6,
+      "reported_assertions": "2209",
+      "errors": 0,
+      "failures": 0
+    },
+    "threaded": {
+      "cases": 6,
+      "reported_assertions": "2209",
+      "errors": 0,
+      "failures": 0
+    }
+  },
+  "release_verified": true,
+  "release_matches_committed_per_tick_trace": true,
+  "legacy_save_run_ticks": 1500,
+  "platforms_not_verified": [
+    "Windows",
+    "macOS",
+    "ARM/mobile"
+  ],
+  "interactive_feel_not_verified": true
+}

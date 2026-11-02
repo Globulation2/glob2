@@ -1,0 +1,22 @@
+All executions constrained to CPUs0–11 (taskset); initial native builds used0–7 and browser builds8–11.
+Native dependency environment:
+GLOB2_SDL3_PREFIX=/home/bradley/.cache/glob2/native-sdl3-3.4.16-image3.4.6-ttf3.2.2-net3.2.0
+GLOB2_RECORDING_PREFIX=/home/bradley/.local/share/glob2/development/dependencies/build-a3a8fc397766ecbe44e3ffd0/prefix
+
+python3 tools/dev_build.py -Q -s -j8 engine-tests unit-tests
+python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --filter 'ReplenishmentStaffing/*' --filter 'ReplayStepCounter/*' -j2 --timeout 300 --junit artifacts/finish-trips/focused-final.xml --artifacts artifacts/finish-trips/native
+python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --filter 'BuildingProductionCombat/*' --filter 'BuildingMaterialDemand/*' --filter 'BuildingStock/*' --filter 'MarketsV2/*' --filter 'LegacyRoundTripSave/*' --filter 'TeamStatsSave/*legacy version*' --filter 'TeamStatsSave/*replay*' --filter 'JavaScriptCompatibility/*' --exclude-tag display --exclude-tag benchmark -j2 --timeout 300 --junit artifacts/finish-trips/regressions.xml --artifacts artifacts/finish-trips/regressions
+python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --filter 'TurnEngineHarness/the committed match record*' --update-fixtures -j1
+python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --filter 'TurnEngineHarness/*rejects earlier*' --filter 'TurnEngineHarness/the committed match record*' --filter 'TurnEngineHarness/two engines with AI seats*' --filter 'TurnEngineHarness/AI-only turn recordings*' -j2 --timeout 300 --junit artifacts/finish-trips/network.xml --artifacts artifacts/finish-trips/network
+python3 test/check_sim_revision.py
+scons -Q -s -j8 release=1
+build/linux/client/release/src/glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz --output-dir artifacts/finish-trips/release-verify
+cmp artifacts/finish-trips/release-verify/checksums.txt test/fixtures/multiplayer/FourSquares1.verify-trace.txt
+build/linux/client/release/src/glob2 game repeat games/cross-replay.game.gz --ticks 1500 --runs 1
+
+Browser dependency environment:
+GLOB2_RECORDING_PREFIX=/home/bradley/.local/share/glob2/development/dependencies/build-a67f9f075109cd87f6160634/prefix
+python3 tools/dev_build.py target=web web_variant=both -Q -s -j4 web-tests
+python3 browser/serve.py 8774 --bind 127.0.0.1 --directory build/emscripten/client/debug/dev-dev_fast-true-linker-auto
+Module.start(['--test-suite=ReplenishmentStaffing','--reporters=junit','--out=/evidence/tests.xml']) in Chromium153 through Playwright, separately for serial and threaded script-tests.js.
+Each browser staffing.trace was compared byte-for-byte with the final native artifact; exit status, test XML and expected heap threading mode were checked.
