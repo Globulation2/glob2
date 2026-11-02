@@ -19,6 +19,9 @@ legacy saves; the references describe their execution under the current engine.
 Aggregate checksums also include serialized state and random-stream progress,
 so historical hashes are not promises of cross-epoch simulation compatibility.
 
+The active references include the shared Econo/Nicowar farming expansion and
+overgrowth policy. The retained source saves remain unchanged.
+
 The checker compares complete sidecars, including the aggregate checksum and every
 team/entity record, for fresh loads and the v108 checkpoint continuation. It does
 not discard differing fields or weaken the per-tick comparison.
