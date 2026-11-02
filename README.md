@@ -9,8 +9,9 @@ for resources, 1024-tick AI Studio, generated/reloaded 64-tick Generator Studio 
 continuation plus 256-record midpoint reload with one/four workers. Input saves and scripts remain
 unchanged in the source repository. All 174 browser Node contracts pass.
 
-Browser qualification of all 30 original cases is still running. This is native evidence only,
-not a complete local or hosted green checkpoint. Two earlier Chromium graphics failures remain
+Focused browser qualification passes: 35 tests passed and one existing WebKit interactive-threaded fallback was skipped.
+All six original resource composition cases pass from the exact final source with their provenance assertions intact.
+This is not a complete local or hosted green checkpoint. Two earlier Chromium graphics failures remain
 separate work. Windows/macOS fixture verification remains hosted.
 
 Extract with tar -xzf native-reference-evidence.tar.gz; begin with qualification.json, status.json
@@ -23,3 +24,5 @@ available after extraction, without storing duplicate GCC11/GCC13 and serial/par
 Archive SHA-256: 5b0ddab57ebb3f039d82e8ac898664031b0a410a23b990b428bd41bb10a63b1d
 
 Additional evidence: all 150 actual resource records emitted by the failed master macOS job match the refreshed golden exactly. See macos-qualification.json and macos-resource-compositions.trace. Full browser inventory is unchanged: all 747 project/file/title/tag identities match (inventory-comparison.json). Runtime file digests and the frozen build source are recorded in runtime-provenance.json.
+
+Browser evidence: extract browser-fixture-evidence.tar.gz and read final-review.json. All 18 complete Studio/generator traces match native byte-for-byte, with all 36 original selected cases accounted for.
