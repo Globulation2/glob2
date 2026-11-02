@@ -13,6 +13,7 @@
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <memory>
+#include <sstream>
 
 namespace
 {
