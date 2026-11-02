@@ -381,6 +381,9 @@ synchronization. `?gl-errors=1` enables frame-boundary error collection for
 renderer validation; `renderContext.error` is `null` when collection is
 disabled and otherwise retains the most recent nonzero observed error. Use
 this flag for error assertions, and omit it from performance measurements.
+Graphics dimensions and optional GL errors are sampled after paint callbacks.
+Logical update turns publish their state without querying the GPU, so diagnostic
+readback cannot block timer-driven UI or loading work between paints.
 
 The browser steps simulation on the application host even in its threaded
 runtime; background AI/gradient workers do not enable the native separate
