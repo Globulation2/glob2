@@ -48,6 +48,17 @@ bool SkinSpriteManifest::parse(const std::string &bytes, const AuthorizedSkin &s
 		if (turns)
 			for (const auto &page : doc.at("turnPages"))
 				allRecords.push_back(page);
+		const unsigned proneFirst = allRecords.size();
+		const bool prone = doc.contains("proneHarvestMapping") || doc.contains("proneHarvestPages");
+		if (prone)
+		{
+			if (doc.at("proneHarvestMapping") !=
+					nlohmann::json{{"directions", 8}, {"phases", 64}, {"logicalSize", 38}} ||
+				!doc.at("proneHarvestPages").is_array() || doc.at("proneHarvestPages").size() != 8)
+				return false;
+			for (const auto &page : doc.at("proneHarvestPages"))
+				allRecords.push_back(page);
+		}
 		std::vector<SkinSpritePage> candidate;
 		for (unsigned i = 0; i < allRecords.size(); ++i)
 		{
@@ -57,13 +68,21 @@ bool SkinSpriteManifest::parse(const std::string &bytes, const AuthorizedSkin &s
 			p.first = i < 28 ? (i % 4) * 64 : i == 28 ? 0 : 256;
 			p.frames = i < 28 ? 64 : i == 28 ? 1 : 32;
 			p.size = i == 28 ? 128 : 1024;
+			if (i >= proneFirst)
+			{
+				p.clip = ProneHarvestSpriteClip;
+				p.first = (i - proneFirst) * 64;
+				p.frames = 64;
+			}
 			p.hash = r.at("sha256").get<std::string>();
 			if (!r.at("bytes").is_number_unsigned() && !r.at("bytes").is_number_integer())
 				return false;
 			if (r.at("bytes") < 1 || r.at("bytes") > 2 * 1024 * 1024)
 				return false;
 			p.bytes = r.at("bytes").get<unsigned>();
-			if (!Sha256::isHexDigest(p.hash) || r.at("clip") != SkinSpriteClips[p.clip] ||
+			if (!Sha256::isHexDigest(p.hash) ||
+				r.at("clip") != (p.clip == ProneHarvestSpriteClip ? ProneHarvestSpriteName
+																  : SkinSpriteClips[p.clip]) ||
 				r.at("first") != p.first || r.at("frames") != p.frames || r.at("width") != p.size ||
 				r.at("height") != p.size)
 				return false;

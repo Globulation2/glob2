@@ -27,10 +27,10 @@ public:
                  int right, int bottom, int viewportX, int viewportY,
                  int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion, bool drawUnits = true, bool drawBuildings = true, const FogFade *fogFade = nullptr);
     std::optional<std::uint32_t> buildingColor(int team) const;
-    bool draw(GAGCore::GraphicContext &gfx, int type, int team, int action,
-              int direction, int delta, float x, float y, GAGCore::SkinShadow shadow = {},
-              std::uint8_t alpha = 255);
-    bool drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
+	bool draw(GAGCore::GraphicContext &gfx, int type, int team, int action, int direction,
+			  int delta, float x, float y, GAGCore::SkinShadow shadow = {},
+			  std::uint8_t alpha = 255, int pronePhase = -1);
+	bool drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
                    float width, float height, std::uint8_t alpha = 255);
 private:
     static unsigned unitClip(int type, int action);
@@ -60,6 +60,7 @@ private:
     std::array<GAGCore::SkinMesh, Online::SWARM_MESHES.size()> swarms;
     bool visible = true;
     bool ready = false;
-    std::array<GAGCore::SkinMesh, 7> clips;
+	std::array<GAGCore::SkinMesh, 2> proneHarvest;
+	std::array<GAGCore::SkinMesh, 7> clips;
     std::array<GAGCore::SkinMesh, 7> turns;
 };
