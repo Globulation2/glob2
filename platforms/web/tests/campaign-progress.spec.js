@@ -5,7 +5,17 @@ const fs=require('node:fs/promises');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=async(page,name)=>{
   if(name==='MainMenuScreen') {
-    await expect.poll(async()=>{const s=await state(page);if(s.screen.includes('CampaignMainMenu')) await clickControl(page,'back');return /MainMenuScreen|IntroductionOfferScreen/.test(s.screen+' '+s.screenClass);}).toBe(true);
+    await expect.poll(async()=>{
+      const s=await state(page);
+      if(/MainMenuScreen|IntroductionOfferScreen/.test(s.screen+' '+s.screenClass)) return true;
+      if(s.screen.includes('CampaignMainMenu') && s.controls.back?.enabled) {
+        await clickControl(page,'back');
+        // A consumed Back starts the transition. Do not send it again while
+        // the old screen name remains published with its controls removed.
+        return true;
+      }
+      return false;
+    }, {timeout:60000}).toBe(true);
     return waitForMainMenu(page);
   }
   return expect.poll(async()=>(await state(page)).screen).toContain(name);
