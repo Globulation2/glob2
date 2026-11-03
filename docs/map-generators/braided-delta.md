@@ -20,10 +20,10 @@ per-colony fans by making one shared wetland the middle of the map.
   ground, each in a clearing of plain grass with a starter wheat patch and a copse. Floodplain
   farms, island woods and the great island's orchard lie inward; building room and kopje stone lie
   outward in the desert.
-- **The panhandle's river is a wall.** Its water is deep with a ring of shallow water, and a tile
-  mixing the two can be neither walked nor swum, so nothing crosses it but its boardwalk bridges
-  (River crossings). Deep water never touches ground a unit can stand on, or a swimmer could step
-  straight in and across; inside the range the river is deep against the rock.
+- **The panhandle's river requires bridges or swimming.** Its deep core and shallow banks
+  block walking between the boardwalk bridges (River crossings). Trained units can swim
+  through either depth and across their transitions. Shallow shoals line the banks; inside
+  the range the river is deep against the rock.
 - **The swamp is slow, not closed.** Marsh is walkable at 5/8 speed and takes no buildings or
   crops. The swamp's channels are shallow: forded where the fords are, swum by trained units.
   Lagoons are deep pools off the channels.
@@ -74,8 +74,8 @@ lobby offers generate. Tags: natural terrain, river, swamp, desert, islands, con
 
 - the terrain is the design's, corner for corner;
 - every colony can walk to colony 0;
-- in each stretch of the panhandle between its gorge, bridges and apex, nothing that walks or swims
-  gets from one bank to the other (the bank is the side of the river's middle line);
+- in each stretch of the panhandle between its gorge, bridges and apex, units without swimming
+  cannot reach the other bank (the bank is the side of the river's middle line);
 - no piece of 48 or more walkable tiles is cut off from colony 0 by terrain;
 - every colony can harvest food within 24 steps and wood within 32, with 16 building sites.
 

@@ -625,6 +625,11 @@ TEST_SUITE("TerrainRuntime")
 		std::vector<Uint16> expected(1024, 1);
 		expected[0] = GRADIENT_AT_GOAL;
 		map.propagateGradient(expected.data(), 6);
+		const auto baseline = map.frozenTerrainMovementSnapshot(6);
+		// The square patch contains grass plus quarter-, half- and full-ice
+		// cells, each with a distinct cardinal and diagonal entry cost.
+		REQUIRE(baseline->movement.profiles.size() == 4);
+		REQUIRE(baseline->movement.steps.size() == 8);
 		nlohmann::json definitions = nlohmann::json::array();
 		for (unsigned speed = 64; speed <= 1024; ++speed)
 			definitions.push_back({{"key", "unused:s" + std::to_string(speed)},
@@ -636,8 +641,8 @@ TEST_SUITE("TerrainRuntime")
 			nlohmann::json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
 		REQUIRE(map.terrainRegistry().movement(6).profiles.size() > 50);
 		const auto snapshot = map.frozenTerrainMovementSnapshot(6);
-		CHECK(snapshot->movement.profiles.size() == 2);
-		CHECK(snapshot->movement.steps.size() == 4);
+		CHECK(snapshot->movement.profiles.size() == baseline->movement.profiles.size());
+		CHECK(snapshot->movement.steps == baseline->movement.steps);
 		CHECK(map.terrainQueueBuckets() == 64);
 		std::vector<Uint16> actual(1024, 1);
 		actual[0] = GRADIENT_AT_GOAL;
@@ -1044,7 +1049,12 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
     map.paintCell(3,3,WATER); // Removing the last fast cell must remove its histogram contribution.
     map.paintCell(25,25,TRAIL);
     CHECK(map.hasTerrainMovementModifiers());
-    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10); // Faster walkable ground is unavailable to swimmers.
+    CHECK_FALSE(map.terrainPropertiesAt(25,25).swimmable); // The pure trail is walking-only.
+    CHECK(map.terrainPropertiesAt(24,24).swimmable);
+    CHECK(map.terrainPropertiesAt(24,24).groundSpeedQ8==320); // (3*256+512)/4.
+    CHECK(map.minStepCost(WATER_ONLY_CLASS)==8); // Swimming shores inherit a quarter of trail speed.
+    map.paintCell(25,25,WATER);
+    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10); // Removing the last fast shore restores the minimum.
 
     map.fillTerrain(*fast);
     // This fixed layout makes an overestimated water-only heuristic choose
@@ -1408,10 +1418,18 @@ TEST_CASE("escape fields separate team permissions swimming and forbidden-area e
     CHECK(map.gradientRuntime->safety.fields.size()==2);
     map.removeForbidden(14,8,0);
     REQUIRE(map.pathfindTerrainSafety(first));
+    const int permittedDx=first->dx,permittedDy=first->dy;
     // A unit already on forbidden ice can leave through further forbidden cells.
+    // Paint only the hazardous approach, leaving its safe goal unchanged; the
+    // best direction must match the unpainted route, including cheaper mixed edges.
     for(int y=6;y<=10;++y) for(int x=6;x<=13;++x) map.addForbidden(x,y,0);
     REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(first->dx==1); CHECK(first->dy==0);
+    CHECK(first->dx==permittedDx); CHECK(first->dy==permittedDy);
+    const int nextX=first->posX+first->dx,nextY=first->posY+first->dy;
+    CHECK((first->dx!=0 || first->dy!=0));
+    CHECK(map.terrainPropertiesAt(nextX,nextY).groundHealthQ8<0);
+    CHECK_FALSE(map.isFreeForGroundUnit(nextX,nextY,false,world.game.teams[0]->me));
+    CHECK(map.isFreeForGroundUnitNoForbidden(nextX,nextY,false));
     // Swimming exposes the surrounding safe water as additional escape goals.
     first->setPerformance(SWIM,first->performance[WALK]);
     REQUIRE(map.pathfindTerrainSafety(first));
