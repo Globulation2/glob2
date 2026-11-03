@@ -1,0 +1,7 @@
+# Live canvas control bounds validation
+
+Head f8fea7787bba7d9b1fe02f8005cf34c87f12c241, base 622ace3e8755d91c68c42d774793762ce4557e0f. Helper-only change; live DOM canvas backing replaces render-context creation size for the existing aspect-ratio stale-layout guard. Physical CSS coordinate mapping, assertions, selected inventory and deadlines are retained.
+
+Twelve original Chromium/Firefox cases: eleven pass, one fails. All four fullscreen cases, four viewport/high-DPI cases, both Firefox editor cases and Chromium serial editor pass. Chromium threaded editor fails waiting for SettingsScreen after a settings click; screenshot retained. This unresolved failure is not waived or claimed repaired. Old full baseline703 also fails Chromium threaded editor at owner lookup. Paired unmodified-master and candidate serial editor diagnostic runs each exceeded the original 720 s deadline; these diagnostic replays did not produce a usable failure-state attachment and are not claimed direct before/after timing evidence. Their complete logs and JUnit errors are retained.
+
+The real release Wasm baseline703 is reused: browser production source, SDK, release flags and pinned source bytes are unchanged through base622; intervening browser changes are test helpers/documentation and the recording-download mirror preserves source hashes. Native helper baseline703 is unchanged. There are no runtime, dependency, simulation or timeout changes. Full master CI and complete current-master validation remain pending.
