@@ -38,7 +38,7 @@ as an arena. Fairness is statistical; the lobby keeps the best-scoring of severa
   with stone outcrops (which never grow) and fruit groves. Algae seeds the pools.
 - **Routes opened, not hoped for.** Last of all, `openRoutes` walks from colony 0 and, for any
   colony it cannot reach, opens the cheapest way through: deposits on it are cleared and water on
-  it becomes a sand ford (all four corners of each route tile), so a boxed-in start is repaired rather than
+  it becomes a sand ford (painting its swimming corners), so a boxed-in start is repaired rather than
   failed.
 - **Checked, not assumed.** `validateWorld` rebuilds the design and requires every clearing's pond
   present, no deposit on any levee tile, and every colony reachable on foot from colony 0, with
