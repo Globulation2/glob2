@@ -14,6 +14,7 @@
 #include "Team.h"
 #include "Building.h"
 #include "MapInternal.h"
+#include "gradient/GradientRuntime.h"
 #include "Race.h"
 #include "Ressource.h"
 #include "IntBuildingType.h"
@@ -1053,7 +1054,13 @@ TEST_CASE("experimental fallback choices preserve or release the actual assignme
         auto* seeker=f.addUnit(WORKER,8,9);REQUIRE(seeker);hireClaimWorker(*seeker,*b);
         REQUIRE(holder->acquireMaterialClaimAt(Uint32(map.coordToIndex(13,8))));
         const auto held=holder->activeMaterialClaim;
+        const GradientFieldKey demandKey{GradientFieldFamily::Materials,0,Uint8(seeker->movementClass()),WHEAT};
+        const auto queryBucket=f.game.stepCounter&127;
+        const auto beforeQueries=map.gradientRuntime->adaptive.enroll(demandKey).queries[queryBucket];
         seeker->handleActiveMaterialMovement();
+        // Selection reads are real demand even when every available unit of
+        // stock is reserved and this worker must wait instead of descending.
+        CHECK(map.gradientRuntime->adaptive.fields.at(demandKey).queries[queryBucket]==beforeQueries+1);
         CHECK(seeker->materialClaimPolicyState.decisionOrdinal==1);
         CHECK(seeker->materialClaimPolicyState.fallbackCount==1);
         CHECK_FALSE(seeker->activeMaterialClaim);

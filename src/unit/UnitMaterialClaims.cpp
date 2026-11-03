@@ -281,7 +281,12 @@ void Unit::handleActiveMaterialMovement()
     const bool refresh=experimental && activeMaterialClaim && config.destinationRefreshJ
         && cadence.decisionOrdinal-cadence.lastGoalAttempt>=config.destinationRefreshJ;
     if(!activeMaterialClaim || refresh) {
-        const auto* field=map.getMaterialGradientSlot(owner->teamNumber,destinationPurpose,movementClass(),false,nullptr);
+        std::optional<GradientFieldKey> key;
+        const auto* field=map.getMaterialGradientSlot(owner->teamNumber,destinationPurpose,movementClass(),false,nullptr,&key);
+        // Claims consume the material field even when selection finds only
+        // fully reserved stock. Keep adaptive refresh demand alive while these
+        // workers wait for growth or a different available destination.
+        if(key)map.gradientMovementDemand(*key);
         if(experimental)cadence.lastGoalAttempt=cadence.decisionOrdinal;
         if(field) {
             map.observeMaterialClaimDecision(*this,field);const auto previousTask=materialClaimTask;
