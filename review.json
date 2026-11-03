@@ -62,5 +62,12 @@
     "compared": 564,
     "failures": 0,
     "reference_updates": false
+  },
+  "linux_checksum_validation": {
+    "javascript": "Bothprofile1andrealistic-profile1 completechecksums/exact1-and4-workerreplay/saveoutputand6savedcontinuationspass",
+    "released_simulation": "Threefrozenworlds1024/2048/2048ticksandv108checkpoint256reloadticks haveidenticalcompletechecksumsidecars",
+    "archive": "linux-checksum-validation.tar.gz",
+    "sha256": "dc64e6bec90b65dd042490b8b212290801b911e8909af230f2846d78fc479c7e",
+    "scope": "LinuxGCC13only. Remainingcontinuationgroupsandfullnativeinprogress;nocross-platformequivalenceclaim."
   }
 }
