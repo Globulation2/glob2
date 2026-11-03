@@ -40,6 +40,47 @@ std::vector<nlohmann::json> rows(const std::string& path) {
 }
 }
 TEST_SUITE("ClaimLiveJourney") {
+TEST_CASE("movement-only observation preserves classic and active worlds without oracle work") {
+    glob2test::HeadlessGlobals globals;
+    for(bool active:{false,true}) {
+        std::vector<Uint32> reference;
+        for(bool observe:{false,true}) {
+            CAPTURE(active);CAPTURE(observe);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=1937});
+            auto& map=fixture.game.map;
+            if(active) {map.setMaterialDestinationsEnabled(true);map.setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig{});}
+            auto* consumer=fixture.addBuilding("inn",20,20);auto* unit=worker(fixture,consumer);
+            map.setResourceByIndex(12,8,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(12,8),WHEAT,1);
+            const auto path=(glob2test::artifactDir()/"movement-only.jsonl.gz").string();
+            std::shared_ptr<ResourceClaims::Probe> probe;
+            if(observe) {
+                std::filesystem::remove(path);ResourceClaims::Probe::Config config;config.movementOnly=true;config.movementStartTick=0;
+                probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);
+            }
+            if(active)REQUIRE(unit->acquireMaterialClaimAt(map.coordToIndex(12,8)));
+            const auto random=unit->entityRandom;std::vector<Uint32> checksums;
+            for(unsigned tick=0;tick<3;++tick) {
+                fixture.game.stepCounter=tick;
+                if(observe)probe->decision(fixture.game,*unit,nullptr); // Must not capture or dereference a field.
+                unit->committedMove(1,0);checksums.push_back(fixture.game.checkSum());
+            }
+            CHECK(unit->entityRandom==random);CHECK(map.materialClaimTrackingEnabled()==false);
+            CHECK(map.activeClaimsEnabled()==active);
+            if(!observe)reference=checksums;
+            else {
+                CHECK(checksums==reference);probe->publish(3);probe->finish();
+                CHECK(probe->movementMetrics().totalMoves==3);
+                CHECK(probe->movementMetrics().moves[unsigned(active?ResourceClaims::Probe::MovementKind::ClaimedResource:ResourceClaims::Probe::MovementKind::UnclaimedResource)]==3);
+                CHECK(probe->metrics().decisions==0);CHECK(probe->metrics().captureBytes==0);
+                CHECK(probe->liveMetrics().journeyEligible==0);CHECK(probe->liveMetrics().moves==0);
+                const auto trace=rows(path);REQUIRE(trace.size()==2);
+                CHECK(trace.front()["movement_only"]==true);CHECK(trace.front()["decision_sampling_enabled"]==false);
+                CHECK(trace.back()["movement_audit"]["coverage_known"]==true);
+            }
+            unit->attachedBuilding=nullptr;
+        }
+    }
+}
 TEST_CASE("actual committed movement and harvest observation preserve simulation checksums") {
     glob2test::HeadlessGlobals globals;
     std::vector<Uint32> reference;

@@ -275,6 +275,13 @@ def trace_rows(stream):
         raise ValueError('duplicate pattern/policy identities')
     from .claim_journeys import Validator
     journeys = Validator(schema)
+    movement_only = schema.get('movement_only', False)
+    if type(movement_only) is not bool:
+        raise ValueError('invalid movement-only mode')
+    if 'decision_sampling_enabled' in schema and schema['decision_sampling_enabled'] is not (not movement_only):
+        raise ValueError('inconsistent decision sampling mode')
+    if movement_only and (schema.get('movement_audit_version') != 1 or schema.get('decision_sampling_enabled') is not False):
+        raise ValueError('movement-only trace requires movement audit and disabled decision sampling')
     yield schema
     count, summary, previous = 0, None, -1
     for line in stream:
@@ -286,9 +293,13 @@ def trace_rows(stream):
         if row.get('kind') == 'summary':
             summary = row
         elif row.get('kind') == 'journey':
+            if movement_only:
+                raise ValueError('journey in movement-only trace')
             journeys.row(row)
             yield row
         elif row.get('kind') == 'decision':
+            if movement_only:
+                raise ValueError('decision in movement-only trace')
             if type(row.get('ordinal')) is not int or row['ordinal'] <= previous:
                 raise ValueError('duplicate or unordered claim event')
             previous = row['ordinal']
@@ -318,6 +329,8 @@ def trace_rows(stream):
     if not summary or summary.get('complete') is not True or summary.get('submitted') != count or summary.get('completed') != count:
         raise ValueError('incomplete resource claim trace')
     journeys.finish(summary)
+    if movement_only and any(summary.get(key) != 0 for key in ('decisions','sampled','submitted','completed','capture_bytes')):
+        raise ValueError('movement-only trace contains decision work')
     yield summary
 
 

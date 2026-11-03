@@ -23,6 +23,7 @@ public:
         unsigned maxPending=8;
         std::string deepContext; // Diagnostic JSON: source_revision,bundle_id,cohort_id,game_id.
         std::optional<Uint32> movementStartTick;
+        bool movementOnly=false; // No ledger, decision sampling, or journey baselines required.
     };
     enum class LiveEvent : unsigned {
         Acquired, Released, Retargeted, HarvestBegin, Harvested, HarvestFailed,

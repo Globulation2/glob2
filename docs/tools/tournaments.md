@@ -1007,6 +1007,18 @@ travel before loading or establish wasted movement. Older captures lack this
 audit and remain unavailable, never zero. Compare these totals alongside delivery,
 labour and shortage metrics before evaluating roam or job-release fallbacks.
 
+For classic-versus-claims travel comparisons, use the explicit
+`resource_claims_movement_only` job observer (CLI
+`--resource-claims-movement-only`). It requires bundle capability
+`resource_claims_movement_only_version: 1`, the same bounded observer configuration
+and compressed artifact as the decision probe, and full results. Sampling bounds
+remain recorded but decision sampling and journey baselines are disabled. The
+schema attests `movement_only: true` and `decision_sampling_enabled: false`;
+collectors reject decision/journey rows or unknown segment coverage. This mode
+neither enables a shadow ledger nor changes the loaded/new game's claim policy.
+It excludes shadow, decision and deep observers. Results report actual claim
+enforcement, including `ledger_mode: "disabled"` for a classic baseline.
+
 Use the separate bounded gameplay analyzer for exact team-timeline metrics:
 
 ```sh

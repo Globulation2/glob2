@@ -7,6 +7,11 @@ from pathlib import Path
 from .common import read_json
 
 _TYPES = {}
+_CLAIM_OBSERVERS = ('resource_claims_shadow', 'resource_claims_probe', 'resource_claims_movement_only')
+
+def _claim_sampling(config):
+    return next(config[key] for key in _CLAIM_OBSERVERS if key in config)
+
 _UNIFIED_COLLECTORS=('unified-gradient-h128-v4','unified-gradient-spatial-h128-v3')
 DEFAULT_GAME_TICKS = 90000
 DEFAULT_WIN_PROBABILITY_PERMILLE = 950
@@ -115,7 +120,7 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
@@ -142,8 +147,10 @@ class EngineJob:
             validate_policy(config['resource_claims_policy'])
             if config.get('material_destinations') is not True or 'resource_claims_active' in config or 'resource_claims_shadow' in config or job['outputs'].get('replay'):
                 raise ValueError('experimental claim policy requires material destinations and excludes other modes and replay')
-        if 'resource_claims_shadow' in config and 'resource_claims_probe' in config:
-            raise ValueError('choose shadow or active probe')
+        if sum(key in config for key in _CLAIM_OBSERVERS) > 1:
+            raise ValueError('choose exactly one claim observer')
+        if 'resource_claims_movement_only' in config and 'resource_claims_deep_context' in config:
+            raise ValueError('movement-only observer excludes deep capture')
         if 'resource_claims_probe' in config and 'resource_claims_active' not in config and 'resource_claims_policy' not in config and 'save' not in job['inputs']:
             raise ValueError('active probe requires active new game or saved state')
         if 'resource_claims_deep_context' in config:
@@ -157,8 +164,8 @@ class EngineJob:
                 raise ValueError('deep capture requires claim observation')
             if 'resource-claims-deep/manifest.json' not in job['outputs'].get('required', []):
                 raise ValueError('deep capture requires final manifest artifact')
-        if self.kind == 'game' and ('resource_claims_shadow' in config or 'resource_claims_probe' in config):
-            claims = config.get('resource_claims_shadow', config.get('resource_claims_probe'))
+        if self.kind == 'game' and any(key in config for key in _CLAIM_OBSERVERS):
+            claims = _claim_sampling(config)
             bounds = {'sample_every': (1, 1000000000), 'max_samples': (1, 1000000), 'max_bytes': (1024, 2147483647)}
             if not isinstance(claims, dict) or set(claims) != set(bounds):
                 raise ValueError('resource_claims_shadow requires sample_every, max_samples and max_bytes')
@@ -237,7 +244,7 @@ class EngineJob:
             required = job['labels']['require_movement_audit']
             if type(required) is not bool:
                 raise ValueError('require_movement_audit must be a boolean')
-            if required and (self.kind != 'game' or not any(k in config for k in ('resource_claims_probe','resource_claims_shadow'))):
+            if required and (self.kind != 'game' or not any(k in config for k in _CLAIM_OBSERVERS)):
                 raise ValueError('required movement audit needs an explicit game claim observer')
         if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', DEFAULT_GAME_TICKS) > 4096
                 and 'artifact_bytes' not in job['limits']):
@@ -307,9 +314,12 @@ class EngineJob:
             if 'resource_claims_policy' in config:
                 from .claim_policy import canonical_policy
                 add('--resource-claims-policy-json', canonical_policy(config['resource_claims_policy']))
-            if 'resource_claims_shadow' in config or 'resource_claims_probe' in config:
-                claims = config.get('resource_claims_shadow', config.get('resource_claims_probe'))
-                args.append('--resource-claims-shadow' if 'resource_claims_shadow' in config else '--resource-claims-probe')
+            if any(key in config for key in _CLAIM_OBSERVERS):
+                claims = _claim_sampling(config)
+                observer = next(key for key in _CLAIM_OBSERVERS if key in config)
+                if observer == 'resource_claims_movement_only' and bundle.get('capabilities', {}).get('resource_claims_movement_only_version') != 1:
+                    raise ValueError('bundle lacks movement-only observer version 1')
+                args.append('--'+observer.replace('_','-'))
                 for key, flag in (('sample_every', '--resource-claims-sample-every'),
                                   ('max_samples', '--resource-claims-max-samples'),
                                   ('max_bytes', '--resource-claims-max-bytes')):
@@ -391,7 +401,7 @@ class EngineJob:
                 raise ValueError('engine material destination mode differs from frozen request')
             if 'resource_claims_active' in job['config'] and result.get('resolved', {}).get('active_claim_policy') != job['config']['resource_claims_active']:
                 raise ValueError('engine active claim policy differs from frozen request')
-        if result.get('status') == 'completed' and ('resource_claims_shadow' in job['config'] or 'resource_claims_probe' in job['config']):
+        if result.get('status') == 'completed' and any(key in job['config'] for key in _CLAIM_OBSERVERS):
             from .resource_claims import ARTIFACT, trace_rows
             mode = result.get('resolved', {}).get('material_destinations_enabled')
             if type(mode) is not bool:
@@ -399,7 +409,13 @@ class EngineJob:
             if 'material_destinations' in job['config'] and mode != job['config']['material_destinations']:
                 raise ValueError('engine material destination mode differs from frozen request')
             attestation = result.get('resource_claims_shadow', {})
-            active = 'resource_claims_probe' in job['config']
+            movement_only = 'resource_claims_movement_only' in job['config']
+            actual_policy = result.get('resolved', {}).get('active_claim_policy')
+            if movement_only and actual_policy not in ('disabled','prototype-stationary-v1','experimental'):
+                raise ValueError('movement-only observer lacks claim mode provenance')
+            active = actual_policy != 'disabled' if movement_only else 'resource_claims_probe' in job['config']
+            if attestation.get('movement_only',False) is not movement_only:
+                raise ValueError('engine claim observation mode differs from request')
             if attestation.get('schema_version') != 1 or attestation.get('enforced') is not active:
                 raise ValueError('engine did not attest requested claim enforcement mode')
             if active:
@@ -410,11 +426,13 @@ class EngineJob:
                 # relabel an experimental continuation as the old prototype.
                 if actual_policy not in ('prototype-stationary-v1', 'experimental') or (expected_policy is not None and actual_policy != expected_policy):
                     raise ValueError('engine active claim policy differs from frozen request')
-            sampling = job['config'].get('resource_claims_shadow', job['config'].get('resource_claims_probe'))
+            sampling = _claim_sampling(job['config'])
             with gzip.open(path.parent / ARTIFACT, 'rt') as stream:
                 rows = trace_rows(stream)
                 schema = next(rows)
-                if job.get('labels', {}).get('require_movement_audit') and schema.get('movement_audit_version') != 1:
+                if schema.get('movement_only',False) is not movement_only or movement_only and schema.get('decision_sampling_enabled') is not False:
+                    raise ValueError('movement-only schema mismatch')
+                if (movement_only or job.get('labels', {}).get('require_movement_audit')) and schema.get('movement_audit_version') != 1:
                     raise ValueError('engine did not attest required movement audit')
                 for config_key, schema_key in (('sample_every', 'sample_every'), ('max_samples', 'max_samples'), ('max_bytes', 'max_output_bytes')):
                     if sampling[config_key] != schema.get(schema_key):
@@ -431,7 +449,7 @@ class EngineJob:
                             raise ValueError('claim event policy differs from engine result')
                 if row['submitted'] != attestation.get('submitted') or row['completed'] != attestation.get('completed'):
                     raise ValueError('resource claim summary differs from engine result')
-                if job.get('labels', {}).get('require_movement_audit') and row['movement_audit']['coverage_known'] is not True:
+                if (movement_only or job.get('labels', {}).get('require_movement_audit')) and row['movement_audit']['coverage_known'] is not True:
                     raise ValueError('required movement audit lacks known segment coverage')
         if result.get('status') == 'completed' and 'resource_claims_deep_context' in job['config']:
             from .claim_capture import read_capture, DESIGN, validate_manifest

@@ -417,6 +417,7 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
         {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
         {"sample_every",config.sampleEvery},{"max_samples",config.maxSamples},{"max_pending",config.maxPending},
         {"movement_audit_version",1},
+        {"movement_only",config.movementOnly},{"decision_sampling_enabled",!config.movementOnly},
         {"live_journey_version",1},{"live_event_names",Json::array({"acquired","released","retargeted","harvest_begin","harvested","harvest_failed",
             "goal_refresh_same","goal_refresh_changed","goal_refresh_failed","fallback_wait","fallback_roam","fallback_release",
             "route_initial","route_refresh","route_repair","route_probe_fallback","pending_path","traffic_wait","geometry_contradiction",
@@ -487,7 +488,7 @@ const Probe::LiveMetrics& Probe::liveMetrics() const {return impl->live;}
 const Probe::MovementMetrics& Probe::movementMetrics() const {return impl->movement;}
 void Probe::liveEvent(const Unit& unit,LiveEvent event) const
 {
-    if(impl->finished)return;
+    if(impl->finished || impl->config.movementOnly)return;
     const auto tick=unit.owner->game->stepCounter;impl->expireJourneys(tick);
     const auto owner=unitOwner(unit.gid,unit.scriptIdentity);
     ++impl->live.events.at(unsigned(event));
@@ -540,7 +541,7 @@ void Probe::liveEvent(const Unit& unit,LiveEvent event) const
 }
 void Probe::routeWork(const RouteDiagnostics& value) const
 {
-    if(impl->finished)return;
+    if(impl->finished || impl->config.movementOnly)return;
     auto& live=impl->live;
     live.routeCompleted+=value.completed;live.routeCanceled+=value.canceled;
     live.routeExpansions+=value.expansions;live.routeElapsedNs+=value.elapsedNs;
@@ -549,7 +550,7 @@ void Probe::routeWork(const RouteDiagnostics& value) const
 }
 void Probe::routeEvent(Uint64 owner,Uint64 task,Uint32 tick,LiveEvent event) const
 {
-    if(impl->finished)return;
+    if(impl->finished || impl->config.movementOnly)return;
     impl->expireJourneys(tick);++impl->live.events.at(unsigned(event));
     const auto at=impl->journeys.find(owner);
     if(at!=impl->journeys.end() && at->second.task==task)++at->second.events[unsigned(event)];
@@ -586,7 +587,7 @@ void Probe::moved(const Unit& unit,int oldX,int oldY) const
         ++impl->movement.moves[index];impl->movement.weightedCost[index]+=cost;
         ++impl->movement.totalMoves;impl->movement.totalCost+=cost;
     }
-    if(!unit.activeMaterialClaim)return;
+    if(!unit.activeMaterialClaim || impl->config.movementOnly)return;
     ++impl->live.moves;impl->live.liveCost+=cost;
     const auto at=impl->journeys.find(unitOwner(unit.gid,unit.scriptIdentity));
     if(at==impl->journeys.end() || at->second.task!=unit.materialClaimTask){++impl->live.untrackedMoves;return;}
@@ -595,7 +596,7 @@ void Probe::moved(const Unit& unit,int oldX,int oldY) const
 
 void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pickupAccess)
 {
-    if(impl->finished)return;
+    if(impl->finished || impl->config.movementOnly)return;
     auto& metrics=impl->metrics;
     const Uint64 ordinal=++metrics.decisions;
     ++impl->materialDecisions.at(unit.destinationPurpose);

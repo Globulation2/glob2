@@ -293,6 +293,17 @@ TEST_CASE("active claim observer is independent of shadow tracking" * doctest::t
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims-probe"}));
 }
 
+TEST_CASE("movement-only observer is independent of claim enforcement" * doctest::test_suite("CommandLine"))
+{
+    const std::vector<std::string> args={"game","run","--output-dir","artifacts/movement-only-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims-movement-only"};
+    CHECK_NOTHROW(Cli::parse(args));
+    CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/movement-only-cli","--load-game","classic.game","--resource-claims-movement-only"}));
+    for(const auto* flag:{"--resource-claims-probe","--resource-claims-shadow","--resource-claims-deep-context"}) {
+        auto bad=args;bad.push_back(flag);if(std::string(flag)=="--resource-claims-deep-context")bad.push_back("{}");
+        CHECK_THROWS(Cli::parse(bad));
+    }
+}
+
 TEST_CASE("explicit live claim policy JSON is new-game research only")
 {
     std::vector<std::string> args={"game","run","--output-dir","artifacts/policy-cli","--map-file","test.map","--game-seed","42","--player","castor","--material-destinations","--resource-claims-policy-json",R"({"source_version":1,"route_refresh_j":6})"};
