@@ -47,7 +47,7 @@ class TerrainDecor(unittest.TestCase):
         self.assertEqual(sorted(blocks), sorted(decor.ORDER))
         for name, block in blocks.items():
             first = decor.first_frame(name)
-            self.assertEqual(block["sprite"], decor.PREFIX)
+            self.assertEqual(block["sprite"], decor.SPRITE)
             self.assertEqual(block["full"], list(range(first, first + decor.FULL)))
             self.assertEqual(block["edge"], list(range(first + decor.FULL, first + decor.FRAMES)))
             if name in decor.CONNECTED:

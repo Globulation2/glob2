@@ -1453,6 +1453,76 @@ def render_pumice(ctx):
     return mix(rgb, p["rust"], [smoothstep(0.74, 0.88, v) * r for v, r in zip(rust, rock)], 0.4), None
 
 
+@recipe(name="frozen_lake", group="ice", label="Frozen lake", profile="frozen",
+        seam={'height': 4, 'cast_q8': 64, 'cast_width_q8': 640, 'fringe': [228, 240, 248], 'fringe_q8': 96,
+              'fringe_width_q8': 384},
+        palette={"deep": (88, 126, 146), "mid": (130, 168, 184), "pale": (178, 206, 216), "glint": (226, 238, 242),
+                 "crack": (206, 226, 232), "white": (242, 248, 250), "frost": (226, 236, 240)},
+        style=Style(luma=160, std=18, grain_max=14, match=0.7), periodic=True, grid=8, blocks=4)
+def render_frozen_lake(ctx):
+    """Frosted lake ice: teal depth under a thin white bloom, a few long white
+    pressure cracks, trapped bubbles and patches of frost. Static, unlike water."""
+    return frozen_lake_look(ctx, RECIPES["frozen_lake"].palette, 0.7, 0.9)
+
+
+def warped_edges(ctx, cells, warp, cells_warp=4):
+    """Long, wandering fracture lines: Worley edges warped, common at the block edge."""
+    size = ctx.size
+    f1, f2, _, c1, c2, _ = block_worley(ctx, cells)
+    cx, cy = fbm(ctx.shared_rng, cells_warp, 2, size=size), fbm(ctx.shared_rng, cells_warp, 2, size=size)
+    wx = blend_fields(cx, fbm(ctx.rng, cells_warp, 2, size=size), ctx.interior_mask)
+    wy = blend_fields(cy, fbm(ctx.rng, cells_warp, 2, size=size), ctx.interior_mask)
+    return domain_warp([b - a for a, b in zip(f1, f2)], wx, wy, warp)
+
+
+def bubbles(ctx):
+    """Clusters of small air bubbles trapped in the ice."""
+    size = ctx.size
+
+    def make(rng):
+        mask = [0.0] * (size * size)
+        for _ in range(3 * (size // N) ** 2):
+            x, y = rng.random() * size, rng.random() * size
+            for _ in range(rng.randint(5, 12)):
+                stamp_disc(mask, x + rng.gauss(0, 7), y + rng.gauss(0, 7), rng.uniform(1.0, 2.6), softness=0.4)
+        return mask
+    return layout_field(ctx, make)
+
+
+def frozen_lake_look(ctx, p, frost_amount, crack_strength):
+    """Thick lake ice: depth tint, streaks, sheen, pressure cracks, bubbles and frost."""
+    size = ctx.size
+    # Depth: broad clear (dark) and cloudy (pale) zones of thick lake ice.
+    depth = layout_field(ctx, lambda rng: fbm(rng, 3, 3, size=size))
+    rgb = ramp(depth, [(0.0, p["deep"]), (0.55, p["mid"]), (1.0, p["pale"])])
+    # Cold streaks frozen into the ice.
+    streak = layout_field(ctx, lambda rng: fbm(rng, 4, 3, cells_y=14, size=size))
+    rgb = mix(rgb, p["pale"], [smoothstep(0.55, 0.85, v) for v in streak], 0.25)
+    # Soft specular sheen: a broad diagonal glint.
+    sheen = layout_field(ctx, lambda rng: fbm(rng, 2, 2, size=size))
+    rgb = mix(rgb, p["glint"], [smoothstep(0.6, 0.9, v) for v in sheen], 0.35)
+    # Pressure cracks: few, long and bright; a fine fracture net under them.
+    major = warped_edges(ctx, 1, 18, 3)
+    fine = warped_edges(ctx, 6, 6, 8)
+    gate = layout_field(ctx, lambda rng: fbm(rng, 5, 2, size=size))
+    net = [(1 - smoothstep(0.012, 0.03, e)) * smoothstep(0.42, 0.55, g) for e, g in zip(fine, gate)]
+    rgb = mix(rgb, p["crack"], net, 0.3 * crack_strength)
+    # Only some ridges survive: long pressure cracks, not a full net.
+    keep = layout_field(ctx, lambda rng: fbm(rng, 2, 2, size=size))
+    ridge = [smoothstep(0.45, 0.6, k) for k in keep]
+    line = [(1 - smoothstep(0.01, 0.035, e)) * r for e, r in zip(major, ridge)]
+    halo = [(1 - smoothstep(0.02, 0.09, e)) * r for e, r in zip(major, ridge)]
+    rgb = mix(rgb, p["crack"], halo, 0.25 * crack_strength)
+    rgb = mix(rgb, p["white"], line, 0.85 * crack_strength)
+    rgb = mix(rgb, p["white"], bubbles(ctx), 0.7)
+    # Frost and wind-blown snow dusting in patches.
+    frost = layout_field(ctx, lambda rng: fbm(rng, 6, 3, size=size))
+    grain = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
+    dust = [smoothstep(0.62, 0.8, f) * (0.6 + 0.4 * g) for f, g in zip(frost, grain)]
+    rgb = mix(rgb, p["frost"], dust, frost_amount)
+    return rgb, None
+
+
 @recipe(name="deep_snow", group="ice", label="Deep snow", profile="soft",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512, "fringe": [196, 210, 232], "fringe_q8": 64,
               "fringe_width_q8": 384},

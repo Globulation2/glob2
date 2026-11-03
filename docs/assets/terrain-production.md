@@ -91,7 +91,7 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 | Grass | baseline, no mark | |
 | Fertile (loam, moss, spring meadow) | warm, saturated ground | |
 | Water, deep water, lava | reserved colour | |
-| Snow and ice (ice, deep snow) | reserved cold white | |
+| Snow and ice (ice, deep snow, frozen lake) | reserved cold white and pale teal | `frozen_lake_look` |
 | Sand | warm fine grain | `sand_look` |
 | Barren (dirt, clay, shale, heath) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks` |
 | Paths (road, brick path, boardwalk, sandstone tiles) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone` |
@@ -112,7 +112,9 @@ cell, ochre and grey in a checker. Mud is churned lumps and water-filled pits;
 mudflat is desiccated mud in big curled plates split by deep cracks,
 with salt bloom and a few damp sunken plates; scree is big jagged slabs heaped
 over one another, each tipped to its own brightness; pumice field is dark porous
-volcanic rock riddled with vesicles, beside lava and ember field. The helpers keep the block contract: geometry comes from
+volcanic rock riddled with vesicles, beside lava and ember field. Frozen lake
+plays exactly like ice: frosted teal lake ice with a few long white pressure
+cracks, trapped bubbles and frost patches, static and paler than any water. The helpers keep the block contract: geometry comes from
 the shared stream at the block edge, interiors vary, and any normalisation or
 lighting uses the common reference. Obstacles are lit from the top left and cast
 onto grass, and void casts onto every neighbour. The grass and sand
@@ -397,7 +399,7 @@ existing artwork.
 | `brush` | 320 / 768 / 320 / 384 / 512 | 48 × 17 | hedge, thicket, heath, spring_meadow |
 | `sand` (existing) | 256 / 1024 / 320 / 512 / 512 | 61 × 17, traced | water, sand, grass |
 | `fractured` (existing) | 320 / 768 / 320 / 128 / 256 | 32 × 9 | lava, ember_field |
-| `frozen` | 320 / 768 / 320 / 128 / 256 | 32 × 9 | ice |
+| `frozen` | 320 / 768 / 320 / 128 / 256 | 32 × 9 | ice, frozen_lake |
 | `cobblestone` (existing) | 256 / 640 / 224 / 320 / 384 | 24 × 9 | road |
 | `shore` | 256 / 832 / 320 / 384 / 704 | 48 × 33, lobed with ripple | pair treatments only |
 | `liquid` | 256 / 1024 / 448 / 128 / 640 | 40 × 33, broad and smooth | pair treatments only |
@@ -448,7 +450,7 @@ default rule (the rougher profile wins):
 | 4 | boulders, hedge, thicket | 88 / 832, a sense of height on the grass side |
 | 4 | ridge_rock, outcrop | 72 / 768 |
 | 4 | lava, ember_field | no cast; scorch fringe `[214,110,40]` 128/640 and `[160,80,40]` 96/512 |
-| 4 | ice (existing) | 64 / 640 with frost fringe |
+| 4 | ice (existing), frozen_lake | 64 / 640 with frost fringe |
 | 3 | road (existing), brick_path, boardwalk, sandstone | 48 / 512 |
 | 3 | deep_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
 | 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |

@@ -46,7 +46,7 @@ class TerrainSynth(unittest.TestCase):
 
     def test_every_catalogue_type_has_a_recipe(self):
         self.assertEqual(sorted(synth.RECIPES), sorted(synth.SYNTH_ORDER))
-        self.assertEqual(len(synth.BUILTIN_ORDER), 30)
+        self.assertEqual(len(synth.BUILTIN_ORDER), 31)
         for name, recipe in synth.RECIPES.items():
             self.assertEqual(recipe.name, name)
             self.assertIn(recipe.profile, ("rock", "soft", "crisp", "brush", "sand", "fractured", "cliff", "cobblestone", "frozen",
@@ -64,7 +64,7 @@ class TerrainSynth(unittest.TestCase):
         """Native-only terrain is limited to legacy art without an HD source."""
         catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
         rows = {line.split()[0] for line in (ROOT / "content/data/highres/v1/frames.txt").read_text().splitlines()[1:]}
-        native_only = {"content/data/gfx/terrain", "content/data/gfx/terrain-cobblestone"}
+        native_only = {"data/gfx/terrain", "data/gfx/terrain-cobblestone"}
         for material in catalog["materials"]:
             sprite = material["sprite"]
             if sprite in native_only:
@@ -72,10 +72,10 @@ class TerrainSynth(unittest.TestCase):
             decor = material.get("decor")
             if decor:
                 for frame in decor["full"] + decor["edge"]:
-                    name = f"{decor['sprite'].removeprefix('content/data/gfx/')}{frame}"
+                    name = f"{decor['sprite'].removeprefix('data/gfx/')}{frame}"
                     with self.subTest(frame=name):
                         self.assertIn(name, rows)
-            stem = sprite.removeprefix("content/data/gfx/")
+            stem = sprite.removeprefix("data/gfx/")
             phases = material.get("animation_frames", 1)
             stride = material.get("animation_stride", 0)
             for variant in material["variants"]:
@@ -338,7 +338,7 @@ class TerrainSynth(unittest.TestCase):
         self.assertEqual([m["key"] for m in fragment["materials"]], synth.SYNTH_ORDER)
         self.assertEqual(fragment["bindings"], {name: name for name in synth.SYNTH_ORDER})
         for block in fragment["materials"]:
-            self.assertEqual(block["sprite"], f"content/data/gfx/terrain-{block['key']}")
+            self.assertEqual(block["sprite"], f"data/gfx/terrain-{block['key']}")
             recipe = synth.RECIPES[block["key"]]
             self.assertEqual(len(block["variants"]), (recipe.grid ** 2 or synth.VARIANTS) * recipe.blocks)
             self.assertNotIn("ocean", block)
