@@ -272,6 +272,7 @@ void Unit::resolveDeath()
 
 			// generate death animation (no-op in headless mode)
 			owner->game->animations->onUnitDeath(*owner->map, posX, posY, owner);
+			owner->game->animations->onUnitGone(gid);
 		}
 		isDead = true;
 	}

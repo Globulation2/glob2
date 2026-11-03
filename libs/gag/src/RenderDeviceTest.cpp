@@ -60,6 +60,20 @@ class DelayedDevice final : public RenderDevice
 }
 TEST_SUITE("RenderDevice")
 {
+    TEST_CASE("additive blits add filtered light and never join ordinary blits")
+    {
+        auto source=surface(1,1);paint(source.get(),40,80,120);DelayedDevice device;RenderResources resources;
+        auto backend=makeDeviceRenderBackend(device,resources,2,1);
+        backend->blit(source.get(),source.get(),1,false,{0,0,1,1},{0,0,1,1},200);
+        REQUIRE(backend->blitAdditive(source.get(),source.get(),1,{0,0,1,1},{1,0,1,1},128));
+        backend->blit(source.get(),source.get(),1,false,{0,0,1,1},{0,0,1,1},200);
+        backend->present();
+        REQUIRE(device.pending.size()==1);const auto &packets=device.pending.front().frame.packets;REQUIRE(packets.size()==3);
+        CHECK(packets[0].blend==DrawPacket::Blend::Automatic);
+        CHECK(packets[1].blend==DrawPacket::Blend::Additive);CHECK(packets[1].linear);CHECK(packets[1].alpha==128);
+        CHECK(packets[1].texture==packets[0].texture);
+        CHECK_FALSE(packets[0].compatible(packets[1]));CHECK_FALSE(packets[1].compatible(packets[2]));
+    }
     TEST_CASE("physical scissors partition fractional CPU geometry without double blending")
     {
         auto render=[](bool partition) {

@@ -307,6 +307,16 @@ class DeviceRenderBackend final : public RenderBackend
         value.source = src; value.destination = dst; value.alpha = alpha; value.linear = true;
         append(std::move(value)); ++counts.blits;
     }
+    bool blitAdditive(const void *key, SDL_Surface *source, std::uint64_t revision,
+                      const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
+    {
+        if(aborted)return true;
+        auto value = packet(DrawPacket::Kind::Blit); try{value.texture = texture(key, source, revision, false);}catch(const RenderAdmissionDeferred &){abort();return true;}
+        value.source = src; value.destination = dst; value.alpha = alpha; value.linear = true;
+        value.blend = DrawPacket::Blend::Additive;
+        append(std::move(value)); ++counts.blits;
+        return true;
+    }
     void blitMipmapped(const void *key, SDL_Surface *source, std::uint64_t revision,
                       std::span<const RenderMipLevel> mipLevels, const SDL_Rect &src,
                       const SDL_FRect &dst, Uint8 alpha) override

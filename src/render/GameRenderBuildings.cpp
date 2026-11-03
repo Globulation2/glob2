@@ -31,6 +31,7 @@
 
 
 #include "Brush.h"
+#include "UnitEffectArt.h"
 #include "IntBuildingType.h"
 
 
@@ -79,11 +80,26 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	const Uint8 spriteAlpha = Uint8(std::lround(255 * spriteOpacity));
 	if (spriteOpacity > 0)
 	{
+		// A swarm that has just produced a unit glows in its team colour (UnitEffects.h).
+		float glowOpacity = 0;
+		if (view)
+			if (const auto found = view->render.swarmGlows.find(Uint16(gid)); found != view->render.swarmGlows.end())
+				glowOpacity = found->second;
+		const GAGCore::Color glow = glowOpacity > 0 ? UnitEffectArt::tint(UnitEffectArt::hueOf(color)) : GAGCore::Color();
+		const Uint8 glowAlpha = Uint8(std::lround(255 * glowOpacity * spriteOpacity));
 		const bool skinned = view && type->presentation.skinSlot == "swarm"
 			&& !type->isBuildingSite && view->render.skinPreview().drawSwarm(
 				*globalContainer->gfx, team->number, x+dx, y+dy,
-				buildingSprite->getW(imgid), buildingSprite->getH(imgid), spriteAlpha);
-		if (!skinned) globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid, spriteAlpha);
+				buildingSprite->getW(imgid), buildingSprite->getH(imgid), spriteAlpha,
+				Uint32(glow.r) << 16 | Uint32(glow.g) << 8 | glow.b, glowAlpha);
+		if (!skinned)
+		{
+			globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid, spriteAlpha);
+			if (glowAlpha)
+				if (DrawableSurface *shape = buildingSprite->silhouette(imgid, glow, true))
+					globalContainer->gfx->drawSurfaceAdditive(float(x+dx), float(y+dy), float(buildingSprite->getW(imgid)),
+						float(buildingSprite->getH(imgid)), shape, glowAlpha);
+		}
 	}
 	if (detail && detail->buildingIcon > 0)
 	{

@@ -34,6 +34,7 @@
 #include <algorithm>
 #include "unit/render/UnitSkin.h"
 #include "scene/Scene.h"
+#include "UnitEffectArt.h"
 #include "Utilities.h"
 #include "GameGUI.h"
 #include <SDL3/SDL.h>
@@ -85,6 +86,19 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
 			return;
 	}
+	// A unit a swarm has just produced fades in as a team-colour silhouette,
+	// sliding out of the swarm; one a building has just serviced shimmers in the
+	// service's colour (UnitEffects.h).
+	const auto effect = view.render.unitEffects.find(gid);
+	const bool hasEffect = effect != view.render.unitEffects.end();
+	const auto effectKind = hasEffect ? UnitEffect::Kind(effect->second.kind) : UnitEffect::Kind::Spawn;
+	const float effectAge = hasEffect ? effect->second.age + view.render.unitMotion : 0;
+	const UnitEffect::UnitLook effectLook = !hasEffect ? UnitEffect::UnitLook{1, 0, 0}
+		: effectKind == UnitEffect::Kind::Spawn ? UnitEffect::unitLook(effectAge)
+		: UnitEffect::UnitLook{1, 0, UnitEffect::serviceSilhouette(effectAge)};
+	fogAlpha = Uint8(std::lround(fogAlpha * effectLook.opacity));
+	if (fogAlpha == 0)
+		return;
 	// Everything drawn for the unit fades with it: `opacity` for the bars, pips and
 	// marker, which take a fraction, and faded() for alphas out of 255.
 	const float opacity = fogAlpha / 255.f;
@@ -115,6 +129,11 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	{
 		// TODO : if looks ugly, do something intelligent here
 	}
+	if (hasEffect)
+	{
+		px -= int(std::lround(effect->second.dx * effectLook.slide));
+		py -= int(std::lround(effect->second.dy * effectLook.slide));
+	}
 
 	int dir=unit->direction;
 	assert(dir>=0);
@@ -144,6 +163,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// The sprite stays opaque under the marker fading in over it, and goes once
 	// the marker is solid. Units at the fog edge fade, including painted meshes
 	// and their original ground shadows.
+	const float teamHue = UnitEffectArt::hueOf(color);
+	const GAGCore::Color glow = !hasEffect ? GAGCore::Color()
+		: effectKind == UnitEffect::Kind::Spawn ? UnitEffectArt::tint(teamHue) : UnitEffectArt::serviceTint(effectKind);
+	const Uint8 glowAlpha = Uint8(std::lround(255 * effectLook.silhouette));
 	// A swimmer's limbs fade into the water, whichever artwork draws it.
 	const bool swimming = (unit->action == STOP_SWIM || unit->action == SWIM || pronePhase >= 0) &&
 						  detail.unitSprite > 0;
@@ -156,9 +179,19 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 				*globalContainer->gfx, meshClass, unit->team, unit->action, dir, delta, px, py,
 				{unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
 				 unsigned(unitSprite->getH(imgid))},
-				fogAlpha, pronePhase))
+				fogAlpha, pronePhase, Uint32(glow.r) << 16 | Uint32(glow.g) << 8 | glow.b, glowAlpha))
+		{
 			globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
+			// Meshes brighten as they draw; a sprite gets its silhouette's light added.
+			if (glowAlpha)
+				if (DrawableSurface *shape = unitSprite->silhouette(imgid, glow))
+					globalContainer->gfx->drawSurfaceAdditive(float(px-decX), float(py-decY), float(unitSprite->getW(imgid)),
+						float(unitSprite->getH(imgid)), shape, faded(glowAlpha));
+		}
 	}
+	if (hasEffect && detail.unitSprite > 0)
+		view.render.unitOverlays.push_back({float(px), float(py), effectAge, teamHue, opacity,
+			UnitEffect::seedOf(effect->second.x, effect->second.y, gid), effect->second.kind, effect->second.level});
 	if (swimming && pronePhase < 0)
 	{
 		// Each stroke sends a ring back across the water over the faded limbs.

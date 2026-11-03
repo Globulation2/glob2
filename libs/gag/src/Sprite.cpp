@@ -393,6 +393,58 @@ namespace GAGCore
 		teamColorBytes = 0;
 	}
 
+	DrawableSurface *Sprite::silhouette(unsigned index, const Color &color, bool teamLayerOnly)
+	{
+		if (!checkBound(index))
+			return nullptr;
+		DrawableSurface *team = rotated[index] ? rotated[index]->orig : nullptr;
+		DrawableSurface *base = teamLayerOnly ? nullptr : images[index];
+		DrawableSurface *shape = base ? base : team;
+		if (!shape)
+			return nullptr;
+		const TeamColorKey key{int(index), teamLayerOnly, color.r, color.g, color.b};
+		if (auto found = silhouetteIndex.find(key); found != silhouetteIndex.end())
+		{
+			silhouetteList.splice(silhouetteList.begin(), silhouetteList, found->second);
+			return silhouetteList.front().surface.get();
+		}
+		std::unique_ptr<DrawableSurface> ds(shape->clone());
+		SDL_Surface *pixels = ds->getSDLSurface();
+		// The team layer adds its coverage to the base layer's: 1-(1-a)(1-b).
+		SDL_Surface *over = base && team && team->getSDLSurface()->w == pixels->w
+			&& team->getSDLSurface()->h == pixels->h ? team->getSDLSurface() : nullptr;
+		const auto *format = SDL_GetPixelFormatDetails(pixels->format);
+		const auto *overFormat = over ? SDL_GetPixelFormatDetails(over->format) : nullptr;
+		for (int y = 0; y < pixels->h; ++y)
+		{
+			Uint32 *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(pixels->pixels) + y * pixels->pitch);
+			const Uint32 *overRow = over ? reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(over->pixels) + y * over->pitch) : nullptr;
+			for (int x = 0; x < pixels->w; ++x)
+			{
+				Uint8 r, g, b, a;
+				SDL_GetRGBA(row[x], format, SDL_GetSurfacePalette(pixels), &r, &g, &b, &a);
+				if (overRow)
+				{
+					Uint8 ignored, coverage;
+					SDL_GetRGBA(overRow[x], overFormat, SDL_GetSurfacePalette(over), &ignored, &ignored, &ignored, &coverage);
+					a = Uint8(255 - (255 - a) * (255 - coverage) / 255);
+				}
+				row[x] = SDL_MapSurfaceRGBA(pixels, color.r, color.g, color.b, a);
+			}
+		}
+		const size_t bytes = static_cast<size_t>(pixels->w) * pixels->h * 4;
+		while (!silhouetteList.empty() && silhouetteBytes + bytes > silhouetteCacheCap)
+		{
+			silhouetteBytes -= silhouetteList.back().bytes;
+			silhouetteIndex.erase(silhouetteList.back().key);
+			silhouetteList.pop_back();
+		}
+		silhouetteList.push_front(TeamColorNode{key, std::move(ds), bytes});
+		silhouetteIndex[key] = silhouetteList.begin();
+		silhouetteBytes += bytes;
+		return silhouetteList.front().surface.get();
+	}
+
 	DrawableSurface *Sprite::getColoredSurface(int index, bool experiment)
 	{
 		RotatedImage *image = experiment ? experimentRotated[index] : rotated[index];
