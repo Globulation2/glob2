@@ -63,9 +63,11 @@ builds use temporary paths without spaces, then their verified installations are
 copied to the cache volume before atomic publication. This permits the macOS
 `Application Support` cache location without passing it to upstream Makefiles.
 Pinned SDL and recording archive downloads retry network failures and transient
-HTTP responses up to three attempts, with one- and two-second delays. Every
-archive must match its locked SHA-256 before installation; checksum failures
-and permanent HTTP errors fail immediately.
+HTTP responses in up to three rounds, with one- and two-second delays between
+rounds. Each round tries the primary URL and any locked mirrors in order; a
+transient primary failure falls through to a mirror without an extra delay.
+Every source must match the same locked SHA-256 before installation; checksum
+failures and permanent HTTP errors fail immediately.
 Explicit
 prefix overrides and `GLOB2_DEV_MODE=isolated` remain supported. Clean, dry-run,
 help and compilation-database-only requests do not provision dependencies.
@@ -90,7 +92,7 @@ No speedup is assumed before measuring matching source and toolchain inputs.
 ### Shared renderer shader assets
 
 The build generates shader layouts and GLSL variants from
-`libgag/shaders/renderer-manifest.json` and the authoritative material sources.
+`libs/gag/shaders/renderer-manifest.json` and the authoritative material sources.
 `GLOB2_GLSLANG` can point to pinned glslang 15.1.0 for offline Vulkan SPIR-V generation;
 without the platform’s offline binaries the experimental SDL GPU family is unavailable.
 `GLOB2_NAGA` selects pinned Naga 27.0.0 for browser WGSL. Optional

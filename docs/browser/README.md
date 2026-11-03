@@ -4,7 +4,7 @@ The browser client shares simulation, formats and online play with native client
 
 ## Build and understand
 
-1. [Build, play and test](../../browser/README.md).
+1. [Build, play and test](../../platforms/web/README.md).
 2. [Architecture and runtime packaging](implementation.md).
 3. [Storage and save completion](storage.md), [viewport and input](viewport.md), [network transports](gateway.md), and [music playback](audio.md).
 

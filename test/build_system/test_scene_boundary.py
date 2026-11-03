@@ -60,7 +60,7 @@ class SceneBoundaryTests(unittest.TestCase):
         # Audit their full local dependency chain, not only the Scene include.
         headers += [ROOT / 'src/resource' / name for name in
                     ('ResourceRegistry.h', 'ResourceProperties.h', 'Material.h')]
-        headers += [ROOT / 'src/game/ExperimentalFeatures.h', ROOT / 'libgag/include/Types.h']
+        headers += [ROOT / 'src/game/ExperimentalFeatures.h', ROOT / 'libs/gag/include/Types.h']
         for path in headers:
             for name in include.findall(path.read_text()):
                 if '/' not in name and name.islower():

@@ -21,15 +21,15 @@ def bundle_resources(root,bundle):
     resources=bundle/'Contents/Resources';hashes={}
     for name in ASSETS:
         path=resources/name
-        if not path.is_file() or sha(path)!=sha(root/name):
+        if not path.is_file() or sha(path)!=sha(root/'content'/name):
             raise ValueError('Missing or changed bundled asset: '+name)
         hashes[name]=sha(path)
     key='NSLocalNetworkUsageDescription'
-    source=plistlib.loads((root/'darwin/Info.plist').read_bytes())
+    source=plistlib.loads((root/'platforms/macos/Info.plist').read_bytes())
     actual=plistlib.loads((bundle/'Contents/Info.plist').read_bytes())
     if actual.get(key)!=source[key]:raise ValueError('English permission purpose mismatch')
     localized=resources/'th.lproj/InfoPlist.strings'
-    if not localized.is_file() or localized.read_bytes()!=(root/'darwin/th.lproj/InfoPlist.strings').read_bytes():
+    if not localized.is_file() or localized.read_bytes()!=(root/'platforms/macos/th.lproj/InfoPlist.strings').read_bytes():
         raise ValueError('Thai permission purpose mismatch or misplaced resource')
     thai=re.search(r'"NSLocalNetworkUsageDescription"\s*=\s*"([^"]+)";',localized.read_text(encoding='utf-8')).group(1)
     hashes['th.lproj/InfoPlist.strings']=sha(localized)

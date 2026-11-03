@@ -47,7 +47,7 @@ file has been qualified.
 
 ## Tests
 
-`browser/tests/import.spec.js` drives real file choosers, game controls and
+`platforms/web/tests/import.spec.js` drives real file choosers, game controls and
 browser database failures. It checks byte digests, duplicate-name preservation,
 corrupt/truncated input rejection, loading imported games/maps/replays, and
 quota failure followed by export and retry. Read-only diagnostics expose import
@@ -94,7 +94,7 @@ versions or definitions before modifying progress. The file-picker basename
 never becomes a save destination. The format is separate from simulation saves
 and does not carry accounts or credentials.
 
-`browser/tests/campaign-progress.spec.js` covers round trips, merging an older
+`platforms/web/tests/campaign-progress.spec.js` covers round trips, merging an older
 backup, malformed files, persistence failure, retry and discard, including an
 absent previous file. Recovery is verified from another browser page and after
 reload. The native safety harness also checks every truncated backup, version
@@ -195,7 +195,7 @@ as game saves. Exporting the replay uses the checked atomic writer, retaining th
 previous destination on failure and restoring the live recording's file position
 before a retry. The replay format is unchanged.
 
-`browser/tests/replay-save.spec.js` covers real name entry, resize, delayed
+`platforms/web/tests/replay-save.spec.js` covers real name entry, resize, delayed
 persistence, ignored cancellation while writing, quota failure, file export,
 retry, refresh and replay playback. The native session harness covers an invalid
 destination and byte-identical retry. Automatic `last_game.replay` recording and

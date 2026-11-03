@@ -37,7 +37,7 @@ template <class T, unsigned Capacity> class Ring
 };
 // Round the half-second target up to whole blocks (512 ms at 48 kHz).
 // Refill at 427 ms to retain a cushion for a 400 ms producer stall.
-// Keep browser/music-worker.js and browser/music-output.js aligned.
+// Keep platforms/web/music-worker.js and platforms/web/music-output.js aligned.
 constexpr unsigned TargetBlocks = 24, LowBlocks = 20, CapacityBlocks = 48;
 struct Block
 {

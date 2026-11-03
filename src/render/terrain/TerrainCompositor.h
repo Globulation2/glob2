@@ -84,13 +84,13 @@ class Compositor
 	using CornerColors = std::array<const std::array<unsigned char, 3> *, 4>;
 	void composeOverview(const Recipe &, SDL_Surface *target, int x, int y,
 						 const CornerColors *cornerColors = nullptr) const;
-	// The shared decor sprite (every decor block names the same one), or null
-	// when the catalog has no decor; the renderer batches decor like resources.
+	// The shared sprite supports cached row batching; mixed custom sprites use
+	// the ordinary renderer. Material lookup also serves editor swatches.
 	GAGCore::Sprite *decorSprite() const { return sharedDecorSprite; }
     GAGCore::Sprite *decorSprite(MaterialId id) const { return decorSprites.at(id); }
     GAGCore::Sprite *decorSprite(const SceneMap &map, int x, int y) const;
-	// Decor frame drawn over cell (x, y), or -1. Cells with a neighbour of a
-	// different appearance use the smaller edge frames.
+	// Any undecorated corner suppresses raised objects. Decorated-only borders
+	// choose one material, weighted by corner count, using presentation hashing.
 	int decorFrame(const SceneMap &, int x, int y) const;
     struct PreparedMaterialView
     {
@@ -135,6 +135,13 @@ class Compositor
     std::size_t cpuMaterialBytesForRecipes(std::span<const Recipe> recipes) const;
 	std::uint64_t materialRevision(MaterialId id) const { return materialRevisions[id]; }
 	int scale() const { return resolution; }
+    // Diagnostic: HD preparations, and those that drew a native source for a
+    // material whose HD frames had already appeared (streaming fallback).
+    struct HighResolutionCoverage { std::uint64_t prepares = 0, fallbacks = 0; };
+    HighResolutionCoverage highResolutionCoverage() const { return coverage; }
+    // Look-ahead phases kept resident for streamed animated HD materials, beyond
+    // the current and next phase that every animation requires.
+    static constexpr std::size_t AnimationLookaheadBytes = 64u * 1024 * 1024;
 	std::size_t sourceBytes() const;
 
   private:
@@ -159,8 +166,10 @@ class Compositor
 		GAGCore::DrawableSurface *source = nullptr;
 		std::uint64_t identity = 0, revision = 0;
 		int size = 0;
+		bool opaque = false; // Every pixel has full alpha.
 		std::vector<std::array<unsigned char, 4>> pixels;
 	};
+	static void markOpaque(Texture &);
 	Catalog definitions;
 	bool hasContextualProfiles = false;
     MapAssetSprites customSprites;
@@ -191,6 +200,8 @@ class Compositor
     bool prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target,
                          const std::vector<unsigned char> *wanted);
 	std::vector<std::uint64_t> materialRevisions;
+	std::vector<int> highResolutionSizes; // Largest source size seen per material.
+	HighResolutionCoverage coverage;
 	int resolution = 1;
 	unsigned preparedTime = 0;
 };

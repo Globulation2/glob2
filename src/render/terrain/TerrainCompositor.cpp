@@ -66,6 +66,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			animationTextures.back().next.resize(m.variants.size());
 		}
 		materialRevisions.push_back(0);
+		highResolutionSizes.push_back(0);
 	}
     if (mixedDecorSprites) sharedDecorSprite = nullptr;
 	// Shore calm pulls waves toward one colour per material, so the fade
@@ -109,6 +110,11 @@ void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
 	t.source = source;
 	t.identity = source->lifetimeIdentity();
 	t.revision = source->contentRevision();
+	markOpaque(t);
+}
+void Compositor::markOpaque(Texture &t)
+{
+	t.opaque = std::all_of(t.pixels.begin(), t.pixels.end(), [](const auto &p) { return p[3] == 255; });
 }
 std::pair<GAGCore::Sprite *, unsigned> Compositor::editorIcon(TerrainType type) const
 {
@@ -178,6 +184,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 		if (packaged)
 		{
 			pack->read(m.sprite + std::to_string(frame) + ".png", t.pixels);
+			markOpaque(t);
 			t.size = 32;
 			t.source = source;
 			t.identity = source->lifetimeIdentity();
@@ -214,6 +221,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 										   : 0;
 				destination[3] = alpha / band;
 			}
+	for (auto &t : target) markOpaque(t);
 	return changed;
 }
 void Compositor::prepare(bool hd, int time)
@@ -265,23 +273,40 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
     }
     // A sprite can back several materials: declare the union before any reads.
     std::map<GAGCore::Sprite *, std::vector<unsigned>> windows;
+    // Streamed animations keep later phases resident within a shared budget,
+    // so advancing reuses decoded frames instead of dropping the old phase and
+    // decoding the next one again. Endpoints are listed first and decode first.
+    std::size_t lookaheadBytes = AnimationLookaheadBytes;
     for (unsigned id = 0; id < definitions.materials.size(); ++id)
     {
         const auto &m = definitions.materials[id];
         auto &window = windows[sprites[id]];
         if (!hd) continue;
         const unsigned phase = unsigned(time) / m.animationTicks % m.animationFrames;
+        const bool animated = m.animationFrames > 1 && m.animationTicks > 1;
+        std::size_t count = 0;
         for (unsigned i = 0; i < m.variants.size(); ++i)
             if (!requested || (*requested)[id][i])
             {
+                ++count;
                 window.push_back(m.variants[i].frame + phase * m.animationStride);
-                if (m.animationFrames > 1 && m.animationTicks > 1)
+                if (animated)
                     window.push_back(m.variants[i].frame + (phase + 1) % m.animationFrames * m.animationStride);
             }
+        if (!animated || !count || !GAGCore::Sprite::highResolutionDeferred(m.sprite)) continue;
+        constexpr std::size_t frameBytes = 128 * 128 * 4; // A 32-pixel cell at HD scale 4.
+        const unsigned extra = unsigned(std::min<std::size_t>(m.animationFrames - 2,
+                                                              lookaheadBytes / (count * frameBytes)));
+        lookaheadBytes -= extra * count * frameBytes;
+        for (unsigned ahead = 2; ahead < 2 + extra; ++ahead)
+            for (unsigned i = 0; i < m.variants.size(); ++i)
+                if (!requested || (*requested)[id][i])
+                    window.push_back(m.variants[i].frame + (phase + ahead) % m.animationFrames * m.animationStride);
     }
     for (auto &[sprite, window] : windows) sprite->setHighResolutionFrames(window);
 
 	int nextResolution = 1;
+	bool fallback = false;
 	// Surf moves once per `ticks`, so entering a new step invalidates its pages
 	// too, also when the texture itself is still (dark water).
 	const unsigned previousTime = preparedTime;
@@ -331,7 +356,10 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
 			if (advanced) animation.current.swap(animation.next);
 			const bool currentChanged = prepareMaterial(id, hd, phase, animation.current, wanted);
 			const bool nextChanged = prepareMaterial(id, hd, (phase + 1) % m.animationFrames, animation.next, wanted);
-			const unsigned blend = unsigned(time) % m.animationTicks;
+			// Stepped crossfades hold each weight for several ticks; by default
+			// every tick is its own step.
+			const unsigned steps = m.animationBlendSteps ? unsigned(m.animationBlendSteps) : unsigned(m.animationTicks);
+			const unsigned blend = unsigned(time) % m.animationTicks * steps / m.animationTicks;
             bool missingOutput = false;
             for (unsigned i = 0; i < m.variants.size(); ++i)
                 if ((!wanted || (*wanted)[i]) && textures[id][i].pixels.empty()) missingOutput = true;
@@ -347,8 +375,20 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
 					auto &out = textures[id][i];
 					out.size = std::max(a.size, b.size);
 					out.pixels.resize(out.size * out.size);
-					const unsigned weightB = (std::uint64_t(blend) * 65536 + m.animationTicks / 2) / m.animationTicks;
+					const unsigned weightB = (std::uint64_t(blend) * 65536 + steps / 2) / steps;
 					const unsigned weightA = 65536 - weightB;
+					out.opaque = a.opaque && b.opaque;
+					if (out.opaque && a.size == out.size && b.size == out.size)
+					{
+						// Opaque endpoints at one size: a flat loop the compiler
+						// vectorizes. Full alpha stays (255 * 65536 + 32768) >> 16.
+						const auto *pa = a.pixels.front().data(), *pb = b.pixels.front().data();
+						auto *po = out.pixels.front().data();
+						const std::size_t bytes = out.pixels.size() * 4;
+						for (std::size_t k = 0; k < bytes; ++k)
+							po[k] = static_cast<unsigned char>((pa[k] * weightA + pb[k] * weightB + 32768) >> 16);
+						continue;
+					}
 					for (std::size_t p = 0; p < out.pixels.size(); ++p)
 					{
 						// Partial HD packs can supply only one endpoint at higher resolution.
@@ -383,8 +423,24 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
 			++materialRevisions[id];
 		for (const auto &texture : textures[id])
 			if (texture.size > 32) nextResolution = 4;
+		if (hd)
+			for (unsigned i = 0; i < m.variants.size(); ++i)
+				if (!wanted || (*wanted)[i])
+				{
+					// Either crossfade endpoint can still be a native source.
+					int size = textures[id][i].size;
+					if (!animation.current.empty())
+						size = std::min({size, animation.current[i].size, animation.next[i].size});
+					fallback |= highResolutionSizes[id] > size;
+					highResolutionSizes[id] = std::max(highResolutionSizes[id], size);
+				}
 	}
 	resolution = nextResolution;
+	if (hd)
+	{
+		++coverage.prepares;
+		coverage.fallbacks += fallback;
+	}
 }
 MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const {
     // Custom terrain with its own artwork binds by key; anything else draws its appearance.
@@ -395,44 +451,46 @@ MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const 
 }
 std::pair<MaterialId, unsigned> Compositor::decorMaterial(const SceneMap &map, int x, int y) const
 {
-	// The decorated material most corners share: all four draw its full decor,
-	// two or three its edge decor, a single corner none.
-	MaterialId best = 0;
-	unsigned count = 0;
-	const auto corners = map.cellCorners(x & map.getMaskW(), y & map.getMaskH());
+	x &= map.getMaskW();
+	y &= map.getMaskH();
+	const auto corners = map.cellCorners(x, y);
 	std::array<MaterialId, 4> materials;
 	for (unsigned k = 0; k < corners.size(); ++k)
-		materials[k] = materialFor(map, corners[k]);
-	for (const auto id : materials)
 	{
-		if (definitions.materials[id].decor.full.empty())
-			continue;
-		const auto same = unsigned(std::count(materials.begin(), materials.end(), id));
-		if (same > count)
-		{
-			best = id;
-			count = same;
-		}
+		materials[k] = materialFor(map, corners[k]);
+		if (!decorSprites[materials[k]] || definitions.materials[materials[k]].decor.full.empty())
+			return {0, 0};
 	}
-	return {best, count};
+	if (materials[0] == materials[1] && materials[0] == materials[2] &&
+		materials[0] == materials[3])
+		return {materials[0], 4};
+	// Choosing one of four corners gives 2+2 borders equal odds and 3+1
+	// borders a three-to-one split. Presentation hashing never consumes game RNG.
+	const auto chosen = materials[hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0xd3c04a71u) & 3u];
+	return {chosen, unsigned(std::count(materials.begin(), materials.end(), chosen))};
 }
 GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const
 {
-    return decorSprites[decorMaterial(map, x, y).first];
+	const auto [material, count] = decorMaterial(map, x, y);
+	return count ? decorSprites[material] : nullptr;
 }
 int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
-	const auto [best, count] = decorMaterial(map, x, y);
-	const auto &decor = definitions.materials[best].decor;
-	if (count == 0 || (count < 2 && decor.connected.empty())) return -1;
+	const auto [material, count] = decorMaterial(map, x, y);
+	if (!count)
+		return -1;
+	const auto &decor = definitions.materials[material].decor;
 	unsigned mask = 0;
 	const auto corners = map.cellCorners(x, y);
 	for (unsigned k = 0; k < corners.size(); ++k)
-		if (const auto id = materialFor(map, corners[k]); id == best ||
-			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty())) mask |= 1u << k;
-	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed(), mask,
+		if (const auto id = materialFor(map, corners[k]);
+			id == material ||
+			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty()))
+			mask |= 1u << k;
+	return definitions.decorFrame(
+		material, x, y, count < 4, map.terrainSeed(), mask,
 		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const

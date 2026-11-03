@@ -21,7 +21,7 @@ Start with a workflow, then follow the reference for the asset family you are ch
 | [High-resolution pack](high-resolution/README.md) | Approved inputs and assembly. |
 | [Runtime artwork inventory](high-resolution/ASSET-PROVENANCE.md) | Generated active-frame provenance; maintained by its generator. |
 | [Third-party attribution](source-attribution.md) | External sources and license responsibilities. |
-| [Original artwork](../../datasrc/gfx/README.md) | Preserved editable sources, mappings and export recipes. |
+| [Original artwork](../../content-src/gfx/README.md) | Preserved editable sources, mappings and export recipes. |
 | [Unit animation](../../tools/unit-animation/README.md) | Original Blender rigs and reproducible sprites. |
 | [AI sprite candidates](../../tools/artwork/ai/README.md) | Staging, inference provenance and promotion review. |
 

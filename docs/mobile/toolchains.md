@@ -5,7 +5,7 @@ Pinned dependencies, isolated build outputs, icons and recording libraries.
 ## Toolchains and output isolation
 
 Run commands from the repository root. Versions and checksums are pinned in
-`mobile/toolchain.json`, `mobile/android-tools.json` and `mobile/vcpkg.json`.
+`platforms/mobile/toolchain.json`, `platforms/mobile/android-tools.json` and `platforms/mobile/vcpkg.json`.
 
 Android CI opts into the shared `CCACHE=1` compiler wrapper and restores a
 per-architecture cache keyed by the pinned toolchain, dependency manifest and
@@ -16,7 +16,7 @@ Android checks. The APK workflow does not build the native doctest harnesses,
 so changes confined to those harnesses run native CI without rebuilding all three
 Android APKs. Changes to the shared CI summary script still select the APK jobs.
 
-Use `python3 mobile/doctor.py android` or `python3 mobile/doctor.py ios` to inspect
+Use `python3 platforms/mobile/doctor.py android` or `python3 platforms/mobile/doctor.py ios` to inspect
 SDK availability. iOS requires the pinned full Xcode 27.0 toolchain;
 `--developer-dir` on the packaging command selects it without changing the
 machine's Xcode selection.
@@ -42,13 +42,13 @@ and cache reuse under alternating transforms.
 ## App icons
 
 Both mobile packages use the canonical blue Glob artwork from
-`data/icons/glob2-icon-128x128.png`, on the in-game purple background. Android
+`content/data/icons/glob2-icon-128x128.png`, on the in-game purple background. Android
 ships density-specific legacy icons and a padded adaptive foreground; iOS ships
 an opaque iPhone/iPad AppIcon asset catalog, compiled by Xcode into the bundle.
 The canonical source is 128 pixels; larger sizes are resampled from that source.
 
 The generated assets are checked in, so normal builds need no image tooling.
-After changing the canonical source, run `python3 mobile/icons.py` with Pillow
+After changing the canonical source, run `python3 platforms/mobile/icons.py` with Pillow
 installed and review both the adaptive foreground and opaque icon before committing.
 
 
@@ -63,7 +63,7 @@ pinned dependency bundle after this manifest changes. Android indexes and hashes
 the exported payload; retain APK/AAB verification after AAPT packaging and after
 installing an update, which must not keep an obsolete PNG in front of a new WebP.
 
-Candidate validation uses `python3 mobile/android_release.py check-candidate`; this checks identity and build recipes without requiring a new publication tag. `check` retains strict tag-collision and version-code checks for release publication.
+Candidate validation uses `python3 platforms/mobile/android_release.py check-candidate`; this checks identity and build recipes without requiring a new publication tag. `check` retains strict tag-collision and version-code checks for release publication.
 
 
 ## Recording libraries and exports

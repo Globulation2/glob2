@@ -14,7 +14,7 @@ request signing and TestFlight upload. Reusable release staging calls retain
 The archive job uses Python 3.14.8 so the pinned asset encoder has binary wheels
 on the Xcode runner; the runner's moving default Python is not a build input.
 
-Archive verification runs `mobile/ios_privacy.py` against the main executable
+Archive verification runs `platforms/mobile/ios_privacy.py` against the main executable
 and embedded Mach-O frameworks. Glob2 does not use camera capture or Bluetooth
 discovery: the SDL camera/HIDAPI backends and the CoreBluetooth link are omitted.
 The check rejects remaining camera/Bluetooth imports before signing. Keep

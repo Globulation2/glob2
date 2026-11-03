@@ -31,9 +31,9 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     from dev_store import browser_sdk, cache, isolated, key, command_path
     sdk = browser_sdk(root, arguments.get('emsdk', os.environ.get('EMSDK')))
     compiler = sdk / 'upstream/emscripten/em++'
-    lock = json.loads((root / 'browser/toolchain.json').read_text())
+    lock = json.loads((root / 'platforms/web/toolchain.json').read_text())
     if not compiler.exists():
-        raise ValueError('Emscripten SDK not found; run python3 browser/setup.py or pass emsdk=/path/to/emsdk')
+        raise ValueError('Emscripten SDK not found; run python3 platforms/web/setup.py or pass emsdk=/path/to/emsdk')
     if not GetOption('clean'):
         version = subprocess.check_output([str(compiler), '--version'], text=True)
         if lock['emscripten'] not in version.splitlines()[0]:
@@ -43,7 +43,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     sdl_prefix = output / 'sdl3/prefix'
     build_environment = dict(os.environ)
     # Cache is target/config-specific, including port downloads and compiled system libraries.
-    shared_cache = cache(root, 'emscripten-' + key(root, ['browser/toolchain.json', 'scons/sdl3-versions.json', 'scons/sdl3-vendored.json', 'scons/opus-versions.json', 'scons/opus_dependencies.py'], [PORTS, threaded])) if not isolated() else output
+    shared_cache = cache(root, 'emscripten-' + key(root, ['platforms/web/toolchain.json', 'scons/sdl3-versions.json', 'scons/sdl3-vendored.json', 'scons/opus-versions.json', 'scons/opus_dependencies.py'], [PORTS, threaded])) if not isolated() else output
     build_environment['EM_CACHE'] = str(shared_cache / 'cache')
     build_environment['EM_PORTS'] = str(shared_cache / 'ports')
     # emsdk's template derives paths from EM_CONFIG; anchor it to the selected
@@ -67,14 +67,14 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                       LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
     env['OPUS_PREFIX'] = str(opus_prefix)
     env['PROGSUFFIX'] = '.js'
-    env.Append(LINKFLAGS=['--js-library', 'browser/canvas-size.js', '--js-library', 'browser/webgpu-device.js', '--js-library', 'browser/gradient-compute.js'])
+    env.Append(LINKFLAGS=['--js-library', 'platforms/web/canvas-size.js', '--js-library', 'platforms/web/webgpu-device.js', '--js-library', 'platforms/web/gradient-compute.js'])
     if threaded:
         env.Append(CCFLAGS=['-pthread'], LINKFLAGS=['-pthread', '-sOFFSCREENCANVAS_SUPPORT=1',
             '-sDEFAULT_PTHREAD_STACK_SIZE=8388608',
             '-sPTHREAD_POOL_SIZE_STRICT=0',
             "'-sPTHREAD_POOL_SIZE=Math.min(2*Math.max(navigator.hardwareConcurrency||1,1),16)'",
             '-sALLOW_BLOCKING_ON_MAIN_THREAD=0',
-            '--js-library', 'browser/threaded-egl.js'])
+            '--js-library', 'platforms/web/threaded-egl.js'])
     legacy_gl = identity.get('web_legacy_gl', True)
     config = output / 'include/glob2/BuildConfig.h'
     write_if_changed(config, f'''#pragma once
@@ -105,11 +105,11 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_FUNCTIONS=[\"_main\",\"_malloc\",\"_free\"]'",
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
-        '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js', '--pre-js', 'browser/recording.js', '--pre-js', 'browser/runtime.js',
+        '--pre-js', 'platforms/web/storage.js', '--pre-js', 'platforms/web/file-selection.js', '--pre-js', 'platforms/web/audio.js', '--pre-js', 'platforms/web/recording.js', '--pre-js', 'platforms/web/runtime.js',
         ] + PORTS)
     if legacy_gl:
-        env.Append(LINKFLAGS=['--pre-js', 'browser/legacy-gl-runtime.js',
-                              '--post-js', 'browser/webgl-shaders.js'])
+        env.Append(LINKFLAGS=['--pre-js', 'platforms/web/legacy-gl-runtime.js',
+                              '--post-js', 'platforms/web/webgl-shaders.js'])
     if arguments.get('web_profile') == '1':
         # Preserve function names for browser CPU profiles without changing optimization.
         env.Append(LINKFLAGS=['--profiling-funcs'])
@@ -137,20 +137,20 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         if not (asset_root / 'data').is_dir():
             env.AlwaysBuild(exported)
         asset_manifest = asset_output / 'asset-manifest.js'
-        # The plan also reads the browser copies (browser/derive_assets.py) and the game
+        # The plan also reads the browser copies (platforms/web/derive_assets.py) and the game
         # sprite names in GlobalContainer::loadGameGraphics, terrain and building tables.
-        plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py',
-                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'data/terrain/tileset.json', 'data/resources/registry.json']
-        plan_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
+        plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'platforms/web/derive_assets.py',
+                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'content/data/terrain/tileset.json', 'content/data/resources/registry.json']
+        plan_inputs += [str(p) for p in Path('platforms/web/assets').glob('*') if p.is_file()]
         plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
-        plan_inputs += [str(p) for p in Path('data/buildings').rglob('*.json')]
-        plan_inputs += [str(p) for p in Path('data/resources').rglob('*.json')]
+        plan_inputs += [str(p) for p in Path('content/data/buildings').rglob('*.json')]
+        plan_inputs += [str(p) for p in Path('content/data/resources').rglob('*.json')]
         assets = env.Command(str(asset_manifest), [exported] + plan_inputs,
             Action(lambda target, source, env: web_assets.build(root, asset_output, target[0].abspath, asset_root) and 0,
                    'Packaging browser game data'))
     else:
         assets, asset_manifest, asset_root = packaged
-    env.Append(LINKFLAGS=['--pre-js', str(asset_manifest), '--pre-js', 'browser/asset-loader.js'])
+    env.Append(LINKFLAGS=['--pre-js', str(asset_manifest), '--pre-js', 'platforms/web/asset-loader.js'])
     # SDL_ttf's static archive requires HarfBuzz; HarfBuzz in turn uses FreeType.
     env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'harfbuzz', 'freetype', 'webpdemux', 'webpmux', 'webp', 'sharpyuv'])
     env.Append(LIBS=[env.File(str(opus_prefix / 'lib' / ('lib' + name + '.a'))) for name in OPUS_LIBRARIES])
@@ -168,10 +168,10 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS), Value(threaded)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
     files = ['src/' + s for s in CLIENT_SOURCES if s not in ('audio/VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')]
-    files += ['libgag/src/' + s for s in GAG_SOURCES if s not in ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')]
-    files += ['libusl/src/' + s for s in USL_SOURCES]
-    files += ['browser/HiveBrowserHost.cpp', 'browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/RecordingPlatform.cpp', 'browser/NetTransport.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
-    files += ['browser/Audio.cpp', 'browser/GradientCompute.cpp']
+    files += ['libs/gag/src/' + s for s in GAG_SOURCES if s not in ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')]
+    files += ['libs/usl/src/' + s for s in USL_SOURCES]
+    files += ['platforms/web/HiveBrowserHost.cpp', 'platforms/web/VoiceRecorder.cpp', 'platforms/web/ApplicationHost.cpp', 'platforms/web/RecordingPlatform.cpp', 'platforms/web/NetTransport.cpp', 'platforms/web/Launcher.cpp', 'platforms/web/HttpFetch.cpp']
+    files += ['platforms/web/Audio.cpp', 'platforms/web/GradientCompute.cpp']
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
@@ -208,17 +208,17 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         # The harness page has no asset packages beside it: preload the exported data.
         flags, kept = list(tests['LINKFLAGS']), []
         for index, flag in enumerate(flags):
-            if flag in (str(asset_manifest), 'browser/asset-loader.js') and kept and kept[-1] == '--pre-js':
+            if flag in (str(asset_manifest), 'platforms/web/asset-loader.js') and kept and kept[-1] == '--pre-js':
                 kept.pop()
             else:
                 kept.append(flag)
         tests['LINKFLAGS'] = kept
         for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
             tests.Append(LINKFLAGS=['--preload-file', str(asset_root / asset_directory) + '@/' + asset_directory])
-        tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
+        tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
         tests.Append(LINKFLAGS=['--preload-file', 'test/fixtures@/test/fixtures',
                                '--preload-file', 'examples/javascript@/examples/javascript',
-                               '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
+                               '--preload-file', 'content/games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
         for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp', '#src/common/EntityRandomTest.cpp', '#src/unit/EntityRandomLifecycleTest.cpp', ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])), '#src/common/ComputeExecutorHarness.cpp', '#src/field/WebGPUGradientTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp', '#src/replay/ReplayTelemetryTest.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp',
@@ -258,22 +258,22 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         production = unique([by_source[name] for name in files if name != 'src/app/Glob2.cpp'])
         production += script_objects
         harness = tests.Program(str(output / 'script-tests.js'), production + test_objects)
-        tests.Depends(harness, ['browser/gradient-compute.js', 'browser/storage.js', 'browser/file-selection.js',
-                               'browser/audio.js', 'browser/runtime.js', 'browser/webgl-shaders.js', 'browser/canvas-size.js'])
+        tests.Depends(harness, ['platforms/web/gradient-compute.js', 'platforms/web/storage.js', 'platforms/web/file-selection.js',
+                               'platforms/web/audio.js', 'platforms/web/runtime.js', 'platforms/web/webgl-shaders.js', 'platforms/web/canvas-size.js'])
         env.Depends(harness, assets)
-        tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'examples/javascript', 'games')
+        tests.Depends(harness, [str(p) for directory in ('content/data', 'content/maps', 'content/campaigns', 'content/scripts', 'test/fixtures', 'examples/javascript', 'content/games')
                                for p in Path(directory).rglob('*') if p.is_file()])
         tests.SideEffect([str(output / ('script-tests.' + extension)) for extension in ('wasm', 'data')], harness)
         if threaded:
-            tests.Depends(harness, 'browser/threaded-egl.js')
+            tests.Depends(harness, 'platforms/web/threaded-egl.js')
         env.Alias('web-tests', harness)
 
-    env.Depends(program, ['browser/gradient-compute.js', 'browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/recording.js', 'browser/runtime.js', 'browser/webgl-shaders.js',
-                          'browser/asset-loader.js', 'browser/canvas-size.js', 'browser/toolchain.json', assets])
+    env.Depends(program, ['platforms/web/gradient-compute.js', 'platforms/web/storage.js', 'platforms/web/file-selection.js', 'platforms/web/audio.js', 'platforms/web/recording.js', 'platforms/web/runtime.js', 'platforms/web/webgl-shaders.js',
+                          'platforms/web/asset-loader.js', 'platforms/web/canvas-size.js', 'platforms/web/toolchain.json', assets])
     if legacy_gl:
-        env.Depends(program, 'browser/legacy-gl-runtime.js')
+        env.Depends(program, 'platforms/web/legacy-gl-runtime.js')
     if threaded:
-        env.Depends(program, 'browser/threaded-egl.js')
+        env.Depends(program, 'platforms/web/threaded-egl.js')
     env.Depends(program, env['RENDER_SHADER_FILES'])
     env.SideEffect([str(output / 'index.wasm'), str(output / 'index.data')], program)
     # SideEffect alone does not rebuild an up-to-date JS target after deletion.
@@ -299,7 +299,7 @@ def build_web(directory, identity, arguments):
         if not serial:
             env, database, packaged = threaded_env, threaded_database, threaded_packaged
     def shell(target, source, env):
-        page = Path('browser/shell.html').read_text().replace('/* AI_STUDIO_BRIDGE */', Path('browser/studio-envelope.js').read_text() + '\n' + Path('browser/generator-studio.js').read_text() + '\n' + Path('browser/studio.js').read_text() + '\n' + Path('browser/set-preview.js').read_text()).replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>')
+        page = Path('platforms/web/shell.html').read_text().replace('/* AI_STUDIO_BRIDGE */', Path('platforms/web/studio-envelope.js').read_text() + '\n' + Path('platforms/web/generator-studio.js').read_text() + '\n' + Path('platforms/web/studio.js').read_text() + '\n' + Path('platforms/web/set-preview.js').read_text()).replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>')
         # The page shows WebAssembly download progress against these sizes.
         sizes = {}
         if serial: sizes['index.wasm'] = Path(directory) / 'index.wasm'
@@ -308,14 +308,14 @@ def build_web(directory, identity, arguments):
         sizes = json.dumps({name: path.stat().st_size for name, path in sizes.items()}, separators=(',', ':'), sort_keys=True)
         page, count = re.subn(r'data-wasm-bytes="0"', f"data-wasm-bytes='{sizes}'", page, count=1)
         if count != 1:
-            raise ValueError('browser/shell.html lacks the data-wasm-bytes placeholder')
+            raise ValueError('platforms/web/shell.html lacks the data-wasm-bytes placeholder')
         write_if_changed(str(target[0]), page)
         write_if_changed(str(target[1]), page)
         write_if_changed(str(target[2]), page)
         write_if_changed(str(target[3]), page)
         return 0
     page = env.Command([str(Path(directory) / 'index.html'), str(Path(directory) / 'studio.html'), str(Path(directory) / 'set-preview.html'), str(Path(directory) / 'generator-studio.html')],
-        ['browser/shell.html', 'browser/studio-envelope.js', 'browser/generator-studio.js', 'browser/studio.js', 'browser/set-preview.js', 'browser/loader.js'] + [runtime for runtime in (serial, threaded) if runtime], Action(shell, 'Packaging browser runtimes'))
+        ['platforms/web/shell.html', 'platforms/web/studio-envelope.js', 'platforms/web/generator-studio.js', 'platforms/web/studio.js', 'platforms/web/set-preview.js', 'platforms/web/loader.js'] + [runtime for runtime in (serial, threaded) if runtime], Action(shell, 'Packaging browser runtimes'))
     # The music decoder has independent Wasm memory in both browser variants.
     music = env.Clone()
     music['CCFLAGS'] = [flag for flag in music.Split(music.get('CCFLAGS', [])) if flag != '-pthread']
@@ -331,11 +331,11 @@ def build_web(directory, identity, arguments):
         '-sEXPORTED_RUNTIME_METHODS=["UTF8ToString","HEAPU8","HEAP16"]']
     configure_development(music, identity)
     music_objects = [music.Object(str(Path(directory) / 'music-obj' / (source + '.o')), source)
-        for source in ('browser/MusicWorker.cpp', 'src/audio/MusicProducer.cpp', 'src/audio/MusicStream.cpp')]
+        for source in ('platforms/web/MusicWorker.cpp', 'src/audio/MusicProducer.cpp', 'src/audio/MusicStream.cpp')]
     record(music, music_objects, "compile")
     music_program = record(music, music.Program(str(Path(directory) / 'music-runtime.js'), music_objects), "link")
     music.SideEffect(str(Path(directory) / 'music-runtime.wasm'), music_program)
-    music_scripts = env.Install(directory, ['browser/music-worker.js', 'browser/music-output.js'])
+    music_scripts = env.Install(directory, ['platforms/web/music-worker.js', 'platforms/web/music-output.js'])
     env.Depends(page, [music_program, music_scripts])
     # One recording module serves both game runtimes, and is fetched only on use.
     from recording_dependencies import build as build_recording, attach as attach_recording
@@ -343,7 +343,7 @@ def build_web(directory, identity, arguments):
     recording_prefix = ensure_dependency(build_recording, os.environ.get('GLOB2_RECORDING_PREFIX', recording_prefix), Path(directory) / 'recording/sources',
             explicit=bool(os.environ.get('GLOB2_RECORDING_PREFIX')), execute=can_build_dependencies(), jobs=dependency_jobs(arguments),
             cc=env['CC'], cxx=env['CXX'], ar=env['AR'], ranlib=env['RANLIB'],
-            target='wasm', arch='wasm32', sdk_identity=json.loads(Path('browser/toolchain.json').read_text()), cflags=['-msimd128', '-fwasm-exceptions'], environment=env['ENV'])
+            target='wasm', arch='wasm32', sdk_identity=json.loads(Path('platforms/web/toolchain.json').read_text()), cflags=['-msimd128', '-fwasm-exceptions'], environment=env['ENV'])
     recording = env.Clone()
     recording['LIBS'] = []
     recording['CCFLAGS'] = ['-O3', '-msimd128']
@@ -356,11 +356,11 @@ def build_web(directory, identity, arguments):
     attach_recording(recording, recording_prefix, 'wasm')
     configure_development(recording, identity)
     recording_objects = [recording.Object(str(Path(directory) / 'recording-obj' / (source + '.o')), source)
-        for source in ('browser/RecordingWorker.cpp', 'libgag/src/RecordingEncoder.cpp', 'libgag/src/RecordingSession.cpp', 'libgag/src/RecordingMetadata.cpp')]
+        for source in ('platforms/web/RecordingWorker.cpp', 'libs/gag/src/RecordingEncoder.cpp', 'libs/gag/src/RecordingSession.cpp', 'libs/gag/src/RecordingMetadata.cpp')]
     record(recording, recording_objects, "compile")
     recording_program = record(recording, recording.Program(str(Path(directory) / 'recording-runtime.js'), recording_objects), 'link')
     recording.SideEffect(str(Path(directory) / 'recording-runtime.wasm'), recording_program)
-    recording_worker = env.Install(directory, ['browser/recording-worker.js','browser/recording-storage.js','browser/recording-video.js'])
+    recording_worker = env.Install(directory, ['platforms/web/recording-worker.js','platforms/web/recording-storage.js','platforms/web/recording-video.js'])
     recording_notices = [env.Install(str(Path(directory)/'licenses/recording'),str(p))
         for p in (recording_prefix/'share/licenses/recording').glob('*')]
     opus_notices = [env.Install(str(Path(directory)/'licenses/opus'), str(p))
@@ -377,21 +377,21 @@ def build_web(directory, identity, arguments):
     hive.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     configure_development(hive, identity)
     hive_objects = [hive.Object(str(Path(directory) / 'hive-obj' / (source + '.o')), source)
-        for source in ('browser/HiveWorker.cpp', 'src/hive/HiveWorker.cpp', 'src/scripting/javascript/ScriptRuntime.cpp', 'src/scripting/javascript/ScriptValue.cpp')]
+        for source in ('platforms/web/HiveWorker.cpp', 'src/hive/HiveWorker.cpp', 'src/scripting/javascript/ScriptRuntime.cpp', 'src/scripting/javascript/ScriptValue.cpp')]
     hive_objects += javascript_objects(hive, Path(directory) / 'hive-obj/third_party', True)
     record(hive, hive_objects, "compile")
     hive_program = record(hive, hive.Program(str(Path(directory) / 'hive-runtime.js'), hive_objects), 'link')
     hive.SideEffect(str(Path(directory) / 'hive-runtime.wasm'), hive_program)
-    hive_worker = env.Install(directory, 'browser/hive-worker.js')
+    hive_worker = env.Install(directory, 'platforms/web/hive-worker.js')
     env.Depends(page, [hive_program, hive_worker])
-    loader = env.Install(directory, 'browser/loader.js')
-    presentation_surface = env.Install(directory, 'browser/presentation-surface.js')
-    localization = env.Install(directory, 'browser/i18n.js')
-    localization += env.Install(str(Path(directory) / 'locales'), [str(path) for path in sorted(Path('platform/packages/i18n/locales').glob('*.json'))])
+    loader = env.Install(directory, 'platforms/web/loader.js')
+    presentation_surface = env.Install(directory, 'platforms/web/presentation-surface.js')
+    localization = env.Install(directory, 'platforms/web/i18n.js')
+    localization += env.Install(str(Path(directory) / 'locales'), [str(path) for path in sorted(Path('services/online/packages/i18n/locales').glob('*.json'))])
     # The pre-Wasm HTML launcher cannot use fonts inside Emscripten's VFS.
     # Keep its same-origin, lazy HTTP font faces available on standalone hosts.
-    script_font_manifest = json.loads(Path('data/fonts/scripts/manifest.json').read_text())
-    script_font_files = ['data/fonts/scripts/' + font['name'] + '-Regular.ttf'
+    script_font_manifest = json.loads(Path('content/data/fonts/scripts/manifest.json').read_text())
+    script_font_files = ['content/data/fonts/scripts/' + font['name'] + '-Regular.ttf'
                          for font in script_font_manifest['fonts']]
     script_font_targets = [str(Path(directory) / 'script-fonts.css'),
                            str(Path(directory) / 'fonts/sans-core.ttf'),
@@ -403,9 +403,9 @@ def build_web(directory, identity, arguments):
         web_assets.launcher_script_fonts(Path.cwd(), directory)
         return 0
     script_fonts = env.Command(script_font_targets,
-        ['platform/packages/i18n/script-fonts.css', 'data/fonts/scripts/manifest.json',
-         'data/fonts/LICENSE-Noto.txt', 'data/fonts/LICENSE-DejaVu.txt', 'data/fonts/LICENSE-Droid.txt',
-         'browser/assets/sans-core.ttf', 'scons/web_assets.py'] + script_font_files,
+        ['services/online/packages/i18n/script-fonts.css', 'content/data/fonts/scripts/manifest.json',
+         'content/data/fonts/LICENSE-Noto.txt', 'content/data/fonts/LICENSE-DejaVu.txt', 'content/data/fonts/LICENSE-Droid.txt',
+         'platforms/web/assets/sans-core.ttf', 'scons/web_assets.py'] + script_font_files,
         Action(launcher_fonts, 'Packaging launcher script fonts'))
     env.Depends(page, [loader, presentation_surface, localization, script_fonts])
     env.Alias('web-package', [page, loader, presentation_surface])

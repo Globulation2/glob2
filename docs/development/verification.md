@@ -220,7 +220,7 @@ predictive subset of hosted checks. Documentation and other cheap-only changes
 remain cheap. The cheap `music` job covers changes under `tools/music/`, including
 its Python tests and a small C++ portable-file round trip using libopusfile; this
 job does not establish engine verification. Files inside a soundtrack set,
-`data/zik/<set>/`, qualify for engine prediction; `data/zik/SConscript` selects full
+`content/data/zik/<set>/`, qualify for engine prediction; `content/data/zik/SConscript` selects full
 verification as build infrastructure.
 
 `ci:run` overrides prediction with affected hosted checks; applicable native
@@ -249,7 +249,7 @@ For focused macOS qualification, dispatch `.github/workflows/ci-macos.yml`
 with an exact `revision` and `coverage_profile=full` (or `compatibility` for the
 selected compatibility inventory). It runs the same native build, regression,
 continuation, scripting and strict generator evidence steps as the reusable
-workflow, with a 90-minute job ceiling. This is macOS evidence, not a full
+workflow, with a 120-minute job ceiling. This is macOS evidence, not a full
 development checkpoint.
 
 Nightly is a fallback with a separate concurrency group. Expensive nightly jobs

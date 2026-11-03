@@ -67,7 +67,7 @@ a clean-machine launch without users installing missing dependencies; use its
 [Linux guidance](https://docs.gog.com/linux-guidelines/) when qualifying each
 release. The macOS depot contains `Glob2.app`, including scripts and bundled
 library/license files. The Windows depot reuses the portable Windows packaging
-helper. GOG's project template is `gog/project-template.json`; the renderer
+helper. GOG's project template is `platforms/stores/gog/project-template.json`; the renderer
 fills one depot and one primary launch task per operating system.
 
 ## Reuse reviewed released payloads (build only)
@@ -138,7 +138,7 @@ as separate states.
 ## Upload to Staging
 
 After GOG grants access, commit the nonsecret product and base product IDs and
-the approved Linux Pipeline Builder SHA-256 to `gog/release-config.json` through
+the approved Linux Pipeline Builder SHA-256 to `platforms/stores/gog/release-config.json` through
 review. Set these **secrets** in `gog-staging`:
 
 | Name | Type | Purpose |

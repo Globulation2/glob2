@@ -19,8 +19,8 @@ class SteamWindowsPackageTests(unittest.TestCase):
         self.source.mkdir()
         self.runtime.mkdir()
         for name in ASSET_DIRS:
-            folder = self.source / name
-            folder.mkdir()
+            folder = self.source / "content" / name
+            folder.mkdir(parents=True)
             (folder / "asset.txt").write_text(name)
         (self.source / "COPYING").write_text("GPL")
         attribution = self.source / "docs/assets/source-attribution.md"

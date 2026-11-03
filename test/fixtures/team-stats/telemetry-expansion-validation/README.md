@@ -1,6 +1,6 @@
 # Format-108 telemetry checkpoint
 
-`checkpoint-1024-v108.game.gz` is a four-AI game (`games/gd-large-4ai.game`, game
+`checkpoint-1024-v108.game.gz` is a four-AI game (`content/games/gd-large-4ai.game`, game
 seed 2) saved at tick 1,024 in save format 108. `test/check_telemetry_simulation.py`
 loads it, simulates to tick 1,280 and compares each team/entity checksum record with
 `test/fixtures/scoped-gradients/v108-reload-256.checksums.gz`. The uncompressed

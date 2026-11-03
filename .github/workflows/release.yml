@@ -87,9 +87,9 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - name: Validate Android release identity
-        run: python3 mobile/android_release.py ${{ inputs.tag && 'check' || 'check-candidate' }}
+        run: python3 platforms/mobile/android_release.py ${{ inputs.tag && 'check' || 'check-candidate' }}
       - name: Validate F-Droid listing for publication
-        run: python3 mobile/android_release.py check-listing
+        run: python3 platforms/mobile/android_release.py check-listing
       - name: Test Android release preflight and package checks
         run: python3 -m unittest discover -s test/build_system -p test_android_release.py -v
 
@@ -135,8 +135,8 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends scons pkg-config nasm libva-dev unzip zip autoconf automake libtool cmake ninja-build
       - name: Install pinned Android toolchain
         run: |
-          python3 mobile/setup_ndk.py
-          python3 mobile/setup_tools.py
+          python3 platforms/mobile/setup_ndk.py
+          python3 platforms/mobile/setup_tools.py
           sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \
@@ -144,13 +144,13 @@ jobs:
       - name: Build source dependencies and release APK
         run: |
           set -o pipefail
-          code="$(python3 mobile/android_release.py code --arch '${{ matrix.arch }}')"
+          code="$(python3 platforms/mobile/android_release.py code --arch '${{ matrix.arch }}')"
           sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
-          python3 mobile/fdroid_build.py --version-code "$code" --android-sdk "$sdk" \
+          python3 platforms/mobile/fdroid_build.py --version-code "$code" --android-sdk "$sdk" \
             --android-ndk "$sdk/ndk/28.2.13676358" 2>&1 \
             | tee "build/android-${{ matrix.arch }}-build.log"
           apk="build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
-          python3 mobile/android_release.py verify-apk --arch '${{ matrix.arch }}' --apk "$apk"
+          python3 platforms/mobile/android_release.py verify-apk --arch '${{ matrix.arch }}' --apk "$apk"
       - name: Load reviewed emulator smoke driver
         if: matrix.arch == 'x86_64'
         env:
@@ -160,26 +160,26 @@ jobs:
           set -euo pipefail
           # Validation follows the reviewed mirror driver; APK bytes remain tagged.
           git fetch --no-tags "https://github.com/$DRIVER_REPOSITORY.git" "$DRIVER_COMMIT"
-          git show FETCH_HEAD:mobile/smoke.py > "$RUNNER_TEMP/release-smoke.py"
-          cp "$RUNNER_TEMP/release-smoke.py" mobile/smoke.py
+          git show FETCH_HEAD:platforms/mobile/smoke.py > "$RUNNER_TEMP/release-smoke.py"
+          cp "$RUNNER_TEMP/release-smoke.py" platforms/mobile/smoke.py
       - name: Launch x86_64 release candidate in an emulator
         if: matrix.arch == 'x86_64'
         run: |
           sudo chmod a+rw /dev/kvm
-          python3 mobile/setup_tools.py --emulator
-          python3 mobile/emulator.py configure --arch x86_64
-          nohup python3 mobile/emulator.py adb-server > build/mobile-adb-server.log 2>&1 &
-          nohup python3 mobile/emulator.py run --arch x86_64 > build/mobile-emulator.log 2>&1 &
+          python3 platforms/mobile/setup_tools.py --emulator
+          python3 platforms/mobile/emulator.py configure --arch x86_64
+          nohup python3 platforms/mobile/emulator.py adb-server > build/mobile-adb-server.log 2>&1 &
+          nohup python3 platforms/mobile/emulator.py run --arch x86_64 > build/mobile-emulator.log 2>&1 &
           ready=0
           for attempt in $(seq 1 90); do
-            if python3 mobile/emulator.py status --arch x86_64 >/dev/null 2>&1; then ready=1; break; fi
+            if python3 platforms/mobile/emulator.py status --arch x86_64 >/dev/null 2>&1; then ready=1; break; fi
             sleep 5
           done
           test "$ready" -eq 1
-          python3 mobile/android.py sign --arch x86_64 --release --fdroid
-          python3 mobile/android.py install --arch x86_64 --release --fdroid --serial emulator-5580 --adb-port 15037
-          python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64 --package org.globulation2.glob2
-          python3 mobile/emulator.py stop --arch x86_64
+          python3 platforms/mobile/android.py sign --arch x86_64 --release --fdroid
+          python3 platforms/mobile/android.py install --arch x86_64 --release --fdroid --serial emulator-5580 --adb-port 15037
+          python3 platforms/mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64 --package org.globulation2.glob2
+          python3 platforms/mobile/emulator.py stop --arch x86_64
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
@@ -392,7 +392,7 @@ jobs:
           cp "artifacts/release-source/glob2-${VERSION}.tar.gz" "$top/SOURCES/"
           python3 scons/sdl3_dependencies.py --download-only --work "$top/SOURCES"
           python3 tools/build_asset_encoder.py fetch --sources "$top/SOURCES"
-          rpmbuild -ba fedora/glob2.spec --define "_topdir $top"
+          rpmbuild -ba platforms/linux/fedora/glob2.spec --define "_topdir $top"
           stage="$GITHUB_WORKSPACE/artifacts/rpm-size-stage"
           mkdir -p "$stage"
           rpmfile="$(find "$top/RPMS" -name 'glob2-*.rpm' ! -name '*debuginfo*' ! -name '*debugsource*' -print -quit)"
@@ -649,11 +649,11 @@ jobs:
           # Package size reports run git on the container's checkout.
           git config --global --add safe.directory '*'
           python3 tools/release/render_flatpak.py "$REVISION" \
-            flatpak/org.globulation2.Globulation2.yml
+            platforms/linux/flatpak/org.globulation2.Globulation2.yml
       - uses: flatpak/flatpak-github-actions/flatpak-builder@79327416609af08178ad73b352877e51450790b3 # v6
         with:
           bundle: glob2.flatpak
-          manifest-path: flatpak/org.globulation2.Globulation2.yml
+          manifest-path: platforms/linux/flatpak/org.globulation2.Globulation2.yml
           build-dir: artifacts/flatpak-app
           cache-key: glob2-flatpak-${{ needs.preflight.outputs.revision }}
           upload-artifact: false
@@ -671,7 +671,7 @@ jobs:
           name: release-flatpak
           path: |
             glob2.flatpak
-            flatpak/org.globulation2.Globulation2.yml
+            platforms/linux/flatpak/org.globulation2.Globulation2.yml
           if-no-files-found: error
 
   snap-package:

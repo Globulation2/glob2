@@ -26,9 +26,11 @@ def download(work, versions):
         archive = work / spec['archive']
         if not archive.exists():
             temporary = archive.with_suffix(archive.suffix + '.download')
-            for attempt in range(3):
+            sources = (spec['url'], *spec.get('mirrors', ()))
+            attempts = [(attempt, url) for attempt in range(3) for url in sources]
+            for request_index, (attempt, url) in enumerate(attempts):
                 try:
-                    with urllib.request.urlopen(spec['url'], timeout=60) as response:
+                    with urllib.request.urlopen(url, timeout=60) as response:
                         payload = response.read()
                     if hashlib.sha256(payload).hexdigest() != spec['sha256']:
                         raise ValueError(f'Dependency archive checksum mismatch: {archive}')
@@ -37,14 +39,17 @@ def download(work, versions):
                     break
                 except urllib.error.HTTPError as error:
                     error.close()
-                    if error.code not in (408, 429, 500, 502, 503, 504) or attempt == 2:
+                    if error.code not in (408, 429, 500, 502, 503, 504) or request_index == len(attempts) - 1:
                         raise
                 except (urllib.error.URLError, TimeoutError, ConnectionError):
-                    if attempt == 2:
+                    if request_index == len(attempts) - 1:
                         raise
                 finally:
                     temporary.unlink(missing_ok=True)
-                time.sleep(2 ** attempt)
+                # Try a configured mirror immediately; back off only after
+                # every source failed in this round. Every source uses one pin.
+                if (request_index + 1) % len(sources) == 0:
+                    time.sleep(2 ** attempt)
         if hashlib.sha256(archive.read_bytes()).hexdigest() != spec['sha256']:
             raise ValueError(f'Dependency archive checksum mismatch: {archive}')
 

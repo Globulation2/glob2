@@ -37,7 +37,7 @@ def checkouts(extra=()):
             for line in command.stdout.splitlines()
             if line.startswith("worktree ")
         )
-    return sorted(p for p in result if (p / "mobile/toolchain.json").is_file())
+    return sorted(p for p in result if (p / "platforms/mobile/toolchain.json").is_file())
 
 
 def open_paths(arguments):
@@ -85,14 +85,14 @@ def busy(checkout):
 
 
 def artifacts(root):
-    tools = json.loads((root / "mobile/android-tools.json").read_text())
+    tools = json.loads((root / "platforms/mobile/android-tools.json").read_text())
     result = [tools["gradle"]]
     host = store.platform.system() + "-" + store.platform.machine()
     if "jdk-" + host in tools:
         result.append(tools["jdk-" + host])
     if "sdk-tools-" + store.platform.system() in tools:
         result.append(tools["sdk-tools-" + store.platform.system()])
-    android = json.loads((root / "mobile/toolchain.json").read_text())["android"]
+    android = json.loads((root / "platforms/mobile/toolchain.json").read_text())["android"]
     if store.platform.system() in android["ndk_archives"]:
         result.append(
             dict(
@@ -101,7 +101,7 @@ def artifacts(root):
                 archive_directory="android-ndk-r28c",
             )
         )
-    emulator = json.loads((root / "mobile/emulator.json").read_text())["archives"]
+    emulator = json.loads((root / "platforms/mobile/emulator.json").read_text())["archives"]
     if host in emulator:
         result.append(emulator[host])
     arch = "arm64-v8a" if store.platform.machine() in ("arm64", "aarch64") else "x86_64"
@@ -168,7 +168,7 @@ def migrate_browser(checkout, item, receipt, apply):
     """Compare installed components, preserving local SDK configuration and caches."""
     if not receipt or receipt.get("checks", {}).get("browser-build") != 0:
         return
-    manifest = checkout / "browser/toolchain.json"
+    manifest = checkout / "platforms/web/toolchain.json"
     if not manifest.is_file():
         return
     target = store.browser_sdk(checkout, lease=False)

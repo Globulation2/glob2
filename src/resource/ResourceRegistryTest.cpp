@@ -28,7 +28,7 @@ std::string source(Json definitions)
 }
 std::shared_ptr<const ResourceRegistry> stock()
 {
-    return ResourceRegistry::loadFile((glob2test::sourceRoot() / "data/resources/registry.json").string());
+    return ResourceRegistry::loadFile((glob2test::contentRoot() / "data/resources/registry.json").string());
 }
 }
 

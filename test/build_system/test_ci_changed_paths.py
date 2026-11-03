@@ -59,7 +59,7 @@ class ChangedPathsTest(unittest.TestCase):
         self.assertNotRegex(development, r'(?m)^scons==')
 
     def assert_jobs(self, paths, platform=None, platform_stack=None, music=None, **expected):
-        # The TypeScript platform job runs on platform/ changes and with full CI.
+        # The TypeScript platform job runs on services/online/ changes and with full CI.
         if platform is None:
             platform = all(expected.values())
         # The self-hosted stack smoke test runs on its own paths and with full CI.
@@ -79,13 +79,13 @@ class ChangedPathsTest(unittest.TestCase):
         )
         # A soundtrack set's files are packaged game data: native and browser builds.
         self.assert_jobs(
-            ["data/zik/woodland/a1.ogg", "data/zik/woodland/LICENSE.txt"],
+            ["content/data/zik/woodland/a1.ogg", "content/data/zik/woodland/LICENSE.txt"],
             native=True, browser=True, map_generators=False,
             deployment=False, cross_platform=False, music=False, platform=False,
         )
-        # The shared data/zik/SConscript is a build input: every job.
+        # The shared content/data/zik/SConscript is a build input: every job.
         self.assert_jobs(
-            ["data/zik/SConscript"], native=True, browser=True, map_generators=True,
+            ["content/data/zik/SConscript"], native=True, browser=True, map_generators=True,
             deployment=True, cross_platform=True,
         )
 
@@ -101,7 +101,7 @@ class ChangedPathsTest(unittest.TestCase):
             deployment=False, cross_platform=False, platform_stack=True,
         )
         self.assert_jobs(
-            ["platform/packages/db/migrations/0005_rooms.sql"], native=False, browser=False,
+            ["services/online/packages/db/migrations/0005_rooms.sql"], native=False, browser=False,
             map_generators=False, deployment=False, cross_platform=False, platform=True,
             platform_stack=True,
         )
@@ -113,7 +113,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_platform_only(self):
         self.assert_jobs(
-            ["platform/apps/api/src/app.ts", "platform/package-lock.json"],
+            ["services/online/apps/api/src/app.ts", "services/online/package-lock.json"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=True,
             # Dependency changes also rebuild the stack's images.
@@ -122,21 +122,21 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_platform_docs_only(self):
         self.assert_jobs(
-            ["platform/README.md", "docs/multiplayer/architecture.md"],
+            ["services/online/README.md", "docs/multiplayer/architecture.md"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=False,
         )
 
     def test_protocol_fixtures_run_platform_and_native_contract_tests(self):
         self.assert_jobs(
-            ["platform/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json"],
+            ["services/online/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json"],
             native=True, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=True,
         )
 
     def test_documentation_only(self):
         self.assert_jobs(
-            ["docs/browser/implementation.md", "README.md", "browser/README.md"],
+            ["docs/browser/implementation.md", "README.md", "platforms/web/README.md"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False,
         )
@@ -172,7 +172,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_browser_shell_only(self):
         self.assert_jobs(
-            ["browser/storage.js", "browser/tests/storage.spec.js"],
+            ["platforms/web/storage.js", "platforms/web/tests/storage.spec.js"],
             native=False, browser=True, map_generators=False,
             deployment=False, cross_platform=False,
         )
@@ -198,7 +198,7 @@ class ChangedPathsTest(unittest.TestCase):
                      "test/maxima/fixtures/save-continuation/expected-resources-30000-30512.json",
                      "test/maxima/check_save_continuation_fixture.py",
                      "test/fixtures/resources/seeded-compositions-units.trace",
-                     "test/support/TestMain.cpp", "libgag/src/ImageAssetTest.cpp"):
+                     "test/support/TestMain.cpp", "libs/gag/src/ImageAssetTest.cpp"):
             with self.subTest(path=path):
                 self.assert_jobs(
                     [path], native=True, browser=True, map_generators=False,
@@ -247,7 +247,7 @@ class ChangedPathsTest(unittest.TestCase):
         )
 
     def test_cross_platform_fixtures_run_everything(self):
-        for path in ("browser/tests/determinism.spec.js", "browser/tests/fixtures/cross-replay.replay",
+        for path in ("platforms/web/tests/determinism.spec.js", "platforms/web/tests/fixtures/cross-replay.replay",
                      "test/run-browser-determinism.py", "src/map/generator/MapGeneratorGoldenTest.cpp",
                      ".github/workflows/build.yml"):
             with self.subTest(path=path):
@@ -258,7 +258,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_mixed_independent_changes(self):
         self.assert_jobs(
-            ["browser/storage.js", "src/map/gradient/PathGradientHarness.cpp"],
+            ["platforms/web/storage.js", "src/map/gradient/PathGradientHarness.cpp"],
             native=True, browser=True, map_generators=False,
             deployment=False, cross_platform=False,
         )
@@ -276,9 +276,9 @@ class ChangedPathsTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.assert_jobs([path], native=True, browser=True, map_generators=False,
                                  deployment=False, cross_platform=True)
-        for paths in (["libgag/include/RenderBackend.h"], ["libgag/src/FileManager.cpp"],
-                      ["libgag/src/SurfaceRaster.cpp", "src/map/generator/core/MapGenerator.cpp"],
-                      ["libgag/src/UnknownRenderer.cpp"]):
+        for paths in (["libs/gag/include/RenderBackend.h"], ["libs/gag/src/FileManager.cpp"],
+                      ["libs/gag/src/SurfaceRaster.cpp", "src/map/generator/core/MapGenerator.cpp"],
+                      ["libs/gag/src/UnknownRenderer.cpp"]):
             with self.subTest(paths=paths):
                 self.assert_jobs(paths, native=True, browser=True, map_generators=True,
                                  deployment=True, cross_platform=True)

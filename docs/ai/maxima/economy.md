@@ -51,6 +51,82 @@ replace those planning gates: an impossible bid would otherwise consume labour
 and suppress feasible development. New rules should be represented in these same
 stages rather than stored as a separate persistent strategy profile.
 
+## Prestige race
+
+With normal prestige victory active and `prestige.enabled=true`, the policy
+competes for the same construction and training budget as ordinary technology. It
+prepares a prestige-producing building, invests in its upgrade chain, prioritizes
+a winning
+finish, or holds when prerequisites are missing, survival needs intervene, or
+it cannot catch the surviving leader before crossing the shared threshold.
+Victory enablement, the threshold and alliance-sharing precedence come from
+primitive snapshot metadata; the copied configuration omits victory objects.
+Catalog prestige values determine the increments; the policy does not assume a
+fixed school score. Dedicated investment uses upgrade chains whose prerequisite
+buildings and construction sites have zero prestige, so cancelling an upgrade
+cannot itself add prestige. A catalog without such a route leaves this policy
+on hold. It credits
+completed buildings and pending construction, including prestige due from a new
+building's first completion,
+requests one to four unfinished pipelines according to spare qualified builders,
+and keeps ordinary school demand when that is larger. `prestige.max_pipelines`
+defaults to four; set it to one for the conservative comparison policy.
+Each allocation assesses prestige after initializing
+the director budget, so only completed prestige-producing levels retire a pipeline;
+basic schools, prerequisite upgrades and pending sites continue to supply it.
+Healthy idle workers qualified for the final upgrade, plus qualified builders
+already working on that building lineage, supply the parallel allowance.
+Existing training reserves and unmet ordinary construction requests are deducted;
+capacity above the base pipeline needs full configured construction/upgrade crews.
+The base request still passes ordinary workforce and funding checks. Counting builders
+already on the pipeline prevents its own staffing from shrinking its allowance.
+The allowance also stops at the number of remaining prestige increments needed,
+and an immediate winning finish uses one pipeline. Private materials in an
+existing school cannot justify extra new pipelines without supply for their full
+upgrade chains. Population, qualified-builder, service continuity, placement and
+construction limits still apply. The requested stock is capped at the engine's
+per-team building limit.
+New matches enable this policy by default when normal prestige victory is active.
+It can increase spending on schools and qualified builders when prestige is viable;
+set `prestige.enabled=false` to opt out.
+
+The threshold counts all teams' prestige, including defeated colonies. Leadership
+considers surviving teams individually. Tied leaders win; an ally's individual
+lead is sufficient only with mutual alliance and the alliance victory condition
+ordered before prestige victory. Private stock funds only its own building’s next
+upgrade; unrelated private stores do not establish a construction supply route.
+Completion projections include fresh individual scores between the engine's
+32-tick global-total refreshes. A larger cached total remains conservative until
+the next refresh after a prestige building is lost.
+Before starting a prestige-producing action, Maxima rejects a completion that
+would cross the threshold and award it no victory. Only one such completion is
+committed at once. Fresh observations also recheck queued orders and active
+upgrades. An unsafe active upgrade is cancelled with the ordinary construction
+cancel order when restoring its previous building is safe; cancellation waits
+for execution and the observed result before releasing its planner commitment.
+Custom first-level prestige sites still block additional prestige commitments
+and receive the start check, but the engine cannot undo them with an upgrade
+cancel order. The policy does not demolish them. It also rejects a cancellation
+that would restore enough prestige to trigger a loss in a custom catalog.
+
+The policy changes economic investment, not combat targets, defense placement
+or reconnaissance objectives. Timed prestige finishes alone do not activate it.
+Turning off normal prestige victory or `prestige.enabled` removes both the
+investment policy and its completion guards. Race telemetry reports numeric
+state/reason, standings, remaining threshold, pending gain and investment priority.
+Director snapshots also expose the selected target level, prestige pipeline request
+and ordinary school request after allocation.
+
+Save format 192 persists race budgets and cancellation identities/receipts.
+Format 193 adds the adaptive pipeline setting. Saves predating that setting
+restore `prestige.max_pipelines=1`, preserving the conservative execution policy.
+Supported older Maxima saves gain the new policy when their match enables prestige
+victory. Missing prestige configuration explicitly receives `enabled=true` and
+the documented weights. The new policy reassesses pending work before development
+execution resumes. Other saved execution work is retained. This intentional
+behavior change requires the
+new simulation/network version; it does not drop older save support.
+
 ## Local staffing
 
 Every completed inn and swarm samples corn stock as a share of its capacity

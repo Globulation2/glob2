@@ -56,7 +56,7 @@ timing baseline before execution resumes; game state is retained in memory.
 
 ## Validation
 
-`browser/tests/rendering.spec.js` drives real controls, verifies the actual WebGL2
+`platforms/web/tests/rendering.spec.js` drives real controls, verifies the actual WebGL2
 context and drawing-buffer dimensions, exercises software selection, and loses
 and restores the context repeatedly during a match. It also verifies retained
 settings, editor, and confirmation controls after restoration. Playwright runs
@@ -74,11 +74,11 @@ changing simulation behavior.
 
 ## Performance measurement
 
-`browser/benchmarks/rendering.cjs` compares WebGL2 and software rendering against
+`platforms/web/benchmarks/rendering.cjs` compares WebGL2 and software rendering against
 a locally served build. Results depend on browser, GPU, driver, and concurrent
 load, so machine-specific output stays outside the repository.
 
-From `browser/`, run:
+From `platforms/web/`, run:
 
 ```sh
 GLOB2_TEST_URL=http://127.0.0.1:8770 GLOB2_ANGLE=metal node benchmarks/rendering.cjs webgl2

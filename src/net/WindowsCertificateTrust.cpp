@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "mobile/CertificateTrust.h"
+#include "platforms/mobile/CertificateTrust.h"
 #include <windows.h>
 #include <wincrypt.h>
 #include <memory>

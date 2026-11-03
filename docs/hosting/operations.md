@@ -137,9 +137,9 @@ smoke checks, and under `match-e2e/` the clients' logs, results and checksum
 traces, plus the end-to-end `results.json`. The exit status is 0 only if every
 check passed. Add `--keep` to leave the stack running for inspection.
 
-The web app's browser suites (`platform/apps/web/e2e`: page smoke tests and axe
+The web app's browser suites (`services/online/apps/web/e2e`: page smoke tests and axe
 accessibility checks on desktop and phone) run separately, against a seeded API:
-`npm run build -w @glob2/web && npm run e2e -w @glob2/web` in `platform/`, with the
+`npm run build -w @glob2/web && npm run e2e -w @glob2/web` in `services/online/`, with the
 test Postgres running.
 
 [Hosting index](README.md) · [Documentation index](../README.md).

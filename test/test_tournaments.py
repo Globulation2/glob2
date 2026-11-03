@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Protocol, durable lease acceptance, transfer corruption and offline analysis tests."""
 import base64
+import copy
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import sys
@@ -19,7 +21,7 @@ from tools.tournaments.model import job, validate_experiment, validate_job
 from tools.tournaments.transfer import put_chunk, offset
 from tools.tournaments.worker import Worker, installed_bundle, outcome_only, pack
 from tools.tournaments.analysis import adjudicate, paired_effects, probability_scores, observations
-from tools.tournaments.probability import summary, group_summary, stopping_threshold
+from tools.tournaments.probability import summary, group_summary, group_score, stopping_threshold, SCORE_METRIC
 
 FAKE = '''#!/usr/bin/env python3
 import json, pathlib, sys
@@ -761,14 +763,17 @@ def _probability_team(n, chance=500, area=1000000, start=0, end=1000, **extra):
     return dict(team=n, alliance=n, alive=True, outcome='unresolved', prestige=100-n,
                 units=50, buildings=10, eliminated_tick=-1,
                 win_probability=dict(model='test-model', permille=chance, start_tick=start,
-                                     end_tick=end, area_twice_permille_ticks=area), **extra)
+                                     end_tick=end, area_twice_permille_ticks=area),
+                win_probability_history=[[start, int(area/(end-start)-chance) if end>start else chance], [end,chance]], **extra)
 
 
 def _probability_row(name='baseline', mean=500, block='one', build='build'):
+    teams=[_probability_team(0, mean, mean*2000), _probability_team(1, 1000-mean, (1000-mean)*2000)]
+    result=dict(ticks=1000,termination='tick_cap',teams=teams,winning_teams=[])
     return dict(build=build, block=block, pair=block, held_out=False, variant=name,
                 format='1v1', competitors=['subject', 'rival'], groups=[0, 1], subject_group=0,
-                ticks=1000, placements=[1, 2], probabilities=[summary(_probability_team(0, mean, mean*2000)),
-                                                          summary(_probability_team(1, 1000-mean, (1000-mean)*2000))])
+                ticks=1000, placements=[1, 2], probabilities=[summary(t) for t in teams],
+                trajectory_scores=[group_score([t],result,{'ticks':1000}) for t in teams])
 
 
 class ProbabilityTests(unittest.TestCase):
@@ -815,7 +820,8 @@ class ProbabilityTests(unittest.TestCase):
         self.assertEqual(len(scores), 2)
         subject=next(s for s in scores if s['role']=='subject')
         opponent=next(s for s in scores if s['role']=='opponent')
-        self.assertEqual((subject['mean'], opponent['mean']), (.51,.49))
+        self.assertAlmostEqual(subject['mean'], .51)
+        self.assertAlmostEqual(opponent['mean'], .49)
         self.assertEqual((subject['wins'], opponent['losses']), (1,1))
 
     def test_paired_probability_intervals_keep_same_seed_rotations_together(self):
@@ -825,7 +831,7 @@ class ProbabilityTests(unittest.TestCase):
                 row=_probability_row(variant, 510, 'one-seed')
                 row['pair']='rotation-'+str(rotation)
                 rows.append(row)
-        effect=next(s for s in paired_effects(rows, 100) if s['metric']=='win_probability_mean')
+        effect=next(s for s in paired_effects(rows, 100) if s['metric']==SCORE_METRIC)
         self.assertEqual((effect['pairs'], effect['blocks']), (2,1))
         self.assertIsNone(effect['interval'])
 
@@ -833,7 +839,7 @@ class ProbabilityTests(unittest.TestCase):
         from tools.tournaments.model import job
         from tools.tournaments.analysis import reanalyze
         request = job('game', 'a'*64, seeds={'game': 42},
-                      config={'players': ['castor', 'cortex'], 'win_probability_permille': 950},
+                      config={'players': ['castor', 'cortex'], 'ticks':1000, 'win_probability_permille': 950},
                       labels={'format': '1v1', 'block': 'paired-map'})
         result = dict(termination='tick_cap', ticks=1000, winning_teams=[],
                       teams=[_probability_team(0, 300), _probability_team(1, 700)],
@@ -842,16 +848,17 @@ class ProbabilityTests(unittest.TestCase):
             root=Path(directory)
             (root/'results').mkdir()
             (root/'experiment.json').write_text(json.dumps(dict(id='probability', jobs=[request])))
-            record=dict(id='attempt', host='local', category='success', job=request, result=outcome_only(result), artifacts=[])
+            record=dict(id='attempt', host='local', category='success', job=request, result=outcome_only(result, request['config']), artifacts=[])
             (root/'results'/(request['id']+'.json')).write_text(json.dumps(record))
             report=reanalyze(root, draws=10)
             self.assertEqual(report['policy']['name'], 'win_probability')
             winner=next(s for s in report['probability_scores'] if s['competitor']=='cortex')
             self.assertEqual((winner['wins'], winner['losses'], winner['draws']), (1,0,0))
-            self.assertEqual(winner['mean'], .5)
+            self.assertAlmostEqual(winner['mean'], .1+.4/math.log(3))
             self.assertTrue((root/'reports/win_probability/probability_scores.csv').is_file())
             text=(root/'reports/win_probability/report.md').read_text()
-            self.assertIn('Mean whole-game win probability', text)
+            self.assertIn('Adjusted win-probability trajectory score', text)
+            self.assertEqual(report['score_definition']['coefficient'], 2)
             self.assertIn('W / L / D', text)
 
     def test_cap_uses_final_probability_instead_of_economy(self):
@@ -909,7 +916,7 @@ class ProbabilityTests(unittest.TestCase):
         candidate=_probability_row('improved', 510)
         baseline['win_probability_permille']=950
         candidate['win_probability_permille']=0
-        self.assertFalse(any(s['metric']=='win_probability_mean' for s in paired_effects([baseline,candidate], 10)))
+        self.assertFalse(any(s['metric']==SCORE_METRIC for s in paired_effects([baseline,candidate], 10)))
         candidate['variant']='baseline'
         scores=probability_scores([baseline,candidate], 10)
         subject=[s for s in scores if s['competitor']=='subject']
@@ -921,7 +928,7 @@ class ProbabilityTests(unittest.TestCase):
                 row=_probability_row(variant, 510, block)
                 row['win_probability_permille']=threshold
                 rows.append(row)
-        effects=[s for s in paired_effects(rows, 10) if s['metric']=='win_probability_mean']
+        effects=[s for s in paired_effects(rows, 10) if s['metric']==SCORE_METRIC]
         self.assertEqual({s['win_probability_permille'] for s in effects}, {0,950})
         self.assertTrue(all(s['pairs']==1 for s in effects))
 
@@ -929,7 +936,7 @@ class ProbabilityTests(unittest.TestCase):
         rows=[_probability_row(block='one'), _probability_row('improved', 510, 'one'),
               _probability_row(block='two'), _probability_row('improved', 520, 'two')]
         effects=paired_effects(rows, draws=100, seed=42)
-        probability=next(x for x in effects if x['metric']=='win_probability_mean')
+        probability=next(x for x in effects if x['metric']==SCORE_METRIC)
         self.assertAlmostEqual(probability['mean_effect'], .015)
         placement=next(x for x in effects if x['metric']=='placement')
         self.assertEqual(placement['mean_effect'], 0)
@@ -944,6 +951,164 @@ class ProbabilityTests(unittest.TestCase):
         rows.append(_probability_row('improved', 900, 'three', build='other'))
         self.assertEqual(len(probability_scores(rows, 0)), 6)
 
+
+
+def _adjusted_team(n=0, points=None, outcome='unresolved', alliance=None):
+    p=points or [[0,500],[1000,500]]
+    area=sum((a[1]+b[1])*(b[0]-a[0]) for a,b in zip(p,p[1:]))
+    return dict(team=n, alliance=n if alliance is None else alliance, alive=outcome!='lost',
+                eliminated_tick=-1, outcome=outcome, prestige=0,units=10,buildings=1,
+                win_probability_history=p,win_probability=dict(model='fixture',permille=p[-1][1],
+                start_tick=p[0][0],end_tick=p[-1][0],area_twice_permille_ticks=area))
+
+
+def _adjusted_result(teams=None, end=1000, horizon=1000, termination='tick_cap', winners=None):
+    return dict(schema_version=1,status='completed',ticks=end,termination=termination,
+                winning_teams=winners or [],teams=teams or [_adjusted_team(),_adjusted_team(1)],
+                players=[dict(team=0,ai='maxima'),dict(team=1,ai='castor')],
+                resolved=dict(tick_limit=horizon,rules=dict(winProbabilityPermille=950)))
+
+
+class TrajectoryScoreTests(unittest.TestCase):
+    def test_linear_rise_matches_independent_quadrature(self):
+        t=_adjusted_team(points=[[0,200],[400,800],[1000,600]])
+        r=_adjusted_result([t]);v=group_score([t],r)
+        # Midpoint numerical integration, independent of the analytic reader.
+        steps=50000;delta=1000/steps
+        def probability(x):return .2+.6*x/400 if x<400 else .8-.2*(x-400)/600
+        expected=sum(probability((i+.5)*delta)*2/(1000+2*(i+.5)*delta)/math.log(3)*delta for i in range(steps))
+        self.assertAlmostEqual(v['score'],expected,places=9)
+        self.assertEqual(v['metric'],SCORE_METRIC)
+        self.assertEqual(v['coefficient'],2)
+
+    def test_faster_real_wins_receive_more_credit_for_equal_earlier_strength(self):
+        def evaluate(ticks,termination='engine_end',outcome='won'):
+            t=_adjusted_team(points=[[0,600],[ticks,600]],outcome=outcome)
+            return group_score([t],_adjusted_result([t],end=ticks,horizon=1000,termination=termination,winners=[0] if outcome=='won' else []))
+        early=evaluate(200);late=evaluate(600);cap=evaluate(1000,'tick_cap','unresolved');loss=evaluate(200,'engine_end','lost')
+        self.assertGreater(early['score'],late['score']);self.assertGreater(late['score'],cap['score']);self.assertGreater(cap['score'],loss['score'])
+        self.assertAlmostEqual(early['score'],1-.4*math.log(1.4)/math.log(3))
+        self.assertEqual(early['outcome_source'],'engine');self.assertEqual(loss['outcome_credit'],0)
+        self.assertIsNone(cap['outcome_credit']);self.assertEqual(cap['terminal_weight'],0)
+
+    def test_probability_stop_credits_full_predicted_outcome_and_tags_it(self):
+        a=_adjusted_team(points=[[0,500],[300,960]],outcome='won');b=_adjusted_team(1,[[0,500],[300,40]],'lost')
+        r=_adjusted_result([a,b],end=300,horizon=1000,termination='win_probability',winners=[0])
+        winner=group_score([a],r);loser=group_score([b],r)
+        self.assertEqual((winner['outcome_credit'],loser['outcome_credit']),(1,0))
+        self.assertEqual(winner['outcome_source'],'probability_stop')
+        self.assertAlmostEqual(winner['score']+loser['score'],1)
+        actual=copy.deepcopy(r);actual['termination']='engine_end'
+        self.assertEqual(group_score([a],actual)['score'],winner['score'])
+        self.assertEqual(group_score([a],actual)['outcome_source'],'engine')
+
+    def test_shared_winners_each_receive_full_credit_and_alliance_counts_once(self):
+        a=_adjusted_team(points=[[0,400],[500,400]],alliance=7);b=_adjusted_team(1,[[0,400],[500,400]],alliance=7)
+        r=_adjusted_result([a,b],end=500,horizon=1000,termination='engine_end',winners=[0,1])
+        self.assertEqual(group_score([a,b],r)['score'],group_score([a],r)['score'])
+        self.assertEqual(group_score([b],r)['outcome_credit'],1)
+        # A group wins when one member is declared: do not sum their probabilities.
+        r['winning_teams']=[0]
+        self.assertEqual(group_score([a,b],r)['outcome_credit'],1)
+
+    def test_compaction_preserves_score_and_actual_resolved_horizon(self):
+        a=_adjusted_team(points=[[0,300],[200,800],[500,900]],outcome='won')
+        r=_adjusted_result([a],end=500,horizon=1000,termination='win_probability',winners=[0])
+        full=group_score([a],r);compact=outcome_only(r,{'ticks':2000})
+        self.assertNotIn('win_probability_history',compact['teams'][0])
+        self.assertEqual(compact['teams'][0]['win_probability'],a['win_probability'])
+        self.assertEqual(group_score(compact['teams'],compact,{'ticks':2000}),full)
+        self.assertEqual(outcome_only(compact),compact)
+
+    def test_old_full_history_scores_but_old_compact_cannot_invent_log_area(self):
+        r=_adjusted_result();self.assertTrue(group_score(r['teams'][:1],r)['available'])
+        del r['teams'][0]['win_probability_history']
+        v=group_score(r['teams'][:1],r)
+        self.assertFalse(v['available']);self.assertIsNone(v['score']);self.assertEqual(v['unavailable_reason'],'missing_history')
+
+    def test_partial_mixed_stale_or_missing_horizons_are_unavailable(self):
+        for points in ([[200,500],[1000,500]],[[0,500],[900,500]]):
+            t=_adjusted_team(points=points);self.assertFalse(group_score([t],_adjusted_result([t]))['available'])
+        t=_adjusted_team();t['win_probability']['model']='mixed'
+        self.assertFalse(group_score([t],_adjusted_result([t]))['available'])
+        r=_adjusted_result();del r['resolved']
+        self.assertEqual(group_score(r['teams'][:1],r)['unavailable_reason'],'missing_horizon')
+        self.assertTrue(group_score(r['teams'][:1],r,{'ticks':1000})['available'])
+        self.assertEqual(group_score([_adjusted_team()],_adjusted_result(horizon=500))['unavailable_reason'],'horizon_before_end')
+
+    def test_unknown_early_end_does_not_receive_invented_outcome_credit(self):
+        t=_adjusted_team(points=[[0,500],[200,500]])
+        r=_adjusted_result([t],end=200,horizon=1000,termination='tick_cap')
+        self.assertEqual(group_score([t],r)['unavailable_reason'],'unresolved_before_horizon')
+        for termination in ('engine_end','win_probability'):
+            r['termination']=termination
+            self.assertEqual(group_score([t],r)['unavailable_reason'],'missing_terminal_outcome')
+
+    def test_invalid_history_or_cached_integrals_are_rejected(self):
+        for mutate in (lambda t:t['win_probability_history'].append([1000,500]),
+                       lambda t:t['win_probability_history'].__setitem__(1,[1000,1001]),
+                       lambda t:t['win_probability'].__setitem__('area_twice_permille_ticks',900000)):
+            t=_adjusted_team();mutate(t)
+            with self.assertRaises(ValueError):group_score([t],_adjusted_result([t]))
+        c=outcome_only(_adjusted_result());c['teams'][0]['win_probability_log_integral']['weighted_area']=float('nan')
+        with self.assertRaisesRegex(ValueError,'compact'):group_score(c['teams'][:1],c)
+
+    def test_horizon_and_format_cohorts_do_not_pool_or_pair(self):
+        rows=[]
+        for horizon,fmt in ((1000,'1v1'),(2000,'1v1'),(1000,'ffa')):
+            for arm in ('baseline','candidate'):
+                r=_adjusted_result(horizon=horizon,termination='engine_end',winners=[0])
+                j=job('game','a'*64,config={'ticks':horizon},labels={'pair':'same-map','format':fmt,'variant':arm,'block':'seed'})
+                rows+=observations([dict(job=j,result=r,category='success')],'win_probability')
+        effects=[e for e in paired_effects(rows,0) if e['metric']==SCORE_METRIC]
+        self.assertEqual({(e['format'],e['horizon_ticks']) for e in effects},{('1v1',1000),('1v1',2000),('ffa',1000)})
+        scores=probability_scores(rows,0)
+        self.assertEqual(len([s for s in scores if s['role']=='subject']),6)
+        mismatch=copy.deepcopy(rows[:2]);mismatch[1]['trajectory_scores'][0]['horizon_ticks']=3000
+        self.assertFalse(any(e['metric']==SCORE_METRIC for e in paired_effects(mismatch,0)))
+
+
+class AdjustedScoreCompatibilityTests(unittest.TestCase):
+    def test_unknown_cached_or_observation_metric_never_falls_back_to_auc(self):
+        compact=outcome_only(_adjusted_result())
+        compact['teams'][0]['win_probability_log_integral']['metric']='future-score'
+        value=group_score(compact['teams'][:1],compact)
+        self.assertFalse(value['available'])
+        self.assertEqual(value['unavailable_reason'],'unsupported_cached_metric')
+        row=_probability_row('candidate')
+        row['trajectory_scores'][0]['metric']='future-score'
+        score=next(v for v in probability_scores([row],0) if v['role']=='subject')
+        self.assertEqual(score['unavailable_reasons'],{'unsupported_score_metric':1})
+        self.assertIsNone(score['mean'])
+        self.assertEqual(score['legacy_linear_mean'],.5)
+        self.assertFalse(any(v['metric']==SCORE_METRIC for v in paired_effects([_probability_row(),row],0)))
+
+    def test_actual_predicted_and_cap_sources_are_reported_separately(self):
+        rows=[]
+        for block,termination,end in (('actual','engine_end',200),('predicted','win_probability',200),('cap','tick_cap',1000)):
+            teams=[_adjusted_team(0,[[0,500],[end,960]],'won' if termination!='tick_cap' else 'unresolved'),
+                   _adjusted_team(1,[[0,500],[end,40]],'lost' if termination!='tick_cap' else 'unresolved')]
+            result=_adjusted_result(teams,end=end,termination=termination,winners=[0] if termination!='tick_cap' else [])
+            request=job('game','a'*64,config={'ticks':1000},labels={'block':block})
+            rows+=observations([dict(job=request,result=outcome_only(result),category='success')],'win_probability')
+        scores=probability_scores(rows,0)
+        self.assertEqual(len(scores),2)
+        for score in scores:
+            self.assertEqual(score['scored_games'],3)
+            self.assertEqual(score['outcome_credit_sources'],{'engine':1,'probability_stop':1,'tick_cap':1})
+            self.assertEqual(score['probability_ended_games'],1)
+            self.assertEqual(score['capped_games'],1)
+
+    def test_old_compact_reports_coverage_instead_of_a_fabricated_score(self):
+        result=_adjusted_result()
+        for team in result['teams']:
+            del team['win_probability_history']
+        request=job('game','a'*64,config={'ticks':1000})
+        rows=observations([dict(job=request,result=result,category='success')],'win_probability')
+        for score in probability_scores(rows,0):
+            self.assertIsNone(score['mean'])
+            self.assertEqual(score['unavailable_reasons'],{'missing_history':1})
+            self.assertAlmostEqual(score['legacy_linear_mean'],.5)
 
 
 if __name__ == '__main__': unittest.main()

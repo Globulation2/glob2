@@ -118,7 +118,8 @@ struct Entities
 		return std::span<const BuildingView>(buildings).subspan(range.offset,range.count);
 	}
 };
-struct Teams { std::vector<TeamView> values; int totalPrestige = 0; };
+struct Teams { std::vector<TeamView> values; int totalPrestige = 0;
+    bool prestigeWinCondition = false, prestigeAlliesShareVictory = false; int prestigeToReach = 0; };
 struct Rules
 {
 	RuleView values;

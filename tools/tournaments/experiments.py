@@ -9,7 +9,7 @@ from .analysis import POLICIES, reanalyze
 from .bundles import inspect_bundle
 from .common import atomic_json, digest, read_json
 from .coordinator import Coordinator
-from .jobs import win_probability_threshold
+from .jobs import DEFAULT_GAME_TICKS, win_probability_threshold
 from .model import generator_samples, grid, job, rotations, seeded_samples, validate_experiment
 
 
@@ -83,7 +83,7 @@ class Planner:
                   'symmetric_control': method == 15, 'block': f'{method}:{map_seed}:{game_seed}'}
         value = job('game', build, seeds={'map': map_seed, 'game': game_seed},
                     config={'generator': method, 'params': params, 'candidates': config.get('candidates', 5),
-                            'players': players, 'ticks': config.get('ticks', 90000), 'ai_params': {},
+                            'players': players, 'ticks': config.get('ticks', DEFAULT_GAME_TICKS), 'ai_params': {},
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
@@ -130,7 +130,7 @@ class Planner:
         value = job('game', build,
                     inputs={'map': {'job': generated['id'], 'artifact': f'map-r{rotation}.map.gz'}},
                     depends_on=[generated['id']], seeds={'game': seed},
-                    config={'players': players, 'ticks': config.get('ticks', 90000),
+                    config={'players': players, 'ticks': config.get('ticks', DEFAULT_GAME_TICKS),
                             'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             'win_probability_permille': win_probability_threshold(config)},
@@ -264,7 +264,7 @@ def experiment_main(kind):
     try:
         if args.command=='reanalyze':
             report=reanalyze(args.directory,args.policy,args.draws,args.seed,args.k,args.output)
-            print(json.dumps({'results':report['committed_results'],'ratings':report['ratings'],'probability_scores':report['probability_scores']},indent=2))
+            print(json.dumps({'results':report['committed_results'],'ratings':report['ratings'],'score_definition':report['score_definition'],'probability_scores':report['probability_scores']},indent=2))
         else:
             manifest=Planner(kind,read_json(args.config),[inspect_bundle(p) for p in args.bundle]).plan()
             if args.command=='plan': atomic_json(args.output,manifest)

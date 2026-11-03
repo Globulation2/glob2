@@ -6,7 +6,7 @@ or selection interface. Their IDs are permanently 0, 1 and 2. Additional IDs are
 local to an immutable catalog and must be resolved from stable keys at setup.
 Catalogs contain at most 1,024 definitions; game state allocates by actual count.
 
-`UnitCatalog` reads `data/units/registry.json`. Authored entries may extend an
+`UnitCatalog` reads `content/data/units/registry.json`. Authored entries may extend an
 existing definition and override its behavior fields, four ability-level tables,
 material production cost and presentation identity. Parsing validates the whole
 catalog before publication. Missing installed data falls back to baked legacy
@@ -225,6 +225,15 @@ a course whose ordinary ability is inactive. Qualification-only courses do not
 count as ability training.
 
 ## Cargo and production
+
+Completed replenishing buildings, including inns, swarms and towers, keep assigned
+couriers on their current delivery trips when inventory demand falls. Recruitment
+still uses the current material-demand cap, so an excess crew does not trigger
+new hires. After unloading, a courier leaves if the crew still exceeds that cap;
+if consumption has restored demand, it can make another trip. Multi-packet loads
+finish their useful unloading before this check. Player staffing reductions take
+effect immediately. Construction, repair and upgrades retain finite-demand
+staffing, and medical departures and route failures keep their usual behavior.
 
 Cargo capacity counts raw transport packets, including fractional supplier
 packets. Default workers carry one inline packet. Larger inventories use a

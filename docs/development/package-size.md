@@ -5,7 +5,7 @@ How the shared asset pipeline prepares runtime data and how to measure package c
 ## Release asset and bundle sizes
 
 Release packagers share `tools/package_assets.py`. Original artwork stays in
-`data/` and `datasrc/`; generated runtime trees and per-image caches stay under
+`content/data/` and `content-src/`; generated runtime trees and per-image caches stay under
 `build/`. Runtime artwork is WebP in every client build: units, buildings,
 terrain, resources, effects, UI, icons, wordmarks and browser menu art. Release
 bundles choose the smaller of lossless WebP Q75/method 4 and lossy WebP
@@ -130,7 +130,7 @@ Use an external RSS
 measurement and distinguish warm filesystem cache from cold reads.
 
 Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
-(currently `data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
+(currently `content/data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
 consecutive frames of one layer and size, sixteen tiles to a row, each encoded like
 any other image. `<name>.sheet` beside them lists each sheet's file, layer
 (`image` or `rotated`), first frame, frame count and tile size. When that index
@@ -151,7 +151,10 @@ never application content. It requires network access on first setup; subsequent
 exports reuse cached verified conversions. Image recipe identity includes the
 recipe version, encoder pins, Q90 quality/method and depth conversion policy;
 older recipes regenerate automatically. Corrupt cache entries regenerate from
-source artwork. Export/install ownership remains `runtime-assets-v1`, so older
+source artwork. Concurrent exporters accept an already-published cache file only
+when its bytes exactly match their own output, including when a Windows reader
+prevents replacement; conflicting or unreadable publications fail.
+Export/install ownership remains `runtime-assets-v1`, so older
 generated trees can be replaced and obsolete managed files removed safely.
 Flatpak supplies checksum-pinned encoder sources and build dependencies for its offline sandbox. RPM uses
 `tools/build_asset_encoder.py` with checksum-pinned Source archives; the helper

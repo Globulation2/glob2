@@ -336,7 +336,7 @@ exported images, maps and command logs are retained under `artifacts/map-image/`
 
 The optional online AI Map Studio uses this same categorical importer and normal
 map serialization. Its maintained offline Python modules live under
-`platform/packages/map-studio/python`; provider calls belong to the durable online
+`services/online/packages/map-studio/python`; provider calls belong to the durable online
 worker. Legacy `map_image_examples.py` and `map_image_crop.py` entry points retain
 the original square four-colony workflow. `studio_pipeline.py` generalizes
 reference preparation, carrier geometry and crop selection for the studio's

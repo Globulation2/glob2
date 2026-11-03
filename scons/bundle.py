@@ -58,8 +58,8 @@ def createBundle(target, source, env) :
     if env.get('RECORDING_PREFIX'):
         shutil.copytree(Path(env['RECORDING_PREFIX'])/'share/licenses/recording',Path(bundleDir)/'Contents/Resources/licenses/recording',dirs_exist_ok=True)
     run('cp COPYING %s/Contents/Resources/' % bundleDir)
-    run('cp data/javascript-licenses.txt %s/Contents/Resources/' % bundleDir)
-    run('cp data/json-license.txt %s/Contents/Resources/' % bundleDir)
+    run('cp content/data/javascript-licenses.txt %s/Contents/Resources/' % bundleDir)
+    run('cp content/data/json-license.txt %s/Contents/Resources/' % bundleDir)
     run('cp docs/assets/source-attribution.md %s/Contents/Resources/' % bundleDir)
     # write Info.plist -- TODO actually write it not copy it
     plistFile = env['BUNDLE_PLIST']

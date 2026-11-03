@@ -4,6 +4,7 @@
 #include "SnapshotStorage.h"
 #include "Building.h"
 #include "Game.h"
+#include "WinningConditions.h"
 #include "GameRuleOverrides.h"
 #include "BuildingCapabilities.h"
 #include "GlobalContainer.h"
@@ -515,7 +516,16 @@ Handle capture(const Game& game,
     }
 	if (needs(requirements, Component::Entities))
 		for (const auto& p : game.buildProjects) append(entities->projects, {p.posX,p.posY,p.teamNumber,p.typeNum,p.unitWorking,p.unitWorkingFuture});
-	if (needs(requirements, Component::Teams)) teams->totalPrestige = game.totalPrestige;
+	if (needs(requirements, Component::Teams)) {
+        teams->totalPrestige = game.totalPrestige;
+        teams->prestigeWinCondition = const_cast<Game&>(game).isPrestigeWinCondition();
+        teams->prestigeAlliesShareVictory = false;
+        for(const auto& condition:game.gameHeader.getWinningConditions()) {
+            if(condition->getType()==WCPrestige)break;
+            if(condition->getType()==WCAllies)teams->prestigeAlliesShareVictory=true;
+        }
+        teams->prestigeToReach = game.prestigeToReach;
+    }
 	if (needs(requirements, Component::Catalogs)) result->catalogs = std::move(catalogsOwner);
 	if (needs(requirements, Component::Terrain)) result->terrain = std::move(terrainOwner);
 	if (needs(requirements, Component::Resources)) result->resources = std::move(resourcesOwner);

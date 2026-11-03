@@ -9,6 +9,10 @@ capped-game adjudication belongs in offline analysis.
 
 Run AI games without a GUI to generate `.replay` files for cross-codebase fidelity testing (C++ vs Rust).
 
+Version 194 changes replenishment staffing: assigned couriers finish deliveries
+before inventory-driven dismissal. Earlier replays are rejected; supported older
+saves still load, with unchanged save encoding and a minimum save version of 58.
+
 Version 121 gives each AI controller an independent saved random stream. Version
 122 also gives each Econo and Nicowar controller a private gradient cache. AI
 orders and game trajectories can differ from earlier versions for the same
@@ -230,7 +234,7 @@ pipeline to produce curated datasets (exact counts per matchup).
 ```
 
 - `--map <name>` is the bare map filename without `.map` (resolved as
-  `maps/<name>.map`, or `maps/<name>.map.gz` when that exists). On a typo the
+  `content/maps/<name>.map`, or `content/maps/<name>.map.gz` when that exists). On a typo the
   binary fails fast with a clear message; it does **not** silently retry
   random maps.
 - `--matchup <list>` is one AI name per team. The list length must
@@ -360,7 +364,7 @@ partition verification jobs by it; the definition of the data hash is in the
 [turn protocol](../multiplayer/turn-engine.md#simulation-version).
 
 CI verifies `test/fixtures/multiplayer/FourSquares1.g2mr` on Linux, Windows, macOS and in
-three browsers (`test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`)
+three browsers (`test/run-browser-determinism.py` and `platforms/web/tests/determinism.spec.js`)
 and requires every selected `checksums.txt` trace to be identical. Full verification
 compares seven traces: two Linux builds, Windows, macOS and three browsers. The committed
 `FourSquares1.verify-trace.txt` is the expected trace, and CI fails when the platforms
@@ -573,7 +577,7 @@ offloading when measuring checksum optimizations.
 | 4 | Econo | `AI::ECONO` | Expansionist (shared AI runtime) |
 | 5 | Nicowar | `AI::NICOWAR` | Strongest economy-focused AI (shared AI runtime) |
 | 6 | Cortex | `AI::CORTEX` | Food-aware growth and supported attack waves (experimental) |
-| 7 | Maxima | `AI::MAXIMA` | Standalone colony developer with relentless attacks; strategy configured through `data/maxima` and `GLOB2_MAXIMA_*` (see [Maxima](../ai/maxima/README.md)) |
+| 7 | Maxima | `AI::MAXIMA` | Standalone colony developer with relentless attacks; strategy configured through `content/data/maxima` and `GLOB2_MAXIMA_*` (see [Maxima](../ai/maxima/README.md)) |
 | 8 | Cabino | `AI::CABINO` | Resurrected 2005-2007 Nicowar: independent cooperating modules, outside the shared AI runtime. |
 
 Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The player type encodes which AI: `P_AI + implementationID` maps to the enum above.
