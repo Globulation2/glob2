@@ -4,6 +4,8 @@ const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile,clickControl,clickListRow,controlBox,control}=require('./main-menu');
 const {darkShare}=require('./pixels');
 const {test, expect} = require('@playwright/test');
+const viewportHeader = require('node:fs').readFileSync(require('node:path').resolve(__dirname, '../../src/hud/GameGUIViewport.h'), 'utf8');
+const rightMenuWidth = Number(viewportHeader.match(/GAME_GUI_RIGHT_MENU_WIDTH = (\d+)/)[1]);
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await state(page)).screen).toContain(name);
@@ -83,9 +85,13 @@ test('tutorial sessions quit through the end screen and can restart', async ({pa
     await clickControl(page, 'tutorial/lesson/0');
     await screen(page, 'match');
     await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
-    // Wait for the first HUD frame, then use its visible menu icon in CSS pixels.
+    // The lesson can present its opening briefing at tick 12. Dismiss it
+    // before trying the HUD underneath that modal.
+    if (Object.keys((await state(page)).controls).some(key => key.startsWith('objectives/tab'))) await clickControl(page, 'ok');
+    // Legacy HUD controls do not publish browser bounds; share the native
+    // sidebar width and use the presented surface for CSS coordinate scaling.
     const hud=await control(page,'intro/collapse'),size=page.viewportSize();
-    await page.mouse.click((hud.surface.w-160)*size.width/hud.surface.w,18*size.height/hud.surface.h);
+    await page.mouse.click((hud.surface.w-rightMenuWidth)*size.width/hud.surface.w,18*size.height/hud.surface.h);
     await clickControl(page, 'quit');
     await screen(page, 'EndGameScreen');
     await page.locator('#canvas').press('Enter');

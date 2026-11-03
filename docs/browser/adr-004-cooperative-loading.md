@@ -140,6 +140,15 @@ checkpoints. Construction and allocation still need loading latency qualificatio
 
 ## Host work budgets and clock injection
 
+Initial artwork loading advances on short timer turns independently of display
+callbacks. The host still draws the loading screen on animation callbacks. Slow
+or throttled display frames therefore do not starve bounded asset-processing
+work, and every turn yields so input, cancellation and context recovery can run.
+Hidden startup uses the application's idle cadence until it becomes visible.
+The static loading splash refreshes at most five times per second so
+software-backed browser drawing leaves CPU time for preparation. Handover or
+cancellation restores the player's requested rendering limit.
+
 `CooperativeSlice` is a host pacing policy shared by game loading, editor loading,
 and generation. It advances a root until completion, four milliseconds of steady
 clock time, or 64 checkpoints, whichever is observed first. Cheap steps can be

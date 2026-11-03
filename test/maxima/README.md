@@ -20,6 +20,7 @@ are required.
 | Coverage | Suites |
 | --- | --- |
 | Configuration resolution, bounds and defaults | `MaximaStrategyTest`, `MaximaStrategyConfigTest`, `MaximaStrategyPolicyTest` |
+| Prestige race, completion safety and continuation | `MaximaPrestigeStandaloneTest`, `MaximaDirectorRegressionTest` |
 | Director budgets, production and labour | `MaximaDirectorRegressionTest`, `MaximaEconomyRegressionTest`, `MaximaLabourStandaloneTest` |
 | Stock-band staffing | `MaximaStaffingControlStandaloneTest` |
 | Food claims, bounds, relocation and sealed-building demolition | `MaximaFoodLedgerStandaloneTest`, `MaximaRelocationIntegrationTest` |

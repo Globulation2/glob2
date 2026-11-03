@@ -25,6 +25,7 @@
 #include "AIMaximaFeedingDemand.h"
 #include "AIMaximaFruit.h"
 #include "AIMaximaPlacement.h"
+#include "AIMaximaPrestige.h"
 #include "AIMaximaRecon.h"
 #include "AIMaximaForceModel.h"
 #include "AIMaximaLabour.h"
@@ -198,6 +199,11 @@ private:
 		int upgrade_level2_racetrack_weight;
 		int upgrade_level2_pool_weight;
 		int upgrade_level2_barracks_weight;
+		int prestige_priority=0;
+		int prestige_building_type=-1;
+		int prestige_target_level=0;
+        int prestige_desired_buildings=0;
+		bool prestige_completion_allowed=false;
 		int first_prestige_trained_workers;
 		int second_prestige_trained_workers;
 		int second_prestige_population_min;
@@ -338,6 +344,7 @@ private:
 		PolicyTechnology,
 		PolicyDefense,
 		PolicyOffense,
+		PolicyPrestige,
 		PolicyCount
 	};
 
@@ -510,7 +517,18 @@ private:
 	void score_demands();
 	void score_postures();
 	void select_posture();
-	void allocate_resources();
+	void allocate_resources(AIMaximaRuntime::Context& runtime);
+    void assess_prestige(AIMaximaRuntime::Context& runtime);
+    std::vector<Prestige::Standing> prestige_standings(const AIMaximaRuntime::Context& runtime) const;
+    bool prestige_enabled(const AIMaximaRuntime::Context& runtime) const;
+    int prestige_pipeline_allowance(const AIMaximaPlacement::BuildingProfile& profile,
+        Prestige::PipelineCapacity* capacity=nullptr) const;
+    int prestige_gain(int buildingType,int fromLevel,int targetLevel) const;
+    bool prestige_action_allowed(AIMaximaRuntime::Context& runtime,int root,int from,int to,int excludedAction=-1) const;
+    void guard_prestige_completions(AIMaximaRuntime::Context& runtime);
+    Prestige::Race prestige_race;
+    std::map<int,Prestige::Cancellation> prestige_cancellations;
+    bool prestige_migration_pending=false;
 	void build_policy_bids();
 	void arbitrate_policy_bids();
 	const char* policy_name(PolicyKind policy) const;

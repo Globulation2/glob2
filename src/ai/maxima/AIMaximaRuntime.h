@@ -21,6 +21,7 @@
 #include "ai/engine/AIDecision.h"
 
 #include <memory>
+#include <functional>
 #include <limits>
 #include <list>
 #include <locale>
@@ -721,6 +722,7 @@ class Context
 	void add_material_tracker(Management::MaterialTracker*, int id);
 	std::shared_ptr<Management::MaterialTracker> get_material_tracker(int id);
 	Construction::BuildingRegister& get_building_register() { return buildings; }
+	const Construction::BuildingRegister& get_building_register() const { return buildings; }
 	Gradients::GradientManager& get_gradient_manager() { return gradients; }
     const Gradients::GradientManager& get_gradient_manager() const { return gradients; }
 	const TeamStat& get_team_stats();
@@ -731,6 +733,9 @@ class Context
         }
         orders.push_back(order);
     }
+    // Revoke stale queued commands before dispatch, preserving registry receipts.
+    void reject_queued_orders(const std::function<bool(const Order&)>& reject);
+    void push_urgent_order(std::shared_ptr<Order> order);
 	bool is_fruit_on_map() const { return fruitOnMap; }
 	void dispatch_event(const RuntimeEvent& event);
 	void save(GAGCore::OutputStream*) const;

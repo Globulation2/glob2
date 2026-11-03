@@ -393,6 +393,7 @@ UNIT_TESTS = [
     '#src/ai/maxima/MaximaPlacementStandaloneTest.cpp',
     '#src/ai/maxima/MaximaReconStandaloneTest.cpp',
     '#src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp',
+    '#src/ai/maxima/MaximaPrestigeStandaloneTest.cpp',
     '#src/ai/maxima/MaximaTacticsStandaloneTest.cpp',
 ]
 

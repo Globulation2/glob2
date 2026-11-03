@@ -129,6 +129,12 @@ void Building::updateBuildingSite(void)
 
 
 
+bool Building::finishesDeliveryTrips() const
+{
+	return buildingState==ALIVE && constructionResultState==NO_CONSTRUCTION &&
+		!type->isBuildingSite && runtime->replenishMaterialMask!=0;
+}
+
 void Building::updateUnitsWorking(void)
 {
 	if (maxUnitWorking==0)
@@ -138,7 +144,12 @@ void Building::updateUnitsWorking(void)
 	}
 	else
 	{
-		while (unitsWorking.size()>(unsigned)desiredMaxUnitWorking)
+		// A delivery can lower inventory demand while other couriers are still
+		// travelling. Let them finish; recruitment still uses desiredMaxUnitWorking.
+		const unsigned cap=finishesDeliveryTrips()
+			? unsigned(std::max(0,std::min(maxUnitWorking,type->semantics.assignmentLimit)))
+			: unsigned(desiredMaxUnitWorking);
+		while (unitsWorking.size()>cap)
 		{
 			int maxDistSquare=0;
 

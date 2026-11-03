@@ -248,7 +248,9 @@ exports.readBrowserFile = async (page,path) => Buffer.from(await page.evaluate(p
 // they ask for the main menu. Tests of onboarding itself drive its controls.
 exports.waitForMainMenu = async (page, {timeout = 60000} = {}) => {
   await expect.poll(async () => {
-    const state=await page.evaluate(()=>glob2Diagnostics.snapshot());
+    // A retry can navigate before the new document installs its diagnostics.
+    const state=await page.evaluate(()=>globalThis.glob2Diagnostics?.snapshot());
+    if (!state) return false;
     if ((state.screen+' '+state.screenClass).includes('MainMenuScreen')) return true;
     if ((state.screen+' '+state.screenClass).includes('IntroductionOfferScreen') && state.controls['intro/menu']?.enabled)
       await exports.clickControl(page,'intro/menu');

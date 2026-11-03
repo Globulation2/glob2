@@ -6,6 +6,7 @@ from .common import read_json
 
 _TYPES = {}
 _UNIFIED_COLLECTORS=('unified-gradient-h128-v4','unified-gradient-spatial-h128-v3')
+DEFAULT_GAME_TICKS = 90000
 DEFAULT_WIN_PROBABILITY_PERMILLE = 950
 
 
@@ -152,7 +153,7 @@ class EngineJob:
             if not isinstance(config.get('rules', {}), dict) or any(
                     not isinstance(k, str) or type(v) is not int for k, v in config.get('rules', {}).items()):
                 raise ValueError('rules must map names to integer values')
-            if type(config.get('ticks', 90000)) is not int or config.get('ticks', 90000) < 1:
+            if type(config.get('ticks', DEFAULT_GAME_TICKS)) is not int or config.get('ticks', DEFAULT_GAME_TICKS) < 1:
                 raise ValueError('ticks must be a positive integer')
             if config.get('alliances') and len(config['alliances']) != len(config.get('players', [])):
                 raise ValueError('one alliance required per player')
@@ -167,7 +168,7 @@ class EngineJob:
             raise ValueError('telemetry log mode requires requested telemetry')
         if job['outputs'].get('log_mode') == 'win-probability' and (self.kind != 'game' or 'team-timeline' not in job['outputs'].get('telemetry', [])):
             raise ValueError('win-probability logs require game team-timeline telemetry')
-        if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', 90000) > 4096
+        if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', DEFAULT_GAME_TICKS) > 4096
                 and 'artifact_bytes' not in job['limits']):
             raise ValueError('detailed checksums for long games require an explicit artifact_bytes limit; use short focused probes')
         if job['outputs'].get('result', 'full') not in ('full', 'outcome'):
@@ -197,7 +198,7 @@ class EngineJob:
                     inputs.get('map', inputs.get('save')))
             if 'game' in job['seeds']:
                 add('--game-seed', job['seeds']['game'])
-            add('--ticks', config.get('ticks', 90000))
+            add('--ticks', config.get('ticks', DEFAULT_GAME_TICKS))
             for player in config.get('players', []):
                 add('--player', player)
             for player, params in sorted(config.get('ai_params', {}).items()):

@@ -514,8 +514,8 @@ unsupported combinations remain reported failures rather than being filtered out
   failed jobs and map-generation jobs retain their diagnostic artifacts.
   For rating-only runs, set `outputs.result` to `outcome`. The retained payload
   includes termination, winners, team/player identity, survival, prestige,
-  military totals and compact probability summaries needed by adjudication and
-  whole-game scoring, while omitting
+  military totals, raw probability summaries and the versioned log integral
+  needed by adjusted trajectory scoring, while omitting
   per-tick histories and other bulky result details. Installed bundles are fully
   hashed before atomic publication and then treated as immutable; workers do not
   rehash the complete bundle before every queued game.
@@ -674,71 +674,94 @@ above. Both use the same production report serializer.
 
 ## Whole-game probability scores
 
-**Use mean whole-match win probability as the standard continuous AI effectiveness
-score alongside wins, losses and draws**, including in custom assessments. Small
-improvements can strengthen the trajectory of many games without changing who
-wins them; the integral retains that information, making it more sensitive than
-outcomes alone. Standard reanalysis and pooled leaderboards report it automatically.
-Use the paired `win_probability_mean` effect to assess an ablation, with matched
-seeds, seat rotations and held-out maps, rather than judging a small change only
-by its win count. Actual outcomes remain an essential supporting check.
+**Use the adjusted win-probability trajectory score as the standard continuous
+AI effectiveness score alongside wins, losses and draws**, including custom
+assessments. Its identity is `log_time_outcome_v1`, with log curvature `c=2`.
+It replaces the previous linear AUC divided by observed game duration.
+Standard reanalysis, experiment entry points and pooled leaderboards use it.
+This is a trajectory/utility score from 0 to 1, not a calibrated win probability.
 
-Every game automatically collects probability history, independently of verbose
-telemetry and of the early-victory rule. Full engine results include per-team
-`win_probability_history` rows `[tick, permille]` and a compact `win_probability`
-summary: `model`, `final_model`, `permille`, `start_tick`, `end_tick`,
-`area_twice_permille_ticks`, and `mean`. The model identity fingerprints the fitted
-fixed-point coefficients and feature transforms. Compact `outputs.result: outcome`
-retains the summary and drops the samples. No `team-timeline` logs are required.
+Let `H` be the absolute game tick limit, `T` its observed end, and `p(t)` the
+piecewise-linear retained model curve. The normalized clock is
+`g(t) = ln(1 + 2*t/H) / ln(3)`. Equivalently, `tau=H/2`; changing the log base
+has no effect after normalization. The first half of the horizon receives
+about 63.1% of the weight. Each game is weighted equally in aggregate reports.
 
-The integral is trapezoidal between actual sample ticks, including the final
-partial interval. Divide `area_twice_permille_ticks` by 2000 for area in
-probability × ticks, then by `end_tick - start_tick` for **mean win probability**
-from 0 to 1. For example, a linear rise from 40% to 80% has a mean of 60%.
-The mean gives games equal weight regardless of duration; raw area also remains
-available for analyses where duration matters. Allies share one trace and are
-counted once, rather than their probabilities being added.
+The score is `integral_0^T p(t) dg(t) + u * (1 - g(T))`:
 
-Reanalysis exports `probability_scores` in JSON/CSV and a Markdown table, grouped
-by format, build, variant, competitor, model and stopping threshold. Ablations
-also separate subject and opponent roles, including when both run the same AI,
-so their complementary probabilities cannot cancel a measured improvement.
-It reports wins/losses/draws, game and scored-game counts, missing
-coverage, mean probability, mean area and deterministic 95% intervals resampled
-by seed block (keeping correlated rotations together). Ablation `paired_effects`
-adds `win_probability_mean`: candidate minus baseline for the configured subject,
-with raw paired differences and seed-block bootstrap intervals that keep
-rotations together, separated by model and stopping threshold. Elo and placements remain
-outcome-based; probability scores do not overwrite wins. W/L/D uses the selected
-final-outcome policy; separate cap and probability-stop counts preserve which
-games ended through adjudication or early victory. The pooled leaderboard
-also includes probability scores.
+- On an `engine_end`, `u=1` for every declared winner, including shared winners,
+  and `u=0` for a loss. Terminal utility is a scoring convention; it does not
+  replace the recorded probability samples with invented 100% predictions.
+- On a `win_probability` early stop, apply the same 1/0 credit using its declared
+  predicted winners/losers. Reports label the source `probability_stop`, separately
+  from actual `engine` endings. The default threshold remains 950 permille.
+- At a `tick_cap`, `T=H`, so there is no terminal tail. The usual final-probability
+  adjudication still determines W/L/D and ratings; it does not invent a score tail.
+- An alliance shares one trace and is counted once. Never add allied probabilities.
+  A winning alliance receives one full group credit, not a sum over its members.
 
-Custom scripts can use the same reader rather than reimplementing the integral:
+Raw engine results still contain `win_probability_history` (`[tick, permille]`)
+and the original `win_probability` summary (`model`, `final_model`, `permille`,
+`start_tick`, `end_tick`, `area_twice_permille_ticks`, `mean`). The latter remains
+linear/trapezoidal: area divided by 2000 gives probability × ticks; dividing by
+observed duration gives the **legacy** mean. Neither field is the new score.
+The fixed model identity fingerprints the coefficients and feature transforms.
+
+Workers with `outputs.result: outcome` calculate a per-team
+`win_probability_log_integral` before discarding the large curve. This sufficient
+statistic retains metric/coefficient, resolved horizon, model, coverage, weighted
+area and availability. Final group credit is derived from retained outcomes on
+analysis. Compact results therefore score identically to full results without
+verbose logs. Old full results with complete histories can be rescored. Old
+compact records containing only linear area cannot recover the log integral;
+they are unavailable for the new metric, with an explicit reason. Never treat
+missing or partial history as zero, reconstruct it from the final probability,
+or silently fall back to the old mean.
+
+Analysis report schema 2 exports `probability_scores` in JSON/CSV and Markdown.
+The aggregate `mean` is now the adjusted score, identified by `metric`,
+`coefficient` and `horizon_ticks`. Groups retain format, build, variant, subject
+or opponent role, model and stopping threshold; different horizons are never
+pooled. Each entry includes W/L/D, scored/total games, unavailable reasons,
+`outcome_credit_sources`, cap/early-stop counts and deterministic 95% seed-block
+intervals. `legacy_linear_mean`, `legacy_linear_scored_games` and
+`legacy_linear_mean_area_probability_ticks` preserve the old diagnostic.
+
+Paired ablations export `paired_effects` with metric `log_time_outcome_v1`:
+candidate minus baseline for the configured subject, raw differences and
+seed-block intervals that keep correlated rotations together. Pairing requires
+matching format, build, score definition, horizon, model and stopping rule.
+Elo and placements remain outcome-based; changing this continuous score does
+not rewrite wins, adjudication policies or previously published reports.
+
+Custom scripts should use the shared reader rather than reimplementing the score:
 
 ```python
-from tools.tournaments.probability import group_summary
+from tools.tournaments.probability import group_score
 
-side = group_summary(
+side = group_score(
     [t for t in result["teams"] if t["alliance"] == alliance],
-    expected_end_tick=result["ticks"],
+    result,
+    config=job["config"],
 )
-if side is None or not side["whole_game"]:
-    raise ValueError("Whole-match probability score is unavailable")
-score = side["mean"]  # 0..1, higher is better
+if not side["available"]:
+    raise ValueError(side["unavailable_reason"])
+score = side["score"]  # 0..1, higher is better
 ```
 
-Older saves start history at the first newly observed sample. Scores with missing
-opening or terminal coverage, no elapsed time, or mixed models after a refit are marked
-unavailable for whole-game summaries, rather than extrapolated. Partial observed
-scores and coverage remain in raw observations. Cap adjudication requires a
-prediction at the actual terminal tick; an up-to-date final prediction remains
-usable even when opening history is missing. Changing early-stopping thresholds
-changes the measured duration: compare matched rules, model, maps and opponents.
-These are model-based scores, useful for detecting smaller trajectory changes;
-their sensitivity does not establish robustness to every AI change. The model was
-trained on AI games and cannot see position or planned attacks. Retain actual
-wins, held-out maps and paired evidence alongside the probability score.
+The resolved `tick_limit` takes precedence over the job request; compact records
+retain that horizon in their integral. For a standalone full result, pass its
+resolved metadata or the game job configuration. The configured horizon is fixed,
+not inferred from how quickly a game ended. Zero elapsed time, missing opening or terminal coverage, inconsistent alliance
+traces, or mixed model identities make the adjusted score unavailable. Missing terminal outcomes also remain explicit.
+Cap adjudication can still use a fresh final prediction when history is partial.
+
+Use matched models, horizons, stopping rules, maps and opponents. A probability
+stop credited as a win is still the same model's prediction, not independent
+confirmation of victory; disable early victory when testing natural conversion
+or validating that model. Retain actual outcomes, completion times and held-out
+maps alongside this score. Choosing `c=2` fixes a weighting preference; it does
+not make every actual win rank above every unresolved game.
 
 ## Ending decided games early
 

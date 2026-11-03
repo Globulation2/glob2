@@ -226,6 +226,12 @@ void Unit::handleDisplacement(void)
 							if (useful && cargoDeliveryProgress) { displacement=DIS_FILLING_BUILDING; break; }
 							if (carriedPacketCount()>=unsigned(runtimeTraits().cargoCapacity)) { stopAttachedForBuilding(false); break; }
 						}
+						// Reconsider inventory-driven staffing only after the load has finished
+						// unloading, before committing this worker to another delivery trip.
+						if (attachedBuilding->finishesDeliveryTrips() && attachedBuilding->unitsWorking.size()>
+							unsigned(std::max(0,attachedBuilding->desiredMaxUnitWorking))) {
+							stopAttachedForBuilding(false); break;
+						}
 						if (!performance[HARVEST]) { stopAttachedForBuilding(false); break; }
 						int needs[MaterialSlotCount];
 						attachedBuilding->computeWishedMaterials(needs);

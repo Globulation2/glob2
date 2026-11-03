@@ -3,6 +3,7 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from build_paths import native_binary
 import argparse
 import gzip
@@ -120,6 +121,13 @@ def main():
         area = sum((b[0]-a[0])*(a[1]+b[1]) for a,b in zip(history,history[1:]))
         assert probability['area_twice_permille_ticks'] == area
         assert abs(probability['mean'] - area / (2000*value['ticks'])) < .000001
+    from tools.tournaments.probability import group_score, SCORE_METRIC
+    from tools.tournaments.worker import outcome_only
+    compact=outcome_only(value)
+    for full_team, compact_team in zip(value['teams'], compact['teams']):
+        expected=group_score([full_team], value)
+        assert expected['available'] and expected['metric']==SCORE_METRIC
+        assert expected==group_score([compact_team],compact)
     original_ticks=tick_records(original/'game.replay.checksums')
     for name,save in [('initial-reload','initial.game.gz'),('continuation','checkpoint-512.game.gz')]:
         restored,target=run(name,['game', 'run','--load-game',str(original/save),'--ticks',str(args.ticks),'--telemetry','checksums','--save','final'],
@@ -128,6 +136,7 @@ def main():
         for before, after in zip(value['teams'], restored['teams']):
             assert before['win_probability'] == after['win_probability']
             assert before['win_probability_history'] == after['win_probability_history']
+            assert group_score([before],value)==group_score([after],restored)
         assert trace and all(original_ticks[t]==record for t,record in trace.items()),name
         assert restored['players']==value['players']
     _,normal=run('defaults',base)
