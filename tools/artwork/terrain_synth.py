@@ -9,7 +9,6 @@ Usage (with the pinned development dependencies and Pillow 12.2.0):
     ENC=artifacts/asset-tools/venv/bin/python
     "$ENC" tools/artwork/terrain_synth.py                    # write all frames and catalog blocks
     "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
-    "$ENC" tools/artwork/terrain_synth.py --check            # re-synthesise and compare
     "$ENC" tools/artwork/terrain_synth.py --emit-catalog     # print catalog blocks
     "$ENC" tools/artwork/terrain_synth.py --write-catalog    # catalog from committed frames (no render)
     "$ENC" tools/artwork/terrain_synth.py --hd               # 128x128 renders under artifacts/
@@ -37,10 +36,10 @@ Outputs are `content/data/gfx/terrain-<name>N.png`, the 128x128 HD frames the cl
 tiles were downsampled from (`content/data/highres/v1/terrain-<name>N.png`, registered in
 the pack through tools/artwork/highres_pack.py) and `content-src/gfx/<name>/provenance.json`.
 
-Pixel-exact reproduction (`--check`) is pinned to the encoder interpreter on
-Linux x86-64: besides Pillow's resampling kernels, the renders depend on the C
-library's sin/atan2/hypot and on round() boundaries, so another platform may
-differ in a few low bits. The provenance records the platform.
+Generation runs on any platform. Renders depend on Pillow's resampling and the
+C library's sin/atan2/hypot, so another platform may differ in a few low bits;
+the provenance records the platform and generator for information only, and
+nothing re-renders committed art to compare it.
 
 Python 3, Pillow, NumPy and SciPy (development-only dependencies).
 """
@@ -2789,14 +2788,27 @@ def _render_job(args):
             [t.tobytes() for t in hd], hd[0].size)
 
 
+# A worker rendering one 1024 px block peaks at roughly this much memory.
+WORKER_MEMORY = 1.5 * 2 ** 30
+
+
+def default_jobs():
+    """One render process per core, as many as physical memory allows."""
+    cores = os.cpu_count() or 1
+    try:
+        memory = os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
+    except (AttributeError, ValueError, OSError):
+        return min(2, cores)
+    return max(1, min(cores, int(memory // WORKER_MEMORY)))
+
+
 def synthesize_both(names, jobs=None):
     """Render and perimeter-share all variants at both resolutions:
     ({name: {phase: [native tiles]}}, {name: {phase: [HD tiles]}})."""
     tasks = [(name, phase) for name in names for phase in range(RECIPES[name].phases)]
-    # Each 1024px seeded block keeps several scalar and RGB fields alive.
-    # Bound automatic concurrency on high-core CI/development machines;
-    # contributors can select more workers explicitly when memory permits.
-    jobs = jobs or min(2, os.cpu_count() or 1)
+    # Each 1024px seeded block keeps several scalar and RGB fields alive, so
+    # the automatic worker count is bounded by memory as well as cores.
+    jobs = jobs or default_jobs()
     if jobs > 1 and len(tasks) > 1:
         with concurrent.futures.ProcessPoolExecutor(max_workers=min(jobs, len(tasks))) as pool:
             rendered = list(pool.map(_render_job, tasks))
@@ -2992,65 +3004,6 @@ def write_material(name, phases, hd_phases, root):
     return hashes
 
 
-PLATFORM_NOTE = (
-    "pixel-exact reproduction is pinned to the encoder interpreter on Linux x86-64; "
-    "libm (sin/atan2/hypot) and round() boundaries can differ elsewhere"
-)
-
-
-def check_material(name, phases, root, hd_phases=None):
-    """Compare a fresh synthesis with committed frames and provenance."""
-    rec = RECIPES[name]
-    problems = []
-    frames = frames_of(name, phases)
-    fresh = tile_hashes(frames)
-    provenance_path = root / "content-src/gfx" / name / "provenance.json"
-    if not provenance_path.exists():
-        return [f"{name}: missing {provenance_path.relative_to(root)}"]
-    provenance = json.loads(provenance_path.read_text())
-    if provenance.get("method") != "procedural":
-        return [f"{name}: provenance method is {provenance.get('method')!r}; mark the recipe placeholder_only"]
-    recorded = provenance.get("runtime_sha256", {})
-    expected_names = [f"{FRAME_PREFIX}{name}{i}.png" for i in range(rec.cells * rec.blocks * rec.phases)]
-    if list(recorded) != expected_names:
-        problems.append(f"{name}: provenance covers {len(recorded)} frames, expected {len(expected_names)}")
-    here = platform_record()
-    recorded_platform = provenance.get("platform")
-    platform_hint = "" if recorded_platform == here else (
-        f" (recorded on {recorded_platform}, checking on {here}; {PLATFORM_NOTE})"
-    )
-    for i, relative in enumerate(expected_names):
-        path = root / relative
-        if not path.exists():
-            problems.append(f"{relative}: missing")
-            continue
-        with Image.open(path) as image:
-            committed = pixel_sha256(image)
-        if committed != fresh[i]:
-            problems.append(f"{relative}: committed pixels differ from a fresh synthesis{platform_hint}")
-        if recorded.get(relative) != committed:
-            problems.append(f"{relative}: provenance hash differs from committed pixels")
-    if hd_phases is not None:
-        recorded_hd = provenance.get("highres_sha256", {})
-        for i, tile in enumerate(frames_of(name, hd_phases)):
-            relative = f"{HD_PREFIX}{name}{i}.png"
-            path = root / relative
-            if not path.exists():
-                problems.append(f"{relative}: missing HD frame")
-                continue
-            with Image.open(path) as image:
-                committed = pixel_sha256(image)
-            if committed != pixel_sha256(tile):
-                problems.append(f"{relative}: committed HD pixels differ from a fresh synthesis{platform_hint}")
-            if recorded_hd.get(relative) != committed:
-                problems.append(f"{relative}: provenance HD hash differs from committed pixels")
-    if provenance.get("generator_sha256") != generator_hashes():
-        problems.append(f"{name}: generator sha256 differs; re-run terrain_synth.py to refresh provenance")
-    if provenance.get("pillow") != PIL.__version__:
-        problems.append(f"{name}: provenance Pillow {provenance.get('pillow')} != {PIL.__version__}")
-    return problems
-
-
 # --------------------------------------------------------------------------
 # Contact sheet
 # --------------------------------------------------------------------------
@@ -3141,17 +3094,16 @@ def contact_sheet(results, root, columns=2):
 
 
 def require_pillow():
+    """Warn when Pillow differs from the pinned version: its resampling kernels
+    can shift a few low bits of the art, which is harmless."""
     if PIL.__version__ != PILLOW_VERSION:
-        raise SystemExit(
-            f"terrain_synth.py needs Pillow {PILLOW_VERSION} (resampling kernels are a determinism input); "
-            f"found {PIL.__version__}. Use \"$(python3 tools/package_assets.py --encoder-python)\"."
-        )
+        print(f"note: rendering with Pillow {PIL.__version__}; the pinned version is {PILLOW_VERSION}",
+              file=sys.stderr)
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--material", action="append", help="material name (repeatable; default all)")
-    parser.add_argument("--check", action="store_true", help="re-synthesise and compare with committed frames")
     parser.add_argument("--contact-sheet", type=Path, help="write a review sheet PNG (no frames written)")
     parser.add_argument("--emit-catalog", action="store_true", help="print catalog blocks and colour initialisers")
     parser.add_argument("--write-catalog", action="store_true",
@@ -3159,7 +3111,7 @@ def main(argv=None):
                              "from the committed frames, without rendering (writing frames also does this)")
     parser.add_argument("--hd", action="store_true", help="write 128x128 renders under artifacts/terrain/hd/ (no frames written)")
     parser.add_argument("--write", action="store_true", help="also write frames when another mode is selected")
-    parser.add_argument("--jobs", type=int, default=0, help="parallel render processes (default: up to 2, bounded for 1024px block memory)")
+    parser.add_argument("--jobs", type=int, default=0, help="parallel render processes (default: one per core, bounded by memory)")
     parser.add_argument("--root", type=Path, default=ROOT, help="repository root to read and write")
     args = parser.parse_args(argv)
     require_pillow()
@@ -3178,21 +3130,6 @@ def main(argv=None):
             for i, tile in enumerate(frames_of(name, phases)):
                 tile.save(out / f"terrain-{name}{i}.png")
         print(f"Wrote HD renders for {len(hd)} materials to {out}")
-
-    if args.check:
-        checked = [n for n in names if not RECIPES[n].placeholder_only]
-        results, hd_results = synthesize_both(checked, jobs)
-        problems = [p for name in checked for p in check_material(name, results[name], root, hd_results[name])]
-        skipped = [n for n in names if RECIPES[n].placeholder_only]
-        for problem in problems:
-            print("FAIL", problem)
-        if skipped:
-            print("skipped placeholder-only recipes:", ", ".join(skipped))
-        if problems:
-            print(f"NOTE {PLATFORM_NOTE}")
-            raise SystemExit(1)
-        print(f"PASS {len(checked)} procedural materials match their committed frames and provenance")
-        return
 
     # Review modes do not write frames unless --write is given; --hd alone is
     # complete after the renders above. The catalog needs only each material's

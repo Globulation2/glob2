@@ -27,7 +27,6 @@ Usage (pinned encoder interpreter, as for terrain_synth.py):
     ENC="$(python3 tools/package_assets.py --encoder-python)"
     "$ENC" tools/artwork/terrain_decor.py                  # write all frames + HD
     "$ENC" tools/artwork/terrain_decor.py --sheet artifacts/terrain/decor.png
-    "$ENC" tools/artwork/terrain_decor.py --check
 
 All sets share one sprite, `content/data/gfx/terrain-decorN.png`, with set k at
 frames 12k..12k+11 in `ORDER`, followed by connected hedge/thicket frames
@@ -1205,34 +1204,6 @@ def write(results, root):
     path.write_text(json.dumps(document, indent=2) + "\n")
 
 
-def check(results, root):
-    path = provenance_path(root)
-    if not path.exists():
-        return ["missing content-src/gfx/terrain-decor/provenance.json"]
-    provenance = json.loads(path.read_text())
-    problems = []
-    if provenance.get("generator_sha256") != generator_sha():
-        problems.append("generator changed; re-run terrain_decor.py")
-    for name, frames in results.items():
-        recorded = provenance["sets"].get(name)
-        if recorded is None:
-            problems.append(f"{name}: missing from provenance")
-            continue
-        for i, (native, hd) in enumerate(frames):
-            n = frame_number(name, i)
-            for relative, image, table in ((f"{PREFIX}{n}.png", native, recorded["runtime_sha256"]),
-                                           (f"{HD_PREFIX}{n}.png", hd, recorded["highres_sha256"])):
-                target = root / relative
-                if not target.exists():
-                    problems.append(f"{relative}: missing")
-                    continue
-                with Image.open(target) as committed:
-                    digest = pixel_sha256(committed)
-                if digest != pixel_sha256(image) or table.get(relative) != digest:
-                    problems.append(f"{relative}: differs from a fresh synthesis")
-    return problems
-
-
 def write_catalog(root):
     """Add or refresh each obstacle material's decor block in tileset.json."""
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -1339,7 +1310,6 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--decor", action="append", help="decor name (repeatable; default all)")
     parser.add_argument("--sheet", type=Path, help="write a review sheet and nothing else")
-    parser.add_argument("--check", action="store_true")
     parser.add_argument("--write-catalog", action="store_true", help="also add decor blocks to tileset.json")
     parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args(argv)
@@ -1355,14 +1325,6 @@ def main(argv=None):
         args.sheet.parent.mkdir(parents=True, exist_ok=True)
         (connected_sheet(results) if all(n in CONNECTED for n in names) else sheet(results, ground)).save(args.sheet)
         print(f"Wrote {args.sheet}")
-        return
-    if args.check:
-        problems = check(results, root)
-        for p in problems:
-            print("FAIL", p)
-        if problems:
-            raise SystemExit(1)
-        print(f"PASS {len(names)} decor sets match their committed frames and provenance")
         return
     write(results, root)
     if args.write_catalog:

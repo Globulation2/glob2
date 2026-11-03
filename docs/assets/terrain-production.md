@@ -26,7 +26,6 @@ uv pip install --python artifacts/asset-tools/venv/bin/python -r tools/artwork/r
 ENC=artifacts/asset-tools/venv/bin/python
 "$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames and their tileset.json blocks
 "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
-"$ENC" tools/artwork/terrain_synth.py --check               # reproduce and compare
 "$ENC" tools/artwork/terrain_synth.py --emit-catalog        # material blocks and colour initialisers
 "$ENC" tools/artwork/terrain_synth.py --write-catalog       # refresh tileset.json from committed frames (no render)
 "$ENC" tools/artwork/validate_material.py --all
@@ -41,8 +40,7 @@ periodic value noise (a random lattice tiled 3×3 and resized bicubically, so th
 field wraps by construction), fractal sums, domain warps, Worley cells (F1 and
 F2−F1, Euclidean and Chebyshev), scattered stamps and palette ramps. Named
 geometry and animation random streams use deterministic `fnv1a32` seeds derived
-from the material, layout and phase. The pinned production environment reproduces
-the output byte for byte. Each layout renders a continuous field whose boundary geometry is
+from the material, layout and phase. Each layout renders a continuous field whose boundary geometry is
 shared with the other layouts; its interior uses a separate seed. Existing tiles
 are never read into an output; the original grass, sand, trail, ice and water
 tiles are measured (luma mean and spread, wrapped neighbour grain, saturation)
@@ -200,8 +198,7 @@ sloping top facets meeting at an off-centre peak, so each face takes one light
 value. The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
 316–427; thicket corner tiles at 428–683 and interiors at 684–795), the HD frames, provenance and, with
-`--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`
-writes a review sheet. Select `--decor hedge --decor thicket --sheet <path>`
+`--write-catalog`, the `decor` blocks. `--sheet` writes a review sheet. Select `--decor hedge --decor thicket --sheet <path>`
 for before/after fields with narrow strips, corners, isolated vegetation and a
 hole. Decor is presentation only: the minimap, the overview and
 the simulation ignore it.
@@ -342,21 +339,17 @@ payload. This is a resource-lifetime contract, not a performance guarantee;
 viewport size, sampling resolution and the number of visible material variants
 still determine preparation work and live pixel storage.
 
-`--check` re-synthesises every material and compares the pixel hashes with the
-committed PNGs and with `provenance.json`; it also requires the recorded
-generator hashes and Pillow 12.2.0, so any edit to `terrain_synth.py` or
-`material_tiles.py` is followed by a default run that refreshes the provenance
-(pixels that did not change produce byte-identical PNGs). Pixel-exact
-reproduction is pinned to the encoder interpreter on Linux x86-64: besides
-Pillow's kernels the renders depend on the C library's `sin`/`atan2`/`hypot` and
-on `round()` boundaries, so the provenance records the platform and a mismatch
-on another platform is reported with that note. Recipes swapped to
-image-generated art are marked `placeholder_only=True` and skipped by `--check`.
+Committed art is not re-rendered to check it: regenerate only the materials
+you changed (`--material`), on any platform. Renders depend on Pillow's kernels
+and the C library's `sin`/`atan2`/`hypot`, so another platform may differ in a
+few low bits; `provenance.json` records the platform, generator hashes and
+Pillow version for information only. Recipes swapped to image-generated art are
+marked `placeholder_only=True`.
 Writing frames also writes each variant's 128×128 render, the exact source the
 classic tile is downsampled from, as its HD frame (`content/data/highres/v1/terrain-<name>N.png`
 and `content-src/gfx/production/procedural-materials/`), registers it in the pack
 manifest and `frames.txt` through `tools/artwork/highres_pack.py`, and records its
-hash in the provenance; `--check` compares both resolutions. `--hd` alone writes
+hash in the provenance. `--hd` alone writes
 the renders under `artifacts/terrain/hd/` for review and changes nothing else.
 Preview and minimap colours derive from the rendered mean unless a recipe
 overrides them for legibility (void, hazards, deep water).

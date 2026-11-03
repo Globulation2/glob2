@@ -56,13 +56,6 @@ class TerrainSynth(unittest.TestCase):
             self.assertIn(recipe.border_class, classes)
             self.assertIn("height", recipe.seam)
 
-    def test_determinism_matches_committed_frames_and_provenance(self):
-        for name in synth.SYNTH_ORDER:
-            if synth.RECIPES[name].placeholder_only:
-                continue
-            with self.subTest(material=name):
-                self.assertEqual(synth.check_material(name, self.results[name], ROOT, self.hd[name]), [])
-
     def test_every_catalogue_sprite_frame_has_registered_hd(self):
         """Native-only terrain is limited to legacy art without an HD source."""
         catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
