@@ -2330,6 +2330,18 @@ Lapad ng tarangkahan
 Tinirintas na Delta
 [Braid count]
 Bilang ng tirintas
+[Flood]
+Baha
+[Distributaries]
+Mga sanga ng ilog
+[River crossings]
+Mga tawiran sa ilog
+[Dunes]
+Mga buhanginan
+[Dry]
+Tuyo
+[Wet]
+Basa
 [Rejoining frequency]
 Dalas ng muling pagsasanib
 [Crossing spacing]

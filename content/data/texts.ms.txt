@@ -2330,6 +2330,18 @@ Lebar pintu pagar
 Delta Jalinan
 [Braid count]
 Bilangan jalinan
+[Flood]
+Banjir
+[Distributaries]
+Cabang sungai
+[River crossings]
+Lintasan sungai
+[Dunes]
+Bukit pasir
+[Dry]
+Kering
+[Wet]
+Basah
 [Rejoining frequency]
 Kekerapan percantuman semula
 [Crossing spacing]

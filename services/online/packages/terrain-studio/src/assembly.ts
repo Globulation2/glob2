@@ -4,7 +4,8 @@ import {
   parse,
   namespace,
   TERRAIN_PRESETS,
-  canonicalTerrainPreset,
+  normalizeTerrainPreset,
+  normalizeSetPackage,
   RESOURCE_PRESETS,
   MATERIALS,
   TERRAIN_STUDIO_MAX_ENTRIES,
@@ -82,8 +83,15 @@ export function entryKey(pack: SetPackage, key: string) {
     throw Error('Use a local entry slug or an existing draft key.');
   return namespace(pack) + key;
 }
+/** Accepts legacy built-in terrain names and returns a plan that uses the current ones. */
 export function validatePlan(value: unknown, base: SetPackage): TerrainPlan {
-  const plan = parse(TerrainPlan, value, 'terrain plan'),
+  const parsed = parse(TerrainPlan, value, 'terrain plan'),
+    plan: TerrainPlan = {
+      ...parsed,
+      entries: parsed.entries.map((e) =>
+        e.kind === 'terrain' ? { ...e, preset: normalizeTerrainPreset(e.preset) } : e,
+      ),
+    },
     seen = new Set<string>();
   if (plan.action === 'discuss' && plan.entries.length)
     throw Error('Discussion cannot modify the set.');
@@ -101,7 +109,7 @@ export function validatePlan(value: unknown, base: SetPackage): TerrainPlan {
       if (!old) throw Error('Cannot remove a missing entry.');
       continue;
     }
-    if (e.kind === 'terrain' && !canonicalTerrainPreset(e.preset))
+    if (e.kind === 'terrain' && !TERRAIN_PRESETS.includes(e.preset))
       throw Error('Unknown terrain preset.');
     if (e.kind === 'resource' && !RESOURCE_PRESETS.some((v) => v.key === e.preset))
       throw Error('Unknown resource preset.');
@@ -168,8 +176,9 @@ export function assemble(
   plan: TerrainPlan,
   art: Record<string, EntryArtwork>,
 ): SetPackage {
-  validatePlan(plan, base);
-  const pack = structuredClone(base);
+  plan = validatePlan(plan, base);
+  // Assembly writes a new package that is hashed afterwards, so legacy names are safe to update.
+  const pack = normalizeSetPackage(structuredClone(base));
   pack.title = plan.title;
   pack.description = plan.description;
   function add(sheet: SetSheet) {
@@ -298,5 +307,5 @@ Return discuss for questions, brainstorming, unsupported mechanics or important 
 Return the complete brief and a concise explanation. Up to 12 named entry changes per build, any mix. Keep all other entries unchanged. Existing keys are stable; new keys are lowercase local slugs. Do not change kind. Artwork edits regenerateArt=true; property-only edits false. New entries require art. propertiesJson/presentationJson are JSON object strings containing only overrides. yieldsJson supplies a complete replacement yield table when nonempty; empty '{}' preserves existing values. Preserve existing presets unless starting a new entry. Terrain presets: ${TERRAIN_PRESETS.join(', ')}. Resource presets: ${JSON.stringify(RESOURCE_PRESETS.map((v) => ({ key: v.key, properties: v.properties, yields: v.yields })))}.
 Terrain properties include walkable,swimmable,flyable,buildable,resourcesGrow,fertilitySource,nonGrowingResources,projectileBlocks,shoreline,groundSpeedQ8,airSpeedQ8,groundHealthQ8,airHealthQ8,growthQ8,fertilityQ8,inhibitionQ8,shoreSupportQ8,farmMaterial. Q8 256=1; signed health negative damages per tick. Terrain presentationJson supports ONLY profile,edges,preview,minimap,seam. profile is one of grass,sand,fractured,rock,soft,crisp,brush; edges is blend or periodic. preview and minimap are RGB arrays of three integers 0-255, never CSS colors or a color field. seam is an OBJECT, never a boolean: optional integer fields height (0-255),cast_q8 (0-256),cast_width_q8 (0-2048),fringe_q8 (0-256),fringe_width_q8 (0-2048), and fringe (RGB array). Use an empty object string '{}' for default appearance; generated artwork supplies its average preview/minimap color. Never provide sprite paths or frame mappings. Resource presentationJson supports ONLY name,minimap,animationFrames,animationStride,animationTicks; use '{}' unless an override is needed. allowedResourceKeys=null preserves permissions; arrays explicitly restrict deposits, using full stable keys or new local slugs. Resource rates 196608=one opportunity/probability one. Yields: capacity,initial,seedReserve,growthRate,consumption one/all/infinite; ensure primaryMaterial remains a yield. Resource habitats land=1,aquatic=2,shore=4,desert=8. Preserve required experiments for existing definitions. Generated resource art has three stock stages and two variants per stage. Respect habitat/ecology and terrain growth compatibility. Do not claim balanced gameplay based on format validity.
 Art: default coarse painterly Globulation 2 style, earthy palette, readable at 32 px, no text or grids. Use optional user style/reference direction. Ground is overhead seamless material. Resource objects are soft three-quarter view with upper-left lighting, centered and base anchored, transparent background. decorPrompt creates raised objects over terrain; use only if requested or necessary for raised obstacles. animationFrames=1 by default, 2-4 only if user requests animation (gentle deterministic glow pulse). Clearly explain glow-only animation when broader motion is requested.
-Brief: ${brief}\nCurrent set (source artwork omitted): ${JSON.stringify({ ...base, assets: { ...base.assets, sheets: base.assets.sheets.map(({ png: _png, ...s }) => s) } })}\nConversation: ${JSON.stringify(messages)}`;
+Brief: ${brief}\nCurrent set (source artwork omitted): ${JSON.stringify({ ...normalizeSetPackage(base), assets: { ...base.assets, sheets: base.assets.sheets.map(({ png: _png, ...s }) => s) } })}\nConversation: ${JSON.stringify(messages)}`;
 }

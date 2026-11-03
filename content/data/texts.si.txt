@@ -2328,6 +2328,18 @@ Trdnjave
 Razvejana delta
 [Braid count]
 Število rokavov
+[Flood]
+Poplava
+[Distributaries]
+Rečni rokavi
+[River crossings]
+Prehodi čez reko
+[Dunes]
+Sipine
+[Dry]
+Suho
+[Wet]
+Mokro
 [Rejoining frequency]
 Pogostost sotočij
 [Crossing spacing]

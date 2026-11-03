@@ -10,6 +10,7 @@ import {
   TerrainStudioTurn,
   TerrainStudioAdopt,
   SetPackage,
+  normalizeSetPackage,
   newPackage,
   namespace,
   parse,
@@ -151,7 +152,8 @@ export async function terrainStudioRoutes(app: FastifyInstance) {
                     ]),
                   )
                 : v;
-        pack = parse(SetPackage, remap(pack), 'remixed set');
+        // The remix is a new draft, hashed only when checked; the source release is untouched.
+        pack = normalizeSetPackage(parse(SetPackage, remap(pack), 'remixed set'));
         pack.title = input.title;
         if (pack.credits.length < 64)
           pack.credits.push({ author: a.display_name, license: pack.license });

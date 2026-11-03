@@ -2328,6 +2328,18 @@ Emoji
 Διακλαδισμένο δέλτα
 [Braid count]
 Αριθμός κλάδων
+[Flood]
+Πλημμύρα
+[Distributaries]
+Βραχίονες ποταμού
+[River crossings]
+Διαβάσεις ποταμού
+[Dunes]
+Αμμόλοφοι
+[Dry]
+Ξηρό
+[Wet]
+Υγρό
 [Rejoining frequency]
 Συχνότητα συμβολών
 [Crossing spacing]

@@ -14,7 +14,7 @@ const entry = {
   operation: 'upsert' as const,
   key: 'marsh',
   name: 'Fungal marsh',
-  preset: 'marsh',
+  preset: 'mudflat',
   propertiesJson: '{"groundSpeedQ8":128}',
   yieldsJson: '{}',
   presentationJson: '{}',
@@ -40,7 +40,7 @@ it('assembles normal terrain packages with shared appearance bindings', () => {
   const b = base(),
     key = namespace(b) + 'marsh',
     p = assemble(b, plan, { [key]: art });
-  expect(p.terrains[0]).toMatchObject({ key, base: 'marsh', properties: { groundSpeedQ8: 128 } });
+  expect(p.terrains[0]).toMatchObject({ key, base: 'mudflat', properties: { groundSpeedQ8: 128 } });
   expect(p.assets.terrains[key]).toMatchObject({
     profile: 'soft',
     sprite: 'data/sets/' + art.sheet.hash,
@@ -62,6 +62,35 @@ it('preserves untouched entries and exact artwork bytes during focused revisions
   );
   expect(next.terrains[1]).toEqual(first.terrains[1]);
   expect(next.assets).toEqual(first.assets);
+});
+it('accepts legacy built-in terrain names and emits the current ones', () => {
+  const b = base(),
+    key = namespace(b) + 'marsh';
+  // A draft saved before the rename, and a planner that still answers with an old name.
+  b.terrains.push({
+    key: namespace(b) + 'lane',
+    name: 'Lane',
+    base: 'dirt_track',
+    appearance: 'gravel',
+    properties: {},
+  });
+  const legacy = { ...plan, entries: [{ ...entry, preset: 'marsh' }] };
+  expect(validatePlan(legacy, b).entries[0]?.preset).toBe('mudflat');
+  expect(legacy.entries[0]?.preset).toBe('marsh');
+  const p = assemble(b, legacy, { [key]: art });
+  expect(p.terrains).toEqual([
+    expect.objectContaining({
+      key: namespace(b) + 'lane',
+      base: 'brick_path',
+      appearance: 'shale',
+    }),
+    expect.objectContaining({ key, base: 'mudflat', appearance: 'mudflat' }),
+  ]);
+  expect(b.terrains[0]).toMatchObject({ base: 'dirt_track', appearance: 'gravel' });
+  expect(plannerPrompt(b, [], '')).not.toMatch(/dirt_track|"gravel"/);
+  expect(() => validatePlan({ ...plan, entries: [{ ...entry, preset: 'swamp' }] }, base())).toThrow(
+    'Unknown terrain preset.',
+  );
 });
 it('rejects missing artwork, duplicate entries, oversized scope and new inventory materials', () => {
   const b = base();

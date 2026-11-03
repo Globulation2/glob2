@@ -38,17 +38,49 @@ export const TERRAIN_PRESETS = [
   'pumice',
   'frozen_lake',
 ];
-/** Earlier names of renamed built-ins; the engine still accepts them (LEGACY_TERRAIN_NAMES). */
-export const LEGACY_TERRAIN_PRESETS: Readonly<Record<string, string>> = {
-  gravel: 'shale',
+/**
+ * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay
+ * groups are unchanged, so an old name means exactly the same terrain. Sets, drafts and
+ * studio requests stored before the rename, and older clients, still send these names.
+ */
+export const LEGACY_TERRAIN_PRESET_ALIASES: Readonly<Record<string, string>> = Object.freeze({
   flower_meadow: 'heath',
-  marsh: 'mudflat',
+  gravel: 'shale',
   dirt_track: 'brick_path',
-};
-/** The current name of a terrain preset, accepting legacy names; undefined when unknown. */
-export function canonicalTerrainPreset(name: string): string | undefined {
-  if (TERRAIN_PRESETS.includes(name)) return name;
-  return Object.hasOwn(LEGACY_TERRAIN_PRESETS, name) ? LEGACY_TERRAIN_PRESETS[name] : undefined;
+  marsh: 'mudflat',
+});
+/** Current name for a built-in terrain preset; other values pass through unchanged. */
+export function normalizeTerrainPreset(name: string): string {
+  return Object.hasOwn(LEGACY_TERRAIN_PRESET_ALIASES, name)
+    ? (LEGACY_TERRAIN_PRESET_ALIASES[name] as string)
+    : name;
+}
+/** True for a current preset name or a legacy alias of one. */
+export function isTerrainPreset(name: string): boolean {
+  return TERRAIN_PRESETS.includes(normalizeTerrainPreset(name));
+}
+/**
+ * Rewrites legacy built-in names in terrain `base` and `appearance` references. Returns
+ * the same object when nothing changes. Call only where a package enters the platform
+ * before it is stored or hashed: published releases and validated deliveries are
+ * content-addressed by their exact bytes and must never be rewritten.
+ */
+export function normalizeSetPackage<T extends Pick<SetPackage, 'terrains'>>(pack: T): T {
+  let changed = false;
+  const terrains = pack.terrains.map((terrain) => {
+    let next = terrain;
+    for (const field of ['base', 'appearance']) {
+      const value = terrain[field];
+      if (typeof value !== 'string') continue;
+      const current = normalizeTerrainPreset(value);
+      if (current === value) continue;
+      if (next === terrain) next = { ...terrain };
+      next[field] = current;
+      changed = true;
+    }
+    return next;
+  });
+  return changed ? { ...pack, terrains } : pack;
 }
 export const MATERIALS = [
   'wood',
@@ -122,5 +154,6 @@ export function newRelease(pack: SetPackage): SetPackage {
       );
     return value;
   };
-  return replace(copy) as SetPackage;
+  // A release copy is a new draft, so it starts with current built-in terrain names.
+  return normalizeSetPackage(replace(copy) as SetPackage);
 }

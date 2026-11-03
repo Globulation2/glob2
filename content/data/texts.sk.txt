@@ -2328,6 +2328,18 @@ Pevnosti
 Rozvetvená delta
 [Braid count]
 Počet ramien
+[Flood]
+Záplavy
+[Distributaries]
+Riečne ramená
+[River crossings]
+Prechody cez rieku
+[Dunes]
+Duny
+[Dry]
+Sucho
+[Wet]
+Vlhko
 [Rejoining frequency]
 Frekvencia sútokov
 [Crossing spacing]

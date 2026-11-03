@@ -2328,6 +2328,18 @@ OpenGL 在此版本中不可用。
 辫状三角洲
 [Braid count]
 河汊数量
+[Flood]
+洪泛
+[Distributaries]
+分流河道
+[River crossings]
+渡河点
+[Dunes]
+沙丘
+[Dry]
+干燥
+[Wet]
+湿润
 [Rejoining frequency]
 汇合频率
 [Crossing spacing]

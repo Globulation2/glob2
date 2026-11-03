@@ -2328,6 +2328,18 @@ Emoji
 辮狀三角洲
 [Braid count]
 河汊數量
+[Flood]
+洪氾
+[Distributaries]
+分流河道
+[River crossings]
+渡河點
+[Dunes]
+沙丘
+[Dry]
+乾燥
+[Wet]
+濕潤
 [Rejoining frequency]
 匯合頻率
 [Crossing spacing]

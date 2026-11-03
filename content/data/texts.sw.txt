@@ -2306,6 +2306,18 @@ Upana wa lango
 Delta yenye mikondo inayosokotana
 [Braid count]
 Idadi ya mikondo
+[Flood]
+Mafuriko
+[Distributaries]
+Matawi ya mto
+[River crossings]
+Vivuko vya mto
+[Dunes]
+Matuta ya mchanga
+[Dry]
+Kavu
+[Wet]
+Majimaji
 [Rejoining frequency]
 Marudio ya kuungana tena
 [Crossing spacing]

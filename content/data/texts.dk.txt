@@ -2328,6 +2328,18 @@ Portbredde
 Forgrenet delta
 [Braid count]
 Antal flodarme
+[Flood]
+Oversvømmelse
+[Distributaries]
+Flodarme
+[River crossings]
+Flodovergange
+[Dunes]
+Klitter
+[Dry]
+Tørt
+[Wet]
+Vådt
 [Rejoining frequency]
 Sammenløbsfrekvens
 [Crossing spacing]

@@ -2328,6 +2328,18 @@ Largura do portão
 Delta entrelaçado
 [Braid count]
 Número de braços
+[Flood]
+Cheia
+[Distributaries]
+Distributários
+[River crossings]
+Travessias do rio
+[Dunes]
+Dunas
+[Dry]
+Seco
+[Wet]
+Úmido
 [Rejoining frequency]
 Frequência de confluências
 [Crossing spacing]
