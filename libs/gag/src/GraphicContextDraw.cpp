@@ -823,7 +823,10 @@ void GraphicContext::drawSkinSprite(float x,float y,float w,float h,DrawableSurf
     if (!surface || w<=0 || h<=0) return;
     prepareDraw();Sprite::flushBatches(this);
     auto *source=surface->getSDLSurface();if(!source)return;
-    if(renderer) renderer->blitLinear(surface,source,surface->contentRevision(),SDL_Rect{sx,sy,sw,sh},SDL_FRect{x,y,w,h},alpha);
+    if(renderer && radialFade.active() && source->w>0 && source->h>0)
+        renderer->triangles(radialFadeTriangles(radialFade,x,y,w,h,float(sx)/source->w,float(sy)/source->h,
+            float(sx+sw)/source->w,float(sy+sh)/source->h,alpha/255.f),surface,source,surface->contentRevision());
+    else if(renderer) renderer->blitLinear(surface,source,surface->contentRevision(),SDL_Rect{sx,sy,sw,sh},SDL_FRect{x,y,w,h},alpha);
     else SurfaceRaster::skinBlitFloat(getSDLSurface(),source,SDL_Rect{sx,sy,sw,sh},SDL_FRect{x,y,w,h},alpha);
     ++drawCalls;markPixelsChanged();
 }

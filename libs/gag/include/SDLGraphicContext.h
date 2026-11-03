@@ -11,6 +11,7 @@
 #include "GameplayRecording.h"
 #include "SkinAtlasCache.h"
 #include "SkinShadow.h"
+#include "RadialFade.h"
 #include "SpriteRenderAtlas.h"
 #include <AssetLoader.h>
 #include <array>
@@ -585,6 +586,7 @@ namespace GAGCore
         static void releaseSurfaceTextures();
         static void restoreSurfaceTextures();
         unsigned unitShaderProgram = 0;
+		RadialFade radialFade;
 		int unitShaderLocBase = -1, unitShaderLocTeam = -1;
 		int unitShaderLocHasBase = -1, unitShaderLocHasTeam = -1;
 		bool unitShaderFailureLogged = false;
@@ -822,6 +824,12 @@ namespace GAGCore
         // Diagnostic comparison switches use the same context and assets.
         void setRenderBatchEnabled(bool enabled);
         bool hasUnitShader() const { return unitShaderProgram != 0; }
+        //! Fade sprite, surface and skin draws with distance from a point until
+        //! replaced; an inactive fade draws normally. Prefer RadialFadeScope
+        //! (RenderStateScope.h). The native software surface, used without a
+        //! renderer backend, draws unfaded.
+        void setRadialFade(const RadialFade &fade) { radialFade = fade; }
+        const RadialFade &getRadialFade() const { return radialFade; }
         // Render distinct visible poses before painting the map; composites retain painter order.
         void drawSkinSprite(float x,float y,float w,float h,DrawableSurface *surface,int sx,int sy,int sw,int sh,Uint8 alpha);
         // Production FBO tile, top-down straight RGBA; no shadows or window readback.
