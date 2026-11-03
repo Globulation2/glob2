@@ -22,7 +22,9 @@ for(const mode of ['serial','threaded'])test(`${mode}: renderer availability mat
   const options=await page.evaluate(()=>Object.entries(glob2Diagnostics.snapshot().controls).filter(([key,value])=>/^popup\//.test(key)&&value.label.startsWith('Programmable GL')).map(([,value])=>value.label));
   expect(options).toHaveLength(1);
   expect(options[0]==='Programmable GL','Advertised availability must match an independent browser API probe').toBe(supported);
-  if(supported)await page.locator('#canvas').press('Escape',{delay:80});
+  // Escape is a browser fullscreen shortcut. Close the popup through its
+  // already selected software choice without leaving the presentation host.
+  if(supported)await clickByLabel(page,/popup/,'Software');
   else {
     expect(options[0]).toContain('Renderer unavailable');
     await clickByLabel(page,/popup/,options[0]);
