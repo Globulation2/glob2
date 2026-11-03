@@ -836,8 +836,14 @@ preordered witness per candidate using a one-sided 95% paired game bootstrap,
 stratified by the frozen family mix. The proposed bound permits at most 10% more
 mean selected-access travel in exchange for at least 25% fewer raw probes.
 Fallback, unreachable-access and missing-label status must match on every game;
-unknown costs prevent a cut, and each family must also satisfy the travel bound
-in its observed mean. These are exploratory allocation bounds, not simultaneous
+unknown candidate costs prevent a cut. A complete, uncensored frozen event whose
+exhaustive oracle proves there is no reachable, legally harvestable unclaimed
+alternative may be excluded from travel comparisons using
+`prove_no_reachable_alternative`. The proposal binds that proof to the record,
+manifest and event identities, retains every game's failure and probe checks,
+and separately requires at least 16 travel-applicable games and five per planned
+family. No missing cost becomes zero. Each family must also satisfy the travel
+bound in its observed applicable-game mean. These are exploratory allocation bounds, not simultaneous
 winner confidence intervals. Frozen factor and observed-niche representatives
 remain protected. An array is removable only when no surviving alias or policy
 uses it in any direction, and a deterministic 10% sample of removable physical
