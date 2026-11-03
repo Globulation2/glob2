@@ -329,6 +329,63 @@ TEST_CASE("shipped water HD keeps up with moving full-variant animation windows 
     CHECK(readySum > 0);
 }
 
+// Lava streams like a deferred multi-layout bank. The compositor's windows are
+// emulated: every variant visible, either the current/next endpoints alone or
+// every phase kept resident (the look-ahead used when it fits the budget).
+TEST_CASE("lava HD look-ahead keeps streamed animation endpoints resident [display][artifacts][benchmark]") {
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ToolkitScope toolkit;
+    GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "lava HD cadence");
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite::deferHighResolution("data/gfx/terrain-lava");
+    std::ofstream evidence(glob2test::artifactDir() / "lava-hd-cadence.txt");
+    for (bool lookahead : {false, true}) {
+        GAGCore::Sprite sprite;
+        REQUIRE(sprite.load("data/gfx/terrain-lava"));
+        constexpr unsigned phases = 4, ticks = 8;
+        const unsigned variants = sprite.getFrameCount() / phases;
+        REQUIRE(variants * phases == sprite.getFrameCount());
+        std::vector<unsigned> window;
+        std::size_t readySum = 0, samples = 0, fallbackTicks = 0, peakResident = 0;
+        for (unsigned tick = 0; tick < phases * ticks * 3; ++tick) {
+            const unsigned phase = tick / ticks % phases;
+            window.clear();
+            for (unsigned variant = 0; variant < variants; ++variant) {
+                window.push_back(phase * variants + variant);
+                window.push_back((phase + 1) % phases * variants + variant);
+            }
+            for (unsigned ahead = 2; lookahead && ahead < phases; ++ahead)
+                for (unsigned variant = 0; variant < variants; ++variant)
+                    window.push_back((phase + ahead) % phases * variants + variant);
+            sprite.setHighResolutionFrames(window);
+            GAGCore::Toolkit::pollAssets(2);
+            const auto resident = std::size_t(std::count_if(sprite.experimentImages.begin(),
+                sprite.experimentImages.end(), [](auto *image) { return image != nullptr; }));
+            CHECK(resident <= variants * (lookahead ? phases : 2));
+            peakResident = std::max(peakResident, resident);
+            // The first cycle warms up; later cycles measure steady streaming.
+            if (tick >= phases * ticks) {
+                std::size_t ready = 0;
+                for (unsigned variant = 0; variant < variants; ++variant)
+                    for (unsigned endpoint : {phase, (phase + 1) % phases})
+                        ready += sprite.experimentImages[endpoint * variants + variant] != nullptr;
+                readySum += ready; ++samples;
+                fallbackTicks += ready < 2 * variants;
+            }
+            SDL_Delay(16);
+        }
+        evidence << (lookahead ? "lookahead" : "endpoints") << " variants " << variants << " phase_ticks " << ticks
+                 << " measured_ticks " << samples << " endpoint_hd_fraction " << double(readySum) / (samples * 2 * variants)
+                 << " fallback_ticks " << fallbackTicks << " resident_peak " << peakResident << '\n';
+        // Diagnostic coverage: development builds and CI hardware do not
+        // establish shipping throughput. Bounded residency and progress are required.
+        CHECK(readySum > 0);
+        sprite.setHighResolutionFrames({});
+    }
+    evidence << "asset_peak_working_bytes " << GAGCore::Toolkit::assets().metrics().peakWorkingBytes << '\n';
+}
+
 TEST_CASE("portable HD uses standalone frames without requesting GL atlases [display]") {
     glob2test::TempDir scratch("portable-hd");
     const auto artwork = scratch.path / "data/gfx";

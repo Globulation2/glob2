@@ -9,6 +9,7 @@
 #include "Unit.h"
 #include "Building.h"
 #include "render/SoftwareTerrainCache.h"
+#include "render/terrain/TerrainCompositor.h"
 #include <RenderBackend.h>
 #include <PresentationWork.h>
 #include <GameplayRecording.h>
@@ -375,6 +376,8 @@ static void interactiveBenchmark()
 				printf("fixed_hud_tick_rate=0.0\n");
 			}
 			std::uint64_t initialHits = 0, initialRebuilds = 0;
+			auto &compositor = globalContainer->terrainCompositor(gui.game.map.frozenAssetBundle());
+			TerrainVisual::Compositor::HighResolutionCoverage initialCoverage;
 			double c0 = 0;
 			double freq = SDL_GetPerformanceFrequency();
 			const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
@@ -390,6 +393,7 @@ static void interactiveBenchmark()
                     initialGraphics = gui.game.map.computeExecutor().graphicsMetrics();
 					initialHits = terrainCache.cacheHits();
 					initialRebuilds = terrainCache.cacheRebuilds();
+					initialCoverage = compositor.highResolutionCoverage();
 					PerformanceTelemetry::collector().reset();
 				}
 				if (getenv("PROFILE_PAN"))
@@ -465,6 +469,14 @@ static void interactiveBenchmark()
 				   (unsigned long long)(terrainCache.cacheHits() - initialHits),
 				   (unsigned long long)(terrainCache.cacheRebuilds() -
 										initialRebuilds));
+            // Streaming fallback: a prepared view drew native art for a material
+            // whose HD frames had already appeared. Warmup is reported separately.
+            const auto coverage = compositor.highResolutionCoverage();
+            printf("terrain_hd prepares=%llu fallback_prepares=%llu warmup_prepares=%llu warmup_fallback_prepares=%llu\n",
+                   (unsigned long long)(coverage.prepares - initialCoverage.prepares),
+                   (unsigned long long)(coverage.fallbacks - initialCoverage.fallbacks),
+                   (unsigned long long)initialCoverage.prepares,
+                   (unsigned long long)initialCoverage.fallbacks);
             const auto work = terrainCache.workMetrics;
             const auto graphics = gui.game.map.computeExecutor().graphicsMetrics();
             printf("terrain_cpu batches=%llu jobs=%llu cells=%llu serial_pages=%llu "
