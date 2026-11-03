@@ -46,7 +46,7 @@ TEST_CASE("all explicit fallback and routing choices remain represented in polic
 }
 }
 
-TEST_CASE("version two recovery identity is explicit strict and preserves legacy canonical bytes")
+TEST_CASE("version two recovery identity is explicit strict and preserves legacy canonical bytes" * doctest::test_suite("ClaimPolicyConfig"))
 {
     const ClaimPolicyConfig config;
     CHECK(config.usesRecovery());

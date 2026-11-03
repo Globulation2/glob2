@@ -131,6 +131,51 @@ TEST_SUITE("ActiveClaimRoutes")
         restoreRoutes(map, {}, false, 194);
         CHECK_FALSE(map.activeClaimsEnabled());
     }
+    TEST_CASE("cached route cadence exposes persistent new immobile traffic")
+    {
+        // Diagnostic control for the route experiment: a zero-refresh path
+        // currently waits forever behind traffic which appeared after capture.
+        // Preserve this observation rather than silently selecting a new policy.
+        glob2test::HeadlessGlobals globals;
+        std::ofstream evidence(glob2test::artifactDir()/"traffic-cadence.tsv");
+        REQUIRE(evidence.good());evidence<<"participants\tcadence\tready\twaiting\n";
+        for(unsigned threads:{1u,3u}) for(unsigned cadence:{0u,1u}) {
+            CAPTURE(threads);CAPTURE(cadence);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;
+            map.configureCompute(threads);map.setMaterialDestinationsEnabled(true);
+            ResourceClaims::ClaimPolicyConfig config;config.routeRefreshJ=cadence;
+            map.setMaterialClaimPolicyConfig(config);
+            auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
+            Assignment cleanup{*unit};assign(*unit,*building,map,14,8);
+            unit->materialClaimPolicyState.decisionOrdinal=1;game.observeCompletedWorld();
+            int dx=0,dy=0;
+            REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Pending);
+            map.flushClaimRoutes();++game.stepCounter;map.publishClaimRoutes();
+            game.invalidateObservation();game.observeCompletedWorld();
+            REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Ready);
+            const int blockedX=unit->posX+dx,blockedY=unit->posY+dy;
+            REQUIRE(fixture.addUnit(WORKER,blockedX,blockedY));
+            map.markImmobileUnit(blockedX,blockedY,unit->owner->teamNumber);
+            unsigned ready=0,waiting=0;
+            for(unsigned decision=0;decision<32;++decision) {
+                map.flushClaimRoutes();++game.stepCounter;map.publishClaimRoutes();
+                game.invalidateObservation();game.observeCompletedWorld();
+                ++unit->materialClaimPolicyState.decisionOrdinal;
+                const auto result=map.nextClaimRouteStep(*unit,&dx,&dy);
+                REQUIRE(result!=ResourceClaims::StepResult::Failed);
+                if(result==ResourceClaims::StepResult::Ready) {
+                    ++ready;
+                    CHECK_FALSE((unit->posX+dx==blockedX && unit->posY+dy==blockedY));
+                } else ++waiting;
+                REQUIRE(unit->activeMaterialClaim);
+            }
+            if(cadence)CHECK(ready>=30);
+            else {CHECK(ready==0);CHECK(waiting==32);}
+            evidence<<threads<<'\t'<<cadence<<'\t'<<ready<<'\t'<<waiting<<'\n';
+        }
+        REQUIRE(evidence.good());
+    }
     TEST_CASE("experimental heading refresh and displaced publication retain deterministic saved state")
     {
         glob2test::HeadlessGlobals globals;
