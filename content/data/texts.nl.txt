@@ -5674,20 +5674,20 @@ Rotsuitsteeksel
 Aarde
 [clay]
 Klei
-[gravel]
-Grind
-[flower_meadow]
-Bloemenweide
+[shale]
+Schalie
+[heath]
+Heide
 [mud]
 Modder
-[marsh]
-Moeras
+[mudflat]
+Slikvlakte
 [deep_snow]
 Diepe sneeuw
 [scree]
 Puinhelling
-[dirt_track]
-Aarden pad
+[brick_path]
+Klinkerpad
 [boardwalk]
 Vlonderpad
 [lava]
@@ -5716,6 +5716,12 @@ Droog gras
 Duinzand
 [pale_sand]
 Licht zand
+[sandstone]
+Zandsteentegels
+[pumice]
+Puimsteenveld
+[frozen_lake]
+Bevroren meer
 [terrain group water]
 Water
 [terrain group sand]

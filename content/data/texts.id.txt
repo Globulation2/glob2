@@ -5674,20 +5674,20 @@ Singkapan batu
 Tanah
 [clay]
 Tanah liat
-[gravel]
-Kerikil
-[flower_meadow]
-Padang bunga
+[shale]
+Serpih
+[heath]
+Padang semak
 [mud]
 Lumpur
-[marsh]
-Rawa
+[mudflat]
+Dataran lumpur
 [deep_snow]
 Salju tebal
 [scree]
 Lereng berbatu
-[dirt_track]
-Jalan tanah
+[brick_path]
+Jalan bata
 [boardwalk]
 Jalan papan
 [lava]
@@ -5716,6 +5716,12 @@ Rumput kering
 Pasir bukit
 [pale_sand]
 Pasir pucat
+[sandstone]
+Ubin batu pasir
+[pumice]
+Hamparan batu apung
+[frozen_lake]
+Danau beku
 [terrain group water]
 Air
 [terrain group sand]

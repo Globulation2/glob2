@@ -5674,20 +5674,20 @@ Felsvorsprung
 Erde
 [clay]
 Ton
-[gravel]
-Kies
-[flower_meadow]
-Blumenwiese
+[shale]
+Schiefer
+[heath]
+Heide
 [mud]
 Schlamm
-[marsh]
-Sumpf
+[mudflat]
+Schlammebene
 [deep_snow]
 Tiefer Schnee
 [scree]
 Geröll
-[dirt_track]
-Feldweg
+[brick_path]
+Ziegelpflaster
 [boardwalk]
 Bohlenweg
 [lava]
@@ -5716,6 +5716,12 @@ Trockenes Gras
 Dünensand
 [pale_sand]
 Heller Sand
+[sandstone]
+Sandsteinplatten
+[pumice]
+Bimssteinfeld
+[frozen_lake]
+Zugefrorener See
 [terrain group water]
 Wasser
 [terrain group sand]

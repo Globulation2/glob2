@@ -11,8 +11,8 @@ tiles (frames 48 to 79: four straight-edge groups of eight variants). Every
 linear trend between the patch endpoints removed so shared edges keep their
 zero endpoints. The frozen profile uses seeded angular random walks for ice.
 The catalogue profiles are also seeded random walks: `rock` (angular, strong
-speckle) for boulders, ridges, scree and gravel; `crisp` (short, no speckle)
-for holes, chasms and boardwalks; `brush` (leafy) for meadows. Smooth profiles
+speckle) for boulders, ridges, scree, shale and pumice; `crisp` (short, no speckle)
+for holes, chasms and boardwalks; `brush` (leafy) for meadows and heath. Smooth profiles
 (still water, molten lava, paved roads and tracks) have no contour tables.
 For shipped profiles only the `contours_q12` arrays are replaced; every other
 field stays as authored. A profile listed in NEW_PROFILES that is missing from

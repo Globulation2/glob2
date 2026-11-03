@@ -7,6 +7,8 @@ export {
   namespace,
   newPackage,
   newRelease,
+  normalizeSetPackage,
+  normalizeTerrainPreset,
 } from '@glob2/protocol';
 export async function sheetFromFile(file: File, frameWidth: number, frameHeight: number) {
   if (file.size > 12 * 1024 * 1024) throw Error(t('This PNG exceeds the sheet upload limit.'));

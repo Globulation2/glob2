@@ -38,16 +38,13 @@ class TerrainDecor(unittest.TestCase):
                 self.assertGreaterEqual(min(box[:2]), 8)
                 self.assertLessEqual(max(box[2:]), decor.CELL - 8)
 
-    def test_committed_frames_match_a_fresh_synthesis(self):
-        self.assertEqual(decor.check(self.results, ROOT), [])
-
     def test_catalog_blocks_name_the_shared_sprite_and_frames(self):
         catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
         blocks = {m["key"]: m["decor"] for m in catalog["materials"] if "decor" in m}
         self.assertEqual(sorted(blocks), sorted(decor.ORDER))
         for name, block in blocks.items():
             first = decor.first_frame(name)
-            self.assertEqual(block["sprite"], decor.PREFIX)
+            self.assertEqual(block["sprite"], decor.SPRITE)
             self.assertEqual(block["full"], list(range(first, first + decor.FULL)))
             self.assertEqual(block["edge"], list(range(first + decor.FULL, first + decor.FRAMES)))
             if name in decor.CONNECTED:

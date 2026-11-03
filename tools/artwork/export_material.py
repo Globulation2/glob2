@@ -116,13 +116,12 @@ MATERIAL_PROMPTS = {
         "no smoke, no rocks, no vegetation. The ember pulse is added procedurally; paint embers at a "
         "steady medium intensity."
     ),
-    "flower_meadow": PROMPT_HEADER + (
-        "Material: Flower meadow, a wild meadow viewed from above. Mid-green grass with painterly "
-        "mottling and short blades, covered about 12-18% by clearly readable flower heads: small patches "
-        "of one colour (white daisies, yellow buttercups, pink, violet, red, blue) plus scattered "
-        "singles. Each head is a ring of four to six saturated petals around a contrasting centre with a "
-        "small soft shadow, three to four pixels across after downscaling. No stems drawn, no bare soil, "
-        "no path, no border."
+    "heath": PROMPT_HEADER + (
+        "Material: Heath, dry barren scrubland viewed from above. Pale, faded, cracked sandy peat with "
+        "broken dry cracks, covered about 30-40% by ragged clumps of low dormant heather and dead grey "
+        "scrub, each clump built of many small crinkly tufts lit from the upper left with a soft shadow "
+        "to the lower right. Umber, olive and grey vegetation only: no flowers, no green grass, no path, "
+        "no border."
     ),
     "outcrop": PROMPT_HEADER + (
         "Material: Outcrop, impassable bare bedrock viewed from above. Four to six large flat slabs of "
