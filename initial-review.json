@@ -1,0 +1,23 @@
+{
+  "revision": "9c895136e580751f664fe61e7d3878d14e10e2db",
+  "base": "d185775fbf90e9adbe884c289531aa34098964e5",
+  "scope": "Fill24newtelemetrykeysin9previouslycompletecatalogs(216values),restoreninecompletemarkers. No Englishsubstitutesorchecker/testchanges. OwnerthreadtranslationdoesnotassumemainUIthread. Other35nonEnglishcatalogsremainpendingasbefore.",
+  "languages": [
+    "nb",
+    "ms",
+    "fil",
+    "bg",
+    "bn",
+    "mr",
+    "ta",
+    "te",
+    "th"
+  ],
+  "validation": {
+    "strict": "0 structural errors; all9catalogshave0untranslated",
+    "translation_tests": 10,
+    "font_coverage": "AllcatalogcharacterssupportedbyactualpinnedSDL3_ttf/fontstack"
+  },
+  "browser": "21originalMarathi/Bulgarian/Thaicasesall3browsersandbothruntimesinprogress. Privatecatalogpackages/historicalenginequalification;notcurrentenginebuildorfullnewperformancepanelrenderclaim. See runtime-provenance.json.",
+  "introduced_regression": "1374leftnewtextblankandcorrectlymarkedincomplete,causingcomplete-languagepickerlabels/nativeselectors tochange. Thisfillsnewtextandrestoresintendedcompletechoices;doesnotrelaxassertions."
+}
