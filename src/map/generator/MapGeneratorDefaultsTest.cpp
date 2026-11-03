@@ -1284,6 +1284,35 @@ TEST_SUITE("MapGeneratorDefaults")
 			}
 		}
 	}
+	TEST_CASE("Anthill narrow tunnels stay connected under blocked corner ties [slow][map-generators]")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		const auto method = GeneratorRegistry::builtins().idOf("anthill");
+		struct Case { unsigned seed; int width, height; };
+		// Retain the standard square and both default-contract rectangles. The
+		// minimum width and width3 exercise necks where two walking/two rock
+		// corners used to be traversable; default width4 has additional margin.
+		for (int tunnelWidth : {2, 3})
+			for (const Case &c : {Case{22001, 8, 8}, Case{31001, 9, 7}, Case{31001, 7, 9}})
+			{
+				D request;
+				request.setMethodDefaults(method);
+				request.seed = c.seed;
+				request.wDec = c.width;
+				request.hDec = c.height;
+				request.options["tunnel-width"] = tunnelWidth;
+				INFO("tunnel-width=" << tunnelWidth << ", seed=" << c.seed <<
+					 ", dimensions=" << (1 << c.width) << "x" << (1 << c.height));
+				Game world(nullptr);
+				const auto result = GenerationService().generate(world, request);
+				CHECK_MESSAGE(bool(result), result.diagnostic());
+				if (!result)
+					continue;
+				CHECK(MapGeneration::walkFromFirstColony(world.map, request.nbTeams,
+					"the anthill", "through the narrow tunnels").error.empty());
+			}
+	}
 	TEST_CASE("Braided Delta scales every resource and keeps its colonies supplied")
 	{
 		DefaultsFixture fixture;
