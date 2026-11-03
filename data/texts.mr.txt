@@ -6856,5 +6856,53 @@ MCP सर्व्हर सक्षम करा
 आदेश प्राप्त झाला: %0
 [hive order not confirmed]
 आदेशाची पुष्टी झाली नाही. पुन्हा प्रयत्न करण्यासाठी कमांडर उघडा; तुमचा संदेश जतन करून ठेवण्यात आला आहे.
+[engine performance per game minute]
+
+[engine performance per real minute]
+
+[engine performance game engine performance]
+
+[engine performance task wall-time costs]
+
+[engine performance inspect slow ticks]
+
+[engine performance no advancing ticks recorded yet]
+
+[engine performance whole-engine performance]
+
+[engine performance open performance charts]
+
+[engine performance engine performance]
+
+[engine performance follow latest interval]
+
+[engine performance compare task costs]
+
+[engine performance all metrics and slow ticks]
+
+[engine performance phase orders]
+
+[engine performance phase units]
+
+[engine performance phase buildings]
+
+[engine performance phase map]
+
+[engine performance phase statistics]
+
+[engine performance phase ai]
+
+[engine performance phase world capture]
+
+[engine performance phase checksums]
+
+[engine performance wall time %0]
+
+[engine performance waits %0 joins %1 locks %2]
+
+[engine performance phase %0 wall %1]
+
+[engine performance tick %0 wall %1]
+
 [hive standing order update failed]
 स्थायी आदेश अद्ययावत करता आला नाही. तुमचा आदेश या उपकरणावर थांबवण्यात आला आहे; संबंधित नियंत्रण पुन्हा वापरा.
