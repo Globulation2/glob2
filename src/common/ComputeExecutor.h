@@ -500,7 +500,9 @@ private:
 	std::function<void(std::size_t)> job;
 	std::exception_ptr error;
 	// submit()/join(): live batches, each held from submission to its join.
-	std::array<Slot, Slots> slots;
+	// Keep the fixed-capacity arena off Map/Game owners' bounded worker stacks.
+	// It is allocated once and never resized, so live slot addresses stay stable.
+	std::vector<Slot> slots = std::vector<Slot>(Slots);
 	// Under mutex. Pick visits only batches with unclaimed work, rather than
 	// branching over the entire horizon (including completed retained tickets).
 	std::array<std::uint64_t, (Slots + 63) / 64> unclaimedSlots{};
