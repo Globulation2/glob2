@@ -323,6 +323,17 @@ class HtmlGoogleDraftTest(unittest.TestCase):
 
 
 class BackendIsolationTest(unittest.TestCase):
+    def test_plain_and_html_reject_existing_filipino_editorial_campaign(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            ledger = output / 'google/fil/attempts.jsonl'
+            ledger.parent.mkdir(parents=True)
+            ledger.write_text('{"characters": 10}\n', encoding='utf-8')
+            for mode in ('plain', 'html'):
+                with self.subTest(mode=mode):
+                    with self.assertRaisesRegex(ValueError, 'paid editorial ledger'):
+                        DRAFT.assert_backend_budget(output, mode)
+
     def test_plain_cannot_reset_segmented_paid_ledger(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary)
@@ -341,7 +352,8 @@ class BackendIsolationTest(unittest.TestCase):
                     self.fail('Cannot acquire paid writer for another backend')
 
 
-from test_google_draft_segmented import SegmentedGoogleDraftTest
+from test_google_draft_segmented import (SegmentedGoogleDraftTest, GooglePlanDraftTest,
+    GoogleMergedApiTest, NorwegianGoogleDraftTest, FilipinoEditorialGoogleDraftTest, GoogleWorkflowDispatchTest)
 
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@
 
 namespace fe = Glob2UI;
 namespace {
-const char *topicKeys[] = {"[stats topic overview]", "[stat page colony]", "[stats topic economy]", "[stat group military]", "[stats topic world]"};
+const char *topicKeys[] = {"[stats topic overview]", "[stat page colony]", "[stats topic economy]", "[stat group military]", "[stats topic world]", "[engine performance game engine performance]"};
 void paintWaiting(fe::Canvas &canvas, fe::Rect rect, fe::FontRole role, int inset)
 {
     const auto &measure = canvas.measurer();
@@ -63,7 +63,7 @@ InGameStatisticsPanel::Topic InGameStatisticsPanel::topicFor(Stats::Group group)
 }
 void InGameStatisticsPanel::selectTopic(Topic value)
 {
-    if (int(value) < 0 || int(value) > int(Topic::World)) return;
+    if (int(value) < 0 || int(value) > int(Topic::Engine)) return;
     selectedTopic = value;
     inlineHoverX = inlineHoverY = -1;
     invalidate();
@@ -315,18 +315,25 @@ fe::Element InGameStatisticsPanel::build(const fe::Presentation &p)
     std::vector<fe::Element> topicRows, buttons;
     const bool narrow = bounds.w < p.textPt(270);
     const int columns = narrow ? 2 : 3;
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 6; ++i) {
         buttons.push_back(fe::expanded(fe::button("stats/topic/" + std::to_string(i), fe::tr(topicKeys[i]),
             [this, i] { selectTopic(Topic(i)); }, {.selected = selectedTopic == Topic(i), .role = fe::FontRole::Support})));
-        if ((narrow && i == 0) || int(buttons.size()) == columns || i == 4) {
+        if ((narrow && i == 0) || int(buttons.size()) == columns || i == 5) {
             topicRows.push_back(fe::row(std::move(buttons), {p.pt(4)}));
             buttons.clear();
         }
     }
     std::vector<fe::Element> content;
     if (!p.touch) content.push_back(fe::label(fe::tr("[Statistics]")));
-    if (watching) content.push_back(fe::label(fe::tr("[watching:]") + " " + watchedName));
+    if (watching && selectedTopic != Topic::Engine) content.push_back(fe::label(fe::tr("[watching:]") + " " + watchedName));
     content.push_back(fe::column(std::move(topicRows), {p.pt(4)}));
+    if (selectedTopic == Topic::Engine) {
+        content.push_back(fe::expanded(fe::scroll("stats/engine-scroll", enginePerformance.compact(p, [this] {
+            returnKey="engine-performance/open"; host().closePopup();
+            gui.openDialog(GameGUI::IGM_STATISTICS,std::make_unique<InGamePerformanceHistory>());
+        }), {.shrinkToContent = false})));
+        return fe::pad(p.pt(6), fe::column(std::move(content), {p.pt(6)}));
+    }
     std::vector<fe::Element> body;
     bool missing = false;
     const auto *stats = history();
@@ -451,4 +458,15 @@ void InGameStatisticsHistory::paintChart(fe::Canvas &canvas, fe::Rect rect)
         });
     } else paintWaiting(canvas, rect, fe::FontRole::Body, 8);
     canvas.popClip();
+}
+
+InGamePerformanceHistory::InGamePerformanceHistory() = default;
+void InGamePerformanceHistory::onUpdate(Uint32) {
+    const auto* h=PerformanceTelemetry::collector().history.get();
+    const auto next=h?h->revision:0;
+    if(next!=revision){revision=next;invalidate();}
+}
+fe::Element InGamePerformanceHistory::build(const fe::Presentation &p) {
+    return fe::footer(fe::scroll("performance/history/body",panel.build(p,[this]{invalidate();}),{.shrinkToContent=false}),
+        dialogActions({{"performance/history/close","Back to game",[this]{finish(0);},false,SDLK_ESCAPE}},p));
 }

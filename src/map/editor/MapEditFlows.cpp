@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 #include "MapAssetBundle.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Editor flows that must not lose work or leave the editor: quit and window
@@ -274,7 +275,7 @@ void MapEdit::pollDeviceImport()
 	catch (const std::exception &error)
 	{
 		GAGCore::ApplicationHost::importChanged("invalid");
-		loadSaveScreen->showLoadFailure(error.what());
+		loadSaveScreen->showLoadFailure(Glob2UI::exceptionText(error));
 		return;
 	}
 	GAGCore::ApplicationHost::importChanged("succeeded");

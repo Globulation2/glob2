@@ -1,0 +1,1029 @@
+import { statusLabel, aiTagLabel } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import {
+  AI_TAGS,
+  AI_CHECK_LABELS,
+  pendingAiReport,
+  passedAiReport,
+  type AiDetail,
+  type AiUpload,
+  type AiValidationReport,
+  type PublishAiRequest,
+} from '@glob2/protocol';
+import { aiApi } from '../aiApi.ts';
+import { aiBrowseUrl, aiReturnUrl, readAiBrowse, type AiBrowseState } from '../aiBrowse.ts';
+import { ApiError } from '../api.ts';
+import {
+  LibraryHeader,
+  LibraryNav,
+  LibraryFilters,
+  LibraryField,
+  LibraryGrid,
+  LibraryCard,
+  LibraryResults,
+  LibraryEmpty,
+  useLibrarySearch,
+} from '../components/library.tsx';
+import { Loaded, ErrorNotice } from '../components/common.tsx';
+import { Link, useRouter } from '../router.tsx';
+import { useLoad, useSession } from '../state.tsx';
+import { date } from '../format.ts';
+import '../styles/ais.css';
+const DOCS = 'https://github.com/Globulation2/glob2/blob/master/docs/development/';
+const STARTER = 'https://github.com/Globulation2/glob2-javascript-ai-starter-exampler';
+
+function Learn() {
+  useLocale();
+  const toggle = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const [dismissed, setDismissed] = useState(() => {
+    try {
+      return localStorage.getItem('ai-introduction') === 'dismissed';
+    } catch {
+      return false;
+    }
+  });
+  const dismiss = () => {
+    setOpen(false);
+    setDismissed(true);
+    toggle.current?.focus();
+    try {
+      localStorage.setItem('ai-introduction', 'dismissed');
+    } catch {
+      /* Storage may be unavailable. */
+    }
+  };
+  return (
+    <section className="ai-learn">
+      <button ref={toggle} className="small" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <RichMessage
+          source={'How AIs work {slot0}'}
+          slots={{ slot0: <span aria-hidden="true">{open ? '−' : '+'}</span> }}
+        />
+      </button>
+      {!open && !dismissed && (
+        <div className="ai-learn-summary">
+          <p>
+            {t(
+              'Install community AIs for local games. Versions work offline. Only run code from authors you trust.',
+            )}
+          </p>
+          <button className="small" onClick={dismiss}>
+            {t('Got it')}
+          </button>
+        </div>
+      )}
+      {open && (
+        <div className="ai-learn-body">
+          <div>
+            <h2>{t('A new mind for your colony')}</h2>
+            <p>
+              {t(
+                'Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.',
+              )}
+            </p>
+            <p className="caption">
+              {t(
+                'Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.',
+              )}
+            </p>
+          </div>
+          <nav aria-label={t('AI authoring resources')}>
+            <a href={DOCS + 'javascript.md'}>{t('Authoring guide ↗')}</a>
+            <a href={DOCS + 'javascript-api.md'}>{t('JavaScript API reference ↗')}</a>
+            <a href={STARTER}>{t('Start building an AI ↗')}</a>
+            <button className="small" onClick={dismiss}>
+              {t('Got it')}
+            </button>
+          </nav>
+        </div>
+      )}
+    </section>
+  );
+}
+function Tags({ value, onChange }: { value: string[]; onChange: (tags: string[]) => void }) {
+  useLocale();
+  return (
+    <div className="ai-tags" role="group" aria-label={t('AI tags')}>
+      {AI_TAGS.map((tag) => (
+        <button
+          type="button"
+          key={tag}
+          className="small"
+          aria-pressed={value.includes(tag)}
+          disabled={!value.includes(tag) && value.length >= 5}
+          onClick={() =>
+            onChange(
+              value.includes(tag)
+                ? value.filter((t) => t !== tag)
+                : value.length < 5
+                  ? [...value, tag]
+                  : value,
+            )
+          }
+        >
+          {aiTagLabel(tag)}
+        </button>
+      ))}
+    </div>
+  );
+}
+export function AiChecklist({ report }: { report: AiValidationReport }) {
+  useLocale();
+  return (
+    <ol className="ai-checklist" aria-label={t('Compatibility checks')}>
+      {report.checks.map((c) => (
+        <li key={c.id} data-status={c.status}>
+          <span className={c.status === 'running' ? 'ai-spin' : ''} aria-hidden="true">
+            {{ passed: '✓', failed: '×', skipped: '—', pending: '○', running: '◌' }[c.status]}
+          </span>
+          <div>
+            <strong>{t(AI_CHECK_LABELS[c.id])}</strong>
+            <small>
+              {statusLabel(c.status)}
+              {c.message ? ': ' + c.message : ''}
+            </small>
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
+}
+export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favourites' }) {
+  useLocale();
+  const { account } = useSession();
+  const { location, navigate } = useRouter();
+  const browse = readAiBrowse(location.search);
+  const { query, tags, sort, pages } = browse;
+  const queryKey = location.path + '?' + query;
+  const [searchDraft, setSearchDraft] = useState({ key: queryKey, value: query });
+  const search = searchDraft.key === queryKey ? searchDraft.value : query;
+  const setSearch = (value: string) => setSearchDraft({ key: queryKey, value });
+  const restoredFocus = useRef('');
+  const updateBrowse = (update: Partial<AiBrowseState>) =>
+    navigate(aiBrowseUrl(location.path, { ...browse, focus: '', cursor: '', ...update }), {
+      replace: true,
+    });
+  const applySearch = useLibrarySearch(search, query, (value) =>
+    updateBrowse({ query: value, pages: 1 }),
+  );
+  const reset = () => {
+    setSearch('');
+    updateBrowse({ query: '', tags: [], sort: 'likes', pages: 1 });
+  };
+  const load = useLoad(
+    async (signal) => {
+      let cursor: string | undefined = browse.cursor || undefined;
+      const items: Awaited<ReturnType<typeof aiApi.list>>['items'] = [];
+      for (let i = 0; i < pages; i++) {
+        const page = await aiApi.list(
+          {
+            q: query,
+            tags: tags.join(','),
+            sort,
+            owner: view === 'mine' ? 'me' : undefined,
+            favourites: view === 'favourites' ? 'true' : undefined,
+            cursor,
+            limit: 24,
+          },
+          signal,
+        );
+        items.push(...page.items);
+        cursor = page.nextCursor;
+        if (!cursor) break;
+      }
+      return { items, cursor };
+    },
+    [query, tags.join(','), sort, pages, browse.cursor, view, account?.id],
+  );
+  useEffect(() => {
+    if (load.status !== 'ready' || !browse.focus || restoredFocus.current === browse.focus) return;
+    const card = document.getElementById('ai-card-' + browse.focus);
+    if (card) {
+      card.focus();
+      restoredFocus.current = browse.focus;
+    }
+  }, [load.status, browse.focus]);
+  return (
+    <div className="ai-library library-page">
+      <LibraryHeader
+        art="swarm"
+        title={t('AI Library')}
+        description={t('Discover a new opponent. Find a new way to play.')}
+        actions={
+          <>
+            <Link className="btn primary" to="/ais/new">
+              {t('Share your AI')}
+            </Link>
+            <Link className="btn" to="/ai-studio">
+              {t('Build in AI Studio')}
+            </Link>
+          </>
+        }
+      />
+      <LibraryNav label={t('AI library views')}>
+        {(
+          [
+            ['discover', '/ais', t('Browse')],
+            ['favourites', '/ais/favourites', t('Favourites')],
+            ['mine', '/ais/mine', t('My AIs')],
+          ] as const
+        ).map(([id, to, label]) => (
+          <Link
+            key={id}
+            to={to}
+            className={id === view ? 'on' : ''}
+            aria-current={id === view ? 'page' : undefined}
+          >
+            {label}
+          </Link>
+        ))}
+      </LibraryNav>
+      <Learn />
+      {!account && view !== 'discover' ? (
+        <div className="notice">
+          <RichMessage
+            source={'{slot0} to see your library.'}
+            slots={{ slot0: <a href="/signin">{t('Sign in')}</a> }}
+          />
+        </div>
+      ) : (
+        <>
+          <LibraryFilters
+            onSubmit={(e) => {
+              e.preventDefault();
+              applySearch();
+            }}
+          >
+            <LibraryField label={t('Search AIs')} search>
+              <input
+                type="search"
+                maxLength={128}
+                placeholder={t('Search names, descriptions, authors…')}
+                aria-label={t('Search AIs')}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </LibraryField>
+            <LibraryField label={t('Sort')}>
+              <select
+                aria-label={t('Sort AIs')}
+                value={sort}
+                onChange={(e) => {
+                  updateBrowse({ sort: e.target.value, pages: 1 });
+                }}
+              >
+                <option value="likes">{t('Most liked')}</option>
+                <option value="newest">{t('Newest')}</option>
+                <option value="updated">{t('Recently updated')}</option>
+                <option value="downloads">{t('Most downloaded')}</option>
+              </select>
+            </LibraryField>
+            <button type="button" onClick={reset}>
+              {t('Reset filters')}
+            </button>
+          </LibraryFilters>
+          <Tags
+            value={tags}
+            onChange={(v) => {
+              updateBrowse({ tags: v, pages: 1 });
+            }}
+          />
+          <LibraryResults count={(data) => data.items.length} load={load} retry={load.reload}>
+            {(data) =>
+              data.items.length ? (
+                <>
+                  <LibraryGrid>
+                    {data.items.map((ai) => (
+                      <LibraryCard
+                        className="ai-card"
+                        id={'ai-card-' + ai.id}
+                        key={ai.id}
+                        to={
+                          '/ais/' +
+                          ai.id +
+                          '?return=' +
+                          encodeURIComponent(
+                            aiBrowseUrl(location.path, { ...browse, focus: ai.id }),
+                          )
+                        }
+                      >
+                        <div className="ai-card-top">
+                          <span className="ai-monogram" aria-hidden="true">
+                            {ai.name.slice(0, 2).toUpperCase()}
+                          </span>
+                          <span className="badge">
+                            <RichMessage
+                              source={'v{slot0}'}
+                              slots={{ slot0: ai.latestVersion.label }}
+                            />
+                          </span>
+                        </div>
+                        <h2>{ai.name}</h2>
+                        <p className="caption">
+                          <RichMessage
+                            source={'by {slot0}{slot1}'}
+                            slots={{
+                              slot0: ai.owner.displayName,
+                              slot1: ai.hidden ? t(' · hidden') : '',
+                            }}
+                          />
+                        </p>
+                        <p className="ai-excerpt">
+                          {ai.description || t('A community-created colony controller.')}
+                        </p>
+                        <div className="ai-tags">
+                          {ai.tags.map((tag) => (
+                            <span className="badge" key={tag}>
+                              {aiTagLabel(tag)}
+                            </span>
+                          ))}
+                        </div>
+                        <footer>
+                          <span>
+                            <RichMessage source={'♥ {slot0} likes'} slots={{ slot0: ai.likes }} />
+                          </span>
+                          <span>
+                            <RichMessage
+                              source={'↓ {slot0} downloads'}
+                              slots={{ slot0: ai.downloads }}
+                            />
+                          </span>
+                          {ai.favourited && <span aria-label={t('Favourited')}>{t('★')}</span>}
+                        </footer>
+                      </LibraryCard>
+                    ))}
+                  </LibraryGrid>
+                  {data.cursor && (
+                    <button
+                      onClick={() =>
+                        pages < 20
+                          ? updateBrowse({ pages: pages + 1, cursor: browse.cursor })
+                          : navigate(
+                              aiBrowseUrl(location.path, {
+                                ...browse,
+                                pages: 1,
+                                cursor: data.cursor ?? '',
+                                focus: '',
+                              }),
+                            )
+                      }
+                    >
+                      {pages < 20 ? t('Show more') : t('Next results')}
+                    </button>
+                  )}
+                </>
+              ) : (
+                <LibraryEmpty
+                  art="swarm"
+                  action={
+                    query || tags.length ? (
+                      <button onClick={reset}>{t('Clear filters')}</button>
+                    ) : view === 'favourites' ? (
+                      <Link className="btn" to="/ais">
+                        {t('Browse')}
+                      </Link>
+                    ) : (
+                      <Link className="btn primary" to="/ais/new">
+                        {t('Share your AI')}
+                      </Link>
+                    )
+                  }
+                >
+                  {query || tags.length
+                    ? t('No AIs match these filters.')
+                    : view === 'mine'
+                      ? t('Your first AI belongs here.')
+                      : view === 'favourites'
+                        ? t('Favourite an AI to keep it close.')
+                        : t('A new library is taking shape. Share the first AI.')}
+                </LibraryEmpty>
+              )
+            }
+          </LibraryResults>
+        </>
+      )}
+    </div>
+  );
+}
+function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void }) {
+  useLocale();
+  const { account } = useSession(),
+    { navigate, location } = useRouter();
+  const returnUrl = aiReturnUrl(location.search.get('return'));
+  const editButton = useRef<HTMLButtonElement>(null);
+  const reportButton = useRef<HTMLButtonElement>(null);
+  const ai = detail.ai;
+  const [selected, setSelected] = useState(detail.versions[0]?.id ?? ''),
+    [error, setError] = useState<Error>(),
+    [busy, setBusy] = useState(false),
+    [editing, setEditing] = useState(false),
+    [reporting, setReporting] = useState(false),
+    [reason, setReason] = useState('broken'),
+    [reportText, setReportText] = useState('');
+  const [name, setName] = useState(ai.name),
+    [description, setDescription] = useState(ai.description),
+    [tags, setTags] = useState<string[]>(ai.tags),
+    [visibility, setVisibility] = useState(ai.visibility);
+  const v = detail.versions.find((v) => v.id === selected) ?? detail.versions[0];
+  const run = async (fn: () => Promise<unknown>) => {
+    setBusy(true);
+    setError(undefined);
+    try {
+      await fn();
+      reload();
+    } catch (e) {
+      setError(e as Error);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <>
+      <Link to={returnUrl}>
+        <RichMessage
+          source={'← {slot0}'}
+          slots={{
+            slot0: returnUrl.startsWith(t('/ais/favourites'))
+              ? t('Favourites')
+              : returnUrl.startsWith(t('/ais/mine'))
+                ? t('My AIs')
+                : t('AI Library'),
+          }}
+        />
+      </Link>
+      <header className="page-head">
+        <span className="ai-monogram" aria-hidden="true">
+          {ai.name.slice(0, 2).toUpperCase()}
+        </span>
+        <div className="grow">
+          <h1>{ai.name}</h1>
+          <p className="sub">
+            <RichMessage
+              source={'by {slot0} · updated {slot1}'}
+              slots={{ slot0: ai.owner.displayName, slot1: date(ai.updatedAt) }}
+            />
+          </p>
+        </div>
+        {detail.viewer.owner && (
+          <Link className="btn primary" to={'/ais/' + ai.id + '/new'}>
+            {t('Publish a version')}
+          </Link>
+        )}
+      </header>
+      {ai.hidden && (
+        <div className="notice warn">
+          <RichMessage
+            source={'Hidden by a moderator: {slot0}'}
+            slots={{ slot0: ai.hiddenReason }}
+          />
+        </div>
+      )}
+      <div className="ai-detail-grid">
+        <section className="card">
+          <div className="ai-tags">
+            {ai.tags.map((tag) => (
+              <span className="badge" key={tag}>
+                {aiTagLabel(tag)}
+              </span>
+            ))}
+          </div>
+          <p className="ai-description">{ai.description}</p>
+          <div className="tiles">
+            <div className="tile">
+              <span className="caption">{t('Likes')}</span>
+              <div className="v">{ai.likes}</div>
+            </div>
+            <div className="tile">
+              <span className="caption">{t('All downloads')}</span>
+              <div className="v">{ai.downloads}</div>
+            </div>
+          </div>
+          <div className="toolbar">
+            {account?.kind === 'registered' ? (
+              <>
+                <button
+                  disabled={busy}
+                  aria-pressed={ai.liked}
+                  onClick={() => void run(() => aiApi.social(ai.id, 'like', !ai.liked))}
+                >
+                  {ai.liked ? t('♥ Liked') : t('♡ Like')}
+                </button>
+                <button
+                  disabled={busy}
+                  aria-pressed={ai.favourited}
+                  onClick={() => void run(() => aiApi.social(ai.id, 'favourite', !ai.favourited))}
+                >
+                  {ai.favourited ? t('★ Favourited') : t('☆ Favourite')}
+                </button>
+              </>
+            ) : (
+              <a className="btn" href="/signin">
+                {t('Sign in to like or favourite')}
+              </a>
+            )}
+            {account && (
+              <button
+                ref={reportButton}
+                aria-expanded={reporting}
+                aria-controls="ai-report"
+                onClick={() => setReporting(!reporting)}
+              >
+                {t('Report')}
+              </button>
+            )}
+            {detail.viewer.owner && (
+              <button
+                ref={editButton}
+                aria-expanded={editing}
+                aria-controls="ai-edit"
+                onClick={() => setEditing(!editing)}
+              >
+                {t('Edit details')}
+              </button>
+            )}
+            {detail.viewer.moderator && (
+              <button
+                disabled={busy}
+                onClick={() => {
+                  const reason = ai.hidden ? '' : window.prompt(t('Reason for hiding this AI'));
+                  if (reason !== null) void run(() => aiApi.hide(ai.id, !ai.hidden, reason));
+                }}
+              >
+                {ai.hidden ? t('Unhide') : t('Hide')}
+              </button>
+            )}
+          </div>
+          {reporting && (
+            <form
+              id="ai-report"
+              aria-label={t('Report AI')}
+              onSubmit={(e) => {
+                e.preventDefault();
+                void run(async () => {
+                  await aiApi.report(ai.id, reason, reportText);
+                  setReporting(false);
+                  reportButton.current?.focus();
+                });
+              }}
+            >
+              <label className="field">
+                {t('Reason')}
+                <select autoFocus value={reason} onChange={(e) => setReason(e.target.value)}>
+                  {[
+                    ['broken', t('Broken')],
+                    ['offensive', t('Offensive')],
+                    ['copyright', t('Copyright')],
+                    ['other', t('Other')],
+                  ].map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="field">
+                {t('Details')}
+                <textarea
+                  maxLength={2000}
+                  value={reportText}
+                  onChange={(e) => setReportText(e.target.value)}
+                />
+              </label>
+              <div className="toolbar">
+                <button disabled={busy}>{t('Send report')}</button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => {
+                    setReporting(false);
+                    reportButton.current?.focus();
+                  }}
+                >
+                  {t('Cancel report')}
+                </button>
+              </div>
+            </form>
+          )}
+          {editing && (
+            <form
+              id="ai-edit"
+              aria-label={t('Edit AI details')}
+              onSubmit={(e) => {
+                e.preventDefault();
+                void run(async () => {
+                  await aiApi.update(ai.id, {
+                    name,
+                    description,
+                    tags: tags as PublishAiRequest['tags'],
+                    visibility,
+                  });
+                  setEditing(false);
+                  editButton.current?.focus();
+                });
+              }}
+            >
+              <label className="field">
+                {t('Name')}
+                <input
+                  autoFocus
+                  required
+                  maxLength={128}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </label>
+              <label className="field">
+                {t('Description')}
+                <textarea
+                  maxLength={4000}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </label>
+              <Tags value={tags} onChange={setTags} />
+              <label className="field">
+                {t('Visibility')}
+                <select
+                  value={visibility}
+                  onChange={(e) => setVisibility(e.target.value as typeof visibility)}
+                >
+                  {['public', 'unlisted', 'private'].map((x) => (
+                    <option key={x} value={x}>
+                      {statusLabel(x)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="toolbar">
+                <button className="primary" disabled={busy}>
+                  {t('Save details')}
+                </button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => {
+                    setEditing(false);
+                    setName(ai.name);
+                    setDescription(ai.description);
+                    setTags(ai.tags);
+                    setVisibility(ai.visibility);
+                    editButton.current?.focus();
+                  }}
+                >
+                  {t('Cancel editing')}
+                </button>
+                <button
+                  type="button"
+                  className="danger"
+                  disabled={busy}
+                  onClick={() => {
+                    if (window.confirm(t('Delete this AI and its published versions?')))
+                      void run(async () => {
+                        await aiApi.remove(ai.id);
+                        navigate('/ais/mine');
+                      });
+                  }}
+                >
+                  {t('Delete AI')}
+                </button>
+              </div>
+            </form>
+          )}
+        </section>
+        {v && (
+          <section className="card">
+            <label className="field">
+              {t('Version')}
+              <select value={v.id} onChange={(e) => setSelected(e.target.value)}>
+                {detail.versions.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    <RichMessage
+                      source={'{slot0} · {slot1}'}
+                      slots={{ slot0: v.label, slot1: date(v.createdAt) }}
+                    />
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p>{v.notes || t('No release notes.')}</p>
+            <p className="caption">
+              <RichMessage
+                source={'Profile {slot0} · {slot1} downloads of this version'}
+                slots={{ slot0: v.profile, slot1: v.downloads }}
+              />
+            </p>
+            <a className="btn primary" href={v.downloadUrl} download>
+              {t('Download JavaScript (.js)')}
+            </a>
+            <p className="caption">{t('Import in Settings → Custom AIs to use in local games.')}</p>
+            {detail.viewer.owner && (
+              <Link className="btn" to={'/ai-studio?version=' + v.id}>
+                {t('Edit in AI Studio')}
+              </Link>
+            )}
+            {v.validations.map((report) => (
+              <details key={report.simVersion + '-' + report.suite} className="ai-validation">
+                <summary>
+                  {passedAiReport(report)
+                    ? t('✓ Passed compatibility checks')
+                    : t('× Compatibility checks failed')}
+                </summary>
+                <p className="caption ai-hash">
+                  <RichMessage
+                    source={'Engine {slot0} · suite {slot1}'}
+                    slots={{ slot0: report.simVersion, slot1: report.suite }}
+                  />
+                </p>
+                <AiChecklist report={report} />
+              </details>
+            ))}
+            <details className="ai-validation">
+              <summary>{t('Source identity')}</summary>
+              <code className="ai-hash">{v.hash}</code>
+            </details>
+          </section>
+        )}
+      </div>
+      {error && <ErrorNotice error={error} />}
+      <Learn />
+    </>
+  );
+}
+export function AiPage({ id }: { id: string }) {
+  useLocale();
+  const load = useLoad((signal) => aiApi.detail(id, signal), [id]);
+  return (
+    <>
+      <Loaded load={load} page="AI">
+        {(detail) => <AiDetails key={id} detail={detail} reload={load.reload} />}
+      </Loaded>
+      {load.status === 'error' && <button onClick={load.reload}>{t('Try again')}</button>}
+    </>
+  );
+}
+
+export function AiPublish({ id }: { id?: string }) {
+  useLocale();
+  const { account } = useSession(),
+    { navigate } = useRouter();
+  const [name, setName] = useState(''),
+    [description, setDescription] = useState(''),
+    [version, setVersion] = useState(''),
+    [notes, setNotes] = useState(''),
+    [tags, setTags] = useState<string[]>([]),
+    [visibility, setVisibility] = useState<PublishAiRequest['visibility']>('public');
+  const [upload, setUpload] = useState<AiUpload>(),
+    [error, setError] = useState<Error>(),
+    [busy, setBusy] = useState(false),
+    [checking, setChecking] = useState(false),
+    [file, setFile] = useState<File>(),
+    [fileFailure, setFileFailure] = useState('');
+  const generation = useRef(0),
+    controller = useRef<AbortController | undefined>(undefined);
+  useEffect(
+    () => () => {
+      generation.current++;
+      controller.current?.abort();
+    },
+    [],
+  );
+  useEffect(() => {
+    if (!id) return;
+    const c = new AbortController();
+    void aiApi.detail(id, c.signal).then(
+      (d) => {
+        setName(d.ai.name);
+        setDescription(d.ai.description);
+        setTags(d.ai.tags);
+        setVisibility(d.ai.visibility);
+      },
+      (e) => {
+        if (!c.signal.aborted) setError(e as Error);
+      },
+    );
+    return () => c.abort();
+  }, [id]);
+  const check = async (selected: File) => {
+    controller.current?.abort();
+    const c = new AbortController();
+    controller.current = c;
+    const token = ++generation.current;
+    setUpload(undefined);
+    setError(undefined);
+    setChecking(true);
+    setFile(selected);
+    setFileFailure('');
+    let submitted = false;
+    try {
+      if (!selected.name.toLowerCase().endsWith('.js'))
+        throw Error(t('Choose one bundled .js file.'));
+      if (!selected.size) throw Error(t('Choose a nonempty JavaScript file.'));
+      if (selected.size > 128 * 1024) throw Error(t('The file must be no larger than 128 KiB.'));
+      submitted = true;
+      let u = await aiApi.upload(selected, c.signal);
+      while (token === generation.current) {
+        setUpload(u);
+        if (u.status !== 'pending') break;
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        if (c.signal.aborted) return;
+        u = await aiApi.check(u.id, c.signal);
+      }
+      if (token === generation.current && u.report.metadata) {
+        const m = u.report.metadata;
+        setName((n) => n || m.name || selected.name.replace(/\.js$/i, ''));
+        setDescription((d) => d || m.description);
+        setVersion((v) => v || m.version || '1.0.0');
+      }
+    } catch (e) {
+      if (!c.signal.aborted) {
+        setError(e as Error);
+        if (!submitted || (e instanceof ApiError && [400, 413].includes(e.status)))
+          setFileFailure((e as Error).message);
+      }
+    } finally {
+      if (token === generation.current) setChecking(false);
+    }
+  };
+  const publish = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!upload || upload.status !== 'valid') return;
+    setBusy(true);
+    setError(undefined);
+    try {
+      const ai = await aiApi.publish(
+        {
+          uploadId: upload.id,
+          name,
+          description,
+          version,
+          notes,
+          tags: tags as PublishAiRequest['tags'],
+          visibility,
+        },
+        id,
+      );
+      navigate('/ais/' + ai.id);
+    } catch (e) {
+      setError(e as Error);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const pending = pendingAiReport('0'.repeat(64), '');
+  const report: AiValidationReport = upload?.report ?? {
+    ...pending,
+    checks: pending.checks.map((c) =>
+      fileFailure
+        ? {
+            ...c,
+            status: c.id === 'file' ? 'failed' : 'skipped',
+            ...(c.id === 'file' ? { message: fileFailure } : {}),
+          }
+        : c,
+    ),
+  };
+  const runningCheck = report.checks.find((check) => check.status === 'running');
+  const passedChecks = report.checks.filter((check) => check.status === 'passed').length;
+  return (
+    <>
+      <header className="page-head">
+        <div>
+          <h1>{id ? t('Publish a new version') : t('Share your AI')}</h1>
+          <p className="sub">
+            {t(
+              'Give your colony controller a home. Every release keeps its own source and download history.',
+            )}
+          </p>
+        </div>
+      </header>
+      {!account ? (
+        <div className="notice">
+          <RichMessage
+            source={'{slot0} to share an AI.'}
+            slots={{ slot0: <a href="/signin">{t('Sign in')}</a> }}
+          />
+        </div>
+      ) : (
+        <form className="ai-publish-grid" onSubmit={(e) => void publish(e)}>
+          <section className="card">
+            <label className="ai-drop field">
+              {t('Bundled JavaScript file')}
+              <input
+                type="file"
+                accept=".js"
+                disabled={busy}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) void check(f);
+                }}
+              />
+              <span className="caption">
+                {t('One .js file · up to 128 KiB · profiles 1 and 2')}
+              </span>
+            </label>
+            {!id && (
+              <>
+                <label className="field">
+                  {t('Name')}
+                  <input
+                    required
+                    maxLength={128}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </label>
+                <label className="field">
+                  {t('Description')}
+                  <textarea
+                    maxLength={4000}
+                    rows={5}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </label>
+                <p className="caption">
+                  {t(
+                    'Choose up to five tags. These describe your strategy, not a tested strength rating.',
+                  )}
+                </p>
+                <Tags value={tags} onChange={setTags} />
+                <label className="field">
+                  {t('Visibility')}
+                  <select
+                    value={visibility}
+                    onChange={(e) => setVisibility(e.target.value as typeof visibility)}
+                  >
+                    <option value="public">{t('Public — listed for everyone')}</option>
+                    <option value="unlisted">{t('Unlisted — accessible by link')}</option>
+                    <option value="private">{t('Private — only you')}</option>
+                  </select>
+                </label>
+              </>
+            )}
+            <label className="field">
+              {t('Version label')}
+              <input
+                required
+                maxLength={64}
+                placeholder={t('1.0.0')}
+                value={version}
+                onChange={(e) => setVersion(e.target.value)}
+              />
+            </label>
+            <label className="field">
+              {t('Release notes')}
+              <textarea maxLength={2000} value={notes} onChange={(e) => setNotes(e.target.value)} />
+            </label>
+            <button
+              className="primary"
+              disabled={busy || checking || upload?.status !== 'valid' || !passedAiReport(report)}
+            >
+              {busy ? t('Publishing…') : t('Publish')}
+            </button>
+            <p className="caption">
+              {t('Publishing preserves these exact source bytes. Changes require a new version.')}
+            </p>
+          </section>
+          <aside className="card ai-validation-panel">
+            <h2>{t('Compatibility checklist')}</h2>
+            <p role="status">
+              {checking
+                ? t('Checking your AI… {value0} of {value1} checks passed.{value2}', {
+                    value0: passedChecks,
+                    value1: report.checks.length,
+                    value2: runningCheck
+                      ? ' Running: ' + AI_CHECK_LABELS[runningCheck.id] + '.'
+                      : '',
+                  })
+                : upload?.status === 'valid'
+                  ? t('Ready to publish')
+                  : upload?.status === 'invalid'
+                    ? t('Fix the failed checks and choose your updated file.')
+                    : upload?.status === 'error'
+                      ? t('Validation was interrupted. Your AI has not been published.')
+                      : fileFailure
+                        ? t('Choose an updated file to try again.')
+                        : t('Choose a file to begin.')}
+            </p>
+            <AiChecklist report={report} />
+            {upload?.error && <p className="notice error">{upload.error}</p>}
+            {file && !checking && (
+              <button type="button" onClick={() => void check(file)}>
+                {t('Check again')}
+              </button>
+            )}
+            <p className="caption">
+              {t(
+                'Short seeded games check runtime behaviour, repeatability, and save/resume. Passing does not certify safety or playing strength.',
+              )}
+            </p>
+            {error && <ErrorNotice error={error} />}
+          </aside>
+        </form>
+      )}
+      <Learn />
+    </>
+  );
+}

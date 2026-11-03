@@ -44,7 +44,7 @@ its default.
 
 `instance.yaml` holds the settings players see: name, guests, sign-in providers,
 local accounts, rate limits, the access policy and quick-match queues. Its format
-is documented in [`platform/instance.example.yaml`](../../platform/instance.example.yaml)
+is documented in [`services/online/instance.example.yaml`](../../services/online/instance.example.yaml)
 and [ratings and matchmaking](../multiplayer/ratings-and-matchmaking.md). Restart
 `platform-api` and `platform-worker` after editing it:
 `docker compose up -d --force-recreate platform-api platform-worker`.

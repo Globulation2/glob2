@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -58,9 +59,9 @@ void LANFindScreen::connect()
 {
 	try {
         const auto endpoint = NetEndpoint::parse(serverName);
-        if (endpoint.route != "/yog") throw std::invalid_argument(tr("[lan lobby endpoint required]"));
+        if (endpoint.route != "/yog") throw Glob2UI::PresentedError(tr("[lan lobby endpoint required]"));
     } catch (const std::exception& error) {
-        screens.push(std::make_unique<MessageScreen>(error.what(), std::vector<std::string>{tr("[ok]")}));
+        screens.push(std::make_unique<MessageScreen>(Glob2UI::exceptionText(error), std::vector<std::string>{tr("[ok]")}));
         return;
     }
 	Lan::LanClient::Options options;

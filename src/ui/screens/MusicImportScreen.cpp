@@ -34,7 +34,7 @@ void MusicImportScreen::install()
 	}
 	catch (const std::exception &error)
 	{
-		notice = error.what();
+		notice = musicError(error.what());
 	}
 	invalidate();
 }
@@ -51,7 +51,7 @@ void MusicImportScreen::onTimer(Uint32)
 				persistence = AH::persistStorage();
 			}
 			else
-				notice = job->error();
+				notice = musicError(job->error());
 			job.reset();
 			invalidate();
 		}

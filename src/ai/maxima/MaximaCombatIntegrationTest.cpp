@@ -235,14 +235,14 @@ static void economicRecoveryPreservesMilitaryBudget()
     a.opponents[1].score=10;
     a.opponents[1].estimated_warriors=10;
     a.strategy.emergencies.colony_enabled=false;
-    glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.allocate_resources();});
+    glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.allocate_resources(a.context);});
     const int reserve=a.budget.defense_reserve;
     const int attack=a.budget.attack_units;
     REQUIRE((a.budget.attack_flags==1 && attack>0));
     a.snapshot.unserved_food=50;
     a.snapshot.critical_food=50;
     a.posture=Maxima::PostureRecover;
-    glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.allocate_resources();});
+    glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.allocate_resources(a.context);});
     REQUIRE(a.severe_food_emergency());
     REQUIRE((a.budget.attack_flags==1 && a.budget.attack_units==attack));
     REQUIRE(a.budget.defense_reserve==reserve);
@@ -1236,7 +1236,7 @@ static void offensiveControlSwitches()
         a.target=1;
         auto enemy=f.game.addUnit(35,35,1,WARRIOR,0,0,0,0);
         REQUIRE(enemy);
-        glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.allocate_resources();});
+        glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.allocate_resources(a.context);});
         a.finalize_director_plan(c);
         REQUIRE(a.budget.explorer_campaign_active==(enabled && eligible));
         c.buildingOrders.clear(); c.managementOrders.clear();
@@ -1251,7 +1251,7 @@ static void offensiveControlSwitches()
         a.tactical_mission.flagId=f.id(flag);
         a.strategy.tactics.enabled=false;
         a.strategy.explorer_campaign.enabled=false;
-        glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.allocate_resources();});
+        glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.allocate_resources(a.context);});
         a.finalize_director_plan(c);
         a.control_offense(c);
         REQUIRE(a.attack_flags.empty());

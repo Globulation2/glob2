@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct BraidedDeltaOptions
 {
-	int braids, rejoins, islandSize, crossingSpacing;
+	int flood, distributaries, islands, crossings, dunes;
 	int wheat, wood, stone, algae, fruit;
 	explicit BraidedDeltaOptions(const GenerationRequest &);
 };

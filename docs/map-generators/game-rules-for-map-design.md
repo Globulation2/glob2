@@ -183,6 +183,11 @@ outside this format.
 
 ## The rules of resources
 
+Loam, moss and spring meadow support land crops directly and each contribute
+128 Q8 fertility (half of water’s 256). Their contributions also feed shore
+ecology, but they supply no shoreline support. Built-in terrain uses these values
+when existing maps and saves load; embedded custom terrain keeps its authored values.
+
 | Resource | Used for | Where it can be | How it grows |
 | --- | --- | --- | --- |
 | Wheat (corn) | Swarms turn it into units; inns store it to feed units | Grass | Grows and spreads, one visit in three, only where a random probe finds water and the opposite probe finds no sand |

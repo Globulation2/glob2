@@ -32,7 +32,7 @@ explicitly. Run shared-store pruning and migration in shared mode; those command
 reject isolated mode to preserve the shared store's locking boundary.
 No setup command accepts new Android SDK licenses automatically;
 run `python3 tools/dev_environment.py sdkmanager -- --licenses` yourself before installing SDK
-platform/build packages with `mobile/setup_tools.py --sdk-packages`.
+platform/build packages with `platforms/mobile/setup_tools.py --sdk-packages`.
 
 ```sh
 python3 tools/dev_environment.py paths --report-file

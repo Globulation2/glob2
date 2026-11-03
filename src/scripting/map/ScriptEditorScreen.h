@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -73,6 +74,7 @@ class ScriptEditorScreen : public Glob2UI::InGameDialog
 	const char *scriptExtension() const;
 	Language selectedLanguage;
 	std::array<std::string, 3> scriptDrafts;
+	Glob2UI::DiagnosticText compilationDiagnostic;
 	std::string script, compilation;
 	bool compiled = false;
 	std::string primary[8], secondary[8], hints[8], briefing;

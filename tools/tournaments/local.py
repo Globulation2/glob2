@@ -21,7 +21,8 @@ def supplied_binary(binary, data_root, cache):
     with tempfile.TemporaryDirectory(prefix='glob2-supplied-') as temp:
         source=Path(temp)
         shutil.copy2(binary,source/'glob2')
-        shutil.copytree(data_root/'data',source/'data')
+        # A checkout keeps data/ under content/; installed trees at the root.
+        shutil.copytree((data_root/'content' if (data_root/'content'/'data').is_dir() else data_root)/'data',source/'data')
         manifest=register_bundle(source,cache,'glob2','supplied-local',dirty_identity=file_hash(binary))
     return cache/manifest['id']
 

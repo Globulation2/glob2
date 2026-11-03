@@ -213,7 +213,9 @@ Headless results automatically include the trace and an exact integer
 trapezoidal-area summary. Detailed `GLOB2_WINPROB` log records still require
 `--telemetry team-timeline`; the automatic summary does not. The tournament
 framework uses final probability for its default cap adjudication and reports
-normalized whole-game probability separately from outcomes. See
+the adjusted trajectory score (`c=2` log time plus outcome credit) separately
+from ratings. Probability-stop credits are labelled predicted; the raw model
+trace and linear area remain unchanged. See
 [whole-game scores](../../tools/tournaments.md#whole-game-probability-scores).
 The original calibration labels and measurements above used the historical
 economic adjudication, not this new default; these changes do not refit the model.

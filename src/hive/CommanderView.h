@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "HiveWorker.h"
+#include "HiveReport.h"
 #include <nlohmann/json.hpp>
 #include <map>
 #include <vector>
@@ -16,6 +17,10 @@ class CommanderView
 	virtual bool available() const = 0;
 	virtual bool local() const { return false; }
 	virtual Json standingOrders() const = 0;
+	virtual Report reportPresentation(std::size_t index) const
+	{
+		return Report(index < reports.size() ? reports[index] : std::string{});
+	}
 	virtual void stop() = 0;
 	virtual void change(const std::string &id, const std::string &action) = 0;
 };

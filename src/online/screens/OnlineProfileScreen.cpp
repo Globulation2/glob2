@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "EngineTiming.h"
 #include "online/ReplayAppearance.h"
 #include "OnlineProfileScreen.h"
@@ -163,7 +164,7 @@ void OnlineProfileScreen::load(bool more)
 				problem = response.error.code == "not_found" || response.error.code == "http_404"
 							  ? tr("[profile history unavailable]")
 							  : (response.error.message.empty() ? tr("[online connection problem]")
-																: response.error.message);
+																: apiErrorText(response.error));
 				invalidate();
 				return;
 			}

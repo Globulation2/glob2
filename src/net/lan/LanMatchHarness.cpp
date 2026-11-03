@@ -87,7 +87,7 @@ std::uint64_t wallMs()
 
 std::string mapPath()
 {
-	return (glob2test::sourceRoot() / "maps" / "FourSquares1.map.gz").string();
+	return (glob2test::contentRoot() / "maps" / "FourSquares1.map.gz").string();
 }
 
 std::uint16_t testPort()

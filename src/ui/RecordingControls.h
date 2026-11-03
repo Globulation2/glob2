@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "FrontendUI.h"
@@ -27,7 +28,10 @@ inline Element recordingControls(bool always = false)
 		[] { GAGCore::Recording::toggle(); }, options)};
 	parts.push_back(button("recording/files",tr("[recordings]"),[] { GAGCore::Recording::requestFiles(); }));
 	if (!status.error.empty())
-		parts.push_back(paragraph(status.error, {FontRole::Support, true}));
+	{
+		static DiagnosticText recordingError;
+		parts.push_back(paragraph(recordingError(status.error), {FontRole::Support, true}));
+	}
 	return column(std::move(parts));
 }
 } // namespace Glob2UI

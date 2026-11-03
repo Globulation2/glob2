@@ -468,6 +468,7 @@ class MapEdit
     friend class PhoneEditor;
     friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
+    friend struct TranslationPreviewAccess;
 	std::unique_ptr<PhoneEditor> phone;
     bool editing = false;
     int editingResult = 0;

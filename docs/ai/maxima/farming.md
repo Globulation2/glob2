@@ -8,7 +8,7 @@
 - [Recurring food demand](#recurring-food-demand)
 - [Policy order](#policy-order)
 - [Permanent wheat protection](#permanent-wheat-protection)
-- [Minimum renewable wood reserve](#minimum-renewable-wood-reserve)
+- [Renewable wood capacity reserve](#renewable-wood-capacity-reserve)
 - [Wood pressure](#wood-pressure)
 - [Fertility firebreak](#fertility-firebreak)
 - [Maintenance clearing areas and emergency flag](#maintenance-clearing-areas-and-emergency-flag)
@@ -20,9 +20,12 @@
 The runtime policy follows a plan/reconcile pipeline rather than incrementally
 editing shared masks:
 
-1. `build_farming_protection_plan` classifies wheat and wood roles and resolves
-   their priority against reservations and firebreaks, including the minimum
-   renewable wood reserve.
+1. `build_wheat_protection_plan` owns the wheat layout and management-radius
+   rules. `build_farming_protection_plan` allocates wood against that wheat plan
+   and composes the final masks. Building reservations retain priority. Placement
+   and clearing use the same read-only reserve query. Each query shares validated
+   terrain inputs across both phases; a cold query rebuilds them locally once
+   without changing area ownership or adding serialized state.
 2. `resolve_wheat_invasion_clearing` gives wood beside the final protected wheat
    mask the same hard clearing priority used by maintenance. It uses this pass's
    wheat mask, so new and revoked obligations do not depend on stale maintenance.
@@ -85,7 +88,9 @@ F * current_amount/8 * empty_compatible_neighbors/8
 
 Wheat capacity is divided by three to match its growth-rate gate. A direction is
 not compatible when it contains a resource (including the same type), building,
-ground or air unit, non-grass terrain, or a disabled-growth cell.
+ground or air unit, non-grass terrain, or a disabled-growth cell. This is the
+stock-dependent `expected_capacity` diagnostic; the wood allocation below uses
+stable mature-donor capacity instead.
 
 ## Recurring food demand
 
@@ -104,36 +109,37 @@ Every discovered resource tile, plus empty fertile grass immediately adjacent
 to wheat or wood, is evaluated in this order:
 
 1. Exact planner footprints, access rings and arteries remain open.
-2. The growing edge of a wheat or wood farm, and compatible empty grass
+2. The growing edge of a wheat farm, and compatible empty grass
    continuing that edge, are protected on the expansion lattice only. Wheat
    uses the 3276/65536 fertility threshold (approximately 5%) inland. Wheat
    beside a connected beach bypasses that cutoff, including empty growing
    cells immediately adjacent to live wheat, so a farm can still follow the
    most fertile coastal growth path. The exemption persists after growth so a
    low-fertility corner cannot expose the crop it just reserved. Unrelated
-   empty coast remains open. Wood retains its adaptive threshold.
+   empty coast remains open. Wood is allocated separately by renewable capacity.
    Coastal backing follows eight-connected sand from actual water, including
    blended beach tiles and map wrapping; isolated inland sand does not count.
    In a filled-in wheat interior, the odd/odd cell in each 2x2 block is
-   selected for permanent protection. Wood retains permanent interior seeds.
+   selected for permanent protection.
    At the creeping edge, protection expands to the two aligned
    matching-parity classes (even/even and odd/odd, one-in-two), leaving
    the cross-parity half as worker lanes. Every odd/odd interior seed is therefore
    also a boundary layout cell. Wheat uses a radius-one closing of the live
    crop footprint (dilation followed by erosion, with wrapping) to fill small
    harvest holes before identifying the outer boundary. Those holes do not
-   turn the whole interior into a checkerboard. Wood's edge test is unchanged.
-3. Wood inside the configured fertility firebreak is open, even when it would
-   otherwise be part of the wood farm pattern.
-4. Wheat and wood not selected by the shared farm pattern remain harvestable.
+   turn the whole interior into a checkerboard. Wood uses viable seed/outlet
+   pairs instead of this pattern.
+3. Wood seed/outlet pairs are selected to meet the renewable capacity target.
+   This quota replaces ordinary wood frontier, interior and fallback protection.
+4. Remaining wood stays harvestable; the configured fertility firebreak can
+   clear it. Wheat outside its selected pattern also remains harvestable.
 5. Other resources remain harvestable.
 
 Wood next to protected wheat yields its protection to the wheat-invasion
-clearing contract when that sub-policy is on, except inside the minimum wood
-reserve. This final precedence also
-applies to temporary fallback wood anchors.
+clearing contract when that sub-policy is on, except inside the wood capacity
+reserve.
 
-The moving wheat and wood perimeters are forbidden before the resource spreads
+The moving wheat perimeters are forbidden before the resource spreads
 into them. This closes the resource-growth/AI-update race in which a worker
 could harvest a brand-new edge tile before Maxima noticed it. The frontier
 advances only after the matching resource actually grows; old edge cells become
@@ -152,7 +158,8 @@ rebuilt on map load alongside fertility.
 
 An isolated off-lattice wheat patch retains one temporary local anchor until it
 spreads onto the sparse lattice. A patch with no protected live resource also
-selects one eligible fallback anchor. Wheat and wood anchors remain protected.
+selects one eligible fallback anchor. Wheat anchors remain protected; wood
+uses the capacity reserve below.
 Odd/odd boundary cells retain the normal
 aligned pattern as they become interior seeds. Empty protected frontier cells
 do not count as live anchors. The fallback disappears once the normal pattern
@@ -177,13 +184,31 @@ Save format 118 no longer writes the experimental rolling-maturity cache.
 Version 117 saves remain readable; their obsolete cache is consumed and
 discarded. Earlier save formats retain their existing loading behavior.
 
-## Minimum renewable wood reserve
+## Renewable wood capacity reserve
 
-While farm protection is enabled, Maxima retains up to two live wood seeds across
-its managed area, with one distinct neighboring harvest outlet per seed. This is
-a small standing minimum, not a quota for every forest patch or building. A seed
-needs positive exact fertility; the ordinary wood-farm fertility cutoff does not
-apply. Sterile wood alone cannot establish a renewable reserve.
+While farm protection is enabled, Maxima targets wood at **10% of combined
+reserved renewable wheat and wood capacity**: wood capacity is one ninth of
+reserved wheat capacity. This is a production-potential ratio, not a tile-count
+ratio or a share of unused map area. Ordinary wood patterns no longer add
+protection outside this quota.
+
+Capacity uses mature-donor offspring yield, including the resource's ecology,
+spread rate and material yield. Stock quantities and passing units do not change
+it. Wheat contributes through harvestable, compatible neighboring outlets of
+protected live wheat. Shared wheat outlets count once, using the strongest
+neighboring donor. Each reserved wood seed guarantees one distinct harvest
+outlet; its capacity uses the same units. Live protected wheat donors are never
+used as wood outlets. Assigning another outlet to wood removes any wheat capacity
+previously counted there. Telemetry retains the common
+eight-direction denominator on both sides of the ratio.
+
+Selection stops when the wood target is reached or no viable pairs remain.
+Whole pairs round the target up; small farms can therefore exceed 10%. Mixed
+resources can also produce wood as a coproduct of protected wheat. With
+zero wheat capacity, Maxima retains one viable bootstrap pair. Sterile wood,
+infinite stocks and local-only producers do not justify protected wood seeds.
+The adaptive ordinary wood-farm fertility cutoff no longer governs protection;
+a propagating donor only needs positive renewable capacity.
 
 Selection prefers the aligned expansion lattice, then greater fertility, then
 map index. Scores do not depend on fluctuating resource amounts. A replacement
@@ -206,7 +231,7 @@ building/access contracts retain priority. New building parcels and circulation
 routes avoid both seeds and outlets, so future construction uses another location.
 Losing a seed, growth eligibility, or usable access causes selection to be rebuilt.
 
-This deliberately trades a few cells of wheat or building capacity for continued
+This trades wheat expansion or building capacity for continued
 wood regeneration. It preserves a source and harvesting space, not a guaranteed
 wood delivery rate: fertility, competing growth and available workers still matter.
 
@@ -224,11 +249,13 @@ wood_clear_pressure = clamp(0,100,
 minimum_wood_fertility = 15% + round(10% * wood_clear_pressure / 100)
 ```
 
-The resulting wood cutoff ranges from 15% through 25%, with a neutral pressure
-of 50 producing a 20% cutoff. The terms and divisors are tunable, while the
-formulas remain monotone with wood
-surplus, construction failures, and loss of space. Remote forests are not
-actively cleared merely because they fall below the protection threshold.
+The historical cutoff ranges from 15% through 25%, with neutral pressure
+producing 20%. The two fertility parameters remain accepted for strategy/save
+compatibility and diagnostics; the schema groups them under `compatibility`,
+with low impact, rather than advertising active wood-protection controls.
+Wood protection now follows the capacity quota. Wood pressure still controls
+discretionary clearing. Remote forests are not actively cleared merely because
+they fall outside the reserve.
 Buildings do not suppress nearby farm protection; only exact planner footprints,
 access rings, arteries, and maintained strategic openings override it.
 
@@ -241,9 +268,8 @@ clearing labor cuts and maintains the contour. Empty cells, wheat cells and
 permanent resources are excluded; newly grown wood joins on the next policy pass.
 
 Wheat and its pre-growth frontier have priority over this ordinary firebreak.
-Wood uses the same farming policy everywhere else, but the wood-only inner
-firebreak deliberately overrides ordinary wood protection inside its fertility
-band. The minimum wood reserve is exempt.
+Wood outside the capacity reserve remains harvestable. The capacity reserve
+is exempt from the wood-only firebreak.
 Hard building and path reservations still have higher priority.
 
 ## Maintenance clearing areas and emergency flag
@@ -292,11 +318,13 @@ clearing, defense, farming and placement share one deterministic map-scale job
 slot per AI update. A due strategy review takes priority and publishes its budget
 before the smaller executors run; other due jobs stay pending for later updates. Derived masks are reused and only real
 forbidden-area deltas produce orders. The `farming_policy` record reports
-`microseconds`, `wood_reserve_seeds`, `protected_seeds`, `protected_frontier`, `protected_wheat_edges`,
+`microseconds`, `wood_reserve_seeds`, `wood_reserve_capacity`,
+`wood_reserve_target`, `wheat_renewable_capacity`, `protected_seeds`, `protected_frontier`, `protected_wheat_edges`,
 `protected_wheat_bootstraps`, `protected_wood_edges`, `protected_wood_bootstraps`,
 `protected_interior_seeds`, `expected_capacity`, `blocked_directions`,
-`wood_pressure`, `wood_fertility`, `added` and `removed`. Layout-role counts
-describe the final classification; area-order deltas describe changes to
+`wood_pressure`, `wood_fertility`, `added` and `removed`. Wheat layout-role counts
+describe classification before the wood allocation; legacy wood edge/bootstrap
+counts are zero. Capacity fields describe the wood allocation; area-order deltas describe changes to
 the forbidden mask. Clearing emits
 `land_clearing_started`, `land_clearing_finished` and `maintenance_clearing`
 with its reason.

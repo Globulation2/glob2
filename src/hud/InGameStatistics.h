@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ui/FrontendUI.h"
+#include "EnginePerformancePanel.h"
 #include "stats/MetricCatalog.h"
 #include "render/scene/Scene.h"
 #include <map>
@@ -12,7 +13,7 @@ class GameGUI;
 class InGameStatisticsPanel : public Glob2UI::InGameDialog
 {
 public:
-    enum class Topic { Overview, Colony, Economy, Military, World };
+    enum class Topic { Overview, Colony, Economy, Military, World, Engine };
     explicit InGameStatisticsPanel(GameGUI &gui);
     const char *recordingId() const override { return "in_game_statistics"; }
     Glob2UI::Element build(const Glob2UI::Presentation &p) override;
@@ -43,6 +44,7 @@ protected:
     void paintPanel(GAGGUI::ui::Canvas &, GAGGUI::ui::Rect) override;
 private:
     GameGUI &gui;
+    EnginePerformancePanel enginePerformance;
     Topic selectedTopic = Topic::Overview;
     std::map<Topic, std::string> selectedMetrics{{Topic::Overview, "population"}};
     int inlineHoverX = -1, inlineHoverY = -1;
@@ -85,4 +87,19 @@ private:
     const TeamStats *observedStats = nullptr;
     int observedTeam = -1, hoverX = -1, hoverY = -1;
     void paintChart(GAGGUI::ui::Canvas &canvas, GAGGUI::ui::Rect rect);
+};
+
+// Dedicated expanded route: performance is session-wide, not a team metric.
+class InGamePerformanceHistory : public Glob2UI::InGameDialog {
+public:
+    InGamePerformanceHistory();
+    const char *recordingId() const override { return "in_game_engine_performance"; }
+    Glob2UI::Element build(const Glob2UI::Presentation &) override;
+protected:
+    void onEscape() override { finish(0); }
+    void onUpdate(Uint32) override;
+    double maxWidth() const override { return 1180; }
+private:
+    EnginePerformancePanel panel;
+    std::uint64_t revision=~std::uint64_t(0);
 };

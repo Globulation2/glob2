@@ -22,10 +22,10 @@ SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/scripting/sgsl/', 'src/engine/sim/', 'src/game/orders/')
 PRESENTATION = ('src/hud/', 'src/render/', 'src/unit/render/', 'src/building/hud/')
 # Code inside the directories above that belongs to neither class: every check.
-UNCLASSIFIED = ('src/mcp/', 'libgag/shaders/', 'tools/shaders/', 'data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
+UNCLASSIFIED = ('src/mcp/', 'libs/gag/shaders/', 'tools/shaders/', 'content/data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
                 'src/building/types/', 'src/team/stats/', 'src/map/preview/', 'src/map/tools/',
                 'src/net/lan/screens/')
-UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
+UNCLASSIFIED_FILES = {'libs/gag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
                       'src/map/Brush.cpp', 'src/map/BrushCoverage.cpp', 'src/unit/UnitDisplayNames.cpp',
                       'src/net/ConnectionOverlay.cpp', 'src/net/turn/TurnMatchPresenter.cpp',
                       'src/map/editor/screens/EditorMainMenu.cpp'}
@@ -36,31 +36,31 @@ TEST_SOURCE_NAMES = {'RuntimePackCheck.cpp', 'MaximaStrategyDump.cpp', 'source_c
                      'OnlineScreensProbe.cpp', 'RelayTestMain.cpp', 'ResourceGrowthFixtures.cpp'}
 # Build-system and service suites: unknown to the selector, so every check.
 TOOLING_TESTS = ('test/build_system/', 'test/baselines/', 'test/relay_service/', 'test/online_service/')
-TEST_ROOTS = ('src/', 'libgag/', 'libusl/', 'natsort/', 'mobile/')
+TEST_ROOTS = ('src/', 'libs/gag/', 'libs/usl/', 'third_party/natsort/', 'platforms/mobile/')
 SIMULATION_FILES = {'src/game/Game_sync.cpp', 'src/game/Game.cpp', 'src/engine/EngineRun.cpp',
                     'src/engine/Engine.cpp', 'src/replay/ReplayReader.cpp', 'src/replay/ReplayWriter.cpp'}
 THREAD_FILES = {'src/map/ResourceGrowth.cpp', 'src/map/ResourceGrowth.h', 'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
                 'src/hud/draw/GameGUIDraw.cpp', 'src/hud/GameGUIStep.cpp', 'src/hud/GameGUIOrders.cpp',
-                'libgag/src/PerformanceTelemetry.cpp', 'libgag/src/AssetLoader.cpp',
-                'libgag/include/AssetLoader.h', 'libgag/src/SpriteLoad.cpp',
-                'src/audio/SoundMixer.cpp', 'src/audio/MusicBuffer.h', 'browser/Audio.cpp'}
+                'libs/gag/src/PerformanceTelemetry.cpp', 'libs/gag/src/AssetLoader.cpp',
+                'libs/gag/include/AssetLoader.h', 'libs/gag/src/SpriteLoad.cpp',
+                'src/audio/SoundMixer.cpp', 'src/audio/MusicBuffer.h', 'platforms/web/Audio.cpp'}
 # Paths whose changes rebuild and smoke-test the whole self-hosted stack
 # (deploy/compose.yaml). Its images compile the engine, so engine changes that
 # do not otherwise select every check skip it rather than adding a second
 # client build to every PR.
 PLATFORM_STACK_PATHS = (
-    'deploy/', 'test/deployment/', 'src/relay/', 'platform/package-lock.json',
-    'platform/packages/db/migrations/', 'platform/apps/api/src/main.ts',
-    'platform/apps/worker/src/main.ts', 'platform/apps/engine-agent/src/main.ts',
-    'platform/apps/music-worker/', 'platform/apps/ai-music-worker/',
+    'deploy/', 'test/deployment/', 'src/relay/', 'services/online/package-lock.json',
+    'services/online/packages/db/migrations/', 'services/online/apps/api/src/main.ts',
+    'services/online/apps/worker/src/main.ts', 'services/online/apps/engine-agent/src/main.ts',
+    'services/online/apps/music-worker/', 'services/online/apps/ai-music-worker/',
 )
 TRANSPORT_HARNESSES = {'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
                        'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}
-RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp',
-          'libgag/src/SurfaceRaster.cpp', 'libgag/src/RenderDevice.cpp', 'libgag/src/RenderFrame.cpp',
-          'libgag/src/RenderResources.cpp', 'libgag/src/RendererSelection.cpp',
-          'libgag/src/GraphicContextRenderer.cpp', 'libgag/src/ProgrammableGLDevice.cpp',
-          'libgag/src/SDLGPUDevice.cpp', 'libgag/src/WebGPUDevice.cpp'}
+RENDER = {'libs/gag/src/RenderBackend.cpp', 'libs/gag/src/SoftwareRenderBackend.cpp',
+          'libs/gag/src/SurfaceRaster.cpp', 'libs/gag/src/RenderDevice.cpp', 'libs/gag/src/RenderFrame.cpp',
+          'libs/gag/src/RenderResources.cpp', 'libs/gag/src/RendererSelection.cpp',
+          'libs/gag/src/GraphicContextRenderer.cpp', 'libs/gag/src/ProgrammableGLDevice.cpp',
+          'libs/gag/src/SDLGPUDevice.cpp', 'libs/gag/src/WebGPUDevice.cpp'}
 
 
 # The mirror-only deployment of app.glob2.online (deploy-online.yml runs
@@ -71,9 +71,9 @@ MIRROR_DEPLOY_FILES = {'.github/workflows/deploy-online.yml', 'deploy/online-dep
 
 
 def music_set_path(path):
-    """A file inside one soundtrack set directory, data/zik/<set>/...: game data that
-    the native and browser packaging checks cover (data/zik/SConscript stays shared)."""
-    return path.startswith('data/zik/') and path.count('/') >= 3
+    """A file inside one soundtrack set directory, content/data/zik/<set>/...: game data that
+    the native and browser packaging checks cover (content/data/zik/SConscript stays shared)."""
+    return path.startswith('content/data/zik/') and path.count('/') >= 4
 
 
 def is_test_source(path):
@@ -87,13 +87,13 @@ def unclassified(path):
 
 
 def cheap_path(path):
-    return (path.startswith(('docs/', 'test/build_system/test_ci', 'fdroid/', 'fastlane/'))
+    return (path.startswith(('docs/', 'test/build_system/test_ci', 'platforms/stores/fdroid/', 'fastlane/'))
             or path.endswith('.md') or path in MIRROR_DEPLOY_FILES or path in {
                 'INSTALL', 'AUTHORS', 'tools/README', 'debian/README.Debian', 'debian/README.source',
                 'requirements-dev.txt', 'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
                 'tools/check_docs.py', 'tools/docs/navigation.json', 'tools/docs/requirements.txt', 'test/test_check_docs.py',
                 'tools/package_steam_windows.py', 'test/test_steam_windows_package.py',
-                'mobile/android_release.py', '.github/workflows/steam-windows-package.yml',
+                'platforms/mobile/android_release.py', '.github/workflows/steam-windows-package.yml',
                 '.github/workflows/mac-app-store.yml'})
 
 
@@ -126,10 +126,10 @@ def select(paths, labels=(), known=False):
     for path in paths:
         if cheap_path(path):
             continue
-        if path.startswith('platform/'):
+        if path.startswith('services/online/'):
             # The TypeScript platform has its own job. Generated contract fixtures
             # are also consumed by the C++ contract tests.
-            if path.startswith('platform/packages/protocol/fixtures/'):
+            if path.startswith('services/online/packages/protocol/fixtures/'):
                 add(path, 'native', 'platform')
             else:
                 add(path, 'platform')
@@ -165,7 +165,7 @@ def select(paths, labels=(), known=False):
                 add(path, 'native', 'map_generators', 'compatibility')
             else:
                 add(path, 'native')
-        elif path.startswith(('scons/', 'libusl/', 'data/terrain/', 'data/resources/', 'data/units/')) or path in {'SConstruct', 'vcpkg.json', 'libgag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
+        elif path.startswith(('scons/', 'libs/usl/', 'content/data/terrain/', 'content/data/resources/', 'content/data/units/')) or path in {'SConstruct', 'vcpkg.json', 'libs/gag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
             add(path, *FLAGS)
         elif path.startswith(('test/fixtures/', 'test/maxima/fixtures/', 'test/support/', '.github/')) or path in {
             'test/run_tests.py', 'test/ci_native_shard_plan.py', 'test/ci-native-auxiliary.json',
@@ -175,11 +175,11 @@ def select(paths, labels=(), known=False):
             'test/maxima/check_save_continuation_fixture.py',
             'test/build_provenance.py'} or path.startswith('test/ci-timings/'):
             add(path, *FLAGS)
-        elif path.startswith(('mobile/',)):
+        elif path.startswith(('platforms/mobile/',)):
             add(path, 'native', 'android')
-        elif path.startswith('darwin/'):
+        elif path.startswith('platforms/macos/'):
             add(path, 'native', 'macos')
-        elif path.startswith('windows/'):
+        elif path.startswith('platforms/windows/'):
             add(path, 'native', 'windows')
         elif path.startswith('src/hive/'):
             add(path, *FLAGS)
@@ -187,10 +187,10 @@ def select(paths, labels=(), known=False):
             add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform', 'deployment')
         elif path.startswith(('deploy/', 'test/deployment/')):
             add(path, 'browser', 'deployment')
-        elif path.startswith('browser/'):
-            if path == 'browser/toolchain.json':
+        elif path.startswith('platforms/web/'):
+            if path == 'platforms/web/toolchain.json':
                 add(path, *FLAGS)
-            elif path == 'browser/tests/determinism.spec.js' or path.startswith('browser/tests/fixtures/'):
+            elif path == 'platforms/web/tests/determinism.spec.js' or path.startswith('platforms/web/tests/fixtures/'):
                 add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform')
             else:
                 add(path, 'browser')
@@ -231,7 +231,7 @@ def browser_matrix(selected, paths, complete=False):
     entries = json.loads((ROOT / '.github/scripts/ci_browser_matrix.json').read_text())
     if not selected['browser']:
         return []
-    presentation = any(p.startswith(('browser/',) + PRESENTATION) or p in RENDER or 'Screen' in Path(p).name for p in paths)
+    presentation = any(p.startswith(('platforms/web/',) + PRESENTATION) or p in RENDER or 'Screen' in Path(p).name for p in paths)
     if complete:
         return entries
     if presentation:

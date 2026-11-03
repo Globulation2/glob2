@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "app/ClientFeatures.h"
 // Copyright (C) 2026 glob2 contributors
 // Settings > Online (multiplayer mock-up 8): which server to play on (the official
@@ -91,7 +92,7 @@ void SettingsScreen::unlinkProvider(const std::string &provider, const std::stri
 	online->calls->rest(HttpFetch::Method::Delete, Online::Api::accountIdentity(provider), Json(),
 						[this, name](const Online::PlatformClient::Response &r) {
 							online->notice = r.ok ? std::string(GAGCore::FormattableString(tr("%0 is no longer linked.")).arg(name))
-												 : r.error.message;
+												 : apiErrorText(r.error);
 							invalidate();
 							if (r.ok)
 								online->calls->refreshAccount([this](const Online::PlatformClient::Response &) { invalidate(); });
@@ -267,7 +268,7 @@ void SettingsScreen::buildOnline()
 			}, options);
 			auto save = Glob2UI::button("online.name.save", tr("Save"), [this] {
 				online->calls->rename(online->nameDraft, [this](const Online::PlatformClient::Response &r) {
-					online->notice = r.ok ? tr("Display name saved.") : r.error.message;
+					online->notice = r.ok ? tr("Display name saved.") : apiErrorText(r.error);
 					online->nameEdited = false;
 					invalidate();
 				});

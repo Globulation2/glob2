@@ -2,12 +2,12 @@
 from gimpfu import *
 import os, json, hashlib
 root=os.environ.get('GLOB2_ART_ROOT',os.getcwd())
-out=os.path.join(root,'datasrc/gfx/derived/papyrus-native')
+out=os.path.join(root,'content-src/gfx/derived/papyrus-native')
 if not os.path.isdir(out): os.makedirs(out)
 records=[]
 for stage in range(5):
     name='ressource%d' % (20+stage)
-    relative='datasrc/gfx/originals/terrain/papyrus.xcf'
+    relative='content-src/gfx/originals/terrain/papyrus.xcf'
     path=os.path.join(root,relative)
     image=pdb.gimp_file_load(path,path,run_mode=RUN_NONINTERACTIVE)
     layers=[dict(index=i,name=l.name,visible=l.visible,opacity=l.opacity,mode=int(l.mode),offsets=l.offsets) for i,l in enumerate(image.layers)]

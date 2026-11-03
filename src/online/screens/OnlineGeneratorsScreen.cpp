@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
 #include "OnlineGeneratorsScreen.h"
@@ -76,7 +77,7 @@ void OnlineGeneratorsScreen::fetch(bool more)
 				   try
 				   {
 					   if (!r.ok)
-						   throw std::runtime_error(r.error.message);
+						   throw Glob2UI::PresentedError(apiErrorText(r.error), r.error.message);
 					   for (const auto &v : r.result.at("items"))
 						   catalogue.push_back(v);
 					   cursor = r.result.value("nextCursor", "");
@@ -84,7 +85,7 @@ void OnlineGeneratorsScreen::fetch(bool more)
 				   }
 				   catch (const std::exception &e)
 				   {
-					   status = e.what();
+					   status = Glob2UI::exceptionText(e);
 				   }
 				   invalidate();
 			   });
@@ -105,13 +106,13 @@ void OnlineGeneratorsScreen::select(const std::string &id)
 				   try
 				   {
 					   if (!r.ok)
-						   throw std::runtime_error(r.error.message);
+						   throw Glob2UI::PresentedError(apiErrorText(r.error), r.error.message);
 					   detail = r.result;
 					   selectRelease(0);
 				   }
 				   catch (const std::exception &e)
 				   {
-					   status = e.what();
+					   status = Glob2UI::exceptionText(e);
 					   detail = Json();
 				   }
 				   invalidate();
@@ -166,26 +167,26 @@ void OnlineGeneratorsScreen::install()
 			try
 			{
 				if (!r.ok)
-					throw std::runtime_error(r.error.message);
+					throw Glob2UI::PresentedError(apiErrorText(r.error), r.error.message);
 				if (calls.client().origin() != origin)
-					throw std::runtime_error(Glob2UI::libraryText("Online server changed during download"));
+					throw Glob2UI::PresentedError(Glob2UI::libraryText("Online server changed during download"));
 				if (Online::Sha256::hex(r.body) != fileHash)
-					throw std::runtime_error(Glob2UI::libraryText("Generator file hash mismatch"));
+					throw Glob2UI::PresentedError(Glob2UI::libraryText("Generator file hash mismatch"));
 				const auto package = JS::Package::parse(r.body);
 				if (package->id != packageId || package->hash != packageHash)
-					throw std::runtime_error(Glob2UI::libraryText("Generator package identity mismatch"));
+					throw Glob2UI::PresentedError(Glob2UI::libraryText("Generator package identity mismatch"));
 				before = library.checkpoint();
 				JS::LibraryOrigin source{origin, id, versionId, fileHash, packageHash};
 				library.put(r.body, library.entries().contains(packageId) ? packageId : "",
 							&source);
 				persistence = AH::persistStorage();
 				if (!persistence)
-					throw std::runtime_error(Glob2UI::libraryText("Storage persistence unavailable"));
+					throw Glob2UI::PresentedError(Glob2UI::libraryText("Storage persistence unavailable"));
 				status = Glob2UI::libraryText("Saving generator library…");
 			}
 			catch (const std::exception &e)
 			{
-				failInstallation(e.what());
+				failInstallation(Glob2UI::exceptionText(e));
 			}
 			invalidate();
 		},
@@ -204,7 +205,7 @@ void OnlineGeneratorsScreen::failInstallation(const std::string &message)
 		}
 		catch (const std::exception &error)
 		{
-			status += GAGCore::FormattableString(Glob2UI::libraryText(" Could not restore the previous library: %0")).arg(error.what());
+			status += GAGCore::FormattableString(Glob2UI::libraryText(" Could not restore the previous library: %0")).arg(Glob2UI::exceptionText(error));
 		}
 	}
 	persistence.reset();

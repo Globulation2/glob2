@@ -15,9 +15,9 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SCENARIOS = (
-    (ROOT / "games/gd-large-4ai.game", 1024,
+    (ROOT / "content/games/gd-large-4ai.game", 1024,
      ROOT / "test/fixtures/scoped-gradients/gd-large-4ai-1024.units.checksums.gz"),
-    (ROOT / "games/gd-bigarena-long.game", 2048,
+    (ROOT / "content/games/gd-bigarena-long.game", 2048,
      ROOT / "test/fixtures/scoped-gradients/gd-bigarena-2048.units.checksums.gz"),
     (ROOT / "test/fixtures/ai-random-streams/numbi-castor-v121.game.gz", 2048,
      ROOT / "test/fixtures/scoped-gradients/numbi-castor-2048.units.checksums.gz"),

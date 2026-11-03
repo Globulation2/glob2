@@ -17,6 +17,7 @@
 #include "Settlements.h"
 #include "Sketch.h"
 #include "Tessellation.h"
+#include "TerrainTypeTable.h"
 #include <algorithm>
 #include <cmath>
 #include <numeric>
@@ -24,115 +25,120 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Honeycomb isle: a city of hexagon blocks on an island in a lagoon, cut in two by a wide river
-// that a few bridges cross. Paved streets draw the honeycomb. Pale wheat fields ring the island's
-// edge and line the river; the blocks inside contain overgrown rubble, with a few open squares,
-// crater gardens round flooded bomb craters, and an open orchard at the middle. Every colony's home is two blocks with a cistern garden.
+// Honeycomb isle: a board of terrain hexes on an island in the sea, after the board game. Every
+// hex is one landscape (a wheat field, a forest, a pasture, clay hills, a mountain with its quarry,
+// a lake), roads run along every hex edge, a river cuts the island in two under a few bridges and
+// a desert oasis with an orchard sits at the middle. Every colony's home is two hexes with a
+// cistern garden, and every home borders two food hexes and a forest of its own.
 //
-// HOW IT PLAYS. The city is only as big as the colonies need (blocks per colony), and the lagoon
-// and river cannot be crossed until units swim, so colonies start a block or two apart and nobody
-// expands away from the fight. Food is on the island's edge and along the river; the ruins between
-// the homes are where they meet. Rubble is wood: it blocks walking and building, so it is cover and
-// chokepoint, and it is the city's lumber, so a colony builds its town by clearing its own cover,
-// and cutting through a ruin opens a way into a neighbour's flank. Blocks have no stone liners,
-// so clearing rubble opens the whole block. The bridges are
-// where the two halves of the city meet, and the landmark's orchard is the prize at the middle.
+// HOW IT PLAYS. The island is only as big as the colonies need (blocks per colony), and the sea and
+// river cannot be crossed until units swim, so colonies start a hex or two apart. Each kind of hex
+// is one resource or one use: food in the fields (and the water meadows along the river), wood in
+// the forests, stone at the foot of the mountains (one per colony, between the homes) and on the
+// hills, building room on pastures and hills. A colony grows by taking the hexes round it, and
+// the mountains, lakes and the oasis between the homes are where neighbours meet. Roads are fast
+// and seal every hex: crops, trees and their growth stay inside the hex they were planted in.
 //
-// WHY IT WORKS (docs/map-generators/game-rules-for-map-design.md). Every street is paved, and a
-// line of sand corners seals the ground either side of it, so every block is a sealed plot of its
-// own: its crops and its rubble can grow only inside it, and no pond or field needs a sand ring.
-// The validator proves it on the finished map (containedPlotsMismatch over every block's label).
+// WHY IT WORKS (docs/map-generators/game-rules-for-map-design.md). Each road is cobbled road down
+// its middle with gravel shoulders. Neither carries a deposit, so a hex is a sealed plot of its own,
+// and the gravel inhibits the growth probe as the sand streets of earlier revisions did, which
+// keeps a field's or a forest's growth near the old calibration even though the road itself
+// doesn't. The validator proves the seal on the finished map (containedPlotsMismatch over every
+// hex's label).
 //
-// HOW IT GOT HERE (2026-09-16, built with the maintainer over one session; the lessons are in
-// .agents/skills/glob2-map-design). It began as "Rubble city", an urban-combat map meant to force
-// colonies to build close together and fight in tight quarters: a bombed-out city of square blocks
-// on a scorched sand plain, whose rubble was wood planted only where water could never make it
-// grow, so every tile cleared stayed cleared, with water only in sand-ringed cisterns and craters.
-// Looking at it changed it, step by step: the blocks became hexagons (they read as a city, and "a
-// Settlers of Catan board"); a map with "no water" got the lagoon round the city and the river
-// through it; the blocks along the edge and the river became wheat fields; the sand rings came off
-// every pond once the paved streets were known to seal each block; the river was made twice as
-// wide. By the end it was, in the maintainer's words, no longer urban combat but original and
-// unlike any other map, and it was renamed for how it looks.
+// THE TERRAIN. The layout is drawn with one terrain per mechanic (grass, sand, water, deep water,
+// road, gravel, scree, loam, boulders, ridge rock), so every measurement of the design (pure tiles,
+// crop growth) sees exactly the rules the game will; a last pass paints the looks that share each
+// mechanic (moss, spring meadow, clay, flower meadow, mud, deep snow, thicket, hedge,
+// outcrop, boardwalk, dirt track, dark water, lush and dry grass, pale and dune sand). One look per
+// kind of ground: one sand on every shore, solid fields, solid clay hills.
+//
+// HOW IT GOT HERE. Revisions 1-4 (2026-09-16, built with the maintainer over one session) began as
+// "Rubble city", an urban-combat map of bombed square blocks, and became a honeycomb city of
+// rubble-filled hexes on a lagoon: the hexagons read as "a Settlers of Catan board", and the
+// lagoon, river, edge wheat fields and central orchard followed. Revision 5 (2026-11-01) rebuilt it
+// on the terrain catalogue as the maintainer saw it, closer to the board game than to a ruined
+// city: the rubble and statues are gone and every hex is a landscape of its own.
 //
 // TRADEOFFS made to make it work:
-// - Rubble near water regrows inside its block. Keeping rubble only where it could never grow lost
-//   a third of the ruins once the lagoon and river were added; sealed blocks keep the look instead
-//   of the "cleared for good" rule.
-// - The city never fills the map. A city from edge to edge had almost no water, so the city takes
-//   at most three fifths of the map's blocks, blocks shrink to 16 before that, and a crowded map
-//   squeezes colonies to three blocks each (cramped is the point) before refusing them. Homes keep
-//   off the river's banks, so a small map that runs out of home blocks is laid out without the
-//   river.
-// - Fairness is statistical, like Old Town's: homes are spread as far apart as the city allows and
-//   dealt at random, and every colony gets the same home design (one per map), the same cistern and
-//   the same starter crops; the ruins, craters and fields between them differ.
-// - The older AIs (Numbi, Castor, Warrush) stall here while Nicowar, Cortex, Cabino and Maxima
-//   grow; by the maintainer's decision the map is not tuned for them.
+// - The island never fills the map. An island from edge to edge had almost no water, so it takes
+//   at most three fifths of the map's hexes, hexes shrink to 16 before that, and a crowded map
+//   squeezes colonies to three hexes each before refusing them. Homes keep off the river's banks,
+//   so a small map that runs out of home hexes is laid out without the river.
+// - Fairness is statistical: homes are spread as far apart as the island allows and dealt at
+//   random; every colony gets the same home design (one per map), the same cistern, the same
+//   starter crops, two food hexes and a forest beside its home (the river can add a water meadow)
+//   and a share of the mountains between the homes. Hexes further out are dealt at random.
+// - The deep sea beyond the shallows is a barrier even to swimmers (a tile mixing shallow and deep
+//   corners is neither walkable nor swimmable), so swimming opens the river and the coast, not a
+//   way across the sea to the island's far side.
 namespace
 {
 
 constexpr int kHexPitchPercent = 150;
-// Square blocks the same area as hexagons of a block size: 150% of it times the square root of a
-// regular hexagon's area over its pitch squared (0.866). Squares at the raw block size gave a city
-// a fifth of the building sites (bulk study, 2026-09-16).
+// Square hexes the same area as hexagons of a block size: 150% of it times the square root of a
+// regular hexagon's area over its pitch squared (0.866).
 constexpr int kSquarePitchPercent = 140;
-// Blocks shrink, never below this, until the map has this many blocks for every so many the city
-// wants (5 to 3), which leaves a ring of lagoon round it. A map still too small at the smallest
-// block gets a smaller city, never more than that share of its blocks: a city from edge to edge
-// left a map with hardly any water (FEEDBACK 2026-09-16: "way too little water, without the lagoon
-// surrounding the city"). A crowded city is the map's point, so colonies may be squeezed down to
-// this many blocks each, their two home blocks and one more, before the map refuses them. Below 16,
-// some home gardens could not hold their starter crops.
+// Hexes shrink, never below this, until the map has this many for every so many the island wants
+// (5 to 3), which leaves the sea round it; colonies may be squeezed down to this many hexes each,
+// their two home hexes and one more, before the map refuses them. Below 16 some home gardens could
+// not hold their starter crops.
 constexpr int kSmallestBlock = 16, kCityShareNumerator = 5, kCityShareDenominator = 3;
 constexpr int kFewestBlocksPerColony = 3;
-// A home's cistern garden: its own crops at every amount, then the scaled part on top. The starter
-// wheat is one broad patch beside the swarm (see generate), not a ring round the pond.
+// A home's cistern garden: its own crops at every amount, then the scaled part on top.
 constexpr int kHomeWheat = 22, kHomeWood = 12, kHomeWheatExtra = 10, kHomeWoodExtra = 6;
-// A crater garden's crops at an amount of 100.
-constexpr int kCraterWheat = 26, kCraterWood = 20;
+// A lake's garden crops at an amount of 100.
+constexpr int kLakeWheat = 26, kLakeWood = 20;
 // A cistern's pond and the ring of garden round it, in tiles.
 constexpr double kCisternRadius = 2.2, kCisternGarden = 6.0;
-// How far behind the midpoint between a home's two blocks its well stands, at most.
+// How far behind the midpoint between a home's two hexes its well stands, at most.
 constexpr double kWellBehindMidway = 11.0;
-// Weights of the ordinary blocks: ruins with standing outlines, collapsed blocks, open squares and
-// wheat fields.
-constexpr int kRuinWeight = 50, kCollapsedWeight = 22, kSquareWeight = 16;
-// The wheat-fields control: the chance, in percent, that an edge block and a riverside block is a
-// field, and the weight of a field among the inner blocks, for Few, Normal and Many.
+// The weights of the hexes dealt at random: forests, pastures and hills; fields by the control.
+constexpr int kForestWeight = 30, kPastureWeight = 24, kHillsWeight = 14;
+// The food hexes beside every home.
+constexpr int kHomeFood = 2;
+// The wheat-fields control: the chance, in percent, that a riverside hex is a field, and the weight
+// of a field among the dealt hexes, for Few, Normal and Many.
 struct FieldShare
 {
-	int edge, riverside, innerWeight;
+	int riverside, weight;
 };
-// Many used to weigh inner fields 25 and measured only 9% more wheat than Normal, the edge being
-// all fields already (bulk study, 2026-09-16).
-constexpr FieldShare kFieldShares[] = {{50, 25, 0}, {100, 50, 12}, {100, 100, 60}};
-// The landmark orchard: groves (each a cherry, an orange and a prune clump) at a fruit amount of
-// 100, and the most any amount plants.
+constexpr FieldShare kFieldShares[] = {{25, 14}, {50, 28}, {100, 44}};
+// Mountains per colony for Few, Normal and Many, in halves.
+constexpr int kMountainHalves[] = {1, 2, 3};
+// Stone at the foot of a mountain and on a hill's knoll at an amount of 100.
+constexpr int kMountainStone = 8, kHillStone = 2;
+// The landmark orchard: groves at a fruit amount of 100, and the most any amount plants.
 constexpr int kOrchardGroves = 2, kMostOrchardGroves = 6;
-// How far the river wanders from its line, as a share of a block's pitch; how far home blocks
-// keep from its water, in tiles.
+// How far the river wanders from its line, as a share of a hex's pitch; how far home hexes keep
+// from its water, in tiles.
 constexpr double kRiverWander = 0.35, kHomeRiverMargin = 3.0;
+// The sea deepens this many vertices from land, and darkens (the same deep water, another look)
+// further out.
+constexpr int kDeepFromShore = 8, kDarkFromShore = 18;
 
 enum class Block : unsigned char
 {
 	Outside,
 	Home,
 	Annex,
-	Ruin,
-	Collapsed,
-	Crater,
-	Field, // a block of wheat round a pond, sealed by its streets
-	Bank, // the river takes a fifth of it or more: a wheat field on its banks, no pond
-	Square,
-	Landmark
+	Field,    // wheat on loam
+	Bank,     // the river takes a fifth of it or more: a water meadow of wheat on its banks
+	Forest,   // trees on moss round a thicket
+	Pasture,  // open grass and flower meadow, a hedgerow across it
+	Hills,    // clay with outcrop knolls
+	Mountain, // a ridge-rock massif with a snow cap, scree and boulders, stone at its foot
+	Lake,     // a pond with a dark middle and a garden round it, mud on its rim
+	Landmark  // the desert oasis and its orchard
 };
+const char *const kBlockNames[] = {"outside", "home",     "annex", "field", "bank",    "forest",
+								   "pasture", "hills", "mountain", "lake",  "landmark"};
 
 // The per-map garden design every colony shares.
 enum HomeDesign
 {
-	WellYard,    // the cistern in front of the home block's middle
-	GardenCourt, // the well on the street between the two blocks
+	WellYard,    // the cistern in front of the home hex's middle
+	GardenCourt, // the well on the road between the two hexes
 	kHomeDesigns
 };
 const char *const kHomeDesignNames[] = {"well-yard", "garden-court"};
@@ -141,10 +147,9 @@ struct Plot
 {
 	std::vector<int> tiles;
 	int wheat, wood, minimumWheat, minimumWood;
-	// A wheat field's plot is planted full, wheat on this share and wood on the rest, scaled by the
-	// amounts; 0 for a garden planted to its counts.
+	// A field's plot is planted full of wheat, scaled by the amount; 0 for a garden planted to its
+	// counts.
 	int fillWheatShare = 0;
-	// A garden's crops are planted round its pond at `centre`; a field's fill its block.
 	bool garden = false;
 	ShapePoint centre{0, 0};
 	// The side of the pond the wheat takes, the wood the other: a home's faces its swarm. The wheat
@@ -157,13 +162,15 @@ struct Layout
 {
 	Torus t{1, 1};
 	Tessellation g;
-	TerrainSketch terrain;
+	// The terrain by mechanic, which every measurement reads, and the terrain the map is given:
+	// the same rules, painted with the looks.
+	TerrainSketch terrain, paint;
 	std::vector<int> cell, homeOf, plotOf;
-	// The validator's growth labels: every plot, each home's whole ground and each crater's block.
+	// The validator's growth labels: each home's whole ground, every other hex's.
 	std::vector<int> sealOf;
 	std::vector<Block> kind; // per cell
-	std::vector<unsigned char> street, stone, rubble, orchard, river;
-	std::vector<int> homeCell, annexCell, craterCell, landmarkCell;
+	std::vector<unsigned char> street, stone, trees, orchard, river;
+	std::vector<int> homeCell, annexCell, landmarkCell;
 	std::vector<ShapePoint> swarms, wells, landmarks;
 	std::vector<Plot> plots;
 	int homeDesign = 0, bridges = 0;
@@ -176,8 +183,7 @@ struct Layout
 	Fertility::Field fertility;
 };
 
-// The offsets of the tiles within `radius` of a tile, as dilateRound counts them (squared distance
-// at most the radius squared): a local disc scan gives the same answer as dilating a whole map.
+// The offsets of the tiles within `radius` of a tile, as dilateRound counts them.
 std::vector<std::pair<int, int>> discOffsets(double radius)
 {
 	std::vector<std::pair<int, int>> offsets;
@@ -208,9 +214,17 @@ ShapePoint cellCentre(const Layout &L, int cell)
 	return tilePoint(L.g.cells[cell].centre);
 }
 
-// A garden: a round plot of grass with a pond at its middle and no sand ring, the paved streets
-// round its block holding its crops. Only tiles `within` accepts are taken, so a garden never
-// reaches into a street other colonies use.
+// A vertex's terrain: its mechanic in `terrain`, and the look it is painted with when that look
+// shares the mechanic (0 leaves the look to the last pass).
+void setVertex(Layout &L, std::vector<unsigned char> &look, int i, TerrainType mechanic,
+			   TerrainType painted)
+{
+	L.terrain[i] = mechanic;
+	look[i] = painted;
+}
+
+// A garden: a round plot of grass with a pond at its middle and no sand ring, the roads round its
+// hex holding its crops. Only tiles `within` accepts are taken.
 template <typename Within>
 void garden(Layout &L, GenerationContext &context, ShapePoint at, double pond, double grass,
 			const Plot &crops, const char *stream, const Within &within)
@@ -236,7 +250,7 @@ void garden(Layout &L, GenerationContext &context, ShapePoint at, double pond, d
 	L.plots.push_back(std::move(p));
 }
 
-// Farthest-point spreading over the free cells of the city, from every cell already `taken`.
+// Farthest-point spreading over the free cells of the island, from every cell already `taken`.
 int farthestFree(const Layout &L, const std::vector<unsigned char> &free,
 				 const std::vector<long long> &nearest)
 {
@@ -257,10 +271,9 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	const int n = t.size(), teams = std::max(1, request.nbTeams);
 	const double cx = t.w / 2.0, cy = t.h / 2.0;
 
-	// The blocks: a warped tiling, every edge a street. A map too small for the city the colonies
-	// ask for gets smaller blocks, down to kSmallestBlock (FEEDBACK 2026-09-16: "it can also shrink
-	// the size of the blocks when needed"), so the city keeps its lagoon; a map too small even then
-	// gets a smaller city (below).
+	// The hexes: a warped tiling, every edge a road. A map too small for the island the colonies
+	// ask for gets smaller hexes, down to kSmallestBlock, so the island keeps its sea; a map too
+	// small even then gets a smaller island (below).
 	const int landmarks = teams > 4 ? 2 : 1;
 	const int wanted = teams * o.blocksPerColony + landmarks;
 	int blockSize = o.blockSize;
@@ -276,7 +289,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	L.telemetry.measure("honeycomb-isle.block-size", blockSize);
 	if (blockSize < o.blockSize)
 		L.telemetry.fallback("honeycomb-isle.blocks.shrunk",
-							 "Blocks shrunk to fit the city on the map.");
+							 "Hexes shrunk to fit the island on the map.");
 	const std::vector<unsigned char> edges(L.g.edges.size(), 1);
 	warpCorners(L.g, warpLimit(L.g) * o.warp / 100, edges, o.streetWidth + 6, blockSize / 4, context,
 				"honeycomb-isle-warp");
@@ -295,8 +308,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	}
 
 	// The river: a wandering band along one of the map's axes, all the way round the torus, a
-	// little off the middle so the landmark keeps its ground. The city is cut in two and the lagoon
-	// joins its ends.
+	// little off the middle so the oasis keeps its ground.
 	const double pitch = std::sqrt(double(n) / cells);
 	L.river.assign(n, 0);
 	std::vector<StrokePoint> riverPath;
@@ -334,11 +346,11 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			if (margin[i])
 				nearRiver[L.cell[i]] = 1;
 	}
-	// A block the river takes a fifth of is a bank block; one it only clips keeps its kind.
+	// A hex the river takes a fifth of is a bank hex; one it only clips keeps its kind.
 	const auto isBank = [&](int c) { return riverTiles[c] * 5 >= cellTiles[c]; };
 
-	// The city: the blocks nearest the middle, as many as the colonies need, bank blocks not
-	// counted. Everything else is the lagoon.
+	// The island: the hexes nearest the middle, as many as the colonies need, bank hexes not
+	// counted. Everything else is the sea.
 	std::vector<int> byDistance(cells);
 	std::iota(byDistance.begin(), byDistance.end(), 0);
 	const auto fromMiddle = [&](int c)
@@ -349,14 +361,13 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	};
 	std::stable_sort(byDistance.begin(), byDistance.end(),
 					 [&](int a, int b) { return fromMiddle(a) < fromMiddle(b); });
-	// Bank blocks count towards the lagoon's share, since the city's outline is what keeps it.
 	int cityCells = 0, counted = 0;
 	for (; cityCells < mostCity && counted < wanted; ++cityCells)
 		counted += !isBank(byDistance[cityCells]);
 	L.telemetry.measure("honeycomb-isle.blocks.city-actual", cityCells);
 	if (counted < wanted)
 		L.telemetry.fallback("honeycomb-isle.city.reduced",
-							 "The city was made smaller to keep the lagoon round it.");
+							 "The island was made smaller to keep the sea round it.");
 	L.kind.assign(cells, Block::Outside);
 	std::vector<unsigned char> free(cells, 0);
 	int bankCells = 0;
@@ -365,7 +376,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		const int c = byDistance[k];
 		const bool bank = isBank(c);
 		free[c] = !bank;
-		L.kind[c] = bank ? Block::Bank : Block::Square; // until dealt a kind
+		L.kind[c] = bank ? Block::Bank : Block::Pasture; // until dealt a kind
 		bankCells += bank;
 	}
 	L.telemetry.measure("honeycomb-isle.blocks.banks", bankCells);
@@ -377,8 +388,8 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			nearest[other] = std::min(nearest[other], L.g.distance2(other, c));
 	};
 
-	// The landmark at the middle; the homes as far from it and each other as the city allows, each
-	// a home block and the neighbour nearest the landmark, where the swarm stands.
+	// The oasis at the middle; the homes as far from it and each other as the island allows, each
+	// a home hex and the neighbour nearest the oasis, where the swarm stands.
 	int middle = 0;
 	while (!free[byDistance[middle]])
 		++middle;
@@ -390,8 +401,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	{
 		int home = -1, annex = -1;
 		// Homes keep off the river's banks, so no garden or swarm is crowded by its water; a small
-		// map that runs out of such blocks may put a home on any block the river does not reach
-		// into.
+		// map that runs out of such hexes may put a home on any hex the river does not reach into.
 		for (const bool clearOfBanks : {true, false})
 		{
 			const auto homeGround = [&](int c)
@@ -419,7 +429,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			{
 				if (!clearOfBanks)
 					L.telemetry.fallback("honeycomb-isle.home.on-bank",
-										 "A home stands on a block beside the river.", k);
+										 "A home stands on a hex beside the river.", k);
 				break;
 			}
 		}
@@ -449,8 +459,66 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		L.homeCell = homes;
 		L.annexCell = annexes;
 	}
-	// A second landmark on a crowded city, then the craters, each as far as it can be from the
-	// water already placed: between the homes, where neighbours meet.
+	// Every home borders exactly kHomeFood food hexes (fields, or water meadows the river already
+	// made) and a forest of its own, like a settlement on the board: the free hexes beside its two
+	// hexes nearest its swarm, fields first. No other field is dealt beside a home (below): a
+	// rotation of four-AI games on independently dealt neighbours ran from one field beside a home
+	// to four, and from 98 to 245 births per seat.
+	std::vector<unsigned char> besideHome(cells, 0);
+	int homeFields = 0, homeForests = 0;
+	for (int k = 0; k < teams; ++k)
+	{
+		const ShapePoint swarm = cellCentre(L, L.annexCell[k]);
+		std::vector<std::pair<double, int>> beside;
+		std::vector<int> seen;
+		int foodBeside = 0; // water meadows, and fields an earlier home was given
+		for (int own : {L.homeCell[k], L.annexCell[k]})
+			for (int edge : L.g.cells[own].edges)
+			{
+				const int next = L.g.other(edge, own);
+				if (L.kind[next] == Block::Home || L.kind[next] == Block::Annex ||
+					std::find(seen.begin(), seen.end(), next) != seen.end())
+					continue;
+				seen.push_back(next);
+				besideHome[next] = 1;
+				foodBeside += L.kind[next] == Block::Bank || L.kind[next] == Block::Field;
+				if (free[next])
+				{
+					// Hexes shared with another home come last, so one home's field is not a
+					// neighbour's extra food.
+					bool shared = false;
+					for (int e2 : L.g.cells[next].edges)
+					{
+						const int across = L.g.other(e2, next);
+						shared |= (L.kind[across] == Block::Home || L.kind[across] == Block::Annex) &&
+								  across != L.homeCell[k] && across != L.annexCell[k];
+					}
+					const ShapePoint p = cellCentre(L, next);
+					const double dx = t.offsetX(int(swarm.x), int(p.x)), dy = t.offsetY(int(swarm.y), int(p.y));
+					beside.push_back({dx * dx + dy * dy + (shared ? 1e9 : 0.0), next});
+				}
+			}
+		std::sort(beside.begin(), beside.end());
+		beside.erase(std::unique(beside.begin(), beside.end()), beside.end());
+		std::vector<Block> owed(std::max(0, kHomeFood - foodBeside), Block::Field);
+		owed.push_back(Block::Forest);
+		if (foodBeside > kHomeFood)
+			L.telemetry.fallback("honeycomb-isle.home.extra-food",
+								 "A home borders more food hexes than its share.", k);
+		for (size_t b = 0; b < owed.size() && b < beside.size(); ++b)
+		{
+			free[beside[b].second] = 0;
+			L.kind[beside[b].second] = owed[b];
+			(owed[b] == Block::Field ? homeFields : homeForests) += 1;
+		}
+		if (beside.size() < owed.size())
+			L.telemetry.fallback("honeycomb-isle.home.short-of-neighbours",
+								 "A home has too few free hexes beside it for its field and forest.", k);
+	}
+	L.telemetry.measure("honeycomb-isle.home.fields", homeFields);
+	L.telemetry.measure("honeycomb-isle.home.forests", homeForests);
+	// A second oasis on a crowded island, then the lakes and the mountains, each as far as it can be
+	// from what was placed before: between the homes, where neighbours meet.
 	for (int k = 1; k < landmarks; ++k)
 		if (const int c = farthestFree(L, free, nearest); c >= 0)
 		{
@@ -459,62 +527,126 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		}
 	for (int c : L.landmarkCell)
 		L.kind[c] = Block::Landmark;
-	const int craters = o.craters * teams;
-	for (int k = 0; k < craters; ++k)
+	const auto spread = [&](int count, Block kind, const char *key)
 	{
-		const int c = farthestFree(L, free, nearest);
-		if (c < 0)
-			break;
-		take(c);
-		L.craterCell.push_back(c);
-		L.kind[c] = Block::Crater;
-	}
-	L.telemetry.measure("honeycomb-isle.craters.target", craters);
-	L.telemetry.measure("honeycomb-isle.craters.actual", L.craterCell.size());
-	if (int(L.craterCell.size()) < craters)
-		L.telemetry.fallback("honeycomb-isle.craters.reduced",
-							 "The city ran out of blocks for craters.");
-	// Every block on the city's edge, where it meets the lagoon, or beside the river, is a wheat
-	// field (FEEDBACK 2026-09-16: "basically all of the ones around the outer edge"); every other
-	// city block is dealt a ruin, a collapsed block, a square or a field.
-	int ruins = 0, collapsed = 0, squares = 0, edgeFields = 0;
+		int placed = 0;
+		for (; placed < count; ++placed)
+		{
+			const int c = farthestFree(L, free, nearest);
+			if (c < 0)
+				break;
+			take(c);
+			L.kind[c] = kind;
+		}
+		L.telemetry.measure(std::string("honeycomb-isle.") + key + ".target", count);
+		L.telemetry.measure(std::string("honeycomb-isle.") + key + ".actual", placed);
+		if (placed < count)
+			L.telemetry.fallback(std::string("honeycomb-isle.") + key + ".reduced",
+								 "The island ran out of hexes.");
+	};
+	spread(o.lakes * teams, Block::Lake, "lakes");
+	spread(std::max(1, kMountainHalves[std::clamp(o.mountains, 0, 2)] * teams / 2), Block::Mountain,
+		   "mountains");
+	// Every other hex is dealt from a shuffled deck of fields, forests, pastures and hills, as the
+	// board game deals its tiles: independent draws left one seed with a single pasture and twelve
+	// forests. Half the hexes by the river (all of them with Many fields) are fields first. The deck
+	// tops up the island's totals, counting the fields and forests already beside the homes and by
+	// the river, to the proportions of the weights.
+	const FieldShare &share = kFieldShares[std::clamp(o.wheatFields, 0, 2)];
+	std::vector<int> dealt(int(Block::Landmark) + 1, 0), remaining;
 	for (int c = 0; c < cells; ++c)
 	{
 		if (!free[c])
 			continue;
-		bool edge = false;
-		for (int e : L.g.cells[c].edges)
-			edge |= L.kind[L.g.other(e, c)] == Block::Outside;
-		// So is about half of the blocks along the river (FEEDBACK 2026-09-16: "more of the cells
-		// along the river wheat filled", then a few more ruins back); the blocks the river runs
-		// through are all fields.
-		const FieldShare &share = kFieldShares[std::clamp(o.wheatFields, 0, 2)];
-		if ((edge && int(context.bounded("honeycomb-isle-edge", 100)) < share.edge) ||
-			(nearRiver[c] && int(context.bounded("honeycomb-isle-riverside", 100)) < share.riverside))
-		{
+		free[c] = 0;
+		if (nearRiver[c] && !besideHome[c] &&
+			int(context.bounded("honeycomb-isle-riverside", 100)) < share.riverside)
 			L.kind[c] = Block::Field;
-			++edgeFields;
-			continue;
+		else
+			remaining.push_back(c);
+	}
+	for (int c = 0; c < cells; ++c)
+		++dealt[int(L.kind[c])];
+	dealt[int(Block::Pasture)] -= int(remaining.size()); // their placeholder until dealt
+	{
+		const Block suits[] = {Block::Field, Block::Forest, Block::Pasture, Block::Hills};
+		const int weights[] = {share.weight, kForestWeight, kPastureWeight, kHillsWeight};
+		const int weightSum = weights[0] + weights[1] + weights[2] + weights[3];
+		int already = 0;
+		for (Block b : suits)
+			already += dealt[int(b)];
+		const int total = already + int(remaining.size());
+		int cards[4], sum = 0;
+		for (int s = 0; s < 4; ++s)
+		{
+			cards[s] = std::max(0, total * weights[s] / weightSum - dealt[int(suits[s])]);
+			sum += cards[s];
 		}
-		const int draw = int(context.bounded(
-			"honeycomb-isle-blocks", kRuinWeight + kCollapsedWeight + kSquareWeight + share.innerWeight));
-		L.kind[c] = draw < kRuinWeight										? Block::Ruin
-					: draw < kRuinWeight + kCollapsedWeight					? Block::Collapsed
-					: draw < kRuinWeight + kCollapsedWeight + kSquareWeight ? Block::Square
-																			: Block::Field;
-		ruins += L.kind[c] == Block::Ruin;
-		collapsed += L.kind[c] == Block::Collapsed;
-		squares += L.kind[c] == Block::Square;
+		// Rounding and the hexes already dealt leave the deck short or long; settle it on the suits
+		// furthest below or above their share.
+		const auto gap = [&](int s)
+		{ return (dealt[int(suits[s])] + cards[s]) * weightSum - total * weights[s]; };
+		while (sum != int(remaining.size()))
+		{
+			int pick = -1;
+			for (int s = 0; s < 4; ++s)
+				if ((sum > int(remaining.size()) ? cards[s] > 0 : true) &&
+					(pick < 0 || (sum > int(remaining.size()) ? gap(s) > gap(pick) : gap(s) < gap(pick))))
+					pick = s;
+			cards[pick] += sum > int(remaining.size()) ? -1 : 1;
+			sum += sum > int(remaining.size()) ? -1 : 1;
+		}
+		std::vector<Block> deck;
+		for (int s = 0; s < 4; ++s)
+			deck.insert(deck.end(), cards[s], suits[s]);
+		for (int k = int(deck.size()) - 1; k > 0; --k)
+			std::swap(deck[k], deck[context.bounded("honeycomb-isle-deck", unsigned(k + 1))]);
+		// A field or forest card dealt beside a home changes places with the next card that is
+		// neither, so a home's other neighbours are building ground (pastures, hills) and its share of
+		// food and wood is the same as every other home's.
+		int moved = 0;
+		const auto owedKind = [](Block b) { return b == Block::Field || b == Block::Forest; };
+		for (size_t k = 0; k < remaining.size(); ++k)
+			if (besideHome[remaining[k]] && owedKind(deck[k]))
+				for (size_t j = k + 1; j < deck.size(); ++j)
+					if (!owedKind(deck[j]))
+					{
+						std::swap(deck[k], deck[j]);
+						++moved;
+						break;
+					}
+		L.telemetry.measure("honeycomb-isle.deck.moved", moved);
+		for (size_t k = 0; k < remaining.size(); ++k)
+		{
+			L.kind[remaining[k]] = deck[k];
+			++dealt[int(deck[k])];
+		}
+	}
+	for (int k = int(Block::Field); k <= int(Block::Landmark); ++k)
+		L.telemetry.measure(std::string("honeycomb-isle.blocks.") + kBlockNames[k], dealt[k]);
+	// What each home ended up beside, after the deck: its food and wood hexes.
+	for (int k = 0; k < teams; ++k)
+	{
+		std::vector<int> seen;
+		int food = 0, forest = 0;
+		for (int own : {L.homeCell[k], L.annexCell[k]})
+			for (int edge : L.g.cells[own].edges)
+			{
+				const int next = L.g.other(edge, own);
+				if (std::find(seen.begin(), seen.end(), next) != seen.end())
+					continue;
+				seen.push_back(next);
+				food += L.kind[next] == Block::Field || L.kind[next] == Block::Bank;
+				forest += L.kind[next] == Block::Forest;
+			}
+		L.telemetry.measure("honeycomb-isle.home.food-beside", food, k);
+		L.telemetry.measure("honeycomb-isle.home.forests-beside", forest, k);
 	}
 	L.homeDesign = int(context.bounded("honeycomb-isle-home-design", kHomeDesigns));
 	L.telemetry.choice("honeycomb-isle.home-design", kHomeDesignNames[L.homeDesign]);
 	L.telemetry.measure("honeycomb-isle.blocks.city", wanted);
-	L.telemetry.measure("honeycomb-isle.blocks.ruins", ruins);
-	L.telemetry.measure("honeycomb-isle.blocks.collapsed", collapsed);
-	L.telemetry.measure("honeycomb-isle.blocks.squares", squares);
-	L.telemetry.measure("honeycomb-isle.blocks.edge-fields", edgeFields);
 
-	// Streets: a band along every border between two cells, inside the city.
+	// Roads: a band along every border between two hexes, on the island.
 	std::vector<unsigned char> border(n, 0), inCity(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
@@ -534,10 +666,11 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	const std::vector<int> depth = clearance(t, interior);
 
 	L.terrain.assign(n, GRASS);
+	std::vector<unsigned char> look(n, 0);
 	L.homeOf.assign(n, -1);
 	L.plotOf.assign(n, -1);
 	L.stone.assign(n, 0);
-	L.rubble.assign(n, 0);
+	L.trees.assign(n, 0);
 	L.orchard.assign(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
@@ -547,8 +680,8 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 				if (L.cell[i] == L.homeCell[k] || L.cell[i] == L.annexCell[k])
 					L.homeOf[i] = k;
 	}
-	// A home's own streets stay grass, except where its blocks meet another colony's: two homes'
-	// grounds are kept apart by sand like every other block.
+	// A home's own roads stay grass, except where its hexes meet another colony's: two homes'
+	// grounds are kept apart by road like every other hex.
 	const auto paved = [&](int i)
 	{
 		if (!L.street[i])
@@ -564,8 +697,27 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			}
 		return false;
 	};
+	std::vector<unsigned char> pavedMask(n, 0);
 	for (int i = 0; i < n; ++i)
-		L.terrain[i] = !inCity[i] || L.river[i] ? WATER : paved(i) ? SAND : GRASS;
+	{
+		pavedMask[i] = paved(i);
+		L.terrain[i] = !inCity[i] || L.river[i] ? WATER : pavedMask[i] ? TRAIL : GRASS;
+	}
+	// The road's shoulders: its vertices beside the ground of a hex are gravel, which carries no
+	// deposit either and holds back the growth probe as the old sand streets did.
+	for (int i = 0; i < n; ++i)
+	{
+		if (L.terrain[i] != TRAIL)
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int j = t.at(x + dx, y + dy);
+				if (inCity[j] && !pavedMask[j] && !L.river[j])
+					L.terrain[i] = GRAVEL;
+			}
+	}
 
 	const auto nearPoint = [&](int i, ShapePoint p, double r)
 	{ return t.dist2(t.remainderX(i), i / t.w, int(std::lround(p.x)), int(std::lround(p.y))) <= r * r; };
@@ -574,8 +726,10 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	for (int i = 0; i < n; ++i)
 		if (inCity[i])
 			tilesOf[L.cell[i]].push_back(i);
+	const int inner = std::max(4, centreClearance(L.g) - o.streetWidth / 2);
+	L.telemetry.measure("honeycomb-isle.hex.inner-radius", inner);
 
-	// Homes: open gardens round the cistern, without stone walls or posts.
+	// Homes: open gardens round the cistern.
 	const std::vector<std::pair<int, int>> sharedMargin = discOffsets(o.streetWidth / 2.0 + 2.5);
 	for (int k = 0; k < teams; ++k)
 	{
@@ -590,8 +744,8 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			}(),
 			L.homeCell[k]));
 		const double axis = std::atan2(annex.y - home.y, annex.x - home.x);
-		// The home's own ground, kept clear of the streets round it: the two blocks and the street
-		// between them, less a margin from every other street.
+		// The home's own ground, kept clear of the roads round it: the two hexes and the road
+		// between them, less a margin from every other road.
 		const auto own = [&, k](int i)
 		{
 			if (L.homeOf[i] != k)
@@ -604,11 +758,9 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			}
 			return true;
 		};
-		// The court design puts its well on the street between the blocks, the others in front of
-		// the home block's middle: 2.5 tiles at the default block size, and further forward on
-		// bigger blocks, so the garden's wheat stays in a worker's reach of the swarm (final
-		// reliability pass, 2026-09-16: at blocks of 22 the swarm stood 34 tiles from a well 2.5
-		// tiles forward, and its nearest wheat was 25 to 27 steps away).
+		// The court design puts its well on the road between the hexes, the other in front of the
+		// home hex's middle: 2.5 tiles at the default size, and further forward on bigger hexes,
+		// so the garden's wheat stays in a worker's reach of the swarm.
 		const double apart = std::hypot(annex.x - home.x, annex.y - home.y);
 		const double lead =
 			L.homeDesign == GardenCourt ? apart / 2 : std::max(2.5, apart / 2 - kWellBehindMidway);
@@ -622,109 +774,240 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		L.plots.back().wheatToward = annex;
 	}
 
-	// Craters: a pond blown into the block, its garden round it.
-	const double craterPond = std::clamp(centreClearance(L.g) * 0.28, 2.5, 5.0);
-	for (int c : L.craterCell)
+	// The landscape of every other hex. Each draws its own shapes from its own stream.
+	const double pondRadius = std::clamp(inner * 0.28, 2.5, 5.0);
+	const std::vector<int> drift = periodicNoise(t.w, t.h, 5, context.stream("honeycomb-isle-drifts"));
+	const std::vector<int> grain = periodicNoise(t.w, t.h, 3, context.stream("honeycomb-isle-grain"));
+	int lakes = 0, mountains = 0, hills = 0, pastures = 0, forests = 0, fields = 0, hedges = 0;
+	std::vector<unsigned char> quarry(n, 0), forestGround(n, 0), lakeDeep(n, 0);
+	for (int c = 0; c < cells; ++c)
 	{
+		const Block kind = L.kind[c];
 		const ShapePoint centre = cellCentre(L, c);
-		const double drift = context.bounded("honeycomb-isle-craters", 16) / 10.0;
-		const double heading = context.bounded("honeycomb-isle-craters", 3600) * 2 * kPi / 3600;
-		// The block's inside eroded by a tile: an inside tile whose eight neighbours are inside
-		// too.
 		const auto inside = [&, c](int i) { return L.cell[i] == c && interior[i]; };
-		const auto eroded = [&](int i)
+		// The block's inside eroded by `margin` tiles, so nothing drawn here touches a road.
+		const auto deep = [&, c](int i, int margin) { return L.cell[i] == c && interior[i] && depth[i] > margin; };
+		const auto offset = [&](int i, ShapePoint p, double &dx, double &dy)
 		{
-			for (int dy = -1; dy <= 1; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
-					if (!inside(t.at(t.remainderX(i) + dx, i / t.w + dy)))
-						return false;
-			return true;
+			dx = t.offsetX(int(std::lround(p.x)), t.remainderX(i));
+			dy = t.offsetY(int(std::lround(p.y)), i / t.w);
 		};
-		garden(L, context, polarPoint(centre.x, centre.y, drift, heading), craterPond, 3.5,
-			   {{}, kCraterWheat, kCraterWood, 0, 0}, "honeycomb-isle-craters", eroded);
-		L.plots.back().heading = heading;
-	}
-	// Wheat fields: a whole block's ground inside its streets one sealed plot, planted full of
-	// wheat round a small pond that keeps it growing back.
-	int fields = 0;
-	for (int c = 0; c < cells; ++c)
-	{
-		// A bank block, the river through it, is a field too, watered by the river instead of a
-		// pond.
-		const bool bank = L.kind[c] == Block::Bank;
-		if (L.kind[c] != Block::Field && !bank)
-			continue;
-		std::vector<int> corners;
-		for (int i : tilesOf[c])
-			if (interior[i] && !L.river[i])
+		switch (kind)
+		{
+		case Block::Field:
+		case Block::Bank:
+		{
+			// The whole field is loam, which waters it; a bank hex is a water meadow, the same crop
+			// land in spring meadow. Earlier furrows of loam and grass read as too busy (maintainer
+			// playtest, 2026-11-01).
+			std::vector<int> corners;
+			for (int i : tilesOf[c])
+			{
+				if (!interior[i] || L.river[i])
+					continue;
 				corners.push_back(i);
-		// The block's paved streets bound it on every side, so the field needs no sand of its own.
-		Plot p{corners, 0, 0, 0, 0, 100};
-		const ShapePoint centre = cellCentre(L, c);
-		const RadialShape pond(craterPond * 0.7, 0.3, context, "honeycomb-isle-fields");
-		if (!riverTiles[c])
-			fillShape(L.terrain, t, centre.x, centre.y, pond, 0, WATER);
-		for (int i : p.tiles)
-			L.plotOf[i] = int(L.plots.size());
-		L.plots.push_back(std::move(p));
-		++fields;
-	}
-	L.telemetry.measure("honeycomb-isle.blocks.fields", fields);
-
-	// The central orchard is open grass, without stone rings, pillars or platforms.
-	const int groves = std::clamp(int(scaledCount(kOrchardGroves, o.fruit)), 0, kMostOrchardGroves);
-	const double orchardRadius = groves ? 3.5 + std::max(0, groves - kOrchardGroves) * 0.75 : 0.0;
-	L.telemetry.measure("honeycomb-isle.orchard.groves", groves);
-	for (int c : L.landmarkCell)
-	{
-		const ShapePoint centre = cellCentre(L, c);
-		L.landmarks.push_back(centre);
-		for (int i : tilesOf[c])
+				setVertex(L, look, i, LOAM, kind == Block::Bank ? SPRING_MEADOW : LOAM);
+			}
+			Plot p{corners, 0, 0, 0, 0, 100};
+			for (int i : p.tiles)
+				L.plotOf[i] = int(L.plots.size());
+			L.plots.push_back(std::move(p));
+			++fields;
+			break;
+		}
+		case Block::Forest:
 		{
-			if (!interior[i])
-				continue;
-			if (nearPoint(i, centre, orchardRadius))
-				L.orchard[i] = 1;
+			// Trees on a floor of moss, which waters them, round a thicket that never clears.
+			const RadialShape core(std::clamp(inner * 0.2, 1.6, 3.0), 0.35, context, "honeycomb-isle-forests");
+			const double heart = core.maximumRadius() + 2.5;
+			for (int i : tilesOf[c])
+			{
+				if (!inside(i))
+					continue;
+				forestGround[i] = 1;
+				if (nearPoint(i, centre, heart) && depth[i] > 2)
+					setVertex(L, look, i, LOAM, MOSS);
+			}
+			fillShape(L.terrain, t, centre.x, centre.y, core, 0, BOULDERS);
+			forEachTileInShape(t, centre.x, centre.y, core, 0, [&](int i, double, double) { look[i] = THICKET; });
+			++forests;
+			break;
+		}
+		case Block::Pasture:
+		{
+			// Open grass with drifts of flower meadow, and a hedgerow across it with a gap in its
+			// middle: cover, never a wall round anything.
+			for (int i : tilesOf[c])
+				if (deep(i, 1) && drift[i] > 65536 * 62 / 100)
+					setVertex(L, look, i, GRAVEL, FLOWER_MEADOW);
+			const double heading = context.bounded("honeycomb-isle-hedges", 3600) * kPi / 3600;
+			const double shift = (int(context.bounded("honeycomb-isle-hedges", 7)) - 3) * inner / 8.0;
+			const double ux = std::cos(heading), uy = std::sin(heading);
+			const double gap = 2.5, reach = inner * 0.75;
+			bool any = false;
+			for (int i : tilesOf[c])
+			{
+				if (!deep(i, 2))
+					continue;
+				double dx, dy;
+				offset(i, centre, dx, dy);
+				const double along = dx * ux + dy * uy, across = -dx * uy + dy * ux - shift;
+				if (std::abs(across) <= 0.75 && std::abs(along) >= gap && std::abs(along) <= reach)
+				{
+					setVertex(L, look, i, BOULDERS, HEDGE);
+					any = true;
+				}
+			}
+			hedges += any;
+			++pastures;
+			break;
+		}
+		case Block::Hills:
+		{
+			// Clay, with two or three outcrop knolls; one knoll keeps a pocket of grass at its foot
+			// for its stone.
+			for (int i : tilesOf[c])
+				if (inside(i))
+					setVertex(L, look, i, GRAVEL, CLAY);
+			const int knolls = 2 + int(context.bounded("honeycomb-isle-hills", 2));
+			for (int k = 0; k < knolls; ++k)
+			{
+				const double angle = context.bounded("honeycomb-isle-hills", 3600) * 2 * kPi / 3600;
+				const double distance = inner * (0.15 + context.bounded("honeycomb-isle-hills", 40) / 100.0);
+				const ShapePoint at = polarPoint(centre.x, centre.y, distance, angle);
+				const RadialShape knoll(1.6 + context.bounded("honeycomb-isle-hills", 9) / 10.0, 0.3, context,
+										"honeycomb-isle-hills");
+				if (k == 0)
+				{
+					// The pocket beside the first knoll, on the side towards the hex's middle.
+					const ShapePoint foot = polarPoint(at.x, at.y, knoll.maximumRadius() + 2.0, angle + kPi);
+					for (int i : tilesOf[c])
+						if (deep(i, 1) && nearPoint(i, foot, 2.2))
+						{
+							setVertex(L, look, i, GRASS, GRASS);
+							quarry[i] = 2;
+						}
+				}
+				forEachTileInShape(t, at.x, at.y, knoll, 0,
+								   [&](int i, double, double)
+								   {
+									   if (deep(i, 1))
+										   setVertex(L, look, i, RIDGE_ROCK, OUTCROP);
+								   });
+			}
+			++hills;
+			break;
+		}
+		case Block::Mountain:
+		{
+			// A ridge-rock massif with a cap of snow, a skirt of scree and boulders, and grass at
+			// its foot where the quarry is.
+			const RadialShape massif(std::clamp(inner * 0.45, 3.0, 7.0), 0.3, context, "honeycomb-isle-mountains");
+			const double peak = massif.maximumRadius();
+			const double skirt = peak + 2.5, foot = peak + 4.5;
+			for (int i : tilesOf[c])
+			{
+				if (!inside(i))
+					continue;
+				double dx, dy;
+				offset(i, centre, dx, dy);
+				const double r = std::hypot(dx, dy);
+				if (r <= skirt && deep(i, 1))
+				{
+					const TerrainType rubble = grain[i] > 65536 * 78 / 100 ? BOULDERS : SCREE;
+					setVertex(L, look, i, rubble, rubble);
+				}
+				else if (r <= foot && deep(i, 1))
+					quarry[i] = 1;
+			}
+			forEachTileInShape(t, centre.x, centre.y, massif, 0,
+							   [&](int i, double dx, double dy)
+							   {
+								   if (!deep(i, 1))
+									   return;
+								   const double r = std::hypot(dx, dy);
+								   const bool cap = r <= peak * 0.4;
+								   setVertex(L, look, i, cap ? SCREE : RIDGE_ROCK,
+											 cap ? DEEP_SNOW : grain[i] > 65536 * 70 / 100 ? OUTCROP : RIDGE_ROCK);
+							   });
+			++mountains;
+			break;
+		}
+		case Block::Lake:
+		{
+			// A pond with a dark deep middle, a garden round it, and a rim of mud.
+			const double shift = context.bounded("honeycomb-isle-lakes", 16) / 10.0;
+			const double heading = context.bounded("honeycomb-isle-lakes", 3600) * 2 * kPi / 3600;
+			const ShapePoint at = polarPoint(centre.x, centre.y, shift, heading);
+			const auto eroded = [&](int i)
+			{
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+						if (!inside(t.at(t.remainderX(i) + dx, i / t.w + dy)))
+							return false;
+				return true;
+			};
+			const double lake = pondRadius * 1.15, ring = 3.5;
+			garden(L, context, at, lake, ring, {{}, kLakeWheat, kLakeWood, 0, 0}, "honeycomb-isle-lakes",
+				   eroded);
+			L.plots.back().heading = heading;
+			for (int i : tilesOf[c])
+			{
+				if (!deep(i, 1))
+					continue;
+				double dx, dy;
+				offset(i, at, dx, dy);
+				const double r = std::hypot(dx, dy);
+				if (r <= lake - 2.0 && L.terrain[i] == WATER)
+					lakeDeep[i] = 1; // drawn after the beaches, which take any other terrain for land
+				else if (r >= lake + ring + 1.0 && r <= lake + ring + 2.2 && L.plotOf[i] < 0)
+					setVertex(L, look, i, SCREE, MUD);
+			}
+			++lakes;
+			break;
+		}
+		case Block::Landmark:
+		{
+			// The desert: dune sand round an oasis pond, the orchard on the grass about it.
+			const int groves = std::clamp(int(scaledCount(kOrchardGroves, o.fruit)), 0, kMostOrchardGroves);
+			const double orchardRadius = groves ? 3.5 + std::max(0, groves - kOrchardGroves) * 0.75 : 0.0;
+			const double meadow = std::max(4.0, orchardRadius + 3.5);
+			L.landmarks.push_back(centre);
+			for (int i : tilesOf[c])
+			{
+				if (!inside(i))
+					continue;
+				double dx, dy;
+				offset(i, centre, dx, dy);
+				const double r = std::hypot(dx, dy);
+				if (r > meadow && depth[i] > 1)
+					setVertex(L, look, i, SAND, DUNE_SAND);
+				else
+					look[i] = r > meadow - 1.5 ? DRY_GRASS : LUSH_GRASS;
+				if (r <= orchardRadius && r >= 2.0)
+					L.orchard[i] = 1;
+			}
+			const RadialShape oasis(1.6, 0.25, context, "honeycomb-isle-oasis");
+			fillShape(L.terrain, t, centre.x, centre.y, oasis, 0, WATER);
+			break;
+		}
+		default:
+			break;
 		}
 	}
+	L.telemetry.measure("honeycomb-isle.orchard.groves",
+						std::clamp(int(scaledCount(kOrchardGroves, o.fruit)), 0, kMostOrchardGroves));
+	L.telemetry.measure("honeycomb-isle.fields", fields);
+	L.telemetry.measure("honeycomb-isle.forests", forests);
+	L.telemetry.measure("honeycomb-isle.pastures", pastures);
+	L.telemetry.measure("honeycomb-isle.pastures.hedged", hedges);
+	L.telemetry.measure("honeycomb-isle.hills", hills);
+	L.telemetry.measure("honeycomb-isle.mountains", mountains);
+	L.telemetry.measure("honeycomb-isle.lakes", lakes);
 
-	// Ruins and collapsed blocks contain rubble, with open edges instead of stone outlines.
-	const std::vector<int> fill = periodicNoise(t.w, t.h, 4, context.stream("honeycomb-isle-fill"));
-	const std::vector<int> chunks = periodicNoise(t.w, t.h, 2, context.stream("honeycomb-isle-chunks"));
-	std::vector<unsigned char> rubbleGround(n, 0);
-	for (int c = 0; c < cells; ++c)
-	{
-		if (L.kind[c] != Block::Ruin && L.kind[c] != Block::Collapsed)
-			continue;
-		for (int i : tilesOf[c])
-			if (interior[i] && depth[i] >= (L.kind[c] == Block::Ruin ? 2 : 1))
-				rubbleGround[i] = 1;
-	}
-	// The rubble control sets how full a ruin is; the wood amount scales it like any other wood, so
-	// at a wood amount of 0 the blocks stand empty.
-	const int share = std::clamp(int(scaledCount(o.rubble + 10, o.wood)), 0, 100);
-	L.telemetry.measure("honeycomb-isle.rubble.share", share);
-	std::vector<unsigned char> rubbleShare = noisyShare(rubbleGround, fill, share);
-	// Fallen masonry in the rubble: about 3% of it at a stone amount of 100, scaled by the amount.
-	const int chunkShare = std::clamp(int(scaledCount(3, o.stone)), 0, 100);
-	const int chunkCut = chunkShare ? 65536 - 65536 * chunkShare / 100 : 65536;
-	for (int i = 0; i < n; ++i)
-		if (rubbleShare[i] && depth[i] >= 2 && chunks[i] >= chunkCut)
-			L.stone[i] = 1;
-
-	// Squares keep their ground open: a single statue at the middle.
-	for (int c = 0; c < cells; ++c)
-		if (L.kind[c] == Block::Square && o.stone > 0)
-		{
-			const ShapePoint p = cellCentre(L, c);
-			const int i = t.at(int(std::lround(p.x)), int(std::lround(p.y)));
-			if (interior[i] && depth[i] >= 3)
-				L.stone[i] = 1;
-		}
-
-	// Bridges: sand across the river where it runs through the city, evenly spaced along it, with
-	// clear ground at both ends.
-	std::vector<unsigned char> landing(n, 0);
+	// Bridges: boardwalk across the river where it runs through the island, evenly spaced along
+	// it, with clear ground at both ends and a dirt track on through any field to the first road.
+	std::vector<unsigned char> landing(n, 0), deck(n, 0);
 	if (!riverPath.empty())
 	{
 		std::vector<int> spans;
@@ -738,22 +1021,22 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		for (int b = 0; b < count; ++b)
 		{
 			const StrokePoint &at = riverPath[spans[(2 * b + 1) * spans.size() / (2 * count)]];
-			// The deck is sand over the water; beyond each end the ground stays clear of rubble and
-			// stone for a few tiles, so a bridge always lands on open ground.
 			const double reach = riverWidth / 2.0 + 6.0;
 			const ShapePoint a = alongX ? ShapePoint{at.x, at.y - reach} : ShapePoint{at.x - reach, at.y};
 			const ShapePoint e = alongX ? ShapePoint{at.x, at.y + reach} : ShapePoint{at.x + reach, at.y};
-			std::vector<unsigned char> deck(n, 0), approach(n, 0);
-			strokePath(deck, t, {{a.x, a.y, 1.5}, {e.x, e.y, 1.5}});
+			std::vector<unsigned char> span(n, 0), approach(n, 0);
+			strokePath(span, t, {{a.x, a.y, 1.5}, {e.x, e.y, 1.5}});
 			strokePath(approach, t, {{a.x, a.y, 3.5}, {e.x, e.y, 3.5}});
 			for (int i = 0; i < n; ++i)
 			{
-				if (deck[i] && inCity[i] && L.terrain[i] == WATER)
+				// The deck is laid after the beaches; until then it holds the beach back as sand.
+				if (span[i] && inCity[i] && L.terrain[i] == WATER)
+				{
 					L.terrain[i] = SAND;
+					deck[i] = 1;
+				}
 				landing[i] = landing[i] || approach[i];
 			}
-			// Beyond each end a sand causeway runs on through any field to the first street, so
-			// wheat growing on a bank never closes a bridge.
 			const double nx = alongX ? 0.0 : 1.0, ny = alongX ? 1.0 : 0.0;
 			for (const double side : {-1.0, 1.0})
 			{
@@ -768,10 +1051,9 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 					for (int w = -1; w <= 1; ++w)
 					{
 						const int i = t.at(int(std::lround(px + ny * w)), int(std::lround(py + nx * w)));
-						const Block b = L.kind[L.cell[i]];
-						if ((b == Block::Field || b == Block::Bank) && !L.street[i] && L.homeOf[i] < 0)
+						if (!L.street[i] && L.homeOf[i] < 0 && inCity[i] && !L.river[i])
 						{
-							L.terrain[i] = SAND;
+							setVertex(L, look, i, TRAIL, DIRT_TRACK);
 							landing[i] = 1;
 						}
 					}
@@ -783,56 +1065,146 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	L.telemetry.measure("honeycomb-isle.bridges", L.bridges);
 
 	layBeaches(L.terrain, t);
-	// Beaches and street sand spoil tiles; only pure grass carries anything.
+	for (int i = 0; i < n; ++i)
+		if (lakeDeep[i] && L.terrain[i] == WATER)
+			setVertex(L, look, i, DEEP_WATER, DARK_WATER);
+	for (int i = 0; i < n; ++i)
+		if (deck[i])
+			setVertex(L, look, i, TRAIL, BOARDWALK);
+	// The sea deepens away from the shore. A tile mixing shallow and deep corners is neither
+	// walkable nor swimmable, so the deep sea is a barrier; it is drawn only outside the island,
+	// never in the river.
+	{
+		std::vector<unsigned char> water(n, 0);
+		for (int i = 0; i < n; ++i)
+			water[i] = L.terrain[i] == WATER || L.terrain[i] == DEEP_WATER;
+		const std::vector<int> offshore = clearance(t, water);
+		// The clearance is counted in king's moves, so its contours are squares; noise breaks them up.
+		const std::vector<int> swell = periodicNoise(t.w, t.h, 9, context.stream("honeycomb-isle-swell"));
+		int deepTiles = 0;
+		for (int i = 0; i < n; ++i)
+		{
+			const int lift = swell[i] * 7 / 65536 - 3;
+			if (L.terrain[i] == WATER && !inCity[i] && offshore[i] + lift >= kDeepFromShore)
+			{
+				setVertex(L, look, i, DEEP_WATER,
+						  offshore[i] - lift >= kDarkFromShore ? DARK_WATER : DEEP_WATER);
+				++deepTiles;
+			}
+		}
+		L.telemetry.measure("honeycomb-isle.sea.deep", deepTiles);
+	}
+
+	// Crops grow on tiles whose four corners are grass or loam; only such tiles carry plots.
+	const auto cropCorner = [&](int i) { return L.terrain[i] == GRASS || L.terrain[i] == LOAM; };
+	std::vector<unsigned char> crop(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = t.remainderX(i), y = i / t.w;
+		crop[i] = cropCorner(i) && cropCorner(t.at(x + 1, y)) && cropCorner(t.at(x, y + 1)) &&
+				  cropCorner(t.at(x + 1, y + 1));
+	}
 	const std::vector<unsigned char> grass = pureTiles(L.terrain, t, GRASS);
 	for (Plot &p : L.plots)
 	{
 		for (int i : p.tiles)
-			if (!grass[i])
+			if (!crop[i])
 				L.plotOf[i] = -1;
-		p.tiles.erase(std::remove_if(p.tiles.begin(), p.tiles.end(), [&](int i) { return !grass[i]; }),
+		p.tiles.erase(std::remove_if(p.tiles.begin(), p.tiles.end(), [&](int i) { return !crop[i]; }),
 					  p.tiles.end());
 	}
-	L.fertility = cropGrowthField(L.terrain, t);
+	// The growth field on the sketch with deep water as water: the two irrigate alike, and a tile
+	// mixing them irrigates as either, which the sketch's pure-tile field reads only this way.
+	{
+		TerrainSketch shallow = L.terrain;
+		for (unsigned char &v : shallow)
+			if (v == DEEP_WATER)
+				v = WATER;
+		L.fertility = cropGrowthField(shallow, t);
+	}
 	const Fertility::Field &fertility = L.fertility;
-	// Every block is sealed by its paved streets, so rubble near water may regrow, but only inside
-	// its own block: each rubble block is labelled as a plot of its own for the validator.
-	int rubbleTiles = 0, regrowing = 0;
-	const int firstBlockPlot = int(L.plots.size());
+
+	// Forests: trees on the forest's crop ground in noisy stands, as full as the forest control
+	// and the wood amount make them. Stone: at a mountain's foot and in a hill's pocket.
+	const std::vector<int> stands = periodicNoise(t.w, t.h, 4, context.stream("honeycomb-isle-stands"));
+	const int density = std::clamp(int(scaledCount(o.forest + 10, o.wood)), 0, 100);
+	L.telemetry.measure("honeycomb-isle.forest.share", density);
+	std::vector<unsigned char> treeGround(n, 0);
 	for (int i = 0; i < n; ++i)
-	{
-		const bool usable = grass[i] && L.plotOf[i] < 0 && !L.river[i] && !landing[i];
-		L.stone[i] = L.stone[i] && usable && !L.street[i];
-		const bool dry = fertility.at(t.remainderX(i), i / t.w) == 0;
-		if (rubbleShare[i] && usable && L.homeOf[i] < 0 && !L.stone[i])
+		treeGround[i] = forestGround[i] && crop[i] && !landing[i] && depth[i] >= 1;
+	const std::vector<unsigned char> standShare = noisyShare(treeGround, stands, density);
+	int treeTiles = 0;
+	for (int i = 0; i < n; ++i)
+		if (standShare[i])
 		{
-			L.rubble[i] = 1;
-			++rubbleTiles;
-			regrowing += !dry;
+			L.trees[i] = 1;
+			++treeTiles;
 		}
+	L.telemetry.measure("honeycomb-isle.forest.trees", treeTiles);
+	{
+		std::vector<std::pair<int, int>> mountainFoot, hillPocket;
+		for (int i = 0; i < n; ++i)
+			if (quarry[i] && grass[i] && !landing[i] && !L.street[i])
+				(quarry[i] == 1 ? mountainFoot : hillPocket).push_back({-grain[i], i});
+		std::sort(mountainFoot.begin(), mountainFoot.end());
+		std::sort(hillPocket.begin(), hillPocket.end());
+		// Each mountain and each hill takes its own share of its best-ranked foot tiles.
+		const auto quarryStone = [&](const std::vector<std::pair<int, int>> &ranked, int perHex)
+		{
+			std::vector<int> taken(cells, 0);
+			int placed = 0;
+			for (const auto &[rank, i] : ranked)
+				if (taken[L.cell[i]] < perHex)
+				{
+					L.stone[i] = 1;
+					++taken[L.cell[i]];
+					++placed;
+				}
+			return placed;
+		};
+		L.telemetry.measure("honeycomb-isle.stone.mountain",
+							quarryStone(mountainFoot, int(scaledCount(kMountainStone, o.stone))));
+		L.telemetry.measure("honeycomb-isle.stone.hills",
+							quarryStone(hillPocket, int(scaledCount(kHillStone, o.stone))));
 	}
+
+	// Every crop tile is labelled for the validator: a home's whole ground is one label (its garden
+	// crops may grow through it), every other hex's crop ground another, sealed by its roads.
+	L.sealOf.assign(n, -1);
+	const int firstHexLabel = int(L.plots.size());
 	for (int i = 0; i < n; ++i)
 	{
-		const Block b = L.kind[L.cell[i]];
-		if (grass[i] && L.plotOf[i] < 0 && (b == Block::Ruin || b == Block::Collapsed))
-			L.plotOf[i] = firstBlockPlot + L.cell[i];
-	}
-	// No pond needs a ring of sand round its garden (FEEDBACK 2026-09-16: "the extra sand ring
-	// around lakes"): the sand of the streets round a home's two blocks, or round a crater's block,
-	// holds the crops, so that whole ground is one label.
-	L.sealOf = L.plotOf;
-	for (int i = 0; i < n; ++i)
-	{
-		if (!grass[i])
+		if (!crop[i])
 			continue;
-		if (L.homeOf[i] >= 0)
-			L.sealOf[i] = firstBlockPlot + cells + L.homeOf[i];
-		else if (L.kind[L.cell[i]] == Block::Crater)
-			L.sealOf[i] = firstBlockPlot + L.cell[i];
+		L.sealOf[i] = L.homeOf[i] >= 0 ? firstHexLabel + cells + L.homeOf[i] : firstHexLabel + L.cell[i];
 	}
-	L.telemetry.measure("honeycomb-isle.rubble.regrowing", regrowing);
-	L.telemetry.measure("honeycomb-isle.rubble.tiles", rubbleTiles);
+	int regrowing = 0;
+	for (int i = 0; i < n; ++i)
+		regrowing += L.trees[i] && fertility.at(t.remainderX(i), i / t.w) > 0;
+	L.telemetry.measure("honeycomb-isle.forest.regrowing", regrowing);
 	L.telemetry.measure("honeycomb-isle.plots", L.plots.size());
+
+	// The looks. Grass is lush where it is tended (homes, forests, water meadows, the oasis) and
+	// plain elsewhere: shading it by its growth chance blotched pastures and hillsides. Every beach
+	// is pale sand and the desert dune sand; everything else keeps the look it was drawn with.
+	L.paint = L.terrain;
+	for (int i = 0; i < n; ++i)
+	{
+		const TerrainType mechanic = TerrainType(L.terrain[i]);
+		const TerrainType chosen = TerrainType(look[i]);
+		if (look[i] && terrainGroup(chosen) == terrainGroup(mechanic))
+		{
+			L.paint[i] = chosen;
+			continue;
+		}
+		const Block b = L.kind[L.cell[i]];
+		if (mechanic == GRASS && (L.homeOf[i] >= 0 || b == Block::Forest || b == Block::Bank))
+			L.paint[i] = LUSH_GRASS;
+		else if (mechanic == SAND)
+			// One beach sand everywhere (three sands on one shore looked wrong; maintainer playtest,
+			// 2026-11-01); the desert keeps its dunes.
+			L.paint[i] = b == Block::Landmark ? DUNE_SAND : PALE_SAND;
+	}
 	return L;
 }
 
@@ -843,15 +1215,13 @@ bool sameDesign(const GenerationRequest &a, const GenerationRequest &b)
 }
 
 // The whole layout as a pure function of the request and the context's named streams. Homes keep
-// off the river, so on a small map the river can leave too few blocks for them; then the city is
-// laid out again without it (the lagoon still gives it its water), and only a map too small even
-// then refuses the colonies.
+// off the river, so on a small map the river can leave too few hexes for them; then the island is
+// laid out again without it, and only a map too small even then refuses the colonies.
 //
 // A generation asks for the same design three times: the request check (designFailure), generate
-// and validateWorld. The design depends only on the request (every draw comes from a named stream
-// seeded by the request's seed), so the last design built on this thread is kept and handed out
-// again for the same request, its telemetry replayed so each context records what building it would
-// have.
+// and validateWorld. The design depends only on the request, so the last design built on this
+// thread is kept and handed out again for the same request, its telemetry replayed so each context
+// records what building it would have.
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	struct Cache
@@ -870,7 +1240,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		{
 			GenerationTelemetry both = cache.layout.telemetry;
 			both.fallback("honeycomb-isle.river.dropped",
-						  "The river left too few blocks for the homes; laid out without it.");
+						  "The river left too few hexes for the homes; laid out without it.");
 			cache.layout = layout(request, context, 0);
 			both.replay(cache.layout.telemetry);
 			cache.layout.telemetry = std::move(both);
@@ -899,8 +1269,8 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "honeycomb isle terrain";
-	writeVertices(map, L.terrain);
-	// Scattered masonry and rubble go down before the colonies: neither is ever on a home.
+	writeVertices(map, L.paint);
+	// Quarry stone and forest trees go down before the colonies: neither is ever on a home.
 	int stoneTiles = 0;
 	for (int i = 0; i < n; ++i)
 	{
@@ -910,7 +1280,7 @@ bool generate(Game &game, GenerationContext &context)
 			map.setResourceByIndex(x, y, STONE, 1);
 			++stoneTiles;
 		}
-		else if (L.rubble[i] && map.isResourceAllowed(x, y, WOOD))
+		else if (L.trees[i] && map.isResourceAllowed(x, y, WOOD))
 			map.setResourceByIndex(x, y, WOOD, 1);
 	}
 	context.telemetry.measure("honeycomb-isle.stone.tiles", stoneTiles);
@@ -939,7 +1309,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const Plot &p = L.plots[k];
 		const int size = int(p.tiles.size()), wheatShare = size * p.fillWheatShare / 100;
-		// A field is planted to its corners, dry corners included: its streets hold them.
+		// A field is planted to its corners, dry corners included: its roads hold them.
 		const int wheat = p.fillWheatShare
 							  ? int(std::min<std::int64_t>(wheatShare, scaledCount(wheatShare, o.wheat)))
 							  : p.minimumWheat + int(scaledCount(p.wheat, o.wheat));
@@ -952,8 +1322,7 @@ bool generate(Game &game, GenerationContext &context)
 		if (p.garden)
 		{
 			// A garden's crops go round its pond, wheat in one broad half facing `heading` and wood
-			// in the other. The first version alternated them by quarter, which left only thin arcs
-			// of wheat; one solid patch beside the swarm reads better and is what the AIs look for.
+			// in the other: one solid patch beside the swarm reads well and is what the AIs look for.
 			const ShapePoint well = p.centre;
 			const auto byDistanceTo = [&](ShapePoint to)
 			{
@@ -972,10 +1341,8 @@ bool generate(Game &game, GenerationContext &context)
 						   t.offsetY(int(std::lround(well.y)), i / t.w) * uy >=
 					   0;
 			};
-			// The wheat nearest the swarm on its own side of the pond: on big blocks the swarm
-			// stands far from the cistern, and wheat planted nearest the pond was 25 steps from it
-			// (final reliability pass, 2026-09-16: 6 of 1,620 maps, all blocks of 22 with little
-			// wheat).
+			// The wheat nearest the swarm on its own side of the pond: on big hexes the swarm stands
+			// far from the cistern, and wheat planted nearest the pond was 25 steps from it.
 			for (const auto &[distance, i] : byDistanceTo(p.wheatToward))
 			{
 				const int x = t.remainderX(i), y = i / t.w;
@@ -1048,9 +1415,8 @@ bool generate(Game &game, GenerationContext &context)
 						 { return L.orchard[i] && clearGround(map, t.remainderX(i), i / t.w); });
 		}
 	seedAlgae(map, context, t, "honeycomb-isle-algae", o.algae, AlgaeBand::shallows(0, 4, 60));
-	// No generic crop or route repair: an unrestricted top-up would break the gardens' seal and
-	// could plant living wood in a street. The validator refuses a colony short of crops or room
-	// instead.
+	// No generic crop or route repair: an unrestricted top-up would break the hexes' seal. The
+	// validator refuses a colony short of crops or room instead.
 	return true;
 }
 
@@ -1063,7 +1429,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return mismatch;
 	const Torus &t = L.t;
 	const int teams = context.request.nbTeams;
-	// Every block is sealed by its streets: no crop or rubble may grow out of the plot it is in.
+	for (int i = 0; i < t.size(); ++i)
+		if (map.vertexTerrainAt(t.remainderX(i), i / t.w) != TerrainType(L.paint[i]))
+			return "The terrain at " + std::to_string(t.remainderX(i)) + "," + std::to_string(i / t.w) +
+				   " is not the design's.";
+	// Every hex is sealed by its roads: no crop or tree may grow out of the hex it is in.
 	const Fertility::Field &fertility = L.fertility;
 	if (const std::string error = containedPlotsMismatch(map, t, L.sealOf, &fertility); !error.empty())
 		return error;
@@ -1073,10 +1443,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 		if (L.street[i] && L.homeOf[i] < 0 && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable &&
 			map.getResource(t.remainderX(i), i / t.w).type != NO_RES_TYPE)
-			return "A street is blocked by a deposit at " + std::to_string(t.remainderX(i)) + "," +
+			return "A road is blocked by a deposit at " + std::to_string(t.remainderX(i)) + "," +
 				   std::to_string(i / t.w) + ".";
 	if (const std::string error =
-			walkFromFirstColony(map, teams, "the city", "along the streets").error;
+			walkFromFirstColony(map, teams, "the island", "along the roads").error;
 		!error.empty())
 		return error;
 	return startingAccessFailure(map, teams, {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}}, 16, 24);
@@ -1086,8 +1456,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 HoneycombIsleOptions::HoneycombIsleOptions(const GenerationRequest &r)
 	: blockShape(r.option("block-shape")), blockSize(r.option("block-size")),
 	  streetWidth(r.option("street-width")), warp(r.option("warp")),
-	  blocksPerColony(r.option("blocks-per-colony")), rubble(r.option("rubble")),
-	  craters(r.option("crater-gardens")),
+	  blocksPerColony(r.option("blocks-per-colony")), forest(r.option("forest-density")),
+	  lakes(r.option("lakes")), mountains(r.option("mountains")),
 	  riverWidth(r.option("river-width")), wheatFields(r.option("wheat-fields")),
 	  bridges(r.option("bridges")),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
@@ -1103,12 +1473,12 @@ GeneratorDefinition honeycombIsleDefinition()
 		"honeycomb-isle",
 		53,
 		"Honeycomb isle",
-		// Revision 4: hexagons by default, open cell edges and an unenclosed orchard.
-		4,
+		// Revision 5: a board of terrain hexes on the terrain catalogue (fields, forests, pastures,
+		// hills, mountains, lakes, a desert oasis), cobbled roads and a deep sea.
+		5,
 		false,
-		// Blocks of 18 with streets of 3 leave a block's inside about 15 tiles across, room for
-		// a cistern garden and a swarm's neighbourhood; eleven blocks a colony leave room for
-		// ruins inside the ring of edge and riverside fields.
+		// Hexes of 18 with roads of 3 leave a hex's inside about 15 tiles across, room for a
+		// cistern garden and a swarm's neighbourhood, or a mountain and its quarry.
 		{GeneratorControl::choice("block-shape", "Block shape", {"Squares", "Hexagons", "Random"},
 								  1, ControlGroup::Terrain)
 			 .withSearchValues({0, 1}),
@@ -1121,21 +1491,21 @@ GeneratorDefinition honeycombIsleDefinition()
 		 GeneratorControl{"blocks-per-colony", "Blocks per colony", 8, 16, 1, 11,
 						  ControlGroup::Layout}
 			 .withSearchRange(10, 14),
-		 GeneratorControl{"rubble", "Rubble", 20, 90, 5, 70, ControlGroup::Terrain}.withSearchRange(
-			 45, 75),
-		 GeneratorControl{"crater-gardens", "Craters per colony", 0, 3, 1, 1, ControlGroup::Layout}
-			 .withSearchRange(1, 3),
+		 GeneratorControl{"forest-density", "Forest density", 20, 90, 5, 70, ControlGroup::Terrain}
+			 .withSearchRange(45, 80),
+		 GeneratorControl{"lakes", "Lakes", 0, 3, 1, 1, ControlGroup::Layout}.withSearchRange(1, 2),
+		 GeneratorControl::choice("mountains", "Mountain ranges", {"Few", "Normal", "Many"}, 1,
+								  ControlGroup::Layout)
+			 .withSearchValues({0, 1, 2}),
 		 GeneratorControl::choice("wheat-fields", "Wheat fields", {"Few", "Normal", "Many"}, 1,
 								  ControlGroup::Layout)
 			 .withSearchValues({0, 1, 2}),
-		 // FEEDBACK 2026-09-16: the river "a bit thicker, maybe 2x" (was 6 wide, at most 12).
 		 GeneratorControl{"river-width", "River width", 0, 20, 1, 12, ControlGroup::Terrain}
 			 .withSearchRange(8, 16),
 		 GeneratorControl{"bridges", "Bridges", 1, 6, 1, 3, ControlGroup::Layout}.withSearchRange(
 			 2, 5),
-		 // Wheat fields are planted full at 100 and rubble is full at 200, so higher amounts would
-		 // change nothing (bulk study, 2026-09-16). The stone amount scales only the masonry
-		 // chunks in the rubble and the single statues in open squares.
+		 // Fields are planted full at 100 and forests are full by 150-200, so higher amounts would
+		 // change nothing. The stone amount scales the quarries at the mountains and hills.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount", 100),
 		 GeneratorControl::percentage("wood-amount", "Wood amount", 200),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
@@ -1145,7 +1515,7 @@ GeneratorDefinition honeycombIsleDefinition()
 		true,
 		designFailure<design>,
 		validateWorld,
-		// The hex tiling itself reads as stylised/artificial on top of the urban ruins.
-		{"terrain:urban", "terrain:novelty", "feature:river", "feature:hexagons", "feature:ruins",
-		 "style:tight-building"}};
+		{"terrain:novelty", "feature:hexagons", "feature:islands", "feature:river", "feature:farmland",
+		 "feature:forest", "feature:mountains", "feature:lakes", "feature:orchard",
+		 "style:contested-center"}};
 }

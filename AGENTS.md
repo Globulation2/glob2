@@ -15,11 +15,13 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Units, buildings and teams | `src/unit/`, `src/building/`, `src/team/` (statistics in `team/stats/`), `src/resource/`; each holds its type tables in `types/` and its drawing or HUD code in `render/` or `hud/` |
 | Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/`; generators in `generator/`, the editor in `editor/` |
 | AI implementations | `src/ai/`, one directory per AI, behind `AIImplementation` |
-| Rendering, menus and editor | `src/render/`, in-game HUD in `src/hud/`, menus and settings in `src/ui/`, each domain's screens in its `screens/` directory, `src/map/editor/`; drawing reads only the extracted Scene in `src/render/scene/`, see [Scene renderer](docs/architecture/rendering.md#scene-renderer); menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
+| Rendering, menus and editor | `src/render/`, in-game HUD in `src/hud/`, menus and settings in `src/ui/`, each domain's screens in its `screens/` directory, `src/map/editor/`; drawing reads only the extracted Scene in `src/render/scene/`, see [Scene renderer](docs/architecture/rendering.md#scene-renderer); menu/dialog framework in `libs/gag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
 | Network and multiplayer client | `src/net/` (turn netcode in `src/net/turn/`, LAN in `src/net/lan/`), online client in `src/online/` ([client](docs/multiplayer/client.md)), match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
-| Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `platform/`, [platform architecture](docs/multiplayer/architecture.md) |
-| Soundtrack sets and the music pipeline | `data/zik/` (one directory per set), `tools/music/` (build and QA), [music pipeline](docs/assets/music-pipeline.md), [style guide](docs/assets/music-style-guide.md); playback in `src/audio/SoundMixer.cpp` |
-| Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
+| Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `services/online/`, [platform architecture](docs/multiplayer/architecture.md); hosting and deployment scripts in `deploy/` |
+| Game content (the runtime tree) | `content/` holds `data/`, `maps/`, `campaigns/`, `scripts/` and `games/` under the names the game loads them by: the file manager adds a checkout's `content/` as a search root, packages install its directories at their root, and online sim-data hashes use the paths relative to it. Source art and provenance live in `content-src/` |
+| Platform shells and packaging | `platforms/` (`web/`, `platforms/mobile/`, `macos/`, `platforms/windows/`, `linux/`, `stores/`); `debian/`, `snap/` and `fastlane/` stay at the root because dpkg, snapcraft and F-Droid expect them there |
+| Soundtrack sets and the music pipeline | `content/data/zik/` (one directory per set), `tools/music/` (build and QA), [music pipeline](docs/assets/music-pipeline.md), [style guide](docs/assets/music-style-guide.md); playback in `src/audio/SoundMixer.cpp` |
+| Graphics/UI and scripting libraries | `libs/gag/`, `libs/usl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
 | Documentation index | [docs/README.md](docs/README.md) |
 | Application shell and shared utilities | `src/app/` (entry point, settings, command-line modes in `cli/`), `src/audio/`, `src/common/` |
@@ -150,7 +152,7 @@ Treat runtime and development dependencies differently.
 
 Pin exact versions. General Python tooling installs from `requirements-dev.txt`;
 add new packages there, or in a focused requirements file that it includes.
-Hash-pinned isolated environments (`mobile/play-api-requirements.txt`) and
+Hash-pinned isolated environments (`platforms/mobile/play-api-requirements.txt`) and
 large, hardware-specific extras (`tools/music/requirements-*.txt`) stay separate.
 A development dependency that starts to affect runtime becomes a runtime
 dependency and needs approval.
@@ -170,17 +172,22 @@ freeze the threshold in the cohort and use an explicit zero only when playing
 out complete end games is part of the assessment. Resolve tick-cap survivors by
 final win probability rather than the historical economic calculation.
 
-Use **integrated whole-match win probability**, normalized by observed game time,
-as the primary continuous effectiveness metric alongside wins, losses and draws.
-It captures improvements in the strength and duration of an AI's position that
-can leave discrete match outcomes unchanged, making small changes easier to
-measure. Standard reports collect and analyze it automatically; custom scripts
-should use the retained integer area/coverage summary rather than count samples
-or infer it from the final chance. Compare paired seeds and seat rotations, report
-confidence intervals and missing coverage, and keep model identities, stopping
-rules, opponents and map distributions comparable. Retain actual outcomes as a
-check against improving the model score without improving play. Old or partial
-history is unavailable, never zero. See [tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
+Use the **adjusted win-probability trajectory score** (`log_time_outcome_v1`,
+log curvature `c=2`) as the primary continuous effectiveness metric alongside
+wins, losses and draws. It integrates the retained probability curve on a log
+clock through the fixed game tick limit, then credits a declared win with 1 and
+a loss with 0 for the remaining horizon. Probability-based early stops receive
+the same outcome credit, explicitly labelled predicted rather than actual.
+Tick caps receive no invented terminal tail. Shared winners each receive full
+credit; count an alliance once. Use `tools.tournaments.probability.group_score`
+or the standard reports, not the legacy linear area/observed-time mean. Compact
+results retain a versioned log integral before dropping curves; old compact
+records without that integral are unavailable, never silently approximated.
+Compare paired seeds and seat rotations, report confidence intervals and missing
+coverage, and keep metric version, horizon, model, stopping rules, opponents and
+map distributions comparable. Retain actual outcomes and completion times as
+checks against improving a model score without improving play. See
+[tournament scoring](docs/tools/tournaments.md#whole-game-probability-scores).
 
 ## Review and merge ownership
 

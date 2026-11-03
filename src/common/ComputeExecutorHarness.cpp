@@ -1403,6 +1403,51 @@ TEST_CASE("callback histograms count every invocation and AI lane despite trace 
         }
     }
 }
+TEST_CASE("fork join publishes all callback timing samples before returning or throwing")
+{
+	if constexpr (!GAGCore::ThreadSupport::available)
+		return;
+	ComputeExecutor executor;
+	executor.configure(3);
+	for (auto mode :
+		 {ComputeTelemetryMode::Off, ComputeTelemetryMode::Waits, ComputeTelemetryMode::Trace})
+	{
+		executor.configureTelemetry(mode);
+		for (bool fail : {false, true})
+		{
+			executor.resetPerformance();
+			std::atomic<unsigned> calls{0};
+			auto job = [&](std::size_t i)
+			{
+				++calls;
+				if (fail && i == 17)
+					throw std::runtime_error("timed callback failure");
+			};
+			if (fail)
+				CHECK_THROWS_AS(executor.run(512, job), std::runtime_error);
+			else
+				executor.run(512, job);
+			CHECK(calls == 512);
+			auto captured = std::make_unique<PerformanceTelemetry::Collector>();
+			executor.absorbPerformance(*captured);
+			const auto &all = captured->window[unsigned(PerformanceTelemetry::Id::ComputeForkJoin)];
+			CHECK(all.calls == 512);
+			CHECK(all.time.count == 512);
+			PerformanceTelemetry::Moments roles;
+			for (auto id :
+				 {PerformanceTelemetry::Id::ComputeOwner, PerformanceTelemetry::Id::ComputeWorker})
+				roles.merge(captured->window[unsigned(id)].time);
+			CHECK(roles.count == all.time.count);
+			CHECK(roles.total == all.time.total);
+			CHECK(roles.histogram == all.time.histogram);
+			CHECK(roles.maximum == all.time.maximum);
+			CHECK(all.cpuSamples == 0);
+			auto empty = std::make_unique<PerformanceTelemetry::Collector>();
+			executor.absorbPerformance(*empty);
+			CHECK(empty->window[unsigned(PerformanceTelemetry::Id::ComputeForkJoin)].calls == 0);
+		}
+	}
+}
 TEST_CASE("trace preserves early external resolution and continuation callback ordering")
 {
     if constexpr (!GAGCore::ThreadSupport::available) return;
@@ -1752,4 +1797,152 @@ TEST_CASE("canceling a slot-blocked graphics batch wakes its owner before scene 
     CHECK(executor.graphicsMetrics().jobs == 0);
     releaseScene.store(true);
     executor.cancelPresentationAndWait();
+}
+
+TEST_SUITE("ComputeExecutor")
+{
+	TEST_CASE("direct external completion retains suspension timing")
+	{
+		if constexpr (!GAGCore::ThreadSupport::available)
+			return;
+		using namespace PerformanceTelemetry;
+		ComputeExecutor executor;
+		executor.configure(2);
+		struct Deferred
+		{
+			ComputeExecutor &executor;
+			std::promise<ComputeExecutor::CompletionTicket> ready;
+			static void run(void *state, std::size_t)
+			{
+				auto &self = *static_cast<Deferred *>(state);
+				self.ready.set_value(self.executor.defer());
+			}
+		} state{executor};
+		ComputeExecutor::Group group{1, {Deferred::run, &state}};
+		auto batch = executor.submit(std::span(&group, 1), 1, {ComputeProducer::AI, 0, 1});
+		auto ticket = state.ready.get_future().get();
+		// The same worker executes this later batch only after the deferred callback
+		// returns. Completing afterward must count a nonzero external suspension.
+		ComputeExecutor::Group barrier{1, {+[](void *, std::size_t) {}, nullptr}};
+		auto later = executor.submit(std::span(&barrier, 1), 2);
+		executor.join(later, {JoinReason::Teardown, ComputeTelemetry::NoTick});
+		CHECK(ticket->complete());
+		executor.join(batch, {JoinReason::TickDeadline, 1});
+		auto captured = std::make_unique<Collector>();
+		executor.absorbPerformance(*captured);
+		CHECK(captured->window[unsigned(Id::ExternalAI)].time.total > 0);
+		CHECK(captured->window[unsigned(Id::ComputeAI)].calls == 1);
+	}
+	TEST_CASE("live timing absorption preserves samples across callback retirement")
+	{
+		if constexpr (!GAGCore::ThreadSupport::available)
+			return;
+		using namespace PerformanceTelemetry;
+		ComputeExecutor executor;
+		executor.configure(4);
+		ComputeExecutor::Group group{
+			256, {+[](void *, std::size_t) { std::this_thread::yield(); }, nullptr}};
+		auto ticket = executor.submit(std::span(&group, 1), 1, {ComputeProducer::AI, 0, 1});
+		auto result = std::make_unique<Collector>();
+		const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+		do
+		{
+			executor.absorbPerformance(*result);
+			std::this_thread::yield();
+		} while (!executor.finished(ticket) && std::chrono::steady_clock::now() < deadline);
+		executor.join(ticket, {JoinReason::TickDeadline, 1});
+		executor.absorbPerformance(*result);
+		const auto &all = result->window[unsigned(Id::ComputeAI)];
+		CHECK(all.calls == 256);
+		CHECK(all.time.count == 256);
+		std::uint64_t buckets = 0;
+		for (auto count : all.time.histogram)
+			buckets += count;
+		CHECK(buckets == 256);
+		CHECK(result->window[unsigned(Id::QueueAI)].calls == 64);
+		CHECK(result->window[unsigned(Id::CausalDropped)].calls == 192);
+		CHECK(result->window[unsigned(Id::ComputeWorker)].calls == 256);
+	}
+	TEST_CASE("retirement publishes bounded causal summaries without losing callback samples")
+	{
+		using namespace PerformanceTelemetry;
+		for (unsigned threads : {1u, 4u, 8u})
+		{
+			if constexpr (!GAGCore::ThreadSupport::available)
+				if (threads != 1)
+					continue;
+			ComputeExecutor executor;
+			executor.configure(threads);
+			ComputeExecutor::Group group{128, {+[](void *, std::size_t) {}, nullptr}};
+			auto ticket = executor.submit(std::span(&group, 1), 1, {ComputeProducer::Hiring, 0, 1});
+			executor.join(ticket, {JoinReason::TickDeadline, 1});
+			auto result = std::make_unique<Collector>();
+			executor.absorbPerformance(*result);
+			CHECK(result->window[unsigned(Id::ComputeHiring)].calls == 128);
+			CHECK(result->window[unsigned(Id::QueueHiring)].calls == 64);
+			CHECK(result->window[unsigned(Id::CausalDropped)].calls == 64);
+			CHECK(result->window[unsigned(Id::CausalDropped)].time.total == 64);
+			executor.absorbPerformance(*result);
+			CHECK(result->window[unsigned(Id::ComputeHiring)].calls == 128);
+		}
+	}
+	TEST_CASE("sparse timing shards reuse active IDs across captures and resets")
+	{
+		using namespace PerformanceTelemetry;
+		ComputeExecutor executor;
+		executor.configure(GAGCore::ThreadSupport::available ? 4 : 1);
+		const ComputeProducer producers[]{ComputeProducer::AI, ComputeProducer::Hiring,
+										  ComputeProducer::Turret};
+		const Id ids[]{Id::ComputeAI, Id::ComputeHiring, Id::ComputeTurret};
+		ComputeExecutor::Group group{16, {+[](void *, std::size_t) {}, nullptr}};
+		for (unsigned iteration = 0; iteration < 96; ++iteration)
+		{
+			const auto selected = iteration % 3;
+			auto ticket = executor.submit(std::span(&group, 1), iteration,
+										  {producers[selected], 0, iteration});
+			executor.join(ticket, {JoinReason::TickDeadline, iteration});
+			if (iteration % 7 == 0)
+				executor.resetPerformance();
+			auto captured = std::make_unique<Collector>();
+			executor.absorbPerformance(*captured);
+			for (unsigned i = 0; i < 3; ++i)
+				CHECK(captured->window[unsigned(ids[i])].calls ==
+					  (iteration % 7 != 0 && i == selected ? 16 : 0));
+			executor.absorbPerformance(*captured);
+			CHECK(captured->window[unsigned(ids[selected])].calls == (iteration % 7 != 0 ? 16 : 0));
+		}
+	}
+	TEST_CASE("permanent callback and join telemetry works with optional diagnostics off")
+	{
+		using namespace PerformanceTelemetry;
+		ComputeExecutor executor;
+		executor.configure(1);
+		CHECK(executor.telemetryMode() == ComputeTelemetryMode::Off);
+		ComputeExecutor::Group group{1,
+									 {+[](void *, std::size_t) {}, nullptr},
+									 ComputeExecutor::NoLane,
+									 Id::WorkerGradientGuard};
+		auto ticket =
+			executor.submit(std::span(&group, 1), 1, {ComputeProducer::PeriodicGradient, 0, 1});
+		executor.join(ticket, {JoinReason::TickDeadline, 1});
+		Collector result;
+		executor.absorbPerformance(result);
+		CHECK(result.window[unsigned(Id::ComputePeriodicGradient)].calls == 1);
+		CHECK(result.window[unsigned(Id::WorkerGradientGuard)].calls == 1);
+		CHECK(result.window[unsigned(Id::JoinPeriodicGradient)].calls == 1);
+		CHECK(result.window[unsigned(Id::OwnerJoinPeriodicGradient)].calls == 1);
+		CHECK(result.window[unsigned(Id::CriticalCallbackPeriodicGradient)].calls == 1);
+		const auto before = executor.requiredJoinCosts();
+		executor.absorbPerformance(result);
+		CHECK(executor.requiredJoinCosts().owner == before.owner);
+		CHECK(result.window[unsigned(Id::ComputePeriodicGradient)].calls == 1);
+		executor.resetTelemetry();
+		Collector reset;
+		executor.absorbPerformance(reset);
+		CHECK(reset.window[unsigned(Id::ComputePeriodicGradient)].calls == 0);
+		CHECK(executor.requiredJoinCosts().owner == 0);
+		// Session-local permanent storage plus three owner collectors and the shared
+		// worker sink fit the non-history allowance. Event traces are optional extras.
+		CHECK(4 * sizeof(Collector) + executor.performanceStorageBytes() < 4 * 1024 * 1024);
+	}
 }

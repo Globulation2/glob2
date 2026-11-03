@@ -6,13 +6,14 @@ Import('env')
 if env['server']:
     Return()
 
-Import('client_objects', 'client_object_by_source', 'client_libs')
+Import('client_objects', 'client_object_by_source', 'client_libs', 'online_error_catalog')
+from online_error_catalog import bind_consumer as bind_online_error_consumer
 
 sys.path.insert(0, Dir('.').srcnode().abspath)
 import tests as registry
 
 test_env = env.Clone()
-test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#libgag/src'), Dir('#third_party/quickjs-ng')])
+test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#libs/gag/src'), Dir('#third_party/quickjs-ng')])
 # Console entry point for every test binary: no -mwindows, SDL3 headers supply no separate main library.
 test_env['LINKFLAGS'] = [flag for flag in test_env.Split(test_env['LINKFLAGS']) if flag != '-mwindows']
 # Keep function names in native harnesses for crash backtraces; shipping programs
@@ -71,6 +72,7 @@ def objects(entries, prefix):
             compile_env.Append(CPPDEFINES=options.get('defines', []))
         name = source.lstrip('#').replace('/', '_').rsplit('.', 1)[0]
         targets = compile_env.Object(prefix + name + '.o', source_node(source))
+        bind_online_error_consumer(compile_env, targets, source, online_error_catalog)
         if source.endswith(('TestMain.cpp', 'TranslationPreviewHarness.cpp')):
             compile_env.Depends(targets, provenance_header)
         out += targets

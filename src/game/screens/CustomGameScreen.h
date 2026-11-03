@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "CustomGameRules.h"
@@ -79,7 +80,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	void loadCatalogMap(const Online::MapPlayRequest &request);
 	void launchFailed()
 	{
-		message = "Could not launch this map. Your setup is retained; try again.";
+		message = Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[Could not launch this map. Your setup is retained; try again.]", "Could not launch this map. Your setup is retained; try again.") : "Could not launch this map. Your setup is retained; try again.";
 		invalidate();
 	}
 	int selectedSpeed() const { return setup.speed; }
@@ -119,6 +120,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	void beginCatalogDownload();
 	MapHeader mapHeader;
 	GameHeader gameHeader;
+	Glob2UI::DiagnosticText validationError, mapDownloadError;
 	std::string username, source, message;
 	std::unique_ptr<Online::OnlineStorage> aiStorage;
 	std::unique_ptr<Script::Library> aiLibrary;
@@ -159,9 +161,6 @@ class CustomGameScreen : public Glob2UI::Screen
 	void finishPreview();
 	bool previewBusy() const { return previewPending || candidates != nullptr; }
 	bool validMap = false, userMaps = false;
-	// LandscapePickerScreen::SortOrder, kept as a plain int here so this header does not need
-	// that screen's full declaration; see CustomGamePreferences::landscapeSortOrder.
-	int landscapeSortOrder = 0;
 	bool separateMapLibraries = true;
 	int currentTab = 0;
 	bool forRoom = false;

@@ -14,6 +14,7 @@ from javascript import javascript_objects, numeric_guard, strict_numeric_source,
 import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 import skin_materials
+from online_error_catalog import configure as configure_online_error_catalog, bind_objects as bind_online_error_objects, bind_consumer as bind_online_error_consumer
 
 
 def build_mobile(directory, identity, arguments):
@@ -103,18 +104,19 @@ def build_mobile(directory, identity, arguments):
         from dev_build import cache_flags
         cache_flags(env)
     env.Alias("dev-dependencies", [])
+    online_error_catalog = configure_online_error_catalog(env, output / 'include')
     strict = env.Clone()
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     script_objects = javascript_objects(env, object_root / 'third_party', identity['mode'] == 'release', shared=identity['target'] == 'android')
     files = ['src/' + name for name in CLIENT_SOURCES if name != 'audio/VoiceRecorder.cpp']
     if identity['target'] == 'ios':
         files.remove('src/app/Glob2.cpp')
-        files += ['mobile/ios/SafeArea.mm', 'mobile/ios/Documents.mm', 'mobile/ios/LaunchLinks.mm', 'mobile/ios/CertificateTrust.cpp']
-    files += ['libgag/src/' + name for name in GAG_SOURCES]
-    files += ['libusl/src/' + name for name in USL_SOURCES]
-    files += ['browser/VoiceRecorder.cpp', 'mobile/MobilePaths.cpp', 'mobile/Documents.cpp', 'mobile/CertificateTrust.cpp', 'mobile/TemporaryFiles.cpp']
+        files += ['platforms/mobile/ios/SafeArea.mm', 'platforms/mobile/ios/Documents.mm', 'platforms/mobile/ios/LaunchLinks.mm', 'platforms/mobile/ios/CertificateTrust.cpp']
+    files += ['libs/gag/src/' + name for name in GAG_SOURCES]
+    files += ['libs/usl/src/' + name for name in USL_SOURCES]
+    files += ['platforms/web/VoiceRecorder.cpp', 'platforms/mobile/MobilePaths.cpp', 'platforms/mobile/Documents.cpp', 'platforms/mobile/CertificateTrust.cpp', 'platforms/mobile/TemporaryFiles.cpp']
     if identity['target'] == 'android':
-        files += ['mobile/android/Documents.cpp', 'mobile/android/CertificateTrust.cpp']
+        files += ['platforms/mobile/android/Documents.cpp', 'platforms/mobile/android/CertificateTrust.cpp']
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
         # SDL3/SDL_main.h supplies Android entry-point routing.
@@ -122,14 +124,15 @@ def build_mobile(directory, identity, arguments):
         by_source = {}
         for compile_env, subset in ((strict, [f for f in files if strict_numeric_source(f)]), (env, [f for f in files if not strict_numeric_source(f)])):
             by_source.update(development_objects(compile_env, subset, lambda name: str(object_root / (name + '.o')), shared=True))
+        bind_online_error_objects(env, by_source, online_error_catalog)
         objects = unique([by_source[name] for name in files]) + script_objects
         numeric_guard(strict, [by_source[name] for name in files if guarded_numeric_source(name)])
         program = record(env, env.SharedLibrary(str(output / 'lib/main'), objects), 'link')
         if 'android-tests' in COMMAND_LINE_TARGETS:
             # Cross-compile the two doctest binaries from test/tests.py as Android PIE
-            # executables for adb shell (mobile/android_device_tests.py). They reuse the
+            # executables for adb shell (platforms/mobile/android_device_tests.py). They reuse the
             # same game objects; test/support/TestMain.cpp is the entry point and
-            # mobile/NativeTestMain.cpp interposes the platform bridges.
+            # platforms/mobile/NativeTestMain.cpp interposes the platform bridges.
             import sys
             sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
             import tests as registry
@@ -139,11 +142,11 @@ def build_mobile(directory, identity, arguments):
             tests['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
             # Retain build definitions (including the official origin).
             # TestMain.cpp defines SDL_MAIN_HANDLED itself.
-            tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
+            tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
             # by_source also maps unity members to their shared production object.
             client_objects = unique([obj for name, obj in by_source.items() if name != 'src/app/Glob2.cpp']) + script_objects
             library_objects = [obj for name, obj in by_source.items()
-                               if name.startswith('libgag/') or name.startswith('libusl/')] + script_objects
+                               if name.startswith('libs/gag/') or name.startswith('libs/usl/')] + script_objects
 
             def available(options):
                 required = options.get('require', ())
@@ -164,6 +167,7 @@ def build_mobile(directory, identity, arguments):
                     path = registry.source_path(source)
                     name = prefix + path.replace('/', '_').rsplit('.', 1)[0]
                     targets = compile_env.Object(str(object_root / 'tests' / (name + '.o')), path)
+                    bind_online_error_consumer(compile_env, targets, source, online_error_catalog)
                     if source.endswith('TestMain.cpp'):
                         compile_env.Depends(targets, provenance_header)
                     out += targets
@@ -180,7 +184,7 @@ def build_mobile(directory, identity, arguments):
                         out += test_objects([entry], 'unit-')
                 return unique(out)
 
-            bridge = tests.Object(str(object_root / 'tests' / 'NativeTestMain.o'), 'mobile/NativeTestMain.cpp')
+            bridge = tests.Object(str(object_root / 'tests' / 'NativeTestMain.o'), 'platforms/mobile/NativeTestMain.cpp')
             engine = tests.Program(str(output / 'tests' / 'glob2-engine-tests'),
                                    test_objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
                                    + bridge + client_objects)
@@ -192,7 +196,9 @@ def build_mobile(directory, identity, arguments):
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
-        objects = [(objc if name == 'mobile/ios/Documents.mm' else strict if strict_numeric_source(name) else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
+        by_source = {name: (objc if name == 'platforms/mobile/ios/Documents.mm' else strict if strict_numeric_source(name) else env).Object(str(object_root / archive_object_name(name)), name) for name in files}
+        bind_online_error_objects(env, by_source, online_error_catalog)
+        objects = [obj for name in files for obj in by_source[name]] + script_objects
         numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])
         # ar replaces matching members but otherwise retains obsolete names.
         # Recreate this owned output so renamed/removed sources cannot survive.
@@ -203,9 +209,9 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))
             import tests as registry
             tests = env.Clone()
-            tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
+            tests.Append(CPPPATH=['test', 'test/support', 'libs/gag/src'])
             test_objects = []
-            for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries():
+            for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/online/ApiErrorTextTest.cpp']:
                 source, options = (entry, {}) if isinstance(entry, str) else entry
                 local = tests.Clone()
                 local.Append(CXXFLAGS=options.get('cxxflags', []))
@@ -214,6 +220,7 @@ def build_mobile(directory, identity, arguments):
                     local.Append(CPPDEFINES=[('main', 'glob2ScriptTestMain')])
                 path = registry.source_path(source)
                 targets = local.Object(str(object_root / 'tests' / archive_object_name(path)), path)
+                bind_online_error_consumer(local, targets, source, online_error_catalog)
                 if source.endswith('TestMain.cpp'):
                     local.Depends(targets, provenance_header)
                 test_objects += targets

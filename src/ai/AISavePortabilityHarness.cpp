@@ -142,11 +142,17 @@ TEST_SUITE("AISavePortability")
 			require(loaded.size() == 1 && loaded[0]->current == series.current,
 				"legacy telemetry remains readable without changing stored samples");
 			series = *loaded[0];
+            // The formerly reserved seventh slot now belongs to prestige.
+            // Old stored rows remain intact; a fresh sample replaces them.
+            maxima.policy_bids[AIMaxima::Maxima::PolicyPrestige].utility=73;
 			maxima.captureTelemetry();
 			for (unsigned i = 0; i < series.fields.size(); ++i)
 			{
 				if (series.fields[i].name.starts_with("state.policy_bids_6."))
-					require(series.current.values[i] == AITelemetry::Value{}, "invalid policy sample cleared");
+                    require(series.current.values[i].valid && series.current.values[i].updated==17,
+                        "prestige replaces the formerly reserved sample at the current tick");
+                if (series.fields[i].name == "state.policy_bids_6.utility")
+                    require(series.current.values[i].bits==73, "real seventh policy sampled");
 				if (series.fields[i].name == "state.policy_bids_5.utility")
 					require(series.current.values[i].valid, "real sixth policy still sampled");
 			}

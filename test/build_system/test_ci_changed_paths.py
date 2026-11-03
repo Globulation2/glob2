@@ -1,10 +1,12 @@
 """Guard the CI path rules against accidental gaps in platform coverage."""
 
 import importlib.util
+import os
 from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 from types import SimpleNamespace
 import unittest
 
@@ -17,8 +19,47 @@ SPEC.loader.exec_module(ci_changed_paths)
 
 
 class ChangedPathsTest(unittest.TestCase):
+    def test_build_contract_environment_uses_encoder_only_to_create_child(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / '.github/workflows/build.yml').read_text()
+        block = workflow.split('      - name: Test shared build-system contracts once\n', 1)[1]
+        block = block.split('      - name:', 1)[0]
+        self.assertTrue(block.startswith('        run: |\n'))
+        script = '\n'.join(line[10:] for line in block.splitlines()[1:])
+        with tempfile.TemporaryDirectory() as temporary:
+            work = Path(temporary)
+            (work / 'bin').mkdir()
+            encoder = work / 'encoder with spaces'
+            encoder.write_text('#!/bin/sh\n'
+                               'printf "encoder:%s\\n" "$*" >> calls\n'
+                               '[ "$1 $2" = "-m venv" ] || exit 7\n'
+                               'mkdir -p "$3/bin"\n'
+                               'printf \'#!/bin/sh\\nprintf "child:%%s\\\\n" "$*" >> calls\\n\' > "$3/bin/python"\n'
+                               'chmod +x "$3/bin/python"\n')
+            encoder.chmod(0o755)
+            python = work / 'bin/python3'
+            python.write_text('#!/bin/sh\n'
+                              '[ "$*" = "tools/package_assets.py --encoder-python" ] || exit 8\n'
+                              'printf "%s\\n" "$TEST_ENCODER"\n')
+            python.chmod(0o755)
+            subprocess.run(['bash', '-eu', '-c', script], cwd=work, check=True,
+                           env={**os.environ, 'PATH': str(work / 'bin') + os.pathsep + os.environ['PATH'],
+                                'TEST_ENCODER': str(encoder)})
+            self.assertEqual((work / 'calls').read_text().splitlines(), [
+                'encoder:-m venv artifacts/build-contract-venv',
+                'child:-m pip install -r test/build_system/requirements.txt',
+                'child:-m unittest discover -s test/build_system -v'])
+        requirements = root / 'test/build_system/requirements.txt'
+        lines = requirements.read_text().splitlines()
+        self.assertIn('scons==4.11.1', lines)
+        include = next(line[3:] for line in lines if line.startswith('-r '))
+        self.assertEqual((requirements.parent / include).resolve(), root / 'tools/asset-requirements.txt')
+        development = (root / 'requirements-dev.txt').read_text()
+        self.assertIn('-r test/build_system/requirements.txt', development)
+        self.assertNotRegex(development, r'(?m)^scons==')
+
     def assert_jobs(self, paths, platform=None, platform_stack=None, music=None, **expected):
-        # The TypeScript platform job runs on platform/ changes and with full CI.
+        # The TypeScript platform job runs on services/online/ changes and with full CI.
         if platform is None:
             platform = all(expected.values())
         # The self-hosted stack smoke test runs on its own paths and with full CI.
@@ -38,13 +79,13 @@ class ChangedPathsTest(unittest.TestCase):
         )
         # A soundtrack set's files are packaged game data: native and browser builds.
         self.assert_jobs(
-            ["data/zik/woodland/a1.ogg", "data/zik/woodland/LICENSE.txt"],
+            ["content/data/zik/woodland/a1.ogg", "content/data/zik/woodland/LICENSE.txt"],
             native=True, browser=True, map_generators=False,
             deployment=False, cross_platform=False, music=False, platform=False,
         )
-        # The shared data/zik/SConscript is a build input: every job.
+        # The shared content/data/zik/SConscript is a build input: every job.
         self.assert_jobs(
-            ["data/zik/SConscript"], native=True, browser=True, map_generators=True,
+            ["content/data/zik/SConscript"], native=True, browser=True, map_generators=True,
             deployment=True, cross_platform=True,
         )
 
@@ -60,7 +101,7 @@ class ChangedPathsTest(unittest.TestCase):
             deployment=False, cross_platform=False, platform_stack=True,
         )
         self.assert_jobs(
-            ["platform/packages/db/migrations/0005_rooms.sql"], native=False, browser=False,
+            ["services/online/packages/db/migrations/0005_rooms.sql"], native=False, browser=False,
             map_generators=False, deployment=False, cross_platform=False, platform=True,
             platform_stack=True,
         )
@@ -72,7 +113,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_platform_only(self):
         self.assert_jobs(
-            ["platform/apps/api/src/app.ts", "platform/package-lock.json"],
+            ["services/online/apps/api/src/app.ts", "services/online/package-lock.json"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=True,
             # Dependency changes also rebuild the stack's images.
@@ -81,21 +122,21 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_platform_docs_only(self):
         self.assert_jobs(
-            ["platform/README.md", "docs/multiplayer/architecture.md"],
+            ["services/online/README.md", "docs/multiplayer/architecture.md"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=False,
         )
 
     def test_protocol_fixtures_run_platform_and_native_contract_tests(self):
         self.assert_jobs(
-            ["platform/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json"],
+            ["services/online/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json"],
             native=True, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=True,
         )
 
     def test_documentation_only(self):
         self.assert_jobs(
-            ["docs/browser/implementation.md", "README.md", "browser/README.md"],
+            ["docs/browser/implementation.md", "README.md", "platforms/web/README.md"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False,
         )
@@ -131,7 +172,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_browser_shell_only(self):
         self.assert_jobs(
-            ["browser/storage.js", "browser/tests/storage.spec.js"],
+            ["platforms/web/storage.js", "platforms/web/tests/storage.spec.js"],
             native=False, browser=True, map_generators=False,
             deployment=False, cross_platform=False,
         )
@@ -157,7 +198,7 @@ class ChangedPathsTest(unittest.TestCase):
                      "test/maxima/fixtures/save-continuation/expected-resources-30000-30512.json",
                      "test/maxima/check_save_continuation_fixture.py",
                      "test/fixtures/resources/seeded-compositions-units.trace",
-                     "test/support/TestMain.cpp", "libgag/src/ImageAssetTest.cpp"):
+                     "test/support/TestMain.cpp", "libs/gag/src/ImageAssetTest.cpp"):
             with self.subTest(path=path):
                 self.assert_jobs(
                     [path], native=True, browser=True, map_generators=False,
@@ -206,7 +247,7 @@ class ChangedPathsTest(unittest.TestCase):
         )
 
     def test_cross_platform_fixtures_run_everything(self):
-        for path in ("browser/tests/determinism.spec.js", "browser/tests/fixtures/cross-replay.replay",
+        for path in ("platforms/web/tests/determinism.spec.js", "platforms/web/tests/fixtures/cross-replay.replay",
                      "test/run-browser-determinism.py", "src/map/generator/MapGeneratorGoldenTest.cpp",
                      ".github/workflows/build.yml"):
             with self.subTest(path=path):
@@ -217,7 +258,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_mixed_independent_changes(self):
         self.assert_jobs(
-            ["browser/storage.js", "src/map/gradient/PathGradientHarness.cpp"],
+            ["platforms/web/storage.js", "src/map/gradient/PathGradientHarness.cpp"],
             native=True, browser=True, map_generators=False,
             deployment=False, cross_platform=False,
         )
@@ -235,9 +276,9 @@ class ChangedPathsTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.assert_jobs([path], native=True, browser=True, map_generators=False,
                                  deployment=False, cross_platform=True)
-        for paths in (["libgag/include/RenderBackend.h"], ["libgag/src/FileManager.cpp"],
-                      ["libgag/src/SurfaceRaster.cpp", "src/map/generator/core/MapGenerator.cpp"],
-                      ["libgag/src/UnknownRenderer.cpp"]):
+        for paths in (["libs/gag/include/RenderBackend.h"], ["libs/gag/src/FileManager.cpp"],
+                      ["libs/gag/src/SurfaceRaster.cpp", "src/map/generator/core/MapGenerator.cpp"],
+                      ["libs/gag/src/UnknownRenderer.cpp"]):
             with self.subTest(paths=paths):
                 self.assert_jobs(paths, native=True, browser=True, map_generators=True,
                                  deployment=True, cross_platform=True)

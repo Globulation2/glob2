@@ -64,7 +64,7 @@ namespace SystemLanguage
 		// These new catalogs cover specific written forms, not transliterations
 		// or other scripts of the same language. Never select the wrong form.
 		static const std::map<std::string, std::string> writtenForms = {
-			{"am", "ethi"}, {"bho", "deva"}, {"bn", "beng"}, {"ff", "latn"}, {"fuc", "latn"},
+			{"am", "ethi"}, {"bg", "cyrl"}, {"bho", "deva"}, {"bn", "beng"}, {"ff", "latn"}, {"fuc", "latn"},
 			{"fil", "latn"}, {"tl", "latn"}, {"gu", "gujr"}, {"ha", "latn"}, {"hi", "deva"},
 			{"ig", "latn"}, {"jv", "latn"}, {"jw", "latn"}, {"kn", "knda"}, {"ln", "latn"},
 			{"ml", "mlym"}, {"mr", "deva"}, {"ms", "latn"}, {"my", "mymr"}, {"ne", "deva"}, {"om", "latn"},
@@ -88,7 +88,7 @@ namespace SystemLanguage
 		if (language == "fuc" || language == "ff")
 			return !has("adlm") && (language == "fuc" || has("sn") || has("mr")) ? "fuc" : "";
 		static const std::map<std::string, std::string> codes = {
-			{"ar", "ar"}, {"ca", "ca"}, {"cs", "cz"}, {"da", "dk"}, {"de", "de"}, {"el", "gr"},
+			{"ar", "ar"}, {"bg", "bg"}, {"ca", "ca"}, {"cs", "cz"}, {"da", "dk"}, {"de", "de"}, {"el", "gr"},
 			{"en", "en"}, {"eo", "eo"}, {"es", "es"}, {"eu", "eu"}, {"fa", "fa"}, {"fi", "fi"},
 			{"fr", "fr"}, {"hu", "hu"}, {"id", "id"}, {"in", "id"}, {"it", "it"}, {"ja", "ja"},
 			{"ko", "ko"}, {"nb", "nb"}, {"nl", "nl"}, {"pl", "pl"}, {"ro", "ro"}, {"ru", "ru"}, {"sk", "sk"},

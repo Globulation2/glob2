@@ -1,5 +1,7 @@
+#include <PerformanceTelemetry.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
+#include "stats/TeamStatChart.h"
 #include "EngineFixtures.h"
 #include "GameGUIViewport.h"
 #include "MapZoomControls.h"
@@ -13,6 +15,7 @@
 #include "EndGameScreen.h"
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <FormatableString.h>
 #include "LoadSaveDialog.h"
 #include "ConnectionOverlay.h"
 #include "hive/HiveDialog.h"
@@ -149,6 +152,89 @@ TEST_SUITE("GUIInteractionCoverage")
         }
     }
 
+    TEST_CASE("Bulgarian building failure rows wrap inside the panel and remain scrollable [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=360,
+            .beforeLoad=[](GlobalContainer& container) { container.settings.language="bg"; }});
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto* building=world.game.addBuilding(8,8,world.game.buildingsTypes.getFinishedTypeNum("inn"),0,0,0);
+        REQUIRE(building);
+        auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.adjustLocalTeam();
+        gui.setSelection(GameGUI::BUILDING_SELECTION,building);gui.prepareLocalPresentation(gui.frameScene);
+        auto& panel=gui.frameScene.panels.building;REQUIRE(panel.valid);
+        // Exercise counterfactual immutable observations, leaving simulation state untouched.
+        SnapshotBuilding record=panel.state();panel.record=&record;
+        record.working.count=0;record.desiredMaxUnitWorking=10;
+        std::fill_n(record.unitsFailingRequirements,Building::UnitCantWorkReasonSize,0);
+        const auto checksum=world.checksum();
+        auto* gfx=globals->gfx;
+        const auto begin=[&] {
+            gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
+            gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
+        };
+        const auto frameHash=[&] {
+            auto* image=gfx->completedFrame();REQUIRE(image);
+            Uint64 hash=1469598103934665603ull;
+            const auto* bytes=static_cast<const Uint8*>(image->pixels);
+            for(int i=0;i<image->h*image->pitch;++i)hash=(hash^bytes[i])*1099511628211ull;
+            return hash;
+        };
+        const auto renderReasons=[&](int& y) {
+            begin();gui.drawBuildingFailureReasons(&panel,building->type,y);gfx->nextFrame();
+            auto* image=gfx->completedFrame();REQUIRE(image);
+            // Render without the outer panel clip: wrapping itself must preserve
+            // the four-pixel right padding, rather than hide overflow by clipping.
+            for(int row=8;row<y;++row)for(int x=image->w-4;x<image->w;++x)
+            {
+                Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(image,x,row,&r,&g,&b,&a));
+                CHECK((r==24&&g==35&&b==28));
+            }
+            CHECK(world.checksum()==checksum);
+            return frameHash();
+        };
+        // Counts at the end of these long labels must still appear. A one-line
+        // clipped draw would lose the count and produce identical images.
+        for(int reason=1;reason<Building::UnitCantWorkReasonSize;++reason)
+        {
+            CAPTURE(reason);
+            record.unitsFailingRequirements[reason]=7;
+            int y=8;const auto seven=renderReasons(y);
+            CHECK(y>8+YOFFSET_RESOURCE_LINE);
+            record.unitsFailingRequirements[reason]=8;
+            y=8;CHECK(renderReasons(y)!=seven);
+            record.unitsFailingRequirements[reason]=0;
+        }
+        // Short existing labels retain a single row and its nominal pitch.
+        auto* strings=Toolkit::getStringTable();
+        strings->setLang(strings->getLangCode("en"));
+        record.unitsFailingRequirements[Building::UnitTooLowLevel]=7;
+        int shortY=8;renderReasons(shortY);
+        const auto shortText=FormattableString(strings->getString("[%0 units too low level]")).arg(7);
+        CHECK(shortY==8+std::max(YOFFSET_RESOURCE_LINE,globals->littleFont->getStringHeight(shortText)));
+        strings->setLang(strings->getLangCode("bg"));
+        std::fill_n(record.unitsFailingRequirements,Building::UnitCantWorkReasonSize,0);
+        begin();gui.drawBuildingInfos();gfx->nextFrame();
+        const int baselineScroll=gui.buildingInfoScrollMaximum;
+        std::fill_n(record.unitsFailingRequirements,Building::UnitCantWorkReasonSize,7);
+        int failureBottom=8;renderReasons(failureBottom);
+        const int failureHeight=failureBottom-8;
+        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"bulgarian-failure-rows.bmp").string().c_str()));
+        begin();gui.drawBuildingInfos();gfx->nextFrame();
+        CHECK(gui.buildingInfoScrollMaximum>baselineScroll);
+        if(baselineScroll>0)CHECK(gui.buildingInfoScrollMaximum==baselineScroll+failureHeight);
+        else CHECK(gui.buildingInfoScrollMaximum<=failureHeight);
+        // Wheel dispatch is only handled while the pointer is over the info panel.
+        gui.mouseX=gfx->getW()-RIGHT_MENU_WIDTH+8;
+        gui.mouseY=YPOS_BASE_BUILDING+8;
+        REQUIRE(gui.scrollBuildingChoices(-1));
+        CHECK(gui.buildingInfoScroll>0);
+        while(gui.buildingInfoScroll<gui.buildingInfoScrollMaximum)REQUIRE(gui.scrollBuildingChoices(-1));
+        begin();gui.drawBuildingInfos();gfx->nextFrame();
+        CHECK(gui.buildingInfoScroll==gui.buildingInfoScrollMaximum);
+        CHECK(world.checksum()==checksum);
+        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"bulgarian-failure-panel-scrolled.bmp").string().c_str()));
+    }
+
     TEST_CASE("service progress horizon covers mixed visits and preserves stock horizons")
     {
         glob2test::HeadlessGlobals globals;
@@ -190,7 +276,7 @@ TEST_SUITE("GUIInteractionCoverage")
                 {"recipes",{{"worker",{{"enabled",true},{"duration",1},{"cost",nlohmann::json::object()}}}}}};
             world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.buildingsTypes.loadSprites();world.game.configureBuildingCatalog();
             auto* building=world.game.addBuilding(8,8,typeId,0,0,0);REQUIRE(building);
-            auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
+            auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.adjustLocalTeam();
             gui.setSelection(GameGUI::BUILDING_SELECTION,building);gui.prepareLocalPresentation(gui.frameScene);
             auto& panel=gui.frameScene.panels.building;REQUIRE(panel.valid);
             const auto checksum=world.checksum();
@@ -302,7 +388,7 @@ TEST_SUITE("GUIInteractionCoverage")
     {
         glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
         glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
+        auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.adjustLocalTeam();
         const int current=world.game.buildingsTypes.getTypeNum("inn",0,false);
         const int nextSite=world.game.buildingsTypes.get(current)->nextLevel;
         const int next=world.game.buildingsTypes.get(nextSite)->nextLevel;
@@ -1350,6 +1436,48 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
     }
     CHECK(seen.size()==panel.metrics().size());
     CHECK_FALSE(seen.count("win probability"));
+    {
+        auto &perf = PerformanceTelemetry::collector();
+        perf.history = std::make_unique<PerformanceTelemetry::History>();
+        for (unsigned i = 0; i < 4; ++i) {
+            auto sample = std::make_unique<PerformanceTelemetry::Window>();
+            sample->tickStart = i * 512; sample->tickEnd = (i + 1) * 512;
+            sample->startNs = i * 1000000000ULL; sample->endNs = (i + 1) * 1000000000ULL;
+            auto &m = sample->metrics[unsigned(PerformanceTelemetry::Id::OwnerAdvance)];
+            m.calls = 512; m.time.add((i + 1) * 1000000);
+            perf.history->append(std::move(*sample));
+        }
+        panel.selectTopic(InGameStatisticsPanel::Topic::Engine); panel.update(0);
+        REQUIRE(panel.host().find("engine-performance/open"));
+        REQUIRE(panel.host().find("engine-performance/summary"));
+        CHECK_FALSE(gui.sceneRequest(false).includeHistory);
+        draw("engine-performance-wall.bmp");
+        panel.host().tapAt(panel.host().bounds("engine-performance/open").center());
+        REQUIRE(gui.inGameMenu==GameGUI::IGM_STATISTICS);
+        REQUIRE(gui.gameMenuScreen);
+        CHECK_FALSE(gui.gamePaused);
+        gui.gameMenuScreen->update(0);
+        REQUIRE(gui.gameMenuScreen->host().find("engine-performance/chart"));
+        REQUIRE(gui.gameMenuScreen->host().find("engine-performance/chart/5"));
+        auto* performance=static_cast<InGamePerformanceHistory*>(gui.gameMenuScreen.get());
+        // Plot hit testing uses the font-dependent bounds measured during drawing.
+        draw("engine-performance-expanded.bmp");
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/chart").center());
+        CHECK(performance->panel.cursorMinute>=0);
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/follow-latest").center());
+        CHECK(performance->panel.cursorMinute<0);
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/range/1").center());
+        gui.gameMenuScreen->update(0);
+        draw("engine-performance-recent.bmp");
+        gui.gameMenuScreen->host().scrollIntoView("engine-performance/all-metrics");
+        gui.gameMenuScreen->update(0);
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/all-metrics").center());
+        gui.gameMenuScreen->update(0);
+        REQUIRE(gui.gameMenuScreen->host().find("engine-performance/explorer-chart"));
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("performance/history/close").center());
+        gui.processGameMenu(nullptr);
+        CHECK(world.game.checkSum() == checksum);
+    }
     panel.selectTopic(InGameStatisticsPanel::Topic::Economy); panel.update(0);
     panel.host().scrollIntoView("stats/metric/spending"); panel.update(0);
     REQUIRE(panel.host().find("stats/scroll/2")->scrollOffset() > 0);
@@ -1535,4 +1663,45 @@ TEST_CASE("statistics sheet scroll stays open and fits phone rotations [display]
         CHECK(world.game.checkSum()==checksum);CHECK(gui.orderQueue.empty());
     }
     gui.setPublishedScene(nullptr);
+}
+
+
+TEST_CASE("Bulgarian empty statistics notices wrap without ink outside their chart [display][artifacts]" *
+          doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::GlobalsOptions options{.display=true, .loadStrings=true};
+    options.beforeLoad=[](GlobalContainer &globals) { globals.settings.language="bg"; };
+    glob2test::HeadlessGlobals globals(options);
+    const auto notice=GAGCore::Toolkit::getStringTable()->getString("[Not enough recorded history yet.]");
+    auto *font=globals->littleFont;
+    REQUIRE(font);
+    Stats::Metric metric{.id="population"};
+    TeamStatChart::Options chart;
+    chart.metric=&metric;
+    for (const int width : {120,176}) {
+        INFO(width);
+        REQUIRE(font->getStringWidth(notice)>width-16);
+        auto *raw=SDL_CreateSurface(480,240,SDL_PIXELFORMAT_ARGB8888);
+        REQUIRE(raw);
+        GAGCore::DrawableSurface surface(raw,GAGCore::DrawableSurface::AdoptPixels{},false);
+        REQUIRE(SDL_FillSurfaceRect(surface.getSDLSurface(),nullptr,0));
+        // Deliberately leave the surrounding surface unclipped: the renderer
+        // must lay out the complete notice, rather than hide overflow pixels.
+        TeamStatChart::paint({},0,surface,16,16,width,200,chart);
+        surface.nextFrame();
+        auto *pixels=surface.getSDLSurface();
+        int outside=0,secondLine=0,total=0;
+        for (int y=0;y<pixels->h;++y) for (int x=0;x<pixels->w;++x) {
+            Uint8 red,green,blue,alpha;
+            REQUIRE(SDL_ReadSurfacePixel(pixels,x,y,&red,&green,&blue,&alpha));
+            if (!(red||green||blue)) continue;
+            ++total;
+            outside+=x<16 || x>=16+width || y<16 || y>=216;
+            secondLine+=x>=16 && x<16+width && y>=24+font->getStringHeight("0") && y<216;
+        }
+        CHECK(total>0);
+        CHECK(outside==0);
+        CHECK(secondLine>0);
+        REQUIRE(IMG_SavePNG(pixels,(glob2test::artifactDir()/("empty-chart-"+std::to_string(width)+".png")).string().c_str()));
+    }
 }

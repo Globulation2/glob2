@@ -10,9 +10,9 @@ are produced by `tools/artwork/terrain_synth.py`. Static materials have four
 interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
 layout and water and deep water one 4×4 layout, keeping their animated banks
 at 256 frames each. Frames are stored as
-`data/gfx/terrain-<name>N.png` at 32×32 RGBA and
-`data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
-in `datasrc/gfx/<name>/provenance.json`. The shared tile code in
+`content/data/gfx/terrain-<name>N.png` at 32×32 RGBA and
+`content/data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
+in `content-src/gfx/<name>/provenance.json`. The shared tile code in
 `tools/artwork/material_tiles.py` provides sheet cutting, pixel hashing and style
 statistics. The original legacy artwork remains available as style references;
 new terrain frames use their own `terrain-` prefixes and do not overwrite it.
@@ -103,19 +103,26 @@ neighbouring cells and occlude each other.
 A material opts in with a `decor` block:
 
 ```json
-"decor": {"sprite": "data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
+"decor": {"sprite": "content/data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- `full` frames are used for cells whose four corners share a decorated
-  appearance.
-- `edge` frames are smaller and pulled toward the cell centre, for cells where two
-  or three corners share it, so clusters do not spill far onto open ground. A
-  single decorated corner draws no decor.
-- Optional `connected` frames follow the four painted corners, including single
-  corners. The flat array has 16 mask groups with the same number of variants
-  in each group: top-left bit 1, top-right bit 2, bottom-left bit 4, bottom-right
-  bit 8. Mask zero draws nothing. These frames override `full`/`edge`; those
-  arrays remain available for older catalogs and standalone object decor.
+- A cell draws raised decor only when every corner resolves to a decorated
+  material. An undecorated corner, such as ordinary grass, sand or water, suppresses all
+  raised objects in that cell, preserving a clear border against open ground.
+  Eligibility follows rendered material bindings, including custom materials.
+- Uniform cells keep their existing `full` or connected mask-15 frames and
+  interior variants. A border between decorated materials draws just one
+  material's ornament: a deterministic coordinate/terrain-seed hash chooses a
+  corner, so two-plus-two corners give each material equal odds and three-plus-one
+  corners give a three-to-one split. This uses no simulation random numbers.
+- Mixed decorated cells use the selected material's `edge` frames, including
+  when it occupies just one corner. Connected foliage retains its authored
+  corner geometry; adjacent connected foliage materials join into one crown of
+  the selected material. No overlapping ornaments or new artwork are needed.
+- Connected arrays have 16 mask groups with equal variant counts (top-left bit 1,
+  top-right bit 2, bottom-left bit 4, bottom-right bit 8). `connected_corners`
+  retains its seeded corner-colour variants; `connected_interior` supplies
+  alternative filled-cell crowns.
 - The variant is chosen by a coordinate hash salted with the map's terrain seed,
   unless `connected_corners` is true. Then each mask holds 16 corner tiles: every
   map vertex has one seeded colour bit, shared by all materials, and a cell
@@ -157,7 +164,7 @@ boundary irregularity and woody gaps between crowns. The other sets are faceted 
 a shared grain, and broad stepped bedrock blocks with sparse lichen. Ridge and
 outcrop rocks are flat-shaded prisms: a convex ring raised into walls, with
 sloping top facets meeting at an off-centre peak, so each face takes one light
-value. The tool writes `data/gfx/terrain-decorN.png`
+value. The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
 316–427; thicket corner tiles at 428–683 and interiors at 684–795), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`
@@ -242,7 +249,7 @@ repetition of the shared edge motifs while retaining the same tile dimensions
 and feature density. Shared boundary motifs can still become recognizable;
 judge repetition in mixed-block previews.
 
-Regular water (`terrain_synth.py` recipe `water`, sprite `data/gfx/terrain-water`)
+Regular water (`terrain_synth.py` recipe `water`, sprite `content/data/gfx/terrain-water`)
 keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)).
 Water and deep water use one 4×4 layout with sixteen phases
 (`animation_ticks 6`, preserving the 96-tick loop). Each phase renders 512×512
@@ -253,10 +260,17 @@ lower right and finer cross chop breaks them into moving glints. Deep water
 reads the same geometry with its darker palette and less chop.
 
 Both depths read the same wave geometry and timing on the same position grid,
-so crests continue across the shallow/deep blend. Animated materials stay on a
-single layout because every layout multiplies by the phase count: four 8×8
-layouts at sixteen phases would be 4096 frames per water, which doubled frame
-time and kept HD fallback visible in measurement. `"variant_block_group"`
+so crests continue across the shallow/deep blend. Every layout multiplies by the
+phase count, so the bank size decides whether an animated material can take
+several layouts. Four 8×8 layouts at four phases (lava, ember field) are 1024
+frames and fit: the renderer keeps every phase of the visible variants resident
+(see [Visible material preparation](#visible-material-preparation)) and
+`animation_blend_steps` limits how often their pages recompose. Four layouts at
+sixteen phases would be 4096 frames per water, which doubled frame time and kept
+HD fallback visible in measurement, so water and deep water stay on one layout.
+Give a multi-layout animated material `animation_blend_steps` (4 for an
+8-tick phase) and compare its frame time and HD fallback with the single-layout
+material in a release build before committing it. `"variant_block_group"`
 remains available for materials that share block selection. Dark water remains static. All three waters and marsh pools are opaque and use
 the ordinary material composition path.
 
@@ -283,7 +297,13 @@ including its composition boundary coverage, and prepares those combinations.
 `Compositor::prepareVisible` derives this set from a scene and visible cell
 bounds; `prepareForRecipes` accepts an explicit recipe set for callers that
 already have it. Animated selections prepare the current and next phase for
-interpolation. Unused variants, phases and HD sources are retired as the
+interpolation. A streamed (multi-layout) animation also keeps the later phases
+of its visible variants resident, within a 64 MiB look-ahead budget shared by
+all animated materials (`Compositor::AnimationLookaheadBytes`). Endpoints decode
+first, and an advance reuses resident frames instead of dropping the old phase
+and decoding the next one again; without that, every phase change re-decoded
+the whole visible set. When the budget is exhausted a material falls back to
+current and next only. Unused variants, phases and HD sources are retired as the
 selection changes; offscreen materials do not advance their prepared revisions
 merely because the visual clock changes.
 
@@ -309,8 +329,8 @@ on `round()` boundaries, so the provenance records the platform and a mismatch
 on another platform is reported with that note. Recipes swapped to
 image-generated art are marked `placeholder_only=True` and skipped by `--check`.
 Writing frames also writes each variant's 128×128 render, the exact source the
-classic tile is downsampled from, as its HD frame (`data/highres/v1/terrain-<name>N.png`
-and `datasrc/gfx/production/procedural-materials/`), registers it in the pack
+classic tile is downsampled from, as its HD frame (`content/data/highres/v1/terrain-<name>N.png`
+and `content-src/gfx/production/procedural-materials/`), registers it in the pack
 manifest and `frames.txt` through `tools/artwork/highres_pack.py`, and records its
 hash in the provenance; `--check` compares both resolutions. `--hd` alone writes
 the renders under `artifacts/terrain/hd/` for review and changes nothing else.
@@ -333,7 +353,7 @@ replacement.
 ### Provenance layout
 
 ```
-datasrc/gfx/<name>/
+content-src/gfx/<name>/
   provenance.json   generator, method (procedural | image-generator | hybrid),
                     generator or exporter sha256, recipe or prompt, Python and
                     Pillow versions, style references ("statistics only"),

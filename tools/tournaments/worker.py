@@ -72,15 +72,19 @@ def installed_bundle(path):
     return manifest
 
 
-def outcome_only(result):
+def outcome_only(result, config=None):
     """Retain the authoritative outcome and every supported adjudication field."""
     team_fields = ('team', 'alliance', 'outcome', 'alive', 'eliminated_tick',
                    'prestige', 'units', 'buildings', 'warrior_attack', 'warrior_hp', 'warriors',
                    'win_probability')
+    from .probability import log_integral_summary, score_horizon
+    horizon = score_horizon(result, config)
     player_fields = ('player', 'team', 'ai')
     return {key: result[key] for key in ('schema_version', 'status', 'ticks', 'termination', 'winning_teams', 'win_probability_permille')
             if key in result} | {
-        'teams': [{key: team[key] for key in team_fields if key in team} for team in result.get('teams', [])],
+        'teams': [{key: team[key] for key in team_fields if key in team}
+                  | {'win_probability_log_integral': log_integral_summary(team, result.get('ticks'), horizon)}
+                  for team in result.get('teams', [])],
         'players': [{key: player[key] for key in player_fields if key in player} for player in result.get('players', [])],
         **({'win_probability_permille': result['resolved']['rules']['winProbabilityPermille']}
            if 'winProbabilityPermille' in result.get('resolved', {}).get('rules', {}) else {}),
@@ -470,7 +474,7 @@ def execute(root, identity):
                     elif code == 0 and status != 'completed':
                         record['category'] = 'invalid_result'
                     elif code == 0 and job['outputs'].get('result') == 'outcome':
-                        record['result'] = outcome_only(record['result'])
+                        record['result'] = outcome_only(record['result'], job['config'])
                 except (OSError, ValueError) as error:
                     record['diagnostic'] = str(error)
                     if code == 0:

@@ -280,7 +280,7 @@ void Client::finish(const Json &r)
 	if (!accepted && !currentProgram.empty())
 	{
 		programs[currentProgram].paused = true;
-		reports.push_back("A standing order needs attention and has been paused.");
+		appendReport("A standing order needs attention and has been paused.", ReportSource::StandingOrderPaused);
 	}
 	if (current.contains("id"))
 	{
@@ -384,8 +384,8 @@ void Client::update(bool caughtUp)
 						 p.paused = true;
 					 pendingResult = Json::object();
 					 current = Json::object();
-					 reports.push_back("The connection changed. Review your paused standing orders "
-									   "before resuming.");
+					 appendReport("The connection changed. Review your paused standing orders "
+									   "before resuming.", ReportSource::ConnectionChanged);
 					 save();
 				 }
 				 lease = nextLease;
@@ -411,9 +411,9 @@ void Client::update(bool caughtUp)
 							 missing.missingCheckpoint = true;
 							 programs[missing.definition.at("id").get<std::string>()] =
 								 std::move(missing);
-							 reports.push_back(
+							 appendReport(
 								 "A standing order needs a fresh instruction after reconnecting. "
-								 "You can cancel it or ask the commander to replace it.");
+								 "You can cancel it or ask the commander to replace it.", ReportSource::FreshInstruction);
 							 save();
 						 }
 						 else if (record.at("status") != "active" ||
@@ -459,12 +459,10 @@ void Client::update(bool caughtUp)
 						 else
 						 {
 							 progress.clear();
-							 reports.push_back(b.at("text"));
+							 appendReport(b.at("text").template get<std::string>());
 						 }
 					 }
 				 }
-				 while (reports.size() > 100)
-					 reports.erase(reports.begin());
 			 });
 	}
 	if (!pendingResult.empty() && !resultSending && timestamp - lastResult >= 1000)
@@ -523,8 +521,8 @@ void Client::deliverResult()
 				 {
 					 for (auto &[id, p] : programs)
 						 p.paused = true;
-					 reports.push_back("An order could not be confirmed. Review your "
-									   "standing orders before resuming.");
+					 appendReport("An order could not be confirmed. Review your "
+									   "standing orders before resuming.", ReportSource::ConfirmationFailed);
 				 }
 				 pendingResult = Json::object();
 				 save();
@@ -539,8 +537,8 @@ void Client::command(const std::string &text, bool ongoing)
 	if (commandSending)
 	{
 		commandDraft = text;
-		reports.push_back("Your previous order is still sending. This message has been kept; open "
-						  "the commander to send it again.");
+		appendReport("Your previous order is still sending. This message has been kept; open "
+						  "the commander to send it again.", ReportSource::PreviousSending);
 		return;
 	}
 	commandDraft = text;
@@ -565,11 +563,11 @@ void Client::command(const std::string &text, bool ongoing)
 				 if (commandDraft == text)
 					 commandDraft.clear();
 				 retryCommandId.clear();
-				 reports.push_back("Order received: " + text);
+				 appendReport("Order received: " + text, ReportSource::OrderReceived, text);
 			 }
 			 else
-				 reports.push_back("Order not confirmed. Open the commander to retry; your message "
-								   "has been kept.");
+				 appendReport("Order not confirmed. Open the commander to retry; your message "
+								   "has been kept.", ReportSource::OrderNotConfirmed);
 		 });
 }
 void Client::stop()
@@ -589,7 +587,7 @@ void Client::stop()
 			 if (r.ok)
 				 progress.clear();
 			 controlStatus["commander"] = r.ok ? "Stopped" : "Stop failed; retry the stop shortcut";
-			 reports.push_back(controlStatus["commander"]);
+			 appendReport(controlStatus["commander"], r.ok ? ReportSource::Stopped : ReportSource::StopFailed);
 		 });
 }
 void Client::change(const std::string &id, const std::string &action)
@@ -619,8 +617,8 @@ void Client::change(const std::string &id, const std::string &action)
 				 return;
 			 controlStatus[id] = r.ok ? "Requested" : "Update failed; try again";
 			 if (!r.ok)
-				 reports.push_back("Standing order update failed. Your order is paused locally; "
-								   "retry the control.");
+				 appendReport("Standing order update failed. Your order is paused locally; "
+								   "retry the control.", ReportSource::UpdateFailed);
 		 });
 }
 void Client::buyCredits()

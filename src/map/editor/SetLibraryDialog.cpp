@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SetLibraryDialog.h"
 #include "online/OnlineServices.h"
@@ -57,35 +58,35 @@ void SetLibraryDialog::onUpdate(Uint32) {
     if (!fetch || fetch->state() == HttpFetch::State::Pending) return;
     try {
         if (fetch->state() != HttpFetch::State::Done || fetch->response().status != 200)
-            throw std::runtime_error(fe::tr("[set library connection error]"));
+            throw Glob2UI::PresentedError(fe::tr("[set library connection error]"));
         const auto& body = fetch->response().body;
         if (downloading) {
-            if (Online::Sha256::hex(body) != expectedHash) throw std::runtime_error(fe::tr("[set library hash error]"));
+            if (Online::Sha256::hex(body) != expectedHash) throw Glob2UI::PresentedError(fe::tr("[set library hash error]"));
             inspected=std::make_unique<Map>(); inspected->setSize(5,5,GRASS); inspected->importSet(body);
             previews.bind(inspected->frozenTerrainRegistry(),inspected->frozenResourceRegistry(),inspected->frozenAssetBundle());
             package = MapAssetBundle::parseDocument(body);
             updateVersion.clear();
             if (!package.is_object() || !package.at("terrains").is_array() || !package.at("resources").is_array())
-                throw std::runtime_error(fe::tr("[set library package error]"));
+                throw Glob2UI::PresentedError(fe::tr("[set library package error]"));
             selected.clear();
             for (const auto* entries : {&package.at("terrains"), &package.at("resources")})
                 for (const auto& entry : *entries) selected.insert(entry.at("key").get<std::string>());
             bytes = body; status = fe::tr("[set library selection help]");
         } else {
             auto page = nlohmann::json::parse(body);
-            if (!page.at("items").is_array() || page.at("items").size() > 12) throw std::runtime_error(fe::tr("[set library listing error]"));
+            if (!page.at("items").is_array() || page.at("items").size() > 12) throw Glob2UI::PresentedError(fe::tr("[set library listing error]"));
             for (const auto& set : page.at("items")) {
                 if (!uuid(set.at("id").get<std::string>()) || set.at("title").get<std::string>().size() > 512 ||
-                    !set.at("versions").is_array() || set.at("versions").size() > 50) throw std::runtime_error(fe::tr("[set library listing error]"));
+                    !set.at("versions").is_array() || set.at("versions").size() > 50) throw Glob2UI::PresentedError(fe::tr("[set library listing error]"));
                 for (const auto& version : set.at("versions"))
                     if (!uuid(version.at("id").get<std::string>()) || !Online::Sha256::isHexDigest(version.at("hash").get<std::string>()) ||
                         !version.at("minVersionMinor").is_number_integer() || version.at("label").get<std::string>().size() > 256)
-                        throw std::runtime_error(fe::tr("[set library release error]"));
+                        throw Glob2UI::PresentedError(fe::tr("[set library release error]"));
             }
             items = page.at("items"); cursor = page.value("nextCursor", std::string{});
             status = items.empty() ? fe::tr("[set library empty]") : fe::tr("[set library release help]");
         }
-    } catch (const std::exception& error) { status = error.what(); package = nullptr; bytes.clear(); }
+    } catch (const std::exception& error) { status = Glob2UI::exceptionText(error, fe::tr(downloading ? "[set library package error]" : "[set library listing error]")); package = nullptr; bytes.clear(); }
     fetch.reset(); invalidate();
 }
 fe::Element SetLibraryDialog::build(const fe::Presentation& p) {
@@ -111,7 +112,7 @@ fe::Element SetLibraryDialog::build(const fe::Presentation& p) {
                 body.push_back(fe::heading(fe::tr("[set library artwork]")));
                 body.push_back(fe::textEditor("local/artwork",editArtwork,[this](const std::string& value){editArtwork=value;},options));
             }
-            body.push_back(fe::button("local/apply",fe::tr("[set library apply]"),[this]{try{map.editCustomEntry(editKey,editDefinition,editArtwork);changed();localEntries();status=fe::tr("[set library updated]");invalidate();}catch(const std::exception& e){status=e.what();invalidate();}}));
+            body.push_back(fe::button("local/apply",fe::tr("[set library apply]"),[this]{try{map.editCustomEntry(editKey,editDefinition,editArtwork);changed();localEntries();status=fe::tr("[set library updated]");invalidate();}catch(const std::exception& e){status=Glob2UI::exceptionText(e);invalidate();}}));
         }
         return fe::footer(fe::scroll("set/local-list",fe::column(std::move(body),{p.pt(8)})),dialogActions({{"close",fe::tr("[Close]"),[this]{finish(0);}}},p));
     }
@@ -155,7 +156,7 @@ fe::Element SetLibraryDialog::build(const fe::Presentation& p) {
         fe::ButtonOptions options; options.enabled = !selected.empty();
         body.push_back(fe::button("set/import", fe::tr("[set library import]"), [this] {
             try { if(updateVersion.empty())import(bytes, {selected.begin(), selected.end()});else {map.updateSet(bytes,updateVersion,{selected.begin(),selected.end()});changed();} finish(1); }
-            catch (const std::exception& error) { status = error.what(); invalidate(); }
+            catch (const std::exception& error) { status = Glob2UI::exceptionText(error); invalidate(); }
         }, options));
     } else for (const auto& set : items) {
         body.push_back(fe::heading(set.at("title").get<std::string>()));

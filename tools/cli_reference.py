@@ -202,7 +202,7 @@ def main():
         ("zsh", "_glob2"),
         ("fish", "glob2.fish"),
     ]:
-        outputs[ROOT / "data/completions" / name] = invoke(binary, "completion", shell)
+        outputs[ROOT / "content/data/completions" / name] = invoke(binary, "completion", shell)
     mismatches = []
     for path, content in outputs.items():
         if args.check:

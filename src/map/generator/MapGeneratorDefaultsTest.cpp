@@ -1284,7 +1284,7 @@ TEST_SUITE("MapGeneratorDefaults")
 			}
 		}
 	}
-	TEST_CASE("Braided Delta uses coherent fields quarries and mixed orchards")
+	TEST_CASE("Braided Delta scales every resource and keeps its colonies supplied")
 	{
 		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
@@ -1297,65 +1297,42 @@ TEST_SUITE("MapGeneratorDefaults")
 			if (variant == 3)
 			{
 				request.wDec = request.hDec = 7;
-				request.options["rejoining-frequency"] = 3;
+				request.options["flood"] = 2;
 			}
-			const int amount = variant == 1 ? 0 : variant >= 2 ? 300 : 100;
+			const int amount = variant == 1 ? 0 : variant == 2 ? 300 : 100;
 			for (const auto &control : definition.controls)
 				if (control.group == ControlGroup::Resources)
 					request.options[control.id] = amount;
 			Game world(nullptr);
 			const auto result = GenerationService().generate(world, request, true);
 			REQUIRE_MESSAGE(bool(result), result.diagnostic());
-			int islands = 0;
-			for (const auto &record : result.telemetry.records())
-				if (record.key == "braided-delta.islands")
-					islands = int(std::get<std::int64_t>(record.value));
 			const MapGeneration::Torus t(world.map);
-			const auto walk = MapGeneration::walkFromFirstColony(world.map, request.nbTeams, "delta resources", "over the fords");
-			REQUIRE(walk.error.empty());
-			for (const int type : {STONE, CHERRY, ORANGE, PRUNE})
+			int fruit = 0, stone = 0, wheat = 0;
+			for (int i = 0; i < t.size(); ++i)
 			{
-				std::vector<unsigned char> mask(t.size(), 0);
-				int count = 0;
-				for (int i = 0; i < t.size(); ++i)
-					count += mask[i] = world.map.getResource(i).type == type;
-				const auto components = MapGeneration::connectedRegions(mask, t.w, t.h, true, MapGeneration::GridNeighbors::Cardinal);
-				const int groups = *std::max_element(components.begin(), components.end()) + 1;
-				CHECK(groups == (amount ? islands : 0));
-				if (type != STONE)
-					CHECK(count == islands * (amount ? std::max(1, 3 * amount / 100) : 0));
-				std::vector<unsigned char> reachable(groups, 0);
-				for (int i = 0; i < t.size(); ++i)
-					if (mask[i])
-						for (const auto &[dx, dy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-							reachable[components[i]] |= walk.steps[t.at(t.remainderX(i) + dx, i / t.w + dy)] >= 0;
-				for (int reached : reachable)
-					CHECK(reached); // Actual finished gathering faces, after every later layer and repair.
+				const int type = world.map.getResource(i).type;
+				fruit += type >= CHERRY && type <= PRUNE;
+				stone += type == STONE;
+				wheat += type == WHEAT;
 			}
+			// The great island's orchard and the kopjes' quarries follow their amounts; starter
+			// wheat stays whatever the amount.
+			if (amount == 0)
+			{
+				CHECK(fruit == 0);
+				CHECK(stone == 0);
+			}
+			else
+				CHECK(fruit > 0);
+			CHECK(wheat > 0);
+			CHECK(MapGeneration::walkFromFirstColony(world.map, request.nbTeams, "the delta", "over its fords").error.empty());
 			CHECK(MapGeneration::startingAccessFailure(world.map, request.nbTeams,
 				{{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}}).empty());
 			GenerationContext check(request);
 			REQUIRE(definition.validateWorld(world, check).empty());
-			if (variant == 0)
-			{
-				for (int tick = 0; tick < 2048; ++tick)
-					world.map.growResources();
-				CHECK(definition.validateWorld(world, check).empty());
-				std::vector<std::pair<int, Resource>> oranges;
-				for (int i = 0; i < t.size(); ++i)
-					if (world.map.getResource(i).type == ORANGE)
-					{
-						oranges.emplace_back(i, world.map.getResource(i));
-						world.map.replaceResource(t.remainderX(i), i / t.w, Resource{});
-					}
-				CHECK(definition.validateWorld(world, check).find("fruit groups") != std::string::npos);
-				for (const auto &[tile, resource] : oranges)
-					world.map.replaceResource(t.remainderX(tile), tile / t.w, resource);
-				CHECK(definition.validateWorld(world, check).empty());
-			}
 		}
 	}
-	TEST_CASE("Braided Delta retained generation and overgrowth contracts")
+	TEST_CASE("Braided Delta retained generation and damage contracts")
 	{
 		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();

@@ -4,7 +4,7 @@
 #include "GeneratorDefinition.h"
 struct HoneycombIsleOptions
 {
-	int blockShape, blockSize, streetWidth, warp, blocksPerColony, rubble, craters;
+	int blockShape, blockSize, streetWidth, warp, blocksPerColony, forest, lakes, mountains;
 	int riverWidth, bridges, wheatFields;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit HoneycombIsleOptions(const GenerationRequest &r);

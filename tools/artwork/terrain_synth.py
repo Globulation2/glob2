@@ -34,9 +34,9 @@ interiors. Frames are phase-major, block-major, then
 row-major cell: `cell + cells * block + (cells * blocks) * phase`, where
 `cells = grid * grid`. Animated materials
 render four phases (sixteen for water and deep water).
-Outputs are `data/gfx/terrain-<name>N.png`, the 128x128 HD frames the classic
-tiles were downsampled from (`data/highres/v1/terrain-<name>N.png`, registered in
-the pack through tools/artwork/highres_pack.py) and `datasrc/gfx/<name>/provenance.json`.
+Outputs are `content/data/gfx/terrain-<name>N.png`, the 128x128 HD frames the classic
+tiles were downsampled from (`content/data/highres/v1/terrain-<name>N.png`, registered in
+the pack through tools/artwork/highres_pack.py) and `content-src/gfx/<name>/provenance.json`.
 
 Pixel-exact reproduction (`--check`) is pinned to the encoder interpreter on
 Linux x86-64: besides Pillow's resampling kernels, the renders depend on the C
@@ -88,8 +88,8 @@ from terrain_tileset import BUILTIN_NAMES, LEGACY_BINDINGS  # noqa: E402
 PILLOW_VERSION = "12.2.0"
 N = SHEET  # render size; four render pixels per native pixel
 VARIANTS = 16
-FRAME_PREFIX = "data/gfx/terrain-"
-HD_PREFIX = "data/highres/v1/terrain-"
+FRAME_PREFIX = "content/data/gfx/terrain-"
+HD_PREFIX = "content/data/highres/v1/terrain-"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain synthesis v1"
 XS = [i % N for i in range(N * N)]
@@ -1708,7 +1708,7 @@ def sand_look(ctx, p):
 
 
 # Water: opaque animated tiles in the colour of the retired scrolling ocean
-# backdrop (data/gfx/water0.png averaged about (69, 52, 200), luma 74). Water
+# backdrop (content/data/gfx/water0.png averaged about (69, 52, 200), luma 74). Water
 # and deep water are cells of one 4x4-cell periodic block (`variant_grid`), so
 # a wave field four cells across continues over every cell edge. The field is a
 # sum of plane waves with whole wave numbers on that block, each advancing a
@@ -2640,7 +2640,7 @@ def write_material(name, phases, hd_phases, root):
     ], HD_CATEGORY, root)
     hd_hashes = {f"{HD_PREFIX}{name}{i}.png": pixel_sha256(tile) for i, tile in enumerate(hd_frames)}
     document = provenance_document(name, phases, hashes, root, hd_hashes)
-    path = root / "datasrc/gfx" / name / "provenance.json"
+    path = root / "content-src/gfx" / name / "provenance.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(document, indent=2) + "\n")
     return hashes
@@ -2658,7 +2658,7 @@ def check_material(name, phases, root, hd_phases=None):
     problems = []
     frames = frames_of(name, phases)
     fresh = tile_hashes(frames)
-    provenance_path = root / "datasrc/gfx" / name / "provenance.json"
+    provenance_path = root / "content-src/gfx" / name / "provenance.json"
     if not provenance_path.exists():
         return [f"{name}: missing {provenance_path.relative_to(root)}"]
     provenance = json.loads(provenance_path.read_text())
@@ -2809,7 +2809,7 @@ def main(argv=None):
     parser.add_argument("--contact-sheet", type=Path, help="write a review sheet PNG (no frames written)")
     parser.add_argument("--emit-catalog", action="store_true", help="print catalog blocks and colour initialisers")
     parser.add_argument("--write-catalog", action="store_true",
-                        help="merge the material blocks, bindings and pair treatments into data/terrain/tileset.json")
+                        help="merge the material blocks, bindings and pair treatments into content/data/terrain/tileset.json")
     parser.add_argument("--hd", action="store_true", help="write 128x128 renders under artifacts/terrain/hd/ (no frames written)")
     parser.add_argument("--write", action="store_true", help="also write frames when another mode is selected")
     parser.add_argument("--jobs", type=int, default=0, help="parallel render processes (default: up to 2, bounded for 1024px block memory)")
@@ -2862,15 +2862,15 @@ def main(argv=None):
         print(json.dumps(catalog_fragment(results), indent=2))
         print(presentation_initialisers(results))
     if args.write_catalog:
-        write_catalog(results, root / "data/terrain/tileset.json")
-        print(f"Merged {len(results)} material blocks into data/terrain/tileset.json")
+        write_catalog(results, root / "content/data/terrain/tileset.json")
+        print(f"Merged {len(results)} material blocks into content/data/terrain/tileset.json")
     if not modes or args.write:
         for name in names:
             hashes = write_material(name, results[name], hd_results[name], root)
             stats = style_stats(results[name][0])
             print(f"{name:<14} {len(hashes):3d} frames  luma {stats['luma']:5.1f} std {stats['std']:4.1f} "
                   f"grain {stats['grain']:4.1f} sat {stats['sat']:.2f}")
-        print(f"Wrote {len(names)} materials under {root / 'data/gfx'} and {root / 'datasrc/gfx'}")
+        print(f"Wrote {len(names)} materials under {root / 'content/data/gfx'} and {root / 'content-src/gfx'}")
 
 
 if __name__ == "__main__":

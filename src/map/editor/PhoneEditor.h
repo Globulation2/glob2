@@ -8,6 +8,7 @@
 #include <ui/Host.h>
 #include <ui/PositionedControls.h>
 #include <memory>
+#include <array>
 #include <optional>
 #include <set>
 #include <cstdint>
@@ -75,9 +76,12 @@ class PhoneEditor
 	std::vector<Row> rows;
 	std::vector<Chip> chips;
 	GAGCore::ViewRect safe, content;
+	std::array<GAGCore::ViewRect, 4> headerButtons{};
 	bool tools = true, pan = false, onMap = false;
 	// Terrain, resources, buildings, flags/units, teams.
 	static constexpr int modeCount = 5;
+	int modeColumns = modeCount;
+	GAGCore::ViewRect modeRect(int index) const;
 	// Points: the card strip, and the group chips above it in Terrain and Resources.
 	static constexpr double cardHeight = 68, chipHeight = 36;
 	int paletteMode = 2;

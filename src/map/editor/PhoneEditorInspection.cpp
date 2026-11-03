@@ -149,7 +149,7 @@ std::vector<PhoneEditor::Target> PhoneEditor::controlTargets()
 	{
 		const char *keys[] = {"menu", "team", "level", "selection"};
 		auto &control = add(-2 - i, std::string("editor/") + keys[i], labels[i],
-							{safe.x + i * safe.w / 4, safe.y, safe.w / 4, 48 * u}, {},
+							headerButtons[i], {},
 							i != 1 || paletteMode >= 2);
 		if (i == 1 && paletteMode >= 2)
 			control.value = editor.team;
@@ -164,8 +164,7 @@ std::vector<PhoneEditor::Target> PhoneEditor::controlTargets()
 		const char *labels[] = {"Terrain", "Resources", "Buildings", "Flags and units", "Teams"};
 		for (int i = 0; i < modeCount; ++i)
 			add(-10 - i, "tray/mode/" + std::to_string(i), labels[i],
-				{modeBar.x + i * modeBar.w / modeCount, modeBar.y, modeBar.w / modeCount,
-				 modeBar.h})
+				modeRect(i))
 				.selected = paletteMode == i;
 		if (editor.panelMode == MapEdit::Teams)
 			add(-21, "editor/teams", "Edit teams", tray);

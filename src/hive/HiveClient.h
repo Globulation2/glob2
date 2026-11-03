@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "HiveWorker.h"
+#include "HiveReport.h"
 #include "CommanderView.h"
 #include <nlohmann/json.hpp>
 #include "online/PlatformClient.h"
@@ -58,6 +59,11 @@ class Client : public CommanderView
 	bool save();
 	void restore();
 	void deliverResult();
+	ReportHistory reportHistory;
+	void appendReport(std::string text, ReportSource source = ReportSource::Remote, std::string parameter = {})
+	{
+		reportHistory.append(reports, std::move(text), source, std::move(parameter));
+	}
 
   public:
 	std::string commandDraft, retryCommandId, retryCommandText;
@@ -74,5 +80,6 @@ class Client : public CommanderView
 	void buyCredits();
 	bool available() const { return enabled; }
 	Json standingOrders() const;
+	Report reportPresentation(std::size_t index) const override { return reportHistory.at(reports, index); }
 };
 } // namespace Hive

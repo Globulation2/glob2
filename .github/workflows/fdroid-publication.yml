@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Check all Android release variants in F-Droid
         id: fdroid
-        run: python3 mobile/fdroid_monitor.py
+        run: python3 platforms/mobile/fdroid_monitor.py
       - name: Report publication state
         env:
           GH_TOKEN: ${{ github.token }}

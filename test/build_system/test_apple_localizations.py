@@ -20,7 +20,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / 'mobile'))
+sys.path.insert(0, str(ROOT / 'platforms/mobile'))
 sys.path.insert(0, str(ROOT / 'scons'))
 import ios
 from apple_localizations import localization_files
@@ -34,8 +34,8 @@ def strings(path):
 
 class AppleLocalizationTests(unittest.TestCase):
     def fixture(self, root):
-        directories = [root / 'en.lproj', root / 'mr.lproj', root / 'ta.lproj', root / 'te.lproj']
-        for directory, value in zip(directories, ('English purpose.', 'मराठी चाचणी.', 'தமிழ் சோதனை.', 'తెలుగు పరీక్ష.')):
+        directories = [root / 'en.lproj', root / 'mr.lproj', root / 'ta.lproj', root / 'te.lproj', root / 'th.lproj', root / 'bg.lproj']
+        for directory, value in zip(directories, ('English purpose.', 'मराठी चाचणी.', 'தமிழ் சோதனை.', 'తెలుగు పరీక్ష.', 'ข้อความทดสอบภาษาไทย', 'Българска цел.')):
             directory.mkdir(parents=True)
             (directory / 'InfoPlist.strings').write_text(
                 '"NSLocalNetworkUsageDescription" = ' + json.dumps(value, ensure_ascii=False) + ';\n', encoding='utf-8')
@@ -49,7 +49,7 @@ class AppleLocalizationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             directories = self.fixture(root)
-            for name in ('COPYING', 'data/javascript-licenses.txt', 'data/json-license.txt',
+            for name in ('COPYING', 'content/data/javascript-licenses.txt', 'content/data/json-license.txt',
                          'docs/assets/source-attribution.md', 'Info.plist', 'Glob2.icns'):
                 file = root / name
                 file.parent.mkdir(parents=True, exist_ok=True)
@@ -79,7 +79,7 @@ class AppleLocalizationTests(unittest.TestCase):
             with contextlib.chdir(root), patch.object(bundle, 'run', side_effect=platform_command), \
                  patch.object(bundle, 'GetOption', return_value=1), \
                  patch.object(bundle, 'addDependentLibsToBundle'), \
-                 patch('moltenvk.install_macos'), patch('tools.package_assets.export_assets', side_effect=export):
+                 patch.object(bundle, 'install_macos'), patch('tools.package_assets.export_assets', side_effect=export):
                 bundle.createBundle([], [], env)
             resources = root / 'Glob2.app/Contents/Resources'
             for directory in directories:
@@ -110,10 +110,9 @@ class AppleLocalizationTests(unittest.TestCase):
             (root / 'CMakeLists.txt').write_text('\n'.join(lines) + '\n')
             subprocess.run(['cmake', '-S', str(root), '-B', str(root / 'build')],
                            check=True, capture_output=True, text=True)
-            self.assertEqual((root / '0.txt').read_text(), 'Resources/en.lproj')
-            self.assertEqual((root / '1.txt').read_text(), 'Resources/mr.lproj')
-            self.assertEqual((root / '2.txt').read_text(), 'Resources/ta.lproj')
-            self.assertEqual((root / '3.txt').read_text(), 'Resources/te.lproj')
+            for index in range(len(directories)):
+                self.assertEqual((root / (str(index) + '.txt')).read_text(), 'Resources')
+            # Xcode retains .lproj automatically; do not add it twice.
             self.assertEqual(set((root / 'sources.txt').read_text().split(';')),
                              {str(directory / 'InfoPlist.strings') for directory in directories})
 
@@ -126,9 +125,9 @@ class AppleLocalizationTests(unittest.TestCase):
                 for keyword in node.keywords:
                     if keyword.arg == 'BUNDLE_RESOURCEDIRS':
                         declared.extend(ast.literal_eval(keyword.value))
-        self.assertTrue({'darwin/en.lproj', 'darwin/mr.lproj', 'darwin/ta.lproj', 'darwin/te.lproj'} <= set(declared))
-        for base, plist_path in ((ROOT / 'darwin', ROOT / 'darwin/Info.plist'),
-                                 (ROOT / 'mobile/ios', ROOT / 'mobile/ios/Info.plist.in')):
+        self.assertTrue({'platforms/macos/en.lproj', 'platforms/macos/mr.lproj', 'platforms/macos/ta.lproj', 'platforms/macos/te.lproj', 'platforms/macos/th.lproj', 'platforms/macos/bg.lproj'} <= set(declared))
+        for base, plist_path in ((ROOT / 'platforms/macos', ROOT / 'platforms/macos/Info.plist'),
+                                 (ROOT / 'platforms/mobile/ios', ROOT / 'platforms/mobile/ios/Info.plist.in')):
             with self.subTest(platform=base):
                 info = plistlib.loads(plist_path.read_bytes())
                 self.assertEqual(info['CFBundleDevelopmentRegion'], 'en')
@@ -150,6 +149,16 @@ class AppleLocalizationTests(unittest.TestCase):
                 self.assertRegex(tamil['NSLocalNetworkUsageDescription'], r'[\u0b80-\u0bff]')
                 self.assertIn('Globulation 2', tamil['NSLocalNetworkUsageDescription'])
                 self.assertNotEqual(tamil, english)
+                thai = strings(base / 'th.lproj/InfoPlist.strings')
+                self.assertEqual(set(thai), set(english))
+                self.assertRegex(thai['NSLocalNetworkUsageDescription'], r'[\u0e00-\u0e7f]')
+                self.assertIn('Globulation 2', thai['NSLocalNetworkUsageDescription'])
+                self.assertNotEqual(thai, english)
+                bulgarian = strings(base / 'bg.lproj/InfoPlist.strings')
+                self.assertEqual(set(bulgarian), set(english))
+                self.assertRegex(bulgarian['NSLocalNetworkUsageDescription'], r'[\u0400-\u04ff]')
+                self.assertIn('Globulation 2', bulgarian['NSLocalNetworkUsageDescription'])
+                self.assertNotEqual(bulgarian, english)
 
 
 if __name__ == '__main__':

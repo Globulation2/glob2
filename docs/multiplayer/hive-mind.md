@@ -19,7 +19,7 @@ not satisfy those gates.
 
 ## Trust and execution
 
-`platform/packages/hive` owns the commander loop, prompt versions, provider adapter,
+`services/online/packages/hive` owns the commander loop, prompt versions, provider adapter,
 credit accounting and payment fulfillment. The API authenticates every operation
 against the live match participant and the `hive-mind` entitlement. Team identity
 comes from that participant record, never a tool parameter. Registered accounts
@@ -52,7 +52,7 @@ resource and simulation rules still apply.
 ## Version 1 contract
 
 The complete supported contract is packaged in
-[`commander-api.txt`](../../platform/packages/hive/src/commander-api.txt), with
+[`commander-api.txt`](../../services/online/packages/hive/src/commander-api.txt), with
 [player-only declarations](../../examples/hive-mind/hive.d.ts) and
 [executable examples](../../examples/hive-mind). The prompt includes that contract
 and copies of those examples; tests check they match. Do not import the broader
@@ -116,7 +116,7 @@ public metadata, test fixtures or logs. Use dedicated production credentials.
 `HIVE_DEVELOPMENT_CREDITS=1` enables the operator-only development grant command:
 
 ```sh
-cd platform
+cd services/online
 DATABASE_URL=... HIVE_DEVELOPMENT_CREDITS=1 node packages/hive/scripts/admin.ts grant ACCOUNT_UUID IDEMPOTENCY_KEY 100000
 ```
 
@@ -139,7 +139,7 @@ balance negative, preventing further calls until sufficient credits are added.
 
 ## Validation and release gates
 
-Run platform checks from `platform/` and engine tests via the shared registry:
+Run platform checks from `services/online/` and engine tests via the shared registry:
 
 ```sh
 npm run check
@@ -171,8 +171,8 @@ passing result.
 Run the held-out evaluation only with explicit development opt-in:
 
 ```sh
-HIVE_LIVE_EVAL=1 HIVE_EVAL_REASONINGCANVAS=1 node platform/packages/hive/eval/run.ts
-node platform/packages/hive/eval/select.ts artifacts/hive/eval
+HIVE_LIVE_EVAL=1 HIVE_EVAL_REASONINGCANVAS=1 node services/online/packages/hive/eval/run.ts
+node services/online/packages/hive/eval/select.ts artifacts/hive/eval
 ```
 
 The optional `HIVE_EVAL_REASONINGCANVAS` switch reads the development environment

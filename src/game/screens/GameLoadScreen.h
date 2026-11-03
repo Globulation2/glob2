@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ui/FrontendUI.h"
@@ -31,6 +32,7 @@ class GameLoadScreen : public Glob2UI::Screen
 	std::unique_ptr<Engine> engine;
 	std::optional<GAGCore::CooperativeTask> task;
 	std::string status;
+	mutable Glob2UI::DiagnosticText loadFailure;
 	std::string failureDiagnostic;
 	bool accepted = false;
 };

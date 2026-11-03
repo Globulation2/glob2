@@ -170,7 +170,7 @@ def main():
             run('map', 'generate','maze','--seed','7','--width','256','--height','128',
                 '--preview',OUT/f'rectangular-{scale}.png','--preview-scale',scale)
             assert png(OUT/f'rectangular-{scale}.png')[:2] == (256*scale,128*scale)
-        premade = next(iter(sorted((ROOT / 'maps').glob('*.map.gz'))))
+        premade = next(iter(sorted((ROOT / 'content/maps').glob('*.map.gz'))))
         run('map', 'preview',premade,'--output',OUT / 'premade.png')
         png(OUT / 'premade.png')
         invalid = [

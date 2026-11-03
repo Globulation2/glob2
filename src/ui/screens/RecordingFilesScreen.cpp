@@ -24,7 +24,7 @@ Element RecordingFilesScreen::build(const Presentation &p)
 	const bool idle = recording.state != Recording::State::Starting && recording.state != Recording::State::Recording && recording.state != Recording::State::Finalizing;
 	std::vector<Element> items;
 	if (files.busy) items.push_back(paragraph(tr("[recording working]")));
-	if (!files.error.empty()) items.push_back(paragraph(files.error));
+	if (!files.error.empty()) items.push_back(paragraph(filesError(files.error)));
 	if (!error.empty()) items.push_back(paragraph(error));
 	if (files.files.empty() && !files.busy) items.push_back(paragraph(tr("[recording none]")));
 	for (const auto &file : files.files)

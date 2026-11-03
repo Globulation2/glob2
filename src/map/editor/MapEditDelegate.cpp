@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
@@ -148,7 +149,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 					}
 					catch (const std::exception &e)
 					{
-						loadSaveScreen->showLoadFailure(e.what());
+						loadSaveScreen->showLoadFailure(Glob2UI::exceptionText(e));
 						break;
 					}
 					performAction("close load screen");

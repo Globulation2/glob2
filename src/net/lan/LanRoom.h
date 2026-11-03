@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 
@@ -85,6 +86,7 @@ namespace Lan
 		bool launched = false;
 		bool finished = false;
 		bool ready = false;
+		mutable Glob2UI::DiagnosticText closeDiagnostic;
 		std::string ending;
 
 		// The game this client is about to play or plays.

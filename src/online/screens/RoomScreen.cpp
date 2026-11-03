@@ -652,7 +652,7 @@ Element RoomScreen::seats(const Presentation &p, bool phone)
 			TextOptions readyText;
 			readyText.role = FontRole::Support;
 			readyText.color = slot.ready ? palette.success : palette.warning;
-			readyLabel = label(slot.ready ? tr("[room ready]") : tr("[room not ready]"), readyText);
+			readyLabel = expanded(label(slot.ready ? tr("[room ready]") : tr("[room not ready]"), readyText));
 			if (slot.progress >= 0 && slot.progress < 100)
 				add(formatted("[room downloading %0]", std::to_string(slot.progress)));
 			if (phone)

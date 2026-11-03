@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "ui/DiagnosticText.h"
 #include "ui/FrontendUI.h"
 #include "PlatformClient.h"
 #include "BuildingLibrary.h"
@@ -20,6 +21,7 @@ class BuildingLibraryScreen : public Glob2UI::Screen
 	Online::PlatformScope calls;
 	nlohmann::json families = nlohmann::json::array();
 	nlohmann::json openedFamily;
+	Glob2UI::DiagnosticText listingError;
 	std::string status, cursor, familyInput;
 	bool started = false, busy = false;
 	void reload(bool more = false);

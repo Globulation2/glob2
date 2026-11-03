@@ -1444,6 +1444,22 @@ void Context::record_profile(long long totalMicros,long long aiMicros,
 	profileBuildingSearchCalls=0;
 }
 
+void Context::reject_queued_orders(const std::function<bool(const Order&)>& reject)
+{
+    for(auto i=orders.begin();i!=orders.end();) {
+        if(!reject(**i)){++i;continue;}
+        if(const auto* construction=dynamic_cast<const OrderConstruction*>(i->get()))
+            buildings.order_execution_completed(construction->gid,false,
+                (*i)->aiSelectedTarget?std::optional<Uint32>((*i)->aiSelectedTarget->generation):std::nullopt);
+        i=orders.erase(i);
+    }
+}
+void Context::push_urgent_order(std::shared_ptr<Order> order)
+{
+    push_order(std::move(order));
+    orders.splice(orders.begin(),orders,std::prev(orders.end()));
+}
+
 shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
 {
 	const bool profiling=telemetry_enabled();

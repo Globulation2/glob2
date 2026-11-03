@@ -941,7 +941,8 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(terrainProperties(LAVA).airHealthQ8 == -64);
 		CHECK_FALSE(terrainProperties(LAVA).walkable);
 		CHECK(terrainProvidesFertility(terrainProperties(LOAM)));
-		CHECK(terrainProperties(LOAM).fertilityQ8 == 768);
+		for (const auto type : {LOAM, MOSS, SPRING_MEADOW})
+			CHECK(terrainProperties(type).fertilityQ8 == terrainProperties(WATER).fertilityQ8 / 2);
 		CHECK(terrainProperties(LOAM).buildable);
 		CHECK(terrainProperties(DEEP_WATER).swimmable);
 		CHECK(terrainProperties(DEEP_WATER).groundSpeedQ8 == 192);

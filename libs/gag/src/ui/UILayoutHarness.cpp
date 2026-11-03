@@ -1,0 +1,1882 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Layout-engine checks without fonts or a window: fixed-advance text, recording canvas.
+#include "Glob2Test.h"
+#include <string>
+#include <stdexcept>
+#include <functional>
+#include <utility>
+#include <ui/Containers.h>
+#include <ui/Controls.h>
+#include <ui/Host.h>
+#include <ui/PositionedControls.h>
+#include <nlohmann/json.hpp>
+#include "UIRecordingCanvas.h"
+#include <BrowserTextInput.h>
+#include <cstdio>
+#include <vector>
+
+using namespace GAGGUI::ui;
+using glob2test::RecordingCanvas;
+
+namespace
+{
+void require(bool condition, const char *message)
+{
+	GLOB2_REQUIRE(condition, message);
+}
+
+Theme theme;
+FixedTextMeasurer measurer(8, 16);
+
+struct Fixture
+{
+	Host host;
+	Presentation presentation;
+	// Event timestamps and Host::update ticks come from this clock only.
+	Uint32 clock = 1000;
+	Fixture(Host::Builder build, int width, int height, bool touch = false)
+		: host(theme, std::move(build)), presentation(Presentation::forSurface(width, height, 1, touch))
+	{
+		host.setMeasurer(&measurer);
+		host.setPresentation(presentation);
+		host.layoutIfNeeded();
+	}
+	void resize(int width, int height)
+	{
+		presentation = Presentation::forSurface(width, height, 1, presentation.touch);
+		host.setPresentation(presentation);
+		host.layoutIfNeeded();
+	}
+	RecordingCanvas paint()
+	{
+		RecordingCanvas canvas(presentation.viewport.size(), measurer);
+		host.paint(canvas, 0);
+		return canvas;
+	}
+	SDL_Event key(SDL_Keycode sym, Uint16 mod = 0)
+	{
+		SDL_Event e{};
+		e.type = SDL_EVENT_KEY_DOWN;
+		e.key.key = sym;
+		e.key.mod = mod;
+		host.event(e);
+		return e;
+	}
+	void mouse(Uint32 type, Point p)
+	{
+		SDL_Event e{};
+		e.type = type;
+		e.common.timestamp = SDL_MS_TO_NS(clock);
+		if (type == SDL_EVENT_MOUSE_MOTION)
+		{
+			e.motion.x = p.x;
+			e.motion.y = p.y;
+		}
+		else
+		{
+			e.button.button = SDL_BUTTON_LEFT;
+			e.button.x = p.x;
+			e.button.y = p.y;
+		}
+		host.event(e);
+	}
+	void click(Point p)
+	{
+		mouse(SDL_EVENT_MOUSE_BUTTON_DOWN, p);
+		mouse(SDL_EVENT_MOUSE_BUTTON_UP, p);
+	}
+	void finger(Uint32 type, Point p)
+	{
+		SDL_Event e{};
+		e.type = type;
+		e.tfinger.timestamp = SDL_MS_TO_NS(clock);
+		e.tfinger.touchID = 1;
+		e.tfinger.fingerID = 1;
+		e.tfinger.x = float(p.x) / presentation.viewport.w;
+		e.tfinger.y = float(p.y) / presentation.viewport.h;
+		host.event(e);
+	}
+	// Let `ms` pass and give the host its frame.
+	void advance(Uint32 ms)
+	{
+		clock += ms;
+		host.update(clock);
+	}
+	// Frames until coasting and bouncing stop; returns the offsets visited.
+	std::vector<int> settle(const std::string &key)
+	{
+		std::vector<int> visited;
+		for (int i = 0; i < 1000 && host.animating(); ++i)
+		{
+			advance(16);
+			visited.push_back(host.find(key)->scrollOffset() + host.find(key)->overscroll());
+		}
+		return visited;
+	}
+	// A finger flick upward: four 20 px moves 16 ms apart, then release.
+	void flick(Point from)
+	{
+		finger(SDL_EVENT_FINGER_DOWN, from);
+		for (int i = 1; i <= 4; ++i)
+		{
+			advance(16);
+			finger(SDL_EVENT_FINGER_MOTION, {from.x, from.y - 20 * i});
+		}
+		finger(SDL_EVENT_FINGER_UP, {from.x, from.y - 80});
+	}
+	void wheel(int y, Point at)
+	{
+		SDL_Event motion{};
+		motion.type = SDL_EVENT_MOUSE_MOTION;
+		motion.motion.x = at.x;
+		motion.motion.y = at.y;
+		host.event(motion);
+		SDL_Event e{};
+		e.type = SDL_EVENT_MOUSE_WHEEL;
+		e.wheel.y = y;
+		host.event(e);
+	}
+};
+
+void checkIconsAndTooltips()
+{
+	auto asset = std::make_shared<IconAsset>();
+	asset->name = "settings";
+	asset->rasters.push_back({24, {}}); // Identity only: recording never accesses raster pixels.
+	Fixture decorative([&](const Presentation &) { return row({icon(asset), expandedSpacer()}); },
+					   120, 60);
+	auto decoration = decorative.paint();
+	require(decoration.icons.front().bounds.w == 20, "standalone icon defaults to 20 points");
+	decorative.presentation.unit = 2;
+	decorative.host.setPresentation(decorative.presentation);
+	require(decorative.paint().icons.front().bounds.w == 40, "icon size follows point scale");
+	ButtonOptions gear;
+	gear.icon = asset;
+	gear.iconSize = 24;
+	gear.accessibleLabel = "Settings";
+	gear.tooltip = "Settings";
+	int clicks = 0;
+	Fixture f(
+		[&](const Presentation &p)
+		{
+			return row(
+				{width(p.pt(48), button("gear", "", [&] { ++clicks; }, gear)), expandedSpacer()});
+		},
+		200, 100, true);
+	require(f.host.find("gear")->accessibleText() == "Settings",
+			"icon button retains its accessible name");
+	require(f.host.bounds("gear").w == 48 && f.host.bounds("gear").h >= 48,
+			"gear keeps a full touch target");
+	auto painted = f.paint();
+	require(painted.icons.size() == 1 && painted.icons[0].bounds.w == 24,
+			"gear paints at 24 points");
+	require(f.host.bounds("gear").contains(painted.icons[0].bounds), "icon stays inside button");
+	f.host.focus("gear", true);
+	f.key(SDLK_SPACE);
+	require(clicks == 1, "icon button activates from keyboard");
+	f.click({24, 24});
+	require(clicks == 2, "icon button activates from pointer");
+	auto missing = std::make_shared<IconAsset>();
+	gear.icon = missing;
+	Fixture fallback([&](const Presentation &) { return button("missing", "", [] {}, gear); }, 200,
+					 100);
+	require(fallback.paint().texts.front().second == "Settings",
+			"missing icon restores translated text");
+	bool rejected = false;
+	try
+	{
+		ButtonOptions unnamed;
+		unnamed.icon = asset;
+		button("bad", "", [] {}, unnamed);
+	}
+	catch (const std::invalid_argument &)
+	{
+		rejected = true;
+	}
+	require(rejected, "icon-only buttons must be named");
+	gear.icon = asset;
+	gear.iconSize = 20;
+	Fixture combined([&](const Presentation &)
+					 { return button("combined", "A long translated label", [] {}, gear); }, 110,
+					 160);
+	auto combinedPaint = combined.paint();
+	require(combinedPaint.icons.size() == 1 && combinedPaint.texts.size() > 1,
+			"label wraps beside icon");
+	for (const auto &line : combinedPaint.texts)
+		require(line.first.x >= combinedPaint.icons[0].bounds.right() + 6,
+				"text reserves the icon and gap");
+	for (int state = 0; state < 4; ++state)
+	{
+		ButtonOptions options;
+		options.icon = asset;
+		options.enabled = state != 0;
+		options.primary = state == 1;
+		options.selected = state == 2;
+		options.danger = state == 3;
+		Fixture colours([&](const Presentation &)
+						{ return button("colour", "Label", [] {}, options); }, 200, 100);
+		const auto c = colours.paint().icons.front().color;
+		const auto expected = state == 0   ? theme.palette.muted
+							  : state == 1 ? theme.palette.accentInk
+							  : state == 3 ? theme.palette.danger
+										   : theme.palette.ink;
+		require(c.r == expected.r && c.g == expected.g && c.b == expected.b,
+				"icon inherits button ink state");
+	}
+	Fixture tip([&](const Presentation &)
+				{ return row({width(48, button("tip", "", [] {}, gear)), expandedSpacer()}); }, 100,
+				80);
+	tip.host.focus("tip", true);
+	auto draw = [&](Uint32 tick)
+	{
+		RecordingCanvas canvas({100, 80}, measurer);
+		tip.host.paint(canvas, tick);
+		return canvas;
+	};
+	require(draw(100).texts.empty() && draw(699).texts.empty(), "tooltip waits 600ms");
+	auto shown = draw(700);
+	require(shown.texts.size() == 1 && shown.texts[0].second == "Settings",
+			"keyboard focus shows translated tooltip");
+	require(shown.texts[0].first.x >= 0 && shown.texts[0].first.y >= 0 &&
+				shown.texts[0].first.x + measurer.width(FontRole::Support, "Settings") <= 100,
+			"tooltip remains in safe viewport");
+	tip.key(SDLK_SPACE);
+	require(draw(1400).texts.empty(), "activation suppresses tooltip until target changes");
+	tip.host.focus("", false);
+	draw(1401);
+	SDL_Event motion{};
+	motion.type = SDL_EVENT_MOUSE_MOTION;
+	motion.motion.x = 15;
+	motion.motion.y = 15;
+	tip.host.event(motion);
+	require(draw(1500).texts.empty(), "hover starts a new timer");
+	require(draw(2100).texts.size() == 1, "pointer hover shows tooltip");
+	SDL_Event press{};
+	press.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+	press.button.button = SDL_BUTTON_LEFT;
+	press.button.x = 15;
+	press.button.y = 15;
+	tip.host.event(press);
+	draw(2101);
+	press.type = SDL_EVENT_MOUSE_BUTTON_UP;
+	tip.host.event(press);
+	require(draw(2800).texts.empty(), "pointer activation hides tooltip even after pressed frame");
+	motion.motion.x = 99;
+	motion.motion.y = 79;
+	tip.host.event(motion);
+	require(draw(2200).texts.empty(), "pointer departure hides tooltip");
+	tip.host.focus("tip", true);
+	draw(2300);
+	PopupSpec popup;
+	popup.anchor = tip.host.bounds("tip");
+	popup.options = {"Choice"};
+	tip.host.openPopup(popup);
+	auto popupPaint = draw(3000);
+	for (const auto &text : popupPaint.texts)
+		require(text.second != "Settings", "popup hides background tooltip");
+}
+
+void checkGeometry()
+{
+	Constraints c = Constraints::loose({100, 50});
+	require(c.clamp({200, 20}) == Size{100, 20}, "clamp bounds width");
+	require(!Constraints{}.boundedW(), "default constraints are unbounded");
+	require(Rect{0, 0, 10, 10}.contains(Point{9, 9}) && !Rect{0, 0, 10, 10}.contains(Point{10, 9}),
+			"rect containment is half open");
+	require(Rect{0, 0, 10, 10}.intersect({5, 5, 10, 10}) == Rect{5, 5, 5, 5}, "rect intersection");
+	require(Rect{0, 0, 10, 10}.unite({5, 5, 10, 10}) == Rect{0, 0, 15, 15}, "rect union");
+}
+
+void checkText()
+{
+	const auto lines = wrapText(measurer, FontRole::Body, "one two three four", 8 * 10);
+	require(lines.size() == 2 && lines[0] == "one two" && lines[1] == "three four", "word wrap");
+	const auto forced = wrapText(measurer, FontRole::Body, "abcdefghijkl", 8 * 5);
+	require(forced.size() == 3 && forced[0] == "abcde", "unspaced runs break by glyph");
+	const auto newline = wrapText(measurer, FontRole::Body, "a\nb", 800);
+	require(newline.size() == 2, "explicit newline breaks");
+	const auto cjk = wrapText(measurer, FontRole::Body, "日本語。テスト", 8 * 3);
+	require(cjk.size() >= 2 && cjk[0] == "日本" && cjk[1].rfind("語。", 0) == 0,
+			"closing punctuation stays with its glyph");
+	require(ellipsize(measurer, FontRole::Body, "abcdefgh", 8 * 4) == "abc…", "ellipsis fits width");
+	require(ellipsize(measurer, FontRole::Body, "abc", 8 * 4) == "abc", "short text untouched");
+	require(nextGlyph("é", 0) == 2 && previousGlyph("aé", 3) == 1, "utf8 stepping");
+}
+
+// Fixture boundaries are independent of the wrapping implementation. Actual
+// SDL_ttf/HarfBuzz cluster discovery is covered by the production font tests.
+void checkShapingClusterWrapping()
+{
+    struct ClusterFixture : FixedTextMeasurer
+    {
+        std::string cluster;
+        explicit ClusterFixture(std::string cluster) : cluster(std::move(cluster)) {}
+        std::vector<std::size_t> clusterEnds(FontRole role, const std::string &text) const override
+        {
+            if (text.rfind(cluster, 0) != 0) return FixedTextMeasurer::clusterEnds(role, text);
+            std::vector<std::size_t> ends{cluster.size()};
+            for (std::size_t at = cluster.size(); at < text.size();) {
+                at = nextGlyph(text, at);
+                ends.push_back(at);
+            }
+            return ends;
+        }
+    };
+    // Yoruba decomposed vowel with underdot+tone, Indic conjunct+matra,
+    // Myanmar stacked consonants, and Thai consonant+tone mark.
+    for (const std::string cluster : {"o\u0323\u0301", "क्षि", "ক্ষি", "র্কি", "কৌ", "က္က", "ก้"}) {
+        ClusterFixture shaped(cluster);
+        const auto source = cluster + "x";
+        const auto lines = wrapText(shaped, FontRole::Body, source, 8);
+        require(lines.size() == 2 && lines[0] == cluster && lines[1] == "x",
+                "oversized shaping cluster stays whole instead of losing its marks");
+        const auto block = layoutText(shaped, FontRole::Body, source, 8, 0);
+        require(block.width == shaped.width(FontRole::Body, cluster) && block.width > 8,
+                "layout exposes an oversized indivisible cluster instead of clamping evidence");
+        const int clusterAndEllipsis = shaped.width(FontRole::Body, cluster + "…");
+        require(ellipsize(shaped, FontRole::Body, cluster + "bc", clusterAndEllipsis) == cluster + "…",
+                "ellipsis removes complete shaping clusters");
+        require(ellipsize(shaped, FontRole::Body, cluster + "bc", 8) == "…",
+                "slot cannot keep part of an oversized shaping cluster");
+        const auto explicitLines = wrapText(shaped, FontRole::Body, cluster + "\nx", 800);
+        require(explicitLines.size() == 2 && explicitLines.front() == cluster,
+                "explicit newline keeps preceding cluster intact");
+
+        const auto editable = cluster + "x\n" + cluster + "y";
+        Fixture editor([&](const Presentation &) {
+            return column({textEditor("cluster-editor", editable, {}, {true, 8})});
+        }, 32, 300);
+        editor.host.setMeasurer(&shaped);
+        editor.host.layoutIfNeeded();
+        RecordingCanvas canvas(editor.presentation.viewport.size(), shaped);
+        editor.host.paint(canvas, 0);
+        require(canvas.texts.size() == 4 && canvas.texts[0].second == cluster &&
+                canvas.texts[1].second == "x" && canvas.texts[2].second == cluster &&
+                canvas.texts[3].second == "y",
+                "multiline editor keeps shaping clusters and explicit newlines intact");
+    }
+    FixedTextMeasurer fixed;
+    const std::string annotated = "ab\u200bcd\u200bef";
+    require(wrapText(fixed, FontRole::Body, annotated, 32) == std::vector<std::string>{"abcd", "ef"},
+            "soft boundaries prefer whole words without adding spaces");
+    require(wrapText(fixed, FontRole::Body, annotated, 24) == std::vector<std::string>{"ab", "cd", "ef"},
+            "a Thai-style word wraps before it exceeds the remaining line");
+    require(wrapText(fixed, FontRole::Body, "ab\u200bcdefg", 24) == std::vector<std::string>{"ab", "cde", "fg"},
+            "oversized annotated words retain emergency cluster wrapping");
+    require(wrapText(fixed, FontRole::Body, "\u200bab \u200bcd\u200b\u200b\nef\u200b", 80) ==
+            std::vector<std::string>{"ab cd", "ef"},
+            "leading consecutive and trailing hints preserve real spaces and newlines");
+    require(ellipsize(fixed, FontRole::Body, annotated, 32) == "abc…",
+            "ellipsis neither measures nor emits soft boundary markers");
+    require(ellipsize(fixed, FontRole::Body, annotated, 80) == "abcdef",
+            "untruncated labels omit soft boundary markers too");
+    ClusterFixture thai("ก้");
+    require(wrapText(thai, FontRole::Body, "ก้\u200bx", 8) == std::vector<std::string>{"ก้", "x"},
+            "a soft boundary never separates a Thai base and tone mark");
+    struct InvalidBoundaries : FixedTextMeasurer
+    {
+        std::vector<std::size_t> clusterEnds(FontRole, const std::string &) const override
+        { return {1}; } // Inside the first multibyte character in the fixture.
+    } invalid;
+    const auto invalidLines = wrapText(invalid, FontRole::Body, "éx", 8);
+    require(invalidLines.size() == 1 && invalidLines.front() == "éx",
+            "invalid segmentation is conservatively treated as one unsplittable run");
+    require(ellipsize(invalid, FontRole::Body, "éx", 8) == "…",
+            "invalid segmentation never leaves a partial UTF-8 character");
+}
+
+void checkColumnAndFlex()
+{
+	Fixture f(
+		[](const Presentation &)
+		{
+			return column({height(20, label("a")), expanded(label("b")), height(30, label("c"))},
+						  {10});
+		},
+		200, 200);
+	require(f.host.rootBounds() == Rect{0, 0, 200, 200}, "root fills the safe rect");
+	auto *root = f.host.root();
+	require(root->children.size() == 3, "column keeps three children");
+	require(root->children[0]->bounds == Rect{0, 0, 200, 20}, "first fixed child");
+	require(root->children[1]->bounds == Rect{0, 30, 200, 130}, "flex child takes the remainder");
+	require(root->children[2]->bounds == Rect{0, 170, 200, 30}, "last fixed child at the bottom");
+}
+
+void checkRowCrossAlign()
+{
+	Fixture f(
+		[](const Presentation &)
+		{
+			return row({sized({50, 10}, label("a")), sized({50, 30}, label("b"))},
+					   {0, CrossAlign::Center});
+		},
+		200, 100);
+	auto *root = f.host.root();
+	require(root->children[0]->bounds == Rect{0, 45, 50, 10}, "row centers the short child");
+	require(root->children[1]->bounds == Rect{50, 35, 50, 30}, "row places the tall child");
+}
+
+void checkParagraphWrapsWithWidth()
+{
+	Fixture f([](const Presentation &) { return column({paragraph("one two three four five six")}); }, 8 * 10, 400);
+	auto *text = f.host.root()->children[0].get();
+	require(text->bounds.h == 3 * 16 + 2 * theme.lineGap, "paragraph grows to three lines");
+	f.resize(8 * 30, 400);
+	require(f.host.root()->children[0]->bounds.h == 16, "paragraph shrinks to one line after resize");
+}
+
+void checkWrapColumns()
+{
+	auto build = [](const Presentation &)
+	{
+		return wrap({button("a", "A", {}), button("b", "B", {}), button("c", "C", {})},
+					{4, 100, 0, true});
+	};
+	Fixture narrow(build, 150, 400);
+	auto *root = narrow.host.root();
+	require(root->children[0]->bounds.w == 150 && root->children[1]->bounds.y > 0,
+			"narrow wrap stacks one per row");
+	Fixture wide(build, 220, 400);
+	root = wide.host.root();
+	require(root->children[0]->bounds.y == root->children[1]->bounds.y &&
+				root->children[2]->bounds.y > 0,
+			"wide wrap fits two per row");
+	require(root->children[0]->bounds.w == root->children[1]->bounds.w, "cells share width");
+}
+
+void checkFooterFolds()
+{
+	auto build = [](const Presentation &)
+	{
+		std::vector<Element> actions;
+		for (int i = 0; i < 6; ++i)
+			actions.push_back(button("act" + std::to_string(i), "Action", {}));
+		return footer(scroll("body", paragraph("body text")), wrap(actions, {4, 200}));
+	};
+	Fixture tall(build, 300, 600);
+	auto *root = tall.host.root();
+	require(root->children[1]->bounds.bottom() == 600, "actions pinned to the bottom when they fit");
+	require(root->children[0]->bounds.bottom() < root->children[1]->bounds.y, "body sits above actions");
+	Fixture shortHost(build, 300, 220);
+	root = shortHost.host.root();
+	// Folded, the arranged tree is one page-level scroll holding body then actions.
+	auto *fold = shortHost.host.find("footer/fold");
+	require(fold && root->children.size() == 1 && root->children[0].get() == fold,
+			"oversized actions join one page-level scroll");
+	auto &flow = *fold->children[0];
+	require(flow.children[1]->bounds.y == flow.children[0]->bounds.bottom() + theme.gap,
+			"oversized actions fold into the flow below the body");
+}
+
+void checkScrollClampAndWheel()
+{
+	auto build = [](const Presentation &)
+	{
+		std::vector<Element> rows;
+		for (int i = 0; i < 20; ++i)
+			rows.push_back(height(30, label("row " + std::to_string(i))));
+		return scroll("list", column(rows, {0}));
+	};
+	Fixture f(build, 200, 100);
+	auto *sc = f.host.find("list");
+	require(sc && sc->scrollMaximum() == 600 - 100, "scroll maximum is content minus viewport");
+	f.wheel(-3, {50, 50});
+	require(sc->scrollOffset() == 3 * f.host.metrics().control, "wheel scrolls by control heights");
+	f.host.find("list")->scrollBy(100000, f.host);
+	f.host.layoutIfNeeded();
+	require(f.host.find("list")->scrollOffset() == 500, "offset clamps to the maximum");
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	require(f.host.find("list")->scrollOffset() == 500, "offset survives a rebuild");
+	auto canvas = f.paint();
+	for (const auto &t : canvas.texts)
+		require(t.first.y >= -30 && t.first.y < 100, "only visible rows are painted near the viewport");
+	// Rows above the viewport are still laid out but clipped.
+	require(f.host.root()->hitTest({50, 50}, [](const Node &n) { return n.name() == std::string("label"); }) != nullptr,
+			"hit test finds a clipped row inside the viewport");
+	require(f.host.root()->hitTest({50, 150}, [](const Node &n) { return true; }) == nullptr,
+			"hit test rejects points outside the scroll bounds");
+}
+
+void checkTapVersusPan()
+{
+	int taps = 0;
+	auto build = [&](const Presentation &)
+	{
+		std::vector<Element> rows;
+		for (int i = 0; i < 20; ++i)
+			rows.push_back(button("b" + std::to_string(i), "B", [&] { ++taps; }, {false, false, true, false, false, false, SDLK_UNKNOWN, FontRole::Body, 40}));
+		return scroll("list", column(rows, {0}));
+	};
+	Fixture f(build, 200, 100, true);
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 20});
+	f.finger(SDL_EVENT_FINGER_UP, {50, 20});
+	require(taps == 1, "a tap activates the button under the finger");
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 80});
+	f.advance(16);
+	f.finger(SDL_EVENT_FINGER_MOTION, {50, 40});
+	f.advance(60); // the finger rests before lifting: no momentum
+	f.finger(SDL_EVENT_FINGER_UP, {50, 40});
+	require(taps == 1, "a drag scrolls instead of tapping");
+	require(f.host.find("list")->scrollOffset() == 40, "drag distance becomes scroll offset");
+	require(!f.host.animating(), "a rested finger leaves no momentum");
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 20});
+	SDL_Event lost{};
+	lost.type = SDL_EVENT_WINDOW_RESIZED;
+	lost.type = SDL_EVENT_WINDOW_FOCUS_LOST;
+	f.host.event(lost);
+	f.finger(SDL_EVENT_FINGER_UP, {50, 20});
+	require(taps == 1, "focus loss cancels a held press");
+}
+
+void checkPressSurvivesResize()
+{
+	// A release already queued when the window resizes still lands on the
+	// element it was pressed on.
+	int clicks = 0;
+	Fixture f([&](const Presentation &) { return column({button("go", "Go", [&] { ++clicks; })}); }, 300, 100);
+	SDL_Event e{};
+	e.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+	e.button.button = SDL_BUTTON_LEFT;
+	e.button.x = 20;
+	e.button.y = 10;
+	f.host.event(e);
+	f.resize(320, 120);
+	e.type = SDL_EVENT_MOUSE_BUTTON_UP;
+	f.host.event(e);
+	require(clicks == 1, "a press survives a resize before its release");
+}
+
+void checkFocusAndKeyboard()
+{
+	std::vector<std::string> activated;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			return column({button("one", "One", [&] { activated.push_back("one"); }),
+						   button("two", "Two", [&] { activated.push_back("two"); }, {false, false, false}),
+						   button("three", "Three", [&] { activated.push_back("three"); }, {true, false, true, false, false, false, SDLK_RETURN}),
+						   button("cancel", "Cancel", [&] { activated.push_back("cancel"); }, {false, false, true, false, false, false, SDLK_ESCAPE})});
+		},
+		300, 400);
+	require(f.host.focusOrder() == std::vector<std::string>{"one", "three", "cancel"}, "disabled buttons are skipped");
+	f.key(SDLK_TAB);
+	require(f.host.focused() == "one" && f.host.keyboardFocused(), "tab focuses the first button");
+	f.key(SDLK_TAB);
+	f.key(SDLK_TAB);
+	f.key(SDLK_TAB);
+	require(f.host.focused() == "one", "tab wraps around");
+	f.key(SDLK_TAB, SDL_KMOD_LSHIFT);
+	require(f.host.focused() == "cancel", "shift-tab moves backwards");
+	f.key(SDLK_RETURN);
+	require(activated == std::vector<std::string>{"cancel"}, "enter activates the focused button");
+	f.host.focus("", false);
+	f.key(SDLK_RETURN);
+	require(activated.back() == "three", "enter without focus fires the return shortcut");
+	f.key(SDLK_ESCAPE);
+	require(activated.back() == "cancel", "escape fires the escape shortcut");
+	f.click({150, 10});
+	require(activated.back() == "one", "click activates the button under the pointer");
+	f.click(f.host.bounds("two").center());
+	require(activated.back() == "one", "disabled buttons ignore clicks");
+}
+
+void checkChoicePopup()
+{
+	int picked = -1;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			return column({choice("pick", {"Alpha", "Beta", "Gamma"}, 1, [&](int v) { picked = v; }),
+						   button("other", "Other", {})});
+		},
+		300, 400);
+	f.click(f.host.bounds("pick").center());
+	require(f.host.popupOpen(), "activating a choice opens its popup");
+	require(f.host.find("popup/2") != nullptr, "popup lists every option");
+	f.key(SDLK_DOWN);
+	f.key(SDLK_RETURN);
+	require(picked == 2 && !f.host.popupOpen(), "keyboard picks the highlighted option and closes");
+	f.click(f.host.bounds("pick").center());
+	f.click({299, 399});
+	require(!f.host.popupOpen() && picked == 2, "clicking outside dismisses without picking");
+}
+
+void checkIconSegmentsAndChoice()
+{
+	auto asset = std::make_shared<IconAsset>();
+	asset->name = "option";
+	asset->rasters.push_back({24, {}});
+	Fixture segmented([&](const Presentation &)
+					  { return segments("mode", {"One", "Two"}, 0, [](int) {}, {}, {asset, asset}); }, 300, 60);
+	auto segmentPaint = segmented.paint();
+	require(segmentPaint.icons.size() == 2, "each segment paints its icon");
+	require(segmented.host.bounds("mode/0").contains(segmentPaint.icons[0].bounds) &&
+				segmented.host.bounds("mode/1").contains(segmentPaint.icons[1].bounds),
+			"segment icons stay inside their buttons");
+
+	ChoiceOptions options;
+	options.icons = {asset, asset, asset};
+	Fixture f([&](const Presentation &) { return choice("pick", {"Alpha", "Beta", "Gamma"}, 1, [](int) {}, options); },
+			  300, 400);
+	auto closed = f.paint();
+	require(closed.icons.size() == 1 && f.host.bounds("pick").contains(closed.icons[0].bounds),
+			"a choice paints the selected option's icon inside the control");
+	for (const auto &line : closed.texts)
+		if (line.second == "Beta")
+			require(line.first.x >= closed.icons[0].bounds.right() + 6, "the value text clears the icon");
+	f.click(f.host.bounds("pick").center());
+	require(f.host.popupOpen(), "an icon choice opens its popup");
+	require(f.paint().icons.size() == 1 + 3, "every popup row paints its icon");
+
+	options.compactLabel = "More";
+	Fixture compact([&](const Presentation &) { return choice("more", {"Alpha"}, 0, [](int) {}, options); }, 300, 60);
+	require(compact.paint().icons.empty(), "a compact label replaces the option icon");
+}
+
+void checkTextField()
+{
+	std::string model = "ab";
+	Fixture f([&](const Presentation &) { return textField("name", model, [&](const std::string &v) { model = v; }); }, 300, 100);
+	f.click({20, 20});
+	require(f.host.editing() == "name", "tapping a field starts editing");
+	SDL_Event text{};
+	text.type = SDL_EVENT_TEXT_INPUT;
+	text.text.text = "c";
+	f.host.event(text);
+	require(model == "abc", "text input appends at the cursor");
+	f.key(SDLK_LEFT);
+	f.key(SDLK_BACKSPACE);
+	require(model == "ac", "backspace removes before the cursor after moving left");
+	f.host.layoutIfNeeded();
+	require(f.host.state("name").cursor == 1, "cursor position persists across rebuilds");
+	f.key(SDLK_ESCAPE);
+	require(f.host.editing().empty(), "escape ends editing");
+}
+
+void checkTextFieldByteLimit()
+{
+	std::string model = "নাম";
+	TextFieldOptions options;
+	options.maxLength = 32;
+	options.maxBytes = 32;
+	options.commitOnSubmit = true;
+	int previews = 0;
+	options.preview = [&](const std::string &) { ++previews; };
+	Fixture f([&](const Presentation &) { return textField("name", model, [&](const std::string &v) { model = v; }, options); }, 400, 100);
+	f.click({20, 20});
+	const auto replace = [&](const std::string &next)
+	{
+		f.key(SDLK_A, SDL_KMOD_CTRL);
+		SDL_Event text{};
+		text.type = SDL_EVENT_TEXT_INPUT;
+		text.text.text = next.c_str();
+		f.host.event(text);
+	};
+	std::string oversized;
+	for (int i = 0; i < 8; ++i) oversized += "ক";
+	oversized += "ক্ষ";
+	require(oversized.size() == 33, "probe crosses the byte cap inside a Bengali conjunct");
+	replace(oversized);
+	require(f.host.state("name").text == "নাম", "oversized edit preserves the whole previous draft");
+	require(previews == 0 && model == "নাম", "rejected edit never reaches preview or model");
+	replace("ক্ষুদ্র");
+	require(f.host.state("name").text == "ক্ষুদ্র", "a complete Bengali edit below the byte cap is accepted");
+	f.key(SDLK_RETURN);
+	require(model == "ক্ষুদ্র", "Enter commits the complete Bengali name");
+	f.click({20, 20});
+	replace(std::string(32, 'a'));
+	f.key(SDLK_RETURN);
+	require(model == std::string(32, 'a'), "all 32 ASCII bytes remain supported");
+}
+
+void checkTextFieldCharacterLimit()
+{
+	const auto repeat = [](const std::string &text, std::size_t count)
+	{
+		std::string result;
+		while (count--) result += text;
+		return result;
+	};
+	for (const auto &[character, maximum] : std::vector<std::pair<std::string, std::size_t>>{
+		{"ক", 32}, {"ক", 128}, {"😀", 32}})
+	{
+		std::string model;
+		TextFieldOptions options;
+		options.maxLength = maximum;
+		int changes = 0;
+		Fixture f([&](const Presentation &)
+		{
+			return textField("name", model, [&](const std::string &next) { model = next; ++changes; }, options);
+		}, 400, 100);
+		f.click({20, 20});
+		const auto replace = [&](const std::string &next)
+		{
+			f.key(SDLK_A, SDL_KMOD_CTRL);
+			SDL_Event text{};
+			text.type = SDL_EVENT_TEXT_INPUT;
+			text.text.text = next.c_str();
+			f.host.event(text);
+		};
+		if (maximum == 128)
+		{
+			const auto title = repeat(character, 43);
+			require(title.size() == 129, "title crosses 128 bytes while staying below 128 characters");
+			replace(title);
+			require(model == title, "a valid 43-character Bengali title is unchanged");
+		}
+		const auto full = repeat(character, maximum);
+		replace(full);
+		require(model == full, "character capacity counts codepoints independently of UTF-8 bytes");
+		const auto acceptedChanges = changes;
+		replace(full + character);
+		require(model == full && changes == acceptedChanges, "an extra codepoint rejects the whole edit");
+	}
+
+	std::string model = "abc";
+	TextFieldOptions options;
+	options.maxLength = 5;
+	Fixture f([&](const Presentation &) { return textField("name", model, [&](const std::string &next) { model = next; }, options); }, 400, 100);
+	f.click({20, 20});
+	SDL_Event text{};
+	text.type = SDL_EVENT_TEXT_INPUT;
+	text.text.text = "ক্ষ";
+	f.host.event(text);
+	require(model == "abc", "character overflow never appends a partial Bengali conjunct");
+}
+
+void checkCopyField()
+{
+	// A failed Copy leaves the text in a field that opens selected and ignores edits.
+	std::string model = "https://app.glob2.online/j/ABCDEFGHJK";
+	TextFieldOptions options;
+	options.selectForCopy = true;
+	Fixture f([&](const Presentation &) { return textField("copy", model, [&](const std::string &v) { model = v; }, options); }, 400, 100);
+	f.click({20, 20});
+	require(f.host.editing() == "copy", "tapping the copy field starts editing");
+	require(f.host.state("copy").highlight == 1, "the copy field opens with its text selected");
+	SDL_Event text{};
+	text.type = SDL_EVENT_TEXT_INPUT;
+	text.text.text = "x";
+	f.host.event(text);
+	f.key(SDLK_BACKSPACE);
+	require(model == "https://app.glob2.online/j/ABCDEFGHJK", "typing does not change text shown for copying");
+}
+
+void checkListView()
+{
+	int selected = 0;
+	std::vector<std::string> items;
+	for (int i = 0; i < 30; ++i)
+		items.push_back("item " + std::to_string(i));
+	Fixture f([&](const Presentation &) { return column({listView("files", items, selected, [&](int i) { selected = i; }, {{}, {}, {}, {}, {}, 5})}); }, 200, 400);
+	auto *list = f.host.find("files");
+	require(list && list->bounds.h == 5 * f.host.metrics().control, "list height follows visible rows");
+	f.click({50, list->bounds.y + f.host.metrics().control + 2});
+	require(selected == 1, "clicking a row selects it");
+	f.key(SDLK_DOWN);
+	require(selected == 2, "down arrow moves the selection");
+	selected = 29;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	require(f.host.find("files")->scrollOffset() > 0, "selection scrolls into view");
+}
+
+void checkAdaptiveAndField()
+{
+	Fixture f([](const Presentation &) { return form({field("Player name", textField("name", "x", {}), {"Shown in games"})}); }, 800, 400);
+	auto nameWide = f.host.bounds("name");
+	f.resize(300, 400);
+	auto nameNarrow = f.host.bounds("name");
+	require(nameWide.x > 0 && nameNarrow.x == 0, "field stacks on narrow widths and sits inline on wide ones");
+	int chosen = 0;
+	Fixture a([&](const Presentation &) { return adaptive([&](const LayoutContext &, Size available) { chosen = available.w >= 500 ? 2 : 1; return label("x"); }); }, 800, 400);
+	require(chosen == 2, "adaptive sees the wide width");
+	a.resize(300, 400);
+	require(chosen == 1, "adaptive re-chooses after resize");
+	// Fields inside an adaptive subtree only exist after layout: editing must
+	// survive the rebuild each edit causes.
+	std::string model = "x";
+	Fixture b([&](const Presentation &) { return adaptive([&](const LayoutContext &, Size) { return textField("name", model, [&](const std::string &v) { model = v; }); }); }, 300, 100);
+	b.click({20, 20});
+	require(b.host.editing() == "name", "tapping a field inside adaptive starts editing");
+	SDL_Event text{};
+	text.type = SDL_EVENT_TEXT_INPUT;
+	text.text.text = "y";
+	b.host.event(text);
+	require(model == "xy", "text input reaches a field inside adaptive");
+	b.host.layoutIfNeeded();
+	require(b.host.editing() == "name", "editing survives the rebuild after an edit");
+}
+
+Host::Builder buttonList(int &taps)
+{
+	return [&taps](const Presentation &)
+	{
+		std::vector<Element> rows;
+		for (int i = 0; i < 20; ++i)
+			rows.push_back(button("b" + std::to_string(i), "B", [&taps] { ++taps; }, {false, false, true, false, false, false, SDLK_UNKNOWN, FontRole::Body, 40}));
+		return scroll("list", column(rows, {0}));
+	};
+}
+
+void checkFlingContinues()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, true);
+	f.flick({50, 90});
+	auto *list = f.host.find("list");
+	require(list->scrollOffset() == 80, "the drag itself moved the content");
+	require(f.host.animating(), "a flick keeps the content moving after release");
+	f.advance(16);
+	require(f.host.find("list")->scrollOffset() > 80, "the content coasts on the next frame");
+	const auto path = f.settle("list");
+	require(!f.host.animating() && !path.empty(), "coasting ends");
+	for (std::size_t i = 1; i < path.size(); ++i)
+		require(path[i] >= path[i - 1], "coasting never reverses");
+	const int rest = f.host.find("list")->scrollOffset();
+	require(rest > 80 && rest <= f.host.find("list")->scrollMaximum(), "the content rests further along, inside the range");
+	require(f.host.find("list")->overscroll() == 0, "no stretch remains after coasting");
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	require(f.host.find("list")->scrollOffset() == rest, "the resting offset survives a rebuild");
+	require(taps == 0, "a flick never taps");
+	// Content that stops mid-way keeps its offset on later frames.
+	f.advance(500);
+	require(f.host.find("list")->scrollOffset() == rest, "idle content stays put");
+}
+
+void checkOverscrollSpringsBack()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, true);
+	f.host.find("list")->scrollBy(100000, f.host);
+	f.host.layoutIfNeeded();
+	const int end = f.host.find("list")->scrollMaximum();
+	require(end > 0 && f.host.find("list")->scrollOffset() == end, "starts at the end");
+	const int listTop = f.host.find("list")->bounds.y;
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 90});
+	f.advance(16);
+	f.finger(SDL_EVENT_FINGER_MOTION, {50, 40});
+	auto *list = f.host.find("list");
+	require(list->scrollOffset() == end, "the clamped offset stays at the maximum");
+	const int stretch = list->overscroll();
+	require(stretch > 0 && stretch < 50, "pulling past the end stretches less than the finger moved");
+	f.host.layoutIfNeeded();
+	require(f.host.find("b0")->bounds.y == listTop - end - stretch, "children shift by the stretch");
+	f.advance(16);
+	f.finger(SDL_EVENT_FINGER_MOTION, {50, 10});
+	require(f.host.find("list")->overscroll() > stretch, "pulling further stretches further");
+	require(f.host.find("list")->overscroll() < 100, "the stretch stays inside the viewport");
+	f.advance(60);
+	f.finger(SDL_EVENT_FINGER_UP, {50, 10});
+	require(f.host.animating(), "released stretched content springs back");
+	// A rebuild mid-bounce persists only the clamped offset.
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	require(f.host.state("list").scroll == end, "persisted state never includes the stretch");
+	require(f.host.find("list")->overscroll() == 0, "a rebuilt node starts unstretched");
+	f.advance(16);
+	require(f.host.find("list")->overscroll() > 0, "the bounce continues on the rebuilt node");
+	const auto path = f.settle("list");
+	for (std::size_t i = 1; i < path.size(); ++i)
+		require(path[i] <= path[i - 1] + 1, "the spring never overshoots back");
+	require(f.host.find("list")->overscroll() == 0, "the stretch is gone");
+	require(f.host.find("list")->scrollOffset() == end, "the content rests at the end");
+	f.host.layoutIfNeeded();
+	require(f.host.find("b0")->bounds.y == listTop - end, "children return to their place");
+	require(taps == 0, "stretching never taps");
+}
+
+void checkTouchStopsFling()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, true);
+	f.flick({50, 90});
+	f.advance(16);
+	require(f.host.animating(), "coasting");
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 50});
+	require(!f.host.animating(), "a touch stops the coasting content");
+	const int held = f.host.find("list")->scrollOffset();
+	f.advance(100);
+	require(f.host.find("list")->scrollOffset() == held, "stopped content stays where the finger caught it");
+	f.finger(SDL_EVENT_FINGER_UP, {50, 50});
+	require(taps == 0, "the stopping touch is not a tap");
+	require(!f.host.animating(), "nothing moves after the stopping touch lifts");
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 50});
+	f.finger(SDL_EVENT_FINGER_UP, {50, 50});
+	require(taps == 1, "the next touch taps as usual");
+	// Wheel input also stops a fling and scrolls by control heights from there.
+	f.flick({50, 90});
+	f.advance(16);
+	const int before = f.host.find("list")->scrollOffset();
+	f.wheel(1, {50, 50});
+	require(!f.host.animating(), "the wheel stops coasting");
+	require(f.host.find("list")->scrollOffset() == before - f.host.metrics().control, "the wheel scrolls from where the content was");
+	// Content moved by something else drops the animation instead of fighting it.
+	f.flick({50, 90});
+	f.advance(16);
+	f.host.scrollIntoView("b0");
+	f.host.layoutIfNeeded();
+	f.advance(16);
+	require(!f.host.animating(), "scrollIntoView ends coasting");
+	require(f.host.find("list")->scrollOffset() == 0, "the programmatic position wins");
+}
+
+void checkScrollbarPressStopsFling()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, true);
+	f.flick({50, 90});
+	f.advance(16);
+	require(f.host.animating(), "coasting");
+	auto *list = f.host.find("list");
+	const Point track{list->bounds.right() - 2, list->bounds.y + 50};
+	require(list->capturesPointer(track), "the scrollbar track captures the pointer");
+	f.finger(SDL_EVENT_FINGER_DOWN, track);
+	require(!f.host.animating(), "grabbing the scrollbar stops coasting");
+	f.finger(SDL_EVENT_FINGER_UP, track);
+	require(!f.host.animating(), "the thumb release leaves the content still");
+}
+
+void checkMouseDragDoesNotFling()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, false);
+	f.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN, {50, 90});
+	for (int i = 1; i <= 4; ++i)
+	{
+		f.advance(16);
+		f.mouse(SDL_EVENT_MOUSE_MOTION, {50, 90 - 20 * i});
+	}
+	f.mouse(SDL_EVENT_MOUSE_BUTTON_UP, {50, 10});
+	require(f.host.find("list")->scrollOffset() == 80, "a mouse drag scrolls by the pointer distance");
+	require(!f.host.animating(), "a mouse drag has no momentum");
+	f.advance(100);
+	require(f.host.find("list")->scrollOffset() == 80, "the content stays where the mouse left it");
+	f.host.find("list")->scrollBy(100000, f.host);
+	f.host.layoutIfNeeded();
+	f.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN, {50, 90});
+	f.advance(16);
+	f.mouse(SDL_EVENT_MOUSE_MOTION, {50, 40});
+	require(f.host.find("list")->overscroll() == 0, "a mouse drag past the end does not stretch");
+	f.mouse(SDL_EVENT_MOUSE_BUTTON_UP, {50, 40});
+	require(taps == 0, "mouse drags never tap");
+}
+
+void checkListAndTextOverscroll()
+{
+	int selected = 0;
+	std::vector<std::string> items;
+	for (int i = 0; i < 30; ++i)
+		items.push_back("item " + std::to_string(i));
+	Fixture f([&](const Presentation &) { return column({listView("files", items, selected, [&](int i) { selected = i; }, {{}, {}, {}, {}, {}, 5})}); }, 200, 400, true);
+	auto *list = f.host.find("files");
+	list->scrollBy(100000, f.host);
+	f.host.layoutIfNeeded();
+	list = f.host.find("files");
+	const int maximum = list->scrollMaximum();
+	require(maximum > 0, "the list overflows");
+	const int lastRowTop = list->subTargets().back().bounds.y;
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, list->bounds.y + 90});
+	f.advance(16);
+	f.finger(SDL_EVENT_FINGER_MOTION, {50, list->bounds.y + 40});
+	list = f.host.find("files");
+	require(list->scrollOffset() == maximum && list->overscroll() > 0, "a list stretches past its last row");
+	require(list->subTargets().back().bounds.y == lastRowTop - list->overscroll(), "list rows shift by the stretch");
+	f.advance(60);
+	f.finger(SDL_EVENT_FINGER_UP, {50, list->bounds.y + 40});
+	f.settle("files");
+	require(f.host.find("files")->overscroll() == 0 && f.host.find("files")->scrollOffset() == maximum, "the list springs back");
+	require(selected == 0, "stretching a list selects nothing");
+
+	std::string text;
+	for (int i = 0; i < 40; ++i)
+		text += "line " + std::to_string(i) + "\n";
+	Fixture t([&](const Presentation &) { return column({textEditor("log", text, {}, {true, 4})}); }, 200, 400, true);
+	auto *editor = t.host.find("log");
+	editor->scrollBy(100000, t.host);
+	t.host.layoutIfNeeded();
+	editor = t.host.find("log");
+	require(editor->scrollMaximum() > 0, "the log overflows");
+	auto before = t.paint();
+	t.finger(SDL_EVENT_FINGER_DOWN, {50, editor->bounds.y + 60});
+	t.advance(16);
+	t.finger(SDL_EVENT_FINGER_MOTION, {50, editor->bounds.y + 20});
+	editor = t.host.find("log");
+	require(editor->overscroll() > 0, "a text log stretches past its last line");
+	auto during = t.paint();
+	require(!before.texts.empty() && !during.texts.empty(), "lines are painted");
+	require(during.texts.back().first.y == before.texts.back().first.y - editor->overscroll(), "painted lines shift by the stretch");
+	t.advance(60);
+	t.finger(SDL_EVENT_FINGER_UP, {50, editor->bounds.y + 20});
+	t.settle("log");
+	require(t.host.find("log")->overscroll() == 0, "the log springs back");
+}
+
+// Whatever the width and text size, a control's measured size holds the text
+// it paints (see glob2test::textSpill), so larger text never spills into a neighbour.
+void checkTextStaysInControls()
+{
+	auto gear = std::make_shared<IconAsset>();
+	gear->name = "gear";
+	gear->rasters.push_back({24, {}});
+	const std::string longText = "Language & player preferences";
+	auto build = [&](const Presentation &p)
+	{
+		ButtonOptions nav;
+		nav.flat = true;
+		nav.alignLeft = true;
+		nav.minHeight = 42;
+		nav.icon = gear;
+		ButtonOptions iconOnly;
+		iconOnly.icon = gear;
+		iconOnly.accessibleLabel = "Gear";
+		SliderOptions slide;
+		slide.caption = longText;
+		slide.valueText = "50%";
+		StepperOptions step;
+		step.valueText = "Three colonies";
+		ListOptions list;
+		list.visibleRows = 3;
+		std::vector<Element> rows{
+			button("nav/0", "Display & graphics", {}, nav),
+			button("nav/1", "Gameplay", {}, nav),
+			button("nav/2", longText, {}, nav),
+			button("plain", longText, {}),
+			button("icon", "", {}, iconOnly),
+			row({expanded(button("pair/0", "Players & Teams", {})), expanded(button("pair/1", "Game Rules", {}))}, {p.pt(4)}),
+			toggle("toggle", longText, true, {}),
+			segments("segments", {"Text size 100%", "Text size 125%", "Text size 150%"}, 0, {}),
+			choice("choice", {longText, "Short"}, 0, {}),
+			chooser("chooser", longText, {}),
+			stepper("stepper", 3, 0, 10, {}, step),
+			slider("slider", 5, 0, 10, {}, slide),
+			textField("field", longText, {}),
+			listView("list", {longText, "Two", "Three"}, 0, {}, list),
+		};
+		return column(std::move(rows), {p.pt(4)});
+	};
+	for (bool touch : {false, true})
+		// Text sizes 100%, 150% and 175%, then a font whose lines run taller than the
+		// control height (platform rasterizers report different line heights).
+		for (auto [glyph, line] : {std::pair{8, 16}, {12, 24}, {14, 28}, {10, 40}})
+			for (int width : {140, 200, 280, 420})
+			{
+				FixedTextMeasurer sized(glyph, line);
+				Host host(theme, build);
+				host.setMeasurer(&sized);
+				host.setPresentation(Presentation::forSurface(width, 3000, 1, touch));
+				host.layoutIfNeeded();
+				RecordingCanvas canvas({width, 3000}, sized);
+				host.paint(canvas, 0);
+				const auto spill = glob2test::textSpill(canvas, host.interactiveNodes());
+				GLOB2_REQUIRE(spill.empty(), spill + " (touch=" + std::to_string(touch) + " glyph=" + std::to_string(glyph) +
+												 " line=" + std::to_string(line) + " width=" + std::to_string(width) + ")");
+			}
+}
+
+void checkInvariants()
+{
+	Fixture f(
+		[](const Presentation &p)
+		{
+			std::vector<Element> actions{button("ok", "OK", {}), button("cancel", "Cancel", {})};
+			return footer(scroll("body", column({paragraph("Some text"), toggle("t", "Toggle", true, {}), stepper("s", 3, 0, 10, {}), slider("sl", 5, 0, 10, {})})), wrap(actions));
+		},
+		320, 568, true);
+	for (auto *node : f.host.interactiveNodes())
+	{
+		require(f.presentation.safe.contains(node->bounds), "interactive nodes stay inside the safe rect");
+		require(node->bounds.h >= f.host.metrics().minTarget, "touch targets meet the minimum height");
+	}
+}
+} // namespace
+
+namespace
+{
+const ControlSnapshot *control(const SurfaceSnapshot &surface, const std::string &key)
+{
+	const ControlSnapshot *result = nullptr;
+	auto find = [&](auto &&self, const std::vector<ControlSnapshot> &items) -> void
+	{
+		for (const auto &item : items)
+		{
+			if (item.key == key)
+				result = &item;
+			self(self, item.children);
+		}
+	};
+	find(find, surface.controls);
+	return result;
+}
+} // namespace
+TEST_CASE("typed snapshots preserve per-target revisions and reject stale consumption" *
+		  doctest::test_suite("UILayout"))
+{
+	int clicks = 0, counter = 0;
+	bool present = true, enabled = true;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			ButtonOptions options;
+			options.enabled = enabled;
+			return column(
+				{label(std::to_string(counter)),
+				 present ? button("action", "Act", [&] { ++clicks; }, options) : empty()});
+		},
+		400, 200);
+	auto first = f.host.inspect();
+	REQUIRE(control(first, "action"));
+	const auto revision = control(first, "action")->revision;
+	++counter;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	auto second = f.host.inspect();
+	CHECK(control(second, "action")->revision == revision);
+	CHECK(first.instance == second.instance);
+	auto dispatch = semanticDispatch();
+	dispatch->surface = first.instance;
+	dispatch->revision = revision;
+	dispatch->key = "action";
+	enabled = false;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK(f.host.event(dispatch->event()));
+	CHECK(dispatch->consumed);
+	CHECK_FALSE(dispatch->error.empty());
+	CHECK(clicks == 0);
+	enabled = true;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	std::string error;
+	CHECK(f.host.act("action", {}, error));
+	CHECK(clicks == 1);
+	f.host.tapAt(f.host.bounds("action").center());
+	CHECK(clicks == 2);
+	present = false;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	(void)f.host.inspect();
+	present = true;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	const auto restored = f.host.inspect();
+	CHECK(control(restored, "action")->revision != revision);
+}
+TEST_CASE("semantic values selection clipping and popup ownership" *
+		  doctest::test_suite("UILayout"))
+{
+	int selected = 0, amount = 1;
+	bool on = false;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			return column(
+				{toggle("toggle", "Toggle", on, [&](bool next) { on = next; }),
+				 choice("choice", {"One", "Two"}, selected, [&](int next) { selected = next; }),
+				 slider("slider", amount, 0, 10, [&](int next) { amount = next; }),
+				 button("disabled", "Disabled", [] {}, {.enabled = false})});
+		},
+		400, 400);
+	std::string error;
+	CHECK(f.host.act("toggle", {ActionKind::SetValue, true}, error));
+	CHECK(on);
+	f.host.layoutIfNeeded();
+	CHECK(f.host.act("choice", {ActionKind::Select, 1}, error));
+	CHECK(selected == 1);
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.act("slider", {ActionKind::SetValue, 11}, error));
+	CHECK(amount == 1);
+	CHECK(f.host.act("slider", {ActionKind::SetValue, 7}, error));
+	CHECK(amount == 7);
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.act("disabled", {}, error));
+	CHECK(f.host.act("choice", {}, error));
+	f.host.layoutIfNeeded();
+	auto popup = f.host.inspect();
+	REQUIRE(control(popup, "toggle"));
+	CHECK(control(popup, "toggle")->blocked);
+	CHECK_FALSE(f.host.act("toggle", {}, error));
+}
+TEST_SUITE("UILayout")
+{
+	TEST_CASE("icons and tooltips")
+	{
+		checkIconsAndTooltips();
+	}
+	TEST_CASE("settings toggles keep captions left and the full row actionable")
+	{
+		struct ToggleCanvas : RecordingCanvas
+		{
+			using RecordingCanvas::RecordingCanvas;
+			std::vector<Rect> marks;
+			void strokeRect(Rect rect, GAGCore::Color) override { marks.push_back(rect); }
+		};
+		for (bool touch : {false, true})
+			for (int width : {280, 640, 1000})
+				for (int glyph : {8, 12})
+				{
+					bool value = false;
+					bool enabled = true;
+					FixedTextMeasurer text(glyph, glyph * 2);
+					Fixture f([&](const Presentation &) {
+						return column({toggle("setting", "A long setting label that wraps on phones", value,
+							[&](bool next) { value = next; }, enabled,
+							{.trailing = true, .help = "Explanatory help stays with its label and wraps without crossing the checkbox."})});
+					}, width, 1000, touch);
+					f.host.setMeasurer(&text);
+					f.host.invalidate();
+					f.host.layoutIfNeeded();
+					ToggleCanvas canvas(f.presentation.viewport.size(), text);
+					f.host.paint(canvas, 0);
+					REQUIRE(canvas.marks.size() == 1);
+					const auto bounds = f.host.bounds("setting");
+					const auto mark = canvas.marks.front();
+					CHECK(bounds.contains(mark));
+					CHECK(mark.center().x > bounds.center().x);
+					REQUIRE_FALSE(canvas.texts.empty());
+					CHECK(canvas.texts.front().first.x == bounds.x);
+					for (const auto &[at, line] : canvas.texts)
+					{
+						CHECK(at.x + text.width(FontRole::Body, line) <= mark.x);
+						CHECK(bounds.contains(at));
+					}
+					// Label, mark and help all belong to the same target.
+					f.host.tapAt({bounds.x + 1, bounds.y + 1});
+					CHECK(value);
+					f.host.tapAt(mark.center());
+					CHECK_FALSE(value);
+					f.host.tapAt(canvas.texts.back().first);
+					CHECK(value);
+					f.host.focus("setting", true);
+					f.key(SDLK_SPACE);
+					CHECK_FALSE(value);
+					enabled = false;
+					f.host.invalidate();
+					f.host.tapAt(bounds.center());
+					CHECK_FALSE(value);
+				}
+	}
+	TEST_CASE("geometry") { checkGeometry(); }
+	TEST_CASE("text") { checkText(); }
+	TEST_CASE("wrap and ellipsis preserve shaping clusters") { checkShapingClusterWrapping(); }
+	TEST_CASE("column and flex") { checkColumnAndFlex(); }
+	TEST_CASE("row cross align") { checkRowCrossAlign(); }
+	TEST_CASE("paragraph wraps with width") { checkParagraphWrapsWithWidth(); }
+	TEST_CASE("text fields retain the touch target with compact control metrics")
+	{
+		Theme compactTheme = theme;
+		compactTheme.touchControlHeight = 34;
+		FixedTextMeasurer text(8, 38);
+		Host host(compactTheme, [](const Presentation &) { return column({textField("chat", "", {})}); });
+		host.setMeasurer(&text);
+		host.setPresentation(Presentation::forSurface(1024, 768, 1, true));
+		host.layoutIfNeeded();
+		REQUIRE(host.find("chat"));
+		CHECK(host.find("chat")->bounds.h >= host.metrics().minTarget);
+	}
+	TEST_CASE("wrap columns") { checkWrapColumns(); }
+	TEST_CASE("footer folds") { checkFooterFolds(); }
+	TEST_CASE("scroll clamp and wheel") { checkScrollClampAndWheel(); }
+	TEST_CASE("tap versus pan") { checkTapVersusPan(); }
+	TEST_CASE("native gestures retain fractions ownership and survive rebuilds")
+	{
+		int taps = 0;
+		Fixture f(buttonList(taps), 200, 100);
+		GAGCore::GestureScrollEvent e;
+		e.sequence = 31; e.x = 50; e.y = 50;
+		auto send = [&](GAGCore::ScrollGesturePhase phase, double dy,
+			GAGCore::ScrollGesturePhase momentum = GAGCore::ScrollGesturePhase::None)
+		{
+			e.phase = phase; e.momentum = momentum; e.dy = dy;
+			e.timestamp = SDL_MS_TO_NS(f.clock);
+			CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		};
+		send(GAGCore::ScrollGesturePhase::Began, 0);
+		for (int i = 0; i < 8; ++i) send(GAGCore::ScrollGesturePhase::Changed, -0.125);
+		CHECK(f.host.find("list")->scrollOffset() == 1);
+		f.host.invalidate(); f.host.layoutIfNeeded();
+		e.x = 500; e.y = 500; // Pointer leaves the captured list.
+		send(GAGCore::ScrollGesturePhase::Changed, -20);
+		CHECK(f.host.find("list")->scrollOffset() == 21);
+		send(GAGCore::ScrollGesturePhase::Ended, 0);
+		f.advance(16);
+		CHECK(f.host.find("list")->scrollOffset() == 21);
+		send(GAGCore::ScrollGesturePhase::None, -10, GAGCore::ScrollGesturePhase::Began);
+		CHECK(f.host.find("list")->scrollOffset() == 31);
+		f.host.cancelGestures();
+		send(GAGCore::ScrollGesturePhase::None, -10, GAGCore::ScrollGesturePhase::Changed);
+		CHECK(f.host.find("list")->scrollOffset() == 31);
+		CHECK(taps == 0);
+	}
+	TEST_CASE("native gesture bounds settle and external jumps cancel the tail")
+	{
+		int taps = 0;
+		Fixture f(buttonList(taps), 200, 100);
+		GAGCore::GestureScrollEvent e;
+		e.sequence = 32; e.x = 50; e.y = 50; e.timestamp = SDL_MS_TO_NS(f.clock);
+		e.phase = GAGCore::ScrollGesturePhase::Began;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		e.phase = GAGCore::ScrollGesturePhase::Changed; e.dy = 80;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		CHECK(f.host.find("list")->overscroll() < 0);
+		e.phase = GAGCore::ScrollGesturePhase::Ended; e.dy = 0;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		CHECK(f.host.animating());
+		f.settle("list");
+		CHECK(f.host.find("list")->overscroll() == 0);
+		e.sequence++; e.phase = GAGCore::ScrollGesturePhase::Began;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		f.host.find("list")->scrollBy(50, f.host);
+		e.phase = GAGCore::ScrollGesturePhase::Changed; e.dy = -10;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		CHECK(f.host.find("list")->scrollOffset() == 50);
+		CHECK_FALSE(f.host.animating());
+	}
+	TEST_CASE("native nested capture does not transfer to parent and missing owners consume tails")
+	{
+		bool includeInner = true;
+		Fixture f([&](const Presentation &)
+		{
+			std::vector<Element> children;
+			for (int i = 0; i < 20; ++i) children.push_back(height(40, label("row")));
+			return scroll("outer", column({includeInner ? height(80, scroll("inner", column(children))) : height(80, label("gone")), height(300, label("footer"))}));
+		}, 200, 100);
+		GAGCore::GestureScrollEvent e;
+		e.sequence = 41; e.x = 50; e.y = 40; e.timestamp = SDL_MS_TO_NS(f.clock);
+		e.phase = GAGCore::ScrollGesturePhase::Began;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		e.phase = GAGCore::ScrollGesturePhase::Changed; e.dy = -2000;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		CHECK(f.host.find("inner")->scrollOffset() > 0);
+		CHECK(f.host.find("outer")->scrollOffset() == 0);
+		includeInner = false; f.host.invalidate(); f.advance(16);
+		e.phase = GAGCore::ScrollGesturePhase::None; e.momentum = GAGCore::ScrollGesturePhase::Began;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		CHECK(f.host.find("outer")->scrollOffset() == 0);
+	}
+	TEST_CASE("native popup scrolling owns its tail after dismissal")
+	{
+		int taps = 0;
+		Fixture f(buttonList(taps), 200, 100);
+		PopupSpec popup;
+		popup.anchor = {20, 20, 100, 20};
+		for (int i = 0; i < 20; ++i) popup.options.push_back("option " + std::to_string(i));
+		f.host.openPopup(popup);
+		auto *list = f.host.find("popup/scroll");
+		REQUIRE(list);
+		GAGCore::GestureScrollEvent e;
+		e.sequence = 42; e.x = list->bounds.x + 10; e.y = list->bounds.y + 10;
+		e.timestamp = SDL_MS_TO_NS(f.clock); e.phase = GAGCore::ScrollGesturePhase::Began;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		e.phase = GAGCore::ScrollGesturePhase::Changed; e.dy = -20;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		CHECK(list->scrollOffset() > 0);
+		f.host.closePopup();
+		e.phase = GAGCore::ScrollGesturePhase::None; e.momentum = GAGCore::ScrollGesturePhase::Began;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		CHECK(f.host.find("list")->scrollOffset() == 0);
+	}
+	TEST_CASE("fling continues after release") { checkFlingContinues(); }
+	TEST_CASE("overscroll springs back") { checkOverscrollSpringsBack(); }
+	TEST_CASE("touch wheel and programmatic scroll stop a fling") { checkTouchStopsFling(); }
+	TEST_CASE("scrollbar press stops a fling") { checkScrollbarPressStopsFling(); }
+	TEST_CASE("mouse drag does not fling") { checkMouseDragDoesNotFling(); }
+	TEST_CASE("list and text overscroll") { checkListAndTextOverscroll(); }
+	TEST_CASE("press survives resize") { checkPressSurvivesResize(); }
+	TEST_CASE("focus and keyboard") { checkFocusAndKeyboard(); }
+	TEST_CASE("choice popup") { checkChoicePopup(); }
+	TEST_CASE("icon segments and choices") { checkIconSegmentsAndChoice(); }
+	TEST_CASE("text field") { checkTextField(); }
+	TEST_CASE("text field UTF-8 byte limit preserves Bengali edits") { checkTextFieldByteLimit(); }
+	TEST_CASE("text field character limits preserve Bengali and non-BMP input") { checkTextFieldCharacterLimit(); }
+	TEST_CASE("list view") { checkListView(); }
+	TEST_CASE("copy field") { checkCopyField(); }
+	TEST_CASE("adaptive and field") { checkAdaptiveAndField(); }
+	TEST_CASE("invariants") { checkInvariants(); }
+	TEST_CASE("text stays inside its control at every size") { checkTextStaysInControls(); }
+}
+
+TEST_CASE("semantic text values retain draft commit and cancel" * doctest::test_suite("UILayout"))
+{
+	std::string model = "original";
+	int commits = 0;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			TextFieldOptions options;
+			options.commitOnSubmit = true;
+			options.maxLength = 32;
+			options.maxBytes = 32;
+			return column({textField(
+							   "draft", model,
+							   [&](const std::string &v)
+							   {
+								   model = v;
+								   ++commits;
+							   },
+							   options),
+						   slider("other", 1, 0, 10, [](int) {})});
+		},
+		400, 200);
+	std::string error;
+	const auto originalDraft = f.host.state("draft").text;
+	const auto originalEditing = f.host.editing();
+	const std::string oversized = std::string(27, 'a') + "ก้";
+	REQUIRE(oversized.size() == 33);
+	CHECK_FALSE(f.host.act("draft", {ActionKind::SetValue, oversized}, error));
+	CHECK(f.host.state("draft").text == originalDraft);
+	CHECK(f.host.focused() == "draft"); // Host actions focus their requested control before value validation.
+	CHECK(f.host.editing() == originalEditing);
+	CHECK(model == "original");
+	CHECK(commits == 0);
+	CHECK(f.host.act("draft", {ActionKind::SetValue, std::string("cancelled")}, error));
+	CHECK(model == "original");
+	CHECK(commits == 0);
+	f.key(SDLK_ESCAPE);
+	f.host.layoutIfNeeded();
+	CHECK(model == "original");
+	CHECK(commits == 0);
+	CHECK(f.host.act("draft", {ActionKind::SetValue, std::string("committed")}, error));
+	f.key(SDLK_RETURN);
+	f.host.layoutIfNeeded();
+	CHECK(model == "committed");
+	CHECK(commits == 1);
+	CHECK(f.host.act("draft", {ActionKind::SetValue, std::string("focus committed")}, error));
+	CHECK(f.host.act("other", {ActionKind::SetValue, 5}, error));
+	CHECK(model == "focus committed");
+	CHECK(commits == 2);
+	CHECK(f.host.editing().empty());
+}
+
+TEST_CASE("semantic canvas scroll uses its normal wheel path" * doctest::test_suite("UILayout"))
+{
+	int turns = 0;
+	Point point;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			CanvasOptions options;
+			options.wheel = [&](int direction, Point local)
+			{
+				turns += direction;
+				point = local;
+			};
+			return canvas("canvas", {200, 100}, [](Canvas &, Rect, const Frame &) {}, options);
+		},
+		200, 100);
+	std::string error;
+	CHECK(f.host.act("canvas", {ActionKind::Scroll, -15}, error));
+	CHECK(turns == 1);
+	CHECK(point == Point{100, 50});
+	CHECK(f.host.act("canvas", {ActionKind::Scroll, 0}, error));
+	CHECK(turns == 1);
+	CHECK_FALSE(f.host.act("canvas", {ActionKind::Activate, {}}, error));
+}
+
+TEST_CASE("typed text preserves newlines and browser diagnostics retain legacy labels" *
+		  doctest::test_suite("UILayout"))
+{
+	Fixture f([](const Presentation &) { return textEditor("editor", "first\nsecond", [](const auto &) {}); }, 400, 200);
+    auto snapshot = f.host.inspect();
+    REQUIRE(control(snapshot, "editor"));
+    CHECK(std::get<std::string>(control(snapshot, "editor")->value) == "first\nsecond");
+    auto legacy = nlohmann::json::parse(diagnosticJSON(snapshot));
+    CHECK(legacy["controls"]["editor"]["label"] == "first second");
+}
+
+TEST_CASE("identical reopened popups reject an earlier lifetime target" * doctest::test_suite("UILayout"))
+{
+	Fixture f([](const Presentation &) { return button("base", "Base", [] {}); }, 400, 200);
+	int firstPicks = 0, secondPicks = 0;
+	PopupSpec popup;
+	popup.anchor = {20, 20, 100, 20};
+	popup.options = {"Same option"};
+	popup.pick = [&](int) { ++firstPicks; };
+	f.host.openPopup(popup);
+	auto snapshot = f.host.inspect();
+	const auto *row = control(snapshot, "popup/0");
+	REQUIRE(row);
+	auto pending = semanticDispatch();
+	pending->surface = snapshot.instance;
+	pending->key = row->key;
+	pending->revision = row->revision;
+	pending->action = {ActionKind::Activate, {}};
+	f.host.closePopup();
+	popup.pick = [&](int) { ++secondPicks; };
+	f.host.openPopup(popup);
+	CHECK(f.host.event(pending->event()));
+	CHECK(pending->error.find("Stale") != std::string::npos);
+	CHECK(firstPicks == 0);
+	CHECK(secondPicks == 0);
+	CHECK(f.host.popupOpen());
+	std::string error;
+	CHECK(f.host.act("popup/0", {ActionKind::Activate, {}}, error));
+	CHECK(secondPicks == 1);
+}
+
+TEST_CASE("positioned custom controls share clipped human and semantic targets" * doctest::test_suite("UILayout"))
+{
+    int taps=0,scroll=0;bool enabled=true;std::string context="first";
+    Fixture f([&](const Presentation &)
+    {
+        PositionedControl action;
+        action.key="domain/action";action.identity=context;action.label="Action";
+        action.bounds={35,45,100,30};action.clip=Rect{30,40,50,60};action.enabled=enabled;
+        action.tap=[&](Point){++taps;};
+        PositionedControl wheel;
+        wheel.key="domain/scroll";wheel.role="scroll";wheel.bounds={90,100,80,50};
+        wheel.actions={ActionKind::Scroll};
+        wheel.perform=[&](const SemanticAction &a)
+        {
+            if(a.kind!=ActionKind::Scroll)return false;
+            const auto *d=std::get_if<int>(&a.value);if(!d)return false;scroll+=*d;return true;
+        };
+        return positionedControls({action,wheel});
+    },240,180);
+    // Absolute domain bounds do not acquire the host root's inset origin.
+    f.host.setAvailable([](const Presentation &,const Metrics &){return Rect{20,25,190,140};});
+    f.host.relayout();f.host.layoutIfNeeded();
+    CHECK(f.host.bounds("domain/action")==Rect{35,45,100,30});
+    auto first=f.host.inspect();const auto *snapshot=control(first,"domain/action");REQUIRE(snapshot);
+    CHECK(snapshot->visible==Rect{35,45,45,30});
+    f.click({100,55});CHECK(taps==0);
+    f.click({50,55});CHECK(taps==1);
+    std::string error;
+    CHECK(f.host.act("domain/action",{},error));CHECK(taps==2);
+    f.click({110,120});CHECK(scroll==0); // scroll-only is never Activate
+    f.mouse(SDL_EVENT_MOUSE_MOTION,{110,120});
+    SDL_Event wheel{};wheel.type=SDL_EVENT_MOUSE_WHEEL;wheel.wheel.y=-1;
+    CHECK(f.host.event(wheel));CHECK(scroll==f.host.metrics().control);
+    CHECK(f.host.act("domain/scroll",{ActionKind::Scroll,-f.host.metrics().control},error));CHECK(scroll==0);
+    auto pending=semanticDispatch();pending->surface=first.instance;pending->key="domain/action";pending->revision=snapshot->revision;
+    context="replacement";f.host.invalidate();f.host.layoutIfNeeded();
+    CHECK(f.host.event(pending->event()));CHECK_FALSE(pending->error.empty());CHECK(taps==2);
+    enabled=false;f.host.invalidate();f.host.layoutIfNeeded();
+    f.click({50,55});CHECK(taps==2);
+    CHECK_FALSE(f.host.act("domain/action",{},error));
+}
+
+TEST_CASE("positioned callbacks refresh values revisions and subsequent actions" * doctest::test_suite("UILayout"))
+{
+    bool selected = false;
+    int offset = 0;
+    Fixture f([&](const Presentation &)
+    {
+        PositionedControl toggle;
+        toggle.key = "toggle"; toggle.bounds = {10,10,80,30};
+        toggle.value = toggle.selected = selected;
+        toggle.perform = [&, current=selected](const SemanticAction &) { selected = !current; return true; };
+        PositionedControl scroll;
+        scroll.key = "scroll"; scroll.bounds = {10,60,80,60};
+        scroll.value = offset; scroll.actions = {ActionKind::Scroll};
+        scroll.perform = [&, current=offset](const SemanticAction &a)
+        { const auto* delta=std::get_if<int>(&a.value); if(!delta)return false; offset=current+*delta; return true; };
+        return positionedControls({toggle,scroll});
+    },200,160);
+    const auto before=f.host.inspect();
+    std::string error;
+    REQUIRE(f.host.act("toggle", {}, error));
+    f.host.layoutIfNeeded();
+    const auto after=f.host.inspect();
+    CHECK(control(after,"toggle")->selected);
+    CHECK(control(after,"toggle")->revision > control(before,"toggle")->revision);
+    REQUIRE(f.host.act("toggle", {}, error));
+    CHECK_FALSE(selected);
+    f.click({30,20}); CHECK(selected);
+    f.click({30,20}); CHECK_FALSE(selected);
+    REQUIRE(f.host.act("scroll", {ActionKind::Scroll, 5}, error));
+    REQUIRE(f.host.act("scroll", {ActionKind::Scroll, 7}, error));
+    CHECK(offset == 12);
+    f.host.layoutIfNeeded();
+    CHECK(std::get<int>(control(f.host.inspect(),"scroll")->value) == 12);
+}
+
+TEST_CASE("positioned callbacks may retire their owning Host" * doctest::test_suite("UILayout"))
+{
+    for (bool semantic : {false,true})
+    {
+        std::unique_ptr<Host> owner;
+        int calls=0;
+        owner=std::make_unique<Host>(theme,[&](const Presentation &)
+        {
+            PositionedControl close;
+            close.key="close"; close.bounds={10,10,80,30};
+            if(semantic)close.perform=[&](const SemanticAction &){owner.reset();++calls;return true;};
+            else close.tap=[&](Point){owner.reset();++calls;};
+            return positionedControls({close});
+        });
+        owner->setMeasurer(&measurer);
+        owner->setPresentation(Presentation::forSurface(200,160,1,false));
+        std::string error;
+        REQUIRE(owner->act("close",{},error));
+        CHECK_FALSE(owner);
+        CHECK(calls==1);
+    }
+}
+
+TEST_CASE("higher hosts block only overlapping targets and cancel captured input" * doctest::test_suite("UILayout"))
+{
+    int covered=0,free=0,hive=0;
+    Fixture lower([&](const Presentation &)
+    {
+        return row({button("covered","Covered",[&]{++covered;}),button("free","Free",[&]{++free;})});
+    },400,160);
+    const auto bounds=lower.host.bounds("covered");
+    const auto point=Point{bounds.x+2,bounds.y+2};
+    const auto initial=lower.host.inspect();
+    const auto freeRevision=control(initial,"free")->revision;
+    auto queued=semanticDispatch();queued->surface=initial.instance;queued->key="covered";queued->revision=control(initial,"covered")->revision;
+    const Rect owner{bounds.x+bounds.w/2,bounds.y,bounds.w-bounds.w/2,bounds.h};
+    Fixture higher([&](const Presentation &)
+    {
+        PositionedControl c;c.key="hive";c.label="Hive";c.bounds=owner;c.tap=[&](Point){++hive;};
+        return positionedControls({c});
+    },400,160);
+    lower.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN,point);
+    lower.host.setBlockedRegions({owner});
+    lower.mouse(SDL_EVENT_MOUSE_BUTTON_UP,point);
+    CHECK(covered==0);
+    const auto obscured=lower.host.inspect();
+    CHECK(control(obscured,"covered")->blocked);
+    CHECK_FALSE(control(obscured,"free")->blocked);
+    CHECK(control(obscured,"free")->revision==freeRevision);
+    CHECK(lower.host.event(queued->event()));CHECK_FALSE(queued->error.empty());
+    lower.click(point);CHECK(covered==0); // conservative for partially covered targets
+    lower.host.focus("covered",true);lower.key(SDLK_RETURN);CHECK(covered==0);
+    std::string error;
+    CHECK_FALSE(lower.host.act("covered",{},error));
+    CHECK(lower.host.act("free",{},error));CHECK(free==1);
+    CHECK(higher.host.act("hive",{},error));CHECK(hive==1);
+    lower.host.setBlockedRegions({});
+    lower.click(point);CHECK(covered==1);
+}
+
+TEST_CASE("external ownership preserves uncovered list rows and popup ownership" * doctest::test_suite("UILayout"))
+{
+    int selected=0;
+    Fixture list([&](const Presentation &){return listView("rows",{"One","Two","Three"},selected,[&](int i){selected=i;});},240,180);
+    auto before=list.host.inspect();const auto *first=control(before,"rows/0");const auto *second=control(before,"rows/1");
+    REQUIRE(first);REQUIRE(second);
+    list.host.setBlockedRegions({first->visible});
+    const auto blocked=list.host.inspect();
+    CHECK(control(blocked,"rows")->blocked);
+    CHECK(control(blocked,"rows/0")->blocked);
+    CHECK_FALSE(control(blocked,"rows/1")->blocked);
+    list.click(second->visible.center());CHECK(selected==1);
+    std::string error;
+    CHECK(list.host.act("rows/2",{},error));CHECK(selected==2);
+    int base=0,picked=0;
+    Fixture popup([&](const Presentation &)
+    {
+        PositionedControl c;c.key="base";c.bounds={0,180,80,30};c.tap=[&](Point){++base;};
+        return positionedControls({c});
+    },400,320);
+    PopupSpec spec;spec.anchor={20,20,120,24};spec.options={"One","Two"};spec.pick=[&](int){++picked;};
+    popup.host.openPopup(spec);
+    popup.host.setBlockedRegions({popup.host.bounds("base")});
+    CHECK(popup.host.popupOpen());
+    const auto current=popup.host.inspect();CHECK(control(current,"base")->blocked);
+    CHECK_FALSE(control(current,"popup/1")->blocked);
+    CHECK_FALSE(popup.host.act("base",{},error));CHECK(base==0);
+    CHECK(popup.host.act("popup/1",{},error));CHECK(picked==1);
+}
+
+TEST_CASE("blocked editor drafts suspend while keyboard focus reaches uncovered controls" * doctest::test_suite("UILayout"))
+{
+    std::string model="Original";int commits=0,clicks=0;
+    Fixture f([&](const Presentation &)
+    {
+        TextFieldOptions options;options.commitOnSubmit=true;
+        return column({textField("field",model,[&](const std::string &v){model=v;++commits;},options),button("free","Free",[&]{++clicks;})});
+    },400,200);
+    std::string error;
+    REQUIRE(f.host.act("field",{ActionKind::SetValue,std::string("Draft")},error));
+    f.host.setBlockedRegions({f.host.bounds("field")});
+    SDL_Event enter{};enter.type=SDL_EVENT_KEY_DOWN;enter.key.key=SDLK_RETURN;
+    CHECK(f.host.event(enter));CHECK(commits==0);CHECK(clicks==0);
+    f.key(SDLK_TAB);CHECK(f.host.focused()=="free");
+    f.key(SDLK_RETURN);CHECK(clicks==1);CHECK(commits==0);CHECK(model=="Original");
+    f.host.setBlockedRegions({});
+    CHECK(std::get<std::string>(f.host.find("field")->controlValue())=="Draft");
+    f.key(SDLK_RETURN);CHECK(clicks==2);CHECK(commits==0);
+    CHECK(f.host.act("field",{},error));
+    f.key(SDLK_ESCAPE);CHECK(commits==0);CHECK(model=="Original");
+}
+
+TEST_CASE("remote owner geometry changes preserve an uncovered press" * doctest::test_suite("UILayout"))
+{
+    int clicks=0;
+    Fixture f([&](const Presentation &)
+    {
+        PositionedControl c;c.key="free";c.bounds={10,10,80,30};c.tap=[&](Point){++clicks;};return positionedControls({c});
+    },400,200);
+    f.host.setBlockedRegions({{200,20,80,40}});
+    f.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN,{30,25});
+    f.host.setBlockedRegions({{200,20,100,60}});
+    f.mouse(SDL_EVENT_MOUSE_BUTTON_UP,{30,25});CHECK(clicks==1);
+}
+
+TEST_CASE("keyed press survives a tree rebuild with unrelated blocked regions" * doctest::test_suite("UILayout"))
+{
+    int clicks=0;
+    Fixture f([&](const Presentation &)
+    {
+        PositionedControl c;c.key="stable";c.bounds={10,10,80,30};c.tap=[&](Point){++clicks;};return positionedControls({c});
+    },400,200);
+    f.host.setBlockedRegions({{200,20,100,60}});
+    f.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN,{30,25});
+    f.host.invalidate();f.host.layoutIfNeeded();
+    f.mouse(SDL_EVENT_MOUSE_BUTTON_UP,{30,25});CHECK(clicks==1);
+}
+
+TEST_CASE("indexed selections bind the full catalog without binding unrelated counters" *
+		  doctest::test_suite("UILayout"))
+{
+	for (int kind = 0; kind < 3; ++kind)
+	{
+		CAPTURE(kind);
+		std::vector<std::string> catalog{"A", "B", "C"};
+		std::vector<bool> enabled{true, true, true};
+		int counter = 0, chosen = -1;
+		Fixture f(
+			[&](const Presentation &)
+			{
+				Element selection;
+				if (kind == 0)
+				{
+					ChoiceOptions options;
+					options.enabled = enabled;
+					selection =
+						choice("selection", catalog, 0, [&](int i) { chosen = i; }, options);
+				}
+				else if (kind == 1)
+				{
+					ListOptions options;
+					options.enabled = enabled;
+					selection =
+						listView("selection", catalog, 0, [&](int i) { chosen = i; }, options);
+				}
+				else
+					selection =
+						segments("selection", catalog, 0, [&](int i) { chosen = i; }, enabled);
+				return column({selection, button("counter", std::to_string(counter), [] {})});
+			},
+			400, 300);
+		const std::string key = kind == 2 ? "selection/0" : "selection";
+		auto snapshot = f.host.inspect();
+		const auto originalRevision = control(snapshot, key)->revision;
+		const auto unchangedCounterRevision = control(snapshot, "counter")->revision;
+		auto queued = semanticDispatch();
+		queued->surface = snapshot.instance;
+		queued->key = key;
+		queued->revision = originalRevision;
+		queued->action = kind == 2 ? SemanticAction{} : SemanticAction{ActionKind::Select, 1};
+		auto queuedRow = semanticDispatch();
+		if (kind == 1)
+		{
+			queuedRow->surface = snapshot.instance;
+			queuedRow->key = "selection/0";
+			queuedRow->revision = control(snapshot, "selection/0")->revision;
+		}
+		std::swap(catalog[1], catalog[2]);
+		f.host.invalidate();
+		f.host.layoutIfNeeded();
+		snapshot = f.host.inspect();
+		CHECK(control(snapshot, "counter")->revision == unchangedCounterRevision);
+		CHECK(control(snapshot, key)->revision != originalRevision);
+		CHECK(f.host.event(queued->event()));
+		CHECK(queued->error.find("Stale") != std::string::npos);
+		if (kind == 1)
+		{
+			CHECK(f.host.event(queuedRow->event()));
+			CHECK(queuedRow->error.find("Stale") != std::string::npos);
+		}
+		CHECK(chosen == -1);
+		const auto reorderedRevision = control(snapshot, key)->revision;
+		++counter;
+		f.host.invalidate();
+		f.host.layoutIfNeeded();
+		snapshot = f.host.inspect();
+		CHECK(control(snapshot, key)->revision == reorderedRevision);
+		enabled[1] = false;
+		f.host.invalidate();
+		f.host.layoutIfNeeded();
+		snapshot = f.host.inspect();
+		CHECK(control(snapshot, key)->revision != reorderedRevision);
+	}
+}
+
+TEST_CASE("choice popups retain only the current owner meaning" * doctest::test_suite("UILayout"))
+{
+	std::string ownerContext = "first-object";
+	std::vector<std::string> catalog{"A", "B", "C"};
+	int counter = 0, picked = -1;
+	bool enabled = true, present = true;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			ChoiceOptions options;
+			options.controlEnabled = enabled;
+			auto selection = present ? semanticContext(choice(
+														   "choice", catalog, 0,
+														   [&](int i) { picked = i; }, options),
+													   ownerContext)
+									 : empty();
+			return column({selection, button("counter", std::to_string(counter), [] {})});
+		},
+		400, 300);
+	std::string error;
+	auto queueRow = [&]
+	{
+		REQUIRE(f.host.act("choice", {}, error));
+		REQUIRE(f.host.popupOpen());
+		const auto snapshot = f.host.inspect();
+		auto queued = semanticDispatch();
+		queued->surface = snapshot.instance;
+		queued->key = "popup/1";
+		queued->revision = control(snapshot, queued->key)->revision;
+		return queued;
+	};
+	// Unchanged labels and indices can nevertheless address a different domain object.
+	auto old = queueRow();
+	ownerContext = "second-object";
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.popupOpen());
+	CHECK(f.host.event(old->event()));
+	CHECK_FALSE(old->error.empty());
+	CHECK(picked == -1);
+	// The full unselected catalog also owns the popup, not just its selected label.
+	old = queueRow();
+	std::swap(catalog[1], catalog[2]);
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.popupOpen());
+	CHECK(f.host.event(old->event()));
+	CHECK_FALSE(old->error.empty());
+	CHECK(picked == -1);
+	// A rebuild caused by an unrelated value preserves the popup and pending action.
+	old = queueRow();
+	++counter;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK(f.host.popupOpen());
+	CHECK(f.host.event(old->event()));
+	CHECK(old->error.empty());
+	CHECK(picked == 1);
+	old = queueRow();
+	enabled = false;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.popupOpen());
+	enabled = true;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	old = queueRow();
+	present = false;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	CHECK_FALSE(f.host.popupOpen());
+}

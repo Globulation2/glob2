@@ -49,7 +49,7 @@ void SettingsScreen::buildMCP()
 		break;
 	case MCP::ListenerState::Error:
 		info(
-			std::string(GAGCore::FormattableString(tr("Error: %0")).arg(service->failureReason())));
+			std::string(GAGCore::FormattableString(tr("Error: %0")).arg(mcpError(service->failureReason()))));
 		break;
 	}
 	const auto controller = service->hasController() ? service->currentController() : tr("None");

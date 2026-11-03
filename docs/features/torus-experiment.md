@@ -167,7 +167,7 @@ Run from the repository root:
 
 ```sh
 GLOB2_USER_DIR="$PWD/artifacts/torus/profile" SDL_AUDIODRIVER=dummy \
-  GLOB2_BENCH_MAP=maps/Oazis.map GLOB2_BENCH_FRAMES=100 \
+  GLOB2_BENCH_MAP=content/maps/Oazis.map GLOB2_BENCH_FRAMES=100 \
   build/<toolchain>/client/release/test/torus-render-benchmark --renderer gpu --no-fullscreen --mute --window-size 1280x800
 ```
 

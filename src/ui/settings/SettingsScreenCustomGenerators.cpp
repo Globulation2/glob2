@@ -1,3 +1,4 @@
+#include "ui/DiagnosticText.h"
 #include "app/ClientFeatures.h"
 #include "OnlineGeneratorsScreen.h"
 #include <ScreenStack.h>
@@ -26,7 +27,7 @@ struct SettingsScreen::CustomGeneratorState
 		{
 			persistence = AH::persistStorage();
 			if (!persistence)
-				throw std::runtime_error("Generator storage persistence is unavailable");
+				throw Glob2UI::PresentedError(Glob2UI::nativeSurfaceText("[library Storage persistence unavailable]", "Storage persistence unavailable"), "Generator storage persistence is unavailable");
 		}
 		catch (...)
 		{
@@ -76,7 +77,7 @@ void SettingsScreen::pollCustomGenerators()
 	}
 	catch (const std::exception &error)
 	{
-		s.notice = error.what();
+		s.notice = Glob2UI::exceptionText(error);
 		invalidate();
 	}
 }
@@ -90,7 +91,7 @@ void SettingsScreen::buildCustomGenerators()
 	}
 	catch (const std::exception &error)
 	{
-		info(error.what());
+		info(generatorConstructionError.exception(error));
 		return;
 	}
 	auto &s = *customGenerators;
@@ -156,7 +157,7 @@ void SettingsScreen::buildCustomGenerators()
 				   }
 				   catch (const std::exception &error)
 				   {
-					   customGenerators->notice = error.what();
+					   customGenerators->notice = Glob2UI::exceptionText(error);
 				   }
 				   invalidate();
 			   });
