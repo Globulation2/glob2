@@ -535,8 +535,8 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 			}
 			else
 			{
-				sketch[i] = MARSH;
-				look[i] = grain[i] > 47000 ? MUD : MARSH;
+				sketch[i] = MUDFLAT;
+				look[i] = grain[i] > 47000 ? MUD : MUDFLAT;
 				++marsh;
 			}
 		}
@@ -573,15 +573,15 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 			else if (stripe > 0.7 && duneBreak[i] / 65536.0 > duneCut && r[i] > 1.15)
 				later(i, SAND, DUNE_SAND);
 			else if (grain[i] > 52000)
-				later(i, GRAVEL, GRAVEL);
+				later(i, SHALE, SHALE);
 		}
 		else
 		{
 			// The panhandle: papyrus along the river, dry ground beyond.
 			if (fromRiver[i] <= 7 && fromWater[i] >= 1)
 			{
-				sketch[i] = MARSH;
-				look[i] = MARSH;
+				sketch[i] = MUDFLAT;
+				look[i] = MUDFLAT;
 			}
 			else
 				look[i] = DRY_GRASS;
@@ -606,8 +606,8 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		if (sketch[i] == SAND && !look[i] && !isle[i] &&
 			(r[i] < swampEdge || (f.remainderX(i) < apex && fromRiver[i] <= 7)))
 		{
-			sketch[i] = MARSH;
-			look[i] = MARSH;
+			sketch[i] = MUDFLAT;
+			look[i] = MUDFLAT;
 		}
 	// Dry channel beds past the water's end.
 	for (int i = 0; i < n; ++i)
@@ -667,7 +667,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 				const int i = f.at(int(u) + du, int(c) + dv);
 				const bool deck = dv >= lo - 1 && dv <= hi + 1;
 				sketch[i] = TRAIL;
-				look[i] = deck ? BOARDWALK : DIRT_TRACK;
+				look[i] = deck ? BOARDWALK : BRICK_PATH;
 			}
 		const int a = labelAt(u, c + lo - 6), z = labelAt(u, c + hi + 6);
 		if (a >= 0 && z >= 0)

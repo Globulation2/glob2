@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 33 built-in materials, including grass, sand, their lush, dry, dune and pale
+All 36 built-in materials, including grass, sand, their lush, dry, dune and pale
 looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Static materials have four
 interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
@@ -91,13 +91,13 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 | Grass | baseline, no mark | |
 | Fertile (loam, moss, spring meadow) | warm, saturated ground | |
 | Water, deep water, lava | reserved colour | |
-| Snow and ice (ice, deep snow, frozen lake) | reserved cold white and pale teal | `frozen_lake_look` |
+| Snow and ice (ice, deep snow, frozen lake) | reserved cold white and pale teal | `warped_edges`, `bubbles` (frozen lake) |
 | Sand | warm fine grain | `sand_look` |
-| Barren (dirt, clay, shale, heath) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks` |
+| Barren (dirt, clay, shale, heath) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone` |
-| Rough (mud, mudflat, scree, pumice field) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`, `plates` |
+| Rough (mud, mudflat, scree, pumice field) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
-| Void (hole, chasm) | ledges whose lit rims fall away into darkness (hole); strata (chasm) | `void_falloff` |
+| Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
 | Obstacles | tall raised decor | `terrain_decor.py` |
 
 Within the groups: dirt keeps the original speckled earth and stones under the

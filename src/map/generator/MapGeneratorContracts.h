@@ -227,7 +227,7 @@ inline void braidedDeltaChecks()
 		for (int i = 0; i < torus.size(); ++i)
 		{
 			deep = deep || game.map.vertexTerrainAt(size_t(i)) == DEEP_WATER;
-			marsh = marsh || game.map.vertexTerrainAt(size_t(i)) == MARSH;
+			marsh = marsh || game.map.vertexTerrainAt(size_t(i)) == MUDFLAT;
 		}
 		assert(deep && marsh);
 		// Damage: a causeway of sand straight across the map wherever there is water. The terrain no

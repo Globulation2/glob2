@@ -12302,7 +12302,7 @@
       "key": "shale",
       "sprite": "data/gfx/terrain-shale",
       "profile": "rock",
-      "preview": [141, 136, 128],
+      "preview": [142, 136, 128],
       "variants": [
         {
           "frame": 0,
@@ -13332,7 +13332,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [141, 136, 128],
+      "minimap": [142, 136, 128],
       "seam": {
         "height": 2,
         "cast_q8": 40,

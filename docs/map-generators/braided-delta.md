@@ -24,10 +24,10 @@ per-colony fans by making one shared wetland the middle of the map.
   mixing the two can be neither walked nor swum, so nothing crosses it but its boardwalk bridges
   (River crossings). Deep water never touches ground a unit can stand on, or a swimmer could step
   straight in and across; inside the range the river is deep against the rock.
-- **The swamp is slow, not closed.** Marsh is walkable at 5/8 speed and takes no buildings or
+- **The swamp is slow, not closed.** Mudflat is walkable at 5/8 speed and takes no buildings or
   crops. The swamp's channels are shallow: forded where the fords are, swum by trained units.
   Lagoons are deep pools off the channels.
-- **Growth stays where it is put.** Marsh, sand and gravel grow nothing, so the swamp's islands and
+- **Growth stays where it is put.** Mudflat, sand and shale grow nothing, so the swamp's islands and
   the floodplain are the renewable ground.
 
 ## How it is built
@@ -43,7 +43,7 @@ picks its axis on a square map.
 | Fan | An ellipse round the apex whose edge wanders with its bearing. Primary arms leave the apex across it, fork (`growBranches`), meander and thin outwards; past the wet edge they carry on as dry sandy beds. Side channels braid neighbouring arms in the swamp. |
 | Zones | A tile's zone comes from its fan radius, reaching out along the channels in fingers: swamp, floodplain, fringe, desert. |
 | Water | Lagoons, seasonal pools on the floodplain, and rare desert pans that hold water. Deep cores in the panhandle's river and the lagoons. |
-| Swamp | Marsh, except where the island noise rises; one great island along the flow. Channel banks are marsh, not sand. |
+| Swamp | Mudflat, except where the island noise rises; one great island along the flow. Channel banks are mudflat, not sand. |
 | Crossings | Boardwalk bridges over the panhandle; sand fords across the channels on a spanning set of the land plus loops; then a repair that fords any piece still cut off by the cheapest crossing of shallow water (or a lagoon), never the panhandle's river. |
 | Homes | Spread by walking distance round the swamp's rim, on squares of pure grass with room; desert features are laid only afterwards, outside every home's clearing. |
 | Resources | Starter kits first, then the great island's orchard, a quarry at each kopje, wheat on levee loam, woods on lush ground and islands, and algae. |

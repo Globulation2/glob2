@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "d4ba46a698ae1beef934b36b013fff198e2c969aa88d898b4803f7b3abf0563b",
+    "tools/artwork/terrain_synth.py": "308feccc160edb3bae76ef8d118db6a7e5af2a4623bcb53693336946b0bb29ca",
     "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1"
   },
   "material": "sand",
