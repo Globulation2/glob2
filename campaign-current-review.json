@@ -1,0 +1,66 @@
+{
+  "repair_revision": "2eaeaae70bdd30f53dc6bf60b579a05b6feba3d7",
+  "integration_revision": "1d09ddbff80f3cf916f1163a99a9899149ab31c4",
+  "integration_base": "8382dc99c127ba0cb2578e8903d22b754493a95a",
+  "earlier_qualification": "12originalcampaigncases allpass0skip on pretelemetry runtime; retained in original menu-fixture-evidence.tar.gz",
+  "current_local_campaign": {
+    "passed": 8,
+    "failed": 4,
+    "results": [
+      "  \u2718   1 [chromium] \u203a browser/tests/campaign-progress.spec.js:57:1 \u203a campaign progress merges through the chooser, survives reload and rejects invalid backups (1.1m)",
+      "  \u2713   2 [chromium] \u203a browser/tests/campaign-progress.spec.js:75:44 \u203a campaign persistence failure preserves the durable backup with retry (2.3m)",
+      "  \u2718   3 [chromium] \u203a browser/tests/campaign-progress.spec.js:75:44 \u203a campaign persistence failure preserves the durable backup with discard (2.8m)",
+      "  \u2713   4 [chromium] \u203a browser/tests/campaign-progress.spec.js:106:1 \u203a leaving a new campaign waits for persistence and discard removes its uncommitted file (1.3m)",
+      "  \u2713   9 [firefox] \u203a browser/tests/campaign-progress.spec.js:57:1 \u203a campaign progress merges through the chooser, survives reload and rejects invalid backups (2.0m)",
+      "  \u2713  10 [firefox] \u203a browser/tests/campaign-progress.spec.js:75:44 \u203a campaign persistence failure preserves the durable backup with retry (2.9m)",
+      "  \u2718  11 [firefox] \u203a browser/tests/campaign-progress.spec.js:75:44 \u203a campaign persistence failure preserves the durable backup with discard (2.3m)",
+      "  \u2713  12 [firefox] \u203a browser/tests/campaign-progress.spec.js:106:1 \u203a leaving a new campaign waits for persistence and discard removes its uncommitted file (1.8m)",
+      "  \u2713  17 [webkit] \u203a browser/tests/campaign-progress.spec.js:57:1 \u203a campaign progress merges through the chooser, survives reload and rejects invalid backups (1.5m)",
+      "  \u2713  18 [webkit] \u203a browser/tests/campaign-progress.spec.js:75:44 \u203a campaign persistence failure preserves the durable backup with retry (2.6m)",
+      "  \u2718  19 [webkit] \u203a browser/tests/campaign-progress.spec.js:75:44 \u203a campaign persistence failure preserves the durable backup with discard (2.5m)",
+      "  \u2713  20 [webkit] \u203a browser/tests/campaign-progress.spec.js:106:1 \u203a leaving a new campaign waits for persistence and discard removes its uncommitted file (2.0m)"
+    ]
+  },
+  "hosted_campaign": {
+    "passed": 4,
+    "job": 125663096032,
+    "url": "https://github.com/Globulation2/glob2/actions/runs/41555072721/job/125663096032",
+    "rows": [
+      "2026-11-03T01:22:59.8559168Z   \u2713  15 [chromium] \u203a tests/campaign-progress.spec.js:57:1 \u203a campaign progress merges through the chooser, survives reload and rejects invalid backups (40.8s)",
+      "2026-11-03T01:23:56.6043894Z   \u2713  16 [chromium] \u203a tests/campaign-progress.spec.js:75:44 \u203a campaign persistence failure preserves the durable backup with retry (56.7s)",
+      "2026-11-03T01:24:52.9124098Z   \u2713  17 [chromium] \u203a tests/campaign-progress.spec.js:75:44 \u203a campaign persistence failure preserves the durable backup with discard (56.3s)",
+      "2026-11-03T01:25:26.1181225Z   \u2713  18 [chromium] \u203a tests/campaign-progress.spec.js:106:1 \u203a leaving a new campaign waits for persistence and discard removes its uncommitted file (33.2s)"
+    ]
+  },
+  "remaining_regressions": "Current local failures occur on fresh-document reload/recovered-page startup, at loading with artworkReady=true and persisted storage, before any Back control is available. The read-only startup predicate cannot introduce these application loading states. Original master already failed campaign startup (de58 run41548075917). Hosted job fails only skin; other PR jobs fail import startup and renderer restoration. No full green claim.",
+  "node_contracts": {
+    "passed": 184,
+    "failed": 0
+  },
+  "runtime_hashes": {
+    "index.js": {
+      "bytes": 1815334,
+      "sha256": "53aa3c32f640fe3b4ae9b6d37ff08a98486707f8ba466e4831f9b789c6d3b4d1"
+    },
+    "index.wasm": {
+      "bytes": 26930862,
+      "sha256": "e4ae8faed2666f1c57be7c84db428adf46e6f9bd2ceb6933db91e725ea170939"
+    },
+    "index.data": {
+      "bytes": 61178,
+      "sha256": "ce5fa39acbe960ccb5735218d4f775f3bba6a79701bfdc7b0f4f421ad1f52032"
+    },
+    "threaded/index.js": {
+      "bytes": 1867946,
+      "sha256": "c0a8bb5821eb048e4c45b466f97790c8b2a0efdae87047b524fbcf5b94bd3760"
+    },
+    "threaded/index.wasm": {
+      "bytes": 26940167,
+      "sha256": "3e775ab7aeca455efe48056f0da2e85db1550c3e3175d2de877d84d6f51bfec9"
+    }
+  },
+  "integration_changes": [
+    "browser/tests/campaign-progress.spec.js",
+    "browser/tests/marathi.spec.js"
+  ]
+}
