@@ -925,6 +925,14 @@ See [AI evaluation](../ai/README.md), [map-generator verification](../map-genera
 
 ### Movement-ratio research campaign
 
+An explicitly approved capacity expansion can be recorded in
+`cpu-allocation-amendment.json` with `original_cpu_ids`, `original_deadline`,
+and the expanded `cpu_ids`. Continuation validates that amendment and retains
+the original receipt. Extra CPUs use a separate worker with four participants
+per game, preserving existing attempt allocations. Record the transition time
+for scheduling-interference analysis. The expansion accelerates existing work;
+it does not multiply planned sample counts or reset deadlines.
+
 `python3 -m tools.gradient_ratio_experiment plan --bundle BUNDLE --phase pilot
 --output artifacts/ratio-pilot.json` freezes independently seeded baseline,
 class-mode, separate-speed-mode, median and equal-cost games. It gives half the

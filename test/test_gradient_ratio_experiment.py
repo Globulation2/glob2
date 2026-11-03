@@ -1,11 +1,11 @@
 """Independent-seed planning, required evidence, and statistical unit contracts."""
-import copy
+import copy,json
 import unittest
 import tempfile,time,io
 from pathlib import Path
 from unittest.mock import patch
 from collections import Counter, defaultdict
-from tools.gradient_ratio_experiment import ARMS, NAMED, compare, plan, add_observer_calibration, finalists, _resume_pilot, _continue_pilot, diagnostic_projection, latest_gameplay
+from tools.gradient_ratio_experiment import continuation_cpu_ids, ARMS, NAMED, compare, plan, add_observer_calibration, finalists, _resume_pilot, _continue_pilot, diagnostic_projection, latest_gameplay
 from tools.tournaments.jobs import EngineJob, routing_ratio_outputs
 
 
@@ -16,6 +16,16 @@ def bundle():
             [('width',[7,8,9]),('height',[7,8,9]),('teams',[2,3,4,6]),('workers',[4]),('water',[10,30])]]) for i,name in enumerate(names)]))
 
 class RatioExperiment(unittest.TestCase):
+    def test_capacity_amendment_preserves_receipt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);receipt={'cpu_ids':list(range(12,24)),'deadline':123}
+            self.assertEqual(continuation_cpu_ids(root,receipt),receipt['cpu_ids'])
+            record={'original_cpu_ids':receipt['cpu_ids'],'original_deadline':123,'cpu_ids':list(range(32))}
+            (root/'cpu-allocation-amendment.json').write_text(json.dumps(record))
+            self.assertEqual(continuation_cpu_ids(root,receipt),list(range(32)))
+            record['original_deadline']=124;(root/'cpu-allocation-amendment.json').write_text(json.dumps(record))
+            with self.assertRaises(ValueError):continuation_cpu_ids(root,receipt)
+
     def test_plan_is_reproducible_balanced_and_independent(self):
         first=plan(bundle(),phase='pilot');self.assertEqual(first,plan(bundle(),phase='pilot'))
         self.assertEqual(len(first['jobs']),12*5*5)

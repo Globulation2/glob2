@@ -552,15 +552,32 @@ def phase_job_counts(coordinator):
     return dict(coordinator.db.execute('SELECT state,count(*) FROM jobs GROUP BY state').fetchall())
 
 
+def continuation_cpu_ids(root, receipt):
+    """Explicitly amended capacity leaves the original campaign receipt intact."""
+    amendment=Path(root)/'cpu-allocation-amendment.json'
+    if not amendment.exists():return receipt['cpu_ids']
+    record=read_json(amendment);ids=record['cpu_ids']
+    if (record['original_cpu_ids']!=receipt['cpu_ids'] or
+        record['original_deadline']!=receipt['deadline'] or
+        len(set(ids))!=len(ids) or not set(receipt['cpu_ids'])<=set(ids) or len(ids)%4):
+        raise ValueError('invalid CPU allocation amendment')
+    return ids
+
+
 def run_phase(root, bundle_path, manifest, cpu_ids, deadline):
     """Drain before the phase boundary; absolute per-job deadlines backstop it."""
     root=Path(root);phase=manifest['metadata']['phase'];directory=root/phase
     host=dict(name='ratio-local',transport='local',directory=str((root/'worker').resolve()),slots=3,
-        cpu_ids=cpu_ids,participants_per_game=4,collect_slots=1,prefetch=0,
+        cpu_ids=read_json(root/'campaign.json')['cpu_ids'],participants_per_game=4,collect_slots=1,prefetch=0,
         disk_reserve_bytes=10*GIB,spool_budget_bytes=4*GIB,cache_budget_bytes=4*GIB,
         attempt_budget_bytes=512*1024**2,log_budget_bytes=128*1024**2)
     host.pop('prefetch') # Coordinator-only setting.
-    hosts=root/'hosts.json';atomic_json(hosts,[host])
+    host_records=[host]
+    extra=[c for c in cpu_ids if c not in host['cpu_ids']]
+    if extra:
+        host_records.append(dict(host,name='ratio-extra',directory=str((root/'worker-extra').resolve()),
+            cpu_ids=extra,slots=len(extra)//4,collect_slots=2))
+    hosts=root/'hosts.json';atomic_json(hosts,host_records)
     coordinator=Coordinator.submit(directory,manifest,[bundle_path]);frozen_manifest=coordinator.manifest;coordinator.close()
     log=(root/(phase+'-coordinator.log')).open('ab')
     runner=subprocess.Popen([sys.executable,'-m','tools.tournaments','run',str(directory),'--hosts',str(hosts)],stdout=log,stderr=subprocess.STDOUT)
@@ -657,7 +674,7 @@ def _resume_pilot(bundle_path,directory,cpu_ids):
 def _continue_pilot(bundle_path,directory,cpu_ids):
     """Reattach orchestration without changing any admitted or pending pilot job."""
     root=Path(directory).resolve();receipt=read_json(root/'campaign.json')
-    if cpu_ids!=receipt['cpu_ids']:raise ValueError('continuation must preserve CPU allocation')
+    if cpu_ids!=continuation_cpu_ids(root,receipt):raise ValueError('continuation must match approved CPU allocation')
     if time.time()>=receipt['deadline'] or (root/'confirmation').exists():raise ValueError('pilot continuation window is unavailable')
     os.sched_setaffinity(0,cpu_ids)
     manifest=read_json(root/'pilot-recovery/experiment.json')
