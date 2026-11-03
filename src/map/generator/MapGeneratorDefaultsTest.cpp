@@ -940,7 +940,7 @@ TEST_SUITE("MapGeneratorDefaults")
         // Keep one runner-visible case while exercising each scenario on a fresh
         // world. Doctest subcases produce distinct JUnit names, which the engine
         // registry deliberately rejects as an unexpected case inventory.
-        for (const auto [scenario, name] : {
+        for (const auto& [scenario, name] : {
             std::pair{Scenario::ProtectedNeighbours, "protected neighbouring terrain"},
             std::pair{Scenario::AdjacentBuilding, "untouched diagonal building"},
             std::pair{Scenario::UntouchedResource, "untouched diagonal resource"},
