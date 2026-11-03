@@ -13,7 +13,12 @@ const settled = page => page.evaluate(() => new Promise(resolve => requestAnimat
 // configured viewport. Input must follow the live CSS viewport.
 const viewport = page => page.evaluate(() => ({width: innerWidth, height: innerHeight}));
 async function current(page, bounds) {
-  const {width, height} = await viewport(page);
+  // Layout follows the renderer's logical/backing surface, which can differ
+  // from CSS dimensions while fullscreen replaces a presentation canvas.
+  const {width, height} = await page.evaluate(() => {
+    const state = glob2Diagnostics.snapshot();
+    return {width: state.width, height: state.height};
+  });
   return Math.abs(width / bounds.surface.w - height / bounds.surface.h) < 0.02;
 }
 async function control(page, key, {timeout = 30000, enabled = true} = {}) {

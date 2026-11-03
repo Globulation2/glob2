@@ -261,7 +261,8 @@ screen is published; repeating that choice or waiting for its retired bounds
 would delay the test after the game has already moved on.
 Control geometry and input coordinates use the live CSS viewport. Fullscreen
 can change that viewport while Playwright retains its configured dimensions;
-control bounds must be compared and scaled against the current window size.
+control bounds are checked against the live render size and scaled into the
+current CSS window size.
 
 Pixel assertions decode the captured, opaque PNG in the Node test runner using
 the pinned development-only `pngjs` package. They inspect the same presented
