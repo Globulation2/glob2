@@ -60,6 +60,11 @@ bool GraphicContext::flushDeviceFrame()
     return didRecordDeviceFrame(*renderer);
 }
 
+bool GraphicContext::presentedDeviceFrame() const
+{
+    return !renderDevice() || didPresentDeviceFrame(*renderer);
+}
+
 bool GraphicContext::deferDeviceFrame()
 {
     return renderDevice() && GAGCore::deferDeviceFrame(*renderer);

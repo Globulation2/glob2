@@ -6,8 +6,54 @@ addToLibrary({
     state: 0, error: '', device: null, context: null, lost: false,
     shaders: {}, pipelines: new Map(), resources: new Map(), meshes: new Map(), meshBytes: 0, frames: [], activeFrame: null, captures: [], transients: new Set(), transientBytes: 0, allocationEpoch: 0, masks: new Map(), maskBytes: 0, scratch: new Map(), scratchBytes: 0,
     issued: 0, completed: 0, epoch: 0, width: 0, height: 0, screen: null, committed: null, bytes: 0, deferred: false, presentOwned: [], presentBytes: 0,
-    handle(error){if(error?.deferred){this.deferred=true;this.error=String(error.message);}else this.fail(error);},
-    fail(error) { this.error=String(error?.message||error);this.state=-1;this.lost=true; },
+    timingSupported:false,timingSlots:[],timingFrames:0,timingSkipped:0,timingInvalid:0,activeTiming:null,
+    beginTiming(started){
+      const frame=this.timingFrames++;
+      if(!this.timingSupported || frame%16!==Math.floor(frame/512)%16)return;
+      let slot=this.timingSlots.find(v=>!v.busy);
+      if(!slot){if(this.timingSlots.length>=32){++this.timingSkipped;return;}
+        // Optional instrumentation must release partial allocations and leave
+        // ordinary rendering usable if timestamp resources cannot be created.
+        slot={};
+        try {
+          slot.queries=this.device.createQuerySet({type:'timestamp',count:64});
+          slot.resolve=this.device.createBuffer({size:512,usage:GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC});
+          slot.read=this.device.createBuffer({size:512,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});
+        } catch (_) {
+          slot.read?.destroy();slot.resolve?.destroy();slot.queries?.destroy();
+          ++this.timingInvalid;this.timingSupported=false;return;
+        }
+        this.timingSlots.push(slot);}
+      Object.assign(slot,{busy:true,ready:false,frame,started,count:0,invalid:false,epoch:this.allocationEpoch});this.activeTiming=slot;
+    },
+    timingPass(){
+      const slot=this.activeTiming;if(!slot)return {};
+      if(slot.count===64){slot.invalid=true;return {};}
+      const index=slot.count;slot.count+=2;
+      return {timestampWrites:{querySet:slot.queries,beginningOfPassWriteIndex:index,endOfPassWriteIndex:index+1}};
+    },
+    endTiming(encoder){
+      const slot=this.activeTiming;this.activeTiming=null;if(!slot)return null;
+      if(!slot.count||slot.invalid){++this.timingInvalid;slot.busy=false;return null;}
+      encoder.resolveQuerySet(slot.queries,0,slot.count,slot.resolve,0);
+      encoder.copyBufferToBuffer(slot.resolve,0,slot.read,0,slot.count*8);return slot;
+    },
+    resolveTiming(slot){
+      if(!slot)return;
+      slot.read.mapAsync(GPUMapMode.READ).then(()=>{
+        if(slot.retired||slot.epoch!==this.allocationEpoch)return;
+        const values=new BigUint64Array(slot.read.getMappedRange());let ns=0n;
+        for(let i=0;i<slot.count;i+=2){if(values[i+1]<values[i])slot.invalid=true;else ns+=values[i+1]-values[i];}
+        slot.read.unmap();slot.duration=Number(ns);slot.ready=true;
+      }).catch(()=>{if(!slot.retired&&slot.epoch===this.allocationEpoch){slot.invalid=true;slot.ready=true;}});
+    },
+    resetTiming(){
+      this.activeTiming=null;
+      for(const slot of this.timingSlots){slot.retired=true;if(slot.busy)++this.timingInvalid;slot.queries.destroy();slot.resolve.destroy();slot.read.destroy();}
+      this.timingSlots=[];
+    },
+    handle(error){if(this.activeTiming){this.activeTiming.busy=false;this.activeTiming=null;++this.timingInvalid;}if(error?.deferred){this.deferred=true;this.error=String(error.message);}else this.fail(error);},
+    fail(error) { this.resetTiming(); this.error=String(error?.message||error);this.state=-1;this.lost=true; },
     async prepare(root, ownedSources=null) {
       if(this.state===0.5)return;
       if(this.device&&!this.lost){this.state=1;return;}
@@ -19,9 +65,9 @@ addToLibrary({
         const gpu=globalThis.navigator?.gpu;if(!gpu)throw Error('WebGPU unavailable');
         const adapter=await gpu.requestAdapter();if(!current())return;
         if(!adapter)throw Error('No WebGPU adapter');
-        const device=await adapter.requestDevice();
+        const device=await adapter.requestDevice({requiredFeatures:adapter.features?.has('timestamp-query')?['timestamp-query']:[]});
         if(!current()){device.destroy();return;}
-        this.gpu=gpu;this.adapter=adapter;this.device=device;
+        this.gpu=gpu;this.adapter=adapter;this.device=device;this.timingSupported=!!device.features?.has('timestamp-query');
         device.lost.then(info=>{if(epoch===this.epoch)this.fail('WebGPU device lost: '+info.message);});
         device.addEventListener('uncapturederror',e=>{if(epoch===this.epoch)this.fail(e.error);});
         this.pipelines.clear();this.shaders={};this.metadata=ownedSources ? ownedSources.metadata : JSON.parse(FS.readFile(root+'/../metadata.json',{encoding:'utf8'}));
@@ -129,7 +175,7 @@ addToLibrary({
       if(divisor>1)raw.lastUse=this.issued+1;
       const draw=(variant,destination,rectangle,data,images)=>{
         const pipeline=this.pipeline(variant,3,0,false,0),[x,y,w,h]=rectangle;
-        const pass=encoder.beginRenderPass({colorAttachments:[{view:this.textureView(destination.texture),loadOp:destination.initialized?'load':'clear',clearValue:[0,0,0,0],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(destination.depth),depthLoadOp:destination.depthInitialized?'load':'clear',depthClearValue:1,depthStoreOp:'store'}});
+        const pass=encoder.beginRenderPass({...this.timingPass(),colorAttachments:[{view:this.textureView(destination.texture),loadOp:destination.initialized?'load':'clear',clearValue:[0,0,0,0],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(destination.depth),depthLoadOp:destination.depthInitialized?'load':'clear',depthClearValue:1,depthStoreOp:'store'}});
         destination.initialized=true;destination.depthInitialized=true;pass.setPipeline(pipeline);pass.setViewport(0,0,destination.width,destination.height,0,1);pass.setScissorRect(x,y,w,h);
         const vb=this.buffer(new Float32Array([[x,y,0,0],[x+w,y,1,0],[x+w,y+h,1,1],[x,y,0,0],[x+w,y+h,1,1],[x,y+h,0,1]].flatMap(([px,py,a,b])=>[px,py,1,1,1,1,a,b])),GPUBufferUsage.VERTEX);owned.push(vb);pass.setVertexBuffer(0,vb);
         for(let group=0;group<4;group++){const entries=[];if(group===1||group===3){const b=this.buffer(group===1?new Float32Array([destination.width,destination.height,0,0]):data,GPUBufferUsage.UNIFORM);owned.push(b);entries.push({binding:0,resource:{buffer:b}});}if(group===2)entries.push(...images);pass.setBindGroup(group,this.device.createBindGroup({layout:pipeline.getBindGroupLayout(group),entries}));}pass.draw(6);pass.end();
@@ -143,9 +189,9 @@ addToLibrary({
       draw('terrain-compose',raw,divisor>1?[0,0,size,size]:rect,data,images);
       if(divisor>1)draw('terrain-reduce',target,rect,new Uint32Array([divisor|(pma?65536:0),0,0,0]),[{binding:0,resource:this.textureView(raw.texture)}]);
     },
-    submit(records,count,vertices,uniforms,width,height){
+    submit(records,count,vertices,uniforms,width,height,started=0){
       this.deferred=false;if(this.lost)throw Error(this.error);if(!this.activeFrame&&this.frames.length>=8)return 0;
-      this.size(width,height);const encoder=this.device.createCommandEncoder(),owned=[];
+      this.size(width,height);this.beginTiming(started);const encoder=this.device.createCommandEncoder(),owned=[];
       const vertex=this.buffer(vertices,GPUBufferUsage.VERTEX);owned.push(vertex);const bindings=this.submissionBindings(owned);
       // Attachment loads/stores and immutable bindings may be reused only for
       // adjacent draws. Clears, explicit barriers and terrain passes end the run.
@@ -165,7 +211,7 @@ addToLibrary({
         const fullColor=clearColor&&clip[0]===0&&clip[1]===0&&clip[2]===target.width&&clip[3]===target.height;
         if(kind===2||active?.target!==target)endPass();
         if(!active){
-          const pass=encoder.beginRenderPass({colorAttachments:[{view:this.textureView(target.texture),loadOp:fullColor||!target.initialized?'clear':'load',clearValue:fullColor?[f(224),f(228),f(232),f(236)]:[0,0,0,0],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(target.depth),depthLoadOp:clearDepth||!target.depthInitialized?'clear':'load',depthClearValue:clearDepth?f(240):1,depthStoreOp:'store'}});
+          const pass=encoder.beginRenderPass({...this.timingPass(),colorAttachments:[{view:this.textureView(target.texture),loadOp:fullColor||!target.initialized?'clear':'load',clearValue:fullColor?[f(224),f(228),f(232),f(236)]:[0,0,0,0],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(target.depth),depthLoadOp:clearDepth||!target.depthInitialized?'clear':'load',depthClearValue:clearDepth?f(240):1,depthStoreOp:'store'}});
           target.initialized=true;target.depthInitialized=true;active={pass,target,groups:[]};
         }
         const pass=active.pass;
@@ -205,13 +251,13 @@ addToLibrary({
         }else pass.draw(u(52),1,u(48));
       }
       endPass();
-      const identity=++this.issued;this.device.queue.submit([encoder.finish()]);
+      const identity=++this.issued;const timing=this.endTiming(encoder);this.device.queue.submit([encoder.finish()]);this.resolveTiming(timing);
       if(!this.activeFrame)this.activeFrame={identity,owned:[]};this.activeFrame.identity=identity;this.activeFrame.owned.push(...owned);return identity;
     },
     present(){
       if(this.lost)throw Error(this.error);if(!this.screen||(!this.activeFrame&&this.frames.length>=8))return;
       const pipeline=this.presentPipeline,encoder=this.device.createCommandEncoder(),owned=[];
-      const pass=encoder.beginRenderPass({colorAttachments:[{view:this.context.getCurrentTexture().createView(),loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(this.screen.depth),depthLoadOp:'load',depthStoreOp:'store'}});
+      const pass=encoder.beginRenderPass({...this.timingPass(),colorAttachments:[{view:this.context.getCurrentTexture().createView(),loadOp:'clear',clearValue:[0,0,0,1],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(this.screen.depth),depthLoadOp:'load',depthStoreOp:'store'}});
       pass.setPipeline(pipeline);
       if(!this.presentGeometrySize){
         const vertices=new Float32Array([[0,0,0,0],[this.width,0,1,0],[this.width,this.height,1,1],[0,0,0,0],[this.width,this.height,1,1],[0,this.height,0,1]].flatMap(([x,y,u,v])=>[x,y,1,1,1,1,u,v]));
@@ -247,6 +293,7 @@ addToLibrary({
       buffer.mapAsync(GPUMapMode.READ).then(()=>{if(!item.cancelled)item.ready=true;else buffer.destroy();}).catch(()=>{item.cancelled=true;item.ready=true;});return 1;
     },
     reset(){
+      this.resetTiming();
       this.presentGroups=null;this.presentGeometrySize=null;this.views=new WeakMap();
       this.presentOwned.forEach(b=>b.destroy());this.presentOwned=[];this.presentBytes=0;
       ++this.allocationEpoch;this.retireBuffers(Array.from(this.transients));this.frames=[];this.activeFrame=null;
@@ -311,7 +358,7 @@ addToLibrary({
   glob2_webgpu_geometry_delete__deps:['$Glob2WebGPU'],
   glob2_webgpu_geometry_delete(id){const g=Glob2WebGPU,m=g.meshes.get(id);if(m){m.vertices.destroy();m.indices.destroy();g.meshBytes-=m.bytes;g.meshes.delete(id);}},
   glob2_webgpu_submit__deps:['$Glob2WebGPU'],
-  glob2_webgpu_submit(records,count,vertices,vertexBytes,indices,indexBytes,width,height){try{return Glob2WebGPU.submit(HEAPU8.slice(records,records+count*256),count,HEAPU8.slice(vertices,vertices+vertexBytes),HEAPU8.slice(indices,indices+indexBytes),width,height);}catch(e){Glob2WebGPU.handle(e);return 0;}},
+  glob2_webgpu_submit(records,count,vertices,vertexBytes,indices,indexBytes,width,height,started){try{return Glob2WebGPU.submit(HEAPU8.slice(records,records+count*256),count,HEAPU8.slice(vertices,vertices+vertexBytes),HEAPU8.slice(indices,indices+indexBytes),width,height,started);}catch(e){Glob2WebGPU.handle(e);return 0;}},
   glob2_webgpu_deferred__deps:['$Glob2WebGPU'],
   glob2_webgpu_deferred(){return +Glob2WebGPU.deferred;},
   glob2_webgpu_discard__deps:['$Glob2WebGPU'],
@@ -324,6 +371,18 @@ addToLibrary({
   glob2_webgpu_can_begin(){return Glob2WebGPU.lost?-1:(Glob2WebGPU.activeFrame||Glob2WebGPU.frames.length<8)?1:0;},
   glob2_webgpu_present__deps:['$Glob2WebGPU'],
   glob2_webgpu_present(){try{Glob2WebGPU.present();return 1;}catch(e){Glob2WebGPU.handle(e);return 0;}},
+  glob2_webgpu_timing_supported__deps:['$Glob2WebGPU'],
+  glob2_webgpu_timing_supported(){return Glob2WebGPU.timingSupported?1:0;},
+  glob2_webgpu_timing_pending__deps:['$Glob2WebGPU'],
+  glob2_webgpu_timing_pending(){return Glob2WebGPU.timingSlots.filter(v=>v.busy).length;},
+  glob2_webgpu_timing_count__deps:['$Glob2WebGPU'],
+  glob2_webgpu_timing_count(invalid){return invalid?Glob2WebGPU.timingInvalid:Glob2WebGPU.timingSkipped;},
+  glob2_webgpu_timing_poll__deps:['$Glob2WebGPU'],
+  glob2_webgpu_timing_poll(destination){const g=Glob2WebGPU;
+    for(const slot of g.timingSlots){if(!slot.ready)continue;slot.ready=false;slot.busy=false;
+      if(slot.invalid){++g.timingInvalid;continue;}
+      HEAPF64[destination/8]=slot.frame;HEAPF64[destination/8+1]=slot.started;HEAPF64[destination/8+2]=slot.duration;return 1;}
+    return 0;},
   glob2_webgpu_reset__deps:['$Glob2WebGPU'],
   glob2_webgpu_reset(){Glob2WebGPU.reset();Glob2WebGPU.destroyImage(Glob2WebGPU.white);Glob2WebGPU.white=null;Glob2WebGPU.context?.unconfigure();Glob2WebGPU.context=null;},
   glob2_webgpu_capture__deps:['$Glob2WebGPU'],
