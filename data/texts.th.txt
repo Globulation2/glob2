@@ -6857,52 +6857,52 @@ AI สำหรับ​ทุก​อาณานิคม​ที่​ค�
 [hive order not confirmed]
 ยัง​ไม่ได้​ยืนยัน​คำสั่ง เปิด​แผง​บัญชาการ​เพื่อ​ลอง​อีกครั้ง เก็บ​ข้อความ​ของ​คุณ​ไว้​แล้ว
 [engine performance per game minute]
-
+ต่อหนึ่งนาทีในเกม
 [engine performance per real minute]
-
+ต่อหนึ่งนาทีจริง
 [engine performance game engine performance]
-
+ประสิทธิภาพของเอนจินเกม
 [engine performance task wall-time costs]
-
+เวลาจริงที่งานใช้
 [engine performance inspect slow ticks]
-
+ตรวจสอบทิกที่ช้า
 [engine performance no advancing ticks recorded yet]
-
+ยังไม่มีการบันทึกทิกที่เดินหน้า
 [engine performance whole-engine performance]
-
+ประสิทธิภาพของเอนจินทั้งหมด
 [engine performance open performance charts]
-
+เปิดแผนภูมิประสิทธิภาพ
 [engine performance engine performance]
-
+ประสิทธิภาพของเอนจิน
 [engine performance follow latest interval]
-
+ติดตามช่วงเวลาล่าสุด
 [engine performance compare task costs]
-
+เปรียบเทียบเวลาที่งานใช้
 [engine performance all metrics and slow ticks]
-
+ตัวชี้วัดทั้งหมดและทิกที่ช้า
 [engine performance phase orders]
-
+คำสั่ง
 [engine performance phase units]
-
+ยูนิต
 [engine performance phase buildings]
-
+สิ่งปลูกสร้าง
 [engine performance phase map]
-
+แผนที่
 [engine performance phase statistics]
-
+สถิติ
 [engine performance phase ai]
-
+ปัญญาประดิษฐ์
 [engine performance phase world capture]
-
+การบันทึกสถานะโลก
 [engine performance phase checksums]
-
+ผลรวมตรวจสอบ
 [engine performance wall time %0]
-
+เวลาที่ผ่านไป: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+เวลารอที่จำเป็น: %0 ms; เธรดเจ้าของรอให้งานเสร็จ: %1 ms; ล็อก: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: เวลาที่ผ่านไป %1 ms
 [engine performance tick %0 wall %1]
-
+ทิก %0: เวลาที่ผ่านไป %1 ms
 [hive standing order update failed]
 อัปเดต​คำสั่ง​ต่อเนื่อง​ไม่สำเร็จ คำสั่ง​ถูก​พัก​ไว้​บน​อุปกรณ์​นี้ ลอง​ใช้​ปุ่ม​ควบคุม​อีกครั้ง
