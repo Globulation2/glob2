@@ -1,0 +1,13 @@
+{
+  "revision": "a3292ed53f69a8bd750d94284cfa0c8ad795e420",
+  "base": "4f40c206a0ae7bb3fb0ddbecd1e41a68c1c75e06",
+  "hosted_failure": "https://github.com/Globulation2/glob2/actions/runs/41556945986/job/125729602140",
+  "scope": "Catalog19reportedunlocalizedfragments plus adjacenttopiclabel/slowtickphaseandtickformats;24keys,44nonEnglishblankfallbackcatalogs. No checker/test weakened. Englishcomplete,9formerlycompleteotherlanguagesnowmarkedincomplete.",
+  "verification": {
+    "strict": "0 structural errors; complete inventory retained",
+    "translation_tests": 10,
+    "release_compilation": "BothactualmodifiedUItranslationunitsGCC13 -O3; privateexistinggeneratedconfiguration/SDKread-only; not full native link/runtime",
+    "formatted_output": "52exactoriginalEnglishreadouts; real FormattableString, zero/fractional/largevalues and uint64tickboundaries"
+  },
+  "limits": "Fullsuite/otherplatforms pending. Other pre-existing performance prose outside these controls remains English; this is not a complete translation claim. Save/replay/network/simulationcodeandgatesunchanged. No runtime dependencies added."
+}
