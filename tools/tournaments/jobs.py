@@ -233,6 +233,12 @@ class EngineJob:
                     'team-timeline' not in job['outputs'].get('telemetry', []) or
                     job['outputs'].get('log_mode', 'full') not in ('full', 'gameplay')):
                 raise ValueError('required gameplay telemetry needs game team-timeline and full or gameplay logs')
+        if 'require_movement_audit' in job.get('labels', {}):
+            required = job['labels']['require_movement_audit']
+            if type(required) is not bool:
+                raise ValueError('require_movement_audit must be a boolean')
+            if required and (self.kind != 'game' or not any(k in config for k in ('resource_claims_probe','resource_claims_shadow'))):
+                raise ValueError('required movement audit needs an explicit game claim observer')
         if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', DEFAULT_GAME_TICKS) > 4096
                 and 'artifact_bytes' not in job['limits']):
             raise ValueError('detailed checksums for long games require an explicit artifact_bytes limit; use short focused probes')
@@ -408,6 +414,8 @@ class EngineJob:
             with gzip.open(path.parent / ARTIFACT, 'rt') as stream:
                 rows = trace_rows(stream)
                 schema = next(rows)
+                if job.get('labels', {}).get('require_movement_audit') and schema.get('movement_audit_version') != 1:
+                    raise ValueError('engine did not attest required movement audit')
                 for config_key, schema_key in (('sample_every', 'sample_every'), ('max_samples', 'max_samples'), ('max_bytes', 'max_output_bytes')):
                     if sampling[config_key] != schema.get(schema_key):
                         raise ValueError('resource claim sampling limits changed')
@@ -423,6 +431,8 @@ class EngineJob:
                             raise ValueError('claim event policy differs from engine result')
                 if row['submitted'] != attestation.get('submitted') or row['completed'] != attestation.get('completed'):
                     raise ValueError('resource claim summary differs from engine result')
+                if job.get('labels', {}).get('require_movement_audit') and row['movement_audit']['coverage_known'] is not True:
+                    raise ValueError('required movement audit lacks known segment coverage')
         if result.get('status') == 'completed' and 'resource_claims_deep_context' in job['config']:
             from .claim_capture import read_capture, DESIGN, validate_manifest
             deep = path.parent / 'resource-claims-deep'

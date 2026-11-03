@@ -469,6 +469,7 @@ def read_game(stream, labels):
     return {'schema': schema, 'summary': summary, 'sampling': sampling, 'claim_modes': sorted(modes), 'metrics': metrics, 'scenario_counts': dict(scenario_counts),
             'route_metrics': route_metrics, 'diagnostics': diagnostics,
             'journey_policy_digests': sorted(journey_digests), 'journeys': journey_totals,
+            'movement_audit': summary.get('movement_audit'),
             'journey_interpretation': 'Per-game diagnostic totals; partial journeys retain partial costs; acquisition static baseline is not a dynamic optimum; no independent-unit inference.'}
 
 
@@ -573,7 +574,8 @@ def analyze(directory, *, draws=500, seed=1):
                 claim_modes.add((resolved['active_claim_policy'] != 'disabled', resolved['active_claim_policy']))
             games.append((game_id, measured))
             entry.update({'measured': True, 'summary': measured['summary'], 'sampling': measured['sampling'], 'diagnostics': measured['diagnostics'],
-                          'journeys': measured['journeys'], 'journey_interpretation': measured['journey_interpretation']})
+                          'journeys': measured['journeys'], 'journey_interpretation': measured['journey_interpretation'],
+                          'movement_audit': measured['movement_audit']})
         except (OSError, EOFError, ValueError, StopIteration, KeyError, TypeError) as error:
             entry.update({'measured': False, 'error': str(error)})
         coverage.append(entry)

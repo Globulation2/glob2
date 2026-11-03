@@ -10,7 +10,7 @@ import sys
 import tempfile
 import unittest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from tools.tournaments.claim_journeys import EVENTS, attest_digests
+from tools.tournaments.claim_journeys import EVENTS, MOVEMENT_KINDS, attest_digests
 from tools.tournaments.resource_claims import COLUMNS, trace_rows, read_game
 from tools.tournaments.jobs import EngineJob
 from tools.tournaments.claim_policy import policy_digest
@@ -49,6 +49,46 @@ def stream(rows):return io.StringIO(''.join(json.dumps(r)+'\n' for r in rows))
 
 
 class Journeys(unittest.TestCase):
+    def test_required_movement_capture_rejects_old_or_unknown_coverage(self):
+        rows,job,result=fixture();job['labels']={'require_movement_audit':True}
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);out=root/'output';out.mkdir();(out/'result.json').write_text(json.dumps(result))
+            def capture():
+                with gzip.open(out/'resource-claims-shadow.jsonl.gz','wt') as f:f.write(stream(rows).getvalue())
+            capture()
+            with self.assertRaisesRegex(ValueError,'required movement audit'):EngineJob('game').collect(job,root)
+            rows[0]['movement_audit_version']=1
+            rows[-1]['movement_audit']={'version':1,'scope':'all-transport-committed-grid-moves','kind_names':list(MOVEMENT_KINDS),
+                'coverage_start':5,'coverage_end':10,'coverage_end_exclusive':True,'coverage_known':True,
+                'moves':[0,2,0,0,0,0],'weighted_cost':[0,20,0,0,0,0],'total_moves':2,'total_weighted_cost':20,
+                'excluded_non_neighbor_moves':0,'unclaimed_source_separation_available':False}
+            capture();self.assertEqual(EngineJob('game').collect(job,root)['status'],'completed')
+            rows[-1]['movement_audit'].update(coverage_start=None,coverage_known=False);capture()
+            with self.assertRaisesRegex(ValueError,'segment coverage'):EngineJob('game').collect(job,root)
+
+    def test_all_transport_movement_and_unknown_continuation_are_explicit(self):
+        rows,_,_=fixture()
+        self.assertIsNone(read_game(stream(rows),{})['movement_audit'])
+        rows[0]['movement_audit_version']=1
+        audit={'version':1,'scope':'all-transport-committed-grid-moves','kind_names':list(MOVEMENT_KINDS),
+               'coverage_start':5,'coverage_end':10,'coverage_known':True,'coverage_end_exclusive':True,
+               'moves':[1,2,3,4,5,6],'weighted_cost':[10,20,30,40,50,60],
+               'total_moves':21,'total_weighted_cost':210,'excluded_non_neighbor_moves':1,
+               'unclaimed_source_separation_available':False}
+        rows[-1]['movement_audit']=audit
+        self.assertEqual(read_game(stream(rows),{})['movement_audit'],audit)
+        for changes in ({'total_moves':20},{'moves':[1]},{'coverage_start':True},
+                        {'coverage_known':False},{'coverage_end_exclusive':False},{'unclaimed_source_separation_available':True},
+                        {'weighted_cost':[0,20,30,40,50,60]},{'excluded_non_neighbor_moves':-1}):
+            bad=copy.deepcopy(rows);bad[-1]['movement_audit'].update(changes)
+            with self.subTest(changes=changes), self.assertRaises(ValueError):list(trace_rows(stream(bad)))
+        audit.update(coverage_start=None,coverage_known=False)
+        self.assertIsNone(read_game(stream(rows),{})['movement_audit']['coverage_start'])
+        audit.update(coverage_start=5,coverage_end=None)
+        self.assertIsNone(read_game(stream(rows),{})['movement_audit']['coverage_end'])
+        del rows[0]['movement_audit_version']
+        with self.assertRaisesRegex(ValueError,'unadvertised movement'):list(trace_rows(stream(rows)))
+
     def test_journeys_do_not_change_decision_counts_or_impute_partial_optima(self):
         rows,_,_=fixture();game=read_game(stream(rows),{})
         self.assertEqual(game['diagnostics']['events'],0)

@@ -96,6 +96,9 @@ struct Probe::Impl
         std::array<Uint64,unsigned(LiveEvent::Count)> events{};
     };
     LiveMetrics live;
+    MovementMetrics movement;
+    std::optional<Uint32> movementEndTick;
+    std::optional<Uint32> lastTransportEventTick;
     std::map<Owner,Journey> journeys;
     struct ClosedJourney {Owner owner;Journey journey;const char* terminal;Uint32 tick;};
     std::vector<ClosedJourney> closedJourneys;
@@ -413,6 +416,7 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
     impl->write(Json{{"kind","schema"},{"version",1},{"timing_clock","worker-steady-clock-elapsed"},{"cohort","sampled-material-movement-and-pickup-decisions-before-choice"},
         {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
         {"sample_every",config.sampleEvery},{"max_samples",config.maxSamples},{"max_pending",config.maxPending},
+        {"movement_audit_version",1},
         {"live_journey_version",1},{"live_event_names",Json::array({"acquired","released","retargeted","harvest_begin","harvested","harvest_failed",
             "goal_refresh_same","goal_refresh_changed","goal_refresh_failed","fallback_wait","fallback_roam","fallback_release",
             "route_initial","route_refresh","route_repair","route_probe_fallback","pending_path","traffic_wait","geometry_contradiction",
@@ -435,7 +439,16 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
 }
 Probe::~Probe()=default;
 const Probe::Metrics& Probe::metrics() const {return impl->metrics;}
-void Probe::publish(Uint32 tick) {impl->publish(tick);if(!impl->finished){impl->publishBaselines(tick);impl->expireJourneys(tick);}}
+void Probe::publish(Uint32 tick) {
+    impl->publish(tick);
+    if(!impl->finished) {
+        impl->publishBaselines(tick);impl->expireJourneys(tick);
+        // Publications inside a decision can precede later moves at the same
+        // tick. Only a later boundary covers those events exclusively.
+        if(!impl->lastTransportEventTick || tick>*impl->lastTransportEventTick)impl->movementEndTick=tick;
+        else impl->movementEndTick.reset();
+    }
+}
 void Probe::finish()
 {
     if(impl->finished)return;
@@ -450,7 +463,19 @@ void Probe::finish()
         {"material_contested",impl->materialContested},{"sampled_infinite",impl->sampledInfinite},
         {"sampled_pooled",impl->sampledPooled},{"sampled_exhausted_pools",impl->sampledExhaustedPools},
         {"stale_scalar_ineligible",impl->staleScalarIneligible},{"stale_mixed_field_ineligible",impl->staleMixedFieldIneligible},
-        {"stale_invalid_xy",impl->staleInvalidXY},{"capture_bytes",m.captureBytes},{"live",impl->liveSummary()}}.dump()+"\n");
+        {"stale_invalid_xy",impl->staleInvalidXY},{"capture_bytes",m.captureBytes},{"live",impl->liveSummary()},
+        {"movement_audit",{{"version",1},{"scope","all-transport-committed-grid-moves"},
+            {"coverage_start",impl->config.movementStartTick?Json(*impl->config.movementStartTick):Json(nullptr)},
+            {"coverage_end",impl->movementEndTick?Json(*impl->movementEndTick):Json(nullptr)},
+            {"coverage_end_exclusive",true},
+            {"coverage_known",impl->config.movementStartTick && impl->movementEndTick && *impl->config.movementStartTick<=*impl->movementEndTick},
+            {"kind_names",{"medical","claimed_resource","unclaimed_resource","return_to_job","idle","other"}},
+            {"moves",impl->movement.moves},{"weighted_cost",impl->movement.weightedCost},
+            {"total_moves",impl->movement.totalMoves},{"total_weighted_cost",impl->movement.totalCost},
+            {"excluded_non_neighbor_moves",impl->movement.excludedNonNeighbor},
+            {"unclaimed_source_separation_available",false},
+            {"unclaimed_resource_scope","natural and supplier pursuit are combined; source kind unavailable"},
+            {"continuation_scope","segment totals only; prior travel and journey origins unavailable"}}}}.dump()+"\n");
     const auto file=impl->file; impl->file=nullptr;
     if(gzclose(file)!=Z_OK) throw std::runtime_error("resource claim probe close failed; dataset is incomplete");
     impl->metrics.outputBytes=std::filesystem::file_size(impl->path);
@@ -459,6 +484,7 @@ void Probe::finish()
 }
 
 const Probe::LiveMetrics& Probe::liveMetrics() const {return impl->live;}
+const Probe::MovementMetrics& Probe::movementMetrics() const {return impl->movement;}
 void Probe::liveEvent(const Unit& unit,LiveEvent event) const
 {
     if(impl->finished)return;
@@ -530,11 +556,37 @@ void Probe::routeEvent(Uint64 owner,Uint64 task,Uint32 tick,LiveEvent event) con
 }
 void Probe::moved(const Unit& unit,int oldX,int oldY) const
 {
-    if(impl->finished || !unit.activeMaterialClaim || (oldX==unit.posX && oldY==unit.posY))return;
+    if(impl->finished || (oldX==unit.posX && oldY==unit.posY))return;
+    bool transport=!unit.isDead && unit.hasCapability(UnitRuntimeTraits::Transport);
+    if(!transport && !unit.activeMaterialClaim)return;
     impl->expireJourneys(unit.owner->game->stepCounter);
-    const auto& map=*unit.owner->map;const auto view=map.stateView();
+    if(transport) {
+        impl->lastTransportEventTick=unit.owner->game->stepCounter;
+        if(impl->movementEndTick && *impl->movementEndTick<=*impl->lastTransportEventTick)impl->movementEndTick.reset();
+    }
+    auto& map=*unit.owner->map;
+    if(transport && map.warpDistMax(oldX,oldY,unit.posX,unit.posY)!=1) {
+        ++impl->movement.excludedNonNeighbor;transport=false;
+        if(!unit.activeMaterialClaim)return;
+    }
+    // Movement cost needs only authoritative cell rules. Avoid warming growth
+    // or area-effect caches while observing otherwise unclaimed movement.
+    const auto view=map.cellView();
     const RouteProfile profile{unit.movementClass(),unit.owner->me,unit.gid,OccupancyPolicy::Static};
     const auto cost=routeEntryCost(view,map.coordToIndex(unit.posX,unit.posY),profile,unit.dx && unit.dy);
+    if(transport) {
+        auto kind=MovementKind::Other;
+        if(unit.medical!=Unit::MED_FREE)kind=MovementKind::Medical;
+        else if(unit.activity==Unit::ACT_FILLING && unit.displacement==Unit::DIS_GOING_TO_RESOURCE)
+            kind=unit.activeMaterialClaim?MovementKind::ClaimedResource:MovementKind::UnclaimedResource;
+        else if(unit.activity==Unit::ACT_FILLING && unit.displacement==Unit::DIS_GOING_TO_BUILDING)
+            kind=MovementKind::ReturnToJob;
+        else if(unit.activity==Unit::ACT_RANDOM)kind=MovementKind::Idle;
+        const auto index=unsigned(kind);
+        ++impl->movement.moves[index];impl->movement.weightedCost[index]+=cost;
+        ++impl->movement.totalMoves;impl->movement.totalCost+=cost;
+    }
+    if(!unit.activeMaterialClaim)return;
     ++impl->live.moves;impl->live.liveCost+=cost;
     const auto at=impl->journeys.find(unitOwner(unit.gid,unit.scriptIdentity));
     if(at==impl->journeys.end() || at->second.task!=unit.materialClaimTask){++impl->live.untrackedMoves;return;}

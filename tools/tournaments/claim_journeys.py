@@ -6,6 +6,7 @@ EVENTS = ('acquired','released','retargeted','harvest_begin','harvested','harves
           'fallback_release','route_initial','route_refresh','route_repair','route_probe_fallback','pending_path',
           'traffic_wait','geometry_contradiction','reanchor_joined','reanchor_failed','probe_tail_failed','obsolete_probe')
 TERMINALS = {'harvested','harvest_failed','retargeted','released','timeout','end_of_segment'}
+MOVEMENT_KINDS = ('medical','claimed_resource','unclaimed_resource','return_to_job','idle','other')
 
 
 def natural(value, name, maximum=2**64-1):
@@ -14,8 +15,47 @@ def natural(value, name, maximum=2**64-1):
     return value
 
 
+def validate_movement_audit(version, audit):
+    if version is None:
+        if audit is not None:
+            raise ValueError('unadvertised movement audit')
+        return
+    if type(version) is not int or version != 1 or not isinstance(audit, dict) or type(audit.get('version')) is not int or audit['version'] != 1:
+        raise ValueError('unsupported movement audit')
+    if (audit.get('scope') != 'all-transport-committed-grid-moves' or
+            not isinstance(audit.get('kind_names'), list) or tuple(audit['kind_names']) != MOVEMENT_KINDS):
+        raise ValueError('invalid movement audit scope/kinds')
+    start, end = audit.get('coverage_start'), audit.get('coverage_end')
+    if start is not None:
+        natural(start, 'movement coverage start', 2**32-1)
+    if end is not None:
+        natural(end, 'movement coverage end', 2**32-1)
+    if audit.get('coverage_end_exclusive') is not True:
+        raise ValueError('movement coverage requires an exclusive end')
+    known = audit.get('coverage_known')
+    if type(known) is not bool or known != (start is not None and end is not None and start <= end):
+        raise ValueError('invalid movement coverage availability')
+    values = []
+    for name in ('moves', 'weighted_cost'):
+        array = audit.get(name)
+        if not isinstance(array, list) or len(array) != len(MOVEMENT_KINDS):
+            raise ValueError('invalid movement audit counts')
+        values.append([natural(value, 'movement '+name) for value in array])
+    moves, costs = values
+    if any((move == 0) != (cost == 0) or cost < move for move, cost in zip(moves, costs)):
+        raise ValueError('inconsistent committed movement costs')
+    if natural(audit.get('total_moves'), 'movement total') != sum(moves) or natural(audit.get('total_weighted_cost'), 'movement total cost') != sum(costs):
+        raise ValueError('movement audit totals disagree')
+    natural(audit.get('excluded_non_neighbor_moves'), 'movement excluded non-neighbor')
+    if audit.get('unclaimed_source_separation_available') is not False:
+        raise ValueError('unclaimed natural/supplier separation is unavailable')
+
+
 class Validator:
     def __init__(self, schema):
+        self.movement_version = schema.get('movement_audit_version')
+        if self.movement_version is not None and (type(self.movement_version) is not int or self.movement_version != 1):
+            raise ValueError('unsupported movement audit version')
         self.enabled = 'live_journey_version' in schema
         if self.enabled and (type(schema['live_journey_version']) is not int or schema['live_journey_version'] != 1 or tuple(schema.get('live_event_names', ())) != EVENTS):
             raise ValueError('unsupported live journey schema')
@@ -65,6 +105,7 @@ class Validator:
         self.phases[min(row['acquired_tick']//4096,15)] += 1
 
     def finish(self, summary):
+        validate_movement_audit(self.movement_version, summary.get('movement_audit'))
         live = summary.get('live')
         if not self.enabled:
             if live is not None: raise ValueError('unadvertised journey summary')

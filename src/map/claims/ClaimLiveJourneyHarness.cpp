@@ -15,6 +15,13 @@ struct JourneyUnit : Unit {
         wrapPosition();owner->map->setGroundUnit(posX,posY,gid);
     }
 };
+struct JourneyExplorer : Unit {
+    JourneyExplorer(Team* team):Unit(16,16,GIDfrom(1,0),EXPLORER,team,0) {}
+    void committedMove() {
+        owner->map->setAirUnit(posX,posY,NOGUID);dx=1;dy=0;wrapPosition();
+        owner->map->setAirUnit(posX,posY,gid);
+    }
+};
 JourneyUnit* worker(glob2test::HeadlessGame& fixture,Building* consumer,int slot=0) {
     auto* unit=new JourneyUnit(8,8+slot,slot,fixture.game.teams[0]);
     fixture.game.teams[0]->attachUnit(slot,unit);fixture.game.map.setGroundUnit(unit->posX,unit->posY,unit->gid);
@@ -46,6 +53,7 @@ TEST_CASE("actual committed movement and harvest observation preserve simulation
         const auto path=(glob2test::artifactDir()/"live-journey.jsonl.gz").string();
         std::shared_ptr<ResourceClaims::Probe> probe;
         if(observe) {std::filesystem::remove(path);ResourceClaims::Probe::Config config;config.sampleEvery=1;config.maxSamples=16;
+            config.movementStartTick=fixture.game.stepCounter;
             probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);}
         REQUIRE(unit->acquireMaterialClaimAt(map.coordToIndex(12,8)));
         std::vector<Uint32> checksums{fixture.game.checkSum()};
@@ -58,6 +66,8 @@ TEST_CASE("actual committed movement and harvest observation preserve simulation
         else {
             CHECK(checksums==reference);probe->finish();
             const auto& m=probe->liveMetrics();CHECK(m.moves==3);CHECK(m.liveCost==30);
+            CHECK(probe->movementMetrics().totalMoves==3);
+            CHECK(probe->movementMetrics().moves[unsigned(ResourceClaims::Probe::MovementKind::ClaimedResource)]==3);
             CHECK(m.journeyAdmitted==1);CHECK(m.journeyCompleted==1);
             CHECK(m.events[unsigned(ResourceClaims::Probe::LiveEvent::Harvested)]==1);
             const auto trace=rows(path);REQUIRE(trace.size()==3);
@@ -68,6 +78,80 @@ TEST_CASE("actual committed movement and harvest observation preserve simulation
             CHECK(trace.back()["live"]["scope"]=="held-material-claim-pursuit-only");
             CHECK(trace.back()["live"]["unclaimed_movement_available"]==false);
         }
+        unit->attachedBuilding=nullptr;
+    }
+}
+TEST_CASE("unclaimed and idle transport movement is observed without changing the world") {
+    glob2test::HeadlessGlobals globals;
+    std::vector<Uint32> reference;
+    for(bool observe:{false,true}) {
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=1937});
+        auto& map=fixture.game.map;auto* consumer=fixture.addBuilding("inn",20,20);auto* unit=worker(fixture,consumer);
+        const auto path=(glob2test::artifactDir()/"all-transport-movement.jsonl.gz").string();
+        std::shared_ptr<ResourceClaims::Probe> probe;
+        if(observe) {
+            std::filesystem::remove(path);ResourceClaims::Probe::Config config;config.movementStartTick=0;
+            probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);
+        }
+        const auto random=unit->entityRandom;
+        std::vector<Uint32> checksums;
+        const auto move=[&](int x,int y){++fixture.game.stepCounter;unit->committedMove(x,y);checksums.push_back(fixture.game.checkSum());};
+        move(1,0); // Legacy/unclaimed resource pursuit, including supplier travel.
+        unit->medical=Unit::MED_HUNGRY;move(0,1);
+        unit->medical=Unit::MED_FREE;unit->displacement=Unit::DIS_GOING_TO_BUILDING;move(1,1);
+        unit->activity=Unit::ACT_RANDOM;move(-1,0);
+        unit->activity=Unit::ACT_FLAG;move(0,1);
+        move(0,0); // A stationary decision is not a committed move.
+        move(3,0); // Teleports/non-neighbor updates have no inferred path cost.
+        auto* explorer=new JourneyExplorer(fixture.game.teams[0]);fixture.game.teams[0]->attachUnit(1,explorer);
+        REQUIRE_FALSE(explorer->hasCapability(UnitRuntimeTraits::Transport));
+        map.setAirUnit(16,16,explorer->gid);++fixture.game.stepCounter;explorer->committedMove();
+        checksums.push_back(fixture.game.checkSum());
+        CHECK(unit->entityRandom==random);
+        if(!observe)reference=checksums;
+        else {
+            CHECK(checksums==reference);probe->publish(fixture.game.stepCounter);probe->finish();
+            CHECK(probe->liveMetrics().moves==0);
+            const auto& m=probe->movementMetrics();CHECK(m.totalMoves==5);CHECK(m.totalCost==54);
+            CHECK(m.excludedNonNeighbor==1);
+            for(auto kind:{ResourceClaims::Probe::MovementKind::Medical,ResourceClaims::Probe::MovementKind::UnclaimedResource,
+                          ResourceClaims::Probe::MovementKind::ReturnToJob,ResourceClaims::Probe::MovementKind::Idle,
+                          ResourceClaims::Probe::MovementKind::Other})CHECK(m.moves[unsigned(kind)]==1);
+            const auto trace=rows(path);REQUIRE(trace.size()==2);
+            CHECK(trace.front()["movement_audit_version"]==1);
+            const auto audit=trace.back()["movement_audit"];
+            CHECK(audit["coverage_known"]==true);CHECK(audit["coverage_start"]==0);CHECK(audit["coverage_end"]==8);
+            CHECK(audit["total_moves"]==5);CHECK(audit["excluded_non_neighbor_moves"]==1);
+        }
+        unit->attachedBuilding=nullptr;
+    }
+}
+TEST_CASE("movement audit leaves unspecified continuation coverage unknown") {
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=1937});
+    auto* consumer=fixture.addBuilding("inn",20,20);auto* unit=worker(fixture,consumer);
+    const auto path=(glob2test::artifactDir()/"movement-unknown-coverage.jsonl.gz").string();std::filesystem::remove(path);
+    auto probe=std::make_shared<ResourceClaims::Probe>(fixture.game.map.computeExecutor(),path,ResourceClaims::Probe::Config{});
+    fixture.game.map.setMaterialClaimProbe(probe);fixture.game.stepCounter=5;unit->committedMove(1,0);probe->finish();
+    const auto trace=rows(path);CHECK(trace.back()["movement_audit"]["coverage_known"]==false);
+    CHECK(trace.back()["movement_audit"]["coverage_start"].is_null());
+    CHECK(trace.back()["movement_audit"]["coverage_end"].is_null());
+    CHECK(trace.back()["movement_audit"]["total_moves"]==1);unit->attachedBuilding=nullptr;
+}
+TEST_CASE("movement coverage requires a boundary after the last observed move") {
+    glob2test::HeadlessGlobals globals;
+    for(bool advanceBoundary:{false,true}) {
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=1937});
+        auto* consumer=fixture.addBuilding("inn",20,20);auto* unit=worker(fixture,consumer);
+        const auto path=(glob2test::artifactDir()/(advanceBoundary?"movement-next-boundary.jsonl.gz":"movement-same-boundary.jsonl.gz")).string();
+        std::filesystem::remove(path);ResourceClaims::Probe::Config config;config.movementStartTick=5;
+        auto probe=std::make_shared<ResourceClaims::Probe>(fixture.game.map.computeExecutor(),path,config);fixture.game.map.setMaterialClaimProbe(probe);
+        fixture.game.stepCounter=5;probe->publish(5);unit->committedMove(1,0);
+        fixture.game.stepCounter=advanceBoundary?6:5;probe->publish(fixture.game.stepCounter);probe->finish();
+        const auto audit=rows(path).back()["movement_audit"];
+        CHECK(audit["total_moves"]==1);CHECK(audit["coverage_known"]==advanceBoundary);
+        if(advanceBoundary)CHECK(audit["coverage_end"]==6);
+        else CHECK(audit["coverage_end"].is_null());
         unit->attachedBuilding=nullptr;
     }
 }

@@ -4,6 +4,7 @@
 #include <memory>
 #include <array>
 #include <string>
+#include <optional>
 class Game;
 class Unit;
 class ComputeExecutor;
@@ -21,6 +22,7 @@ public:
         Uint64 maxOutputBytes=64ull*1024*1024;
         unsigned maxPending=8;
         std::string deepContext; // Diagnostic JSON: source_revision,bundle_id,cohort_id,game_id.
+        std::optional<Uint32> movementStartTick;
     };
     enum class LiveEvent : unsigned {
         Acquired, Released, Retargeted, HarvestBegin, Harvested, HarvestFailed,
@@ -41,6 +43,11 @@ public:
         Uint64 decisions=0, sampled=0, contested=0, submitted=0, completed=0;
         Uint64 excludedSampleLimit=0, excludedQueueLimit=0, excludedMissingField=0, captureBytes=0, outputBytes=0;
     };
+    enum class MovementKind : unsigned { Medical, ClaimedResource, UnclaimedResource, ReturnToJob, Idle, Other, Count };
+    struct MovementMetrics {
+        std::array<Uint64,unsigned(MovementKind::Count)> moves{},weightedCost{};
+        Uint64 totalMoves=0,totalCost=0,excludedNonNeighbor=0;
+    };
     Probe(ComputeExecutor&, std::string path, Config);
     ~Probe();
     void decision(Game&, const Unit&, const Uint16* field, Uint32 pickupAccess = UINT32_MAX);
@@ -52,6 +59,7 @@ public:
     void moved(const Unit&, int oldX, int oldY) const;
     void routeEvent(Uint64 owner,Uint64 task,Uint32 tick,LiveEvent) const;
     const LiveMetrics& liveMetrics() const;
+    const MovementMetrics& movementMetrics() const;
     void routeWork(const RouteDiagnostics&) const;
 };
 }

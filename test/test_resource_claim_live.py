@@ -38,6 +38,14 @@ def fixture():
 
 
 class LivePlans(unittest.TestCase):
+    def test_fallback_batch_requires_movement_coverage_for_control_too(self):
+        p,bundle,split,cohort=fixture()
+        configs=[{'label':'control','policy':p},{'label':'roam','policy':p|{'fallback':'roam'}}]
+        with self.assertRaisesRegex(ValueError,'movement audit'):
+            plan(cohort,split,bundle,configs)
+        bundle['capabilities']['resource_claims_movement_audit_version']=1
+        result=plan(cohort,split,bundle,configs)
+        self.assertTrue(all(j['labels']['require_movement_audit'] for j in result['jobs']))
     def test_recovery_identity_is_frozen_across_factor_sweep_and_plan(self):
         p, bundle, split, cohort = fixture()
         p = p | {'source_version': 2} | RECOVERY_V1

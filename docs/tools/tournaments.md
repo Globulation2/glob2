@@ -994,6 +994,19 @@ game; sampled units are not independent experimental replicates. Movement totals
 cover held claims only and cannot establish total pursuit travel for disabled or
 shadow behavior.
 
+New captures may additionally advertise `movement_audit_version: 1`. Their summary
+counts committed neighboring grid moves and weighted entry costs for every live
+transport-capable unit, partitioned into medical travel, claimed or unclaimed
+resource pursuit, return to the job, idle movement and other activity. Stationary
+decisions contribute no move; non-neighbor updates are explicitly excluded.
+Unclaimed resource pursuit combines natural-resource and supplier travel; its
+source kind is unavailable. Segment start/end and coverage availability are
+explicit, with an exclusive end taken from the engine's final publication. An
+unspecified start or unpublished end remains null. These totals do not reconstruct
+travel before loading or establish wasted movement. Older captures lack this
+audit and remain unavailable, never zero. Compare these totals alongside delivery,
+labour and shortage metrics before evaluating roam or job-release fallbacks.
+
 Use the separate bounded gameplay analyzer for exact team-timeline metrics:
 
 ```sh

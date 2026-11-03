@@ -101,6 +101,9 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
         if key in identities or not isinstance(row.get('label'), str) or not row['label']:
             raise ValueError('unique policies and nonempty labels required')
         identities.add(key)
+    needs_movement = any(row.get('policy', {}).get('fallback') != 'wait' for row in configs)
+    if needs_movement and caps.get('resource_claims_movement_audit_version') != 1:
+        raise ValueError('fallback comparisons require all-transport movement audit version 1')
     for value in (max_jobs, campaign_bytes, disk_reserve_bytes):
         if type(value) is not int or value <= 0:
             raise ValueError('positive explicit job/storage bounds required')
@@ -158,6 +161,8 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
             if 'team-timeline' not in outputs.setdefault('telemetry',[]):
                 outputs['telemetry'].append('team-timeline')
             labels['require_gameplay_telemetry']=True
+            if needs_movement:
+                labels['require_movement_audit']=True
             outputs['required'] = [name for name in outputs.get('required', []) if not name.startswith('resource-claims-deep/')]
             if 'resource-claims-shadow.jsonl.gz' not in outputs['required']:
                 outputs['required'].append('resource-claims-shadow.jsonl.gz')
