@@ -254,6 +254,13 @@ selection, durable persistence and update-only DOM text dispatch; `pacing.spec.j
 with a headless reference at different rendering caps. Player actions use real mouse/keyboard input;
 assertions read `glob2Diagnostics` without changing game state.
 
+Pixel assertions decode the captured, opaque PNG in the Node test runner using
+the pinned development-only `pngjs` package. They inspect the same presented
+pixels and color/count thresholds without sending the screenshot back into the
+game page for another GPU-backed canvas read. This keeps pixel checks available
+while the application thread is busy. WebGL checks still capture screenshots,
+since its non-preserved drawing buffer can be cleared between presentations.
+
 ```sh
 cd browser
 npm ci --ignore-scripts
