@@ -236,9 +236,18 @@ class Scorer:
     policy runtime. Oracle reachability/cost never filters or ranks candidates.
     """
     def __init__(self,event,*,prefix_entries=256,cache_bytes=16*1024**2):
+        import numpy as np
         if prefix_entries < 0 or cache_bytes < 0:raise ValueError('invalid scorer budget')
         self.event,self.prefix_entries,self.cache_bytes=event,prefix_entries,cache_bytes
         self.cache=OrderedDict();self.used=0;self.prefix_hits=0;self.vector_entries=0
+        # A published destination and unit origin are immutable for this event.
+        # Share their ranking across every pattern; oracle labels never enter it.
+        accesses=event.destinations.astype(np.int64)
+        w,h=event.width,event.height
+        dx=np.maximum(0,np.abs(((accesses%w-event.unit%w+w//2)&(w-1))-w//2)-1)
+        dy=np.maximum(0,np.abs(((accesses//w-event.unit//w+h//2)&(h-1))-h//2)-1)
+        self.geometry=(10*np.maximum(dx,dy)+4*np.minimum(dx,dy)).astype(np.uint32)
+        self.geometry.setflags(write=False)
 
     def segment(self,data):
         import numpy as np
@@ -253,10 +262,7 @@ class Scorer:
         probes=(((origins//w+fields['y'])&(h-1))*w+((origins%w+fields['x'])&(w-1)))
         sources=self.event.sources[probes];hits=np.flatnonzero(sources!=NO_TILE)
         if not len(hits):return Outcome(probes=n),Outcome(probes=n),None
-        accesses=self.event.destinations[probes[hits]].astype(np.int64)
-        dx=np.maximum(0,np.abs(((accesses%w-self.event.unit%w+w//2)&(w-1))-w//2)-1)
-        dy=np.maximum(0,np.abs(((accesses//w-self.event.unit//w+h//2)&(h-1))-h//2)-1)
-        scores=10*np.maximum(dx,dy)+4*np.minimum(dx,dy)
+        scores=self.geometry[probes[hits]]
         best=int(np.argmin(scores));first=int(hits[0]);closest=int(hits[best])
         def outcome(index,count):
             source=int(sources[index]);access=int(self.event.destinations[probes[index]])
@@ -285,10 +291,7 @@ class Scorer:
         outcomes=[(Outcome(probes=int(count)),Outcome(probes=int(count))) for count in counts]
         if not len(hits):return outcomes
         hitgroups=groups[hits];unique,first=np.unique(hitgroups,return_index=True)
-        accesses=self.event.destinations[probes[hits]].astype(np.int64)
-        dx=np.maximum(0,np.abs(((accesses%w-self.event.unit%w+w//2)&(w-1))-w//2)-1)
-        dy=np.maximum(0,np.abs(((accesses//w-self.event.unit//w+h//2)&(h-1))-h//2)-1)
-        scores=10*np.maximum(dx,dy)+4*np.minimum(dx,dy)
+        scores=self.geometry[probes[hits]]
         minimum=np.minimum.reduceat(scores,first)
         besthits=hits[scores==np.repeat(minimum,np.diff(np.append(first,len(hits))))]
         bestgroups=groups[besthits];_,bestfirst=np.unique(bestgroups,return_index=True)
@@ -341,7 +344,7 @@ def score_game(events, arrays, *, max_patterns=250000, max_event_bytes=128*1024*
     if not events or len(events)>8192 or len({e.game_id for e in events})!=1 or len({e.event_id for e in events})!=len(events):
         raise ValueError('bounded unique events from one game required')
     if len({identity(e.provenance) for e in events})!=1:raise ValueError('mixed event provenance')
-    if sum(e.destinations.nbytes+e.sources.nbytes+len(e.candidates)*256 for e in events)>max_event_bytes:
+    if sum(2*e.destinations.nbytes+e.sources.nbytes+len(e.candidates)*256 for e in events)>max_event_bytes:
         raise ValueError('event batch exceeds memory budget; stream smaller game batches')
     scorers=[Scorer(e,cache_bytes=0) for e in events]
     def score(batch):
@@ -418,7 +421,7 @@ def score_logical_game(events,directory,views=None):
     import itertools
     events=list(itertools.islice(events,8193))
     if not events or len(events)>8192 or len({e.game_id for e in events})!=1:raise ValueError('one bounded game required')
-    if sum(e.destinations.nbytes+e.sources.nbytes+len(e.candidates)*256 for e in events)>128*1024**2:
+    if sum(2*e.destinations.nbytes+e.sources.nbytes+len(e.candidates)*256 for e in events)>128*1024**2:
         raise ValueError('logical game event batch exceeds128MiB')
     if len({e.event_id for e in events})!=len(events):raise ValueError('duplicate event identity')
     if len({identity(e.provenance) for e in events})!=1:raise ValueError('mixed event provenance')

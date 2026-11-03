@@ -749,9 +749,11 @@ writes exact packed arrays into bounded shards (64 MiB by default) with a
 SQLite deduplication/alias index, a 2 GiB total allowance and a free-space reserve.
 Incomplete or modified catalogs cannot be scored. Relative directional aliases
 select precomputed views using each frozen event's nearest octant. The scorer
-resolves published destinations once, computes both policies with vectorized
+resolves published destinations and their geometric ranking once, computes both policies with vectorized
 tails and a bounded shared-prefix cache, and emits per-game aggregates rather
-than per-event full-grid outcomes. Its source/cohort-pinned splits use whole
+than per-event full-grid outcomes. The immutable geometric plane uses four bytes
+per map tile and counts toward the event-batch memory allowance. Oracle path
+labels never participate in this ranking. Its source/cohort-pinned splits use whole
 game IDs. Pure fixture tests cover all 240 pilot profiles against an independent
 scalar reference; native frozen-event parity and capture are separate gates,
 not established by those Python tests. Full-grid CPU/space budgets must be

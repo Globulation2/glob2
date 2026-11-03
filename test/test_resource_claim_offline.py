@@ -2,6 +2,7 @@
 """Independent offline kernel contracts; native deep-freeze parity remains gated."""
 import dataclasses
 import json
+import random
 from pathlib import Path
 import sys
 import tempfile
@@ -41,6 +42,22 @@ def reference(e,data,first):
 
 
 class OfflineClaims(unittest.TestCase):
+    def test_large_rectangular_wrap_and_unlabeled_probes_match_scalar_ranking(self):
+        width,height=512,256
+        tiles=[0,1,width-1,width*(height-1),width*height-1,17*width+255]
+        destinations=[NO_TILE]*(width*height)
+        for tile in range(0,len(destinations),3):destinations[tile]=tiles[tile%len(tiles)]
+        e=FrozenEvent(width,height,width*height-2,tiles[3],destinations,
+            [Candidate(tile,distance=10000,access_distance=10000) for tile in tiles],
+            game_id='wrap',event_id='one',provenance=event().provenance,optimum=10000)
+        rng=random.Random(491)
+        arrays=[b''.join(PROBE.pack(rng.randrange(-1024,1025),rng.randrange(-1024,1025),rng.randrange(3))
+                         for _ in range(n)) for n in (0,1,17,257,1024)]
+        scorer=Scorer(e,prefix_entries=16,cache_bytes=8192)
+        expected=[(reference(e,data,True),reference(e,data,False)) for data in arrays]
+        self.assertEqual(scorer.evaluate_many(arrays),expected)
+        self.assertEqual([scorer.evaluate(data) for data in arrays],expected)
+
     def test_all_240_pilot_profiles_match_independent_scalar_reference(self):
         profiles=(('unit',1,'every','forward',0),('resource',2,'every','reverse',1),
             ('midpoint',4,'random_block','shuffle',2),('interleaved',1,'every','forward',4),
