@@ -6856,5 +6856,53 @@ GL మాత్రమే
 ఆదేశం అందింది: %0
 [hive order not confirmed]
 ఆదేశం ధృవీకరించబడలేదు. మళ్లీ ప్రయత్నించడానికి కమాండర్‌ను తెరవండి; మీ సందేశం భద్రపరచబడింది.
+[engine performance per game minute]
+
+[engine performance per real minute]
+
+[engine performance game engine performance]
+
+[engine performance task wall-time costs]
+
+[engine performance inspect slow ticks]
+
+[engine performance no advancing ticks recorded yet]
+
+[engine performance whole-engine performance]
+
+[engine performance open performance charts]
+
+[engine performance engine performance]
+
+[engine performance follow latest interval]
+
+[engine performance compare task costs]
+
+[engine performance all metrics and slow ticks]
+
+[engine performance phase orders]
+
+[engine performance phase units]
+
+[engine performance phase buildings]
+
+[engine performance phase map]
+
+[engine performance phase statistics]
+
+[engine performance phase ai]
+
+[engine performance phase world capture]
+
+[engine performance phase checksums]
+
+[engine performance wall time %0]
+
+[engine performance waits %0 joins %1 locks %2]
+
+[engine performance phase %0 wall %1]
+
+[engine performance tick %0 wall %1]
+
 [hive standing order update failed]
 స్థాయీ ఆదేశాన్ని నవీకరించడం విఫలమైంది. మీ ఆదేశం ఈ పరికరంలో తాత్కాలికంగా నిలిపివేయబడింది; సంబంధిత నియంత్రణను మళ్లీ ఉపయోగించండి.

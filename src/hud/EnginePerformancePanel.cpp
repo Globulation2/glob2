@@ -8,6 +8,7 @@
 #include <tuple>
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
+#include <FormatableString.h>
 #include <RenderDevice.h>
 
 namespace fe = Glob2UI;
@@ -325,7 +326,7 @@ fe::Element EnginePerformancePanel::explorer(const fe::Presentation &p,
 							   view = View(i);
 							   changed();
 						   });
-	auto clock = fe::choice("engine-performance/clock", {"Per game minute", "Per real minute"},
+	auto clock = fe::choice("engine-performance/clock", {fe::tr("[engine performance per game minute]"), fe::tr("[engine performance per real minute]")},
 							realMinutes ? 1 : 0,
 							[this, changed](int i)
 							{
@@ -345,7 +346,7 @@ fe::Element EnginePerformancePanel::explorer(const fe::Presentation &p,
 	options.hover = inspectPoint;
 	options.tap = [inspectPoint](fe::Point point, fe::Host &) { inspectPoint(point); };
 	std::vector<fe::Element> parts;
-	parts.push_back(fe::label("Game engine performance"));
+	parts.push_back(fe::label(fe::tr("[engine performance game engine performance]")));
 	parts.push_back(std::move(category));
 	parts.push_back(std::move(metric));
 	if (scope == unsigned(pt::Id::CaptureLatency))
@@ -370,7 +371,7 @@ fe::Element EnginePerformancePanel::explorer(const fe::Presentation &p,
 			paint(c, r);
 		},
 		options));
-	parts.push_back(fe::button("engine-performance/costs", "Task wall-time costs",
+	parts.push_back(fe::button("engine-performance/costs", fe::tr("[engine performance task wall-time costs]"),
 							   [this, changed]
 							   {
 								   costsOpen = !costsOpen;
@@ -379,7 +380,7 @@ fe::Element EnginePerformancePanel::explorer(const fe::Presentation &p,
 							   {.selected = costsOpen}));
 	if (costsOpen)
 		parts.push_back(taskCosts(p));
-	parts.push_back(fe::button("engine-performance/slow", "Inspect slow ticks",
+	parts.push_back(fe::button("engine-performance/slow", fe::tr("[engine performance inspect slow ticks]"),
 							   [this, changed]
 							   {
 								   slowOpen = !slowOpen;
@@ -399,8 +400,8 @@ fe::Element EnginePerformancePanel::explorer(const fe::Presentation &p,
 			selectedSlow = std::min(selectedSlow, unsigned(slow.size() - 1));
 			std::vector<std::string> ticks;
 			for (const auto &tick : slow)
-				ticks.push_back("Tick " + std::to_string(tick.tick) + ": " +
-								number(tick.wallNs / 1e6) + " ms wall");
+				ticks.push_back(GAGCore::FormattableString(fe::tr("[engine performance tick %0 wall %1]"))
+					.arg(tick.tick).arg(number(tick.wallNs / 1e6)));
 			parts.push_back(fe::choice("engine-performance/slow-tick", ticks, int(selectedSlow),
 									   [this, changed](int i)
 									   {
@@ -408,19 +409,18 @@ fe::Element EnginePerformancePanel::explorer(const fe::Presentation &p,
 										   changed();
 									   }));
 			const auto &tick = slow[selectedSlow];
-			parts.push_back(fe::paragraph("Wall time: " + number(tick.wallNs / 1e6) + " ms"));
-			parts.push_back(fe::paragraph("Required waits: " + number(tick.waitNs / 1e6) +
-										  " ms; owner joins: " + number(tick.ownerJoinNs / 1e6) +
-										  " ms; locks: " + number(tick.lockNs / 1e6) + " ms"));
-			static constexpr const char *phases[]{"Orders",        "Units",      "Buildings",
-												  "Map",           "Statistics", "AI",
-												  "World capture", "Checksums"};
+			parts.push_back(fe::paragraph(GAGCore::FormattableString(fe::tr("[engine performance wall time %0]")).arg(number(tick.wallNs / 1e6))));
+			parts.push_back(fe::paragraph(GAGCore::FormattableString(fe::tr("[engine performance waits %0 joins %1 locks %2]"))
+				.arg(number(tick.waitNs / 1e6)).arg(number(tick.ownerJoinNs / 1e6)).arg(number(tick.lockNs / 1e6))));
+			static constexpr const char *phases[]{"[engine performance phase orders]",        "[engine performance phase units]",      "[engine performance phase buildings]",
+												  "[engine performance phase map]",           "[engine performance phase statistics]", "[engine performance phase ai]",
+												  "[engine performance phase world capture]", "[engine performance phase checksums]"};
 			for (unsigned i = 0; i < tick.phaseWall.size(); ++i)
-				parts.push_back(fe::paragraph(std::string(phases[i]) + ": " +
-											  number(tick.phaseWall[i] / 1e6) + " ms wall"));
+				parts.push_back(fe::paragraph(GAGCore::FormattableString(fe::tr("[engine performance phase %0 wall %1]"))
+				.arg(fe::tr(phases[i])).arg(number(tick.phaseWall[i] / 1e6))));
 		}
 		else
-			parts.push_back(fe::paragraph("No advancing ticks recorded yet."));
+			parts.push_back(fe::paragraph(fe::tr("[engine performance no advancing ticks recorded yet]")));
 	}
 	parts.push_back(fe::hint(
 		"Local execution session. Game-time axis; approximate histogram percentiles. Inclusive "
@@ -509,7 +509,7 @@ fe::Element EnginePerformancePanel::compact(const fe::Presentation &p, std::func
 			charts[index].unit;
 	}
 	return fe::column(
-		{fe::label("Whole-engine performance"),
+		{fe::label(fe::tr("[engine performance whole-engine performance]")),
 		 fe::canvas(
 			 "engine-performance/summary", {p.pt(160), p.pt(108)},
 			 [this, p](fe::Canvas &c, fe::Rect r, const fe::Frame &)
@@ -532,7 +532,7 @@ fe::Element EnginePerformancePanel::compact(const fe::Presentation &p, std::func
 				 }
 			 },
 			 options),
-		 fe::button("engine-performance/open", "Open performance charts", std::move(open)),
+		 fe::button("engine-performance/open", fe::tr("[engine performance open performance charts]"), std::move(open)),
 		 fe::hint("This session · all teams\nWall-clock measurements")},
 		{p.pt(8)});
 }
@@ -540,7 +540,7 @@ fe::Element EnginePerformancePanel::compact(const fe::Presentation &p, std::func
 fe::Element EnginePerformancePanel::build(const fe::Presentation &p, std::function<void()> changed)
 {
 	initCharts();
-	std::vector<fe::Element> parts{fe::heading("Engine performance")};
+	std::vector<fe::Element> parts{fe::heading(fe::tr("[engine performance engine performance]"))};
 	const auto *h = pt::collector().history.get();
 	if (h && h->size)
 		parts.push_back(fe::hint(
@@ -559,7 +559,7 @@ fe::Element EnginePerformancePanel::build(const fe::Presentation &p, std::functi
 										  cursorMinute = -1;
 										  changed();
 									  });
-			auto follow = fe::button("engine-performance/follow-latest", "Follow latest interval",
+			auto follow = fe::button("engine-performance/follow-latest", fe::tr("[engine performance follow latest interval]"),
 									 [this, changed]
 									 {
 										 cursorMinute = -1;
@@ -615,7 +615,7 @@ fe::Element EnginePerformancePanel::build(const fe::Presentation &p, std::functi
 	}
 	parts.push_back(fe::wrap(std::move(cards),
 							 {.gap = p.pt(10), .minChildWidth = p.textPt(380), .maxColumns = 2}));
-	parts.push_back(fe::button("engine-performance/cost-summary", "Compare task costs",
+	parts.push_back(fe::button("engine-performance/cost-summary", fe::tr("[engine performance compare task costs]"),
 							   [this, changed]
 							   {
 								   costsOpen = !costsOpen;
@@ -624,7 +624,7 @@ fe::Element EnginePerformancePanel::build(const fe::Presentation &p, std::functi
 							   {.selected = costsOpen}));
 	if (costsOpen)
 		parts.push_back(taskCosts(p));
-	parts.push_back(fe::button("engine-performance/all-metrics", "All metrics and slow ticks",
+	parts.push_back(fe::button("engine-performance/all-metrics", fe::tr("[engine performance all metrics and slow ticks]"),
 							   [this, changed]
 							   {
 								   explorerOpen = !explorerOpen;
