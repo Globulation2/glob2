@@ -56,6 +56,92 @@ void assign(Unit& unit, Building& building, Map& map, int x, int y)
 
 TEST_SUITE("ActiveClaimRoutes")
 {
+    TEST_CASE("adjacent pickup exchange preserves sticky controls and never steals another claim")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(unsigned version:{2u,3u})for(bool opportunistic:{false,true}) {
+            if(version==2 && opportunistic)continue;
+            CAPTURE(version);CAPTURE(opportunistic);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+            auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+            ResourceClaims::ClaimPolicyConfig config;config.sourceVersion=version;config.opportunisticAdjacentPickup=opportunistic;
+            map.setMaterialClaimPolicyConfig(config);
+            auto* consumer=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
+            auto* holder=fixture.addUnit(WORKER,9,9);Assignment cleanup{*unit},cleanupHolder{*holder};
+            assign(*unit,*consumer,map,14,8);assign(*holder,*consumer,map,9,8);
+            map.setMaterialAmountSlot(map.coordToIndex(9,8),WHEAT,1);
+            const auto original=*unit->activeMaterialClaim;const auto task=unit->materialClaimTask;
+            const auto random=unit->entityRandom;const auto routes=saveRoutes(map,false);
+            CHECK_FALSE(unit->prepareActiveMaterialPickup(9,8));
+            CHECK(unit->activeMaterialClaim==original);CHECK(unit->materialClaimTask==task);
+            CHECK(saveRoutes(map,false)==routes);
+            holder->releaseActiveMaterialClaim();
+            CHECK(unit->prepareActiveMaterialPickup(9,8)==opportunistic);
+            CHECK(unit->entityRandom==random);
+            if(opportunistic) {
+                CHECK(unit->activeMaterialClaim->access==map.coordToIndex(9,8));
+                CHECK(unit->materialClaimTask==task+1);
+                CHECK(map.materialClaimState().at(original.source)==0);
+                CHECK(map.materialClaimState().at(map.coordToIndex(9,8))==1);
+                CHECK(map.materialAmountAtSlot(original.source,WHEAT)==3);
+                CHECK(map.materialAmountAtSlot(map.coordToIndex(9,8),WHEAT)==1);
+            } else {
+                CHECK(unit->activeMaterialClaim==original);CHECK(unit->materialClaimTask==task);
+            }
+        }
+    }
+    TEST_CASE("adjacent pickup exchange prefers the held reachable claim and rejects distant pickup calls")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig config;config.sourceVersion=3;config.opportunisticAdjacentPickup=true;map.setMaterialClaimPolicyConfig(config);
+        auto* consumer=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);Assignment cleanup{*unit};
+        assign(*unit,*consumer,map,9,8);const auto task=unit->materialClaimTask;
+        map.setResourceByIndex(7,8,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(7,8),WHEAT,1);
+        CHECK_FALSE(unit->prepareActiveMaterialPickup(7,8));CHECK(unit->materialClaimTask==task);
+        CHECK(unit->prepareActiveMaterialPickup(9,8));
+        assign(*unit,*consumer,map,14,8);const auto far=*unit->activeMaterialClaim;
+        map.setResourceByIndex(15,8,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(15,8),WHEAT,1);
+        CHECK_FALSE(unit->prepareActiveMaterialPickup(15,8));CHECK(unit->activeMaterialClaim==far);
+    }
+    TEST_CASE("adjacent pickup exchange uses toroidal distance at map edges")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig config;config.sourceVersion=3;config.opportunisticAdjacentPickup=true;map.setMaterialClaimPolicyConfig(config);
+        auto* consumer=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,0,0);Assignment cleanup{*unit};
+        assign(*unit,*consumer,map,14,8);const auto old=unit->activeMaterialClaim->source;
+        map.setResourceByIndex(map.getW()-1,map.getH()-1,WHEAT,1);
+        map.setMaterialAmountSlot(map.coordToIndex(-1,-1),WHEAT,1);
+        REQUIRE(unit->prepareActiveMaterialPickup(-1,-1));
+        CHECK(unit->targetX==map.getW()-1);CHECK(unit->targetY==map.getH()-1);
+        CHECK(map.materialClaimState().at(old)==0);
+        CHECK(map.materialClaimState().at(map.coordToIndex(-1,-1))==1);
+    }
+    TEST_CASE("adjacent farm pickup can keep its remote reserved stock while changing access")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::GameOptions options{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true};
+        options.experiments.set(ExperimentId::FarmAreas,true);glob2test::HeadlessGame fixture(options);
+        auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig config;config.sourceVersion=3;config.opportunisticAdjacentPickup=true;map.setMaterialClaimPolicyConfig(config);
+        auto* consumer=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,7,12);Assignment cleanup{*unit};
+        for(int x=8;x<=14;++x) {
+            map.setResourceByIndex(x,12,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(x,12),WHEAT,x==14?2:1);map.addFarmArea(x,12,0);
+        }
+        unit->attachedBuilding=consumer;unit->activity=Unit::ACT_FILLING;unit->displacement=Unit::DIS_GOING_TO_RESOURCE;
+        unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
+        REQUIRE(unit->acquireMaterialClaimAt(map.coordToIndex(14,12)));
+        const auto source=unit->activeMaterialClaim->source;const auto task=unit->materialClaimTask;
+        REQUIRE(source==map.coordToIndex(14,12));REQUIRE(unit->activeMaterialClaim->reserve==1);
+        REQUIRE(unit->prepareActiveMaterialPickup(8,12));
+        CHECK(unit->activeMaterialClaim->source==source);CHECK(unit->activeMaterialClaim->access==map.coordToIndex(8,12));
+        CHECK(unit->materialClaimTask==task+1);CHECK(map.materialClaimState().at(source)==1);
+        CHECK(map.materialClaimState().at(map.coordToIndex(8,12))==0);
+        CHECK(map.materialAmountAtSlot(source,WHEAT)==2);
+    }
     TEST_CASE("pending and published routes preserve publication and bytes across binary and text saves")
     {
         glob2test::HeadlessGlobals globals;

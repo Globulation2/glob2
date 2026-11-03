@@ -42,6 +42,9 @@ def factor_configs(control, patterns=()):
             add(f'{factor}-{str(value).lower()}', {factor: value})
     for asset in patterns:
         add('pattern-' + asset['name'], {'pattern': asset['name'], 'pattern_digest': asset['digest']})
+    if 'opportunistic_adjacent_pickup' in control:
+        for enabled in (False,True):
+            add('adjacent-pickup-'+str(enabled).lower(),{'opportunistic_adjacent_pickup':enabled})
     return rows
 
 
@@ -101,9 +104,9 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
         if key in identities or not isinstance(row.get('label'), str) or not row['label']:
             raise ValueError('unique policies and nonempty labels required')
         identities.add(key)
-    needs_movement = any(row.get('policy', {}).get('fallback') != 'wait' for row in configs)
+    needs_movement = any(row['policy']['fallback'] != 'wait' or row['policy'].get('opportunistic_adjacent_pickup',False) for row in configs)
     if needs_movement and caps.get('resource_claims_movement_audit_version') != 1:
-        raise ValueError('fallback comparisons require all-transport movement audit version 1')
+        raise ValueError('fallback and adjacent-pickup comparisons require all-transport movement audit version 1')
     for value in (max_jobs, campaign_bytes, disk_reserve_bytes):
         if type(value) is not int or value <= 0:
             raise ValueError('positive explicit job/storage bounds required')

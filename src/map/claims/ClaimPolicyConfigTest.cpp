@@ -60,3 +60,28 @@ TEST_CASE("version two recovery identity is explicit strict and preserves legacy
     CHECK(legacy.canonicalJson().find("recovery_")==std::string::npos);
     CHECK(legacy.digest()!=config.digest());
 }
+
+TEST_CASE("adjacent pickup exchange is an explicit version three policy" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    const ClaimPolicyConfig baseline;
+    CHECK(baseline.sourceVersion==2);
+    CHECK(baseline.digest()=="ecd0f62776a44cc849227ded464b60e3032d4de9549e92164f176406fe251c4b");
+    auto json=nlohmann::json::parse(baseline.canonicalJson());
+    CHECK_FALSE(json.contains("opportunistic_adjacent_pickup"));
+    json["source_version"]=3;
+    CHECK_THROWS(ClaimPolicyConfig::parse(json.dump()));
+    for(bool enabled:{false,true}) {
+        json["opportunistic_adjacent_pickup"]=enabled;
+        const auto config=ClaimPolicyConfig::parse(json.dump());
+        CHECK(config.usesRecovery());CHECK(config.opportunisticAdjacentPickup==enabled);
+        CHECK(ClaimPolicyConfig::parse(config.canonicalJson())==config);
+        CHECK(config.digest()!=baseline.digest());
+    }
+    for(const auto& invalid:{nlohmann::json(1),nlohmann::json("true"),nlohmann::json(nullptr)}) {
+        json["opportunistic_adjacent_pickup"]=invalid;CHECK_THROWS(ClaimPolicyConfig::parse(json.dump()));
+    }
+    for(unsigned version:{1u,2u,4u}) {
+        json["source_version"]=version;json["opportunistic_adjacent_pickup"]=false;
+        CHECK_THROWS(ClaimPolicyConfig::parse(json.dump()));
+    }
+}

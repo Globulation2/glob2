@@ -956,6 +956,16 @@ not queue their Cartesian product or launch games. First eliminate clearly poor
 routing/refresh candidates using separately labeled short movement fixtures and
 frozen event paths; then supply a small explicit whole-game config batch.
 
+Policy source version 3 adds the explicit boolean `opportunistic_adjacent_pickup`;
+it retains the version 2 recovery contract. When enabled, a worker can exchange a
+distant reservation for available material within pickup range. An already
+reachable held reservation takes priority, and a failed exchange preserves the
+old claim. Other workers' reservations remain protected. Versions 1 and 2 retain
+sticky pickup behavior and their original canonical identities. Version 3 requires
+bundle policy capability 3; batches testing this option require the transport
+movement audit on every arm. This is an experimental variant, not a selected
+default or a demonstrated throughput improvement.
+
 Interaction confirmation accepts three to five binary scalar factors and records
 the half-fraction generator and aliasing. It is a diagnostic design, not proof
 that aliased interactions are absent. Whole-game plans preserve every selected

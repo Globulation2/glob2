@@ -38,6 +38,16 @@ def fixture():
 
 
 class LivePlans(unittest.TestCase):
+    def test_adjacent_pickup_comparison_requires_transport_audit_on_every_arm(self):
+        p,bundle,split,cohort=fixture();bundle['capabilities']['resource_claims_policy_config_version']=3
+        current=p|{'source_version':3,'opportunistic_adjacent_pickup':True}|RECOVERY_V1
+        configs=[{'label':'sticky','policy':p},{'label':'adjacent','policy':current}]
+        with self.assertRaisesRegex(ValueError,'movement audit'):plan(cohort,split,bundle,configs)
+        bundle['capabilities']['resource_claims_movement_audit_version']=1
+        result=plan(cohort,split,bundle,configs)
+        self.assertTrue(all(row['labels']['require_movement_audit'] for row in result['jobs']))
+        self.assertEqual({row['policy']['opportunistic_adjacent_pickup'] for row in factor_configs(current)},{False,True})
+
     def test_fallback_batch_requires_movement_coverage_for_control_too(self):
         p,bundle,split,cohort=fixture()
         configs=[{'label':'control','policy':p},{'label':'roam','policy':p|{'fallback':'roam'}}]

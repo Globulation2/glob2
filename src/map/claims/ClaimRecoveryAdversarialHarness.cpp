@@ -123,7 +123,7 @@ struct Islands {
     glob2test::HeadlessGame world;
     Unit* worker=nullptr;Unit* holder=nullptr;Building* consumer=nullptr;
     Uint32 nearest=0,reachable=0;
-    Islands(unsigned participants,bool closest,ResourceClaims::ClaimPolicyConfig::Fallback fallback=ResourceClaims::ClaimPolicyConfig::Fallback::Wait)
+    Islands(unsigned participants,bool closest,ResourceClaims::ClaimPolicyConfig::Fallback fallback=ResourceClaims::ClaimPolicyConfig::Fallback::Wait,bool adjacentPickup=false)
         :world({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9341}) {
         auto& game=world.game;auto& map=game.map;
         map.configureCompute(participants);game.gameHeader.setResourceGrowthDisabled(true);game.gameHeader.getWinningConditions().clear();
@@ -131,6 +131,7 @@ struct Islands {
         map.setMaterialDestinationsEnabled(true);
         ResourceClaims::ClaimPolicyConfig config;
         REQUIRE(nlohmann::json::parse(config.canonicalJson())["source_version"]==2);
+        if(adjacentPickup) {config.sourceVersion=3;config.opportunisticAdjacentPickup=true;}
         config.fallback=fallback;config.fallbackAfterDecisions=1;
         if(closest)config.selection=ResourceClaims::ClaimPolicyConfig::Selection::ClosestGeometric;
         map.setMaterialClaimPolicyConfig(config);
@@ -153,6 +154,45 @@ struct Islands {
         game.invalidateObservation();game.observeCompletedWorld();
     }
 };
+}
+
+TEST_CASE("adjacent pickup exchange survives full-save continuation with an outstanding old route" * doctest::test_suite("ActiveClaimRoutes"))
+{
+    glob2test::HeadlessGlobals globals;
+    for(unsigned participants:{1u,3u}) {
+        CAPTURE(participants);
+        Islands fixture(participants,false,ResourceClaims::ClaimPolicyConfig::Fallback::Wait,true);
+        auto& game=fixture.world.game;auto& map=game.map;
+        REQUIRE(fixture.worker->acquireMaterialClaimAt(fixture.reachable));
+        REQUIRE(map.incResourceByIndex(9,8,WHEAT,0));map.setMaterialAmountSlot(map.coordToIndex(9,8),WHEAT,1);
+        game.invalidateObservation();game.observeCompletedWorld();int dx=0,dy=0;
+        REQUIRE(map.nextClaimRouteStep(*fixture.worker,&dx,&dy)==ResourceClaims::StepResult::Pending);
+        map.flushClaimRoutes(); // A checkpoint boundary has sealed this tick's submissions.
+        const auto gid=fixture.worker->gid;
+        auto resumed=copyRecoveryGame(fixture.world,participants,participants==1?"adjacent-pickup-v3-pending":"");
+        if(participants==1) {
+            std::ofstream metadata(glob2test::artifactDir()/"adjacent-pickup-v3-pending.json");
+            metadata<<nlohmann::json{{"start_tick",game.stepCounter},{"gid",gid},{"old_source",fixture.reachable},
+                {"adjacent_access",map.coordToIndex(9,8)},{"simulation_checksum",game.checkSum()}}.dump();REQUIRE(metadata.good());
+        }
+        REQUIRE(resumed->game.map.materialClaimPolicyConfig().opportunisticAdjacentPickup);
+        const auto complete=[&](Game& branch) {
+            auto* unit=branch.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];REQUIRE(unit);
+            auto& world=branch.map;const auto random=unit->entityRandom;
+            unit->handleDisplacement();REQUIRE(unit->displacement==Unit::DIS_HARVESTING);
+            REQUIRE(unit->activeMaterialClaim);CHECK(unit->activeMaterialClaim->access==world.coordToIndex(9,8));
+            CHECK(world.materialClaimState().at(fixture.reachable)==0);
+            CHECK(world.materialClaimState().at(world.coordToIndex(9,8))==1);
+            world.flushClaimRoutes();++branch.stepCounter;world.publishClaimRoutes();
+            CHECK(world.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Arrived);
+            REQUIRE(unit->takeActiveMaterialClaim());
+            CHECK(world.materialAmountAtSlot(world.coordToIndex(9,8),WHEAT)==0);
+            CHECK(world.materialAmountAtSlot(fixture.reachable,WHEAT)==1);
+            CHECK(world.materialClaimState().at(world.coordToIndex(9,8))==0);
+            CHECK(unit->entityRandom==random);return branch.checkSum();
+        };
+        CHECK(complete(game)==complete(resumed->game));
+    }
 }
 
 TEST_CASE("diagnostic checkpoint bootstrap preserves the warm nonclaim world" * doctest::test_suite("ClaimLateFork"))

@@ -235,9 +235,17 @@ bool Unit::prepareActiveMaterialPickup(int x,int y)
     if(!map.activeClaimsEnabled())return true;
     if(activeMaterialClaim && !activeMaterialClaimValid())releaseActiveMaterialClaim();
     const auto access=Uint32(map.coordToIndex(x,y));
-    if(!activeMaterialClaim && !acquireMaterialClaimAt(access))return false;
-    // Sticky claim: passing another source cannot steal its reserved material.
-    return activeMaterialClaim->access==access;
+    if(activeMaterialClaim) {
+        if(activeMaterialClaim->access==access)return true;
+        if(map.materialClaimPolicy()!=ResourceClaims::ActiveClaimPolicy::Experimental ||
+            !map.materialClaimPolicyConfig().opportunisticAdjacentPickup)return false;
+        const auto held=activeMaterialClaim->access;
+        // Finish an already reachable reservation first. Otherwise exchange the
+        // distant claim only if adjacent stock can be reserved transactionally.
+        if(map.warpDistMax(posX,posY,int(held%map.getW()),int(held/map.getW()))<=1 ||
+            map.warpDistMax(posX,posY,int(access%map.getW()),int(access/map.getW()))>1)return false;
+    }
+    return acquireMaterialClaimAt(access);
 }
 
 bool Unit::takeActiveMaterialClaim()

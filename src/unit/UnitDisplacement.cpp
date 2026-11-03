@@ -115,7 +115,7 @@ void Unit::handleDisplacement(void)
 				// Inside a farm area (farm-areas experiment) the grain comes off
 				// the ripest tile of the connected field rather than off the tile
 				// under the animation, and an exhausted field hands out nothing.
-				// Everywhere else this is the old unconditional grant.
+				// Outside pooled fields, harvest the touched deposit directly.
 				if (hasCapability(UnitRuntimeTraits::ExtendedCargo) && !canCarryMaterial(destinationPurpose)) {
 					// This pickup never consumed its source. Do not let the old
 					// harvest animation become an idle clearing completion.

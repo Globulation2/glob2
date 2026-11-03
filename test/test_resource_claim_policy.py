@@ -30,6 +30,22 @@ def job():
 
 
 class LivePolicy(unittest.TestCase):
+    def test_adjacent_pickup_policy_requires_explicit_version_and_boolean(self):
+        legacy=policy()|{'source_version':2}|RECOVERY_V1
+        caps={'resource_claims_policy_config_version':3,'resource_claims_active_policies':['experimental'],
+              'resource_claims_policy_patterns':[{'name':legacy['pattern'],'digest':legacy['pattern_digest']}]}
+        self.assertNotIn('opportunistic_adjacent_pickup',json.loads(canonical_policy(legacy)))
+        self.assertEqual(validate_policy(legacy,caps),legacy)
+        for enabled in (False,True):
+            current=legacy|{'source_version':3,'opportunistic_adjacent_pickup':enabled}
+            self.assertEqual(validate_policy(current,caps),current)
+            self.assertNotEqual(policy_digest(current),policy_digest(legacy))
+            with self.assertRaisesRegex(ValueError,'version 3'):
+                validate_policy(current,caps|{'resource_claims_policy_config_version':2})
+        for bad in (legacy|{'opportunistic_adjacent_pickup':False},legacy|{'source_version':3},
+                    legacy|{'source_version':3,'opportunistic_adjacent_pickup':1}):
+            with self.subTest(bad=bad),self.assertRaises(ValueError):validate_policy(bad)
+
     def test_recovery_version_is_explicit_and_old_policy_identity_is_stable(self):
         old = policy()
         self.assertEqual(policy_digest(old), 'f5b1257cb0263acb94c41fb96def0016065fc49f5db3c257edd9d4fc368351f4')

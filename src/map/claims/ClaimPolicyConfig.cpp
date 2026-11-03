@@ -55,7 +55,8 @@ unsigned number(const Json& value)
 void ClaimPolicyConfig::validate() const
 {
     patternByName(pattern);
-    if((sourceVersion!=1 && sourceVersion!=2) || unsigned(selection)>=SelectionNames.size() || unsigned(fallback)>=FallbackNames.size()
+    if(sourceVersion<1 || sourceVersion>LatestSourceVersion || (sourceVersion<3 && opportunisticAdjacentPickup)
+        || unsigned(selection)>=SelectionNames.size() || unsigned(fallback)>=FallbackNames.size()
         || unsigned(routeTarget)>=RouteNames.size() || unsigned(pendingStep)>=PendingNames.size()
         || !interval(destinationRefreshJ) || !interval(routeRefreshJ)
         || !fallbackAfterDecisions || fallbackAfterDecisions>65535
@@ -80,6 +81,7 @@ std::string ClaimPolicyConfig::canonicalJson() const
         result["recovery_backoff_ticks"]=ClaimRecovery::BackoffTicks;
         result["recovery_selection"]="first_available_cursor";
     }
+    if(sourceVersion>=3)result["opportunistic_adjacent_pickup"]=opportunisticAdjacentPickup;
     return result.dump();
 }
 std::string ClaimPolicyConfig::digest() const {return Online::Sha256::hex(canonicalJson());}
@@ -87,7 +89,7 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
 {
     if(text.size()>8192)throw std::invalid_argument("resource claim policy JSON exceeds allowance");
     const auto input=Json::parse(text);if(!input.is_object())throw std::invalid_argument("resource claim policy must be an object");
-    if(!input.contains("source_version") || (number(input.at("source_version"))!=1 && number(input.at("source_version"))!=2))
+    if(!input.contains("source_version") || number(input.at("source_version"))<1 || number(input.at("source_version"))>LatestSourceVersion)
         throw std::invalid_argument("unsupported resource claim policy source version");
     ClaimPolicyConfig result;result.sourceVersion=number(input.at("source_version"));
     const Json recovery{{"recovery_source_version",ClaimRecovery::SourceVersion},{"recovery_cache_entries",ClaimRecovery::CacheEntries},
@@ -97,12 +99,14 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
     if(result.usesRecovery()) {
         for(const auto* key:{"pattern","pattern_digest","selection","fallback","fallback_after_decisions","destination_refresh_j",
             "route_refresh_j","route_target","pending_step","maximum_expansions","use_primary_gradient"})
-            if(!input.contains(key))throw std::invalid_argument("incomplete version 2 resource claim policy");
+            if(!input.contains(key))throw std::invalid_argument("incomplete recovery resource claim policy");
         for(const auto& [key,value]:recovery.items())
             if(!input.contains(key) || (value.is_string() ? !input[key].is_string() : !(input[key].is_number_integer() || input[key].is_number_unsigned()))
                 || input[key]!=value || input[key].is_boolean())
                 throw std::invalid_argument("resource claim recovery contract differs");
     }
+    if(result.sourceVersion>=3 && !input.contains("opportunistic_adjacent_pickup"))
+        throw std::invalid_argument("version 3 requires an explicit adjacent pickup policy");
     for(const auto& [key,value]:input.items()) {
         if(key=="source_version" || key=="pattern_digest" || (result.usesRecovery() && recovery.contains(key)))continue;
         if(key=="pattern") {if(!value.is_string())throw std::invalid_argument("invalid claim pattern");result.pattern=value.get<std::string>();}
@@ -115,6 +119,10 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
         else if(key=="route_refresh_j")result.routeRefreshJ=number(value);
         else if(key=="maximum_expansions")result.maximumExpansions=number(value);
         else if(key=="use_primary_gradient") {if(!value.is_boolean())throw std::invalid_argument("invalid primary gradient flag");result.usePrimaryGradient=value.get<bool>();}
+        else if(key=="opportunistic_adjacent_pickup" && result.sourceVersion>=3) {
+            if(!value.is_boolean())throw std::invalid_argument("invalid adjacent pickup flag");
+            result.opportunisticAdjacentPickup=value.get<bool>();
+        }
         else throw std::invalid_argument("unknown resource claim policy parameter: "+key);
     }
     result.validate();

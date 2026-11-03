@@ -15,8 +15,9 @@ struct ClaimPolicyConfig
     enum class RouteTarget : std::uint8_t { ClaimedAccess, ProbeThenGradient };
     enum class PendingStep : std::uint8_t { Wait, DirectHeading };
     static constexpr unsigned SourceVersion=2;
+    static constexpr unsigned LatestSourceVersion=3;
     unsigned sourceVersion=SourceVersion;
-    bool usesRecovery() const { return sourceVersion==2; }
+    bool usesRecovery() const { return sourceVersion>=2; }
     std::string pattern="spiral:k16:unit:s1:every:forward:d0:seed1";
     Selection selection=Selection::FirstAvailable;
     Fallback fallback=Fallback::Wait;
@@ -25,6 +26,7 @@ struct ClaimPolicyConfig
     unsigned fallbackAfterDecisions=16, destinationRefreshJ=0, routeRefreshJ=0;
     unsigned maximumExpansions=4096;
     bool usePrimaryGradient=false;
+    bool opportunisticAdjacentPickup=false; // Version 3 only; old policies remain sticky.
     static ClaimPolicyConfig parse(std::string_view);
     void validate() const;
     std::string canonicalJson() const;
