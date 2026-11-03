@@ -557,7 +557,7 @@ TEST_CASE("source four raw probes recover stale and fully claimed XY without rep
         const auto old=Uint32(map.coordToIndex(12,8)),fresh=Uint32(map.coordToIndex(10,8));
         map.setResourceByIndex(12,8,WHEAT,1);map.setMaterialAmountSlot(old,WHEAT,1);
         const auto* field=glob2test::awaitGradient(fixture.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,seeker->movementClass());});
-        const auto lease=map.materialGradientDestinations(field);REQUIRE(lease);CHECK(lease->x[map.coordToIndex(8,8)]==12);
+        const auto lease=map.materialGradientDestinations(field);REQUIRE(lease);CHECK(lease->x(map.coordToIndex(8,8))==12);
         map.setResourceByIndex(10,8,WHEAT,1);map.setMaterialAmountSlot(fresh,WHEAT,1);
         if(scenario==0)map.setMaterialAmountSlot(old,WHEAT,0);
         else if(scenario==1)REQUIRE(holder->acquireMaterialClaimAt(old));
