@@ -1,0 +1,36 @@
+[
+  {
+    "scope": "runtime-e4",
+    "binary_sha256": "25307010caa12aadd31634db45db645a3e96f4dcf3d98d1ef42236d4daff96dc",
+    "producer": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"
+      },
+      "revision": "e4a60b70bc70725cbf486f5f60344d0ea6deafb2",
+      "sourceStatus": [],
+      "sourceTreeSha256": "805bf5e4f4fd8b2503b9eafa7f09b7f13e5730a142dd6be0550683391431171b"
+    }
+  },
+  {
+    "scope": "mobility-118",
+    "binary_sha256": "9c3198d65024eea26c1dff9730c0561810255c33ab2f90b1203dbc16b78bd12d",
+    "producer": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"
+      },
+      "revision": "118ea6a955238e934cdaa25b1db2fd5e0ea70891",
+      "sourceStatus": [],
+      "sourceTreeSha256": "7d6c07f46cdf360f7c08d50cd394edcdbb6a0ff3aeb98336be8c6a914f5ffc23"
+    }
+  }
+]

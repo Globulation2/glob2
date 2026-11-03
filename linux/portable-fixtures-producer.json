@@ -1,0 +1,16 @@
+{
+  "binary_sha256": "a7c6471b5ee04a54ff6f0123d9431dd7d909c1401af4111a1e38c36482345e0a",
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "53c070fce6dcccce9935ef3c1e9c764de912fd2d",
+    "sourceStatus": [],
+    "sourceTreeSha256": "49552d221893463ae6ba3eab771d28bf8729f93d93304113d2de1572f41add8c"
+  }
+}

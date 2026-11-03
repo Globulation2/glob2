@@ -1,0 +1,182 @@
+{
+  "raw_producer": {
+    "dirty": false,
+    "revision": "e4a60b70bc70725cbf486f5f60344d0ea6deafb2",
+    "sourceStatus": [],
+    "sourceTreeSha256": "805bf5e4f4fd8b2503b9eafa7f09b7f13e5730a142dd6be0550683391431171b"
+  },
+  "raw_sha256": "75e56a399e368a738af4174341b3eeb17de3ac3cf904f4d3a38724525b44ee10",
+  "rows": 564,
+  "hashes_and_statuses_preserved": true,
+  "mapping": [
+    {
+      "id": 7,
+      "observed_revision": 7,
+      "final_revision": 8,
+      "rows": 8
+    },
+    {
+      "id": 12,
+      "observed_revision": 14,
+      "final_revision": 15,
+      "rows": 8
+    },
+    {
+      "id": 14,
+      "observed_revision": 5,
+      "final_revision": 6,
+      "rows": 8
+    },
+    {
+      "id": 15,
+      "observed_revision": 2,
+      "final_revision": 3,
+      "rows": 8
+    },
+    {
+      "id": 16,
+      "observed_revision": 2,
+      "final_revision": 3,
+      "rows": 8
+    },
+    {
+      "id": 17,
+      "observed_revision": 11,
+      "final_revision": 12,
+      "rows": 8
+    },
+    {
+      "id": 18,
+      "observed_revision": 7,
+      "final_revision": 8,
+      "rows": 8
+    },
+    {
+      "id": 20,
+      "observed_revision": 3,
+      "final_revision": 4,
+      "rows": 8
+    },
+    {
+      "id": 21,
+      "observed_revision": 3,
+      "final_revision": 4,
+      "rows": 8
+    },
+    {
+      "id": 22,
+      "observed_revision": 3,
+      "final_revision": 4,
+      "rows": 8
+    },
+    {
+      "id": 23,
+      "observed_revision": 4,
+      "final_revision": 5,
+      "rows": 8
+    },
+    {
+      "id": 24,
+      "observed_revision": 5,
+      "final_revision": 6,
+      "rows": 8
+    },
+    {
+      "id": 26,
+      "observed_revision": 5,
+      "final_revision": 6,
+      "rows": 8
+    },
+    {
+      "id": 27,
+      "observed_revision": 5,
+      "final_revision": 6,
+      "rows": 8
+    },
+    {
+      "id": 28,
+      "observed_revision": 6,
+      "final_revision": 7,
+      "rows": 8
+    },
+    {
+      "id": 29,
+      "observed_revision": 8,
+      "final_revision": 9,
+      "rows": 8
+    },
+    {
+      "id": 30,
+      "observed_revision": 7,
+      "final_revision": 8,
+      "rows": 8
+    },
+    {
+      "id": 31,
+      "observed_revision": 8,
+      "final_revision": 9,
+      "rows": 8
+    },
+    {
+      "id": 34,
+      "observed_revision": 12,
+      "final_revision": 13,
+      "rows": 8
+    },
+    {
+      "id": 43,
+      "observed_revision": 2,
+      "final_revision": 3,
+      "rows": 8
+    },
+    {
+      "id": 45,
+      "observed_revision": 4,
+      "final_revision": 5,
+      "rows": 8
+    },
+    {
+      "id": 52,
+      "observed_revision": 4,
+      "final_revision": 5,
+      "rows": 8
+    },
+    {
+      "id": 53,
+      "observed_revision": 5,
+      "final_revision": 6,
+      "rows": 8
+    },
+    {
+      "id": 55,
+      "observed_revision": 2,
+      "final_revision": 3,
+      "rows": 8
+    },
+    {
+      "id": 59,
+      "observed_revision": 3,
+      "final_revision": 4,
+      "rows": 12
+    },
+    {
+      "id": 60,
+      "observed_revision": 3,
+      "final_revision": 4,
+      "rows": 8
+    },
+    {
+      "id": 61,
+      "observed_revision": 3,
+      "final_revision": 4,
+      "rows": 8
+    },
+    {
+      "id": 68,
+      "observed_revision": 3,
+      "final_revision": 4,
+      "rows": 8
+    }
+  ],
+  "scope": "Derived expected fixture keys only. These rows do not claim macOS execution of final source; generator algorithms were unchanged after E4."
+}

@@ -1,0 +1,24 @@
+{
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/runner/work/glob2/glob2/build/darwin/client/release/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-I/opt/homebrew/opt/openssl@3/include -std=gnu++20 -Wall -fPIC -O3",
+      "LINKFLAGS": "-L/opt/homebrew/opt/openssl@3/lib -Wall -O3 -Wl,-rpath,/Users/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib"
+    },
+    "revision": "e4a60b70bc70725cbf486f5f60344d0ea6deafb2",
+    "sourceStatus": [],
+    "sourceTreeSha256": "805bf5e4f4fd8b2503b9eafa7f09b7f13e5730a142dd6be0550683391431171b"
+  },
+  "command": [
+    "/Users/runner/work/glob2/glob2/build/darwin/client/release/test/glob2-engine-tests",
+    "--test-suite=RuntimeResources",
+    "--test-case=frozen seeded resource compositions*",
+    "--reporters=junit",
+    "--out=/Users/runner/work/glob2/glob2/artifacts/browser-determinism/resources/native/tests.xml"
+  ],
+  "trace_sha256": "3518076aa285b75cd400533d36890c5ab736b004480a6f5e141131d59b94bdbe",
+  "fixture_sha256": "3518076aa285b75cd400533d36890c5ab736b004480a6f5e141131d59b94bdbe"
+}

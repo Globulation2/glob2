@@ -1,0 +1,27 @@
+{
+  "final-core": {
+    "passed": 75,
+    "skipped": 19,
+    "failed": 0
+  },
+  "final-mobility": {
+    "passed": 98,
+    "skipped": 0,
+    "failed": 0
+  },
+  "final-unit": {
+    "passed": 1236,
+    "skipped": 92,
+    "failed": 0
+  },
+  "final-portable-fixtures": {
+    "passed": 4,
+    "skipped": 0,
+    "failed": 0
+  },
+  "fertility-binding": {
+    "passed": 3,
+    "skipped": 0,
+    "failed": 0
+  }
+}

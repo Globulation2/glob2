@@ -1,0 +1,7 @@
+{
+  "equal": true,
+  "bytes": 461844,
+  "sha256": "e624a0bdf5dee59dc11d4d19c8ee068f5d6a6b97b5e7e6e0de9d6584c0653a24",
+  "normalization": "Existing MapHeader format159 versus fixture-normalized125 contribution only",
+  "ticks": 256
+}

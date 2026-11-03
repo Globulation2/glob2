@@ -1,0 +1,40 @@
+{
+  "source": {
+    "dirty": false,
+    "revision": "e4a60b70bc70725cbf486f5f60344d0ea6deafb2",
+    "sourceStatus": [],
+    "sourceTreeSha256": "805bf5e4f4fd8b2503b9eafa7f09b7f13e5730a142dd6be0550683391431171b"
+  },
+  "platform": "macos-arm64",
+  "host": "macOS-26.6.2-arm64-arm-64bit",
+  "host_compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "source_binary_association": "unverified by collector; inspect the producing build job",
+  "binary_sha256": "d29557eb5d1b7b894fceb8daf8d6eecd42134f21c7ad81f8fef493d09d0d260b",
+  "expected_tables": {
+    "test/map-generator-golden.txt": "150aafc27de7dc5c659749412793f97b20f4c6a3b693db151fbf6fe20d303e59",
+    "test/fixtures/map-generators/pre-resource-epoch-golden.txt": "9005a7fed9df999c04a5f2f232f9585da4b92eeff8bb055b2886186a65db9f61",
+    "test/map-generator-resource-epoch.json": "60131173bfef77b06bbee9ee4cbdf8b7559d6a383b629ec31d71919b6144c374"
+  },
+  "commands": [
+    [
+      "/Users/runner/work/glob2/glob2/build/darwin/client/release/src/MapGeneratorGoldenTest",
+      "/var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/glob2-generator-inventory-_cmzwxey",
+      "--inventory"
+    ],
+    [
+      "/Users/runner/work/glob2/glob2/build/darwin/client/release/src/MapGeneratorGoldenTest",
+      "/var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/glob2-generator-evidence-pozr7kh4",
+      "--print"
+    ],
+    [
+      "/Users/runner/work/glob2/glob2/build/darwin/client/release/src/MapGeneratorGoldenTest",
+      "/var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/glob2-generator-evidence-sz0jyof9",
+      "--print"
+    ]
+  ],
+  "inventory_sha256": "8ed47dc5624e5cd3073791ed170b03e9cbefc0ab0bf3f286b19d5ae6213817cd",
+  "row_count": 564,
+  "acceptance": "unapproved; same-host fresh-process repeatability only",
+  "github_run_id": "41719551996",
+  "github_job": "native"
+}

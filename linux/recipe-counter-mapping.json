@@ -1,0 +1,198 @@
+[
+  {
+    "id": 61,
+    "slug": "marchland",
+    "old": 3,
+    "new": 4,
+    "path": "src/map/generator/generators/MarchlandGenerator.cpp"
+  },
+  {
+    "id": 68,
+    "slug": "bastion-keys",
+    "old": 3,
+    "new": 4,
+    "path": "src/map/generator/generators/BastionKeysGenerator.cpp"
+  },
+  {
+    "id": 28,
+    "slug": "old-growth",
+    "old": 6,
+    "new": 7,
+    "path": "src/map/generator/generators/OldGrowthGenerator.cpp"
+  },
+  {
+    "id": 15,
+    "slug": "symmetric-arena",
+    "old": 2,
+    "new": 3,
+    "path": "src/map/generator/generators/SymmetricArenaGenerator.cpp"
+  },
+  {
+    "id": 18,
+    "slug": "tidal-flats",
+    "old": 7,
+    "new": 8,
+    "path": "src/map/generator/generators/TidalFlatsGenerator.cpp"
+  },
+  {
+    "id": 43,
+    "slug": "drumlin-field",
+    "old": 2,
+    "new": 3,
+    "path": "src/map/generator/generators/DrumlinFieldGenerator.cpp"
+  },
+  {
+    "id": 7,
+    "slug": "shattered-coast",
+    "old": 7,
+    "new": 8,
+    "path": "src/map/generator/generators/ShatteredCoastGenerator.cpp"
+  },
+  {
+    "id": 14,
+    "slug": "stone-highlands",
+    "old": 5,
+    "new": 6,
+    "path": "src/map/generator/generators/StoneHighlandsGenerator.cpp"
+  },
+  {
+    "id": 52,
+    "slug": "rice-terraces",
+    "old": 4,
+    "new": 5,
+    "path": "src/map/generator/generators/RiceTerracesGenerator.cpp"
+  },
+  {
+    "id": 45,
+    "slug": "savannah",
+    "old": 4,
+    "new": 5,
+    "path": "src/map/generator/generators/SavannahGenerator.cpp"
+  },
+  {
+    "id": 17,
+    "slug": "city-states",
+    "old": 11,
+    "new": 12,
+    "path": "src/map/generator/generators/CityStatesGenerator.cpp"
+  },
+  {
+    "id": 34,
+    "slug": "emoji",
+    "old": 12,
+    "new": 13,
+    "path": "src/map/generator/generators/EmojiGenerator.cpp"
+  },
+  {
+    "id": 53,
+    "slug": "honeycomb-isle",
+    "old": 5,
+    "new": 6,
+    "path": "src/map/generator/generators/HoneycombIsleGenerator.cpp"
+  },
+  {
+    "id": 12,
+    "slug": "fjord-continent",
+    "old": 14,
+    "new": 15,
+    "path": "src/map/generator/generators/FjordContinentGenerator.cpp"
+  },
+  {
+    "id": 23,
+    "slug": "amphitheatre",
+    "old": 4,
+    "new": 5,
+    "path": "src/map/generator/generators/AmphitheatreGenerator.cpp"
+  },
+  {
+    "id": 31,
+    "slug": "old-town",
+    "old": 8,
+    "new": 9,
+    "path": "src/map/generator/generators/OldTownGenerator.cpp"
+  },
+  {
+    "id": 22,
+    "slug": "carousel",
+    "old": 3,
+    "new": 4,
+    "path": "src/map/generator/generators/CarouselGenerator.cpp"
+  },
+  {
+    "id": 30,
+    "slug": "polder",
+    "old": 7,
+    "new": 8,
+    "path": "src/map/generator/generators/PolderGenerator.cpp"
+  },
+  {
+    "id": 24,
+    "slug": "switchbacks",
+    "old": 5,
+    "new": 6,
+    "path": "src/map/generator/generators/SwitchbacksGenerator.cpp"
+  },
+  {
+    "id": 29,
+    "slug": "canals",
+    "old": 8,
+    "new": 9,
+    "path": "src/map/generator/generators/CanalsGenerator.cpp"
+  },
+  {
+    "id": 60,
+    "slug": "even-ground",
+    "old": 3,
+    "new": 4,
+    "path": "src/map/generator/generators/EvenGroundGenerator.cpp"
+  },
+  {
+    "id": 59,
+    "slug": "gauntlet",
+    "old": 3,
+    "new": 4,
+    "path": "src/map/generator/generators/GauntletGenerator.cpp"
+  },
+  {
+    "id": 20,
+    "slug": "spider-web",
+    "old": 3,
+    "new": 4,
+    "path": "src/map/generator/generators/SpiderWebGenerator.cpp"
+  },
+  {
+    "id": 55,
+    "slug": "bajada",
+    "old": 2,
+    "new": 3,
+    "path": "src/map/generator/generators/BajadaGenerator.cpp"
+  },
+  {
+    "id": 21,
+    "slug": "coral",
+    "old": 3,
+    "new": 4,
+    "path": "src/map/generator/generators/CoralGenerator.cpp"
+  },
+  {
+    "id": 16,
+    "slug": "ring-world",
+    "old": 2,
+    "new": 3,
+    "path": "src/map/generator/generators/RingWorldGenerator.cpp"
+  },
+  {
+    "id": 26,
+    "slug": "fingerprint",
+    "old": 5,
+    "new": 6,
+    "path": "src/map/generator/generators/FingerprintGenerator.cpp"
+  },
+  {
+    "id": 27,
+    "slug": "rain-shadow",
+    "old": 5,
+    "new": 6,
+    "path": "src/map/generator/generators/RainShadowGenerator.cpp"
+  }
+]

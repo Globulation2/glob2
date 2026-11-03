@@ -1,0 +1,30 @@
+[
+  {
+    "fixture": "profile1",
+    "workers": "workers1",
+    "equal": true,
+    "bytes": 461844,
+    "sha256": "d4aaa92bc9e7f8501ab938f6b5b7fceb9c8be003b19235d0272ebf4f3fcc44ff"
+  },
+  {
+    "fixture": "profile1",
+    "workers": "workers4",
+    "equal": true,
+    "bytes": 461844,
+    "sha256": "d4aaa92bc9e7f8501ab938f6b5b7fceb9c8be003b19235d0272ebf4f3fcc44ff"
+  },
+  {
+    "fixture": "realistic-profile1",
+    "workers": "workers1",
+    "equal": true,
+    "bytes": 461844,
+    "sha256": "e178cd60b5a047dad94e9964b60ec5f081129192309052cd4713d122fa625fdf"
+  },
+  {
+    "fixture": "realistic-profile1",
+    "workers": "workers4",
+    "equal": true,
+    "bytes": 461844,
+    "sha256": "e178cd60b5a047dad94e9964b60ec5f081129192309052cd4713d122fa625fdf"
+  }
+]

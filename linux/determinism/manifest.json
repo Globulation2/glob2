@@ -1,0 +1,33 @@
+{
+  "fixture": "content/games/cross-replay.game.gz",
+  "seed": 42,
+  "ticks": 1500,
+  "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "trace_sha256": "7312d7047956ba9ae0230f439638bed069ab5b41b10ce40a6a7a4094269e94cc",
+  "command": [
+    "/home/bradley/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+    "game",
+    "repeat",
+    "/home/bradley/glob2/content/games/cross-replay.game.gz",
+    "--ticks",
+    "1500",
+    "--runs",
+    "1"
+  ],
+  "verify_match": {
+    "record": "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "record_sha256": "a4aba938955ba77c0a4de2f7183bcca53ce86e561d77ed6357e9a441f7c10440",
+    "trace_sha256": "0c66f74d0a51d4996db0d8e2cce4445af03922a4c786dc6e66c6916957a33b1e",
+    "verdict": "verified",
+    "command": [
+      "/home/bradley/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "match",
+      "verify",
+      "/home/bradley/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map-file",
+      "/home/bradley/glob2/content/maps/FourSquares1.map.gz",
+      "--output-dir",
+      "/home/bradley/glob2/artifacts/terrain-vote/mean/native-determinism/verify-match"
+    ]
+  }
+}
