@@ -11,7 +11,7 @@ Re-record when the accepted replay floor changes, using an isolated profile:
 ```sh
 GLOB2_USER_DATA_DIR="$PWD/artifacts/browser-fixture-profile" \
 GLOB2_TEST_SEED=42 \
-GLOB2_REPLAY_PATH="$PWD/browser/tests/fixtures/cross-replay.replay" \
+GLOB2_REPLAY_PATH="$PWD/platforms/web/tests/fixtures/cross-replay.replay" \
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
 ./build/darwin/client/release/src/glob2 game repeat content/games/cross-replay.game.gz --ticks 1500 --runs 1
 ```
