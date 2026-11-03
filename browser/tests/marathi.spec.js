@@ -211,12 +211,17 @@ for (const device of [
       // Instruction paragraphs are intentionally absent from interactive-only
       // diagnostics. Verify real glyph ink below the heading/actions; exact
       // Marathi instruction/help content is checked in the saved image review.
-      const card = await rootBox(page, 'intro/help');
-      const help = await controlBox(page, 'intro/help');
-      const top = Math.ceil(help.y + help.height + 4);
-      const body = {x: Math.ceil(card.x + 4), y: top,
-        width: Math.floor(card.width - 8), height: Math.floor(card.y + card.height - top - 4)};
-      expect(body.height).toBeGreaterThan(20);
+      let body;
+      // A consumed click precedes publication of the expanded card's bounds.
+      // Wait for that layout before cropping its instruction/help paragraphs.
+      await expect.poll(async () => {
+        const card = await rootBox(page, 'intro/help');
+        const help = await controlBox(page, 'intro/help');
+        const top = Math.ceil(help.y + help.height + 4);
+        body = {x: Math.ceil(card.x + 4), y: top,
+          width: Math.floor(card.width - 8), height: Math.floor(card.y + card.height - top - 4)};
+        return body.height;
+      }).toBeGreaterThan(20);
       expect(body.width).toBeGreaterThan(20);
       expect(await hasLightText(page, body, 150)).toBe(true);
       records.phoneHelpBody = {clip: body, minimumChannel: 150, renderedGlyphInk: true,
