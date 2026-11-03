@@ -4,13 +4,105 @@
 #include "GradientFixture.h"
 #include "ActiveRouteRuntime.h"
 #include "ClaimPolicyConfig.h"
+#include "gradient/GradientRuntime.h"
+#include "engine/sim/snapshot/SnapshotChecksum.h"
+#include "online/Sha256.h"
+#include "GlobalContainer.h"
+#include <FileManager.h>
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <nlohmann/json.hpp>
 #include <memory>
 #include <fstream>
+#include <sstream>
+#include <algorithm>
 
 namespace {
+constexpr std::size_t MaximumForkBytes=64u*1024u*1024u;
+// Diagnostic intervention only. Ordinary loads and production policy setters
+// retain their existing contracts. A claims-off checkpoint supplies identical
+// warm gradients, AI/hiring work, stocks, clocks and animation state to every
+// policy branch; only claim ownership/configuration is introduced here.
+Uint32 nonClaimWorldChecksum(Game& game)
+{
+    auto world=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game));
+    auto entities=std::make_shared<SimulationSnapshot::Entities>(*world.entities);
+    for(auto& unit:entities->units) {unit.activeClaimsEnabled=false;unit.experimentalMaterialClaims=false;}
+    world.entities=std::move(entities);world.activeClaimRuntimeChecksum=0;
+    return SimulationChecksum::snapshotChecksum(world,true);
+}
+nlohmann::json forkClassicCheckpoint(Game& game,ResourceClaims::ClaimPolicyConfig config)
+{
+    auto& map=game.map;config.validate();
+    REQUIRE(game.stepCounter>0);REQUIRE(map.materialDestinationsEnabled());
+    REQUIRE(map.materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Disabled);
+    REQUIRE_FALSE(map.materialClaimTracking);REQUIRE_FALSE(map.materialClaimRoutes);
+    REQUIRE(map.materialClaimLedger().size()==0);
+    std::vector<Unit*> units;
+    for(int team=0;team<game.teamsCount();++team)for(auto* unit:game.teams[team]->liveUnits) {
+        REQUIRE_FALSE(unit->activeMaterialClaim);REQUIRE(unit->materialClaimTask==0);
+        REQUIRE(unit->materialClaimPolicyState==ResourceClaims::MaterialClaimPolicyState{});
+        units.push_back(unit);
+    }
+    std::sort(units.begin(),units.end(),[](const Unit* a,const Unit* b) {
+        // Preserve work already inside a harvest animation before reserving
+        // stock for travelers. Both groups use stable generation/GID ownership.
+        const bool ah=a->displacement==Unit::DIS_HARVESTING,bh=b->displacement==Unit::DIS_HARVESTING;
+        return std::tuple{!ah,ResourceClaims::unitOwner(a->gid,a->scriptIdentity)}<
+               std::tuple{!bh,ResourceClaims::unitOwner(b->gid,b->scriptIdentity)};
+    });
+    const auto before=nonClaimWorldChecksum(game),hiring=game.hiringChecksum();
+    const auto adaptive=map.gradientRuntime->adaptive.checksum();
+    const auto pending=[&] {
+        std::vector<std::tuple<Uint16**,unsigned,bool>> jobs;
+        map.gradientRuntime->pipeline.visitLogical([&](auto slot,unsigned due,bool superseded){jobs.emplace_back(slot,due,superseded);});
+        return jobs;
+    };
+    const auto pendingBefore=pending();const auto queued=map.gradientRuntime->fieldRequests.size();
+    std::ostringstream rngBefore;rngBefore<<game.syncRandom;
+    // Allocate/validate before changing owner state. No pipeline is drained,
+    // canceled, rescheduled or forced to publish by this intervention.
+    const auto digest=Online::Sha256::digest(config.canonicalJson());
+    auto frozen=std::make_unique<const ResourceClaims::ClaimPolicyConfig>(std::move(config));
+    map.materialClaimConfiguration=std::move(frozen);map.materialClaimConfigurationDigest=digest;
+    map.activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Experimental;
+    map.checkActiveClaimRules();map.claimChanges.markAll();
+    unsigned harvesting=0,traveling=0,rejected=0;
+    for(auto* unit:units) {
+        if(unit->activity!=Unit::ACT_FILLING || !unit->attachedBuilding || unit->medical!=Unit::MED_FREE || unit->isDead)continue;
+        std::optional<Uint32> access;
+        if(unit->displacement==Unit::DIS_HARVESTING)
+            access=Uint32(map.coordToIndex(unit->posX+unit->dx,unit->posY+unit->dy));
+        else if(unit->displacement==Unit::DIS_GOING_TO_RESOURCE && unit->validTarget() &&
+                unit->targetX>=0 && unit->targetX<map.getW() && unit->targetY>=0 && unit->targetY<map.getH())
+            access=Uint32(map.coordToIndex(unit->targetX,unit->targetY));
+        if(!access)continue;
+        const UnitState state=*unit;const auto random=unit->entityRandom;
+        const bool acquired=unit->acquireMaterialClaimAt(*access);
+        // Harvest animations may no longer have a live pursuit target. Their
+        // reserved access is separate; retain all preexisting animation fields.
+        unit->targetX=state.targetX;unit->targetY=state.targetY;unit->setValidTarget(state.validTarget());
+        REQUIRE(static_cast<const UnitState&>(*unit)==state);REQUIRE(unit->entityRandom==random);
+        if(acquired) {
+            REQUIRE(unit->activeMaterialClaimValid());
+            if(unit->displacement==Unit::DIS_HARVESTING)++harvesting;else ++traveling;
+        } else ++rejected;
+    }
+    game.invalidateObservation();
+    REQUIRE(game.hiringChecksum()==hiring);REQUIRE(map.gradientRuntime->adaptive.checksum()==adaptive);
+    REQUIRE(pending()==pendingBefore);REQUIRE(map.gradientRuntime->fieldRequests.size()==queued);
+    std::ostringstream rngAfter;rngAfter<<game.syncRandom;REQUIRE(rngAfter.str()==rngBefore.str());
+    REQUIRE(nonClaimWorldChecksum(game)==before);
+    return {{"version",1},{"intervention","claims-off-checkpoint-bootstrap-v1"},
+        {"tick",game.stepCounter},{"policy_digest",map.materialClaimPolicyConfig().digest()},
+        {"policy",nlohmann::json::parse(map.materialClaimPolicyConfig().canonicalJson())},
+        {"bootstrap_order","harvesting first, then stable generation/GID; travelers second"},
+        {"harvesting_claims",harvesting},{"traveling_claims",traveling},{"rejected_existing_accesses",rejected},
+        {"unclaimed_behavior","existing access only; retry through normal movement/pickup; no pattern search during bootstrap"},
+        {"nonclaim_world_checksum",before},{"hiring_checksum",hiring},{"pending_gradient_jobs",pendingBefore.size()},
+        {"queued_gradient_jobs",queued},{"pending_work_reset",false},{"ordinary_continuation",false}};
+}
+
 std::unique_ptr<glob2test::HeadlessGame> copyRecoveryGame(glob2test::HeadlessGame& source,unsigned participants,const std::string& exportName={})
 {
     auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(bytes);
@@ -61,6 +153,83 @@ struct Islands {
         game.invalidateObservation();game.observeCompletedWorld();
     }
 };
+}
+
+TEST_CASE("diagnostic checkpoint bootstrap preserves the warm nonclaim world" * doctest::test_suite("ClaimLateFork"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame source({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=3197});
+    auto& game=source.game;auto& map=game.map;map.setMaterialDestinationsEnabled(true);
+    game.gameHeader.setResourceGrowthDisabled(true);game.gameHeader.getWinningConditions().clear();
+    auto* consumer=source.addBuilding("inn",20,20);REQUIRE(consumer);
+    std::vector<Unit*> workers{source.addUnit(WORKER,13,8),source.addUnit(WORKER,8,8),source.addUnit(WORKER,9,8)};
+    REQUIRE(map.incResourceByIndex(12,8,WHEAT,0));map.setMaterialAmountSlot(map.coordToIndex(12,8),WHEAT,1);
+    consumer->maxUnitWorking=3;consumer->setMaterial(WHEAT,0);consumer->updateCallLists();
+    for(auto* unit:workers) {REQUIRE(unit);unit->hungriness=0;unit->medical=Unit::MED_FREE;unit->activity=Unit::ACT_RANDOM;}
+    glob2test::publishCurrentHiringSuggestions(game);
+    for(unsigned i=0;i<workers.size();++i)REQUIRE(consumer->subscribeToBringMaterialsStep());
+    glob2test::discardPrematureHiringSuggestions(game);
+    REQUIRE(glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,workers[0]->movementClass());}));
+    for(auto* unit:workers) {
+        REQUIRE(unit->attachedBuilding==consumer);REQUIRE(unit->activity==Unit::ACT_FILLING);
+        unit->destinationPurpose=WHEAT;unit->targetX=12;unit->targetY=8;unit->setValidTarget(true);
+        unit->displacement=Unit::DIS_GOING_TO_RESOURCE;
+    }
+    workers[0]->displacement=Unit::DIS_HARVESTING;workers[0]->movement=Unit::MOV_HARVESTING;
+    workers[0]->dx=-1;workers[0]->dy=0;
+    game.invalidateObservation();game.observeCompletedWorld();
+    const auto sourceChecksum=game.checkSum();
+    auto serial=copyRecoveryGame(source,1,"classic-checkpoint"),parallel=copyRecoveryGame(source,3);
+    const auto first=forkClassicCheckpoint(serial->game,ResourceClaims::ClaimPolicyConfig{});
+    const auto second=forkClassicCheckpoint(parallel->game,ResourceClaims::ClaimPolicyConfig{});
+    CHECK(first==second);CHECK(first["harvesting_claims"]==1);CHECK(first["traveling_claims"]==0);
+    CHECK(first["rejected_existing_accesses"]==2);CHECK(game.checkSum()==sourceChecksum);
+    REQUIRE(serial->game.checkSum()==parallel->game.checkSum());
+    auto resumed=copyRecoveryGame(*serial,3);
+    for(unsigned tick=0;tick<128;++tick) {
+        serial->step();parallel->step();resumed->step();
+        REQUIRE(serial->game.checkSum()==parallel->game.checkSum());
+        REQUIRE(serial->game.checkSum()==resumed->game.checkSum());
+    }
+    std::ofstream evidence(glob2test::artifactDir()/"bootstrap.json");evidence<<first.dump(2)<<'\n';REQUIRE(evidence.good());
+}
+
+TEST_CASE("external classic checkpoint creates an explicitly attributed claim experiment" *
+    doctest::test_suite("ClaimLateFork") * doctest::skip(std::getenv("GLOB2_CLAIM_FORK_INPUT")==nullptr))
+{
+    const char* inputPath=std::getenv("GLOB2_CLAIM_FORK_INPUT");
+    const char* configPath=std::getenv("GLOB2_CLAIM_FORK_CONFIG");
+    REQUIRE(inputPath);REQUIRE(configPath);
+    REQUIRE(std::filesystem::file_size(inputPath)<=MaximumForkBytes);
+    REQUIRE(std::filesystem::file_size(configPath)<=4096);
+    std::ifstream configuration(configPath);std::ostringstream text;text<<configuration.rdbuf();REQUIRE(configuration.good());
+    const auto policy=ResourceClaims::ClaimPolicyConfig::parse(text.str());
+    glob2test::HeadlessGlobals globals;glob2test::HeadlessGame fixture;
+    unsigned participants=1;
+    if(const char* value=std::getenv("GLOB2_CLAIM_FORK_PARTICIPANTS")) {
+        REQUIRE((std::string(value)=="1" || std::string(value)=="2" || std::string(value)=="3"));
+        participants=unsigned(value[0]-'0');
+    }
+    fixture.game.map.clear();fixture.game.map.resourceCells.clear();fixture.game.map.configureCompute(participants);
+    GAGCore::BinaryInputStream input(globalContainer->fileManager->openInflatingInputStreamBackend(inputPath));
+    REQUIRE(fixture.gui.load(&input,true));
+    const auto hashFile=[](const char* path) {
+        std::ifstream file(path,std::ios::binary);Online::Sha256 hash;std::array<char,65536> buffer;
+        while(file) {file.read(buffer.data(),buffer.size());hash.update(buffer.data(),std::size_t(file.gcount()));}
+        REQUIRE(file.eof());return Online::Sha256::toHex(hash.finish());
+    };
+    auto report=forkClassicCheckpoint(fixture.game,policy);
+    report["source_sha256"]=hashFile(inputPath);report["source_configuration_sha256"]=hashFile(configPath);
+    const auto forkChecksum=fixture.game.checkSum();
+    const auto output=glob2test::artifactDir()/"fork.game.gz";
+    REQUIRE_FALSE(std::filesystem::exists(output));
+    REQUIRE(globalContainer->fileManager->writeGzipAtomically(output.string(),[&](GAGCore::OutputStream& stream){
+        fixture.gui.save(&stream,"diagnostic claim checkpoint fork; see fork.json");}));
+    REQUIRE(fixture.game.checkSum()==forkChecksum);report["fork_sim_checksum"]=forkChecksum;
+    REQUIRE(std::filesystem::file_size(output)<=MaximumForkBytes);
+    report["storage_contract_version"]=2;report["maximum_file_bytes"]=MaximumForkBytes;
+    report["fork_sha256"]=hashFile(output.string().c_str());report["fork_bytes"]=std::filesystem::file_size(output);
+    std::ofstream metadata(glob2test::artifactDir()/"fork.json");metadata<<report.dump(2)<<'\n';REQUIRE(metadata.good());
 }
 
 TEST_CASE("a terminal island path failure reaches the configured bounded release fallback" * doctest::test_suite("ClaimRecoveryAdversarial"))
