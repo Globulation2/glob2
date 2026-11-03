@@ -20,7 +20,7 @@ Use contracts, map inspection and populated games for different questions: legal
   must be evenly divisible by `step`. A `GeneratorControl::Kind::Toggle` control must be exactly 0 to 1 in
   steps of 1, with no allowed values, power-of-two formatting or terrain weight; the lobby and
   editor show it as a checkbox. Every control label needs matching entries in
-  `data/texts.en.txt` (`[Label]` / `Label`) and `data/texts.keys.txt` (`[Label]`), the same as any
+  `content/data/texts.en.txt` (`[Label]` / `Label`) and `content/data/texts.keys.txt` (`[Label]`), the same as any
   other UI string.
 
 ## Verification tools

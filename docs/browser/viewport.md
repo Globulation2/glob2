@@ -30,7 +30,7 @@ reveals the full layout again. The page has no permanent wrapper controls.
 
 ## Verification
 
-`browser/tests/viewport.spec.js` uses real browser resize and mouse/keyboard input
+`platforms/web/tests/viewport.spec.js` uses real browser resize and mouse/keyboard input
 in Chromium, Firefox and WebKit. Set `GLOB2_TEST_RENDERER=webgl2` to run these
 same scenarios against the GPU backend. It checks canvas dimensions and its page bounds,
 nonblack rendered pixels, menu hit positions, ongoing simulation through a small
@@ -46,7 +46,7 @@ when callbacks did not run while hidden. Scheduled screens suspend input on both
 edges; the application skips their update while hidden. A session resumes on its
 logical clock, preserving the pending tick deadline and excluding elapsed hidden
 time. The native regression inserts a 60-second gap and verifies the resulting
-50-tick session. `browser/visibility.config.js` runs a separate real-window
+50-tick session. `platforms/web/visibility.config.js` runs a separate real-window
 Chromium regression without Playwright focus overrides; on Linux run it under
 `xvfb-run -a`. Ordinary headless tests do not prove document visibility behavior.
 The normal cross-browser suite also exercises visibility bookkeeping. The
@@ -62,7 +62,7 @@ absolute motion from each button event before SDL's button listener runs. It
 handles releases outside the canvas for a canvas-started press and skips relative
 pointer-lock input. This SDK adaptation stays in the browser platform layer.
 
-`browser/tests/input.spec.js` suppresses trusted motion delivery while keeping
+`platforms/web/tests/input.spec.js` suppresses trusted motion delivery while keeping
 real button input, then selects a map, starts a match, resizes and quits it.
 The regression fails before the adapter in Chromium and passes afterward in
 Chromium, Firefox and WebKit. The real-window Chromium checks run with both

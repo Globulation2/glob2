@@ -23,19 +23,19 @@ namespace
 {
 std::string source(const std::string &name="introduction")
 {
-    std::ifstream catalogFile(glob2test::sourceRoot()/"scripts/tutorials/catalog.json");
+    std::ifstream catalogFile(glob2test::contentRoot()/"scripts/tutorials/catalog.json");
     const auto catalog=Tutorial::contentJson({std::istreambuf_iterator<char>(catalogFile),{}});
     std::string path;
     for(const auto &entry:catalog.items)
         if(std::filesystem::path(entry.string("definition")).stem()==name) path=entry.string("script");
     REQUIRE_FALSE(path.empty());
-    std::ifstream file(glob2test::sourceRoot()/path);
+    std::ifstream file(glob2test::contentRoot()/path);
     REQUIRE(file.good());
     return {std::istreambuf_iterator<char>(file),{}};
 }
 void setup(glob2test::HeadlessGame &w,const std::string &name="introduction")
 {
-    const auto path=glob2test::sourceRoot()/("campaigns/"+name+".map.gz");
+    const auto path=glob2test::contentRoot()/("campaigns/"+name+".map.gz");
     gzFile file=gzopen(path.string().c_str(),"rb"); REQUIRE(file);
     std::string bytes;char buffer[4096];int count;
     while((count=gzread(file,buffer,sizeof(buffer)))>0) bytes.append(buffer,count);
@@ -130,7 +130,7 @@ void until(glob2test::HeadlessGame &w,const std::function<bool()> &done,int limi
 TEST_CASE("packaged lesson maps embed their source and share geography" * doctest::test_suite("Introduction"))
 {
     glob2test::HeadlessGlobals globals;
-    std::ifstream catalogFile(glob2test::sourceRoot()/"scripts/tutorials/catalog.json");
+    std::ifstream catalogFile(glob2test::contentRoot()/"scripts/tutorials/catalog.json");
     const auto catalog=Tutorial::contentJson({std::istreambuf_iterator<char>(catalogFile),{}});
     std::vector<Uint16> reference;
     for(const auto &entry:catalog.items) {

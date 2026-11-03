@@ -191,10 +191,10 @@ filled = '\u0938\u0902\u092a\u093e\u0926\u093f\u0924'
 translated = '\u0928\u092e\u0938\u094d\u0915\u093e\u0930'
 paths['native'].write_text('[edited]\n' + filled + '\n', encoding='utf-8')
 draft.atomic_json(paths['online'], {'Edited': filled, 'Hello': ''})
-invariant = draft.PROGRAM.ROOT / 'platform/packages/i18n/invariants.json'
+invariant = draft.PROGRAM.ROOT / 'services/online/packages/i18n/invariants.json'
 draft.atomic_json(root / 'manifest.json', {
     'locales': ['mr'], 'source_sha256': 'test',
-    'source_files': {'platform/packages/i18n/invariants.json': draft.PROGRAM.digest(invariant.read_bytes())},
+    'source_files': {'services/online/packages/i18n/invariants.json': draft.PROGRAM.digest(invariant.read_bytes())},
     'batches': [{'path': 'native.json'}, {'path': 'online.json'}]})
 draft.atomic_json(root / 'native.json', {'surface': 'native', 'domain': 'general', 'entries': [
     {'id': 'native:[edited]', 'key': '[edited]', 'source': 'Edited'}]})
@@ -246,9 +246,9 @@ assert len(json.loads((root / 'google-budget.json').read_text(encoding='utf-8'))
         paths['native'].parent.mkdir(parents=True)
         paths['native'].write_text('[hello]\n\n[edited]\nसंपादित\n', encoding='utf-8')
         DRAFT.atomic_json(paths['online'], {'{count} item': {'one': '', 'other': ''}, ' ': '', 'Paragraphs': ''})
-        invariant = DRAFT.PROGRAM.ROOT / 'platform/packages/i18n/invariants.json'
+        invariant = DRAFT.PROGRAM.ROOT / 'services/online/packages/i18n/invariants.json'
         DRAFT.atomic_json(self.root / 'manifest.json', {
-            'locales': ['mr'], 'source_sha256': 'frozen-test-source', 'source_files': {'platform/packages/i18n/invariants.json':
+            'locales': ['mr'], 'source_sha256': 'frozen-test-source', 'source_files': {'services/online/packages/i18n/invariants.json':
             DRAFT.PROGRAM.digest(invariant.read_bytes())},
             'batches': [{'path': 'native.json'}, {'path': 'online.json'}]})
         DRAFT.atomic_json(self.root / 'native.json', {'surface': 'native', 'domain': 'general', 'entries': [
@@ -683,12 +683,12 @@ class FilipinoEditorialGoogleDraftTest(unittest.TestCase):
             path = self.root / name
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text('{}')
-        (self.root / 'data/texts.keys.txt').write_text('[hello]\n[value %0]\n')
-        (self.root / 'data/texts.en.txt').write_text('[hello]\nHello\n[value %0]\n Value %0 \n')
-        (self.root / 'platform/packages/i18n/locales/en.json').write_text(json.dumps({
+        (self.root / 'content/data/texts.keys.txt').write_text('[hello]\n[value %0]\n')
+        (self.root / 'content/data/texts.en.txt').write_text('[hello]\nHello\n[value %0]\n Value %0 \n')
+        (self.root / 'services/online/packages/i18n/locales/en.json').write_text(json.dumps({
             'Hello': 'Hello', '{count} items': {'one': '{count} item', 'other': '{count} items'},
             'Invalid mapId.': 'Invalid mapId.'}))
-        (self.root / 'platform/packages/i18n/invariants.json').write_text(json.dumps({'Invalid mapId.': ['mapId']}))
+        (self.root / 'services/online/packages/i18n/invariants.json').write_text(json.dumps({'Invalid mapId.': ['mapId']}))
         with patch.object(DRAFT.PROGRAM.subprocess, 'check_output', return_value='test'):
             DRAFT.PROGRAM.prepare(self.output, root=self.root, locales=('fil',))
         with patch.object(DRAFT.PROGRAM, 'plural_categories', return_value=['one', 'other']):
@@ -795,7 +795,7 @@ class FilipinoEditorialGoogleDraftTest(unittest.TestCase):
         self.assertEqual(len((state / 'attempts.jsonl').read_text().splitlines()), 2)
 
     def test_punctuation_only_values_do_not_use_paid_api(self):
-        source = self.root / 'platform/packages/i18n/locales/en.json'
+        source = self.root / 'services/online/packages/i18n/locales/en.json'
         source.write_text(json.dumps({' / {slot0}': ' / {slot0}'}))
         # New source requires a freshly prepared kit, never source hash tampering.
         self.output = self.root / 'punctuation-kit'

@@ -39,6 +39,6 @@ for file in "${DB_MIGRATOR_PASSWORD_FILE:-}" "${DB_API_PASSWORD_FILE:-}" "${DB_W
 done
 
 if [ -n "${ADMIN_DATABASE_URL:-}" ]; then
-  node /app/platform/packages/db/src/cli.ts roles
+  node /app/services/online/packages/db/src/cli.ts roles
 fi
-exec node /app/platform/packages/db/src/cli.ts latest
+exec node /app/services/online/packages/db/src/cli.ts latest

@@ -73,7 +73,9 @@ platform_on() {
 		-e DATABASE_URL="postgres://glob2:$(setting POSTGRES_PASSWORD)@postgres:5432/$target" \
 		-e DATABASE_PASSWORD_FILE= platform-api "$@"
 }
-platform_on node /app/platform/packages/db/src/cli.ts latest
+# Relative to the image working directory, so images from before and after
+# the platform moved to services/online/ both resolve it.
+platform_on node packages/db/src/cli.ts latest
 
 # 3. Re-apply deletions.
 : > "$work/deleted"

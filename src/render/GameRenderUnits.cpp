@@ -27,6 +27,8 @@
 #include "unit/render/UnitDrawGeometry.h"
 #include "unit/render/UnitAnimation.h"
 #include "unit/render/UnitMotion.h"
+#include "unit/render/SwimmingPresentation.h"
+#include <RenderStateScope.h>
 #include "unit/render/ColonySkinPreview.h"
 #include <algorithm>
 #include "unit/render/UnitSkin.h"
@@ -156,22 +158,29 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	const float spawnHue = SpawnEffectArt::hueOf(color);
 	const GAGCore::Color glow = spawning ? SpawnEffectArt::tint(spawnHue) : GAGCore::Color();
 	const Uint8 glowAlpha = Uint8(std::lround(255 * spawnLook.silhouette));
-	if (detail.unitSprite > 0 &&
-		!view.render.skinPreview().draw(*globalContainer->gfx, meshClass, unit->team,
-			unit->action, dir, delta, px, py,
-            {unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
-             unsigned(unitSprite->getH(imgid))}, fogAlpha,
-            Uint32(glow.r) << 16 | Uint32(glow.g) << 8 | glow.b, glowAlpha))
+	// A swimmer's limbs fade into the water, whichever artwork draws it.
+	const bool swimming = (unit->action == STOP_SWIM || unit->action == SWIM) && detail.unitSprite > 0;
+	const float reach = meshClass == WARRIOR ? SWIM_REACH_WARRIOR : SWIM_REACH_WORKER;
 	{
-		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
-		// Meshes brighten as they draw; a sprite gets its silhouette laid over it.
-		if (glowAlpha)
-			if (DrawableSurface *shape = unitSprite->silhouette(imgid, glow))
-			{
-				Sprite::flushBatches(globalContainer->gfx);
-				globalContainer->gfx->drawSurface(float(px-decX), float(py-decY), float(unitSprite->getW(imgid)),
-					float(unitSprite->getH(imgid)), shape, faded(unsigned(std::lround(SpawnEffect::SpriteSilhouetteOpacity * glowAlpha))));
-			}
+		const GAGCore::RadialFadeScope fade(*globalContainer->gfx,
+			swimming ? swimmerFade(px, py, reach) : GAGCore::RadialFade{});
+		if (detail.unitSprite > 0 &&
+			!view.render.skinPreview().draw(*globalContainer->gfx, meshClass, unit->team,
+				unit->action, dir, delta, px, py,
+				{unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
+				 unsigned(unitSprite->getH(imgid))}, fogAlpha,
+				Uint32(glow.r) << 16 | Uint32(glow.g) << 8 | glow.b, glowAlpha))
+		{
+			globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
+			// Meshes brighten as they draw; a sprite gets its silhouette laid over it.
+			if (glowAlpha)
+				if (DrawableSurface *shape = unitSprite->silhouette(imgid, glow))
+				{
+					Sprite::flushBatches(globalContainer->gfx);
+					globalContainer->gfx->drawSurface(float(px-decX), float(py-decY), float(unitSprite->getW(imgid)),
+						float(unitSprite->getH(imgid)), shape, faded(unsigned(std::lround(SpawnEffect::SpriteSilhouetteOpacity * glowAlpha))));
+				}
+		}
 	}
 	if (spawning && detail.unitSprite > 0)
 	{
@@ -179,6 +188,21 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		Sprite::flushBatches(globalContainer->gfx);
 		SpawnEffect::forEachShimmerTwinkle(SpawnEffect::seedOf(spawned->second.x, spawned->second.y, gid), spawnAge,
 			[&](const SpawnEffect::Sparkle &twinkle) { art.draw(*globalContainer->gfx, spawnHue, px + 16.f, py + 16.f, twinkle, opacity); });
+	}
+	if (swimming)
+	{
+		// Each stroke sends a ring back across the water over the faded limbs.
+		// It fades out with the sprite.
+		const SwimRipple ring = swimRipple(delta, reach);
+		const float alpha = ring.alpha * opacity * detail.unitSprite;
+		if (alpha >= 1)
+			forEachSwimRippleSegment(px + 16, py + 16, ring.radius, unit->dx, unit->dy,
+				[&](const SwimRippleSegment &segment)
+				{
+					if (alpha * segment.weight >= 1)
+						globalContainer->gfx->drawLine(segment.x0, segment.y0, segment.x1, segment.y1,
+							Color(225, 240, 255, Uint8(alpha * segment.weight)));
+				});
 	}
 	if (detail.unitMarker > 0)
 	{

@@ -31,6 +31,7 @@
 #include "TorusMapFixture.h"
 #include "render/scene/SceneExtract.h"
 #include "render/SoftwareTerrainCache.h"
+#include "render/terrain/TerrainCompositor.h"
 #include "render/OverviewTerrainCache.h"
 #include <algorithm>
 #include <cassert>
@@ -294,8 +295,11 @@ static int run(int argc, char **argv)
             std::uint64_t warmupAttempts=0,warmupHolds=0,warmupAdmissionDefers=0;
             const int warmupFrames = std::max(0, std::getenv("GLOB2_BENCH_WARMUP_FRAMES")
                 ? std::atoi(std::getenv("GLOB2_BENCH_WARMUP_FRAMES")) : 2);
+            auto &compositor = globalContainer->terrainCompositor(gui.game.map.frozenAssetBundle());
+            TerrainVisual::Compositor::HighResolutionCoverage initialCoverage;
             for (int i = -warmupFrames; i < frames; ++i)
             {
+                if (i == 0) initialCoverage = compositor.highResolutionCoverage();
                 if(!finishRendering())ContextAccess::backend(*gfx)->present();
                 const auto telemetryBefore=gfx->renderDevice()?gfx->renderDevice()->telemetry():GAGCore::RenderTelemetry{};
                 const auto scopesBefore = PerformanceTelemetry::collector().window;
@@ -379,6 +383,14 @@ static int run(int argc, char **argv)
                 static_cast<unsigned long long>(measuredAdmissionDefers),1000.0*times.size()/measuredWallMs);
             std::printf("WARMUP_COMPLETION_SUMMARY mode=%s completed=%d attempts=%llu intentional_holds=%llu admission_deferrals=%llu\n",label,warmupFrames,
                 static_cast<unsigned long long>(warmupAttempts),static_cast<unsigned long long>(warmupHolds),static_cast<unsigned long long>(warmupAdmissionDefers));
+            // Streaming fallback: a prepared view drew native art for a material
+            // whose HD frames had already appeared. Warmup is reported separately.
+            const auto coverage = compositor.highResolutionCoverage();
+            std::printf("terrain_hd mode=%s prepares=%llu fallback_prepares=%llu warmup_prepares=%llu warmup_fallback_prepares=%llu\n", label,
+                static_cast<unsigned long long>(coverage.prepares - initialCoverage.prepares),
+                static_cast<unsigned long long>(coverage.fallbacks - initialCoverage.fallbacks),
+                static_cast<unsigned long long>(initialCoverage.prepares),
+                static_cast<unsigned long long>(initialCoverage.fallbacks));
             std::sort(times.begin(), times.end());
             std::printf("%s median=%.3f ms p95=%.3f ms\n", label, times[times.size()/2], times[(times.size()*95+99)/100-1]);
             std::printf("%s p99=%.3f ms max=%.3f ms\n", label,

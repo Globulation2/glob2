@@ -16,7 +16,7 @@ import zlib
 
 SIZE = 512
 QUADRANT = 256
-REGISTRY = json.loads((Path(__file__).resolve().parents[2] / 'libgag/shaders/skin-materials.json').read_text())
+REGISTRY = json.loads((Path(__file__).resolve().parents[2] / 'libs/gag/shaders/skin-materials.json').read_text())
 MATERIALS = {m['key']: m['id'] for m in REGISTRY['materials']}
 # Distinct per-model colours make quadrant mix-ups visible in previews.
 MODEL_COLORS = (((45, 115, 180), (240, 190, 50)),   # worker

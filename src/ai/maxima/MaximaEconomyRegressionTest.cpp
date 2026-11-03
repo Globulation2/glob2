@@ -709,7 +709,7 @@ void trackerLogicalCadence()
 void holidayHarvestCapacity()
 {
     Game game(NULL);
-    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend((glob2test::sourceRoot() / "maps/Holiday_Island_2.map.gz").string()));
+    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend((glob2test::contentRoot() / "maps/Holiday_Island_2.map.gz").string()));
     REQUIRE(input.isValid()); REQUIRE(game.load(&input));
     Player player; player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player); auto& c=ai.context; c.initialize();

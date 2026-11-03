@@ -82,7 +82,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             self.assertGreaterEqual(len(strings), 4, line)
             specifications.append((strings[0], strings[-1]))
         schema_keys = [key for key, _description in specifications]
-        base = (ROOT / "data/maxima/base.strategy").read_text()
+        base = (ROOT / "content/data/maxima/base.strategy").read_text()
         base_keys = re.findall(r"^([a-z][a-z0-9_.]+)\s*=", base, re.M)
         self.assertEqual(len(schema_keys), len(set(schema_keys)))
         self.assertEqual(len(base_keys), len(set(base_keys)))
@@ -92,7 +92,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
     def test_global_swarm_staffing_caps_are_removed(self) -> None:
         for source in (self.strategy, self.maxima,
                        (ROOT / "src/ai/maxima/AIMaximaStrategy.h").read_text(),
-                       (ROOT / "data/maxima/base.strategy").read_text()):
+                       (ROOT / "content/data/maxima/base.strategy").read_text()):
             self.assertNotIn("swarm_worker_cap", source)
 
     def test_active_members_have_consumers_and_legacy_members_are_explicit(self) -> None:

@@ -52,7 +52,7 @@ concave outlines and rectangular maps expose assumptions hidden by square previe
 
 A resource can be reachable by a worker yet fall outside an AI's local observation
 area. Inspect the relevant [AI code](../../../../src/ai/maxima/AIMaxima.cpp) and
-[strategy](../../../../data/maxima/base.strategy) for the distance metric, radius,
+[strategy](../../../../content/data/maxima/base.strategy) for the distance metric, radius,
 and coordinate origin: a scan from a building's top-left is different from one
 from its centre, and neither is a walking-distance test.
 

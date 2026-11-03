@@ -5,7 +5,7 @@ the platform's REST API (`HttpFetch`), and secure WebSockets for the platform's
 realtime channel, the match relay and LAN hosts. `NetTransport`
 (`src/net/NetTransport.h`) is the one WebSocket abstraction. Natively,
 `WssTransport` implements it with Boost.Beast; in the browser,
-`browser/NetTransport.cpp` uses the page's WebSocket. There is no
+`platforms/web/NetTransport.cpp` uses the page's WebSocket. There is no
 WebSocket-to-TCP gateway and no raw-TCP fallback for public traffic.
 
 | Connection | Endpoint | Mode | Guide |

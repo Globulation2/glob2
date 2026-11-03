@@ -9,7 +9,7 @@
 #include <vector>
 
 // Typed views of the platform resources the quick-match, profile and map
-// screens read (platform/packages/protocol: realtime.ts queue events,
+// screens read (services/online/packages/protocol: realtime.ts queue events,
 // MatchAssignment; resources.ts QueueInfo, MatchSummary, MatchDetail, MapInfo,
 // MapDetail; relay.ts RelayRegionList). Parsing is lenient about fields the
 // screens do not need and returns nothing for documents missing required ones.
@@ -233,7 +233,7 @@ struct ProfileSummary
 ProfileSummary summarizeProfile(const std::string &accountId, const std::vector<MatchSummary> &matches,
 								std::size_t window = 50);
 
-// GET /api/v1/players/{id} (PlayerProfile in platform/packages/protocol/src/history.ts).
+// GET /api/v1/players/{id} (PlayerProfile in services/online/packages/protocol/src/history.ts).
 struct PlayerProfile
 {
 	std::string accountId, displayName, kind;

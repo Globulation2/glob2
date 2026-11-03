@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[4]
 OUT = Path(__file__).resolve().parent
 
 def stock(family, variant=1):
-    return json.loads((ROOT / 'data/buildings' / (family + '.json')).read_text())['variants'][variant]
+    return json.loads((ROOT / 'content/data/buildings' / (family + '.json')).read_text())['variants'][variant]
 
 def make(seed, missing):
     rng = random.Random(seed)

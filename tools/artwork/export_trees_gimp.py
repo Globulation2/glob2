@@ -2,11 +2,11 @@
 from gimpfu import *
 import os, json, hashlib
 root=os.environ.get('GLOB2_ART_ROOT',os.getcwd())
-out=os.path.join(root,'datasrc/gfx/derived/tree-native')
+out=os.path.join(root,'content-src/gfx/derived/tree-native')
 if not os.path.isdir(out): os.makedirs(out)
 records=[]
 for name in ['trees_1_1','trees_1_2','trees_2_1','trees_3_1','trees_4_1']:
-    relative='datasrc/gfx/originals/resources/tree/'+name+'.xcf'
+    relative='content-src/gfx/originals/resources/tree/'+name+'.xcf'
     path=os.path.join(root,relative)
     image=pdb.gimp_file_load(path,path,run_mode=RUN_NONINTERACTIVE)
     layers=[dict(index=i,name=l.name,visible=l.visible,opacity=l.opacity,mode=int(l.mode),offsets=l.offsets) for i,l in enumerate(image.layers)]

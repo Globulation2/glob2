@@ -7,10 +7,10 @@ Build and run the iOS app with isolated simulators and pinned dependencies.
 Build dependencies and the generated Xcode project with the same configuration:
 
 ```sh
-python3 mobile/dependencies.py --target ios --environment simulator --release
-python3 mobile/ios.py build --environment simulator --release
-python3 mobile/ios.py install --environment simulator --release --device SIMULATOR_UUID
-python3 mobile/ios.py launch --environment simulator --release --device SIMULATOR_UUID
+python3 platforms/mobile/dependencies.py --target ios --environment simulator --release
+python3 platforms/mobile/ios.py build --environment simulator --release
+python3 platforms/mobile/ios.py install --environment simulator --release --device SIMULATOR_UUID
+python3 platforms/mobile/ios.py launch --environment simulator --release --device SIMULATOR_UUID
 ```
 
 The simulator tools use an isolated device set under

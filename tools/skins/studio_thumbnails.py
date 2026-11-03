@@ -48,7 +48,7 @@ def from_legacy(output):
     import numpy as np
     from swarm_metrics import rasterize, write_png
     output.mkdir(parents=True, exist_ok=True)
-    for path in sorted((ROOT / 'data/skins/colony-v1').glob('*.gsk')):
+    for path in sorted((ROOT / 'content/data/skins/colony-v1').glob('*.gsk')):
         data = path.read_bytes()
         _, count, index_count, frames, _ = struct.unpack_from('<4sIIII', data)
         indices = np.frombuffer(data, '<u4', index_count, 20 + count * 8).reshape(-1, 3)
@@ -72,7 +72,7 @@ def from_legacy(output):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--sprite-bundle', type=Path)
-    parser.add_argument('--output', type=Path, default=ROOT / 'platform/apps/web/public/skins/thumbs')
+    parser.add_argument('--output', type=Path, default=ROOT / 'services/online/apps/web/public/skins/thumbs')
     parser.add_argument('--clip', choices=CLIPS, action='append')
     args = parser.parse_args()
     if args.sprite_bundle:

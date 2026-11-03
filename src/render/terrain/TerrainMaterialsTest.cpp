@@ -12,6 +12,8 @@
 #include "render/scene/SceneMap.h"
 #include "TerrainCompiledPack.h"
 #include <FileManager.h>
+#include <Toolkit.h>
+#include <filesystem>
 #include <SDL3_image/SDL_image.h>
 #include <nlohmann/json.hpp>
 #include <fstream>
@@ -547,6 +549,144 @@ TEST_SUITE("TerrainMaterials")
 		b->markPixelsChanged();
 		CHECK(pixel(2) == 0x80f00000u); // Transparent cyan contributes no colour.
 	}
+	TEST_CASE("stepped crossfades hold each weight and its revision for several ticks [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		const auto id = definitions.find("ice");
+		auto &ice = definitions.materials[id];
+		ice.sprite = "data/gfx/terrain";
+		ice.variantGrid = 0; ice.variantBlocks = 1;
+		ice.variants = {{272, 1}};
+		ice.totalWeight = 1;
+		ice.animationFrames = 2;
+		ice.animationStride = 1;
+		ice.animationTicks = 8;
+		ice.animationBlendSteps = 2;
+		ice.periodicEdges = true;
+		auto *a = globals->terrain->nativeFrame(272), *b = globals->terrain->nativeFrame(273);
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> originalA(
+			SDL_DuplicateSurface(a->getSDLSurface()), SDL_DestroySurface),
+			originalB(SDL_DuplicateSurface(b->getSDLSurface()), SDL_DestroySurface);
+		REQUIRE(originalA);
+		REQUIRE(originalB);
+		a->drawFilledRect(0, 0, 32, 32, 240, 0, 0);
+		b->drawFilledRect(0, 0, 32, 32, 0, 0, 240);
+		{
+			TerrainVisual::Compositor compositor(definitions);
+			TerrainVisual::Recipe recipe;
+			recipe.width = recipe.height = 16;
+			recipe.corners.fill(id);
+			GAGCore::DrawableSurface result(32, 32);
+			const auto pixel = [&](int time)
+			{
+				compositor.prepare(false, time);
+				compositor.compose(recipe, result.getSDLSurface(), 0, 0, 1);
+				return static_cast<const Uint32 *>(result.getSDLSurface()->pixels)[0];
+			};
+			// Two steps per eight-tick phase: the endpoint, then the midpoint.
+			std::vector<std::uint64_t> revisions;
+			for (int time = 0; time < 17; ++time)
+			{
+				const Uint32 expected[] = {0xfff00000u, 0xff780078u, 0xff0000f0u, 0xff780078u};
+				CHECK(pixel(time) == expected[time / 4 % 4]);
+				revisions.push_back(compositor.materialRevision(id));
+			}
+			for (int time = 1; time < 17; ++time)
+				CHECK(revisions[time] == revisions[time - 1] + (time % 4 == 0));
+		}
+		for (auto [frame, original] : {std::pair{a, originalA.get()}, std::pair{b, originalB.get()}})
+		{
+			SDL_SetSurfaceBlendMode(original, SDL_BLENDMODE_NONE);
+			SDL_BlitSurface(original, nullptr, frame->getSDLSurface(), nullptr);
+			frame->markPixelsChanged();
+		}
+	}
+	TEST_CASE("animation_blend_steps is optional and bounded by the phase length")
+	{
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
+		const auto j = nlohmann::json::parse(input);
+		std::size_t lava = 0, grass = 0;
+		while (j["materials"][lava]["key"] != "lava") ++lava;
+		while (j["materials"][grass]["key"] != "grass") ++grass;
+		const auto parsed = TerrainVisual::Catalog::parse(j);
+		CHECK(parsed.materials[parsed.find("lava")].animationBlendSteps == 0);
+		const int ticks = j["materials"][lava]["animation_ticks"];
+		for (int steps : {1, ticks / 2, ticks})
+		{
+			auto valid = j;
+			valid["materials"][lava]["animation_blend_steps"] = steps;
+			const auto c = TerrainVisual::Catalog::parse(valid);
+			CHECK(c.materials[c.find("lava")].animationBlendSteps == steps);
+		}
+		for (const nlohmann::json steps : {nlohmann::json(0), nlohmann::json(ticks + 1), nlohmann::json("4")})
+		{
+			auto invalid = j;
+			invalid["materials"][lava]["animation_blend_steps"] = steps;
+			CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
+		}
+		auto still = j;
+		still["materials"][grass]["animation_blend_steps"] = 1; // Nothing to crossfade.
+		CHECK_THROWS(TerrainVisual::Catalog::parse(still));
+	}
+	TEST_CASE("streamed animated HD keeps later phases resident across advances [display]")
+	{
+		const auto directory = glob2test::artifactDir() / "animated-hd";
+		std::filesystem::create_directories(directory);
+		std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/terrain-hd-solid.webp",
+			directory / "frame.webp", std::filesystem::copy_options::overwrite_existing);
+		{
+			std::ofstream frames(directory / "frames.txt");
+			frames << "GLOB2_HIGHRES 1\n";
+			for (int frame = 0; frame < 256; ++frame)
+				frames << "terrain-grass" << frame << " 32 32 4 frame.webp -\n";
+		}
+		glob2test::ScopedEnvironment hdPath("GLOB2_EXPERIMENT_TEXTURE_DIR", directory.string().c_str());
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		const auto id = definitions.find("grass");
+		auto &grass = definitions.materials[id];
+		// Four phases borrow the bank's four layouts, one streamed HD frame each.
+		grass.variants.resize(64);
+		grass.totalWeight = 64;
+		grass.variantBlocks = 1;
+		grass.animationFrames = 4;
+		grass.animationStride = 64;
+		grass.animationTicks = 2;
+		GAGCore::Sprite::deferHighResolution(grass.sprite);
+		GAGCore::Sprite::setHighResolution(true);
+		struct Restore { ~Restore() { GAGCore::Sprite::setHighResolution(false); } } restore;
+		TerrainVisual::Compositor compositor(definitions);
+		std::vector<TerrainVisual::Recipe> recipes;
+		for (int y = 0; y < 2; ++y)
+			for (int x = 0; x < 2; ++x)
+			{
+				TerrainVisual::Recipe r;
+				r.x = x; r.y = y;
+				r.width = r.height = 16;
+				r.corners.fill(id);
+				recipes.push_back(r);
+			}
+		compositor.prepareForRecipes(true, 0, recipes);
+		GAGCore::Sprite::finishHighResolution();
+		compositor.prepareForRecipes(true, 0, recipes);
+		auto *sprite = GAGCore::Toolkit::getSprite(grass.sprite);
+		for (int phase = 0; phase < 4; ++phase)
+			for (int cell : {0, 1, 8, 9})
+				CHECK(sprite->baseFrame(cell + 64 * phase)->getW() == 128);
+		CHECK(compositor.scale() == 4);
+		// Cycle twice through every phase without streaming time: each advance
+		// reuses resident frames, so no preparation falls back to native art.
+		const auto before = compositor.highResolutionCoverage();
+		for (int time = 1; time < 17; ++time)
+			compositor.prepareForRecipes(true, time, recipes);
+		const auto after = compositor.highResolutionCoverage();
+		CHECK(after.prepares == before.prepares + 16);
+		CHECK(after.fallbacks == before.fallbacks);
+	}
 	TEST_CASE("animation invalidates only pages using that material [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
@@ -611,7 +751,7 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("compiled pages validate metadata and stale catalogs use source fallback [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
 		j["compiled_pack"] = "data/terrain/test-pack/atlas.json";
 		const auto root = glob2test::artifactDir();
@@ -672,7 +812,7 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("compositor preserves native artwork overridden before startup [display] [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		auto document = nlohmann::json::parse(input);
 		document["compiled_pack"] = "data/terrain/startup-override/atlas.json";
 		for (auto &material : document["materials"])
@@ -746,7 +886,7 @@ TEST_SUITE("TerrainMaterials")
 			  "[display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
 		// Pad the shipped catalog to 64 materials with grass clones.
 		for (auto i = j["materials"].size(); i < 64; ++i)
@@ -1178,7 +1318,7 @@ TEST_SUITE("TerrainMaterials")
 			auto definitions = catalog();
 			if (legacy)
 			{
-				std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+				std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 				auto j = nlohmann::json::parse(input);
 				j["version"] = 1;
 				j.erase("boundary_warp_q8");
@@ -1525,7 +1665,7 @@ TEST_SUITE("TerrainMaterials")
 					CHECK(c.variantIndex(water, x, y, seed) == (unsigned(y) & (grid - 1)) * grid + (unsigned(x) & (grid - 1)));
 				}
 
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		const auto j = nlohmann::json::parse(input);
 		std::size_t index = 0;
 		while (j["materials"][index]["key"] != "water")
@@ -1585,7 +1725,7 @@ TEST_SUITE("TerrainMaterials")
 			for (int y = -8; y < 64; ++y)
 				for (int x = -8; x < 64; ++x)
 					CHECK(c.variantIndex(c.find("water"), x, y, seed) == c.variantIndex(c.find("deep_water"), x, y, seed));
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		const auto document = nlohmann::json::parse(input);
 		std::size_t index = 0;
 		while (document["materials"][index]["key"] != "scree") ++index;
@@ -1609,7 +1749,7 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("catalog rejects corrupt references and grows independently of gameplay IDs")
 	{
 		glob2test::HeadlessGlobals globals;
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
 		for (auto i = j["materials"].size(); i < 64; ++i)
 		{

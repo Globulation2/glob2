@@ -35,7 +35,7 @@ Run these together with `MusicSet/*`, `CommunityMusic*/*`, and `GameplayRecordin
 
 ```sh
 python3 test/run_tests.py --filter 'Music*/*' --filter 'SoundMixer*/*' --filter 'CommunityMusic*/*' --filter 'GameplayRecording*/*'
-node --test browser/unit/*.test.js
+node --test platforms/web/unit/*.test.js
 (cd browser && npx playwright test tests/music-audio.spec.js tests/music-game.spec.js tests/recording.spec.js)
 ```
 
@@ -71,9 +71,9 @@ For browser ten-minute contention runs, serve the unversioned build directory
 `build/emscripten/client/release`, then run:
 
 ```sh
-node browser/benchmarks/audio.cjs http://127.0.0.1:8770 allcore 600
-node browser/benchmarks/audio.cjs http://127.0.0.1:8770 memory 600
-taskset -c 0 node browser/benchmarks/audio.cjs http://127.0.0.1:8770 singlecore 600
+node platforms/web/benchmarks/audio.cjs http://127.0.0.1:8770 allcore 600
+node platforms/web/benchmarks/audio.cjs http://127.0.0.1:8770 memory 600
+taskset -c 0 node platforms/web/benchmarks/audio.cjs http://127.0.0.1:8770 singlecore 600
 ```
 
 Choose an allowed CPU for `taskset`. The single-core run shares that CPU with two

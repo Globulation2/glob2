@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'mobile'))
+sys.path.insert(0, str(ROOT / 'platforms/mobile'))
 sys.path.insert(0, str(ROOT / 'scons'))
 import dependencies
 import android
@@ -54,8 +54,8 @@ class MobileDependencyManifestTests(unittest.TestCase):
                     output = root / default_directory(identity)
                     (output / 'lib').mkdir(parents=True)
                     (output / 'lib/libmain.so').write_bytes(b'native client')
-                    (root / 'mobile').mkdir()
-                    (root / 'mobile/android').mkdir()
+                    (root / 'platforms/mobile').mkdir(parents=True)
+                    (root / 'platforms/mobile/android').mkdir()
                     prefix = root / 'deps'
                     (prefix / 'share/glob2/sdl-java').mkdir(parents=True)
                     library = prefix / 'library.a'
