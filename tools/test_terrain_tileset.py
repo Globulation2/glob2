@@ -62,6 +62,8 @@ class TerrainTileset(unittest.TestCase):
             lambda d: d["border_classes"].append({"key": "cover"}),
             lambda d: d["border_classes"][0].update(shoreline=1),
             lambda d: d["border_classes"][0].update(unknown=True),
+            lambda d: d["bundle_profiles"]["soft"].update({"class": "absent"}),
+            lambda d: d["bundle_profiles"]["soft"].update(profile="soft"),
             lambda d: d["materials"][0].update({"class": "absent"}),
             lambda d: d["materials"][0].pop("class"),
             lambda d: d["profiles"][0].update(coast="absent"),
@@ -274,6 +276,7 @@ class TerrainTileset(unittest.TestCase):
         self.document["version"] = 1
         self.document.pop("boundary_warp_q8")
         self.document.pop("border_classes")
+        self.document.pop("bundle_profiles", None)
         for profile in self.document["profiles"]:
             for field in ("feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape",
                           "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8"):
