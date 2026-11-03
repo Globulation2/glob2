@@ -16,6 +16,8 @@ FOLDER = ROOT / 'content/data/skins/colony-v1'
 DESIGNER = ROOT / 'services/online/apps/web/public/skins/models'
 # Which fitted format animates each unit clip by default, and its header size.
 UNIT_FORMATS = {
+    'worker-prone-harvest': ('shapes', 'GSB1', 32),
+    'worker-prone-harvest-mid': ('shapes', 'GSB1', 32),
     'worker-walk': ('shapes', 'GSB1', 32), 'worker-swim': ('shapes', 'GSB1', 32),
     'worker-harvest': ('shapes', 'GSB1', 32), 'warrior-walk': ('shapes', 'GSB1', 32),
     'warrior-swim': ('shapes', 'GSB1', 32), 'warrior-fight': ('shapes', 'GSB1', 32),
