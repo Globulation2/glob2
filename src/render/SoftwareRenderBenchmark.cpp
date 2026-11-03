@@ -108,8 +108,6 @@ class SoftwareRenderBenchmark
 {
 static void interactiveBenchmark()
 {
-    if (std::getenv("GLOB2_PERF_DISABLE"))
-        throw std::runtime_error("Interactive frame observations require performance telemetry");
     const auto *path = std::getenv("PROFILE_SAVE");
     if (!path || !*path)
         throw std::runtime_error("PROFILE_SAVE must name a saved game");
