@@ -5665,7 +5665,7 @@ Sống đá
 [gravel]
 Sỏi
 [flower_meadow]
-Đồng hoa
+Đồng cây bụi
 [mud]
 Bùn
 [marsh]

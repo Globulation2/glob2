@@ -5665,7 +5665,7 @@ Argila
 [gravel]
 Cascalho
 [flower_meadow]
-Prado de flores
+Charneca
 [mud]
 Lama
 [marsh]

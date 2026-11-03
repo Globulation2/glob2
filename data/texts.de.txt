@@ -5665,7 +5665,7 @@ Ton
 [gravel]
 Kies
 [flower_meadow]
-Blumenwiese
+Heide
 [mud]
 Schlamm
 [marsh]

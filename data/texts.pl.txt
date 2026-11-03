@@ -5665,7 +5665,7 @@ Glina
 [gravel]
 Żwir
 [flower_meadow]
-Łąka kwietna
+Wrzosowisko
 [mud]
 Błoto
 [marsh]

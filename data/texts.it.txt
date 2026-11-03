@@ -5665,7 +5665,7 @@ Argilla
 [gravel]
 Ghiaia
 [flower_meadow]
-Prato fiorito
+Brughiera
 [mud]
 Fango
 [marsh]

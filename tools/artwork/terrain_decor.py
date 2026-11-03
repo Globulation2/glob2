@@ -638,10 +638,12 @@ def make_rock(rng, gx, gy, rx, ry, angle, wall, lift, peak, tone, *, points=8, j
     return Rock(ring, (px, py, wall + peak), tone)
 
 
-def draw_rocks(canvas, rng, rocks, *, lichen=None, strata=0.0, shadow=0.45):
+def draw_rocks(canvas, rng, rocks, *, lichen=None, strata=0.0, shadow=0.45, reach=1.0, lip=0.0):
     """Shadows first, then every rock back to front: a dark body fill that
     closes any gaps between facets, flat-shaded facets with grit, wall
-    strata and a darker foot, and thin seams where facets meet."""
+    strata and a darker foot, and thin seams where facets meet. `reach`
+    scales the shadow's throw; `lip` brightens the top edge of each wall,
+    the lit ledge lip of the ridges group."""
     grit = fbm(rng, 18, 3)
     fine = Noise(rng, 64)
     moss = fbm(rng, 10, 2)
@@ -649,7 +651,7 @@ def draw_rocks(canvas, rng, rocks, *, lichen=None, strata=0.0, shadow=0.45):
     for rock in rocks:
         footprint = face_mask([(x, y) for x, y, _ in rock.ring])
         height = max(z for _, _, z in rock.ring + [rock.peak])
-        cast_shadow(canvas, footprint, shadow, 3 + height * 0.04, 4 + height * 0.25)
+        cast_shadow(canvas, footprint, shadow, 3 + height * 0.04 * reach, (4 + height * 0.25) * reach)
     for rock in rocks:
         ground = max(y for _, y, _ in rock.ring)
         height = max(z for _, _, z in rock.ring + [rock.peak])
@@ -665,6 +667,10 @@ def draw_rocks(canvas, rng, rocks, *, lichen=None, strata=0.0, shadow=0.45):
                 g = grit(x, y)
                 shade = value * (0.84 + 0.3 * g + 0.08 * (fine(x, y) - 0.5))
                 if kind == "side":
+                    if lip:
+                        (ax, ay), (bx, by) = poly[0], poly[1]
+                        top = ay + (by - ay) * clamp((x - ax) / (bx - ax)) if bx != ax else min(ay, by)
+                        shade *= 1 + lip * (1 - smoothstep(0.5, 3.0, y - top))
                     # Darker toward the foot, faint bedding lines across the wall.
                     foot = smoothstep(ground - height, ground + 4, y)
                     shade *= 1 - 0.28 * foot * foot
@@ -690,63 +696,66 @@ def outcrop_tone(rng):
     return tuple(c + j for c in base)
 
 
-@spec("ridge_rock", "chunky faceted crags clustered along a shared grain")
+# Ridges: low walls and small peaks with a lit lip and a short shadow, so a
+# ridge reads as a ledge to step around rather than an obstacle to walk past.
+
+@spec("ridge_rock", "low ledge walls with small peaks along a shared grain, lit lip, short shadow")
 def render_ridge_rock(rng, edge):
     canvas = Canvas()
-    grain = -0.35 + rng.uniform(-0.25, 0.25)   # the shared strike every crag follows
-    gx, gy = S / 2 + rng.uniform(-6, 6), S / 2 + CELL * 0.2
+    grain = -0.25 + rng.uniform(-0.2, 0.2)   # the shared strike every ledge follows
+    gx, gy = S / 2 + rng.uniform(-6, 6), S / 2 + CELL * 0.22
     rocks = []
     count = rng.randint(1, 2) if edge else rng.randint(3, 4)
     for k in range(count):
         t = (k - (count - 1) / 2) / max(1, count - 1)
-        ox = t * (44 if edge else 96) + rng.uniform(-8, 8)
-        oy = t * (44 if edge else 96) * math.sin(grain) + rng.uniform(-12, 12)
-        scale = rng.uniform(0.7, 0.85) if edge else rng.uniform(0.85, 1.1)
+        ox = t * (40 if edge else 84) + rng.uniform(-6, 6)
+        oy = t * (40 if edge else 84) * math.sin(grain) + rng.uniform(-6, 6)
+        scale = rng.uniform(0.7, 0.85) if edge else rng.uniform(0.85, 1.05)
         tone = mix3((134, 134, 136), (156, 153, 148), rng.random())
-        peak = rng.uniform(56, 80) * scale
-        rocks.append(make_rock(rng, gx + ox, gy + oy, 44 * scale, 27 * scale, grain, rng.uniform(4, 8) * scale,
-                               peak * 0.4, peak, tone, points=7, jag=0.3, peak_offset=0.45))
-    return draw_rocks(canvas, rng, rocks, strata=0.12, shadow=0.42)
+        rocks.append(make_rock(rng, gx + ox, gy + oy, 48 * scale, 22 * scale, grain, rng.uniform(14, 20) * scale,
+                               4, rng.uniform(6, 14) * scale, tone, points=7, jag=0.25, peak_offset=0.5))
+    return draw_rocks(canvas, rng, rocks, strata=0.12, shadow=0.38, reach=0.5, lip=0.35)
 
 
-@spec("outcrop", "broad stepped bedrock blocks with faceted tops and sparse lichen")
+@spec("outcrop", "low stepped bedrock shelves with faceted tops, sparse lichen, lit lip, short shadow")
 def render_outcrop(rng, edge):
     canvas = Canvas()
     tone = outcrop_tone(rng)
-    gx, gy = S / 2 + rng.uniform(-8, 8), S / 2 + CELL * 0.15
+    gx, gy = S / 2 + rng.uniform(-8, 8), S / 2 + CELL * 0.18
     rocks = []
     if edge:
         rx = rng.uniform(44, 54)
-        rocks.append(make_rock(rng, gx, gy, rx, rx * 0.72, rng.uniform(-0.5, 0.5), rng.uniform(24, 32), 8,
-                               rng.uniform(10, 16), tone, points=8, jag=0.3, peak_offset=0.5))
+        rocks.append(make_rock(rng, gx, gy, rx, rx * 0.6, rng.uniform(-0.5, 0.5), rng.uniform(12, 16), 4,
+                               rng.uniform(5, 9), tone, points=8, jag=0.3, peak_offset=0.5))
     elif rng.random() < 0.3:
-        # Two blocks split by a joint, the rear one taller.
+        # Two shelves split by a joint, the rear one a step higher.
         rx = rng.uniform(48, 56)
         for k, side in enumerate((-1, 1)):
             rocks.append(make_rock(rng, gx + side * rx * 0.75, gy - (6 if k == 0 else -6) + rng.uniform(-6, 6), rx,
-                                   rx * 0.8, rng.uniform(-0.4, 0.4), rng.uniform(30, 44), 8, rng.uniform(10, 16),
-                                   outcrop_tone(rng), points=7, jag=0.3, peak_offset=0.5))
+                                   rx * 0.65, rng.uniform(-0.4, 0.4), rng.uniform(14, 20) if k == 0 else
+                                   rng.uniform(10, 14), 4, rng.uniform(5, 9), outcrop_tone(rng), points=7, jag=0.3,
+                                   peak_offset=0.5))
     else:
         rx = rng.uniform(66, 86)
         gx += rng.uniform(-10, 10)
-        wall = rng.uniform(30, 42)
-        rocks.append(make_rock(rng, gx, gy, rx, rx * 0.74, rng.uniform(-0.4, 0.4), wall, 10, rng.uniform(12, 20),
+        wall = rng.uniform(14, 20)
+        rocks.append(make_rock(rng, gx, gy, rx, rx * 0.62, rng.uniform(-0.4, 0.4), wall, 5, rng.uniform(6, 10),
                                tone, points=8, jag=0.3, peak_offset=0.5))
         if rng.random() < 0.6:
-            # A smaller block stepped on top of the first, set back from its face.
+            # A smaller shelf stepped on top of the first, set back from its face.
             rx2 = rx * rng.uniform(0.4, 0.55)
             sx, sy = gx + rng.uniform(-0.3, 0.3) * rx, gy - rng.uniform(0.1, 0.3) * rx
-            rocks.append(make_rock(rng, sx, sy - wall, rx2, rx2 * 0.7, rng.uniform(-0.6, 0.6),
-                                   rng.uniform(14, 20), 5, rng.uniform(8, 12), outcrop_tone(rng), points=6, jag=0.3,
+            rocks.append(make_rock(rng, sx, sy - wall, rx2, rx2 * 0.65, rng.uniform(-0.6, 0.6),
+                                   rng.uniform(8, 12), 3, rng.uniform(4, 7), outcrop_tone(rng), points=6, jag=0.3,
                                    peak_offset=0.5))
     for _ in range(rng.randint(0, 1) if edge else rng.randint(1, 2)):
         # Fallen rubble at the foot of the face.
         a = rng.uniform(-0.8, 0.8) * math.pi / 2 + math.pi / 2
         d = rx * rng.uniform(0.85, 1.0)
-        r = rng.uniform(8, 13)
+        r = rng.uniform(7, 11)
         rocks.append(make_rock(rng, gx + math.cos(a) * d, gy + math.sin(a) * d * 0.62, r, r * 0.7,
-                               rng.uniform(0, math.tau), r * 0.5, 2, r * 0.45, outcrop_tone(rng), points=6))
-    return draw_rocks(canvas, rng, rocks, lichen=(118, 128, 76), strata=0.0, shadow=0.45)
+                               rng.uniform(0, math.tau), r * 0.4, 2, r * 0.35, outcrop_tone(rng), points=6))
+    return draw_rocks(canvas, rng, rocks, lichen=(118, 128, 76), strata=0.0, shadow=0.4, reach=0.5, lip=0.3)
 
 
 # Connected foliage is a raised surface over its painted footprint, not a set of

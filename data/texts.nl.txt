@@ -5665,7 +5665,7 @@ Klei
 [gravel]
 Grind
 [flower_meadow]
-Bloemenweide
+Heide
 [mud]
 Modder
 [marsh]

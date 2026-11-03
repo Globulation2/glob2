@@ -5665,7 +5665,7 @@ AI 생성 아님
 [gravel]
 자갈
 [flower_meadow]
-꽃 초원
+관목 황야
 [mud]
 진흙
 [marsh]

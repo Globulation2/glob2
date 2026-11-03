@@ -5665,7 +5665,7 @@ Hlina
 [gravel]
 Štrk
 [flower_meadow]
-Kvetnatá lúka
+Vresovisko
 [mud]
 Blato
 [marsh]

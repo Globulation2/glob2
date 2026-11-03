@@ -5665,7 +5665,7 @@ Ler
 [gravel]
 Grus
 [flower_meadow]
-Blomstereng
+Hede
 [mud]
 Mudder
 [marsh]

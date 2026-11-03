@@ -5665,7 +5665,7 @@ Tanah liat
 [gravel]
 Kerikil
 [flower_meadow]
-Padang bunga
+Padang semak
 [mud]
 Lumpur
 [marsh]

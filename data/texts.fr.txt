@@ -5665,7 +5665,7 @@ Argile
 [gravel]
 Gravier
 [flower_meadow]
-Prairie fleurie
+Lande
 [mud]
 Boue
 [marsh]

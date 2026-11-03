@@ -64,7 +64,7 @@ All built-in recipes declare `periodic=True` and a `grid`; static recipes use
 `grid=8, blocks=4`, lava and ember field `grid=8`, and the waters `grid=4`:
 cell position selects the corresponding frame within one seeded layout, and
 runtime and compiled packs skip border preparation. This includes object-based
-grounds such as gravel, flower meadow and marsh as well as the legacy bindings.
+grounds such as heath and marsh as well as the legacy bindings.
 The legacy materials retain their established palettes and material identities;
 water keeps its violet-blue palette, and ice keeps its frozen-ground profile.
 
@@ -82,10 +82,37 @@ intentional boardwalk plank gaps without mistaking them for tile seams. A
 synthetic block contract also verifies that slicing leaves every HD pixel
 unchanged and that native frames equal downsampling the unsliced block.
 
-Group readability is part of the recipes: obstacles are lit from the top left and cast onto grass, hazards warm
-and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
-barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
-and light, void near black with a cast onto every neighbour. The grass and sand
+Group readability is part of the recipes. Every type in a gameplay group has
+the same rules, so each group carries one learnable mark, drawn by one shared
+helper in `terrain_synth.py`, while colour and material stay free per biome:
+
+| Group | Mark | Helper |
+| --- | --- | --- |
+| Grass | baseline, no mark | |
+| Fertile (loam, moss, spring meadow) | warm, saturated ground | |
+| Water, deep water, lava | reserved colour | |
+| Snow and ice (ice, deep snow) | reserved cold white | |
+| Sand | warm fine grain | `sand_look` |
+| Barren (dirt, clay, gravel, heath) | faded colour, broken dry hairline cracks about one native pixel wide | `barren_mark`, `group_cracks` |
+| Paths (road, dirt track, boardwalk) | straight lines (setts, ruts, planks) with a crisp, lighter worn lip | `worn_edge`, `ruts` |
+| Rough (mud, marsh, scree) | heavy lumps, wet pits with a sheen on the lit rim | `lumps`, `wet_pits` |
+| Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
+| Void (hole, chasm) | ledges whose lit rims fall away into darkness (hole); strata (chasm) | `void_falloff` |
+| Obstacles | tall raised decor | `terrain_decor.py` |
+
+Within the groups: dirt is faded warm earth with a few stones; clay keeps its
+baked plates under the shared cracks; gravel is dry, flat, angular crushed stone
+rather than rounded pebbles, so it no longer reads as road; heath (key
+`flower_meadow`, kept for maps and catalogs) is low dusky heather and dead scrub
+cushions on cracked earth, rather than flowers that read as farmland. Road is
+laid stone setts in straight running-bond courses with rounded corners; dirt
+track has two strong, straight wheel ruts; boardwalk keeps its planks. Mud is
+churned lumps and water-filled pits; marsh is waterlogged tussock mounds,
+standing pools and upright reeds; scree is big, dark, jumbled slabs, each tipped
+to its own brightness. The helpers keep the block contract: geometry comes from
+the shared stream at the block edge, interiors vary, and any normalisation or
+lighting uses the common reference. Obstacles are lit from the top left and cast
+onto grass, and void casts onto every neighbour. The grass and sand
 looks keep the grain of the classic tile they stand in for and change only its
 colour: lush and dry grass are soft like grass, dune and pale sand speckled at the
 native pixel like sand. Like grass and sand they are four-layout 8×8 block
@@ -153,11 +180,13 @@ this profile and applies it to foliage material pairs as well as their decor. He
 strokes and soft crowns. Thicket has sparser olive foliage with visible branches.
 Both rise six native pixels above their ground material and sample one
 continuous canopy texture across a 4×4 block of cells. Thicket has broader
-boundary irregularity and woody gaps between crowns. The other sets are faceted boulders and rubble, clusters of faceted crags along
-a shared grain, and broad stepped bedrock blocks with sparse lichen. Ridge and
-outcrop rocks are flat-shaded prisms: a convex ring raised into walls, with
-sloping top facets meeting at an off-centre peak, so each face takes one light
-value. The tool writes `data/gfx/terrain-decorN.png`
+boundary irregularity and woody gaps between crowns. The other sets are faceted boulders and rubble; for ridge rock, low ledge
+walls with small peaks along a shared grain; and for outcrop, low stepped bedrock
+shelves with sparse lichen. Ridge and outcrop rocks are flat-shaded prisms: a
+convex ring raised into walls, with sloping top facets meeting at an off-centre
+peak, so each face takes one light value. They share the ridges group's ledge
+look: a lit lip along the top of each wall and a short shadow, half the throw of
+the boulders'. The tool writes `data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
 316–427; thicket corner tiles at 428–683 and interiors at 684–795), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`
@@ -174,20 +203,11 @@ flower heads, tussocks). All built-in materials instead set
 Within a block, objects can cross cell edges freely. Across interchangeable
 block boundaries, recipes preserve shared periodic object geometry and vary the
 interior. Object fields, stamps and domes wrap across the complete canvas, and
-shared scalar fields supply continuous ground, shadows and lighting. Gravel,
-flower meadow and marsh use this approach too, rather than repeating a shared
-object band around every individual tile.
-Their recipes follow reference photographs of pebble beds, wildflower meadows and
-tussock bogs:
-
-- Gravel is overlapping rounded pebbles of mixed grey and warm tones with contact
-  shadows over a dark bed of fines.
-- Flower meadow has patches of one colour plus singles, each head a ring of
-  saturated petals around a contrasting centre with a soft shadow.
-- Marsh has grass tussocks with radiating blades on dark wet moss, with open
-  pools and reed tufts.
-
-The photographs are only looked at; nothing from them is read into an output.
+shared scalar fields supply continuous ground, shadows and lighting. Heath and
+marsh use this approach too, rather than repeating a shared object band around
+every individual tile: heath's scrub cushions and marsh's pools and reed clumps
+are whole objects, and Voronoi-based marks (cracks, crushed stone, lumps, slabs)
+keep their boundary cells in every layout.
 
 Lava and ember field are animated: one 8×8 layout with four phases, frame
 `variant + 64 * phase` (frames 0–255), catalogued with `animation_frames 4`,

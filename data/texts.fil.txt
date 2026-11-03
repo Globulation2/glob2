@@ -5665,7 +5665,7 @@ Luwad
 [gravel]
 graba
 [flower_meadow]
-Parang na may mga bulaklak
+Tuyong kaparangan
 [mud]
 Putik
 [marsh]

@@ -5665,7 +5665,7 @@ AI 生成ではない
 [gravel]
 砂利
 [flower_meadow]
-花畑
+荒れ野
 [mud]
 泥
 [marsh]

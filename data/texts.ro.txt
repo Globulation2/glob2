@@ -5665,7 +5665,7 @@ Argilă
 [gravel]
 Pietriș
 [flower_meadow]
-Pajiște cu flori
+Landă
 [mud]
 Noroi
 [marsh]

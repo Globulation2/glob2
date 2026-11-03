@@ -5665,7 +5665,7 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [gravel]
 شن
 [flower_meadow]
-چمنزار گل
+خلنگزار
 [mud]
 گل‌ولای
 [marsh]

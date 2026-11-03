@@ -5665,7 +5665,7 @@ Kil
 [gravel]
 Çakıl
 [flower_meadow]
-Çiçekli çayır
+Fundalık
 [mud]
 Çamur
 [marsh]

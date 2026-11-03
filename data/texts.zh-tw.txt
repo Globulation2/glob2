@@ -5665,7 +5665,7 @@ AI 生成
 [gravel]
 礫石
 [flower_meadow]
-花草地
+石楠荒地
 [mud]
 泥濘
 [marsh]

@@ -5665,7 +5665,7 @@ Jíl
 [gravel]
 Štěrk
 [flower_meadow]
-Květnatá louka
+Vřesoviště
 [mud]
 Bláto
 [marsh]

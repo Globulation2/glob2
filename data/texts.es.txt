@@ -5665,7 +5665,7 @@ Arcilla
 [gravel]
 Grava
 [flower_meadow]
-Pradera de flores
+Brezal
 [mud]
 Barro
 [marsh]

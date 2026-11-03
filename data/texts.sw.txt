@@ -5641,7 +5641,7 @@ Udongo wa mfinyanzi
 [gravel]
 Changarawe
 [flower_meadow]
-Mbuga ya maua
+Nyika ya vichaka
 [mud]
 Tope
 [marsh]

@@ -5665,7 +5665,7 @@ Argilo
 [gravel]
 Gruzo
 [flower_meadow]
-Flora herbejo
+Erikejo
 [mud]
 Koto
 [marsh]

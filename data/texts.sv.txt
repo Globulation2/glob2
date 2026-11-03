@@ -5665,7 +5665,7 @@ Lera
 [gravel]
 Grus
 [flower_meadow]
-Blomsteräng
+Ljunghed
 [mud]
 Gyttja
 [marsh]

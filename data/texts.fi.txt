@@ -5665,7 +5665,7 @@ Savi
 [gravel]
 Sora
 [flower_meadow]
-Kukkaniitty
+Nummi
 [mud]
 Muta
 [marsh]

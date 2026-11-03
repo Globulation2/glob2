@@ -5641,7 +5641,7 @@ Leire
 [gravel]
 Grus
 [flower_meadow]
-Blomstereng
+Lynghei
 [mud]
 Søle
 [marsh]

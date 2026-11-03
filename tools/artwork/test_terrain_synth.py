@@ -49,7 +49,8 @@ class TerrainSynth(unittest.TestCase):
         self.assertEqual(len(synth.BUILTIN_ORDER), 28)
         for name, recipe in synth.RECIPES.items():
             self.assertEqual(recipe.name, name)
-            self.assertIn(recipe.profile, ("rock", "soft", "crisp", "brush", "sand", "fractured", "cliff", "cobblestone", "frozen"))
+            self.assertIn(recipe.profile, ("rock", "soft", "crisp", "brush", "sand", "fractured", "cliff", "cobblestone", "frozen",
+                                            "canopy"))
             self.assertIn("height", recipe.seam)
 
     def test_determinism_matches_committed_frames_and_provenance(self):
@@ -204,18 +205,10 @@ class TerrainSynth(unittest.TestCase):
         means = {name: mean_color(self.tiles(name)) for name in synth.SYNTH_ORDER}
         groups = {name: synth.RECIPES[name].group for name in synth.SYNTH_ORDER}
         groups.update(grass="grass", sand="sand", road="paths", ice="ice")
-        # Road retains the original muted stone palette. Its cobblestone
-        # contour profile and connected pavers distinguish it from gravel's
-        # scattered stones, despite their intentionally similar mean colors.
-        profile_distinguished = {frozenset(("road", "gravel"))}
         names = sorted(means)
         for i, a in enumerate(names):
             for b in names[i + 1:]:
                 if groups[a] == groups[b]:
-                    continue
-                if frozenset((a, b)) in profile_distinguished:
-                    self.assertEqual({synth.RECIPES[a].profile, synth.RECIPES[b].profile},
-                                     {"cobblestone", "rock"})
                     continue
                 with self.subTest(pair=(a, b)):
                     # A floor against accidental near-duplicates; readability also
@@ -358,7 +351,7 @@ class TerrainSynth(unittest.TestCase):
         pairs = {tuple(sorted((p["a"], p["b"]))) for p in fragment["pair_treatments"]}
         self.assertEqual(len(pairs), len(fragment["pair_treatments"]))
         for p in fragment["pair_treatments"]:
-            self.assertIn(p["profile"], ("rock", "soft", "crisp", "brush", "fractured"))
+            self.assertIn(p["profile"], ("rock", "soft", "crisp", "brush", "fractured", "beach"))
         json.dumps(fragment)
 
     def test_provenance_records_statistics_only_references(self):

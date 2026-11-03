@@ -5665,7 +5665,7 @@ Agyag
 [gravel]
 Kavics
 [flower_meadow]
-Virágos rét
+Hangás
 [mud]
 Sár
 [marsh]

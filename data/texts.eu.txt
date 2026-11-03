@@ -5665,7 +5665,7 @@ Buztina
 [gravel]
 Legarra
 [flower_meadow]
-Lore-belardia
+Txilardia
 [mud]
 Lokatza
 [marsh]

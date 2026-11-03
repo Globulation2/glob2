@@ -5665,7 +5665,7 @@ Glina
 [gravel]
 Prod
 [flower_meadow]
-Cvetlični travnik
+Resava
 [mud]
 Blato
 [marsh]
