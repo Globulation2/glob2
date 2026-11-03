@@ -322,9 +322,13 @@ script asks for.
 bottom-left, bottom-right. Terrain is stored per map vertex, and vertex (x,y) is the
 top-left corner of tile (x,y). Index the immutable definitions returned by
 `ctx.game.terrainTypes()` with these IDs. When all four agree, the tile has that
-terrain's rules exactly; mixed corners are walkable when any corner is, never
-swimmable or buildable, block projectiles and count as a shoreline when any corner
-does, and are otherwise as permissive as the weakest corner. There is
+terrain's rules exactly. For mixed profiles, the largest count of walking,
+swimming or blocked corners determines ground movement. Walking wins ties; a
+swimming/blocked tie stays blocked. All numeric modifiers use the arithmetic mean
+of all four corners: ground/air speed and health, growth, fertility, inhibition and
+shoreline support. Q8 averages round toward zero, and signed health rates can
+offset each other. Mixed profiles are never buildable; they block projectiles and count as a shoreline when any corner does,
+and require all corners for flight and growth permissions. There is
 no single per-tile terrain field. `corners` follows the same visibility and
 remembered-observation rules as `resource`. The registry is static public metadata
 and does not reveal map contents.

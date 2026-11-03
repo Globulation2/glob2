@@ -907,8 +907,35 @@ inline void lavaPrimitiveChecks()
 	assert(finalQuality.score == selected.quality.score);
 }
 
+// Planning masks must use the same corner votes as the compiled map, including
+// water-majority shores and the wrapping cells at the map's seams.
+inline void sketchMovementChecks()
+{
+	Game game(nullptr);
+	landscapeGrass(game, 4, 4);
+	const Torus t(game.map);
+	TerrainSketch terrain(t.size(), WATER);
+	terrain[t.at(0, 0)] = GRASS;
+	assert(!walkableTiles(terrain, t)[t.at(0, 0)]);
+	terrain[t.at(1, 0)] = SAND;
+	assert(walkableTiles(terrain, t)[t.at(0, 0)]);
+	terrain.assign(t.size(), CHASM);
+	terrain[t.at(0, 0)] = GRASS;
+	assert(!walkableTiles(terrain, t)[t.at(0, 0)]);
+	const TerrainType types[] = {GRASS, SAND, WATER, DEEP_WATER, CHASM, LAVA};
+	std::mt19937 random(43);
+	for (int attempt = 0; attempt < 8; ++attempt)
+	{
+		for (auto &corner : terrain)
+			corner = types[random() % std::size(types)];
+		writeVertices(game.map, terrain);
+		assert(walkableTiles(terrain, t) == walkableTiles(game.map));
+	}
+}
+
 inline void landscapeChecks()
 {
+	sketchMovementChecks();
 	contourFarmChecks();
 	lavaPrimitiveChecks();
 	dealChecks();

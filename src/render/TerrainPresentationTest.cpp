@@ -1591,7 +1591,8 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(map.vertexTerrainAt(7, 8) == WATER);
 		CHECK(map.vertexTerrainAt(8, 7) == WATER);
 		CHECK(map.vertexTerrainAt(7, 7) == WATER);
-		CHECK(map.terrainPropertiesAt(7, 7).walkable);
+		CHECK_FALSE(map.terrainPropertiesAt(7, 7).walkable);
+		CHECK(map.terrainPropertiesAt(7, 7).swimmable);
 		CHECK_FALSE(map.terrainPropertiesAt(6, 6).walkable);
 		CHECK(map.vertexTerrainAt(0, 10) == ICE);
 		CHECK(map.vertexTerrainAt(63, 10) == WATER);

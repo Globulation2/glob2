@@ -303,7 +303,7 @@ def main():
         del legacy['terrain']['ice'],legacy['terrain']['road']
         contract(legacy)
         islands=fixtures['islands']
-        assert islands['terrain']['water']['tiles'] == 4094
+        assert islands['terrain']['water']['tiles'] == 4092
         assert islands['movement']['walking']['between_colonies'] == [[0,None],[None,0]]
         assert islands['movement']['walking_and_swimming']['between_colonies'] == [[0,2],[2,0]]
         assert fixtures['algae-ring']['movement']['walking_and_swimming']['between_colonies'] == [[0,None],[None,0]]

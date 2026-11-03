@@ -911,7 +911,7 @@ TEST_SUITE("MapGeneratorDefaults")
         CHECK(open[torus.at(8,8)]);
         CHECK(open[torus.at(10,8)]);
         CHECK_FALSE(open[torus.at(12,8)]);
-        // A water tile's mixed neighbours are walkable transitions.
+        // This side neighbour has two walking corners, so the tie permits walking.
         CHECK(open[torus.at(11,8)]);
         CHECK_FALSE(beach[torus.at(8,8)]);
         CHECK_FALSE(beach[torus.at(10,8)]);
@@ -932,6 +932,120 @@ TEST_SUITE("MapGeneratorDefaults")
 		CHECK(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
 		MapGeneration::paintTile(map, 20, 20, WATER);
 		CHECK_FALSE(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
+    }
+    TEST_CASE("colony route repairs cross mixed water and protect adjacent walls")
+    {
+        glob2test::HeadlessGlobals globals;
+        Game game(nullptr);
+        auto& map = game.map;
+        map.setSize(5, 5);
+        map.setGame(&game);
+        const MapGeneration::Torus torus(map);
+        MapGeneration::TerrainSketch sketch(torus.size(), WATER);
+        for (int y = 0; y < torus.h; ++y)
+            for (int x = 0; x < torus.w; ++x)
+                sketch[torus.at(x,y)] = x % 2 ? WATER : DEEP_WATER;
+        for (int y = 10; y <= 18; ++y)
+            for (int x = 2; x <= 9; ++x)
+            {
+                sketch[torus.at(x,y)] = GRASS;
+                sketch[torus.at(x+18,y)] = GRASS;
+            }
+        MapGeneration::writeVertices(map, sketch);
+        GenerationRequest request;
+        request.nbTeams = 2;
+        GenerationContext context(request);
+        context.bootX[0] = 4; context.bootY[0] = 12;
+        context.bootX[1] = 22; context.bootY[1] = 12;
+        const auto source = MapGeneration::tileMask(torus, {torus.at(3,11)});
+        const auto reachable = [&] {
+            return MapGeneration::stepsFrom(torus, source, MapGeneration::walkableTiles(map))[torus.at(21,11)] >= 0;
+        };
+        CHECK_FALSE(reachable());
+        const MapGeneration::StepCosts costs{1, 3, 8, 25, -1};
+        std::vector<unsigned char> keep(torus.size(), 0);
+        for (int y = 0; y < torus.h; ++y)
+            keep[torus.at(14,y)] = keep[torus.at(30,y)] = 1;
+        const auto vertices = [&] {
+            return std::vector<TerrainType>(map.vertexTerrainState().begin(), map.vertexTerrainState().end());
+        };
+        SUBCASE("protected neighbours prevent ford painting")
+        {
+            // A one-cell gap cannot hold a ford without touching its neighbours.
+            keep[torus.at(14,13)] = keep[torus.at(30,13)] = 0;
+            const auto before = vertices();
+            CHECK_FALSE(MapGeneration::openColonyRoutes(map, context, torus, costs, 0, &keep));
+            CHECK(vertices() == before);
+            REQUIRE(MapGeneration::openColonyRoutes(map, context, torus, costs));
+            CHECK(reachable());
+            CHECK_FALSE(MapGeneration::openColonyRoutes(map, context, torus, costs));
+        }
+        SUBCASE("minority land corners retain buildings and resources")
+        {
+            // Only the eastern crossing is permitted. Its water-majority cell
+            // (14,13) shares one grass corner with the legal plot at (15,9).
+            // That corner is not painted, so its diagonal cell is untouched.
+            for (int y = 12; y <= 14; ++y) keep[torus.at(14,y)] = 0;
+            {
+                auto edit = map.editTerrain();
+                for (int y = 9; y <= 13; ++y)
+                    for (int x = 15; x <= 19; ++x) map.setVertexTerrain(x,y,GRASS);
+            }
+            REQUIRE(map.terrainPropertiesAt(14,13).swimmable);
+            Building* building = nullptr;
+            SUBCASE("adjacent building stays on buildable terrain")
+            {
+                game.addTeam();
+                const int swarm = game.buildingsTypes.getTypeNum("swarm",0,false);
+                REQUIRE(map.isFreeForBuilding(15,9,4,4));
+                building = game.addBuilding(15,9,swarm,0);
+                REQUIRE(building);
+            }
+            SUBCASE("untouched diagonal resources are not cleared")
+            {
+                map.replaceResource(15,12,{CHERRY,0,3,0});
+            }
+            REQUIRE(MapGeneration::openColonyRoutes(map, context, torus, costs, 0, &keep));
+            CHECK(reachable());
+            CHECK(map.vertexTerrainAt(15,13) == GRASS);
+            if (building)
+            {
+                for (int y = 9; y < 13; ++y)
+                    for (int x = 15; x < 19; ++x)
+                    {
+                        CHECK(map.terrainPropertiesAt(x,y).buildable);
+                        CHECK(map.getBuilding(x,y) == building->gid);
+                    }
+            }
+            else
+            {
+                CHECK(map.getResource(15,12).type == CHERRY);
+                CHECK(map.getResource(15,12).amount == 3);
+            }
+        }
+        SUBCASE("buildings on touched swimming terrain prevent ford painting")
+        {
+            // Authored profiles may permit building on swimming terrain. Such
+            // corners would be painted and must protect their whole footprint.
+            map.setGame(nullptr);
+            map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:buildable-water","name":"Buildable water","base":"water","appearance":"water","properties":{"buildable":true}}]})");
+            map.setGame(&game);
+            const auto water = map.terrainRegistry().find("test:buildable-water");
+            REQUIRE(water.has_value());
+            {
+                auto edit = map.editTerrain();
+                for (int y = 9; y <= 13; ++y)
+                    for (int x = 15; x <= 19; ++x) map.setVertexTerrain(x,y,*water);
+            }
+            for (int y = 12; y <= 14; ++y) keep[torus.at(14,y)] = 0;
+            game.addTeam();
+            const int swarm = game.buildingsTypes.getTypeNum("swarm",0,false);
+            REQUIRE(map.isFreeForBuilding(15,9,4,4));
+            REQUIRE(game.addBuilding(15,9,swarm,0));
+            const auto before = vertices();
+            CHECK_FALSE(MapGeneration::openColonyRoutes(map, context, torus, costs, 0, &keep));
+            CHECK(vertices() == before);
+        }
     }
 	TEST_CASE("toolkit geometry; raster; resource and home contracts")
 	{

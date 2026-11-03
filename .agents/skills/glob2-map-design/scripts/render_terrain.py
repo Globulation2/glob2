@@ -10,7 +10,7 @@ tile's rules come from its four corner vertices. Make one with the structured co
   python3 render_terrain.py /tmp/dump/terrain.txt fort.png --centre 113 136 --radius 40 --scale 10
 
 Codes (src/app/cli/MapStudy.cpp): 0 pure grass, 1 pure sand, 2 pure water, 3 mixed corners (a
-beach or a one-vertex sand line: walkable when any corner is, never buildable), 4 wheat, 5 wood,
+beach or a one-vertex sand line: movement by corner vote, never buildable), 4 wheat, 5 wood,
 6 stone, 7 building, 8 fruit, 9 algae, and 10 + terrain ID for a tile wholly of another terrain
 (drawn in one neutral colour). A resource hides the terrain under it.
 """

@@ -1176,11 +1176,20 @@ std::string validate(const Game &game, const GenerationContext &context, const L
 				   " cannot fit six complete upgrade envelopes with circulation: " +
 				   upgrades.failure;
 	}
+	// Crossings reserve terrain vertices. The walking footprint consists of
+	// cells with at least two crossing corners; a lone boundary corner is a
+	// water-majority fringe, not part of the designed lane. Check every cell
+	// of that footprint, in addition to the finished-world connectivity above.
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (L.crossings[i] && !map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable)
-			return "A designed crossing was lost at (" + std::to_string(t.remainderX(i)) + "," +
-				   std::to_string(i / t.w) + ") during terrain rasterization.";
+		const int x = t.remainderX(i), y = i / t.w;
+		const unsigned crossingCorners = unsigned(L.crossings[i] != 0) +
+			unsigned(L.crossings[t.at(x + 1, y)] != 0) +
+			unsigned(L.crossings[t.at(x, y + 1)] != 0) +
+			unsigned(L.crossings[t.at(x + 1, y + 1)] != 0);
+		if (crossingCorners >= 2 && !map.terrainPropertiesAt(x, y).walkable)
+			return "A designed crossing was lost at (" + std::to_string(x) + "," +
+				   std::to_string(y) + ") during terrain rasterization.";
 	}
 	return "";
 }

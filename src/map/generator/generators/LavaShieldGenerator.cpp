@@ -17,6 +17,7 @@
 #include "Roads.h"
 #include "Sketch.h"
 #include "StartQuality.h"
+#include "TerrainProperties.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
@@ -120,8 +121,8 @@ struct Layout
 	Torus t{1, 1};
 	Stretch stretch;
 	TerrainSketch terrain;
-	// hot: tiles with any lava-group corner (never painted over). wall: tiles whose four corners
-	// are all lava-group, the impassable flows and crater. fords: the cooled crossings' tiles;
+	// hot: tiles with any lava-group corner (never painted over). wall: lava-touching tiles
+	// blocked by the corner movement vote. fords: the walkable cooled crossings' tiles;
 	// fordTiles lists them per long tongue. flowEdge and fordCorners are the corners the
 	// margins along the flows are measured from, once the towns are placed (furnishMargins).
 	std::vector<unsigned char> rim, lake, hot, wall, fords, flowEdge, fordCorners;
@@ -459,9 +460,14 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			hot += isHot(c);
 			forded = forded || ford[c];
 		}
+		const auto movement = combineCornerRules(
+			terrainProperties(TerrainType(L.terrain[corners[0]])),
+			terrainProperties(TerrainType(L.terrain[corners[1]])),
+			terrainProperties(TerrainType(L.terrain[corners[2]])),
+			terrainProperties(TerrainType(L.terrain[corners[3]])));
 		L.hot[i] = hot > 0;
-		L.wall[i] = hot == 4;
-		L.fords[i] = forded && hot < 4;
+		L.wall[i] = hot > 0 && !movement.walkable && !movement.swimmable;
+		L.fords[i] = forded && movement.walkable;
 	}
 	for (const auto &cut : fordVertices)
 	{
@@ -1179,7 +1185,7 @@ GeneratorDefinition lavaShieldDefinition()
 			// gravel, stone is a crust along the flows, the rim is loam, roads are dirt tracks and
 			// the open sea is deep water.
 			// Revision 7: the crater is uninterrupted lava, without void vents.
-			7,
+			8,
 			false,
 			{GeneratorControl{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout}
 				 .withSearchRange(4, 7),

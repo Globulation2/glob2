@@ -95,9 +95,9 @@ constexpr int kReferenceGap = 6, kSmallestSpacing = 16;
 // a quarter of the map; with it, two fifths.
 constexpr int kSiteMinimumPercent = 83, kRelaxRounds = 3;
 // An esker is a wandering line of sand `kEskerHalfWidth` tiles either side of its centre: three
-// terrain vertices of sand, which is four walkable tiles across (a tile with any sand corner is
-// land), so a column of units crosses it two abreast, while a defender's towers on the landing
-// cover the whole of it (a level-1 tower reaches 5 tiles). It wanders by up to `kEskerWander`
+// terrain vertices of sand, with at least two sand corners needed per walking tile. A defender's
+// towers on the landing cover the narrow crossing (a level-1 tower reaches 5 tiles).
+// It wanders by up to `kEskerWander`
 // tiles from the straight line between its two drumlins, enough to read as a ridge the meltwater
 // left rather than a ruled causeway, little enough that it does not stray into a third drumlin's
 // water in the usual gap (`water-gap` is 6 by default); its width swells and narrows by a fifth.
@@ -487,8 +487,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Torus &t = L.t;
 	const int teams = context.request.nbTeams;
 	// The promise the map makes: with the eskers shut, no colony can walk to another. An esker is
-	// sand on terrain vertices and a tile with any sand corner is walkable, so the tiles to shut
-	// are every tile touching an esker corner (roadTiles), not the corners alone.
+	// sand on terrain vertices; close every tile touching an esker corner (roadTiles),
+	// covering the whole walking crossing even where its boundary cells are water-majority.
 	if (const std::array<int, 2> leak = colonyLeak(map, t, teams, roadTiles(t, L.esker));
 		leak[0] >= 0)
 		return "Colony " + std::to_string(leak[0]) + " can walk to colony " +

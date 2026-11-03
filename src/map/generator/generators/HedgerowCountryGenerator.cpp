@@ -329,11 +329,10 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	// the largest distance cache is 64 MiB, local to this reconstructible design call.
 	if (r.nbTeams > 1 && r.nbTeams < g.cellCount())
 	{
-		const auto water = pureTiles(L.terrain, t, WATER);
-		std::vector<unsigned char> walkable(t.size(), 0);
+		auto walkable = walkableTiles(L.terrain, t);
 		std::vector<int> samples, origins;
 		for (int i = 0; i < t.size(); ++i)
-			walkable[i] = !water[i] && !L.hedge[i] && !L.plot[i];
+			walkable[i] = walkable[i] && !L.hedge[i] && !L.plot[i];
 		for (int y = 2; y < t.h; y += 4)
 			for (int x = 2; x < t.w; x += 4)
 				if (walkable[t.at(x, y)])
@@ -572,7 +571,7 @@ GeneratorDefinition hedgerowCountryDefinition()
 		"hedgerow-country",
 		38,
 		"Hedgerow Country",
-		8,
+		9,
 		false,
 		{GeneratorControl{"field-size", "Field size", 48, 96, 16, 64, ControlGroup::Layout}
 			 .withSearchRange(48, 80),

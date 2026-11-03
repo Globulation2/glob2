@@ -2216,9 +2216,8 @@ inline void bastionKeysContracts()
 	assert(GenerationService().generate(bridged, request));
 	assert(coloniesApart(bridged.map, 2, "without swimming").empty());
 	const Torus t(bridged.map);
-	// The estates are dressed in catalogue ground. Deep water is
-	// absent by design: a tile between shallow and deep water is not swimmable, so a ring of it
-	// would seal every island from swimmers.
+	// The estates are dressed in catalogue ground; the sea uses ordinary water.
+	// This recipe does not add a deep-water band around the islands.
 	{
 		std::set<int> used;
 		int pier = -1;
