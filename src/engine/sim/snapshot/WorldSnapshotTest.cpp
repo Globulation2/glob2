@@ -28,8 +28,8 @@ TEST_SUITE("WorldSnapshot")
     TEST_CASE("material source coordinates stay immutable with their captured publication")
     {
         using Frozen = const gradient_kernel::OwnedDestinations&;
-        static_assert(std::is_same_v<decltype(std::declval<Frozen>().x[0]), const Uint16&>);
-        static_assert(std::is_same_v<decltype(std::declval<Frozen>().x.get()), const Uint16*>);
+        static_assert(std::is_same_v<decltype(std::declval<Frozen>().coordinates[0]), const Uint32&>);
+        static_assert(std::is_same_v<decltype(std::declval<Frozen>().coordinates.get()), const Uint32*>);
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
         auto& map = fixture.game.map;
@@ -44,7 +44,7 @@ TEST_SUITE("WorldSnapshot")
         const auto* field = before.resourceFields->find(key);
         REQUIRE(field); REQUIRE(field->destinations);
         const auto index = map.coordToIndex(4, 4);
-        CHECK(field->destinations->x[index] == 12); CHECK(field->destinations->y[index] == 12);
+        CHECK(field->destinations->x(index) == 12); CHECK(field->destinations->y(index) == 12);
         CHECK(field->destinationGeneration > 0);
         // Dropping the live metadata must not revoke or mutate an older lease.
         map.setMaterialDestinationsEnabled(false);
@@ -53,7 +53,7 @@ TEST_SUITE("WorldSnapshot")
         const auto* replaced = after.resourceFields->find(key);
         REQUIRE(replaced); CHECK_FALSE(replaced->destinations);
         CHECK(replaced->destinationGeneration == 0);
-        CHECK(field->destinations->x[index] == 12); CHECK(field->destinations->y[index] == 12);
+        CHECK(field->destinations->x(index) == 12); CHECK(field->destinations->y(index) == 12);
     }
 
     TEST_CASE("claims have immutable exact counts and independent dirty chunks")

@@ -162,7 +162,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
         const bool recovering=recovery.recovering && !activeMaterialClaim;
         const bool firstAvailable=recovering || config.selection==ResourceClaims::ClaimPolicyConfig::Selection::FirstAvailable;
         const auto origin=Uint32(map.coordToIndex(posX,posY));
-        const auto nx=destinations->x[origin],ny=destinations->y[origin];
+        const auto nx=destinations->x(origin),ny=destinations->y(origin);
         const bool nearestValid=nx<map.getW() && ny<map.getH();
         const auto delta=[](int a,int b,int size){return ((b-a+size/2)&(size-1))-size/2;};
         const int nearDx=nearestValid?delta(posX,nx,map.getW()):0,nearDy=nearestValid?delta(posY,ny,map.getH()):0;
@@ -212,7 +212,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
                 const int probeX=ox+probes.x[i],probeY=oy+probes.y[i];
                 const auto probe=Uint32(map.coordToIndex(probeX,probeY));
                 if constexpr(Record)++coordinates;
-                const auto x=destinations->x[probe],y=destinations->y[probe];
+                const auto x=destinations->x(probe),y=destinations->y(probe);
                 if((!Raw || 2*i>=firstCandidate) && x<map.getW() && y<map.getH() && consider.template operator()<false>(Uint32(map.coordToIndex(x,y)),x,y,probe,unsigned(i)) && firstAvailable)break;
                 if constexpr(Raw) {
                     // ClosestGeometric scans both candidates; FirstAvailable
@@ -247,7 +247,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
     }
     for(std::size_t i=0;i<pattern.x.size();++i) {
         const auto probe=map.coordToIndex(posX+pattern.x[i],posY+pattern.y[i]);
-        const auto x=destinations->x[probe],y=destinations->y[probe];
+        const auto x=destinations->x(probe),y=destinations->y(probe);
         if(x>=map.getW() || y>=map.getH())continue;
         const auto access=Uint32(map.coordToIndex(x,y));
         if(visited[access]==epoch)continue;

@@ -20,7 +20,7 @@ void propagate(std::uint16_t* gradient, DestinationPlanes destinations,
     int maxCost, field::Grid grid, GradientWorkspace& workspace, CostAt costAt)
 {
     static_assert(Buckets == 64 || Buckets == 128 || Buckets == 256);
-    if (!gradient || !destinations.x || !destinations.y ||
+    if (!gradient || !destinations.coordinates ||
         grid.width() > DestinationPlanes::Invalid || grid.height() > DestinationPlanes::Invalid ||
         grid.cells() > std::size_t(std::numeric_limits<int>::max()))
         throw std::invalid_argument("Invalid gradient destination planes or dimensions");
@@ -40,11 +40,11 @@ void propagate(std::uint16_t* gradient, DestinationPlanes destinations,
     std::size_t pending = 0;
     for (std::size_t i = 0; i < grid.cells(); ++i) {
         if (gradient[i] <= GRADIENT_UNREACHABLE) {
-            destinations.x[i] = destinations.y[i] = DestinationPlanes::Invalid;
+            destinations.coordinates[i] = DestinationPlanes::InvalidCoordinate;
             continue;
         }
-        destinations.x[i] = std::uint16_t(Masked ? i & grid.maskX() : i % grid.width());
-        destinations.y[i] = std::uint16_t(Masked ? i >> shift : i / grid.width());
+        destinations.set(i,std::uint16_t(Masked ? i & grid.maskX() : i % grid.width()),
+            std::uint16_t(Masked ? i >> shift : i / grid.width()));
         const int cost = GRADIENT_AT_GOAL - gradient[i];
         if (cost < int(Buckets)) { queue[cost].push(std::uint32_t(i)); ++pending; }
         else deferred.emplace_back(cost, int(i));
@@ -68,16 +68,15 @@ void propagate(std::uint16_t* gradient, DestinationPlanes destinations,
             const auto steps = costAt(i);
             if (!steps.cardinal || !steps.diagonal || steps.cardinal >= Buckets || steps.diagonal >= Buckets)
                 throw std::invalid_argument("Destination gradient edge exceeds selected queue");
-            const auto sourceX = destinations.x[i], sourceY = destinations.y[i];
+            const auto source = destinations.coordinates[i];
             const int x = Masked ? int(i & grid.maskX()) : int(i % grid.width());
             const int y = Masked ? int(i >> shift) : int(i / grid.width());
             const auto relax = [&](std::size_t n,unsigned cost) {
                 const auto candidate=std::uint16_t(GRADIENT_AT_GOAL-cost);
                 const auto old=gradient[n];
                 if (!old || old>candidate) return;
-                if (old==candidate && ((std::uint32_t(destinations.y[n])<<16)|destinations.x[n]) <=
-                    ((std::uint32_t(sourceY)<<16)|sourceX)) return;
-                destinations.x[n]=sourceX; destinations.y[n]=sourceY;
+                if (old==candidate && destinations.coordinates[n]<=source) return;
+                destinations.coordinates[n]=source;
                 if (old<candidate) {
                     gradient[n]=candidate;
                     queue[cost%Buckets].push(std::uint32_t(n)); ++pending;

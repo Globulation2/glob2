@@ -217,7 +217,7 @@ public:
     // Use the same published source as live planning, including aged goals.
     // Private cold-start planes deliberately retain their cost-only ascent.
     const auto cell=index(x,y);
-    *rx=published->destinations->x[cell];*ry=published->destinations->y[cell];
+    *rx=published->destinations->x(cell);*ry=published->destinations->y(cell);
     return true;
    }
   }

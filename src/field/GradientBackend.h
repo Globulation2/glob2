@@ -111,8 +111,7 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
         // trivial-field scan. Every admitted group must have a safe CPU path.
         if (!request.gradient || !request.costAt || (!request.cpu && !batchRecovery))
             throw std::invalid_argument("Gradient group requires seeds, costs and CPU recovery");
-        if (bool(request.destinations.x) != bool(request.destinations.y) ||
-            (request.destinations && (request.grid.width() > DestinationPlanes::Invalid ||
+        if ((request.destinations && (request.grid.width() > DestinationPlanes::Invalid ||
                 request.grid.height() > DestinationPlanes::Invalid)))
             throw std::invalid_argument("Invalid gradient destination output");
         if (request.family != first.family || &request.session != &first.session ||

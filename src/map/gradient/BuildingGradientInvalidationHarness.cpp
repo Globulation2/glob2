@@ -1379,8 +1379,8 @@ TEST_SUITE("BuildingGradientInvalidation")
             const auto* field=glob2test::awaitGradient(original.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,0);});
             auto published=map.materialGradientDestinations(field);
             REQUIRE(published);
-            CHECK(published->x[map.coordToIndex(4,4)]==12);
-            CHECK(published->y[map.coordToIndex(4,4)]==12);
+            CHECK(published->x(map.coordToIndex(4,4))==12);
+            CHECK(published->y(map.coordToIndex(4,4))==12);
             REQUIRE(map.getMaterialGradientSlot(0,WHEAT,1)==nullptr);
             preparePeriodic(map);
             REQUIRE(map.gradientPipelineStatus().pending>0);
@@ -1395,8 +1395,7 @@ TEST_SUITE("BuildingGradientInvalidation")
                 auto da=map.materialGradientDestinations(a),db=restored.game.map.materialGradientDestinations(b);
                 REQUIRE(da); REQUIRE(db);
                 CHECK(std::equal(a,a+published->cells,b));
-                CHECK(std::equal(da->x.get(),da->x.get()+da->cells,db->x.get()));
-                CHECK(std::equal(da->y.get(),da->y.get()+da->cells,db->y.get()));
+                CHECK(std::equal(da->coordinates.get(),da->coordinates.get()+da->cells,db->coordinates.get()));
                 CHECK(map.checkSum(true,true)==restored.game.map.checkSum(true,true));
             };
             REQUIRE(restored.game.map.materialDestinationsEnabled());

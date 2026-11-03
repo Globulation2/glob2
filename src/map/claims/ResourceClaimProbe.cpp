@@ -392,7 +392,7 @@ struct Probe::Impl
             // publication. Older/warming fields explicitly use scalar fallback.
             const auto destination=[&](Uint32 cell) {
                 if(work.destinations) {
-                    const auto x=work.destinations->x[cell],y=work.destinations->y[cell];
+                    const auto x=work.destinations->x(cell),y=work.destinations->y(cell);
                     if(x>=view.width || y>=view.height)return Oracle::NoTile;
                     return Uint32(y*view.width+x);
                 }
@@ -807,7 +807,7 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
             ++impl->staleMixedFieldIneligible;return {};
         }
         const auto origin=map.coordToIndex(unit.posX,unit.posY);
-        x=destinations->x[origin]; y=destinations->y[origin];
+        x=destinations->x(origin); y=destinations->y(origin);
         if(x>=map.getW() || y>=map.getH()) {++impl->staleInvalidXY;return {};}
         staleGoal=true;
     }

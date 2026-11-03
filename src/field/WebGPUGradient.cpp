@@ -138,7 +138,6 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 		return false;
 	for (const auto &request : requests)
 		if (!request.gradient || !request.costAt || request.limit < 0 ||
-            bool(request.destinations.x) != bool(request.destinations.y) ||
             (request.destinations && (request.grid.width() > DestinationPlanes::Invalid || request.grid.height() > DestinationPlanes::Invalid)) ||
 			request.operation != Operation::CompleteField)
 			return false;
@@ -238,8 +237,7 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
             for (std::size_t cell = 0; cell < request.grid.cells(); ++cell) {
                 request.gradient[cell] = std::uint16_t(tasks[i]->output[cell*2]);
                 const auto source = tasks[i]->output[cell*2+1];
-                request.destinations.x[cell] = source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source % request.grid.width());
-                request.destinations.y[cell] = source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source / request.grid.width());
+                request.destinations.set(cell, source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source % request.grid.width()), source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source / request.grid.width()));
             }
         } else std::copy(tasks[i]->output.begin(), tasks[i]->output.end(), request.gradient);
 		if (requests[i].executedOnDevice)

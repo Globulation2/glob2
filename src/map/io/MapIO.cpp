@@ -762,33 +762,45 @@ void saveDestinations(GAGCore::OutputStream* stream, const gradient_kernel::Owne
 {
     stream->writeEnterSection("destinations");
     stream->writeUint8(planes!=nullptr,"present");
-    if (planes) {
-        stream->writeEnterSection("x"); saveGradient(stream,planes->x.get(),cells); stream->writeLeaveSection();
-        stream->writeEnterSection("y"); saveGradient(stream,planes->y.get(),cells); stream->writeLeaveSection();
+    if(planes)for(unsigned component=0;component<2;++component) {
+        stream->writeEnterSection(component?"y":"x");stream->writeUint8(1,"present");
+        const auto get=[&](size_t i){return component?planes->y(i):planes->x(i);};
+        if(GAGCore::PackedArray::binary(stream))GAGCore::PackedArray::write<Uint16>(stream,cells,get);
+        else for(size_t i=0;i<cells;++i) {
+            stream->writeEnterSection(i);stream->writeUint16(get(i),"value");stream->writeLeaveSection();
+        }
+        stream->writeLeaveSection();
     }
     stream->writeLeaveSection();
 }
 std::shared_ptr<gradient_kernel::OwnedDestinations> loadDestinations(GAGCore::InputStream* stream,
-    const Uint16* costs, size_t cells, unsigned width, unsigned height, bool packed)
+    const Uint16* costs,size_t cells,unsigned width,unsigned height,bool packed)
 {
     stream->readEnterSection("destinations");
     std::shared_ptr<gradient_kernel::OwnedDestinations> planes;
-    if (loadFlag(stream,"present")) {
-        if (!costs) throw std::runtime_error("Saved destinations without costs");
+    if(loadFlag(stream,"present")) {
+        if(!costs)throw std::runtime_error("Saved destinations without costs");
         planes=std::make_shared<gradient_kernel::OwnedDestinations>(cells);
-        Uint16* raw=nullptr;
-        stream->readEnterSection("x"); loadGradient(stream,raw,cells,packed); planes->x.reset(raw); stream->readLeaveSection();
-        raw=nullptr;
-        stream->readEnterSection("y"); loadGradient(stream,raw,cells,packed); planes->y.reset(raw); stream->readLeaveSection();
-        if (!planes->x || !planes->y) throw std::runtime_error("Missing saved destination plane");
-        for (size_t i=0;i<cells;++i) {
-            const unsigned x=planes->x[i],y=planes->y[i];
-            if (costs[i]<=1 ? (x!=65535 || y!=65535) : (x>=width || y>=height || costs[y*width+x]<=1))
+        for(unsigned component=0;component<2;++component) {
+            stream->readEnterSection(component?"y":"x");
+            if(!loadFlag(stream,"present"))throw std::runtime_error("Missing saved destination plane");
+            const auto set=[&](size_t i,Uint16 value) {
+                if(!component)planes->coordinates[i]=value;
+                else planes->coordinates[i]|=Uint32(value)<<16;
+            };
+            if(packed)GAGCore::PackedArray::read<Uint16>(stream,cells,set);
+            else for(size_t i=0;i<cells;++i) {
+                stream->readEnterSection(i);set(i,stream->readUint16("value"));stream->readLeaveSection();
+            }
+            stream->readLeaveSection();
+        }
+        for(size_t i=0;i<cells;++i) {
+            const unsigned x=planes->x(i),y=planes->y(i);
+            if(costs[i]<=1?(x!=65535 || y!=65535):(x>=width || y>=height || costs[y*width+x]<=1))
                 throw std::runtime_error("Invalid saved gradient destination");
         }
     }
-    stream->readLeaveSection();
-    return planes;
+    stream->readLeaveSection();return planes;
 }
 void saveDestinationSequence(GAGCore::OutputStream* stream, Uint64 value)
 {

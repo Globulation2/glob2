@@ -720,8 +720,7 @@ struct Runtime
                     for (std::size_t i = 0; i < cells; ++i) {
                         request.gradient[i] = std::uint16_t(out[2*i]);
                         const auto source = out[2*i+1];
-                        request.destinations.x[i] = source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source % w);
-                        request.destinations.y[i] = source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source / w);
+                        request.destinations.set(i, source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source % w), source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source / w));
                     }
                 } else for (std::size_t i = 0; i < cells; ++i) request.gradient[i] = std::uint16_t(out[i]);
 				if (request.executedOnDevice)
@@ -884,7 +883,6 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 		return false;
 	for (const auto &request : requests)
 		if (!request.gradient || !request.costAt || request.limit < 0 ||
-            bool(request.destinations.x) != bool(request.destinations.y) ||
             (request.destinations && (request.grid.width() > DestinationPlanes::Invalid || request.grid.height() > DestinationPlanes::Invalid)) ||
 			request.operation != Operation::CompleteField)
 			return false;
@@ -951,8 +949,7 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 				if (!singleton) {
                     std::copy(seeds[i].begin(), seeds[i].end(), requests[i].gradient);
                     if (outputs[i]) {
-                        std::copy_n(outputs[i]->x.get(), outputs[i]->cells, requests[i].destinations.x);
-                        std::copy_n(outputs[i]->y.get(), outputs[i]->cells, requests[i].destinations.y);
+                        std::copy_n(outputs[i]->coordinates.get(), outputs[i]->cells, requests[i].destinations.coordinates);
                     }
                 }
 				if (requests[i].executedOnDevice)

@@ -382,7 +382,7 @@ TEST_SUITE("ActiveClaimRoutes")
         restoreRoutes(map,saved,true);CHECK(map.activeClaimRouteChecksum(true)==hash);
         // A new nearer resource relabels the gradient; held access stays fixed.
         map.setResourceByIndex(11,8,WHEAT,1);map.updateMaterialGradient(0,WHEAT,0,false);
-        const auto relabeled=[&]{const auto* cost=map.getMaterialGradientSlot(0,WHEAT,0);const auto labels=map.materialGradientDestinations(cost);return labels&&labels->x[map.coordToIndex(9,8)]==11;};
+        const auto relabeled=[&]{const auto* cost=map.getMaterialGradientSlot(0,WHEAT,0);const auto labels=map.materialGradientDestinations(cost);return labels&&labels->x(map.coordToIndex(9,8))==11;};
         // Owner work is already admitted: visit every publication boundary so
         // statistics/hiring deadlines advance with the material refresh.
         for(unsigned boundary=0;!relabeled() && boundary<4096;++boundary){++game.stepCounter;game.observeCompletedWorld();}

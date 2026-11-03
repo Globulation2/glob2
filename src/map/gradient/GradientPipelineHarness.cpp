@@ -75,13 +75,12 @@ TEST_CASE("destination planes publish with their cost generation and survive pen
         auto* resumed = new std::uint16_t[64]{};
         pipeline.visitPendingSnapshots([&](const auto& snapshot) {
             REQUIRE(snapshot.destinations);
-            CHECK(snapshot.destinations->x[0] == 3);
+            CHECK(snapshot.destinations->x(0) == 3);
             GradientPipeline::RestoredSnapshot saved{&resumed,0,snapshot.remaining,snapshot.superseded,
                 std::make_unique<std::uint16_t[]>(64)};
             std::copy_n(snapshot.data,64,saved.data.get());
             saved.destinations = std::make_shared<OwnedDestinations>(64);
-            std::copy_n(snapshot.destinations->x.get(),64,saved.destinations->x.get());
-            std::copy_n(snapshot.destinations->y.get(),64,saved.destinations->y.get());
+            std::copy_n(snapshot.destinations->coordinates.get(),64,saved.destinations->coordinates.get());
             restored.restoreCompleted(std::move(saved));
         });
         pipeline.advance(); restored.advance();
@@ -90,11 +89,11 @@ TEST_CASE("destination planes publish with their cost generation and survive pen
         const auto lease = pipeline.destinationField(&published);
         REQUIRE(lease);
         REQUIRE(restored.destinationField(&resumed));
-        CHECK(lease->x[0] == 3); CHECK(lease->y[0] == 0);
+        CHECK(lease->x(0) == 3); CHECK(lease->y(0) == 0);
         CHECK(pipeline.destinationMemory().publishedBytes == 256);
         CHECK(pipeline.destinationMemory().pendingReservedBytes == 0);
         CHECK(std::equal(published,published+64,resumed));
-        CHECK(std::equal(lease->x.get(),lease->x.get()+64,restored.destinationField(&resumed)->x.get()));
+        CHECK(std::equal(lease->coordinates.get(),lease->coordinates.get()+64,restored.destinationField(&resumed)->coordinates.get()));
 
         // Reusing the cost buffer for a cost-only generation removes metadata.
         pipeline.submit(&published,0,[](auto& job) {
@@ -103,7 +102,7 @@ TEST_CASE("destination planes publish with their cost generation and survive pen
         });
         pipeline.advance(); pipeline.advance();
         CHECK_FALSE(pipeline.destinationField(&published));
-        CHECK(lease->x[0] == 3); // A borrowed old generation stays immutable.
+        CHECK(lease->x(0) == 3); // A borrowed old generation stays immutable.
         CHECK(pipeline.destinationMemory().publishedBytes == 0);
         restored.invalidate(&resumed);
         CHECK_FALSE(restored.destinationField(&resumed));
@@ -167,7 +166,7 @@ TEST_CASE("destination planes survive device transport and worker recovery")
         pipeline.finish();CHECK_FALSE(pipeline.destinationField(&published));
         pipeline.advance();pipeline.advance();
         const auto result=pipeline.destinationField(&published);REQUIRE(result);
-        CHECK(result->x[0]==1);CHECK(result->y[0]==1);
+        CHECK(result->x(0)==1);CHECK(result->y(0)==1);
         CHECK(published[0]==GRADIENT_AT_GOAL-LAND_STEPS.diagonal);
         CHECK(service->metrics().executed==unsigned(success));
         CHECK(service->metrics().fallbacks==unsigned(!success));

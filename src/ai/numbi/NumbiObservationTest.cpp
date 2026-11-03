@@ -115,8 +115,8 @@ TEST_SUITE("NumbiObservation")
     CHECK(captured==live);
     if(live) {
      CHECK(sx==lx);CHECK(sy==ly);CHECK(sd==ld);
-     CHECK(sx==destinations->x[map.coordToIndex(x,y)]);
-     CHECK(sy==destinations->y[map.coordToIndex(x,y)]);
+     CHECK(sx==destinations->x(map.coordToIndex(x,y)));
+     CHECK(sy==destinations->y(map.coordToIndex(x,y)));
     }
    }
    CHECK(cache.empty());

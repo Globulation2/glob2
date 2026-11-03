@@ -95,7 +95,6 @@ bool executeGradientAccelerator(std::span<const BackendRequest> requests, Plan p
 		return false;
 	for (const auto &request : requests)
 		if (!request.gradient || !request.costAt || request.limit < 0 ||
-			bool(request.destinations.x) != bool(request.destinations.y) ||
 			(request.destinations && (request.grid.width() > DestinationPlanes::Invalid || request.grid.height() > DestinationPlanes::Invalid)) ||
 			request.operation != Operation::CompleteField || !validFamily(request.family))
 			return false;

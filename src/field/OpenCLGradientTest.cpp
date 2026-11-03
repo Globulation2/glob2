@@ -102,8 +102,7 @@ TEST_SUITE("OpenCLGradient")
                 REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
                 if (!alreadyFixedGradient(seeds)) CHECK(executed);
                 CHECK(actual==expected);
-                CHECK(std::equal(output.x.get(),output.x.get()+grid.cells(),reference.x.get()));
-                CHECK(std::equal(output.y.get(),output.y.get()+grid.cells(),reference.y.get()));
+                CHECK(std::equal(output.coordinates.get(),output.coordinates.get()+grid.cells(),reference.coordinates.get()));
                 // Same lane switches element widths without reusing incorrectly
                 // sized device buffers or incorrectly interpreting staging.
                 actual=seeds;request.gradient=actual.data();request.destinations={};

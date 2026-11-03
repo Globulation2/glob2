@@ -94,8 +94,7 @@ TEST_SUITE("RuntimeGradientBackend")
                 request.executedOnDevice=&executed;
                 REQUIRE(executeVulkanGradient(std::span(&request,1),plan));
                 CHECK(executed); CHECK(actual==expected);
-                CHECK(std::equal(output.x.get(),output.x.get()+grid.cells(),reference.x.get()));
-                CHECK(std::equal(output.y.get(),output.y.get()+grid.cells(),reference.y.get()));
+                CHECK(std::equal(output.coordinates.get(),output.coordinates.get()+grid.cells(),reference.coordinates.get()));
                 actual=seeds;request.gradient=actual.data();request.destinations={};
                 REQUIRE(executeVulkanGradient(std::span(&request,1),plan));
                 CHECK(actual==expected);
@@ -108,8 +107,7 @@ TEST_SUITE("RuntimeGradientBackend")
             auto first=seeds, second=seeds;
             OwnedDestinations a(grid.cells()),b(grid.cells());
             for (auto* output : {&a,&b}) {
-                std::fill_n(output->x.get(),grid.cells(),91);
-                std::fill_n(output->y.get(),grid.cells(),92);
+                std::fill_n(output->coordinates.get(),grid.cells(),gradient_kernel::DestinationPlanes::pack(91,92));
             }
             std::array<BackendRequest,2> requests{
                 BackendRequest{first.data(),COST_LIMIT,grid,session,nullptr,[](void*,auto){return LAND_STEPS;},nullptr},
@@ -121,8 +119,7 @@ TEST_SUITE("RuntimeGradientBackend")
             CHECK_FALSE(executeVulkanGradient(requests,plan));
             CHECK(first==seeds);CHECK(second==seeds);
             for (auto* output : {&a,&b}) {
-                CHECK(std::all_of(output->x.get(),output->x.get()+grid.cells(),[](auto value){return value==91;}));
-                CHECK(std::all_of(output->y.get(),output->y.get()+grid.cells(),[](auto value){return value==92;}));
+                CHECK(std::all_of(output->coordinates.get(),output->coordinates.get()+grid.cells(),[](auto value){return value==gradient_kernel::DestinationPlanes::pack(91,92);}));
             }
         }
     }
@@ -726,8 +723,7 @@ TEST_SUITE("RuntimeGradientBackend")
             auto first=seeds, second=seeds;
             OwnedDestinations firstXY(grid.cells()), secondXY(grid.cells());
             for (auto* xy : {&firstXY,&secondXY}) {
-                std::fill_n(xy->x.get(),grid.cells(),123);
-                std::fill_n(xy->y.get(),grid.cells(),456);
+                std::fill_n(xy->coordinates.get(),grid.cells(),gradient_kernel::DestinationPlanes::pack(123,456));
             }
             auto control=std::make_shared<OpenCLRequiredControl>();
             std::array<BackendRequest,2> requests{
@@ -748,8 +744,7 @@ TEST_SUITE("RuntimeGradientBackend")
             CHECK_FALSE(committed[0]); CHECK_FALSE(committed[1]);
             CHECK(first==seeds); CHECK(second==seeds);
             for (auto* xy : {&firstXY,&secondXY}) {
-                CHECK(std::all_of(xy->x.get(),xy->x.get()+grid.cells(),[](auto v){return v==123;}));
-                CHECK(std::all_of(xy->y.get(),xy->y.get()+grid.cells(),[](auto v){return v==456;}));
+                CHECK(std::all_of(xy->coordinates.get(),xy->coordinates.get()+grid.cells(),[](auto v){return v==gradient_kernel::DestinationPlanes::pack(123,456);}));
             }
             CHECK(vulkanGradientStatus().fields==fields);
         }

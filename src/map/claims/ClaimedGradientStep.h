@@ -41,10 +41,10 @@ ClaimedGradientStep claimedGradientStep(field::Grid grid,
     if (std::min(distanceX, width - distanceX) <= 1 &&
         std::min(distanceY, height - distanceY) <= 1)
         return {Status::Arrived};
-    if (values.size() != cells || destinations.cells != cells || !destinations.x || !destinations.y)
+    if (values.size() != cells || destinations.cells != cells || !destinations.coordinates)
         return {};
     const auto matches = [&](std::size_t index) {
-        return destinations.x[index] == targetX && destinations.y[index] == targetY;
+        return destinations.x(index) == targetX && destinations.y(index) == targetY;
     };
     const auto here = values[current];
     if (here <= 1 || !matches(current)) return {};
