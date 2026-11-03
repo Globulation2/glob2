@@ -14,8 +14,7 @@ struct Fixture {
     std::vector<bool> geometry = std::vector<bool>(grid.cells(),true), traffic = geometry;
     std::uint32_t current = grid.index(1,4), access = grid.index(5,4);
     Fixture() {
-        std::fill_n(destinations.x.get(),grid.cells(),5);
-        std::fill_n(destinations.y.get(),grid.cells(),4);
+        std::fill_n(destinations.coordinates.get(),grid.cells(),gradient_kernel::DestinationPlanes::pack(5,4));
         values[current]=100;
     }
     auto step() const {
@@ -32,7 +31,7 @@ TEST_CASE("weighted steps retain the exact claimed destination and stable ties")
     const auto north=f.grid.index(1,3),east=f.grid.index(2,4),west=f.grid.index(0,4);
     f.values[north]=130;f.costs[north]=40; // Higher scalar, worse weighted step.
     f.values[east]=120;
-    f.values[west]=60000;f.destinations.x[west]=0; // Wrong source must never win.
+    f.values[west]=60000;f.destinations.set(west,0,f.destinations.y(west)); // Wrong source must never win.
     auto result=f.step();REQUIRE(result.status==Status::Ready);CHECK(result.dx==1);CHECK(result.dy==0);
     f.costs[north]=20; // Both score110: north precedes east in tabClose.
     result=f.step();REQUIRE(result.status==Status::Ready);CHECK(result.dx==0);CHECK(result.dy==-1);
@@ -49,7 +48,7 @@ TEST_CASE("queued traffic waits while broken geometry falls back to routing") {
     auto result=f.step();REQUIRE(result.status==Status::Ready);CHECK(result.dx==0);CHECK(result.dy==-1);
     f.values[north]=f.values[f.current]; // No random plateau sidesteps.
     CHECK(f.step().status==Status::Pending);
-    f.destinations.x[east]=0;CHECK(f.step().status==Status::Unavailable);
+    f.destinations.set(east,0,f.destinations.y(east));CHECK(f.step().status==Status::Unavailable);
 }
 TEST_CASE("arrival means the held access neighborhood rather than a scalar peak") {
     Fixture f;f.values[f.current]=65535;
@@ -63,10 +62,10 @@ TEST_CASE("arrival means the held access neighborhood rather than a scalar peak"
 TEST_CASE("retained publication labels are read independently of replacement leases") {
     Fixture f;f.values[f.grid.index(2,4)]=120;
     auto old=std::make_shared<gradient_kernel::OwnedDestinations>(f.grid.cells());
-    std::fill_n(old->x.get(),f.grid.cells(),5);std::fill_n(old->y.get(),f.grid.cells(),4);
+    std::fill_n(old->coordinates.get(),f.grid.cells(),gradient_kernel::DestinationPlanes::pack(5,4));
     const std::shared_ptr<const gradient_kernel::OwnedDestinations> retained=old;
     auto replacement=std::make_shared<gradient_kernel::OwnedDestinations>(f.grid.cells());
-    std::fill_n(replacement->x.get(),f.grid.cells(),0);std::fill_n(replacement->y.get(),f.grid.cells(),0);
+    std::fill_n(replacement->coordinates.get(),f.grid.cells(),gradient_kernel::DestinationPlanes::pack(0,0));
     const auto run=[&](const auto& lease){return ResourceClaims::claimedGradientStep(f.grid,f.values,*lease,
         f.current,f.access,[](auto){return true;},[](auto){return true;},[](auto,bool){return 10u;});};
     CHECK(run(retained).status==Status::Ready);CHECK(run(replacement).status==Status::Unavailable);
@@ -90,7 +89,7 @@ TEST_CASE("fresh weighted fields descend to their exact source on narrow and wra
             [&](auto i){return costs[i];});
         for(unsigned start=0;start<grid.cells();++start) {
             if(values[start]<=1)continue;
-            const auto access=unsigned(grid.index(destinations.x[start],destinations.y[start]));
+            const auto access=unsigned(grid.index(destinations.x(start),destinations.y(start)));
             auto current=start;bool arrived=false;
             for(unsigned steps=0;steps<grid.cells();++steps) {
                 const auto result=ResourceClaims::claimedGradientStep(grid,values,destinations,current,access,
@@ -100,7 +99,7 @@ TEST_CASE("fresh weighted fields descend to their exact source on narrow and wra
                 REQUIRE(result.status==Status::Ready);
                 const auto next=unsigned(grid.index(int(current%width)+result.dx,int(current/width)+result.dy));
                 CHECK(values[next]>values[current]);
-                CHECK(destinations.x[next]==destinations.x[start]);CHECK(destinations.y[next]==destinations.y[start]);
+                CHECK(destinations.x(next)==destinations.x(start));CHECK(destinations.y(next)==destinations.y(start));
                 const auto step=(result.dx&&result.dy)?costs[next].diagonal:costs[next].cardinal;
                 CHECK(unsigned(values[next])-step==values[current]);
                 current=next;

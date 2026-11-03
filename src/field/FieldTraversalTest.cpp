@@ -95,13 +95,15 @@ TEST_CASE("destination propagation agrees with independent cost and source oracl
         }
         field[0] = GRADIENT_AT_GOAL;
         if (w*h > 1) field.back() = GRADIENT_AT_GOAL - (trial ? 500 : 0);
+        OwnedDestinations destinations(w*h);
         auto expected = field, expectedX = x, expectedY = y;
         destinationReference(expected, expectedX, expectedY, costs, w, h, cap);
         const auto at = [&](std::size_t i) { return costs[i]; };
-        if (buckets == 64) propagateDestinationFieldCPU<64>(field.data(), {x.data(),y.data()}, cap, {w,h}, workspace, at);
-        else if (buckets == 128) propagateDestinationFieldCPU<128>(field.data(), {x.data(),y.data()}, cap, {w,h}, workspace, at);
-        else propagateDestinationFieldCPU<256>(field.data(), {x.data(),y.data()}, cap, {w,h}, workspace, at);
-        CHECK(field == expected); CHECK(x == expectedX); CHECK(y == expectedY);
+        if (buckets == 64) propagateDestinationFieldCPU<64>(field.data(), destinations.planes(), cap, {w,h}, workspace, at);
+        else if (buckets == 128) propagateDestinationFieldCPU<128>(field.data(), destinations.planes(), cap, {w,h}, workspace, at);
+        else propagateDestinationFieldCPU<256>(field.data(), destinations.planes(), cap, {w,h}, workspace, at);
+        CHECK(field == expected);
+        for(int i=0;i<w*h;++i){CHECK(destinations.x(i)==expectedX[i]);CHECK(destinations.y(i)==expectedY[i]);}
     }
 }
 
@@ -115,17 +117,17 @@ TEST_CASE("destination classic overload preserves costs and clears old labels on
         seeds[3] = seeds[11] = GRADIENT_AT_GOAL;
         seeds[100] = GRADIENT_AT_GOAL - 300;
         seeds[45] = GRADIENT_FORBIDDEN;
+        OwnedDestinations destinations(w*h);
         auto expected = seeds;
         const auto water = [](std::size_t i) { return i % 3 == 0; };
         propagateFieldCPU(expected.data(), swim, COST_LIMIT, {w,h}, ordinary, water);
-        propagateFieldCPU(seeds.data(), {x.data(),y.data()}, swim, COST_LIMIT, {w,h}, labeled, water);
+        propagateFieldCPU(seeds.data(), destinations.planes(), swim, COST_LIMIT, {w,h}, labeled, water);
         CHECK(seeds == expected);
-        CHECK(x[3] == 3); CHECK(y[3] == 0);
-        CHECK(x[45] == DestinationPlanes::Invalid); CHECK(y[45] == DestinationPlanes::Invalid);
+        CHECK(destinations.x(3) == 3); CHECK(destinations.y(3) == 0);
+        CHECK(destinations.coordinates[45] == DestinationPlanes::InvalidCoordinate);
         std::fill(seeds.begin(), seeds.end(), GRADIENT_UNREACHABLE);
-        propagateFieldCPU(seeds.data(), {x.data(),y.data()}, swim, COST_LIMIT, {w,h}, labeled, water);
-        CHECK(std::all_of(x.begin(), x.end(), [](auto value) { return value == DestinationPlanes::Invalid; }));
-        CHECK(std::all_of(y.begin(), y.end(), [](auto value) { return value == DestinationPlanes::Invalid; }));
+        propagateFieldCPU(seeds.data(), destinations.planes(), swim, COST_LIMIT, {w,h}, labeled, water);
+        CHECK(std::all_of(destinations.coordinates.get(), destinations.coordinates.get()+w*h, [](auto value) { return value == DestinationPlanes::InvalidCoordinate; }));
     }
 }
 

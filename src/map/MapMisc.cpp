@@ -85,7 +85,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
         std::sort(outputs.begin(),outputs.end(),[](const auto& a,const auto& b){return std::get<0>(a)<std::get<0>(b);});
         for (const auto& [id,planes,generation]:outputs) {
             mix64(id); mix64(generation);
-            if (heavy) for (size_t i=0;i<size;++i) mix64(Uint32(planes->x[i])|(Uint32(planes->y[i])<<16));
+            if (heavy) for (size_t i=0;i<size;++i) mix64(Uint32(planes->x(i))|(Uint32(planes->y(i))<<16));
         }
     }
 

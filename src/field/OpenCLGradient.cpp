@@ -1197,7 +1197,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         })) return false;
         const bool withDestinations = bool(input.front().destinations);
         if (std::any_of(input.begin(),input.end(),[&](const auto& r) {
-            return bool(r.destinations)!=withDestinations || bool(r.destinations.x)!=bool(r.destinations.y)
+            return bool(r.destinations)!=withDestinations
                 || (withDestinations && (r.grid.width()>DestinationPlanes::Invalid || r.grid.height()>DestinationPlanes::Invalid));
         })) return false;
         if(std::all_of(input.begin(),input.end(),alreadyFixed)) {
@@ -1272,8 +1272,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                     const auto packed=staged[outputOffset+i];
                     r.gradient[i]=std::uint16_t(packed>>32);
                     const auto source=~std::uint32_t(packed);
-                    r.destinations.x[i]=r.gradient[i]>1 ? std::uint16_t(source%r.grid.width()) : DestinationPlanes::Invalid;
-                    r.destinations.y[i]=r.gradient[i]>1 ? std::uint16_t(source/r.grid.width()) : DestinationPlanes::Invalid;
+                    r.destinations.set(i, r.gradient[i]>1 ? std::uint16_t(source%r.grid.width()) : DestinationPlanes::Invalid, r.gradient[i]>1 ? std::uint16_t(source/r.grid.width()) : DestinationPlanes::Invalid);
                 }
                 if(r.executedOnDevice) *r.executedOnDevice=true;
                 ++status.committedFields;

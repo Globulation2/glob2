@@ -97,8 +97,7 @@ TEST_CASE("owned worker bridge commits exact retained fields and recovers cancel
             const std::span<const std::uint16_t> actual(field->data.get(), grid.cells());
             CHECK(std::equal(actual.begin(), actual.end(), expected.begin()));
             if (destinations) {
-                CHECK(std::equal(field->destinations->x.get(),field->destinations->x.get()+grid.cells(),expectedDestinations.x.get()));
-                CHECK(std::equal(field->destinations->y.get(),field->destinations->y.get()+grid.cells(),expectedDestinations.y.get()));
+                CHECK(std::equal(field->destinations->coordinates.get(),field->destinations->coordinates.get()+grid.cells(),expectedDestinations.coordinates.get()));
             }
             CHECK(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds), actual,
                   grid, field->limit, [](std::size_t) { return LAND_STEPS; }));
@@ -114,8 +113,7 @@ TEST_CASE("owned worker bridge commits exact retained fields and recovers cancel
         auto first=seeds, second=seeds;
         OwnedDestinations firstXY(small.cells()), secondXY(small.cells());
         for (auto* xy : {&firstXY,&secondXY}) {
-            std::fill_n(xy->x.get(),small.cells(),123);
-            std::fill_n(xy->y.get(),small.cells(),456);
+            std::fill_n(xy->coordinates.get(),small.cells(),gradient_kernel::DestinationPlanes::pack(123,456));
         }
         auto control=std::make_shared<OpenCLRequiredControl>();
         std::array<BackendRequest,2> requests{
@@ -143,8 +141,7 @@ TEST_CASE("owned worker bridge commits exact retained fields and recovers cancel
         CHECK_FALSE(committed[0]); CHECK_FALSE(committed[1]);
         CHECK(first==seeds); CHECK(second==seeds);
         for (auto* xy : {&firstXY,&secondXY}) {
-            CHECK(std::all_of(xy->x.get(),xy->x.get()+small.cells(),[](auto v){return v==123;}));
-            CHECK(std::all_of(xy->y.get(),xy->y.get()+small.cells(),[](auto v){return v==456;}));
+            CHECK(std::all_of(xy->coordinates.get(),xy->coordinates.get()+small.cells(),[](auto v){return v==gradient_kernel::DestinationPlanes::pack(123,456);}));
         }
         CHECK(webGPUGradientStatus().fields==fields);
     }

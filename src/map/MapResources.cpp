@@ -348,7 +348,7 @@ bool Map::materialAvailableUpdateSlot(int team, int material, int swim, int x, i
         // Planning intentionally observes the published field's age. Workers
         // separately validate current stock in projectMaterialDestination.
         const size_t index=coordToIndex(x,y);
-        *targetX=destinations->x[index]; *targetY=destinations->y[index];
+        *targetX=destinations->x(index); *targetY=destinations->y(index);
         return true;
     }
     // Planning adapters retain their historical ascent semantics. Workers use
@@ -390,7 +390,7 @@ bool Map::projectMaterialDestination(const Uint16* field, int team, int material
     if (here<=GRADIENT_UNREACHABLE) return false;
     if (const auto destinations=materialGradientDestinations(field)) {
         const size_t index=coordToIndex(x,y);
-        const unsigned dx=destinations->x[index],dy=destinations->y[index];
+        const unsigned dx=destinations->x(index),dy=destinations->y(index);
         if (dx>=unsigned(w) || dy>=unsigned(h) || !materialDestinationValidSlot(team,material,movement,dx,dy,markets,consumer)) return false;
         *targetX=dx; *targetY=dy;
         return true;

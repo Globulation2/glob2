@@ -65,17 +65,17 @@ TEST_CASE("new published sources cannot redirect a held access through the fast 
     glob2test::HeadlessGlobals globals;Pursuit f;
     const auto original=f.unit->activeMaterialClaim;
     const auto old=f.map.materialGradientDestinations(f.map.getMaterialGradientSlot(0,WHEAT,0));
-    REQUIRE(old);CHECK(old->x[f.map.coordToIndex(8,8)]==12);
+    REQUIRE(old);CHECK(old->x(f.map.coordToIndex(8,8))==12);
     f.map.setResourceByIndex(10,8,WHEAT,1);
     f.map.updateMaterialGradient(0,WHEAT,0,false);
     REQUIRE(glob2test::awaitGradient(f.world.game,[&]()->const Uint16*{
         const auto* field=f.map.getMaterialGradientSlot(0,WHEAT,0);
         const auto labels=f.map.materialGradientDestinations(field);
-        return labels && labels->x[f.map.coordToIndex(8,8)]==10 ? field : nullptr;
+        return labels && labels->x(f.map.coordToIndex(8,8))==10 ? field : nullptr;
     }));
     int dx=0,dy=0;
     CHECK(f.map.nextClaimGradientStep(*f.unit,&dx,&dy)==ResourceClaims::StepResult::Failed);
     CHECK(f.unit->activeMaterialClaim==original);
-    CHECK(old->x[f.map.coordToIndex(8,8)]==12);
+    CHECK(old->x(f.map.coordToIndex(8,8))==12);
 }
 }
