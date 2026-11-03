@@ -194,6 +194,13 @@ for (const device of [
     await clickControl(page, 'tutorial/lesson/0');
     await screen(page, 'GameSessionScreen');
     await expect.poll(async () => (await snapshot(page)).tick, {timeout: 120000}).toBeGreaterThan(25);
+    // The opening briefing appears at tick 12 and captures input before the
+    // tutorial card. Close that real modal before inspecting or opening Help.
+    if (Object.keys((await snapshot(page)).controls).some(key => key.startsWith('objectives/tab'))) {
+      await clickControl(page, 'ok');
+      await expect.poll(async () => Object.keys((await snapshot(page)).controls)
+        .some(key => key.startsWith('objectives/tab'))).toBe(false);
+    }
     await expect.poll(() => label(page, 'intro/help')).toBe('मदत / का?');
     await control(page, 'intro/help');
     records.lesson = await snapshot(page);
