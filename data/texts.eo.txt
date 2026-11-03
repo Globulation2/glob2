@@ -5708,6 +5708,8 @@ Pala sablo
 Grejsaj platoj
 [pumice]
 Pumika kampo
+[frozen_lake]
+Frostiĝinta lago
 [terrain group water]
 Akvo
 [terrain group sand]

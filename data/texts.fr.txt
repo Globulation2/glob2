@@ -5708,6 +5708,8 @@ Sable clair
 Dalles de grès
 [pumice]
 Champ de pierre ponce
+[frozen_lake]
+Lac gelé
 [terrain group water]
 Eau
 [terrain group sand]

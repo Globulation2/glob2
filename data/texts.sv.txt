@@ -5708,6 +5708,8 @@ Ljus sand
 Sandstensplattor
 [pumice]
 Pimpstensfält
+[frozen_lake]
+Frusen sjö
 [terrain group water]
 Vatten
 [terrain group sand]

@@ -5708,6 +5708,8 @@ Areia clara
 Lajes de arenito
 [pumice]
 Campo de pedra-pomes
+[frozen_lake]
+Lago congelado
 [terrain group water]
 Água
 [terrain group sand]

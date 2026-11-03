@@ -8,7 +8,7 @@
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
 #define VERSION_MINOR 195
-// version 195 adds built-in sandstone tiles and pumice field; custom terrain IDs move up by two.
+// version 195 adds built-in sandstone tiles, pumice field and frozen lake; custom terrain IDs move up by three.
 // version 194 lets replenishment couriers finish trips before demand-driven dismissal; save encoding is unchanged.
 // version 193 adds the saved adaptive prestige pipeline limit.
 // version 192 persists Maxima prestige investment and cancellation state.

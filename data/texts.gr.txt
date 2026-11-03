@@ -5708,6 +5708,8 @@ CPU %0%
 Πλάκες ψαμμίτη
 [pumice]
 Πεδίο ελαφρόπετρας
+[frozen_lake]
+Παγωμένη λίμνη
 [terrain group water]
 Νερό
 [terrain group sand]

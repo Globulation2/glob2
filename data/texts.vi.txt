@@ -5708,6 +5708,8 @@ Cát trắng
 Đá lát sa thạch
 [pumice]
 Bãi đá bọt
+[frozen_lake]
+Hồ đóng băng
 [terrain group water]
 Nước
 [terrain group sand]

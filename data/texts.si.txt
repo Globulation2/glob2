@@ -5708,6 +5708,8 @@ Svetel pesek
 Plošče iz peščenjaka
 [pumice]
 Polje plovca
+[frozen_lake]
+Zamrznjeno jezero
 [terrain group water]
 Voda
 [terrain group sand]

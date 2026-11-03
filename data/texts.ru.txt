@@ -5708,6 +5708,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Плиты из песчаника
 [pumice]
 Пемзовое поле
+[frozen_lake]
+Замёрзшее озеро
 [terrain group water]
 Вода
 [terrain group sand]

@@ -5684,6 +5684,8 @@ Lys sand
 Sandsteinsheller
 [pumice]
 Pimpsteinsfelt
+[frozen_lake]
+Frossen innsjø
 [terrain group water]
 Vann
 [terrain group sand]

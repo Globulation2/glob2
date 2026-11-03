@@ -80,6 +80,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		// Laid ochre and grey flagstones; dark porous rock beside lava and ember fields.
 		authored(SANDSTONE, G::Paths, "sandstone", "[sandstone]", {136, 126, 98}, {150, 140, 110}),
 		authored(PUMICE, G::Rough, "pumice", "[pumice]", {44, 42, 42}, {58, 55, 54}),
+		// Ice over a lake: plays exactly like ice.
+		authored(FROZEN_LAKE, G::Ice, "frozen_lake", "[frozen_lake]", {128, 160, 174}, {141, 172, 185}),
 	}};
 	return rows;
 }();

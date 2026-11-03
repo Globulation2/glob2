@@ -5708,6 +5708,8 @@ Pasir pucat
 Ubin batu pasir
 [pumice]
 Hamparan batu apung
+[frozen_lake]
+Danau beku
 [terrain group water]
 Air
 [terrain group sand]

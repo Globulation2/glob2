@@ -5708,6 +5708,8 @@ AI 生成ではない
 砂岩の敷石
 [pumice]
 軽石の原
+[frozen_lake]
+凍った湖
 [terrain group water]
 水
 [terrain group sand]

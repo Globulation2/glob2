@@ -5708,6 +5708,8 @@ AI 生成
 砂岩石板
 [pumice]
 浮石地
+[frozen_lake]
+冰封湖面
 [terrain group water]
 水
 [terrain group sand]

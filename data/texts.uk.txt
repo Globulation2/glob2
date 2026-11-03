@@ -5708,6 +5708,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Плити з пісковику
 [pumice]
 Поле пемзи
+[frozen_lake]
+Замерзле озеро
 [terrain group water]
 Вода
 [terrain group sand]

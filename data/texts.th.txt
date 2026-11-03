@@ -5684,6 +5684,8 @@ AI ทำงาน​อย่างไร
 แผ่น​หิน​ทราย
 [pumice]
 ลาน​หิน​พัมมิซ
+[frozen_lake]
+ทะเลสาบ​น้ำแข็ง
 [terrain group water]
 น้ำ
 [terrain group sand]

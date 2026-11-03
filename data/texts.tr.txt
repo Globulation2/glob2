@@ -5708,6 +5708,8 @@ Açık renkli kum
 Kumtaşı karolar
 [pumice]
 Sünger taşı alanı
+[frozen_lake]
+Donmuş göl
 [terrain group water]
 Su
 [terrain group sand]

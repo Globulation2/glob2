@@ -21,10 +21,10 @@ raised it to 33. It embeds `fixture:bog` (water base, id 29) and `fixture:mud`
 and their vertices move up by four, and a resave reloads identically.
 
 `custom-registry-194.game.gz` is a format-194 saved game written by an origin/master
-build at revision `622ace3e87` (`TERRAIN_COUNT` 33), before sandstone tiles and the
-pumice field raised it to 35. It embeds the same `fixture:bog` (id 33) and
+build at revision `622ace3e87` (`TERRAIN_COUNT` 33), before sandstone tiles, the
+pumice field and the frozen lake raised it to 36. It embeds the same `fixture:bog` (id 33) and
 `fixture:mud` (id 34), painted at (4,4), (5,4) and (6,6) beside pale sand (18,18),
 chasm (8,8), ice (10,10), trail (12,10), sand (14,14) and water (16,14).
 `TerrainPropertiesTest.cpp` checks that built-in IDs, pale sand included, load
-unchanged, custom IDs and their vertices move up by two, and a resave reloads
+unchanged, custom IDs and their vertices move up by three, and a resave reloads
 identically at the current format.

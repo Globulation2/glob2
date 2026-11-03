@@ -354,6 +354,7 @@ static constexpr int FILE_FORMAT_VERSION_MAXIMA_PRESTIGE = 192;
 // Adaptive prestige preparation; older strategies retain a single pipeline.
 static constexpr int FILE_FORMAT_VERSION_MAXIMA_PRESTIGE_PARALLEL = 193;
 
-//! Built-in sandstone tiles and pumice field: TERRAIN_COUNT grew from 33 to 35, so
-//! earlier files carry custom terrain IDs starting at 33 that the loader renumbers.
+//! Built-in sandstone tiles, pumice field and frozen lake: TERRAIN_COUNT grew from
+//! 33 to 36, so earlier files carry custom terrain IDs starting at 33 that the
+//! loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_SANDSTONE_PUMICE = 195;

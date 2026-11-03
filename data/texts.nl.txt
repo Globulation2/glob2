@@ -5708,6 +5708,8 @@ Licht zand
 Zandsteentegels
 [pumice]
 Puimsteenveld
+[frozen_lake]
+Bevroren meer
 [terrain group water]
 Water
 [terrain group sand]

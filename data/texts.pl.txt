@@ -5708,6 +5708,8 @@ Jasny piasek
 Płyty z piaskowca
 [pumice]
 Pole pumeksu
+[frozen_lake]
+Zamarznięte jezioro
 [terrain group water]
 Woda
 [terrain group sand]

@@ -5708,6 +5708,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Плоче од пешчара
 [pumice]
 Поље пловућца
+[frozen_lake]
+Залеђено језеро
 [terrain group water]
 Вода
 [terrain group sand]

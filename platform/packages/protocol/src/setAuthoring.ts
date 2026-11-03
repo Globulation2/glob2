@@ -36,6 +36,7 @@ export const TERRAIN_PRESETS = [
   'pale_sand',
   'sandstone',
   'pumice',
+  'frozen_lake',
 ];
 /** Earlier names of renamed built-ins; the engine still accepts them (LEGACY_TERRAIN_NAMES). */
 export const LEGACY_TERRAIN_PRESETS: Readonly<Record<string, string>> = {

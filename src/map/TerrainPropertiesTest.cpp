@@ -851,7 +851,7 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(reloaded.game.map.terrainRegistry().digest() == loaded.game.map.terrainRegistry().digest());
 		CHECK(reloaded.game.map.checkSum(true) == loaded.game.map.checkSum(true));
 	}
-	TEST_CASE("format-194 saves keep built-in IDs and move custom terrain behind sandstone and pumice")
+	TEST_CASE("format-194 saves keep built-in IDs and move custom terrain behind the format-195 built-ins")
 	{
 		glob2test::HeadlessGlobals globals;
 		// Written by an origin/master build (TERRAIN_COUNT 33) with two runtime
@@ -927,6 +927,16 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(TerrainRegistry::builtins()->find("sandstone") == SANDSTONE);
 		CHECK(TerrainRegistry::builtins()->find("pumice") == PUMICE);
 	}
+	TEST_CASE("a frozen lake shares every rule of ice")
+	{
+		CHECK(terrainGroup(FROZEN_LAKE) == TerrainGroup::Ice);
+		CHECK(terrainPaintable(FROZEN_LAKE));
+		CHECK(sameTerrainProperties(terrainProperties(FROZEN_LAKE), terrainProperties(ICE)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(FROZEN_LAKE) ==
+			  TerrainRegistry::builtins()->propertyIndex(ICE));
+		CHECK(std::string(terrainPresentation(FROZEN_LAKE).name) == "frozen_lake");
+		CHECK(TerrainRegistry::builtins()->find("frozen_lake") == FROZEN_LAKE);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},
@@ -957,7 +967,7 @@ TEST_SUITE("TerrainRuntime")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				painted.push_back(TerrainType(i));
-		REQUIRE(painted.size() == 30);
+		REQUIRE(painted.size() == 31);
 		for (std::size_t n = 0; n < painted.size(); ++n)
 		{
 			map.paintCell(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);

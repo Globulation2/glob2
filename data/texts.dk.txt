@@ -5708,6 +5708,8 @@ Lyst sand
 Sandstensfliser
 [pumice]
 Pimpstensfelt
+[frozen_lake]
+Frossen sø
 [terrain group water]
 Vand
 [terrain group sand]

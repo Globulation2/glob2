@@ -5708,6 +5708,8 @@ Nisip deschis
 Dale de gresie
 [pumice]
 Câmp de piatră ponce
+[frozen_lake]
+Lac înghețat
 [terrain group water]
 Apă
 [terrain group sand]

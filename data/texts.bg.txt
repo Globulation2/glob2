@@ -5684,6 +5684,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Плочи от пясъчник
 [pumice]
 Поле от пемза
+[frozen_lake]
+Замръзнало езеро
 [terrain group water]
 Вода
 [terrain group sand]

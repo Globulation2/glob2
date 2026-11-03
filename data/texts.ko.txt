@@ -5708,6 +5708,8 @@ AI 생성 아님
 사암 포석
 [pumice]
 부석 지대
+[frozen_lake]
+얼어붙은 호수
 [terrain group water]
 물
 [terrain group sand]

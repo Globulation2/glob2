@@ -5684,6 +5684,8 @@ AI کی بنائی ہوئی نہیں
 ریتلے پتھر کی ٹائلیں
 [pumice]
 جھانویں کا میدان
+[frozen_lake]
+منجمد جھیل
 [terrain group water]
 پانی
 [terrain group sand]

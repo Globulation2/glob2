@@ -5708,6 +5708,8 @@ Arena clara
 Losas de arenisca
 [pumice]
 Campo de piedra pómez
+[frozen_lake]
+Lago helado
 [terrain group water]
 Agua
 [terrain group sand]

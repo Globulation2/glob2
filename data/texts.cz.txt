@@ -5708,6 +5708,8 @@ Světlý písek
 Pískovcové dlaždice
 [pumice]
 Pemzové pole
+[frozen_lake]
+Zamrzlé jezero
 [terrain group water]
 Voda
 [terrain group sand]

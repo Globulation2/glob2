@@ -5684,6 +5684,8 @@ Pale sand
 Sandstone tiles
 [pumice]
 Pumice field
+[frozen_lake]
+Frozen lake
 [terrain group water]
 Water
 [terrain group sand]

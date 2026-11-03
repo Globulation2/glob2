@@ -5684,6 +5684,8 @@ AI से नहीं बना
 बलुआ पत्थर की टाइलें
 [pumice]
 झाँवे का मैदान
+[frozen_lake]
+जमी हुई झील
 [terrain group water]
 पानी
 [terrain group sand]

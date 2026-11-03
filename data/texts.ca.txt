@@ -5708,6 +5708,8 @@ Sorra clara
 Lloses de gres
 [pumice]
 Camp de pedra tosca
+[frozen_lake]
+Llac glaçat
 [terrain group water]
 Aigua
 [terrain group sand]

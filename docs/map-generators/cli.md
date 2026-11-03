@@ -249,7 +249,7 @@ heath `#3C7E30`, mud `#604C38`, mudflat `#4A604E`, deep snow `#DEE4EC`, scree
 `#5A3426`, loam `#4A3E28`, moss `#2E602A`, spring meadow `#5C963A`, deep water
 `#0A3CA0`, dark water `#0E264E`, hole `#0A0A0E`, chasm `#18121A`, lush grass `#196531`,
 dry grass `#787B34`, dune sand `#CC9755`, pale sand `#D3CAA8`, sandstone tiles
-`#968C6E`, pumice field `#3A3736`). Import recognises
+`#968C6E`, pumice field `#3A3736`, frozen lake `#8DACB9`). Import recognises
 them **only by exact colour**: every other pixel classifies by nearest colour among
 the classic entries above, so existing images never acquire catalogue terrain or
 its experiment requirements by accident. Imported catalogue cells record their

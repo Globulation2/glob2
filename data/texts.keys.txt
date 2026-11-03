@@ -2841,6 +2841,7 @@
 [pale_sand]
 [sandstone]
 [pumice]
+[frozen_lake]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]

@@ -5708,6 +5708,8 @@ Heller Sand
 Sandsteinplatten
 [pumice]
 Bimssteinfeld
+[frozen_lake]
+Zugefrorener See
 [terrain group water]
 Wasser
 [terrain group sand]

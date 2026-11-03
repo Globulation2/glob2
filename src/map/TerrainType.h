@@ -46,10 +46,12 @@ enum TerrainType : std::uint16_t
 	DRY_GRASS=30,
 	DUNE_SAND=31,
 	PALE_SAND=32,
-	// Sandstone flagstones (Paths) and pumice beside lava (Rough), format 195.
+	// Sandstone flagstones (Paths), pumice beside lava (Rough) and a frozen lake
+	// (Ice), format 195.
 	SANDSTONE=33,
 	PUMICE=34,
-	TERRAIN_COUNT=35,
+	FROZEN_LAKE=35,
+	TERRAIN_COUNT=36,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load

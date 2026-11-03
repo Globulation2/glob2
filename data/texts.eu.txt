@@ -5708,6 +5708,8 @@ Hare argia
 Hareharrizko lauzak
 [pumice]
 Apar-harrizko eremua
+[frozen_lake]
+Laku izoztua
 [terrain group water]
 Ura
 [terrain group sand]

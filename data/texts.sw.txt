@@ -5684,6 +5684,8 @@ Mchanga wenye rangi hafifu
 Vigae vya mawe ya mchanga
 [pumice]
 Uwanda wa mawe ya pumisi
+[frozen_lake]
+Ziwa lililoganda
 [terrain group water]
 Maji
 [terrain group sand]

@@ -288,13 +288,14 @@ TEST_CASE("terrain IDs of older files skip the retired shores and follow the cur
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_GROUND_LOOKS, TERRAIN_COUNT_BEFORE_GROUND_LOOKS) == TERRAIN_COUNT);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_GROUND_LOOKS, 40) == 40 - TERRAIN_COUNT_BEFORE_GROUND_LOOKS + TERRAIN_COUNT);
 	// Formats 191 to 194 keep every built-in through PALE_SAND and move custom IDs behind
-	// sandstone and pumice.
+	// sandstone, pumice and frozen lake.
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE, CHASM) == CHASM);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE, PALE_SAND) == PALE_SAND);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE, TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE) == TERRAIN_COUNT);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE, 40) == 40 - TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE + TERRAIN_COUNT);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT, SANDSTONE) == SANDSTONE);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT, PUMICE) == PUMICE);
+	CHECK(R::currentTerrainId(TERRAIN_COUNT, FROZEN_LAKE) == FROZEN_LAKE);
 	CHECK(legacyFrameCorners(16) == std::array{SAND, SAND, SAND, GRASS});
 	CHECK(legacyFrameCorners(3) == std::array{GRASS, GRASS, GRASS, GRASS});
 	CHECK_FALSE(legacyFrameCorners(272));

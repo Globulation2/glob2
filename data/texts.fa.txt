@@ -5708,6 +5708,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 سنگ‌فرش ماسه‌سنگی
 [pumice]
 دشت سنگ پا
+[frozen_lake]
+دریاچهٔ یخ‌زده
 [terrain group water]
 آب
 [terrain group sand]

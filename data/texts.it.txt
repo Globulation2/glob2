@@ -5708,6 +5708,8 @@ Sabbia chiara
 Lastre di arenaria
 [pumice]
 Campo di pomice
+[frozen_lake]
+Lago ghiacciato
 [terrain group water]
 Acqua
 [terrain group sand]

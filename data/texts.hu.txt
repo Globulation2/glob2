@@ -5708,6 +5708,8 @@ Világos homok
 Homokkő burkolólapok
 [pumice]
 Horzsakőmező
+[frozen_lake]
+Befagyott tó
 [terrain group water]
 Víz
 [terrain group sand]

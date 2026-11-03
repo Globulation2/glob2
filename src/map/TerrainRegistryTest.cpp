@@ -257,7 +257,7 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(vertex->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeLooks.dump()));
 
-		// Formats 191 to 194 number their definitions from 33, before sandstone and pumice.
+		// Formats 191 to 194 number their definitions from 33, before sandstone, pumice and frozen lake.
 		auto beforeSandstone = Json::parse(registry->serialize());
 		for (auto &item : beforeSandstone["terrains"])
 			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE;

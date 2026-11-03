@@ -5708,6 +5708,8 @@ Vaalea hiekka
 Hiekkakivilaatat
 [pumice]
 Hohkakivikenttä
+[frozen_lake]
+Jäätynyt järvi
 [terrain group water]
 Vesi
 [terrain group sand]
