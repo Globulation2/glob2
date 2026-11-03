@@ -3,7 +3,7 @@ const {createHash} = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const {waitForMainMenu, gameURL, clickMainMenu, clickControl, clickSettingsDone, tapControl, clickByLabel, readBrowserFile, clickListRow} = require('./main-menu');
-const thai = require('../../services/online/packages/i18n/locales/th.json');
+const thai = require('../../../services/online/packages/i18n/locales/th.json');
 
 test.use({locale: 'th-TH'});
 

@@ -4,7 +4,7 @@ const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile,clickControl,clickListRow,controlBox,control}=require('./main-menu');
 const {darkShare}=require('./pixels');
 const {test, expect} = require('@playwright/test');
-const viewportHeader = require('node:fs').readFileSync(require('node:path').resolve(__dirname, '../../src/hud/GameGUIViewport.h'), 'utf8');
+const viewportHeader = require('node:fs').readFileSync(require('node:path').resolve(__dirname, '../../../src/hud/GameGUIViewport.h'), 'utf8');
 const rightMenuWidth = Number(viewportHeader.match(/GAME_GUI_RIGHT_MENU_WIDTH = (\d+)/)[1]);
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
