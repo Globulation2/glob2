@@ -547,6 +547,11 @@ def finalists(report):
     return ['baseline',*alternatives[:2]]
 
 
+def phase_job_counts(coordinator):
+    """Admission only needs ledger states, not decoded historical game results."""
+    return dict(coordinator.db.execute('SELECT state,count(*) FROM jobs GROUP BY state').fetchall())
+
+
 def run_phase(root, bundle_path, manifest, cpu_ids, deadline):
     """Drain before the phase boundary; absolute per-job deadlines backstop it."""
     root=Path(root);phase=manifest['metadata']['phase'];directory=root/phase
@@ -556,16 +561,16 @@ def run_phase(root, bundle_path, manifest, cpu_ids, deadline):
         attempt_budget_bytes=512*1024**2,log_budget_bytes=128*1024**2)
     host.pop('prefetch') # Coordinator-only setting.
     hosts=root/'hosts.json';atomic_json(hosts,[host])
-    coordinator=Coordinator.submit(directory,manifest,[bundle_path]);coordinator.close()
+    coordinator=Coordinator.submit(directory,manifest,[bundle_path]);frozen_manifest=coordinator.manifest;coordinator.close()
     log=(root/(phase+'-coordinator.log')).open('ab')
     runner=subprocess.Popen([sys.executable,'-m','tools.tournaments','run',str(directory),'--hosts',str(hosts)],stdout=log,stderr=subprocess.STDOUT)
     reason='complete';draining=False;last_monitor=0
     try:
         with gzip.open(root/(phase+'-host.jsonl.gz'),'at') as monitor:
             while True:
-                now=time.time();coordinator=Coordinator(directory)
+                now=time.time();coordinator=Coordinator(directory,repair=False,manifest=frozen_manifest)
                 try:
-                    status=coordinator.status();jobs=status['jobs']
+                    jobs=phase_job_counts(coordinator)
                     used=directory_bytes(root)
                     pressure=used>=37*GIB or shutil.disk_usage(root).free<=12*GIB
                     if not draining and (now>=deadline-1815 or pressure):

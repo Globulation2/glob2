@@ -993,6 +993,11 @@ header tick before decoding its large counter payload. Earlier snapshots and
 performance records remain intact in the compressed log; population/building
 intervals come from the dedicated state telemetry. This avoids repeatedly
 parsing unused intermediate counter payloads without changing final totals.
+The campaign admission monitor reads ledger state counts without decoding old
+result payloads or repairing exports on every poll. Detailed status/reporting
+remains available separately; storage accounting and phase-draining checks are
+unchanged.
+
 
 
 The controller reserves 10 GiB free space, limits attempts to 512 MiB, stops
