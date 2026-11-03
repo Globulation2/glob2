@@ -1,0 +1,235 @@
+{
+  "revision": "1c805fb4c0810278bce49c10658063d4a0b03bd7",
+  "base": "4f40c206a0ae7bb3fb0ddbecd1e41a68c1c75e06",
+  "auxiliary": {
+    "pid": 3925123,
+    "revision": "1c805fb4c0810278bce49c10658063d4a0b03bd7",
+    "results": [
+      {
+        "name": "translation-catalog",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "data/check_translations.py",
+          "--strict"
+        ],
+        "exit_code": 1,
+        "seconds": 4.4
+      },
+      {
+        "name": "translation-tests",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_translations.py"
+        ],
+        "exit_code": 0,
+        "seconds": 1.0
+      },
+      {
+        "name": "translation-tooling",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_translation_program.py"
+        ],
+        "exit_code": 0,
+        "seconds": 2.6
+      },
+      {
+        "name": "script-support",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_script_support.py"
+        ],
+        "exit_code": 0,
+        "seconds": 0.1
+      },
+      {
+        "name": "font-coverage",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_font_coverage.py"
+        ],
+        "exit_code": 0,
+        "seconds": 0.2
+      },
+      {
+        "name": "map-report",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_map_report.py",
+          "build/stack-release/src/glob2",
+          "build/stack-release/test/MapReportHarness"
+        ],
+        "exit_code": 0,
+        "seconds": 1.9
+      },
+      {
+        "name": "map-cli",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_map_cli.py",
+          "build/stack-release/src/glob2"
+        ],
+        "exit_code": 0,
+        "seconds": 152.1
+      },
+      {
+        "name": "map-image",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_map_image.py",
+          "build/stack-release/src/glob2"
+        ],
+        "exit_code": 0,
+        "seconds": 6.2
+      },
+      {
+        "name": "javascript-profile",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_javascript.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/javascript-profile"
+        ],
+        "exit_code": 0,
+        "seconds": 11.7
+      },
+      {
+        "name": "released-simulation",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_telemetry_simulation.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/released-simulation"
+        ],
+        "exit_code": 0,
+        "seconds": 6.9
+      },
+      {
+        "name": "runtime-continuation",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_shared_runtime_save_continuation.py",
+          "build/stack-release/src/glob2"
+        ],
+        "exit_code": 0,
+        "seconds": 23.2
+      },
+      {
+        "name": "maxima-continuation",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/maxima/check_save_continuation_fixture.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/maxima-continuation"
+        ],
+        "exit_code": 0,
+        "seconds": 3.1
+      },
+      {
+        "name": "parallel-compute",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_parallel_compute.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/parallel-compute"
+        ],
+        "exit_code": 0,
+        "seconds": 49.0
+      },
+      {
+        "name": "gradient-pipeline",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_gradient_pipeline.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/gradient-pipeline"
+        ],
+        "exit_code": 0,
+        "seconds": 187.4
+      },
+      {
+        "name": "lan-session",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/run_lan_session_test.py",
+          "build/stack-release/src/LANSessionHarness"
+        ],
+        "exit_code": 0,
+        "seconds": 54.0
+      },
+      {
+        "name": "menu-colony",
+        "command": [
+          "build/stack-release/test/MenuColonyHarness",
+          "check",
+          "data/menu/colony.bin"
+        ],
+        "exit_code": 0,
+        "seconds": 5.0
+      },
+      {
+        "name": "menu-navigation",
+        "command": [
+          "build/stack-release/test/MenuColonyHarness",
+          "navigation",
+          "unused"
+        ],
+        "exit_code": 0,
+        "seconds": 1.4
+      },
+      {
+        "name": "native-browser-trace",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/run-browser-determinism.py",
+          "build/stack-release/src/glob2",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/browser-native",
+          "--engine-binary",
+          "build/stack-release/test/glob2-engine-tests"
+        ],
+        "exit_code": 0,
+        "seconds": 2.1
+      },
+      {
+        "name": "maxima-config",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "src/ai/maxima/MaximaStrategyConfigTest.py"
+        ],
+        "exit_code": 0,
+        "seconds": 3.2
+      },
+      {
+        "name": "maxima-policies",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "src/ai/maxima",
+          "-p",
+          "*Test.py"
+        ],
+        "exit_code": 0,
+        "seconds": 5.2
+      }
+    ],
+    "phase": "finished"
+  },
+  "windows": {
+    "job": 125735809758,
+    "url": "https://github.com/Globulation2/glob2/actions/runs/41580052537/job/125735809758",
+    "conclusion": "success",
+    "engine_passed": 1822,
+    "engine_skipped": 272,
+    "note": "PlatformomissionsareWindowsnativeinventory;notalocallycompleteorcrossplatformclaim."
+  },
+  "native_full": "Stillrunning;oneEngineSessionmenu renderingfailureobserved. Testexpectationinlinearenaassumptioninferredfromsource;actualfinalfailure/JUnitpending. Originalfailureretained. No mergewhileintroducedknownfailureunresolved.",
+  "followup": "Observer4034254waitsfullnative+CLIcompletionbeforearchivingalloldresults,integratingfetchedmaster,updatingone-bankstorageexpectationwithoutchanging4MiB/16MiBbudgets,thenpushingdraftandrerunningallnative+compatibility. Rootbrowser/helper/prefixuntouched."
+}
