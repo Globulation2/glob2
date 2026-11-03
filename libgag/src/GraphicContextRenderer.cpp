@@ -23,6 +23,7 @@ int glob2_surface_prepare(int gpu, int width, int height);
 int glob2_surface_poll();
 void glob2_surface_finish(int success);
 void glob2_surface_error(char *destination, int size);
+int glob2_surface_webgl_available();
 int glob2_surface_webgpu_available();
 }
 #endif
@@ -136,6 +137,11 @@ std::vector<RendererAvailability> GraphicContext::rendererAvailability() const
 #endif
         if (backend == RendererBackend::ProgrammableGL) available = programmableGLCompiled();
 #ifdef __EMSCRIPTEN__
+        if (available && (backend == RendererBackend::LegacyGL || backend == RendererBackend::ProgrammableGL) &&
+                !glob2_surface_webgl_available()) {
+            available = false;
+            reason = "WebGL2 is unavailable in this browser's presentation thread.";
+        }
         if (backend == RendererBackend::WebGPU) {
             available = std::filesystem::exists(rendererShaderDirectory() + "/webgpu/primitive.frag.wgsl");
             if (!available) reason = "This build does not contain the generated WebGPU shaders.";

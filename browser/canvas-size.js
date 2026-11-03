@@ -44,6 +44,24 @@ addToLibrary({
   ],
   $Glob2SurfaceBridge: {
     state: 1, request: 0, pending: null, failure: '', listening: false,
+    webglCapability: undefined,
+    webglAvailable() {
+      if (this.webglCapability !== undefined) return this.webglCapability;
+      try {
+        // Probe the realm that would own the context, never the DOM realm on
+        // behalf of an application pthread. Keep the active canvas untouched.
+        var probe;
+#if PTHREADS
+        if (ENVIRONMENT_IS_PTHREAD) probe = new OffscreenCanvas(1, 1);
+        else
+#endif
+        { probe = document.createElement('canvas'); probe.width = probe.height = 1; }
+        var context = probe.getContext('webgl2');
+        this.webglCapability = !!context;
+        context?.getExtension('WEBGL_lose_context')?.loseContext();
+      } catch (_) { this.webglCapability = false; }
+      return this.webglCapability;
+    },
     prepare(gpu, width, height) {
       if (this.pending) return -1;
       this.failure = '';
@@ -115,6 +133,8 @@ addToLibrary({
   glob2_surface_poll__deps: ['$Glob2SurfaceBridge'],
   glob2_surface_poll: () => Glob2SurfaceBridge.state,
   // Query the calling presentation realm, which may be the application worker.
+  glob2_surface_webgl_available__deps: ['$Glob2SurfaceBridge'],
+  glob2_surface_webgl_available: () => +Glob2SurfaceBridge.webglAvailable(),
   glob2_surface_webgpu_available: () => +Boolean(globalThis.navigator?.gpu),
   // The startup choice belongs to the DOM realm, not the pthread's Module.
   glob2_surface_startup_uses_gl__proxy: 'sync',

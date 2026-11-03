@@ -264,6 +264,16 @@ can change that viewport while Playwright retains its configured dimensions;
 control bounds are checked against the live render size and scaled into the
 current CSS window size.
 
+WebGL renderer choices probe the realm that owns presentation. Threaded software
+remains usable when a browser has DOM WebGL2 but no worker WebGL2; unavailable
+GL requests are rejected before retiring the active surface. GPU-switching tests
+independently probe that browser capability and explicitly skip only transitions
+that the presentation realm cannot implement. Probe timeouts and errors fail
+the test. Availability contracts still verify software responsiveness, truthful
+choices and preservation of the canvas, application and fullscreen after an
+unsupported request. Supported GPU transitions keep their original assertions.
+
+
 Pixel assertions decode the captured, opaque PNG in the Node test runner using
 the pinned development-only `pngjs` package. They inspect the same presented
 pixels and color/count thresholds without sending the screenshot back into the

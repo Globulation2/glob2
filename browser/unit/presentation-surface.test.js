@@ -102,6 +102,22 @@ for (const threaded of [false,true]) test(`WebGPU availability follows the ${thr
   scope.navigator={};
   assert.equal(webgpuAvailable(),0);
 });
+for (const threaded of [false,true]) test(`WebGL availability probes only its ${threaded?'worker':'DOM'} owner and releases its cached scratch context`,()=>{
+  const {scope,library:l}=library(threaded);
+  let probes=0,released=0;
+  const canvas=()=>({getContext:type=>{assert.equal(type,'webgl2');++probes;return {getExtension:name=>{assert.equal(name,'WEBGL_lose_context');return {loseContext:()=>++released};}};}});
+  scope.OffscreenCanvas=class {constructor(w,h){assert.equal(w,1);assert.equal(h,1);assert.equal(threaded,true);return canvas();}};
+  scope.document={createElement:tag=>{assert.equal(tag,'canvas');assert.equal(threaded,false);return canvas();}};
+  assert.equal(l.glob2_surface_webgl_available(),1);
+  assert.equal(l.glob2_surface_webgl_available(),1);
+  assert.equal(probes,1);assert.equal(released,1);
+  const missing=library(threaded);let attempts=0;
+  missing.scope.OffscreenCanvas=class {getContext(){++attempts;return null;}};
+  missing.scope.document={createElement:()=>({getContext:()=>{++attempts;return null;}})};
+  assert.equal(missing.library.glob2_surface_webgl_available(),0);
+  assert.equal(missing.library.glob2_surface_webgl_available(),0);
+  assert.equal(attempts,1);
+});
 test('GL bridge restores legacy texture tuning and copies readback without a shared view',()=>{
   const {scope,library:l}=library(true);
   scope.GLctx={MAX_TEXTURE_IMAGE_UNITS:0x8872,getParameter:()=>4,
