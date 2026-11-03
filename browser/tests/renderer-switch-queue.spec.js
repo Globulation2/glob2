@@ -1,3 +1,4 @@
+const {requirePresentationWebGL}=require('./renderer-support');
 const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test,expect}=require('@playwright/test');
@@ -17,7 +18,8 @@ async function responsiveRealms(page,predicate,argument){
     finally{clearTimeout(timer);}
   }))).filter(Boolean);
 }
-async function select(page,label){await clickControl(page,'graphics.renderer');await clickByLabel(page,/popup/,label);}
+async function select(page,label){
+  if(label==='Programmable GL')await requirePresentationWebGL(page);await clickControl(page,'graphics.renderer');await clickByLabel(page,/popup/,label);}
 async function start(page,mode){
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
   const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',mode);url.searchParams.set('renderer','software');

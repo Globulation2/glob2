@@ -1,3 +1,4 @@
+const {requirePresentationWebGL}=require('./renderer-support');
 const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test,expect}=require('@playwright/test');
@@ -14,6 +15,7 @@ async function settingsPersisted(page) {
   await expect.poll(async()=>(await state(page)).persisting,{timeout:120000}).toBe(false);
 }
 async function choose(page,label) {
+  if(label==='Programmable GL')await requirePresentationWebGL(page);
   await settingsPersisted(page);
   const before={generation:await generation(page),loop:(await state(page)).loop};
   await clickControl(page,'graphics.renderer');
