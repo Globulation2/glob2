@@ -1,7 +1,7 @@
 {
   "revision": "1c805fb4c0810278bce49c10658063d4a0b03bd7",
   "base": "4f40c206a0ae7bb3fb0ddbecd1e41a68c1c75e06",
-  "status": "Releasebuildpass,67originalexecutor/telemetry/512KiBcasespass;generatorgoldensandremainingcompatibility/fullnativeactive;actualMac/Windowsrecoverypending",
+  "status": "Releasebuild/67focused/564acceptedgeneratorfingerprintspass;20auxandfullnative/CLIcontinuing;actualMac/Windowsstillcompiling",
   "actual_hosted_failure": {
     "run": 41556945986,
     "job": 125693945747,
@@ -41,6 +41,12 @@
       "exit_decimal": 3221225725,
       "exit_hex": "0xC00000FD",
       "log": "artifacts/ci-recovery/hosted-838-windows.log.gz"
+    },
+    "linux_gcc13": {
+      "job": 125729602051,
+      "case": "CustomGameSetup/Comb preview fits a 512 KiB worker stack",
+      "exit": -11,
+      "other_cases_passed": 522
     }
   },
   "local_focused_result": {
@@ -50,5 +56,11 @@
     "skipped": "0"
   },
   "build_seconds": 1463.6,
-  "base_integration_limit": "Frozenrepairbase4f40 predatesmerged1374catalogrepair. Itsauxcatalogwillretainknown19errors; do noteraseorclaimall20green. No editsbeneathactivebuild/tests."
+  "base_integration_limit": "Frozenrepairbase4f40 predatesmerged1374catalogrepair. Itsauxcatalogwillretainknown19errors; do noteraseorclaimall20green. No editsbeneathactivebuild/tests.",
+  "generator_golden_result": {
+    "platform": "linux-x86_64",
+    "compared": 564,
+    "failures": 0,
+    "reference_updates": false
+  }
 }
