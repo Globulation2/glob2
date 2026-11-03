@@ -6856,5 +6856,53 @@ AI สำหรับ​ทุก​อาณานิคม​ที่​ค�
 ได้รับ​คำสั่ง​แล้ว: %0
 [hive order not confirmed]
 ยัง​ไม่ได้​ยืนยัน​คำสั่ง เปิด​แผง​บัญชาการ​เพื่อ​ลอง​อีกครั้ง เก็บ​ข้อความ​ของ​คุณ​ไว้​แล้ว
+[engine performance per game minute]
+
+[engine performance per real minute]
+
+[engine performance game engine performance]
+
+[engine performance task wall-time costs]
+
+[engine performance inspect slow ticks]
+
+[engine performance no advancing ticks recorded yet]
+
+[engine performance whole-engine performance]
+
+[engine performance open performance charts]
+
+[engine performance engine performance]
+
+[engine performance follow latest interval]
+
+[engine performance compare task costs]
+
+[engine performance all metrics and slow ticks]
+
+[engine performance phase orders]
+
+[engine performance phase units]
+
+[engine performance phase buildings]
+
+[engine performance phase map]
+
+[engine performance phase statistics]
+
+[engine performance phase ai]
+
+[engine performance phase world capture]
+
+[engine performance phase checksums]
+
+[engine performance wall time %0]
+
+[engine performance waits %0 joins %1 locks %2]
+
+[engine performance phase %0 wall %1]
+
+[engine performance tick %0 wall %1]
+
 [hive standing order update failed]
 อัปเดต​คำสั่ง​ต่อเนื่อง​ไม่สำเร็จ คำสั่ง​ถูก​พัก​ไว้​บน​อุปกรณ์​นี้ ลอง​ใช้​ปุ่ม​ควบคุม​อีกครั้ง
