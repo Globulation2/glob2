@@ -1027,7 +1027,7 @@ TEST_SUITE("MapGeneratorDefaults")
         {
             // Authored profiles may permit building on swimming terrain. Such
             // corners would be painted and must protect their whole footprint.
-            map.setGame(nullptr);
+            map.game = nullptr;
             map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:buildable-water","name":"Buildable water","base":"water","appearance":"water","properties":{"buildable":true}}]})");
             map.setGame(&game);
             const auto water = map.terrainRegistry().find("test:buildable-water");
