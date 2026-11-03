@@ -728,7 +728,8 @@ Element EndGameScreen::chartCanvas(const Presentation &p)
 Element EndGameScreen::actionBar(const Presentation &p, bool compact)
 {
 	std::vector<fe::MenuAction> actions;
-	if (metric())
+    actions.push_back({"engine-performance", showEnginePerformance ? "Game statistics" : "Game engine performance", [this] { showEnginePerformance = !showEnginePerformance; invalidate(); }});
+	if (metric() && !showEnginePerformance)
 		actions.push_back({"expand", fe::tr(expandedChart ? "[Back to chart]" : "[Expand chart]"), [this] { expandChart(!expandedChart); }});
 	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 		actions.push_back({"save-replay", fe::tr("[save replay]"), [this] { saveReplay("replays", "replay"); }});
@@ -761,6 +762,14 @@ Element EndGameScreen::build(const Presentation &p)
 {
 	// Below about 900 points there is no room for the metric list beside the chart.
 	const bool compact = p.compact() || p.shortLandscape() || p.dialog.w < p.pt(900);
+    if (showEnginePerformance) {
+        fe::CardOptions page;
+        page.padding = p.pt(compact ? 10 : 16);
+        return fe::card(fe::column({
+        fe::expanded(fe::scroll("results/engine-scroll", enginePerformance.build(p, [this] { invalidate(); }), {.shrinkToContent = false})),
+        actionBar(p, compact)}, {p.pt(8)}), page);
+    }
+
 	std::vector<Element> parts;
 	if (online && (!expandedChart || !compact))
 	{

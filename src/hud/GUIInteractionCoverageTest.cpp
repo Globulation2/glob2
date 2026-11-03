@@ -1,3 +1,4 @@
+#include <PerformanceTelemetry.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
 #include "stats/TeamStatChart.h"
@@ -1435,6 +1436,46 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
     }
     CHECK(seen.size()==panel.metrics().size());
     CHECK_FALSE(seen.count("win probability"));
+    {
+        auto &perf = PerformanceTelemetry::collector();
+        perf.history = std::make_unique<PerformanceTelemetry::History>();
+        for (unsigned i = 0; i < 4; ++i) {
+            auto sample = std::make_unique<PerformanceTelemetry::Window>();
+            sample->tickStart = i * 512; sample->tickEnd = (i + 1) * 512;
+            sample->startNs = i * 1000000000ULL; sample->endNs = (i + 1) * 1000000000ULL;
+            auto &m = sample->metrics[unsigned(PerformanceTelemetry::Id::OwnerAdvance)];
+            m.calls = 512; m.time.add((i + 1) * 1000000);
+            perf.history->append(std::move(*sample));
+        }
+        panel.selectTopic(InGameStatisticsPanel::Topic::Engine); panel.update(0);
+        REQUIRE(panel.host().find("engine-performance/open"));
+        REQUIRE(panel.host().find("engine-performance/summary"));
+        CHECK_FALSE(gui.sceneRequest(false).includeHistory);
+        draw("engine-performance-wall.bmp");
+        panel.host().tapAt(panel.host().bounds("engine-performance/open").center());
+        REQUIRE(gui.inGameMenu==GameGUI::IGM_STATISTICS);
+        REQUIRE(gui.gameMenuScreen);
+        CHECK_FALSE(gui.gamePaused);
+        gui.gameMenuScreen->update(0);
+        REQUIRE(gui.gameMenuScreen->host().find("engine-performance/chart"));
+        REQUIRE(gui.gameMenuScreen->host().find("engine-performance/chart/5"));
+        auto* performance=static_cast<InGamePerformanceHistory*>(gui.gameMenuScreen.get());
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/chart").center());
+        CHECK(performance->panel.cursorMinute>=0);
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/follow-latest").center());
+        CHECK(performance->panel.cursorMinute<0);
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/range/1").center());
+        gui.gameMenuScreen->update(0);
+        draw("engine-performance-expanded.bmp");
+        gui.gameMenuScreen->host().scrollIntoView("engine-performance/all-metrics");
+        gui.gameMenuScreen->update(0);
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/all-metrics").center());
+        gui.gameMenuScreen->update(0);
+        REQUIRE(gui.gameMenuScreen->host().find("engine-performance/explorer-chart"));
+        gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("performance/history/close").center());
+        gui.processGameMenu(nullptr);
+        CHECK(world.game.checkSum() == checksum);
+    }
     panel.selectTopic(InGameStatisticsPanel::Topic::Economy); panel.update(0);
     panel.host().scrollIntoView("stats/metric/spending"); panel.update(0);
     REQUIRE(panel.host().find("stats/scroll/2")->scrollOffset() > 0);

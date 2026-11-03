@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ProgrammableGLDevice.h>
+#include <PerformanceTelemetry.h>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -201,6 +202,53 @@ class ProgrammableGLDevice final : public RenderDevice
     std::deque<Pending> pending;
     std::deque<Readback> readbacks;
     RenderTelemetry counts;
+    using GenQueries = void (APIENTRY *)(GLsizei, GLuint *);
+    using DeleteQueries = void (APIENTRY *)(GLsizei, const GLuint *);
+    using BeginQuery = void (APIENTRY *)(GLenum, GLuint);
+    using EndQuery = void (APIENTRY *)(GLenum);
+    using GetQueryiv = void (APIENTRY *)(GLuint, GLenum, GLuint *);
+    using GetQuery64 = void (APIENTRY *)(GLuint, GLenum, std::uint64_t *);
+    GenQueries genQueries = nullptr; DeleteQueries deleteQueries = nullptr;
+    BeginQuery beginQuery = nullptr; EndQuery endQuery = nullptr;
+    GetQueryiv getQueryiv = nullptr; GetQuery64 getQuery64 = nullptr;
+    struct TimingSlot { GLuint query = 0; bool pending = false; std::uint64_t frame = 0, started = 0; };
+    std::array<TimingSlot, 32> timingSlots{};
+    int activeTiming = -1;
+    std::uint64_t timingFrames = 0;
+    bool timingSupported = false, disjointTiming = false;
+    void initTiming() {
+        disjointTiming = SDL_GL_ExtensionSupported("GL_EXT_disjoint_timer_query") || SDL_GL_ExtensionSupported("GL_EXT_disjoint_timer_query_webgl2");
+        if (!disjointTiming && !SDL_GL_ExtensionSupported("GL_ARB_timer_query")) return;
+        auto load = [](const char *core, const char *ext) { const auto proc = SDL_GL_GetProcAddress(core); return proc ? proc : SDL_GL_GetProcAddress(ext); };
+        genQueries = reinterpret_cast<GenQueries>(load("glGenQueries", "glGenQueriesEXT"));
+        deleteQueries = reinterpret_cast<DeleteQueries>(load("glDeleteQueries", "glDeleteQueriesEXT"));
+        beginQuery = reinterpret_cast<BeginQuery>(load("glBeginQuery", "glBeginQueryEXT"));
+        endQuery = reinterpret_cast<EndQuery>(load("glEndQuery", "glEndQueryEXT"));
+        getQueryiv = reinterpret_cast<GetQueryiv>(load("glGetQueryObjectuiv", "glGetQueryObjectuivEXT"));
+        getQuery64 = reinterpret_cast<GetQuery64>(load("glGetQueryObjectui64v", "glGetQueryObjectui64vEXT"));
+        timingSupported = genQueries && deleteQueries && beginQuery && endQuery && getQueryiv && getQuery64;
+    }
+    void beginTiming() {
+        const auto frame = timingFrames++;
+        if (!timingSupported || frame % 16 != (frame / 512) % 16) return;
+        for (unsigned i = 0; i < timingSlots.size(); ++i) if (!timingSlots[i].pending) {
+            auto &slot = timingSlots[i];
+            if (!slot.query) genQueries(1, &slot.query);
+            if (!slot.query) { PerformanceTelemetry::collector().record(PerformanceTelemetry::Id::GPUSkipped, 1); return; }
+            slot.pending = true; slot.frame = frame; slot.started = PerformanceTelemetry::now(); activeTiming = int(i);
+            beginQuery(0x88BF, slot.query); return; // GL_TIME_ELAPSED
+        }
+        PerformanceTelemetry::collector().record(PerformanceTelemetry::Id::GPUSkipped, 1);
+    }
+    void endTiming() { if (activeTiming >= 0) { endQuery(0x88BF); activeTiming = -1; } }
+    void resetTiming() {
+        endTiming();
+        for (auto &slot : timingSlots) {
+            if (slot.pending) PerformanceTelemetry::collector().record(PerformanceTelemetry::Id::GPUInvalid, 1);
+            if (slot.query && deleteQueries) deleteQueries(1, &slot.query);
+            slot = {};
+        }
+    }
     static constexpr std::size_t TextureBudget = 256 * 1024 * 1024;
     static constexpr std::array<std::size_t,4> ClassLimits{64*1024*1024,64*1024*1024,128*1024*1024,32*1024*1024};
     std::array<std::size_t,4> classBytes{};
@@ -858,6 +906,7 @@ class ProgrammableGLDevice final : public RenderDevice
         if (!context) return;
         if (!SDL_GL_MakeCurrent(window, context)) { SDL_GL_DestroyContext(context); context = nullptr; return; }
         if (gl.glDeleteSync) {
+            resetTiming();
             for (auto &value : pending) gl.glDeleteSync(value.fence);
             for (auto &value : readbacks) { gl.glDeleteSync(value.fence); gl.glDeleteBuffers(1, &value.buffer); }
             for (auto &[key, value] : masks) destroy(value);
@@ -960,12 +1009,12 @@ class ProgrammableGLDevice final : public RenderDevice
                 composeProgram=terrainProgram(shaderRoot+"terrain-compose.vert",shaderRoot+"terrain-compose.frag",false);
                 reduceProgram=terrainProgram(shaderRoot+"terrain-reduce.vert",shaderRoot+"terrain-reduce.frag",true);supportsTerrain=true;
             }
-            SDL_GL_SetSwapInterval(0); screen();
+            SDL_GL_SetSwapInterval(0); screen(); initTiming();
         } catch (...) { cleanup(); throw; }
     }
     ~ProgrammableGLDevice() override { cleanup(); }
     SDL_GLContext borrowedContext() const { return context; }
-    RenderDeviceCapabilities capabilities() const override { return {true, true, false, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain}; }
+    RenderDeviceCapabilities capabilities() const override { return {true, true, timingSupported, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain}; }
     bool canBeginFrame() override
     {
         current(); poll();
@@ -1003,6 +1052,7 @@ class ProgrammableGLDevice final : public RenderDevice
         }
         screen();
         if(!frameOpen){
+            beginTiming();
             gl.glDisable(GL_SCISSOR_TEST);gl.glBindFramebuffer(GL_READ_FRAMEBUFFER,screenFramebuffer);gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER,committedFramebuffer);
             gl.glBlitFramebuffer(0,0,width,height,0,0,width,height,GL_COLOR_BUFFER_BIT,GL_NEAREST);
             check("Retain completed renderer output");frameOpen=true;
@@ -1063,6 +1113,7 @@ class ProgrammableGLDevice final : public RenderDevice
         gl.glDisable(GL_SCISSOR_TEST); gl.glBindFramebuffer(GL_READ_FRAMEBUFFER, screenFramebuffer); gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         gl.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
         check("Present renderer frame");
+        endTiming();
         if (frameOpen) {
             GLsync fence = gl.glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
             if (!fence) throw std::runtime_error("Cannot create renderer fence");
@@ -1075,6 +1126,8 @@ class ProgrammableGLDevice final : public RenderDevice
     {
         current();screen();
         if(!frameOpen)return;
+        endTiming();
+        ++counts.deferredFrames;
         gl.glDisable(GL_SCISSOR_TEST);gl.glBindFramebuffer(GL_READ_FRAMEBUFFER,committedFramebuffer);gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER,screenFramebuffer);
         gl.glBlitFramebuffer(0,0,width,height,0,0,width,height,GL_COLOR_BUFFER_BIT,GL_NEAREST);
         const auto fence=gl.glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE,0);
@@ -1084,7 +1137,7 @@ class ProgrammableGLDevice final : public RenderDevice
     }
     void reset() override
     {
-        current(); cancelCaptures();
+        current(); resetTiming(); cancelCaptures();
         // GL guarantees deleted storage remains live for already issued commands.
         // Submitted snapshots are released only when cancelling this generation.
         for (auto &value : pending) gl.glDeleteSync(value.fence);
@@ -1110,6 +1163,24 @@ class ProgrammableGLDevice final : public RenderDevice
                 destroyMesh(it->second); it = meshes.erase(it);
             } else ++it;
         }
+    }
+    unsigned pendingTimings() const override { return unsigned(std::count_if(timingSlots.begin(), timingSlots.end(), [](const auto &slot) { return slot.pending; })); }
+    bool pollTiming(GpuTimingResult &result) override {
+        if (!timingSupported) return false;
+        current();
+        if (disjointTiming) {
+            GLint disjoint = 0; gl.glGetIntegerv(0x8FBB, &disjoint);
+            if (disjoint) { resetTiming(); return false; }
+        }
+        for (unsigned i = 0; i < timingSlots.size(); ++i) {
+            auto &slot = timingSlots[i];
+            if (!slot.pending || activeTiming == int(i)) continue;
+            GLuint available = 0; getQueryiv(slot.query, 0x8867, &available);
+            if (!available) continue;
+            std::uint64_t ns = 0; getQuery64(slot.query, 0x8866, &ns);
+            result = {slot.frame, slot.started, ns}; slot.pending = false; return true;
+        }
+        return false;
     }
     RenderTelemetry telemetry() const override
     {
