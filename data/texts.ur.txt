@@ -5638,19 +5638,19 @@ AI کی بنائی ہوئی نہیں
 مٹی
 [clay]
 چکنی مٹی
-[gravel]
+[shale]
 بجری
-[flower_meadow]
+[heath]
 پھولوں کا مرغزار
 [mud]
 کیچڑ
-[marsh]
+[mudflat]
 دلدل
 [deep_snow]
 گہری برف
 [scree]
 پتھریلا ڈھلوانی ملبہ
-[dirt_track]
+[brick_path]
 کچا راستہ
 [boardwalk]
 تختوں کا راستہ
@@ -5680,6 +5680,10 @@ AI کی بنائی ہوئی نہیں
 ٹیلے کی ریت
 [pale_sand]
 ہلکے رنگ کی ریت
+[sandstone]
+ریتلے پتھر کی ٹائلیں
+[pumice]
+جھانویں کا میدان
 [terrain group water]
 پانی
 [terrain group sand]

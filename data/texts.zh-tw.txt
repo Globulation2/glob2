@@ -5662,19 +5662,19 @@ AI 生成
 泥土
 [clay]
 黏土
-[gravel]
+[shale]
 礫石
-[flower_meadow]
+[heath]
 花草地
 [mud]
 泥濘
-[marsh]
+[mudflat]
 沼澤
 [deep_snow]
 深雪
 [scree]
 碎石坡
-[dirt_track]
+[brick_path]
 土路
 [boardwalk]
 木棧道
@@ -5704,6 +5704,10 @@ AI 生成
 沙丘沙礫
 [pale_sand]
 淺色沙礫
+[sandstone]
+砂岩石板
+[pumice]
+浮石地
 [terrain group water]
 水
 [terrain group sand]

@@ -4,6 +4,7 @@
 #include "TerrainType.h"
 #include <array>
 #include <cstdint>
+#include <string_view>
 
 // One row per built-in TerrainType: its group (and therefore its simulation
 // profile), external name, string-table label and semantic colours.
@@ -55,13 +56,13 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(OUTCROP, G::Ridges, "outcrop", "[outcrop]", {90, 90, 86}, {110, 112, 108}),
 		authored(DIRT, G::Barren, "dirt", "[dirt]", {110, 90, 64}, {128, 104, 74}),
 		authored(CLAY, G::Barren, "clay", "[clay]", {140, 98, 72}, {158, 112, 84}),
-		authored(GRAVEL, G::Barren, "gravel", "[gravel]", {120, 114, 104}, {138, 130, 118}),
-		authored(FLOWER_MEADOW, G::Barren, "flower_meadow", "[flower_meadow]", {52, 118, 46}, {60, 126, 48}),
+		authored(SHALE, G::Barren, "shale", "[shale]", {120, 114, 104}, {138, 130, 118}),
+		authored(HEATH, G::Barren, "heath", "[heath]", {52, 118, 46}, {60, 126, 48}),
 		authored(MUD, G::Rough, "mud", "[mud]", {82, 64, 48}, {96, 76, 56}),
-		authored(MARSH, G::Rough, "marsh", "[marsh]", {62, 82, 66}, {74, 96, 78}),
+		authored(MUDFLAT, G::Rough, "mudflat", "[mudflat]", {62, 82, 66}, {74, 96, 78}),
 		authored(DEEP_SNOW, G::Rough, "deep_snow", "[deep_snow]", {208, 216, 226}, {222, 228, 236}),
 		authored(SCREE, G::Rough, "scree", "[scree]", {104, 108, 116}, {118, 122, 128}),
-		authored(DIRT_TRACK, G::Paths, "dirt_track", "[dirt_track]", {156, 128, 92}, {170, 142, 104}),
+		authored(BRICK_PATH, G::Paths, "brick_path", "[brick_path]", {156, 128, 92}, {170, 142, 104}),
 		authored(BOARDWALK, G::Paths, "boardwalk", "[boardwalk]", {142, 110, 72}, {164, 128, 84}),
 		authored(LAVA, G::Lava, "lava", "[lava]", {150, 60, 24}, {190, 80, 30}),
 		authored(EMBER_FIELD, G::Lava, "ember_field", "[ember_field]", {70, 40, 32}, {90, 52, 38}),
@@ -76,6 +77,9 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(DRY_GRASS, G::Grass, "dry_grass", "[dry_grass]", {120, 123, 52}, {120, 123, 52}),
 		authored(DUNE_SAND, G::Sand, "dune_sand", "[dune_sand]", {204, 151, 85}, {204, 151, 85}),
 		authored(PALE_SAND, G::Sand, "pale_sand", "[pale_sand]", {211, 202, 168}, {211, 202, 168}),
+		// Laid ochre and grey flagstones; dark porous rock beside lava and ember fields.
+		authored(SANDSTONE, G::Paths, "sandstone", "[sandstone]", {136, 126, 98}, {150, 140, 110}),
+		authored(PUMICE, G::Rough, "pumice", "[pumice]", {44, 42, 42}, {58, 55, 54}),
 	}};
 	return rows;
 }();
@@ -147,3 +151,44 @@ static_assert(
 			   frozenRow(TERRAIN_TYPES[TRAIL], "road");
 	}(),
 	"The classic terrain names are frozen");
+
+// Earlier external names of renamed built-ins. Saved custom registries (their
+// base and appearance), map sets, scripts, editor actions and authoring JSON may
+// still name a type by one of these, so every name-to-type lookup resolves them
+// through terrainTypeByName. Never write them: files and reports use the row name.
+struct LegacyTerrainName
+{
+	const char *name;
+	TerrainType type;
+};
+inline constexpr std::array<LegacyTerrainName, 4> LEGACY_TERRAIN_NAMES{{
+	{"gravel", SHALE},
+	{"flower_meadow", HEATH},
+	{"marsh", MUDFLAT},
+	{"dirt_track", BRICK_PATH},
+}};
+
+static_assert(
+	[]
+	{
+		using namespace terrain_table_detail;
+		for (const auto &legacy : LEGACY_TERRAIN_NAMES)
+			for (const auto &row : TERRAIN_TYPES)
+				if (sameText(legacy.name, row.name))
+					return false;
+		return true;
+	}(),
+	"A legacy terrain name must not shadow a current one");
+
+// The built-in that a current or legacy external name denotes, or TERRAIN_COUNT
+// when there is none. Callers apply their own paintable or registry checks.
+inline constexpr TerrainType terrainTypeByName(std::string_view name)
+{
+	for (const auto &row : TERRAIN_TYPES)
+		if (name == row.name)
+			return row.id;
+	for (const auto &legacy : LEGACY_TERRAIN_NAMES)
+		if (name == legacy.name)
+			return legacy.type;
+	return TERRAIN_COUNT;
+}

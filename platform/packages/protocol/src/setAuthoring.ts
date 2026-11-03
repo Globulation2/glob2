@@ -13,13 +13,13 @@ export const TERRAIN_PRESETS = [
   'outcrop',
   'dirt',
   'clay',
-  'gravel',
-  'flower_meadow',
+  'shale',
+  'heath',
   'mud',
-  'marsh',
+  'mudflat',
   'deep_snow',
   'scree',
-  'dirt_track',
+  'brick_path',
   'boardwalk',
   'lava',
   'ember_field',
@@ -34,7 +34,21 @@ export const TERRAIN_PRESETS = [
   'dry_grass',
   'dune_sand',
   'pale_sand',
+  'sandstone',
+  'pumice',
 ];
+/** Earlier names of renamed built-ins; the engine still accepts them (LEGACY_TERRAIN_NAMES). */
+export const LEGACY_TERRAIN_PRESETS: Readonly<Record<string, string>> = {
+  gravel: 'shale',
+  flower_meadow: 'heath',
+  marsh: 'mudflat',
+  dirt_track: 'brick_path',
+};
+/** The current name of a terrain preset, accepting legacy names; undefined when unknown. */
+export function canonicalTerrainPreset(name: string): string | undefined {
+  if (TERRAIN_PRESETS.includes(name)) return name;
+  return Object.hasOwn(LEGACY_TERRAIN_PRESETS, name) ? LEGACY_TERRAIN_PRESETS[name] : undefined;
+}
 export const MATERIALS = [
   'wood',
   'food',

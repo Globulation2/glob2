@@ -4,6 +4,7 @@ import {
   parse,
   namespace,
   TERRAIN_PRESETS,
+  canonicalTerrainPreset,
   RESOURCE_PRESETS,
   MATERIALS,
   TERRAIN_STUDIO_MAX_ENTRIES,
@@ -100,7 +101,7 @@ export function validatePlan(value: unknown, base: SetPackage): TerrainPlan {
       if (!old) throw Error('Cannot remove a missing entry.');
       continue;
     }
-    if (e.kind === 'terrain' && !TERRAIN_PRESETS.includes(e.preset))
+    if (e.kind === 'terrain' && !canonicalTerrainPreset(e.preset))
       throw Error('Unknown terrain preset.');
     if (e.kind === 'resource' && !RESOURCE_PRESETS.some((v) => v.key === e.preset))
       throw Error('Unknown resource preset.');

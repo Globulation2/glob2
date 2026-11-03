@@ -5662,19 +5662,19 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 تراب
 [clay]
 طين صلصالي
-[gravel]
+[shale]
 حصى
-[flower_meadow]
+[heath]
 مرج زهور
 [mud]
 وحل
-[marsh]
+[mudflat]
 مستنقع
 [deep_snow]
 ثلج عميق
 [scree]
 منحدر ركام صخري
-[dirt_track]
+[brick_path]
 طريق ترابي
 [boardwalk]
 ممر خشبي
@@ -5704,6 +5704,10 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 رمل الكثبان
 [pale_sand]
 رمل فاتح
+[sandstone]
+بلاط من الحجر الرملي
+[pumice]
+حقل الحجر الخفاف
 [terrain group water]
 ماء
 [terrain group sand]

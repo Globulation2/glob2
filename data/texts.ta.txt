@@ -5638,19 +5638,19 @@ ZIP அல்லது மூன்று இசைத்தடங்களை �
 மண்
 [clay]
 களிமண்
-[gravel]
+[shale]
 சரளைக்கல்
-[flower_meadow]
+[heath]
 பூக்கள் நிறைந்த புல்வெளி
 [mud]
 சேறு
-[marsh]
+[mudflat]
 சதுப்பு நிலம்
 [deep_snow]
 ஆழமான பனி
 [scree]
 சரிவுக் கற்சிதறல்
-[dirt_track]
+[brick_path]
 மண் தடம்
 [boardwalk]
 மரப்பலகை நடைபாதை
@@ -6820,6 +6820,10 @@ GL மட்டும்
 மணற்குன்று மணல்
 [pale_sand]
 வெளிர்நிற மணல்
+[sandstone]
+மணற்கல் ஓடுகள்
+[pumice]
+நுரைக்கல் வெளி
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]

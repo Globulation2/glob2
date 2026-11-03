@@ -5662,19 +5662,19 @@ Skalný výchoz
 Hlina
 [clay]
 Íl
-[gravel]
+[shale]
 Štrk
-[flower_meadow]
+[heath]
 Kvetnatá lúka
 [mud]
 Blato
-[marsh]
+[mudflat]
 Močiar
 [deep_snow]
 Hlboký sneh
 [scree]
 Suť
-[dirt_track]
+[brick_path]
 Poľná cesta
 [boardwalk]
 Drevený chodník
@@ -5704,6 +5704,10 @@ Suchá tráva
 Dunový piesok
 [pale_sand]
 Svetlý piesok
+[sandstone]
+Pieskovcové dlaždice
+[pumice]
+Pemzové pole
 [terrain group water]
 Voda
 [terrain group sand]

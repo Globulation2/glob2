@@ -5662,19 +5662,19 @@ AI 생성 아님
 흙
 [clay]
 점토
-[gravel]
+[shale]
 자갈
-[flower_meadow]
+[heath]
 꽃 초원
 [mud]
 진흙
-[marsh]
+[mudflat]
 습지
 [deep_snow]
 깊은 눈
 [scree]
 돌무더기 비탈
-[dirt_track]
+[brick_path]
 흙길
 [boardwalk]
 나무 길
@@ -5704,6 +5704,10 @@ AI 생성 아님
 사구 모래
 [pale_sand]
 밝은 모래
+[sandstone]
+사암 포석
+[pumice]
+부석 지대
 [terrain group water]
 물
 [terrain group sand]

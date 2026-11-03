@@ -5662,19 +5662,19 @@ Aflorament
 Terra
 [clay]
 Argila
-[gravel]
+[shale]
 Grava
-[flower_meadow]
+[heath]
 Prat de flors
 [mud]
 Fang
-[marsh]
+[mudflat]
 Aiguamoll
 [deep_snow]
 Neu profunda
 [scree]
 Tartera
-[dirt_track]
+[brick_path]
 Camí de terra
 [boardwalk]
 Passarel·la de fusta
@@ -5704,6 +5704,10 @@ Herba seca
 Sorra de duna
 [pale_sand]
 Sorra clara
+[sandstone]
+Lloses de gres
+[pumice]
+Camp de pedra tosca
 [terrain group water]
 Aigua
 [terrain group sand]

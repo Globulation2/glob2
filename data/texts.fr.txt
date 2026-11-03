@@ -5662,19 +5662,19 @@ Affleurement
 Terre
 [clay]
 Argile
-[gravel]
+[shale]
 Gravier
-[flower_meadow]
+[heath]
 Prairie fleurie
 [mud]
 Boue
-[marsh]
+[mudflat]
 Marais
 [deep_snow]
 Neige profonde
 [scree]
 Éboulis
-[dirt_track]
+[brick_path]
 Chemin de terre
 [boardwalk]
 Passerelle en bois
@@ -5704,6 +5704,10 @@ Herbe sèche
 Sable de dune
 [pale_sand]
 Sable clair
+[sandstone]
+Dalles de grès
+[pumice]
+Champ de pierre ponce
 [terrain group water]
 Eau
 [terrain group sand]

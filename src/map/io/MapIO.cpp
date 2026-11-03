@@ -232,7 +232,8 @@ try
 		if (!drawn) legacyCellTerrain[i] = type;
 	};
 
-	// Vertex IDs written before the grass and sand looks number custom terrain from 29.
+	// Vertex IDs written before the latest built-ins number custom terrain from the writer's
+	// built-in count (TerrainRegistry::savedBuiltinCount).
 	auto savedVertexTerrain = [&](Uint16 saved) -> std::optional<TerrainType>
 	{
 		const auto id = TerrainRegistry::currentTerrainId(savedBuiltins, saved);

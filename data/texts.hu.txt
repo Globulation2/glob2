@@ -5662,19 +5662,19 @@ Sziklakibúvás
 Föld
 [clay]
 Agyag
-[gravel]
+[shale]
 Kavics
-[flower_meadow]
+[heath]
 Virágos rét
 [mud]
 Sár
-[marsh]
+[mudflat]
 Mocsár
 [deep_snow]
 Mély hó
 [scree]
 Kőtörmelék
-[dirt_track]
+[brick_path]
 Földút
 [boardwalk]
 Pallóút
@@ -5704,6 +5704,10 @@ Száraz fű
 Dűnehomok
 [pale_sand]
 Világos homok
+[sandstone]
+Homokkő burkolólapok
+[pumice]
+Horzsakőmező
 [terrain group water]
 Víz
 [terrain group sand]

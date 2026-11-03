@@ -1610,7 +1610,8 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::HeadlessGlobals globals({.display = true});
 		auto &compositor = globals->terrainCompositor();
 		const auto minimap = TerrainVisual::minimapPalette(compositor.catalog());
-		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .teams = 0});
+		// Wide enough for one row holding every non-classic paintable type.
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .teams = 0});
 		auto &map = fixture.game.map;
 		std::vector<TerrainType> painted;
 		for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
@@ -1630,6 +1631,7 @@ TEST_SUITE("TerrainPresentation")
 			map.paintCell(int(painted.size()) + 1, 1, type);
 			painted.push_back(type);
 		}
+		REQUIRE(painted.size() + 1 < std::size_t(map.getW()));
 		(void)minimap;
 		const auto filename = (glob2test::artifactDir() / "terrain-catalogue-colors.png").string();
 		exportMapImage(fixture.game, filename);
@@ -2079,7 +2081,7 @@ TEST_SUITE("TerrainValidation")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
-		REQUIRE(types.size() == 28);
+		REQUIRE(types.size() == 30);
 		for (std::size_t n = 0; n < types.size(); ++n)
 		{
 			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..23 are rendered
@@ -2161,7 +2163,7 @@ TEST_SUITE("TerrainValidation")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				keys.push_back(terrainPresentation(TerrainType(i)).name);
-		REQUIRE(keys.size() == 28);
+		REQUIRE(keys.size() == 30);
 		// One 4x composed tile per catalogue material, six per row.
 		GAGCore::DrawableSurface sheet(6 * 128, 5 * 128);
 		for (std::size_t n = 0; n < keys.size(); ++n)

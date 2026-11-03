@@ -5662,19 +5662,19 @@ CPU %0%
 Χώμα
 [clay]
 Άργιλος
-[gravel]
+[shale]
 Χαλίκι
-[flower_meadow]
+[heath]
 Ανθισμένο λιβάδι
 [mud]
 Λάσπη
-[marsh]
+[mudflat]
 Έλος
 [deep_snow]
 Βαθύ χιόνι
 [scree]
 Σάρα
-[dirt_track]
+[brick_path]
 Χωματόδρομος
 [boardwalk]
 Ξύλινος διάδρομος
@@ -5704,6 +5704,10 @@ CPU %0%
 Άμμος αμμόλοφου
 [pale_sand]
 Ανοιχτόχρωμη άμμος
+[sandstone]
+Πλάκες ψαμμίτη
+[pumice]
+Πεδίο ελαφρόπετρας
 [terrain group water]
 Νερό
 [terrain group sand]

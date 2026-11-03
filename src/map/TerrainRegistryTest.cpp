@@ -248,7 +248,7 @@ TEST_SUITE("TerrainRegistry")
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT + 1));
 		CHECK(TerrainRegistry::deserialize(R"({"schemaVersion":1,"terrains":[]})", TERRAIN_COUNT_BEFORE_CATALOGUE) == builtin);
 
-		// Formats 146 to 186 number their definitions from 29, before the grass and sand looks.
+		// Formats 146 to 190 number their definitions from 29, before the grass and sand looks.
 		auto beforeLooks = Json::parse(registry->serialize());
 		for (auto &item : beforeLooks["terrains"])
 			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_GROUND_LOOKS;
@@ -256,6 +256,62 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(vertex->serialize() == registry->serialize());
 		CHECK(vertex->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeLooks.dump()));
+
+		// Formats 191 to 194 number their definitions from 33, before sandstone and pumice.
+		auto beforeSandstone = Json::parse(registry->serialize());
+		for (auto &item : beforeSandstone["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE;
+		const auto looks = TerrainRegistry::deserialize(beforeSandstone.dump(), TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE);
+		CHECK(looks->serialize() == registry->serialize());
+		CHECK(looks->digest() == registry->digest());
+		CHECK(looks->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeSandstone.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeSandstone.dump(), TERRAIN_COUNT_BEFORE_GROUND_LOOKS));
+	}
+	TEST_CASE("renamed built-ins still resolve by their legacy names")
+	{
+		const std::pair<const char *, TerrainType> renamed[] = {
+			{"gravel", SHALE}, {"flower_meadow", HEATH}, {"marsh", MUDFLAT}, {"dirt_track", BRICK_PATH}};
+		const auto builtin = TerrainRegistry::builtins();
+		for (auto [legacy, type] : renamed)
+		{
+			CAPTURE(legacy);
+			CHECK(terrainTypeByName(legacy) == type);
+			CHECK(builtin->find(legacy) == type);
+			// The current name is the only one ever written.
+			CHECK(builtin->key(type) == terrainPresentation(type).name);
+			CHECK(builtin->key(type) != legacy);
+		}
+		CHECK(std::string(terrainPresentation(SHALE).name) == "shale");
+		CHECK(std::string(terrainPresentation(HEATH).name) == "heath");
+		CHECK(std::string(terrainPresentation(MUDFLAT).name) == "mudflat");
+		CHECK(std::string(terrainPresentation(BRICK_PATH).name) == "brick_path");
+		CHECK(builtin->find("shale") == SHALE);
+		CHECK(terrainTypeByName("road") == TRAIL);
+		CHECK(terrainTypeByName("no_such_terrain") == TERRAIN_COUNT);
+		CHECK_FALSE(builtin->find("no_such_terrain"));
+
+		// Authoring JSON may name the old base and appearance; it imports and
+		// serializes under the current names.
+		auto old = definition("test:fen", "marsh");
+		old["appearance"] = "flower_meadow";
+		auto current = definition("test:fen", "mudflat");
+		current["appearance"] = "heath";
+		const auto fromOld = builtin->importJson(source(Json::array({old})));
+		const auto fromCurrent = builtin->importJson(source(Json::array({current})));
+		CHECK(fromOld->serialize() == fromCurrent->serialize());
+		CHECK(fromOld->digest() == fromCurrent->digest());
+		const auto fen = *fromOld->find("test:fen");
+		CHECK(fromOld->appearance(fen) == HEATH);
+		CHECK(sameTerrainProperties(fromOld->properties(fen), terrainProperties(MUDFLAT)));
+		CHECK(Json::parse(fromOld->serialize())["terrains"][0]["appearance"] == "heath");
+
+		// A saved registry written before the rename (appearance "dirt_track") loads.
+		auto saved = Json::parse(fromCurrent->serialize());
+		saved["terrains"][0]["appearance"] = "dirt_track";
+		const auto loaded = TerrainRegistry::deserialize(saved.dump());
+		CHECK(loaded->appearance(*loaded->find("test:fen")) == BRICK_PATH);
+		CHECK(Json::parse(loaded->serialize())["terrains"][0]["appearance"] == "brick_path");
 	}
 	TEST_CASE("large registries compile equivalent definitions into bounded movement profiles")
 	{

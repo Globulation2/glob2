@@ -5638,19 +5638,19 @@ ZIP किंवा तीन ट्रॅक आयात करा
 माती
 [clay]
 चिकणमाती
-[gravel]
+[shale]
 खडी
-[flower_meadow]
+[heath]
 फुलांचे कुरण
 [mud]
 चिखल
-[marsh]
+[mudflat]
 दलदल
 [deep_snow]
 दाट बर्फ
 [scree]
 स्क्री
-[dirt_track]
+[brick_path]
 मातीची वाट
 [boardwalk]
 लाकडी फळ्यांची वाट
@@ -6820,6 +6820,10 @@ MCP सर्व्हर सक्षम करा
 वाळूच्या टेकड्यांतील वाळू
 [pale_sand]
 फिकट वाळू
+[sandstone]
+वालुकाश्माच्या फरशा
+[pumice]
+प्युमिस दगडाचे मैदान
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
 [script error at %0:%1: %2]

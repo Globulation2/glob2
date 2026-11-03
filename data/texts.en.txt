@@ -5638,19 +5638,19 @@ Outcrop
 Dirt
 [clay]
 Clay
-[gravel]
+[shale]
 Gravel
-[flower_meadow]
+[heath]
 Flower meadow
 [mud]
 Mud
-[marsh]
+[mudflat]
 Marsh
 [deep_snow]
 Deep snow
 [scree]
 Scree
-[dirt_track]
+[brick_path]
 Dirt track
 [boardwalk]
 Boardwalk
@@ -5680,6 +5680,10 @@ Dry grass
 Dune sand
 [pale_sand]
 Pale sand
+[sandstone]
+Sandstone tiles
+[pumice]
+Pumice field
 [terrain group water]
 Water
 [terrain group sand]

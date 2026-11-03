@@ -2231,7 +2231,7 @@ inline void bastionKeysContracts()
 			if (corner == BOARDWALK && pier < 0)
 				pier = i;
 		}
-		for (const int type : {BOARDWALK, DIRT_TRACK, GRAVEL, LOAM, OUTCROP, RIDGE_ROCK})
+		for (const int type : {BOARDWALK, BRICK_PATH, SHALE, LOAM, OUTCROP, RIDGE_ROCK})
 			assert(used.count(type));
 		assert(!used.count(DEEP_WATER) && !used.count(DARK_WATER));
 		// Any change to the dressing is a changed design, so the final-world check refuses it.

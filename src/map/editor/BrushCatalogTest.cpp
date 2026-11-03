@@ -159,6 +159,15 @@ TEST_SUITE("BrushCatalog")
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
+		// Sandstone tiles close the path brushes and pumice the rough-ground brushes.
+		const auto *paths = findBrushGroup(catalog, BrushSection::Terrain, "paths");
+		const auto *rough = findBrushGroup(catalog, BrushSection::Terrain, "rough");
+		REQUIRE(paths);
+		REQUIRE(rough);
+		REQUIRE_FALSE(paths->entries.empty());
+		REQUIRE_FALSE(rough->entries.empty());
+		CHECK(paths->entries.back().id == "terrain/sandstone");
+		CHECK(rough->entries.back().id == "terrain/pumice");
 
 		// Resources: every registry entry, foundation ones included, with placement
 		// validity taken from the map's habitat rules.

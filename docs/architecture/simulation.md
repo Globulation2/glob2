@@ -242,13 +242,15 @@ checksum adapter remains available for diagnostic fixtures.
   Adding a type is one enumerator, one row, one label and one material binding;
   adding a group is one profile and, when gated, one `ExperimentId`.
 - Format 141 raised the built-in count from 7 to 31; format 146 retired the two
-  shore types (IDs 5 and 6), moving the catalogue down by two to 29; format 187
+  shore types (IDs 5 and 6), moving the catalogue down by two to 29; format 191
   appended the grass and sand looks (`LUSH_GRASS`, `DRY_GRASS`, `DUNE_SAND`,
-  `PALE_SAND`, in the Grass and Sand groups) for `TERRAIN_COUNT` 33. Built-in IDs only
+  `PALE_SAND`, in the Grass and Sand groups) for 33; format 195 appended `SANDSTONE`
+  (Paths) and `PUMICE` (Rough) for `TERRAIN_COUNT` 35. Built-in IDs only
   ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
   a format gate. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
-  (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX` or
-  `TERRAIN_COUNT_BEFORE_GROUND_LOOKS` for older files),
+  (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX`,
+  `TERRAIN_COUNT_BEFORE_GROUND_LOOKS` or `TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE` for
+  older files),
   `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
   `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize
   with shifted IDs, so their digest changes and replays that embed one no longer

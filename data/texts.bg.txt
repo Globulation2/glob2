@@ -5638,19 +5638,19 @@ FFmpeg не е наличен, така че записът е изключен.
 Почва
 [clay]
 Глина
-[gravel]
+[shale]
 Чакъл
-[flower_meadow]
+[heath]
 Цветна поляна
 [mud]
 Кал
-[marsh]
+[mudflat]
 Блато
 [deep_snow]
 Дълбок сняг
 [scree]
 Сипей
-[dirt_track]
+[brick_path]
 Черен път
 [boardwalk]
 Дървена пътека
@@ -5680,6 +5680,10 @@ FFmpeg не е наличен, така че записът е изключен.
 Пясък от дюни
 [pale_sand]
 Блед пясък
+[sandstone]
+Плочи от пясъчник
+[pumice]
+Поле от пемза
 [terrain group water]
 Вода
 [terrain group sand]

@@ -5662,19 +5662,19 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Грунт
 [clay]
 Глина
-[gravel]
+[shale]
 Гравий
-[flower_meadow]
+[heath]
 Цветочный луг
 [mud]
 Грязь
-[marsh]
+[mudflat]
 Болото
 [deep_snow]
 Глубокий снег
 [scree]
 Осыпь
-[dirt_track]
+[brick_path]
 Грунтовая дорога
 [boardwalk]
 Деревянный настил
@@ -5704,6 +5704,10 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Барханный песок
 [pale_sand]
 Светлый песок
+[sandstone]
+Плиты из песчаника
+[pumice]
+Пемзовое поле
 [terrain group water]
 Вода
 [terrain group sand]

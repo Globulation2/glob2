@@ -5662,19 +5662,19 @@ Elstara roko
 Tero
 [clay]
 Argilo
-[gravel]
+[shale]
 Gruzo
-[flower_meadow]
+[heath]
 Flora herbejo
 [mud]
 Koto
-[marsh]
+[mudflat]
 Marĉo
 [deep_snow]
 Profunda neĝo
 [scree]
 Rokrompaĵoj
-[dirt_track]
+[brick_path]
 Terpado
 [boardwalk]
 Tabulpado
@@ -5704,6 +5704,10 @@ Seka herbo
 Duna sablo
 [pale_sand]
 Pala sablo
+[sandstone]
+Grejsaj platoj
+[pumice]
+Pumika kampo
 [terrain group water]
 Akvo
 [terrain group sand]
