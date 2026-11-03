@@ -19,5 +19,28 @@
     "fixed_ComputeExecutor": 5376
   },
   "change": "Fixed-size slot arena allocated once on heap; same slot count/indexing/stableaddresses, neverresized. Memory report includes arena capacitybytes. No testbudget/golden/SIM_REV changes; identicalworld/replay/continuation validation pending, no simulation change claim untilverified.",
-  "private_dependencies": "Bit-identical18library/manifestfilescopied;onlyprivatepc/cmakemetadatarelocated. Rootprefix/binaries/sourcefrozenforongoingfullbrowser."
+  "private_dependencies": "Bit-identical18library/manifestfilescopied;onlyprivatepc/cmakemetadatarelocated. Rootprefix/binaries/sourcefrozenforongoingfullbrowser.",
+  "additional_hosted_failures": {
+    "linux_gcc11": {
+      "job": 125718343936,
+      "case": "CustomGameSetup/Comb preview fits a 512 KiB worker stack",
+      "exit": -11,
+      "log": "artifacts/ci-recovery/hosted-838-gcc11-shard4.log"
+    },
+    "clang_coverage": {
+      "job": 125693944999,
+      "same_512_case_exit": -11,
+      "log": "artifacts/ci-recovery/hosted-838-coverage.log.gz"
+    },
+    "windows": {
+      "job": 125693945129,
+      "cases": [
+        "test_experimental_catalog_survives_generated_map_and_saved_continuation",
+        "test_structured_map_study_writes_report_map_and_manifest"
+      ],
+      "exit_decimal": 3221225725,
+      "exit_hex": "0xC00000FD",
+      "log": "artifacts/ci-recovery/hosted-838-windows.log.gz"
+    }
+  }
 }
