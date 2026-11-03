@@ -18,7 +18,7 @@ def bundle():
 class RatioExperiment(unittest.TestCase):
     def test_export_optimization_repairs_missing_files(self):
         from tools.tournaments.coordinator import Coordinator
-        original=Coordinator.repair_exports
+        original=Coordinator.repair_exports;original_receive=Coordinator.receive_artifact
         try:
             install_export_optimization()
             with tempfile.TemporaryDirectory() as tmp:
@@ -37,7 +37,47 @@ class RatioExperiment(unittest.TestCase):
                 Coordinator.repair_exports(fake)
                 self.assertEqual(json.loads((root/'attempts/a.json').read_text()),{'category':'success'})
                 self.assertTrue((root/'results/job.json').exists());db.close()
-        finally:Coordinator.repair_exports=original
+        finally:
+            Coordinator.repair_exports=original;Coordinator.receive_artifact=original_receive
+
+    def test_existing_object_fast_path_checks_corruption(self):
+        import hashlib
+        from tools.tournaments.coordinator import Coordinator
+        original=Coordinator.repair_exports;original_receive=Coordinator.receive_artifact
+        try:
+            install_export_optimization()
+            with tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp);(root/'artifacts').mkdir()
+                raw=b'complete measurement';identity=hashlib.sha256(raw).hexdigest()
+                target=root/'artifacts'/identity;target.write_bytes(raw)
+                fake=type('Fake',(),{'root':root})()
+                artifact={'sha256':identity,'bytes':len(raw)}
+                self.assertTrue(Coordinator.receive_artifact(fake,None,artifact))
+                target.write_bytes(b'x'*len(raw))
+                with self.assertRaises(ValueError):Coordinator.receive_artifact(fake,None,artifact)
+        finally:
+            Coordinator.repair_exports=original;Coordinator.receive_artifact=original_receive
+
+    def test_existing_confirmation_and_diagnostic_manifests_are_reused(self):
+        from tools.gradient_ratio_experiment import _finish_campaign
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);now=time.time()
+            for name in ('screening','confirmation','diagnostic-confirmation'):(root/name).mkdir()
+            screen={'jobs':[{'limits':{'deadline_unix':now+100}}]}
+            confirmation={'jobs':[{'limits':{'deadline_unix':now+5000}}],'sentinel':'frozen performance'}
+            diagnostic={'jobs':[{'limits':{'deadline_unix':now+9000}}],'sentinel':'frozen diagnostics'}
+            for name,value in [('screening/experiment.json',screen),('screening-report.json',{}),('confirmation/experiment.json',confirmation),('diagnostic-confirmation/experiment.json',diagnostic)]:
+                (root/name).write_text(json.dumps(value))
+            for name in ('confirmation','diagnostic-confirmation'):(root/name/'state.sqlite').touch()
+            pilot={'games':[{'arm':'baseline','high_diversity_with_extra_builds':1,'wall_seconds':100,'diagnostic':False}],'stages':{}}
+            with patch('tools.gradient_ratio_experiment.Coordinator') as coordinator,patch('tools.gradient_ratio_experiment.phase_job_counts',return_value={'active':1}),patch('tools.gradient_ratio_experiment.diagnostic_projection',return_value={'light_seconds':100}),patch('tools.gradient_ratio_experiment.finalists',return_value=['baseline','mode','equal']),patch('tools.gradient_ratio_experiment.run_phase',side_effect=[root/'confirmation',root/'diagnostic-confirmation']) as run,patch('tools.gradient_ratio_experiment.summarize'),patch('tools.gradient_ratio_experiment.plan') as planner:
+                coordinator.return_value.status.return_value={'jobs':{}}
+                coordinator.return_value.mode='paused'
+                _finish_campaign(root,'/bundle',bundle(),list(range(32)),pilot,now-1000,now+10000,now+9000)
+                self.assertEqual(run.call_args_list[0].args[2],confirmation)
+                self.assertEqual(run.call_args_list[1].args[2],diagnostic)
+                self.assertEqual(run.call_args_list[0].args[-1],now+5000)
+                planner.assert_not_called()
 
     def test_capacity_amendment_preserves_receipt(self):
         with tempfile.TemporaryDirectory() as tmp:

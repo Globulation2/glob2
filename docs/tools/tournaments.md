@@ -934,7 +934,13 @@ for scheduling-interference analysis. The expansion accelerates existing work;
 it does not multiply planned sample counts or reset deadlines. The research
 coordinator skips decoding successful attempt exports that already exist;
 missing exports retain normal recovery. This optimization runs only in the
-coordinator process and preserves the frozen worker package.
+coordinator process and preserves the frozen worker package. Already received
+artifacts also bypass repeated storage scans, while retaining size and checksum
+verification. Continuation reuses existing confirmation manifests and deadlines.
+A `storage-admission.json` receipt can reserve diagnostic space with lower
+per-phase admission ceilings; it cannot raise the 37 GiB campaign safety cutoff.
+With expanded capacity, diagnostic planning includes at least twelve setups
+when its conservative time estimate permits, covering all six named maps.
 
 `python3 -m tools.gradient_ratio_experiment plan --bundle BUNDLE --phase pilot
 --output artifacts/ratio-pilot.json` freezes independently seeded baseline,

@@ -571,6 +571,20 @@ def install_export_optimization():
             path=self.root/'results'/(row['id']+'.json')
             if not path.exists():atomic_json(path,json.loads(row['record']))
     Coordinator.repair_exports=repair_exports
+    # Existing content-addressed objects need no new disk reservation or full
+    # directory recount. The normal receiver still checks size and SHA-256.
+    from tools.tournaments.transfer import receive_file
+    from tools.tournaments.common import hash_id
+    original=Coordinator.receive_artifact
+    if not getattr(original,'ratio_existing_object_fast_path',False):
+        def receive_artifact(self,transport,artifact):
+            identity=hash_id(artifact['sha256']);size=artifact['bytes']
+            if type(size) is not int or size<0:raise ValueError('invalid artifact byte size')
+            if (self.root/'artifacts'/identity).exists():
+                return receive_file(transport,self.root/'artifacts',identity,size,budget=8)
+            return original(self,transport,artifact)
+        receive_artifact.ratio_existing_object_fast_path=True
+        Coordinator.receive_artifact=receive_artifact
 
 
 def continuation_cpu_ids(root, receipt):
@@ -610,7 +624,10 @@ def run_phase(root, bundle_path, manifest, cpu_ids, deadline):
                 try:
                     jobs=phase_job_counts(coordinator)
                     used=directory_bytes(root)
-                    pressure=used>=37*GIB or shutil.disk_usage(root).free<=12*GIB
+                    admission=read_json(root/'storage-admission.json') if (root/'storage-admission.json').exists() else {}
+                    ceiling=admission.get('phase_ceiling_bytes',{}).get(phase,37*GIB)
+                    if not 0<ceiling<=37*GIB:raise ValueError('invalid storage admission ceiling')
+                    pressure=used>=ceiling or shutil.disk_usage(root).free<=12*GIB
                     if not draining and (now>=deadline-1815 or pressure):
                         reason='storage_guard' if pressure else 'phase_budget'
                         coordinator.control('draining');draining=True
@@ -696,7 +713,7 @@ def _continue_pilot(bundle_path,directory,cpu_ids):
     """Reattach orchestration without changing any admitted or pending pilot job."""
     root=Path(directory).resolve();receipt=read_json(root/'campaign.json')
     if cpu_ids!=continuation_cpu_ids(root,receipt):raise ValueError('continuation must match approved CPU allocation')
-    if time.time()>=receipt['deadline'] or (root/'confirmation').exists():raise ValueError('pilot continuation window is unavailable')
+    if time.time()>=receipt['deadline']:raise ValueError('campaign continuation window is unavailable')
     os.sched_setaffinity(0,cpu_ids)
     manifest=read_json(root/'pilot-recovery/experiment.json')
     coordinator=Coordinator(root/'pilot-recovery')
@@ -766,19 +783,41 @@ def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,wo
     screen_report=read_json(root/'screening-report.json') if (root/'screening-report.json').exists() else summarize(screen_dir,root/'screening-report.json',stages)
     chosen=finalists(screen_report);atomic_json(root/'finalists.json',dict(arms=chosen,rule='retain mode and fastest measured CPU/route-quality Pareto alternative',source=digest(screen_report)))
     remaining=work_end-time.time()
-    if remaining<=3600:raise RuntimeError('insufficient remaining campaign time for confirmation')
-    perf_end=time.time()+remaining*.8
-    count=int(3*(perf_end-time.time())*.85/median/(len(chosen)*4));setups=min(300,max(2,count-count%2))
-    confirmation=plan(bundle,phase='confirmation',setups=setups,seed=20261104,arms=chosen,diagnostics=0,deadline=perf_end,process_attempts=1)
-    confirm_dir=run_phase(root,bundle_path,confirmation,cpu_ids,perf_end)
-    summarize(confirm_dir,root/'confirmation-report.json',stages)
-    diagnostic_median=projection['mixed_diagnostic_seconds_projection']
-    count=int(3*max(0,work_end-time.time())*.75/diagnostic_median/(len(chosen)*4));setups=min(120,max(2,count-count%2))
-    diagnostic=plan(bundle,phase='confirmation',setups=setups,seed=20261105,arms=chosen,diagnostics=1,deadline=work_end,quality_fraction=.2,process_attempts=1)
-    diagnostic['metadata']['phase']='diagnostic-confirmation'
-    diagnostic['id']+='-diagnostic'
-    diagnostic_dir=run_phase(root,bundle_path,diagnostic,cpu_ids,work_end)
-    summarize(diagnostic_dir,root/'diagnostic-confirmation-report.json',stages)
+    if remaining<=3600 and not (root/'confirmation/experiment.json').exists():raise RuntimeError('insufficient remaining campaign time for confirmation')
+    def continue_phase(name,manifest,deadline):
+        directory=root/name
+        if (directory/'state.sqlite').exists():
+            coordinator=Coordinator(directory,repair=False)
+            try:
+                jobs=phase_job_counts(coordinator)
+                finished=not jobs.get('active',0) and not jobs.get('pending',0)
+                if not finished and coordinator.mode=='paused':coordinator.control('running')
+            finally:coordinator.close()
+            if finished:return directory
+        return run_phase(root,bundle_path,manifest,cpu_ids,deadline)
+    if (root/'confirmation/experiment.json').exists():
+        confirmation=read_json(root/'confirmation/experiment.json')
+        perf_end=confirmation['jobs'][0]['limits']['deadline_unix']
+    else:
+        perf_end=time.time()+remaining*.8
+        count=int(3*(perf_end-time.time())*.85/median/(len(chosen)*4));setups=min(300,max(2,count-count%2))
+        confirmation=plan(bundle,phase='confirmation',setups=setups,seed=20261104,arms=chosen,diagnostics=0,deadline=perf_end,process_attempts=1)
+    confirm_dir=continue_phase('confirmation',confirmation,perf_end)
+    if not (root/'confirmation-report.json').exists():summarize(confirm_dir,root/'confirmation-report.json',stages)
+    if (root/'diagnostic-confirmation/experiment.json').exists():
+        diagnostic=read_json(root/'diagnostic-confirmation/experiment.json')
+    else:
+        diagnostic_median=projection['mixed_diagnostic_seconds_projection']
+        count=int(3*max(0,work_end-time.time())*.75/diagnostic_median/(len(chosen)*4));setups=min(120,max(2,count-count%2))
+        affordable=int((len(cpu_ids)//4)*max(0,work_end-time.time())*.75/diagnostic_median/(len(chosen)*4))
+        # Twelve frozen-seed setups cover all six named generators plus six random.
+        if affordable>=12:setups=max(setups,12)
+        diagnostic=plan(bundle,phase='confirmation',setups=setups,seed=20261105,arms=chosen,diagnostics=1,deadline=work_end,quality_fraction=.2,process_attempts=1)
+        diagnostic['metadata']['phase']='diagnostic-confirmation'
+        diagnostic['id']+='-diagnostic'
+    diagnostic_end=diagnostic['jobs'][0]['limits']['deadline_unix']
+    diagnostic_dir=continue_phase('diagnostic-confirmation',diagnostic,diagnostic_end)
+    if not (root/'diagnostic-confirmation-report.json').exists():summarize(diagnostic_dir,root/'diagnostic-confirmation-report.json',stages)
     atomic_json(root/'completed.json',dict(finished=time.time(),started=started,arms=chosen,
         decision='Evidence ready for maintainer decision; no production policy changed'))
 
