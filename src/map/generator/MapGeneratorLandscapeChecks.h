@@ -922,6 +922,10 @@ inline void sketchMovementChecks()
 	terrain.assign(t.size(), CHASM);
 	terrain[t.at(0, 0)] = GRASS;
 	assert(!walkableTiles(terrain, t)[t.at(0, 0)]);
+	terrain[t.at(1, 0)] = SAND;
+	assert(!walkableTiles(terrain, t)[t.at(0, 0)]); // Two rock corners still block.
+	terrain[t.at(0, 1)] = GRASS;
+	assert(walkableTiles(terrain, t)[t.at(0, 0)]); // Three land corners open the cell.
 	const TerrainType types[] = {GRASS, SAND, WATER, DEEP_WATER, CHASM, LAVA};
 	std::mt19937 random(43);
 	for (int attempt = 0; attempt < 8; ++attempt)
