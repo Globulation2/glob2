@@ -11,7 +11,7 @@ platform.
 | Source | What it supplies | Licence |
 | --- | --- | --- |
 | [Natural Earth](https://www.naturalearthdata.com/) 1:50m vector data, fetched as GeoJSON from the [nvkelso/natural-earth-vector](https://github.com/nvkelso/natural-earth-vector) mirror: `ne_50m_land`, `ne_50m_lakes`, `ne_50m_rivers_lake_centerlines`, `ne_50m_glaciated_areas`, `ne_50m_geography_regions_polys` | Coasts, lakes, the great rivers, ice caps, and the named deserts and mountain ranges | Public domain |
-| Köppen-Geiger climate classification, Kottek, Grieser, Beck, Rudolf and Rubel (2006), "World Map of the Köppen-Geiger climate classification updated", *Meteorologische Zeitschrift* 15, 259-263; the 0.5° ASCII grid from [koeppen-geiger.vu-wien.ac.at](http://koeppen-geiger.vu-wien.ac.at/) | Biomes: which land is forest, farmland, steppe, desert, tundra or ice | Free with attribution (credited in `data/authors.txt`) |
+| Köppen-Geiger climate classification, Kottek, Grieser, Beck, Rudolf and Rubel (2006), "World Map of the Köppen-Geiger climate classification updated", *Meteorologische Zeitschrift* 15, 259-263; the 0.5° ASCII grid from [koeppen-geiger.vu-wien.ac.at](http://koeppen-geiger.vu-wien.ac.at/) | Biomes: which land is forest, farmland, steppe, desert, tundra or ice | Free with attribution (credited in `content/data/authors.txt`) |
 
 Why these: the 1:50m scale resolves a continent at 512 pixels across (about 15 km a pixel)
 without hair-thin coastlines, and a 0.5° climate grid (about 55 km) is coarse enough to read as

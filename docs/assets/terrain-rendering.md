@@ -232,8 +232,13 @@ Generated/edited pages keep alpha-weighted mip filtering but upload uncompressed
 textures. Driver-side DXT encoding is reserved for artwork with prepared mip
 chains; repeating that encoding on animated terrain updates stalls rendering.
 Crossfades update material revisions on each visual tick, so pages containing
-animated materials recompose at that cadence. Repeating the same animation time
-reuses their pixels. Pages also keep the coverage of mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
+animated materials recompose at that cadence; `animation_blend_steps` lowers it
+to that many recompositions per phase (see
+[terrain materials](terrain-materials.md)). Repeating the same animation time
+reuses their pixels. Device composition keeps up to 1024 material source
+textures and never evicts one the current frame already drew, so a view with
+several four-layout materials (256 variants each) does not re-upload its own
+sources within one frame. Pages also keep the coverage of mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
 composed pixel), so a phase change re-blends their textures instead of
 re-sampling the boundary; coverage depends only on the cell, never on the phase.
 These masks have their own budget (16 MiB software, 32 MiB GPU, or 128 MiB for

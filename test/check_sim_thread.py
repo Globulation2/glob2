@@ -25,10 +25,10 @@ def scenarios(work, baseline):
                        '--set', 'height=7', '--set', 'teams=4', '--game-seed', '19',
                        '--player', 'maxima', '--player', 'cortex', '--player', 'nicowar',
                        '--player', 'maxima', '--ticks', '1', '--save', 'initial'], generated)
-    yield 'new-game', ['--map-file', str(ROOT / 'maps/FourSquares1.map.gz'), '--game-seed', '123',
+    yield 'new-game', ['--map-file', str(ROOT / 'content/maps/FourSquares1.map.gz'), '--game-seed', '123',
                        '--player', 'econo', '--player', 'nicowar', '--player', 'castor',
                        '--player', 'numbi', '--ticks', '1500']
-    yield 'new-game-maxima', ['--map-file', str(ROOT / 'maps/balanced.map.gz'), '--game-seed', '7',
+    yield 'new-game-maxima', ['--map-file', str(ROOT / 'content/maps/balanced.map.gz'), '--game-seed', '7',
                               '--player', 'maxima', '--player', 'cortex', '--player', 'warrush',
                               '--player', 'cabino', '--ticks', '1500']
     yield 'generated-load', ['--load-game', str(generated / 'initial.game'), '--ticks', '1500']

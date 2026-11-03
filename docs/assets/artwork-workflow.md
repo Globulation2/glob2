@@ -6,9 +6,9 @@ runtime bundle have different jobs.
 
 ## Preserve and choose inputs
 
-Start with [original artwork](../../datasrc/gfx/README.md), its source catalog,
-[building mappings](../../datasrc/gfx/building-map.md) and
-[coverage limitations](../../datasrc/gfx/coverage.md). Preserve originals byte for
+Start with [original artwork](../../content-src/gfx/README.md), its source catalog,
+[building mappings](../../content-src/gfx/building-map.md) and
+[coverage limitations](../../content-src/gfx/coverage.md). Preserve originals byte for
 byte. Work on copies; record source hashes, authorship/license and export settings.
 A larger canvas alone does not establish usable detail or a correct sprite mapping.
 
@@ -18,7 +18,7 @@ fallbacks where source coverage or registration is uncertain. Consult
 
 ## Stage a family
 
-- Original layers: follow [export recipes](../../datasrc/gfx/recovered-runtime.md).
+- Original layers: follow [export recipes](../../content-src/gfx/recovered-runtime.md).
 - Units: use the pinned [Blender animation workflow](../../tools/unit-animation/README.md).
 - Terrain: follow [material production](terrain-production.md), including shared edges.
 - Authored vectors: use `tools/artwork/render_authored.py` and retained SVG sources.
@@ -30,7 +30,7 @@ zoomed inspection. Do not promote candidates automatically or overwrite original
 
 ## Assemble approved inputs
 
-Approved production inputs are under `datasrc/gfx/production/`. Assembly reproduces
+Approved production inputs are under `content-src/gfx/production/`. Assembly reproduces
 reviewed final pixels without model inference:
 
 ```sh

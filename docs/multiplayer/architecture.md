@@ -20,15 +20,15 @@ The online platform connects clients, match relays and engine agents. Start here
 
 | Part | Code | Role |
 | --- | --- | --- |
-| `platform-api` | `platform/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), browser sign-in pages (`/signin`, `/auth/<provider>/…`), JWKS (`/.well-known/jwks.json`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
-| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, applying ratings, completing map jobs); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool, relay sweep) on the one replica holding the leader lock. The process code only: the domain logic it runs is in `@glob2/play`. |
-| `engine-agent` | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version with its glob2 binary; see [Engine agents](engine-agents.md#engine-agents). |
-| web app | `platform/apps/web` | Home, leaderboards, player and match pages, map catalog, moderation (React + Vite); see [match history and the web app](history-and-web.md). Sign-in and invite pages are rendered by `platform-api`. |
+| `platform-api` | `services/online/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), browser sign-in pages (`/signin`, `/auth/<provider>/…`), JWKS (`/.well-known/jwks.json`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
+| `platform-worker` | `services/online/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, applying ratings, completing map jobs); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool, relay sweep) on the one replica holding the leader lock. The process code only: the domain logic it runs is in `@glob2/play`. |
+| `engine-agent` | `services/online/apps/engine-agent` | Runs engine jobs for exactly one sim version with its glob2 binary; see [Engine agents](engine-agents.md#engine-agents). |
+| web app | `services/online/apps/web` | Home, leaderboards, player and match pages, map catalog, moderation (React + Vite); see [match history and the web app](history-and-web.md). Sign-in and invite pages are rendered by `platform-api`. |
 | relay | `src/relay/` | Clock and turn sequencing for matches; trusts only signed tickets. |
-| contracts | `platform/packages/protocol` | Every JSON shape, exported as JSON Schema with fixtures for C++. |
-| data | `platform/packages/db` | SQL migrations, typed Kysely access, pub/sub, leader lock. |
-| match domain | `platform/packages/play` | Shared by the API and the worker: ratings, queue tickets and proposals, the match start sequence, relay placement, map sources, match-end intake, catalog job results, the warm map pool and stored-JSON decoding. Test doubles and fixtures are exported as `@glob2/play/testing`. |
-| plumbing | `platform/packages/core` | Configuration, logging, AccessPolicy, blob store, job queue, engine-agent liveness, shutdown. |
+| contracts | `services/online/packages/protocol` | Every JSON shape, exported as JSON Schema with fixtures for C++. |
+| data | `services/online/packages/db` | SQL migrations, typed Kysely access, pub/sub, leader lock. |
+| match domain | `services/online/packages/play` | Shared by the API and the worker: ratings, queue tickets and proposals, the match start sequence, relay placement, map sources, match-end intake, catalog job results, the warm map pool and stored-JSON decoding. Test doubles and fixtures are exported as `@glob2/play/testing`. |
+| plumbing | `services/online/packages/core` | Configuration, logging, AccessPolicy, blob store, job queue, engine-agent liveness, shutdown. |
 
 Apps depend on packages, never on each other: ESLint rejects imports of an app
 package (`@glob2/api`, `@glob2/worker`, `@glob2/engine-agent`, `@glob2/web`)
@@ -83,8 +83,8 @@ produce identical games; every simulation change bumps `SIM_REVISION`
 ## Configuration and operation
 
 Each service reads secrets and deployment settings from the environment (or a
-`.env` file; see `platform/.env.example`) and instance settings from
-`instance.yaml` (see `platform/instance.example.yaml`): name, guest access,
+`.env` file; see `services/online/.env.example`) and instance settings from
+`instance.yaml` (see `services/online/instance.example.yaml`): name, guest access,
 sign-in providers (secrets referenced by environment-variable name), access
 policy, queues, and the browser client URL that invite pages link to. Relays
 authenticate to `/internal` with keys from `RELAY_KEYS` or `RELAY_KEYS_FILE` (see

@@ -21,7 +21,7 @@ license: GPL-3.0-or-later
 website: https://glob2.online/
 source-code: https://github.com/Globulation2/glob2
 issues: https://github.com/Globulation2/glob2/issues
-icon: data/icons/glob2-icon-256x256.png
+icon: content/data/icons/glob2-icon-256x256.png
 grade: stable
 confinement: strict
 
@@ -49,7 +49,7 @@ parts:
     plugin: nil
     source: .
     parse-info:
-      - data/org.globulation2.Globulation2.metainfo.xml
+      - content/data/org.globulation2.Globulation2.metainfo.xml
     build-packages:
       - git
       - nasm

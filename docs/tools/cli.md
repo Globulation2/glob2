@@ -68,7 +68,7 @@ glob2 game run --map-file artifacts/river.map.gz --game-seed 713 \
 glob2 game run --load-game artifacts/game/final.game.gz --ticks 128 \
   --telemetry checksums --output-dir artifacts/continued
 glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr \
-  --map-file maps/FourSquares1.map.gz --output-dir artifacts/verified
+  --map-file content/maps/FourSquares1.map.gz --output-dir artifacts/verified
 ```
 
 Each structured job needs a fresh output directory without `result.json`. A saved

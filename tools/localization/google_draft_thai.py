@@ -246,7 +246,7 @@ def run_locked(args):
     online = json.loads(paths['online'].read_text(encoding='utf-8'))
     if errors or set(native) != set(native_source) or set(online) != set(online_source):
         raise ValueError('Draft catalog keys are invalid')
-    invariants = json.loads((ROOT / 'platform/packages/i18n/invariants.json').read_text(encoding='utf-8'))
+    invariants = json.loads((ROOT / 'services/online/packages/i18n/invariants.json').read_text(encoding='utf-8'))
     entries = pending_entries(native_source, online_source, native, online, invariants)
     if args.ids_file:
         selected = json.loads(args.ids_file.read_text(encoding='utf-8'))

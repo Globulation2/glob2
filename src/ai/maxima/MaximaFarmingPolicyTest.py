@@ -17,7 +17,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         cls.source = cls.policy + "\n" + cls.core
         cls.primitive = (ROOT / "src/ai/maxima/AIMaximaFarming.cpp").read_text()
         cls.placement = (ROOT / "src/ai/maxima/AIMaximaPlacement.cpp").read_text()
-        cls.base_strategy = (ROOT / "data/maxima/base.strategy").read_text()
+        cls.base_strategy = (ROOT / "content/data/maxima/base.strategy").read_text()
 
     def test_farming_and_clearing_are_extracted_as_one_policy_unit(self):
         methods = (

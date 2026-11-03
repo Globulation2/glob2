@@ -63,7 +63,7 @@ of one game can be joined. A distribution `name` exports `name.count`, `name.mea
 One stable, versioned JSON object per match (`Turn::clientNetworkSummary`, defined in
 `src/net/turn/TurnTelemetry.h`). It is written locally and nothing sends it; it is the
 shape a later platform upload would carry. Its JSON Schema is `ClientNetworkSummary`
-in `platform/packages/protocol` (`platform/packages/protocol/src/network.ts`, with fixtures), so a future upload
+in `services/online/packages/protocol` (`services/online/packages/protocol/src/network.ts`, with fixtures), so a future upload
 endpoint has a contract to validate against; no endpoint, table or upload exists. It contains no account ids,
 addresses, names or free text. Adding optional fields keeps version 1; renaming,
 removing or changing the meaning of a field requires version 2.
@@ -156,7 +156,7 @@ host schedules frames itself and records neither.
   (`RelayMetrics::matchNetwork`), adds each match's `SequencerTelemetry` when the match
   ends, and appends its Prometheus text to `/metrics`. `RelayMatchEnded` carries
   `sequencer.networkSummary()` as `network`. The `G2MR` record format is unchanged.
-- **Contract:** `platform/packages/protocol/src/network.ts` defines
+- **Contract:** `services/online/packages/protocol/src/network.ts` defines
   `RelayNetworkSummary` and `ClientNetworkSummary` (JSON Schemas and fixtures under
   `fixtures/`). Both are open objects: a newer engine may add fields within version 1.
   `RelayMatchEnded.network` is optional, and the platform drops a summary that does

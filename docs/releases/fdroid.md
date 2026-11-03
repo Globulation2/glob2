@@ -9,11 +9,11 @@ Maintain F-Droid source builds and independent distribution metadata.
 The main F-Droid repository builds and signs `org.globulation2.glob2` from a
 public `vVERSION` tag. This is the same application ID used by Play. The
 `--fdroid` build mode applies F-Droid's version codes and unsigned APK checks.
-The upstream build recipe is `fdroid/metadata/org.globulation2.glob2.yml`;
+The upstream build recipe is `platforms/stores/fdroid/metadata/org.globulation2.glob2.yml`;
 submit its tested contents to F-Droid's `fdroiddata` project. The recipe removes compressed CI
 prediction data from the build checkout before source scanning; these files
 are not Android build inputs.
-`mobile/android-release.json` gives the version
+`platforms/mobile/android-release.json` gives the version
 name and base code, and the `armeabi-v7a`, `arm64-v8a`, and `x86_64` APKs use
 `10 * base + 1`, `+ 2`, and `+ 3`, respectively. The `fastlane/metadata/android/`
 tree contains the listing text, icon, per-APK changelogs, and Android screenshots.
@@ -25,7 +25,7 @@ The mobile and build-only release workflows retain unsigned APKs as validation
 artifacts; those files are not installable public releases. A temporary
 developer signature supports emulator and device checks. The all-platform
 staging workflow signs those verified unsigned APKs in its protected
-`android-sideload` job using `mobile/sideload_release.py`, verifies the pinned
+`android-sideload` job using `platforms/mobile/sideload_release.py`, verifies the pinned
 permanent signing certificate and alignment, and stages only the final signed
 APKs. APK verification checks every packaged native ELF's ABI and load-segment
 alignment: 16 KB pages for ARM64 and x86-64, and 4 KB pages for ARMv7. This is
@@ -35,7 +35,7 @@ The reviewed `.github/workflows/fdroid-release-validation.yml` workflow is
 mirrored to `genixpro/glob2-release` and runs by owner dispatch with
 the exact public candidate commit SHA. Its read-only jobs build all three
 unsigned APKs through
-`mobile/fdroid_build.py`, retain checksums and logs, and launch the x86_64
+`platforms/mobile/fdroid_build.py`, retain checksums and logs, and launch the x86_64
 candidate in an emulator. After approval and tagging, dispatch it again with
 the public tag to verify the tag points to that same source commit. Compare its
 APKs with the public workflow artifacts before submitting the recipe.
@@ -59,7 +59,7 @@ as required by its app inclusion template. Play the candidate on
 real ARM64 and 32-bit ARM devices and an x86_64 emulator. Record APK digests,
 logs, screenshots, save/load,
 rotation, lifecycle, keyboard, touch, and editor results under `artifacts/` for
-review. For each ABI, run `python3 mobile/compare_fdroid_apks.py --arch ABI
+review. For each ABI, run `python3 platforms/mobile/compare_fdroid_apks.py --arch ABI
 --github-apk GITHUB_APK --fdroid-apk FDROID_APK` and review any native library
 differences against the retained symbol/build records. The daily
 `fdroid-publication.yml` workflow in the release mirror checks F-Droid's package API
@@ -83,7 +83,7 @@ publish directly to the main F-Droid repository. Review the shipped asset
 licenses against `docs/assets/source-attribution.md` and the font licenses with
 the first submission.
 
-The Fedora spec in `fedora/glob2.spec` is a starting recipe for the new source
+The Fedora spec in `platforms/linux/fedora/glob2.spec` is a starting recipe for the new source
 archive. The checked-in `debian/` directory is historic and is **not** used by
 this workflow; work with the Debian Games Team's Salsa package before proposing
 an update. Debian's upload can subsequently reach Ubuntu during its development

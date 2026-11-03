@@ -79,10 +79,10 @@ jobs:
       - name: Build and package browser client
         run: |
           set -euo pipefail
-          python3 browser/setup.py
+          python3 platforms/web/setup.py
           scons target=web release=1 client_profile=free -j$(nproc)
-          python3 browser/package-static.py
-          python3 browser/package-static.py --verify build/browser-static
+          python3 platforms/web/package-static.py
+          python3 platforms/web/package-static.py --verify build/browser-static
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: client-build-browser
@@ -142,7 +142,7 @@ jobs:
           project_id: bradley-personal-20261027
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3
       - name: Upload assets then publish entry point
-        run: python3 browser/publish-static.py candidate "$BUCKET"
+        run: python3 platforms/web/publish-static.py candidate "$BUCKET"
       - name: Verify threaded public frontend
         if: env.PUBLIC_URL != ''
         run: |

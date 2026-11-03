@@ -4,7 +4,7 @@
 #pragma once
 
 // The JSON the relay sends the platform: RelayRegistration, RelayHeartbeat and
-// RelayMatchEnded (platform/packages/protocol/src/relay.ts), plus helpers to read the
+// RelayMatchEnded (services/online/packages/protocol/src/relay.ts), plus helpers to read the
 // map hash out of a MatchSetup document for the match record.
 
 #include <array>

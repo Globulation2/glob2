@@ -12,7 +12,7 @@ workflow trigger.
 The build job verifies the exact public tag commit and matching game version
 (without requiring desktop store metadata), installs the locked
 Emscripten SDK, builds `scons target=web release=1`, and packages the client with
-`browser/package-static.py`. Its `browser-release` artifact includes SHA-256
+`platforms/web/package-static.py`. Its `browser-release` artifact includes SHA-256
 checksums. The package includes the versioned presentation-surface runtime and
 each Emscripten shader preload (`index.data`, including the separate threaded
 preload). These payloads participate in the release identity and require verified
@@ -29,7 +29,7 @@ identity even when the build inputs are unchanged.
 The destination is `gs://glob2-browser-pharaoh-418820-20260909` in project
 `bradley-personal-20261027`. Versioned JavaScript, WebAssembly and data objects receive
 explicit content types and immutable one-year caching. Publication uses
-`browser/publish-static.py` to verify the complete package and upload its gzip
+`platforms/web/publish-static.py` to verify the complete package and upload its gzip
 representations, including translation catalogs, launcher font CSS, pinned fonts
 and licences. Stable assets such as `i18n.js`, catalogs and font CSS require cache
 revalidation. All assets are uploaded before `index.html`, which is published last
