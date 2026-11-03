@@ -56,7 +56,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(DIRT, G::Barren, "dirt", "[dirt]", {110, 90, 64}, {128, 104, 74}),
 		authored(CLAY, G::Barren, "clay", "[clay]", {140, 98, 72}, {158, 112, 84}),
 		authored(GRAVEL, G::Barren, "gravel", "[gravel]", {120, 114, 104}, {138, 130, 118}),
-		authored(FLOWER_MEADOW, G::Barren, "flower_meadow", "[flower_meadow]", {52, 118, 46}, {60, 126, 48}),
+		// Heath keeps its old green image colour: exported map images import it by exact colour.
+		{FLOWER_MEADOW, G::Barren, "flower_meadow", "[flower_meadow]", {104, 72, 86}, {118, 86, 100}, {60, 126, 48}, {104, 72, 86}},
 		authored(MUD, G::Rough, "mud", "[mud]", {82, 64, 48}, {96, 76, 56}),
 		authored(MARSH, G::Rough, "marsh", "[marsh]", {62, 82, 66}, {74, 96, 78}),
 		authored(DEEP_SNOW, G::Rough, "deep_snow", "[deep_snow]", {208, 216, 226}, {222, 228, 236}),
