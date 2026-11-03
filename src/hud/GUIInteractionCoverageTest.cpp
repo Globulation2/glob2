@@ -1460,13 +1460,15 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
         REQUIRE(gui.gameMenuScreen->host().find("engine-performance/chart"));
         REQUIRE(gui.gameMenuScreen->host().find("engine-performance/chart/5"));
         auto* performance=static_cast<InGamePerformanceHistory*>(gui.gameMenuScreen.get());
+        // Plot hit testing uses the font-dependent bounds measured during drawing.
+        draw("engine-performance-expanded.bmp");
         gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/chart").center());
         CHECK(performance->panel.cursorMinute>=0);
         gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/follow-latest").center());
         CHECK(performance->panel.cursorMinute<0);
         gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/range/1").center());
         gui.gameMenuScreen->update(0);
-        draw("engine-performance-expanded.bmp");
+        draw("engine-performance-recent.bmp");
         gui.gameMenuScreen->host().scrollIntoView("engine-performance/all-metrics");
         gui.gameMenuScreen->update(0);
         gui.gameMenuScreen->host().tapAt(gui.gameMenuScreen->host().bounds("engine-performance/all-metrics").center());
