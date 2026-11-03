@@ -1,11 +1,11 @@
 """Independent-seed planning, required evidence, and statistical unit contracts."""
 import copy
 import unittest
-import tempfile,time
+import tempfile,time,io
 from pathlib import Path
 from unittest.mock import patch
 from collections import Counter, defaultdict
-from tools.gradient_ratio_experiment import ARMS, NAMED, compare, plan, add_observer_calibration, finalists, _resume_pilot, _continue_pilot, diagnostic_projection
+from tools.gradient_ratio_experiment import ARMS, NAMED, compare, plan, add_observer_calibration, finalists, _resume_pilot, _continue_pilot, diagnostic_projection, latest_gameplay
 from tools.tournaments.jobs import EngineJob, routing_ratio_outputs
 
 
@@ -134,6 +134,39 @@ class RatioExperiment(unittest.TestCase):
             self.assertEqual(run.call_args.args[2],manifest)
             self.assertEqual(run.call_args.args[4],started+6*3600)
             self.assertEqual(finish.call_args.args[-3:-1],(started,end))
+
+    def test_fast_final_counter_reader_matches_streamed_selection(self):
+        from tools.tournaments.game_telemetry import parse
+        text=('GLOB2_MEASURE team=1 tick=512 counter=10\n'
+              'GLOB2_MEASURE team=0 tick=256 counter=7\n'
+              'GLOB2_MEASURE_HISTORY team=1 tick=999 counter=999\n'
+              'GLOB2_MEASURE team=1 tick=128 counter=4\n'
+              'GLOB2_MEASURE tick=768 team=0 counter=11\n'
+              'GLOB2_MEASURE team=1 tick=512 final=1 counter=12\n'
+              'GLOB2_PERF_SAMPLE tick=9999 calls=10\n')
+        class Source:
+            def open_artifact(self,record,name):return io.StringIO(text)
+        expected={}
+        for line in text.splitlines():
+            result=parse(line)
+            if result and result[0]=='GLOB2_MEASURE':
+                values=result[1];team=values['team']
+                if values['tick']>=expected.get(team,{}).get('tick',-1):expected[team]=values
+        self.assertEqual(latest_gameplay(Source(),dict(artifacts=[dict(path='stdout.log')])),expected)
+        self.assertEqual(latest_gameplay(Source(),dict(artifacts=[])),{})
+
+    def test_completed_pilot_continuation_does_not_reopen_admission(self):
+        from tools.tournaments.common import atomic_json
+        started=time.time()-6*3600;end=started+48*3600
+        manifest=plan(bundle(),phase='pilot')
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);(root/'pilot-recovery').mkdir()
+            atomic_json(root/'campaign.json',dict(started=started,deadline=end,cpu_ids=list(range(12,24))))
+            atomic_json(root/'pilot-recovery/experiment.json',manifest)
+            with patch('tools.gradient_ratio_experiment.os.sched_setaffinity'),patch('tools.gradient_ratio_experiment.Coordinator')as coordinator,patch('tools.gradient_ratio_experiment.inspect_bundle',return_value=bundle()),patch('tools.gradient_ratio_experiment.run_phase')as run,patch('tools.gradient_ratio_experiment.summarize',return_value={'games':[]}),patch('tools.gradient_ratio_experiment._finish_campaign'):
+                coordinator.return_value.status.return_value={'jobs':{'completed':10,'cancelled':20}}
+                _continue_pilot('/bundle',root,list(range(12,24)))
+                run.assert_not_called();coordinator.return_value.control.assert_not_called()
 
     def test_replication_cannot_be_sacrificed_to_more_setups(self):
         with self.assertRaises(ValueError):plan(bundle(),phase='pilot',replicates=3)

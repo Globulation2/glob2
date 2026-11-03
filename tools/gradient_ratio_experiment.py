@@ -11,6 +11,7 @@ import math
 import os
 from pathlib import Path
 import random
+import re
 import statistics
 import subprocess
 import sys
@@ -212,6 +213,24 @@ def stage_for(job,tick,stages):
     return 'early' if tick<found['mid_tick'] else 'mid' if tick<found['late_tick'] else 'late'
 
 
+def latest_gameplay(source,record):
+    """Decode only final counters; retain the full interval log as evidence."""
+    if 'stdout.log' not in {a['path'] for a in record['artifacts']}:return {}
+    from tools.tournaments.game_telemetry import parse
+    header=re.compile(r'^GLOB2_MEASURE team=(\d+) tick=(\d+)(?:\s|$)')
+    latest={}
+    with source.open_artifact(record,'stdout.log') as stream:
+        for line in stream:
+            if not line.startswith('GLOB2_MEASURE '):continue
+            match=header.match(line)
+            if match:team,tick=map(int,match.groups())
+            else:
+                values=parse(line)[1];team=values.get('team');tick=values.get('tick',-1)
+                if team is None:continue
+            if tick>=latest.get(team,(-1,None))[0]:latest[team]=(tick,line)
+    return {team:parse(value[1])[1] for team,value in latest.items()}
+
+
 def export_games(source, stages):
     output=[]
     for record in source:
@@ -332,11 +351,7 @@ def export_games(source, stages):
                     q=quality[r['family']];q['queries']+=1
                     for key in ('extra_cost','false_unreachable','false_reachable','invalid_goal','missed_move','escape_failure','stall'):q[key]+=int(r[key])
             entry['adaptive_quality']={k:dict(v) for k,v in quality.items()}
-        latest={}
-        for telemetry in source.telemetry(record):
-            if telemetry.get('record')=='GLOB2_MEASURE':
-                values=telemetry['values'];team=values.get('team')
-                if team is not None and values.get('tick',-1)>=latest.get(team,{}).get('tick',-1):latest[team]=values
+        latest=latest_gameplay(source,record)
         entry['gameplay']={str(team):{k:v for k,v in values.items() if k.startswith(('deaths_','completed_','harvested_','delivered_','harvestDistance_','harvestSamples_','eatWalkDistance_','eatWalkSamples_','labour_','filling_')) or k in ('tick','hungry','critical','trappedUnits','trappedBuildings','meals','trainingVisits')} for team,values in latest.items()}
         entry['starvation_deaths']=sum(v for values in entry['gameplay'].values() for k,v in values.items() if k.startswith('deaths_') and k.endswith('_1') and isinstance(v,(int,float))) if latest else None
         amphibious_queries=[r for r in queries if r['planning']=='0' and int(r['family'])<7 and 1<=int(r['physical'])<=6]
@@ -638,15 +653,18 @@ def _continue_pilot(bundle_path,directory,cpu_ids):
     """Reattach orchestration without changing any admitted or pending pilot job."""
     root=Path(directory).resolve();receipt=read_json(root/'campaign.json')
     if cpu_ids!=receipt['cpu_ids']:raise ValueError('continuation must preserve CPU allocation')
-    if time.time()>=receipt['deadline'] or (root/'screening').exists():raise ValueError('pilot continuation window is unavailable')
+    if time.time()>=receipt['deadline'] or (root/'confirmation').exists():raise ValueError('pilot continuation window is unavailable')
     os.sched_setaffinity(0,cpu_ids)
     manifest=read_json(root/'pilot-recovery/experiment.json')
     coordinator=Coordinator(root/'pilot-recovery')
-    try:coordinator.control('running')
+    try:
+        status=coordinator.status()
+        finished=not status['jobs'].get('active',0) and not status['jobs'].get('pending',0)
+        if not finished:coordinator.control('running')
     finally:coordinator.close()
     bundle=inspect_bundle(bundle_path)
-    pilot_dir=run_phase(root,bundle_path,manifest,cpu_ids,min(receipt['deadline'],receipt['started']+6*3600))
-    report=summarize(pilot_dir,root/'pilot-report.json')
+    pilot_dir=root/'pilot-recovery' if finished else run_phase(root,bundle_path,manifest,cpu_ids,min(receipt['deadline'],receipt['started']+6*3600))
+    report=read_json(root/'pilot-report.json') if (root/'pilot-report.json').exists() else summarize(pilot_dir,root/'pilot-report.json')
     report['superseded_cohort']='pilot; recording repair only, excluded from comparisons'
     atomic_json(root/'pilot-report.json',report)
     _finish_campaign(root,bundle_path,bundle,cpu_ids,report,receipt['started'],receipt['deadline'],receipt['deadline']-900)
@@ -676,7 +694,10 @@ def diagnostic_projection(root,pilot_report,quality_fraction=.2):
 def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,work_end):
     if not any(g['arm']=='baseline' and g['high_diversity_with_extra_builds'] for g in pilot_report['games']):
         raise RuntimeError('Pilot did not verify diverse amphibious query demand with duplicated ratio builds; revise workload coverage within the original remaining budget before screening')
-    stages=pilot_report['stages'];atomic_json(root/'stages.json',stages)
+    stages=pilot_report['stages']
+    if (root/'stages.json').exists():
+        if read_json(root/'stages.json')!=stages:raise ValueError('frozen stage definitions changed')
+    else:atomic_json(root/'stages.json',stages)
     durations=[g['wall_seconds'] for g in pilot_report['games'] if not g['diagnostic']]
     if not durations:raise RuntimeError('pilot produced no valid lightweight games')
     projection=diagnostic_projection(root,pilot_report)
@@ -684,11 +705,22 @@ def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,wo
     median=projection['light_seconds']
     screen_hours=min(10*3600,max(0,end-time.time())*.3)
     count=int(3*screen_hours*.8*.85/median/(len(ARMS)*4));setups=min(120,max(2,count-count%2))
-    screen_end=min(end,time.time()+screen_hours)
-    screen=plan(bundle,phase='screening',setups=setups,seed=20261103,deadline=screen_end,
-        diagnostics=projection['screen_diagnostic_job_fraction'],quality_fraction=.2,process_attempts=1)
-    screen_dir=run_phase(root,bundle_path,screen,cpu_ids,screen_end)
-    screen_report=summarize(screen_dir,root/'screening-report.json',stages)
+    screen_finished=False
+    if (root/'screening/experiment.json').exists():
+        screen=read_json(root/'screening/experiment.json')
+        screen_end=screen['jobs'][0]['limits']['deadline_unix']
+        coordinator=Coordinator(root/'screening')
+        try:
+            status=coordinator.status()
+            screen_finished=not status['jobs'].get('active',0) and not status['jobs'].get('pending',0)
+            if not screen_finished:coordinator.control('running')
+        finally:coordinator.close()
+    else:
+        screen_end=min(end,time.time()+screen_hours)
+        screen=plan(bundle,phase='screening',setups=setups,seed=20261103,deadline=screen_end,
+            diagnostics=projection['screen_diagnostic_job_fraction'],quality_fraction=.2,process_attempts=1)
+    screen_dir=root/'screening' if screen_finished else run_phase(root,bundle_path,screen,cpu_ids,screen_end)
+    screen_report=read_json(root/'screening-report.json') if (root/'screening-report.json').exists() else summarize(screen_dir,root/'screening-report.json',stages)
     chosen=finalists(screen_report);atomic_json(root/'finalists.json',dict(arms=chosen,rule='retain mode and fastest measured CPU/route-quality Pareto alternative',source=digest(screen_report)))
     remaining=work_end-time.time()
     if remaining<=3600:raise RuntimeError('insufficient remaining campaign time for confirmation')

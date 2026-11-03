@@ -983,7 +983,16 @@ original phase and campaign deadlines. Prepare and validate the new controller
 first, briefly pause admission, then replace only the old controller process
 group. Existing worker/game process groups must remain alive, and leases must be
 renewed by the replacement promptly. This differs from `--resume-pilot`, which
-creates a superseding recording cohort after a recording correction.
+creates a superseding recording cohort after a recording correction. A completed
+pilot remains closed during continuation; its accepted results are summarized
+without reopening cancelled work. An existing screening cohort keeps its frozen
+manifest and deadline.
+
+The final gameplay-counter reader selects each team's latest measurement by
+header tick before decoding its large counter payload. Earlier snapshots and
+performance records remain intact in the compressed log; population/building
+intervals come from the dedicated state telemetry. This avoids repeatedly
+parsing unused intermediate counter payloads without changing final totals.
 
 
 The controller reserves 10 GiB free space, limits attempts to 512 MiB, stops
