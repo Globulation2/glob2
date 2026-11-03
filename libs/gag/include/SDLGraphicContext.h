@@ -398,7 +398,7 @@ namespace GAGCore
         void resetDeviceSkinState() { deviceSkinState.reset(); }
         void invalidateDeviceSkinTiles();
         void prepareDeviceSkinMeshes(const std::vector<SkinMeshRequest> &);
-        bool drawDeviceSkinMesh(const SkinMeshRequest &, float, float, float, float, SkinShadow, Uint8);
+        bool drawDeviceSkinMesh(const SkinMeshRequest &, float, float, float, float, SkinShadow, Uint8, Color = Color(), Uint8 = 0);
         bool readDeviceSkinMesh(const SkinMeshRequest &, std::vector<std::uint8_t> &);
         void captureScreenshot();
         bool saveScreenshot(SDL_Surface &, const std::string &);
@@ -817,6 +817,11 @@ namespace GAGCore
 		//! shader is unavailable so the caller can fall back to two ordinary
 		//! drawSurface calls (base, then the CPU-recoloured team layer).
 		bool drawTeamColoredQuad(DrawableSurface *base, DrawableSurface *team, float x, float y, float w, float h, Uint8 alpha, float hueShift);
+		//! Draw all of `surface` stretched to (x, y, w, h), adding its light (its
+		//! colour times alpha) to what is already drawn instead of blending over
+		//! it, so it brightens rather than tints. Accelerated renderers only; the
+		//! software renderer draws it normally. Earlier batched draws go first.
+		void drawSurfaceAdditive(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
 		//! Maximum supported texture dimension, or zero when no limit is reported.
 		int maximumTextureSize() const;
 		RenderBatch* getRenderBatch() const { return renderBatchEnabled?renderBatch.get():nullptr; }
@@ -837,10 +842,13 @@ namespace GAGCore
         void prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests);
         // Returns false without drawing when the backend or assets are unavailable.
         // texture is the team's colour atlas and material its material-id map;
-        // region (SkinRegion) selects the model's quadrant of both.
+        // region (SkinRegion) selects the model's quadrant of both. A non-zero
+        // glowAlpha then adds the mesh's own image again, tinted by glow, to
+        // brighten it in that colour.
         bool drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
                           DrawableSurface &material, std::uint8_t region,
-                          float x, float y, float w, float h, SkinShadow underlay = {}, Uint8 alpha = Color::ALPHA_OPAQUE);
+                          float x, float y, float w, float h, SkinShadow underlay = {}, Uint8 alpha = Color::ALPHA_OPAQUE,
+                          Color glow = Color(), Uint8 glowAlpha = 0);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
@@ -964,6 +972,11 @@ namespace GAGCore
 		DrawableSurface *lookupTeamColor(const TeamColorKey &key);
 		void insertTeamColor(const TeamColorKey &key, std::unique_ptr<DrawableSurface> surface, size_t bytes);
 		void clearTeamColorCache();
+		// Silhouettes reuse the key: `experiment` holds silhouette()'s teamLayerOnly.
+		std::list<TeamColorNode> silhouetteList;
+		std::unordered_map<TeamColorKey, std::list<TeamColorNode>::iterator, TeamColorKeyHash> silhouetteIndex;
+		size_t silhouetteBytes = 0;
+		static const size_t silhouetteCacheCap = 8u * 1024u * 1024u;
 
 		friend class DrawableSurface;
 		// Support functions
@@ -979,6 +992,12 @@ namespace GAGCore
         {
             return checkBound(index) ? prepareDrawSurface(index, false, true) : nullptr;
         }
+
+        //! The frame's shape filled with one colour, for effects drawn over the
+        //! sprite at its logical size: opaque wherever either layer is, or only
+        //! where its team-colour layer is. Built from the native layers on first
+        //! use and kept in a small LRU cache; null when there is no such layer.
+        DrawableSurface *silhouette(unsigned index, const Color &color, bool teamLayerOnly = false);
 
         // Immutable native image access for terrain cache preparation. Team layers
         // need separate composition and therefore are not cacheable here.

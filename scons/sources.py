@@ -179,6 +179,7 @@ CLIENT_SOURCES = (
     'render/OverviewTerrainCache.cpp',
     'render/MapOverlayQueue.cpp',
     'render/MapRenderState.cpp',
+    'render/UnitEffectArt.cpp',
     'render/FogFade.cpp',
     'render/scene/SceneMap.cpp',
     'render/scene/SceneExtract.cpp',

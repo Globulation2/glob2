@@ -88,7 +88,8 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
     else if (next.effects) {
         metrics.bytesCopied+=next.effects->sectors.size()*sizeof(SectorEffects);
         for (const auto& sector:next.effects->sectors) metrics.bytesCopied+=sector.bullets.size()*sizeof(BulletRecord)
-            +sector.explosions.size()*sizeof(ExplosionRecord)+sector.deaths.size()*sizeof(DeathRecord);
+            +sector.explosions.size()*sizeof(ExplosionRecord)+sector.deaths.size()*sizeof(DeathRecord)
+            +sector.unitEffects.size()*sizeof(UnitEffectRecord);
     }
     if (next.statisticsInputs && next.statisticsInputs == previous.statisticsInputs) ++metrics.reusedComponents;
     else if(next.statisticsInputs) {

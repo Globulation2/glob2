@@ -748,11 +748,12 @@ bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<st
 }
 bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
                                   DrawableSurface &material, std::uint8_t region,
-                                  float x, float y, float w, float h, SkinShadow underlay, Uint8 alpha)
+                                  float x, float y, float w, float h, SkinShadow underlay, Uint8 alpha,
+                                  Color glow, Uint8 glowAlpha)
 {
     PERF_SCOPE_TIME(SkinComposite);
     const SkinMeshRequest request{&mesh, frame, &texture, &material, region};
-    if (presentationDevice && renderer == deviceRenderer.get()) return drawDeviceSkinMesh(request, x, y, w, h, underlay, alpha);
+    if (presentationDevice && renderer == deviceRenderer.get()) return drawDeviceSkinMesh(request, x, y, w, h, underlay, alpha, glow, glowAlpha);
     if (!valid(request)) return false;
     if (alpha == 0) return true;
     const auto key = keyFor(request);
@@ -783,14 +784,30 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
         glColor4f(faded,faded,faded,faded); glTexCoord2f(u+extent*s,v+extent*(1-t)); glVertex2f(cx,cy);
     };
     glBegin(GL_QUADS);
-    if (radialFade.active())
-        forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCell &cell) {
-            for (const RadialFadeCorner &k : cell) corner(k.x, k.y, k.s, k.t, k.fade);
+    const auto quads = [&](auto vertex) {
+        if (radialFade.active())
+            forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCell &cell) {
+                for (const RadialFadeCorner &k : cell) vertex(k.x, k.y, k.s, k.t, k.fade);
+            });
+        else {
+            vertex(x,y,0,0,1); vertex(x+w,y,1,0,1); vertex(x+w,y+h,1,1,1); vertex(x,y+h,0,1,1);
+        }
+    };
+    quads(corner);
+    glEnd();
+    if (glowAlpha)
+    {
+        // The premultiplied tile again, tinted and added: brighter where the mesh is.
+        const float tint = glowAlpha / 255.f;
+        glState.blendFunc(GL_ONE,GL_ONE);
+        glBegin(GL_QUADS);
+        quads([&](float cx, float cy, float s, float t, float fade) {
+            const float o = opacity*fade*tint;
+            glColor4f(o*glow.r/255.f,o*glow.g/255.f,o*glow.b/255.f,o); glTexCoord2f(u+extent*s,v+extent*(1-t)); glVertex2f(cx,cy);
         });
-    else {
-        corner(x,y,0,0,1); corner(x+w,y,1,0,1); corner(x+w,y+h,1,1,1); corner(x,y+h,0,1,1);
+        glEnd(); ++drawCalls;
     }
-    glEnd(); glColor4f(1,1,1,1); glState.blendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); ++drawCalls;
+    glColor4f(1,1,1,1); glState.blendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); ++drawCalls;
     return true;
 }
 }
@@ -800,6 +817,6 @@ namespace GAGCore
 bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<std::uint8_t> &rgba) { return presentationDevice && renderer == deviceRenderer.get() && readDeviceSkinMesh(request, rgba); }
 void GraphicContext::destroySkinRenderer() { skinResources = {}; }
 void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests) { if (presentationDevice && renderer == deviceRenderer.get()) prepareDeviceSkinMeshes(requests); }
-bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &paint, DrawableSurface &material, std::uint8_t region, float x,float y,float w,float h, SkinShadow underlay, Uint8 alpha) { return presentationDevice && renderer == deviceRenderer.get() && drawDeviceSkinMesh({&mesh, frame, &paint, &material, region}, x,y,w,h,underlay,alpha); }
+bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &paint, DrawableSurface &material, std::uint8_t region, float x,float y,float w,float h, SkinShadow underlay, Uint8 alpha, Color glow, Uint8 glowAlpha) { return presentationDevice && renderer == deviceRenderer.get() && drawDeviceSkinMesh({&mesh, frame, &paint, &material, region}, x,y,w,h,underlay,alpha,glow,glowAlpha); }
 }
 #endif
