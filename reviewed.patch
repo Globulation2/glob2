@@ -1,0 +1,55 @@
+diff --git a/docs/development/performance-telemetry.md b/docs/development/performance-telemetry.md
+index 850b273f00..639fa1af45 100644
+--- a/docs/development/performance-telemetry.md
++++ b/docs/development/performance-telemetry.md
+@@ -391,6 +391,9 @@ executor summaries and causal sidecars fit the remaining 4 MiB allowance, includ
+ the retained decorative menu executor and bounded chart/GPU presentation storage.
+ Timing banks are allocated before workers start: the serial menu needs only one,
+ while the foreground executor reserves banks for its configured participants.
++The executor's fixed-capacity batch-slot arena is also allocated once on the heap;
++it never resizes. This keeps per-job timing storage off bounded worker stacks,
++including stack-owned map and game objects, while preserving live slot addresses.
+ Explicit event tracing retains its separate diagnostic allocation.
+ GPU query/readback storage and chart projections are bounded. The release-build
+ collection-overhead acceptance target is 2%; fast-build tests do not establish it.
+diff --git a/src/common/ComputeExecutor.h b/src/common/ComputeExecutor.h
+index d81977d527..28a8de3d25 100644
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -500,7 +500,9 @@ private:
+ 	std::function<void(std::size_t)> job;
+ 	std::exception_ptr error;
+ 	// submit()/join(): live batches, each held from submission to its join.
+-	std::array<Slot, Slots> slots;
++	// Keep the fixed-capacity arena off Map/Game owners' bounded worker stacks.
++	// It is allocated once and never resized, so live slot addresses stay stable.
++	std::vector<Slot> slots = std::vector<Slot>(Slots);
+ 	// Under mutex. Pick visits only batches with unclaimed work, rather than
+ 	// branching over the entire horizon (including completed retained tickets).
+ 	std::array<std::uint64_t, (Slots + 63) / 64> unclaimedSlots{};
+@@ -1990,10 +1992,10 @@ public:
+ 			  requiredTotals[1].load(std::memory_order_relaxed),
+ 			  requiredTotals[2].load(std::memory_order_relaxed)};
+   }
+-  // Include retained bank allocations; sizeof(executor) alone undercounts them.
++  // Include the fixed slot arena and retained banks, even when they are on the heap.
+   std::size_t performanceStorageBytes() const
+   {
+-	  std::size_t bytes = sizeof(*this);
++	  std::size_t bytes = sizeof(*this) + slots.capacity() * sizeof(Slot);
+ 	  for (const auto &shard : performanceShards)
+ 	  {
+ 		  std::lock_guard lock(shard.mutex);
+diff --git a/src/engine/EngineSessionHarness.cpp b/src/engine/EngineSessionHarness.cpp
+index 3c73055644..f84d6c020b 100644
+--- a/src/engine/EngineSessionHarness.cpp
++++ b/src/engine/EngineSessionHarness.cpp
+@@ -781,7 +781,7 @@ TEST_SUITE("EngineSession")
+ 									 sizeof(ComputeExecutor::PerformanceShard::Metrics);
+ 		const auto decorative = colony.game->map.computeExecutor().performanceStorageBytes();
+ 		CHECK(decorative ==
+-			  sizeof(ComputeExecutor) + sizeof(ComputeExecutor::PerformanceShard::Metrics));
++			  foreground->performanceStorageBytes());
+ 		constexpr std::size_t presentationReserve = 384 * 1024;
+ 		const auto nonHistory = 4 * sizeof(PerformanceTelemetry::Collector) + mainMaximum +
+ 								decorative + presentationReserve;

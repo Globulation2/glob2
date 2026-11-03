@@ -1,0 +1,290 @@
+{
+  "revision": "724143d8af6ebc926e7719324c5902ebf608517d",
+  "base": "a46b28716cc0d69ac6435513c98233cc3e2ddf23",
+  "changed_files": [
+    "docs/development/performance-telemetry.md",
+    "src/common/ComputeExecutor.h",
+    "src/engine/EngineSessionHarness.cpp"
+  ],
+  "focused": {
+    "tests": "68",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "generator_golden_result": {
+    "compared": 564,
+    "failures": 0
+  },
+  "auxiliary": {
+    "pid": 4062921,
+    "revision": "724143d8af6ebc926e7719324c5902ebf608517d",
+    "results": [
+      {
+        "name": "translation-catalog",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "data/check_translations.py",
+          "--strict"
+        ],
+        "exit_code": 0,
+        "seconds": 4.7
+      },
+      {
+        "name": "translation-tests",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_translations.py"
+        ],
+        "exit_code": 0,
+        "seconds": 1.2
+      },
+      {
+        "name": "translation-tooling",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_translation_program.py"
+        ],
+        "exit_code": 0,
+        "seconds": 2.7
+      },
+      {
+        "name": "script-support",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_script_support.py"
+        ],
+        "exit_code": 0,
+        "seconds": 0.1
+      },
+      {
+        "name": "font-coverage",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_font_coverage.py"
+        ],
+        "exit_code": 0,
+        "seconds": 0.2
+      },
+      {
+        "name": "map-report",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_map_report.py",
+          "build/stack-release/src/glob2",
+          "build/stack-release/test/MapReportHarness"
+        ],
+        "exit_code": 0,
+        "seconds": 2.1
+      },
+      {
+        "name": "map-cli",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_map_cli.py",
+          "build/stack-release/src/glob2"
+        ],
+        "exit_code": 0,
+        "seconds": 158.8
+      },
+      {
+        "name": "map-image",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/test_map_image.py",
+          "build/stack-release/src/glob2"
+        ],
+        "exit_code": 0,
+        "seconds": 6.0
+      },
+      {
+        "name": "javascript-profile",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_javascript.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/javascript-profile"
+        ],
+        "exit_code": 0,
+        "seconds": 11.9
+      },
+      {
+        "name": "released-simulation",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_telemetry_simulation.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/released-simulation"
+        ],
+        "exit_code": 0,
+        "seconds": 7.6
+      },
+      {
+        "name": "runtime-continuation",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_shared_runtime_save_continuation.py",
+          "build/stack-release/src/glob2"
+        ],
+        "exit_code": 0,
+        "seconds": 23.2
+      },
+      {
+        "name": "maxima-continuation",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/maxima/check_save_continuation_fixture.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/maxima-continuation"
+        ],
+        "exit_code": 0,
+        "seconds": 2.9
+      },
+      {
+        "name": "parallel-compute",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_parallel_compute.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/parallel-compute"
+        ],
+        "exit_code": 0,
+        "seconds": 51.1
+      },
+      {
+        "name": "gradient-pipeline",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/check_gradient_pipeline.py",
+          "build/stack-release/src/glob2",
+          "--output",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/gradient-pipeline"
+        ],
+        "exit_code": 0,
+        "seconds": 197.4
+      },
+      {
+        "name": "lan-session",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/run_lan_session_test.py",
+          "build/stack-release/src/LANSessionHarness"
+        ],
+        "exit_code": 0,
+        "seconds": 53.9
+      },
+      {
+        "name": "menu-colony",
+        "command": [
+          "build/stack-release/test/MenuColonyHarness",
+          "check",
+          "data/menu/colony.bin"
+        ],
+        "exit_code": 0,
+        "seconds": 6.0
+      },
+      {
+        "name": "menu-navigation",
+        "command": [
+          "build/stack-release/test/MenuColonyHarness",
+          "navigation",
+          "unused"
+        ],
+        "exit_code": 0,
+        "seconds": 2.1
+      },
+      {
+        "name": "native-browser-trace",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "test/run-browser-determinism.py",
+          "build/stack-release/src/glob2",
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/comb-stack/auxiliary/browser-native",
+          "--engine-binary",
+          "build/stack-release/test/glob2-engine-tests"
+        ],
+        "exit_code": 0,
+        "seconds": 2.6
+      },
+      {
+        "name": "maxima-config",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "src/ai/maxima/MaximaStrategyConfigTest.py"
+        ],
+        "exit_code": 0,
+        "seconds": 6.4
+      },
+      {
+        "name": "maxima-policies",
+        "command": [
+          "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "src/ai/maxima",
+          "-p",
+          "*Test.py"
+        ],
+        "exit_code": 0,
+        "seconds": 4.2
+      }
+    ],
+    "phase": "finished"
+  },
+  "previous_native_full": {
+    "revision": "1c805fb4c0810278bce49c10658063d4a0b03bd7",
+    "results": {
+      "tests": "3490",
+      "failures": "1",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "failure": "EngineSessioninlineallocationassert517952==192032;correctedone-bankcomparisonpassescurrentfocused. Both4MiBand16MiBceilingsunchanged."
+  },
+  "prior_hosted": {
+    "revision": "1c805fb4c0810278bce49c10658063d4a0b03bd7",
+    "windows_job": 125735809758,
+    "windows_conclusion": "success",
+    "windows_engine_passed": 1822,
+    "windows_engine_skipped": 272,
+    "macos_job": 125735810004,
+    "macos_conclusion": "success",
+    "macos_engine_passed": 1823,
+    "macos_engine_skipped": 274,
+    "macos_golden_rows": 564,
+    "macos_golden_failures": 0,
+    "limit": "Exactallocationheaderidenticaltonewhead;newheadonlycorrectsequivalenttestassertionandintegratesmasterUIcatalog. Notafinal-headhostedmatrixclaim."
+  },
+  "cross_platform": {
+    "linux_revision": "724143d8af6ebc926e7719324c5902ebf608517d",
+    "hosted_run": 41580052537,
+    "comparison": "All bytes identical; same canonical match verify initial state, seed and orders; platformnativearrays retained",
+    "platforms": [
+      {
+        "platform": "macos",
+        "artifact_id": 13208464750,
+        "revision": "1c805fb4c0810278bce49c10658063d4a0b03bd7",
+        "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+        "bytes": 10914,
+        "lines": 843
+      },
+      {
+        "platform": "windows",
+        "artifact_id": 13208398483,
+        "revision": "1c805fb4c0810278bce49c10658063d4a0b03bd7",
+        "sha256": "5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c",
+        "bytes": 10914,
+        "lines": 843
+      }
+    ]
+  },
+  "current_full_native": "Stillrunning4053835;notcountedaspass. Completenative/browser/latestmastergreencheckpointnotestablished. Rootbrowser/source/helper/SDLremainfrozende58.",
+  "coverage_rationale": "Fullprior3490caseinventoryidentifiedoneintroducedtestassumption;exactfixedcaseandall67previousfocusedcasespassfinalhead,all564acceptedfingerprintsand20integrationgroupspass. Runtime/save/replay/worker-count andper-tickcanonicalmatchchecksumsretained. AcceptfocusedfinallocalverificationperAGENTSwhilecompletecurrentruncontinues. No simulation revision/golden/testceilingchanges.",
+  "platform_limits": "NativeLinuxGCC13,hostedmacOSarm64/WindowsMinGWx64qualifiedasscoped;finalWasm/browsermatrixandfullnativepending. NoAndroid/iOS/NSISexecutionclaimfromthisevidence."
+}
