@@ -1,0 +1,41 @@
+{
+  "reviews": [
+    {
+      "pull_request": 1368,
+      "tested_source_revision": "4dfc88069e28eefaebbff795fa9b211c42915532",
+      "base": "de58ea77c3dc35048842d9c3addc9d227ee0c6fc",
+      "runtime_revision": "7b594e5ec769c52d74c5fb33c2ba1b1555b79409",
+      "results": {
+        "id": "",
+        "name": "",
+        "tests": "12",
+        "failures": "0",
+        "skipped": "0",
+        "errors": "0",
+        "time": "925.090725"
+      },
+      "scope": "12 original cases in all3 browser projects. Original whole-case deadlines and assertions retained. Focused fixture repair, not the full checkpoint.",
+      "patch_sha256": "de87dcf63b2311af8eb6a40479f39574d2c2ba27ffa7d65d56597128c5b97956"
+    },
+    {
+      "pull_request": 1369,
+      "tested_source_revision": "2eaeaae70bdd30f53dc6bf60b579a05b6feba3d7",
+      "base": "de58ea77c3dc35048842d9c3addc9d227ee0c6fc",
+      "runtime_revision": "7b594e5ec769c52d74c5fb33c2ba1b1555b79409",
+      "results": {
+        "id": "",
+        "name": "",
+        "tests": "12",
+        "failures": "0",
+        "skipped": "0",
+        "errors": "0",
+        "time": "959.802902"
+      },
+      "scope": "12 original cases in all3 browser projects. Original whole-case deadlines and assertions retained. Focused fixture repair, not the full checkpoint.",
+      "patch_sha256": "06dbb0809c744e62f822db63283aed84e5ccd2d94b02c82f68a881796dbdf6c3"
+    }
+  ],
+  "archive_sha256": "82e9b1e5cdcec3736c7a9522db4a82f16d65b4efe9a3b8043b6cbc11c267a4c9",
+  "bytes": 69608885,
+  "files": 130
+}
