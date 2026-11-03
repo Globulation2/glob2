@@ -13,7 +13,11 @@ contours and sampling behavior; version 2 adds denser contours, edge softness an
 world-space bends; version 3 adds per-profile displacement amplitude, pebble
 speckle, diagonal bridging and up to sixty-four curves per profile; version 4 adds
 border classes, profile precedence and coasts, and smooth contours (see
-[Boundary rules](terrain-rendering.md#boundary-rules)). Version-2
+[Boundary rules](terrain-rendering.md#boundary-rules)). Custom terrain bundled in
+map files names a profile key but no class. A version-4 catalog's `bundle_profiles`
+maps each retired or class-bearing key to a current `profile` and `class`, so older
+maps keep loading; any other bundled key keeps its profile and becomes `solid`. Keep
+an entry for every profile key a released catalog has shipped. Version-2
 packs parse unchanged and render through the current resolver, which rounds
 corners and reads each curve mirrored and negated. Material keys are unique strings. Bindings map semantic terrain
 names to material keys. Every paintable built-in terrain in `src/map/TerrainTypeTable.h`

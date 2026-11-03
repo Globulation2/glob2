@@ -184,6 +184,15 @@ def _validate(document, root):
     for p in profiles.values():
         if "coast" in p and (p["coast"] not in profiles or p["coast"] == p["key"]):
             raise ValueError("Profile coast must name another profile")
+    aliases = document.get("bundle_profiles", {})
+    if aliases and version < 4:
+        raise ValueError("Bundle profiles require catalog version 4")
+    if not isinstance(aliases, dict) or any(
+        not isinstance(a, dict) or a.get("profile") not in profiles
+        or a.get("class") not in classes
+        for key, a in aliases.items()
+    ):
+        raise ValueError("Bundle profiles must name a profile and a border class")
     materials = {}
     sources = {}
     decor_sprites = set()

@@ -22,6 +22,36 @@
       "shoreline": true
     }
   ],
+  "bundle_profiles": {
+    "canopy": {
+      "profile": "canopy",
+      "class": "cover"
+    },
+    "cliff": {
+      "profile": "crisp",
+      "class": "cut"
+    },
+    "cobblestone": {
+      "profile": "paved",
+      "class": "built"
+    },
+    "fractured": {
+      "profile": "rock",
+      "class": "solid"
+    },
+    "liquid": {
+      "profile": "still",
+      "class": "pool"
+    },
+    "organic": {
+      "profile": "soil",
+      "class": "solid"
+    },
+    "soft": {
+      "profile": "soil",
+      "class": "solid"
+    }
+  },
   "profiles": [
     {
       "key": "canopy",
