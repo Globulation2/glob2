@@ -117,7 +117,7 @@ it.each(['proneHarvestMapping', 'proneHarvestPages'])(
   'rejects missing harvest extension %s',
   (key) => {
     const doc = fixture() as unknown as Record<string, unknown>;
-    delete doc[key];
+    Reflect.deleteProperty(doc, key);
     expect(() => validateBundle(Buffer.from(JSON.stringify(doc)), source, revision)).toThrow();
   },
 );
