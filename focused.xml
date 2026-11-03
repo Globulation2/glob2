@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="53" failures="0" errors="17" skipped="0"><testsuite name="TerrainEcology"><testcase classname="TerrainEcology" name="empty and prohibited resource cells do not acquire bonus growth" time="8.82939" status="run" />
+  <testcase classname="TerrainEcology" name="four growth opportunities preserve capped stacks and measured conservation" time="40.1004" status="run" />
+  </testsuite><testsuite name="TerrainProperties"><testcase classname="TerrainProperties" name="Trail retains legacy identities and terrain behavior" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="constrained explorer flag eligibility applies route accessibility and hunger distance" time="12.1425" status="run" />
+  <testcase classname="TerrainProperties" name="exclusive movement modes and bounded compile-time definitions" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="explorers ignore ice damage and no-permadeath applies to ground hazards" time="13.6189" status="run" />
+  <testcase classname="TerrainProperties" name="health modifiers clip healing and expose units that have found an exit" time="15.2162" status="run" />
+  <testcase classname="TerrainProperties" name="ice exposure includes stationary units and preserves fractional health in saves" time="25.6848" status="run" />
+  <testcase classname="TerrainProperties" name="projectile supercover tests intermediate cells corners and wrapped coordinates" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="retired terrain flags load from old headers without becoming experiments" time="22.2858" status="run" />
+  <testcase classname="TerrainProperties" name="same-size map replacement and terrain edits refresh ecology" time="3.07893" status="run" />
+  <testcase classname="TerrainProperties" name="terrain edits refresh escape costs after captured routes publish at their fixed deadline" time="10.1548" status="run" />
+  <testcase classname="TerrainProperties" name="terrain health profiles choose independent air and ground rates" time="14.9004" status="run" />
+  <testcase classname="TerrainProperties" name="vertex terrain survives tiling and batches snapshot invalidation" time="2.51329" status="run" />
+  </testsuite><testsuite name="TerrainRuntime"><testcase classname="TerrainRuntime" name="custom capabilities drive map queries health ecology and immutable match definitions" time="9.80966" status="run" />
+  <testcase classname="TerrainRuntime" name="each catalogue type shares its group profile" time="4.05517" status="run" />
+  <testcase classname="TerrainRuntime" name="eager resumed and worker gradients agree on custom slow swimming" time="5.21526" status="run" />
+  <testcase classname="TerrainRuntime" name="embedded registry restores custom state and pending gradients without source files" time="19.6433" status="run" />
+  <testcase classname="TerrainRuntime" name="format-137 saves with custom terrain load with remapped IDs and resave at the current format" time="20.3346" status="run" />
+  <testcase classname="TerrainRuntime" name="format-186 saves keep built-in IDs and move custom terrain behind the grass and sand looks" time="20.0082" status="run" />
+  <testcase classname="TerrainRuntime" name="grass and sand looks share every rule of grass and sand" time="4.90771" status="run" />
+  <testcase classname="TerrainRuntime" name="large embedded registry crosses the stream string limit" time="107.879" status="run" />
+  <testcase classname="TerrainRuntime" name="maps isolate registries and reject failed imports atomically" time="4.89625" status="run" />
+  <testcase classname="TerrainRuntime" name="painted catalogue terrain survives save and reload with its checksum" time="50.4962" status="run" />
+  <testcase classname="TerrainRuntime" name="production pipeline captures custom movement and discards fields after reimport" time="25.1112" status="run" />
+  <testcase classname="TerrainRuntime" name="unused distinct costs do not expand map movement setup" time="7.37413" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="AI-only turn recordings replay through their terminal checksum [network-sim][artifacts]" time="41.223" status="run" />
+  <testcase classname="TurnEngineHarness" name="Filipino registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="120.059"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+verify-match: verified; 842 checksums in 17899 ms
+verify-match: unverifiable (the match ran sim version 191-73-289bec536583fdb3508350732d433c2aab519de883507b9af486b120b1cea81d but this verifier is 194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0); 842 checksums in 36541 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="Marathi registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="120.198"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+verify-match: verified; 842 checksums in 23477 ms
+verify-match: unverifiable (the match ran sim version 191-73-be0cfb6de27ede2ccf532696a24fe30af46f1f6e825019b75072d91081b3cee9 but this verifier is 194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0); 842 checksums in 21190 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="Thai registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="120.059"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+verify-match: verified; 842 checksums in 19449 ms
+verify-match: unverifiable (the match ran sim version 191-73-9ce97439847adc396d7cf42390d2962c382a23f89363df4dd92c53dbc1f6c4d9 but this verifier is 194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0); 842 checksums in 37205 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="Thai registration rejects published Telugu revision 113 without changing replay file floors [network-sim][artifacts]" time="120.030"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+verify-match: verified; 842 checksums in 18568 ms
+verify-match: unverifiable (the match ran sim version 191-73-289bec536583fdb3508350732d433c2aab519de883507b9af486b120b1cea81d but this verifier is 194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0); 842 checksums in 37677 ms
+verify-match: unverifiable (the record names sim version 191-73-289bec536583fdb3508350732d433c2aab519de883507b9af486b120b1cea81d but this verifier is 194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0); 842 checksums in 20645 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" time="120.061"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="120.074"><error message="timeout" type="timeout">d in Order.cpp (111)
+Bad packet received in Order.cpp (111)
+Bad packet received in Order.cpp (208)
+Bad packet received in Order.cpp (164)
+Bad packet received in Order.cpp (111)
+Bad packet received in Order.cpp (101)
+Bad packet received in Order.cpp (101)
+Bad packet received in Order.cpp (101)
+Bad packet received in Order.cpp (106)
+Bad packet received in Order.cpp (106)
+Bad packet received in Order.cpp (170)
+Bad packet received in Order.cpp (106)
+Bad packet received in Order.cpp (170)
+Bad packet received in Order.cpp (170)
+Bad packet received in Order.cpp (64)
+Bad packet received in Order.cpp (64)
+Bad packet received in Order.cpp (64)
+Bad packet received in Order.cpp (196)
+Bad packet received in Order.cpp (196)
+Bad packet received in Order.cpp (196)
+Bad packet received in Order.cpp (3)
+Bad packet received in Order.cpp (3)
+Bad packet received in Order.cpp (61)
+Bad packet received in Order.cpp (3)
+Bad packet received in Order.cpp (61)
+Bad packet received in Order.cpp (61)
+Bad packet received in Order.cpp (249)
+Bad packet received in Order.cpp (249)
+Bad packet received in Order.cpp (248)
+Bad packet received in Order.cpp (249)
+Bad packet received in Order.cpp (248)
+Bad packet received in Order.cpp (250)
+Bad packet received in Order.cpp (250)
+Bad packet received in Order.cpp (246)
+Bad packet received in Order.cpp (248)
+Bad packet received in Order.cpp (246)
+Bad packet received in Order.cpp (144)
+Bad packet received in Order.cpp (250)
+Bad packet received in Order.cpp (144)
+Bad packet received in Order.cpp (233)
+Bad packet received in Order.cpp (246)
+Bad packet received in Order.cpp (233)
+Bad packet received in Order.cpp (144)
+Bad packet received in Order.cpp (233)
+Bad packet received in Order.cpp (233)
+Bad packet received in Order.cpp (233)
+Bad packet received in Order.cpp (194)
+Bad packet received in Order.cpp (233)
+OrderAlterArea::setData(dataLength=2) failure
+data[0]=3
+data[1]=1
+Bad packet received in Order.cpp (194)
+OrderAlterArea::setData(dataLength=2) failure
+data[0]=3
+data[1]=1
+Bad packet received in Order.cpp (26)
+Bad packet received in Order.cpp (26)
+Bad packet received in Order.cpp (194)
+OrderAlterArea::setData(dataLength=2) failure
+data[0]=3
+data[1]=1
+Bad packet received in Order.cpp (26)
+Bad packet received in Order.cpp (68)
+Bad packet received in Order.cpp (68)
+Bad packet received in Order.cpp (68)
+Bad packet received in Order.cpp (255)
+Bad packet received in Order.cpp (88)
+Bad packet received in Order.cpp (255)
+Bad packet received in Order.cpp (88)
+Bad packet received in Order.cpp (255)
+Bad packet received in Order.cpp (88)
+Bad packet received in Order.cpp (128)
+Bad packet received in Order.cpp (190)
+Bad packet received in Order.cpp (128)
+Bad packet received in Order.cpp (190)
+Bad packet received in Order.cpp (66)
+Bad packet received in Order.cpp (128)
+Bad packet received in Order.cpp (190)
+Bad packet received in Order.cpp (66)
+Bad packet received in Order.cpp (125)
+Bad packet received in Order.cpp (125)
+Bad packet received in Order.cpp (66)
+Bad packet received in Order.cpp (217)
+Bad packet received in Order.cpp (125)
+Bad packet received in Order.cpp (217)
+Bad packet received in Order.cpp (123)
+Bad packet received in Order.cpp (123)
+Bad packet received in Order.cpp (217)
+Bad packet received in Order.cpp (123)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (205)
+Bad packet received in Order.cpp (186)
+Bad packet received in Order.cpp (194)
+Bad packet received in Order.cpp (205)
+Bad packet received in Order.cpp (186)
+Bad packet received in Order.cpp (194)
+Bad packet received in Order.cpp (205)
+Bad packet received in Order.cpp (186)
+Bad packet received in Order.cpp (194)
+Bad packet received in Order.cpp (86)
+Bad packet received in Order.cpp (86)
+Bad packet received in Order.cpp (86)
+Bad packet received in Order.cpp (83)
+Bad packet received in Order.cpp (83)
+Bad packet received in Order.cpp (83)
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="120.068"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+Turn session: diverged at tick 425; reloading
+Turn session: reloaded the initial state in 6908 ms; fast-forwarding
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" time="110.697" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]" time="40.2085" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" time="120.097"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+verify-match: verified; 632 checksums in 27103 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" time="120.148"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" time="120.068"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="combined Thai and Bulgarian registration rejects shared revision 115 without changing replay file floors [network-sim][artifacts]" time="120.031"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+verify-match: verified; 842 checksums in 19876 ms
+verify-match: unverifiable (the match ran sim version 191-73-e09bf9518579c665617212e36e5ff735ad3e3bae85e0d994b836f2ce35babe56 but this verifier is 194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0); 842 checksums in 38482 ms
+verify-match: unverifiable (the record names sim version 191-73-e09bf9518579c665617212e36e5ff735ad3e3bae85e0d994b836f2ce35babe56 but this verifier is 194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0); 842 checksums in 17117 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="combined Thai and Filipino registration rejects shared revision 114 without changing replay file floors [network-sim][artifacts]" time="120.020"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+verify-match: verified; 842 checksums in 17009 ms
+verify-match: unverifiable (the match ran sim version 191-73-cb71317a961766ae7d249e039c3f6ea8fcc6fb3b6d620e1cb69ae0cbae014e7a but this verifier is 194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0); 842 checksums in 38372 ms
+verify-match: unverifiable (the record names sim version 191-73-cb71317a961766ae7d249e039c3f6ea8fcc6fb3b6d620e1cb69ae0cbae014e7a but this verifier is 194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0); 842 checksums in 21790 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="combined Thai and Honeycomb integration rejects shared revision 116 without changing replay file floors [network-sim][artifacts]" time="109.7" status="run" />
+  <testcase classname="TurnEngineHarness" name="embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]" time="120.143"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+verify-match: verified; 842 checksums in 32801 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]" time="80.5882" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="120.077"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="map checksum coverage survives the last human quitting [network-sim]" time="12.9171" status="run" />
+  <testcase classname="TurnEngineHarness" name="one client claiming the game finished does not end it for a player who is reconnecting [network-sim]" time="74.2467" status="run" />
+  <testcase classname="TurnEngineHarness" name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" time="120.072"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+Turn session: rejected an order of type 67 from seat 1 at tick 100 (wrong_player)
+Turn session: rejected an order of type 100 from seat 1 at tick 101 (not_permitted)
+Bad packet received in Order.cpp (238)
+Turn session: rejected an order of type 238 from seat 1 at tick 102 (undecodable)
+Turn session: rejected an order of type 20 from seat 1 at tick 103 (wrong_team)
+Turn session: rejected an order of type 73 from seat 1 at tick 104 (wrong_team)
+Turn session: rejected an order of type 72 from seat 1 at tick 105 (undecodable)
+verify-match: verified; 5 orders rejected; 392 checksums in 20073 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts]" time="81.8343" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="44.7391" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="120.074"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+verify-match: verified; 1292 checksums in 38477 ms
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="voice packets do not hold up a player's orders [network-sim][artifacts]" time="120.049"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+
+[run_tests] killed after 120s
+</error></testcase><testcase classname="TurnEngineHarness" name="without a pause limit a pause lasts until someone resumes it [network-sim]" time="60.8704" status="run" />
+  </testsuite></testsuites>

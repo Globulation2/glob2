@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="17" failures="0" errors="2" skipped="0"><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="Filipino registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="52.9311" status="run" />
+  <testcase classname="TurnEngineHarness" name="Marathi registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="52.1633" status="run" />
+  <testcase classname="TurnEngineHarness" name="Thai registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="68.4094" status="run" />
+  <testcase classname="TurnEngineHarness" name="Thai registration rejects published Telugu revision 113 without changing replay file floors [network-sim][artifacts]" time="68.7618" status="run" />
+  <testcase classname="TurnEngineHarness" name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" time="34.0076" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="32.382"><error message="error" type="error">eceived in Order.cpp (90)
+Bad packet received in Order.cpp (240)
+Bad packet received in Order.cpp (55)
+Bad packet received in Order.cpp (233)
+Bad packet received in Order.cpp (230)
+Bad packet received in Order.cpp (55)
+Bad packet received in Order.cpp (90)
+Bad packet received in Order.cpp (102)
+Bad packet received in Order.cpp (55)
+Bad packet received in Order.cpp (102)
+Bad packet received in Order.cpp (183)
+Bad packet received in Order.cpp (183)
+Bad packet received in Order.cpp (102)
+Bad packet received in Order.cpp (183)
+Bad packet received in Order.cpp (91)
+Bad packet received in Order.cpp (91)
+Bad packet received in Order.cpp (91)
+Bad packet received in Order.cpp (50)
+Bad packet received in Order.cpp (50)
+Bad packet received in Order.cpp (50)
+Bad packet received in Order.cpp (97)
+Bad packet received in Order.cpp (97)
+Bad packet received in Order.cpp (248)
+Bad packet received in Order.cpp (248)
+Bad packet received in Order.cpp (97)
+Bad packet received in Order.cpp (248)
+Bad packet received in Order.cpp (98)
+Bad packet received in Order.cpp (36)
+Bad packet received in Order.cpp (98)
+Bad packet received in Order.cpp (36)
+Bad packet received in Order.cpp (2)
+Bad packet received in Order.cpp (2)
+Bad packet received in Order.cpp (98)
+Bad packet received in Order.cpp (36)
+Bad packet received in Order.cpp (2)
+Bad packet received in Order.cpp (86)
+Bad packet received in Order.cpp (86)
+Bad packet received in Order.cpp (107)
+Bad packet received in Order.cpp (107)
+Bad packet received in Order.cpp (231)
+Bad packet received in Order.cpp (86)
+Bad packet received in Order.cpp (228)
+Bad packet received in Order.cpp (231)
+Bad packet received in Order.cpp (107)
+Bad packet received in Order.cpp (228)
+Bad packet received in Order.cpp (231)
+Bad packet received in Order.cpp (65)
+Bad packet received in Order.cpp (228)
+Bad packet received in Order.cpp (65)
+Bad packet received in Order.cpp (183)
+Bad packet received in Order.cpp (183)
+Bad packet received in Order.cpp (3)
+Bad packet received in Order.cpp (215)
+Bad packet received in Order.cpp (65)
+Bad packet received in Order.cpp (3)
+Bad packet received in Order.cpp (215)
+Bad packet received in Order.cpp (183)
+Bad packet received in Order.cpp (3)
+Bad packet received in Order.cpp (88)
+Bad packet received in Order.cpp (215)
+Bad packet received in Order.cpp (88)
+Bad packet received in Order.cpp (88)
+Bad packet received in Order.cpp (235)
+Bad packet received in Order.cpp (235)
+Bad packet received in Order.cpp (235)
+Bad packet received in Order.cpp (119)
+Bad packet received in Order.cpp (82)
+Bad packet received in Order.cpp (119)
+OrderAlterArea::setData(dataLength=4) failure
+data[0]=0
+data[1]=0
+data[2]=0
+data[3]=31
+Bad packet received in Order.cpp (82)
+OrderAlterArea::setData(dataLength=4) failure
+data[0]=0
+data[1]=0
+data[2]=0
+data[3]=31
+Bad packet received in Order.cpp (119)
+Bad packet received in Order.cpp (82)
+OrderAlterArea::setData(dataLength=4) failure
+data[0]=0
+data[1]=0
+data[2]=0
+data[3]=31
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (243)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (243)
+Bad packet received in Order.cpp (120)
+Bad packet received in Order.cpp (120)
+Bad packet received in Order.cpp (243)
+Bad packet received in Order.cpp (128)
+Bad packet received in Order.cpp (128)
+Bad packet received in Order.cpp (27)
+Bad packet received in Order.cpp (120)
+Bad packet received in Order.cpp (27)
+Bad packet received in Order.cpp (128)
+Bad packet received in Order.cpp (27)
+Bad packet received in Order.cpp (187)
+Bad packet received in Order.cpp (187)
+Bad packet received in Order.cpp (187)
+
+[run_tests] exit status -15
+
+[error] a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]: exception
+SIGTERM - Termination request signal
+</error></testcase><testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="50.1425" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" time="58.6033" status="run" />
+  <testcase classname="TurnEngineHarness" name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" time="56.9307" status="run" />
+  <testcase classname="TurnEngineHarness" name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" time="99.8597" status="run" />
+  <testcase classname="TurnEngineHarness" name="combined Thai and Bulgarian registration rejects shared revision 115 without changing replay file floors [network-sim][artifacts]" time="70.0071" status="run" />
+  <testcase classname="TurnEngineHarness" name="combined Thai and Filipino registration rejects shared revision 114 without changing replay file floors [network-sim][artifacts]" time="66.4992" status="run" />
+  <testcase classname="TurnEngineHarness" name="embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]" time="34.5819" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="111.741" status="run" />
+  <testcase classname="TurnEngineHarness" name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" time="4.593"><error message="error" type="error">GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.4.1.1) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/cea6/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/cea6/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "622ace3e8755d91c68c42d774793762ce4557e0f", "sourceStatus": [" M docs/map-generators/game-rules-for-map-design.md", " M src/game/SimRevision.h", " M src/map/TerrainGroup.h", " M src/map/TerrainPropertiesTest.cpp"], "sourceTreeSha256": "94220cfdf9404ef4ba061205ece777e4e96c8c49fb30978b5cc6334f68996014"}
+
+[run_tests] exit status -15
+
+[error] orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]: exception
+SIGTERM - Termination request signal
+</error></testcase><testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="50.5739" status="run" />
+  <testcase classname="TurnEngineHarness" name="voice packets do not hold up a player's orders [network-sim][artifacts]" time="40.7473" status="run" />
+  </testsuite></testsuites>

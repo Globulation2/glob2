@@ -1,0 +1,5 @@
+PASS TurnEngineHarness/a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts] (307.8s)
+PASS TurnEngineHarness/orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim] (10.5s)
+
+2 passed, 0 failed, 0 skipped (318.3s of test time)
+[run_tests] JUnit report: artifacts/fertility-128/hostile-retry.xml (2 cases)

@@ -1,0 +1,18 @@
+{
+  "testedCommit": "648e6e2de197ea05b51bf7502f4b39a3c55bb9ba",
+  "testedBase": "622ace3e8755d91c68c42d774793762ce4557e0f",
+  "integrationBaseAtReview": "0d55bf0843b4b73e5bed173b6faeb74f2094233b",
+  "environment": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "build": "PYTHONPATH=\"$PWD\" python3 tools/dev_build.py -j8 engine-tests",
+  "buildResult": "passed; initial attempts failed because spawned asset workers could not import tools; PYTHONPATH workaround resolved it",
+  "fixtureUpdate": "GLOB2_BUILD_DIR=build/darwin/client/debug/dev-dev_fast-true-linker-auto python3 test/run_tests.py --update-fixtures --filter \"TurnEngineHarness/the committed*\"",
+  "initialTests": "53 cases: 36 passed, 17 timed out at 120 seconds; retry runs only those 17 at -j2 --timeout 600",
+  "limitations": [
+    "Fast development macOS ARM64 build only; no release or cross-platform determinism claim",
+    "No maintainer playtest of economy pacing",
+    "Master advanced with browser rendering and root/build layout changes during local validation; hosted merge-result CI requested; user authorized merge on relevant local passes without waiting for CI",
+    "FertilityField suite lives in unit binary and was not built; terrain profile and TerrainEcology engine checks were covered"
+  ],
+  "finalResult": "All 53 selected cases passed across initial run and retries. Initial: 36 pass, 17 timeouts. Retry: 15 pass, 2 SIGTERM exits. Individual final retry: 2 pass. Golden fixture refresh/verification and sim-revision check passed."
+}
