@@ -115,12 +115,18 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'material_destinations'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
             raise ValueError('saved games retain their seeds')
+        if 'benchmark_warmup_ticks' in config:
+            warmup=config['benchmark_warmup_ticks'];limit=config.get('ticks',DEFAULT_GAME_TICKS)
+            if type(limit) is not int or type(warmup) is not int or not 0<=warmup<=2147483647 or warmup>=limit:
+                raise ValueError('benchmark_warmup_ticks must leave a positive measured window')
+        if 'gradient_backend' in config and config['gradient_backend'] not in ('cpu','scalar','sse2','neon','opencl','vulkan','webgpu'):
+            raise ValueError('invalid gradient_backend')
         if self.kind == 'game' and 'material_destinations' in config:
             if type(config['material_destinations']) is not bool:
                 raise ValueError('material_destinations must be a boolean')
@@ -250,6 +256,10 @@ class EngineJob:
             if 'game' in job['seeds']:
                 add('--game-seed', job['seeds']['game'])
             add('--ticks', config.get('ticks', DEFAULT_GAME_TICKS))
+            if 'benchmark_warmup_ticks' in config:
+                add('--benchmark-warmup',config['benchmark_warmup_ticks'])
+            if 'gradient_backend' in config:
+                add('--gradient-backend',config['gradient_backend'])
             for player in config.get('players', []):
                 add('--player', player)
             for player, params in sorted(config.get('ai_params', {}).items()):
@@ -323,6 +333,13 @@ class EngineJob:
         if result.get('status') not in ('completed', 'invalid_request', 'generation_failed', 'artifact_failure'):
             raise ValueError('invalid engine completion status')
         if result.get('status') == 'completed':
+            if 'gradient_backend' in job['config'] and result.get('gradient_backend')!=job['config']['gradient_backend']:
+                raise ValueError('engine gradient backend differs from frozen request')
+            if 'benchmark_warmup_ticks' in job['config']:
+                fields=('benchmark_setup_cpu_ns','benchmark_run_cpu_ns','benchmark_save_cpu_ns','benchmark_measured_ticks','ticks')
+                if (any(type(result.get(k)) is not int or result[k]<0 for k in fields) or
+                    not result['benchmark_run_cpu_ns'] or not 0<result['benchmark_measured_ticks']<=result['ticks']-job['config']['benchmark_warmup_ticks']):
+                    raise ValueError('engine did not attest a measured CPU window')
             resolved = result.get('resolved', {})
             if resolved.get('active_claim_policy') == 'experimental':
                 from .claim_policy import attested_policy_digest
