@@ -316,6 +316,20 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
             if (w <= 0 || h <= 0 || sw <= 0 || sh <= 0) return;
             auto* pixels=surface->getSDLSurface();
             if (!pixels || pixels->w <= 0 || pixels->h <= 0) return;
+            if (radialFade.active()) {
+                const DrawableSurface *uploadSource=surface;
+                SDL_Rect source{sx,sy,sw,sh};
+                if(renderer==deviceRenderer.get() && surface->spriteSource &&
+                    surface->spriteSource->resolveDeviceAtlas(*surface,source,uploadSource))
+                    pixels=const_cast<DrawableSurface*>(uploadSource)->getSDLSurface();
+                if (spriteBatch.owner == this) spriteBatch.flush();
+                renderer->triangles(radialFadeTriangles(radialFade, x, y, w, h,
+                    float(source.x)/pixels->w, float(source.y)/pixels->h,
+                    float(source.x+source.w)/pixels->w, float(source.y+source.h)/pixels->h, alpha/255.f, false),
+                    uploadSource, pixels, uploadSource->contentRevision());
+                ++drawCalls;
+                return;
+            }
             if (renderer == deviceRenderer.get() && surface->highResolutionSampling) {
                 // Use the existing alpha-weighted CPU chain for every device.
                 // Mutation creates a new owned upload revision before submission.
@@ -388,6 +402,58 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			const float u1 = static_cast<float>(sx + sw) * surface->texMultX + biasX;
 			const float v0 = static_cast<float>(sy) * surface->texMultY + biasY;
 			const float v1 = static_cast<float>(sy + sh) * surface->texMultY + biasY;
+
+			if (radialFade.active())
+			{
+				if (spriteBatch.owner == this)
+					spriteBatch.flush();
+				const auto *atlas = surface->textureInfo ? surface->textureInfo->sprite : nullptr;
+				const unsigned tex = atlas ? atlas->atlas->texture : surface->texture;
+				if (renderBatch && renderBatch->active())
+				{
+					ArrayView array{};
+					if (surface->highResolutionSampling)
+						array = renderBatch->pack(tex);
+					const QueueKey key{array.texture ? QueueKey::ArrayTexture : QueueKey::Texture,
+									   array.texture ? array.texture : tex, 0, false, false, true, 1};
+					forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
+						const RadialFadeCorner &c, const RadialFadeCorner &d)
+					{
+						std::array<QueueVertex, 8> v{};
+						const RadialFadeCorner *corners[] = {&a, &b, &c, &d};
+						for (int j = 0; j < 4; ++j)
+						{
+							const auto &k = *corners[j];
+							const float faded = alpha * k.fade;
+							v[j] = {k.x, k.y, u0 + (u1 - u0) * k.s, v0 + (v1 - v0) * k.t};
+							v[j].color = Color(255, 255, 255, Uint8(faded + 0.5f));
+							v[j].alpha = faded / 255.f;
+							v[j].baseLayer = array.layer;
+						}
+						renderBatch->append(key, v, 4);
+					});
+					return;
+				}
+				glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glState.doBlend(true);
+				glState.doTexture(true);
+				glState.setTexture(tex);
+				++drawCalls;
+				glBegin(GL_QUADS);
+				forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
+					const RadialFadeCorner &c, const RadialFadeCorner &d)
+				{
+					for (const RadialFadeCorner *k : {&a, &b, &c, &d})
+					{
+						glColor4f(1, 1, 1, alpha / 255.f * k->fade);
+						glTexCoord2f(u0 + (u1 - u0) * k->s, v0 + (v1 - v0) * k->t);
+						glVertex2f(k->x, k->y);
+					}
+				});
+				glEnd();
+				glColor4ub(255, 255, 255, 255);
+				return;
+			}
 
 			// draw
 			if (renderBatch && renderBatch->active())

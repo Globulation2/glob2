@@ -27,6 +27,7 @@
 #include "unit/render/UnitDrawGeometry.h"
 #include "unit/render/UnitAnimation.h"
 #include "unit/render/UnitMotion.h"
+#include "unit/render/SwimmingPresentation.h"
 #include "unit/render/ColonySkinPreview.h"
 #include <algorithm>
 #include "unit/render/UnitSkin.h"
@@ -138,12 +139,44 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// The sprite stays opaque under the marker fading in over it, and goes once
 	// the marker is solid. Units at the fog edge fade, including painted meshes
 	// and their original ground shadows.
-	if (detail.unitSprite > 0 &&
-		!view.render.skinPreview().draw(*globalContainer->gfx, meshClass, unit->team,
-			unit->action, dir, delta, px, py,
-            {unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
-             unsigned(unitSprite->getH(imgid))}, fogAlpha))
-		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
+	// A swimmer's limbs fade into the water, whichever artwork draws it.
+	const bool swimming = (unit->action == STOP_SWIM || unit->action == SWIM) && detail.unitSprite > 0;
+	const float reach = meshClass == WARRIOR ? SWIM_REACH_WARRIOR : SWIM_REACH_WORKER;
+	{
+		struct FadeScope
+		{
+			GraphicContext *gfx;
+			~FadeScope() { if (gfx) gfx->clearRadialFade(); }
+		} fade{swimming ? globalContainer->gfx : nullptr};
+		if (swimming)
+			globalContainer->gfx->setRadialFade(swimmerFade(px, py, reach));
+		if (detail.unitSprite > 0 &&
+			!view.render.skinPreview().draw(*globalContainer->gfx, meshClass, unit->team,
+				unit->action, dir, delta, px, py,
+				{unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
+				 unsigned(unitSprite->getH(imgid))}, fogAlpha))
+			globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
+	}
+	if (swimming)
+	{
+		// Each stroke sends a ring back across the water over the faded limbs.
+		// It fades out with the sprite.
+		const SwimRipple ring = swimRipple(delta, reach);
+		const float alpha = ring.alpha * opacity * detail.unitSprite;
+		if (alpha >= 1)
+		{
+			const float cx = px + 16, cy = py + 16, step = 2 * float(M_PI) / SWIM_RIPPLE_SEGMENTS;
+			for (int segment = 0; segment < SWIM_RIPPLE_SEGMENTS; ++segment)
+			{
+				const float a0 = segment * step, a1 = a0 + step;
+				const float weight = swimRippleWeight(a0 + step / 2, unit->dx, unit->dy);
+				if (alpha * weight >= 1)
+					globalContainer->gfx->drawLine(cx + ring.radius * std::cos(a0), cy + ring.radius * std::sin(a0),
+						cx + ring.radius * std::cos(a1), cy + ring.radius * std::sin(a1),
+						Color(225, 240, 255, Uint8(alpha * weight)));
+			}
+		}
+	}
 	if (detail.unitMarker > 0)
 	{
 		const bool warrior = meshClass==WARRIOR, explorer = meshClass==EXPLORER;

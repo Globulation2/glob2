@@ -261,16 +261,32 @@ namespace GAGCore
 				key.base = ba.texture;
 				key.team = ta.texture;
 			}
-			std::array<QueueVertex, 8> vertices{};
-			vertices[0] = {x, y, bu0, bv0, tu0, tv0, hueShift, alpha / 255.f};
-			vertices[1] = {x + w, y, bu1, bv0, tu1, tv0, hueShift, alpha / 255.f};
-			vertices[2] = {x + w, y + h, bu1, bv1, tu1, tv1, hueShift, alpha / 255.f};
-			vertices[3] = {x, y + h, bu0, bv1, tu0, tv1, hueShift, alpha / 255.f};
-			for (int n = 0; n < 4; ++n)
+			const auto vertex = [&](float vx, float vy, float s, float t, float fade)
 			{
-				vertices[n].baseLayer = ba.layer;
-				vertices[n].teamLayer = ta.layer;
+				QueueVertex v{vx, vy, bu0 + (bu1 - bu0) * s, bv0 + (bv1 - bv0) * t,
+							  tu0 + (tu1 - tu0) * s, tv0 + (tv1 - tv0) * t, hueShift, alpha / 255.f * fade};
+				v.baseLayer = ba.layer;
+				v.teamLayer = ta.layer;
+				return v;
+			};
+			if (radialFade.active())
+			{
+				forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
+					const RadialFadeCorner &c, const RadialFadeCorner &d)
+				{
+					std::array<QueueVertex, 8> vertices{};
+					const RadialFadeCorner *corners[] = {&a, &b, &c, &d};
+					for (int n = 0; n < 4; ++n)
+						vertices[n] = vertex(corners[n]->x, corners[n]->y, corners[n]->s, corners[n]->t, corners[n]->fade);
+					renderBatch->append(key, vertices, 4);
+				});
+				return true;
 			}
+			std::array<QueueVertex, 8> vertices{};
+			vertices[0] = vertex(x, y, 0, 0, 1);
+			vertices[1] = vertex(x + w, y, 1, 0, 1);
+			vertices[2] = vertex(x + w, y + h, 1, 1, 1);
+			vertices[3] = vertex(x, y + h, 0, 1, 1);
 			renderBatch->append(key, vertices, 4);
 			return true;
 		}
@@ -285,15 +301,30 @@ namespace GAGCore
 		glUniform1i(unitShaderLocTeam, 1);
 		glUniform1i(unitShaderLocHasBase, base ? 1 : 0);
 		glUniform1i(unitShaderLocHasTeam, team ? 1 : 0);
-		glMultiTexCoord2f(GL_TEXTURE2, hueShift, alpha / 255.f);
-
 		glState.doBlend(true);
 		++drawCalls;
+		const auto corner = [&](float vx, float vy, float s, float t, float fade)
+		{
+			glMultiTexCoord2f(GL_TEXTURE2, hueShift, alpha / 255.f * fade);
+			glMultiTexCoord2f(GL_TEXTURE0, bu0 + (bu1 - bu0) * s, bv0 + (bv1 - bv0) * t);
+			glMultiTexCoord2f(GL_TEXTURE1, tu0 + (tu1 - tu0) * s, tv0 + (tv1 - tv0) * t);
+			glVertex2f(vx, vy);
+		};
 		glBegin(GL_QUADS);
-		glMultiTexCoord2f(GL_TEXTURE0, bu0, bv0); glMultiTexCoord2f(GL_TEXTURE1, tu0, tv0); glVertex2f(x, y);
-		glMultiTexCoord2f(GL_TEXTURE0, bu1, bv0); glMultiTexCoord2f(GL_TEXTURE1, tu1, tv0); glVertex2f(x + w, y);
-		glMultiTexCoord2f(GL_TEXTURE0, bu1, bv1); glMultiTexCoord2f(GL_TEXTURE1, tu1, tv1); glVertex2f(x + w, y + h);
-		glMultiTexCoord2f(GL_TEXTURE0, bu0, bv1); glMultiTexCoord2f(GL_TEXTURE1, tu0, tv1); glVertex2f(x, y + h);
+		if (radialFade.active())
+			forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
+				const RadialFadeCorner &c, const RadialFadeCorner &d)
+			{
+				for (const RadialFadeCorner *k : {&a, &b, &c, &d})
+					corner(k->x, k->y, k->s, k->t, k->fade);
+			});
+		else
+		{
+			corner(x, y, 0, 0, 1);
+			corner(x + w, y, 1, 0, 1);
+			corner(x + w, y + h, 1, 1, 1);
+			corner(x, y + h, 0, 1, 1);
+		}
 		glEnd();
 
 		// Restore fixed-function state: every other draw call in this codebase

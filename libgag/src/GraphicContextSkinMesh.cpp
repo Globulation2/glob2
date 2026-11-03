@@ -777,11 +777,20 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
     x-=w*(Padding-1)/2; y-=h*(Padding-1)/2; w*=Padding; h*=Padding;
     // The atlas uses premultiplied alpha: fade RGB together with alpha.
     const float opacity = alpha / 255.f;
+    // Tiles are stored bottom-up, so the texture's v runs against screen y.
+    const auto corner = [&](float cx, float cy, float s, float t, float fade) {
+        const float faded = opacity*fade;
+        glColor4f(faded,faded,faded,faded); glTexCoord2f(u+extent*s,v+extent*(1-t)); glVertex2f(cx,cy);
+    };
     glBegin(GL_QUADS);
-    glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u,v+extent); glVertex2f(x,y);
-    glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u+extent,v+extent); glVertex2f(x+w,y);
-    glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u+extent,v); glVertex2f(x+w,y+h);
-    glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u,v); glVertex2f(x,y+h);
+    if (radialFade.active())
+        forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
+            const RadialFadeCorner &c, const RadialFadeCorner &d) {
+            for (const RadialFadeCorner *k : {&a, &b, &c, &d}) corner(k->x, k->y, k->s, k->t, k->fade);
+        });
+    else {
+        corner(x,y,0,0,1); corner(x+w,y,1,0,1); corner(x+w,y+h,1,1,1); corner(x,y+h,0,1,1);
+    }
     glEnd(); glColor4f(1,1,1,1); glState.blendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); ++drawCalls;
     return true;
 }
