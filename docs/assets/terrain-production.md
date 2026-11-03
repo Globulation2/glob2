@@ -354,53 +354,50 @@ existing artwork.
 
 ### Boundary profiles for the catalogue
 
-| Profile | roughness / amplitude / feather / speckle / bridge (Q8) | Curves | Materials |
-| --- | --- | --- | --- |
-| `rock` | 384 / 896 / 192 / 448 / 192 | 48 × 9, angular | boulders, ridge_rock, outcrop, scree, gravel, chasm |
-| `soft` | 160 / 512 / 448 / 128 / 640 | 40 × 17, gentle | mud, marsh, loam, moss, deep_snow, deep_water, dark_water, clay, dirt |
-| `crisp` | 96 / 256 / 128 / 0 / 256 | 24 × 9 | void_hole, boardwalk |
-| `brush` | 320 / 768 / 320 / 384 / 512 | 48 × 17 | hedge, thicket, flower_meadow, spring_meadow |
-| `sand` (existing) | 256 / 1024 / 320 / 512 / 512 | 61 × 17, traced | water, sand, grass, dirt_track |
-| `fractured` (existing) | 320 / 768 / 320 / 128 / 256 | 32 × 9 | lava, ember_field |
-| `frozen` | 320 / 768 / 320 / 128 / 256 | 32 × 9 | ice |
-| `cobblestone` (existing) | 256 / 640 / 224 / 320 / 384 | 24 × 9 | road |
-| `shore` | 256 / 832 / 320 / 384 / 704 | 48 × 33, lobed with ripple | pair treatments only |
-| `liquid` | 256 / 1024 / 448 / 128 / 640 | 40 × 33, broad and smooth | pair treatments only |
-| `organic` | 288 / 896 / 320 / 320 / 512 | 48 × 17, lobed and noisy | pair treatments only |
+Each material names a border class and its edge profile;
+[Boundary rules](terrain-rendering.md#boundary-rules) then choose every contact
+without pair treatments. Classes, strongest first:
 
-`tools/terrain_profile_curves.py --write` generates the curves with seeded random
-walks and appends a missing profile with these parameters; never author curves by
-hand. The script still emits the earlier, shorter curve sets and lacks the
-`shore`, `liquid` and `organic` profiles, so `--write` would shrink the shipped
-sets; bring it up to date before regenerating. `sand` uses every distinct traced
-edge of the original grass/sand tiles, so the classic coast keeps its look with
-less repetition. `shore`, `liquid` and
-`organic` are sine series with a weak fundamental plus a detrended ripple; the
-weak fundamental keeps edge crossings near the vertex lattice so lone cells stay
-round. Their feather and speckle are unused, since softness and pebbles come from
-the material's own profile.
+| Class | Materials | Edge profile |
+| --- | --- | --- |
+| `cover` | hedge, thicket | `canopy` |
+| `cut` | void_hole, chasm | `crisp` |
+| `built` | road, dirt_track, boardwalk | `paved`, `track`, `crisp` |
+| `flow` | lava, ember_field | `molten` |
+| `solid` | everything else | `rock`, `soil`, `frozen`, `brush`, `turf`, `sand` |
+| `pool` (shoreline) | water, deep_water, dark_water | `still` |
 
-Pair treatments cover material pairs that meet inside one cell now that terrain
-is stored per vertex. Entries are needed only where the choice differs from the
-default rule (the rougher profile wins):
+| Profile | Shape | Precedence / coast | roughness / amplitude / feather / speckle / bridge (Q8) | Materials |
+| --- | --- | --- | --- | --- |
+| `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket |
+| `crisp` | patch | 20 | 96 / 256 / 128 / 0 / 256 | void_hole, chasm, boardwalk |
+| `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road |
+| `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | dirt_track |
+| `molten` | smooth, wiggle 1536 / 64 px | 0 | – / – / 320 / – / 512 | lava, ember_field |
+| `still` | smooth, wiggle 1536 / 128 px | 0 | – / – / 320 / – / 640 | water, deep_water, dark_water |
+| `rock` | contextual | 50 | 384 / 896 / 192 / 448 / 192 | boulders, ridge_rock, outcrop, scree, gravel |
+| `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, mud, marsh, deep_snow, loam, moss |
+| `frozen` | contextual | 30 | 320 / 768 / 320 / 128 / 256 | ice |
+| `brush` | contextual | 20 / `shore` | 320 / 768 / 320 / 384 / 512 | flower_meadow, spring_meadow |
+| `turf` | contextual | 10 / `shore` | 256 / 1024 / 320 / 512 / 512 | grass, lush_grass, dry_grass |
+| `sand` | contextual | 10 / `beach` | 256 / 1024 / 320 / 512 / 512 | sand, dune_sand, pale_sand |
+| `shore` | contextual | coast only | 256 / 832 / 320 / 384 / 704 | grassy and earthen coasts |
+| `beach` | contextual | coast only | 104 / 1024 / 448 / 0 / 640 | sandy coasts |
 
-- `rock`: boulders, ridge_rock and outcrop against grass.
-- `brush`: hedge and thicket against grass.
-- `shore`: grass, moss, loam, spring_meadow and flower_meadow against water,
-  deep_water and dark_water.
-- `liquid`: water/deep_water, deep_water/dark_water, water/dark_water, ice/water,
-  and marsh and mud against the three waters.
-- `organic`: moss, loam, mud, marsh, dirt, clay and deep_snow against grass and
-  sand; moss/loam, moss/marsh, loam/dirt, loam/mud, mud/marsh, dirt/clay,
-  dirt/mud, clay/mud, deep_snow/ice, and spring_meadow against moss, loam,
-  flower_meadow and dirt, and flower_meadow/dirt.
-- `crisp`: boardwalk against grass, sand, the three waters, marsh, mud, moss,
-  dirt, loam, clay, gravel, dirt_track and road; void_hole and chasm against
-  every other material.
-- `cobblestone`: road against grass, sand, dirt_track, gravel, scree,
-  flower_meadow and spring_meadow.
-- `fractured`: lava and ember_field against grass, sand, dirt, gravel and scree;
-  lava against hedge and flower_meadow.
+`tools/artwork/terrain_synth.py` records each material's `profile` and
+`border_class` in its recipe and writes both into the catalog. The `rock`,
+`crisp`, `brush` and `frozen` contours are seeded random walks from
+`tools/terrain_profile_curves.py`; `sand` and `turf` trace every distinct edge
+of the original grass/sand tiles, so the classic coast keeps its look with less
+repetition. `shore`, `soil` and `beach` are sine series with a weak fundamental
+plus a detrended ripple; the weak fundamental keeps edge crossings near the
+vertex lattice so lone cells stay round. The shipped tables have been tuned
+beyond what the script emits, so review its diff before `--write`.
+
+To place a new terrain, pick the class that says what the surface is and the
+edge profile that says how it shapes the contacts it wins; add a profile only
+for a genuinely new edge character. A pair treatment is an escape hatch for an
+exception the classes cannot express, not the way to tune a material.
 
 ### Seam ranks
 

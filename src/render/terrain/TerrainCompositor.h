@@ -36,7 +36,8 @@ class Compositor
   public:
 	explicit Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty());
 	const Catalog &catalog() const { return definitions; }
-	bool contextualBorders() const { return hasContextualProfiles; }
+	// Contextual and smooth profiles read one vertex of halo around each cell.
+	bool neighborhoodBorders() const { return hasNeighborhoodProfiles; }
 	std::pair<GAGCore::Sprite *, unsigned> editorIcon(TerrainType type) const;
 	void prepare(bool hd, int time);
     // Retain only requested variants; immutable CPU snapshots remain usable.
@@ -162,7 +163,7 @@ class Compositor
 		std::vector<std::array<unsigned char, 4>> pixels;
 	};
 	Catalog definitions;
-	bool hasContextualProfiles = false;
+	bool hasNeighborhoodProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
     void describeShoreCalm(const SceneMap&, Recipe &) const;

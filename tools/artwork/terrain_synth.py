@@ -103,7 +103,6 @@ TAU = 2 * math.pi
 BAND = 10
 STAMP_MARGIN = 12
 
-LEGACY_NAMES = list(LEGACY_BINDINGS)
 # Catalogue order of the built-in types, from the engine's generated name list.
 BUILTIN_ORDER = [name for name in json.loads(BUILTIN_NAMES.read_text()) if name not in LEGACY_BINDINGS]
 # Legacy bindings whose material is synthesised here too: regular water is an
@@ -917,7 +916,10 @@ class Recipe:
     name: str
     group: str
     label: str
+    # Boundary identity written to the catalog: the material's edge profile
+    # and its border class (see "Boundary rules" in docs/assets/terrain-rendering.md).
     profile: str
+    border_class: str
     seam: dict
     palette: dict
     style: Style
@@ -1028,7 +1030,7 @@ def soft_blobs(ctx, count, radius_min, radius_max, core=0.0):
 
 # Barren ground: muted warm neutrals, inhibits growth like sand but is not a shore.
 
-@recipe(name="dirt", group="barren", label="Dirt", profile="soft",
+@recipe(name="dirt", group="barren", label="Dirt", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (104, 82, 56), "mid": (136, 108, 74), "light": (160, 132, 96), "pebble": (86, 68, 48)},
         style=Style(luma=116, std=9, grain_max=8), periodic=True, grid=8, blocks=4)
@@ -1059,7 +1061,7 @@ def dirt_fields(rng, size):
     return height, fine, pebbles
 
 
-@recipe(name="clay", group="barren", label="Clay", profile="soft",
+@recipe(name="clay", group="barren", label="Clay", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (134, 88, 60), "mid": (166, 114, 80), "light": (186, 138, 100), "crack": (116, 74, 52)},
         style=Style(luma=124, std=8, grain_max=8), periodic=True, grid=8, blocks=4)
@@ -1089,7 +1091,7 @@ def render_clay(ctx):
     return rgb, None
 
 
-@recipe(name="gravel", group="barren", label="Gravel", profile="rock",
+@recipe(name="gravel", group="barren", label="Gravel", profile="rock", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"fines": (98, 86, 70), "gap": (50, 43, 36),
                  "stones": [(168, 156, 136), (146, 138, 126), (178, 162, 136), (128, 122, 114),
@@ -1139,7 +1141,7 @@ def render_gravel(ctx):
     return rgb, None
 
 
-@recipe(name="flower_meadow", group="barren", label="Flower meadow", profile="brush",
+@recipe(name="flower_meadow", group="barren", label="Flower meadow", profile="brush", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
         palette={"dark": (26, 98, 28), "mid": (34, 116, 34), "light": (54, 134, 46),
                  "shadow": (18, 60, 20),
@@ -1206,7 +1208,7 @@ def flower_meadow_paint(rgb, size, cx, cy, radius, u, colour, centre, shadow):
 
 # Rough ground: slow going; cool and desaturated apart from mud.
 
-@recipe(name="mud", group="rough", label="Mud", profile="soft",
+@recipe(name="mud", group="rough", label="Mud", profile="soil", border_class="solid",
         seam={"height": 1},
         palette={"dark": (62, 48, 36), "mid": (88, 70, 52), "light": (116, 96, 74), "sheen": (150, 132, 112)},
         style=Style(luma=76, std=8, grain_max=7), periodic=True, grid=8, blocks=4)
@@ -1244,7 +1246,7 @@ def mud_fields(rng, size):
     return height, grit, pools
 
 
-@recipe(name="marsh", group="rough", label="Marsh", profile="soft",
+@recipe(name="marsh", group="rough", label="Marsh", profile="soil", border_class="solid",
         seam={"height": 1},
         palette={"tussock": (138, 140, 72), "dry": (176, 156, 96), "green": (100, 124, 58),
                  "moss": (78, 92, 52), "water": (112, 128, 146), "sky": (156, 170, 184),
@@ -1347,7 +1349,7 @@ def mix_channel(a, b, c, t):
     return a + (b - a) * (t / 0.5) if t < 0.5 else b + (c - b) * ((t - 0.5) / 0.5)
 
 
-@recipe(name="deep_snow", group="rough", label="Deep snow", profile="soft",
+@recipe(name="deep_snow", group="rough", label="Deep snow", profile="soil", border_class="solid",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512, "fringe": [196, 210, 232], "fringe_q8": 64,
               "fringe_width_q8": 384},
         palette={"dark": (156, 170, 210), "mid": (204, 208, 234), "light": (236, 236, 250), "sparkle": (252, 252, 255)},
@@ -1385,7 +1387,7 @@ def render_deep_snow(ctx):
     return rgb, None
 
 
-@recipe(name="scree", group="rough", label="Scree", profile="rock",
+@recipe(name="scree", group="rough", label="Scree", profile="rock", border_class="solid",
         seam={"height": 1},
         palette={"dark": (84, 86, 92), "mid": (118, 120, 124), "light": (152, 154, 156), "dirt": (62, 56, 50)},
         style=Style(luma=118, std=14, grain_max=12), periodic=True, grid=8, blocks=4)
@@ -1450,7 +1452,7 @@ def render_scree(ctx):
 
 # Paths: warm and light, faster movement.
 
-@recipe(name="dirt_track", group="paths", label="Dirt track", profile="sand",
+@recipe(name="dirt_track", group="paths", label="Dirt track", profile="track", border_class="built",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
         palette={"dark": (142, 116, 82), "mid": (170, 142, 104), "light": (192, 166, 126)},
         style=Style(luma=146, std=7, grain_max=6), periodic=True, grid=8, blocks=4)
@@ -1493,7 +1495,7 @@ def dirt_track_fields(rng, size):
     return height, fine, worn, wobble, centre
 
 
-@recipe(name="boardwalk", group="paths", label="Boardwalk", profile="crisp",
+@recipe(name="boardwalk", group="paths", label="Boardwalk", profile="crisp", border_class="built",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
         palette={"dark": (108, 90, 68), "mid": (156, 134, 104), "light": (182, 160, 128), "gap": (76, 60, 44)},
         style=Style(luma=134, std=11, grain_max=10, match=0.6), periodic=True, grid=8, blocks=4,
@@ -1537,7 +1539,7 @@ def render_boardwalk(ctx):
 
 # Fertile ground: warm, saturated undertone; the new strategic resource.
 
-@recipe(name="loam", group="fertile", label="Loam", profile="soft",
+@recipe(name="loam", group="fertile", label="Loam", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
         palette={"dark": (52, 38, 24), "mid": (74, 58, 36), "light": (98, 80, 52), "fleck": (96, 108, 56)},
         style=Style(luma=66, std=8, grain_max=8), periodic=True, grid=8, blocks=4)
@@ -1569,7 +1571,7 @@ def loam_fields(rng, size):
     return height, grit, flecks
 
 
-@recipe(name="moss", group="fertile", label="Moss", profile="soft",
+@recipe(name="moss", group="fertile", label="Moss", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
         palette={"dark": (26, 60, 38), "mid": (38, 84, 50), "light": (62, 110, 68)},
         style=Style(luma=68, std=7, grain_max=6), periodic=True, grid=8, blocks=4)
@@ -1596,7 +1598,7 @@ def render_moss(ctx):
     return rgb, None
 
 
-@recipe(name="spring_meadow", group="fertile", label="Spring meadow", profile="brush",
+@recipe(name="spring_meadow", group="fertile", label="Spring meadow", profile="brush", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
         palette={"dark": (78, 118, 50), "mid": (104, 146, 66), "light": (134, 170, 90), "dot": (236, 228, 170)},
         style=Style(luma=105, std=7, grain_max=7), periodic=True, grid=8, blocks=4)
@@ -1628,7 +1630,7 @@ def render_spring_meadow(ctx):
 # from the same common-edge and per-layout fields, so they keep the soft (grass)
 # and speckled (sand) grain and only shift the colour and a few small accents.
 
-@recipe(name="lush_grass", group="grass", label="Lush grass", profile="sand",
+@recipe(name="lush_grass", group="grass", label="Lush grass", profile="turf", border_class="solid",
         seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
         palette={"dark": (14, 80, 40), "mid": (26, 104, 52), "light": (48, 128, 64), "clump": (10, 66, 34)},
         style=Style(luma=72, std=6, grain_max=6), periodic=True, grid=8, blocks=4)
@@ -1641,7 +1643,7 @@ def render_lush_grass(ctx):
     return mix(rgb, p["clump"], [smoothstep(0.58, 0.74, v) for v in clumps], 0.45), None
 
 
-@recipe(name="dry_grass", group="grass", label="Dry grass", profile="sand",
+@recipe(name="dry_grass", group="grass", label="Dry grass", profile="turf", border_class="solid",
         seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
         palette={"dark": (92, 100, 36), "mid": (120, 124, 52), "light": (150, 146, 74), "straw": (176, 164, 96)},
         style=Style(luma=114, std=7, grain_max=7), periodic=True, grid=8, blocks=4)
@@ -1665,7 +1667,7 @@ def grass_look(ctx, p):
     return [[c * (1 + 0.05 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
 
 
-@recipe(name="dune_sand", group="sand", label="Dune sand", profile="sand",
+@recipe(name="dune_sand", group="sand", label="Dune sand", profile="sand", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (176, 120, 60), "mid": (206, 152, 84), "light": (230, 186, 118)},
         style=Style(luma=158, std=20, grain_max=26, match=0.5), periodic=True, grid=8, blocks=4)
@@ -1676,7 +1678,7 @@ def render_dune_sand(ctx):
     return mix(rgb, p["dark"], flecks, 0.18), None
 
 
-@recipe(name="pale_sand", group="sand", label="Pale sand", profile="sand",
+@recipe(name="pale_sand", group="sand", label="Pale sand", profile="sand", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (190, 180, 146), "mid": (214, 204, 170), "light": (234, 226, 196), "shell": (250, 246, 232)},
         style=Style(luma=198, std=14, grain_max=24, match=0.5), periodic=True, grid=8, blocks=4)
@@ -1818,7 +1820,7 @@ def render_waves(ctx, palette, swell_weight, chop_weight, glint, front):
     return mix(rgb, palette["glint"], glints, glint)
 
 
-@recipe(name="water", group="water", label="Water", profile="sand",
+@recipe(name="water", group="water", label="Water", profile="still", border_class="pool",
         seam={"height": 5, "cast_q8": 72, "cast_width_q8": 640},
         palette={"deep": (50, 36, 168), "base": (68, 52, 198), "light": (86, 72, 216), "glint": (156, 150, 244)},
         style=Style(luma=74, std=8, grain_max=8, match=0.0), phases=WAVE_PHASES, animation_ticks=6,
@@ -1827,7 +1829,7 @@ def render_water(ctx):
     return render_waves(ctx, RECIPES["water"].palette, 0.35, 0.2, 0.55, 0.2), None
 
 
-@recipe(name="deep_water", group="deep_water", label="Deep water", profile="soft",
+@recipe(name="deep_water", group="deep_water", label="Deep water", profile="still", border_class="pool",
         seam={"height": 6, "cast_q8": 72, "cast_width_q8": 640},
         palette={"deep": (40, 28, 132), "base": (52, 38, 152), "light": (62, 48, 170), "glint": (110, 96, 214)},
         style=Style(luma=56, std=6, grain_max=7, match=0.0), phases=WAVE_PHASES, animation_ticks=6,
@@ -1836,7 +1838,7 @@ def render_deep_water(ctx):
     return render_waves(ctx, RECIPES["deep_water"].palette, 0.4, 0.12, 0.3, 0.15), None
 
 
-@recipe(name="dark_water", group="deep_water", label="Dark water", profile="soft",
+@recipe(name="dark_water", group="deep_water", label="Dark water", profile="still", border_class="pool",
         seam={"height": 7, "cast_q8": 80, "cast_width_q8": 704},
         palette={"tint": (40, 30, 104), "murk": (32, 24, 84), "speck": (20, 15, 52)},
         style=Style(luma=38, std=4, grain_max=5, match=0.5), periodic=True, grid=8, blocks=4,
@@ -1864,7 +1866,7 @@ def dark_water_fields(rng, size):
     return murk, specks
 
 
-@recipe(name="ridge_rock", group="ridges", label="Ridge", profile="rock",
+@recipe(name="ridge_rock", group="ridges", label="Ridge", profile="rock", border_class="solid",
         seam={"height": 4, "cast_q8": 72, "cast_width_q8": 768},
         palette={"dark": (72, 72, 76), "mid": (104, 104, 106), "light": (138, 138, 136), "crack": (46, 46, 50)},
         style=Style(luma=102, std=12, grain_max=10), periodic=True, grid=8, blocks=4)
@@ -1902,7 +1904,7 @@ def ridge_rock_fields(rng, size):
     return height, fine, ridged, widths
 
 
-@recipe(name="outcrop", group="ridges", label="Outcrop", profile="rock",
+@recipe(name="outcrop", group="ridges", label="Outcrop", profile="rock", border_class="solid",
         seam={"height": 4, "cast_q8": 72, "cast_width_q8": 768},
         palette={"dark": (80, 80, 76), "mid": (110, 112, 108), "light": (140, 142, 136), "lichen": (120, 130, 70)},
         style=Style(luma=108, std=12, grain_max=10), periodic=True, grid=8, blocks=4,
@@ -1952,7 +1954,7 @@ def outcrop_lichen(rng, size, count):
 # neighbour (rank above all other materials), since a hole this dark cannot
 # show a lip of its own.
 
-@recipe(name="void_hole", group="void", label="Hole", profile="crisp",
+@recipe(name="void_hole", group="void", label="Hole", profile="crisp", border_class="cut",
         seam={"height": 8, "cast_q8": 96, "cast_width_q8": 512},
         palette={"dark": (6, 6, 10), "mid": (10, 10, 14), "light": (14, 14, 20)},
         style=Style(luma=10, std=2, grain_max=3), periodic=True, grid=8, blocks=4,
@@ -1967,7 +1969,7 @@ def render_void_hole(ctx):
     return rgb, None
 
 
-@recipe(name="chasm", group="void", label="Chasm", profile="cliff",
+@recipe(name="chasm", group="void", label="Chasm", profile="crisp", border_class="cut",
         seam={"height": 8, "cast_q8": 96, "cast_width_q8": 512},
         palette={"dark": (26, 20, 24), "mid": (46, 38, 42), "light": (74, 64, 66), "floor": (6, 4, 8)},
         style=Style(luma=40, std=9, grain_max=8), periodic=True, grid=8, blocks=4,
@@ -2007,7 +2009,7 @@ def chasm_fields(rng, size):
 
 # Obstacles: height cues (lit top, cast shadow); placeholders for image-generated art.
 
-@recipe(name="boulders", group="obstacles", label="Boulders", profile="rock",
+@recipe(name="boulders", group="obstacles", label="Boulders", profile="rock", border_class="solid",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"ground_dark": (112, 100, 84), "ground": (128, 114, 96), "ground_light": (144, 130, 110),
                  "rock_dark": (84, 88, 92), "rock_light": (138, 142, 142), "shadow": (40, 36, 34)},
@@ -2043,7 +2045,7 @@ def boulders_fields(rng, size):
     return height, grit, pebbles
 
 
-@recipe(name="hedge", group="obstacles", label="Hedge", profile="canopy",
+@recipe(name="hedge", group="obstacles", label="Hedge", profile="canopy", border_class="cover",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (22, 50, 24), "mid": (36, 76, 36), "light": (64, 108, 52), "gap": (10, 26, 14)},
         style=Style(luma=56, std=10, grain_max=9), periodic=True, grid=8, blocks=4,
@@ -2076,7 +2078,7 @@ def hedge_fields(rng, size):
     return height, grit, leaves
 
 
-@recipe(name="thicket", group="obstacles", label="Thicket", profile="canopy",
+@recipe(name="thicket", group="obstacles", label="Thicket", profile="canopy", border_class="cover",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (40, 54, 26), "mid": (62, 80, 38), "light": (92, 110, 58),
                  "twig": (96, 78, 52), "twig_dark": (52, 42, 30)},
@@ -2111,7 +2113,7 @@ def thicket_fields(rng, size):
     return height, fine, twigs
 
 
-@recipe(name="lava", group="lava", label="Lava", profile="fractured",
+@recipe(name="lava", group="lava", label="Lava", profile="molten", border_class="flow",
         seam={"height": 4, "fringe": [214, 110, 40], "fringe_q8": 128, "fringe_width_q8": 640},
         palette={"crust_dark": (36, 18, 16), "crust": (50, 24, 20), "crust_warm": (96, 42, 26),
                  "glow": (170, 70, 24), "glow_bright": (220, 150, 60)},
@@ -2150,7 +2152,7 @@ def render_lava(ctx):
     return mix(rgb, glow, channel, 0.9), None
 
 
-@recipe(name="ember_field", group="lava", label="Ember field", profile="fractured",
+@recipe(name="ember_field", group="lava", label="Ember field", profile="molten", border_class="flow",
         seam={"height": 4, "fringe": [160, 80, 40], "fringe_q8": 96, "fringe_width_q8": 512},
         palette={"dark": (50, 28, 24), "mid": (60, 34, 28), "light": (80, 44, 32),
                  "ember_dim": (120, 50, 30), "ember": (230, 120, 40), "ember_core": (250, 200, 80)},
@@ -2202,7 +2204,7 @@ def ember_field_soil(rng, size):
 
 # Legacy surfaces keep their original palette/style statistics.
 
-@recipe(name='grass', group="legacy", label='Grass', profile='sand',
+@recipe(name='grass', group="legacy", label='Grass', profile="turf", border_class="solid",
         seam={'height': 2, 'cast_q8': 56, 'cast_width_q8': 512}, palette={'dark': (28, 104, 28), 'mid': (30, 113, 31), 'light': (33, 124, 34)}, style=Style(luma=79.3, std=5.0, grain_max=4),
         periodic=True, grid=8, blocks=4, preview=(30, 113, 30), minimap=(0, 90, 0))
 def render_grass(ctx):
@@ -2229,7 +2231,7 @@ def grass_fields(rng, size):
 SAND_GRAINS, SAND_DUNES, SAND_BEVEL = 160, 0.25, 0.15
 
 
-@recipe(name='sand', group="legacy", label='Sand', profile='sand',
+@recipe(name='sand', group="legacy", label='Sand', profile="sand", border_class="solid",
         seam={'height': 1}, palette={'dark': (141, 130, 33), 'mid': (183, 169, 47), 'light': (225, 209, 67)}, style=Style(luma=160.1, std=27.0, grain_max=36.3),
         periodic=True, grid=8, blocks=4, preview=(182, 168, 48), minimap=(170, 170, 0))
 def render_sand(ctx):
@@ -2255,7 +2257,7 @@ def sand_fields(rng, size):
     return height, flecks
 
 
-@recipe(name='road', group="legacy", label='Road', profile='cobblestone',
+@recipe(name='road', group="legacy", label='Road', profile="paved", border_class="built",
         seam={'height': 3, 'cast_q8': 48, 'cast_width_q8': 512}, palette={'dark': (95, 84, 71), 'mid': (135, 122, 103), 'light': (165, 149, 128)}, style=Style(luma=121.2, std=23.2, grain_max=22.9),
         periodic=True, grid=8, blocks=4, preview=(133, 120, 101), minimap=(176, 138, 98))
 def render_road(ctx):
@@ -2287,7 +2289,7 @@ def render_road(ctx):
     return rgb, None
 
 
-@recipe(name='ice', group="legacy", label='Ice', profile='frozen',
+@recipe(name='ice', group="legacy", label='Ice', profile="frozen", border_class="solid",
         seam={'height': 4, 'cast_q8': 64, 'cast_width_q8': 640, 'fringe': [228, 240, 248], 'fringe_q8': 96, 'fringe_width_q8': 384}, palette={'dark': (186, 214, 231), 'mid': (195, 221, 235), 'light': (208, 229, 241)}, style=Style(luma=215.4, std=6.2, grain_max=5.6),
         periodic=True, grid=8, blocks=4, preview=(190, 225, 240), minimap=(190, 225, 240))
 def render_ice(ctx):
@@ -2316,33 +2318,6 @@ def ice_fields(rng, size):
 
 
 assert set(SYNTH_ORDER) == set(RECIPES), "every built-in needs a recipe and vice versa"
-
-# Pair treatments (B5): boundary families chosen for specific contacts.
-# The grass and sand looks take the same edges as classic grass and sand.
-GRASS_LOOKS = ("grass", "lush_grass", "dry_grass")
-SAND_LOOKS = ("sand", "dune_sand", "pale_sand")
-PAIR_TREATMENTS = (
-    [{"a": name, "b": look, "profile": "rock"} for name in ("boulders", "ridge_rock", "outcrop") for look in GRASS_LOOKS]
-    + [{"a": name, "b": look, "profile": "brush"} for name in ("hedge", "thicket") for look in GRASS_LOOKS]
-    + [
-        {"a": "water", "b": "deep_water", "profile": "soft"},
-        {"a": "deep_water", "b": "dark_water", "profile": "soft"},
-    ]
-    # Low-roughness waterlines that the shoreline surf can wash up.
-    + [{"a": name, "b": look, "profile": "beach"} for name in ("water", "deep_water", "dark_water")
-       for look in SAND_LOOKS]
-    + [
-        {"a": name, "b": ground_name, "profile": "fractured"}
-        for name in ("lava", "ember_field")
-        for ground_name in GRASS_LOOKS + SAND_LOOKS + ("dirt", "gravel")
-    ]
-    + [
-        {"a": name, "b": other, "profile": "crisp"}
-        for name in ("void_hole", "chasm")
-        for other in LEGACY_NAMES + [n for n in BUILTIN_ORDER if n not in ("void_hole", "chasm")]
-    ]
-)
-
 
 # --------------------------------------------------------------------------
 # Rendering
@@ -2495,6 +2470,7 @@ def material_block(name, phases):
         "key": name,
         "sprite": f"{FRAME_PREFIX}{name}",
         "profile": rec.profile,
+        "class": rec.border_class,
         "preview": list(preview),
         "variants": [{"frame": i, "weight": 1} for i in range(rec.cells * rec.blocks)],
     }
@@ -2520,12 +2496,11 @@ def catalog_fragment(results):
     return {
         "materials": [material_block(name, results[name]) for name in names],
         "bindings": {name: name for name in names},
-        "pair_treatments": [p for p in PAIR_TREATMENTS if p["a"] in results or p["b"] in results],
     }
 
 
 def merge_catalog(document, fragment):
-    """Replace or append the fragment's materials, bindings and pair treatments.
+    """Replace or append the fragment's materials and bindings.
 
     Everything else in the catalog (version, profiles, warp, existing
     materials) is left untouched, so re-running after a recipe change only
@@ -2542,13 +2517,6 @@ def merge_catalog(document, fragment):
         else:
             document["materials"].append(block)
     document["bindings"].update(fragment["bindings"])
-    treatments = document.setdefault("pair_treatments", [])
-    existing = {tuple(sorted((p["a"], p["b"]))) for p in treatments}
-    for pair in fragment["pair_treatments"]:
-        key = tuple(sorted((pair["a"], pair["b"])))
-        if key not in existing:
-            treatments.append(pair)
-            existing.add(key)
     return document
 
 

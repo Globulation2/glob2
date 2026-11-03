@@ -7,11 +7,13 @@ checksums or the synchronized random stream.
 
 ## Add artwork
 
-A version-3 catalog contains `profiles`, `materials`, `bindings` and optional
-`pair_treatments`. Version-1 packs remain readable with their original five-point
+A version-4 catalog contains `border_classes`, `profiles`, `materials`, `bindings`
+and optional `pair_treatments`. Version-1 packs remain readable with their original five-point
 contours and sampling behavior; version 2 adds denser contours, edge softness and
 world-space bends; version 3 adds per-profile displacement amplitude, pebble
-speckle, diagonal bridging and up to sixty-four curves per profile. Version-2
+speckle, diagonal bridging and up to sixty-four curves per profile; version 4 adds
+border classes, profile precedence and coasts, and smooth contours (see
+[Boundary rules](terrain-rendering.md#boundary-rules)). Version-2
 packs parse unchanged and render through the current resolver, which rounds
 corners and reads each curve mirrored and negated. Material keys are unique strings. Bindings map semantic terrain
 names to material keys. Every paintable built-in terrain in `src/map/TerrainTypeTable.h`
@@ -30,7 +32,8 @@ Each material supplies:
 
 - `key`, a stable authoring name, and `sprite`, a `data/`-relative sprite prefix;
 - `variants`, an array of `{ "frame": 272, "weight": 1 }` entries;
-- `profile`, the key of its boundary family, and `preview`, three overview RGB channels;
+- `profile`, the key of its edge profile, and `preview`, three overview RGB channels;
+- `class` (version 4), the key of its border class;
 - optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
 - optional `animation_frames`, `animation_ticks`, and `animation_stride`;
 - optional `edges` (`blend` or `periodic`, see [Periodic edges](terrain-production.md#periodic-edges))
@@ -70,13 +73,14 @@ no engine, save or renderer change is needed.
 
 Add `data/gfx/tundra0.png` and `data/gfx/tundra1.png`, both 32×32 RGBA images.
 Append this entry to the catalog's `materials` array, reusing the existing
-`fractured` profile key:
+`frozen` edge profile and the `solid` border class:
 
 ```json
 {
   "key": "tundra",
   "sprite": "data/gfx/tundra",
-  "profile": "fractured",
+  "profile": "frozen",
+  "class": "solid",
   "preview": [155, 205, 220],
   "minimap": [170, 210, 225],
   "variants": [
