@@ -1,0 +1,1 @@
+PASS read-only observations expose fresh rows; update/check retain mismatch guards; table bytes unchanged

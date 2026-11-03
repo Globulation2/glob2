@@ -1,0 +1,24 @@
+{
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"
+    },
+    "revision": "8db8848bccfd4f7f41478fcbe89a33333609dc16",
+    "sourceStatus": [],
+    "sourceTreeSha256": "b6cf5e157b6710b80302fd8347ba8adff856dfead334f3207d32c5ae35a834ef"
+  },
+  "command": [
+    "/home/bradley/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+    "--test-suite=RuntimeResources",
+    "--test-case=frozen seeded resource compositions*",
+    "--reporters=junit",
+    "--out=/home/bradley/glob2/artifacts/terrain-vote/mean/integration-final-determinism/resources/native/tests.xml"
+  ],
+  "trace_sha256": "8d3e3d7e5015262c189635dd0045349b8271dc22d7ea2ddbc78e31727cfe2705",
+  "fixture_sha256": "8d3e3d7e5015262c189635dd0045349b8271dc22d7ea2ddbc78e31727cfe2705"
+}

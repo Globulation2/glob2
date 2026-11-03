@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Current simulation rejects earlier replays and enforces acceptance boundaries" time="1.46529" status="run" />
+  </testsuite><testsuite name="RuntimeResources"><testcase classname="RuntimeResources" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="4.33554" status="run" />
+  </testsuite><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="border classes choose every contact from material semantics" time="0.451063" status="run" />
+  <testcase classname="TerrainMaterials" name="border gallery renders each kind of material contact [display] [artifacts]" time="11.7257" status="run" />
+  <testcase classname="TerrainMaterials" name="catalogue boundary profiles keep their reviewed geometry" time="2.3422" status="run" />
+  </testsuite><testsuite name="UnitCustomization"><testcase classname="UnitCustomization" name="all locked capability ablations match fixed tick and RNG traces [golden][artifacts]" time="1.44158" status="run" />
+  </testsuite></testsuites>

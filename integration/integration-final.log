@@ -1,0 +1,9 @@
+PASS TerrainMaterials/border classes choose every contact from material semantics (0.5s)
+PASS UnitCustomization/all locked capability ablations match fixed tick and RNG traces [golden][artifacts] (1.5s)
+PASS JavaScriptCompatibility/Current simulation rejects earlier replays and enforces acceptance boundaries (1.5s)
+PASS TerrainMaterials/catalogue boundary profiles keep their reviewed geometry (2.4s)
+PASS RuntimeResources/frozen seeded resource compositions preserve invariants and exact simulation continuation [golden] (4.4s)
+PASS TerrainMaterials/border gallery renders each kind of material contact [display] [artifacts] (11.8s)
+
+6 passed, 0 failed, 0 skipped (22.0s of test time)
+[run_tests] JUnit report: artifacts/terrain-vote/mean/integration-final.xml (6 cases)

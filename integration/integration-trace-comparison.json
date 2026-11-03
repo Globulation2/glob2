@@ -1,0 +1,31 @@
+{
+  "source_revision": "a710a18f61",
+  "integrated_master": "29e21eabad",
+  "earlier_paired_runtime": "e4a60b70bc70725cbf486f5f60344d0ea6deafb2",
+  "traces": {
+    "native.replay.checksums": {
+      "raw_equal": true,
+      "bytes": 4156234,
+      "sha256": "7312d7047956ba9ae0230f439638bed069ab5b41b10ce40a6a7a4094269e94cc"
+    },
+    "verify-match.checksums.txt": {
+      "raw_equal": true,
+      "bytes": 10914,
+      "sha256": "0c66f74d0a51d4996db0d8e2cce4445af03922a4c786dc6e66c6916957a33b1e"
+    },
+    "seeded-compositions.trace": {
+      "raw_equal": false,
+      "header_normalized_equal": true,
+      "rows": 150,
+      "xor_mask": "0x00800000",
+      "explanation": "Only format194\u2192195 MapHeader version checksum contribution. This one-team, one-player fixture rotates that bit nine times after version XOR. Seed, tick and syncRandom SHA256 are identical. Mask is specific to this fixture."
+    },
+    "unit-ablations.trace": {
+      "raw_equal": true,
+      "bytes": 1340,
+      "sha256": "b0e8ecfaacc376119f5c301056b238a9de09ebbf0987c5f3fb3273c3ff83ccf1"
+    }
+  },
+  "tested_revision": "8db8848bccfd4f7f41478fcbe89a33333609dc16",
+  "final_comment_only_revision": "cbbefd0089"
+}
