@@ -5638,19 +5638,19 @@ Singkapan
 Tanah
 [clay]
 Tanah liat
-[gravel]
+[shale]
 Syal
-[flower_meadow]
+[heath]
 Padang belukar
 [mud]
 Lumpur
-[marsh]
+[mudflat]
 Dataran lumpur
 [deep_snow]
 Salji tebal
 [scree]
 Timbunan serpihan batu
-[dirt_track]
+[brick_path]
 Laluan bata
 [boardwalk]
 Laluan pejalan kaki
@@ -6822,6 +6822,12 @@ Pasir gumuk
 Ralat pada %0:%1: %2
 [pale_sand]
 Pasir pucat
+[sandstone]
+Jubin batu pasir
+[pumice]
+Padang batu apung
+[frozen_lake]
+Tasik beku
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

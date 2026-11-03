@@ -458,7 +458,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.terrain[i] = face.at(x, y) > threshold ? OUTCROP : RIDGE_ROCK;
 			}
 			else
-				L.terrain[i] = L.water[i] ? WATER : L.road[i] ? DIRT_TRACK : scree[i] ? SCREE : GRASS;
+				L.terrain[i] = L.water[i] ? WATER : L.road[i] ? BRICK_PATH : scree[i] ? SCREE : GRASS;
 		}
 		layBeaches(L.terrain, t);
 	}

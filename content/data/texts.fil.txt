@@ -5662,19 +5662,19 @@ Nakausling bato
 Lupa
 [clay]
 Luwad
-[gravel]
+[shale]
 Shale
-[flower_meadow]
+[heath]
 Tuyong kaparangan
 [mud]
 Putik
-[marsh]
+[mudflat]
 Kapatagang putik
 [deep_snow]
 Malalim na niyebe
 [scree]
 Bunton ng maliliit na bato
-[dirt_track]
+[brick_path]
 Daang ladrilyo
 [boardwalk]
 Daanang kahoy
@@ -6820,6 +6820,12 @@ Tuyong damo
 Buhangin ng burol
 [pale_sand]
 Maputlang buhangin
+[sandstone]
+Baldosang batong-buhangin
+[pumice]
+Parang ng pumice
+[frozen_lake]
+Nagyelong lawa
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
 [script error at %0:%1: %2]

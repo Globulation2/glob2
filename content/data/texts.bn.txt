@@ -5638,19 +5638,19 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 মাটি
 [clay]
 কাদামাটি
-[gravel]
+[shale]
 শেল পাথর
-[flower_meadow]
+[heath]
 শুষ্ক ঝোপভূমি
 [mud]
 কাদা
-[marsh]
+[mudflat]
 কাদার সমভূমি
 [deep_snow]
 পুরু তুষার
 [scree]
 আলগা পাথরের ঢাল
-[dirt_track]
+[brick_path]
 ইটের পথ
 [boardwalk]
 কাঠের পথ
@@ -5680,6 +5680,12 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 বালিয়াড়ির বালি
 [pale_sand]
 ফ্যাকাশে বালি
+[sandstone]
+বেলেপাথরের টালি
+[pumice]
+পিউমিস পাথরের প্রান্তর
+[frozen_lake]
+জমে যাওয়া হ্রদ
 [terrain group water]
 জল
 [terrain group sand]

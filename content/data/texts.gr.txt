@@ -5662,19 +5662,19 @@ CPU %0%
 Χώμα
 [clay]
 Άργιλος
-[gravel]
+[shale]
 Σχιστόλιθος
-[flower_meadow]
+[heath]
 Θαμνότοπος
 [mud]
 Λάσπη
-[marsh]
+[mudflat]
 Λασπότοπος
 [deep_snow]
 Βαθύ χιόνι
 [scree]
 Σάρα
-[dirt_track]
+[brick_path]
 Δρόμος από τούβλα
 [boardwalk]
 Ξύλινος διάδρομος
@@ -5704,6 +5704,12 @@ CPU %0%
 Άμμος αμμόλοφου
 [pale_sand]
 Ανοιχτόχρωμη άμμος
+[sandstone]
+Πλάκες ψαμμίτη
+[pumice]
+Πεδίο ελαφρόπετρας
+[frozen_lake]
+Παγωμένη λίμνη
 [terrain group water]
 Νερό
 [terrain group sand]

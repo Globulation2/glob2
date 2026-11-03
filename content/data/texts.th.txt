@@ -5638,19 +5638,19 @@ AI ทำงาน​อย่างไร
 ดิน
 [clay]
 ดินเหนียว
-[gravel]
+[shale]
 หินดินดาน
-[flower_meadow]
+[heath]
 ทุ่งพุ่มไม้แห้ง
 [mud]
 โคลน
-[marsh]
+[mudflat]
 ที่ราบโคลน
 [deep_snow]
 หิมะ​หนา
 [scree]
 เศษ​หิน​ลาดเขา
-[dirt_track]
+[brick_path]
 ทางปูอิฐ
 [boardwalk]
 ทางเดิน​ไม้
@@ -5680,6 +5680,12 @@ AI ทำงาน​อย่างไร
 ทราย​แบบ​เนินทราย
 [pale_sand]
 ทราย​สีอ่อน
+[sandstone]
+แผ่น​หิน​ทราย
+[pumice]
+ลาน​หิน​พัมมิซ
+[frozen_lake]
+ทะเลสาบ​น้ำแข็ง
 [terrain group water]
 น้ำ
 [terrain group sand]

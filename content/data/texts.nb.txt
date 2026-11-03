@@ -5638,19 +5638,19 @@ Bergblotning
 Jord
 [clay]
 Leire
-[gravel]
+[shale]
 Skifer
-[flower_meadow]
+[heath]
 Lynghei
 [mud]
 Søle
-[marsh]
+[mudflat]
 Mudderflate
 [deep_snow]
 Dyp snø
 [scree]
 Ur
-[dirt_track]
+[brick_path]
 Teglsteinsti
 [boardwalk]
 Plankesti
@@ -5680,6 +5680,12 @@ Tørt gress
 Dynesand
 [pale_sand]
 Lys sand
+[sandstone]
+Sandsteinsheller
+[pumice]
+Pimpsteinsfelt
+[frozen_lake]
+Frossen innsjø
 [terrain group water]
 Vann
 [terrain group sand]

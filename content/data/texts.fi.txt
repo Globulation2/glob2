@@ -5662,19 +5662,19 @@ Kalliopaljastuma
 Multa
 [clay]
 Savi
-[gravel]
+[shale]
 Liuske
-[flower_meadow]
+[heath]
 Nummi
 [mud]
 Muta
-[marsh]
+[mudflat]
 Mutatasanko
 [deep_snow]
 Syvä lumi
 [scree]
 Kivirakka
-[dirt_track]
+[brick_path]
 Tiilipolku
 [boardwalk]
 Pitkospuut
@@ -5704,6 +5704,12 @@ Kuiva ruoho
 Dyynihiekka
 [pale_sand]
 Vaalea hiekka
+[sandstone]
+Hiekkakivilaatat
+[pumice]
+Hohkakivikenttä
+[frozen_lake]
+Jäätynyt järvi
 [terrain group water]
 Vesi
 [terrain group sand]

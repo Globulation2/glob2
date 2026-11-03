@@ -5638,19 +5638,19 @@ AI ద్వారా రూపొందించబడలేదు
 మట్టి
 [clay]
 బంకమట్టి
-[gravel]
+[shale]
 షేల్ రాయి
-[flower_meadow]
+[heath]
 పొద బీడు
 [mud]
 బురద
-[marsh]
+[mudflat]
 బురద మైదానం
 [deep_snow]
 లోతైన మంచు
 [scree]
 వదులైన రాళ్లు
-[dirt_track]
+[brick_path]
 ఇటుక దారి
 [boardwalk]
 చెక్క బాట
@@ -5680,6 +5680,12 @@ AI ద్వారా రూపొందించబడలేదు
 దిబ్బల ఇసుక
 [pale_sand]
 లేత రంగు ఇసుక
+[sandstone]
+ఇసుకరాతి పలకలు
+[pumice]
+ప్యూమిస్ రాతి మైదానం
+[frozen_lake]
+గడ్డకట్టిన సరస్సు
 [terrain group water]
 నీరు
 [terrain group sand]

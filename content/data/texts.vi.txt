@@ -5662,19 +5662,19 @@ Sống đá
 Đất
 [clay]
 Đất sét
-[gravel]
+[shale]
 Đá phiến
-[flower_meadow]
+[heath]
 Đồng cây bụi
 [mud]
 Bùn
-[marsh]
+[mudflat]
 Bãi bùn
 [deep_snow]
 Tuyết dày
 [scree]
 Sườn đá vụn
-[dirt_track]
+[brick_path]
 Lối lát gạch
 [boardwalk]
 Lối ván gỗ
@@ -5704,6 +5704,12 @@ Cỏ khô
 Cát đụn
 [pale_sand]
 Cát trắng
+[sandstone]
+Đá lát sa thạch
+[pumice]
+Bãi đá bọt
+[frozen_lake]
+Hồ đóng băng
 [terrain group water]
 Nước
 [terrain group sand]

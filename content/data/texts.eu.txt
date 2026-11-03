@@ -5662,19 +5662,19 @@ Azaleratzea
 Lurra
 [clay]
 Buztina
-[gravel]
+[shale]
 Arbela
-[flower_meadow]
+[heath]
 Txilardia
 [mud]
 Lokatza
-[marsh]
+[mudflat]
 Lokatz-lautada
 [deep_snow]
 Elur sakona
 [scree]
 Harrizko malda
-[dirt_track]
+[brick_path]
 Adreiluzko bidea
 [boardwalk]
 Zurezko pasabidea
@@ -5704,6 +5704,12 @@ Belar lehorra
 Duna-harea
 [pale_sand]
 Hare argia
+[sandstone]
+Hareharrizko lauzak
+[pumice]
+Apar-harrizko eremua
+[frozen_lake]
+Laku izoztua
 [terrain group water]
 Ura
 [terrain group sand]

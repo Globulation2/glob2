@@ -5662,19 +5662,19 @@ Skalní výchoz
 Hlína
 [clay]
 Jíl
-[gravel]
+[shale]
 Břidlice
-[flower_meadow]
+[heath]
 Vřesoviště
 [mud]
 Bláto
-[marsh]
+[mudflat]
 Bahnitá pláň
 [deep_snow]
 Hluboký sníh
 [scree]
 Suť
-[dirt_track]
+[brick_path]
 Cihlová cesta
 [boardwalk]
 Dřevěný chodník
@@ -5704,6 +5704,12 @@ Suchá tráva
 Dunový písek
 [pale_sand]
 Světlý písek
+[sandstone]
+Pískovcové dlaždice
+[pumice]
+Pemzové pole
+[frozen_lake]
+Zamrzlé jezero
 [terrain group water]
 Voda
 [terrain group sand]
