@@ -1,0 +1,23 @@
+{
+  "revision": "1c805fb4c0810278bce49c10658063d4a0b03bd7",
+  "base": "4f40c206a0ae7bb3fb0ddbecd1e41a68c1c75e06",
+  "status": "Draft, native build and unchanged regression/compatibility validation pending",
+  "actual_hosted_failure": {
+    "run": 41556945986,
+    "job": 125693945747,
+    "source_revision": "8382dc99c127ba0cb2578e8903d22b754493a95a",
+    "case": "CustomGameSetup/Comb preview fits a 512 KiB worker stack",
+    "exit_status": -10,
+    "url": "https://github.com/Globulation2/glob2/actions/runs/41556945986/job/125693945747"
+  },
+  "gcc13_linux_sizes_bytes": {
+    "pre_telemetry_Game": 263464,
+    "broken_Game": 576128,
+    "fixed_Game": 250240,
+    "worker_stack_limit": 524288,
+    "broken_ComputeExecutor": 331264,
+    "fixed_ComputeExecutor": 5376
+  },
+  "change": "Fixed-size slot arena allocated once on heap; same slot count/indexing/stableaddresses, neverresized. Memory report includes arena capacitybytes. No testbudget/golden/SIM_REV changes; identicalworld/replay/continuation validation pending, no simulation change claim untilverified.",
+  "private_dependencies": "Bit-identical18library/manifestfilescopied;onlyprivatepc/cmakemetadatarelocated. Rootprefix/binaries/sourcefrozenforongoingfullbrowser."
+}
