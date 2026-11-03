@@ -1,0 +1,7 @@
+# Studio SIM123 reference evidence
+
+Repair a917f1799b on base972dd6f9b3b5d21121fddc198faf71c9459731a7. Original browser contracts reported fixture SIM122 versus engine123. Regenerated 1024-tick Studio and 64-tick generated/loaded generator traces from native ab643d39d728fdeb2a5c941ae3158beac46c032e, with exact original source/map/package/seed/tick/player configuration. All commands completed; generated and loaded traces match every byte. Both new trace byte lengths and SHA256 digests are identical to the previous manifests. Frozen native preview checksum/package/world fingerprint are unchanged. Native report identifies SIM123 and new simVersion194-75-e778c87bfc8864818b866746f6e75a5082618246dd1ef5aacc8bdd15dc3f58c0. Only metadata changes; assertions and checksums are retained.
+
+With pinned browser development dependencies installed in the moved platforms/web directory, all193 Node contracts pass. The initial environment-only missing-pngjs attempt is retained locally and is not a code failure. Complete native traces, commands, source/report/manifest facts and final Node output are archived here.
+
+Intervening master972 changes are drawing/assets only; reviewed CPU simulation input paths are unchanged. A fresh latest-production native recheck and twelve browser comparisons across all three browsers and serial/threaded modes are queued. Those are pending, not claimed passed. The PR remains draft. No simulation/version gate/save/replay format, test inventory, assertions or timeouts are changed.
