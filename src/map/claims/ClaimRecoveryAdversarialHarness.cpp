@@ -397,7 +397,7 @@ TEST_CASE("source four resumes raw candidate after failed XY at same coordinate 
         for(auto* current:{&game,&restored->game}) {
             auto* worker=current->teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];REQUIRE(worker);
             const auto* field=current->map.lookupMaterialGradientSlot(0,WHEAT,worker->movementClass(),false,nullptr);REQUIRE(field);
-            const auto labels=current->map.materialGradientDestinations(field);REQUIRE(labels);CHECK(labels->x[raw]==12);
+            const auto labels=current->map.materialGradientDestinations(field);REQUIRE(labels);CHECK(labels->x(raw)==12);
             REQUIRE(worker->selectActiveMaterialClaim(field));REQUIRE(worker->activeMaterialClaim);
             CHECK(worker->activeMaterialClaim->source==raw);CHECK(worker->activeMaterialClaim->access==raw);
             CHECK(current->map.materialClaimRoutes->recovery.at(owner).nextProbe==4);
