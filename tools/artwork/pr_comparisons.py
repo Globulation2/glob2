@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from PIL import Image, ImageDraw
 ROOT=Path(__file__).resolve().parents[2]
-PACK=ROOT/'data/highres/v1'
+PACK=ROOT/'content/data/highres/v1'
 OUT=ROOT/'artifacts/artwork-comparisons'
 frames=json.loads((PACK/'manifest.json').read_text())['frames']
 
@@ -16,7 +16,7 @@ def composite(f, original):
     for role in ['base','team']:
         for layer in f['layers']:
             if layer['role']!=role: continue
-            path=(ROOT/'data/gfx' if original else PACK)/layer['file']
+            path=(ROOT/'content/data/gfx' if original else PACK)/layer['file']
             if not path.exists(): continue
             im=Image.open(path).convert('RGBA')
             if original: im=im.resize((im.width*4,im.height*4),Image.Resampling.NEAREST)

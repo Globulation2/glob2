@@ -13,7 +13,7 @@
 //
 // The front ends keep their own URL policy, trust configuration and API; this
 // does the resolution, connection, TLS handshake, exchange, limits and deadline.
-// (The browser build uses emscripten_fetch instead, browser/HttpFetch.cpp.)
+// (The browser build uses emscripten_fetch instead, platforms/web/HttpFetch.cpp.)
 // Header-only, so the relay and the game link it without extra sources.
 
 #include <boost/asio.hpp>

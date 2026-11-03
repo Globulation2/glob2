@@ -61,9 +61,18 @@ def sim_revision(source):
     return int(found.group(1))
 
 
+def assets(root):
+    """The directory holding data/: a checkout's content/, or root itself for
+    installed trees and revisions from before the content/ move. Names hashed
+    below stay relative to it, matching the engine's virtual paths."""
+    content = Path(root) / 'content'
+    return content if (content / 'data').is_dir() else Path(root)
+
+
 def sim_data_files(root):
     """Default catalog dependencies are discovered, never a manually maintained list."""
-    manifest_path = Path(root) / 'data/buildings/manifest.json'
+    root = assets(root)
+    manifest_path = root / 'data/buildings/manifest.json'
     if not manifest_path.exists():
         # Historical revisions predate repository catalogs.
         return SIM_DATA_FILES
@@ -93,7 +102,7 @@ def data_hash(root, files=None, revision='read'):
     if revision is not None:
         entry(digest, '#sim-revision', str(revision).encode())
     for name in files:
-        path = Path(root) / name
+        path = assets(root) / name
         entry(digest, name, path.read_bytes() if path.is_file() else None)
     return digest.hexdigest()
 
@@ -122,7 +131,7 @@ def main():
     arguments = parser.parse_args()
     root = arguments.data_root or arguments.source
     for name in sim_data_files(root):
-        if not (Path(root) / name).is_file():
+        if not (assets(root) / name).is_file():
             print(f'warning: missing simulation data file {name}', file=sys.stderr)
     key = sim_version_key(arguments.source, root)
     if arguments.expect and arguments.expect != key:

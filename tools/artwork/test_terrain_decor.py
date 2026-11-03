@@ -42,7 +42,7 @@ class TerrainDecor(unittest.TestCase):
         self.assertEqual(decor.check(self.results, ROOT), [])
 
     def test_catalog_blocks_name_the_shared_sprite_and_frames(self):
-        catalog = json.loads((ROOT / "data/terrain/tileset.json").read_text())
+        catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
         blocks = {m["key"]: m["decor"] for m in catalog["materials"] if "decor" in m}
         self.assertEqual(sorted(blocks), sorted(decor.ORDER))
         for name, block in blocks.items():

@@ -222,7 +222,7 @@ std::vector<Uint8> hostileOrder(Game& game, int team, int seat, std::mt19937& rn
 
 std::string mapPath(const std::string& name)
 {
-	return (glob2test::sourceRoot() / "maps" / (name + ".map.gz")).string();
+	return (glob2test::contentRoot() / "maps" / (name + ".map.gz")).string();
 }
 
 // Uploaded current files bind their authored catalogs through the production

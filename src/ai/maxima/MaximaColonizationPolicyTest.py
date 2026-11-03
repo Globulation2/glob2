@@ -17,7 +17,7 @@ class MaximaColonizationPolicyTest(unittest.TestCase):
         cls.header = (ROOT / "src/ai/maxima/AIMaxima.h").read_text()
         cls.placement = (ROOT / "src/ai/maxima/AIMaximaPlacement.cpp").read_text()
         cls.placement_header = (ROOT / "src/ai/maxima/AIMaximaPlacement.h").read_text()
-        cls.base = (ROOT / "data/maxima/base.strategy").read_text()
+        cls.base = (ROOT / "content/data/maxima/base.strategy").read_text()
 
     def test_schema_v2_colonization_defaults_are_complete(self) -> None:
         expected = {

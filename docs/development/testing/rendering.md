@@ -72,7 +72,7 @@ normal build. This is a direct method regression, not an interactive replay test
 
 ## Aspect-ratio and screen-capture regression
 
-The `FullscreenAspect` suite (`libgag/src/FullscreenAspectHarness.cpp`) opens a real SDL
+The `FullscreenAspect` suite (`libs/gag/src/FullscreenAspectHarness.cpp`) opens a real SDL
 window and checks native presentation pixels, clipping, logical screen captures,
 and translated mouse motion/button events and polling at equal, wide, tall and odd
 window sizes, accepting actual OS constraints. Desktop fullscreen follows the same
@@ -87,7 +87,7 @@ python3 test/run_tests.py --filter 'FullscreenAspect/*'
 Both cases are tagged `[display:1600x1400]`: the runner opens that Xvfb screen on
 Linux without a `DISPLAY` and uses Mesa software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`)
 in CI. The OpenGL case is skipped in `opengl=0` builds. The same goes for the
-`WindowResize` suite (`libgag/src/WindowResizeHarness.cpp`), which resizes the window
+`WindowResize` suite (`libs/gag/src/WindowResizeHarness.cpp`), which resizes the window
 through the cache, callbacks, reflow, context recreation and minimum-size paths and
 checks live scale/fullscreen transitions, F11, preserved window dimensions and
 context identity. `TextRaster` checks glyph pixels against an independent native

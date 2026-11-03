@@ -39,7 +39,7 @@ no barracks campus is reserved.
 - [Configuration](configuration.md): parameter files, overrides and schema access.
 
 All Maxima implementation lives in `src/ai/maxima/`, parameter files in
-`data/maxima/`, and tests in [`test/maxima/`](../../../test/maxima/README.md).
+`content/data/maxima/`, and tests in [`test/maxima/`](../../../test/maxima/README.md).
 Saved games retain the resolved strategy and execution state, including pending
 orders, staffing, labour allowances, attack waves and observation history.
 

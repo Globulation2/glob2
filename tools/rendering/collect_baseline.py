@@ -96,7 +96,7 @@ def main():
                      '--format=csv,noheader'], ['vulkaninfo', '--summary'], ['glxinfo', '-B']]:
         report['probes'].append(capture(command))
     report['pins'] = {str(p.relative_to(ROOT)): {'sha256': digest(p), 'contents': json.loads(p.read_text())}
-                      for p in [ROOT / 'scons/sdl3-versions.json', ROOT / 'browser/toolchain.json']}
+                      for p in [ROOT / 'scons/sdl3-versions.json', ROOT / 'platforms/web/toolchain.json']}
     report['drm_devices'] = []
     for device in sorted(Path('/sys/class/drm').glob('card[0-9]*/device')):
         if not (device / 'vendor').is_file():

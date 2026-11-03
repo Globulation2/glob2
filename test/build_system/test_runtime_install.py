@@ -14,7 +14,7 @@ class RuntimeInstallTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
         self.source = root / "source"
-        self.image = self.source / "data/gfx/frame0.png"
+        self.image = self.source / "content/data/gfx/frame0.png"
         self.image.parent.mkdir(parents=True)
         Image.new("RGBA", (64, 64), (20, 80, 130, 255)).save(self.image)
         self.exported = root / "exported"
@@ -59,7 +59,7 @@ class RuntimeInstallTests(unittest.TestCase):
         self.assertTrue(unrelated.is_file())
 
     def test_frames_packed_into_sheets_leave_the_install(self):
-        frame = self.source / "data/gfx/unit0r.png"
+        frame = self.source / "content/data/gfx/unit0r.png"
         Image.new("RGBA", (4, 4), (9, 8, 7, 255)).save(frame)
         install_export(self.exported, self.installed)
         export_assets(self.source, self.exported, optimized=False)
@@ -75,7 +75,7 @@ class RuntimeInstallTests(unittest.TestCase):
         self.assertEqual(changed.read_bytes(), b"user artwork")
 
     def test_legacy_install_frames_packed_into_sheets_are_removed(self):
-        frame = self.source / "data/gfx/unit0r.png"
+        frame = self.source / "content/data/gfx/unit0r.png"
         Image.new("RGBA", (4, 4), (9, 8, 7, 255)).save(frame)
         export_assets(self.source, self.exported)
         legacy = self.installed / "data/gfx/unit0r.png"

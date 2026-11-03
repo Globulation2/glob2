@@ -249,6 +249,11 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			integerInRange(m.value("animation_stride", nlohmann::json(0)), 0, 65535);
 		require(v.animationFrames == 1 || v.animationStride > 0,
 				"animated material needs a frame stride");
+		if (m.contains("animation_blend_steps"))
+		{
+			require(v.animationFrames > 1, "animation_blend_steps needs an animated material");
+			v.animationBlendSteps = integerInRange(m.at("animation_blend_steps"), 1, v.animationTicks);
+		}
 		v.preview = rgbColor(m.at("preview"));
 		v.minimap = rgbColor(m.value("minimap", m.at("preview")));
 		if (m.contains("seam"))

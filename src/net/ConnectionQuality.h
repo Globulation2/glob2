@@ -4,9 +4,9 @@
 
 // The connection-quality table of the game (docs/multiplayer/connection-quality.md).
 //
-// The source of truth is platform/packages/protocol/src/connectionQuality.ts, which the
+// The source of truth is services/online/packages/protocol/src/connectionQuality.ts, which the
 // match page and the API use; its generator writes the table to
-// platform/packages/protocol/fixtures/connection-quality.json (vendored as
+// services/online/packages/protocol/fixtures/connection-quality.json (vendored as
 // test/fixtures/protocol/connection-quality.json), and src/net/ConnectionQualityTest.cpp
 // checks this copy against it. Change both together.
 //

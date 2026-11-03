@@ -41,8 +41,10 @@ def main():
     if not map_file.is_file():
         # Repository maps are gzip-compressed by default; prefer that, falling
         # back to a legacy raw file of the same name.
-        map_file=root/'maps'/(args.map+'.map.gz')
-        if not map_file.is_file(): map_file=root/'maps'/(args.map+'.map')
+        # A checkout keeps the runtime tree under content/; installed trees at the root.
+        maps=(root/'content' if (root/'content'/'maps').is_dir() else root)/'maps'
+        map_file=maps/(args.map+'.map.gz')
+        if not map_file.is_file(): map_file=maps/(args.map+'.map')
     artifact=store_artifact(map_file,directory/'artifacts')
     players=args.matchup.split(',')
     if args.swap_sides and len(players)!=2: parser.error('--swap-sides requires two AIs')

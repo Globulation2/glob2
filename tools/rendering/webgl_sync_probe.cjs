@@ -9,7 +9,7 @@ const output=path.resolve(process.argv[2]||path.join(root,'artifacts','webgl-syn
 async function run(){
   if(!process.env.EMCXX||!process.env.PLAYWRIGHT_MODULE)throw Error('Set EMCXX and PLAYWRIGHT_MODULE to the pinned SDK and installed Playwright module');
   fs.mkdirSync(output,{recursive:true});
-  const built=spawnSync(process.env.EMCXX,[path.join(root,'browser/tests/fixtures/webgl-sync-probe.cpp'),'-O0','-sMIN_WEBGL_VERSION=2','-sMAX_WEBGL_VERSION=2','-sGL_ENABLE_GET_PROC_ADDRESS=1','-sEXIT_RUNTIME=0','-o',path.join(output,'probe.js')],{stdio:'inherit'});
+  const built=spawnSync(process.env.EMCXX,[path.join(root,'platforms/web/tests/fixtures/webgl-sync-probe.cpp'),'-O0','-sMIN_WEBGL_VERSION=2','-sMAX_WEBGL_VERSION=2','-sGL_ENABLE_GET_PROC_ADDRESS=1','-sEXIT_RUNTIME=0','-o',path.join(output,'probe.js')],{stdio:'inherit'});
   if(built.status!==0)throw Error('SDK probe compilation failed');
   fs.writeFileSync(path.join(output,'index.html'),'<canvas id="canvas" width="16" height="16"></canvas><script>var Module={canvas:document.getElementById("canvas"),onRuntimeInitialized(){globalThis.ready=true;}};</script><script src="probe.js"></script>');
   const server=http.createServer((req,res)=>{

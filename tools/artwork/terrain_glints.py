@@ -46,8 +46,10 @@ SCALE = 4
 S = NATIVE * SCALE
 CELL = 32 * SCALE
 PAD = (S - CELL) // 2
-PREFIX = "data/gfx/terrain-glint"
-HD_PREFIX = "data/highres/v1/terrain-glint"
+PREFIX = "data/gfx/terrain-glint"            # runtime path, as tileset.json names it
+FILE_PREFIX = "content/" + PREFIX           # where the checkout stores it
+HD_PREFIX = "content/data/highres/v1/terrain-glint"
+TILESET = "content/data/terrain/tileset.json"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain glints v1"
 FERTILE = ["loam", "moss", "spring_meadow"]
@@ -127,7 +129,7 @@ def generator_sha():
 
 
 def provenance_path(root):
-    return root / "datasrc/gfx/terrain-glint/provenance.json"
+    return root / "content-src/gfx/terrain-glint/provenance.json"
 
 
 def write(frames, root):
@@ -135,7 +137,7 @@ def write(frames, root):
 
     hashes, hd_hashes, hd_frames = {}, {}, []
     for n, (native, hd) in sorted(frames.items()):
-        relative = f"{PREFIX}{n}.png"
+        relative = f"{FILE_PREFIX}{n}.png"
         (root / relative).parent.mkdir(parents=True, exist_ok=True)
         native.save(root / relative, optimize=False)
         hashes[relative] = pixel_sha256(native)
@@ -165,13 +167,13 @@ def write(frames, root):
 def check(frames, root):
     path = provenance_path(root)
     if not path.exists():
-        return ["missing datasrc/gfx/terrain-glint/provenance.json"]
+        return ["missing content-src/gfx/terrain-glint/provenance.json"]
     provenance = json.loads(path.read_text())
     problems = []
     if provenance.get("generator_sha256") != generator_sha():
         problems.append("generator changed; re-run terrain_glints.py")
     for n, (native, hd) in sorted(frames.items()):
-        for relative, image, table in ((f"{PREFIX}{n}.png", native, provenance["runtime_sha256"]),
+        for relative, image, table in ((f"{FILE_PREFIX}{n}.png", native, provenance["runtime_sha256"]),
                                        (f"{HD_PREFIX}{n}.png", hd, provenance["highres_sha256"])):
             target = root / relative
             if not target.exists():
@@ -181,7 +183,7 @@ def check(frames, root):
                 digest = pixel_sha256(committed)
             if digest != pixel_sha256(image) or table.get(relative) != digest:
                 problems.append(f"{relative}: differs from a fresh synthesis")
-    catalog = json.loads((root / "data/terrain/tileset.json").read_text())
+    catalog = json.loads((root / TILESET).read_text())
     for material in catalog["materials"]:
         if material["key"] in FERTILE and material.get("overlay") != overlay_block():
             problems.append(f"{material['key']}: overlay block out of date; run --write-catalog")
@@ -193,7 +195,7 @@ def write_catalog(root):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from terrain_profile_curves import dump_catalog
 
-    path = root / "data/terrain/tileset.json"
+    path = root / TILESET
     document = json.loads(path.read_text())
     found = set()
     for material in document["materials"]:
@@ -212,13 +214,13 @@ def ground_tile(root, key, x, y):
     material = next(m for m in catalog_document(root)["materials"] if m["key"] == key)
     grid = material.get("variant_grid", 1)
     frame = material["variants"][(y % grid) * grid + x % grid]["frame"]
-    with Image.open(root / f"{material['sprite']}{frame}.png") as tile:
+    with Image.open(root / "content" / f"{material['sprite']}{frame}.png") as tile:
         return tile.convert("RGBA")
 
 
 @functools.lru_cache(maxsize=None)
 def catalog_document(root):
-    return json.loads((root / "data/terrain/tileset.json").read_text())
+    return json.loads((root / TILESET).read_text())
 
 
 def field(root, frames, key, step, size=8, scale=2):

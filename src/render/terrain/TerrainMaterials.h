@@ -56,11 +56,11 @@ struct Surf
 // is updated in place. surfSide is true when the sample's dominant material is
 // the surf one. wx and wy are the sample's non-negative Q8 world pixel
 // coordinates. The integer arithmetic is mirrored exactly by
-// libgag/shaders/terrain-compose-fragment.glsl.
+// libs/gag/shaders/terrain-compose-fragment.glsl.
 void applySurf(const Surf &, bool surfSide, int margin, int wx, int wy, unsigned time,
 			   unsigned value[3]);
 // Share of each wash (of 1024) spent rushing up the beach; the rest drains back
-// more slowly. Mirrored as washIn in libgag/shaders/terrain-compose-fragment.glsl.
+// more slowly. Mirrored as washIn in libs/gag/shaders/terrain-compose-fragment.glsl.
 constexpr int SurfWashInQ10 = 224;
 // Shore calm: animated surf liquids fade from their full waves to a quiet
 // shimmer toward land, so the surf is the only motion at the beach. The fade
@@ -78,7 +78,7 @@ constexpr int ShoreCalmSearch = (ShoreCalmReachQ8 + 128 + 255) / 256;
 // fx, fy (0..256). The result is continuous across cells.
 unsigned shoreCalm(const std::array<std::uint8_t, 4> &corners, unsigned fx, unsigned fy);
 // Pulls rgb toward mean by calm (Q8), keeping `strength` of the reduction;
-// mirrored exactly by libgag/shaders/terrain-compose-fragment.glsl.
+// mirrored exactly by libs/gag/shaders/terrain-compose-fragment.glsl.
 void applyShoreCalm(unsigned calm, unsigned strength, const std::array<unsigned char, 3> &mean,
 					unsigned rgb[3]);
 // Raised objects drawn over a material's cells with the resources, in screen
@@ -122,6 +122,9 @@ struct Material
 	std::uint32_t blockSalt = 0;
 	unsigned profile = 0;
 	int animationFrames = 1, animationTicks = 1, animationStride = 0;
+	// Crossfade weights per phase ("animation_blend_steps"); zero blends on
+	// every tick. Fewer steps recompose animated pages less often.
+	int animationBlendSteps = 0;
 	// Variants share one periodic edge band and join without the runtime's
 	// border blend toward variant 0 ("edges": "periodic").
 	bool periodicEdges = false;

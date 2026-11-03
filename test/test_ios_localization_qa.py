@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 # Use the tracked helper after patch integration, or the artifact proposal for review.
 ROOT = Path(__file__).resolve().parents[1]
-HELPER = ROOT/'mobile/ios_localization_qa.py'
+HELPER = ROOT/'platforms/mobile/ios_localization_qa.py'
 spec = importlib.util.spec_from_file_location('ios_localization_qa', HELPER)
 qa = importlib.util.module_from_spec(spec); spec.loader.exec_module(qa)
 
@@ -49,15 +49,15 @@ class SimulatorSelection(unittest.TestCase):
 
 class BundleIntegrity(unittest.TestCase):
     def fixture(self, root, app):
-        (root/'mobile/ios/th.lproj').mkdir(parents=True)
-        (root/'mobile/ios/Info.plist.in').write_text('<key>NSLocalNetworkUsageDescription</key><string>Connect locally.</string>')
-        (root/'mobile/ios/th.lproj/InfoPlist.strings').write_text('"NSLocalNetworkUsageDescription" = "เชื่อมต่อผ่านเครือข่ายในพื้นที่";')
+        (root/'platforms/mobile/ios/th.lproj').mkdir(parents=True)
+        (root/'platforms/mobile/ios/Info.plist.in').write_text('<key>NSLocalNetworkUsageDescription</key><string>Connect locally.</string>')
+        (root/'platforms/mobile/ios/th.lproj/InfoPlist.strings').write_text('"NSLocalNetworkUsageDescription" = "เชื่อมต่อผ่านเครือข่ายในพื้นที่";')
         app.mkdir(); (app/'th.lproj').mkdir()
         (app/'Info.plist').write_bytes(plistlib.dumps({'NSLocalNetworkUsageDescription':'Connect locally.'}))
         (app/'Glob2').write_bytes(b'executable')
         (app/'th.lproj/InfoPlist.strings').write_bytes(b'compiled localized plist')
         for name in qa.FILES:
-            for base in (root,app):
+            for base in (root/'content',app):
                 p=base/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(name.encode())
 
     def test_exact_bundle_and_individual_asset_hashes(self):
@@ -91,8 +91,8 @@ class LocalizedResourcePlacement(unittest.TestCase):
 
     def test_xcode_localized_sources_use_resources_without_duplicate_locale(self):
         repo=next(p for p in Path(__file__).resolve().parents if (p/'SConstruct').is_file())
-        sys.path.insert(0,str(repo/'mobile'))
-        spec=importlib.util.spec_from_file_location('ios_packaging_contract',ROOT/'mobile/ios.py')
+        sys.path.insert(0,str(repo/'platforms/mobile'))
+        spec=importlib.util.spec_from_file_location('ios_packaging_contract',ROOT/'platforms/mobile/ios.py')
         generator=importlib.util.module_from_spec(spec);spec.loader.exec_module(generator)
         with tempfile.TemporaryDirectory(prefix='ios resources ') as temp:
             root=Path(temp)
@@ -133,7 +133,7 @@ class FailureEvidence(unittest.TestCase):
                 elif 'devicetypes' in parts:text=json.dumps({'devicetypes':[dict(identifier='phone',name='iPhone 16')]})
                 elif 'create' in parts:text='owned-uuid'
                 elif 'get_app_container' in parts:text=str(container)
-                elif 'mobile/ios_smoke.py' in parts:
+                elif 'platforms/mobile/ios_smoke.py' in parts:
                     self.assertEqual(kwargs['env']['SIMCTL_CHILD_SDL_PREFERRED_LOCALES'],'th_TH')
                     # Actual run41262337554 ignored Documents/LocalizationQA:
                     # initializeMobilePaths replaces the environment override.
@@ -153,7 +153,7 @@ class FailureEvidence(unittest.TestCase):
             self.assertEqual(actions,[['shutdown','owned-uuid'],['delete','owned-uuid']])
             self.assertTrue((output/'smoke/failure.png').exists())
             result=json.loads((output/'result.json').read_text());self.assertFalse(result['passed'])
-            smoke_call=next(p for p in calls if 'mobile/ios_smoke.py' in p)
+            smoke_call=next(p for p in calls if 'platforms/mobile/ios_smoke.py' in p)
             self.assertIn('--simulator-set',smoke_call)
             self.assertNotIn('shutdown all',' '.join(' '.join(p) for p in calls))
 

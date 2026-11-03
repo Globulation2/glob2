@@ -6,7 +6,7 @@ import numpy as np
 from scipy import ndimage
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
-DERIVED=ROOT/'datasrc/gfx/derived/wheat-v1'
+DERIVED=ROOT/'content-src/gfx/derived/wheat-v1'
 frames=json.loads((DERIVED/'manifest.json').read_text())['frames']
 assert {f['id'] for f in frames}=={'ressource%d'%i for i in [10,11,12,13,15,16,17,18]}
 for frame in frames:
@@ -14,7 +14,7 @@ for frame in frames:
         assert hashlib.sha256((ROOT/source['path']).read_bytes()).hexdigest()==source['sha256']
     name=frame['id']+'.png'
     new=Image.open(DERIVED/name).convert('RGBA')
-    classic=Image.open(ROOT/'data/gfx'/name).convert('RGBA')
+    classic=Image.open(ROOT/'content/data/gfx'/name).convert('RGBA')
     assert new.size==(classic.width*4,classic.height*4)
     a=np.asarray(classic)[:,:,3]>80
     b=np.asarray(new.resize(classic.size,Image.Resampling.LANCZOS))[:,:,3]>80

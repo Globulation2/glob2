@@ -38,7 +38,7 @@ class TerrainGlintsTest(unittest.TestCase):
 
     def test_committed_assets_and_catalog_match(self):
         self.assertEqual(glints.check(self.frames, glints.ROOT), [])
-        catalog = json.loads((glints.ROOT / "data/terrain/tileset.json").read_text())
+        catalog = json.loads((glints.ROOT / glints.TILESET).read_text())
         with_overlay = sorted(m["key"] for m in catalog["materials"] if "overlay" in m)
         self.assertEqual(with_overlay, sorted(glints.FERTILE))
 
