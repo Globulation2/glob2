@@ -632,7 +632,7 @@ class Smoke:
         command = [sys.executable, str(ROOT / 'test/deployment/live_match_e2e.py'), '--mode', 'queue',
                    '--queue', E2E_QUEUE, '--origin', self.origin, '--ca-file', str(ca),
                    '--engine-command', shlex.join(engine), '--psql', shlex.join(psql),
-                   '--output-dir', str(out / 'run'), '--verify-timeout', '600']
+                   '--out', str(out / 'run'), '--verify-timeout', '600']
         log_path = out / 'live_match_e2e.log'
         with open(log_path, 'w') as log_file:
             code = subprocess.run(command, env=self.env, stdout=log_file, stderr=subprocess.STDOUT,
