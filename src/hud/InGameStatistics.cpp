@@ -14,7 +14,7 @@
 
 namespace fe = Glob2UI;
 namespace {
-const char *topicKeys[] = {"[stats topic overview]", "[stat page colony]", "[stats topic economy]", "[stat group military]", "[stats topic world]", "Game engine performance"};
+const char *topicKeys[] = {"[stats topic overview]", "[stat page colony]", "[stats topic economy]", "[stat group military]", "[stats topic world]", "[engine performance game engine performance]"};
 void paintWaiting(fe::Canvas &canvas, fe::Rect rect, fe::FontRole role, int inset)
 {
     const auto &measure = canvas.measurer();
@@ -316,7 +316,7 @@ fe::Element InGameStatisticsPanel::build(const fe::Presentation &p)
     const bool narrow = bounds.w < p.textPt(270);
     const int columns = narrow ? 2 : 3;
     for (int i = 0; i < 6; ++i) {
-        buttons.push_back(fe::expanded(fe::button("stats/topic/" + std::to_string(i), i==5?topicKeys[i]:fe::tr(topicKeys[i]),
+        buttons.push_back(fe::expanded(fe::button("stats/topic/" + std::to_string(i), fe::tr(topicKeys[i]),
             [this, i] { selectTopic(Topic(i)); }, {.selected = selectedTopic == Topic(i), .role = fe::FontRole::Support})));
         if ((narrow && i == 0) || int(buttons.size()) == columns || i == 5) {
             topicRows.push_back(fe::row(std::move(buttons), {p.pt(4)}));
