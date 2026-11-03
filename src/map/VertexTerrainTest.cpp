@@ -89,7 +89,7 @@ TEST_CASE("corner movement votes cover every arrangement and tie")
 		// Rows are walking counts, columns swimming counts; the remainder is
 		// blocked. Covers all fifteen count triples, including (1, 2, 1).
 		constexpr unsigned winners[5][5] = {
-			{2, 2, 2, 1, 1}, {2, 2, 1, 1, 99}, {0, 0, 0, 99, 99},
+			{2, 2, 2, 1, 1}, {2, 2, 1, 1, 99}, {2, 0, 0, 99, 99},
 			{0, 0, 99, 99, 99}, {0, 99, 99, 99, 99}};
 		const unsigned winner = winners[counts[0]][counts[1]];
 		const auto p = combineCornerRules(categories[corners[0]], categories[corners[1]],
@@ -207,7 +207,10 @@ TEST_CASE("every built-in pair combines into valid transition rules")
 				continue;
 			CHECK_EQ(p.swimmable, rules(TerrainType(a)).swimmable && rules(TerrainType(b)).swimmable);
 			CHECK_FALSE(p.buildable);
-			CHECK_EQ(p.walkable, rules(TerrainType(a)).walkable || rules(TerrainType(b)).walkable);
+			const auto& first = rules(TerrainType(a));
+			const auto& second = rules(TerrainType(b));
+			CHECK_EQ(p.walkable, (first.walkable || second.walkable) &&
+				(first.walkable || first.swimmable) && (second.walkable || second.swimmable));
 			CHECK_EQ(p.flyable, rules(TerrainType(a)).flyable && rules(TerrainType(b)).flyable);
 			CHECK_EQ(p.projectileBlocks, rules(TerrainType(a)).projectileBlocks || rules(TerrainType(b)).projectileBlocks);
 		}
@@ -354,7 +357,8 @@ TEST_CASE("a cell's four corners paint it uniform and its neighbours mixed")
 			if (x != 6 || y != 6)
 			{
 				CHECK(map.terrainTypeAt(x, y) == MIXED_TERRAIN);
-				CHECK(map.terrainPropertiesAt(x, y).walkable);
+				// Side neighbours have two blocked corners; diagonals have one.
+				CHECK_EQ(map.terrainPropertiesAt(x, y).walkable, x != 6 && y != 6);
 				CHECK(map.terrainPropertiesAt(x, y).projectileBlocks);
 			}
 }

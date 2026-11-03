@@ -15,13 +15,14 @@
   vertex (x,y) is the top-left corner of tile (x,y). A tile's rules come from its four corners
   (`combineCornerRules`, `TerrainPropertiesLayout.h`, compiled once per combination by
   `CellRuleTable`): equal property profiles keep their rules exactly; mixed profiles count
-  walking, swimming and blocked corners and use the largest count. Walking wins ties; a
-  swimming/blocked tie stays blocked. Numeric effects use the arithmetic mean of all four
-  corners: ground/air speed and health, growth, fertility, inhibition and shoreline support.
+  walking, swimming and blocked corners. Two or more blocked corners block ground movement;
+  otherwise walking or swimming wins by count, with walking winning their tie. Numeric
+  effects use the arithmetic mean of all four corners: ground/air speed and health, growth, fertility, inhibition and shoreline support.
   Q8 averages round toward zero; damage and healing can offset each other. This blends speed
   boundaries and gives mixed shores partial ecological effects. Mixed profiles are never
   buildable, and other permissions remain conservative. A single walkable corner cannot open a blocked or water
-  cell; two walkable corners suffice. A two-water/two-blocked cell stays blocked, while
+  cell. Two walking corners suffice unless both remaining corners are blocked. Both
+  two-land/two-blocked and two-water/two-blocked cells stay blocked, while
   different water profiles can mix and still swim. So a tile is pure grass only when all four of its corners are grass, and a single sand
   vertex spoils the four tiles around it. This is why a one-vertex sand road (`tracePath`) blocks a
   strip about two tiles wide, and why generators stamp grass inside a one-tile sand ring. Read a

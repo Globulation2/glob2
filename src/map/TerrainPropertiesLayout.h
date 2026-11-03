@@ -57,8 +57,8 @@ constexpr bool sameTerrainProperties(const TerrainProperties& a, const TerrainPr
 // A cell's rules come from its four corner terrains. Corners with equal
 // profiles keep that exact profile, so members of one terrain group still
 // combine into their group's mechanic. Otherwise the cell is a transition:
-// movement is chosen by the largest count of walking, swimming or blocked
-// corners. Walking wins ties; a swimming/blocked tie stays blocked. Every numeric
+// two or more blocked corners block ground movement. Otherwise the more common
+// walking/swimming category wins, with walking winning their tie. Every numeric
 // modifier uses the arithmetic mean of all four corners, independently of that
 // vote. Equal corner weights give speed, health and ecology gradual transitions
 // at 1:3, 2:2 and 3:1 boundaries. Q8 averages round toward zero. Transitions are
@@ -78,8 +78,8 @@ constexpr TerrainProperties combineCornerRules(const TerrainProperties& a, const
 	}
 	if (uniform) return a;
 	TerrainProperties result;
-	result.walkable = walking >= swimming && walking >= blocked;
-	result.swimmable = swimming > walking && swimming > blocked;
+	result.walkable = blocked < 2 && walking >= swimming;
+	result.swimmable = blocked < 2 && swimming > walking;
 	result.buildable = false;
 	result.projectileBlocks = result.shoreline = false;
 	result.flyable = result.resourcesGrow = result.nonGrowingResources = result.fertilitySource = true;

@@ -120,8 +120,8 @@ constexpr int kQueenExtra = 3, kQueenGrowthLimit = 400;
 constexpr double kFace = 1.5;
 // Tunnels likewise: the open tile beside the rock is drawn half rock, so a tunnel stroked to its
 // width read a tile narrower than it (first previews of revision 6). Each side is dug this much
-// further, so a tunnel looks `tunnel-width` across. Corner voting requires two
-// walkable corners; the default width is four to keep diagonal bends open to traffic.
+// further, so a tunnel looks `tunnel-width` across. Corner voting requires three
+// walkable corners against rock; the default width is four to keep bends open to traffic.
 constexpr double kTunnelFace = 0.5;
 // A quarry chamber (REVISION 2026-10-26) is dug to a farm chamber's size but has no pond: a stone
 // deposit of radius kQuarryRadius at its middle at the default stone amount, its roads stopping
@@ -435,7 +435,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.homeOf[i] = k;
 	// The terrain (REVISION 2026-10-26): ponds, dirt-track roads and scree spoil on open ground, and
 	// rock on every vertex of a closed tile, so a closed tile is rock on all four corners and as
-	// impassable as the stone was. Mixed face cells need at least two walking corners;
+	// impassable as the stone was. Mixed face cells need at least three walking corners;
 	// single-corner fringes stay blocked. Mixed face cells hold no building or crop.
 	{
 		std::vector<unsigned char> closed(n, 0);

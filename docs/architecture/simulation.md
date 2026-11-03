@@ -197,8 +197,9 @@ checksum adapter remains available for diagnostic fixtures.
   top-left, top-right, bottom-left and bottom-right corners. A cell's rules come
   from its corners through `combineCornerRules` (`TerrainPropertiesLayout.h`):
   corners with equal property profiles keep that exact profile. Otherwise, count
-  walking, swimming and blocked corners and use the largest count. Walking wins
-  ties; a swimming/blocked tie stays blocked. Thus three water corners and one
+  walking, swimming and blocked corners. Two or more blocked corners make the
+  cell impassable on the ground. Otherwise walking or swimming wins by count,
+  with walking winning a tie between the two. Thus three water corners and one
   grass corner swim, two grass and two water corners walk, and three blocked
   corners and one grass corner stay blocked. Different water profiles can join
   without creating an impassable transition. All eight numeric modifiers use the
