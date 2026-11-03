@@ -544,4 +544,70 @@ TEST_CASE("actual outcome keeps selection before route failure and counts cooldo
     }
 }
 
+TEST_CASE("source four raw probes recover stale and fully claimed XY without replacing first success") {
+    glob2test::HeadlessGlobals globals;
+    for(unsigned mode:{3u,4u,5u})for(unsigned scenario:{0u,1u,2u})for(bool closest:{false,true}) {
+        CAPTURE(mode);CAPTURE(scenario);CAPTURE(closest);
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=3211});
+        auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig policy;policy.sourceVersion=mode==3?3:4;policy.directResourceProbes=mode==5;
+        policy.selection=closest?ResourceClaims::ClaimPolicyConfig::Selection::ClosestGeometric:ResourceClaims::ClaimPolicyConfig::Selection::FirstAvailable;
+        map.setMaterialClaimPolicyConfig(policy);
+        auto* consumer=fixture.addBuilding("inn",20,20);auto* seeker=worker(fixture,consumer,0);auto* holder=worker(fixture,consumer,1);
+        const auto old=Uint32(map.coordToIndex(12,8)),fresh=Uint32(map.coordToIndex(10,8));
+        map.setResourceByIndex(12,8,WHEAT,1);map.setMaterialAmountSlot(old,WHEAT,1);
+        const auto* field=glob2test::awaitGradient(fixture.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,seeker->movementClass());});
+        const auto lease=map.materialGradientDestinations(field);REQUIRE(lease);CHECK(lease->x[map.coordToIndex(8,8)]==12);
+        map.setResourceByIndex(10,8,WHEAT,1);map.setMaterialAmountSlot(fresh,WHEAT,1);
+        if(scenario==0)map.setMaterialAmountSlot(old,WHEAT,0);
+        else if(scenario==1)REQUIRE(holder->acquireMaterialClaimAt(old));
+        const auto path=(glob2test::artifactDir()/"raw-probe-counters.jsonl.gz").string();std::filesystem::remove(path);
+        ResourceClaims::Probe::Config config;config.sampleEvery=1;
+        auto probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);
+        const auto random=seeker->entityRandom;const bool selected=seeker->selectActiveMaterialClaim(field);
+        const bool expected=scenario==2 || mode==5;CHECK(selected==expected);CHECK(seeker->entityRandom==random);
+        if(expected){REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==((scenario!=2 || (closest && mode==5))?fresh:old));}
+        probe->finish();const auto trace=rows(path);const auto& counters=trace.back()["raw_resource_probes"]["material_counters"][WHEAT];
+        CHECK(counters[5]==((mode==5 && (scenario!=2 || closest))?1:0));
+        if(mode!=5 || (scenario==2 && !closest)){CHECK(counters[2]==0);CHECK(counters[3]==0);CHECK(counters[4]==0);}
+        else {CHECK(counters[2].get<Uint64>()>0);CHECK(counters[3].get<Uint64>()>0);CHECK(counters[4].get<Uint64>()>0);CHECK(counters[3].get<Uint64>()<=map.cellCount());}
+        for(auto* unit:{seeker,holder}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+    }
+}
+TEST_CASE("raw probes reuse natural goal eligibility and pooled source reservation") {
+    glob2test::HeadlessGlobals globals;
+    for(unsigned scenario:{0u,1u,2u,3u,4u,5u}) {
+        // forbidden, wrong material, infinite stone, farm donor, water algae,
+        // invisible fruit: raw coordinates never bypass natural-goal rules.
+        CAPTURE(scenario);
+        glob2test::HeadlessGame::Options options;options.discovered=true;options.clearImmobile=true;options.loadDefaultRace=true;options.header=true;
+        if(scenario==3)options.experiments.set(ExperimentId::FarmAreas,true);
+        glob2test::HeadlessGame fixture(options);auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig policy;policy.sourceVersion=4;policy.directResourceProbes=true;map.setMaterialClaimPolicyConfig(policy);
+        auto* consumer=fixture.addBuilding("inn",20,20);auto* seeker=worker(fixture,consumer,0);auto* other=worker(fixture,consumer,1);
+        const int material=scenario==2?STONE:scenario==4?ALGA:scenario==5?CHERRY:WHEAT;
+        seeker->destinationPurpose=material;other->destinationPurpose=material;
+        if(scenario==4){seeker->setPerformance(SWIM,1);other->setPerformance(SWIM,1);map.paintCell(12,8,WATER);map.paintCell(9,8,WATER);}
+        const auto old=Uint32(map.coordToIndex(12,8)),fresh=Uint32(map.coordToIndex(9,8));
+        map.setResourceByIndex(12,8,material,1);map.setMaterialAmountSlot(old,material,1);map.fogOfWar[old]|=seeker->owner->me;
+        const auto* field=glob2test::awaitGradient(fixture.game,[&]{return map.getMaterialGradientSlot(0,material,seeker->movementClass());});
+        const auto lease=map.materialGradientDestinations(field);REQUIRE(lease);
+        map.setMaterialAmountSlot(old,material,0);
+        map.setResourceByIndex(9,8,scenario==1?WOOD:material,1);map.setMaterialAmountSlot(fresh,scenario==1?WOOD:material,1);
+        map.fogOfWar[fresh]|=seeker->owner->me;
+        if(scenario==0)map.addForbidden(9,8,0);
+        if(scenario==5)map.fogOfWar[fresh]&=~seeker->owner->me;
+        const auto donor=Uint32(map.coordToIndex(10,8));
+        if(scenario==3){map.setResourceByIndex(10,8,WHEAT,1);map.setMaterialAmountSlot(donor,WHEAT,2);map.addFarmArea(9,8,0);map.addFarmArea(10,8,0);}
+        const bool selected=seeker->selectActiveMaterialClaim(field);CHECK(selected==(scenario>=2 && scenario<=4));
+        if(selected) {
+            REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==fresh);
+            CHECK(seeker->activeMaterialClaim->source==(scenario==3?donor:fresh));CHECK(seeker->activeMaterialClaimValid());
+            CHECK(other->acquireMaterialClaimAt(fresh)==(scenario==2));
+            if(scenario==3)CHECK(seeker->activeMaterialClaim->reserve==1);
+        }
+        for(auto* unit:{seeker,other}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+    }
+}
+
 }

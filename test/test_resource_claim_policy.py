@@ -30,6 +30,25 @@ def job():
 
 
 class LivePolicy(unittest.TestCase):
+    def test_direct_resource_probes_require_source_four_and_keep_old_hashes(self):
+        hashes=['f5b1257cb0263acb94c41fb96def0016065fc49f5db3c257edd9d4fc368351f4','3503d4c91a7af35b39f4969589d02fb4b7fe532b088b3d561026b66d2e234154','eda0c89c9e6b6dad7d16b66bdf9be667ca0a5646b0e05809c622a3a94e7629d1']
+        for version in (1,2,3):
+            old=policy()|({'source_version':version}|RECOVERY_V1 if version>=2 else {})|({'opportunistic_adjacent_pickup':True} if version>=3 else {})
+            self.assertEqual(policy_digest(old),hashes[version-1])
+            with self.assertRaises(ValueError):validate_policy(old|{'direct_resource_probes':False})
+        current=old|{'source_version':4,'direct_resource_probes':False}
+        caps={'resource_claims_policy_config_version':4,'resource_claims_active_policies':['experimental'],
+              'resource_claims_policy_patterns':[{'name':current['pattern'],'digest':current['pattern_digest']}]}
+        for enabled in (False,True):
+            self.assertEqual(validate_policy(current|{'direct_resource_probes':enabled},caps)['direct_resource_probes'],enabled)
+        self.assertNotEqual(policy_digest(current),policy_digest(current|{'direct_resource_probes':True}))
+        for field in ('direct_resource_probes','opportunistic_adjacent_pickup'):
+            for bad in (None,0,1,'true'):
+                with self.assertRaises(ValueError):validate_policy(current|{field:bad})
+            with self.assertRaises(ValueError):validate_policy({k:v for k,v in current.items() if k!=field})
+        with self.assertRaises(ValueError):validate_policy(current,caps|{'resource_claims_policy_config_version':3})
+        with self.assertRaises(ValueError):validate_policy(current,caps|{'resource_claims_policy_config_version':5})
+
     def test_adjacent_pickup_policy_requires_explicit_version_and_boolean(self):
         legacy=policy()|{'source_version':2}|RECOVERY_V1
         caps={'resource_claims_policy_config_version':3,'resource_claims_active_policies':['experimental'],

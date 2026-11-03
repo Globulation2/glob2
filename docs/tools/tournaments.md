@@ -956,6 +956,27 @@ not queue their Cartesian product or launch games. First eliminate clearly poor
 routing/refresh candidates using separately labeled short movement fixtures and
 frozen event paths; then supply a small explicit whole-game config batch.
 
+Experimental policy source version 4 requires the explicit boolean
+`direct_resource_probes`, together with the source 3 adjacent-pickup boolean and
+existing recovery fields. Versions 1–3 reject this new key and retain their
+canonical identities. A version 4 executable accepts those older configurations;
+older executables reject source 4. The prototype first tests the published XY
+destination at each pattern entry. First-available selection checks the entry's
+own resource after the XY candidate is rejected; closest-geometric selection
+considers both candidates at every entry, with deduplication. Raw-enabled source
+4 uses a paired recovery cursor (`2 * entry + phase`), bounded by twice the
+pattern length, so a failed XY target can resume at the same relative pattern entry's raw
+resource. Movement or a changed nearest-resource bearing can change that entry's
+absolute map coordinate; this does not preserve a stationary world-space scan.
+Older sources and raw-disabled source 4 retain the original cursor bound.
+The existing route-attempt limits are unchanged. This is a diagnostic ablation, not an adopted
+policy. Existing offline pattern scores remain XY-only and must not be presented
+as measurements of the hybrid selector. The additive `raw_resource_probes`
+footer covers raw-enabled full-probe selections only; zero counters in raw-off or
+movement-only runs mean unobserved work. `raw_best_candidate_improvements` counts
+provisional winners, while `raw_final_selections` counts a raw winner only after
+reservation commit succeeds (including a successful unchanged held claim).
+
 Policy source version 3 adds the explicit boolean `opportunistic_adjacent_pickup`;
 it retains the version 2 recovery contract. When enabled, a worker can exchange a
 distant reservation for available material within pickup range. An already

@@ -52,10 +52,23 @@ unsigned number(const Json& value)
     return value.get<unsigned>();
 }
 }
+unsigned ClaimPolicyConfig::recoveryCandidateCount(std::size_t coordinates) const
+{
+    const unsigned factor=sourceVersion>=4 && directResourceProbes?2:1;
+    if(coordinates>UINT32_MAX/factor)throw std::overflow_error("claim candidate count exceeds cursor width");
+    return unsigned(coordinates)*factor;
+}
+unsigned ClaimPolicyConfig::maximumRecoveryCandidateCount() const
+{
+    const auto& selected=patternByName(pattern);unsigned maximum=0;
+    for(unsigned direction=0;direction<8;++direction)
+        maximum=std::max(maximum,recoveryCandidateCount(selected.viewForDirection(direction).x.size()));
+    return maximum;
+}
 void ClaimPolicyConfig::validate() const
 {
     patternByName(pattern);
-    if(sourceVersion<1 || sourceVersion>LatestSourceVersion || (sourceVersion<3 && opportunisticAdjacentPickup)
+    if(sourceVersion<1 || sourceVersion>LatestSourceVersion || (sourceVersion<3 && opportunisticAdjacentPickup) || (sourceVersion<4 && directResourceProbes)
         || unsigned(selection)>=SelectionNames.size() || unsigned(fallback)>=FallbackNames.size()
         || unsigned(routeTarget)>=RouteNames.size() || unsigned(pendingStep)>=PendingNames.size()
         || !interval(destinationRefreshJ) || !interval(routeRefreshJ)
@@ -82,6 +95,7 @@ std::string ClaimPolicyConfig::canonicalJson() const
         result["recovery_selection"]="first_available_cursor";
     }
     if(sourceVersion>=3)result["opportunistic_adjacent_pickup"]=opportunisticAdjacentPickup;
+    if(sourceVersion>=4)result["direct_resource_probes"]=directResourceProbes;
     return result.dump();
 }
 std::string ClaimPolicyConfig::digest() const {return Online::Sha256::hex(canonicalJson());}
@@ -107,6 +121,8 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
     }
     if(result.sourceVersion>=3 && !input.contains("opportunistic_adjacent_pickup"))
         throw std::invalid_argument("version 3 requires an explicit adjacent pickup policy");
+    if(result.sourceVersion>=4 && !input.contains("direct_resource_probes"))
+        throw std::invalid_argument("version 4 requires an explicit direct resource probe policy");
     for(const auto& [key,value]:input.items()) {
         if(key=="source_version" || key=="pattern_digest" || (result.usesRecovery() && recovery.contains(key)))continue;
         if(key=="pattern") {if(!value.is_string())throw std::invalid_argument("invalid claim pattern");result.pattern=value.get<std::string>();}
@@ -122,6 +138,10 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
         else if(key=="opportunistic_adjacent_pickup" && result.sourceVersion>=3) {
             if(!value.is_boolean())throw std::invalid_argument("invalid adjacent pickup flag");
             result.opportunisticAdjacentPickup=value.get<bool>();
+        }
+        else if(key=="direct_resource_probes" && result.sourceVersion>=4) {
+            if(!value.is_boolean())throw std::invalid_argument("invalid direct resource probe flag");
+            result.directResourceProbes=value.get<bool>();
         }
         else throw std::invalid_argument("unknown resource claim policy parameter: "+key);
     }

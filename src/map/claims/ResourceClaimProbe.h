@@ -78,5 +78,6 @@ public:
     const LiveMetrics& liveMetrics() const;
     const MovementMetrics& movementMetrics() const;
     void routeWork(const RouteDiagnostics&) const;
+    void rawResourceProbes(unsigned material, Uint64 coordinates, Uint64 xyChecks, Uint64 attempts, Uint64 checks, Uint64 improvements, Uint64 finalSelections=0) const;
 };
 }

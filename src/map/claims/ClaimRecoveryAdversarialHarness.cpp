@@ -349,3 +349,60 @@ TEST_CASE("recovery bounds island attempts and preserves pending GUI continuatio
     }
     }
 }
+
+TEST_CASE("source four resumes raw candidate after failed XY at same coordinate across saves" * doctest::test_suite("ActiveClaimRoutes"))
+{
+    glob2test::HeadlessGlobals globals;
+    std::vector<Uint32> reference;
+    for(unsigned participants:{1u,3u}) {
+        CAPTURE(participants);
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9377});
+        auto& game=fixture.game;auto& map=game.map;map.configureCompute(participants);
+        game.gameHeader.setResourceGrowthDisabled(true);game.gameHeader.getWinningConditions().clear();
+        map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig policy;policy.sourceVersion=4;policy.directResourceProbes=true;
+        policy.maximumExpansions=1;map.setMaterialClaimPolicyConfig(policy);
+        auto* consumer=fixture.addBuilding("inn",20,20);auto* unit=fixture.addUnit(WORKER,8,8);REQUIRE(consumer);REQUIRE(unit);
+        consumer->maxUnitWorking=1;consumer->setMaterial(WHEAT,0);consumer->updateCallLists();
+        unit->hungriness=0;unit->medical=Unit::MED_FREE;unit->activity=Unit::ACT_RANDOM;
+        const auto old=Uint32(map.coordToIndex(12,8)),first=Uint32(map.coordToIndex(4,8)),raw=Uint32(map.coordToIndex(9,8));
+        REQUIRE(map.incResourceByIndex(4,8,WHEAT,0));map.setMaterialAmountSlot(first,WHEAT,1);
+        REQUIRE(map.incResourceByIndex(12,8,WHEAT,0));map.setMaterialAmountSlot(old,WHEAT,1);
+        glob2test::publishCurrentHiringSuggestions(game);REQUIRE(consumer->subscribeToBringMaterialsStep());
+        glob2test::discardPrematureHiringSuggestions(game);REQUIRE(unit->attachedBuilding==consumer);
+        glob2test::awaitGradient(game,[&]{return map.getMaterialGradientSlot(0,WHEAT,unit->movementClass());});
+        game.invalidateObservation();game.observeCompletedWorld();unit->handleActiveMaterialMovement();
+        REQUIRE(unit->activeMaterialClaim);CHECK(unit->activeMaterialClaim->access==first);
+        const auto owner=ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity);
+        REQUIRE(map.materialClaimRoutes);CHECK(map.materialClaimRoutes->recovery.at(owner).nextProbe==1);
+        map.flushClaimRoutes();++game.stepCounter;game.observeCompletedWorld();
+        unit->handleActiveMaterialMovement();REQUIRE_FALSE(unit->activeMaterialClaim);
+        REQUIRE(map.materialClaimRoutes->recovery.at(owner).recovering);
+        CHECK(map.materialClaimRoutes->recovery.at(owner).nextProbe==1);
+        // Coordinate0 raw is empty; coordinate1 XY leads to the other goal.
+        // Its real bounded route also fails while the worker remains stationary.
+        unit->handleActiveMaterialMovement();REQUIRE(unit->activeMaterialClaim);
+        CHECK(unit->activeMaterialClaim->access==old);
+        CHECK(map.materialClaimRoutes->recovery.at(owner).nextProbe==3);
+        map.flushClaimRoutes();++game.stepCounter;game.observeCompletedWorld();
+        unit->handleActiveMaterialMovement();REQUIRE_FALSE(unit->activeMaterialClaim);
+        CHECK(map.materialClaimRoutes->recovery.at(owner).nextProbe==3);
+        // New adjacent stock appears after failure; XY still names the old goal.
+        // Only raw phase1 of coordinate1 finds this legal, unoccupied tile.
+        REQUIRE(map.incResourceByIndex(9,8,WHEAT,0));map.setMaterialAmountSlot(raw,WHEAT,1);
+        REQUIRE(map.materialDestinationValidSlot(0,WHEAT,unit->movementClass(),9,8,false,nullptr));
+        game.invalidateObservation();
+        const auto gid=unit->gid;auto restored=copyRecoveryGame(fixture,participants);
+        std::vector<Uint32> trace{game.checkSum()};
+        for(auto* current:{&game,&restored->game}) {
+            auto* worker=current->teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];REQUIRE(worker);
+            const auto* field=current->map.lookupMaterialGradientSlot(0,WHEAT,worker->movementClass(),false,nullptr);REQUIRE(field);
+            const auto labels=current->map.materialGradientDestinations(field);REQUIRE(labels);CHECK(labels->x[raw]==12);
+            REQUIRE(worker->selectActiveMaterialClaim(field));REQUIRE(worker->activeMaterialClaim);
+            CHECK(worker->activeMaterialClaim->source==raw);CHECK(worker->activeMaterialClaim->access==raw);
+            CHECK(current->map.materialClaimRoutes->recovery.at(owner).nextProbe==4);
+        }
+        CHECK(game.checkSum()==restored->game.checkSum());trace.push_back(game.checkSum());
+        if(participants==1)reference=trace;else CHECK(trace==reference);
+    }
+}

@@ -52,6 +52,7 @@ struct Probe::Impl
         Ready, Pending, Failed, Arrived, Wait, Roam, Release, CooldownWait, CounterCount };
     std::array<std::array<std::array<Uint64,CounterCount>,2>,MaterialCount> outcomes{};
     Uint64 outcomeRows=0;
+    std::array<std::array<Uint64,6>,MaterialCount> rawProbes{};
     Json outcomeSummary() const {
         return {{"version",1},{"material_phase_counters",outcomes},{"phase_names",{"movement","pickup"}},
             {"counter_names",{"eligible","attempted","acquired","held_same","retarget_access","retarget_donor_same_access",
@@ -590,6 +591,9 @@ void Probe::finish()
         {"sampled_pooled",impl->sampledPooled},{"sampled_exhausted_pools",impl->sampledExhaustedPools},
         {"stale_scalar_ineligible",impl->staleScalarIneligible},{"stale_mixed_field_ineligible",impl->staleMixedFieldIneligible},
         {"stale_invalid_xy",impl->staleInvalidXY},{"capture_bytes",m.captureBytes},{"live",impl->liveSummary()},{"decision_outcomes",impl->outcomeSummary()},
+        {"raw_resource_probes",{{"version",1},{"material_counters",impl->rawProbes},{"counter_names",{"coordinate_visits","xy_unique_candidate_checks","raw_attempted_coordinates","raw_unique_candidate_checks","raw_best_candidate_improvements","raw_final_selections"}},
+            {"scope","source4 raw-enabled full-probe selections only; raw-off and movement-only zeros mean unobserved work, not zero work; at most 2 candidate phases per array coordinate; paired recoverycursor2*i+phase; A*admission budget unchanged; raw after XY per array entry, deduplicated with XY; checks precede recovery/score/eligibility rejection; improvements are provisional; final selections count only successful commits of a raw winner, including unchanged held claims"},
+            {"offline_patterns","existing pattern scores/probes remain XY-only shadow estimates, not hybrid selector measurements"}}},
         {"movement_audit",{{"version",1},{"scope","all-transport-committed-grid-moves"},
             {"coverage_start",impl->config.movementStartTick?Json(*impl->config.movementStartTick):Json(nullptr)},
             {"coverage_end",impl->movementEndTick?Json(*impl->movementEndTick):Json(nullptr)},
@@ -671,6 +675,12 @@ void Probe::liveEvent(const Unit& unit,LiveEvent event) const
     else if(event==LiveEvent::HarvestFailed)impl->closeJourney(at,"harvest_failed",tick);
     else if(event==LiveEvent::Retargeted)impl->closeJourney(at,"retargeted",tick);
     else if(event==LiveEvent::Released && !at->second.harvesting)impl->closeJourney(at,"released",tick);
+}
+void Probe::rawResourceProbes(unsigned material,Uint64 coordinates,Uint64 xyChecks,Uint64 attempts,Uint64 checks,Uint64 improvements,Uint64 finalSelections) const
+{
+    if(!observesDecisionOutcomes())return;
+    auto& counters=impl->rawProbes.at(material);
+    counters[0]+=coordinates;counters[1]+=xyChecks;counters[2]+=attempts;counters[3]+=checks;counters[4]+=improvements;counters[5]+=finalSelections;
 }
 void Probe::routeWork(const RouteDiagnostics& value) const
 {

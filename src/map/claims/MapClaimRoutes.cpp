@@ -526,6 +526,7 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
         stream->readEnterSection("claimRecovery");const auto count=stream->readUint32("count");
         if(count>MaximumStates || (count && (activeClaimPolicy!=ActiveClaimPolicy::Experimental || !materialClaimPolicyConfig().usesRecovery())))
             throw std::runtime_error("Invalid recovery record count");
+        const auto maximumCursor=materialClaimPolicyConfig().sourceVersion>=4?materialClaimPolicyConfig().maximumRecoveryCandidateCount():65536u;
         for(unsigned i=0;i<count;++i) {
             stream->readEnterSection(i);const auto owner=read64(stream);ClaimRecovery value;
             recoveryFields(value,[&](auto& field,const char* name){
@@ -538,7 +539,7 @@ void Map::loadActiveClaimRoutes(GAGCore::InputStream* stream, Sint32 versionMino
             if(!unit || unit->scriptIdentity!=Uint32(owner>>16) || value.replacement>=ClaimRecovery::CacheEntries ||
                 value.attempts>ClaimRecovery::MaxAttempts || (!value.windowKnown && value.attempts) ||
                 (value.pinnedAccess!=ClaimRecovery::NoTile && value.pinnedAccess>=cellCount()) ||
-                value.nextProbe>65536 || value.movement>=MOVEMENT_CLASS_COUNT || value.material>=MaterialSlotCount)
+                value.nextProbe>maximumCursor || value.movement>=MOVEMENT_CLASS_COUNT || value.material>=MaterialSlotCount)
                 throw std::runtime_error("Invalid recovery owner or context");
             for(const auto& e:value.entries)if(e.ttl>ClaimRecovery::TtlTicks || (e.access!=ClaimRecovery::NoTile && e.access>=cellCount()))
                 throw std::runtime_error("Invalid recovery exclusion");

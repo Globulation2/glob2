@@ -85,3 +85,33 @@ TEST_CASE("adjacent pickup exchange is an explicit version three policy" * docte
         CHECK_THROWS(ClaimPolicyConfig::parse(json.dump()));
     }
 }
+
+TEST_CASE("direct resource probes require explicit source four and preserve prior identities" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    ClaimPolicyConfig config;CHECK(config.sourceVersion==2);CHECK_FALSE(config.directResourceProbes);
+    auto wire=nlohmann::json::parse(config.canonicalJson());
+    wire["source_version"]=4;wire["opportunistic_adjacent_pickup"]=true;
+    CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+    for(bool enabled:{false,true}) {
+        wire["direct_resource_probes"]=enabled;
+        const auto parsed=ClaimPolicyConfig::parse(wire.dump());CHECK(parsed.directResourceProbes==enabled);
+        CHECK(ClaimPolicyConfig::parse(parsed.canonicalJson())==parsed);
+    }
+    for(auto invalid:{nlohmann::json(1),nlohmann::json("true"),nlohmann::json(nullptr)}) {
+        wire["direct_resource_probes"]=invalid;CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+    }
+    wire["direct_resource_probes"]=false;
+    for(unsigned version:{1u,2u,3u}) {wire["source_version"]=version;CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));}
+    wire["source_version"]=4;wire.erase("opportunistic_adjacent_pickup");CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+}
+
+TEST_CASE("paired raw candidate cursor count is gated and overflow checked" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    ClaimPolicyConfig config;
+    CHECK(config.recoveryCandidateCount(17)==17);
+    config.sourceVersion=3;CHECK(config.recoveryCandidateCount(17)==17);
+    config.sourceVersion=4;CHECK(config.recoveryCandidateCount(17)==17);
+    config.directResourceProbes=true;CHECK(config.recoveryCandidateCount(17)==34);
+    CHECK_THROWS(config.recoveryCandidateCount(std::size_t(UINT32_MAX)/2+1));
+    CHECK(config.maximumRecoveryCandidateCount()>0);
+}

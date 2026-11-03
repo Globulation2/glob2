@@ -30,9 +30,9 @@ def validate_policy(policy, capabilities=None):
     if not isinstance(policy, dict):
         raise ValueError('claim policy requires all canonical configuration fields')
     version = policy.get('source_version')
-    if type(version) is not int or version not in (1, 2, 3):
+    if type(version) is not int or version not in (1, 2, 3, 4):
         raise ValueError('unsupported claim policy source version')
-    expected_keys = KEYS | (set(RECOVERY_V1) if version >= 2 else set()) | ({'opportunistic_adjacent_pickup'} if version >= 3 else set())
+    expected_keys = KEYS | (set(RECOVERY_V1) if version >= 2 else set()) | ({'opportunistic_adjacent_pickup'} if version >= 3 else set()) | ({'direct_resource_probes'} if version >= 4 else set())
     if set(policy) != expected_keys:
         raise ValueError('claim policy requires all canonical configuration fields')
     if version >= 2:
@@ -54,11 +54,13 @@ def validate_policy(policy, capabilities=None):
             raise ValueError('invalid claim policy bound: ' + key)
     if version >= 3 and type(policy['opportunistic_adjacent_pickup']) is not bool:
         raise ValueError('claim adjacent pickup option must be boolean')
+    if version >= 4 and type(policy['direct_resource_probes']) is not bool:
+        raise ValueError('claim direct resource probes option must be boolean')
     if type(policy['use_primary_gradient']) is not bool:
         raise ValueError('claim primary gradient option must be boolean')
     if capabilities is not None:
         supported = capabilities.get('resource_claims_policy_config_version')
-        if type(supported) is not int or supported not in (1, 2, 3) or supported < version or 'experimental' not in capabilities.get('resource_claims_active_policies', []):
+        if type(supported) is not int or supported not in (1, 2, 3, 4) or supported < version or 'experimental' not in capabilities.get('resource_claims_active_policies', []):
             raise ValueError('build does not advertise claim policy config version ' + str(version))
         assets = capabilities.get('resource_claims_policy_patterns', [])
         if {'name': policy['pattern'], 'digest': policy['pattern_digest']} not in assets:

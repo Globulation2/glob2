@@ -176,44 +176,72 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
             [&](const auto& candidate){return config.pattern==candidate.name;});
         if(found==ResourceClaims::Experiment::pilotPatterns().end())throw std::logic_error("configured material claim pattern missing");
         const auto probes=found->viewForDirection(octant);
+        const unsigned candidateCount=config.recoveryCandidateCount(probes.x.size());
         Uint32 bestAccess=UINT32_MAX,bestProbe=UINT32_MAX;unsigned bestScore=UINT_MAX,bestOrdinal=0;
         std::optional<ResolvedClaim> bestResolved;
-        for(std::size_t i=recovering?recovery.firstProbe:0;i<probes.x.size();++i) {
-            const auto tag=probes.origin[i];if(tag && !nearestValid)continue;
-            const int ox=tag==0?posX:tag==1?nx:posX+nearDx/2;
-            const int oy=tag==0?posY:tag==1?ny:posY+nearDy/2;
-            const auto probe=Uint32(map.coordToIndex(ox+probes.x[i],oy+probes.y[i]));
-            const auto x=destinations->x[probe],y=destinations->y[probe];
-            if(x>=map.getW() || y>=map.getH())continue;
-            const auto access=Uint32(map.coordToIndex(x,y));
-            if(visited[access]==epoch)continue;
-            visited[access]=epoch;
-            // A soft failed-route exclusion cannot forbid a pickup already
-            // within reach. Deduplicate first: this eligibility is constant for
-            // every probe leading to the same access during one selection.
-            if(config.usesRecovery() && (!recovery.mayRoute || recovery.rejects(access)) &&
-                map.warpDistMax(posX,posY,x,y)>1)continue;
-            const unsigned dx=std::max(0,std::abs(delta(posX,x,map.getW()))-1),dy=std::max(0,std::abs(delta(posY,y,map.getH()))-1);
-            const unsigned score=10*std::max(dx,dy)+4*std::min(dx,dy);
-            // Only a strictly better geometric candidate can replace the held
-            // best. Reject dominated accesses before any connected-farm flood;
-            // first-available exits below, so its evaluation order is unchanged.
-            if(bestAccess!=UINT32_MAX && score>=bestScore)continue;
-            const auto resolved=resolveClaim(*this,access,&farmMemo);if(!resolved)continue;
-            if(!map.materialClaimLedger().available(ResourceClaims::unitOwner(gid,scriptIdentity),resolved->claim,resolved->capacity,resolved->infinite))continue;
-            bestAccess=access;bestProbe=probe;bestScore=score;bestResolved=*resolved;bestOrdinal=unsigned(i);
-            if(firstAvailable)break;
-        }
+        // Dispatch once. Raw=false instantiation contains no raw-probe branch
+        // or counter work in the per-pattern loop and retains XY-only ordering.
+        const auto search=[&]<bool Raw,bool Record>() {
+            Uint64 coordinates=0,xyChecks=0,rawAttempts=0,rawChecks=0,rawImprovements=0;
+            const auto consider=[&]<bool Physical>(Uint32 access,unsigned x,unsigned y,Uint32 probe,unsigned i) {
+                if(visited[access]==epoch)return false;
+                visited[access]=epoch;
+                if constexpr(Record){if constexpr(Physical)++rawChecks;else ++xyChecks;}
+                // A soft failed-route exclusion cannot forbid a pickup already
+                // within reach. Deduplicate first: this eligibility is constant for
+                // every probe leading to the same access during one selection.
+                if(config.usesRecovery() && (!recovery.mayRoute || recovery.rejects(access)) &&
+                    map.warpDistMax(posX,posY,x,y)>1)return false;
+                const unsigned dx=std::max(0,std::abs(delta(posX,x,map.getW()))-1),dy=std::max(0,std::abs(delta(posY,y,map.getH()))-1);
+                const unsigned score=10*std::max(dx,dy)+4*std::min(dx,dy);
+                // Only a strictly better geometric candidate can replace the held
+                // best. Reject dominated accesses before any connected-farm flood;
+                // first-available exits below, so its evaluation order is unchanged.
+                if(bestAccess!=UINT32_MAX && score>=bestScore)return false;
+                const auto resolved=resolveClaim(*this,access,&farmMemo);if(!resolved)return false;
+                if(!map.materialClaimLedger().available(ResourceClaims::unitOwner(gid,scriptIdentity),resolved->claim,resolved->capacity,resolved->infinite))return false;
+                if constexpr(Record && Physical)++rawImprovements;
+                bestAccess=access;bestProbe=probe;bestScore=score;bestResolved=*resolved;bestOrdinal=Raw?2*i+unsigned(Physical):i;
+                return true;
+            };
+            const std::size_t firstCandidate=recovering?recovery.firstProbe:0;
+            for(std::size_t i=Raw?firstCandidate/2:firstCandidate;i<probes.x.size();++i) {
+                const auto tag=probes.origin[i];if(tag && !nearestValid)continue;
+                const int ox=tag==0?posX:tag==1?nx:posX+nearDx/2;
+                const int oy=tag==0?posY:tag==1?ny:posY+nearDy/2;
+                const int probeX=ox+probes.x[i],probeY=oy+probes.y[i];
+                const auto probe=Uint32(map.coordToIndex(probeX,probeY));
+                if constexpr(Record)++coordinates;
+                const auto x=destinations->x[probe],y=destinations->y[probe];
+                if((!Raw || 2*i>=firstCandidate) && x<map.getW() && y<map.getH() && consider.template operator()<false>(Uint32(map.coordToIndex(x,y)),x,y,probe,unsigned(i)) && firstAvailable)break;
+                if constexpr(Raw) {
+                    // ClosestGeometric scans both candidates; FirstAvailable
+                    // reaches this only when XY did not yield its winner.
+                    if constexpr(Record)++rawAttempts;
+                    if(consider.template operator()<true>(probe,unsigned(probeX)&(map.getW()-1),unsigned(probeY)&(map.getH()-1),probe,unsigned(i)) && firstAvailable)break;
+                }
+            }
+            if constexpr(Record)if(const auto* observer=map.resourceClaimProbe())
+                observer->rawResourceProbes(destinationPurpose,coordinates,xyChecks,rawAttempts,rawChecks,rawImprovements);
+        };
+        if(config.directResourceProbes) {
+            const auto* observer=map.resourceClaimProbe();
+            if(observer && observer->observesDecisionOutcomes())search.template operator()<true,true>();
+            else search.template operator()<true,false>();
+        } else search.template operator()<false,false>();
         if(bestAccess==UINT32_MAX) {
             if(config.usesRecovery() && recovery.mayRoute && !activeMaterialClaim)
-                map.finishClaimRecoverySelection(*this,unsigned(probes.x.size()),unsigned(probes.x.size()));
+                map.finishClaimRecoverySelection(*this,candidateCount,candidateCount);
             return false;
         }
         const auto oldTask=materialClaimTask;
         if(!commitResolvedClaim(*this,*bestResolved))return false;
+        if(config.directResourceProbes && (bestOrdinal&1))
+            if(const auto* observer=map.resourceClaimProbe();observer && observer->observesDecisionOutcomes())
+                observer->rawResourceProbes(destinationPurpose,0,0,0,0,0,1);
         if(oldTask!=materialClaimTask || materialClaimPolicyState.probe==UINT32_MAX) {
             materialClaimPolicyState.probe=bestProbe;
-            if(config.usesRecovery())map.finishClaimRecoverySelection(*this,bestOrdinal,unsigned(probes.x.size()));
+            if(config.usesRecovery())map.finishClaimRecoverySelection(*this,bestOrdinal,candidateCount);
         }
         return true;
     }
