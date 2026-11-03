@@ -1,17 +1,9 @@
-# Golden map fingerprints, owner-specific resource placement (save format 152, SIM40).
-# platform id revision wDec hDec teams seed status hash
-# The 67 affected generator revisions account for SIM40 owner-specific resource placement/smoothing.
-# Linux rows for the SIM40 revision-only repair were measured independently with GCC 11 and 13.
-# Polder revision 7 follows expanded-ground defaults; Linux GCC 13 and independent native macOS jobs supplied its rows.
-# Historical epoch-0 rows (including macos-arm64) are preserved in fixtures/map-generators/pre-resource-epoch-golden.txt.
-# macos-arm64 rows were measured in independent native jobs; revision metadata follows the same SIM40 repair.
-# Older historical rows described the per-cell terrain model.
-# Generation fingerprints are platform-specific; acceptance does not imply cross-platform terrain equality.
-# --require-rows remains strict for platforms without accepted rows.
-# Regenerate this platform with MapGeneratorGoldenTest <profile> --update after a generator revision bump.
-# Anthill revision 6 (ridge-rock walls, quarry chambers): macos-arm64 rows from a local native run; linux-x86_64 rows copied from them (the two platforms matched on every Anthill row in CI before the doorstep change).
-# Honeycomb isle revision 5 (terrain hexes on the catalogue): macos-arm64 rows from a local native run; linux-x86_64 rows copied from them (the two platforms matched on every Honeycomb isle row before).
-# Braided Delta revision 6 (inland delta on the catalogue): macos-arm64 rows from a local native run; linux-x86_64 rows copied from them (the two platforms matched on every Braided Delta row before).
+# Golden map fingerprints: platform id revision wDec hDec teams seed status hash
+# Regenerate with MapGeneratorGoldenTest <profile> --update after a recipe revision bump.
+# Refresh each platform from its own native observations; generated worlds may differ across platforms.
+# These world hashes do not establish cross-platform simulation determinism.
+# --require-rows rejects missing or stale rows for the current platform.
+# Historical resource-epoch-0 rows remain in fixtures/map-generators/pre-resource-epoch-golden.txt.
 linux-x86_64 0 1 7 7 4 1 ok 598464062941275300
 linux-x86_64 0 1 8 8 2 1 ok 5434630491393693860
 linux-x86_64 0 1 8 8 4 1 ok 5434630491393693860
