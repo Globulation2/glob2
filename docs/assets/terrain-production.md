@@ -49,9 +49,9 @@ ground materials aim at a luma spread of 6–14 and a grain of 3–10 at 32 px.
 
 Ground recipes render periodic blocks and slice them into 128×128 frames,
 area-averaged to 32×32 for classic rendering. Every block is 8×8 tiles
-(1024×1024 HD pixels), with four interchangeable layouts. Automatic synthesis
-uses at most two workers to bound the temporary field buffers; `--jobs` explicitly
-overrides that limit. Noise frequency,
+(1024×1024 HD pixels), with four interchangeable layouts. Synthesis uses one
+worker per core, as many as physical memory allows (about 1.5 GB each for the
+temporary field buffers); `--jobs` overrides that. Noise frequency,
 stone counts and stamp counts scale with block size so feature sizes and density
 stay at their native scale. Stamps can cross any cell edge and wrap around the
 whole block. Shading and domain warps sample the whole block, including its
