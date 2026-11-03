@@ -552,6 +552,27 @@ def phase_job_counts(coordinator):
     return dict(coordinator.db.execute('SELECT state,count(*) FROM jobs GROUP BY state').fetchall())
 
 
+def install_export_optimization():
+    """Skip decoding immutable successful exports already present on disk.
+
+    Only the coordinator process is changed; worker package identity stays frozen.
+    Missing files and every non-success record retain the normal repair path.
+    """
+    def repair_exports(self):
+        for row in self.db.execute('SELECT id,record,category FROM attempts WHERE record IS NOT NULL'):
+            path=self.root/'attempts'/(row['id']+'.json')
+            if row['category']=='success' and path.exists():continue
+            record=json.loads(row['record'])
+            if not path.exists():atomic_json(path,record)
+            if record['category']!='success':
+                path=self.root/'failures'/(row['id']+'.json')
+                if not path.exists():atomic_json(path,record)
+        for row in self.db.execute('SELECT j.id,a.record FROM jobs j JOIN attempts a ON j.accepted=a.id'):
+            path=self.root/'results'/(row['id']+'.json')
+            if not path.exists():atomic_json(path,json.loads(row['record']))
+    Coordinator.repair_exports=repair_exports
+
+
 def continuation_cpu_ids(root, receipt):
     """Explicitly amended capacity leaves the original campaign receipt intact."""
     amendment=Path(root)/'cpu-allocation-amendment.json'
@@ -580,7 +601,7 @@ def run_phase(root, bundle_path, manifest, cpu_ids, deadline):
     hosts=root/'hosts.json';atomic_json(hosts,host_records)
     coordinator=Coordinator.submit(directory,manifest,[bundle_path]);frozen_manifest=coordinator.manifest;coordinator.close()
     log=(root/(phase+'-coordinator.log')).open('ab')
-    runner=subprocess.Popen([sys.executable,'-m','tools.tournaments','run',str(directory),'--hosts',str(hosts)],stdout=log,stderr=subprocess.STDOUT)
+    runner=subprocess.Popen([sys.executable,'-c','from tools.gradient_ratio_experiment import install_export_optimization; install_export_optimization(); from tools.tournaments.__main__ import main; main()', 'run',str(directory),'--hosts',str(hosts)],stdout=log,stderr=subprocess.STDOUT)
     reason='complete';draining=False;last_monitor=0
     try:
         with gzip.open(root/(phase+'-host.jsonl.gz'),'at') as monitor:
@@ -807,7 +828,7 @@ def campaign(bundle_path, directory, cpu_ids, hours=48, resume_pilot=False, cont
             decision_package(directory,str(error))
         raise
     finally:
-        for worker in (Path(directory)/'worker/workers').glob('*'):
+        for worker in Path(directory).glob('worker*/workers/*'):
             if worker.is_dir():atomic_json(worker/'stop.json',dict(requested=time.time()))
     decision_package(directory)
 

@@ -1,11 +1,11 @@
 """Independent-seed planning, required evidence, and statistical unit contracts."""
-import copy,json
+import copy,json,sqlite3
 import unittest
 import tempfile,time,io
 from pathlib import Path
 from unittest.mock import patch
 from collections import Counter, defaultdict
-from tools.gradient_ratio_experiment import continuation_cpu_ids, ARMS, NAMED, compare, plan, add_observer_calibration, finalists, _resume_pilot, _continue_pilot, diagnostic_projection, latest_gameplay
+from tools.gradient_ratio_experiment import install_export_optimization, continuation_cpu_ids, ARMS, NAMED, compare, plan, add_observer_calibration, finalists, _resume_pilot, _continue_pilot, diagnostic_projection, latest_gameplay
 from tools.tournaments.jobs import EngineJob, routing_ratio_outputs
 
 
@@ -16,6 +16,29 @@ def bundle():
             [('width',[7,8,9]),('height',[7,8,9]),('teams',[2,3,4,6]),('workers',[4]),('water',[10,30])]]) for i,name in enumerate(names)]))
 
 class RatioExperiment(unittest.TestCase):
+    def test_export_optimization_repairs_missing_files(self):
+        from tools.tournaments.coordinator import Coordinator
+        original=Coordinator.repair_exports
+        try:
+            install_export_optimization()
+            with tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp)
+                for name in ('attempts','failures','results'):(root/name).mkdir()
+                db=sqlite3.connect(':memory:');db.row_factory=sqlite3.Row
+                db.execute('create table attempts(id,record,category)');db.execute('create table jobs(id,accepted)')
+                for identity,category in [('a','success'),('b','timeout')]:
+                    db.execute('insert into attempts values(?,?,?)',(identity,json.dumps({'category':category}),category))
+                db.execute("insert into jobs values('job','a')")
+                fake=type('Fake',(),{'root':root,'db':db})()
+                Coordinator.repair_exports(fake)
+                self.assertTrue((root/'failures/b.json').exists())
+                self.assertFalse((root/'failures/a.json').exists())
+                (root/'attempts/a.json').unlink();(root/'results/job.json').unlink()
+                Coordinator.repair_exports(fake)
+                self.assertEqual(json.loads((root/'attempts/a.json').read_text()),{'category':'success'})
+                self.assertTrue((root/'results/job.json').exists());db.close()
+        finally:Coordinator.repair_exports=original
+
     def test_capacity_amendment_preserves_receipt(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);receipt={'cpu_ids':list(range(12,24)),'deadline':123}

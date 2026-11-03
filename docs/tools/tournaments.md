@@ -931,7 +931,10 @@ and the expanded `cpu_ids`. Continuation validates that amendment and retains
 the original receipt. Extra CPUs use a separate worker with four participants
 per game, preserving existing attempt allocations. Record the transition time
 for scheduling-interference analysis. The expansion accelerates existing work;
-it does not multiply planned sample counts or reset deadlines.
+it does not multiply planned sample counts or reset deadlines. The research
+coordinator skips decoding successful attempt exports that already exist;
+missing exports retain normal recovery. This optimization runs only in the
+coordinator process and preserves the frozen worker package.
 
 `python3 -m tools.gradient_ratio_experiment plan --bundle BUNDLE --phase pilot
 --output artifacts/ratio-pilot.json` freezes independently seeded baseline,
