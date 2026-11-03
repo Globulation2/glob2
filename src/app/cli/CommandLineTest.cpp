@@ -292,3 +292,15 @@ TEST_CASE("active claim observer is independent of shadow tracking" * doctest::t
     CHECK_NOTHROW(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--material-destinations","--resource-claims-active","prototype-stationary-v1","--resource-claims-probe"}));
     CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/active-probe-cli","--map-file","test.map","--player","castor","--game-seed","42","--resource-claims-probe"}));
 }
+
+TEST_CASE("explicit live claim policy JSON is new-game research only")
+{
+    std::vector<std::string> args={"game","run","--output-dir","artifacts/policy-cli","--map-file","test.map","--game-seed","42","--player","castor","--material-destinations","--resource-claims-policy-json",R"({"source_version":1,"route_refresh_j":6})"};
+    CHECK_NOTHROW(Cli::parse(args));
+    auto probe=args;probe.push_back("--resource-claims-probe");CHECK_NOTHROW(Cli::parse(probe));
+    auto bad=args;bad.back()=R"({"source_version":1,"route_refresh_j":5})";CHECK_THROWS(Cli::parse(bad));
+    bad=args;bad.insert(bad.end(),{"--resource-claims-active","prototype-stationary-v1"});CHECK_THROWS(Cli::parse(bad));
+    bad=args;bad.push_back("--resource-claims-shadow");CHECK_THROWS(Cli::parse(bad));
+    bad=args;bad.insert(bad.end(),{"--write-replay","test.replay"});CHECK_THROWS(Cli::parse(bad));
+    CHECK_THROWS(Cli::parse({"game","run","--output-dir","artifacts/policy-cli","--load-game","test.game","--resource-claims-policy-json",R"({"source_version":1})"}));
+}

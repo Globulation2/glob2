@@ -180,6 +180,7 @@ struct Handle
 	std::shared_ptr<const Fertility::GrowthCache> growth;
 	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
+    Uint32 activeClaimRuntimeChecksum = 0;
 	std::array<Uint64, 6> mapGenerations{};
 	//! Named views share existing buffers and retain only their consumer's inputs.
 	Handle simulationView() const;

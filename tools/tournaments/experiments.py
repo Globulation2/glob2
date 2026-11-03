@@ -1,5 +1,6 @@
 """Experiment planners. All execution goes through Coordinator."""
 import argparse
+import copy
 import itertools
 import json
 import random
@@ -15,6 +16,7 @@ from .model import generator_samples, grid, job, rotations, seeded_samples, vali
 
 class Planner:
     def __init__(self, kind, config, bundles):
+        config = copy.deepcopy(config)
         self.kind, self.config = kind, config
         self.bundles = {bundle['id']: bundle for bundle in bundles}
         self.builds = config.get('builds', list(self.bundles))
@@ -29,6 +31,10 @@ class Planner:
         if 'resource_claims_active' in config:
             if any(config['resource_claims_active'] not in self.bundles[build]['capabilities'].get('resource_claims_active_policies', []) for build in self.builds):
                 raise ValueError('active policy absent from pinned build catalog')
+        if 'resource_claims_policy' in config:
+            from .claim_policy import validate_policy
+            for build in self.builds:
+                validate_policy(config['resource_claims_policy'], self.bundles[build]['capabilities'])
         if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') != 1 for build in self.builds):
             raise ValueError('build does not advertise active claim probe version 1')
         if 'resource_claims_deep_context' in config and any(self.bundles[build]['capabilities'].get('resource_claims_deep_version') != 1 for build in self.builds):
@@ -114,7 +120,7 @@ class Planner:
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
-                            **({key: config[key] for key in ('resource_claims_probe', 'resource_claims_active', 'resource_claims_deep_context') if key in config}),
+                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context') if key in config}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
@@ -166,7 +172,7 @@ class Planner:
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
-                            **({key: config[key] for key in ('resource_claims_probe', 'resource_claims_active', 'resource_claims_deep_context') if key in config}),
+                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context') if key in config}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)

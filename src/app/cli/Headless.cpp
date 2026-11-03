@@ -41,6 +41,8 @@
 #include "SimVersion.h"
 #include <nlohmann/json.hpp>
 #include "map/claims/ResourceClaimProbe.h"
+#include "map/claims/ClaimPolicyConfig.h"
+#include "map/claims/ResourceClaimPilotPatterns.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include "GameGUI.h"
@@ -553,7 +555,7 @@ struct HeadlessRunner
 		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
-			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay","--material-destinations","--resource-claims-active"})
+			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay","--material-destinations","--resource-claims-active","--resource-claims-policy-json"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
@@ -683,6 +685,8 @@ struct HeadlessRunner
                         throw std::invalid_argument("invalid active claim prototype selection");
                     engine.gui.game.map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
                 }
+                if(options.count("--resource-claims-policy-json"))
+                    engine.gui.game.map.setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig::parse(one(options,"--resource-claims-policy-json")));
             }
 		}
 		if(options.count("--map-script"))
@@ -868,7 +872,7 @@ struct HeadlessRunner
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"initialChecksum\":" << initialChecksum
 			<< ",\"finalChecksum\":" << engine.latestChecksum->value
-            << ",\"checksum_algorithm\":\"snapshot-v3\""
+            << ",\"checksum_algorithm\":\"snapshot-v4\""
 			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu
 			<< ",\"benchmark_save_cpu_ns\":" << saveCpu
@@ -1002,7 +1006,12 @@ struct HeadlessRunner
 			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
 			result << ']';
 		}
-        result << ",\"active_claim_policy\":" << quote(engine.gui.game.map.activeClaimsEnabled()?"prototype-stationary-v1":"disabled");
+        result << ",\"active_claim_policy\":" << quote(engine.gui.game.map.materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental?"experimental":engine.gui.game.map.activeClaimsEnabled()?"prototype-stationary-v1":"disabled");
+        if(engine.gui.game.map.materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental) {
+            const auto& config=engine.gui.game.map.materialClaimPolicyConfig();
+            result << ",\"resource_claims_policy_config\":" << config.canonicalJson()
+                << ",\"resource_claims_policy_digest\":" << quote(config.digest());
+        }
         result << ",\"material_destinations_enabled\":" << (engine.gui.game.map.materialDestinationsEnabled()?"true":"false");
         if (options.count("--resource-gradient-exploration")) {
             result << ",\"resource_gradient_collection\":{\"intervals\":" << quote(one(options,"--resource-gradient-exploration"))
@@ -1157,7 +1166,17 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_shadow_version\":1,\"material_destinations_version\":1,\"resource_claims_deep_version\":1,\"resource_claims_probe_version\":1,\"resource_claims_active_policies\":[\"prototype-stationary-v1\"],\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_shadow_version\":1,\"material_destinations_version\":1,\"resource_claims_deep_version\":1,\"resource_claims_probe_version\":1,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
+
+            // Config asset identities are frozen by the planner before dispatch.
+            // This catalog path is diagnostic setup, never a simulation hot loop.
+            nlohmann::json policyPatterns=nlohmann::json::array();
+            for(const auto& pattern:ResourceClaims::Experiment::pilotPatterns()) {
+                ResourceClaims::ClaimPolicyConfig config;config.pattern=pattern.name;
+                const auto canonical=nlohmann::json::parse(config.canonicalJson());
+                policyPatterns.push_back({{"name",pattern.name},{"digest",canonical.at("pattern_digest")}});
+            }
+            std::cout << policyPatterns.dump() << ",\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

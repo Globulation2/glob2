@@ -2,6 +2,7 @@
 #pragma once
 #include "ClaimRouteSearch.h"
 #include "ResourceClaimPatternEvaluation.h"
+#include "ResourceClaimExposure.h"
 #include "MapInternal.h"
 #include <chrono>
 #include <map>
@@ -16,6 +17,7 @@ struct RouteMeasurement
     const char* status = "unreachable";
     Uint64 cost = Oracle::Unreachable, ns = 0;
     Uint32 expansions = 0, continuationSteps = 0;
+    ExposureProxy::Path exposure;
 };
 class StaticRoutes
 {
@@ -24,6 +26,7 @@ class StaticRoutes
     const Oracle::Result& oracle;
     std::span<const Uint16> values;
     RouteSearch search;
+    const ExposureProxy* exposure=nullptr;
     std::map<Uint32, RouteMeasurement> directCache, prefixCache;
     std::map<std::pair<Uint32,Uint32>,RouteMeasurement> continuationCache;
     std::vector<Uint32> successors;
@@ -48,14 +51,23 @@ class StaticRoutes
         measurement.ns=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
         measurement.expansions=result.expansions;
         if(result.status==RouteStatus::ExpansionLimit)measurement.status="expansion_limit";
-        else if(result.status==RouteStatus::Found){measurement.status="reached";measurement.cost=result.cost;}
+        else if(result.status==RouteStatus::Found){
+            measurement.status="reached";measurement.cost=result.cost;
+            if(exposure) {
+                measurement.exposure.endpoint=query.origin;auto previous=query.origin;
+                for(const auto cell:result.cells) {
+                    const bool diagonal=cell%view.width!=previous%view.width && cell/view.width!=previous/view.width;
+                    exposure->enter(measurement.exposure,cell,routeEntryCost(view,cell,query.route,diagonal));previous=cell;
+                }
+            }
+        }
         else if(result.status==RouteStatus::CostLimit)measurement.status="cost_limit";
         return measurement;
     }
 public:
     static constexpr unsigned OutcomeLimit=32, ExpansionLimit=4096, ContinuationLimit=4096;
-    StaticRoutes(MapState::View view,const Oracle::Query& query,const Oracle::Result& oracle,std::span<const Uint16> values)
-        :view(view),query(query),oracle(oracle),values(values)
+    StaticRoutes(MapState::View view,const Oracle::Query& query,const Oracle::Result& oracle,std::span<const Uint16> values,const ExposureProxy* exposure=nullptr)
+        :view(view),query(query),oracle(oracle),values(values),exposure(exposure)
     {
         successors.resize(values.size(),Oracle::NoTile);
         successorCosts.resize(values.size()); successorRead.resize(values.size());
@@ -100,6 +112,7 @@ public:
         else {
             const auto start=std::chrono::steady_clock::now();
             Uint32 cell=probe; tail.cost=0; tail.status="contradiction";
+            if(exposure)tail.exposure.endpoint=probe;
             while(true) {
                 if(separation(cell,access)<=1){tail.status="reached";break;}
                 if(tail.continuationSteps>=ContinuationLimit){tail.status="continuation_limit";break;}
@@ -119,12 +132,14 @@ public:
                 const auto selected=successors[cell];const auto step=successorCosts[cell];
                 if(selected==Oracle::NoTile || !routePassable(view,selected,query.route))break;
                 cell=selected;tail.cost+=step;++tail.continuationSteps;
+                if(exposure)exposure->enter(tail.exposure,cell,step);
             }
             if(std::string_view(tail.status)!="reached")tail.cost=Oracle::Unreachable;
             tail.ns=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
             continuationCache[key]=tail;
         }
         tail.ns+=prefix.ns;tail.expansions=prefix.expansions;
+        if(exposure){auto combined=prefix.exposure;combined.append(tail.exposure);tail.exposure=combined;}
         if(tail.cost!=Oracle::Unreachable)tail.cost+=prefix.cost;
         return tail;
     }

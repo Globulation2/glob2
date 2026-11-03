@@ -39,6 +39,7 @@ Unit::~Unit()
 {
 	assert(!populationMembership && !populationPrevious && !populationNext);
 	if (owner && owner->game) {
+        owner->map->forgetClaimRecovery(ResourceClaims::unitOwner(gid,scriptIdentity));
         if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
         else if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 		if (hasCapability(UnitRuntimeTraits::ReleaseClearingClaims) && previousClearingArea && owner->map->getW()>0 && owner->map->isClearingAreaClaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber)==gid)
@@ -157,6 +158,7 @@ void Unit::rebindDefinitionForSetup()
 
 void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
+    materialClaimPolicyState={};
 	// unit specification
 	this->typeNum = typeNum;
 
@@ -276,6 +278,9 @@ void Unit::setTargetBuilding(Building * b)
 void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction, UnitJobPurpose purpose)
 {
     if(owner->map->activeClaimsEnabled())releaseActiveMaterialClaim();
+    if(owner->map->materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental) {
+        materialClaimPolicyState.lastGoalAttempt=0;materialClaimPolicyState.fallbackCount=0;materialClaimPolicyState.probe=UINT32_MAX;
+    }
     const MaterialClaimObservation claimObservation{*this};
 	Building* b=building;
 	if (attraction && !inside) {
@@ -830,12 +835,15 @@ void Unit::reconcileMaterialClaim()
     const auto release=[&] { map.releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity)); };
     if (isDead || hp<UNIT_HP_DEATH_THRESHOLD || medical!=MED_FREE || !attachedBuilding
         || activity!=ACT_FILLING || !validMaterial(destinationPurpose)
-        || (!performance[WALK] && !performance[SWIM] && !performance[FLY])
         || !performance[HARVEST] || !canCarryMaterial(destinationPurpose)) { release(); return; }
     const bool harvesting=displacement==DIS_HARVESTING;
     if (!harvesting && (displacement!=DIS_GOING_TO_RESOURCE || !validTarget())) { release(); return; }
     const auto access=map.coordToIndex(harvesting?posX+dx:targetX,harvesting?posY+dy:targetY);
     const int x=int(access%map.getW()), y=int(access/map.getW());
+    if(!performance[WALK] && !performance[SWIM] && !performance[FLY] &&
+        (map.warpDistMax(posX,posY,x,y)>1 || !map.doesUnitTouchBuilding(this,attachedBuilding->gid))) {
+        release();return;
+    }
     if (!map.isMaterialTakeableSlot(x,y,destinationPurpose)
         || map.isForbidden(x,y,owner->me)) { release(); return; }
     auto source=access;

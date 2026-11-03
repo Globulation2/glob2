@@ -60,6 +60,41 @@ template<class Values> std::string evidenceHash(const Values& values)
 
 TEST_SUITE("DelayedGradientPublication")
 {
+TEST_CASE("published194 saves predate destination and active claim fields")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame source({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=source.game;
+    source.addBuilding("inn",2,2);
+    source.addUnit(WORKER,8,8);
+    game.map.setResourceByIndex(12,8,WHEAT,1);
+    for(unsigned tick=0;tick<16;++tick)game.step(0);
+    class Published194Output final : public glob2test::LegacyPopulationOutput {
+    public:
+        Published194Output(GAGCore::MemoryStreamBackend* bytes,Game& game)
+            : LegacyPopulationOutput(bytes,&game,194,GradientLayout::PreservePending) {}
+        void writeSint32(Sint32 value,std::string_view name) override {
+            LegacyPopulationOutput::writeSint32(name=="versionMinor"?194:value,name);
+        }
+    };
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    Published194Output output(memory,game);
+    game.save(&output,false,"published194-without-claims");output.flush();
+    const auto bytes=memory->takeContents();
+    glob2test::HeadlessGame restored({.loadDefaultRace=true,.header=true});
+    restored.game.map.clear();restored.game.map.resourceCells.clear();
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    REQUIRE(restored.game.load(&input));
+    REQUIRE(restored.game.mapHeader.getVersionMinor()==194);
+    CHECK_FALSE(restored.game.map.materialDestinationsEnabled());
+    CHECK_FALSE(restored.game.map.activeClaimsEnabled());
+    CHECK(normalizedChecksums(game)==normalizedChecksums(restored.game));
+    for(unsigned tick=0;tick<64;++tick) {
+        game.step(0);restored.game.step(0);
+        REQUIRE(normalizedChecksums(game)==normalizedChecksums(restored.game));
+    }
+}
+
 TEST_CASE("private174 migration profile is explicit and does not replace published layouts")
 {
     class HeaderVersionOutput final : public glob2test::LegacyPopulationOutput {

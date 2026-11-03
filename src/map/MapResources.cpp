@@ -12,6 +12,8 @@
 #include "Unit.h"
 #include "claims/ResourceClaimProbe.h"
 #include "claims/ActiveRouteRuntime.h"
+#include "claims/ClaimPolicyConfig.h"
+#include "online/Sha256.h"
 #include "GlobalContainer.h"
 #include "MapInternal.h"
 #include "TerrainResourceProperties.h"
@@ -358,7 +360,11 @@ bool Map::materialAvailableUpdateSlot(int team, int material, int swim, int x, i
 bool Map::materialDestinationValidSlot(int team, int material, int movement, int x, int y, bool markets, const Building* consumer) const
 {
     if (movement!=AIR_MOVEMENT_CLASS && isForbidden(x,y,Team::teamNumberToMask(team))) return false;
-    if (isMaterialTakeableSlot(x,y,material) && !isForbidden(x,y,Team::teamNumberToMask(team))) return true;
+    if (isMaterialTakeableSlot(x,y,material) && !isForbidden(x,y,Team::teamNumberToMask(team))) {
+        const auto index=coordToIndex(x,y);
+        const auto& properties=resourcePropertiesByIndex(getResource(index).type);
+        if(!properties.visibleToHarvest || (fogOfWar[index]&Team::teamNumberToMask(team)))return true;
+    }
     if (!game) return false;
     const unsigned modes=consumer ? materialSupplyModesSlot(consumer,material) : (markets && marketsV2Enabled() ? 1u : 0u);
     if (!modes) return false;
@@ -521,7 +527,11 @@ void Map::observeMaterialClaimDecision(const Unit& unit,const Uint16* field)
 }
 void Map::finishMaterialClaimProbe()
 {
-    if (materialClaimProbe) materialClaimProbe->finish();
+    if (materialClaimProbe) {
+        if(game)materialClaimProbe->publish(game->stepCounter);
+        if(materialClaimRoutes)materialClaimProbe->routeWork(materialClaimRoutes->pipeline.takeDiagnostics());
+        materialClaimProbe->finish();
+    }
 }
 
 void Map::observeMaterialClaimPickupDecision(const Unit& unit,int x,int y)
@@ -557,12 +567,37 @@ void Map::setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy)
         throw std::invalid_argument("active claims require material destinations and exclude shadow tracking");
     if(game && game->stepCounter)throw std::logic_error("active claim policy changes require new game setup");
     if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
-        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;
+        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
     }
     materialClaimRoutes.reset();activeClaimRules.reset();
+    materialClaimConfiguration.reset();materialClaimConfigurationDigest={};
     activeClaimPolicy=policy;
     materialClaims.reset(cellCount());claimChanges.markAll();
     checkActiveClaimRules();
+    if(game)game->invalidateObservation();
+}
+
+const ResourceClaims::ClaimPolicyConfig& Map::materialClaimPolicyConfig() const
+{
+    static const ResourceClaims::ClaimPolicyConfig prototype;
+    return materialClaimConfiguration?*materialClaimConfiguration:prototype;
+}
+
+void Map::setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)
+{
+    config.validate();
+    if(!materialDestinationsEnabled() || materialClaimTracking)
+        throw std::invalid_argument("experimental claims require material destinations and exclude shadow tracking");
+    if(game && game->stepCounter)throw std::logic_error("claim policy configuration requires new game setup");
+    const auto digest=Online::Sha256::digest(config.canonicalJson());
+    auto frozen=std::make_unique<const ResourceClaims::ClaimPolicyConfig>(std::move(config));
+    if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
+        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
+    }
+    materialClaimRoutes.reset();activeClaimRules.reset();
+    materialClaimConfiguration=std::move(frozen);materialClaimConfigurationDigest=digest;
+    activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Experimental;
+    materialClaims.reset(cellCount());claimChanges.markAll();checkActiveClaimRules();
     if(game)game->invalidateObservation();
 }
 
@@ -574,6 +609,11 @@ void Map::rebuildActiveMaterialClaims()
     for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
         if(!activeClaimsEnabled() && (unit->activeMaterialClaim || unit->materialClaimTask))
             throw std::runtime_error("disabled active claims contain unit state");
+        const auto& cadence=unit->materialClaimPolicyState;
+        if(materialClaimPolicy()!=ResourceClaims::ActiveClaimPolicy::Experimental) {
+            if(cadence!=ResourceClaims::MaterialClaimPolicyState{})throw std::runtime_error("nonexperimental claims contain policy state");
+        } else if(cadence.lastGoalAttempt>cadence.decisionOrdinal || (cadence.probe!=UINT32_MAX && cadence.probe>=cellCount()))
+            throw std::runtime_error("invalid saved material claim policy state");
         if(unit->activeMaterialClaim) {
             const auto& saved=*unit->activeMaterialClaim;
             if(saved.source>=cellCount() || saved.access>=cellCount() || !validMaterial(saved.material) || !unit->materialClaimTask)
@@ -604,6 +644,8 @@ void Map::rebuildActiveMaterialClaims()
         if(!unit || ResourceClaims::unitOwner(gid,unit->scriptIdentity)!=owner || !unit->activeMaterialClaim
             || unit->materialClaimTask!=state.identity.task || unit->activeMaterialClaim->access!=state.target)
             throw std::runtime_error("saved claim route does not match unit claim");
+        if(materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental && state.lastRefreshOrdinal>unit->materialClaimPolicyState.decisionOrdinal)
+            throw std::runtime_error("saved route refresh exceeds unit decision ordinal");
     }
 
 }

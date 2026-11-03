@@ -33,6 +33,12 @@ placements adopt the new streams and trajectories.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
+Format 196 corrects worker material-target projection and harvest eligibility.
+These corrections can change ordinary worker movement even when experimental
+claims are disabled, so the replay floor is 196. Earlier saves remain loadable
+and adopt the corrected simulation. Material destination and claim experiments
+remain explicit new-game options and cannot record replays.
+
 Unit format 153 embeds resolved unit definitions, assigned job purposes and
 extended cargo before dependent state. It uses network protocol 69 and simulation
 revision 47 when introduced. New recordings checksum the catalog and extended state. Legacy saves
@@ -552,7 +558,7 @@ binary `.checksums` sidecar's total is the deep hash (header flag bit 0). Deep a
 routine hashes use different algorithms and observation boundaries and must not
 be compared directly.
 `game run` result fields `initialChecksum` and `finalChecksum` use the routine
-snapshot schema, identified by `checksum_algorithm: "snapshot-v3"`. They do not
+snapshot schema, identified by `checksum_algorithm: "snapshot-v4"`. They do not
 trigger deep verification. `match verify`'s `checksums.txt` always contains routine
 source-turn hashes, including the terminal samples.
 

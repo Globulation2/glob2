@@ -768,6 +768,90 @@ input allowance (including all candidate rows), aggregate output, and free-space
 reserve. Compression is not assumed. These allowances are separate from ordinary
 tournament telemetry and must be included in the overall campaign allocation.
 
+Reversible discovery screening is available through the NumPy-enabled development
+environment:
+
+```sh
+python -m tools.resource_claim_screen RESULTS CATALOG SPLIT.json OUTPUT
+```
+
+Use a new output directory and one frozen live-policy configuration. The tool
+never opens held-out event payloads. Global cuts require at least 16 usable,
+uncensored discovery games and at least five in **each planned gameplay cohort**
+from the split (broad, protected farming and pooled farming in the initial plan).
+Missing cohorts are reported explicitly; broad-only evidence cannot eliminate
+global farm candidates. Global cuts also require at least one selected event at
+or after tick 60,000 with locally sparse or fully claimed legal goals in each
+planned farming cohort:
+protected farming must concern food (material 1 in the frozen registry), and
+pooled farming must actually use pooled mechanics. Growing requested-material
+stock on own-team forbidden cells is direct evidence of configured regrowth
+potential, not guaranteed habitat success or AI intent. Legacy traces only count
+nearby forbidden paint; growing food beside that paint is an explicitly labeled
+adjacency proxy, since the painted cells may contain wood or be empty. Reversible
+pilot allocation may use this proxy with factor/niche backstops and eliminated
+audits retained; it cannot qualify final protected-food scenario coverage. A
+known zero direct count overrides the weaker proxy. The final reservoir ordinal
+is joined to its ordinary trace features; selection is never changed after
+seeing the event. Family labels alone do not establish realized farm coverage. The preregistered
+local criterion is a toroidal Euclidean radius-16 disk around the nearest source:
+at most four legal goals is locally sparse; more than four legal goals with zero
+available goals is a separate fully claimed regime. This is an explicit screening
+criterion, not a universal ecological definition. Record distinct disk area and
+legal/available counts for radii 16 and 32 around the unit, nearest source and
+wrapped midpoint; retain global counts as context. Remote dense plots must not
+hide local scarcity. For pooled farming, a late event also qualifies when the
+nearest frozen candidate is an eligible access in a component with zero
+available physical sources and the ordinary row confirms pooled mechanics.
+Other nearby components may still have stock; their density does not negate
+exhaustion of the selected pool. Report that component’s raw, legal and available
+counts separately from the radius-16 context.
+The report retains material, reason, pooling, tick and legal-density regimes;
+this minimal screening safeguard does not replace final scenario coverage. The first pass retains compact global aggregates. A
+second pass verifies bounded witnesses: failure/reachability outcomes must match,
+the eliminated candidate must never beat its witness in selected-access travel
+or probe count on any observed game, and its total probes must be at least 25% higher. Preserve
+search-family/radius/sparsity/origin/direction representatives, observed niche
+winners, and a deterministic 10% audit sample of eliminated candidates. This is
+reversible compute allocation, not policy promotion or a final confidence claim.
+Reopen candidates after claim enforcement changes the game distribution.
+
+For bounded pilot reuse, `--score-cache DIRECTORY` stores immutable per-game
+score matrices under a 2 GiB cache allowance and 8 GiB free-space reserve. Entries
+bind the complete catalog identity, scorer and decoder sources, frozen event
+bytes, exact decoded inputs, alias-view bytes and provenance, with a matrix
+checksum. Malformed alias views are rejected. Legacy cache entries require an
+explicit provenance upgrade or recomputation; they are never silently reused. Provisional discovery precomputation can fill
+this cache before coverage gates pass; no elimination follows from precomputation.
+Both screening passes reuse exact entries. Reserve cache and retained captures
+inside the campaign budget. This is a small-pilot optimization, not permission
+to retain full-grid matrices for a thousand games; large rounds still stream
+compact aggregates and re-score shortlists.
+
+The optional `tools.resource_claim_physical_screen` API prepares a stronger
+proposal; it does not apply an allocation or dispatch games. It tests one
+preordered witness per candidate using a one-sided 95% paired game bootstrap,
+stratified by the frozen family mix. The proposed bound permits at most 10% more
+mean selected-access travel in exchange for at least 25% fewer raw probes.
+Fallback, unreachable-access and missing-label status must match on every game;
+unknown costs prevent a cut, and each family must also satisfy the travel bound
+in its observed mean. These are exploratory allocation bounds, not simultaneous
+winner confidence intervals. Frozen factor and observed-niche representatives
+remain protected. An array is removable only when no surviving alias or policy
+uses it in any direction, and a deterministic 10% sample of removable physical
+arrays remains for drift audits. Its probe-entry reduction is explicitly a work
+projection; CPU savings require a separate measured comparison. Applying this
+stronger proposal requires the agreed screening decision and preserves the
+original report, frozen cohort and unopened holdout.
+
+The screening report measures full versus retained-plus-audit offline kernels on
+the same frozen event before a larger rollout. These timings do not establish
+shipping policy costs. Dense/sparse screening bins use legal pickup goals from
+frozen candidate eligibility, with pooled availability resolved per component;
+raw stock density remains a separate feature. Protected crops can make raw stock
+density high while legal gradient goals are sparse. Missing goal or exposure
+information is unavailable, never zero.
+
 Temporary deep capture uses `resource_claims_deep_context` with source revision,
 bundle, cohort and game identities and requires capability
 `resource_claims_deep_version: 1`. It forwards `--resource-claims-deep-context`;
@@ -780,7 +864,11 @@ rejects censored or incomplete captures and checks final priority and SHA256.
 The binary has a 10 MiB ceiling, its replacement directory a 24 MiB ceiling,
 and an 8 GiB free-space reserve. A completed zero-eligible game has no binary;
 it remains missing policy evidence. Native roundtrip parity with the 240 pilot
-outcomes must pass on real captured events before full-grid scoring.
+outcomes must pass on real captured events before full-grid scoring. The portable
+`claim_capture` validator ships inside the worker archive and uses only the Python
+standard library; offline NumPy helpers are loaded separately. Verify collection
+from the actual archive with `python -I -S`, outside the checkout, so missing
+package files cannot be hidden by contributor imports.
 
 New-game claim cohorts explicitly freeze `material_destinations: true` and require
 the bundle's `material_destinations_version: 1` capability. This temporary mode
@@ -799,6 +887,103 @@ saved probes retain their authoritative mode. Collectors verify the canonical
 fields, result enforcement, and each event's enforcement/policy. New nullable
 schema-level enforcement is resolved per event; historical shadow traces remain
 supported. Different enforcement modes are never silently pooled in analysis.
+
+For configurable live trials, freeze the complete canonical JSON object in
+`resource_claims_policy` instead of `resource_claims_active`. It forwards
+`--resource-claims-policy-json`, requires material destinations and the pinned
+`resource_claims_policy_config_version` capability, and rejects saved-state or
+replay overrides. Obtain the canonical fields and compiled pattern asset digests
+from the executable/catalog; do not rely on implicit defaults. The standard-library
+`claim_policy` validator checks the full configuration and pinned
+`resource_claims_policy_patterns` inventory. Collectors attest the exact canonical
+configuration and SHA256 in results and diagnostic events. Different configuration
+digests are analyzed separately. Configurability does not select or approve a
+shipping policy.
+
+Policy source version 1 retains its original canonical fields and digest. Source
+version 2 additionally identifies bounded failed-route recovery: four rejected
+accesses with a 128-tick soft expiry, at most four route attempts per 64-tick
+window, a 16-tick backoff, and first-available recovery scanning from a retained
+cursor. These fixed parameters are explicit canonical fields, not additional
+free sweep factors. A capability version 2 build accepts both policy versions;
+version 1 builds cannot run version 2 configurations. Compare versions as
+distinct interventions rather than combining their measurements.
+
+The result's `gradient_execution.destination_published_bytes` and
+`destination_pending_reserved_bytes` describe current destination allocations
+and immutable pending reservations when metadata is enabled. Reading them does
+not publish or join background work. They exclude retained snapshots, scratch
+space and allocator overhead; use whole-process RSS measurements for the memory
+budget and paired release-build CPU measurements for runtime overhead.
+
+Plan live trials separately from execution with `tools.tournaments.resource_claim_live`:
+
+```sh
+python -m tools.tournaments.resource_claim_live factors CONTROL.json FACTORS.json --patterns SHORTLIST.json
+python -m tools.tournaments.resource_claim_live interactions CONTROL.json BINARY_FACTORS.json INTERACTIONS.json
+python -m tools.tournaments.resource_claim_live plan COHORT.json SPLIT.json BUNDLE.json CONFIG_BATCH.json PLAN.json --additional-reserved-bytes BYTES
+```
+
+`CONTROL.json` is a complete canonical configuration. The optional shortlist is
+an array of catalog `{name, digest}` assets; config batches contain a `configs`
+array of `{label, policy}` entries. Factor generation declares independent and
+coupled destination/path refresh intervals, fallback, pending movement, route
+target, primary-gradient use, selection rule and shortlisted patterns. It does
+not queue their Cartesian product or launch games. First eliminate clearly poor
+routing/refresh candidates using separately labeled short movement fixtures and
+frozen event paths; then supply a small explicit whole-game config batch.
+
+Interaction confirmation accepts three to five binary scalar factors and records
+the half-fraction generator and aliasing. It is a diagnostic design, not proof
+that aliased interactions are absent. Whole-game plans preserve every selected
+original tuple, seed, seat, stopping rule and discovery identity across new
+build/job IDs. Discovery is the default; held-out games require explicit
+`--stage confirmation --partition holdout`. They never repair or resample a tuple
+based on a policy result. New captures require an attested bundle with compiled
+pattern digests. Deep capture defaults off; ordinary bounded probes and whole-game metrics remain
+enabled. Confirmation stages can opt in with `--deep-capture --round-id NAME`.
+The pinned bundle must advertise deep capture. Contexts use the new source/bundle
+and a per-policy/round cohort identity while preserving original game IDs and
+discovery roles. Each policy gets its own frozen split in `design.deep_splits`;
+extract that split and analyze one policy cohort at a time. Context identities
+remain stable across small config batches. The deep manifest becomes a required
+artifact and remains inside the existing attempt/campaign caps.
+
+Planning defaults to 256 jobs, a 32 GiB campaign and an 8 GiB free-space reserve.
+It reserves every attempt's artifact/log cap plus an equal transfer/spool copy
+and the explicitly supplied other reservations. Automatic retries are disabled;
+retrying retained failures needs a new storage review. A batch that exceeds a bound is
+rejected in full; select fewer policies, not fewer paired games. Existing large
+trace allowances may permit only a few policies per batch. Submission remains a
+separate operation after native validation and resource review; generated plans
+do not authorize dispatch or select a shipping policy.
+
+Live diagnostic traces may also advertise `live_journey_version: 1` and an
+ordered event-name table. Bounded journey rows describe committed movement for
+sampled acquisitions, with a static acquisition-time baseline to the held pickup
+access. Journeys are separate from ordinary decision counts. Readers validate
+unique owner/task identities, admission/phase counters, partial terminals and
+nullable baseline costs; collectors bind each journey's policy digest to the
+resolved executable configuration even when there are no decision rows.
+Timeout/end-of-segment costs describe partial movement, not completed-route
+regret. Workload-dependent admission exclusions censor sampling. Aggregate by
+game; sampled units are not independent experimental replicates. Movement totals
+cover held claims only and cannot establish total pursuit travel for disabled or
+shadow behavior.
+
+Use the separate bounded gameplay analyzer for exact team-timeline metrics:
+
+```sh
+python -m tools.tournaments.resource_claim_gameplay RESULTS --build-design DESIGN.json --output INVENTORY.json
+python -m tools.tournaments.resource_claim_gameplay RESULTS --design DESIGN.json --baseline POLICY_DIGEST --output REPORT.json
+```
+
+Freeze the design before comparing resource outcomes. It records paired initial
+states, policy identity, seats and a common observed tick window across all
+planned policies. Missing variants or timeline boundaries remain unavailable;
+early-ended matches are not extrapolated. These team-level measurements are
+separate from diagnostic journey samples and preserve the discovery/holdout
+partition.
 
 The pilot header has 240 logical pattern profiles with precomputed views for all
 eight nearest-resource bearings. Cone/ray direction offsets are relative to that

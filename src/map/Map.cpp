@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
 #include "claims/ActiveRouteRuntime.h"
+#include "claims/ClaimPolicyConfig.h"
 #include "gradient/GradientTargetCell.h"
 #include "gradient/GradientExecutionAudit.h"
 #include "Game.h"
@@ -484,11 +485,22 @@ void Map::clearGradientBufferPool()
 
 std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
 {
-    if (!gradientRuntime->deviceService) return {};
-    const auto device=gradientRuntime->deviceService->metrics();
-    return {{"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},
-        {"coordinator_executed",device.executed},{"coordinator_fallbacks",device.fallbacks},
-        {"coordinator_queued",device.queued}};
+    std::vector<std::pair<std::string,Uint64>> result;
+    if (materialDestinationsEnabled()) {
+        // Owner-held published allocations and immutable pending reservations
+        // only: memory observation must not join work or inspect worker output.
+        // Retained snapshots, workspaces and allocator slack remain part of RSS.
+        const auto memory=gradientRuntime->pipeline.destinationMemory();
+        result.emplace_back("destination_published_bytes",memory.publishedBytes);
+        result.emplace_back("destination_pending_reserved_bytes",memory.pendingReservedBytes);
+    }
+    if (gradientRuntime->deviceService) {
+        const auto device=gradientRuntime->deviceService->metrics();
+        result.insert(result.end(),{{"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},
+            {"coordinator_executed",device.executed},{"coordinator_fallbacks",device.fallbacks},
+            {"coordinator_queued",device.queued}});
+    }
+    return result;
 }
 
 void Map::configureGradientExecution()
@@ -540,6 +552,8 @@ void Map::configureCompute(unsigned threads)
 void Map::clear()
 {
     materialClaimRoutes.reset();
+    materialClaimConfiguration.reset();
+    materialClaimConfigurationDigest={};
     materialClaimProbe.reset();
     materialClaimFarmCache.clear();
     materialClaimFarmEpoch = {};

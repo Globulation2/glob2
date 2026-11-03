@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+#include <cstdint>
+#include <string>
+#include <string_view>
+
+namespace ResourceClaims
+{
+// Temporary, explicit live experiment. Defaults reproduce the format-195
+// prototype; none of these parameters enables claims in an ordinary game.
+struct ClaimPolicyConfig
+{
+    enum class Selection : std::uint8_t { FirstAvailable, ClosestGeometric };
+    enum class Fallback : std::uint8_t { Wait, Roam, ReleaseJob, BoundedWaitRelease };
+    enum class RouteTarget : std::uint8_t { ClaimedAccess, ProbeThenGradient };
+    enum class PendingStep : std::uint8_t { Wait, DirectHeading };
+    static constexpr unsigned SourceVersion=2;
+    unsigned sourceVersion=SourceVersion;
+    bool usesRecovery() const { return sourceVersion==2; }
+    std::string pattern="spiral:k16:unit:s1:every:forward:d0:seed1";
+    Selection selection=Selection::FirstAvailable;
+    Fallback fallback=Fallback::Wait;
+    RouteTarget routeTarget=RouteTarget::ClaimedAccess;
+    PendingStep pendingStep=PendingStep::Wait;
+    unsigned fallbackAfterDecisions=16, destinationRefreshJ=0, routeRefreshJ=0;
+    unsigned maximumExpansions=4096;
+    bool usePrimaryGradient=false;
+    static ClaimPolicyConfig parse(std::string_view);
+    void validate() const;
+    std::string canonicalJson() const;
+    std::string digest() const;
+    bool operator==(const ClaimPolicyConfig&) const = default;
+};
+struct MaterialClaimPolicyState
+{
+    std::uint64_t decisionOrdinal=0,lastGoalAttempt=0;
+    std::uint32_t fallbackCount=0,probe=UINT32_MAX;
+    bool operator==(const MaterialClaimPolicyState&) const = default;
+};
+}

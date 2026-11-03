@@ -2,12 +2,14 @@
 #pragma once
 #include <SDL3/SDL_stdinc.h>
 #include <memory>
+#include <array>
 #include <string>
 class Game;
 class Unit;
 class ComputeExecutor;
 namespace ResourceClaims
 {
+struct RouteDiagnostics;
 // Temporary decision-event experiment, never consulted by simulation decisions.
 class Probe
 {
@@ -20,6 +22,21 @@ public:
         unsigned maxPending=8;
         std::string deepContext; // Diagnostic JSON: source_revision,bundle_id,cohort_id,game_id.
     };
+    enum class LiveEvent : unsigned {
+        Acquired, Released, Retargeted, HarvestBegin, Harvested, HarvestFailed,
+        GoalRefreshSame, GoalRefreshChanged, GoalRefreshFailed,
+        FallbackWait, FallbackRoam, FallbackRelease,
+        RouteInitial, RouteRefresh, RouteRepair, RouteProbeFallback,
+        PendingPath, TrafficWait, GeometryContradiction, ReanchorJoined,
+        ReanchorFailed, ProbeTailFailed, ObsoleteProbe, Count
+    };
+    struct LiveMetrics {
+        std::array<Uint64,unsigned(LiveEvent::Count)> events{};
+        Uint64 moves=0,liveCost=0,journeyEligible=0,journeySampled=0,journeyAdmitted=0,journeyCompleted=0;
+        Uint64 excludedCapacity=0,excludedLimit=0,untrackedMoves=0;
+        Uint64 routeCompleted=0,routeCanceled=0,routeExpansions=0,routeElapsedNs=0,routeUnobserved=0,routeRestored=0;
+        std::array<Uint64,4> routeStatuses{};
+    };
     struct Metrics {
         Uint64 decisions=0, sampled=0, contested=0, submitted=0, completed=0;
         Uint64 excludedSampleLimit=0, excludedQueueLimit=0, excludedMissingField=0, captureBytes=0, outputBytes=0;
@@ -30,5 +47,11 @@ public:
     void publish(Uint32 tick);
     void finish();
     const Metrics& metrics() const;
+    // Observers never influence gameplay, consume RNG, or persist simulation state.
+    void liveEvent(const Unit&, LiveEvent) const;
+    void moved(const Unit&, int oldX, int oldY) const;
+    void routeEvent(Uint64 owner,Uint64 task,Uint32 tick,LiveEvent) const;
+    const LiveMetrics& liveMetrics() const;
+    void routeWork(const RouteDiagnostics&) const;
 };
 }

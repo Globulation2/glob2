@@ -722,7 +722,9 @@ void Map::removeTeam(void)
 
 namespace
 {
-constexpr int MaterialDestinationsFormat = 194;
+// Published format 194 predates destination metadata (its encoding is 193).
+// The first retained claims experiment saves include both additions in 195.
+constexpr int MaterialDestinationsFormat = 195;
 bool loadFlag(GAGCore::InputStream *stream, const char *name)
 {
 	const auto value=stream->readUint8(name);
@@ -954,7 +956,7 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
     if (VERSION_MINOR<MaterialDestinationsFormat && gradientRuntime->materialDestinationsEnabled)
-        throw std::runtime_error("Material destinations require save format 194");
+        throw std::runtime_error("Material destinations require save format 195");
 	// A header changed since the last tick (a fork) reconfigures an empty pipeline first.
 	const_cast<Map*>(this)->ensureBuildingGradientPipeline();
 	stream->writeEnterSection("mapRuntime");

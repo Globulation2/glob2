@@ -434,6 +434,7 @@ CLIENT_SOURCES = (
     'map/MapQuery.cpp',
     'map/MapResources.cpp',
     'map/claims/ResourceClaimOracle.cpp',
+    'map/claims/ClaimPolicyConfig.cpp',
     'map/claims/ResourceClaimProbe.cpp',
     'map/claims/MapClaimRoutes.cpp',
     'map/claims/MapClaimInvalidation.cpp',

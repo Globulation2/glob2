@@ -236,6 +236,7 @@ void Unit::resolveDeath()
 
 	if (hp<UNIT_HP_DEATH_THRESHOLD)
 	{
+        owner->map->forgetClaimRecovery(ResourceClaims::unitOwner(gid,scriptIdentity));
         if (owner->map->activeClaimsEnabled()) releaseActiveMaterialClaim();
         else if (owner->map->materialClaimTrackingEnabled()) owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 		if (!isDead)

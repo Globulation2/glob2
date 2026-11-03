@@ -48,15 +48,23 @@ TEST_SUITE("ResourceClaimRouteExperiment")
         std::vector<Uint16> values(16*8,GRADIENT_UNREACHABLE);
         // Ascending row ending at a blocked resource; routing must stop adjacent.
         for(int x=1;x<=5;++x)values[f.index(x,3)]=Uint16(GRADIENT_AT_GOAL-(5-x)*10);
-        Experiment::StaticRoutes routes(f.snapshot.view(),f.query,oracle,values);
+        f.occupancy->cells[f.index(4,3)].groundUnit=16;
+        Experiment::ExposureProxy exposure(16,8,f.occupancy->cells,f.visibility->visible,2,1,16,8);
+        Experiment::StaticRoutes routes(f.snapshot.view(),f.query,oracle,values,&exposure);
         const auto direct=routes.direct(candidate.source);
         REQUIRE(std::string_view(direct.status)=="reached");
         CHECK(direct.cost==candidate.distance);
+        CHECK(direct.exposure.cost==direct.cost);CHECK(direct.exposure.steps>0);
+        CHECK(direct.exposure.nearCost[0][2]==direct.cost);
         const auto via=routes.via(candidate.source,f.index(2,3));
         REQUIRE(std::string_view(via.status)=="reached");
         CHECK(via.cost==candidate.accessDistance);
         CHECK(via.continuationSteps==2);
+        CHECK(via.exposure.steps==3);CHECK(via.exposure.cost==via.cost);
+        CHECK(via.exposure.endpoint==f.index(4,3));CHECK(via.exposure.minimum[0]==0);
+        CHECK(via.exposure.nearSteps[0][0]==2);
         CHECK(routes.via(candidate.source,f.index(2,3)).cost==via.cost);
+        CHECK(routes.via(candidate.source,f.index(2,3)).exposure.steps==via.exposure.steps);
     }
     TEST_CASE("pooled source route stops at the closer connected farm access")
     {

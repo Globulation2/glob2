@@ -5,6 +5,7 @@
 
 #include "UnitState.h"
 #include "ResourceClaims.h"
+#include "map/claims/ClaimPolicyConfig.h"
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
 #include "UnitCatalog.h"
@@ -45,6 +46,7 @@ class Unit : public UnitUtils, public UnitState
 public:
     std::optional<ResourceClaims::Claim> activeMaterialClaim;
     Uint64 materialClaimTask=0;
+    ResourceClaims::MaterialClaimPolicyState materialClaimPolicyState;
     bool acquireMaterialClaimAt(Uint32 access);
     void releaseActiveMaterialClaim();
     bool activeMaterialClaimValid();

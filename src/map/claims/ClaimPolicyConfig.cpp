@@ -1,0 +1,125 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#include "ClaimPolicyConfig.h"
+#include "ClaimRecovery.h"
+#include "ResourceClaimPilotPatterns.h"
+#include "online/Sha256.h"
+#include <nlohmann/json.hpp>
+#include <array>
+#include <stdexcept>
+
+namespace ResourceClaims
+{
+namespace
+{
+using Json=nlohmann::json;
+constexpr std::array<unsigned,15> Intervals{0,1,2,3,4,6,8,12,16,24,32,48,64,96,128};
+bool interval(unsigned v){return std::find(Intervals.begin(),Intervals.end(),v)!=Intervals.end();}
+const Experiment::PilotPattern& patternByName(std::string_view name)
+{
+    for(const auto& pattern:Experiment::pilotPatterns())if(name==pattern.name)return pattern;
+    throw std::invalid_argument("unknown resource claim experiment pattern");
+}
+std::string patternDigest(std::string_view name)
+{
+    const auto& pattern=patternByName(name); Online::Sha256 hash;
+    const auto integer=[&](std::uint32_t value,unsigned bytes) {
+        std::array<std::uint8_t,4> encoded{};
+        for(unsigned i=0;i<bytes;++i)encoded[i]=std::uint8_t(value>>(8*i));
+        hash.update(encoded.data(),bytes);
+    };
+    for(unsigned direction=0;direction<8;++direction) {
+        const auto view=pattern.viewForDirection(direction);integer(view.x.size(),4);
+        for(std::size_t i=0;i<view.x.size();++i) {
+            integer(std::uint16_t(view.x[i]),2);integer(std::uint16_t(view.y[i]),2);integer(view.origin[i],1);
+        }
+    }
+    return Online::Sha256::toHex(hash.finish());
+}
+template<class E,std::size_t N> E enumeration(const Json& value,const std::array<const char*,N>& names)
+{
+    if(!value.is_string())throw std::invalid_argument("resource claim policy enum must be a string");
+    for(unsigned i=0;i<N;++i)if(value==names[i])return E(i);
+    throw std::invalid_argument("unknown resource claim policy enum");
+}
+constexpr std::array SelectionNames{"first_available","closest_geometric"};
+constexpr std::array FallbackNames{"wait","roam","release_job","bounded_wait_release"};
+constexpr std::array RouteNames{"claimed_access","probe_then_gradient"};
+constexpr std::array PendingNames{"wait","direct_heading"};
+unsigned number(const Json& value)
+{
+    if(!(value.is_number_integer() || value.is_number_unsigned()) || value.is_number_float()
+        || value<0 || value>UINT32_MAX)throw std::invalid_argument("resource claim policy needs a bounded unsigned integer");
+    return value.get<unsigned>();
+}
+}
+void ClaimPolicyConfig::validate() const
+{
+    patternByName(pattern);
+    if((sourceVersion!=1 && sourceVersion!=2) || unsigned(selection)>=SelectionNames.size() || unsigned(fallback)>=FallbackNames.size()
+        || unsigned(routeTarget)>=RouteNames.size() || unsigned(pendingStep)>=PendingNames.size()
+        || !interval(destinationRefreshJ) || !interval(routeRefreshJ)
+        || !fallbackAfterDecisions || fallbackAfterDecisions>65535
+        || !maximumExpansions || maximumExpansions>4096)
+        throw std::invalid_argument("invalid resource claim policy parameters");
+}
+std::string ClaimPolicyConfig::canonicalJson() const
+{
+    validate();
+    Json result{{"source_version",sourceVersion},{"pattern",pattern},{"pattern_digest",patternDigest(pattern)},
+        {"selection",SelectionNames[unsigned(selection)]},{"fallback",FallbackNames[unsigned(fallback)]},
+        {"fallback_after_decisions",fallbackAfterDecisions},{"destination_refresh_j",destinationRefreshJ},
+        {"route_refresh_j",routeRefreshJ},{"route_target",RouteNames[unsigned(routeTarget)]},
+        {"pending_step",PendingNames[unsigned(pendingStep)]},{"maximum_expansions",maximumExpansions},
+        {"use_primary_gradient",usePrimaryGradient}};
+    if(usesRecovery()) {
+        result["recovery_source_version"]=ClaimRecovery::SourceVersion;
+        result["recovery_cache_entries"]=ClaimRecovery::CacheEntries;
+        result["recovery_ttl_ticks"]=ClaimRecovery::TtlTicks;
+        result["recovery_attempt_window_ticks"]=ClaimRecovery::AttemptWindowTicks;
+        result["recovery_max_attempts"]=ClaimRecovery::MaxAttempts;
+        result["recovery_backoff_ticks"]=ClaimRecovery::BackoffTicks;
+        result["recovery_selection"]="first_available_cursor";
+    }
+    return result.dump();
+}
+std::string ClaimPolicyConfig::digest() const {return Online::Sha256::hex(canonicalJson());}
+ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
+{
+    if(text.size()>8192)throw std::invalid_argument("resource claim policy JSON exceeds allowance");
+    const auto input=Json::parse(text);if(!input.is_object())throw std::invalid_argument("resource claim policy must be an object");
+    if(!input.contains("source_version") || (number(input.at("source_version"))!=1 && number(input.at("source_version"))!=2))
+        throw std::invalid_argument("unsupported resource claim policy source version");
+    ClaimPolicyConfig result;result.sourceVersion=number(input.at("source_version"));
+    const Json recovery{{"recovery_source_version",ClaimRecovery::SourceVersion},{"recovery_cache_entries",ClaimRecovery::CacheEntries},
+        {"recovery_ttl_ticks",ClaimRecovery::TtlTicks},{"recovery_attempt_window_ticks",ClaimRecovery::AttemptWindowTicks},
+        {"recovery_max_attempts",ClaimRecovery::MaxAttempts},{"recovery_backoff_ticks",ClaimRecovery::BackoffTicks},
+        {"recovery_selection","first_available_cursor"}};
+    if(result.usesRecovery()) {
+        for(const auto* key:{"pattern","pattern_digest","selection","fallback","fallback_after_decisions","destination_refresh_j",
+            "route_refresh_j","route_target","pending_step","maximum_expansions","use_primary_gradient"})
+            if(!input.contains(key))throw std::invalid_argument("incomplete version 2 resource claim policy");
+        for(const auto& [key,value]:recovery.items())
+            if(!input.contains(key) || (value.is_string() ? !input[key].is_string() : !(input[key].is_number_integer() || input[key].is_number_unsigned()))
+                || input[key]!=value || input[key].is_boolean())
+                throw std::invalid_argument("resource claim recovery contract differs");
+    }
+    for(const auto& [key,value]:input.items()) {
+        if(key=="source_version" || key=="pattern_digest" || (result.usesRecovery() && recovery.contains(key)))continue;
+        if(key=="pattern") {if(!value.is_string())throw std::invalid_argument("invalid claim pattern");result.pattern=value.get<std::string>();}
+        else if(key=="selection")result.selection=enumeration<Selection>(value,SelectionNames);
+        else if(key=="fallback")result.fallback=enumeration<Fallback>(value,FallbackNames);
+        else if(key=="route_target")result.routeTarget=enumeration<RouteTarget>(value,RouteNames);
+        else if(key=="pending_step")result.pendingStep=enumeration<PendingStep>(value,PendingNames);
+        else if(key=="fallback_after_decisions")result.fallbackAfterDecisions=number(value);
+        else if(key=="destination_refresh_j")result.destinationRefreshJ=number(value);
+        else if(key=="route_refresh_j")result.routeRefreshJ=number(value);
+        else if(key=="maximum_expansions")result.maximumExpansions=number(value);
+        else if(key=="use_primary_gradient") {if(!value.is_boolean())throw std::invalid_argument("invalid primary gradient flag");result.usePrimaryGradient=value.get<bool>();}
+        else throw std::invalid_argument("unknown resource claim policy parameter: "+key);
+    }
+    result.validate();
+    if(input.contains("pattern_digest") && input["pattern_digest"]!=patternDigest(result.pattern))
+        throw std::invalid_argument("resource claim pattern asset digest differs");
+    return result;
+}
+}

@@ -5,9 +5,10 @@
 #pragma once
 #include "ResourceClaims.h"
 #include "claims/ActiveMaterialClaims.h"
+#include "claims/ClaimRecovery.h"
 #include "field/GradientDestinationPlanes.h"
 struct GradientTargetCell;
-namespace ResourceClaims { class Probe; }
+namespace ResourceClaims { class Probe; struct ClaimPolicyConfig; }
 #include "OwnerRandom.h"
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
@@ -150,6 +151,8 @@ class Map
     ResourceClaims::ActiveClaimPolicy activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Disabled;
     std::optional<std::array<Uint64,3>> activeClaimRules;
     std::unique_ptr<ResourceClaims::ActiveRouteRuntime> materialClaimRoutes;
+    std::unique_ptr<const ResourceClaims::ClaimPolicyConfig> materialClaimConfiguration;
+    std::array<Uint8,32> materialClaimConfigurationDigest{};
     std::shared_ptr<ResourceClaims::Probe> materialClaimProbe;
     std::array<Uint64,4> materialClaimFarmEpoch{};
     std::map<std::array<Uint32,5>,std::optional<size_t>> materialClaimFarmCache;
@@ -778,11 +781,21 @@ public:
     bool activeClaimsEnabled() const { return activeClaimPolicy!=ResourceClaims::ActiveClaimPolicy::Disabled; }
     ResourceClaims::ActiveClaimPolicy materialClaimPolicy() const { return activeClaimPolicy; }
     void setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy);
+    const ResourceClaims::ClaimPolicyConfig& materialClaimPolicyConfig() const;
+    void setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig);
+    ResourceClaims::StepResult nextClaimGradientStep(const Unit&, int*, int*);
     ResourceClaims::StepResult nextClaimRouteStep(Unit&, int*, int*);
     void cancelClaimRoute(ResourceClaims::Owner);
     void flushClaimRoutes();
     void publishClaimRoutes();
     Uint32 activeClaimRouteChecksum(bool includePending) const;
+    Uint32 activeClaimSnapshotChecksum() const;
+    ResourceClaims::ClaimRecoverySelection beginClaimRecoverySelection(const Unit&);
+    void finishClaimRecoverySelection(const Unit&, unsigned probe, unsigned patternSize);
+    unsigned recordClaimFailure(const Unit&, ResourceClaims::ClaimFailureKind);
+    void claimRecoveryHarvested(const Unit&);
+    void forgetClaimRecovery(ResourceClaims::Owner);
+
     void saveActiveClaimRoutes(GAGCore::OutputStream*) const;
     void loadActiveClaimRoutes(GAGCore::InputStream*, Sint32 versionMinor);
     void rebuildActiveMaterialClaims();

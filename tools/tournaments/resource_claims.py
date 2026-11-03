@@ -273,6 +273,8 @@ def trace_rows(stream):
         raise ValueError('unsupported resource claim schema')
     if len(set(schema['patterns'])) != len(schema['patterns']) or len(set(schema['policies'])) != len(schema['policies']):
         raise ValueError('duplicate pattern/policy identities')
+    from .claim_journeys import Validator
+    journeys = Validator(schema)
     yield schema
     count, summary, previous = 0, None, -1
     for line in stream:
@@ -283,6 +285,9 @@ def trace_rows(stream):
             raise ValueError('rows after claim summary')
         if row.get('kind') == 'summary':
             summary = row
+        elif row.get('kind') == 'journey':
+            journeys.row(row)
+            yield row
         elif row.get('kind') == 'decision':
             if type(row.get('ordinal')) is not int or row['ordinal'] <= previous:
                 raise ValueError('duplicate or unordered claim event')
@@ -291,7 +296,7 @@ def trace_rows(stream):
                 enforced = row.get('claims_enforced', schema['claims_enforced'])
                 if type(enforced) is not bool or schema['claims_enforced'] is not None and enforced is not schema['claims_enforced']:
                     raise ValueError('missing or inconsistent per-event claim mode')
-                if enforced and row.get('active_policy') != 'prototype-stationary-v1':
+                if enforced and row.get('active_policy') not in ('prototype-stationary-v1', 'experimental'):
                     raise ValueError('unknown active claim policy')
                 if not enforced and row.get('active_policy', 'disabled') != 'disabled':
                     raise ValueError('inactive event advertises an active policy')
@@ -312,6 +317,7 @@ def trace_rows(stream):
             raise ValueError('unknown claim trace row')
     if not summary or summary.get('complete') is not True or summary.get('submitted') != count or summary.get('completed') != count:
         raise ValueError('incomplete resource claim trace')
+    journeys.finish(summary)
     yield summary
 
 
@@ -325,9 +331,19 @@ def read_game(stream, labels):
     diagnostics = {'events': 0, 'oracle_elapsed_ns': 0, 'static_route_elapsed_ns': 0, 'oracle_timing_missing': 0, 'route_timing_missing': 0, 'timing_clock': schema.get('timing_clock', 'legacy_steady_clock_elapsed'), 'published_xy_events': 0, 'missing_xy_events': 0, 'first_sample_tick': None, 'last_sample_tick': None, 'late_sample_events': 0}
     summary = None
     modes = set()
+    journey_digests = set()
+    journey_totals = {'rows':0,'steps':0,'live_cost':0,'partial':0,'baseline_missing':0,'terminals':defaultdict(int)}
     for row in rows:
         if row['kind'] == 'summary':
             summary = row
+            continue
+        if row['kind'] == 'journey':
+            journey_digests.add(row['policy_digest'])
+            journey_totals['rows'] += 1
+            journey_totals['steps'] += row['steps'];journey_totals['live_cost'] += row['live_cost']
+            journey_totals['partial'] += row['terminal'] in ('timeout','end_of_segment')
+            journey_totals['baseline_missing'] += row['baseline_status'] != 'reached'
+            journey_totals['terminals'][row['terminal']] += 1
             continue
         modes.add((row.get('claims_enforced', schema.get('claims_enforced', False)), row.get('active_policy', 'disabled')))
         for scenario in scenario_hits(row):
@@ -451,7 +467,9 @@ def read_game(stream, labels):
         'exclusion_coverage_known': all(count is not None for count in exclusions.values()),
         'complete_framing_is_unbiased_coverage': False}
     return {'schema': schema, 'summary': summary, 'sampling': sampling, 'claim_modes': sorted(modes), 'metrics': metrics, 'scenario_counts': dict(scenario_counts),
-            'route_metrics': route_metrics, 'diagnostics': diagnostics}
+            'route_metrics': route_metrics, 'diagnostics': diagnostics,
+            'journey_policy_digests': sorted(journey_digests), 'journeys': journey_totals,
+            'journey_interpretation': 'Per-game diagnostic totals; partial journeys retain partial costs; acquisition static baseline is not a dynamic optimum; no independent-unit inference.'}
 
 
 class MeanIntervals:
@@ -522,7 +540,7 @@ def summarize(games, *, draws=500, seed=1, routes=False):
 def analyze(directory, *, draws=500, seed=1):
     source = Results(directory)
     expected = {j['id']: j for j in source.manifest['jobs'] if j['type'] == 'game'}
-    games, coverage, schemas, claim_modes = [], [], set(), set()
+    games, coverage, schemas, claim_modes, live_policies = [], [], set(), set(), set()
     for record in source:
         game = record['job']; game_id = game['id']
         if game_id not in expected:
@@ -537,16 +555,31 @@ def analyze(directory, *, draws=500, seed=1):
                 with gzip.GzipFile(fileobj=packed, mode='rb') as decompressed:
                     with io.TextIOWrapper(decompressed) as stream:
                         measured = read_game(stream, game.get('labels', {}))
+            resolved = (record.get('result') or {}).get('resolved', {})
+            from .claim_journeys import attest_digests
+            attest_digests(measured['journey_policy_digests'], resolved)
+            expected_policy = game.get('config', {}).get('resource_claims_policy')
+            experimental = (resolved.get('active_claim_policy') == 'experimental' or expected_policy is not None
+                            or any(mode[1] == 'experimental' for mode in measured['claim_modes']))
+            if experimental:
+                from .claim_policy import attested_policy_digest, policy_digest
+                identity = attested_policy_digest(resolved)
+                if expected_policy is not None and identity != policy_digest(expected_policy):
+                    raise ValueError('experimental claim policy differs from frozen request')
+                live_policies.add(identity)
             schemas.add(digest(measured['schema']))
             claim_modes.update(tuple(mode) for mode in measured['claim_modes'])
+            if resolved.get('active_claim_policy') in ('disabled', 'prototype-stationary-v1', 'experimental'):
+                claim_modes.add((resolved['active_claim_policy'] != 'disabled', resolved['active_claim_policy']))
             games.append((game_id, measured))
-            entry.update({'measured': True, 'summary': measured['summary'], 'sampling': measured['sampling'], 'diagnostics': measured['diagnostics']})
+            entry.update({'measured': True, 'summary': measured['summary'], 'sampling': measured['sampling'], 'diagnostics': measured['diagnostics'],
+                          'journeys': measured['journeys'], 'journey_interpretation': measured['journey_interpretation']})
         except (OSError, EOFError, ValueError, StopIteration, KeyError, TypeError) as error:
             entry.update({'measured': False, 'error': str(error)})
         coverage.append(entry)
     coverage.extend({'game': game_id, 'category': 'missing', 'measured': False} for game_id in expected)
     # Differing sample rates/pattern sets/claim modes cannot be pooled silently.
-    if len(schemas) > 1 or len(claim_modes) > 1:
+    if len(schemas) > 1 or len(claim_modes) > 1 or len(live_policies) > 1:
         raise ValueError('mixed claim trace schemas; analyze frozen cohorts separately')
     groups = summarize(games, draws=draws, seed=seed)
     route_groups = summarize(games, draws=draws, seed=seed, routes=True)

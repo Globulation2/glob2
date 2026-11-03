@@ -115,7 +115,7 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_active', 'resource_claims_deep_context', 'material_destinations'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'material_destinations'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
@@ -131,9 +131,14 @@ class EngineJob:
                 raise ValueError('active claims require known prototype and material destinations')
             if 'resource_claims_shadow' in config or job['outputs'].get('replay'):
                 raise ValueError('active claims exclude shadow and replay')
+        if 'resource_claims_policy' in config:
+            from .claim_policy import validate_policy
+            validate_policy(config['resource_claims_policy'])
+            if config.get('material_destinations') is not True or 'resource_claims_active' in config or 'resource_claims_shadow' in config or job['outputs'].get('replay'):
+                raise ValueError('experimental claim policy requires material destinations and excludes other modes and replay')
         if 'resource_claims_shadow' in config and 'resource_claims_probe' in config:
             raise ValueError('choose shadow or active probe')
-        if 'resource_claims_probe' in config and 'resource_claims_active' not in config and 'save' not in job['inputs']:
+        if 'resource_claims_probe' in config and 'resource_claims_active' not in config and 'resource_claims_policy' not in config and 'save' not in job['inputs']:
             raise ValueError('active probe requires active new game or saved state')
         if 'resource_claims_deep_context' in config:
             context = config['resource_claims_deep_context']
@@ -187,7 +192,7 @@ class EngineJob:
                     raise ValueError('new game requires players and game seed')
             if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
                 raise ValueError('new game requires players and game seed')
-            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'experiments', 'material_destinations', 'resource_claims_active', 'win_probability_permille')):
+            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules', 'experiments', 'material_destinations', 'resource_claims_active', 'resource_claims_policy', 'win_probability_permille')):
                 raise ValueError('cannot override a saved game configuration')
             experiments = config.get('experiments', [])
             if (not isinstance(experiments, list) or len(experiments) > 64 or
@@ -273,6 +278,9 @@ class EngineJob:
                 add('--resource-claims-deep-context', json.dumps(config['resource_claims_deep_context'], separators=(',', ':')))
             if 'resource_claims_active' in config:
                 add('--resource-claims-active', config['resource_claims_active'])
+            if 'resource_claims_policy' in config:
+                from .claim_policy import canonical_policy
+                add('--resource-claims-policy-json', canonical_policy(config['resource_claims_policy']))
             if 'resource_claims_shadow' in config or 'resource_claims_probe' in config:
                 claims = config.get('resource_claims_shadow', config.get('resource_claims_probe'))
                 args.append('--resource-claims-shadow' if 'resource_claims_shadow' in config else '--resource-claims-probe')
@@ -315,6 +323,18 @@ class EngineJob:
         if result.get('status') not in ('completed', 'invalid_request', 'generation_failed', 'artifact_failure'):
             raise ValueError('invalid engine completion status')
         if result.get('status') == 'completed':
+            resolved = result.get('resolved', {})
+            if resolved.get('active_claim_policy') == 'experimental':
+                from .claim_policy import attested_policy_digest
+                attested_policy_digest(resolved)
+                if 'resource_claims_policy' not in job['config'] and 'save' not in job['inputs']:
+                    raise ValueError('engine experimental claim policy differs from frozen request')
+            if 'resource_claims_policy' in job['config']:
+                from .claim_policy import policy_digest
+                policy = job['config']['resource_claims_policy']
+                resolved = result.get('resolved', {})
+                if resolved.get('active_claim_policy') != 'experimental' or resolved.get('resource_claims_policy_config') != policy or resolved.get('resource_claims_policy_digest') != policy_digest(policy):
+                    raise ValueError('engine experimental claim policy differs from frozen request')
             if 'material_destinations' in job['config'] and result.get('resolved', {}).get('material_destinations_enabled') is not job['config']['material_destinations']:
                 raise ValueError('engine material destination mode differs from frozen request')
             if 'resource_claims_active' in job['config'] and result.get('resolved', {}).get('active_claim_policy') != job['config']['resource_claims_active']:
@@ -330,8 +350,14 @@ class EngineJob:
             active = 'resource_claims_probe' in job['config']
             if attestation.get('schema_version') != 1 or attestation.get('enforced') is not active:
                 raise ValueError('engine did not attest requested claim enforcement mode')
-            if active and result.get('resolved', {}).get('active_claim_policy') != job['config'].get('resource_claims_active', 'prototype-stationary-v1'):
-                raise ValueError('engine active claim policy differs from frozen request')
+            if active:
+                actual_policy = result.get('resolved', {}).get('active_claim_policy')
+                expected_policy = ('experimental' if 'resource_claims_policy' in job['config']
+                                   else job['config'].get('resource_claims_active'))
+                # Saved-state identity freezes its policy. Do not silently
+                # relabel an experimental continuation as the old prototype.
+                if actual_policy not in ('prototype-stationary-v1', 'experimental') or (expected_policy is not None and actual_policy != expected_policy):
+                    raise ValueError('engine active claim policy differs from frozen request')
             sampling = job['config'].get('resource_claims_shadow', job['config'].get('resource_claims_probe'))
             with gzip.open(path.parent / ARTIFACT, 'rt') as stream:
                 rows = trace_rows(stream)
@@ -339,7 +365,10 @@ class EngineJob:
                 for config_key, schema_key in (('sample_every', 'sample_every'), ('max_samples', 'max_samples'), ('max_bytes', 'max_output_bytes')):
                     if sampling[config_key] != schema.get(schema_key):
                         raise ValueError('resource claim sampling limits changed')
+                from .claim_journeys import attest_digests
                 for row in rows:
+                    if row['kind'] == 'journey':
+                        attest_digests([row['policy_digest']], result.get('resolved', {}))
                     if row['kind'] == 'decision':
                         enforced = row.get('claims_enforced', schema.get('claims_enforced', False))
                         if enforced is not active:

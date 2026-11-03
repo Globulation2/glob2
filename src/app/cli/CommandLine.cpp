@@ -4,6 +4,7 @@
 #include "MapRender.h"
 #include "gradient/ResourceGradientExploration.h"
 #include "gradient/AdaptiveGradientModel.h"
+#include "map/claims/ClaimPolicyConfig.h"
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -375,12 +376,18 @@ void constraints(const Request &r)
                 || r.has("--resource-claims-shadow") || r.has("--load-game") || r.has("--write-replay"))
                 throw std::invalid_argument("active claim prototype requires new-game material destinations, excludes shadow/replay");
         }
+        if(r.has("--resource-claims-policy-json")) {
+            if(!r.has("--material-destinations") || r.has("--resource-claims-active") || r.has("--resource-claims-shadow")
+                || r.has("--load-game") || r.has("--write-replay"))
+                throw std::invalid_argument("claim policy JSON requires new-game material destinations and excludes other claim modes/replay");
+            ResourceClaims::ClaimPolicyConfig::parse(r.get("--resource-claims-policy-json"));
+        }
         if (r.has("--material-destinations") && (r.has("--load-game") || r.has("--write-replay")))
             throw std::invalid_argument("Material destination research mode requires a new game and cannot record a replay");
         for(const auto* option:{"--resource-claims-sample-every","--resource-claims-max-samples","--resource-claims-max-bytes","--resource-claims-deep-context"})
             if(r.has(option) && !r.has("--resource-claims-shadow") && !r.has("--resource-claims-probe"))
                 throw std::invalid_argument("claim sample options require shadow or explicit probe");
-        if(r.has("--resource-claims-probe") && !r.has("--resource-claims-shadow") && !r.has("--resource-claims-active") && !r.has("--load-game"))
+        if(r.has("--resource-claims-probe") && !r.has("--resource-claims-shadow") && !r.has("--resource-claims-active") && !r.has("--resource-claims-policy-json") && !r.has("--load-game"))
             throw std::invalid_argument("claim probe requires active or shadow ledger mode");
         if (r.has("--resource-gradient-exploration")) {
             const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
@@ -577,6 +584,7 @@ const std::vector<Command> &commands()
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
              value("--resource-claims-deep-context", "json", "Temporary bounded min-hash capture provenance: source_revision,bundle_id,cohort_id,game_id"),
              flag("--resource-claims-probe", "Collect diagnostic claim decisions from an active-policy game without a shadow ledger"),
+             value("--resource-claims-policy-json", "JSON", "Explicit live resource-claim experiment configuration; requires material destinations"),
              value("--resource-claims-active", "policy", "Experimental active policy: prototype-stationary-v1; requires material destinations"),
              flag("--material-destinations", "Enable experimental material destination metadata for a new game; excludes replay recording"),
              flag("--resource-claims-shadow", "Observe worker material claims without enforcing capacity; rebuild diagnostic state after load"),

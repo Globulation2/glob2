@@ -28,10 +28,12 @@ def trace(path, columns=2):
 def verify_cases(root):
     traces = {name: trace(root / 'cases' / name / 'world.checksums') for name in CASES}
     results = {name: json.loads((root / 'cases' / name / 'result.json').read_text()) for name in CASES}
+    if len({value.get('checksum_algorithm') for value in results.values()}) != 1:
+        raise ValueError('Qualification mixes checksum algorithms')
     snapshots = {}
     for name in CASES:
         algorithm = results[name].get('checksum_algorithm')
-        if algorithm == 'snapshot-v3':
+        if algorithm in ('snapshot-v3', 'snapshot-v4'):
             samples = trace(root / 'cases' / name / 'snapshot.checksums', columns=3)
             if any(source != world for source, world, _ in samples):
                 raise ValueError(f'{name}: snapshot source/world ticks differ')

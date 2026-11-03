@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 195
+#define VERSION_MINOR 197
+// version 196 persists explicit material-claim experimental policy and decision cadence.
 // version 195 persists active material claims, seed commitments and pending unit routes.
 // version 194 persists optional material gradient destination planes and publication identities.
 // version 193 adds the saved adaptive prestige pipeline limit.
