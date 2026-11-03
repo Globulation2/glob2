@@ -52,10 +52,9 @@ class TerrainDecor(unittest.TestCase):
             self.assertEqual(block["edge"], list(range(first + decor.FULL, first + decor.FRAMES)))
             if name in decor.CONNECTED:
                 material = next(m for m in catalog["materials"] if m["key"] == name)
-                self.assertEqual(material["profile"], "canopy")
-                for pair in catalog["pair_treatments"]:
-                    if name in (pair["a"], pair["b"]):
-                        self.assertEqual(pair["profile"], "canopy")
+                # Cover is the strongest class, so canopy draws all its contacts.
+                self.assertEqual((material["profile"], material["class"]), ("canopy", "cover"))
+                self.assertEqual(catalog["border_classes"][0]["key"], "cover")
                 start = decor.connected_first(name)
                 self.assertEqual(block["connected"], list(range(start, start + 16 * decor.CANOPY_VARIANTS)))
                 self.assertEqual(block["connected_interior"],

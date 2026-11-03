@@ -7,11 +7,17 @@ checksums or the synchronized random stream.
 
 ## Add artwork
 
-A version-3 catalog contains `profiles`, `materials`, `bindings` and optional
-`pair_treatments`. Version-1 packs remain readable with their original five-point
+A version-4 catalog contains `border_classes`, `profiles`, `materials`, `bindings`
+and optional `pair_treatments`. Version-1 packs remain readable with their original five-point
 contours and sampling behavior; version 2 adds denser contours, edge softness and
 world-space bends; version 3 adds per-profile displacement amplitude, pebble
-speckle, diagonal bridging and up to sixty-four curves per profile. Version-2
+speckle, diagonal bridging and up to sixty-four curves per profile; version 4 adds
+border classes, profile precedence and coasts, and smooth contours (see
+[Boundary rules](terrain-rendering.md#boundary-rules)). Custom terrain bundled in
+map files names a profile key but no class. A version-4 catalog's `bundle_profiles`
+maps each retired or class-bearing key to a current `profile` and `class`, so older
+maps keep loading; any other bundled key keeps its profile and becomes `solid`. Keep
+an entry for every profile key a released catalog has shipped. Version-2
 packs parse unchanged and render through the current resolver, which rounds
 corners and reads each curve mirrored and negated. Material keys are unique strings. Bindings map semantic terrain
 names to material keys. Every paintable built-in terrain in `src/map/TerrainTypeTable.h`
@@ -30,7 +36,8 @@ Each material supplies:
 
 - `key`, a stable authoring name, and `sprite`, a `content/data/`-relative sprite prefix;
 - `variants`, an array of `{ "frame": 272, "weight": 1 }` entries;
-- `profile`, the key of its boundary family, and `preview`, three overview RGB channels;
+- `profile`, the key of its edge profile, and `preview`, three overview RGB channels;
+- `class` (version 4), the key of its border class;
 - optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
 - optional `animation_frames`, `animation_ticks`, `animation_stride` and
   `animation_blend_steps`;
@@ -71,13 +78,14 @@ no engine, save or renderer change is needed.
 
 Add `content/data/gfx/tundra0.png` and `content/data/gfx/tundra1.png`, both 32×32 RGBA images.
 Append this entry to the catalog's `materials` array, reusing the existing
-`fractured` profile key:
+`frozen` edge profile and the `solid` border class:
 
 ```json
 {
   "key": "tundra",
   "sprite": "content/data/gfx/tundra",
-  "profile": "fractured",
+  "profile": "frozen",
+  "class": "solid",
   "preview": [155, 205, 220],
   "minimap": [170, 210, 225],
   "variants": [
