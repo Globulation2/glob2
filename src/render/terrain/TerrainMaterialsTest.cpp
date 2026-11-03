@@ -605,7 +605,7 @@ TEST_SUITE("TerrainMaterials")
 	}
 	TEST_CASE("animation_blend_steps is optional and bounded by the phase length")
 	{
-		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
 		const auto j = nlohmann::json::parse(input);
 		std::size_t lava = 0, grass = 0;
 		while (j["materials"][lava]["key"] != "lava") ++lava;
