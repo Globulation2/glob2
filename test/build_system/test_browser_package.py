@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location(
-    "package_static", Path(__file__).resolve().parents[2] / "browser/package-static.py"
+    "package_static", Path(__file__).resolve().parents[2] / "platforms/web/package-static.py"
 )
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
@@ -21,7 +21,7 @@ class BrowserPackageTests(unittest.TestCase):
     def test_ci_artifacts_publish_music_and_launcher_runtime_closures(self):
         workflow = (module.ROOT / ".github/workflows/build.yml").read_text()
         steps = workflow.split("\n      - ")
-        shell = (module.ROOT / "browser/shell.html").read_text()
+        shell = (module.ROOT / "platforms/web/shell.html").read_text()
         scripts = re.findall(r'<script\b[^>]*\bsrc=["\']([^"\']+)["\']', shell)
         relative_scripts = [name for name in scripts if not name.startswith(("/", "http:", "https:"))]
         for artifact in ("web-client", "glob2-web-development"):
@@ -44,14 +44,14 @@ class BrowserPackageTests(unittest.TestCase):
         web_assets.launcher_script_fonts(module.ROOT, self.source)
         module.package(self.source, self.output)
         module.verify(self.output)
-        manifest = json.loads((module.ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        manifest = json.loads((module.ROOT / 'content/data/fonts/scripts/manifest.json').read_text())
         for font in manifest['fonts']:
             name = 'fonts/' + font['name'] + '-Regular.ttf'
             self.assertEqual(hashlib.sha256((self.output / name).read_bytes()).hexdigest(), font['sha256'])
         for name, canonical in {
-            'fonts/sans-core.ttf': 'browser/assets/sans-core.ttf',
-            'fonts/LICENSE-DejaVu.txt': 'data/fonts/LICENSE-DejaVu.txt',
-            'fonts/LICENSE-Droid.txt': 'data/fonts/LICENSE-Droid.txt',
+            'fonts/sans-core.ttf': 'platforms/web/assets/sans-core.ttf',
+            'fonts/LICENSE-DejaVu.txt': 'content/data/fonts/LICENSE-DejaVu.txt',
+            'fonts/LICENSE-Droid.txt': 'content/data/fonts/LICENSE-Droid.txt',
         }.items():
             with self.subTest(asset=name):
                 self.assertEqual((self.output / name).read_bytes(),
@@ -195,7 +195,7 @@ class BrowserPackageTests(unittest.TestCase):
         (self.source / "i18n.js").write_text('/* translation runtime */')
         catalogs = self.source / "locales"
         catalogs.mkdir()
-        for canonical in (module.ROOT / "platform/packages/i18n/locales").glob("*.json"):
+        for canonical in (module.ROOT / "services/online/packages/i18n/locales").glob("*.json"):
             (catalogs / canonical.name).write_text('{"Loading game…":"Fixture translation"}')
 
     def refresh_checksums(self):

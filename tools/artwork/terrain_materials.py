@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 from tools.artwork.package_runtime import PRODUCTION, require, sha, validate
 from tools.artwork.validate_runtime import topology
 
-SOURCES = ROOT / 'datasrc/gfx/derived/terrain-materials-v1'
+SOURCES = ROOT / 'content-src/gfx/derived/terrain-materials-v1'
 OUTPUT = PRODUCTION / 'original-materials'
 RECIPE = 'original-based grass and sand v1; retained rugged corner masks'
 SCALE = 4
@@ -107,7 +107,7 @@ def load_sources():
     materials = {}
     for label, frame in (('grass', 0), ('sand', 128)):
         record = recipe['materials'][label]
-        path, native_path = ROOT / record['path'], ROOT / f'data/gfx/terrain{frame}.png'
+        path, native_path = ROOT / record['path'], ROOT / f'content/data/gfx/terrain{frame}.png'
         require(record['frame'] == frame and sha(path) == record['sha256'],
                 'Approved material hash/frame differs: ' + label)
         require(sha(native_path) == record['native_sha256'], 'Native reference differs: ' + label)
@@ -170,7 +170,7 @@ def compatible_edges(tiles, corners, water):
 def build_tiles(recipe, materials, masks):
     tiles = {}
     for i in list(GRASS) + list(SAND):
-        with Image.open(ROOT / f'data/gfx/terrain{i}.png') as native:
+        with Image.open(ROOT / f'content/data/gfx/terrain{i}.png') as native:
             tiles[i] = np.asarray(refine(native.convert('RGB'), recipe['settings']).convert('RGBA')).copy()
     grass, sand = materials['grass'], materials['sand']
     for i in GRASS_SAND:
@@ -223,7 +223,7 @@ def prepare():
         labels = ['grass'] if i in GRASS else ['sand'] if i in SAND or i in SAND_WATER else ['grass', 'sand']
         sources = [source_record(ROOT / recipe['materials'][label]['path']) for label in labels]
         native_frames = [i] if i in GRASS or i in SAND else [recipe['materials'][label]['frame'] for label in labels]
-        sources += [source_record(ROOT / f'data/gfx/terrain{native}.png') for native in native_frames]
+        sources += [source_record(ROOT / f'content/data/gfx/terrain{native}.png') for native in native_frames]
         if i in masks:
             family = 'grass-sand' if i in GRASS_SAND else 'sand-water'
             sources.append(source_record(SOURCES / f'{family}-masks/terrain{i}.png'))

@@ -87,7 +87,7 @@ TEST_SUITE("SoundMixerTrackSelection")
 {
 	TEST_CASE("track selection while closed and queued mid-fade changes")
 	{
-		const std::string dataDir = glob2test::sourceRoot().string();
+		const std::string dataDir = glob2test::contentRoot().string();
 
 		// The dummy driver gives a real SDL_OpenAudioDeviceStream without needing hardware, so
 		// the muted-start / unmute path below is the production one.

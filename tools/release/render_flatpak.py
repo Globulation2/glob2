@@ -21,4 +21,4 @@ if __name__ == "__main__":
     parser.add_argument("commit")
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
-    render(Path("flatpak/org.globulation2.Globulation2.yml.in"), args.output, args.commit)
+    render(Path("platforms/linux/flatpak/org.globulation2.Globulation2.yml.in"), args.output, args.commit)

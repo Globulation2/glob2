@@ -157,8 +157,9 @@ def capture_inputs(binaries, roots, manifest_path, fixture_paths):
                                  'inspection': 'ldd' if platform.system() == 'Linux' else 'unavailable'}
                            for name, path in binaries.items()},
         data_roots={name: {'path': str(root), 'files': {
-            str(path.relative_to(root)): digest(path)
-            for path in sorted((root / 'data').rglob('*'))
+            str(path.relative_to(assets)): digest(path)
+            for assets in [root / 'content' if (root / 'content' / 'data').is_dir() else root]
+            for path in sorted((assets / 'data').rglob('*'))
             if path.is_file() and path.suffix in CATALOG_SUFFIXES}}
             for name, root in roots.items()},
         runner_inputs={str(path): digest(path) for path in RUNNER_INPUTS},
@@ -269,7 +270,7 @@ def main():
     binaries = {'baseline': args.before.resolve(), 'candidate': args.after.resolve()}
     roots = {'baseline': args.before_root.resolve(), 'candidate': args.after_root.resolve()}
     for root in roots.values():
-        if not (root/'data').is_dir():
+        if not (root/'data').is_dir() and not (root/'content'/'data').is_dir():
             p.error(f'missing data directory: {root}')
     if roots['baseline'] == roots['candidate']:
         p.error('baseline and candidate require distinct frozen data roots')

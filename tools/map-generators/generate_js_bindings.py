@@ -1064,7 +1064,7 @@ def main():
             "export type GeneratorCallback = (context: GeneratorContext) => void | string;",
         ]
     )
-    emit(ROOT / "data/generators/toolkit.d.ts", "\n".join(types) + "\n")
+    emit(ROOT / "content/data/generators/toolkit.d.ts", "\n".join(types) + "\n")
     print(
         f"{len(records)} records, {len(functions)} functions, {sum(len(x) for x in groups.values())} adapters"
     )

@@ -67,8 +67,8 @@ class OnlineErrorCatalogTest(unittest.TestCase):
         self.assertEqual(len(sized_chunks), len(chunks))
         self.assertTrue(all(len(value.encode('ascii')) == int(size) for _, value, size in sized_chunks))
     def test_current_authoritative_catalog_hashes_and_size(self):
-        en = ROOT / 'platform/packages/i18n/locales/en.json'
-        bg = ROOT / 'platform/packages/i18n/locales/bg.json'
+        en = ROOT / 'services/online/packages/i18n/locales/en.json'
+        bg = ROOT / 'services/online/packages/i18n/locales/bg.json'
         result = MODULE.generate(en, bg, self.output)
         self.assertEqual(result['english_sha256'], hashlib.sha256(en.read_bytes()).hexdigest())
         self.assertEqual(result['bulgarian_sha256'], hashlib.sha256(bg.read_bytes()).hexdigest())

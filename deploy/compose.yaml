@@ -18,7 +18,7 @@
 # service that uses it.
 #
 # Configuration: deploy/.env (copy .env.example) and deploy/instance.yaml
-# (copy platform/instance.example.yaml).
+# (copy services/online/instance.example.yaml).
 name: glob2-platform
 
 x-hardening: &hardening

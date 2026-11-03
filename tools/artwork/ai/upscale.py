@@ -42,7 +42,7 @@ def filled_rgb(source):
 def select_frame(root, frame_id):
     if not re.fullmatch(r'[A-Za-z0-9_-]+', frame_id):
         raise ValueError('Invalid sprite frame ID')
-    manifest = json.loads((root / 'data/highres/v1/manifest.json').read_text())
+    manifest = json.loads((root / 'content/data/highres/v1/manifest.json').read_text())
     frame = next((f for f in manifest['frames'] if f['id'] == frame_id), None)
     if not frame or frame['recipe'] not in AI:
         raise ValueError('Select an existing AI-upscaled sprite; originals and connected terrain are excluded')
@@ -53,11 +53,11 @@ def select_frame(root, frame_id):
         if role not in {'base', 'team'} or role in roles or name != frame_id + suffix:
             raise ValueError('Invalid or duplicate sprite layer: ' + name)
         roles.add(role)
-        with Image.open(root / 'data/gfx' / name) as image:
+        with Image.open(root / 'content/data/gfx' / name) as image:
             if image.size != (layer['logical_width'], layer['logical_height']):
                 raise ValueError('Classic source dimensions differ: ' + name)
     expected = {role for role, suffix in (('base', '.png'), ('team', 'r.png'))
-                if (root / 'data/gfx' / (frame_id + suffix)).is_file()}
+                if (root / 'content/data/gfx' / (frame_id + suffix)).is_file()}
     if not roles or roles != expected:
         raise ValueError('Missing classic base/team layers: ' + frame_id)
     return frame
@@ -120,7 +120,7 @@ def generate(root, frame_id, output, executable=None, models=None, prepare_only=
         records = []
         for layer in frame['layers']:
             name = layer['file']
-            source = root / 'data/gfx' / name
+            source = root / 'content/data/gfx' / name
             with Image.open(source) as native:
                 image = native.convert('RGBA')
             padded = np.pad(filled_rgb(image), ((PADDING, PADDING), (PADDING, PADDING), (0, 0)), mode='edge')

@@ -171,10 +171,10 @@ report: geometry/coverage matching and subtle shading differences are distinct.
 
 ## High-resolution textures
 
-Native 32-pose sprites remain in `data/gfx`. The Blender originals live in
-`datasrc/gfx/originals/units`. Approved high-resolution layers use the existing
-`datasrc/gfx/production/original-derived` category and are packaged into
-`data/highres/v1` alongside the other artwork. Unit icons are not changed.
+Native 32-pose sprites remain in `content/data/gfx`. The Blender originals live in
+`content-src/gfx/originals/units`. Approved high-resolution layers use the existing
+`content-src/gfx/production/original-derived` category and are packaged into
+`content/data/highres/v1` alongside the other artwork. Unit icons are not changed.
 The runtime keeps the native logical dimensions (32, 38 or 40 pixels) and uses a
 fixed 128×128 pixel texture for every pose, regardless of native size -- 128 is
 a power of two, unlike 152 or 160 (38 or 40 × 4), which the engine's texture
@@ -246,7 +246,7 @@ From the repository root, using Blender **3.6.23**:
 blender -b --disable-autoexec --python-exit-code 1 --python tools/skins/export_units.py -- \
   --output artifacts/skins/units
 python3 tools/skins/make_paint.py artifacts/skins/units --material mixed
-cp data/skins/colony-v1/swarm.gsk artifacts/skins/units/
+cp content/data/skins/colony-v1/swarm.gsk artifacts/skins/units/
 python3 tools/skins/test_export.py artifacts/skins/units
 python3 tools/skins/install_units.py artifacts/skins/units
 scons release=1 skin-preview
@@ -255,7 +255,7 @@ GLOB2_SKIN_PREVIEW_DIR="$PWD/artifacts/skins/units" build/linux/client/release/s
 ```
 
 Validate the installed package with `python3 tools/skins/test_export.py
-data/skins/colony-v1`. This checks retained source and mesh hashes, complete clip
+content/data/skins/colony-v1`. This checks retained source and mesh hashes, complete clip
 coverage, shared paint coordinates across actions, animation in all headings,
 unclipped geometry, normalized lighting normals, and identical designer models for
 all seven unit actions and the swarm. Workers and warriors additionally require
@@ -282,7 +282,7 @@ heading (the static swarm has one page). Run it with white, stripes, spots and
 an isolated patch to review both geometry and paint attachment. Generated files stay
 under `artifacts/`. `python3 tools/skins/make_paint.py <DIR> [--pattern
 checker|stripes|spots|solid] [--color RRGGBB] [--material <key>|mixed]` (keys
-from `libgag/shaders/skin-materials.json`) writes the colony-v2 pair `<DIR>/paint.webp`
+from `libs/gag/shaders/skin-materials.json`) writes the colony-v2 pair `<DIR>/paint.webp`
 (512x512 colour atlas, one 256x256 quadrant per model: worker top-left, warrior
 top-right, explorer bottom-left, swarm bottom-right) and `<DIR>/material.webp`
 (the matching material-id map). The generator requires Pillow with WebP support
@@ -292,7 +292,7 @@ pink registration stripe. `--material mixed` cycles every material for shader ch
 
 `export_units.py` preserves all original source bytes. Worker and warrior surfaces
 are constructed from the retained definition in
-`datasrc/gfx/authored/skins/limb-surfaces.json`, `tools/skins/limb_surface.py`
+`content-src/gfx/authored/skins/limb-surfaces.json`, `tools/skins/limb_surface.py`
 and `tools/skins/chart.py`.
 The established socket/ring topology and its paint chart are retained. The
 builder fits its welded front/top quarter to one connected rest panel using a
@@ -341,7 +341,7 @@ transfer, including ellipsoid orientations; only its UVs change to a body-space
 front/back and top/bottom folded chart. Swarm geometry and UVs are unchanged.
 
 `install_units.py` validates all three generated sets before copying unit meshes,
-surface contracts and provenance into `data/skins/colony-v1`, and copies all unit
+surface contracts and provenance into `content/data/skins/colony-v1`, and copies all unit
 actions into the web designer. Preset paint remains reproducible through
 `make_paint.py`; changing UVs alone does not require replacing immutable preset
 texture bytes. Colony Studio offers free camera orbit, action, animation and paused-frame
@@ -474,15 +474,15 @@ in the generator, then regenerate and install every shape with Blender 3.6.23:
 
 ```sh
 blender --background --factory-startup -t 1 --python-exit-code 1 \
-  --python tools/skins/generate_swarms.py -- --output data/skins/colony-v1
-cp data/skins/colony-v1/swarm-*.gsk platform/apps/web/public/skins/models/
+  --python tools/skins/generate_swarms.py -- --output content/data/skins/colony-v1
+cp content/data/skins/colony-v1/swarm-*.gsk services/online/apps/web/public/skins/models/
 ```
 
 `-t 1` is required: metaball surfacing is only byte-reproducible on one thread.
 The generator writes `swarm-<id>.gsk` and records its hashes, design, coverage
 and volume in `manifest.json`; `test_skin_assets.py` fails if the generator, its
 helpers or a mesh change without regeneration, or if the designer's copies in
-`platform/apps/web/public/skins/models` differ. A new shape also needs its id in
+`services/online/apps/web/public/skins/models` differ. A new shape also needs its id in
 `src/online/SwarmMeshCatalog.h` and the protocol's `SwarmMesh`, in the same
 order as `DESIGNS` (the asset test checks the three agree), and a name and
 description in the designer's `SWARM_SHAPES`. Ids are part of signed skins, so
@@ -498,7 +498,7 @@ the same texel density. `tools/skins/swarm_metrics.py MESH.gsk... --preview DIR
 --paint PNG` (NumPy; Blender's bundled Python has it) reports texel density,
 visible seams and UV islands as the game camera sees a static mesh, and can
 render shaded previews for review. To see a shape in a real scene, copy
-`data/skins/colony-v1/*.gsk` beside a `paint.webp` under `artifacts/`, point
+`content/data/skins/colony-v1/*.gsk` beside a `paint.webp` under `artifacts/`, point
 `GLOB2_SKIN_PREVIEW_DIR` there and set `GLOB2_SKIN_PREVIEW_SWARM=<id>`; the
 previews above then draw team 0's swarm with that shape, painted from the
 atlas's swarm quadrant. `--paint` takes a 256px swarm paint, such as that
@@ -636,9 +636,9 @@ checker:
 ```sh
 scons release=1 server=0 skin-preview
 build/linux/client/release/src/skin-preview \
-  data/skins/colony-v1/worker-walk.gsb artifacts/review/shapes --rig-review
+  content/data/skins/colony-v1/worker-walk.gsb artifacts/review/shapes --rig-review
 build/linux/client/release/src/skin-preview \
-  data/skins/colony-v1/worker-walk.gsk artifacts/review/baked --rig-review
+  content/data/skins/colony-v1/worker-walk.gsk artifacts/review/baked --rig-review
 python3 tools/skins/rig_silhouette.py artifacts/review/baked artifacts/review/shapes
 ```
 
@@ -667,7 +667,7 @@ output-directory arguments, then extract the selectors:
 
 ```sh
 python3 tools/skins/studio_thumbnails.py --sprite-bundle artifacts/rig/sprites \
-  --clip worker-walk --output platform/apps/web/public/skins/thumbs
+  --clip worker-walk --output services/online/apps/web/public/skins/thumbs
 ```
 
 This path requires Pillow, validates the page hash and dimensions, and crops
@@ -693,7 +693,7 @@ A GSB1 frame is `mean + sum(c_k * shape_k)` for positions and, separately,
 normals, turned about model Z by the heading and taken through the camera.
 Native rendering evaluates it on the CPU (`SkinShapeModel`) into the baked
 per-pose upload path, cached per atlas tile like a baked pose; Studio evaluates
-the displayed pose the same way (`platform/apps/web/src/skins/shapes.ts`).
+the displayed pose the same way (`services/online/apps/web/src/skins/shapes.ts`).
 
 A GSR1 frame maps to a time `((floor(f/32) % groups)*32 + f%32)/32` seconds
 in a `samples/32` second cycle, where `groups` is `samples/32`: a 64-sample
@@ -708,11 +708,11 @@ space. Positions blend four weighted bone transforms; normals blend each
 bone's inverse-transpose (its rotation divided by its uniform scale), then
 normalize, before and after the camera. Native rendering uploads the rest mesh
 once per model and context and skins it on the GPU with the shader in
-`libgag/include/SkinDeformation.h`, sharing the palette across paints of the
+`libs/gag/include/SkinDeformation.h`, sharing the palette across paints of the
 same pose; the context keeps at most 16 uploaded rest models beside the
 bounded pose atlas, and failed shader compilation or capability checks use the
 CPU evaluator (`SkinModel::evaluate`). Studio uses the same contract in
-`platform/apps/web/src/skins/rig.ts`.
+`services/online/apps/web/src/skins/rig.ts`.
 
 `SkinMesh` adapts all three formats for the renderer. `fromShapes` and
 `fromModel` present one clip of a model as 256 frames without owning pose
@@ -771,7 +771,7 @@ publishes a new immutable model only after all checks pass; failures leave an
 existing mesh untouched.
 
 C++ and TypeScript validate decoded float32 values using binary64 arithmetic
-(`libgag/src/SkinAssetReader.h`, `platform/apps/web/src/skins/binaryAsset.ts`).
+(`libs/gag/src/SkinAssetReader.h`, `services/online/apps/web/src/skins/binaryAsset.ts`).
 Inclusive scale and duration lower bounds and heading bounds use their
 serialized float32 endpoints; norm and weight-sum tolerance is binary64
 `0.0001`. Accepted quaternions and weights normalize into float32 storage in
@@ -818,7 +818,7 @@ in every browser, so they have no shader to check here. The suite has no API
 or built-app dependency; install the repository's Playwright browsers first:
 
 ```sh
-npm exec --prefix platform -- playwright test -c platform/apps/web/e2e/rig.config.ts
+npm exec --prefix platform -- playwright test -c services/online/apps/web/e2e/rig.config.ts
 ```
 
 All three engine projects (Chromium, Firefox and WebKit) must pass; unavailable

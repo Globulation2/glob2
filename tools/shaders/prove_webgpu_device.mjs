@@ -6,7 +6,7 @@ const require=createRequire(import.meta.url),{chromium}=require(process.env.PLAY
 const directory=resolve(process.argv[2]||'artifacts/shaders/generated');
 const shaders=Object.fromEntries(['primitive','world','cloud','point','skin','skin-rig','terrain-compose','terrain-reduce'].flatMap(v=>['vert','frag'].map(s=>[`${v}.${s}.wgsl`,readFileSync(join(directory,'webgpu',`${v}.${s}.wgsl`),'utf8')])));
 shaders['metadata.json']=readFileSync(join(directory,'metadata.json'),'utf8');
-const library=readFileSync(new URL('../../browser/webgpu-device.js',import.meta.url),'utf8');
+const library=readFileSync(new URL('../../platforms/web/webgpu-device.js',import.meta.url),'utf8');
 const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM,args:['--enable-unsafe-webgpu','--enable-features=Vulkan','--use-vulkan=swiftshader','--use-angle=vulkan','--disable-vulkan-surface']});
 try{const page=await browser.newPage();await page.goto(process.env.SHADER_PROOF_URL||'http://127.0.0.1:8784/');
 const result=await page.evaluate(async({library,shaders})=>{

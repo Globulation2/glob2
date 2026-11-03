@@ -27,7 +27,7 @@ const std::string MATCH = "7e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b";
 Json assignmentJson()
 {
 	const auto path = glob2test::sourceRoot() /
-					  "platform/packages/protocol/fixtures/valid/RealtimeEventMatchStart/assignment.json";
+					  "services/online/packages/protocol/fixtures/valid/RealtimeEventMatchStart/assignment.json";
 	Json value = Json::parse(glob2test::readFile(path));
 	value["matchId"] = MATCH;
 	return value;

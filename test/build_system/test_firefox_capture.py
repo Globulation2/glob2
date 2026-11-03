@@ -8,7 +8,7 @@ from unittest import mock
 import zipfile
 
 
-SCRIPT = Path(__file__).resolve().parents[2] / 'browser' / 'firefox_capture.py'
+SCRIPT = Path(__file__).resolve().parents[2] / 'platforms/web' / 'firefox_capture.py'
 SPEC = importlib.util.spec_from_file_location('firefox_capture', SCRIPT)
 capture = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(capture)

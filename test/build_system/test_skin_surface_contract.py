@@ -17,9 +17,9 @@ import install_units
 class SkinSurfaceContractTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.data = (ROOT / "data/skins/colony-v1/worker-walk.gsk").read_bytes()
+        cls.data = (ROOT / "content/data/skins/colony-v1/worker-walk.gsk").read_bytes()
         cls.contract = json.loads(
-            (ROOT / "data/skins/colony-v1/worker-surface.json").read_text()
+            (ROOT / "content/data/skins/colony-v1/worker-surface.json").read_text()
         )
         cls.count = struct.unpack_from("<I", cls.data, 4)[0]
 
@@ -57,7 +57,7 @@ class SkinInstallTest(unittest.TestCase):
     def test_incomplete_export_does_not_replace_installed_meshes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            installed = root / "data/skins/colony-v1"
+            installed = root / "content/data/skins/colony-v1"
             installed.mkdir(parents=True)
             (installed / "manifest.json").write_text("{}")
             mesh = installed / "worker-walk.gsk"

@@ -14,7 +14,7 @@
 -r .github/scripts/requirements-ci-model.txt
 #
 # Kept out on purpose:
-# - mobile/play-api-requirements.txt: hash-pinned, isolated venv for Play uploads.
+# - platforms/mobile/play-api-requirements.txt: hash-pinned, isolated venv for Play uploads.
 # - tools/music/requirements-{synth,samples,separation,genai}.txt: large or
 #   hardware-specific extras (pedalboard, torch/Demucs, ACE-Step).
 # - bpy, bmesh, mathutils (Blender), gimpfu (GIMP) and gi (PyGObject) come from the
