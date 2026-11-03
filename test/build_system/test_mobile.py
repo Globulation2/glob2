@@ -12,7 +12,7 @@ from mobile_toolchain import discover
 
 class EmulatorSmokeTests(unittest.TestCase):
     def test_root_reconnects_after_recorded_adbd_restart(self):
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import smoke
         from unittest.mock import Mock
         run = Mock(side_effect=[RuntimeError('adb: unable to connect for root: closed'), '', '0\n'])
@@ -21,7 +21,7 @@ class EmulatorSmokeTests(unittest.TestCase):
                          [('root',), ('wait-for-device',), ('shell', 'id', '-u')])
 
     def test_root_requires_verified_uid_after_reconnection(self):
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import smoke
         from unittest.mock import Mock
         run = Mock(side_effect=['', '', '2000', '', '', '0'])
@@ -33,7 +33,7 @@ class EmulatorSmokeTests(unittest.TestCase):
         self.assertEqual(run.call_count, 9)
 
     def test_root_does_not_retry_unrelated_failures(self):
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import smoke
         from unittest.mock import Mock
         run = Mock(side_effect=RuntimeError('permission denied'))
@@ -67,7 +67,7 @@ class EmulatorSmokeTests(unittest.TestCase):
                                  ['KEYCODE_TAB', 'KEYCODE_ENTER'] * len(initial))
 
     def test_smoke_dismisses_recorded_android_first_run_introduction(self):
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import smoke
         # Actual run41252859958: native reached these screens in2seconds and
         # then waited90seconds at the introduction; no crash or slow startup.
@@ -419,7 +419,7 @@ class IOSSmokeFailureTests(unittest.TestCase):
     def test_screenshot_failure_retains_display_inventory_and_actual_error_output(self):
         import json
         import subprocess
-        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
         import ios_smoke
         root = Path(__file__).resolve().parents[2]
         scratch = root/'build/test-profiles'
