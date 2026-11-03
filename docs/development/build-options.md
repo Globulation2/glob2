@@ -63,9 +63,11 @@ builds use temporary paths without spaces, then their verified installations are
 copied to the cache volume before atomic publication. This permits the macOS
 `Application Support` cache location without passing it to upstream Makefiles.
 Pinned SDL and recording archive downloads retry network failures and transient
-HTTP responses up to three attempts, with one- and two-second delays. Every
-archive must match its locked SHA-256 before installation; checksum failures
-and permanent HTTP errors fail immediately.
+HTTP responses in up to three rounds, with one- and two-second delays between
+rounds. Each round tries the primary URL and any locked mirrors in order; a
+transient primary failure falls through to a mirror without an extra delay.
+Every source must match the same locked SHA-256 before installation; checksum
+failures and permanent HTTP errors fail immediately.
 Explicit
 prefix overrides and `GLOB2_DEV_MODE=isolated` remain supported. Clean, dry-run,
 help and compilation-database-only requests do not provision dependencies.

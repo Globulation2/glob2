@@ -9,15 +9,23 @@ const settled = page => page.evaluate(() => new Promise(resolve => requestAnimat
 // The logical surface always fills the window at one uniform scale, so bounds
 // published for a previous window size (their surface has another aspect
 // ratio) are stale after a resize and must not be clicked.
-function current(page, bounds) {
-  const {width, height} = page.viewportSize();
+// Fullscreen can resize the real window without changing Playwright's
+// configured viewport. Input must follow the live CSS viewport.
+const viewport = page => page.evaluate(() => ({width: innerWidth, height: innerHeight}));
+async function current(page, bounds) {
+  // Layout follows the renderer's logical/backing surface, which can differ
+  // from CSS dimensions while fullscreen replaces a presentation canvas.
+  const {width, height} = await page.evaluate(() => {
+    const state = glob2Diagnostics.snapshot();
+    return {width: state.width, height: state.height};
+  });
   return Math.abs(width / bounds.surface.w - height / bounds.surface.h) < 0.02;
 }
 async function control(page, key, {timeout = 30000, enabled = true} = {}) {
   let found;
   await expect.poll(async () => {
     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
-    return Boolean(found && (!enabled || found.enabled) && current(page, found));
+    return Boolean(found && (!enabled || found.enabled) && (await current(page, found)));
   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
   await settled(page);
   return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
@@ -39,12 +47,12 @@ exports.clickByLabel = async (page, keyPattern, label, options = {}) => {
 };
 // Logical → CSS pixels: the canvas fills the window at the logical surface size,
 // scaled by any interface scale setting.
-function css(page, bounds, point) {
-  const {width, height} = page.viewportSize();
+async function css(page, bounds, point) {
+  const {width, height} = await viewport(page);
   const sx = width / bounds.surface.w, sy = height / bounds.surface.h;
   return {x: point.x * sx, y: point.y * sy};
 }
-function center(page, bounds) {
+async function center(page, bounds) {
   return css(page, bounds, {x: bounds.x + bounds.w / 2, y: bounds.y + bounds.h / 2});
 }
 exports.control = control;
@@ -53,15 +61,15 @@ exports.controlBox = async (page, key, options) => {
   const requested = {enabled: false, ...options};
   const bounds = options?.fullyVisible
     ? await controlOnScreen(page, key, requested) : await control(page, key, requested);
-  const origin = css(page, bounds, {x: bounds.x, y: bounds.y});
-  const corner = css(page, bounds, {x: bounds.x + bounds.w, y: bounds.y + bounds.h});
+  const origin = await css(page, bounds, {x: bounds.x, y: bounds.y});
+  const corner = await css(page, bounds, {x: bounds.x + bounds.w, y: bounds.y + bounds.h});
   return {x: origin.x, y: origin.y, width: corner.x - origin.x, height: corner.y - origin.y};
 };
 // The panel of the host owning a control, in CSS pixels.
 exports.rootBox = async (page, key) => {
   const bounds = await control(page, key, {enabled: false});
-  const origin = css(page, bounds, {x: bounds.root.x, y: bounds.root.y});
-  const corner = css(page, bounds, {x: bounds.root.x + bounds.root.w, y: bounds.root.y + bounds.root.h});
+  const origin = await css(page, bounds, {x: bounds.root.x, y: bounds.root.y});
+  const corner = await css(page, bounds, {x: bounds.root.x + bounds.root.w, y: bounds.root.y + bounds.root.h});
   return {x: origin.x, y: origin.y, width: corner.x - origin.x, height: corner.y - origin.y};
 };
 // Scroll regions publish every row and card, including ones scrolled out of
@@ -99,7 +107,7 @@ async function controlOnScreen(page, key, options) {
         anchor = {x: row.x + row.w / 2, y: row.y + row.h / 2};
       }
     }
-    const root = css(page, bounds, anchor);
+    const root = await css(page, bounds, anchor);
     await page.mouse.move(root.x, root.y);
     const distance = bounds.y + bounds.h / 2 - anchor.y;
     // SDL's browser wheel converts 100 CSS pixels into one scroll step. A
@@ -113,7 +121,7 @@ async function controlOnScreen(page, key, options) {
   throw new Error(`control "${key}" cannot be scrolled into view`);
 }
 // Click the on-screen part of the control.
-function visibleCenter(page, bounds) {
+async function visibleCenter(page, bounds) {
   const v = shown(bounds) ? bounds.visible : bounds;
   return css(page, bounds, {x: v.x + v.w / 2, y: v.y + v.h / 2});
 }
@@ -132,12 +140,12 @@ async function consumed(page) {
 exports.consumed = consumed;
 exports.clickControl = async (page, key, options = {}) => {
   const bounds = await controlOnScreen(page, key, options);
-  await page.locator('#canvas').click({position: visibleCenter(page, bounds), delay: 80, ...(options.click || {})});
+  await page.locator('#canvas').click({position: await visibleCenter(page, bounds), delay: 80, ...(options.click || {})});
   await consumed(page);
 };
 exports.tapControl = async (page, key, options = {}) => {
   const bounds = await control(page, key, options);
-  const at = center(page, bounds);
+  const at = await center(page, bounds);
   await page.touchscreen.tap(at.x, at.y);
   await consumed(page);
 };
@@ -257,12 +265,12 @@ exports.waitForMainMenu = async (page, {timeout = 60000} = {}) => {
       const key = ['intro/menu', 'intro/continue'].find(key =>
         !sent.has(key) && state.controls[key]?.enabled);
       const bounds = key && state.controls[key];
-      if (bounds && shown(bounds) && current(page, bounds)) {
+      if (bounds && shown(bounds) && (await current(page, bounds))) {
         // This snapshot already supplies the visible hit area. Re-entering a
         // control/layout wait can outlive an accepted screen transition on a
         // busy renderer. Send each choice once, then observe the destination.
         sent.add(key);
-        await page.locator('#canvas').click({position: visibleCenter(page, bounds), delay: 80});
+        await page.locator('#canvas').click({position: await visibleCenter(page, bounds), delay: 80});
         await consumed(page);
       }
     }

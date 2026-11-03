@@ -70,6 +70,47 @@ class DownloadTests(unittest.TestCase):
             sleep.assert_not_called()
             self.assertEqual(list(Path(temporary).iterdir()), [])
 
+    def test_transient_primary_failure_uses_same_pin_on_mirror_without_delay(self):
+        spec = self.versions['dependency']
+        spec['mirrors'] = ['https://mirror.invalid/dependency.tar.gz']
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(module.urllib.request, 'urlopen', side_effect=[
+                    TimeoutError('primary unavailable'), io.BytesIO(self.payload)]) as request, \
+                mock.patch.object(module.time, 'sleep') as sleep:
+            module.download(temporary, self.versions)
+            self.assertEqual((Path(temporary) / spec['archive']).read_bytes(), self.payload)
+            self.assertEqual(request.call_args_list,
+                             [mock.call(url, timeout=60) for url in [spec['url'], *spec['mirrors']]])
+            sleep.assert_not_called()
+            self.assertFalse(list(Path(temporary).glob('*.download')))
+
+    def test_mirror_checksum_failure_is_not_installed_or_retried(self):
+        spec = self.versions['dependency']
+        spec['mirrors'] = ['https://mirror.invalid/dependency.tar.gz']
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(module.urllib.request, 'urlopen', side_effect=[
+                    ConnectionError('primary unavailable'), io.BytesIO(b'corrupt')]) as request, \
+                mock.patch.object(module.time, 'sleep') as sleep:
+            with self.assertRaisesRegex(ValueError, 'checksum mismatch'):
+                module.download(temporary, self.versions)
+            self.assertEqual(request.call_count, 2)
+            sleep.assert_not_called()
+            self.assertEqual(list(Path(temporary).iterdir()), [])
+
+    def test_exhausted_mirrors_retry_each_source_in_three_bounded_rounds(self):
+        spec = self.versions['dependency']
+        spec['mirrors'] = ['https://mirror.invalid/dependency.tar.gz']
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(module.urllib.request, 'urlopen',
+                                  side_effect=urllib.error.URLError('unavailable')) as request, \
+                mock.patch.object(module.time, 'sleep') as sleep:
+            with self.assertRaises(urllib.error.URLError):
+                module.download(temporary, self.versions)
+            self.assertEqual(request.call_args_list,
+                             [mock.call(url, timeout=60) for url in [spec['url'], *spec['mirrors']]] * 3)
+            self.assertEqual(sleep.call_args_list, [mock.call(1), mock.call(2)])
+            self.assertEqual(list(Path(temporary).iterdir()), [])
+
     def test_existing_archive_is_verified_without_network(self):
         with tempfile.TemporaryDirectory() as temporary, \
                 mock.patch.object(module.urllib.request, 'urlopen') as request:
