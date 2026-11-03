@@ -64,6 +64,21 @@ class TerrainTileset(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate(invalid)
 
+    def test_animation_blend_steps_are_optional_and_bounded_by_the_phase(self):
+        lava = next(m for m in self.document["materials"] if m["key"] == "lava")
+        for steps in (1, lava["animation_ticks"]):
+            lava["animation_blend_steps"] = steps
+            validate(self.document)
+        for steps in (0, lava["animation_ticks"] + 1, "4", 2.0, True):
+            lava["animation_blend_steps"] = steps
+            with self.assertRaises(ValueError):
+                validate(self.document)
+        lava.pop("animation_blend_steps")
+        still = next(m for m in self.document["materials"] if "animation_frames" not in m)
+        still["animation_blend_steps"] = 1
+        with self.assertRaises(ValueError):
+            validate(self.document)
+
     def test_variant_block_groups_use_nonempty_utf8_keys_of_at_most_64_bytes(self):
         # Reduce to one material so each schema boundary checks only its frames.
         document = copy.deepcopy(self.document)
