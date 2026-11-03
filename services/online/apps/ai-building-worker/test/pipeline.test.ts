@@ -258,7 +258,7 @@ it('resumes a completed design stage after a restart', async () => {
     ).join('\n\n'),
     examples = await Promise.all(
       ['inn', 'hospital', 'defencetower', 'swarm'].map((name) =>
-        readFile(resolve(root, 'data/buildings', name + '.json'), 'utf8'),
+        readFile(resolve(root, 'content/data/buildings', name + '.json'), 'utf8'),
       ),
     );
   const prompt = plannerPrompt(

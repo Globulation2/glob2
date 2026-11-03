@@ -330,7 +330,7 @@ it('late sprite readiness is signed and pinned independently from frozen skin co
     .returning('id')
     .executeTakeFirstOrThrow();
   // Existing published PNGs keep their source identity when delivery uses WebP.
-  const fixture = JSON.parse(readFileSync('../test/fixtures/skins/authorization.json', 'utf8'));
+  const fixture = JSON.parse(readFileSync('../../test/fixtures/skins/authorization.json', 'utf8'));
   const sourceTexture = await putContent(blobs, Buffer.from(fixture.sourceTextureHex, 'hex'));
   const sourceMaterial = await putContent(blobs, Buffer.from(fixture.sourceMaterialHex, 'hex'));
   for (const blob of [sourceTexture, sourceMaterial])
