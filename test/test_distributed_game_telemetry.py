@@ -36,6 +36,21 @@ class Telemetry(unittest.TestCase):
                      'GLOB2_AI_SCHEMA name="ok"junk', 'GLOB2_PERF_SAMPLE x=1e999'):
             with self.assertRaises(ValueError, msg=line): parse(line)
 
+    def test_permanent_performance_records_preserve_cpu_histograms_and_late_gpu_identity(self):
+        prefix, values = parse('GLOB2_PERF_SAMPLE session=2 tick_start=512 tick=1024 scope=simulation.units cpu_total_ns=9007199254740993 cpu_samples=12 histogram="1,2,3" p95_ns=100 self_cpu_ns=na')
+        self.assertEqual(prefix, 'GLOB2_PERF_SAMPLE')
+        self.assertEqual(values['cpu_total_ns'], 9007199254740993)
+        self.assertEqual(values['histogram'], '1,2,3')
+        self.assertIsNone(values['self_cpu_ns'])
+        _, wall = parse('GLOB2_PERF_SAMPLE session=3 tick_start=0 tick=512 scope=simulation.units total_ns=12345 cpu_samples=0 cpu_total_ns=na self_cpu_ns=na schema_version=2')
+        self.assertEqual(wall['total_ns'], 12345)
+        self.assertEqual(wall['cpu_samples'], 0)
+        self.assertIsNone(wall['cpu_total_ns'])
+        self.assertIsNone(wall['self_cpu_ns'])
+        _, gpu = parse('GLOB2_PERF_GPU_RESULT session=2 frame=15 elapsed_start_ns=800 duration_ns=700 schema_version=2')
+        self.assertEqual(gpu['frame'], 15)
+        self.assertEqual(gpu['elapsed_start_ns'], 800)
+
     def test_compressed_artifact_offline_export_and_missing_data(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

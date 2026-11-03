@@ -6868,5 +6868,53 @@ Prejet ukaz: %0
 Ukaz ni potrjen. Odprite poveljnika za ponovni poskus; vaše sporočilo je bilo shranjeno.
 [hive standing order update failed]
 Posodobitev trajnega ukaza ni uspela. Vaš ukaz je začasno ustavljen na tej napravi; poskusite znova z ustreznim kontrolnikom.
+[engine performance per game minute]
+
+[engine performance per real minute]
+
+[engine performance game engine performance]
+
+[engine performance task wall-time costs]
+
+[engine performance inspect slow ticks]
+
+[engine performance no advancing ticks recorded yet]
+
+[engine performance whole-engine performance]
+
+[engine performance open performance charts]
+
+[engine performance engine performance]
+
+[engine performance follow latest interval]
+
+[engine performance compare task costs]
+
+[engine performance all metrics and slow ticks]
+
+[engine performance phase orders]
+
+[engine performance phase units]
+
+[engine performance phase buildings]
+
+[engine performance phase map]
+
+[engine performance phase statistics]
+
+[engine performance phase ai]
+
+[engine performance phase world capture]
+
+[engine performance phase checksums]
+
+[engine performance wall time %0]
+
+[engine performance waits %0 joins %1 locks %2]
+
+[engine performance phase %0 wall %1]
+
+[engine performance tick %0 wall %1]
+
 [AI for all computer colonies]
 Umetna inteligenca za vse računalniško vodene kolonije

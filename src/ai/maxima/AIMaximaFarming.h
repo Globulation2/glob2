@@ -2,7 +2,7 @@
   Maxima private farming primitives.
 
   These types deliberately live outside Map and the shared AI runtime.  They are
-  deterministic, allocation-free during queries, and are never serialized.
+  deterministic, provide allocation-free cache lookups, and are never serialized.
  */
 
 #ifndef AI_MAXIMA_FARMING_H
@@ -18,8 +18,8 @@ namespace AIMaxima
 namespace Farming
 {
 
-/// All farm patterns share the map's fixed 2x2 phase. Interior seeds are a
-/// subset of the boundary checkerboard, so transitions never release a seed.
+/// Wheat uses the map's fixed 2x2 phase: interior seeds remain boundary cells.
+/// Wood prefers this alignment for donors and keeps its harvest outlets off it.
 inline bool isInteriorSeed(int x, int y) { return (x&1) && (y&1); }
 inline bool isExpansionCell(int x, int y) { return (x&1)==(y&1); }
 inline bool isCoastalOpeningCell(int x, int y) { return !isExpansionCell(x, y); }

@@ -11,6 +11,36 @@ from mobile_toolchain import discover
 
 
 class EmulatorSmokeTests(unittest.TestCase):
+    def test_root_reconnects_after_recorded_adbd_restart(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import smoke
+        from unittest.mock import Mock
+        run = Mock(side_effect=[RuntimeError('adb: unable to connect for root: closed'), '', '0\n'])
+        smoke.wait_for_root_adbd(run)
+        self.assertEqual([entry.args for entry in run.call_args_list],
+                         [('root',), ('wait-for-device',), ('shell', 'id', '-u')])
+
+    def test_root_requires_verified_uid_after_reconnection(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import smoke
+        from unittest.mock import Mock
+        run = Mock(side_effect=['', '', '2000', '', '', '0'])
+        smoke.wait_for_root_adbd(run)
+        self.assertEqual(run.call_count, 6)
+        run = Mock(side_effect=['', '', '2000'] * 3)
+        with self.assertRaisesRegex(RuntimeError, 'does not permit profile inspection'):
+            smoke.wait_for_root_adbd(run)
+        self.assertEqual(run.call_count, 9)
+
+    def test_root_does_not_retry_unrelated_failures(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import smoke
+        from unittest.mock import Mock
+        run = Mock(side_effect=RuntimeError('permission denied'))
+        with self.assertRaisesRegex(RuntimeError, 'permission denied'):
+            smoke.wait_for_root_adbd(run)
+        run.assert_called_once()
+
     def test_smoke_completes_hand_preference_and_waits_for_current_menu(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
         import smoke

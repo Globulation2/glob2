@@ -316,6 +316,12 @@ struct MaximaStrategy
 		int recovery_inn_weight;
 	} upgrades;
 
+	struct PrestigePolicy
+	{
+		bool enabled;
+		int investment_floor, urgency_weight, finish_priority, max_pipelines;
+	} prestige;
+
 	struct Repairs
 	{
 		bool enabled;

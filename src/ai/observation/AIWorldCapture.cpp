@@ -50,7 +50,9 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 	if (lease.terrain) { terrain = lease.terrain->registry; cellRules = lease.terrain->rules; terrainRevision = lease.terrain->revision; terrainMovementModifiers = lease.terrain->movementModifiers; airTerrainConstraints = lease.terrain->airConstraints; }
 	if (lease.rules) { configuration = lease.rules->configuration; rules = lease.rules->values; ruleValues = lease.rules->named; experimentKeys = lease.rules->experiments; }
 	if (lease.areas) farmAreasEnabled = lease.areas->farmEnabled;
-	if (lease.teams) { teams = lease.teams->values; totalPrestige = lease.teams->totalPrestige; }
+	if (lease.teams) { teams = lease.teams->values; totalPrestige = lease.teams->totalPrestige;
+        prestigeWinCondition = lease.teams->prestigeWinCondition;
+        prestigeAlliesShareVictory = lease.teams->prestigeAlliesShareVictory; prestigeToReach = lease.teams->prestigeToReach; }
 	if (lease.entities) { buildings = lease.entities->buildings; units = lease.entities->units; buildProjects = lease.entities->projects; }
 	if (lease.entities) {
 		const auto buildingSlots = lease.entities->buildingSlotIndices.size();

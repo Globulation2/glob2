@@ -6868,5 +6868,53 @@ MCP সার্ভার চালু করুন
 আদেশ পাওয়া গেছে: %0
 [hive order not confirmed]
 আদেশ নিশ্চিত করা হয়নি। আবার চেষ্টা করতে কমান্ডার খুলুন; আপনার বার্তাটি সংরক্ষণ করা হয়েছে।
+[engine performance per game minute]
+প্রতি খেলার মিনিটে
+[engine performance per real minute]
+প্রতি বাস্তব মিনিটে
+[engine performance game engine performance]
+গেম ইঞ্জিনের কর্মক্ষমতা
+[engine performance task wall-time costs]
+কাজে ব্যয় হওয়া বাস্তব সময়
+[engine performance inspect slow ticks]
+ধীর টিক পরীক্ষা করুন
+[engine performance no advancing ticks recorded yet]
+এখনও অগ্রসর হওয়া কোনো টিক রেকর্ড করা হয়নি।
+[engine performance whole-engine performance]
+সম্পূর্ণ ইঞ্জিনের কর্মক্ষমতা
+[engine performance open performance charts]
+কর্মক্ষমতার চার্ট খুলুন
+[engine performance engine performance]
+ইঞ্জিনের কর্মক্ষমতা
+[engine performance follow latest interval]
+সর্বশেষ সময়ের ব্যবধান অনুসরণ করুন
+[engine performance compare task costs]
+কাজের সময় তুলনা করুন
+[engine performance all metrics and slow ticks]
+সব পরিমাপ ও ধীর টিক
+[engine performance phase orders]
+আদেশ
+[engine performance phase units]
+ইউনিট
+[engine performance phase buildings]
+ভবন
+[engine performance phase map]
+মানচিত্র
+[engine performance phase statistics]
+পরিসংখ্যান
+[engine performance phase ai]
+কৃত্রিম বুদ্ধিমত্তা
+[engine performance phase world capture]
+জগতের অবস্থার স্ন্যাপশট
+[engine performance phase checksums]
+চেকসাম
+[engine performance wall time %0]
+অতিবাহিত সময়: %0 ms
+[engine performance waits %0 joins %1 locks %2]
+প্রয়োজনীয় অপেক্ষা: %0 ms; মালিক থ্রেডের কাজ শেষ হওয়ার অপেক্ষা: %1 ms; লক: %2 ms
+[engine performance phase %0 wall %1]
+%0: %1 ms অতিবাহিত সময়
+[engine performance tick %0 wall %1]
+টিক %0: %1 ms অতিবাহিত সময়
 [hive standing order update failed]
 স্থায়ী আদেশ আপডেট ব্যর্থ হয়েছে। আপনার আদেশটি স্থানীয়ভাবে স্থগিত করা হয়েছে; সংশ্লিষ্ট নিয়ন্ত্রণটি আবার ব্যবহার করুন।

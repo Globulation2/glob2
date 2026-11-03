@@ -2,11 +2,13 @@ const {waitForMainMenu}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {clickMainMenu,clickControl,clickListRow}=require('./main-menu');
 
-// Inspect the presented worker sprite, excluding the adjacent colored text.
+// Inspect the first colored icon in the top bar: the worker sprite. Its x
+// position follows measured counters, so locate its ink instead of assuming the
+// old fixed-width layout. The 18px sample excludes the adjacent counter text.
 // The first tutorial uses the standard red team. This catches a hue shift
 // caused by decoding BGRA sprite bytes with an RGBA display format.
 async function workerColors(page, width) {
-  const png = await page.screenshot({clip:{x:((width-640)>>2)+12,y:0,width:18,height:16}});
+  const png = await page.screenshot({clip:{x:0,y:0,width,height:16}});
   return page.evaluate(async base64 => {
     const bitmap = await createImageBitmap(await (await fetch('data:image/png;base64,'+base64)).blob());
     const canvas = document.createElement('canvas');
@@ -14,13 +16,23 @@ async function workerColors(page, width) {
     const context = canvas.getContext('2d');
     context.drawImage(bitmap,0,0); bitmap.close();
     const pixels = context.getImageData(0,0,canvas.width,canvas.height).data;
-    let red=0, purple=0;
-    for (let i=0;i<pixels.length;i+=4) {
-      const [r,g,b] = pixels.slice(i,i+3);
-      if (r>80 && r>g*1.5 && r>b*1.5) red++;
-      if (r>80 && b>80 && r>g*1.5 && b>g*1.5) purple++;
+    let first=-1;
+    for (let x=0;x<canvas.width && first<0;x++) {
+      for (let y=0;y<canvas.height;y++) {
+        const i=(y*canvas.width+x)*4, [r,g,b]=pixels.slice(i,i+3);
+        // Locate any saturated ink, independent of the expected team hue.
+        if (Math.max(r,g,b)>80 && Math.max(r,g,b)-Math.min(r,g,b)>30) {first=x;break;}
+      }
     }
-    return {red,purple};
+    let red=0, purple=0;
+    if (first>=0) for (let x=first;x<Math.min(first+18,canvas.width);x++) {
+      for (let y=0;y<canvas.height;y++) {
+        const i=(y*canvas.width+x)*4, [r,g,b]=pixels.slice(i,i+3);
+        if (r>80 && r>g*1.5 && r>b*1.5) red++;
+        if (r>80 && b>80 && r>g*1.5 && b>g*1.5) purple++;
+      }
+    }
+    return {red,purple,first};
   }, png.toString('base64'));
 }
 

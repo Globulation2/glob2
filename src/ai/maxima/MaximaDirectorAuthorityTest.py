@@ -32,7 +32,7 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             self.source,
             "void Maxima::evaluate_strategy",
         )
-        self.assertLess(cycle.index("allocate_resources()"),
+        self.assertLess(cycle.index("allocate_resources(runtime)"),
                         cycle.index("finalize_director_plan(runtime)"))
 
     def test_classic_authority_and_blending_cannot_return(self) -> None:

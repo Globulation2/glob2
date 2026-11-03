@@ -124,20 +124,33 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertIn("farming.wood_firebreak_fertility_min_percent = 5", self.base_strategy)
         self.assertIn("farming.wood_firebreak_fertility_max_percent = 14", self.base_strategy)
 
-    def test_wheat_and_wood_share_preemptive_farm_pattern(self):
-        # Native tests cover parity, moving boundaries, wrapping and orders.
-        self.assertIn("wheat_role=classify_farm_tile", self.policy)
-        self.assertIn("wood_role=classify_farm_tile", self.policy)
-        self.assertIn("Farming::isInteriorSeed", self.policy)
-        self.assertIn("Farming::isExpansionCell", self.policy)
-
-    def test_wood_firebreak_remains_additional_override(self):
-        farming = self.policy[self.policy.index(
+    def test_wheat_pattern_and_wood_allocation_have_separate_owners(self):
+        # Native tests exercise parity, quota scaling, wrapping and area orders.
+        wheat = self.policy[self.policy.index(
+            "Maxima::FarmProtectionPlan Maxima::build_wheat_protection_plan"
+        ):self.policy.index(
             "Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan"
-        ):]
-        farming = farming[:farming.index("void Maxima::apply_farming_protection")]
-        self.assertLess(farming.index("else if(wheat_farm)"), farming.index("wood_firebreak_mask[index]"))
-        self.assertLess(farming.index("wood_firebreak_mask[index]"), farming.index("else if(wood_farm)"))
+        )]
+        self.assertIn("classify_wheat_tile", wheat)
+        self.assertNotIn("select_wood_reserve", wheat)
+        self.assertNotIn("wood_role", self.policy)
+        self.assertIn("Farming::isInteriorSeed", wheat)
+        composer = self.policy[self.policy.index(
+            "Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan"
+        ):self.policy.index("void Maxima::resolve_wheat_invasion_clearing")]
+        self.assertLess(composer.index("build_wheat_protection_plan"),
+                        composer.index("select_wood_reserve"))
+
+    def test_wood_capacity_reserve_is_exempt_from_ordinary_clearing(self):
+        maintenance = self.policy[self.policy.index(
+            "Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan"
+        ):self.policy.index("void Maxima::apply_maintenance_clearing_plan")]
+        self.assertIn("!wood_reserve.cells[index]", maintenance)
+        invasion = self.policy[self.policy.index(
+            "bool Maxima::wheat_invasion_clearing_required"
+        ):self.policy.index("Maxima::FarmProtectionPlan Maxima::build_wheat_protection_plan")]
+        self.assertIn("wood_reserve.cells[index]", invasion)
+        self.assertIn("return false", invasion)
 
     def test_sparse_wheat_lattice_leaves_complete_access_lanes(self):
         reserved = {(x, y) for y in range(8) for x in range(8) if (x & 1) and (y & 1)}
@@ -158,14 +171,18 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertNotIn("ressource", helper)
         self.assertNotIn("mi.is_sand(x+dx, y+dy)", farming)
 
-    def test_shoreline_connectivity_is_cached_once_per_map_load(self):
+    def test_shoreline_cache_supports_read_only_cold_queries(self):
         initializer = self.policy[self.policy.index("void Maxima::initialize_farming_cache"):]
         initializer = initializer[:initializer.index("int Maxima::available_expansion_neighbors")]
-        self.assertEqual(self.policy.count("shoreline_backing(map)"), 1)
         self.assertIn("shoreline_backing(map)", initializer)
         self.assertIn("farming_shoreline_mask.size()==size_t(w*h)", initializer)
         self.assertIn("farming_cardinal_shoreline_mask.size()==size_t(w*h)", initializer)
-        self.assertIn("farming_shoreline_mask[index]!=0", self.policy)
+        terrain = self.policy[self.policy.index("struct Maxima::FarmTerrainInputs"):
+                              self.policy.index("struct Maxima::FarmProtectionPlan")]
+        self.assertIn("if(!cached || cachedShoreline.size()!=size_t(w*h))", terrain)
+        self.assertIn("shoreline_backing(&map)", terrain)
+        self.assertNotIn("applied_farm_protection_mask", terrain)
+        self.assertNotIn("initialize_farming_cache", terrain)
 
     def test_wheat_wood_boundary_conversion_is_removed(self):
         self.assertNotIn("select_barrier_conversion_target", self.header)

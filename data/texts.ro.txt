@@ -6868,5 +6868,53 @@ Ordin primit: %0
 Ordinul nu a fost confirmat. Deschideți comandantul pentru a încerca din nou; mesajul dvs. a fost păstrat.
 [hive standing order update failed]
 Actualizarea ordinului permanent a eșuat. Ordinul dvs. este pus pe pauză pe acest dispozitiv; încercați din nou folosind controlul corespunzător.
+[engine performance per game minute]
+
+[engine performance per real minute]
+
+[engine performance game engine performance]
+
+[engine performance task wall-time costs]
+
+[engine performance inspect slow ticks]
+
+[engine performance no advancing ticks recorded yet]
+
+[engine performance whole-engine performance]
+
+[engine performance open performance charts]
+
+[engine performance engine performance]
+
+[engine performance follow latest interval]
+
+[engine performance compare task costs]
+
+[engine performance all metrics and slow ticks]
+
+[engine performance phase orders]
+
+[engine performance phase units]
+
+[engine performance phase buildings]
+
+[engine performance phase map]
+
+[engine performance phase statistics]
+
+[engine performance phase ai]
+
+[engine performance phase world capture]
+
+[engine performance phase checksums]
+
+[engine performance wall time %0]
+
+[engine performance waits %0 joins %1 locks %2]
+
+[engine performance phase %0 wall %1]
+
+[engine performance tick %0 wall %1]
+
 [AI for all computer colonies]
 IA pentru toate coloniile controlate de calculator

@@ -45,7 +45,7 @@ jobs:
   native:
     if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.ios_localization) }}
     runs-on: macos-26
-    timeout-minutes: ${{ inputs.desktop_localization && 180 || 90 }}
+    timeout-minutes: ${{ inputs.desktop_localization && 180 || 120 }}
     steps:
       - uses: actions/checkout@v4
         with:

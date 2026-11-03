@@ -6868,5 +6868,53 @@ MCP сървър
 Заповедта не е потвърдена. Отворете командира, за да опитате отново; съобщението ви е запазено.
 [hive standing order update failed]
 Актуализирането на постоянната заповед не бе успешно. Заповедта ви е на пауза на това устройство; опитайте отново чрез съответната контрола.
+[engine performance per game minute]
+На игрова минута
+[engine performance per real minute]
+На реална минута
+[engine performance game engine performance]
+Производителност на игровия енджин
+[engine performance task wall-time costs]
+Реално време за изпълнение на задачите
+[engine performance inspect slow ticks]
+Преглед на бавните тактове
+[engine performance no advancing ticks recorded yet]
+Все още няма записани тактове с напредък.
+[engine performance whole-engine performance]
+Производителност на целия енджин
+[engine performance open performance charts]
+Отваряне на графиките за производителност
+[engine performance engine performance]
+Производителност на енджина
+[engine performance follow latest interval]
+Следване на последния интервал
+[engine performance compare task costs]
+Сравнение на времето за задачите
+[engine performance all metrics and slow ticks]
+Всички показатели и бавни тактове
+[engine performance phase orders]
+Заповеди
+[engine performance phase units]
+Единици
+[engine performance phase buildings]
+Сгради
+[engine performance phase map]
+Карта
+[engine performance phase statistics]
+Статистика
+[engine performance phase ai]
+Изкуствен интелект
+[engine performance phase world capture]
+Снимка на състоянието на света
+[engine performance phase checksums]
+Контролни суми
+[engine performance wall time %0]
+Изминало време: %0 ms
+[engine performance waits %0 joins %1 locks %2]
+Необходими изчаквания: %0 ms; изчакване на задачи от нишката собственик: %1 ms; заключвания: %2 ms
+[engine performance phase %0 wall %1]
+%0: %1 ms изминало време
+[engine performance tick %0 wall %1]
+Такт %0: %1 ms изминало време
 [AI for all computer colonies]
 ИИ за всички компютърни колонии

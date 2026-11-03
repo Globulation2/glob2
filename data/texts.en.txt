@@ -6868,5 +6868,53 @@ Your previous order is still sending. This message has been kept; open the comma
 Order received: %0
 [hive order not confirmed]
 Order not confirmed. Open the commander to retry; your message has been kept.
+[engine performance per game minute]
+Per game minute
+[engine performance per real minute]
+Per real minute
+[engine performance game engine performance]
+Game engine performance
+[engine performance task wall-time costs]
+Task wall-time costs
+[engine performance inspect slow ticks]
+Inspect slow ticks
+[engine performance no advancing ticks recorded yet]
+No advancing ticks recorded yet.
+[engine performance whole-engine performance]
+Whole-engine performance
+[engine performance open performance charts]
+Open performance charts
+[engine performance engine performance]
+Engine performance
+[engine performance follow latest interval]
+Follow latest interval
+[engine performance compare task costs]
+Compare task costs
+[engine performance all metrics and slow ticks]
+All metrics and slow ticks
+[engine performance phase orders]
+Orders
+[engine performance phase units]
+Units
+[engine performance phase buildings]
+Buildings
+[engine performance phase map]
+Map
+[engine performance phase statistics]
+Statistics
+[engine performance phase ai]
+AI
+[engine performance phase world capture]
+World capture
+[engine performance phase checksums]
+Checksums
+[engine performance wall time %0]
+Wall time: %0 ms
+[engine performance waits %0 joins %1 locks %2]
+Required waits: %0 ms; owner joins: %1 ms; locks: %2 ms
+[engine performance phase %0 wall %1]
+%0: %1 ms wall
+[engine performance tick %0 wall %1]
+Tick %0: %1 ms wall
 [hive standing order update failed]
 Standing order update failed. Your order is paused locally; retry the control.

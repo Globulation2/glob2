@@ -6868,5 +6868,53 @@ CPU (αυτόματα)
 Η εντολή δεν επιβεβαιώθηκε. Ανοίξτε τον διοικητή για να προσπαθήσετε ξανά. Το μήνυμά σας έχει διατηρηθεί.
 [hive standing order update failed]
 Η ενημέρωση της πάγιας εντολής απέτυχε. Η εντολή σας έχει τεθεί σε παύση σε αυτή τη συσκευή. Δοκιμάστε ξανά μέσω του αντίστοιχου στοιχείου ελέγχου.
+[engine performance per game minute]
+
+[engine performance per real minute]
+
+[engine performance game engine performance]
+
+[engine performance task wall-time costs]
+
+[engine performance inspect slow ticks]
+
+[engine performance no advancing ticks recorded yet]
+
+[engine performance whole-engine performance]
+
+[engine performance open performance charts]
+
+[engine performance engine performance]
+
+[engine performance follow latest interval]
+
+[engine performance compare task costs]
+
+[engine performance all metrics and slow ticks]
+
+[engine performance phase orders]
+
+[engine performance phase units]
+
+[engine performance phase buildings]
+
+[engine performance phase map]
+
+[engine performance phase statistics]
+
+[engine performance phase ai]
+
+[engine performance phase world capture]
+
+[engine performance phase checksums]
+
+[engine performance wall time %0]
+
+[engine performance waits %0 joins %1 locks %2]
+
+[engine performance phase %0 wall %1]
+
+[engine performance tick %0 wall %1]
+
 [AI for all computer colonies]
 ΤΝ για όλες τις αποικίες που ελέγχει ο υπολογιστής

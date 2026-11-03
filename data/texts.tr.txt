@@ -6868,5 +6868,53 @@ Emir alındı: %0
 Emir onaylanmadı. Tekrar denemek için komutanı açın; mesajınız saklandı.
 [hive standing order update failed]
 Kalıcı emir güncellenemedi. Emriniz bu cihazda duraklatıldı; ilgili denetimi kullanarak tekrar deneyin.
+[engine performance per game minute]
+
+[engine performance per real minute]
+
+[engine performance game engine performance]
+
+[engine performance task wall-time costs]
+
+[engine performance inspect slow ticks]
+
+[engine performance no advancing ticks recorded yet]
+
+[engine performance whole-engine performance]
+
+[engine performance open performance charts]
+
+[engine performance engine performance]
+
+[engine performance follow latest interval]
+
+[engine performance compare task costs]
+
+[engine performance all metrics and slow ticks]
+
+[engine performance phase orders]
+
+[engine performance phase units]
+
+[engine performance phase buildings]
+
+[engine performance phase map]
+
+[engine performance phase statistics]
+
+[engine performance phase ai]
+
+[engine performance phase world capture]
+
+[engine performance phase checksums]
+
+[engine performance wall time %0]
+
+[engine performance waits %0 joins %1 locks %2]
+
+[engine performance phase %0 wall %1]
+
+[engine performance tick %0 wall %1]
+
 [AI for all computer colonies]
 Bilgisayar kontrollü tüm koloniler için yapay zekâ

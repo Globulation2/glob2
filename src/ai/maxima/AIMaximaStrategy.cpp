@@ -299,6 +299,11 @@ namespace
 		INT_SPEC(upgrades, level2_racetrack_base_weight, "upgrades.level2_racetrack_base_weight", 0, 1000, "weight", "upgrades", "Level-two racetrack upgrade weight", StrategyImpactMedium),
 		INT_SPEC(upgrades, level2_pool_base_weight, "upgrades.level2_pool_base_weight", 0, 1000, "weight", "upgrades", "Level-two swimming-pool upgrade weight", StrategyImpactMedium),
 		INT_SPEC(upgrades, level2_barracks_base_weight, "upgrades.level2_barracks_base_weight", 0, 1000, "weight", "upgrades", "Level-two barracks upgrade weight", StrategyImpactMedium),
+        BOOL_SPEC(prestige, enabled, "prestige.enabled", "enabled", "prestige", "Economic prestige race and completion safety", StrategyImpactHigh),
+        INT_SPEC(prestige, investment_floor, "prestige.investment_floor", 0, 100, "score", "prestige", "Prestige investment priority floor", StrategyImpactHigh),
+        INT_SPEC(prestige, urgency_weight, "prestige.urgency_weight", 0, 100, "score", "prestige", "Additional priority near the shared threshold", StrategyImpactMedium),
+        INT_SPEC(prestige, finish_priority, "prestige.finish_priority", 0, 100, "score", "prestige", "Winning prestige completion priority", StrategyImpactHigh),
+        INT_SPEC(prestige, max_pipelines, "prestige.max_pipelines", 1, 4, "pipelines", "prestige", "Qualified-worker limit on parallel prestige preparation", StrategyImpactHigh),
 		INT_SPEC(upgrades, first_prestige_trained_workers, "upgrades.first_prestige_trained_workers", 0, 1000, "units", "upgrades", "Trained-worker threshold for first prestige upgrades", StrategyImpactMedium),
 		INT_SPEC(upgrades, second_prestige_trained_workers, "upgrades.second_prestige_trained_workers", 0, 1000, "units", "upgrades", "Trained-worker threshold for second prestige upgrades", StrategyImpactMedium),
 		INT_SPEC(upgrades, second_prestige_population_min, "upgrades.second_prestige_population_min", 0, 1000, "units", "upgrades", "Population threshold for second prestige upgrades", StrategyImpactMedium),
@@ -633,8 +638,8 @@ namespace
 		INT_SPEC(farming, urgent_interval_ticks, "farming.urgent_interval_ticks", 1, 1000000, "ticks", "farming", "Urgent farming evaluation interval", StrategyImpactMedium),
 		INT_SPEC(farming, management_radius, "farming.management_radius", 0, 128, "tiles", "farming", "Farm and wood firebreak radius from allied physical buildings; zero disables cutoff", StrategyImpactMedium),
 		INT_SPEC(farming, wheat_fertility_min, "farming.wheat_fertility_min", 0, 65536, "fertility", "farming", "Minimum fertility for protected wheat seeds and bridges", StrategyImpactMedium),
-		INT_SPEC(farming, wood_fertility_base_percent, "farming.wood_fertility_base_percent", 0, 100, "percent", "farming", "Base retained wood fertility percentage", StrategyImpactMedium),
-		INT_SPEC(farming, wood_fertility_pressure_percent, "farming.wood_fertility_pressure_percent", 0, 100, "percent", "farming", "Additional retained fertility under pressure", StrategyImpactMedium),
+		INT_SPEC(farming, wood_fertility_base_percent, "farming.wood_fertility_base_percent", 0, 100, "percent", "compatibility", "Legacy wood fertility diagnostic; no effect on wood protection", StrategyImpactLow),
+		INT_SPEC(farming, wood_fertility_pressure_percent, "farming.wood_fertility_pressure_percent", 0, 100, "percent", "compatibility", "Legacy pressure-scaled wood fertility diagnostic; no effect on wood protection", StrategyImpactLow),
 		INT_SPEC(farming, wood_firebreak_fertility_min_percent, "farming.wood_firebreak_fertility_min_percent", 0, 100, "percent", "farming", "Minimum fertility included in the persistent wood-clearing firebreak", StrategyImpactMedium),
 		INT_SPEC(farming, wood_firebreak_fertility_max_percent, "farming.wood_firebreak_fertility_max_percent", 0, 100, "percent", "farming", "Maximum fertility included in the persistent wood-clearing firebreak", StrategyImpactMedium),
 		INT_SPEC(farming, wood_pressure_base, "farming.wood_pressure_base", 0, 100, "score", "farming", "Base wood-clearing pressure", StrategyImpactMedium),
@@ -1512,6 +1517,20 @@ bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& va
             "forward_support.inns_enabled","forward_support.hospitals_enabled",
             "forward_support.distance_tiles","forward_support.coverage_distance_tiles"})
             if(!provenance.count(key)) provenance[key]="legacy tactical defaults";
+    }
+    if(versionMinor<FILE_FORMAT_VERSION_MAXIMA_PRESTIGE) {
+        if(!provenance.count("prestige.enabled"))restored.prestige.enabled=true;
+        if(!provenance.count("prestige.investment_floor"))restored.prestige.investment_floor=45;
+        if(!provenance.count("prestige.urgency_weight"))restored.prestige.urgency_weight=35;
+        if(!provenance.count("prestige.finish_priority"))restored.prestige.finish_priority=100;
+        for(const char* key:{"prestige.enabled","prestige.investment_floor","prestige.urgency_weight","prestige.finish_priority"})
+            if(!provenance.count(key))provenance[key]="legacy prestige activation";
+    }
+    if(versionMinor<FILE_FORMAT_VERSION_MAXIMA_PRESTIGE_PARALLEL
+        && !provenance.count("prestige.max_pipelines")) {
+        // Existing one-pipeline saves retain their executable strategy.
+        restored.prestige.max_pipelines=1;
+        provenance["prestige.max_pipelines"]="legacy single prestige pipeline";
     }
     for(const auto& spec:parameterSpecs)
         if(!provenance.count(spec.key))
