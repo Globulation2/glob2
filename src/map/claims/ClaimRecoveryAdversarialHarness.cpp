@@ -8,12 +8,17 @@
 #include <StreamBackend.h>
 #include <nlohmann/json.hpp>
 #include <memory>
+#include <fstream>
 
 namespace {
-std::unique_ptr<glob2test::HeadlessGame> copyRecoveryGame(glob2test::HeadlessGame& source,unsigned participants)
+std::unique_ptr<glob2test::HeadlessGame> copyRecoveryGame(glob2test::HeadlessGame& source,unsigned participants,const std::string& exportName={})
 {
     auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(bytes);
     const auto before=source.game.checkSum();source.gui.save(&output,"claim recovery adversarial continuation");output.flush();
+    if(!exportName.empty()) {
+        std::ofstream file(glob2test::artifactDir()/(exportName+".game"),std::ios::binary);
+        file.write(bytes->getBuffer(),bytes->getPosition());REQUIRE(file.good());
+    }
     auto* copied=new GAGCore::MemoryStreamBackend(*bytes);copied->seekFromStart(0);
     auto result=std::make_unique<glob2test::HeadlessGame>();
     result->game.map.clear();result->game.map.resourceCells.clear();result->game.map.configureCompute(participants);
@@ -101,7 +106,8 @@ TEST_CASE("recovery bounds island attempts and preserves pending GUI continuatio
                 REQUIRE(map.materialClaimRoutes);
                 REQUIRE(map.materialClaimRoutes->states.begin()->second.pending);
                 map.flushClaimRoutes();
-                resumed=copyRecoveryGame(fixture.world,participants);savedPending=true;
+                resumed=copyRecoveryGame(fixture.world,participants,participants==1?
+                    std::string("recovery-")+(closest?"closest":"first")+"-pending":"");savedPending=true;
                 // This request publishes exactly one tick after its original admission.
                 ++game.stepCounter;game.observeCompletedWorld();
                 ++resumed->game.stepCounter;resumed->game.observeCompletedWorld();
@@ -109,6 +115,13 @@ TEST_CASE("recovery bounds island attempts and preserves pending GUI continuatio
                 advance(game);advance(resumed->game);
             }
             REQUIRE(game.checkSum()==resumed->game.checkSum());
+            if(tick==10 || tick==80) {
+                // Continue from actual failed-target history and from the later
+                // recovery window too, not just an empty initial retry record.
+                resumed=copyRecoveryGame(fixture.world,participants,participants==1?
+                    std::string("recovery-")+(closest?"closest":"first")+(tick==10?"-cooldown":"-later"):"");
+                REQUIRE(game.checkSum()==resumed->game.checkSum());
+            }
             trace.push_back(game.checkSum());
             REQUIRE(map.materialClaimRoutes);
             // First fixed64tick admission window cannot be escaped by evicting
