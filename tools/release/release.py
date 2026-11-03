@@ -54,14 +54,14 @@ def validate(tag=None):
             raise SystemExit(f"tag {tag!r} does not match PACKAGE_VERSION {current!r}")
         if git("rev-parse", "HEAD") != git("rev-parse", f"refs/tags/{tag}^{{commit}}"):
             raise SystemExit(f"HEAD is not the commit tagged {tag}")
-        metainfo = ET.parse(ROOT / "data" / "org.globulation2.Globulation2.metainfo.xml").getroot()
+        metainfo = ET.parse(ROOT / "content" / "data" / "org.globulation2.Globulation2.metainfo.xml").getroot()
         if metainfo.find(f"./releases/release[@version='{current}']") is None:
             raise SystemExit(f"AppStream release notes for {current} are required before publishing")
         screenshot = metainfo.find("./screenshots/screenshot/image")
         screenshot_url = (screenshot.text or "").strip() if screenshot is not None else ""
         if not screenshot_url.startswith("https://"):
             raise SystemExit("a hosted gameplay screenshot is required before publishing")
-        screenshot_path = ROOT / "data" / "screenshots" / "globulation2-gameplay.png"
+        screenshot_path = ROOT / "content" / "data" / "screenshots" / "globulation2-gameplay.png"
         try:
             with urllib.request.urlopen(screenshot_url, timeout=15) as response:
                 hosted_screenshot = response.read()
@@ -69,7 +69,7 @@ def validate(tag=None):
             raise SystemExit(f"gameplay screenshot URL is unavailable: {error}") from None
         if hashlib.sha256(hosted_screenshot).digest() != hashlib.sha256(screenshot_path.read_bytes()).digest():
             raise SystemExit("hosted gameplay screenshot does not match the release checkout")
-        icon = ROOT / "data" / "icons" / "glob2-icon-256x256.png"
+        icon = ROOT / "content" / "data" / "icons" / "glob2-icon-256x256.png"
         png = icon.read_bytes() if icon.is_file() else b""
         if len(png) < 24 or png[:8] != b"\x89PNG\r\n\x1a\n" or struct.unpack(">II", png[16:24]) != (256, 256):
             raise SystemExit("a 256x256 PNG application icon is required before publishing")

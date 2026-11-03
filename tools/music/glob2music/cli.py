@@ -105,7 +105,7 @@ def _resolve(target):
         manifest = load_manifest(target)
         # Reference sets (the original soundtrack) have no recipe; check the files
         # the game ships instead of a build output.
-        installed = REPO_ROOT / 'data' / 'zik' / target
+        installed = REPO_ROOT / 'content' / 'data' / 'zik' / target
         if manifest.method == 'reference':
             return installed, manifest
         # A shipped set that has not been built locally is checked as installed.
@@ -232,7 +232,7 @@ def cmd_install(args):
     if not m.shipped and not args.unshipped:
         print(f'{m.set_id}: set.toml has shipped = false (pass --unshipped to install anyway)', file=sys.stderr)
         return 2
-    zik = Path(args.data_dir) if args.data_dir else REPO_ROOT / 'data' / 'zik'
+    zik = Path(args.data_dir) if args.data_dir else REPO_ROOT / 'content' / 'data' / 'zik'
     _registered_sconscript(zik, m.set_id)       # validate before touching any file
     dest = zik / m.set_id
     dest.mkdir(parents=True, exist_ok=True)

@@ -24,7 +24,7 @@ def main():
         target=root/'source'/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
     subprocess.run(['git','diff','--binary','--output='+str(root/'tracked.patch')],check=True)
     supplied=root/'supplied';supplied.mkdir();shutil.copy2(args.executable,supplied/'glob2')
-    shutil.copytree('data',supplied/'data')
+    shutil.copytree('content/data',supplied/'data')
     revision=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
     bundle=register_bundle(supplied,root.parent/'bundles','glob2',revision,
                            dirty_identity=checksum.hexdigest(),options={'release':1,'server':0})

@@ -1288,7 +1288,7 @@ jobs:
           key: playwright-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.browsers }}-${{ hashFiles('platforms/web/package-lock.json') }}
       - name: Install browser test dependencies
         id: install_browser_test_dependencies
-        working-directory: browser
+        working-directory: platforms/web
         run: |
           npm ci --ignore-scripts
           npx playwright install --with-deps ${{ matrix.browsers }}
@@ -1308,7 +1308,7 @@ jobs:
       - name: Run ${{ matrix.name }}
         id: run_matrix_name
         continue-on-error: true
-        working-directory: browser
+        working-directory: platforms/web
         run: ${{ matrix.command }}
       # Baseline replay and per-browser scripting results share this artifact
       # family; the comparison job selects each corpus explicitly.

@@ -32,7 +32,10 @@ export function draftHash(source: string) {
   }
   return createHash('sha256').update(source).digest('hex');
 }
-const example = new URL('../../../../../../content/data/generators/examples/swamp/', import.meta.url);
+const example = new URL(
+  '../../../../../../content/data/generators/examples/swamp/',
+  import.meta.url,
+);
 const manifest = JSON.parse(readFileSync(new URL('manifest.json', example), 'utf8'));
 const script = readFileSync(new URL('generator.js', example), 'utf8');
 export function generatorStarter() {

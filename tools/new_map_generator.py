@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 GENERATORS = ROOT / 'src' / 'map' / 'generator' / 'generators'
 REGISTRY = ROOT / 'src' / 'map' / 'generator' / 'core' / 'GeneratorRegistry.cpp'
 SOURCE_MANIFEST = ROOT / 'scons' / 'sources.py'
-TEXTS = ROOT / 'data'
+TEXTS = ROOT / 'content' / 'data'
 
 HEADER = '''// SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once

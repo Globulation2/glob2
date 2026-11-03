@@ -37,7 +37,7 @@ class FontCoverageTest(unittest.TestCase):
                 font = ttf.TTF_OpenFont(str(path).encode(), 13)
                 self.assertTrue(font, 'Could not load bundled ' + path.name)
                 fonts.append(font)
-            for path in sorted((ROOT / 'data').glob('texts.*.txt')):
+            for path in sorted((ROOT / 'content/data').glob('texts.*.txt')):
                 if path.name in ('texts.keys.txt', 'texts.list.txt', 'texts.incomplete.txt'):
                     continue
                 values = path.read_text(encoding='utf-8').splitlines()[1::2]

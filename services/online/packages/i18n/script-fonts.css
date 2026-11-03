@@ -21,7 +21,8 @@ option:lang(bg) {
 
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../content/data/fonts/scripts/NotoSansDevanagari-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansDevanagari-Regular.ttf')
+    format('truetype');
   font-display: swap;
   unicode-range: U+0900-097F, U+1CD0-1CFF, U+A8E0-A8FF;
 }
@@ -69,7 +70,8 @@ option:lang(bg) {
 }
 @font-face {
   font-family: 'Glob2 Scripts';
-  src: url('../../../../content/data/fonts/scripts/NotoSansMalayalam-Regular.ttf') format('truetype');
+  src: url('../../../../content/data/fonts/scripts/NotoSansMalayalam-Regular.ttf')
+    format('truetype');
   font-display: swap;
   unicode-range: U+0D00-0D7F;
 }

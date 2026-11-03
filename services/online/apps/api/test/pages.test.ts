@@ -55,7 +55,9 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
     expect(dejavuLicence.statusCode).toBe(200);
     expect(dejavuLicence.headers['content-type']).toContain('text/plain');
     expect(dejavuLicence.rawPayload).toEqual(
-      readFileSync(new URL('../../../../../content/data/fonts/LICENSE-DejaVu.txt', import.meta.url)),
+      readFileSync(
+        new URL('../../../../../content/data/fonts/LICENSE-DejaVu.txt', import.meta.url),
+      ),
     );
     const manifest = JSON.parse(
       readFileSync(
