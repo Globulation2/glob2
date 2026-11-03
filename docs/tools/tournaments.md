@@ -1004,6 +1004,28 @@ game; sampled units are not independent experimental replicates. Movement totals
 cover held claims only and cannot establish total pursuit travel for disabled or
 shadow behavior.
 
+Full decision probes may advertise `blocker_census_version: 1`. Ordinary decision
+rows then include an authoritative claimant census for the selected physical
+source and, when applicable, its farm component. Counts distinguish the
+requester, other claimants, potentially conflicting reservations and same-team
+versus other-team owners. Other teams are not necessarily hostile. Infinite
+sharing and exclusive deposit consumption have different conflict rules; a
+seed-reserve shortage need not involve another claimant.
+Nearest-access reservability uses owner-aware component availability and is
+reported separately from static reachability. A rejected raw donor does not
+prove that the same pooled pickup access requires an alternative.
+
+Fixed histograms cover all potentially conflicting owners before the bounded
+owner examples are selected. Example exclusions are explicit. Distances are
+current toroidal geometric distances to each claimant's own source and pickup
+access, rather than path distances. Observed acquisition ages are exact;
+inherited ages are labeled lower bounds, with unavailable ages separate. These
+measure ledger ownership independently of journey duration, which can continue
+through harvesting after release. Direct and pooled groups overlap and must not
+be added together. Shadow or disabled ledgers report the authoritative census
+as unavailable. Path distance and current route state are not inferred from it.
+The census remains in the ordinary trace; join deep captures by event ordinal.
+
 New captures may additionally advertise `movement_audit_version: 1`. Their summary
 counts committed neighboring grid moves and weighted entry costs for every live
 transport-capable unit, partitioned into medical travel, claimed or unclaimed

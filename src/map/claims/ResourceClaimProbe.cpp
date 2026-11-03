@@ -17,6 +17,7 @@
 #include <nlohmann/json.hpp>
 #include <zlib.h>
 #include <chrono>
+#include <algorithm>
 #include <deque>
 #include <map>
 #include <filesystem>
@@ -37,9 +38,21 @@ Json distanceJson(Uint64 cost) { return cost==Oracle::Unreachable ? Json(nullptr
 }
 struct Probe::Impl
 {
+    static constexpr unsigned MaximumClaimantExamples=16,MaximumTrackedClaimants=Unit::MAX_COUNT*Team::MAX_COUNT;
+    struct ClaimAge {Claim claim;Uint64 task=0;Uint32 since=0;bool exact=false;};
+    struct Claimant {
+        Owner owner=0;Claim claim;Uint32 position=Oracle::NoTile,team=0;
+        Uint64 task=0;Uint32 age=0;bool identityValid=false,claimMatches=false,ageAvailable=false,ageExact=false;
+    };
+    std::map<Owner,ClaimAge> claimAges;
+    Uint64 claimAgeTrackingExcluded=0;
     struct Work {
         SimulationSnapshot::Handle world;
         std::vector<std::pair<Owner,Claim>> owners;
+        std::vector<Claimant> claimants;
+        Uint32 selectedSource=Oracle::NoTile;
+        bool pooledGoal=false,desiredExclusive=false,desiredInfinite=false;
+        Uint64 claimAgeTrackingExcluded=0;
         std::vector<Uint16> field;
         std::shared_ptr<const gradient_kernel::OwnedDestinations> destinations;
         bool deepSelected=false;
@@ -70,6 +83,102 @@ struct Probe::Impl
         std::exception_ptr error;
         bool published=false;
     };
+    static Json blockerCensus(const Work& work,const Oracle::Result& oracle,int width,int height) {
+        if(!work.claimsEnforced)return Json{{"available",false},{"reason","shadow-or-disabled-ledger; authoritative blocker census unavailable"},{"direct",nullptr},{"pooled",nullptr},{"nearest_access_reservable",nullptr},{"nearest_access_static_reachable",nullptr}};
+        std::vector<Uint32> components(std::size_t(width)*height,Oracle::NoTile);
+        std::vector<bool> infinite(components.size(),false);
+        const Oracle::Candidate* nearestCandidate=nullptr;
+        for(const auto& c:oracle.candidates){components[c.source]=c.component;infinite[c.source]=c.infinite;if(c.source==work.nearest)nearestCandidate=&c;}
+        const auto component=components[work.nearest];
+        const bool nearestEligible=nearestCandidate && nearestCandidate->accessEligible;
+        const bool nearestReservable=nearestEligible && (work.pooledGoal
+            ? component!=Oracle::NoTile && std::any_of(oracle.candidates.begin(),oracle.candidates.end(),[&](const auto& c){return c.component==component && c.available;})
+            : nearestCandidate->available);
+        struct Histograms {
+            Uint32 owners=0,ageUnavailable=0;
+            std::array<Uint32,11> sourceDistance{},accessDistance{}; // Last bin is unknown.
+            std::array<Uint32,9> exactAge{},lowerBoundAge{};
+        };
+        const auto bin=[](Uint32 value,const auto& upperBounds) {
+            std::size_t i=0;while(i+1<upperBounds.size() && value>upperBounds[i])++i;return i;
+        };
+        constexpr std::array<Uint32,10> distanceBounds{0,1,3,7,15,31,63,127,255,UINT32_MAX};
+        constexpr std::array<Uint32,9> ageBounds{0,15,63,255,1023,4095,16383,65535,UINT32_MAX};
+        const auto group=[&](bool pooled) {
+            Json examples=Json::array();Uint32 allOwners=0,requesterOwners=0,total=0,conflicts=0,sameTeam=0,otherTeam=0,unknownIdentity=0,exactAge=0,lowerAge=0,unknownAge=0;
+            std::array<Uint32,Team::MAX_COUNT> byTeam{},conflictingByTeam{};
+            std::array<Histograms,3> histograms{};
+            const auto dx=[&](Uint32 a,Uint32 b){const auto d=std::abs(int(a%width)-int(b%width));return std::min(d,width-d);};
+            const auto dy=[&](Uint32 a,Uint32 b){const auto d=std::abs(int(a/width)-int(b/width));return std::min(d,height-d);};
+            for(const auto& c:work.claimants) {
+                if(pooled ? components[c.claim.source]!=component : c.claim.source!=work.selectedSource)continue;
+                ++allOwners;if(c.owner==work.query.owner){++requesterOwners;continue;}
+                ++total;
+                const bool sourceInfinite=pooled?infinite[c.claim.source]:work.desiredInfinite;
+                const bool conflict=(!sourceInfinite && c.claim.material==work.query.material) || c.claim.exclusive || work.desiredExclusive;
+                conflicts+=conflict;
+                if(c.identityValid){++byTeam[c.team];conflictingByTeam[c.team]+=conflict;}
+                if(!c.identityValid)++unknownIdentity;
+                else if((Uint32(1)<<c.team)==work.query.route.teamMask)++sameTeam;else ++otherTeam;
+                if(!c.ageAvailable)++unknownAge;else if(c.ageExact)++exactAge;else ++lowerAge;
+                const auto distance=[&](Uint32 tile)->Uint32 {return c.position==Oracle::NoTile?Oracle::NoTile:Uint32(std::max(dx(c.position,tile),dy(c.position,tile)));};
+                // Full frozen census, before deterministic example truncation.
+                // Other-team does not imply enemy: diplomacy is not inferred.
+                if(conflict) {
+                    const unsigned teamGroup=!c.identityValid?2:(Uint32(1)<<c.team)==work.query.route.teamMask?0:1;
+                    auto& h=histograms[teamGroup];++h.owners;
+                    const auto sourceDistance=distance(c.claim.source),accessDistance=distance(c.claim.access);
+                    ++h.sourceDistance[sourceDistance==Oracle::NoTile?10:bin(sourceDistance,distanceBounds)];
+                    ++h.accessDistance[accessDistance==Oracle::NoTile?10:bin(accessDistance,distanceBounds)];
+                    if(!c.ageAvailable)++h.ageUnavailable;
+                    else if(c.ageExact)++h.exactAge[bin(c.age,ageBounds)];
+                    else ++h.lowerBoundAge[bin(c.age,ageBounds)];
+                }
+                if(examples.size()>=MaximumClaimantExamples)continue;
+                const auto distanceValue=[&](Uint32 tile)->Json {const auto d=distance(tile);return d==Oracle::NoTile?Json(nullptr):Json(d);};
+                examples.push_back({{"owner",c.owner},{"team",c.identityValid?Json(c.team):Json(nullptr)},
+                    {"identity_valid",c.identityValid},{"claim_matches_unit",c.claimMatches},{"material",c.claim.material},{"source",c.claim.source},{"access",c.claim.access},
+                    {"exclusive",c.claim.exclusive},{"requested_yield_infinite",sourceInfinite},{"reserve",c.claim.reserve},{"conflicts_requested_material_or_exclusive",conflict},
+                    {"current_position",c.position==Oracle::NoTile?Json(nullptr):Json(c.position)},
+                    {"source_chebyshev_tiles",distanceValue(c.claim.source)},{"access_chebyshev_tiles",distanceValue(c.claim.access)},
+                    {"claim_age_ticks",c.ageAvailable?Json(c.age):Json(nullptr)},
+                    {"claim_age_kind",!c.ageAvailable?"unavailable":c.ageExact?"observed-acquisition-exact":"first-observed-lower-bound"},
+                    {"task",c.claimMatches?Json(c.task):Json(nullptr)},{"path_distance",nullptr},{"route_state",nullptr}});
+            }
+            Json distributions=Json::array();
+            constexpr std::array<const char*,3> teamGroups{"same_team","other_team","unresolved"};
+            for(unsigned i=0;i<histograms.size();++i) {
+                const auto& h=histograms[i];
+                distributions.push_back({{"team_group",teamGroups[i]},{"potential_conflicting_owners",h.owners},
+                    {"source_distance_tiles",h.sourceDistance},{"access_distance_tiles",h.accessDistance},
+                    {"exact_age_ticks",h.exactAge},{"lower_bound_age_ticks",h.lowerBoundAge},{"age_unavailable",h.ageUnavailable}});
+            }
+            return Json{{"histograms",std::move(distributions)},{"all_selected_goal_owners",allOwners},{"requester_owners",requesterOwners},{"owners",total},{"conflicting_owners",conflicts},{"same_team_owners",sameTeam},{"other_team_owners",otherTeam},
+                {"known_team_owners",byTeam},{"conflicting_team_owners",conflictingByTeam},{"identity_unavailable",unknownIdentity},{"exact_age_owners",exactAge},{"lower_bound_age_owners",lowerAge},{"age_unavailable_owners",unknownAge},
+                {"examples",std::move(examples)},{"examples_excluded",total>MaximumClaimantExamples?total-MaximumClaimantExamples:0},
+                {"examples_censored",total>MaximumClaimantExamples}};
+        };
+        return Json{{"available",true},{"version",1},
+            {"histogram_schema",{{"version",1},{"scope","all potential conflicting owners excluding requester; independent of example truncation"},
+                {"distance_bins",{"0","1","2-3","4-7","8-15","16-31","32-63","64-127","128-255",">=256","unknown"}},
+                {"age_bins_ticks",{"0","1-15","16-63","64-255","256-1023","1024-4095","4096-16383","16384-65535",">=65536"}},
+                {"age_unknown_bin","age_unavailable; separate from exact and lower-bound histograms"},
+                {"sum_contract","each distance histogram sums to potential_conflicting_owners; exact_age+lower_bound_age+age_unavailable sums to that same count; three team groups sum to conflicting_owners"},
+                {"interpretation","lower-bound bins describe observed minima, not actual-age distribution; geometric distances are not path distances"}}},
+            {"direct_source",work.selectedSource},{"nearest_access",work.nearest},
+            {"nearest_access_reservable",nearestReservable},
+            {"nearest_access_static_reachable",nearestEligible && nearestCandidate->accessDistance!=Oracle::Unreachable},
+            {"nearest_access_reservable_contract","owner-aware oracle access eligibility and available physical donor (any donor in nearest pool); independent of path reachability; raw donor failure need not require an alternative access"},
+            {"pooled_goal",work.pooledGoal},{"pool_membership_available",work.pooledGoal && component!=Oracle::NoTile},
+            {"pool_component",component==Oracle::NoTile?Json(nullptr):Json(component)},
+            {"direct",group(false)},{"pooled",work.pooledGoal && component!=Oracle::NoTile?group(true):Json(nullptr)},
+            {"age_tracking_excluded_total",work.claimAgeTrackingExcluded},{"captured_ledger_owners",work.claimants.size()},{"example_limit_per_group",MaximumClaimantExamples},
+            {"example_selection","first owners in deterministic ledger order; censored examples are not a random sample"},
+            {"group_relationship","direct-source and nearest-pool groups may overlap; do not add their counts"},
+            {"distance_contract","current owner-to-own-source/access toroidal Chebyshev tiles; geometric only, not path distance"},
+            {"count_contract","exact frozen ledger owner counts; owners/conflicting_owners exclude requester, all_selected_goal_owners includes it; potential conflicting reservations do not prove cause of shortage; pool groups physical sources in nearest query-material farm component"},
+            {"age_contract","ledger acquisition/release observations, independent of journey/harvesting lifetime; inherited ages are lower bounds; no persisted ages"}};
+    }
     static void runBaseline(void* context,std::size_t) noexcept {
         auto& job=*static_cast<Baseline*>(context);
         try {
@@ -369,12 +478,13 @@ struct Probe::Impl
                 {"exposure_missing",!exposure},{"exposure_proxy",std::move(exposureMetadata)},
                 {"access_exposure",std::move(accessExposure)},{"optimal_exposure",std::move(optimalExposure)},
                 {"occupancy","static"},{"nearest_octant",evaluator.closestOctant()},{"oracle_expanded",oracle.expanded},{"oracle_elapsed_ns",oracleNs},
-                {"static_routes",std::move(routeRows)},{"static_route_unique",ranked.size()},
+                {"blocker_census",blockerCensus(work,oracle,view.width,view.height)},{"static_routes",std::move(routeRows)},{"static_route_unique",ranked.size()},
                 {"static_route_excluded_limit",ranked.size()>Experiment::StaticRoutes::OutcomeLimit?ranked.size()-Experiment::StaticRoutes::OutcomeLimit:0},
                 {"static_route_elapsed_ns",routeNs},{"source_count",oracle.candidates.size()},{"optimal",best},{"features",work.features},{"patterns",std::move(outcomes)}};
             if(work.deepSelected) {
                 auto metadata=row;
                 metadata.erase("static_routes");
+                metadata.erase("blocker_census"); // Bounded ordinary trace, joined by event ordinal; deep wire unchanged.
                 metadata.erase("access_exposure"); // Compact trace holds selected-access proxies; full offline risk needs a future wire revision.
                 metadata.erase("features"); // Feature row remains in ordinary trace, joined by ordinal.
                 metadata["game_id"]=work.deepContext.at("game_id");
@@ -426,6 +536,7 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
         {"continuation_policy","diagnostic-ordinal-resets-after-load"},{"patterns",patterns},
         {"new_destination_reads_semantics","marginal shared event-cache misses in pattern order; instrumentation amortization only, not standalone policy cost"},
         {"stale_goal_eligibility","published XY from natural-only field; failed scalar projection and mixed supplier fields excluded"},
+        {"blocker_census_version",1},{"blocker_example_limit_per_group",Impl::MaximumClaimantExamples},{"blocker_tracking_owner_limit",Impl::MaximumTrackedClaimants},
         {"outcome_columns",{"pattern","policy","source","access","probe","weighted_cost","probes","new_destination_reads","fallback","access_weighted_cost"}},
         {"exposure_proxy_contract",{{"version",1},{"selection","deep minhash reservoir replacements only; use final per-game minimum for unbiased eligible-event comparisons"},{"meaning","coarse hostile occupied-cell proximity, not combat risk"},
             {"distance","toroidal Chebyshev, capped at16;17 means beyond cap or no seed"},
@@ -491,6 +602,14 @@ void Probe::liveEvent(const Unit& unit,LiveEvent event) const
     if(impl->finished || impl->config.movementOnly)return;
     const auto tick=unit.owner->game->stepCounter;impl->expireJourneys(tick);
     const auto owner=unitOwner(unit.gid,unit.scriptIdentity);
+    // Exact ledger lifetime is separate from sampled journey lifetime (which may
+    // continue through harvest after the reservation has been released).
+    if(event==LiveEvent::Released || event==LiveEvent::Retargeted)impl->claimAges.erase(owner);
+    else if(event==LiveEvent::Acquired && unit.activeMaterialClaim) {
+        if(impl->claimAges.contains(owner) || impl->claimAges.size()<Impl::MaximumTrackedClaimants)
+            impl->claimAges.insert_or_assign(owner,Impl::ClaimAge{*unit.activeMaterialClaim,unit.materialClaimTask,tick,true});
+        else ++impl->claimAgeTrackingExcluded;
+    }
     ++impl->live.events.at(unsigned(event));
     auto at=impl->journeys.find(owner);
     if(event==LiveEvent::Acquired) {
@@ -669,6 +788,33 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
     work->world=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),mask,nullptr,&impl->storage,false);
     metrics.captureBytes+=impl->storage.bytesCopied-bytes;
     work->owners=map.materialClaimLedger().entries();
+    work->selectedSource=Uint32(source);work->pooledGoal=pooled;work->desiredExclusive=exclusive;work->desiredInfinite=yield.consumption==ResourceConsumption::Infinite;
+    if(map.activeClaimsEnabled()) {
+        if(work->owners.size()>Impl::MaximumTrackedClaimants)throw std::logic_error("claim census exceeds engine unit bound");
+        work->claimants.reserve(work->owners.size());
+        for(const auto& [owner,claim]:work->owners) {
+            Impl::Claimant row;row.owner=owner;row.claim=claim;
+            const auto gid=Uint16(owner);const auto team=gid<Impl::MaximumTrackedClaimants?Unit::GIDtoTeam(gid):Team::MAX_COUNT;
+            const auto* claimant=team<game.teamsCount() && game.teams[team]?game.teams[team]->myUnits[Unit::GIDtoID(gid)]:nullptr;
+            if(claimant && unitOwner(claimant->gid,claimant->scriptIdentity)==owner) {
+                row.identityValid=true;row.team=team;row.position=Uint32(map.coordToIndex(claimant->posX,claimant->posY));row.task=claimant->materialClaimTask;
+                row.claimMatches=claimant->activeMaterialClaim && *claimant->activeMaterialClaim==claim;
+                if(row.claimMatches) {
+                    auto at=impl->claimAges.find(owner);
+                    if(at!=impl->claimAges.end() && (at->second.task!=row.task || at->second.claim!=claim)) {impl->claimAges.erase(at);at=impl->claimAges.end();}
+                    if(at==impl->claimAges.end()) {
+                        if(impl->claimAges.size()<Impl::MaximumTrackedClaimants)at=impl->claimAges.emplace(owner,Impl::ClaimAge{claim,row.task,game.stepCounter,false}).first;
+                        else ++impl->claimAgeTrackingExcluded;
+                    }
+                    if(at!=impl->claimAges.end() && game.stepCounter>=at->second.since) {
+                        row.ageAvailable=true;row.ageExact=at->second.exact;row.age=game.stepCounter-at->second.since;
+                    }
+                }
+            }
+            work->claimants.push_back(row);
+        }
+    }
+    work->claimAgeTrackingExcluded=impl->claimAgeTrackingExcluded;
     work->field.assign(field,field+map.cellCount());
     work->destinations=destinations;
     work->reason=staleGoal?"stale_goal":exhaustedPool?"farm_reserve":"fully_claimed";
