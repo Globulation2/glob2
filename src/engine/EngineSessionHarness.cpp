@@ -194,8 +194,7 @@ TEST_SUITE("EngineSession")
 			}
 		} deferred{executor};
 		ComputeExecutor::Group group{1, {Deferred::run, &deferred}};
-		auto pending =
-			executor.submit(std::span(&group, 1), 100000, {ComputeProducer::Hiring, 0, 100000});
+		executor.submit(std::span(&group, 1), 100000, {ComputeProducer::Hiring, 0, 100000});
 		auto ticket = deferred.ready.get_future().get();
 		auto &perf = PerformanceTelemetry::collector();
 		executor.absorbPerformance(perf);
