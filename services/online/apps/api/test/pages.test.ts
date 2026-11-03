@@ -77,7 +77,7 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
     const droidLicence = await app.inject('/signin/assets/LICENSE-Droid.txt');
     expect(droidLicence.statusCode).toBe(200);
     expect(droidLicence.rawPayload).toEqual(
-      readFileSync(new URL('../../../../data/fonts/LICENSE-Droid.txt', import.meta.url)),
+      readFileSync(new URL('../../../../../content/data/fonts/LICENSE-Droid.txt', import.meta.url)),
     );
     const licence = await app.inject('/signin/assets/LICENSE-Noto.txt');
     expect(licence.statusCode).toBe(200);
