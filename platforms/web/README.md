@@ -254,6 +254,12 @@ selection, durable persistence and update-only DOM text dispatch; `pacing.spec.j
 with a headless reference at different rendering caps. Player actions use real mouse/keyboard input;
 assertions read `glob2Diagnostics` without changing game state.
 
+The main-menu helper sends each first-run introduction choice once using its
+published visible hit area, then waits for the main-menu diagnostics within the
+existing deadline. An accepted transition can retire a control before the next
+screen is published; repeating that choice or waiting for its retired bounds
+would delay the test after the game has already moved on.
+
 Pixel assertions decode the captured, opaque PNG in the Node test runner using
 the pinned development-only `pngjs` package. They inspect the same presented
 pixels and color/count thresholds without sending the screenshot back into the
