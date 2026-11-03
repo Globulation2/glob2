@@ -628,6 +628,8 @@ def run_phase(root, bundle_path, manifest, cpu_ids, deadline):
                     ceiling=admission.get('phase_ceiling_bytes',{}).get(phase,37*GIB)
                     if not 0<ceiling<=37*GIB:raise ValueError('invalid storage admission ceiling')
                     pressure=used>=ceiling or shutil.disk_usage(root).free<=12*GIB
+                    if not draining and coordinator.mode=='draining':
+                        draining=True;reason='explicit_drain'
                     if not draining and (now>=deadline-1815 or pressure):
                         reason='storage_guard' if pressure else 'phase_budget'
                         coordinator.control('draining');draining=True
@@ -795,29 +797,46 @@ def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,wo
             finally:coordinator.close()
             if finished:return directory
         return run_phase(root,bundle_path,manifest,cpu_ids,deadline)
-    if (root/'confirmation/experiment.json').exists():
+    amendment=read_json(root/'confirmation-amendment.json') if (root/'confirmation-amendment.json').exists() else None
+    primary='confirmation';diagnostic_name='diagnostic-confirmation'
+    if amendment:
+        if amendment['original_deadline']!=end or amendment['screening_source']!=digest(screen_report):
+            raise ValueError('confirmation amendment changed campaign deadline or screening source')
+        if amendment['arms']!=['baseline','mode','median']:
+            raise ValueError('unsupported confirmation amendment arms')
+        # The original cohort is drained and summarized separately. Never pool
+        # its selected arms or time blocks into the fresh amended comparison.
+        prior=read_json(root/'confirmation/experiment.json')
+        prior_dir=continue_phase('confirmation',prior,prior['jobs'][0]['limits']['deadline_unix'])
+        if not (root/'confirmation-report.json').exists():summarize(prior_dir,root/'confirmation-report.json',stages)
+        chosen=amendment['arms'];primary='confirmation-median';diagnostic_name='diagnostic-confirmation-median'
+        confirmation=read_json(root/amendment['performance_manifest'])
+        diagnostic=read_json(root/amendment['diagnostic_manifest'])
+        for name,value in [(primary,confirmation),(diagnostic_name,diagnostic)]:
+            if value['metadata']['phase']!=name or {j['labels']['variant'] for j in value['jobs']}!=set(chosen):
+                raise ValueError('amended manifest has wrong phase or arms')
+    elif (root/'confirmation/experiment.json').exists():
         confirmation=read_json(root/'confirmation/experiment.json')
-        perf_end=confirmation['jobs'][0]['limits']['deadline_unix']
     else:
         perf_end=time.time()+remaining*.8
         count=int(3*(perf_end-time.time())*.85/median/(len(chosen)*4));setups=min(300,max(2,count-count%2))
         confirmation=plan(bundle,phase='confirmation',setups=setups,seed=20261104,arms=chosen,diagnostics=0,deadline=perf_end,process_attempts=1)
-    confirm_dir=continue_phase('confirmation',confirmation,perf_end)
-    if not (root/'confirmation-report.json').exists():summarize(confirm_dir,root/'confirmation-report.json',stages)
-    if (root/'diagnostic-confirmation/experiment.json').exists():
+    perf_end=confirmation['jobs'][0]['limits']['deadline_unix']
+    confirm_dir=continue_phase(primary,confirmation,perf_end)
+    if not (root/(primary+'-report.json')).exists():summarize(confirm_dir,root/(primary+'-report.json'),stages)
+    if not amendment and (root/'diagnostic-confirmation/experiment.json').exists():
         diagnostic=read_json(root/'diagnostic-confirmation/experiment.json')
-    else:
+    elif not amendment:
         diagnostic_median=projection['mixed_diagnostic_seconds_projection']
         count=int(3*max(0,work_end-time.time())*.75/diagnostic_median/(len(chosen)*4));setups=min(120,max(2,count-count%2))
         affordable=int((len(cpu_ids)//4)*max(0,work_end-time.time())*.75/diagnostic_median/(len(chosen)*4))
-        # Twelve frozen-seed setups cover all six named generators plus six random.
         if affordable>=12:setups=max(setups,12)
         diagnostic=plan(bundle,phase='confirmation',setups=setups,seed=20261105,arms=chosen,diagnostics=1,deadline=work_end,quality_fraction=.2,process_attempts=1)
         diagnostic['metadata']['phase']='diagnostic-confirmation'
         diagnostic['id']+='-diagnostic'
     diagnostic_end=diagnostic['jobs'][0]['limits']['deadline_unix']
-    diagnostic_dir=continue_phase('diagnostic-confirmation',diagnostic,diagnostic_end)
-    if not (root/'diagnostic-confirmation-report.json').exists():summarize(diagnostic_dir,root/'diagnostic-confirmation-report.json',stages)
+    diagnostic_dir=continue_phase(diagnostic_name,diagnostic,diagnostic_end)
+    if not (root/(diagnostic_name+'-report.json')).exists():summarize(diagnostic_dir,root/(diagnostic_name+'-report.json'),stages)
     atomic_json(root/'completed.json',dict(finished=time.time(),started=started,arms=chosen,
         decision='Evidence ready for maintainer decision; no production policy changed'))
 
@@ -825,7 +844,8 @@ def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,wo
 def decision_package(root, error=None):
     root=Path(root)
     reports={name:read_json(root/(name+'-report.json')) for name in
-        ('pilot','screening','confirmation','diagnostic-confirmation') if (root/(name+'-report.json')).exists()}
+        ('pilot','screening','confirmation','diagnostic-confirmation','confirmation-median','diagnostic-confirmation-median') if (root/(name+'-report.json')).exists()}
+    amended=(root/'confirmation-amendment.json').exists()
     package=dict(status='attention_required' if error else 'complete',error=error,
         reports={name:name+'-report.json' for name in reports},production_policy='baseline',
         platform_coverage='Native Linux x86_64 validated; Windows, macOS, browser and mobile execution unverified')
@@ -833,7 +853,8 @@ def decision_package(root, error=None):
         'Status: '+('stopped with incomplete evidence: '+error if error else 'campaign complete; no production policy promoted'),'',
         'Policy comparisons use independent game seeds. Screening is exploratory; confirmation is held out. Observer calibration uses identical seeds only to isolate instrumentation cost.','']
     for name,report in reports.items():
-        lines.extend([f"## {name}",'',f"Successful games: {report['committed']} / {report['planned']}; missing/failed: {report['missing_jobs']}.",'',
+        role=' — supplemental, collected before finalist amendment' if amended and name=='confirmation' else ''
+        lines.extend([f"## {name}{role}",'',f"Successful games: {report['committed']} / {report['planned']}; missing/failed: {report['missing_jobs']}.",'',
             '| Policy | CPU seconds per tick difference | 95% CI | Common setups |','|---|---:|---|---:|'])
         for arm,value in report['cpu_per_tick'].items():
             lines.append(f"| {arm} | {value['effect']} | {value['ci95']} | {value['setups']} |")
@@ -846,7 +867,10 @@ def decision_package(root, error=None):
             games=[g for g in report['games'] if g['arm']==arm and g['diagnostic']]
             values=describe([g['route_time_penalty']['mean'] for g in games])
             lines.append(f"| {arm} | {sum(g['route_time_penalty']['n'] for g in games)} | {values['mean']} | {values['p95']} |")
-    confirm=reports.get('confirmation',{})
+    primary='confirmation-median' if (root/'confirmation-amendment.json').exists() else 'confirmation'
+    package['primary_confirmation']=primary
+    package['supplemental_confirmation']='confirmation' if primary!='confirmation' else None
+    confirm=reports.get(primary,{})
     ranking=sorted((v['effect'],a) for a,v in confirm.get('cpu_per_tick',{}).items() if v['effect'] is not None)
     package['cpu_ranking']=[a for _,a in ranking]
     lines.extend(['','Measured CPU ranking: '+(', '.join(package['cpu_ranking']) or 'unavailable'),'',

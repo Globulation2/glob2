@@ -79,6 +79,31 @@ class RatioExperiment(unittest.TestCase):
                 self.assertEqual(run.call_args_list[0].args[-1],now+5000)
                 planner.assert_not_called()
 
+    def test_median_amendment_keeps_original_cohort_separate(self):
+        from tools.gradient_ratio_experiment import _finish_campaign
+        from tools.tournaments.common import digest
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);now=time.time();arms=['baseline','mode','median']
+            for name in ('screening','confirmation'):(root/name).mkdir()
+            screen={'jobs':[{'limits':{'deadline_unix':now+100}}]}
+            prior={'jobs':[{'limits':{'deadline_unix':now+5000}}]}
+            def manifest(name,deadline):return {'metadata':{'phase':name},'jobs':[{'labels':{'variant':a},'limits':{'deadline_unix':deadline}} for a in arms]}
+            new=manifest('confirmation-median',now+5000);diag=manifest('diagnostic-confirmation-median',now+9000)
+            amendment={'original_deadline':now+10000,'screening_source':digest({}),'arms':arms,'performance_manifest':'new.json','diagnostic_manifest':'diag.json'}
+            for name,value in [('screening/experiment.json',screen),('screening-report.json',{}),('confirmation/experiment.json',prior),('confirmation-amendment.json',amendment),('new.json',new),('diag.json',diag)]:
+                (root/name).write_text(json.dumps(value))
+            (root/'confirmation/state.sqlite').touch()
+            pilot={'games':[{'arm':'baseline','high_diversity_with_extra_builds':1,'wall_seconds':100,'diagnostic':False}],'stages':{}}
+            paths=[root/'confirmation',root/'confirmation-median',root/'diagnostic-confirmation-median']
+            with patch('tools.gradient_ratio_experiment.Coordinator') as coordinator,patch('tools.gradient_ratio_experiment.phase_job_counts',return_value={'active':1}),patch('tools.gradient_ratio_experiment.diagnostic_projection',return_value={'light_seconds':100}),patch('tools.gradient_ratio_experiment.finalists',return_value=['baseline','mode','equal']),patch('tools.gradient_ratio_experiment.run_phase',side_effect=paths) as run,patch('tools.gradient_ratio_experiment.summarize') as summarize,patch('tools.gradient_ratio_experiment.plan') as planner:
+                coordinator.return_value.status.return_value={'jobs':{}}
+                coordinator.return_value.mode='draining'
+                _finish_campaign(root,'/bundle',bundle(),list(range(32)),pilot,now-1000,now+10000,now+9000)
+                self.assertEqual([x.args[2] for x in run.call_args_list],[prior,new,diag])
+                self.assertEqual([x.args[1].name for x in summarize.call_args_list],['confirmation-report.json','confirmation-median-report.json','diagnostic-confirmation-median-report.json'])
+                coordinator.return_value.control.assert_not_called()
+                planner.assert_not_called()
+
     def test_capacity_amendment_preserves_receipt(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);receipt={'cpu_ids':list(range(12,24)),'deadline':123}

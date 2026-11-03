@@ -940,7 +940,12 @@ verification. Continuation reuses existing confirmation manifests and deadlines.
 A `storage-admission.json` receipt can reserve diagnostic space with lower
 per-phase admission ceilings; it cannot raise the 37 GiB campaign safety cutoff.
 With expanded capacity, diagnostic planning includes at least twelve setups
-when its conservative time estimate permits, covering all six named maps.
+when its conservative time estimate permits, covering all six named maps. A
+maintainer-approved `confirmation-amendment.json` can replace the equal-cost
+finalist with median using separately frozen performance and diagnostic manifests.
+The original cohort drains and remains supplemental; amended confirmation uses
+fresh independent seeds and contemporaneous baseline/mode controls. Reports never
+pool the two confirmation cohorts, and campaign deadlines remain unchanged.
 
 `python3 -m tools.gradient_ratio_experiment plan --bundle BUNDLE --phase pilot
 --output artifacts/ratio-pilot.json` freezes independently seeded baseline,
