@@ -154,7 +154,7 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
             outputs = copy.deepcopy(original['outputs'])
             # Probability-only logs omit the exact delivery/labour counters.
             # Preserve typed gameplay records for the frozen paired endpoint.
-            outputs['log_mode']='telemetry'
+            outputs['log_mode']='gameplay'
             if 'team-timeline' not in outputs.setdefault('telemetry',[]):
                 outputs['telemetry'].append('team-timeline')
             labels['require_gameplay_telemetry']=True

@@ -230,7 +230,7 @@ Every job has these fields:
 | `depends_on` | Job IDs; every input dependency must appear; cycles rejected |
 | `seeds` | `{"game":N}` or `{"map":N}`; empty on saved games |
 | `config` | Game: players, ticks, ai_params (player-string to key/value object), alliances, winning_conditions. Generator: generator, params, candidates, rotations. Defaults follow CLI |
-| `outputs` | replay false; saves/telemetry/reports empty lists; log_mode `full` (or `telemetry`, or `win-probability` with game team-timeline telemetry); map false; core/stack false; required empty list of relative output paths; result `full` (or `outcome` for compact rating/adjudication fields only) |
+| `outputs` | replay false; saves/telemetry/reports empty lists; log_mode `full` (or `telemetry`, or `gameplay`/`win-probability` with game team-timeline telemetry); map false; core/stack false; required empty list of relative output paths; result `full` (or `outcome` for compact rating/adjudication fields only) |
 | `limits` | timeout_seconds 3600, memory_mb host default, estimated_seconds 60 (buffer planning only) |
 | `labels` | Opaque JSON object preserved unchanged |
 
@@ -286,12 +286,16 @@ For model-based Maxima comparisons, this profile retains only the engine's
 
 For tactical studies that also need Maxima flags and placement decisions, use
 `log_mode: "telemetry"` with the requested `maxima`/`team-timeline` telemetry.
-It retains `MAXIMA_TELEMETRY`, `GLOB2_WINPROB`, `GLOB2_TL`, `GLOB2_ECON`,
-`GLOB2_TIMELINE`, `GLOB2_MEASURE`, `GLOB2_MEASURE_HISTORY`, `GLOB2_AI_*` and
-`GLOB2_PERF_*` records, while omitting unrelated console output.
+It retains `MAXIMA_TELEMETRY`, `GLOB2_WINPROB`, `GLOB2_TL`, `GLOB2_ECON` and
+`GLOB2_TIMELINE` records, while omitting unrelated console/performance chatter.
+For delivery and labour studies, `log_mode: "gameplay"` keeps `GLOB2_MEASURE`,
+`GLOB2_MEASURE_HISTORY`, win-probability and team-state records, omitting AI,
+performance and Maxima records. This avoids retaining high-volume AI samples and histories
+when they are outside the study. Saved games may still emit substantial gameplay
+history; calibrate allowances over a full measurement window before dispatch.
 Probability-only capture omits delivery and labour measurements. Jobs that need
 those measurements can set `labels.require_gameplay_telemetry: true`; validation
-requires game `team-timeline` telemetry with full or telemetry capture, and
+requires game `team-timeline` telemetry with full or gameplay capture, and
 collection rejects a completed game without a retained final measurement record.
 Endpoint analysis must still verify team coverage and observation boundaries.
 Requested CSV outputs are unaffected.

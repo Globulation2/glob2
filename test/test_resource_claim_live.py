@@ -79,7 +79,7 @@ class LivePlans(unittest.TestCase):
             self.assertNotIn('resource_claims_shadow', item['config'])
             self.assertNotIn('resource_claims_deep_context', item['config'])
             self.assertEqual(item['build'], bundle['id'])
-            self.assertEqual(item['outputs']['log_mode'],'telemetry')
+            self.assertEqual(item['outputs']['log_mode'],'gameplay')
             self.assertIn('team-timeline',item['outputs']['telemetry'])
             self.assertIs(item['labels']['require_gameplay_telemetry'],True)
             self.assertEqual(item['limits']['log_bytes'],128*1024**2)

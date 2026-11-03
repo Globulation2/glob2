@@ -217,20 +217,22 @@ class EngineJob:
             raise ValueError('generation requires map seed and generator ID')
         if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack', 'result', 'log_mode'}:
             raise ValueError('unknown requested output')
-        if job['outputs'].get('log_mode', 'full') not in ('full', 'win-probability', 'telemetry'):
-            raise ValueError('log_mode must be full, telemetry or win-probability')
+        if job['outputs'].get('log_mode', 'full') not in ('full', 'win-probability', 'gameplay', 'telemetry'):
+            raise ValueError('log_mode must be full, telemetry, gameplay or win-probability')
         if job['outputs'].get('log_mode') == 'telemetry' and not job['outputs'].get('telemetry'):
             raise ValueError('telemetry log mode requires requested telemetry')
         if job['outputs'].get('log_mode') == 'win-probability' and (self.kind != 'game' or 'team-timeline' not in job['outputs'].get('telemetry', [])):
             raise ValueError('win-probability logs require game team-timeline telemetry')
+        if job['outputs'].get('log_mode') == 'gameplay' and (self.kind != 'game' or 'team-timeline' not in job['outputs'].get('telemetry', [])):
+            raise ValueError('gameplay logs require game team-timeline telemetry')
         if 'require_gameplay_telemetry' in job.get('labels', {}):
             required = job['labels']['require_gameplay_telemetry']
             if type(required) is not bool:
                 raise ValueError('require_gameplay_telemetry must be a boolean')
             if required and (self.kind != 'game' or
                     'team-timeline' not in job['outputs'].get('telemetry', []) or
-                    job['outputs'].get('log_mode', 'full') not in ('full', 'telemetry')):
-                raise ValueError('required gameplay telemetry needs game team-timeline and full or telemetry logs')
+                    job['outputs'].get('log_mode', 'full') not in ('full', 'gameplay')):
+                raise ValueError('required gameplay telemetry needs game team-timeline and full or gameplay logs')
         if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', DEFAULT_GAME_TICKS) > 4096
                 and 'artifact_bytes' not in job['limits']):
             raise ValueError('detailed checksums for long games require an explicit artifact_bytes limit; use short focused probes')
