@@ -1,0 +1,39 @@
+{
+  "up_seconds": 33,
+  "stack up": {
+    "ok": true,
+    "seconds": 33.46
+  },
+  "services healthy": {
+    "ok": true,
+    "seconds": 0.34
+  },
+  "edge routing": {
+    "ok": true,
+    "seconds": 1.19
+  },
+  "instance and engine agent": {
+    "ok": true,
+    "seconds": 0.05
+  },
+  "guest sign-in and realtime": {
+    "ok": true,
+    "seconds": 0.32
+  },
+  "jwks": {
+    "ok": true,
+    "seconds": 0.19
+  },
+  "relays": {
+    "ok": true,
+    "seconds": 0.95
+  },
+  "generate-map job": {
+    "ok": true,
+    "seconds": 5.02
+  },
+  "rated quick match end to end": {
+    "ok": true,
+    "seconds": 76.59
+  }
+}
