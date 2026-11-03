@@ -105,6 +105,49 @@ TEST_SUITE("ActiveClaimRoutes")
         map.setResourceByIndex(15,8,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(15,8),WHEAT,1);
         CHECK_FALSE(unit->prepareActiveMaterialPickup(15,8));CHECK(unit->activeMaterialClaim==far);
     }
+    TEST_CASE("denied adjacent pickup exchange preserves the outstanding route and its publication deadline")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(unsigned participants:{1u,3u}) {
+            CAPTURE(participants);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+            auto& game=fixture.game;auto& map=game.map;map.configureCompute(participants);
+            map.setMaterialDestinationsEnabled(true);
+            ResourceClaims::ClaimPolicyConfig config;config.sourceVersion=3;config.opportunisticAdjacentPickup=true;
+            map.setMaterialClaimPolicyConfig(config);
+            auto* consumer=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
+            auto* holder=fixture.addUnit(WORKER,9,9);Assignment cleanup{*unit},holderCleanup{*holder};
+            assign(*unit,*consumer,map,14,8);assign(*holder,*consumer,map,9,8);
+            const auto adjacent=Uint32(map.coordToIndex(9,8));map.setMaterialAmountSlot(adjacent,WHEAT,1);
+            game.observeCompletedWorld();int dx=0,dy=0;
+            REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Pending);
+            map.flushClaimRoutes();
+            const auto admittedTick=game.stepCounter;
+            const auto task=unit->materialClaimTask;
+            const auto original=*unit->activeMaterialClaim,other=*holder->activeMaterialClaim;
+            const auto random=unit->entityRandom;
+            // Both serializations include the request identity, due tick and
+            // privately completed output, while owner publication stays pending.
+            const auto binary=saveRoutes(map,false),text=saveRoutes(map,true);
+            const auto checksum=map.activeClaimRouteChecksum(true);
+            REQUIRE_FALSE(unit->prepareActiveMaterialPickup(9,8));
+            CHECK(unit->activeMaterialClaim==original);CHECK(unit->materialClaimTask==task);
+            CHECK(holder->activeMaterialClaim==other);CHECK(unit->entityRandom==random);
+            CHECK(map.materialClaimState().at(original.source)==1);CHECK(map.materialClaimState().at(adjacent)==1);
+            CHECK(saveRoutes(map,false)==binary);CHECK(saveRoutes(map,true)==text);
+            CHECK(map.activeClaimRouteChecksum(true)==checksum);
+            map.publishClaimRoutes();
+            CHECK(game.stepCounter==admittedTick);
+            CHECK(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Pending);
+            CHECK(saveRoutes(map,false)==binary);
+            ++game.stepCounter;map.publishClaimRoutes();
+            REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Ready);
+            CHECK(dx==1);CHECK(std::abs(dy)<=1);
+            CHECK(unit->activeMaterialClaim==original);CHECK(unit->materialClaimTask==task);
+            CHECK(map.materialAmountAtSlot(original.source,WHEAT)==3);
+            CHECK(map.materialAmountAtSlot(adjacent,WHEAT)==1);
+        }
+    }
     TEST_CASE("adjacent pickup exchange uses toroidal distance at map edges")
     {
         glob2test::HeadlessGlobals globals;
