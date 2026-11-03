@@ -199,6 +199,10 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		circuit.push_back({p.x, p.y, kRoadHalfWidth});
 	}
 	strokePath(L.rim, t, circuit, 1, true);
+	// Navigation and validation require each flagged rim cell to stay open.
+	// Protect its complete corner footprint: reserving only its top-left track
+	// vertex let two lava-root corners close that cell under blocked ties.
+	const auto rimCorners = tileCorners(t, L.rim);
 
 	auto &rng = context.stream("lava-flows");
 	const auto roll = [&]() { return rng() / 4294967296.0; };
@@ -370,7 +374,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			continue;
 		if (ford[i])
 			L.terrain[i] = SCREE;
-		else if (live[i])
+		else if (live[i] && !rimCorners[i])
 			L.terrain[i] = LAVA;
 		else if (cooled[i] && L.terrain[i] == GRASS)
 			L.terrain[i] = SCREE;
@@ -1185,7 +1189,8 @@ GeneratorDefinition lavaShieldDefinition()
 			// gravel, stone is a crust along the flows, the rim is loam, roads are dirt tracks and
 			// the open sea is deep water.
 			// Revision 7: the crater is uninterrupted lava, without void vents.
-			8,
+			// Revision 9: live roots preserve all corners of reserved circuit cells.
+			9,
 			false,
 			{GeneratorControl{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout}
 				 .withSearchRange(4, 7),

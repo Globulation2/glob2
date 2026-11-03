@@ -123,6 +123,11 @@ constexpr double kFace = 1.5;
 // further, so a tunnel looks `tunnel-width` across. Corner voting requires three
 // walkable corners against rock; the default width is four to keep bends open to traffic.
 constexpr double kTunnelFace = 0.5;
+// Painting rock on every closed tile's corners erodes a narrow diagonal neck.
+// A 1.5-radius stroke can leave only two walking corners in its cells, which
+// the blocked-corner tie closes. Keep sampled radii above that neck threshold;
+// default width 4 already stays at least 1.875 even at maximum width jitter.
+constexpr double kMinimumTunnelHalfWidth = 1.6;
 // A quarry chamber (REVISION 2026-10-26) is dug to a farm chamber's size but has no pond: a stone
 // deposit of radius kQuarryRadius at its middle at the default stone amount, its roads stopping
 // kQuarryRoadStop short of the middle so the tiles they spoil never reach the deposit. Round the
@@ -297,9 +302,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			continue;
 		const int siteA = graph.edgeCells[edge][0], siteB = graph.edgeCells[edge][1];
 		const Site a = L.sites[siteA], b = L.sites[siteB];
-		const std::vector<StrokePoint> path =
+		auto path =
 			wanderingPath(t, {a.x + 0.5, a.y + 0.5}, {b.x + 0.5, b.y + 0.5}, o.tunnelWidth / 2.0 + kTunnelFace,
 						  kWanderShare * o.chamberSpacing, kWidthJitter, tunnels);
+		for (auto &point : path)
+			point.halfWidth = std::max(point.halfWidth, kMinimumTunnelHalfWidth);
 		strokePath(L.open, t, path);
 		if (!o.sandRoads)
 			continue;
@@ -685,7 +692,7 @@ GeneratorDefinition anthillDefinition()
 		"anthill",
 		32,
 		"Anthill",
-		7,
+		8,
 		false,
 		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
 		// pond and a few buildings; a queen chamber grown to 60 building sites (overlapping 4x4

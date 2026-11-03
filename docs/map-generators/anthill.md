@@ -11,8 +11,10 @@ buildings, and growing means taking the next chamber down the tunnel.
   cells the graph (`cellGraph` over `siteNeighbours`); a spanning tree through every chamber but the
   queens' (`carveSpanningTree`), one door into each queen chamber, and `loops` percent (0-60, 20) of
   the chambers' count in extra tunnels. Every open edge is a wandering tunnel `tunnel-width` wide as drawn (2-4,
-  4; dug half a tile further each side, since the tile beside the rock is drawn half rock;
-  the default keeps diagonal bends open under the three-walkable-corner rule against rock) between its chambers' middles (`wanderingPath`), with a dirt-track road traced down its middle that
+  default 4; dug half a tile further each side, since the tile beside the rock is drawn half rock).
+  At widths 2–3, sampled stroke radii are floored at 1.6 so rock-corner erosion cannot close a
+  narrow neck under the three-walkable-corner rule. Default width 4 already clears this floor.
+  Tunnels join their chambers' middles (`wanderingPath`), with a dirt-track road traced down the middle that
   stops on the pond's beach at each end (`sand-roads`, on). The road is one vertex wide, so it never
   makes a pure dirt-track tile: the tiles either side are mixed, blending grass and track speeds while holding
   no building and no crop, so nothing can be built across a tunnel (first play had AIs walling
