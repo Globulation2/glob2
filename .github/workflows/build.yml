@@ -103,6 +103,7 @@ jobs:
         with:
           ref: ${{ inputs.revision || github.sha }}
           fetch-depth: 0
+          filter: blob:none
       - name: Test shared build-system contracts once
         run: |
           encoder_python="$(python3 tools/package_assets.py --encoder-python)"
