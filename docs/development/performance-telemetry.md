@@ -391,6 +391,9 @@ executor summaries and causal sidecars fit the remaining 4 MiB allowance, includ
 the retained decorative menu executor and bounded chart/GPU presentation storage.
 Timing banks are allocated before workers start: the serial menu needs only one,
 while the foreground executor reserves banks for its configured participants.
+The executor's fixed-capacity batch-slot arena is also allocated once on the heap;
+it never resizes. This keeps per-job timing storage off bounded worker stacks,
+including stack-owned map and game objects, while preserving live slot addresses.
 Explicit event tracing retains its separate diagnostic allocation.
 GPU query/readback storage and chart projections are bounded. The release-build
 collection-overhead acceptance target is 2%; fast-build tests do not establish it.
