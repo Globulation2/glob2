@@ -6,7 +6,7 @@ const traceFixture = require("./fixtures/generator-studio-trace.json");
 const root = path.resolve(__dirname, "../../..");
 const manifest = JSON.parse(
   fs.readFileSync(
-    path.join(root, "data/generators/examples/swamp/manifest.json"),
+    path.join(root, "content/data/generators/examples/swamp/manifest.json"),
     "utf8",
   ),
 );
@@ -15,7 +15,7 @@ const source = JSON.stringify({
   manifest: { ...manifest, entry: "generator.js" },
   modules: {
     "generator.js": fs.readFileSync(
-      path.join(root, "data/generators/examples/swamp/generator.js"),
+      path.join(root, "content/data/generators/examples/swamp/generator.js"),
       "utf8",
     ),
   },

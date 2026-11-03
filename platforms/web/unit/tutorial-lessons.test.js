@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
 const root=path.resolve(__dirname,'../../..');
-const read=name=>fs.readFileSync(path.join(root,name),'utf8');
+const read=name=>fs.readFileSync(path.join(root,'content',name),'utf8');
 function runner(definition,hook='function tutorialCondition(){return false;}') {
   const context=vm.createContext({});
   vm.runInContext('const lesson='+JSON.stringify(definition)+';'+hook+read('scripts/tutorials/runtime.js'),context);

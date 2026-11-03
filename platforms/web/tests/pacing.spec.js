@@ -7,7 +7,7 @@ const {openRuntimeHost} = require('./runtime-host');
 const {gameURL, clickMainMenu, clickControl, clickListRow, clickSettingsDone} = require('./main-menu');
 const state = (page) => page.evaluate(() => glob2Diagnostics.snapshot());
 const root = path.resolve(__dirname, '../../..');
-const fixture = path.join(root, 'games/cross-replay.game.gz');
+const fixture = path.join(root, 'content/games/cross-replay.game.gz');
 
 // Compare the actual display-paced session with the serial CLI engine using
 // the same initial state and no gameplay orders. Speed keys affect host pacing.

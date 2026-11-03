@@ -10,7 +10,7 @@ const {compiledSuiteInventory,compareCaseInventory} = require('./compiled-case-i
 for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4], ['threaded',8], ['threaded','auto']]) {
 test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${threads})`, async ({page}, info) => {
   const root = path.resolve(__dirname, '../../..');
-  const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game.gz'));
+  const fixture = fs.readFileSync(path.join(root, 'content/games/cross-replay.game.gz'));
   await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
       window.engineLog = [];
       var Module = {
@@ -66,7 +66,7 @@ test(`WebAssembly verifies the committed match record (${variant})`, async ({pag
   test.setTimeout(300000);
   const root = path.resolve(__dirname, '../../..');
   const record = fs.readFileSync(path.join(root, 'test/fixtures/multiplayer/FourSquares1.g2mr'));
-  const map = fs.readFileSync(path.join(root, 'maps/FourSquares1.map.gz'));
+  const map = fs.readFileSync(path.join(root, 'content/maps/FourSquares1.map.gz'));
   await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
       window.engineLog = [];
       var Module = {
