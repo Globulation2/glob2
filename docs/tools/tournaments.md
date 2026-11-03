@@ -943,7 +943,10 @@ With expanded capacity, diagnostic planning includes at least twelve setups
 when its conservative time estimate permits, covering all six named maps. A
 maintainer-approved `confirmation-amendment.json` can replace the equal-cost
 finalist with median using separately frozen performance and diagnostic manifests.
-The original cohort drains and remains supplemental; amended confirmation uses
+The original cohort collects and summarizes existing results in the background
+with admission stopped, while amended confirmation starts fresh games. Only
+one cohort admits games at a time. The original cohort remains supplemental;
+amended confirmation uses
 fresh independent seeds and contemporaneous baseline/mode controls. Reports never
 pool the two confirmation cohorts, and campaign deadlines remain unchanged.
 

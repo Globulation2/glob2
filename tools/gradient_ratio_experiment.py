@@ -618,7 +618,7 @@ def run_phase(root, bundle_path, manifest, cpu_ids, deadline):
     runner=subprocess.Popen([sys.executable,'-c','from tools.gradient_ratio_experiment import install_export_optimization; install_export_optimization(); from tools.tournaments.__main__ import main; main()', 'run',str(directory),'--hosts',str(hosts)],stdout=log,stderr=subprocess.STDOUT)
     reason='complete';draining=False;last_monitor=0
     try:
-        with gzip.open(root/(phase+'-host.jsonl.gz'),'at') as monitor:
+        with gzip.open(root/(phase+'-host-'+str(time.time_ns())+'.jsonl.gz'),'wt') as monitor:
             while True:
                 now=time.time();coordinator=Coordinator(directory,repair=False,manifest=frozen_manifest)
                 try:
@@ -753,6 +753,32 @@ def diagnostic_projection(root,pilot_report,quality_fraction=.2):
         interpretation='Measured lightweight median and diagnostic attempt p75 include timeouts; bounded-route cost is a conservative projection.')
 
 
+def drain_supplemental(root,bundle_path,cpu_ids):
+    root=Path(root);manifest=read_json(root/'confirmation/experiment.json')
+    coordinator=Coordinator(root/'confirmation',repair=False)
+    try:
+        if coordinator.mode not in ('draining','cancelled'):
+            raise ValueError('supplemental cohort must have admission stopped before parallel collection')
+        jobs=phase_job_counts(coordinator)
+        finished=not jobs.get('active',0) and not jobs.get('pending',0)
+    finally:coordinator.close()
+    directory=root/'confirmation' if finished else run_phase(root,bundle_path,manifest,cpu_ids,manifest['jobs'][0]['limits']['deadline_unix'])
+    if not (root/'confirmation-report.json').exists():summarize(directory,root/'confirmation-report.json',read_json(root/'stages.json'))
+
+
+def start_supplemental_drain(root,bundle_path,cpu_ids):
+    """Only the primary cohort admits games; the old cohort collects results."""
+    root=Path(root)
+    log=(root/'supplemental-drain.log').open('ab')
+    command=[sys.executable,'-m','tools.gradient_ratio_experiment','drain-supplemental',
+        '--directory',str(root),'--bundle',str(bundle_path),'--cpu-ids',','.join(map(str,cpu_ids))]
+    try:process=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT)
+    finally:log.close()
+    atomic_json(root/'supplemental-drain-launch.json',dict(pid=process.pid,started=time.time(),command=command,
+        role='collect and summarize existing original-cohort results; no admission'))
+    return process
+
+
 def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,work_end):
     if not any(g['arm']=='baseline' and g['high_diversity_with_extra_builds'] for g in pilot_report['games']):
         raise RuntimeError('Pilot did not verify diverse amphibious query demand with duplicated ratio builds; revise workload coverage within the original remaining budget before screening')
@@ -798,7 +824,7 @@ def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,wo
             if finished:return directory
         return run_phase(root,bundle_path,manifest,cpu_ids,deadline)
     amendment=read_json(root/'confirmation-amendment.json') if (root/'confirmation-amendment.json').exists() else None
-    primary='confirmation';diagnostic_name='diagnostic-confirmation'
+    primary='confirmation';diagnostic_name='diagnostic-confirmation';supplemental=None
     if amendment:
         if amendment['original_deadline']!=end or amendment['screening_source']!=digest(screen_report):
             raise ValueError('confirmation amendment changed campaign deadline or screening source')
@@ -806,9 +832,7 @@ def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,wo
             raise ValueError('unsupported confirmation amendment arms')
         # The original cohort is drained and summarized separately. Never pool
         # its selected arms or time blocks into the fresh amended comparison.
-        prior=read_json(root/'confirmation/experiment.json')
-        prior_dir=continue_phase('confirmation',prior,prior['jobs'][0]['limits']['deadline_unix'])
-        if not (root/'confirmation-report.json').exists():summarize(prior_dir,root/'confirmation-report.json',stages)
+        if not (root/'confirmation-report.json').exists():supplemental=start_supplemental_drain(root,bundle_path,cpu_ids)
         chosen=amendment['arms'];primary='confirmation-median';diagnostic_name='diagnostic-confirmation-median'
         confirmation=read_json(root/amendment['performance_manifest'])
         diagnostic=read_json(root/amendment['diagnostic_manifest'])
@@ -837,6 +861,9 @@ def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,wo
     diagnostic_end=diagnostic['jobs'][0]['limits']['deadline_unix']
     diagnostic_dir=continue_phase(diagnostic_name,diagnostic,diagnostic_end)
     if not (root/(diagnostic_name+'-report.json')).exists():summarize(diagnostic_dir,root/(diagnostic_name+'-report.json'),stages)
+    if supplemental:
+        if supplemental.wait(timeout=max(1,end-time.time()-30)):
+            raise RuntimeError('supplemental result collection failed; see supplemental-drain.log')
     atomic_json(root/'completed.json',dict(finished=time.time(),started=started,arms=chosen,
         decision='Evidence ready for maintainer decision; no production policy changed'))
 
@@ -904,10 +931,12 @@ def main():
     p.add_argument('--ticks',type=int,default=90000);p.add_argument('--diagnostics',type=float,default=.2)
     p=sub.add_parser('analyze');p.add_argument('directory');p.add_argument('--output',required=True);p.add_argument('--stages')
     p=sub.add_parser('freeze-stages');p.add_argument('directory');p.add_argument('--output',required=True)
+    p=sub.add_parser('drain-supplemental');p.add_argument('--bundle',required=True);p.add_argument('--directory',required=True);p.add_argument('--cpu-ids',required=True)
     p=sub.add_parser('campaign');p.add_argument('--bundle',required=True);p.add_argument('--directory',required=True)
     p.add_argument('--cpu-ids',required=True);p.add_argument('--hours',type=float,default=48);p.add_argument('--resume-pilot',action='store_true');p.add_argument('--continue-pilot',action='store_true')
     args=parser.parse_args()
     if args.command=='plan':atomic_json(args.output,plan(inspect_bundle(args.bundle),phase=args.phase,setups=args.setups,replicates=args.replicates,seed=args.seed,arms=args.arms,ticks=args.ticks,diagnostics=args.diagnostics))
+    elif args.command=='drain-supplemental':drain_supplemental(args.directory,args.bundle,[int(v) for v in args.cpu_ids.split(',')])
     elif args.command=='campaign':campaign(args.bundle,args.directory,[int(v) for v in args.cpu_ids.split(',')],args.hours,args.resume_pilot,args.continue_pilot)
     elif args.command=='freeze-stages':atomic_json(args.output,freeze_stages(Results(args.directory)))
     else:summarize(args.directory,args.output,read_json(args.stages) if args.stages else None)

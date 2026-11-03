@@ -94,15 +94,25 @@ class RatioExperiment(unittest.TestCase):
                 (root/name).write_text(json.dumps(value))
             (root/'confirmation/state.sqlite').touch()
             pilot={'games':[{'arm':'baseline','high_diversity_with_extra_builds':1,'wall_seconds':100,'diagnostic':False}],'stages':{}}
-            paths=[root/'confirmation',root/'confirmation-median',root/'diagnostic-confirmation-median']
-            with patch('tools.gradient_ratio_experiment.Coordinator') as coordinator,patch('tools.gradient_ratio_experiment.phase_job_counts',return_value={'active':1}),patch('tools.gradient_ratio_experiment.diagnostic_projection',return_value={'light_seconds':100}),patch('tools.gradient_ratio_experiment.finalists',return_value=['baseline','mode','equal']),patch('tools.gradient_ratio_experiment.run_phase',side_effect=paths) as run,patch('tools.gradient_ratio_experiment.summarize') as summarize,patch('tools.gradient_ratio_experiment.plan') as planner:
+            paths=[root/'confirmation-median',root/'diagnostic-confirmation-median']
+            with patch('tools.gradient_ratio_experiment.start_supplemental_drain') as drain,patch('tools.gradient_ratio_experiment.Coordinator') as coordinator,patch('tools.gradient_ratio_experiment.phase_job_counts',return_value={'active':1}),patch('tools.gradient_ratio_experiment.diagnostic_projection',return_value={'light_seconds':100}),patch('tools.gradient_ratio_experiment.finalists',return_value=['baseline','mode','equal']),patch('tools.gradient_ratio_experiment.run_phase',side_effect=paths) as run,patch('tools.gradient_ratio_experiment.summarize') as summarize,patch('tools.gradient_ratio_experiment.plan') as planner:
                 coordinator.return_value.status.return_value={'jobs':{}}
-                coordinator.return_value.mode='draining'
+                coordinator.return_value.mode='draining';drain.return_value.wait.return_value=0
                 _finish_campaign(root,'/bundle',bundle(),list(range(32)),pilot,now-1000,now+10000,now+9000)
-                self.assertEqual([x.args[2] for x in run.call_args_list],[prior,new,diag])
-                self.assertEqual([x.args[1].name for x in summarize.call_args_list],['confirmation-report.json','confirmation-median-report.json','diagnostic-confirmation-median-report.json'])
+                self.assertEqual([x.args[2] for x in run.call_args_list],[new,diag]);drain.assert_called_once()
+                self.assertEqual([x.args[1].name for x in summarize.call_args_list],['confirmation-median-report.json','diagnostic-confirmation-median-report.json'])
                 coordinator.return_value.control.assert_not_called()
                 planner.assert_not_called()
+
+    def test_parallel_supplemental_collection_refuses_running_admission(self):
+        from tools.gradient_ratio_experiment import drain_supplemental
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'confirmation').mkdir()
+            (root/'confirmation/experiment.json').write_text(json.dumps({'jobs':[]}))
+            with patch('tools.gradient_ratio_experiment.Coordinator') as coordinator,patch('tools.gradient_ratio_experiment.run_phase') as run:
+                coordinator.return_value.mode='running'
+                with self.assertRaises(ValueError):drain_supplemental(root,'/bundle',list(range(32)))
+                run.assert_not_called()
 
     def test_capacity_amendment_preserves_receipt(self):
         with tempfile.TemporaryDirectory() as tmp:
