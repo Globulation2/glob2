@@ -247,15 +247,25 @@ exports.readBrowserFile = async (page,path) => Buffer.from(await page.evaluate(p
 // Existing gameplay tests explicitly decline the first-run recommendation when
 // they ask for the main menu. Tests of onboarding itself drive its controls.
 exports.waitForMainMenu = async (page, {timeout = 60000} = {}) => {
+  const sent = new Set();
   await expect.poll(async () => {
     // A retry can navigate before the new document installs its diagnostics.
     const state=await page.evaluate(()=>globalThis.glob2Diagnostics?.snapshot());
     if (!state) return false;
     if ((state.screen+' '+state.screenClass).includes('MainMenuScreen')) return true;
-    if ((state.screen+' '+state.screenClass).includes('IntroductionOfferScreen') && state.controls['intro/menu']?.enabled)
-      await exports.clickControl(page,'intro/menu');
-    else if ((state.screen+' '+state.screenClass).includes('IntroductionOfferScreen') && state.controls['intro/continue']?.enabled)
-      await exports.clickControl(page,'intro/continue');
+    if ((state.screen+' '+state.screenClass).includes('IntroductionOfferScreen')) {
+      const key = ['intro/menu', 'intro/continue'].find(key =>
+        !sent.has(key) && state.controls[key]?.enabled);
+      const bounds = key && state.controls[key];
+      if (bounds && shown(bounds) && current(page, bounds)) {
+        // This snapshot already supplies the visible hit area. Re-entering a
+        // control/layout wait can outlive an accepted screen transition on a
+        // busy renderer. Send each choice once, then observe the destination.
+        sent.add(key);
+        await page.locator('#canvas').click({position: visibleCenter(page, bounds), delay: 80});
+        await consumed(page);
+      }
+    }
     return false;
   }, {timeout,message:'main menu is not showing after declining the introduction'}).toBe(true);
 };
