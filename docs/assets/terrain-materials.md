@@ -32,7 +32,8 @@ Each material supplies:
 - `variants`, an array of `{ "frame": 272, "weight": 1 }` entries;
 - `profile`, the key of its boundary family, and `preview`, three overview RGB channels;
 - optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
-- optional `animation_frames`, `animation_ticks`, and `animation_stride`;
+- optional `animation_frames`, `animation_ticks`, `animation_stride` and
+  `animation_blend_steps`;
 - optional `edges` (`blend` or `periodic`, see [Periodic edges](terrain-production.md#periodic-edges))
   and `variant_grid`, see [Positional variants](terrain-production.md#positional-variants);
 - optional `variant_blocks` for interchangeable interiors and `variant_block_group`
@@ -112,6 +113,14 @@ last-to-first at the loop boundary. It keeps two prepared endpoints and one
 blended texture per variant, without adding sprite frames. The existing visual
 clock and pause behavior are unchanged. Materials with a one-tick phase duration
 still select a discrete frame.
+
+`animation_blend_steps` (1 to `animation_ticks`, animated materials only) rounds
+the crossfade down to that many weights per phase, each held for an equal share
+of the phase: with `animation_ticks 8` and 4 steps the blend moves every second
+tick. Every step recomposes the terrain pages that show the material, so fewer
+steps trade crossfade smoothness for less page work. 1 cuts between phases
+without blending. Omitting the field blends on every tick, as before. Custom map
+artwork bundles do not accept the field.
 
 ## Validate and inspect
 

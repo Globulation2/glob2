@@ -232,6 +232,10 @@ def _validate(document, root):
             or (phases > 1 and stride == 0)
         ):
             raise ValueError("Invalid animation")
+        if "animation_blend_steps" in m:
+            steps = m["animation_blend_steps"]
+            if phases == 1 or type(steps) is not int or not 1 <= steps <= ticks:
+                raise ValueError("Invalid animation blend steps")
         if (
             not isinstance(m["variants"], list)
             or not m["variants"]

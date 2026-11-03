@@ -110,6 +110,9 @@ struct Material
 	std::uint32_t blockSalt = 0;
 	unsigned profile = 0;
 	int animationFrames = 1, animationTicks = 1, animationStride = 0;
+	// Crossfade weights per phase ("animation_blend_steps"); zero blends on
+	// every tick. Fewer steps recompose animated pages less often.
+	int animationBlendSteps = 0;
 	// Variants share one periodic edge band and join without the runtime's
 	// border blend toward variant 0 ("edges": "periodic").
 	bool periodicEdges = false;

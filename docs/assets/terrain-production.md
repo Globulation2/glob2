@@ -260,10 +260,17 @@ lower right and finer cross chop breaks them into moving glints. Deep water
 reads the same geometry with its darker palette and less chop.
 
 Both depths read the same wave geometry and timing on the same position grid,
-so crests continue across the shallow/deep blend. Animated materials stay on a
-single layout because every layout multiplies by the phase count: four 8×8
-layouts at sixteen phases would be 4096 frames per water, which doubled frame
-time and kept HD fallback visible in measurement. `"variant_block_group"`
+so crests continue across the shallow/deep blend. Every layout multiplies by the
+phase count, so the bank size decides whether an animated material can take
+several layouts. Four 8×8 layouts at four phases (lava, ember field) are 1024
+frames and fit: the renderer keeps every phase of the visible variants resident
+(see [Visible material preparation](#visible-material-preparation)) and
+`animation_blend_steps` limits how often their pages recompose. Four layouts at
+sixteen phases would be 4096 frames per water, which doubled frame time and kept
+HD fallback visible in measurement, so water and deep water stay on one layout.
+Give a multi-layout animated material `animation_blend_steps` (4 for an
+8-tick phase) and compare its frame time and HD fallback with the single-layout
+material in a release build before committing it. `"variant_block_group"`
 remains available for materials that share block selection. Dark water remains static. All three waters and marsh pools are opaque and use
 the ordinary material composition path.
 
@@ -290,7 +297,13 @@ including its composition boundary coverage, and prepares those combinations.
 `Compositor::prepareVisible` derives this set from a scene and visible cell
 bounds; `prepareForRecipes` accepts an explicit recipe set for callers that
 already have it. Animated selections prepare the current and next phase for
-interpolation. Unused variants, phases and HD sources are retired as the
+interpolation. A streamed (multi-layout) animation also keeps the later phases
+of its visible variants resident, within a 64 MiB look-ahead budget shared by
+all animated materials (`Compositor::AnimationLookaheadBytes`). Endpoints decode
+first, and an advance reuses resident frames instead of dropping the old phase
+and decoding the next one again; without that, every phase change re-decoded
+the whole visible set. When the budget is exhausted a material falls back to
+current and next only. Unused variants, phases and HD sources are retired as the
 selection changes; offscreen materials do not advance their prepared revisions
 merely because the visual clock changes.
 
