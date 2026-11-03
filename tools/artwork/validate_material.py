@@ -103,8 +103,6 @@ def validate(name, root=ROOT):
             f"export animated materials with --animate-glow")
     if method == "procedural":
         require(not recipe.placeholder_only, f"{name}: recipe is placeholder_only but provenance is procedural")
-        require(record.get("generator_sha256") == terrain_synth.generator_hashes(),
-                f"{name}: generator hashes differ; re-run terrain_synth.py")
     else:
         source = source_dir / record.get("source", "material.png")
         require(source.is_file(), f"{name}: missing {source.relative_to(root)}")

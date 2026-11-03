@@ -5674,20 +5674,20 @@ Wychodnia
 Ziemia
 [clay]
 Glina
-[gravel]
-Żwir
-[flower_meadow]
-Łąka kwietna
+[shale]
+Łupek
+[heath]
+Wrzosowisko
 [mud]
 Błoto
-[marsh]
-Mokradła
+[mudflat]
+Równina błotna
 [deep_snow]
 Głęboki śnieg
 [scree]
 Piarg
-[dirt_track]
-Droga gruntowa
+[brick_path]
+Ścieżka z cegły
 [boardwalk]
 Drewniany chodnik
 [lava]
@@ -5716,6 +5716,12 @@ Sucha trawa
 Piasek wydmowy
 [pale_sand]
 Jasny piasek
+[sandstone]
+Płyty z piaskowca
+[pumice]
+Pole pumeksu
+[frozen_lake]
+Zamarznięte jezioro
 [terrain group water]
 Woda
 [terrain group sand]

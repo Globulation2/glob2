@@ -5674,20 +5674,20 @@ Skalni izdanek
 Prst
 [clay]
 Glina
-[gravel]
-Prod
-[flower_meadow]
-Cvetlični travnik
+[shale]
+Skrilavec
+[heath]
+Resava
 [mud]
 Blato
-[marsh]
-Močvirje
+[mudflat]
+Blatna ravnica
 [deep_snow]
 Globok sneg
 [scree]
 Melišče
-[dirt_track]
-Kolovoz
+[brick_path]
+Opečna pot
 [boardwalk]
 Lesena pot
 [lava]
@@ -5716,6 +5716,12 @@ Suha trava
 Sipinski pesek
 [pale_sand]
 Svetel pesek
+[sandstone]
+Plošče iz peščenjaka
+[pumice]
+Polje plovca
+[frozen_lake]
+Zamrznjeno jezero
 [terrain group water]
 Voda
 [terrain group sand]

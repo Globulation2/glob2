@@ -5674,20 +5674,20 @@ FFmpeg није доступан, па је снимање искључено. �
 Земља
 [clay]
 Глина
-[gravel]
-Шљунак
-[flower_meadow]
-Цветна ливада
+[shale]
+Шкриљац
+[heath]
+Вресиште
 [mud]
 Блато
-[marsh]
-Мочвара
+[mudflat]
+Муљевита равница
 [deep_snow]
 Дубок снег
 [scree]
 Сипар
-[dirt_track]
-Земљани пут
+[brick_path]
+Стаза од цигле
 [boardwalk]
 Дрвена стаза
 [lava]
@@ -5716,6 +5716,12 @@ FFmpeg није доступан, па је снимање искључено. �
 Песак дина
 [pale_sand]
 Светли песак
+[sandstone]
+Плоче од пешчара
+[pumice]
+Поље пловућца
+[frozen_lake]
+Залеђено језеро
 [terrain group water]
 Вода
 [terrain group sand]

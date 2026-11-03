@@ -5674,20 +5674,20 @@ Afloriment
 Pământ
 [clay]
 Argilă
-[gravel]
-Pietriș
-[flower_meadow]
-Pajiște cu flori
+[shale]
+Șist
+[heath]
+Landă
 [mud]
 Noroi
-[marsh]
-Mlaștină
+[mudflat]
+Câmpie de mâl
 [deep_snow]
 Zăpadă adâncă
 [scree]
 Grohotiș
-[dirt_track]
-Drum de pământ
+[brick_path]
+Alee de cărămidă
 [boardwalk]
 Podeț de lemn
 [lava]
@@ -5716,6 +5716,12 @@ Iarbă uscată
 Nisip de dună
 [pale_sand]
 Nisip deschis
+[sandstone]
+Dale de gresie
+[pumice]
+Câmp de piatră ponce
+[frozen_lake]
+Lac înghețat
 [terrain group water]
 Apă
 [terrain group sand]

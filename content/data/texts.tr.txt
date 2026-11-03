@@ -5674,20 +5674,20 @@ Kaya çıkıntısı
 Toprak
 [clay]
 Kil
-[gravel]
-Çakıl
-[flower_meadow]
-Çiçekli çayır
+[shale]
+Şeyl
+[heath]
+Fundalık
 [mud]
 Çamur
-[marsh]
-Bataklık
+[mudflat]
+Çamur düzlüğü
 [deep_snow]
 Derin kar
 [scree]
 Taş döküntüsü
-[dirt_track]
-Toprak yol
+[brick_path]
+Tuğla yol
 [boardwalk]
 Ahşap yol
 [lava]
@@ -5716,6 +5716,12 @@ Kuru çimen
 Kumul kumu
 [pale_sand]
 Açık renkli kum
+[sandstone]
+Kumtaşı karolar
+[pumice]
+Sünger taşı alanı
+[frozen_lake]
+Donmuş göl
 [terrain group water]
 Su
 [terrain group sand]

@@ -227,7 +227,7 @@ inline void braidedDeltaChecks()
 		for (int i = 0; i < torus.size(); ++i)
 		{
 			deep = deep || game.map.vertexTerrainAt(size_t(i)) == DEEP_WATER;
-			marsh = marsh || game.map.vertexTerrainAt(size_t(i)) == MARSH;
+			marsh = marsh || game.map.vertexTerrainAt(size_t(i)) == MUDFLAT;
 		}
 		assert(deep && marsh);
 		// Damage: a causeway of sand straight across the map wherever there is water. The terrain no
@@ -2201,7 +2201,7 @@ inline void bastionKeysContracts()
 			if (corner == BOARDWALK && pier < 0)
 				pier = i;
 		}
-		for (const int type : {BOARDWALK, DIRT_TRACK, GRAVEL, LOAM, OUTCROP, RIDGE_ROCK})
+		for (const int type : {BOARDWALK, BRICK_PATH, SHALE, LOAM, OUTCROP, RIDGE_ROCK})
 			assert(used.count(type));
 		assert(!used.count(DEEP_WATER) && !used.count(DARK_WATER));
 		// Any change to the dressing is a changed design, so the final-world check refuses it.

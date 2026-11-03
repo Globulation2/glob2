@@ -5674,20 +5674,20 @@ Afloramento
 Terra
 [clay]
 Argila
-[gravel]
-Cascalho
-[flower_meadow]
-Prado de flores
+[shale]
+Xisto
+[heath]
+Charneca
 [mud]
 Lama
-[marsh]
-Pântano
+[mudflat]
+Planície de lama
 [deep_snow]
 Neve profunda
 [scree]
 Cascalheira
-[dirt_track]
-Caminho de terra
+[brick_path]
+Caminho de tijolos
 [boardwalk]
 Passarela de madeira
 [lava]
@@ -5716,6 +5716,12 @@ Grama seca
 Areia de duna
 [pale_sand]
 Areia clara
+[sandstone]
+Lajotas de arenito
+[pumice]
+Campo de pedra-pomes
+[frozen_lake]
+Lago congelado
 [terrain group water]
 Água
 [terrain group sand]

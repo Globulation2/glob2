@@ -5674,20 +5674,20 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Ґрунт
 [clay]
 Глина
-[gravel]
-Гравій
-[flower_meadow]
-Квіткова лука
+[shale]
+Сланець
+[heath]
+Пустище
 [mud]
 Багно
-[marsh]
-Болото
+[mudflat]
+Мулова рівнина
 [deep_snow]
 Глибокий сніг
 [scree]
 Осип
-[dirt_track]
-Ґрунтова дорога
+[brick_path]
+Цегляна доріжка
 [boardwalk]
 Дерев'яний настил
 [lava]
@@ -5716,6 +5716,12 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Пісок дюн
 [pale_sand]
 Світлий пісок
+[sandstone]
+Плити з пісковику
+[pumice]
+Поле пемзи
+[frozen_lake]
+Замерзле озеро
 [terrain group water]
 Вода
 [terrain group sand]

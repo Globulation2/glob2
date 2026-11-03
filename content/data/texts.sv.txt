@@ -5674,20 +5674,20 @@ Klippa
 Jord
 [clay]
 Lera
-[gravel]
-Grus
-[flower_meadow]
-Blomsteräng
+[shale]
+Skiffer
+[heath]
+Ljunghed
 [mud]
 Gyttja
-[marsh]
-Kärr
+[mudflat]
+Lerslätt
 [deep_snow]
 Djup snö
 [scree]
 Rasbrant
-[dirt_track]
-Jordstig
+[brick_path]
+Tegelgång
 [boardwalk]
 Spång
 [lava]
@@ -5716,6 +5716,12 @@ Torrt gräs
 Dynsand
 [pale_sand]
 Ljus sand
+[sandstone]
+Sandstensplattor
+[pumice]
+Pimpstensfält
+[frozen_lake]
+Frusen sjö
 [terrain group water]
 Vatten
 [terrain group sand]

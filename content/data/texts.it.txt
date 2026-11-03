@@ -5674,20 +5674,20 @@ Affioramento
 Terra
 [clay]
 Argilla
-[gravel]
-Ghiaia
-[flower_meadow]
-Prato fiorito
+[shale]
+Scisto
+[heath]
+Brughiera
 [mud]
 Fango
-[marsh]
-Palude
+[mudflat]
+Piana fangosa
 [deep_snow]
 Neve profonda
 [scree]
 Ghiaione
-[dirt_track]
-Strada sterrata
+[brick_path]
+Sentiero di mattoni
 [boardwalk]
 Passerella in legno
 [lava]
@@ -5716,6 +5716,12 @@ Erba secca
 Sabbia di duna
 [pale_sand]
 Sabbia chiara
+[sandstone]
+Lastre di arenaria
+[pumice]
+Campo di pomice
+[frozen_lake]
+Lago ghiacciato
 [terrain group water]
 Acqua
 [terrain group sand]

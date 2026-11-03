@@ -715,7 +715,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			{
 				const int j = t.at(x + dx, y + dy);
 				if (inCity[j] && !pavedMask[j] && !L.river[j])
-					L.terrain[i] = GRAVEL;
+					L.terrain[i] = SHALE;
 			}
 	}
 
@@ -839,7 +839,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			// middle: cover, never a wall round anything.
 			for (int i : tilesOf[c])
 				if (deep(i, 1) && drift[i] > 65536 * 62 / 100)
-					setVertex(L, look, i, GRAVEL, FLOWER_MEADOW);
+					setVertex(L, look, i, SHALE, HEATH);
 			const double heading = context.bounded("honeycomb-isle-hedges", 3600) * kPi / 3600;
 			const double shift = (int(context.bounded("honeycomb-isle-hedges", 7)) - 3) * inner / 8.0;
 			const double ux = std::cos(heading), uy = std::sin(heading);
@@ -868,7 +868,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			// for its stone.
 			for (int i : tilesOf[c])
 				if (inside(i))
-					setVertex(L, look, i, GRAVEL, CLAY);
+					setVertex(L, look, i, SHALE, CLAY);
 			const int knolls = 2 + int(context.bounded("honeycomb-isle-hills", 2));
 			for (int k = 0; k < knolls; ++k)
 			{
@@ -1053,7 +1053,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 						const int i = t.at(int(std::lround(px + ny * w)), int(std::lround(py + nx * w)));
 						if (!L.street[i] && L.homeOf[i] < 0 && inCity[i] && !L.river[i])
 						{
-							setVertex(L, look, i, TRAIL, DIRT_TRACK);
+							setVertex(L, look, i, TRAIL, BRICK_PATH);
 							landing[i] = 1;
 						}
 					}

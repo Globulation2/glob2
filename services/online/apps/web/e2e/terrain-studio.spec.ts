@@ -41,7 +41,7 @@ test('terrain creation workspace fits desktop and phone and submits one revision
       {
         key: 's:marsh',
         name: 'Fungal marsh',
-        base: 'marsh',
+        base: 'mudflat',
         properties: { groundSpeedQ8: 128, growthQ8: 320 },
       },
     ],

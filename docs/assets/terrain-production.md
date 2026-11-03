@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 33 built-in materials, including grass, sand, their lush, dry, dune and pale
+All 36 built-in materials, including grass, sand, their lush, dry, dune and pale
 looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Static materials have four
 interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
@@ -24,11 +24,10 @@ input:
 uv venv artifacts/asset-tools/venv
 uv pip install --python artifacts/asset-tools/venv/bin/python -r tools/artwork/requirements.txt
 ENC=artifacts/asset-tools/venv/bin/python
-"$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames
+"$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames and their tileset.json blocks
 "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
-"$ENC" tools/artwork/terrain_synth.py --check               # reproduce and compare
 "$ENC" tools/artwork/terrain_synth.py --emit-catalog        # material blocks and colour initialisers
-"$ENC" tools/artwork/terrain_synth.py --write-catalog       # merge them into tileset.json
+"$ENC" tools/artwork/terrain_synth.py --write-catalog       # refresh tileset.json from committed frames (no render)
 "$ENC" tools/artwork/terrain_glints.py --write-catalog      # then restore the fertile glint overlays
 "$ENC" tools/artwork/validate_material.py --all
 "$ENC" -m unittest discover -s tools/artwork -p 'test_*material*.py'
@@ -42,8 +41,7 @@ periodic value noise (a random lattice tiled 3×3 and resized bicubically, so th
 field wraps by construction), fractal sums, domain warps, Worley cells (F1 and
 F2−F1, Euclidean and Chebyshev), scattered stamps and palette ramps. Named
 geometry and animation random streams use deterministic `fnv1a32` seeds derived
-from the material, layout and phase. The pinned production environment reproduces
-the output byte for byte. Each layout renders a continuous field whose boundary geometry is
+from the material, layout and phase. Each layout renders a continuous field whose boundary geometry is
 shared with the other layouts; its interior uses a separate seed. Existing tiles
 are never read into an output; the original grass, sand, trail, ice and water
 tiles are measured (luma mean and spread, wrapped neighbour grain, saturation)
@@ -52,9 +50,9 @@ ground materials aim at a luma spread of 6–14 and a grain of 3–10 at 32 px.
 
 Ground recipes render periodic blocks and slice them into 128×128 frames,
 area-averaged to 32×32 for classic rendering. Every block is 8×8 tiles
-(1024×1024 HD pixels), with four interchangeable layouts. Automatic synthesis
-uses at most two workers to bound the temporary field buffers; `--jobs` explicitly
-overrides that limit. Noise frequency,
+(1024×1024 HD pixels), with four interchangeable layouts. Synthesis uses one
+worker per core, as many as physical memory allows (about 1.5 GB each for the
+temporary field buffers); `--jobs` overrides that. Noise frequency,
 stone counts and stamp counts scale with block size so feature sizes and density
 stay at their native scale. Stamps can cross any cell edge and wrap around the
 whole block. Shading and domain warps sample the whole block, including its
@@ -65,7 +63,7 @@ All built-in recipes declare `periodic=True` and a `grid`; static recipes use
 `grid=8, blocks=4`, lava and ember field `grid=8`, and the waters `grid=4`:
 cell position selects the corresponding frame within one seeded layout, and
 runtime and compiled packs skip border preparation. This includes object-based
-grounds such as gravel, flower meadow and marsh as well as the legacy bindings.
+grounds such as heath as well as the legacy bindings.
 The legacy materials retain their established palettes and material identities;
 water keeps its violet-blue palette, and ice keeps its frozen-ground profile.
 
@@ -83,13 +81,46 @@ intentional boardwalk plank gaps without mistaking them for tile seams. A
 synthetic block contract also verifies that slicing leaves every HD pixel
 unchanged and that native frames equal downsampling the unsliced block.
 
-Group readability is part of the recipes: obstacles are lit from the top left and cast onto grass, hazards warm
-and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
-barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
-and light, void near black with a cast onto every neighbour. The grass and sand
+Group readability is part of the recipes. Every type in a gameplay group has
+the same rules, so each group carries one learnable mark, drawn by one shared
+helper in `terrain_synth.py`, while colour and material stay free per biome:
+
+| Group | Mark | Helper |
+| --- | --- | --- |
+| Grass | baseline, no mark | |
+| Fertile (loam, moss, spring meadow) | warm, saturated ground | |
+| Water, deep water, lava | reserved colour | |
+| Snow and ice (ice, deep snow, frozen lake) | reserved cold white and pale teal | `warped_edges`, `bubbles` (frozen lake) |
+| Sand | warm fine grain | `sand_look` |
+| Barren (dirt, clay, shale, heath) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
+| Paths (road, brick path, boardwalk, sandstone tiles) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone` |
+| Rough (mud, mudflat, scree, pumice field) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
+| Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
+| Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
+| Obstacles | tall raised decor | `terrain_decor.py` |
+
+Within the groups: dirt keeps the original speckled earth and stones under the
+shared cracks; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
+heath is clumps of dormant and dead heather cushions,
+each built of lit sprig tufts, over pale cracked sandy peat. Paths are all laid by the
+globs, never natural ground: road is stone setts in running-bond courses; brick
+path is long clay pavers in an axis-aligned herringbone that
+reads the same whichever way the path runs; boardwalk is long weathered planks
+with grain, knots and nails; sandstone tiles are square flags, two by two per
+cell, ochre and grey in a checker. Mud is churned lumps and water-filled pits;
+mudflat is desiccated mud in big curled plates split by deep cracks,
+with salt bloom and a few damp sunken plates; scree is big jagged slabs heaped
+over one another, each tipped to its own brightness; pumice field is dark porous
+volcanic rock riddled with vesicles, beside lava and ember field. Frozen lake
+plays exactly like ice: frosted teal lake ice with a few long white pressure
+cracks, trapped bubbles and frost patches, static and paler than any water. The helpers keep the block contract: geometry comes from
+the shared stream at the block edge, interiors vary, and any normalisation or
+lighting uses the common reference. Obstacles are lit from the top left and cast
+onto grass, and void casts onto every neighbour. The grass and sand
 looks keep the grain of the classic tile they stand in for and change only its
-colour: lush and dry grass are soft like grass, dune and pale sand speckled at the
-native pixel like sand. Like grass and sand they are four-layout 8×8 block
+colour: lush and dry grass are soft like grass, dune and pale sand speckled like
+sand. All three sands use lit grains one or two native pixels across, half the
+size of the original sand tile's grains. Like grass and sand they are four-layout 8×8 block
 materials, and they take the same pair treatments (`GRASS_LOOKS` and `SAND_LOOKS`
 in the synthesiser).
 
@@ -168,8 +199,7 @@ sloping top facets meeting at an off-centre peak, so each face takes one light
 value. The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
 316–427; thicket corner tiles at 428–683 and interiors at 684–795), the HD frames, provenance and, with
-`--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`
-writes a review sheet. Select `--decor hedge --decor thicket --sheet <path>`
+`--write-catalog`, the `decor` blocks. `--sheet` writes a review sheet. Select `--decor hedge --decor thicket --sheet <path>`
 for before/after fields with narrow strips, corners, isolated vegetation and a
 hole. Decor is presentation only: the minimap, the overview and
 the simulation ignore it.
@@ -220,20 +250,11 @@ flower heads, tussocks). All built-in materials instead set
 Within a block, objects can cross cell edges freely. Across interchangeable
 block boundaries, recipes preserve shared periodic object geometry and vary the
 interior. Object fields, stamps and domes wrap across the complete canvas, and
-shared scalar fields supply continuous ground, shadows and lighting. Gravel,
-flower meadow and marsh use this approach too, rather than repeating a shared
-object band around every individual tile.
-Their recipes follow reference photographs of pebble beds, wildflower meadows and
-tussock bogs:
-
-- Gravel is overlapping rounded pebbles of mixed grey and warm tones with contact
-  shadows over a dark bed of fines.
-- Flower meadow has patches of one colour plus singles, each head a ring of
-  saturated petals around a contrasting centre with a soft shadow.
-- Marsh has grass tussocks with radiating blades on dark wet moss, with open
-  pools and reed tufts.
-
-The photographs are only looked at; nothing from them is read into an output.
+shared scalar fields supply continuous ground, shadows and lighting. Heath uses
+this approach too, rather than repeating a shared object band around every
+individual tile: its heather cushions are whole cells, and Voronoi-based marks
+(cracks, shale plates, lumps, mudflat plates, scree fragments) keep their
+boundary cells in every layout.
 
 Lava and ember field are animated: one 8×8 layout with four phases, frame
 `variant + 64 * phase` (frames 0–255), catalogued with `animation_frames 4`,
@@ -310,7 +331,7 @@ HD fallback visible in measurement, so water and deep water stay on one layout.
 Give a multi-layout animated material `animation_blend_steps` (4 for an
 8-tick phase) and compare its frame time and HD fallback with the single-layout
 material in a release build before committing it. `"variant_block_group"`
-remains available for materials that share block selection. Dark water remains static. All three waters and marsh pools are opaque and use
+remains available for materials that share block selection. Dark water remains static. All three waters are opaque and use
 the ordinary material composition path.
 
 Each sixteen-phase water has 256 native and 256 HD frames, indexed as
@@ -357,21 +378,17 @@ payload. This is a resource-lifetime contract, not a performance guarantee;
 viewport size, sampling resolution and the number of visible material variants
 still determine preparation work and live pixel storage.
 
-`--check` re-synthesises every material and compares the pixel hashes with the
-committed PNGs and with `provenance.json`; it also requires the recorded
-generator hashes and Pillow 12.2.0, so any edit to `terrain_synth.py` or
-`material_tiles.py` is followed by a default run that refreshes the provenance
-(pixels that did not change produce byte-identical PNGs). Pixel-exact
-reproduction is pinned to the encoder interpreter on Linux x86-64: besides
-Pillow's kernels the renders depend on the C library's `sin`/`atan2`/`hypot` and
-on `round()` boundaries, so the provenance records the platform and a mismatch
-on another platform is reported with that note. Recipes swapped to
-image-generated art are marked `placeholder_only=True` and skipped by `--check`.
+Committed art is not re-rendered to check it: regenerate only the materials
+you changed (`--material`), on any platform. Renders depend on Pillow's kernels
+and the C library's `sin`/`atan2`/`hypot`, so another platform may differ in a
+few low bits; `provenance.json` records the platform, generator hashes and
+Pillow version for information only. Recipes swapped to image-generated art are
+marked `placeholder_only=True`.
 Writing frames also writes each variant's 128×128 render, the exact source the
 classic tile is downsampled from, as its HD frame (`content/data/highres/v1/terrain-<name>N.png`
 and `content-src/gfx/production/procedural-materials/`), registers it in the pack
 manifest and `frames.txt` through `tools/artwork/highres_pack.py`, and records its
-hash in the provenance; `--check` compares both resolutions. `--hd` alone writes
+hash in the provenance. `--hd` alone writes
 the renders under `artifacts/terrain/hd/` for review and changes nothing else.
 Preview and minimap colours derive from the rendered mean unless a recipe
 overrides them for legibility (void, hazards, deep water).
@@ -406,53 +423,50 @@ existing artwork.
 
 ### Boundary profiles for the catalogue
 
-| Profile | roughness / amplitude / feather / speckle / bridge (Q8) | Curves | Materials |
-| --- | --- | --- | --- |
-| `rock` | 384 / 896 / 192 / 448 / 192 | 48 × 9, angular | boulders, ridge_rock, outcrop, scree, gravel, chasm |
-| `soft` | 160 / 512 / 448 / 128 / 640 | 40 × 17, gentle | mud, marsh, loam, moss, deep_snow, deep_water, dark_water, clay, dirt |
-| `crisp` | 96 / 256 / 128 / 0 / 256 | 24 × 9 | void_hole, boardwalk |
-| `brush` | 320 / 768 / 320 / 384 / 512 | 48 × 17 | hedge, thicket, flower_meadow, spring_meadow |
-| `sand` (existing) | 256 / 1024 / 320 / 512 / 512 | 61 × 17, traced | water, sand, grass, dirt_track |
-| `fractured` (existing) | 320 / 768 / 320 / 128 / 256 | 32 × 9 | lava, ember_field |
-| `frozen` | 320 / 768 / 320 / 128 / 256 | 32 × 9 | ice |
-| `cobblestone` (existing) | 256 / 640 / 224 / 320 / 384 | 24 × 9 | road |
-| `shore` | 256 / 832 / 320 / 384 / 704 | 48 × 33, lobed with ripple | pair treatments only |
-| `liquid` | 256 / 1024 / 448 / 128 / 640 | 40 × 33, broad and smooth | pair treatments only |
-| `organic` | 288 / 896 / 320 / 320 / 512 | 48 × 17, lobed and noisy | pair treatments only |
+Each material names a border class and its edge profile;
+[Boundary rules](terrain-rendering.md#boundary-rules) then choose every contact
+without pair treatments. Classes, strongest first:
 
-`tools/terrain_profile_curves.py --write` generates the curves with seeded random
-walks and appends a missing profile with these parameters; never author curves by
-hand. The script still emits the earlier, shorter curve sets and lacks the
-`shore`, `liquid` and `organic` profiles, so `--write` would shrink the shipped
-sets; bring it up to date before regenerating. `sand` uses every distinct traced
-edge of the original grass/sand tiles, so the classic coast keeps its look with
-less repetition. `shore`, `liquid` and
-`organic` are sine series with a weak fundamental plus a detrended ripple; the
-weak fundamental keeps edge crossings near the vertex lattice so lone cells stay
-round. Their feather and speckle are unused, since softness and pebbles come from
-the material's own profile.
+| Class | Materials | Edge profile |
+| --- | --- | --- |
+| `cover` | hedge, thicket | `canopy` |
+| `cut` | void_hole, chasm | `crisp` |
+| `built` | road, brick_path, sandstone, boardwalk | `paved`, `crisp` |
+| `flow` | lava, ember_field | `molten` |
+| `solid` | everything else | `rock`, `soil`, `frozen`, `brush`, `turf`, `sand` |
+| `pool` (shoreline) | water, deep_water, dark_water | `still` |
 
-Pair treatments cover material pairs that meet inside one cell now that terrain
-is stored per vertex. Entries are needed only where the choice differs from the
-default rule (the rougher profile wins):
+| Profile | Shape | Precedence / coast | roughness / amplitude / feather / speckle / bridge (Q8) | Materials |
+| --- | --- | --- | --- | --- |
+| `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket |
+| `crisp` | patch | 20 | 96 / 256 / 128 / 0 / 256 | void_hole, chasm, boardwalk |
+| `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone |
+| `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | none since dirt track became brick path; kept for future tracks |
+| `molten` | smooth, wiggle 1536 / 64 px | 0 | – / – / 320 / – / 512 | lava, ember_field |
+| `still` | smooth, wiggle 1536 / 128 px | 0 | – / – / 320 / – / 640 | water, deep_water, dark_water |
+| `rock` | contextual | 50 | 384 / 896 / 192 / 448 / 192 | boulders, ridge_rock, outcrop, scree, shale, pumice |
+| `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, mud, mudflat, deep_snow, loam, moss |
+| `frozen` | contextual | 30 | 320 / 768 / 320 / 128 / 256 | ice, frozen_lake |
+| `brush` | contextual | 20 / `shore` | 320 / 768 / 320 / 384 / 512 | heath, spring_meadow |
+| `turf` | contextual | 10 / `shore` | 256 / 1024 / 320 / 512 / 512 | grass, lush_grass, dry_grass |
+| `sand` | contextual | 10 / `beach` | 256 / 1024 / 320 / 512 / 512 | sand, dune_sand, pale_sand |
+| `shore` | contextual | coast only | 256 / 832 / 320 / 384 / 704 | grassy and earthen coasts |
+| `beach` | contextual | coast only | 104 / 1024 / 448 / 0 / 640 | sandy coasts |
 
-- `rock`: boulders, ridge_rock and outcrop against grass.
-- `brush`: hedge and thicket against grass.
-- `shore`: grass, moss, loam, spring_meadow and flower_meadow against water,
-  deep_water and dark_water.
-- `liquid`: water/deep_water, deep_water/dark_water, water/dark_water, ice/water,
-  and marsh and mud against the three waters.
-- `organic`: moss, loam, mud, marsh, dirt, clay and deep_snow against grass and
-  sand; moss/loam, moss/marsh, loam/dirt, loam/mud, mud/marsh, dirt/clay,
-  dirt/mud, clay/mud, deep_snow/ice, and spring_meadow against moss, loam,
-  flower_meadow and dirt, and flower_meadow/dirt.
-- `crisp`: boardwalk against grass, sand, the three waters, marsh, mud, moss,
-  dirt, loam, clay, gravel, dirt_track and road; void_hole and chasm against
-  every other material.
-- `cobblestone`: road against grass, sand, dirt_track, gravel, scree,
-  flower_meadow and spring_meadow.
-- `fractured`: lava and ember_field against grass, sand, dirt, gravel and scree;
-  lava against hedge and flower_meadow.
+`tools/artwork/terrain_synth.py` records each material's `profile` and
+`border_class` in its recipe and writes both into the catalog. The `rock`,
+`crisp`, `brush` and `frozen` contours are seeded random walks from
+`tools/terrain_profile_curves.py`; `sand` and `turf` trace every distinct edge
+of the original grass/sand tiles, so the classic coast keeps its look with less
+repetition. `shore`, `soil` and `beach` are sine series with a weak fundamental
+plus a detrended ripple; the weak fundamental keeps edge crossings near the
+vertex lattice so lone cells stay round. The shipped tables have been tuned
+beyond what the script emits, so review its diff before `--write`.
+
+To place a new terrain, pick the class that says what the surface is and the
+edge profile that says how it shapes the contacts it wins; add a profile only
+for a genuinely new edge character. A pair treatment is an escape hatch for an
+exception the classes cannot express, not the way to tune a material.
 
 ### Seam ranks
 
@@ -465,12 +479,13 @@ default rule (the rougher profile wins):
 | 4 | boulders, hedge, thicket | 88 / 832, a sense of height on the grass side |
 | 4 | ridge_rock, outcrop | 72 / 768 |
 | 4 | lava, ember_field | no cast; scorch fringe `[214,110,40]` 128/640 and `[160,80,40]` 96/512 |
-| 4 | ice (existing) | 64 / 640 with frost fringe |
-| 3 | road (existing), dirt_track, boardwalk | 48 / 512 |
+| 4 | ice (existing), frozen_lake | 64 / 640 with frost fringe |
+| 3 | road (existing), brick_path, boardwalk, sandstone | 48 / 512 |
 | 3 | deep_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
-| 2 | grass (existing), loam, moss, spring_meadow, flower_meadow | 56 / 512 |
-| 2 | dirt, clay, gravel | 40 / 448 |
-| 1 | sand (existing), mud, marsh, scree | no cast |
+| 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |
+| 2 | heath | 48 / 480 |
+| 2 | dirt, clay, shale | 40 / 448 |
+| 1 | sand (existing), mud, mudflat, scree, pumice | no cast |
 
 Casts stay within two to three pixels and near or under a third strength, as
 [Seams](terrain-rendering.md#seams) requires. Equal ranks cast nothing, so barren ground beside grass

@@ -5650,20 +5650,20 @@ Mwamba unaojitokeza
 Udongo
 [clay]
 Udongo wa mfinyanzi
-[gravel]
-Changarawe
-[flower_meadow]
-Mbuga ya maua
+[shale]
+Shale
+[heath]
+Nyika ya vichaka
 [mud]
 Tope
-[marsh]
-Kinamasi
+[mudflat]
+Uwanda wa matope
 [deep_snow]
 Theluji nene
 [scree]
 Kokoto za mteremkoni
-[dirt_track]
-Njia ya udongo
+[brick_path]
+Njia ya matofali
 [boardwalk]
 Njia ya mbao
 [lava]
@@ -5692,6 +5692,12 @@ Nyasi kavu
 Mchanga wa matuta
 [pale_sand]
 Mchanga wenye rangi hafifu
+[sandstone]
+Vigae vya mawe ya mchanga
+[pumice]
+Uwanda wa mawe ya pumisi
+[frozen_lake]
+Ziwa lililoganda
 [terrain group water]
 Maji
 [terrain group sand]

@@ -6,6 +6,7 @@
 #include "GlobalContainer.h"
 #include "SoftwareTerrainCache.h"
 #include "OverviewTerrainCache.h"
+#include "UnitEffectArt.h"
 
 MapRenderState::MapRenderState() = default;
 MapRenderState::~MapRenderState() = default;
@@ -34,6 +35,12 @@ ColonySkinPreview &MapRenderState::skinPreview()
 {
 	if (!skinPreview_) skinPreview_ = std::make_unique<ColonySkinPreview>();
 	return *skinPreview_;
+}
+
+UnitEffectArt &MapRenderState::effectArt()
+{
+	if (!effectArt_) effectArt_ = std::make_unique<UnitEffectArt>();
+	return *effectArt_;
 }
 
 void MapRenderState::swapSkinPreview(MapRenderState &other)

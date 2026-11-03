@@ -18,8 +18,19 @@ constexpr int UNIT_ANIMATION_MAX_ACTION_BASE =
 constexpr int UNIT_ANIMATION_MOVEMENT_FRAME_COUNT =
 	UNIT_ANIMATION_ACTION_COUNT * UNIT_ANIMATION_ACTION_FRAME_COUNT;
 constexpr int UNIT_ANIMATION_TURN_FRAMES = 32;
-constexpr int UNIT_ANIMATION_ATLAS_FRAME_COUNT =
+constexpr int UNIT_ANIMATION_PRONE_HARVEST_BASE =
 	UNIT_ANIMATION_MOVEMENT_FRAME_COUNT + UNIT_ANIMATION_ACTION_COUNT * UNIT_ANIMATION_TURN_FRAMES;
+constexpr int UNIT_ANIMATION_PRONE_HARVEST_PHASES = 64;
+constexpr int UNIT_ANIMATION_ATLAS_FRAME_COUNT = UNIT_ANIMATION_PRONE_HARVEST_BASE + 8 * 64;
+// Direction 8 is a stationary-turn sentinel, not a ninth harvest heading.
+constexpr int unitProneHarvestFrame(int direction, int phase)
+{
+	return (direction == 8 ? 0 : direction) * 64 + phase;
+}
+constexpr int unitProneHarvestMeshFrame(int direction, int phase)
+{
+	return (direction == 8 ? 0 : direction) * 32 + phase / 2;
+}
 constexpr bool validUnitAnimationBase(std::uint32_t actionBase)
 {
 	return actionBase <= UNIT_ANIMATION_MAX_ACTION_BASE;

@@ -5674,20 +5674,20 @@ Klippefremspring
 Jord
 [clay]
 Ler
-[gravel]
-Grus
-[flower_meadow]
-Blomstereng
+[shale]
+Skifer
+[heath]
+Hede
 [mud]
 Mudder
-[marsh]
-Sump
+[mudflat]
+Mudderflade
 [deep_snow]
 Dyb sne
 [scree]
 Stenur
-[dirt_track]
-Jordsti
+[brick_path]
+Murstenssti
 [boardwalk]
 Plankesti
 [lava]
@@ -5716,6 +5716,12 @@ Tørt græs
 Klitsand
 [pale_sand]
 Lyst sand
+[sandstone]
+Sandstensfliser
+[pumice]
+Pimpstensfelt
+[frozen_lake]
+Frossen sø
 [terrain group water]
 Vand
 [terrain group sand]

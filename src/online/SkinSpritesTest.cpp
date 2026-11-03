@@ -70,6 +70,20 @@ struct Fixture
 		}
 		skin.spriteManifestHash = Online::Sha256::hex(doc.dump());
 	}
+	void addProneHarvest()
+	{
+		doc["proneHarvestMapping"] = {{"directions", 8}, {"phases", 64}, {"logicalSize", 38}};
+		doc["proneHarvestPages"] = nlohmann::json::array();
+		for (unsigned i = 0; i < 8; ++i)
+		{
+			auto page = doc["pages"][0];
+			page["clip"] = "worker-prone-harvest";
+			page["first"] = i * 64;
+			doc["proneHarvestPages"].push_back(page);
+		}
+		skin.spriteManifestHash = Online::Sha256::hex(doc.dump());
+	}
+
 	void addTurns()
 	{
 		doc["turnMapping"] = {{"first", 256}, {"frames", 32}, {"phaseShift", 3}};
@@ -87,6 +101,41 @@ struct Fixture
 } // namespace
 TEST_SUITE("SkinSprites")
 {
+	TEST_CASE("prone harvest pages are optional, complete and bounded")
+	{
+		for (bool turns : {false, true})
+		{
+			Fixture f;
+			if (turns)
+				f.addTurns();
+			Online::SkinSpriteManifest manifest;
+			REQUIRE(manifest.parse(f.doc.dump(), f.skin));
+			f.addProneHarvest();
+			REQUIRE(manifest.parse(f.doc.dump(), f.skin));
+			CHECK(manifest.pages.back().clip == 8);
+			CHECK(manifest.pages.back().first == 448);
+			for (int fault = 0; fault < 6; ++fault)
+			{
+				auto doc = f.doc;
+				if (fault == 0)
+					doc.erase("proneHarvestMapping");
+				if (fault == 1)
+					doc["proneHarvestPages"].erase(7);
+				if (fault == 2)
+					doc["proneHarvestPages"][1]["first"] = 0;
+				if (fault == 3)
+					doc["proneHarvestMapping"]["phases"] = 32;
+				if (fault == 4)
+					doc["proneHarvestPages"][0]["clip"] = "swarm";
+				if (fault == 5)
+					doc["proneHarvestPages"][0]["frames"] = 128;
+				f.skin.spriteManifestHash = Online::Sha256::hex(doc.dump());
+				CHECK_FALSE(manifest.parse(doc.dump(), f.skin));
+				CHECK(manifest.pages.empty());
+			}
+		}
+	}
+
 	TEST_CASE("padded turn shadows keep their native size and shared mesh center")
 	{
 		glob2test::ToolkitScope toolkit;
@@ -279,7 +328,7 @@ TEST_SUITE("SkinSprites")
 		CHECK_FALSE(sprites.draw(*gfx, 2, 0, 0, 10, 10, 38, 38));
 		CHECK(sprites.decodedBytes() == 0);
 	}
-	TEST_CASE("software turns share hash cached images with movement in either request order")
+	TEST_CASE("software turns and prone harvest share cached images with movement")
 	{
 		glob2test::ToolkitScope toolkit;
 		auto *gfx = GAGCore::Toolkit::initGraphic(128, 128, 0, "skin turns");
@@ -287,6 +336,7 @@ TEST_SUITE("SkinSprites")
 		{
 			Fixture f;
 			f.addTurns();
+			f.addProneHarvest();
 			Online::MemoryStorage storage;
 			OnlineFakes::Http http;
 			Online::SkinSprites sprites(storage, "https://example.test", [&](auto request)
@@ -306,6 +356,10 @@ TEST_SUITE("SkinSprites")
 			sprites.poll();
 			for (unsigned frame : {256u, 287u, 0u, 63u, 255u})
 				REQUIRE(sprites.draw(*gfx, 2, 0, frame, 10, 10, 38, 38));
+			for (unsigned direction = 0; direction < 8; ++direction)
+				for (unsigned phase : {0u, 63u})
+					REQUIRE(sprites.draw(*gfx, 2, 8, direction * 64 + phase, 10, 10, 38, 38));
+			CHECK_FALSE(sprites.draw(*gfx, 2, 8, 512, 10, 10, 38, 38));
 			CHECK_FALSE(sprites.draw(*gfx, 2, 0, 288, 10, 10, 38, 38));
 			CHECK(http.count("/pages/" + Online::Sha256::hex(f.unit)) == 1);
 			sprites.remove(2);

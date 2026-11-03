@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <nlohmann/json_fwd.hpp>
+#include "TerrainSmoothBorders.h"
 
 namespace TerrainVisual
 {
@@ -15,9 +16,23 @@ struct Variant
 	int frame;
 	unsigned weight;
 };
+// Contour geometry of a boundary profile. Patch blends the nine prepared
+// patches with authored contour curves; contextual follows marching-square
+// curves through two-material cells; smooth follows a spline field through the
+// vertex neighbourhood (see TerrainSmoothBorders.h).
+enum class BoundaryShape { Patch, Contextual, Smooth };
 struct Profile
 {
 	std::string key;
+	BoundaryShape shape = BoundaryShape::Patch;
+	// Version 4: rank among the edges of one border class; the higher one
+	// shapes a contact between two materials of that class.
+	int precedence = 0;
+	// Version 4: profile this edge draws against a shoreline class, or -1.
+	int coast = -1;
+	int wiggle = 0;        // Smooth: Q8 pixels of meander along a straight contour.
+	int wigglePeriod = 64; // Smooth: logical pixels between the broadest meanders.
+	int squareness = 0;    // Smooth: Q8 from round (0) to square (256) corners.
 	int roughness = 192;  // Q8 multiplier; 256 represents 1.
 	int feather = 256;    // Q8 native-pixel edge softness.
 	int amplitude = 512;  // Q8 pixel limit on local contour displacement.
@@ -25,7 +40,6 @@ struct Profile
 	int bridge = 0;       // Q8 pixel half-width of the neck joining diagonal lobes.
 	int shearScale = 128; // Version 3 reads shear curves as pixel displacement (256).
 	bool legacyEdges = false;
-	bool contextual = false; // Neighbour-guided natural border geometry (version 3).
 	std::vector<std::vector<int>> contours; // Q12 normalized patch displacements.
 };
 // Contact treatment where this material meets another. A higher material casts
@@ -101,6 +115,15 @@ struct Decor
 	// the same count per colour: alternative interiors picked by a cell hash.
 	std::vector<int> connectedInterior;
 };
+// Version 4 border class: what kind of surface a material is (cover, cut,
+// built, flow, solid, pool). Classes are listed strongest first; the stronger
+// side of a contact shapes it. A shoreline class takes the shape of its basin,
+// so the land against it draws its coast profile.
+struct BorderClass
+{
+	std::string key;
+	bool shoreline = false;
+};
 // A flat animated overlay drawn over the ground under any decor ("overlay"),
 // such as the glints that mark fertile ground. Each cycle lists one frame per
 // step, -1 for a step that draws nothing; a cell keeps one cycle, starts it at
@@ -116,6 +139,7 @@ struct Overlay
 struct Material
 {
 	std::string key, sprite;
+	unsigned borderClass = 0; // Version 4.
 	std::vector<Variant> variants;
 	unsigned totalWeight = 0;
 	std::uint32_t salt = 0;
@@ -157,14 +181,20 @@ class Catalog
 	int version = 2;
 	// Q8 pixel amplitudes at 64px, 32px and 8px scales. Omitted in older packs.
 	std::array<int, 3> boundaryWarp{};
+	std::vector<BorderClass> borderClasses; // Version 4, strongest first.
 	std::vector<Profile> profiles;
 	std::vector<Material> materials;
 	std::vector<PairTreatment> treatments;
 	std::map<std::string, MaterialId> bindings;
 	static Catalog parse(const nlohmann::json &document);
 	MaterialId find(const std::string &key) const;
+	// Boundary profile drawing the contact of two different materials; see
+	// TerrainBorderRules.cpp.
 	unsigned profileFor(MaterialId a, MaterialId b) const;
 	bool contextualFor(MaterialId a, MaterialId b) const;
+	// Version 4: a's border class is stronger, or the same class with a higher
+	// edge precedence. Diagonal smooth contacts join the dominant material.
+	bool dominates(MaterialId a, MaterialId b) const;
 	// seed is the map's terrain look seed (Recipe::seed); zero for diagnostics.
 	unsigned variantIndex(MaterialId material, int x, int y, std::uint32_t seed = 0) const;
 	int frame(MaterialId material, int x, int y, int time, std::uint32_t seed = 0) const;
@@ -222,6 +252,8 @@ class PreparedCoverage
 	Coverage at(int px, int py) const;
 
   private:
+	SmoothBorders smooth;
+	Coverage roughCoverage(int px, int py) const;
 	struct Point { float x = 0, y = 0; };
 	struct Border
 	{
