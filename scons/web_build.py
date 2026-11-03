@@ -226,6 +226,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 ('#src/map/claims/ClaimRecoveryAdversarialHarness.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/map/claims/ClaimRecoveryAdversarialTest.cpp',
                 '#src/map/claims/ClaimPolicyConfigTest.cpp',
+                '#src/ai/numbi/NumbiObservationTest.cpp',
                 '#src/engine/sim/snapshot/SnapshotChecksumTest.cpp',
                 '#src/map/claims/ActiveClaimRoutesHarness.cpp',
                 '#src/map/claims/ClaimRoutePipelineTest.cpp',
