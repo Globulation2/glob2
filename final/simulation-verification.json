@@ -1,0 +1,64 @@
+{
+  "revision": "ddaeb01588a291ecb620bd9d46307ca2e79c831b",
+  "rows": [
+    {
+      "stage": "early",
+      "workers": 1,
+      "matching_ticks": 64,
+      "finalChecksum": 3620933841,
+      "run": "verify-pr-integrated-early-1"
+    },
+    {
+      "stage": "early",
+      "workers": 4,
+      "matching_ticks": 64,
+      "finalChecksum": 3620933841,
+      "run": "verify-pr-integrated-early-4"
+    },
+    {
+      "stage": "middle",
+      "workers": 1,
+      "matching_ticks": 64,
+      "finalChecksum": 3574114374,
+      "run": "verify-pr-integrated-middle-1"
+    },
+    {
+      "stage": "middle",
+      "workers": 4,
+      "matching_ticks": 64,
+      "finalChecksum": 3574114374,
+      "run": "verify-pr-integrated-middle-4"
+    },
+    {
+      "stage": "later",
+      "workers": 1,
+      "matching_ticks": 64,
+      "finalChecksum": 671480941,
+      "run": "verify-pr-integrated-later-1"
+    },
+    {
+      "stage": "later",
+      "workers": 4,
+      "matching_ticks": 64,
+      "finalChecksum": 671480941,
+      "run": "verify-pr-integrated-later-4"
+    },
+    {
+      "continuation_workers": 1,
+      "matching_ticks": 64,
+      "runs": [
+        "continuity-pr-integrated-whole-1",
+        "continuity-pr-integrated-resumed-1"
+      ]
+    },
+    {
+      "continuation_workers": 4,
+      "matching_ticks": 64,
+      "runs": [
+        "continuity-pr-integrated-whole-4",
+        "continuity-pr-integrated-resumed-4"
+      ]
+    }
+  ],
+  "binary_sha256": "24318ecf26f3b7c707c184d85e2004ee3d34e10dbde20209684448dc1c7d72c2"
+}

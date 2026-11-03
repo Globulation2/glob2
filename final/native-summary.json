@@ -1,0 +1,7 @@
+{
+  "unique_cases": 215,
+  "results": {
+    "passed": 215
+  },
+  "corrected_test": "GUI interaction regression now renders measured plot bounds before tapping; original failing report retained alongside successful retry."
+}

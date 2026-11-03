@@ -1,0 +1,24 @@
+[
+  {
+    "command": [
+      "python3",
+      "/home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/pr-final/verify-integrated.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "build/linux/client/release/src/glob2",
+      "match",
+      "verify",
+      "test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map-file",
+      "maps/FourSquares1.map.gz",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/pr-final/match-verification",
+      "--compute-threads",
+      "4"
+    ],
+    "returncode": 0
+  }
+]

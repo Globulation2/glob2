@@ -1,0 +1,11 @@
+{
+  "before": {
+    "instructions": 397600259,
+    "result": "windows 67 covered_ticks 262144 calls 6144 total 10243584"
+  },
+  "after": {
+    "instructions": 109854411,
+    "result": "windows 67 covered_ticks 262144 calls 6144 total 10243584"
+  },
+  "instruction_reduction_percent": 72.37063897385438
+}

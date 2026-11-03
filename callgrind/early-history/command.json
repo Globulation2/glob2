@@ -1,0 +1,22 @@
+[
+  "valgrind",
+  "--tool=callgrind",
+  "--collect-atstart=no",
+  "--toggle-collect=Engine::advanceSession*",
+  "--callgrind-out-file=/home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/callgrind/early-history/profile.out",
+  "/home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/glob2-profile-history",
+  "game",
+  "run",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/runs/frozen/initial.game.gz",
+  "--ticks",
+  "512",
+  "--benchmark-warmup",
+  "0",
+  "--compute-threads",
+  "1",
+  "--gradient-backend",
+  "cpu",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/callgrind/early-history/game"
+]

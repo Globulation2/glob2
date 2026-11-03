@@ -1,0 +1,496 @@
+{
+  "early": {
+    "ticks": 512,
+    "before_ir": 963164721,
+    "after_ir": 972122402,
+    "ir_percent_change": 0.9300258621079527,
+    "functions": {
+      "ComputeExecutor::Batch ComputeExecutor::submitImpl<(ComputeTelemetryMode)0>(std::span<ComputeExecutor::Group const, 18446744073709551615ul>, unsigned long, BatchDiagnostics)": {
+        "before_self_ir": 0,
+        "after_self_ir": 1036184,
+        "before_calls": 0,
+        "after_calls": 2598,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 1539173
+      },
+      "ComputeExecutor::PerformanceSamples::add(PerformanceTelemetry::Id, unsigned long)": {
+        "before_self_ir": 0,
+        "after_self_ir": 143676,
+        "before_calls": 0,
+        "after_calls": 11989,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 143676
+      },
+      "ComputeExecutor::PerformanceSamples::publish()": {
+        "before_self_ir": 0,
+        "after_self_ir": 899215,
+        "before_calls": 0,
+        "after_calls": 7794,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 2154060
+      },
+      "ComputeExecutor::absorbPerformance(PerformanceTelemetry::Collector&)": {
+        "before_self_ir": 0,
+        "after_self_ir": 45852,
+        "before_calls": 0,
+        "after_calls": 9,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 107577
+      },
+      "ComputeExecutor::group(ComputeExecutor::Slot const&, unsigned long) const [clone .isra.0]": {
+        "before_self_ir": 0,
+        "after_self_ir": 4536,
+        "before_calls": 0,
+        "after_calls": 545,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 4536
+      },
+      "Engine::advanceSession(unsigned long, std::function<void ()> const&, bool)": {
+        "before_self_ir": 145497,
+        "after_self_ir": 215702,
+        "before_calls": 512,
+        "after_calls": 512,
+        "before_inclusive_ir": 963164721,
+        "after_inclusive_ir": 972122402
+      },
+      "Engine::configureSessionTelemetry(Engine::MainLoopState&, PerformanceTelemetry::Collector&)": {
+        "before_self_ir": 43520,
+        "after_self_ir": 50680,
+        "before_calls": 512,
+        "after_calls": 512,
+        "before_inclusive_ir": 86550,
+        "after_inclusive_ir": 107193
+      },
+      "PerformanceTelemetry::Budget::add(unsigned long, unsigned long)": {
+        "before_self_ir": 4096,
+        "after_self_ir": 8192,
+        "before_calls": 1024,
+        "after_calls": 2048,
+        "before_inclusive_ir": 4096,
+        "after_inclusive_ir": 8192
+      },
+      "PerformanceTelemetry::Collector::capture(unsigned long, bool, bool)": {
+        "before_self_ir": 26062,
+        "after_self_ir": 69846,
+        "before_calls": 512,
+        "after_calls": 8,
+        "before_inclusive_ir": 50985,
+        "after_inclusive_ir": 2572766
+      },
+      "PerformanceTelemetry::Collector::configure(unsigned long, unsigned long, unsigned long, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)": {
+        "before_self_ir": 19483,
+        "after_self_ir": 19485,
+        "before_calls": 512,
+        "after_calls": 512,
+        "before_inclusive_ir": 29206,
+        "after_inclusive_ir": 29208
+      },
+      "PerformanceTelemetry::Collector::import(PerformanceTelemetry::Id, PerformanceTelemetry::Metric const&)": {
+        "before_self_ir": 0,
+        "after_self_ir": 7035,
+        "before_calls": 0,
+        "after_calls": 480,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 59853
+      },
+      "PerformanceTelemetry::Collector::record(PerformanceTelemetry::Id, unsigned long)": {
+        "before_self_ir": 12800,
+        "after_self_ir": 24576,
+        "before_calls": 512,
+        "after_calls": 1024,
+        "before_inclusive_ir": 30208,
+        "after_inclusive_ir": 62464
+      },
+      "PerformanceTelemetry::Collector::slowTick(PerformanceTelemetry::SlowTick const&)": {
+        "before_self_ir": 0,
+        "after_self_ir": 75093,
+        "before_calls": 0,
+        "after_calls": 512,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 75093
+      },
+      "PerformanceTelemetry::History::History()": {
+        "before_self_ir": 0,
+        "after_self_ir": 51917,
+        "before_calls": 0,
+        "after_calls": 1,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 747984
+      },
+      "PerformanceTelemetry::History::appendSlot()": {
+        "before_self_ir": 0,
+        "after_self_ir": 136,
+        "before_calls": 0,
+        "after_calls": 9,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 136
+      },
+      "PerformanceTelemetry::Metric::merge(PerformanceTelemetry::Metric const&)": {
+        "before_self_ir": 4446,
+        "after_self_ir": 27625,
+        "before_calls": 312,
+        "after_calls": 1144,
+        "before_inclusive_ir": 6898,
+        "after_inclusive_ir": 222328
+      },
+      "PerformanceTelemetry::Moments::add(unsigned long)": {
+        "before_self_ir": 359108,
+        "after_self_ir": 1832726,
+        "before_calls": 10566,
+        "after_calls": 50449,
+        "before_inclusive_ir": 359108,
+        "after_inclusive_ir": 1832726
+      },
+      "PerformanceTelemetry::Moments::merge(PerformanceTelemetry::Moments const&)": {
+        "before_self_ir": 2452,
+        "after_self_ir": 194703,
+        "before_calls": 312,
+        "after_calls": 1144,
+        "before_inclusive_ir": 2452,
+        "after_inclusive_ir": 194703
+      },
+      "PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)": {
+        "before_self_ir": 2492832,
+        "after_self_ir": 2498065,
+        "before_calls": 43820,
+        "after_calls": 44844,
+        "before_inclusive_ir": 3501852,
+        "after_inclusive_ir": 3737510
+      },
+      "PerformanceTelemetry::Scope::stop()": {
+        "before_self_ir": 793534,
+        "after_self_ir": 853778,
+        "before_calls": 48942,
+        "after_calls": 49966,
+        "before_inclusive_ir": 1491080,
+        "after_inclusive_ir": 1654986
+      },
+      "PerformanceTelemetry::Scope::~Scope()": {
+        "before_self_ir": 219090,
+        "after_self_ir": 224200,
+        "before_calls": 43820,
+        "after_calls": 44844,
+        "before_inclusive_ir": 1044570,
+        "after_inclusive_ir": 1198226
+      },
+      "PerformanceTelemetry::collector()": {
+        "before_self_ir": 664950,
+        "after_self_ir": 861688,
+        "before_calls": 44334,
+        "after_calls": 45358,
+        "before_inclusive_ir": 664950,
+        "after_inclusive_ir": 861688
+      },
+      "PerformanceTelemetry::now()": {
+        "before_self_ir": 103075,
+        "after_self_ir": 252030,
+        "before_calls": 20625,
+        "after_calls": 50641,
+        "before_inclusive_ir": 721525,
+        "after_inclusive_ir": 1764210
+      },
+      "std::vector<std::shared_ptr<ComputeExecutor::Completion>, std::allocator<std::shared_ptr<ComputeExecutor::Completion> > >::_M_fill_assign(unsigned long, std::shared_ptr<ComputeExecutor::Completion> const&)": {
+        "before_self_ir": 141577,
+        "after_self_ir": 141577,
+        "before_calls": 2598,
+        "after_calls": 2598,
+        "before_inclusive_ir": 149805,
+        "after_inclusive_ir": 149423
+      },
+      "void ComputeExecutor::execute<(ComputeTelemetryMode)0>(ComputeExecutor::Claim const&, unsigned long)": {
+        "before_self_ir": 892780,
+        "after_self_ir": 1687435,
+        "before_calls": 4102,
+        "after_calls": 4102,
+        "before_inclusive_ir": 806248304,
+        "after_inclusive_ir": 808056593
+      },
+      "void ComputeExecutor::joinImpl<(ComputeTelemetryMode)0>(ComputeExecutor::Batch&, JoinContext) [clone .isra.0]": {
+        "before_self_ir": 3169013,
+        "after_self_ir": 4229020,
+        "before_calls": 2081,
+        "after_calls": 2593,
+        "before_inclusive_ir": 809738196,
+        "after_inclusive_ir": 815348627
+      },
+      "void std::vector<ComputeExecutor::Group, std::allocator<ComputeExecutor::Group> >::_M_assign_aux<__gnu_cxx::__normal_iterator<ComputeExecutor::Group const*, std::span<ComputeExecutor::Group const, 18446744073709551615ul>::__iter_tag> >(__gnu_cxx::__normal_iterator<ComputeExecutor::Group const*, std::span<ComputeExecutor::Group const, 18446744073709551615ul>::__iter_tag>, __gnu_cxx::__normal_iterator<ComputeExecutor::Group const*, std::span<ComputeExecutor::Group const, 18446744073709551615ul>::__iter_tag>, std::forward_iterator_tag) [clone .isra.0]": {
+        "before_self_ir": 61216,
+        "after_self_ir": 0,
+        "before_calls": 1571,
+        "after_calls": 0,
+        "before_inclusive_ir": 97034,
+        "after_inclusive_ir": 0
+      }
+    },
+    "before_history_ir": 975117249,
+    "change_vs_before_history_percent": -0.3071268612129696,
+    "matched_results": [
+      "initialChecksum",
+      "finalChecksum",
+      "benchmark_measured_ticks",
+      "growth_submitted",
+      "growth_published",
+      "growth_sampled",
+      "growth_proposals",
+      "growth_publishedProposals",
+      "growth_accepted",
+      "growth_rejected",
+      "growth_clamped",
+      "growth_stockAdded",
+      "growth_tilesAdded",
+      "growth_capacityGrowthBatches",
+      "growth_maxProposals",
+      "growth_maxPending",
+      "growth_maxProposalBytes",
+      "growth_waitNs",
+      "growth_delay"
+    ]
+  },
+  "later": {
+    "ticks": 512,
+    "before_ir": 1915463289,
+    "after_ir": 1927307950,
+    "ir_percent_change": 0.6183705565134368,
+    "functions": {
+      "ComputeExecutor::Batch ComputeExecutor::submitImpl<(ComputeTelemetryMode)0>(std::span<ComputeExecutor::Group const, 18446744073709551615ul>, unsigned long, BatchDiagnostics)": {
+        "before_self_ir": 0,
+        "after_self_ir": 1213411,
+        "before_calls": 0,
+        "after_calls": 3005,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 1803219
+      },
+      "ComputeExecutor::PerformanceSamples::add(PerformanceTelemetry::Id, unsigned long)": {
+        "before_self_ir": 0,
+        "after_self_ir": 185424,
+        "before_calls": 0,
+        "after_calls": 15468,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 185424
+      },
+      "ComputeExecutor::PerformanceSamples::publish()": {
+        "before_self_ir": 0,
+        "after_self_ir": 1073219,
+        "before_calls": 0,
+        "after_calls": 9018,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 2570963
+      },
+      "ComputeExecutor::absorbPerformance(PerformanceTelemetry::Collector&)": {
+        "before_self_ir": 0,
+        "after_self_ir": 120512,
+        "before_calls": 0,
+        "after_calls": 16,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 276790
+      },
+      "ComputeExecutor::group(ComputeExecutor::Slot const&, unsigned long) const [clone .isra.0]": {
+        "before_self_ir": 0,
+        "after_self_ir": 16334,
+        "before_calls": 0,
+        "after_calls": 1110,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 16334
+      },
+      "Engine::advanceSession(unsigned long, std::function<void ()> const&, bool)": {
+        "before_self_ir": 145497,
+        "after_self_ir": 215758,
+        "before_calls": 512,
+        "after_calls": 512,
+        "before_inclusive_ir": 1915463289,
+        "after_inclusive_ir": 1927307950
+      },
+      "Engine::configureSessionTelemetry(Engine::MainLoopState&, PerformanceTelemetry::Collector&)": {
+        "before_self_ir": 43520,
+        "after_self_ir": 50680,
+        "before_calls": 512,
+        "after_calls": 512,
+        "before_inclusive_ir": 86550,
+        "after_inclusive_ir": 106976
+      },
+      "PerformanceTelemetry::Budget::add(unsigned long, unsigned long)": {
+        "before_self_ir": 4096,
+        "after_self_ir": 8192,
+        "before_calls": 1024,
+        "after_calls": 2048,
+        "before_inclusive_ir": 4096,
+        "after_inclusive_ir": 8192
+      },
+      "PerformanceTelemetry::Collector::capture(unsigned long, bool, bool)": {
+        "before_self_ir": 27412,
+        "after_self_ir": 163805,
+        "before_calls": 512,
+        "after_calls": 15,
+        "before_inclusive_ir": 55116,
+        "after_inclusive_ir": 4334283
+      },
+      "PerformanceTelemetry::Collector::configure(unsigned long, unsigned long, unsigned long, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)": {
+        "before_self_ir": 19483,
+        "after_self_ir": 19485,
+        "before_calls": 512,
+        "after_calls": 512,
+        "before_inclusive_ir": 29206,
+        "after_inclusive_ir": 29208
+      },
+      "PerformanceTelemetry::Collector::import(PerformanceTelemetry::Id, PerformanceTelemetry::Metric const&)": {
+        "before_self_ir": 0,
+        "after_self_ir": 18600,
+        "before_calls": 0,
+        "after_calls": 1255,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 152950
+      },
+      "PerformanceTelemetry::Collector::record(PerformanceTelemetry::Id, unsigned long)": {
+        "before_self_ir": 12800,
+        "after_self_ir": 24576,
+        "before_calls": 512,
+        "after_calls": 1024,
+        "before_inclusive_ir": 30208,
+        "after_inclusive_ir": 62464
+      },
+      "PerformanceTelemetry::Collector::slowTick(PerformanceTelemetry::SlowTick const&)": {
+        "before_self_ir": 0,
+        "after_self_ir": 82623,
+        "before_calls": 0,
+        "after_calls": 512,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 82623
+      },
+      "PerformanceTelemetry::History::History()": {
+        "before_self_ir": 0,
+        "after_self_ir": 51917,
+        "before_calls": 0,
+        "after_calls": 1,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 747984
+      },
+      "PerformanceTelemetry::History::appendSlot()": {
+        "before_self_ir": 0,
+        "after_self_ir": 255,
+        "before_calls": 0,
+        "after_calls": 16,
+        "before_inclusive_ir": 0,
+        "after_inclusive_ir": 255
+      },
+      "PerformanceTelemetry::Metric::merge(PerformanceTelemetry::Metric const&)": {
+        "before_self_ir": 5928,
+        "after_self_ir": 70475,
+        "before_calls": 390,
+        "after_calls": 2866,
+        "before_inclusive_ir": 9644,
+        "after_inclusive_ir": 584432
+      },
+      "PerformanceTelemetry::Moments::add(unsigned long)": {
+        "before_self_ir": 364276,
+        "after_self_ir": 2081804,
+        "before_calls": 10718,
+        "after_calls": 57337,
+        "before_inclusive_ir": 364276,
+        "after_inclusive_ir": 2081804
+      },
+      "PerformanceTelemetry::Moments::merge(PerformanceTelemetry::Moments const&)": {
+        "before_self_ir": 3716,
+        "after_self_ir": 513957,
+        "before_calls": 390,
+        "after_calls": 2866,
+        "before_inclusive_ir": 3716,
+        "after_inclusive_ir": 513957
+      },
+      "PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)": {
+        "before_self_ir": 2734216,
+        "after_self_ir": 2735343,
+        "before_calls": 47921,
+        "after_calls": 48945,
+        "before_inclusive_ir": 3810071,
+        "after_inclusive_ir": 4057992
+      },
+      "PerformanceTelemetry::Scope::stop()": {
+        "before_self_ir": 822247,
+        "after_self_ir": 882437,
+        "before_calls": 53043,
+        "after_calls": 54067,
+        "before_inclusive_ir": 1530281,
+        "after_inclusive_ir": 1694517
+      },
+      "PerformanceTelemetry::Scope::~Scope()": {
+        "before_self_ir": 239595,
+        "after_self_ir": 244705,
+        "before_calls": 47921,
+        "after_calls": 48945,
+        "before_inclusive_ir": 1104276,
+        "after_inclusive_ir": 1258262
+      },
+      "PerformanceTelemetry::collector()": {
+        "before_self_ir": 726465,
+        "after_self_ir": 939607,
+        "before_calls": 48435,
+        "after_calls": 49459,
+        "before_inclusive_ir": 726465,
+        "after_inclusive_ir": 939607
+      },
+      "PerformanceTelemetry::now()": {
+        "before_self_ir": 104600,
+        "after_self_ir": 274330,
+        "before_calls": 20930,
+        "after_calls": 55100,
+        "before_inclusive_ir": 732200,
+        "after_inclusive_ir": 1920310
+      },
+      "std::vector<std::shared_ptr<ComputeExecutor::Completion>, std::allocator<std::shared_ptr<ComputeExecutor::Completion> > >::_M_fill_assign(unsigned long, std::shared_ptr<ComputeExecutor::Completion> const&)": {
+        "before_self_ir": 163459,
+        "after_self_ir": 163459,
+        "before_calls": 3005,
+        "after_calls": 3005,
+        "before_inclusive_ir": 172849,
+        "after_inclusive_ir": 172828
+      },
+      "void ComputeExecutor::execute<(ComputeTelemetryMode)0>(ComputeExecutor::Claim const&, unsigned long)": {
+        "before_self_ir": 1009861,
+        "after_self_ir": 1904380,
+        "before_calls": 4665,
+        "after_calls": 4665,
+        "before_inclusive_ir": 1493865076,
+        "after_inclusive_ir": 1495912375
+      },
+      "void ComputeExecutor::joinImpl<(ComputeTelemetryMode)0>(ComputeExecutor::Batch&, JoinContext) [clone .isra.0]": {
+        "before_self_ir": 3948321,
+        "after_self_ir": 5149390,
+        "before_calls": 2610,
+        "after_calls": 3122,
+        "before_inclusive_ir": 1498191427,
+        "after_inclusive_ir": 1504725204
+      },
+      "void std::vector<ComputeExecutor::Group, std::allocator<ComputeExecutor::Group> >::_M_assign_aux<__gnu_cxx::__normal_iterator<ComputeExecutor::Group const*, std::span<ComputeExecutor::Group const, 18446744073709551615ul>::__iter_tag> >(__gnu_cxx::__normal_iterator<ComputeExecutor::Group const*, std::span<ComputeExecutor::Group const, 18446744073709551615ul>::__iter_tag>, __gnu_cxx::__normal_iterator<ComputeExecutor::Group const*, std::span<ComputeExecutor::Group const, 18446744073709551615ul>::__iter_tag>, std::forward_iterator_tag) [clone .isra.0]": {
+        "before_self_ir": 77262,
+        "after_self_ir": 0,
+        "before_calls": 1978,
+        "after_calls": 0,
+        "before_inclusive_ir": 121331,
+        "after_inclusive_ir": 0
+      }
+    },
+    "before_history_ir": 1934466083,
+    "change_vs_before_history_percent": -0.3700314553408468,
+    "matched_results": [
+      "initialChecksum",
+      "finalChecksum",
+      "benchmark_measured_ticks",
+      "growth_submitted",
+      "growth_published",
+      "growth_sampled",
+      "growth_proposals",
+      "growth_publishedProposals",
+      "growth_accepted",
+      "growth_rejected",
+      "growth_clamped",
+      "growth_stockAdded",
+      "growth_tilesAdded",
+      "growth_capacityGrowthBatches",
+      "growth_maxProposals",
+      "growth_maxPending",
+      "growth_maxProposalBytes",
+      "growth_waitNs",
+      "growth_delay"
+    ]
+  }
+}

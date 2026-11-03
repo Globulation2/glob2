@@ -1,0 +1,310 @@
+# callgrind format
+version: 1
+creator: callgrind-3.26.0
+pid: 2837003
+cmd:  /home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/history-efficiency/history-after
+part: 1
+
+
+desc: I1 cache: 
+desc: D1 cache: 
+desc: LL cache: 
+
+desc: Timerange: Basic block 0 - 105064499
+desc: Trigger: Program termination
+
+positions: line
+events: Ir
+summary: 109854411
+
+
+ob=(8) /home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/history-efficiency/history-after
+fl=(228) ???
+fn=(1424) PerformanceTelemetry::Collector::capture(unsigned long, bool, bool)
+0 9216
+cfn=(1404) fakeClock()
+calls=512 0 
+0 1536
+0 1536
+
+ob=(1) /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+fl=(1) ???
+fn=(0) 0x0000000000023340
+cob=(8)
+cfi=(228)
+cfn=(1364) (below main)
+calls=1 0 
+0 109854411
+
+ob=(4) ???
+fl=(191) ???
+fn=(1436) 0x00000000040032c0
+0 276
+cob=(2) /usr/lib/x86_64-linux-gnu/libc.so.6
+cfi=(234) ./string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S
+cfn=(1400) __memcpy_avx_unaligned_erms
+calls=138 255 
+0 2512
+
+fn=(1398) 0x0000000004003230
+0 2048
+cob=(2)
+cfi=(234)
+cfn=(1400)
+calls=1029 255 
+0 101327064
+
+fn=(1428) 0x00000000040031e0
+0 1024
+cob=(2)
+cfi=(237) ./string/../sysdeps/x86_64/multiarch/strncpy-avx2.S
+cfn=(1430) __strncpy_avx2
+calls=512 54 
+0 15872
+
+ob=(8)
+fl=(228)
+fn=(1424)
+0 512
+cfn=(1404)
+calls=512 0 
+0 1536
+0 3072
+cfn=(1426) PerformanceTelemetry::History::appendSlot()
+calls=512 0 
+0 4631847
+0 10752
+cob=(4)
+cfi=(191)
+cfn=(1398)
+calls=512 0 
+0 95569112
+0 12800
+cob=(4)
+cfi=(191)
+cfn=(1428)
+calls=512 0 
+0 16896
+0 2048
+cob=(4)
+cfi=(191)
+cfn=(1398)
+calls=512 0 
+0 5760000
+0 336893
+cfn=(1432) PerformanceTelemetry::Metric::merge(PerformanceTelemetry::Metric const&)
+calls=6655 0 
+0 1920786
+0 1185198
+cfn=(1404)
+calls=512 0 
+0 1536
+0 1536
+cfn=(1404)
+calls=512 0 
+0 1536
+0 29184
+
+fn=(1422) PerformanceTelemetry::Collector::record(PerformanceTelemetry::Id, unsigned long)
+0 301056
+
+fn=(1390) main
+cfn=(1420) measureHistory(PerformanceTelemetry::Collector&)
+calls=1 0 
+0 109854411
+
+fn=(1364)
+cob=(2)
+cfi=(229) ./csu/../csu/libc-start.c
+cfn=(1366) __libc_start_main@@GLIBC_2.34
+calls=1 242 
+0 109854411
+
+fn=(1432)
+0 1920786
+
+fn=(1434) PerformanceTelemetry::Window::merge(PerformanceTelemetry::Window const&)
+0 4053315
+
+fn=(1404)
+0 6144
+
+fn=(1420)
+0 17
+cfn=(1422)
+calls=1 0 
+0 49
+0 4088
+cfn=(1422)
+calls=511 0 
+0 25039
+0 28160
+cfn=(1422)
+calls=5632 0 
+0 275968
+0 22528
+cfn=(1424)
+calls=512 0 
+0 109497532
+0 1030
+
+fn=(1426)
+0 568959
+cfn=(1434)
+calls=445 0 
+0 4053315
+0 5309
+cob=(4)
+cfi=(191)
+cfn=(1436)
+calls=138 0 
+0 2788
+0 1476
+
+ob=(2)
+fl=(229)
+fn=(1366)
+cfi=(230) ./csu/../sysdeps/nptl/libc_start_call_main.h
+cfn=(1382) (below main)
+calls=1 30 
+360 109854411
+
+fl=(230)
+fn=(1382)
+cob=(8)
+cfi=(228)
+cfn=(1390)
+calls=1 0 
+59 109854411
+
+fl=(234)
+fn=(1400)
+255 1162
++1 1162
++6 1162
++1 1162
++2 1148
++1 1148
++1 1148
++3 41
++1 41
++1 41
++3 82
++30 14
++1 14
++2 6
++1 6
++2 2
++4 2
++16 2
++1 2
++1 2
++1 2
++1 2
++7 8
++1 8
++1 8
++1 8
++2 8
++17 4
++1 4
++1 4
++1 4
++1 4
++7 80
++1 80
++1 80
++1 80
++1 80
++1 80
++1 160
++5 1107
++1 1107
++5 83
++1 83
++2 83
++1 83
++1 83
++2 3
++1 3
++1 3
++1 3
++1 3
++1 3
++1 3
++1 3
++1 3
++1 3
++1 3
++1 3
++1 3
++1 3
++1 6
+563 1024
++7 1024
++1 1024
++6 93
++3 93
++2 93
++3 93
++1 93
++2 93
++2 17354637
++2 93
++2 93
++2 186
++5 1024
++1 1024
++4 1024
++2 1024
++3 1024
++4 1024
++1 1024
++4 1024
++4 1024
++24 931
++2 931
++2 931
++2 931
++3 931
++1 931
++2 83940683
++3 931
++2 931
++2 1862
+
+fl=(237)
+fn=(1430)
+54 512
++18 512
++3 512
++3 512
++1 512
++1 512
++1 512
++1 512
++3 512
++1 512
++1 512
++4 512
++7 512
++2 512
+458 512
++1 512
++5 512
++4 512
++1 512
++1 512
++1 512
++1 512
++10 512
++1 512
++1 512
++1 512
++1 512
++45 512
++2 512
++1 512
++1 512
+
+totals: 109854411

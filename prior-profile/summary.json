@@ -1,0 +1,54 @@
+{
+  "changes": [
+    "One direct metrics copy into reserved history slot",
+    "Fixed physical history slots; compaction moves logical order indices",
+    "Shard-only active metric tracking; no collector-wide dirty state",
+    "Removed unused History::slowTick and Output temporary Metric",
+    "One due decision for executor absorption and capture"
+  ],
+  "preserved": [
+    "Every coarse task timed",
+    "512-tick/one-second cadence",
+    "Histogram resolution",
+    "Whole-session coverage and merge semantics",
+    "16MiB cap",
+    "Simulation scheduling and serialized state"
+  ],
+  "review": "Subagent reviewed initial design and actual implementation/tests; no correctness blocker; recommended this limited scope without more layers",
+  "native_cases_passed": 89,
+  "native_reports": [
+    "native-headless.xml",
+    "native-display.xml"
+  ],
+  "focused_cases_passed": 65,
+  "focused_assertions": 139262,
+  "collector_cases_passed": 9,
+  "collector_assertions": 545,
+  "full_game_added_instructions_percent": {
+    "early": 0.9300258621079527,
+    "later": 0.6183705565134368
+  },
+  "full_game_comparison": "512 advancing ticks each, serial/no-export, matched checksums and growth counters; instruction counts, not CPU-cycle/throughput percentages",
+  "long_history": {
+    "before": {
+      "instructions": 397600259,
+      "result": "windows 67 covered_ticks 262144 calls 6144 total 10243584"
+    },
+    "after": {
+      "instructions": 109854411,
+      "result": "windows 67 covered_ticks 262144 calls 6144 total 10243584"
+    },
+    "instruction_reduction_percent": 72.37063897385438
+  },
+  "long_history_digest_equal": true,
+  "memory": {
+    "history_bytes": 12532912,
+    "history_limit_bytes": 12582912,
+    "history_capacity": 67,
+    "nonhistory_collectors_and_executor_bytes": 3260992,
+    "nonhistory_limit_bytes": 4194304
+  },
+  "simulation": "../simulation-verification-history-efficiency.json: six64tick curves plus two64tick save continuations",
+  "multiplayer": "match-verification.log:842 checksums verified",
+  "coverage_limits": "Linux native execution only; physical GPU/mobile and non-Linux unverified; no new threaded-throughput claim"
+}

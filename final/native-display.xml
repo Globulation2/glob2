@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="40" failures="1" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="automatic GUI sessions poll asset finalizers on the presentation thread [display]" time="13.2016" status="run" />
+  <testcase classname="EngineSession" name="buffered input receipts wait for GUI dispatch and cancel exact ranges [display]" time="7.16706" status="run" />
+  <testcase classname="EngineSession" name="game screen inspection stops before results replace the released gameplay scene [display]" time="7.44165" status="run" />
+  <testcase classname="EngineSession" name="menu colony rendering consumes its shared boundary without recapture [display]" time="6.70833" status="run" />
+  <testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="8.64344" status="run" />
+  <testcase classname="EngineSession" name="paced sessions publish completed worlds before waiting and AI reuses them [display]" time="7.67554" status="run" />
+  <testcase classname="EngineSession" name="render ceilings preserve per tick simulation checksums [display][artifacts]" time="20.4176" status="run" />
+  <testcase classname="EngineSession" name="results finalize non-AI telemetry with optional diagnostics off [display]" time="7.23651" status="run" />
+  <testcase classname="EngineSession" name="routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]" time="8.10648" status="run" />
+  </testsuite><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="statistics topics history and overlays preserve gameplay state [display:1024x768][artifacts]" time="12.231" status="run">
+      <failure message="-1 &gt;= 0" type="CHECK">
+src/hud/GUIInteractionCoverageTest.cpp:1464:
+CHECK( performance-&gt;panel.cursorMinute&gt;=0 ) is NOT correct!
+  values: CHECK( -1 &gt;= 0 )
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="ProgrammableGLDevice"><testcase classname="ProgrammableGLDevice" name="GL trims completed retired targets while capture leases remain [display]" time="5.22337" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="GLES300 shaders draw retained partial submissions [display]" time="2.47907" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="RGBA upload shortcut preserves color-key and color-space conversion [display]" time="2.96212" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="authoritative skin rig matches fixed geometry and cropped capture retains target [display]" time="3.39442" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="capture queues retain timestamps orientation and screenshot independence [display]" time="2.2563" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="cloud revisions and cached world uniforms change pixels on the next frame [display]" time="2.04482" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="desktop core primitives match CPU reference with alpha tolerance [display]" time="2.10982" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="discarded partial frame restores prior output and retains admitted capture [display]" time="2.36299" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="explicit GL trim restores live immutable source pixels [display]" time="4.84673" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="explicit straight and premultiplied uploads retain identical compositing [display]" time="2.85299" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="factory recreation restores retained logical frame and texture revisions [display]" time="2.26487" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="full skin atlas color capacity admits independently bounded depth storage [display]" time="1.9919" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="integer terrain composition preserves seam wrapping orientation reduction and PMA [display]" time="6.55253" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="linear atlas bounds isolate cropped neighbours [display]" time="2.91295" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="linear sampling premultiplies transparent edge colours [display]" time="2.92509" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="malformed advertised shader rejects candidate while prior factory remains usable [display]" time="2.98883" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="many bounded command flushes remain one presentation frame [display]" time="3.16471" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="minification samples authored CPU mip levels without driver regeneration [display]" time="4.20303" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="offscreen targets preserve CPU orientation and later sampling [display]" time="1.97459" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="old texture revisions queued draws and device generation survive mutation [display]" time="2.62129" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="ordered primitive segments share uploads across state and point changes [display]" time="2.34383" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="ordered upload segments flush at vertex capacity without losing following draws [display]" time="2.4185" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="physical scissors preserve fractional alpha seams [display][isolated]" time="1.87817" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="primitive state reuse matches isolated target viewport clip and program transitions [display]" time="2.68281" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="shared CPU pages batch different sprite frames and retain queued revisions [display]" time="4.54285" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="terrain rejects unallocated target feedback before changing the retained frame [display]" time="5.17389" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="translucent offscreen pixels retain premultiplied representation [display]" time="2.69248" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="world depth clipping and overlay state preserve ordered rendering [display]" time="2.73538" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="world sampling preserves offscreen top-left orientation and fractional target size [display]" time="2.57502" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="6.71283" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,9 @@
+[
+  {
+    "command": [
+      "bash",
+      "/home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/pr-final/run-native.sh"
+    ],
+    "returncode": 1
+  }
+]

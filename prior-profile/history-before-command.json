@@ -1,0 +1,8 @@
+[
+  "valgrind",
+  "--tool=callgrind",
+  "--collect-atstart=no",
+  "--toggle-collect=measureHistory*",
+  "--callgrind-out-file=/home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/history-efficiency/history-before.out",
+  "/home/bradley/.codex/worktrees/4d13/glob2/artifacts/engine-performance/history-efficiency/history-before"
+]
