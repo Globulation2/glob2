@@ -1,0 +1,295 @@
+<testsuites id="" name="" tests="24" failures="5" skipped="0" errors="0" time="2770.3841380000003">
+<testsuite name="campaign-progress.spec.js" timestamp="2026-11-03T01:48:28.044Z" hostname="chromium" tests="4" failures="2" skipped="0" time="448.013" errors="0">
+<testcase name="campaign progress merges through the chooser, survives reload and rejects invalid backups" classname="campaign-progress.spec.js" time="64.544">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/error-context.md]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(received).toBe(expected) // Object.is equality" type="expect.toBe">
+<![CDATA[  [chromium] › campaign-progress.spec.js:57:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      16 |       }
+      17 |       return false;
+    > 18 |     }, {timeout:60000}).toBe(true);
+         |                         ^
+      19 |     return waitForMainMenu(page);
+      20 |   }
+      21 |   return expect.poll(async()=>(await state(page)).screen).toContain(name);
+        at screen (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:18:25)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:55:90
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="campaign persistence failure preserves the durable backup with retry" classname="campaign-progress.spec.js" time="139.318">
+</testcase>
+<testcase name="campaign persistence failure preserves the durable backup with discard" classname="campaign-progress.spec.js" time="166.349">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/error-context.md]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(received).toBe(expected) // Object.is equality" type="expect.toBe">
+<![CDATA[  [chromium] › campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      16 |       }
+      17 |       return false;
+    > 18 |     }, {timeout:60000}).toBe(true);
+         |                         ^
+      19 |     return waitForMainMenu(page);
+      20 |   }
+      21 |   return expect.poll(async()=>(await state(page)).screen).toContain(name);
+        at screen (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:18:25)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:102:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="leaving a new campaign waits for persistence and discard removes its uncommitted file" classname="campaign-progress.spec.js" time="77.802">
+</testcase>
+</testsuite>
+<testsuite name="marathi.spec.js" timestamp="2026-11-03T01:48:28.044Z" hostname="chromium" tests="4" failures="1" skipped="0" time="392.772" errors="0">
+<testcase name="Marathi game desktop › serial native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="125.54">
+</testcase>
+<testcase name="Marathi game desktop › threaded native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="135.956">
+</testcase>
+<testcase name="Marathi game phone › serial native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="59.246">
+</testcase>
+<testcase name="Marathi game phone › threaded native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="72.03">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/error-context.md]]
+
+[[ATTACHMENT|results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(received).toBeGreaterThan(expected)" type="expect.toBeGreaterThan">
+<![CDATA[  [chromium] › marathi.spec.js:84:49 › Marathi game phone › threaded native catalog, settings and tutorial render in Marathi 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 20
+    Received:   19
+
+      217 |       const body = {x: Math.ceil(card.x + 4), y: top,
+      218 |         width: Math.floor(card.width - 8), height: Math.floor(card.y + card.height - top - 4)};
+    > 219 |       expect(body.height).toBeGreaterThan(20);
+          |                           ^
+      220 |       expect(body.width).toBeGreaterThan(20);
+      221 |       expect(await hasLightText(page, body, 150)).toBe(true);
+      222 |       records.phoneHelpBody = {clip: body, minimumChannel: 150, renderedGlyphInk: true,
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/marathi.spec.js:219:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../menu-latest-integration-evidence/results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../menu-latest-integration-evidence/results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="campaign-progress.spec.js" timestamp="2026-11-03T01:48:28.044Z" hostname="firefox" tests="4" failures="1" skipped="0" time="540.783" errors="0">
+<testcase name="campaign progress merges through the chooser, survives reload and rejects invalid backups" classname="campaign-progress.spec.js" time="121.496">
+</testcase>
+<testcase name="campaign persistence failure preserves the durable backup with retry" classname="campaign-progress.spec.js" time="173.384">
+</testcase>
+<testcase name="campaign persistence failure preserves the durable backup with discard" classname="campaign-progress.spec.js" time="138.58">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/test-failed-1.png]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/test-failed-2.png]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/error-context.md]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(received).toBe(expected) // Object.is equality" type="expect.toBe">
+<![CDATA[  [firefox] › campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      16 |       }
+      17 |       return false;
+    > 18 |     }, {timeout:60000}).toBe(true);
+         |                         ^
+      19 |     return waitForMainMenu(page);
+      20 |   }
+      21 |   return expect.poll(async()=>(await state(page)).screen).toContain(name);
+        at screen (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:18:25)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:93:81
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="leaving a new campaign waits for persistence and discard removes its uncommitted file" classname="campaign-progress.spec.js" time="107.323">
+</testcase>
+</testsuite>
+<testsuite name="marathi.spec.js" timestamp="2026-11-03T01:48:28.044Z" hostname="firefox" tests="4" failures="0" skipped="0" time="357.796" errors="0">
+<testcase name="Marathi game desktop › serial native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="95.009">
+</testcase>
+<testcase name="Marathi game desktop › threaded native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="146.395">
+</testcase>
+<testcase name="Marathi game phone › serial native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="55.163">
+</testcase>
+<testcase name="Marathi game phone › threaded native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="61.229">
+</testcase>
+</testsuite>
+<testsuite name="campaign-progress.spec.js" timestamp="2026-11-03T01:48:28.044Z" hostname="webkit" tests="4" failures="1" skipped="0" time="511.183" errors="0">
+<testcase name="campaign progress merges through the chooser, survives reload and rejects invalid backups" classname="campaign-progress.spec.js" time="87.345">
+</testcase>
+<testcase name="campaign persistence failure preserves the durable backup with retry" classname="campaign-progress.spec.js" time="154.341">
+</testcase>
+<testcase name="campaign persistence failure preserves the durable backup with discard" classname="campaign-progress.spec.js" time="148.427">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/test-failed-1.png]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/test-failed-2.png]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/error-context.md]]
+
+[[ATTACHMENT|results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(received).toBe(expected) // Object.is equality" type="expect.toBe">
+<![CDATA[  [webkit] › campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      16 |       }
+      17 |       return false;
+    > 18 |     }, {timeout:60000}).toBe(true);
+         |                         ^
+      19 |     return waitForMainMenu(page);
+      20 |   }
+      21 |   return expect.poll(async()=>(await state(page)).screen).toContain(name);
+        at screen (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:18:25)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:93:81
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="leaving a new campaign waits for persistence and discard removes its uncommitted file" classname="campaign-progress.spec.js" time="121.07">
+</testcase>
+</testsuite>
+<testsuite name="marathi.spec.js" timestamp="2026-11-03T01:48:28.044Z" hostname="webkit" tests="4" failures="0" skipped="0" time="450.654" errors="0">
+<testcase name="Marathi game desktop › serial native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="122.302">
+</testcase>
+<testcase name="Marathi game desktop › threaded native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="180.065">
+</testcase>
+<testcase name="Marathi game phone › serial native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="52.751">
+</testcase>
+<testcase name="Marathi game phone › threaded native catalog, settings and tutorial render in Marathi" classname="marathi.spec.js" time="95.536">
+</testcase>
+</testsuite>
+</testsuites>

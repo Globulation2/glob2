@@ -1,0 +1,228 @@
+
+Running 24 tests using 1 worker
+
+(node:3658545) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 [chromium] › browser/tests/campaign-progress.spec.js:57:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups (1.1m)
+(node:3660455) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [chromium] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with retry (2.3m)
+  ✘   3 [chromium] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard (2.8m)
+(node:3667118) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [chromium] › browser/tests/campaign-progress.spec.js:106:1 › leaving a new campaign waits for persistence and discard removes its uncommitted file (1.3m)
+  ✓   5 [chromium] › browser/tests/marathi.spec.js:84:49 › Marathi game desktop › serial native catalog, settings and tutorial render in Marathi (2.1m)
+  ✓   6 [chromium] › browser/tests/marathi.spec.js:84:49 › Marathi game desktop › threaded native catalog, settings and tutorial render in Marathi (2.3m)
+  ✓   7 [chromium] › browser/tests/marathi.spec.js:84:49 › Marathi game phone › serial native catalog, settings and tutorial render in Marathi (59.2s)
+  ✘   8 [chromium] › browser/tests/marathi.spec.js:84:49 › Marathi game phone › threaded native catalog, settings and tutorial render in Marathi (1.2m)
+(node:3677731) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [firefox] › browser/tests/campaign-progress.spec.js:57:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups (2.0m)
+  ✓  10 [firefox] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with retry (2.9m)
+  ✘  11 [firefox] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard (2.3m)
+(node:3691286) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  12 [firefox] › browser/tests/campaign-progress.spec.js:106:1 › leaving a new campaign waits for persistence and discard removes its uncommitted file (1.8m)
+  ✓  13 [firefox] › browser/tests/marathi.spec.js:84:49 › Marathi game desktop › serial native catalog, settings and tutorial render in Marathi (1.6m)
+  ✓  14 [firefox] › browser/tests/marathi.spec.js:84:49 › Marathi game desktop › threaded native catalog, settings and tutorial render in Marathi (2.4m)
+  ✓  15 [firefox] › browser/tests/marathi.spec.js:84:49 › Marathi game phone › serial native catalog, settings and tutorial render in Marathi (55.2s)
+  ✓  16 [firefox] › browser/tests/marathi.spec.js:84:49 › Marathi game phone › threaded native catalog, settings and tutorial render in Marathi (1.0m)
+(node:3702262) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [webkit] › browser/tests/campaign-progress.spec.js:57:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups (1.5m)
+  ✓  18 [webkit] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with retry (2.6m)
+  ✘  19 [webkit] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard (2.5m)
+(node:3712511) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  20 [webkit] › browser/tests/campaign-progress.spec.js:106:1 › leaving a new campaign waits for persistence and discard removes its uncommitted file (2.0m)
+  ✓  21 [webkit] › browser/tests/marathi.spec.js:84:49 › Marathi game desktop › serial native catalog, settings and tutorial render in Marathi (2.0m)
+  ✓  22 [webkit] › browser/tests/marathi.spec.js:84:49 › Marathi game desktop › threaded native catalog, settings and tutorial render in Marathi (3.0m)
+  ✓  23 [webkit] › browser/tests/marathi.spec.js:84:49 › Marathi game phone › serial native catalog, settings and tutorial render in Marathi (52.8s)
+  ✓  24 [webkit] › browser/tests/marathi.spec.js:84:49 › Marathi game phone › threaded native catalog, settings and tutorial render in Marathi (1.6m)
+
+
+  1) [chromium] › browser/tests/campaign-progress.spec.js:57:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      16 |       }
+      17 |       return false;
+    > 18 |     }, {timeout:60000}).toBe(true);
+         |                         ^
+      19 |     return waitForMainMenu(page);
+      20 |   }
+      21 |   return expect.poll(async()=>(await state(page)).screen).toContain(name);
+        at screen (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:18:25)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:55:90
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../menu-latest-integration-evidence/results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../menu-latest-integration-evidence/results/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      16 |       }
+      17 |       return false;
+    > 18 |     }, {timeout:60000}).toBe(true);
+         |                         ^
+      19 |     return waitForMainMenu(page);
+      20 |   }
+      21 |   return expect.poll(async()=>(await state(page)).screen).toContain(name);
+        at screen (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:18:25)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:102:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › browser/tests/marathi.spec.js:84:49 › Marathi game phone › threaded native catalog, settings and tutorial render in Marathi 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 20
+    Received:   19
+
+      217 |       const body = {x: Math.ceil(card.x + 4), y: top,
+      218 |         width: Math.floor(card.width - 8), height: Math.floor(card.y + card.height - top - 4)};
+    > 219 |       expect(body.height).toBeGreaterThan(20);
+          |                           ^
+      220 |       expect(body.width).toBeGreaterThan(20);
+      221 |       expect(await hasLightText(page, body, 150)).toBe(true);
+      222 |       records.phoneHelpBody = {clip: body, minimumChannel: 150, renderedGlyphInk: true,
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/marathi.spec.js:219:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../menu-latest-integration-evidence/results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../menu-latest-integration-evidence/results/marathi-Marathi-game-phone-bfce9--tutorial-render-in-Marathi-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [firefox] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      16 |       }
+      17 |       return false;
+    > 18 |     }, {timeout:60000}).toBe(true);
+         |                         ^
+      19 |     return waitForMainMenu(page);
+      20 |   }
+      21 |   return expect.poll(async()=>(await state(page)).screen).toContain(name);
+        at screen (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:18:25)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:93:81
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [webkit] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      16 |       }
+      17 |       return false;
+    > 18 |     }, {timeout:60000}).toBe(true);
+         |                         ^
+      19 |     return waitForMainMenu(page);
+      20 |   }
+      21 |   return expect.poll(async()=>(await state(page)).screen).toContain(name);
+        at screen (/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:18:25)
+        at /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/tests/campaign-progress.spec.js:93:81
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace ../menu-latest-integration-evidence/results/campaign-progress-campaign-805e6-durable-backup-with-discard-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Slow test file: [webkit] › browser/tests/marathi.spec.js (7.5m)
+  Slow test file: [chromium] › browser/tests/marathi.spec.js (6.5m)
+  Slow test file: [firefox] › browser/tests/marathi.spec.js (6.0m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  5 failed
+    [chromium] › browser/tests/campaign-progress.spec.js:57:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups 
+    [chromium] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard 
+    [chromium] › browser/tests/marathi.spec.js:84:49 › Marathi game phone › threaded native catalog, settings and tutorial render in Marathi 
+    [firefox] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard 
+    [webkit] › browser/tests/campaign-progress.spec.js:75:44 › campaign persistence failure preserves the durable backup with discard 
+  19 passed (46.2m)

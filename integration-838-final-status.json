@@ -1,0 +1,83 @@
+{
+  "pid": 3588526,
+  "revision": "1d09ddbff80f3cf916f1163a99a9899149ab31c4",
+  "base": "8382dc99c127ba0cb2578e8903d22b754493a95a",
+  "scope": "Exact latest-master telemetry integration plus both fixture-only repairs; both release runtimes, complete Node contracts and24 original cases3browsers. Separate worktree/outputs; existing native/fullbrowser/source/SDL untouched. Shared dependencies use unchanged content-addressed fingerprints; no compiler/SDK/recipe/pin overrides.",
+  "results": [
+    {
+      "name": "build",
+      "command": [
+        "scons",
+        "target=web",
+        "release=1",
+        "-j8",
+        "web-package"
+      ],
+      "exit_code": 0,
+      "seconds": 2544.3
+    },
+    {
+      "name": "npm",
+      "command": [
+        "npm",
+        "ci",
+        "--prefix",
+        "browser"
+      ],
+      "exit_code": 0,
+      "seconds": 1.5
+    },
+    {
+      "name": "node",
+      "command": [
+        "node",
+        "--test",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/asset-loader.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/audio.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/file-selection.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/generator-studio.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/gradient-compute.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/instance-config.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/language.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/map-launch.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/music-output.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/music-worker.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/presentation-surface.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/quit-navigation.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/replay-appearance.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/replay-fixture.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/runtime-variants.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/set-preview.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/startup-renderer.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/storage.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/studio.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/text-bridge.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/thai-input.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/threaded-canvas.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/threading.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/tutorial-lessons.test.js",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/unit/webgpu-device.test.js"
+      ],
+      "exit_code": 0,
+      "seconds": 1.8
+    },
+    {
+      "name": "browser",
+      "command": [
+        "xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 2560x2048x24 -noreset",
+        "node",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration/browser/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config=/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration-evidence/playwright.config.cjs",
+        "--output=/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/menu-latest-integration-evidence/results",
+        "--trace=retain-on-failure"
+      ],
+      "exit_code": 1,
+      "seconds": 2773.6
+    }
+  ],
+  "phase": "failed; inspect actual log before any rerun"
+}
