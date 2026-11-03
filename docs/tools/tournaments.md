@@ -966,6 +966,26 @@ baseline-pilot workload stage boundaries and selects two screening finalists;
 insufficient screening evidence stops the campaign instead of inventing a choice.
 The existing adaptive model and 95% early-victory rule stay fixed.
 
+After the pilot, diagnostic planning uses observed attempt costs, including
+right-censored timeouts. Bounded route/kernel diagnostics run broadly; the more
+expensive unified adaptive-quality observer is enabled on a preselected fifth
+of diagnostic blocks, with the same tier for every policy arm in a block.
+The model itself stays fixed. Manifests record the tier and its selection rate;
+missing quality-probe data is unavailable, not zero. The bounded-route duration
+used for budgeting is a conservative projection and is labelled separately from
+measured pilot timings. Future cohorts attempt a game once for process failures,
+avoiding repeated deterministic diagnostic timeouts; transport retries retain
+the standard infrastructure allowance.
+
+`campaign --continue-pilot` reattaches a corrected controller to the existing
+pilot ledger. It preserves accepted, active and pending job identities and the
+original phase and campaign deadlines. Prepare and validate the new controller
+first, briefly pause admission, then replace only the old controller process
+group. Existing worker/game process groups must remain alive, and leases must be
+renewed by the replacement promptly. This differs from `--resume-pilot`, which
+creates a superseding recording cohort after a recording correction.
+
+
 The controller reserves 10 GiB free space, limits attempts to 512 MiB, stops
 admission at a 37 GiB campaign footprint, and reserves the remaining space beneath
 40 GiB for draining work. Each game also carries an absolute deadline in

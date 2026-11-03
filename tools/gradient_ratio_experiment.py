@@ -38,9 +38,10 @@ def category(g):
 
 
 def plan(bundle, *, phase, setups=12, replicates=4, seed=20261102, arms=ARMS,
-         ticks=90000, diagnostics=.2, deadline=None):
+         ticks=90000, diagnostics=.2, deadline=None, quality_fraction=1, process_attempts=2):
     if setups < 2 or setups % 2 or replicates < 4 or not 0 <= diagnostics <= 1:
         raise ValueError('use an even setup count, at least four independent replicates, and diagnostic fraction 0..1')
+    if not 0<=quality_fraction<=1 or process_attempts<1:raise ValueError('invalid diagnostic quality fraction or attempt count')
     if not arms or arms[0] != 'baseline' or len(set(arms)) != len(arms) or set(arms)-set(ARMS):
         raise ValueError('arms must start with baseline and contain distinct known policies')
     catalog = bundle['capabilities']
@@ -90,10 +91,14 @@ def plan(bundle, *, phase, setups=12, replicates=4, seed=20261102, arms=ARMS,
         local=[(setup,r,diagnostics==1) for r in range(replicates)]
         local += [(setup,replicates+r,True) for r in range(extra//setups+(index<extra%setups))]
         rng.shuffle(local);blocks.extend(local)
+    diagnostic_blocks=[i for i,b in enumerate(blocks) if b[2]]
+    # Select whole randomized blocks so every arm gets the same observer tier.
+    quality_order=sorted(diagnostic_blocks,key=lambda i:digest([seed,phase,i,'quality-tier']))
+    quality_blocks=set(quality_order[:round(len(quality_order)*quality_fraction)])
     for block_index,(setup,replicate,diagnostic) in enumerate(blocks):
         order = list(arms);rng.shuffle(order)
         for arm in order:
-            ratio = dict(policy=arm,study='routes' if diagnostic else 'counts',work=True,quality=diagnostic,kernels=diagnostic)
+            ratio = dict(policy=arm,study='routes' if diagnostic else 'counts',work=True,quality=diagnostic and block_index in quality_blocks,kernels=diagnostic)
             players=setup['players'][replicate % len(setup['players']):]+setup['players'][:replicate % len(setup['players'])]
             config=dict(generator=setup['generator'],params=setup['params'],candidates=5,players=players,ticks=ticks,
                         win_probability_permille=950,routing_ratio=ratio)
@@ -106,11 +111,11 @@ def plan(bundle, *, phase, setups=12, replicates=4, seed=20261102, arms=ARMS,
                     replay=diagnostic and replicate==(0 if diagnostics==1 else replicates) and setup['generator_id'] in NAMED),
                 limits=limits,labels=dict(phase=phase,setup=setup['id'],replicate=replicate,block=block_index,
                     variant=arm,format=setup['format'],generator=setup['generator'],generator_id=setup['generator_id'],
-                    terrain_category=setup['category'],diagnostic=diagnostic,held_out=phase=='confirmation')))
-    manifest=dict(schema_version=1,id='ratio-'+phase+'-'+digest([bundle['id'],seed,setups,replicates,list(arms)])[:16],
-        settings=dict(artifact_budget_bytes=30*GIB,disk_reserve_bytes=10*GIB,prefetch=0),jobs=jobs,
+                    terrain_category=setup['category'],diagnostic=diagnostic,quality_probe=ratio['quality'],held_out=phase=='confirmation')))
+    manifest=dict(schema_version=1,id='ratio-'+phase+'-'+digest([bundle['id'],seed,setups,replicates,list(arms),ticks,diagnostics,quality_fraction,process_attempts])[:16],
+        settings=dict(artifact_budget_bytes=30*GIB,disk_reserve_bytes=10*GIB,prefetch=0,process_attempts=process_attempts),jobs=jobs,
         metadata=dict(contract='routing-ratio-study-v1',phase=phase,setups=setup_rows,seed=seed,
-            independent_seeds=True,minimum_replicates=replicates,stopping_permille=950,
+            independent_seeds=True,minimum_replicates=replicates,stopping_permille=950,quality_probe_fraction=quality_fraction,
             routing_observer=dict(query_hash_denominator=1024,window_ticks=512,routes_per_window=8,routes_per_game=2048),
             adaptive_model_sha256=bundle.get('build_options',{}).get('adaptive_model_sha256'),
             layout_controls='pinned catalog defaults with legal size/density constraints',
@@ -477,6 +482,7 @@ def summarize(directory, output, stages=None):
             for name in sorted({g['generator'] for g in games})},high_diversity_cpu_descriptive=compare(games,'cpu_per_diverse_tick'),memory=compare(games,'peak_rss_bytes'),sampled_simulation_memory=compare(games,'simulation_sampled_rss_peak'),stages_cpu={s:compare(games,'cpu_per_tick_'+s) for s in ('early','mid','late')},adjusted=regression(games),
         by_generator={name:compare([g for g in games if g['generator']==name]) for name in sorted({g['generator'] for g in games})},games=games,
         limitations=['Routing traces follow fresh static fields, excluding congestion, changing goals and forbidden secondary ranking.',
+            'Unified adaptive-quality errors are available only for preselected expensive-observer blocks; other diagnostic games still collect bounded routes, model inputs and work.',
             'Point-to-point searches have policy/reachability counters; frozen route-regret traces cover gradient-backed movement queries, not point A-star queries.',
             'Actual-speed oracle measures expected movement ticks with engine terrain/diagonal quantization; it excludes hazard utility and pickup penalties.',
             'Memory components include attached fields/queues and retained terrain plus output reservations; RSS also includes detached leases, pools, and other engine storage.',
@@ -628,17 +634,59 @@ def _resume_pilot(bundle_path,directory,cpu_ids):
     _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,end-min(900,(end-started)*.1))
 
 
+def _continue_pilot(bundle_path,directory,cpu_ids):
+    """Reattach orchestration without changing any admitted or pending pilot job."""
+    root=Path(directory).resolve();receipt=read_json(root/'campaign.json')
+    if cpu_ids!=receipt['cpu_ids']:raise ValueError('continuation must preserve CPU allocation')
+    if time.time()>=receipt['deadline'] or (root/'screening').exists():raise ValueError('pilot continuation window is unavailable')
+    os.sched_setaffinity(0,cpu_ids)
+    manifest=read_json(root/'pilot-recovery/experiment.json')
+    coordinator=Coordinator(root/'pilot-recovery')
+    try:coordinator.control('running')
+    finally:coordinator.close()
+    bundle=inspect_bundle(bundle_path)
+    pilot_dir=run_phase(root,bundle_path,manifest,cpu_ids,min(receipt['deadline'],receipt['started']+6*3600))
+    report=summarize(pilot_dir,root/'pilot-report.json')
+    report['superseded_cohort']='pilot; recording repair only, excluded from comparisons'
+    atomic_json(root/'pilot-report.json',report)
+    _finish_campaign(root,bundle_path,bundle,cpu_ids,report,receipt['started'],receipt['deadline'],receipt['deadline']-900)
+
+
+def diagnostic_projection(root,pilot_report,quality_fraction=.2):
+    """Use all observed attempt costs, including censored diagnostic timeouts."""
+    light=[g['wall_seconds'] for g in pilot_report['games'] if not g['diagnostic']]
+    if not light:raise ValueError('no lightweight throughput evidence')
+    light_seconds=statistics.median(light)
+    source=Results(Path(root)/('pilot-recovery' if (Path(root)/'pilot-recovery').exists() else 'pilot'))
+    heavy=[r['finished']-r['started'] for r in source.attempts()
+        if r.get('finished') and r.get('job',{}).get('labels',{}).get('diagnostic')
+        and 'observer_mode' not in r['job']['labels'] and r['category'] in ('success','timeout')]
+    heavy_seconds=quantile(heavy,.75) if heavy else light_seconds*10
+    # Conservative projection for bounded route/kernel diagnostics; actual
+    # throughput will be reported separately, never presented as measured here.
+    route_seconds=2*light_seconds
+    mixed=quality_fraction*heavy_seconds+(1-quality_fraction)*route_seconds
+    diagnostic_fraction=(.2*light_seconds)/(.8*mixed+.2*light_seconds)
+    return dict(light_seconds=light_seconds,heavy_seconds=heavy_seconds,heavy_attempts=len(heavy),
+        bounded_route_seconds_projection=route_seconds,mixed_diagnostic_seconds_projection=mixed,
+        quality_probe_fraction=quality_fraction,screen_diagnostic_job_fraction=diagnostic_fraction,
+        interpretation='Measured lightweight median and diagnostic attempt p75 include timeouts; bounded-route cost is a conservative projection.')
+
+
 def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,work_end):
     if not any(g['arm']=='baseline' and g['high_diversity_with_extra_builds'] for g in pilot_report['games']):
         raise RuntimeError('Pilot did not verify diverse amphibious query demand with duplicated ratio builds; revise workload coverage within the original remaining budget before screening')
     stages=pilot_report['stages'];atomic_json(root/'stages.json',stages)
     durations=[g['wall_seconds'] for g in pilot_report['games'] if not g['diagnostic']]
     if not durations:raise RuntimeError('pilot produced no valid lightweight games')
-    median=statistics.median(durations)
+    projection=diagnostic_projection(root,pilot_report)
+    atomic_json(root/'diagnostic-budget-projection.json',projection)
+    median=projection['light_seconds']
     screen_hours=min(10*3600,max(0,end-time.time())*.3)
-    count=int(3*screen_hours*.75/median/(len(ARMS)*4));setups=min(120,max(2,count-count%2))
+    count=int(3*screen_hours*.8*.85/median/(len(ARMS)*4));setups=min(120,max(2,count-count%2))
     screen_end=min(end,time.time()+screen_hours)
-    screen=plan(bundle,phase='screening',setups=setups,seed=20261103,deadline=screen_end)
+    screen=plan(bundle,phase='screening',setups=setups,seed=20261103,deadline=screen_end,
+        diagnostics=projection['screen_diagnostic_job_fraction'],quality_fraction=.2,process_attempts=1)
     screen_dir=run_phase(root,bundle_path,screen,cpu_ids,screen_end)
     screen_report=summarize(screen_dir,root/'screening-report.json',stages)
     chosen=finalists(screen_report);atomic_json(root/'finalists.json',dict(arms=chosen,rule='retain mode and fastest measured CPU/route-quality Pareto alternative',source=digest(screen_report)))
@@ -646,13 +694,12 @@ def _finish_campaign(root,bundle_path,bundle,cpu_ids,pilot_report,started,end,wo
     if remaining<=3600:raise RuntimeError('insufficient remaining campaign time for confirmation')
     perf_end=time.time()+remaining*.8
     count=int(3*(perf_end-time.time())*.85/median/(len(chosen)*4));setups=min(300,max(2,count-count%2))
-    confirmation=plan(bundle,phase='confirmation',setups=setups,seed=20261104,arms=chosen,diagnostics=0,deadline=perf_end)
+    confirmation=plan(bundle,phase='confirmation',setups=setups,seed=20261104,arms=chosen,diagnostics=0,deadline=perf_end,process_attempts=1)
     confirm_dir=run_phase(root,bundle_path,confirmation,cpu_ids,perf_end)
     summarize(confirm_dir,root/'confirmation-report.json',stages)
-    diagnostic_durations=[g['wall_seconds'] for g in pilot_report['games'] if g['diagnostic']]
-    diagnostic_median=statistics.median(diagnostic_durations) if diagnostic_durations else median*4
+    diagnostic_median=projection['mixed_diagnostic_seconds_projection']
     count=int(3*max(0,work_end-time.time())*.75/diagnostic_median/(len(chosen)*4));setups=min(120,max(2,count-count%2))
-    diagnostic=plan(bundle,phase='confirmation',setups=setups,seed=20261105,arms=chosen,diagnostics=1,deadline=work_end)
+    diagnostic=plan(bundle,phase='confirmation',setups=setups,seed=20261105,arms=chosen,diagnostics=1,deadline=work_end,quality_fraction=.2,process_attempts=1)
     diagnostic['metadata']['phase']='diagnostic-confirmation'
     diagnostic['id']+='-diagnostic'
     diagnostic_dir=run_phase(root,bundle_path,diagnostic,cpu_ids,work_end)
@@ -695,9 +742,10 @@ def decision_package(root, error=None):
     (root/'decision-package.md').write_text('\n'.join(lines)+'\n')
 
 
-def campaign(bundle_path, directory, cpu_ids, hours=48, resume_pilot=False):
+def campaign(bundle_path, directory, cpu_ids, hours=48, resume_pilot=False, continue_pilot=False):
     try:
-        if resume_pilot:_resume_pilot(bundle_path,directory,cpu_ids)
+        if continue_pilot:_continue_pilot(bundle_path,directory,cpu_ids)
+        elif resume_pilot:_resume_pilot(bundle_path,directory,cpu_ids)
         else:_campaign(bundle_path,directory,cpu_ids,hours)
     except Exception as error:
         if Path(directory).is_dir():
@@ -719,10 +767,10 @@ def main():
     p=sub.add_parser('analyze');p.add_argument('directory');p.add_argument('--output',required=True);p.add_argument('--stages')
     p=sub.add_parser('freeze-stages');p.add_argument('directory');p.add_argument('--output',required=True)
     p=sub.add_parser('campaign');p.add_argument('--bundle',required=True);p.add_argument('--directory',required=True)
-    p.add_argument('--cpu-ids',required=True);p.add_argument('--hours',type=float,default=48);p.add_argument('--resume-pilot',action='store_true')
+    p.add_argument('--cpu-ids',required=True);p.add_argument('--hours',type=float,default=48);p.add_argument('--resume-pilot',action='store_true');p.add_argument('--continue-pilot',action='store_true')
     args=parser.parse_args()
     if args.command=='plan':atomic_json(args.output,plan(inspect_bundle(args.bundle),phase=args.phase,setups=args.setups,replicates=args.replicates,seed=args.seed,arms=args.arms,ticks=args.ticks,diagnostics=args.diagnostics))
-    elif args.command=='campaign':campaign(args.bundle,args.directory,[int(v) for v in args.cpu_ids.split(',')],args.hours,args.resume_pilot)
+    elif args.command=='campaign':campaign(args.bundle,args.directory,[int(v) for v in args.cpu_ids.split(',')],args.hours,args.resume_pilot,args.continue_pilot)
     elif args.command=='freeze-stages':atomic_json(args.output,freeze_stages(Results(args.directory)))
     else:summarize(args.directory,args.output,read_json(args.stages) if args.stages else None)
 

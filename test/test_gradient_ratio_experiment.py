@@ -5,7 +5,7 @@ import tempfile,time
 from pathlib import Path
 from unittest.mock import patch
 from collections import Counter, defaultdict
-from tools.gradient_ratio_experiment import ARMS, NAMED, compare, plan, add_observer_calibration, finalists, _resume_pilot
+from tools.gradient_ratio_experiment import ARMS, NAMED, compare, plan, add_observer_calibration, finalists, _resume_pilot, _continue_pilot, diagnostic_projection
 from tools.tournaments.jobs import EngineJob, routing_ratio_outputs
 
 
@@ -98,6 +98,42 @@ class RatioExperiment(unittest.TestCase):
                 self.assertEqual(after['outputs']['log_mode'],'research')
                 self.assertNotEqual(before['id'],after['id'])
             self.assertEqual(finish.call_args.args[-3:-1],(started,deadline))
+
+    def test_expensive_observer_is_selected_by_whole_arm_blocks(self):
+        manifest=plan(bundle(),phase='confirmation',diagnostics=1,quality_fraction=.2,process_attempts=1)
+        blocks=defaultdict(list)
+        for request in manifest['jobs']:
+            blocks[request['labels']['block']].append(request['config']['routing_ratio']['quality'])
+            self.assertTrue(request['config']['routing_ratio']['kernels'])
+            self.assertEqual(request['config']['routing_ratio']['study'],'routes')
+        self.assertEqual(sum(all(v) for v in blocks.values()),round(len(blocks)*.2))
+        self.assertTrue(all(len(set(v))==1 for v in blocks.values()))
+        self.assertEqual(manifest['settings']['process_attempts'],1)
+
+    def test_diagnostic_projection_accounts_for_censored_timeouts(self):
+        records=[dict(started=0,finished=seconds,category=category,job=dict(labels=dict(diagnostic=True)))
+                 for seconds,category in [(10,'success'),(1800,'timeout')]]
+        with patch('tools.gradient_ratio_experiment.Results') as results:
+            results.return_value.attempts.return_value=iter(records)
+            projection=diagnostic_projection(Path('/unused'),dict(games=[dict(diagnostic=False,wall_seconds=75)]))
+        self.assertGreater(projection['heavy_seconds'],1000)
+        self.assertEqual(projection['heavy_attempts'],2)
+        self.assertLess(projection['screen_diagnostic_job_fraction'],.2)
+
+    def test_controller_handoff_preserves_the_current_pilot_manifest(self):
+        from tools.tournaments.common import atomic_json
+        started=time.time()-3600;end=started+48*3600
+        manifest=plan(bundle(),phase='pilot',deadline=started+6*3600)
+        manifest['metadata']['phase']='pilot-recovery'
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);(root/'pilot-recovery').mkdir()
+            atomic_json(root/'campaign.json',dict(started=started,deadline=end,cpu_ids=list(range(12,24))))
+            atomic_json(root/'pilot-recovery/experiment.json',manifest)
+            with patch('tools.gradient_ratio_experiment.os.sched_setaffinity'),patch('tools.gradient_ratio_experiment.Coordinator'),patch('tools.gradient_ratio_experiment.inspect_bundle',return_value=bundle()),patch('tools.gradient_ratio_experiment.run_phase',return_value=root/'pilot-recovery')as run,patch('tools.gradient_ratio_experiment.summarize',return_value={'games':[]}),patch('tools.gradient_ratio_experiment._finish_campaign')as finish:
+                _continue_pilot('/bundle',root,list(range(12,24)))
+            self.assertEqual(run.call_args.args[2],manifest)
+            self.assertEqual(run.call_args.args[4],started+6*3600)
+            self.assertEqual(finish.call_args.args[-3:-1],(started,end))
 
     def test_replication_cannot_be_sacrificed_to_more_setups(self):
         with self.assertRaises(ValueError):plan(bundle(),phase='pilot',replicates=3)
