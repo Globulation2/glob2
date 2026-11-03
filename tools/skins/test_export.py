@@ -85,7 +85,7 @@ def validate_installed(root, repository):
     manifest = json.loads((root / "manifest.json").read_text())
     assert manifest["format"] == "GSK1" and manifest["layout"] == "colony-v1"
     groups = {
-        "worker": ("walk", "swim", "harvest"),
+        "worker": ("walk", "swim", "harvest", "prone-harvest", "prone-harvest-mid"),
         "warrior": ("walk", "swim", "fight"),
         "explorer": ("fly",),
     }
@@ -128,6 +128,10 @@ def validate_installed(root, repository):
                     hashlib.sha256((repository / dependency).read_bytes()).hexdigest()
                     == digest
                 ), (name + ": " + dependency + " changed")
+        elif name.startswith("worker-prone-harvest"):
+            assert record["source"] == "tools/unit-animation/prone_harvest_motion.py"
+            for dependency, digest in record["dependencies"].items():
+                assert hashlib.sha256((repository/dependency).read_bytes()).hexdigest()==digest
         else:
             assert source.is_relative_to((repository / "content-src/gfx").resolve())
         assert (

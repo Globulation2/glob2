@@ -4,6 +4,7 @@
 #include "GlobalContainer.h"
 #include "UnitConsts.h"
 #include "UnitAnimation.h"
+#include "UnitHarvestAnimation.h"
 #include "UnitMotion.h"
 #include "render/scene/Scene.h"
 #include "BuildingType.h"
@@ -94,6 +95,9 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 	for (const auto &swarm : Online::SWARM_MESHES)
 		requests.push_back(
 			GAGCore::requestSkinMesh(loader, path(root + "/" + std::string(swarm.file))));
+	for (const auto *name : {"worker-prone-harvest", "worker-prone-harvest-mid"})
+		requests.push_back(GAGCore::requestSkinMesh(
+			loader, path(root + "/" + GAGCore::skinClipFile(name, baked))));
 	std::array<GAGCore::SkinMesh, 7> replacement, replacementTurns;
 	for (unsigned i = 0; i < replacement.size(); ++i)
 	{
@@ -127,6 +131,16 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 	for (unsigned i = 0; i < swarms.size(); ++i)
 		if (auto mesh = loader.wait(requests[clips.size() + i]))
 			swarms[i] = *mesh;
+	for (unsigned i = 0; i < proneHarvest.size(); ++i)
+	{
+		const auto name = i == 0 ? "worker-prone-harvest" : "worker-prone-harvest-mid";
+		auto mesh = loader.wait(requests[clips.size() + swarms.size() + i]);
+		if (!baked && (!mesh || !mesh->shapes || mesh->frames != 256 || mesh->logicalSize != 38))
+			mesh = loader.wait(GAGCore::requestSkinMesh(
+				loader, path(root + "/" + GAGCore::skinClipFile(name, true))));
+		proneHarvest[i] =
+			mesh && mesh->frames == 256 && mesh->logicalSize == 38 ? *mesh : GAGCore::SkinMesh{};
+	}
 	return true;
 }
 bool ColonySkinPreview::loadInstalledMeshes()
@@ -245,33 +259,41 @@ ColonySkinPreview::~ColonySkinPreview() {
 }
 
 bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team, int action,
-							 int direction, int delta, float x, float y,
-							 GAGCore::SkinShadow shadow, std::uint8_t alpha)
+							 int direction, int delta, float x, float y, GAGCore::SkinShadow shadow,
+							 std::uint8_t alpha, int pronePhase)
 {
 	if (!visible || team < 0 || team >= 32 || direction < 0 || direction > 8 || delta < 0 ||
-		delta > 255)
+		delta > 255 || pronePhase < -1 || pronePhase >= UNIT_ANIMATION_PRONE_HARVEST_PHASES)
 		return false;
 	if (sprites && (!gfx.rendererCapabilities().liveSkins || !ready || !textures[team]))
 	{
-		const unsigned clip = unitClip(type, action);
-		if (clip >= 8)
+		const unsigned clip = pronePhase >= 0 ? 8 : unitClip(type, action);
+		if (clip >= 8 && pronePhase < 0)
 			return false;
-		const float size = Online::SkinSpriteLogicalSizes[clip], offset = (size - 32) / 2;
-		return sprites->draw(gfx, team, clip, unitSkinSpriteFrame(direction, delta), x - offset,
-							 y - offset, size, size, shadow, alpha);
+		const float size = pronePhase >= 0 ? 38 : Online::SkinSpriteLogicalSizes[clip],
+					offset = (size - 32) / 2;
+		return sprites->draw(gfx, team, clip,
+							 pronePhase >= 0 ? unitProneHarvestFrame(direction, pronePhase)
+											 : unitSkinSpriteFrame(direction, delta),
+							 x - offset, y - offset, size, size, shadow, alpha);
 	}
 	if (sprites)
-		sprites->prefetch(team, unitClip(type, action), unitSkinSpriteFrame(direction, delta));
+		sprites->prefetch(team, pronePhase >= 0 ? 8 : unitClip(type, action),
+						  pronePhase >= 0 ? unitProneHarvestFrame(direction, pronePhase)
+										  : unitSkinSpriteFrame(direction, delta));
 	if (!ready || !textures[team] || !materials[team])
 		return false;
-	const auto *mesh = unitMesh(type, action, direction == 8);
-	if (!mesh)
+	const auto *mesh =
+		pronePhase >= 0 ? &proneHarvest[pronePhase % 2] : unitMesh(type, action, direction == 8);
+	if (!mesh || !mesh->identity)
 		return false;
 	const float size = mesh->logicalSize;
 	const float offset = (size - 32) / 2;
-	return gfx.drawSkinMesh(*mesh, unitSkinMeshFrame(direction, delta), *textures[team],
-							*materials[team], unitRegion(type), x - offset, y - offset, size, size,
-							shadow, alpha);
+	return gfx.drawSkinMesh(*mesh,
+							pronePhase >= 0 ? unitProneHarvestMeshFrame(direction, pronePhase)
+											: unitSkinMeshFrame(direction, delta),
+							*textures[team], *materials[team], unitRegion(type), x - offset,
+							y - offset, size, size, shadow, alpha);
 }
 
 bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
@@ -373,13 +395,20 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Presentation
 						}
 						const auto meshClass =
 							scene.world.catalogs->units->runtime(unit->typeNum).meshClass;
-						const auto *mesh = unitMesh(meshClass, unit->action, unit->direction == 8);
-						if (mesh && unit->direction >= 0 && unit->direction <= 8 &&
-							unit->delta >= 0 && unit->delta <= 255)
+						const int pronePhase =
+							unitProneHarvestPhase(scene, *unit, meshClass, unitMotion);
+						const auto *mesh = pronePhase >= 0 ? &proneHarvest[pronePhase % 2]
+														   : unitMesh(meshClass, unit->action,
+																	  unit->direction == 8);
+						if (mesh && mesh->identity && unit->direction >= 0 &&
+							unit->direction <= 8 && unit->delta >= 0 && unit->delta <= 255)
 							requests.push_back(
 								{mesh,
-								 static_cast<unsigned>(unitSkinMeshFrame(
-									 unit->direction, drawnUnitDelta(*unit, unitMotion))),
+								 static_cast<unsigned>(
+									 pronePhase >= 0
+										 ? unitProneHarvestMeshFrame(unit->direction, pronePhase)
+										 : unitSkinMeshFrame(unit->direction,
+															 drawnUnitDelta(*unit, unitMotion))),
 								 textures[unit->team].get(), materials[unit->team].get(),
 								 unitRegion(meshClass)});
 					}
