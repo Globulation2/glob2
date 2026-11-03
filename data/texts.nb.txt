@@ -6856,5 +6856,53 @@ Kompilering fullført
 Linje: %0 Kol.: %1
 [script loading failed %0]
 Kunne ikke laste skriptet fra %0
+[engine performance per game minute]
+Per spillminutt
+[engine performance per real minute]
+Per faktisk minutt
+[engine performance game engine performance]
+Spillmotorens ytelse
+[engine performance task wall-time costs]
+Oppgavenes tidsbruk
+[engine performance inspect slow ticks]
+Undersøk langsomme spillsteg
+[engine performance no advancing ticks recorded yet]
+Ingen fremadskridende spillsteg er registrert ennå.
+[engine performance whole-engine performance]
+Hele motorens ytelse
+[engine performance open performance charts]
+Åpne ytelsesdiagrammer
+[engine performance engine performance]
+Motorytelse
+[engine performance follow latest interval]
+Følg siste intervall
+[engine performance compare task costs]
+Sammenlign oppgavenes tidsbruk
+[engine performance all metrics and slow ticks]
+Alle målinger og langsomme spillsteg
+[engine performance phase orders]
+Ordrer
+[engine performance phase units]
+Enheter
+[engine performance phase buildings]
+Bygninger
+[engine performance phase map]
+Kart
+[engine performance phase statistics]
+Statistikk
+[engine performance phase ai]
+Kunstig intelligens
+[engine performance phase world capture]
+Registrering av verdenstilstand
+[engine performance phase checksums]
+Kontrollsummer
+[engine performance wall time %0]
+Forløpt tid: %0 ms
+[engine performance waits %0 joins %1 locks %2]
+Påkrevd venting: %0 ms; venting i eiertråden: %1 ms; låser: %2 ms
+[engine performance phase %0 wall %1]
+%0: %1 ms forløpt tid
+[engine performance tick %0 wall %1]
+Spillsteg %0: %1 ms forløpt tid
 [script saving failed %0]
 Kunne ikke lagre skriptet i %0

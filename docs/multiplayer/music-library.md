@@ -65,6 +65,9 @@ Each source write schedules trusted score validation and rendering automatically
 the next model call receives the resulting checks to repair any failures.
 This prevents repeated source rewrites from consuming the action budget before
 a candidate is ever validated. The three-render limit still applies.
+Delivery requires score validation and all eleven audio checks, including mood
+transition analysis. A passing headline cannot replace missing, duplicate or
+failed checks.
 Common project/message and credit-pack schemas live in `protocol/src/studioCommon.ts`;
 studio-specific settings, products and balances remain separate.
 

@@ -9,7 +9,7 @@ for (const variant of ['serial', 'threaded']) {
     await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
       window.introDone=false; window.introExit=null; window.introLog=[];
       var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
-        locateFile:name=>'/${variant==='threaded'?'threaded/':''}'+name,
+        locateFile:name=>name.endsWith('.data')?'/'+name:'/${variant==='threaded'?'threaded/':''}'+name,
         print:m=>introLog.push(String(m)), printErr:m=>introLog.push(String(m)),
         onExit:code=>window.introExit=code,
         preRun:[()=>{FS.mkdirTree('/evidence/profile');ENV.GLOB2_TEST_SOURCE_ROOT='/';

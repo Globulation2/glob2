@@ -8,10 +8,12 @@ have their own save-format rules; timing collection does not change them.
 
 ## Meaning of the measurements
 
-All durations are monotonic elapsed nanoseconds, not process CPU time. Descheduling and
-blocking inside an instrumented operation remain in its duration. Rendering measures CPU-side
-submission and the presentation call; it does not measure GPU execution or physical display
-scanout. No GPU queries, synchronization, or additional world scans are introduced.
+Wall durations are monotonic elapsed nanoseconds. Always-on collection does not read
+thread CPU clocks. Descheduling and blocking inside an instrumented operation remain
+in its duration. Rendering measures host submission and presentation wall time;
+sampled GPU execution is a separate measurement where supported (see permanent
+charts below). Physical display scanout is not measured. GPU timing is nonblocking,
+and collection does not request additional world scans.
 
 - `loop` measures complete main-loop iterations, including pacing.
 - `loop.work` excludes intentional sleep, network sleep, and the presentation call.
@@ -44,7 +46,8 @@ Per-player `ai.player` scopes identify player, team, implementation, and control
 generation where the synchronous polling API is instrumented. Scheduled worker decisions
 use the explicit `ai_pipeline` metrics below; worker-local scopes are not merged into the
 owner collector. Replay timings describe replay execution, not reconstructed original
-AI decisions. Audio callback and GPU execution times are not instrumented.
+AI decisions. Audio callback time is not instrumented. GPU execution timing is capability-dependent;
+see the permanent rendering measurements below.
 Startup timings include generation attempts performed while preparing the session.
 
 ## Cost and sampling
@@ -55,7 +58,8 @@ call and time one in 64 calls. The selected residue rotates between capture wind
 using gameplay RNG. This spreads sampling across periodic callers, but does not make the
 estimate statistically unbiased for every workload.
 
-Each scope retains fixed-size online moments: count, integer total/maximum, mean, and M2.
+Each scope retains fixed-size online moments: count, integer total/maximum, mean, M2,
+and an integer duration histogram.
 There is no event log, per-event allocation, string lookup, or sorting. Nesting is bounded at
 64 timed scopes; player attribution retains at most 128 controller generations per session.
 Overflow reports dropped records/samples and continues the game normally.
@@ -65,8 +69,8 @@ is available only when all instrumented child timing is exact. Uninstrumented wo
 in the parent's self time. Encountering a sampled descendant makes self time unavailable,
 rather than subtracting an estimate from an exact duration.
 
-`GLOB2_PERF_DISABLE=1` disables collection for benchmark comparisons. It is a diagnostic
-control, not a gameplay option. `GLOB2_PERF_BUILD_LABEL` optionally supplies a build identifier
+Collection cannot be disabled through the environment or gameplay settings. Benchmark
+comparisons must use a preceding executable with matching fixtures and build inputs. `GLOB2_PERF_BUILD_LABEL` optionally supplies a build identifier
 in exports; the benchmark artifacts should also retain the executable hash and build command.
 
 ## Export contract
@@ -82,10 +86,10 @@ Existing records remain unchanged. New records use key/value fields and nanoseco
   autosave drain. Cumulative mode is `all`; compare mode-specific sample records when speed
   changes matter.
 
-A sample closes at the end of the iteration crossing a 512-tick boundary, or after five
-seconds without a tick-based capture. Mode changes close the previous interval. Windows
-continue during pause/stalls. No unbounded performance history is retained; explicit output
-streams interval records, while collection without output retains only aggregates.
+A sample closes at the end of the iteration crossing a 512-tick boundary, or after one
+second without a tick-based capture. Mode changes close the previous interval. Windows
+continue during pause/stalls. A bounded compacting performance history is retained for the live/results charts;
+explicit output streams the original interval records before compaction.
 
 Exact scopes export `total_ns`. Sampled scopes export `observed_total_ns` and
 `estimated_total_ns = sample_mean * call_count`. Their maxima and standard deviations describe
@@ -184,10 +188,12 @@ Reconfiguring workers or diagnostics starts a fresh collection interval; exports
 that interval or the time since the latest load/restart reset.
 No diagnostic metadata is saved, replayed, hashed, or used to choose simulation results.
 
-- `off` allocates no diagnostic sidecars or trace storage. Its worker specialization
-  contains no diagnostic clock calls, counter updates, event writes or mode tests.
+- `off` allocates no optional diagnostic sidecars or trace storage. Permanent
+  wall-time and bounded dependency summaries still collect; optional event writes
+  and diagnostic-clock calls remain absent.
 - `waits` records submissions and owner joins under the existing executor mutex.
-  Workers use the same specialization as `off`; worker callback timing is unavailable.
+  Workers use the same specialization as `off`; optional worker callback records
+  are unavailable, while permanent callback wall-time summaries still collect.
 - `trace` also records scheduling, callbacks, suspension, external resolution,
   continuations, completion and retirement. Callback end is distinct from completion.
   A continuation retains its batch/job identity; repeated claim/start/end events identify
@@ -321,3 +327,171 @@ mutex, and `trace_open_work` marks an open interval. A session reset discards th
 previous maintenance interval; an epoch check suppresses its returning events, while
 `trace_coverage_gap` marks that missing prefix until the next configuration/reset.
 Both flags contribute to `trace_incomplete`, independently of dropped-event counts.
+
+## Permanent engine performance charts
+
+Live statistics and the results screen include **Game engine performance**. Collection
+is mandatory; the former `GLOB2_PERF_DISABLE` environment variable has no effect.
+Export still follows the existing team-timeline stream, so ordinary play does not
+create additional files. Loading or starting another match starts a new local
+performance session; performance history is not saved or reconstructed by replays.
+The completed session remains available while viewing its results.
+
+All computation charts use **monotonic wall time**, including owner advancement,
+executor callbacks, per-player AI callbacks, software rendering and save stages.
+Measurements include time spent blocked or descheduled within each scope. Compare
+owner execution, required joins and background waits to interpret busy-machine
+results. No thread CPU-clock reads are performed by always-on telemetry. Reserved
+CPU export fields remain unavailable (`cpu_samples=0`, CPU durations `na`), and
+descriptors identify `cpu_source=unavailable`; wall durations are never labelled CPU
+time. Existing explicitly requested diagnostic profilers retain their own contracts.
+
+The live sidebar provides session-wide TPS, tick duration and wait frequency, with
+**Open performance charts** opening a dedicated responsive dialog. That dialog and
+the results screen share a curated dashboard: achieved/requested TPS, mean/p95 tick
+duration and budget, exposed waits per advancing tick, affected ticks and overruns,
+frame intervals and budget, jitter, and CPU-side rendering wall time versus sampled
+GPU execution. Two columns collapse to one on small screens or larger text. The
+whole-session/last-five-game-minutes range applies to every chart and task-cost row;
+hover or tap selects one logical game time across charts; **Follow latest interval**
+clears that selection. Readouts explicitly identify latest versus selected intervals.
+Shading marks uncapped or mixed tick-target intervals. Budget lines follow each
+window; absent or mixed budgets have gaps. Gold markers identify interruptions and
+mode changes; gold baseline spans identify compacted intervals. Costs use complete
+stored windows intersecting the selected range, including the full boundary window.
+Task costs are grouped by owner, worker callbacks, and rendering/supporting work,
+with ms per advancing tick and total ms; inclusive rows are not a bottleneck ranking.
+**All metrics and slow ticks** retains the detailed metric explorer.
+
+The catalog exposes existing scopes, rendering counters and executor summaries;
+its overview includes tick wall cost, achieved/requested TPS, presented FPS,
+frame jitter, wait frequency and budget misses. Rates default to game minutes
+(1,800 simulation ticks) and can use elapsed real minutes instead. Paused windows
+have no game-minute denominator. Missing coverage and unsupported measurements remain
+unavailable. For wait means, totals, calls and per-tick costs, an advancing interval
+with owner-advancement coverage and no wait events displays zero; event percentiles
+remain unavailable without samples. This presentation rule does not invent samples
+or change exports.
+Inclusive wall scopes overlap; do not sum parents and children. Exclusive wall
+views require complete child coverage.
+
+Windows close after 512 ticks or one second, on execution-mode changes, and at
+finalization. A fixed history allocation of at most 12 MiB preserves the entire
+session by merging the adjacent windows with the finest combined coverage, breaking
+ties by age. Retained windows occupy stationary slots: compaction moves only small
+logical-order indices and reuses the merged-away slot. Capture copies the current
+metrics directly into that slot, without an intermediate full-window copy. Counts, totals, integer histograms and parallel variance moments merge
+without averaging percentiles. Hover readouts identify merged windows and execution
+modes. Window `boundaries` is a bit mask: 1 renderer/device generation change,
+2 presentation gap over two seconds, 4 suspension, 8 resume. A long gap is observed
+elapsed time, not proof that the application was backgrounded. The 64 slowest owner ticks retain wall cost, required-join costs and phase
+deltas (orders, units, buildings, map, statistics, AI, world capture, checksums).
+The owner collector, simulation mailbox, simulation collector, shared worker sink,
+executor summaries and causal sidecars fit the remaining 4 MiB allowance, including
+the retained decorative menu executor and bounded chart/GPU presentation storage.
+Timing banks are allocated before workers start: the serial menu needs only one,
+while the foreground executor reserves banks for its configured participants.
+The executor's fixed-capacity batch-slot arena is also allocated once on the heap;
+it never resizes. This keeps per-job timing storage off bounded worker stacks,
+including stack-owned map and game objects, while preserving live slot addresses.
+Explicit event tracing retains its separate diagnostic allocation.
+GPU query/readback storage and chart projections are bounded. The release-build
+collection-overhead acceptance target is 2%; fast-build tests do not establish it.
+
+When profiling collection overhead, compare identical release fixtures with native
+process CPU measurements as well as instruction profiles. Callgrind instruction
+counts exclude execution inside kernel system calls. Process CPU measurements in
+explicit benchmark runs are separate from the game's wall-time telemetry. Measure
+export overhead separately from collection.
+
+Permanent executor summaries operate independently of `--compute-telemetry`.
+Callback aggregates publish outside the scheduler mutex through four fixed timing
+shards. Participant indices use independent shards up to four participants; larger
+pools share stripes, keeping the storage bound independent of thread count. A shard
+can delay timing publication, but it never holds the scheduler mutex while doing so.
+Callback samples publish before completion becomes visible. Interval absorption
+locks timing shards only, without parking workers or acquiring the scheduler mutex.
+Each shard tracks its active metric IDs, so absorption/reset visits only populated
+metrics. The owner uses one due decision for shard absorption and interval closure;
+measurement frequency and the one-second/512-tick cadence are unchanged.
+Implicit worker collectors are suppressed because their scopes are not absorbed by
+the owner. Callback durations belong to the next interval that absorbs their shard;
+shards are handed off independently, so a callback racing a capture boundary may
+appear in the following interval. The simulation mailbox transfers samples and its
+completed-tick watermark under the same lock, including the initial loaded tick.
+Finalization drains outstanding jobs even with optional diagnostics disabled,
+without publishing future simulation outcomes. Final totals remain complete. Required-join
+snapshots use relaxed atomic counters
+without acquiring the scheduler mutex. Detailed optional traces retain their own
+existing diagnostic-lock contract.
+
+The scheduler retains only coarse causal timestamps and scalar dependency state.
+At batch retirement, the owner copies at most 64 compact causal observations while
+the batch is protected, then aggregates queue, lane and external durations after
+releasing the scheduler mutex. Those causal distributions belong to the retirement
+window; callback durations still publish at callback completion. Histograms and
+variance updates never run under the scheduler mutex for permanent telemetry.
+Job callback wall durations, player lanes, gradient subtypes, required waits, incomplete
+deadlines and unique affected ticks are available with diagnostics `off`.
+Turrets have their own producer and tick-deadline joins. Save/teardown joins do not
+count as required tick waits. A tick can wait for several producers, so per-producer
+wait-tick counts must not be summed into a global affected-tick count.
+
+Causal metadata retains at most 64 job records per live batch and one completion
+timestamp per lane. Callback totals remain complete beyond that bound; missing
+causal detail increments `compute.causal_unavailable`. Retirement retains no growing
+predecessor chain. Queue delay starts at lane eligibility; external suspension ends
+at resolution, and continuation invocations remain part of the same job. Required
+joins expose the last prerequisite's callback, lane, queue and external durations
+when evidence exists. These describe its observed lifetime, including time before
+the join: they are not additive portions of the exposed stall, a counterfactual
+speedup estimate, or proof of which competing task occupied workers. The additive
+owner wall accounting separates required lock acquisition, owner execution,
+background waits, and time outside those joins.
+
+### Rendering and GPU timing
+
+Render telemetry retains packets, batches, upload bytes, tracked resource bytes,
+submission/presentation/capture wall time, capture completions, latency,
+and drops. Tracked resource memory is not total GPU/driver memory. Frame intervals
+and consecutive interval changes describe presentation returns, not display scanout.
+Headless sessions do not fabricate rendering measurements. Capture latency is a
+frame-level counter delta: its mean divides accumulated latency by completed
+captures, and individual-capture percentiles are unavailable. GPU descriptors
+identify elapsed-query intervals separately from timestamp-query render-pass sums.
+
+GL/GLES uses optional nonblocking elapsed-time queries where the timer extension and
+entry points exist. WebGPU requests its optional timestamp-query feature and sums
+sampled render-pass durations; its `render.gpu.render_passes` scope excludes copies
+and is distinct from GL's `render.gpu.execution` interval. SDL GPU retains CPU-side
+measurements and reports GPU execution timing unavailable when its pinned public API
+provides no query support. No runtime dependency changes are needed.
+
+GPU sampling selects one in 16 submissions/frames with a rotating residue. Each
+backend retains at most 32 outstanding slots. Polling never waits for completion;
+full rings skip measurements, disjoint results and device resets invalidate them,
+and finalization reports unresolved queries without waiting for them. WebGPU also
+bounds each sample to 32 render passes; larger samples are marked invalid rather
+than reporting a truncated duration. Late results update the original retained
+window by timestamp, including a compacted window.
+
+### Performance export version 2
+
+Existing `GLOB2_PERF_*` records and fields retain their meaning. Schema records add
+units, category, source and aggregation information. Duration samples add
+approximate histogram upper-bound percentiles and a quoted
+comma-separated integer histogram (bucket zero is zero; bucket n covers
+`[2^(n-1), 2^n-1]`). Counter/gauge scopes use `total_value`, `mean_value` and
+`max_value` with their declared units rather than pretending bytes are nanoseconds.
+Reserved CPU fields are unavailable in new wall-time records. Readers still preserve
+CPU fields in historical exports without reinterpreting them as wall time.
+
+`GLOB2_PERF_RENDERER` records backend generations and timing capabilities.
+`GLOB2_PERF_GPU_RESULT` carries individual frame/submission identity, original elapsed
+timestamp, GPU scope and duration. These raw GPU observations overlap interval/final
+aggregates; choose one population, never sum them together. A result arriving after
+its interval was exported is available through the raw result and final total;
+previously streamed intervals are not rewritten. `GLOB2_PERF_SLOW_TICK` contains the
+bounded slow-tick evidence. Existing offline readers preserve these record families,
+exact integers and nulls in the same JSONL/CSV outputs as gameplay measurements.
+Compare builds, hosts, rendering backends and execution modes separately.

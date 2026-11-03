@@ -97,10 +97,8 @@ test.describe('responsive mixed input',()=>{
     await expect.poll(async()=>(await snapshot(page)).tick).toBeGreaterThan(tick);
     await page.screenshot({path:info.outputPath('phone-loaded-match.png')});
   });
-  // Browser software and WebGL2 retain the dock: the phone tray requires
-  // the SDL portable renderer (MapEdit::wantedPresentation). Native
-  // EditorPresentation tests cover that renderer's live dock/tray switching.
-  test('touch browser editor retains its dock across phone rotation',async({page},info)=>{
+  // All browser renderers follow the shared dock/tray presentation policy.
+  test('touch browser editor switches between dock and tray across phone rotation',async({page},info)=>{
     const controls=()=>page.evaluate(()=>Object.keys(glob2Diagnostics.snapshot().controls));
     const tray=async()=>(await controls()).some(key=>key.startsWith('tray/'));
     await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
@@ -115,17 +113,18 @@ test.describe('responsive mixed input',()=>{
     await page.screenshot({path:info.outputPath('editor-tablet-dock.png')});
     await page.setViewportSize({width:390,height:844});
     await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([390,844]);
-    await control(page,'brush/terrain/grass');
-    await tapControl(page,'brush/terrain/grass');
-    expect(await tray()).toBe(false);
-    await page.screenshot({path:info.outputPath('editor-phone-dock.png')});
+    await control(page,'tray/terrain/grass');
+    await tapControl(page,'tray/terrain/grass');
+    expect(await tray()).toBe(true);
+    await page.screenshot({path:info.outputPath('editor-phone-tray.png')});
     await page.setViewportSize({width:844,height:390});
     await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([844,390]);
-    await control(page,'brush/terrain/grass');
-    expect(await tray()).toBe(false);
+    await control(page,'tray/terrain/grass');
+    expect(await tray()).toBe(true);
     await page.screenshot({path:info.outputPath('editor-phone-landscape.png')});
     await page.setViewportSize({width:1024,height:768});
     await expect.poll(tray).toBe(false);
+    await control(page,'brush/terrain/grass');
     expect((await snapshot(page)).screen).toContain('MapEditorScreen');
   });
   test('touch tablet dock publishes its brush cards',async({page})=>{
@@ -149,7 +148,13 @@ test.describe('opaque WebGL settings panel', () => {
     // Native labels confirm the script font has actually reached the screen.
     expect((await snapshot(page)).controls['nav.0'].label).toMatch(/[\u0980-\u09ff]/);
     const first = await controlBox(page, 'nav.0', {fullyVisible: true});
-    const last = await controlBox(page, 'nav.7', {fullyVisible: true});
+    // Categories depend on compiled features; Hive Mind is absent in browsers.
+    // Cover the complete visible rail instead of assuming a category index.
+    const navigation = Object.entries((await snapshot(page)).controls)
+      .filter(([key, bounds]) => /^nav\.\d+$/.test(key) && bounds.visible?.h >= bounds.h)
+      .sort(([, a], [, b]) => b.y - a.y);
+    expect(navigation.length).toBeGreaterThan(1);
+    const last = await controlBox(page, navigation[0][0], {fullyVisible: true});
     const clip = {x: first.x, y: first.y, width: first.width,
       height: last.y + last.height - first.y};
     const {hasDarkText, comparePresentedRGB} = require('./pixels');

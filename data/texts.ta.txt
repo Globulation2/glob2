@@ -6856,5 +6856,53 @@ GL மட்டும்
 கட்டளை பெறப்பட்டது: %0
 [hive order not confirmed]
 கட்டளை உறுதிசெய்யப்படவில்லை. மீண்டும் முயற்சி செய்ய கட்டளைச் சாளரத்தைத் திறக்கவும்; உங்கள் செய்தி சேமிக்கப்பட்டுள்ளது.
+[engine performance per game minute]
+விளையாட்டின் ஒவ்வொரு நிமிடத்திற்கும்
+[engine performance per real minute]
+ஒவ்வொரு உண்மையான நிமிடத்திற்கும்
+[engine performance game engine performance]
+விளையாட்டு இயந்திரத்தின் செயல்திறன்
+[engine performance task wall-time costs]
+பணிகளுக்கு எடுத்த உண்மையான நேரம்
+[engine performance inspect slow ticks]
+மெதுவான இயக்கப் படிகளை ஆய்வு செய்
+[engine performance no advancing ticks recorded yet]
+முன்னேறும் இயக்கப் படிகள் இன்னும் பதிவு செய்யப்படவில்லை.
+[engine performance whole-engine performance]
+முழு இயந்திரத்தின் செயல்திறன்
+[engine performance open performance charts]
+செயல்திறன் வரைபடங்களைத் திற
+[engine performance engine performance]
+இயந்திரத்தின் செயல்திறன்
+[engine performance follow latest interval]
+சமீபத்திய இடைவெளியைப் பின்தொடர்
+[engine performance compare task costs]
+பணிகளின் நேரத்தை ஒப்பிடு
+[engine performance all metrics and slow ticks]
+அனைத்து அளவீடுகளும் மெதுவான இயக்கப் படிகளும்
+[engine performance phase orders]
+கட்டளைகள்
+[engine performance phase units]
+அலகுகள்
+[engine performance phase buildings]
+கட்டிடங்கள்
+[engine performance phase map]
+வரைபடம்
+[engine performance phase statistics]
+புள்ளிவிவரங்கள்
+[engine performance phase ai]
+செயற்கை நுண்ணறிவு
+[engine performance phase world capture]
+உலக நிலையின் நகலெடுப்பு
+[engine performance phase checksums]
+சரிபார்ப்புத் தொகைகள்
+[engine performance wall time %0]
+கடந்த நேரம்: %0 ms
+[engine performance waits %0 joins %1 locks %2]
+தேவையான காத்திருப்பு: %0 ms; உரிமையாளர் இழை பணிகளுக்காகக் காத்திருத்தல்: %1 ms; பூட்டுகள்: %2 ms
+[engine performance phase %0 wall %1]
+%0: %1 ms கடந்த நேரம்
+[engine performance tick %0 wall %1]
+இயக்கப் படி %0: %1 ms கடந்த நேரம்
 [hive standing order update failed]
 தொடர் கட்டளையைப் புதுப்பிக்க முடியவில்லை. உங்கள் கட்டளை இந்தச் சாதனத்தில் இடைநிறுத்தப்பட்டுள்ளது; தொடர்புடைய கட்டுப்பாட்டை மீண்டும் பயன்படுத்தவும்.

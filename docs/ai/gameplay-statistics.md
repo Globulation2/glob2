@@ -303,7 +303,7 @@ Related: [AI documentation](README.md).
 The opt-in `TeamStatsPipeline` benchmark uses a fixed seed, 256 stationary units,
 shared snapshot capture and no orders for 1,024 ticks. Run the release test binary
 with an isolated `GLOB2_USER_DATA_DIR`, dummy SDL drivers,
-`GLOB2_STATS_BENCHMARK=1`, `GLOB2_PERF_DISABLE=1`,
+`GLOB2_STATS_BENCHMARK=1`,
 `--test-suite=TeamStatsPipeline --test-case='pipeline versus*'`. It prints
 `STATS_BENCH` rows for synchronous, immediate-snapshot and delayed-snapshot modes.
 These isolate scheduling/capture costs; they do not establish whole-game speedup.

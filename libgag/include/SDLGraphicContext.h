@@ -411,6 +411,7 @@ namespace GAGCore
         bool submitDevicePacket(DrawPacket packet);
         // Bounded offscreen producers publish only completed logical captures.
         bool flushDeviceFrame();
+        bool presentedDeviceFrame() const;
         bool deferDeviceFrame();
         bool setDeviceTargetScissor(const SDL_Rect *pixels);
     private:

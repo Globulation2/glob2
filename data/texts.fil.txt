@@ -6856,5 +6856,53 @@ Ipinapadala pa rin ang iyong nakaraang utos. Nai-save ang mensaheng ito; buksan 
 Natanggap ang utos: %0
 [hive order not confirmed]
 Hindi nakumpirma ang utos. Buksan ang kumander para subukan muli; napanatili ang iyong mensahe.
+[engine performance per game minute]
+Bawat minuto ng laro
+[engine performance per real minute]
+Bawat aktuwal na minuto
+[engine performance game engine performance]
+Pagganap ng makina ng laro
+[engine performance task wall-time costs]
+Aktuwal na oras na ginugol ng mga gawain
+[engine performance inspect slow ticks]
+Suriin ang mababagal na hakbang
+[engine performance no advancing ticks recorded yet]
+Wala pang naitalang umuusad na hakbang.
+[engine performance whole-engine performance]
+Pagganap ng buong makina
+[engine performance open performance charts]
+Buksan ang mga tsart ng pagganap
+[engine performance engine performance]
+Pagganap ng makina
+[engine performance follow latest interval]
+Sundan ang pinakabagong pagitan
+[engine performance compare task costs]
+Ihambing ang oras ng mga gawain
+[engine performance all metrics and slow ticks]
+Lahat ng sukatan at mababagal na hakbang
+[engine performance phase orders]
+Mga utos
+[engine performance phase units]
+Mga yunit
+[engine performance phase buildings]
+Mga gusali
+[engine performance phase map]
+Mapa
+[engine performance phase statistics]
+Estadistika
+[engine performance phase ai]
+Artipisyal na intelihensiya
+[engine performance phase world capture]
+Pagkuha ng kalagayan ng mundo
+[engine performance phase checksums]
+Mga halagang pansuri
+[engine performance wall time %0]
+Lumipas na oras: %0 ms
+[engine performance waits %0 joins %1 locks %2]
+Kinakailangang paghihintay: %0 ms; paghihintay ng thread na may-ari sa mga gawain: %1 ms; mga lock: %2 ms
+[engine performance phase %0 wall %1]
+%0: %1 ms na lumipas
+[engine performance tick %0 wall %1]
+Hakbang %0: %1 ms na lumipas
 [hive standing order update failed]
 Nabigo ang pag-update ng standing order. Naka-pause ang iyong utos sa device na ito; gamitin muli ang kaukulang kontrol.

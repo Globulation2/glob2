@@ -6856,5 +6856,53 @@ GL మాత్రమే
 ఆదేశం అందింది: %0
 [hive order not confirmed]
 ఆదేశం ధృవీకరించబడలేదు. మళ్లీ ప్రయత్నించడానికి కమాండర్‌ను తెరవండి; మీ సందేశం భద్రపరచబడింది.
+[engine performance per game minute]
+ఆటలో ప్రతి నిమిషానికి
+[engine performance per real minute]
+ప్రతి వాస్తవ నిమిషానికి
+[engine performance game engine performance]
+ఆట ఇంజిన్ పనితీరు
+[engine performance task wall-time costs]
+పనులకు పట్టిన వాస్తవ సమయం
+[engine performance inspect slow ticks]
+నెమ్మదైన టిక్‌లను పరిశీలించండి
+[engine performance no advancing ticks recorded yet]
+ముందుకు సాగే టిక్‌లు ఇంకా నమోదు కాలేదు.
+[engine performance whole-engine performance]
+మొత్తం ఇంజిన్ పనితీరు
+[engine performance open performance charts]
+పనితీరు చార్ట్‌లను తెరవండి
+[engine performance engine performance]
+ఇంజిన్ పనితీరు
+[engine performance follow latest interval]
+తాజా కాలవ్యవధిని అనుసరించండి
+[engine performance compare task costs]
+పనులకు పట్టిన సమయాన్ని పోల్చండి
+[engine performance all metrics and slow ticks]
+అన్ని కొలతలు మరియు నెమ్మదైన టిక్‌లు
+[engine performance phase orders]
+ఆదేశాలు
+[engine performance phase units]
+యూనిట్లు
+[engine performance phase buildings]
+భవనాలు
+[engine performance phase map]
+మ్యాప్
+[engine performance phase statistics]
+గణాంకాలు
+[engine performance phase ai]
+కృత్రిమ మేధస్సు
+[engine performance phase world capture]
+ప్రపంచ స్థితి స్నాప్‌షాట్
+[engine performance phase checksums]
+చెక్‌సమ్‌లు
+[engine performance wall time %0]
+గడిచిన సమయం: %0 ms
+[engine performance waits %0 joins %1 locks %2]
+అవసరమైన నిరీక్షణ: %0 ms; పనుల కోసం యజమాని థ్రెడ్ నిరీక్షణ: %1 ms; లాక్‌లు: %2 ms
+[engine performance phase %0 wall %1]
+%0: %1 ms గడిచిన సమయం
+[engine performance tick %0 wall %1]
+టిక్ %0: %1 ms గడిచిన సమయం
 [hive standing order update failed]
 స్థాయీ ఆదేశాన్ని నవీకరించడం విఫలమైంది. మీ ఆదేశం ఈ పరికరంలో తాత్కాలికంగా నిలిపివేయబడింది; సంబంధిత నియంత్రణను మళ్లీ ఉపయోగించండి.

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <WebGPUDevice.h>
+#include <PerformanceTelemetry.h>
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -21,12 +22,16 @@ int glob2_webgpu_mask_upload(unsigned,int,int,const void*,const void*);
 void glob2_webgpu_mask_delete(unsigned);
 int glob2_webgpu_geometry_upload(unsigned,const void *,unsigned,const void *,unsigned);
 void glob2_webgpu_geometry_delete(unsigned);
-unsigned glob2_webgpu_submit(const void *, unsigned, const void *, unsigned, const void *, unsigned, int, int);
+unsigned glob2_webgpu_submit(const void *, unsigned, const void *, unsigned, const void *, unsigned, int, int, double);
 unsigned glob2_webgpu_completed();
 unsigned glob2_webgpu_issued();
 unsigned glob2_webgpu_memory();
 int glob2_webgpu_can_begin();
 int glob2_webgpu_present();
+int glob2_webgpu_timing_supported();
+unsigned glob2_webgpu_timing_pending();
+unsigned glob2_webgpu_timing_count(int);
+int glob2_webgpu_timing_poll(double *);
 void glob2_webgpu_reset();
 int glob2_webgpu_capture(unsigned, int, int,unsigned,int,int);
 int glob2_webgpu_capture_ready();
@@ -147,7 +152,7 @@ class WebGPUDevice final:public RenderDevice {
   public:
     explicit WebGPUDevice(SDL_Window *borrowed):window(borrowed){maxTexture=glob2_webgpu_attach();if(!maxTexture)fail();issued=glob2_webgpu_issued();}
     ~WebGPUDevice() override{glob2_webgpu_reset();}
-    RenderDeviceCapabilities capabilities() const override{return {true,true,false,int(maxTexture),true,true,true,true};}
+    RenderDeviceCapabilities capabilities() const override{return {true,true,bool(glob2_webgpu_timing_supported()),int(maxTexture),true,true,true,true};}
     bool canBeginFrame() override{poll();const int ready=glob2_webgpu_can_begin();if(ready<0)fail();return ready>0;}
     RenderSubmission submit(RenderFrame frame) override{
         detail::RenderCpuTimer timing(counts.cpuSubmitNanoseconds);
@@ -218,7 +223,7 @@ class WebGPUDevice final:public RenderDevice {
             if(vertices.size()>32*1024*1024||uniforms.size()>8*1024*1024)throw std::length_error("WebGPU frame geometry budget");
             records.push_back(draw);counts.packets+=end-begin;counts.batches+=draw.kind<2;begin=end;
         }
-        const auto identity=glob2_webgpu_submit(records.data(),records.size(),vertices.data(),vertices.size(),uniforms.data(),uniforms.size(),width,height);if(!identity)fail();issued=identity;RenderSubmission submission{identity,epoch};pending.push_back({submission,std::move(frame)});return submission;
+        const auto identity=glob2_webgpu_submit(records.data(),records.size(),vertices.data(),vertices.size(),uniforms.data(),uniforms.size(),width,height,double(PerformanceTelemetry::now()));if(!identity)fail();issued=identity;RenderSubmission submission{identity,epoch};pending.push_back({submission,std::move(frame)});return submission;
     }
     void trimRetiredResources() override {
         poll(); const auto done=glob2_webgpu_completed();
@@ -242,7 +247,9 @@ class WebGPUDevice final:public RenderDevice {
     void discardFrame() override{const auto identity=glob2_webgpu_discard();if(!identity)fail();issued=identity;}
     void reset() override{cancelCaptures();glob2_webgpu_reset();textures.clear();meshes.clear();masks.clear();pending.clear();textureBytes=meshBytes=maskBytes=0;classBytes.fill(0);++epoch;maxTexture=glob2_webgpu_attach();if(!maxTexture)fail();issued=glob2_webgpu_issued();}
     std::uint64_t generation() const override{return epoch;}
-    RenderTelemetry telemetry() const override{auto result=counts;result.resourceBytes=glob2_webgpu_memory();return result;}
+    unsigned pendingTimings() const override{return glob2_webgpu_timing_pending();}
+    bool pollTiming(GpuTimingResult &result) override{double value[3]{};if(!glob2_webgpu_timing_poll(value))return false;result={std::uint64_t(value[0]),std::uint64_t(value[1]),std::uint64_t(value[2]),true};return true;}
+    RenderTelemetry telemetry() const override{auto result=counts;result.resourceBytes=glob2_webgpu_memory();result.gpuSkipped=glob2_webgpu_timing_count(0);result.gpuInvalid=glob2_webgpu_timing_count(1);return result;}
     bool capture(CaptureRequest request) override{
         detail::RenderCpuTimer timing(counts.cpuCaptureNanoseconds);
         unsigned target=0;int width,height;outputSize(width,height);if(request.target){auto&a=allocation(request.target,false,true);target=a.identity;width=request.target->descriptor.width;height=request.target->descriptor.height;}

@@ -1,6 +1,7 @@
 const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test,expect}=require('@playwright/test');
+const {test:recordingTest}=require('./recording-context');
 const {gameURL,clickMainMenu,clickControl,clickByLabel,clickSettingsDone,clickCustomGameStart,controlBox}=require('./main-menu');
 const {clickCreateMap}=require('./editor-controls');
 const {hasDarkText}=require('./pixels');
@@ -169,6 +170,11 @@ async function match(page) {
   let receipt;
   try {
     await clickMainMenu(page,'custom');
+    // Keep the renderer fixture independent of the lobby's default landscape.
+    await clickControl(page,'generator/landscape');await screen(page,'LandscapePickerScreen');
+    await clickByLabel(page,/^landscape\/\d+$/,'Fingerprint');
+    await clickControl(page,'landscape/use',{timeout:60000});
+    await screen(page,'CustomGameScreen');
     await clickControl(page,'generator/colonies');await clickByLabel(page,/popup/,'2');
     for(const dimension of ['width','height']) {
       await clickControl(page,'generator/'+dimension);await clickByLabel(page,/popup/,'128');
@@ -256,7 +262,7 @@ for(const mode of ['serial','threaded']) {
     await page.screenshot({path:info.outputPath('saved-software-startup.png')});
     expect(errors).toEqual([]);
   });
-  test(`${mode}: Automatic resolving to the active Software renderer completes without replacing the surface`,async({page},info)=>{
+  recordingTest(`${mode}: Automatic resolving to the active Software renderer completes without replacing the surface`,async({page},info)=>{
     test.setTimeout(switchTimeout);const verify=await start(page,mode);await match(page);await openOverlay(page);
     // direct0 keeps Software as its initial automatic policy. Capture the actual
     // presentation object as well as its generation to detect redundant teardown.
@@ -360,7 +366,7 @@ for(const mode of ['serial','threaded']) {
     await openMenu(page);await clickControl(page,'quit');
     await clickControl(page,'choice/1');await screen(page,'EditorMainMenu');await verify();
   });
-  test(`${mode}: recording retains one session while changing backend`,async({page},info)=>{
+  recordingTest(`${mode}: recording retains one session while changing backend`,async({page},info)=>{
     test.setTimeout(mediaTimeout);const verify=await start(page,mode);await match(page);
     const completed=()=>page.evaluate(async()=>{
       const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings',{create:true});

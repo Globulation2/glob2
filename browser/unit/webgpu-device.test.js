@@ -228,3 +228,75 @@ test('indexed mesh ranges reuse physical buffers but refresh changed bounds',asy
   assert.equal(f.calls.bindings,4);assert.deepEqual(f.calls.draws,[[3],[3],[3],[3]]);
   assert.deepEqual(f.calls.sequence,['begin','indexed','indexed','indexed','indexed','end']);
 });
+
+test('GPU timers resolve asynchronously and preserve original submission identity',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.g.timingSupported=true;
+  f.device.createQuerySet=()=>({destroy(){}});
+  f.context.GPUBufferUsage.QUERY_RESOLVE=32;f.context.GPUBufferUsage.COPY_SRC=64;
+  f.context.HEAPF64=new Float64Array(f.context.HEAPU8.buffer);
+  f.g.beginTiming(12345);const writes=f.g.timingPass().timestampWrites;
+  assert.equal(writes.beginningOfPassWriteIndex,0);assert.equal(writes.endOfPassWriteIndex,1);
+  const slot=f.g.endTiming({resolveQuerySet(){},copyBufferToBuffer(){}});
+  new BigUint64Array(slot.read.getMappedRange()).set([100n,220n]);
+  f.g.resolveTiming(slot);assert.equal(f.library.glob2_webgpu_timing_poll(0),0);
+  f.maps.shift()();await Promise.resolve();await Promise.resolve();
+  assert.equal(f.library.glob2_webgpu_timing_poll(0),1);
+  assert.deepEqual(Array.from(f.context.HEAPF64.slice(0,3)),[0,12345,120]);
+  assert.equal(slot.busy,false);assert.equal(f.library.glob2_webgpu_timing_poll(0),0);
+});
+test('GPU timer rings are bounded and reset invalidates pending samples',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.g.timingSupported=true;
+  f.device.createQuerySet=()=>({destroy(){}});
+  const encoder={resolveQuerySet(){},copyBufferToBuffer(){}};
+  for(let i=0;i<32;i++){f.g.timingFrames=i*16;f.g.beginTiming(i);f.g.timingPass();f.g.endTiming(encoder);}
+  assert.equal(f.g.timingSlots.length,32);f.g.timingFrames=513;f.g.beginTiming(999);
+  assert.equal(f.g.timingSkipped,1);assert.equal(f.g.activeTiming,null);
+  f.g.resetTiming();assert.equal(f.g.timingInvalid,32);assert.equal(f.g.timingSlots.length,0);
+});
+test('unsupported GPU timestamps allocate no timing resources',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');const buffers=f.calls.buffers;
+  f.g.beginTiming(1);assert.deepEqual(Object.keys(f.g.timingPass()),[]);
+  assert.equal(f.g.endTiming({}),null);assert.equal(f.calls.buffers,buffers);
+});
+
+for (const failAt of [0,1,2]) test(`GPU timing allocation failure at resource ${failAt} rolls back without failing rendering`,async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.g.timingSupported=true;
+  let created=0,destroyed=0;
+  const allocate=()=>{if(created===failAt)throw Error('timing allocation failed');++created;return{destroy(){++destroyed;}};};
+  const createBuffer=f.device.createBuffer;
+  f.device.createQuerySet=allocate;f.device.createBuffer=allocate;
+  f.g.beginTiming(1);
+  assert.equal(destroyed,created);assert.equal(f.g.timingSlots.length,0);
+  assert.equal(f.g.timingInvalid,1);assert.equal(f.g.timingSupported,false);
+  assert.equal(f.g.activeTiming,null);assert.equal(f.g.state,1);assert.equal(f.g.lost,false);
+  f.device.createBuffer=createBuffer;
+  assert.equal(f.g.submit(new Uint8Array(),0,new Uint8Array(),new Uint8Array(),16,16),1);
+  assert.equal(f.g.state,1);assert.equal(f.g.lost,false);
+});
+for(const kind of ['reversed timestamps','map rejection','late callback after reset']) test(`GPU timers safely discard ${kind}`,async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.g.timingSupported=true;
+  f.device.createQuerySet=()=>({destroy(){}});
+  f.g.beginTiming(123);f.g.timingPass();
+  const slot=f.g.endTiming({resolveQuerySet(){},copyBufferToBuffer(){}});
+  if(kind==='map rejection')slot.read.mapAsync=()=>Promise.reject(Error('map failed'));
+  else new BigUint64Array(slot.read.getMappedRange()).set(kind==='reversed timestamps'?[220n,100n]:[100n,220n]);
+  f.g.resolveTiming(slot);
+  if(kind==='late callback after reset')f.g.resetTiming();
+  if(f.maps.length)f.maps.shift()();
+  await Promise.resolve();await Promise.resolve();await Promise.resolve();
+  assert.equal(f.library.glob2_webgpu_timing_poll(0),0);
+  assert.equal(f.g.timingInvalid,1);assert.equal(f.library.glob2_webgpu_timing_pending(),0);
+  assert.equal(f.g.lost,false);assert.equal(f.g.state,1);
+  if(kind==='late callback after reset')assert.equal(slot.ready,false);
+});
+test('GPU timing samples with more than 32 passes are invalid rather than truncated',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.g.timingSupported=true;
+  f.device.createQuerySet=()=>({destroy(){}});
+  f.g.beginTiming(123);
+  for(let i=0;i<32;++i)assert.ok(f.g.timingPass().timestampWrites);
+  assert.deepEqual(Object.keys(f.g.timingPass()),[]);
+  let resolved=false;
+  assert.equal(f.g.endTiming({resolveQuerySet(){resolved=true;}}),null);
+  assert.equal(resolved,false);assert.equal(f.g.timingInvalid,1);
+  assert.equal(f.library.glob2_webgpu_timing_pending(),0);
+});
