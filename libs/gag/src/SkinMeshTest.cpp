@@ -1,0 +1,546 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#include "Glob2Test.h"
+#include <SkinMesh.h>
+#include <glob2/SkinMaterials.h>
+#include "src/online/SwarmMeshCatalog.h"
+#include "src/online/SkinSpriteManifest.h"
+#include <SDL3_image/SDL_image.h>
+#include <cstdlib>
+#include "src/online/SkinViewTransforms.h"
+#include <cmath>
+#include <filesystem>
+#include <fstream>
+#include <SkinAtlasCache.h>
+#include <StreamBackend.h>
+#include <SDLGraphicContext.h>
+#include <Toolkit.h>
+#include <nlohmann/json.hpp>
+#include <bit>
+#include <cstdint>
+#include <limits>
+#ifdef HAVE_OPENGL
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <epoxy/gl.h>
+#endif
+#endif
+
+namespace
+{
+void word(std::string &bytes, std::uint32_t value)
+{
+    for (int i=0; i<4; ++i) bytes.push_back(static_cast<char>(value >> (i*8)));
+}
+void replaceWord(std::string &bytes, std::size_t offset, std::uint32_t value)
+{
+    std::string encoded; word(encoded,value); bytes.replace(offset,4,encoded);
+}
+std::string fixture(unsigned frames = 256)
+{
+    std::string bytes="GSK1";
+    for (auto value : {3u,3u,frames,38u}) word(bytes,value);
+    for (int i=0; i<6; ++i) word(bytes,std::bit_cast<std::uint32_t>(0.5f));
+    for (auto index : {0u,1u,2u}) word(bytes,index);
+    for (unsigned f=0; f<frames; ++f)
+        for (int v=0; v<3; ++v)
+            for (int c=0; c<6; ++c)
+                word(bytes,std::bit_cast<std::uint32_t>(c==5 ? 1.f : 0.f));
+    return bytes;
+}
+}
+TEST_SUITE("SkinMesh")
+{
+    TEST_CASE("stationary unit turns preserve frozen geometry and source clip across all mesh formats")
+    {
+        for (unsigned clip = 0; clip < 7; ++clip)
+        {
+            const auto &view = Online::UnitSkinViews[clip];
+            const std::string name = Online::SkinSpriteClips[clip];
+            for (const auto &extension : {std::string(".gsk"), GAGCore::skinClipFile(name).substr(name.size())})
+            {
+                GAGCore::SkinMesh mesh;
+                std::string error;
+                REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/(name+extension)).string(), error));
+                std::vector<float> original;
+                REQUIRE(mesh.evaluate(0, original));
+                const auto identity = mesh.identity;
+                const auto turns = mesh.stationaryTurns(view.inverse, view.projection, view.normals);
+                REQUIRE(turns.identity);
+                CHECK(turns.identity != identity);
+                CHECK(turns.frames == 32);
+                CHECK_FALSE(turns.model);
+                CHECK_FALSE(turns.shapes);
+                CHECK(turns.uv == mesh.uv);
+                CHECK(turns.detailUV == mesh.detailUV);
+                CHECK(turns.indices == mesh.indices);
+                CHECK(turns.logicalSize == mesh.logicalSize);
+                std::vector<float> first, previous;
+                REQUIRE(turns.evaluate(0, first));
+                REQUIRE(first.size() == original.size());
+                for (unsigned i=0; i<first.size(); ++i)
+                    CHECK(std::abs(first[i]-original[i]) < 0.00001f);
+                for (unsigned frame=0; frame<32; ++frame)
+                {
+                    std::vector<float> current;
+                    REQUIRE(turns.evaluate(frame, current));
+                    INFO(name << extension << " heading " << frame);
+                    if (frame) CHECK(current != previous);
+                    for (unsigned vertex=0; vertex<mesh.vertices; ++vertex)
+                    {
+                        const auto i=vertex*6;
+                        const auto height=[&](const auto &p) { return view.inverse[8]*p[i]+view.inverse[9]*p[i+1]+view.inverse[10]*p[i+2]+view.inverse[11]; };
+                        CHECK(std::abs(height(current)-height(original)) < 0.00001f);
+                        const auto length=[&](const auto &p) { return p[i+3]*p[i+3]+p[i+4]*p[i+4]+p[i+5]*p[i+5]; };
+                        CHECK(std::abs(length(current)-length(original)) < 0.00001f);
+                        CHECK(std::abs(current[i]) < 1.25f);
+                        CHECK(std::abs(current[i+1]) < 1.25f);
+                    }
+                    previous = std::move(current);
+                }
+                CHECK_FALSE(turns.evaluate(32, previous));
+                CHECK_FALSE(turns.stationaryTurns(view.inverse, view.projection, view.normals).identity);
+                CHECK(mesh.identity == identity);
+                CHECK(mesh.frames == 256);
+                REQUIRE(mesh.evaluate(0, previous));
+                CHECK(previous == original);
+                CHECK(mesh.stationaryTurns(view.inverse, view.projection, view.normals).identity != turns.identity);
+            }
+        }
+        const auto &view=Online::UnitSkinViews[0];
+        CHECK_FALSE(GAGCore::SkinMesh{}.stationaryTurns(view.inverse, view.projection, view.normals).identity);
+    }
+    TEST_CASE("detail unwrap preserves paint and rejects malformed sidecars transactionally")
+    {
+        auto bytes = fixture();
+        GAGCore::MemoryStreamBackend input(bytes.data(), bytes.size());
+        GAGCore::SkinMesh mesh; std::string error;
+        REQUIRE(mesh.load(input, error));
+        const auto paint = mesh.uv;
+        std::string sidecar = "GUV1"; word(sidecar, 3);
+        for (float value : {0.f, 0.f, 1.f, 0.f, 0.5f, 1.f})
+            word(sidecar, std::bit_cast<std::uint32_t>(value));
+        GAGCore::MemoryStreamBackend detail(sidecar.data(), sidecar.size());
+        REQUIRE(mesh.loadDetailUV(detail, error));
+        CHECK(mesh.uv == paint);
+        CHECK(mesh.detailUV != paint);
+        const auto uv = mesh.detailUV;
+        const auto identity = mesh.identity;
+        for (unsigned fault = 0; fault < 6; ++fault) {
+            auto bad = sidecar;
+            if (fault == 0) bad.pop_back();
+            if (fault == 1) bad[0] = 'X';
+            if (fault == 2) replaceWord(bad, 4, 4);
+            if (fault == 3) replaceWord(bad, 8, std::bit_cast<std::uint32_t>(-0.1f));
+            if (fault == 4) replaceWord(bad, 8, std::bit_cast<std::uint32_t>(1.1f));
+            if (fault == 5) replaceWord(bad, 8, std::bit_cast<std::uint32_t>(std::numeric_limits<float>::quiet_NaN()));
+            GAGCore::MemoryStreamBackend corrupt(bad.data(), bad.size());
+            CHECK_FALSE(mesh.loadDetailUV(corrupt, error));
+            CHECK(mesh.detailUV == uv);
+            CHECK(mesh.uv == paint);
+            CHECK(mesh.identity == identity);
+        }
+    }
+    TEST_CASE("virtual asset streams use the same bounded decoder")
+    {
+        auto bytes=fixture();
+        GAGCore::MemoryStreamBackend input(bytes.data(),bytes.size());
+        GAGCore::SkinMesh mesh;
+        std::string error;
+        REQUIRE(mesh.load(input,error));
+        CHECK(mesh.frames==256);
+        const auto identity=mesh.identity;
+        bytes.pop_back();
+        GAGCore::MemoryStreamBackend truncated(bytes.data(),bytes.size());
+        CHECK_FALSE(mesh.load(truncated,error));
+        CHECK(mesh.identity==identity);
+        GAGCore::FileStreamBackend missing(nullptr);
+        CHECK_FALSE(mesh.load(missing,error));
+    }
+    TEST_CASE("static swarm pose")
+    {
+        glob2test::TempDir directory("skin-static");
+        const auto path = directory.path / "swarm.gsk";
+        glob2test::writeFile(path, fixture(1));
+        GAGCore::SkinMesh mesh;
+        std::string error;
+        REQUIRE(mesh.load(path.string(), error));
+        CHECK(mesh.frames == 1);
+        CHECK(mesh.poses.size() == 18);
+    }
+    TEST_CASE("static camera ring preserves UVs, scale and independent cache identities")
+    {
+        const std::array<const char *,7> shapes{"swarm", "swarm-crown", "swarm-clutch", "swarm-toadstool", "swarm-coral", "swarm-skep", "swarm-bloom"};
+        for (unsigned shape=0; shape<shapes.size(); ++shape)
+        {
+            GAGCore::SkinMesh mesh; std::string error;
+            REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/(std::string(shapes[shape])+".gsk")).string(), error));
+            const auto &t=Online::SkinViews[shape];
+            auto zero=mesh.rotatedView(0,t.inverse,t.projection,t.normals);
+            REQUIRE(zero.poses.size()==mesh.poses.size());
+            for (unsigned i=0;i<mesh.poses.size();++i) CHECK(std::abs(zero.poses[i]-mesh.poses[i])<0.00001f);
+            auto previous=mesh.identity;
+            for (unsigned angle=0;angle<360;angle+=5)
+            {
+                auto rotated=mesh.rotatedView(angle,t.inverse,t.projection,t.normals);
+                CHECK(rotated.identity!=previous);
+                CHECK(rotated.identity!=mesh.identity);
+                CHECK(rotated.uv==mesh.uv);
+                CHECK(rotated.indices==mesh.indices);
+                for (unsigned v=0;v<mesh.vertices;++v)
+                {
+                    const auto i=v*6;
+                    CHECK(std::abs(rotated.poses[i])<1.25f);
+                    CHECK(std::abs(rotated.poses[i+1])<1.25f);
+                    // Recovered world height is invariant around the ring.
+                    const auto height=[&](const auto &p){ return t.inverse[8]*p[i]+t.inverse[9]*p[i+1]+t.inverse[10]*p[i+2]+t.inverse[11]; };
+                    CHECK(std::abs(height(rotated.poses)-height(mesh.poses))<0.00001f);
+                    const auto length=[&](const auto &p){return p[i+3]*p[i+3]+p[i+4]*p[i+4]+p[i+5]*p[i+5];};
+                    CHECK(std::abs(length(rotated.poses)-length(mesh.poses))<0.00001f);
+                }
+                previous=rotated.identity;
+            }
+            for (double invalid : {-1., 360., std::numeric_limits<double>::infinity(), std::numeric_limits<double>::quiet_NaN()})
+                CHECK(mesh.rotatedView(invalid,t.inverse,t.projection,t.normals).identity==0);
+        }
+    }
+#ifdef HAVE_OPENGL
+    TEST_CASE("rotated swarms render independently with every material [display][artifacts]")
+    {
+        glob2test::ToolkitScope toolkit;
+        auto *gfx=GAGCore::Toolkit::initGraphic(640,480,GAGCore::GraphicContext::USEGPU,"Swarm camera and material contract");
+        GAGCore::SkinMesh mesh; std::string error;
+        REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1/swarm-crown.gsk").string(),error));
+        const auto &t=Online::SkinViews[1];
+        std::array<GAGCore::SkinMesh,4> variants;
+        for (unsigned i=0;i<4;++i) variants[i]=mesh.rotatedView(i*90,t.inverse,t.projection,t.normals);
+        GAGCore::DrawableSurface paint(512,512), material(512,512);
+        paint.drawFilledRect(0,0,512,512,GAGCore::Color(237,146,82));
+        auto pixels=[&]() {
+            glFinish(); std::vector<unsigned char> result(640*480*4);
+            glReadPixels(0,0,640,480,GL_RGBA,GL_UNSIGNED_BYTE,result.data());
+            CHECK(glGetError()==GL_NO_ERROR); return result;
+        };
+        auto draw=[&](unsigned id,bool reverse) {
+            material.drawFilledRect(0,0,512,512,GAGCore::Color(id,id,id));
+            std::vector<GAGCore::SkinMeshRequest> requests;
+            for (auto &variant:variants) requests.push_back({&variant,0,&paint,&material,GAGCore::SkinRegionSwarm});
+            gfx->prepareSkinMeshes(requests);
+            gfx->drawFilledRect(0,0,640,480,GAGCore::Color(38,33,45));
+            for (unsigned k=0;k<4;++k) {
+                unsigned i=reverse?3-k:k;
+                REQUIRE(gfx->drawSkinMesh(variants[i],0,paint,material,GAGCore::SkinRegionSwarm,12+i*156,148,144,144));
+            }
+            return pixels();
+        };
+        // The body-only materials share one path; fur adds shell passes.
+        for (unsigned id : {0u, 1u, 3u, 18u}) {
+            REQUIRE(id < SKIN_MATERIAL_COUNT);
+            const auto forward=draw(id,false);
+            const auto reverse=draw(id,true);
+            unsigned differences=0, maximum=0;
+            for (unsigned i=0;i<forward.size();++i) if (forward[i]!=reverse[i]) { ++differences; maximum=std::max(maximum,unsigned(std::abs(int(forward[i])-int(reverse[i])))); }
+            INFO("material " << id << " differences " << differences << " maximum " << maximum);
+            // Reallocation in different atlas slots can shift sparse bilinear
+            // rounding by one channel level; angle/cache mixups are far larger.
+            // Fur strands are single texels of binary alpha, so the same
+            // sub-texel shift moves whole strand edges.
+            const bool shells=GAGCore::skinMaterialShells(id);
+            CHECK(maximum<=(shells?48u:1u));
+            CHECK(differences<=(shells?400u:150u));
+            gfx->printScreen(glob2test::artifactDirFromWorkingDirectory()+"/swarm-material-"+std::to_string(id)+".bmp");
+            // Substantial non-background coverage proves this is not an empty fallback.
+            unsigned changed=0;
+            for (unsigned p=0;p<forward.size();p+=4) changed+=forward[p]!=38 || forward[p+1]!=33 || forward[p+2]!=45;
+            CHECK(changed>1000);
+        }
+    }
+    // Every material on every model, as the sprite baker renders it: a contact
+    // sheet for review plus guards against a material collapsing into matte.
+    TEST_CASE("material contact sheet [display][artifacts]")
+    {
+        glob2test::ToolkitScope toolkit;
+        auto *gfx=GAGCore::Toolkit::initGraphic(640,480,GAGCore::GraphicContext::USEGPU|GAGCore::GraphicContext::NOAUDIO,"Skin material contact sheet");
+        struct Model { const char *mesh; unsigned frame; GAGCore::SkinRegion region; };
+        const Model models[]={{"worker-walk",0,GAGCore::SkinRegionWorker},{"warrior-fight",8,GAGCore::SkinRegionWarrior},
+                              {"explorer-fly",0,GAGCore::SkinRegionExplorer},{"swarm",0,GAGCore::SkinRegionSwarm}};
+        constexpr unsigned Tile=128, Models=4, Scale=4;
+        std::array<GAGCore::SkinMesh,Models> meshes;
+        for (unsigned m=0;m<Models;++m) {
+            std::string error;
+            REQUIRE(meshes[m].load((glob2test::contentRoot()/"data/skins/colony-v1"/(std::string(models[m].mesh)+".gsk")).string(),error));
+        }
+        GAGCore::DrawableSurface paint(512,512), material(512,512);
+        paint.drawFilledRect(0,0,512,512,GAGCore::Color(237,146,82));
+        // Straight-alpha tiles per material and model, read back exactly.
+        std::vector<std::vector<std::uint8_t>> tiles(SKIN_MATERIAL_COUNT*Models);
+        for (unsigned id=0;id<SKIN_MATERIAL_COUNT;++id) {
+            material.drawFilledRect(0,0,512,512,GAGCore::Color(id,id,id));
+            for (unsigned m=0;m<Models;++m) {
+                auto &tile=tiles[id*Models+m];
+                REQUIRE(gfx->readSkinMesh({&meshes[m],models[m].frame,&paint,&material,models[m].region},tile));
+                REQUIRE(tile.size()==Tile*Tile*4);
+                std::vector<std::uint8_t> again;
+                REQUIRE(gfx->readSkinMesh({&meshes[m],models[m].frame,&paint,&material,models[m].region},again));
+                INFO("material "<<GAGCore::SkinMaterials[id].key<<" on "<<models[m].mesh);
+                CHECK(again==tile);
+            }
+        }
+        const auto sheets=std::filesystem::path(glob2test::artifactDirFromWorkingDirectory())/"skins"/"materials";
+        std::filesystem::create_directories(sheets);
+        // Sheet rows are materials, columns models, over a neutral backdrop.
+        const auto compose=[&](unsigned scale,const std::string &name) {
+            const unsigned w=Models*Tile*scale, h=SKIN_MATERIAL_COUNT*Tile*scale;
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> sheet(SDL_CreateSurface(w,h,SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);
+            REQUIRE(sheet);
+            for (unsigned y=0;y<h;++y) for (unsigned x=0;x<w;++x) {
+                const unsigned id=y/(Tile*scale), m=x/(Tile*scale);
+                const auto *p=tiles[id*Models+m].data()+(((y/scale)%Tile)*Tile+(x/scale)%Tile)*4;
+                auto *out=static_cast<std::uint8_t*>(sheet->pixels)+y*sheet->pitch+x*4;
+                const unsigned back=((x/(8*scale))+(y/(8*scale)))%2 ? 92 : 76;
+                for (unsigned c=0;c<3;++c) out[c]=static_cast<std::uint8_t>((p[c]*p[3]+back*(255-p[3])+127)/255);
+                out[3]=255;
+            }
+            REQUIRE(SDL_SaveBMP(sheet.get(),(sheets/name).string().c_str()));
+        };
+        compose(1,"contact-sheet.bmp");
+        compose(Scale,"contact-sheet-4x.bmp");
+        // Appearance statistics per material on the worker: a material that
+        // renders like matte, or like any other material, fails here.
+        struct Stats { double coverage, luminance, contrast; };
+        const auto stats=[&](unsigned id) {
+            const auto &tile=tiles[id*Models+0];
+            double sum=0,squares=0; unsigned covered=0;
+            for (unsigned i=0;i<Tile*Tile;++i) if (tile[i*4+3]>127) {
+                const double l=(0.299*tile[i*4]+0.587*tile[i*4+1]+0.114*tile[i*4+2])/255.0;
+                sum+=l; squares+=l*l; ++covered;
+            }
+            const double mean=covered?sum/covered:0, variance=covered?std::max(0.0,squares/covered-mean*mean):0;
+            return Stats{double(covered)/(Tile*Tile),mean,std::sqrt(variance)};
+        };
+        const auto distance=[&](unsigned a,unsigned b) {
+            const auto &ta=tiles[a*Models+0], &tb=tiles[b*Models+0];
+            double sum=0; unsigned n=0;
+            for (unsigned i=0;i<Tile*Tile;++i) if (ta[i*4+3]>127 && tb[i*4+3]>127) {
+                for (unsigned c=0;c<3;++c) sum+=std::abs(int(ta[i*4+c])-int(tb[i*4+c]));
+                ++n;
+            }
+            return n?sum/(3.0*n):0.0;
+        };
+        const auto matte=stats(1);
+        nlohmann::json fingerprints;
+        for (unsigned id=0;id<SKIN_MATERIAL_COUNT;++id) {
+            const auto s=stats(id);
+            INFO("material "<<GAGCore::SkinMaterials[id].key);
+            CHECK(s.coverage>=matte.coverage-0.001);
+            CHECK(s.luminance>0.08); CHECK(s.luminance<0.95);
+            if (id!=1) CHECK(distance(id,1)>=10.0);
+            for (unsigned other=0;other<id;++other) {
+                INFO("against "<<GAGCore::SkinMaterials[other].key);
+                CHECK(distance(id,other)>=4.0);
+            }
+            fingerprints[GAGCore::SkinMaterials[id].key]={{"coverage",std::round(s.coverage*1000)/1000},
+                {"luminance",std::round(s.luminance*1000)/1000},{"contrast",std::round(s.contrast*1000)/1000}};
+        }
+        // Committed fingerprints catch unintended drift; refresh them with
+        // GLOB2_UPDATE_SKIN_FINGERPRINTS=1 when a material changes on purpose.
+        const auto fixture=glob2test::sourceRoot()/"test/fixtures/skins/material-fingerprints.json";
+        if (std::getenv("GLOB2_UPDATE_SKIN_FINGERPRINTS")) glob2test::writeFile(fixture,fingerprints.dump(2)+"\n");
+        const auto expected=nlohmann::json::parse(glob2test::readFile(fixture));
+        for (unsigned id=0;id<SKIN_MATERIAL_COUNT;++id) {
+            const char *key=GAGCore::SkinMaterials[id].key;
+            INFO("material "<<key);
+            REQUIRE(expected.contains(key));
+            for (const char *field : {"coverage","luminance","contrast"}) {
+                const double want=expected[key][field].get<double>(), got=fingerprints[key][field].get<double>();
+                INFO(field<<" expected "<<want<<" got "<<got);
+                CHECK(std::abs(got-want)<=std::max(0.02,0.1*want));
+            }
+        }
+    }
+#endif
+    TEST_CASE("bounded transactional decoding")
+    {
+        glob2test::TempDir directory("skin-mesh");
+        const auto path = directory.path / "mesh.gsk";
+        const auto valid = fixture();
+        glob2test::writeFile(path,valid);
+        GAGCore::SkinMesh mesh;
+        std::string error;
+        REQUIRE(mesh.load(path.string(),error));
+        CHECK(mesh.vertices==3);
+        CHECK(mesh.frames==256);
+        CHECK(mesh.poses.size()==256*3*6);
+        const auto identity=mesh.identity;
+        for (int corruption=0; corruption<8; ++corruption)
+        {
+            auto bad=valid;
+            switch(corruption)
+            {
+                case 0: bad[3]='2'; break;
+                case 1: replaceWord(bad,4,0xffffffffu); break;
+                case 2: replaceWord(bad,8,4); break;
+                case 3: replaceWord(bad,12,255); break;
+                case 4: replaceWord(bad,20,std::bit_cast<std::uint32_t>(-1.f)); break;
+                case 5: replaceWord(bad,44,3); break;
+                case 6: replaceWord(bad,56,std::bit_cast<std::uint32_t>(std::numeric_limits<float>::quiet_NaN())); break;
+                case 7: bad.pop_back(); break;
+            }
+            glob2test::writeFile(path,bad);
+            CHECK_FALSE(mesh.load(path.string(),error));
+            CHECK_FALSE(error.empty());
+            CHECK(mesh.identity==identity);
+            CHECK(mesh.vertices==3);
+        }
+        glob2test::writeFile(path,valid);
+        REQUIRE(mesh.load(path.string(),error));
+        CHECK(mesh.identity!=identity);
+        CHECK(error.empty());
+    }
+}
+
+TEST_SUITE("SkinAtlasCache")
+{
+    TEST_CASE("visible hits survive a full atlas eviction batch")
+    {
+        GAGCore::SkinAtlasCache cache;
+        using Key = GAGCore::SkinAtlasCache::Key;
+        for (unsigned i=0; i<cache.Capacity; ++i)
+            CHECK(cache.reserve(Key{1,i,1,1,1,1,0}) == i);
+        // Protect the oldest half before admitting an equally large new set.
+        for (unsigned i=0; i<cache.Capacity/2; ++i) REQUIRE(cache.touch(Key{1,i,1,1,1,1,0}));
+        for (unsigned i=0; i<cache.Capacity/2; ++i) cache.reserve(Key{2,i,1,1,1,1,0});
+        CHECK(cache.size() == cache.Capacity);
+        for (unsigned i=0; i<cache.Capacity; ++i)
+            CHECK(cache.find(Key{1,i,1,1,1,1,0}).has_value() == (i<cache.Capacity/2));
+        for (unsigned i=0; i<cache.Capacity/2; ++i) REQUIRE(cache.find(Key{2,i,1,1,1,1,0}));
+    }
+    TEST_CASE("paint and material revisions, lifetimes, region, mesh and pose are independent cache keys")
+    {
+        using Cache = GAGCore::SkinAtlasCache;
+        Cache cache;
+        const auto base = Cache::key(1,0,1,1,1,1,0);
+        cache.reserve(base);
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,2,1,1,0)));  // paint revision
+        CHECK_FALSE(cache.find(Cache::key(1,0,2,1,1,1,0)));  // paint lifetime
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,1,1,2,0)));  // material revision
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,1,2,1,0)));  // material lifetime
+        for (std::uint8_t region=1; region<4; ++region)
+            CHECK_FALSE(cache.find(Cache::key(1,0,1,1,1,1,region)));
+        CHECK_FALSE(cache.find(Cache::key(2,0,1,1,1,1,0)));
+        CHECK_FALSE(cache.find(Cache::key(1,1,1,1,1,1,0)));
+        // A paint surface reused as a material (or vice versa) is a different key.
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,1,3,1,0)));
+        cache.reserve(Cache::key(1,0,3,1,1,1,0));
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,1,3,1,0)));
+        CHECK(cache.reserve(base) == 0);
+        CHECK(cache.size() == 2);
+        cache = {};
+        CHECK_FALSE(cache.find(base));
+        CHECK(cache.reserve(base) == 0);
+    }
+}
+
+TEST_SUITE("SkinMaterialMap")
+{
+    TEST_CASE("greyscale material maps decode to exact ids")
+    {
+        glob2test::ToolkitScope toolkit; GAGCore::Toolkit::initGraphic(64,64,0,"skin material");
+        // The authorization fixture's 8-bit greyscale map cycles ids 0..3 in
+        // 32-row bands; WebP must retain the exact material IDs.
+        const auto fixture=nlohmann::json::parse(glob2test::readFile(glob2test::sourceRoot()/"test/fixtures/skins/authorization.json"));
+        const auto hex=fixture["materialHex"].get<std::string>();
+        std::string bytes;
+        for (std::size_t i=0; i<hex.size(); i+=2) bytes.push_back(static_cast<char>(std::stoul(hex.substr(i,2),nullptr,16)));
+        glob2test::TempDir directory("skin-material");
+        glob2test::writeFile(directory.path/"material.webp",bytes);
+        auto material=GAGCore::loadSkinMaterialMap((directory.path/"material.webp").string());
+        REQUIRE(material);
+        CHECK(material->getW()==512);
+        CHECK(material->getH()==512);
+        auto *raw=material->getSDLSurface();
+        for (int band=0; band<16; ++band)
+        {
+            Uint8 r,g,b,a;
+            REQUIRE(SDL_ReadSurfacePixel(raw,7,band*32+5,&r,&g,&b,&a));
+            CHECK(r==band%4); CHECK(g==band%4); CHECK(b==band%4); CHECK(a==255);
+        }
+        CHECK_FALSE(GAGCore::loadSkinMaterialMap((directory.path/"missing.webp").string()));
+    }
+}
+
+#ifdef HAVE_OPENGL
+TEST_SUITE("SkinReadback") {
+TEST_CASE("export readback matches live compositing for every pose and rotated swarm [display]") {
+    glob2test::ToolkitScope toolkit;
+    auto *gfx=GAGCore::Toolkit::initGraphic(640,480,GAGCore::GraphicContext::USEGPU|GAGCore::GraphicContext::NOAUDIO,"skin readback");
+    const auto source=nlohmann::json::parse(glob2test::readFile(glob2test::sourceRoot()/"test/fixtures/skins/authorization.json"));
+    glob2test::TempDir files("skin-readback");
+    for(const auto &name:{"texture","material"}) {
+        const auto hex=source[std::string(name)+"Hex"].get<std::string>();std::string bytes;
+        for(std::size_t i=0;i<hex.size();i+=2)bytes.push_back(char(std::stoul(hex.substr(i,2),nullptr,16)));
+        glob2test::writeFile(files.path/(std::string(name)+".webp"),bytes);
+    }
+    GAGCore::DrawableSurface paint((files.path/"texture.webp").string());
+    auto material=GAGCore::loadSkinMaterialMap((files.path/"material.webp").string());REQUIRE(material);
+    nlohmann::json bundle;const char *exportPath=std::getenv("GLOB2_SKIN_EXPORT_DIR");
+    if(exportPath)bundle=nlohmann::json::parse(glob2test::readFile(std::filesystem::path(exportPath)/"manifest.json"));
+    std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> exported(nullptr,SDL_DestroySurface);
+    unsigned loadedPage=~0u;std::uint64_t poses=0;
+    const auto compare=[&](const GAGCore::SkinMesh &mesh,unsigned frame,unsigned region,unsigned clip,bool turning=false) {
+        std::vector<uint8_t> rgba;REQUIRE(gfx->readSkinMesh({&mesh,frame,&paint,material.get(),uint8_t(region)},rgba));
+        REQUIRE(rgba.size()==128*128*4);
+        gfx->drawFilledRect(0,0,640,480,GAGCore::Color(20,40,60));
+        REQUIRE(gfx->drawSkinMesh(mesh,frame,paint,*material,region,12.8f,12.8f,102.4f,102.4f));
+        std::vector<uint8_t> live(128*128*4);glReadPixels(0,480-128,128,128,GL_RGBA,GL_UNSIGNED_BYTE,live.data());
+        unsigned error=0,alphaErrors=0;
+        for(unsigned y=0;y<128;++y)for(unsigned x=0;x<128;++x)for(unsigned c=0;c<3;++c) {
+            const unsigned at=(y*128+x)*4,gl=((127-y)*128+x)*4;
+            const auto expected=(unsigned(rgba[at+c])*rgba[at+3]+unsigned(c==0?20:c==1?40:60)*(255-rgba[at+3])+127)/255;
+            error=std::max(error,unsigned(std::abs(int(expected)-int(live[gl+c]))));
+        }
+        INFO("clip "<<clip<<" frame "<<frame);CHECK(error<=1);
+        if(exportPath && clip<8) {
+            const unsigned page=turning?29+clip:clip<7?clip*4+frame/64:28;
+            if(page!=loadedPage) {
+                const auto hash=(turning?bundle["turnPages"][clip]:bundle["pages"][page])["sha256"].get<std::string>();
+                std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> image(IMG_Load((std::filesystem::path(exportPath)/(hash+".webp")).string().c_str()),SDL_DestroySurface);
+                REQUIRE(image);exported.reset(SDL_ConvertSurface(image.get(),SDL_PIXELFORMAT_RGBA32));REQUIRE(exported);loadedPage=page;
+            }
+            const unsigned cell=turning?frame:clip<7?frame%64:0;
+            for(unsigned y=0;y<128;++y)for(unsigned x=0;x<128;++x) {
+                const auto *pixel=static_cast<const uint8_t *>(exported->pixels)+((cell/8)*128+y)*exported->pitch+((cell%8)*128+x)*4;
+                alphaErrors+=pixel[3]!=rgba[(y*128+x)*4+3];
+            }
+            if (alphaErrors)
+                glob2test::writeFile(std::filesystem::path(glob2test::artifactDirFromWorkingDirectory()) / "mismatched-live-tile.rgba",
+                    std::string(reinterpret_cast<const char *>(rgba.data()),rgba.size()));
+            REQUIRE(alphaErrors==0);
+        }
+        ++poses;
+    };
+    for(unsigned clip=0;clip<7;++clip) {
+        GAGCore::SkinMesh mesh;std::string error;
+        REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/(exportPath?GAGCore::skinClipFile(Online::SkinSpriteClips[clip]):std::string(Online::SkinSpriteClips[clip])+".gsk")).string(),error));
+        for(unsigned frame=0;frame<256;++frame)compare(mesh,frame,clip<3?0:clip<6?1:2,clip);
+        // Publishing uses the fitted meshes; compare every derived heading to
+        // live compositing and, when supplied, the exported turn page alpha.
+        REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/GAGCore::skinClipFile(Online::SkinSpriteClips[clip])).string(),error));
+        const auto &view=Online::UnitSkinViews[clip];
+        const auto turns=mesh.stationaryTurns(view.inverse,view.projection,view.normals);
+        REQUIRE(turns.identity);
+        for(unsigned frame=0;frame<32;++frame)compare(turns,frame,clip<3?0:clip<6?1:2,clip,true);
+    }
+    for(unsigned choice=0;choice<Online::SWARM_MESHES.size();++choice) {
+        GAGCore::SkinMesh mesh;std::string error;
+        REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/Online::SWARM_MESHES[choice].file).string(),error));
+        for(unsigned angle:{0u,127u,359u}) {
+            const auto &view=Online::SkinViews[choice];
+            auto oriented=angle?mesh.rotatedView(angle,view.inverse,view.projection,view.normals):mesh;
+            compare(oriented,0,3,choice==0 && angle==0?7:8);
+        }
+    }
+    CHECK(poses==2037);
+}
+}
+#endif

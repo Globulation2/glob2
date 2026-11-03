@@ -63,7 +63,7 @@ class GOGReleaseTests(unittest.TestCase):
         git('init', '-q')
         (source / 'scons').mkdir()
         (source / 'scons/build_layout.py').write_text('PACKAGE_VERSION = "0.11.0.0"\n')
-        resource = source / 'darwin/mr.lproj/InfoPlist.strings'
+        resource = source / 'platforms/macos/mr.lproj/InfoPlist.strings'
         resource.parent.mkdir(parents=True)
         resource.write_text('"NSLocalNetworkUsageDescription" = "मूळ मजकूर";\n', encoding='utf-8')
         git('add', '.')
@@ -74,7 +74,7 @@ class GOGReleaseTests(unittest.TestCase):
             resource.write_text('"NSLocalNetworkUsageDescription" = "बदललेला मजकूर";\n', encoding='utf-8')
             git('add', '.')
             git('commit', '-qm', 'Mirror changes localized permission copy')
-            with self.assertRaisesRegex(ValueError, r'game source differs from public tag:.*\n.*darwin/mr.lproj/InfoPlist.strings'):
+            with self.assertRaisesRegex(ValueError, r'game source differs from public tag:.*\n.*platforms/macos/mr.lproj/InfoPlist.strings'):
                 preflight('v0.11.0.0', public)
 
     def test_retired_tutorial_assets_are_rejected_even_when_inventoried(self):

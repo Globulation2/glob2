@@ -36,9 +36,9 @@ def validate_frames(root, pack, manifest):
     require(len(frames) == len(manifest['frames']), 'Duplicate frame IDs')
     for frame in frames.values():
         frame_id = frame['id']
-        native = root / 'data/gfx' / (frame_id + '.png')
+        native = root / 'content/data/gfx' / (frame_id + '.png')
         if not native.exists():
-            native = root / 'data/gfx' / (frame_id + 'r.png')
+            native = root / 'content/data/gfx' / (frame_id + 'r.png')
         require(rgba(native).size == (frame['width'], frame['height']), f'Logical dimensions: {frame_id}')
         layers = {layer['role']: layer for layer in frame['layers']}
         require(len(layers) == len(frame['layers']) and layers and layers.keys() <= {'base', 'team'},
@@ -55,9 +55,9 @@ def validate_frames(root, pack, manifest):
                     layer['logical_width'] * 4, layer['logical_height'] * 4)
                 require(image.size == expected, f'Layer dimensions: {path}')
         for role, suffix in (('base', '.png'), ('team', 'r.png')):
-            if (root / 'data/gfx' / (frame_id + suffix)).exists():
+            if (root / 'content/data/gfx' / (frame_id + suffix)).exists():
                 require(role in layers, f'Missing {role} layer: {frame_id}')
-    expected = {p.stem.removesuffix('r') for p in (root / 'data/gfx').glob('*.png')
+    expected = {p.stem.removesuffix('r') for p in (root / 'content/data/gfx').glob('*.png')
                 if WORLD_FRAME.fullmatch(p.name)}
     # Legacy connected terrain must cover the 272 atlas tiles; catalogue
     # materials (terrain-<name>N) register standalone 4x frames instead.
@@ -107,7 +107,7 @@ def validate_resources(root, pack, manifest, frames):
             require(tile.tobytes() == native.resize(tile.size, Image.Resampling.LANCZOS).tobytes(),
                     f'Recovered resource pixels: {name}')
         else:
-            original = rgba(root / 'data/gfx' / (name + '.png'))
+            original = rgba(root / 'content/data/gfx' / (name + '.png'))
             alpha = original.getchannel('A').resize(tile.size, Image.Resampling.BILINEAR)
             require(tile.getchannel('A').tobytes() == alpha.tobytes(), f'Constrained resource alpha: {name}')
         tiles.append(tile)
@@ -181,14 +181,14 @@ def validate_export(root, pack, manifest, exported):
     # The shared terrain compiler legitimately emits several textures from
     # one catalog source. HD PNG layers each have exactly one runtime output.
     hd_records = [record for record in audit['files']
-                  if record['source'].startswith('data/highres/v1/')]
+                  if record['source'].startswith('content/data/highres/v1/')]
     records = {record['source']: record for record in hd_records}
     require(len(records) == len(hd_records), 'Duplicate exported HD source records')
     images = [layer for frame in manifest['frames'] for layer in frame['layers']]
     images += [level for key in ('terrain_atlas', 'resource_atlas') for level in manifest[key]['levels']]
     for image in images:
         name = image['file']
-        relative = 'data/highres/v1/' + name
+        relative = 'content/data/highres/v1/' + name
         record = records[relative]
         expected = str(Path(relative).with_suffix('.webp'))
         require(record['output'] == expected, f'Runtime filename: {relative}')
@@ -207,15 +207,15 @@ def validate_export(root, pack, manifest, exported):
             if not record['lossy']:
                 require(decoded.tobytes() == source.tobytes(), f'Lossless runtime pixels: {name}')
     expected_index = re.sub(r'\.png(?=\s|$)', '.webp', (pack / 'frames.txt').read_text())
-    require((exported / 'data/highres/v1/frames.txt').read_text() == expected_index, 'Runtime frame index differs')
-    require(not list((exported / 'data/highres/v1').glob('*.png')), 'Source PNGs leaked into the runtime pack')
+    require((exported / 'content/data/highres/v1/frames.txt').read_text() == expected_index, 'Runtime frame index differs')
+    require(not list((exported / 'content/data/highres/v1').glob('*.png')), 'Source PNGs leaked into the runtime pack')
     for name in ('manifest.json', 'README.md'):
-        require(not (exported / 'data/highres/v1' / name).exists(), f'Source metadata shipped: {name}')
+        require(not (exported / 'content/data/highres/v1' / name).exists(), f'Source metadata shipped: {name}')
     print(f'PASS: {len(images)} WebP layers/atlases; shared encoding, hashes, alpha, geometry and runtime index')
 
 
 def validate(root=ROOT, exported=None):
-    pack = root / 'data/highres/v1'
+    pack = root / 'content/data/highres/v1'
     manifest = json.loads((pack / 'manifest.json').read_text())
     frames = validate_frames(root, pack, manifest)
     validate_resources(root, pack, manifest, frames)

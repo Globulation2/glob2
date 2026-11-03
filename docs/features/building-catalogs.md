@@ -67,7 +67,7 @@ and two delivery-worker slots using the installed inn artwork:
       "width": 2, "height": 2, "hpInit": 200, "hpMax": 200,
       "insideSpeed": 12, "maxUnitInside": 3,
       "maxMaterial": [0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      "gameSprite": "data/gfx/inn0b", "miniSprite": "data/gfx/miniinn0b"
+      "gameSprite": "content/data/gfx/inn0b", "miniSprite": "content/data/gfx/miniinn0b"
     },
     "semantics": {
       "placeable": true, "instantPlacement": true, "repairable": false,
@@ -101,7 +101,7 @@ import shutil
 from pathlib import Path
 
 output = Path("artifacts/field-kitchen-catalog")
-shutil.copytree("data/buildings", output)  # Choose a fresh directory for each copy.
+shutil.copytree("content/data/buildings", output)  # Choose a fresh directory for each copy.
 example = Path("test/fixtures/building-catalog/authoring")
 shutil.copy2(example / "field-kitchen.json", output)
 manifest_path = output / "manifest.json"

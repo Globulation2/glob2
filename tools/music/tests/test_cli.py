@@ -68,15 +68,15 @@ class ResolveTest(unittest.TestCase):
             (plain / 'a1.opus').write_bytes(b'')
             self.assertEqual(cli._resolve(str(plain)), (plain, None))
             out, repo = tmp / 'out', tmp / 'repo'
-            (repo / 'data' / 'zik' / 'moss-lanterns').mkdir(parents=True)
+            (repo / 'content' / 'data' / 'zik' / 'moss-lanterns').mkdir(parents=True)
             with mock.patch.object(cli, 'OUT_DIR', out), mock.patch.object(cli, 'REPO_ROOT', repo):
                 # Reference sets are always the shipped files.
-                self.assertEqual(cli._resolve('original')[0], repo / 'data' / 'zik' / 'original')
-                # A shipped set not built locally falls back to data/zik only when installed.
+                self.assertEqual(cli._resolve('original')[0], repo / 'content' / 'data' / 'zik' / 'original')
+                # A shipped set not built locally falls back to content/data/zik only when installed.
                 self.assertEqual(cli._resolve('moss-lanterns')[0], out / 'moss-lanterns')
-                (repo / 'data' / 'zik' / 'moss-lanterns' / 'a1.opus').write_bytes(b'')
+                (repo / 'content' / 'data' / 'zik' / 'moss-lanterns' / 'a1.opus').write_bytes(b'')
                 directory, m = cli._resolve('moss-lanterns')
-                self.assertEqual((directory, m.set_id), (repo / 'data' / 'zik' / 'moss-lanterns', 'moss-lanterns'))
+                self.assertEqual((directory, m.set_id), (repo / 'content' / 'data' / 'zik' / 'moss-lanterns', 'moss-lanterns'))
                 (out / 'moss-lanterns').mkdir(parents=True)
                 (out / 'moss-lanterns' / 'a1.opus').write_bytes(b'')
                 self.assertEqual(cli._resolve('moss-lanterns')[0], out / 'moss-lanterns')
@@ -115,7 +115,7 @@ class RegisterAndInstallTest(unittest.TestCase):
 
     def test_recursive_discovery_needs_no_registration_edit(self):
         with tempfile.TemporaryDirectory() as tmp:
-            text = (Path(__file__).resolve().parents[3] / 'data/zik/SConscript').read_text()
+            text = (Path(__file__).resolve().parents[3] / 'content/data/zik/SConscript').read_text()
             zik = self.zik(tmp, text)
             cli._register_set(zik, 'new-set')
             self.assertEqual((zik / 'SConscript').read_text(), text)

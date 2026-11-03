@@ -218,7 +218,7 @@ class Smoke:
         for entry in ('index.html', 'studio.html', 'generator-studio.html'):
             (self.directory / 'web-client' / entry).write_text('<!doctype html><title>glob2 web client</title>')
         # A content-addressed data package with a precompressed copy, as
-        # browser/precompress.py and deploy/install-web-client.py lay them out.
+        # platforms/web/precompress.py and deploy/install-web-client.py lay them out.
         (self.directory / 'web-client/assets').mkdir()
         (self.directory / f'web-client/{SMOKE_PACKAGE}').write_bytes(b'package')
         (self.directory / f'web-client/{SMOKE_PACKAGE}.br').write_bytes(b'brotli')
@@ -312,7 +312,7 @@ class Smoke:
         if not self.arguments.no_build:
             # Every image in this build must use the same resolved theme revision.
             self.env['GLOB2_DESIGN_SYSTEM_SHA'] = subprocess.check_output(
-                ['node', str(ROOT / 'platform/scripts/design-system.mjs'), '--resolve-only'],
+                ['node', str(ROOT / 'services/online/scripts/design-system.mjs'), '--resolve-only'],
                 text=True, cwd=ROOT).strip()
             log('building images (platform, music-worker, skin-render-worker, engine-agent, relay, caddy)')
             started = time.monotonic()

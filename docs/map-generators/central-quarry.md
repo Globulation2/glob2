@@ -64,7 +64,7 @@ There is no stone amount: the quarry is the only stone, and `validateWorld` refu
   couple of towers, whether swimming is a fair counter and whether the holder's lead feels earned need
   a human playtest.
 - **Maxima never mines the quarry.** It counts stone only within 20 tiles of its own buildings
-  (`environment.local_territory_radius` in `data/maxima/base.strategy`).
+  (`environment.local_territory_radius` in `content/data/maxima/base.strategy`).
 - **Nicowar starves more than Cabino** (up to 80 starvation deaths in a 30,000-tick game) while its
   weak colonies lose the fight for the isle.
 - **The ring of equal walk is offset towards the landing**, so colonies can bunch on one side of the

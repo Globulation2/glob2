@@ -1,0 +1,17 @@
+from sources import USL_SOURCES
+usl_sources = list(USL_SOURCES)
+    
+Import("env")
+Import("PackTar")
+import os
+    
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
+    for file in os.listdir("."):
+        if file.find(".cpp") != -1 or file.find(".h") != -1:
+            PackTar(env["TARFILE"], file)
+    PackTar(env["TARFILE"], "SConscript")
+    
+from dev_compile import objects as development_objects, unique
+mapping = development_objects(env, usl_sources,
+    lambda source: env.File(source.removeprefix('#libs/usl/src/')[:-4] + '.o').abspath)
+env.Library("usl", unique(mapping.values()))

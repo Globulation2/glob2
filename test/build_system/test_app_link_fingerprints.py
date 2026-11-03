@@ -15,7 +15,7 @@ from unittest.mock import patch
 import urllib.error
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'mobile'))
+sys.path.insert(0, str(ROOT / 'platforms/mobile'))
 import app_link_fingerprints as links
 
 HEX = 'ab' * 32
@@ -73,7 +73,7 @@ def pinned_keytool():
 KEYTOOL = pinned_keytool()
 
 
-@unittest.skipUnless(KEYTOOL and shutil.which('openssl'), 'needs the pinned JDK (mobile/setup_tools.py) and openssl')
+@unittest.skipUnless(KEYTOOL and shutil.which('openssl'), 'needs the pinned JDK (platforms/mobile/setup_tools.py) and openssl')
 class KeystoreTests(unittest.TestCase):
     def test_reads_certificate_and_removes_decoded_keystore(self):
         with tempfile.TemporaryDirectory() as directory:

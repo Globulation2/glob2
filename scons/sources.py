@@ -774,9 +774,9 @@ USL_SOURCES = (
 )
 
 INCLUDE_DIRECTORIES = (
-    'libgag/include',
+    'libs/gag/include',
     '.',
-    'libusl/src',
+    'libs/usl/src',
     'src',
     'src/ai',
     'src/hud',

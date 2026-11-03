@@ -11,8 +11,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 class OfflineEncoderTests(unittest.TestCase):
     def test_sources_match_rpm_and_flatpak_inputs(self):
-        rpm = (ROOT / "fedora/glob2.spec").read_text()
-        encoded = (ROOT / "flatpak/org.globulation2.Globulation2.yml.in").read_text()
+        rpm = (ROOT / "platforms/linux/fedora/glob2.spec").read_text()
+        encoded = (ROOT / "platforms/linux/flatpak/org.globulation2.Globulation2.yml.in").read_text()
         for artifact in encoder.SOURCES.values():
             self.assertIn(artifact["url"], rpm)
             self.assertIn(artifact["url"], encoded)

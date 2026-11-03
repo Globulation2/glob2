@@ -85,7 +85,7 @@ def validate_installed(root, repository):
     manifest = json.loads((root / "manifest.json").read_text())
     assert manifest["format"] == "GSK1" and manifest["layout"] == "colony-v1"
     groups = {
-        "worker": ("walk", "swim", "harvest"),
+        "worker": ("walk", "swim", "harvest", "prone-harvest", "prone-harvest-mid"),
         "warrior": ("walk", "swim", "fight"),
         "explorer": ("fly",),
     }
@@ -97,7 +97,7 @@ def validate_installed(root, repository):
         "generated swarm file names follow their id"
     )
     # The platform contract and the generator name the same meshes in the same order.
-    protocol = (repository / "platform/packages/protocol/src/skins.ts").read_text()
+    protocol = (repository / "services/online/packages/protocol/src/skins.ts").read_text()
     union = protocol[protocol.index("export const SwarmMesh = Type.Union([") :]
     assert re.findall(
         r"Type\.Literal\('([a-z]+)'\)", union[: union.index("]);")]
@@ -128,8 +128,12 @@ def validate_installed(root, repository):
                     hashlib.sha256((repository / dependency).read_bytes()).hexdigest()
                     == digest
                 ), (name + ": " + dependency + " changed")
+        elif name.startswith("worker-prone-harvest"):
+            assert record["source"] == "tools/unit-animation/prone_harvest_motion.py"
+            for dependency, digest in record["dependencies"].items():
+                assert hashlib.sha256((repository/dependency).read_bytes()).hexdigest()==digest
         else:
-            assert source.is_relative_to((repository / "datasrc/gfx").resolve())
+            assert source.is_relative_to((repository / "content-src/gfx").resolve())
         assert (
             hashlib.sha256(source.read_bytes()).hexdigest() == record["sourceSha256"]
         ), (name + ": source changed")
@@ -204,7 +208,7 @@ def validate_installed(root, repository):
         print(
             name + ": installed bytes, source, UV identity, bounds and normals verified"
         )
-    previews = repository / "platform/apps/web/public/skins/models"
+    previews = repository / "services/online/apps/web/public/skins/models"
     for name in sorted(expected):
         assert (
             hashlib.sha256((previews / name).read_bytes()).hexdigest()

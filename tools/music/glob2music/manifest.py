@@ -20,7 +20,7 @@ write Oggs, normalise loudness or limit peaks themselves.
     license = "CC0-1.0"                # licence of the finished audio
     credits = ["Composed for Globulation 2 ...", "Samples: VSCO 2 CE (CC0)"]
     ai_generated = false               # true requires an [ai] table
-    shipped = true                     # installed into data/zik by `install`
+    shipped = true                     # installed into content/data/zik by `install`
     seed = 1                           # base seed for ctx.rng()
     description = "..."                # optional
 

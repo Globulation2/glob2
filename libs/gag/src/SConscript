@@ -1,0 +1,30 @@
+from sources import GAG_SOURCES
+Import("env")
+libgag_sources = list(GAG_SOURCES)
+if env["PLATFORM"] == "darwin" and not env.get("mingw") and not env.get("mingwcross"):
+    libgag_sources.append("MacScrollMonitor.mm")
+
+
+    
+Import("env")
+from dev_compile import objects as development_objects, unique
+mapping = development_objects(env, libgag_sources,
+    lambda source: env.File(source.removeprefix('#libs/gag/src/').rsplit('.', 1)[0] + '.o').abspath)
+l1 = env.StaticLibrary("gag", unique(mapping.values()))
+if env.get("RUNTIME_ASSET_STAMP"):
+    env.Requires(l1, env["RUNTIME_ASSET_STAMP"])
+
+if env.get('role') != 'relay':
+    Default(l1)
+
+    
+Import("env")
+Import("PackTar")
+import os
+    
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
+    for file in os.listdir("."):
+        if file.endswith((".cpp", ".mm", ".h")):
+            PackTar(env["TARFILE"], file)
+    
+    PackTar(env["TARFILE"], "SConscript")

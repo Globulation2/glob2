@@ -4,7 +4,7 @@
 #pragma once
 
 // MatchSetup: the engine-independent JSON description of a match
-// (platform/packages/protocol, src/matchSetup.ts, is the source of truth for its
+// (services/online/packages/protocol, src/matchSetup.ts, is the source of truth for its
 // shape). This file turns it into the GameHeader every client and the verifier run,
 // so all of them build the same game from the same JSON:
 //

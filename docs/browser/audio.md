@@ -5,8 +5,8 @@ Music playback has its own decoder worker and AudioWorklet, independent of the g
 ### Music playback
 
 Both game runtimes use a separate Wasm decoder worker and an AudioWorklet. The
-application sends assets and controls through `browser/Audio.cpp` and the UI host
-in `browser/audio.js`; ongoing playback never calls the application mixer or
+application sends assets and controls through `platforms/web/Audio.cpp` and the UI host
+in `platforms/web/audio.js`; ongoing playback never calls the application mixer or
 waits for its event loop.
 
 | Owner | Responsibilities | Must not do |

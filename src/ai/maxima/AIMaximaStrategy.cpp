@@ -900,6 +900,12 @@ namespace
 		delete direct;
 		if(GAGCore::Toolkit::getFileManager())
 			return GAGCore::Toolkit::getFileManager()->openIFStream(fileName);
+		// Without a file manager (MaximaStrategyDump), a source checkout keeps
+		// the runtime tree under content/.
+		std::ifstream* checkout=new std::ifstream(("content/"+fileName).c_str());
+		if(checkout->good())
+			return checkout;
+		delete checkout;
 		return NULL;
 	}
 

@@ -5,7 +5,7 @@
 
 // Match ticket verification for the relay (docs/multiplayer/relay.md). Tickets are
 // EdDSA (Ed25519) JWTs the platform signs; the contract lives in
-// platform/packages/protocol/src/ticket.ts and src/node/jwt.ts. The checks run in the
+// services/online/packages/protocol/src/ticket.ts and src/node/jwt.ts. The checks run in the
 // same order as the platform's own verifier, so both report the same reason for the
 // shared fixtures in test/fixtures/relay-tickets/.
 

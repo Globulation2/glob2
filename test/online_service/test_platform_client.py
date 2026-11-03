@@ -2,7 +2,7 @@
 requests, reconnect, token refresh, refresh-token reuse, browser sign-in start,
 sign-out).
 
-Needs a platform/ checkout with dependencies installed (the TypeScript
+Needs a services/online/ checkout with dependencies installed (the TypeScript
 workspace from the multiplayer platform branch) and a Postgres role that may
 create databases. The test creates and drops its own database, generates
 signing keys, runs the API on loopback behind a local TLS proxy (the client

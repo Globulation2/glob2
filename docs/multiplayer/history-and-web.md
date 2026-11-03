@@ -3,7 +3,7 @@
 The platform keeps what the verifier and rating updater record (plan section G):
 matches, participants, rating history, per-team statistics and 512-tick
 timelines, and the replay of every verified match. This page describes the
-read-only REST API over that history and the web app built on it (`platform/apps/web`).
+read-only REST API over that history and the web app built on it (`services/online/apps/web`).
 The writers are described in [ratings and matchmaking](ratings-and-matchmaking.md)
 and [architecture](engine-agents.md#engine-agents).
 
@@ -13,7 +13,7 @@ Directory search uses PostgreSQL’s trusted `pg_trgm` extension, installed by m
 0036 alongside the name and substring-search indexes. Deploy migrations and the API
 before deploying the web app that consumes the additive endpoints.
 
-All shapes are in `platform/packages/protocol/src/history.ts` (with JSON Schema
+All shapes are in `services/online/packages/protocol/src/history.ts` (with JSON Schema
 and fixtures under `fixtures/`). Lists are newest first and page with an opaque
 `cursor`; `limit` is optional.
 
@@ -85,7 +85,7 @@ whose relay sent no summary.
 
 ## Web app
 
-`platform/apps/web` is a React single-page app served by Caddy for every path
+`services/online/apps/web` is a React single-page app served by Caddy for every path
 that is not routed to the API or the browser client, and lays out for phone
 width (320 px up).
 
@@ -159,20 +159,20 @@ without menu controls or status bars; no separate sprite animations are overlaid
 
 - **Tokens** live in `src/styles/tokens.css`: colours, type, spacing, radii and
   shadows for two themes. *Meadow* (light) is the menu paper theme
-  (`libgag/include/ui/Theme.h`) with the wordmark's green and gold; *Night
+  (`libs/gag/include/ui/Theme.h`) with the wordmark's green and gold; *Night
   colony* (dark) is the in-match touch theme's aubergine and gold
   (`src/ui/FrontendUI.cpp`). The theme follows the system unless the viewer
   picks one with the navigation toggle (stored in that browser only; `public/theme.js`
   applies it before the first paint).
-  The browser download screen (`browser/shell.html`) uses the same theme choice
+  The browser download screen (`platforms/web/shell.html`) uses the same theme choice
   and palette, with the shared wordmark, Glob icon and Nunito font served from
   `/signin/assets/`, and the site's `/favicon-32.png` favicon.
-- **Type**: Glob2 Sans (the game font, a Latin subset of `data/fonts/sans.ttf`)
+- **Type**: Glob2 Sans (the game font, a Latin subset of `content/data/fonts/sans.ttf`)
   for headings and numbers, Nunito (SIL OFL, self-hosted) for body text.
 - **Team colours** are the engine's (`src/team/Team.cpp`: hue `team × 360 / teams`,
   HSV 0.8/0.9), computed in `src/colors.ts`. Swatches show the exact colour;
   chart lines use the same hue adjusted to keep 3:1 contrast in either theme.
-- **Art** in `src/art/` is generated from `data/gfx` and `data/highres` by
+- **Art** in `src/art/` is generated from `content/data/gfx` and `content/data/highres` by
   `apps/web/art/build_art.py`, which also writes the server-rendered pages'
   images and fonts to `apps/api/src/web/static/`. See `apps/web/art/README.md`
   for sources, licences and contrast ratios.
@@ -287,7 +287,7 @@ the instance description) load on demand.
 ### Watch in browser
 
 The match page links "Watch in browser" to `/play/?replay=<replay URL>`. The
-browser shell (`browser/shell.html`) downloads that replay while the game loads,
+browser shell (`platforms/web/shell.html`) downloads that replay while the game loads,
 writes it to the in-memory `/tmp` (never to saved storage), and starts the game
 with `replay <file>`, the existing replay viewer. It accepts http(s) URLs only,
 sends credentials only to its own origin, and caps the file at 64 MiB. When the
@@ -297,7 +297,7 @@ reports `watchReplay` (`none`, `downloading`, `ready` or `failed`).
 ## Tests
 
 ```sh
-cd platform
+cd services/online
 npx vitest run apps/api/test/history.test.ts   # REST against Postgres
 npx vitest run apps/web                        # page components (jsdom)
 npm run build -w @glob2/web && npm run e2e -w @glob2/web
@@ -309,7 +309,7 @@ previews and an open room (`apps/web/e2e/showcase.ts`), the API with local
 accounts enabled, and a front server that routes like the Caddyfile. When a
 browser game build exists (`build/emscripten/client/release`, or
 `GLOB2_WEB_CLIENT_DIR`) it also plays the seeded replay
-(`browser/tests/fixtures/cross-replay.replay`) through Watch in browser.
+(`platforms/web/tests/fixtures/cross-replay.replay`) through Watch in browser.
 
 Every page, including the sign-in and invite pages, is checked with axe in both
 themes on desktop and phone and must have no violations: `a11y.spec.ts` runs

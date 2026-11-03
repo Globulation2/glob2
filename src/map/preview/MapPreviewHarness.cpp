@@ -92,11 +92,11 @@ struct MapPreviewHarness
 		const auto directory = std::filesystem::path(glob2test::artifactDirFromWorkingDirectory()) /
 							   "generator-studio";
 		std::filesystem::create_directories(directory);
-		std::ifstream manifestFile(glob2test::sourceRoot() /
+		std::ifstream manifestFile(glob2test::contentRoot() /
 								   "data/generators/examples/swamp/manifest.json");
 		auto manifest = Json::parse(manifestFile);
 		manifest["entry"] = "generator.js";
-		std::ifstream scriptFile(glob2test::sourceRoot() /
+		std::ifstream scriptFile(glob2test::contentRoot() /
 								 "data/generators/examples/swamp/generator.js");
 		const std::string script{std::istreambuf_iterator<char>(scriptFile),
 								 std::istreambuf_iterator<char>()};
@@ -468,7 +468,7 @@ struct MapPreviewHarness
 			}
 		};
 		const auto fixture = output + "/selection-fixture.map.gz";
-		std::filesystem::copy_file(glob2test::sourceRoot() / glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map"), fixture,
+		std::filesystem::copy_file(glob2test::contentRoot() / glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map"), fixture,
 								   std::filesystem::copy_options::overwrite_existing);
 		auto start = std::chrono::steady_clock::now();
 		REQUIRE(custom.loadMap(fixture));

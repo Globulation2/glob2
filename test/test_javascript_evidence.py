@@ -14,7 +14,7 @@ from check_javascript_evidence import provenance_issues, inventory
 from check_javascript import CURRENT_SAVE_VERSION, save_header, header_checksum_delta, continuation_matches, adjust_header_checksum
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('android_device_tests', ROOT / 'mobile/android_device_tests.py')
+spec = importlib.util.spec_from_file_location('android_device_tests', ROOT / 'platforms/mobile/android_device_tests.py')
 android = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(android)
 
