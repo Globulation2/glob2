@@ -59,7 +59,7 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(FLOWER_MEADOW, G::Barren, "flower_meadow", "[flower_meadow]", {52, 118, 46}, {60, 126, 48}),
 		authored(MUD, G::Rough, "mud", "[mud]", {82, 64, 48}, {96, 76, 56}),
 		authored(MARSH, G::Rough, "marsh", "[marsh]", {62, 82, 66}, {74, 96, 78}),
-		authored(DEEP_SNOW, G::Rough, "deep_snow", "[deep_snow]", {208, 216, 226}, {222, 228, 236}),
+		authored(DEEP_SNOW, G::Ice, "deep_snow", "[deep_snow]", {208, 216, 226}, {222, 228, 236}),
 		authored(SCREE, G::Rough, "scree", "[scree]", {104, 108, 116}, {118, 122, 128}),
 		authored(DIRT_TRACK, G::Paths, "dirt_track", "[dirt_track]", {156, 128, 92}, {170, 142, 104}),
 		authored(BOARDWALK, G::Paths, "boardwalk", "[boardwalk]", {142, 110, 72}, {164, 128, 84}),

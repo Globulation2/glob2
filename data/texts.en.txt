@@ -5687,7 +5687,7 @@ Sand
 [terrain group grass]
 Grass
 [terrain group ice]
-Ice
+Snow and ice
 [terrain group paths]
 Paths
 [terrain group obstacles]

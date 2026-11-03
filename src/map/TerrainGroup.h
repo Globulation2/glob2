@@ -69,6 +69,7 @@ inline constexpr auto TERRAIN_GROUPS = []
 		grass.farmMaterial = materialIndex(MaterialId::Food);
 	}
 	{
+		// Ice and deep snow: slow, and the cold wears ground units down.
 		auto &ice = define(TerrainGroup::Ice, "ice", "[terrain group ice]", true);
 		ice.walkable = true;
 		ice.groundSpeedQ8 = 128;
@@ -98,7 +99,7 @@ inline constexpr auto TERRAIN_GROUPS = []
 		barren.inhibitionQ8 = 256;
 	}
 	{
-		// Mud, marsh, deep snow, scree: slow, unbuildable, nothing grows.
+		// Mud, marsh, scree: slow, unbuildable, nothing grows.
 		auto &rough = define(TerrainGroup::Rough, "rough", "[terrain group rough]", true);
 		rough.walkable = true;
 		rough.groundSpeedQ8 = 160;
