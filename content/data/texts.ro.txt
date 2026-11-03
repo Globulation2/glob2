@@ -2328,6 +2328,18 @@ Lățimea porții
 Deltă împletită
 [Braid count]
 Număr de brațe
+[Flood]
+Inundație
+[Distributaries]
+Brațe ale râului
+[River crossings]
+Treceri peste râu
+[Dunes]
+Dune
+[Dry]
+Uscat
+[Wet]
+Umed
 [Rejoining frequency]
 Frecvența confluențelor
 [Crossing spacing]

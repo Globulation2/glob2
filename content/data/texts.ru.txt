@@ -2328,6 +2328,18 @@ OpenGL недоступен в этой сборке.
 Разветвлённая дельта
 [Braid count]
 Число проток
+[Flood]
+Разлив
+[Distributaries]
+Рукава
+[River crossings]
+Переправы через реку
+[Dunes]
+Дюны
+[Dry]
+Сухо
+[Wet]
+Влажно
 [Rejoining frequency]
 Частота слияний
 [Crossing spacing]

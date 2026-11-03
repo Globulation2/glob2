@@ -159,6 +159,15 @@ bool GraphicContext::drawDeviceSkinMesh(const SkinMeshRequest &request,float x,f
     packet.source={int(tile%Columns*TileSize),int(tile/Columns*TileSize),TileSize,TileSize};
     packet.destination={x-w*(Padding-1)/2,y-h*(Padding-1)/2,w*Padding,h*Padding};
     packet.alpha=alpha;packet.linear=true;packet.blend=DrawPacket::Blend::Premultiplied;
+    if(radialFade.active()) {
+        // Devices premultiply triangle colours for a premultiplied page, so
+        // the vertices carry straight opacity and the packet none of its own.
+        const auto &d=packet.destination;const float page=float(AtlasSize);
+        packet.kind=DrawPacket::Kind::Triangles;packet.alpha=255;
+        const auto vertices=radialFadeTriangles(radialFade,d.x,d.y,d.w,d.h,packet.source.x/page,packet.source.y/page,
+            (packet.source.x+packet.source.w)/page,(packet.source.y+packet.source.h)/page,alpha/255.f);
+        packet.vertices.assign(vertices.begin(),vertices.end());
+    }
     return submitDevicePacket(std::move(packet));
 }
 bool GraphicContext::readDeviceSkinMesh(const SkinMeshRequest &request,std::vector<std::uint8_t> &rgba) {

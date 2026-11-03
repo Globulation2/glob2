@@ -7,10 +7,13 @@ export function validateRendererCapability(value: unknown): string {
   if (
     capability['format'] !== SPRITE_BUNDLE_FORMAT ||
     capability['stationaryTurns'] !== true ||
+    capability['proneHarvest'] !== true ||
     typeof capability['renderRevision'] !== 'string' ||
     !/^[0-9a-f]{64}$/.test(capability['renderRevision'])
   )
-    throw new Error('Unsupported skin renderer; deploy a native renderer with stationary turns');
+    throw new Error(
+      'Unsupported skin renderer; deploy a native renderer with stationary turns and prone harvesting',
+    );
   return capability['renderRevision'];
 }
 const clips = [
@@ -91,16 +94,35 @@ export function validateBundle(
     Object.keys(mapping).length !== 3
   )
     throw new Error('Incomplete skin turns');
-  const allPages = [...pages, ...turns];
+  const proneMapping = doc['proneHarvestMapping'] as Record<string, unknown> | undefined;
+  const pronePages = doc['proneHarvestPages'];
+  if (
+    !proneMapping ||
+    proneMapping['directions'] !== 8 ||
+    proneMapping['phases'] !== 64 ||
+    proneMapping['logicalSize'] !== 38 ||
+    Object.keys(proneMapping).length !== 3 ||
+    !Array.isArray(pronePages) ||
+    pronePages.length !== 8
+  )
+    throw new Error('Incomplete prone harvesting');
+  const allPages = [...pages, ...turns, ...pronePages];
   allPages.forEach((raw: unknown, index: number) => {
     if (!raw || typeof raw !== 'object') throw new Error('Invalid sprite page');
     const p = raw as Record<string, unknown>,
       clip = index < 28 ? Math.floor(index / 4) : index === 28 ? 7 : index - 29,
       size = index === 28 ? 128 : 1024;
     if (
-      p['clip'] !== clips[clip] ||
-      p['first'] !== (index < 28 ? (index % 4) * 64 : index === 28 ? 0 : 256) ||
-      p['frames'] !== (index < 28 ? 64 : index === 28 ? 1 : 32) ||
+      p['clip'] !== (index >= 36 ? 'worker-prone-harvest' : clips[clip]) ||
+      p['first'] !==
+        (index >= 36
+          ? (index - 36) * 64
+          : index < 28
+            ? (index % 4) * 64
+            : index === 28
+              ? 0
+              : 256) ||
+      p['frames'] !== (index >= 36 ? 64 : index < 28 ? 64 : index === 28 ? 1 : 32) ||
       p['width'] !== size ||
       p['height'] !== size ||
       typeof p['sha256'] !== 'string' ||

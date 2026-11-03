@@ -2306,6 +2306,18 @@ HP ≤25/50/75%
 বহুশাখা বদ্বীপ
 [Braid count]
 নদীর শাখার সংখ্যা
+[Flood]
+বন্যা
+[Distributaries]
+শাখানদী
+[River crossings]
+নদী পারাপার
+[Dunes]
+বালিয়াড়ি
+[Dry]
+শুষ্ক
+[Wet]
+আর্দ্র
 [Rejoining frequency]
 শাখা আবার মেশার হার
 [Crossing spacing]

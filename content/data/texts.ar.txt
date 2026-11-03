@@ -2328,6 +2328,18 @@ OpenGL غير متوفر في هذا الإصدار.
 دلتا متشعبة
 [Braid count]
 عدد الفروع
+[Flood]
+الفيضان
+[Distributaries]
+الروافد المتفرعة
+[River crossings]
+معابر النهر
+[Dunes]
+الكثبان
+[Dry]
+جاف
+[Wet]
+رطب
 [Rejoining frequency]
 تكرار الالتقاء
 [Crossing spacing]

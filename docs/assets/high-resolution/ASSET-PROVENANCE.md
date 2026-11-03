@@ -15,9 +15,9 @@ Catalog terrain materials use original procedural 8×8 blocks with shared bounda
 | Original-based terrain with deterministic grain and tiling | 256 |
 | Procedural resource painting | 120 |
 | Procedural terrain synthesis | 9244 |
-| Recovered original | 2076 |
+| Recovered original | 2588 |
 
-Total: **11873 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../content/data/highres/v1/manifest.json). See [original export recipes](../../../content-src/gfx/recovered-runtime.md) for limitations.
+Total: **12385 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../content/data/highres/v1/manifest.json). See [original export recipes](../../../content-src/gfx/recovered-runtime.md) for limitations.
 
 | Frame | Source category | Logical canvas | Native canvas/source | Recipe |
 | --- | --- | --- | --- | --- |
@@ -10992,62 +10992,574 @@ Total: **11873 frames**. Source/output SHA-256 hashes, native sizes and selected
 | `unit2013` | Recovered original | 40×40 | — ([source](../../../content-src/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit2014` | Recovered original | 40×40 | — ([source](../../../content-src/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
 | `unit2015` | Recovered original | 40×40 | — ([source](../../../content-src/gfx/originals/units/glob-warrior-fight.blend)) | recovered original: Blender 2.34 frozen-pose turn; 32 headings |
+| `unit2016` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2017` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2018` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2019` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit202` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2020` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2021` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2022` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2023` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2024` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2025` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2026` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2027` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2028` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2029` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit203` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2030` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2031` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2032` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2033` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2034` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2035` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2036` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2037` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2038` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2039` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit204` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2040` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2041` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2042` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2043` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2044` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2045` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2046` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2047` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2048` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2049` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit205` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2050` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2051` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2052` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2053` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2054` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2055` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2056` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2057` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2058` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2059` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit206` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2060` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2061` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2062` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2063` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2064` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2065` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2066` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2067` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2068` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2069` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit207` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2070` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2071` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2072` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2073` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2074` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2075` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2076` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2077` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2078` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2079` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit208` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2080` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2081` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2082` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2083` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2084` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2085` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2086` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2087` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2088` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2089` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit209` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2090` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2091` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2092` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2093` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2094` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2095` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2096` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2097` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2098` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2099` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit21` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit210` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2100` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2101` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2102` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2103` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2104` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2105` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2106` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2107` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2108` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2109` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit211` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2110` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2111` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2112` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2113` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2114` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2115` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2116` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2117` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2118` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2119` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit212` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2120` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2121` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2122` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2123` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2124` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2125` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2126` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2127` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2128` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2129` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit213` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2130` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2131` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2132` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2133` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2134` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2135` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2136` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2137` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2138` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2139` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit214` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2140` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2141` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2142` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2143` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2144` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2145` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2146` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2147` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2148` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2149` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit215` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2150` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2151` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2152` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2153` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2154` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2155` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2156` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2157` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2158` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2159` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit216` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2160` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2161` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2162` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2163` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2164` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2165` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2166` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2167` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2168` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2169` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit217` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2170` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2171` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2172` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2173` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2174` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2175` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2176` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2177` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2178` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2179` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit218` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2180` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2181` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2182` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2183` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2184` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2185` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2186` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2187` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2188` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2189` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit219` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2190` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2191` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2192` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2193` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2194` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2195` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2196` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2197` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2198` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2199` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit22` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit220` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2200` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2201` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2202` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2203` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2204` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2205` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2206` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2207` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2208` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2209` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit221` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2210` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2211` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2212` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2213` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2214` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2215` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2216` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2217` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2218` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2219` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit222` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2220` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2221` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2222` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2223` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2224` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2225` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2226` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2227` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2228` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2229` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit223` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2230` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2231` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2232` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2233` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2234` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2235` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2236` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2237` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2238` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2239` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit224` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2240` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2241` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2242` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2243` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2244` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2245` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2246` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2247` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2248` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2249` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit225` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2250` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2251` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2252` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2253` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2254` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2255` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2256` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2257` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2258` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2259` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit226` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2260` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2261` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2262` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2263` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2264` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2265` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2266` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2267` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2268` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2269` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit227` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2270` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2271` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2272` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2273` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2274` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2275` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2276` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2277` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2278` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2279` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit228` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2280` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2281` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2282` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2283` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2284` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2285` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2286` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2287` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2288` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2289` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit229` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2290` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2291` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2292` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2293` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2294` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2295` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2296` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2297` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2298` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2299` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit23` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit230` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2300` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2301` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2302` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2303` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2304` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2305` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2306` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2307` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2308` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2309` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit231` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2310` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2311` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2312` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2313` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2314` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2315` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2316` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2317` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2318` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2319` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit232` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2320` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2321` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2322` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2323` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2324` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2325` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2326` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2327` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2328` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2329` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit233` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2330` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2331` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2332` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2333` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2334` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2335` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2336` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2337` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2338` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2339` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit234` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2340` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2341` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2342` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2343` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2344` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2345` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2346` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2347` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2348` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2349` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit235` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2350` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2351` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2352` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2353` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2354` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2355` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2356` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2357` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2358` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2359` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit236` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2360` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2361` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2362` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2363` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2364` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2365` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2366` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2367` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2368` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2369` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit237` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2370` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2371` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2372` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2373` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2374` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2375` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2376` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2377` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2378` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2379` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit238` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2380` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2381` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2382` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2383` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2384` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2385` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2386` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2387` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2388` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2389` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit239` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2390` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2391` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2392` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2393` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2394` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2395` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2396` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2397` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2398` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2399` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit24` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit240` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2400` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2401` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2402` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2403` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2404` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2405` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2406` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2407` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2408` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2409` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit241` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2410` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2411` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2412` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2413` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2414` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2415` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2416` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2417` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2418` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2419` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit242` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2420` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2421` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2422` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2423` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2424` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2425` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2426` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2427` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2428` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2429` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit243` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2430` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2431` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2432` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2433` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2434` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2435` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2436` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2437` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2438` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2439` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit244` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2440` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2441` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2442` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2443` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2444` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2445` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2446` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2447` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2448` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2449` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit245` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2450` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2451` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2452` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2453` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2454` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2455` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2456` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2457` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2458` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2459` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit246` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2460` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2461` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2462` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2463` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2464` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2465` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2466` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2467` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2468` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2469` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit247` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2470` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2471` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2472` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2473` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2474` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2475` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2476` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2477` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2478` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2479` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit248` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2480` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2481` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2482` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2483` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2484` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2485` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2486` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2487` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2488` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2489` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit249` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2490` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2491` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2492` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2493` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2494` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2495` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2496` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2497` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2498` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2499` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit25` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit250` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2500` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2501` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2502` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2503` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2504` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2505` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2506` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2507` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2508` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2509` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit251` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2510` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2511` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2512` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2513` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2514` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2515` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2516` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2517` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2518` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2519` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit252` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
+| `unit2520` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2521` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2522` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2523` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2524` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2525` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2526` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
+| `unit2527` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-swim.blend)) | recovered original: Blender 2.34 authored prone harvest; 64 phases |
 | `unit253` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit254` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit255` | Recovered original | 32×32 | — ([source](../../../content-src/gfx/originals/units/explorer.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |

@@ -117,7 +117,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
         .innerJoin('blobs', 'blobs.sha256', 'colony_skin_sprite_pages.sha256')
         .select(['blobs.size', 'blobs.content_type'])
         .execute();
-      expect(pages).toHaveLength(36);
+      expect(pages).toHaveLength(44);
       expect(pages.every((p) => p.content_type === 'image/webp')).toBe(true);
       console.log(
         JSON.stringify({
@@ -252,8 +252,13 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
       await save();
       expect((await command(args, cwd, { SDL_VIDEODRIVER: 'dummy' })).code).not.toBe(0);
       await expect(access(join(work, 'output.partial'))).rejects.toThrow();
-      // Correct inputs, but no installed meshes: staging must be cleaned on failure.
-      const missing = await command(args, work);
+      // Runtime names resolve through mounted roots, including the compiled
+      // source root. Override one mesh with corrupt bytes to exercise cleanup
+      // independently of the renderer's installation or working directory.
+      const brokenMeshes = join(work, 'data', 'skins', 'colony-v1');
+      await mkdir(brokenMeshes, { recursive: true });
+      await writeFile(join(brokenMeshes, 'worker-walk.gsb'), 'invalid mesh');
+      const missing = await command(args, work, { GLOB2_ASSET_DIR: work });
       expect(missing.code).toBe(3);
       expect(missing.stderr).toContain('worker-walk.gsb');
       await expect(access(join(work, 'output.partial'))).rejects.toThrow();

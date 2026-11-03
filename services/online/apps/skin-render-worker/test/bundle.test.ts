@@ -45,6 +45,11 @@ function fixture() {
     pages: Array.from({ length: 29 }, (_, i) =>
       i < 28 ? page(Math.floor(i / 4), (i % 4) * 64, 64) : page(7, 0, 1, 128),
     ),
+    proneHarvestMapping: { directions: 8, phases: 64, logicalSize: 38 },
+    proneHarvestPages: Array.from({ length: 8 }, (_, i) => ({
+      ...page(0, i * 64, 64),
+      clip: 'worker-prone-harvest',
+    })),
     turnPages: Array.from({ length: 7 }, (_, i) => page(i, 256, 32)),
   };
 }
@@ -52,8 +57,8 @@ it('returns every page for storage while retaining the original bundle contract'
   const doc = fixture();
   const bundle = validateBundle(Buffer.from(JSON.stringify(doc)), source, revision);
   expect(doc.pages).toHaveLength(29);
-  expect(bundle.pages).toHaveLength(36);
-  expect(bundle.pages.slice(29)).toEqual(doc.turnPages);
+  expect(bundle.pages).toHaveLength(44);
+  expect(bundle.pages.slice(29, 36)).toEqual(doc.turnPages);
 });
 it.each([
   'missing mapping',
@@ -85,18 +90,39 @@ it.each([
   expect(() => validateBundle(Buffer.from(JSON.stringify(doc)), source, revision)).toThrow();
 });
 
-it('requires turn support before a worker registers the renderer revision', () => {
-  const current = { format: 'colony-sprites-v1', renderRevision: revision, stationaryTurns: true };
+it('requires turn and harvest support before registering a renderer', () => {
+  const current = {
+    format: 'colony-sprites-v1',
+    renderRevision: revision,
+    stationaryTurns: true,
+    proneHarvest: true,
+  };
   expect(validateRendererCapability(current)).toBe(revision);
   for (const bad of [
     null,
     {},
     { ...current, stationaryTurns: undefined },
     { ...current, stationaryTurns: false },
+    { ...current, proneHarvest: undefined },
+    { ...current, proneHarvest: false },
     { ...current, stationaryTurns: 'true' },
     { ...current, format: 'future' },
     { ...current, renderRevision: '../bad' },
   ]) {
     expect(() => validateRendererCapability(bad)).toThrow('Unsupported skin renderer');
   }
+});
+
+it.each(['proneHarvestMapping', 'proneHarvestPages'])(
+  'rejects missing harvest extension %s',
+  (key) => {
+    const doc = fixture() as unknown as Record<string, unknown>;
+    delete doc[key];
+    expect(() => validateBundle(Buffer.from(JSON.stringify(doc)), source, revision)).toThrow();
+  },
+);
+it('rejects an incomplete or misordered harvest page list', () => {
+  const doc = fixture();
+  doc.proneHarvestPages[1]!.first = 0;
+  expect(() => validateBundle(Buffer.from(JSON.stringify(doc)), source, revision)).toThrow();
 });

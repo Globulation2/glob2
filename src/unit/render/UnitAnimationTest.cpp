@@ -98,13 +98,29 @@ class UnitAnimationTest
 			if (clip < 6)
 				CHECK_EQ(last + 1, unitAnimationFrame(base + 64, 8, 0));
 			else
-				CHECK_EQ(UNIT_ANIMATION_ATLAS_FRAME_COUNT - 1, last);
+				CHECK_EQ(UNIT_ANIMATION_PRONE_HARVEST_BASE - 1, last);
 		}
 	}
 };
 
 TEST_SUITE("UnitAnimation")
 {
+	TEST_CASE("Prone harvest appends 64 poses without changing saved bases")
+	{
+		CHECK(UNIT_ANIMATION_PRONE_HARVEST_BASE == 2016);
+		for (int direction = 0; direction < 8; ++direction)
+			for (int phase = 0; phase < 64; ++phase)
+			{
+				CHECK(unitProneHarvestFrame(direction, phase) == direction * 64 + phase);
+				CHECK(unitProneHarvestMeshFrame(direction, phase) * 2 + phase % 2 ==
+					  unitProneHarvestFrame(direction, phase));
+				CHECK(UNIT_ANIMATION_PRONE_HARVEST_BASE + unitProneHarvestFrame(direction, phase) <
+					  UNIT_ANIMATION_ATLAS_FRAME_COUNT);
+			}
+		CHECK(unitProneHarvestFrame(8, 63) == 63);
+		CHECK_FALSE(validUnitAnimationBase(448));
+	}
+
 	TEST_CASE("HistoricalOutOfRangeTurns")
 	{
 		for (int base : {-1, std::numeric_limits<int>::min(), 385, 447, 448, 4096,

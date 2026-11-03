@@ -2328,6 +2328,18 @@ Portbredd
 Flätat delta
 [Braid count]
 Antal flodarmar
+[Flood]
+Översvämning
+[Distributaries]
+Flodarmar
+[River crossings]
+Flodövergångar
+[Dunes]
+Sanddyner
+[Dry]
+Torrt
+[Wet]
+Blött
 [Rejoining frequency]
 Sammanflödesfrekvens
 [Crossing spacing]
