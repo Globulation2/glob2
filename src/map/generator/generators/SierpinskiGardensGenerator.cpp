@@ -255,9 +255,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	layBeaches(L.terrain, t);
 	// Graph travel uses the preliminary land mask. Finished-world validators later
 	// account for deposits, settlements, and actual engine movement predicates.
-	auto passable = pureTiles(L.terrain, t, WATER);
-	for (auto &tile : passable)
-		tile = !tile;
+	const auto passable = walkableTiles(L.terrain, t);
 	const auto graph = crossingEndpointGraph(t, passable, candidates);
 	if (!graph.failure.empty())
 	{
@@ -380,7 +378,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 			49,
 			"Sierpiński Gardens",
 			// Revision 8: one of four home garden designs per map (FractalMapSupport.h).
-			9,
+			10,
 			false,
 			controls,
 			generate,

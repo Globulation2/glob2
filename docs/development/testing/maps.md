@@ -316,26 +316,31 @@ occur after the measured phases. This is a bounded component benchmark, not a
 statistical gameplay comparison or proof of no regression against the old engine.
 Run it on an otherwise idle host, separately from builds and tournaments.
 
-The five explicit-design generator regressions use
+The live explicit-design regressions compare Maze and Caravanserai against
 `test/map-generator-resource-epoch.json` to separate topology from initial stock.
 Resource epoch 1 removes resource-sprite draws from the simulation RNG; historical
-full hashes are retained, while new full hashes include the resulting stock
-quantities. Topology hashes still cover every underlying/render terrain tile,
-resource identity/location, and colony start. A stock-only change cannot silently
-approve a changed route or deposit layout.
+full hashes are retained, while epoch-1 full hashes include the resulting stock
+quantities. Topology hashes cover vertex terrain, resource identity/location, and
+colony starts. A stock-only change cannot silently approve a changed route or
+deposit layout.
 
-To record an epoch row, first generate the five historical explicit designs with
-the archived engine (256², four teams, seed 1: maze `cell-shape=0`, fingerprint
-`pattern=0,barrier=0`, canals `block-shape=0`, caravanserai `desert=1`, honeycomb-isle
-`block-shape=1`). Keep their `.map.gz` files under their generator names in an
+The archive retains all five original explicit designs (256², four teams, seed 1:
+maze `cell-shape=0`, fingerprint `pattern=0,barrier=0`, canals `block-shape=0`,
+caravanserai `desert=1`, honeycomb-isle `block-shape=1`). Honeycomb's redesign and
+the terrain movement and ecology changes to Canals and Fingerprint intentionally
+change their worlds, so those three no longer assert equality with the archived
+topology. Their current output is covered by generator contracts and the platform
+golden matrix; do not overwrite historical references with their new layouts.
+
+To record a retained epoch comparison, generate Maze and Caravanserai with the
+archived engine and keep their `.map.gz` files under their generator names in an
 ignored artifact directory. Set `GLOB2_RECORD_RESOURCE_DESIGN_GOLDENS` to that
 absolute directory and run the `MapGeneratorDefaults/Explicit designs*` test.
 Recording verifies the historical full hashes and compares topology before writing
 an `epoch1-<platform>.json` artifact. Review every comparison before copying rows
 into the fixture. Record other platform/compiler variants on those actual builds;
-unavailable full hashes produce an explicit unverified warning. The four designs
-whose historical full hashes matched across platforms retain portable topology
-checks; Fingerprint's known platform variant requires its own recorded topology.
+unavailable full hashes produce an explicit unverified warning. The retained
+Maze and Caravanserai cases also enforce their portable topology references.
 
 ### Generator fingerprint verification and observations
 
@@ -363,9 +368,9 @@ require investigation before acceptance. Agreement still does not establish
 historical topology preservation: independently verify against archived pre-epoch
 maps before adding new expected rows or the resource-epoch design hashes.
 
-The macOS job also runs the five explicit-design resource-epoch checks separately
-and retains `resource-design-observations.json` with every actual full and topology
-hash. Existing accepted-platform and portable-topology assertions still run;
+The macOS job also runs the retained Maze and Caravanserai resource-epoch checks
+separately and retains `resource-design-observations.json` with their actual full
+and topology hashes. Existing accepted-platform and portable-topology assertions still run;
 unverified full hashes are marked as observations, and the record distinguishes
 which references exist. The existing `GLOB2_RECORD_RESOURCE_DESIGN_GOLDENS`
 archived-map comparison remains available for independent historical validation.

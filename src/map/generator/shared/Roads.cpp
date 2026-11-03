@@ -264,6 +264,31 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 		}
 		return tiles;
 	};
+	// A swimming cell has at least two swimming corners. Turning just those
+	// corners into sand makes walking win without erasing minority land, ice or
+	// obstacles. Use the same footprint for planning, protection and clearing.
+	const auto visitFordCorners = [&](int cell, const auto &visit)
+	{
+		const int x = t.remainderX(cell), y = cell / t.w;
+		for (int dy = 0; dy <= 1; ++dy)
+			for (int dx = 0; dx <= 1; ++dx)
+			{
+				const int cx = t.x(x + dx), cy = t.y(y + dy);
+				if (map.terrainProperties(map.vertexTerrainAt(cx, cy)).swimmable && !visit(cx, cy))
+					return false;
+			}
+		return true;
+	};
+	const auto visitFordCells = [&](int cell, const auto &visit)
+	{
+		return visitFordCorners(cell, [&](int x, int y)
+		{
+			for (int dy = -1; dy <= 0; ++dy)
+				for (int dx = -1; dx <= 0; ++dx)
+					if (!visit(t.at(x + dx, y + dy))) return false;
+			return true;
+		});
+	};
 	bool changed = false;
 	for (int team = 1; team < teams; ++team)
 	{
@@ -302,8 +327,18 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 			t, GridNeighbors::Cardinal, reachable, target,
 			[&](int, int to, int, int)
 			{
-				if ((!map.terrainPropertiesAt(to).walkable && map.terrainTypeAt(to) != WATER) ||
+				const auto& terrain = map.terrainPropertiesAt(to);
+				if ((!terrain.walkable && !terrain.swimmable) ||
 					map.getBuilding(t.remainderX(to), to / t.w) != NOGBID || (keep && (*keep).at(to)))
+					return -1;
+				// Terrain edits can affect neighbouring cells. Preserve every
+				// protected tile and building touched by an actual painted corner,
+				// including authored buildings on buildable swimming terrain.
+				if (!terrain.walkable && !visitFordCells(to, [&](int cell)
+					{
+						return map.getBuilding(t.remainderX(cell), cell / t.w) == NOGBID &&
+							(!keep || !(*keep).at(cell));
+					}))
 					return -1;
 				return stepCost(map, t.remainderX(to), to / t.w, costs);
 			});
@@ -316,20 +351,20 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 		{
 			::MapGeneration::generationCheckpoint();
 			const int x = t.remainderX(i), y = i / t.w;
-			if (map.isWater(x, y))
+			if (map.terrainPropertiesAt(i).swimmable)
 			{
-				// One sand corner turns this tile and its three other tiles into walkable shore.
-				fords.push_back({x, y});
-				for (int dy = -1; dy <= 0; ++dy)
+				visitFordCorners(i, [&](int cx, int cy)
+				{
+					fords.emplace_back(cx, cy);
+					return true;
+				});
+				visitFordCells(i, [&](int cell)
 				{
 					::MapGeneration::generationCheckpoint();
-					for (int dx = -1; dx <= 0; ++dx)
-					{
-						::MapGeneration::generationCheckpoint();
-						if (map.isResource(t.x(x + dx), t.y(y + dy)))
-							map.setNoResource(t.x(x + dx), t.y(y + dy), 1);
-					}
-				}
+					const int cx = t.remainderX(cell), cy = cell / t.w;
+					if (map.isResource(cx, cy)) map.setNoResource(cx, cy, 1);
+					return true;
+				});
 			}
 			else if (map.isResource(x, y))
 			{

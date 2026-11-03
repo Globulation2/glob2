@@ -310,12 +310,12 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	// clipped garden cannot hide a useful full field behind it merely by being closer.
 	const auto fertility = cropGrowthField(L.terrain, t);
 	std::vector<unsigned char> open(n, 0);
-	const auto water = pureTiles(L.terrain, t, WATER);
+	const auto walkable = walkableTiles(L.terrain, t);
 	L.renewable.assign(n, 0);
 	L.plotCapacity.assign(L.plots.size(), 0);
 	for (int i = 0; i < n; ++i)
 	{
-		open[i] = !water[i] && !L.wall[i] && !cropGround[i] && L.crop[i] < CHERRY;
+		open[i] = walkable[i] && !L.wall[i] && !cropGround[i] && L.crop[i] < CHERRY;
 		L.renewable[i] = cropGround[i] && fertility.at(t.remainderX(i), i / t.w) > 0;
 		if (L.renewable[i] && !L.wall[i]) ++L.plotCapacity[L.plotOf[i]];
 	}
@@ -674,7 +674,7 @@ GeneratorDefinition faultedCityDefinition()
 	return {"faulted-city",
 			64,
 			"The Faulted City",
-			4,
+			5,
 			false,
 			{GeneratorControl{"fault-displacement", "Fault displacement", 4, 14, 1, 10,
 							  ControlGroup::Terrain}

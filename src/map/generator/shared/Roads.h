@@ -145,15 +145,16 @@ int clearRoute(Map &, const Torus &, const std::vector<int> &route, int radius,
 /// Every colony must be able to walk to colony 0 at the start. Where a map's growth, water or walls box
 /// one in, the cheapest way from anything colony 0's doorstep reaches to that colony's doorstep (the
 /// open ring round its swarm) is opened under `costs`, four-connected: deposits on it are cleared, and
-/// water on it becomes a sand ford (one sand corner per water tile, clearing deposits on the four tiles
-/// it spoils). The map may look odd there; it does not fail. Returns whether anything changed; the
+/// swimmable terrain on it becomes a sand ford. Only swimming corners are painted, preserving
+/// minority land and obstacles; deposits are cleared only on cells touching a painted corner.
+/// The map may look odd there; it does not fail. Returns whether anything changed; the
 /// terrain is rebuilt when a ford was laid. Everglades' backstop, and any map whose design can close.
 ///
 /// With `radius` above 0 the deposits within that many steps of the route are cleared too
 /// (clearRoute), so a pass cut through a range or a forest takes a column of units and does not
-/// close on the first regrowth. Tiles of `keep` are never entered and never cleared: a designed wall
-/// the route must go round, whatever `costs` says a deposit costs. The defaults are the original
-/// behaviour, so existing maps are unchanged.
+/// close on the first regrowth. Tiles of `keep` are never entered, cleared or touched by ford
+/// painting: a designed wall the route must go round, whatever `costs` says a deposit costs.
+/// Ford painting also leaves every existing building and its terrain footprint untouched.
 bool openColonyRoutes(Map &, const GenerationContext &, const Torus &, const StepCosts &costs,
 					  int radius = 0, const std::vector<unsigned char> *keep = nullptr);
 

@@ -104,9 +104,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	}
 	// Graph travel uses the preliminary land mask. Finished-world validators later
 	// account for deposits, settlements, and actual engine movement predicates.
-	auto passable = pureTiles(L.terrain, t, WATER);
-	for (auto &tile : passable)
-		tile = !tile;
+	const auto passable = walkableTiles(L.terrain, t);
 	const auto graph = crossingEndpointGraph(t, passable, candidates);
 	if (!graph.failure.empty())
 	{
@@ -248,7 +246,7 @@ GeneratorDefinition hilbertRiverDefinition()
 			"hilbert-river",
 			50,
 			"Hilbert River",
-			9,
+			10,
 			false,
 			controls,
 			generate,

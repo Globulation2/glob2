@@ -196,11 +196,24 @@ checksum adapter remains available for diagnostic fixtures.
   Vertex (x,y) is the top-left corner of cell (x,y); `cellCorners(x, y)` returns the
   top-left, top-right, bottom-left and bottom-right corners. A cell's rules come
   from its corners through `combineCornerRules` (`TerrainPropertiesLayout.h`):
-  equal corners keep their terrain's exact profile; mixed corners are walkable when
-  any corner is, never swimmable or buildable, block projectiles and count as a
-  shoreline when any corner does, and are otherwise as permissive as their weakest
-  corner (speed and ground damage from the walkable corners). Mixed grass/sand and sand/water cells reproduce the retired shore
-  profiles exactly, which is why no shore terrain types exist.
+  corners with equal property profiles keep that exact profile. Otherwise, count
+  walking, swimming and blocked corners. Two or more blocked corners make the
+  cell impassable on the ground. Otherwise walking or swimming wins by count,
+  with walking winning a tie between the two. Thus three water corners and one
+  grass corner swim, two grass and two water corners walk, and three blocked
+  corners and one grass corner stay blocked. Different water profiles can join
+  without creating an impassable transition. All eight numeric modifiers use the
+  arithmetic mean of **all four corners**, independently of the movement vote:
+  ground and air speed, ground and air health, growth, fertility, inhibition and
+  shoreline support. Q8 values are summed in signed 32-bit integers and divided
+  by four, rounding toward zero. A 100%/200% speed boundary therefore has 125%,
+  150% and 175% cells when one, two or three corners have the higher speed. Damage and healing are signed
+  rates and can offset each other; fractions below one Q8 unit round to zero.
+  Mixed profiles are never buildable; flight and growth permissions require all
+  corners, while projectile blocking and shoreline flags require any corner.
+  Resource masks are intersected and mixed profiles have no automatic farming
+  material. Shore transitions blend ecology instead of using a fixed shore
+  profile, so partial inhibition and shoreline support affect nearby crop growth.
 - A per-map `CellRuleTable` (`src/map/CellRules.h`) compiles each corner combination
   once: properties, movement costs per swimming class, air costs and resource
   habitat. Cells store only a rule index; rule t is the uniform cell of type t, and
@@ -212,8 +225,8 @@ checksum adapter remains available for diagnostic fixtures.
   category. Write vertices with `setVertexTerrain`, `paintVertices`,
   `paintVertexSquare`, `assignVertexTerrain` or `fillTerrain`, and batch edits with
   `editTerrain()` so snapshots, topology and ecology caches stay consistent.
-- Grass directly against water is legal: the cells between are walkable and
-  unbuildable. Beaches are a painting and generation convention. `paintVertices`
+- Grass directly against water is legal: mixed cells are unbuildable and walk
+  with at least two grass corners, otherwise they swim. Beaches are a painting and generation convention. `paintVertices`
   (by default) and `paintVertexSquare` turn an opposite vertex next to painted
   grass or water into sand. `Map::layBeaches()` handles a whole map independently
   of scan order and turns both sides of every grass/water contact into sand, a

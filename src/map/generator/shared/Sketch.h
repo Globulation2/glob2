@@ -20,9 +20,9 @@ namespace MapGeneration
 /// finally writes out with writeVertices.
 using TerrainSketch = std::vector<unsigned char>;
 
-/// Grass may never touch water (each tile takes its rules from its four corner vertices), so every
-/// land vertex beside water becomes sand. Like Map::layBeaches() this reads only the original
-/// terrain, so the result doesn't depend on scan order; unlike it, water is never eaten away.
+/// Beaches are a generation convention: every non-WATER vertex beside WATER becomes sand.
+/// Like Map::layBeaches() this reads only the original terrain, so the result doesn't depend on
+/// scan order; unlike it, water is never eaten away.
 void layBeaches(TerrainSketch &, const Torus &);
 
 /// Writes the sketch to the map's vertices, re-deriving every tile from its corners.
@@ -43,6 +43,10 @@ std::vector<unsigned char> tileCorners(const Torus &, const std::vector<unsigned
 /// sand or water. Buildings and deposits need pure grass, and the engine's growth tests read pure
 /// water and pure sand, so this is the sketch as the game will see it.
 std::vector<unsigned char> pureTiles(const TerrainSketch &, const Torus &, TerrainType type);
+
+/// The walking permission derived from each tile's four built-in terrain profiles.
+/// Use for travel and connectivity; mixed water-majority cells are not land.
+std::vector<unsigned char> walkableTiles(const TerrainSketch &, const Torus &);
 
 /// The same pure-terrain mask from a finished map's corner-derived tiles. Use after all terrain repairs
 /// when validating a growth or shoreline promise; mixed beach tiles belong to none of the masks.

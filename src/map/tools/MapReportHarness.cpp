@@ -122,10 +122,13 @@ int main(int argc, char **argv)
 			Game game(nullptr);
 			game.map.setSize(6, 6, WATER);
 			game.map.setGame(&game);
-			// One grass corner makes cells (1,1) and (3,1) walkable; every corner
-			// of cell (2,1) between them stays water.
-			game.map.setVertexTerrain(1, 1, GRASS);
-			game.map.setVertexTerrain(4, 1, GRASS);
+			// Two grass corners make cells (1,1) and (3,1) walkable; every
+			// corner of cell (2,1) between them stays water.
+			for (int y = 1; y <= 2; ++y)
+			{
+				game.map.setVertexTerrain(1, y, GRASS);
+				game.map.setVertexTerrain(4, y, GRASS);
+			}
 			teams(game, 1, 3);
 			emit(game, std::filesystem::path(argv[1]) / "islands.json");
 			for (int y = 0; y < 3; ++y)
