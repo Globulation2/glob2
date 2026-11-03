@@ -1469,8 +1469,9 @@ TEST_SUITE("TerrainMaterials")
 					}
 		}
 		// This hashes catalog IDs as well as coverage. The group-look catalog
-		// reordered mud (14 -> 12) and void_hole (27 -> 23), without changing
-		// these border profiles. Geometry changes still need a rendered comparison.
+		// reordered mud (14 -> 12) and void_hole (27 -> 23) after the reviewed
+		// semantic-border update, preserving its profiles. Geometry changes still
+		// need a rendered comparison.
 		CHECK(digest == 12872139009941546255ull);
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
