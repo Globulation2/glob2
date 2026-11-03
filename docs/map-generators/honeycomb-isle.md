@@ -19,9 +19,9 @@ its own.
   middle. The bridges are where the two halves of the island meet.
 - **Fast roads.** Roads are cobbled road with gravel shoulders: fast, buildable, and nothing grows
   on them, so every hex is a sealed plot of its own.
-- **The deep sea is a wall.** The sea deepens eight tiles from the shore, and a tile mixing
-  shallow and deep water can be neither walked nor swum, so swimming opens the river and the
-  coast, never a way across the sea.
+- **The deep sea slows swimmers.** The sea deepens eight tiles from the shore. Mixed
+  shallow/deep cells remain swimmable, so swimmers can use the river, follow the coast
+  or take a longer route around the island through the slower open sea.
 
 ## The hexes
 
