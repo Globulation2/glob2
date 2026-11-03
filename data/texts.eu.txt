@@ -2328,6 +2328,18 @@ Atearen zabalera
 Delta txirikordatua
 [Braid count]
 Adar kopurua
+[Flood]
+Uholdea
+[Distributaries]
+Ibai-adarrak
+[River crossings]
+Ibai-pasabideak
+[Dunes]
+Dunak
+[Dry]
+Lehorra
+[Wet]
+Hezea
 [Rejoining frequency]
 Elkarguneen maiztasuna
 [Crossing spacing]

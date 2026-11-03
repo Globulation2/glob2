@@ -2328,6 +2328,18 @@ OpenGL није доступан у овој верзији.
 Разграната делта
 [Braid count]
 Број рукаваца
+[Flood]
+Поплава
+[Distributaries]
+Рукавци
+[River crossings]
+Прелази преко реке
+[Dunes]
+Дине
+[Dry]
+Суво
+[Wet]
+Влажно
 [Rejoining frequency]
 Учесталост спајања
 [Crossing spacing]

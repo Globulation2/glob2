@@ -2306,6 +2306,18 @@ HP ≤25/50/75%
 باہم گندھی شاخوں والا ڈیلٹا
 [Braid count]
 شاخوں کی تعداد
+[Flood]
+سیلاب
+[Distributaries]
+دریائی شاخیں
+[River crossings]
+دریا کی گزرگاہیں
+[Dunes]
+ریت کے ٹیلے
+[Dry]
+خشک
+[Wet]
+مرطوب
 [Rejoining frequency]
 دوبارہ ملنے کی شرح
 [Crossing spacing]

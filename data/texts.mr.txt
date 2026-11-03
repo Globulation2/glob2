@@ -2306,6 +2306,18 @@ HP ≤25/50/75%
 वेणीसारखा त्रिभुज प्रदेश
 [Braid count]
 गुंफलेल्या प्रवाहांची संख्या
+[Flood]
+पूर
+[Distributaries]
+नदीच्या शाखा
+[River crossings]
+नदी ओलांडण्याच्या जागा
+[Dunes]
+वाळूचे ढिगारे
+[Dry]
+कोरडे
+[Wet]
+ओलसर
 [Rejoining frequency]
 पुन्हा सामील होण्याची वारंवारता
 [Crossing spacing]

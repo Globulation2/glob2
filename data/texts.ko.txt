@@ -2328,6 +2328,18 @@ Globulation 2 커서를 표시합니다.
 망상 삼각주
 [Braid count]
 분류 수
+[Flood]
+범람
+[Distributaries]
+갈래 물길
+[River crossings]
+강 건널목
+[Dunes]
+사구
+[Dry]
+건조
+[Wet]
+습윤
 [Rejoining frequency]
 합류 빈도
 [Crossing spacing]

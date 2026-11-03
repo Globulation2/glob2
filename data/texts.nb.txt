@@ -2306,6 +2306,18 @@ Portbredde
 Flettet delta
 [Braid count]
 Antall fletter
+[Flood]
+Flom
+[Distributaries]
+Elvearmer
+[River crossings]
+Elvekrysninger
+[Dunes]
+Sanddyner
+[Dry]
+Tørt
+[Wet]
+Vått
 [Rejoining frequency]
 Hyppighet for gjenforening
 [Crossing spacing]

@@ -2328,6 +2328,18 @@ Kapuszélesség
 Fonatos delta
 [Braid count]
 Folyóágak száma
+[Flood]
+Árvíz
+[Distributaries]
+Folyóágak
+[River crossings]
+Folyóátkelők
+[Dunes]
+Dűnék
+[Dry]
+Száraz
+[Wet]
+Nedves
 [Rejoining frequency]
 Összefolyások gyakorisága
 [Crossing spacing]

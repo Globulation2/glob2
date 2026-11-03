@@ -2328,6 +2328,18 @@ Larghezza del portale
 Delta intrecciato
 [Braid count]
 Numero di rami
+[Flood]
+Piena
+[Distributaries]
+Rami del fiume
+[River crossings]
+Attraversamenti del fiume
+[Dunes]
+Dune
+[Dry]
+Secco
+[Wet]
+Umido
 [Rejoining frequency]
 Frequenza delle confluenze
 [Crossing spacing]

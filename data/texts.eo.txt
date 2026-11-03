@@ -2328,6 +2328,18 @@ Larĝo de pordego
 Plektita delto
 [Braid count]
 Nombro de riverbrakoj
+[Flood]
+Inundo
+[Distributaries]
+Riverbranĉoj
+[River crossings]
+Riveraj transirejoj
+[Dunes]
+Dunoj
+[Dry]
+Seka
+[Wet]
+Malseka
 [Rejoining frequency]
 Ofteco de kunfluoj
 [Crossing spacing]

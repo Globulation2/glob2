@@ -2328,6 +2328,18 @@ Largeur des portes
 Delta en tresses
 [Braid count]
 Nombre de bras
+[Flood]
+Crue
+[Distributaries]
+Défluents
+[River crossings]
+Passages du fleuve
+[Dunes]
+Dunes de sable
+[Dry]
+Sec
+[Wet]
+Humide
 [Rejoining frequency]
 Fréquence des confluences
 [Crossing spacing]

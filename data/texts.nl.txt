@@ -2328,6 +2328,18 @@ Poortbreedte
 Vlechtende delta
 [Braid count]
 Aantal rivierarmen
+[Flood]
+Overstroming
+[Distributaries]
+Rivierarmen
+[River crossings]
+Rivierovergangen
+[Dunes]
+Duinen
+[Dry]
+Droog
+[Wet]
+Nat
 [Rejoining frequency]
 Frequentie van samenvloeiingen
 [Crossing spacing]

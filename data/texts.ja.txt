@@ -2328,6 +2328,18 @@ Globulation 2のカーソルを表示します。
 網状三角州
 [Braid count]
 分流数
+[Flood]
+氾濫
+[Distributaries]
+分流
+[River crossings]
+渡河地点
+[Dunes]
+砂丘
+[Dry]
+乾燥
+[Wet]
+湿潤
 [Rejoining frequency]
 合流頻度
 [Crossing spacing]

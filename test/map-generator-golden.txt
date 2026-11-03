@@ -11,6 +11,7 @@
 # Regenerate this platform with MapGeneratorGoldenTest <profile> --update after a generator revision bump.
 # Anthill revision 6 (ridge-rock walls, quarry chambers): macos-arm64 rows from a local native run; linux-x86_64 rows copied from them (the two platforms matched on every Anthill row in CI before the doorstep change).
 # Honeycomb isle revision 5 (terrain hexes on the catalogue): macos-arm64 rows from a local native run; linux-x86_64 rows copied from them (the two platforms matched on every Honeycomb isle row before).
+# Braided Delta revision 6 (inland delta on the catalogue): macos-arm64 rows from a local native run; linux-x86_64 rows copied from them (the two platforms matched on every Braided Delta row before).
 linux-x86_64 0 1 7 7 4 1 ok 598464062941275300
 linux-x86_64 0 1 8 8 2 1 ok 5434630491393693860
 linux-x86_64 0 1 8 8 4 1 ok 5434630491393693860
@@ -275,14 +276,14 @@ linux-x86_64 35 8 8 8 4 3 ok 13683619385477116390
 linux-x86_64 35 8 8 8 8 1 ok 4045541251001142697
 linux-x86_64 35 8 9 8 4 1 ok 7122568584849999775
 linux-x86_64 35 8 9 9 4 1 ok 16665024367831278960
-linux-x86_64 36 5 7 7 4 1 invalid 0
-linux-x86_64 36 5 8 8 2 1 ok 11237153423013622719
-linux-x86_64 36 5 8 8 4 1 ok 16379059168846623552
-linux-x86_64 36 5 8 8 4 2 ok 17575597842539179813
-linux-x86_64 36 5 8 8 4 3 ok 5481442715423168861
-linux-x86_64 36 5 8 8 8 1 invalid 0
-linux-x86_64 36 5 9 8 4 1 ok 1218435641925280942
-linux-x86_64 36 5 9 9 4 1 ok 6109449944616549892
+linux-x86_64 36 6 7 7 4 1 ok 6127824181018566280
+linux-x86_64 36 6 8 8 2 1 ok 16659019771127687875
+linux-x86_64 36 6 8 8 4 1 ok 3354412198563467139
+linux-x86_64 36 6 8 8 4 2 ok 6994063633369201344
+linux-x86_64 36 6 8 8 4 3 ok 4970096733342898765
+linux-x86_64 36 6 8 8 8 1 ok 11749636473129902294
+linux-x86_64 36 6 9 8 4 1 ok 8766169606483661687
+linux-x86_64 36 6 9 9 4 1 ok 15983359291280908733
 linux-x86_64 37 6 7 7 4 1 invalid 0
 linux-x86_64 37 6 8 8 2 1 ok 16104873859263949444
 linux-x86_64 37 6 8 8 4 1 ok 875989434635821803
@@ -839,14 +840,14 @@ macos-arm64 35 8 8 8 4 3 ok 13683619385477116390
 macos-arm64 35 8 8 8 8 1 ok 4045541251001142697
 macos-arm64 35 8 9 8 4 1 ok 7122568584849999775
 macos-arm64 35 8 9 9 4 1 ok 16665024367831278960
-macos-arm64 36 5 7 7 4 1 invalid 0
-macos-arm64 36 5 8 8 2 1 ok 11237153423013622719
-macos-arm64 36 5 8 8 4 1 ok 16379059168846623552
-macos-arm64 36 5 8 8 4 2 ok 17575597842539179813
-macos-arm64 36 5 8 8 4 3 ok 5481442715423168861
-macos-arm64 36 5 8 8 8 1 invalid 0
-macos-arm64 36 5 9 8 4 1 ok 1218435641925280942
-macos-arm64 36 5 9 9 4 1 ok 6109449944616549892
+macos-arm64 36 6 7 7 4 1 ok 6127824181018566280
+macos-arm64 36 6 8 8 2 1 ok 16659019771127687875
+macos-arm64 36 6 8 8 4 1 ok 3354412198563467139
+macos-arm64 36 6 8 8 4 2 ok 6994063633369201344
+macos-arm64 36 6 8 8 4 3 ok 4970096733342898765
+macos-arm64 36 6 8 8 8 1 ok 11749636473129902294
+macos-arm64 36 6 9 8 4 1 ok 8766169606483661687
+macos-arm64 36 6 9 9 4 1 ok 15983359291280908733
 macos-arm64 37 6 7 7 4 1 invalid 0
 macos-arm64 37 6 8 8 2 1 ok 16104873859263949444
 macos-arm64 37 6 8 8 4 1 ok 875989434635821803

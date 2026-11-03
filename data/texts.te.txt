@@ -2306,6 +2306,18 @@ HP ≤ 25/50/75 %
 బ్రెయిడెడ్ డెల్టా
 [Braid count]
 నదీ పాయల సంఖ్య
+[Flood]
+వరద
+[Distributaries]
+ఉపనదీ శాఖలు
+[River crossings]
+నది దాటే మార్గాలు
+[Dunes]
+ఇసుక దిబ్బలు
+[Dry]
+పొడి
+[Wet]
+తడి
 [Rejoining frequency]
 తిరిగి కలిసే తరచుదనం
 [Crossing spacing]

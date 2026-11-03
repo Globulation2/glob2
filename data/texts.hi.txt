@@ -2306,6 +2306,18 @@ Globulation 2 का कर्सर दिखाएँ।
 बहुधारी डेल्टा
 [Braid count]
 धाराओं की संख्या
+[Flood]
+बाढ़
+[Distributaries]
+वितरिकाएँ
+[River crossings]
+नदी पारगमन
+[Dunes]
+रेत के टीले
+[Dry]
+शुष्क
+[Wet]
+नम
 [Rejoining frequency]
 फिर जुड़ने की आवृत्ति
 [Crossing spacing]
