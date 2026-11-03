@@ -17,8 +17,18 @@ Catalog loadCatalog(std::shared_ptr<const MapAssetBundle> assets)
 	auto document = nlohmann::json::parse(*input);
     if (assets && !assets->terrains.empty()) {
         document.erase("compiled_pack");
+        // Map files keep the profile keys of the catalog they were made with.
+        // bundle_profiles renames retired keys and gives each its border class;
+        // any other key is a solid material unless the bundle names a class.
+        const auto aliases = document.value("bundle_profiles", nlohmann::json::object());
         for (const auto& [key, value] : assets->terrains.items()) {
             auto material = value; material["key"] = key;
+            if (document.value("version", 1) >= 4) {
+                const auto alias = aliases.find(material.at("profile").get<std::string>());
+                if (alias != aliases.end()) material["profile"] = alias->at("profile");
+                if (!material.contains("class"))
+                    material["class"] = alias != aliases.end() ? alias->at("class") : nlohmann::json("solid");
+            }
             document["materials"].push_back(material);
             document["bindings"][key] = key;
         }

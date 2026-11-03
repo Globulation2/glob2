@@ -45,11 +45,15 @@ class TerrainSynth(unittest.TestCase):
         return self.results[name][phase]
 
     def test_every_catalogue_type_has_a_recipe(self):
+        catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
+        profiles = {p["key"] for p in catalog["profiles"]}
+        classes = {c["key"] for c in catalog["border_classes"]}
         self.assertEqual(sorted(synth.RECIPES), sorted(synth.SYNTH_ORDER))
         self.assertEqual(len(synth.BUILTIN_ORDER), 28)
         for name, recipe in synth.RECIPES.items():
             self.assertEqual(recipe.name, name)
-            self.assertIn(recipe.profile, ("rock", "soft", "crisp", "brush", "sand", "fractured", "cliff", "cobblestone", "frozen"))
+            self.assertIn(recipe.profile, profiles)
+            self.assertIn(recipe.border_class, classes)
             self.assertIn("height", recipe.seam)
 
     def test_determinism_matches_committed_frames_and_provenance(self):
@@ -204,7 +208,7 @@ class TerrainSynth(unittest.TestCase):
         means = {name: mean_color(self.tiles(name)) for name in synth.SYNTH_ORDER}
         groups = {name: synth.RECIPES[name].group for name in synth.SYNTH_ORDER}
         groups.update(grass="grass", sand="sand", road="paths", ice="ice")
-        # Road retains the original muted stone palette. Its cobblestone
+        # Road retains the original muted stone palette. Its straight paved
         # contour profile and connected pavers distinguish it from gravel's
         # scattered stones, despite their intentionally similar mean colors.
         profile_distinguished = {frozenset(("road", "gravel"))}
@@ -215,7 +219,7 @@ class TerrainSynth(unittest.TestCase):
                     continue
                 if frozenset((a, b)) in profile_distinguished:
                     self.assertEqual({synth.RECIPES[a].profile, synth.RECIPES[b].profile},
-                                     {"cobblestone", "rock"})
+                                     {"paved", "rock"})
                     continue
                 with self.subTest(pair=(a, b)):
                     # A floor against accidental near-duplicates; readability also
@@ -355,10 +359,9 @@ class TerrainSynth(unittest.TestCase):
             if synth.RECIPES[block["key"]].grid:
                 self.assertEqual((block["edges"], block["variant_grid"]), ("periodic", recipe.grid))
             self.assertEqual(block.get("variant_blocks", 1), recipe.blocks)
-        pairs = {tuple(sorted((p["a"], p["b"]))) for p in fragment["pair_treatments"]}
-        self.assertEqual(len(pairs), len(fragment["pair_treatments"]))
-        for p in fragment["pair_treatments"]:
-            self.assertIn(p["profile"], ("rock", "soft", "crisp", "brush", "fractured"))
+            self.assertEqual((block["profile"], block["class"]), (recipe.profile, recipe.border_class))
+        # Border classes choose every contact; the synthesiser writes no pair overrides.
+        self.assertNotIn("pair_treatments", fragment)
         json.dumps(fragment)
 
     def test_provenance_records_statistics_only_references(self):

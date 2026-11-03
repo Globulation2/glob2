@@ -916,7 +916,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					}
 				// Compare the complete vertex window including the contour halo.
 				std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
-				const int halo = compositor.contextualBorders() ? 1 : 0;
+				const int halo = compositor.neighborhoodBorders() ? 1 : 0;
 				for (int y = -halo; y <= ChunkTiles + halo; ++y)
 					for (int x = -halo; x <= ChunkTiles + halo; ++x)
 						sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);

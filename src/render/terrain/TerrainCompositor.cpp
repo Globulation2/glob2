@@ -14,8 +14,8 @@ namespace TerrainVisual
 Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets)
     : definitions(std::move(catalog)), customSprites(std::move(assets))
 {
-	hasContextualProfiles = std::any_of(definitions.profiles.begin(), definitions.profiles.end(),
-		[](const auto &profile) { return profile.contextual; });
+	hasNeighborhoodProfiles = std::any_of(definitions.profiles.begin(), definitions.profiles.end(),
+		[](const auto &profile) { return profile.shape != BoundaryShape::Patch; });
 	pack = CompiledPack::load(definitions);
 	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
 	{
@@ -509,9 +509,13 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	MaterialId other = first;
 	for (const auto id : r.corners)
 		if (id != first) other = id;
-	if (other == first || !definitions.contextualFor(first, other) ||
+	if (other == first || !hasNeighborhoodProfiles)
+		return r;
+	// Version 4 smooth contacts read the halo of any mixed cell; earlier
+	// catalogs only of two-material contextual cells, keeping their recipes.
+	if (definitions.version < 4 && (!definitions.contextualFor(first, other) ||
 		std::any_of(r.corners.begin(), r.corners.end(),
-			[first, other](auto id) { return id != first && id != other; }))
+			[first, other](auto id) { return id != first && id != other; })))
 		return r;
 	r.hasNeighborhood = true;
 	for (int y = -1; y <= 2; ++y)
@@ -613,6 +617,7 @@ std::size_t Compositor::cpuMaterialBytesSelected(std::span<const MaterialId> nee
                         definitions.profiles.capacity() * sizeof(Profile) +
                         definitions.materials.capacity() * sizeof(Material) +
                         definitions.treatments.capacity() * sizeof(PairTreatment) +
+                        definitions.borderClasses.capacity() * sizeof(BorderClass) +
                         textures.capacity() * sizeof(std::vector<CpuMaterials::Texture>);
     for (const auto &profile : definitions.profiles)
     {
@@ -629,6 +634,8 @@ std::size_t Compositor::cpuMaterialBytesSelected(std::span<const MaterialId> nee
                  256;
     for (const auto &binding : definitions.bindings)
         bytes += sizeof(binding) + binding.first.capacity() + 128;
+    for (const auto &entry : definitions.borderClasses)
+        bytes += entry.key.capacity() + 64;
     bytes += textures.size();
     for (std::size_t id = 0; id < textures.size(); ++id)
         if (usage ? std::any_of((*usage)[id].begin(), (*usage)[id].end(), [](auto v) { return v != 0; })
@@ -665,6 +672,7 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsSelected
         auto copy = std::make_shared<Catalog>();
         copy->version = definitions.version;
         copy->boundaryWarp = definitions.boundaryWarp;
+        copy->borderClasses = definitions.borderClasses;
         copy->profiles = definitions.profiles;
         copy->materials = definitions.materials;
         copy->treatments = definitions.treatments;
