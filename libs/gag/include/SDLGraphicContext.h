@@ -817,6 +817,11 @@ namespace GAGCore
 		//! shader is unavailable so the caller can fall back to two ordinary
 		//! drawSurface calls (base, then the CPU-recoloured team layer).
 		bool drawTeamColoredQuad(DrawableSurface *base, DrawableSurface *team, float x, float y, float w, float h, Uint8 alpha, float hueShift);
+		//! Draw all of `surface` stretched to (x, y, w, h), adding its light (its
+		//! colour times alpha) to what is already drawn instead of blending over
+		//! it, so it brightens rather than tints. Accelerated renderers only; the
+		//! software renderer draws it normally. Earlier batched draws go first.
+		void drawSurfaceAdditive(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
 		//! Maximum supported texture dimension, or zero when no limit is reported.
 		int maximumTextureSize() const;
 		RenderBatch* getRenderBatch() const { return renderBatchEnabled?renderBatch.get():nullptr; }

@@ -313,6 +313,23 @@ class SDLRenderBackend final : public RenderBackend
 		const SDL_Vertex vertices[] = {a, b, e, a, e, d};
 		submit(vertices, key, pixels, revision, true);
 	}
+	bool blitAdditive(const void *key, SDL_Surface *pixels, std::uint64_t revision,
+					  const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
+	{
+		// The straight-alpha texture with SDL's additive mode adds colour times
+		// alpha. A texture keeps its own blend and scale modes, so restore them.
+		SDL_Texture *texture = textureFor(key, pixels, revision, false);
+		SDL_BlendMode blend = SDL_BLENDMODE_BLEND;
+		SDL_ScaleMode scaleMode = SDL_SCALEMODE_NEAREST;
+		check(SDL_GetTextureBlendMode(texture, &blend));
+		check(SDL_GetTextureScaleMode(texture, &scaleMode));
+		check(SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_ADD));
+		check(SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_LINEAR));
+		blit(key, pixels, revision, false, src, dst, alpha);
+		check(SDL_SetTextureBlendMode(texture, blend));
+		check(SDL_SetTextureScaleMode(texture, scaleMode));
+		return true;
+	}
 	void blitLinear(const void *key, SDL_Surface *pixels, std::uint64_t revision,
 					const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
 	{

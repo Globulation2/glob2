@@ -60,9 +60,6 @@ constexpr float SwarmGlow = 0.5f;
 constexpr int DustMotes = 84;
 //! Opacity scale of the whole dust cloud, and of its white glints within it.
 constexpr float DustIntensity = 0.5f, DustGlint = 0.6f;
-//! A sprite's silhouette is laid over it with ordinary blending, so it covers
-//! rather than brightens; this keeps some of the sprite showing through.
-constexpr float SpriteSilhouetteOpacity = 0.75f;
 
 inline float clamp01(float v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
 inline float lerp(float a, float b, float t) { return a + (b - a) * t; }

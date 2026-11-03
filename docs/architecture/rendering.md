@@ -393,13 +393,31 @@ twinkles and level numbers are drawn after the buildings, which would otherwise 
 them.
 
 Sprites get the silhouette from `Sprite::silhouette`, a cached copy of the native frame
-filled with one colour and laid over the sprite with ordinary blending; the swarm uses
-its team-colour layer alone, and the icons are the white `mapicon` glyphs filled the
-same way, picking the largest pre-sized frame that fits on screen. Skinned meshes are
+filled with one colour, whose light is added over the sprite
+(`GraphicContext::drawSurfaceAdditive`); the swarm uses its team-colour layer alone.
+Dust motes add the light of their white cores and glints the same way, while their team
+colour blends normally, since added red turns yellow over grass. The icons are the white
+`mapicon` glyphs filled with the service's colour and blended normally, picking the
+largest pre-sized frame that fits on screen. Skinned meshes are
 brightened instead by adding their composited tile again, tinted (the `glow` arguments
 of `GraphicContext::drawSkinMesh`); pre-rendered skin sprites draw without it. Dust
 stars and glows are drawn procedurally by `UnitEffectArt`, one set per team hue, so the
 effects ship no new image assets.
+
+### Additive draws
+
+`GraphicContext::drawSurfaceAdditive` adds a surface's light (its colour times alpha) to
+what is already drawn instead of blending over it, so effects can brighten rather than
+tint. It first flushes queued batches to keep painter order, then uses a filtered,
+additively blended blit:
+
+- **Device renderers** (SDL GPU, programmable GL, WebGPU): a `DrawPacket` blit with
+  `Blend::Additive`.
+- **Portable SDL renderer:** `SDL_BLENDMODE_ADD` on the texture for that draw only.
+- **Legacy GL:** an immediate quad with `GL_SRC_ALPHA, GL_ONE`.
+
+The software renderer draws the surface normally. A backend opts in through
+`RenderBackend::blitAdditive`.
 
 See [adaptive zoom detail](zoom-detail.md).
 

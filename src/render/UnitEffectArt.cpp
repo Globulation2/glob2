@@ -175,10 +175,9 @@ DrawableSurface &UnitEffectArt::core()
 
 DrawableSurface &UnitEffectArt::glint()
 {
-	// White where the star is coloured: drawn without additive blending, it
-	// stays light enough to read as a flash.
+	// The star's shape in grey: its light is added, so it flashes white.
 	if (!glint_)
-		glint_ = rasterize([](float u, float v, Pixel &pixel) { shadeStar(u, v, pixel, 0, 0, 0.97f, 1); }, {1, 1, 1, 0});
+		glint_ = rasterize([](float u, float v, Pixel &pixel) { shadeStar(u, v, pixel, 0, 0, 0.75f, 0.72f); }, {0.5f, 0.5f, 0.5f, 0});
 	return *glint_;
 }
 
@@ -193,13 +192,15 @@ Uint8 opacityByte(float alpha)
 void UnitEffectArt::draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const UnitEffect::Sparkle &sparkle, float opacity)
 {
 	const float cx = x + sparkle.x, cy = y + sparkle.y, size = sparkle.size;
+	// The team colour blends normally (added, red would turn yellow on grass);
+	// the white core and glint add light.
 	if (const Uint8 alpha = opacityByte(sparkle.alpha * opacity))
 	{
 		gfx.drawSurface(cx - size / 2, cy - size / 2, size, size, &star(hue), alpha);
-		gfx.drawSurface(cx - size / 2, cy - size / 2, size, size, &core(), opacityByte(sparkle.alpha * opacity * 0.7f));
+		gfx.drawSurfaceAdditive(cx - size / 2, cy - size / 2, size, size, &core(), opacityByte(sparkle.alpha * opacity * 0.7f));
 	}
 	if (const Uint8 alpha = opacityByte(sparkle.glint * opacity))
-		gfx.drawSurface(cx - size, cy - size, 2 * size, 2 * size, &glint(), alpha);
+		gfx.drawSurfaceAdditive(cx - size, cy - size, 2 * size, 2 * size, &glint(), alpha);
 }
 
 void UnitEffectArt::draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const UnitEffect::Glow &glowSpec, float opacity)

@@ -97,11 +97,8 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid, spriteAlpha);
 			if (glowAlpha)
 				if (DrawableSurface *shape = buildingSprite->silhouette(imgid, glow, true))
-				{
-					Sprite::flushBatches(globalContainer->gfx);
-					globalContainer->gfx->drawSurface(float(x+dx), float(y+dy), float(buildingSprite->getW(imgid)),
+					globalContainer->gfx->drawSurfaceAdditive(float(x+dx), float(y+dy), float(buildingSprite->getW(imgid)),
 						float(buildingSprite->getH(imgid)), shape, glowAlpha);
-				}
 		}
 	}
 	if (detail && detail->buildingIcon > 0)

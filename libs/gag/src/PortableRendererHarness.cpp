@@ -259,6 +259,28 @@ TEST_CASE("each accelerated backend uploads surface revisions independently [dis
     draw(*a, 0, 0, 255); draw(*b, 0, 0, 255);
 }
 
+TEST_CASE("portable additive blits add light and restore the texture's blending [display]")
+{
+    GraphicContext context(64, 48, 0, "Additive blit test");
+    DrawableSurface light(16, 16);
+    light.drawFilledRect(0, 0, 16, 16, Color(100, 100, 100));
+    using Window = std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)>;
+    Window window(SDL_CreateWindow("Additive blit", 64, 48, SDL_WINDOW_HIDDEN), SDL_DestroyWindow);
+    REQUIRE(window);
+    SDL_PumpEvents();
+    auto backend = makeSDLRenderBackend(window.get(), 64, 48);
+    REQUIRE(backend);
+    backend->fill(SDL_FRect{0, 0, 64, 48}, SDL_Color{10, 20, 30, 255});
+    REQUIRE(backend->blitAdditive(&light, light.getSDLSurface(), light.contentRevision(),
+        SDL_Rect{0, 0, 16, 16}, SDL_FRect{0, 0, 16, 16}, 255));
+    // The same texture drawn normally afterwards covers rather than adds.
+    backend->blit(&light, light.getSDLSurface(), light.contentRevision(), false,
+        SDL_Rect{0, 0, 16, 16}, SDL_FRect{32, 0, 16, 16}, 255);
+    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> image(backend->capture(), SDL_DestroySurface);
+    expect(image.get(), image->w * 8 / 64, image->h * 8 / 48, 110, 120, 130);
+    expect(image.get(), image->w * 40 / 64, image->h * 8 / 48, 100, 100, 100);
+}
+
 TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]")
 {
 	verifyMapBoundaries(0);

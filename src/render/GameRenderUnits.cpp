@@ -95,7 +95,6 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	const UnitEffect::UnitLook effectLook = !hasEffect ? UnitEffect::UnitLook{1, 0, 0}
 		: effectKind == UnitEffect::Kind::Spawn ? UnitEffect::unitLook(effectAge)
 		: UnitEffect::UnitLook{1, 0, UnitEffect::serviceSilhouette(effectAge)};
-	const Uint8 sightAlpha = fogAlpha;
 	fogAlpha = Uint8(std::lround(fogAlpha * effectLook.opacity));
 	if (fogAlpha == 0)
 		return;
@@ -178,17 +177,11 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 				Uint32(glow.r) << 16 | Uint32(glow.g) << 8 | glow.b, glowAlpha))
 		{
 			globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
-			// Meshes brighten as they draw; a sprite gets its silhouette laid over it.
+			// Meshes brighten as they draw; a sprite gets its silhouette's light added.
 			if (glowAlpha)
 				if (DrawableSurface *shape = unitSprite->silhouette(imgid, glow))
-				{
-					Sprite::flushBatches(globalContainer->gfx);
-					globalContainer->gfx->drawSurface(float(px-decX), float(py-decY), float(unitSprite->getW(imgid)),
-						float(unitSprite->getH(imgid)), shape,
-						// Brighter than the faint emerging unit beneath it, as added light would be.
-						Uint8(std::lround(UnitEffect::SpriteSilhouetteOpacity * glowAlpha * sightAlpha / 255.f
-							* std::sqrt(effectLook.opacity))));
-				}
+					globalContainer->gfx->drawSurfaceAdditive(float(px-decX), float(py-decY), float(unitSprite->getW(imgid)),
+						float(unitSprite->getH(imgid)), shape, faded(glowAlpha));
 		}
 	}
 	if (hasEffect && detail.unitSprite > 0)

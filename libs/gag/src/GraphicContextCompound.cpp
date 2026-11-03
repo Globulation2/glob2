@@ -546,6 +546,62 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			DrawableSurface::drawSurface(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), surface, sx, sy, sw, sh, alpha);
 	}
 
+	void GraphicContext::drawSurfaceAdditive(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
+	{
+		if (!surface || w <= 0 || h <= 0 || alpha == 0)
+			return;
+		SDL_Surface *pixels = surface->getSDLSurface();
+		if (!pixels || pixels->w <= 0 || pixels->h <= 0)
+			return;
+		// Queued draws go first, so the light lands over them in painter order.
+		if (renderBatch) renderBatch->barrier();
+		Sprite::flushBatches(this);
+		if (renderer)
+		{
+			prepareDraw();
+			if (spriteBatch.owner == this) spriteBatch.flush();
+			if (renderer->blitAdditive(surface, pixels, surface->contentRevision(),
+					SDL_Rect{0, 0, pixels->w, pixels->h}, SDL_FRect{x, y, w, h}, alpha))
+			{
+				++drawCalls;
+				return;
+			}
+			drawSurface(x, y, w, h, surface, alpha);
+			return;
+		}
+		#ifdef HAVE_OPENGL
+		if (_gc->optionFlags & GraphicContext::USEGPU)
+		{
+			if (spriteBatch.owner == this) spriteBatch.flush();
+			if (surface->glUploadedRevision != surface->contentRevision())
+				surface->uploadToTexture();
+			const float u1 = pixels->w * surface->texMultX, v1 = pixels->h * surface->texMultY;
+			const float opacity = alpha / 255.f;
+			// Fixed-function drawing: batches and the team-colour shader bind their own programs.
+			glUseProgram(0);
+			glState.doBlend(true);
+			glState.blendFunc(GL_SRC_ALPHA, GL_ONE);
+			glState.doTexture(true);
+			glState.setTexture(surface->texture);
+			// Standalone surfaces sample their nearest texels; filter this draw.
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glColor4f(1, 1, 1, opacity);
+			++drawCalls;
+			glBegin(GL_QUADS);
+			glTexCoord2f(0, 0); glVertex2f(x, y);
+			glTexCoord2f(u1, 0); glVertex2f(x + w, y);
+			glTexCoord2f(u1, v1); glVertex2f(x + w, y + h);
+			glTexCoord2f(0, v1); glVertex2f(x, y + h);
+			glEnd();
+			glColor4ub(255, 255, 255, 255);
+			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			return;
+		}
+		#endif
+		drawSurface(x, y, w, h, surface, alpha);
+	}
+
 	// Lets us efficiently draw terrain and water.
 	void GraphicContext::finishDrawingSprite(Sprite* sprite, Uint8 alpha)
 	{
