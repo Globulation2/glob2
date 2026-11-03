@@ -43,7 +43,33 @@ test('live colony meshes render through WebGL2 and survive context restoration',
     }
     const atlases = new WeakSet();
     const shaders = new WeakSet(), programs = new WeakSet(), inspected = new WeakSet();
+    const bindings = new WeakMap(), observed = new WeakSet();
+    const state = gl => {
+      if (!bindings.has(gl)) bindings.set(gl, {program:null, unit:gl.TEXTURE0, textures:new Map(), lost:false});
+      if (!observed.has(gl)) {
+        observed.add(gl);
+        gl.canvas.addEventListener('webglcontextlost', () => {
+          bindings.set(gl, {program:null, unit:gl.TEXTURE0, textures:new Map(), lost:true});
+        });
+        gl.canvas.addEventListener('webglcontextrestored', () => bindings.delete(gl));
+      }
+      return bindings.get(gl);
+    };
     const proto = WebGL2RenderingContext.prototype;
+    // Observe the actual binding calls. Querying GPU state for every ordinary
+    // sprite draw can stall serial software-backed GL and starve persistence.
+    const use = proto.useProgram, active = proto.activeTexture, texture = proto.bindTexture;
+    proto.useProgram = function(program) {
+      const result = use.call(this, program); state(this).program = program; return result;
+    };
+    proto.activeTexture = function(unit) {
+      const result = active.call(this, unit); state(this).unit = unit; return result;
+    };
+    proto.bindTexture = function(target, value) {
+      const result = texture.call(this, target, value);
+      if (target === this.TEXTURE_2D) { const s=state(this); s.textures.set(s.unit, value); }
+      return result;
+    };
     const source = proto.shaderSource, attach = proto.attachShader, draw = proto.drawElements, bind = proto.bindFramebuffer;
     proto.bindFramebuffer = function(...args) { framebufferEpoch++; return bind.apply(this,args); };
     proto.shaderSource = function(shader, text) {
@@ -55,14 +81,20 @@ test('live colony meshes render through WebGL2 and survive context restoration',
       return attach.call(this, program, shader);
     };
     const recordComposite = gl => {
-      if (!atlases.has(gl.getParameter(gl.TEXTURE_BINDING_2D))) return;
+      const s = state(gl);
+      if (s.lost || !atlases.has(s.textures.get(s.unit))) return;
       if (typeof window === 'undefined') globalThis.postMessage({glob2SkinTestComposite:true});
       else globalThis.skinComposites++;
     };
     proto.drawElements = function(...args) {
-      const program = this.getParameter(this.CURRENT_PROGRAM);
+      const s = state(this), program = s.lost ? null : s.program;
       if (program && !inspected.has(program)) {
         inspected.add(program);
+        // Cross-check the observation once per program against the real GL
+        // state, retaining independent evidence without per-sprite queries.
+        if (this.getParameter(this.CURRENT_PROGRAM) !== program ||
+            this.getParameter(this.TEXTURE_BINDING_2D) !== (s.textures.get(s.unit) || null))
+          throw new Error('Skin tracker binding observation differs from WebGL state');
         if (this.getAttachedShaders(program)?.some(shader => this.getShaderSource(shader)?.includes('surfaceNormal'))) programs.add(program);
       }
       if (programs.has(program)) {
