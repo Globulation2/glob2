@@ -781,7 +781,7 @@ TEST_SUITE("EngineSession")
 									 sizeof(ComputeExecutor::PerformanceShard::Metrics);
 		const auto decorative = colony.game->map.computeExecutor().performanceStorageBytes();
 		CHECK(decorative ==
-			  sizeof(ComputeExecutor) + sizeof(ComputeExecutor::PerformanceShard::Metrics));
+			  foreground->performanceStorageBytes());
 		constexpr std::size_t presentationReserve = 384 * 1024;
 		const auto nonHistory = 4 * sizeof(PerformanceTelemetry::Collector) + mainMaximum +
 								decorative + presentationReserve;
