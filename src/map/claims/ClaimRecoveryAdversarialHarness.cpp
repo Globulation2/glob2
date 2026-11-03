@@ -26,14 +26,15 @@ struct Islands {
     glob2test::HeadlessGame world;
     Unit* worker=nullptr;Unit* holder=nullptr;Building* consumer=nullptr;
     Uint32 nearest=0,reachable=0;
-    Islands(unsigned participants,bool closest):world({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9341}) {
+    Islands(unsigned participants,bool closest,ResourceClaims::ClaimPolicyConfig::Fallback fallback=ResourceClaims::ClaimPolicyConfig::Fallback::Wait)
+        :world({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9341}) {
         auto& game=world.game;auto& map=game.map;
         map.configureCompute(participants);game.gameHeader.setResourceGrowthDisabled(true);game.gameHeader.getWinningConditions().clear();
         {Map::TerrainEditBatch edit(map);for(int y=0;y<32;++y)for(int x:{7,8,16,17})map.setVertexTerrain(x,y,WATER);}
         map.setMaterialDestinationsEnabled(true);
         ResourceClaims::ClaimPolicyConfig config;
         REQUIRE(nlohmann::json::parse(config.canonicalJson())["source_version"]==2);
-        config.fallback=ResourceClaims::ClaimPolicyConfig::Fallback::Wait;
+        config.fallback=fallback;config.fallbackAfterDecisions=1;
         if(closest)config.selection=ResourceClaims::ClaimPolicyConfig::Selection::ClosestGeometric;
         map.setMaterialClaimPolicyConfig(config);
         consumer=world.addBuilding("inn",9,22);REQUIRE(consumer);
@@ -55,6 +56,25 @@ struct Islands {
         game.invalidateObservation();game.observeCompletedWorld();
     }
 };
+}
+
+TEST_CASE("a terminal island path failure reaches the configured bounded release fallback" * doctest::test_suite("ClaimRecoveryAdversarial"))
+{
+    glob2test::HeadlessGlobals globals;
+    for(unsigned participants:{1u,3u}) {
+        CAPTURE(participants);
+        Islands fixture(participants,false,ResourceClaims::ClaimPolicyConfig::Fallback::BoundedWaitRelease);
+        auto& game=fixture.world.game;auto& map=game.map;
+        bool released=false;
+        for(unsigned decision=0;decision<32;++decision) {
+            fixture.worker->handleActiveMaterialMovement();
+            if(!fixture.worker->attachedBuilding) {released=true;break;}
+            map.flushClaimRoutes();++game.stepCounter;game.observeCompletedWorld();
+        }
+        REQUIRE(released);
+        CHECK_FALSE(fixture.worker->activeMaterialClaim);
+        CHECK(map.materialClaimLedger().size()==1); // The independent holder remains reserved.
+    }
 }
 
 TEST_CASE("recovery bounds island attempts and preserves pending GUI continuation" * doctest::test_suite("ClaimRecoveryAdversarial"))

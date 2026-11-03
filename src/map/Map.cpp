@@ -486,7 +486,7 @@ void Map::clearGradientBufferPool()
 std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
 {
     std::vector<std::pair<std::string,Uint64>> result;
-    if (materialDestinationsEnabled()) {
+    if (gradientRuntime->materialDestinationsEnabled) {
         // Owner-held published allocations and immutable pending reservations
         // only: memory observation must not join work or inspect worker output.
         // Retained snapshots, workspaces and allocator slack remain part of RSS.

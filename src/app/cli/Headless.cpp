@@ -1181,7 +1181,8 @@ int runHeadlessCommand(const Cli::Request &request)
                 const auto canonical=nlohmann::json::parse(config.canonicalJson());
                 policyPatterns.push_back({{"name",pattern.name},{"digest",canonical.at("pattern_digest")}});
             }
-            std::cout << policyPatterns.dump() << ",\"ais\":[";
+            std::cout << policyPatterns.dump() << ",\"resource_claims_policy_default\":"
+                << ResourceClaims::ClaimPolicyConfig{}.canonicalJson() << ",\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

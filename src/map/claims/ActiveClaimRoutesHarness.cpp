@@ -161,6 +161,33 @@ TEST_SUITE("ActiveClaimRoutes")
             roundtrip();
         }
     }
+    TEST_CASE("successful periodic refreshes remain unrestricted before recovery")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(unsigned threads:{1u,3u}) {
+            CAPTURE(threads);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;
+            map.configureCompute(threads);map.setMaterialDestinationsEnabled(true);
+            ResourceClaims::ClaimPolicyConfig config;config.routeRefreshJ=1;
+            map.setMaterialClaimPolicyConfig(config);
+            auto* building=fixture.addBuilding("inn",2,2);auto* unit=fixture.addUnit(WORKER,8,8);
+            Assignment cleanup{*unit};assign(*unit,*building,map,14,8);
+            unit->materialClaimPolicyState.decisionOrdinal=1;game.observeCompletedWorld();
+            int dx=0,dy=0;
+            REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Pending);
+            for(unsigned tick=0;tick<10;++tick) {
+                map.flushClaimRoutes();++game.stepCounter;map.publishClaimRoutes();
+                game.invalidateObservation();game.observeCompletedWorld();
+                ++unit->materialClaimPolicyState.decisionOrdinal;
+                const auto before=map.activeClaimSnapshotChecksum();
+                REQUIRE(map.nextClaimRouteStep(*unit,&dx,&dy)==ResourceClaims::StepResult::Ready);
+                // Every J=1 decision admits a new request while keeping its
+                // previous route usable. A retry cap must not erase this factor.
+                CHECK(map.activeClaimSnapshotChecksum()!=before);
+            }
+        }
+    }
     TEST_CASE("experimental probe arrival follows only the held access and stale tails replan directly")
     {
         glob2test::HeadlessGlobals globals;

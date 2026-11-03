@@ -186,10 +186,13 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
             const auto x=destinations->x[probe],y=destinations->y[probe];
             if(x>=map.getW() || y>=map.getH())continue;
             const auto access=Uint32(map.coordToIndex(x,y));
-            if(config.usesRecovery() && (recovery.rejects(access) ||
-                (!recovery.mayRoute && map.warpDistMax(posX,posY,x,y)>1)))continue;
             if(visited[access]==epoch)continue;
             visited[access]=epoch;
+            // A soft failed-route exclusion cannot forbid a pickup already
+            // within reach. Deduplicate first: this eligibility is constant for
+            // every probe leading to the same access during one selection.
+            if(config.usesRecovery() && (!recovery.mayRoute || recovery.rejects(access)) &&
+                map.warpDistMax(posX,posY,x,y)>1)continue;
             const unsigned dx=std::max(0,std::abs(delta(posX,x,map.getW()))-1),dy=std::max(0,std::abs(delta(posY,y,map.getH()))-1);
             const unsigned score=10*std::max(dx,dy)+4*std::min(dx,dy);
             // Only a strictly better geometric candidate can replace the held

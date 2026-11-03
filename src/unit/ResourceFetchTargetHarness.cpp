@@ -654,6 +654,45 @@ TEST_CASE("flying resource pursuit crosses paint but chooses the farther legal p
 
 TEST_SUITE("ActiveMaterialClaims")
 {
+    TEST_CASE("natural tree fruit stone and water algae pickups share exact reservation semantics")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(int material:{WOOD,CHERRY,STONE,ALGA}) {
+            CAPTURE(material);
+            glob2test::HeadlessGame f({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+            auto& map=f.game.map;map.setMaterialDestinationsEnabled(true);
+            map.setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig{});
+            auto* consumer=f.addBuilding("inn",20,20);REQUIRE(consumer);
+            auto* a=f.addUnit(WORKER,8,8);auto* b=f.addUnit(WORKER,8,9);REQUIRE(a);REQUIRE(b);
+            if(material==ALGA) {
+                map.paintCell(9,8,WATER);
+                a->setPerformance(SWIM,1);b->setPerformance(SWIM,1);
+            }
+            const auto access=Uint32(map.coordToIndex(9,8));
+            map.setResourceByIndex(9,8,material,1);map.setMaterialAmountSlot(access,material,1);
+            map.setMapDiscovered(9,8,a->owner->me);map.fogOfWar[access]|=a->owner->me;
+            for(auto* unit:{a,b}) {
+                unit->attachedBuilding=consumer;unit->activity=Unit::ACT_FILLING;
+                unit->jobPurpose=UnitJobPurpose::Transport;unit->destinationPurpose=material;
+                unit->displacement=Unit::DIS_GOING_TO_RESOURCE;unit->medical=Unit::MED_FREE;
+            }
+            const auto before=map.materialAmountAtSlot(access,material);REQUIRE(before==1);
+            REQUIRE(a->acquireMaterialClaimAt(access));REQUIRE(a->activeMaterialClaimValid());
+            CHECK(a->activeMaterialClaim->exclusive==(material==WOOD));
+            CHECK(b->acquireMaterialClaimAt(access)==(material==STONE));
+            CHECK(map.materialClaimLedger().size()==(material==STONE?2u:1u));
+            a->dx=1;a->dy=0;a->displacement=Unit::DIS_HARVESTING;
+            REQUIRE(a->takeActiveMaterialClaim());CHECK_FALSE(a->activeMaterialClaim);
+            CHECK(map.materialAmountAtSlot(access,material)==(material==STONE?before:0u));
+            if(material==STONE) {
+                REQUIRE(b->activeMaterialClaim);CHECK(b->activeMaterialClaimValid());
+                REQUIRE(a->acquireMaterialClaimAt(access));a->releaseActiveMaterialClaim();
+            } else if(material==WOOD)CHECK(map.getResource(access).type==NO_RES_TYPE);
+            a->releaseActiveMaterialClaim();b->releaseActiveMaterialClaim();
+            CHECK(map.materialClaimLedger().size()==0);
+            a->attachedBuilding=nullptr;b->attachedBuilding=nullptr;
+        }
+    }
     TEST_CASE("active reservations enforce capacity and survive unrelated gradient changes")
     {
         glob2test::HeadlessGlobals globals;

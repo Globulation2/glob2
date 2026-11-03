@@ -904,12 +904,15 @@ shipping policy.
 
 Policy source version 1 retains its original canonical fields and digest. Source
 version 2 additionally identifies bounded failed-route recovery: four rejected
-accesses with a 128-tick soft expiry, at most four route attempts per 64-tick
-window, a 16-tick backoff, and first-available recovery scanning from a retained
+accesses with a 128-tick soft expiry, at most four recovery route attempts per
+64-tick window, a 16-tick backoff, and first-available recovery scanning from a retained
 cursor. These fixed parameters are explicit canonical fields, not additional
 free sweep factors. A capability version 2 build accepts both policy versions;
 version 1 builds cannot run version 2 configurations. Compare versions as
-distinct interventions rather than combining their measurements.
+distinct interventions rather than combining their measurements. Successful
+periodic refreshes before any failure remain unrestricted so cadence factors
+retain their meaning. Reaching a resource within pickup range needs no route
+admission and bypasses soft failed-route exclusions.
 
 The result's `gradient_execution.destination_published_bytes` and
 `destination_pending_reserved_bytes` describe current destination allocations

@@ -84,6 +84,7 @@ TEST_CASE("published194 saves predate destination and active claim fields")
     glob2test::HeadlessGame restored({.loadDefaultRace=true,.header=true});
     restored.game.map.clear();restored.game.map.resourceCells.clear();
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
     REQUIRE(restored.game.load(&input));
     REQUIRE(restored.game.mapHeader.getVersionMinor()==194);
     CHECK_FALSE(restored.game.map.materialDestinationsEnabled());

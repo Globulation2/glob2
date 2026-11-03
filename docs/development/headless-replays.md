@@ -39,7 +39,8 @@ the save floor remains 58.
 
 Format 196 corrects worker material-target projection and harvest eligibility.
 These corrections can change ordinary worker movement even when experimental
-claims are disabled, so the replay floor is 196. Earlier saves remain loadable
+claims are disabled. Format 197 also extends authoritative snapshot checksums
+to cover claim routes and bounded recovery, so the replay floor is 197. Earlier saves remain loadable
 and adopt the corrected simulation. Material destination and claim experiments
 remain explicit new-game options and cannot record replays.
 
