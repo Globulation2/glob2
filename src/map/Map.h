@@ -48,6 +48,7 @@ namespace ResourceClaims { class Probe; struct ClaimPolicyConfig; }
 class MapAssetBundle;
 #include "BitArray.h"
 
+#include "map/claims/ResourceClaimDecisionToken.h"
 namespace SimulationSnapshot { struct Handle; }
 namespace gradient_kernel { enum class Family; }
 
@@ -812,8 +813,8 @@ public:
     void reconcileMaterialClaims();
     void setMaterialClaimProbe(std::shared_ptr<ResourceClaims::Probe> probe) { materialClaimProbe=std::move(probe); }
     const ResourceClaims::Probe* resourceClaimProbe() const { return materialClaimProbe.get(); }
-    void observeMaterialClaimDecision(const Unit&, const Uint16* field);
-    void observeMaterialClaimPickupDecision(const Unit&, int x, int y);
+    ResourceClaims::DecisionToken observeMaterialClaimDecision(const Unit&, const Uint16* field);
+    ResourceClaims::DecisionToken observeMaterialClaimPickupDecision(const Unit&, int x, int y);
     void finishMaterialClaimProbe();
     struct MaterialClaimTelemetry {
         Uint64 reconciliations=0, changed=0, released=0, overcommittedSelections=0, peakActive=0;

@@ -37,8 +37,8 @@ class Planner:
                 validate_policy(config['resource_claims_policy'], self.bundles[build]['capabilities'])
         if 'resource_claims_movement_only' in config and any(self.bundles[build]['capabilities'].get('resource_claims_movement_only_version') != 1 for build in self.builds):
             raise ValueError('build does not advertise movement-only observer version 1')
-        if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') != 1 for build in self.builds):
-            raise ValueError('build does not advertise active claim probe version 1')
+        if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') not in (1, 2) for build in self.builds):
+            raise ValueError('build does not advertise active claim probe version 1 or 2')
         if 'resource_claims_deep_context' in config and any(self.bundles[build]['capabilities'].get('resource_claims_deep_version') != 1 for build in self.builds):
             raise ValueError('build does not advertise deep claim capture version 1')
         if 'material_destinations' in config:

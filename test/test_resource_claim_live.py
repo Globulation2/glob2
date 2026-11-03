@@ -38,6 +38,18 @@ def fixture():
 
 
 class LivePlans(unittest.TestCase):
+    def test_probe_capability_versions_are_explicit(self):
+        from tools.tournaments.experiments import Planner
+        p,bundle,split,cohort=fixture()
+        for version in (1,2):
+            bundle['capabilities']['resource_claims_probe_version']=version
+            Planner('test',{'resource_claims_probe':{}},[bundle])
+            plan(cohort,split,bundle,[{'label':'control','policy':p}])
+        for version in (None,0,3):
+            bundle['capabilities']['resource_claims_probe_version']=version
+            with self.assertRaises(ValueError):Planner('test',{'resource_claims_probe':{}},[bundle])
+            with self.assertRaises(ValueError):plan(cohort,split,bundle,[{'label':'control','policy':p}])
+
     def test_adjacent_pickup_comparison_requires_transport_audit_on_every_arm(self):
         p,bundle,split,cohort=fixture();bundle['capabilities']['resource_claims_policy_config_version']=3
         current=p|{'source_version':3,'opportunistic_adjacent_pickup':True}|RECOVERY_V1

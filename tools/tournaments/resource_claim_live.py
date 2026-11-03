@@ -95,7 +95,7 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
     if not configs or len(configs) > 128:
         raise ValueError('provide 1 to 128 explicit canonical policy configs')
     caps = bundle['capabilities']
-    if caps.get('material_destinations_version') != 1 or caps.get('resource_claims_probe_version') != 1:
+    if caps.get('material_destinations_version') != 1 or caps.get('resource_claims_probe_version') not in (1, 2):
         raise ValueError('bundle needs destination metadata and active probe capabilities')
     identities = set()
     for row in configs:

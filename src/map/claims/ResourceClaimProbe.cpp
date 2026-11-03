@@ -46,6 +46,20 @@ struct Probe::Impl
     };
     std::map<Owner,ClaimAge> claimAges;
     Uint64 claimAgeTrackingExcluded=0;
+    // Fixed material/phase/counter dimensions; no per-owner retention.
+    enum OutcomeCounter { Eligible, Attempted, Acquired, HeldSame, RetargetAccess, RetargetDonor,
+        NoCandidate, NoAttempt, Cooldown, MissingField, Linked, UnlinkedHeldExchange,
+        Ready, Pending, Failed, Arrived, Wait, Roam, Release, CooldownWait, CounterCount };
+    std::array<std::array<std::array<Uint64,CounterCount>,2>,MaterialCount> outcomes{};
+    Uint64 outcomeRows=0;
+    Json outcomeSummary() const {
+        return {{"version",1},{"material_phase_counters",outcomes},{"phase_names",{"movement","pickup"}},
+            {"counter_names",{"eligible","attempted","acquired","held_same","retarget_access","retarget_donor_same_access",
+                "no_candidate","not_attempted","cooldown_not_attempted","missing_field_not_attempted","linked_rows","unlinked_held_exchange",
+                "route_ready","route_pending","route_failed","route_arrived","fallback_wait","fallback_roam","fallback_release","cooldown_wait"}},
+            {"rows",outcomeRows},{"submitted_without_outcome",metrics.submitted-outcomeRows},{"missing_contract","legacy/shadow and direct diagnostic calls may lack outcomes; missing is unavailable, never failure"},{"nearest_classification","sampled linked rows only; join original decision nearest access"},
+            {"scope","active natural-resource movement calls and complete adjacent pickup scans; attempted means selector/prepare invoked, even during cooldown adjacent search; no_candidate means attempted without successful selection and may retain a held claim; cooldown_wait records suppressed fallback independently; counters overlap; no delivery causality"}};
+    }
     struct Work {
         SimulationSnapshot::Handle world;
         std::vector<std::pair<Owner,Claim>> owners;
@@ -66,7 +80,7 @@ struct Probe::Impl
         const char* reason="fully_claimed";
         Oracle::Query query;
         Uint32 tick=0, seed=0, nearest=0, capacity=0, claimed=0;
-        Uint64 ordinal=0;
+        Uint64 ordinal=0,preTask=0;
         bool pickup=false;
         Json features;
         std::string line;
@@ -469,7 +483,7 @@ struct Probe::Impl
                 {"build_elapsed_ns",exposureNs}};
             Json row={{"kind","decision"},{"claims_enforced",work.claimsEnforced},{"active_policy",work.experimental?"experimental":work.claimsEnforced?"prototype-stationary-v1":"disabled"},
                 {"policy_config",work.policyConfig},{"policy_digest",work.policyDigest},
-                {"decision_kind",work.goalRefresh?"goal_refresh":work.claimsEnforced?"new_claim_acquisition":"legacy_resource_decision"},{"reason",work.reason},{"phase",work.pickup?"pickup":"movement"},{"tick",work.tick},{"ordinal",work.ordinal},{"seed",work.seed},
+                {"pre_task",work.preTask},{"decision_kind",work.goalRefresh?"goal_refresh":work.claimsEnforced?"new_claim_acquisition":"legacy_resource_decision"},{"reason",work.reason},{"phase",work.pickup?"pickup":"movement"},{"tick",work.tick},{"ordinal",work.ordinal},{"seed",work.seed},
                 {"width",view.width},{"height",view.height},{"owner",work.query.owner},{"gid",work.query.route.unitGid},{"team_mask",work.query.route.teamMask},
                 {"movement",work.query.route.movement},{"material",work.query.material},{"origin",work.query.origin},
                 {"nearest",work.nearest},{"capacity",work.capacity},{"claimed",work.claimed},
@@ -536,7 +550,7 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
         {"continuation_policy","diagnostic-ordinal-resets-after-load"},{"patterns",patterns},
         {"new_destination_reads_semantics","marginal shared event-cache misses in pattern order; instrumentation amortization only, not standalone policy cost"},
         {"stale_goal_eligibility","published XY from natural-only field; failed scalar projection and mixed supplier fields excluded"},
-        {"blocker_census_version",1},{"blocker_example_limit_per_group",Impl::MaximumClaimantExamples},{"blocker_tracking_owner_limit",Impl::MaximumTrackedClaimants},
+        {"decision_outcome_version",1},{"decision_outcome_order","outcome may precede decision; join by ordinal; legacy/shadow and direct diagnostic calls have no actual outcome"},{"blocker_census_version",1},{"blocker_example_limit_per_group",Impl::MaximumClaimantExamples},{"blocker_tracking_owner_limit",Impl::MaximumTrackedClaimants},
         {"outcome_columns",{"pattern","policy","source","access","probe","weighted_cost","probes","new_destination_reads","fallback","access_weighted_cost"}},
         {"exposure_proxy_contract",{{"version",1},{"selection","deep minhash reservoir replacements only; use final per-game minimum for unbiased eligible-event comparisons"},{"meaning","coarse hostile occupied-cell proximity, not combat risk"},
             {"distance","toroidal Chebyshev, capped at16;17 means beyond cap or no seed"},
@@ -575,7 +589,7 @@ void Probe::finish()
         {"material_contested",impl->materialContested},{"sampled_infinite",impl->sampledInfinite},
         {"sampled_pooled",impl->sampledPooled},{"sampled_exhausted_pools",impl->sampledExhaustedPools},
         {"stale_scalar_ineligible",impl->staleScalarIneligible},{"stale_mixed_field_ineligible",impl->staleMixedFieldIneligible},
-        {"stale_invalid_xy",impl->staleInvalidXY},{"capture_bytes",m.captureBytes},{"live",impl->liveSummary()},
+        {"stale_invalid_xy",impl->staleInvalidXY},{"capture_bytes",m.captureBytes},{"live",impl->liveSummary()},{"decision_outcomes",impl->outcomeSummary()},
         {"movement_audit",{{"version",1},{"scope","all-transport-committed-grid-moves"},
             {"coverage_start",impl->config.movementStartTick?Json(*impl->config.movementStartTick):Json(nullptr)},
             {"coverage_end",impl->movementEndTick?Json(*impl->movementEndTick):Json(nullptr)},
@@ -713,17 +727,61 @@ void Probe::moved(const Unit& unit,int oldX,int oldY) const
     ++at->second.steps;at->second.cost+=cost;
 }
 
-void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pickupAccess)
+bool Probe::observesDecisionOutcomes() const { return !impl->finished && !impl->config.movementOnly; }
+Probe::DecisionOutcome Probe::beginDecisionOutcome(const Unit& unit,bool pickup) const {
+    DecisionOutcome out;out.owner=unitOwner(unit.gid,unit.scriptIdentity);out.preTask=unit.materialClaimTask;
+    out.tick=unit.owner->game->stepCounter;out.material=unit.destinationPurpose;out.pickup=pickup;
+    if(unit.activeMaterialClaim){out.preSource=unit.activeMaterialClaim->source;out.preAccess=unit.activeMaterialClaim->access;}
+    return out;
+}
+void Probe::selectedDecisionOutcome(DecisionOutcome& out,const Unit& unit) const {
+    out.selectedTask=unit.materialClaimTask;
+    if(unit.activeMaterialClaim){out.selectedSource=unit.activeMaterialClaim->source;out.selectedAccess=unit.activeMaterialClaim->access;}
+}
+void Probe::finishDecisionOutcome(const DecisionOutcome& out,const Unit& unit) const {
+    if(!observesDecisionOutcomes())return;
+    auto& counts=impl->outcomes.at(out.material)[out.pickup?1:0];++counts[Impl::Eligible];
+    const bool held=out.preAccess!=UINT32_MAX,hasSelection=out.selectedAccess!=UINT32_MAX;
+    const char* change=!hasSelection?"no_claim":!held?"acquired":out.selectedTask==out.preTask?"held_same":
+        out.selectedAccess==out.preAccess?"retarget_donor_same_access":"retarget_access";
+    if(out.attempted)++counts[Impl::Attempted];else {
+        ++counts[Impl::NoAttempt];
+        if(std::string_view(out.noAttempt)=="cooldown")++counts[Impl::Cooldown];
+        if(std::string_view(out.noAttempt)=="missing_field")++counts[Impl::MissingField];
+    }
+    if(out.attempted && !out.selected)++counts[Impl::NoCandidate];
+    if(hasSelection)++counts[!held?Impl::Acquired:out.selectedTask==out.preTask?Impl::HeldSame:
+        out.selectedAccess==out.preAccess?Impl::RetargetDonor:Impl::RetargetAccess];
+    if(out.pickup && held && hasSelection && out.selectedTask!=out.preTask && !out.token.ordinal)++counts[Impl::UnlinkedHeldExchange];
+    const std::string_view route(out.route),fallback(out.fallback);
+    if(route=="ready")++counts[Impl::Ready];else if(route=="pending")++counts[Impl::Pending];
+    else if(route=="failed")++counts[Impl::Failed];else if(route=="arrived")++counts[Impl::Arrived];
+    if(fallback=="wait")++counts[Impl::Wait];else if(fallback=="roam")++counts[Impl::Roam];else if(fallback=="release_job")++counts[Impl::Release];
+    if(std::string_view(out.fallbackReason)=="cooldown")++counts[Impl::CooldownWait];
+    if(!out.token.ordinal)return;
+    ++counts[Impl::Linked];++impl->outcomeRows;
+    const auto tile=[](Uint32 v)->Json{return v==UINT32_MAX?Json(nullptr):Json(v);};
+    impl->write(Json{{"kind","decision_outcome"},{"schema_version",1},{"ordinal",out.token.ordinal},{"owner",out.owner},
+        {"tick",out.tick},{"material",out.material},{"phase",out.pickup?"pickup":"movement"},
+        {"pre_task",out.preTask},{"pre_source",tile(out.preSource)},{"pre_access",tile(out.preAccess)},
+        {"attempted",out.attempted},{"selection_succeeded",out.selected},{"not_attempted_reason",out.attempted?Json(nullptr):Json(out.noAttempt)},
+        {"selected_task",out.selectedTask},{"selected_source",tile(out.selectedSource)},{"selected_access",tile(out.selectedAccess)},
+        {"claim_change",change},{"selected_is_nearest_access",hasSelection?Json(out.selectedAccess==out.token.nearestAccess):Json(nullptr)},
+        {"route_result",out.route},{"fallback",out.fallback},{"fallback_reason",out.fallbackReason},
+        {"final_task",unit.materialClaimTask},{"final_has_claim",unit.activeMaterialClaim.has_value()}}.dump()+"\n");
+}
+
+DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pickupAccess)
 {
-    if(impl->finished || impl->config.movementOnly)return;
+    if(impl->finished || impl->config.movementOnly)return {};
     auto& metrics=impl->metrics;
     const Uint64 ordinal=++metrics.decisions;
     ++impl->materialDecisions.at(unit.destinationPurpose);
     const auto seed=game.gameHeader.getRandomSeed();
-    if(mix(mix(seed)^mix(game.stepCounter)^mix(unitOwner(unit.gid,unit.scriptIdentity))^mix(ordinal))%impl->config.sampleEvery)return;
+    if(mix(mix(seed)^mix(game.stepCounter)^mix(unitOwner(unit.gid,unit.scriptIdentity))^mix(ordinal))%impl->config.sampleEvery)return {};
     ++metrics.sampled;
     ++impl->materialSampled.at(unit.destinationPurpose);
-    if(!field){++metrics.excludedMissingField;return;}
+    if(!field){++metrics.excludedMissingField;return {};}
     auto& map=game.map;
     map.reconcileMaterialClaims();
     Sint32 x=0,y=0;
@@ -734,17 +792,17 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
     if(pickupAccess!=UINT32_MAX) { x=int(pickupAccess%map.getW()); y=int(pickupAccess/map.getW()); }
     else if(!map.projectMaterialDestination(field,unit.owner->teamNumber,unit.destinationPurpose,unit.movementClass(),unit.posX,unit.posY,&x,&y,
         unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets(),unit.attachedBuilding)) {
-        if(!destinations){++impl->staleScalarIneligible;return;}
+        if(!destinations){++impl->staleScalarIneligible;return {};}
         if(field!=map.lookupMaterialGradientSlot(unit.owner->teamNumber,unit.destinationPurpose,unit.movementClass(),false,nullptr)) {
-            ++impl->staleMixedFieldIneligible;return;
+            ++impl->staleMixedFieldIneligible;return {};
         }
         const auto origin=map.coordToIndex(unit.posX,unit.posY);
         x=destinations->x[origin]; y=destinations->y[origin];
-        if(x>=map.getW() || y>=map.getH()) {++impl->staleInvalidXY;return;}
+        if(x>=map.getW() || y>=map.getH()) {++impl->staleInvalidXY;return {};}
         staleGoal=true;
     }
     const auto access=map.coordToIndex(x,y);
-    if(!staleGoal && !map.materialAmountAtSlot(access,unit.destinationPurpose))return; // Supplier cohort.
+    if(!staleGoal && !map.materialAmountAtSlot(access,unit.destinationPurpose))return {}; // Supplier cohort.
     auto source=access;
     const bool accessResource=map.resourceRegistry().valid(static_cast<ResourceId>(map.getResource(access).type));
     const auto accessYield=accessResource?map.resourceRegistry().yields(static_cast<ResourceId>(map.getResource(access).type))[unit.destinationPurpose]:YieldProperties{};
@@ -765,7 +823,7 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
     const Claim desired{Uint32(source),Uint32(access),Uint8(unit.destinationPurpose),map.getResource(source).type,exclusive,Uint16(reserve)};
     impl->sampledInfinite+=yield.consumption==ResourceConsumption::Infinite;
     impl->sampledPooled+=pooled; impl->sampledExhaustedPools+=exhaustedPool;
-    if(!staleGoal && map.materialClaimLedger().available(unitOwner(unit.gid,unit.scriptIdentity),desired,capacity,yield.consumption==ResourceConsumption::Infinite))return;
+    if(!staleGoal && map.materialClaimLedger().available(unitOwner(unit.gid,unit.scriptIdentity),desired,capacity,yield.consumption==ResourceConsumption::Infinite))return {};
     ++metrics.contested;
     ++impl->materialContested.at(unit.destinationPurpose);
     bool deepSelected=false;
@@ -775,8 +833,8 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
         deepSelected=impl->deep.consider(deepPriority,ordinal);
     }
     if(!impl->config.deepContext.empty() && !destinations)++impl->deepIneligibleNoXY;
-    if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;if(!impl->config.deepContext.empty() && destinations)impl->deep.excluded(false);return;}
-    if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;if(!impl->config.deepContext.empty() && destinations)impl->deep.excluded(true);return;}
+    if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;if(!impl->config.deepContext.empty() && destinations)impl->deep.excluded(false);return {};}
+    if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;if(!impl->config.deepContext.empty() && destinations)impl->deep.excluded(true);return {};}
     auto work=std::make_unique<Impl::Work>();
     work->deepSelected=deepSelected;work->deepPriority=deepPriority;
     if(deepSelected)work->deepContext=impl->deepContext;
@@ -841,7 +899,7 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
             work->incomingAttackers|=game.teams[team]->me;
     }
     work->pickup=pickupAccess!=UINT32_MAX;
-    work->tick=game.stepCounter; work->seed=seed; work->ordinal=ordinal; work->nearest=Uint32(access);
+    work->preTask=unit.materialClaimTask;work->tick=game.stepCounter; work->seed=seed; work->ordinal=ordinal; work->nearest=Uint32(access);
     work->capacity=capacity; work->claimed=map.materialClaimLedger().materialCount(Uint32(source),unit.destinationPurpose);
     Json fieldKey=nullptr, fieldGeneration=nullptr;
     for (const auto& plane:map.publishedResourceFields()) if (*plane.slot==field) {
@@ -899,5 +957,6 @@ void Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pick
         {ComputeProducer::Other,game.stepCounter,Uint64(game.stepCounter)+1}); }
     catch(...) {impl->pending.pop_back();throw;}
     ++metrics.submitted;
+    return {ordinal,Uint32(access)};
 }
 }

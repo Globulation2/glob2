@@ -521,9 +521,10 @@ void Map::reconcileMaterialClaims()
     materialClaimTelemetry.sweepNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
 }
 
-void Map::observeMaterialClaimDecision(const Unit& unit,const Uint16* field)
+ResourceClaims::DecisionToken Map::observeMaterialClaimDecision(const Unit& unit,const Uint16* field)
 {
-    if ((materialClaimTracking || activeClaimsEnabled()) && materialClaimProbe && game) materialClaimProbe->decision(*game,unit,field);
+    if ((materialClaimTracking || activeClaimsEnabled()) && materialClaimProbe && game) return materialClaimProbe->decision(*game,unit,field);
+    return {};
 }
 void Map::finishMaterialClaimProbe()
 {
@@ -534,12 +535,12 @@ void Map::finishMaterialClaimProbe()
     }
 }
 
-void Map::observeMaterialClaimPickupDecision(const Unit& unit,int x,int y)
+ResourceClaims::DecisionToken Map::observeMaterialClaimPickupDecision(const Unit& unit,int x,int y)
 {
-    if ((!materialClaimTracking && !activeClaimsEnabled()) || !materialClaimProbe || !game) return;
+    if ((!materialClaimTracking && !activeClaimsEnabled()) || !materialClaimProbe || !game) return {};
     const auto* field=lookupMaterialGradientSlot(unit.owner->teamNumber,unit.destinationPurpose,unit.movementClass(),
         unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets(),unit.attachedBuilding);
-    materialClaimProbe->decision(*game,unit,field,Uint32(coordToIndex(x,y)));
+    return materialClaimProbe->decision(*game,unit,field,Uint32(coordToIndex(x,y)));
 }
 
 std::optional<size_t> Map::pickClaimFarmHarvestTileSlot(int x,int y,int material,Uint32 teamMask,std::optional<size_t> entry)

@@ -991,6 +991,33 @@ trace allowances may permit only a few policies per batch. Submission remains a
 separate operation after native validation and resource review; generated plans
 do not authorize dispatch or select a shipping policy.
 
+Active-probe bundle capability version 2 adds linked outcome rows; planners
+accept versions 1 and 2 and reject unknown versions. Version 1 bundles retain
+the previous trace contract. Temporary full-probe traces may advertise `decision_outcome_version: 1`.
+Their separate `decision_outcome` rows record the actual immediate selection,
+held-claim change, route result and applied fallback. Join them to sampled
+`decision` rows by ordinal; either row may arrive first. Collectors verify owner,
+preselection task, tick, material, phase and nearest-access identity, reject
+duplicate links, and bound retained links by the frozen sample cap and a
+one-million-row reader ceiling (exceeding it fails explicitly). These rows
+do not increase the decision `submitted` or `completed` counts.
+
+The optional outcome summary keeps fixed material/phase counters separate from
+sampled observations. Counter categories overlap: a failed refresh can retain the
+old claim, so `no_candidate` and `held_same` can both increase.
+`cooldown_wait` is independent of whether selection was attempted: the selector
+can still examine adjacent pickups during a cooldown. Unlinked active
+decisions remain explicitly unavailable (including direct diagnostic calls);
+legacy/shadow decisions are unobserved by design, not evidence of failed active
+selection. A selected claim is captured before a subsequent route failure can
+release it. `no_candidate` means the selector or pickup preparation returned false; it
+does not establish global resource absence (recovery filters or unavailable
+destination metadata can also prevent selection). A `pending` route result can
+mean a blocked cached next step as well as unfinished route work; it does not
+by itself measure CPU waiting. Immediate selection and route results do not establish eventual
+harvest, delivery or feeding causality. Older traces without this schema retain
+their existing report shape.
+
 Live diagnostic traces may also advertise `live_journey_version: 1` and an
 ordered event-name table. Bounded journey rows describe committed movement for
 sampled acquisitions, with a static acquisition-time baseline to the held pickup

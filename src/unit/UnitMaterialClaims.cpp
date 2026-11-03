@@ -268,6 +268,9 @@ bool Unit::takeActiveMaterialClaim()
 void Unit::handleActiveMaterialMovement()
 {
     auto& map=*owner->map;
+    const auto* observer=map.resourceClaimProbe();
+    if(observer && !observer->observesDecisionOutcomes())observer=nullptr;
+    std::optional<ResourceClaims::Probe::DecisionOutcome> outcome;
     const bool experimental=map.materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental;
     const auto& config=map.materialClaimPolicyConfig();
     auto& cadence=materialClaimPolicyState;
@@ -278,6 +281,7 @@ void Unit::handleActiveMaterialMovement()
         const bool release=config.fallback==F::ReleaseJob || (config.fallback==F::BoundedWaitRelease && failures>=config.fallbackAfterDecisions);
         if(const auto* probe=map.resourceClaimProbe())probe->liveEvent(*this,release?ResourceClaims::Probe::LiveEvent::FallbackRelease:
             config.fallback==F::Roam?ResourceClaims::Probe::LiveEvent::FallbackRoam:ResourceClaims::Probe::LiveEvent::FallbackWait);
+        if(observer)outcome->fallback=release?"release_job":config.fallback==F::Roam?"roam":"wait";
         if(release) {setNeedToRecheckMedical(true);stopAttachedForBuilding(false);movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;}
         else if(config.fallback==F::Roam)movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
     };
@@ -286,6 +290,7 @@ void Unit::handleActiveMaterialMovement()
         ++cadence.decisionOrdinal;
     }
     if(activeMaterialClaim && !activeMaterialClaimValid())releaseActiveMaterialClaim();
+    if(observer)outcome=observer->beginDecisionOutcome(*this,false);
     const bool refresh=experimental && activeMaterialClaim && config.destinationRefreshJ
         && cadence.decisionOrdinal-cadence.lastGoalAttempt>=config.destinationRefreshJ;
     if(!activeMaterialClaim || refresh) {
@@ -297,23 +302,30 @@ void Unit::handleActiveMaterialMovement()
         if(key)map.gradientMovementDemand(*key);
         if(experimental)cadence.lastGoalAttempt=cadence.decisionOrdinal;
         if(field) {
-            map.observeMaterialClaimDecision(*this,field);const auto previousTask=materialClaimTask;
+            const auto token=map.observeMaterialClaimDecision(*this,field);const auto previousTask=materialClaimTask;
+            if(observer){outcome=observer->beginDecisionOutcome(*this,false);outcome->token=token;outcome->attempted=true;}
             const bool selected=selectActiveMaterialClaim(field);
+            if(observer)outcome->selected=selected;
             if(refresh)if(const auto* probe=map.resourceClaimProbe())probe->liveEvent(*this,!selected?ResourceClaims::Probe::LiveEvent::GoalRefreshFailed:
                 previousTask==materialClaimTask?ResourceClaims::Probe::LiveEvent::GoalRefreshSame:ResourceClaims::Probe::LiveEvent::GoalRefreshChanged);
         }
+        else if(observer)outcome->noAttempt="missing_field";
         // Failed refresh leaves the old valid reservation and route untouched.
     }
+    if(observer)observer->selectedDecisionOutcome(*outcome,*this);
     dx=dy=0;direction=UNIT_DIRECTION_NONE;movement=MOV_GOING_DX_DY;
     if(!activeMaterialClaim) {
         setValidTarget(false);
+        if(observer)outcome->fallbackReason="no_resource";
         if(experimental) {
             if(recoveryEnabled) {
                 // Route admission cooldown is not evidence that stock is absent.
                 if(map.beginClaimRecoverySelection(*this).mayRoute)
                     fallback(map.recordClaimFailure(*this,ResourceClaims::ClaimFailureKind::NoResource));
+                else if(observer){outcome->fallbackReason="cooldown";outcome->noAttempt="cooldown";}
             } else fallback(cadence.fallbackCount==UINT32_MAX?UINT32_MAX:cadence.fallbackCount+1);
         }
+        if(observer)observer->finishDecisionOutcome(*outcome,*this);
         return;
     }
     if(experimental && !recoveryEnabled)cadence.fallbackCount=0;
@@ -321,11 +333,14 @@ void Unit::handleActiveMaterialMovement()
     auto result=ResourceClaims::StepResult::Failed;
     if(experimental && config.usePrimaryGradient)result=map.nextClaimGradientStep(*this,&stepX,&stepY);
     if(result==ResourceClaims::StepResult::Failed)result=map.nextClaimRouteStep(*this,&stepX,&stepY);
+    if(observer)outcome->route=result==ResourceClaims::StepResult::Ready?"ready":result==ResourceClaims::StepResult::Pending?"pending":result==ResourceClaims::StepResult::Arrived?"arrived":"failed";
     if(result==ResourceClaims::StepResult::Ready) {
         dx=Sint8(stepX);dy=Sint8(stepY);directionFromDxDy();
     } else if(result==ResourceClaims::StepResult::Failed) {
+        if(observer)outcome->fallbackReason="path_failed";
         const auto failures=recoveryEnabled?map.recordClaimFailure(*this,ResourceClaims::ClaimFailureKind::PathFailed):0;
         releaseActiveMaterialClaim();
         if(recoveryEnabled && failures)fallback(failures);
     }
+    if(observer)observer->finishDecisionOutcome(*outcome,*this);
 }

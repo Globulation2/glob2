@@ -5,6 +5,7 @@
 #include <array>
 #include <string>
 #include <optional>
+#include "ResourceClaimDecisionToken.h"
 class Game;
 class Unit;
 class ComputeExecutor;
@@ -51,7 +52,22 @@ public:
     };
     Probe(ComputeExecutor&, std::string path, Config);
     ~Probe();
-    void decision(Game&, const Unit&, const Uint16* field, Uint32 pickupAccess = UINT32_MAX);
+    DecisionToken decision(Game&, const Unit&, const Uint16* field, Uint32 pickupAccess = UINT32_MAX);
+    // Owner-stack observation only. Never shared with a diagnostic worker.
+    struct DecisionOutcome {
+        DecisionToken token;
+        Uint64 owner=0,preTask=0,selectedTask=0;
+        Uint32 tick=0,preSource=UINT32_MAX,preAccess=UINT32_MAX,selectedSource=UINT32_MAX,selectedAccess=UINT32_MAX;
+        unsigned material=0; bool pickup=false,attempted=false,selected=false;
+        const char* noAttempt="held_claim";
+        const char* route="not_attempted";
+        const char* fallback="none";
+        const char* fallbackReason="none";
+    };
+    bool observesDecisionOutcomes() const;
+    DecisionOutcome beginDecisionOutcome(const Unit&, bool pickup) const;
+    void selectedDecisionOutcome(DecisionOutcome&, const Unit&) const;
+    void finishDecisionOutcome(const DecisionOutcome&, const Unit&) const;
     void publish(Uint32 tick);
     void finish();
     const Metrics& metrics() const;

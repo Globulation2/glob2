@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Material.h"
+#include "map/claims/ResourceClaimProbe.h"
 #include <algorithm>
 #include <climits>
 #include "Unit.h"
@@ -21,16 +22,26 @@ std::optional<Offset> materialPickup(Unit& unit)
 {
     auto& map=*unit.owner->map;
     if(!map.activeClaimsEnabled())return map.doesUnitTouchMaterialSource(&unit,static_cast<MaterialId>(unit.destinationPurpose));
+    const auto* observer=map.resourceClaimProbe();
+    if(observer && !observer->observesDecisionOutcomes())observer=nullptr;
+    std::optional<ResourceClaims::Probe::DecisionOutcome> outcome;
     if(unit.activeMaterialClaim && !unit.activeMaterialClaimValid())unit.releaseActiveMaterialClaim();
+    if(observer){outcome=observer->beginDecisionOutcome(unit,true);outcome->noAttempt="no_adjacent_candidate";}
     bool observed=false;
     for(int dx=-1;dx<=1;++dx)for(int dy=-1;dy<=1;++dy)
         if(map.isMaterialTakeableSlot(unit.posX+dx,unit.posY+dy,unit.destinationPurpose)
             && !map.isForbidden(unit.posX+dx,unit.posY+dy,unit.owner->me)) {
             if(!unit.activeMaterialClaim && !observed) {
-                map.observeMaterialClaimPickupDecision(unit,unit.posX+dx,unit.posY+dy);observed=true;
+                const auto token=map.observeMaterialClaimPickupDecision(unit,unit.posX+dx,unit.posY+dy);observed=true;
+                if(observer){outcome=observer->beginDecisionOutcome(unit,true);outcome->token=token;}
             }
-            if(unit.prepareActiveMaterialPickup(unit.posX+dx,unit.posY+dy))return Offset{dx,dy};
+            if(observer)outcome->attempted=true;
+            if(unit.prepareActiveMaterialPickup(unit.posX+dx,unit.posY+dy)) {
+                if(observer){outcome->selected=true;observer->selectedDecisionOutcome(*outcome,unit);observer->finishDecisionOutcome(*outcome,unit);}
+                return Offset{dx,dy};
+            }
         }
+    if(observer){observer->selectedDecisionOutcome(*outcome,unit);observer->finishDecisionOutcome(*outcome,unit);}
     return std::nullopt;
 }
 

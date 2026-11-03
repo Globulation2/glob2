@@ -275,6 +275,8 @@ def trace_rows(stream):
         raise ValueError('duplicate pattern/policy identities')
     from .claim_journeys import Validator
     journeys = Validator(schema)
+    from .claim_outcomes import Validator as OutcomeValidator
+    actual_outcomes = OutcomeValidator(schema)
     movement_only = schema.get('movement_only', False)
     if type(movement_only) is not bool:
         raise ValueError('invalid movement-only mode')
@@ -292,6 +294,11 @@ def trace_rows(stream):
             raise ValueError('rows after claim summary')
         if row.get('kind') == 'summary':
             summary = row
+        elif row.get('kind') == 'decision_outcome':
+            if movement_only:
+                raise ValueError('decision outcome in movement-only trace')
+            actual_outcomes.row(row)
+            yield row
         elif row.get('kind') == 'journey':
             if movement_only:
                 raise ValueError('journey in movement-only trace')
@@ -322,6 +329,7 @@ def trace_rows(stream):
                 if type(pattern) is not int or type(policy) is not int or not 0 <= pattern < len(schema['patterns']) or not 0 <= policy < len(schema['policies']) or (pattern, policy) in seen:
                     raise ValueError('invalid/duplicate pattern policy index')
                 seen.add((pattern, policy))
+            actual_outcomes.decision(row)
             count += 1
             yield row
         else:
@@ -329,6 +337,7 @@ def trace_rows(stream):
     if not summary or summary.get('complete') is not True or summary.get('submitted') != count or summary.get('completed') != count:
         raise ValueError('incomplete resource claim trace')
     journeys.finish(summary)
+    actual_outcomes.finish(summary)
     if movement_only and any(summary.get(key) != 0 for key in ('decisions','sampled','submitted','completed','capture_bytes')):
         raise ValueError('movement-only trace contains decision work')
     yield summary
@@ -345,10 +354,18 @@ def read_game(stream, labels):
     summary = None
     modes = set()
     journey_digests = set()
+    outcome_active_decisions = 0
+    outcome_inactive_decisions = 0
+    outcome_totals = {'rows':0,'claim_changes':defaultdict(int),'route_results':defaultdict(int),'fallbacks':defaultdict(int)}
     journey_totals = {'rows':0,'steps':0,'live_cost':0,'partial':0,'baseline_missing':0,'terminals':defaultdict(int)}
     for row in rows:
         if row['kind'] == 'summary':
             summary = row
+            continue
+        if row['kind'] == 'decision_outcome':
+            outcome_totals['rows'] += 1
+            for target,field in (('claim_changes','claim_change'),('route_results','route_result'),('fallbacks','fallback')):
+                outcome_totals[target][row[field]] += 1
             continue
         if row['kind'] == 'journey':
             journey_digests.add(row['policy_digest'])
@@ -358,6 +375,10 @@ def read_game(stream, labels):
             journey_totals['baseline_missing'] += row['baseline_status'] != 'reached'
             journey_totals['terminals'][row['terminal']] += 1
             continue
+        if row.get('claims_enforced', schema.get('claims_enforced', False)) is True:
+            outcome_active_decisions += 1
+        else:
+            outcome_inactive_decisions += 1
         modes.add((row.get('claims_enforced', schema.get('claims_enforced', False)), row.get('active_policy', 'disabled')))
         for scenario in scenario_hits(row):
             scenario_counts[scenario] += 1
@@ -479,11 +500,17 @@ def read_game(stream, labels):
     sampling = {'censored': bool(reasons), 'reasons': reasons, 'exclusions': exclusions,
         'exclusion_coverage_known': all(count is not None for count in exclusions.values()),
         'complete_framing_is_unbiased_coverage': False}
-    return {'schema': schema, 'summary': summary, 'sampling': sampling, 'claim_modes': sorted(modes), 'metrics': metrics, 'scenario_counts': dict(scenario_counts),
+    result = {'schema': schema, 'summary': summary, 'sampling': sampling, 'claim_modes': sorted(modes), 'metrics': metrics, 'scenario_counts': dict(scenario_counts),
             'route_metrics': route_metrics, 'diagnostics': diagnostics,
             'journey_policy_digests': sorted(journey_digests), 'journeys': journey_totals,
             'movement_audit': summary.get('movement_audit'),
             'journey_interpretation': 'Per-game diagnostic totals; partial journeys retain partial costs; acquisition static baseline is not a dynamic optimum; no independent-unit inference.'}
+    if schema.get('decision_outcome_version') is not None:
+        result['decision_outcomes'] = outcome_totals | {'coverage':summary['decision_outcomes'],
+            'active_submitted_without_outcome':outcome_active_decisions-outcome_totals['rows'],
+            'inactive_shadow_unobserved_decisions':outcome_inactive_decisions,
+            'interpretation':'Linked immediate selection/route outcomes; missing linkage remains explicit, not failed selection or downstream delivery evidence.'}
+    return result
 
 
 class MeanIntervals:

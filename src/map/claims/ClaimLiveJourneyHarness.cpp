@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "ResourceClaimProbe.h"
 #include "ClaimPolicyConfig.h"
+#include "ClaimRecovery.h"
 #include <nlohmann/json.hpp>
 #include <zlib.h>
 #include <sstream>
@@ -10,6 +12,7 @@
 namespace {
 struct JourneyUnit : Unit {
     JourneyUnit(int x,int y,int slot,Team* team):Unit(x,y,GIDfrom(slot,0),WORKER,team,0) {}
+    void pickupDecision() { handleDisplacement(); }
     void committedMove(int x,int y) {
         owner->map->setGroundUnit(posX,posY,NOGUID);dx=x;dy=y;
         wrapPosition();owner->map->setGroundUnit(posX,posY,gid);
@@ -401,6 +404,144 @@ TEST_CASE("blocker census distinguishes infinite sharing from exclusive deposit 
         }
     }
     CHECK(decisions==1);map.releaseMaterialClaim(sharing);map.releaseMaterialClaim(destructive);query->attachedBuilding=nullptr;
+}
+
+TEST_CASE("actual decision outcomes link selection and fallback without changing simulation") {
+    glob2test::HeadlessGlobals globals;
+    std::vector<Uint32> reference;
+    for(int observation:{0,1,2}) {
+        CAPTURE(observation);
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=3197});
+        auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig policy;policy.sourceVersion=1;policy.usePrimaryGradient=false;map.setMaterialClaimPolicyConfig(policy);
+        auto* consumer=fixture.addBuilding("inn",20,20);
+        auto* seeker=worker(fixture,consumer,0);auto* holder=worker(fixture,consumer,1);auto* other=worker(fixture,consumer,2);
+        const auto nearest=Uint32(map.coordToIndex(12,8)),alternative=Uint32(map.coordToIndex(14,8));
+        for(int x:{12,14}){map.setResourceByIndex(x,8,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(x,8),WHEAT,1);}
+        REQUIRE(holder->acquireMaterialClaimAt(nearest));
+        glob2test::awaitGradient(fixture.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,seeker->movementClass());});
+        // Fixture advances gradient boundaries without Game::step; route jobs
+        // still require the normal completed-world snapshot before submission.
+        fixture.game.invalidateObservation();fixture.game.observeCompletedWorld();
+        const auto path=(glob2test::artifactDir()/"actual-decision-outcomes.jsonl.gz").string();
+        std::shared_ptr<ResourceClaims::Probe> probe;
+        if(observation) {
+            std::filesystem::remove(path);ResourceClaims::Probe::Config config;config.sampleEvery=1;config.maxSamples=8;config.movementOnly=observation==2;
+            probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);
+        }
+        const auto random=seeker->entityRandom;
+        seeker->handleActiveMaterialMovement();REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==alternative);
+        std::vector<Uint32> checksums{fixture.game.checkSum(nullptr,nullptr,nullptr,false)};
+        seeker->releaseActiveMaterialClaim();REQUIRE(other->acquireMaterialClaimAt(alternative));
+        seeker->handleActiveMaterialMovement();CHECK_FALSE(seeker->activeMaterialClaim);
+        checksums.push_back(fixture.game.checkSum(nullptr,nullptr,nullptr,false));CHECK(seeker->entityRandom==random);
+        if(!observation)reference=checksums;else {
+            CHECK(checksums==reference);probe->finish();
+            const auto trace=rows(path);std::vector<nlohmann::json> decisions,outcomes;
+            for(const auto& row:trace){if(row["kind"]=="decision")decisions.push_back(row);if(row["kind"]=="decision_outcome")outcomes.push_back(row);}
+            if(observation==2){CHECK(decisions.empty());CHECK(outcomes.empty());CHECK(trace.back()["decision_outcomes"]["rows"]==0);}
+            else {
+                REQUIRE(decisions.size()==2);REQUIRE(outcomes.size()==2);
+                for(unsigned j=0;j<2;++j)for(const char* key:{"ordinal","owner","tick","material","phase","pre_task"})CHECK(outcomes[j][key]==decisions[j][key]);
+                CHECK(outcomes[0]["selected_access"]==alternative);CHECK(outcomes[0]["selected_is_nearest_access"]==false);
+                CHECK(outcomes[0]["claim_change"]=="acquired");CHECK(outcomes[0]["selection_succeeded"]==true);CHECK(outcomes[0]["route_result"]=="pending");
+                CHECK(outcomes[1]["selected_access"].is_null());CHECK(outcomes[1]["selection_succeeded"]==false);
+                CHECK(outcomes[1]["fallback"]=="wait");CHECK(outcomes[1]["fallback_reason"]=="no_resource");
+                CHECK(trace.back()["decision_outcomes"]["submitted_without_outcome"]==0);
+                const auto& counters=trace.back()["decision_outcomes"]["material_phase_counters"][WHEAT][0];
+                CHECK(counters[0]==2);CHECK(counters[1]==2);CHECK(counters[2]==1);CHECK(counters[6]==1);CHECK(counters[16]==1);
+            }
+        }
+        for(auto* unit:{seeker,holder,other}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+    }
+}
+TEST_CASE("actual pickup outcome spans failed first candidate and successful later candidate") {
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=3199});
+    auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);ResourceClaims::ClaimPolicyConfig policy;policy.sourceVersion=3;policy.opportunisticAdjacentPickup=true;map.setMaterialClaimPolicyConfig(policy);
+    auto* consumer=fixture.addBuilding("inn",20,20);auto* seeker=worker(fixture,consumer,0);auto* holder=worker(fixture,consumer,1);
+    const auto first=Uint32(map.coordToIndex(7,7)),second=Uint32(map.coordToIndex(7,8));
+    for(int y:{7,8}){map.setResourceByIndex(7,y,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(7,y),WHEAT,1);}
+    REQUIRE(holder->acquireMaterialClaimAt(first));
+    auto* exchanger=worker(fixture,consumer,2);
+    map.setResourceByIndex(14,10,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(14,10),WHEAT,1);
+    map.setResourceByIndex(7,9,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(7,9),WHEAT,1);
+    REQUIRE(exchanger->acquireMaterialClaimAt(Uint32(map.coordToIndex(14,10))));
+    glob2test::awaitGradient(fixture.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,seeker->movementClass());});
+        // Fixture advances gradient boundaries without Game::step; route jobs
+        // still require the normal completed-world snapshot before submission.
+        fixture.game.invalidateObservation();fixture.game.observeCompletedWorld();
+    const auto path=(glob2test::artifactDir()/"actual-pickup-outcomes.jsonl.gz").string();std::filesystem::remove(path);
+    ResourceClaims::Probe::Config config;config.sampleEvery=1;config.maxSamples=8;
+    auto probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);
+    seeker->pickupDecision();REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==second);
+    exchanger->pickupDecision();REQUIRE(exchanger->activeMaterialClaim);CHECK(exchanger->activeMaterialClaim->access==map.coordToIndex(7,9));
+    probe->finish();
+    const auto trace=rows(path);nlohmann::json decision,outcome;unsigned count=0;
+    for(const auto& row:trace){if(row["kind"]=="decision")decision=row;if(row["kind"]=="decision_outcome"){outcome=row;++count;}}
+    REQUIRE(count==1);REQUIRE(!decision.is_null());CHECK(outcome["ordinal"]==decision["ordinal"]);
+    CHECK(decision["nearest"]==first);CHECK(outcome["selected_access"]==second);CHECK(outcome["selection_succeeded"]==true);
+    CHECK(outcome["selected_is_nearest_access"]==false);CHECK(outcome["phase"]=="pickup");CHECK(outcome["route_result"]=="not_attempted");
+    const auto& counts=trace.back()["decision_outcomes"]["material_phase_counters"][WHEAT][1];
+    CHECK(counts[0]==2);CHECK(counts[2]==1);CHECK(counts[4]==1);CHECK(counts[11]==1);
+    for(auto* unit:{seeker,holder,exchanger}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+}
+
+TEST_CASE("actual outcome keeps selection before route failure and counts cooldown scans separately") {
+    glob2test::HeadlessGlobals globals;
+    for(bool failure:{false,true}) {
+        CAPTURE(failure);
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=3203});
+        auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig policy;policy.sourceVersion=2;policy.usePrimaryGradient=false;
+        policy.maximumExpansions=1;policy.destinationRefreshJ=1;map.setMaterialClaimPolicyConfig(policy);
+        auto* consumer=fixture.addBuilding("inn",20,20);auto* seeker=worker(fixture,consumer,0);auto* holder=worker(fixture,consumer,1);
+        const auto nearest=Uint32(map.coordToIndex(12,8)),alternative=Uint32(map.coordToIndex(14,8));
+        for(int x:{12,14}){map.setResourceByIndex(x,8,WHEAT,1);map.setMaterialAmountSlot(map.coordToIndex(x,8),WHEAT,1);}
+        REQUIRE(holder->acquireMaterialClaimAt(nearest));
+        glob2test::awaitGradient(fixture.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,seeker->movementClass());});
+        // Fixture advances gradient boundaries without Game::step; route jobs
+        // still require the normal completed-world snapshot before submission.
+        fixture.game.invalidateObservation();fixture.game.observeCompletedWorld();
+        if(!failure) {
+            // Fixture establishes an already exhausted owner admission window.
+            // Actual selection still scans adjacent goals while routes cool down.
+            const auto recovery=map.beginClaimRecoverySelection(*seeker);REQUIRE(recovery.state);
+            auto& state=*const_cast<ResourceClaims::ClaimRecovery*>(recovery.state);
+            for(unsigned i=0;i<ResourceClaims::ClaimRecovery::MaxAttempts;++i)REQUIRE(state.admit(fixture.game.stepCounter));
+            // Normal cadence admissions are not recovery until a terminal
+            // failure establishes a streak. Match that required prior state.
+            state.recordFailure(fixture.game.stepCounter,alternative,ResourceClaims::ClaimRecovery::BackoffTicks);
+            REQUIRE_FALSE(map.beginClaimRecoverySelection(*seeker).mayRoute);
+        }
+        const auto path=(glob2test::artifactDir()/(failure?"outcome-route-failed.jsonl.gz":"outcome-cooldown.jsonl.gz")).string();std::filesystem::remove(path);
+        ResourceClaims::Probe::Config config;config.sampleEvery=1;config.maxSamples=8;
+        auto probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);
+        seeker->handleActiveMaterialMovement();
+        if(failure) {
+            REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==alternative);
+            map.flushClaimRoutes();++fixture.game.stepCounter;map.publishClaimRoutes();
+            fixture.game.invalidateObservation();fixture.game.observeCompletedWorld();
+            seeker->handleActiveMaterialMovement();
+        }
+        CHECK_FALSE(seeker->activeMaterialClaim);probe->finish();
+        const auto trace=rows(path);std::vector<nlohmann::json> outcomes;
+        for(const auto& row:trace)if(row["kind"]=="decision_outcome")outcomes.push_back(row);
+        REQUIRE(outcomes.size()==(failure?2:1));const auto& outcome=outcomes.back();
+        CHECK(outcome["attempted"]==true);
+        const auto& counts=trace.back()["decision_outcomes"]["material_phase_counters"][WHEAT][0];
+        if(failure) {
+            CHECK(outcome["selected_access"]==alternative);CHECK(outcome["selection_succeeded"]==true);
+            CHECK(outcome["claim_change"]=="held_same");CHECK(outcome["route_result"]=="failed");
+            CHECK(outcome["fallback_reason"]=="path_failed");CHECK(outcome["final_has_claim"]==false);
+            CHECK(outcome["final_task"].get<Uint64>()>outcome["selected_task"].get<Uint64>());CHECK(counts[14]==1);
+        } else {
+            CHECK(outcome["selection_succeeded"]==false);CHECK(outcome["fallback_reason"]=="cooldown");
+            CHECK(outcome["fallback"]=="none");CHECK(outcome["not_attempted_reason"].is_null());
+            CHECK(counts[1]==1);CHECK(counts[6]==1);CHECK(counts[8]==0);CHECK(counts[19]==1);
+        }
+        for(auto* unit:{seeker,holder}){unit->releaseActiveMaterialClaim();unit->attachedBuilding=nullptr;}
+    }
 }
 
 }
