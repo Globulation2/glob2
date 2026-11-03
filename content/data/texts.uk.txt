@@ -2328,6 +2328,18 @@ OpenGL недоступний у цій збірці.
 Розгалужена дельта
 [Braid count]
 Кількість проток
+[Flood]
+Розлив
+[Distributaries]
+Рукави
+[River crossings]
+Переправи через річку
+[Dunes]
+Дюни
+[Dry]
+Сухо
+[Wet]
+Волого
 [Rejoining frequency]
 Частота злиттів
 [Crossing spacing]

@@ -2328,6 +2328,18 @@ Torbreite
 Verflochtenes Delta
 [Braid count]
 Anzahl der Flussarme
+[Flood]
+Überflutung
+[Distributaries]
+Flussarme
+[River crossings]
+Flussübergänge
+[Dunes]
+Dünen
+[Dry]
+Trocken
+[Wet]
+Feucht
 [Rejoining frequency]
 Häufigkeit der Zusammenflüsse
 [Crossing spacing]

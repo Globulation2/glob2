@@ -2328,6 +2328,18 @@ Amplada de la porta
 Delta trenat
 [Braid count]
 Nombre de braços
+[Flood]
+Inundació
+[Distributaries]
+Braços del riu
+[River crossings]
+Passos del riu
+[Dunes]
+Dunes de sorra
+[Dry]
+Sec
+[Wet]
+Humit
 [Rejoining frequency]
 Freqüència de confluències
 [Crossing spacing]

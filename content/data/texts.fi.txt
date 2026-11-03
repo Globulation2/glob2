@@ -2328,6 +2328,18 @@ Portin leveys
 Haarautuva suisto
 [Braid count]
 Jokihaarojen määrä
+[Flood]
+Tulva
+[Distributaries]
+Jokihaarat
+[River crossings]
+Joenylitykset
+[Dunes]
+Dyynit
+[Dry]
+Kuiva
+[Wet]
+Kostea
 [Rejoining frequency]
 Yhtymiskohtien tiheys
 [Crossing spacing]

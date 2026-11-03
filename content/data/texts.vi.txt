@@ -2328,6 +2328,18 @@ Chiều rộng cổng
 Châu thổ đan nhánh
 [Braid count]
 Số nhánh sông
+[Flood]
+Ngập lụt
+[Distributaries]
+Phân lưu
+[River crossings]
+Điểm qua sông
+[Dunes]
+Cồn cát
+[Dry]
+Khô
+[Wet]
+Ẩm
 [Rejoining frequency]
 Tần suất hợp lưu
 [Crossing spacing]

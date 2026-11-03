@@ -2306,6 +2306,18 @@ Gate width
 Braided Delta
 [Braid count]
 Braid count
+[Flood]
+Flood
+[Distributaries]
+Distributaries
+[River crossings]
+River crossings
+[Dunes]
+Dunes
+[Dry]
+Dry
+[Wet]
+Wet
 [Rejoining frequency]
 Rejoining frequency
 [Crossing spacing]

@@ -2328,6 +2328,18 @@ Emoji
 دلتای شاخه‌شاخه
 [Braid count]
 تعداد شاخه‌ها
+[Flood]
+سیلاب
+[Distributaries]
+شاخه‌های رود
+[River crossings]
+گذرگاه‌های رود
+[Dunes]
+تپه‌های شنی
+[Dry]
+خشک
+[Wet]
+مرطوب
 [Rejoining frequency]
 بسامد پیوندها
 [Crossing spacing]
