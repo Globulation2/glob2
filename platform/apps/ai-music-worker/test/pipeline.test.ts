@@ -92,6 +92,7 @@ function candidate(pass: boolean): Rendered {
         'repetition',
         'alignment',
         'contrast',
+        'transition',
         'noise',
         'balance',
         'audibility',

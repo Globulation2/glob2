@@ -142,6 +142,7 @@ it.skipIf(process.env['MUSIC_RENDER_TEST'] !== '1')(
           'repetition',
           'alignment',
           'contrast',
+          'transition',
           'noise',
           'balance',
           'audibility',
