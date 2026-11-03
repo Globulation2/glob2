@@ -6857,52 +6857,52 @@ Arahan diterima: %0
 [hive order not confirmed]
 Arahan belum disahkan. Buka komander untuk mencuba semula; mesej anda telah disimpan.
 [engine performance per game minute]
-
+Setiap minit permainan
 [engine performance per real minute]
-
+Setiap minit sebenar
 [engine performance game engine performance]
-
+Prestasi enjin permainan
 [engine performance task wall-time costs]
-
+Masa sebenar yang diambil tugas
 [engine performance inspect slow ticks]
-
+Periksa detik perlahan
 [engine performance no advancing ticks recorded yet]
-
+Belum ada detik yang bergerak maju direkodkan.
 [engine performance whole-engine performance]
-
+Prestasi keseluruhan enjin
 [engine performance open performance charts]
-
+Buka carta prestasi
 [engine performance engine performance]
-
+Prestasi enjin
 [engine performance follow latest interval]
-
+Ikuti selang terkini
 [engine performance compare task costs]
-
+Bandingkan masa tugas
 [engine performance all metrics and slow ticks]
-
+Semua ukuran dan detik perlahan
 [engine performance phase orders]
-
+Arahan
 [engine performance phase units]
-
+Unit
 [engine performance phase buildings]
-
+Bangunan
 [engine performance phase map]
-
+Peta
 [engine performance phase statistics]
-
+Statistik
 [engine performance phase ai]
-
+Kecerdasan buatan
 [engine performance phase world capture]
-
+Tangkapan keadaan dunia
 [engine performance phase checksums]
-
+Jumlah semak
 [engine performance wall time %0]
-
+Masa berlalu: %0 ms
 [engine performance waits %0 joins %1 locks %2]
-
+Penantian wajib: %0 ms; utas pemilik menunggu tugas: %1 ms; kunci: %2 ms
 [engine performance phase %0 wall %1]
-
+%0: %1 ms masa berlalu
 [engine performance tick %0 wall %1]
-
+Detik %0: %1 ms masa berlalu
 [hive standing order update failed]
 Kemas kini arahan tetap gagal. Arahan anda dijeda secara setempat; cuba semula melalui kawalan berkenaan.
