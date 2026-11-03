@@ -165,6 +165,9 @@ void testVersionBounds()
 		check(!beforeTargetFix.loadReplay(writeReplayBody(version, 1), false),
 		      "material target boundary: earlier worker execution rejected");
 	}
+    ReplayReader previousStaffing;
+    check(!previousStaffing.loadReplay(writeReplayBody(193,1),false),
+          "replenishment boundary: immediate-dismissal replay rejected");
 	{
 		ReplayReader previous;
 		check(!previous.loadReplay(writeReplayBody(165,1),false),

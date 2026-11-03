@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include <PerformanceTelemetry.h>
 #include <vector>
+#include <cmath>
 #include <algorithm>
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -21,6 +23,7 @@
 #include "Bullet.h"
 #include "Sector.h"
 #include "EndGameScreen.h"
+#include "UIRecordingCanvas.h"
 #include "ReplayReader.h"
 #include "ReplayTelemetry.h"
 #include "FileFormatVersions.h"
@@ -859,9 +862,9 @@ static void measurementReplayBoundaries()
 	// Format 166 makes append-order populations authoritative; format 167
 	// changes completed-observation timing. Format 171 unifies flyer routing.
 	// A newer save writer need not drop supported replay schedules.
-	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_MAINLINE_TERRAINS
+	require(REPLAY_MINIMUM_VERSION_MINOR == 194
             && REPLAY_MINIMUM_VERSION_MINOR <= VERSION_MINOR && NET_PROTOCOL_VERSION == 75,
-			"integrated simulation preserves the replay floor and current network gates");
+			"replenishment staffing advances the replay floor without changing network protocol gates");
 	for (int version : std::initializer_list<int>{98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR-1, REPLAY_MINIMUM_VERSION_MINOR,
             FILE_FORMAT_VERSION_MAXIMA_FORWARD_SUPPORT, FILE_FORMAT_VERSION_MAXIMA_FLAG_PROXIMITY,
             VERSION_MINOR, VERSION_MINOR+1})
@@ -1206,6 +1209,16 @@ static void measurementScreenshots(const std::string &directory)
 	gui.localTeamNo = 0;
 	gui.localPlayer = 0;
 	gui.adjustLocalTeam();
+    auto &perf = PerformanceTelemetry::collector();
+    perf.history = std::make_unique<PerformanceTelemetry::History>();
+    for (unsigned i = 0; i < 8; ++i) {
+        auto sample = std::make_unique<PerformanceTelemetry::Window>();
+        sample->tickStart = i * 512; sample->tickEnd = (i + 1) * 512;
+        sample->startNs = i * 1000000000ULL; sample->endNs = (i + 1) * 1000000000ULL;
+        auto &m = sample->metrics[unsigned(PerformanceTelemetry::Id::OwnerAdvance)];
+        m.calls = 1; m.time.add((i + 1) * 1000000); m.cpuSamples = 1; m.cpuNs = (i + 1) * 500000;
+        perf.history->append(std::move(*sample));
+    }
 	for (const auto size : {std::pair{640, 480}, std::pair{1024, 768}})
 	{
 		globalContainer->gfx->setRes(size.first, size.second, 0);
@@ -1214,6 +1227,10 @@ static void measurementScreenshots(const std::string &directory)
 		{
 			EndGameScreen screen(&gui);
 			screen.beginExecution(globalContainer->gfx);
+            screen.showEnginePerformance = true; screen.invalidate(); screen.paintFrame(0);
+            require(bool(screen.host().find("engine-performance/chart")), "engine performance chart is present in results");
+            require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), (directory + "/engine-performance-" + suffix).c_str()), "save engine performance screenshot");
+            screen.showEnginePerformance = false; screen.invalidate();
 			// The overview, then one chart of each form: a level, a smoothed rate, a
 			// split counter, bands of the population, a net value and a global series.
 			const std::pair<const char *, bool> charts[] = {{"population", false}, {"births", false}, {"births", true},
@@ -1584,6 +1601,227 @@ TEST_SUITE("TeamStatsSave")
 		            ++game.stepCounter;
 		        }
 		glob2test::expectGolden("team-stats/version84.expected.txt", trace.text());
+	}
+    TEST_CASE("performance wait charts distinguish zero events from missing coverage")
+    {
+        glob2test::HeadlessGlobals globals;
+        auto &perf=PerformanceTelemetry::collector();
+        perf.history=std::make_unique<PerformanceTelemetry::History>();
+        for(unsigned i=0;i<3;++i){
+            auto w=std::make_unique<PerformanceTelemetry::Window>();
+            w->tickStart=i*30;w->tickEnd=(i+1)*30;
+            w->startNs=i*1000000000ULL;w->endNs=(i+1)*1000000000ULL;
+            if(i<2)w->metrics[unsigned(PerformanceTelemetry::Id::OwnerAdvance)].time.add(1000);
+            if(i==0)w->metrics[unsigned(PerformanceTelemetry::Id::WaitAI)].time.add(2000000);
+            perf.history->append(std::move(*w));
+        }
+        EnginePerformancePanel panel;
+        panel.scope=unsigned(PerformanceTelemetry::Id::WaitAI);
+        panel.refresh();
+        REQUIRE(panel.points.size()==3);
+        CHECK(panel.points[0].value==2.);
+        CHECK(panel.points[1].value==0.);
+        CHECK(std::isnan(panel.points[2].value));
+        panel.view=EnginePerformancePanel::View::PerTick;panel.refresh();
+        CHECK(panel.points[1].value==0.);
+        CHECK(std::isnan(panel.points[2].value));
+        panel.scope=unsigned(PerformanceTelemetry::Id::GPUTime);panel.refresh();
+        CHECK(std::isnan(panel.points[1].value));
+        CHECK(perf.history->window(1).metrics[unsigned(PerformanceTelemetry::Id::WaitAI)].time.count==0);
+    }
+	TEST_CASE("performance explorer units follow the selected population and denominator")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto &perf = PerformanceTelemetry::collector();
+		perf.history = std::make_unique<PerformanceTelemetry::History>();
+		auto w = std::make_unique<PerformanceTelemetry::Window>();
+		w->tickStart = 0;
+		w->tickEnd = 30;
+		w->startNs = 0;
+		w->endNs = 1000000000;
+		auto &sampled = w->metrics[unsigned(PerformanceTelemetry::Id::PathResource)];
+		sampled.calls = 2;
+		auto &bytes = w->metrics[unsigned(PerformanceTelemetry::Id::RenderMemory)];
+		bytes.calls = 1;
+		bytes.time.add(4096);
+		bytes.self = 4096;
+		perf.history->append(std::move(*w));
+		EnginePerformancePanel panel;
+		panel.scope = unsigned(PerformanceTelemetry::Id::PathResource);
+		panel.view = EnginePerformancePanel::View::Calls;
+		panel.refresh();
+		CHECK(panel.viewUnit() == "calls/min");
+		CHECK(panel.points[0].value == 120.);
+		panel.view = EnginePerformancePanel::View::Mean;
+		panel.refresh();
+		CHECK(std::isnan(panel.points[0].value));
+		panel.scope = unsigned(PerformanceTelemetry::Id::RenderMemory);
+		panel.view = EnginePerformancePanel::View::Total;
+		CHECK(panel.viewUnit() == "bytes/min");
+		panel.view = EnginePerformancePanel::View::PerTick;
+		CHECK(panel.viewUnit() == "bytes/tick");
+		panel.view = EnginePerformancePanel::View::Self;
+		panel.refresh();
+		CHECK(std::isnan(panel.points[0].value));
+		panel.scope = PerformanceTelemetry::ScopeCount + 5;
+		CHECK(panel.viewUnit() == "FPS");
+		panel.scope = PerformanceTelemetry::ScopeCount + 9;
+		CHECK(panel.viewUnit() == "%");
+	}
+	TEST_CASE("performance legends distinguish repeated paused tick windows")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto &perf = PerformanceTelemetry::collector();
+		perf.history = std::make_unique<PerformanceTelemetry::History>();
+		for (unsigned i = 0; i < 3; ++i)
+		{
+			auto w = std::make_unique<PerformanceTelemetry::Window>();
+			w->tickStart = i ? 30 : 0;
+			w->tickEnd = 30;
+			w->startNs = i * 1000000000ULL;
+			w->endNs = (i + 1) * 1000000000ULL;
+			auto &frames = w->metrics[unsigned(PerformanceTelemetry::Id::FrameInterval)];
+			frames.calls = 1;
+			frames.time.add((i + 1) * 10000000ULL);
+			perf.history->append(std::move(*w));
+		}
+		EnginePerformancePanel panel;
+		panel.scope = unsigned(PerformanceTelemetry::Id::FrameInterval);
+		panel.refresh();
+		GAGGUI::ui::FixedTextMeasurer measurer;
+		glob2test::RecordingCanvas canvas({600, 220}, measurer);
+		const auto plot = panel.paintLines(canvas, {0, 0, 600, 220}, {&panel}, {"Frames"}, "ms");
+		CHECK(std::any_of(canvas.texts.begin(), canvas.texts.end(),
+						  [](const auto &entry) { return entry.second == "Frames: 30.00 ms"; }));
+		panel.inspect(599, plot, panel.points);
+		canvas.texts.clear();
+		panel.paintLines(canvas, {0, 0, 600, 220}, {&panel}, {"Frames"}, "ms");
+		CHECK(std::any_of(canvas.texts.begin(), canvas.texts.end(),
+						  [](const auto &entry) { return entry.second == "Frames: 30.00 ms"; }));
+	}
+	TEST_CASE("performance explorer inspection and GPU pass samples share the dashboard presenter")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto &perf = PerformanceTelemetry::collector();
+		perf.history = std::make_unique<PerformanceTelemetry::History>();
+		for (unsigned i = 0; i < 3; ++i)
+		{
+			auto w = std::make_unique<PerformanceTelemetry::Window>();
+			w->tickStart = i * 30;
+			w->tickEnd = (i + 1) * 30;
+			w->startNs = i * 1000000000ULL;
+			w->endNs = (i + 1) * 1000000000ULL;
+			auto &gpu = w->metrics[unsigned(PerformanceTelemetry::Id::GPURenderPass)];
+			gpu.calls = 1;
+			gpu.time.add((i + 1) * 1000000ULL);
+			perf.history->append(std::move(*w));
+		}
+		EnginePerformancePanel panel;
+		panel.initCharts();
+		const auto &render = panel.charts.back();
+		CHECK(render.series.size() == 3);
+		CHECK(render.series.back()->scope == unsigned(PerformanceTelemetry::Id::GPURenderPass));
+		panel.scope = unsigned(PerformanceTelemetry::Id::GPURenderPass);
+		panel.refresh();
+		GAGGUI::ui::FixedTextMeasurer measurer;
+		glob2test::RecordingCanvas canvas({600, 220}, measurer);
+		panel.paint(canvas, {0, 0, 600, 220});
+		panel.inspect(panel.explorerPlot.left +
+						  (panel.explorerPlot.right - panel.explorerPlot.left) * (2. / 3.),
+					  panel.explorerPlot, panel.points);
+		canvas.texts.clear();
+		panel.paint(canvas, {0, 0, 600, 220});
+		CHECK(std::any_of(canvas.texts.begin(), canvas.texts.end(), [](const auto &entry)
+						  { return entry.second == "Value: 2.00 ms (n=1)"; }));
+		CHECK(std::any_of(canvas.texts.begin(), canvas.texts.end(), [](const auto &entry)
+						  { return entry.second.starts_with("Selected: "); }));
+	}
+	TEST_CASE("performance chart geometry respects enlarged text and measured plot margins")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto &perf = PerformanceTelemetry::collector();
+		perf.history = std::make_unique<PerformanceTelemetry::History>();
+		for (unsigned i = 0; i < 3; ++i)
+		{
+			auto w = std::make_unique<PerformanceTelemetry::Window>();
+			w->tickStart = i * 30;
+			w->tickEnd = (i + 1) * 30;
+			w->startNs = i * 1000000000ULL;
+			w->endNs = (i + 1) * 1000000000ULL;
+			w->metrics[unsigned(PerformanceTelemetry::Id::FrameInterval)].time.add((i + 1) *
+																				   1000000000ULL);
+			perf.history->append(std::move(*w));
+		}
+		EnginePerformancePanel panel;
+		panel.scope = unsigned(PerformanceTelemetry::Id::FrameInterval);
+		panel.refresh();
+		GAGGUI::ui::FixedTextMeasurer measurer(12, 28);
+		glob2test::RecordingCanvas canvas({600, 330}, measurer);
+		const auto plot = panel.paintLines(canvas, {0, 0, 600, 330}, {&panel, &panel, &panel},
+										   {"CPU", "GPU", "GPU passes"}, "ms");
+		CHECK(plot.left > 52);
+		// All header rows, axis values and legends must fit at the actual font size.
+		for (std::size_t i = 0; i < canvas.texts.size(); ++i)
+		{
+			const auto &[at, text] = canvas.texts[i];
+			const GAGGUI::ui::Rect rect{at.x, at.y,
+										measurer.width(GAGGUI::ui::FontRole::Support, text), 28};
+			CHECK((GAGGUI::ui::Rect{0, 0, 600, 330}.contains(rect)));
+			for (std::size_t j = 0; j < i; ++j)
+			{
+				const auto &[otherAt, other] = canvas.texts[j];
+				const GAGGUI::ui::Rect otherRect{
+					otherAt.x, otherAt.y, measurer.width(GAGGUI::ui::FontRole::Support, other), 28};
+				CHECK(rect.intersect(otherRect).empty());
+			}
+		}
+		panel.inspect(plot.left + (plot.right - plot.left) * (2. / 3.), plot, panel.points);
+		CHECK(panel.cursorMinute == doctest::Approx(2. / 60.));
+	}
+	TEST_CASE("capture latency charts use completed captures rather than frame delta samples")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto &perf = PerformanceTelemetry::collector();
+		perf.history = std::make_unique<PerformanceTelemetry::History>();
+		for (unsigned i = 0; i < 2; ++i)
+		{
+			auto w = std::make_unique<PerformanceTelemetry::Window>();
+			w->tickStart = i * 30;
+			w->tickEnd = (i + 1) * 30;
+			w->startNs = i * 1000000000ULL;
+			w->endNs = (i + 1) * 1000000000ULL;
+			w->metrics[unsigned(PerformanceTelemetry::Id::CaptureLatency)].time.add(i ? 0
+																					  : 30000000);
+			w->metrics[unsigned(PerformanceTelemetry::Id::CaptureCount)].time.add(i ? 0 : 3);
+			perf.history->append(std::move(*w));
+		}
+		EnginePerformancePanel panel;
+		panel.scope = unsigned(PerformanceTelemetry::Id::CaptureLatency);
+		panel.refresh();
+		CHECK(panel.viewUnit() == "ms/capture");
+		CHECK(panel.points[0].value == 10.);
+		CHECK(std::isnan(panel.points[1].value));
+		panel.view = EnginePerformancePanel::View::Calls;
+		panel.refresh();
+		CHECK(panel.viewUnit() == "captures/min");
+		CHECK(panel.points[0].value == 180.);
+		CHECK(panel.points[1].value == 0.);
+		panel.view = EnginePerformancePanel::View::Total;
+		panel.refresh();
+		CHECK(panel.points[0].value == 1800.);
+		CHECK(panel.points[1].value == 0.);
+		panel.view = EnginePerformancePanel::View::PerTick;
+		panel.refresh();
+		CHECK(panel.points[0].value == 1.);
+		for (const auto view :
+			 {EnginePerformancePanel::View::Self, EnginePerformancePanel::View::P50,
+			  EnginePerformancePanel::View::P95, EnginePerformancePanel::View::P99,
+			  EnginePerformancePanel::View::Maximum, EnginePerformancePanel::View::Deviation})
+		{
+			panel.view = view;
+			panel.refresh();
+			CHECK(std::isnan(panel.points[0].value));
+		}
 	}
 	TEST_CASE("measurement screenshots [display][artifacts]")
 	{

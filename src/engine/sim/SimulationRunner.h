@@ -62,11 +62,11 @@ public:
 	//! What the simulation thread measures (PerformanceTelemetry scopes). The main
 	//! thread absorbs the mailbox while running, or this collector after stop().
 	PerformanceTelemetry::Collector telemetry;
-    void absorbTelemetry(PerformanceTelemetry::Collector& target);
-    Uint32 latestTelemetryTick();
+	// Metrics and their logical watermark are one mailbox observation.
+	Uint32 absorbTelemetry(PerformanceTelemetry::Collector &target);
+	void configureTelemetry(const PerformanceTelemetry::Collector &target);
 
-
-private:
+  private:
 	void run();
     std::mutex telemetryMutex;
     PerformanceTelemetry::Collector telemetryMailbox;

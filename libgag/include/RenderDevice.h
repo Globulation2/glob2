@@ -27,6 +27,7 @@ struct RenderTelemetry
     std::size_t resourceBytes = 0;
     std::uint64_t cpuSubmitNanoseconds=0,cpuPresentNanoseconds=0,cpuCaptureNanoseconds=0;
     std::uint64_t captureLatencyNanoseconds=0,captureCompletions=0;
+    std::uint64_t deferredFrames=0,reusedFrames=0,gpuSkipped=0,gpuInvalid=0;
 };
 namespace detail
 {
@@ -60,6 +61,7 @@ struct CaptureResult
 // One presentation thread owns the device. submit takes ownership of packets;
 // implementations retain their texture snapshots until completion/cancellation.
 // A zero submission means bounded admission rejected the frame.
+struct GpuTimingResult { std::uint64_t frame = 0, startedNs = 0, durationNs = 0; bool renderPasses = false; };
 class RenderDevice
 {
   public:
@@ -78,6 +80,9 @@ class RenderDevice
     virtual void reset() = 0;
     virtual std::uint64_t generation() const = 0;
     virtual RenderTelemetry telemetry() const = 0;
+    // Nonblocking; never wait for a query result.
+    virtual bool pollTiming(GpuTimingResult &) { return false; }
+    virtual unsigned pendingTimings() const { return 0; }
     // Poll completion and release retired allocations before a large preflight.
     // Never wait for GPU work. Completed reconstructible GPU copies may be
     // forgotten while logical CPU snapshots remain owned by callers; preserve

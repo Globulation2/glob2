@@ -189,6 +189,9 @@ struct TickProfile
     {
         const auto started = std::chrono::steady_clock::now();
         Sample sample; sample.tick = tick; sample.duration = duration;
+        // Explicit per-tick profiling pulls completed worker summaries here;
+        // normal play only merges them at periodic capture boundaries.
+        executor.absorbPerformance(PerformanceTelemetry::collector());
         const auto& perf = PerformanceTelemetry::collector();
         for (unsigned i = 0; i < previousPhases.size(); ++i) {
             const auto cumulative = perf.total[i].time.total + perf.window[i].time.total;
@@ -249,6 +252,7 @@ struct TickProfile
                 const auto id = PerformanceTelemetry::Id(i);
                 if (id == PerformanceTelemetry::Id::SimulationLateness || id == PerformanceTelemetry::Id::SceneAge ||
                     id == PerformanceTelemetry::Id::FrameInterval || id == PerformanceTelemetry::Id::Jitter) continue;
+                if (std::string_view(PerformanceTelemetry::unit(i)) != "ns") continue;
                 if (sample.phases[i]) row["phases"][names[i]] = {{"observed_ns", sample.phases[i]}, {"stride", strides[i]}};
             }
             for (unsigned p = 0; p < Producers; ++p)
@@ -833,6 +837,7 @@ struct HeadlessRunner
 		const auto saveCpuStart=benchmark?processCpuNs():0;
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
 		const auto saveCpu=benchmark?processCpuNs()-saveCpuStart:0;
+        engine.gui.game.map.computeExecutor().absorbPerformance(PerformanceTelemetry::collector());
 		PerformanceTelemetry::collector().capture(engine.gui.game.stepCounter, true, true);
 		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
@@ -1166,7 +1171,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_shadow_version\":1,\"material_destinations_version\":1,\"resource_claims_deep_version\":1,\"resource_claims_probe_version\":1,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_shadow_version\":1,\"material_destinations_version\":1,\"resource_claims_deep_version\":1,\"resource_claims_probe_version\":1,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
 
             // Config asset identities are frozen by the planner before dispatch.
             // This catalog path is diagnostic setup, never a simulation hot loop.

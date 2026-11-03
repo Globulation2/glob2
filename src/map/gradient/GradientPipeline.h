@@ -505,7 +505,10 @@ class GradientPipeline
                 if (job->due!=jobs.front()->due) throw std::logic_error("Mixed gradient batch deadlines");
                 job->seed=seed; job->executorDue=due;
                 auto fn=callback; fn.context=job;
-                groups.push_back({1,fn,ComputeExecutor::NoLane});
+                static constexpr PerformanceTelemetry::Id ids[]{PerformanceTelemetry::Id::WorkerGradientMaterials,
+                    PerformanceTelemetry::Id::WorkerGradientMarkets, PerformanceTelemetry::Id::WorkerGradientGuard,
+                    PerformanceTelemetry::Id::WorkerGradientClear, PerformanceTelemetry::Id::WorkerGradientForbidden};
+                groups.push_back({1,fn,ComputeExecutor::NoLane,ids[unsigned(job->request.kind)]});
             }
             const auto batch=executor->submit(groups,due,{ComputeProducer::PeriodicGradient,
                 deadline ? due/2-remaining : tick,due/2});

@@ -22,8 +22,9 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 197 adds bounded experimental claim recovery after version 196 corrected material-target projection and
-//! harvest eligibility, so older recordings can execute different worker decisions.
+//! the reader still accepts. Version 197 adds authoritative route/recovery checksum
+//! coverage after material-target fixes and version 194 courier staffing changes.
+//! Earlier recordings follow different simulation trajectories.
 //! Save compatibility has a separate floor in Version.h.
 static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 197;
 

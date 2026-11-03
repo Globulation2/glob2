@@ -209,6 +209,7 @@ CLIENT_SOURCES = (
     'hud/GameGUIDefaultAssignManager.cpp',
     'hud/GameGUIDialog.cpp',
     'hud/InGameStatistics.cpp',
+    'hud/EnginePerformancePanel.cpp',
     'hud/draw/GameGUIDraw.cpp',
     'hud/draw/GameGUIDrawChoice.cpp',
     'hud/draw/GameGUIDrawUnitInfos.cpp',

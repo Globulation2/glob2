@@ -8,9 +8,10 @@
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
 #define VERSION_MINOR 197
+// version 197 persists bounded claim recovery and uses snapshot-v4 checksums.
 // version 196 persists explicit material-claim experimental policy and decision cadence.
-// version 195 persists active material claims, seed commitments and pending unit routes.
-// version 194 persists optional material gradient destination planes and publication identities.
+// version 195 persists material destination planes, active claims and pending unit routes.
+// version 194 lets replenishment couriers finish trips; save encoding is unchanged.
 // version 193 adds the saved adaptive prestige pipeline limit.
 // version 192 persists Maxima prestige investment and cancellation state.
 // version 191 adds four built-in grass and sand looks; custom terrain IDs move up by four.

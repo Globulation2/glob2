@@ -100,6 +100,7 @@ namespace GAGCore
     void BackgroundFileWriter::poll()
     {
         if (!cooperativeOnly || !cooperative) return;
+        PERF_SCOPE_TIME(SaveCooperative);
         const auto start = PerformanceTelemetry::now();
         bool complete = false;
         // Stop between bounded encoding/deflate steps after a 2ms budget.

@@ -123,11 +123,10 @@ def main():
                                PROFILE_WARMUP=str(args.warmup), PROFILE_CLOUDS='0',
                                PROFILE_COMPUTE_TELEMETRY='off', GLOB2_UI_SCALE='1',
                                GLOB2_USER_DATA_DIR=profile, GLOB2_RENDER_EXECUTION=mode,
-                               GLOB2_RENDER_WORKERS='2', GLOB2_PERF_DISABLE='1')
+                               GLOB2_RENDER_WORKERS='2')
                     env.update(CASES[case])
-                    if case == 'live-simulation':
-                        del env['GLOB2_PERF_DISABLE']  # Display admission is counted by telemetry.
-                    elif repeat == 0:
+                    env.pop('GLOB2_PERF_DISABLE', None)  # Compare both builds with production collection.
+                    if case != 'live-simulation' and repeat == 0:
                         env['PROFILE_CAPTURE'] = str(args.output / f'{label}.bmp')
                     if args.assets:
                         env['GLOB2_ASSET_DIR'] = str(args.assets.resolve())

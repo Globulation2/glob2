@@ -362,5 +362,7 @@ void GameSessionScreen::suspendExecution()
 
 std::vector<GAGGUI::ui::Host *> GameSessionScreen::inspectionHosts()
 {
-	return engine ? engine->inspectionHosts() : std::vector<GAGGUI::ui::Host *>{};
+	// An input receipt can request inspection before the results-screen push is
+	// applied. Teardown has already released the gameplay scene at that point.
+	return started && !finished && engine ? engine->inspectionHosts() : std::vector<GAGGUI::ui::Host *>{};
 }
