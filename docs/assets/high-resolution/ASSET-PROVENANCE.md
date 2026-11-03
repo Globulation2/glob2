@@ -14,10 +14,10 @@ Catalog terrain materials use original procedural 8×8 blocks with shared bounda
 | Non-AI mask resampling | 38 |
 | Original-based terrain with deterministic grain and tiling | 256 |
 | Procedural resource painting | 120 |
-| Procedural terrain synthesis | 9244 |
+| Procedural terrain synthesis | 9276 |
 | Recovered original | 2076 |
 
-Total: **11873 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/recovered-runtime.md) for limitations.
+Total: **11905 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/recovered-runtime.md) for limitations.
 
 | Frame | Source category | Logical canvas | Native canvas/source | Recipe |
 | --- | --- | --- | --- | --- |
@@ -4468,6 +4468,38 @@ Total: **11873 frames**. Source/output SHA-256 hashes, native sizes and selected
 | `terrain-flower_meadow97` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: flower_meadow |
 | `terrain-flower_meadow98` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: flower_meadow |
 | `terrain-flower_meadow99` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: flower_meadow |
+| `terrain-glint0` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint1` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint10` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint11` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint12` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint13` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint14` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint15` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint16` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint17` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint18` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint19` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint2` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint20` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint21` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint22` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint23` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint24` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint25` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint26` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint27` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint28` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint29` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint3` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint30` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint31` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint4` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint5` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint6` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint7` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint8` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
+| `terrain-glint9` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_glints.py)) | procedural terrain glints v1 |
 | `terrain-grass0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: grass |
 | `terrain-grass1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: grass |
 | `terrain-grass10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: grass |

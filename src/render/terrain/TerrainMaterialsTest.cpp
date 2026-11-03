@@ -121,6 +121,73 @@ TEST_SUITE("TerrainMaterials")
 			}
 	}
 
+	TEST_CASE("fertile ground overlays glint sparsely, out of step and on its own cycle")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto c = catalog();
+		for (const char *key : {"loam", "moss", "spring_meadow"})
+			CHECK_FALSE(c.materials[c.find(key)].overlay.cycles.empty());
+		for (const char *key : {"grass", "sand", "boulders", "lava"})
+			CHECK(c.materials[c.find(key)].overlay.cycles.empty());
+		CHECK(c.overlayFrame(c.find("grass"), 3, 4, 100) == -1);
+		const auto id = c.find("loam");
+		const auto &overlay = c.materials[id].overlay;
+		const auto period = std::uint32_t(overlay.ticks * overlay.cycles.front().size());
+		unsigned glinting = 0, lit = 0, startsAtZero = 0;
+		for (int y = 0; y < 64; ++y)
+			for (int x = 0; x < 64; ++x)
+			{
+				bool cellGlints = false;
+				for (std::uint32_t tick = 0; tick < period; tick += std::uint32_t(overlay.ticks))
+				{
+					const int frame = c.overlayFrame(id, x, y, tick, 9);
+					// A step holds for `ticks` scene ticks and the cycle repeats.
+					CHECK(c.overlayFrame(id, x, y, tick + std::uint32_t(overlay.ticks) - 1, 9) == frame);
+					CHECK(c.overlayFrame(id, x, y, tick + period, 9) == frame);
+					if (frame >= 0)
+					{
+						cellGlints = true;
+						++lit;
+					}
+				}
+				glinting += cellGlints;
+				startsAtZero += c.overlayFrame(id, x, y, 0, 9) == overlay.cycles.front().front();
+			}
+		// About density_q8 / 256 of the cells glint, and they do not all flash together.
+		const double share = glinting / 4096.0;
+		CHECK(std::abs(share - overlay.densityQ8 / 256.0) < 0.05);
+		CHECK(lit > glinting);
+		CHECK(startsAtZero < glinting / 4);
+		// A different map seed picks different cells.
+		unsigned moved = 0;
+		for (int x = 0; x < 256; ++x)
+			for (std::uint32_t tick = 0; tick < period; tick += std::uint32_t(overlay.ticks))
+				moved += (c.overlayFrame(id, x, 0, tick, 9) >= 0) != (c.overlayFrame(id, x, 0, tick, 10) >= 0);
+		CHECK(moved > 0);
+	}
+
+	TEST_CASE("overlays reject empty, all-dark and out-of-range cycles")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto original = nlohmann::json::parse(catalog().serialized);
+		for (const auto &cycles : {nlohmann::json::array(), nlohmann::json::array({nlohmann::json::array()}),
+								   nlohmann::json::array({nlohmann::json::array({-1, -1})}),
+								   nlohmann::json::array({nlohmann::json::array({-2})}),
+								   nlohmann::json::array({nlohmann::json::array({70000})})})
+		{
+			auto document = original;
+			for (auto &material : document["materials"])
+				if (material["key"] == "loam")
+					material["overlay"]["cycles"] = cycles;
+			CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+		}
+		auto document = original;
+		for (auto &material : document["materials"])
+			if (material["key"] == "loam")
+				material["overlay"]["density_q8"] = 0;
+		CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+	}
+
 	TEST_CASE("connected canopy ground leaves contact shadows to the foliage [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
