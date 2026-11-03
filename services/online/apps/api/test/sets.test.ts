@@ -109,6 +109,35 @@ async function checked(d: SetDraft) {
   await db.transaction().execute((trx) => applySetJobResult(trx, jobId));
   return stored;
 }
+it('stores drafts from older clients with current built-in terrain names', async () => {
+  const p = pack();
+  p.terrains = [{ ...p.terrains[0], base: 'marsh', appearance: 'flower_meadow' }];
+  const created = await call('POST', '/api/v1/set-drafts', owner, p);
+  expect(created.status).toBe(201);
+  const d = (await created.json()) as SetDraft;
+  expect(d.package.terrains[0]).toMatchObject({ base: 'mudflat', appearance: 'heath' });
+  p.terrains = [{ ...p.terrains[0], base: 'dirt_track', appearance: 'gravel' }];
+  const saved = await call('PUT', '/api/v1/set-drafts/' + d.id, owner, {
+    revision: d.revision,
+    package: p,
+  });
+  expect(saved.status).toBe(200);
+  expect(((await saved.json()) as SetDraft).package.terrains[0]).toMatchObject({
+    base: 'brick_path',
+    appearance: 'shale',
+  });
+  // Rows written before the rename are not rewritten on read, so stored hashes stay valid.
+  const legacy = { ...p.terrains[0], base: 'marsh', appearance: 'marsh' };
+  await harness.database.db
+    .updateTable('set_drafts')
+    .set({ document: JSON.stringify({ ...p, terrains: [legacy] }) })
+    .where('id', '=', d.id)
+    .execute();
+  const stored = (await (
+    await call('GET', '/api/v1/set-drafts/' + d.id, owner)
+  ).json()) as SetDraft;
+  expect(stored.package.terrains[0]).toMatchObject({ base: 'marsh', appearance: 'marsh' });
+});
 it('protects drafts, rejects stale saves, and requires current validation to publish', async () => {
   expect((await call('POST', '/api/v1/set-drafts', guest, pack())).status).toBe(403);
   const d = await createSaved();

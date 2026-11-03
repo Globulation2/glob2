@@ -164,7 +164,9 @@ it('remixes only accessible releases and preserves source credits and stable ret
   pack.terrains.push({
     key: namespace(pack) + 'marsh',
     name: 'Marsh',
+    // Released before the built-in rename; the stored release keeps its exact bytes.
     base: 'marsh',
+    appearance: 'dirt_track',
     properties: {},
   });
   const hash = await new AgentBlobs(harness.blobs, harness.database.db).write(
@@ -217,6 +219,7 @@ it('remixes only accessible releases and preserves source credits and stable ret
   expect(draft.package.credits).toContainEqual(pack.credits[0]);
   expect(draft.package.setId).not.toBe(pack.setId);
   expect(draft.package.terrains[0]?.['key']).toBe(namespace(draft.package) + 'marsh');
+  expect(draft.package.terrains[0]).toMatchObject({ base: 'mudflat', appearance: 'brick_path' });
   expect(
     (
       await call('POST', '/api/v1/terrain-studio/threads', other, {

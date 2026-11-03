@@ -37,7 +37,7 @@ const plan: TerrainPlan = {
       operation: 'upsert',
       key: 'marsh',
       name: 'Marsh',
-      preset: 'marsh',
+      preset: 'mudflat',
       propertiesJson: '{}',
       yieldsJson: '{}',
       presentationJson: '{}',

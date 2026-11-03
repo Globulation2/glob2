@@ -14,6 +14,7 @@ import {
   RESOURCE_PRESETS,
   namespace,
   newPackage,
+  normalizeSetPackage,
   sheetFromFile,
   sheetUrl,
 } from './model.ts';
@@ -275,7 +276,8 @@ export function SetEditor({
     void request<SetDraft>('GET', '/api/v1/set-drafts/' + id, { signal: abort.signal }).then(
       (d) => {
         setDraft(d);
-        setPack(d.package);
+        // Older drafts may use retired built-in terrain names; show and save the current ones.
+        setPack(normalizeSetPackage(d.package));
         setTagsText(d.package.tags.join(', '));
       },
       (e) => {
@@ -459,7 +461,7 @@ export function SetEditor({
                 void action(async () => {
                   const current = await request<SetDraft>('GET', '/api/v1/set-drafts/' + draft.id);
                   setDraft(current);
-                  setPack(current.package);
+                  setPack(normalizeSetPackage(current.package));
                   setJsonEdits({});
                   setDirty(false);
                   onSaved?.();
