@@ -1,0 +1,202 @@
+{
+  "revision": "9c895136e580751f664fe61e7d3878d14e10e2db",
+  "base": "d185775fbf90e9adbe884c289531aa34098964e5",
+  "scope": "Fill24newtelemetrykeysin9previouslycompletecatalogs(216values),restoreninecompletemarkers. No Englishsubstitutesorchecker/testchanges. OwnerthreadtranslationdoesnotassumemainUIthread. Other35nonEnglishcatalogsremainpendingasbefore.",
+  "languages": [
+    "nb",
+    "ms",
+    "fil",
+    "bg",
+    "bn",
+    "mr",
+    "ta",
+    "te",
+    "th"
+  ],
+  "validation": {
+    "strict": "0 structural errors; all9catalogshave0untranslated",
+    "translation_tests": 10,
+    "font_coverage": "AllcatalogcharacterssupportedbyactualpinnedSDL3_ttf/fontstack"
+  },
+  "browser": "All21originalcasespasswithoutskips:12Marathi/3Bulgarian/6Thai,threebrowserengines,bothruntimevariants. Catalog-onlyqualificationwithhistoricalengine;originalassertions/deadlinesretained. Unchangedpicker/StringTablesourcesandWasmhashesrecorded;notacurrentengineorallnewpanelparagraphvisualclaim.",
+  "introduced_regression": "1374leftnewtextblankandcorrectlymarkedincomplete,causingcomplete-languagepickerlabels/nativeselectors tochange. Thisfillsnewtextandrestoresintendedcompletechoices;doesnotrelaxassertions.",
+  "browser_results": {
+    "id": "",
+    "name": "",
+    "tests": "21",
+    "failures": "0",
+    "skipped": "0",
+    "errors": "0",
+    "time": "846.777967"
+  },
+  "browser_cases": 21,
+  "runtime_provenance": {
+    "compiled_revision": "1d09ddbff80f3cf916f1163a99a9899149ab31c4",
+    "catalog_source": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/telemetry-translations",
+    "private_runtime": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/telemetry-translations-validation/runtime",
+    "changed_packages": [
+      "assets/core.95436c720624f10a.data",
+      "assets/translations-1.84c269c45af6b420.data",
+      "assets/translations-2.d4d0b363a5a9d995.data",
+      "assets/translations-3.4fd3a7fefff23936.data"
+    ],
+    "wasm": [
+      {
+        "file": "index.wasm",
+        "sha256": "e4ae8faed2666f1c57be7c84db428adf46e6f9bd2ceb6933db91e725ea170939"
+      },
+      {
+        "file": "threaded/index.wasm",
+        "sha256": "3e775ab7aeca455efe48056f0da2e85db1550c3e3175d2de877d84d6f51bfec9"
+      }
+    ],
+    "scope": "Catalog-only fixture qualification with unchanged historical engine. Real files repacked using production core stubs/hash/offset schema; no fake controls or assertions. Does not establish current engine build or performance-panel execution. All original language-picker tests and deadlines stay intact.",
+    "catalog_revision": "9c895136e580751f664fe61e7d3878d14e10e2db",
+    "catalog_hashes": {
+      "texts.ta.txt": "6405f46228c03105d7b1a6e1d29e3c31969faaa3a9184d8d726b387554011efa",
+      "texts.eo.txt": "07b05192b8f4d3db9b313ba48931fa74356b5a76eed6f22c4c0e0f737347c575",
+      "texts.hu.txt": "7f6d5a3aecfccdb0558291aad0afda75fa9fc4631d235425c3e9f8482a7cd33a",
+      "texts.list.txt": "fa45502182e943b2fc229677a277700b3761a7fab48dbd2489fe2421449839e2",
+      "texts.ja.txt": "60bc57d3cba0e8c37eb25049908f7e7dbdc70c978aa70ab83ac3eac63c6dc97b",
+      "texts.ur.txt": "1100e5d8bc9611973c7e62e9150688b230c9cee91125b68bd4f657ef8fdbfbd0",
+      "texts.ms.txt": "356fe14533d0b2fadb253c4e2ff6c078d2507badb11eb4f75351c44abd8a9674",
+      "texts.sw.txt": "e893f89fd73ea4f5555ec9a7ce25cb3f3dd8f7fc01b1e9a484334b506645327c",
+      "texts.th.txt": "a61a84fcfe4dc5a4058860e90d113a6bf810053cd8fc3eca2ba23346ea359fda",
+      "texts.gr.txt": "4033f124fd05581dcc61e8cf011aa3cbfcc80d907359d268b3863c6f07aa48b3",
+      "texts.ar.txt": "faee6928c4b2d5ff87f5214f1d5a3bdba3a09177295b5b0ba40bbb4bbc7fd64b",
+      "texts.nb.txt": "1ddff141c44a78e476a2829fbf8755d178de534864c083f981dfebf670125d04",
+      "texts.vi.txt": "405ab1cf7b30bca157b963cb6c7eaf2382184b80dd48be03829525eaf4c0aa75",
+      "texts.sr.txt": "45d71bfd2a088995f1fc145ad8377464119baaf929c65f70f4ec4d806a760414",
+      "texts.fa.txt": "e104040c9ee92175e62af3a92283550faaa95aad057bdf65fbbcc6d066abda4f",
+      "texts.ro.txt": "e411634a2bbc03145aeaae5c711aa840f372fe9065b41f08e9f8e6684fa19237",
+      "texts.ca.txt": "b38291a401197ca1c83daccd9588de3eddfb34ab94fec356e2b42f307b4d3226",
+      "texts.sk.txt": "f2d200b58cf7f48cffd76e4965e49f11640d054be1ddde227248e8c45e1ea25e",
+      "texts.it.txt": "a64cc5d3b921fb58f235f70fd7e07af697d741aa04746f1518c40807ca010b57",
+      "texts.pl.txt": "d9222e942959f6282f42eb106414505acd28712488bb276dcc54797f33b1bf84",
+      "texts.nl.txt": "321ad6254667ea33712da9d61bc308f730a4a9ad706c27c7f7d21e93e6eed317",
+      "texts.uk.txt": "eea57a1e0feacf7f344cc1285ffe73cece653508cd3e9d50f1d823d71677e2dc",
+      "texts.zh-cn.txt": "8d6983a4cc2afd479ec81b828abcf5fe28d6fa2b1585b51dfd4f5f31363327b2",
+      "texts.keys.txt": "12c06dd3ea5b3df6356fbf75d184e79631d38da653383486b3bd6a4f8a97bf3a",
+      "texts.fr.txt": "718784c484ac86fa91072bd56f64fc46294f3340a0d8fd1c78611c2232ac4aac",
+      "texts.zh-tw.txt": "63c40f6f12098deb9a8227a1395348ba6e8866aa224b6621272ac89ce060f8da",
+      "texts.incomplete.txt": "b4bfae33acf41f51ae8e4b8b8a880abb2e1facbbc1df36516682bbaaf3fda27f",
+      "texts.mr.txt": "a2fb792edc2b73cd83a06bab80a23c3ac2c60fc87af2d696f5a414caba31f825",
+      "texts.pending.txt": "0a59c44e06c73bd1f57fe1f93536749652f9f7ed326994159a3ae8e14e88e3db",
+      "texts.bn.txt": "c6eb26b495032469a8044bd611bef222c372a8568c2ccd6c4ffb51cf6f42eb47",
+      "texts.cz.txt": "f41019e42460df1f244e42a4cbddf8a0235edb23434aa75b4a62664160f328d9",
+      "texts.es.txt": "a4f0e19e07677f3b86b5939a1c8d27aa0c4db8100a20659734de7ccaf1d8f763",
+      "texts.fi.txt": "239a2dd118c2a3e456ca2f60269a54dca1f1c544912c5e73ca655585aa9c7bad",
+      "texts.id.txt": "3eac1df6437df4af265c3b958eb9b941769b4dfde0d30437e5c95caed608a81b",
+      "texts.eu.txt": "318116be81ef33200e6d5790094f064f88dca3dcd1c3f28d5791a488689c37de",
+      "texts.dk.txt": "2433271ec25b363f721e84bb7f0ce27ae7352eeb4074f70b12071065fd32a062",
+      "texts.bg.txt": "5692c044ba0a18fdfe43552412227151bedf0e4f7d8504e57d91f5ca4edcb021",
+      "texts.te.txt": "9c2657e6f2670ef58d870ef456a34d32edf7abb8600f121adbc1d65481ab0450",
+      "texts.br.txt": "c689b4da7281c8055fdb98b0189c56f441b8b2859564a3ecbbb1f441a70bbc80",
+      "texts.ru.txt": "1ae84c311fcfd525b66168146efa6bb8d1cd460d32a7293d20fbafadef6764f2",
+      "texts.en.txt": "2a51f9f8aab7db2edb1d7886be59b636bf544ad55c216dd0879697d1f9bd8385",
+      "texts.fil.txt": "45dbe1e104ca4217e0d1eea24d0243c35ebce7d3b1161e5a83124ce0b6c816ae",
+      "texts.ko.txt": "5b17560078b23e8eb94458d17dcb6922fe594101f37552d503b961c2cc4e7091",
+      "texts.hi.txt": "4e920cb6fe08c96fb5e2f525563595b7544a015444210a9c00d121c3710fc323",
+      "texts.si.txt": "0bb27d91b46513e7309ed14cb5408ed4020a97e057279bf8b5b38daaf0fcc3ba",
+      "texts.pt.txt": "407f2cd6cd44d9748edde6578c4ac09fdd8d91923194426ed9d39f48597b9864",
+      "texts.tr.txt": "cd27a97d3f36a1ffbc00fb4f379b90721abcad9bc2f6fcadd451a28601e3749c",
+      "texts.sv.txt": "25e69eb246b5edb5282c42cbabf566a968588804b811070ae6c6a982fa7c403f",
+      "texts.de.txt": "b1018931cf8bdecb88c94bac3eddd3122fb9d4fcd1d2dd131cdac07b7ab3dfaf"
+    },
+    "unchanged_picker_sources": [
+      "src/ui/settings/SettingsScreenGeneral.cpp",
+      "libgag/src/StringTable.cpp"
+    ]
+  },
+  "scope_audit": {
+    "revision": "9c895136e580751f664fe61e7d3878d14e10e2db",
+    "base": "d185775fbf90e9adbe884c289531aa34098964e5",
+    "catalogs": [
+      {
+        "code": "nb",
+        "changed_keys": 24,
+        "other_values_identical": 3430,
+        "untranslated": 0,
+        "complete_flag": true
+      },
+      {
+        "code": "ms",
+        "changed_keys": 24,
+        "other_values_identical": 3430,
+        "untranslated": 0,
+        "complete_flag": true
+      },
+      {
+        "code": "fil",
+        "changed_keys": 24,
+        "other_values_identical": 3430,
+        "untranslated": 0,
+        "complete_flag": true
+      },
+      {
+        "code": "bg",
+        "changed_keys": 24,
+        "other_values_identical": 3430,
+        "untranslated": 0,
+        "complete_flag": true
+      },
+      {
+        "code": "bn",
+        "changed_keys": 24,
+        "other_values_identical": 3430,
+        "untranslated": 0,
+        "complete_flag": true
+      },
+      {
+        "code": "mr",
+        "changed_keys": 24,
+        "other_values_identical": 3430,
+        "untranslated": 0,
+        "complete_flag": true
+      },
+      {
+        "code": "ta",
+        "changed_keys": 24,
+        "other_values_identical": 3430,
+        "untranslated": 0,
+        "complete_flag": true
+      },
+      {
+        "code": "te",
+        "changed_keys": 24,
+        "other_values_identical": 3430,
+        "untranslated": 0,
+        "complete_flag": true
+      },
+      {
+        "code": "th",
+        "changed_keys": 24,
+        "other_values_identical": 3430,
+        "untranslated": 0,
+        "complete_flag": true
+      }
+    ],
+    "tests_modified": false,
+    "native_code_modified": false
+  },
+  "archives": [
+    {
+      "name": "final-chromium.tar.gz",
+      "files": 54,
+      "bytes": 26775679,
+      "sha256": "6f09afec3ab56a427b3ebedbd7159e02c9fd865a4ed8e0132c30755e532062c4"
+    },
+    {
+      "name": "final-firefox.tar.gz",
+      "files": 54,
+      "bytes": 32257285,
+      "sha256": "159ed8f79172a6aa845c671edab4aba7494090b06bbb5c27c02fbf81d9c32278"
+    },
+    {
+      "name": "final-webkit.tar.gz",
+      "files": 54,
+      "bytes": 29472291,
+      "sha256": "4d3dbd8dfca548968dec885a32d9a2c9ccf722339b6dd6485952749148e56b10"
+    }
+  ]
+}
