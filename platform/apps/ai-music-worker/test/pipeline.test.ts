@@ -217,25 +217,29 @@ it('stops after three failed renders and refunds the reservation', async () => {
   expect((await studio.request(id))?.status).toBe('failed');
   expect(await studio.credits.balance(account)).toEqual({ balance: 4, reserved: 0, available: 4 });
 });
-it.each(['all', 'transition'])('refuses a passing headline with missing mandatory checks (%s)', async (missing) => {
-  const { id } = await fixture();
-  let calls = 0;
-  const bad = candidate(true);
-  bad.report.checks = missing === 'all' ? [] : bad.report.checks.filter((check) => check.name !== missing);
-  await worker(
-    {
-      text: async () => ({
-        text: JSON.stringify(
-          calls++ === 0 ? { action: 'write', value: '# source' } : { action: 'render' },
-        ),
-        usage: {},
-      }),
-    },
-    { run: async () => bad },
-  ).tick();
-  expect((await studio.request(id))?.status).toBe('failed');
-  expect((await studio.request(id))?.release_id).toBeNull();
-});
+it.each(['all', 'transition'])(
+  'refuses a passing headline with missing mandatory checks (%s)',
+  async (missing) => {
+    const { id } = await fixture();
+    let calls = 0;
+    const bad = candidate(true);
+    bad.report.checks =
+      missing === 'all' ? [] : bad.report.checks.filter((check) => check.name !== missing);
+    await worker(
+      {
+        text: async () => ({
+          text: JSON.stringify(
+            calls++ === 0 ? { action: 'write', value: '# source' } : { action: 'render' },
+          ),
+          usage: {},
+        }),
+      },
+      { run: async () => bad },
+    ).tick();
+    expect((await studio.request(id))?.status).toBe('failed');
+    expect((await studio.request(id))?.release_id).toBeNull();
+  },
+);
 it('never dispatches an uncertain provider request twice', async () => {
   const { account, id } = await fixture();
   let calls = 0;
