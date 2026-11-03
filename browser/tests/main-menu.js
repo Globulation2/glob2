@@ -13,11 +13,12 @@ const settled = page => page.evaluate(() => new Promise(resolve => requestAnimat
 // configured viewport. Input must follow the live CSS viewport.
 const viewport = page => page.evaluate(() => ({width: innerWidth, height: innerHeight}));
 async function current(page, bounds) {
-  // Layout follows the renderer's logical/backing surface, which can differ
-  // from CSS dimensions while fullscreen replaces a presentation canvas.
+  // Layout follows the live backing surface, which can differ from CSS in
+  // fullscreen. The render-context diagnostic retains its creation size;
+  // after a resize it cannot establish whether control bounds are current.
   const {width, height} = await page.evaluate(() => {
-    const state = glob2Diagnostics.snapshot();
-    return {width: state.width, height: state.height};
+    const canvas = document.getElementById('canvas');
+    return {width: canvas.width, height: canvas.height};
   });
   return Math.abs(width / bounds.surface.w - height / bounds.surface.h) < 0.02;
 }
