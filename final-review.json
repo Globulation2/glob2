@@ -1,0 +1,53 @@
+{
+  "revision": "d482c558f965d8b500c8bb824130673ba58421d3",
+  "base": "a69886a8f9c7495e5c70449d01bdb18ce8174de9",
+  "representatives": {
+    "id": "",
+    "name": "",
+    "tests": "24",
+    "failures": "0",
+    "skipped": "3",
+    "errors": "0",
+    "time": "1168.349585"
+  },
+  "required_webgl_mode": {
+    "id": "",
+    "name": "",
+    "tests": "3",
+    "failures": "0",
+    "skipped": "0",
+    "errors": "0",
+    "time": "56.510579"
+  },
+  "unique_representative_cases_passed": 24,
+  "original_renderer_case_passed": 1,
+  "node_cases_passed": 191,
+  "rgba_byte_identical_comparisons": 24,
+  "playwright_inventory": 747,
+  "build_contracts": {
+    "unique_passed": 732,
+    "omitted": 1,
+    "omission": "NSIScompilernotavailablelocally"
+  },
+  "limits": "Alloriginalscreenshots/thresholds/counts/inputs/wholecasedeadlinesretained. ThreeinitialconditionalskipsrerununchangedinrequiredWebGLmodeandallpassed. InitialWebGLlauncherfailedbeforetestsduetoduplicatePlaywrightinstances;correctrunnerusedandloadererrorretainedseparately. No fullmatrix/speed/reliability claim.",
+  "archives": [
+    {
+      "name": "ui-evidence-chromium.tar.gz",
+      "bytes": 16931240,
+      "sha256": "61ae84179eb1b24a14c063ea015439e036dabfb2af4afd9ddb289e225ef80074",
+      "files": 44
+    },
+    {
+      "name": "ui-evidence-firefox.tar.gz",
+      "bytes": 20575650,
+      "sha256": "99d23cbd8d59cbe39780a9b4d07b9ae0e6d087c9f7ceef5023e64268a46365ad",
+      "files": 44
+    },
+    {
+      "name": "ui-evidence-webkit.tar.gz",
+      "bytes": 18615678,
+      "sha256": "27bf52fcad27463efff7145ee2e0291468117eefe5fc590b5ff36902fe806303",
+      "files": 44
+    }
+  ]
+}
