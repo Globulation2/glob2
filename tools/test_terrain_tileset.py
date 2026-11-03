@@ -5,7 +5,8 @@ from pathlib import Path
 import tempfile
 import unittest
 from terrain_tileset import (ROOT, BINDINGS, LEGACY_BINDINGS, validate, compile_tileset, pixel_fingerprint,
-                             seamless_sources, data_path, required_bindings, material_provenance)
+                             seamless_sources, data_path, required_bindings, material_provenance,
+                             border_profile, border_table)
 from PIL import Image
 
 
@@ -33,6 +34,53 @@ class TerrainTileset(unittest.TestCase):
         self.document["version"] = 2
         with self.assertRaises(ValueError):
             validate(self.document)
+
+    def test_border_classes_choose_contacts_without_pair_overrides(self):
+        self.assertEqual(self.document["version"], 4)
+        self.assertNotIn("pair_treatments", self.document)
+        expected = {
+            ("water", "deep_water"): "still", ("water", "grass"): "shore", ("water", "sand"): "beach",
+            ("lava", "boulders"): "molten", ("lava", "water"): "molten", ("road", "boulders"): "paved",
+            ("road", "lava"): "paved", ("boardwalk", "water"): "crisp", ("hedge", "void_hole"): "canopy",
+            ("dirt", "grass"): "soil", ("boulders", "mud"): "rock", ("ice", "water"): "frozen",
+        }
+        for (a, b), profile in expected.items():
+            with self.subTest(pair=(a, b)):
+                self.assertEqual(border_profile(self.document, a, b), profile)
+                self.assertEqual(border_profile(self.document, b, a), profile)
+        table = border_table(self.document)
+        self.assertEqual(len(table), 33 * 32 // 2)
+        # An explicit pair treatment remains an escape hatch.
+        self.document["pair_treatments"] = [{"a": "water", "b": "grass", "profile": "beach"}]
+        self.assertEqual(border_profile(self.document, "grass", "water"), "beach")
+
+    def test_border_class_schema_is_version_gated(self):
+        mutations = [
+            lambda d: d.update(version=3),
+            lambda d: d.pop("border_classes"),
+            lambda d: d.update(border_classes=[]),
+            lambda d: d["border_classes"].append({"key": "cover"}),
+            lambda d: d["border_classes"][0].update(shoreline=1),
+            lambda d: d["border_classes"][0].update(unknown=True),
+            lambda d: d["bundle_profiles"]["soft"].update({"class": "absent"}),
+            lambda d: d["bundle_profiles"]["soft"].update(profile="soft"),
+            lambda d: d["materials"][0].update({"class": "absent"}),
+            lambda d: d["materials"][0].pop("class"),
+            lambda d: d["profiles"][0].update(coast="absent"),
+            lambda d: d["profiles"][0].update(coast=d["profiles"][0]["key"]),
+            lambda d: d["profiles"][0].update(precedence=256),
+            lambda d: d["profiles"][0].update(wiggle_q8=64),
+            lambda d: next(p for p in d["profiles"] if p.get("shape") == "smooth").update(wiggle_period=48),
+            lambda d: next(p for p in d["profiles"] if p.get("shape") == "smooth").update(wiggle_q8=2049),
+            lambda d: next(p for p in d["profiles"] if p.get("shape") == "smooth").update(squareness_q8=257),
+            lambda d: d["profiles"][0].update(squareness_q8=64),
+        ]
+        for mutate in mutations:
+            with self.subTest(mutate=mutate):
+                d = copy.deepcopy(self.document)
+                mutate(d)
+                with self.assertRaises(ValueError):
+                    validate(d)
 
     def test_registered_materials_and_scalability(self):
         expected = catalog_frame_count(self.document)
@@ -227,13 +275,18 @@ class TerrainTileset(unittest.TestCase):
     def test_version_one_catalog_remains_supported(self):
         self.document["version"] = 1
         self.document.pop("boundary_warp_q8")
+        self.document.pop("border_classes")
+        self.document.pop("bundle_profiles", None)
         for profile in self.document["profiles"]:
-            for field in ("feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape"):
+            for field in ("feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape",
+                          "precedence", "coast", "wiggle_q8", "wiggle_period", "squareness_q8"):
                 profile.pop(field, None)
+            profile.setdefault("roughness_q8", 0)
             profile["contours_q12"] = [[0, 128, -128, 64, 0]] * 4
         for material in self.document["materials"]:
             material.pop("seam", None)
             material.pop("surf", None)
+            material.pop("class", None)
         self.assertEqual(len(validate(self.document)), catalog_frame_count(self.document))
         self.document["profiles"][0]["contours_q12"][0][1] = 257
         with self.assertRaises(ValueError):

@@ -2328,6 +2328,18 @@ Szerokość bramy
 Delta roztokowa
 [Braid count]
 Liczba ramion
+[Flood]
+Wylew
+[Distributaries]
+Odnogi rzeki
+[River crossings]
+Przeprawy przez rzekę
+[Dunes]
+Wydmy
+[Dry]
+Sucho
+[Wet]
+Mokro
 [Rejoining frequency]
 Częstotliwość połączeń
 [Crossing spacing]

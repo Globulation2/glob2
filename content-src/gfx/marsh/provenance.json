@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "59ec96672751a6567c5dcd1397deec4b149d77e03cde8e0ed0f20dfd981289bb",
+    "tools/artwork/terrain_synth.py": "d8d69a34239aff15dd5fc31a45c29d26cf3714bf0bb98b39440516e5d2f984fe",
     "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1"
   },
   "material": "marsh",
@@ -12,7 +12,8 @@
     "name": "marsh",
     "group": "rough",
     "label": "Marsh",
-    "profile": "soft",
+    "profile": "soil",
+    "border_class": "solid",
     "seam": {
       "height": 1
     },

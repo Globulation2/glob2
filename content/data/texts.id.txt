@@ -2328,6 +2328,18 @@ Lebar gerbang
 Delta berjalin
 [Braid count]
 Jumlah cabang
+[Flood]
+Banjir
+[Distributaries]
+Cabang sungai
+[River crossings]
+Penyeberangan sungai
+[Dunes]
+Bukit pasir
+[Dry]
+Kering
+[Wet]
+Basah
 [Rejoining frequency]
 Frekuensi pertemuan
 [Crossing spacing]

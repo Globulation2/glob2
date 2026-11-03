@@ -2306,6 +2306,18 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 பின்னல் கழிமுகம்
 [Braid count]
 பின்னல் எண்ணிக்கை
+[Flood]
+வெள்ளம்
+[Distributaries]
+கிளை ஆறுகள்
+[River crossings]
+ஆற்றுக் கடவுகள்
+[Dunes]
+மணல் குன்றுகள்
+[Dry]
+வறண்ட
+[Wet]
+ஈரமான
 [Rejoining frequency]
 மீண்டும் இணையும் அடிக்கடித்தன்மை
 [Crossing spacing]

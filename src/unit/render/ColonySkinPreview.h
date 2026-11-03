@@ -29,10 +29,11 @@ public:
     std::optional<std::uint32_t> buildingColor(int team) const;
     // A non-zero glowAlpha brightens a skinned mesh in glowRgb (0xRRGGBB);
     // pre-rendered skin sprites draw without it.
-    bool draw(GAGCore::GraphicContext &gfx, int type, int team, int action,
-              int direction, int delta, float x, float y, GAGCore::SkinShadow shadow = {},
-              std::uint8_t alpha = 255, std::uint32_t glowRgb = 0, std::uint8_t glowAlpha = 0);
-    bool drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
+	bool draw(GAGCore::GraphicContext &gfx, int type, int team, int action, int direction,
+			  int delta, float x, float y, GAGCore::SkinShadow shadow = {},
+			  std::uint8_t alpha = 255, int pronePhase = -1,
+			  std::uint32_t glowRgb = 0, std::uint8_t glowAlpha = 0);
+	bool drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
                    float width, float height, std::uint8_t alpha = 255,
                    std::uint32_t glowRgb = 0, std::uint8_t glowAlpha = 0);
 private:
@@ -63,6 +64,7 @@ private:
     std::array<GAGCore::SkinMesh, Online::SWARM_MESHES.size()> swarms;
     bool visible = true;
     bool ready = false;
-    std::array<GAGCore::SkinMesh, 7> clips;
+	std::array<GAGCore::SkinMesh, 2> proneHarvest;
+	std::array<GAGCore::SkinMesh, 7> clips;
     std::array<GAGCore::SkinMesh, 7> turns;
 };

@@ -2306,6 +2306,18 @@ HP ≤25/50/75%
 Плетена делта
 [Braid count]
 Брой речни ръкави
+[Flood]
+Наводнение
+[Distributaries]
+Ръкави
+[River crossings]
+Речни преходи
+[Dunes]
+Дюни
+[Dry]
+Сухо
+[Wet]
+Влажно
 [Rejoining frequency]
 Честота на повторно присъединяване
 [Crossing spacing]

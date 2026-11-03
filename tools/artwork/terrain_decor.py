@@ -1238,15 +1238,8 @@ def write_catalog(root):
 
     path = root / "content/data/terrain/tileset.json"
     document = json.loads(path.read_text())
-    # The canopy owns foliage irregularity and depth. A quiet underlay must
-    # not expose the old brush profile's spines below the raised surface.
-    canopy_profile = {"key": "canopy", "shape": "patch", "roughness_q8": 0,
-                      "amplitude_q8": 0, "feather_q8": 128, "speckle_q8": 0,
-                      "bridge_q8": 512, "contours_q12": [[0] * 9 for _ in range(32)]}
-    document["profiles"] = [p for p in document["profiles"] if p["key"] != "canopy"] + [canopy_profile]
-    for pair in document["pair_treatments"]:
-        if pair["a"] in CONNECTED or pair["b"] in CONNECTED:
-            pair["profile"] = "canopy"
+    # Connected foliage keeps the quiet "canopy" edge of the "cover" border
+    # class (authored by terrain_synth.py), so no ground contour shows below it.
     for material in document["materials"]:
         if material["key"] in SPECS:
             first = first_frame(material["key"])
@@ -1262,7 +1255,6 @@ def write_catalog(root):
                                                                  start + CONNECTED_FRAMES))
             material["decor"].pop("connected_grid", None)
             material["decor"]["connected_corners"] = True
-            material["profile"] = "canopy"
     path.write_text(dump_catalog(document))
 
 

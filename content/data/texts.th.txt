@@ -2306,6 +2306,18 @@ HP ≤25/50/75%
 ปากแม่น้ำ​แตกแขนง
 [Braid count]
 จำนวน​สาย​แม่น้ำ
+[Flood]
+น้ำ​หลาก
+[Distributaries]
+แม่น้ำ​สาขา​แยก
+[River crossings]
+จุด​ข้าม​แม่น้ำ
+[Dunes]
+เนิน​ทราย
+[Dry]
+แห้ง
+[Wet]
+ชุ่ม​น้ำ
 [Rejoining frequency]
 ความถี่​การ​บรรจบ
 [Crossing spacing]

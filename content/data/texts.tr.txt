@@ -2328,6 +2328,18 @@ Kapı genişliği
 Örgülü delta
 [Braid count]
 Kol sayısı
+[Flood]
+Taşkın
+[Distributaries]
+Nehir kolları
+[River crossings]
+Nehir geçitleri
+[Dunes]
+Kumullar
+[Dry]
+Kuru
+[Wet]
+Islak
 [Rejoining frequency]
 Birleşme sıklığı
 [Crossing spacing]

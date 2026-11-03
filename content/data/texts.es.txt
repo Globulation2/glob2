@@ -2328,6 +2328,18 @@ Anchura de la puerta
 Delta trenzado
 [Braid count]
 Número de brazos
+[Flood]
+Inundación
+[Distributaries]
+Brazos del río
+[River crossings]
+Cruces del río
+[Dunes]
+Dunas
+[Dry]
+Seco
+[Wet]
+Húmedo
 [Rejoining frequency]
 Frecuencia de confluencias
 [Crossing spacing]
