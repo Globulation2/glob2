@@ -12,8 +12,8 @@ between the patch endpoints removed so shared edges keep their zero endpoints.
 The fractured and cobblestone profiles use seeded random walks: angular jumps
 for ice, broad plateaus for cobblestone chips. The catalogue profiles added for
 the new terrain groups are also seeded random walks: `rock` (angular, strong
-speckle) for boulders, ridges, scree, gravel and chasms; `soft` (gentle, wide
-bridges) for mud, marsh, loam, moss, snow, clay, dirt and deep water; `crisp`
+speckle) for boulders, ridges, scree, shale and chasms; `soft` (gentle, wide
+bridges) for mud, mudflat, loam, moss, snow, clay, dirt and deep water; `crisp`
 (short, no speckle) for holes and boardwalks; `brush` (leafy) for hedges,
 thickets and meadows. For shipped profiles only the `contours_q12` arrays are
 replaced; roughness, amplitude, feather, speckle and bridge stay as authored.

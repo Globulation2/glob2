@@ -63,6 +63,8 @@ PAD = (S - CELL) // 2
 FULL, EDGE = 8, 4    # frames per size class: full 0..7, edge 8..11
 FRAMES = FULL + EDGE
 PREFIX = "content/data/gfx/terrain-decor"
+# tileset.json names the sprite by its runtime path, under the data search root.
+SPRITE = "data/gfx/terrain-decor"
 HD_PREFIX = "content/data/highres/v1/terrain-decor"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain decor v1"
@@ -1251,7 +1253,7 @@ def write_catalog(root):
         if material["key"] in SPECS:
             first = first_frame(material["key"])
             material["decor"] = {
-                "sprite": PREFIX,
+                "sprite": SPRITE,
                 "full": list(range(first, first + FULL)),
                 "edge": list(range(first + FULL, first + FRAMES)),
             }

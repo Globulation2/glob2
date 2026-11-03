@@ -28,7 +28,7 @@ tiles (`variant_grid`) and box-downsampled to 32x32. Static materials use
 field use one 8x8 block, and water and deep water one 4x4 block, to keep their
 animated frame banks small. Feature
 counts and noise frequencies scale with canvas size to keep their native density.
-Heath (key flower_meadow) and marsh place whole objects in shared outer bands.
+Heath places whole objects in shared outer bands.
 The interchangeable blocks preserve shared edge geometry while varying their
 interiors. Frames are phase-major, block-major, then
 row-major cell: `cell + cells * block + (cells * blocks) * phase`, where
@@ -91,6 +91,8 @@ PILLOW_VERSION = "12.2.0"
 N = SHEET  # render size; four render pixels per native pixel
 VARIANTS = 16
 FRAME_PREFIX = "content/data/gfx/terrain-"
+# The catalog names sprites by their runtime path, under the data search root.
+SPRITE_PREFIX = "data/gfx/terrain-"
 HD_PREFIX = "content/data/highres/v1/terrain-"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain synthesis v1"
@@ -1120,13 +1122,17 @@ def cast(rgb, height, colour, reach=3, strength=0.5):
     return mix(rgb, colour, drop, strength)
 
 
-def jag(ctx, fields, amount, cells=16):
-    """Break straight cell edges into jagged ones: one shared warp for all
-    `fields` (lists), common at the block edge and varied inside."""
+def jag(ctx, fields, common, amount, cells=16):
+    """Break straight cell edges into jagged ones. `fields` (lists) take one
+    warp that is common at the block edge and varied inside; their `common`
+    references take the common warp alone, so every layout lights against
+    the same reference."""
     size = ctx.size
-    wx = layout_field(ctx, lambda rng: fbm(rng, cells, 2, size=size))
-    wy = layout_field(ctx, lambda rng: fbm(rng, cells, 2, size=size))
-    return [domain_warp(f, wx, wy, amount) for f in fields]
+    cx, cy = fbm(ctx.shared_rng, cells, 2, size=size), fbm(ctx.shared_rng, cells, 2, size=size)
+    wx = blend_fields(cx, fbm(ctx.rng, cells, 2, size=size), ctx.interior_mask)
+    wy = blend_fields(cy, fbm(ctx.rng, cells, 2, size=size), ctx.interior_mask)
+    return ([domain_warp(f, wx, wy, amount) for f in fields],
+            [domain_warp(f, cx, cy, amount) for f in common])
 
 
 def wet_pits(rgb, height, common, pit, water, sheen, depth=0.75):
@@ -1232,16 +1238,16 @@ def render_clay(ctx):
     return barren_mark(ctx, rgb, p["crack"], cells=9, fade=0.1), None
 
 
-@recipe(name="gravel", group="barren", label="Gravel", profile="rock",
+@recipe(name="shale", group="barren", label="Shale", profile="rock",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"fines": (118, 110, 98), "gap": (78, 72, 64), "crack": (64, 58, 52),
                  "chips": [(162, 156, 146), (148, 144, 138), (170, 160, 144), (138, 134, 128),
                            (156, 146, 132), (176, 170, 160)]},
         style=Style(luma=136, std=16, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4)
-def render_gravel(ctx):
+def render_shale(ctx):
     """Shale: big flat plates of grey stone, each lying at its own level so
     one overlaps the next, with jagged broken edges, under the barren cracks."""
-    p = RECIPES["gravel"].palette
+    p = RECIPES["shale"].palette
     size = ctx.size
     height, common, _, ids = plates(ctx, 3, stretch=1.7, step=0.35, rise=0.05)
     count = 3 * ctx.area_scale
@@ -1252,24 +1258,23 @@ def render_gravel(ctx):
     rgb = [[c * (0.9 + 0.2 * v) for c, v in zip(channel, layers)] for channel in rgb]
     speck = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
     rgb = [[c * (0.94 + 0.12 * v) for c, v in zip(channel, speck)] for channel in rgb]
-    *rgb, height, common = jag(ctx, [*rgb, height, common], 6, cells=12)
+    (*rgb, height), (common,) = jag(ctx, [*rgb, height], [common], 6, cells=12)
     rgb = shade(rgb, height, 0.35, reference_height=common)
     rgb = cast(rgb, height, p["gap"], reach=5, strength=0.55)
     return barren_mark(ctx, rgb, p["crack"], cells=4, strength=0.7, fade=0.15), None
 
 
-@recipe(name="flower_meadow", group="barren", label="Heath", profile="brush",
+@recipe(name="heath", group="barren", label="Heath", profile="brush",
         seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
         palette={"dark": (108, 98, 86), "mid": (126, 116, 102), "light": (138, 128, 114),
                  "crack": (74, 62, 54), "shadow": (78, 68, 60),
                  "stem": (56, 47, 42), "body": (90, 75, 65), "tip": (132, 118, 96),
                  "dead": (92, 86, 78), "deadtip": (124, 118, 106)},
-        style=Style(luma=100, std=15, grain_max=14, match=0.7), periodic=True, grid=8, blocks=4,
-        note="dry heath; the key stays flower_meadow for maps and catalogs")
-def render_flower_meadow(ctx):
+        style=Style(luma=100, std=15, grain_max=14, match=0.7), periodic=True, grid=8, blocks=4)
+def render_heath(ctx):
     """Dry heath: clumps of dormant and dead heather cushions, each built of
     lit sprig tufts, over pale, faded, cracked sandy peat."""
-    p = RECIPES["flower_meadow"].palette
+    p = RECIPES["heath"].palette
     rgb = heath_ground(ctx, p)
     mat, cover = heather_cushions(ctx, p)
     rgb = mix(rgb, p["shadow"], soft_shadow(cover), 0.5)
@@ -1378,14 +1383,14 @@ def mud_fields(rng, size):
     return height, grit, pools
 
 
-@recipe(name="marsh", group="rough", label="Mudflat", profile="soft", seam={"height": 1},
+@recipe(name="mudflat", group="rough", label="Mudflat", profile="soft", seam={"height": 1},
         palette={"dark": (128, 114, 96), "mid": (164, 148, 126), "light": (186, 172, 150),
                  "gap": (52, 44, 36), "damp": (96, 84, 70), "salt": (222, 216, 204), "glint": (200, 196, 186)},
         style=Style(luma=146, std=20, grain_max=14, match=0.9), periodic=True, grid=8, blocks=4)
-def render_marsh(ctx):
+def render_mudflat(ctx):
     """Desiccated mudflat: big curled plates split by deep dark cracks, salt
-    bloom on top and damp mud in a few sunken plates. The key stays marsh."""
-    p, size = RECIPES["marsh"].palette, ctx.size
+    bloom on top and damp mud in a few sunken plates."""
+    p, size = RECIPES["mudflat"].palette, ctx.size
     f1, f2, ids, c1, c2, cids = block_worley(ctx, 3)
     count = 3 * ctx.area_scale
     sunk = [ctx.shared_rng.random() < 0.08 for _ in range(count)]
@@ -1399,9 +1404,10 @@ def render_marsh(ctx):
 
     height = [plate(a, b, i) for a, b, i in zip(f1, f2, ids)]
     common = [plate(a, b, i) for a, b, i in zip(c1, c2, cids)]
-    sx = layout_field(ctx, lambda rng: fbm(rng, 6, 2, size=size))
-    sy = layout_field(ctx, lambda rng: fbm(rng, 6, 2, size=size))
-    height, common = domain_warp(height, sx, sy, 10), domain_warp(common, sx, sy, 10)
+    cx, cy = fbm(ctx.shared_rng, 6, 2, size=size), fbm(ctx.shared_rng, 6, 2, size=size)
+    sx = blend_fields(cx, fbm(ctx.rng, 6, 2, size=size), ctx.interior_mask)
+    sy = blend_fields(cy, fbm(ctx.rng, 6, 2, size=size), ctx.interior_mask)
+    height, common = domain_warp(height, sx, sy, 10), domain_warp(common, cx, cy, 10)
     tone = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size))
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
     rgb = apply_cell_jitter(rgb, ids, cell_jitter(ctx.shared_rng, count, 0.06))
@@ -1590,7 +1596,7 @@ def render_scree(ctx):
     grit = np.array(layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))).reshape(size, size)
     fine = np.where(which >= 0, 0.06, 0.22) * (grit - 0.5) * 2
     rgb = [[c * (1 + f) for c, f in zip(ch, as_list(fine))] for ch in rgb]
-    *rgb, h, ch = jag(ctx, [*rgb, as_list(top), as_list(ctop)], jag_amt, cells=6)
+    (*rgb, h), (ch,) = jag(ctx, [*rgb, as_list(top)], [as_list(ctop)], jag_amt, cells=6)
     h, ch = np.array(h).reshape(size, size), np.array(ch).reshape(size, size)
     rgb = shade(rgb, as_list(h), shade_k, reference_height=as_list(ch))
     occ = np.clip((wrap_blur(h, occ_r) - h) / 6.0, 0, 1)
@@ -1601,14 +1607,14 @@ def render_scree(ctx):
 
 # Paths: warm and light, faster movement.
 
-@recipe(name="dirt_track", group="paths", label="Brick path", profile="crisp",
+@recipe(name="brick_path", group="paths", label="Brick path", profile="crisp",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
         palette={"joint": (38, 28, 28)},
         style=Style(luma=112, std=20, grain_max=16), periodic=True, grid=8, blocks=4)
-def render_dirt_track(ctx):
+def render_brick_path(ctx):
     """Brick path: long clay pavers laid in an axis-aligned herringbone, so the
-    path reads the same whichever way it runs. The key stays dirt_track."""
-    p = RECIPES["dirt_track"].palette
+    path reads the same whichever way it runs."""
+    p = RECIPES["brick_path"].palette
     width, length = 4, 16
     size = ctx.size
     bricks, ids, edge, joint, along = herringbone(size, width * NATIVE_PX, length * NATIVE_PX)
@@ -1681,7 +1687,10 @@ def herringbone(size, width, length):
             ox, oy = (i * width + j * length) % size, (i * width - j * length) % size
             origins.setdefault((ox, oy), None)
     bricks = []
+    # Shift by half a brick width so joints never run along a cell edge.
+    shift = width // 2
     for ox, oy in sorted(origins):
+        ox, oy = (ox + shift) % size, (oy + shift) % size
         bricks.append((ox, oy, length, width, 0))
         bricks.append((ox, (oy + width) % size, width, length, 1))
     ids = [-1] * (size * size)
@@ -2639,7 +2648,7 @@ PAIR_TREATMENTS = (
     + [
         {"a": name, "b": ground_name, "profile": "fractured"}
         for name in ("lava", "ember_field")
-        for ground_name in GRASS_LOOKS + SAND_LOOKS + ("dirt", "gravel")
+        for ground_name in GRASS_LOOKS + SAND_LOOKS + ("dirt", "shale")
     ]
     + [
         {"a": name, "b": other, "profile": "crisp"}
@@ -2798,7 +2807,7 @@ def material_block(name, phases):
     preview, minimap, _ = preview_colors(name, phases)
     block = {
         "key": name,
-        "sprite": f"{FRAME_PREFIX}{name}",
+        "sprite": f"{SPRITE_PREFIX}{name}",
         "profile": rec.profile,
         "preview": list(preview),
         "variants": [{"frame": i, "weight": 1} for i in range(rec.cells * rec.blocks)],

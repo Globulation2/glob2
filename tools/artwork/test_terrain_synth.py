@@ -87,7 +87,7 @@ class TerrainSynth(unittest.TestCase):
 
     def test_hd_frames_match_their_classic_downsample(self):
         """HD frames are the 4x source of the classic tiles, not a separate look."""
-        _, hd = synth.synthesize_both(["gravel", "lava"], jobs=1)
+        _, hd = synth.synthesize_both(["shale", "lava"], jobs=1)
         for name, phases in hd.items():
             for phase, tiles in phases.items():
                 for tile, native in zip(tiles, self.tiles(name, phase)):
@@ -240,7 +240,7 @@ class TerrainSynth(unittest.TestCase):
         from terrain_tileset import seamless_sources
         from material_tiles import runtime_blend
 
-        for name in ("gravel", "deep_water"):
+        for name in ("shale", "deep_water"):
             document = {"materials": [{"sprite": f"content/data/gfx/terrain-{name}",
                                        "variants": [{"frame": i} for i in range(synth.VARIANTS)]}]}
             prepared = seamless_sources(document, ROOT)

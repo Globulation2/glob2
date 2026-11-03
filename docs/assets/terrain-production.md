@@ -64,7 +64,7 @@ All built-in recipes declare `periodic=True` and a `grid`; static recipes use
 `grid=8, blocks=4`, lava and ember field `grid=8`, and the waters `grid=4`:
 cell position selects the corresponding frame within one seeded layout, and
 runtime and compiled packs skip border preparation. This includes object-based
-grounds such as heath and marsh as well as the legacy bindings.
+grounds such as heath as well as the legacy bindings.
 The legacy materials retain their established palettes and material identities;
 water keeps its violet-blue palette, and ice keeps its frozen-ground profile.
 
@@ -101,16 +101,15 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 | Obstacles | tall raised decor | `terrain_decor.py` |
 
 Within the groups: dirt keeps the original speckled earth and stones under the
-shared cracks; clay is red baked clay in bold plates; shale (key `gravel`, kept
-for maps and catalogs) is big flat plates of grey stone lying over one another;
-heath (key `flower_meadow`) is clumps of dormant and dead heather cushions,
+shared cracks; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
+heath is clumps of dormant and dead heather cushions,
 each built of lit sprig tufts, over pale cracked sandy peat. Paths are all laid by the
 globs, never natural ground: road is stone setts in running-bond courses; brick
-path (key `dirt_track`) is long clay pavers in an axis-aligned herringbone that
+path is long clay pavers in an axis-aligned herringbone that
 reads the same whichever way the path runs; boardwalk is long weathered planks
 with grain, knots and nails; sandstone tiles are square flags, two by two per
 cell, ochre and grey in a checker. Mud is churned lumps and water-filled pits;
-mudflat (key `marsh`) is desiccated mud in big curled plates split by deep cracks,
+mudflat is desiccated mud in big curled plates split by deep cracks,
 with salt bloom and a few damp sunken plates; scree is big jagged slabs heaped
 over one another, each tipped to its own brightness; pumice field is dark porous
 volcanic rock riddled with vesicles, beside lava and ember field. The helpers keep the block contract: geometry comes from
@@ -213,11 +212,11 @@ flower heads, tussocks). All built-in materials instead set
 Within a block, objects can cross cell edges freely. Across interchangeable
 block boundaries, recipes preserve shared periodic object geometry and vary the
 interior. Object fields, stamps and domes wrap across the complete canvas, and
-shared scalar fields supply continuous ground, shadows and lighting. Heath and
-marsh use this approach too, rather than repeating a shared object band around
-every individual tile: heath's scrub cushions and marsh's pools and reed clumps
-are whole objects, and Voronoi-based marks (cracks, crushed stone, lumps, slabs)
-keep their boundary cells in every layout.
+shared scalar fields supply continuous ground, shadows and lighting. Heath uses
+this approach too, rather than repeating a shared object band around every
+individual tile: its heather cushions are whole cells, and Voronoi-based marks
+(cracks, shale plates, lumps, mudflat plates, scree fragments) keep their
+boundary cells in every layout.
 
 Lava and ember field are animated: one 8×8 layout with four phases, frame
 `variant + 64 * phase` (frames 0–255), catalogued with `animation_frames 4`,
@@ -294,7 +293,7 @@ HD fallback visible in measurement, so water and deep water stay on one layout.
 Give a multi-layout animated material `animation_blend_steps` (4 for an
 8-tick phase) and compare its frame time and HD fallback with the single-layout
 material in a release build before committing it. `"variant_block_group"`
-remains available for materials that share block selection. Dark water remains static. All three waters and marsh pools are opaque and use
+remains available for materials that share block selection. Dark water remains static. All three waters are opaque and use
 the ordinary material composition path.
 
 Each sixteen-phase water has 256 native and 256 HD frames, indexed as
@@ -392,11 +391,11 @@ existing artwork.
 
 | Profile | roughness / amplitude / feather / speckle / bridge (Q8) | Curves | Materials |
 | --- | --- | --- | --- |
-| `rock` | 384 / 896 / 192 / 448 / 192 | 48 × 9, angular | boulders, ridge_rock, outcrop, scree, gravel, chasm |
-| `soft` | 160 / 512 / 448 / 128 / 640 | 40 × 17, gentle | mud, marsh, loam, moss, deep_snow, deep_water, dark_water, clay, dirt |
-| `crisp` | 96 / 256 / 128 / 0 / 256 | 24 × 9 | void_hole, boardwalk |
-| `brush` | 320 / 768 / 320 / 384 / 512 | 48 × 17 | hedge, thicket, flower_meadow, spring_meadow |
-| `sand` (existing) | 256 / 1024 / 320 / 512 / 512 | 61 × 17, traced | water, sand, grass, dirt_track |
+| `rock` | 384 / 896 / 192 / 448 / 192 | 48 × 9, angular | boulders, ridge_rock, outcrop, scree, shale, pumice, chasm |
+| `soft` | 160 / 512 / 448 / 128 / 640 | 40 × 17, gentle | mud, mudflat, loam, moss, deep_snow, deep_water, dark_water, clay, dirt |
+| `crisp` | 96 / 256 / 128 / 0 / 256 | 24 × 9 | void_hole, boardwalk, brick_path, sandstone |
+| `brush` | 320 / 768 / 320 / 384 / 512 | 48 × 17 | hedge, thicket, heath, spring_meadow |
+| `sand` (existing) | 256 / 1024 / 320 / 512 / 512 | 61 × 17, traced | water, sand, grass |
 | `fractured` (existing) | 320 / 768 / 320 / 128 / 256 | 32 × 9 | lava, ember_field |
 | `frozen` | 320 / 768 / 320 / 128 / 256 | 32 × 9 | ice |
 | `cobblestone` (existing) | 256 / 640 / 224 / 320 / 384 | 24 × 9 | road |
@@ -422,21 +421,21 @@ default rule (the rougher profile wins):
 
 - `rock`: boulders, ridge_rock and outcrop against grass.
 - `brush`: hedge and thicket against grass.
-- `shore`: grass, moss, loam, spring_meadow and flower_meadow against water,
+- `shore`: grass, moss, loam, spring_meadow and heath against water,
   deep_water and dark_water.
 - `liquid`: water/deep_water, deep_water/dark_water, water/dark_water, ice/water,
-  and marsh and mud against the three waters.
-- `organic`: moss, loam, mud, marsh, dirt, clay and deep_snow against grass and
-  sand; moss/loam, moss/marsh, loam/dirt, loam/mud, mud/marsh, dirt/clay,
+  and mudflat and mud against the three waters.
+- `organic`: moss, loam, mud, mudflat, dirt, clay and deep_snow against grass and
+  sand; moss/loam, moss/mudflat, loam/dirt, loam/mud, mud/mudflat, dirt/clay,
   dirt/mud, clay/mud, deep_snow/ice, and spring_meadow against moss, loam,
-  flower_meadow and dirt, and flower_meadow/dirt.
-- `crisp`: boardwalk against grass, sand, the three waters, marsh, mud, moss,
-  dirt, loam, clay, gravel, dirt_track and road; void_hole and chasm against
+  heath and dirt, and heath/dirt.
+- `crisp`: boardwalk against grass, sand, the three waters, mudflat, mud, moss,
+  dirt, loam, clay, shale, brick_path and road; void_hole and chasm against
   every other material.
-- `cobblestone`: road against grass, sand, dirt_track, gravel, scree,
-  flower_meadow and spring_meadow.
-- `fractured`: lava and ember_field against grass, sand, dirt, gravel and scree;
-  lava against hedge and flower_meadow.
+- `cobblestone`: road against grass, sand, brick_path, shale, scree,
+  heath and spring_meadow.
+- `fractured`: lava and ember_field against grass, sand, dirt, shale and scree;
+  lava against hedge and heath.
 
 ### Seam ranks
 
@@ -450,11 +449,12 @@ default rule (the rougher profile wins):
 | 4 | ridge_rock, outcrop | 72 / 768 |
 | 4 | lava, ember_field | no cast; scorch fringe `[214,110,40]` 128/640 and `[160,80,40]` 96/512 |
 | 4 | ice (existing) | 64 / 640 with frost fringe |
-| 3 | road (existing), dirt_track, boardwalk | 48 / 512 |
+| 3 | road (existing), brick_path, boardwalk, sandstone | 48 / 512 |
 | 3 | deep_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
-| 2 | grass (existing), loam, moss, spring_meadow, flower_meadow | 56 / 512 |
-| 2 | dirt, clay, gravel | 40 / 448 |
-| 1 | sand (existing), mud, marsh, scree | no cast |
+| 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |
+| 2 | heath | 48 / 480 |
+| 2 | dirt, clay, shale | 40 / 448 |
+| 1 | sand (existing), mud, mudflat, scree, pumice | no cast |
 
 Casts stay within two to three pixels and near or under a third strength, as
 [Seams](terrain-rendering.md#seams) requires. Equal ranks cast nothing, so barren ground beside grass
