@@ -1,0 +1,16 @@
+== 1L
+endpoints variants 64 phase_ticks 8 measured_ticks 64 endpoint_hd_fraction 0.915527 fallback_ticks 17 resident_peak 128
+lookahead variants 64 phase_ticks 8 measured_ticks 64 endpoint_hd_fraction 1 fallback_ticks 0 resident_peak 256
+asset_peak_working_bytes 922406
+== 4L
+endpoints variants 256 phase_ticks 8 measured_ticks 64 endpoint_hd_fraction 0.834198 fallback_ticks 39 resident_peak 512
+lookahead variants 256 phase_ticks 8 measured_ticks 64 endpoint_hd_fraction 1 fallback_ticks 0 resident_peak 1024
+asset_peak_working_bytes 922434
+== 4L
+endpoints variants 256 phase_ticks 8 measured_ticks 64 endpoint_hd_fraction 0.840607 fallback_ticks 39 resident_peak 512
+lookahead variants 256 phase_ticks 8 measured_ticks 64 endpoint_hd_fraction 1 fallback_ticks 0 resident_peak 1024
+asset_peak_working_bytes 922410
+== 4L
+endpoints variants 256 phase_ticks 8 measured_ticks 64 endpoint_hd_fraction 0.800781 fallback_ticks 46 resident_peak 512
+lookahead variants 256 phase_ticks 8 measured_ticks 64 endpoint_hd_fraction 1 fallback_ticks 0 resident_peak 1024
+asset_peak_working_bytes 922330
