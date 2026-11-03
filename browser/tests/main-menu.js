@@ -260,10 +260,11 @@ exports.waitForMainMenu = async (page, {timeout = 60000} = {}) => {
       if (bounds && shown(bounds) && current(page, bounds)) {
         // This snapshot already supplies the visible hit area. Re-entering a
         // control/layout wait can outlive an accepted screen transition on a
-        // busy renderer. Send each choice once, then observe the destination.
+        // busy renderer. The destination is the acknowledgement; no extra
+        // canvas-stability or loop-counter wait is needed before observing it.
         sent.add(key);
-        await page.locator('#canvas').click({position: visibleCenter(page, bounds), delay: 80});
-        await consumed(page);
+        const at = visibleCenter(page, bounds);
+        await page.mouse.click(at.x, at.y, {delay: 80});
       }
     }
     return false;
