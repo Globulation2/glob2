@@ -13,6 +13,7 @@
 #include "MapInternal.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include "render/GameAnimations.h"
 #include <climits>
 
 void Unit::waitForGradient()
@@ -720,6 +721,7 @@ void Unit::handleMovementExitingBuilding()
 		jobPurpose=UnitJobPurpose::None;
 		activity=ACT_RANDOM;
 		movement=MOV_EXITING_BUILDING;
+		owner->game->animations->onUnitLeftBuilding(*owner->map, gid, posX, posY, dx, dy, owner);
 		attachedBuilding->removeUnitFromInside(this);
 		attachedBuilding->updateConstructionState();
 		attachedBuilding=NULL;

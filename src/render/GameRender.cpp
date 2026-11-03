@@ -35,7 +35,7 @@
 #include "GameRenderInternal.h"
 #include "SoftwareTerrainCache.h"
 #include "unit/render/UnitMotion.h"
-#include "SpawnEffects.h"
+#include "UnitEffects.h"
 #include "scene/SceneExtract.h"
 #include "PerformanceTelemetry.h"
 
@@ -278,19 +278,24 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
     view.render.skinPreview().prepare(frame.target, scene, left, top, right, bot,
         viewportX, viewportY, localTeam, frame.visibleTeams, drawOptions & DRAW_WHOLE_MAP,
         view.render.unitMotion, view.render.detail.unitSprite > 0, view.render.detail.buildingSprite > 0, &view.render.fogFade);
-	// Swarm spawn effects go with the unit sprites, and only accelerated
-	// renderers draw them: index this frame's by unit and by swarm.
-	view.render.spawnedUnits.clear();
+	// Unit effects at buildings go with the unit sprites, are building particles
+	// for the detail setting, and only accelerated renderers draw them: index this
+	// frame's by unit, and the producing swarms' glows by swarm.
+	view.render.unitEffects.clear();
 	view.render.swarmGlows.clear();
-	if (view.render.detail.unitSprite > 0 && frame.target.rendererCapabilities().accelerated)
+	view.render.unitOverlays.clear();
+	if (view.render.detail.unitSprite > 0 && globalContainer->settings.buildingParticles
+		&& frame.target.rendererCapabilities().accelerated)
 		for (const SceneSectorEffects &sector : scene.entities.sectors)
-			for (const SceneSpawnAnimation &spawn : sector.spawns)
+			for (const SceneUnitEffect &effect : sector.unitEffects)
 			{
-				view.render.spawnedUnits[spawn.unit] = spawn;
-				const float glow = SpawnEffect::swarmGlow(spawn.age + view.render.unitMotion);
+				view.render.unitEffects[effect.unit] = effect;
+				if (effect.kind != Uint8(UnitEffect::Kind::Spawn))
+					continue;
+				const float glow = UnitEffect::swarmGlow(effect.age + view.render.unitMotion);
 				if (glow > 0)
 				{
-					float &swarm = view.render.swarmGlows[spawn.building];
+					float &swarm = view.render.swarmGlows[effect.building];
 					swarm = std::max(swarm, glow);
 				}
 			}
@@ -359,7 +364,7 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 	if (view.render.detail.unitSprite > 0)
 	{
 		scenePass(&Game::drawMapBulletsExplosionsDeathAnimations, scene);
-		scenePass(&Game::drawMapSpawnEffects, view, scene);
+		scenePass(&Game::drawMapUnitEffects, view, scene);
 	}
 
 	// Compute once for the independently selected cloud layers.

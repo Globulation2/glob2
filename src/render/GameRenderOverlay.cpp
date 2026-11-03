@@ -34,7 +34,8 @@
 #include "ReplayWriter.h"
 
 #include "GameAnimations.h"
-#include "SpawnEffectArt.h"
+#include "UnitEffectArt.h"
+#include <string>
 #include "unit/render/ColonySkinPreview.h"
 
 #define BULLET_IMGID 0
@@ -133,10 +134,10 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 	}
 }
 
-void Game::drawMapSpawnEffects(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
+void Game::drawMapUnitEffects(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
 {
-	// drawMap indexes spawns only for renderers that draw them.
-	if (view.render.spawnedUnits.empty())
+	// drawMap indexes effects only for renderers and settings that draw them.
+	if (view.render.unitEffects.empty())
 		return;
 	PERF_SCOPE_TIME(Effects);
 	const SceneEntities &entities = scene.entities;
@@ -144,31 +145,73 @@ void Game::drawMapSpawnEffects(int left, int top, int right, int bot, int sw, in
 	Uint32 visibleTeams = entities.teams[localTeam].mask;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 	const int mapPixW = map.getW() << 5, mapPixH = map.getH() << 5;
-	SpawnEffectArt &art = view.render.spawnArt();
+	UnitEffectArt &art = view.render.effectArt();
 	GAGCore::GraphicContext &gfx = *globalContainer->gfx;
+	const float pixelsPerUnit = gfx.mapTransformScale() * gfx.getRasterScale();
 	Sprite::flushBatches(&gfx);
+	// A spawn's dust and a service's icons stay on the tile the unit came out on.
 	for (const SceneSectorEffects &sector : entities.sectors)
-		for (const SceneSpawnAnimation &spawn : sector.spawns)
+		for (const SceneUnitEffect &effect : sector.unitEffects)
 		{
-			const float age = spawn.age + view.render.unitMotion;
-			if (age >= SpawnEffect::DustTicks || !map.isFOWDiscovered(spawn.x, spawn.y, visibleTeams))
+			const float age = effect.age + view.render.unitMotion;
+			const auto kind = UnitEffect::Kind(effect.kind);
+			const bool spawn = kind == UnitEffect::Kind::Spawn;
+			if (age >= (spawn ? UnitEffect::DustTicks : UnitEffect::IconDelayTicks + UnitEffect::IconTicks) ||
+				(!(drawOptions & DRAW_WHOLE_MAP) && !map.isFOWDiscovered(effect.x, effect.y, visibleTeams)))
 				continue;
-			auto color = presentationColor(entities.teams[spawn.team].color);
-			if (const auto chosen = view.render.skinPreview().buildingColor(spawn.team))
+			int glyph = -1;
+			if (!spawn)
+			{
+				if (!entities.typeDefinitions || effect.buildingType < 0 || size_t(effect.buildingType) >= entities.typeDefinitions->size())
+					continue;
+				glyph = (*entities.typeDefinitions)[effect.buildingType].presentation.iconFrame;
+			}
+			auto color = presentationColor(entities.teams[effect.team].color);
+			if (const auto chosen = view.render.skinPreview().buildingColor(effect.team))
 				color = GAGCore::Color((*chosen >> 16) & 255, (*chosen >> 8) & 255, *chosen & 255);
-			const float hue = SpawnEffectArt::hueOf(color);
+			const float hue = UnitEffectArt::hueOf(color);
+			const std::uint32_t seed = UnitEffect::seedOf(effect.x, effect.y, effect.unit);
 			int x, y;
-			map.mapCaseToDisplayable(spawn.x, spawn.y, &x, &y, viewportX, viewportY);
-			// The cloud is centred on the birth tile and reaches about two tiles.
+			map.mapCaseToDisplayable(effect.x, effect.y, &x, &y, viewportX, viewportY);
+			// A cloud reaches about two tiles; icons a little over one.
 			const int centreX = x + 16, centreY = y + 16, reach = 72;
 			forEachMapCopy(centreX - reach, centreY - reach, centreX + reach, centreY + reach,
 				mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
 					const float cx = float(centreX + dx), cy = float(centreY + dy);
-					SpawnEffect::forEachDustGlow(age, [&](const SpawnEffect::Glow &glow) { art.draw(gfx, hue, cx, cy, glow, 1); });
-					SpawnEffect::forEachDustMote(SpawnEffect::seedOf(spawn.x, spawn.y, spawn.unit), age,
-						[&](const SpawnEffect::Sparkle &mote) { art.draw(gfx, hue, cx, cy, mote, 1); });
+					if (spawn)
+					{
+						UnitEffect::forEachDustGlow(age, [&](const UnitEffect::Glow &glow) { art.draw(gfx, hue, cx, cy, glow, 1); });
+						UnitEffect::forEachDustMote(seed, age,
+							[&](const UnitEffect::Sparkle &mote) { art.draw(gfx, hue, cx, cy, mote, 1); });
+					}
+					else
+						UnitEffect::forEachServiceIcon(seed, age, [&](const UnitEffect::Icon &icon) {
+							art.draw(gfx, *globalContainer->mapIcons, glyph, kind, cx, cy, icon, 1, pixelsPerUnit);
+						});
 				});
 		}
+	// Over each unit: a spawn's twinkles, and a trained unit's new level rising like
+	// a combat level-up (Game::drawUnit).
+	for (const auto &unit : view.render.unitOverlays)
+	{
+		if (UnitEffect::Kind(unit.kind) == UnitEffect::Kind::Spawn)
+			UnitEffect::forEachShimmerTwinkle(unit.seed, unit.age, [&](const UnitEffect::Sparkle &twinkle) {
+				art.draw(gfx, unit.hue, unit.x + 16, unit.y + 16, twinkle, unit.opacity);
+			});
+		else if (unit.level)
+		{
+			const auto number = UnitEffect::levelNumber(unit.age);
+			if (number.alpha <= 0)
+				continue;
+			const std::string text = std::to_string(unit.level);
+			globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 242, 131, 14));
+			gfx.drawString(int(unit.x) + 16 - (globalContainer->standardFont->getStringWidth(text.c_str()) >> 1),
+				int(unit.y - 16 - number.rise), globalContainer->standardFont, text, 0,
+				Uint8(std::lround(255 * number.alpha * unit.opacity)));
+			globalContainer->standardFont->popStyle();
+		}
+	}
+	view.render.unitOverlays.clear();
 }
 
 namespace

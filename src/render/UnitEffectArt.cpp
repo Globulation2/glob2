@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "SpawnEffectArt.h"
+#include "UnitEffectArt.h"
 
 #include <algorithm>
 #include <cmath>
@@ -111,10 +111,10 @@ int hueKey(float hue)
 }
 }
 
-SpawnEffectArt::SpawnEffectArt() = default;
-SpawnEffectArt::~SpawnEffectArt() = default;
+UnitEffectArt::UnitEffectArt() = default;
+UnitEffectArt::~UnitEffectArt() = default;
 
-float SpawnEffectArt::hueOf(const Color &team)
+float UnitEffectArt::hueOf(const Color &team)
 {
 	const float r = team.r / 255.f, g = team.g / 255.f, b = team.b / 255.f;
 	const float high = std::max({r, g, b}), low = std::min({r, g, b}), range = high - low;
@@ -125,13 +125,20 @@ float SpawnEffectArt::hueOf(const Color &team)
 	return hue < 0 ? hue + 360 : hue;
 }
 
-Color SpawnEffectArt::tint(float hue)
+Color UnitEffectArt::tint(float hue)
 {
 	const Rgba c = hsl(hue, 1, 0.7f);
 	return Color(Uint8(std::lround(255 * c.r)), Uint8(std::lround(255 * c.g)), Uint8(std::lround(255 * c.b)));
 }
 
-DrawableSurface &SpawnEffectArt::star(float hue)
+Color UnitEffectArt::serviceTint(UnitEffect::Kind kind)
+{
+	const auto service = UnitEffect::serviceColor(kind);
+	const Rgba c = hsl(service.hue, service.saturation, service.lightness);
+	return Color(Uint8(std::lround(255 * c.r)), Uint8(std::lround(255 * c.g)), Uint8(std::lround(255 * c.b)));
+}
+
+DrawableSurface &UnitEffectArt::star(float hue)
 {
 	auto &image = stars[hueKey(hue)];
 	if (!image)
@@ -139,7 +146,7 @@ DrawableSurface &SpawnEffectArt::star(float hue)
 	return *image;
 }
 
-DrawableSurface &SpawnEffectArt::glow(float hue, float lightness)
+DrawableSurface &UnitEffectArt::glow(float hue, float lightness)
 {
 	auto &image = glows[hueKey(hue) * 100 + int(std::lround(lightness * 99))];
 	if (!image)
@@ -149,7 +156,7 @@ DrawableSurface &SpawnEffectArt::glow(float hue, float lightness)
 	return *image;
 }
 
-DrawableSurface &SpawnEffectArt::core()
+DrawableSurface &UnitEffectArt::core()
 {
 	if (!core_)
 		core_ = rasterize([](float u, float v, Pixel &pixel) {
@@ -160,7 +167,7 @@ DrawableSurface &SpawnEffectArt::core()
 	return *core_;
 }
 
-DrawableSurface &SpawnEffectArt::glint()
+DrawableSurface &UnitEffectArt::glint()
 {
 	// White where the star is coloured: drawn without additive blending, it
 	// stays light enough to read as a flash.
@@ -177,7 +184,7 @@ Uint8 opacityByte(float alpha)
 }
 }
 
-void SpawnEffectArt::draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const SpawnEffect::Sparkle &sparkle, float opacity)
+void UnitEffectArt::draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const UnitEffect::Sparkle &sparkle, float opacity)
 {
 	const float cx = x + sparkle.x, cy = y + sparkle.y, size = sparkle.size;
 	if (const Uint8 alpha = opacityByte(sparkle.alpha * opacity))
@@ -189,11 +196,33 @@ void SpawnEffectArt::draw(GAGCore::GraphicContext &gfx, float hue, float x, floa
 		gfx.drawSurface(cx - size, cy - size, 2 * size, 2 * size, &glint(), alpha);
 }
 
-void SpawnEffectArt::draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const SpawnEffect::Glow &glowSpec, float opacity)
+void UnitEffectArt::draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const UnitEffect::Glow &glowSpec, float opacity)
 {
 	if (const Uint8 alpha = opacityByte(glowSpec.alpha * opacity))
 	{
 		const float r = glowSpec.radius;
 		gfx.drawSurface(x + glowSpec.x - r, y + glowSpec.y - r, 2 * r, 2 * r, &glow(hue, glowSpec.lightness), alpha);
 	}
+}
+
+void UnitEffectArt::draw(GAGCore::GraphicContext &gfx, GAGCore::Sprite &icons, int glyph, UnitEffect::Kind kind,
+	float x, float y, const UnitEffect::Icon &icon, float opacity, float pixelsPerUnit)
+{
+	// Each mapicon glyph has frames this many pixels across (tools/icons/export_map_icons.py).
+	static constexpr int Sizes[] = {10, 12, 16, 20, 24, 32, 48};
+	constexpr int SizeCount = int(sizeof(Sizes) / sizeof(Sizes[0]));
+	int size = 0;
+	for (int i = 0; i < SizeCount; ++i)
+		if (Sizes[i] <= icon.size * pixelsPerUnit)
+			size = i;
+	const unsigned frame = unsigned(glyph * SizeCount + size);
+	const Uint8 alpha = opacityByte(icon.alpha * opacity);
+	if (!alpha || int(frame) >= icons.getFrameCount())
+		return;
+	const float half = icon.size / 2, cx = x + icon.x, cy = y + icon.y;
+	// The shadow keeps a green cross readable on grass.
+	if (DrawableSurface *shadow = icons.silhouette(frame, Color(10, 20, 10)))
+		gfx.drawSurface(cx - half + 0.6f, cy - half + 0.6f, icon.size, icon.size, shadow, opacityByte(icon.alpha * opacity * 0.55f));
+	if (DrawableSurface *glyphShape = icons.silhouette(frame, serviceTint(kind)))
+		gfx.drawSurface(cx - half, cy - half, icon.size, icon.size, glyphShape, alpha);
 }

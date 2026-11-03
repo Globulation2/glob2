@@ -31,7 +31,7 @@
 
 
 #include "Brush.h"
-#include "SpawnEffectArt.h"
+#include "UnitEffectArt.h"
 #include "IntBuildingType.h"
 
 
@@ -80,12 +80,12 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	const Uint8 spriteAlpha = Uint8(std::lround(255 * spriteOpacity));
 	if (spriteOpacity > 0)
 	{
-		// A swarm that has just produced a unit glows in its team colour (SpawnEffects.h).
+		// A swarm that has just produced a unit glows in its team colour (UnitEffects.h).
 		float glowOpacity = 0;
 		if (view)
 			if (const auto found = view->render.swarmGlows.find(Uint16(gid)); found != view->render.swarmGlows.end())
 				glowOpacity = found->second;
-		const GAGCore::Color glow = glowOpacity > 0 ? SpawnEffectArt::tint(SpawnEffectArt::hueOf(color)) : GAGCore::Color();
+		const GAGCore::Color glow = glowOpacity > 0 ? UnitEffectArt::tint(UnitEffectArt::hueOf(color)) : GAGCore::Color();
 		const Uint8 glowAlpha = Uint8(std::lround(255 * glowOpacity * spriteOpacity));
 		const bool skinned = view && type->presentation.skinSlot == "swarm"
 			&& !type->isBuildingSite && view->render.skinPreview().drawSwarm(

@@ -15,6 +15,8 @@
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include "render/GameAnimations.h"
+#include "render/UnitEffects.h"
 
 namespace {
 // Crowding eligibility changes independently of tile movement when a warrior
@@ -425,6 +427,8 @@ void Unit::handleDisplacement(void)
 						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 						setNeedToRecheckMedical(true);
+						owner->game->animations->onUnitServiced(gid, Uint8(UnitEffect::Kind::Feed),
+							attachedBuilding->gid, attachedBuilding->typeNum, 0);
 					}
 					else if (destinationPurpose==HEAL)
 					{
@@ -435,6 +439,8 @@ void Unit::handleDisplacement(void)
 						hp=performance[HP];
 						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 						setNeedToRecheckMedical(true);
+						owner->game->animations->onUnitServiced(gid, Uint8(UnitEffect::Kind::Heal),
+							attachedBuilding->gid, attachedBuilding->typeNum, 0);
 					}
 					// Restored units already inside exit safely without gaining a level.
 					// New training visits are rejected by Team::findBestUpgrade.
@@ -458,9 +464,19 @@ void Unit::handleDisplacement(void)
 						else
 							applyTrainingUnchecked(attachedBuilding->type->semantics.training[destinationPurpose], destinationPurpose);
 
+						// The exit effect floats the highest new level, displayed 1-based
+						// except SWIM, which is stored that way.
+						int shownLevel = 0;
 						for (int a = 0; a < NB_ABILITY; ++a)
+						{
 							owner->stats.events().abilityGains[typeNum][a] +=
 								std::max(0, level[a] - previousLevels[a]);
+							if (level[a] > previousLevels[a])
+								shownLevel = std::max(shownLevel, a == SWIM ? level[a] : 1 + level[a]);
+						}
+						if (shownLevel)
+							owner->game->animations->onUnitServiced(gid, Uint8(UnitEffect::Kind::Train),
+								attachedBuilding->gid, attachedBuilding->typeNum, Uint8(std::min(shownLevel, 255)));
 					}
 				}
 				else
@@ -596,6 +612,9 @@ void Unit::applyPartialInsideBenefit()
 void Unit::expelFromBuilding(int x, int y, int dx, int dy)
 {
     const GuardCostEligibility guardCostEligibility(*this);
+	// A unit already on its way out had its whole service; one expelled mid-stay
+	// gets a partial benefit and no exit effect.
+	const bool served = displacement==DIS_EXITING_BUILDING;
 	applyPartialInsideBenefit();
 	standardRandomActivity();
 	insideTimeout=0;
@@ -605,5 +624,9 @@ void Unit::expelFromBuilding(int x, int y, int dx, int dy)
 	this->dy=dy;
 	delta=0;
 	movement=MOV_EXITING_BUILDING;
+	if (served)
+		owner->game->animations->onUnitLeftBuilding(*owner->map, gid, posX, posY, dx, dy, owner);
+	else
+		owner->game->animations->onUnitGone(gid);
 	handleActionExitingBuilding();
 }

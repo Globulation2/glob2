@@ -9,12 +9,14 @@
 #include <SDL3/SDL_stdinc.h>
 
 #include <memory>
+#include <cstdint>
 #include <unordered_map>
+#include <vector>
 #include <valarray>
 
 class DynamicClouds;
 class ColonySkinPreview;
-class SpawnEffectArt;
+class UnitEffectArt;
 namespace GAGCore { class DrawableSurface; }
 class SoftwareTerrainCache;
 class OverviewTerrainCache;
@@ -57,17 +59,24 @@ struct MapRenderState
 	MapOverlayQueue overlays;
 	//! PresentationFrame explicitly prepared by a standalone owner before drawing.
 	PresentationFrame ownScene;
-	//! Swarm spawn effects this frame draws (SpawnEffects.h): the record of each
-	//! newly produced unit by its gid, and each producing swarm's glow opacity by
-	//! its gid. Set by Game::drawMap; empty when the renderer does not draw them.
-	std::unordered_map<Uint16, SceneSpawnAnimation> spawnedUnits;
+	//! Unit effects this frame draws (UnitEffects.h): the record of each unit a
+	//! building has just produced or serviced by its gid, and each producing
+	//! swarm's glow opacity by its gid. Set by Game::drawMap; empty when the
+	//! renderer or the detail setting does not draw them.
+	std::unordered_map<Uint16, SceneUnitEffect> unitEffects;
 	std::unordered_map<Uint16, float> swarmGlows;
+	//! What is drawn over a unit playing an effect (a spawn's twinkles, a trained
+	//! unit's level number), queued as the unit is drawn and drawn by the effects
+	//! pass, after the buildings that would otherwise cover it. (x, y) is the
+	//! unit's top-left corner.
+	struct UnitOverlay { float x, y, age, hue, opacity; std::uint32_t seed; Uint8 kind, level; };
+	std::vector<UnitOverlay> unitOverlays;
 
 	//! The cloud field for this view, created on first use.
 	DynamicClouds &clouds();
 	ColonySkinPreview &skinPreview();
 	//! The spawn effect's procedural images, created on first use.
-	SpawnEffectArt &spawnArt();
+	UnitEffectArt &effectArt();
 	// Keep match appearance while rebuilding the rest of a reconnect view.
 	void swapSkinPreview(MapRenderState &other);
 	//! The terrain page cache for map, rebuilt when the map was replaced.
@@ -79,7 +88,7 @@ struct MapRenderState
 private:
 	std::unique_ptr<DynamicClouds> clouds_;
 	std::unique_ptr<ColonySkinPreview> skinPreview_;
-	std::unique_ptr<SpawnEffectArt> spawnArt_;
+	std::unique_ptr<UnitEffectArt> effectArt_;
 	std::unique_ptr<SoftwareTerrainCache> terrainCache_;
 	Uint64 terrainCacheMap = 0; //!< Map::identity() the cache was built for.
 };

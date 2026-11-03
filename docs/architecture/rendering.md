@@ -351,10 +351,14 @@ simulation, saves and replays are unaffected.
   explosions, and remembered enemy buildings. Bullets near a fading unit therefore vanish
   at the fog swap.
 
-### Swarm spawn effect
+### Unit effects at buildings
 
-When a swarm produces a unit, accelerated renderers play a short effect; the software
-renderer draws the unit as before. Timing and shapes are in `src/render/SpawnEffects.h`:
+When a building produces or changes a unit, accelerated renderers play a short effect
+on it; the software renderer draws the unit as before, and **Detail effects: reduced**
+(`Settings::buildingParticles`) turns them all off. Timing and shapes are in
+`src/render/UnitEffects.h`.
+
+When a swarm produces a unit:
 
 - The swarm glows in a light version of its team colour for about 0.4 seconds, at 20% of
   full strength.
@@ -364,19 +368,38 @@ renderer draws the unit as before. Timing and shapes are in `src/render/SpawnEff
 - A cloud of team-coloured dust twinkles on its birth tile, with motes flashing white,
   and fades out within 0.75 seconds. It stays on the tile while the unit walks away.
 
-`Building::swarmStep` records the spawn in `GameAnimations` beside death animations: it
-is render-only, absent from checksums, saves and replays, and recorded only with a
-display. Records are captured into the snapshot's effects (`SpawnRecord`), and
-`Game::drawMap` indexes them by unit and swarm gid for the frame. Each part runs from
-the record's age plus the drawn tick fraction, so it stops while paused.
+When a unit comes out of a building that healed, fed or trained it:
+
+- It shimmers as a silhouette in the service's colour (heal green, feed yellow, training
+  white-gold) that settles over one second from 90%.
+- Seven copies of that building's own map icon (`presentation.iconFrame`, the glyph on
+  its zoomed-out chip) burst out of it at random angles, distances, sizes and start
+  times, then drift and fade within about 0.9 seconds. They never fly into the sector
+  above the unit, where level numbers rise.
+- A trained unit floats its highest new level, displayed as in the unit panel, rising
+  like a combat level-up number.
+
+`Building::swarmStep` records spawns in `GameAnimations` beside death animations. A
+successful feed, heal or training (some level rose) at the end of a stay
+(`Unit::handleDisplacement`) records a pending service by unit gid; it plays when the
+unit actually comes out (`Unit::handleMovementExitingBuilding`, or `expelFromBuilding`
+for a unit already on its way out). A unit expelled mid-stay, a trainee leaving while
+upgrades are disabled, or one whose course became invalid plays nothing. Records are
+render-only, absent from checksums, saves and replays, and kept only with a display.
+They are captured into the snapshot's effects (`UnitEffectRecord`), and `Game::drawMap`
+indexes them by unit and producing swarm for the frame. Each part runs from the
+record's age plus the drawn tick fraction, so it stops while paused. Dust, icons,
+twinkles and level numbers are drawn after the buildings, which would otherwise cover
+them.
 
 Sprites get the silhouette from `Sprite::silhouette`, a cached copy of the native frame
 filled with one colour and laid over the sprite with ordinary blending; the swarm uses
-its team-colour layer alone. Skinned meshes are brightened instead by adding their
-composited tile again, tinted (the `glow` arguments of `GraphicContext::drawSkinMesh`);
-pre-rendered skin sprites draw without it. Dust stars and glows are drawn procedurally
-by `SpawnEffectArt`, one set per team hue, so the effect ships no image assets.
-
+its team-colour layer alone, and the icons are the white `mapicon` glyphs filled the
+same way, picking the largest pre-sized frame that fits on screen. Skinned meshes are
+brightened instead by adding their composited tile again, tinted (the `glow` arguments
+of `GraphicContext::drawSkinMesh`); pre-rendered skin sprites draw without it. Dust
+stars and glows are drawn procedurally by `UnitEffectArt`, one set per team hue, so the
+effects ship no new image assets.
 
 See [adaptive zoom detail](zoom-detail.md).
 
