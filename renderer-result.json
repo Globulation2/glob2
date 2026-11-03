@@ -1,0 +1,24 @@
+{
+  "revision": "d482c558f965d8b500c8bb824130673ba58421d3",
+  "original_renderer_case": {
+    "id": "",
+    "name": "",
+    "tests": "1",
+    "failures": "0",
+    "skipped": "0",
+    "errors": "0",
+    "time": "703.424881"
+  },
+  "original_whole_case_timeout_seconds": 720,
+  "original_inputs_and_all_assertions": true,
+  "node_tests_passed": 191,
+  "rgba_parity_comparisons": 24,
+  "inventory_count": 747,
+  "build_contracts": {
+    "unique_passed": 732,
+    "omitted": 1,
+    "omission": "NSIScompilerunavailablelocally",
+    "full_suite": "733 tests OK skipped2,then cachedSDLarchivecheck qualified1omissionwithoriginaltest"
+  },
+  "remaining": "24originalcross-browserUIcasesqueued/active. Singlefunctionalpassdoesnotestablishgeneralreliability, speedgainsorfullCIgreen."
+}
