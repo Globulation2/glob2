@@ -1,0 +1,33 @@
+{
+  "revision": "d482c558f9",
+  "base": "a69886a8f9c7495e5c70449d01bdb18ce8174de9",
+  "status": "Draft qualification; original renderer reproduction still running",
+  "node": {
+    "passed": 191,
+    "failed": 0
+  },
+  "parity": {
+    "comparisons": 24,
+    "byte_identical": true,
+    "scope": "ActualcapturedopaqueSoftware/WebGLscreenshots;originalbrowsercanvasdecoderonidlepagesvsrunnerPNGparser"
+  },
+  "inventory": {
+    "baseline_count": 747,
+    "current_count": 747,
+    "identical": true
+  },
+  "diagnosis": {
+    "captured_crop": "140x44",
+    "dark_pixels_all_channels_below120": 235,
+    "required": "strictly more than50",
+    "trace": "Prior diagnostic had a screenshot result but no completion of following page.evaluate PNGdecode call@227 before timeout. Root issue is an avoidable application-thread dependency in a pixel assertion; not a claim that all hosted renderer failures are solved."
+  },
+  "dependency": {
+    "name": "pngjs",
+    "version": "7.0.0",
+    "license": "MIT",
+    "unpacked_bytes": 650101,
+    "usage": "Browser test-only devDependency; no bundle/native/production runtime imports"
+  },
+  "limits": "128MiBinput,32MiBcompressed archive; whole720stest andallassertionsunchanged"
+}
