@@ -271,13 +271,11 @@ namespace GAGCore
 			};
 			if (radialFade.active())
 			{
-				forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
-					const RadialFadeCorner &c, const RadialFadeCorner &d)
+				forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCell &cell)
 				{
 					std::array<QueueVertex, 8> vertices{};
-					const RadialFadeCorner *corners[] = {&a, &b, &c, &d};
 					for (int n = 0; n < 4; ++n)
-						vertices[n] = vertex(corners[n]->x, corners[n]->y, corners[n]->s, corners[n]->t, corners[n]->fade);
+						vertices[n] = vertex(cell[n].x, cell[n].y, cell[n].s, cell[n].t, cell[n].fade);
 					renderBatch->append(key, vertices, 4);
 				});
 				return true;
@@ -312,11 +310,10 @@ namespace GAGCore
 		};
 		glBegin(GL_QUADS);
 		if (radialFade.active())
-			forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
-				const RadialFadeCorner &c, const RadialFadeCorner &d)
+			forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCell &cell)
 			{
-				for (const RadialFadeCorner *k : {&a, &b, &c, &d})
-					corner(k->x, k->y, k->s, k->t, k->fade);
+				for (const RadialFadeCorner &k : cell)
+					corner(k.x, k.y, k.s, k.t, k.fade);
 			});
 		else
 		{

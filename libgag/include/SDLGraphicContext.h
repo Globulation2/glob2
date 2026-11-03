@@ -824,10 +824,11 @@ namespace GAGCore
         void setRenderBatchEnabled(bool enabled);
         bool hasUnitShader() const { return unitShaderProgram != 0; }
         //! Fade sprite, surface and skin draws with distance from a point until
-        //! cleared (see RadialFade). The native software surface, used without
-        //! a renderer backend, draws unfaded.
+        //! replaced; an inactive fade draws normally. Prefer RadialFadeScope
+        //! (RenderStateScope.h). The native software surface, used without a
+        //! renderer backend, draws unfaded.
         void setRadialFade(const RadialFade &fade) { radialFade = fade; }
-        void clearRadialFade() { radialFade = {}; }
+        const RadialFade &getRadialFade() const { return radialFade; }
         // Render distinct visible poses before painting the map; composites retain painter order.
         void drawSkinSprite(float x,float y,float w,float h,DrawableSurface *surface,int sx,int sy,int sw,int sh,Uint8 alpha);
         // Production FBO tile, top-down straight RGBA; no shadows or window readback.

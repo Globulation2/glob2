@@ -164,8 +164,9 @@ bool GraphicContext::drawDeviceSkinMesh(const SkinMeshRequest &request,float x,f
         // the vertices carry straight opacity and the packet none of its own.
         const auto &d=packet.destination;const float page=float(AtlasSize);
         packet.kind=DrawPacket::Kind::Triangles;packet.alpha=255;
-        packet.vertices=radialFadeTriangles(radialFade,d.x,d.y,d.w,d.h,packet.source.x/page,packet.source.y/page,
-            (packet.source.x+packet.source.w)/page,(packet.source.y+packet.source.h)/page,alpha/255.f,false);
+        const auto vertices=radialFadeTriangles(radialFade,d.x,d.y,d.w,d.h,packet.source.x/page,packet.source.y/page,
+            (packet.source.x+packet.source.w)/page,(packet.source.y+packet.source.h)/page,alpha/255.f);
+        packet.vertices.assign(vertices.begin(),vertices.end());
     }
     return submitDevicePacket(std::move(packet));
 }

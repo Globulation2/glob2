@@ -784,9 +784,8 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
     };
     glBegin(GL_QUADS);
     if (radialFade.active())
-        forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
-            const RadialFadeCorner &c, const RadialFadeCorner &d) {
-            for (const RadialFadeCorner *k : {&a, &b, &c, &d}) corner(k->x, k->y, k->s, k->t, k->fade);
+        forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCell &cell) {
+            for (const RadialFadeCorner &k : cell) corner(k.x, k.y, k.s, k.t, k.fade);
         });
     else {
         corner(x,y,0,0,1); corner(x+w,y,1,0,1); corner(x+w,y+h,1,1,1); corner(x,y+h,0,1,1);

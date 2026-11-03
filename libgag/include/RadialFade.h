@@ -2,8 +2,8 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <algorithm>
+#include <array>
 #include <cmath>
-#include <vector>
 
 namespace GAGCore
 {
@@ -16,9 +16,11 @@ struct RadialFade
 {
 	float x = 0, y = 0, inner = 0, outer = 0, floor = 1;
 	bool active() const { return outer > inner && floor < 1; }
+	//! Only meaningful while active().
 	float at(float px, float py) const
 	{
-		const float t = std::clamp((std::hypot(px - x, py - y) - inner) / (outer - inner), 0.f, 1.f);
+		const float dx = px - x, dy = py - y;
+		const float t = std::clamp((std::sqrt(dx * dx + dy * dy) - inner) / (outer - inner), 0.f, 1.f);
 		return 1 - (1 - floor) * t * t * (3 - 2 * t);
 	}
 };
@@ -26,6 +28,8 @@ struct RadialFade
 // A faded draw becomes this many cells per side, with the fade interpolated
 // across each cell; at unit sprite sizes a cell spans a few pixels.
 constexpr int RADIAL_FADE_CELLS = 8;
+// Two triangles per cell.
+constexpr int RADIAL_FADE_TRIANGLE_VERTICES = RADIAL_FADE_CELLS * RADIAL_FADE_CELLS * 6;
 
 // One grid corner: its position, its place (s, t) across the destination
 // rectangle from 0 to 1, and the fade there.
@@ -33,9 +37,11 @@ struct RadialFadeCorner
 {
 	float x, y, s, t, fade;
 };
+// A grid cell's corners, clockwise from top-left: the order of a GL quad.
+using RadialFadeCell = std::array<RadialFadeCorner, 4>;
 
-// Calls cell(a, b, c, d) for each grid cell of the destination rectangle, with
-// the corners clockwise from top-left.
+// Calls cell(corners) for each grid cell of the destination rectangle of an
+// active fade.
 template <class Cell>
 void forEachRadialFadeCell(const RadialFade &fade, float x, float y, float w, float h, Cell cell)
 {
@@ -50,27 +56,27 @@ void forEachRadialFadeCell(const RadialFade &fade, float x, float y, float w, fl
 		}
 	for (int j = 0; j < N; ++j)
 		for (int i = 0; i < N; ++i)
-			cell(corners[j][i], corners[j][i + 1], corners[j + 1][i + 1], corners[j + 1][i]);
+			cell(RadialFadeCell{corners[j][i], corners[j][i + 1], corners[j + 1][i + 1], corners[j + 1][i]});
 }
 
 // Triangles for a faded textured rectangle sampling [u0, u1] x [v0, v1], two
-// per cell. A premultiplied source fades its colour together with its alpha.
-inline std::vector<SDL_Vertex> radialFadeTriangles(const RadialFade &fade, float x, float y, float w, float h,
-	float u0, float v0, float u1, float v1, float alpha, bool premultiplied)
+// per cell, with straight alpha. Returned by value so that the per-draw
+// geometry stays off the heap.
+inline std::array<SDL_Vertex, RADIAL_FADE_TRIANGLE_VERTICES> radialFadeTriangles(const RadialFade &fade,
+	float x, float y, float w, float h, float u0, float v0, float u1, float v1, float alpha)
 {
-	std::vector<SDL_Vertex> vertices;
-	vertices.reserve(RADIAL_FADE_CELLS * RADIAL_FADE_CELLS * 6);
+	std::array<SDL_Vertex, RADIAL_FADE_TRIANGLE_VERTICES> vertices;
+	size_t n = 0;
 	const auto vertex = [&](const RadialFadeCorner &c)
 	{
-		const float a = alpha * c.fade, rgb = premultiplied ? a : 1.f;
-		return SDL_Vertex{{c.x, c.y}, {rgb, rgb, rgb, a}, {u0 + (u1 - u0) * c.s, v0 + (v1 - v0) * c.t}};
+		return SDL_Vertex{{c.x, c.y}, {1, 1, 1, alpha * c.fade}, {u0 + (u1 - u0) * c.s, v0 + (v1 - v0) * c.t}};
 	};
-	forEachRadialFadeCell(fade, x, y, w, h,
-		[&](const RadialFadeCorner &a, const RadialFadeCorner &b, const RadialFadeCorner &c, const RadialFadeCorner &d)
-		{
-			const SDL_Vertex va = vertex(a), vb = vertex(b), vc = vertex(c), vd = vertex(d);
-			vertices.insert(vertices.end(), {va, vb, vc, va, vc, vd});
-		});
+	forEachRadialFadeCell(fade, x, y, w, h, [&](const RadialFadeCell &cell)
+	{
+		const SDL_Vertex a = vertex(cell[0]), b = vertex(cell[1]), c = vertex(cell[2]), d = vertex(cell[3]);
+		for (const SDL_Vertex &v : {a, b, c, a, c, d})
+			vertices[n++] = v;
+	});
 	return vertices;
 }
 } // namespace GAGCore

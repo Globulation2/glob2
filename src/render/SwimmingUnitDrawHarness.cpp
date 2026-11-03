@@ -14,6 +14,7 @@
 #include "Game.h"
 #include "Unit.h"
 #include "GraphicContext.h"
+#include <RenderStateScope.h>
 #include "unit/render/SwimmingPresentation.h"
 #include "unit/render/UnitAnimation.h"
 #include <SDL3_image/SDL_image.h>
@@ -114,9 +115,10 @@ class SwimmingUnitDrawHarness
 		save(plain, "swim-frame-plain");
 
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		gfx->setRadialFade(swimmerFade(px, py, SWIM_REACH_WORKER));
-		gfx->drawSprite(x, y, sprite, frame);
-		gfx->clearRadialFade();
+		{
+			const GAGCore::RadialFadeScope fade(*gfx, swimmerFade(px, py, SWIM_REACH_WORKER));
+			gfx->drawSprite(x, y, sprite, frame);
+		}
 		const Frame faded = grab();
 		save(faded, "swim-frame-faded");
 

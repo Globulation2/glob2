@@ -359,17 +359,19 @@ See [adaptive zoom detail](zoom-detail.md).
 The swim artwork is seen from above with the body lying flat, so a swimmer is placed in
 the water rather than on it by fading its limbs, not by cutting it at a waterline.
 `Game::drawUnit` sets a `RadialFade` (`libgag/include/RadialFade.h`) on the graphic
-context around a swimmer's sprite: the torso stays opaque and opacity falls to a floor
-towards the outstretched limbs. Every unit draw path honours it (classic sprites with or
-without the team-colour shader, pre-rendered skin sprites, and live skin meshes on the
-legacy GL and device renderers) by drawing the quad as a grid whose vertex opacity carries
-the fade; only the native software surface without a renderer backend draws unfaded.
+context with a `RadialFadeScope` (`libgag/include/RenderStateScope.h`) around a
+swimmer's sprite: the torso stays opaque and opacity falls to a floor towards the
+outstretched limbs. Every unit draw path honours it (classic sprites with or without the
+team-colour shader, pre-rendered skin sprites, and live skin meshes on the legacy GL and
+device renderers) by drawing the quad as a grid whose vertex opacity carries the fade;
+only the native software surface without a renderer backend draws unfaded.
 Each arm stroke of the swim clip sends a ring out from the limb tips, timed from the
 unit's animation phase so ripples follow the visible stroke. A moving swimmer's ring fades
 to nothing ahead of it, so the ripple spreads backwards; one treading water ripples all
-round. Constants and the ring geometry are in
-`src/unit/render/SwimmingPresentation.h`. All of it is presentation: it reads the unit's
-action, heading and animation phase and changes no simulation state.
+round. The ring is drawn as short line segments whose opacity carries that crescent; the
+constants, ring timing and segment geometry are in `src/unit/render/SwimmingPresentation.h`.
+All of it is presentation: it reads the unit's action, heading and animation phase and
+changes no simulation state.
 
 ## Clouds, bars and resource batches
 

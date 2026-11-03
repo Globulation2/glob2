@@ -40,4 +40,21 @@ class UITransformScope
 	UITransformScope(const UITransformScope &) = delete;
 	UITransformScope &operator=(const UITransformScope &) = delete;
 };
+// Fades the draws made within it (see RadialFade), then restores the fade it
+// replaced. An inactive fade draws normally.
+class RadialFadeScope
+{
+	GraphicContext &context;
+	RadialFade previous;
+
+  public:
+	RadialFadeScope(GraphicContext &target, const RadialFade &fade)
+		: context(target), previous(target.getRadialFade())
+	{
+		context.setRadialFade(fade);
+	}
+	~RadialFadeScope() { context.setRadialFade(previous); }
+	RadialFadeScope(const RadialFadeScope &) = delete;
+	RadialFadeScope &operator=(const RadialFadeScope &) = delete;
+};
 } // namespace GAGCore

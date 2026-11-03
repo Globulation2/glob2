@@ -3,6 +3,7 @@
 #include <RadialFade.h>
 #include <algorithm>
 #include <cmath>
+#include <numbers>
 
 // How a swimming unit sits in the water. The swim artwork is seen from above
 // with the body lying flat, so the torso stays solid while the outstretched
@@ -58,14 +59,54 @@ inline SwimRipple swimRipple(int delta, float reach)
 constexpr int SWIM_RIPPLE_SEGMENTS = 24;
 constexpr float SWIM_RIPPLE_FRONT_EDGE = -0.2f, SWIM_RIPPLE_BACK_EDGE = 0.6f;
 
-//! Opacity, from 0 to 1, of the ring at the given angle (radians, in screen
-//! coordinates with y down) for a swimmer heading along (dx, dy).
-inline float swimRippleWeight(float angle, int dx, int dy)
+//! Opacity, from 0 to 1, of the ring at the point in unit direction (ux, uy)
+//! from its centre (screen coordinates, y down) for a swimmer heading along
+//! (dx, dy).
+inline float swimRippleWeight(float ux, float uy, int dx, int dy)
 {
 	if (!dx && !dy)
 		return 1;
 	// Cosine between this point of the ring and straight behind the swimmer.
-	const float behind = -(std::cos(angle) * float(dx) + std::sin(angle) * float(dy)) / std::hypot(float(dx), float(dy));
+	const float behind = -(ux * float(dx) + uy * float(dy)) / std::sqrt(float(dx * dx + dy * dy));
 	const float t = std::clamp((behind - SWIM_RIPPLE_FRONT_EDGE) / (SWIM_RIPPLE_BACK_EDGE - SWIM_RIPPLE_FRONT_EDGE), 0.f, 1.f);
 	return t * t * (3 - 2 * t);
+}
+
+struct SwimRippleSegment
+{
+	float x0, y0, x1, y1, weight;
+};
+
+//! Calls segment(SwimRippleSegment) for each segment of a ring of the given
+//! radius around (cx, cy), clockwise on screen from straight right, weighted
+//! at its middle for a swimmer heading along (dx, dy).
+template <class Segment>
+void forEachSwimRippleSegment(float cx, float cy, float radius, int dx, int dy, Segment segment)
+{
+	// Unit directions of the segment ends and middles, the same every frame.
+	struct Directions
+	{
+		float x[SWIM_RIPPLE_SEGMENTS + 1], y[SWIM_RIPPLE_SEGMENTS + 1];
+		float midX[SWIM_RIPPLE_SEGMENTS], midY[SWIM_RIPPLE_SEGMENTS];
+	};
+	static const Directions directions = []
+	{
+		Directions d{};
+		const float step = 2 * std::numbers::pi_v<float> / SWIM_RIPPLE_SEGMENTS;
+		for (int i = 0; i <= SWIM_RIPPLE_SEGMENTS; ++i)
+		{
+			d.x[i] = std::cos(i * step);
+			d.y[i] = std::sin(i * step);
+			if (i < SWIM_RIPPLE_SEGMENTS)
+			{
+				d.midX[i] = std::cos(i * step + step / 2);
+				d.midY[i] = std::sin(i * step + step / 2);
+			}
+		}
+		return d;
+	}();
+	for (int i = 0; i < SWIM_RIPPLE_SEGMENTS; ++i)
+		segment(SwimRippleSegment{cx + radius * directions.x[i], cy + radius * directions.y[i],
+			cx + radius * directions.x[i + 1], cy + radius * directions.y[i + 1],
+			swimRippleWeight(directions.midX[i], directions.midY[i], dx, dy)});
 }

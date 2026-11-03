@@ -325,7 +325,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                 if (spriteBatch.owner == this) spriteBatch.flush();
                 renderer->triangles(radialFadeTriangles(radialFade, x, y, w, h,
                     float(source.x)/pixels->w, float(source.y)/pixels->h,
-                    float(source.x+source.w)/pixels->w, float(source.y+source.h)/pixels->h, alpha/255.f, false),
+                    float(source.x+source.w)/pixels->w, float(source.y+source.h)/pixels->h, alpha/255.f),
                     uploadSource, pixels, uploadSource->contentRevision());
                 ++drawCalls;
                 return;
@@ -405,9 +405,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 
 			if (radialFade.active())
 			{
-				if (spriteBatch.owner == this)
-					spriteBatch.flush();
-				const auto *atlas = surface->textureInfo ? surface->textureInfo->sprite : nullptr;
+				Sprite *atlas = surface->textureInfo ? surface->textureInfo->sprite : nullptr;
 				const unsigned tex = atlas ? atlas->atlas->texture : surface->texture;
 				if (renderBatch && renderBatch->active())
 				{
@@ -416,14 +414,12 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 						array = renderBatch->pack(tex);
 					const QueueKey key{array.texture ? QueueKey::ArrayTexture : QueueKey::Texture,
 									   array.texture ? array.texture : tex, 0, false, false, true, 1};
-					forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
-						const RadialFadeCorner &c, const RadialFadeCorner &d)
+					forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCell &cell)
 					{
 						std::array<QueueVertex, 8> v{};
-						const RadialFadeCorner *corners[] = {&a, &b, &c, &d};
 						for (int j = 0; j < 4; ++j)
 						{
-							const auto &k = *corners[j];
+							const RadialFadeCorner &k = cell[j];
 							const float faded = alpha * k.fade;
 							v[j] = {k.x, k.y, u0 + (u1 - u0) * k.s, v0 + (v1 - v0) * k.t};
 							v[j].color = Color(255, 255, 255, Uint8(faded + 0.5f));
@@ -434,20 +430,25 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 					});
 					return;
 				}
+				// Drawn now, so quads queued earlier for the batch or this atlas
+				// go first to keep painter order.
+				if (spriteBatch.owner == this)
+					spriteBatch.flush();
+				if (atlas)
+					finishDrawingSprite(atlas, Color::ALPHA_OPAQUE);
 				glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				glState.doBlend(true);
 				glState.doTexture(true);
 				glState.setTexture(tex);
 				++drawCalls;
 				glBegin(GL_QUADS);
-				forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCorner &a, const RadialFadeCorner &b,
-					const RadialFadeCorner &c, const RadialFadeCorner &d)
+				forEachRadialFadeCell(radialFade, x, y, w, h, [&](const RadialFadeCell &cell)
 				{
-					for (const RadialFadeCorner *k : {&a, &b, &c, &d})
+					for (const RadialFadeCorner &k : cell)
 					{
-						glColor4f(1, 1, 1, alpha / 255.f * k->fade);
-						glTexCoord2f(u0 + (u1 - u0) * k->s, v0 + (v1 - v0) * k->t);
-						glVertex2f(k->x, k->y);
+						glColor4f(1, 1, 1, alpha / 255.f * k.fade);
+						glTexCoord2f(u0 + (u1 - u0) * k.s, v0 + (v1 - v0) * k.t);
+						glVertex2f(k.x, k.y);
 					}
 				});
 				glEnd();
