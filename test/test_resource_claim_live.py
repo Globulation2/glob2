@@ -79,7 +79,11 @@ class LivePlans(unittest.TestCase):
             self.assertNotIn('resource_claims_shadow', item['config'])
             self.assertNotIn('resource_claims_deep_context', item['config'])
             self.assertEqual(item['build'], bundle['id'])
-        self.assertEqual(result['design']['reserved_bytes'], 6144)
+            self.assertEqual(item['outputs']['log_mode'],'telemetry')
+            self.assertIn('team-timeline',item['outputs']['telemetry'])
+            self.assertIs(item['labels']['require_gameplay_telemetry'],True)
+            self.assertEqual(item['limits']['log_bytes'],128*1024**2)
+        self.assertEqual(result['design']['reserved_bytes'],4*(1024+128*1024**2))
         held = plan(cohort, split, bundle, configs, stage='confirmation', partition='holdout')
         self.assertEqual({j['labels']['initial_state_identity'] for j in held['jobs']}, {'g2'})
 

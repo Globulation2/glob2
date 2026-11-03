@@ -223,6 +223,14 @@ class EngineJob:
             raise ValueError('telemetry log mode requires requested telemetry')
         if job['outputs'].get('log_mode') == 'win-probability' and (self.kind != 'game' or 'team-timeline' not in job['outputs'].get('telemetry', [])):
             raise ValueError('win-probability logs require game team-timeline telemetry')
+        if 'require_gameplay_telemetry' in job.get('labels', {}):
+            required = job['labels']['require_gameplay_telemetry']
+            if type(required) is not bool:
+                raise ValueError('require_gameplay_telemetry must be a boolean')
+            if required and (self.kind != 'game' or
+                    'team-timeline' not in job['outputs'].get('telemetry', []) or
+                    job['outputs'].get('log_mode', 'full') not in ('full', 'telemetry')):
+                raise ValueError('required gameplay telemetry needs game team-timeline and full or telemetry logs')
         if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', DEFAULT_GAME_TICKS) > 4096
                 and 'artifact_bytes' not in job['limits']):
             raise ValueError('detailed checksums for long games require an explicit artifact_bytes limit; use short focused probes')
@@ -333,6 +341,25 @@ class EngineJob:
         if result.get('status') not in ('completed', 'invalid_request', 'generation_failed', 'artifact_failure'):
             raise ValueError('invalid engine completion status')
         if result.get('status') == 'completed':
+            if job.get('labels', {}).get('require_gameplay_telemetry'):
+                from .game_telemetry import parse
+                from .storage import DEFAULT_LOG_BYTES
+                retained = 0
+                found_final = False
+                with gzip.open(Path(attempt_dir) / 'stdout.log.gz', 'rb') as stream:
+                    while True:
+                        line = stream.readline(1024**2 + 1)
+                        if not line:
+                            break
+                        retained += len(line)
+                        if len(line) > 1024**2 or retained > job['limits'].get('log_bytes', DEFAULT_LOG_BYTES):
+                            raise ValueError('gameplay log exceeds collection allowance')
+                        if line.startswith(b'GLOB2_MEASURE '):
+                            _, fields = parse(line.decode('utf-8'))
+                            if fields.get('final') == 1 and type(fields.get('tick')) is int:
+                                found_final = True
+                if not found_final:
+                    raise ValueError('engine did not retain final gameplay telemetry')
             if 'gradient_backend' in job['config'] and result.get('gradient_backend')!=job['config']['gradient_backend']:
                 raise ValueError('engine gradient backend differs from frozen request')
             if 'benchmark_warmup_ticks' in job['config']:

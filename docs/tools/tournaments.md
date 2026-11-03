@@ -286,9 +286,15 @@ For model-based Maxima comparisons, this profile retains only the engine's
 
 For tactical studies that also need Maxima flags and placement decisions, use
 `log_mode: "telemetry"` with the requested `maxima`/`team-timeline` telemetry.
-It retains `MAXIMA_TELEMETRY`, `GLOB2_WINPROB`, `GLOB2_TL`, `GLOB2_ECON` and
-`GLOB2_TIMELINE` records, while omitting unrelated console/performance chatter.
-Other telemetry families require full capture. Requested CSV outputs are unaffected.
+It retains `MAXIMA_TELEMETRY`, `GLOB2_WINPROB`, `GLOB2_TL`, `GLOB2_ECON`,
+`GLOB2_TIMELINE`, `GLOB2_MEASURE`, `GLOB2_MEASURE_HISTORY`, `GLOB2_AI_*` and
+`GLOB2_PERF_*` records, while omitting unrelated console output.
+Probability-only capture omits delivery and labour measurements. Jobs that need
+those measurements can set `labels.require_gameplay_telemetry: true`; validation
+requires game `team-timeline` telemetry with full or telemetry capture, and
+collection rejects a completed game without a retained final measurement record.
+Endpoint analysis must still verify team coverage and observation boundaries.
+Requested CSV outputs are unaffected.
 
 `log_mode` controls stdout retention only; stderr remains diagnostic. The engine
 still emits its ordinary timeline internally. Both console streams are compressed

@@ -152,6 +152,12 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
                           live_stage=stage, live_round=round_id, source_revision=bundle['source_revision'],
                           paired_original_job=original['id'])
             outputs = copy.deepcopy(original['outputs'])
+            # Probability-only logs omit the exact delivery/labour counters.
+            # Preserve typed gameplay records for the frozen paired endpoint.
+            outputs['log_mode']='telemetry'
+            if 'team-timeline' not in outputs.setdefault('telemetry',[]):
+                outputs['telemetry'].append('team-timeline')
+            labels['require_gameplay_telemetry']=True
             outputs['required'] = [name for name in outputs.get('required', []) if not name.startswith('resource-claims-deep/')]
             if 'resource-claims-shadow.jsonl.gz' not in outputs['required']:
                 outputs['required'].append('resource-claims-shadow.jsonl.gz')
@@ -167,6 +173,7 @@ def plan(cohort, split, bundle, configs, *, stage='factor', partition='discovery
             limits = copy.deepcopy(original['limits'])
             if any(type(limits.get(k)) is not int or limits[k] <= 0 for k in ('artifact_bytes', 'log_bytes')):
                 raise ValueError('each attempt needs explicit artifact and log caps')
+            limits['log_bytes']=max(limits['log_bytes'],128*1024**2)
             jobs.append(job('game', bundle['id'], seeds=copy.deepcopy(original['seeds']),
                             config=config, outputs=outputs, limits=limits, labels=labels))
     attempt_bytes = sum(j['limits']['artifact_bytes']+j['limits']['log_bytes'] for j in jobs)
