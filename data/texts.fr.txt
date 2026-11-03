@@ -5663,19 +5663,19 @@ Terre
 [clay]
 Argile
 [gravel]
-Gravier
+Schiste
 [flower_meadow]
 Lande
 [mud]
 Boue
 [marsh]
-Marais
+Vasière
 [deep_snow]
 Neige profonde
 [scree]
 Éboulis
 [dirt_track]
-Chemin de terre
+Chemin de briques
 [boardwalk]
 Passerelle en bois
 [lava]

@@ -5663,19 +5663,19 @@ Tero
 [clay]
 Argilo
 [gravel]
-Gruzo
+Ŝisto
 [flower_meadow]
 Erikejo
 [mud]
 Koto
 [marsh]
-Marĉo
+Ŝlima ebenaĵo
 [deep_snow]
 Profunda neĝo
 [scree]
 Rokrompaĵoj
 [dirt_track]
-Terpado
+Brika vojo
 [boardwalk]
 Tabulpado
 [lava]

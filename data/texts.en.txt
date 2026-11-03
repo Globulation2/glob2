@@ -5639,19 +5639,19 @@ Dirt
 [clay]
 Clay
 [gravel]
-Gravel
+Shale
 [flower_meadow]
 Heath
 [mud]
 Mud
 [marsh]
-Marsh
+Mudflat
 [deep_snow]
 Deep snow
 [scree]
 Scree
 [dirt_track]
-Dirt track
+Brick path
 [boardwalk]
 Boardwalk
 [lava]

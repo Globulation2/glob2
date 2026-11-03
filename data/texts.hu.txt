@@ -5663,19 +5663,19 @@ Föld
 [clay]
 Agyag
 [gravel]
-Kavics
+Pala
 [flower_meadow]
 Hangás
 [mud]
 Sár
 [marsh]
-Mocsár
+Iszapsíkság
 [deep_snow]
 Mély hó
 [scree]
 Kőtörmelék
 [dirt_track]
-Földút
+Téglaút
 [boardwalk]
 Pallóút
 [lava]

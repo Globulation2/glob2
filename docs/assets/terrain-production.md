@@ -24,11 +24,11 @@ input:
 uv venv artifacts/asset-tools/venv
 uv pip install --python artifacts/asset-tools/venv/bin/python -r tools/artwork/requirements.txt
 ENC=artifacts/asset-tools/venv/bin/python
-"$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames
+"$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames and their tileset.json blocks
 "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
 "$ENC" tools/artwork/terrain_synth.py --check               # reproduce and compare
 "$ENC" tools/artwork/terrain_synth.py --emit-catalog        # material blocks and colour initialisers
-"$ENC" tools/artwork/terrain_synth.py --write-catalog       # merge them into tileset.json
+"$ENC" tools/artwork/terrain_synth.py --write-catalog       # refresh tileset.json from committed frames (no render)
 "$ENC" tools/artwork/validate_material.py --all
 "$ENC" -m unittest discover -s tools/artwork -p 'test_*material*.py'
 "$ENC" -m unittest discover -s tools/artwork -p test_terrain_synth.py
@@ -93,29 +93,34 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 | Water, deep water, lava | reserved colour | |
 | Snow and ice (ice, deep snow) | reserved cold white | |
 | Sand | warm fine grain | `sand_look` |
-| Barren (dirt, clay, gravel, heath) | faded colour, broken dry hairline cracks about one native pixel wide | `barren_mark`, `group_cracks` |
-| Paths (road, dirt track, boardwalk) | straight lines (setts, ruts, planks) with a crisp, lighter worn lip | `worn_edge`, `ruts` |
-| Rough (mud, marsh, scree) | heavy lumps, wet pits with a sheen on the lit rim | `lumps`, `wet_pits` |
+| Barren (dirt, clay, shale, heath) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks` |
+| Paths (road, brick path, boardwalk, sandstone tiles) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone` |
+| Rough (mud, mudflat, scree, pumice field) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`, `plates` |
 | Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | ledges whose lit rims fall away into darkness (hole); strata (chasm) | `void_falloff` |
 | Obstacles | tall raised decor | `terrain_decor.py` |
 
-Within the groups: dirt is faded warm earth with a few stones; clay keeps its
-baked plates under the shared cracks; gravel is dry, flat, angular crushed stone
-rather than rounded pebbles, so it no longer reads as road; heath (key
-`flower_meadow`, kept for maps and catalogs) is low dusky heather and dead scrub
-cushions on cracked earth, rather than flowers that read as farmland. Road is
-laid stone setts in straight running-bond courses with rounded corners; dirt
-track has two strong, straight wheel ruts; boardwalk keeps its planks. Mud is
-churned lumps and water-filled pits; marsh is waterlogged tussock mounds,
-standing pools and upright reeds; scree is big, dark, jumbled slabs, each tipped
-to its own brightness. The helpers keep the block contract: geometry comes from
+Within the groups: dirt keeps the original speckled earth and stones under the
+shared cracks; clay is red baked clay in bold plates; shale (key `gravel`, kept
+for maps and catalogs) is big flat plates of grey stone lying over one another;
+heath (key `flower_meadow`) is clumps of dormant and dead heather cushions,
+each built of lit sprig tufts, over pale cracked sandy peat. Paths are all laid by the
+globs, never natural ground: road is stone setts in running-bond courses; brick
+path (key `dirt_track`) is long clay pavers in an axis-aligned herringbone that
+reads the same whichever way the path runs; boardwalk is long weathered planks
+with grain, knots and nails; sandstone tiles are square flags, two by two per
+cell, ochre and grey in a checker. Mud is churned lumps and water-filled pits;
+mudflat (key `marsh`) is desiccated mud in big curled plates split by deep cracks,
+with salt bloom and a few damp sunken plates; scree is big jagged slabs heaped
+over one another, each tipped to its own brightness; pumice field is dark porous
+volcanic rock riddled with vesicles, beside lava and ember field. The helpers keep the block contract: geometry comes from
 the shared stream at the block edge, interiors vary, and any normalisation or
 lighting uses the common reference. Obstacles are lit from the top left and cast
 onto grass, and void casts onto every neighbour. The grass and sand
 looks keep the grain of the classic tile they stand in for and change only its
-colour: lush and dry grass are soft like grass, dune and pale sand speckled at the
-native pixel like sand. Like grass and sand they are four-layout 8×8 block
+colour: lush and dry grass are soft like grass, dune and pale sand speckled like
+sand. All three sands use lit grains one or two native pixels across, half the
+size of the original sand tile's grains. Like grass and sand they are four-layout 8×8 block
 materials, and they take the same pair treatments (`GRASS_LOOKS` and `SAND_LOOKS`
 in the synthesiser).
 
@@ -180,13 +185,11 @@ this profile and applies it to foliage material pairs as well as their decor. He
 strokes and soft crowns. Thicket has sparser olive foliage with visible branches.
 Both rise six native pixels above their ground material and sample one
 continuous canopy texture across a 4×4 block of cells. Thicket has broader
-boundary irregularity and woody gaps between crowns. The other sets are faceted boulders and rubble; for ridge rock, low ledge
-walls with small peaks along a shared grain; and for outcrop, low stepped bedrock
-shelves with sparse lichen. Ridge and outcrop rocks are flat-shaded prisms: a
-convex ring raised into walls, with sloping top facets meeting at an off-centre
-peak, so each face takes one light value. They share the ridges group's ledge
-look: a lit lip along the top of each wall and a short shadow, half the throw of
-the boulders'. The tool writes `data/gfx/terrain-decorN.png`
+boundary irregularity and woody gaps between crowns. The other sets are faceted boulders and rubble, clusters of faceted crags along
+a shared grain, and broad stepped bedrock blocks with sparse lichen. Ridge and
+outcrop rocks are flat-shaded prisms: a convex ring raised into walls, with
+sloping top facets meeting at an off-centre peak, so each face takes one light
+value. The tool writes `data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
 316–427; thicket corner tiles at 428–683 and interiors at 684–795), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--check` reproduces them, and `--sheet`

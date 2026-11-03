@@ -5663,19 +5663,19 @@ Hlina
 [clay]
 Íl
 [gravel]
-Štrk
+Bridlica
 [flower_meadow]
 Vresovisko
 [mud]
 Blato
 [marsh]
-Močiar
+Bahnitá pláň
 [deep_snow]
 Hlboký sneh
 [scree]
 Suť
 [dirt_track]
-Poľná cesta
+Tehlová cesta
 [boardwalk]
 Drevený chodník
 [lava]

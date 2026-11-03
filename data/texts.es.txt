@@ -5663,19 +5663,19 @@ Tierra
 [clay]
 Arcilla
 [gravel]
-Grava
+Pizarra
 [flower_meadow]
 Brezal
 [mud]
 Barro
 [marsh]
-Pantano
+Llanura de barro
 [deep_snow]
 Nieve profunda
 [scree]
 Pedregal
 [dirt_track]
-Camino de tierra
+Camino de ladrillo
 [boardwalk]
 Pasarela de madera
 [lava]

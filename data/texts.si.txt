@@ -5663,19 +5663,19 @@ Prst
 [clay]
 Glina
 [gravel]
-Prod
+Skrilavec
 [flower_meadow]
 Resava
 [mud]
 Blato
 [marsh]
-Močvirje
+Blatna ravnica
 [deep_snow]
 Globok sneg
 [scree]
 Melišče
 [dirt_track]
-Kolovoz
+Opečna pot
 [boardwalk]
 Lesena pot
 [lava]

@@ -5663,19 +5663,19 @@ Terra
 [clay]
 Argilla
 [gravel]
-Ghiaia
+Scisto
 [flower_meadow]
 Brughiera
 [mud]
 Fango
 [marsh]
-Palude
+Piana fangosa
 [deep_snow]
 Neve profonda
 [scree]
 Ghiaione
 [dirt_track]
-Strada sterrata
+Sentiero di mattoni
 [boardwalk]
 Passerella in legno
 [lava]

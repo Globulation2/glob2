@@ -5663,19 +5663,19 @@ Hlína
 [clay]
 Jíl
 [gravel]
-Štěrk
+Břidlice
 [flower_meadow]
 Vřesoviště
 [mud]
 Bláto
 [marsh]
-Bažina
+Bahnitá pláň
 [deep_snow]
 Hluboký sníh
 [scree]
 Suť
 [dirt_track]
-Polní cesta
+Cihlová cesta
 [boardwalk]
 Dřevěný chodník
 [lava]

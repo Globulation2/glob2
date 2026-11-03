@@ -5663,19 +5663,19 @@ Aarde
 [clay]
 Klei
 [gravel]
-Grind
+Schalie
 [flower_meadow]
 Heide
 [mud]
 Modder
 [marsh]
-Moeras
+Slikvlakte
 [deep_snow]
 Diepe sneeuw
 [scree]
 Puinhelling
 [dirt_track]
-Aarden pad
+Klinkerpad
 [boardwalk]
 Vlonderpad
 [lava]

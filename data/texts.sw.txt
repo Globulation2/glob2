@@ -5639,19 +5639,19 @@ Udongo
 [clay]
 Udongo wa mfinyanzi
 [gravel]
-Changarawe
+Shale
 [flower_meadow]
 Nyika ya vichaka
 [mud]
 Tope
 [marsh]
-Kinamasi
+Uwanda wa matope
 [deep_snow]
 Theluji nene
 [scree]
 Kokoto za mteremkoni
 [dirt_track]
-Njia ya udongo
+Njia ya matofali
 [boardwalk]
 Njia ya mbao
 [lava]

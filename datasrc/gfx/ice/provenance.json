@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "3140917400c460186685603d597f0172c5ffc6af4567d48aea07f87c8924b3db",
+    "tools/artwork/terrain_synth.py": "2554e7623fcacc0bb5b14ca1d9a1b43cabf8a62215e1dd057755898fec337f9f",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "ice",

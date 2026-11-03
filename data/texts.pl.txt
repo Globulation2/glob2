@@ -5663,19 +5663,19 @@ Ziemia
 [clay]
 Glina
 [gravel]
-Żwir
+Łupek
 [flower_meadow]
 Wrzosowisko
 [mud]
 Błoto
 [marsh]
-Mokradła
+Równina błotna
 [deep_snow]
 Głęboki śnieg
 [scree]
 Piarg
 [dirt_track]
-Droga gruntowa
+Ścieżka z cegły
 [boardwalk]
 Drewniany chodnik
 [lava]

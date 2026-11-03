@@ -5639,19 +5639,19 @@ Jord
 [clay]
 Leire
 [gravel]
-Grus
+Skifer
 [flower_meadow]
 Lynghei
 [mud]
 Søle
 [marsh]
-Myr
+Mudderflate
 [deep_snow]
 Dyp snø
 [scree]
 Ur
 [dirt_track]
-Grusvei
+Teglsteinsti
 [boardwalk]
 Plankesti
 [lava]

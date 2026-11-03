@@ -5663,19 +5663,19 @@ Tanah
 [clay]
 Tanah liat
 [gravel]
-Kerikil
+Serpih
 [flower_meadow]
 Padang semak
 [mud]
 Lumpur
 [marsh]
-Rawa
+Dataran lumpur
 [deep_snow]
 Salju tebal
 [scree]
 Lereng berbatu
 [dirt_track]
-Jalan tanah
+Jalan bata
 [boardwalk]
 Jalan papan
 [lava]

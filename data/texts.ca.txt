@@ -5663,19 +5663,19 @@ Terra
 [clay]
 Argila
 [gravel]
-Grava
+Pissarra
 [flower_meadow]
 Bruguerar
 [mud]
 Fang
 [marsh]
-Aiguamoll
+Plana de fang
 [deep_snow]
 Neu profunda
 [scree]
 Tartera
 [dirt_track]
-Camí de terra
+Camí de maó
 [boardwalk]
 Passarel·la de fusta
 [lava]

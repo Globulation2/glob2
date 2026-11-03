@@ -5663,19 +5663,19 @@ Terra
 [clay]
 Argila
 [gravel]
-Cascalho
+Xisto
 [flower_meadow]
 Charneca
 [mud]
 Lama
 [marsh]
-Pântano
+Planície de lama
 [deep_snow]
 Neve profunda
 [scree]
 Cascalheira
 [dirt_track]
-Caminho de terra
+Caminho de tijolos
 [boardwalk]
 Passarela de madeira
 [lava]

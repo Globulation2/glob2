@@ -5639,19 +5639,19 @@ Tanah
 [clay]
 Tanah liat
 [gravel]
-Kerikil
+Syal
 [flower_meadow]
 Padang belukar
 [mud]
 Lumpur
 [marsh]
-Paya
+Dataran lumpur
 [deep_snow]
 Salji tebal
 [scree]
 Timbunan serpihan batu
 [dirt_track]
-Laluan tanah
+Laluan bata
 [boardwalk]
 Laluan pejalan kaki
 [lava]

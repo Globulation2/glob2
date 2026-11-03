@@ -5663,19 +5663,19 @@ Lupa
 [clay]
 Luwad
 [gravel]
-graba
+Shale
 [flower_meadow]
 Tuyong kaparangan
 [mud]
 Putik
 [marsh]
-Latian
+Kapatagang putik
 [deep_snow]
 Malalim na niyebe
 [scree]
 Bunton ng maliliit na bato
 [dirt_track]
-Daanan ng lupa
+Daang ladrilyo
 [boardwalk]
 Daanang kahoy
 [lava]

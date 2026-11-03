@@ -10220,7 +10220,7 @@
       "key": "dirt",
       "sprite": "data/gfx/terrain-dirt",
       "profile": "soft",
-      "preview": [140, 111, 80],
+      "preview": [124, 99, 75],
       "variants": [
         {
           "frame": 0,
@@ -11250,7 +11250,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [140, 111, 80],
+      "minimap": [124, 99, 75],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -11261,7 +11261,7 @@
       "key": "clay",
       "sprite": "data/gfx/terrain-clay",
       "profile": "soft",
-      "preview": [154, 115, 89],
+      "preview": [175, 107, 77],
       "variants": [
         {
           "frame": 0,
@@ -12291,7 +12291,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [154, 115, 89],
+      "minimap": [175, 107, 77],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -12302,7 +12302,7 @@
       "key": "gravel",
       "sprite": "data/gfx/terrain-gravel",
       "profile": "rock",
-      "preview": [142, 136, 128],
+      "preview": [142, 136, 127],
       "variants": [
         {
           "frame": 0,
@@ -13332,7 +13332,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [142, 136, 128],
+      "minimap": [142, 136, 127],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -13343,7 +13343,7 @@
       "key": "flower_meadow",
       "sprite": "data/gfx/terrain-flower_meadow",
       "profile": "brush",
-      "preview": [113, 96, 90],
+      "preview": [113, 95, 90],
       "variants": [
         {
           "frame": 0,
@@ -14373,7 +14373,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [113, 96, 90],
+      "minimap": [113, 95, 90],
       "seam": {
         "height": 2,
         "cast_q8": 56,
@@ -18545,7 +18545,7 @@
       "key": "dirt_track",
       "sprite": "data/gfx/terrain-dirt_track",
       "profile": "sand",
-      "preview": [169, 142, 106],
+      "preview": [169, 142, 107],
       "variants": [
         {
           "frame": 0,
@@ -19575,7 +19575,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [169, 142, 106],
+      "minimap": [169, 142, 107],
       "seam": {
         "height": 3,
         "cast_q8": 48,
@@ -29615,7 +29615,7 @@
       "key": "dune_sand",
       "sprite": "data/gfx/terrain-dune_sand",
       "profile": "sand",
-      "preview": [202, 150, 85],
+      "preview": [202, 150, 84],
       "variants": [
         {
           "frame": 0,
@@ -30645,7 +30645,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [202, 150, 85],
+      "minimap": [202, 150, 84],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -30656,7 +30656,7 @@
       "key": "pale_sand",
       "sprite": "data/gfx/terrain-pale_sand",
       "profile": "sand",
-      "preview": [210, 201, 168],
+      "preview": [210, 200, 167],
       "variants": [
         {
           "frame": 0,
@@ -31686,7 +31686,7 @@
       "edges": "periodic",
       "variant_grid": 8,
       "variant_blocks": 4,
-      "minimap": [210, 201, 168],
+      "minimap": [210, 200, 167],
       "seam": {
         "height": 2,
         "cast_q8": 40,

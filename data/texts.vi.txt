@@ -5663,19 +5663,19 @@ Sống đá
 [clay]
 Đất sét
 [gravel]
-Sỏi
+Đá phiến
 [flower_meadow]
 Đồng cây bụi
 [mud]
 Bùn
 [marsh]
-Đầm lầy
+Bãi bùn
 [deep_snow]
 Tuyết dày
 [scree]
 Sườn đá vụn
 [dirt_track]
-Đường đất
+Lối lát gạch
 [boardwalk]
 Lối ván gỗ
 [lava]

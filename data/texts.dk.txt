@@ -5663,19 +5663,19 @@ Jord
 [clay]
 Ler
 [gravel]
-Grus
+Skifer
 [flower_meadow]
 Hede
 [mud]
 Mudder
 [marsh]
-Sump
+Mudderflade
 [deep_snow]
 Dyb sne
 [scree]
 Stenur
 [dirt_track]
-Jordsti
+Murstenssti
 [boardwalk]
 Plankesti
 [lava]

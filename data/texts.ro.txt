@@ -5663,19 +5663,19 @@ Pământ
 [clay]
 Argilă
 [gravel]
-Pietriș
+Șist
 [flower_meadow]
 Landă
 [mud]
 Noroi
 [marsh]
-Mlaștină
+Câmpie de mâl
 [deep_snow]
 Zăpadă adâncă
 [scree]
 Grohotiș
 [dirt_track]
-Drum de pământ
+Alee de cărămidă
 [boardwalk]
 Podeț de lemn
 [lava]

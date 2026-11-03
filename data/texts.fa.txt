@@ -5663,19 +5663,19 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [clay]
 رس
 [gravel]
-شن
+شیل
 [flower_meadow]
 خلنگزار
 [mud]
 گل‌ولای
 [marsh]
-مرداب
+دشت گلی
 [deep_snow]
 برف عمیق
 [scree]
 دامنهٔ سنگ‌ریزه
 [dirt_track]
-راه خاکی
+مسیر آجری
 [boardwalk]
 گذرگاه چوبی
 [lava]

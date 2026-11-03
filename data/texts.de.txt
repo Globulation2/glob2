@@ -5663,19 +5663,19 @@ Erde
 [clay]
 Ton
 [gravel]
-Kies
+Schiefer
 [flower_meadow]
 Heide
 [mud]
 Schlamm
 [marsh]
-Sumpf
+Schlammebene
 [deep_snow]
 Tiefer Schnee
 [scree]
 Geröll
 [dirt_track]
-Feldweg
+Ziegelpflaster
 [boardwalk]
 Bohlenweg
 [lava]

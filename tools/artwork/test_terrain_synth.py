@@ -46,7 +46,7 @@ class TerrainSynth(unittest.TestCase):
 
     def test_every_catalogue_type_has_a_recipe(self):
         self.assertEqual(sorted(synth.RECIPES), sorted(synth.SYNTH_ORDER))
-        self.assertEqual(len(synth.BUILTIN_ORDER), 28)
+        self.assertEqual(len(synth.BUILTIN_ORDER), 30)
         for name, recipe in synth.RECIPES.items():
             self.assertEqual(recipe.name, name)
             self.assertIn(recipe.profile, ("rock", "soft", "crisp", "brush", "sand", "fractured", "cliff", "cobblestone", "frozen",
@@ -179,7 +179,7 @@ class TerrainSynth(unittest.TestCase):
         trail = style_stats(reference_tiles("trail"))
         self.assertLess(grass["std"], 8)
         self.assertLess(trail["std"], 14)
-        for name in ("dirt", "clay", "mud", "dirt_track", "loam", "moss", "spring_meadow", "deep_snow"):
+        for name in ("dirt", "clay", "mud", "loam", "moss", "spring_meadow", "deep_snow"):
             stats = style_stats(self.tiles(name))
             with self.subTest(material=name):
                 self.assertLessEqual(stats["std"], 14)

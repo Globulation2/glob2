@@ -5663,19 +5663,19 @@ Jord
 [clay]
 Lera
 [gravel]
-Grus
+Skiffer
 [flower_meadow]
 Ljunghed
 [mud]
 Gyttja
 [marsh]
-Kärr
+Lerslätt
 [deep_snow]
 Djup snö
 [scree]
 Rasbrant
 [dirt_track]
-Jordstig
+Tegelgång
 [boardwalk]
 Spång
 [lava]

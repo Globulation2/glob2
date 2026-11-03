@@ -5663,19 +5663,19 @@ Multa
 [clay]
 Savi
 [gravel]
-Sora
+Liuske
 [flower_meadow]
 Nummi
 [mud]
 Muta
 [marsh]
-Suo
+Mutatasanko
 [deep_snow]
 Syvä lumi
 [scree]
 Kivirakka
 [dirt_track]
-Maapolku
+Tiilipolku
 [boardwalk]
 Pitkospuut
 [lava]

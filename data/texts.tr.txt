@@ -5663,19 +5663,19 @@ Toprak
 [clay]
 Kil
 [gravel]
-Çakıl
+Şeyl
 [flower_meadow]
 Fundalık
 [mud]
 Çamur
 [marsh]
-Bataklık
+Çamur düzlüğü
 [deep_snow]
 Derin kar
 [scree]
 Taş döküntüsü
 [dirt_track]
-Toprak yol
+Tuğla yol
 [boardwalk]
 Ahşap yol
 [lava]

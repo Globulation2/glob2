@@ -5663,19 +5663,19 @@ Lurra
 [clay]
 Buztina
 [gravel]
-Legarra
+Arbela
 [flower_meadow]
 Txilardia
 [mud]
 Lokatza
 [marsh]
-Padura
+Lokatz-lautada
 [deep_snow]
 Elur sakona
 [scree]
 Harrizko malda
 [dirt_track]
-Lurrezko bidea
+Adreiluzko bidea
 [boardwalk]
 Zurezko pasabidea
 [lava]

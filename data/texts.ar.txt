@@ -5663,19 +5663,19 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [clay]
 طين صلصالي
 [gravel]
-حصى
+طفل صفحي
 [flower_meadow]
 أرض الخلنج
 [mud]
 وحل
 [marsh]
-مستنقع
+سهل طيني
 [deep_snow]
 ثلج عميق
 [scree]
 منحدر ركام صخري
 [dirt_track]
-طريق ترابي
+ممر من الطوب
 [boardwalk]
 ممر خشبي
 [lava]
