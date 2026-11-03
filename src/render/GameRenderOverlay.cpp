@@ -34,6 +34,8 @@
 #include "ReplayWriter.h"
 
 #include "GameAnimations.h"
+#include "SpawnEffectArt.h"
+#include "unit/render/ColonySkinPreview.h"
 
 #define BULLET_IMGID 0
 
@@ -129,6 +131,44 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 		}
 		globalContainer->gfx->finishDrawingSprite(globalContainer->deathAnimation, 255);
 	}
+}
+
+void Game::drawMapSpawnEffects(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
+{
+	// drawMap indexes spawns only for renderers that draw them.
+	if (view.render.spawnedUnits.empty())
+		return;
+	PERF_SCOPE_TIME(Effects);
+	const SceneEntities &entities = scene.entities;
+	const SceneMap &map = scene.map;
+	Uint32 visibleTeams = entities.teams[localTeam].mask;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
+	const int mapPixW = map.getW() << 5, mapPixH = map.getH() << 5;
+	SpawnEffectArt &art = view.render.spawnArt();
+	GAGCore::GraphicContext &gfx = *globalContainer->gfx;
+	Sprite::flushBatches(&gfx);
+	for (const SceneSectorEffects &sector : entities.sectors)
+		for (const SceneSpawnAnimation &spawn : sector.spawns)
+		{
+			const float age = spawn.age + view.render.unitMotion;
+			if (age >= SpawnEffect::DustTicks || !map.isFOWDiscovered(spawn.x, spawn.y, visibleTeams))
+				continue;
+			auto color = presentationColor(entities.teams[spawn.team].color);
+			if (const auto chosen = view.render.skinPreview().buildingColor(spawn.team))
+				color = GAGCore::Color((*chosen >> 16) & 255, (*chosen >> 8) & 255, *chosen & 255);
+			const float hue = SpawnEffectArt::hueOf(color);
+			int x, y;
+			map.mapCaseToDisplayable(spawn.x, spawn.y, &x, &y, viewportX, viewportY);
+			// The cloud is centred on the birth tile and reaches about two tiles.
+			const int centreX = x + 16, centreY = y + 16, reach = 72;
+			forEachMapCopy(centreX - reach, centreY - reach, centreX + reach, centreY + reach,
+				mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
+					const float cx = float(centreX + dx), cy = float(centreY + dy);
+					SpawnEffect::forEachDustGlow(age, [&](const SpawnEffect::Glow &glow) { art.draw(gfx, hue, cx, cy, glow, 1); });
+					SpawnEffect::forEachDustMote(SpawnEffect::seedOf(spawn.x, spawn.y, spawn.unit), age,
+						[&](const SpawnEffect::Sparkle &mote) { art.draw(gfx, hue, cx, cy, mote, 1); });
+				});
+		}
 }
 
 namespace

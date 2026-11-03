@@ -244,9 +244,18 @@ ColonySkinPreview::~ColonySkinPreview() {
 		request.cancel();
 }
 
+namespace
+{
+GAGCore::Color glowColor(std::uint32_t rgb)
+{
+	return GAGCore::Color((rgb >> 16) & 255, (rgb >> 8) & 255, rgb & 255);
+}
+}
+
 bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team, int action,
 							 int direction, int delta, float x, float y,
-							 GAGCore::SkinShadow shadow, std::uint8_t alpha)
+							 GAGCore::SkinShadow shadow, std::uint8_t alpha,
+							 std::uint32_t glowRgb, std::uint8_t glowAlpha)
 {
 	if (!visible || team < 0 || team >= 32 || direction < 0 || direction > 8 || delta < 0 ||
 		delta > 255)
@@ -271,11 +280,12 @@ bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team, i
 	const float offset = (size - 32) / 2;
 	return gfx.drawSkinMesh(*mesh, unitSkinMeshFrame(direction, delta), *textures[team],
 							*materials[team], unitRegion(type), x - offset, y - offset, size, size,
-							shadow, alpha);
+							shadow, alpha, glowColor(glowRgb), glowAlpha);
 }
 
 bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
-								  float width, float height, std::uint8_t alpha)
+								  float width, float height, std::uint8_t alpha,
+								  std::uint32_t glowRgb, std::uint8_t glowAlpha)
 {
 	if (!visible)
 		return false;
@@ -285,7 +295,7 @@ bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team, float 
     const auto *mesh = swarmMesh(team);
     // Whichever mesh is chosen, the swarm is painted from the swarm quadrant.
     return mesh && gfx.drawSkinMesh(*mesh, 0, *textures[team], *materials[team], GAGCore::SkinRegionSwarm,
-                                    x, y, width, height, {}, alpha);
+                                    x, y, width, height, {}, alpha, glowColor(glowRgb), glowAlpha);
 }
 
 const GAGCore::SkinMesh *ColonySkinPreview::swarmMesh(int team) const

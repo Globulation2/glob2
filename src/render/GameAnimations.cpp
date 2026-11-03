@@ -5,6 +5,7 @@
 #include "GameAnimations.h"
 
 #include "GlobalContainer.h"
+#include "SpawnEffects.h"
 #include "map/Map.h"
 
 UnitDeathAnimation::UnitDeathAnimation(int x, int y, Team *team)
@@ -31,6 +32,7 @@ void GameAnimations::resize(int sectorCount)
 	clear();
 	sectorExplosions.resize(sectorCount);
 	sectorDeathAnimations.resize(sectorCount);
+	sectorSpawnAnimations.resize(sectorCount);
 }
 
 void GameAnimations::clear()
@@ -47,6 +49,8 @@ void GameAnimations::clear()
 			delete a;
 		bucket.clear();
 	}
+	for (auto& bucket : sectorSpawnAnimations)
+		bucket.clear();
 }
 
 void GameAnimations::onBulletImpact(const Map& map, int x, int y)
@@ -69,10 +73,26 @@ void GameAnimations::onUnitDeath(const Map& map, int x, int y, Team *team)
 	sectorDeathAnimations[idx].push_back(new UnitDeathAnimation(x, y, team));
 }
 
+void GameAnimations::onUnitSpawn(const Map& map, int x, int y, Team *team, Uint16 unitGid,
+	Uint16 buildingGid, int dx, int dy)
+{
+	if (!enabled)
+		return;
+	// step() runs later in the same tick, so the effect is first captured at age 0.
+	sectorSpawnAnimations[map.getSectorIndex(x, y)].push_back(
+		{x, y, -1, team, unitGid, buildingGid, Sint8(dx), Sint8(dy)});
+}
+
 void GameAnimations::step()
 {
 	if (!enabled)
 		return;
+	for (auto& bucket : sectorSpawnAnimations)
+	{
+		for (auto& spawn : bucket)
+			++spawn.age;
+		std::erase_if(bucket, [](const UnitSpawnAnimation& spawn) { return spawn.age >= SpawnEffect::LifetimeTicks; });
+	}
 	for (auto& bucket : sectorExplosions)
 	{
 		for (auto it = bucket.begin(); it != bucket.end(); )

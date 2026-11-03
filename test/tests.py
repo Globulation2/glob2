@@ -317,6 +317,7 @@ UNIT_TESTS = [
     '#src/render/overlay/OverlayFillTest.cpp',
     '#src/render/ZoomDetailTest.cpp',
     '#src/render/FogFadeTest.cpp',
+    '#src/render/SpawnEffectsTest.cpp',
     '#src/team/stats/MetricSeriesTest.cpp',
     '#src/game/rules/TeamLayoutTest.cpp',
     '#src/hud/input/PanelButtonHitTest.cpp',

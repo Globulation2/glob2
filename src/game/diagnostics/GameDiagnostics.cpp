@@ -62,6 +62,7 @@ size_t sceneBytes(const Game& game)
 		{
 			bytes += 4*game.animations->getExplosions(i).size()*sizeof(SceneExplosion);
 			bytes += 4*game.animations->getDeathAnimations(i).size()*sizeof(SceneDeathAnimation);
+			bytes += 4*game.animations->getSpawnAnimations(i).size()*sizeof(SceneSpawnAnimation);
 		}
 	}
 	for (int p=0; p<game.gameHeader.getNumberOfPlayers(); ++p)

@@ -5,6 +5,7 @@
 
 
 #include <list>
+#include <SDL3/SDL_stdinc.h>
 #include <vector>
 
 class Map;
@@ -27,7 +28,20 @@ struct UnitDeathAnimation
 	Team *team;
 };
 
-//! Per-game render container for bullet explosions and unit death animations.
+//! A unit a swarm has just produced, for the spawn effect (SpawnEffects.h).
+//! Render-only, like the death animation; the team pointer only colors it.
+struct UnitSpawnAnimation
+{
+	int x, y;          //!< birth tile, where the dust cloud stays
+	int age;           //!< ticks since the spawn, captured as 0 on its first tick
+	Team *team;
+	Uint16 unitGid;     //!< the new unit, which fades in
+	Uint16 buildingGid; //!< the swarm that produced it, which glows
+	Sint8 dx, dy;       //!< direction the unit leaves the swarm in
+};
+
+//! Per-game render container for bullet explosions, unit death animations and
+//! unit spawn effects.
 //!
 //! These two effect lists used to live on Sector, alongside the sim-state
 //! bullets list. That mixed render state with sim state and forced sim sites
@@ -69,6 +83,10 @@ public:
 	//! @param map needed to map (x,y) to a sector index.
 	void onUnitDeath(const Map& map, int x, int y, Team *team);
 
+	//! Record a unit produced by a swarm. No-op when disabled.
+	void onUnitSpawn(const Map& map, int x, int y, Team *team, Uint16 unitGid,
+		Uint16 buildingGid, int dx, int dy);
+
 	//! Tick down ticksLeft on every stored animation and remove the finished
 	//! ones. Called once per simulation tick from Map::syncStep.
 	void step();
@@ -78,10 +96,13 @@ public:
 		{ return sectorExplosions[sectorIdx]; }
 	const std::list<UnitDeathAnimation *>& getDeathAnimations(int sectorIdx) const
 		{ return sectorDeathAnimations[sectorIdx]; }
+	const std::vector<UnitSpawnAnimation>& getSpawnAnimations(int sectorIdx) const
+		{ return sectorSpawnAnimations[sectorIdx]; }
 
 private:
 	bool enabled;
 	std::vector<std::list<BulletExplosion *>> sectorExplosions;
 	std::vector<std::list<UnitDeathAnimation *>> sectorDeathAnimations;
+	std::vector<std::vector<UnitSpawnAnimation>> sectorSpawnAnimations;
 };
 

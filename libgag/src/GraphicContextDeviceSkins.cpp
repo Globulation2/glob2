@@ -147,7 +147,8 @@ void GraphicContext::prepareDeviceSkinMeshes(const std::vector<SkinMeshRequest> 
         } catch(...) {endDeviceTarget();deviceSkinState.reset();throw;}
     }
 }
-bool GraphicContext::drawDeviceSkinMesh(const SkinMeshRequest &request,float x,float y,float w,float h,SkinShadow underlay,Uint8 alpha) {
+bool GraphicContext::drawDeviceSkinMesh(const SkinMeshRequest &request,float x,float y,float w,float h,SkinShadow underlay,Uint8 alpha,
+    Color glow,Uint8 glowAlpha) {
     if(!validDeviceSkin(request) || !rendererCapabilities().liveSkins) return false;
     prepareDeviceSkinMeshes({request});
     if(!deviceSkinState) return false;
@@ -159,7 +160,13 @@ bool GraphicContext::drawDeviceSkinMesh(const SkinMeshRequest &request,float x,f
     packet.source={int(tile%Columns*TileSize),int(tile/Columns*TileSize),TileSize,TileSize};
     packet.destination={x-w*(Padding-1)/2,y-h*(Padding-1)/2,w*Padding,h*Padding};
     packet.alpha=alpha;packet.linear=true;packet.blend=DrawPacket::Blend::Premultiplied;
-    return submitDevicePacket(std::move(packet));
+    DrawPacket brighten=packet;
+    if(!submitDevicePacket(std::move(packet))) return false;
+    if(glowAlpha==0 || alpha==0) return true;
+    // The premultiplied tile, tinted and added: brighter where the mesh is.
+    brighten.blend=DrawPacket::Blend::Additive;brighten.color={glow.r,glow.g,glow.b,255};
+    brighten.alpha=Uint8(unsigned(glowAlpha)*alpha/255);
+    return submitDevicePacket(std::move(brighten));
 }
 bool GraphicContext::readDeviceSkinMesh(const SkinMeshRequest &request,std::vector<std::uint8_t> &rgba) {
     // Promise-based WebGPU readback is exposed through asynchronous captures;

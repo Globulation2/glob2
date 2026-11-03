@@ -38,11 +38,14 @@ struct Session
 struct BulletRecord { Sint32 px, py, speedX, speedY, ticksLeft, ticksInitial; };
 struct ExplosionRecord { int x, y, ticksLeft; };
 struct DeathRecord { int x, y, ticksLeft, team; };
+// Unit and building gids name the produced unit and the swarm that produced it.
+struct SpawnRecord { int x, y, age, team; Uint16 unit, building; Sint8 dx, dy; };
 struct SectorEffects
 {
     std::vector<BulletRecord> bullets;
     std::vector<ExplosionRecord> explosions;
     std::vector<DeathRecord> deaths;
+    std::vector<SpawnRecord> spawns;
 };
 struct Effects { std::vector<SectorEffects> sectors; };
 struct StatisticsInputs {

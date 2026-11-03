@@ -465,12 +465,14 @@ Handle capture(const Game& game,
         const auto count=game.map.getSectorW()*game.map.getSectorH();
         effects->sectors.resize(count);
         for (int i=0;i<count;++i) {
-            auto& sector=effects->sectors[i]; sector.bullets.clear(); sector.explosions.clear(); sector.deaths.clear();
+            auto& sector=effects->sectors[i]; sector.bullets.clear(); sector.explosions.clear(); sector.deaths.clear(); sector.spawns.clear();
             for (const auto* b:const_cast<Map&>(game.map).getSector(i)->bullets)
                 sector.bullets.push_back({b->px,b->py,b->speedX,b->speedY,b->ticksLeft,b->ticksInitial});
             if (game.animations) {
                 for (const auto* e:game.animations->getExplosions(i)) sector.explosions.push_back({e->x,e->y,e->ticksLeft});
                 for (const auto* d:game.animations->getDeathAnimations(i)) sector.deaths.push_back({d->x,d->y,d->ticksLeft,d->team->teamNumber});
+                for (const auto& s:game.animations->getSpawnAnimations(i))
+                    sector.spawns.push_back({s.x,s.y,s.age,s.team->teamNumber,s.unitGid,s.buildingGid,s.dx,s.dy});
             }
         }
         result->effects=std::move(effects);

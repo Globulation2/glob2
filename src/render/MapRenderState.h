@@ -9,10 +9,12 @@
 #include <SDL3/SDL_stdinc.h>
 
 #include <memory>
+#include <unordered_map>
 #include <valarray>
 
 class DynamicClouds;
 class ColonySkinPreview;
+class SpawnEffectArt;
 namespace GAGCore { class DrawableSurface; }
 class SoftwareTerrainCache;
 class OverviewTerrainCache;
@@ -55,10 +57,17 @@ struct MapRenderState
 	MapOverlayQueue overlays;
 	//! PresentationFrame explicitly prepared by a standalone owner before drawing.
 	PresentationFrame ownScene;
+	//! Swarm spawn effects this frame draws (SpawnEffects.h): the record of each
+	//! newly produced unit by its gid, and each producing swarm's glow opacity by
+	//! its gid. Set by Game::drawMap; empty when the renderer does not draw them.
+	std::unordered_map<Uint16, SceneSpawnAnimation> spawnedUnits;
+	std::unordered_map<Uint16, float> swarmGlows;
 
 	//! The cloud field for this view, created on first use.
 	DynamicClouds &clouds();
 	ColonySkinPreview &skinPreview();
+	//! The spawn effect's procedural images, created on first use.
+	SpawnEffectArt &spawnArt();
 	// Keep match appearance while rebuilding the rest of a reconnect view.
 	void swapSkinPreview(MapRenderState &other);
 	//! The terrain page cache for map, rebuilt when the map was replaced.
@@ -70,6 +79,7 @@ struct MapRenderState
 private:
 	std::unique_ptr<DynamicClouds> clouds_;
 	std::unique_ptr<ColonySkinPreview> skinPreview_;
+	std::unique_ptr<SpawnEffectArt> spawnArt_;
 	std::unique_ptr<SoftwareTerrainCache> terrainCache_;
 	Uint64 terrainCacheMap = 0; //!< Map::identity() the cache was built for.
 };

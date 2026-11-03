@@ -748,11 +748,12 @@ bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<st
 }
 bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
                                   DrawableSurface &material, std::uint8_t region,
-                                  float x, float y, float w, float h, SkinShadow underlay, Uint8 alpha)
+                                  float x, float y, float w, float h, SkinShadow underlay, Uint8 alpha,
+                                  Color glow, Uint8 glowAlpha)
 {
     PERF_SCOPE_TIME(SkinComposite);
     const SkinMeshRequest request{&mesh, frame, &texture, &material, region};
-    if (presentationDevice && renderer == deviceRenderer.get()) return drawDeviceSkinMesh(request, x, y, w, h, underlay, alpha);
+    if (presentationDevice && renderer == deviceRenderer.get()) return drawDeviceSkinMesh(request, x, y, w, h, underlay, alpha, glow, glowAlpha);
     if (!valid(request)) return false;
     if (alpha == 0) return true;
     const auto key = keyFor(request);
@@ -782,7 +783,21 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
     glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u+extent,v+extent); glVertex2f(x+w,y);
     glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u+extent,v); glVertex2f(x+w,y+h);
     glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u,v); glVertex2f(x,y+h);
-    glEnd(); glColor4f(1,1,1,1); glState.blendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); ++drawCalls;
+    glEnd();
+    if (glowAlpha)
+    {
+        // The premultiplied tile again, tinted and added: brighter where the mesh is.
+        const float o = opacity * glowAlpha / 255.f;
+        const float r = o * glow.r / 255.f, g = o * glow.g / 255.f, b = o * glow.b / 255.f;
+        glState.blendFunc(GL_ONE,GL_ONE);
+        glBegin(GL_QUADS);
+        glColor4f(r,g,b,o); glTexCoord2f(u,v+extent); glVertex2f(x,y);
+        glColor4f(r,g,b,o); glTexCoord2f(u+extent,v+extent); glVertex2f(x+w,y);
+        glColor4f(r,g,b,o); glTexCoord2f(u+extent,v); glVertex2f(x+w,y+h);
+        glColor4f(r,g,b,o); glTexCoord2f(u,v); glVertex2f(x,y+h);
+        glEnd(); ++drawCalls;
+    }
+    glColor4f(1,1,1,1); glState.blendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); ++drawCalls;
     return true;
 }
 }
@@ -792,6 +807,6 @@ namespace GAGCore
 bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<std::uint8_t> &rgba) { return presentationDevice && renderer == deviceRenderer.get() && readDeviceSkinMesh(request, rgba); }
 void GraphicContext::destroySkinRenderer() { skinResources = {}; }
 void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests) { if (presentationDevice && renderer == deviceRenderer.get()) prepareDeviceSkinMeshes(requests); }
-bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &paint, DrawableSurface &material, std::uint8_t region, float x,float y,float w,float h, SkinShadow underlay, Uint8 alpha) { return presentationDevice && renderer == deviceRenderer.get() && drawDeviceSkinMesh({&mesh, frame, &paint, &material, region}, x,y,w,h,underlay,alpha); }
+bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &paint, DrawableSurface &material, std::uint8_t region, float x,float y,float w,float h, SkinShadow underlay, Uint8 alpha, Color glow, Uint8 glowAlpha) { return presentationDevice && renderer == deviceRenderer.get() && drawDeviceSkinMesh({&mesh, frame, &paint, &material, region}, x,y,w,h,underlay,alpha,glow,glowAlpha); }
 }
 #endif

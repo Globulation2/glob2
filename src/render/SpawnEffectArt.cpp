@@ -1,0 +1,199 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "SpawnEffectArt.h"
+
+#include <algorithm>
+#include <cmath>
+#include <stdexcept>
+#include <utility>
+
+using GAGCore::Color;
+using GAGCore::DrawableSurface;
+
+namespace
+{
+constexpr int Size = 64;  //!< pixels across each image
+constexpr int Samples = 4; //!< per pixel side, for antialiased edges
+
+struct Rgba { float r, g, b, a; };
+
+Rgba hsl(float hue, float saturation, float lightness, float alpha = 1)
+{
+	const float c = (1 - std::fabs(2 * lightness - 1)) * saturation;
+	const float h = std::fmod(std::fmod(hue, 360.f) + 360.f, 360.f) / 60;
+	const float x = c * (1 - std::fabs(std::fmod(h, 2.f) - 1)), m = lightness - c / 2;
+	float r = 0, g = 0, b = 0;
+	if (h < 1) { r = c; g = x; }
+	else if (h < 2) { r = x; g = c; }
+	else if (h < 3) { g = c; b = x; }
+	else if (h < 4) { g = x; b = c; }
+	else if (h < 5) { r = x; b = c; }
+	else { r = c; b = x; }
+	return {r + m, g + m, b + m, alpha};
+}
+
+Rgba mix(const Rgba &a, const Rgba &b, float t)
+{
+	return {a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t, a.b + (b.b - a.b) * t, a.a + (b.a - a.a) * t};
+}
+
+//! A radial gradient with stops at 0, 0.35 and 1 of its radius, clear beyond.
+Rgba radial(float distance, const Rgba &centre, const Rgba &middle, const Rgba &edge)
+{
+	if (distance >= 1)
+		return {0, 0, 0, 0};
+	return distance < 0.35f ? mix(centre, middle, distance / 0.35f) : mix(middle, edge, (distance - 0.35f) / 0.65f);
+}
+
+//! Premultiplied accumulation of layers painted over one another.
+struct Pixel
+{
+	float r = 0, g = 0, b = 0, a = 0;
+	void over(const Rgba &c)
+	{
+		r = c.r * c.a + r * (1 - c.a);
+		g = c.g * c.a + g * (1 - c.a);
+		b = c.b * c.a + b * (1 - c.a);
+		a = c.a + a * (1 - c.a);
+	}
+};
+
+//! Paint an image from shade(u, v, pixel), with u and v from -1 to 1 across it.
+template <class Shade>
+std::unique_ptr<DrawableSurface> rasterize(Shade shade)
+{
+	SDL_Surface *surface = SDL_CreateSurface(Size, Size, SDL_PIXELFORMAT_ARGB8888);
+	if (!surface)
+		throw std::runtime_error(SDL_GetError());
+	for (int y = 0; y < Size; ++y)
+	{
+		Uint32 *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(surface->pixels) + y * surface->pitch);
+		for (int x = 0; x < Size; ++x)
+		{
+			Pixel sum;
+			for (int sy = 0; sy < Samples; ++sy)
+				for (int sx = 0; sx < Samples; ++sx)
+				{
+					Pixel sample;
+					shade((x + (sx + 0.5f) / Samples) * 2 / Size - 1, (y + (sy + 0.5f) / Samples) * 2 / Size - 1, sample);
+					sum.r += sample.r; sum.g += sample.g; sum.b += sample.b; sum.a += sample.a;
+				}
+			const float n = Samples * Samples, a = sum.a / n;
+			const auto channel = [&](float premultiplied) { return Uint8(std::lround(255 * std::clamp(a > 0 ? premultiplied / n / a : 0.f, 0.f, 1.f))); };
+			row[x] = SDL_MapSurfaceRGBA(surface, channel(sum.r), channel(sum.g), channel(sum.b), Uint8(std::lround(255 * a)));
+		}
+	}
+	auto result = std::make_unique<DrawableSurface>(surface);
+	SDL_DestroySurface(surface);
+	return result;
+}
+
+//! A soft round body with a cross of long spikes and a fainter diagonal cross.
+void shadeStar(float u, float v, Pixel &pixel, float hue, float saturation, float bodyLightness, float spikeLightness)
+{
+	pixel.over(radial(std::hypot(u, v) / 0.55f, hsl(hue, saturation, bodyLightness),
+		hsl(hue, saturation * 0.95f, bodyLightness - 0.2f), hsl(hue, saturation * 0.95f, bodyLightness - 0.25f, 0)));
+	const Rgba spike = hsl(hue, saturation, spikeLightness);
+	struct Cross { float width, length, alpha; bool diagonal; };
+	for (const Cross &cross : {Cross{2.2f / 32, 0.95f, 1, false}, Cross{1.4f / 32, 0.55f, 0.55f, true}})
+	{
+		const float pu = cross.diagonal ? (u + v) * 0.70710678f : u;
+		const float pv = cross.diagonal ? (v - u) * 0.70710678f : v;
+		for (const auto &[along, across] : {std::pair{pu, pv}, std::pair{pv, pu}})
+			if (std::fabs(across) <= cross.width / 2 && std::fabs(along) <= cross.length)
+				pixel.over({spike.r, spike.g, spike.b, cross.alpha * (1 - std::fabs(along) / cross.length)});
+	}
+}
+
+int hueKey(float hue)
+{
+	return int(std::lround(hue)) % 360;
+}
+}
+
+SpawnEffectArt::SpawnEffectArt() = default;
+SpawnEffectArt::~SpawnEffectArt() = default;
+
+float SpawnEffectArt::hueOf(const Color &team)
+{
+	const float r = team.r / 255.f, g = team.g / 255.f, b = team.b / 255.f;
+	const float high = std::max({r, g, b}), low = std::min({r, g, b}), range = high - low;
+	if (range <= 0)
+		return 0;
+	float hue = high == r ? std::fmod((g - b) / range, 6.f) : high == g ? (b - r) / range + 2 : (r - g) / range + 4;
+	hue *= 60;
+	return hue < 0 ? hue + 360 : hue;
+}
+
+Color SpawnEffectArt::tint(float hue)
+{
+	const Rgba c = hsl(hue, 1, 0.7f);
+	return Color(Uint8(std::lround(255 * c.r)), Uint8(std::lround(255 * c.g)), Uint8(std::lround(255 * c.b)));
+}
+
+DrawableSurface &SpawnEffectArt::star(float hue)
+{
+	auto &image = stars[hueKey(hue)];
+	if (!image)
+		image = rasterize([hue](float u, float v, Pixel &pixel) { shadeStar(u, v, pixel, hue, 1, 0.75f, 0.72f); });
+	return *image;
+}
+
+DrawableSurface &SpawnEffectArt::glow(float hue, float lightness)
+{
+	auto &image = glows[hueKey(hue) * 100 + int(std::lround(lightness * 99))];
+	if (!image)
+		image = rasterize([hue, lightness](float u, float v, Pixel &pixel) {
+			pixel.over(radial(std::hypot(u, v), hsl(hue, 1, lightness), hsl(hue, 0.95f, 0.6f), hsl(hue, 0.95f, 0.55f, 0)));
+		});
+	return *image;
+}
+
+DrawableSurface &SpawnEffectArt::core()
+{
+	if (!core_)
+		core_ = rasterize([](float u, float v, Pixel &pixel) {
+			const float d = std::hypot(u, v) / (6.f / 32);
+			if (d < 1)
+				pixel.over({1, 1, 1, 1 - d});
+		});
+	return *core_;
+}
+
+DrawableSurface &SpawnEffectArt::glint()
+{
+	// White where the star is coloured: drawn without additive blending, it
+	// stays light enough to read as a flash.
+	if (!glint_)
+		glint_ = rasterize([](float u, float v, Pixel &pixel) { shadeStar(u, v, pixel, 0, 0, 0.97f, 1); });
+	return *glint_;
+}
+
+namespace
+{
+Uint8 opacityByte(float alpha)
+{
+	return Uint8(std::lround(255 * std::clamp(alpha, 0.f, 1.f)));
+}
+}
+
+void SpawnEffectArt::draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const SpawnEffect::Sparkle &sparkle, float opacity)
+{
+	const float cx = x + sparkle.x, cy = y + sparkle.y, size = sparkle.size;
+	if (const Uint8 alpha = opacityByte(sparkle.alpha * opacity))
+	{
+		gfx.drawSurface(cx - size / 2, cy - size / 2, size, size, &star(hue), alpha);
+		gfx.drawSurface(cx - size / 2, cy - size / 2, size, size, &core(), opacityByte(sparkle.alpha * opacity * 0.7f));
+	}
+	if (const Uint8 alpha = opacityByte(sparkle.glint * opacity))
+		gfx.drawSurface(cx - size, cy - size, 2 * size, 2 * size, &glint(), alpha);
+}
+
+void SpawnEffectArt::draw(GAGCore::GraphicContext &gfx, float hue, float x, float y, const SpawnEffect::Glow &glowSpec, float opacity)
+{
+	if (const Uint8 alpha = opacityByte(glowSpec.alpha * opacity))
+	{
+		const float r = glowSpec.radius;
+		gfx.drawSurface(x + glowSpec.x - r, y + glowSpec.y - r, 2 * r, 2 * r, &glow(hue, glowSpec.lightness), alpha);
+	}
+}

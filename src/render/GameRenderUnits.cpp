@@ -31,6 +31,7 @@
 #include <algorithm>
 #include "unit/render/UnitSkin.h"
 #include "scene/Scene.h"
+#include "SpawnEffectArt.h"
 #include "Utilities.h"
 #include "GameGUI.h"
 #include <SDL3/SDL.h>
@@ -82,6 +83,15 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
 			return;
 	}
+	// A unit a swarm has just produced fades in as a team-colour silhouette,
+	// sliding out of the swarm (SpawnEffects.h).
+	const auto spawned = view.render.spawnedUnits.find(gid);
+	const bool spawning = spawned != view.render.spawnedUnits.end();
+	const float spawnAge = spawning ? spawned->second.age + view.render.unitMotion : 0;
+	const SpawnEffect::UnitLook spawnLook = spawning ? SpawnEffect::unitLook(spawnAge) : SpawnEffect::UnitLook{1, 0, 0};
+	fogAlpha = Uint8(std::lround(fogAlpha * spawnLook.opacity));
+	if (fogAlpha == 0)
+		return;
 	// Everything drawn for the unit fades with it: `opacity` for the bars, pips and
 	// marker, which take a fraction, and faded() for alphas out of 255.
 	const float opacity = fogAlpha / 255.f;
@@ -112,6 +122,11 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	{
 		// TODO : if looks ugly, do something intelligent here
 	}
+	if (spawning)
+	{
+		px -= int(std::lround(spawned->second.dx * spawnLook.slide));
+		py -= int(std::lround(spawned->second.dy * spawnLook.slide));
+	}
 
 	int dir=unit->direction;
 	assert(dir>=0);
@@ -138,12 +153,33 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// The sprite stays opaque under the marker fading in over it, and goes once
 	// the marker is solid. Units at the fog edge fade, including painted meshes
 	// and their original ground shadows.
+	const float spawnHue = SpawnEffectArt::hueOf(color);
+	const GAGCore::Color glow = spawning ? SpawnEffectArt::tint(spawnHue) : GAGCore::Color();
+	const Uint8 glowAlpha = Uint8(std::lround(255 * spawnLook.silhouette));
 	if (detail.unitSprite > 0 &&
 		!view.render.skinPreview().draw(*globalContainer->gfx, meshClass, unit->team,
 			unit->action, dir, delta, px, py,
             {unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
-             unsigned(unitSprite->getH(imgid))}, fogAlpha))
+             unsigned(unitSprite->getH(imgid))}, fogAlpha,
+            Uint32(glow.r) << 16 | Uint32(glow.g) << 8 | glow.b, glowAlpha))
+	{
 		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
+		// Meshes brighten as they draw; a sprite gets its silhouette laid over it.
+		if (glowAlpha)
+			if (DrawableSurface *shape = unitSprite->silhouette(imgid, glow))
+			{
+				Sprite::flushBatches(globalContainer->gfx);
+				globalContainer->gfx->drawSurface(float(px-decX), float(py-decY), float(unitSprite->getW(imgid)),
+					float(unitSprite->getH(imgid)), shape, faded(unsigned(std::lround(SpawnEffect::SpriteSilhouetteOpacity * glowAlpha))));
+			}
+	}
+	if (spawning && detail.unitSprite > 0)
+	{
+		SpawnEffectArt &art = view.render.spawnArt();
+		Sprite::flushBatches(globalContainer->gfx);
+		SpawnEffect::forEachShimmerTwinkle(SpawnEffect::seedOf(spawned->second.x, spawned->second.y, gid), spawnAge,
+			[&](const SpawnEffect::Sparkle &twinkle) { art.draw(*globalContainer->gfx, spawnHue, px + 16.f, py + 16.f, twinkle, opacity); });
+	}
 	if (detail.unitMarker > 0)
 	{
 		const bool warrior = meshClass==WARRIOR, explorer = meshClass==EXPLORER;
