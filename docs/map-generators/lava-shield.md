@@ -184,7 +184,7 @@ not a ratio of weakest to strongest raw town quality. Ties keep the earlier prop
 Each town leaves its plan's pure grass inside the frayed two-corner sand ring. An
 approach begins two corners beyond the plain ring and reaches the crater circuit,
 protecting town and route from future crop growth; it is reserved as sand and then
-laid as dirt track, except beside water, where it stays a sand beach. It first requests three tiles
+laid as brick path, except beside water, where it stays a sand beach. It first requests three tiles
 of width. If that cannot fit, the same shared operation tries a one-tile route with the
 same protected terrain and routing costs. Existing walkable non-grass beach
 tiles are reused unchanged; only new stretches are painted pure sand. This explicit narrow-detour

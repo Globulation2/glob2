@@ -75,7 +75,7 @@ inline constexpr auto TERRAIN_GROUPS = []
 		ice.groundHealthQ8 = -8;
 	}
 	{
-		// Trail, dirt track, boardwalk: fast, buildable, nothing grows.
+		// Trail, brick path, boardwalk, sandstone: fast, buildable, nothing grows.
 		auto &paths = define(TerrainGroup::Paths, "paths", "[terrain group paths]", true);
 		paths.walkable = paths.buildable = true;
 		paths.groundSpeedQ8 = 512;
@@ -91,7 +91,7 @@ inline constexpr auto TERRAIN_GROUPS = []
 		define(TerrainGroup::Ridges, "ridges", "[terrain group ridges]", true);
 	}
 	{
-		// Dirt, clay, gravel, flower meadow: buildable, inhibits growth like sand,
+		// Dirt, clay, shale, heath: buildable, inhibits growth like sand,
 		// but no shore support so it never acts as a coastline.
 		auto &barren = define(TerrainGroup::Barren, "barren", "[terrain group barren]", true);
 		barren.walkable = barren.buildable = true;

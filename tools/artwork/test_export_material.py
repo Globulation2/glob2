@@ -116,7 +116,7 @@ class ExportMaterial(unittest.TestCase):
             self.assertIn(name.replace("_", " ").split()[0], prompt.lower(), name)
         self.assertEqual(
             set(export_material.MATERIAL_PROMPTS),
-            {"boulders", "hedge", "thicket", "lava", "ember_field", "flower_meadow", "outcrop"},
+            {"boulders", "hedge", "thicket", "lava", "ember_field", "heath", "outcrop"},
         )
 
     def test_committed_materials_validate(self):

@@ -856,6 +856,92 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(reloaded.game.map.terrainRegistry().digest() == loaded.game.map.terrainRegistry().digest());
 		CHECK(reloaded.game.map.checkSum(true) == loaded.game.map.checkSum(true));
 	}
+	TEST_CASE("format-194 saves keep built-in IDs and move custom terrain behind the format-195 built-ins")
+	{
+		glob2test::HeadlessGlobals globals;
+		// Written by an origin/master build (TERRAIN_COUNT 33) with two runtime
+		// definitions painted at IDs 33 and 34 beside pale sand, chasm, ice, trail,
+		// sand and water.
+		auto *backend = globalContainer->fileManager->openInflatingInputStreamBackend(
+			"test/fixtures/terrain-catalogue/custom-registry-194.game.gz");
+		REQUIRE(backend);
+		GameGUI loaded;
+		{
+			GAGCore::BinaryInputStream input(backend);
+			REQUIRE(loaded.game.load(&input));
+		}
+		CHECK(loaded.game.mapHeader.getVersionMinor() == 194);
+		auto verify = [](const Map &map)
+		{
+			REQUIRE(map.terrainRegistry().size() == TERRAIN_COUNT + 2);
+			const auto bog = map.terrainRegistry().find("fixture:bog");
+			const auto mud = map.terrainRegistry().find("fixture:mud");
+			REQUIRE(bog);
+			REQUIRE(mud);
+			CHECK(*bog == TerrainType(TERRAIN_COUNT));
+			CHECK(*mud == TerrainType(TERRAIN_COUNT + 1));
+			CHECK(map.terrainRegistry().appearance(*bog) == WATER);
+			CHECK(map.terrainRegistry().appearance(*mud) == SAND);
+			CHECK(map.terrainProperties(*bog).swimmable);
+			CHECK(map.terrainProperties(*bog).groundSpeedQ8 == 128);
+			CHECK(map.terrainProperties(*mud).groundSpeedQ8 == 192);
+			CHECK_FALSE(map.terrainProperties(*mud).buildable);
+			CHECK(map.terrainTypeAt(4, 4) == *bog);
+			CHECK(map.terrainTypeAt(5, 4) == *bog);
+			CHECK(map.terrainTypeAt(6, 6) == *mud);
+			CHECK(map.terrainTypeAt(8, 8) == CHASM);
+			CHECK(map.terrainTypeAt(10, 10) == ICE);
+			CHECK(map.terrainTypeAt(12, 10) == TRAIL);
+			CHECK(map.terrainTypeAt(14, 14) == SAND);
+			CHECK(map.terrainTypeAt(16, 14) == WATER);
+			CHECK(map.terrainTypeAt(18, 18) == PALE_SAND);
+			CHECK(map.terrainTypeAt(0, 0) == GRASS);
+		};
+		verify(loaded.game.map);
+		auto *resaved = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(resaved);
+		loaded.game.save(&output, false, "custom-registry-195");
+		output.flush();
+		GameGUI reloaded;
+		{
+			GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
+				std::string(resaved->getBuffer(), resaved->getPosition())));
+			REQUIRE(reloaded.game.load(&input));
+		}
+		CHECK(reloaded.game.mapHeader.getVersionMinor() == VERSION_MINOR);
+		verify(reloaded.game.map);
+		CHECK(reloaded.game.map.terrainRegistry().digest() == loaded.game.map.terrainRegistry().digest());
+		CHECK(reloaded.game.map.checkSum(true) == loaded.game.map.checkSum(true));
+		CHECK(nlohmann::json::parse(reloaded.game.map.terrainRegistry().serialize())["terrains"][0]["id"] == TERRAIN_COUNT);
+	}
+	TEST_CASE("sandstone and pumice share every rule of their path and rough groups")
+	{
+		for (auto [type, member] : {std::pair{SANDSTONE, BRICK_PATH}, std::pair{SANDSTONE, BOARDWALK},
+									std::pair{PUMICE, MUD}, std::pair{PUMICE, SCREE}})
+		{
+			CAPTURE(terrainPresentation(type).name);
+			CHECK(terrainGroup(type) == terrainGroup(member));
+			CHECK(sameTerrainProperties(terrainProperties(type), terrainProperties(member)));
+			CHECK(TerrainRegistry::builtins()->propertyIndex(type) ==
+				  TerrainRegistry::builtins()->propertyIndex(member));
+		}
+		CHECK(terrainGroup(SANDSTONE) == TerrainGroup::Paths);
+		CHECK(terrainGroup(PUMICE) == TerrainGroup::Rough);
+		CHECK(std::string(terrainPresentation(SANDSTONE).name) == "sandstone");
+		CHECK(std::string(terrainPresentation(PUMICE).name) == "pumice");
+		CHECK(TerrainRegistry::builtins()->find("sandstone") == SANDSTONE);
+		CHECK(TerrainRegistry::builtins()->find("pumice") == PUMICE);
+	}
+	TEST_CASE("a frozen lake shares every rule of ice")
+	{
+		CHECK(terrainGroup(FROZEN_LAKE) == TerrainGroup::Ice);
+		CHECK(terrainPaintable(FROZEN_LAKE));
+		CHECK(sameTerrainProperties(terrainProperties(FROZEN_LAKE), terrainProperties(ICE)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(FROZEN_LAKE) ==
+			  TerrainRegistry::builtins()->propertyIndex(ICE));
+		CHECK(std::string(terrainPresentation(FROZEN_LAKE).name) == "frozen_lake");
+		CHECK(TerrainRegistry::builtins()->find("frozen_lake") == FROZEN_LAKE);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},
@@ -886,7 +972,7 @@ TEST_SUITE("TerrainRuntime")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				painted.push_back(TerrainType(i));
-		REQUIRE(painted.size() == 28);
+		REQUIRE(painted.size() == 31);
 		for (std::size_t n = 0; n < painted.size(); ++n)
 		{
 			map.paintCell(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);
@@ -942,7 +1028,7 @@ TEST_SUITE("TerrainRuntime")
 		CHECK_FALSE(terrainProperties(DIRT).shoreline);
 		CHECK(terrainProperties(MUD).groundSpeedQ8 == 160);
 		CHECK_FALSE(terrainProperties(MUD).buildable);
-		CHECK(terrainProperties(DIRT_TRACK).groundSpeedQ8 == 512);
+		CHECK(terrainProperties(BRICK_PATH).groundSpeedQ8 == 512);
 		CHECK(terrainProperties(LAVA).airHealthQ8 == -64);
 		CHECK_FALSE(terrainProperties(LAVA).walkable);
 		CHECK(terrainProvidesFertility(terrainProperties(LOAM)));

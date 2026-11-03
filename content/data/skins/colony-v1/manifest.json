@@ -275,6 +275,62 @@
       "fitScale": 1.4064,
       "vertices": 1011,
       "triangles": 2000
+    },
+    "worker-prone-harvest.gsk": {
+      "sha256": "faf2e6e95739e11b2ac1a6d99c6b906010ed3202855326423d329c96ca438266",
+      "source": "tools/unit-animation/prone_harvest_motion.py",
+      "sourceSha256": "f57bfe2297fea20dd51ded2d9c2888776d1dfb6bf661b18c39097f57e2dad111",
+      "dependencies": {
+        "content-src/gfx/originals/units/glob-worker-swim.blend": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+        "content-src/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+        "content-src/gfx/authored/skins/limb-surfaces.json": "6f54fdca4a3c3f0cf057bb7f9ffe45df9b03993bf883aa477518371c1dffcca8",
+        "content-src/gfx/authored/skins/limb-paint-charts.json": "f7054587b87a594e2e6d7c6fb9f7808215d65e7cc801a45826d73132ba7dea82",
+        "tools/unit-animation/prone_harvest_motion.py": "f57bfe2297fea20dd51ded2d9c2888776d1dfb6bf661b18c39097f57e2dad111",
+        "tools/unit-animation/prone_harvest_author.py": "e78663325a84a32b8a827267aa455979a8ef8c9826ecbbf180e386071342c528",
+        "tools/skins/export_units.py": "7fc6a1a261221b400be3502406d8f5199c4f56ac3434dc248e9d92b4090832bb",
+        "tools/skins/chart.py": "b52de155b7dbfce46ef6d6ac4016aea326d389ddedfc02043c852714b205b442",
+        "tools/skins/limb_surface.py": "90856737e21db0c90466253760c8aed098d8230b39a90ba5b8441e88d04a3acb",
+        "tools/skins/connected_surface.py": "991663f1d2ea89478474cf7352b086ae585d3e5e5dc63b2d782464afab2b3ad4",
+        "tools/unit-animation/prone_harvest.py": "8826a538a107190f69a488ef1e6d1c02642af24ee48506d9ba3864383e55bfda",
+        "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
+        "content/data/skins/colony-v1/worker-swim.guv": "308976f024b804954565f321fcd4025bcee95b15bbbcf035a5120ae8c07d882b"
+      },
+      "vertices": 2898,
+      "triangles": 5664,
+      "detailUV": {
+        "file": "worker-prone-harvest.guv",
+        "sha256": "308976f024b804954565f321fcd4025bcee95b15bbbcf035a5120ae8c07d882b"
+      }
+    },
+    "worker-prone-harvest-mid.gsk": {
+      "sha256": "e5838518bc089ac3a2858394583276a71bce01b369c72aa6d163644792fe6b09",
+      "source": "tools/unit-animation/prone_harvest_motion.py",
+      "sourceSha256": "f57bfe2297fea20dd51ded2d9c2888776d1dfb6bf661b18c39097f57e2dad111",
+      "dependencies": {
+        "content-src/gfx/originals/units/glob-worker-swim.blend": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+        "content-src/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+        "content-src/gfx/authored/skins/limb-surfaces.json": "6f54fdca4a3c3f0cf057bb7f9ffe45df9b03993bf883aa477518371c1dffcca8",
+        "content-src/gfx/authored/skins/limb-paint-charts.json": "f7054587b87a594e2e6d7c6fb9f7808215d65e7cc801a45826d73132ba7dea82",
+        "tools/unit-animation/prone_harvest_motion.py": "f57bfe2297fea20dd51ded2d9c2888776d1dfb6bf661b18c39097f57e2dad111",
+        "tools/unit-animation/prone_harvest_author.py": "e78663325a84a32b8a827267aa455979a8ef8c9826ecbbf180e386071342c528",
+        "tools/skins/export_units.py": "7fc6a1a261221b400be3502406d8f5199c4f56ac3434dc248e9d92b4090832bb",
+        "tools/skins/chart.py": "b52de155b7dbfce46ef6d6ac4016aea326d389ddedfc02043c852714b205b442",
+        "tools/skins/limb_surface.py": "90856737e21db0c90466253760c8aed098d8230b39a90ba5b8441e88d04a3acb",
+        "tools/skins/connected_surface.py": "991663f1d2ea89478474cf7352b086ae585d3e5e5dc63b2d782464afab2b3ad4",
+        "tools/unit-animation/prone_harvest.py": "8826a538a107190f69a488ef1e6d1c02642af24ee48506d9ba3864383e55bfda",
+        "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
+        "content/data/skins/colony-v1/worker-swim.guv": "308976f024b804954565f321fcd4025bcee95b15bbbcf035a5120ae8c07d882b"
+      },
+      "vertices": 2898,
+      "triangles": 5664,
+      "detailUV": {
+        "file": "worker-prone-harvest-mid.guv",
+        "sha256": "308976f024b804954565f321fcd4025bcee95b15bbbcf035a5120ae8c07d882b"
+      }
     }
   },
   "rigs": {
@@ -461,6 +517,72 @@
         "content/data/skins/colony-v1/warrior-fight.view.json": "d47435578b56df1defde62405e820db108107648f78d2daee2ea1470b8d07063"
       },
       "accepted": true
+    },
+    "worker-prone-harvest.gsb": {
+      "sha256": "dece28933b4040267a502c6075ff26e19c644110461624d54d5864cac51d0ca7",
+      "sources": {
+        "content-src/gfx/originals/units/glob-worker-swim.blend": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+        "content-src/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+        "content-src/gfx/authored/skins/limb-surfaces.json": "6f54fdca4a3c3f0cf057bb7f9ffe45df9b03993bf883aa477518371c1dffcca8",
+        "content-src/gfx/authored/skins/limb-paint-charts.json": "f7054587b87a594e2e6d7c6fb9f7808215d65e7cc801a45826d73132ba7dea82",
+        "tools/unit-animation/prone_harvest_motion.py": "f57bfe2297fea20dd51ded2d9c2888776d1dfb6bf661b18c39097f57e2dad111",
+        "tools/unit-animation/prone_harvest_author.py": "e78663325a84a32b8a827267aa455979a8ef8c9826ecbbf180e386071342c528",
+        "tools/skins/export_units.py": "7fc6a1a261221b400be3502406d8f5199c4f56ac3434dc248e9d92b4090832bb",
+        "tools/skins/chart.py": "b52de155b7dbfce46ef6d6ac4016aea326d389ddedfc02043c852714b205b442",
+        "tools/skins/limb_surface.py": "90856737e21db0c90466253760c8aed098d8230b39a90ba5b8441e88d04a3acb",
+        "tools/skins/connected_surface.py": "991663f1d2ea89478474cf7352b086ae585d3e5e5dc63b2d782464afab2b3ad4",
+        "tools/unit-animation/prone_harvest.py": "8826a538a107190f69a488ef1e6d1c02642af24ee48506d9ba3864383e55bfda",
+        "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
+        "content/data/skins/colony-v1/worker-swim.guv": "308976f024b804954565f321fcd4025bcee95b15bbbcf035a5120ae8c07d882b"
+      },
+      "format": "GSB1",
+      "version": 1,
+      "file": "worker-prone-harvest.gsb",
+      "accepted": true,
+      "clips": [
+        {
+          "id": 0,
+          "name": "worker-prone-harvest",
+          "frames": 256,
+          "shapes": 32,
+          "normalShapes": 24
+        }
+      ]
+    },
+    "worker-prone-harvest-mid.gsb": {
+      "sha256": "db655a02753612f49a3f59072b17ee4439818257ab35caa9045d425b2b76d62f",
+      "sources": {
+        "content-src/gfx/originals/units/glob-worker-swim.blend": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+        "content-src/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+        "content-src/gfx/authored/skins/limb-surfaces.json": "6f54fdca4a3c3f0cf057bb7f9ffe45df9b03993bf883aa477518371c1dffcca8",
+        "content-src/gfx/authored/skins/limb-paint-charts.json": "f7054587b87a594e2e6d7c6fb9f7808215d65e7cc801a45826d73132ba7dea82",
+        "tools/unit-animation/prone_harvest_motion.py": "f57bfe2297fea20dd51ded2d9c2888776d1dfb6bf661b18c39097f57e2dad111",
+        "tools/unit-animation/prone_harvest_author.py": "e78663325a84a32b8a827267aa455979a8ef8c9826ecbbf180e386071342c528",
+        "tools/skins/export_units.py": "7fc6a1a261221b400be3502406d8f5199c4f56ac3434dc248e9d92b4090832bb",
+        "tools/skins/chart.py": "b52de155b7dbfce46ef6d6ac4016aea326d389ddedfc02043c852714b205b442",
+        "tools/skins/limb_surface.py": "90856737e21db0c90466253760c8aed098d8230b39a90ba5b8441e88d04a3acb",
+        "tools/skins/connected_surface.py": "991663f1d2ea89478474cf7352b086ae585d3e5e5dc63b2d782464afab2b3ad4",
+        "tools/unit-animation/prone_harvest.py": "8826a538a107190f69a488ef1e6d1c02642af24ee48506d9ba3864383e55bfda",
+        "tools/skins/fit_unit_shapes.py": "cda769b5b73aeba5b0329510d28124a4aa84a1881297a6d9d05915c614836e97",
+        "tools/skins/skin_assets.py": "7dad04e32f252192389ab2b3e2f3f5b4d4b93116cf47adad30337eef29a1f592",
+        "content/data/skins/colony-v1/worker-swim.gsk": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
+        "content/data/skins/colony-v1/worker-swim.guv": "308976f024b804954565f321fcd4025bcee95b15bbbcf035a5120ae8c07d882b"
+      },
+      "format": "GSB1",
+      "version": 1,
+      "file": "worker-prone-harvest-mid.gsb",
+      "accepted": true,
+      "clips": [
+        {
+          "id": 1,
+          "name": "worker-prone-harvest-mid",
+          "frames": 256,
+          "shapes": 32,
+          "normalShapes": 24
+        }
+      ]
     }
   }
 }

@@ -5674,20 +5674,20 @@ AI 生成ではない
 土
 [clay]
 粘土
-[gravel]
-砂利
-[flower_meadow]
-花畑
+[shale]
+頁岩
+[heath]
+荒れ野
 [mud]
 泥
-[marsh]
-湿地
+[mudflat]
+泥原
 [deep_snow]
 深い雪
 [scree]
 岩屑地
-[dirt_track]
-土の道
+[brick_path]
+レンガ道
 [boardwalk]
 木道
 [lava]
@@ -5716,6 +5716,12 @@ AI 生成ではない
 砂丘の砂
 [pale_sand]
 白い砂
+[sandstone]
+砂岩の敷石
+[pumice]
+軽石の原
+[frozen_lake]
+凍った湖
 [terrain group water]
 水
 [terrain group sand]

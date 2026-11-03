@@ -49,7 +49,7 @@ buildings, and growing means taking the next chamber down the tunnel.
   and a half wider than its size to retain the building and crop room it had with stone walls.
   `openColonyRoutes` only clears crops in a tunnel; it never cuts rock, and the validator checks that
   the finished terrain is the design's vertex for vertex.
-- **Experiments.** A generated map declares the ridge, rough (scree) and path (dirt track) terrain
+- **Experiments.** A generated map declares the ridge, rough (scree) and path (brick path) terrain
   experiments in its header.
 
 ## Implementation source

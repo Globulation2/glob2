@@ -33,6 +33,11 @@ class RenderBackend
                               const SDL_FRect &dst, Uint8 alpha) {
         blit(key, source, revision, false, src, dst, alpha);
     }
+    // Adds the source's light (colour times alpha) to the target instead of
+    // blending over it, linearly filtered. Returns false when the backend cannot,
+    // and the caller then draws normally.
+    virtual bool blitAdditive(const void *, SDL_Surface *, std::uint64_t, const SDL_Rect &,
+                              const SDL_FRect &, Uint8) { return false; }
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
 	virtual RenderOperations operations() const { return {}; }

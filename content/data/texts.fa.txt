@@ -5674,20 +5674,20 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 خاک
 [clay]
 رس
-[gravel]
-شن
-[flower_meadow]
-چمنزار گل
+[shale]
+شیل
+[heath]
+خلنگزار
 [mud]
 گل‌ولای
-[marsh]
-مرداب
+[mudflat]
+دشت گلی
 [deep_snow]
 برف عمیق
 [scree]
 دامنهٔ سنگ‌ریزه
-[dirt_track]
-راه خاکی
+[brick_path]
+مسیر آجری
 [boardwalk]
 گذرگاه چوبی
 [lava]
@@ -5716,6 +5716,12 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 ماسه تپه‌ای
 [pale_sand]
 ماسه روشن
+[sandstone]
+سنگ‌فرش ماسه‌سنگی
+[pumice]
+دشت سنگ پا
+[frozen_lake]
+دریاچهٔ یخ‌زده
 [terrain group water]
 آب
 [terrain group sand]

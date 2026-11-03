@@ -1,6 +1,7 @@
 # Core unit animation sprites
 
-The game uses 32 poses for each of eight directions in seven animation sets.
+Core movement uses 32 poses for each of eight directions in seven animation sets.
+The separate prone-harvest stroke uses 64 poses per direction (see below).
 Normal simulation speed is 30 ticks per second, defined in
 [src/engine/EngineTiming.h](../../src/engine/EngineTiming.h). Sprite pose count
 does not set the display refresh rate.
@@ -898,3 +899,51 @@ hardware renderer and refuses a software fallback. Scene measurements do not
 replace an active-match playtest, browser integration, other physical
 platforms or appearance review. The runner targets Linux (`/usr/bin/time`,
 X11 and optional NVIDIA telemetry).
+
+## Harvesting afloat
+
+Non-flying workers harvesting on swimmable, non-walkable terrain use a separate prone
+stroke. Land harvesting and building retain their original animation. The stroke
+opens wide in the body's plane, gathers inward, then recovers, with a continuous
+hand path, delayed elbows and a small torso response. Its 64 poses play over
+1.92 seconds at normal game speed, driven by interpolated presentation time and
+staggered by unit identity. It does not change harvesting orders or simulation
+state. The swimmer fade applies to this animation, without stroke ripples.
+
+`prone_harvest_motion.py` is the editable motion source.
+`prone_harvest_author.py` uses Blender **3.6.23** to sample that motion against
+the existing worker surface and paint topology. It also saves an editable modern
+Blender scene in the work directory. Render the classic artwork using the pinned
+Blender 2.34 materials and lighting:
+
+```sh
+/path/to/blender-3.6.23/blender -b --python-exit-code 1 \
+  --python tools/unit-animation/prone_harvest_author.py -- \
+  --output artifacts/prone-harvest/job
+python3 tools/unit-animation/prone_harvest.py render \
+  --work artifacts/prone-harvest/job --blender /path/to/blender-2.34/blender \
+  --libraries /path/to/private/legacy/libraries --workers 4
+python3 tools/unit-animation/prone_harvest.py export --work artifacts/prone-harvest/job
+python3 tools/unit-animation/prone_harvest.py install --work artifacts/prone-harvest/job
+python3 tools/skins/view_constants.py
+python3 tools/artwork/package_runtime.py --capture-approved
+python3 tools/artwork/runtime_provenance.py
+```
+
+Host export requires NumPy and Pillow. Source, scene, renderer and output hashes
+bind the staged results; installation verifies the entire set before copying.
+The native and HD frames occupy `unit2016` through `unit2527` (direction × 64 +
+phase). Movement installers preserve both appended presentation blocks. Saved
+action offsets remain unchanged.
+
+Two 256-frame mesh clips, `worker-prone-harvest` and
+`worker-prone-harvest-mid`, hold even and odd phases respectively. This preserves
+the GSK1/GSB1 formats while giving both baked and deformable rendering the full
+64-pose loop. Both retain the original worker UVs and triangle topology.
+
+New published sprite bundles add `proneHarvestMapping` with eight directions,
+64 phases and logical size 38, plus eight `proneHarvestPages` for clip
+`worker-prone-harvest`. Existing bundle fields retain their meaning. New clients
+fall back to classic prone artwork if an older published skin lacks these pages;
+older clients ignore the extension. Skin workers require the renderer's
+`proneHarvest: true` capability before processing new publication jobs.

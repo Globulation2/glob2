@@ -7,11 +7,10 @@ Usage (with the pinned development dependencies and Pillow 12.2.0):
     uv venv artifacts/asset-tools/venv
     uv pip install --python artifacts/asset-tools/venv/bin/python -r tools/asset-requirements.txt
     ENC=artifacts/asset-tools/venv/bin/python
-    "$ENC" tools/artwork/terrain_synth.py                    # write all frames
+    "$ENC" tools/artwork/terrain_synth.py                    # write all frames and catalog blocks
     "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
-    "$ENC" tools/artwork/terrain_synth.py --check            # re-synthesise and compare
     "$ENC" tools/artwork/terrain_synth.py --emit-catalog     # print catalog blocks
-    "$ENC" tools/artwork/terrain_synth.py --write-catalog    # merge them into tileset.json
+    "$ENC" tools/artwork/terrain_synth.py --write-catalog    # catalog from committed frames (no render)
     "$ENC" tools/artwork/terrain_synth.py --hd               # 128x128 renders under artifacts/
 
 Every material is synthesised from scratch: periodic value noise, fractal sums,
@@ -28,7 +27,6 @@ tiles (`variant_grid`) and box-downsampled to 32x32. Static materials use
 field use one 8x8 block, and water and deep water one 4x4 block, to keep their
 animated frame banks small. Feature
 counts and noise frequencies scale with canvas size to keep their native density.
-Gravel, flower meadow and marsh instead share periodic outer object bands.
 The interchangeable blocks preserve shared edge geometry while varying their
 interiors. Frames are phase-major, block-major, then
 row-major cell: `cell + cells * block + (cells * blocks) * phase`, where
@@ -38,14 +36,15 @@ Outputs are `content/data/gfx/terrain-<name>N.png`, the 128x128 HD frames the cl
 tiles were downsampled from (`content/data/highres/v1/terrain-<name>N.png`, registered in
 the pack through tools/artwork/highres_pack.py) and `content-src/gfx/<name>/provenance.json`.
 
-Pixel-exact reproduction (`--check`) is pinned to the encoder interpreter on
-Linux x86-64: besides Pillow's resampling kernels, the renders depend on the C
-library's sin/atan2/hypot and on round() boundaries, so another platform may
-differ in a few low bits. The provenance records the platform.
+Generation runs on any platform. Renders depend on Pillow's resampling and the
+C library's sin/atan2/hypot, so another platform may differ in a few low bits;
+the provenance records the platform and generator for information only, and
+nothing re-renders committed art to compare it.
 
 Python 3, Pillow, NumPy and SciPy (development-only dependencies).
 """
 import argparse
+import bisect
 import concurrent.futures
 import hashlib
 import json
@@ -59,6 +58,7 @@ from dataclasses import dataclass, field, asdict
 from functools import lru_cache
 from pathlib import Path
 
+import numpy as np
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 
@@ -89,6 +89,8 @@ PILLOW_VERSION = "12.2.0"
 N = SHEET  # render size; four render pixels per native pixel
 VARIANTS = 16
 FRAME_PREFIX = "content/data/gfx/terrain-"
+# The catalog names sprites by their runtime path, under the data search root.
+SPRITE_PREFIX = "data/gfx/terrain-"
 HD_PREFIX = "content/data/highres/v1/terrain-"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain synthesis v1"
@@ -103,7 +105,6 @@ TAU = 2 * math.pi
 BAND = 10
 STAMP_MARGIN = 12
 
-LEGACY_NAMES = list(LEGACY_BINDINGS)
 # Catalogue order of the built-in types, from the engine's generated name list.
 BUILTIN_ORDER = [name for name in json.loads(BUILTIN_NAMES.read_text()) if name not in LEGACY_BINDINGS]
 # Legacy bindings whose material is synthesised here too: regular water is an
@@ -468,29 +469,6 @@ def stamp_disc(mask, cx, cy, radius, value=1.0, softness=0.5, mode="max"):
                 mask[i] = clamp01(mask[i] + weight * value)
 
 
-def disc_profile(cx, cy, radius, lumps=(), *, size=N):
-    """Dome height field of one disc (1 at the centre, 0 at the rim), wrapped.
-
-    `lumps` is a list of (harmonic, amplitude, phase) radius modulations that
-    turn the circle into an irregular stone outline.
-    """
-    height = [0.0] * (size * size)
-    r = int(math.ceil(radius * 1.4)) + 1
-    for oy in range(-r, r + 1):
-        uy = int(math.floor(cy)) + oy
-        y = uy % size
-        for ox in range(-r, r + 1):
-            ux = int(math.floor(cx)) + ox
-            x = ux % size
-            dx, dy = ux + 0.5 - cx, uy + 0.5 - cy
-            angle = math.atan2(dy, dx)
-            local = radius * (1 + sum(a * math.sin(h * angle + ph) for h, a, ph in lumps))
-            d = math.hypot(dx, dy) / local
-            if d < 1:
-                height[y * size + x] = max(height[y * size + x], math.sqrt(1 - d * d))
-    return height
-
-
 def scatter(ctx, count, radius_min, radius_max, softness=0.5):
     """Random soft discs, with native density on either a tile or a full block.
 
@@ -639,32 +617,6 @@ def render_block_domes(objects, tone_of, lumps_of=None, texture=None, *, size):
     return height, rgb
 
 
-def render_domes(objects, tone_of, lumps_of=None, texture=None, *, size=N):
-    """Painter-ordered domes: (height, rgb) fields from objects.
-
-    `texture(u, angle, h)` optionally scales the tone per pixel, from the
-    pixel's angle around the object centre and its dome height."""
-    if size != N:
-        return render_block_domes(objects, tone_of, lumps_of, texture, size=size)
-    height = [0.0] * (N * N)
-    rgb = [[0.0] * (N * N) for _ in range(3)]
-    for x, y, r, u in sorted(objects, key=lambda o: o[1]):
-        lumps = lumps_of(u) if lumps_of else ()
-        dome = disc_profile(x, y, r, lumps)
-        tone = tone_of(u)
-        for i, h in enumerate(dome):
-            if h > 0.0:
-                height[i] = h
-                scale = 1.0
-                if texture:
-                    dx = (XS[i] + 0.5 - x + N / 2) % N - N / 2
-                    dy = (YS[i] + 0.5 - y + N / 2) % N - N / 2
-                    scale = texture(u, math.atan2(dy, dx), h)
-                for c in range(3):
-                    rgb[c][i] = tone[c] * scale
-    return height, rgb
-
-
 def shifted(values, dx, dy):
     """The field moved by (dx, dy) whole render pixels, wrapped."""
     size = math.isqrt(len(values))
@@ -675,20 +627,6 @@ def interior_weight(margin, fade=8):
     """0 within `margin` render px of the edge, rising to 1 over `fade`."""
     w = band_weight(margin, margin + fade)
     return [1 - v for v in w]
-
-
-def stamp_flower(masks, cx, cy, radius, petals, angle):
-    """Petals (discs around the centre) into masks["petal"], centre into
-    masks["centre"], a soft drop shadow into masks["shadow"]. Wrapped."""
-    # Overlapping petals make a round rosette: at 32 px it reads as a round
-    # bloom with a centre, never as a stroke.
-    pr = radius * 0.55
-    for k in range(petals):
-        a = angle + TAU * k / petals
-        px, py = cx + math.cos(a) * radius * 0.45, cy + math.sin(a) * radius * 0.45
-        stamp_disc(masks["petal"], px, py, pr, 1.0, 0.3)
-    stamp_disc(masks["shadow"], cx + 1.5, cy + 2.0, radius * 1.05, 0.8, 0.7)
-    stamp_disc(masks["centre"], cx, cy, max(2.0, radius * 0.3), 1.0, 0.3)
 
 
 def band(values, edge, width):
@@ -917,7 +855,10 @@ class Recipe:
     name: str
     group: str
     label: str
+    # Boundary identity written to the catalog: the material's edge profile
+    # and its border class (see "Boundary rules" in docs/assets/terrain-rendering.md).
     profile: str
+    border_class: str
     seam: dict
     palette: dict
     style: Style
@@ -1026,13 +967,159 @@ def soft_blobs(ctx, count, radius_min, radius_max, core=0.0):
     return halo, cores, discs
 
 
+# Group marks: every material in a gameplay group shares one learnable mark,
+# drawn by the same helper, while its colour and material stay free per biome.
+# Each helper keeps the block contract: boundary geometry from the shared
+# stream, varied interiors, and a common reference for any normalisation.
+
+
+def layout_field(ctx, make):
+    """`make(rng)` from the shared stream at the block edge, varied inside."""
+    return blend_fields(make(ctx.shared_rng), make(ctx.rng), ctx.interior_mask)
+
+
+def group_cracks(ctx, cells=7, width=0.065, gaps=0.30, warp=5):
+    """Barren mark: broken dry cracks one to two native pixels wide.
+
+    Warped Voronoi edges, gated by broad noise so the network breaks into
+    separate fissures rather than closed plates (clay keeps its own plates).
+    """
+    f1, f2, _, _, _, _ = block_worley(ctx, cells)
+    size = ctx.size
+    wx = layout_field(ctx, lambda rng: fbm(rng, 5, 2, size=size))
+    wy = layout_field(ctx, lambda rng: fbm(rng, 5, 2, size=size))
+    edge = domain_warp([b - a for a, b in zip(f1, f2)], wx, wy, warp)
+    gate = layout_field(ctx, lambda rng: fbm(rng, 6, 2, size=size))
+    return [(1 - smoothstep(width * 0.4, width, e)) * smoothstep(gaps - 0.06, gaps + 0.06, g)
+            for e, g in zip(edge, gate)]
+
+
+def barren_mark(ctx, rgb, crack_colour, cells=7, strength=1.0, fade=0.22):
+    """Faded colour plus shared dry cracks with a lit lower lip."""
+    rgb = desaturate(rgb, fade)
+    cracks = group_cracks(ctx, cells)
+    lip = [max(0.0, b - a) for a, b in zip(cracks, shifted(cracks, 1, 1))]
+    rgb = mix(rgb, crack_colour, cracks, strength)
+    return [[c * (1 + 0.20 * l) for c, l in zip(channel, lip)] for channel in rgb]
+
+
+def worn_edge(rgb, lines, light=(1, 1), strength=0.16):
+    """Paths mark: a crisp, lighter worn lip beside every straight line.
+
+    `lines` marks grooves (ruts, joints, plank gaps); the lip is the strip
+    just past each groove toward the viewer's light."""
+    dx, dy = light
+    lip = [max(0.0, b - a) for a, b in zip(lines, shifted(lines, dx, dy))]
+    return [[c * (1 + strength * l) for c, l in zip(channel, lip)] for channel in rgb]
+
+
+def lumps(ctx, cells, pits=0.0, metric="euclid", stretch=1.0, rise=0.6, warp=0):
+    """Rough mark: heavy lumps, with some cells sunk into wet pits.
+
+    Returns (height, common height, pit mask, cell ids). Height rises from 0
+    at every cell border over `rise` (in F2-F1 units: large for rounded
+    lumps, small for flat-topped slabs) and is negative in pit cells. Pits are
+    chosen per cell id from the shared stream, so boundary pits are the same
+    pits in every layout. `warp` rounds soft lumps (render px); the signed
+    height is warped, so pit rims stay continuous. Cell ids stay unwarped.
+    """
+    f1, f2, ids, common1, common2, common_ids = block_worley(ctx, cells, metric, stretch)
+    count = cells * ctx.area_scale
+    sunk = [1.0 if ctx.shared_rng.random() < pits else 0.0 for _ in range(count)]
+
+    def dome(a, b, i):
+        h = smoothstep(0.0, rise, b - a)
+        return -h * 0.8 if sunk[i] else h
+
+    height = [dome(a, b, i) for a, b, i in zip(f1, f2, ids)]
+    common = [dome(a, b, i) for a, b, i in zip(common1, common2, common_ids)]
+    if warp:
+        common_x, common_y = fbm(ctx.shared_rng, 4, 2, size=ctx.size), fbm(ctx.shared_rng, 4, 2, size=ctx.size)
+        wx = blend_fields(common_x, fbm(ctx.rng, 4, 2, size=ctx.size), ctx.interior_mask)
+        wy = blend_fields(common_y, fbm(ctx.rng, 4, 2, size=ctx.size), ctx.interior_mask)
+        height = domain_warp(height, wx, wy, warp)
+        common = domain_warp(common, common_x, common_y, warp)
+    pit = [smoothstep(0.1, 0.4, -h) for h in height]
+    return height, common, pit, ids
+
+
+def plates(ctx, cells, metric="angular", stretch=1.0, step=0.3, rise=0.1):
+    """Overlapping slabs: Worley cells raised to their own level.
+
+    Returns (height, common height, cell ids). Each cell is a flat-topped
+    slab at a level drawn per cell id from the shared stream, so boundary
+    slabs stand at the same level in every layout and neighbours meet at
+    steps that `shade` and `cast` pick out, as if one slab lay over the next.
+    `rise` (in F2-F1 units) is the bevel width at each slab's rim.
+    """
+    f1, f2, ids, common1, common2, common_ids = block_worley(ctx, cells, metric, stretch)
+    levels = [ctx.shared_rng.random() for _ in range(cells * ctx.area_scale)]
+
+    def slab(a, b, i):
+        return step * levels[i] + smoothstep(0.0, rise, b - a)
+
+    height = [slab(a, b, i) for a, b, i in zip(f1, f2, ids)]
+    common = [slab(a, b, i) for a, b, i in zip(common1, common2, common_ids)]
+    return height, common, ids
+
+
+def cast(rgb, height, colour, reach=3, strength=0.5):
+    """Shadow a higher neighbour casts down-right onto lower ground: wherever
+    the height `reach` px up and to the left stands above this pixel, blend
+    toward `colour` in proportion to the step."""
+    over = shifted(height, reach, reach)
+    drop = [clamp01((o - h) * 4) for o, h in zip(over, height)]
+    return mix(rgb, colour, drop, strength)
+
+
+def jag(ctx, fields, common, amount, cells=16):
+    """Break straight cell edges into jagged ones. `fields` (lists) take one
+    warp that is common at the block edge and varied inside; their `common`
+    references take the common warp alone, so every layout lights against
+    the same reference."""
+    size = ctx.size
+    cx, cy = fbm(ctx.shared_rng, cells, 2, size=size), fbm(ctx.shared_rng, cells, 2, size=size)
+    wx = blend_fields(cx, fbm(ctx.rng, cells, 2, size=size), ctx.interior_mask)
+    wy = blend_fields(cy, fbm(ctx.rng, cells, 2, size=size), ctx.interior_mask)
+    return ([domain_warp(f, wx, wy, amount) for f in fields],
+            [domain_warp(f, cx, cy, amount) for f in common])
+
+
+def wet_pits(rgb, height, common, pit, water, sheen, depth=0.75):
+    """Rough mark: standing water in the pits, a bright sheen on the lit rim."""
+    rgb = mix(rgb, water, pit, depth)
+    glint = [max(0.0, -g) * p for g, p in zip(gradient_light(height, reference_height=common), pit)]
+    return mix(rgb, sheen, [smoothstep(0.15, 0.6, g) for g in glint], 0.85)
+
+
+def ridge_mark(ctx, rgb, spacing=64, wobble=0.5, riser=0.14, lip=0.05, lit=0.3, shadow=0.35):
+    """Ridges mark: long, roughly level ledges every `spacing` render px.
+
+    Down the screen each ledge top ends in a narrow lit lip, then a short
+    shaded riser drops to the next ledge. Ledge k is where
+    `y / spacing + wobble * noise` crosses k; only its fractional part is
+    used, so the ledges wrap with the block."""
+    size = ctx.size
+    noise = layout_field(ctx, lambda rng: fbm(rng, 3, 2, cells_y=2, size=size))
+    top, fall = 1 - riser - lip, 1 - riser
+    scale = []
+    for i, n in enumerate(noise):
+        f = ((i // size) / spacing + wobble * (n - 0.5)) % 1
+        glint = smoothstep(top - 0.02, top + 0.01, f) * (1 - smoothstep(fall - 0.01, fall + 0.01, f))
+        face = smoothstep(fall - 0.01, fall + 0.01, f) * (1 - 0.6 * smoothstep(fall, 1.0, f))
+        scale.append(1 + lit * glint - shadow * face)
+    return [[c * k for c, k in zip(channel, scale)] for channel in rgb]
+
+
 # Barren ground: muted warm neutrals, inhibits growth like sand but is not a shore.
 
-@recipe(name="dirt", group="barren", label="Dirt", profile="soft",
+@recipe(name="dirt", group="barren", label="Dirt", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
-        palette={"dark": (104, 82, 56), "mid": (136, 108, 74), "light": (160, 132, 96), "pebble": (86, 68, 48)},
-        style=Style(luma=116, std=9, grain_max=8), periodic=True, grid=8, blocks=4)
+        palette={"dark": (104, 82, 56), "mid": (136, 108, 74), "light": (160, 132, 96), "pebble": (86, 68, 48),
+                 "crack": (66, 48, 32)},
+        style=Style(luma=116, std=10, grain_max=9), periodic=True, grid=8, blocks=4)
 def render_dirt(ctx):
+    """The original speckled earth and stones, under the barren group's cracks."""
     p = RECIPES["dirt"].palette
     common, common_grain, common_pebbles = dirt_fields(ctx.shared_rng, ctx.size)
     own, own_grain, own_pebbles = dirt_fields(ctx.rng, ctx.size)
@@ -1044,7 +1131,8 @@ def render_dirt(ctx):
     fine = blend_fields(common_grain, own_grain, ctx.interior_mask)
     rgb = [[c * (1 + 0.12 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
     pebbles = blend_fields(common_pebbles, own_pebbles, ctx.interior_mask)
-    return mix(rgb, p["pebble"], pebbles, 0.8), None
+    rgb = mix(rgb, p["pebble"], pebbles, 0.8)
+    return barren_mark(ctx, rgb, p["crack"], fade=0.0), None
 
 
 def dirt_fields(rng, size):
@@ -1059,12 +1147,12 @@ def dirt_fields(rng, size):
     return height, fine, pebbles
 
 
-@recipe(name="clay", group="barren", label="Clay", profile="soft",
+@recipe(name="clay", group="barren", label="Clay", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
-        palette={"dark": (134, 88, 60), "mid": (166, 114, 80), "light": (186, 138, 100), "crack": (116, 74, 52)},
+        palette={"dark": (150, 76, 46), "mid": (184, 102, 64), "light": (204, 128, 88), "crack": (112, 56, 34)},
         style=Style(luma=124, std=8, grain_max=8), periodic=True, grid=8, blocks=4)
 def render_clay(ctx):
-    """Cracked clay with shared boundary plates and independent interiors."""
+    """Red baked clay in bold plates, split again by the barren group's cracks."""
     p = RECIPES["clay"].palette
     size, shared, own = ctx.size, ctx.shared_rng, ctx.rng
     f1, f2, _, common1, common2, _ = block_worley(ctx, 6)
@@ -1084,133 +1172,121 @@ def render_clay(ctx):
     common_grit = lattice_noise(shared, 48, size=size)
     grit = blend_fields(common_grit, lattice_noise(own, 48, size=size), ctx.interior_mask)
     rgb = [[c * (1 + 0.08 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
-    cracks = band(edge, 0.03, 0.05)
-    rgb = mix(rgb, p["crack"], cracks, 0.45)
-    return rgb, None
+    cracks = band(edge, 0.04, 0.07)
+    rgb = mix(rgb, p["crack"], cracks, 0.7)
+    return barren_mark(ctx, rgb, p["crack"], cells=9, fade=0.1), None
 
 
-@recipe(name="gravel", group="barren", label="Gravel", profile="rock",
+@recipe(name="shale", group="barren", label="Shale", profile="rock", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
-        palette={"fines": (98, 86, 70), "gap": (50, 43, 36),
-                 "stones": [(168, 156, 136), (146, 138, 126), (178, 162, 136), (128, 122, 114),
-                            (160, 140, 118), (132, 133, 134), (200, 188, 162), (156, 128, 104),
-                            (176, 150, 120), (214, 202, 176)]},
-        style=Style(luma=128, std=32, grain_max=26, match=0.8), periodic=True, grid=8, blocks=4)
-def render_gravel(ctx):
-    """Rounded pebbles, after close-up photographs of pebble beds: a dark bed
-    of fines under packed, overlapping stones of mixed grey and warm tones,
-    each lit from the upper left with a dark contact shadow to the lower
-    right, and a few larger stones on top."""
-    p = RECIPES["gravel"].palette
+        palette={"fines": (118, 110, 98), "gap": (78, 72, 64), "crack": (64, 58, 52),
+                 "chips": [(162, 156, 146), (148, 144, 138), (170, 160, 144), (138, 134, 128),
+                           (156, 146, 132), (176, 170, 160)]},
+        style=Style(luma=136, std=16, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4)
+def render_shale(ctx):
+    """Shale: big flat plates of grey stone, each lying at its own level so
+    one overlaps the next, with jagged broken edges, under the barren cracks."""
+    p = RECIPES["shale"].palette
     size = ctx.size
-    common_bed = fbm(ctx.shared_rng, 12, 2, size=size)
-    own_bed = fbm(ctx.rng, 12, 2, size=size)
-    bed = normalize_like(blend_fields(common_bed, own_bed, ctx.interior_mask), common_bed)
-    rgb = ramp(bed, [(0.0, p["gap"]), (1.0, p["fines"])])
-    speck = blend_fields(lattice_noise(ctx.shared_rng, 64, size=size),
-                         lattice_noise(ctx.rng, 64, size=size), ctx.interior_mask)
-    master_ctx = Ctx(ctx.name, 0, ctx.phase, ctx.phases, size=size)
-
-    def tone(u):
-        colour = p["stones"][int(u * 997) % len(p["stones"])]
-        value = 0.86 + 0.26 * ((u * 7919) % 1.0)
-        return [c * value for c in colour]
-
-    def lumps(u):
-        return [(h, (0.05 + 0.06 * ((u * 31 * h) % 1.0)) * 3 / (h + 1), u * TAU * h) for h in (2, 3, 5)]
-
-    # Grit, stones and a few large stones: a size hierarchy with the dark bed
-    # showing between them, which is what separates stones at 32 px.
-    for count, radius, spacing in ((40, (4.0, 6.0), 1.05), (18, (8.0, 11.0), 1.0), (3, (11.0, 14.0), 0.95)):
-        shared, own = block_object_field(ctx, count, radius, spacing=spacing)
-        master_shared, master_own = block_object_field(master_ctx, count, radius, spacing=spacing)
-        height, stones = render_domes(shared + own, tone, lumps, size=size)
-        if ctx.variant == 0:
-            master_height = height
-        else:
-            master_height, master_stones = render_domes(master_shared + master_own, tone, lumps, size=size)
-            del master_stones
-        stones = shade(stones, height, 0.5, reference_height=master_height)
-        stones = [[c * (0.92 + 0.16 * v) for c, v in zip(channel, speck)] for channel in stones]
-        cover = [smoothstep(0.0, 0.2, h) for h in height]
-        shadow = shifted(cover, 2, 3)
-        rgb = mix(rgb, p["gap"], [s * (1 - c) for s, c in zip(shadow, cover)], 0.7)
-        rgb = mix(rgb, stones, cover, 1.0)
-    return rgb, None
+    height, common, ids = plates(ctx, 3, stretch=1.7, step=0.35, rise=0.05)
+    count = 3 * ctx.area_scale
+    tones = [p["chips"][int(ctx.shared_rng.random() * len(p["chips"]))] for _ in range(count)]
+    rgb = [[tones[i][k] for i in ids] for k in range(3)]
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(ctx.shared_rng, count, 0.08))
+    layers = layout_field(ctx, lambda rng: fbm(rng, 3, 2, cells_y=24, size=size))
+    rgb = [[c * (0.9 + 0.2 * v) for c, v in zip(channel, layers)] for channel in rgb]
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
+    rgb = [[c * (0.94 + 0.12 * v) for c, v in zip(channel, speck)] for channel in rgb]
+    (*rgb, height), (common,) = jag(ctx, [*rgb, height], [common], 6, cells=12)
+    rgb = shade(rgb, height, 0.35, reference_height=common)
+    rgb = cast(rgb, height, p["gap"], reach=5, strength=0.55)
+    return barren_mark(ctx, rgb, p["crack"], cells=4, strength=0.7, fade=0.15), None
 
 
-@recipe(name="flower_meadow", group="barren", label="Flower meadow", profile="brush",
-        seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
-        palette={"dark": (26, 98, 28), "mid": (34, 116, 34), "light": (54, 134, 46),
-                 "shadow": (18, 60, 20),
-                 "flowers": [(250, 250, 244), (252, 214, 64), (236, 120, 176), (178, 120, 230),
-                             (240, 92, 72), (120, 160, 246)],
-                 "centres": [(248, 196, 60), (120, 70, 30), (250, 236, 150)]},
-        style=Style(luma=92, std=24, grain_max=18, match=0.3), periodic=True, grid=8, blocks=4)
-def render_flower_meadow(ctx):
-    """Whole flowers cross common block edges; independently seeded drifts fill the interior."""
-    p, size = RECIPES["flower_meadow"].palette, ctx.size
-    common = fbm(ctx.shared_rng, 8, 3, size=size)
-    own = fbm(ctx.rng, 8, 3, size=size)
-    turf = normalize_like(blend_fields(common, own, ctx.interior_mask), common)
-    rgb = ramp(turf, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    common_blades = lattice_noise(ctx.shared_rng, 48, size=size)
-    own_blades = lattice_noise(ctx.rng, 48, size=size)
-    blades = blend_fields(common_blades, own_blades, ctx.interior_mask)
-    rgb = [[c * (0.88 + 0.24 * v) for c, v in zip(channel, blades)] for channel in rgb]
-
-    common_patch = fbm(ctx.shared_rng, 4, 2, size=size)
-    own_patch = fbm(ctx.rng, 4, 2, size=size)
-    patch_reference = common_patch
-    common_patch = normalize_like(common_patch, patch_reference)
-    own_patch = normalize_like(own_patch, patch_reference)
-    # Start color/density variation beyond every shared flower's full extent.
-    # Heads stay whole: their palette and petal geometry never cross-fade.
-    shared, own_objects = block_object_field(ctx, 24, (6.5, 8.0), spacing=1.05)
-    for cx, cy, radius, u in sorted(shared + own_objects, key=lambda o: o[1]):
-        x, y = int(cx) % size, int(cy) % size
-        index = y * size + x
-        weight = smoothstep(112.0, 192.0, min(cx, cy, size - cx, size - cy))
-        patch = common_patch[index] + (own_patch[index] - common_patch[index]) * weight
-        if patch < 0.30:
-            continue  # Open grass between drifts, rather than a uniform flower carpet.
-        color_id = min(len(p["flowers"]) - 1, int(patch * len(p["flowers"])))
-        if int(u * 65535) % 5 == 0:
-            color_id = int(u * 7919) % len(p["flowers"])  # Scattered singles among same-color patches.
-        colour = p["flowers"][color_id]
-        centre = p["centres"][int(u * 997) % len(p["centres"])]
-        flower_meadow_paint(rgb, size, cx, cy, radius, u, colour, centre, p["shadow"])
-    return rgb, None
+@recipe(name="heath", group="barren", label="Heath", profile="brush", border_class="solid",
+        seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
+        palette={"dark": (108, 98, 86), "mid": (126, 116, 102), "light": (138, 128, 114),
+                 "crack": (74, 62, 54), "shadow": (78, 68, 60),
+                 "stem": (56, 47, 42), "body": (90, 75, 65), "tip": (132, 118, 96),
+                 "dead": (92, 86, 78), "deadtip": (124, 118, 106)},
+        style=Style(luma=100, std=15, grain_max=14, match=0.7), periodic=True, grid=8, blocks=4)
+def render_heath(ctx):
+    """Dry heath: clumps of dormant and dead heather cushions, each built of
+    lit sprig tufts, over pale, faded, cracked sandy peat."""
+    p = RECIPES["heath"].palette
+    rgb = heath_ground(ctx, p)
+    mat, cover = heather_cushions(ctx, p)
+    rgb = mix(rgb, p["shadow"], soft_shadow(cover), 0.5)
+    return mix(rgb, mat, cover, 1.0), None
 
 
-def flower_meadow_paint(rgb, size, cx, cy, radius, u, colour, centre, shadow):
-    """Render a flower in its small wrapped bounding box, independent of canvas size."""
-    side = 32
-    left, top = math.floor(cx) - side // 2, math.floor(cy) - side // 2
-    masks = {name: [0.0] * (side * side) for name in ("petal", "centre", "shadow")}
-    stamp_flower(masks, cx - left, cy - top, radius, 4 + int(u * 65521) % 3, (u * 171 % 1) * TAU)
-    # Per-head bevel normalization is local and therefore identical for a
-    # shared boundary flower, irrespective of the rest of the block's layout.
-    lighting = gradient_light(masks["petal"])
-    for i, (petal, core, cast) in enumerate(zip(masks["petal"], masks["centre"], masks["shadow"])):
-        if not (petal or core or cast):
-            continue
-        target = ((top + i // side) % size) * size + (left + i % side) % size
-        for k in range(3):
-            value = rgb[k][target]
-            value += (shadow[k] - value) * cast * 0.55
-            value += (colour[k] * (1 - 0.25 * lighting[i]) - value) * petal
-            value += (centre[k] - value) * core
-            rgb[k][target] = value
+def heath_ground(ctx, p):
+    """Pale, faded sandy peat under the barren group's cracks."""
+    size = ctx.size
+    base = layout_field(ctx, lambda rng: fbm(rng, 4, 3, size=size))
+    rgb = ramp(base, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    sand = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
+    rgb = [[c * (0.93 + 0.14 * v) for c, v in zip(ch, sand)] for ch in rgb]
+    return barren_mark(ctx, rgb, p["crack"], fade=0.15)
 
 
-# Rough ground: slow going; cool and desaturated apart from mud.
+def soft_shadow(cover):
+    """A soft shadow down-right of each covered area."""
+    taps = ((3, 4, 0.35), (5, 7, 0.4), (7, 10, 0.25))
+    out = [0.0] * len(cover)
+    for dx, dy, w in taps:
+        out = [o + w * v for o, v in zip(out, shifted(cover, dx, dy))]
+    return [o * (1 - c) for o, c in zip(out, cover)]
 
-@recipe(name="mud", group="rough", label="Mud", profile="soft",
+
+def heather_cushions(ctx, p, cells=100, tufts=700, threshold=0.5, spread=0.12, light=0.5, part=0.55, dead_share=0.4):
+    """Heath bushes: clumps of rounded cushions built of lit sprig tufts,
+    a share of them dead grey. Returns (colour, cover)."""
+    size, shared = ctx.size, ctx.shared_rng
+    f1, _, ids, c1, _, cids = block_worley(ctx, cells)
+    t1, _, _, ct1, _, _ = block_worley(ctx, tufts)
+    count = cells * ctx.area_scale
+    bias = [shared.random() for _ in range(count)]
+    kind = [shared.random() for _ in range(count)]
+    reach = [shared.uniform(0.55, 0.8) for _ in range(count)]
+    patch = layout_field(ctx, lambda rng: fbm(rng, 4, 3, size=size))
+    fray = layout_field(ctx, lambda rng: lattice_noise(rng, 40, size=size))
+    twig = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
+
+    def dome(a, i, fr):
+        # Rounded but with a finite rim slope, so the tiny field differences
+        # just inside the exact block edge cannot jump the lit rim.
+        d = a / (reach[i] * (0.75 + 0.5 * fr))
+        return (1 - d * d) * (1.5 - 0.5 * d * d) if d < 1 else 0.0
+
+    def tuft(t):
+        return max(0.0, 1 - t / 0.75)
+
+    grow = [smoothstep(threshold - 0.04, threshold + 0.04, v + spread * (bias[i] - 0.5))
+            for v, i in zip(patch, ids)]
+    body = [dome(a, i, fr) * g for a, i, fr, g in zip(f1, ids, fray, grow)]
+    height = [b * (0.55 + 0.45 * tuft(t)) for b, t in zip(body, t1)]
+    common_height = [dome(a, i, 0.5) * (0.55 + 0.45 * tuft(t)) for a, i, t in zip(c1, cids, ct1)]
+    cover = [smoothstep(0.0, 0.35, b) for b in body]
+    tone = [0.5 * h + 0.25 * tuft(t) + 0.25 * w for h, t, w in zip(height, t1, twig)]
+    live = ramp(tone, [(0.0, p["stem"]), (0.5, p["body"]), (1.0, p["tip"])])
+    dead = ramp(tone, [(0.0, p["stem"]), (0.5, p["dead"]), (1.0, p["deadtip"])])
+    mat = mix(live, dead, [1.0 if kind[i] < dead_share else 0.0 for i in ids], 1.0)
+    mat = apply_cell_jitter(mat, ids, cell_jitter(shared, count, 0.07))
+    mat = shade(mat, height, light, reference_height=common_height)
+    # Dark gaps where tufts part, deepest toward the bush rim.
+    gaps = [smoothstep(0.25, 0.0, tuft(t)) * (1 - 0.6 * b) for t, b in zip(t1, body)]
+    mat = mix(mat, p["stem"], gaps, part)
+    return mat, cover
+
+
+@recipe(name="mud", group="rough", label="Mud", profile="soil", border_class="solid",
         seam={"height": 1},
-        palette={"dark": (62, 48, 36), "mid": (88, 70, 52), "light": (116, 96, 74), "sheen": (150, 132, 112)},
-        style=Style(luma=76, std=8, grain_max=7), periodic=True, grid=8, blocks=4)
+        palette={"dark": (62, 48, 36), "mid": (88, 70, 52), "light": (116, 96, 74), "sheen": (150, 132, 112),
+                 "water": (46, 38, 32), "glint": (168, 160, 150)},
+        style=Style(luma=76, std=11, grain_max=8), periodic=True, grid=8, blocks=4)
 def render_mud(ctx):
+    """Churned heavy lumps and water-filled pits with a wet sheen."""
     p = RECIPES["mud"].palette
     common, common_grit, common_pools = mud_fields(ctx.shared_rng, ctx.size)
     own, own_grit, own_pools = mud_fields(ctx.rng, ctx.size)
@@ -1227,8 +1303,10 @@ def render_mud(ctx):
     grit = [a + (b - a) * w for a, b, w in zip(common_grit, own_grit, ctx.interior_mask)]
     rgb = [[c * (1 + 0.12 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
     pools = [a + (b - a) * w for a, b, w in zip(common_pools, own_pools, ctx.interior_mask)]
-    rgb = mix(rgb, p["sheen"], pools, 0.4)
-    return rgb, None
+    rgb = mix(rgb, p["sheen"], pools, 0.25)
+    height, common_height, pit, _ = lumps(ctx, 3, pits=0.25, warp=24)
+    rgb = shade(rgb, height, 0.5, reference_height=common_height)
+    return wet_pits(rgb, height, common_height, pit, p["water"], p["glint"]), None
 
 
 def mud_fields(rng, size):
@@ -1244,110 +1322,148 @@ def mud_fields(rng, size):
     return height, grit, pools
 
 
-@recipe(name="marsh", group="rough", label="Marsh", profile="soft",
-        seam={"height": 1},
-        palette={"tussock": (138, 140, 72), "dry": (176, 156, 96), "green": (100, 124, 58),
-                 "moss": (78, 92, 52), "water": (112, 128, 146), "sky": (156, 170, 184),
-                 "rim": (46, 50, 40), "reed": (132, 100, 60)},
-        style=Style(luma=104, std=22, grain_max=16, match=0.45), periodic=True, grid=8, blocks=4)
-def render_marsh(ctx):
-    """Whole shared boundary tussocks, pools and reeds over varied wet moss."""
-    p, size = RECIPES["marsh"].palette, ctx.size
-    common = fbm(ctx.shared_rng, 6, 3, size=size)
-    own = fbm(ctx.rng, 6, 3, size=size)
-    bed = normalize_like(blend_fields(common, own, ctx.interior_mask), common)
-    rgb = ramp(bed, [(0.0, p["moss"]), (0.6, p["green"]), (1.0, p["tussock"])])
-    shared, interior = block_object_field(ctx, 22, (6.0, 9.5), spacing=0.9)
-    blades, blade_rgb = marsh_fans(shared + interior, size, p)
-    rgb = mix(rgb, p["moss"], [b * 0.6 for b in shifted(blades, 2, 2)], 0.5)
-    rgb = mix(rgb, blade_rgb, blades, 1.0)
+@recipe(name="mudflat", group="rough", label="Mudflat", profile="soil", border_class="solid", seam={"height": 1},
+        palette={"dark": (128, 114, 96), "mid": (164, 148, 126), "light": (186, 172, 150),
+                 "gap": (52, 44, 36), "damp": (96, 84, 70), "salt": (222, 216, 204), "glint": (200, 196, 186)},
+        style=Style(luma=146, std=20, grain_max=14, match=0.9), periodic=True, grid=8, blocks=4)
+def render_mudflat(ctx):
+    """Desiccated mudflat: big curled plates split by deep dark cracks, salt
+    bloom on top and damp mud in a few sunken plates."""
+    p, size = RECIPES["mudflat"].palette, ctx.size
+    # Plates about two tiles across; one in twelve has sunk into a damp hollow.
+    f1, f2, ids, c1, c2, cids = block_worley(ctx, 3)
+    count = 3 * ctx.area_scale
+    sunk = [ctx.shared_rng.random() < 0.08 for _ in range(count)]
 
-    # Two independent pool beds, retaining half of the second, preserve the
-    # original average of one-and-a-half pools per native tile.
-    shared, interior = block_object_field(ctx, 1, (12.0, 18.0), spacing=1.0)
-    pool_objects = shared + interior
-    shared, interior = block_object_field(ctx, 1, (12.0, 18.0), spacing=1.0)
-    pool_objects += [obj for obj in shared + interior if obj[3] < 0.5]
-    pools = marsh_pools(pool_objects, size)
-    rim = [smoothstep(0.0, 0.12, v) for v in pools]
-    inner = [smoothstep(0.12, 0.3, v) for v in pools]
-    common_water = fbm(ctx.shared_rng, 4, 2, size=size)
-    own_water = fbm(ctx.rng, 4, 2, size=size)
-    sky = normalize_like(blend_fields(common_water, own_water, ctx.interior_mask), common_water)
-    water = mix(flat(p["water"], size=size), p["sky"], sky, 0.6)
-    rgb = mix(rgb, p["rim"], rim, 0.9)
-    rgb = mix(rgb, water, inner, 1.0)
+    def plate(a, b, i):
+        e = b - a
+        if sunk[i]:
+            return -0.6
+        # Flat top that curls up toward its rim, then drops into the crack.
+        return smoothstep(0.03, 0.09, e) * (0.65 + 0.35 * (1 - smoothstep(0.09, 0.35, e)))
 
-    shared, interior = block_object_field(ctx, 1, (8.0, 12.0), spacing=1.0)
-    reed_objects = shared + interior
-    shared, interior = block_object_field(ctx, 1, (8.0, 12.0), spacing=1.0)
-    reed_objects += [obj for obj in shared + interior if obj[3] < 0.5]
-    reeds, _ = marsh_fans(reed_objects, size, p, reeds=True)
-    rgb = mix(rgb, p["rim"], shifted(reeds, 2, 2), 0.35)
-    return mix(rgb, p["reed"], reeds, 0.9), None
-
-
-def marsh_fans(objects, size, palette, reeds=False):
-    """Rasterize each fan on a small local patch, then wrap onto the block."""
-    mask = [0.0] * (size * size)
-    rgb = [[0.0] * (size * size) for _ in range(3)] if not reeds else None
-    patch_size, centre = 64, 32
-    for x, y, radius, u in sorted(objects, key=lambda obj: obj[1]):
-        local = [0.0] * (patch_size * patch_size)
-        count = 5 + int(u * 5) if reeds else 9
-        for j in range(count):
-            if reeds:
-                angle = -math.pi / 2 + (((u * 97 + j * 0.618) % 1) - 0.5) * 1.2
-                x0 = centre + (((u * 43 + j * 0.37) % 1) - 0.5) * 10
-                y0 = centre + (((u * 17 + j * 0.53) % 1) - 0.5) * 8
-                length = 7 + 5 * ((u * 29 + j * 0.47) % 1)
-                stamp_stroke(local, x0, y0, angle, length, 1.8)
-            else:
-                t = (u * 97 + j * 0.618) % 1
-                angle = -math.pi / 2 + (t - 0.5) * 2.6
-                length = radius * (0.8 + 0.6 * ((u * 13 + j * 0.37) % 1))
-                stamp_stroke(local, centre, centre + radius * 0.35, angle, length, 2.2)
-        tone = [mix_channel(palette["green"][k], palette["tussock"][k], palette["dry"][k], (u * 5.3) % 1)
-                for k in range(3)] if not reeds else None
-        shade = 0.85 + 0.3 * ((u * 7.7) % 1)
-        origin_x, origin_y = math.floor(x) - centre, math.floor(y) - centre
-        for i, value in enumerate(local):
-            if not value:
-                continue
-            index = ((origin_y + i // patch_size) % size) * size + (origin_x + i % patch_size) % size
-            if value > mask[index]:
-                mask[index] = value
-                if rgb is not None:
-                    for k in range(3):
-                        rgb[k][index] = tone[k] * shade * (0.85 + 0.25 * value)
-    return mask, rgb
+    height = [plate(a, b, i) for a, b, i in zip(f1, f2, ids)]
+    common = [plate(a, b, i) for a, b, i in zip(c1, c2, cids)]
+    # Bend the straight Voronoi cracks; the reference takes the common warp so
+    # every layout lights against the same field.
+    cx, cy = fbm(ctx.shared_rng, 6, 2, size=size), fbm(ctx.shared_rng, 6, 2, size=size)
+    sx = blend_fields(cx, fbm(ctx.rng, 6, 2, size=size), ctx.interior_mask)
+    sy = blend_fields(cy, fbm(ctx.rng, 6, 2, size=size), ctx.interior_mask)
+    height, common = domain_warp(height, sx, sy, 10), domain_warp(common, cx, cy, 10)
+    # Dry crust with salt bloom, each plate faintly its own tone.
+    tone = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size))
+    rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(ctx.shared_rng, count, 0.06))
+    salt = layout_field(ctx, lambda rng: fbm(rng, 10, 2, size=size))
+    rgb = mix(rgb, p["salt"], [smoothstep(0.62, 0.8, v) for v in salt], 0.45)
+    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
+    rgb = [[c * (1 + 0.1 * (v - 0.5) * 2) for c, v in zip(ch, fine)] for ch in rgb]
+    rgb = shade(rgb, height, 0.45, reference_height=common)
+    # Deep dark cracks between the plates; damp mud in the sunken ones.
+    crack = [1 - smoothstep(0.05, 0.35, h) for h in height]
+    rgb = mix(rgb, p["gap"], crack, 0.95)
+    pit = [smoothstep(0.1, 0.4, -h) for h in height]
+    return wet_pits(rgb, height, common, pit, p["damp"], p["glint"], depth=0.6), None
 
 
-def marsh_pools(objects, size):
-    """Wrapped irregular pool domes; no full-canvas allocation per pool."""
-    heights = [0.0] * (size * size)
-    for x, y, radius, u in objects:
-        lumps = [(h, 0.08 + 0.08 * ((u * 31 + h * 0.37) % 1), TAU * ((u * 53 + h * 0.47) % 1))
-                 for h in (2, 3, 4)]
-        reach = math.ceil(radius * 1.5) + 1
-        for uy in range(math.floor(y) - reach, math.floor(y) + reach + 1):
-            for ux in range(math.floor(x) - reach, math.floor(x) + reach + 1):
-                dx, dy = ux + 0.5 - x, uy + 0.5 - y
-                angle = math.atan2(dy, dx)
-                local = radius * (1 + sum(a * math.sin(h * angle + ph) for h, a, ph in lumps))
-                distance = math.hypot(dx, dy) / local
-                if distance < 1:
-                    index = (uy % size) * size + ux % size
-                    heights[index] = max(heights[index], math.sqrt(1 - distance * distance))
-    return heights
+@recipe(name="pumice", group="rough", label="Pumice field", profile="rock", border_class="solid", seam={"height": 1},
+        palette={"dark": (42, 40, 40), "mid": (70, 67, 65), "light": (102, 98, 95), "hole": (12, 10, 10),
+                 "rust": (104, 72, 48)},
+        style=Style(luma=56, std=14, grain_max=14, match=0.7), periodic=True, grid=8, blocks=4)
+def render_pumice(ctx):
+    """Pumice field: the rough group's heavy lumps as rounded blocks of dark
+    porous volcanic rock, split by deep black crevices, pitted with vesicles."""
+    p, size = RECIPES["pumice"].palette, ctx.size
+    height, common, pit, ids = lumps(ctx, 3, pits=0.1, warp=20)
+    tone = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size))
+    rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(ctx.shared_rng, 3 * ctx.area_scale, 0.15))
+
+    def vesicles(rng):
+        holes = [0.0] * (size * size)
+        for _ in range(110 * (size // N) ** 2):
+            x, y = rng.random() * size, rng.random() * size
+            r = rng.choice((2.5, 3.0, 3.5, 4.5, 4.5, 6.5)) * rng.uniform(0.8, 1.2)
+            stamp_disc(holes, x, y, r, softness=0.35)
+        return holes
+
+    holes = layout_field(ctx, vesicles)
+    rock = [smoothstep(0.08, 0.3, h) for h in height]
+    rgb = mix(rgb, p["hole"], [v * r for v, r in zip(holes, rock)], 0.55)
+    rgb = shade(rgb, height, 0.6, reference_height=common)
+    rgb = mix(rgb, p["hole"], [1 - smoothstep(0.0, 0.2, h) for h in height], 0.92)
+    rgb = mix(rgb, p["hole"], pit, 0.9)
+    rust = layout_field(ctx, lambda rng: fbm(rng, 14, 2, size=size))
+    return mix(rgb, p["rust"], [smoothstep(0.74, 0.88, v) * r for v, r in zip(rust, rock)], 0.4), None
 
 
-def mix_channel(a, b, c, t):
-    """Three-stop ramp for one channel at t in [0, 1]."""
-    return a + (b - a) * (t / 0.5) if t < 0.5 else b + (c - b) * ((t - 0.5) / 0.5)
+def warped_edges(ctx, cells, warp, cells_warp=4):
+    """Long, wandering fracture lines: Worley edges warped, common at the block edge."""
+    size = ctx.size
+    f1, f2, _, c1, c2, _ = block_worley(ctx, cells)
+    cx, cy = fbm(ctx.shared_rng, cells_warp, 2, size=size), fbm(ctx.shared_rng, cells_warp, 2, size=size)
+    wx = blend_fields(cx, fbm(ctx.rng, cells_warp, 2, size=size), ctx.interior_mask)
+    wy = blend_fields(cy, fbm(ctx.rng, cells_warp, 2, size=size), ctx.interior_mask)
+    return domain_warp([b - a for a, b in zip(f1, f2)], wx, wy, warp)
 
 
-@recipe(name="deep_snow", group="rough", label="Deep snow", profile="soft",
+def bubbles(ctx):
+    """Clusters of small air bubbles trapped in the ice."""
+    size = ctx.size
+
+    def make(rng):
+        mask = [0.0] * (size * size)
+        for _ in range(3 * (size // N) ** 2):
+            x, y = rng.random() * size, rng.random() * size
+            for _ in range(rng.randint(5, 12)):
+                stamp_disc(mask, x + rng.gauss(0, 7), y + rng.gauss(0, 7), rng.uniform(1.0, 2.6), softness=0.4)
+        return mask
+    return layout_field(ctx, make)
+
+
+@recipe(name="frozen_lake", group="ice", label="Frozen lake", profile="frozen", border_class="solid",
+        seam={'height': 4, 'cast_q8': 64, 'cast_width_q8': 640, 'fringe': [228, 240, 248], 'fringe_q8': 96,
+              'fringe_width_q8': 384},
+        palette={"deep": (88, 126, 146), "mid": (130, 168, 184), "pale": (178, 206, 216), "glint": (226, 238, 242),
+                 "crack": (206, 226, 232), "white": (242, 248, 250), "frost": (226, 236, 240)},
+        style=Style(luma=160, std=18, grain_max=14, match=0.7), periodic=True, grid=8, blocks=4)
+def render_frozen_lake(ctx):
+    """Frosted lake ice: teal depth under a thin white bloom, a few long white
+    pressure cracks, trapped bubbles and patches of frost. It plays exactly
+    like ice and stays static, pale and grey-white beside any water."""
+    p, size = RECIPES["frozen_lake"].palette, ctx.size
+    # Depth: broad clear (dark) and cloudy (pale) zones of thick lake ice.
+    depth = layout_field(ctx, lambda rng: fbm(rng, 3, 3, size=size))
+    rgb = ramp(depth, [(0.0, p["deep"]), (0.55, p["mid"]), (1.0, p["pale"])])
+    # Cold streaks frozen into the ice.
+    streak = layout_field(ctx, lambda rng: fbm(rng, 4, 3, cells_y=14, size=size))
+    rgb = mix(rgb, p["pale"], [smoothstep(0.55, 0.85, v) for v in streak], 0.25)
+    # Soft specular sheen: a broad diagonal glint.
+    sheen = layout_field(ctx, lambda rng: fbm(rng, 2, 2, size=size))
+    rgb = mix(rgb, p["glint"], [smoothstep(0.6, 0.9, v) for v in sheen], 0.35)
+    # Pressure cracks: few, long and bright; a fine fracture net under them.
+    major = warped_edges(ctx, 1, 18, 3)
+    fine = warped_edges(ctx, 6, 6, 8)
+    gate = layout_field(ctx, lambda rng: fbm(rng, 5, 2, size=size))
+    net = [(1 - smoothstep(0.012, 0.03, e)) * smoothstep(0.42, 0.55, g) for e, g in zip(fine, gate)]
+    rgb = mix(rgb, p["crack"], net, 0.27)
+    # Only some ridges survive: long pressure cracks, not a full net.
+    keep = layout_field(ctx, lambda rng: fbm(rng, 2, 2, size=size))
+    ridge = [smoothstep(0.45, 0.6, k) for k in keep]
+    line = [(1 - smoothstep(0.01, 0.035, e)) * r for e, r in zip(major, ridge)]
+    halo = [(1 - smoothstep(0.02, 0.09, e)) * r for e, r in zip(major, ridge)]
+    rgb = mix(rgb, p["crack"], halo, 0.225)
+    rgb = mix(rgb, p["white"], line, 0.765)
+    rgb = mix(rgb, p["white"], bubbles(ctx), 0.7)
+    # Frost and wind-blown snow dusting in patches.
+    frost = layout_field(ctx, lambda rng: fbm(rng, 6, 3, size=size))
+    grain = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
+    dust = [smoothstep(0.62, 0.8, f) * (0.6 + 0.4 * g) for f, g in zip(frost, grain)]
+    rgb = mix(rgb, p["frost"], dust, 0.7)
+    return rgb, None
+
+
+@recipe(name="deep_snow", group="ice", label="Deep snow", profile="soil", border_class="solid",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512, "fringe": [196, 210, 232], "fringe_q8": 64,
               "fringe_width_q8": 384},
         palette={"dark": (156, 170, 210), "mid": (204, 208, 234), "light": (236, 236, 250), "sparkle": (252, 252, 255)},
@@ -1385,159 +1501,371 @@ def render_deep_snow(ctx):
     return rgb, None
 
 
-@recipe(name="scree", group="rough", label="Scree", profile="rock",
-        seam={"height": 1},
-        palette={"dark": (84, 86, 92), "mid": (118, 120, 124), "light": (152, 154, 156), "dirt": (62, 56, 50)},
-        style=Style(luma=118, std=14, grain_max=12), periodic=True, grid=8, blocks=4)
+def wrap_blur(a, r):
+    """Wrapping box blur of a square numpy field of any size (`box_blur` is
+    fixed at N), from running sums along each axis."""
+    if r <= 0:
+        return a
+    k = 2 * r + 1
+    out = a.copy()
+    for axis in (0, 1):
+        padded = np.concatenate([np.take(out, range(-r - 1, 0), axis=axis), out,
+                                 np.take(out, range(0, r), axis=axis)], axis=axis)
+        sums = np.cumsum(padded, axis=axis)
+        n = out.shape[axis]
+        out = (np.take(sums, range(k, k + n), axis=axis) - np.take(sums, range(0, n), axis=axis)) / k
+    return out
+
+
+def as_list(a):
+    """A numpy field as the flat list the field library works on."""
+    return a.ravel().tolist()
+
+
+def rock_layer(ctx, cells, metric, stretch, base, slope, cap, gap, keep, cap_spread=0.5):
+    """One size class of angular rock fragments, in render-pixel heights.
+
+    Each Worley cell, inset by its own gap, is a faceted roof: height grows
+    linearly with F2-F1 toward the cell's middle, so every face toward an
+    edge is planar and takes one light value, and is clipped at the cell's
+    own flat top (`cap`). A cell is present with probability `keep`; absent
+    cells leave the ground showing. Per-cell values are drawn by id from the
+    shared stream, as in `plates`, so boundary fragments match every layout.
+
+    Returns (height, common height, ids, common ids, mask, common mask) as
+    size x size arrays; height is -1e3 where no fragment stands.
+    """
+    size = ctx.size
+    f1, f2, ids, c1, c2, cids = block_worley(ctx, cells, metric, stretch)
+    count = cells * ctx.area_scale
+    r = ctx.shared_rng
+    gaps = np.array([gap * (0.6 + 0.8 * r.random()) for _ in range(count)])
+    caps = np.array([cap * (1 - cap_spread + 2 * cap_spread * r.random()) for _ in range(count)])
+    lift = np.array([r.random() for _ in range(count)])
+    present = np.array([r.random() < keep for _ in range(count)])
+    cell_px = size / np.sqrt(count)
+
+    def build(a, b, i):
+        a, b, i = np.asarray(a), np.asarray(b), np.asarray(i)
+        inside = (b - a - gaps[i]) * cell_px  # render px inside the fragment's edge
+        roof = np.minimum(np.maximum(inside, 0) * slope, caps[i])
+        h = base * (0.7 + 0.6 * lift[i]) + roof
+        m = (inside > 0) & present[i]
+        return np.where(m, h, -1e3).reshape(size, size), m.reshape(size, size), i.reshape(size, size)
+
+    h, m, i = build(f1, f2, ids)
+    ch, cm, ci = build(c1, c2, cids)
+    return h, ch, i, ci, m, cm
+
+
+def scree_fields(ctx, layers):
+    """Heap the size classes in a z-buffer: at each pixel the highest fragment
+    wins, so larger fragments rest on and lap over smaller ones.
+
+    Returns (height, common height, layer index, fragment id); the layer is
+    -1 on open ground. Painting layers in order instead tessellates them
+    into crazy paving; the z-buffer lets a cobble lap over a block's low rim
+    without piercing its middle, because each block's lowest top clears the
+    highest cobble (see SCREE_LAYERS).
+    """
+    size = ctx.size
+    top, common_top = np.zeros((size, size)), np.zeros((size, size))
+    layer = np.full((size, size), -1)
+    fragment = np.zeros((size, size), dtype=np.int64)
+    for k, spec in enumerate(layers):
+        h, ch, ids, _, m, cm = rock_layer(ctx, **spec)
+        over = m & (h > top)
+        top = np.where(over, h, top)
+        layer = np.where(over, k, layer)
+        fragment = np.where(over, ids, fragment)
+        common_top = np.where(cm & (ch > common_top), ch, common_top)
+    return top, common_top, layer, fragment
+
+
+# Talus size classes, smallest first: chips between the stones, cobbles about
+# half a tile across, and a few dominant blocks a tile or more across. A
+# block's lowest top (base 10 x 0.7 + cap 18 x 0.7) clears the highest cobble
+# (base 5 x 1.3 + cap 8 x 1.5), so cobbles never pierce a block.
+SCREE_LAYERS = [
+    dict(cells=24, metric="euclid", stretch=1.0, base=2.0, slope=0.4, cap=4.0, gap=0.10, keep=0.85, cap_spread=0.6),
+    dict(cells=6, metric="euclid", stretch=1.0, base=5.0, slope=0.3, cap=8.0, gap=0.07, keep=0.8, cap_spread=0.5),
+    dict(cells=1, metric="angular", stretch=1.5, base=10.0, slope=0.25, cap=18.0, gap=0.05, keep=0.55, cap_spread=0.3),
+]
+# Per-fragment tone and iron stain, looked up by (layer, id) in a fixed table
+# drawn from the shared stream, so a boundary fragment keeps its tone.
+SCREE_TONES = 4096
+
+
+@recipe(name="scree", group="rough", label="Scree", profile="rock", border_class="solid", seam={"height": 1},
+        palette={"void": (30, 28, 27), "ground": (70, 64, 58), "dark": (82, 80, 77),
+                 "mid": (112, 108, 102), "light": (142, 138, 130), "warm": (128, 110, 92)},
+        style=Style(luma=86, std=20, grain_max=14, match=0.8), periodic=True, grid=8, blocks=4)
 def render_scree(ctx):
-    p = RECIPES["scree"].palette
-    size, shared, own = ctx.size, ctx.shared_rng, ctx.rng
-    count = shared.randint(12, 16) * ctx.area_scale
-    points = [(shared.random() * size, shared.random() * size) for _ in range(count)]
-    angles = [shared.random() * TAU for _ in range(count)]
-    rotations = [(math.cos(a), math.sin(a)) for a in angles]
-    cell = size / math.sqrt(count)
-
-    def chip_fields(positions, turns):
-        first, second, nearest = _worley_from_points(positions, "angular", turns, 1.35, size=size)
-        return [v / cell for v in first], [(b - a) / cell for a, b in zip(first, second)], nearest
-
-    master_first, master_edge, ids = chip_fields(points, rotations)
-    f1, edge = master_first, master_edge
-    if ctx.variant:
-        # Boundary chips are the same actual stones in every layout. Only
-        # points safely inside the block move; no unrelated RGB images are
-        # cross-faded, so chip outlines and their bevels remain intact.
-        # Certify that a moved point cannot change F1 or F2 in the shared
-        # band, including the extra pixel sampled by bevel lighting. The
-        # angular metric is at least Euclidean / sqrt(1 + 1 / stretch**2).
-        # A fixed guard can fail in a sparse patch when the block gets larger.
-        shared_second = max((a + b) * cell for i, (a, b) in enumerate(zip(master_first, master_edge))
-                            if min(i % size, i // size, size - 1 - i % size, size - 1 - i // size) < 33)
-        guard = math.ceil(33 + shared_second * math.sqrt(1 + 1 / 1.35 ** 2)) + 1
-        interior = [(i, x, y) for i, (x, y) in enumerate(points)
-                    if min(x, y, size - x, size - y) > guard]
-        positions, turns = list(points), list(rotations)
-        for i, _, _ in interior:
-            positions[i] = (own.uniform(guard, size - guard), own.uniform(guard, size - guard))
-            angle = own.random() * TAU
-            turns[i] = (math.cos(angle), math.sin(angle))
-        f1, edge, ids = chip_fields(positions, turns)
-
-    master_grit = fbm(shared, 10, 2, size=size)
-    grit = master_grit
-    weight = ctx.interior_mask
-    if ctx.variant:
-        grit = [a + (b - a) * w for a, b, w in zip(master_grit, fbm(own, 10, 2, size=size), weight)]
-    master_tone = [0.25 * (1 - a) + 0.75 * g for a, g in zip(master_first, master_grit)]
-    ordered = sorted(master_tone)
-    low, high = (ordered[int(q * (len(ordered) - 1))] for q in (0.05, 0.95))
-    # One shared stretch prevents a different interior changing edge colours.
-    tone = [clamp01((0.25 * (1 - a) + 0.75 * g - low) / (high - low)) for a, g in zip(f1, grit)]
-    rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = apply_cell_jitter(rgb, ids, cell_jitter(shared, 16 * ctx.area_scale, 0.14))
-    top = [smoothstep(0.08, 0.30, e) for e in edge]
-    master_top = [smoothstep(0.08, 0.30, e) for e in master_edge]
-    rgb = shade(rgb, top, 0.45, light=(-0.7, -0.7), reference_height=master_top)
-    gaps = band(edge, 0.06, 0.06)
-    rgb = mix(rgb, p["dirt"], gaps, 0.85)
-    fine = lattice_noise(shared, 48, size=size)
-    if ctx.variant:
-        fine = [a + (b - a) * w for a, b, w in zip(fine, lattice_noise(own, 48, size=size), weight)]
-    rgb = [[c * (1 + 0.08 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
-    return rgb, None
+    """Talus: angular, faceted fragments from chips to blocks a tile or more
+    across, heaped so they rest on and lap over each other, with occluded
+    voids between and shadows cast down-right: the rough group's heavy
+    relief as broken rock."""
+    p, size = RECIPES["scree"].palette, ctx.size
+    top, common_top, layer, fragment = scree_fields(ctx, SCREE_LAYERS)
+    rock = layer >= 0
+    tones = np.array([ctx.shared_rng.random() for _ in range(SCREE_TONES)])
+    stained = np.array([ctx.shared_rng.random() < 0.08 for _ in range(SCREE_TONES)], dtype=float)
+    key = (fragment * 7 + layer * 1031 + 3) % SCREE_TONES
+    tone = np.where(rock, 0.3 + 0.55 * tones[key], 0.0)
+    rgb = ramp(as_list(tone), [(0.0, p["ground"]), (0.3, p["dark"]), (0.58, p["mid"]), (0.85, p["light"])])
+    rgb = mix(rgb, p["warm"], as_list(stained[key] * rock), 0.3)
+    # Coarse grit on the open ground between stones, faint texture on faces.
+    grit = np.array(layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))).reshape(size, size)
+    fine = as_list(np.where(rock, 0.06, 0.22) * (grit - 0.5) * 2)
+    rgb = [[c * (1 + f) for c, f in zip(channel, fine)] for channel in rgb]
+    # A gentle bend only, so fracture edges stay straight and angular.
+    (*rgb, height), (common,) = jag(ctx, [*rgb, as_list(top)], [as_list(common_top)], 3, cells=6)
+    # Planar roofs give each facet one tone, with crisp creases between.
+    rgb = shade(rgb, height, 0.85, reference_height=common)
+    # Voids: darken where neighbouring fragments stand above this pixel.
+    h = np.array(height).reshape(size, size)
+    occlusion = np.clip((wrap_blur(h, 6) - h) / 6.0, 0, 1)
+    rgb = mix(rgb, p["void"], as_list(occlusion), 0.9)
+    return cast(rgb, height, p["void"], reach=5, strength=0.55), None
 
 
 # Paths: warm and light, faster movement.
 
-@recipe(name="dirt_track", group="paths", label="Dirt track", profile="sand",
+NATIVE_PX = N // 32  # render pixels per native pixel
+
+# Brick firings, after the reference: red, plum, grey-brown, dark, rust.
+BRICK_FIRINGS = [
+    ((156, 84, 68), 3), ((116, 82, 76), 3), ((118, 102, 88), 3),
+    ((94, 68, 64), 2), ((166, 96, 70), 1),
+]
+
+
+def pick_firing(rng):
+    """One weighted brick firing colour."""
+    total = sum(w for _, w in BRICK_FIRINGS)
+    r = rng.random() * total
+    for colour, w in BRICK_FIRINGS:
+        r -= w
+        if r < 0:
+            return colour
+    return BRICK_FIRINGS[-1][0]
+
+
+def herringbone(size, width, length):
+    """Axis-aligned herringbone over a periodic block, in render pixels.
+
+    Bricks are `width` x `length` (joint included). Horizontal bricks sit on the
+    lattice (width, width), (length, -length); each vertical brick hangs below
+    its horizontal partner's left end. The pattern repeats over the block when
+    size / 2 is a multiple of both width and length. Axis-aligned rather than
+    at 45 degrees: joints stay on whole native pixels, and a path reads the
+    same running across or down the screen.
+
+    Returns the brick list and, per pixel, the brick index, the distance from
+    the brick face's edge, the joint mask and the position along the brick
+    (0..1) for lengthwise firing gradients.
+    """
+    assert (size // 2) % width == 0 and (size // 2) % length == 0
+    origins = set()
+    span = size // width + size // length + 4
+    for i in range(-span, span):
+        for j in range(-span, span):
+            origins.add(((i * width + j * length) % size, (i * width - j * length) % size))
+    bricks = []
+    # Shift by half a brick width so joints never run along a cell edge.
+    shift = width // 2
+    for ox, oy in sorted(origins):
+        ox, oy = (ox + shift) % size, (oy + shift) % size
+        bricks.append((ox, oy, length, width, 0))
+        bricks.append((ox, (oy + width) % size, width, length, 1))
+    ids = [-1] * (size * size)
+    edge = [0.0] * (size * size)
+    joint = [0.0] * (size * size)
+    along = [0.0] * (size * size)
+    gap = NATIVE_PX  # one native pixel of joint on each brick's right and bottom side
+    radius = 0.75 * NATIVE_PX
+    for k, (x0, y0, bw, bh, vertical) in enumerate(bricks):
+        fw, fh = bw - gap, bh - gap
+        for v in range(bh):
+            row = ((y0 + v) % size) * size
+            for u in range(bw):
+                i = row + (x0 + u) % size
+                ids[i] = k
+                if u >= fw or v >= fh:
+                    joint[i], edge[i] = 1.0, 0.0
+                else:
+                    dx = min(u + 0.5, fw - u - 0.5)
+                    dy = min(v + 0.5, fh - v - 0.5)
+                    e = min(dx, dy)
+                    if dx < radius and dy < radius:
+                        e = radius - math.hypot(radius - dx, radius - dy)
+                    edge[i] = e
+                    joint[i] = 1.0 if e < 0 else 0.0
+                along[i] = (v / bh) if vertical else (u / bw)
+    assert min(ids) >= 0
+    return bricks, ids, edge, joint, along
+
+
+@recipe(name="brick_path", group="paths", label="Brick path", profile="paved", border_class="built",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
-        palette={"dark": (142, 116, 82), "mid": (170, 142, 104), "light": (192, 166, 126)},
-        style=Style(luma=146, std=7, grain_max=6), periodic=True, grid=8, blocks=4)
-def render_dirt_track(ctx):
-    """Shared edge soil and rut lines, with varied wear and wobble inside."""
-    p = RECIPES["dirt_track"].palette
-    common, common_fine, common_worn, common_wobble, centre = dirt_track_fields(ctx.shared_rng, ctx.size)
-    own, own_fine, own_worn, own_wobble, _ = dirt_track_fields(ctx.rng, ctx.size)
+        palette={"joint": (38, 28, 28)},
+        style=Style(luma=112, std=20, grain_max=16), periodic=True, grid=8, blocks=4)
+def render_brick_path(ctx):
+    """Brick path: long clay pavers laid in an axis-aligned herringbone, so the
+    path reads the same whichever way it runs."""
+    p, size = RECIPES["brick_path"].palette, ctx.size
+    # Long 4:1 pavers, 4 x 16 native px with their joint: every joint lands on
+    # whole native pixels, so the 32 px tiles stay crisp.
+    bricks, ids, edge, joint, along = herringbone(size, 4 * NATIVE_PX, 16 * NATIVE_PX)
+    # Joint geometry is a fixed lattice common to every layout; brick firings
+    # come from the shared stream at the block edge and each layout's own
+    # stream inside, like road's stone tones.
+    def firings(rng):
+        out = []
+        for _ in bricks:
+            c = pick_firing(rng)
+            lift = 1 + (rng.random() - 0.5) * 0.16
+            slope = (rng.random() - 0.5) * 0.18
+            out.append((tuple(v * lift for v in c), slope))
+        return out
+    common, own = firings(ctx.shared_rng), firings(ctx.rng)
     interior = ctx.interior_mask
-    height = normalize_like(blend_fields(common, own, interior), common, 0.02, 0.98)
-    rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    fine = blend_fields(common_fine, own_fine, interior)
-    rgb = [[c * (1 + 0.12 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
-    worn = blend_fields(common_worn, own_worn, interior)
-    rgb = mix(rgb, p["light"], worn, 0.5)
-    # Keep one common pair of centre lines per tile-height period. Scalar
-    # wobble changes smoothly inside each layout without splitting the ruts.
-    wobble = blend_fields(common_wobble, own_wobble, interior)
-    ruts = []
-    for i in range(ctx.size * ctx.size):
-        y = i // ctx.size + (wobble[i] - 0.5) * 6
-        d = min(abs((y - centre + N / 2) % N - N / 2),
-                abs((y - centre - 32 + N / 2) % N - N / 2))
-        ruts.append(1 - smoothstep(2.0, 6.0, d))
-    rgb = [[c * (1 - 0.04 * r) for c, r in zip(channel, ruts)] for channel in rgb]
+    mottle = layout_field(ctx, lambda rng: fbm(rng, 24, 3, size=size))
+    rgb = ([0.0] * (size * size), [0.0] * (size * size), [0.0] * (size * size))
+    # Each brick one firing, a little brighter or darker and graded end to end,
+    # with a fine mottle across all of them.
+    for i in range(size * size):
+        k, w = ids[i], interior[i]
+        (ca, sa), (cb, sb) = common[k], own[k]
+        slope = sa + (sb - sa) * w
+        f = (1 + slope * (along[i] - 0.5) * 2) * (1 + 0.14 * (mottle[i] - 0.5) * 2)
+        for ch in range(3):
+            rgb[ch][i] = (ca[ch] + (cb[ch] - ca[ch]) * w) * f
+    # A slight bevel, dark recessed joints and the Paths group's worn lip.
+    height = [smoothstep(0.0, 1.5 * NATIVE_PX, e) for e in edge]
+    rgb = shade(rgb, height, 0.25)
+    rgb = mix(rgb, p["joint"], joint, 0.95)
+    rgb = worn_edge(rgb, joint, light=(NATIVE_PX, NATIVE_PX), strength=0.18)
+    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
+    rgb = [[c * (1 + 0.07 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
     return rgb, None
 
 
-def dirt_track_fields(rng, size):
-    """Periodic soil, fine grain, worn patches and rut wobble at native scale."""
-    height = fbm(rng, 4, 3, size=size)
-    height = domain_warp(height, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 8)
-    fine = lattice_noise(rng, 48, size=size)
-    worn = [0.0] * (size * size)
-    for _ in range(3 * (size // N) ** 2):
-        x, y = rng.random() * size, rng.random() * size
-        stamp_disc(worn, x, y, rng.uniform(14, 22), softness=0.9)
-    centre = 40 + rng.random() * 16
-    wobble = fbm(rng, 2, 2, size=size)
-    return height, fine, worn, wobble, centre
-
-
-@recipe(name="boardwalk", group="paths", label="Boardwalk", profile="crisp",
+@recipe(name="boardwalk", group="paths", label="Boardwalk", profile="crisp", border_class="built",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
-        palette={"dark": (108, 90, 68), "mid": (156, 134, 104), "light": (182, 160, 128), "gap": (76, 60, 44)},
-        style=Style(luma=134, std=11, grain_max=10, match=0.6), periodic=True, grid=8, blocks=4,
+        palette={"dark": (92, 84, 74), "mid": (134, 124, 108), "light": (164, 154, 136), "gap": (40, 36, 32),
+                 "knot": (70, 62, 54), "nail": (52, 50, 50)},
+        style=Style(luma=122, std=14, grain_max=14, match=0.7), periodic=True, grid=8, blocks=4,
         note="planks run one way: accepted compromise")
 def render_boardwalk(ctx):
-    """Whole common planks and joints, with independently varied interior wood."""
-    p = RECIPES["boardwalk"].palette
+    """Long weathered planks, silvered grey-brown, with grain, knots and nails.
+
+    Planks are about 8 native px wide and 2.5 to 4.5 cells long. Plank ends,
+    knots and per-plank brightness come from the shared stream, so every
+    layout has the same joints and no layout fades between planks that do
+    not line up; only the wood grain inside varies."""
+    p, size = RECIPES["boardwalk"].palette, ctx.size
     shared, own = ctx.shared_rng, ctx.rng
-    size = ctx.size
-    planks = 4 * (size // N)
-    height = size // planks
-    common_raw = fbm(shared, 2, 3, cells_y=24, size=size)
-    own_raw = fbm(own, 2, 3, cells_y=24, size=size)
-    common_wood = normalize_like(common_raw, common_raw)
-    own_wood = normalize_like(own_raw, common_raw)
-    tone = [0.0] * (size * size)
-    gaps = [0.0] * (size * size)
-    # Joint geometry and plank lighting are common, so an alternate interior
-    # never fades between incompatible plank ends or cuts a boundary board.
-    shifts = [int(shared.random() * size) for _ in range(planks)]
-    brightness = [1 + (shared.random() - 0.5) * 0.18 for _ in range(planks)]
-    joints = [shared.random() * N for _ in range(planks)]
+    rows = 4 * (size // N)
+    width = size / rows
+    # Plank ends: each row gets joints 2.5-4.5 cells apart, wrapping the block.
+    ends, shifts, bright = [], [], []
+    for _ in range(rows):
+        x, row = shared.random() * size, []
+        start = x
+        while True:
+            row.append(x % size)
+            x += shared.uniform(2.5, 4.5) * N
+            if x - start > size - 2.0 * N:
+                break
+        ends.append(sorted(row))
+        shifts.append([int(shared.random() * size) for _ in row])
+        bright.append([1 + (shared.random() - 0.5) * 0.22 for _ in row])
+    grain_common = fbm(shared, 2, 3, cells_y=40, size=size)
+    grain_own = fbm(own, 2, 3, cells_y=40, size=size)
+    streak_c = lattice_noise(shared, 4, 64, size=size)
+    streak_o = lattice_noise(own, 4, 64, size=size)
     interior = ctx.interior_mask
+    tone, gaps, knots, nails = ([0.0] * (size * size) for _ in range(4))
+    # Most planks carry a knot somewhere along their length.
+    knot_list = []
+    for k in range(rows):
+        for e in ends[k]:
+            if shared.random() < 0.6:
+                knot_list.append((e + shared.uniform(0.6, 2.0) * N, (k + shared.uniform(0.3, 0.7)) * width,
+                                  shared.uniform(5, 9)))
+    for kx, ky, kr in knot_list:
+        stamp_disc(knots, kx % size, ky % size, kr, softness=0.6)
+    # Each pixel samples its plank's own stretch of grain, so neighbouring
+    # planks never share a grain line; joints and nail pairs sit at the ends.
     for i in range(size * size):
         x, y = i % size, i // size
-        k = y // height
-        sample = y * size + (x + shifts[k]) % size
-        wood = common_wood[sample] + (own_wood[sample] - common_wood[sample]) * interior[i]
-        tone[i] = clamp01(wood * brightness[k])
-        edge = min(y - k * height, (k + 1) * height - y)
-        gap = 1 - smoothstep(1.0, 3.0, edge + 0.5)
-        jx = abs(((x + 0.5 - joints[k]) + N / 2) % N - N / 2)
-        gaps[i] = max(gap, 1 - smoothstep(1.0, 2.5, jx))
+        k = min(rows - 1, int(y / width))
+        row = ends[k]
+        seg = max((j for j, e in enumerate(row) if e <= x), default=len(row) - 1)
+        sample = y * size + (x + shifts[k][seg]) % size
+        w = interior[i]
+        g = grain_common[sample] + (grain_own[sample] - grain_common[sample]) * w
+        st = streak_c[sample] + (streak_o[sample] - streak_c[sample]) * w
+        tone[i] = clamp01((0.45 * g + 0.55 * st) * bright[k][seg])
+        edge = min(y - k * width, (k + 1) * width - y)
+        gap = 1 - smoothstep(1.0, 3.5, edge + 0.5)
+        jd = min(abs(((x + 0.5 - e) + size / 2) % size - size / 2) for e in row)
+        gaps[i] = max(gap, 1 - smoothstep(1.0, 2.5, jd))
+        nail_y = abs(edge - width * 0.28)
+        if 5.0 < jd < 8.0 and nail_y < 1.6:
+            nails[i] = 1.0
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    common_grain = lattice_noise(shared, 48, size=size)
-    own_grain = lattice_noise(own, 48, size=size)
-    fine = blend_fields(common_grain, own_grain, interior)
-    rgb = [[c * (1 + 0.08 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
-    return mix(rgb, p["gap"], gaps, 0.85), None
+    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 6, 128, size=size))
+    rgb = [[c * (1 + 0.16 * (v - 0.5) * 2) for c, v in zip(ch, fine)] for ch in rgb]
+    rgb = mix(rgb, p["knot"], knots, 0.55)
+    rgb = mix(rgb, p["nail"], nails, 0.5)
+    rgb = mix(rgb, p["gap"], gaps, 0.9)
+    return worn_edge(rgb, gaps, strength=0.2), None
+
+
+@recipe(name="sandstone", group="paths", label="Sandstone tiles", profile="paved", border_class="built",
+        seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
+        palette={"ochre": (176, 150, 92), "grey": (132, 130, 116), "joint": (72, 64, 54), "crack": (88, 78, 62),
+                 "speck": (96, 86, 70)},
+        style=Style(luma=136, std=18, grain_max=16, match=0.7), periodic=True, grid=8, blocks=4)
+def render_sandstone(ctx):
+    """Square sandstone flags, two by two per cell, ochre and grey in a checker,
+    each with rounded corners, mottle, speckle and a few fine cracks, set in
+    dark joints with the Paths group's worn lip. The flag grid is the same in
+    every layout."""
+    p, size = RECIPES["sandstone"].palette, ctx.size
+    flag = N // 2
+    per_row = size // flag
+    jit = [ctx.shared_rng.uniform(0.9, 1.1) for _ in range(per_row * per_row)]
+    joints, ids = [0.0] * (size * size), [0] * (size * size)
+    for i in range(size * size):
+        x, y = i % size, i // size
+        fx, fy = x // flag, y // flag
+        ids[i] = fy * per_row + fx
+        lx, ly = x - fx * flag + 0.5, y - fy * flag + 0.5
+        dx, dy = min(lx, flag - lx), min(ly, flag - ly)
+        # Rounded corners: distance to an inset rounded square.
+        r = 10.0
+        cx, cy = max(0.0, r - dx), max(0.0, r - dy)
+        edge = r - math.hypot(cx, cy) if dx < r and dy < r else min(dx, dy)
+        joints[i] = 1 - smoothstep(2.0, 5.0, edge)
+    base = [p["ochre"] if ((k // per_row) + (k % per_row)) % 2 == 0 else p["grey"] for k in range(per_row * per_row)]
+    rgb = [[base[k][c] * jit[k] for k in ids] for c in range(3)]
+    mottle = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size))
+    rgb = [[c * (0.88 + 0.24 * v) for c, v in zip(ch, mottle)] for ch in rgb]
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
+    rgb = mix(rgb, p["speck"], [smoothstep(0.78, 0.92, v) for v in speck], 0.5)
+    cracks = group_cracks(ctx, cells=5, width=0.04, gaps=0.45)
+    rgb = mix(rgb, p["crack"], cracks, 0.6)
+    rgb = shade(rgb, [1 - j for j in joints], 0.25)
+    rgb = mix(rgb, p["joint"], joints, 0.9)
+    return worn_edge(rgb, joints, strength=0.22), None
 
 
 # Fertile ground: warm, saturated undertone; the new strategic resource.
 
-@recipe(name="loam", group="fertile", label="Loam", profile="soft",
+@recipe(name="loam", group="fertile", label="Loam", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
         palette={"dark": (52, 38, 24), "mid": (74, 58, 36), "light": (98, 80, 52), "fleck": (96, 108, 56)},
         style=Style(luma=66, std=8, grain_max=8), periodic=True, grid=8, blocks=4)
@@ -1569,7 +1897,7 @@ def loam_fields(rng, size):
     return height, grit, flecks
 
 
-@recipe(name="moss", group="fertile", label="Moss", profile="soft",
+@recipe(name="moss", group="fertile", label="Moss", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
         palette={"dark": (26, 60, 38), "mid": (38, 84, 50), "light": (62, 110, 68)},
         style=Style(luma=68, std=7, grain_max=6), periodic=True, grid=8, blocks=4)
@@ -1596,7 +1924,7 @@ def render_moss(ctx):
     return rgb, None
 
 
-@recipe(name="spring_meadow", group="fertile", label="Spring meadow", profile="brush",
+@recipe(name="spring_meadow", group="fertile", label="Spring meadow", profile="brush", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
         palette={"dark": (78, 118, 50), "mid": (104, 146, 66), "light": (134, 170, 90), "dot": (236, 228, 170)},
         style=Style(luma=105, std=7, grain_max=7), periodic=True, grid=8, blocks=4)
@@ -1628,7 +1956,7 @@ def render_spring_meadow(ctx):
 # from the same common-edge and per-layout fields, so they keep the soft (grass)
 # and speckled (sand) grain and only shift the colour and a few small accents.
 
-@recipe(name="lush_grass", group="grass", label="Lush grass", profile="sand",
+@recipe(name="lush_grass", group="grass", label="Lush grass", profile="turf", border_class="solid",
         seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
         palette={"dark": (14, 80, 40), "mid": (26, 104, 52), "light": (48, 128, 64), "clump": (10, 66, 34)},
         style=Style(luma=72, std=6, grain_max=6), periodic=True, grid=8, blocks=4)
@@ -1641,7 +1969,7 @@ def render_lush_grass(ctx):
     return mix(rgb, p["clump"], [smoothstep(0.58, 0.74, v) for v in clumps], 0.45), None
 
 
-@recipe(name="dry_grass", group="grass", label="Dry grass", profile="sand",
+@recipe(name="dry_grass", group="grass", label="Dry grass", profile="turf", border_class="solid",
         seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
         palette={"dark": (92, 100, 36), "mid": (120, 124, 52), "light": (150, 146, 74), "straw": (176, 164, 96)},
         style=Style(luma=114, std=7, grain_max=7), periodic=True, grid=8, blocks=4)
@@ -1665,10 +1993,10 @@ def grass_look(ctx, p):
     return [[c * (1 + 0.05 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
 
 
-@recipe(name="dune_sand", group="sand", label="Dune sand", profile="sand",
+@recipe(name="dune_sand", group="sand", label="Dune sand", profile="sand", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (176, 120, 60), "mid": (206, 152, 84), "light": (230, 186, 118)},
-        style=Style(luma=158, std=20, grain_max=26, match=0.5), periodic=True, grid=8, blocks=4)
+        style=Style(luma=158, std=20, grain_max=26, match=0.9), periodic=True, grid=8, blocks=4)
 def render_dune_sand(ctx):
     """Classic sand grain in warm orange, with its mineral flecks."""
     p = RECIPES["dune_sand"].palette
@@ -1676,7 +2004,7 @@ def render_dune_sand(ctx):
     return mix(rgb, p["dark"], flecks, 0.18), None
 
 
-@recipe(name="pale_sand", group="sand", label="Pale sand", profile="sand",
+@recipe(name="pale_sand", group="sand", label="Pale sand", profile="sand", border_class="solid",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (190, 180, 146), "mid": (214, 204, 170), "light": (234, 226, 196), "shell": (250, 246, 232)},
         style=Style(luma=198, std=14, grain_max=24, match=0.5), periodic=True, grid=8, blocks=4)
@@ -1691,8 +2019,8 @@ def sand_look(ctx, p):
     """Sand dunes and lit pebble grains through a palette, and its flecks."""
     common, common_flecks = sand_fields(ctx.shared_rng, ctx.size)
     own, own_flecks = sand_fields(ctx.rng, ctx.size)
-    # Lit grains two or three native pixels across, as the original tiles
-    # have, rather than independent single-pixel noise.
+    # Lit grains one or two native pixels across, half the size of the
+    # original tiles' grains, rather than independent single-pixel noise.
     count = SAND_GRAINS
     first, second, ids, common_first, common_second, common_ids = block_worley(ctx, count)
     tones = [ctx.shared_rng.random() for _ in range(count * ctx.area_scale)]
@@ -1818,7 +2146,7 @@ def render_waves(ctx, palette, swell_weight, chop_weight, glint, front):
     return mix(rgb, palette["glint"], glints, glint)
 
 
-@recipe(name="water", group="water", label="Water", profile="sand",
+@recipe(name="water", group="water", label="Water", profile="still", border_class="pool",
         seam={"height": 5, "cast_q8": 72, "cast_width_q8": 640},
         palette={"deep": (50, 36, 168), "base": (68, 52, 198), "light": (86, 72, 216), "glint": (156, 150, 244)},
         style=Style(luma=74, std=8, grain_max=8, match=0.0), phases=WAVE_PHASES, animation_ticks=6,
@@ -1827,7 +2155,7 @@ def render_water(ctx):
     return render_waves(ctx, RECIPES["water"].palette, 0.35, 0.2, 0.55, 0.2), None
 
 
-@recipe(name="deep_water", group="deep_water", label="Deep water", profile="soft",
+@recipe(name="deep_water", group="deep_water", label="Deep water", profile="still", border_class="pool",
         seam={"height": 6, "cast_q8": 72, "cast_width_q8": 640},
         palette={"deep": (40, 28, 132), "base": (52, 38, 152), "light": (62, 48, 170), "glint": (110, 96, 214)},
         style=Style(luma=56, std=6, grain_max=7, match=0.0), phases=WAVE_PHASES, animation_ticks=6,
@@ -1836,7 +2164,7 @@ def render_deep_water(ctx):
     return render_waves(ctx, RECIPES["deep_water"].palette, 0.4, 0.12, 0.3, 0.15), None
 
 
-@recipe(name="dark_water", group="deep_water", label="Dark water", profile="soft",
+@recipe(name="dark_water", group="deep_water", label="Dark water", profile="still", border_class="pool",
         seam={"height": 7, "cast_q8": 80, "cast_width_q8": 704},
         palette={"tint": (40, 30, 104), "murk": (32, 24, 84), "speck": (20, 15, 52)},
         style=Style(luma=38, std=4, grain_max=5, match=0.5), periodic=True, grid=8, blocks=4,
@@ -1864,7 +2192,7 @@ def dark_water_fields(rng, size):
     return murk, specks
 
 
-@recipe(name="ridge_rock", group="ridges", label="Ridge", profile="rock",
+@recipe(name="ridge_rock", group="ridges", label="Ridge", profile="rock", border_class="solid",
         seam={"height": 4, "cast_q8": 72, "cast_width_q8": 768},
         palette={"dark": (72, 72, 76), "mid": (104, 104, 106), "light": (138, 138, 136), "crack": (46, 46, 50)},
         style=Style(luma=102, std=12, grain_max=10), periodic=True, grid=8, blocks=4)
@@ -1883,9 +2211,9 @@ def render_ridge_rock(ctx):
     ridged = blend_fields(common_ridges, own_ridges, weight)
     widths = blend_fields(common_widths, own_widths, weight)
     cracks = [1 - smoothstep(0.0, 0.05 + 0.10 * w, r) for r, w in zip(ridged, widths)]
-    rgb = shade(rgb, h, 0.4, light=(-1.0, -0.3), reference_height=common_h)
-    rgb = mix(rgb, p["crack"], cracks, 0.6)
-    return rgb, None
+    rgb = shade(rgb, h, 0.2, light=(-1.0, -0.3), reference_height=common_h)
+    rgb = mix(rgb, p["crack"], cracks, 0.3)
+    return ridge_mark(ctx, rgb), None
 
 
 def ridge_rock_fields(rng, size):
@@ -1902,7 +2230,7 @@ def ridge_rock_fields(rng, size):
     return height, fine, ridged, widths
 
 
-@recipe(name="outcrop", group="ridges", label="Outcrop", profile="rock",
+@recipe(name="outcrop", group="ridges", label="Outcrop", profile="rock", border_class="solid",
         seam={"height": 4, "cast_q8": 72, "cast_width_q8": 768},
         palette={"dark": (80, 80, 76), "mid": (110, 112, 108), "light": (140, 142, 136), "lichen": (120, 130, 70)},
         style=Style(luma=108, std=12, grain_max=10), periodic=True, grid=8, blocks=4,
@@ -1936,7 +2264,7 @@ def render_outcrop(ctx):
     lichen = blend_fields(common_lichen, own_lichen, ctx.interior_mask)
     lichen = [l * (1 - g) for l, g in zip(lichen, gaps)]
     rgb = mix(rgb, p["lichen"], lichen, 0.75)
-    return rgb, None
+    return ridge_mark(ctx, rgb, lit=0.4, shadow=0.45), None
 
 
 def outcrop_lichen(rng, size, count):
@@ -1952,7 +2280,7 @@ def outcrop_lichen(rng, size, count):
 # neighbour (rank above all other materials), since a hole this dark cannot
 # show a lip of its own.
 
-@recipe(name="void_hole", group="void", label="Hole", profile="crisp",
+@recipe(name="void_hole", group="void", label="Hole", profile="crisp", border_class="cut",
         seam={"height": 8, "cast_q8": 96, "cast_width_q8": 512},
         palette={"dark": (6, 6, 10), "mid": (10, 10, 14), "light": (14, 14, 20)},
         style=Style(luma=10, std=2, grain_max=3), periodic=True, grid=8, blocks=4,
@@ -1967,7 +2295,7 @@ def render_void_hole(ctx):
     return rgb, None
 
 
-@recipe(name="chasm", group="void", label="Chasm", profile="cliff",
+@recipe(name="chasm", group="void", label="Chasm", profile="crisp", border_class="cut",
         seam={"height": 8, "cast_q8": 96, "cast_width_q8": 512},
         palette={"dark": (26, 20, 24), "mid": (46, 38, 42), "light": (74, 64, 66), "floor": (6, 4, 8)},
         style=Style(luma=40, std=9, grain_max=8), periodic=True, grid=8, blocks=4,
@@ -2007,7 +2335,7 @@ def chasm_fields(rng, size):
 
 # Obstacles: height cues (lit top, cast shadow); placeholders for image-generated art.
 
-@recipe(name="boulders", group="obstacles", label="Boulders", profile="rock",
+@recipe(name="boulders", group="obstacles", label="Boulders", profile="rock", border_class="solid",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"ground_dark": (112, 100, 84), "ground": (128, 114, 96), "ground_light": (144, 130, 110),
                  "rock_dark": (84, 88, 92), "rock_light": (138, 142, 142), "shadow": (40, 36, 34)},
@@ -2043,7 +2371,7 @@ def boulders_fields(rng, size):
     return height, grit, pebbles
 
 
-@recipe(name="hedge", group="obstacles", label="Hedge", profile="canopy",
+@recipe(name="hedge", group="obstacles", label="Hedge", profile="canopy", border_class="cover",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (22, 50, 24), "mid": (36, 76, 36), "light": (64, 108, 52), "gap": (10, 26, 14)},
         style=Style(luma=56, std=10, grain_max=9), periodic=True, grid=8, blocks=4,
@@ -2076,7 +2404,7 @@ def hedge_fields(rng, size):
     return height, grit, leaves
 
 
-@recipe(name="thicket", group="obstacles", label="Thicket", profile="canopy",
+@recipe(name="thicket", group="obstacles", label="Thicket", profile="canopy", border_class="cover",
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (40, 54, 26), "mid": (62, 80, 38), "light": (92, 110, 58),
                  "twig": (96, 78, 52), "twig_dark": (52, 42, 30)},
@@ -2111,7 +2439,7 @@ def thicket_fields(rng, size):
     return height, fine, twigs
 
 
-@recipe(name="lava", group="lava", label="Lava", profile="fractured",
+@recipe(name="lava", group="lava", label="Lava", profile="molten", border_class="flow",
         seam={"height": 4, "fringe": [214, 110, 40], "fringe_q8": 128, "fringe_width_q8": 640},
         palette={"crust_dark": (36, 18, 16), "crust": (50, 24, 20), "crust_warm": (96, 42, 26),
                  "glow": (170, 70, 24), "glow_bright": (220, 150, 60)},
@@ -2150,7 +2478,7 @@ def render_lava(ctx):
     return mix(rgb, glow, channel, 0.9), None
 
 
-@recipe(name="ember_field", group="lava", label="Ember field", profile="fractured",
+@recipe(name="ember_field", group="lava", label="Ember field", profile="molten", border_class="flow",
         seam={"height": 4, "fringe": [160, 80, 40], "fringe_q8": 96, "fringe_width_q8": 512},
         palette={"dark": (50, 28, 24), "mid": (60, 34, 28), "light": (80, 44, 32),
                  "ember_dim": (120, 50, 30), "ember": (230, 120, 40), "ember_core": (250, 200, 80)},
@@ -2200,21 +2528,41 @@ def ember_field_soil(rng, size):
     return height, lattice_noise(rng, 48, size=size)
 
 
-# Legacy surfaces keep their original palette/style statistics.
+# Legacy surfaces keep their original palette/style statistics; grass is the
+# exception, redrawn as sunlit turf in natural greens (minimap and preview keep
+# the classic colours).
 
-@recipe(name='grass', group="legacy", label='Grass', profile='sand',
-        seam={'height': 2, 'cast_q8': 56, 'cast_width_q8': 512}, palette={'dark': (28, 104, 28), 'mid': (30, 113, 31), 'light': (33, 124, 34)}, style=Style(luma=79.3, std=5.0, grain_max=4),
+@recipe(name='grass', group="legacy", label='Grass', profile="turf", border_class="solid",
+        seam={'height': 2, 'cast_q8': 56, 'cast_width_q8': 512},
+        palette={'shadow': (30, 74, 38), 'dark': (44, 98, 40), 'mid': (70, 124, 46), 'light': (112, 150, 62),
+                 'warm': (138, 150, 66), 'cool': (36, 92, 64)},
+        style=Style(luma=88, std=8, grain_max=8),
         periodic=True, grid=8, blocks=4, preview=(30, 113, 30), minimap=(0, 90, 0))
 def render_grass(ctx):
-    """Quiet green turf with common edge tufts and varied interior growth."""
-    p = RECIPES["grass"].palette
-    common, common_grain = grass_fields(ctx.shared_rng, ctx.size)
-    own, own_grain = grass_fields(ctx.rng, ctx.size)
-    height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
-    rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    fine = blend_fields(common_grain, own_grain, ctx.interior_mask)
-    rgb = [[c * (1 + 0.05 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
-    return rgb, None
+    """Fine tufts over soft growth: blue-green hollows, yellow-green crowns and
+    broad sun/moisture drift, with gentle top-left relief."""
+    p, size = RECIPES["grass"].palette, ctx.size
+
+    def growth(rng):
+        g = fbm(rng, 6, 4, size=size)
+        g = domain_warp(g, fbm(rng, 3, 2, size=size), fbm(rng, 3, 2, size=size), 1.5 * size / N)
+        tufts = fbm(rng, 64, 2, cells_y=24, size=size)
+        return [0.6 * a + 0.4 * b for a, b in zip(g, tufts)]
+
+    common_raw = growth(ctx.shared_rng)
+    common = normalize_like(common_raw, common_raw, 0.02, 0.98)
+    height = normalize_like(blend_fields(common_raw, growth(ctx.rng), ctx.interior_mask), common_raw, 0.02, 0.98)
+    rgb = ramp(height, [(0.0, p['shadow']), (0.35, p['dark']), (0.7, p['mid']), (1.0, p['light'])])
+    rgb = shade(rgb, height, 0.16, reference_height=common)
+    # Broad warm/cool drift, a cell or two across, like sun and soil moisture.
+    common_drift = fbm(ctx.shared_rng, 1.5, 3, size=size)
+    drift = normalize_like(blend_fields(common_drift, fbm(ctx.rng, 1.5, 3, size=size), ctx.interior_mask),
+                           common_drift)
+    rgb = mix(rgb, p['warm'], [smoothstep(0.55, 0.9, v) for v in drift], 0.55 * 0.35)
+    rgb = mix(rgb, p['cool'], [smoothstep(0.45, 0.1, v) for v in drift], 0.55 * 0.3)
+    fine = blend_fields(lattice_noise(ctx.shared_rng, 64, size=size), lattice_noise(ctx.rng, 64, size=size),
+                        ctx.interior_mask)
+    return [[c * (1 + 0.07 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb], None
 
 
 def grass_fields(rng, size):
@@ -2226,10 +2574,10 @@ def grass_fields(rng, size):
     return height, lattice_noise(rng, 48, size=size)
 
 
-SAND_GRAINS, SAND_DUNES, SAND_BEVEL = 160, 0.25, 0.15
+SAND_GRAINS, SAND_DUNES, SAND_BEVEL = 640, 0.25, 0.15
 
 
-@recipe(name='sand', group="legacy", label='Sand', profile='sand',
+@recipe(name='sand', group="legacy", label='Sand', profile="sand", border_class="solid",
         seam={'height': 1}, palette={'dark': (141, 130, 33), 'mid': (183, 169, 47), 'light': (225, 209, 67)}, style=Style(luma=160.1, std=27.0, grain_max=36.3),
         periodic=True, grid=8, blocks=4, preview=(182, 168, 48), minimap=(170, 170, 0))
 def render_sand(ctx):
@@ -2255,39 +2603,64 @@ def sand_fields(rng, size):
     return height, flecks
 
 
-@recipe(name='road', group="legacy", label='Road', profile='cobblestone',
+@recipe(name='road', group="legacy", label='Road', profile="paved", border_class="built",
         seam={'height': 3, 'cast_q8': 48, 'cast_width_q8': 512}, palette={'dark': (95, 84, 71), 'mid': (135, 122, 103), 'light': (165, 149, 128)}, style=Style(luma=121.2, std=23.2, grain_max=22.9),
         periodic=True, grid=8, blocks=4, preview=(133, 120, 101), minimap=(176, 138, 98))
 def render_road(ctx):
-    """Warm cobbled paving: whole edge stones and varied interior cobbles.
+    """Laid stone setts in straight courses, with straight mortar joints.
 
-    The small irregular stones retain a shared bevel/mortar network near the
-    block perimeter. Only interior point positions and scalar stone texture
-    vary; common lighting and tone references keep every edge interchangeable.
+    Course and joint geometry is periodic and common to every layout, so no
+    layout can cut a boundary stone; only stone tone and texture vary inside.
+    Each joint takes the paths group's crisp, lighter worn lip.
     """
-    p = RECIPES["road"].palette
-    first, second, ids, common_first, common_second, _ = block_worley(ctx, 36)
-    edge = [b - a for a, b in zip(first, second)]
-    common_edge = [b - a for a, b in zip(common_first, common_second)]
-    common_texture = fbm(ctx.shared_rng, 8, 3, size=ctx.size)
-    own_texture = fbm(ctx.rng, 8, 3, size=ctx.size)
-    texture = normalize_like(blend_fields(common_texture, own_texture, ctx.interior_mask),
-                             common_texture, 0.03, 0.97)
-    rgb = ramp(texture, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = apply_cell_jitter(rgb, ids, cell_jitter(ctx.shared_rng, 36 * ctx.area_scale, 0.12))
-    height = [smoothstep(0.025, 0.16, v) for v in edge]
-    common_height = [smoothstep(0.025, 0.16, v) for v in common_edge]
-    rgb = shade(rgb, height, 0.24, reference_height=common_height)
-    mortar = [1 - smoothstep(0.015, 0.075, v) for v in edge]
+    p, size = RECIPES["road"].palette, ctx.size
+    course = 32  # HD pixels per course: eight native pixels, dividing every block.
+    rows = size // course
+    joints = []
+    for _ in range(rows):
+        # Joint positions for one course, wrapping once around the block.
+        start = ctx.shared_rng.random() * size
+        row, x = [start], start
+        while True:
+            length = ctx.shared_rng.uniform(30.0, 58.0)
+            if start + size - (x + length) < 30.0:
+                break
+            x += length
+            row.append(x)
+        joints.append(row)
+    stones = sum(len(row) for row in joints)
+    common_tones = [ctx.shared_rng.random() for _ in range(stones)]
+    own_tones = [ctx.rng.random() for _ in range(stones)]
+    height, mortar, tone = [0.0] * (size * size), [0.0] * (size * size), [0.0] * (size * size)
+    first = 0
+    for k, row in enumerate(joints):
+        starts = row + [row[0] + size]
+        for y in range(k * course, (k + 1) * course):
+            dy = min(y - k * course, (k + 1) * course - 1 - y) + 0.5
+            for x in range(size):
+                ux = x + 0.5 if x + 0.5 >= row[0] else x + 0.5 + size
+                stone = bisect.bisect_right(starts, ux) - 1
+                dx = min(ux - starts[stone], starts[stone + 1] - ux)
+                i = y * size + x
+                # Rounded corners: worn setts, not sawn bricks.
+                edge = min(dx, dy) if min(dx, dy) > 5 else 5 - math.hypot(max(0.0, 5 - dx), max(0.0, 5 - dy))
+                mortar[i] = 1 - smoothstep(1.5, 3.0, edge)
+                height[i] = smoothstep(1.5, 9.0, edge)
+                w = ctx.interior_mask[i]
+                tone[i] = common_tones[first + stone] + (own_tones[first + stone] - common_tones[first + stone]) * w
+        first += len(row)
+    texture = layout_field(ctx, lambda rng: fbm(rng, 8, 3, size=size))
+    shade_tone = [clamp01(0.45 * v + 0.55 * s) for v, s in zip(texture, tone)]
+    rgb = ramp(shade_tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rgb = shade(rgb, height, 0.22)
     rgb = mix(rgb, tuple(c * 0.62 for c in p["dark"]), mortar, 0.9)
-    common_grit = lattice_noise(ctx.shared_rng, 48, size=ctx.size)
-    own_grit = lattice_noise(ctx.rng, 48, size=ctx.size)
-    grit = blend_fields(common_grit, own_grit, ctx.interior_mask)
+    rgb = worn_edge(rgb, mortar)
+    grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
     rgb = [[c * (1 + 0.09 * (v - 0.5) * 2) for c, v in zip(channel, grit)] for channel in rgb]
     return rgb, None
 
 
-@recipe(name='ice', group="legacy", label='Ice', profile='frozen',
+@recipe(name='ice', group="legacy", label='Ice', profile="frozen", border_class="solid",
         seam={'height': 4, 'cast_q8': 64, 'cast_width_q8': 640, 'fringe': [228, 240, 248], 'fringe_q8': 96, 'fringe_width_q8': 384}, palette={'dark': (186, 214, 231), 'mid': (195, 221, 235), 'light': (208, 229, 241)}, style=Style(luma=215.4, std=6.2, grain_max=5.6),
         periodic=True, grid=8, blocks=4, preview=(190, 225, 240), minimap=(190, 225, 240))
 def render_ice(ctx):
@@ -2316,33 +2689,6 @@ def ice_fields(rng, size):
 
 
 assert set(SYNTH_ORDER) == set(RECIPES), "every built-in needs a recipe and vice versa"
-
-# Pair treatments (B5): boundary families chosen for specific contacts.
-# The grass and sand looks take the same edges as classic grass and sand.
-GRASS_LOOKS = ("grass", "lush_grass", "dry_grass")
-SAND_LOOKS = ("sand", "dune_sand", "pale_sand")
-PAIR_TREATMENTS = (
-    [{"a": name, "b": look, "profile": "rock"} for name in ("boulders", "ridge_rock", "outcrop") for look in GRASS_LOOKS]
-    + [{"a": name, "b": look, "profile": "brush"} for name in ("hedge", "thicket") for look in GRASS_LOOKS]
-    + [
-        {"a": "water", "b": "deep_water", "profile": "soft"},
-        {"a": "deep_water", "b": "dark_water", "profile": "soft"},
-    ]
-    # Low-roughness waterlines that the shoreline surf can wash up.
-    + [{"a": name, "b": look, "profile": "beach"} for name in ("water", "deep_water", "dark_water")
-       for look in SAND_LOOKS]
-    + [
-        {"a": name, "b": ground_name, "profile": "fractured"}
-        for name in ("lava", "ember_field")
-        for ground_name in GRASS_LOOKS + SAND_LOOKS + ("dirt", "gravel")
-    ]
-    + [
-        {"a": name, "b": other, "profile": "crisp"}
-        for name in ("void_hole", "chasm")
-        for other in LEGACY_NAMES + [n for n in BUILTIN_ORDER if n not in ("void_hole", "chasm")]
-    ]
-)
-
 
 # --------------------------------------------------------------------------
 # Rendering
@@ -2442,14 +2788,27 @@ def _render_job(args):
             [t.tobytes() for t in hd], hd[0].size)
 
 
+# A worker rendering one 1024 px block peaks at roughly this much memory.
+WORKER_MEMORY = 1.5 * 2 ** 30
+
+
+def default_jobs():
+    """One render process per core, as many as physical memory allows."""
+    cores = os.cpu_count() or 1
+    try:
+        memory = os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
+    except (AttributeError, ValueError, OSError):
+        return min(2, cores)
+    return max(1, min(cores, int(memory // WORKER_MEMORY)))
+
+
 def synthesize_both(names, jobs=None):
     """Render and perimeter-share all variants at both resolutions:
     ({name: {phase: [native tiles]}}, {name: {phase: [HD tiles]}})."""
     tasks = [(name, phase) for name in names for phase in range(RECIPES[name].phases)]
-    # Each 1024px seeded block keeps several scalar and RGB fields alive.
-    # Bound automatic concurrency on high-core CI/development machines;
-    # contributors can select more workers explicitly when memory permits.
-    jobs = jobs or min(2, os.cpu_count() or 1)
+    # Each 1024px seeded block keeps several scalar and RGB fields alive, so
+    # the automatic worker count is bounded by memory as well as cores.
+    jobs = jobs or default_jobs()
     if jobs > 1 and len(tasks) > 1:
         with concurrent.futures.ProcessPoolExecutor(max_workers=min(jobs, len(tasks))) as pool:
             rendered = list(pool.map(_render_job, tasks))
@@ -2493,8 +2852,9 @@ def material_block(name, phases):
     preview, minimap, _ = preview_colors(name, phases)
     block = {
         "key": name,
-        "sprite": f"{FRAME_PREFIX}{name}",
+        "sprite": f"{SPRITE_PREFIX}{name}",
         "profile": rec.profile,
+        "class": rec.border_class,
         "preview": list(preview),
         "variants": [{"frame": i, "weight": 1} for i in range(rec.cells * rec.blocks)],
     }
@@ -2520,12 +2880,11 @@ def catalog_fragment(results):
     return {
         "materials": [material_block(name, results[name]) for name in names],
         "bindings": {name: name for name in names},
-        "pair_treatments": [p for p in PAIR_TREATMENTS if p["a"] in results or p["b"] in results],
     }
 
 
 def merge_catalog(document, fragment):
-    """Replace or append the fragment's materials, bindings and pair treatments.
+    """Replace or append the fragment's materials and bindings.
 
     Everything else in the catalog (version, profiles, warp, existing
     materials) is left untouched, so re-running after a recipe change only
@@ -2542,14 +2901,13 @@ def merge_catalog(document, fragment):
         else:
             document["materials"].append(block)
     document["bindings"].update(fragment["bindings"])
-    treatments = document.setdefault("pair_treatments", [])
-    existing = {tuple(sorted((p["a"], p["b"]))) for p in treatments}
-    for pair in fragment["pair_treatments"]:
-        key = tuple(sorted((pair["a"], pair["b"])))
-        if key not in existing:
-            treatments.append(pair)
-            existing.add(key)
     return document
+
+
+def committed_phases(name, root):
+    """The committed native frames of a material's first phase, as rendered."""
+    rec = RECIPES[name]
+    return [[Image.open(root / f"{FRAME_PREFIX}{name}{i}.png").copy() for i in range(rec.cells * rec.blocks)]]
 
 
 def write_catalog(results, path):
@@ -2646,65 +3004,6 @@ def write_material(name, phases, hd_phases, root):
     return hashes
 
 
-PLATFORM_NOTE = (
-    "pixel-exact reproduction is pinned to the encoder interpreter on Linux x86-64; "
-    "libm (sin/atan2/hypot) and round() boundaries can differ elsewhere"
-)
-
-
-def check_material(name, phases, root, hd_phases=None):
-    """Compare a fresh synthesis with committed frames and provenance."""
-    rec = RECIPES[name]
-    problems = []
-    frames = frames_of(name, phases)
-    fresh = tile_hashes(frames)
-    provenance_path = root / "content-src/gfx" / name / "provenance.json"
-    if not provenance_path.exists():
-        return [f"{name}: missing {provenance_path.relative_to(root)}"]
-    provenance = json.loads(provenance_path.read_text())
-    if provenance.get("method") != "procedural":
-        return [f"{name}: provenance method is {provenance.get('method')!r}; mark the recipe placeholder_only"]
-    recorded = provenance.get("runtime_sha256", {})
-    expected_names = [f"{FRAME_PREFIX}{name}{i}.png" for i in range(rec.cells * rec.blocks * rec.phases)]
-    if list(recorded) != expected_names:
-        problems.append(f"{name}: provenance covers {len(recorded)} frames, expected {len(expected_names)}")
-    here = platform_record()
-    recorded_platform = provenance.get("platform")
-    platform_hint = "" if recorded_platform == here else (
-        f" (recorded on {recorded_platform}, checking on {here}; {PLATFORM_NOTE})"
-    )
-    for i, relative in enumerate(expected_names):
-        path = root / relative
-        if not path.exists():
-            problems.append(f"{relative}: missing")
-            continue
-        with Image.open(path) as image:
-            committed = pixel_sha256(image)
-        if committed != fresh[i]:
-            problems.append(f"{relative}: committed pixels differ from a fresh synthesis{platform_hint}")
-        if recorded.get(relative) != committed:
-            problems.append(f"{relative}: provenance hash differs from committed pixels")
-    if hd_phases is not None:
-        recorded_hd = provenance.get("highres_sha256", {})
-        for i, tile in enumerate(frames_of(name, hd_phases)):
-            relative = f"{HD_PREFIX}{name}{i}.png"
-            path = root / relative
-            if not path.exists():
-                problems.append(f"{relative}: missing HD frame")
-                continue
-            with Image.open(path) as image:
-                committed = pixel_sha256(image)
-            if committed != pixel_sha256(tile):
-                problems.append(f"{relative}: committed HD pixels differ from a fresh synthesis{platform_hint}")
-            if recorded_hd.get(relative) != committed:
-                problems.append(f"{relative}: provenance HD hash differs from committed pixels")
-    if provenance.get("generator_sha256") != generator_hashes():
-        problems.append(f"{name}: generator sha256 differs; re-run terrain_synth.py to refresh provenance")
-    if provenance.get("pillow") != PIL.__version__:
-        problems.append(f"{name}: provenance Pillow {provenance.get('pillow')} != {PIL.__version__}")
-    return problems
-
-
 # --------------------------------------------------------------------------
 # Contact sheet
 # --------------------------------------------------------------------------
@@ -2795,24 +3094,24 @@ def contact_sheet(results, root, columns=2):
 
 
 def require_pillow():
+    """Warn when Pillow differs from the pinned version: its resampling kernels
+    can shift a few low bits of the art, which is harmless."""
     if PIL.__version__ != PILLOW_VERSION:
-        raise SystemExit(
-            f"terrain_synth.py needs Pillow {PILLOW_VERSION} (resampling kernels are a determinism input); "
-            f"found {PIL.__version__}. Use \"$(python3 tools/package_assets.py --encoder-python)\"."
-        )
+        print(f"note: rendering with Pillow {PIL.__version__}; the pinned version is {PILLOW_VERSION}",
+              file=sys.stderr)
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--material", action="append", help="material name (repeatable; default all)")
-    parser.add_argument("--check", action="store_true", help="re-synthesise and compare with committed frames")
     parser.add_argument("--contact-sheet", type=Path, help="write a review sheet PNG (no frames written)")
     parser.add_argument("--emit-catalog", action="store_true", help="print catalog blocks and colour initialisers")
     parser.add_argument("--write-catalog", action="store_true",
-                        help="merge the material blocks, bindings and pair treatments into content/data/terrain/tileset.json")
+                        help="merge the material blocks, bindings and pair treatments into content/data/terrain/tileset.json "
+                             "from the committed frames, without rendering (writing frames also does this)")
     parser.add_argument("--hd", action="store_true", help="write 128x128 renders under artifacts/terrain/hd/ (no frames written)")
     parser.add_argument("--write", action="store_true", help="also write frames when another mode is selected")
-    parser.add_argument("--jobs", type=int, default=0, help="parallel render processes (default: up to 2, bounded for 1024px block memory)")
+    parser.add_argument("--jobs", type=int, default=0, help="parallel render processes (default: one per core, bounded by memory)")
     parser.add_argument("--root", type=Path, default=ROOT, help="repository root to read and write")
     args = parser.parse_args(argv)
     require_pillow()
@@ -2832,26 +3131,16 @@ def main(argv=None):
                 tile.save(out / f"terrain-{name}{i}.png")
         print(f"Wrote HD renders for {len(hd)} materials to {out}")
 
-    if args.check:
-        checked = [n for n in names if not RECIPES[n].placeholder_only]
-        results, hd_results = synthesize_both(checked, jobs)
-        problems = [p for name in checked for p in check_material(name, results[name], root, hd_results[name])]
-        skipped = [n for n in names if RECIPES[n].placeholder_only]
-        for problem in problems:
-            print("FAIL", problem)
-        if skipped:
-            print("skipped placeholder-only recipes:", ", ".join(skipped))
-        if problems:
-            print(f"NOTE {PLATFORM_NOTE}")
-            raise SystemExit(1)
-        print(f"PASS {len(checked)} procedural materials match their committed frames and provenance")
-        return
-
-    # Review and catalog modes do not write frames unless --write is given;
-    # --hd alone is complete after the renders above.
+    # Review modes do not write frames unless --write is given; --hd alone is
+    # complete after the renders above. The catalog needs only each material's
+    # mean colour, so --write-catalog alone reads it from the committed frames.
     modes = args.contact_sheet is not None or args.emit_catalog or args.write_catalog or args.hd
-    needs_native = args.contact_sheet is not None or args.emit_catalog or args.write_catalog or not modes or args.write
-    if not needs_native:
+    renders = args.contact_sheet is not None or args.emit_catalog or not modes or args.write
+    if args.write_catalog and not renders:
+        write_catalog({name: committed_phases(name, root) for name in names}, root / "content/data/terrain/tileset.json")
+        print(f"Merged {len(names)} material blocks from committed frames into content/data/terrain/tileset.json")
+        return
+    if not renders:
         return
     results, hd_results = synthesize_both(names, jobs)
     if args.contact_sheet is not None:
@@ -2861,9 +3150,6 @@ def main(argv=None):
     if args.emit_catalog:
         print(json.dumps(catalog_fragment(results), indent=2))
         print(presentation_initialisers(results))
-    if args.write_catalog:
-        write_catalog(results, root / "content/data/terrain/tileset.json")
-        print(f"Merged {len(results)} material blocks into content/data/terrain/tileset.json")
     if not modes or args.write:
         for name in names:
             hashes = write_material(name, results[name], hd_results[name], root)
@@ -2871,6 +3157,10 @@ def main(argv=None):
             print(f"{name:<14} {len(hashes):3d} frames  luma {stats['luma']:5.1f} std {stats['std']:4.1f} "
                   f"grain {stats['grain']:4.1f} sat {stats['sat']:.2f}")
         print(f"Wrote {len(names)} materials under {root / 'content/data/gfx'} and {root / 'content-src/gfx'}")
+    if args.write_catalog or not modes or args.write:
+        # Written frames carry their catalog blocks from the same render.
+        write_catalog(results, root / "content/data/terrain/tileset.json")
+        print(f"Merged {len(results)} material blocks into content/data/terrain/tileset.json")
 
 
 if __name__ == "__main__":

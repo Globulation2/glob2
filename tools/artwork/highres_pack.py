@@ -54,7 +54,7 @@ def _encode(image, path):
 def register_frames(frames, category, root=ROOT):
     """Write and register frames: [{id, image, recipe, sources}] at 4x.
 
-    `id` is the native sprite frame name (for example `terrain-gravel3`); its
+    `id` is the native sprite frame name (for example `terrain-shale3`); its
     classic `content/data/gfx/<id>.png` must already exist at the logical size. Existing
     entries with the same id are replaced in place; new ones are appended.
     """

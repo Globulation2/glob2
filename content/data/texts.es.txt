@@ -5674,20 +5674,20 @@ Afloramiento
 Tierra
 [clay]
 Arcilla
-[gravel]
-Grava
-[flower_meadow]
-Pradera de flores
+[shale]
+Pizarra
+[heath]
+Brezal
 [mud]
 Barro
-[marsh]
-Pantano
+[mudflat]
+Llanura de barro
 [deep_snow]
 Nieve profunda
 [scree]
 Pedregal
-[dirt_track]
-Camino de tierra
+[brick_path]
+Camino de ladrillo
 [boardwalk]
 Pasarela de madera
 [lava]
@@ -5716,6 +5716,12 @@ Hierba seca
 Arena de duna
 [pale_sand]
 Arena clara
+[sandstone]
+Losas de arenisca
+[pumice]
+Campo de piedra pómez
+[frozen_lake]
+Lago helado
 [terrain group water]
 Agua
 [terrain group sand]

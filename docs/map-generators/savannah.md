@@ -26,9 +26,9 @@ those experiments in their header like any map that contains them.
 | Signature | Construction |
 | --- | --- |
 | Golden grass with lone and dead trees | Tall grass over the dry plain in noise-ranked sweeps, thinning to scrub; trees, small clumps and dead trees dotted on it |
-| Red earth | Every crop plot is sealed in dirt and clay instead of sand; dry patches become clay pans with gravel |
+| Red earth | Every crop plot is sealed in dirt and clay instead of sand; dry patches become clay pans with shale |
 | Kopjes | A ridge-rock core with stone on its flanks, skirted by scree |
-| Watering holes and game trails | Larger neutral ponds with a deep centre, a mud ring (maize holes) or sand bank (rice holes), fish in the shallows; dirt tracks from each home's approaches to the nearest hole |
+| Watering holes and game trails | Larger neutral ponds with a deep centre, a mud ring (maize holes) or sand bank (rice holes), fish in the shallows; brick paths from each home's approaches to the nearest hole |
 
 ## Controls and supported requests
 
@@ -38,7 +38,7 @@ those experiments in their header like any map that contains them.
 | Dry patches | 0–20%, step 1 | 8% | Share of eligible plains vertices turned into clay pans, outside home, approach and feature reservations. This excludes plot seals and beaches. |
 | Grassland | 0–100%, step 5 | 70% | Share of the dry plain under tall grass; a further eighth of it, thinned, is scrub. |
 | Kopjes | Few / Normal / Many | Normal | Share of plain features that are kopjes: 15 / 25 / 40%. |
-| Game trails | On / off | On | Dirt tracks along each approach and on to the nearest watering hole. |
+| Game trails | On / off | On | Brick paths along each approach and on to the nearest watering hole. |
 | Wheat, wood, stone, algae, fruit, fish, camp-site amounts | 0–300%, step 25 | 100% | Additional deposits; exact tile counts saturate when eligible plots fill. Wheat also scales maize, rice and potatoes. |
 
 Sides are existing power-of-two sizes **128, 256, 512**, square or rectangles up to
@@ -120,7 +120,7 @@ operations explain their units; the evidence section records actual verification
   legal gap at seed 1001 on a 128×128 four-colony map; exhaustive eligibility removes
   that sampling failure without shrinking homes or rerolling the seed. A radius-19
   reservation plus a one-tile gap must fit clear of every home, approach and earlier hole.
-- **Game trails:** each approach carries a dirt track (fast, buildable, nothing grows)
+- **Game trails:** each approach carries a brick path (fast, buildable, nothing grows)
   from 18 tiles out to its end, and a trail runs on from the end to the rim of the
   nearest watering hole, bowed up to four tiles. Track is laid only on grass corners of
   no plot, never inside any home reservation but its own approach, and never inside a
@@ -152,7 +152,7 @@ operations explain their units; the evidence section records actual verification
   until cleared.
 - **Dry patches:** periodic noise with cell period 14 makes coherent patches instead
   of speckles. `sprinkleSand` ranks eligible vertices and keeps three steps from water;
-  the patches then become clay with gravel. Beaches are laid after all terrain
+  the patches then become clay with shale. Beaches are laid after all terrain
   operations, and deep water after them. Plot eligibility is then trimmed to final
   pure-grass tiles; beaches and kopje cores may remove plot tiles, but starter floors
   are never reduced.

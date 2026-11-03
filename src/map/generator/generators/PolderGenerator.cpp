@@ -281,9 +281,9 @@ void expandGround(TerrainSketch &terrain, const Layout &L)
 	{
 		unsigned char &v = terrain.at(i);
 		if (v == SAND && L.dyke[i])
-			v = L.boardwalk[i] ? BOARDWALK : DIRT_TRACK;
+			v = L.boardwalk[i] ? BOARDWALK : BRICK_PATH;
 		else if (v == SAND && L.ring[i] && !L.dyke[i])
-			v = GRAVEL;
+			v = SHALE;
 	}
 }
 

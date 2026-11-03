@@ -349,7 +349,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		if (L.lake[i])
 			L.terrain[i] = LAVA;
 		else if (L.rim[i])
-			L.terrain[i] = DIRT_TRACK;
+			L.terrain[i] = BRICK_PATH;
 	}
 	if (o.islets)
 	{
@@ -393,7 +393,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		for (int i = 0; i < t.size(); ++i)
 			if (drawn[i] == SCREE && cooled[i] && !ford[i] &&
 				around(i, [&](int j) { return !cooled[j] && drawn[j] != LAVA; }))
-				L.terrain[i] = GRAVEL;
+				L.terrain[i] = SHALE;
 	}
 	// Ember fringes every lava vertex that touches anything but lava.
 	{
@@ -409,7 +409,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	L.flowEdge.assign(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 		L.flowEdge[i] = (live[i] && isHot(i)) ||
-						(cooled[i] && (L.terrain[i] == SCREE || L.terrain[i] == GRAVEL));
+						(cooled[i] && (L.terrain[i] == SCREE || L.terrain[i] == SHALE));
 	L.fordCorners = ford;
 	auto &palette = context.stream("lava-palette");
 	const PeriodicNoise ash(t.w, t.h, 7, palette), soil(t.w, t.h, 9, palette),
@@ -885,11 +885,11 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 				shore = shore || v == WATER || v == DEEP_WATER;
 			}
 		if (track[i] && !shore)
-			terrain[i] = DIRT_TRACK;
+			terrain[i] = BRICK_PATH;
 	}
 	std::vector<unsigned char> sand(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		sand[i] = terrain[i] == SAND || terrain[i] == DIRT_TRACK;
+		sand[i] = terrain[i] == SAND || terrain[i] == BRICK_PATH;
 	const auto roadGround = roadTiles(t, sand);
 	for (int i = 0; i < t.size(); ++i)
 		reserve[i] = reserve[i] || roadGround[i];

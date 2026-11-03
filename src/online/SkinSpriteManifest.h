@@ -10,6 +10,8 @@ inline constexpr std::array<const char *, 8> SkinSpriteClips{
 	{"worker-walk", "worker-swim", "worker-harvest", "warrior-walk", "warrior-swim",
 	 "warrior-fight", "explorer-fly", "swarm"}};
 inline constexpr std::array<unsigned, 8> SkinSpriteLogicalSizes{{38, 38, 38, 40, 40, 40, 32, 96}};
+inline constexpr unsigned ProneHarvestSpriteClip = 8;
+inline constexpr const char *ProneHarvestSpriteName = "worker-prone-harvest";
 struct SkinSpritePage
 {
 	std::string hash;

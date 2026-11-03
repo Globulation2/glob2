@@ -276,7 +276,7 @@ void dressLanes(Layout &L)
 			for (int dx = -1; dx <= 1; ++dx)
 				beach = beach || before[t.at(t.remainderX(i) + dx, i / t.w + dy)] == WATER;
 		if (!beach)
-			L.terrain[i] = DIRT_TRACK;
+			L.terrain[i] = BRICK_PATH;
 	}
 }
 
@@ -349,7 +349,7 @@ void dressGround(Layout &L, GenerationContext &context)
 		const int x = t.remainderX(i), y = i / t.w;
 		if (fromWall[i] >= 3 && fromWall[i] <= 6 && L.homeOf[i] < 0)
 		{
-			next[i] = clay.at(x, y) > .72 ? DIRT : GRAVEL;
+			next[i] = clay.at(x, y) > .72 ? DIRT : SHALE;
 			++glacis;
 		}
 		else if (L.arm[i])
@@ -357,7 +357,7 @@ void dressGround(Layout &L, GenerationContext &context)
 			// A harbour arm is a rocky headland: shingle, with outcrop on its far half so it reads
 			// as a breakwater rather than a strip of lawn.
 			const bool outerHalf = fromWall[i] >= armFrom;
-			next[i] = outerHalf && scrub.at(x, y) > .5 ? OUTCROP : clay.at(x, y) > .8 ? DIRT : GRAVEL;
+			next[i] = outerHalf && scrub.at(x, y) > .5 ? OUTCROP : clay.at(x, y) > .8 ? DIRT : SHALE;
 			++arms;
 		}
 		else if (fromSea[i] <= 3 && scrub.at(x, y) > .55)
@@ -367,7 +367,7 @@ void dressGround(Layout &L, GenerationContext &context)
 		}
 		else if (fromWall[i] >= 8 && clay.at(x, y) > .66)
 		{
-			next[i] = FLOWER_MEADOW;
+			next[i] = HEATH;
 			++meadows;
 		}
 	}
@@ -398,7 +398,7 @@ void dressGround(Layout &L, GenerationContext &context)
 					}
 					else
 					{
-						next[v] = clay.at(x, y) > .7 ? DIRT : GRAVEL;
+						next[v] = clay.at(x, y) > .7 ? DIRT : SHALE;
 						++battery;
 					}
 				}

@@ -17,6 +17,9 @@
 #include <RenderStateScope.h>
 #include "unit/render/SwimmingPresentation.h"
 #include "unit/render/UnitAnimation.h"
+#include "unit/render/UnitHarvestAnimation.h"
+#include "unit/render/ColonySkinPreview.h"
+#include <cstdlib>
 #include <SDL3_image/SDL_image.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -151,6 +154,57 @@ class SwimmingUnitDrawHarness
 	}
 
 public:
+	static void harvest()
+	{
+		Game game(nullptr);
+		game.map.setSize(4, 4, WATER);
+		game.map.setGame(&game);
+		game.addTeam(0);
+		for (int direction = 0; direction < 8; ++direction)
+		{
+			auto *u = game.addUnit(3 + 3 * (direction % 4), 3 + 4 * (direction / 4), 0, WORKER,
+								 NB_UNIT_LEVELS - 1, 0, 0, 0);
+			REQUIRE(u);
+			u->action = HARVEST;
+			u->direction = direction;
+		}
+		Game::ViewState view;
+		if (std::getenv("GLOB2_SKIN_PREVIEW_DIR"))
+		{
+			REQUIRE(view.render.skinPreview().ready);
+			for (const auto &mesh : view.render.skinPreview().proneHarvest)
+				REQUIRE(mesh.identity != 0);
+		}
+		for (unsigned frame = 0; frame < 64; ++frame)
+		{
+			// Drive only the presentation clock, never advance game orders.
+			game.stepCounter = unsigned(frame * 9 / 10);
+			view.render.unitMotion = float(frame) * .9f - float(game.stepCounter);
+			const auto before = game.checkSum();
+			const auto &scene = glob2test::sceneOf(game, view);
+			REQUIRE_FALSE(scene.entities.units.empty());
+			const auto &worker = scene.entities.units.front();
+			CHECK(unitProneHarvestPhase(scene, worker, WORKER, view.render.unitMotion) >= 0);
+			CHECK(unitProneHarvestPhase(scene, worker, WARRIOR, view.render.unitMotion) == -1);
+			auto changed = worker;
+			changed.action = BUILD;
+			CHECK(unitProneHarvestPhase(scene, changed, WORKER, view.render.unitMotion) == -1);
+			changed = worker;
+			changed.performance[FLY] = 1;
+			CHECK(unitProneHarvestPhase(scene, changed, WORKER, view.render.unitMotion) == -1);
+			view.render.skinPreview().prepare(*globalContainer->gfx, scene, 0, 0, 16, 16, 0, 0, 0, 0,
+											true, view.render.unitMotion);
+			capture(game, view, "harvest-" + std::to_string(frame));
+			CHECK(game.checkSum() == before);
+		}
+		// The same action on land, including shores, keeps its normal artwork.
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+				game.map.setVertexTerrain(x, y, GRASS);
+		const auto &scene = glob2test::sceneOf(game, view);
+		auto worker = scene.entities.units.front();
+		CHECK(unitProneHarvestPhase(scene, worker, WORKER, 0) == -1);
+	}
 	static void run()
 	{
 		Game game(nullptr);
@@ -190,6 +244,19 @@ public:
 
 TEST_SUITE("SwimmingUnitDraw")
 {
+	TEST_CASE("harvesting afloat uses the approved stroke without mutating simulation "
+			  "[display:1024x768][artifacts]")
+	{
+		outputDirectory = glob2test::artifactDir().string();
+		glob2test::HeadlessGlobals globals(
+			glob2test::GlobalsOptions{.display = true,
+									  .loadStrings = true,
+									  .width = SCREEN_W,
+									  .height = SCREEN_H,
+									  .screenFlags = GraphicContext::USEGPU});
+		SwimmingUnitDrawHarness::harvest();
+	}
+
 TEST_CASE("swimmers fade into the water around a solid torso [display:1024x768][artifacts]")
 {
 	outputDirectory = glob2test::artifactDir().string();

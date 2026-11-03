@@ -7,6 +7,7 @@ import { insertBlob } from '@glob2/play';
 import {
   simVersionKey,
   SetPackage,
+  normalizeSetPackage,
   SaveSetDraftRequest,
   PublishSetRequest,
   UpdateSetRequest,
@@ -310,7 +311,8 @@ export async function setLibraryRoutes(app: FastifyInstance, identity: Identity)
   app.post('/api/v1/set-drafts', { bodyLimit: SET_PACKAGE_MAX_BYTES }, async (r, reply) => {
     const a = await signed(r);
     await enforce(changes, a.id, reply, 'Too many set changes.');
-    const pack = body(SetPackage, r.body);
+    // Drafts are stored before they are hashed, so legacy terrain names are updated here.
+    const pack = normalizeSetPackage(body(SetPackage, r.body));
     const d = await db.transaction().execute(async (trx) => {
       await trx
         .insertInto('asset_sets')
@@ -432,6 +434,7 @@ export async function setLibraryRoutes(app: FastifyInstance, identity: Identity)
       await enforce(changes, a.id, reply, 'Too many set changes.');
       const input = body(SaveSetDraftRequest, r.body),
         current = await ownedDraft(r.params.id, a);
+      input.package = normalizeSetPackage(input.package);
       if (input.package.setId !== current.set_id || input.package.versionId !== current.id)
         throw apiError('bad_request', 'Draft identities cannot change.');
       if (Buffer.byteLength(JSON.stringify(input.package)) > SET_PACKAGE_MAX_BYTES)

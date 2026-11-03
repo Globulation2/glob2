@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SWARMS = ('swarm', 'swarm-crown', 'swarm-clutch', 'swarm-toadstool', 'swarm-coral', 'swarm-skep', 'swarm-bloom')
-UNITS = ('worker-walk', 'worker-swim', 'worker-harvest', 'warrior-walk', 'warrior-swim', 'warrior-fight', 'explorer-fly')
+UNITS = ('worker-walk', 'worker-swim', 'worker-harvest', 'warrior-walk', 'warrior-swim', 'warrior-fight', 'explorer-fly', 'worker-prone-harvest', 'worker-prone-harvest-mid')
 
 
 def generate():

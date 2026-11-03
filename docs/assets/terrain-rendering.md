@@ -25,17 +25,38 @@ All materials share this field so multi-material junctions remain joined. Wrappe
 world coordinates determine its control points, independently of texture variants,
 camera position, animation and simulation randomness.
 
+### Boundary rules
+
+Version-4 catalogs choose the profile of every contact from what the two
+materials are, without per-pair entries. `border_classes` lists the classes
+strongest first; each material names its `class` and its edge `profile`:
+
+1. The stronger class shapes the contact with its own edge profile. The shipped
+   order is `cover` (raised foliage that hides its edge), `cut` (holes and
+   chasms), `built` (roads, tracks, boardwalks), `flow` (lava, which overruns
+   its surroundings), `solid` (natural ground) and `pool` (standing water).
+2. A class marked `"shoreline": true` takes the shape of its basin: against it
+   the stronger side draws its edge profile's `coast` when it names one. Grass
+   therefore meets water with `shore`, sand with `beach` and rock with `rock`,
+   while lava and roads keep their own edges.
+3. Within one class the edge profile with the higher `precedence` (0–255) wins,
+   with the profile key as a stable tie break: rock over soil over ice, brush and
+   turf; the three waters all use `still`.
+4. A `pair_treatments` entry still overrides one pair. The shipped catalog needs
+   none.
+
+`python3 tools/terrain_tileset.py --border-table` lists the profile of every
+material pair; `--compare OLD.json` lists only the pairs that changed. Version
+1–3 catalogs keep the earlier rule: the rougher profile wins, and contextual
+geometry requires both materials' profiles and the chosen one to opt in.
+
 ### Contextual natural borders
 
 Version-3 profiles may set `"shape": "contextual"`; omission or `"patch"` retains
-existing patch geometry. The shipped sand, shore, organic, soft, rock, brush,
-liquid and frozen profiles use contextual geometry. Ice uses frozen, which shares
-fractured's authored detail but enables natural curves; lava retains fractured.
-Chasm uses the cliff profile, which preserves rock's authored detail with patch
-geometry and prevents new natural materials from rounding a chasm boundary.
-Both materials' own profiles and their selected pair treatment must opt in.
-Constructed paths, lava, and crisp holes/chasm borders therefore retain their
-existing treatment even against a rougher natural material.
+existing patch geometry. The shipped rock, soil, frozen, brush, turf, sand, shore
+and beach profiles use contextual geometry. In version 4 a contact uses it when
+its chosen profile does; the class order keeps natural profiles from rounding
+roads, holes and lava.
 
 The compositor reads a 4×4 vertex neighbourhood, including one vertex beyond each
 side of the cell. Ordinary two-material cells use marching-square edge midpoints
@@ -142,11 +163,54 @@ junctions. Textures use straight alpha only after coverage and source alpha have
 been combined. Feathering is narrow,
 not a broad blur over the square boundary.
 
-By default the rougher boundary profile wins, with a stable key tie break. Optional
+[Boundary rules](#boundary-rules) choose the profile of a contact. Optional
 `pair_treatments` entries contain `a`, `b` and `profile`; these choose another
 contour family for that pair without changing material connectivity. Pairs are
-unordered, unique and must reference existing materials and profiles. Most
-materials need no pair entries.
+unordered, unique and must reference existing materials and profiles.
+
+### Smooth borders
+
+Version-4 profiles may set `"shape": "smooth"` for contacts that should read as
+one continuous line: liquid against liquid, lava against its surroundings and
+roads. Smooth profiles need no `roughness_q8` or `contours_q12`; they take
+`wiggle_q8` (0–2048, the Q8 pixels a straight contour meanders) and
+`wiggle_period` (32, 64, 128 or 256 logical pixels between the broadest bends)
+and `squareness_q8` (0 round to 256 square corners). `feather_q8` and
+`bridge_q8` keep their meanings.
+
+`SmoothBorders` gives each corner material of a cell a field interpolated
+through the 4×4 vertex neighbourhood with Catmull-Rom splines; the strongest
+field owns a sample. The splines pass through their vertices, so every vertex
+keeps its own material, and their slopes agree across cell edges, so a contour
+continues across the map instead of restarting in every cell. Ambiguous
+diagonals and junctions need no fallback: the fields decide them. At a diagonal
+saddle the dominant material (stronger class, then precedence, then a seeded
+choice) joins its two lobes through a neck sized by `bridge_q8`, so roads and
+rivers continue diagonally.
+
+Squareness remaps each cell coordinate toward a step at the cell's midline (a
+blend of the coordinate and a triple smoothstep) before the splines are
+evaluated. The remap keeps both cell ends and one slope at each, so fields stay
+continuous across cells while contours hug the midlines and corners tighten from
+arcs toward right angles; roads use 224, tracks 128 and liquids and lava 0.
+Corner shares take the squarest smooth contact around a vertex and interpolate
+like wiggle.
+
+Meanders multiply each field by world-anchored value noise of the material's own
+`wiggle_period`, in two octaves. Noise never reaches a zero field, so a material
+cannot appear where its vertices do not reach. The pair's meander is the
+difference of its two fields' noise, at most `wiggle_q8` along a straight
+contour and bounded so a vertex always wins its own sample. Weights ramp over the
+two materials' mean feather from a first-order distance to the competing field,
+and seams and surf read that distance to the nearest field of any neighbourhood
+material, including vertices beyond the cell edge.
+
+A vertex is smooth when every contact with its eight neighbours resolves to a
+smooth profile. A cell interpolates its four corner shares bilinearly (with a
+smoothstep) and blends smooth coverage with the patch or contextual coverage
+by that share, so smooth water fades into a rough coast without tile seams.
+Version-4 cells with more than one material read the one-vertex halo; earlier
+catalogs keep halo-free recipes outside two-material contextual cells.
 
 Textures are kept separate from boundary masks. Runtime preparation blends each
 material's variant borders toward one periodic master while keeping interior
@@ -190,8 +254,8 @@ wraps cleanly; another field breaks the foam line into patches.
 
 Surf reads the same per-sample distance as seams, which is exact only within
 eight logical pixels of the edge, so each band and `reach_q8` plus
-`foam_width_q8` must end within 2048. Water/sand edges use the `beach` profile,
-a low-roughness copy of `liquid`, so the waterline is a gentle curve the wash can
+`foam_width_q8` must end within 2048. Water/sand edges use the `beach` coast
+profile, a low-roughness contour, so the waterline is a gentle curve the wash can
 follow instead of a row of teeth. A material with surf counts as
 animated: its pages re-blend whenever the wash advances, also without texture
 animation. The optional `ticks` (default 1, at most `period`) advances the wash

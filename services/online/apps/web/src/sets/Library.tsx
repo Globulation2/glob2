@@ -18,7 +18,7 @@ import type { SetInfo, SetList, SetDraft, SetDraftSummary, SetPackage } from '@g
 import { request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession, isModerator } from '../state.tsx';
-import { newRelease } from './model.ts';
+import { newRelease, normalizeTerrainPreset } from './model.ts';
 import './sets.css';
 
 export function SetLibrary({ mine = false }: { mine?: boolean }) {
@@ -457,7 +457,7 @@ export function SetDetail({ id }: { id: string }) {
                     <p>
                       <RichMessage
                         source={'Gameplay preset: {slot0}'}
-                        slots={{ slot0: entry['base'] }}
+                        slots={{ slot0: normalizeTerrainPreset(entry['base']) }}
                       />
                     </p>
                   )}
