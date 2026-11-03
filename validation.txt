@@ -1,0 +1,47 @@
+Official swimming harvest: PR #1389 verification
+
+Tested code revision: 906c14aa136e568cc56f3d51224edad25f046790
+Base: ab643d39d728fdeb2a5c941ae3158beac46c032e; master fetched before final validation; no intervening base changes.
+Environment: Linux x86_64, GCC 15.2, pinned SDL 3.4.16, fast development (-O0 -g1), Xvfb + Mesa software OpenGL. This is correctness evidence, not a release/performance claim.
+
+Final code checks (all exit 0):
+- Build client, unit tests, engine tests: passed.
+- UnitAnimation (8), SkinSprites (11), SkinShapeModel (3): 22 native cases passed.
+- SwimmingUnitDraw, ColonySkinPreview, UnitHighResolutionCache display: 5 cases passed.
+- UnitHighResolutionCache software: 1 case passed.
+- Painted deformable harvest capture: 1 case passed; 64 frames.
+- Painted baked harvest capture: 1 case passed; 64 frames.
+- All harvest captures assert unchanged simulation checksums and reject flying workers, non-workers, non-harvest actions and land harvesting.
+- Online worker/bundle tests: 21 passed.
+- Native publishing: 2 passed, including real baking and atomic storage of all 44 pages, and validation/staging cleanup.
+- TypeScript typecheck: passed.
+- Independent agent review: P2 flying-worker selection issue fixed in 906c14aa136e568cc56f3d51224edad25f046790; no remaining blockers or unnecessary leftovers. See review.txt.
+
+Asset checks (passed at 7de60bd3c4342628fc2a2586f3bc66079a326001; reused because the only subsequent changes are the flying-worker selection guard, its harness assertion and README wording; asset bytes/tooling/dependencies unchanged):
+- test_skin_assets.py: 5 tests passed.
+- tools/unit-animation/test_render.py: 8 tests passed.
+- tools/skins/test_export.py: installed hashes, mirrors, topology, UVs, bounds and normals passed.
+- tools/artwork/package_runtime.py --check: complete production frame/index coverage and hashes passed.
+
+Exact commands, repository root unless indicated:
+GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix" python3 tools/dev_build.py --build=build/local-dev -j16 unit-tests engine-tests build/local-dev/src/glob2
+GLOB2_BUILD_DIR="$PWD/build/local-dev" python3 test/run_tests.py --binary unit --filter 'UnitAnimation/*' --filter 'SkinSprites/*' --filter 'SkinShapeModel/*'
+env -u DISPLAY SDL_VIDEO_DRIVER=x11 GLOB2_BUILD_DIR="$PWD/build/local-dev" python3 test/run_tests.py --tag display --filter 'SwimmingUnitDraw/*' --filter 'UnitHighResolutionCache/*' --filter 'ColonySkinPreview/*'
+GLOB2_BUILD_DIR="$PWD/build/local-dev" python3 test/run_tests.py --binary engine --filter 'UnitHighResolutionCache/*software*'
+For the two mesh runs: --filter 'SwimmingUnitDraw/harvesting*', GLOB2_SKIN_PREVIEW_DIR="$PWD/artifacts/prone-harvest/game-skin"; add GLOB2_SKIN_RIGS=0 for baked meshes. Paint generated with tools/skins/make_paint.py (spots, glossy), models symlinked to installed assets.
+python3 -m unittest discover -s test/build_system -p test_skin_assets.py
+artifacts/prone-harvest/venv/bin/python tools/unit-animation/test_render.py
+artifacts/prone-harvest/venv/bin/python tools/skins/test_export.py content/data/skins/colony-v1
+python3 tools/artwork/package_runtime.py --check
+From services/online with an isolated PostgreSQL 16 test server (TEST_DATABASE_URL):
+npx vitest run apps/skin-render-worker/test/bundle.test.ts apps/skin-render-worker/test/process.test.ts
+npm run typecheck
+GLOB2_SKIN_RENDER_TEST_BINARY="$PWD/../../build/local-dev/src/glob2" SDL_VIDEO_DRIVER=x11 xvfb-run -a npx vitest run apps/skin-render-worker/test/native.test.ts
+
+Coverage rationale / limits:
+This is presentation and asset integration only. No simulation execution, resource collection, saved fields/action offsets, replay gates or SIM_REVISION change. Native frame mapping, skin fallbacks, 64-pose selection, source provenance, and online bundle publication are covered. Windows, macOS, mobile and browser runtime builds were not run; Linux evidence is not cross-platform equivalence.
+Two existing broader artwork audits remain unavailable: runtime_provenance.py encounters legacy data/ paths and old generator hashes in base records; validate_runtime.py expects an obsolete 272-entry terrain table. Neither script/table changed in this PR. The focused checks above validate the new assets. Their earlier failure logs are retained in test-results.zip; this PR does not claim those global audits passed.
+
+Scope audit:
+1585 changed files: 1536 required PNGs (512 native, 512 HD, 512 production originals), model assets/sidecars, metadata, source, tests and two existing docs. No prototypes, Blender binaries, venvs, generated scenes, screenshots or reports are in the PR. This separate evidence branch contains review material only.
+Maintainer explicitly approved the fade-only motion and requested review and merge. Author accepts the scoped local verification above for this presentation-only change; hosted CI may still be pending, as permitted by repository policy.

@@ -1,0 +1,10 @@
+Independent subagent review
+
+Reviewed revision: 906c14aa136e568cc56f3d51224edad25f046790
+Reviewer: review_prone_harvest (separate subagent requested by maintainer)
+
+Initial finding P2: custom flying workers harvesting over water were selected for prone harvesting. Fixed in 906c14aa13 by excluding unit.performance[FLY]; the existing in-game harness now checks the negative case.
+
+Final disposition: No remaining blocking findings. Reviewed classic sprites, deformable meshes, published sprites, fallback compatibility, water fade without ripples, and the asset pipeline. Independent asset checks confirmed mesh mirrors, frame counts, and source hashes. Full diff whitespace checks pass; working tree clean. No prototype artifacts or unnecessary leftovers found.
+
+Final execution and platform validation are reported separately by the author. This is an agent review, not a human GitHub approval.
