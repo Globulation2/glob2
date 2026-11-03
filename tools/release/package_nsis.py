@@ -95,7 +95,7 @@ def package(stage, output, version, compiler="makensis"):
                     ("VERSION", version),
                 )
             )
-            + f'\n!include "{quote(ROOT / "windows/win32_installer.nsi", runtime=False)}"\n',
+            + f'\n!include "{quote(ROOT / "platforms/windows/win32_installer.nsi", runtime=False)}"\n',
             encoding="utf-8",
         )
         subprocess.run([compiler, "-WX", str(wrapper)], check=True)

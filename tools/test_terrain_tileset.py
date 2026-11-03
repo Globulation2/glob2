@@ -21,7 +21,7 @@ def catalog_frame_count(document):
 
 class TerrainTileset(unittest.TestCase):
     def setUp(self):
-        self.document = json.loads((ROOT / "data/terrain/tileset.json").read_text())
+        self.document = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
 
     def test_boundary_shapes_are_explicit_and_version_gated(self):
         validate(self.document)
@@ -63,6 +63,21 @@ class TerrainTileset(unittest.TestCase):
             next(m for m in invalid["materials"] if m["key"] == material["key"]).pop("variant_grid")
             with self.assertRaises(ValueError):
                 validate(invalid)
+
+    def test_animation_blend_steps_are_optional_and_bounded_by_the_phase(self):
+        lava = next(m for m in self.document["materials"] if m["key"] == "lava")
+        for steps in (1, lava["animation_ticks"]):
+            lava["animation_blend_steps"] = steps
+            validate(self.document)
+        for steps in (0, lava["animation_ticks"] + 1, "4", 2.0, True):
+            lava["animation_blend_steps"] = steps
+            with self.assertRaises(ValueError):
+                validate(self.document)
+        lava.pop("animation_blend_steps")
+        still = next(m for m in self.document["materials"] if "animation_frames" not in m)
+        still["animation_blend_steps"] = 1
+        with self.assertRaises(ValueError):
+            validate(self.document)
 
     def test_variant_block_groups_use_nonempty_utf8_keys_of_at_most_64_bytes(self):
         # Reduce to one material so each schema boundary checks only its frames.
@@ -227,9 +242,9 @@ class TerrainTileset(unittest.TestCase):
     def test_variant_borders_preserve_premultiplied_alpha_continuity(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "data").mkdir()
-            Image.new("RGBA", (32, 32), (40, 80, 120, 128)).save(root / "data/tile0.png")
-            Image.new("RGBA", (32, 32), (250, 0, 0, 0)).save(root / "data/tile1.png")
+            (root / "content/data").mkdir(parents=True)
+            Image.new("RGBA", (32, 32), (40, 80, 120, 128)).save(root / "content/data/tile0.png")
+            Image.new("RGBA", (32, 32), (250, 0, 0, 0)).save(root / "content/data/tile1.png")
             document = {"materials": [{"sprite": "data/tile", "variants": [{"frame": 0}, {"frame": 1}]}]}
             frames = seamless_sources(document, root)
             first, second = frames["data/tile0.png"], frames["data/tile1.png"]

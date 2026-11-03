@@ -73,8 +73,8 @@ jobs:
         run: python3 -m unittest discover -s test/build_system -p 'test_amazon_release.py' -v
       - name: Install pinned Android tools
         run: |
-          python3 mobile/setup_ndk.py
-          python3 mobile/setup_tools.py
+          python3 platforms/mobile/setup_ndk.py
+          python3 platforms/mobile/setup_tools.py
       - name: Install pinned Android SDK packages
         run: |
           python3 - <<'PY'
@@ -84,8 +84,8 @@ jobs:
           from dev_store import paths
           dev=paths(root)
           sdk=pathlib.Path(dev['android_sdk'])
-          lock=json.loads((root/'mobile/toolchain.json').read_text())['android']
-          tools=json.loads((root/'mobile/android-tools.json').read_text())
+          lock=json.loads((root/'platforms/mobile/toolchain.json').read_text())['android']
+          tools=json.loads((root/'platforms/mobile/android-tools.json').read_text())
           jdk=tools['jdk-Linux-x86_64']
           java=pathlib.Path(dev['java_home'])
           env=dict(os.environ, JAVA_HOME=str(java), ANDROID_HOME=str(sdk), ANDROID_SDK_ROOT=str(sdk))
@@ -96,8 +96,8 @@ jobs:
           PY
       - name: Build both ARM dependency sets
         run: |
-          python3 mobile/dependencies.py --arch arm64-v8a --release
-          python3 mobile/dependencies.py --arch armeabi-v7a --release
+          python3 platforms/mobile/dependencies.py --arch arm64-v8a --release
+          python3 platforms/mobile/dependencies.py --arch armeabi-v7a --release
       - name: Build and verify unsigned Fire tablet APK
         id: package
         env:
@@ -105,13 +105,13 @@ jobs:
           COMMIT: ${{ steps.source.outputs.commit }}
         run: |
           set -euo pipefail
-          code="$(python3 mobile/amazon_release.py version-code)"
-          python3 mobile/android.py build --arch arm64-v8a --release --amazon-apk --version-code "$code"
+          code="$(python3 platforms/mobile/amazon_release.py version-code)"
+          python3 platforms/mobile/android.py build --arch arm64-v8a --release --amazon-apk --version-code "$code"
           apk=build/android/device/arm64-v8a/24/client/release/amazon/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
           mkdir -p artifacts/amazon-appstore
           cp "$apk" artifacts/amazon-appstore/glob2-fire-unsigned.apk
           cp "${apk%.apk}.json" artifacts/amazon-appstore/glob2-fire-unsigned.json
-          python3 mobile/amazon_release.py prepare --apk artifacts/amazon-appstore/glob2-fire-unsigned.apk \
+          python3 platforms/mobile/amazon_release.py prepare --apk artifacts/amazon-appstore/glob2-fire-unsigned.apk \
             --tag "$TAG" --source-commit "$COMMIT" --output artifacts/amazon-appstore/provenance.json
           echo "digest=$(sha256sum artifacts/amazon-appstore/glob2-fire-unsigned.apk | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -138,7 +138,7 @@ jobs:
           path: ${{ runner.temp }}/amazon-appstore
       - name: Install pinned verification tools
         run: |
-          python3 mobile/setup_tools.py
+          python3 platforms/mobile/setup_tools.py
           python3 - <<'PY'
           import json, os, pathlib, subprocess
           root=pathlib.Path.cwd()
@@ -146,8 +146,8 @@ jobs:
           from dev_store import paths
           dev=paths(root)
           sdk=pathlib.Path(dev['android_sdk'])
-          lock=json.loads((root/'mobile/toolchain.json').read_text())['android']
-          tools=json.loads((root/'mobile/android-tools.json').read_text())
+          lock=json.loads((root/'platforms/mobile/toolchain.json').read_text())['android']
+          tools=json.loads((root/'platforms/mobile/android-tools.json').read_text())
           jdk=tools['jdk-Linux-x86_64']
           java=pathlib.Path(dev['java_home'])
           env=dict(os.environ,JAVA_HOME=str(java),ANDROID_HOME=str(sdk),ANDROID_SDK_ROOT=str(sdk))
@@ -164,7 +164,7 @@ jobs:
         run: |
           set -euo pipefail
           dir="$RUNNER_TEMP/amazon-appstore"
-          python3 mobile/amazon_release.py verify --apk "$dir/glob2-fire-unsigned.apk" --manifest "$dir/provenance.json"
+          python3 platforms/mobile/amazon_release.py verify --apk "$dir/glob2-fire-unsigned.apk" --manifest "$dir/provenance.json"
           python3 - <<'PY'
           import json,os,pathlib
           value=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'amazon-appstore/provenance.json').read_text())
@@ -191,7 +191,7 @@ jobs:
           key.write_bytes(base64.b64decode(encoded,validate=True))
           key.chmod(0o600)
           PY
-          python3 mobile/amazon_release.py sign --apk "$dir/glob2-fire-unsigned.apk" \
+          python3 platforms/mobile/amazon_release.py sign --apk "$dir/glob2-fire-unsigned.apk" \
             --manifest "$dir/provenance.json" --keystore "$key" --key-alias glob2-amazon \
             --expected-cert-sha256 "$GLOB2_AMAZON_CERT_SHA256" --output "$dir/glob2-fire-amazon.apk"
       - name: Retain signed candidate for first console submission
@@ -215,5 +215,5 @@ jobs:
           set -euo pipefail
           test -n "$RELEASE_NOTES"
           dir="$RUNNER_TEMP/amazon-appstore"
-          python3 mobile/amazon_release.py publish --apk "$dir/glob2-fire-amazon.apk" \
+          python3 platforms/mobile/amazon_release.py publish --apk "$dir/glob2-fire-amazon.apk" \
             --manifest "$dir/glob2-fire-amazon.json" --release-notes "$RELEASE_NOTES"

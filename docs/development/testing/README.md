@@ -15,7 +15,7 @@ Start with [native tests](../../../test/README.md) for build commands, runner is
 
 ## Integration and tooling
 
-- [Online and LAN](network.md), [mobile platforms](platforms.md), and [browser tests](../../../browser/README.md#automated-tests).
+- [Online and LAN](network.md), [mobile platforms](platforms.md), and [browser tests](../../../platforms/web/README.md#automated-tests).
 - [Lobby automation](lobby-automation.md).
 - [Python tooling](tooling.md) and [coverage workflows](ci.md).
 

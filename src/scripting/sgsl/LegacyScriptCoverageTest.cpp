@@ -51,7 +51,7 @@ std::string save(MapScriptSGSL& script, Game& game)
 
 void loadLanguageInventory(const std::filesystem::path& listing, const std::string& excludedLanguage = {}, bool publishedWithoutTelugu = false)
 {
-    std::istringstream entries(glob2test::readFile(glob2test::sourceRoot() / "data/texts.list.txt"));
+    std::istringstream entries(glob2test::readFile(glob2test::contentRoot() / "data/texts.list.txt"));
     std::string contents, entry;
     while (std::getline(entries, entry))
     {
@@ -59,7 +59,7 @@ void loadLanguageInventory(const std::filesystem::path& listing, const std::stri
         if (entry.empty() || (!excludedLanguage.empty() && entry == "data/texts." + excludedLanguage + ".txt")) continue;
         // Marathi was published before this PR; omit its later Telugu, Filipino, and Bulgarian additions in that historical fixture.
         if (publishedWithoutTelugu && (entry == "data/texts.te.txt" || entry == "data/texts.fil.txt" || entry == "data/texts.bg.txt")) continue;
-        contents += (glob2test::sourceRoot() / entry).string() + "\n";
+        contents += (glob2test::contentRoot() / entry).string() + "\n";
     }
     glob2test::writeFile(listing, contents);
     auto* strings = GAGCore::Toolkit::getStringTable();
@@ -82,7 +82,7 @@ struct RestoreLanguageInventory
     {
         globals.settings.language = settingsLanguage;
         auto* strings = GAGCore::Toolkit::getStringTable();
-        const bool loaded = strings->load((glob2test::sourceRoot() / "data/texts.list.txt").string());
+        const bool loaded = strings->load((glob2test::contentRoot() / "data/texts.list.txt").string());
         CHECK(loaded);
         if (loaded)
         {

@@ -18,6 +18,9 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
+# The runtime tree lives under content/ in a checkout; packages hold its
+# directories at their root, so exported paths are relative to content/.
+CONTENT = "content"
 ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
 PILLOW_VERSION = "12.2.0"
 ENCODING = json.loads((ROOT / "tools/image_encoding.json").read_text())
@@ -66,12 +69,13 @@ def include_asset(relative, platform="generic"):
 
 
 def source_files(root, platform):
+    content = Path(root) / CONTENT
     for directory in ASSET_DIRS:
-        for p in sorted((root / directory).rglob("*")):
+        for p in sorted((content / directory).rglob("*")):
             if p.is_symlink():
                 raise ValueError("Asset symlinks are not supported: " + str(p))
-            if p.is_file() and include_asset(p.relative_to(root), platform):
-                relative = p.relative_to(root)
+            if p.is_file() and include_asset(p.relative_to(content), platform):
+                relative = p.relative_to(content)
                 if relative.parts[:2] == ('data', 'zik') and p.suffix == '.ogg':
                     raise ValueError('Convert Vorbis music to .opus before packaging: ' + str(relative))
                 yield p
@@ -567,10 +571,11 @@ def _export_assets(
     jobs=None,
 ):
     root, output = Path(root).resolve(), Path(output).resolve()
-    catalog = root / "data/terrain/tileset.json"
+    content = root / CONTENT
+    catalog = content / "data/terrain/tileset.json"
 
     if root.is_relative_to(output) or any(
-        output == root / d or output.is_relative_to(root / d) for d in ASSET_DIRS
+        output == content / d or output.is_relative_to(content / d) for d in ASSET_DIRS
     ):
         raise ValueError("Export output must not overlap source assets")
     if platform not in (
@@ -625,7 +630,7 @@ def _export_assets(
     if (
         cache == output
         or cache.is_relative_to(output)
-        or any(cache == root / d or cache.is_relative_to(root / d) for d in ASSET_DIRS)
+        or any(cache == content / d or cache.is_relative_to(content / d) for d in ASSET_DIRS)
     ):
         raise ValueError("Cache must be outside exported and source assets")
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -633,8 +638,8 @@ def _export_assets(
     destinations = set()
     files = list(source_files(root, platform))
     if optimized:
-        verify_highres_atlases(root)
-    sheets = sheet_plan(files, root) if optimized else {}
+        verify_highres_atlases(content)
+    sheets = sheet_plan(files, content) if optimized else {}
     packed = {f for plan in sheets.values() for sheet in plan for f in sheet["frames"]}
     with tempfile.TemporaryDirectory(
         prefix=output.name + "-staging-", dir=output.parent
@@ -644,7 +649,7 @@ def _export_assets(
         # never publish the export or mutate its ordered audit/destination set.
         encoded = {}
         for source in files:
-            relative = source.relative_to(root)
+            relative = source.relative_to(content)
             public_png = platform == "linux" and relative.parts[:2] == ("data", "screenshots")
             if optimized and source not in packed and source.suffix.lower() == ".png" and not public_png:
                 encoded[source] = encoders.submit(encode_image, source, relative.as_posix(), cache, lossy)
@@ -652,11 +657,11 @@ def _export_assets(
         for sprite, plan in sheets.items():
             for sheet in plan:
                 relative = Path(sprite).parent / sheet["name"]
-                encoded_sheets[relative] = encoders.submit(encode_sheet, sheet, root, cache, lossy, relative)
+                encoded_sheets[relative] = encoders.submit(encode_sheet, sheet, content, cache, lossy, relative)
         for source in files:
             if source in packed:
                 continue
-            relative = source.relative_to(root)
+            relative = source.relative_to(content)
             blob = source
             record = dict(lossy=False)
             # AppStream screenshot references are public PNG URLs, not image-loader
@@ -716,7 +721,7 @@ def _export_assets(
                         recipe=record.get("recipe"),
                         packed_from=[
                             dict(
-                                source=f.relative_to(root).as_posix(),
+                                source=f.relative_to(content).as_posix(),
                                 sha256=hashlib.sha256(f.read_bytes()).hexdigest(),
                             )
                             for f in sheet["frames"]
@@ -749,7 +754,7 @@ def _export_assets(
                 with tempfile.TemporaryDirectory(prefix="terrain-pack-", dir=output.parent) as temporary_pack:
                     pack = Path(temporary_pack)
                     fingerprints = terrain_runtime_fingerprints(
-                        compiler, compiler.validate(document, root), root, stage, sheets
+                        compiler, compiler.validate(document, root), content, stage, sheets
                     )
                     compiler.compile_tileset(
                         document, pack, root=root, runtime_fingerprints=fingerprints
@@ -855,7 +860,7 @@ def export_assets(
     acquires the output lease itself, avoiding a recursive lock in its parent.
     """
     jobs = packaging_jobs(jobs)
-    if (optimized or (Path(root) / "data/terrain/tileset.json").is_file()) and not encoder_ready() and not worker:
+    if (optimized or (Path(root) / CONTENT / "data/terrain/tileset.json").is_file()) and not encoder_ready() and not worker:
         return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs)
     sys.path.insert(0, str(ROOT / "scons"))
     from dev_store import Lease

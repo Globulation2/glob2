@@ -18,17 +18,17 @@ class RecipeTrialTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as task:
             root = Path(task)
             (root / 'metadata').mkdir()
-            (root / 'mobile').mkdir()
+            (root / 'platforms/mobile').mkdir(parents=True)
             path = root / 'metadata/org.globulation2.glob2.yml'
             path.write_text(recipe)
-            (root / 'mobile/android-release.json').write_text(json.dumps({
+            (root / 'platforms/mobile/android-release.json').write_text(json.dumps({
                 'versionName': '0.12.0.1', 'versionCodeBase': 120001}))
             result = subprocess.run([sys.executable, '-c', script], cwd=root,
                 env=dict(os.environ, SOURCE_COMMIT='a' * 40), capture_output=True, text=True)
             return result, path.read_text()
 
     def test_rewrites_all_three_abis_and_update_identity(self):
-        recipe = (ROOT / 'fdroid/metadata/org.globulation2.glob2.yml').read_text()
+        recipe = (ROOT / 'platforms/stores/fdroid/metadata/org.globulation2.glob2.yml').read_text()
         result, text = self.run_trial(recipe)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(re.findall(r'^    versionCode: (\d+)$', text, re.M),
@@ -39,7 +39,7 @@ class RecipeTrialTests(unittest.TestCase):
         self.assertIn('CurrentVersionCode: 1200013', text)
 
     def test_rejects_missing_or_duplicate_abis(self):
-        recipe = (ROOT / 'fdroid/metadata/org.globulation2.glob2.yml').read_text()
+        recipe = (ROOT / 'platforms/stores/fdroid/metadata/org.globulation2.glob2.yml').read_text()
         for replacement in ('1100002', '1100004'):
             with self.subTest(replacement=replacement):
                 result, _ = self.run_trial(recipe.replace('versionCode: 1100003',

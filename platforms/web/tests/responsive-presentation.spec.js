@@ -1,0 +1,187 @@
+const {waitForMainMenu}=require('./main-menu');
+const {test,expect}=require('@playwright/test');
+const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile,tapControl,clickControl,control,controlBox}=require('./main-menu');
+const {clickCreateMap}=require('./editor-controls');
+const snapshot=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await snapshot(page)).screen).toContain(name);
+async function matchFrame(page) {
+  const frames=(await snapshot(page)).frames;
+  await expect.poll(async()=>(await snapshot(page)).frames).toBeGreaterThan(frames+2);
+}
+async function touchMatch(page,x,y) {await page.touchscreen.tap(x,y);await matchFrame(page);}
+
+test.describe('responsive mixed input',()=>{
+  test.use({viewport:{width:1024,height:768},hasTouch:true});
+  test.beforeEach(async({page})=>{
+    await page.goto(gameURL());await screen(page,'AudioPreferenceScreen');
+    await tapControl(page,'audio.silence');await screen(page,'HandPreferenceScreen');
+    await tapControl(page,'hand.right');await screen(page,'MainMenuScreen');
+  });
+  test('native text editing preserves Unicode and selection across rotation',async({page},info)=>{
+    expect(await page.evaluate(()=>Module.presentationMetrics.touch)).toBe(true);
+    await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
+    const canvas=page.locator('#canvas');
+    // The player name lives in the Player category.
+    await clickControl(page,'nav.5');
+    await clickControl(page,'player.name');
+    const field=page.locator('input[aria-label="Game text field"]');
+    await expect(field).toBeVisible();
+    await field.click();await field.fill('Zoë 🌱');
+    await expect.poll(()=>page.evaluate(()=>(FS.analyzePath('/home/web_user/.glob2/preferences.txt').exists ? FS.readFile('/home/web_user/.glob2/preferences.txt',{encoding:'utf8'}) : ''))).toContain('username=Zoë 🌱');
+    await field.evaluate(element=>element.setSelectionRange(0,3));
+    await field.press('Backspace');await field.pressSequentially('Ada');
+    await expect(field).toHaveValue('Ada 🌱');
+    await page.setViewportSize({width:768,height:1024});
+    await expect(field).toHaveValue('Ada 🌱');
+    await expect(field).toBeFocused();
+    await expect.poll(async()=>{const box=await field.boundingBox();return box.x+box.width;}).toBeLessThanOrEqual(768);
+    expect((await field.boundingBox()).x).toBeGreaterThanOrEqual(0);
+    await page.screenshot({path:info.outputPath('tablet-text-rotation.png')});
+    await page.evaluate(()=>{Module.presentationMetrics.keyboardInset=680;});
+    await expect.poll(async()=>{const box=await field.boundingBox();return box.y+box.height;}).toBeLessThanOrEqual(344);
+    await expect(field).toBeFocused();
+    expect(await page.evaluate(()=>Module.presentationMetrics.height)).toBe(1024);
+    await page.evaluate(()=>{Module.presentationMetrics.keyboardInset=0;});
+    await expect.poll(()=>page.evaluate(()=>(FS.analyzePath('/home/web_user/.glob2/preferences.txt').exists ? FS.readFile('/home/web_user/.glob2/preferences.txt',{encoding:'utf8'}) : ''))).toContain('username=Ada 🌱');
+    await expect.poll(async()=>(await field.boundingBox()).y).toBeGreaterThan(100);
+    await clickSettingsDone(page);await screen(page,'MainMenuScreen');
+    await page.reload();await screen(page,'MainMenuScreen');
+    expect(await page.evaluate(()=>(FS.analyzePath('/home/web_user/.glob2/preferences.txt').exists ? FS.readFile('/home/web_user/.glob2/preferences.txt',{encoding:'utf8'}) : ''))).toContain('username=Ada 🌱');
+  });
+  test('touch setup and gameplay retain their session when resized with a mouse attached',async({page},info)=>{
+    await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
+    await clickCustomGameStart(page);
+    await expect.poll(async()=>(await snapshot(page)).tick,{timeout:60000}).toBeGreaterThan(20);
+    const tick=(await snapshot(page)).tick;
+    await page.setViewportSize({width:390,height:844});
+    await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([390,844]);
+    await matchFrame(page);
+    await page.mouse.move(200,200);
+    await expect.poll(async()=>(await snapshot(page)).tick).toBeGreaterThan(tick);
+    expect((await snapshot(page)).screenClass).toContain('GameSessionScreen');
+    await page.screenshot({path:info.outputPath('phone-gameplay-mouse.png')});
+    // A real touch selects the first icon of the palette rail, the bottom cell
+    // nearest the right thumb.
+    await touchMatch(page,32,820);
+    await touchMatch(page,346,764);
+    await touchMatch(page,195,400);
+    await page.screenshot({path:info.outputPath('phone-placement-preview.png')});
+    await page.setViewportSize({width:844,height:390});
+    await expect.poll(()=>page.evaluate(()=>Module.presentationMetrics.width)).toBe(844);
+    await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([844,390]);
+    await matchFrame(page);
+    await page.screenshot({path:info.outputPath('phone-gameplay-landscape.png')});
+    // Cancel the retained preview (Cancel is the left half; OK sits under the
+    // right thumb), then save through the responsive dialog.
+    await touchMatch(page,210,366);
+    await page.locator('#canvas').press('Escape');
+    await matchFrame(page);
+    await tapControl(page,'save');
+    await tapControl(page,'name');
+    const field=page.locator('input[aria-label="Game text field"]');
+    await expect(field).toBeVisible();await field.fill('Responsive phone');
+    await page.screenshot({path:info.outputPath('phone-save-dialog.png')});
+    await field.press('Enter'); // Native input validates through the dialog's shared shortcut.
+    const digest=()=>page.evaluate(()=>glob2Diagnostics.saveDigest('Responsive_phone.game.gz'));
+    await expect.poll(digest).not.toBeNull();
+    await expect.poll(async()=>(await snapshot(page)).persisting).toBe(false);
+    const saved=await digest();
+    const bytes=await readBrowserFile(page,'/home/web_user/.glob2/games/Responsive_phone.game.gz');
+    require('node:fs').writeFileSync(info.outputPath('Responsive_phone.game.gz'),Buffer.from(bytes));
+    await page.reload();await screen(page,'MainMenuScreen');
+    expect(await digest()).toEqual(saved);
+    await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');
+    await tapControl(page,'files/0');
+    await page.locator('#canvas').press('Enter');
+    await screen(page,'match');
+    await expect.poll(async()=>(await snapshot(page)).tick).toBeGreaterThan(tick);
+    await page.screenshot({path:info.outputPath('phone-loaded-match.png')});
+  });
+  // All browser renderers follow the shared dock/tray presentation policy.
+  test('touch browser editor switches between dock and tray across phone rotation',async({page},info)=>{
+    const controls=()=>page.evaluate(()=>Object.keys(glob2Diagnostics.snapshot().controls));
+    const tray=async()=>(await controls()).some(key=>key.startsWith('tray/'));
+    await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
+    await clickControl(page,'new-map');await screen(page,'NewMapScreen');
+    await clickCreateMap(page);await screen(page,'MapEditorScreen');
+    // The editor advances host turns, not simulation match frames.
+    const loop=(await snapshot(page)).loop;
+    await expect.poll(async()=>(await snapshot(page)).loop).toBeGreaterThan(loop+2);
+    await tapControl(page,'dock/tab/terrain');
+    await control(page,'brush/terrain/grass');
+    expect(await tray()).toBe(false);
+    await page.screenshot({path:info.outputPath('editor-tablet-dock.png')});
+    await page.setViewportSize({width:390,height:844});
+    await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([390,844]);
+    await control(page,'tray/terrain/grass');
+    await tapControl(page,'tray/terrain/grass');
+    expect(await tray()).toBe(true);
+    await page.screenshot({path:info.outputPath('editor-phone-tray.png')});
+    await page.setViewportSize({width:844,height:390});
+    await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([844,390]);
+    await control(page,'tray/terrain/grass');
+    expect(await tray()).toBe(true);
+    await page.screenshot({path:info.outputPath('editor-phone-landscape.png')});
+    await page.setViewportSize({width:1024,height:768});
+    await expect.poll(tray).toBe(false);
+    await control(page,'brush/terrain/grass');
+    expect((await snapshot(page)).screen).toContain('MapEditorScreen');
+  });
+  test('touch tablet dock publishes its brush cards',async({page})=>{
+    await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
+    await clickControl(page,'new-map');await screen(page,'NewMapScreen');
+    await clickCreateMap(page);await screen(page,'MapEditorScreen');
+    await tapControl(page,'dock/tab/terrain');
+    await control(page,'brush/terrain/grass');
+    expect(await page.evaluate(()=>Object.keys(glob2Diagnostics.snapshot().controls).some(key=>key.startsWith('tray/')))).toBe(false);
+  });
+});
+
+
+test.describe('opaque WebGL settings panel', () => {
+  test.use({viewport: {width: 1280, height: 900}, deviceScaleFactor: 1, locale: 'bn-BD'});
+  test('antialiased Bengali text and icons keep the presented panel opaque', async ({page}, info) => {
+    test.skip(process.env.GLOB2_TEST_RENDERER !== 'webgl2', 'Checks actual WebGL canvas compositing');
+    await page.goto(gameURL()); await screen(page, 'MainMenuScreen');
+    await clickMainMenu(page, 'settings'); await screen(page, 'SettingsScreen');
+    expect((await snapshot(page)).renderer).toBe('webgl2');
+    // Native labels confirm the script font has actually reached the screen.
+    expect((await snapshot(page)).controls['nav.0'].label).toMatch(/[\u0980-\u09ff]/);
+    const first = await controlBox(page, 'nav.0', {fullyVisible: true});
+    // Categories depend on compiled features; Hive Mind is absent in browsers.
+    // Cover the complete visible rail instead of assuming a category index.
+    const navigation = Object.entries((await snapshot(page)).controls)
+      .filter(([key, bounds]) => /^nav\.\d+$/.test(key) && bounds.visible?.h >= bounds.h)
+      .sort(([, a], [, b]) => b.y - a.y);
+    expect(navigation.length).toBeGreaterThan(1);
+    const last = await controlBox(page, navigation[0][0], {fullyVisible: true});
+    const clip = {x: first.x, y: first.y, width: first.width,
+      height: last.y + last.height - first.y};
+    const {hasDarkText, comparePresentedRGB} = require('./pixels');
+    await expect.poll(() => hasDarkText(page, clip)).toBe(true);
+    await page.mouse.move(1, 1);
+    const canvas = page.locator('#canvas');
+    const original = await canvas.evaluate(element => ({
+      value: element.style.getPropertyValue('background-color'),
+      priority: element.style.getPropertyPriority('background-color'),
+    }));
+    const captures = [];
+    try {
+      // Background behind opaque UI must never bleed through glyph coverage.
+      // glBlendFunc used SRC_ALPHA for framebuffer alpha too, leaving 0.75
+      // alpha at a half-covered glyph and washing it out over the page.
+      for (const [name, color] of [['black', '#000'], ['white', '#fff']]) {
+        await canvas.evaluate((element, color) => element.style.setProperty('background-color', color), color);
+        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        captures.push(await page.screenshot({path: info.outputPath('opaque-panel-' + name + '.png'), clip}));
+      }
+    } finally {
+      await canvas.evaluate((element, original) => {
+        if (original.value) element.style.setProperty('background-color', original.value, original.priority);
+        else element.style.removeProperty('background-color');
+      }, original);
+    }
+    const difference = await comparePresentedRGB(page, captures[0], captures[1]);
+    expect(difference.maximumChannelDifference, JSON.stringify(difference)).toBeLessThanOrEqual(2);
+  });
+});

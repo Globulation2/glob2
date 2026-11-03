@@ -95,9 +95,9 @@ struct Pipeline::State
             return IdentityLess{}(record.identity,key);
         });
     }
-    void complete(Generation& generation) {
+    void complete(Generation& generation, JoinContext context = {JoinReason::Teardown, ComputeTelemetry::NoTick}) {
         if (generation.batch.empty()) return;
-        try { executor.join(generation.batch); } catch (...) { generation.error=std::current_exception(); }
+        try { executor.join(generation.batch, context); } catch (...) { generation.error=std::current_exception(); }
         generation.preparation->observation=nullptr;
         generation.observation.reset(); // Completed jobs need no world lease.
     }
@@ -159,7 +159,7 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
     }
     s.pending.push_back(std::move(generation));
     auto& scheduled=*s.pending.back();
-    try { scheduled.batch=s.executor.submit(groups,ComputeExecutor::advanceDue(scheduled.deadline)); }
+    try { scheduled.batch=s.executor.submit(groups,ComputeExecutor::advanceDue(scheduled.deadline), {ComputeProducer::Turret, game.stepCounter, scheduled.deadline}); }
     catch (...) { s.pending.pop_back(); throw; }
     s.lastPreparation=scheduled.preparation;
     ++s.metrics.admissions; s.metrics.teamJobs+=scheduled.jobs.size();
@@ -169,7 +169,7 @@ void Pipeline::publish(Game& game)
     auto& s=*state;
     while (!s.pending.empty() && s.pending.front()->deadline<=game.stepCounter) {
         auto& generation=*s.pending.front();
-        s.complete(generation);
+        s.complete(generation, {JoinReason::TickDeadline, game.stepCounter});
         if (generation.error) {
             auto error=generation.error; s.pending.pop_front();
             std::rethrow_exception(error); // Never silently drop a failed generation.

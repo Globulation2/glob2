@@ -102,9 +102,9 @@ class PolicyTest(unittest.TestCase):
     def test_music_pipeline_is_a_cheap_job_and_sets_are_packaged_data(self):
         music = self.select(['tools/music/glob2music/qa/seam.py', 'tools/music/sets/woodland/set.toml'])
         self.assertEqual({flag for flag, on in music.items() if on}, {'music'})
-        assets = self.select(['data/zik/woodland/a1.ogg', 'data/zik/woodland/LICENSE.txt'])
+        assets = self.select(['content/data/zik/woodland/a1.ogg', 'content/data/zik/woodland/LICENSE.txt'])
         self.assertEqual({flag for flag, on in assets.items() if on}, {'native', 'browser'})
-        self.assertEqual(self.select(['data/zik/SConscript']), policy.full())
+        self.assertEqual(self.select(['content/data/zik/SConscript']), policy.full())
         # Music-only PRs stay cheap; mixing engine code also runs the predictive budget.
         report, _ = self.exercise('pull_request', ['tools/music/glob2music/cli.py'])
         self.assertEqual({flag for flag, on in report['selection'].items() if on}, {'music'})
@@ -113,10 +113,10 @@ class PolicyTest(unittest.TestCase):
         self.assertTrue(report['selection']['music'])
         self.assertEqual(report['verification_mode'], 'predictive')
         self.assertGreater(report['execution_plan']['ranked_count'], 0)
-        report, _ = self.exercise('pull_request', ['data/zik/woodland/a1.ogg'])
+        report, _ = self.exercise('pull_request', ['content/data/zik/woodland/a1.ogg'])
         self.assertEqual(report['verification_mode'], 'predictive')
         self.assertTrue(any(report['selection'].values()))
-        report, _ = self.exercise('pull_request', ['data/zik/woodland/a1.ogg'], labels=['ci:run'])
+        report, _ = self.exercise('pull_request', ['content/data/zik/woodland/a1.ogg'], labels=['ci:run'])
         self.assertTrue(report['selection']['native'] and report['selection']['browser'])
         self.assertFalse(report['selection']['music'])
         report, _ = self.exercise('schedule', [], reused_run=123)
@@ -129,24 +129,24 @@ class PolicyTest(unittest.TestCase):
                      'tools/encode_music.py']:
             selected = self.select([path])
             self.assertTrue(selected['music'] and selected['platform'] and selected['platform_stack'])
-        self.assertTrue(self.select(['platform/apps/music-worker/src/process.ts'])['platform_stack'])
-        self.assertTrue(self.select(['platform/apps/ai-music-worker/src/runner.ts'])['platform_stack'])
+        self.assertTrue(self.select(['services/online/apps/music-worker/src/process.ts'])['platform_stack'])
+        self.assertTrue(self.select(['services/online/apps/ai-music-worker/src/runner.ts'])['platform_stack'])
 
     def test_platform_stack_smoke_follows_the_stack_inputs(self):
         for path in ['deploy/compose.yaml', 'deploy/Dockerfile', 'test/deployment/platform_stack_smoke.py',
-                     'src/relay/RelayServer.cpp', 'platform/packages/db/migrations/0006_room_kicks_lost_relays.sql',
-                     'platform/apps/worker/src/main.ts', 'platform/package-lock.json']:
+                     'src/relay/RelayServer.cpp', 'services/online/packages/db/migrations/0006_room_kicks_lost_relays.sql',
+                     'services/online/apps/worker/src/main.ts', 'services/online/package-lock.json']:
             self.assertTrue(self.select([path])['platform_stack'], path)
-        for path in ['deploy/README.md', 'platform/apps/api/src/play/rooms.ts', 'src/ai/Maxima.cpp',
-                     'src/hud/input/GameGUIInput.cpp', 'browser/shell.html']:
+        for path in ['deploy/README.md', 'services/online/apps/api/src/play/rooms.ts', 'src/ai/Maxima.cpp',
+                     'src/hud/input/GameGUIInput.cpp', 'platforms/web/shell.html']:
             self.assertFalse(self.select([path])['platform_stack'], path)
 
     def test_terrain_catalog_and_compiler_are_shared_boundaries(self):
-        for path in ('data/terrain/tileset.json','tools/terrain_tileset.py','tools/test_terrain_tileset.py'):
+        for path in ('content/data/terrain/tileset.json','tools/terrain_tileset.py','tools/test_terrain_tileset.py'):
             self.assertEqual(self.select([path]),policy.full())
 
     def test_shared_unknown_and_unavailable_inputs_fail_closed(self):
-        for path in ['src/app/Version.h','libgag/include/Surface.h','libgag/include/AudioFormat.h','scons/opus_dependencies.py','SConstruct','unmapped/new.cpp','test/ci_native_shard_plan.py']:
+        for path in ['src/app/Version.h','libs/gag/include/Surface.h','libs/gag/include/AudioFormat.h','scons/opus_dependencies.py','SConstruct','unmapped/new.cpp','test/ci_native_shard_plan.py']:
             self.assertEqual(self.select([path]), policy.full(), path)
         self.assertEqual(policy.select([], known=False)[0], policy.full())
         self.assertFalse(any(self.select([]).values()))
@@ -188,9 +188,9 @@ class PolicyTest(unittest.TestCase):
                         self.assertRegex(title, re.compile(pattern))
 
     def test_release_metadata_does_not_compile_engine(self):
-        paths=['fdroid/metadata.yml','fastlane/metadata/title.txt','tools/package_steam_windows.py',
+        paths=['platforms/stores/fdroid/metadata.yml','fastlane/metadata/title.txt','tools/package_steam_windows.py',
                '.github/workflows/steam-windows-package.yml','.github/workflows/mac-app-store.yml',
-               'mobile/android_release.py',
+               'platforms/mobile/android_release.py',
                '.github/workflows/deploy-online.yml','deploy/online-deploy.sh','deploy/online_remote.py',
                'test/deployment/test_online_deploy.py']
         self.assertFalse(any(self.select(paths).values()))
@@ -333,7 +333,7 @@ class ReuseTest(unittest.TestCase):
         import ast
         import hashlib
         import re
-        producer = (ROOT / 'browser/tests/determinism.spec.js').read_text()
+        producer = (ROOT / 'platforms/web/tests/determinism.spec.js').read_text()
         variants = ast.literal_eval(re.search(
             r'for \(const \[variant, threads\] of (\[.*?\])\) \{', producer).group(1))
         self.assertEqual(tuple(map(tuple, variants)), evidence.BROWSER_TRACE_VARIANTS)
@@ -350,7 +350,7 @@ class ReuseTest(unittest.TestCase):
             for threads in (8, 'auto'):
                 path=root/'browser-determinism-wasm-0'/'wasm'/f'threaded-{threads}'
                 manifest=path/'manifest.json';saved=manifest.read_text();manifest.unlink()
-                with self.subTest(missing=threads), self.assertRaisesRegex(ValueError, 'Missing browser/thread traces'):
+                with self.subTest(missing=threads), self.assertRaisesRegex(ValueError, 'Missing platforms/web/thread traces'):
                     evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'})
                 manifest.write_text(saved)
                 checksum=path/'wasm.replay.checksums';checksum.write_bytes(b'y'*1501)

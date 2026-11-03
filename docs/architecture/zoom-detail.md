@@ -64,9 +64,9 @@ it is saved, checksummed or read by the simulation.
   and all are drawn, including when they overlap. Higher-priority icons draw on
   top (damaged, flags, towers, hives, the rest), with equal priorities retaining
   their original draw order. The icons are
-  generated from `data/gfx/mapicon*.png` sources and loaded as WebP in the runtime
+  generated from `content/data/gfx/mapicon*.png` sources and loaded as WebP in the runtime
   tree. The sources are rasterised at seven pixel sizes from the SVGs in
-  `datasrc/icons/map/` by `python3 tools/icons/export_map_icons.py` (needs
+  `content-src/icons/map/` by `python3 tools/icons/export_map_icons.py` (needs
   `rsvg-convert`); the renderer draws the largest frame that fits, pixel for pixel.
   Frame order is shared between that script and `MapOverlayQueue.cpp`.
 - In the overview `Game::drawMapTerritory` washes the land around each team's

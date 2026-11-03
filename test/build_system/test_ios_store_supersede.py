@@ -3,7 +3,7 @@ import copy
 from pathlib import Path
 import sys
 import unittest
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
 import ios_store_supersede as store
 
 

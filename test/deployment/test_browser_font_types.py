@@ -33,7 +33,7 @@ class BrowserFontTypeTests(unittest.TestCase):
         spec = importlib.util.spec_from_file_location('launcher_web_assets', ROOT / 'scons/web_assets.py')
         assets = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(assets)
-        manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        manifest = json.loads((ROOT / 'content/data/fonts/scripts/manifest.json').read_text())
         rules = play_rules((ROOT / 'deploy/Caddyfile').read_text())
         with socket.socket() as reservation:
             reservation.bind(('127.0.0.1', 0))
@@ -97,7 +97,7 @@ class BrowserFontTypeTests(unittest.TestCase):
                                                 decoded = gzip.decompress(body) if encoding == 'gzip' else body
                                                 self.assertEqual(decoded, original)
                                                 if name == 'fonts/sans-core.ttf':
-                                                    self.assertEqual(decoded, (ROOT / 'browser/assets/sans-core.ttf').read_bytes())
+                                                    self.assertEqual(decoded, (ROOT / 'platforms/web/assets/sans-core.ttf').read_bytes())
                                                 elif name.endswith('.ttf'):
                                                     font = next(f for f in manifest['fonts'] if f['name'] + '-Regular.ttf' == Path(name).name)
                                                     self.assertEqual(hashlib.sha256(decoded).hexdigest(), font['sha256'])

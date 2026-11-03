@@ -1,0 +1,11 @@
+{
+  "name": "glob2-browser-tests",
+  "private": true,
+  "scripts": {
+    "test": "node --test unit/*.test.js && playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "pngjs": "7.0.0"
+  }
+}

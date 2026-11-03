@@ -209,7 +209,7 @@ after a change, allow a day or reinstall the app.
 
 The apps take the domain from `scons/official_instance.py`: the Android build fills
 the App Link host (`officialInstanceHost` in `AndroidManifest.xml`) from it, and
-`mobile/ios.py` writes `applinks:<host>` into the iOS entitlements, both using the default host
+`platforms/mobile/ios.py` writes `applinks:<host>` into the iOS entitlements, both using the default host
 `app.glob2.online`. The Amazon and China editions leave online play out, so they
 declare neither invite links nor associated domains.
 

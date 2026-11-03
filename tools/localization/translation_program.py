@@ -24,7 +24,7 @@ import urllib.request
 import urllib.error
 
 ROOT = Path(__file__).resolve().parents[2]
-SPEC = importlib.util.spec_from_file_location('translation_checker', ROOT / 'data/check_translations.py')
+SPEC = importlib.util.spec_from_file_location('translation_checker', ROOT / 'content/data/check_translations.py')
 CHECKER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CHECKER)
 LOCALES = ('hi', 'bn', 'ur', 'mr', 'te', 'sw', 'ha', 'ta', 'fil', 'th', 'gu',
@@ -58,10 +58,10 @@ NMT_TARGETS = {
     'sv': 'sv', 'sw': 'sw', 'tr': 'tr', 'uk': 'uk', 'ur': 'ur', 'vi': 'vi',
     'zh-Hans': 'zh-CN', 'zh-Hant': 'zh-TW',
 }
-SOURCE_PATHS = ('data/texts.keys.txt', 'data/texts.en.txt',
-                'platform/packages/i18n/locales/en.json',
-                'platform/packages/i18n/plural-sources.json',
-                'platform/packages/i18n/invariants.json')
+SOURCE_PATHS = ('content/data/texts.keys.txt', 'content/data/texts.en.txt',
+                'services/online/packages/i18n/locales/en.json',
+                'services/online/packages/i18n/plural-sources.json',
+                'services/online/packages/i18n/invariants.json')
 LOW_RESOURCE = {'ha', 'am', 'yo', 'my', 'jv', 'om', 'pcm', 'ps', 'bho', 'fuc-Latn',
                 'ln', 'uz', 'sd', 'ig', 'su'}
 GATES = ('language_brief', 'source_based_pilot', 'structural', 'desktop_rendering', 'phone_rendering', 'browser_startup',
@@ -149,7 +149,7 @@ def prepare(output, batch_size=160, root=ROOT, locales=LOCALES):
     write_json(output / 'source/native.json', native)
     write_json(output / 'source/online.json', online)
     for name in ('plural-sources.json', 'invariants.json'):
-        (output / 'source' / name).write_bytes((root / 'platform/packages/i18n' / name).read_bytes())
+        (output / 'source' / name).write_bytes((root / 'services/online/packages/i18n' / name).read_bytes())
     (output / 'source/native-keys.txt').write_text('\n'.join(keys) + '\n', encoding='utf-8')
     for locale in locales:
         write_json(output / 'reviews' / (locale + '.json'), {

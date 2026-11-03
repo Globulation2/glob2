@@ -45,7 +45,7 @@
     "name": "chromium webgl2 viewport",
     "browsers": "chromium",
     "renderer": "webgl2",
-    "command": "xvfb-run -a npx playwright test viewport.spec.js --project=chromium"
+    "command": "xvfb-run -a npx playwright test viewport.spec.js graphics-diagnostics.spec.js --project=chromium"
   },
   {
     "name": "chromium webgl2 damaged load",

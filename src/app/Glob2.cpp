@@ -20,7 +20,7 @@
 #include <stdexcept>
 #include <string>
 #ifdef GLOB2_MOBILE
-#include "mobile/MobilePaths.h"
+#include "platforms/mobile/MobilePaths.h"
 #include <exception>
 #include <SDL3/SDL_log.h>
 #endif
@@ -456,7 +456,20 @@ class AssetStartupLoop : public GAGCore::ApplicationHost::Loop {
     std::shared_ptr<bool> cancelled;
     bool hidden = false;
 public:
-    explicit AssetStartupLoop(std::shared_ptr<bool> value) : cancelled(std::move(value)) {}
+    explicit AssetStartupLoop(std::shared_ptr<bool> value) : cancelled(std::move(value)) {
+#ifdef __EMSCRIPTEN__
+        // The splash is static apart from progress. Leave CPU time for asset
+        // preparation when browser graphics are backed by software rendering.
+        const int requested = globalContainer->settings.targetRenderFps;
+        globalContainer->gfx->setTargetRenderFps(requested > 0 ? std::min(requested, 5) : 5);
+#endif
+    }
+#ifdef __EMSCRIPTEN__
+    ~AssetStartupLoop() override {
+        globalContainer->gfx->setTargetRenderFps(globalContainer->settings.targetRenderFps);
+        globalContainer->gfx->resetRenderPacing();
+    }
+#endif
     bool frame(std::uint32_t, const std::vector<SDL_Event>& events) override {
         for (const auto &event : events) if (event.type == SDL_EVENT_QUIT) *cancelled = true;
         if (*cancelled) return false;
@@ -477,11 +490,12 @@ public:
         if (!hidden && !*cancelled) globalContainer->drawAssetLoading();
     }
     std::uint32_t delay(std::uint32_t) override {
+        // Asset work must advance even when display callbacks are infrequent.
+        // The host schedules drawing separately on animation callbacks.
 #ifdef __EMSCRIPTEN__
-        return GAGCore::ApplicationHost::AnimationFrameDelay;
-#else
-        return 3;
+        if (hidden) return 100; // Match the application's background idle cadence.
 #endif
+        return 3;
     }
 };
 }

@@ -60,6 +60,21 @@ namespace
 {
 	const int PREEMPTIVE_UNREACHABLE=-1;
 
+    constexpr int InnCarrierCeiling=8;
+    constexpr int SwarmCarrierCeiling=12;
+
+    int carrierCeiling(const BuildingType& type,const MaximaStrategy& strategy)
+    {
+        int ceiling=std::min(type.semantics.assignmentLimit,
+            strategy.staffing.control_maximum_workers);
+        // A provider with both services keeps the production allowance.
+        if(!type.semantics.production.enabledUnits.empty())
+            ceiling=std::min(ceiling,SwarmCarrierCeiling);
+        else if(type.maxUnitInside>0 && type.semantics.feeding.enabled)
+            ceiling=std::min(ceiling,InnCarrierCeiling);
+        return ceiling;
+    }
+
     int initialCarrierRequest(const BuildingType& type,const MaximaStrategy& strategy)
     {
         int requested=-1;
@@ -67,7 +82,7 @@ namespace
         if(type.maxUnitInside>0)requested=std::max(requested,strategy.staffing.new_inn_workers);
         if(type.shootingRange>0 && type.shootRhythm>0)requested=std::max(requested,strategy.staffing.completed_tower_workers);
         if(requested<0)requested=type.presentation.defaultAssigned<0?2:type.presentation.defaultAssigned;
-        return std::clamp(requested,0,std::min(type.semantics.assignmentLimit,strategy.staffing.control_maximum_workers));
+        return std::clamp(requested,0,carrierCeiling(type,strategy));
     }
 
     FeedingEstimate operatingEstimate(const BuildingType& type,const MaximaStrategy& strategy,const GameHeader& rules,bool constrainHauling=true)
@@ -4679,7 +4694,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
             const auto allowed=swarm_allowance.find(value.id);
             if(allowed!=swarm_allowance.end())value.plannedCarriers=std::min(value.plannedCarriers,allowed->second);
             value.plannedCarriers=std::clamp(value.plannedCarriers,0,
-                std::min(AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.assignmentLimit,strategy.staffing.control_maximum_workers));
+                carrierCeiling(AIEngine::ObservationQueries::buildingType(runtime.observation(),*building),strategy));
             std::copy_n(building->ratio,3,value.productionRatios);
         }
 		world.buildings.push_back(value);
@@ -6278,7 +6293,8 @@ int Maxima::update_staffing_request(Context& runtime, int id)
 	policy.highPermille=budget.staffing_high_permille;
 	policy.slack=budget.staffing_slack;
 	policy.minimumWorkers=budget.staffing_minimum_workers;
-	policy.maximumWorkers=std::min({MAXIMA_MAX_UNIT_WORKING,budget.staffing_maximum_workers,AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.assignmentLimit});
+	policy.maximumWorkers=std::min({MAXIMA_MAX_UNIT_WORKING,budget.staffing_maximum_workers,
+        carrierCeiling(AIEngine::ObservationQueries::buildingType(runtime.observation(),*building),strategy)});
 	policy.minimumWorkers=std::min(policy.minimumWorkers,policy.maximumWorkers);
 	policy.cooldownPasses=budget.staffing_cooldown_passes;
 	// A building that has just been built starts where it is useful rather

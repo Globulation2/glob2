@@ -79,7 +79,7 @@ build/linux/client/release/test/glob2-engine-tests -ts=TerrainHazardBenchmark \
 
 Its separate `write mature game fixtures` case creates control, sparse-ice and
 patchwork-ice saves. Set `GLOB2_HAZARD_BENCH_SAVE` to a mature save (the default is
-`games/cross-replay.game`) and `GLOB2_TEST_ARTIFACTS` to the output directory. Produce
+`content/games/cross-replay.game`) and `GLOB2_TEST_ARTIFACTS` to the output directory. Produce
 fixtures with the older build so both readers accept exactly the same bytes. Use
 `game run --benchmark-warmup` to exclude loading and initial cache rebuilding
 from whole-engine CPU time per tick. Alternate revision order across repeats and
@@ -231,7 +231,7 @@ execute on the device; an unavailable adapter or CPU fallback cannot qualify GPU
 coverage. Set `GLOB2_REQUIRE_VULKAN=1` when requiring the native Vulkan cases.
 Set `GLOB2_REQUIRE_OPENCL=1` to require OpenCL device execution. Run browser
 WebGPU cases separately.
-`browser/tests/gradient-compute.spec.js` compares 66 fields, including all five
+`platforms/web/tests/gradient-compute.spec.js` compares 66 fields, including all five
 retained NVIDIA inputs on both algorithms with repeated buffer reuse. Set
 `GLOB2_WEBGPU_EXPECT_DEVICE=NVIDIA` (or another device-name pattern) to require a
 matching hardware adapter; software substitution fails the test. Without this
