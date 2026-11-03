@@ -46,6 +46,28 @@ def wait_for_main_menu(run, logs, wait_for):
     wait_for(lambda: 'MainMenuScreen' in ready_screen(), 'native main menu')
 
 
+def wait_for_root_adbd(run):
+    """Reconnect after a root request restarts the task-owned emulator daemon."""
+    transient = ('unable to connect for root: closed', 'device offline', 'device not found')
+    last_error = None
+    for _ in range(3):
+        try:
+            run('root', timeout=10)
+        except RuntimeError as error:
+            if not any(message in str(error) for message in transient):
+                raise
+            last_error = error
+        try:
+            run('wait-for-device', timeout=30)
+            if run('shell', 'id', '-u', timeout=10).strip() == '0':
+                return
+        except RuntimeError as error:
+            if not any(message in str(error) for message in transient):
+                raise
+            last_error = error
+    raise RuntimeError('Owned emulator does not permit profile inspection after adbd restart') from last_error
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--serial', required=True)
@@ -143,9 +165,7 @@ def main():
         # Application-created profile files must survive lifecycle transitions.
         # The release APK is not debuggable. The task-owned emulator
         # permits root; read its profile without requiring a debug-only app build.
-        run('root'); run('wait-for-device')
-        if run('shell', 'id', '-u').strip() != '0':
-            raise RuntimeError('Owned emulator does not permit profile inspection')
+        wait_for_root_adbd(run)
         def profile_files():
             profile = '/data/user/0/' + package + '/files'
             script = 'find ' + profile + r' -type f ! -path "*/assets/*" ! -name "*.log" ! -name "*.tmp" -exec sha256sum {} \;'

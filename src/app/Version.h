@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 193
+#define VERSION_MINOR 194
+// version 194 lets replenishment couriers finish trips before demand-driven dismissal; save encoding is unchanged.
 // version 193 adds the saved adaptive prestige pipeline limit.
 // version 192 persists Maxima prestige investment and cancellation state.
 // version 191 adds four built-in grass and sand looks; custom terrain IDs move up by four.

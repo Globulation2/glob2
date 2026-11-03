@@ -158,6 +158,7 @@ class Catalog
 		unsigned cornerMask = 15, unsigned cornerColours = 0) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
+std::uint32_t mapSeedSalt(std::uint32_t seed);
 // One seeded bit per map vertex, packed for a cell in corner-mask order. It is
 // shared by all materials, so adjacent connected foliage joins the same shapes.
 unsigned cornerColours(int x, int y, unsigned maskW, unsigned maskH, std::uint32_t seed);

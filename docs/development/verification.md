@@ -249,7 +249,7 @@ For focused macOS qualification, dispatch `.github/workflows/ci-macos.yml`
 with an exact `revision` and `coverage_profile=full` (or `compatibility` for the
 selected compatibility inventory). It runs the same native build, regression,
 continuation, scripting and strict generator evidence steps as the reusable
-workflow, with a 90-minute job ceiling. This is macOS evidence, not a full
+workflow, with a 120-minute job ceiling. This is macOS evidence, not a full
 development checkpoint.
 
 Nightly is a fallback with a separate concurrency group. Expensive nightly jobs

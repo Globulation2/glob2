@@ -82,10 +82,15 @@ static void minimumIsAlwaysHonoured()
 /// The request never exceeds the engine's own ceiling.
 static void requestIsCappedAtTheEngineLimit()
 {
-	const Policy policy=responsive();State state;
-	state.request=policy.maximumWorkers;
-	const int request=run(state, policy, 0, 20, 40);
-	REQUIRE(request==policy.maximumWorkers);
+	for(int ceiling:{8,12,20})
+	{
+		Policy policy=responsive();policy.maximumWorkers=ceiling;
+		State state;state.request=20;
+		REQUIRE(run(state,policy,0,20,40)==ceiling);
+		// An old request must also be clipped when there is no measurable store.
+		state.request=20;
+		REQUIRE(update(state,policy,0,0,0)==ceiling);
+	}
 }
 
 /// Capacity differences are normalised: a level-one inn and a swarm at the same

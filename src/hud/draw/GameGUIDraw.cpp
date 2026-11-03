@@ -268,11 +268,14 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 
 GameGUI::TopBarLayout GameGUI::topBarLayout() const
 {
+	// Inspection can lay out the HUD before draw() refreshes the legacy pointer.
+	// Read the statistics owned by the same immutable scene as the other panels.
+	const auto &stats = *drawnScene().panels.localStats;
 	TopBarLayout layout;
 	for (int i = 0; i < 3; ++i)
-		layout.values[i] = std::to_string(teamStats->getFreeUnits(i) -
-			(i == 0 ? teamStats->getWorkersNeeded() : 0)) + "/" +
-			std::to_string(teamStats->getTotalUnits(i));
+		layout.values[i] = std::to_string(stats.getFreeUnits(i) -
+			(i == 0 ? stats.getWorkersNeeded() : 0)) + "/" +
+			std::to_string(stats.getTotalUnits(i));
 	const auto &colony = drawnScene().panels.local.state();
 	layout.values[3] = std::to_string(colony.prestige);
 	layout.values[4] = std::to_string(colony.unitConversionGained);

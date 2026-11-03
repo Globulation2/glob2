@@ -7,7 +7,7 @@ exports.campaignFrame = page => rootBox(page, 'ok');
 exports.clickCampaignFooter = (page, save, options) => clickControl(page, save ? 'ok' : 'cancel', options);
 
 // The editor's generator chooser now uses the shared landscape catalog. Drive
-// its real sort/navigation controls; the old form's list coordinates no longer
+// its real navigation controls; the old form's list coordinates no longer
 // select a generator. Read the native catalog so new generators cannot silently
 // shift a fixture onto another landscape. Only pointer/key events change the UI.
 let landscapeNames;
@@ -33,7 +33,6 @@ exports.chooseEditorLandscape = async (page,name) => {
   if(!names.some(label=>label.toLowerCase()===name.toLowerCase())) throw new Error('Unknown editor landscape fixture: '+name);
   await clickControl(page,'landscape');
   await expect.poll(screen).toContain('LandscapePickerScreen');
-  await clickControl(page,'landscape/sort/1'); // Alphabetical.
   await clickByLabel(page,/^landscape\/\d+$/,name); // The card carries the landscape's name.
   // Confirmation is disabled while the selected preview is being generated.
   // Wait before acting: retrying Enter can reach the resumed parent's Create

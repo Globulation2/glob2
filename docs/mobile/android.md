@@ -67,6 +67,10 @@ For the separate mainland China local-play configuration, pass `--china` to
 both the dependency and Android packaging commands. The iOS dependency and
 packaging commands accept the same flag.
 
+The staged Gradle project allows a 2 GiB Java heap for APK packaging, which
+retains the full artwork bundle while writing the archive. Native compilation
+keeps its separate `--jobs` setting; Gradle packaging uses two workers.
+
 The asset packager excludes local caches and metadata before writing its index.
 The completed APK is checked against that index and its content digest, so an
 AAPT-filtered or missing file fails the build instead of failing on first launch.

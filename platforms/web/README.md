@@ -282,6 +282,18 @@ the tests still require actual WebGL2 and audio activation. It does not bypass
 assertions or select the software game renderer. Other environments retain the
 default headless browser configuration.
 
+On Linux this headed configuration also prepares a private copy of the locked
+Playwright Firefox browser under `build/browser-testing/firefox-compositor/`.
+Its screenshot adapter reads the compositor instead of re-rendering the document:
+the bundled Juggler `drawSnapshot` capture omits worker WebGL canvases that are
+visible on the display. This preserves the pixel assertions and requested clip
+regions. Capture requires the foreground tab and a clip within the viewport;
+unsupported requests fail explicitly. The adapter verifies the exact Firefox version and screenshot-module
+hash, and rejects unfamiliar versions for review. It never changes the shared
+Playwright installation, the game runtime, or an existing browser-cache entry.
+See [Firefox compositor capture](https://firefox-source-docs.mozilla.org/gfx/DebuggingWebRenderScreenshots.html).
+This adapter is development tooling; it is not included in the game package.
+
 For the separate real-window visibility suite in a Linux container, set `CI=1`
 and run `xvfb-run -a npx playwright test --config visibility.config.js`. Its local
 test browser then uses `--no-sandbox` and SwiftShader; these settings affect only
@@ -369,6 +381,9 @@ synchronization. `?gl-errors=1` enables frame-boundary error collection for
 renderer validation; `renderContext.error` is `null` when collection is
 disabled and otherwise retains the most recent nonzero observed error. Use
 this flag for error assertions, and omit it from performance measurements.
+Graphics dimensions and optional GL errors are sampled after paint callbacks.
+Logical update turns publish their state without querying the GPU, so diagnostic
+readback cannot block timer-driven UI or loading work between paints.
 
 The browser steps simulation on the application host even in its threaded
 runtime; background AI/gradient workers do not enable the native separate
@@ -445,7 +460,10 @@ uses no Asyncify, shared-memory requirement or main-thread codec proxy.
 
 Run `recording.spec.js` in Chromium, Firefox and WebKit for both runtime transports,
 resize segmentation, exports, missing WebCodecs and unavailable storage. Independent
-media decoding requires an external validator; recording itself does not. See
+media decoding requires an external validator; recording itself does not. Tests
+that read recording files use `tests/recording-context.js`: WebKit gets a temporary
+persistent profile because its ephemeral contexts disable OPFS. The profile is
+removed after each test; other browsers retain their ordinary isolated contexts. See
 [gameplay footage](../../docs/features/gameplay-recording.md) for defaults and limits.
 
 ## Embedded AI Studio tests

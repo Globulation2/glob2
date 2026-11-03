@@ -60,11 +60,13 @@ struct HostState {
     double values[Count]{};
 };
 thread_local HostState hostState;
-void publishDiagnostics(bool hostTurn = false) {
+void publishDiagnostics(bool hostTurn = false, bool sampleGraphics = false) {
     auto &d = diagnostics;
     static const bool checkErrors = std::getenv("GLOB2_WEBGL_ERRORS") != nullptr;
     int dimensions[3]{};
-    EM_ASM({
+    // WebGL queries can synchronously drain the driver. Sample them after
+    // painting, so logical update timers never wait for graphics diagnostics.
+    if (sampleGraphics) EM_ASM({
         if (typeof GLctx === 'undefined' || !GLctx || GLctx.isContextLost()) return;
         HEAP32[$0 >> 2] = GLctx.drawingBufferWidth;
         HEAP32[($0 >> 2) + 1] = GLctx.drawingBufferHeight;
@@ -170,7 +172,7 @@ void scheduledDraw(void *opaque)
         hostState.values[HostState::Visibility] >= 0 || hostState.values[HostState::Width] > 0) return;
     const HostFrameScope scope;
     state.loop->draw();
-    publishDiagnostics();
+    publishDiagnostics(false, true);
     // Painting follows display callbacks independently of screen/job timers.
     state.drawScheduled = true;
     schedule(scheduledDraw, *reference, -1);

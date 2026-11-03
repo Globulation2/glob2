@@ -1,6 +1,7 @@
 const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test,expect}=require('@playwright/test');
+const {test:recordingTest}=require('./recording-context');
 const {gameURL,clickMainMenu,clickControl,clickByLabel,clickCustomGameStart,clickSettingsDone}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>{const value=await state(page);return value.screen+' '+value.screenClass;},{timeout:120000}).toContain(name);
@@ -186,7 +187,7 @@ for(const mode of ['serial','threaded']){
     try{const owner=await supersede(page,gates,false);await info.attach('serialized-surface-events',{body:JSON.stringify(await surface(page),null,2),contentType:'application/json'});expect(await owner.evaluate(()=>rendererQueueOwner.entered)).toBe(1);await verify();}
     finally{await gates.cleanup();}
   });
-  test(`${mode}: rejected preparation keeps one recording session and its timeline`,async({page},info)=>{
+  recordingTest(`${mode}: rejected preparation keeps one recording session and its timeline`,async({page},info)=>{
     test.setTimeout(480000);const verify=await start(page,mode);
     await clickMainMenu(page,'custom');
     await clickControl(page,'generator/colonies');await clickByLabel(page,/popup/,'2');
