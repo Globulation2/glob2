@@ -1062,7 +1062,8 @@ SceneRequest GameGUI::sceneRequest(bool includeTiming)
 	SceneRequest request;
 	request.localTeam = localTeamNo;
     request.includeTelemetry = inGameMenu == IGM_TELEMETRY;
-    request.includeHistory = ((!activeDialog() && statisticsVisible()) || inGameMenu == IGM_STATISTICS);
+    request.includeHistory = ((!activeDialog() && statisticsVisible() &&
+        (!statisticsPanel || statisticsPanel->topic() != InGameStatisticsPanel::Topic::Engine)) || inGameMenu == IGM_STATISTICS);
 	request.spectating = globalContainer->isViewingGame();
 	request.view = clientRequests.latest();
 	if (selectionMode == BUILDING_SELECTION)
