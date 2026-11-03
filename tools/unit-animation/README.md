@@ -902,7 +902,7 @@ X11 and optional NVIDIA telemetry).
 
 ## Harvesting afloat
 
-Workers harvesting on swimmable, non-walkable terrain use a separate prone
+Non-flying workers harvesting on swimmable, non-walkable terrain use a separate prone
 stroke. Land harvesting and building retain their original animation. The stroke
 opens wide in the body's plane, gathers inward, then recovers, with a continuous
 hand path, delayed elbows and a small torso response. Its 64 poses play over

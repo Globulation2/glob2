@@ -11,7 +11,7 @@
 inline int unitProneHarvestPhase(const PresentationFrame &scene, const SnapshotUnit &unit,
 								 int meshClass, float motion)
 {
-	if (meshClass != WORKER || unit.action != HARVEST)
+	if (meshClass != WORKER || unit.action != HARVEST || unit.performance[FLY])
 		return -1;
 	const auto &terrain = scene.map.terrainPropertiesAt(unit.posX, unit.posY);
 	if (terrain.walkable || !terrain.swimmable)

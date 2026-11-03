@@ -189,6 +189,9 @@ public:
 			auto changed = worker;
 			changed.action = BUILD;
 			CHECK(unitProneHarvestPhase(scene, changed, WORKER, view.render.unitMotion) == -1);
+			changed = worker;
+			changed.performance[FLY] = 1;
+			CHECK(unitProneHarvestPhase(scene, changed, WORKER, view.render.unitMotion) == -1);
 			view.render.skinPreview().prepare(*globalContainer->gfx, scene, 0, 0, 16, 16, 0, 0, 0, 0,
 											true, view.render.unitMotion);
 			capture(game, view, "harvest-" + std::to_string(frame));
