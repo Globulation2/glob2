@@ -95,6 +95,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	const UnitEffect::UnitLook effectLook = !hasEffect ? UnitEffect::UnitLook{1, 0, 0}
 		: effectKind == UnitEffect::Kind::Spawn ? UnitEffect::unitLook(effectAge)
 		: UnitEffect::UnitLook{1, 0, UnitEffect::serviceSilhouette(effectAge)};
+	const Uint8 sightAlpha = fogAlpha;
 	fogAlpha = Uint8(std::lround(fogAlpha * effectLook.opacity));
 	if (fogAlpha == 0)
 		return;
@@ -183,7 +184,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 				{
 					Sprite::flushBatches(globalContainer->gfx);
 					globalContainer->gfx->drawSurface(float(px-decX), float(py-decY), float(unitSprite->getW(imgid)),
-						float(unitSprite->getH(imgid)), shape, faded(unsigned(std::lround(UnitEffect::SpriteSilhouetteOpacity * glowAlpha))));
+						float(unitSprite->getH(imgid)), shape,
+						// Brighter than the faint emerging unit beneath it, as added light would be.
+						Uint8(std::lround(UnitEffect::SpriteSilhouetteOpacity * glowAlpha * sightAlpha / 255.f
+							* std::sqrt(effectLook.opacity))));
 				}
 		}
 	}

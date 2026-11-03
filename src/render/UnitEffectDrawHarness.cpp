@@ -164,7 +164,7 @@ TEST_CASE("service effects play over a unit leaving a hospital and a school [dis
 		const auto serve = [&](int age) {
 			game.animations->clear();
 			game.animations->onUnitServiced(unit->gid, Uint8(kind), building->gid, building->typeNum, Uint8(level));
-			game.animations->onUnitLeftBuilding(game.map, unit->gid, exitX, exitY, 0, 1, game.teams[0]);
+			game.animations->onUnitLeftBuilding(game.map, unit->gid, exitX, exitY, 0, 1, game.teams[0], 0);
 			for (int tick = 0; tick <= age; ++tick)
 				game.animations->step();
 		};

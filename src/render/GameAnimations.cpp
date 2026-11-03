@@ -91,7 +91,7 @@ void GameAnimations::onUnitServiced(Uint16 unitGid, Uint8 kind, Uint16 buildingG
 	pendingServices[unitGid] = {0, 0, 0, nullptr, unitGid, buildingGid, buildingType, 0, 0, kind, level};
 }
 
-void GameAnimations::onUnitLeftBuilding(const Map& map, Uint16 unitGid, int x, int y, int dx, int dy, Team *team)
+void GameAnimations::onUnitLeftBuilding(const Map& map, Uint16 unitGid, int x, int y, int dx, int dy, Team *team, int emergeTicks)
 {
 	if (!enabled)
 		return;
@@ -101,8 +101,9 @@ void GameAnimations::onUnitLeftBuilding(const Map& map, Uint16 unitGid, int x, i
 	UnitEffectAnimation effect = pending->second;
 	pendingServices.erase(pending);
 	effect.x = x; effect.y = y; effect.dx = Sint8(dx); effect.dy = Sint8(dy); effect.team = team;
-	// step() runs later in the same tick, so the effect is first captured at age 0.
-	effect.age = -1;
+	// step() runs later in the same tick, so without a wait the effect is first
+	// captured at age 0.
+	effect.age = -1 - std::clamp(emergeTicks, 0, UnitEffect::MaxEmergeTicks);
 	sectorUnitEffects[map.getSectorIndex(x, y)].push_back(effect);
 }
 

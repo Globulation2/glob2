@@ -42,6 +42,11 @@ constexpr float IconTicks = 22.5f, IconDelayTicks = 4;
 constexpr float IconSize = 10, IconReach = 22;
 //! A trained unit's level number rises like a combat level-up's.
 constexpr float LevelTicks = 20;
+//! A service effect waits for its unit to be half out of the building, at most this long.
+constexpr int MaxEmergeTicks = 16;
+//! Ticks a unit moving `speed` (action delta per tick) takes to be half out.
+inline int emergeTicks(int speed) { return speed > 0 ? std::min(MaxEmergeTicks, 128 / speed) : 0; }
+// Service records age from -emergeTicks, so a wait does not shorten their effect.
 static_assert(LifetimeTicks >= ServiceShimmerTicks && LifetimeTicks >= IconDelayTicks + IconTicks &&
               LifetimeTicks >= LevelTicks, "service records must outlive their effect");
 static_assert(LifetimeTicks >= TwinklesEnd && LifetimeTicks >= DustTicks &&
@@ -91,7 +96,8 @@ inline float swarmGlow(float age)
 	return SwarmGlow * PulseStrength * pulse;
 }
 
-//! Opacity of a serviced unit's silhouette at `age`.
+//! Opacity of a serviced unit's silhouette at `age`; it holds its peak while the
+//! unit is still coming out (negative ages).
 inline float serviceSilhouette(float age)
 {
 	return ServiceShimmerPeak * (1 - smoothstep(clamp01(age / ServiceShimmerTicks)));

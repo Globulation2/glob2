@@ -185,9 +185,13 @@ void Game::drawMapUnitEffects(int left, int top, int right, int bot, int sw, int
 							[&](const UnitEffect::Sparkle &mote) { art.draw(gfx, hue, cx, cy, mote, 1); });
 					}
 					else
+					{
+						// The icons burst once the unit is half out, half a tile short of its exit tile.
+						const float ux = cx - effect.dx * 16.f, uy = cy - effect.dy * 16.f;
 						UnitEffect::forEachServiceIcon(seed, age, [&](const UnitEffect::Icon &icon) {
-							art.draw(gfx, *globalContainer->mapIcons, glyph, kind, cx, cy, icon, 1, pixelsPerUnit);
+							art.draw(gfx, *globalContainer->mapIcons, glyph, kind, ux, uy, icon, 1, pixelsPerUnit);
 						});
+					}
 				});
 		}
 	// Over each unit: a spawn's twinkles, and a trained unit's new level rising like

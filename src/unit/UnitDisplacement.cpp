@@ -625,7 +625,7 @@ void Unit::expelFromBuilding(int x, int y, int dx, int dy)
 	delta=0;
 	movement=MOV_EXITING_BUILDING;
 	if (served)
-		owner->game->animations->onUnitLeftBuilding(*owner->map, gid, posX, posY, dx, dy, owner);
+		owner->game->animations->onUnitLeftBuilding(*owner->map, gid, posX, posY, dx, dy, owner, UnitEffect::emergeTicks(speed));
 	else
 		owner->game->animations->onUnitGone(gid);
 	handleActionExitingBuilding();

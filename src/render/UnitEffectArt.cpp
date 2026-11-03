@@ -59,8 +59,10 @@ struct Pixel
 };
 
 //! Paint an image from shade(u, v, pixel), with u and v from -1 to 1 across it.
+//! Transparent pixels keep the colour `clear` rather than black, so filtering
+//! the image down to a few pixels does not darken its soft edges.
 template <class Shade>
-std::unique_ptr<DrawableSurface> rasterize(Shade shade)
+std::unique_ptr<DrawableSurface> rasterize(Shade shade, const Rgba &clear)
 {
 	SDL_Surface *surface = SDL_CreateSurface(Size, Size, SDL_PIXELFORMAT_ARGB8888);
 	if (!surface)
@@ -79,8 +81,11 @@ std::unique_ptr<DrawableSurface> rasterize(Shade shade)
 					sum.r += sample.r; sum.g += sample.g; sum.b += sample.b; sum.a += sample.a;
 				}
 			const float n = Samples * Samples, a = sum.a / n;
-			const auto channel = [&](float premultiplied) { return Uint8(std::lround(255 * std::clamp(a > 0 ? premultiplied / n / a : 0.f, 0.f, 1.f))); };
-			row[x] = SDL_MapSurfaceRGBA(surface, channel(sum.r), channel(sum.g), channel(sum.b), Uint8(std::lround(255 * a)));
+			const auto channel = [&](float premultiplied, float fallback) {
+				return Uint8(std::lround(255 * std::clamp(a > 1.f / 255 ? premultiplied / n / a : fallback, 0.f, 1.f)));
+			};
+			row[x] = SDL_MapSurfaceRGBA(surface, channel(sum.r, clear.r), channel(sum.g, clear.g), channel(sum.b, clear.b),
+				Uint8(std::lround(255 * a)));
 		}
 	}
 	auto result = std::make_unique<DrawableSurface>(surface);
@@ -142,7 +147,8 @@ DrawableSurface &UnitEffectArt::star(float hue)
 {
 	auto &image = stars[hueKey(hue)];
 	if (!image)
-		image = rasterize([hue](float u, float v, Pixel &pixel) { shadeStar(u, v, pixel, hue, 1, 0.75f, 0.72f); });
+		image = rasterize([hue](float u, float v, Pixel &pixel) { shadeStar(u, v, pixel, hue, 1, 0.75f, 0.72f); },
+			hsl(hue, 0.95f, 0.5f));
 	return *image;
 }
 
@@ -152,7 +158,7 @@ DrawableSurface &UnitEffectArt::glow(float hue, float lightness)
 	if (!image)
 		image = rasterize([hue, lightness](float u, float v, Pixel &pixel) {
 			pixel.over(radial(std::hypot(u, v), hsl(hue, 1, lightness), hsl(hue, 0.95f, 0.6f), hsl(hue, 0.95f, 0.55f, 0)));
-		});
+		}, hsl(hue, 0.95f, 0.55f));
 	return *image;
 }
 
@@ -163,7 +169,7 @@ DrawableSurface &UnitEffectArt::core()
 			const float d = std::hypot(u, v) / (6.f / 32);
 			if (d < 1)
 				pixel.over({1, 1, 1, 1 - d});
-		});
+		}, {1, 1, 1, 0});
 	return *core_;
 }
 
@@ -172,7 +178,7 @@ DrawableSurface &UnitEffectArt::glint()
 	// White where the star is coloured: drawn without additive blending, it
 	// stays light enough to read as a flash.
 	if (!glint_)
-		glint_ = rasterize([](float u, float v, Pixel &pixel) { shadeStar(u, v, pixel, 0, 0, 0.97f, 1); });
+		glint_ = rasterize([](float u, float v, Pixel &pixel) { shadeStar(u, v, pixel, 0, 0, 0.97f, 1); }, {1, 1, 1, 0});
 	return *glint_;
 }
 

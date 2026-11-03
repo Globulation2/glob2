@@ -95,8 +95,9 @@ public:
 	//! A building healed, fed or trained a unit inside it (UnitEffect::Kind). The
 	//! effect waits for the unit to come out. No-op when disabled.
 	void onUnitServiced(Uint16 unitGid, Uint8 kind, Uint16 buildingGid, Sint32 buildingType, Uint8 level);
-	//! A unit came out of a building at (x, y): plays its pending service effect.
-	void onUnitLeftBuilding(const Map& map, Uint16 unitGid, int x, int y, int dx, int dy, Team *team);
+	//! A unit came out of a building at (x, y): plays its pending service effect
+	//! once it is half out, `emergeTicks` from now, while buildings still cover it.
+	void onUnitLeftBuilding(const Map& map, Uint16 unitGid, int x, int y, int dx, int dy, Team *team, int emergeTicks);
 	//! A unit died: forget any service effect it was waiting to play.
 	void onUnitGone(Uint16 unitGid);
 
