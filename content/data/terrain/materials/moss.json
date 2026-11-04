@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-moss",
   "profile": "soil",
   "class": "solid",
-  "preview": [41, 85, 51],
+  "preview": [21, 83, 59],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [41, 85, 51],
+  "minimap": [21, 83, 59],
   "seam": {
     "height": 2,
     "cast_q8": 56,

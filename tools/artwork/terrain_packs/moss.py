@@ -16,8 +16,8 @@ from terrain_core import (
 
 @recipe(name="moss", group="fertile", label="Moss", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
-        palette={"dark": (26, 60, 38), "mid": (38, 84, 50), "light": (62, 110, 68)},
-        style=Style(luma=68, std=7, grain_max=6), periodic=True, grid=8, blocks=4)
+        palette={"dark": (10, 54, 42), "mid": (22, 86, 62), "light": (52, 120, 88)},
+        style=Style(luma=62, std=8, grain_max=6), periodic=True, grid=8, blocks=4)
 def render_moss(ctx):
     """Shared edge pillows with independent moss cushions farther inside."""
     p = RECIPES["moss"].palette
