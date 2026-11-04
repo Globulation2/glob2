@@ -1,0 +1,21 @@
+{
+  "pid": 1728282,
+  "revision": "60dc7da06e801709a7cefcddec942adbcc08c4db",
+  "worktree": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/recording-download-repair",
+  "phase": "finished; inspect results and stack-owned cleanup",
+  "command": [
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/recording-download-repair/test/deployment/platform_stack_smoke.py",
+    "--jobs",
+    "2",
+    "--match-e2e",
+    "--tag",
+    "ci-queue-revisions-60dc7d",
+    "--log-dir",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/queue-current-stack/evidence"
+  ],
+  "note": "DisposableuniqueComposeproject/ephemeralports/ownvolumes;stockrepositoryglob2-engineandglob2-ai-musicAppArmorprofilesloadedandconfinedprobespass. Do notdisableconfinement. Fresh294sourceplusqueue-revisionrepair60dc7d;2nativebuildjobs,compressedouterlogfromcapture. Native419fullsuiteactiveinotherworktree;itsbinaries/SDLunchanged;containerhasindependentoutputs;no duplicate stack run.",
+  "child_pid": 1728284,
+  "exit_code": 0,
+  "seconds": 2270.8
+}
