@@ -599,14 +599,14 @@ GAGCore::Sprite *Compositor::overlaySprite(const SceneMap &map, int x, int y) co
 	const auto material = overlayMaterial(map, x & map.getMaskW(), y & map.getMaskH(), found);
 	return found ? overlaySprites[material] : nullptr;
 }
-int Compositor::overlayFrame(const SceneMap &map, int x, int y, bool *animated) const
+int Compositor::overlayFrame(const SceneMap &map, int x, int y, int time, bool *animated) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
 	bool found;
 	const auto material = overlayMaterial(map, x, y, found);
 	if (animated) *animated = false;
-	return found ? definitions.overlayFrame(material, x, y, map.tick, map.terrainSeed(), animated) : -1;
+	return found ? definitions.overlayFrame(material, x, y, std::uint32_t(time), map.terrainSeed(), animated) : -1;
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {

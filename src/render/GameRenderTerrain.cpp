@@ -68,6 +68,9 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
     auto *overlaySprite = compositor.overlaySprite();
     if (!overlaySprite && std::any_of(compositor.catalog().materials.begin(), compositor.catalog().materials.end(),
         [](const auto &m) { return !m.overlay.sprite.empty(); })) return false;
+    // Overlays follow the presentation clock that animates lava and water, so
+    // they twinkle in the editor, where the simulation tick never moves.
+    const int animationTime = render.animationTime;
     auto &metrics = render.resourceRowMetrics;
     GAGCore::MapGeometryCache *cache;
     try
@@ -150,7 +153,7 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                     store(row.decor.frames[x], decor, decorChanged);
                     row.decor.visibleFrames += decor >= 0;
                     bool overlayAnimated = false;
-                    const int overlay = overlaySprite ? compositor.overlayFrame(map, x, mapY, &overlayAnimated) : -1;
+                    const int overlay = overlaySprite ? compositor.overlayFrame(map, x, mapY, animationTime, &overlayAnimated) : -1;
                     store(row.overlay.frames[x], overlay, overlayChanged);
                     if (overlayAnimated) row.overlay.animated.push_back(x);
                     row.overlay.visibleFrames += overlay >= 0;
@@ -162,7 +165,7 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                 row.refreshGeometry = false;
                 row.built = true;
             }
-            else if (row.tick != map.tick)
+            else if (row.tick != map.tick || row.animationTime != animationTime)
             {
                 const auto update = [&](ResourceRowCache::Layer &layer, auto selectFrame, bool resource) {
                     bool changed = false;
@@ -187,10 +190,13 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                     }
                     if (changed) layer.revision = ++nextRevision;
                 };
-                update(row.resources, [&](int x) { return resourceFrame(x, map.getResource(x, mapY)); }, true);
-                update(row.overlay, [&](int x) { return compositor.overlayFrame(map, x, mapY); }, false);
+                if (row.tick != map.tick)
+                    update(row.resources, [&](int x) { return resourceFrame(x, map.getResource(x, mapY)); }, true);
+                if (row.animationTime != animationTime)
+                    update(row.overlay, [&](int x) { return compositor.overlayFrame(map, x, mapY, animationTime); }, false);
             }
             row.tick = map.tick;
+            row.animationTime = animationTime;
             if (row.customSprites || row.invalidFrames) return false;
         }
     }
@@ -311,14 +317,16 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 												 x + viewportX + 1, y + viewportY + 1,
 												 visibleTeams);
 	};
-	// Overlays lie flat on the ground, under every row's decor.
+	// Overlays lie flat on the ground, under every row's decor, and animate on
+	// the presentation clock like lava and water (static without a render state).
+	const int animationTime = render ? render->animationTime : 0;
 	for (int y = top; y <= bot; ++y)
 		for (int x = left; x <= right; ++x)
 		{
 			auto *overlaySprite = compositor.overlaySprite(sceneMap, x + viewportX, y + viewportY);
 			if (!overlaySprite || !visible(x, y))
 				continue;
-			const int frame = compositor.overlayFrame(sceneMap, x + viewportX, y + viewportY);
+			const int frame = compositor.overlayFrame(sceneMap, x + viewportX, y + viewportY, animationTime);
 			if (frame < 0)
 				continue;
 			if (pendingSprite != overlaySprite)

@@ -311,8 +311,10 @@ with an `overlay` block:
   presentation hash of the cell, the material and the map's terrain seed.
 - A chosen cell keeps one of the `cycles` and starts it at its own hashed step,
   so neighbouring glints never flash together. It advances one step every
-  `ticks` scene ticks (30 per second), so overlays pause with the game. A step of
-  `-1` draws nothing.
+  `ticks` steps of the presentation clock that animates lava and water
+  (`MapRenderState::animationTime`, one per drawn frame), so overlays pause with
+  the game and still twinkle in the map editor, where the simulation tick never
+  moves. A step of `-1` draws nothing.
 - A cell draws an overlay only when all four corners resolve to materials with
   one, so glints stay on their ground; a mixed cell picks one corner's material.
 - Overlays lie flat: the renderer draws every visible row's overlays before any

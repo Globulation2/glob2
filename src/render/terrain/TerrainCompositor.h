@@ -96,11 +96,13 @@ class Compositor
 	// choose one material, weighted by corner count, using presentation hashing.
 	int decorFrame(const SceneMap &, int x, int y) const;
 	// Flat animated overlays (fertile glints), drawn under decor. A cell draws
-	// one only when all four corners carry an overlay; it follows the scene tick.
+	// one only when all four corners carry an overlay. `time` is the presentation
+	// clock that animates lava and water (MapRenderState::animationTime), not the
+	// simulation tick, so glints twinkle in the editor and pause with the game.
 	GAGCore::Sprite *overlaySprite() const { return sharedOverlaySprite; }
 	GAGCore::Sprite *overlaySprite(MaterialId id) const { return overlaySprites.at(id); }
 	GAGCore::Sprite *overlaySprite(const SceneMap &map, int x, int y) const;
-	int overlayFrame(const SceneMap &, int x, int y, bool *animated = nullptr) const;
+	int overlayFrame(const SceneMap &, int x, int y, int time, bool *animated = nullptr) const;
     struct PreparedMaterialView
     {
         unsigned variant = 0;

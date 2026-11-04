@@ -17,6 +17,7 @@
 #include "OverviewTerrainCache.h"
 #include <Toolkit.h>
 #include "MapRenderState.h"
+#include "ResourceRowCache.h"
 #include "MapThumbnail.h"
 #include "MapImage.h"
 #include "GenerationRequest.h"
@@ -25,6 +26,7 @@
 #include "StreamBackend.h"
 #include <SDL3_image/SDL_image.h>
 #include <RenderBackend.h>
+#include <RenderBatch.h>
 #include <RenderDevice.h>
 #include <RendererSelection.h>
 #ifdef HAVE_OPENGL
@@ -35,6 +37,7 @@
 #endif
 #endif
 #include <algorithm>
+#include <set>
 #include <cstdio>
 #include <filesystem>
 #include <cstring>
@@ -1968,6 +1971,121 @@ TEST_SUITE("TerrainValidation")
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "connected-foliage.png").string().c_str()));
+	}
+
+	GLOB2_TEST_CASE("fertile glints follow the presentation clock while the simulation tick stands still",
+					"[display][isolated][writes-preferences]")
+	{
+		// The editor never steps the simulation, so a glint keyed to the scene
+		// tick would freeze there. Overlays take the clock that animates lava
+		// and water instead, through both resource drawing paths.
+		glob2test::HeadlessGlobals globals(
+			{.display = true,
+			 .width = 512,
+			 .height = 512,
+			 .seed = 7331,
+			 .beforeLoad = [](GlobalContainer &container)
+			 { container.settings.rendererBackend = RendererBackend::Software; }});
+		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4, .discovered = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+				map.paintCell(x, y, LOAM);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		REQUIRE(scene.tick == 0);
+		auto &compositor = globals->terrainCompositor();
+		const auto &catalog = compositor.catalog();
+		const auto id = catalog.find("loam");
+		const auto &overlay = catalog.materials[id].overlay;
+		REQUIRE(!overlay.cycles.empty());
+		const int period = overlay.ticks * int(overlay.cycles.front().size());
+		// With the tick fixed, the frame still moves with the presentation time
+		// and matches the catalog's choice for that time.
+		unsigned moving = 0;
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+			{
+				std::set<int> frames;
+				for (int time = 0; time < period; time += overlay.ticks)
+				{
+					const int frame = compositor.overlayFrame(scene, x, y, time);
+					CHECK(frame == catalog.overlayFrame(id, x, y, std::uint32_t(time), scene.terrainSeed()));
+					frames.insert(frame);
+				}
+				moving += frames.size() > 1;
+			}
+		CHECK(moving > 0);
+		// The cached rows refresh their glints when only the presentation clock
+		// advances, and keep them when it stands still. Only the legacy GL
+		// context owns the geometry batch the row cache draws through.
+		auto &gfx = *globals->gfx;
+		const auto availability = gfx.rendererAvailability();
+		if (!std::any_of(availability.begin(), availability.end(), [](const auto &choice)
+						 { return choice.available && choice.backend == RendererBackend::LegacyGL; }))
+		{
+			MESSAGE("Row cache coverage omitted: legacy GL unavailable");
+			return;
+		}
+		REQUIRE(gfx.requestBackendSwitch(RendererBackend::LegacyGL));
+		gfx.nextFrame();
+		INFO(gfx.backendSwitchStatus().reason);
+		REQUIRE(gfx.backendSwitchStatus().phase == RendererSwitchPhase::Complete);
+		REQUIRE(gfx.backendSwitchStatus().active == RendererBackend::LegacyGL);
+		MapRenderState render;
+		const auto draw = [&]
+		{
+			// Rows are cached only inside a frame's draw batch, as Game::drawMap opens one.
+			GAGCore::FrameDrawBatch frameBatch(&gfx);
+			REQUIRE(gfx.getRenderBatch());
+			gfx.setClipRect();
+			gfx.beginMapTransform(1, 0, 0, 0, 0, 512, 512);
+			Game::drawMapTerrain(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render.animationTime);
+			Game::drawMapResources(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, &render);
+			GAGCore::Sprite::flushBatches(&gfx);
+			gfx.endMapTransform();
+			if (gfx.renderer)
+				gfx.renderer->flush();
+			gfx.nextFrame();
+		};
+		// The cached rows also need the resource sprite and the shared decor
+		// and overlay sprites.
+		REQUIRE(globalContainer->resources);
+		REQUIRE(compositor.decorSprite());
+		REQUIRE(compositor.overlaySprite());
+		draw();
+		REQUIRE(render.resourceRows);
+		const auto revisions = [&]
+		{
+			std::vector<std::uint64_t> out;
+			for (const auto &row : render.resourceRows->rows)
+				out.push_back(row.overlay.revision);
+			return out;
+		};
+		const auto frames = [&]
+		{
+			std::vector<int> out;
+			for (const auto &row : render.resourceRows->rows)
+				out.insert(out.end(), row.overlay.frames.begin(), row.overlay.frames.end());
+			return out;
+		};
+		const auto before = revisions();
+		const auto framesBefore = frames();
+		bool animated = false;
+		for (const auto &row : render.resourceRows->rows)
+			animated |= !row.overlay.animated.empty();
+		REQUIRE(animated);
+		draw();
+		CHECK(revisions() == before);
+		CHECK(frames() == framesBefore);
+		render.animationTime += overlay.ticks;
+		draw();
+		CHECK(revisions() != before);
+		CHECK(frames() != framesBefore);
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+				CHECK(render.resourceRows->rows[y].overlay.frames[x] ==
+					  compositor.overlayFrame(scene, x, y, render.animationTime));
 	}
 
 	TEST_CASE("raised cliffs corners strips a hole and their walls [display][artifacts]")

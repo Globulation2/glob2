@@ -449,7 +449,7 @@ int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t se
 	// A salt distinct from the ground variant's, so the two choices are independent.
 	return frames[hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % frames.size()];
 }
-int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t tick, std::uint32_t seed, bool *animated) const
+int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t time, std::uint32_t seed, bool *animated) const
 {
 	if (animated) *animated = false;
 	const auto &o = materials[id].overlay;
@@ -461,7 +461,7 @@ int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t tick, std::
 		return -1;
 	const auto &cycle = o.cycles[hash(x, y, salt ^ 0x6a1171u) % o.cycles.size()];
 	if (animated) *animated = cycle.size() > 1;
-	const std::uint32_t step = tick / std::uint32_t(o.ticks) + hash(x, y, salt ^ 0x6a1172u);
+	const std::uint32_t step = time / std::uint32_t(o.ticks) + hash(x, y, salt ^ 0x6a1172u);
 	return cycle[step % cycle.size()];
 }
 namespace

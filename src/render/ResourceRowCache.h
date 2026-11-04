@@ -34,7 +34,8 @@ public:
     {
         Layer resources, decor, overlay;
         std::uint64_t resourceRevision = 0;
-        std::uint32_t tick = 0;
+        std::uint32_t tick = 0; // simulation tick the resource frames were chosen at
+        int animationTime = 0;  // presentation time the overlay frames were chosen at
         unsigned invalidFrames = 0;
         bool built = false, customSprites = false, refreshGeometry = true;
     };
