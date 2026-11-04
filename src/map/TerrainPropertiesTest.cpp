@@ -1046,7 +1046,7 @@ TEST_SUITE("TerrainRuntime")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				painted.push_back(TerrainType(i));
-		REQUIRE(painted.size() == 32);
+		REQUIRE(painted.size() == TERRAIN_COUNT - BOULDERS);
 		CHECK(std::find(painted.begin(), painted.end(), TUNDRA) != painted.end());
 		for (std::size_t n = 0; n < painted.size(); ++n)
 		{
