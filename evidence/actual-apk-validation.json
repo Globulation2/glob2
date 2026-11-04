@@ -1,0 +1,19 @@
+{
+  "revision": "9a62c5db6038355c26497bae1a06e2e16ac12465",
+  "native_compile_command": [
+    "g++",
+    "-std=c++20",
+    "-I/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/build/sdl3-ci/prefix/include",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-validation/actual-index-probe.cpp",
+    "-L/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/build/sdl3-ci/prefix/lib",
+    "-Wl,-rpath,/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/build/sdl3-ci/prefix/lib",
+    "-lSDL3",
+    "-o",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-validation/actual-index-probe"
+  ],
+  "native_index_bytes": 1102050,
+  "native_index_matches_every_byte": true,
+  "apk_verified": true,
+  "apk_verify_seconds": 1.7,
+  "source_apk": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android4c3-release-evidence/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
+}

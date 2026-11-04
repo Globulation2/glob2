@@ -1,0 +1,7 @@
+{
+  "index_bytes": 1102050,
+  "paths": 31076,
+  "sha256": "683f751490964b2a7853889a4d2e529cbfd10dd3303803320b6425ada1777cac",
+  "runtime_limit_bytes": 1048576,
+  "apk": "artifacts/ci-recovery/android4c3-release-evidence/android/device/x86_64/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
+}
