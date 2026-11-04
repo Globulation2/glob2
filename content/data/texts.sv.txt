@@ -5728,6 +5728,8 @@ Vindpinad snö
 Vittrad sandsten
 [windy_sand_dune]
 Vindräfflade dyner
+[hardpan]
+Hårdskorpa
 [terrain group water]
 Vatten
 [terrain group sand]

@@ -5728,6 +5728,8 @@ Tuyết gió thổi
 Sa thạch phong hóa
 [windy_sand_dune]
 Đụn cát gợn gió
+[hardpan]
+Bãi đất cứng
 [terrain group water]
 Nước
 [terrain group sand]

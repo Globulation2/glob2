@@ -5704,6 +5704,8 @@ Wind-swept snow
 Weathered sandstone
 [windy_sand_dune]
 Windy sand dune
+[hardpan]
+Hardpan
 [terrain group water]
 Water
 [terrain group sand]

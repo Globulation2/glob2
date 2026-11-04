@@ -5704,6 +5704,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Изветрял пясъчник
 [windy_sand_dune]
 Набраздени от вятъра дюни
+[hardpan]
+Твърда кора
 [terrain group water]
 Вода
 [terrain group sand]

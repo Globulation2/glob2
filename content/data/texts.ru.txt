@@ -5728,6 +5728,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Выветренный песчаник
 [windy_sand_dune]
 Барханы с ветровой рябью
+[hardpan]
+Твёрдая корка
 [terrain group water]
 Вода
 [terrain group sand]

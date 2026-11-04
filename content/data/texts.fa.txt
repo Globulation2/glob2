@@ -5728,6 +5728,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 ماسه‌سنگ فرسوده
 [windy_sand_dune]
 تپه‌های شنی بادخورده
+[hardpan]
+سخت‌لایه
 [terrain group water]
 آب
 [terrain group sand]

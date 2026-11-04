@@ -5704,6 +5704,8 @@ AI ద్వారా రూపొందించబడలేదు
 శిథిలమైన ఇసుకరాయి
 [windy_sand_dune]
 గాలి అలల ఇసుక దిబ్బలు
+[hardpan]
+గట్టి నేల పొర
 [terrain group water]
 నీరు
 [terrain group sand]

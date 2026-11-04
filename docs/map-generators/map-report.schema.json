@@ -541,6 +541,9 @@
         "weathered_sandstone": {
           "$ref": "#/$defs/coverage"
         },
+        "hardpan": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

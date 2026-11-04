@@ -5704,6 +5704,8 @@ Snøfokk
 Forvitret sandstein
 [windy_sand_dune]
 Vindrifla dyner
+[hardpan]
+Hardskorpe
 [terrain group water]
 Vann
 [terrain group sand]

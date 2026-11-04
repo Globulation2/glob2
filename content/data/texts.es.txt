@@ -5728,6 +5728,8 @@ Nieve barrida por el viento
 Arenisca erosionada
 [windy_sand_dune]
 Dunas de viento
+[hardpan]
+Costra endurecida
 [terrain group water]
 Agua
 [terrain group sand]

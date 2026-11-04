@@ -5728,6 +5728,8 @@ Tuulen pieksämä lumi
 Rapautunut hiekkakivi
 [windy_sand_dune]
 Tuulen uurtamat dyynit
+[hardpan]
+Kovettuma
 [terrain group water]
 Vesi
 [terrain group sand]

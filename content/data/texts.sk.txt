@@ -5728,6 +5728,8 @@ Naviaty sneh
 Zvetraný pieskovec
 [windy_sand_dune]
 Vetrom zvlnené duny
+[hardpan]
+Tvrdá krusta
 [terrain group water]
 Voda
 [terrain group sand]

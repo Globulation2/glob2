@@ -5704,6 +5704,8 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 ক্ষয়প্রাপ্ত বেলেপাথর
 [windy_sand_dune]
 বাতাসে ঢেউ খেলানো বালিয়াড়ি
+[hardpan]
+শক্ত মাটির স্তর
 [terrain group water]
 জল
 [terrain group sand]

@@ -6846,6 +6846,8 @@ Salji ditiup angin
 Batu pasir terluluhawa
 [windy_sand_dune]
 Gumuk pasir berangin
+[hardpan]
+Tanah keras
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

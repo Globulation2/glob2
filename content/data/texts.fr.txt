@@ -5728,6 +5728,8 @@ Neige balayée par le vent
 Grès érodé
 [windy_sand_dune]
 Dunes ridées par le vent
+[hardpan]
+Croûte durcie
 [terrain group water]
 Eau
 [terrain group sand]

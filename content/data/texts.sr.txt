@@ -5728,6 +5728,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Распаднути пешчар
 [windy_sand_dune]
 Ветровите дине
+[hardpan]
+Тврда кора
 [terrain group water]
 Вода
 [terrain group sand]

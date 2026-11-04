@@ -5704,6 +5704,8 @@ AI ทำงาน​อย่างไร
 หินทราย​ผุกร่อน
 [windy_sand_dune]
 เนินทราย​ลอน​ลม
+[hardpan]
+ดินดาน
 [terrain group water]
 น้ำ
 [terrain group sand]

@@ -5728,6 +5728,8 @@ Navátý sníh
 Zvětralý pískovec
 [windy_sand_dune]
 Větrem zvlněné duny
+[hardpan]
+Tvrdá krusta
 [terrain group water]
 Voda
 [terrain group sand]

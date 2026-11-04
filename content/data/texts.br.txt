@@ -5728,6 +5728,8 @@ Neve varrida pelo vento
 Arenito desgastado
 [windy_sand_dune]
 Dunas de vento
+[hardpan]
+Crosta endurecida
 [terrain group water]
 Água
 [terrain group sand]

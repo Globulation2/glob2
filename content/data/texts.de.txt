@@ -5728,6 +5728,8 @@ Verwehter Schnee
 Verwitterter Sandstein
 [windy_sand_dune]
 Windgeriffelte Dünen
+[hardpan]
+Hartkruste
 [terrain group water]
 Wasser
 [terrain group sand]

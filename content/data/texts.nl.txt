@@ -5728,6 +5728,8 @@ Verwaaide sneeuw
 Verweerde zandsteen
 [windy_sand_dune]
 Windribbels in duinzand
+[hardpan]
+Harde korst
 [terrain group water]
 Water
 [terrain group sand]

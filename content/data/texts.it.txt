@@ -5728,6 +5728,8 @@ Neve spazzata dal vento
 Arenaria erosa
 [windy_sand_dune]
 Dune increspate dal vento
+[hardpan]
+Crosta indurita
 [terrain group water]
 Acqua
 [terrain group sand]

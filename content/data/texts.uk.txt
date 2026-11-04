@@ -5728,6 +5728,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Вивітрений пісковик
 [windy_sand_dune]
 Дюни з вітровими брижами
+[hardpan]
+Тверда кірка
 [terrain group water]
 Вода
 [terrain group sand]

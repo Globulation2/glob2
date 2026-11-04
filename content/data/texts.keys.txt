@@ -2851,6 +2851,7 @@
 [wind_swept_snow]
 [weathered_sandstone]
 [windy_sand_dune]
+[hardpan]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]

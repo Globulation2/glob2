@@ -5728,6 +5728,8 @@ Snefygning
 Forvitret sandsten
 [windy_sand_dune]
 Vindriflede klitter
+[hardpan]
+Hårdskorpe
 [terrain group water]
 Vand
 [terrain group sand]

@@ -5728,6 +5728,8 @@ Ventblovita neĝo
 Eroziita grejso
 [windy_sand_dune]
 Ventaj sabloondoj
+[hardpan]
+Malmola krusto
 [terrain group water]
 Akvo
 [terrain group sand]

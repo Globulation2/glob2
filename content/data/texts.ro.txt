@@ -5728,6 +5728,8 @@ Zăpadă spulberată de vânt
 Gresie erodată
 [windy_sand_dune]
 Dune vălurite de vânt
+[hardpan]
+Crustă întărită
 [terrain group water]
 Apă
 [terrain group sand]

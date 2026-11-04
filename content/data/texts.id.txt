@@ -5728,6 +5728,8 @@ Salju tersapu angin
 Batu pasir lapuk
 [windy_sand_dune]
 Bukit pasir berangin
+[hardpan]
+Tanah keras
 [terrain group water]
 Air
 [terrain group sand]

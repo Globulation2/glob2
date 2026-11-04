@@ -5728,6 +5728,8 @@ Szélfútta hó
 Mállott homokkő
 [windy_sand_dune]
 Szélfodrozta dűnék
+[hardpan]
+Kemény kéreg
 [terrain group water]
 Víz
 [terrain group sand]
