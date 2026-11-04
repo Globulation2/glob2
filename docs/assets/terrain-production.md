@@ -16,9 +16,10 @@ helpers and the recipe registry. A material's provenance records the pipeline,
 the shared library, its own module and the family helpers it imports, so tuning
 one material changes only that material's record. To add a material, add a
 module there; the package registers every module it contains. Static materials have four
-interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
-layout and water and deep water one 4×4 layout, keeping their animated banks
-at 256 frames each. Frames are stored as
+interchangeable 8×8 layouts (256 variants), and so do lava and ember field, so
+their glow no longer repeats on the 8×8 grid (1,024 frames each over four
+phases); water and deep water have one 4×4 layout, keeping their animated
+banks at 256 frames each. Frames are stored as
 `content/data/gfx/terrain-<name>N.png` at 32×32 RGBA and
 `content/data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
 in `content-src/gfx/<name>/provenance.json`. The shared tile code in
@@ -68,7 +69,7 @@ wrapped boundary, before it is sliced. One affine luma transform, computed from
 the pooled native statistics, gives every frame the same tone.
 
 All built-in recipes declare `periodic=True` and a `grid`; static recipes use
-`grid=8, blocks=4`, lava and ember field `grid=8`, and the waters `grid=4`:
+`grid=8, blocks=4`, as do lava and ember field, and the waters `grid=4`:
 cell position selects the corresponding frame within one seeded layout, and
 runtime and compiled packs skip border preparation. This includes object-based
 grounds such as heath as well as the legacy bindings.
@@ -279,7 +280,7 @@ with an `overlay` block:
 
 ```json
 "overlay": {"sprite": "data/gfx/terrain-glint", "cycles": [[0, 1, 2, 3, -1, -1, -1, -1]],
-            "ticks": 3, "density_q8": 112}
+            "ticks": 5, "density_q8": 64}
 ```
 
 - Only `density_q8`/256 of the cells draw an overlay at all, chosen by a
@@ -320,10 +321,13 @@ individual tile: its heather cushions are whole cells, and Voronoi-based marks
 (cracks, shale plates, lumps, mudflat plates, scree fragments) keep their
 boundary cells in every layout.
 
-Lava and ember field are animated: one 8×8 layout with four phases, frame
-`variant + 64 * phase` (frames 0–255), catalogued with `animation_frames 4`,
-`animation_stride 64` and `animation_ticks 8`. The crust layout is shared by the
-phases; only the glow ramp moves.
+Lava and ember field are animated: four 8×8 layouts with four phases, frame
+`cell + 64 * layout + 256 * phase` (frames 0–1023), catalogued with
+`animation_frames 4`, `animation_stride 256`, `animation_ticks 8` and
+`animation_blend_steps 4` (the recipe's `blend_steps`): the crossfade moves in
+four steps per phase, so animated pages recompose four times per phase rather
+than every tick. Each layout's crust is shared by its phases; only the glow
+ramp moves.
 
 ### Positional variants
 

@@ -763,7 +763,12 @@ TEST_SUITE("TerrainMaterials")
 		while (j["materials"][lava]["key"] != "lava") ++lava;
 		while (j["materials"][grass]["key"] != "grass") ++grass;
 		const auto parsed = TerrainVisual::Catalog::parse(j);
-		CHECK(parsed.materials[parsed.find("lava")].animationBlendSteps == 0);
+		// Shipped lava crossfades in four steps per phase; without the field it blends every tick.
+		CHECK(parsed.materials[parsed.find("lava")].animationBlendSteps == 4);
+		auto absent = j;
+		absent["materials"][lava].erase("animation_blend_steps");
+		const auto every = TerrainVisual::Catalog::parse(absent);
+		CHECK(every.materials[every.find("lava")].animationBlendSteps == 0);
 		const int ticks = j["materials"][lava]["animation_ticks"];
 		for (int steps : {1, ticks / 2, ticks})
 		{
@@ -1838,7 +1843,8 @@ TEST_SUITE("TerrainMaterials")
 	{
 		glob2test::HeadlessGlobals globals;
 		const auto c = catalog();
-		// Animated materials stay on one layout: every layout multiplies by the phases.
+		// The waters stay on one layout: every layout multiplies their sixteen phases.
+		// Lava and ember field have four layouts like static ground.
 		std::set<std::string> single;
 		for (const auto &material : c.materials)
 		{
@@ -1873,7 +1879,7 @@ TEST_SUITE("TerrainMaterials")
 			CHECK(seen.size() == 4);
 			CHECK(changed > 600);
 		}
-		CHECK(single == std::set<std::string>{"water", "deep_water", "lava", "ember_field"});
+		CHECK(single == std::set<std::string>{"water", "deep_water"});
 		for (unsigned seed : {0u, 1u, 42u})
 			for (int y = -8; y < 64; ++y)
 				for (int x = -8; x < 64; ++x)
