@@ -161,8 +161,8 @@ TEST_SUITE("BrushCatalog")
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
 		// Sandstone tiles close the path brushes, hardpan (after wind-swept snow) the
-		// rough-ground brushes, the frozen lake the ice brushes and weathered sandstone
-		// the barren brushes.
+		// rough-ground brushes, the frozen lake the ice brushes and tundra (after
+		// weathered sandstone) the barren brushes.
 		const auto *paths = findBrushGroup(catalog, BrushSection::Terrain, "paths");
 		const auto *rough = findBrushGroup(catalog, BrushSection::Terrain, "rough");
 		const auto *ice = findBrushGroup(catalog, BrushSection::Terrain, "ice");
@@ -178,7 +178,7 @@ TEST_SUITE("BrushCatalog")
 		CHECK(paths->entries.back().id == "terrain/sandstone");
 		CHECK(rough->entries.back().id == "terrain/hardpan");
 		CHECK(ice->entries.back().id == "terrain/frozen_lake");
-		CHECK(barren->entries.back().id == "terrain/weathered_sandstone");
+		CHECK(barren->entries.back().id == "terrain/tundra");
 
 		// Resources: every registry entry, foundation ones included, with placement
 		// validity taken from the map's habitat rules.

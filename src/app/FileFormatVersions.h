@@ -374,3 +374,7 @@ static constexpr int FILE_FORMAT_VERSION_WINDY_SAND_DUNE = 198;
 //! Built-in hardpan: TERRAIN_COUNT grew from 39 to 40, so earlier files carry custom
 //! terrain IDs starting at 39 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_HARDPAN = 199;
+
+//! Built-in tundra: TERRAIN_COUNT grew from 40 to 41, so earlier files carry custom
+//! terrain IDs starting at 40 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_TUNDRA = 200;

@@ -5706,6 +5706,8 @@ Weathered sandstone
 Windy sand dune
 [hardpan]
 Hardpan
+[tundra]
+Tundra
 [terrain group water]
 Water
 [terrain group sand]
