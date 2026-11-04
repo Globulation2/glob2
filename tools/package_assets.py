@@ -68,6 +68,14 @@ def include_asset(relative, platform="generic"):
     return True
 
 
+def catalog_sha256(terrain_catalog, content):
+    """One digest over the catalog index and every material file it lists."""
+    digest = hashlib.sha256()
+    for path in terrain_catalog.sources(content):
+        digest.update(path.relative_to(content).as_posix().encode() + b"\0" + path.read_bytes())
+    return digest.hexdigest()
+
+
 def source_files(root, platform):
     content = Path(root) / CONTENT
     for directory in ASSET_DIRS:
@@ -622,7 +630,7 @@ def _export_assets(
         spec = importlib.util.spec_from_file_location("terrain_tileset", root / "tools/terrain_tileset.py")
         compiler = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(compiler)
-        compiler.validate(json.loads(catalog.read_text()), root)
+        compiler.validate(compiler.terrain_catalog.load(content), root)
 
     if cache is None:
         cache = root / "build/asset-cache"
@@ -748,7 +756,7 @@ def _export_assets(
                 )
             )
         if catalog.is_file():
-            document = json.loads(catalog.read_text())
+            document = compiler.terrain_catalog.load(content)
             compiled = document.get("compiled_pack")
             if compiled:
                 with tempfile.TemporaryDirectory(prefix="terrain-pack-", dir=output.parent) as temporary_pack:
@@ -768,7 +776,7 @@ def _export_assets(
                         target.parent.mkdir(parents=True, exist_ok=True)
                         shutil.copyfile(generated, target)
                         records.append(dict(source="data/terrain/tileset.json", output=destination.as_posix(),
-                            source_sha256=hashlib.sha256(catalog.read_bytes()).hexdigest(),
+                            source_sha256=catalog_sha256(compiler.terrain_catalog, content),
                             output_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
                             source_bytes=0, output_bytes=target.stat().st_size, lossy=False,
                             recipe=None, generated_by="tools/terrain_tileset.py"))

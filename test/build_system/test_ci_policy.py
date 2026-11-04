@@ -142,7 +142,8 @@ class PolicyTest(unittest.TestCase):
             self.assertFalse(self.select([path])['platform_stack'], path)
 
     def test_terrain_catalog_and_compiler_are_shared_boundaries(self):
-        for path in ('content/data/terrain/tileset.json','tools/terrain_tileset.py','tools/test_terrain_tileset.py'):
+        for path in ('content/data/terrain/tileset.json','content/data/terrain/materials/dirt.json','tools/terrain_catalog.py',
+                     'tools/terrain_tileset.py','tools/test_terrain_tileset.py'):
             self.assertEqual(self.select([path]),policy.full())
 
     def test_shared_unknown_and_unavailable_inputs_fail_closed(self):

@@ -241,7 +241,7 @@ checksum adapter remains available for diagnostic fixtures.
   frames are skipped.
 - Detailed terrain rendering resolves shipped appearances through a
   presentation-only material catalog, corner coverage resolver and CPU compositor.
-  `content/data/terrain/tileset.json` defines those materials independently of gameplay
+  The catalog (`content/data/terrain/`, one file per material) defines them independently of gameplay
   IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
   metadata. See [terrain material authoring](../assets/terrain-materials.md) for
   variants, boundary profiles, asset validation and cache behavior. Visual catalog

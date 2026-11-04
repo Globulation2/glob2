@@ -2764,7 +2764,7 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "626d8f782e7def58b05f2ed3f8e207cca8ac91b4f95ce3259f189c65507d9330"
+      "sha256": "20d08aadc217488b44065b6e484c62b8304dfac06d59f129e39f089982e15df2"
     },
     {
       "runtime": "frames.txt",

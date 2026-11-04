@@ -205,7 +205,8 @@ def game_sprites(root):
     names.update(SPRITE.findall((root / 'src/map/TerrainPresentation.h').read_text()))
     catalog = root / 'content/data/terrain/tileset.json'
     if catalog.exists():
-        document = json.loads(catalog.read_text())
+        catalogs = load_module(Path(__file__).resolve().parents[1], 'terrain_catalog', 'tools/terrain_catalog.py')
+        document = catalogs.load(root / 'content')
         if document.get('compiled_pack'):
             names.add(str(Path(document['compiled_pack']).parent) + '/')
         for material in document['materials']:

@@ -8,13 +8,39 @@
 #include <stdexcept>
 namespace TerrainVisual
 {
+namespace
+{
+nlohmann::json readJson(const std::string &path)
+{
+	std::unique_ptr<std::ifstream> input(GAGCore::Toolkit::getFileManager()->openIFStream(path));
+	if (!input || !*input)
+		throw std::runtime_error("Cannot read " + path);
+	return nlohmann::json::parse(*input);
+}
+} // namespace
+nlohmann::json assembleCatalog(nlohmann::json index,
+							   const std::function<nlohmann::json(const std::string &key)> &readMaterial)
+{
+	for (auto &entry : index.at("materials"))
+	{
+		if (!entry.is_string())
+			continue;
+		const auto key = entry.get<std::string>();
+		auto block = readMaterial(key);
+		if (block.value("key", std::string()) != key)
+			throw std::runtime_error("data/terrain/materials/" + key + ".json must have key " + key);
+		entry = std::move(block);
+	}
+	return index;
+}
+nlohmann::json loadCatalogDocument()
+{
+	return assembleCatalog(readJson("data/terrain/tileset.json"), [](const std::string &key)
+						   { return readJson("data/terrain/materials/" + key + ".json"); });
+}
 Catalog loadCatalog(std::shared_ptr<const MapAssetBundle> assets)
 {
-	std::unique_ptr<std::ifstream> input(
-		GAGCore::Toolkit::getFileManager()->openIFStream("data/terrain/tileset.json"));
-	if (!input || !*input)
-		throw std::runtime_error("Cannot read data/terrain/tileset.json");
-	auto document = nlohmann::json::parse(*input);
+	auto document = loadCatalogDocument();
     if (assets && !assets->terrains.empty()) {
         document.erase("compiled_pack");
         // Map files keep the profile keys of the catalog they were made with.

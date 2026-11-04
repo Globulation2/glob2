@@ -4,7 +4,7 @@
 
 Every terrain group carries one shared visual mark; fertile ground (loam, moss,
 spring meadow) twinkles. The glints are a flat animated overlay drawn over the
-ground and under raised decor (the material's `overlay` block in tileset.json),
+ground and under raised decor (the `overlay` block of the material's catalog file),
 not an animated ground texture: fertile land covers large areas, and an
 overlay never invalidates the cached terrain pages.
 
@@ -13,7 +13,7 @@ brightness levels: rising, peak (a four-pointed star with short diagonal
 rays), falling and fading. A layout's cycle lights those four frames and then
 stays dark, so the runtime draws nothing for most steps. The runtime picks the
 glinting cells, their layout and their starting step by presentation hashing;
-the timing and density live in tileset.json and can be tuned without
+the timing and density live in the catalog and can be tuned without
 regenerating frames.
 
 Usage (pinned encoder interpreter, as for terrain_synth.py):
@@ -39,17 +39,18 @@ import PIL
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from material_tiles import ROOT, fnv1a32, pixel_sha256  # noqa: E402
+import terrain_catalog  # noqa: E402
 
 NATIVE = 64           # frame size; the cell is the central 32x32, as for decor
 SCALE = 4
 S = NATIVE * SCALE
 CELL = 32 * SCALE
 PAD = (S - CELL) // 2
-PREFIX = "data/gfx/terrain-glint"            # runtime path, as tileset.json names it
+PREFIX = "data/gfx/terrain-glint"            # runtime path, as the catalog names it
 FILE_PREFIX = "content/" + PREFIX           # where the checkout stores it
 HD_PREFIX = "content/data/highres/v1/terrain-glint"
-TILESET = "content/data/terrain/tileset.json"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain glints v1"
 FERTILE = ["loam", "moss", "spring_meadow"]
@@ -183,20 +184,15 @@ def check(frames, root):
                 digest = pixel_sha256(committed)
             if digest != pixel_sha256(image) or table.get(relative) != digest:
                 problems.append(f"{relative}: differs from a fresh synthesis")
-    catalog = json.loads((root / TILESET).read_text())
-    for material in catalog["materials"]:
+    for material in catalog_document(root)["materials"]:
         if material["key"] in FERTILE and material.get("overlay") != overlay_block():
             problems.append(f"{material['key']}: overlay block out of date; run --write-catalog")
     return problems
 
 
 def write_catalog(root):
-    """Add or refresh the overlay block of every fertile material in tileset.json."""
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from terrain_profile_curves import dump_catalog
-
-    path = root / TILESET
-    document = json.loads(path.read_text())
+    """Add or refresh the overlay block of every fertile material in the catalog."""
+    document = terrain_catalog.load(root / "content")
     found = set()
     for material in document["materials"]:
         if material["key"] in FERTILE:
@@ -204,8 +200,8 @@ def write_catalog(root):
             found.add(material["key"])
     missing = set(FERTILE) - found
     if missing:
-        raise SystemExit(f"tileset.json has no material for {sorted(missing)}")
-    path.write_text(dump_catalog(document))
+        raise SystemExit(f"the terrain catalog has no material for {sorted(missing)}")
+    terrain_catalog.save(root / "content", document)
 
 
 @functools.lru_cache(maxsize=None)
@@ -220,7 +216,7 @@ def ground_tile(root, key, x, y):
 
 @functools.lru_cache(maxsize=None)
 def catalog_document(root):
-    return json.loads((root / TILESET).read_text())
+    return terrain_catalog.load(root / "content")
 
 
 def field(root, frames, key, step, size=8, scale=2):

@@ -1,0 +1,277 @@
+{
+  "key": "lava",
+  "sprite": "data/gfx/terrain-lava",
+  "profile": "molten",
+  "class": "flow",
+  "preview": [168, 72, 30],
+  "variants": [
+    {
+      "frame": 0,
+      "weight": 1
+    },
+    {
+      "frame": 1,
+      "weight": 1
+    },
+    {
+      "frame": 2,
+      "weight": 1
+    },
+    {
+      "frame": 3,
+      "weight": 1
+    },
+    {
+      "frame": 4,
+      "weight": 1
+    },
+    {
+      "frame": 5,
+      "weight": 1
+    },
+    {
+      "frame": 6,
+      "weight": 1
+    },
+    {
+      "frame": 7,
+      "weight": 1
+    },
+    {
+      "frame": 8,
+      "weight": 1
+    },
+    {
+      "frame": 9,
+      "weight": 1
+    },
+    {
+      "frame": 10,
+      "weight": 1
+    },
+    {
+      "frame": 11,
+      "weight": 1
+    },
+    {
+      "frame": 12,
+      "weight": 1
+    },
+    {
+      "frame": 13,
+      "weight": 1
+    },
+    {
+      "frame": 14,
+      "weight": 1
+    },
+    {
+      "frame": 15,
+      "weight": 1
+    },
+    {
+      "frame": 16,
+      "weight": 1
+    },
+    {
+      "frame": 17,
+      "weight": 1
+    },
+    {
+      "frame": 18,
+      "weight": 1
+    },
+    {
+      "frame": 19,
+      "weight": 1
+    },
+    {
+      "frame": 20,
+      "weight": 1
+    },
+    {
+      "frame": 21,
+      "weight": 1
+    },
+    {
+      "frame": 22,
+      "weight": 1
+    },
+    {
+      "frame": 23,
+      "weight": 1
+    },
+    {
+      "frame": 24,
+      "weight": 1
+    },
+    {
+      "frame": 25,
+      "weight": 1
+    },
+    {
+      "frame": 26,
+      "weight": 1
+    },
+    {
+      "frame": 27,
+      "weight": 1
+    },
+    {
+      "frame": 28,
+      "weight": 1
+    },
+    {
+      "frame": 29,
+      "weight": 1
+    },
+    {
+      "frame": 30,
+      "weight": 1
+    },
+    {
+      "frame": 31,
+      "weight": 1
+    },
+    {
+      "frame": 32,
+      "weight": 1
+    },
+    {
+      "frame": 33,
+      "weight": 1
+    },
+    {
+      "frame": 34,
+      "weight": 1
+    },
+    {
+      "frame": 35,
+      "weight": 1
+    },
+    {
+      "frame": 36,
+      "weight": 1
+    },
+    {
+      "frame": 37,
+      "weight": 1
+    },
+    {
+      "frame": 38,
+      "weight": 1
+    },
+    {
+      "frame": 39,
+      "weight": 1
+    },
+    {
+      "frame": 40,
+      "weight": 1
+    },
+    {
+      "frame": 41,
+      "weight": 1
+    },
+    {
+      "frame": 42,
+      "weight": 1
+    },
+    {
+      "frame": 43,
+      "weight": 1
+    },
+    {
+      "frame": 44,
+      "weight": 1
+    },
+    {
+      "frame": 45,
+      "weight": 1
+    },
+    {
+      "frame": 46,
+      "weight": 1
+    },
+    {
+      "frame": 47,
+      "weight": 1
+    },
+    {
+      "frame": 48,
+      "weight": 1
+    },
+    {
+      "frame": 49,
+      "weight": 1
+    },
+    {
+      "frame": 50,
+      "weight": 1
+    },
+    {
+      "frame": 51,
+      "weight": 1
+    },
+    {
+      "frame": 52,
+      "weight": 1
+    },
+    {
+      "frame": 53,
+      "weight": 1
+    },
+    {
+      "frame": 54,
+      "weight": 1
+    },
+    {
+      "frame": 55,
+      "weight": 1
+    },
+    {
+      "frame": 56,
+      "weight": 1
+    },
+    {
+      "frame": 57,
+      "weight": 1
+    },
+    {
+      "frame": 58,
+      "weight": 1
+    },
+    {
+      "frame": 59,
+      "weight": 1
+    },
+    {
+      "frame": 60,
+      "weight": 1
+    },
+    {
+      "frame": 61,
+      "weight": 1
+    },
+    {
+      "frame": 62,
+      "weight": 1
+    },
+    {
+      "frame": 63,
+      "weight": 1
+    }
+  ],
+  "animation_frames": 4,
+  "animation_stride": 64,
+  "animation_ticks": 8,
+  "edges": "periodic",
+  "variant_grid": 8,
+  "minimap": [176, 68, 28],
+  "seam": {
+    "height": 4,
+    "fringe": [214, 110, 40],
+    "fringe_q8": 128,
+    "fringe_width_q8": 640
+  }
+}
