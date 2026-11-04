@@ -2,8 +2,11 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "143c44261d75dc8f33e12b920c671607b7ac97b23f75b39334da099e9ee32c5c",
-    "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1"
+    "tools/artwork/terrain_synth.py": "468315e12d6863f03b95926bfb5fe1fce5443729dee75e3cfa80ea1f0fcbc54a",
+    "tools/artwork/terrain_core.py": "3c9d59994ec1322cfbdab14dd2c368454dc17b343228eaae161fe27d951d17f4",
+    "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1",
+    "tools/artwork/terrain_packs/cliffs.py": "33c967181225cf5ca70949f8906ffe1b873c0c213a34501428f0165a943d51dc",
+    "tools/artwork/terrain_packs/scree.py": "dc7508033d454d9f9ac67fcb00f77743a8a81496c6107df4feb0e845356fdf51"
   },
   "material": "cliffs",
   "group": "obstacles",

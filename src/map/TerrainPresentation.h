@@ -4,7 +4,7 @@
 #include <array>
 #include <cstdint>
 // Semantic editor/interchange metadata. Detailed visual materials are defined by
-// data/terrain/tileset.json, independently of gameplay identities.
+// the terrain catalog (data/terrain/), independently of gameplay identities.
 struct TerrainPresentation
 {
 	const char *name, *label;

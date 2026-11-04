@@ -6,7 +6,16 @@ Companion to [terrain materials](terrain-materials.md).
 
 All 45 built-in materials, including grass, sand, their lush, dry, dune, pale and
 windy dune looks, road, ice and regular water,
-are produced by `tools/artwork/terrain_synth.py`. Static materials have four
+are produced by `tools/artwork/terrain_synth.py`. Each material is a small
+pack that can be tuned on its own: its recipe and render function live in
+`tools/artwork/terrain_packs/<name>.py` and its catalog block in
+`content/data/terrain/materials/<name>.json`. Materials of one family share a
+helper module there (`_waves`, `_sand`, `_grass`, `_heather`), and
+`tools/artwork/terrain_core.py` holds the shared field library, the group-mark
+helpers and the recipe registry. A material's provenance records the pipeline,
+the shared library, its own module and the family helpers it imports, so tuning
+one material changes only that material's record. To add a material, add a
+module there; the package registers every module it contains. Static materials have four
 interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
 layout and water and deep water one 4×4 layout, keeping their animated banks
 at 256 frames each. Frames are stored as
@@ -24,11 +33,10 @@ input:
 uv venv artifacts/asset-tools/venv
 uv pip install --python artifacts/asset-tools/venv/bin/python -r tools/artwork/requirements.txt
 ENC=artifacts/asset-tools/venv/bin/python
-"$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames and their tileset.json blocks
+"$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames and their catalog files
 "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
 "$ENC" tools/artwork/terrain_synth.py --emit-catalog        # material blocks and colour initialisers
-"$ENC" tools/artwork/terrain_synth.py --write-catalog       # refresh tileset.json from committed frames (no render)
-"$ENC" tools/artwork/terrain_glints.py --write-catalog      # then restore the fertile glint overlays
+"$ENC" tools/artwork/terrain_synth.py --write-catalog       # refresh the catalog from committed frames (no render)
 "$ENC" tools/artwork/validate_material.py --all
 "$ENC" -m unittest discover -s tools/artwork -p 'test_*material*.py'
 "$ENC" -m unittest discover -s tools/artwork -p test_terrain_synth.py
@@ -83,7 +91,8 @@ unchanged and that native frames equal downsampling the unsliced block.
 
 Group readability is part of the recipes. Every type in a gameplay group has
 the same rules, so each group carries one learnable mark, drawn by one shared
-helper in `terrain_synth.py`, while colour and material stay free per biome:
+helper (in `terrain_core.py`, or a family module under `terrain_packs/`), while
+colour and material stay free per biome:
 
 | Group | Mark | Helper |
 | --- | --- | --- |
@@ -285,7 +294,7 @@ with an `overlay` block:
   decor or resources, so raised decor reaching down from the row above still
   covers them. Frames may be up to 64×64 and are centred on the cell, like decor.
   All overlay blocks share one sprite. Editor swatches show one lit step per cell.
-- Timing and density can be tuned in tileset.json without regenerating frames.
+- Timing and density can be tuned in the material files without regenerating frames.
 
 `tools/artwork/terrain_glints.py` draws one mote per layout at four brightness
 levels (rising, a four-pointed peak star with short diagonals, falling, fading)
@@ -294,9 +303,8 @@ writes `content/data/gfx/terrain-glintN.png`, the HD frames and
 `content-src/gfx/terrain-glint/provenance.json`; `--write-catalog` adds the overlay
 blocks, `--check` reproduces frames and blocks, and `--sheet`/`--gif` write a
 still and an animated review of the three fertile fields.
-`terrain_synth.py --write-catalog` rewrites fertile material blocks without
-their overlay, so run `terrain_glints.py --write-catalog` after it; `--check`
-reports a missing block.
+`terrain_synth.py --write-catalog` keeps each material's overlay, decor and surf
+blocks; `terrain_glints.py --check` reports a missing or outdated overlay.
 
 ### Periodic edges
 

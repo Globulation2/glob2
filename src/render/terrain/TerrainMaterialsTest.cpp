@@ -28,6 +28,18 @@ TerrainVisual::Catalog catalog()
 {
 	return TerrainVisual::loadCatalog();
 }
+// The checkout's catalog as one document, read without the file manager.
+nlohmann::json shippedCatalog()
+{
+	const auto read = [](const std::filesystem::path &path)
+	{
+		std::ifstream input(glob2test::contentRoot() / path);
+		REQUIRE(input);
+		return nlohmann::json::parse(input);
+	};
+	return TerrainVisual::assembleCatalog(read("data/terrain/tileset.json"), [&](const std::string &key)
+										  { return read("data/terrain/materials/" + key + ".json"); });
+}
 template <class Field>
 TerrainVisual::Recipe contextualRecipe(int x, int y, int size, Field field)
 {
@@ -746,8 +758,7 @@ TEST_SUITE("TerrainMaterials")
 	}
 	TEST_CASE("animation_blend_steps is optional and bounded by the phase length")
 	{
-		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
-		const auto j = nlohmann::json::parse(input);
+		const auto j = shippedCatalog();
 		std::size_t lava = 0, grass = 0;
 		while (j["materials"][lava]["key"] != "lava") ++lava;
 		while (j["materials"][grass]["key"] != "grass") ++grass;
@@ -892,8 +903,7 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("compiled pages validate metadata and stale catalogs use source fallback [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;
-		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
-		auto j = nlohmann::json::parse(input);
+		auto j = shippedCatalog();
 		j["compiled_pack"] = "data/terrain/test-pack/atlas.json";
 		const auto root = glob2test::artifactDir();
 		const auto dir = root / "data/terrain/test-pack";
@@ -953,8 +963,7 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("compositor preserves native artwork overridden before startup [display] [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
-		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
-		auto document = nlohmann::json::parse(input);
+		auto document = shippedCatalog();
 		document["compiled_pack"] = "data/terrain/startup-override/atlas.json";
 		for (auto &material : document["materials"])
 			if (material["key"] == "ice")
@@ -1027,8 +1036,7 @@ TEST_SUITE("TerrainMaterials")
 			  "[display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
-		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
-		auto j = nlohmann::json::parse(input);
+		auto j = shippedCatalog();
 		// Pad the shipped catalog to 64 materials with grass clones.
 		for (auto i = j["materials"].size(); i < 64; ++i)
 		{
@@ -1459,8 +1467,7 @@ TEST_SUITE("TerrainMaterials")
 			auto definitions = catalog();
 			if (legacy)
 			{
-				std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
-				auto j = nlohmann::json::parse(input);
+				auto j = shippedCatalog();
 				j["version"] = 1;
 				j.erase("boundary_warp_q8");
 				j.erase("border_classes");
@@ -1812,8 +1819,7 @@ TEST_SUITE("TerrainMaterials")
 					CHECK(c.variantIndex(water, x, y, seed) == (unsigned(y) & (grid - 1)) * grid + (unsigned(x) & (grid - 1)));
 				}
 
-		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
-		const auto j = nlohmann::json::parse(input);
+		const auto j = shippedCatalog();
 		std::size_t index = 0;
 		while (j["materials"][index]["key"] != "water")
 			++index;
@@ -1872,8 +1878,7 @@ TEST_SUITE("TerrainMaterials")
 			for (int y = -8; y < 64; ++y)
 				for (int x = -8; x < 64; ++x)
 					CHECK(c.variantIndex(c.find("water"), x, y, seed) == c.variantIndex(c.find("deep_water"), x, y, seed));
-		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
-		const auto document = nlohmann::json::parse(input);
+		const auto document = shippedCatalog();
 		std::size_t index = 0;
 		while (document["materials"][index]["key"] != "scree") ++index;
 		for (const auto &value : {nlohmann::json(0), nlohmann::json(2), nlohmann::json(17), nlohmann::json("4")})
@@ -1896,8 +1901,7 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("catalog rejects corrupt references and grows independently of gameplay IDs")
 	{
 		glob2test::HeadlessGlobals globals;
-		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
-		auto j = nlohmann::json::parse(input);
+		auto j = shippedCatalog();
 		for (auto i = j["materials"].size(); i < 64; ++i)
 		{
 			auto m = j["materials"][2];
@@ -2073,8 +2077,7 @@ TEST_SUITE("TerrainMaterials")
 					CHECK_FALSE((c.dominates(x, y) && c.dominates(y, x)));
 				}
 		// Earlier catalogs keep the roughest-profile rule.
-		std::ifstream input(glob2test::contentRoot() / "data/terrain/tileset.json");
-		auto j = nlohmann::json::parse(input);
+		auto j = shippedCatalog();
 		j["version"] = 3;
 		j.erase("border_classes");
 		for (auto &m : j["materials"]) m.erase("class");

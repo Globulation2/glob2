@@ -174,12 +174,12 @@ def glow_mask(tile):
 def phase_offsets(name, size):
     """A smooth periodic offset field so neighbouring glow pixels pulse together."""
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    import terrain_synth  # noqa: E402
+    import terrain_core  # noqa: E402
 
     rng = random.Random(fnv1a32(f"{name}:glow"))
-    field = terrain_synth.lattice_noise(rng, 3)
-    step = terrain_synth.N // size
-    return [field[(y * step) * terrain_synth.N + x * step] for y in range(size) for x in range(size)]
+    field = terrain_core.lattice_noise(rng, 3)
+    step = terrain_core.N // size
+    return [field[(y * step) * terrain_core.N + x * step] for y in range(size) for x in range(size)]
 
 
 def animate_glow(name, tiles):

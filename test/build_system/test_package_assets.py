@@ -72,8 +72,8 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
             (root / "content/data/gfx").mkdir(parents=True)
             (root / "content/data/terrain").mkdir()
             (root / "tools").mkdir()
-            shutil.copyfile(Path(package_assets.__file__).with_name("terrain_tileset.py"),
-                            root / "tools/terrain_tileset.py")
+            for tool in ("terrain_tileset.py", "terrain_catalog.py"):
+                shutil.copyfile(Path(package_assets.__file__).with_name(tool), root / "tools" / tool)
             Image.new("RGBA", (32, 32), (20, 80, 130, 255)).save(root / "content/data/gfx/tile0.png")
             document = {
                 "version": 1, "compiled_pack": "data/terrain/compiled/atlas.json",

@@ -3,7 +3,6 @@
 
     "$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tools/artwork -p test_terrain_decor.py
 """
-import json
 import sys
 import unittest
 from pathlib import Path
@@ -13,6 +12,9 @@ import PIL
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import terrain_decor as decor  # noqa: E402
 from material_tiles import ROOT  # noqa: E402
+
+sys.path.insert(0, str(ROOT / "tools"))
+import terrain_catalog  # noqa: E402
 
 PILLOW = "12.2.0"
 
@@ -62,7 +64,7 @@ class TerrainDecor(unittest.TestCase):
                 self.assertTrue(all(8 <= x < decor.CELL - 8 and 8 <= y < decor.CELL - 8 for x, y in inked))
 
     def test_catalog_blocks_name_the_shared_sprite_and_frames(self):
-        catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
+        catalog = terrain_catalog.load(ROOT / "content")
         blocks = {m["key"]: m["decor"] for m in catalog["materials"] if "decor" in m}
         self.assertEqual(sorted(blocks), sorted(decor.ORDER))
         for name, block in blocks.items():
