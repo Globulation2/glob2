@@ -5730,6 +5730,8 @@ Forvitret sandsten
 Vindriflede klitter
 [hardpan]
 Hårdskorpe
+[volcanic_ash]
+Vulkansk aske
 [terrain group water]
 Vand
 [terrain group sand]

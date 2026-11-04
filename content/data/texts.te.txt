@@ -5706,6 +5706,8 @@ AI ద్వారా రూపొందించబడలేదు
 గాలి అలల ఇసుక దిబ్బలు
 [hardpan]
 గట్టి నేల పొర
+[volcanic_ash]
+అగ్నిపర్వత బూడిద
 [terrain group water]
 నీరు
 [terrain group sand]

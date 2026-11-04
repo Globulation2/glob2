@@ -5730,6 +5730,8 @@ Arenito erodido
 Dunas de vento
 [hardpan]
 Crosta endurecida
+[volcanic_ash]
+Cinza vulcânica
 [terrain group water]
 Água
 [terrain group sand]

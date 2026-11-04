@@ -5730,6 +5730,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 تپه‌های شنی بادخورده
 [hardpan]
 سخت‌لایه
+[volcanic_ash]
+خاکستر آتشفشانی
 [terrain group water]
 آب
 [terrain group sand]

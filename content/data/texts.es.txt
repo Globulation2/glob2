@@ -5730,6 +5730,8 @@ Arenisca erosionada
 Dunas de viento
 [hardpan]
 Costra endurecida
+[volcanic_ash]
+Ceniza volcánica
 [terrain group water]
 Agua
 [terrain group sand]

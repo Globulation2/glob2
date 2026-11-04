@@ -5730,6 +5730,8 @@ Preperel peščenjak
 Vetrovne sipine
 [hardpan]
 Trda skorja
+[volcanic_ash]
+ගිනිකඳු අළු
 [terrain group water]
 Voda
 [terrain group sand]

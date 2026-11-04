@@ -5730,6 +5730,8 @@ Aşınmış kumtaşı
 Rüzgâr dalgalı kumullar
 [hardpan]
 Sert kabuk
+[volcanic_ash]
+Volkanik kül
 [terrain group water]
 Su
 [terrain group sand]

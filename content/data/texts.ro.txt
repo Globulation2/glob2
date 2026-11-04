@@ -5730,6 +5730,8 @@ Gresie erodată
 Dune vălurite de vânt
 [hardpan]
 Crustă întărită
+[volcanic_ash]
+Cenușă vulcanică
 [terrain group water]
 Apă
 [terrain group sand]

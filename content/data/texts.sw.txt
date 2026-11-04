@@ -5706,6 +5706,8 @@ Mchanga-mawe uliomomonyoka
 Matuta ya mchanga ya upepo
 [hardpan]
 Ganda gumu
+[volcanic_ash]
+Majivu ya volkano
 [terrain group water]
 Maji
 [terrain group sand]
