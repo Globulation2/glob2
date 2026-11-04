@@ -76,3 +76,48 @@ TEST_CASE("Stratified claim minima count rejected population independently" * do
     CHECK(slots[12].consider(1,4,0,true));slots[12].reservoir.written(4);
     CHECK(slots[12].censored()); // Later replacement cannot erase missing coverage.
 }
+
+#include "ResourceClaimTopKDeep.h"
+TEST_SUITE("ResourceClaimTopKDeep")
+{
+TEST_CASE("Bottom four preserves exact cardinality and excludes evicted pending publications")
+{
+    ResourceClaims::Experiment::TopKDeepSlot state;
+    for(Uint64 i=1;i<=4;++i) {const auto slot=state.consider(100+i,i,0,true);REQUIRE(slot>=0);CHECK(state.written(slot,i,"digest"));}
+    CHECK_FALSE(state.censored());CHECK(state.retained()==4);
+    const auto replacement=state.consider(1,5,1,false);REQUIRE(replacement>=0);
+    CHECK(state.censored());CHECK_FALSE(state.written(replacement,4,"stale"));
+    CHECK(state.written(replacement,5,"new"));CHECK_FALSE(state.censored());
+    CHECK(state.consider(999,6,2,true)==-1);CHECK(state.eligible==6);
+    CHECK((state.reasons==std::array<Uint64,3>{4,1,1}));CHECK(state.unknownPool==1);
+    CHECK_THROWS_AS(state.consider(1,6,0,true),std::invalid_argument);
+    ResourceClaims::Experiment::TopKDeepSlot ties;
+    for(Uint64 i=1;i<=4;++i)CHECK(ties.consider(10,i,0,true)==int(i-1));
+    CHECK(ties.consider(10,5,0,true)==-1);
+    CHECK(ties.currentPriorityTies==10);
+    for(unsigned i=0;i<4;++i)CHECK(ties.entries[i].ordinal==i+1);
+}
+TEST_CASE("All rank permutations give every event four fifths inclusion")
+{
+    std::array<unsigned,5> ranks={0,1,2,3,4};std::array<unsigned,5> included{};unsigned permutations=0;
+    do {
+        ResourceClaims::Experiment::TopKDeepSlot state;
+        for(unsigned i=0;i<5;++i)state.consider(ranks[i],i+1,0,true);
+        for(const auto& entry:state.entries) {REQUIRE(entry.ordinal>0);++included[entry.ordinal-1];}
+        ++permutations;
+    } while(std::next_permutation(ranks.begin(),ranks.end()));
+    CHECK(permutations==120);for(const auto count:included)CHECK(count==96);
+}
+TEST_CASE("Admission loss is never salvaged by later replacement or fewer written entries")
+{
+    for(unsigned loss=0;loss<3;++loss) {
+        ResourceClaims::Experiment::TopKDeepSlot state;
+        const auto first=state.consider(10,1,0,true);REQUIRE(first==0);state.written(first,1,"digest");
+        CHECK(state.retained()==1);CHECK_FALSE(state.censored());
+        for(Uint64 i=2;i<=7;++i) {auto slot=state.consider(10-i,i,0,true);if(slot>=0)state.written(slot,i,"digest");}
+        if(loss==2)++state.excludedInputBytes;else state.excluded(loss==1);
+        CHECK(state.retained()==4);CHECK(state.censored());
+    }
+    ResourceClaims::Experiment::TopKDeepSlot empty;CHECK(empty.retained()==0);CHECK_FALSE(empty.censored());
+}
+}

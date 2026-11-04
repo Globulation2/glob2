@@ -851,6 +851,61 @@ TEST_CASE("stratified observer captures acquisition without changing authoritati
 #endif
 }
 
+#ifndef __EMSCRIPTEN__
+TEST_CASE("top-four observer captures four of five acquisitions without changing ownership" * doctest::test_suite("ActiveMaterialClaims"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame f({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
+    auto& map=f.game.map;auto* team=f.game.teams[0];
+    map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+    auto* inn=f.addBuilding("inn",20,20);REQUIRE(inn);
+    REQUIRE(map.incResourceByIndex(12,12,WHEAT,0));REQUIRE(map.incResourceByIndex(15,12,WHEAT,0));
+    auto make=[&](int slot) {
+        auto* u=new TestUnit(8+slot,8,Unit::GIDfrom(slot,0),WORKER,team,0);
+        team->attachUnit(slot,u);map.setGroundUnit(u->posX,u->posY,u->gid);
+        u->attachedBuilding=inn;u->activity=Unit::ACT_FILLING;u->displacement=Unit::DIS_GOING_TO_RESOURCE;u->destinationPurpose=WHEAT;return u;
+    };
+    auto* a=make(0);auto* b=make(1);
+    const auto* field=glob2test::awaitGradient(f.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,a->movementClass());});
+    REQUIRE(a->acquireMaterialClaimAt(Uint32(map.coordToIndex(12,12))));
+    const auto path=(glob2test::artifactDir()/"active-claim-acquisition-probe.jsonl.gz").string();std::filesystem::remove(path);
+    ResourceClaims::Probe::Config config;config.sampleEvery=1;config.maxSamples=5;
+#ifndef __EMSCRIPTEN__
+    config.deepStratified=true;config.deepTopFour=true;
+#endif
+#ifndef __EMSCRIPTEN__
+    // Deep campaign files enforce an 8 GiB disk reserve; browser MEMFS is not
+    // a campaign store. Browser coverage retains the ordinary active observer.
+    const auto deepDirectory=glob2test::artifactDir()/"resource-claims-deep";
+    std::filesystem::remove_all(deepDirectory);
+    config.deepContext=nlohmann::json{{"source_revision","diagnostic-working-tree"},
+        {"bundle_id","diagnostic-engine-harness"},{"cohort_id","deep-wire-fixture"},
+        {"game_id","two-natural-sources"}}.dump();
+#endif
+    auto probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);
+    const auto checksum=f.game.checkSum();const auto claim=a->activeMaterialClaim;
+    for(unsigned i=0;i<5;++i)map.observeMaterialClaimDecision(*b,field);
+    REQUIRE(probe->metrics().submitted==5);CHECK(f.game.checkSum()==checksum);
+    CHECK(a->activeMaterialClaim==claim);CHECK_FALSE(b->activeMaterialClaim);CHECK(map.materialClaimLedger().size()==1);
+    CHECK(map.materialClaimTelemetry.sweeps==0);CHECK_FALSE(map.materialClaimTrackingEnabled());
+    probe->finish();CHECK(probe->metrics().completed==5);
+#ifndef __EMSCRIPTEN__
+    REQUIRE(std::filesystem::is_regular_file(deepDirectory/"event-00-0.bin"));
+    std::ifstream manifestFile(deepDirectory/"manifest.json");
+    const auto manifest=nlohmann::json::parse(manifestFile);
+    CHECK(manifest.at("complete")==true); CHECK(manifest.at("censored")==false);
+    CHECK(manifest.at("version")==3);
+    REQUIRE(manifest.at("strata").size()==16);
+    CHECK(manifest.at("strata")[0].at("eligible")==5);
+    CHECK(manifest.at("strata")[0].at("retained")==4);
+    CHECK(manifest.at("strata")[0].at("weight_numerator")==5);
+    CHECK(manifest.at("strata")[0].at("weight_denominator")==4);
+    CHECK(manifest.at("peak_input_payload").get<Uint64>()<=manifest.at("peak_input_reservations").get<Uint64>());
+#endif
+}
+
+#endif
+
 TEST_CASE("map export projects active ownership out without mutating the live match" * doctest::test_suite("ActiveMaterialClaims"))
 {
     glob2test::HeadlessGlobals globals;

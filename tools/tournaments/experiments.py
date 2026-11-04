@@ -39,6 +39,8 @@ class Planner:
             raise ValueError('build does not advertise movement-only observer version 1')
         if 'resource_claims_probe' in config and any(self.bundles[build]['capabilities'].get('resource_claims_probe_version') not in (1, 2) for build in self.builds):
             raise ValueError('build does not advertise active claim probe version 1 or 2')
+        if config.get('resource_claims_deep_top_four') and any(self.bundles[build]['capabilities'].get('resource_claims_deep_topk_version') != 3 for build in self.builds):
+            raise ValueError('bundle lacks V3 top-four capture')
         if config.get('resource_claims_deep_stratified') and any(self.bundles[build]['capabilities'].get('resource_claims_deep_stratified_version') != 2 for build in self.builds):
             raise ValueError('stratified deep capture requires capability V2')
         if 'resource_claims_deep_context' in config and any(self.bundles[build]['capabilities'].get('resource_claims_deep_version') != 1 for build in self.builds):
@@ -124,7 +126,7 @@ class Planner:
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
-                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified') if key in config}),
+                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified', 'resource_claims_deep_top_four') if key in config}),
                             **({'alliances': alliances} if alliances else {}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
@@ -176,7 +178,7 @@ class Planner:
                             **({'experiments': config['experiments']} if 'experiments' in config else {}),
                             **({'material_destinations': config['material_destinations']} if 'material_destinations' in config else {}),
                             **({'resource_claims_shadow': config['resource_claims_shadow']} if 'resource_claims_shadow' in config else {}),
-                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified') if key in config}),
+                            **({key: copy.deepcopy(config[key]) for key in ('resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified', 'resource_claims_deep_top_four') if key in config}),
                             'win_probability_permille': win_probability_threshold(config)},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)

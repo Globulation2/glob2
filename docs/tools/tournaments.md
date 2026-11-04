@@ -914,6 +914,26 @@ oracle scratch remain separate and require measured memory calibration. A
 reservation underestimate fails the capture rather than silently exceeding its
 accounted allowance.
 
+The optional V3 `resource_claims_deep_top_four: true` adds
+`--resource-claims-deep-top-four` and requires both stratified capture and
+`resource_claims_deep_topk_version: 3`. It retains the four smallest distinct
+priority/event-ordinal pairs per bin, or all events when fewer than four are
+eligible. The default remains the byte-compatible V1/V2 path. Sampling frequency
+and the eligible population do not change; invalid or missing destination fields
+remain outside this capture stream. No additional oracle search is needed, but
+more retained events cause additional exposure analysis, encoding and disk writes.
+
+V3 reserves 640 MiB for 64 final records plus 24 MiB serialized replacement space;
+the 128 MiB input and 80 MiB pending encoded payload allowances remain unchanged.
+Only small ranking metadata stays in the reservoir. An evicted pending result
+cannot overwrite a newer selected event. The separate strict V3 reader requires
+exactly `min(4, N_s)` current records in every uncensored bin. Each has nominal
+weight `N_s / min(4, N_s)` under the independent uniform-priority model; ordinal
+tie-breaking is deterministic and observed priority ties are reported. Admission
+loss, missing writes or corrupt records cannot be repaired by dividing by the
+number of surviving records. Freeze larger per-attempt storage allowances before
+running V3; existing cohorts retain their original limits and readers.
+
 For uncensored bins, eligible-count expansion describes the ordinary sampled
 population under the independent hash-priority model; it does not correct unknown
 admission exclusions. Aggregate within game, then by independent parent world.

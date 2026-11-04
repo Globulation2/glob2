@@ -387,6 +387,7 @@ void constraints(const Request &r)
         if(r.has("--resource-claims-movement-only") && (r.has("--resource-claims-shadow") || r.has("--resource-claims-probe") || r.has("--resource-claims-deep-context")))
             throw std::invalid_argument("movement-only observer excludes decision, shadow and deep observation");
         requireParent("--resource-claims-deep-stratified", "--resource-claims-deep-context");
+        requireParent("--resource-claims-deep-top-four", "--resource-claims-deep-stratified");
         for(const auto* option:{"--resource-claims-sample-every","--resource-claims-max-samples","--resource-claims-max-bytes","--resource-claims-deep-context"})
             if(r.has(option) && !r.has("--resource-claims-shadow") && !r.has("--resource-claims-probe") && !r.has("--resource-claims-movement-only"))
                 throw std::invalid_argument("claim sample options require an explicit observer");
@@ -587,6 +588,7 @@ const std::vector<Command> &commands()
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
              value("--resource-claims-deep-context", "json", "Temporary bounded min-hash capture provenance: source_revision,bundle_id,cohort_id,game_id"),
              flag("--resource-claims-deep-stratified", "Temporary V2 sixteen-stratum deep capture; requires deep context"),
+             flag("--resource-claims-deep-top-four", "Temporary V3 bottom-four capture per stratum; requires stratified capture"),
              flag("--resource-claims-probe", "Collect diagnostic claim decisions from an active-policy game without a shadow ledger"),
              flag("--resource-claims-movement-only", "Measure transport movement without decision sampling or changing claim enforcement"),
              value("--resource-claims-policy-json", "JSON", "Explicit live resource-claim experiment configuration; requires material destinations"),

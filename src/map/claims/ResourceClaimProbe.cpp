@@ -3,6 +3,7 @@
 #include "ResourceClaimOracle.h"
 #include "ResourceClaimDeepEvent.h"
 #include "ResourceClaimStratifiedDeep.h"
+#include "ResourceClaimTopKDeep.h"
 #include "ClaimPolicyConfig.h"
 #include "ResourceClaimPatternEvaluation.h"
 #include "ResourceClaimPilotPatterns.h"
@@ -74,6 +75,7 @@ struct Probe::Impl
         bool deepSelected=false;
         Uint64 deepPriority=0;
         unsigned deepStratum=Experiment::DeepStratumCount;
+        unsigned deepRetainedSlot=0;bool deepTopFour=false;
         Uint64 inputReservation=0;
         Json deepContext;
         std::vector<Uint8> deepBytes;
@@ -401,6 +403,7 @@ struct Probe::Impl
     Json deepContext;
     Experiment::DeepReservoir deep;
     std::array<Experiment::StratifiedDeepSlot,Experiment::DeepStratumCount> deepSlots;
+    std::array<Experiment::TopKDeepSlot,Experiment::DeepStratumCount> topSlots;
     static constexpr Uint64 InputPendingLimit=128ull*1024*1024;
     Uint64 pendingInputReservations=0,peakInputReservations=0,inputAdmissionExclusions=0,inputIneligibleExclusions=0,peakInputPayload=0;
     Uint64 deepIneligibleNoXY=0;
@@ -415,6 +418,38 @@ struct Probe::Impl
     void deepManifest(bool complete)
     {
         if(config.deepContext.empty())return;
+        if(config.deepTopFour) {
+            Json strata=Json::array();bool censored=false;
+            for(unsigned i=0;i<topSlots.size();++i) {
+                const auto& r=topSlots[i];Json records=Json::array();const bool missing=r.censored();censored|=missing;
+                for(unsigned k=0;k<r.entries.size();++k) {
+                    const auto& e=r.entries[k];if(!e.ordinal)continue;
+                    records.push_back(Json{{"slot",k},{"file",Experiment::topKFilename(i,k)},
+                        {"priority",e.priority},{"ordinal",e.ordinal},{"captured_ordinal",e.writtenOrdinal},
+                        {"replacements",e.replacements},{"file_sha256",e.digest}});
+                }
+                strata.push_back(Json{{"id",i},{"name",Experiment::DeepStratumNames[i]},
+                    {"eligible",r.eligible},{"last_ordinal",r.lastOrdinal},{"retained",r.retained()},
+                    {"records",std::move(records)},{"censored",missing},
+                    {"excluded_eligible_admission",r.excludedSampleCap+r.excludedQueueCap},
+                    {"excluded_eligible_sample_cap",r.excludedSampleCap},{"excluded_eligible_queue_cap",r.excludedQueueCap},
+                    {"excluded_input_bytes",r.excludedInputBytes},{"reasons",r.reasons},{"unknown_pool",r.unknownPool},
+                    {"current_priority_ties",r.currentPriorityTies},
+                    {"weight_numerator",!missing && r.eligible?Json(r.eligible):Json(nullptr)},
+                    {"weight_denominator",!missing && r.eligible?Json(r.retained()):Json(nullptr)}});
+            }
+            const auto value=Json{{"version",3},{"top_k",Experiment::DeepTopK},{"complete",complete},{"censored",censored},
+                {"design",Experiment::TopKDeepDesign},{"context",deepContext},{"strata",std::move(strata)},
+                {"weight_contract","Ns/min(4,Ns) only for complete uncensored exact selected sets; nominal independent uniform hash priorities, ordinal tie-break; observed current-priority ties exposed"},
+                {"ineligible_contested_no_xy",deepIneligibleNoXY},{"ordinary_missing_field",metrics.excludedMissingField},
+                {"encoded_pending_limit",Experiment::StratifiedEncodedPendingLimit},{"input_pending_limit",InputPendingLimit},
+                {"peak_input_reservations",peakInputReservations},{"input_admission_exclusions",inputAdmissionExclusions},
+                {"input_ineligible_exclusions",inputIneligibleExclusions},{"peak_input_payload",peakInputPayload},
+                {"input_accounting","vector-capacity-payload-plus-serialized-metadata; excludes allocator/json-node/map/experiment-set-node/shared-registry/pool/oracle-scratch RSS"},
+                {"final_limit",Experiment::TopKFinalLimit},{"transient_limit",Experiment::StratifiedTransientLimit}}.dump();
+            if(value.size()>64*1024)throw std::runtime_error("top-k manifest exceeds allowance");
+            Experiment::replaceTopKDeepFile(deepDirectory/"manifest.json",std::span(reinterpret_cast<const Uint8*>(value.data()),value.size()));return;
+        }
         if(config.deepStratified) {
             Json slots=Json::array();bool censored=false;
             for(unsigned i=0;i<deepSlots.size();++i) {
@@ -448,6 +483,7 @@ struct Probe::Impl
     {
         if (!config.sampleEvery || !config.maxSamples || !config.maxOutputBytes || !config.maxPending || config.maxPending>8)
             throw std::invalid_argument("invalid resource claim probe limits");
+        if(config.deepTopFour && !config.deepStratified)throw std::invalid_argument("top-four capture requires stratified capture");
         if(config.deepStratified && config.deepContext.empty())throw std::invalid_argument("stratified capture requires deep context");
         if (std::filesystem::exists(this->path)) throw std::runtime_error("resource claim probe output already exists");
         if (std::filesystem::space(std::filesystem::path(this->path).parent_path()).available<16ull*1024*1024)
@@ -613,7 +649,8 @@ struct Probe::Impl
                 metadata["event_id"]=std::to_string(work.seed)+":"+std::to_string(work.ordinal);
                 metadata["priority"]=work.deepPriority;
                 if(work.deepStratum<Experiment::DeepStratumCount) {
-                    metadata["deep_design"]=Experiment::StratifiedDeepDesign;
+                    metadata["deep_design"]=work.deepTopFour?Experiment::TopKDeepDesign:Experiment::StratifiedDeepDesign;
+                    if(work.deepTopFour)metadata["deep_slot"]=work.deepRetainedSlot;
                     metadata["deep_stratum"]=work.deepStratum;
                 }
                 metadata["optimum"]=oracle.best?distanceJson(oracle.candidates[*oracle.best].distance):Json(nullptr);
@@ -637,7 +674,13 @@ struct Probe::Impl
             write(work.line);
             if(work.deepSelected) {
                 const auto digest=Online::Sha256::toHex(Online::Sha256::of(work.deepBytes));
-                if(config.deepStratified) {
+                if(config.deepTopFour) {
+                    auto& slot=topSlots.at(work.deepStratum);
+                    if(slot.current(work.deepRetainedSlot,work.ordinal)) {
+                        Experiment::replaceTopKDeepFile(deepDirectory/Experiment::topKFilename(work.deepStratum,work.deepRetainedSlot),work.deepBytes);
+                        slot.written(work.deepRetainedSlot,work.ordinal,digest);
+                    }
+                } else if(config.deepStratified) {
                     Experiment::replaceStratifiedDeepFile(deepDirectory/deepFilename(work.deepStratum),work.deepBytes);
                     auto& slot=deepSlots.at(work.deepStratum);slot.digest=digest;slot.reservoir.written(work.ordinal);
                 } else {
@@ -656,7 +699,7 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
     Json patterns=Json::array();
     for (const auto& pattern:Experiment::pilotPatterns()) patterns.push_back(pattern.name);
     impl->write(Json{{"kind","schema"},{"version",1},{"timing_clock","worker-steady-clock-elapsed"},{"cohort","sampled-material-movement-and-pickup-decisions-before-choice"},
-        {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",config.deepStratified?Experiment::StratifiedDeepDesign:Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",config.deepStratified?Experiment::StratifiedFinalLimit+Experiment::StratifiedTransientLimit:Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
+        {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",config.deepTopFour?Experiment::TopKDeepDesign:config.deepStratified?Experiment::StratifiedDeepDesign:Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",config.deepTopFour?Experiment::TopKFinalLimit+Experiment::StratifiedTransientLimit:config.deepStratified?Experiment::StratifiedFinalLimit+Experiment::StratifiedTransientLimit:Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
         {"sample_every",config.sampleEvery},{"max_samples",config.maxSamples},{"max_pending",config.maxPending},
         {"movement_audit_version",1},
         {"movement_only",config.movementOnly},{"decision_sampling_enabled",!config.movementOnly},
@@ -978,17 +1021,19 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
     const unsigned stratum=impl->config.deepStratified?Experiment::deepStratum(game.stepCounter,
         MaterialId(unit.destinationPurpose),pickupAccess!=UINT32_MAX,pooled,growingForbiddenMaterialNeighbors>0):Experiment::DeepStratumCount;
     bool deepSelected=false;
+    int retainedSlot=-1;
     Uint64 deepPriority=0;
     if(!impl->config.deepContext.empty() && destinations) {
         deepPriority=mix(0xD33FC1A17A93B561ull ^ mix(seed) ^ mix(game.stepCounter) ^ mix(unitOwner(unit.gid,unit.scriptIdentity)) ^ mix(ordinal));
         if(impl->config.deepStratified) {
             deepPriority=mix(deepPriority ^ mix(0x5354524154410000ull+stratum));
-            deepSelected=impl->deepSlots[stratum].consider(deepPriority,ordinal,staleGoal?1:exhaustedPool?2:0,!staleGoal);
+            if(impl->config.deepTopFour) {retainedSlot=impl->topSlots[stratum].consider(deepPriority,ordinal,staleGoal?1:exhaustedPool?2:0,!staleGoal);deepSelected=retainedSlot>=0;}
+            else deepSelected=impl->deepSlots[stratum].consider(deepPriority,ordinal,staleGoal?1:exhaustedPool?2:0,!staleGoal);
         } else deepSelected=impl->deep.consider(deepPriority,ordinal);
     }
     if(!impl->config.deepContext.empty() && !destinations)++impl->deepIneligibleNoXY;
-    if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;if(!impl->config.deepContext.empty() && destinations)(impl->config.deepStratified?impl->deepSlots[stratum].reservoir:impl->deep).excluded(false);return {};}
-    if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;if(!impl->config.deepContext.empty() && destinations)(impl->config.deepStratified?impl->deepSlots[stratum].reservoir:impl->deep).excluded(true);return {};}
+    if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;if(!impl->config.deepContext.empty() && destinations){if(impl->config.deepTopFour)impl->topSlots[stratum].excluded(false);else (impl->config.deepStratified?impl->deepSlots[stratum].reservoir:impl->deep).excluded(false);}return {};}
+    if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;if(!impl->config.deepContext.empty() && destinations){if(impl->config.deepTopFour)impl->topSlots[stratum].excluded(true);else (impl->config.deepStratified?impl->deepSlots[stratum].reservoir:impl->deep).excluded(true);}return {};}
     // Conservative copied-input reservation: every cell includes all 12 material
     // stocks, planes and publication data; owner vectors have the engine unit cap.
     // Shared immutable catalogs and worker oracle scratch are outside this input
@@ -997,7 +1042,7 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
         Uint64(map.cellCount())*Impl::CellInputAllowance+Uint64(Impl::MaximumTrackedClaimants)*Impl::OwnerInputAllowance+1024*1024:0;
     if(inputReservation>Impl::InputPendingLimit-impl->pendingInputReservations) {
         ++impl->inputAdmissionExclusions;
-        if(destinations)++impl->deepSlots[stratum].excludedInputBytes;else ++impl->inputIneligibleExclusions;
+        if(destinations){if(impl->config.deepTopFour)++impl->topSlots[stratum].excludedInputBytes;else ++impl->deepSlots[stratum].excludedInputBytes;}else ++impl->inputIneligibleExclusions;
         return {};
     }
     auto work=std::make_unique<Impl::Work>();
@@ -1005,6 +1050,7 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
     impl->pendingInputReservations+=inputReservation;
     impl->peakInputReservations=std::max(impl->peakInputReservations,impl->pendingInputReservations);
     work->deepSelected=deepSelected;work->deepPriority=deepPriority;work->deepStratum=stratum;
+    work->deepTopFour=impl->config.deepTopFour;work->deepRetainedSlot=retainedSlot>=0?unsigned(retainedSlot):0;
     if(deepSelected)work->deepContext=impl->deepContext;
     using C=SimulationSnapshot::Component;
     const auto mask=SimulationSnapshot::bit(C::Catalogs)|SimulationSnapshot::bit(C::Terrain)|SimulationSnapshot::bit(C::Resources)
