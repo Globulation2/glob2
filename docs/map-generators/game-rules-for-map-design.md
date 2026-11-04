@@ -119,10 +119,11 @@ Trail) plus every terrain-catalogue type (`boulders`, `hedge`, `thicket`, `ridge
 `scree`, `brick_path`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
 `spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`, the grass and
 sand looks `lush_grass`, `dry_grass`, `dune_sand` and `pale_sand`, then `sandstone`,
-`pumice` and `frozen_lake`). The looks share every rule of grass or sand and differ only in artwork and
+`pumice`, `frozen_lake` and `cliffs`). The looks share every rule of grass or sand and differ only in artwork and
 colours; sandstone tiles follow the path rules of road, brick path and boardwalk, and a
 pumice field the rough-ground rules of mud, mudflat and scree; a frozen lake plays exactly
-like ice. The earlier names
+like ice, and cliffs the obstacle rules of boulders, hedge and thicket: impassable, and
+they stop projectiles. The earlier names
 `gravel`, `flower_meadow`, `marsh` and `dirt_track` are still accepted as aliases of
 `shale`, `heath`, `mudflat` and `brick_path` (`LEGACY_TERRAIN_NAMES` in
 `src/map/TerrainTypeTable.h`), but maps, saves and reports are written with the

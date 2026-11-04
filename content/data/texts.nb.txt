@@ -5698,6 +5698,8 @@ Sandsteinsheller
 Pimpsteinsfelt
 [frozen_lake]
 Frossen innsjø
+[cliffs]
+Klipper
 [terrain group water]
 Vann
 [terrain group sand]

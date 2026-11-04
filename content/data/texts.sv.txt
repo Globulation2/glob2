@@ -5722,6 +5722,8 @@ Sandstensplattor
 Pimpstensfält
 [frozen_lake]
 Frusen sjö
+[cliffs]
+Klippor
 [terrain group water]
 Vatten
 [terrain group sand]

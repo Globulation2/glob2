@@ -5698,6 +5698,8 @@ Sandstone tiles
 Pumice field
 [frozen_lake]
 Frozen lake
+[cliffs]
+Cliffs
 [terrain group water]
 Water
 [terrain group sand]

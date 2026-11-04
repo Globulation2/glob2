@@ -937,6 +937,18 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(FROZEN_LAKE).name) == "frozen_lake");
 		CHECK(TerrainRegistry::builtins()->find("frozen_lake") == FROZEN_LAKE);
 	}
+	TEST_CASE("cliffs share every rule of hedge and thicket")
+	{
+		CHECK(terrainGroup(CLIFFS) == TerrainGroup::Obstacles);
+		CHECK(terrainPaintable(CLIFFS));
+		CHECK(sameTerrainProperties(terrainProperties(CLIFFS), terrainProperties(HEDGE)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(CLIFFS) ==
+			  TerrainRegistry::builtins()->propertyIndex(THICKET));
+		CHECK_FALSE(terrainProperties(CLIFFS).walkable);
+		CHECK(terrainProperties(CLIFFS).projectileBlocks);
+		CHECK(std::string(terrainPresentation(CLIFFS).name) == "cliffs");
+		CHECK(TerrainRegistry::builtins()->find("cliffs") == CLIFFS);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},
@@ -967,7 +979,7 @@ TEST_SUITE("TerrainRuntime")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				painted.push_back(TerrainType(i));
-		REQUIRE(painted.size() == 31);
+		REQUIRE(painted.size() == 32);
 		for (std::size_t n = 0; n < painted.size(); ++n)
 		{
 			map.paintCell(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);

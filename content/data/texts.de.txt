@@ -5722,6 +5722,8 @@ Sandsteinplatten
 Bimssteinfeld
 [frozen_lake]
 Zugefrorener See
+[cliffs]
+Klippen
 [terrain group water]
 Wasser
 [terrain group sand]

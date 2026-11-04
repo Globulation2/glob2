@@ -114,6 +114,10 @@ struct Decor
 	// Optional extra filled-mask frames ("connected_interior"), colour-major with
 	// the same count per colour: alternative interiors picked by a cell hash.
 	std::vector<int> connectedInterior;
+	// Draw the corner-mask frames against open ground too ("connected_open"):
+	// cells with undecorated corners show this material's edge, as for a cliff
+	// whose rim and walls stand on the grass, instead of no raised decor.
+	bool connectedOpen = false;
 };
 // Version 4 border class: what kind of surface a material is (cover, cut,
 // built, flow, solid, pool). Classes are listed strongest first; the stronger

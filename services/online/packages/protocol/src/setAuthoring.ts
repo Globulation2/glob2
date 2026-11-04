@@ -37,6 +37,7 @@ export const TERRAIN_PRESETS = [
   'sandstone',
   'pumice',
   'frozen_lake',
+  'cliffs',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay

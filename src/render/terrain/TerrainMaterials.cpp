@@ -270,6 +270,13 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				require(!v.decor.connectedCorners || v.decor.connected.size() == 16 * 16,
 					"connected_corners needs 16 corner-colour variants per mask");
 			}
+			if (d.contains("connected_open"))
+			{
+				require(d.at("connected_open").is_boolean(), "connected_open must be a boolean");
+				v.decor.connectedOpen = d.at("connected_open").get<bool>();
+				require(!v.decor.connectedOpen || !v.decor.connected.empty(),
+					"connected_open needs connected frames");
+			}
 			require(v.decor.connectedInterior.empty() ||
 				(v.decor.connectedCorners && v.decor.connectedInterior.size() % 16 == 0),
 				"connected_interior needs connected_corners and equal variants per colour");

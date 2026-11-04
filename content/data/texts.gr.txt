@@ -5722,6 +5722,8 @@ CPU %0%
 Πεδίο ελαφρόπετρας
 [frozen_lake]
 Παγωμένη λίμνη
+[cliffs]
+Γκρεμοί
 [terrain group water]
 Νερό
 [terrain group sand]

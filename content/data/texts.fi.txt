@@ -5722,6 +5722,8 @@ Hiekkakivilaatat
 Hohkakivikenttä
 [frozen_lake]
 Jäätynyt järvi
+[cliffs]
+Jyrkänteet
 [terrain group water]
 Vesi
 [terrain group sand]

@@ -5722,6 +5722,8 @@ Pískovcové dlaždice
 Pemzové pole
 [frozen_lake]
 Zamrzlé jezero
+[cliffs]
+Útesy
 [terrain group water]
 Voda
 [terrain group sand]

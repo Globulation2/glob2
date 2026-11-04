@@ -5722,6 +5722,8 @@ Lajotas de arenito
 Campo de pedra-pomes
 [frozen_lake]
 Lago congelado
+[cliffs]
+Torgennoù
 [terrain group water]
 Água
 [terrain group sand]

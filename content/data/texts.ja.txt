@@ -5722,6 +5722,8 @@ AI 生成ではない
 軽石の原
 [frozen_lake]
 凍った湖
+[cliffs]
+断崖
 [terrain group water]
 水
 [terrain group sand]

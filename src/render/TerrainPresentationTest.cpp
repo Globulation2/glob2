@@ -1969,6 +1969,71 @@ TEST_SUITE("TerrainValidation")
 			(glob2test::artifactDir() / "connected-foliage.png").string().c_str()));
 	}
 
+	TEST_CASE("raised cliffs corners strips a hole and their walls [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 1024, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true,
+			.loadDefaultRace = true, .header = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		// Every corner mask on its own, as in the foliage panels.
+		for (unsigned mask = 0; mask < 16; ++mask)
+		{
+			const int x = 1 + int(mask % 4) * 3, y = 1 + int(mask / 4) * 3;
+			for (unsigned k = 0; k < 4; ++k)
+				map.setVertexTerrain(x + (k & 1), y + (k >> 1), mask & (1u << k) ? CLIFFS : GRASS);
+		}
+		// A plateau with a hole, a thin strip and a spur, so south, east and west
+		// faces, inner corners and single-cell widths all show.
+		for (int y = 2; y <= 12; ++y)
+			for (int x = 17; x <= 30; ++x)
+				if (!(x >= 21 && x <= 24 && y >= 6 && y <= 9))
+					map.setVertexTerrain(x, y, CLIFFS);
+		for (int x = 2; x <= 13; ++x)
+			map.setVertexTerrain(x, 16, CLIFFS);
+		for (int y = 15; y <= 22; ++y)
+			map.setVertexTerrain(20, y, CLIFFS);
+		// Cliffs against hedge: connected decor joins, so the two meet without a wall.
+		for (int y = 26; y <= 29; ++y)
+			for (int x = 4; x <= 27; ++x)
+				map.setVertexTerrain(x, y, x < 16 ? CLIFFS : HEDGE);
+
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor();
+		const auto &catalog = compositor.catalog();
+		const auto id = catalog.find("cliffs");
+		REQUIRE(!catalog.materials[id].decor.connected.empty());
+		// Cliffs draw their edges on open ground: every corner mask, alone on the
+		// grass, shows its own frame (foliage would draw nothing there).
+		for (unsigned mask = 0; mask < 16; ++mask)
+		{
+			const int x = 1 + int(mask % 4) * 3, y = 1 + int(mask / 4) * 3;
+			CAPTURE(mask);
+			CHECK(compositor.decorFrame(scene, x, y) ==
+				  (mask ? catalog.decorFrame(id, x, y, mask != 15, scene.terrainSeed(), mask,
+											 TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed()))
+						: -1));
+		}
+		// A cell where cliffs, hedge and grass meet keeps the foliage rule: hedge
+		// suppresses raised decor beside open ground.
+		map.setVertexTerrain(15, 25, GRASS);
+		SceneMap mixed;
+		glob2test::observeMap(map, mixed);
+		CHECK(compositor.decorFrame(mixed, 15, 25) == -1);
+		// The plateau's frames come from the cliffs set and stand 64 native pixels tall.
+		const int inside = compositor.decorFrame(scene, 18, 3);
+		REQUIRE(inside >= 0);
+		CHECK(compositor.decorSprite(scene, 18, 3)->getH(inside) == 64);
+
+		fixture.game.drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
+		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
+			(glob2test::artifactDir() / "raised-cliffs.png").string().c_str()));
+	}
+
 	TEST_CASE("shoreline surf animation frames around an island [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(
@@ -2081,7 +2146,7 @@ TEST_SUITE("TerrainValidation")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
-		REQUIRE(types.size() == 31);
+		REQUIRE(types.size() == 32);
 		for (std::size_t n = 0; n < types.size(); ++n)
 		{
 			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..27 are rendered
@@ -2134,9 +2199,16 @@ TEST_SUITE("TerrainValidation")
 			full.insert(full.end(), decor.connectedInterior.begin(), decor.connectedInterior.end());
 			CHECK(contains(full, compositor.decorFrame(scene, ox + 1, oy + 1)));
 			// Painted cells cover vertices ox..ox+3, so the cells just outside
-			// the island have two of its corners.
-			CHECK(compositor.decorFrame(scene, ox - 1, oy + 1) == -1);
-			CHECK(compositor.decorFrame(scene, ox + 3, oy + 1) == -1);
+			// the island have two of its corners: only open-edged decor (cliffs)
+			// draws its edge there.
+			for (const int x : {ox - 1, ox + 3})
+			{
+				const int frame = compositor.decorFrame(scene, x, oy + 1);
+				if (decor.connectedOpen)
+					CHECK(contains(decor.connected, frame));
+				else
+					CHECK(frame == -1);
+			}
 		}
 		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
 		// Painted islands keep their identity.
@@ -2163,7 +2235,7 @@ TEST_SUITE("TerrainValidation")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				keys.push_back(terrainPresentation(TerrainType(i)).name);
-		REQUIRE(keys.size() == 31);
+		REQUIRE(keys.size() == 32);
 		// One 4x composed tile per catalogue material, six per row.
 		GAGCore::DrawableSurface sheet(6 * 128, 6 * 128);
 		for (std::size_t n = 0; n < keys.size(); ++n)
@@ -2192,7 +2264,8 @@ TEST_SUITE("TerrainValidation")
 					auto *hd = decor->baseFrame(frame);
 					REQUIRE(hd);
 					CHECK(hd->getW() == 128);
-					CHECK(hd->getH() == 192);
+					// Cliffs stand twice as tall as foliage, in 32x64 frames.
+					CHECK(hd->getH() == (material.key == "cliffs" ? 256 : 192));
 				}
 			}
 			TerrainVisual::Recipe recipe;

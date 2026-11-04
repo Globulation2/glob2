@@ -5722,6 +5722,8 @@ Lastre di arenaria
 Campo di pomice
 [frozen_lake]
 Lago ghiacciato
+[cliffs]
+Scogliere
 [terrain group water]
 Acqua
 [terrain group sand]

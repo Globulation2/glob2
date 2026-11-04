@@ -51,7 +51,9 @@ enum TerrainType : std::uint16_t
 	SANDSTONE=33,
 	PUMICE=34,
 	FROZEN_LAKE=35,
-	TERRAIN_COUNT=36,
+	// Raised rock cliffs (Obstacles), format 196.
+	CLIFFS=36,
+	TERRAIN_COUNT=37,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -64,6 +66,8 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_VERTEX = 31;
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_GROUND_LOOKS = 29;
 // Formats 191 to 194 ended the built-ins at PALE_SAND.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE = 33;
+// Format 195 ended the built-ins at FROZEN_LAKE.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_CLIFFS = 36;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

@@ -34790,6 +34790,1057 @@
         "fringe_q8": 96,
         "fringe_width_q8": 384
       }
+    },
+    {
+      "key": "cliffs",
+      "sprite": "data/gfx/terrain-cliffs",
+      "profile": "canopy",
+      "class": "cover",
+      "preview": [101, 80, 61],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        },
+        {
+          "frame": 16,
+          "weight": 1
+        },
+        {
+          "frame": 17,
+          "weight": 1
+        },
+        {
+          "frame": 18,
+          "weight": 1
+        },
+        {
+          "frame": 19,
+          "weight": 1
+        },
+        {
+          "frame": 20,
+          "weight": 1
+        },
+        {
+          "frame": 21,
+          "weight": 1
+        },
+        {
+          "frame": 22,
+          "weight": 1
+        },
+        {
+          "frame": 23,
+          "weight": 1
+        },
+        {
+          "frame": 24,
+          "weight": 1
+        },
+        {
+          "frame": 25,
+          "weight": 1
+        },
+        {
+          "frame": 26,
+          "weight": 1
+        },
+        {
+          "frame": 27,
+          "weight": 1
+        },
+        {
+          "frame": 28,
+          "weight": 1
+        },
+        {
+          "frame": 29,
+          "weight": 1
+        },
+        {
+          "frame": 30,
+          "weight": 1
+        },
+        {
+          "frame": 31,
+          "weight": 1
+        },
+        {
+          "frame": 32,
+          "weight": 1
+        },
+        {
+          "frame": 33,
+          "weight": 1
+        },
+        {
+          "frame": 34,
+          "weight": 1
+        },
+        {
+          "frame": 35,
+          "weight": 1
+        },
+        {
+          "frame": 36,
+          "weight": 1
+        },
+        {
+          "frame": 37,
+          "weight": 1
+        },
+        {
+          "frame": 38,
+          "weight": 1
+        },
+        {
+          "frame": 39,
+          "weight": 1
+        },
+        {
+          "frame": 40,
+          "weight": 1
+        },
+        {
+          "frame": 41,
+          "weight": 1
+        },
+        {
+          "frame": 42,
+          "weight": 1
+        },
+        {
+          "frame": 43,
+          "weight": 1
+        },
+        {
+          "frame": 44,
+          "weight": 1
+        },
+        {
+          "frame": 45,
+          "weight": 1
+        },
+        {
+          "frame": 46,
+          "weight": 1
+        },
+        {
+          "frame": 47,
+          "weight": 1
+        },
+        {
+          "frame": 48,
+          "weight": 1
+        },
+        {
+          "frame": 49,
+          "weight": 1
+        },
+        {
+          "frame": 50,
+          "weight": 1
+        },
+        {
+          "frame": 51,
+          "weight": 1
+        },
+        {
+          "frame": 52,
+          "weight": 1
+        },
+        {
+          "frame": 53,
+          "weight": 1
+        },
+        {
+          "frame": 54,
+          "weight": 1
+        },
+        {
+          "frame": 55,
+          "weight": 1
+        },
+        {
+          "frame": 56,
+          "weight": 1
+        },
+        {
+          "frame": 57,
+          "weight": 1
+        },
+        {
+          "frame": 58,
+          "weight": 1
+        },
+        {
+          "frame": 59,
+          "weight": 1
+        },
+        {
+          "frame": 60,
+          "weight": 1
+        },
+        {
+          "frame": 61,
+          "weight": 1
+        },
+        {
+          "frame": 62,
+          "weight": 1
+        },
+        {
+          "frame": 63,
+          "weight": 1
+        },
+        {
+          "frame": 64,
+          "weight": 1
+        },
+        {
+          "frame": 65,
+          "weight": 1
+        },
+        {
+          "frame": 66,
+          "weight": 1
+        },
+        {
+          "frame": 67,
+          "weight": 1
+        },
+        {
+          "frame": 68,
+          "weight": 1
+        },
+        {
+          "frame": 69,
+          "weight": 1
+        },
+        {
+          "frame": 70,
+          "weight": 1
+        },
+        {
+          "frame": 71,
+          "weight": 1
+        },
+        {
+          "frame": 72,
+          "weight": 1
+        },
+        {
+          "frame": 73,
+          "weight": 1
+        },
+        {
+          "frame": 74,
+          "weight": 1
+        },
+        {
+          "frame": 75,
+          "weight": 1
+        },
+        {
+          "frame": 76,
+          "weight": 1
+        },
+        {
+          "frame": 77,
+          "weight": 1
+        },
+        {
+          "frame": 78,
+          "weight": 1
+        },
+        {
+          "frame": 79,
+          "weight": 1
+        },
+        {
+          "frame": 80,
+          "weight": 1
+        },
+        {
+          "frame": 81,
+          "weight": 1
+        },
+        {
+          "frame": 82,
+          "weight": 1
+        },
+        {
+          "frame": 83,
+          "weight": 1
+        },
+        {
+          "frame": 84,
+          "weight": 1
+        },
+        {
+          "frame": 85,
+          "weight": 1
+        },
+        {
+          "frame": 86,
+          "weight": 1
+        },
+        {
+          "frame": 87,
+          "weight": 1
+        },
+        {
+          "frame": 88,
+          "weight": 1
+        },
+        {
+          "frame": 89,
+          "weight": 1
+        },
+        {
+          "frame": 90,
+          "weight": 1
+        },
+        {
+          "frame": 91,
+          "weight": 1
+        },
+        {
+          "frame": 92,
+          "weight": 1
+        },
+        {
+          "frame": 93,
+          "weight": 1
+        },
+        {
+          "frame": 94,
+          "weight": 1
+        },
+        {
+          "frame": 95,
+          "weight": 1
+        },
+        {
+          "frame": 96,
+          "weight": 1
+        },
+        {
+          "frame": 97,
+          "weight": 1
+        },
+        {
+          "frame": 98,
+          "weight": 1
+        },
+        {
+          "frame": 99,
+          "weight": 1
+        },
+        {
+          "frame": 100,
+          "weight": 1
+        },
+        {
+          "frame": 101,
+          "weight": 1
+        },
+        {
+          "frame": 102,
+          "weight": 1
+        },
+        {
+          "frame": 103,
+          "weight": 1
+        },
+        {
+          "frame": 104,
+          "weight": 1
+        },
+        {
+          "frame": 105,
+          "weight": 1
+        },
+        {
+          "frame": 106,
+          "weight": 1
+        },
+        {
+          "frame": 107,
+          "weight": 1
+        },
+        {
+          "frame": 108,
+          "weight": 1
+        },
+        {
+          "frame": 109,
+          "weight": 1
+        },
+        {
+          "frame": 110,
+          "weight": 1
+        },
+        {
+          "frame": 111,
+          "weight": 1
+        },
+        {
+          "frame": 112,
+          "weight": 1
+        },
+        {
+          "frame": 113,
+          "weight": 1
+        },
+        {
+          "frame": 114,
+          "weight": 1
+        },
+        {
+          "frame": 115,
+          "weight": 1
+        },
+        {
+          "frame": 116,
+          "weight": 1
+        },
+        {
+          "frame": 117,
+          "weight": 1
+        },
+        {
+          "frame": 118,
+          "weight": 1
+        },
+        {
+          "frame": 119,
+          "weight": 1
+        },
+        {
+          "frame": 120,
+          "weight": 1
+        },
+        {
+          "frame": 121,
+          "weight": 1
+        },
+        {
+          "frame": 122,
+          "weight": 1
+        },
+        {
+          "frame": 123,
+          "weight": 1
+        },
+        {
+          "frame": 124,
+          "weight": 1
+        },
+        {
+          "frame": 125,
+          "weight": 1
+        },
+        {
+          "frame": 126,
+          "weight": 1
+        },
+        {
+          "frame": 127,
+          "weight": 1
+        },
+        {
+          "frame": 128,
+          "weight": 1
+        },
+        {
+          "frame": 129,
+          "weight": 1
+        },
+        {
+          "frame": 130,
+          "weight": 1
+        },
+        {
+          "frame": 131,
+          "weight": 1
+        },
+        {
+          "frame": 132,
+          "weight": 1
+        },
+        {
+          "frame": 133,
+          "weight": 1
+        },
+        {
+          "frame": 134,
+          "weight": 1
+        },
+        {
+          "frame": 135,
+          "weight": 1
+        },
+        {
+          "frame": 136,
+          "weight": 1
+        },
+        {
+          "frame": 137,
+          "weight": 1
+        },
+        {
+          "frame": 138,
+          "weight": 1
+        },
+        {
+          "frame": 139,
+          "weight": 1
+        },
+        {
+          "frame": 140,
+          "weight": 1
+        },
+        {
+          "frame": 141,
+          "weight": 1
+        },
+        {
+          "frame": 142,
+          "weight": 1
+        },
+        {
+          "frame": 143,
+          "weight": 1
+        },
+        {
+          "frame": 144,
+          "weight": 1
+        },
+        {
+          "frame": 145,
+          "weight": 1
+        },
+        {
+          "frame": 146,
+          "weight": 1
+        },
+        {
+          "frame": 147,
+          "weight": 1
+        },
+        {
+          "frame": 148,
+          "weight": 1
+        },
+        {
+          "frame": 149,
+          "weight": 1
+        },
+        {
+          "frame": 150,
+          "weight": 1
+        },
+        {
+          "frame": 151,
+          "weight": 1
+        },
+        {
+          "frame": 152,
+          "weight": 1
+        },
+        {
+          "frame": 153,
+          "weight": 1
+        },
+        {
+          "frame": 154,
+          "weight": 1
+        },
+        {
+          "frame": 155,
+          "weight": 1
+        },
+        {
+          "frame": 156,
+          "weight": 1
+        },
+        {
+          "frame": 157,
+          "weight": 1
+        },
+        {
+          "frame": 158,
+          "weight": 1
+        },
+        {
+          "frame": 159,
+          "weight": 1
+        },
+        {
+          "frame": 160,
+          "weight": 1
+        },
+        {
+          "frame": 161,
+          "weight": 1
+        },
+        {
+          "frame": 162,
+          "weight": 1
+        },
+        {
+          "frame": 163,
+          "weight": 1
+        },
+        {
+          "frame": 164,
+          "weight": 1
+        },
+        {
+          "frame": 165,
+          "weight": 1
+        },
+        {
+          "frame": 166,
+          "weight": 1
+        },
+        {
+          "frame": 167,
+          "weight": 1
+        },
+        {
+          "frame": 168,
+          "weight": 1
+        },
+        {
+          "frame": 169,
+          "weight": 1
+        },
+        {
+          "frame": 170,
+          "weight": 1
+        },
+        {
+          "frame": 171,
+          "weight": 1
+        },
+        {
+          "frame": 172,
+          "weight": 1
+        },
+        {
+          "frame": 173,
+          "weight": 1
+        },
+        {
+          "frame": 174,
+          "weight": 1
+        },
+        {
+          "frame": 175,
+          "weight": 1
+        },
+        {
+          "frame": 176,
+          "weight": 1
+        },
+        {
+          "frame": 177,
+          "weight": 1
+        },
+        {
+          "frame": 178,
+          "weight": 1
+        },
+        {
+          "frame": 179,
+          "weight": 1
+        },
+        {
+          "frame": 180,
+          "weight": 1
+        },
+        {
+          "frame": 181,
+          "weight": 1
+        },
+        {
+          "frame": 182,
+          "weight": 1
+        },
+        {
+          "frame": 183,
+          "weight": 1
+        },
+        {
+          "frame": 184,
+          "weight": 1
+        },
+        {
+          "frame": 185,
+          "weight": 1
+        },
+        {
+          "frame": 186,
+          "weight": 1
+        },
+        {
+          "frame": 187,
+          "weight": 1
+        },
+        {
+          "frame": 188,
+          "weight": 1
+        },
+        {
+          "frame": 189,
+          "weight": 1
+        },
+        {
+          "frame": 190,
+          "weight": 1
+        },
+        {
+          "frame": 191,
+          "weight": 1
+        },
+        {
+          "frame": 192,
+          "weight": 1
+        },
+        {
+          "frame": 193,
+          "weight": 1
+        },
+        {
+          "frame": 194,
+          "weight": 1
+        },
+        {
+          "frame": 195,
+          "weight": 1
+        },
+        {
+          "frame": 196,
+          "weight": 1
+        },
+        {
+          "frame": 197,
+          "weight": 1
+        },
+        {
+          "frame": 198,
+          "weight": 1
+        },
+        {
+          "frame": 199,
+          "weight": 1
+        },
+        {
+          "frame": 200,
+          "weight": 1
+        },
+        {
+          "frame": 201,
+          "weight": 1
+        },
+        {
+          "frame": 202,
+          "weight": 1
+        },
+        {
+          "frame": 203,
+          "weight": 1
+        },
+        {
+          "frame": 204,
+          "weight": 1
+        },
+        {
+          "frame": 205,
+          "weight": 1
+        },
+        {
+          "frame": 206,
+          "weight": 1
+        },
+        {
+          "frame": 207,
+          "weight": 1
+        },
+        {
+          "frame": 208,
+          "weight": 1
+        },
+        {
+          "frame": 209,
+          "weight": 1
+        },
+        {
+          "frame": 210,
+          "weight": 1
+        },
+        {
+          "frame": 211,
+          "weight": 1
+        },
+        {
+          "frame": 212,
+          "weight": 1
+        },
+        {
+          "frame": 213,
+          "weight": 1
+        },
+        {
+          "frame": 214,
+          "weight": 1
+        },
+        {
+          "frame": 215,
+          "weight": 1
+        },
+        {
+          "frame": 216,
+          "weight": 1
+        },
+        {
+          "frame": 217,
+          "weight": 1
+        },
+        {
+          "frame": 218,
+          "weight": 1
+        },
+        {
+          "frame": 219,
+          "weight": 1
+        },
+        {
+          "frame": 220,
+          "weight": 1
+        },
+        {
+          "frame": 221,
+          "weight": 1
+        },
+        {
+          "frame": 222,
+          "weight": 1
+        },
+        {
+          "frame": 223,
+          "weight": 1
+        },
+        {
+          "frame": 224,
+          "weight": 1
+        },
+        {
+          "frame": 225,
+          "weight": 1
+        },
+        {
+          "frame": 226,
+          "weight": 1
+        },
+        {
+          "frame": 227,
+          "weight": 1
+        },
+        {
+          "frame": 228,
+          "weight": 1
+        },
+        {
+          "frame": 229,
+          "weight": 1
+        },
+        {
+          "frame": 230,
+          "weight": 1
+        },
+        {
+          "frame": 231,
+          "weight": 1
+        },
+        {
+          "frame": 232,
+          "weight": 1
+        },
+        {
+          "frame": 233,
+          "weight": 1
+        },
+        {
+          "frame": 234,
+          "weight": 1
+        },
+        {
+          "frame": 235,
+          "weight": 1
+        },
+        {
+          "frame": 236,
+          "weight": 1
+        },
+        {
+          "frame": 237,
+          "weight": 1
+        },
+        {
+          "frame": 238,
+          "weight": 1
+        },
+        {
+          "frame": 239,
+          "weight": 1
+        },
+        {
+          "frame": 240,
+          "weight": 1
+        },
+        {
+          "frame": 241,
+          "weight": 1
+        },
+        {
+          "frame": 242,
+          "weight": 1
+        },
+        {
+          "frame": 243,
+          "weight": 1
+        },
+        {
+          "frame": 244,
+          "weight": 1
+        },
+        {
+          "frame": 245,
+          "weight": 1
+        },
+        {
+          "frame": 246,
+          "weight": 1
+        },
+        {
+          "frame": 247,
+          "weight": 1
+        },
+        {
+          "frame": 248,
+          "weight": 1
+        },
+        {
+          "frame": 249,
+          "weight": 1
+        },
+        {
+          "frame": 250,
+          "weight": 1
+        },
+        {
+          "frame": 251,
+          "weight": 1
+        },
+        {
+          "frame": 252,
+          "weight": 1
+        },
+        {
+          "frame": 253,
+          "weight": 1
+        },
+        {
+          "frame": 254,
+          "weight": 1
+        },
+        {
+          "frame": 255,
+          "weight": 1
+        }
+      ],
+      "edges": "periodic",
+      "variant_grid": 8,
+      "variant_blocks": 4,
+      "minimap": [101, 80, 61],
+      "seam": {
+        "height": 4,
+        "cast_q8": 88,
+        "cast_width_q8": 832
+      },
+      "decor": {
+        "sprite": "data/gfx/terrain-decor",
+        "full": [796, 797, 798, 799, 800, 801, 802, 803],
+        "edge": [804, 805, 806, 807],
+        "connected": [808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 883, 884, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 899, 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 940, 941, 942, 943, 944, 945, 946, 947, 948, 949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057, 1058, 1059, 1060, 1061, 1062, 1063],
+        "connected_interior": [1064, 1065, 1066, 1067, 1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1096, 1097, 1098, 1099, 1100, 1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108, 1109, 1110, 1111, 1112, 1113, 1114, 1115, 1116, 1117, 1118, 1119, 1120, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130, 1131, 1132, 1133, 1134, 1135, 1136, 1137, 1138, 1139, 1140, 1141, 1142, 1143, 1144, 1145, 1146, 1147, 1148, 1149, 1150, 1151, 1152, 1153, 1154, 1155, 1156, 1157, 1158, 1159, 1160, 1161, 1162, 1163, 1164, 1165, 1166, 1167, 1168, 1169, 1170, 1171, 1172, 1173, 1174, 1175],
+        "connected_corners": true,
+        "connected_open": true
+      }
     }
   ],
   "bindings": {
@@ -34828,7 +35879,8 @@
     "brick_path": "brick_path",
     "sandstone": "sandstone",
     "pumice": "pumice",
-    "frozen_lake": "frozen_lake"
+    "frozen_lake": "frozen_lake",
+    "cliffs": "cliffs"
   },
   "boundary_warp_q8": [960, 352, 120]
 }

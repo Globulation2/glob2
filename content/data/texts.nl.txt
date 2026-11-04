@@ -5722,6 +5722,8 @@ Zandsteentegels
 Puimsteenveld
 [frozen_lake]
 Bevroren meer
+[cliffs]
+Kliffen
 [terrain group water]
 Water
 [terrain group sand]

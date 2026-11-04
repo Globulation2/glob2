@@ -5698,6 +5698,8 @@ AI ద్వారా రూపొందించబడలేదు
 ప్యూమిస్ రాతి మైదానం
 [frozen_lake]
 గడ్డకట్టిన సరస్సు
+[cliffs]
+కొండచరియలు
 [terrain group water]
 నీరు
 [terrain group sand]

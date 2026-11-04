@@ -6838,6 +6838,8 @@ MCP सर्व्हर सक्षम करा
 प्युमिस दगडाचे मैदान
 [frozen_lake]
 गोठलेले सरोवर
+[cliffs]
+कडे
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
 [script error at %0:%1: %2]

@@ -5722,6 +5722,8 @@ Płyty z piaskowca
 Pole pumeksu
 [frozen_lake]
 Zamarznięte jezioro
+[cliffs]
+Klify
 [terrain group water]
 Woda
 [terrain group sand]

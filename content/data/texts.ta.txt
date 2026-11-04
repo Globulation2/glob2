@@ -6838,6 +6838,8 @@ GL மட்டும்
 நுரைக்கல் வெளி
 [frozen_lake]
 உறைந்த ஏரி
+[cliffs]
+செங்குத்துப் பாறைகள்
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]
