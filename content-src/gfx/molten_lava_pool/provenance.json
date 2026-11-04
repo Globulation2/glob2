@@ -5,7 +5,7 @@
     "tools/artwork/terrain_synth.py": "8f478809b4b7fe7cc7b97fab5eebd8fad6795c29b0d2fdaa39bab79fc32f983b",
     "tools/artwork/terrain_core.py": "8a98a23ed1ddf79b0081dd20a8263e4c780404dc5dbe62b92f1a01836e85345b",
     "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1",
-    "tools/artwork/terrain_packs/molten_lava_pool.py": "dd6826067687c8caf4736df27784306ab77a0d69be92fbd633bca533cc7ad55c"
+    "tools/artwork/terrain_packs/molten_lava_pool.py": "34375b9fdd34b6eb61301be56e5209ef00858e2fd5162a1c161936620670cbe1"
   },
   "material": "molten_lava_pool",
   "group": "lava",
