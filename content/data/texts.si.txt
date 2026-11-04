@@ -5739,9 +5739,9 @@ Zaraščena cesta
 [laterite]
 Lateritna tla
 [cliffs]
-ප්‍රපාත
+Pečine
 [molten_lava_pool]
-ද්‍රවිත ලාවා පොකුණ
+Bazen staljene lave
 [terrain group water]
 Voda
 [terrain group sand]
