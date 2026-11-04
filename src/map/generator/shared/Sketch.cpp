@@ -5,6 +5,7 @@
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Map.h"
+#include "TerrainProperties.h"
 #include <algorithm>
 #include <cmath>
 namespace MapGeneration
@@ -98,6 +99,22 @@ std::vector<unsigned char> pureTiles(const TerrainSketch &terrain, const Torus &
 		}
 	}
 	return pure;
+}
+
+std::vector<unsigned char> walkableTiles(const TerrainSketch &terrain, const Torus &t)
+{
+	std::vector<unsigned char> walkable(terrain.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		::MapGeneration::generationCheckpoint();
+		const int x = t.remainderX(i), y = i / t.w;
+		walkable.at(i) = combineCornerRules(
+			terrainProperties(TerrainType(terrain.at(i))),
+			terrainProperties(TerrainType(terrain.at(t.at(x + 1, y)))),
+			terrainProperties(TerrainType(terrain.at(t.at(x, y + 1)))),
+			terrainProperties(TerrainType(terrain.at(t.at(x + 1, y + 1))))).walkable;
+	}
+	return walkable;
 }
 
 std::vector<Island> raiseIslands(TerrainSketch &terrain, const Torus &t, GenerationContext &context,

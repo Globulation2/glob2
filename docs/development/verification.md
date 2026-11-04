@@ -15,6 +15,10 @@ its exact revision and policy.
 Release packaging first runs the full development matrix on the exact candidate
 revision through `build.yml`'s `revision` workflow-call input.
 
+The selector keeps the complete commit history and branch/tag refs, while its
+checkout uses `blob:none` to fetch historical file contents only when needed.
+The selected revision's complete working tree remains available to every check.
+
 The selector runs shared build-system contracts in a dedicated
 `artifacts/build-contract-venv`, created with the pinned asset encoder's Python.
 It installs `test/build_system/requirements.txt` there, including the asset
@@ -220,7 +224,7 @@ predictive subset of hosted checks. Documentation and other cheap-only changes
 remain cheap. The cheap `music` job covers changes under `tools/music/`, including
 its Python tests and a small C++ portable-file round trip using libopusfile; this
 job does not establish engine verification. Files inside a soundtrack set,
-`data/zik/<set>/`, qualify for engine prediction; `data/zik/SConscript` selects full
+`content/data/zik/<set>/`, qualify for engine prediction; `content/data/zik/SConscript` selects full
 verification as build infrastructure.
 
 `ci:run` overrides prediction with affected hosted checks; applicable native

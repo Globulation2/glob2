@@ -15,7 +15,7 @@ or tournament adjudication is part of the worker or engine.
 ## Start locally
 
 Build the production client (`scons -j4 release=1 server=0`), then prepare a directory
-containing `glob2` and `data/`. Include optional symbols and any other runtime files
+containing `glob2` and `content/data/`. Include optional symbols and any other runtime files
 needed by that build. Bundles must contain regular files, not symlinks. Run from the
 repository root:
 
@@ -102,7 +102,7 @@ build/src/glob2 game run --map-file /tmp/generated/map-r0.map.gz \
 To exercise a custom profile, append repeatable rule arguments to a new game:
 
 ```sh
-build/src/glob2 game run --map-file maps/SmallForTwo.map.gz \
+build/src/glob2 game run --map-file content/maps/SmallForTwo.map.gz \
   --game-seed 19 --player cortex --player maxima \
   --rule noUpgrades=1 --rule noHunger=1 --rule peaceful=1 \
   --ticks 30000 --save initial --save final --write-replay \
@@ -806,7 +806,7 @@ schemas/current/history/final values, and engine performance samples/final total
 Collection remains automatic; export remains opt-in. No extra worker service,
 transport option or result-schema migration is needed. The catalog advertises
 `gameplay_telemetry_version`, `ai_telemetry_version`, and
-`performance_telemetry_version` (gameplay 2, AI 1, performance 1). The typed
+`performance_telemetry_version` (gameplay 2, AI 1, performance 2). The typed
 reader also covers the per-team `GLOB2_ECON`/`GLOB2_TL` timeline and the
 `GLOB2_WINPROB` trace as a `team_state` family; unlike the gameplay measurements
 these come straight off `TeamStat`, which is what makes them usable as model
@@ -860,15 +860,16 @@ observed totals, inclusive times and unavailable self times remain distinct.
 Population standard deviations require sample counts and a parallel-variance
 merge, not averaging standard deviations. A headless run has no render budget
 and cannot measure interactive frame quality. Structured final saves are included
-before the performance final record. Ambient `GLOB2_PERF_DISABLE` and build-label
-overrides are isolated like the existing headless tuning environment.
+before the performance final record. Ambient build-label overrides are isolated like the existing headless tuning
+environment. Performance collection is mandatory; the retired disable variable has
+no effect. Version 2 adds wall-time distributions, permanent executor
+wait/dependency summaries and renderer/GPU records to the same stream. GPU raw results
+overlap interval/final aggregates; select one population when analyzing them.
 
 See [gameplay metric definitions](../ai/gameplay-statistics.md),
 [AI schema/extension contract](../ai/telemetry.md), and
 [performance scope definitions](../development/performance-telemetry.md).
-The rebased save formats are 105 (gameplay) and 106 (AI), above master's 104;
-released save support still starts at 58. Master's network/YOG gate 33 and replay
-floor 99 are preserved. Existing exported logs need no conversion.
+Existing exported telemetry logs need no conversion.
 
 
 ## Pipeline throughput benchmark

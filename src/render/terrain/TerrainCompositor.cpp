@@ -14,8 +14,8 @@ namespace TerrainVisual
 Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets)
     : definitions(std::move(catalog)), customSprites(std::move(assets))
 {
-	hasContextualProfiles = std::any_of(definitions.profiles.begin(), definitions.profiles.end(),
-		[](const auto &profile) { return profile.contextual; });
+	hasNeighborhoodProfiles = std::any_of(definitions.profiles.begin(), definitions.profiles.end(),
+		[](const auto &profile) { return profile.shape != BoundaryShape::Patch; });
 	pack = CompiledPack::load(definitions);
 	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
 	{
@@ -66,6 +66,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			animationTextures.back().next.resize(m.variants.size());
 		}
 		materialRevisions.push_back(0);
+		highResolutionSizes.push_back(0);
 	}
     if (mixedDecorSprites) sharedDecorSprite = nullptr;
 	// Shore calm pulls waves toward one colour per material, so the fade
@@ -109,6 +110,11 @@ void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
 	t.source = source;
 	t.identity = source->lifetimeIdentity();
 	t.revision = source->contentRevision();
+	markOpaque(t);
+}
+void Compositor::markOpaque(Texture &t)
+{
+	t.opaque = std::all_of(t.pixels.begin(), t.pixels.end(), [](const auto &p) { return p[3] == 255; });
 }
 std::pair<GAGCore::Sprite *, unsigned> Compositor::editorIcon(TerrainType type) const
 {
@@ -178,6 +184,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 		if (packaged)
 		{
 			pack->read(m.sprite + std::to_string(frame) + ".png", t.pixels);
+			markOpaque(t);
 			t.size = 32;
 			t.source = source;
 			t.identity = source->lifetimeIdentity();
@@ -214,6 +221,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 										   : 0;
 				destination[3] = alpha / band;
 			}
+	for (auto &t : target) markOpaque(t);
 	return changed;
 }
 void Compositor::prepare(bool hd, int time)
@@ -265,23 +273,40 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
     }
     // A sprite can back several materials: declare the union before any reads.
     std::map<GAGCore::Sprite *, std::vector<unsigned>> windows;
+    // Streamed animations keep later phases resident within a shared budget,
+    // so advancing reuses decoded frames instead of dropping the old phase and
+    // decoding the next one again. Endpoints are listed first and decode first.
+    std::size_t lookaheadBytes = AnimationLookaheadBytes;
     for (unsigned id = 0; id < definitions.materials.size(); ++id)
     {
         const auto &m = definitions.materials[id];
         auto &window = windows[sprites[id]];
         if (!hd) continue;
         const unsigned phase = unsigned(time) / m.animationTicks % m.animationFrames;
+        const bool animated = m.animationFrames > 1 && m.animationTicks > 1;
+        std::size_t count = 0;
         for (unsigned i = 0; i < m.variants.size(); ++i)
             if (!requested || (*requested)[id][i])
             {
+                ++count;
                 window.push_back(m.variants[i].frame + phase * m.animationStride);
-                if (m.animationFrames > 1 && m.animationTicks > 1)
+                if (animated)
                     window.push_back(m.variants[i].frame + (phase + 1) % m.animationFrames * m.animationStride);
             }
+        if (!animated || !count || !GAGCore::Sprite::highResolutionDeferred(m.sprite)) continue;
+        constexpr std::size_t frameBytes = 128 * 128 * 4; // A 32-pixel cell at HD scale 4.
+        const unsigned extra = unsigned(std::min<std::size_t>(m.animationFrames - 2,
+                                                              lookaheadBytes / (count * frameBytes)));
+        lookaheadBytes -= extra * count * frameBytes;
+        for (unsigned ahead = 2; ahead < 2 + extra; ++ahead)
+            for (unsigned i = 0; i < m.variants.size(); ++i)
+                if (!requested || (*requested)[id][i])
+                    window.push_back(m.variants[i].frame + (phase + ahead) % m.animationFrames * m.animationStride);
     }
     for (auto &[sprite, window] : windows) sprite->setHighResolutionFrames(window);
 
 	int nextResolution = 1;
+	bool fallback = false;
 	// Surf moves once per `ticks`, so entering a new step invalidates its pages
 	// too, also when the texture itself is still (dark water).
 	const unsigned previousTime = preparedTime;
@@ -331,7 +356,10 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
 			if (advanced) animation.current.swap(animation.next);
 			const bool currentChanged = prepareMaterial(id, hd, phase, animation.current, wanted);
 			const bool nextChanged = prepareMaterial(id, hd, (phase + 1) % m.animationFrames, animation.next, wanted);
-			const unsigned blend = unsigned(time) % m.animationTicks;
+			// Stepped crossfades hold each weight for several ticks; by default
+			// every tick is its own step.
+			const unsigned steps = m.animationBlendSteps ? unsigned(m.animationBlendSteps) : unsigned(m.animationTicks);
+			const unsigned blend = unsigned(time) % m.animationTicks * steps / m.animationTicks;
             bool missingOutput = false;
             for (unsigned i = 0; i < m.variants.size(); ++i)
                 if ((!wanted || (*wanted)[i]) && textures[id][i].pixels.empty()) missingOutput = true;
@@ -347,8 +375,20 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
 					auto &out = textures[id][i];
 					out.size = std::max(a.size, b.size);
 					out.pixels.resize(out.size * out.size);
-					const unsigned weightB = (std::uint64_t(blend) * 65536 + m.animationTicks / 2) / m.animationTicks;
+					const unsigned weightB = (std::uint64_t(blend) * 65536 + steps / 2) / steps;
 					const unsigned weightA = 65536 - weightB;
+					out.opaque = a.opaque && b.opaque;
+					if (out.opaque && a.size == out.size && b.size == out.size)
+					{
+						// Opaque endpoints at one size: a flat loop the compiler
+						// vectorizes. Full alpha stays (255 * 65536 + 32768) >> 16.
+						const auto *pa = a.pixels.front().data(), *pb = b.pixels.front().data();
+						auto *po = out.pixels.front().data();
+						const std::size_t bytes = out.pixels.size() * 4;
+						for (std::size_t k = 0; k < bytes; ++k)
+							po[k] = static_cast<unsigned char>((pa[k] * weightA + pb[k] * weightB + 32768) >> 16);
+						continue;
+					}
 					for (std::size_t p = 0; p < out.pixels.size(); ++p)
 					{
 						// Partial HD packs can supply only one endpoint at higher resolution.
@@ -383,8 +423,24 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
 			++materialRevisions[id];
 		for (const auto &texture : textures[id])
 			if (texture.size > 32) nextResolution = 4;
+		if (hd)
+			for (unsigned i = 0; i < m.variants.size(); ++i)
+				if (!wanted || (*wanted)[i])
+				{
+					// Either crossfade endpoint can still be a native source.
+					int size = textures[id][i].size;
+					if (!animation.current.empty())
+						size = std::min({size, animation.current[i].size, animation.next[i].size});
+					fallback |= highResolutionSizes[id] > size;
+					highResolutionSizes[id] = std::max(highResolutionSizes[id], size);
+				}
 	}
 	resolution = nextResolution;
+	if (hd)
+	{
+		++coverage.prepares;
+		coverage.fallbacks += fallback;
+	}
 }
 MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const {
     // Custom terrain with its own artwork binds by key; anything else draws its appearance.
@@ -453,9 +509,13 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	MaterialId other = first;
 	for (const auto id : r.corners)
 		if (id != first) other = id;
-	if (other == first || !definitions.contextualFor(first, other) ||
+	if (other == first || !hasNeighborhoodProfiles)
+		return r;
+	// Version 4 smooth contacts read the halo of any mixed cell; earlier
+	// catalogs only of two-material contextual cells, keeping their recipes.
+	if (definitions.version < 4 && (!definitions.contextualFor(first, other) ||
 		std::any_of(r.corners.begin(), r.corners.end(),
-			[first, other](auto id) { return id != first && id != other; }))
+			[first, other](auto id) { return id != first && id != other; })))
 		return r;
 	r.hasNeighborhood = true;
 	for (int y = -1; y <= 2; ++y)
@@ -557,6 +617,7 @@ std::size_t Compositor::cpuMaterialBytesSelected(std::span<const MaterialId> nee
                         definitions.profiles.capacity() * sizeof(Profile) +
                         definitions.materials.capacity() * sizeof(Material) +
                         definitions.treatments.capacity() * sizeof(PairTreatment) +
+                        definitions.borderClasses.capacity() * sizeof(BorderClass) +
                         textures.capacity() * sizeof(std::vector<CpuMaterials::Texture>);
     for (const auto &profile : definitions.profiles)
     {
@@ -573,6 +634,8 @@ std::size_t Compositor::cpuMaterialBytesSelected(std::span<const MaterialId> nee
                  256;
     for (const auto &binding : definitions.bindings)
         bytes += sizeof(binding) + binding.first.capacity() + 128;
+    for (const auto &entry : definitions.borderClasses)
+        bytes += entry.key.capacity() + 64;
     bytes += textures.size();
     for (std::size_t id = 0; id < textures.size(); ++id)
         if (usage ? std::any_of((*usage)[id].begin(), (*usage)[id].end(), [](auto v) { return v != 0; })
@@ -609,6 +672,7 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsSelected
         auto copy = std::make_shared<Catalog>();
         copy->version = definitions.version;
         copy->boundaryWarp = definitions.boundaryWarp;
+        copy->borderClasses = definitions.borderClasses;
         copy->profiles = definitions.profiles;
         copy->materials = definitions.materials;
         copy->treatments = definitions.treatments;

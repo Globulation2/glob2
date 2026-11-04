@@ -17,11 +17,11 @@ its own.
 - **Contested ground between the homes.** Mountains (one per colony by default) and lakes are
   spread as far from the homes as the island allows, and the oasis orchard is the prize in the
   middle. The bridges are where the two halves of the island meet.
-- **Fast roads.** Roads are cobbled road with gravel shoulders: fast, buildable, and nothing grows
+- **Fast roads.** Roads are cobbled road with shale shoulders: fast, buildable, and nothing grows
   on them, so every hex is a sealed plot of its own.
-- **The deep sea is a wall.** The sea deepens eight tiles from the shore, and a tile mixing
-  shallow and deep water can be neither walked nor swum, so swimming opens the river and the
-  coast, never a way across the sea.
+- **The deep sea slows swimmers.** The sea deepens eight tiles from the shore. Mixed
+  shallow/deep cells remain swimmable, so swimmers can use the river, follow the coast
+  or take a longer route around the island through the slower open sea.
 
 ## The hexes
 
@@ -31,7 +31,7 @@ its own.
 | Field | Solid loam under wheat | Food. The loam irrigates the field as the pond of earlier revisions did |
 | Water meadow (the river takes a fifth of it) | Spring meadow under wheat | Food, watered by the river too |
 | Forest | Trees on lush grass round a heart of moss and a thicket that never clears | Wood; the moss keeps it growing |
-| Pasture | Grass with drifts of flower meadow, and a hedgerow across it with a gap | Building room; the hedge stops arrows |
+| Pasture | Grass with drifts of heath, and a hedgerow across it with a gap | Building room; the hedge stops arrows |
 | Hills | Clay with two or three outcrop knolls and a grass pocket | Building room and two stone |
 | Mountain | A ridge-rock and outcrop massif with a deep-snow cap, a scree and boulder skirt | Eight stone at its foot; rock towers shoot over, boulders stop arrows |
 | Lake | A pond with a dark deep middle, a garden round it, a mud rim | Food and wood between the homes |
@@ -53,7 +53,7 @@ how it evolved and the tradeoffs.
 | Homes | Two adjoining hexes per colony, spread farthest apart and kept off the river's banks, then dealt at random. Each home's free neighbours nearest its swarm (preferring hexes no other home borders) make up two food hexes, counting water meadows already there, and one forest. One of two garden designs per map: **well yard** or **garden court**. |
 | Contested hexes | The oasis at the middle, then lakes and mountains, each by farthest-point spreading from everything placed before. |
 | Dealt hexes | Half the riverside hexes not beside a home are fields (the Wheat fields control). The rest are dealt from a shuffled deck of fields, forests, pastures and hills whose counts bring the island's totals to the proportions of the weights, as the board game deals its tiles; a field or forest card that falls beside a home changes places with the next pasture or hills card. |
-| Roads | Road down the middle, gravel shoulders against every hex, grass inside a home. |
+| Roads | Road down the middle, shale shoulders against every hex, grass inside a home. |
 | Bridges | Boardwalk decks across the river where it runs through the island, landings kept clear and a dirt-track causeway to the nearest road. |
 | Looks | The layout is drawn with one terrain per mechanic; a last pass paints the looks that share each mechanic, and grass by its growth chance (lush where watered, dry where nothing grows). |
 

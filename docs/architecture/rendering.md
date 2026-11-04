@@ -80,10 +80,10 @@ GUV1 sidecar for procedural detail, so rebuilding the surface does not move save
 paint. Both renderers use the paint UVs when a sidecar is absent; malformed
 sidecars are rejected. See the [unit asset pipeline](../../tools/unit-animation/README.md#experimental-live-colony-skins).
 
-Colony-skin materials are declared once in `libgag/shaders/skin-materials.json`
+Colony-skin materials are declared once in `libs/gag/shaders/skin-materials.json`
 (ids, keys, display names, picker groups, which materials grow fur shells, the
 shell count and the fur length and depth bias every renderer uses) and shaded
-once in `libgag/shaders/skin-material.glsl`. `scons/skin_materials.py`
+once in `libs/gag/shaders/skin-material.glsl`. `scons/skin_materials.py`
 compiles both into the generated `include/glob2/SkinMaterials.h`
 (`SKIN_MATERIAL_COUNT`, `SKIN_MATERIAL_SHELLS`, the `SkinMaterials` table and the
 GLSL text) for the desktop, web and mobile builds; Colony Studio imports the GLSL
@@ -104,12 +104,12 @@ normal; their shader sets `alpha` to 0 where a shell carries no strand. Tiles
 are cached per pose, so no material can animate over time.
 
 To add a material: append it to the JSON, add `skinMaterial_<key>` and its
-dispatch line to the GLSL, mirror the entry in `platform/packages/protocol/src/skins.ts`,
+dispatch line to the GLSL, mirror the entry in `services/online/packages/protocol/src/skins.ts`,
 then run `test/build_system/test_skin_materials.py`, the `SkinMesh` display
 suite with `GLOB2_UPDATE_SKIN_FINGERPRINTS=1` once (it rewrites
 `test/fixtures/skins/material-fingerprints.json` and writes contact sheets under
 `artifacts/skins/materials/`) and review the sheets. While iterating on the
-GLSL, `tools/skins/material_spheres.mjs` (run from `platform/apps/web`) renders
+GLSL, `tools/skins/material_spheres.mjs` (run from `services/online/apps/web`) renders
 every material on a sphere through headless Chromium in seconds, and the
 `skins-materials.spec.ts` e2e captures each material on the worker at studio
 resolution. Any shader edit changes the
@@ -351,8 +351,94 @@ simulation, saves and replays are unaffected.
   explosions, and remembered enemy buildings. Bullets near a fading unit therefore vanish
   at the fog swap.
 
+### Unit effects at buildings
+
+When a building produces or changes a unit, accelerated renderers play a short effect
+on it; the software renderer draws the unit as before, and **Detail effects: reduced**
+(`Settings::buildingParticles`) turns them all off. Timing and shapes are in
+`src/render/UnitEffects.h`.
+
+When a swarm produces a unit:
+
+- The swarm glows in a light version of its team colour for about 0.4 seconds, at 20% of
+  full strength.
+- The unit fades in over 10 ticks, sliding 2 pixels out of the swarm, as a team-colour
+  silhouette that settles to normal shading over one second while a few twinkles drift
+  up over it.
+- A cloud of team-coloured dust twinkles on its birth tile, with motes flashing white,
+  and fades out within 0.75 seconds. It stays on the tile while the unit walks away.
+
+When a unit comes out of a building that healed, fed or trained it:
+
+- It shimmers as a silhouette in the service's colour (heal green, feed yellow, training
+  white-gold) that settles over one second from 90%.
+- Seven copies of that building's own map icon (`presentation.iconFrame`, the glyph on
+  its zoomed-out chip) burst out of it at random angles, distances, sizes and start
+  times, then drift and fade within about 0.9 seconds. They never fly into the sector
+  above the unit, where level numbers rise.
+- A trained unit floats its highest new level, displayed as in the unit panel, rising
+  like a combat level-up number.
+
+`Building::swarmStep` records spawns in `GameAnimations` beside death animations. A
+successful feed, heal or training (some level rose) at the end of a stay
+(`Unit::handleDisplacement`) records a pending service by unit gid; it plays when the
+unit actually comes out (`Unit::handleMovementExitingBuilding`, or `expelFromBuilding`
+for a unit already on its way out). A unit expelled mid-stay, a trainee leaving while
+upgrades are disabled, or one whose course became invalid plays nothing. Records are
+render-only, absent from checksums, saves and replays, and kept only with a display.
+They are captured into the snapshot's effects (`UnitEffectRecord`), and `Game::drawMap`
+indexes them by unit and producing swarm for the frame. Each part runs from the
+record's age plus the drawn tick fraction, so it stops while paused. Dust, icons,
+twinkles and level numbers are drawn after the buildings, which would otherwise cover
+them.
+
+Sprites get the silhouette from `Sprite::silhouette`, a cached copy of the native frame
+filled with one colour, whose light is added over the sprite
+(`GraphicContext::drawSurfaceAdditive`); the swarm uses its team-colour layer alone.
+Dust motes add the light of their white cores and glints the same way, while their team
+colour blends normally, since added red turns yellow over grass. The icons are the white
+`mapicon` glyphs filled with the service's colour and blended normally, picking the
+largest pre-sized frame that fits on screen. Skinned meshes are
+brightened instead by adding their composited tile again, tinted (the `glow` arguments
+of `GraphicContext::drawSkinMesh`); pre-rendered skin sprites draw without it. Dust
+stars and glows are drawn procedurally by `UnitEffectArt`, one set per team hue, so the
+effects ship no new image assets.
+
+### Additive draws
+
+`GraphicContext::drawSurfaceAdditive` adds a surface's light (its colour times alpha) to
+what is already drawn instead of blending over it, so effects can brighten rather than
+tint. It first flushes queued batches to keep painter order, then uses a filtered,
+additively blended blit:
+
+- **Device renderers** (SDL GPU, programmable GL, WebGPU): a `DrawPacket` blit with
+  `Blend::Additive`.
+- **Portable SDL renderer:** `SDL_BLENDMODE_ADD` on the texture for that draw only.
+- **Legacy GL:** an immediate quad with `GL_SRC_ALPHA, GL_ONE`.
+
+The software renderer draws the surface normally. A backend opts in through
+`RenderBackend::blitAdditive`.
 
 See [adaptive zoom detail](zoom-detail.md).
+
+### Swimming units
+
+The swim artwork is seen from above with the body lying flat, so a swimmer is placed in
+the water rather than on it by fading its limbs, not by cutting it at a waterline.
+`Game::drawUnit` sets a `RadialFade` (`libs/gag/include/RadialFade.h`) on the graphic
+context with a `RadialFadeScope` (`libs/gag/include/RenderStateScope.h`) around a
+swimmer's sprite: the torso stays opaque and opacity falls to a floor towards the
+outstretched limbs. Every unit draw path honours it (classic sprites with or without the
+team-colour shader, pre-rendered skin sprites, and live skin meshes on the legacy GL and
+device renderers) by drawing the quad as a grid whose vertex opacity carries the fade;
+only the native software surface without a renderer backend draws unfaded.
+Each arm stroke of the swim clip sends a ring out from the limb tips, timed from the
+unit's animation phase so ripples follow the visible stroke. A moving swimmer's ring fades
+to nothing ahead of it, so the ripple spreads backwards; one treading water ripples all
+round. The ring is drawn as short line segments whose opacity carries that crescent; the
+constants, ring timing and segment geometry are in `src/unit/render/SwimmingPresentation.h`.
+All of it is presentation: it reads the unit's action, heading and animation phase and
+changes no simulation state.
 
 ## Clouds, bars and resource batches
 
@@ -378,7 +464,7 @@ existing paths; cache-backed team-color surfaces cannot be deferred safely.
 
 ### Portable shader build artifacts
 
-`libgag/shaders/renderer-manifest.json` declares skin/rig, world/cloud, smooth-point and 2D primitive
+`libs/gag/shaders/renderer-manifest.json` declares skin/rig, world/cloud, smooth-point and 2D primitive
 vertex layouts, uniform blocks and resource bindings. Generate build artifacts
 with `python3 tools/shaders/generate.py --output artifacts/shaders/generated`.
 The output contains GLSL ES 3.00, desktop GLSL 3.30 and Vulkan GLSL 4.50 sources,
@@ -417,7 +503,7 @@ On an Apple build host, compile the translated output separately with
 contains the exact `xcodebuild -version` output (`xcodeVersion`), SDK name and
 version (`sdk`, `sdkVersion`), and SHA-256 digests of the resolved `metal` and
 `metallib` executables (`metalSha256`, `metallibSha256`). It must match the existing
-Xcode pin in `mobile/toolchain.json`; `--developer-dir` selects a bundle without
+Xcode pin in `platforms/mobile/toolchain.json`; `--developer-dir` selects a bundle without
 changing the system selection. This separate step compiles MSL to AIR, links
 `.metallib`, checks the library magic and compiled function name, and records
 source and library hashes with the entrypoint. Failed or incomplete builds leave
@@ -540,7 +626,7 @@ capabilities, even when the window uses a GPU device. Graphics settings are also
 available from the in-game and editor menus; the running engine or editor is retained
 while settings are open.
 
-The browser WebGPU adapter (`browser/webgpu-device.js` and `WebGPUDevice.cpp`)
+The browser WebGPU adapter (`platforms/web/webgpu-device.js` and `WebGPUDevice.cpp`)
 prepares adapters, devices and shader pipelines asynchronously before changing
 presentation ownership. `glob2_webgpu_prepare(shaderDirectory)` and
 `glob2_webgpu_poll()` return pending (0), ready (1), or failed (-1), with
@@ -593,8 +679,8 @@ browser acceptance.
 The packed C++ wrapper has a separate regression proof. Build it with
 `tools/shaders/build_webgpu_cpp_proof.py`, supplying `--emxx` from the pinned
 Emscripten SDK, the browser SDL prefix with `--sdl-prefix`, and generated shaders
-with `--shader-directory`. Serve its output with `browser/serve.py`, then run
-`NODE_PATH=browser/node_modules node tools/shaders/prove_webgpu_cpp.cjs URL`.
+with `--shader-directory`. Serve its output with `platforms/web/serve.py`, then run
+`NODE_PATH=platforms/web/node_modules node tools/shaders/prove_webgpu_cpp.cjs URL`.
 It checks all four textured skin atlas offsets, straight and premultiplied
 render-target sampling, and pressure eviction with live restoration sources and
 an unpresented frame lease. Exercising only JavaScript records would miss C++

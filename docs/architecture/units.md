@@ -6,7 +6,7 @@ or selection interface. Their IDs are permanently 0, 1 and 2. Additional IDs are
 local to an immutable catalog and must be resolved from stable keys at setup.
 Catalogs contain at most 1,024 definitions; game state allocates by actual count.
 
-`UnitCatalog` reads `data/units/registry.json`. Authored entries may extend an
+`UnitCatalog` reads `content/data/units/registry.json`. Authored entries may extend an
 existing definition and override its behavior fields, four ability-level tables,
 material production cost and presentation identity. Parsing validates the whole
 catalog before publication. Missing installed data falls back to baked legacy

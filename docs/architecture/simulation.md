@@ -168,7 +168,7 @@ checksum adapter remains available for diagnostic fixtures.
   requires the format-128 compact save reader. Older saves load into the current
   simulation.
 - `.map`/`.game` files are gzip level 6 by default (`FileManager::writeGzipAtomic`/
-  `writeGzipAtomically` in `libgag/src/FileManagerGzip.cpp`; the gzip header carries
+  `writeGzipAtomically` in `libs/gag/src/FileManagerGzip.cpp`; the gzip header carries
   a zero timestamp and OS=unknown, producing deterministic bytes with the same
   zlib encoder). This is a container change, not a save-format schema change: the bytes
   inside the gzip stream are exactly what today's serializer already writes, so it
@@ -196,11 +196,24 @@ checksum adapter remains available for diagnostic fixtures.
   Vertex (x,y) is the top-left corner of cell (x,y); `cellCorners(x, y)` returns the
   top-left, top-right, bottom-left and bottom-right corners. A cell's rules come
   from its corners through `combineCornerRules` (`TerrainPropertiesLayout.h`):
-  equal corners keep their terrain's exact profile; mixed corners are walkable when
-  any corner is, never swimmable or buildable, block projectiles and count as a
-  shoreline when any corner does, and are otherwise as permissive as their weakest
-  corner (speed and ground damage from the walkable corners). Mixed grass/sand and sand/water cells reproduce the retired shore
-  profiles exactly, which is why no shore terrain types exist.
+  corners with equal property profiles keep that exact profile. Otherwise, count
+  walking, swimming and blocked corners. Two or more blocked corners make the
+  cell impassable on the ground. Otherwise walking or swimming wins by count,
+  with walking winning a tie between the two. Thus three water corners and one
+  grass corner swim, two grass and two water corners walk, and three blocked
+  corners and one grass corner stay blocked. Different water profiles can join
+  without creating an impassable transition. All eight numeric modifiers use the
+  arithmetic mean of **all four corners**, independently of the movement vote:
+  ground and air speed, ground and air health, growth, fertility, inhibition and
+  shoreline support. Q8 values are summed in signed 32-bit integers and divided
+  by four, rounding toward zero. A 100%/200% speed boundary therefore has 125%,
+  150% and 175% cells when one, two or three corners have the higher speed. Damage and healing are signed
+  rates and can offset each other; fractions below one Q8 unit round to zero.
+  Mixed profiles are never buildable; flight and growth permissions require all
+  corners, while projectile blocking and shoreline flags require any corner.
+  Resource masks are intersected and mixed profiles have no automatic farming
+  material. Shore transitions blend ecology instead of using a fixed shore
+  profile, so partial inhibition and shoreline support affect nearby crop growth.
 - A per-map `CellRuleTable` (`src/map/CellRules.h`) compiles each corner combination
   once: properties, movement costs per swimming class, air costs and resource
   habitat. Cells store only a rule index; rule t is the uniform cell of type t, and
@@ -212,8 +225,8 @@ checksum adapter remains available for diagnostic fixtures.
   category. Write vertices with `setVertexTerrain`, `paintVertices`,
   `paintVertexSquare`, `assignVertexTerrain` or `fillTerrain`, and batch edits with
   `editTerrain()` so snapshots, topology and ecology caches stay consistent.
-- Grass directly against water is legal: the cells between are walkable and
-  unbuildable. Beaches are a painting and generation convention. `paintVertices`
+- Grass directly against water is legal: mixed cells are unbuildable and walk
+  with at least two grass corners, otherwise they swim. Beaches are a painting and generation convention. `paintVertices`
   (by default) and `paintVertexSquare` turn an opposite vertex next to painted
   grass or water into sand. `Map::layBeaches()` handles a whole map independently
   of scan order and turns both sides of every grass/water contact into sand, a
@@ -228,7 +241,7 @@ checksum adapter remains available for diagnostic fixtures.
   frames are skipped.
 - Detailed terrain rendering resolves shipped appearances through a
   presentation-only material catalog, corner coverage resolver and CPU compositor.
-  `data/terrain/tileset.json` defines those materials independently of gameplay
+  `content/data/terrain/tileset.json` defines those materials independently of gameplay
   IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
   metadata. See [terrain material authoring](../assets/terrain-materials.md) for
   variants, boundary profiles, asset validation and cache behavior. Visual catalog
@@ -242,13 +255,17 @@ checksum adapter remains available for diagnostic fixtures.
   Adding a type is one enumerator, one row, one label and one material binding;
   adding a group is one profile and, when gated, one `ExperimentId`.
 - Format 141 raised the built-in count from 7 to 31; format 146 retired the two
-  shore types (IDs 5 and 6), moving the catalogue down by two to 29; format 187
+  shore types (IDs 5 and 6), moving the catalogue down by two to 29; format 191
   appended the grass and sand looks (`LUSH_GRASS`, `DRY_GRASS`, `DUNE_SAND`,
-  `PALE_SAND`, in the Grass and Sand groups) for `TERRAIN_COUNT` 33. Built-in IDs only
+  `PALE_SAND`, in the Grass and Sand groups) for 33; format 195 appended `SANDSTONE`
+  (Paths), `PUMICE` (Rough) and `FROZEN_LAKE` (Ice) for 36; format 196 appended
+  `WIND_SWEPT_SNOW` (Rough, like deep snow) for `TERRAIN_COUNT` 37. Built-in IDs only
   ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
   a format gate. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
-  (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX` or
-  `TERRAIN_COUNT_BEFORE_GROUND_LOOKS` for older files),
+  (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX`,
+  `TERRAIN_COUNT_BEFORE_GROUND_LOOKS`, `TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE` or
+  `TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW` for
+  older files),
   `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
   `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize
   with shifted IDs, so their digest changes and replays that embed one no longer

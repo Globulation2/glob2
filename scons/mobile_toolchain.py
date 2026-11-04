@@ -7,7 +7,7 @@ import platform
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-LOCK = ROOT / 'mobile/toolchain.json'
+LOCK = ROOT / 'platforms/mobile/toolchain.json'
 
 
 def run(command):

@@ -53,7 +53,7 @@ def establish_options(env):
     opts.Add(BoolVariable("mingw", "Build with mingw enabled if not auto-detected", 0))
     opts.Add(BoolVariable("mingwcross", "Cross-compile with mingw for Win32", 0))
     opts.Add("crossroot", "Path to include/ and lib/ containing Win32 files for cross-compiling", "../local")
-    opts.Add("font", "Build the game using an alternative font placed in the data/font folder", "sans.ttf")
+    opts.Add("font", "Build the game using an alternative font placed in the content/data/font folder", "sans.ttf")
     opts.Add("official_instance", "Origin of the official multiplayer platform instance", official_instance.DEFAULT_ORIGIN)
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
@@ -572,8 +572,8 @@ def main():
                     env.Tar(target, f)
               
     PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
-    PackTar(env["TARFILE"], Glob("datasrc/icons/tabler/*"))
-    PackTar(env["TARFILE"], Split("tools/icons/export_tabler.cjs libgag/include/ui/Icon.h"))
+    PackTar(env["TARFILE"], Glob("content-src/icons/tabler/*"))
+    PackTar(env["TARFILE"], Split("tools/icons/export_tabler.cjs libs/gag/include/ui/Icon.h"))
     PackTar(env["TARFILE"], [p for p in sorted(__import__("glob").glob("third_party/**/*", recursive=True)) if os.path.isfile(p)])
     #packaging for apple
     if isDarwinPlatform and env["release"] and any(
@@ -585,9 +585,9 @@ def main():
             BUNDLE_SYMBOL_DIR=bdir+"/symbols",
             BUNDLE_BINARIES=[bdir+"/src/glob2"],
             BUNDLE_RESOURCEDIRS=["data","maps", "campaigns", "scripts",
-                                 "darwin/en.lproj", "darwin/mr.lproj", "darwin/ta.lproj", "darwin/te.lproj", "darwin/bg.lproj", "darwin/th.lproj"],
-            BUNDLE_PLIST="darwin/Info.plist",
-            BUNDLE_ICON="darwin/Glob2.icns" )
+                                 "platforms/macos/en.lproj", "platforms/macos/mr.lproj", "platforms/macos/ta.lproj", "platforms/macos/te.lproj", "platforms/macos/bg.lproj", "platforms/macos/th.lproj"],
+            BUNDLE_PLIST="platforms/macos/Info.plist",
+            BUNDLE_ICON="platforms/macos/Glob2.icns" )
         # Go through the builders rather than calling their actions directly.
         # A direct call runs while scons is still *reading* this file, before
         # anything has been compiled, so the bundle gets whatever binary happens
@@ -624,20 +624,20 @@ def main():
     Export('isWindowsPlatform')
 
     targets = [
-        "campaigns",
-        "data",
+        "content/campaigns",
+        "content/data",
         "debian",
-        "fedora",
-        "libgag",
-        "libusl",
-        "maps",
-        "natsort",
-        "scripts",
+        "platforms/linux/fedora",
+        "libs/gag",
+        "libs/usl",
+        "content/maps",
+        "third_party/natsort",
+        "content/scripts",
         "scons",
         "src",
         "test",
         "tools",
-        "windows"
+        "platforms/windows"
     ]
     optimized_install = not env['server'] and env.get('role') != 'relay' and 'install' in COMMAND_LINE_TARGETS
     if optimized_install and 'dist' in COMMAND_LINE_TARGETS:

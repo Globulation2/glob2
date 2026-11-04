@@ -92,7 +92,7 @@ photo preferences and the current download URL.
 
 Providers are configured in `instance.yaml` under `auth.providers`; their
 secrets stay in the environment and are referenced by variable name (see
-`platform/instance.example.yaml`). Every provider's redirect URI is
+`services/online/instance.example.yaml`). Every provider's redirect URI is
 `<PUBLIC_ORIGIN>/auth/<id>/callback`; register exactly that with the provider.
 
 ### `oidc`
@@ -245,7 +245,7 @@ token lifetime replace the old private key by its `.pub.pem` or remove it.
 
 Verifiers reject tokens that are not `EdDSA`, have another `typ`, name an
 unknown `kid`, are expired (30 s leeway) or have the wrong audience.
-`platform/packages/protocol/fixtures/tickets/` contains a test JWKS and one
+`services/online/packages/protocol/fixtures/tickets/` contains a test JWKS and one
 ticket for each of these cases.
 
 
@@ -297,7 +297,7 @@ reuse, ban; a ban also closes the socket), `auth.handoff.completed`,
 
 ## Verification coverage
 
-Vitest suites under `platform/apps/api/test/` run against Postgres with two API
+Vitest suites under `services/online/apps/api/test/` run against Postgres with two API
 replicas and an in-test OpenID Connect issuer (`mockIssuer.ts`): guest creation
 and return, token rotation and reuse detection, JWKS verification, key
 rotation, local registration and sign-in, renames, admin CLI and role checks,

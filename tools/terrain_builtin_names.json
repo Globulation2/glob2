@@ -11,13 +11,13 @@
   "outcrop",
   "dirt",
   "clay",
-  "gravel",
-  "flower_meadow",
+  "shale",
+  "heath",
   "mud",
-  "marsh",
+  "mudflat",
   "deep_snow",
   "scree",
-  "dirt_track",
+  "brick_path",
   "boardwalk",
   "lava",
   "ember_field",
@@ -31,5 +31,9 @@
   "lush_grass",
   "dry_grass",
   "dune_sand",
-  "pale_sand"
+  "pale_sand",
+  "sandstone",
+  "pumice",
+  "frozen_lake",
+  "wind_swept_snow"
 ]

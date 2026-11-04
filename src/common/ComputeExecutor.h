@@ -24,6 +24,7 @@
 #include <cstdlib>
 #include <cstring>
 #include "ComputeTelemetry.h"
+#include <PerformanceTelemetry.h>
 
 // One executor shares the simulation's workers with optional presentation work.
 // Required simulation work has two shapes:
@@ -296,6 +297,7 @@ public:
 		std::size_t count = 0;
 		Job job;
 		unsigned lane = NoLane;
+		PerformanceTelemetry::Id performanceScope = PerformanceTelemetry::Id::Count;
 	};
 	class Batch
 	{
@@ -322,10 +324,19 @@ private:
 	inline static thread_local std::size_t activeSlot = 0;
 	inline static thread_local std::size_t deferredSlot = 0, deferredIndex = 0;
 	inline static thread_local std::uint64_t deferredSerial = 0;
+	struct JobTiming
+	{
+		std::uint64_t claimed = 0, ended = 0, ready = 0, lane = 0, queue = 0, callback = 0,
+					  external = 0;
+	};
 	struct Slot
 	{
 		std::uint64_t serial = 0; // zero: free
 		std::uint64_t due = 0;
+		BatchDiagnostics perfTags;
+		std::uint64_t submittedNs = 0, completedNs = 0;
+		JobTiming tail;
+		std::array<JobTiming, 64> timing{};
 		std::vector<Group> groups;
 		std::vector<std::size_t> starts; // first job index of each group
 		std::vector<std::uint64_t> laneBases; // lane sequence of each group's first job
@@ -335,6 +346,144 @@ private:
 		std::size_t total = 0, unclaimed = 0, completed = 0, firstUnclaimed = 0;
 		std::exception_ptr error;
 	};
+
+	// Permanent aggregates have bounded independent shards. Scheduler critical
+	// sections retain timestamps and causal counters, never histogram aggregation.
+	enum class PerfKind
+	{
+		Callback,
+		Wait,
+		WaitTick,
+		Queue,
+		Lane,
+		External,
+		Join,
+		OwnerJoin,
+		Deadline,
+		Notification,
+		CriticalCallback,
+		CriticalQueue,
+		CriticalLane,
+		CriticalExternal
+	};
+	static PerformanceTelemetry::Id perfId(PerfKind kind, ComputeProducer producer)
+	{
+		using Id = PerformanceTelemetry::Id;
+		// Scope blocks follow ComputeProducer order; verify their bounds when
+		// extending the taxonomy instead of duplicating every producer mapping.
+		static constexpr std::pair<Id, Id> blocks[]{
+			{Id::ComputeAI, Id::ComputeTurret},
+			{Id::WaitAI, Id::WaitTurret},
+			{Id::WaitTickAI, Id::WaitTickTurret},
+			{Id::QueueAI, Id::QueueTurret},
+			{Id::LaneAI, Id::LaneTurret},
+			{Id::ExternalAI, Id::ExternalTurret},
+			{Id::JoinAI, Id::JoinTurret},
+			{Id::OwnerJoinAI, Id::OwnerJoinTurret},
+			{Id::DeadlineAI, Id::DeadlineTurret},
+			{Id::NotificationAI, Id::NotificationTurret},
+			{Id::CriticalCallbackAI, Id::CriticalCallbackTurret},
+			{Id::CriticalQueueAI, Id::CriticalQueueTurret},
+			{Id::CriticalLaneAI, Id::CriticalLaneTurret},
+			{Id::CriticalExternalAI, Id::CriticalExternalTurret}};
+		static_assert(
+			[]
+			{
+				for (auto [first, last] : blocks)
+					if (unsigned(last) - unsigned(first) + 1 != unsigned(ComputeProducer::Count))
+						return false;
+				return true;
+			}());
+		return Id(unsigned(blocks[unsigned(kind)].first) + unsigned(producer));
+	}
+	static constexpr unsigned PerformanceShards = 4;
+	struct alignas(64) PerformanceShard
+	{
+		using Metrics = std::array<PerformanceTelemetry::Metric, PerformanceTelemetry::ScopeCount>;
+		mutable std::mutex mutex;
+		std::unique_ptr<Metrics> metrics;
+		std::array<std::uint16_t, PerformanceTelemetry::ScopeCount> active{};
+		unsigned activeCount = 0;
+		void clear()
+		{
+			for (unsigned i = 0; i < activeCount; ++i)
+				(*metrics)[active[i]] = {};
+			activeCount = 0;
+		}
+	};
+	std::array<PerformanceShard, PerformanceShards> performanceShards;
+	std::array<std::uint64_t, Lanes> laneCompletedNs{};
+	std::array<std::uint64_t, unsigned(ComputeProducer::Count)> lastWaitTick{};
+	std::array<std::atomic<std::uint64_t>, 3> requiredTotals{};
+	std::atomic<std::uint64_t> performanceEpoch{0};
+	// Operation-local observations are published outside the scheduler mutex,
+	// before callback completion or before returning from a required join.
+	// Shards are independent for up to four participant indices; larger pools
+	// share stripes without increasing telemetry storage or touching scheduling.
+	struct PerformanceSamples
+	{
+		struct Sample
+		{
+			PerformanceTelemetry::Id id;
+			std::uint64_t value;
+		};
+		ComputeExecutor &executor;
+		unsigned participant;
+		std::uint64_t epoch;
+		std::array<Sample, 24> values;
+		unsigned size = 0;
+		PerformanceSamples(ComputeExecutor &e, unsigned p,
+						   std::uint64_t captured = ~std::uint64_t(0))
+			: executor(e), participant(p),
+			  epoch(captured == ~std::uint64_t(0)
+						? e.performanceEpoch.load(std::memory_order_relaxed)
+						: captured)
+		{
+		}
+		~PerformanceSamples() { publish(); }
+		void add(PerformanceTelemetry::Id id, std::uint64_t value)
+		{
+			assert(size < values.size());
+			values[size++] = {id, value};
+		}
+		void add(PerfKind kind, ComputeProducer producer, std::uint64_t value)
+		{
+			add(perfId(kind, producer), value);
+		}
+		void task(PerformanceTelemetry::Id id, std::uint64_t wall, bool worker)
+		{
+			add(id, wall);
+			using Id = PerformanceTelemetry::Id;
+			add(id == Id::ComputeScene      ? (worker ? Id::SceneWorker : Id::SceneOwner)
+				: id == Id::ComputeGraphics ? (worker ? Id::GraphicsWorker : Id::GraphicsOwner)
+				: worker                    ? Id::ComputeWorker
+											: Id::ComputeOwner,
+				wall);
+		}
+		void publish()
+		{
+			if (!size)
+				return;
+			auto &shard = executor.performanceShards[participant % PerformanceShards];
+			std::lock_guard lock(shard.mutex);
+			if (epoch != executor.performanceEpoch.load(std::memory_order_relaxed))
+			{
+				values[0] = {PerformanceTelemetry::Id::CausalDropped, 1};
+				size = 1;
+			}
+			for (unsigned i = 0; i < size; ++i)
+			{
+				auto &m = (*shard.metrics)[unsigned(values[i].id)];
+				if (!m.calls++)
+					shard.active[shard.activeCount++] = std::uint16_t(values[i].id);
+				m.time.add(values[i].value);
+				m.self += values[i].value;
+				m.selfComplete = false;
+			}
+			size = 0;
+		}
+	};
+
 	struct Claim { std::size_t slot = 0, index = 0; bool valid = false; };
 	std::shared_ptr<CompletionLifetime> completionLifetime = std::make_shared<CompletionLifetime>(this);
 	std::vector<std::thread> workers;
@@ -351,7 +500,9 @@ private:
 	std::function<void(std::size_t)> job;
 	std::exception_ptr error;
 	// submit()/join(): live batches, each held from submission to its join.
-	std::array<Slot, Slots> slots;
+	// Keep the fixed-capacity arena off Map/Game owners' bounded worker stacks.
+	// It is allocated once and never resized, so live slot addresses stay stable.
+	std::vector<Slot> slots = std::vector<Slot>(Slots);
 	// Under mutex. Pick visits only batches with unclaimed work, rather than
 	// branching over the entire horizon (including completed retained tickets).
 	std::array<std::uint64_t, (Slots + 63) / 64> unclaimedSlots{};
@@ -518,6 +669,8 @@ private:
 		auto* previous = active;
 		const auto previousSlot = activeSlot;
 		active = this; activeSlot = thread;
+		PerformanceSamples samples(*this, unsigned(thread));
+		const auto perfStart = PerformanceTelemetry::now();
 		const auto start = diagnosticStart<Mode>();
         const auto callbackIndex = [&] { if constexpr (Mode == ComputeTelemetryMode::Trace) return work->next; else return std::size_t(0); }();
 		bool ran = false;
@@ -530,14 +683,18 @@ private:
 			}
 		}
 		catch (...) { work->error = std::current_exception(); }
+		const auto perfEnd = PerformanceTelemetry::now();
 		active = previous; activeSlot = previousSlot;
 		// Release captured inputs outside the scheduler lock before publishing
 		// completion. A ticket retained for status must not retain a world.
 		const bool canceled = work->canceled.load(std::memory_order_acquire);
 		const bool done = canceled || work->error || work->next == work->count;
 		if (done) work->job = {};
+		samples.task(PerformanceTelemetry::Id::ComputeScene, perfEnd - perfStart, thread != 0);
+		samples.publish();
 		{
 			std::lock_guard<std::mutex> lock(mutex);
+
 			if constexpr (Mode == ComputeTelemetryMode::Trace) { presentationTotals.chunks += ran; }
 			if constexpr (Mode == ComputeTelemetryMode::Trace) { presentationTotals.activeNs += diagnosticElapsed<Mode>(start); }
 			if (done)
@@ -617,7 +774,9 @@ private:
         standaloneEvent<Mode>(ComputeTelemetry::EventKind::Claim, 3, serial, index, unsigned(worker));
         standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackStart, 3, serial, index, unsigned(worker));
         lock.unlock();
-        auto *previous = active;
+		PerformanceSamples samples(*this, unsigned(worker));
+		const auto perfStart = PerformanceTelemetry::now();
+		auto *previous = active;
         auto previousSlot = activeSlot;
         active = this;
         activeSlot = worker;
@@ -630,7 +789,8 @@ private:
         {
             failure = std::current_exception();
         }
-        const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+		const auto perfEnd = PerformanceTelemetry::now();
+		const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
         active = previous;
         activeSlot = previousSlot;
         {
@@ -642,7 +802,9 @@ private:
                 work->canceled.store(true);
             }
         }
-        lock.lock();
+		samples.task(PerformanceTelemetry::Id::ComputeGraphics, perfEnd - perfStart, worker != 0);
+		samples.publish();
+		lock.lock();
         --graphicsRunning;
         if constexpr (Mode == ComputeTelemetryMode::Trace) {
             ++graphicsTotals.jobs; graphicsTotals.activeNs += callbackEnd - started;
@@ -682,10 +844,16 @@ private:
 			if constexpr (Mode != ComputeTelemetryMode::Off) ++executed;
             standaloneEvent<Mode>(ComputeTelemetry::EventKind::Claim, 1, runSerial<Mode>(), i, unsigned(slot));
             standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackStart, 1, runSerial<Mode>(), i, unsigned(slot));
+			PerformanceSamples samples(*this, unsigned(slot));
+			const auto perfStart = PerformanceTelemetry::now();
 			try { job(i); }
 			catch (...) { std::lock_guard<std::mutex> lock(mutex); if (!error) error = std::current_exception(); }
+			const auto perfEnd = PerformanceTelemetry::now();
+			samples.task(PerformanceTelemetry::Id::ComputeForkJoin, perfEnd - perfStart, slot != 0);
+			samples.publish();
 			{
 				std::lock_guard<std::mutex> lock(mutex);
+
 				standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackEnd, 1, runSerial<Mode>(), i, unsigned(slot));
                 standaloneEvent<Mode>(ComputeTelemetry::EventKind::Complete, 1, runSerial<Mode>(), i, unsigned(slot));
                 if constexpr (Mode == ComputeTelemetryMode::Trace) ++workerMetrics[slot].jobs;
@@ -767,6 +935,18 @@ private:
 		const auto best = pick(owner, limit);
 		if (!best.valid) return best;
 		auto& slot = slots[best.slot];
+		if (best.index < slot.timing.size())
+		{
+			auto &timing = slot.timing[best.index];
+			const auto claimed = PerformanceTelemetry::now();
+			const auto lane = slot.groups[group(slot, best.index)].lane;
+			const auto ready = std::max(timing.ready ? timing.ready : slot.submittedNs,
+										lane == NoLane ? slot.submittedNs : laneCompletedNs[lane]);
+			if (!timing.claimed)
+				timing.lane = ready - slot.submittedNs;
+			timing.queue += claimed > ready ? claimed - ready : 0;
+			timing.claimed = claimed;
+		}
 		slot.claimed[best.index] = 1; --slot.unclaimed;
 		if (!slot.unclaimed) markUnclaimed(best.slot, false);
 		while (slot.firstUnclaimed < slot.total && slot.claimed[slot.firstUnclaimed]) ++slot.firstUnclaimed;
@@ -788,11 +968,25 @@ private:
 	{
 		event<Mode>(ComputeTelemetry::EventKind::Complete, std::size_t(&slot - slots.data()), index, thread);
 		if (failure && !slot.error) slot.error = failure;
+		// Keep the ticket identity before releasing it: a direct external
+		// completion contributes the suspension between callback end and ready.
+		const bool externallyCompleted = bool(slot.completions[index]);
 		if (auto& ticket = slot.completions[index]) ticket->owner.store(nullptr, std::memory_order_release);
 		slot.completions[index].reset();
+		slot.completedNs = PerformanceTelemetry::now();
+		if (index < slot.timing.size())
+		{
+			auto &timing = slot.timing[index];
+			if (externallyCompleted && timing.ended && timing.ready > timing.ended)
+				timing.external += timing.ready - timing.ended;
+			slot.tail = timing;
+		}
+		else
+			slot.tail = {};
 		const auto lane = slot.groups[group(slot, index)].lane;
 		if (lane != NoLane) {
 			++laneCompleted[lane];
+			laneCompletedNs[lane] = slot.completedNs;
 			// A returning worker claims the newly runnable successor itself.
 			// External resolution has no returning worker, so wake one.
 			if (thread == ~0u && !ownerRunsDeferred()) ready.notify_one();
@@ -804,6 +998,15 @@ private:
 	{
 		auto& slot = slots[ticket.slot];
 		if (ticket.continuation.invoke && !ticket.error) {
+			if (ticket.index < slot.timing.size())
+			{
+				auto &timing = slot.timing[ticket.index];
+				if (!timing.ready)
+					timing.ready = PerformanceTelemetry::now();
+				if (timing.ended && timing.ready > timing.ended)
+					timing.external += timing.ready - timing.ended;
+				timing.ready = std::max(timing.ready, timing.ended);
+			}
 			slot.continuations[ticket.index] = ticket.continuation;
 			slot.claimed[ticket.index] = 0;
 			if (++slot.unclaimed == 1) markUnclaimed(ticket.slot, true);
@@ -821,6 +1024,8 @@ private:
 		auto& slot = slots[ticket.slot];
 		if (slot.serial != ticket.serial || slot.completions[ticket.index].get() != &ticket || ticket.resolved) return false;
 		event<Mode>(ComputeTelemetry::EventKind::ExternalResolution, ticket.slot, ticket.index, ~0u);
+		if (ticket.index < slot.timing.size())
+			slot.timing[ticket.index].ready = PerformanceTelemetry::now();
 		ticket.resolved = true; ticket.continuation = continuation; ticket.error = failure;
 		if (!ticket.running) settle<Mode>(ticket, ~0u);
 		return true;
@@ -834,11 +1039,14 @@ private:
 	void execute(const Claim& claim, std::size_t thread)
 	{
 		Group group; std::size_t offset = 0;
+		ComputeProducer producer;
+		PerformanceSamples samples(*this, unsigned(thread));
 		std::uint64_t serial;
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			auto& slot = slots[claim.slot];
 			serial = slot.serial;
+			producer = slot.perfTags.producer;
 			const auto g = this->group(slot, claim.index);
 			group = slot.groups[g]; offset = claim.index - slot.starts[g];
 			if (slot.continuations[claim.index].invoke) { group.job = slot.continuations[claim.index]; offset = 0; }
@@ -853,16 +1061,32 @@ private:
 		deferredSlot = claim.slot; deferredIndex = claim.index;
 		deferredSerial = serial;
 		const auto started = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+		const auto perfStart = PerformanceTelemetry::now();
 		std::exception_ptr failure;
 		try { group.job.invoke(group.job.context, offset); }
 		catch (...) { failure = std::current_exception(); }
-const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+		const auto perfEnd = PerformanceTelemetry::now();
+		const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
         const auto elapsed = callbackEnd - started;
 		active = previous; activeSlot = previousSlot;
 		deferredSlot = previousDeferredSlot; deferredIndex = previousDeferredIndex; deferredSerial = previousDeferredSerial;
+		samples.task(perfId(PerfKind::Callback, producer), perfEnd - perfStart, thread != 0);
+		if (group.performanceScope != PerformanceTelemetry::Id::Count)
+			samples.add(group.performanceScope, perfEnd - perfStart);
+		if (producer == ComputeProducer::AI && group.lane < 32)
+			samples.add(
+				PerformanceTelemetry::Id(unsigned(PerformanceTelemetry::Id::AILane0) + group.lane),
+				perfEnd - perfStart);
+		samples.publish();
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			auto& slot = slots[claim.slot];
+			if (claim.index < slot.timing.size())
+			{
+				auto &timing = slot.timing[claim.index];
+				timing.callback += perfEnd - perfStart;
+				timing.ended = perfEnd;
+			}
 			event<Mode>(ComputeTelemetry::EventKind::CallbackEnd, claim.slot, claim.index, unsigned(thread), {JoinReason::Teardown, ComputeTelemetry::NoTick}, 0, callbackEnd);
             if constexpr (Mode == ComputeTelemetryMode::Trace) { workerMetrics[thread].activeNs += elapsed; ++workerMetrics[thread].jobs; }
 			if constexpr (Mode == ComputeTelemetryMode::Trace) {
@@ -882,6 +1106,7 @@ const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<M
 	template<ComputeTelemetryMode Mode>
 	void worker(std::size_t slot)
 	{
+		PerformanceTelemetry::bindWorkerCollector();
 		std::size_t seen = 0, simulationClaims = 0;
 		std::unique_lock<std::mutex> lock(mutex);
 		for (;;)
@@ -924,17 +1149,24 @@ const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<M
                         continue;
 					const auto work = maintenance;
 					maintenanceRunning = true;
-                    const auto serial = [&] { if constexpr (Mode == ComputeTelemetryMode::Trace) return ++diagnostics->maintenanceSerial; else return std::uint64_t(0); }();
+					const auto permanentEpoch = performanceEpoch.load(std::memory_order_relaxed);
+					const auto serial = [&] { if constexpr (Mode == ComputeTelemetryMode::Trace) return ++diagnostics->maintenanceSerial; else return std::uint64_t(0); }();
                     const auto epoch = [&] { if constexpr (Mode == ComputeTelemetryMode::Trace) return diagnostics->epoch; else return std::uint64_t(0); }();
                     standaloneEvent<Mode>(ComputeTelemetry::EventKind::Claim, 4, serial, 0, unsigned(slot));
                     standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackStart, 4, serial, 0, unsigned(slot));
 					lock.unlock();
-                    active = this;
+					PerformanceSamples samples(*this, unsigned(slot), permanentEpoch);
+					active = this;
                     activeSlot = slot;
+					const auto perfStart = PerformanceTelemetry::now();
 					work->process();
-                    const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+					const auto perfEnd = PerformanceTelemetry::now();
+					const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
                     active = nullptr;
                     activeSlot = 0;
+					samples.task(PerformanceTelemetry::Id::ComputeMaintenance, perfEnd - perfStart,
+								 true);
+					samples.publish();
 					lock.lock();
 					maintenanceRunning = false;
                     if constexpr (Mode == ComputeTelemetryMode::Trace) {
@@ -1015,7 +1247,11 @@ const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<M
         if (unsigned(context.reason) >= unsigned(JoinReason::Count)) throw std::invalid_argument("Invalid compute join reason");
     }
 public:
-	ComputeExecutor() = default;
+  // Allocate before any callback: the serial menu colony needs only bank0.
+  ComputeExecutor()
+  {
+	  performanceShards[0].metrics = std::make_unique<PerformanceShard::Metrics>();
+  }
 	ComputeExecutor(const ComputeExecutor &) = delete;
 	ComputeExecutor &operator=(const ComputeExecutor &) = delete;
 	~ComputeExecutor() {
@@ -1035,7 +1271,12 @@ public:
         if (!threads)
             throw std::invalid_argument("Executor needs at least one thread");
 		stop(JoinReason::Reconfigure);
-        initializeDiagnostics(threads);
+		const auto banks =
+			GAGCore::ThreadSupport::available ? std::min(threads, PerformanceShards) : 1u;
+		for (unsigned i = 0; i < banks; ++i)
+			if (!performanceShards[i].metrics)
+				performanceShards[i].metrics = std::make_unique<PerformanceShard::Metrics>();
+		initializeDiagnostics(threads);
 		presentationWorker = threads > 1 ? threads - 1 : 0;
 		if constexpr (GAGCore::ThreadSupport::available)
 		{
@@ -1222,7 +1463,8 @@ public:
     // Reset only with required work drained. Presentation is canceled at the
     // session boundary, and streams remain allocated at their configured sizes.
     void resetTelemetry() {
-        if (!diagnostics) return;
+		resetPerformance();
+		if (!diagnostics) return;
         std::lock_guard lock(mutex);
         if (live || inFlight || presentationRunning || graphicsRunning || (graphicsBatch && !graphicsBatch->finished.load()) || (diagnostics && (diagnostics->traceRunActive || diagnostics->traceGraphicsInFlight))) throw std::logic_error("Compute telemetry reset requires a drained executor");
         if (!diagnostics) return;
@@ -1415,7 +1657,8 @@ private:
             for (std::size_t i = 0; i < n; ++i) function(i);
             return;
         }
-        const auto start = diagnosticStart<Mode>();
+		PerformanceSamples samples(*this, 0);
+		const auto start = diagnosticStart<Mode>();
         std::uint64_t ownerNs = 0, backgroundNs = 0, lockNs = 0;
         bool incomplete = false;
         std::size_t ownerJobs = 0;
@@ -1443,7 +1686,8 @@ private:
                 diagnostics->runTags = tags; ++diagnostics->runSerial; diagnostics->traceRunActive = true;
                 standaloneEvent<Mode>(ComputeTelemetry::EventKind::Submit, 1, runSerial<Mode>(), n, 0);
             }
-            const auto ownerStart = diagnosticStart<Mode>();
+			const auto perfStart = PerformanceTelemetry::now();
+			const auto ownerStart = diagnosticStart<Mode>();
             active = this; activeSlot = 0;
             try {
                 for (std::size_t i = 0; i < n; ++i) {
@@ -1469,7 +1713,9 @@ private:
                 }
             } catch (...) { failure = std::current_exception(); }
             active = nullptr;
-            ownerNs = diagnosticElapsed<Mode>(ownerStart);
+			const auto perfEnd = PerformanceTelemetry::now();
+			samples.task(PerformanceTelemetry::Id::ComputeForkJoin, perfEnd - perfStart, false);
+			ownerNs = diagnosticElapsed<Mode>(ownerStart);
             if constexpr (Mode != ComputeTelemetryMode::Off) {
                 std::lock_guard lock(mutex);
                 if constexpr (Mode == ComputeTelemetryMode::Trace) {
@@ -1493,14 +1739,36 @@ private:
             const auto ownerStart = diagnosticStart<Mode>();
             ownerJobs = invoke<Mode>(0);
             ownerNs = diagnosticElapsed<Mode>(ownerStart);
-            const auto lockStart = diagnosticStart<Mode>();
+			const auto perfLockStart = PerformanceTelemetry::now();
+			const auto lockStart = diagnosticStart<Mode>();
             std::unique_lock lock(mutex);
-            const auto acquired = diagnosticStart<Mode>();
+			const auto perfAcquired = PerformanceTelemetry::now();
+			const auto acquired = diagnosticStart<Mode>();
             lockNs = acquired-lockStart;
             incomplete = runDone != count || inFlight != 0;
             standaloneEvent<Mode>(ComputeTelemetry::EventKind::JoinInspection, 1, runSerial<Mode>(), n, 0);
             runFinished.wait(lock, [&] { return runDone == count && inFlight == 0; });
-            backgroundNs = diagnosticElapsed<Mode>(acquired);
+			const auto perfCompleted = PerformanceTelemetry::now();
+			if (ComputeTelemetry::required(context.reason))
+			{
+				samples.add(PerformanceTelemetry::Id::JoinLock, perfAcquired - perfLockStart);
+				requiredTotals[0].fetch_add(perfAcquired - perfLockStart,
+											std::memory_order_relaxed);
+				if (incomplete)
+				{
+					requiredTotals[1].fetch_add(perfCompleted - perfAcquired,
+												std::memory_order_relaxed);
+					samples.add(PerformanceTelemetry::Id::JoinWait, perfCompleted - perfAcquired);
+					samples.add(PerfKind::Wait, tags.producer, perfCompleted - perfAcquired);
+					if (context.logicalTick != ComputeTelemetry::NoTick &&
+						lastWaitTick[unsigned(tags.producer)] != context.logicalTick + 1)
+					{
+						lastWaitTick[unsigned(tags.producer)] = context.logicalTick + 1;
+						samples.add(PerfKind::WaitTick, tags.producer, 1);
+					}
+				}
+			}
+			backgroundNs = diagnosticElapsed<Mode>(acquired);
             if constexpr (Mode != ComputeTelemetryMode::Off) { ++totals.parallelBatches; totals.waitNs += backgroundNs; }
             standaloneEvent<Mode>(ComputeTelemetry::EventKind::JoinEnd, 1, runSerial<Mode>(), n, 0);
             standaloneEvent<Mode>(ComputeTelemetry::EventKind::Retire, 1, runSerial<Mode>(), n, 0);
@@ -1536,6 +1804,11 @@ private:
 		auto& slot = slots[index];
 		slot.serial = nextSerial++;
 		slot.due = due;
+		slot.perfTags = tags;
+		slot.submittedNs = PerformanceTelemetry::now();
+		slot.completedNs = 0;
+		std::fill_n(slot.timing.begin(), std::min(total, slot.timing.size()), JobTiming{});
+		slot.tail = {};
 		slot.groups.assign(groups.begin(), groups.end());
 		slot.starts.clear(); slot.laneBases.clear();
 		std::size_t start = 0, runnable = 0;
@@ -1604,9 +1877,19 @@ private:
     void joinImpl(Batch& batch, JoinContext context) {
         if (batch.empty()) return;
         if (active) throw std::logic_error("Deferred batches cannot be joined from inside a job");
-        const auto start = diagnosticStart<Mode>();
+		PerformanceSamples samples(*this, 0);
+		struct CausalSample
+		{
+			std::uint64_t queue, lane, external;
+		};
+		std::array<CausalSample, 64> causal;
+		std::size_t causalCount = 0, dropped = 0;
+		ComputeProducer causalProducer = ComputeProducer::Other;
+		const auto perfStart = PerformanceTelemetry::now();
+		const auto start = diagnosticStart<Mode>();
         std::unique_lock<std::mutex> lock(mutex);
-        const auto acquired = diagnosticStart<Mode>();
+		const auto perfAcquired = PerformanceTelemetry::now();
+		const auto acquired = diagnosticStart<Mode>();
         auto& slot = slots[batch.slot];
         if (slot.serial != batch.serial) { batch = {}; return; }
         const bool incomplete = slot.completed != slot.total;
@@ -1617,8 +1900,48 @@ private:
             lock.unlock(); execute<Mode>(claimed, 0);
         }
         if (slot.completed != slot.total) slotDone.wait(lock, [&] { return slot.completed == slot.total; });
-        const auto completed = diagnosticStart<Mode>();
-        const auto failure = slot.error;
+		const auto perfCompleted = PerformanceTelemetry::now();
+		const auto completed = diagnosticStart<Mode>();
+		if (ComputeTelemetry::required(context.reason))
+		{
+			const auto producer = slot.perfTags.producer;
+			samples.add(PerfKind::Join, producer, perfCompleted - perfStart);
+			samples.add(PerformanceTelemetry::Id::JoinLock, perfAcquired - perfStart);
+			requiredTotals[0].fetch_add(perfAcquired - perfStart, std::memory_order_relaxed);
+			if (incomplete)
+				requiredTotals[owner ? 2 : 1].fetch_add(perfCompleted - perfAcquired,
+														std::memory_order_relaxed);
+			if (incomplete)
+			{
+				samples.add(PerfKind::Deadline, producer, 1);
+				samples.add(owner ? PerformanceTelemetry::Id::JoinOwner
+								  : PerformanceTelemetry::Id::JoinWait,
+							perfCompleted - perfAcquired);
+				if (slot.tail.claimed)
+				{
+					samples.add(perfId(PerfKind::CriticalCallback, producer), slot.tail.callback);
+					samples.add(PerfKind::CriticalQueue, producer, slot.tail.queue);
+					samples.add(PerfKind::CriticalLane, producer, slot.tail.lane);
+					samples.add(PerfKind::CriticalExternal, producer, slot.tail.external);
+				}
+				samples.add(owner ? PerfKind::OwnerJoin : PerfKind::Wait, producer,
+							perfCompleted - perfAcquired);
+				if (!owner && context.logicalTick != ComputeTelemetry::NoTick &&
+					lastWaitTick[unsigned(producer)] != context.logicalTick + 1)
+				{
+					lastWaitTick[unsigned(producer)] = context.logicalTick + 1;
+					samples.add(PerfKind::WaitTick, producer, 1);
+				}
+			}
+			if (slot.completedNs)
+				samples.add(PerfKind::Notification, producer, perfCompleted - slot.completedNs);
+		}
+		causalProducer = slot.perfTags.producer;
+		causalCount = std::min(slot.total, slot.timing.size());
+		dropped = slot.total - causalCount;
+		for (std::size_t i = 0; i < causalCount; ++i)
+			causal[i] = {slot.timing[i].queue, slot.timing[i].lane, slot.timing[i].external};
+		const auto failure = slot.error;
         if constexpr (Mode != ComputeTelemetryMode::Off) {
             const auto producer = diagnostics->batches[batch.slot].tags.producer;
             auto& value = diagnostics->summary.joins[unsigned(producer)][unsigned(context.reason)];
@@ -1640,10 +1963,77 @@ private:
         if constexpr (Mode != ComputeTelemetryMode::Off)
             diagnostics->summary.joins[unsigned(producer)][unsigned(context.reason)].total.add(diagnosticElapsed<Mode>(start));
         lock.unlock();
-        if (failure) std::rethrow_exception(failure);
+		samples.publish();
+		for (std::size_t i = 0; i < causalCount; ++i)
+		{
+			samples.add(PerfKind::Queue, causalProducer, causal[i].queue);
+			samples.add(PerfKind::Lane, causalProducer, causal[i].lane);
+			samples.add(PerfKind::External, causalProducer, causal[i].external);
+			if (samples.size + 3 > samples.values.size())
+				samples.publish();
+		}
+		samples.publish();
+		for (std::size_t i = 0; i < dropped; ++i)
+		{
+			samples.add(PerformanceTelemetry::Id::CausalDropped, 1);
+			if (samples.size == samples.values.size())
+				samples.publish();
+		}
+		if (failure) std::rethrow_exception(failure);
     }
 public:
-    void join(Batch& batch, JoinContext context = {JoinReason::ImmediateRequired, ComputeTelemetry::NoTick}) {
+  struct JoinCosts
+  {
+	  std::uint64_t lock = 0, wait = 0, owner = 0;
+  };
+  JoinCosts requiredJoinCosts() const
+  {
+	  return {requiredTotals[0].load(std::memory_order_relaxed),
+			  requiredTotals[1].load(std::memory_order_relaxed),
+			  requiredTotals[2].load(std::memory_order_relaxed)};
+  }
+  // Include the fixed slot arena and retained banks, even when they are on the heap.
+  std::size_t performanceStorageBytes() const
+  {
+	  std::size_t bytes = sizeof(*this) + slots.capacity() * sizeof(Slot);
+	  for (const auto &shard : performanceShards)
+	  {
+		  std::lock_guard lock(shard.mutex);
+		  if (shard.metrics)
+			  bytes += sizeof(PerformanceShard::Metrics);
+	  }
+	  return bytes;
+  }
+  void absorbPerformance(PerformanceTelemetry::Collector &collector)
+  {
+	  for (auto &shard : performanceShards)
+	  {
+		  std::lock_guard lock(shard.mutex);
+		  for (unsigned i = 0; i < shard.activeCount; ++i)
+			  collector.import(PerformanceTelemetry::Id(shard.active[i]),
+							   (*shard.metrics)[shard.active[i]]);
+		  shard.clear();
+	  }
+  }
+  void resetPerformance()
+  {
+	  // Only reset takes all timing shards. No producer holds the scheduler
+	  // mutex while waiting for a shard, so this order cannot block scheduling
+	  // behind an ongoing histogram merge.
+	  std::scoped_lock timingLock(performanceShards[0].mutex, performanceShards[1].mutex,
+								  performanceShards[2].mutex, performanceShards[3].mutex);
+	  {
+		  std::lock_guard lock(mutex);
+		  lastWaitTick = {};
+		  laneCompletedNs = {};
+		  for (auto &value : requiredTotals)
+			  value.store(0, std::memory_order_relaxed);
+		  performanceEpoch.fetch_add(1, std::memory_order_relaxed);
+	  }
+	  for (auto &shard : performanceShards)
+		  shard.clear();
+  }
+	void join(Batch& batch, JoinContext context = {JoinReason::ImmediateRequired, ComputeTelemetry::NoTick}) {
         if (batch.empty()) return;
         validateContext(context);
         if (telemetryModeValue == ComputeTelemetryMode::Off) return joinImpl<ComputeTelemetryMode::Off>(batch, context);

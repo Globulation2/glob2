@@ -24,7 +24,7 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		{ExperimentId::MarketsV2, "markets-v2", "Markets V2",
 		 "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."},
         {ExperimentId::GradientRatioMode, "gradient-ratio-mode", "Gradient ratio mode", "Retired research key; amphibious routing always uses the team's most common ratio."},
-        {ExperimentId::GradientSpeedModes, "gradient-speed-modes", "Gradient speed modes", "Research: share amphibious routing using the team's modal walking and swimming speeds."},
+        {ExperimentId::GradientSpeedModes, "gradient-speed-modes", "Gradient speed modes", "Retired research key; amphibious routing always uses the team's most common ratio."},
         {ExperimentId::GradientRatioMedian, "gradient-ratio-median", "Gradient ratio median", "Retired research key; amphibious routing always uses the team's most common ratio."},
         {ExperimentId::GradientRatioEqual, "gradient-ratio-equal", "Gradient equal ratio", "Retired research key; amphibious routing always uses the team's most common ratio."},
 	};

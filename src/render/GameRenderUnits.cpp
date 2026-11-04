@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "unit/render/UnitHarvestAnimation.h"
 #include <PerformanceTelemetry.h>
 #include "MapCopies.h"
 #include <iostream>
@@ -27,10 +28,13 @@
 #include "unit/render/UnitDrawGeometry.h"
 #include "unit/render/UnitAnimation.h"
 #include "unit/render/UnitMotion.h"
+#include "unit/render/SwimmingPresentation.h"
+#include <RenderStateScope.h>
 #include "unit/render/ColonySkinPreview.h"
 #include <algorithm>
 #include "unit/render/UnitSkin.h"
 #include "scene/Scene.h"
+#include "UnitEffectArt.h"
 #include "Utilities.h"
 #include "GameGUI.h"
 #include <SDL3/SDL.h>
@@ -82,6 +86,19 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
 			return;
 	}
+	// A unit a swarm has just produced fades in as a team-colour silhouette,
+	// sliding out of the swarm; one a building has just serviced shimmers in the
+	// service's colour (UnitEffects.h).
+	const auto effect = view.render.unitEffects.find(gid);
+	const bool hasEffect = effect != view.render.unitEffects.end();
+	const auto effectKind = hasEffect ? UnitEffect::Kind(effect->second.kind) : UnitEffect::Kind::Spawn;
+	const float effectAge = hasEffect ? effect->second.age + view.render.unitMotion : 0;
+	const UnitEffect::UnitLook effectLook = !hasEffect ? UnitEffect::UnitLook{1, 0, 0}
+		: effectKind == UnitEffect::Kind::Spawn ? UnitEffect::unitLook(effectAge)
+		: UnitEffect::UnitLook{1, 0, UnitEffect::serviceSilhouette(effectAge)};
+	fogAlpha = Uint8(std::lround(fogAlpha * effectLook.opacity));
+	if (fogAlpha == 0)
+		return;
 	// Everything drawn for the unit fades with it: `opacity` for the bars, pips and
 	// marker, which take a fraction, and faded() for alphas out of 255.
 	const float opacity = fogAlpha / 255.f;
@@ -112,13 +129,21 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	{
 		// TODO : if looks ugly, do something intelligent here
 	}
+	if (hasEffect)
+	{
+		px -= int(std::lround(effect->second.dx * effectLook.slide));
+		py -= int(std::lround(effect->second.dy * effectLook.slide));
+	}
 
 	int dir=unit->direction;
 	assert(dir>=0);
 	assert(dir<9);
 	assert(delta>=0);
 	assert(delta<256);
-	imgid=unitAnimationFrame(imgid, dir, delta);
+	const int pronePhase = unitProneHarvestPhase(scene, *unit, meshClass, view.render.unitMotion);
+	imgid = pronePhase >= 0
+				? UNIT_ANIMATION_PRONE_HARVEST_BASE + unitProneHarvestFrame(dir, pronePhase)
+				: unitAnimationFrame(imgid, dir, delta);
 
 	// draw unit
 	Sprite *unitSprite = skin.sprite;
@@ -138,12 +163,51 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// The sprite stays opaque under the marker fading in over it, and goes once
 	// the marker is solid. Units at the fog edge fade, including painted meshes
 	// and their original ground shadows.
-	if (detail.unitSprite > 0 &&
-		!view.render.skinPreview().draw(*globalContainer->gfx, meshClass, unit->team,
-			unit->action, dir, delta, px, py,
-            {unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
-             unsigned(unitSprite->getH(imgid))}, fogAlpha))
-		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
+	const float teamHue = UnitEffectArt::hueOf(color);
+	const GAGCore::Color glow = !hasEffect ? GAGCore::Color()
+		: effectKind == UnitEffect::Kind::Spawn ? UnitEffectArt::tint(teamHue) : UnitEffectArt::serviceTint(effectKind);
+	const Uint8 glowAlpha = Uint8(std::lround(255 * effectLook.silhouette));
+	// A swimmer's limbs fade into the water, whichever artwork draws it.
+	const bool swimming = (unit->action == STOP_SWIM || unit->action == SWIM || pronePhase >= 0) &&
+						  detail.unitSprite > 0;
+	const float reach = meshClass == WARRIOR ? SWIM_REACH_WARRIOR : SWIM_REACH_WORKER;
+	{
+		const GAGCore::RadialFadeScope fade(*globalContainer->gfx,
+			swimming ? swimmerFade(px, py, reach) : GAGCore::RadialFade{});
+		if (detail.unitSprite > 0 &&
+			!view.render.skinPreview().draw(
+				*globalContainer->gfx, meshClass, unit->team, unit->action, dir, delta, px, py,
+				{unitSprite->baseFrame(imgid), unsigned(unitSprite->getW(imgid)),
+				 unsigned(unitSprite->getH(imgid))},
+				fogAlpha, pronePhase, Uint32(glow.r) << 16 | Uint32(glow.g) << 8 | glow.b, glowAlpha))
+		{
+			globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
+			// Meshes brighten as they draw; a sprite gets its silhouette's light added.
+			if (glowAlpha)
+				if (DrawableSurface *shape = unitSprite->silhouette(imgid, glow))
+					globalContainer->gfx->drawSurfaceAdditive(float(px-decX), float(py-decY), float(unitSprite->getW(imgid)),
+						float(unitSprite->getH(imgid)), shape, faded(glowAlpha));
+		}
+	}
+	if (hasEffect && detail.unitSprite > 0)
+		view.render.unitOverlays.push_back({float(px), float(py), effectAge, teamHue, opacity,
+			UnitEffect::seedOf(effect->second.x, effect->second.y, gid), effect->second.kind, effect->second.level});
+	if (swimming && pronePhase < 0)
+	{
+		// Each stroke sends a ring back across the water over the faded limbs.
+		// It fades out with the sprite.
+		const SwimRipple ring = swimRipple(delta, reach);
+		const float alpha = ring.alpha * opacity * detail.unitSprite;
+		if (alpha >= 1)
+			forEachSwimRippleSegment(
+				px + 16, py + 16, ring.radius, unit->dx, unit->dy,
+				[&](const SwimRippleSegment &segment)
+				{
+					if (alpha * segment.weight >= 1)
+						globalContainer->gfx->drawLine(segment.x0, segment.y0, segment.x1, segment.y1,
+							Color(225, 240, 255, Uint8(alpha * segment.weight)));
+				});
+	}
 	if (detail.unitMarker > 0)
 	{
 		const bool warrior = meshClass==WARRIOR, explorer = meshClass==EXPLORER;
@@ -428,7 +492,11 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 	assert(dir<9);
 	assert(delta>=0);
 	assert(delta<256);
-	imgid=unitAnimationFrame(imgid, dir, delta);
+	const int pronePhase = unitProneHarvestPhase(
+		scene, *unit, scene.world.catalogs->units->runtime(unit->typeNum).meshClass, unitMotion);
+	imgid = pronePhase >= 0
+				? UNIT_ANIMATION_PRONE_HARVEST_BASE + unitProneHarvestFrame(dir, pronePhase)
+				: unitAnimationFrame(imgid, dir, delta);
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(presentationColor(scene.entities.owner(*unit).color));

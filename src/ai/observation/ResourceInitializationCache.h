@@ -36,7 +36,7 @@ inline bool loadResourceInitializations(GAGCore::InputStream* stream,ResourceIni
  if(count>MaterialSlotCount*MOVEMENT_CLASS_COUNT) {stream->readLeaveSection();return false;}
  for(Uint32 i=0;i<count;++i) {
   stream->readEnterSection(i);const int savedKey=stream->readSint32("key");
-  const int classes=versionMinor<196?7:MOVEMENT_CLASS_COUNT;
+  const int classes=versionMinor<197?7:MOVEMENT_CLASS_COUNT;
   const int key=(savedKey/classes)*MOVEMENT_CLASS_COUNT+accessClass(movementAccessFromLegacy(savedKey%classes));ResourceInitialization field;
   field.observedTick=stream->readUint32("tick");const Uint32 cells=stream->readUint32("cells");
   if(savedKey<0 || savedKey/(MaterialSlotCount*classes)!=owner || cells!=expectedCells) {stream->readLeaveSection(2);return false;}
@@ -44,7 +44,7 @@ inline bool loadResourceInitializations(GAGCore::InputStream* stream,ResourceIni
   auto values=std::make_shared<std::vector<Uint16>>(cells);
   for(size_t cell=0;cell<cells;++cell) (*values)[cell]=bytes[cell*2]|(Uint16(bytes[cell*2+1])<<8);
   field.values=std::move(values);stream->readLeaveSection();
-  if(!fields.emplace(key,std::move(field)).second && versionMinor>=196) {stream->readLeaveSection();return false;}
+  if(!fields.emplace(key,std::move(field)).second && versionMinor>=197) {stream->readLeaveSection();return false;}
  }
  stream->readLeaveSection();return stream->isValid();
 }

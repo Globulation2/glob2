@@ -17,6 +17,7 @@
 #include "Roads.h"
 #include "Sketch.h"
 #include "StartQuality.h"
+#include "TerrainProperties.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
@@ -120,8 +121,8 @@ struct Layout
 	Torus t{1, 1};
 	Stretch stretch;
 	TerrainSketch terrain;
-	// hot: tiles with any lava-group corner (never painted over). wall: tiles whose four corners
-	// are all lava-group, the impassable flows and crater. fords: the cooled crossings' tiles;
+	// hot: tiles with any lava-group corner (never painted over). wall: lava-touching tiles
+	// blocked by the corner movement vote. fords: the walkable cooled crossings' tiles;
 	// fordTiles lists them per long tongue. flowEdge and fordCorners are the corners the
 	// margins along the flows are measured from, once the towns are placed (furnishMargins).
 	std::vector<unsigned char> rim, lake, hot, wall, fords, flowEdge, fordCorners;
@@ -198,6 +199,10 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		circuit.push_back({p.x, p.y, kRoadHalfWidth});
 	}
 	strokePath(L.rim, t, circuit, 1, true);
+	// Navigation and validation require each flagged rim cell to stay open.
+	// Protect its complete corner footprint: reserving only its top-left track
+	// vertex let two lava-root corners close that cell under blocked ties.
+	const auto rimCorners = tileCorners(t, L.rim);
 
 	auto &rng = context.stream("lava-flows");
 	const auto roll = [&]() { return rng() / 4294967296.0; };
@@ -344,7 +349,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		if (L.lake[i])
 			L.terrain[i] = LAVA;
 		else if (L.rim[i])
-			L.terrain[i] = DIRT_TRACK;
+			L.terrain[i] = BRICK_PATH;
 	}
 	if (o.islets)
 	{
@@ -369,7 +374,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			continue;
 		if (ford[i])
 			L.terrain[i] = SCREE;
-		else if (live[i])
+		else if (live[i] && !rimCorners[i])
 			L.terrain[i] = LAVA;
 		else if (cooled[i] && L.terrain[i] == GRASS)
 			L.terrain[i] = SCREE;
@@ -388,7 +393,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		for (int i = 0; i < t.size(); ++i)
 			if (drawn[i] == SCREE && cooled[i] && !ford[i] &&
 				around(i, [&](int j) { return !cooled[j] && drawn[j] != LAVA; }))
-				L.terrain[i] = GRAVEL;
+				L.terrain[i] = SHALE;
 	}
 	// Ember fringes every lava vertex that touches anything but lava.
 	{
@@ -404,7 +409,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	L.flowEdge.assign(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 		L.flowEdge[i] = (live[i] && isHot(i)) ||
-						(cooled[i] && (L.terrain[i] == SCREE || L.terrain[i] == GRAVEL));
+						(cooled[i] && (L.terrain[i] == SCREE || L.terrain[i] == SHALE));
 	L.fordCorners = ford;
 	auto &palette = context.stream("lava-palette");
 	const PeriodicNoise ash(t.w, t.h, 7, palette), soil(t.w, t.h, 9, palette),
@@ -459,9 +464,14 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 			hot += isHot(c);
 			forded = forded || ford[c];
 		}
+		const auto movement = combineCornerRules(
+			terrainProperties(TerrainType(L.terrain[corners[0]])),
+			terrainProperties(TerrainType(L.terrain[corners[1]])),
+			terrainProperties(TerrainType(L.terrain[corners[2]])),
+			terrainProperties(TerrainType(L.terrain[corners[3]])));
 		L.hot[i] = hot > 0;
-		L.wall[i] = hot == 4;
-		L.fords[i] = forded && hot < 4;
+		L.wall[i] = hot > 0 && !movement.walkable && !movement.swimmable;
+		L.fords[i] = forded && movement.walkable;
 	}
 	for (const auto &cut : fordVertices)
 	{
@@ -875,11 +885,11 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 				shore = shore || v == WATER || v == DEEP_WATER;
 			}
 		if (track[i] && !shore)
-			terrain[i] = DIRT_TRACK;
+			terrain[i] = BRICK_PATH;
 	}
 	std::vector<unsigned char> sand(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		sand[i] = terrain[i] == SAND || terrain[i] == DIRT_TRACK;
+		sand[i] = terrain[i] == SAND || terrain[i] == BRICK_PATH;
 	const auto roadGround = roadTiles(t, sand);
 	for (int i = 0; i < t.size(); ++i)
 		reserve[i] = reserve[i] || roadGround[i];
@@ -1179,7 +1189,8 @@ GeneratorDefinition lavaShieldDefinition()
 			// gravel, stone is a crust along the flows, the rim is loam, roads are dirt tracks and
 			// the open sea is deep water.
 			// Revision 7: the crater is uninterrupted lava, without void vents.
-			7,
+			// Revision 9: live roots preserve all corners of reserved circuit cells.
+			9,
 			false,
 			{GeneratorControl{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout}
 				 .withSearchRange(4, 7),

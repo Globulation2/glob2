@@ -36,7 +36,8 @@ class Compositor
   public:
 	explicit Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty());
 	const Catalog &catalog() const { return definitions; }
-	bool contextualBorders() const { return hasContextualProfiles; }
+	// Contextual and smooth profiles read one vertex of halo around each cell.
+	bool neighborhoodBorders() const { return hasNeighborhoodProfiles; }
 	std::pair<GAGCore::Sprite *, unsigned> editorIcon(TerrainType type) const;
 	void prepare(bool hd, int time);
     // Retain only requested variants; immutable CPU snapshots remain usable.
@@ -135,6 +136,13 @@ class Compositor
     std::size_t cpuMaterialBytesForRecipes(std::span<const Recipe> recipes) const;
 	std::uint64_t materialRevision(MaterialId id) const { return materialRevisions[id]; }
 	int scale() const { return resolution; }
+    // Diagnostic: HD preparations, and those that drew a native source for a
+    // material whose HD frames had already appeared (streaming fallback).
+    struct HighResolutionCoverage { std::uint64_t prepares = 0, fallbacks = 0; };
+    HighResolutionCoverage highResolutionCoverage() const { return coverage; }
+    // Look-ahead phases kept resident for streamed animated HD materials, beyond
+    // the current and next phase that every animation requires.
+    static constexpr std::size_t AnimationLookaheadBytes = 64u * 1024 * 1024;
 	std::size_t sourceBytes() const;
 
   private:
@@ -159,10 +167,12 @@ class Compositor
 		GAGCore::DrawableSurface *source = nullptr;
 		std::uint64_t identity = 0, revision = 0;
 		int size = 0;
+		bool opaque = false; // Every pixel has full alpha.
 		std::vector<std::array<unsigned char, 4>> pixels;
 	};
+	static void markOpaque(Texture &);
 	Catalog definitions;
-	bool hasContextualProfiles = false;
+	bool hasNeighborhoodProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
     void describeShoreCalm(const SceneMap&, Recipe &) const;
@@ -191,6 +201,8 @@ class Compositor
     bool prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target,
                          const std::vector<unsigned char> *wanted);
 	std::vector<std::uint64_t> materialRevisions;
+	std::vector<int> highResolutionSizes; // Largest source size seen per material.
+	HighResolutionCoverage coverage;
 	int resolution = 1;
 	unsigned preparedTime = 0;
 };

@@ -20,7 +20,7 @@ Use contracts, map inspection and populated games for different questions: legal
   must be evenly divisible by `step`. A `GeneratorControl::Kind::Toggle` control must be exactly 0 to 1 in
   steps of 1, with no allowed values, power-of-two formatting or terrain weight; the lobby and
   editor show it as a checkbox. Every control label needs matching entries in
-  `data/texts.en.txt` (`[Label]` / `Label`) and `data/texts.keys.txt` (`[Label]`), the same as any
+  `content/data/texts.en.txt` (`[Label]` / `Label`) and `content/data/texts.keys.txt` (`[Label]`), the same as any
   other UI string.
 
 ## Verification tools
@@ -57,8 +57,9 @@ Use contracts, map inspection and populated games for different questions: legal
   `MapGeneratorGoldenTest <profile>` regenerates this platform's rows and fails on any map that
   changed at an unchanged revision or any generator whose revision moved without the table
   following; `--update` rewrites this platform's rows and refuses (without `--force`) to record
-  a changed map under an unchanged revision; `--print` writes the rows to stdout, which is how
-  a platform's rows are first bootstrapped from a CI log. Generation is deterministic per
+  a changed map under an unchanged revision. `--print` emits unapproved, read-only rows to
+  stdout even when output changes at an unchanged recipe revision; expected rows stay untouched.
+  This is how a platform's rows are first bootstrapped from a CI log. Generation is deterministic per
   platform, not across platforms, so rows carry the platform they were made on. A platform with
   no rows reports and passes, so a new machine can run the check before its rows exist; CI
   passes `--require-rows`, which fails instead, so the table has to carry rows for every

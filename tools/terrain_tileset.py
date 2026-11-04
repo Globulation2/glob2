@@ -4,6 +4,7 @@
 
 Usage: python3 tools/terrain_tileset.py --check
        python3 tools/terrain_tileset.py --output artifacts/terrain/tileset
+       python3 tools/terrain_tileset.py --border-table [--compare OLD.json]
 Textures and masks are separate: no terrain-pair Cartesian product is baked.
 """
 
@@ -16,6 +17,11 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 LEGACY_BINDINGS = ("water", "sand", "grass", "ice", "road")
 BUILTIN_NAMES = ROOT / "tools/terrain_builtin_names.json"
+
+
+def assets(root):
+    """The runtime tree, where catalog sprite paths such as data/gfx/... resolve."""
+    return Path(root) / "content"
 
 
 def required_bindings(root=ROOT):
@@ -37,14 +43,14 @@ BINDINGS = required_bindings()
 
 
 def material_provenance(document, root=ROOT):
-    """Per-material provenance summaries from datasrc/gfx/<key>/provenance.json.
+    """Per-material provenance summaries from content-src/gfx/<key>/provenance.json.
 
     Materials without a provenance file are existing terrain artwork with
     shared periodic variant borders and no AI-generated imagery.
     """
     result = {}
     for material in document["materials"]:
-        path = Path(root) / "datasrc/gfx" / material["key"] / "provenance.json"
+        path = Path(root) / "content-src/gfx" / material["key"] / "provenance.json"
         if not path.is_file():
             result[material["key"]] = dict(method="existing", source="Existing terrain artwork")
             continue
@@ -93,7 +99,7 @@ def validate(document, root=ROOT):
 
 
 def _validate(document, root):
-    if type(document.get("version")) is not int or document["version"] not in (1, 2, 3):
+    if type(document.get("version")) is not int or document["version"] not in (1, 2, 3, 4):
         raise ValueError("Unsupported terrain catalog version")
     version = document["version"]
     if version == 1 and "boundary_warp_q8" in document:
@@ -119,21 +125,36 @@ def _validate(document, root):
         raise ValueError("Profiles must be a nonempty array")
     if not isinstance(document["materials"], list) or not document["materials"]:
         raise ValueError("Materials must be a nonempty array")
+    classes = border_classes(document)
     profiles = {}
     for p in document["profiles"]:
+        shape = p.get("shape", "patch")
+        if shape not in ("patch", "contextual", "smooth"):
+            raise ValueError("Unknown boundary shape")
+        smooth = shape == "smooth"
         if (
             not isinstance(p["key"], str)
             or not p["key"]
             or p["key"] in profiles
-            or type(p["roughness_q8"]) is not int
-            or not 0 <= p["roughness_q8"] <= 512
+            or type(p.get("roughness_q8", 0 if smooth else None)) is not int
+            or not 0 <= p.get("roughness_q8", 0) <= 512
         ):
             raise ValueError("Invalid or duplicate profile")
-        shape = p.get("shape", "patch")
-        if shape not in ("patch", "contextual"):
-            raise ValueError("Unknown boundary shape")
         if version < 3 and shape != "patch":
             raise ValueError("Contextual shape requires catalog version 3")
+        if version < 4 and smooth:
+            raise ValueError("Smooth shape requires catalog version 4")
+        for field in ("precedence", "coast"):
+            if version < 4 and field in p:
+                raise ValueError(f"{field} requires catalog version 4")
+        integer(p.get("precedence", 0), 0, 255, "Profile precedence")
+        for field in ("wiggle_q8", "wiggle_period", "squareness_q8"):
+            if not smooth and field in p:
+                raise ValueError(f"{field} requires the smooth shape")
+        integer(p.get("wiggle_q8", 0), 0, 2048, "Smooth wiggle")
+        integer(p.get("squareness_q8", 0), 0, 256, "Smooth squareness")
+        if p.get("wiggle_period", 64) not in (32, 64, 128, 256):
+            raise ValueError("Smooth wiggle period must be 32, 64, 128 or 256 pixels")
         if version == 1 and "feather_q8" in p:
             raise ValueError("Boundary feather requires catalog version 2")
         integer(p.get("feather_q8", 256), 128, 512, "Boundary feather")
@@ -141,6 +162,9 @@ def _validate(document, root):
             if version < 3 and field in p:
                 raise ValueError(f"{field} requires catalog version 3")
             integer(p.get(field, 0), 0, 1024, field)
+        if smooth and "contours_q12" not in p:
+            profiles[p["key"]] = p
+            continue
         curves = p["contours_q12"]
         limit = {1: 256, 2: 512}.get(version, 1024)
         if not isinstance(curves, list) or (
@@ -157,6 +181,18 @@ def _validate(document, root):
                 "or 33 points with shared zero endpoints"
             )
         profiles[p["key"]] = p
+    for p in profiles.values():
+        if "coast" in p and (p["coast"] not in profiles or p["coast"] == p["key"]):
+            raise ValueError("Profile coast must name another profile")
+    aliases = document.get("bundle_profiles", {})
+    if aliases and version < 4:
+        raise ValueError("Bundle profiles require catalog version 4")
+    if not isinstance(aliases, dict) or any(
+        not isinstance(a, dict) or a.get("profile") not in profiles
+        or a.get("class") not in classes
+        for key, a in aliases.items()
+    ):
+        raise ValueError("Bundle profiles must name a profile and a border class")
     materials = {}
     sources = {}
     decor_sprites = set()
@@ -168,6 +204,10 @@ def _validate(document, root):
             or m["profile"] not in profiles
         ):
             raise ValueError("Invalid material key or profile")
+        if version >= 4 and m.get("class") not in classes:
+            raise ValueError("Version 4 materials need a known border class")
+        if version < 4 and "class" in m:
+            raise ValueError("Border classes require catalog version 4")
         sprite = data_path(m["sprite"], "Sprite")
         if m.get("edges", "blend") not in ("blend", "periodic"):
             raise ValueError("Material edges must be 'blend' or 'periodic'")
@@ -232,6 +272,10 @@ def _validate(document, root):
             or (phases > 1 and stride == 0)
         ):
             raise ValueError("Invalid animation")
+        if "animation_blend_steps" in m:
+            steps = m["animation_blend_steps"]
+            if phases == 1 or type(steps) is not int or not 1 <= steps <= ticks:
+                raise ValueError("Invalid animation blend steps")
         if (
             not isinstance(m["variants"], list)
             or not m["variants"]
@@ -248,7 +292,7 @@ def _validate(document, root):
                 if not 0 <= frame < 65536:
                     raise ValueError("Invalid frame")
                 relative = f"{sprite.as_posix()}{frame}.png"
-                source = root / relative
+                source = assets(root) / relative
                 with Image.open(source) as image:
                     if image.size != (32, 32):
                         raise ValueError(f"Invalid logical frame dimensions: {source}")
@@ -277,7 +321,7 @@ def _validate(document, root):
                     raise ValueError("Connected decor needs equal variants for all 16 masks")
                 for frame in frames:
                     integer(frame, 0, 65535, "Decor frame")
-                    source = root / f"{decor_sprite.as_posix()}{frame}.png"
+                    source = assets(root) / f"{decor_sprite.as_posix()}{frame}.png"
                     with Image.open(source) as image:
                         if image.width > 64 or image.height > 64:
                             raise ValueError(f"Decor frame larger than 64x64: {source}")
@@ -319,6 +363,66 @@ def _validate(document, root):
     return sources
 
 
+def border_classes(document):
+    """Border classes in dominance order, strongest first (version 4)."""
+    if document["version"] < 4:
+        if "border_classes" in document:
+            raise ValueError("Border classes require catalog version 4")
+        return {}
+    classes = document.get("border_classes")
+    if not isinstance(classes, list) or not classes:
+        raise ValueError("Version 4 catalogs need a nonempty border_classes array")
+    result = {}
+    for rank, entry in enumerate(classes):
+        if (
+            not isinstance(entry, dict)
+            or not isinstance(entry.get("key"), str)
+            or not entry["key"]
+            or entry["key"] in result
+            or type(entry.get("shoreline", False)) is not bool
+            or set(entry) - {"key", "shoreline"}
+        ):
+            raise ValueError("Invalid or duplicate border class")
+        result[entry["key"]] = dict(rank=rank, shoreline=entry.get("shoreline", False))
+    return result
+
+
+def border_profile(document, a, b):
+    """Profile key drawing the contact between materials a and b.
+
+    Mirrors Catalog::profileFor in src/render/terrain/TerrainBorderRules.cpp.
+    """
+    materials = {m["key"]: m for m in document["materials"]}
+    profiles = {p["key"]: p for p in document["profiles"]}
+    for p in document.get("pair_treatments", []):
+        if {p["a"], p["b"]} == {a, b}:
+            return p["profile"]
+    ma, mb = materials[a], materials[b]
+    pa, pb = profiles[ma["profile"]], profiles[mb["profile"]]
+    if document["version"] < 4:
+        ra, rb = pa.get("roughness_q8", 0), pb.get("roughness_q8", 0)
+        if ra != rb:
+            return pa["key"] if ra > rb else pb["key"]
+        return pa["key"] if a < b else pb["key"]
+    classes = border_classes(document)
+    ca, cb = classes[ma["class"]], classes[mb["class"]]
+    if ca["rank"] == cb["rank"]:
+        qa, qb = pa.get("precedence", 0), pb.get("precedence", 0)
+        if qa != qb:
+            return pa["key"] if qa > qb else pb["key"]
+        return min(pa["key"], pb["key"])
+    strong, weak = (pa, cb) if ca["rank"] < cb["rank"] else (pb, ca)
+    if weak["shoreline"] and "coast" in strong:
+        return strong["coast"]
+    return strong["key"]
+
+
+def border_table(document):
+    """Every unordered material pair and the profile drawing its contact."""
+    keys = sorted(m["key"] for m in document["materials"])
+    return {(a, b): border_profile(document, a, b) for i, a in enumerate(keys) for b in keys[i + 1:]}
+
+
 def seamless_sources(document, root):
     """Same four-native-pixel shared border used by runtime source preparation."""
     result = {}
@@ -329,9 +433,9 @@ def seamless_sources(document, root):
                 f"{material['sprite']}{v['frame']+phase*material.get('animation_stride',0)}.png"
                 for v in material["variants"]
             ]
-            master = Image.open(root / names[0]).convert("RGBA")
+            master = Image.open(assets(root) / names[0]).convert("RGBA")
             for name in names:
-                image = Image.open(root / name).convert("RGBA")
+                image = Image.open(assets(root) / name).convert("RGBA")
                 # Periodic materials already share one periodic edge band.
                 for y in range(0 if periodic else 32):
                     for x in range(32):
@@ -410,7 +514,7 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
             x, y = (i % columns) * tile, (i // columns) * tile
             page.paste(padded(image, border), (x, y))
             if runtime_fingerprints is None:
-                with Image.open(root / name) as native:
+                with Image.open(assets(root) / name) as native:
                     fingerprint = pixel_fingerprint(native)
             else:
                 fingerprint = runtime_fingerprints[name]
@@ -435,7 +539,7 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
         for scale in (1, 4):
             size = 16 * scale
             curves = []
-            for curve in profile["contours_q12"]:
+            for curve in profile.get("contours_q12", [[0, 0, 0, 0, 0]] * 4):
                 values = []
                 for i in range(size + 1):
                     t = i * 4096 // size
@@ -472,13 +576,25 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--manifest", type=Path, default=ROOT / "data/terrain/tileset.json")
+    ap.add_argument("--manifest", type=Path, default=ROOT / "content/data/terrain/tileset.json")
     ap.add_argument("--output", type=Path)
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--page-size", type=int, default=1024)
+    ap.add_argument("--border-table", action="store_true",
+                    help="print the profile drawing every material contact")
+    ap.add_argument("--compare", type=Path,
+                    help="with --border-table, list only pairs whose profile differs from this catalog")
     args = ap.parse_args()
     document = json.loads(args.manifest.read_text())
     sources = validate(document)
+    if args.border_table:
+        table = border_table(document)
+        previous = border_table(json.loads(args.compare.read_text())) if args.compare else None
+        for (a, b), profile in table.items():
+            if previous is None:
+                print(f"{a:>14} | {b:<14} {profile}")
+            elif previous.get((a, b)) != profile:
+                print(f"{a:>14} | {b:<14} {previous.get((a, b))} -> {profile}")
     if args.output:
         compile_tileset(document, args.output, page_size=args.page_size)
     print(

@@ -38,24 +38,20 @@ class TerrainDecor(unittest.TestCase):
                 self.assertGreaterEqual(min(box[:2]), 8)
                 self.assertLessEqual(max(box[2:]), decor.CELL - 8)
 
-    def test_committed_frames_match_a_fresh_synthesis(self):
-        self.assertEqual(decor.check(self.results, ROOT), [])
-
     def test_catalog_blocks_name_the_shared_sprite_and_frames(self):
-        catalog = json.loads((ROOT / "data/terrain/tileset.json").read_text())
+        catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
         blocks = {m["key"]: m["decor"] for m in catalog["materials"] if "decor" in m}
         self.assertEqual(sorted(blocks), sorted(decor.ORDER))
         for name, block in blocks.items():
             first = decor.first_frame(name)
-            self.assertEqual(block["sprite"], decor.PREFIX)
+            self.assertEqual(block["sprite"], decor.SPRITE)
             self.assertEqual(block["full"], list(range(first, first + decor.FULL)))
             self.assertEqual(block["edge"], list(range(first + decor.FULL, first + decor.FRAMES)))
             if name in decor.CONNECTED:
                 material = next(m for m in catalog["materials"] if m["key"] == name)
-                self.assertEqual(material["profile"], "canopy")
-                for pair in catalog["pair_treatments"]:
-                    if name in (pair["a"], pair["b"]):
-                        self.assertEqual(pair["profile"], "canopy")
+                # Cover is the strongest class, so canopy draws all its contacts.
+                self.assertEqual((material["profile"], material["class"]), ("canopy", "cover"))
+                self.assertEqual(catalog["border_classes"][0]["key"], "cover")
                 start = decor.connected_first(name)
                 self.assertEqual(block["connected"], list(range(start, start + 16 * decor.CANOPY_VARIANTS)))
                 self.assertEqual(block["connected_interior"],

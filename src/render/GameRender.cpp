@@ -35,6 +35,7 @@
 #include "GameRenderInternal.h"
 #include "SoftwareTerrainCache.h"
 #include "unit/render/UnitMotion.h"
+#include "UnitEffects.h"
 #include "scene/SceneExtract.h"
 #include "PerformanceTelemetry.h"
 
@@ -277,6 +278,27 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
     view.render.skinPreview().prepare(frame.target, scene, left, top, right, bot,
         viewportX, viewportY, localTeam, frame.visibleTeams, drawOptions & DRAW_WHOLE_MAP,
         view.render.unitMotion, view.render.detail.unitSprite > 0, view.render.detail.buildingSprite > 0, &view.render.fogFade);
+	// Unit effects at buildings go with the unit sprites, are building particles
+	// for the detail setting, and only accelerated renderers draw them: index this
+	// frame's by unit, and the producing swarms' glows by swarm.
+	view.render.unitEffects.clear();
+	view.render.swarmGlows.clear();
+	view.render.unitOverlays.clear();
+	if (view.render.detail.unitSprite > 0 && globalContainer->settings.buildingParticles
+		&& frame.target.rendererCapabilities().accelerated)
+		for (const SceneSectorEffects &sector : scene.entities.sectors)
+			for (const SceneUnitEffect &effect : sector.unitEffects)
+			{
+				view.render.unitEffects[effect.unit] = effect;
+				if (effect.kind != Uint8(UnitEffect::Kind::Spawn))
+					continue;
+				const float glow = UnitEffect::swarmGlow(effect.age + view.render.unitMotion);
+				if (glow > 0)
+				{
+					float &swarm = view.render.swarmGlows[effect.building];
+					swarm = std::max(swarm, glow);
+				}
+			}
 	// Prepare terrain pages first, keeping scene ordering independent of the
 	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
 	// Software keeps opaque runs; GPU views draw the same composed pages.
@@ -340,7 +362,10 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 	// Bullets, explosions and death animations are unit-sized effects, and go
 	// with the unit sprites once units are only markers.
 	if (view.render.detail.unitSprite > 0)
+	{
 		scenePass(&Game::drawMapBulletsExplosionsDeathAnimations, scene);
+		scenePass(&Game::drawMapUnitEffects, view, scene);
+	}
 
 	// Compute once for the independently selected cloud layers.
 	if (globalContainer->settings.cloudShadows || (globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER)))

@@ -5,20 +5,19 @@
 Usage: python3 tools/terrain_profile_curves.py           # print a summary
        python3 tools/terrain_profile_curves.py --write   # update tileset.json
 
-The sand profile traces the original hand-drawn grass/sand transition tiles
-(frames 48 to 79: four straight-edge groups of eight variants). Every 32-pixel
-edge yields two 17-point curves, one per 16-pixel patch, with the linear trend
-between the patch endpoints removed so shared edges keep their zero endpoints.
-The fractured and cobblestone profiles use seeded random walks: angular jumps
-for ice, broad plateaus for cobblestone chips. The catalogue profiles added for
-the new terrain groups are also seeded random walks: `rock` (angular, strong
-speckle) for boulders, ridges, scree, gravel and chasms; `soft` (gentle, wide
-bridges) for mud, marsh, loam, moss, snow, clay, dirt and deep water; `crisp`
-(short, no speckle) for holes and boardwalks; `brush` (leafy) for hedges,
-thickets and meadows. For shipped profiles only the `contours_q12` arrays are
-replaced; roughness, amplitude, feather, speckle and bridge stay as authored.
-A profile listed in NEW_PROFILES that is missing from the catalog is appended
-with its authored parameters.
+The sand and turf profiles trace the original hand-drawn grass/sand transition
+tiles (frames 48 to 79: four straight-edge groups of eight variants). Every
+32-pixel edge yields two 17-point curves, one per 16-pixel patch, with the
+linear trend between the patch endpoints removed so shared edges keep their
+zero endpoints. The frozen profile uses seeded angular random walks for ice.
+The catalogue profiles are also seeded random walks: `rock` (angular, strong
+speckle) for boulders, ridges, scree, shale and pumice; `crisp` (short, no speckle)
+for holes, chasms and boardwalks; `brush` (leafy) for meadows and heath. Smooth profiles
+(still water, molten lava, paved roads and tracks) have no contour tables.
+For shipped profiles only the `contours_q12` arrays are replaced; every other
+field stays as authored. A profile listed in NEW_PROFILES that is missing from
+the catalog is appended with its authored parameters. The shipped tables have
+since been tuned by hand, so review the diff before writing.
 """
 
 import argparse
@@ -50,7 +49,7 @@ def trace_sand(root, count):
     for group, side in STRAIGHT_GROUPS:
         for variant in range(8):
             frame = 16 + group * 8 + variant
-            with Image.open(root / f"data/gfx/terrain{frame}.png") as image:
+            with Image.open(root / f"content/data/gfx/terrain{frame}.png") as image:
                 tile = image.convert("RGBA")
                 positions = []
                 for i in range(32):
@@ -93,8 +92,6 @@ def random_walk(rng, points, low, high, kink):
 NEW_PROFILES = {
     "rock": dict(roughness_q8=384, amplitude_q8=896, feather_q8=192, speckle_q8=448, bridge_q8=192,
                  walk=(12, 16, 9, 200, 520, 0.5)),
-    "soft": dict(roughness_q8=160, amplitude_q8=512, feather_q8=448, speckle_q8=128, bridge_q8=640,
-                 walk=(13, 12, 17, 40, 160, 0.1)),
     "crisp": dict(roughness_q8=96, amplitude_q8=256, feather_q8=128, speckle_q8=0, bridge_q8=256,
                   walk=(14, 8, 9, 60, 200, 0.2)),
     "brush": dict(roughness_q8=320, amplitude_q8=768, feather_q8=320, speckle_q8=384, bridge_q8=512,
@@ -104,22 +101,12 @@ NEW_PROFILES = {
 
 def generate(root, sand_count=24):
     rng = random.Random(11)
-    fractured = [random_walk(rng, 9, 150, 450, 0.3) for _ in range(12)]
-    cobblestone = []
-    for _ in range(12):
-        curve = [0]
-        for _ in range(1, 8):
-            curve.append(rng.choice((-640, -400, -200, 0, 200, 400, 640)) + rng.randint(-80, 80))
-        curve.append(0)
-        cobblestone.append(clamp(curve))
-    # Frozen keeps ice's original detail, independently of lava's sharp shape.
-    curves = {"sand": trace_sand(root, sand_count), "fractured": fractured,
-              "frozen": fractured, "cobblestone": cobblestone}
+    sand = trace_sand(root, sand_count)
+    curves = {"sand": sand, "turf": sand, "frozen": [random_walk(rng, 9, 150, 450, 0.3) for _ in range(12)]}
     for key, spec in NEW_PROFILES.items():
         seed, count, points, low, high, kink = spec["walk"]
         walk = random.Random(seed)
         curves[key] = [random_walk(walk, points, low, high, kink) for _ in range(count)]
-    curves["cliff"] = curves["rock"]
     return curves
 
 
@@ -136,7 +123,7 @@ def dump_catalog(document):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=ROOT / "data/terrain/tileset.json")
+    parser.add_argument("--manifest", type=Path, default=ROOT / "content/data/terrain/tileset.json")
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
     document = json.loads(args.manifest.read_text())

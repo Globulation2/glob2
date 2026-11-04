@@ -232,7 +232,8 @@ try
 		if (!drawn) legacyCellTerrain[i] = type;
 	};
 
-	// Vertex IDs written before the grass and sand looks number custom terrain from 29.
+	// Vertex IDs written before the latest built-ins number custom terrain from the writer's
+	// built-in count (TerrainRegistry::savedBuiltinCount).
 	auto savedVertexTerrain = [&](Uint16 saved) -> std::optional<TerrainType>
 	{
 		const auto id = TerrainRegistry::currentTerrainId(savedBuiltins, saved);
@@ -791,7 +792,7 @@ void Map::loadGradient(GAGCore::InputStream* stream,Uint16*& field,size_t cells,
     gradientRuntime->fieldCosts.erase(field);
     loadGradientCells(stream,field,cells,packed);
     if(field) {
-        const int cost=gradientRuntime->loadingGradientVersion>=196 ? stream->readUint8("preparationCost") : legacyCost;
+        const int cost=gradientRuntime->loadingGradientVersion>=197 ? stream->readUint8("preparationCost") : legacyCost;
         if(cost<0 || cost>=MOVEMENT_CLASS_COUNT || movementAccessFromLegacy(cost)!=movementAccessFromLegacy(legacyCost))throw std::runtime_error("Invalid field preparation cost");
         recordFieldCost(field,cost);
     }
@@ -1559,7 +1560,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
             for (auto* building : game->teams[t]->liveBuildings.entries()) building->freeGradients();
         }
     }
-    if(versionMinor<196)consolidateLegacyRoutingFields();
+    if(versionMinor<197)consolidateLegacyRoutingFields();
     // Loaded and discarded slots bypassed publishPlane.
     rebuildPlaneRegistry();
 }

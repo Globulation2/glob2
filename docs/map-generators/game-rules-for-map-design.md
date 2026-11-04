@@ -14,15 +14,23 @@
 - **Terrain lives on corners.** The map stores one terrain type per vertex (`Map::vertexTerrain`);
   vertex (x,y) is the top-left corner of tile (x,y). A tile's rules come from its four corners
   (`combineCornerRules`, `TerrainPropertiesLayout.h`, compiled once per combination by
-  `CellRuleTable`): equal corners keep that terrain's rules exactly; mixed corners are walkable
-  when any corner is, never swimmable or buildable, and otherwise as permissive as the weakest
-  corner. So a tile is pure grass only when all four of its corners are grass, and a single sand
+  `CellRuleTable`): equal property profiles keep their rules exactly; mixed profiles count
+  walking, swimming and blocked corners. Two or more blocked corners block ground movement;
+  otherwise walking or swimming wins by count, with walking winning their tie. Numeric
+  effects use the arithmetic mean of all four corners: ground/air speed and health, growth, fertility, inhibition and shoreline support.
+  Q8 averages round toward zero; damage and healing can offset each other. This blends speed
+  boundaries and gives mixed shores partial ecological effects. Mixed profiles are never
+  buildable, and other permissions remain conservative. A single walkable corner cannot open a blocked or water
+  cell. Two walking corners suffice unless both remaining corners are blocked. Both
+  two-land/two-blocked and two-water/two-blocked cells stay blocked, while
+  different water profiles can mix and still swim. So a tile is pure grass only when all four of its corners are grass, and a single sand
   vertex spoils the four tiles around it. This is why a one-vertex sand road (`tracePath`) blocks a
   strip about two tiles wide, and why generators stamp grass inside a one-tile sand ring. Read a
   vertex with `vertexTerrainAt`, a tile's corners with `cellCorners`, and a tile's rules with
   `terrainPropertiesAt`; `terrainTypeAt` answers `MIXED_TERRAIN` for a mixed tile.
-- **Beaches are a convention, not a rule.** Grass directly against water is legal: the tiles
-  between are walkable and unbuildable, exactly like a sand/water or grass/sand tile. The shipped
+- **Beaches are a convention, not a rule.** Grass directly against water is legal: mixed tiles
+  are unbuildable and walk with at least two grass corners, otherwise they swim. Sand/water
+  uses the same movement vote; grass/sand always walks. The shipped
   maps keep sand between grass and water. `Map::layBeaches()` turns every grass vertex next to
   water, and every water vertex next to grass, into sand, reading the terrain as it was, so the
   result does not depend on scan order; the designed generators apply the same rule to their
@@ -34,11 +42,12 @@
   of farmable grass means four rows of grass laid down.
 - **Buildings need buildable tiles.** `Map::isFreeForBuilding` requires buildable terrain, no
   resource and no unit on every tile of the footprint (`Map::checkTile`). Among the classic
-  terrains only pure grass is buildable, and a mixed tile never is, so a map's building room is
-  its pure grass, not its land. A swarm is 4×4; the start scorer counts free 4×4 footprints as a
-  colony's room (`StartQuality`).
-- **Water blocks walking until a colony can swim.** Ground units cannot enter water
-  (cells whose four corners are all water) until they have trained at a swimming pool. Every island map, strait
+  terrains only pure grass is buildable. Mixed property profiles are never buildable, while
+  different terrain IDs sharing one buildable profile keep that permission. For classic terrain,
+  building room is pure grass, not all land. A swarm is 4×4; the start scorer counts free 4×4
+  footprints as a colony's room (`StartQuality`).
+- **Water blocks walking until a colony can swim.** Ground units without swimming cannot enter
+  swimmable cells, including water-majority shores. Swimming is earned by training at a pool. Every island map, strait
   and moat is therefore a *timing* rule: it separates colonies early and opens once pools are
   built. Sand and grass are both walkable.
 - **Resources block movement and building.** A unit cannot stand on a tile with a resource on it
@@ -115,11 +124,18 @@ painted, only the boundary shapes and texture variants change. For example:
 Both `base` and `appearance` name a paintable built-in terrain by its external name:
 the classic `water`, `sand`, `grass`, `ice` and `road` (the compatibility key for
 Trail) plus every terrain-catalogue type (`boulders`, `hedge`, `thicket`, `ridge_rock`,
-`outcrop`, `dirt`, `clay`, `gravel`, `flower_meadow`, `mud`, `marsh`, `deep_snow`,
-`scree`, `dirt_track`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
-`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`, and the grass and
-sand looks `lush_grass`, `dry_grass`, `dune_sand` and `pale_sand`). The looks share every
-rule of grass or sand and differ only in artwork and colours. There are no shore
+`outcrop`, `dirt`, `clay`, `shale`, `heath`, `mud`, `mudflat`, `deep_snow`,
+`scree`, `brick_path`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
+`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`, the grass and
+sand looks `lush_grass`, `dry_grass`, `dune_sand` and `pale_sand`, then `sandstone`,
+`pumice`, `frozen_lake` and `wind_swept_snow`). The looks share every rule of grass or sand and differ only in artwork and
+colours; sandstone tiles follow the path rules of road, brick path and boardwalk, and a
+pumice field the rough-ground rules of mud, mudflat and scree; a frozen lake plays exactly
+like ice, and wind-swept snow exactly like deep snow. The earlier names
+`gravel`, `flower_meadow`, `marsh` and `dirt_track` are still accepted as aliases of
+`shale`, `heath`, `mudflat` and `brick_path` (`LEGACY_TERRAIN_NAMES` in
+`src/map/TerrainTypeTable.h`), but maps, saves and reports are written with the
+current names. There are no shore
 types: mixed corners make transitions. The base supplies all simulation
 defaults; appearance selects a shipped material and resolved preview colors independently.
 Detailed artwork and natural boundaries use the shared [material catalog](../assets/terrain-materials.md);
@@ -174,6 +190,11 @@ new property kinds, custom resources, custom artwork and scripted registration a
 outside this format.
 
 ## The rules of resources
+
+Loam, moss and spring meadow support land crops directly and each contribute
+128 Q8 fertility (half of water’s 256). Their contributions also feed shore
+ecology, but they supply no shoreline support. Built-in terrain uses these values
+when existing maps and saves load; embedded custom terrain keeps its authored values.
 
 | Resource | Used for | Where it can be | How it grows |
 | --- | --- | --- | --- |

@@ -463,16 +463,16 @@
         "clay": {
           "$ref": "#/$defs/coverage"
         },
-        "gravel": {
+        "shale": {
           "$ref": "#/$defs/coverage"
         },
-        "flower_meadow": {
+        "heath": {
           "$ref": "#/$defs/coverage"
         },
         "mud": {
           "$ref": "#/$defs/coverage"
         },
-        "marsh": {
+        "mudflat": {
           "$ref": "#/$defs/coverage"
         },
         "deep_snow": {
@@ -481,7 +481,7 @@
         "scree": {
           "$ref": "#/$defs/coverage"
         },
-        "dirt_track": {
+        "brick_path": {
           "$ref": "#/$defs/coverage"
         },
         "boardwalk": {
@@ -524,6 +524,34 @@
           "$ref": "#/$defs/coverage"
         },
         "pale_sand": {
+          "$ref": "#/$defs/coverage"
+        },
+        "sandstone": {
+          "$ref": "#/$defs/coverage"
+        },
+        "pumice": {
+          "$ref": "#/$defs/coverage"
+        },
+        "frozen_lake": {
+          "$ref": "#/$defs/coverage"
+        },
+        "wind_swept_snow": {
+          "$ref": "#/$defs/coverage"
+        },
+        "gravel": {
+          "description": "Reports written before the rename to shale.",
+          "$ref": "#/$defs/coverage"
+        },
+        "flower_meadow": {
+          "description": "Reports written before the rename to heath.",
+          "$ref": "#/$defs/coverage"
+        },
+        "marsh": {
+          "description": "Reports written before the rename to mudflat.",
+          "$ref": "#/$defs/coverage"
+        },
+        "dirt_track": {
+          "description": "Reports written before the rename to brick_path.",
           "$ref": "#/$defs/coverage"
         }
       },

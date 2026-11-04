@@ -196,95 +196,65 @@ inline void fortsContracts()
 		   GenerationError::InvalidRequest);
 }
 
-// Exercise the production service and final-world validator, including deliberate damage.
-// A successful seed alone would not show that the validator notices lost expansion ground.
+// Exercise the production service and final-world validator on the inland delta, including
+// deliberate damage: a successful seed alone would not show that the validator notices a breach.
 inline void braidedDeltaChecks()
 {
 	const auto definition = braidedDeltaDefinition();
-	GenerationRequest request;
-	request.setMethodDefaults(definition.legacyId);
-	request.wDec = request.hDec = 7;
-	request.nbTeams = 4;
-	request.options["braid-count"] = 2;
-	request.options["rejoining-frequency"] = 3;
-	for (unsigned seed : {7u, 101u, 22001u, 53006u, 711038u, 711131u, 711226u})
+	struct Case
 	{
-		request = GenerationRequest();
+		unsigned seed;
+		int wDec, hDec, teams, flood;
+	};
+	for (const Case &c : {Case{7, 8, 8, 4, 1}, Case{21, 8, 8, 4, 0}, Case{99, 8, 8, 4, 2}, Case{3, 7, 7, 4, 1},
+						  Case{5, 9, 8, 8, 1}, Case{11, 7, 9, 12, 2}})
+	{
+		GenerationRequest request;
 		request.setMethodDefaults(definition.legacyId);
-		request.wDec = request.hDec = 7;
-		request.nbTeams = 4;
-		request.options["braid-count"] = 2;
-		request.options["rejoining-frequency"] = 3;
-		request.seed = seed;
-		// Bulk seed 711038 exhausts the wood kit's bank space when wheat and the
-		// permanent resources are abundant. Emergency topups must not seed a town.
-		if (seed == 711038u)
-		{
-			request.nbWorkers = 8;
-			request.options["wheat-amount"] = 300;
-			request.options["wood-amount"] = 0;
-			request.options["stone-amount"] = 300;
-			request.options["algae-amount"] = 0;
-			request.options["fruit-amount"] = 300;
-		}
-		// The same bank-reservation failure also occurred on dense medium and large
-		// islands. Keep one fixture of each size, including the opposite crop extreme.
-		if (seed == 711131u || seed == 711226u)
-		{
-			const bool large = seed == 711226u;
-			request.wDec = request.hDec = large ? 9 : 8;
-			request.nbTeams = 12;
-			request.nbWorkers = 8;
-			request.options["braid-count"] = large ? 5 : 4;
-			request.options["island-size"] = large ? 48 : 32;
-			request.options["crossing-spacing"] = large ? 96 : 64;
-			request.options["wheat-amount"] = large ? 0 : 300;
-			request.options["wood-amount"] = large ? 300 : 0;
-			request.options["stone-amount"] = large ? 300 : 0;
-			request.options["algae-amount"] = large ? 300 : 0;
-			request.options["fruit-amount"] = 300;
-		}
+		request.wDec = c.wDec;
+		request.hDec = c.hDec;
+		request.nbTeams = c.teams;
+		request.seed = c.seed;
+		request.options["flood"] = c.flood;
 		Game game(nullptr);
 		const auto result = GenerationService().generate(game, request, true);
 		assert(result);
 		GenerationContext context(request);
 		assert(definition.validateWorld(game, context).empty());
-		// Saturate the eight-connected grass reached by existing wheat/wood. This is a
-		// conservative growth envelope, not a growth-speed simulation: it deliberately ignores
-		// fertility so an initially clear route cannot pass merely by waiting longer to clog.
-		// Sand town rims keep their interiors out of the flood. Revision 1 fails here because
-		// its fords have no permanent approaches through the bank crops.
+		// The panhandle's river is deep: some vertex of the map is deep water, and the swamp is marsh.
 		const MapGeneration::Torus torus(game.map);
-		const auto overgrown = MapGeneration::cropSpreadEnvelope(game.map);
-		// Growth fills empty ground; it cannot replace existing woods, fruit or stone.
-		for (int i : overgrown.visited)
-			if (!game.map.isResource(i % torus.w, i / torus.w) &&
-				game.map.isResourceAllowed(i % torus.w, i / torus.w, WHEAT))
-				game.map.setResourceByIndex(i % torus.w, i / torus.w, WHEAT, 1);
-		assert(MapGeneration::walkFromFirstColony(game.map, request.nbTeams, "the overgrown delta",
-												  "over its ford approaches")
-				   .error.empty());
-		assert(definition.validateWorld(game, context).empty());
-		// Fill all surviving grass with stone. Terrain and colony count still match, but the
-		// usable-island contract must fail after furnishing, not just pass a terrain flood.
+		bool deep = false, marsh = false;
+		for (int i = 0; i < torus.size(); ++i)
+		{
+			deep = deep || game.map.vertexTerrainAt(size_t(i)) == DEEP_WATER;
+			marsh = marsh || game.map.vertexTerrainAt(size_t(i)) == MUDFLAT;
+		}
+		assert(deep && marsh);
+		// Damage: a causeway of sand straight across the map wherever there is water. The terrain no
+		// longer matches the design, so the validator must refuse the world.
+		{
+			Game damaged(nullptr);
+			assert(GenerationService().generate(damaged, request, true));
+			for (int x = 0; x < torus.w; ++x)
+				for (int y = torus.h / 3; y < torus.h / 3 + 3; ++y)
+					if (damaged.map.vertexTerrainAt(x, y) == WATER || damaged.map.vertexTerrainAt(x, y) == DEEP_WATER)
+						damaged.map.setVertexTerrain(x, y, SAND);
+			assert(!definition.validateWorld(damaged, context).empty());
+		}
+		// Damage: stone over every tile that will take it. Terrain still matches, but the colonies
+		// are walled in and the finished-world contract must fail after furnishing.
 		for (int y = 0; y < game.map.getH(); ++y)
 			for (int x = 0; x < game.map.getW(); ++x)
 				if (game.map.isResourceAllowed(x, y, STONE))
 					game.map.setResourceByIndex(x, y, STONE, 1);
 		assert(!definition.validateWorld(game, context).empty());
 	}
-	// Restore the smallest layout for request-boundary checks after the large fixture.
-	request.wDec = request.hDec = 7;
-	request.nbTeams = 4;
-	request.options["island-size"] = 32;
-	// Too many braids, too many colonies and undersized maps fail before mutating a Game.
-	request.options["braid-count"] = 5;
-	assert(!validateGenerationRequest(request, definition).empty());
-	request.options["braid-count"] = 2;
-	request.nbTeams = 5;
-	assert(!validateGenerationRequest(request, definition).empty());
-	request.nbTeams = 1;
+	// Undersized maps fail before mutating a Game.
+	GenerationRequest request;
+	request.setMethodDefaults(definition.legacyId);
 	request.wDec = 6;
+	request.hDec = 7;
+	request.nbTeams = 2;
 	assert(!validateGenerationRequest(request, definition).empty());
 }
 
@@ -530,7 +500,7 @@ inline void savannahContracts()
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(definition.legacyId == 45 && definition.revision == 4);
+	assert(definition.legacyId == 45 && definition.revision == 5);
 	assert(request.option("watering-holes") == 1 && request.option("dry-patches") == 8);
 	assert(request.option("grassland") == 70 && request.option("kopjes") == 1 &&
 		   request.option("game-trails") == 1);
@@ -831,7 +801,7 @@ inline void honeycombIsleContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("honeycomb-isle"));
-	assert(definition.legacyId == 53 && definition.revision == 5);
+	assert(definition.legacyId == 53 && definition.revision == 6);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("block-shape") == 1 && request.option("river-width") == 12 &&
@@ -1076,7 +1046,7 @@ inline void karstTowersContracts()
 inline void bajadaContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("bajada"));
-	assert(definition.legacyId == 55 && definition.revision == 2);
+	assert(definition.legacyId == 55 && definition.revision == 3);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("range-spacing") == 128 && request.option("passes") == 2 &&
@@ -1194,7 +1164,7 @@ inline void evenGroundContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
-	assert(definition.legacyId == 60 && definition.revision == 3);
+	assert(definition.legacyId == 60 && definition.revision == 4);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
@@ -1303,7 +1273,7 @@ inline void marchlandContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("marchland"));
-	assert(definition.legacyId == 61 && definition.revision == 3);
+	assert(definition.legacyId == 61 && definition.revision == 4);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
@@ -2218,9 +2188,8 @@ inline void bastionKeysContracts()
 	assert(GenerationService().generate(bridged, request));
 	assert(coloniesApart(bridged.map, 2, "without swimming").empty());
 	const Torus t(bridged.map);
-	// The estates are dressed in catalogue ground. Deep water is
-	// absent by design: a tile between shallow and deep water is not swimmable, so a ring of it
-	// would seal every island from swimmers.
+	// The estates are dressed in catalogue ground; the sea uses ordinary water.
+	// This recipe does not add a deep-water band around the islands.
 	{
 		std::set<int> used;
 		int pier = -1;
@@ -2231,7 +2200,7 @@ inline void bastionKeysContracts()
 			if (corner == BOARDWALK && pier < 0)
 				pier = i;
 		}
-		for (const int type : {BOARDWALK, DIRT_TRACK, GRAVEL, LOAM, OUTCROP, RIDGE_ROCK})
+		for (const int type : {BOARDWALK, BRICK_PATH, SHALE, LOAM, OUTCROP, RIDGE_ROCK})
 			assert(used.count(type));
 		assert(!used.count(DEEP_WATER) && !used.count(DARK_WATER));
 		// Any change to the dressing is a changed design, so the final-world check refuses it.

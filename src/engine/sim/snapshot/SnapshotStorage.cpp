@@ -34,7 +34,7 @@ MemoryMetrics Storage::memoryMetrics() const
     account(session, [&](const Session& value, bool) { return vectorBytes(value.players); });
     account(effects, [&](const Effects& value, bool) {
         Uint64 bytes=vectorBytes(value.sectors);
-        for (const auto& sector:value.sectors) bytes+=vectorBytes(sector.bullets)+vectorBytes(sector.explosions)+vectorBytes(sector.deaths);
+        for (const auto& sector:value.sectors) bytes+=vectorBytes(sector.bullets)+vectorBytes(sector.explosions)+vectorBytes(sector.deaths)+vectorBytes(sector.unitEffects);
         return bytes;
     });
     account(statistics, [&](const Statistics& value, bool leased) {

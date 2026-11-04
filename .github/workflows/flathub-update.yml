@@ -90,17 +90,17 @@ jobs:
           revision="$(git rev-parse HEAD)"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
           python3 tools/release/render_flatpak.py "$revision" \
-            flatpak/org.globulation2.Globulation2.yml
+            platforms/linux/flatpak/org.globulation2.Globulation2.yml
       - uses: flatpak/flatpak-github-actions/flatpak-builder@79327416609af08178ad73b352877e51450790b3 # v6
         with:
           bundle: glob2.flatpak
-          manifest-path: flatpak/org.globulation2.Globulation2.yml
+          manifest-path: platforms/linux/flatpak/org.globulation2.Globulation2.yml
           cache-key: glob2-flatpak-${{ steps.source.outputs.revision }}
           upload-artifact: false
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: flathub-candidate
-          path: flatpak/org.globulation2.Globulation2.yml
+          path: platforms/linux/flatpak/org.globulation2.Globulation2.yml
           if-no-files-found: error
 
   propose:

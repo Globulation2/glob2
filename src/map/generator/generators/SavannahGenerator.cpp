@@ -222,7 +222,7 @@ int trail(Layout &L, ShapePoint from, ShapePoint to, double bow, int owner)
 											 (kNeutralReserve - 1) * (kNeutralReserve - 1);
 				if (foreign || L.terrain[i] != GRASS || cornerOfPlot(L, x, y))
 					continue;
-				L.terrain[i] = DIRT_TRACK;
+				L.terrain[i] = BRICK_PATH;
 				++laid;
 			}
 		reserve(L, {px, py}, kTrailReserve);
@@ -507,7 +507,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	const auto earth = periodicNoise(t.w, t.h, 6, context.stream("savannah-earth"));
 	for (int i = 0; i < t.size(); ++i)
 		if (L.terrain[i] == SAND && eligible[i])
-			L.terrain[i] = earth[i] > 42000 ? GRAVEL : CLAY;
+			L.terrain[i] = earth[i] > 42000 ? SHALE : CLAY;
 		else if (L.terrain[i] == DIRT && earth[i] > 36000)
 			L.terrain[i] = CLAY;
 	layBeaches(L.terrain, t);
@@ -870,7 +870,7 @@ GeneratorDefinition savannahDefinition()
 	return {"savannah",
 			45,
 			"Savannah",
-			4,
+			5,
 			false,
 			{GeneratorControl::choice("watering-holes", "Watering holes",
 									  {"Sparse", "Normal", "Many"}, 1, ControlGroup::Terrain)

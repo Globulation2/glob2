@@ -71,7 +71,9 @@ namespace
 		void putWater(int x, int y) { paintCell(x,y,WATER); }
 		void putWaterAt(size_t i) { paintCell(i,WATER); }
 
-		// The kernel before the low-level rewrite, kept verbatim as a differential oracle.
+		// The queue algorithm before the low-level rewrite, retained as a
+		// differential oracle. Classify swimming from raw corners under the
+		// current movement vote rather than the retired pure-water predicate.
 		void legacyPropagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT) const
 		{
 			constexpr int WATER_STEP[SWIM_CLASS_COUNT] = { 0, 5, 7, 10, 13, 20, 30, GRADIENT_STEP };
@@ -159,7 +161,12 @@ namespace
 			if (swimClass == 0 || swimClass == SWIM_CLASS_EVEN)
 				sweep([](int) { return GRADIENT_STEP; });
 			else
-				sweep([&](int i) { return isWater((unsigned)i) ? WATER_STEP[swimClass] : GRADIENT_STEP; });
+				sweep([&](int i) {
+					unsigned waterCorners = 0;
+					for (const auto corner : cellCorners(size_t(i)))
+						waterCorners += corner == WATER;
+					return waterCorners >= 3 ? WATER_STEP[swimClass] : GRADIENT_STEP;
+				});
 		}
 		void putGroundUnit(int x, int y) { setGroundUnit(x, y, 0); }
 	};

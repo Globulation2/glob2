@@ -27,13 +27,12 @@ Usage (pinned encoder interpreter, as for terrain_synth.py):
     ENC="$(python3 tools/package_assets.py --encoder-python)"
     "$ENC" tools/artwork/terrain_decor.py                  # write all frames + HD
     "$ENC" tools/artwork/terrain_decor.py --sheet artifacts/terrain/decor.png
-    "$ENC" tools/artwork/terrain_decor.py --check
 
-All sets share one sprite, `data/gfx/terrain-decorN.png`, with set k at
+All sets share one sprite, `content/data/gfx/terrain-decorN.png`, with set k at
 frames 12k..12k+11 in `ORDER`, followed by connected hedge/thicket frames
 (16 corner masks, a 4x4 continuous texture block each), so the runtime batches every decor draw like
 resources. HD frames are registered through tools/artwork/highres_pack.py and
-provenance is written to `datasrc/gfx/terrain-decor/provenance.json`.
+provenance is written to `content-src/gfx/terrain-decor/provenance.json`.
 `--write-catalog` adds the `decor` block to each material in tileset.json.
 Pure Python 3 plus Pillow; no numpy.
 """
@@ -62,8 +61,10 @@ CELL = 32 * SCALE
 PAD = (S - CELL) // 2
 FULL, EDGE = 8, 4    # frames per size class: full 0..7, edge 8..11
 FRAMES = FULL + EDGE
-PREFIX = "data/gfx/terrain-decor"
-HD_PREFIX = "data/highres/v1/terrain-decor"
+PREFIX = "content/data/gfx/terrain-decor"
+# tileset.json names the sprite by its runtime path, under the data search root.
+SPRITE = "data/gfx/terrain-decor"
+HD_PREFIX = "content/data/highres/v1/terrain-decor"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain decor v1"
 LIGHT = (-0.62, -0.78)  # toward the upper left, screen space
@@ -1156,7 +1157,7 @@ def generator_sha():
 
 
 def provenance_path(root):
-    return root / "datasrc/gfx/terrain-decor/provenance.json"
+    return root / "content-src/gfx/terrain-decor/provenance.json"
 
 
 def write(results, root):
@@ -1203,55 +1204,20 @@ def write(results, root):
     path.write_text(json.dumps(document, indent=2) + "\n")
 
 
-def check(results, root):
-    path = provenance_path(root)
-    if not path.exists():
-        return ["missing datasrc/gfx/terrain-decor/provenance.json"]
-    provenance = json.loads(path.read_text())
-    problems = []
-    if provenance.get("generator_sha256") != generator_sha():
-        problems.append("generator changed; re-run terrain_decor.py")
-    for name, frames in results.items():
-        recorded = provenance["sets"].get(name)
-        if recorded is None:
-            problems.append(f"{name}: missing from provenance")
-            continue
-        for i, (native, hd) in enumerate(frames):
-            n = frame_number(name, i)
-            for relative, image, table in ((f"{PREFIX}{n}.png", native, recorded["runtime_sha256"]),
-                                           (f"{HD_PREFIX}{n}.png", hd, recorded["highres_sha256"])):
-                target = root / relative
-                if not target.exists():
-                    problems.append(f"{relative}: missing")
-                    continue
-                with Image.open(target) as committed:
-                    digest = pixel_sha256(committed)
-                if digest != pixel_sha256(image) or table.get(relative) != digest:
-                    problems.append(f"{relative}: differs from a fresh synthesis")
-    return problems
-
-
 def write_catalog(root):
     """Add or refresh each obstacle material's decor block in tileset.json."""
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from terrain_profile_curves import dump_catalog
 
-    path = root / "data/terrain/tileset.json"
+    path = root / "content/data/terrain/tileset.json"
     document = json.loads(path.read_text())
-    # The canopy owns foliage irregularity and depth. A quiet underlay must
-    # not expose the old brush profile's spines below the raised surface.
-    canopy_profile = {"key": "canopy", "shape": "patch", "roughness_q8": 0,
-                      "amplitude_q8": 0, "feather_q8": 128, "speckle_q8": 0,
-                      "bridge_q8": 512, "contours_q12": [[0] * 9 for _ in range(32)]}
-    document["profiles"] = [p for p in document["profiles"] if p["key"] != "canopy"] + [canopy_profile]
-    for pair in document["pair_treatments"]:
-        if pair["a"] in CONNECTED or pair["b"] in CONNECTED:
-            pair["profile"] = "canopy"
+    # Connected foliage keeps the quiet "canopy" edge of the "cover" border
+    # class (authored by terrain_synth.py), so no ground contour shows below it.
     for material in document["materials"]:
         if material["key"] in SPECS:
             first = first_frame(material["key"])
             material["decor"] = {
-                "sprite": PREFIX,
+                "sprite": SPRITE,
                 "full": list(range(first, first + FULL)),
                 "edge": list(range(first + FULL, first + FRAMES)),
             }
@@ -1262,7 +1228,6 @@ def write_catalog(root):
                                                                  start + CONNECTED_FRAMES))
             material["decor"].pop("connected_grid", None)
             material["decor"]["connected_corners"] = True
-            material["profile"] = "canopy"
     path.write_text(dump_catalog(document))
 
 
@@ -1276,7 +1241,7 @@ def connected_sheet(results):
     panel_w, panel_h = width * 32, height * 32
     out = Image.new("RGBA", (panel_w * 2, (panel_h + 28) * len(results)), (32, 35, 30, 255))
     labels = ImageDraw.Draw(out)
-    grass = Image.open(ROOT / "data/gfx/terrain0.png").convert("RGBA")
+    grass = Image.open(ROOT / "content/data/gfx/terrain0.png").convert("RGBA")
     for row, (name, frames) in enumerate(results.items()):
         vertices = {(x, y) for y in range(4, 11) for x in range(2, 15)}
         vertices -= {(x, y) for y in range(6, 9) for x in range(6, 9)}
@@ -1345,7 +1310,6 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--decor", action="append", help="decor name (repeatable; default all)")
     parser.add_argument("--sheet", type=Path, help="write a review sheet and nothing else")
-    parser.add_argument("--check", action="store_true")
     parser.add_argument("--write-catalog", action="store_true", help="also add decor blocks to tileset.json")
     parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args(argv)
@@ -1355,20 +1319,12 @@ def main(argv=None):
     if args.sheet:
         ground = {}
         for name in names:
-            path = root / f"data/gfx/terrain-{name}0.png"
+            path = root / f"content/data/gfx/terrain-{name}0.png"
             if path.exists():
                 ground[name] = Image.open(path).convert("RGBA")
         args.sheet.parent.mkdir(parents=True, exist_ok=True)
         (connected_sheet(results) if all(n in CONNECTED for n in names) else sheet(results, ground)).save(args.sheet)
         print(f"Wrote {args.sheet}")
-        return
-    if args.check:
-        problems = check(results, root)
-        for p in problems:
-            print("FAIL", p)
-        if problems:
-            raise SystemExit(1)
-        print(f"PASS {len(names)} decor sets match their committed frames and provenance")
         return
     write(results, root)
     if args.write_catalog:

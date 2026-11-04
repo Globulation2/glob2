@@ -12,6 +12,7 @@
 #include "Building.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
+#include "render/GameAnimations.h"
 #include "FixedPoint.h"
 #include "Game.h"
 #include "Map.h"
@@ -137,6 +138,7 @@ void Building::swarmStep(void)
 	if (!exitFound) return;
 	Unit* u = owner->game->addUnit(x, y, owner->teamNumber, chosen, 0, 0, dx, dy);
 	if (!u) return;
+	owner->game->animations->onUnitSpawn(*owner->map, x, y, owner, u->gid, gid, dx, dy);
 	const auto& recipe = production.recipes[chosen];
 	if (!committed)
 	{

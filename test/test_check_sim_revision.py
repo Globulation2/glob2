@@ -25,7 +25,8 @@ class CheckSimRevisionTest(unittest.TestCase):
     def setUp(self):
         self.scratch = tempfile.TemporaryDirectory()
         self.root = Path(self.scratch.name)
-        for path in ('src/app/Version.h', 'src/game/SimRevision.h') + sim_version.SIM_DATA_FILES:
+        for path in ('src/app/Version.h', 'src/game/SimRevision.h') + tuple(
+                'content/' + name for name in sim_version.SIM_DATA_FILES):
             (self.root / path).parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / path, self.root / path)
         self.set_revision(5)
@@ -96,7 +97,7 @@ class CheckSimRevisionTest(unittest.TestCase):
         self.assertEqual(sim_version.sim_version_key(self.root).split('-')[:2], before.split('-')[:2])
 
     def test_catalog_files_are_discovered_and_hashed(self):
-        directory = self.root / 'data/buildings'
+        directory = self.root / 'content/data/buildings'
         directory.mkdir(parents=True)
         manifest = directory / 'manifest.json'
         manifest.write_text(json.dumps({'files': ['second.json', 'first.json']}))
@@ -115,15 +116,23 @@ class CheckSimRevisionTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             sim_version.sim_data_files(self.root)
 
+    def test_revisions_from_before_the_content_move_keep_their_key(self):
+        key = sim_version.sim_version_key(self.root)
+        self.git('mv', 'content/data', 'data')
+        self.commit('old layout')
+        old = self.git('rev-parse', 'HEAD').stdout.decode().strip()
+        self.assertEqual(sim_version.sim_version_key(self.root), key)
+        self.assertEqual(checker.key_at(self.root, old, sim_version), key)
+
     def test_unit_catalog_is_hashed_and_historical_keys_copy_its_bytes(self):
-        directory = self.root / 'data/buildings'
+        directory = self.root / 'content/data/buildings'
         directory.mkdir(parents=True)
         (directory / 'manifest.json').write_text(json.dumps({'files': []}))
         legacy = sim_version.sim_version_key(self.root)
         self.commit('pre-unit-catalog')
         before = self.git('rev-parse', 'HEAD').stdout.decode().strip()
         self.assertEqual(checker.key_at(self.root, before, sim_version), legacy)
-        units = self.root / 'data/units/registry.json'
+        units = self.root / 'content/data/units/registry.json'
         units.parent.mkdir(parents=True)
         units.write_text('{"schemaVersion":1,"units":[]}')
         self.assertIn('data/units/registry.json', sim_version.sim_data_files(self.root))

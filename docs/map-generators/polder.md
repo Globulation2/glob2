@@ -30,7 +30,7 @@ until someone can swim.
   Classic keeps the original sand dykes and rings. Expanded gives the dykes and village rings the
   terrain they stand for, after the beaches are laid so the ditches' banks stay sand: dykes are dirt
   track (twice walking speed, buildable, nothing grows) with boardwalk where they cross a ditch, and
-  each village's ring is gravel (inhibits growth like sand, never a coastline). Villages, hamlets, farm
+  each village's ring is shale (inhibits growth like sand, never a coastline). Villages, hamlets, farm
   plots and the crop rows stay grass. Loam crop rows were tried and dropped: fertile ground
   irrigates three times as strongly as water, wheat filled every row, and Cortex found no room for an
   inn (13 of 16 colonies under 20 units after 25,000 ticks, against 1 on grass). Four-AI games of the

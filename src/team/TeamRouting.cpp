@@ -251,8 +251,6 @@ void Team::updateRoutingRatio()
         ++classes[Map::swimClass(unit->performance[WALK],unit->performance[SWIM])];
     }
     unsigned selected=Map::SWIM_CLASS_EVEN;
-    routingRatio.walk=0;
-    routingRatio.swim=0;
     if (!classes.empty()) selected=RoutingRatioState::mode(classes,routingRatio.selected);
     routingRatio.selected=selected; routingRatio.tick=now; routingRatio.known=true;
 }

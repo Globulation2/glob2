@@ -24,13 +24,13 @@ enum TerrainType : std::uint16_t
 	OUTCROP=9,
 	DIRT=10,
 	CLAY=11,
-	GRAVEL=12,
-	FLOWER_MEADOW=13,
+	SHALE=12,
+	HEATH=13,
 	MUD=14,
-	MARSH=15,
+	MUDFLAT=15,
 	DEEP_SNOW=16,
 	SCREE=17,
-	DIRT_TRACK=18,
+	BRICK_PATH=18,
 	BOARDWALK=19,
 	LAVA=20,
 	EMBER_FIELD=21,
@@ -41,12 +41,19 @@ enum TerrainType : std::uint16_t
 	DARK_WATER=26,
 	VOID_HOLE=27,
 	CHASM=28,
-	// Looks of classic grass and sand (format 187): same rules, other artwork.
+	// Looks of classic grass and sand (format 191): same rules, other artwork.
 	LUSH_GRASS=29,
 	DRY_GRASS=30,
 	DUNE_SAND=31,
 	PALE_SAND=32,
-	TERRAIN_COUNT=33,
+	// Sandstone flagstones (Paths), pumice beside lava (Rough) and a frozen lake
+	// (Ice), format 195.
+	SANDSTONE=33,
+	PUMICE=34,
+	FROZEN_LAKE=35,
+	// Snow carved into drifts (Rough, like deep snow), format 196.
+	WIND_SWEPT_SNOW=36,
+	TERRAIN_COUNT=37,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -55,8 +62,12 @@ enum TerrainType : std::uint16_t
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_CATALOGUE = 7;
 // Formats 141 to 145 still numbered the two shore profiles as 5 and 6.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_VERTEX = 31;
-// Formats 146 to 186 ended the built-ins at CHASM.
+// Formats 146 to 190 ended the built-ins at CHASM.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_GROUND_LOOKS = 29;
+// Formats 191 to 194 ended the built-ins at PALE_SAND.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE = 33;
+// Format 195 ended the built-ins at FROZEN_LAKE.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW = 36;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

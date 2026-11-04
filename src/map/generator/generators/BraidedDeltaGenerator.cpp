@@ -1,340 +1,907 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BraidedDeltaGenerator.h"
 #include "Channels.h"
-#include "Farmland.h"
+#include "DesignCache.h"
+#include "Drawing.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "GenerationNumeric.h"
 #include "Geometry.h"
 #include "Grid.h"
-#include "Growth.h"
+#include "LatticeNoise.h"
+#include "Morphology.h"
 #include "Pipeline.h"
-#include "Orbits.h"
 #include "Planting.h"
-#include "Room.h"
+#include "Points.h"
+#include "Resources.h"
 #include "Roads.h"
+#include "Room.h"
 #include "Settlements.h"
 #include "Sketch.h"
+#include "Topology.h"
+#include "TerrainTypeTable.h"
 #include <algorithm>
-#include <array>
 #include <cmath>
-#include <limits>
+#include <functional>
 #include <string>
 #include <vector>
 using namespace MapGeneration;
+namespace N = ::MapGeneration::Numeric;
 
-// Braided Delta is a river ladder wrapped round the torus. Winding longitudinal channels
-// repeatedly exchange water through staggered side channels. Each exchange closes another
-// water loop around an elongated island; there is no trunk mouth or privileged central island.
+// Braided Delta is an inland delta, after the Okavango: a river that never reaches the sea. It
+// leaves a rock range through a gorge, runs down a marsh-lined panhandle, and at the apex spreads
+// into one great swamp in the middle of a desert basin. Out from the apex:
 //
-// PLAY INTENT: follow a bank to a ford, establish feeding/training on another island, or swim
-// directly across a channel. Sand fords and beaches provide permanent circulation, while broad
-// grass interiors carry buildings. Resource abundance changes supplies, never the land budget.
-// This is an asymmetric landscape: comparable home clearings and spread-out seats are a starting
-// heuristic, not a proof of equal contact times or equally valuable neighbouring islands.
+// - the permanent swamp: papyrus marsh threaded by channels that split and rejoin, deep lagoons,
+//   and islands of grass ringed with trees round bare salt-pan hearts, one of them a great island;
+// - the seasonal floodplain: loam levees and lush grass along shrinking channels;
+// - the fringe, where the channels die out in dry sandy beds among sand ridges;
+// - the desert: dry grass, linear dunes, clay pans and rocky kopjes, round the wrap to the range.
+//
+// PLAY INTENT: water and food are in the middle, building room and stone at the edge. Colonies
+// start round the swamp's rim on dry ground and push inward for floodplain farms and islands. The
+// panhandle's deep river is crossed on foot only at its boardwalk bridges; trained units can
+// swim across it. The swamp's channels are shallow, forded or swum; marsh is slow ground nobody
+// can build on. Starts are found, not stamped: fairness is measured.
+//
+// Everything is drawn in a frame along the flow (u downstream, v across), on a torus of its own,
+// and transposed onto the map at the end, so every rule below reads the same on either axis.
 namespace
 {
 constexpr const char *kLayout = "braided-delta-layout";
-// Four vertices of radius leave a genuine water barrier after corner-to-tile conversion, even
-// on bends. Beaches cost another vertex and pure grass needs four grass corners (Channels.h).
-constexpr double kChannelRadius = 4.0;
-// A 20x20 pure-grass town can hold several non-overlapping 4x4 buildings with worker lanes.
-// The two-vertex sand rim stops adjacent crops spreading into it; it is not a no-growth flag.
-constexpr int kTownWidth = 20;
-constexpr int kTownOffset = 25;
 
-struct Crossing
+// The panhandle's river and lagoons keep a deep core behind three vertices of
+// shallow banks. Both depths and their transition cells permit swimming.
+constexpr int kDeep = 3;
+// Levees: a loam crest two to three vertices from a floodplain channel's water.
+constexpr int kLeveeCrest = 3, kLeveeWidth = 7;
+// A home: a square of this many pure grass tiles with clear ground round it.
+constexpr int kHome = 14;
+// The plain grass clearing round a home, radius in tiles.
+constexpr int kHomeClearing = 20;
+// A starter kit: tiles of wheat and wood, this far from the home's middle.
+constexpr int kKitWheat = 24, kKitWood = 18, kKitDistance = 11;
+// Ambient resources at 100%: the share of levee loam under wheat and of lush ground under wood,
+// trees per fruit on the great island, and stone at each kopje.
+constexpr double kWheatShare = 0.45, kWoodShare = 0.22;
+constexpr int kGroveTrees = 4, kQuarryStone = 6;
+// The repair joins pieces of land of this many corners or more. The validator counts tiles, and
+// corner voting can make a thin strip of a few corners into a larger piece of
+// walking tiles: keep this far below the validator's 48.
+constexpr int kRepairPiece = 8;
+// Where the zones end, as a share of the fan's radius (the swamp's edge depends on the flood).
+constexpr double kFloodplainEdge = 0.9, kWetEdge = 0.95, kFringeEdge = 1.02;
+
+double unit(std::mt19937 &random)
 {
-	ShapePoint from, to;
+	return (random() >> 5) * (1.0 / 134217728.0);
+}
+
+// A river's meanders: the path resampled a tile apart and pushed sideways along its normal by two
+// sine waves (one of `wavelength`, one a little under half of it) whose phases and the second's
+// weight come from `random`. The push fades to nothing over the first and last stretch, so an arm
+// still leaves its fork and a river still meets its gorge where it was drawn. Half widths follow
+// the points they belong to. Four draws.
+std::vector<StrokePoint> meander(const std::vector<StrokePoint> &path, double amplitude, double wavelength,
+								 std::mt19937 &random)
+{
+	const double phase = 2 * kPi * unit(random), phase2 = 2 * kPi * unit(random);
+	const double ratio = 0.38 + 0.12 * unit(random), weight = 0.12 + 0.15 * unit(random);
+	if (path.size() < 2)
+		return path;
+	std::vector<StrokePoint> even{path.front()};
+	double walked = 0, next = 1;
+	for (size_t k = 1; k < path.size(); ++k)
+	{
+		const StrokePoint a = path[k - 1], b = path[k];
+		const double length = N::hypot(b.x - a.x, b.y - a.y);
+		for (; length > 0 && next <= walked + length; next += 1)
+		{
+			const double t = (next - walked) / length;
+			even.push_back({a.x + t * (b.x - a.x), a.y + t * (b.y - a.y), a.halfWidth + t * (b.halfWidth - a.halfWidth)});
+		}
+		walked += length;
+	}
+	if (N::hypot(even.back().x - path.back().x, even.back().y - path.back().y) > 0.01)
+		even.push_back(path.back());
+	const double total = double(even.size() - 1);
+	const double ease = std::min(0.25 * wavelength, total / 5);
+	std::vector<StrokePoint> out = even;
+	for (size_t k = 0; k < even.size(); ++k)
+	{
+		const size_t before = k ? k - 1 : 0, after = std::min(even.size() - 1, k + 1);
+		const double tx = even[after].x - even[before].x, ty = even[after].y - even[before].y;
+		const double norm = N::hypot(tx, ty);
+		if (norm <= 0)
+			continue;
+		const double s = double(k);
+		const double edge = std::min(s, total - s) / std::max(1.0, ease);
+		const double fade = edge >= 1 ? 1 : edge * edge * (3 - 2 * edge);
+		const double push = amplitude * fade *
+							(N::sin(2 * kPi * s / wavelength + phase) +
+							 weight * N::sin(2 * kPi * s / (wavelength * ratio) + phase2)) /
+							(1 + weight);
+		out[k].x = even[k].x - push * ty / norm;
+		out[k].y = even[k].y + push * tx / norm;
+	}
+	return out;
+}
+
+// The panhandle's river as the validator needs it: where along the flow it is a wall (from the
+// gorge to the apex) and where its bridges cut that wall.
+struct RiverPlan
+{
+	double start = 0, end = 0, halfWidth = 0;
+	// The river's middle across the flow at each whole u from 0: its meanders push it only
+	// sideways, so it is a function of u.
+	std::vector<double> middle;
+	std::vector<double> bridges;
 };
+
 struct Layout
 {
-	Torus t{1, 1};
-	TerrainSketch terrain;
-	Farm towns;
-	std::vector<ShapePoint> sites, homes;
-	std::vector<Crossing> crossings;
-	std::vector<int> homeOf, islandOf;
-	std::vector<unsigned char> approaches;
-	std::string failure;
+	Torus t{1, 1}; // the map
+	Torus f{1, 1}; // the flow frame: u across its width, v down its height
 	bool transpose = false;
-	int along = 0, across = 0, cells = 0;
-	double lane = 0, cell = 0, phase = 0, shift = 0;
+	int along = 0, across = 0;
+	TerrainSketch terrain, paint;  // in the map's vertices: mechanics, then looks
+	std::vector<ShapePoint> homes; // map tiles
+	std::vector<int> homeOf;       // map tiles
+	std::string failure;
+	int bridges = 0, fords = 0, arms = 0;
+	RiverPlan river;
+	std::vector<double> frameU, frameV;   // each map tile's place in the flow frame
+	std::vector<unsigned char> isles;     // map tiles of swamp islands: 2 on the great island
+	int greatIsland = -1;                 // the map tile at the great island's middle
 
-	ShapePoint point(double u, double v) const
+	int toMap(int i) const
 	{
-		return transpose ? ShapePoint{v, u} : ShapePoint{u, v};
+		const int u = f.remainderX(i), v = i / f.w;
+		return transpose ? t.at(v, u) : t.at(u, v);
 	}
-	// Integer harmonics make the meander continuous at both torus seams. All channels share
-	// the main displacement, so they cannot squeeze an island by wandering towards each other.
-	double wave(double u) const
-	{
-		return 5 * std::sin(2 * kPi * u / along + phase) +
-			   2 * std::sin(4 * kPi * u / along + phase * 0.7);
-	}
-	double bank(double u, int row) const { return shift + row * lane + wave(u); }
 };
 
-Layout design(const GenerationRequest &request, GenerationContext &context)
+Layout designAfresh(const GenerationRequest &request, GenerationContext &context)
 {
 	const BraidedDeltaOptions o(request);
 	Layout L;
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
-	// Run rivers along the longer dimension. On squares the seed chooses their orientation.
+	// The flow runs along the longer dimension; on squares the seed picks.
 	L.transpose = t.h > t.w || (t.h == t.w && context.bounded(kLayout, 2));
 	L.along = L.transpose ? t.h : t.w;
 	L.across = L.transpose ? t.w : t.h;
-	L.lane = double(L.across) / o.braids;
-	// Island size is a minimum transverse land budget, including room beyond the town. More
-	// frequent rejoins shorten islands, but never below twice that budget or 64 tiles: side
-	// channels, their beaches, the town and two approaches must fit before detail is drawn.
-	const int minimumLength = std::max(64, 2 * o.islandSize);
-	const int desiredLength = minimumLength + (3 - o.rejoins) * 32;
-	L.cells = std::max(1, L.along / desiredLength);
-	L.cell = double(L.along) / L.cells;
-	if (L.across < 128 || L.lane < o.islandSize + 16 || L.cell < minimumLength)
+	L.f = {L.along, L.across};
+	const Torus &f = L.f;
+	const int A = L.along, C = L.across, n = f.size();
+	if (A < 128 || C < 128)
 	{
-		L.failure = "The braid channels leave too little island ground; enlarge the map or reduce "
-					"braid count or island size.";
+		L.failure = "An inland delta needs at least 128 tiles each way.";
 		return L;
 	}
-	if (request.nbTeams > o.braids * L.cells)
-	{
-		L.failure = "There are fewer roomy islands than colonies; enlarge the map or increase "
-					"rejoining frequency.";
-		return L;
-	}
-	L.phase = context.bounded(kLayout, 65536) * (2 * kPi / 65536);
-	L.shift = context.bounded(kLayout, L.across);
-	L.terrain.assign(t.size(), GRASS);
-	std::vector<unsigned char> water(t.size(), 0);
-	// A half-tile sample interval makes curves smooth without relying on a rasterizer to guess
-	// their shape. These are independent masks; painting a later reach never erases another.
-	for (int row = 0; row < o.braids; ++row)
-	{
-		std::vector<StrokePoint> path;
-		for (double u = 0; u <= L.along; u += 0.5)
-		{
-			const auto p = L.point(u, L.bank(u, row));
-			path.push_back({p.x, p.y, kChannelRadius});
-		}
-		strokePath(water, t, path);
-		// Adjacent rows have different exchange stations, avoiding one cross-map choke point.
-		const double stagger = row * L.cell / o.braids;
-		for (int c = 0; c < L.cells; ++c)
-		{
-			const double start = c * L.cell + stagger;
-			path.clear();
-			for (int n = 0; n <= 128; ++n)
-			{
-				const double f = n / 128.0;
-				const double u = start + 0.45 * L.cell * f + 6 * std::sin(kPi * f);
-				const auto p = L.point(u, L.bank(u, row) + L.lane * (f * f * (3 - 2 * f)));
-				path.push_back({p.x, p.y, kChannelRadius});
-			}
-			strokePath(water, t, path);
-			// Propose a ford at each side reach midpoint. Together with main-channel fords,
-			// these offer routes around both ends of an island; junction fitting follows below.
-			const double middle = start + 0.225 * L.cell + 6;
-			const double v = L.bank(middle, row) + L.lane / 2;
-			L.crossings.push_back({L.point(middle - 8, v), L.point(middle + 8, v)});
-			// The town sits downstream of the interval midpoint: a bent side channel leans
-			// into the upstream half of the island. The extra 27% keeps the complete sand rim
-			// clear on a 64-tile interval; the explicit footprint check below is authoritative.
-			const double u = start + L.cell / 2 + 0.27 * L.cell;
-			L.sites.push_back(L.point(u, L.bank(u, row) + kTownOffset));
-		}
-		// Spacing is measured along each main channel; rounding to whole periods closes the
-		// seam. Propose at least two fords per channel to avoid a compulsory crossing.
-		const int count = std::max(2, int(std::ceil(double(L.along) / o.crossingSpacing)));
-		const double offset = context.bounded(kLayout, 65536) / 65536.0;
-		for (int n = 0; n < count; ++n)
-		{
-			const double u = (n + offset) * L.along / count;
-			const double v = L.bank(u, row);
-			L.crossings.push_back({L.point(u, v - 9), L.point(u, v + 9)});
-		}
-	}
-	for (int i = 0; i < t.size(); ++i)
-		if (water[i])
-			L.terrain[i] = WATER;
-	layBeaches(L.terrain, t);
-	// Fords near a split may end in another channel. Move each proposed crossing a bounded
-	// distance along its bank until both ends reach pure grass; omit exhausted candidates
-	// rather than painting a land bridge lengthwise down a river. Final island reachability
-	// remains mandatory, so an omission cannot silently strand a useful island.
-	const auto grassBeforeFords = pureTiles(L.terrain, t, GRASS);
-	// Label the islands BEFORE fords join them. Approach roads must stay on their own island;
-	// otherwise the nearest clearing search can cross a ford and service the wrong bank.
-	std::vector<unsigned char> land(t.size(), 0);
-	for (int i = 0; i < t.size(); ++i)
-		land[i] = L.terrain[i] != WATER;
-	const auto islandOf = connectedRegions(land, t.w, t.h, true, GridNeighbors::Cardinal);
-	L.islandOf = islandOf;
-	std::vector<Crossing> fitted;
-	for (const auto &proposed : L.crossings)
-	{
-		const double dx = proposed.to.x - proposed.from.x;
-		const double dy = proposed.to.y - proposed.from.y;
-		const double length = std::hypot(dx, dy);
-		for (int offset : {0, 4, -4, 8, -8, 12, -12, 16, -16})
-		{
-			Crossing ford = proposed;
-			ford.from.x -= offset * dy / length;
-			ford.to.x -= offset * dy / length;
-			ford.from.y += offset * dx / length;
-			ford.to.y += offset * dx / length;
-			const auto grassAt = [&](ShapePoint p)
-			{ return grassBeforeFords[t.at(int(std::floor(p.x)), int(std::floor(p.y)))]; };
-			if (!grassAt(ford.from) || !grassAt(ford.to))
-				continue;
-			if (bridgeAcross(L.terrain, t, ford.from, ford.to, 2.0) > 0)
-				fitted.push_back(ford);
-			break;
-		}
-	}
-	context.telemetry.measure("braided-delta.crossings.requested", L.crossings.size());
-	if (fitted.size() < L.crossings.size())
-		context.telemetry.fallback("braided-delta.crossings.omitted",
-								   "junction or overlapping ford");
-	L.crossings = std::move(fitted);
+	const double c = context.bounded(kLayout, C);
+	const auto across = [&](double dv) { return ChannelDetail::centred(dv, C); };
 
-	// Reserve the full grass rectangle AND its sand rim before furnishing. Check all of that
-	// budget first: stampFarmPlot must not raise land over a channel to rescue a cramped island.
-	L.towns.water.assign(t.size(), 0);
-	L.towns.plot.assign(t.size(), 0);
-	L.towns.sand.assign(t.size(), 0);
-	int adjustedClearings = 0;
-	for (auto &p : L.sites)
+	// The range along the wrap, the panhandle below it, the apex where the river spreads, and the
+	// fan: a lobe round the apex whose radius wanders with its bearing.
+	const PeriodicNoise rangeNoise(C, 1, 12, context.stream("braided-delta-range"));
+	const double riverHalf = std::clamp(A / 60.0, 3.6, 5.5);
+	// The range thickens round the gorge, so the river rises inside the rock: nothing behind the
+	// range reaches its water.
+	const auto rangeEdge = [&](double v)
 	{
-		const auto fits = [&](ShapePoint centre)
+		const double gorge = (2 * riverHalf + 6) * std::max(0.0, 1 - std::abs(across(v - c)) / 24);
+		return std::max(4 + 5 * rangeNoise.at(v, 0), gorge);
+	};
+	// The panhandle runs at least 24 tiles below the thickest part of the range, so its bridges have
+	// a stretch of river between the gorge and the apex on the smallest maps.
+	const double apex = std::max(9 + 0.13 * A, 2 * riverHalf + 6 + 24);
+	const double floodScale = o.flood == 0 ? 0.85 : o.flood == 2 ? 1.1 : 1.0;
+	// The fan is an ellipse round the apex: down the flow it reaches most of the way to the wrap,
+	// across it its sides nearly meet round the other wrap. `radius` is their geometric mean.
+	const double reachAlong = floodScale * 0.92 * (A - apex), reachAcross = floodScale * 0.62 * C;
+	const double radius = N::sqrt(reachAlong * reachAcross);
+	const double swampEdge = o.flood == 0 ? 0.38 : o.flood == 2 ? 0.58 : 0.48;
+	constexpr double kFanAngle = 1.65;
+	const PeriodicNoise lobe(64, 1, 5, context.stream("braided-delta-lobe"));
+	const std::vector<int> warp = fractalNoise(A, C, std::max(16, int(radius / 4)), 2, context.stream("braided-delta-warp"));
+	// The fan's normalized radius at a frame point: under 1 inside the fan, growing outwards.
+	const auto fanRadius = [&](double u, double v, int warpAt)
+	{
+		const double du = (u - apex) / reachAlong, dv = across(v - c) / reachAcross;
+		const double rho = N::hypot(du, dv);
+		const double bearing = N::atan2(dv, du);
+		if (std::abs(bearing) >= kFanAngle)
+			return 9.0;
+		const double profile = N::pow(N::cos(bearing * kPi / (2 * kFanAngle)), 0.35);
+		const double edge = profile * (1 + 0.18 * (2 * lobe.at(32 * (bearing / kFanAngle + 1), 0) - 1));
+		double r = rho / std::max(1 / radius, edge);
+		if (warpAt >= 0)
+			r += 0.14 * (2 * warp[warpAt] / 65536.0 - 1) * std::min(1.0, rho * radius / 12);
+		return r;
+	};
+	// How far the fan reaches along a heading from the apex, in tiles.
+	const auto reachToward = [&](double heading)
+	{ return N::hypot(reachAlong * N::cos(heading), reachAcross * N::sin(heading)); };
+	std::vector<double> r(n);
+	for (int i = 0; i < n; ++i)
+		r[i] = fanRadius(f.remainderX(i) + 0.5, i / f.w + 0.5, i);
+
+	std::vector<unsigned char> water(n, 0), core(n, 0), arms(n, 0), dryBed(n, 0), lagoon(n, 0);
+	std::mt19937 &random = context.stream("braided-delta-river");
+	const auto roll = [&] { return unit(random); };
+	// The panhandle's river: from inside the range to the apex.
+	const double source = riverHalf + 2;
+	const std::vector<StrokePoint> river = meander({{source, c, riverHalf}, {apex, c, riverHalf}},
+												   std::min(7.0, 0.04 * A) * (0.8 + 0.4 * roll()), 30 + 12 * roll(), random);
+	strokePath(water, f, river);
+	strokePath(core, f, river);
+	L.river.start = source - riverHalf;
+	L.river.halfWidth = riverHalf;
+	L.river.middle.assign(size_t(apex) + 2, c);
+	for (const StrokePoint &p : river)
+		if (p.x >= 0 && p.x < L.river.middle.size())
+			L.river.middle[size_t(p.x)] = p.y;
+	L.river.end = apex;
+
+	// The fan's channels: primary arms leave the apex across the fan, fork, and thin as they go
+	// out; where the water gives out they carry on a little as dry sandy beds. Every arm keeps a gap
+	// from every other beyond the stretch where it leaves its fork.
+	std::vector<std::vector<StrokePoint>> channels;
+	{
+		ForkStyle style;
+		style.spread = 0.36;
+		style.spreadJitter = 0.35;
+		style.lengthRatio = 0.78;
+		style.lengthJitter = 0.25;
+		style.widthRatio = 0.85;
+		style.bend = 0.15;
+		style.minimumLength = 8;
+		style.minimumHalfWidth = 1.2;
+		const int roots = 4 + 2 * o.distributaries;
+		const double gap = 10, armHalf = 2.4;
+		const double fork = std::min(60.0, gap + (gap + 2 * armHalf) / (2 * N::sin(style.spread * 0.65)));
+		std::vector<Branch> tree;
+		const auto accept = [&](const std::vector<StrokePoint> &path, int)
 		{
-			const int x0 = int(centre.x) - kTownWidth / 2;
-			const int y0 = int(centre.y) - kTownWidth / 2;
-			for (int dy = -3; dy <= kTownWidth + 3; ++dy)
-				for (int dx = -3; dx <= kTownWidth + 3; ++dx)
-					if (L.terrain[t.at(x0 + dx, y0 + dy)] != GRASS)
-						return false;
+			for (const StrokePoint &p : path)
+				if (fanRadius(p.x, p.y, -1) > 0.95)
+					return false;
+			const StrokePoint start = path.front();
+			const PathBounds bounds = pathBounds(path);
+			for (const StrokePoint &p : path)
+			{
+				if (N::hypot(p.x - start.x, p.y - start.y) < fork)
+					continue;
+				for (const Branch &b : tree)
+					if (N::hypot(b.bounds.x - bounds.x, b.bounds.y - bounds.y) < b.bounds.radius + bounds.radius + gap)
+						for (const StrokePoint &q : b.path)
+							if (N::hypot(p.x - q.x, p.y - q.y) - p.halfWidth - q.halfWidth < gap)
+								return false;
+			}
 			return true;
 		};
-		// The smallest accepted islands can lose a corner of the nominal rectangle to a
-		// meander (retained seed 53006 at 128x128). Translate the WHOLE clearing by at most
-		// six tiles, nearest first, rather than shrinking its room or filling river water.
-		// Check all candidates against the finished shoreline; no extra random draws are used.
-		const ShapePoint nominal = p;
-		bool found = fits(p);
-		for (int radius = 2; !found && radius <= 6; radius += 2)
-			for (int dy = -radius; !found && dy <= radius; dy += 2)
-				for (int dx = -radius; !found && dx <= radius; dx += 2)
+		std::vector<int> order;
+		for (int k = 0; k < roots; ++k)
+			order.push_back(k);
+		std::stable_sort(order.begin(), order.end(), [&](int a, int b)
+						 { return std::abs(2 * a + 1 - roots) < std::abs(2 * b + 1 - roots); });
+		for (int k : order)
+		{
+			const double heading = 0.85 * kFanAngle * ((2.0 * k + 1) / roots - 1) + 0.1 * (2 * roll() - 1);
+			growBranches(tree, -1, {apex, c}, heading, 0.32 * reachToward(heading), armHalf, 2, style, roll, accept);
+		}
+		std::mt19937 &sway = context.stream("braided-delta-sway");
+		for (Branch &b : tree)
+		{
+			if (b.leaf)
+			{
+				// A leaf runs on to the fringe along its heading.
+				const StrokePoint tip = b.path.back();
+				const double run = 0.3 * reachToward(b.heading);
+				const auto more = bentPath({tip.x, tip.y}, b.heading, run, 0.1 * (2 * unit(sway) - 1), tip.halfWidth,
+										   tip.halfWidth, std::max(2, int(run / 3)));
+				for (size_t k = 1; k < more.size(); ++k)
 				{
-					if (std::max(std::abs(dx), std::abs(dy)) != radius)
-						continue;
-					const ShapePoint candidate{nominal.x + dx, nominal.y + dy};
-					if (fits(candidate))
+					b.path.push_back(more[k]);
+					if (fanRadius(more[k].x, more[k].y, -1) > 1.1)
+						break;
+				}
+			}
+			auto path = meander(b.path, 3.5 + 2 * unit(sway), 22 + 12 * unit(sway), sway);
+			// Channels thin outwards; past the wet edge they are beds of sand, not water.
+			for (StrokePoint &p : path)
+				p.halfWidth = std::max(1.1, armHalf * (1 - 0.75 * std::min(1.0, fanRadius(p.x, p.y, -1))));
+			channels.push_back(path);
+		}
+	}
+	// Braiding: in the permanent swamp, side channels leave one arm and rejoin a neighbour.
+	{
+		std::mt19937 &braid = context.stream("braided-delta-braids");
+		const size_t primary = channels.size();
+		for (size_t a = 0; a < primary; ++a)
+			for (int k = 0; k < 2; ++k)
+			{
+				const auto &from = channels[a][size_t(unit(braid) * channels[a].size())];
+				if (fanRadius(from.x, from.y, -1) > swampEdge * 0.95 || fanRadius(from.x, from.y, -1) < 0.12)
+					continue;
+				double best = 1e9;
+				ShapePoint to{};
+				for (size_t b = 0; b < primary; ++b)
+					if (b != a)
+						for (const auto &q : channels[b])
+						{
+							const double d = N::hypot(q.x - from.x, across(q.y - from.y));
+							if (d >= 14 && d <= 34 && d < best && fanRadius(q.x, q.y, -1) < swampEdge)
+							{
+								best = d;
+								to = {q.x, from.y + across(q.y - from.y)};
+							}
+						}
+				if (best < 1e9)
+					channels.push_back(meander(wanderingPath(f, {from.x, from.y}, to, 1.4, 2, 0.2, braid),
+											   2.5, 14 + 6 * unit(braid), braid));
+			}
+	}
+	L.arms = int(channels.size());
+	for (const auto &path : channels)
+	{
+		std::vector<StrokePoint> wet, dry;
+		for (const StrokePoint &p : path)
+		{
+			const double pr = fanRadius(p.x, p.y, -1);
+			(pr < kWetEdge ? wet : dry).push_back(p);
+			if (pr >= kWetEdge - 0.03 && pr < kWetEdge)
+				dry.push_back(p);
+		}
+		if (wet.size() >= 2)
+		{
+			strokePath(water, f, wet);
+			strokePath(arms, f, wet);
+		}
+		if (dry.size() >= 2)
+		{
+			for (StrokePoint &p : dry)
+				p.halfWidth = 1.2;
+			strokePath(dryBed, f, dry);
+		}
+	}
+	const std::vector<int> fromArm = stepsFrom(f, arms);
+	// Lagoons: deep pools in the permanent swamp, off the channels.
+	int lagoons = 0;
+	{
+		std::mt19937 &pool = context.stream("braided-delta-lagoons");
+		const int wanted = std::max(2, int(radius * radius * swampEdge * swampEdge / 900));
+		for (int attempt = 0; attempt < 12 * wanted && lagoons < wanted; ++attempt)
+		{
+			const int i = int(unit(pool) * n);
+			const double size = 4 + 4 * unit(pool), stretch = 1.2 + 0.6 * unit(pool), turn = kPi * unit(pool);
+			if (r[i] > swampEdge * 0.9 || r[i] < 0.1 || fromArm[i] < size * stretch + 4 || water[i])
+				continue;
+			const double u0 = f.remainderX(i), v0 = i / f.w;
+			const int reach = int(size * stretch) + 2;
+			for (int dv = -reach; dv <= reach; ++dv)
+				for (int du = -reach; du <= reach; ++du)
+				{
+					const double a = (du * N::cos(turn) + dv * N::sin(turn)) / stretch;
+					const double b = -du * N::sin(turn) + dv * N::cos(turn);
+					const double bearing = N::atan2(b, a);
+					const double edge = size * (1 + 0.22 * N::sin(3 * bearing + 7 * turn) + 0.12 * N::sin(5 * bearing));
+					if (N::hypot(a, b) < edge)
 					{
-						p = candidate;
-						found = true;
-						++adjustedClearings;
+						const int j = f.at(int(u0) + du, int(v0) + dv);
+						water[j] = lagoon[j] = 1;
 					}
 				}
-		if (!found)
-		{
-			L.failure = "A delta island cannot fit its protected clearing; enlarge the map "
-						"or reduce braid count.";
-			return L;
+			++lagoons;
 		}
-		stampFarmPlot(L.terrain, t, L.towns, int(p.x) - kTownWidth / 2, int(p.y) - kTownWidth / 2,
-					  {kTownWidth, kTownWidth, 2});
 	}
-	context.telemetry.measure("braided-delta.clearings.adjusted", adjustedClearings);
-
-	// A ford alone does not preserve a route: in revision-1 playtests, Numbi grew armies but
-	// all four colonies lost ground contact when bank crops closed the approaches. Connect
-	// BOTH ends of every fitted ford to the protected town rim on that same island. These
-	// three-corner-wide sand lanes cannot grow crops or carry buildings. They cost a little
-	// farmland, but do not require an AI to discover swimming or clear a crop wall to fight.
-	// Use the shared shortest-walk primitive on the designed land, not a post-game repair.
-	// Diagonal steps cost 14 versus 10 for cardinal steps, approximating geometric distance
-	// without floating-point path priorities or long Manhattan detours. No water corner may be
-	// painted, so these lanes cannot create extra river crossings.
-	const auto townCorners = tileCorners(t, L.towns.plot);
-	L.approaches.assign(t.size(), 0);
-	int connectedEnds = 0, approachCorners = 0, longestApproach = 0;
-	for (const auto &ford : L.crossings)
-		for (const auto &end : {ford.from, ford.to})
+	// Seasonal pools on the floodplain: small, shallow, between the channels.
+	const std::vector<int> poolNoise = periodicNoise(A, C, 6, context.stream("braided-delta-pools"));
+	for (int i = 0; i < n; ++i)
+		if (r[i] > swampEdge && r[i] < kFloodplainEdge && fromArm[i] > kLeveeWidth + 4 && poolNoise[i] > 62000)
+			water[i] = 1;
+	// Desert pans: a few far out hold water after rain.
+	const std::vector<int> panNoise = periodicNoise(A, C, 18, context.stream("braided-delta-pans"));
+	std::vector<unsigned char> pan(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int u = f.remainderX(i);
+		if (r[i] > 1.25 && u > rangeEdge(i / f.w) + 10 && panNoise[i] > 59000)
 		{
-			const int source = t.at(int(std::floor(end.x)), int(std::floor(end.y)));
-			const int island = islandOf[source];
-			std::vector<unsigned char> goal(t.size(), 0);
-			for (int i = 0; i < t.size(); ++i)
-				goal[i] = islandOf[i] == island && L.towns.sand[i];
-			const auto route =
-				cheapestWalk(t, GridNeighbors::Eight, {source}, goal,
-							 [&](int, int next, int dx, int dy)
-							 {
-								 return islandOf[next] == island && !townCorners[next]
-											? (dx && dy ? 14 : 10)
-											: -1;
-							 });
-			if (route.empty())
+			pan[i] = 1;
+			if (panNoise[i] > 63500)
+				water[i] = 1;
+		}
+	}
+
+	// The sketch, in the flow frame.
+	TerrainSketch sketch(n, GRASS), look(n, 0);
+	for (int i = 0; i < n; ++i)
+		if (water[i])
+			sketch[i] = WATER;
+	layBeaches(sketch, f);
+	// Deep cores: the panhandle's river and the lagoons.
+	{
+		std::vector<unsigned char> wet(n, 0);
+		for (int i = 0; i < n; ++i)
+			wet[i] = sketch[i] == WATER;
+		const std::vector<int> depth = clearance(f, wet);
+		for (int i = 0; i < n; ++i)
+		{
+			// Inside the range the river stays deep to the rock; downstream the
+			// core gives way to its shallow banks.
+			const bool gorge = core[i] && f.remainderX(i) < rangeEdge(i / f.w) + 1;
+			if (sketch[i] == WATER && (core[i] || lagoon[i]) && (depth[i] >= kDeep || gorge))
 			{
-				L.failure = "A delta ford cannot reach its island clearing.";
-				return L;
+				sketch[i] = DEEP_WATER;
+				look[i] = depth[i] >= kDeep + 2 ? DARK_WATER : DEEP_WATER;
 			}
-			++connectedEnds;
-			longestApproach = std::max(longestApproach, int(route.size()) - 1);
-			for (int i : route)
-				for (int dy = -1; dy <= 1; ++dy)
-					for (int dx = -1; dx <= 1; ++dx)
+		}
+		// Keep shallow shoals where the deep core approaches the banks at the
+		// gorge's mouth. The range (still to be laid) may touch deep water.
+		// Both depths remain accessible to swimmers.
+		const auto rock = [&](int j) { return f.remainderX(j) < rangeEdge(j / f.w) && sketch[j] != WATER; };
+		std::vector<int> shoal;
+		for (int i = 0; i < n; ++i)
+			if (sketch[i] == DEEP_WATER)
+				for (int dv = -1; dv <= 1; ++dv)
+					for (int du = -1; du <= 1; ++du)
 					{
-						const int next = t.at(t.remainderX(i) + dx, i / t.w + dy);
-						if (L.terrain[next] != WATER && !townCorners[next])
+						const int j = f.at(f.remainderX(i) + du, i / f.w + dv);
+						if (sketch[j] != WATER && sketch[j] != DEEP_WATER && !rock(j))
+							shoal.push_back(i);
+					}
+		for (int i : shoal)
+		{
+			sketch[i] = WATER;
+			look[i] = 0;
+		}
+	}
+	std::vector<unsigned char> wetAll(n, 0);
+	for (int i = 0; i < n; ++i)
+		wetAll[i] = sketch[i] == WATER || sketch[i] == DEEP_WATER;
+	const std::vector<int> fromWater = stepsFrom(f, wetAll), fromRiver = stepsFrom(f, core);
+	// The zones reach out along the channels in fingers, as a flood does: a tile's zone radius is
+	// its fan radius less a little for being near a channel.
+	const std::vector<int> fromChannel = stepsFrom(f, arms);
+	for (int i = 0; i < n; ++i)
+		r[i] -= 0.16 * N::exp(-fromChannel[i] / 8.0);
+
+	// Islands in the permanent swamp: the swamp is marsh except where the island noise rises, and
+	// one great island lies along the flow in the swamp's middle.
+	const std::vector<int> isleNoise = fractalNoise(A, C, 14, 2, context.stream("braided-delta-isles"));
+	std::vector<int> swampNoise;
+	for (int i = 0; i < n; ++i)
+		if (sketch[i] == GRASS && r[i] < swampEdge)
+			swampNoise.push_back(isleNoise[i]);
+	const int isleLevel =
+		swampNoise.empty() ? 65536 : percentile(swampNoise, int(100 - (14 + 0.32 * o.islands)));
+	std::vector<unsigned char> isle(n, 0);
+	{
+		std::mt19937 &great = context.stream("braided-delta-great-island");
+		const double bearing = 0.5 * (2 * unit(great) - 1);
+		const double distance = radius * swampEdge * (0.5 + 0.15 * unit(great));
+		const double gu = apex + distance * N::cos(bearing), gv = c + distance * N::sin(bearing);
+		L.greatIsland = L.toMap(f.at(int(gu), int(gv)));
+		const double half = radius * swampEdge * 0.24, wide = half * (0.34 + 0.1 * unit(great));
+		const int reach = int(half) + 2;
+		for (int dv = -reach; dv <= reach; ++dv)
+			for (int du = -reach; du <= reach; ++du)
+			{
+				const double a = du * N::cos(bearing) + dv * N::sin(bearing);
+				const double b = -du * N::sin(bearing) + dv * N::cos(bearing);
+				const int j = f.at(int(gu) + du, int(gv) + dv);
+				const double wobble = 1 + 0.15 * (2 * isleNoise[j] / 65536.0 - 1);
+				if (N::hypot(a / half, b / wide) < wobble && sketch[j] == GRASS)
+					isle[j] = 2;
+			}
+	}
+	for (int i = 0; i < n; ++i)
+		if (sketch[i] == GRASS && r[i] < swampEdge && isleNoise[i] >= isleLevel && !isle[i])
+			isle[i] = 1;
+	const std::vector<int> grain = periodicNoise(A, C, 5, context.stream("braided-delta-grain"));
+	const std::vector<int> kopje = periodicNoise(A, C, 9, context.stream("braided-delta-kopjes"));
+	// Linear dunes: parallel ridges across the wind, a whole number of them round each axis so they
+	// close across the seams, broken by noise into separate dunes.
+	std::mt19937 &wind = context.stream("braided-delta-wind");
+	const int waveU = 1 + int(3 * unit(wind)), waveV = std::max(4, int(C / (11 + 4 * unit(wind))));
+	const double windPhase = 2 * kPi * unit(wind);
+	const std::vector<int> duneBreak = fractalNoise(A, C, 20, 2, wind);
+	const double duneCut = 1 - 0.9 * o.dunes / 100.0;
+	int marsh = 0, loam = 0, isleTiles = 0, duneTiles = 0;
+	// Desert features, the fringe's sand ridges and the dry beds are laid only once the homes are
+	// chosen, and never in a home's clearing: they would break up the room a home needs.
+	std::vector<unsigned char> decoMech(n, 0), decoLook(n, 0);
+	const auto later = [&](int i, TerrainType mechanic, TerrainType painted)
+	{
+		decoMech[i] = mechanic;
+		decoLook[i] = painted;
+	};
+	for (int i = 0; i < n; ++i)
+	{
+		if (sketch[i] != GRASS)
+			continue;
+		const int u = f.remainderX(i), v = i / f.w;
+		if (r[i] < swampEdge)
+		{
+			if (isle[i])
+			{
+				// Islands: grass ringed by trees later, round a bare salt pan where they are wide.
+				look[i] = LUSH_GRASS;
+				++isleTiles;
+			}
+			else
+			{
+				sketch[i] = MUDFLAT;
+				look[i] = grain[i] > 47000 ? MUD : MUDFLAT;
+				++marsh;
+			}
+		}
+		else if (r[i] < kFloodplainEdge)
+		{
+			if (fromArm[i] >= 2 && fromArm[i] <= kLeveeCrest)
+			{
+				sketch[i] = LOAM;
+				look[i] = grain[i] > 45000 ? SPRING_MEADOW : LOAM;
+				++loam;
+			}
+			else
+				look[i] = fromWater[i] <= 10 ? LUSH_GRASS : GRASS;
+		}
+		else if (r[i] < kFringeEdge + 0.08)
+		{
+			// Sand ridges in broken arcs at the edge of the flood.
+			look[i] = fromWater[i] <= 4 ? GRASS : DRY_GRASS;
+			if (std::abs(r[i] - kFringeEdge) < 0.02 && duneBreak[i] > 42000)
+				later(i, SAND, DUNE_SAND);
+		}
+		else if (u >= apex || fromRiver[i] > 9)
+		{
+			// The desert.
+			const double stripe = N::sin(2 * kPi * (waveU * double(u) / A + waveV * double(v) / C) + windPhase +
+										 4 * duneBreak[i] / 65536.0 + 2 * grain[i] / 65536.0);
+			look[i] = DRY_GRASS;
+			if (pan[i])
+				later(i, CLAY, grain[i] > 30000 ? CLAY : DIRT);
+			else if (kopje[i] > 63000)
+				later(i, OUTCROP, OUTCROP);
+			else if (kopje[i] > 61500)
+				later(i, SCREE, SCREE);
+			else if (stripe > 0.7 && duneBreak[i] / 65536.0 > duneCut && r[i] > 1.15)
+				later(i, SAND, DUNE_SAND);
+			else if (grain[i] > 52000)
+				later(i, SHALE, SHALE);
+		}
+		else
+		{
+			// The panhandle: papyrus along the river, dry ground beyond.
+			if (fromRiver[i] <= 7 && fromWater[i] >= 1)
+			{
+				sketch[i] = MUDFLAT;
+				look[i] = MUDFLAT;
+			}
+			else
+				look[i] = DRY_GRASS;
+		}
+	}
+	// Bare salt pans at the hearts of the wider islands.
+	{
+		std::vector<unsigned char> ground(n, 0);
+		for (int i = 0; i < n; ++i)
+			ground[i] = isle[i] && sketch[i] == GRASS;
+		const std::vector<int> room = clearance(f, ground);
+		for (int i = 0; i < n; ++i)
+			if (ground[i] && room[i] >= 5 && grain[i] > 20000)
+			{
+				sketch[i] = SAND;
+				look[i] = PALE_SAND;
+			}
+	}
+	// Papyrus to the water's edge: in the swamp and down the panhandle, the banks the beach rule
+	// laid in sand are marsh. Marsh is walkable like the sand it replaces, but slow.
+	for (int i = 0; i < n; ++i)
+		if (sketch[i] == SAND && !look[i] && !isle[i] &&
+			(r[i] < swampEdge || (f.remainderX(i) < apex && fromRiver[i] <= 7)))
+		{
+			sketch[i] = MUDFLAT;
+			look[i] = MUDFLAT;
+		}
+	// Dry channel beds past the water's end.
+	for (int i = 0; i < n; ++i)
+		if (dryBed[i] && !wetAll[i] && sketch[i] == GRASS)
+			later(i, SAND, PALE_SAND);
+	// The range: ridge rock along the wrap, cut only by the gorge's water, with scree at its foot.
+	for (int i = 0; i < n; ++i)
+	{
+		const int u = f.remainderX(i), v = i / f.w;
+		const double edge = rangeEdge(v);
+		if (u < edge && !wetAll[i])
+			sketch[i] = look[i] = RIDGE_ROCK;
+		else if (u < edge + 1.5 + 2 * grain[i] / 65536.0 && !wetAll[i])
+		{
+			sketch[i] = SCREE;
+			look[i] = grain[i] > 40000 ? BOULDERS : SCREE;
+			if (look[i] == BOULDERS)
+				sketch[i] = BOULDERS;
+		}
+	}
+	context.telemetry.measure("braided-delta.fan.radius", radius);
+	context.telemetry.measure("braided-delta.swamp.marsh", marsh);
+	context.telemetry.measure("braided-delta.swamp.island-tiles", isleTiles);
+	context.telemetry.measure("braided-delta.swamp.lagoons", lagoons);
+	context.telemetry.measure("braided-delta.floodplain.loam", loam);
+
+	// Crossings. Label the land before any is laid, so a ford is offered only where it joins two
+	// pieces not yet joined, then once more wherever it is far from every other.
+	std::vector<unsigned char> walk(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const auto group = terrainGroup(TerrainType(sketch[i]));
+		walk[i] = !wetAll[i] && group != TerrainGroup::Ridges && group != TerrainGroup::Obstacles;
+	}
+	const std::vector<int> pieces = connectedRegions(walk, f.w, f.h, true, GridNeighbors::Cardinal);
+	DisjointSets joined(std::max(1, *std::max_element(pieces.begin(), pieces.end()) + 1));
+	std::vector<ShapePoint> laid;
+	const auto labelAt = [&](double u, double v) { return pieces[f.at(int(N::floor(u)), int(N::floor(v)))]; };
+	// Bridges first: boardwalk decks over the panhandle's deep river, spread down it.
+	for (int b = 0; b < o.crossings; ++b)
+	{
+		const double u = rangeEdge(c) + 10 + (apex - rangeEdge(c) - 16) * (b + 0.5) / o.crossings;
+		int best = -1 << 20;
+		for (int dv = -20; dv <= 20; ++dv)
+			if (core[f.at(int(u), int(c) + dv)] && std::abs(dv) < std::abs(best))
+				best = dv;
+		if (best == -1 << 20)
+			continue;
+		int lo = best, hi = best;
+		while (core[f.at(int(u), int(c) + lo - 1)])
+			--lo;
+		while (core[f.at(int(u), int(c) + hi + 1)])
+			++hi;
+		for (int dv = lo - 4; dv <= hi + 4; ++dv)
+			for (int du = -1; du <= 1; ++du)
+			{
+				const int i = f.at(int(u) + du, int(c) + dv);
+				const bool deck = dv >= lo - 1 && dv <= hi + 1;
+				sketch[i] = TRAIL;
+				look[i] = deck ? BOARDWALK : BRICK_PATH;
+			}
+		const int a = labelAt(u, c + lo - 6), z = labelAt(u, c + hi + 6);
+		if (a >= 0 && z >= 0)
+			joined.unite(a, z);
+		laid.push_back({u, c + (lo + hi) / 2.0});
+		L.river.bridges.push_back(u);
+		++L.bridges;
+	}
+	// Fords: sand across the shallow channels, on a spanning set of the land pieces plus loops.
+	for (int pass = 0; pass < 2; ++pass)
+		for (const auto &path : channels)
+			for (size_t k = 4; k + 4 < path.size(); k += 3)
+			{
+				const StrokePoint p = path[k];
+				if (fanRadius(p.x, p.y, -1) > kWetEdge - 0.04)
+					continue;
+				const double tu = path[k + 1].x - path[k - 1].x, tv = path[k + 1].y - path[k - 1].y;
+				const double len = N::hypot(tu, tv);
+				if (len <= 0)
+					continue;
+				const double nu = -tv / len, nv = tu / len, probe = p.halfWidth + 3;
+				const int left = labelAt(p.x + nu * probe, p.y + nv * probe);
+				const int right = labelAt(p.x - nu * probe, p.y - nv * probe);
+				if (left < 0 || right < 0 || left == right)
+					continue;
+				bool far = true;
+				for (const ShapePoint &q : laid)
+					far = far && N::hypot(q.x - p.x, across(q.y - p.y)) >= (pass ? 44 : 10);
+				if (!far || (pass == 0 && joined.find(left) == joined.find(right)))
+					continue;
+				SandFord ford{p.x, p.y, tu / len, tv / len, nu, nv, p.halfWidth + 2.5, 2};
+				stampFord(sketch, f, ford);
+				joined.unite(left, right);
+				laid.push_back({p.x, p.y});
+				++L.fords;
+			}
+	// Repair: a piece of ground the fords above still leave cut off (a pocket between a junction and
+	// a lagoon, say) gets a ford along the cheapest crossing of shallow water to any other piece.
+	// Deep water is never filled.
+	int repairs = 0;
+	std::vector<unsigned char> hopeless(n, 0); // tiles of pieces no allowed crossing reaches
+	for (int round = 0; round < 24; ++round)
+	{
+		for (int i = 0; i < n; ++i)
+		{
+			const auto group = terrainGroup(TerrainType(sketch[i]));
+			walk[i] = group != TerrainGroup::Water && group != TerrainGroup::DeepWater &&
+					  group != TerrainGroup::Ridges && group != TerrainGroup::Obstacles;
+		}
+		const std::vector<int> now = connectedRegions(walk, f.w, f.h, true, GridNeighbors::Cardinal);
+		const int count = *std::max_element(now.begin(), now.end()) + 1;
+		std::vector<int> size(std::max(1, count), 0);
+		for (int i = 0; i < n; ++i)
+			if (now[i] >= 0)
+				++size[now[i]];
+		const int main = int(std::max_element(size.begin(), size.end()) - size.begin());
+		std::vector<unsigned char> given(std::max(1, count), 0);
+		for (int i = 0; i < n; ++i)
+			if (now[i] >= 0 && hopeless[i])
+				given[now[i]] = 1;
+		int stranded = -1;
+		for (int k = 0; k < count && stranded < 0; ++k)
+			if (k != main && size[k] >= kRepairPiece && !given[k])
+				stranded = k;
+		if (stranded < 0)
+			break;
+		std::vector<int> sources;
+		std::vector<unsigned char> goal(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			if (now[i] == stranded)
+				sources.push_back(i);
+			goal[i] = now[i] >= 0 && now[i] != stranded;
+		}
+		// Shallow water costs a ford; a lagoon's deep water costs more; the panhandle's river is never
+		// crossed this way.
+		const auto route = cheapestWalk(f, GridNeighbors::Cardinal, sources, goal, [&](int, int to, int, int)
+										{
+											if (walk[to])
+												return 1;
+											if (core[to])
+												return -1;
+											return sketch[to] == WATER ? 20 : sketch[to] == DEEP_WATER ? 60 : -1;
+										});
+		if (route.empty())
+		{
+			for (int i : sources)
+				hopeless[i] = 1;
+			continue;
+		}
+		for (int i : route)
+			if (sketch[i] == WATER || sketch[i] == DEEP_WATER)
+				for (int dv = -1; dv <= 1; ++dv)
+					for (int du = -1; du <= 1; ++du)
+					{
+						const int j = f.at(f.remainderX(i) + du, i / f.w + dv);
+						if ((sketch[j] == WATER || sketch[j] == DEEP_WATER) && !core[j])
 						{
-							L.terrain[next] = SAND;
-							approachCorners += !L.approaches[next];
-							L.approaches[next] = 1;
+							sketch[j] = SAND;
+							look[j] = PALE_SAND;
 						}
 					}
-		}
-	context.telemetry.measure("braided-delta.approaches.connected_ends", connectedEnds);
-	context.telemetry.measure("braided-delta.approaches.sand_corners", approachCorners);
-	context.telemetry.measure("braided-delta.approaches.longest_steps", longestApproach);
-	// Farthest-point seats spread early economies among islands. Shuffle the candidate list
-	// to vary the first seat and ties, then deal the selected seats so index zero has no fixed role.
-	auto candidates = L.sites;
-	context.shuffle(candidates.begin(), candidates.end(), "braided-delta-seats");
-	while (int(L.homes.size()) < request.nbTeams)
+		++repairs;
+	}
 	{
-		size_t best = 0;
-		int bestDistance = -1;
-		for (size_t i = 0; i < candidates.size(); ++i)
+		// What the repair could not reach, for the record.
+		for (int i = 0; i < n; ++i)
 		{
-			int distance = std::numeric_limits<int>::max();
-			for (const auto &home : L.homes)
-				distance = std::min(distance, t.dist2(int(home.x), int(home.y),
-													  int(candidates[i].x), int(candidates[i].y)));
-			if (distance > bestDistance)
+			const auto group = terrainGroup(TerrainType(sketch[i]));
+			walk[i] = group != TerrainGroup::Water && group != TerrainGroup::DeepWater &&
+					  group != TerrainGroup::Ridges && group != TerrainGroup::Obstacles;
+		}
+		const std::vector<int> now = connectedRegions(walk, f.w, f.h, true, GridNeighbors::Cardinal);
+		const int count = *std::max_element(now.begin(), now.end()) + 1;
+		std::vector<int> size(std::max(1, count), 0);
+		for (int i = 0; i < n; ++i)
+			if (now[i] >= 0)
+				++size[now[i]];
+		int apart = 0;
+		for (int k = 0; k < count; ++k)
+			apart += size[k] >= kRepairPiece;
+		context.telemetry.measure("braided-delta.fords.pieces-left", apart - 1);
+	}
+	if (repairs)
+		context.telemetry.fallback("braided-delta.fords.repair", "a cut-off piece got a ford by the cheapest crossing");
+	context.telemetry.measure("braided-delta.fords.repairs", repairs);
+	for (int i = 0; i < n; ++i)
+		if (sketch[i] == SAND && !look[i])
+			look[i] = PALE_SAND;
+	context.telemetry.measure("braided-delta.bridges", L.bridges);
+	context.telemetry.measure("braided-delta.fords", L.fords);
+	context.telemetry.measure("braided-delta.channels", L.arms);
+	context.telemetry.choice("braided-delta.orientation", L.transpose ? "vertical" : "horizontal");
+
+	// Homes, in the frame: squares of pure grass with clear ground round them, spread by walking
+	// distance, on the swamp's rim where they can.
+	std::vector<int> sites;
+	{
+		const auto grass = pureTiles(sketch, f, GRASS);
+		std::vector<unsigned char> blocked(n, 0), walkable(n, 0);
+		for (int i = 0; i < n; ++i)
+		{
+			const int u = f.remainderX(i), v = i / f.w;
+			bool dry = false;
+			for (int k = 0; k < 4; ++k)
 			{
-				bestDistance = distance;
-				best = i;
+				const auto group = terrainGroup(TerrainType(sketch[f.at(u + (k & 1), v + (k >> 1))]));
+				dry = dry || (group != TerrainGroup::Water && group != TerrainGroup::DeepWater &&
+							  group != TerrainGroup::Ridges && group != TerrainGroup::Obstacles);
+			}
+			walkable[i] = dry;
+			blocked[i] = !grass[i];
+		}
+		const std::vector<int> room = stepsFrom(f, blocked);
+		std::vector<unsigned char> candidates(n, 0);
+		for (int i = 0; i < n; ++i)
+			candidates[i] = room[i] >= kHome / 2 + 1 && r[i] > swampEdge;
+		// The rim first; anywhere roomy only when the rim cannot hold every colony.
+		std::vector<unsigned char> rim = candidates;
+		for (int i = 0; i < n; ++i)
+			rim[i] = rim[i] && r[i] > 0.6 && r[i] < 1.5;
+		sites = farthestSites(f, rim, walkable, request.nbTeams, context, "braided-delta-starts");
+		if (int(sites.size()) < request.nbTeams)
+		{
+			context.telemetry.fallback("braided-delta.starts.off-rim", "The rim has too little room for every colony");
+			sites = farthestSites(f, candidates, walkable, request.nbTeams, context, "braided-delta-starts");
+		}
+		if (int(sites.size()) < request.nbTeams)
+		{
+			L.failure = "The delta has too little open ground for its colonies; enlarge the map.";
+			return L;
+		}
+	}
+	// The deferred features, outside every home's clearing, which is plain grass: the starting-crop
+	// guarantee plants only on plain grass, not on its lush or dry looks.
+	{
+		std::vector<unsigned char> clearing(n, 0);
+		for (int site : sites)
+			for (int dv = -kHomeClearing - 2; dv <= kHomeClearing + 2; ++dv)
+				for (int du = -kHomeClearing - 2; du <= kHomeClearing + 2; ++du)
+					if (du * du + dv * dv <= (kHomeClearing + 2) * (kHomeClearing + 2))
+					{
+						const int i = f.at(f.remainderX(site) + du, site / f.w + dv);
+						clearing[i] = du * du + dv * dv <= kHomeClearing * kHomeClearing ? 2 : 1;
+					}
+		for (int i = 0; i < n; ++i)
+		{
+			if (clearing[i] == 2 && sketch[i] == GRASS)
+				look[i] = GRASS;
+			if (decoMech[i] && !clearing[i] && sketch[i] == GRASS)
+			{
+				sketch[i] = decoMech[i];
+				look[i] = decoLook[i];
+				duneTiles += decoLook[i] == DUNE_SAND;
 			}
 		}
-		L.homes.push_back(candidates[best]);
-		candidates.erase(candidates.begin() + best);
+		context.telemetry.measure("braided-delta.desert.dunes", duneTiles);
+	}
+
+	// Onto the map: mechanics, and looks where they share the mechanic.
+	L.terrain.assign(t.size(), GRASS);
+	L.paint.assign(t.size(), GRASS);
+	L.frameU.assign(t.size(), 0);
+	L.isles.assign(t.size(), 0);
+	L.frameV.assign(t.size(), 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int m = L.toMap(i);
+		L.terrain[m] = sketch[i];
+		const TerrainType mechanic = TerrainType(sketch[i]), chosen = TerrainType(look[i]);
+		L.paint[m] = look[i] && terrainGroup(chosen) == terrainGroup(mechanic) ? chosen
+					 : mechanic == SAND										 ? PALE_SAND
+																			 : mechanic;
+		L.frameU[m] = f.remainderX(i);
+		L.isles[m] = isle[i];
+		L.frameV[m] = i / f.w;
+	}
+
+	for (int site : sites)
+	{
+		const int m = L.toMap(site);
+		L.homes.push_back({double(t.remainderX(m)), double(m / t.w)});
 	}
 	dealStarts(context, L.homes, "braided-delta-deal");
 	L.homeOf.assign(t.size(), -1);
 	for (int team = 0; team < request.nbTeams; ++team)
-		for (int dy = -10; dy < 10; ++dy)
-			for (int dx = -10; dx < 10; ++dx)
+		for (int dy = -kHome / 2; dy < kHome / 2; ++dy)
+			for (int dx = -kHome / 2; dx < kHome / 2; ++dx)
 				L.homeOf[t.at(int(L.homes[team].x) + dx, int(L.homes[team].y) + dy)] = team;
-	context.telemetry.measure("braided-delta.braids", o.braids);
-	context.telemetry.measure("braided-delta.islands", L.sites.size());
-	context.telemetry.measure("braided-delta.island_length", L.cell);
-	context.telemetry.measure("braided-delta.channel_separation", L.lane);
-	context.telemetry.measure("braided-delta.crossings", L.crossings.size());
-	context.telemetry.choice("braided-delta.orientation", L.transpose ? "vertical" : "horizontal");
 	return L;
+}
+
+// The request check, generation and validation each ask for the design; it is built once.
+Layout design(const GenerationRequest &request, GenerationContext &context)
+{
+	return cachedDesign(request, context, designAfresh);
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -349,163 +916,191 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	const Torus &t = L.t;
 	Map &map = game.map;
-	writeVertices(map, L.terrain);
+	writeVertices(map, L.paint);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	context.stage = "braided delta colonies";
 	if (!settleColonies(
-			game, context, "braided-delta-starts",
+			game, context, "braided-delta-colonies",
 			[&](int team) { return homeGrassMask(map, t, L.homeOf, team); },
-			[&](int team)
-			{
-				return MapGeneratorPoint(t.x(int(L.homes[team].x) - 2),
-										 t.y(int(L.homes[team].y) - 2));
-			}))
+			[&](int team) { return MapGeneratorPoint(t.x(int(L.homes[team].x) - 2), t.y(int(L.homes[team].y) - 2)); }))
 		return false;
 	context.stage = "braided delta resources";
-	const auto water = pureTiles(L.terrain, t, WATER);
-	const auto distance = stepsFrom(t, water);
-	const auto fertility = cropGrowthField(L.terrain, t);
-	std::vector<unsigned char> ground(t.size(), 0), bank(t.size(), 0), frontage(t.size(), 0);
+	// Every colony's starter kit, before anything ambient: a wheat patch and a copse on opposite
+	// sides of its clearing, outside the home square, on plain grass. Starter supplies stay at
+	// these sizes whatever the resource amounts.
+	{
+		std::mt19937 &kits = context.stream("braided-delta-kits");
+		for (int team = 0; team < context.request.nbTeams; ++team)
+		{
+			const ShapePoint home = L.homes[team];
+			const double turn = 2 * kPi * unit(kits);
+			for (int crop = 0; crop < 2; ++crop)
+			{
+				const double heading = turn + crop * kPi;
+				const int ax = int(home.x + kKitDistance * N::cos(heading));
+				const int ay = int(home.y + kKitDistance * N::sin(heading));
+				const int wanted = crop ? kKitWood : kKitWheat;
+				const auto placed = growPatchesNear(map, t, ax, ay, 8, crop ? WOOD : WHEAT, wanted, [&](int i)
+													{
+														return L.homeOf[i] < 0 && map.isGrass(t.remainderX(i), i / t.w) &&
+															   t.chebyshev(t.remainderX(i), i / t.w, int(home.x), int(home.y)) <=
+																   kHomeClearing;
+													});
+				context.telemetry.measure(crop ? "braided-delta.kit.wood" : "braided-delta.kit.wheat", placed.tiles, team);
+				if (placed.tiles < wanted)
+					context.telemetry.fallback("braided-delta.kit.short", "The clearing could not hold the whole kit", team);
+			}
+		}
+	}
+	// The great island's orchard, the swamp's prize: a grove of each fruit near its middle.
+	if (L.greatIsland >= 0 && o.fruit > 0)
+	{
+		const int gx = t.remainderX(L.greatIsland), gy = L.greatIsland / t.w;
+		const int trees = int(std::max<std::int64_t>(1, scaledCount(kGroveTrees, o.fruit)));
+		for (int fruit = 0; fruit < 3; ++fruit)
+		{
+			const double heading = 2 * kPi * fruit / 3;
+			const auto placed = growPatchesNear(map, t, gx + int(4 * N::cos(heading)), gy + int(4 * N::sin(heading)), 10,
+												CHERRY + fruit, trees, [&](int i) { return L.isles[i] == 2; });
+			context.telemetry.measure("braided-delta.orchard.trees", placed.tiles, fruit);
+			if (placed.tiles < trees)
+				context.telemetry.fallback("braided-delta.orchard.short", "The great island could not hold a whole grove", fruit);
+		}
+	}
+	// Stone at the kopjes' feet: a small quarry beside each outcrop.
+	if (o.stone > 0)
+	{
+		const auto outcrop = pureTiles(L.terrain, t, OUTCROP);
+		const std::vector<int> kopjes = connectedRegions(outcrop, t.w, t.h, true, GridNeighbors::Eight);
+		const int count = *std::max_element(kopjes.begin(), kopjes.end()) + 1;
+		std::vector<int> anchor(std::max(1, count), -1);
+		for (int i = 0; i < t.size(); ++i)
+			if (kopjes[i] >= 0 && anchor[kopjes[i]] < 0)
+				anchor[kopjes[i]] = i;
+		int quarries = 0;
+		for (int k = 0; k < count; ++k)
+		{
+			const auto placed = growPatchesNear(map, t, t.remainderX(anchor[k]), anchor[k] / t.w, 6, STONE,
+												int(scaledCount(kQuarryStone, o.stone)), [&](int i) { return L.homeOf[i] < 0; });
+			quarries += placed.tiles > 0;
+		}
+		context.telemetry.measure("braided-delta.quarries", quarries);
+	}
+	// Wheat on the levee loam and woods on the lush ground beside the water and on the islands, as
+	// much of each as the amounts ask, in stands rather than speckle.
+	const std::vector<int> stands = periodicNoise(t.w, t.h, 6, context.stream("braided-delta-stands"));
+	const auto loam = pureTiles(L.terrain, t, LOAM), grass = pureTiles(L.terrain, t, GRASS);
+	const double wheatShare = std::min(0.9, kWheatShare * o.wheat / 100), woodShare = std::min(0.7, kWoodShare * o.wood / 100);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		ground[i] = !L.towns.plot[i] && map.isGrass(t.remainderX(i), i / t.w);
-		bank[i] = ground[i] && distance[i] >= 2 && distance[i] <= 14 && fertility.values()[i] > 0;
-	}
-	// Fund the opening first, with two coherent bank patches outside the protected town.
-	// Several pockets are allowed when a sand approach divides a starter field.
-	for (int team = 0; team < context.request.nbTeams; ++team)
-	{
-		const auto p = L.homes[team];
-		const int island = L.islandOf[t.at(int(p.x), int(p.y))];
-		const double u = L.transpose ? p.y : p.x, v = L.transpose ? p.x : p.y;
-		for (int crop = 0; crop < 2; ++crop)
-		{
-			const auto at = L.point(u + (crop ? 10 : -8), v - 17);
-			const auto placed = growPatchesNear(map, t, int(at.x), int(at.y), 14,
-				crop ? WOOD : WHEAT, crop ? 32 : 48,
-				[&](int i) { return bank[i] && L.islandOf[i] == island; });
-			context.telemetry.measure(crop ? "braided-delta.starter.wood" : "braided-delta.starter.wheat", placed.tiles, team);
-			if (placed.tiles < (crop ? 32 : 48))
-				context.telemetry.fallback("braided-delta.starter.partial", "Bank approaches split the starter supplies", team);
-		}
-	}
-	// One compact mixed orchard and one quarry per island. Placement searches useful
-	// ground near the town's flanks; neither permanent resource is sprayed over the interior.
-	constexpr std::array<std::pair<int, int>, 9> treeOffsets{{
-		{0, 0}, {1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, 1}, {-1, -1}, {1, -1}}};
-	for (size_t site = 0; site < L.sites.size(); ++site)
-	{
-		const auto p = L.sites[site];
-		const int island = L.islandOf[t.at(int(p.x), int(p.y))];
-		const double u = L.transpose ? p.y : p.x, v = L.transpose ? p.x : p.y;
-		const auto free = [&](int i)
-		{ return ground[i] && !frontage[i] && L.islandOf[i] == island && clearGround(map, t.remainderX(i), i / t.w); };
-		const int trees = o.fruit > 0 ? std::max(1, int(scaledCount(3, o.fruit))) : 0;
-		const int facing = int(context.bounded("braided-delta-orchards", 4));
-		const auto treeOffset = [&](int fruit, int tree)
-		{
-			const int dx = (fruit - 1) * 3 + treeOffsets[tree].first;
-			const int dy = (fruit == 1 ? 3 : 0) + treeOffsets[tree].second;
-			return turnStencilVertex(facing, dx, dy);
-		};
-		if (trees)
-		{
-			const auto target = L.point(u - 18, v + 12);
-			const int centre = seedNear(t, int(target.x), int(target.y), 32, [&](int i)
-			{
-				if (!free(i))
-					return false;
-				for (int fruit = 0; fruit < 3; ++fruit)
-					for (int tree = 0; tree < trees; ++tree)
-					{
-						const auto [dx, dy] = treeOffset(fruit, tree);
-						// Leave harvest frontage around every grove, including at maximum fruit.
-						for (const auto &[ox, oy] : {std::pair{0, 0}, {-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-							if (!free(t.at(t.remainderX(i) + dx + ox, i / t.w + dy + oy)))
-								return false;
-					}
-				return true;
-			});
-			if (centre < 0)
-			{
-				context.detail = "A delta island has no room for its compact orchard.";
-				return false;
-			}
-			for (int fruit = 0; fruit < 3; ++fruit)
-				for (int tree = 0; tree < trees; ++tree)
-				{
-					const auto [dx, dy] = treeOffset(fruit, tree);
-					map.setResourceByIndex(t.x(t.remainderX(centre) + dx), t.y(centre / t.w + dy), CHERRY + fruit, 1);
-					for (const auto &[ox, oy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-						frontage[t.at(t.remainderX(centre) + dx + ox, centre / t.w + dy + oy)] = 1;
-				}
-			context.telemetry.measure("braided-delta.orchard.trees-per-fruit", trees, int(site));
-			context.telemetry.measure("braided-delta.orchard.x", t.remainderX(centre), int(site));
-			context.telemetry.measure("braided-delta.orchard.y", centre / t.w, int(site));
-		}
-		const auto quarry = L.point(u + 18, v + 12);
-		const int seed = seedNear(t, int(quarry.x), int(quarry.y), 24, free);
-		int rock = 0;
-		if (seed >= 0 && o.stone > 0)
-			rock = growPatch(map, t, seed, STONE, int(scaledCount(12, o.stone)), [&](int i)
-			{ return free(i) && t.chebyshev(t.remainderX(i), i / t.w, t.remainderX(seed), seed / t.w) <= 6; });
-		if (rock)
-			for (int dy = -6; dy <= 6; ++dy)
-				for (int dx = -6; dx <= 6; ++dx)
-				{
-					const int i = t.at(t.remainderX(seed) + dx, seed / t.w + dy);
-					if (map.getResource(t.remainderX(i), i / t.w).type != STONE || L.islandOf[i] != island)
-						continue;
-					for (const auto &[ox, oy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-						frontage[t.at(t.remainderX(i) + ox, i / t.w + oy)] = 1;
-				}
-		context.telemetry.measure("braided-delta.quarry.target", int(scaledCount(12, o.stone)), int(site));
-		context.telemetry.measure("braided-delta.quarry.tiles", rock, int(site));
-		if (rock < int(scaledCount(12, o.stone)))
-			context.telemetry.fallback("braided-delta.quarry.shortfall", "Not enough connected inland quarry ground", int(site));
-
-		int bankTiles = 0;
-		for (int i = 0; i < t.size(); ++i)
-			bankTiles += bank[i] && L.islandOf[i] == island;
-		context.telemetry.measure("braided-delta.bank.tiles", bankTiles, int(site));
-		// Two food fields and two copses on separate reaches of the island's banks.
-		// Budgets scale with useful bank ground; only patch anchors are jittered.
-		for (int crop = 0; crop < 2; ++crop)
-		{
-			const int base = crop ? std::clamp(bankTiles / 16, 64, 384) : std::clamp(bankTiles / 8, 96, 768);
-			const int budget = int(scaledCount(base, crop ? o.wood : o.wheat));
-			context.telemetry.measure(crop ? "braided-delta.woods.target" : "braided-delta.fields.target", budget, int(site));
-			int planted = 0, patches = 0;
-			for (int shore = 0; shore < 2; ++shore)
-			{
-				const int wanted = budget / 2 + (shore == 0 ? budget % 2 : 0);
-				if (!wanted)
-					continue;
-				const double along = u + (crop ? 0.20 : -0.20) * L.cell +
-					int(context.bounded(crop ? "braided-delta-copses" : "braided-delta-fields", 13)) - 6;
-				const double across = L.bank(along, int(site) / L.cells + shore) + (shore ? -9 : 9);
-				const auto target = L.point(along, across);
-				const int radius = int(std::ceil(std::sqrt(double(wanted)))) + 4;
-				const auto placed = growPatchesNear(map, t, int(target.x), int(target.y), 28,
-					crop ? WOOD : WHEAT, wanted, [&](int i)
-					{ return free(i) && bank[i] && t.chebyshev(t.remainderX(i), i / t.w, int(target.x), int(target.y)) <= radius; });
-				planted += placed.tiles;
-				patches += placed.patches;
-			}
-			context.telemetry.measure(crop ? "braided-delta.woods.tiles" : "braided-delta.fields.tiles", planted, int(site));
-			context.telemetry.measure(crop ? "braided-delta.woods.patches" : "braided-delta.fields.patches", patches, int(site));
-			if (planted < budget)
-				context.telemetry.fallback(crop ? "braided-delta.woods.shortfall" : "braided-delta.fields.shortfall",
-					"The bank's water, town or approaches limited its compact patches", int(site));
-		}
+		const int x = t.remainderX(i), y = i / t.w;
+		if (L.homeOf[i] >= 0 || !map.isFreeForGroundUnit(x, y, false, 0))
+			continue;
+		if (loam[i] && stands[i] >= 65536 * (1 - wheatShare))
+			map.setResourceByIndex(x, y, WHEAT, 1);
+		else if (grass[i] && TerrainType(L.paint[i]) == LUSH_GRASS && stands[i] < 65536 * woodShare)
+			map.setResourceByIndex(x, y, WOOD, 1);
 	}
 	seedAlgae(map, context, t, "braided-delta-algae", o.algae, AlgaeBand::anyWater(90));
-	// Repairs must respect towns and the permanent deposits' initial harvest frontage.
-	for (int i = 0; i < t.size(); ++i)
-		ground[i] = ground[i] && !frontage[i];
-	secureStartingCrops(game, context, t, 24, 32, 0, nullptr, &ground);
+	// The guarantee measures from the swarm's boot tile and the validator from the workers, a few
+	// steps apart: aim a few steps short of the validator's ranges.
+	secureStartingCrops(game, context, t, 20, 28);
 	return true;
+}
+
+// The panhandle's river blocks walking between its gorge, bridges and apex.
+// In each stretch between two cuts, a unit without swimming cannot reach the
+// other bank inside the river band. Trained swimmers may cross either depth.
+// A tile's bank is the side of the river's middle it lies on.
+std::string riverWallFault(const Layout &L, const Map &map)
+{
+	const Torus &t = L.t;
+	const RiverPlan &river = L.river;
+	std::vector<double> cuts{river.start};
+	for (double b : river.bridges)
+		cuts.push_back(b);
+	cuts.push_back(river.end - 6);
+	std::sort(cuts.begin(), cuts.end());
+	const double band = river.halfWidth + 8, bank = river.halfWidth + 3;
+	for (size_t s = 0; s + 1 < cuts.size(); ++s)
+	{
+		const double from = s ? cuts[s] + 4 : cuts[s], to = s + 2 < cuts.size() ? cuts[s + 1] - 4 : cuts[s + 1];
+		if (to - from < 2)
+			continue;
+		// Each tile of the stretch's band: its side, and whether it is out on a bank.
+		std::vector<signed char> side(t.size(), 0);
+		std::vector<int> queue;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const double u = L.frameU[i];
+			if (u < from || u > to || size_t(u) >= river.middle.size())
+				continue;
+			const double offset = ChannelDetail::centred(L.frameV[i] + 0.5 - river.middle[size_t(u)], L.across);
+			if (std::abs(offset) > band)
+				continue;
+			side[i] = offset > 0 ? 1 : -1;
+			const TerrainProperties &rules = map.terrainPropertiesAt(i);
+			if (side[i] > 0 && offset > bank && rules.walkable)
+				queue.push_back(i);
+		}
+		std::vector<unsigned char> seen(t.size(), 0);
+		for (int i : queue)
+			seen[i] = 1;
+		for (size_t head = 0; head < queue.size(); ++head)
+		{
+			const int i = queue[head];
+			const int x = t.remainderX(i), y = i / t.w;
+			if (side[i] < 0)
+			{
+				const double offset =
+					ChannelDetail::centred(L.frameV[i] + 0.5 - river.middle[size_t(L.frameU[i])], L.across);
+				if (-offset > bank)
+					return "Units without swimming can cross the panhandle's river near (" + std::to_string(x) + ", " + std::to_string(y) +
+						   "), between flow " + std::to_string(int(from)) + " and " + std::to_string(int(to)) +
+						   ", away from its bridges.";
+			}
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					const int j = t.at(x + dx, y + dy);
+					if (seen[j] || !side[j])
+						continue;
+					const TerrainProperties &rules = map.terrainPropertiesAt(j);
+					if (rules.walkable)
+					{
+						seen[j] = 1;
+						queue.push_back(j);
+					}
+				}
+		}
+	}
+	return "";
+}
+
+// Every sizeable stretch of ground can be walked to from the first colony: a channel no ford
+// crosses would strand it.
+std::string strandedGroundFault(const Layout &L, const Map &map, const std::vector<int> &steps)
+{
+	const Torus &t = L.t;
+	std::vector<unsigned char> ground(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		ground[i] = map.terrainPropertiesAt(i).walkable;
+	const std::vector<int> pieces = connectedRegions(ground, t.w, t.h, true, GridNeighbors::Eight);
+	const int count = *std::max_element(pieces.begin(), pieces.end()) + 1;
+	std::vector<int> size(std::max(1, count), 0);
+	std::vector<unsigned char> reached(std::max(1, count), 0);
+	for (int i = 0; i < t.size(); ++i)
+		if (pieces[i] >= 0)
+		{
+			++size[pieces[i]];
+			reached[pieces[i]] = reached[pieces[i]] || steps[i] >= 0;
+		}
+	for (int i = 0; i < t.size(); ++i)
+		if (pieces[i] >= 0 && !reached[pieces[i]] && size[pieces[i]] >= 48)
+			return "A stretch of the delta (" + std::to_string(size[pieces[i]]) + " tiles, at " +
+				   std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ") has no ford to it.";
+	return "";
 }
 
 std::string validateWorld(const Game &game, const GenerationContext &context)
@@ -514,91 +1109,35 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Layout L = design(context.request, replay);
 	if (const auto error = designMismatch(L, game.map, "braided delta"); !error.empty())
 		return error;
-	// Inspect the finished world: a terrain-only flood misses resource walls and buildings.
-	const auto walk =
-		walkFromFirstColony(game.map, context.request.nbTeams, "the delta", "over its fords");
+	// The finished terrain is the design's, corner for corner: nothing after it filled a channel
+	// or laid a crossing the checks below did not plan for.
+	for (int i = 0; i < L.t.size(); ++i)
+		if (game.map.vertexTerrainAt(L.t.remainderX(i), i / L.t.w) != TerrainType(L.paint[i]))
+			return "The delta's terrain has changed since it was laid out.";
+	const auto walk = walkFromFirstColony(game.map, context.request.nbTeams, "the delta", "over its fords and bridges");
 	if (!walk.error.empty())
 		return walk.error;
-	// Sand rims contain outside crops, but cannot contain a seed planted inside a town.
-	// Check after every resource repair so future guarantee changes cannot consume its room.
-	if (cropSeedsIn(game.map, L.towns.plot))
-		return "A delta town contains crops that could overgrow its building ground.";
-	// Compare the complete finished shoreline, including fords. Reconstructing only map
-	// dimensions would not detect an accidental repair that fills a channel or cuts a town.
-	const auto grass = pureTiles(L.terrain, L.t, GRASS);
-	const auto water = pureTiles(L.terrain, L.t, WATER);
-	for (int i = 0; i < L.t.size(); ++i)
+	if (const auto error = riverWallFault(L, game.map); !error.empty())
+		return error;
 	{
-		if (bool(grass[i]) != game.map.isGrass(L.t.remainderX(i), i / L.t.w) ||
-			bool(water[i]) != game.map.isWater(L.t.remainderX(i), i / L.t.w))
-			return "The delta shoreline or a crossing has changed.";
+		// Terrain alone: crops and woods can be cut, so they don't strand ground.
+		const Torus t(game.map);
+		std::vector<unsigned char> open(t.size(), 0);
+		for (int i = 0; i < t.size(); ++i)
+			open[i] = game.map.terrainPropertiesAt(i).walkable;
+		const auto steps = stepsFrom(t, tileMask(t, walk.workers.at(0)), open);
+		if (const auto error = strandedGroundFault(L, game.map, steps); !error.empty())
+			return error;
 	}
-	// Permanent deposits are coherent island features, never scattered interior noise.
-	const BraidedDeltaOptions options(context.request);
-	const int trees = options.fruit > 0 ? std::max(1, int(scaledCount(3, options.fruit))) : 0;
-	const int regions = *std::max_element(L.islandOf.begin(), L.islandOf.end()) + 1;
-	std::vector<int> siteOf(regions, -1);
-	for (size_t site = 0; site < L.sites.size(); ++site)
-		siteOf[L.islandOf[L.t.at(int(L.sites[site].x), int(L.sites[site].y))]] = int(site);
-	std::vector<std::array<int, 3>> fruitCounts(L.sites.size());
-	std::vector<std::vector<int>> orchards(L.sites.size()), quarries(L.sites.size());
-	for (int i = 0; i < L.t.size(); ++i)
-	{
-		const int type = game.map.getResource(L.t.remainderX(i), i / L.t.w).type;
-		if (L.towns.plot[i] && type != NO_RES_TYPE)
-			return "A resource occupies a protected delta town.";
-		if (type != STONE && (type < CHERRY || type > PRUNE))
-			continue;
-		const int region = L.islandOf[i];
-		if (region < 0 || siteOf[region] < 0)
-			return "A permanent delta deposit is outside its island resource area.";
-		const int site = siteOf[region];
-		if (type == STONE)
-			quarries[site].push_back(i);
-		else
-		{
-			++fruitCounts[site][type - CHERRY];
-			orchards[site].push_back(i);
-		}
-	}
-	for (size_t site = 0; site < L.sites.size(); ++site)
-	{
-		for (int fruit = 0; fruit < 3; ++fruit)
-			if (fruitCounts[site][fruit] != trees)
-				return "A delta island has lost one of its compact orchard's fruit groups.";
-		for (const auto &[tiles, reach] : {std::pair{&orchards[site], 8}, std::pair{&quarries[site], 12}})
-			for (int a : *tiles)
-				for (int b : *tiles)
-					if (L.t.chebyshev(L.t.remainderX(a), a / L.t.w, L.t.remainderX(b), b / L.t.w) > reach)
-						return "A delta orchard or quarry has been scattered across its island.";
-		if (quarries[site].size() > size_t(scaledCount(12, options.stone)))
-			return "A delta island has more stone than its quarry budget.";
-	}
-	const auto buildable = buildableTiles(game.map);
-	for (size_t k = 0; k < L.sites.size(); ++k)
-	{
-		std::vector<unsigned char> region(L.t.size(), 0);
-		const auto p = L.sites[k];
-		for (int dy = -10; dy < 10; ++dy)
-			for (int dx = -10; dx < 10; ++dx)
-			{
-				const int i = L.t.at(int(p.x) + dx, int(p.y) + dy);
-				region[i] = walk.steps[i] >= 0;
-			}
-		// These are overlapping legal origins, not 64 independent buildings. This floor checks
-		// that both home and neutral islands retain a substantial accessible construction patch.
-		if (buildSites(L.t, buildable, region) < 64)
-			return "A delta island has lost its reachable building clearing.";
-	}
-	return "";
+	return startingAccessFailure(game.map, context.request.nbTeams,
+								 {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}}, 16, 24);
 }
 } // namespace
 
 BraidedDeltaOptions::BraidedDeltaOptions(const GenerationRequest &r)
-	: braids(r.option("braid-count")), rejoins(r.option("rejoining-frequency")),
-	  islandSize(r.option("island-size")), crossingSpacing(r.option("crossing-spacing")),
-	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
-	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
+	: flood(r.option("flood")), distributaries(r.option("distributaries")), islands(r.option("islands")),
+	  crossings(r.option("river-crossings")), dunes(r.option("dunes")), wheat(r.option("wheat-amount")),
+	  wood(r.option("wood-amount")), stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
 {
 }
@@ -608,18 +1147,17 @@ GeneratorDefinition braidedDeltaDefinition()
 	return {"braided-delta",
 			36,
 			"Braided Delta",
-			5,
+			7,
 			false,
-			{GeneratorControl{"braid-count", "Braid count", 2, 5, 1, 2, ControlGroup::Terrain}
-				 .withSearchRange(2, 4),
-			 GeneratorControl{"rejoining-frequency", "Rejoining frequency", 1, 3, 1, 2,
-							  ControlGroup::Terrain}
+			{GeneratorControl::choice("flood", "Flood", {"Dry", "Normal", "Wet"}, 1, ControlGroup::Terrain)
+				 .withSearchValues({0, 1, 2}),
+			 GeneratorControl::choice("distributaries", "Distributaries", {"Few", "Normal", "Many"}, 1,
+									  ControlGroup::Terrain)
+				 .withSearchValues({0, 1, 2}),
+			 GeneratorControl{"islands", "Islands", 0, 100, 10, 50, ControlGroup::Terrain}.withSearchRange(20, 80),
+			 GeneratorControl{"river-crossings", "River crossings", 1, 3, 1, 2, ControlGroup::Layout}
 				 .withSearchRange(1, 3),
-			 GeneratorControl{"island-size", "Island size", 32, 48, 8, 32, ControlGroup::Layout}
-				 .withSearchRange(32, 48),
-			 GeneratorControl{"crossing-spacing", "Crossing spacing", 32, 96, 16, 64,
-							  ControlGroup::Layout}
-				 .withSearchRange(32, 64),
+			 GeneratorControl{"dunes", "Dunes", 0, 100, 10, 50, ControlGroup::Terrain}.withSearchRange(20, 80),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),
@@ -629,5 +1167,6 @@ GeneratorDefinition braidedDeltaDefinition()
 			true,
 			designFailure<design>,
 			validateWorld,
-			{"terrain:natural", "feature:river", "feature:islands", "style:sprawling"}};
+			{"terrain:natural", "feature:river", "feature:swamp", "feature:desert", "feature:islands",
+			 "style:contested-center"}};
 }

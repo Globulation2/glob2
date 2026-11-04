@@ -1,17 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "ExperimentalFeatures.h"
 #include "UnitConsts.h"
-#include <array>
 #include <map>
 
-// Authoritative continuation: speed modes need their own tie history, even
-// when two speed pairs quantize to the same routing class.
+// Authoritative modal-cost selection and deterministic selection boundary.
 struct RoutingRatioState {
-    unsigned selected=3, walk=0, swim=0, tick=0;
+    unsigned selected=3, tick=0;
     bool known=false;
     static bool amphibious(int c) { return c>0 && c<LEGACY_SWIM_CLASS_COUNT; }
-    int route(int physical) const { return accessClass(movementAccessFromLegacy(physical)); }
     static unsigned mode(const std::map<unsigned,unsigned>& counts,unsigned previous) {
         unsigned best=0,maximum=0;
         for (const auto& [value,count]:counts) if(count>maximum){best=value;maximum=count;}

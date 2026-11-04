@@ -213,6 +213,7 @@ int runRenderSkin(const Cli::Request &request)
 			checkEncoderVersion();
 			std::cout << Json{{"format", "colony-sprites-v1"},
 							  {"stationaryTurns", true},
+							  {"proneHarvest", true},
 							  {"renderRevision", SKIN_RENDER_REVISION},
 							  {"encoding", "bundled-images-v3-webp-only"},
 							  {"webpVersion", SKIN_WEBP_VERSION}}
@@ -294,18 +295,39 @@ int runRenderSkin(const Cli::Request &request)
 			{"encoding", "bundled-images-v3-webp-only"},
 			{"pages", Json::array()},
 			{"turnMapping", {{"first", 256}, {"frames", 32}, {"phaseShift", 3}}},
-			{"turnPages", Json::array()}};
+			{"turnPages", Json::array()},
+			{"proneHarvestMapping", {{"directions", 8}, {"phases", 64}, {"logicalSize", 38}}},
+			{"proneHarvestPages", Json::array()}};
+		const auto loadMesh = [](const std::string &file)
+		{
+			// Resolve runtime names through the mounted asset roots, including
+			// content/ in a source checkout and data/ in installed packages.
+			auto &loader = GAGCore::Toolkit::assets();
+			auto request = GAGCore::requestSkinMesh(loader, "data/skins/colony-v1/" + file);
+			auto mesh = loader.wait(request);
+			if (!mesh)
+				throw std::runtime_error(file + ": " + request.error());
+			return *mesh;
+		};
+		std::array<GAGCore::SkinMesh, 2> prone;
 		const auto renderPage = [&](const GAGCore::SkinMesh &mesh, unsigned clip,
 									unsigned sourceFirst, unsigned first, unsigned frames,
 									unsigned size, Json &records)
 		{
-			const unsigned region = clip < 3 ? 0 : clip < 6 ? 1 : clip == 6 ? 2 : 3;
+			const unsigned region = clip == Online::ProneHarvestSpriteClip ? 0
+									: clip < 3                             ? 0
+									: clip < 6                             ? 1
+									: clip == 6                            ? 2
+																		   : 3;
 			std::vector<uint8_t> pixels(size * size * 4, 0), tile;
 			for (unsigned frame = 0; frame < frames; ++frame)
 			{
-				if (!gfx->readSkinMesh(
-						{&mesh, sourceFirst + frame, paint.get(), ids.get(), uint8_t(region)},
-						tile))
+				const bool floating = clip == Online::ProneHarvestSpriteClip;
+				const unsigned sample = sourceFirst + frame;
+				if (!gfx->readSkinMesh({floating ? &prone[sample % 2] : &mesh,
+										floating ? (sample / 64) * 32 + (sample % 64) / 2 : sample,
+										paint.get(), ids.get(), uint8_t(region)},
+									   tile))
 					throw std::runtime_error("OpenGL skin rendering unavailable");
 				const unsigned col = frame % 8, row = frame / 8;
 				for (unsigned y = 0; y < 128; ++y)
@@ -314,24 +336,24 @@ int runRenderSkin(const Cli::Request &request)
 			}
 			const auto bytes = encode(pixels, size), hash = Online::Sha256::hex(bytes);
 			write(staging / (hash + ".webp"), bytes);
-			records.push_back({{"clip", Online::SkinSpriteClips[clip]},
-							   {"first", first},
-							   {"frames", frames},
-							   {"width", size},
-							   {"height", size},
-							   {"sha256", hash},
-							   {"bytes", bytes.size()}});
+			records.push_back(
+				{{"clip", clip == Online::ProneHarvestSpriteClip ? Online::ProneHarvestSpriteName
+																 : Online::SkinSpriteClips[clip]},
+				 {"first", first},
+				 {"frames", frames},
+				 {"width", size},
+				 {"height", size},
+				 {"sha256", hash},
+				 {"bytes", bytes.size()}});
 		};
 		for (unsigned clip = 0; clip < 8; ++clip)
 		{
 			GAGCore::SkinMesh mesh;
-			std::string error;
 			// Published sprites always render the rigs: the recipe digest covers
 			// their bytes and decoders, so GLOB2_SKIN_RIGS is deliberately ignored.
 			const std::string file = clip < 7 ? GAGCore::skinClipFile(Online::SkinSpriteClips[clip])
 											  : std::string(Online::SWARM_MESHES[choice].file);
-			if (!mesh.load("data/skins/colony-v1/" + file, error))
-				throw std::runtime_error(file + ": " + error);
+			mesh = loadMesh(file);
 			if (clip == 7 && angle != 0)
 			{
 				const auto &view = Online::SkinViews[choice];
@@ -354,6 +376,17 @@ int runRenderSkin(const Cli::Request &request)
 				renderPage(turns, clip, 0, 256, GAGCore::SkinTurnFrames, 1024, result["turnPages"]);
 			}
 		}
+		for (unsigned parity = 0; parity < 2; ++parity)
+		{
+			const auto file =
+				GAGCore::skinClipFile(parity ? "worker-prone-harvest-mid" : "worker-prone-harvest");
+			prone[parity] = loadMesh(file);
+			if (prone[parity].frames != 256 || prone[parity].logicalSize != 38)
+				throw std::runtime_error(file + ": invalid prone harvest mesh");
+		}
+		for (unsigned page = 0; page < 8; ++page)
+			renderPage(prone[0], Online::ProneHarvestSpriteClip, page * 64, page * 64, 64, 1024,
+					   result["proneHarvestPages"]);
 		write(staging / "manifest.json", result.dump());
 		std::filesystem::rename(staging, output);
 		staging.clear();

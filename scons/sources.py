@@ -170,6 +170,8 @@ CLIENT_SOURCES = (
     'render/GameRenderBuildings.cpp',
     'render/GameRenderTerrain.cpp',
     'render/terrain/TerrainMaterials.cpp',
+    'render/terrain/TerrainBorderRules.cpp',
+    'render/terrain/TerrainSmoothBorders.cpp',
     'render/terrain/TerrainCatalogIO.cpp',
     'render/terrain/TerrainCompositor.cpp',
     'render/terrain/TerrainCompiledPack.cpp',
@@ -177,6 +179,7 @@ CLIENT_SOURCES = (
     'render/OverviewTerrainCache.cpp',
     'render/MapOverlayQueue.cpp',
     'render/MapRenderState.cpp',
+    'render/UnitEffectArt.cpp',
     'render/FogFade.cpp',
     'render/scene/SceneMap.cpp',
     'render/scene/SceneExtract.cpp',
@@ -209,6 +212,7 @@ CLIENT_SOURCES = (
     'hud/GameGUIDefaultAssignManager.cpp',
     'hud/GameGUIDialog.cpp',
     'hud/InGameStatistics.cpp',
+    'hud/EnginePerformancePanel.cpp',
     'hud/draw/GameGUIDraw.cpp',
     'hud/draw/GameGUIDrawChoice.cpp',
     'hud/draw/GameGUIDrawUnitInfos.cpp',
@@ -772,9 +776,9 @@ USL_SOURCES = (
 )
 
 INCLUDE_DIRECTORIES = (
-    'libgag/include',
+    'libs/gag/include',
     '.',
-    'libusl/src',
+    'libs/usl/src',
     'src',
     'src/ai',
     'src/hud',

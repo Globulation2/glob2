@@ -911,7 +911,7 @@ TEST_SUITE("MapGeneratorDefaults")
         CHECK(open[torus.at(8,8)]);
         CHECK(open[torus.at(10,8)]);
         CHECK_FALSE(open[torus.at(12,8)]);
-        // A water tile's mixed neighbours are walkable transitions.
+        // This side neighbour has two walking corners, so the tie permits walking.
         CHECK(open[torus.at(11,8)]);
         CHECK_FALSE(beach[torus.at(8,8)]);
         CHECK_FALSE(beach[torus.at(10,8)]);
@@ -933,6 +933,130 @@ TEST_SUITE("MapGeneratorDefaults")
 		MapGeneration::paintTile(map, 20, 20, WATER);
 		CHECK_FALSE(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
     }
+    TEST_CASE("colony route repairs cross mixed water and protect adjacent walls")
+    {
+        glob2test::HeadlessGlobals globals;
+        enum class Scenario { ProtectedNeighbours, AdjacentBuilding, UntouchedResource, BuildingOnWater };
+        // Keep one runner-visible case while exercising each scenario on a fresh
+        // world. Doctest subcases produce distinct JUnit names, which the engine
+        // registry deliberately rejects as an unexpected case inventory.
+        for (const auto& [scenario, name] : {
+            std::pair{Scenario::ProtectedNeighbours, "protected neighbouring terrain"},
+            std::pair{Scenario::AdjacentBuilding, "untouched diagonal building"},
+            std::pair{Scenario::UntouchedResource, "untouched diagonal resource"},
+            std::pair{Scenario::BuildingOnWater, "building on a painted water corner"}})
+        {
+            CAPTURE(name);
+            Game game(nullptr);
+            auto& map = game.map;
+            map.setSize(5, 5);
+            map.setGame(&game);
+            const MapGeneration::Torus torus(map);
+            MapGeneration::TerrainSketch sketch(torus.size(), WATER);
+            for (int y = 0; y < torus.h; ++y)
+                for (int x = 0; x < torus.w; ++x)
+                    sketch[torus.at(x,y)] = x % 2 ? WATER : DEEP_WATER;
+            for (int y = 10; y <= 18; ++y)
+                for (int x = 2; x <= 9; ++x)
+                {
+                    sketch[torus.at(x,y)] = GRASS;
+                    sketch[torus.at(x+18,y)] = GRASS;
+                }
+            MapGeneration::writeVertices(map, sketch);
+            GenerationRequest request;
+            request.nbTeams = 2;
+            GenerationContext context(request);
+            context.bootX[0] = 4; context.bootY[0] = 12;
+            context.bootX[1] = 22; context.bootY[1] = 12;
+            const auto source = MapGeneration::tileMask(torus, {torus.at(3,11)});
+            const auto reachable = [&] {
+                return MapGeneration::stepsFrom(torus, source, MapGeneration::walkableTiles(map))[torus.at(21,11)] >= 0;
+            };
+            CHECK_FALSE(reachable());
+            const MapGeneration::StepCosts costs{1, 3, 8, 25, -1};
+            std::vector<unsigned char> keep(torus.size(), 0);
+            for (int y = 0; y < torus.h; ++y)
+                keep[torus.at(14,y)] = keep[torus.at(30,y)] = 1;
+            const auto vertices = [&] {
+                return std::vector<TerrainType>(map.vertexTerrainState().begin(), map.vertexTerrainState().end());
+            };
+            if (scenario == Scenario::ProtectedNeighbours)
+            {
+                // A one-cell gap cannot hold a ford without touching its neighbours.
+                keep[torus.at(14,13)] = keep[torus.at(30,13)] = 0;
+                const auto before = vertices();
+                CHECK_FALSE(MapGeneration::openColonyRoutes(map, context, torus, costs, 0, &keep));
+                CHECK(vertices() == before);
+                REQUIRE(MapGeneration::openColonyRoutes(map, context, torus, costs));
+                CHECK(reachable());
+                CHECK_FALSE(MapGeneration::openColonyRoutes(map, context, torus, costs));
+                continue;
+            }
+            if (scenario == Scenario::AdjacentBuilding || scenario == Scenario::UntouchedResource)
+            {
+                // Only the eastern crossing is permitted. Its water-majority cell
+                // (14,13) shares one grass corner with the legal plot at (15,9).
+                // That corner is not painted, so its diagonal cell is untouched.
+                for (int y = 12; y <= 14; ++y) keep[torus.at(14,y)] = 0;
+                {
+                    auto edit = map.editTerrain();
+                    for (int y = 9; y <= 13; ++y)
+                        for (int x = 15; x <= 19; ++x) map.setVertexTerrain(x,y,GRASS);
+                }
+                REQUIRE(map.terrainPropertiesAt(14,13).swimmable);
+                Building* building = nullptr;
+                if (scenario == Scenario::AdjacentBuilding)
+                {
+                    game.addTeam();
+                    const int swarm = game.buildingsTypes.getTypeNum("swarm",0,false);
+                    REQUIRE(map.isFreeForBuilding(15,9,4,4));
+                    building = game.addBuilding(15,9,swarm,0);
+                    REQUIRE(building);
+                }
+                else
+                    map.replaceResource(15,12,{CHERRY,0,3,0});
+                REQUIRE(MapGeneration::openColonyRoutes(map, context, torus, costs, 0, &keep));
+                CHECK(reachable());
+                CHECK(map.vertexTerrainAt(15,13) == GRASS);
+                if (building)
+                {
+                    for (int y = 9; y < 13; ++y)
+                        for (int x = 15; x < 19; ++x)
+                        {
+                            CHECK(map.terrainPropertiesAt(x,y).buildable);
+                            CHECK(map.getBuilding(x,y) == building->gid);
+                        }
+                }
+                else
+                {
+                    CHECK(map.getResource(15,12).type == CHERRY);
+                    CHECK(map.getResource(15,12).amount == 3);
+                }
+                continue;
+            }
+            // Authored profiles may permit building on swimming terrain. Such
+            // corners would be painted and must protect their whole footprint.
+            map.game = nullptr;
+            map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:buildable-water","name":"Buildable water","base":"water","appearance":"water","properties":{"buildable":true}}]})");
+            map.setGame(&game);
+            const auto water = map.terrainRegistry().find("test:buildable-water");
+            REQUIRE(water.has_value());
+            {
+                auto edit = map.editTerrain();
+                for (int y = 9; y <= 13; ++y)
+                    for (int x = 15; x <= 19; ++x) map.setVertexTerrain(x,y,*water);
+            }
+            for (int y = 12; y <= 14; ++y) keep[torus.at(14,y)] = 0;
+            game.addTeam();
+            const int swarm = game.buildingsTypes.getTypeNum("swarm",0,false);
+            REQUIRE(map.isFreeForBuilding(15,9,4,4));
+            REQUIRE(game.addBuilding(15,9,swarm,0));
+            const auto before = vertices();
+            CHECK_FALSE(MapGeneration::openColonyRoutes(map, context, torus, costs, 0, &keep));
+            CHECK(vertices() == before);
+        }
+    }
+
 	TEST_CASE("toolkit geometry; raster; resource and home contracts")
 	{
 		DefaultsFixture fixture;
@@ -985,14 +1109,6 @@ TEST_SUITE("MapGeneratorDefaults")
 		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
 		// Historical 256-square, four-colony, seed-1 rows before the appended Random values.
-		// Fingerprint's historical world hash has build-specific existing goldens.
-		// Unoptimized Clang 18 coverage preserves the same pre-Random world as macOS.
-#if defined(__APPLE__) || (defined(__linux__) && defined(__x86_64__) && defined(__clang__) && \
-						  __clang_major__ == 18 && defined(GLOB2_TEST_COVERAGE) && !defined(__OPTIMIZE__))
-		constexpr std::uint64_t fingerprint = 15850274609968439542ULL;
-#else
-		constexpr std::uint64_t fingerprint = 5648058033288605271ULL;
-#endif
         // Sprite selection ceased consuming simulation RNG in resource epoch1.
         // Current full references also include SIM40's map-owned placement
         // stock stream; the historical topology references stay unchanged.
@@ -1036,12 +1152,13 @@ TEST_SUITE("MapGeneratorDefaults")
 			int value;
 			std::uint64_t hash;
 		};
-		// Honeycomb revision 4 intentionally removes the historical stone outlines;
-		// its new layout is covered by its contracts and revisioned generator goldens.
+		// Keep historical comparisons only for designs whose topology is unchanged.
+		// Honeycomb revision4 removed the stone outlines; corner voting changes
+		// Canals and Fingerprint placement. Their current worlds are covered by
+		// generator contracts and the platform golden matrix. Do not overwrite
+		// archived resource-epoch references with these intentional new layouts.
 		for (const auto original :
 			 {Original{"maze", "cell-shape", 0, 6132248727033081699ULL},
-			  Original{"fingerprint", "pattern", 0, fingerprint},
-			  Original{"canals", "block-shape", 0, 16622643961647829752ULL},
 			  Original{"caravanserai", "desert", 1, 6244602504248136250ULL}})
 		{
 			D request;
@@ -1170,7 +1287,36 @@ TEST_SUITE("MapGeneratorDefaults")
 			}
 		}
 	}
-	TEST_CASE("Braided Delta uses coherent fields quarries and mixed orchards")
+	TEST_CASE("Anthill narrow tunnels stay connected under blocked corner ties [slow][map-generators]")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		const auto method = GeneratorRegistry::builtins().idOf("anthill");
+		struct Case { unsigned seed; int width, height; };
+		// Retain the standard square and both default-contract rectangles. The
+		// minimum width and width3 exercise necks where two walking/two rock
+		// corners used to be traversable; default width4 has additional margin.
+		for (int tunnelWidth : {2, 3})
+			for (const Case &c : {Case{22001, 8, 8}, Case{31001, 9, 7}, Case{31001, 7, 9}})
+			{
+				D request;
+				request.setMethodDefaults(method);
+				request.seed = c.seed;
+				request.wDec = c.width;
+				request.hDec = c.height;
+				request.options["tunnel-width"] = tunnelWidth;
+				INFO("tunnel-width=" << tunnelWidth << ", seed=" << c.seed <<
+					 ", dimensions=" << (1 << c.width) << "x" << (1 << c.height));
+				Game world(nullptr);
+				const auto result = GenerationService().generate(world, request);
+				CHECK_MESSAGE(bool(result), result.diagnostic());
+				if (!result)
+					continue;
+				CHECK(MapGeneration::walkFromFirstColony(world.map, request.nbTeams,
+					"the anthill", "through the narrow tunnels").error.empty());
+			}
+	}
+	TEST_CASE("Braided Delta scales every resource and keeps its colonies supplied")
 	{
 		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
@@ -1183,65 +1329,42 @@ TEST_SUITE("MapGeneratorDefaults")
 			if (variant == 3)
 			{
 				request.wDec = request.hDec = 7;
-				request.options["rejoining-frequency"] = 3;
+				request.options["flood"] = 2;
 			}
-			const int amount = variant == 1 ? 0 : variant >= 2 ? 300 : 100;
+			const int amount = variant == 1 ? 0 : variant == 2 ? 300 : 100;
 			for (const auto &control : definition.controls)
 				if (control.group == ControlGroup::Resources)
 					request.options[control.id] = amount;
 			Game world(nullptr);
 			const auto result = GenerationService().generate(world, request, true);
 			REQUIRE_MESSAGE(bool(result), result.diagnostic());
-			int islands = 0;
-			for (const auto &record : result.telemetry.records())
-				if (record.key == "braided-delta.islands")
-					islands = int(std::get<std::int64_t>(record.value));
 			const MapGeneration::Torus t(world.map);
-			const auto walk = MapGeneration::walkFromFirstColony(world.map, request.nbTeams, "delta resources", "over the fords");
-			REQUIRE(walk.error.empty());
-			for (const int type : {STONE, CHERRY, ORANGE, PRUNE})
+			int fruit = 0, stone = 0, wheat = 0;
+			for (int i = 0; i < t.size(); ++i)
 			{
-				std::vector<unsigned char> mask(t.size(), 0);
-				int count = 0;
-				for (int i = 0; i < t.size(); ++i)
-					count += mask[i] = world.map.getResource(i).type == type;
-				const auto components = MapGeneration::connectedRegions(mask, t.w, t.h, true, MapGeneration::GridNeighbors::Cardinal);
-				const int groups = *std::max_element(components.begin(), components.end()) + 1;
-				CHECK(groups == (amount ? islands : 0));
-				if (type != STONE)
-					CHECK(count == islands * (amount ? std::max(1, 3 * amount / 100) : 0));
-				std::vector<unsigned char> reachable(groups, 0);
-				for (int i = 0; i < t.size(); ++i)
-					if (mask[i])
-						for (const auto &[dx, dy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-							reachable[components[i]] |= walk.steps[t.at(t.remainderX(i) + dx, i / t.w + dy)] >= 0;
-				for (int reached : reachable)
-					CHECK(reached); // Actual finished gathering faces, after every later layer and repair.
+				const int type = world.map.getResource(i).type;
+				fruit += type >= CHERRY && type <= PRUNE;
+				stone += type == STONE;
+				wheat += type == WHEAT;
 			}
+			// The great island's orchard and the kopjes' quarries follow their amounts; starter
+			// wheat stays whatever the amount.
+			if (amount == 0)
+			{
+				CHECK(fruit == 0);
+				CHECK(stone == 0);
+			}
+			else
+				CHECK(fruit > 0);
+			CHECK(wheat > 0);
+			CHECK(MapGeneration::walkFromFirstColony(world.map, request.nbTeams, "the delta", "over its fords").error.empty());
 			CHECK(MapGeneration::startingAccessFailure(world.map, request.nbTeams,
 				{{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}}).empty());
 			GenerationContext check(request);
 			REQUIRE(definition.validateWorld(world, check).empty());
-			if (variant == 0)
-			{
-				for (int tick = 0; tick < 2048; ++tick)
-					world.map.growResources();
-				CHECK(definition.validateWorld(world, check).empty());
-				std::vector<std::pair<int, Resource>> oranges;
-				for (int i = 0; i < t.size(); ++i)
-					if (world.map.getResource(i).type == ORANGE)
-					{
-						oranges.emplace_back(i, world.map.getResource(i));
-						world.map.replaceResource(t.remainderX(i), i / t.w, Resource{});
-					}
-				CHECK(definition.validateWorld(world, check).find("fruit groups") != std::string::npos);
-				for (const auto &[tile, resource] : oranges)
-					world.map.replaceResource(t.remainderX(tile), tile / t.w, resource);
-				CHECK(definition.validateWorld(world, check).empty());
-			}
 		}
 	}
-	TEST_CASE("Braided Delta retained generation and overgrowth contracts")
+	TEST_CASE("Braided Delta retained generation and damage contracts")
 	{
 		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();

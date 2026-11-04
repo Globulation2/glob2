@@ -64,7 +64,7 @@ class MusicEncodingTests(unittest.TestCase):
 class MusicPackagingTests(unittest.TestCase):
     def test_native_install_discovers_source_sets_from_a_variant_directory(self):
         from types import SimpleNamespace
-        script = Path(__file__).resolve().parents[2] / 'data/zik/SConscript'
+        script = Path(__file__).resolve().parents[2] / 'content/data/zik/SConscript'
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder) / 'source'; root.mkdir()
             names = ['intro.opus', 'menu.opus'] + [f'{name}/a{i}.opus'
@@ -90,7 +90,7 @@ class MusicPackagingTests(unittest.TestCase):
         from package_assets import source_files
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            music = root / 'data/zik/future-set'
+            music = root / 'content/data/zik/future-set'
             music.mkdir(parents=True)
             (music/'a1.ogg').write_bytes(b'old codec')
             with self.assertRaisesRegex(ValueError, 'Convert Vorbis'):

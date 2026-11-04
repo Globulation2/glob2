@@ -69,9 +69,8 @@ using namespace MapGeneration;
 //   random; every colony gets the same home design (one per map), the same cistern, the same
 //   starter crops, two food hexes and a forest beside its home (the river can add a water meadow)
 //   and a share of the mountains between the homes. Hexes further out are dealt at random.
-// - The deep sea beyond the shallows is a barrier even to swimmers (a tile mixing shallow and deep
-//   corners is neither walkable nor swimmable), so swimming opens the river and the coast, not a
-//   way across the sea to the island's far side.
+// - The deep sea beyond the shallows slows swimmers. Mixed depths remain swimmable,
+//   so swimming opens the river, the coast and a longer route around the island.
 namespace
 {
 
@@ -715,7 +714,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			{
 				const int j = t.at(x + dx, y + dy);
 				if (inCity[j] && !pavedMask[j] && !L.river[j])
-					L.terrain[i] = GRAVEL;
+					L.terrain[i] = SHALE;
 			}
 	}
 
@@ -839,7 +838,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			// middle: cover, never a wall round anything.
 			for (int i : tilesOf[c])
 				if (deep(i, 1) && drift[i] > 65536 * 62 / 100)
-					setVertex(L, look, i, GRAVEL, FLOWER_MEADOW);
+					setVertex(L, look, i, SHALE, HEATH);
 			const double heading = context.bounded("honeycomb-isle-hedges", 3600) * kPi / 3600;
 			const double shift = (int(context.bounded("honeycomb-isle-hedges", 7)) - 3) * inner / 8.0;
 			const double ux = std::cos(heading), uy = std::sin(heading);
@@ -868,7 +867,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			// for its stone.
 			for (int i : tilesOf[c])
 				if (inside(i))
-					setVertex(L, look, i, GRAVEL, CLAY);
+					setVertex(L, look, i, SHALE, CLAY);
 			const int knolls = 2 + int(context.bounded("honeycomb-isle-hills", 2));
 			for (int k = 0; k < knolls; ++k)
 			{
@@ -1053,7 +1052,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 						const int i = t.at(int(std::lround(px + ny * w)), int(std::lround(py + nx * w)));
 						if (!L.street[i] && L.homeOf[i] < 0 && inCity[i] && !L.river[i])
 						{
-							setVertex(L, look, i, TRAIL, DIRT_TRACK);
+							setVertex(L, look, i, TRAIL, BRICK_PATH);
 							landing[i] = 1;
 						}
 					}
@@ -1071,9 +1070,8 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	for (int i = 0; i < n; ++i)
 		if (deck[i])
 			setVertex(L, look, i, TRAIL, BOARDWALK);
-	// The sea deepens away from the shore. A tile mixing shallow and deep corners is neither
-	// walkable nor swimmable, so the deep sea is a barrier; it is drawn only outside the island,
-	// never in the river.
+	// The sea deepens away from shore, outside the island and never in the river.
+	// Mixed depths remain swimmable; their mean speed blends into the slower sea.
 	{
 		std::vector<unsigned char> water(n, 0);
 		for (int i = 0; i < n; ++i)
@@ -1475,7 +1473,7 @@ GeneratorDefinition honeycombIsleDefinition()
 		"Honeycomb isle",
 		// Revision 5: a board of terrain hexes on the terrain catalogue (fields, forests, pastures,
 		// hills, mountains, lakes, a desert oasis), cobbled roads and a deep sea.
-		5,
+		6,
 		false,
 		// Hexes of 18 with roads of 3 leave a hex's inside about 15 tiles across, room for a
 		// cistern garden and a swarm's neighbourhood, or a mountain and its quarry.

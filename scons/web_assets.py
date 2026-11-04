@@ -3,11 +3,11 @@
 
 The browser cannot read the game's data directories, so the build copies the files
 the game reads at run time into content-addressed packages under `assets/`, and
-`browser/asset-loader.js` writes them into the virtual file system:
+`platforms/web/asset-loader.js` writes them into the virtual file system:
 
 - `core` holds what the main menu, the online hub and rooms need, including every
   simulation data file (deploy/sim_version.py), so startup and determinism are
-  unchanged. Three files are smaller browser copies (browser/derive_assets.py):
+  unchanged. Three files are smaller browser copies (platforms/web/derive_assets.py):
   the font without its CJK outlines, the menu backdrop as selected PNG/WebP and the wordmark
   without the area the menu never shows.
 - `game`: the in-game sprites (GlobalContainer::loadGameGraphics and the building
@@ -48,7 +48,7 @@ ROOTS = ('data', 'maps', 'campaigns', 'scripts')
 def launcher_script_fonts(root, output):
     """Stage HTTP fonts for the HTML launcher, separately from the game's VFS."""
     root, output = Path(root), Path(output)
-    font_root = root / 'data/fonts'
+    font_root = root / 'content/data/fonts'
     manifest = json.loads((font_root / 'scripts/manifest.json').read_text())
     destination = output / 'fonts'
     destination.mkdir(parents=True, exist_ok=True)
@@ -61,12 +61,12 @@ def launcher_script_fonts(root, output):
             raise ValueError('Launcher font checksum mismatch: ' + name)
         shutil.copyfile(source, destination / name)
     shutil.copyfile(font_root / 'LICENSE-Noto.txt', destination / 'LICENSE-Noto.txt')
-    shutil.copyfile(root / 'browser/assets/sans-core.ttf', destination / 'sans-core.ttf')
+    shutil.copyfile(root / 'platforms/web/assets/sans-core.ttf', destination / 'sans-core.ttf')
     shutil.copyfile(font_root / 'LICENSE-DejaVu.txt', destination / 'LICENSE-DejaVu.txt')
     shutil.copyfile(font_root / 'LICENSE-Droid.txt', destination / 'LICENSE-Droid.txt')
-    css = (root / 'platform/packages/i18n/script-fonts.css').read_text()
-    (output / 'script-fonts.css').write_text(css.replace('../../../data/fonts/scripts/', 'fonts/')
-                                            .replace('../../../browser/assets/', 'fonts/'))
+    css = (root / 'services/online/packages/i18n/script-fonts.css').read_text()
+    (output / 'script-fonts.css').write_text(css.replace('../../../../content/data/fonts/scripts/', 'fonts/')
+                                            .replace('../../../../platforms/web/assets/', 'fonts/'))
 # Never read by the game: build and packaging files, documentation, store metadata,
 # desktop icons, release screenshots and files no code path refers to.
 EXCLUDED_NAMES = {'SConscript'}
@@ -148,18 +148,18 @@ def sim_data_files(root):
 def derived_assets(root, lossy=True, images=True):
     """{core path: browser copy} for the browser copies that still match their sources.
 
-    A copy whose source changed after browser/derive_assets.py wrote it is not used:
+    A copy whose source changed after platforms/web/derive_assets.py wrote it is not used:
     core then ships the original (and, for the font, there is no font-cjk)."""
-    derive = load_module(root, 'glob2_derive_assets', 'browser/derive_assets.py')
+    derive = load_module(root, 'glob2_derive_assets', 'platforms/web/derive_assets.py')
     try:
-        recorded = json.loads((Path(root) / 'browser/assets/sources.json').read_text())
+        recorded = json.loads((Path(root) / 'platforms/web/assets/sources.json').read_text())
     except (OSError, ValueError):
         return {}
     names = hashlib.sha256(''.join(sorted(derive.language_names(root))).encode()).hexdigest()
     current = {}
     for target, entry in recorded.items():
         source = entry.get('source')
-        if source not in derive.DERIVED or Path(target).parent.as_posix() != 'browser/assets':
+        if source not in derive.DERIVED or Path(target).parent.as_posix() != 'platforms/web/assets':
             continue
         if source != derive.FONT and (
                 Path(target).suffix != ".webp" or
@@ -172,7 +172,8 @@ def derived_assets(root, lossy=True, images=True):
                 entry.get('sha256') == derive.digest(Path(root) / source) and
                 entry.get('languageNames', names) == names and
                 entry.get('output_sha256') == derive.digest(Path(root) / target)):
-            current[source] = target
+            # Sources are repository paths; packages name the runtime path.
+            current[source.removeprefix('content/')] = target
     return current
 
 
@@ -180,7 +181,7 @@ def exported_substitutes(root, source, files, derived):
     """{packaged path: browser copy}. The runtime export may have re-encoded an
     image (menu-wordmark.png as .webp); its browser copy then stands in for the
     exported file when smaller. Both runtime artwork and its derivative are WebP."""
-    tree = Path(source or root)
+    tree = Path(source) if source else Path(root) / 'content'
     result = {}
     for path in files:
         stem, suffix = os.path.splitext(path)
@@ -202,7 +203,7 @@ def game_sprites(root):
     # Keep compatibility with older registry declarations. New material sources
     # are authored in the catalog, including sprites outside data/gfx.
     names.update(SPRITE.findall((root / 'src/map/TerrainPresentation.h').read_text()))
-    catalog = root / 'data/terrain/tileset.json'
+    catalog = root / 'content/data/terrain/tileset.json'
     if catalog.exists():
         document = json.loads(catalog.read_text())
         if document.get('compiled_pack'):
@@ -215,7 +216,7 @@ def game_sprites(root):
         names.update(SPRITE.findall(path.read_text()))
     # Include every installed definition, including optional experimental catalogs.
     # The frozen C++ table above only covers artwork needed by old save imports.
-    for path in sorted((root / 'data/buildings').rglob('*.json')):
+    for path in sorted((root / 'content/data/buildings').rglob('*.json')):
         for variant in json.loads(path.read_text()).get('variants', []):
             properties = variant.get('properties', {})
             for field in ('gameSprite', 'miniSprite'):
@@ -223,7 +224,7 @@ def game_sprites(root):
                 if source:
                     names.add(source.removeprefix('data/gfx/') if source.startswith('data/gfx/') else source)
     # Resource sprite prefixes are declarative and may live outside data/gfx.
-    for path in sorted((root / 'data/resources').rglob('*.json')):
+    for path in sorted((root / 'content/data/resources').rglob('*.json')):
         for resource in json.loads(path.read_text()).get('resources', []):
             source = resource.get('presentation', {}).get('sprite')
             if source:
@@ -252,7 +253,9 @@ def game_files(paths, sprites):
 
 
 def source_files(root):
-    """Every file under the asset roots, as sorted POSIX paths relative to root."""
+    """Every file under the asset roots, as sorted POSIX paths relative to root.
+
+    `root` is a runtime tree: a checkout's content/ directory or an export."""
     root = Path(root)
     return sorted(p.relative_to(root).as_posix() for directory in ROOTS
                   for p in (root / directory).rglob('*') if p.is_file())
@@ -264,7 +267,7 @@ def plan(root, source=None):
     `source` is the tree to package (the runtime export), `root` the repository."""
     packages = {name: [] for name in PACKAGES}
     files, skipped = [], []
-    for path in source_files(source or root):
+    for path in source_files(source or Path(root) / 'content'):
         (skipped if excluded(path) else files).append(path)
     game = game_files(files, game_sprites(root))
     lossy = images = True
@@ -317,7 +320,7 @@ def split(paths, sizes, limit):
 
 def contents(root, name, path, substitutes, source=None):
     """The bytes package `name` ships as `path`; browser copies come from the repository."""
-    tree = Path(source or root)
+    tree = Path(source) if source else Path(root) / 'content'
     if name == 'core' and translation(path):
         return stub((tree / path).read_bytes())
     if name == 'core' and path in substitutes:
@@ -363,7 +366,7 @@ def write_packages(root, output, source=None):
 
 
 def manifest_script(manifest):
-    """The --pre-js that hands the package manifest to browser/asset-loader.js."""
+    """The --pre-js that hands the package manifest to platforms/web/asset-loader.js."""
     return ('// Generated by scons/web_assets.py.\n'
             'Module["glob2AssetManifest"] ??= ' + json.dumps(manifest, separators=(',', ':')) + ';\n')
 
@@ -398,7 +401,7 @@ def report(root):
     game = set(packages.get('game', ()))
     rows = {}
     entries = [(name, path, contents(root, name, path, substitutes)) for name, paths in packages.items() for path in paths]
-    entries += [('-', path, (root / path).read_bytes()) for path in skipped]
+    entries += [('-', path, (root / 'content' / path).read_bytes()) for path in skipped]
     for name, path, data in entries:
         row = rows.setdefault((category(path, game), name), [0, 0, 0])
         row[0] += 1
@@ -412,7 +415,7 @@ def report(root):
         size = sum(len(contents(root, name, p, substitutes)) for p in paths)
         print(f'package {name}: {len(paths)} files, {size / 1e6:.2f} MB')
     print(f'excluded: {len(skipped)} files')
-    print('browser copies in core: ' + (', '.join(sorted(substitutes)) or 'none (run browser/derive_assets.py)'))
+    print('browser copies in core: ' + (', '.join(sorted(substitutes)) or 'none (run platforms/web/derive_assets.py)'))
 
 
 if __name__ == '__main__':

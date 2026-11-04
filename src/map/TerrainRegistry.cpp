@@ -35,10 +35,10 @@ std::string text(const Json &j, const char *key,
 }
 TerrainType preset(const std::string &name)
 {
-	// Every paintable built-in is a preset; legacy corner shores are not.
-	for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
-		if (terrainPaintable(TerrainType(i)) && name == TerrainPresentations[i].name)
-			return TerrainType(i);
+	// Every paintable built-in is a preset, also under a legacy name; legacy corner
+	// shores are not.
+	if (const auto type = terrainTypeByName(name); type < TERRAIN_COUNT && terrainPaintable(type))
+		return type;
 	throw std::invalid_argument("Unknown built-in terrain preset: " + name);
 }
 void validKey(const std::string &key)
@@ -335,14 +335,18 @@ unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
 	return versionMinor < FILE_FORMAT_VERSION_TERRAIN_CATALOGUE ? TERRAIN_COUNT_BEFORE_CATALOGUE
 		 : versionMinor < FILE_FORMAT_VERSION_VERTEX_TERRAIN	   ? TERRAIN_COUNT_BEFORE_VERTEX
 		 : versionMinor < FILE_FORMAT_VERSION_GROUND_LOOKS	   ? TERRAIN_COUNT_BEFORE_GROUND_LOOKS
+		 : versionMinor < FILE_FORMAT_VERSION_SANDSTONE_PUMICE ? TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE
+		 : versionMinor < FILE_FORMAT_VERSION_WIND_SWEPT_SNOW  ? TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW
 																   : unsigned(TERRAIN_COUNT);
 }
 std::optional<unsigned> TerrainRegistry::currentTerrainId(unsigned savedBuiltins, unsigned saved)
 {
 	if (savedBuiltins == TERRAIN_COUNT)
 		return saved;
-	// Formats 146 to 186: the built-ins end at CHASM, custom IDs follow them.
-	if (savedBuiltins == TERRAIN_COUNT_BEFORE_GROUND_LOOKS)
+	// Formats 146 to 195 kept every built-in ID (ending at CHASM, PALE_SAND, then
+	// FROZEN_LAKE); custom IDs follow the built-ins.
+	if (savedBuiltins == TERRAIN_COUNT_BEFORE_GROUND_LOOKS || savedBuiltins == TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE ||
+		savedBuiltins == TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW)
 		return saved < savedBuiltins ? saved : saved - savedBuiltins + TERRAIN_COUNT;
 	// Older files: the classic five keep their IDs; 5 and 6 were the shores.
 	if (saved <= TRAIL)
@@ -358,7 +362,9 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 																			  unsigned savedBuiltinCount)
 {
 	if (savedBuiltinCount != TERRAIN_COUNT_BEFORE_CATALOGUE && savedBuiltinCount != TERRAIN_COUNT_BEFORE_VERTEX &&
-		savedBuiltinCount != TERRAIN_COUNT_BEFORE_GROUND_LOOKS && savedBuiltinCount != TERRAIN_COUNT)
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_GROUND_LOOKS &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW && savedBuiltinCount != TERRAIN_COUNT)
 		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);
 	if (j.at("terrains").empty())
@@ -516,5 +522,9 @@ std::optional<TerrainType> TerrainRegistry::find(std::string_view key) const
 	for (unsigned i = 0; i < size(); ++i)
 		if (keys_[i] == key)
 			return TerrainType(i);
+	// Built-ins renamed since a file or script was written. Custom keys carry a
+	// namespace, so they can never be one of these.
+	if (const auto type = terrainTypeByName(key); type < TERRAIN_COUNT)
+		return type;
 	return std::nullopt;
 }

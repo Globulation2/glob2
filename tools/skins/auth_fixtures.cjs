@@ -20,14 +20,14 @@ const sourceTexture=png(512,3,(x,y)=>{const base=quadrants[(y>=256?2:0)+(x>=256?
 const sourceMaterial=png(512,1,(x,y)=>[(y>>5)&3]);
 
 (async()=>{
-const sharp=require('../../platform/node_modules/sharp');
+const sharp=require('../../services/online/node_modules/sharp');
 const texture=await sharp(sourceTexture).webp({lossless:true,effort:4}).toBuffer();
 const material=await sharp(sourceMaterial).webp({lossless:true,effort:4}).toBuffer();
 
 const key=createPrivateKey({key:Buffer.from('302e020100300506032b657004220420'+'01'.repeat(32),'hex'),format:'der',type:'pkcs8'});
 const jwk={...createPublicKey(key).export({format:'jwk'}),kid:'skin-fixture',alg:'EdDSA',use:'sig'};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
-// Mirrors skinManifestSha256 (platform/apps/api/src/skins/manifest.ts): exactly
+// Mirrors skinManifestSha256 (services/online/apps/api/src/skins/manifest.ts): exactly
 // these keys in this order (JSON.stringify), and classic omits swarmMesh.
 const manifest=(v,swarmMesh)=>sha(JSON.stringify({skinId:v.skinId,textureSha256:v.textureSha256,materialSha256:v.materialSha256,layout:v.layout,buildingColor:v.buildingColor,...(swarmMesh&&swarmMesh!=='classic'?{swarmMesh}:{}),...(v.swarmViewAngle?{swarmViewAngle:v.swarmViewAngle}:{})}));
 const version={id:'11111111-1111-4111-8111-111111111111',skinId:'22222222-2222-4222-8222-222222222222',textureSha256:sha(texture),materialSha256:sha(material),layout:'colony-v2',buildingColor:0x334455};
