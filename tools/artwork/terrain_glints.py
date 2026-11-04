@@ -57,12 +57,12 @@ FERTILE = ["loam", "moss", "spring_meadow"]
 LAYOUTS = 8
 LEVELS = 4            # rising, peak, falling, fading
 CYCLE = 12            # steps per cycle; the rest after the lit levels are dark
-TICKS = 3             # scene ticks per step (30 per second): a 1.2 s cycle
-DENSITY_Q8 = 112      # under half of fertile cells glint at all
+TICKS = 5             # scene ticks per step (30 per second): a 2 s cycle
+DENSITY_Q8 = 64       # a quarter of fertile cells glint at all
 CORE = (255, 250, 222)
 RAY = (255, 226, 150)
 # Per level: core radius, ray length, diagonal ray length, peak alpha (all HD).
-LEVEL_SHAPES = [(8, 26, 0, 170), (13, 56, 22, 255), (10, 40, 12, 215), (6, 18, 0, 120)]
+LEVEL_SHAPES = [(8, 26, 0, 120), (13, 56, 22, 180), (10, 40, 12, 150), (6, 18, 0, 84)]
 
 
 def layout_centre(layout):

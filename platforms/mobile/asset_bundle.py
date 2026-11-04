@@ -4,6 +4,17 @@ import gzip
 from pathlib import PurePosixPath
 import zipfile
 
+# Keep this packaging bound in step with AssetIndex.h's native reader.
+MAX_INDEX_BYTES = 4 * 1024 * 1024
+
+
+def encode_asset_index(identity, names):
+    """Reject a bundle the bounded native startup reader cannot install."""
+    index = (identity + '\n' + '\n'.join(names) + '\n').encode('utf-8')
+    if len(index) > MAX_INDEX_BYTES:
+        raise ValueError('Asset index exceeds native startup capacity')
+    return index
+
 
 def include_asset(relative):
     """Exclude local caches/metadata that AAPT omits from packaged assets.
@@ -42,6 +53,8 @@ def restore_gzip_assets(package_path, assets, prefix='assets/glob2-bundle/'):
 def verify_apk_assets(package_path, prefix='assets/glob2-bundle/'):
     """Verify packaged assets against their identity in an APK or AAB."""
     with zipfile.ZipFile(package_path) as package:
+        if package.getinfo(prefix + 'index.list').file_size > MAX_INDEX_BYTES:
+            raise ValueError('Asset index exceeds native startup capacity')
         lines = package.read(prefix + 'index.list').decode('utf-8').splitlines()
         if not lines or len(lines[0]) != 64:
             raise ValueError('Invalid packaged asset index')
