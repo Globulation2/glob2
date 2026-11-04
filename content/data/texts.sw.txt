@@ -5712,6 +5712,8 @@ Majivu ya volkano
 Barafu ya theluji ya mlimani
 [overgrown_road]
 Barabara iliyomea majani
+[laterite]
+Laterite
 [terrain group water]
 Maji
 [terrain group sand]

@@ -5736,6 +5736,8 @@ Vulkaanista tuhkaa
 Jäätikköjää
 [overgrown_road]
 Umpeen kasvanut tie
+[laterite]
+Lateriitti
 [terrain group water]
 Vesi
 [terrain group sand]

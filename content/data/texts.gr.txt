@@ -5736,6 +5736,8 @@ CPU %0%
 Πάγος παγετώνα
 [overgrown_road]
 Κατάφυτος δρόμος
+[laterite]
+Λατερίτης
 [terrain group water]
 Νερό
 [terrain group sand]

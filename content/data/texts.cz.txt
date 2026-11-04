@@ -5736,6 +5736,8 @@ Sopečný popel
 Ledovcový led
 [overgrown_road]
 Zarostlá cesta
+[laterite]
+Laterit
 [terrain group water]
 Voda
 [terrain group sand]

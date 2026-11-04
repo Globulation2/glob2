@@ -5736,6 +5736,8 @@ Vulkáni hamu
 Gleccserjég
 [overgrown_road]
 Benőtt út
+[laterite]
+Laterit
 [terrain group water]
 Víz
 [terrain group sand]

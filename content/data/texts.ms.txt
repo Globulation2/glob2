@@ -6854,6 +6854,8 @@ Abu gunung berapi
 Ais glasier
 [overgrown_road]
 Jalan ditumbuhi tumbuhan
+[laterite]
+Laterit
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

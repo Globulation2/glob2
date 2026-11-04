@@ -5736,6 +5736,8 @@ Errauts bolkanikoa
 Glaziar-izotza
 [overgrown_road]
 Landaretzaz estalitako bidea
+[laterite]
+Laterita
 [terrain group water]
 Ura
 [terrain group sand]

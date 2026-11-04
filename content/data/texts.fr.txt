@@ -5736,6 +5736,8 @@ Cendre volcanique
 Glace de glacier
 [overgrown_road]
 Route envahie par la végétation
+[laterite]
+Latérite
 [terrain group water]
 Eau
 [terrain group sand]

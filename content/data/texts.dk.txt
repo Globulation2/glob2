@@ -5736,6 +5736,8 @@ Vulkansk aske
 Gletsjeris
 [overgrown_road]
 Tilgroet vej
+[laterite]
+Laterit
 [terrain group water]
 Vand
 [terrain group sand]

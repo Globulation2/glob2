@@ -390,3 +390,7 @@ static constexpr int FILE_FORMAT_VERSION_GLACIER_ICE = 202;
 //! Built-in overgrown road: TERRAIN_COUNT grew from 43 to 44, so earlier files carry
 //! custom terrain IDs starting at 43 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_OVERGROWN_ROAD = 203;
+
+//! Built-in laterite: TERRAIN_COUNT grew from 44 to 45, so earlier files carry custom
+//! terrain IDs starting at 44 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_LATERITE = 204;

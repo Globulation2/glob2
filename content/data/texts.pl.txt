@@ -5736,6 +5736,8 @@ Popiół wulkaniczny
 Lód lodowcowy
 [overgrown_road]
 Zarośnięta droga
+[laterite]
+Lateryt
 [terrain group water]
 Woda
 [terrain group sand]

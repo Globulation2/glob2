@@ -92,7 +92,7 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 | Water, deep water, lava | reserved colour | |
 | Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
-| Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
+| Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles, overgrown road) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone`, `hex_paving` (overgrown road) |
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
@@ -104,7 +104,9 @@ shared cracks; clay is red baked clay in bold plates; shale is big flat plates o
 volcanic ash is dark charcoal fine-grained ash with scattered porous black stones and
 rusty mineral specks;
 weathered sandstone is a solid bed of ochre stone worn into large, low, rounded slabs with
-fine joints, rust stain and pale nodules; heath is clumps of dormant and dead heather cushions,
+fine joints, rust stain and pale nodules; laterite is a packed bed of rounded, hardened
+iron-red nodules (a few glossy brown-black iron) over a red crust whose softer cracks run
+between them, with lower patches of bare ochre fines; heath is clumps of dormant and dead heather cushions,
 each built of lit sprig tufts, over pale cracked sandy peat; tundra is its cold
 counterpart on frost-patterned ground: polygons about two cells across with faint
 pale rims, flat olive moss pads (the heath cushion helper) in their centres, beds of
@@ -509,7 +511,7 @@ exception the classes cannot express, not the way to tune a material.
 | 3 | deep_snow, wind_swept_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
 | 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |
 | 2 | heath, tundra | 48 / 480 |
-| 2 | dirt, clay, shale, weathered_sandstone, volcanic_ash | 40 / 448 |
+| 2 | dirt, clay, shale, weathered_sandstone, volcanic_ash, laterite | 40 / 448 |
 | 1 | sand (existing), mud, mudflat, scree, pumice, hardpan | no cast |
 
 Casts stay within two to three pixels and near or under a third strength, as

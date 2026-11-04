@@ -5736,6 +5736,8 @@ AI 生成
 冰川冰
 [overgrown_road]
 雜草叢生的石路
+[laterite]
+紅土
 [terrain group water]
 水
 [terrain group sand]

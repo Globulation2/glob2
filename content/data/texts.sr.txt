@@ -5736,6 +5736,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Глечерски лед
 [overgrown_road]
 Зарастао пут
+[laterite]
+Латерит
 [terrain group water]
 Вода
 [terrain group sand]

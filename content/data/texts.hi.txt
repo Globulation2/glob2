@@ -5712,6 +5712,8 @@ AI से नहीं बना
 हिमनद की बर्फ़
 [overgrown_road]
 घास से ढकी सड़क
+[laterite]
+लेटराइट
 [terrain group water]
 पानी
 [terrain group sand]

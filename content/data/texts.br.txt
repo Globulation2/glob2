@@ -5736,6 +5736,8 @@ Ludu menezioù-tan
 Gelo glacial
 [overgrown_road]
 Hent goloet gant ar geot
+[laterite]
+Laterita
 [terrain group water]
 Água
 [terrain group sand]

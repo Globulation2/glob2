@@ -5736,6 +5736,8 @@ Cenere vulcanica
 Ghiaccio di ghiacciaio
 [overgrown_road]
 Strada invasa dalla vegetazione
+[laterite]
+Laterite
 [terrain group water]
 Acqua
 [terrain group sand]

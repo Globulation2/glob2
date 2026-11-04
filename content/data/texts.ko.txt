@@ -5736,6 +5736,8 @@ AI 생성 아님
 빙하 얼음
 [overgrown_road]
 풀로 뒤덮인 길
+[laterite]
+라테라이트
 [terrain group water]
 물
 [terrain group sand]

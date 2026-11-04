@@ -5736,6 +5736,8 @@ Sopečný popol
 Ľadovcový ľad
 [overgrown_road]
 Zarastená cesta
+[laterite]
+Laterit
 [terrain group water]
 Voda
 [terrain group sand]

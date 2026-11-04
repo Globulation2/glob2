@@ -5736,6 +5736,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Льодовиковий лід
 [overgrown_road]
 Зарослий шлях
+[laterite]
+Латерит
 [terrain group water]
 Вода
 [terrain group sand]

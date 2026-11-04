@@ -5736,6 +5736,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Ледниковый лёд
 [overgrown_road]
 Заросшая дорога
+[laterite]
+Латерит
 [terrain group water]
 Вода
 [terrain group sand]

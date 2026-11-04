@@ -5736,6 +5736,8 @@ Vulkanaska
 Glaciäris
 [overgrown_road]
 Igenvuxen väg
+[laterite]
+Laterit
 [terrain group water]
 Vatten
 [terrain group sand]
