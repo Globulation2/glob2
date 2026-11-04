@@ -227,9 +227,10 @@ class Catalog
 	// cornerColours selects the variant of corner-tiled connected decor.
 	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0,
 		unsigned cornerMask = 15, unsigned cornerColours = 0) const;
-	// Overlay frame for a cell of this material at a scene tick, or -1 when the
-	// material has no overlay, the cell is not chosen or its step is empty.
-	int overlayFrame(MaterialId material, int x, int y, std::uint32_t tick, std::uint32_t seed = 0, bool *animated = nullptr) const;
+	// Overlay frame for a cell of this material at a presentation time (the
+	// clock `frame` uses for animated materials), or -1 when the material has
+	// no overlay, the cell is not chosen or its step is empty.
+	int overlayFrame(MaterialId material, int x, int y, std::uint32_t time, std::uint32_t seed = 0, bool *animated = nullptr) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
 std::uint32_t mapSeedSalt(std::uint32_t seed);
