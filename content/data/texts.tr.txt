@@ -5722,6 +5722,8 @@ Kumtaşı karolar
 Sünger taşı alanı
 [frozen_lake]
 Donmuş göl
+[hardpan]
+Sert kabuk
 [terrain group water]
 Su
 [terrain group sand]

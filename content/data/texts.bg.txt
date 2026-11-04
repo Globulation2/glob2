@@ -5698,6 +5698,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Поле от пемза
 [frozen_lake]
 Замръзнало езеро
+[hardpan]
+Твърда кора
 [terrain group water]
 Вода
 [terrain group sand]

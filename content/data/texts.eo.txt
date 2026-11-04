@@ -5722,6 +5722,8 @@ Grejsaj platoj
 Pumika kampo
 [frozen_lake]
 Frostiĝinta lago
+[hardpan]
+Malmola krusto
 [terrain group water]
 Akvo
 [terrain group sand]

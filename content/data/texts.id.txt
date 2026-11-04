@@ -5722,6 +5722,8 @@ Ubin batu pasir
 Hamparan batu apung
 [frozen_lake]
 Danau beku
+[hardpan]
+Tanah keras
 [terrain group water]
 Air
 [terrain group sand]

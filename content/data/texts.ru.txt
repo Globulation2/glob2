@@ -5722,6 +5722,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Пемзовое поле
 [frozen_lake]
 Замёрзшее озеро
+[hardpan]
+Твёрдая корка
 [terrain group water]
 Вода
 [terrain group sand]

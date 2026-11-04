@@ -5722,6 +5722,8 @@ Pieskovcové dlaždice
 Pemzové pole
 [frozen_lake]
 Zamrznuté jazero
+[hardpan]
+Tvrdá krusta
 [terrain group water]
 Voda
 [terrain group sand]

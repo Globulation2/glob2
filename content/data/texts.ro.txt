@@ -5722,6 +5722,8 @@ Dale de gresie
 Câmp de piatră ponce
 [frozen_lake]
 Lac înghețat
+[hardpan]
+Crustă întărită
 [terrain group water]
 Apă
 [terrain group sand]

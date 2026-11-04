@@ -5722,6 +5722,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 دشت سنگ پا
 [frozen_lake]
 دریاچهٔ یخ‌زده
+[hardpan]
+سخت‌لایه
 [terrain group water]
 آب
 [terrain group sand]

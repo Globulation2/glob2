@@ -5722,6 +5722,8 @@ Lastre di arenaria
 Campo di pomice
 [frozen_lake]
 Lago ghiacciato
+[hardpan]
+Crosta indurita
 [terrain group water]
 Acqua
 [terrain group sand]

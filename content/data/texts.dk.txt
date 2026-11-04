@@ -5722,6 +5722,8 @@ Sandstensfliser
 Pimpstensfelt
 [frozen_lake]
 Frossen sø
+[hardpan]
+Hårdskorpe
 [terrain group water]
 Vand
 [terrain group sand]

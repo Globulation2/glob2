@@ -159,7 +159,7 @@ TEST_SUITE("BrushCatalog")
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
-		// Sandstone tiles close the path brushes, pumice the rough-ground brushes and
+		// Sandstone tiles close the path brushes, hardpan the rough-ground brushes and
 		// the frozen lake the ice brushes.
 		const auto *paths = findBrushGroup(catalog, BrushSection::Terrain, "paths");
 		const auto *rough = findBrushGroup(catalog, BrushSection::Terrain, "rough");
@@ -171,7 +171,7 @@ TEST_SUITE("BrushCatalog")
 		REQUIRE_FALSE(rough->entries.empty());
 		REQUIRE_FALSE(ice->entries.empty());
 		CHECK(paths->entries.back().id == "terrain/sandstone");
-		CHECK(rough->entries.back().id == "terrain/pumice");
+		CHECK(rough->entries.back().id == "terrain/hardpan");
 		CHECK(ice->entries.back().id == "terrain/frozen_lake");
 
 		// Resources: every registry entry, foundation ones included, with placement

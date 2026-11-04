@@ -84,6 +84,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(PUMICE, G::Rough, "pumice", "[pumice]", {44, 42, 42}, {58, 55, 54}),
 		// Ice over a lake: plays exactly like ice.
 		authored(FROZEN_LAKE, G::Ice, "frozen_lake", "[frozen_lake]", {128, 160, 174}, {141, 172, 185}),
+		// Pale baked crust in small cracked pillows: plays exactly like mud and scree.
+		authored(HARDPAN, G::Rough, "hardpan", "[hardpan]", {196, 188, 176}, {212, 204, 192}),
 	}};
 	return rows;
 }();

@@ -5698,6 +5698,8 @@ Vigae vya mawe ya mchanga
 Uwanda wa mawe ya pumisi
 [frozen_lake]
 Ziwa lililoganda
+[hardpan]
+Ganda gumu
 [terrain group water]
 Maji
 [terrain group sand]

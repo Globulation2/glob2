@@ -6840,6 +6840,8 @@ Jubin batu pasir
 Padang batu apung
 [frozen_lake]
 Tasik beku
+[hardpan]
+Tanah keras
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

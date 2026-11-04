@@ -5722,6 +5722,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Поле пемзи
 [frozen_lake]
 Замерзле озеро
+[hardpan]
+Тверда кірка
 [terrain group water]
 Вода
 [terrain group sand]

@@ -5722,6 +5722,8 @@ Lloses de gres
 Camp de pedra tosca
 [frozen_lake]
 Llac glaçat
+[hardpan]
+Crosta endurida
 [terrain group water]
 Aigua
 [terrain group sand]
