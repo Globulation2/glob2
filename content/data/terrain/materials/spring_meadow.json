@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-spring_meadow",
   "profile": "brush",
   "class": "solid",
-  "preview": [89, 122, 58],
+  "preview": [76, 129, 32],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [89, 122, 58],
+  "minimap": [76, 129, 32],
   "seam": {
     "height": 2,
     "cast_q8": 56,
@@ -1051,7 +1051,7 @@
       [24, 25, 26, 27, -1, -1, -1, -1, -1, -1, -1, -1],
       [28, 29, 30, 31, -1, -1, -1, -1, -1, -1, -1, -1]
     ],
-    "ticks": 3,
-    "density_q8": 112
+    "ticks": 5,
+    "density_q8": 64
   }
 }

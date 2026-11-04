@@ -233,6 +233,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#platforms/mobile/AssetIndexTest.cpp',
     '#src/map/gradient/LegacyResourceGradientStateTest.cpp',
     '#src/map/gradient/ResourceGradientExplorationTest.cpp',
     '#src/map/gradient/GradientMarketTargetsTest.cpp',
