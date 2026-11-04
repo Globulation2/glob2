@@ -610,4 +610,35 @@ TEST_CASE("raw probes reuse natural goal eligibility and pooled source reservati
     }
 }
 
+TEST_CASE("mixed source five uses exact D4 typed direct entry after stale initial XY") {
+    glob2test::HeadlessGlobals globals;
+    for(unsigned frame=0;frame<8;++frame)for(bool available:{false,true}) {
+        CAPTURE(frame);CAPTURE(available);
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=3211});
+        auto& map=fixture.game.map;map.setMaterialDestinationsEnabled(true);
+        ResourceClaims::ClaimPolicyConfig policy;policy.sourceVersion=5;
+        policy.pattern="illustrative258-middle13-v1";
+        policy.patternFrame=ResourceClaims::ClaimPolicyConfig::PatternFrame::NearestD4;
+        map.setMaterialClaimPolicyConfig(policy);
+        auto* consumer=fixture.addBuilding("inn",20,20);auto* seeker=worker(fixture,consumer,0);
+        const auto transform=[&](int x,int y){if(frame&4)std::swap(x,y);if(frame&1)x=-x;if(frame&2)y=-y;return std::pair{x,y};};
+        const auto [dx,dy]=transform(4,2);const int nx=8+dx,ny=8+dy;
+        const auto old=Uint32(map.coordToIndex(nx,ny));
+        map.setResourceByIndex(nx,ny,WHEAT,1);map.setMaterialAmountSlot(old,WHEAT,1);
+        const auto* field=glob2test::awaitGradient(fixture.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,seeker->movementClass());});
+        const auto lease=map.materialGradientDestinations(field);REQUIRE(lease);
+        REQUIRE(lease->x[map.coordToIndex(8,8)]==nx);REQUIRE(lease->y[map.coordToIndex(8,8)]==ny);
+        const auto [rx,ry]=transform(3,1);const auto fresh=Uint32(map.coordToIndex(nx+rx,ny+ry));
+        map.setResourceByIndex(nx+rx,ny+ry,WHEAT,1);map.setMaterialAmountSlot(fresh,WHEAT,1);
+        if(!available)map.setMaterialAmountSlot(old,WHEAT,0);
+        const auto random=seeker->entityRandom;REQUIRE(seeker->selectActiveMaterialClaim(field));
+        REQUIRE(seeker->activeMaterialClaim);CHECK(seeker->activeMaterialClaim->access==(available?old:fresh));
+        CHECK(seeker->materialClaimPolicyState.probe==(available?Uint32(map.coordToIndex(8,8)):fresh));
+        CHECK(seeker->entityRandom==random);CHECK(seeker->activeMaterialClaimValid());
+        const auto task=seeker->materialClaimTask;const auto probe=seeker->materialClaimPolicyState.probe;
+        REQUIRE(seeker->selectActiveMaterialClaim(field));CHECK(seeker->materialClaimTask==task);CHECK(seeker->materialClaimPolicyState.probe==probe);
+        seeker->releaseActiveMaterialClaim();seeker->attachedBuilding=nullptr;
+    }
+}
+
 }

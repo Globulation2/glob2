@@ -16,9 +16,11 @@ struct ClaimPolicyConfig
     enum class RouteTarget : std::uint8_t { ClaimedAccess, ProbeThenGradient };
     enum class PendingStep : std::uint8_t { Wait, DirectHeading };
     static constexpr unsigned SourceVersion=2;
-    static constexpr unsigned LatestSourceVersion=4;
+    static constexpr unsigned LatestSourceVersion=5;
     unsigned sourceVersion=SourceVersion;
     bool usesRecovery() const { return sourceVersion>=2; }
+    enum class PatternFrame : std::uint8_t { MapAxes, NearestD4 };
+    PatternFrame patternFrame=PatternFrame::MapAxes;
     std::string pattern="spiral:k16:unit:s1:every:forward:d0:seed1";
     Selection selection=Selection::FirstAvailable;
     Fallback fallback=Fallback::Wait;

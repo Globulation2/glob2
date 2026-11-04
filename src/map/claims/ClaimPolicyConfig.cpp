@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ClaimPolicyConfig.h"
 #include "ClaimRecovery.h"
+#include "ClaimMixedPatterns.h"
 #include "ResourceClaimPilotPatterns.h"
 #include "online/Sha256.h"
 #include <nlohmann/json.hpp>
@@ -35,6 +36,23 @@ std::string patternDigest(std::string_view name)
     }
     return Online::Sha256::toHex(hash.finish());
 }
+std::string mixedDigest(const ClaimPolicyConfig& config)
+{
+    const auto view=Mixed::view(config.pattern,0);
+    if(view.x.empty())throw std::invalid_argument("unknown mixed resource claim pattern");
+    Online::Sha256 hash;
+    const std::string identity=std::string(Mixed::Format)+":"+
+        (config.patternFrame==ClaimPolicyConfig::PatternFrame::MapAxes?"mapaxes":"nearest-d4-v1")+":";
+    hash.update(identity.data(),identity.size());
+    for(std::size_t i=0;i<view.x.size();++i) {
+        const auto x=std::uint16_t(view.x[i]),y=std::uint16_t(view.y[i]);
+        const std::array<std::uint8_t,5> bytes{std::uint8_t(x),std::uint8_t(x>>8),std::uint8_t(y),std::uint8_t(y>>8),view.tag[i]};
+        hash.update(bytes.data(),bytes.size());
+    }
+    return Online::Sha256::toHex(hash.finish());
+}
+std::string assetDigest(const ClaimPolicyConfig& config)
+{return config.sourceVersion==5?mixedDigest(config):patternDigest(config.pattern);}
 template<class E,std::size_t N> E enumeration(const Json& value,const std::array<const char*,N>& names)
 {
     if(!value.is_string())throw std::invalid_argument("resource claim policy enum must be a string");
@@ -54,12 +72,13 @@ unsigned number(const Json& value)
 }
 unsigned ClaimPolicyConfig::recoveryCandidateCount(std::size_t coordinates) const
 {
-    const unsigned factor=sourceVersion>=4 && directResourceProbes?2:1;
+    const unsigned factor=sourceVersion==4 && directResourceProbes?2:1;
     if(coordinates>UINT32_MAX/factor)throw std::overflow_error("claim candidate count exceeds cursor width");
     return unsigned(coordinates)*factor;
 }
 unsigned ClaimPolicyConfig::maximumRecoveryCandidateCount() const
 {
+    if(sourceVersion==5)return unsigned(Mixed::view(pattern,0).x.size());
     const auto& selected=patternByName(pattern);unsigned maximum=0;
     for(unsigned direction=0;direction<8;++direction)
         maximum=std::max(maximum,recoveryCandidateCount(selected.viewForDirection(direction).x.size()));
@@ -67,7 +86,13 @@ unsigned ClaimPolicyConfig::maximumRecoveryCandidateCount() const
 }
 void ClaimPolicyConfig::validate() const
 {
-    patternByName(pattern);
+    if(sourceVersion==5) {
+        if(Mixed::view(pattern,0).x.empty() || directResourceProbes || selection!=Selection::FirstAvailable || unsigned(patternFrame)>1)
+            throw std::invalid_argument("invalid mixed claim policy");
+    } else {
+        patternByName(pattern);
+        if(patternFrame!=PatternFrame::MapAxes)throw std::invalid_argument("legacy claim frame must be mapaxes");
+    }
     if(sourceVersion<1 || sourceVersion>LatestSourceVersion || (sourceVersion<3 && opportunisticAdjacentPickup) || (sourceVersion<4 && directResourceProbes)
         || unsigned(selection)>=SelectionNames.size() || unsigned(fallback)>=FallbackNames.size()
         || unsigned(routeTarget)>=RouteNames.size() || unsigned(pendingStep)>=PendingNames.size()
@@ -79,7 +104,7 @@ void ClaimPolicyConfig::validate() const
 std::string ClaimPolicyConfig::canonicalJson() const
 {
     validate();
-    Json result{{"source_version",sourceVersion},{"pattern",pattern},{"pattern_digest",patternDigest(pattern)},
+    Json result{{"source_version",sourceVersion},{"pattern",pattern},{"pattern_digest",assetDigest(*this)},
         {"selection",SelectionNames[unsigned(selection)]},{"fallback",FallbackNames[unsigned(fallback)]},
         {"fallback_after_decisions",fallbackAfterDecisions},{"destination_refresh_j",destinationRefreshJ},
         {"route_refresh_j",routeRefreshJ},{"route_target",RouteNames[unsigned(routeTarget)]},
@@ -95,7 +120,8 @@ std::string ClaimPolicyConfig::canonicalJson() const
         result["recovery_selection"]="first_available_cursor";
     }
     if(sourceVersion>=3)result["opportunistic_adjacent_pickup"]=opportunisticAdjacentPickup;
-    if(sourceVersion>=4)result["direct_resource_probes"]=directResourceProbes;
+    if(sourceVersion==4)result["direct_resource_probes"]=directResourceProbes;
+    if(sourceVersion==5) {result["pattern_format"]="mixed-v1";result["pattern_frame"]=patternFrame==PatternFrame::MapAxes?"mapaxes":"nearest-d4-v1";}
     return result.dump();
 }
 std::string ClaimPolicyConfig::digest() const {return Online::Sha256::hex(canonicalJson());}
@@ -121,8 +147,10 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
     }
     if(result.sourceVersion>=3 && !input.contains("opportunistic_adjacent_pickup"))
         throw std::invalid_argument("version 3 requires an explicit adjacent pickup policy");
-    if(result.sourceVersion>=4 && !input.contains("direct_resource_probes"))
+    if(result.sourceVersion==4 && !input.contains("direct_resource_probes"))
         throw std::invalid_argument("version 4 requires an explicit direct resource probe policy");
+    if(result.sourceVersion==5 && (!input.contains("pattern_format") || input["pattern_format"]!="mixed-v1" || !input.contains("pattern_frame")))
+        throw std::invalid_argument("version5 requires explicit mixed format/frame");
     for(const auto& [key,value]:input.items()) {
         if(key=="source_version" || key=="pattern_digest" || (result.usesRecovery() && recovery.contains(key)))continue;
         if(key=="pattern") {if(!value.is_string())throw std::invalid_argument("invalid claim pattern");result.pattern=value.get<std::string>();}
@@ -139,14 +167,18 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
             if(!value.is_boolean())throw std::invalid_argument("invalid adjacent pickup flag");
             result.opportunisticAdjacentPickup=value.get<bool>();
         }
-        else if(key=="direct_resource_probes" && result.sourceVersion>=4) {
+        else if(key=="pattern_format" && result.sourceVersion==5) {}
+        else if(key=="pattern_frame" && result.sourceVersion==5) {
+            result.patternFrame=enumeration<PatternFrame>(value,std::array{"mapaxes","nearest-d4-v1"});
+        }
+        else if(key=="direct_resource_probes" && result.sourceVersion==4) {
             if(!value.is_boolean())throw std::invalid_argument("invalid direct resource probe flag");
             result.directResourceProbes=value.get<bool>();
         }
         else throw std::invalid_argument("unknown resource claim policy parameter: "+key);
     }
     result.validate();
-    if(input.contains("pattern_digest") && input["pattern_digest"]!=patternDigest(result.pattern))
+    if(input.contains("pattern_digest") && input["pattern_digest"]!=assetDigest(result))
         throw std::invalid_argument("resource claim pattern asset digest differs");
     return result;
 }

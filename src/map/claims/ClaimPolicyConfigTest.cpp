@@ -115,3 +115,53 @@ TEST_CASE("paired raw candidate cursor count is gated and overflow checked" * do
     CHECK_THROWS(config.recoveryCandidateCount(std::size_t(UINT32_MAX)/2+1));
     CHECK(config.maximumRecoveryCandidateCount()>0);
 }
+
+#include "ClaimMixedPatterns.h"
+TEST_CASE("mixed policy binds frame asset and retains one cursor per typed entry" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    ClaimPolicyConfig config;config.sourceVersion=5;config.pattern=std::string(ResourceClaims::Mixed::IllustrativeName);
+    for(auto frame:{ClaimPolicyConfig::PatternFrame::MapAxes,ClaimPolicyConfig::PatternFrame::NearestD4}) {
+        config.patternFrame=frame;const auto text=config.canonicalJson();
+        CHECK(ClaimPolicyConfig::parse(text)==config);
+        CHECK(config.maximumRecoveryCandidateCount()==13);
+        CHECK(config.recoveryCandidateCount(13)==13);
+        auto wire=nlohmann::json::parse(text);wire["direct_resource_probes"]=false;
+        CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        wire=nlohmann::json::parse(text);wire.erase("pattern_frame");CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        wire=nlohmann::json::parse(text);wire["pattern_format"]="mixed-v2";CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        wire=nlohmann::json::parse(text);wire["selection"]="closest_geometric";CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+    }
+    auto d4=nlohmann::json::parse(config.canonicalJson());config.patternFrame=ClaimPolicyConfig::PatternFrame::MapAxes;
+    const auto mapaxes=nlohmann::json::parse(config.canonicalJson());CHECK(d4["pattern_digest"]!=mapaxes["pattern_digest"]);
+    d4["pattern_frame"]="mapaxes";CHECK_THROWS(ClaimPolicyConfig::parse(d4.dump()));
+    for(unsigned version:{1u,2u,3u,4u}) {
+        ClaimPolicyConfig legacy;legacy.sourceVersion=version;
+        auto wire=nlohmann::json::parse(legacy.canonicalJson());wire["pattern_format"]="mixed-v1";
+        CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+    }
+}
+TEST_CASE("mixed D4 frame matches wrapped signed displacement and precomputed views" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    using namespace ResourceClaims::Mixed;
+    for(unsigned origin:{0u,7u,31u,511u,1023u})for(unsigned nearest=0;nearest<1024;++nearest) {
+        int dx=int(nearest%32)-int(origin%32),dy=int(nearest/32)-int(origin/32);
+        if(dx>=16)dx-=32;
+        if(dx< -16)dx+=32;
+        if(dy>=16)dy-=32;
+        if(dy< -16)dy+=32;
+        const auto expected=unsigned(dx<0)|(unsigned(dy<0)<<1)|(unsigned(std::abs(dy)>std::abs(dx))<<2);
+        CHECK(frame(32,32,origin,nearest)==expected);
+    }
+    CHECK(frame(32,32,17,UINT32_MAX)==0);CHECK(frame(32,32,17,17)==0);
+    CHECK(frame(32,64,0,16)==1); // Negative half-width tie.
+    CHECK(frame(32,64,0,32*32)==6); // Negative half-height, swapped major axis.
+    CHECK(frame(32,64,31+63*32,0)==0); // Wrapped positive diagonal, no swap.
+    CHECK(frame(16,64,0,15+2*16)==5); // dx=-1, dy=2.
+    for(unsigned f=0;f<8;++f) {
+        const auto v=view(IllustrativeName,f);REQUIRE(v.x.size()==13);
+        for(unsigned i=0;i<13;++i) {
+            int x=(f&4)?Illustrative[i].y:Illustrative[i].x,y=(f&4)?Illustrative[i].x:Illustrative[i].y;
+            CHECK(v.x[i]==((f&1)?-x:x));CHECK(v.y[i]==((f&2)?-y:y));CHECK(v.tag[i]==Illustrative[i].tag);
+        }
+    }
+}

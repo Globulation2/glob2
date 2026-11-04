@@ -12,8 +12,8 @@
 TEST_CASE("experimental fetch preserves GUI continuations and execution across participants" * doctest::test_suite("ExperimentalClaimContinuation"))
 {
     glob2test::HeadlessGlobals globals;
-    const auto run=[&](unsigned participants,bool probe) {
-        const auto prefix=std::string("experimental-")+(probe?"probe-":"direct-");
+    const auto run=[&](unsigned participants,bool probe,bool mixed) {
+        const auto prefix=std::string(mixed?"mixed-d4-":"experimental-")+(probe?"probe-":"direct-");
         glob2test::HeadlessGame f({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=7183});
         auto& game=f.game; auto& map=game.map;
         map.computeExecutor().configure(participants);
@@ -21,6 +21,7 @@ TEST_CASE("experimental fetch preserves GUI continuations and execution across p
         game.gameHeader.getWinningConditions().clear(); // Let CLI parity runs continue through delivery.
         map.setMaterialDestinationsEnabled(true);
         ResourceClaims::ClaimPolicyConfig policy;
+        if(mixed){policy.sourceVersion=5;policy.pattern="illustrative258-middle13-v1";policy.patternFrame=ResourceClaims::ClaimPolicyConfig::PatternFrame::NearestD4;}
         policy.pendingStep=ResourceClaims::ClaimPolicyConfig::PendingStep::DirectHeading;
         policy.routeTarget=probe?ResourceClaims::ClaimPolicyConfig::RouteTarget::ProbeThenGradient:ResourceClaims::ClaimPolicyConfig::RouteTarget::ClaimedAccess;
         policy.routeRefreshJ=probe?3:1;policy.destinationRefreshJ=probe?4:6;
@@ -107,9 +108,10 @@ TEST_CASE("experimental fetch preserves GUI continuations and execution across p
         CHECK(map.materialClaimLedger().size()==0); CHECK(evidence.good());
         return trace;
     };
-    for(bool probe:{false,true}) {
+    for(bool mixed:{false,true})for(bool probe:{false,true}) {
+        CAPTURE(mixed);
         CAPTURE(probe);
-        const auto ownerOnly=run(1,probe), parallel=run(3,probe);
+        const auto ownerOnly=run(1,probe,mixed), parallel=run(3,probe,mixed);
         REQUIRE(ownerOnly.size()==parallel.size());
         for(std::size_t tick=0;tick<ownerOnly.size();++tick) {CAPTURE(tick); REQUIRE(ownerOnly[tick]==parallel[tick]);}
     }
