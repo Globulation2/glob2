@@ -17,6 +17,7 @@ struct Source {
     bool rotated = false;
     unsigned first = 0, count = 1;
     int width = 0, height = 0;
+    bool packed = false;
 };
 struct Sources { std::vector<Source> entries; size_t frames = 0; bool sheets = false; };
 std::shared_ptr<const Sources> discover(const AssetLoader::Directory& directory, std::shared_ptr<const AssetLoader::Bytes> index, const std::string& name, bool sheets) {
@@ -27,6 +28,7 @@ std::shared_ptr<const Sources> discover(const AssetLoader::Directory& directory,
             result->sheets = true;
             std::string line;
             size_t manifestBytes = 0;
+            bool packed = false;
             while (std::getline(input, line)) {
                 if (line.ends_with('\r')) line.pop_back();
                 manifestBytes += line.size();
@@ -34,10 +36,29 @@ std::shared_ptr<const Sources> discover(const AssetLoader::Directory& directory,
                 if (line.empty() || line[0] == '#') continue;
                 Source entry; std::string layer;
                 std::istringstream fields(line);
-                fields >> entry.path >> layer >> entry.first >> entry.count >> entry.width >> entry.height;
-                if (!fields || !entry.path.ends_with(".webp") || (layer != "image" && layer != "rotated") ||
-                    entry.path.find_first_of("/\\:") != std::string::npos || !entry.count ||
-                    entry.first > 65536 || entry.count > 65536 - entry.first ||
+                if (line == "GLOB2_SPRITES 2" && manifestBytes == line.size()) {
+                    packed = true;
+                    continue;
+                }
+                fields >> entry.path >> layer >> entry.first;
+                bool valid = bool(fields);
+                if (packed) {
+                    PackedSpriteFrame frame;
+                    valid = valid && PackedSpriteFrame::parse(entry.path, frame);
+#ifdef __EMSCRIPTEN__
+                    // Startup sprites cannot wait for the isolated decoder.
+                    valid = valid && !frame.count;
+#endif
+                    entry.width = int(frame.cropWidth);
+                    entry.height = int(frame.cropHeight);
+                    entry.packed = true;
+                } else {
+                    valid = valid && bool(fields >> entry.count >> entry.width >> entry.height) &&
+                        entry.path.ends_with(".webp") && entry.path.find_first_of("/\\:") == std::string::npos;
+                }
+                std::string extra;
+                if (!valid || (fields >> extra) || (layer != "image" && layer != "rotated") || !entry.count ||
+                    entry.first >= 65536 || entry.count > 65536 - entry.first ||
                     entry.width <= 0 || entry.height <= 0 || entry.width > 4096 || entry.height > 4096) {
                     result->entries.clear(); break;
                 }
@@ -96,7 +117,7 @@ PreparedLayout preparedLayout(const Sources& sources, const std::vector<AssetLoa
         if (!image) throw std::runtime_error("Sprite image unavailable: " + entry.path);
         const int width = sources.sheets ? entry.width : image->surface->w;
         const int height = sources.sheets ? entry.height : image->surface->h;
-        if (sources.sheets)
+        if (sources.sheets && !entry.packed)
             layout.workingBytes += size_t(width) * height * entry.count * pixelBytes + entry.count * sizeof(AssetImage);
         if (entry.rotated) { eligible = false; continue; }
         imageFrames += entry.count;
@@ -123,13 +144,13 @@ std::shared_ptr<const Prepared> cut(const Sources& sources, const std::vector<As
         if (!image) throw std::runtime_error("Sprite image unavailable: " + entry.path);
         const auto *sheet = image->surface;
         const auto columns = entry.width ? sheet->w / entry.width : 1;
-        if (sources.sheets && (!columns || sheet->w % entry.width ||
+        if (sources.sheets && !entry.packed && (!columns || sheet->w % entry.width ||
             std::uint64_t((entry.count + columns - 1) / columns) * entry.height > unsigned(sheet->h)))
             throw std::runtime_error("Invalid sprite sheet: " + entry.path);
         for (unsigned i = 0; i < entry.count; ++i) {
             auto &target = entry.rotated ? result->rotated[entry.first + i] : result->images[entry.first + i];
             if (target) throw std::runtime_error("Duplicate sprite frame: " + entry.path);
-            if (!sources.sheets) { target = image; continue; }
+            if (!sources.sheets || entry.packed) { target = image; continue; }
             auto *tile = SDL_CreateSurface(entry.width, entry.height, SDL_PIXELFORMAT_ARGB8888);
             if (!tile) throw std::runtime_error(SDL_GetError());
             auto owned = std::make_shared<AssetImage>(tile);
@@ -168,7 +189,7 @@ std::shared_ptr<const Prepared> cut(const Sources& sources, const std::vector<As
 }
 struct SpriteLoad::Impl {
     std::string name, failure;
-    bool variableAtlas = false, retried = false, complete = false;
+    bool variableAtlas = false, retried = false, complete = false, deferOptionalHD = false;
     AssetLoader::Handle<Sources> discovery;
     AssetLoader::Handle<Prepared> prepared;
     std::vector<AssetLoader::Handle<AssetImage>> images;
@@ -216,7 +237,12 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         }
         std::vector<AssetLoader::Dependency> dependencies;
         for (const auto &source : impl->sources->entries) {
-            impl->images.push_back(loader.requestImage(source.path));
+            if (source.packed) {
+                PackedSpriteFrame location;
+                PackedSpriteFrame::parse(source.path.substr(source.path.find_last_of('/') + 1), location);
+                impl->images.push_back(location.request(loader, source.path, false, AssetLoader::Priority::Required));
+            } else
+                impl->images.push_back(loader.requestImage(source.path));
             dependencies.push_back(impl->images.back().dependency());
         }
         impl->prepared = loader.requestEstimated<Prepared>("sprite-pixels:" + impl->name + (impl->retried ? ":frames" : ":sheets") + ":" + std::to_string(impl->maxTextureSize) + (impl->variableAtlas ? ":variable" : ":equal"),
@@ -226,7 +252,9 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
             });
         // Establish native preparation before queuing the optional HD frames,
         // so the private sprite can consume their output as decoding proceeds.
-        if (!Sprite::highResolutionDeferred(impl->name))
+        impl->deferOptionalHD = Sprite::highResolutionDeferred(impl->name) ||
+            highResolutionNeedsAsyncLoad(impl->name, impl->sources->frames);
+        if (!impl->deferOptionalHD)
             impl->highResolution = prefetchHighResolutionIncremental(impl->name, impl->sources->frames);
     }
     if (!impl->pixels) {
@@ -251,7 +279,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         impl->sprite->dynamicTeamColor = impl->name == "data/gfx/unit";
     }
     while (impl->frame < impl->sources->frames && std::chrono::steady_clock::now() < deadline) {
-        if (!Sprite::highResolutionDeferred(impl->name) &&
+        if (!impl->deferOptionalHD &&
             !highResolutionFrameReady(impl->name, impl->frame, impl->highResolution)) {
             advanceInputs(); return false;
         }
@@ -269,13 +297,13 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         impl->sprite->images.push_back(adopt(impl->pixels->images[frame]));
         auto *rotated = adopt(impl->pixels->rotated[frame]);
         impl->sprite->rotated.push_back(rotated ? new Sprite::RotatedImage(rotated) : nullptr);
-        if (Sprite::highResolutionDeferred(impl->name)) {
+        if (impl->deferOptionalHD) {
             impl->sprite->experimentImages.push_back(nullptr);
             impl->sprite->experimentRotated.push_back(nullptr);
         } else impl->sprite->appendHighResolutionFrame(frame, *impl->sprite, impl->highResolution);
     }
     if (impl->frame != impl->sources->frames || std::chrono::steady_clock::now() >= deadline) return false;
-    if (!Sprite::highResolutionDeferred(impl->name) &&
+    if (!impl->deferOptionalHD &&
         (!highResolutionAtlasReady(impl->name, impl->highResolution) || impl->highResolution.pending())) {
         advanceInputs(); return false;
     }
@@ -314,7 +342,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
     if(!adoptedAtlas && uncolored && !Sprite::highResolutionDeferred(impl->name))
         impl->sprite->createTextureAtlas(impl->variableAtlas);
     impl->sprite->recomputeBlockCompleteHD();
-    if (!Sprite::highResolutionDeferred(impl->name)) impl->sprite->createHighResolutionAtlas(impl->highResolution);
+    if (!impl->deferOptionalHD) impl->sprite->createHighResolutionAtlas(impl->highResolution);
     impl->sprite->registerLoaded();
     impl->pixels.reset(); impl->sources.reset(); impl->prepared = {}; impl->images.clear(); impl->highResolution.clear();
     impl->complete = true;

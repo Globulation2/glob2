@@ -24,7 +24,7 @@ from terrain_core import (
         seam={"height": 4, "fringe": [214, 110, 40], "fringe_q8": 128, "fringe_width_q8": 640},
         palette={"crust_dark": (36, 18, 16), "crust": (50, 24, 20), "crust_warm": (96, 42, 26),
                  "glow": (170, 70, 24), "glow_bright": (220, 150, 60)},
-        style=Style(luma=58, std=17, grain_max=13, match=0.8), phases=4, animation_ticks=8,
+        style=Style(luma=58, std=17, grain_max=13, match=0.8), phases=4, animation_ticks=16,
         blend_steps=4, periodic=True, grid=8, blocks=4,
         preview=(168, 72, 30), minimap=(176, 68, 28),
         note="placeholder until the image-generated lava lands")

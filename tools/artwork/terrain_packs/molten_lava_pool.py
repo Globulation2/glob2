@@ -26,7 +26,7 @@ from terrain_core import (
         palette={"crust_deep": (84, 12, 3), "crust": (152, 30, 7), "crust_hot": (204, 54, 10),
                  "seep": (246, 104, 8), "crack": (232, 76, 8), "flow": (255, 184, 0),
                  "flow_core": (255, 230, 40), "flow_white": (255, 246, 150), "ridge": (226, 84, 22)},
-        style=Style(luma=96, std=32, grain_max=20, match=0.5), phases=4, animation_ticks=8,
+        style=Style(luma=96, std=32, grain_max=20, match=0.5), phases=4, animation_ticks=16,
         blend_steps=4, periodic=True, grid=8, blocks=4,
         preview=(183, 63, 12), minimap=(214, 74, 14))
 def render_molten_lava_pool(ctx):

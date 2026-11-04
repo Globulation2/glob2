@@ -126,12 +126,16 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         asset_output = Path(asset_directory).resolve() if asset_directory else output
         asset_root = asset_output / 'runtime-assets'
         asset_stamp = asset_root.with_suffix('.json')
+        from runtime_assets import sprite_packing_profile
+        packing = sprite_packing_profile(arguments.get('sprite_packing', 'auto'), identity['mode'] == 'release')
         def prepare_assets(target, source, env):
-            export_assets(root, asset_root, platform='web', optimized=True, lossy=identity['mode']=='release', jobs=GetOption('num_jobs'))
+            export_assets(root, asset_root, platform='web', optimized=True, lossy=identity['mode']=='release',
+                          jobs=GetOption('num_jobs'), terrain_sheets=packing != 'legacy',
+                          packed_hd_sprites=packing != 'legacy', video_sprites=packing == 'video')
             return 0
         asset_inputs = list(source_files(root, 'web'))
         exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +
-            ['tools/package_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json', Value([identity['mode'], [str(p) for p in asset_inputs]])],
+            ['tools/package_assets.py', 'tools/packed_sprite_assets.py', 'scons/recording_dependencies.py', 'scons/recording-versions.json', 'scons/runtime_assets.py', 'scons/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json', Value([identity['mode'], packing, [str(p) for p in asset_inputs]])],
             Action(prepare_assets, 'Exporting verified browser assets'))
         env.Precious(exported)  # Keep the ownership audit while an export is rebuilt.
         if not (asset_root / 'data').is_dir():
@@ -367,6 +371,22 @@ def build_web(directory, identity, arguments):
     opus_notices = [env.Install(str(Path(directory)/'licenses/opus'), str(p))
         for p in (Path(env['OPUS_PREFIX'])/'share/licenses/opus').glob('*')]
     env.Depends(page, [recording_program, recording_worker, recording_notices, opus_notices])
+    # One lazy, non-threaded sprite decoder is shared by both game variants.
+    asset_video = recording.Clone()
+    asset_video.Append(CPPDEFINES=['GLOB2_H264_ASSETS'])
+    asset_video['LINKFLAGS'] = ['-O3', '-msimd128', '-fwasm-exceptions', '--no-entry',
+        '-sMODULARIZE=1', '-sEXPORT_NAME=createAssetVideoRuntime', '-sENVIRONMENT=worker',
+        '-sFILESYSTEM=0', '-sALLOW_MEMORY_GROWTH=1', '-sINITIAL_MEMORY=33554432',
+        '-sMAXIMUM_MEMORY=268435456', '-sSTACK_SIZE=2097152',
+        '-sEXPORTED_FUNCTIONS=["_glob2_decode_asset_video","_malloc","_free"]',
+        '-sEXPORTED_RUNTIME_METHODS=["HEAPU8"]']
+    video_objects = [asset_video.Object(str(Path(directory) / 'asset-video-obj' / (source + '.o')), source)
+        for source in ('platforms/web/AssetVideoWorker.cpp', 'libs/gag/src/AssetVideoDecoder.cpp')]
+    record(asset_video, video_objects, "compile")
+    video_program = record(asset_video, asset_video.Program(str(Path(directory) / 'asset-video-runtime.js'), video_objects), 'link')
+    asset_video.SideEffect(str(Path(directory) / 'asset-video-runtime.wasm'), video_program)
+    video_worker = env.Install(directory, 'platforms/web/asset-video-worker.js')
+    env.Depends(page, [video_program, video_worker])
     # Assistant programs never execute in the live game's WebAssembly memory.
     hive = env.Clone()
     hive['CCFLAGS'] = [flag for flag in hive.Split(hive.get('CCFLAGS', [])) if flag != '-pthread']

@@ -5,7 +5,7 @@
     "tools/artwork/terrain_synth.py": "8f478809b4b7fe7cc7b97fab5eebd8fad6795c29b0d2fdaa39bab79fc32f983b",
     "tools/artwork/terrain_core.py": "8a98a23ed1ddf79b0081dd20a8263e4c780404dc5dbe62b92f1a01836e85345b",
     "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1",
-    "tools/artwork/terrain_packs/ember_field.py": "d555b3b1bae8a5eac546d18de6b06da7b4ebf8bddf05e456989a6966c507bd46"
+    "tools/artwork/terrain_packs/ember_field.py": "9e4c9da36bc76aee7ba4b3e3ce9d41bfa6dee81978f93fcdb09a1b5e153a8684"
   },
   "material": "ember_field",
   "group": "lava",
@@ -65,7 +65,7 @@
       "match": 0.7
     },
     "phases": 4,
-    "animation_ticks": 8,
+    "animation_ticks": 16,
     "blend_steps": 4,
     "alpha_range": [
       255,

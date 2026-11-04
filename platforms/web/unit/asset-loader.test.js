@@ -68,6 +68,32 @@ test('installs a package into the file system with byte progress', async () => {
   assert.equal(loader.state().core, 'ready');
 });
 
+test('installs a sprite index once with its fragments in manifest order', () => {
+  const environment = host();
+  const assets = manifest();
+  const file = '/data/gfx/unit.sheet';
+  const blocks = ['GLOB2_SPRITES 2\n', '@walk.webp,0,0,8,8 image 0\n', '@turn.webp,0,0,8,8 image 1\n'];
+  assets.packages[0].parts = blocks.map(block => ({files: [[file, 0, block.length, true]]}));
+  const loader = new Loader(assets, environment);
+  loader.install('core', blocks.map(text));
+  assert.deepEqual(Object.fromEntries(environment.files), {[file]: blocks.join('')});
+  assert.equal(loader.state().core, 'ready');
+});
+
+test('rejoins independently scored HD layers and keeps standalone frames', () => {
+  const environment = host();
+  const assets = manifest();
+  const file = '/data/highres/v1/frames.txt';
+  const blocks = ['unit0 32 32 4 @base.webp,0,0,8,8 -\n',
+    'unit0 32 32 4 - @team.webp,0,0,8,8\n', 'unit1 32 32 4 base.webp -\n'];
+  assets.packages[1].parts = blocks.map(block => ({files: [[file, 0, block.length, 'hd']]}));
+  const loader = new Loader(assets, environment);
+  loader.install('hd', blocks.map(text));
+  assert.equal(environment.files.get(file),
+    'GLOB2_HIGHRES 2\nunit0 32 32 4 @base.webp,0,0,8,8 @team.webp,0,0,8,8\nunit1 32 32 4 base.webp -\n');
+  assert.equal(loader.state().hd, 'ready');
+});
+
 test('a later package replaces a core file and is reported once to the game', async () => {
   const replacing = manifest();
   replacing.packages.push({name:'font-cjk', optional:true, size:3, parts:[
@@ -273,4 +299,29 @@ test('out-of-order downloads preserve package replacement order', async () => {
   release(); await Promise.all([first, second]);
   assert.equal(environment.files.get('/data/shared'), 'new');
   assert.deepEqual(loader.takeInstalled(), ['first', 'second']);
+});
+
+test('demanded HD terrain installs while shared HD is paused', async () => {
+  const packages = manifest();
+  packages.packages.push({name:'hd-terrain-grass', optional:true, size:3, parts:[
+    {url:'assets/hd-1.bbbbbbbbbbbbbbbb.data', size:3,
+      files:[['/data/highres/v1/grass.webp', 0, 3]]},
+  ]});
+  const environment = host();
+  environment.partConcurrency = 1;
+  environment.saveData = () => true;
+  const loader = new Loader(packages, environment);
+  let resume;
+  const paused = new Promise(resolve => { resume = resolve; });
+  const shared = loader.load('hd', () => paused);
+  loader.request('hd-terrain-grass');
+  assert.equal(loader.state()['hd-terrain-grass'], 'idle');
+  environment.saveData = () => false;
+  loader.request('hd-terrain-grass');
+  await loader.inFlight.get('hd-terrain-grass');
+  assert.equal(environment.files.get('/data/highres/v1/grass.webp'), 'png');
+  assert.deepEqual(loader.takeInstalled(), ['hd-terrain-grass']);
+  resume();
+  await shared;
+  assert.deepEqual(loader.takeInstalled(), ['hd']);
 });

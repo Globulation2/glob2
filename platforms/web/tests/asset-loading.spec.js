@@ -58,9 +58,9 @@ test('a second visit starts from the packages cached on the device', async ({pag
   await page.goto(gameURL());
   await waitForMainMenu(page);
   // Every background package, including artwork where it is wanted. Skin meshes
-  // are requested only on demand and intentionally stay idle on this menu.
+  // and terrain families are requested on demand and stay idle on this menu.
   await expect.poll(async () => Object.entries((await snapshot(page)).assets)
-    .filter(([name]) => name !== 'skins').every(([, state]) => state === 'ready' || state === 'skipped'),
+    .filter(([name]) => name !== 'skins' && !name.startsWith('hd-terrain-')).every(([, state]) => state === 'ready' || state === 'skipped'),
     {timeout: 180000}).toBe(true);
   const downloads = [];
   page.on('request', request => { if (/\/assets\/.*\.data$/.test(request.url())) downloads.push(request.url()); });

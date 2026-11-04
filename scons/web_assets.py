@@ -25,6 +25,8 @@ the game reads at run time into content-addressed packages under `assets/`, and
 - `menu-music`, `music` (the original in-game set), `music-sets` (the other
   soundtrack sets) and `hd` (high-resolution artwork): the game tolerates them
   being absent and loads them when they arrive or when a match starts.
+- `hd-terrain-*` packages carry individual terrain families. The package manifest
+  lists the available families, and each packed family carries its own frame index.
 
 The build packages the verified runtime export (tools/package_assets.py, which
 re-encodes artwork and drops build scripts) when it has one, or the repository's
@@ -105,6 +107,8 @@ GAME_EXTRA = ('data/gfx/cursor/',)
 # Later packages download in parts so the shell can stop between parts while a
 # match is running; each part is also cached on its own.
 PART_BYTES = 4 * 1024 * 1024
+DATA_BROTLI_QUALITY = 9
+BROTLI_WINDOW = 24
 MANIFEST_VERSION = 1
 SPRITE = re.compile(r'"data/gfx/([A-Za-z0-9_-]+)"')
 # Core keeps the key list, English and, of every other language, only what the
@@ -250,6 +254,8 @@ def game_files(paths, sprites):
                re.fullmatch(r'(?:\d+r?|-sheet-\d+)\.(?:png|webp)|\.sheet', path[len(prefix):])
                for prefix in prefixes):
             files.add(path)
+    files.update(path for path in paths if re.fullmatch(
+        r'data/gfx/pack-(?:unit|terrain)-[a-zA-Z0-9_-]+\.webp', path))
     return files
 
 
@@ -260,6 +266,44 @@ def source_files(root):
     root = Path(root)
     return sorted(p.relative_to(root).as_posix() for directory in ROOTS
                   for p in (root / directory).rglob('*') if p.is_file())
+
+
+def hd_terrain_packages(root, source):
+    """Assign registered HD sprite layers to their owning terrain families."""
+    catalog = Path(root) / 'content/data/terrain/tileset.json'
+    index = source / 'data/highres/v1/frames.txt'
+    if not catalog.is_file() or not index.is_file():
+        return {}
+    loader = load_module(root, 'glob2_hd_terrain_catalog', 'tools/terrain_catalog.py')
+    names = {Path(material['sprite']).name
+             for material in loader.load(Path(root) / 'content')['materials']
+             if material['sprite'].startswith('data/gfx/terrain-')}
+    prefixes = sorted(names, key=lambda name: (-len(name), name))
+    owners = {}
+    indexes = [index, *(index.with_name(name + '.frames') for name in prefixes)]
+    for current in indexes:
+        if not current.is_file():
+            continue
+        if current != index:
+            owners[current.relative_to(source).as_posix()] = {current.stem}
+        for row in current.read_text().splitlines()[1:]:
+            fields = row.split()
+            if len(fields) != 6:
+                continue
+            frame = fields[0]
+            family = next((name for name in prefixes
+                           if frame.startswith(name) and frame[len(name):].isdigit()), None)
+            for layer in fields[4:]:
+                if layer.startswith('@'):
+                    parts = layer[1:].split(',')
+                    paths = parts[:2] if parts[0].endswith('.h264') else parts[:1]
+                else:
+                    paths = [layer]
+                for path in paths:
+                    if path != '-' and Path(path).name == path:
+                        owners.setdefault('data/highres/v1/' + path, set()).add(family)
+    return {path: sorted('hd-' + family if family is not None else 'hd' for family in families)
+            for path, families in owners.items() if families != {None}}
 
 
 def plan(root, source=None):
@@ -281,7 +325,18 @@ def plan(root, source=None):
         except (OSError, ValueError):
             lossy = images = False
     substitutes = exported_substitutes(root, source, files, derived_assets(root, lossy, images))
+    hd_owners = hd_terrain_packages(root, Path(source) if source else Path(root) / 'content')
+    split_hd_index = any(path.endswith('.frames') for path in hd_owners)
     for path in files:
+        if path in hd_owners:
+            # Each family must install independently, even if another index
+            # references the same immutable artwork.
+            for package in hd_owners[path]:
+                packages.setdefault(package, []).append(path)
+            continue
+        if hd_owners and not split_hd_index and path == 'data/highres/v1/frames.txt':
+            packages['core'].append(path)
+            continue
         name = 'game' if path in game or path.startswith(GAME_EXTRA) else next(
             (name for name, prefixes in OPTIONAL if path.startswith(prefixes)), 'core')
         if name == 'font-cjk':
@@ -330,26 +385,113 @@ def contents(root, name, path, substitutes, source=None):
     return (tree / path).read_bytes()
 
 
+def hd_index_blocks(path, data, groups):
+    """Split an HD index by logical layer, leaving unpacked layers in a shared block."""
+    header, *lines = data.splitlines()
+    if header != b'GLOB2_HIGHRES 2':
+        raise ValueError(f'invalid packed HD index header: {path}')
+    rows = {}
+    for line in lines:
+        fields = line.split()
+        if len(fields) != 6 or fields[0] in rows:
+            raise ValueError(f'invalid packed HD index row: {path}')
+        rows[fields[0]] = fields
+    blocks, packed = [], set()
+    for layer, ids in groups:
+        if layer not in (4, 5):
+            raise ValueError(f'invalid packed HD index layer: {path}')
+        block = [header + b'\n'] if path.endswith('.frames') else []
+        for ident in ids:
+            fields = rows.get(ident.encode())
+            if fields is None or not fields[layer].startswith(b'@'):
+                raise ValueError(f'invalid packed HD index reference: {path}: {ident}')
+            refs = [b'-', b'-']
+            refs[layer - 4], fields[layer] = fields[layer], b'-'
+            block.append(b' '.join(fields[:4] + refs) + b'\n')
+            packed.add(fields[0])
+        blocks.append(b''.join(block))
+    remaining = [b' '.join(fields) + b'\n' for ident, fields in rows.items()
+                 if ident not in packed or fields[4:] != [b'-', b'-']]
+    if remaining:
+        blocks.append(b''.join(remaining))
+    return blocks
+
+
 def write_packages(root, output, source=None):
     """Write assets/<package>[-<part>].<hash>.data under output; return the manifest."""
     root, output = Path(root), Path(output)
     directory = output / 'assets'
     directory.mkdir(parents=True, exist_ok=True)
     packages, _, substitutes = plan(root, source)
+    sprite_groups = {}
+    sprite_indexes = {}
+    hd_indexes = {}
+    if source:
+        try:
+            audit = json.loads(Path(source).with_suffix('.json').read_text())
+            sprite_groups = {item['output']: item['sprite_group']
+                             for item in audit.get('files', []) if 'sprite_group' in item}
+            sprite_indexes = {item['output']: item['sprite_index_groups']
+                              for item in audit.get('files', []) if 'sprite_index_groups' in item}
+            hd_indexes = {item['output']: item['sprite_hd_index_groups']
+                          for item in audit.get('files', []) if item.get('sprite_hd_index_groups')}
+        except (OSError, ValueError):
+            pass
     manifest, written = {'version': MANIFEST_VERSION, 'packages': []}, set()
     for name, paths in packages.items():
         data = {path: contents(root, name, path, substitutes, source) for path in paths}
+        hd_fragments = {path: hd_index_blocks(path, data[path], hd_indexes[path])
+                        for path in paths if path in hd_indexes}
+        fragments = {}
+        for path in paths:
+            counts = sprite_indexes.get(path)
+            if not counts:
+                continue
+            header, *rows = data[path].splitlines(keepends=True)
+            if header != b'GLOB2_SPRITES 2\n' or any(count <= 0 for count in counts) or sum(counts) != len(rows):
+                raise ValueError(f'invalid packed sprite index partition: {path}')
+            fragments[path] = []
+            offset = 0
+            for count in counts:
+                fragments[path].append(b''.join(rows[offset:offset + count]))
+                offset += count
+        paths = [path for path in paths if path not in fragments and path not in hd_fragments]
         sizes = {path: len(value) for path, value in data.items()}
-        groups = [paths] if name == 'core' else split(paths, sizes, PART_BYTES)
+        if name == 'core':
+            groups = [paths]
+        else:
+            # Give scored sprite groups the same independent compression and
+            # part boundaries that the exporter used to choose their codecs.
+            partitions = {}
+            for path in paths:
+                partitions.setdefault(sprite_groups.get(path), []).append(path)
+            groups = [part for partition in partitions.values() for part in split(partition, sizes, PART_BYTES)]
         entry = {'name': name, 'optional': name not in ('core', 'game'), 'size': sum(sizes.values()), 'parts': []}
-        for index, group in enumerate(groups):
-            blob, files = bytearray(), []
-            for path in group:
-                start = len(blob)
-                blob += data[path]
-                files.append(['/' + path, start, len(blob)])
+        # The browser reconstructs each index from the independently scored row blocks.
+        index_parts = []
+        if fragments:
+            header = b'GLOB2_SPRITES 2\n'
+            index_parts.append((header, [['/' + path, 0, len(header), True] for path in fragments]))
+            entry['size'] -= (len(fragments) - 1) * len(header)
+        for path, blocks in fragments.items():
+            for block in blocks:
+                index_parts.append((block, [['/' + path, 0, len(block), True]]))
+        for path, blocks in hd_fragments.items():
+            entry['size'] += sum(map(len, blocks)) - sizes[path]
+            for block in blocks:
+                index_parts.append((block, [['/' + path, 0, len(block), 'hd']]))
+        part_count = len(groups) + len(index_parts)
+        for index in range(part_count):
+            if index < len(groups):
+                blob, files = bytearray(), []
+                for path in groups[index]:
+                    start = len(blob)
+                    blob += data[path]
+                    files.append(['/' + path, start, len(blob)])
+            else:
+                blob, files = index_parts[index - len(groups)]
             digest = hashlib.sha256(blob).hexdigest()[:16]
-            stem = name if len(groups) == 1 else f'{name}-{index + 1}'
+            stem = name if part_count == 1 else f'{name}-{index + 1}'
             filename = f'{stem}.{digest}.data'
             target = directory / filename
             if not target.is_file() or target.stat().st_size != len(blob):
@@ -411,7 +553,7 @@ def report(root):
         row[2] += len(zlib.compress(data, 9))
     order = {name: index for index, name in enumerate(PACKAGES + ('-',))}
     print(f'{"category":45} {"package":10} {"files":>6} {"MB":>7} {"gzip MB":>8}')
-    for (label, package), (count, raw, packed) in sorted(rows.items(), key=lambda item: (order[item[0][1]], -item[1][1])):
+    for (label, package), (count, raw, packed) in sorted(rows.items(), key=lambda item: (order.get(item[0][1], len(order)), item[0][1], -item[1][1])):
         print(f'{label:45} {package:10} {count:6} {raw / 1e6:7.2f} {packed / 1e6:8.2f}')
     for name, paths in packages.items():
         size = sum(len(contents(root, name, p, substitutes)) for p in paths)

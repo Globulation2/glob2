@@ -279,7 +279,12 @@ void Application::installStagedAssets()
     for (const auto &package : GAGCore::ApplicationHost::takeInstalledAssetPackages())
     {
         GAGCore::Toolkit::assets().invalidate();
-		if (package == "game")
+        if (package == "hd" || package.starts_with("hd-terrain-"))
+        {
+            GAGCore::Sprite::refreshHighResolutionSprite(
+                package == "hd" ? std::string{} : "data/gfx/" + package.substr(3));
+        }
+		else if (package == "game")
 		{
 			// The menu colony and the settings' building artwork use them at once.
 			globalContainer->ensureGameGraphics();

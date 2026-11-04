@@ -68,7 +68,8 @@ class RecordingCodecsTests(unittest.TestCase):
                 env = Environment()
                 attach(env, directory, 'linux', codec)
                 self.assertEqual(any('libx264.a' in p for p in env.values['LIBS']), codec == 'h264')
-                self.assertEqual('CPPDEFINES' in env.values, codec != 'h264')
+                self.assertEqual(env.values['CPPDEFINES'], ['GLOB2_H264_ASSETS'] +
+                                 (['GLOB2_RECORDING_' + codec.upper()] if codec != 'h264' else []))
                 if codec != 'h264':
                     self.assertEqual(env.values['LIBS'][-3:], ['opus', 'dl', 'm'])
                     self.assertFalse(any('libopus.a' in p for p in env.values['LIBS']))

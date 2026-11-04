@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <SDL3/SDL.h>
@@ -82,6 +83,13 @@ bool storageRestoreFailed();
 // the CJK font, menu music) after the main menu is up; see scons/web_assets.py.
 // Hosts that ship all data with the application answer true for every package
 // and never report an installation.
+#ifdef __EMSCRIPTEN__
+// One in-flight group. Poll returns zero while pending, a negative value on
+// failure, or the decoded byte count. Consume or discard the reply before reuse.
+int startAssetVideo(const uint8_t *bytes, size_t length, unsigned width, unsigned height, unsigned count);
+int assetVideoStatus();
+void takeAssetVideo(uint8_t *pixels, size_t size);
+#endif
 bool assetPackageReady(const char *name);
 // Start an optional package without blocking the game; readiness is polled.
 void requestAssetPackage(const char *name);

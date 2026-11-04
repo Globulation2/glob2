@@ -18,7 +18,7 @@ from tools.release.windows_runtime import stage_assets, stage_dlls
 from tools.release.archives import zip_archive
 
 
-def stage(binary, root, original_assets=False, runtime=None):
+def stage(binary, root, original_assets=False, runtime=None, *, sprite_packing="auto", jobs=None):
     if not binary.is_file():
         raise SystemExit(f"missing executable: {binary}")
     if root.exists():
@@ -37,12 +37,15 @@ def stage(binary, root, original_assets=False, runtime=None):
     stage_dlls(binary, runtimes, root)
     if not list(root.glob("SDL3*.dll")):
         raise SystemExit("no SDL3 DLLs found in executable dependencies")
-    stage_assets(Path.cwd(), root, original_assets)
     prefix = os.environ.get("GLOB2_RECORDING_PREFIX")
     if not prefix and os.environ.get("GLOB2_SDL3_PREFIX"):
         prefix = str(Path(os.environ["GLOB2_SDL3_PREFIX"]) / "recording")
     notices = (Path(prefix) if prefix else binary.resolve().parent.parent / "recording/prefix") / "share/licenses/recording"
-    if notices.is_dir(): shutil.copytree(notices,root/"licenses/recording")
+    from scons.runtime_assets import sprite_packing_profile
+    packing = sprite_packing_profile(sprite_packing, True, notices.is_dir())
+    stage_assets(Path.cwd(), root, original_assets, packing=packing, jobs=jobs)
+    if notices.is_dir():
+        shutil.copytree(notices, root / "licenses/recording")
 
     return root
 
@@ -59,10 +62,10 @@ def write_manifest(root, output):
     )
 
 
-def package(binary, output, original_assets=False, compression_report=None):
+def package(binary, output, original_assets=False, compression_report=None, *, sprite_packing="auto", jobs=None):
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as temporary:
-        root = stage(binary, Path(temporary) / "Globulation2", original_assets)
+        root = stage(binary, Path(temporary) / "Globulation2", original_assets, sprite_packing=sprite_packing, jobs=jobs)
         result = zip_archive(root, output)
         if compression_report:
             compression_report.parent.mkdir(parents=True, exist_ok=True)
@@ -84,6 +87,8 @@ if __name__ == "__main__":
         action="store_true",
         help="Offline size measurement baseline using original image bytes (not playable)",
     )
+    parser.add_argument("--sprite-packing", choices=("auto", "legacy", "webp", "video"), default="auto")
+    parser.add_argument("--jobs", type=int, help="Maximum concurrent sprite encoders")
     parser.add_argument("--stage-dir", type=Path, help="Epic BuildPatchTool build root")
     parser.add_argument(
         "--manifest", type=Path, help="hash manifest outside the build root"
@@ -99,12 +104,13 @@ if __name__ == "__main__":
             parser.error(
                 "--stage-dir requires --manifest outside the stage and no ZIP output"
             )
-        print(stage(args.binary, args.stage_dir, args.original_assets))
+        print(stage(args.binary, args.stage_dir, args.original_assets, sprite_packing=args.sprite_packing, jobs=args.jobs))
         write_manifest(args.stage_dir, args.manifest)
     elif args.output and not args.manifest:
         print(
             package(
-                args.binary, args.output, args.original_assets, args.compression_report
+                args.binary, args.output, args.original_assets, args.compression_report,
+                sprite_packing=args.sprite_packing, jobs=args.jobs
             )
         )
     else:

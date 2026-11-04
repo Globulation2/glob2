@@ -441,6 +441,58 @@ std::unique_ptr<FileSelection> selectFile(const std::string& extension) {
     return std::make_unique<BrowserFileSelection>(extension);
 }
 bool storageRestoreFailed() { return MAIN_THREAD_EM_ASM_INT({ return Module.storageRestore === 'failed'; }); }
+int startAssetVideo(const uint8_t *bytes, size_t length, unsigned width, unsigned height, unsigned count)
+{
+    return MAIN_THREAD_EM_ASM_INT({
+        try {
+            if (!Module.glob2AssetVideo) {
+                const worker = new Worker(new URL('asset-video-worker.js', document.baseURI));
+                const state = Module.glob2AssetVideo = ({worker, sequence: 0});
+                const fail = () => {
+                    state.failed = true;
+                    worker.terminate();
+                };
+                worker.onerror = fail;
+                worker.onmessageerror = fail;
+                worker.onmessage = ({data}) => {
+                    if (data.id === state.sequence) state.reply = data;
+                };
+            }
+            const state = Module.glob2AssetVideo;
+            if (state.failed) return 0;
+            state.reply = null;
+            state.started = performance.now();
+            const input = HEAPU8.slice($0, $0 + $1).buffer;
+            state.worker.postMessage({id: ++state.sequence, bytes: input, width: $2, height: $3, count: $4}, [input]);
+            return 1;
+        } catch (_) { return 0; }
+    }, bytes, length, width, height, count);
+}
+
+int assetVideoStatus()
+{
+    return MAIN_THREAD_EM_ASM_INT({
+        const state = Module.glob2AssetVideo;
+        if (!state || state.failed) return -1;
+        if (state.reply) return state.reply.rgba?.byteLength || -1;
+        if (performance.now() - state.started > 30000) {
+            state.failed = true;
+            state.worker.terminate();
+            return -1;
+        }
+        return 0;
+    });
+}
+
+void takeAssetVideo(uint8_t *pixels, size_t size)
+{
+    MAIN_THREAD_EM_ASM({
+        const state = Module.glob2AssetVideo;
+        if ($1) HEAPU8.set(new Uint8Array(state.reply.rgba), $0);
+        if (state) state.reply = null;
+    }, pixels, size);
+}
+
 // Packages come from platforms/web/asset-loader.js on the page's thread. A build without a package of that
 // name (for instance the test harness, which preloads everything) has the data.
 bool assetPackageReady(const char* name)

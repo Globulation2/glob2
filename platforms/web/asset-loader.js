@@ -56,9 +56,14 @@ class Glob2AssetLoader {
     if (next) next(); else this.activeParts--;
   }
   async fetchPart(part, counted, sized, between) {
+    await between?.();
     await this.acquirePart();
+    while (between?.paused?.()) {
+      this.releasePart();
+      await between();
+      await this.acquirePart();
+    }
     try {
-      await between?.();
       return await this.readPart(part, counted, sized);
     }
     finally { this.releasePart(); }
@@ -138,21 +143,67 @@ class Glob2AssetLoader {
   install(name, contents) {
     const entry = this.package(name);
     const directories = new Set();
+    const fragments = new Map(), hdFragments = new Map();
+    const installFile = (path, bytes) => {
+      const slash = path.lastIndexOf('/');
+      const directory = path.slice(0, slash) || '/';
+      if (!directories.has(directory)) {
+        this.host.fs.createPath('/', directory.slice(1), true, true);
+        directories.add(directory);
+      }
+      // A later package may replace a file (the full font replaces the core
+      // package's subset); the game reopens it when told (takeInstalled).
+      if (this.host.fs.analyzePath(path).exists) this.host.fs.unlink(path);
+      // The file system owns the slice; packages are never written back.
+      this.host.fs.createDataFile(directory, path.slice(slash + 1), bytes, true, true, true);
+    };
     entry.parts.forEach((part, index) => {
-      for (const [path, start, end] of part.files) {
-        const slash = path.lastIndexOf('/');
-        const directory = path.slice(0, slash) || '/';
-        if (!directories.has(directory)) {
-          this.host.fs.createPath('/', directory.slice(1), true, true);
-          directories.add(directory);
+      for (const [path, start, end, fragment] of part.files) {
+        const bytes = contents[index].subarray(start, end);
+        if (fragment) {
+          const indexes = fragment === 'hd' ? hdFragments : fragments;
+          if (!indexes.has(path)) indexes.set(path, []);
+          indexes.get(path).push(bytes);
+        } else {
+          installFile(path, bytes);
         }
-        // A later package may replace a file (the full font replaces the core
-        // package's subset); the game reopens it when told (takeInstalled).
-        if (this.host.fs.analyzePath(path).exists) this.host.fs.unlink(path);
-        // The file system owns the slice; packages are never written back.
-        this.host.fs.createDataFile(directory, path.slice(slash + 1), contents[index].subarray(start, end), true, true, true);
       }
     });
+    for (const [path, blocks] of fragments) {
+      const bytes = new Uint8Array(blocks.reduce((size, block) => size + block.length, 0));
+      let offset = 0;
+      for (const block of blocks) {
+        bytes.set(block, offset);
+        offset += block.length;
+      }
+      installFile(path, bytes);
+    }
+    for (const [path, blocks] of hdFragments) {
+      // Each scored block supplies one layer. Rejoin layers on the logical frame ID.
+      const rows = new Map();
+      const decoder = new TextDecoder();
+      for (const block of blocks) {
+        for (const line of decoder.decode(block).split('\n')) {
+          if (!line || line === 'GLOB2_HIGHRES 2') continue;
+          const fields = line.split(' ');
+          if (fields.length !== 6) throw Error('Invalid HD sprite index row: ' + path);
+          const previous = rows.get(fields[0]);
+          if (!previous) {
+            rows.set(fields[0], fields);
+            continue;
+          }
+          if (fields.slice(1, 4).some((field, index) => field !== previous[index + 1]))
+            throw Error('Conflicting HD sprite geometry: ' + path);
+          for (let layer = 4; layer <= 5; layer++) {
+            if (fields[layer] === '-') continue;
+            if (previous[layer] !== '-') throw Error('Duplicate HD sprite layer: ' + path);
+            previous[layer] = fields[layer];
+          }
+        }
+      }
+      const index = ['GLOB2_HIGHRES 2', ...Array.from(rows.values(), row => row.join(' ')), ''];
+      installFile(path, new TextEncoder().encode(index.join('\n')));
+    }
     this.states[name] = 'ready';
     this.installed.push(name);
   }
@@ -161,6 +212,8 @@ class Glob2AssetLoader {
   // Non-blocking demand from the running game. Repeated frames share the
   // in-flight load; failed optional downloads retry at most once per ten seconds.
   request(name, now = Date.now()) {
+    if (!Object.hasOwn(this.states, name)) return;
+    if ((name === 'hd' || name.startsWith('hd-terrain-')) && this.host.saveData?.()) return;
     if (this.states[name] === 'ready' || this.states[name] === 'downloading' ||
         now < (this.retryAfter[name] || 0)) return;
     this.retryAfter[name] = now + 10000;
@@ -174,11 +227,14 @@ class Glob2AssetLoader {
     downloaded.catch(() => {});
     // Downloads overlap, installation follows request order so replacements win
     // consistently regardless of which package finishes first.
-    const installed = this.installing.then(async () => {
+    // Terrain packages only overlap at byte-identical files. Let a demanded
+    // family install while an unrelated background download is paused.
+    const independent = name.startsWith('hd-terrain-');
+    const installed = (independent ? Promise.resolve() : this.installing).then(async () => {
       try { this.install(name, await downloaded); }
       catch (error) { this.states[name] = 'failed'; throw error; }
     });
-    this.installing = installed.catch(() => {});
+    if (!independent) this.installing = installed.catch(() => {});
     const pending = installed.finally(() => this.inFlight.delete(name));
     this.inFlight.set(name, pending);
     return pending;
@@ -207,6 +263,7 @@ if (typeof Module !== 'undefined' && Module.glob2AssetManifest && typeof window 
     resolve,
     wireSize: (url, encoding) => Module.glob2WireSize?.(url, encoding),
     get fs() { return FS; },
+    saveData: () => globalThis.navigator?.connection?.saveData === true,
     onProgress: (name, loaded, total) => Module.glob2AssetProgress?.(name, loaded, total),
   });
   Module.glob2Assets = loader;

@@ -30,14 +30,15 @@ docker run --rm \
 		apt-get update -qq
 		# The embedded recording build configures x264 (needs strings, from binutils) and
 		# cross-compiles FFmpeg, whose configure needs a host C compiler and pkg-config.
-		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 brotli python3-venv cmake make binutils gcc libc6-dev pkg-config >/dev/null
+		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 brotli python3-venv cmake make binutils gcc libc6-dev pkg-config nasm >/dev/null
 		git config --global --add safe.directory "*"
 		python3 platforms/web/setup.py
 		# Both runtimes (serial and threaded), the loader and the page. The
 		# runtime asset export installs its pinned image encoder (Pillow) into a
 		# private environment under GLOB2_DEV_HOME, hence python3-venv.
 		scons target=web release=1 -j"$JOBS" "$@" web-package
-		python3 platforms/web/precompress.py --require-brotli build/emscripten/client/release
+		encoder_python="$(python3 tools/package_assets.py --platform web --encoder-python)"
+		"$encoder_python" platforms/web/precompress.py --require-brotli build/emscripten/client/release
 		chown -R "$OWNER" build/emscripten
 	' sh "$@"
 

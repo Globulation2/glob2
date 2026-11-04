@@ -99,6 +99,29 @@ TEST_CASE("sheet tiles retain frame order and malformed sheets fall back to WebP
     CHECK(*static_cast<const Uint32*>(surface->pixels) == 0x00794d37u); // exact invisible RGB
     CHECK(second->getFrameCount() == 1); CHECK(second->getW(0) == 2);
 }
+TEST_CASE("versioned sprite indexes mix crops and reject incomplete coverage before publication") {
+    glob2test::ToolkitScope toolkit;
+    glob2test::TempDir temp("packed-sprite-load");
+    image(temp.path / "sheet.webp");
+    image(temp.path / "gap0.webp");
+    std::ofstream(temp.path / "mixed.sheet")
+        << "GLOB2_SPRITES 2\n@sheet.webp,1,0,1,2 image 0\n@sheet.webp,0,0,1,1 rotated 1\n";
+    std::ofstream(temp.path / "gap.sheet")
+        << "GLOB2_SPRITES 2\n@sheet.webp,0,0,1,2 image 0\n@sheet.webp,0,0,1,2 image 2\n";
+    GAGCore::Toolkit::getFileManager()->addDir(temp.path.string());
+    GAGCore::SpriteLoad mixed("mixed"), fallback("gap");
+    auto sprite = finish(mixed);
+    REQUIRE(sprite->getFrameCount() == 2);
+    CHECK(sprite->getW(0) == 1);
+    CHECK(sprite->getH(0) == 2);
+    CHECK(sprite->getH(1) == 1);
+    const auto *surface = sprite->nativeFrame(0)->getSDLSurface();
+    CHECK(*static_cast<const Uint32*>(surface->pixels) == 0x00794d37u);
+    CHECK(sprite->nativeFrame(1) == nullptr);
+    auto standalone = finish(fallback);
+    REQUIRE(standalone->getFrameCount() == 1);
+    CHECK(standalone->getW(0) == 2);
+}
 #ifdef HAVE_OPENGL
 TEST_CASE("variable frame atlas admission accounts for maximum sized padded cells [display]") {
     glob2test::ToolkitScope toolkit;

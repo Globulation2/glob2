@@ -40,6 +40,7 @@ def main():
     parser.add_argument('command',choices=['configure','build','bundle','sign','sign-bundle','install','launch'])
     parser.add_argument('--arch',default='arm64-v8a',choices=['arm64-v8a','armeabi-v7a','x86_64'])
     parser.add_argument('--release',action='store_true')
+    parser.add_argument('--sprite-packing', choices=('auto','legacy','webp','video'), default='auto')
     parser.add_argument('--china',action='store_true',help='Package the China local-play client')
     parser.add_argument('--fdroid',action='store_true',help='Apply F-Droid release codes and unsigned APK checks')
     parser.add_argument('--android-sdk',default=None)
@@ -191,8 +192,12 @@ def main():
         shutil.copytree(java,generated/'java')
         sys.path.insert(0, str(ROOT))
         from tools.package_assets import export_assets
+        from runtime_assets import sprite_packing_profile
+        packing = sprite_packing_profile(args.sprite_packing, args.release)
         exported = output/'runtime-assets'
-        export_assets(ROOT, exported, platform='android', optimized=True, lossy=args.release)
+        export_assets(ROOT, exported, platform='android', optimized=True, lossy=args.release, jobs=args.jobs,
+                      terrain_sheets=packing != 'legacy', packed_hd_sprites=packing != 'legacy',
+                      video_sprites=packing == 'video')
         shutil.copytree(output/'shaders', exported/'shaders', dirs_exist_ok=True,
                         ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
         shutil.copytree(output/'licenses/recording',exported/'licenses/recording',dirs_exist_ok=True)

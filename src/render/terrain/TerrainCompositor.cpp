@@ -5,6 +5,10 @@
 #include "TerrainPresentation.h"
 #include "render/scene/SceneMap.h"
 #include <Toolkit.h>
+#ifdef __EMSCRIPTEN__
+#include <ApplicationHost.h>
+#include <bitset>
+#endif
 #include <algorithm>
 #include <stdexcept>
 #include <cstring>
@@ -271,11 +275,43 @@ void Compositor::prepareForRecipes(bool hd, int time, std::span<const Recipe> re
             usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
     prepareSelected(hd, time, &usage);
 }
+#ifdef __EMSCRIPTEN__
+static void requestTerrainPackage(const std::string& package)
+{
+    if (!GAGCore::ApplicationHost::assetPackageReady(package.c_str()))
+        GAGCore::ApplicationHost::requestAssetPackage(package.c_str());
+}
+void Compositor::requestMapTerrain(const SceneMap& map)
+{
+    if (requestedMapIdentity != map.identity()) {
+        requestedMapIdentity = map.identity();
+        requestedTerrainPackages.clear();
+        std::vector<bool> present(definitions.materials.size());
+        std::bitset<1u << 16> seen;
+        for (int y = 0; y < map.getH(); ++y)
+            for (int x = 0; x < map.getW(); ++x) {
+                const auto type = map.vertexTerrainAt(x, y);
+                if (seen[type]) continue;
+                seen.set(type);
+                present[materialFor(map, type)] = true;
+            }
+        for (size_t id = 0; id < present.size(); ++id) {
+            const auto& sprite = definitions.materials[id].sprite;
+            if (present[id] && sprite.starts_with("data/gfx/terrain-"))
+                requestedTerrainPackages.push_back("hd-" + sprite.substr(9));
+        }
+    }
+    for (const auto& package : requestedTerrainPackages) requestTerrainPackage(package);
+}
+#endif
 void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
                                 int left, int top, int right, int bottom)
 {
     Usage usage;
     for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
+#ifdef __EMSCRIPTEN__
+    if (hd && GAGCore::Sprite::highResolutionRequested()) requestMapTerrain(map);
+#endif
     const int width = std::min(map.getW(), std::max(0, right - left + 1));
     const int height = std::min(map.getH(), std::max(0, bottom - top + 1));
     for (int y = 0; y < height; ++y)
@@ -311,6 +347,11 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
         const auto &m = definitions.materials[id];
         auto &window = windows[sprites[id]];
         if (!hd) continue;
+#ifdef __EMSCRIPTEN__
+        if (requested && GAGCore::Sprite::highResolutionRequested() && m.sprite.starts_with("data/gfx/terrain-") &&
+            std::any_of((*requested)[id].begin(), (*requested)[id].end(), [](auto v) { return v != 0; }))
+            requestTerrainPackage("hd-" + m.sprite.substr(9));
+#endif
         const unsigned phase = unsigned(time) / m.animationTicks % m.animationFrames;
         const bool animated = m.animationFrames > 1 && m.animationTicks > 1;
         std::size_t count = 0;

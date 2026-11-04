@@ -385,6 +385,14 @@ AssetLoader::AssetLoader(const FileManager& files, Options options) : impl(std::
     impl->totals.cpuThreads = impl->cpu.size(); impl->totals.ioThreads = impl->io.size();
 }
 AssetLoader::~AssetLoader() { shutdown(); }
+std::shared_ptr<AssetLoader::Result> AssetLoader::findReady(const std::string& key, std::type_index type,
+        Priority priority) {
+    impl->refreshDirectories();
+    std::lock_guard lock(impl->mutex);
+    if (impl->stopping) throw std::runtime_error("Asset loader stopped");
+    return impl->cached(std::to_string(impl->generation) + ':' + type.name() + ':' + key,
+        priority, false, true);
+}
 std::shared_ptr<AssetLoader::Result> AssetLoader::submit(const std::string& key, std::type_index type,
         std::vector<Dependency> dependencies, std::function<std::shared_ptr<const void>()> work,
         std::function<size_t()> estimate, bool read, Priority priority) {
@@ -455,19 +463,21 @@ AssetLoader::Handle<AssetLoader::Directory> AssetLoader::requestDirectory(const 
 AssetLoader::Handle<AssetLoader::Bytes> AssetLoader::requestBytes(const std::string& path, Priority priority) {
     return requestBytesImpl(path, priority, false);
 }
-AssetLoader::Handle<AssetLoader::Bytes> AssetLoader::requestBytesImpl(const std::string& path, Priority priority, bool transient) {
+AssetLoader::Handle<AssetLoader::Bytes> AssetLoader::requestBytesImpl(const std::string& path, Priority priority,
+        bool transient, size_t maxBytes) {
     impl->checkOwner();
     if(path.starts_with("community/buildings/")) {
         const auto found=impl->communityFiles.find(path);
         const auto content=found==impl->communityFiles.end() ? std::shared_ptr<const Bytes>() : found->second;
-        return requestRead<Bytes>(path,[content,path] {
+        return requestRead<Bytes>(path + ':' + std::to_string(maxBytes),[content,path,maxBytes] {
             if(!content) throw std::runtime_error("Missing verified community asset: "+path);
+            if(content->size() > maxBytes) throw std::runtime_error("Invalid asset length: " + path);
             return content;
         },priority);
     }
     impl->refreshDirectories();
     const auto directories = impl->directories;
-    auto work = [this, directories, path, transient]() -> std::shared_ptr<const void> {
+    auto work = [this, directories, path, transient, maxBytes]() -> std::shared_ptr<const void> {
         SDL_IOStream *stream = nullptr;
         if (utf8Path(path).is_absolute())
             stream = SDL_IOFromFile(path.c_str(), "rb");
@@ -476,7 +486,7 @@ AssetLoader::Handle<AssetLoader::Bytes> AssetLoader::requestBytesImpl(const std:
         if (!stream) throw std::runtime_error("Cannot read asset: " + path);
         std::unique_ptr<SDL_IOStream, decltype(&SDL_CloseIO)> input(stream, SDL_CloseIO);
         const auto length = SDL_GetIOSize(stream);
-        if (length < 0 || length > 256 * 1024 * 1024) throw std::runtime_error("Invalid asset length: " + path);
+        if (length < 0 || uint64_t(length) > maxBytes) throw std::runtime_error("Invalid asset length: " + path);
         impl->acquireRead(size_t(length), transient);
         struct Release {
             Impl *impl; size_t bytes; bool transient; bool transferred = false;
@@ -491,7 +501,8 @@ AssetLoader::Handle<AssetLoader::Bytes> AssetLoader::requestBytesImpl(const std:
             throw std::runtime_error("Truncated asset: " + path);
         return bytes;
     };
-    auto result = submit(path + (transient ? ":decode-input" : ":resident-input"), typeid(Bytes), {}, std::move(work), [] { return size_t(0); }, true, priority);
+    auto result = submit(path + (transient ? ":decode-input:" : ":resident-input:") + std::to_string(maxBytes),
+        typeid(Bytes), {}, std::move(work), [] { return size_t(0); }, true, priority);
     Handle<Bytes> handle(result);
     impl->ready->notify_all();
     return handle;
@@ -501,21 +512,14 @@ AssetLoader::Handle<AssetImage> AssetLoader::requestImage(const std::string& pat
         return request<AssetImage>("unsupported-image:" + path, {}, [path]() -> std::shared_ptr<const AssetImage> {
             throw std::runtime_error("Asset images must use WebP: " + path);
         }, 0, priority);
-    const auto &name = path;
-    impl->refreshDirectories();
-    {
-        std::lock_guard lock(impl->mutex);
-        if (impl->stopping) throw std::runtime_error("Asset loader stopped");
-        const auto key = std::to_string(impl->generation) + ':' + typeid(AssetImage).name() + ':' +
-            name + (highResolution ? ":mips" : ":base");
-        // Pending images still take the ordinary path, which promotes their
-        // byte input as well as their decode when request priority increases.
-        if (auto result = impl->cached(key, priority, false, true)) return Handle<AssetImage>(result);
-    }
-    auto bytes = requestBytesImpl(name, priority, true);
+    const auto key = path + (highResolution ? ":mips" : ":base");
+    // Pending images still take the ordinary path, which promotes their byte
+    // input as well as their decode when request priority increases.
+    if (auto result = findReady(key, typeid(AssetImage), priority)) return Handle<AssetImage>(result);
+    auto bytes = requestBytesImpl(path, priority, true);
     auto work = [bytes, highResolution]() -> std::shared_ptr<const void> { return decodeImage(bytes.get(), highResolution); };
 
-    auto result = submit(name + (highResolution ? ":mips" : ":base"), typeid(AssetImage), {bytes.dependency()}, std::move(work), [bytes, highResolution] { return imageWorkingBytes(features(*bytes.get()), highResolution); }, false, priority);
+    auto result = submit(key, typeid(AssetImage), {bytes.dependency()}, std::move(work), [bytes, highResolution] { return imageWorkingBytes(features(*bytes.get()), highResolution); }, false, priority);
     Handle<AssetImage> handle(result);
     impl->ready->notify_all();
     return handle;
@@ -539,6 +543,9 @@ void AssetLoader::poll(std::chrono::milliseconds budget) {
     impl->checkOwner();
     if (budget <= std::chrono::milliseconds::zero()) return;
     const auto start = Clock::now();
+#ifdef __EMSCRIPTEN__
+    pollBrowserVideo();
+#endif
     do {
         std::unique_ptr<Impl::Job> job;
         { std::lock_guard lock(impl->mutex);

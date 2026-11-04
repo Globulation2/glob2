@@ -173,3 +173,122 @@ test('WebGL context restoration retains settings, editor and confirmation contro
   await clickControl(page,'quit'); await clickControl(page,'choice/1'); await screen(page,'EditorMainMenu');
   expect(errors).toEqual([]);
 });
+
+for (const variant of ['serial', 'threaded']) {
+  test(`HD terrain requested by the match can arrive late (${variant})`, async ({page}, info) => {
+    test.setTimeout(240000);
+    const errors = [];
+    page.on('pageerror', error => errors.push(String(error)));
+    let release;
+    const held = new Promise(resolve => { release = resolve; });
+    const familyState = async () => Object.entries((await state(page)).assets)
+      .filter(([name]) => name.startsWith('hd-terrain-'));
+    await page.route('**/assets/hd-terrain-*.data', async route => {
+      await held;
+      await route.continue();
+    });
+    // Observe terrain-sized responses from the real worker. Global artwork
+    // readiness also waits on unit and building sprites and animated lookahead.
+    await page.addInitScript(() => {
+      window.decodedTerrainGroups = 0;
+      const NativeWorker = Worker;
+      window.Worker = class extends NativeWorker {
+        constructor(url, options) {
+          super(url, options);
+          if (!/\/asset-(?:[a-f0-9]+-)?video-worker\.js$/.test(new URL(url, document.baseURI).pathname)) return;
+          const terrain = new Set();
+          const post = this.postMessage.bind(this);
+          this.postMessage = (message, ...transfer) => {
+            if (message.width > 128 || message.height > 128) terrain.add(message.id);
+            return post(message, ...transfer);
+          };
+          this.addEventListener('message', ({data}) => {
+            if (terrain.delete(data.id) && data.rgba) ++window.decodedTerrainGroups;
+          });
+        }
+      };
+    });
+    await page.goto(`/?renderer=webgl2&gl-errors=1&threads=${variant}`);
+    await screen(page, 'MainMenuScreen');
+    expect((await familyState()).every(([, status]) => status === 'idle')).toBe(true);
+    await clickMainMenu(page, 'custom');
+    await screen(page, 'CustomGameScreen');
+    try {
+      const entered = Date.now();
+      await clickCustomGameStart(page);
+      await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
+      await expect.poll(async () => (await familyState()).some(([, status]) => status === 'downloading')).toBe(true);
+      expect((await familyState()).some(([, status]) => status === 'ready')).toBe(false);
+      await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
+      await page.screenshot({path:info.outputPath('native-while-hd-is-held.png')});
+      const resumed = Date.now();
+      release();
+      await expect.poll(async () => {
+        const families = await familyState();
+        return families.some(([, status]) => status === 'ready') &&
+          families.every(([, status]) => status !== 'downloading');
+      }, {timeout:120000}).toBe(true);
+      const installed = Date.now();
+      const videoFamilies = await page.evaluate(() => Module.glob2AssetManifest.packages.some(entry =>
+        entry.name.startsWith('hd-terrain-') && Module.glob2Assets.states[entry.name] === 'ready' &&
+        entry.parts.some(part => part.files.some(([path]) => path.endsWith('.h264')))));
+      if (videoFamilies)
+        await expect.poll(() => page.evaluate(() => window.decodedTerrainGroups), {timeout:120000}).toBeGreaterThan(0);
+      await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
+      await info.attach('terrain-delivery', {contentType:'application/json', body:JSON.stringify({
+        variant, entryToPackagesMs:installed - entered, releaseToPackagesMs:installed - resumed,
+        releaseToRenderedMs:Date.now() - resumed,
+        families:Object.fromEntries(await familyState()),
+      })});
+      expect((await familyState()).some(([, status]) => status === 'idle')).toBe(true);
+      await page.screenshot({path:info.outputPath('after-hd-arrival.png')});
+      await page.locator('#canvas').press('Escape', {delay:80});
+      await clickControl(page, 'quit');
+      await screen(page, 'EndGameScreen');
+      await page.locator('#canvas').press('Enter', {delay:80});
+      await screen(page, 'CustomGameScreen');
+      await clickControl(page, 'map/mode/1');
+      await clickCustomGameStart(page);
+      await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
+      await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
+      expect(errors).toEqual([]);
+    } finally {
+      release();
+    }
+  });
+}
+
+test('an optional asset video worker failure keeps the match playable', async ({page}, info) => {
+  test.setTimeout(240000);
+  let abortWorker;
+  const hold = new Promise(resolve => { abortWorker = resolve; });
+  let requests = 0;
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await page.route(/\/asset-(?:[a-f0-9]+-)?video-worker\.js$/, async route => {
+    ++requests;
+    await hold;
+    await route.abort();
+  });
+  await page.goto('/?renderer=webgl2&gl-errors=1&threads=serial');
+  await screen(page, 'MainMenuScreen');
+  const hasVideo = await page.evaluate(() => Module.glob2AssetManifest.packages.some(entry =>
+    entry.parts.some(part => part.files.some(([path]) => path.endsWith('.h264')))));
+  test.skip(!hasVideo, 'The WebP-only build has no asset video worker requests');
+  try {
+    await clickMainMenu(page, 'custom');
+    await screen(page, 'CustomGameScreen');
+    await clickCustomGameStart(page);
+    await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
+    await expect.poll(() => requests, {timeout:120000}).toBeGreaterThan(0);
+    const tick = (await state(page)).tick;
+    abortWorker();
+    await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(tick + 25);
+    await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
+    expect((await state(page)).renderContext.error).toBe(0);
+    expect(errors).toEqual([]);
+    await page.screenshot({path:info.outputPath('worker-failure-native-fallback.png')});
+  } finally {
+    abortWorker();
+  }
+});

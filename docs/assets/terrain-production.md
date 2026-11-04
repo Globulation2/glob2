@@ -345,12 +345,12 @@ individual tile: its heather cushions are whole cells, and Voronoi-based marks
 (cracks, shale plates, lumps, mudflat plates, scree fragments) keep their
 boundary cells in every layout.
 
-Lava and ember field are animated: four 8×8 layouts with four phases, frame
+Lava, molten lava pools, and ember fields use four 8×8 layouts with four phases, frame
 `cell + 64 * layout + 256 * phase` (frames 0–1023), catalogued with
-`animation_frames 4`, `animation_stride 256`, `animation_ticks 8` and
+`animation_frames 4`, `animation_stride 256`, `animation_ticks 16` and
 `animation_blend_steps 4` (the recipe's `blend_steps`): the crossfade moves in
-four steps per phase, so animated pages recompose four times per phase rather
-than every tick. Each layout's crust is shared by its phases; only the glow
+four steps per phase, holding each weight for four render ticks. A full loop
+takes 64 render ticks. Each layout's crust is shared by its phases; only the glow
 ramp moves.
 
 ### Positional variants

@@ -1029,6 +1029,9 @@ namespace GAGCore
 		static HighResolutionStats highResolutionStats();
 		static void setHighResolution(bool enabled);
         static void requestHighResolution(bool enabled);
+        static bool highResolutionRequested();
+        // An empty name refreshes sprites from the shared HD package.
+        static void refreshHighResolutionSprite(const std::string &name);
         // Large terrain banks retain native frames and stream only the caller's HD window.
         static void deferHighResolution(const std::string& name);
         static bool highResolutionDeferred(const std::string& name);

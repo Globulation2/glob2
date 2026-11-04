@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTENT = "content"
 ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
 PILLOW_VERSION = "12.2.0"
+BROTLI_VERSION = "1.2.0"
 ENCODING = json.loads((ROOT / "tools/image_encoding.json").read_text())
 WEBP_VERSION = ENCODING["webpVersion"]
 POLICY = "runtime-assets-v1"
@@ -101,36 +102,39 @@ def source_files(root, platform):
                 yield p
 
 
-def encoder_ready():
+def encoder_ready(require_brotli=False):
     try:
         from PIL import Image, features
 
         return (
             Image.__version__ == PILLOW_VERSION
             and features.version("webp") == WEBP_VERSION
+            and (not require_brotli or __import__("brotli").__version__ == BROTLI_VERSION)
         )
     except ImportError:
         return False
 
 
-def encoder_probe_command(python):
+def encoder_probe_command(python, require_brotli=False):
     """Validate external interpreters against the same pins as encoder_ready."""
     return [
         str(python),
         "-c",
         "from PIL import Image, features; "
         f"assert Image.__version__ == {PILLOW_VERSION!r} "
-        f"and features.version('webp') == {WEBP_VERSION!r}",
+        f"and features.version('webp') == {WEBP_VERSION!r}" +
+        (f"; import brotli; assert brotli.__version__ == {BROTLI_VERSION!r}" if require_brotli else ""),
     ]
 
 
-def encoder_python():
+def encoder_python(require_brotli=False):
     """Use a private, pinned build-time environment, never modify system Python."""
     configured = os.environ.get("GLOB2_ASSET_ENCODER_PYTHON")
     if configured:
         subprocess.run(encoder_probe_command(configured), check=True)
-        return configured
-    if encoder_ready():
+        if not require_brotli or subprocess.run(encoder_probe_command(configured, True), capture_output=True).returncode == 0:
+            return configured
+    if encoder_ready(require_brotli):
         return sys.executable
     sys.path.insert(0, str(ROOT / "scons"))
     from dev_store import cache, Lease
@@ -138,6 +142,7 @@ def encoder_python():
     name = (
         "asset-encoder-"
         + POLICY
+        + ("-brotli" if require_brotli else "")
         + "-py"
         + str(sys.version_info.major)
         + "."
@@ -147,7 +152,7 @@ def encoder_python():
     python = (
         location / "venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
     )
-    probe_command = encoder_probe_command(python)
+    probe_command = encoder_probe_command(python, require_brotli)
     with Lease(location):
         ready = (
             python.exists()
@@ -269,7 +274,7 @@ def publish_cache_file(temporary, destination):
         temporary.unlink(missing_ok=True)
 
 
-def encode_image(source, relative, cache, lossy):
+def encode_image(source, relative, cache, lossy, *, sheet_candidate=None):
     """Cache the smallest allowed encoding after validating dimensions and pixels."""
     from PIL import Image, features
 
@@ -279,6 +284,8 @@ def encode_image(source, relative, cache, lossy):
     expected = rgba.tobytes()
     recipe = image_recipe(lossy)
     recipe.update(policy=POLICY, zlib=features.version("zlib"))
+    if sheet_candidate is not None:
+        recipe.update(sheet_candidate=sheet_candidate, lossy_quality=75)
     high_depth = raw[24] > 8
     # PNG IHDR color type 6 is the supported renderer RGBA64 conversion.
     convert_depth = high_depth and raw[25] == 6
@@ -320,10 +327,12 @@ def encode_image(source, relative, cache, lossy):
             pass  # A damaged cache is regenerable from the source artwork.
     # Both encodings use the same renderer-visible reference, including RGBA64.
     profile = {k: image.info[k] for k in ("icc_profile", "exif") if k in image.info}
-    stream = io.BytesIO()
-    rgba.save(stream, format="WEBP", lossless=True, quality=75, method=4,
-              exact=True, **profile)
-    candidates = [(stream.getvalue(), ".webp", False)]
+    candidates = []
+    if sheet_candidate != "q75":
+        stream = io.BytesIO()
+        rgba.save(stream, format="WEBP", lossless=True, quality=75, method=4,
+                  exact=True, **profile)
+        candidates.append((stream.getvalue(), ".webp", False))
     if recipe["lossy"] and (not high_depth or convert_depth):
         profile = {k: image.info[k] for k in ("icc_profile", "exif") if k in image.info}
         stream = io.BytesIO()
@@ -352,6 +361,16 @@ def encode_image(source, relative, cache, lossy):
         lossy=is_lossy,
         recipe=recipe,
     )
+    if sheet_candidate is not None:
+        from PIL import ImageChops
+
+        if is_lossy:
+            visible = rgba.getchannel("A").point(lambda value: 255 if value else 0)
+            diff = ImageChops.difference(rgba.convert("RGB"), decoded_rgba(data).convert("RGB"))
+            record["visible_rgb_sse"] = sum((index % 256) ** 2 * count
+                                            for index, count in enumerate(diff.histogram(mask=visible)))
+        else:
+            record["visible_rgb_sse"] = 0
     entry.mkdir(parents=True, exist_ok=True)
     # Unique temporary files also permit independent exporters sharing this cache.
     with tempfile.NamedTemporaryFile(dir=entry, delete=False) as f:
@@ -366,7 +385,7 @@ def encode_image(source, relative, cache, lossy):
     return blob, record
 
 
-def sheet_plan(files, root):
+def sheet_plan(files, root, terrain_sprites=()):
     """{sprite: [sheet]} for the SPRITE_SHEETS frames among files.
 
     Each sheet holds a run of consecutive frames of one layer and one size, at
@@ -374,15 +393,25 @@ def sheet_plan(files, root):
     from PIL import Image
 
     plans = {}
-    for sprite in SPRITE_SHEETS:
-        directory, name = sprite.rsplit("/", 1)
-        pattern = re.compile(re.escape(name) + r"(\d+)(r?)\.png")
-        frames = {}
-        for source in files:
-            relative = source.relative_to(root)
-            match = pattern.fullmatch(relative.name)
-            if relative.parent.as_posix() == directory and match:
-                frames[(int(match.group(1)), match.group(2) == "r")] = source
+    families = {sprite: {} for sprite in (*SPRITE_SHEETS, *sorted(set(terrain_sprites)))}
+    for source in files:
+        relative = source.relative_to(root).as_posix()
+        match = re.fullmatch(r"(.+?)(\d+)(r?)\.png", relative)
+        if not match:
+            continue
+        prefix, digits, layer = match.groups()
+        # A declared family can itself end in a digit. Prefer its longest
+        # matching prefix while leaving at least one digit for the frame.
+        for split in range(len(digits) - 1, -1, -1):
+            frames = families.get(prefix + digits[:split])
+            if frames is None:
+                continue
+            key = int(digits[split:]), layer == "r"
+            if key in frames:
+                raise ValueError("Duplicate sprite frame: " + relative)
+            frames[key] = source
+            break
+    for sprite, frames in families.items():
         if not frames:
             continue
         count = 1 + max(index for index, _ in frames)
@@ -407,7 +436,7 @@ def sheet_plan(files, root):
                     sheets.append(run)
                 run["frames"].append(source)
         for number, sheet in enumerate(sheets):
-            sheet["name"] = "%s-sheet-%d.png" % (name, number)
+            sheet["name"] = f"{Path(sprite).name}-sheet-{number}.png"
         plans[sprite] = sheets
     return plans
 
@@ -517,7 +546,7 @@ def verify_highres_atlases(root):
                 raise ValueError("Source atlas frame placement differs: " + str(frame_path))
 
 
-def terrain_runtime_fingerprints(compiler, sources, root, stage, sheets):
+def terrain_runtime_fingerprints(compiler, sources, root, stage, sheets, packed_fingerprints=None):
     """Attest to the pixels Sprite will load, including encoded sheet frames.
 
     Original PNG hashes remain provenance; decoded runtime fingerprints distinguish
@@ -525,7 +554,7 @@ def terrain_runtime_fingerprints(compiler, sources, root, stage, sheets):
     """
     from PIL import Image
 
-    fingerprints = {}
+    fingerprints = dict(packed_fingerprints or {})
     for sprite, plan in sheets.items():
         for sheet in plan:
             relevant = [
@@ -551,6 +580,37 @@ def terrain_runtime_fingerprints(compiler, sources, root, stage, sheets):
             with Image.open(encoded if encoded.exists() else path) as image:
                 fingerprints[name] = compiler.pixel_fingerprint(image)
     return fingerprints
+
+
+def compiled_terrain_pack(compiler, document, root, cache, source_hashes, fingerprints):
+    """Cache the derived WebP pages so a warm release export performs no encodes."""
+    key = hashlib.sha256(json.dumps([
+        POLICY, image_recipe(False), hashlib.sha256(Path(compiler.__file__).read_bytes()).hexdigest(),
+        document, source_hashes, fingerprints, compiler.material_provenance(document, root),
+    ], sort_keys=True).encode()).hexdigest()
+    entry = cache / ("compiled-terrain-" + key)
+    marker = entry / "checksums.json"
+    from dev_store import Lease
+    with Lease(entry, exclusive=True, track_use=False):
+        try:
+            hashes = json.loads(marker.read_text())
+            if hashes and all(Path(name).name == name and
+                              hashlib.sha256((entry / name).read_bytes()).hexdigest() == digest
+                              for name, digest in hashes.items()):
+                return [entry / name for name in sorted(hashes)]
+        except (OSError, ValueError):
+            pass
+        entry.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="terrain-pack-", dir=cache) as temporary:
+            pack = Path(temporary)
+            compiler.compile_tileset(document, pack, root=root, runtime_fingerprints=fingerprints)
+            hashes = {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in pack.iterdir()}
+            for name in hashes:
+                os.replace(pack / name, entry / name)
+            pending = pack / marker.name
+            pending.write_text(json.dumps(hashes, sort_keys=True))
+            os.replace(pending, marker)
+        return [entry / name for name in sorted(hashes)]
 
 
 def packaging_jobs(jobs=None):
@@ -586,6 +646,26 @@ def encode_sheet(sheet, root, cache, lossy, relative):
     return source, blob, record
 
 
+def encode_terrain_sheet_group(sheets, root, cache, lossy):
+    """Choose a single WebP mode for the whole material family."""
+    candidates = {}
+    sources = [pack_sheet(sheet, root, cache) for sheet in sheets]
+    for mode in (("lossless", "q75") if lossy else ("lossless",)):
+        pages = []
+        for sheet, source in zip(sheets, sources):
+            blob, record = encode_image(source, sheet["name"], cache, mode == "q75",
+                                        sheet_candidate=mode)
+            verify_sheet(sheet, blob, exact=not record["lossy"])
+            pages.append((source, blob, record))
+        candidates[mode] = pages
+    scores = {mode: dict(stored_bytes=sum(blob.stat().st_size for _, blob, _ in pages)
+                         + len(sheet_index(sheets)),
+                         visible_rgb_sse=sum(record["visible_rgb_sse"] for _, _, record in pages))
+              for mode, pages in candidates.items()}
+    winner = min(scores, key=lambda mode: scores[mode]["stored_bytes"])
+    return candidates[winner], dict(winner=winner, candidates=scores)
+
+
 def _export_assets(
     root,
     output,
@@ -595,6 +675,11 @@ def _export_assets(
     cache=None,
     worker=False,
     jobs=None,
+    *,
+    terrain_sheets=False,
+    packed_hd_sprites=False,
+    sprite_ffmpeg=None,
+    video_sprites=False,
 ):
     root, output = Path(root).resolve(), Path(output).resolve()
     content = root / CONTENT
@@ -614,15 +699,17 @@ def _export_assets(
         "web",
     ):
         raise ValueError("Unknown asset platform: " + platform)
+    needs_brotli = platform == "web" and optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg)
+    ready = encoder_ready(True) if needs_brotli else encoder_ready()
     if (
         (optimized or catalog.is_file())
-        and not encoder_ready()
+        and not ready
         and (catalog.is_file() or any(p.suffix.lower() == ".png" for p in source_files(root, platform)))
     ):
         if worker:
             raise RuntimeError("Packaging requires Pillow 12.2.0 with libwebp 1.6.0")
         command = [
-            encoder_python(),
+            encoder_python(True) if needs_brotli else encoder_python(),
             str(Path(__file__).resolve()),
             "--source",
             str(root),
@@ -636,6 +723,14 @@ def _export_assets(
         ]
         if not optimized:
             command.append("--original")
+        if terrain_sheets:
+            command.append("--terrain-sheets")
+        if packed_hd_sprites:
+            command.append("--packed-hd-sprites")
+        if video_sprites:
+            command.append("--video-sprites")
+        if sprite_ffmpeg:
+            command.extend(("--sprite-ffmpeg", str(Path(sprite_ffmpeg).resolve())))
         command.append("--lossy-images" if lossy else "--lossless-images")
         if cache:
             command += ["--cache", str(cache)]
@@ -648,7 +743,10 @@ def _export_assets(
         spec = importlib.util.spec_from_file_location("terrain_tileset", root / "tools/terrain_tileset.py")
         compiler = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(compiler)
-        compiler.validate(compiler.terrain_catalog.load(content), root)
+        terrain_document = compiler.terrain_catalog.load(content)
+        compiler.validate(terrain_document, root)
+    else:
+        terrain_document = None
 
     if cache is None:
         cache = root / "build/asset-cache"
@@ -665,31 +763,125 @@ def _export_assets(
     files = list(source_files(root, platform))
     if optimized:
         verify_highres_atlases(content)
-    sheets = sheet_plan(files, content) if optimized else {}
+    terrain_sprites = {
+        material["sprite"] for material in terrain_document["materials"]
+        if material["sprite"].startswith("data/gfx/terrain-")
+    } if (terrain_sheets or video_sprites or sprite_ffmpeg) and terrain_document else set()
+    sheets = sheet_plan(files, content, terrain_sprites) if optimized else {}
+    terrain_selections = {}
+    hd_selections = {}
+    native_selections = {}
+    hd_rows, hd_groups, hd_references, hd_index_groups = [], {}, {}, {}
+    if optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg):
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        from tools import packed_sprite_assets
+        hd_rows, hd_groups = packed_sprite_assets.plan(content, terrain_document)
+        if video_sprites and not sprite_ffmpeg and lossy:
+            sys.path.insert(0, str(ROOT / "scons"))
+            from dev_store import Lease
+            from recording_dependencies import build
+            directory = cache / "host-sprite-encoder"
+            with Lease(directory, exclusive=True, track_use=False):
+                prefix = build(directory / "prefix", directory / "sources", jobs=jobs, sprite_tool=True)
+            sprite_ffmpeg = prefix / "bin" / ("ffmpeg.exe" if os.name == "nt" else "ffmpeg")
+        encoder = packed_sprite_assets.encoder_identity(sprite_ffmpeg) if sprite_ffmpeg else None
+    native_groups = {}
+    if optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg):
+        materials = {m["sprite"]: m for m in (terrain_document or {}).get("materials", [])}
+        for sprite, pages in sheets.items():
+            if sprite not in terrain_sprites and sprite != "data/gfx/unit":
+                continue
+            for page in pages:
+                layer = 5 if page["rotated"] else 4
+                for offset, path in enumerate(page["frames"]):
+                    index = page["first"] + offset
+                    stem = Path(sprite).name
+                    if sprite == "data/gfx/unit":
+                        clip, measured = packed_sprite_assets.unit_clip(index)
+                        stem += "-" + clip
+                        crf = 26 if layer == 5 and measured is not None else None
+                    else:
+                        crf = 26
+                    name = stem + ("-team" if layer == 5 else "-base")
+                    group = native_groups.setdefault(sprite, {}).setdefault(name, dict(
+                        material=materials.get(sprite), crf=crf, native=True, fingerprints=sprite in terrain_sprites, frames=[]))
+                    group["frames"].append((index, sprite, layer, path))
     packed = {f for plan in sheets.values() for sheet in plan for f in sheet["frames"]}
+    packed_fingerprints = {}
     with tempfile.TemporaryDirectory(
         prefix=output.name + "-staging-", dir=output.parent
     ) as temporary, encoding_executor(jobs) as encoders:
         stage = Path(temporary)
         # Submit independent work before consuming it in source order. Workers
         # never publish the export or mutate its ordered audit/destination set.
+        hd_futures = {
+            name: encoders.submit(packed_sprite_assets.encode_group, name, group, cache, platform, encoder, lossy)
+            for name, group in hd_groups.items()
+        }
+        native_futures = {
+            sprite: {name: encoders.submit(packed_sprite_assets.encode_group, name, group, cache, platform,
+                                          encoder if platform != "web" else None, lossy)
+                     for name, group in groups.items()}
+            for sprite, groups in native_groups.items()
+        }
+        hd_sources = {path for group in hd_groups.values() for _, _, _, path in group["frames"]}
         encoded = {}
         for source in files:
             relative = source.relative_to(content)
             public_png = platform == "linux" and relative.parts[:2] == ("data", "screenshots")
-            if optimized and source not in packed and source.suffix.lower() == ".png" and not public_png:
+            if optimized and source not in packed and source not in hd_sources and source.suffix.lower() == ".png" and not public_png:
                 encoded[source] = encoders.submit(encode_image, source, relative.as_posix(), cache, lossy)
         encoded_sheets = {}
+        encoded_terrain = {}
         for sprite, plan in sheets.items():
+            if sprite in native_futures:
+                continue
+            if sprite in terrain_sprites:
+                encoded_terrain[sprite] = encoders.submit(encode_terrain_sheet_group, plan, content, cache, lossy)
+                continue
             for sheet in plan:
                 relative = Path(sprite).parent / sheet["name"]
                 encoded_sheets[relative] = encoders.submit(encode_sheet, sheet, content, cache, lossy, relative)
+        for name, future in hd_futures.items():
+            directory, result, cache_hit = future.result()
+            hd_selections[name] = {key: value for key, value in result.items() if key not in ("refs", "hashes", "fingerprints")}
+            hd_selections[name]["cache_hit"] = cache_hit
+            if result["winner"] is None:
+                continue
+            group = hd_groups[name]
+            if platform == "web":
+                frames = sorted(group["frames"])
+                family = Path(group["material"]["sprite"]).name if group["material"] else None
+                hd_index_groups.setdefault(family, []).append(
+                    [frames[0][2], [ident for _, ident, _, _ in frames]])
+            for index, ident, layer, path in group["frames"]:
+                hd_references[ident, layer] = result["refs"].get(index, result["refs"].get(str(index)))
+                packed.add(path)
+            source_bytes = sum(path.stat().st_size for _, _, _, path in group["frames"])
+            for number, (filename, digest) in enumerate(sorted(result["hashes"].items())):
+                destination = packed_sprite_assets.HD / filename
+                if destination in destinations:
+                    raise ValueError("Duplicate exported path: " + str(destination))
+                destinations.add(destination)
+                target = stage / destination
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(directory / filename, target)
+                records.append(dict(source="data/highres/v1/frames.txt", output=destination.as_posix(),
+                                    source_sha256=directory.name.removeprefix("sprite-pack-"),
+                                    output_sha256=digest, source_bytes=source_bytes if number == 0 else 0,
+                                    output_bytes=target.stat().st_size, lossy=result["winner"] != "lossless",
+                                    recipe=packed_sprite_assets.PACK_RECIPE, sprite_group="hd/" + name))
+        for source in hd_sources - packed:
+            relative = source.relative_to(content)
+            encoded[source] = encoders.submit(encode_image, source, relative.as_posix(), cache, lossy)
         for source in files:
             if source in packed:
                 continue
             relative = source.relative_to(content)
             blob = source
             record = dict(lossy=False)
+            audit_fields = {}
             # AppStream screenshot references are public PNG URLs, not image-loader
             # logical names. Keep their original representation on Linux.
             public_png = platform == "linux" and relative.parts[:2] == (
@@ -709,7 +901,34 @@ def _export_assets(
             if optimized and relative.as_posix() == "data/highres/v1/frames.txt":
                 # Source indices continue to describe source PNGs; runtime indices
                 # name only the generated artwork. Frame IDs and geometry stay intact.
-                target.write_bytes(re.sub(rb"\.png(?=\s|$)", b".webp", blob.read_bytes()))
+                if hd_references:
+                    runtime_rows = {None: ["GLOB2_HIGHRES 2"]}
+                    family_names = sorted((Path(material["sprite"]).name
+                                           for material in (terrain_document or {}).get("materials", [])
+                                           if material["sprite"].startswith("data/gfx/terrain-")),
+                                          key=lambda name: (-len(name), name))
+                    for row in hd_rows:
+                        layers = [hd_references.get((row[0], layer), re.sub(r"\.png$", ".webp", row[layer]))
+                                  for layer in (4, 5)]
+                        family = packed_sprite_assets.terrain_family(row[0], family_names) if platform == "web" else None
+                        runtime_rows.setdefault(family, ["GLOB2_HIGHRES 2"]).append(" ".join(row[:4] + layers))
+                    target.write_text("\n".join(runtime_rows.pop(None)) + "\n")
+                    for family, rows in sorted(runtime_rows.items()):
+                        index_path = relative.with_name(f"{family}.frames")
+                        if index_path in destinations:
+                            raise ValueError("Duplicate exported path: " + str(index_path))
+                        destinations.add(index_path)
+                        blob = ("\n".join(rows) + "\n").encode()
+                        (stage / index_path).write_bytes(blob)
+                        records.append(dict(source=relative.as_posix(), output=index_path.as_posix(),
+                            source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+                            output_sha256=hashlib.sha256(blob).hexdigest(), source_bytes=0,
+                            output_bytes=len(blob), lossy=False, recipe=packed_sprite_assets.PACK_RECIPE,
+                            sprite_hd_index_groups=hd_index_groups.get(family, [])))
+                    if platform == "web":
+                        audit_fields["sprite_hd_index_groups"] = hd_index_groups.get(None, [])
+                else:
+                    target.write_bytes(re.sub(rb"\.png(?=\s|$)", b".webp", blob.read_bytes()))
             else:
                 shutil.copyfile(blob, target)
             records.append(
@@ -722,12 +941,62 @@ def _export_assets(
                     output_bytes=target.stat().st_size,
                     lossy=record["lossy"],
                     recipe=record.get("recipe"),
+                    **audit_fields,
                 )
             )
         for sprite, plan in sheets.items():
-            for sheet in plan:
+            if sprite in native_futures:
+                lines = ["GLOB2_SPRITES 2"]
+                index_groups = []
+                index_path = Path(sprite + ".sheet")
+                for name, future in native_futures[sprite].items():
+                    directory, result, cache_hit = future.result()
+                    if result["winner"] is None:
+                        raise ValueError("Cannot pack native sprite group: " + name)
+                    audit = {key: value for key, value in result.items() if key not in ("refs", "hashes", "fingerprints")}
+                    audit["cache_hit"] = cache_hit
+                    native_selections[name] = audit
+                    if sprite in terrain_sprites:
+                        terrain_selections[sprite] = audit
+                    group = native_groups[sprite][name]
+                    index_groups.append(len(group["frames"]))
+                    for index, _, layer, path in group["frames"]:
+                        key = str(index) if cache_hit else index
+                        lines.append(f"{result['refs'][key]} {'rotated' if layer == 5 else 'image'} {index}")
+                        if group["fingerprints"]:
+                            packed_fingerprints[path.relative_to(content).as_posix()] = result["fingerprints"][key]
+                    source_bytes = sum(path.stat().st_size for _, _, _, path in group["frames"])
+                    for filename, digest in sorted(result["hashes"].items()):
+                        destination = Path(sprite).parent / filename
+                        if destination in destinations:
+                            raise ValueError("Duplicate exported path: " + str(destination))
+                        destinations.add(destination)
+                        target = stage / destination
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copyfile(directory / filename, target)
+                        records.append(dict(source=index_path.as_posix(), output=destination.as_posix(),
+                            source_sha256=directory.name.removeprefix("sprite-pack-"),
+                            output_sha256=digest, source_bytes=source_bytes,
+                            output_bytes=target.stat().st_size, lossy=result["winner"] != "lossless",
+                            recipe=packed_sprite_assets.PACK_RECIPE, sprite_group="native/" + name))
+                        source_bytes = 0
+                if index_path in destinations:
+                    raise ValueError("Duplicate exported path: " + str(index_path))
+                destinations.add(index_path)
+                blob = ("\n".join(lines) + "\n").encode()
+                (stage / index_path).write_bytes(blob)
+                digest = hashlib.sha256(blob).hexdigest()
+                records.append(dict(source=index_path.as_posix(), output=index_path.as_posix(),
+                    source_sha256=digest, output_sha256=digest, source_bytes=0,
+                    output_bytes=len(blob), lossy=False, recipe=packed_sprite_assets.PACK_RECIPE,
+                    sprite_index_groups=index_groups))
+                continue
+            if sprite in encoded_terrain:
+                pages, terrain_selections[sprite] = encoded_terrain[sprite].result()
+            else:
+                pages = [encoded_sheets[Path(sprite).parent / sheet["name"]].result() for sheet in plan]
+            for sheet, (source, blob, record) in zip(plan, pages):
                 relative = Path(sprite).parent / sheet["name"]
-                source, blob, record = encoded_sheets[relative].result()
                 destination = relative.with_suffix(record["suffix"])
                 if destination in destinations:
                     raise ValueError("Duplicate exported path: " + str(destination))
@@ -773,31 +1042,26 @@ def _export_assets(
                     recipe=None,
                 )
             )
-        if catalog.is_file():
-            document = compiler.terrain_catalog.load(content)
-            compiled = document.get("compiled_pack")
-            if compiled:
-                with tempfile.TemporaryDirectory(prefix="terrain-pack-", dir=output.parent) as temporary_pack:
-                    pack = Path(temporary_pack)
-                    fingerprints = terrain_runtime_fingerprints(
-                        compiler, compiler.validate(document, root), content, stage, sheets
-                    )
-                    compiler.compile_tileset(
-                        document, pack, root=root, runtime_fingerprints=fingerprints
-                    )
-                    for generated in sorted(pack.iterdir()):
-                        destination = Path(compiled).parent / generated.name
-                        if destination in destinations:
-                            raise ValueError("Duplicate compiled terrain path: " + str(destination))
-                        destinations.add(destination)
-                        target = stage / destination
-                        target.parent.mkdir(parents=True, exist_ok=True)
-                        shutil.copyfile(generated, target)
-                        records.append(dict(source="data/terrain/tileset.json", output=destination.as_posix(),
-                            source_sha256=catalog_sha256(compiler.terrain_catalog, content),
-                            output_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
-                            source_bytes=0, output_bytes=target.stat().st_size, lossy=False,
-                            recipe=None, generated_by="tools/terrain_tileset.py"))
+        if terrain_document and (compiled := terrain_document.get("compiled_pack")):
+            source_hashes = compiler.validate(terrain_document, root)
+            fingerprints = terrain_runtime_fingerprints(
+                compiler, source_hashes, content, stage,
+                {name: plan for name, plan in sheets.items() if name not in native_groups}, packed_fingerprints
+            )
+            pages = compiled_terrain_pack(compiler, terrain_document, root, cache, source_hashes, fingerprints)
+            catalog_digest = catalog_sha256(compiler.terrain_catalog, content)
+            for generated in pages:
+                destination = Path(compiled).parent / generated.name
+                if destination in destinations:
+                    raise ValueError("Duplicate compiled terrain path: " + str(destination))
+                destinations.add(destination)
+                target = stage / destination
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(generated, target)
+                records.append(dict(source="data/terrain/tileset.json", output=destination.as_posix(),
+                    source_sha256=catalog_digest, output_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
+                    source_bytes=0, output_bytes=target.stat().st_size, lossy=False,
+                    recipe=None, generated_by="tools/terrain_tileset.py"))
         audit = dict(
             policy=POLICY,
             platform=platform,
@@ -805,6 +1069,9 @@ def _export_assets(
             lossy_images=lossy,
             image_recipe=image_recipe(lossy) if optimized else None,
             files=records,
+            terrain_sheet_selections=terrain_selections,
+            hd_sprite_selections=hd_selections,
+            native_sprite_selections=native_selections,
             source_bytes=sum(x["source_bytes"] for x in records),
             output_bytes=sum(x["output_bytes"] for x in records),
         )
@@ -878,6 +1145,11 @@ def export_assets(
     cache=None,
     worker=False,
     jobs=None,
+    *,
+    terrain_sheets=False,
+    packed_hd_sprites=False,
+    sprite_ffmpeg=None,
+    video_sprites=False,
 ):
     """Export a complete runtime tree and return its source/output audit.
 
@@ -886,13 +1158,19 @@ def export_assets(
     acquires the output lease itself, avoiding a recursive lock in its parent.
     """
     jobs = packaging_jobs(jobs)
-    if (optimized or (Path(root) / CONTENT / "data/terrain/tileset.json").is_file()) and not encoder_ready() and not worker:
-        return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs)
+    needs_brotli = platform == "web" and optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg)
+    ready = encoder_ready(True) if needs_brotli else encoder_ready()
+    if (optimized or (Path(root) / CONTENT / "data/terrain/tileset.json").is_file()) and not ready and not worker:
+        return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs,
+                              terrain_sheets=terrain_sheets, packed_hd_sprites=packed_hd_sprites,
+                              sprite_ffmpeg=sprite_ffmpeg, video_sprites=video_sprites)
     sys.path.insert(0, str(ROOT / "scons"))
     from dev_store import Lease
 
     with Lease(Path(output).resolve(), exclusive=True, track_use=False):
-        return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs)
+        return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs,
+                              terrain_sheets=terrain_sheets, packed_hd_sprites=packed_hd_sprites,
+                              sprite_ffmpeg=sprite_ffmpeg, video_sprites=video_sprites)
 
 
 def main():
@@ -914,12 +1192,20 @@ def main():
     images.add_argument("--lossless-images", "--lossless-background", dest="lossy_images",
                         action="store_false",
                         help="Require exact RGBA; --lossless-background is a deprecated alias")
+    parser.add_argument("--terrain-sheets", action="store_true",
+                        help="Pilot catalog terrain sheets using lossless or Q75 WebP")
+    parser.add_argument("--packed-hd-sprites", action="store_true",
+                        help="Pilot verified packed HD terrain and stock unit sprites")
+    parser.add_argument("--video-sprites", action="store_true",
+                        help="Try RGB H.264 for HD groups with the pinned host encoder")
+    parser.add_argument("--sprite-ffmpeg", type=Path,
+                        help="Try RGB H.264 for HD groups using this pinned host FFmpeg executable")
     parser.add_argument("--jobs", type=int, help="Concurrent image/sheet encoders (default: available CPUs)")
     parser.add_argument("--cache", type=Path)
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.encoder_python:
-        print(encoder_python())
+        print(encoder_python(args.platform == "web"))
         return
     if args.jobs is not None and args.jobs < 1:
         parser.error("--jobs must be a positive integer")
@@ -934,6 +1220,10 @@ def main():
         args.cache,
         args.worker,
         args.jobs,
+        terrain_sheets=args.terrain_sheets,
+        packed_hd_sprites=args.packed_hd_sprites,
+        sprite_ffmpeg=args.sprite_ffmpeg,
+        video_sprites=args.video_sprites,
     )
     print(
         "Runtime assets: %d -> %d bytes (%d files)"

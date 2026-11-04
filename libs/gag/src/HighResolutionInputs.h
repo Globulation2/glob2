@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include <AssetLoader.h>
+#include "PackedSpriteFrame.h"
 #include <array>
 #include <unordered_map>
 
@@ -60,6 +60,14 @@ public:
         ++entries[mipmaps][path].uses;
     }
     void request(AssetLoader& loader, const std::string& path, bool mipmaps = true) {
+        const auto load = [&](bool mips) {
+            const auto token = path.substr(path.find_last_of('/') + 1);
+            if (!token.starts_with('@'))
+                return loader.requestImage(path, AssetLoader::Priority::Required, mips);
+            PackedSpriteFrame location;
+            return location.parse(token, location) ? location.request(loader, path, mips)
+                : AssetLoader::Handle<AssetImage>{};
+        };
         bool registered = mipmaps;
         auto* entry = find(path, registered);
         if (!entry) return;
@@ -67,11 +75,11 @@ public:
         // upgrade gets its own decode; never retarget an in-flight subscription.
         if (mipmaps && !registered) {
             if (!entry->upgradeRequested) {
-                entry->upgraded = loader.requestImage(path, AssetLoader::Priority::Required, true);
+                entry->upgraded = load(true);
                 entry->upgradeRequested = true;
             }
         } else if (!entry->requested && !entry->upgradeRequested) {
-            entry->handle = loader.requestImage(path, AssetLoader::Priority::Required, registered);
+            entry->handle = load(registered);
             entry->requested = true;
         }
     }

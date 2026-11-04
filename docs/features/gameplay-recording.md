@@ -166,12 +166,12 @@ and variable bitrate starting at `max(1 Mbps, width × height × fps × 0.12)`.
 The pinned hashes are in `scons/recording-versions.json`; the minimal dependency
 recipe and cache validation are in `scons/recording_dependencies.py`. Default builds
 enable H.264 encoders and AAC, with MP4/WebM muxing, MOV/Matroska demuxing and
-required conversion/prerequisites. No decoders, filters, tools or network protocols
-are included. Release
+required conversion/prerequisites. Native clients and the browser's lazy asset
+video worker use the same pinned software H.264 decoder and parser. Release
 source archives include the original dependency archives for offline rebuilds,
 and packages include their license notices. Dependencies retain native/WASM SIMD;
 encoder optimization flags do not alter simulation compiler flags. WebM profiles instead
-enable only the selected VP9/AV1 encoder and Opus. Both container readers and
+use the selected VP9/AV1 encoder and Opus for recording. Both container readers and
 writers are included to allow recovery of existing recordings across builds.
 WebM software settings use realtime mode, CPU-used 8, no lookahead, one thread,
 and a two-second keyframe interval. Opus uses the native client's existing library, with stereo audio at 48 kHz

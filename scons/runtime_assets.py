@@ -19,6 +19,14 @@ def optimized_install_enabled(release, choice="auto"):
     return str(choice).lower() in ("1", "true")
 
 
+def sprite_packing_profile(choice, release, video_supported=True):
+    if choice == "auto":
+        choice = "video" if release else "legacy"
+    if choice not in ("legacy", "webp", "video"):
+        raise ValueError("sprite_packing must be auto, legacy, webp, or video")
+    return "webp" if choice == "video" and not video_supported else choice
+
+
 def install_export(exported, destination):
     """Merge owned runtime files while preserving unrelated installed content."""
     exported, destination = Path(exported), Path(destination)
@@ -97,8 +105,14 @@ def prepare_assets(env):
 
     lossy = optimized_install_enabled(env.get("release", True), env.get("optimized_assets", "auto"))
 
+    packing = sprite_packing_profile(env.get("sprite_packing", "auto"), env.get("release", True),
+                                     "GLOB2_H264_ASSETS" in env.get("CPPDEFINES", []))
+    video = packing == "video"
+
     def export(target, source, env):
-        export_assets(root, exported, platform=platform, lossy=lossy, jobs=GetOption("num_jobs"))
+        export_assets(root, exported, platform=platform, lossy=lossy, jobs=GetOption("num_jobs"),
+                      terrain_sheets=packing != "legacy", packed_hd_sprites=packing != "legacy",
+                      video_sprites=video)
         return 0
 
     stamp = env.Command(
@@ -106,13 +120,16 @@ def prepare_assets(env):
         inputs
         + [
             "tools/package_assets.py",
+            "tools/packed_sprite_assets.py",
+            "scons/recording_dependencies.py",
+            "scons/recording-versions.json",
             "tools/terrain_tileset.py",
             "tools/terrain_catalog.py",
             "tools/asset-requirements.txt",
             "tools/image_encoding.json",
             "scons/runtime_assets.py",
             Value(inputs),
-            Value(lossy),
+            Value([lossy, packing, video]),
         ],
         Action(export, "Exporting verified runtime assets"),
     )

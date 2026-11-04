@@ -50,7 +50,12 @@ def createBundle(target, source, env) :
     # Exported image bytes and source notices are the only runtime resources.
     from tools.package_assets import export_assets
     assets = Path(env['BUILDDIR'])/'runtime-assets'
-    export_assets(Path.cwd(), assets, platform='macos', jobs=GetOption('num_jobs'))
+    from runtime_assets import sprite_packing_profile
+    packing = sprite_packing_profile(env.get('sprite_packing', 'auto'), env.get('release', True),
+                                     'GLOB2_H264_ASSETS' in env.get('CPPDEFINES', []))
+    export_assets(Path.cwd(), assets, platform='macos', jobs=GetOption('num_jobs'),
+                  terrain_sheets=packing != 'legacy', packed_hd_sprites=packing != 'legacy',
+                  video_sprites=packing == 'video')
     for directory in ('data', 'maps', 'campaigns', 'scripts'):
         if (assets/directory).is_dir():
             shutil.copytree(assets/directory, Path(bundleDir)/'Contents/Resources'/directory)

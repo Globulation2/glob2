@@ -5,7 +5,7 @@
     "tools/artwork/terrain_synth.py": "8f478809b4b7fe7cc7b97fab5eebd8fad6795c29b0d2fdaa39bab79fc32f983b",
     "tools/artwork/terrain_core.py": "8a98a23ed1ddf79b0081dd20a8263e4c780404dc5dbe62b92f1a01836e85345b",
     "tools/artwork/material_tiles.py": "2413841cdec902a9dd6a3a12b6b12d33ef57f508db5977638043d731d169cea1",
-    "tools/artwork/terrain_packs/lava.py": "7ee9913b6c1df75c9912ebbe501deca39dc44c9058d1cdbe8c422aa9f9c95e3c"
+    "tools/artwork/terrain_packs/lava.py": "2a49ff1ddf5f542cce16fe4137c37520520af98f977f94c4a54a6f7b017fc39c"
   },
   "material": "lava",
   "group": "lava",
@@ -60,7 +60,7 @@
       "match": 0.8
     },
     "phases": 4,
-    "animation_ticks": 8,
+    "animation_ticks": 16,
     "blend_steps": 4,
     "alpha_range": [
       255,
