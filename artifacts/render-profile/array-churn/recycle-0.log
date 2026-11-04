@@ -1,0 +1,126 @@
+GL_ARRAY_CHURN cycle=0 promoted=16 sources=16
+CHURN_TIME cycle=0 ms=9.137
+GL_ARRAY_RESIDENCY live=16 retired=0 free=48 bytes=16777216
+GL_ARRAY_CHURN cycle=1 promoted=16 sources=16
+CHURN_TIME cycle=1 ms=22.973
+GL_ARRAY_RESIDENCY live=16 retired=16 free=32 bytes=16777216
+GL_ARRAY_CHURN cycle=2 promoted=16 sources=16
+CHURN_TIME cycle=2 ms=16.155
+GL_ARRAY_RESIDENCY live=16 retired=32 free=16 bytes=16777216
+GL_ARRAY_CHURN cycle=3 promoted=16 sources=16
+CHURN_TIME cycle=3 ms=84.103
+GL_ARRAY_RESIDENCY live=16 retired=48 free=0 bytes=16777216
+GL_ARRAY_CHURN cycle=4 promoted=16 sources=16
+CHURN_TIME cycle=4 ms=50.668
+GL_ARRAY_RESIDENCY live=16 retired=64 free=48 bytes=33554432
+GL_ARRAY_CHURN cycle=5 promoted=16 sources=16
+CHURN_TIME cycle=5 ms=15.902
+GL_ARRAY_RESIDENCY live=16 retired=80 free=32 bytes=33554432
+GL_ARRAY_CHURN cycle=6 promoted=16 sources=16
+CHURN_TIME cycle=6 ms=76.096
+GL_ARRAY_RESIDENCY live=16 retired=96 free=16 bytes=33554432
+GL_ARRAY_CHURN cycle=7 promoted=16 sources=16
+CHURN_TIME cycle=7 ms=4.373
+GL_ARRAY_RESIDENCY live=16 retired=112 free=0 bytes=33554432
+GL_ARRAY_CHURN cycle=8 promoted=16 sources=16
+CHURN_TIME cycle=8 ms=19.073
+GL_ARRAY_RESIDENCY live=16 retired=128 free=48 bytes=50331648
+GL_ARRAY_CHURN cycle=9 promoted=16 sources=16
+CHURN_TIME cycle=9 ms=10.917
+GL_ARRAY_RESIDENCY live=16 retired=144 free=32 bytes=50331648
+GL_ARRAY_CHURN cycle=10 promoted=16 sources=16
+CHURN_TIME cycle=10 ms=11.018
+GL_ARRAY_RESIDENCY live=16 retired=160 free=16 bytes=50331648
+GL_ARRAY_CHURN cycle=11 promoted=16 sources=16
+CHURN_TIME cycle=11 ms=7.403
+GL_ARRAY_RESIDENCY live=16 retired=176 free=0 bytes=50331648
+GL_ARRAY_CHURN cycle=12 promoted=16 sources=16
+CHURN_TIME cycle=12 ms=10.231
+GL_ARRAY_RESIDENCY live=16 retired=192 free=48 bytes=67108864
+GL_ARRAY_CHURN cycle=13 promoted=16 sources=16
+CHURN_TIME cycle=13 ms=38.118
+GL_ARRAY_RESIDENCY live=16 retired=208 free=32 bytes=67108864
+GL_ARRAY_CHURN cycle=14 promoted=16 sources=16
+CHURN_TIME cycle=14 ms=4.017
+GL_ARRAY_RESIDENCY live=16 retired=224 free=16 bytes=67108864
+GL_ARRAY_CHURN cycle=15 promoted=16 sources=16
+CHURN_TIME cycle=15 ms=2.196
+GL_ARRAY_RESIDENCY live=16 retired=240 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=16 promoted=0 sources=16
+CHURN_TIME cycle=16 ms=0.023
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=17 promoted=0 sources=16
+CHURN_TIME cycle=17 ms=0.018
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=18 promoted=0 sources=16
+CHURN_TIME cycle=18 ms=0.024
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=19 promoted=0 sources=16
+CHURN_TIME cycle=19 ms=0.010
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=20 promoted=0 sources=16
+CHURN_TIME cycle=20 ms=0.009
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=0 promoted=16 sources=16
+CHURN_TIME cycle=0 ms=8.429
+GL_ARRAY_RESIDENCY live=16 retired=0 free=48 bytes=16777216
+GL_ARRAY_CHURN cycle=1 promoted=16 sources=16
+CHURN_TIME cycle=1 ms=4.287
+GL_ARRAY_RESIDENCY live=16 retired=16 free=32 bytes=16777216
+GL_ARRAY_CHURN cycle=2 promoted=16 sources=16
+CHURN_TIME cycle=2 ms=3.468
+GL_ARRAY_RESIDENCY live=16 retired=32 free=16 bytes=16777216
+GL_ARRAY_CHURN cycle=3 promoted=16 sources=16
+CHURN_TIME cycle=3 ms=41.484
+GL_ARRAY_RESIDENCY live=16 retired=48 free=0 bytes=16777216
+GL_ARRAY_CHURN cycle=4 promoted=16 sources=16
+CHURN_TIME cycle=4 ms=4.309
+GL_ARRAY_RESIDENCY live=16 retired=64 free=48 bytes=33554432
+GL_ARRAY_CHURN cycle=5 promoted=16 sources=16
+CHURN_TIME cycle=5 ms=1.858
+GL_ARRAY_RESIDENCY live=16 retired=80 free=32 bytes=33554432
+GL_ARRAY_CHURN cycle=6 promoted=16 sources=16
+CHURN_TIME cycle=6 ms=3.140
+GL_ARRAY_RESIDENCY live=16 retired=96 free=16 bytes=33554432
+GL_ARRAY_CHURN cycle=7 promoted=16 sources=16
+CHURN_TIME cycle=7 ms=4.064
+GL_ARRAY_RESIDENCY live=16 retired=112 free=0 bytes=33554432
+GL_ARRAY_CHURN cycle=8 promoted=16 sources=16
+CHURN_TIME cycle=8 ms=2.685
+GL_ARRAY_RESIDENCY live=16 retired=128 free=48 bytes=50331648
+GL_ARRAY_CHURN cycle=9 promoted=16 sources=16
+CHURN_TIME cycle=9 ms=2.301
+GL_ARRAY_RESIDENCY live=16 retired=144 free=32 bytes=50331648
+GL_ARRAY_CHURN cycle=10 promoted=16 sources=16
+CHURN_TIME cycle=10 ms=2.296
+GL_ARRAY_RESIDENCY live=16 retired=160 free=16 bytes=50331648
+GL_ARRAY_CHURN cycle=11 promoted=16 sources=16
+CHURN_TIME cycle=11 ms=5.127
+GL_ARRAY_RESIDENCY live=16 retired=176 free=0 bytes=50331648
+GL_ARRAY_CHURN cycle=12 promoted=16 sources=16
+CHURN_TIME cycle=12 ms=2.813
+GL_ARRAY_RESIDENCY live=16 retired=192 free=48 bytes=67108864
+GL_ARRAY_CHURN cycle=13 promoted=16 sources=16
+CHURN_TIME cycle=13 ms=2.731
+GL_ARRAY_RESIDENCY live=16 retired=208 free=32 bytes=67108864
+GL_ARRAY_CHURN cycle=14 promoted=16 sources=16
+CHURN_TIME cycle=14 ms=2.096
+GL_ARRAY_RESIDENCY live=16 retired=224 free=16 bytes=67108864
+GL_ARRAY_CHURN cycle=15 promoted=16 sources=16
+CHURN_TIME cycle=15 ms=1.800
+GL_ARRAY_RESIDENCY live=16 retired=240 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=16 promoted=0 sources=16
+CHURN_TIME cycle=16 ms=0.011
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=17 promoted=0 sources=16
+CHURN_TIME cycle=17 ms=0.009
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=18 promoted=0 sources=16
+CHURN_TIME cycle=18 ms=0.040
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=19 promoted=0 sources=16
+CHURN_TIME cycle=19 ms=0.034
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=20 promoted=0 sources=16
+CHURN_TIME cycle=20 ms=12.122
+GL_ARRAY_RESIDENCY live=0 retired=256 free=0 bytes=67108864

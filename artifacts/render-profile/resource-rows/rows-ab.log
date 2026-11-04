@@ -1,0 +1,20 @@
+2D no clouds median=2.273 ms p95=2.449 ms
+2D no clouds p99=3.367 ms max=3.367 ms
+2D no clouds submission_cpu_median=1.747 ms submission_cpu_p95=1.867 ms
+2D no clouds process_cpu_median=1.822 ms process_cpu_p95=1.966 ms
+simulation_checksum=3873409c
+2D no clouds median=0.878 ms p95=1.298 ms
+2D no clouds p99=1.737 ms max=1.737 ms
+2D no clouds submission_cpu_median=0.570 ms submission_cpu_p95=0.610 ms
+2D no clouds process_cpu_median=0.634 ms process_cpu_p95=0.709 ms
+simulation_checksum=3873409c
+2D no clouds median=2.776 ms p95=2.961 ms
+2D no clouds p99=51.597 ms max=51.597 ms
+2D no clouds submission_cpu_median=2.238 ms submission_cpu_p95=2.358 ms
+2D no clouds process_cpu_median=2.328 ms process_cpu_p95=2.470 ms
+simulation_checksum=3873409c
+2D no clouds median=1.326 ms p95=1.455 ms
+2D no clouds p99=41.770 ms max=41.770 ms
+2D no clouds submission_cpu_median=0.753 ms submission_cpu_p95=0.888 ms
+2D no clouds process_cpu_median=0.817 ms process_cpu_p95=0.953 ms
+simulation_checksum=3873409c

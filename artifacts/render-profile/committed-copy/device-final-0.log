@@ -1,0 +1,6 @@
+PASS full, partial and explicit-clear rollback
+1920x1080 p50_ms=0.860 p95_ms=2.885 p99_ms=3.096
+3840x2160 p50_ms=2.724 p95_ms=4.630 p99_ms=5.920
+PASS full, partial and explicit-clear rollback
+1920x1080 p50_ms=0.894 p95_ms=2.760 p99_ms=3.001
+3840x2160 p50_ms=2.656 p95_ms=4.755 p99_ms=5.777

@@ -1,0 +1,10 @@
+2D no clouds median=2.645 ms p95=3.687 ms
+2D no clouds p99=4.599 ms max=4.599 ms
+2D no clouds submission_cpu_median=0.314 ms submission_cpu_p95=1.283 ms
+2D no clouds process_cpu_median=0.496 ms process_cpu_p95=1.839 ms
+simulation_checksum=46126639
+2D no clouds median=2.420 ms p95=3.990 ms
+2D no clouds p99=4.170 ms max=4.170 ms
+2D no clouds submission_cpu_median=0.266 ms submission_cpu_p95=0.723 ms
+2D no clouds process_cpu_median=0.406 ms process_cpu_p95=1.157 ms
+simulation_checksum=46126639
