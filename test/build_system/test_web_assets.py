@@ -296,7 +296,7 @@ class WebAssetPackageTests(unittest.TestCase):
                 target.write_bytes((ROOT / "content" / name).read_bytes())
             (hd / "frames.txt").write_text("GLOB2_HIGHRES 2\nunit0 32 32 0 - unit.webp\n")
             (hd / "terrain-grass.frames").write_text(
-                "GLOB2_HIGHRES 2\nterrain-grass0 32 32 4 @page.h264,alpha.z,128,128,4,0,0,0,128,128 -\n")
+                "GLOB2_HIGHRES 2\nterrain-grass0 32 32 4 @page.h264,alpha.z,128,128,4,0,0,0,128,128 unit.webp\n")
             for name in ("page.h264", "alpha.z", "unit.webp"):
                 (hd / name).write_bytes(name.encode())
             source.with_suffix(".json").write_text(json.dumps({"files": [
@@ -308,9 +308,10 @@ class WebAssetPackageTests(unittest.TestCase):
             paths = lambda package: {path for part in packages[package]["parts"] for path, *_ in part["files"]}
             self.assertEqual(paths("hd"), {"/data/highres/v1/frames.txt", "/data/highres/v1/unit.webp"})
             self.assertEqual(paths("hd-terrain-grass"), {
-                "/data/highres/v1/page.h264", "/data/highres/v1/alpha.z", "/data/highres/v1/terrain-grass.frames"})
+                "/data/highres/v1/page.h264", "/data/highres/v1/alpha.z",
+                "/data/highres/v1/terrain-grass.frames", "/data/highres/v1/unit.webp"})
             data_parts = [part["files"] for part in packages["hd-terrain-grass"]["parts"]]
-            self.assertEqual([len(part) for part in data_parts], [2, 1])
+            self.assertEqual([len(part) for part in data_parts], [2, 2])
             self.assertTrue(packages["hd-terrain-grass"]["optional"])
 
     def test_packages_round_trip_and_are_content_addressed(self):

@@ -661,6 +661,17 @@ class SpriteSheetExportTests(unittest.TestCase):
 
 
 class VerifiedSpritePackTests(unittest.TestCase):
+    def test_video_group_exceeding_runtime_memory_is_rejected_before_encoding(self):
+        from types import SimpleNamespace
+        from tools import packed_sprite_assets as packed
+
+        pose = SimpleNamespace(width=2048, height=2048)
+        group = {"material": None, "crf": 26}
+        with patch.object(packed.subprocess, "run", side_effect=AssertionError("oversized encode")):
+            result = packed.write_video([(index, pose) for index in range(8)], (2048, 2048),
+                                        "oversized", group, "ffmpeg", None, None)
+        self.assertEqual(result, {"rejected": "video group exceeds decoded size limit"})
+
     def test_small_video_above_q75_ceiling_loses_and_warm_cache_never_encodes(self):
         from tools import packed_sprite_assets as packed
 

@@ -20,7 +20,7 @@ HD = Path("data/highres/v1")
 TERRAIN_CRF = {"terrain-grass": 20.25, "terrain-water": 24.5,
                "terrain-ember_field": 26.5, "terrain-lava": 29.5}
 UNIT_CRF = (31, 31, 30.25, 31.25, 30, 29.5, 29.75)
-PACK_RECIPE = "packed-sprites-v7"
+PACK_RECIPE = "packed-sprites-v8"
 
 
 def encoder_identity(ffmpeg):
@@ -196,6 +196,9 @@ def write_video(frames, size, name, group, ffmpeg, directory, fingerprint):
         height = max(lookup[index].height for ids in layout for index in ids)
         count = len(layout)
         canvas = (columns * width, -(-len(layout[0]) // columns) * height)
+        # Keep the complete decoded group within the runtime's RGBA budget.
+        if max(canvas) > 2048 or canvas[0] * canvas[1] * 4 * count > 64 << 20:
+            return dict(rejected="video group exceeds decoded size limit")
         data = bytearray()
         alpha = []
         for ids in layout:
@@ -272,13 +275,16 @@ def score(candidate, directory, platform, sources, group):
         for part in split(paths, sizes, PART_BYTES):
             payload = b"".join((directory / name).read_bytes() for name in part)
             result["transfer_bytes"] += brotli_size(payload)
+        # Family indexes ship in their own part. For rows in a shared index,
+        # charge the independently compressed contribution of this group.
         result["transfer_bytes"] += brotli_size(index)
     return result
 
 
 def brotli_size(payload):
     import brotli
-    return len(brotli.compress(payload, quality=9, lgwin=24))
+    from scons.web_assets import DATA_BROTLI_QUALITY, BROTLI_WINDOW
+    return len(brotli.compress(payload, quality=DATA_BROTLI_QUALITY, lgwin=BROTLI_WINDOW))
 
 
 def encode_group(name, group, cache, platform, encoder, lossy):
@@ -286,10 +292,14 @@ def encode_group(name, group, cache, platform, encoder, lossy):
     if group.get("fingerprints"):
         from tools.terrain_tileset import pixel_fingerprint
         fingerprint = pixel_fingerprint
+    size_policy = None
+    if platform == "web":
+        from scons.web_assets import PART_BYTES, DATA_BROTLI_QUALITY, BROTLI_WINDOW
+        size_policy = (images.BROTLI_VERSION, PART_BYTES, DATA_BROTLI_QUALITY, BROTLI_WINDOW)
     sources = sorted(group["frames"])
     key = hashlib.sha256(json.dumps([PACK_RECIPE, name, group["crf"], group["material"],
         platform, encoder, lossy, bool(fingerprint), images.image_recipe(), zlib.ZLIB_RUNTIME_VERSION,
-        images.BROTLI_VERSION if platform == "web" else None, bool(group.get("native")), group.get("index_rows"),
+        size_policy, bool(group.get("native")), group.get("index_rows"),
         [[index, ident, layer, hashlib.sha256(path.read_bytes()).hexdigest()]
          for index, ident, layer, path in sources]], sort_keys=True).encode()).hexdigest()
     directory = cache / ("sprite-pack-" + key)

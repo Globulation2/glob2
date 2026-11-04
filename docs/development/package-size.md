@@ -137,7 +137,7 @@ Leave the HD variable unset to measure a native startup followed by an HD toggle
 Use an external RSS
 measurement and distinguish warm filesystem cache from cold reads.
 
-Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
+Legacy optimized exports pack the frames of the sprites in `SPRITE_SHEETS`
 (currently `content/data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
 consecutive frames of one layer and size, sixteen tiles to a row, each encoded like
 any other image. `<name>.sheet` beside them lists each sheet's file, layer
@@ -162,7 +162,9 @@ RGB errors over pixels with nonzero source alpha in the Q75 sheets sets the
 group's error ceiling. Video stores nonopaque alpha in separate zlib blocks.
 
 The exporter uses stored bytes for native packages and Brotli transfer sizes
-for browser sprite payload parts. The audit records size, error, rejections,
+for browser sprite payload parts. Terrain family indexes are measured as
+separate parts. For unit indexes shared across groups, each score includes an
+estimate from compressing the group's rows independently. The audit records size, error, rejections,
 and whether the verified group came from cache. Equal scores prefer lossless
 WebP, then Q75 WebP, then H.264. The native compiled terrain fingerprint uses
 the decoded pixels of the winning candidate.
@@ -173,6 +175,9 @@ values via `--sprite-packing`. Standalone exports expose `--terrain-sheets`
 and `--packed-hd-sprites` for packed WebP, with `--video-sprites` to add the
 pinned host encoder. Pass `--lossless-images` to require exact RGBA. Existing
 `.sheet` and HD indexes are readable alongside the versioned packed indexes.
+Version 2 entries address a WebP page rectangle or a frame in an independent
+Annex B video group. Video entries can also name an alpha block and a crop.
+The encoder uses fixed CRFs and one attempt per eligible group.
 
 Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
 when the current Python lacks the pinned encoder. Browser candidate scoring

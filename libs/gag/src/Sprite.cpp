@@ -154,9 +154,10 @@ namespace GAGCore
     bool highResolutionNeedsAsyncLoad(const std::string& name, size_t frames)
     {
 #ifdef __EMSCRIPTEN__
-        if (!highResolutionEnabled || !highResolutionFramesSupported() || Sprite::highResolutionDeferred(name))
-            return false;
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported() ||
+            Sprite::highResolutionDeferred(name))
+            return false;
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         const auto* packEntries = readPack(directory, name);
         if (!packEntries) return false;
@@ -688,12 +689,12 @@ namespace GAGCore
         const bool sameSource = highResolutionEnabled == enabled &&
             requestedHighResolutionGeneration == Toolkit::assets().sourceGeneration() &&
             requestedHighResolutionDirectory == directory;
-        if (sameSource && requestedHighResolutionMipmaps == mipmaps) return;
 #ifdef __EMSCRIPTEN__
         if (enabled && !overrideDir && highResolutionFramesSupported() &&
             !ApplicationHost::assetPackageReady("hd"))
             ApplicationHost::requestAssetPackage("hd");
 #endif
+        if (sameSource && requestedHighResolutionMipmaps == mipmaps) return;
         const bool retainPublishedOnFailure = sameSource;
         requestedHighResolutionMipmaps = mipmaps;
         highResolutionEnabled = enabled;

@@ -107,6 +107,8 @@ GAME_EXTRA = ('data/gfx/cursor/',)
 # Later packages download in parts so the shell can stop between parts while a
 # match is running; each part is also cached on its own.
 PART_BYTES = 4 * 1024 * 1024
+DATA_BROTLI_QUALITY = 9
+BROTLI_WINDOW = 24
 MANIFEST_VERSION = 1
 SPRITE = re.compile(r'"data/gfx/([A-Za-z0-9_-]+)"')
 # Core keeps the key list, English and, of every other language, only what the
@@ -300,9 +302,8 @@ def hd_terrain_packages(root, source):
                 for path in paths:
                     if path != '-' and Path(path).name == path:
                         owners.setdefault('data/highres/v1/' + path, set()).add(family)
-    return {path: 'hd-' + next(iter(families)) for path, families in owners.items()
-            if len(families) == 1 and None not in families}
-
+    return {path: sorted('hd-' + family if family is not None else 'hd' for family in families)
+            for path, families in owners.items() if families != {None}}
 
 
 def plan(root, source=None):
@@ -328,7 +329,10 @@ def plan(root, source=None):
     split_hd_index = any(path.endswith('.frames') for path in hd_owners)
     for path in files:
         if path in hd_owners:
-            packages.setdefault(hd_owners[path], []).append(path)
+            # Each family must install independently, even if another index
+            # references the same immutable artwork.
+            for package in hd_owners[path]:
+                packages.setdefault(package, []).append(path)
             continue
         if hd_owners and not split_hd_index and path == 'data/highres/v1/frames.txt':
             packages['core'].append(path)

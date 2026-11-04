@@ -18,6 +18,9 @@ import shutil
 import subprocess
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from scons.web_assets import DATA_BROTLI_QUALITY, BROTLI_WINDOW
+
 try:
     import brotli
 except ImportError:
@@ -47,11 +50,11 @@ def write(path, data):
 
 def compress_brotli(source, quality):
     if brotli is not None:
-        return brotli.compress(source.read_bytes(), quality=quality, lgwin=24)
+        return brotli.compress(source.read_bytes(), quality=quality, lgwin=BROTLI_WINDOW)
     tool = shutil.which('brotli')
     if not tool:
         return None
-    return subprocess.run([tool, '-c', '-q', str(quality), '-w', '24', str(source)],
+    return subprocess.run([tool, '-c', '-q', str(quality), '-w', str(BROTLI_WINDOW), str(source)],
                           check=True, capture_output=True).stdout
 
 
@@ -94,7 +97,7 @@ def main():
         # Data packages are mostly PNG and Ogg, which barely compress; quality 11
         # would take minutes for a percent or two.
         name = source.relative_to(arguments.directory).as_posix()
-        sizes[name] = compress(source, 9 if source.suffix == '.data' else 11)
+        sizes[name] = compress(source, DATA_BROTLI_QUALITY if source.suffix == '.data' else 11)
         print(f'{name}: {source.stat().st_size / 1e6:.2f} MB, ' +
               ' '.join(f'{encoding} {size / 1e6:.2f} MB' for encoding, size in sizes[name].items()))
     page = arguments.directory / 'index.html'
