@@ -102,7 +102,7 @@ queues:
     acceptSeconds: 60
     mapPool:
       - generatorId: even-ground
-        revision: 3
+        revision: 4
         params: {{width: 7, height: 7, teams: 2}}
         candidates: 1
         startingUnitLevel: 0
