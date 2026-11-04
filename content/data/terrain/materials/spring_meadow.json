@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-spring_meadow",
   "profile": "brush",
   "class": "solid",
-  "preview": [89, 122, 58],
+  "preview": [76, 129, 32],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [89, 122, 58],
+  "minimap": [76, 129, 32],
   "seam": {
     "height": 2,
     "cast_q8": 56,
