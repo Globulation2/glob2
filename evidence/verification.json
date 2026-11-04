@@ -1,0 +1,38 @@
+{
+  "base": "783224e99d0aa1d080675976c267e9c26af571ac",
+  "results": [
+    {
+      "name": "baseline",
+      "exit_code": 1,
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+        "test/build_system/test_ci_policy.py",
+        "PolicyTest.test_browser_matrix_python_entrypoints_exist_from_browser_directory"
+      ]
+    },
+    {
+      "name": "fixed",
+      "exit_code": 0,
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+        "test/build_system/test_ci_policy.py"
+      ]
+    },
+    {
+      "name": "tiers",
+      "exit_code": 0,
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_ci_tiers.py"
+      ]
+    }
+  ],
+  "inventory": "All browser matrix rows identical except lifecycle wrapper path; three wrapped checks retained unchanged.",
+  "actual_failure": "https://github.com/Globulation2/glob2/actions/runs/41882197351/job/126809869494"
+}
