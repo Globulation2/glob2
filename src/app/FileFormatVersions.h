@@ -379,5 +379,9 @@ static constexpr int FILE_FORMAT_VERSION_HARDPAN = 199;
 //! terrain IDs starting at 40 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_TUNDRA = 200;
 
+//! Built-in volcanic ash: TERRAIN_COUNT grew from 41 to 42, so earlier files carry
+//! custom terrain IDs starting at 41 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_VOLCANIC_ASH = 201;
+
 //! Stable access fields retain published and in-flight preparation costs.
-static constexpr int FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY = 201;
+static constexpr int FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY = 202;

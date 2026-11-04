@@ -6846,6 +6846,8 @@ GL மட்டும்
 காற்றலை மணற்குன்றுகள்
 [hardpan]
 கடின மண் அடுக்கு
+[volcanic_ash]
+எரிமலைச் சாம்பல்
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]

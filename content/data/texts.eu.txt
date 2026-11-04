@@ -5730,6 +5730,8 @@ Hareharri higatua
 Haizeak uhindutako dunak
 [hardpan]
 Lurrazal gogorra
+[volcanic_ash]
+Errauts bolkanikoa
 [terrain group water]
 Ura
 [terrain group sand]

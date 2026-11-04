@@ -861,9 +861,9 @@ static void measurementReplayBoundaries()
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
 	// Format 166 makes append-order populations authoritative; format 167
 	// changes completed-observation timing. Format 171 unifies flyer routing.
-	// Shared amphibious routing changes simulation trajectories in format 201;
+	// Shared amphibious routing changes simulation trajectories in the shared-routing format;
 	// probability telemetry itself must not change these acceptance boundaries.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 201
+	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY
             && REPLAY_MINIMUM_VERSION_MINOR <= VERSION_MINOR && NET_PROTOCOL_VERSION == 75,
 			"shared amphibious routing advances the replay floor without changing network protocol gates");
 	for (int version : std::initializer_list<int>{98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR-1, REPLAY_MINIMUM_VERSION_MINOR,

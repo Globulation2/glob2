@@ -5730,6 +5730,8 @@ AI 生成
 風紋沙丘
 [hardpan]
 硬殼地
+[volcanic_ash]
+火山灰
 [terrain group water]
 水
 [terrain group sand]

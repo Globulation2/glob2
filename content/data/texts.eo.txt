@@ -5730,6 +5730,8 @@ Eroziita grejso
 Ventaj sabloondoj
 [hardpan]
 Malmola krusto
+[volcanic_ash]
+Vulkana cindro
 [terrain group water]
 Akvo
 [terrain group sand]

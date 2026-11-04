@@ -460,7 +460,7 @@ snapshot-backed material and hiring queries use the same access identities. Sing
 multi-team searches use equal cost because they have no single owner. Maxima's
 independent strategic travel fields retain their neutral access-based semantics.
 
-Save format 201 preserves each published and pending field's captured costs.
+Save format 202 preserves each published and pending field's captured costs.
 Older saves coalesce ratio-keyed fields into one amphibious field, preserving
 available published guidance while restarting obsolete preparation queues. The
 save-format floor remains unchanged. Historical research campaigns require their

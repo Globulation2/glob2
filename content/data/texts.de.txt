@@ -5730,6 +5730,8 @@ Verwitterter Sandstein
 Windgeriffelte Dünen
 [hardpan]
 Hartkruste
+[volcanic_ash]
+Vulkanasche
 [terrain group water]
 Wasser
 [terrain group sand]

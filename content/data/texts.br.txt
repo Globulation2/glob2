@@ -5730,6 +5730,8 @@ Arenito desgastado
 Dunas de vento
 [hardpan]
 Crosta endurecida
+[volcanic_ash]
+Ludu menezioù-tan
 [terrain group water]
 Água
 [terrain group sand]

@@ -5708,6 +5708,8 @@ Windy sand dune
 Hardpan
 [tundra]
 Tundra
+[volcanic_ash]
+Volcanic ash
 [terrain group water]
 Water
 [terrain group sand]
@@ -5715,7 +5717,7 @@ Sand
 [terrain group grass]
 Grass
 [terrain group ice]
-Ice
+Snow and ice
 [terrain group paths]
 Paths
 [terrain group obstacles]

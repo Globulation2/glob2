@@ -5706,6 +5706,8 @@ AI ทำงาน​อย่างไร
 เนินทราย​ลอน​ลม
 [hardpan]
 ดินดาน
+[volcanic_ash]
+เถ้าภูเขาไฟ
 [terrain group water]
 น้ำ
 [terrain group sand]
