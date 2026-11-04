@@ -199,4 +199,20 @@ TEST_CASE("legacy production caches coalesce without losing their published rati
     CHECK(std::equal(field,field+map.cellCount(),*map.gradientFieldDestination(legacyKey)));
 }
 
+TEST_CASE("removing an editor team retires its published preparation costs") {
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.teams=2,.discovered=true,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    world.game.teams[1]->routingRatio.known=true;
+    world.game.teams[1]->routingRatio.selected=6;
+    REQUIRE(map.incResourceByIndex(24,24,WHEAT,0));
+    const auto* field=glob2test::awaitGradient(world.game,[&] {
+        return map.getMaterialGradientSlot(1,WHEAT,MovementAccess::Amphibious);
+    });
+    REQUIRE(map.publishedCostClass(field,0)==6);
+    world.game.removeTeam();
+    // Checking registry membership never dereferences the retired address.
+    CHECK(map.publishedCostClass(field,0)==0);
+}
+
 }

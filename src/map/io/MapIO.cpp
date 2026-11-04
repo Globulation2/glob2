@@ -774,23 +774,7 @@ void loadGradientCells(GAGCore::InputStream *stream, Uint16 *&field, size_t size
 void Map::saveGradient(GAGCore::OutputStream* stream,const Uint16* field,size_t cells,int cost) const
 {
     saveGradientCells(stream,field,cells);
-    if(field) {
-        if(cost<0) {
-            cost=SWIM_CLASS_EVEN;
-            if(!gradientRuntime->fieldCosts.contains(field) && game) {
-                for(int t=0;t<game->teamsCount();++t)for(int a=0;a<MOVEMENT_CLASS_COUNT;++a) {
-                    if(field==forbiddenGradient[t][a] || field==guardAreasGradient[t][a] || field==clearAreasGradient[t][a])cost=a;
-                    for(int r=0;r<MaterialSlotCount;++r)
-                        if(field==materialGradients[t][r][a] || field==marketMaterialGradients[t][r][a])cost=a;
-                }
-                for(int t=0;t<game->teamsCount();++t)for(const auto* b:game->teams[t]->liveBuildings.entries())
-                    for(int slot=0;slot<BUILDING_GRADIENT_COUNT;++slot)if(field==b->globalGradient[slot])cost=slot%MOVEMENT_CLASS_COUNT;
-                for(const auto& [key,entry]:gradientRuntime->materialFields)if(field==entry.published)cost=entry.swim;
-            }
-            cost=publishedCostClass(field,cost);
-        }
-        stream->writeUint8(cost,"preparationCost");
-    }
+    if (field) stream->writeUint8(cost, "preparationCost");
 }
 void Map::loadGradient(GAGCore::InputStream* stream,Uint16*& field,size_t cells,bool packed,int legacyCost)
 {
@@ -1001,7 +985,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			for (int r=0; r<MaterialSlotCount; ++r)
 			{
 				stream->writeEnterSection(r);
-				saveGradient(stream, materialGradients[t][r][sw], size);
+				saveGradient(stream, materialGradients[t][r][sw], size, publishedCostClass(materialGradients[t][r][sw], sw));
 				stream->writeUint8(materialGradientStale[t][r][sw], "suspendedStale");
 				// Format178 has no round-visitation state for any family.
 				// The "with markets" twin is runtime state like its plain gradient:
@@ -1009,23 +993,23 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				// the text format keys tiles by section name, and the plain
 				// gradient's tiles live in this one.
 				stream->writeEnterSection("markets");
-				saveGradient(stream, marketMaterialGradients[t][r][sw], size);
+				saveGradient(stream, marketMaterialGradients[t][r][sw], size, publishedCostClass(marketMaterialGradients[t][r][sw], sw));
 				stream->writeUint8(marketMaterialGradientStale[t][r][sw], "suspendedStale");
 				stream->writeLeaveSection();
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
 			stream->writeEnterSection("forbidden");
-			saveGradient(stream, forbiddenGradient[t][sw], size);
+			saveGradient(stream, forbiddenGradient[t][sw], size, publishedCostClass(forbiddenGradient[t][sw], sw));
 			stream->writeUint8(forbiddenGradientStale[t][sw], "suspendedStale");
 			stream->writeLeaveSection();
 			stream->writeEnterSection("guard");
-			saveGradient(stream, guardAreasGradient[t][sw], size);
+			saveGradient(stream, guardAreasGradient[t][sw], size, publishedCostClass(guardAreasGradient[t][sw], sw));
 			stream->writeUint8(guardGradientStale[t][sw], "suspendedStale");
 
 			stream->writeLeaveSection();
 			stream->writeEnterSection("clear");
-			saveGradient(stream, clearAreasGradient[t][sw], size);
+			saveGradient(stream, clearAreasGradient[t][sw], size, publishedCostClass(clearAreasGradient[t][sw], sw));
 			stream->writeUint8(clearGradientStale[t][sw], "suspendedStale");
 
 			stream->writeLeaveSection();
@@ -1046,7 +1030,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
                 const auto access=movementAccessFromLegacy(sw);
                 if(accessClass(access)==sw)
                     finishBuildingGradient(building, access, BuildingRoute::Footprint);
-				saveGradient(stream, building->globalGradient[sw], size);
+				saveGradient(stream, building->globalGradient[sw], size, publishedCostClass(building->globalGradient[sw], sw));
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
 				stream->writeUint32(building->gradientGeneration[sw], "generation");
@@ -1080,7 +1064,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
                     const auto access=movementAccessFromLegacy(sw);
                     if(accessClass(access)==sw)
                         finishBuildingGradient(building, access, BuildingRoute(profile));
-					saveGradient(stream, building->globalGradient[slot], size);
+					saveGradient(stream, building->globalGradient[slot], size, publishedCostClass(building->globalGradient[slot], sw));
 					stream->writeUint8(building->dirtyGradient[slot], "dirty");
 					stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[slot], "lastUpdate");
 					stream->writeUint32(building->gradientGeneration[slot], "generation");
@@ -1706,7 +1690,7 @@ void Map::saveMaterialRoutingCache(GAGCore::OutputStream* stream) const
         stream->writeUint8(entry.excludesShared,"excludesShared");
         stream->writeUint8(entry.awaitingFirstRead,"awaitingFirstRead");
         stream->writeUint32(entry.publishedStep,"publishedStep");
-        saveGradient(stream,entry.published,size);
+        saveGradient(stream,entry.published,size,publishedCostClass(entry.published,entry.swim));
         stream->writeLeaveSection();
     }
     stream->writeLeaveSection();

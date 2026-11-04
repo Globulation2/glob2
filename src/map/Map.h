@@ -1107,7 +1107,7 @@ public:
     // A serving generation can predate the team mode; score it with its own costs.
     int publishedCostClass(const Uint16* field,int access=SWIM_CLASS_EVEN) const;
     void recordFieldCost(const Uint16* field,int cost);
-    void saveGradient(GAGCore::OutputStream*,const Uint16*,size_t,int cost=-1) const;
+    void saveGradient(GAGCore::OutputStream*,const Uint16*,size_t,int cost) const;
     void loadGradient(GAGCore::InputStream*,Uint16*&,size_t,bool,int legacyCost=-1);
     void consolidateLegacyRoutingFields();
 
@@ -1134,7 +1134,7 @@ public:
     int swim=accessClass(movementAccessValue); return clearAreasGradient[team][swim]; }
 	const Uint16 *getMaterialGradientSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, bool withMarkets = false, const Building* consumer = nullptr, std::optional<GradientFieldKey>* selectedKey = nullptr);
     const Uint16* getMaterialGradient(int team,MaterialId material,MovementAccess movementAccessValue,bool withMarkets=false,const Building* consumer=nullptr) {
-    int swim=accessClass(movementAccessValue); return getMaterialGradientSlot(team,materialIndex(material),movementAccessFromLegacy(swim),withMarkets,consumer); }
+        return getMaterialGradientSlot(team,materialIndex(material),movementAccessValue,withMarkets,consumer); }
 
 	// Consumer-aware requests are simulation-thread only. Returned cache pointers
 	// remain valid until the next consumer-aware request (which may evict them).
@@ -1179,10 +1179,10 @@ public:
 	
 	bool materialAvailableSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, int x, int y, bool withMarkets = false, const Building* consumer = nullptr);
     bool materialAvailable(int team,MaterialId material,MovementAccess movementAccessValue,int x,int y,bool markets=false,const Building* consumer=nullptr) {
-    int swim=accessClass(movementAccessValue); return materialAvailableSlot(team,materialIndex(material),movementAccessFromLegacy(swim),x,y,markets,consumer); }
+        return materialAvailableSlot(team,materialIndex(material),movementAccessValue,x,y,markets,consumer); }
 	bool materialAvailableSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, int x, int y, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
     bool materialAvailable(int team,MaterialId material,MovementAccess movementAccessValue,int x,int y,int* distance,bool markets=false,const Building* consumer=nullptr) {
-    int swim=accessClass(movementAccessValue); return materialAvailableSlot(team,materialIndex(material),movementAccessFromLegacy(swim),x,y,distance,markets,consumer); }
+        return materialAvailableSlot(team,materialIndex(material),movementAccessValue,x,y,distance,markets,consumer); }
 	bool materialAvailableUpdateSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
 	//! The team's own, alive market next to the unit that holds resourceType, or NULL.
 	Building *touchedStockedMarketSlot(Unit *unit, int resourceType) const;
@@ -1206,8 +1206,7 @@ public:
 	RouteResult queryMaterialDistance(int team, int material, MovementAccess movementAccessValue, int x, int y, int* distance = nullptr, bool withMarkets = false, const Building* consumer = nullptr);
 	Uint16 getGradient(int teamNumber, Uint8 resourceType, MovementAccess movementAccessValue, int x, int y, bool withMarkets = false, const Building* consumer = nullptr)
 	{
-    int swimClass=accessClass(movementAccessValue);
-		const auto* field = getMaterialGradientSlot(teamNumber, resourceType, movementAccessFromLegacy(swimClass), withMarkets, consumer);
+		const auto* field = getMaterialGradientSlot(teamNumber, resourceType, movementAccessValue, withMarkets, consumer);
 		return field ? field[coordToIndex(x, y)] : GRADIENT_UNREACHABLE;
 	}
 	

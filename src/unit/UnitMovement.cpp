@@ -39,7 +39,7 @@ void Unit::followPendingBuildingRoute(Building &building, BuildingRoute route)
 	if (!headingX && !headingY)
 		return;
 	const int preferred = Unit::directionFromDxDy(headingX, headingY);
-	const int access = swimClass();
+	const int access = accessClass(movementAccess());
 	// Match flyToTarget's preference order, but respect ground occupancy and terrain.
 	for (const int offset : {0, 1, 7, 2, 6, 3, 5, 4})
 	{
@@ -542,7 +542,7 @@ void Unit::handleMovementClearingResources()
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
 	}
-	else if (attachedBuilding->anyResourceToClear[swimAccessVariant(movementClass())]==2)
+	else if (attachedBuilding->anyResourceToClear[swimAccessVariant(accessClass(movementAccess()))]==2)
 	{
 		stopAttachedForBuilding(false);
 		movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
@@ -800,7 +800,7 @@ void Unit::handleMovementGoingToResource()
     }
 
 	int teamNumber=owner->teamNumber;
-	int swim=movementClass();
+	int swim=accessClass(movementAccess());
 	bool stopWork;
 	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
 	const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryMaterialStep(entityRandom, teamNumber, destinationPurpose, movementAccessFromLegacy(swim), posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets); });

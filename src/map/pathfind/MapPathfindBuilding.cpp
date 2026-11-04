@@ -44,7 +44,7 @@ FieldReadiness Map::requestBuildingField(Building* building,MovementAccess movem
     if (cold || dirty || clearing) {
         if (!requestBuildingRefresh(building,slot)) {
             if (cold) building->globalGradient[slot]=acquireBuildingGradientBuffer();
-            updateGlobalGradient(building,movementAccessFromLegacy(swimClass),route);
+            updateGlobalGradient(building,movementAccessValue,route);
         }
     }
     return building->globalGradient[slot] ? FieldReadiness::Ready : FieldReadiness::Pending;
@@ -53,7 +53,7 @@ bool Map::prepareBuildingGradient(Building* building,MovementAccess movementAcce
 {
     int swimClass=accessClass(movementAccessValue);
 
-    return requestBuildingField(building,movementAccessFromLegacy(swimClass),route)==FieldReadiness::Ready
+    return requestBuildingField(building,movementAccessValue,route)==FieldReadiness::Ready
         && !building->isLocked(building->routeAccess(swimClass,route));
 }
 const Uint16* Map::lookupBuildingField(const Building* building,MovementAccess movementAccessValue,BuildingRoute route) const
@@ -64,17 +64,13 @@ const Uint16* Map::lookupBuildingField(const Building* building,MovementAccess m
 }
 RouteResult Map::queryBuildingDistance(Building* building,MovementAccess movementAccessValue,int x,int y,int* distance,BuildingRoute route)
 {
-    int swim=accessClass(movementAccessValue);
-
-    if (requestBuildingField(building,movementAccessFromLegacy(swim),route)==FieldReadiness::Pending) return RouteResult::Pending;
-    return buildingAvailable(building,movementAccessFromLegacy(swim),x,y,distance,route) ? RouteResult::Reachable : RouteResult::Unreachable;
+    if (requestBuildingField(building,movementAccessValue,route)==FieldReadiness::Pending) return RouteResult::Pending;
+    return buildingAvailable(building,movementAccessValue,x,y,distance,route) ? RouteResult::Reachable : RouteResult::Unreachable;
 }
 StepResult Map::queryBuildingStep(EntityRandom& random,Building* building,MovementAccess movementAccessValue,int x,int y,int* dx,int* dy,BuildingRoute route)
 {
-    int swim=accessClass(movementAccessValue);
-
-    if (requestBuildingField(building,movementAccessFromLegacy(swim),route)==FieldReadiness::Pending) return StepResult::Pending;
-    return pathfindBuilding(random,building,movementAccessFromLegacy(swim),x,y,dx,dy,route) ? StepResult::Step : StepResult::Blocked;
+    if (requestBuildingField(building,movementAccessValue,route)==FieldReadiness::Pending) return StepResult::Pending;
+    return pathfindBuilding(random,building,movementAccessValue,x,y,dx,dy,route) ? StepResult::Step : StepResult::Blocked;
 }
 
 const Uint16 *Map::buildingGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route)
@@ -83,8 +79,8 @@ const Uint16 *Map::buildingGradient(Building *building, MovementAccess movementA
 
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
-	if (!prepareBuildingGradient(building, movementAccessFromLegacy(swimClass), route)) return NULL;
-	finishBuildingGradient(building, movementAccessFromLegacy(swimClass), route);
+	if (!prepareBuildingGradient(building, movementAccessValue, route)) return NULL;
+	finishBuildingGradient(building, movementAccessValue, route);
 	return building->globalGradient[slot];
 }
 
@@ -131,8 +127,8 @@ bool Map::buildingGradientDirection(EntityRandom& random, Building *building, Mo
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	// Settling this layer also settles all equal/better neighbors the generic
 	// direction picker can select. Keep partial-array access inside this adapter.
-	buildingGradientValue(building, movementAccessFromLegacy(swimClass), coordToIndex(x, y), route);
-	return directionByGradient(random, building->owner->me, movementAccessFromLegacy(swimClass), x, y,
+	buildingGradientValue(building, movementAccessValue, coordToIndex(x, y), route);
+	return directionByGradient(random, building->owner->me, movementAccessValue, x, y,
 		building->globalGradient[slot], dx, dy, strict);
 }
 
@@ -143,14 +139,14 @@ bool Map::buildingAvailable(Building *building, MovementAccess movementAccessVal
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	PERF_SCOPE_TIME(PathBuilding);
-	if (!prepareBuildingGradient(building, movementAccessFromLegacy(swimClass), route))
+	if (!prepareBuildingGradient(building, movementAccessValue, route))
 		return false;
 	// The unit's own cell can be an obstacle in this building's field - it may be
 	// standing on another building, or in a forbidden area - while a cell next to
 	// it is on a route. Take the first of the nine that carries a distance.
-	Uint16 g=buildingGradientValue(building, movementAccessFromLegacy(swimClass), coordToIndex(x, y), route);
+	Uint16 g=buildingGradientValue(building, movementAccessValue, coordToIndex(x, y), route);
 	for (int d=0; d<8 && g<=GRADIENT_UNREACHABLE; d++)
-		g=buildingGradientValue(building, movementAccessFromLegacy(swimClass), coordToIndex(x+tabClose[d][0], y+tabClose[d][1]), route);
+		g=buildingGradientValue(building, movementAccessValue, coordToIndex(x+tabClose[d][0], y+tabClose[d][1]), route);
 	if (g<=GRADIENT_UNREACHABLE)
 		return false;
 	*dist=gradientTiles(g);
@@ -168,38 +164,38 @@ bool Map::pathfindBuilding(EntityRandom& random, Building *building, MovementAcc
 	assert(building);
 	assert(x>=0);
 	assert(y>=0);
-	if (requestBuildingField(building,movementAccessFromLegacy(swimClass),route)==FieldReadiness::Pending) return false;
+	if (requestBuildingField(building,movementAccessValue,route)==FieldReadiness::Pending) return false;
 	if (swimClass!=AIR_MOVEMENT_CLASS && ((areaCells[coordToIndex(x, y)].forbidden) & building->owner->me)!=0)
 	{
 		// This escape path reads the cached field directly as a tie-breaker.
 		// Preserve its old age (do not call buildingGradient here).
-		finishBuildingGradient(building, movementAccessFromLegacy(swimClass), route);
-		return pathfindForbidden(building->globalGradient[slot], building->owner->teamNumber, movementAccessFromLegacy(swimClass), x, y, dx, dy);
+		finishBuildingGradient(building, movementAccessValue, route);
+		return pathfindForbidden(building->globalGradient[slot], building->owner->teamNumber, movementAccessValue, x, y, dx, dy);
 	}
 
-	if (!prepareBuildingGradient(building, movementAccessFromLegacy(swimClass), route))
+	if (!prepareBuildingGradient(building, movementAccessValue, route))
 		return false;
 	if (building->resolveRoute(route) == BuildingRoute::Clearing
-		&& buildingGradientValue(building, movementAccessFromLegacy(swimClass), coordToIndex(x, y), route)==GRADIENT_AT_GOAL)
+		&& buildingGradientValue(building, movementAccessValue, coordToIndex(x, y), route)==GRADIENT_AT_GOAL)
 	{
 		// Standing where one of the flag's resources was: it is gone, the gradient is stale.
 		building->dirtyGradient[slot]=true;
 		return false;
 	}
-	if (buildingGradientDirection(random, building, movementAccessFromLegacy(swimClass), x, y, dx, dy, true, route))
+	if (buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, true, route))
 		return true;
 	if (building->lastGlobalGradientUpdateStepCounter[slot]+STUCK_REBUILD_TICKS>game->stepCounter)
-		return buildingGradientDirection(random, building, movementAccessFromLegacy(swimClass), x, y, dx, dy, false, route);
+		return buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, false, route);
 
 	// Stuck for a while: the gradient may be stale. A scheduled refresh keeps
 	// sidestepping on the old field until it publishes; otherwise rebuild now.
 	if (requestBuildingRefresh(building, slot))
-		return buildingGradientDirection(random, building, movementAccessFromLegacy(swimClass), x, y, dx, dy, false, route);
+		return buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, false, route);
 	noteBuildingSyncReason(BuildingSyncReason::Other);
-	updateGlobalGradient(building, movementAccessFromLegacy(swimClass), route);
+	updateGlobalGradient(building, movementAccessValue, route);
 	if (building->isLocked(building->routeAccess(swimClass, route)))
 		return false;
-	if (buildingGradientDirection(random, building, movementAccessFromLegacy(swimClass), x, y, dx, dy, true, route))
+	if (buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, true, route))
 		return true;
-	return buildingGradientDirection(random, building, movementAccessFromLegacy(swimClass), x, y, dx, dy, false, route);
+	return buildingGradientDirection(random, building, movementAccessValue, x, y, dx, dy, false, route);
 }

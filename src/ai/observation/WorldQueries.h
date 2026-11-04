@@ -171,7 +171,7 @@ public:
     int swim=accessClass(movementAccessValue);
 
   const int key=(owner*MaterialSlotCount+resource)*MOVEMENT_CLASS_COUNT+swim;
-  auto published=world.resourceGradient(owner,resource,movementAccessFromLegacy(swim));
+  auto published=world.resourceGradient(owner,resource,movementAccessValue);
   std::span<const Uint16> gradient=published;
   if(!published.empty()) resourceFields.erase(key);
   else {
