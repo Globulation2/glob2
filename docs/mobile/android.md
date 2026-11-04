@@ -35,6 +35,11 @@ python3 platforms/mobile/android.py launch --arch arm64-v8a --release --serial D
 Release builds start unsigned. `sign` uses a local developer key and validates
 ZIP alignment, the signature and APK digest. Store distribution requires separate
 signing arrangements. Use `armeabi-v7a` or `x86_64` for other supported targets.
+Android packages store native libraries uncompressed and aligned so Android can
+load them directly from the APK. The game library's linker export list exposes
+only the SDL entry point and the Java document picker callback. Update
+`platforms/mobile/android/libmain.exports` if Android or SDL needs to look up a
+new entry point by name.
 The F-Droid build mode adds `--fdroid` to the Android build, sign, install, and
 launch commands. Both F-Droid and Play use `org.globulation2.glob2`. The
 F-Droid release uses
