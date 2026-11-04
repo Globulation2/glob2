@@ -62,6 +62,7 @@ void Map::updateGlobalGradient(Building *building, MovementAccess movementAccess
 		building->settledCostHint[slot] = Uint16(std::min(previous->requiredCost(), 0xFFFE));
 	if (building->sharedGradient[slot])
 	{
+        recordFieldCost(building->globalGradient[slot],-1);
 		building->retireSharedGradient(slot);
 		building->globalGradient[slot] = gradient = acquireBuildingGradientBuffer();
 	}

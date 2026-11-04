@@ -116,6 +116,11 @@ TEST_CASE("saved mode and field costs continue through the next boundary with on
     header.getBasePlayer(0)=BasePlayer(0,"Test",0,BasePlayer::P_LOCAL);
     auto map=Engine::loadMapHeader("maps/balanced.map");
     GameGUI source;REQUIRE(source.loadFromHeaders(map,header,true,true));source.game.map.configureCompute(1);
+    Unit* upgraded=nullptr;
+    for(auto* unit:source.game.teams[0]->liveUnits.entries())if(unit->typeNum==WORKER){upgraded=unit;break;}
+    REQUIRE(upgraded);upgraded->resetAtLevel(3);
+    REQUIRE(upgraded->performance[SWIM]>0);
+
     for(unsigned tick=0;tick<510;++tick)source.game.step(0);
     auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(bytes);
     source.save(&out,"shared routing continuation");out.flush();

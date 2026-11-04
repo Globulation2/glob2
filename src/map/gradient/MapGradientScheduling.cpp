@@ -121,9 +121,9 @@ void Map::ensureBuildingGradientPipeline()
 		auto& search = b->globalGradientSearch[slot];
 		// The depth model reads the replaced lifetime; a locked one leaves the older value.
 		if (search) b->settledCostHint[slot] = Uint16(std::min(search->requiredCost(), 0xFFFE));
+        recordFieldCost(b->globalGradient[slot],-1);
 		b->retireSharedGradient(slot);
         recycleBuildingGradientSearch(std::move(search));
-		gradientRuntime->fieldCosts.erase(b->globalGradient[slot]);
 		recycleBuildingGradientBuffer(b->globalGradient[slot]);
 		b->globalGradient[slot] = p.data.release();
         recordFieldCost(b->globalGradient[slot],p.swim);
