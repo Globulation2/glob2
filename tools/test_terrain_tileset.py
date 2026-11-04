@@ -8,6 +8,7 @@ from terrain_tileset import (ROOT, BINDINGS, LEGACY_BINDINGS, validate, compile_
                              seamless_sources, data_path, required_bindings, material_provenance,
                              border_profile, border_table)
 from PIL import Image
+import terrain_catalog
 
 
 def catalog_frame_count(document):
@@ -22,7 +23,7 @@ def catalog_frame_count(document):
 
 class TerrainTileset(unittest.TestCase):
     def setUp(self):
-        self.document = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
+        self.document = terrain_catalog.load(ROOT / "content")
 
     def test_boundary_shapes_are_explicit_and_version_gated(self):
         validate(self.document)

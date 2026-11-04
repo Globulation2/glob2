@@ -1,7 +1,7 @@
 {
   "generator": "tools/artwork/terrain_glints.py",
   "method": "procedural",
-  "generator_sha256": "4ea1b2018c20e34f4a95ea85f50caa47707dedda33bab93a409ada27be1213b2",
+  "generator_sha256": "e569e1720c3e6cc7180125b94eb439836c0a679766066dd687fab4023882e241",
   "description": "Twinkling motes over fertile ground: one mote per layout at four brightness levels.",
   "seed": "fnv1a32(\"glint:<layout>\")",
   "native_size": 64,

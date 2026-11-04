@@ -17,7 +17,10 @@ import PIL
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import terrain_core as core  # noqa: E402
 import terrain_synth as synth  # noqa: E402
+from terrain_packs import _waves as waves  # noqa: E402
+import terrain_catalog  # noqa: E402
 from material_tiles import (  # noqa: E402
     ROOT,
     TILE,
@@ -45,7 +48,7 @@ class TerrainSynth(unittest.TestCase):
         return self.results[name][phase]
 
     def test_every_catalogue_type_has_a_recipe(self):
-        catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
+        catalog = terrain_catalog.load(ROOT / "content")
         profiles = {p["key"] for p in catalog["profiles"]}
         classes = {c["key"] for c in catalog["border_classes"]}
         self.assertEqual(sorted(synth.RECIPES), sorted(synth.SYNTH_ORDER))
@@ -60,7 +63,7 @@ class TerrainSynth(unittest.TestCase):
 
     def test_every_catalogue_sprite_frame_has_registered_hd(self):
         """Native-only terrain is limited to legacy art without an HD source."""
-        catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
+        catalog = terrain_catalog.load(ROOT / "content")
         rows = {line.split()[0] for line in (ROOT / "content/data/highres/v1/frames.txt").read_text().splitlines()[1:]}
         native_only = {"data/gfx/terrain", "data/gfx/terrain-cobblestone"}
         for material in catalog["materials"]:
@@ -315,12 +318,12 @@ class TerrainSynth(unittest.TestCase):
     def test_water_waves_travel_in_small_steps_around_the_loop(self):
         # No wave term moves more than a quarter wavelength per phase (aliasing
         # would read as flicker), and every term closes the loop exactly.
-        for kx, ky, cycles, _ in synth.WAVE_SWELL + synth.WAVE_CHOP:
-            self.assertLessEqual(cycles / synth.WAVE_PHASES, 0.25, (kx, ky))
-        self.assertEqual(synth.WAVE_SIZE % synth.WAVE_PHASES, 0)
+        for kx, ky, cycles, _ in waves.WAVE_SWELL + waves.WAVE_CHOP:
+            self.assertLessEqual(cycles / waves.WAVE_PHASES, 0.25, (kx, ky))
+        self.assertEqual(waves.WAVE_SIZE % waves.WAVE_PHASES, 0)
         for name in ("water", "deep_water"):
             recipe = synth.RECIPES[name]
-            self.assertEqual(recipe.phases, synth.WAVE_PHASES)
+            self.assertEqual(recipe.phases, waves.WAVE_PHASES)
             for layout in range(recipe.blocks):
                 blocks = [self.grid_block(name, phase, layout=layout) for phase in range(recipe.phases)]
                 self.assertEqual(len({b.tobytes() for b in blocks}), recipe.phases)
@@ -386,8 +389,8 @@ class TerrainBlockContracts(unittest.TestCase):
         rotations[-3] = rotations[0]  # Coincident geometry must prefer the original ID.
         for metric, stretch in (("euclid", 1.0), ("chebyshev", 1.0), ("angular", 0.35), ("angular", 2.6)):
             with self.subTest(metric=metric, stretch=stretch):
-                expected = synth._worley_from_points(points, metric, rotations, stretch, size=32)
-                actual = synth._worley_indexed(points, metric, rotations, stretch, size=32)
+                expected = core._worley_from_points(points, metric, rotations, stretch, size=32)
+                actual = core._worley_indexed(points, metric, rotations, stretch, size=32)
                 self.assertEqual(actual, expected)
 
     def test_catalog_merge_keeps_keys_authored_elsewhere(self):
@@ -407,16 +410,16 @@ class TerrainBlockContracts(unittest.TestCase):
     def test_sampling_uses_the_whole_block_and_wraps_at_512(self):
         size = 4 * synth.N
         values = [float(x + size * y) for y in range(size) for x in range(size)]
-        self.assertEqual(synth.sample(values, 300.25, 257.5), 300.25 + size * 257.5)
-        self.assertEqual(synth.sample(values, size + 300.25, 257.5 - size), 300.25 + size * 257.5)
-        self.assertEqual(synth.sample(values, size - 0.5, 0), (size - 1) / 2)
-        self.assertEqual(synth.sample(values, 0, size - 0.5), size * (size - 1) / 2)
+        self.assertEqual(core.sample(values, 300.25, 257.5), 300.25 + size * 257.5)
+        self.assertEqual(core.sample(values, size + 300.25, 257.5 - size), 300.25 + size * 257.5)
+        self.assertEqual(core.sample(values, size - 0.5, 0), (size - 1) / 2)
+        self.assertEqual(core.sample(values, 0, size - 0.5), size * (size - 1) / 2)
 
     def test_domain_warp_keeps_full_block_coordinates(self):
         size = 4 * synth.N
         values = [float(x + size * y) for y in range(size) for x in range(size)]
         shift_x, shift_y = [1.0] * len(values), [0.0] * len(values)
-        warped = synth.domain_warp(values, shift_x, shift_y, 3, 2)
+        warped = core.domain_warp(values, shift_x, shift_y, 3, 2)
         self.assertEqual(len(warped), size * size)
         for x, y in ((300, 257), (size - 1, 0), (0, size - 1)):
             with self.subTest(x=x, y=y):
@@ -425,7 +428,7 @@ class TerrainBlockContracts(unittest.TestCase):
     def test_stamps_wrap_at_the_block_boundary(self):
         size = 4 * synth.N
         mask = [0.0] * (size * size)
-        synth.stamp_disc(mask, size - 0.5, size - 0.5, 2)
+        core.stamp_disc(mask, size - 0.5, size - 0.5, 2)
         self.assertGreater(mask[(size - 1) * size + size - 1], 0)
         self.assertGreater(mask[0], 0)
         self.assertEqual(mask[synth.N * size + synth.N], 0)
@@ -539,7 +542,7 @@ class TerrainBlockContracts(unittest.TestCase):
                     validate_grid_joins("deep_snow", 0, tiles[:cells] * 2, grid)
 
     def test_committed_catalog_keeps_recipe_edge_contracts(self):
-        catalog = json.loads((ROOT / "content/data/terrain/tileset.json").read_text())
+        catalog = terrain_catalog.load(ROOT / "content")
         materials = {material["key"]: material for material in catalog["materials"]}
         for name, recipe in synth.RECIPES.items():
             with self.subTest(material=name):
