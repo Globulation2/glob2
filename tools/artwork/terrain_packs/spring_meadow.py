@@ -18,8 +18,8 @@ from terrain_core import (
 
 @recipe(name="spring_meadow", group="fertile", label="Spring meadow", profile="brush", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
-        palette={"dark": (78, 118, 50), "mid": (104, 146, 66), "light": (134, 170, 90), "dot": (236, 228, 170)},
-        style=Style(luma=105, std=7, grain_max=7), periodic=True, grid=8, blocks=4)
+        palette={"dark": (66, 120, 34), "mid": (94, 154, 48), "light": (130, 184, 70), "dot": (240, 232, 160)},
+        style=Style(luma=102, std=7, grain_max=7), periodic=True, grid=8, blocks=4)
 def render_spring_meadow(ctx):
     """Common edge turf and blooms, with independently seeded interiors."""
     p = RECIPES["spring_meadow"].palette
@@ -34,7 +34,7 @@ def render_spring_meadow(ctx):
     own_grain = lattice_noise(own_rng, 48, size=ctx.size)
     fine = blend_fields(common_grain, own_grain, ctx.interior_mask)
     rgb = [[c * (1 + 0.12 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
-    rgb = desaturate(rgb, 0.18)
+    rgb = desaturate(rgb, 0.06)
     shared_ctx = Ctx(ctx.name, 0, ctx.phase, ctx.phases, size=ctx.size)
     shared_ctx.rng = shared_rng
     common_dots, _, _ = soft_blobs(shared_ctx, 10, 4.0, 5.5)

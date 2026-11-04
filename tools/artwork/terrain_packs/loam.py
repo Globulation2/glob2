@@ -18,8 +18,8 @@ from terrain_core import (
 
 @recipe(name="loam", group="fertile", label="Loam", profile="soil", border_class="solid",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
-        palette={"dark": (52, 38, 24), "mid": (74, 58, 36), "light": (98, 80, 52), "fleck": (96, 108, 56)},
-        style=Style(luma=66, std=8, grain_max=8), periodic=True, grid=8, blocks=4)
+        palette={"dark": (44, 26, 14), "mid": (80, 50, 26), "light": (112, 76, 42), "fleck": (92, 124, 44)},
+        style=Style(luma=60, std=9, grain_max=8), periodic=True, grid=8, blocks=4)
 def render_loam(ctx):
     """Common periodic soil and flecks at the perimeter, varied interior beds."""
     p = RECIPES["loam"].palette
