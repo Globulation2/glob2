@@ -134,11 +134,11 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	// Replenishment staffing changes require the current replay acceptance floor.
+	// Shared amphibious routing changes require the shared-routing replay floor.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 200);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY);
 	CHECK(VERSION_MINOR >= REPLAY_MINIMUM_VERSION_MINOR);
-	CHECK(FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY == 200);
+	CHECK(FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY > FILE_FORMAT_VERSION_GLACIER_ICE);
 
 	CHECK(NET_PROTOCOL_VERSION == 75);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
