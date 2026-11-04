@@ -5722,6 +5722,8 @@ Pieskovcové dlaždice
 Pemzové pole
 [frozen_lake]
 Zamrznuté jazero
+[wind_swept_snow]
+Naviaty sneh
 [terrain group water]
 Voda
 [terrain group sand]

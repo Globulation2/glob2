@@ -625,6 +625,11 @@ TEST_SUITE("TerrainRuntime")
 		std::vector<Uint16> expected(1024, 1);
 		expected[0] = GRADIENT_AT_GOAL;
 		map.propagateGradient(expected.data(), 6);
+		const auto baseline = map.frozenTerrainMovementSnapshot(6);
+		// The square patch contains grass plus quarter-, half- and full-ice
+		// cells, each with a distinct cardinal and diagonal entry cost.
+		REQUIRE(baseline->movement.profiles.size() == 4);
+		REQUIRE(baseline->movement.steps.size() == 8);
 		nlohmann::json definitions = nlohmann::json::array();
 		for (unsigned speed = 64; speed <= 1024; ++speed)
 			definitions.push_back({{"key", "unused:s" + std::to_string(speed)},
@@ -636,8 +641,8 @@ TEST_SUITE("TerrainRuntime")
 			nlohmann::json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
 		REQUIRE(map.terrainRegistry().movement(6).profiles.size() > 50);
 		const auto snapshot = map.frozenTerrainMovementSnapshot(6);
-		CHECK(snapshot->movement.profiles.size() == 2);
-		CHECK(snapshot->movement.steps.size() == 4);
+		CHECK(snapshot->movement.profiles.size() == baseline->movement.profiles.size());
+		CHECK(snapshot->movement.steps == baseline->movement.steps);
 		CHECK(map.terrainQueueBuckets() == 64);
 		std::vector<Uint16> actual(1024, 1);
 		actual[0] = GRADIENT_AT_GOAL;
@@ -937,6 +942,16 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(FROZEN_LAKE).name) == "frozen_lake");
 		CHECK(TerrainRegistry::builtins()->find("frozen_lake") == FROZEN_LAKE);
 	}
+	TEST_CASE("wind-swept snow shares every rule of deep snow")
+	{
+		CHECK(terrainGroup(WIND_SWEPT_SNOW) == terrainGroup(DEEP_SNOW));
+		CHECK(terrainPaintable(WIND_SWEPT_SNOW));
+		CHECK(sameTerrainProperties(terrainProperties(WIND_SWEPT_SNOW), terrainProperties(DEEP_SNOW)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(WIND_SWEPT_SNOW) ==
+			  TerrainRegistry::builtins()->propertyIndex(DEEP_SNOW));
+		CHECK(std::string(terrainPresentation(WIND_SWEPT_SNOW).name) == "wind_swept_snow");
+		CHECK(TerrainRegistry::builtins()->find("wind_swept_snow") == WIND_SWEPT_SNOW);
+	}
 	TEST_CASE("tundra shares every rule of the barren group")
 	{
 		CHECK(terrainGroup(TUNDRA) == TerrainGroup::Barren);
@@ -1143,17 +1158,45 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
     map.paintCell(3,3,WATER); // Removing the last fast cell must remove its histogram contribution.
     map.paintCell(25,25,TRAIL);
     CHECK(map.hasTerrainMovementModifiers());
-    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10); // Faster walkable ground is unavailable to swimmers.
+    CHECK_FALSE(map.terrainPropertiesAt(25,25).swimmable); // The pure trail is walking-only.
+    CHECK(map.terrainPropertiesAt(24,24).swimmable);
+    CHECK(map.terrainPropertiesAt(24,24).groundSpeedQ8==320); // (3*256+512)/4.
+    CHECK(map.minStepCost(WATER_ONLY_CLASS)==8); // Swimming shores inherit a quarter of trail speed.
+    map.paintCell(25,25,WATER);
+    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10); // Removing the last fast shore restores the minimum.
 
     map.fillTerrain(*fast);
     // This fixed layout makes an overestimated water-only heuristic choose
-    // a more expensive first move. Grass corners block the surrounding cells.
-    for (const auto [x,y]:{std::pair{9,19}, {10,13}, {10,14}, {10,16}, {10,18}, {16,16}, {17,14}})
-        map.setVertexTerrain(x,y,GRASS);
+    // a more expensive first move (94 instead of 77). Full grass cells make
+    // actual swimming obstacles under corner voting; a lone grass vertex does not.
+    for (const auto [x,y]:{std::pair{16,17}, {13,12}, {14,18}, {16,15}, {16,13}, {10,16}, {14,16}, {14,12}, {15,18}})
+        paintVertices(map,x,y,x+1,y+1,GRASS);
     REQUIRE(map.minStepCost(WATER_ONLY_CLASS)==5);
     constexpr int startX=8,startY=16,targetX=20,targetY=16;
-    // Independent reverse Dijkstra: uniform fast water costs 5 cardinal and
-    // 7 diagonal. Read only passability; use neither engine costs nor its heuristic.
+    // Independent reverse Dijkstra. Price each destination from its four raw
+    // corner identities: pure fast water has speed512, while a three-water/one-
+    // grass shore averages448 and costs6 cardinal/8 diagonal instead of5/7.
+    // Neither cell merging, compiled engine costs nor its heuristic is used.
+    std::vector<bool> swimming(map.size);
+    std::vector<int> cardinal(map.size);
+    for (size_t i=0;i<map.size;++i)
+    {
+        int speedSum=0,waterCorners=0;
+        for (const auto corner:map.cellCorners(i))
+        {
+            REQUIRE((corner==*fast || corner==GRASS));
+            speedSum+=corner==*fast ? 512 : 256;
+            waterCorners+=corner==*fast;
+        }
+        swimming[i]=waterCorners>=3;
+        const int speed=speedSum/4;
+        cardinal[i]=(10*256+speed/2)/speed;
+        CHECK(map.terrainPropertiesAt(i).groundSpeedQ8==speed);
+        CHECK(map.terrainPropertiesAt(i).swimmable==swimming[i]);
+    }
+    const auto edgeCost=[&](size_t destination,bool diagonal) {
+        return diagonal ? cardinal[destination]*14/10 : cardinal[destination];
+    };
     std::vector<int> distance(map.size,INT_MAX);
     using Entry=std::pair<int,size_t>;
     std::priority_queue<Entry,std::vector<Entry>,std::greater<Entry>> pending;
@@ -1165,17 +1208,17 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
         const auto [cost,index]=pending.top(); pending.pop();
         if (cost!=distance[index]) continue;
         const int x=int(index&map.wMask),y=int(index>>map.wDec);
-        REQUIRE(map.terrainPropertiesAt(index).groundSpeedQ8==512);
         for (int dx=-1;dx<=1;++dx) for (int dy=-1;dy<=1;++dy)
         {
             if (!dx && !dy) continue;
             const auto next=map.coordToIndex(x+dx,y+dy);
-            if (!map.terrainPropertiesAt(next).swimmable) continue;
-            const int candidate=cost+(dx && dy ? 7 : 5);
+            if (!swimming[next]) continue;
+            // Reverse search: next is the predecessor, index the destination.
+            const int candidate=cost+edgeCost(index,dx && dy);
             if (candidate<distance[next]) { distance[next]=candidate; pending.emplace(candidate,next); }
         }
     }
-    REQUIRE(distance[map.coordToIndex(startX,startY)]==92);
+    REQUIRE(distance[map.coordToIndex(startX,startY)]==77);
     int x=startX,y=startY,travelCost=0;
     for (int step=0;step<64 && (x!=targetX || y!=targetY);++step)
     {
@@ -1183,12 +1226,12 @@ TEST_CASE("water-only movement minima track fast water and retain optimal obstac
         REQUIRE(map.pathfindPointToPoint(x,y,targetX,targetY,&dx,&dy,WATER_ONLY_CLASS,world.game.teams[0]->me,100));
         REQUIRE((dx!=0 || dy!=0));
         const auto next=map.coordToIndex(x+dx,y+dy);
-        const int edge=dx && dy ? 7 : 5;
+        const int edge=edgeCost(next,dx && dy);
         CHECK(edge+distance[next]==distance[map.coordToIndex(x,y)]);
         travelCost+=edge;
         x=(x+dx)&map.wMask; y=(y+dy)&map.hMask;
     }
-    CHECK(x==targetX); CHECK(y==targetY); CHECK(travelCost==92);
+    CHECK(x==targetX); CHECK(y==targetY); CHECK(travelCost==77);
     map.fillTerrain(WATER);
     CHECK(map.minStepCost(WATER_ONLY_CLASS)==10);
 }
@@ -1198,14 +1241,23 @@ TEST_CASE("ice costs twenty recovery ticks per HP and remains traversable")
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     auto& map=world.game.map;
-    // One ice vertex makes the four cells around it icy transitions.
+    // One ice corner averages to 87.5% speed and -2/256 HP per tick.
     map.setVertexTerrain(10,9,ICE);
-    CHECK(map.stepCost(1,0,map.coordToIndex(9,8),0)==33);
-    CHECK(map.stepCost(1,1,map.coordToIndex(9,8),0)==46);
+    CHECK(map.terrainPropertiesAt(9,8).groundSpeedQ8==224);
+    CHECK(map.terrainPropertiesAt(9,8).groundHealthQ8==-2);
+    // Round travel 10/0.875 to 11, then include 20 recovery ticks per HP:
+    // round(11*(256+20*2)/256)=13; diagonal cost is floor(13*1.4)=18.
+    CHECK(map.stepCost(1,0,map.coordToIndex(9,8),0)==13);
+    CHECK(map.stepCost(1,1,map.coordToIndex(9,8),0)==18);
     CHECK(map.stepCost(1,0,map.coordToIndex(9,7),0)==10);
     int dx=0,dy=0;
     REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,0,world.game.teams[0]->me,100));
-    CHECK(dy==-1); // two diagonals and a step above cost 38; the icy row costs 76.
+    CHECK(dx==1); CHECK(dy==0); // The diluted icy row costs 36; the safe detour 38.
+    // Two ice corners per cell make the direct strip expensive enough to avoid.
+    paintVertices(map,9,9,11,9,ICE);
+    CHECK(map.stepCost(1,0,map.coordToIndex(9,8),0)==17);
+    REQUIRE(map.pathfindPointToPoint(8,8,11,8,&dx,&dy,0,world.game.teams[0]->me,100));
+    CHECK(dy==-1); // The detour costs 42, including its one-corner icy landing; straight costs 47.
     // A corridor offers no safe alternative but must remain routable. Grass
     // vertices along row 8 make the cells of rows 7 and 8 walkable.
     map.fillTerrain(WATER);
@@ -1475,10 +1527,18 @@ TEST_CASE("escape fields separate team permissions swimming and forbidden-area e
     CHECK(map.gradientRuntime->safety.fields.size()==2);
     map.removeForbidden(14,8,0);
     REQUIRE(map.pathfindTerrainSafety(first));
+    const int permittedDx=first->dx,permittedDy=first->dy;
     // A unit already on forbidden ice can leave through further forbidden cells.
+    // Paint only the hazardous approach, leaving its safe goal unchanged; the
+    // best direction must match the unpainted route, including cheaper mixed edges.
     for(int y=6;y<=10;++y) for(int x=6;x<=13;++x) map.addForbidden(x,y,0);
     REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(first->dx==1); CHECK(first->dy==0);
+    CHECK(first->dx==permittedDx); CHECK(first->dy==permittedDy);
+    const int nextX=first->posX+first->dx,nextY=first->posY+first->dy;
+    CHECK((first->dx!=0 || first->dy!=0));
+    CHECK(map.terrainPropertiesAt(nextX,nextY).groundHealthQ8<0);
+    CHECK_FALSE(map.isFreeForGroundUnit(nextX,nextY,false,world.game.teams[0]->me));
+    CHECK(map.isFreeForGroundUnitNoForbidden(nextX,nextY,false));
     // Swimming exposes the surrounding safe water as additional escape goals.
     first->setPerformance(SWIM,first->performance[WALK]);
     REQUIRE(map.pathfindTerrainSafety(first));
@@ -1556,17 +1616,28 @@ TEST_CASE("escape fields charge destination terrain and choose a cheaper indirec
     map.game=nullptr;
     map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:mild","name":"Mild hazard","base":"grass","properties":{"groundHealthQ8":-1},"appearance":"ice"},{"key":"test:slow-safe","name":"Slow safety","base":"grass","properties":{"groundSpeedQ8":64},"appearance":"grass"}]})");
     map.setGame(&world.game);
-    map.paintCell(8,8,ICE);
-    map.paintCell(9,8,*map.terrainRegistry().find("test:slow-safe"));
-    map.paintCell(8,7,*map.terrainRegistry().find("test:mild"));
-    map.paintCell(8,6,GRASS);
+    // Author raw corners so the adjacent eastern goal is entirely slow-safe,
+    // while north requires one mixed hazardous step before reaching safety.
+    // The northeastern/southeastern shoulders retain ice so neither diagonal
+    // becomes an unintended cheap safe goal under arithmetic averaging.
+    paintVertices(map,8,8,8,9,ICE);
+    paintVertices(map,9,8,10,9,*map.terrainRegistry().find("test:slow-safe"));
+    paintVertices(map,8,7,9,7,*map.terrainRegistry().find("test:mild"));
+    paintVertices(map,8,6,9,6,GRASS);
+    map.setVertexTerrain(10,7,ICE);
+    paintVertices(map,9,10,10,10,ICE);
+    CHECK(map.terrainPropertiesAt(8,7).groundSpeedQ8==176);
+    CHECK(map.terrainPropertiesAt(8,7).groundHealthQ8==-2);
+    CHECK(map.terrainPropertiesAt(8,6).groundHealthQ8==0); // (-1-1+0+0)/4 truncates toward zero.
+    CHECK(map.stepCost(1,0,map.coordToIndex(9,8),0)==40);
     auto* unit=world.addUnit(WORKER,8,8);
     REQUIRE(unit);
     REQUIRE(map.pathfindTerrainSafety(unit));
     CHECK(unit->dx==0); CHECK(unit->dy==-1);
     const auto& costs=map.gradientRuntime->safety.fields.begin()->second.costs;
-    // Enter mild terrain (11), then grass (10); the adjacent slow goal costs 40.
-    CHECK(costs[map.coordToIndex(8,8)]==21);
+    // Enter the mixed northern cell (round(15*(256+20*2)/256)=17),
+    // then the safe northern cell (10); entering the eastern slow goal costs 40.
+    CHECK(costs[map.coordToIndex(8,8)]==27);
     CHECK(costs[map.coordToIndex(8,7)]==10);
 }
 

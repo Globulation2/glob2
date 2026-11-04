@@ -160,7 +160,9 @@ save; those traces retain the checksum layout preceding format 168.
 Format 168 uses asynchronous routine snapshot checksums and opt-in deep live-world
 sidecars. Current runners compare `profile1-256-deep168.checksums.gz` and
 `realistic-profile1-256-deep168.checksums.gz`; the native `--update-fixtures` option
-rewrites only those current traces. Their aggregate retains existing full map,
+rewrites only those current traces. The current baselines include four-corner terrain
+voting and arithmetic-mean modifiers, which can change movement and resource growth
+without changing the saved initial terrain. Their aggregate retains existing full map,
 script, RNG and pending-work coverage, and header flag bit 0 identifies this deep
 mode. Replays separately validate the source-tagged snapshot schema. The native
 corpus normalizes only MapHeader's checksum minor to 125; the Python checker

@@ -43,9 +43,8 @@ are those of revision 2.
 A tile takes its rules from its four corner vertices, so ground is set on
 corners and kept off every tile that must stay pure grass: towns, ramparts,
 service courts, landing fields and lanes. The sea is shallow water throughout
-and deep water is deliberately absent: a tile whose corners are shallow and
-deep water is neither walkable nor swimmable, so a deep ring would seal every
-island from swimmers.
+and this recipe does not add a deep-water band. Mixed water depths remain
+swimmable under the shared corner rules.
 
 ### A colony's own plantations stay grass
 

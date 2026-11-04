@@ -582,7 +582,7 @@ GeneratorDefinition riceTerracesDefinition()
 		"rice-terraces",
 		52,
 		"Rice terraces",
-		4,
+		5,
 		false,
 		// One hillside at a slant of one is a single terraced slope spiralling round the torus: on
 		// a 256 map it crosses twice. Terraces should be most of the map (a first render with two

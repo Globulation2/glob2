@@ -141,8 +141,8 @@ constexpr int kRelaxRounds = 3;
 // its nearest neighbours, so the swim to the next island lands on a lane and the plot is reached from
 // two sides when a field is solid; a home gets one per granted island when it holds more (the bulk
 // study's causeway failures were all homes with three granted islands and two lanes).
-// kCausewayHalfWidth is the sand line's half width across the strait for a causeway: one vertex of
-// sand already carries units two tiles wide (Channels.h's bridgeAcross).
+// kCausewayHalfWidth is the sand stroke's half width across a strait. It keeps the corner line
+// connected at every angle, supplying at least two sand corners to traversed tiles (bridgeAcross).
 constexpr int kLanes = 2;
 constexpr double kCausewayHalfWidth = 0.75;
 // Islets: a rock islet is a disc of this radius, a grass core of about three tiles that holds a stone

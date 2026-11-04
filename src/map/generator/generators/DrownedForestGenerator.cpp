@@ -97,19 +97,19 @@ std::string requestFailure(const GenerationRequest &r)
 
 std::vector<unsigned char> sketchWalk(const Layout &L)
 {
-	auto water = pureTiles(L.terrain, L.t, WATER);
+	auto walkable = walkableTiles(L.terrain, L.t);
 	const auto grass = pureTiles(L.terrain, L.t, GRASS);
 	std::vector<unsigned char> town(L.t.size(), 0);
 	for (const auto &g : L.clearings)
 		for (int i : g.town)
 			town[i] = 1;
 	for (int i = 0; i < L.t.size(); ++i)
-		water[i] = !water[i] && (!grass[i] || town[i]) && !L.forest[i];
+		walkable[i] = walkable[i] && (!grass[i] || town[i]) && !L.forest[i];
 	for (const auto &g : L.clearings)
 		for (const auto *field : {&g.wheat, &g.wood})
 			for (int i : *field)
-				water[i] = 0;
-	return water;
+				walkable[i] = 0;
+	return walkable;
 }
 
 // Mark a winding shape only on its existing island. The town's outline is different at
@@ -1824,7 +1824,7 @@ GeneratorDefinition drownedForestDefinition()
 	return {"drowned-forest",
 			67,
 			"Drowned Forest",
-			2,
+			3,
 			false,
 			{GeneratorControl{"sandbar-connections", "Sandbar connections", 0, 100, 10, 30,
 							  ControlGroup::Layout}

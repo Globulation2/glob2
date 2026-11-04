@@ -359,6 +359,10 @@ static constexpr int FILE_FORMAT_VERSION_MAXIMA_PRESTIGE_PARALLEL = 193;
 //! loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_SANDSTONE_PUMICE = 195;
 
-//! Built-in tundra: TERRAIN_COUNT grew from 36 to 37, so format-195 files carry
+//! Built-in wind-swept snow: TERRAIN_COUNT grew from 36 to 37, so earlier files carry
 //! custom terrain IDs starting at 36 that the loader renumbers.
-static constexpr int FILE_FORMAT_VERSION_TUNDRA = 196;
+static constexpr int FILE_FORMAT_VERSION_WIND_SWEPT_SNOW = 196;
+
+//! Built-in tundra: TERRAIN_COUNT grew from 37 to 38, so earlier files carry custom
+//! terrain IDs starting at 37 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_TUNDRA = 197;

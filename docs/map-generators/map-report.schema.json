@@ -535,6 +535,9 @@
         "frozen_lake": {
           "$ref": "#/$defs/coverage"
         },
+        "wind_swept_snow": {
+          "$ref": "#/$defs/coverage"
+        },
         "tundra": {
           "$ref": "#/$defs/coverage"
         },

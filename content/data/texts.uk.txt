@@ -5722,6 +5722,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Поле пемзи
 [frozen_lake]
 Замерзле озеро
+[wind_swept_snow]
+Наметений вітром сніг
 [terrain group water]
 Вода
 [terrain group sand]

@@ -84,6 +84,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(PUMICE, G::Rough, "pumice", "[pumice]", {44, 42, 42}, {58, 55, 54}),
 		// Ice over a lake: plays exactly like ice.
 		authored(FROZEN_LAKE, G::Ice, "frozen_lake", "[frozen_lake]", {128, 160, 174}, {141, 172, 185}),
+		// Snow carved by the wind into drifts: plays exactly like deep snow.
+		authored(WIND_SWEPT_SNOW, G::Rough, "wind_swept_snow", "[wind_swept_snow]", {202, 206, 226}, {202, 206, 226}),
 		// Olive moss, grey stones and dark cracked earth: plays exactly like dirt.
 		authored(TUNDRA, G::Barren, "tundra", "[tundra]", {82, 78, 62}, {91, 87, 69}),
 	}};

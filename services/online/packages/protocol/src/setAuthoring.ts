@@ -37,6 +37,7 @@ export const TERRAIN_PRESETS = [
   'sandstone',
   'pumice',
   'frozen_lake',
+  'wind_swept_snow',
   'tundra',
 ];
 /**
