@@ -9,7 +9,7 @@ colonies on the roomiest lattice the torus holds (Orbits.h), a round home and po
 each, the starter kit and the crop guarantee, and three controls to start from. Then:
 
   * adds its definition to GeneratorRegistry::builtins() and its source to scons/sources.py,
-  * adds its translation keys to data/texts.keys.txt and, with the English text as a
+  * adds its translation keys to content/data/texts.keys.txt and, with the English text as a
     placeholder, to every table (translate them before merging),
   * picks the next unused legacy id (or --legacy-id).
 
@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 GENERATORS = ROOT / 'src' / 'map' / 'generator' / 'generators'
 REGISTRY = ROOT / 'src' / 'map' / 'generator' / 'core' / 'GeneratorRegistry.cpp'
 SOURCE_MANIFEST = ROOT / 'scons' / 'sources.py'
-TEXTS = ROOT / 'data'
+TEXTS = ROOT / 'content' / 'data'
 
 HEADER = '''// SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once

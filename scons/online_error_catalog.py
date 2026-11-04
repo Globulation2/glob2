@@ -5,9 +5,9 @@ import sys
 from SCons.Action import Action
 
 INPUTS = ('#tools/localization/build_online_error_catalog.py',
-          '#platform/packages/i18n/locales/en.json',
-          '#platform/packages/i18n/locales/bg.json',
-          '#platform/packages/i18n/locales/th.json')
+          '#services/online/packages/i18n/locales/en.json',
+          '#services/online/packages/i18n/locales/bg.json',
+          '#services/online/packages/i18n/locales/th.json')
 CONSUMERS = ('online/ApiErrorText.cpp', 'online/ApiErrorTextTest.cpp')
 
 

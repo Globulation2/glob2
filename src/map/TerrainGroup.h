@@ -69,14 +69,14 @@ inline constexpr auto TERRAIN_GROUPS = []
 		grass.farmMaterial = materialIndex(MaterialId::Food);
 	}
 	{
-		// Ice and deep snow: slow, and the cold wears ground units down.
+		// Ice, deep snow and frozen lake: slow, and the cold wears ground units down.
 		auto &ice = define(TerrainGroup::Ice, "ice", "[terrain group ice]", true);
 		ice.walkable = true;
 		ice.groundSpeedQ8 = 128;
 		ice.groundHealthQ8 = -8;
 	}
 	{
-		// Trail, dirt track, boardwalk: fast, buildable, nothing grows.
+		// Trail, brick path, boardwalk, sandstone: fast, buildable, nothing grows.
 		auto &paths = define(TerrainGroup::Paths, "paths", "[terrain group paths]", true);
 		paths.walkable = paths.buildable = true;
 		paths.groundSpeedQ8 = 512;
@@ -92,7 +92,7 @@ inline constexpr auto TERRAIN_GROUPS = []
 		define(TerrainGroup::Ridges, "ridges", "[terrain group ridges]", true);
 	}
 	{
-		// Dirt, clay, gravel, flower meadow: buildable, inhibits growth like sand,
+		// Dirt, clay, shale, heath: buildable, inhibits growth like sand,
 		// but no shore support so it never acts as a coastline.
 		auto &barren = define(TerrainGroup::Barren, "barren", "[terrain group barren]", true);
 		barren.walkable = barren.buildable = true;
@@ -111,11 +111,11 @@ inline constexpr auto TERRAIN_GROUPS = []
 	}
 	{
 		// Loam, moss, spring meadow: buildable crop land that irrigates its
-		// surroundings more strongly than water does.
+		// surroundings at half the contribution of water.
 		auto &fertile = define(TerrainGroup::Fertile, "fertile", "[terrain group fertile]", true);
 		fertile.walkable = fertile.buildable = fertile.resourcesGrow = true;
 		fertile.nonGrowingResources = fertile.fertilitySource = true;
-		fertile.fertilityQ8 = 768;
+		fertile.fertilityQ8 = 128;
 		fertile.allowedResources = TERRAIN_GRASS_RESOURCES;
 		fertile.farmMaterial = materialIndex(MaterialId::Food);
 	}

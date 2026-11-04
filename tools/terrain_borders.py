@@ -3,7 +3,7 @@
 """Reproduce retained legacy border sprites from ice and trail textures.
 
 The material compositor does not use these sprites. Keep this recipe for the
-existing asset provenance in datasrc/gfx/trail/.
+existing asset provenance in content-src/gfx/trail/.
 
 The 32x32 frame always remains inside the receiving cell. Bits N/E/S/W select
 four-pixel-wide edge bands, so visual blending never changes gameplay coverage.
@@ -25,7 +25,7 @@ def trail_fraying(x, y):
 
 
 def main():
-    root = Path(__file__).resolve().parents[1] / "data/gfx"
+    root = Path(__file__).resolve().parents[1] / "content/data/gfx"
     last = TILE_SIZE - 1
     for source, first in BORDER_FRAMES:
         with Image.open(root / f"terrain{source}.png") as image:

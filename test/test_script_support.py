@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import MagicMock, call, patch
 
 SPEC = importlib.util.spec_from_file_location('script_support',
-    Path(__file__).resolve().parents[1] / 'data/fonts/check_script_support.py')
+    Path(__file__).resolve().parents[1] / 'content/data/fonts/check_script_support.py')
 PROBE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(PROBE)
 

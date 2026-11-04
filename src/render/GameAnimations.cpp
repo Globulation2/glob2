@@ -5,6 +5,7 @@
 #include "GameAnimations.h"
 
 #include "GlobalContainer.h"
+#include "UnitEffects.h"
 #include "map/Map.h"
 
 UnitDeathAnimation::UnitDeathAnimation(int x, int y, Team *team)
@@ -31,6 +32,7 @@ void GameAnimations::resize(int sectorCount)
 	clear();
 	sectorExplosions.resize(sectorCount);
 	sectorDeathAnimations.resize(sectorCount);
+	sectorUnitEffects.resize(sectorCount);
 }
 
 void GameAnimations::clear()
@@ -47,6 +49,9 @@ void GameAnimations::clear()
 			delete a;
 		bucket.clear();
 	}
+	for (auto& bucket : sectorUnitEffects)
+		bucket.clear();
+	pendingServices.clear();
 }
 
 void GameAnimations::onBulletImpact(const Map& map, int x, int y)
@@ -69,10 +74,55 @@ void GameAnimations::onUnitDeath(const Map& map, int x, int y, Team *team)
 	sectorDeathAnimations[idx].push_back(new UnitDeathAnimation(x, y, team));
 }
 
+void GameAnimations::onUnitSpawn(const Map& map, int x, int y, Team *team, Uint16 unitGid,
+	Uint16 buildingGid, int dx, int dy)
+{
+	if (!enabled)
+		return;
+	// step() runs later in the same tick, so the effect is first captured at age 0.
+	sectorUnitEffects[map.getSectorIndex(x, y)].push_back(
+		{x, y, -1, team, unitGid, buildingGid, -1, Sint8(dx), Sint8(dy), Uint8(UnitEffect::Kind::Spawn), 0});
+}
+
+void GameAnimations::onUnitServiced(Uint16 unitGid, Uint8 kind, Uint16 buildingGid, Sint32 buildingType, Uint8 level)
+{
+	if (!enabled)
+		return;
+	pendingServices[unitGid] = {0, 0, 0, nullptr, unitGid, buildingGid, buildingType, 0, 0, kind, level};
+}
+
+void GameAnimations::onUnitLeftBuilding(const Map& map, Uint16 unitGid, int x, int y, int dx, int dy, Team *team, int emergeTicks)
+{
+	if (!enabled)
+		return;
+	const auto pending = pendingServices.find(unitGid);
+	if (pending == pendingServices.end())
+		return;
+	UnitEffectAnimation effect = pending->second;
+	pendingServices.erase(pending);
+	effect.x = x; effect.y = y; effect.dx = Sint8(dx); effect.dy = Sint8(dy); effect.team = team;
+	// step() runs later in the same tick, so without a wait the effect is first
+	// captured at age 0.
+	effect.age = -1 - std::clamp(emergeTicks, 0, UnitEffect::MaxEmergeTicks);
+	sectorUnitEffects[map.getSectorIndex(x, y)].push_back(effect);
+}
+
+void GameAnimations::onUnitGone(Uint16 unitGid)
+{
+	pendingServices.erase(unitGid);
+}
+
 void GameAnimations::step()
 {
 	if (!enabled)
 		return;
+	for (auto& bucket : sectorUnitEffects)
+	{
+		for (auto& effect : bucket)
+			++effect.age;
+		std::erase_if(bucket, [](const UnitEffectAnimation& effect) { return effect.age >= UnitEffect::LifetimeTicks; });
+	}
+	std::erase_if(pendingServices, [](auto& entry) { return ++entry.second.age >= PendingTicks; });
 	for (auto& bucket : sectorExplosions)
 	{
 		for (auto it = bucket.begin(); it != bucket.end(); )

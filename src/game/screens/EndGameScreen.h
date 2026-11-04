@@ -7,6 +7,7 @@
 #include "GameGUI.h"
 #include "ui/FrontendUI.h"
 #include "TeamStatChart.h"
+#include "hud/EnginePerformancePanel.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -130,6 +131,8 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	std::vector<Stats::Metric> gameMetrics;
 
   private:
+    EnginePerformancePanel enginePerformance;
+    bool showEnginePerformance = false;
 	std::unique_ptr<LoadSaveDialog> replaySave;
 	std::shared_ptr<Online::OnlineMatchResult> online;
 	unsigned onlineRevision = ~0u;

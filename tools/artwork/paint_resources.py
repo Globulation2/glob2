@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Paint the foundation resource sprites: gold ore, iron ore, silica, cotton.
 
-Each sprite is one 32x32 frame (`data/gfx/resource-<name>0.png`) with a 128x128
+Each sprite is one 32x32 frame (`content/data/gfx/resource-<name>0.png`) with a 128x128
 HD frame registered through tools/artwork/highres_pack.py. Frames are painted at
 16x supersampling and box-filtered down, so each object fills its cell like the
 stock rocks instead of floating as a small pile in a padded square.
@@ -25,7 +25,7 @@ layout tables and palettes in each `paint_*` function, preview, then write:
     python3 tools/artwork/package_runtime.py --check
 
 Needs NumPy, SciPy and Pillow (not the pinned encoder interpreter). Writing
-replaces `data/gfx/resource-<name>0.png` and upserts the HD frame in both pack
+replaces `content/data/gfx/resource-<name>0.png` and upserts the HD frame in both pack
 copies; the resource registry and simulation are untouched.
 """
 import argparse
@@ -467,7 +467,7 @@ def render(name):
 
 def sheet(frames, ground):
     """Preview: each sprite on a 3x3 patch of `ground`, classic frames at 3x."""
-    tile = Image.open(ROOT / f"data/gfx/{ground}.png").convert("RGBA")
+    tile = Image.open(ROOT / f"content/data/gfx/{ground}.png").convert("RGBA")
     cells = [(0, 0), (1, 0), (0, 1), (2, 1), (1, 2)]
     out = Image.new("RGBA", (len(frames) * 300, 300 + 140), (30, 30, 30, 255))
     for i, (name, (classic, hd)) in enumerate(frames.items()):
@@ -503,7 +503,7 @@ def main(argv=None):
 
     hd_frames = []
     for name, (classic, hd) in frames.items():
-        classic.save(ROOT / f"data/gfx/resource-{name}0.png", optimize=True)
+        classic.save(ROOT / f"content/data/gfx/resource-{name}0.png", optimize=True)
         hd_frames.append({"id": f"resource-{name}0", "image": hd, "recipe": f"{HD_RECIPE}: {name}",
                           "sources": [source_record(Path(__file__).resolve(), ROOT)]})
     register_frames(hd_frames, HD_CATEGORY)

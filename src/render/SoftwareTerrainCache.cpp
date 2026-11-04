@@ -47,7 +47,7 @@ class GpuTerrainPageCache
     std::uint64_t frame=0,maskIdentity=0,contentRevision=0;
     inline static std::atomic_uint64_t nextCacheIdentity{0};
     const std::uint64_t cacheIdentity=++nextCacheIdentity;
-    static constexpr std::size_t PageBudget=128u*1024*1024,MaskBudget=8u*1024*1024;
+    static constexpr std::size_t PageBudget=128u*1024*1024,MaskBudget=8u*1024*1024,MaxSources=1024;
     static constexpr std::size_t MaskLeaseBudgetBytes=40u*1024*1024;
     static PageKey key(const SoftwareTerrainCache::Chunk &chunk) {return {chunk.x,chunk.y,chunk.scale,chunk.downsample};}
     GAGCore::TextureSnapshot material(TerrainVisual::Compositor &compositor,const TerrainVisual::Recipe &recipe,TerrainVisual::MaterialId id) {
@@ -71,9 +71,11 @@ class GpuTerrainPageCache
             if(!resources->update(handle,surface.get(),view.revision,descriptor)) throw std::bad_alloc();
         } else {
             // Source cache is bounded independently of submitted snapshots.
-            if(sources.size()>=256) {
+            // One four-layout material alone has 256 variants; sources this
+            // frame already drew are never evicted, or a view thrashes them.
+            if(sources.size()>=MaxSources) {
                 auto oldest=std::min_element(sources.begin(),sources.end(),[](const auto &a,const auto &b){return a.second.used<b.second.used;});
-                resources->erase(oldest->second.handle);sources.erase(oldest);
+                if(oldest->second.used!=frame) {resources->erase(oldest->second.handle);sources.erase(oldest);}
             }
             handle=resources->create(surface.get(),view.revision,descriptor);
             if(!handle) throw std::bad_alloc();
@@ -914,7 +916,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					}
 				// Compare the complete vertex window including the contour halo.
 				std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
-				const int halo = compositor.contextualBorders() ? 1 : 0;
+				const int halo = compositor.neighborhoodBorders() ? 1 : 0;
 				for (int y = -halo; y <= ChunkTiles + halo; ++y)
 					for (int x = -halo; x <= ChunkTiles + halo; ++x)
 						sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);

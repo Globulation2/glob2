@@ -28,7 +28,7 @@ STUDY=OUT/'study'
 BINARY=ROOT/'build/src/MapGeneratorStudy'
 catalog=json.loads(subprocess.check_output([BINARY,'--catalog'],text=True))
 (STUDY/'catalog.json').write_text(json.dumps(catalog,indent=2)+'\n')
-lines=(ROOT/'data/texts.en.txt').read_text().splitlines()
+lines=(ROOT/'content/data/texts.en.txt').read_text().splitlines()
 strings={line[1:-1]:lines[i+1] for i,line in enumerate(lines[:-1]) if line.startswith('[') and line.endswith(']')}
 names={c['method']:strings[c['nameKey']] for c in catalog}
 source=Path(sys.argv[1])

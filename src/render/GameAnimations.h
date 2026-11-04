@@ -5,6 +5,8 @@
 
 
 #include <list>
+#include <SDL3/SDL_stdinc.h>
+#include <unordered_map>
 #include <vector>
 
 class Map;
@@ -27,7 +29,24 @@ struct UnitDeathAnimation
 	Team *team;
 };
 
-//! Per-game render container for bullet explosions and unit death animations.
+//! A unit a building has just produced or serviced, for the effects in
+//! UnitEffects.h. Render-only, like the death animation; the team pointer only
+//! colors it.
+struct UnitEffectAnimation
+{
+	int x, y;          //!< tile the unit came out on, where dust and icons stay
+	int age;           //!< ticks since it came out, captured as 0 on its first tick
+	Team *team;
+	Uint16 unitGid;
+	Uint16 buildingGid;   //!< the building it came out of
+	Sint32 buildingType;  //!< that building's type, whose map icon the effect shows
+	Sint8 dx, dy;         //!< direction the unit leaves the building in
+	Uint8 kind;           //!< UnitEffect::Kind
+	Uint8 level;          //!< a trained unit's new displayed level, otherwise 0
+};
+
+//! Per-game render container for bullet explosions, unit death animations and
+//! unit spawn effects.
 //!
 //! These two effect lists used to live on Sector, alongside the sim-state
 //! bullets list. That mixed render state with sim state and forced sim sites
@@ -69,6 +88,19 @@ public:
 	//! @param map needed to map (x,y) to a sector index.
 	void onUnitDeath(const Map& map, int x, int y, Team *team);
 
+	//! Record a unit produced by a swarm. No-op when disabled.
+	void onUnitSpawn(const Map& map, int x, int y, Team *team, Uint16 unitGid,
+		Uint16 buildingGid, int dx, int dy);
+
+	//! A building healed, fed or trained a unit inside it (UnitEffect::Kind). The
+	//! effect waits for the unit to come out. No-op when disabled.
+	void onUnitServiced(Uint16 unitGid, Uint8 kind, Uint16 buildingGid, Sint32 buildingType, Uint8 level);
+	//! A unit came out of a building at (x, y): plays its pending service effect
+	//! once it is half out, `emergeTicks` from now, while buildings still cover it.
+	void onUnitLeftBuilding(const Map& map, Uint16 unitGid, int x, int y, int dx, int dy, Team *team, int emergeTicks);
+	//! A unit died: forget any service effect it was waiting to play.
+	void onUnitGone(Uint16 unitGid);
+
 	//! Tick down ticksLeft on every stored animation and remove the finished
 	//! ones. Called once per simulation tick from Map::syncStep.
 	void step();
@@ -78,10 +110,17 @@ public:
 		{ return sectorExplosions[sectorIdx]; }
 	const std::list<UnitDeathAnimation *>& getDeathAnimations(int sectorIdx) const
 		{ return sectorDeathAnimations[sectorIdx]; }
+	const std::vector<UnitEffectAnimation>& getUnitEffects(int sectorIdx) const
+		{ return sectorUnitEffects[sectorIdx]; }
 
 private:
 	bool enabled;
 	std::vector<std::list<BulletExplosion *>> sectorExplosions;
 	std::vector<std::list<UnitDeathAnimation *>> sectorDeathAnimations;
+	std::vector<std::vector<UnitEffectAnimation>> sectorUnitEffects;
+	//! Services awaiting the unit's exit, by unit gid. `age` counts the wait, so an
+	//! entry a unit never collects cannot outlive PendingTicks.
+	std::unordered_map<Uint16, UnitEffectAnimation> pendingServices;
+	static constexpr int PendingTicks = 600;
 };
 

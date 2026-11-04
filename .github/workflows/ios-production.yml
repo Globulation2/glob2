@@ -78,7 +78,7 @@ jobs:
               if (os.environ['STAGE'] not in ('prepare','supersede') or not re.fullmatch('[A-Za-z0-9-]{1,128}',os.environ['DRAFT_VERSION_ID'])
                   or not re.fullmatch('[A-Za-z0-9-]{1,128}',expected)):
                   raise SystemExit('Replacement requires prepare and explicit draft/current build IDs')
-              help_text=subprocess.check_output(['python3','mobile/ios_store_release.py','--help'],text=True)
+              help_text=subprocess.check_output(['python3','platforms/mobile/ios_store_release.py','--help'],text=True)
               if '--replace-draft-build-id' not in help_text:
                   raise SystemExit('The selected immutable source tag does not support explicit draft replacement')
           run=json.loads(Path('artifacts/ios-production/run.json').read_text())
@@ -91,7 +91,7 @@ jobs:
           python3 - <<'PY'
           import json, os, subprocess, sys
           from pathlib import Path
-          sys.path.insert(0,'mobile')
+          sys.path.insert(0,'platforms/mobile')
           from ios_store_release import validate_provenance
           commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
           validate_provenance(json.loads(Path('artifacts/ios-production/ios-upload-provenance.json').read_text()),os.environ['TAG'],commit,os.environ['UPLOAD_RUN_ID'])
@@ -120,9 +120,9 @@ jobs:
           ref: ${{ github.sha }}
           path: release-driver
           sparse-checkout: |
-            mobile/ios_store_inspect.py
-            mobile/ios_store_supersede.py
-            mobile/ios_store_release.py
+            platforms/mobile/ios_store_inspect.py
+            platforms/mobile/ios_store_supersede.py
+            platforms/mobile/ios_store_release.py
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
@@ -135,7 +135,7 @@ jobs:
       - name: Prepare existing pinned API authentication tools
         run: |
           python3 -m venv "$RUNNER_TEMP/ios-production-tools"
-          "$RUNNER_TEMP/ios-production-tools/bin/pip" install --require-hashes --only-binary=:all: -r mobile/play-api-requirements.txt
+          "$RUNNER_TEMP/ios-production-tools/bin/pip" install --require-hashes --only-binary=:all: -r platforms/mobile/play-api-requirements.txt
       - name: Perform only the explicitly selected owner production action
         env:
           IOS_ASC_KEY_ID: ${{ secrets.IOS_ASC_KEY_ID }}
@@ -151,13 +151,13 @@ jobs:
           set -euo pipefail
           test -n "$IOS_ASC_KEY_ID" && test -n "$IOS_ASC_ISSUER_ID" && test -n "$IOS_ASC_KEY_P8_BASE64"
           if [ "$STAGE" = inspect ]; then
-            PYTHONPATH="$PWD/mobile" "$RUNNER_TEMP/ios-production-tools/bin/python" release-driver/mobile/ios_store_inspect.py \
+            PYTHONPATH="$PWD/platforms/mobile" "$RUNNER_TEMP/ios-production-tools/bin/python" release-driver/platforms/mobile/ios_store_inspect.py \
               --provenance artifacts/ios-production/ios-upload-provenance.json \
               --tag "$TAG" --source-commit "$SOURCE_COMMIT" --run-id "$UPLOAD_RUN_ID"
             exit 0
           fi
           if [ "$STAGE" = supersede ]; then
-            PYTHONPATH="$PWD/mobile" "$RUNNER_TEMP/ios-production-tools/bin/python" release-driver/mobile/ios_store_supersede.py \
+            PYTHONPATH="$PWD/platforms/mobile" "$RUNNER_TEMP/ios-production-tools/bin/python" release-driver/platforms/mobile/ios_store_supersede.py \
               --provenance artifacts/ios-production/ios-upload-provenance.json \
               --tag "$TAG" --source-commit "$SOURCE_COMMIT" --run-id "$UPLOAD_RUN_ID" \
               --draft-version-id "$DRAFT_VERSION_ID" --replace-draft-build-id "$REPLACE_DRAFT_BUILD_ID"
@@ -165,7 +165,7 @@ jobs:
           fi
           replacement_args=()
           if [ -n "$REPLACE_DRAFT_BUILD_ID" ]; then replacement_args=(--replace-draft-build-id "$REPLACE_DRAFT_BUILD_ID"); fi
-          PYTHONPATH="$PWD/mobile" "$RUNNER_TEMP/ios-production-tools/bin/python" release-driver/mobile/ios_store_release.py "$STAGE" \
+          PYTHONPATH="$PWD/platforms/mobile" "$RUNNER_TEMP/ios-production-tools/bin/python" release-driver/platforms/mobile/ios_store_release.py "$STAGE" \
             --provenance artifacts/ios-production/ios-upload-provenance.json \
             --tag "$TAG" --source-commit "$SOURCE_COMMIT" --run-id "$UPLOAD_RUN_ID" \
             --draft-version-id "$DRAFT_VERSION_ID" "${replacement_args[@]}"

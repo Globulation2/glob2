@@ -168,7 +168,7 @@ checksum adapter remains available for diagnostic fixtures.
   requires the format-128 compact save reader. Older saves load into the current
   simulation.
 - `.map`/`.game` files are gzip level 6 by default (`FileManager::writeGzipAtomic`/
-  `writeGzipAtomically` in `libgag/src/FileManagerGzip.cpp`; the gzip header carries
+  `writeGzipAtomically` in `libs/gag/src/FileManagerGzip.cpp`; the gzip header carries
   a zero timestamp and OS=unknown, producing deterministic bytes with the same
   zlib encoder). This is a container change, not a save-format schema change: the bytes
   inside the gzip stream are exactly what today's serializer already writes, so it
@@ -228,7 +228,7 @@ checksum adapter remains available for diagnostic fixtures.
   frames are skipped.
 - Detailed terrain rendering resolves shipped appearances through a
   presentation-only material catalog, corner coverage resolver and CPU compositor.
-  `data/terrain/tileset.json` defines those materials independently of gameplay
+  `content/data/terrain/tileset.json` defines those materials independently of gameplay
   IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
   metadata. See [terrain material authoring](../assets/terrain-materials.md) for
   variants, boundary profiles, asset validation and cache behavior. Visual catalog
@@ -242,13 +242,15 @@ checksum adapter remains available for diagnostic fixtures.
   Adding a type is one enumerator, one row, one label and one material binding;
   adding a group is one profile and, when gated, one `ExperimentId`.
 - Format 141 raised the built-in count from 7 to 31; format 146 retired the two
-  shore types (IDs 5 and 6), moving the catalogue down by two to 29; format 187
+  shore types (IDs 5 and 6), moving the catalogue down by two to 29; format 191
   appended the grass and sand looks (`LUSH_GRASS`, `DRY_GRASS`, `DUNE_SAND`,
-  `PALE_SAND`, in the Grass and Sand groups) for `TERRAIN_COUNT` 33. Built-in IDs only
+  `PALE_SAND`, in the Grass and Sand groups) for 33; format 195 appended `SANDSTONE`
+  (Paths), `PUMICE` (Rough) and `FROZEN_LAKE` (Ice) for `TERRAIN_COUNT` 36. Built-in IDs only
   ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
   a format gate. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
-  (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX` or
-  `TERRAIN_COUNT_BEFORE_GROUND_LOOKS` for older files),
+  (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX`,
+  `TERRAIN_COUNT_BEFORE_GROUND_LOOKS` or `TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE` for
+  older files),
   `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
   `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize
   with shifted IDs, so their digest changes and replays that embed one no longer

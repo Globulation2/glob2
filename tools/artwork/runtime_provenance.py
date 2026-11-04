@@ -18,7 +18,7 @@ CATEGORIES.update({recipe: 'Original-based terrain with deterministic grain and 
 CATEGORIES['soft mask resampling'] = 'Non-AI mask resampling'
 
 def render():
-    manifest = json.loads((ROOT / 'data/highres/v1/manifest.json').read_text())
+    manifest = json.loads((ROOT / 'content/data/highres/v1/manifest.json').read_text())
     rows = []
     for frame in manifest['frames']:
         recipe = frame['recipe']
@@ -37,7 +37,7 @@ def render():
             require(hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest() == source['sha256'],
                     'Provenance source hash differs: ' + source['path'])
         for layer in frame['layers']:
-            path = ROOT / 'data/highres/v1' / layer['file']
+            path = ROOT / 'content/data/highres/v1' / layer['file']
             require(hashlib.sha256(path.read_bytes()).hexdigest() == layer['sha256'],
                     'Provenance layer hash differs: ' + str(path))
         native = '—'
@@ -56,15 +56,15 @@ def render():
              'Unit frames use a fixed 128×128 runtime canvas regardless of their own logical size '
              '(4× for the 32px-native explorer set, ~3.37×/3.2× for the 38px/40px-native worker and warrior sets). '
              'Native canvas dimensions include transparent padding. '
-             '“Recovered original” includes deterministic resizing, matte extraction, layer separation and renders from original Blender rigs, without AI. “Hand-authored vector” frames are drawn by hand as SVG for glob2 (`datasrc/gfx/authored`) and rendered with librsvg by `tools/artwork/render_authored.py`, without AI or recolouring.', '',
+             '“Recovered original” includes deterministic resizing, matte extraction, layer separation and renders from original Blender rigs, without AI. “Hand-authored vector” frames are drawn by hand as SVG for glob2 (`content-src/gfx/authored`) and rendered with librsvg by `tools/artwork/render_authored.py`, without AI or recolouring.', '',
              'Catalog terrain materials use original procedural 8×8 blocks with shared boundaries and four seeded interiors. '
              'The older connected terrain frames reconstruct grass and sand from classic pixels with seeded grain and a soft color constraint, without AI; their transitions retain the previous border masks and shoreline alpha. '
              'Mask resampling adds no invented texture detail. Unit animation textures are rendered from the original Blender rigs.', '',
              '| Source category | Frames |', '| --- | ---: |']
     lines += ['| %s | %d |' % item for item in sorted(counts.items())]
     lines += ['', f'Total: **{len(rows)} frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in '
-              '[the pack manifest](../../../data/highres/v1/manifest.json). '
-              'See [original export recipes](../../../datasrc/gfx/recovered-runtime.md) for limitations.', '',
+              '[the pack manifest](../../../content/data/highres/v1/manifest.json). '
+              'See [original export recipes](../../../content-src/gfx/recovered-runtime.md) for limitations.', '',
               '| Frame | Source category | Logical canvas | Native canvas/source | Recipe |',
               '| --- | --- | --- | --- | --- |']
     lines += ['| `%s` | %s | %s | %s | %s |' % row for row in sorted(rows)]

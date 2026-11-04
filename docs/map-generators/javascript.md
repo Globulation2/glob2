@@ -56,11 +56,11 @@ modules imported with relative paths. Imports cannot leave the package. Each lau
 freezes those files into an immutable package; relaunch after editing to reload it.
 
 ```sh
-build/linux/client/release/src/glob2 --generator-package data/generators/examples/swamp \
+build/linux/client/release/src/glob2 --generator-package content/data/generators/examples/swamp \
   map generate examples:swamp --seed 91 --width 256 --height 256 --teams 4 \
   --output artifacts/swamp.map --preview artifacts/swamp.png --report-file artifacts/swamp.json \
   --export-generator-package artifacts/swamp-generator.json
-python3 tools/map-generators/package.py data/generators/examples/swamp artifacts/swamp-generator.json
+python3 tools/map-generators/package.py content/data/generators/examples/swamp artifacts/swamp-generator.json
 ```
 
 The repeatable `--generator-package PATH` launch option accepts a directory or a
@@ -252,7 +252,7 @@ references require buffer handles. Toolkit families use
 header names, for example `Grid`, `Drawing`, `Growth`, `Planting`, `Homes`, `Solve`
 and `Pipeline`; legacy helpers use `Legacy` prefixes.
 
-The generated [TypeScript declarations](../../data/generators/toolkit.d.ts) describe
+The generated [TypeScript declarations](../../content/data/generators/toolkit.d.ts) describe
 factories, record fields, overloads and callback signatures. The generated
 [coverage inventory](../../src/map/generator/javascript/ToolkitCoverage.json) records
 native symbols and the explicit script equivalents of C++-only templates.

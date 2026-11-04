@@ -36,5 +36,5 @@ def configure(env, directory):
     if not directory.is_absolute():
         directory = Path(env.Dir('#').abspath) / directory
     target = directory.resolve() / 'include/hive/PlayerAPIContract.h'
-    return env.Command(str(target), [env.File('#platform/packages/hive/src/commander-api.txt'), env.File('#scons/hive_api.py')],
+    return env.Command(str(target), [env.File('#services/online/packages/hive/src/commander-api.txt'), env.File('#scons/hive_api.py')],
                        Action(generate, 'Generating Hive player API contract'))

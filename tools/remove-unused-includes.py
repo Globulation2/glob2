@@ -24,7 +24,7 @@ build-configuration macros, and -fsyntax-only cannot tell whether a downstream
 through, and the cleaner would swap it for whatever sub-header happens to arrive
 transitively.
 
-Scope is src/ only. libgag/ and libusl/ are vendored (see cpp-bugs/CLAUDE.md).
+Scope is src/ only. libs/gag/ and libs/usl/ are vendored (see cpp-bugs/CLAUDE.md).
 
 Usage:
   scons compile_commands.json          # refresh the compile database first

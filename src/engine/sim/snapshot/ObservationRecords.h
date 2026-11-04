@@ -38,11 +38,15 @@ struct Session
 struct BulletRecord { Sint32 px, py, speedX, speedY, ticksLeft, ticksInitial; };
 struct ExplosionRecord { int x, y, ticksLeft; };
 struct DeathRecord { int x, y, ticksLeft, team; };
+// A unit a building produced or serviced: gids name the unit and the building,
+// kind is UnitEffect::Kind and level a trained unit's new displayed level.
+struct UnitEffectRecord { int x, y, age, team; Uint16 unit, building; Sint32 buildingType; Sint8 dx, dy; Uint8 kind, level; };
 struct SectorEffects
 {
     std::vector<BulletRecord> bullets;
     std::vector<ExplosionRecord> explosions;
     std::vector<DeathRecord> deaths;
+    std::vector<UnitEffectRecord> unitEffects;
 };
 struct Effects { std::vector<SectorEffects> sectors; };
 struct StatisticsInputs {

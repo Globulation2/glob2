@@ -86,9 +86,11 @@ class PipelineTest(unittest.TestCase):
             # Regenerating movement art must preserve separately rendered turns.
             turn = destination / 'unit1792r.png'
             turn.write_bytes(b'retained turn')
+            prone = destination / 'unit2527r.png'
+            prone.write_bytes(b'retained prone stroke')
             (destination / 'frames.txt').write_text(
-                'GLOB2_HIGHRES 1\nterrain0 32 32 4 terrain0.png -\nunit1792 32 32 0 - unit1792r.png\n')
-            (destination / 'manifest.json').write_text(json.dumps(dict(version=1, frames=[dict(id='unit1792')])))
+                'GLOB2_HIGHRES 1\nterrain0 32 32 4 terrain0.png -\nunit1792 32 32 0 - unit1792r.png\nunit2527 38 38 0 - unit2527r.png\n')
+            (destination / 'manifest.json').write_text(json.dumps(dict(version=1, frames=[dict(id='unit1792'), dict(id='unit2527')])))
             files, rows = render.highres_layout()
             self.assertEqual(len(files), 2816)
             self.assertEqual(len(rows), 1792)
@@ -107,14 +109,16 @@ class PipelineTest(unittest.TestCase):
             installed = (destination / 'frames.txt').read_text().splitlines()
             self.assertEqual(installed[1], 'terrain0 32 32 4 terrain0.png -')
             self.assertEqual(installed[2], 'unit1792 32 32 0 - unit1792r.png')
-            self.assertEqual(installed[3:], rows)
+            self.assertEqual(installed[3], 'unit2527 38 38 0 - unit2527r.png')
+            self.assertEqual(installed[4:], rows)
+            self.assertEqual(prone.read_bytes(), b'retained prone stroke')
             self.assertEqual(turn.read_bytes(), b'retained turn')
             self.assertEqual(json.loads((destination / 'manifest.json').read_text())['frames'][0]['id'], 'unit1792')
             self.assertEqual((destination / 'unit256r.png').read_bytes(), (staged / 'unit256r.png').read_bytes())
 
     def test_rejects_original_source_as_output(self):
         with self.assertRaises(ValueError):
-            render.prepare(render.ROOT / 'datasrc/gfx/originals/units', '/work/render', 4)
+            render.prepare(render.ROOT / 'content-src/gfx/originals/units', '/work/render', 4)
 
     def test_rejects_wrong_file_version(self):
         with self.assertRaises(ValueError):

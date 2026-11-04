@@ -264,7 +264,7 @@ struct CustomGameSetupHarness
             CHECK(screen.getGameHeader().getExperiments().has("preview-building"));
             CHECK(screen.getGameHeader().getBuildingCatalogSnapshot() == world.game.buildingsTypes.snapshotJson());
         }
-        REQUIRE(screen.loadMap((glob2test::sourceRoot() / "maps/FourSquares1.map.gz").string()));
+        REQUIRE(screen.loadMap((glob2test::contentRoot() / "maps/FourSquares1.map.gz").string()));
         CHECK_FALSE(screen.getGameHeader().getExperiments().has("preview-building"));
         globalContainer->settings.experiments.clear();
     }
@@ -2584,7 +2584,7 @@ struct CustomGameSetupHarness
 									("glob2-live-test-" + std::to_string(getpid()) + ".map"))
 									   .string();
 			const std::string transient = glob2IsGzipPath(resolvedMap) ? glob2GzipWritePath(transientBase) : transientBase;
-			std::filesystem::copy_file(glob2test::sourceRoot() / resolvedMap, transient,
+			std::filesystem::copy_file(glob2test::contentRoot() / resolvedMap, transient,
 									   std::filesystem::copy_options::overwrite_existing);
 			Engine e;
 			auto header = Engine::loadMapHeader(transient);

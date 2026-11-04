@@ -1,0 +1,84 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+#include <SDL3/SDL.h>
+#include "RenderResources.h"
+#include <memory>
+#include <span>
+#include <cstdint>
+
+namespace GAGCore
+{
+// Geometry is expressed in logical screen coordinates; texture keys are owned
+// by DrawableSurface and must be forgotten before that surface is destroyed.
+struct RenderOperations
+{
+	std::uint64_t blits = 0, fills = 0, triangles = 0;
+    std::uint64_t rasterBatches = 0, rasterTiles = 0, rasterReferences = 0, rasterSerialBatches = 0;
+    std::uint64_t rasterJobs = 0;
+    std::uint64_t rasterSourceReuses = 0, rasterSourceRetainedBytes = 0;
+    std::uint64_t rasterSnapshotBytes = 0, rasterPeakRetainedBytes = 0, rasterFallbacks = 0;
+};
+
+class RenderBackend
+{
+  public:
+	virtual void blit(const void *key, SDL_Surface *source, std::uint64_t revision, bool opaque,
+					  const SDL_Rect &sourceRect, const SDL_FRect &destination, Uint8 alpha) = 0;
+    virtual void blitLinear(const void *key, SDL_Surface *source, std::uint64_t revision,
+                           const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) {
+        blit(key,source,revision,false,src,dst,alpha);
+    }
+    virtual void blitMipmapped(const void *key, SDL_Surface *source, std::uint64_t revision,
+                              std::span<const RenderMipLevel>, const SDL_Rect &src,
+                              const SDL_FRect &dst, Uint8 alpha) {
+        blit(key, source, revision, false, src, dst, alpha);
+    }
+    // Adds the source's light (colour times alpha) to the target instead of
+    // blending over it, linearly filtered. Returns false when the backend cannot,
+    // and the caller then draws normally.
+    virtual bool blitAdditive(const void *, SDL_Surface *, std::uint64_t, const SDL_Rect &,
+                              const SDL_FRect &, Uint8) { return false; }
+	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
+    virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+	virtual RenderOperations operations() const { return {}; }
+	// Zero means the backend does not impose or report a texture limit.
+	virtual int maximumTextureSize() const { return 0; }
+	// Only software backends borrow a target; binding flushes old queued work.
+	virtual void bindTarget(SDL_Surface *) {}
+	virtual ~RenderBackend() = default;
+	virtual void clip(const SDL_Rect *rect) = 0;
+	// UI-only transform and output clipping; simulation/world coordinates are unchanged.
+	virtual void transform(float scale, float x, float y, const SDL_Rect *bounds) = 0;
+	virtual void triangles(std::span<const SDL_Vertex> vertices, const void *key = nullptr,
+						   SDL_Surface *pixels = nullptr, std::uint64_t revision = 0) = 0;
+	// Untextured screen-space geometry, retaining the current clip. This avoids
+	// changing/flushing the map transform for pixel-aligned overlays.
+	virtual void screenTriangles(std::span<const SDL_Vertex> vertices) = 0;
+	virtual void forget(const void *key) = 0;
+	virtual void reset() = 0;
+	virtual void present() = 0;
+    // Complete deferred drawing before accessing borrowed target pixels outside
+    // this backend. Capture, presentation and target binding fence themselves.
+	virtual void flush() = 0;
+    // Abandon queued drawing after a failed CPU batch. No output is committed;
+    // the owner restores the completed image before beginning another frame.
+    virtual void discardFrame() noexcept {}
+	virtual void logicalSize(int width, int height) = 0;
+	// Map logical geometry across the CPU target without letterboxing.
+	virtual void nativeLogicalSize(int width, int height) { logicalSize(width, height); }
+	virtual SDL_Surface *capture() = 0;
+	virtual void outputSize(int &width, int &height) = 0;
+    // Optional CPU path for tile edges already snapped to backing pixels.
+    // Retains the current clip and ordering without a logical-coordinate round trip.
+    virtual bool blitPixels(SDL_Surface*, const SDL_Rect&, const SDL_Rect&, Uint8) { return false; }
+    // A non-null key/revision follows the same mutation/forget contract as blit.
+    // The default preserves backends that do not cache backing-pixel sources.
+    virtual bool blitPixels(const void *, SDL_Surface *source, std::uint64_t,
+                            const SDL_Rect &src, const SDL_Rect &dst, Uint8 alpha) {
+        return blitPixels(source, src, dst, alpha);
+    }
+    virtual bool fillPixels(const SDL_Rect&, SDL_Color) { return false; }
+};
+std::unique_ptr<RenderBackend> makeSoftwareRenderBackend(SDL_Surface *surface);
+std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window *window, int width, int height);
+} // namespace GAGCore

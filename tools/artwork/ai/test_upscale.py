@@ -17,9 +17,9 @@ class CandidateTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / 'repo'
-        self.pack = self.root / 'data/highres/v1'
+        self.pack = self.root / 'content/data/highres/v1'
         self.pack.mkdir(parents=True)
-        self.native = self.root / 'data/gfx'
+        self.native = self.root / 'content/data/gfx'
         self.native.mkdir(parents=True)
         self.output = Path(self.temp.name) / 'candidate'
         self.frame = dict(id='inn0b0', recipe='current', layers=[])
@@ -64,7 +64,7 @@ class CandidateTests(unittest.TestCase):
 
     def test_rejects_protected_ancestor_and_symlink_outputs(self):
         for output in (self.root, self.root.parent, self.root / 'src/stage',
-                       self.root / 'data/stage', self.root / 'artifacts'):
+                       self.root / 'content/data/stage', self.root / 'artifacts'):
             with self.assertRaises(ValueError):
                 upscale.staging_output(self.root, output)
         link = Path(self.temp.name) / 'linked'

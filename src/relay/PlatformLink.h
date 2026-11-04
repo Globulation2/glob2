@@ -3,7 +3,7 @@
 
 #pragma once
 
-// The relay's side of the platform's /internal/v1 API (platform/packages/protocol/
+// The relay's side of the platform's /internal/v1 API (services/online/packages/protocol/
 // src/relay.ts): registration and heartbeat, the match setup lookup, and the upload
 // of each finished match (record, then RelayMatchEnded). Every call carries the
 // operator-configured relay key as a bearer token. Records are written to the spool

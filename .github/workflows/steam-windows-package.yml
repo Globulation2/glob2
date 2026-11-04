@@ -180,7 +180,9 @@ jobs:
           ref: ${{ needs.preflight.outputs.source_sha }}
           persist-credentials: false
           path: fixture
-          sparse-checkout: games/cross-replay.game.gz
+          sparse-checkout: |
+            content/games/cross-replay.game.gz
+            games/cross-replay.game.gz
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
@@ -196,7 +198,8 @@ jobs:
           $env:GLOB2_USER_DATA_DIR = Join-Path $env:RUNNER_TEMP 'glob2-profile'
           $env:GLOB2_ASSET_DIR = $depot
           Set-Location $depot
-          $save = "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz"
+          $save = "$env:GITHUB_WORKSPACE\fixture\content\games\cross-replay.game.gz"
+          if (-not (Test-Path $save)) { $save = "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz" }
           switch ($env:CLI_VERSION) {
             '1' { $repeatArgs = @('--nox', $save, '10', '1') }
             '2' { $repeatArgs = @('game', 'repeat', $save, '--ticks', '10', '--runs', '1') }

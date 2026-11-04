@@ -97,7 +97,7 @@ Catalog Catalog::parse(const nlohmann::json &j)
 					std::count(c.compiledPack.begin(), c.compiledPack.end(), '/') >= 3,
 				"compiled pack must name atlas.json in its own data subdirectory");
 	}
-	const int version = integerInRange(j.at("version"), 1, 3);
+	const int version = integerInRange(j.at("version"), 1, 4);
 	c.version = version;
 	if (j.contains("boundary_warp_q8"))
 	{
@@ -108,16 +108,48 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		for (int i = 0; i < 3; ++i)
 			c.boundaryWarp[i] = integerInRange(warp[i], 0, limits[i]);
 	}
-	require(j.at("profiles").is_array() && !j.at("profiles").empty(), "missing boundary profiles");
 	std::set<std::string> keys;
+	require(version >= 4 || !j.contains("border_classes"), "border classes require catalog version 4");
+	if (version >= 4)
+	{
+		const auto &classes = j.at("border_classes");
+		require(classes.is_array() && !classes.empty() && classes.size() < 256,
+				"version 4 catalogs need border classes");
+		for (const auto &entry : classes)
+		{
+			BorderClass v{entry.at("key").get<std::string>()};
+			require(!v.key.empty() && keys.insert(v.key).second, "duplicate border class");
+			const auto shoreline = entry.value("shoreline", nlohmann::json(false));
+			require(shoreline.is_boolean(), "border class shoreline must be a boolean");
+			v.shoreline = shoreline.get<bool>();
+			c.borderClasses.push_back(std::move(v));
+		}
+		keys.clear();
+	}
+	require(j.at("profiles").is_array() && !j.at("profiles").empty(), "missing boundary profiles");
 	for (const auto &p : j.at("profiles"))
 	{
-		Profile v{p.at("key").get<std::string>(), integerInRange(p.at("roughness_q8"), 0, 512)};
-		v.legacyEdges = version == 1;
 		const auto shape = p.value("shape", std::string{"patch"});
-		require(shape == "patch" || shape == "contextual", "unknown boundary shape");
+		require(shape == "patch" || shape == "contextual" || shape == "smooth", "unknown boundary shape");
 		require(version >= 3 || shape == "patch", "contextual shape requires catalog version 3");
-		v.contextual = shape == "contextual";
+		require(version >= 4 || shape != "smooth", "smooth shape requires catalog version 4");
+		const bool smooth = shape == "smooth";
+		// Smooth geometry has no authored roughness or contour tables; patch
+		// fallbacks beside it draw straight, warped edges.
+		Profile v{p.at("key").get<std::string>()};
+		v.roughness = integerInRange(smooth ? p.value("roughness_q8", nlohmann::json(0)) : p.at("roughness_q8"), 0, 512);
+		v.legacyEdges = version == 1;
+		v.shape = shape == "smooth" ? BoundaryShape::Smooth
+			: shape == "contextual" ? BoundaryShape::Contextual : BoundaryShape::Patch;
+		for (const char *field : {"precedence", "coast"})
+			require(version >= 4 || !p.contains(field), "precedence and coast require catalog version 4");
+		v.precedence = integerInRange(p.value("precedence", nlohmann::json(0)), 0, 255);
+		for (const char *field : {"wiggle_q8", "wiggle_period", "squareness_q8"})
+			require(smooth || !p.contains(field), "wiggle requires the smooth shape");
+		v.wiggle = integerInRange(p.value("wiggle_q8", nlohmann::json(0)), 0, 2048);
+		v.wigglePeriod = integerInRange(p.value("wiggle_period", nlohmann::json(64)), 32, 256);
+		v.squareness = integerInRange(p.value("squareness_q8", nlohmann::json(0)), 0, 256);
+		require((v.wigglePeriod & (v.wigglePeriod - 1)) == 0, "wiggle period must be a power of two");
 		require(version >= 2 || !p.contains("feather_q8"),
 				"boundary feather requires catalog version 2");
 		v.feather = integerInRange(p.value("feather_q8", nlohmann::json(256)), 128, 512);
@@ -129,6 +161,12 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		v.bridge = integerInRange(p.value("bridge_q8", nlohmann::json(0)), 0, 1024);
 		v.shearScale = version >= 3 ? 256 : 128;
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate boundary profile");
+		if (smooth && !p.contains("contours_q12"))
+		{
+			v.contours.assign(4, std::vector<int>(5, 0));
+			c.profiles.push_back(std::move(v));
+			continue;
+		}
 		const auto &curves = p.at("contours_q12");
 		require(curves.is_array() && (version >= 3 ? curves.size() >= 4 && curves.size() <= 64
 												   : curves.size() == 4),
@@ -156,6 +194,12 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				return i;
 		throw std::runtime_error("Terrain tileset: unknown profile " + key);
 	};
+	for (unsigned i = 0; i < c.profiles.size(); ++i)
+		if (const auto &p = j.at("profiles")[i]; p.contains("coast"))
+		{
+			c.profiles[i].coast = int(findProfile(p.at("coast").get<std::string>()));
+			require(c.profiles[i].coast != int(i), "a profile cannot be its own coast");
+		}
 	keys.clear();
 	require(j.at("materials").is_array() && !j.at("materials").empty() &&
 				j.at("materials").size() < 65536,
@@ -169,6 +213,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		v.salt = keyHash(v.key);
 		v.blockSalt = v.salt;
 		v.profile = findProfile(m.at("profile"));
+		require(version >= 4 || !m.contains("class"), "border classes require catalog version 4");
+		if (version >= 4)
+		{
+			const auto key = m.at("class").get<std::string>();
+			const auto found = std::find_if(c.borderClasses.begin(), c.borderClasses.end(),
+				[&](const auto &entry) { return entry.key == key; });
+			require(found != c.borderClasses.end(), "unknown border class");
+			v.borderClass = unsigned(found - c.borderClasses.begin());
+		}
 		// Water is an ordinary (animated) tile material; the scrolling ocean
 		// backdrop and per-material backdrops were retired.
 		require(!m.contains("ocean") && !m.contains("backdrop"),
@@ -228,6 +281,11 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			integerInRange(m.value("animation_stride", nlohmann::json(0)), 0, 65535);
 		require(v.animationFrames == 1 || v.animationStride > 0,
 				"animated material needs a frame stride");
+		if (m.contains("animation_blend_steps"))
+		{
+			require(v.animationFrames > 1, "animation_blend_steps needs an animated material");
+			v.animationBlendSteps = integerInRange(m.at("animation_blend_steps"), 1, v.animationTicks);
+		}
 		v.preview = rgbColor(m.at("preview"));
 		v.minimap = rgbColor(m.value("minimap", m.at("preview")));
 		if (m.contains("seam"))
@@ -302,26 +360,6 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		c.treatments.push_back({a, b, findProfile(p.at("profile"))});
 	}
 	return c;
-}
-unsigned Catalog::profileFor(MaterialId a, MaterialId b) const
-{
-	auto lo = std::min(a, b), hi = std::max(a, b);
-	for (const auto &p : treatments)
-		if (p.a == lo && p.b == hi)
-			return p.profile;
-	const auto &aa = materials[a], &bb = materials[b];
-	// Stable under manifest reordering, including equal roughness.
-	return profiles[aa.profile].roughness > profiles[bb.profile].roughness ? aa.profile
-		   : profiles[aa.profile].roughness < profiles[bb.profile].roughness
-			   ? bb.profile
-			   : (aa.key < bb.key ? aa.profile : bb.profile);
-}
-bool Catalog::contextualFor(MaterialId a, MaterialId b) const
-{
-	// Both surfaces must opt in: an organic default must not round a road,
-	// boardwalk or sharp hazard just because it has the greater roughness.
-	return a != b && profiles[materials[a].profile].contextual && profiles[materials[b].profile].contextual &&
-		profiles[profileFor(a, b)].contextual;
 }
 std::uint32_t mapSeedSalt(std::uint32_t seed)
 {
@@ -742,6 +780,47 @@ unsigned PreparedCoverage::borderMargin(Point sample) const
 }
 Coverage PreparedCoverage::at(int px, int py) const
 {
+	if (smooth.inactive())
+		return roughCoverage(px, py);
+	if (smooth.complete())
+		return smooth.at(px, py);
+	const int share = smooth.share(px, py);
+	if (share <= 0)
+		return roughCoverage(px, py);
+	if (share >= 4096)
+		return smooth.at(px, py);
+	// Between a smooth region and its rougher surroundings the vertex shares
+	// fade one geometry into the other; both are continuous across tiles.
+	const auto fine = smooth.at(px, py), rough = roughCoverage(px, py);
+	Coverage out;
+	unsigned count = 0;
+	const auto add = [&](MaterialId material, std::uint64_t weight)
+	{
+		unsigned slot = 0;
+		while (slot < count && out.material[slot] != material)
+			++slot;
+		if (slot == count)
+			out.material[count++] = material;
+		out.weight[slot] += unsigned(weight);
+	};
+	for (unsigned i = 0; i < 4; ++i)
+	{
+		if (fine.weight[i]) add(fine.material[i], std::uint64_t(fine.weight[i]) * unsigned(share) / 4096);
+		if (rough.weight[i]) add(rough.material[i], std::uint64_t(rough.weight[i]) * unsigned(4096 - share) / 4096);
+	}
+	unsigned sum = 0, largest = 0;
+	for (unsigned i = 0; i < count; ++i)
+	{
+		sum += out.weight[i];
+		if (out.weight[i] > out.weight[largest]) largest = i;
+	}
+	out.weight[largest] += 65536 - sum;
+	out.margin = (fine.margin * unsigned(share) + rough.margin * unsigned(4096 - share)) / 4096;
+	out.neighbor = share >= 2048 ? fine.neighbor : rough.neighbor;
+	return out;
+}
+Coverage PreparedCoverage::roughCoverage(int px, int py) const
+{
 	if (!hasBorder) return patchCoverage(px, py);
 	int dx = 0, dy = 0;
 	for (const auto &layer : warp)
@@ -815,6 +894,7 @@ Coverage PreparedCoverage::at(int px, int py) const
 
 PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 {
+	smooth.prepare(c, r);
 	prepareBorders(c, r);
 	// A single world-space field bends the complete material partition. Using
 	// different fields per material would pull junctions apart. Hash only grid
