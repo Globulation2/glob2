@@ -1,0 +1,13 @@
+{
+  "old": "031c13a4aebc0a879bb387180cbaeb4337624084",
+  "base": "4c3ea56450c5bb269a672319d4117eeae5b243b5",
+  "head": "7a1f5b49e095b4b4d08cfb6067e6cde0ddbaa4bf",
+  "files": [
+    "test/fixtures/scoped-gradients/gd-bigarena-2048.units.checksums.gz",
+    "test/fixtures/scoped-gradients/gd-large-4ai-1024.units.checksums.gz",
+    "test/fixtures/scoped-gradients/numbi-castor-2048.units.checksums.gz",
+    "test/fixtures/scoped-gradients/v108-reload-256.units.checksums.gz",
+    "test/maxima/fixtures/save-continuation/expected-units-30000-30512.json"
+  ],
+  "reason": "Integrate replay and translation precondition repairs; all five candidates byte-identical in ca21 production recheck. Hosted cross-platform compatibility still required."
+}
