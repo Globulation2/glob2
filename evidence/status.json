@@ -1,0 +1,50 @@
+{
+  "pid": 2730748,
+  "revision": "86c0310efe3874685204acfbdc6766dc73af25cc",
+  "worktree": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-repair",
+  "results": [
+    {
+      "name": "native-harness-build",
+      "command": [
+        "python3",
+        "tools/dev_build.py",
+        "--build=build/android-index-release",
+        "dev_fast=0",
+        "release=1",
+        "server=0",
+        "-j2",
+        "menu-colony-harness"
+      ],
+      "exit_code": 0,
+      "seconds": 4637.4
+    },
+    {
+      "name": "menu-colony-check",
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-repair/build/android-index-release/test/MenuColonyHarness",
+        "check",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-repair/content/data/menu/colony.bin"
+      ],
+      "exit_code": 0,
+      "seconds": 11.7
+    },
+    {
+      "name": "menu-navigation",
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-repair/build/android-index-release/test/MenuColonyHarness",
+        "navigation",
+        "unused"
+      ],
+      "exit_code": 0,
+      "seconds": 4.1
+    }
+  ],
+  "phase": "finished; affected standalone harness builds and both maintained modes pass",
+  "note": "Latest fetched master1c8707b515 plus two explicit MovementAccess::Land arguments in standalone MenuColonyHarness. ActualClang127compilefailedint->MovementAccessat218/678; productionMenuColonyalreadyusesLand. No engine calculation/simversion/save/replay/network or dependency changes. Reuse own inactive ordinaryreleasebuild/android-index-release viaSCons only wheninputsvalid; rootandactivehelpers/SDLunchanged. BuildaffectedstandaloneharnessandrunbothmaintainedCI modes withisolatedprofiles/dummySDL.",
+  "command": [
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-repair/build/android-index-release/test/MenuColonyHarness",
+    "navigation",
+    "unused"
+  ],
+  "child_pid": 2838479
+}
