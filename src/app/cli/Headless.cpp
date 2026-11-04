@@ -617,6 +617,9 @@ struct HeadlessRunner
 			// not apply here, only --experiment does.
 			for(const auto &key : many(options,"--experiment"))
 			{
+                const auto id=parseExperimentKey(key);
+                if(id && *id>=ExperimentId::GradientRatioMode && *id<=ExperimentId::GradientRatioEqual)
+                    throw std::invalid_argument("movement-ratio research policies are retired; use the frozen research build");
 				if(!knownExperimentKey(key, header.catalogExperimentKeys())) throw std::invalid_argument("unknown experiment: " + key);
 				header.getExperiments().set(key, true, header.catalogExperimentKeys());
 			}

@@ -462,7 +462,8 @@ Save format 197 preserves each published and pending field's captured costs.
 Older saves coalesce ratio-keyed fields into one amphibious field, preserving
 available published guidance while restarting obsolete preparation queues. The
 save-format floor remains unchanged. The retired research-policy experiment keys
-are recognized in old headers but no longer select different routing policies.
+are recognized in old headers but no longer select different routing policies;
+new command-line selections of these keys are rejected.
 The temporary `--routing-ratio-study` observer has been removed; historical
 campaigns require their frozen binaries and tool packages.
 
