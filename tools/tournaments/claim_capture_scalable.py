@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from .claim_capture import DESIGN, STRATA, MAX_RECORD, MAX_METADATA, read_capture, validate_manifest
 
+CAPTURE_ONLY_SCOPE = 'retained-replacements-only-v1'
 MAX_TOP_K = 16
 MAX_MANIFEST = 256*1024
 TOPK_DESIGN = 'independent-bottom-k-per-disjoint-stratum-v4'
@@ -17,6 +18,8 @@ def _count(row, name, maximum=U64):
 
 
 def validate_scalable_manifest(manifest):
+    if 'work_scope' in manifest and manifest['work_scope'] != CAPTURE_ONLY_SCOPE:
+        raise ValueError('unsupported capture work scope')
     top_k=manifest.get('top_k')
     if type(top_k) is not int or not 1<=top_k<=MAX_TOP_K:raise ValueError('invalid configured top-k')
     if (type(manifest.get('version')) is not int or manifest.get('version') != 4 or

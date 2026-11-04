@@ -391,6 +391,7 @@ void constraints(const Request &r)
         requireParent("--resource-claims-deep-missing", "--resource-claims-deep-context");
         requireParent("--resource-claims-deep-top-four", "--resource-claims-deep-stratified");
         requireParent("--resource-claims-deep-top-k", "--resource-claims-deep-stratified");
+        requireParent("--resource-claims-capture-only", "--resource-claims-deep-top-k");
         if(r.has("--resource-claims-deep-top-k") && r.has("--resource-claims-deep-top-four"))throw std::invalid_argument("select only one top-k capture mode");
         for(const auto* option:{"--resource-claims-sample-every","--resource-claims-max-samples","--resource-claims-max-bytes","--resource-claims-deep-context"})
             if(r.has(option) && !r.has("--resource-claims-shadow") && !r.has("--resource-claims-probe") && !r.has("--resource-claims-movement-only"))
@@ -595,6 +596,7 @@ const std::vector<Command> &commands()
              integer("--resource-claims-missing-sample-every", "Independent missing-destination diagnostic sample period", 1, 1000000000, "256"),
              flag("--resource-claims-deep-missing", "Temporary independent missing-destination capture; requires deep context"),
              flag("--resource-claims-deep-top-four", "Temporary V3 bottom-four capture per stratum; requires stratified capture"),
+             flag("--resource-claims-capture-only", "Temporary retained-replacement-only capture work"),
              integer("--resource-claims-deep-top-k", "Temporary V4 retained samples per stratum", 1, 16),
              flag("--resource-claims-probe", "Collect diagnostic claim decisions from an active-policy game without a shadow ledger"),
              flag("--resource-claims-movement-only", "Measure transport movement without decision sampling or changing claim enforcement"),

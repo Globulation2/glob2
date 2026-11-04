@@ -466,6 +466,7 @@ struct Probe::Impl
     static constexpr Uint64 InputPendingLimit=128ull*1024*1024;
     Uint64 pendingInputReservations=0,peakInputReservations=0,inputAdmissionExclusions=0,inputIneligibleExclusions=0,peakInputPayload=0;
     Uint64 deepIneligibleNoXY=0;
+    Uint64 captureOnlySkipped=0;
     std::string deepDigest;
     std::optional<ClaimPolicyConfig> cachedPolicy;
     Json cachedPolicyJson;
@@ -501,7 +502,7 @@ struct Probe::Impl
                     {"weight_numerator",!missing && r.eligible?Json(r.eligible):Json(nullptr)},
                     {"weight_denominator",!missing && r.eligible?Json(r.retained()):Json(nullptr)}});
             }
-            const auto value=Json{{"version",config.deepTopK?4:3},{"top_k",topKCapacity()},{"complete",complete},{"censored",censored},
+            auto document=Json{{"version",config.deepTopK?4:3},{"top_k",topKCapacity()},{"complete",complete},{"censored",censored},
                 {"design",topKDesign()},{"context",deepContext},{"strata",std::move(strata)},
                 {"weight_contract",config.deepTopK?"Ns/min(k,Ns) only for complete uncensored exact selected sets; nominal independent uniform hash priorities, ordinal tie-break; observed current-priority ties exposed":"Ns/min(4,Ns) only for complete uncensored exact selected sets; nominal independent uniform hash priorities, ordinal tie-break; observed current-priority ties exposed"},
                 {"ineligible_contested_no_xy",deepIneligibleNoXY},{"ordinary_missing_field",metrics.excludedMissingField},
@@ -509,7 +510,9 @@ struct Probe::Impl
                 {"peak_input_reservations",peakInputReservations},{"input_admission_exclusions",inputAdmissionExclusions},
                 {"input_ineligible_exclusions",inputIneligibleExclusions},{"peak_input_payload",peakInputPayload},
                 {"input_accounting","vector-capacity-payload-plus-serialized-metadata; excludes allocator/json-node/map/experiment-set-node/shared-registry/pool/oracle-scratch RSS"},
-                {"final_limit",Experiment::topKFinalLimit(topKCapacity())},{"transient_limit",Experiment::StratifiedTransientLimit}}.dump();
+                {"final_limit",Experiment::topKFinalLimit(topKCapacity())},{"transient_limit",Experiment::StratifiedTransientLimit}};
+            if(config.captureOnly)document["work_scope"]="retained-replacements-only-v1";
+            const auto value=document.dump();
             if(value.size()>topKManifestLimit())throw std::runtime_error("top-k manifest exceeds allowance");
             Experiment::replaceTopKDeepFile(deepDirectory/"manifest.json",std::span(reinterpret_cast<const Uint8*>(value.data()),value.size()),topKCapacity(),config.deepTopK!=0);return;
         }
@@ -547,6 +550,7 @@ struct Probe::Impl
         if (!config.sampleEvery || !config.maxSamples || !config.maxOutputBytes || !config.maxPending || config.maxPending>8)
             throw std::invalid_argument("invalid resource claim probe limits");
         if(config.deepTopK && (!config.deepTopFour || config.deepTopK>Experiment::DeepTopKMaximum))throw std::invalid_argument("invalid scalable capture configuration");
+        if(config.captureOnly && (!config.deepTopK || !config.deepStratified))throw std::invalid_argument("capture-only requires configured stratified top-k");
         if(config.deepTopK)for(auto& slot:topSlots)slot=Experiment::TopKDeepSlot(config.deepTopK);
         if(config.deepMissing && (config.deepContext.empty() || !config.missingSampleEvery || config.movementOnly))throw std::invalid_argument("missing capture requires full observer/context/sample rate");
         if(config.deepTopFour && !config.deepStratified)throw std::invalid_argument("top-four capture requires stratified capture");
@@ -772,6 +776,7 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
     for (const auto& pattern:Experiment::pilotPatterns()) patterns.push_back(pattern.name);
     impl->write(Json{{"kind","schema"},{"version",1},{"timing_clock","worker-steady-clock-elapsed"},{"cohort","sampled-material-movement-and-pickup-decisions-before-choice"},
         {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",config.deepTopFour?impl->topKDesign():config.deepStratified?Experiment::StratifiedDeepDesign:Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",config.deepTopFour?Experiment::topKFinalLimit(impl->topKCapacity())+Experiment::StratifiedTransientLimit:config.deepStratified?Experiment::StratifiedFinalLimit+Experiment::StratifiedTransientLimit:Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
+        {"capture_only_version",config.captureOnly?1:0},{"decision_work_scope",config.captureOnly?"retained-replacements-only-v1":"all-admitted-contested-samples"},
         {"sample_every",config.sampleEvery},{"max_samples",config.maxSamples},{"max_pending",config.maxPending},
         {"movement_audit_version",1},
         {"movement_only",config.movementOnly},{"decision_sampling_enabled",!config.movementOnly},
@@ -817,7 +822,7 @@ void Probe::finish()
     impl->publishBaselines(UINT32_MAX,true);
     while(!impl->journeys.empty())impl->closeJourney(impl->journeys.begin(),"end_of_segment",impl->latestLiveTick);
     const auto& m=impl->metrics;
-    impl->write(Json{{"kind","summary"},{"complete",true},{"decisions",m.decisions},{"sampled",m.sampled},
+    impl->write(Json{{"kind","summary"},{"capture_only_version",impl->config.captureOnly?1:0},{"capture_only_skipped_nonretained",impl->captureOnlySkipped},{"complete",true},{"decisions",m.decisions},{"sampled",m.sampled},
         {"contested",m.contested},{"submitted",m.submitted},{"completed",m.completed},
         {"excluded_sample_limit",m.excludedSampleLimit},{"excluded_queue_limit",m.excludedQueueLimit},{"excluded_missing_field",m.excludedMissingField},
         {"material_decisions",impl->materialDecisions},{"material_sampled",impl->materialSampled},
@@ -1167,6 +1172,9 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
         } else deepSelected=impl->deep.consider(deepPriority,ordinal);
     }
     if(!impl->config.deepContext.empty() && !destinations)++impl->deepIneligibleNoXY;
+    // Sampling, eligibility, ordinal and bottom-k insertion above remain identical.
+    // Non-retained events need neither frozen inputs nor Oracle/pattern work.
+    if(impl->config.captureOnly && !deepSelected){++impl->captureOnlySkipped;return {};}
     if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;if(!impl->config.deepContext.empty() && destinations){if(impl->config.deepTopFour)impl->topSlots[stratum].excluded(false);else (impl->config.deepStratified?impl->deepSlots[stratum].reservoir:impl->deep).excluded(false);}return {};}
     if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;if(!impl->config.deepContext.empty() && destinations){if(impl->config.deepTopFour)impl->topSlots[stratum].excluded(true);else (impl->config.deepStratified?impl->deepSlots[stratum].reservoir:impl->deep).excluded(true);}return {};}
     // Conservative copied-input reservation: every cell includes all 12 material

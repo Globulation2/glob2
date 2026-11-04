@@ -23,6 +23,7 @@ public:
         Uint64 maxOutputBytes=64ull*1024*1024;
         unsigned maxPending=8;
         std::string deepContext; // Diagnostic JSON: source_revision,bundle_id,cohort_id,game_id.
+        bool captureOnly=false; // V1 work scope: submit only current bottom-k replacements.
         unsigned deepTopK=0; // Explicit V4 capacity 1..16; zero keeps legacy capture.
         bool deepMissing=false; // Additive missing-destination stream; requires deepContext.
         Uint32 missingSampleEvery=256;

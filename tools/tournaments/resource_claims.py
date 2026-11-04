@@ -274,6 +274,12 @@ def trace_rows(stream):
     if len(set(schema['patterns'])) != len(schema['patterns']) or len(set(schema['policies'])) != len(schema['policies']):
         raise ValueError('duplicate pattern/policy identities')
     from .claim_journeys import Validator
+    capture_only = schema.get('capture_only_version', 0)
+    if type(capture_only) is not int or capture_only not in (0, 1):
+        raise ValueError('unsupported capture-only version')
+    expected_scope = 'retained-replacements-only-v1' if capture_only else 'all-admitted-contested-samples'
+    if schema.get('decision_work_scope', expected_scope) != expected_scope or capture_only and 'decision_work_scope' not in schema:
+        raise ValueError('unsupported decision work scope')
     journeys = Validator(schema)
     from .claim_outcomes import Validator as OutcomeValidator
     actual_outcomes = OutcomeValidator(schema)
@@ -336,6 +342,12 @@ def trace_rows(stream):
             raise ValueError('unknown claim trace row')
     if not summary or summary.get('complete') is not True or summary.get('submitted') != count or summary.get('completed') != count:
         raise ValueError('incomplete resource claim trace')
+    if type(summary.get('capture_only_version', 0)) is not int or summary.get('capture_only_version', 0) != capture_only:
+        raise ValueError('capture-only footer scope mismatch')
+    if capture_only:
+        skipped = summary.get('capture_only_skipped_nonretained')
+        if type(skipped) is not int or skipped < 0:
+            raise ValueError('invalid capture-only skipped count')
     journeys.finish(summary)
     actual_outcomes.finish(summary)
     if movement_only and any(summary.get(key) != 0 for key in ('decisions','sampled','submitted','completed','capture_bytes')):
@@ -346,6 +358,8 @@ def trace_rows(stream):
 def read_game(stream, labels):
     rows = trace_rows(stream)
     schema = next(rows)
+    if schema.get('capture_only_version', 0):
+        raise ValueError('capture-only decision rows are replacement-selected, not ordinary event samples; use deep capture weights')
     # Each accumulator belongs to one game, pattern, policy and stratum.
     sums = defaultdict(lambda: defaultdict(float))
     route_sums = defaultdict(lambda: defaultdict(float))

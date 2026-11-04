@@ -1435,3 +1435,54 @@ TEST_CASE("missing destination observer distinguishes absent fields from stale i
     REQUIRE(std::filesystem::is_regular_file(root/"resource-claims-missing/event-04.bin"));
 }
 #endif
+
+#ifndef __EMSCRIPTEN__
+TEST_CASE("capture-only preserves bottom-k membership while skipping nonretained work" * doctest::test_suite("ActiveMaterialClaims"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame f({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
+    auto& map=f.game.map;auto* team=f.game.teams[0];
+    map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+    auto* inn=f.addBuilding("inn",20,20);REQUIRE(inn);
+    REQUIRE(map.incResourceByIndex(12,12,WHEAT,0));REQUIRE(map.incResourceByIndex(15,12,WHEAT,0));
+    auto make=[&](int slot) {
+        auto* u=new TestUnit(8+slot,8,Unit::GIDfrom(slot,0),WORKER,team,0);
+        team->attachUnit(slot,u);map.setGroundUnit(u->posX,u->posY,u->gid);
+        u->attachedBuilding=inn;u->activity=Unit::ACT_FILLING;u->displacement=Unit::DIS_GOING_TO_RESOURCE;u->destinationPurpose=WHEAT;return u;
+    };
+    auto* a=make(0);auto* b=make(1);
+    const auto* field=glob2test::awaitGradient(f.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,a->movementClass());});
+    REQUIRE(a->acquireMaterialClaimAt(Uint32(map.coordToIndex(12,12))));
+
+    nlohmann::json manifests[2];Uint64 submitted[2]{};
+    const auto checksum=f.game.checkSum();
+    for(unsigned mode=0;mode<2;++mode) {
+        const auto directory=glob2test::artifactDir()/(mode?"capture-only":"capture-all");
+        std::filesystem::remove_all(directory);std::filesystem::create_directories(directory);
+        ResourceClaims::Probe::Config config;config.sampleEvery=1;config.maxSamples=96;
+        config.deepStratified=true;config.deepTopFour=true;config.deepTopK=16;config.captureOnly=mode;
+        config.deepContext=nlohmann::json{{"source_revision","fixture"},{"bundle_id","fixture"},
+            {"cohort_id","retained-parity"},{"game_id","same-frozen-world"}}.dump();
+        auto probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),(directory/"trace.jsonl.gz").string(),config);
+        map.setMaterialClaimProbe(probe);
+        for(unsigned event=0;event<96;++event) {
+            map.observeMaterialClaimDecision(*b,field);
+            probe->publish(f.game.stepCounter+1);
+            CHECK(f.game.checkSum()==checksum);
+            CHECK(a->activeMaterialClaim.has_value());CHECK_FALSE(b->activeMaterialClaim);
+        }
+        probe->finish();CHECK(probe->metrics().sampled==96);CHECK(probe->metrics().contested==96);
+        submitted[mode]=probe->metrics().submitted;CHECK(probe->metrics().completed==submitted[mode]);
+        std::ifstream input(directory/"resource-claims-deep/manifest.json");manifests[mode]=nlohmann::json::parse(input);
+        CHECK(manifests[mode]["censored"]==false);
+        map.setMaterialClaimProbe(nullptr);
+    }
+    CHECK(submitted[0]==96);CHECK(submitted[1]>=16);CHECK(submitted[1]<submitted[0]);
+    CHECK(manifests[1]["work_scope"]=="retained-replacements-only-v1");
+    for(unsigned stratum=0;stratum<16;++stratum) {
+        auto left=manifests[0]["strata"][stratum],right=manifests[1]["strata"][stratum];
+        for(auto* row:{&left,&right})for(auto& record:(*row)["records"])record.erase("file_sha256"); // Worker elapsed timing is deliberately non-identical.
+        CHECK(left==right);
+    }
+}
+#endif

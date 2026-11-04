@@ -43,7 +43,9 @@ class TopKTests(unittest.TestCase):
    (p/'manifest.json').write_text(json.dumps(m));rows=list(read_scalable_captures(p,m,expected_provenance=provenance));self.assertEqual(sum(r[3] is not None for r in rows),16);self.assertEqual(len(rows),31)
    (p/'event-00-3.bin').unlink()
    with self.assertRaisesRegex(ValueError,'inventory'):list(read_scalable_captures(p,m,expected_provenance=provenance))
- def test_isolated_zip_collector(self):
+ def test_capture_only_isolated_zip_collector(self):
+  self.test_isolated_zip_collector(capture_only=True)
+ def test_isolated_zip_collector(self,capture_only=False):
   from tools.tournaments.transport import worker_archive
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory);attempt=root/'attempt';output=attempt/'output';deep=output/'resource-claims-deep';deep.mkdir(parents=True)
@@ -51,17 +53,27 @@ class TopKTests(unittest.TestCase):
    for e in m['strata'][0]['records']:
     meta=dict(width=2,height=2,origin=0,nearest=1,game_id='g',ordinal=e['ordinal'],priority=e['priority'],deep_design=TOPK_DESIGN,deep_stratum=0,deep_slot=e['slot'],provenance={k:context[k] for k in ('source_revision','bundle_id','cohort_id')})
     encoded=json.dumps(meta).encode();data=HEADER.pack(MAGIC,1,len(encoded),4,0)+encoded+struct.pack('<4I',1,1,1,1);data+=hashlib.sha256(data).digest();e['file_sha256']=hashlib.sha256(data).hexdigest();(deep/e['file']).write_bytes(data)
+   if capture_only:m['work_scope']='retained-replacements-only-v1'
    (deep/'manifest.json').write_text(json.dumps(m))
    schema={'kind':'schema','version':1,'patterns':['fixture'],'policies':['first_available'],'sample_every':1000,'max_samples':10000,'max_output_bytes':1048576,'outcome_columns':['pattern','policy','source','access','probe','weighted_cost','probes','new_destination_reads','fallback','access_weighted_cost']}
+   footer={'kind':'summary','complete':True,'submitted':4,'completed':4}
+   if capture_only:
+    schema.update(capture_only_version=1,decision_work_scope='retained-replacements-only-v1')
+    footer.update(capture_only_version=1,capture_only_skipped_nonretained=9)
    with gzip.open(output/'resource-claims-shadow.jsonl.gz','wt') as stream:
-    for row in [schema]+[{'kind':'decision','ordinal':i,'patterns':[[0,0,1,1,0,3,1,1,False,7]]} for i in range(1,5)]+[{'kind':'summary','complete':True,'submitted':4,'completed':4}]:stream.write(json.dumps(row)+'\n')
+    for row in [schema]+[{'kind':'decision','ordinal':i,'patterns':[[0,0,1,1,0,3,1,1,False,7]]} for i in range(1,5)]+[footer]:stream.write(json.dumps(row)+'\n')
    (output/'result.json').write_text(json.dumps({'schema_version':1,'status':'completed','resolved':{'material_destinations_enabled':True},'resource_claims_shadow':{'schema_version':1,'enforced':False,'submitted':4,'completed':4}}))
    job={'config':{'material_destinations':True,'resource_claims_shadow':{'sample_every':1000,'max_samples':10000,'max_bytes':1048576},'resource_claims_deep_context':context,'resource_claims_deep_stratified':True,'resource_claims_deep_top_k':16}}
+   if capture_only:job['config']['resource_claims_capture_only']=True
    (root/'job.json').write_text(json.dumps(job));archive=root/'worker.pyz';worker_archive(archive)
    code="import sys,json;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from tournaments.jobs import EngineJob;assert EngineJob('game').collect(json.loads(Path(sys.argv[2]).read_text()),sys.argv[3])['status']=='completed';assert 'numpy' not in sys.modules"
    env=dict(os.environ);env.pop('PYTHONPATH',None);env.pop('PYTHONHOME',None)
    process=subprocess.run([sys.executable,'-I','-S','-c',code,str(archive),str(root/'job.json'),str(attempt)],cwd=root,env=env,capture_output=True,text=True)
    self.assertEqual(process.returncode,0,process.stderr)
+   if capture_only:
+    job['config'].pop('resource_claims_capture_only');(root/'job.json').write_text(json.dumps(job))
+    rejected=subprocess.run([sys.executable,'-I','-S','-c',code,str(archive),str(root/'job.json'),str(attempt)],cwd=root,env=env,capture_output=True,text=True)
+    self.assertNotEqual(rejected.returncode,0);self.assertIn('scope differs',rejected.stderr)
  def test_cli_capability_gate(self):
   from tools.tournaments.jobs import EngineJob
   j={'config':{'resource_claims_deep_top_k':16,'resource_claims_deep_stratified':True,'resource_claims_deep_context':{'source_revision':'s'}},'outputs':{},'seeds':{}}
