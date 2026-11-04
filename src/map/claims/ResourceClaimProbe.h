@@ -27,6 +27,7 @@ public:
         unsigned deepTopK=0; // Explicit V4 capacity 1..16; zero keeps legacy capture.
         bool deepMissing=false; // Additive missing-destination stream; requires deepContext.
         Uint32 missingSampleEvery=256;
+        unsigned deepMissingTopK=0; // Explicit V2; zero preserves legacy single minimum.
         bool deepTopFour=false; // Explicit V3 diagnostic, requires deepStratified.
         bool deepStratified=false; // Explicit V2 diagnostic; deepContext alone remains V1.
         std::optional<Uint32> movementStartTick;

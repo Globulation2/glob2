@@ -4,6 +4,7 @@
 #include "ResourceClaimDeepEvent.h"
 #include "ResourceClaimStratifiedDeep.h"
 #include "ResourceClaimTopKDeep.h"
+#include "ResourceClaimMissingTopKDeep.h"
 #include "ResourceClaimMissingDeep.h"
 #include "ClaimPolicyConfig.h"
 #include "ResourceClaimPatternEvaluation.h"
@@ -404,11 +405,40 @@ struct Probe::Impl
     std::deque<std::unique_ptr<MissingWork>> missingPending;
     SimulationSnapshot::Storage missingStorage;
     std::array<Experiment::MissingSlot,Experiment::MissingStrata> missingSlots;
+    std::array<Experiment::TopKDeepSlot,Experiment::MissingStrata> missingTopSlots;
     std::filesystem::path missingDirectory;
     Uint64 missingCalls=0,missingSampled=0,missingMixed=0,missingValid=0,missingAdmissions=0,missingCompleted=0,missingObsolete=0;
     Uint64 missingInputReservations=0,missingPeakInput=0,missingPeakPayload=0,missingOracleNs=0;
+    Uint64 missingPressureCount=0,missingTickEligible=0,missingTickSelected=0,missingTickAdmitted=0;
+    Uint32 missingAdmissionTick=UINT32_MAX;
+    Json missingPressureExamples=Json::array();
+    unsigned missingPendingCapacity() const {return config.deepMissingTopK?Experiment::MissingTopKPendingLimit:Experiment::MissingPendingLimit;}
+    void missingPressure(Uint64 ordinal,Uint32 tick,unsigned stratum) {
+        if(!config.deepMissingTopK || missingPending.size()<Experiment::MissingPendingLimit)return;
+        ++missingPressureCount;if(missingPressureExamples.size()>=16)return;
+        Json pending=Json::array();for(const auto& w:missingPending)pending.push_back({{"ordinal",w->ordinal},{"tick",w->tick},{"stratum",w->deepStratum},{"slot",w->deepRetainedSlot},{"input_bytes",w->inputReservation}});
+        missingPressureExamples.push_back({{"ordinal",ordinal},{"tick",tick},{"stratum",stratum},{"pending_count",missingPending.size()},{"input_bytes",missingInputReservations},{"eligible_this_tick",missingTickEligible},{"selected_this_tick",missingTickSelected},{"admitted_this_tick",missingTickAdmitted},{"pending",std::move(pending)}});
+    }
+    void missingTopManifest(bool complete) {
+        Json slots=Json::array();bool censored=false;
+        for(unsigned i=0;i<missingTopSlots.size();++i) {
+            const auto& s=missingTopSlots[i];censored|=s.censored();Json records=Json::array();
+            for(unsigned j=0;j<s.entries.size();++j) {const auto& e=s.entries[j];if(e.ordinal)records.push_back({{"slot",j},{"priority",e.priority},{"ordinal",e.ordinal},{"captured_ordinal",e.writtenOrdinal},{"replacements",e.replacements},{"file",Experiment::missingTopKFilename(i,j,config.deepMissingTopK)},{"file_sha256",e.digest}});}
+            slots.push_back({{"id",i},{"eligible",s.eligible},{"last_ordinal",s.lastOrdinal},{"retained",s.retained()},{"reasons",s.reasons},{"ties",s.currentPriorityTies},{"excluded_sample_cap",s.excludedSampleCap},{"excluded_queue_cap",s.excludedQueueCap},{"excluded_input_bytes",s.excludedInputBytes},{"censored",s.censored()},{"weight_numerator",s.eligible?Json(s.eligible):Json(nullptr)},{"weight_denominator",s.eligible?Json(s.retained()):Json(nullptr)},{"records",std::move(records)}});
+        }
+        const auto value=Json{{"version",2},{"design",Experiment::MissingTopKDesign},{"top_k",config.deepMissingTopK},{"complete",complete},{"censored",censored},{"context",deepContext},
+            {"sample_every",config.missingSampleEvery},{"calls",missingCalls},{"sampled",missingSampled},{"excluded_mixed",missingMixed},{"valid_destination",missingValid},
+            {"admitted",missingAdmissions},{"completed",missingCompleted},{"obsolete_completed",missingObsolete},{"oracle_elapsed_ns",missingOracleNs},{"strata",std::move(slots)},
+            {"input_pending_limit",Experiment::MissingInputLimit},{"peak_input_reservations",missingPeakInput},{"peak_input_payload",missingPeakPayload},{"pending_limit",Experiment::MissingTopKPendingLimit},{"encoded_pending_limit",Experiment::MissingTopKPendingLimit*Experiment::DeepRecordLimit},
+            {"record_limit",Experiment::DeepRecordLimit},{"final_limit",Experiment::missingTopKFinalLimit(config.deepMissingTopK)},{"transient_limit",Experiment::MissingTransientLimit},{"free_reserve",Experiment::DeepFreeReserve},{"max_admissions",Experiment::MissingAdmissionLimit},
+            {"capture_timing","pre-legacy-reconciliation; immutable observed ledger, no extra reconciliation"},{"population","independent hash over existing decision hooks plus exclusive active missing-field acquisition hook; not all worker ticks"},
+            {"input_accounting","same vector-capacity/metadata accounting as legacy; excludes allocator/node/shared-registry/pool/oracle RSS"},{"admission_pressure_count",missingPressureCount},{"admission_pressure_examples",missingPressureExamples},{"admission_pressure_examples_censored",missingPressureCount>missingPressureExamples.size()},
+            {"weight_contract","Ns/min(k,Ns) only for complete uncensored exact selected sets; hash priority then ordinal"}}.dump();
+        Experiment::replaceMissingTopKFile(missingDirectory/"manifest.json",std::span(reinterpret_cast<const Uint8*>(value.data()),value.size()),config.deepMissingTopK);
+    }
     void missingManifest(bool complete) {
         if(!config.deepMissing)return;
+        if(config.deepMissingTopK){missingTopManifest(complete);return;}
         Json slots=Json::array();bool censored=false;
         for(unsigned i=0;i<missingSlots.size();++i) {
             const auto& s=missingSlots[i];const auto& r=s.reservoir;censored|=s.censored();
@@ -449,11 +479,19 @@ struct Probe::Impl
         while(!missingPending.empty() && (all || Uint64(missingPending.front()->tick)+1<=tick)) {
             auto& w=*missingPending.front();executor.join(w.batch,{all?JoinReason::Save:JoinReason::TickDeadline,Uint32(tick)});
             if(w.error)std::rethrow_exception(w.error);
+            if(config.deepMissingTopK) {
+                auto& slot=missingTopSlots.at(w.deepStratum);
+                if(slot.current(w.deepRetainedSlot,w.ordinal)) {
+                    Experiment::replaceMissingTopKFile(missingDirectory/Experiment::missingTopKFilename(w.deepStratum,w.deepRetainedSlot,config.deepMissingTopK),w.deepBytes,config.deepMissingTopK);
+                    slot.written(w.deepRetainedSlot,w.ordinal,Online::Sha256::toHex(Online::Sha256::of(w.deepBytes)));
+                } else ++missingObsolete;
+            } else {
             auto& slot=missingSlots.at(w.deepStratum);
             if(slot.reservoir.ordinal==w.ordinal) {
                 Experiment::replaceMissingFile(missingDirectory/Experiment::missingFilename(w.deepStratum),w.deepBytes);
                 slot.digest=Online::Sha256::toHex(Online::Sha256::of(w.deepBytes));slot.reservoir.written(w.ordinal);
             } else ++missingObsolete;
+            }
             missingOracleNs+=w.missingMetadata.at("oracle_elapsed_ns").get<Uint64>();
             missingInputReservations-=w.inputReservation;++missingCompleted;missingPending.pop_front();
         }
@@ -551,6 +589,8 @@ struct Probe::Impl
             throw std::invalid_argument("invalid resource claim probe limits");
         if(config.deepTopK && (!config.deepTopFour || config.deepTopK>Experiment::DeepTopKMaximum))throw std::invalid_argument("invalid scalable capture configuration");
         if(config.captureOnly && (!config.deepTopK || !config.deepStratified))throw std::invalid_argument("capture-only requires configured stratified top-k");
+        if(config.deepMissingTopK && (!config.deepMissing || config.deepMissingTopK>64))throw std::invalid_argument("invalid missing top-k config");
+        if(config.deepMissingTopK)for(auto& slot:missingTopSlots)slot=Experiment::TopKDeepSlot(config.deepMissingTopK);
         if(config.deepTopK)for(auto& slot:topSlots)slot=Experiment::TopKDeepSlot(config.deepTopK);
         if(config.deepMissing && (config.deepContext.empty() || !config.missingSampleEvery || config.movementOnly))throw std::invalid_argument("missing capture requires full observer/context/sample rate");
         if(config.deepTopFour && !config.deepStratified)throw std::invalid_argument("top-four capture requires stratified capture");
@@ -1039,13 +1079,16 @@ void Probe::missingDecision(Game& game,const Unit& unit,const Uint16* field,Uint
     if(labels && labels->x[origin]<map.getW() && labels->y[origin]<map.getH()){++impl->missingValid;return;}
     const auto stratum=Experiment::missingStratum(reason,MaterialId(unit.destinationPurpose),pickupAccess!=UINT32_MAX);
     auto& slot=impl->missingSlots[stratum];const auto rank=mix(0x4d49535352414e4bull^mix(seed)^mix(owner)^mix(game.stepCounter)^mix(ordinal)^mix(stratum));
-    const bool selected=slot.consider(rank,ordinal,reason);
-    if(!selected)return;
-    if(impl->missingAdmissions>=Experiment::MissingAdmissionLimit){slot.reservoir.excluded(false);return;}
-    if(impl->missingPending.size()>=Experiment::MissingPendingLimit){slot.reservoir.excluded(true);return;}
+    if(impl->config.deepMissingTopK){if(impl->missingAdmissionTick!=game.stepCounter){impl->missingAdmissionTick=game.stepCounter;impl->missingTickEligible=impl->missingTickSelected=impl->missingTickAdmitted=0;}++impl->missingTickEligible;}
+    const int retainedSlot=impl->config.deepMissingTopK?impl->missingTopSlots[stratum].consider(rank,ordinal,unsigned(reason),true):(slot.consider(rank,ordinal,reason)?0:-1);
+    if(retainedSlot<0)return;
+    if(impl->config.deepMissingTopK){++impl->missingTickSelected;impl->missingPressure(ordinal,game.stepCounter,stratum);}
+    const auto excluded=[&](bool queue){if(impl->config.deepMissingTopK)impl->missingTopSlots[stratum].excluded(queue);else slot.reservoir.excluded(queue);};
+    if(impl->missingAdmissions>=Experiment::MissingAdmissionLimit){excluded(false);return;}
+    if(impl->missingPending.size()>=impl->missingPendingCapacity()){excluded(true);return;}
     const Uint64 reserve=Uint64(map.cellCount())*Impl::CellInputAllowance+Uint64(Impl::MaximumTrackedClaimants)*Impl::OwnerInputAllowance+1024*1024;
-    if(reserve>Experiment::MissingInputLimit-impl->missingInputReservations){++slot.inputExcluded;return;}
-    auto w=std::make_unique<Impl::MissingWork>();w->inputReservation=reserve;w->ordinal=ordinal;w->tick=game.stepCounter;w->deepStratum=stratum;w->destinations=labels;
+    if(reserve>Experiment::MissingInputLimit-impl->missingInputReservations){if(impl->config.deepMissingTopK)++impl->missingTopSlots[stratum].excludedInputBytes;else ++slot.inputExcluded;return;}
+    auto w=std::make_unique<Impl::MissingWork>();w->inputReservation=reserve;w->ordinal=ordinal;w->tick=game.stepCounter;w->deepStratum=stratum;w->deepRetainedSlot=unsigned(retainedSlot);w->destinations=labels;
     using C=SimulationSnapshot::Component;
     const auto mask=SimulationSnapshot::bit(C::Catalogs)|SimulationSnapshot::bit(C::Terrain)|SimulationSnapshot::bit(C::Resources)
         |SimulationSnapshot::bit(C::Occupancy)|SimulationSnapshot::bit(C::Areas)|SimulationSnapshot::bit(C::Visibility)|SimulationSnapshot::bit(C::Rules);
@@ -1067,6 +1110,7 @@ void Probe::missingDecision(Game& game,const Unit& unit,const Uint16* field,Uint
         {"claims_enforced",map.activeClaimsEnabled()},{"ledger_timing","pre-legacy-reconcile observed state"},
         {"farm_areas_enabled",map.farmAreasEnabled()},{"walk_speed",unit.performance[WALK]},{"swim_speed",unit.performance[SWIM]},
         {"fly_speed",unit.performance[FLY]},{"hp",unit.hp},{"medical",int(unit.medical)}};
+    if(impl->config.deepMissingTopK){w->missingMetadata["design"]=Experiment::MissingTopKDesign;w->missingMetadata["physical_slot"]=retainedSlot;w->missingMetadata["top_k"]=impl->config.deepMissingTopK;}
     if(map.materialClaimPolicy()==ActiveClaimPolicy::Experimental) {
         const auto canonical=map.materialClaimPolicyConfig().canonicalJson();w->missingMetadata["policy_config"]=Json::parse(canonical);w->missingMetadata["policy_digest"]=Online::Sha256::hex(canonical);
     }else {w->missingMetadata["policy_config"]=nullptr;w->missingMetadata["policy_digest"]=nullptr;}
@@ -1077,7 +1121,7 @@ void Probe::missingDecision(Game& game,const Unit& unit,const Uint16* field,Uint
     const ComputeExecutor::Group group{1,{Impl::runMissing,raw},ComputeExecutor::NoLane};
     try {raw->batch=impl->executor.submit(std::span(&group,1),ComputeExecutor::boundaryDue(Uint64(game.stepCounter)+1),{ComputeProducer::Other,game.stepCounter,Uint64(game.stepCounter)+1});}
     catch(...){impl->missingPending.pop_back();throw;}
-    impl->missingInputReservations+=reserve;impl->missingPeakInput=std::max(impl->missingPeakInput,impl->missingInputReservations);++impl->missingAdmissions;
+    impl->missingInputReservations+=reserve;impl->missingPeakInput=std::max(impl->missingPeakInput,impl->missingInputReservations);++impl->missingAdmissions;if(impl->config.deepMissingTopK)++impl->missingTickAdmitted;
 }
 
 DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pickupAccess)

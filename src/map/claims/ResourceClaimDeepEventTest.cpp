@@ -1,3 +1,4 @@
+#include "ResourceClaimMissingTopKDeep.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ResourceClaimDeepEvent.h"
 #include "ResourceClaimStratifiedDeep.h"
@@ -171,4 +172,16 @@ TEST_CASE("Top-k output filenames are canonical and capacity bounded" * doctest:
     }
     for(const auto name:{"event-0-0.bin","event-16-0.bin","event-00-64.bin","event-00-00.bin","event-00-01.bin","event-00--1.bin","event-00-+1.bin","event-00-1.bin.partial","event-00-1.bin/","event-00-1.BIN","event-00-.bin","event-00-a.bin","../manifest.json","manifest.json.partial"})CHECK_FALSE(topKOutputName(name,64));
     CHECK_FALSE(topKOutputName("manifest.json",0));CHECK_FALSE(topKOutputName("manifest.json",65));
+}
+
+TEST_CASE("Missing top-k retains exact ranks with obsolete generation protection" * doctest::test_suite("ResourceClaimTopKDeep")) {
+ using namespace ResourceClaims::Experiment;
+ for(unsigned k=1;k<=64;++k)for(unsigned bin=0;bin<8;++bin) {
+  TopKDeepSlot state(k);
+  for(Uint64 n=1;n<=129;++n) {const auto slot=state.consider(1000-n,n,n%3,true);REQUIRE(slot>=0);CHECK(state.written(slot,n,"digest"));CHECK(state.retained()==std::min<Uint64>(n,k));}
+  for(const auto& entry:state.entries)CHECK(entry.ordinal>129-k);
+  CHECK(missingTopKOutputName(missingTopKFilename(bin,k-1,k),k));CHECK(missingTopKFinalLimit(k)==Uint64(8)*k*DeepRecordLimit);CHECK_FALSE(state.censored());
+ }
+ TopKDeepSlot state(1);CHECK(state.consider(9,1,0,true)==0);CHECK(state.consider(8,2,1,true)==0);CHECK_FALSE(state.written(0,1,"obsolete"));CHECK(state.entries[0].replacements==0);CHECK(state.written(0,2,"current"));CHECK(state.consider(8,3,2,true)==-1);CHECK(state.currentPriorityTies==1);CHECK_FALSE(state.censored());state.excludedInputBytes=1;CHECK(state.censored());
+ CHECK_FALSE(missingTopKOutputName("event-08-0.bin",64));CHECK_FALSE(missingTopKOutputName("event-00-01.bin",64));CHECK_THROWS(missingTopKFinalLimit(65));
 }

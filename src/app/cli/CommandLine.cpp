@@ -594,6 +594,7 @@ const std::vector<Command> &commands()
              value("--resource-claims-deep-context", "json", "Temporary bounded min-hash capture provenance: source_revision,bundle_id,cohort_id,game_id"),
              flag("--resource-claims-deep-stratified", "Temporary V2 sixteen-stratum deep capture; requires deep context"),
              integer("--resource-claims-missing-sample-every", "Independent missing-destination diagnostic sample period", 1, 1000000000, "256"),
+             integer("--resource-claims-missing-top-k", "Temporary V2 missing-destination samples per stratum", 1, 64),
              flag("--resource-claims-deep-missing", "Temporary independent missing-destination capture; requires deep context"),
              flag("--resource-claims-deep-top-four", "Temporary V3 bottom-four capture per stratum; requires stratified capture"),
              flag("--resource-claims-capture-only", "Temporary retained-replacement-only capture work"),
