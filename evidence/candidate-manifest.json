@@ -1,0 +1,22 @@
+{
+  "gd-bigarena-2048.units.checksums.gz": {
+    "bytes": 2176194,
+    "sha256": "8dfd8196ad0722a0e34ba703f84410d7c44998b8929199fdae01b21aa9d2bc43"
+  },
+  "expected-units-30000-30512.json": {
+    "bytes": 40451,
+    "sha256": "9ddfc78e9bd66034eec7fe680a40ad540104ab164850b91e0757c9056a56626b"
+  },
+  "gd-large-4ai-1024.units.checksums.gz": {
+    "bytes": 373618,
+    "sha256": "c4b0266856e5f917155ca549c7c59aa483b459959a77a29b938086c9fb8fa4e6"
+  },
+  "v108-reload-256.units.checksums.gz": {
+    "bytes": 121973,
+    "sha256": "5c8030cc97d300aec8d037276c925b3f168537b09d2119c0ef91c228d76c3aa7"
+  },
+  "numbi-castor-2048.units.checksums.gz": {
+    "bytes": 297196,
+    "sha256": "752aa409e1d6a304ebec8994beabd7f9bec3533d7ca8b555c451bad0b92d307d"
+  }
+}
