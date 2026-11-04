@@ -1,0 +1,314 @@
+[
+  {
+    "catalog": "ar",
+    "key": "[tundra]",
+    "before": null,
+    "after": "أرض التندرا"
+  },
+  {
+    "catalog": "br",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Douar toundra"
+  },
+  {
+    "catalog": "ca",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Sòl de tundra"
+  },
+  {
+    "catalog": "cz",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundrová půda"
+  },
+  {
+    "catalog": "de",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundraboden"
+  },
+  {
+    "catalog": "dk",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundrajord"
+  },
+  {
+    "catalog": "es",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Suelo de tundra"
+  },
+  {
+    "catalog": "eo",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundra grundo"
+  },
+  {
+    "catalog": "eu",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundrako lurra"
+  },
+  {
+    "catalog": "fa",
+    "key": "[tundra]",
+    "before": null,
+    "after": "زمین توندرا"
+  },
+  {
+    "catalog": "fr",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Sol de toundra"
+  },
+  {
+    "catalog": "gr",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Έδαφος τούνδρας"
+  },
+  {
+    "catalog": "hu",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundratalaj"
+  },
+  {
+    "catalog": "it",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Terreno di tundra"
+  },
+  {
+    "catalog": "nl",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Toendrabodem"
+  },
+  {
+    "catalog": "pl",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Gleba tundrowa"
+  },
+  {
+    "catalog": "pt",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Solo de tundra"
+  },
+  {
+    "catalog": "ro",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Sol de tundră"
+  },
+  {
+    "catalog": "ru",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Тундровая почва"
+  },
+  {
+    "catalog": "si",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundrska tla"
+  },
+  {
+    "catalog": "sk",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundrová pôda"
+  },
+  {
+    "catalog": "sr",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Тундрено тло"
+  },
+  {
+    "catalog": "fi",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundramaa"
+  },
+  {
+    "catalog": "sv",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundramark"
+  },
+  {
+    "catalog": "tr",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundra toprağı"
+  },
+  {
+    "catalog": "zh-tw",
+    "key": "[tundra]",
+    "before": null,
+    "after": "苔原地面"
+  },
+  {
+    "catalog": "zh-cn",
+    "key": "[tundra]",
+    "before": null,
+    "after": "苔原地面"
+  },
+  {
+    "catalog": "uk",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Тундровий ґрунт"
+  },
+  {
+    "catalog": "id",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tanah tundra"
+  },
+  {
+    "catalog": "vi",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Đất lãnh nguyên"
+  },
+  {
+    "catalog": "ja",
+    "key": "[tundra]",
+    "before": null,
+    "after": "ツンドラ地帯"
+  },
+  {
+    "catalog": "ko",
+    "key": "[tundra]",
+    "before": null,
+    "after": "툰드라 지형"
+  },
+  {
+    "catalog": "hi",
+    "key": "[tundra]",
+    "before": null,
+    "after": "टुंड्रा की भूमि"
+  },
+  {
+    "catalog": "ur",
+    "key": "[tundra]",
+    "before": null,
+    "after": "ٹنڈرا کی زمین"
+  },
+  {
+    "catalog": "sw",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Ardhi ya tundra"
+  },
+  {
+    "catalog": "ta",
+    "key": "[tundra]",
+    "before": null,
+    "after": "துந்திரா நிலம்"
+  },
+  {
+    "catalog": "nb",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tundramark"
+  },
+  {
+    "catalog": "ms",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Tanah tundra"
+  },
+  {
+    "catalog": "bn",
+    "key": "[tundra]",
+    "before": null,
+    "after": "তুন্দ্রার ভূমি"
+  },
+  {
+    "catalog": "mr",
+    "key": "[tundra]",
+    "before": null,
+    "after": "टुंड्राची जमीन"
+  },
+  {
+    "catalog": "te",
+    "key": "[tundra]",
+    "before": null,
+    "after": "టండ్రా నేల"
+  },
+  {
+    "catalog": "fil",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Lupang tundra"
+  },
+  {
+    "catalog": "bg",
+    "key": "[tundra]",
+    "before": null,
+    "after": "Тундрова почва"
+  },
+  {
+    "catalog": "th",
+    "key": "[tundra]",
+    "before": null,
+    "after": "พื้นดินทุนดรา"
+  },
+  {
+    "catalog": "si",
+    "key": "[volcanic_ash]",
+    "before": "ගිනිකඳු අළු",
+    "after": "Vulkanski pepel"
+  },
+  {
+    "catalog": "si",
+    "key": "[overgrown_road]",
+    "before": "වල් වැඩුණු මාර්ගය",
+    "after": "Zaraščena cesta"
+  },
+  {
+    "catalog": "si",
+    "key": "[laterite]",
+    "before": "කබොක්",
+    "after": "Lateritna tla"
+  },
+  {
+    "catalog": "it",
+    "key": "[laterite]",
+    "before": "Laterite",
+    "after": "Suolo lateritico"
+  },
+  {
+    "catalog": "sw",
+    "key": "[laterite]",
+    "before": "Laterite",
+    "after": "Udongo wa lateriti"
+  },
+  {
+    "catalog": "fil",
+    "key": "[laterite]",
+    "before": "Laterite",
+    "after": "Lupang laterita"
+  },
+  {
+    "catalog": "sw",
+    "key": "[shale]",
+    "before": "Shale",
+    "after": "Mwamba wa udongo wenye tabaka"
+  },
+  {
+    "catalog": "fil",
+    "key": "[shale]",
+    "before": "Shale",
+    "after": "Batong luwad na patong-patong"
+  }
+]

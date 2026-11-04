@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="44" failures="1" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="44.2451" status="run">
+      <failure message="false" type="REQUIRE">
+src/game/screens/CustomGameSetupHarness.cpp:1955:
+REQUIRE( (tile.preview.state == LandscapePreviewer::State::Ready &amp;&amp; tile.preview.width == 256 &amp;&amp; tile.preview.height == 256 &amp;&amp; tile.preview.starts.size() == 4) ) is NOT correct!
+  values: REQUIRE( false )
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Compact identity tables preserve unused slots and reject invalid entries" time="0.241954" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="Current simulation rejects earlier replays and enforces acceptance boundaries" time="0.277883" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="0.433634" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="2.53343" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="0.178783" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="0.155907" status="run" />
+  </testsuite><testsuite name="LegacyScriptCoverage"><testcase classname="LegacyScriptCoverage" name="Bulgarian SGSL language tokens require the installed catalog" time="0.807294" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Bulgarian SGSL selects its message and retains an authored default" time="0.493841" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Filipino SGSL language tokens require the installed catalog" time="0.795727" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Filipino SGSL selects its message and retains an authored default for other locales" time="0.304676" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Malay SGSL language tokens require the installed catalog" time="0.793987" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Malay SGSL selects its message and retains an authored default for other locales" time="0.474376" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Marathi SGSL language tokens require the installed catalog" time="0.765451" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Marathi SGSL selects its message and retains an authored default for other locales" time="0.489127" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Telugu SGSL language tokens require the installed catalog" time="0.789269" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Telugu SGSL selects its message and retains an authored default for other locales" time="0.491285" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Thai SGSL language tokens require the installed catalog" time="0.621462" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="Thai SGSL selects its message and retains an authored default for other locales" time="0.31626" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="adding Bulgarian preserves legacy SGSL source bytes and saved program counters" time="1.21222" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="adding Filipino preserves legacy SGSL source bytes and saved program counters" time="1.20089" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="adding Malay preserves legacy SGSL source bytes and saved program counters" time="1.15561" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="adding Marathi preserves legacy SGSL source bytes and saved program counters" time="1.12597" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="adding Telugu preserves legacy SGSL source bytes and saved program counters" time="1.18189" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="adding Thai preserves legacy SGSL source bytes and saved program counters" time="1.00243" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="alliance levels preserve unrelated teams and apply vision masks" time="0.059153" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="area waits observe team alliance and negation instead of unrelated units" time="0.059127" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="authored flag aliases resolve game catalog IDs and respect missing definitions" time="0.096236" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="catalog languages and quoted locale names preserve suspended story continuation" time="2.89549" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="count waits evaluate all building classes exact levels and unit comparisons" time="0.429917" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="flag lifecycle and GUI commands change their real game objects" time="0.058866" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="independent stories timers space and saved suspension resume exactly" time="0.05871" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="invalid references and value boundaries report typed errors" time="0.058663" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="legacy resetAI tokens with invalid player or implementation leave players intact" time="0.059378" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="named highlights target distinct GUI elements and unhighlight restores state" time="0.069428" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="objectives and hints resolve script numbers and persist in game snapshots" time="0.117964" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="random legacy summons preserve story progress through full continuation" time="0.133072" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="resetAI authoring accepts valid slots before an editor map has a player header" time="0.041139" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="resetAI changes only the chosen player and rejects unsafe indices" time="0.059402" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="summons respect painted area capacity and unit attributes" time="0.058678" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="supported statements and wait forms compile" time="0.058113" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="truncated arguments fail without accepting incomplete statements" time="0.058418" status="run" />
+  <testcase classname="LegacyScriptCoverage" name="unit and building highlights use map and panel channels independently" time="0.059696" status="run" />
+  </testsuite></testsuites>

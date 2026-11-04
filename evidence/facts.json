@@ -1,0 +1,28 @@
+{
+  "pid": null,
+  "source_revision": "78ff292c76a3eac8463bacb863137c2f913bff01",
+  "native_source": "e92d9635aa;same6a8productioncode;onlyresource-testchecksumdisplaynormalizationdiff",
+  "phase": "ready",
+  "caption_keys_only": true,
+  "language_codes_and_inventory_unchanged": true,
+  "no_runtime_dependency_or_font_bytes_changed": true,
+  "translation_regressions_passed": 10,
+  "actual_SDL_font_coverage_passed": true,
+  "native_recheck": {
+    "tests": 44,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "unchanged_catalog_UI_baseline": {
+    "tests": 1,
+    "failures": 0
+  },
+  "initial_targeted_run": {
+    "passed": 43,
+    "failed": 1,
+    "failure": "Known intermittent LandscapePreviewer four-colony readiness assertion; source unchanged before successful full44recheck. Earlierhostedmasterhasthesamefailure;no test/timeout/seed modified."
+  },
+  "glyph_failure_root_cause": "Legacytexts.siisSlovenian;threeSinhala-valuedterraincaptionscorrectedtoSlovenian. No newfontneeded.",
+  "no_shared_vocabulary_exceptions_added": true
+}
