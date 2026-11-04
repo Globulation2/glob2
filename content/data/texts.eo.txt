@@ -5724,6 +5724,8 @@ Pumika kampo
 Frostiĝinta lago
 [wind_swept_snow]
 Ventblovita neĝo
+[weathered_sandstone]
+Eroziita grejso
 [terrain group water]
 Akvo
 [terrain group sand]

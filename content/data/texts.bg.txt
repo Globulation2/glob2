@@ -5700,6 +5700,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Замръзнало езеро
 [wind_swept_snow]
 Навят сняг
+[weathered_sandstone]
+Изветрял пясъчник
 [terrain group water]
 Вода
 [terrain group sand]

@@ -5724,6 +5724,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Замёрзшее озеро
 [wind_swept_snow]
 Заметённый ветром снег
+[weathered_sandstone]
+Выветренный песчаник
 [terrain group water]
 Вода
 [terrain group sand]

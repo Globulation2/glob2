@@ -5700,6 +5700,8 @@ AI ద్వారా రూపొందించబడలేదు
 గడ్డకట్టిన సరస్సు
 [wind_swept_snow]
 గాలికి ఎగిరిన మంచు
+[weathered_sandstone]
+శిథిలమైన ఇసుకరాయి
 [terrain group water]
 నీరు
 [terrain group sand]

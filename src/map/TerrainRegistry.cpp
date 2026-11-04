@@ -337,6 +337,7 @@ unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
 		 : versionMinor < FILE_FORMAT_VERSION_GROUND_LOOKS	   ? TERRAIN_COUNT_BEFORE_GROUND_LOOKS
 		 : versionMinor < FILE_FORMAT_VERSION_SANDSTONE_PUMICE ? TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE
 		 : versionMinor < FILE_FORMAT_VERSION_WIND_SWEPT_SNOW  ? TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW
+		 : versionMinor < FILE_FORMAT_VERSION_WEATHERED_SANDSTONE ? TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE
 		 : versionMinor < FILE_FORMAT_VERSION_TUNDRA		   ? TERRAIN_COUNT_BEFORE_TUNDRA
 																   : unsigned(TERRAIN_COUNT);
 }
@@ -344,10 +345,12 @@ std::optional<unsigned> TerrainRegistry::currentTerrainId(unsigned savedBuiltins
 {
 	if (savedBuiltins == TERRAIN_COUNT)
 		return saved;
-	// Formats 146 to 196 kept every built-in ID (ending at CHASM, PALE_SAND,
-	// FROZEN_LAKE, then WIND_SWEPT_SNOW); custom IDs follow the built-ins.
+	// Formats 146 to 197 kept every built-in ID (ending at CHASM, PALE_SAND,
+	// FROZEN_LAKE, WIND_SWEPT_SNOW, then WEATHERED_SANDSTONE); custom IDs follow the
+	// built-ins.
 	if (savedBuiltins == TERRAIN_COUNT_BEFORE_GROUND_LOOKS || savedBuiltins == TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE ||
-		savedBuiltins == TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW || savedBuiltins == TERRAIN_COUNT_BEFORE_TUNDRA)
+		savedBuiltins == TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW || savedBuiltins == TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE ||
+		savedBuiltins == TERRAIN_COUNT_BEFORE_TUNDRA)
 		return saved < savedBuiltins ? saved : saved - savedBuiltins + TERRAIN_COUNT;
 	// Older files: the classic five keep their IDs; 5 and 6 were the shores.
 	if (saved <= TRAIL)
@@ -365,7 +368,8 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 	if (savedBuiltinCount != TERRAIN_COUNT_BEFORE_CATALOGUE && savedBuiltinCount != TERRAIN_COUNT_BEFORE_VERTEX &&
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_GROUND_LOOKS &&
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE &&
-		savedBuiltinCount != TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW && savedBuiltinCount != TERRAIN_COUNT_BEFORE_TUNDRA &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE && savedBuiltinCount != TERRAIN_COUNT_BEFORE_TUNDRA &&
 		savedBuiltinCount != TERRAIN_COUNT)
 		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);

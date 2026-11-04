@@ -278,15 +278,27 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(lake->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeDrifts.dump()));
 
-		// Format 196 numbers its definitions from 37, before tundra.
-		auto beforeTundra = Json::parse(registry->serialize());
-		for (auto &item : beforeTundra["terrains"])
-			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_TUNDRA;
-		const auto drifts = TerrainRegistry::deserialize(beforeTundra.dump(), TERRAIN_COUNT_BEFORE_TUNDRA);
+		// Format 196 numbers its definitions from 37, before weathered sandstone.
+		auto beforeWeathered = Json::parse(registry->serialize());
+		for (auto &item : beforeWeathered["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE;
+		const auto drifts = TerrainRegistry::deserialize(beforeWeathered.dump(), TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE);
 		CHECK(drifts->serialize() == registry->serialize());
 		CHECK(drifts->digest() == registry->digest());
 		CHECK(drifts->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeWeathered.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeWeathered.dump(), TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW));
+
+		// Format 197 numbers its definitions from 38, before tundra.
+		auto beforeTundra = Json::parse(registry->serialize());
+		for (auto &item : beforeTundra["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_TUNDRA;
+		const auto weathered = TerrainRegistry::deserialize(beforeTundra.dump(), TERRAIN_COUNT_BEFORE_TUNDRA);
+		CHECK(weathered->serialize() == registry->serialize());
+		CHECK(weathered->digest() == registry->digest());
+		CHECK(weathered->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeTundra.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeTundra.dump(), TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

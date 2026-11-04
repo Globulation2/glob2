@@ -5724,6 +5724,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 دریاچهٔ یخ‌زده
 [wind_swept_snow]
 برف بادرُفته
+[weathered_sandstone]
+ماسه‌سنگ فرسوده
 [terrain group water]
 آب
 [terrain group sand]

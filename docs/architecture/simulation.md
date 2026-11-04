@@ -259,13 +259,15 @@ checksum adapter remains available for diagnostic fixtures.
   appended the grass and sand looks (`LUSH_GRASS`, `DRY_GRASS`, `DUNE_SAND`,
   `PALE_SAND`, in the Grass and Sand groups) for 33; format 195 appended `SANDSTONE`
   (Paths), `PUMICE` (Rough) and `FROZEN_LAKE` (Ice) for 36; format 196 appended
-  `WIND_SWEPT_SNOW` (Rough, like deep snow) for 37; format 197 appended `TUNDRA`
-  (Barren) for `TERRAIN_COUNT` 38. Built-in IDs only
+  `WIND_SWEPT_SNOW` (Rough, like deep snow) for 37; format 197 appended
+  `WEATHERED_SANDSTONE` (Barren, like dirt) for 38; format 198 appended `TUNDRA`
+  (Barren) for `TERRAIN_COUNT` 39. Built-in IDs only
   ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
   a format gate. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
   (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX`,
   `TERRAIN_COUNT_BEFORE_GROUND_LOOKS`, `TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE`,
-  `TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW` or `TERRAIN_COUNT_BEFORE_TUNDRA` for
+  `TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW`, `TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE` or
+  `TERRAIN_COUNT_BEFORE_TUNDRA` for
   older files),
   `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
   `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize

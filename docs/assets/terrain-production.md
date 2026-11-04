@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 38 built-in materials, including grass, sand, their lush, dry, dune and pale
+All 39 built-in materials, including grass, sand, their lush, dry, dune and pale
 looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Static materials have four
 interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
@@ -91,7 +91,7 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 | Water, deep water, lava | reserved colour | |
 | Snow and ice (ice, deep snow, wind-swept snow, frozen lake) | reserved cold white and pale teal | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow) |
 | Sand | warm fine grain | `sand_look` |
-| Barren (dirt, clay, shale, heath, tundra) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
+| Barren (dirt, clay, shale, heath, weathered sandstone, tundra) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone` |
 | Rough (mud, mudflat, scree, pumice field) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
@@ -100,10 +100,12 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 
 Within the groups: dirt keeps the original speckled earth and stones under the
 shared cracks; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
-heath is clumps of dormant and dead heather cushions,
+weathered sandstone is a solid bed of ochre stone worn into large, low, rounded slabs with
+fine joints, rust stain and pale nodules; heath is clumps of dormant and dead heather cushions,
 each built of lit sprig tufts, over pale cracked sandy peat; tundra is its cold
-counterpart, low cushions of dull olive moss (the heath cushion helper) over dark
-cracked earth strewn with whole grey stones. Paths are all laid by the
+counterpart on frost-patterned ground: polygons about two cells across with faint
+pale rims, flat olive moss pads (the heath cushion helper) in their centres, beds of
+grey stones, and the shared cracks in dark peaty earth. Paths are all laid by the
 globs, never natural ground: road is stone setts in running-bond courses; brick
 path is long clay pavers in an axis-aligned herringbone that
 reads the same whichever way the path runs; boardwalk is long weathered planks
@@ -412,7 +414,7 @@ without pair treatments. Classes, strongest first:
 | `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | none since dirt track became brick path; kept for future tracks |
 | `molten` | smooth, wiggle 1536 / 64 px | 0 | – / – / 320 / – / 512 | lava, ember_field |
 | `still` | smooth, wiggle 1536 / 128 px | 0 | – / – / 320 / – / 640 | water, deep_water, dark_water |
-| `rock` | contextual | 50 | 384 / 896 / 192 / 448 / 192 | boulders, ridge_rock, outcrop, scree, shale, pumice |
+| `rock` | contextual | 50 | 384 / 896 / 192 / 448 / 192 | boulders, ridge_rock, outcrop, scree, shale, pumice, weathered_sandstone |
 | `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, mud, mudflat, deep_snow, wind_swept_snow, loam, moss |
 | `frozen` | contextual | 30 | 320 / 768 / 320 / 128 / 256 | ice, frozen_lake |
 | `brush` | contextual | 20 / `shore` | 320 / 768 / 320 / 384 / 512 | heath, tundra, spring_meadow |
@@ -452,7 +454,7 @@ exception the classes cannot express, not the way to tune a material.
 | 3 | deep_snow, wind_swept_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
 | 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |
 | 2 | heath, tundra | 48 / 480 |
-| 2 | dirt, clay, shale | 40 / 448 |
+| 2 | dirt, clay, shale, weathered_sandstone | 40 / 448 |
 | 1 | sand (existing), mud, mudflat, scree, pumice | no cast |
 
 Casts stay within two to three pixels and near or under a third strength, as

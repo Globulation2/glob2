@@ -538,6 +538,9 @@
         "wind_swept_snow": {
           "$ref": "#/$defs/coverage"
         },
+        "weathered_sandstone": {
+          "$ref": "#/$defs/coverage"
+        },
         "tundra": {
           "$ref": "#/$defs/coverage"
         },

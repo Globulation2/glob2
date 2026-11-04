@@ -952,11 +952,21 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(WIND_SWEPT_SNOW).name) == "wind_swept_snow");
 		CHECK(TerrainRegistry::builtins()->find("wind_swept_snow") == WIND_SWEPT_SNOW);
 	}
+	TEST_CASE("weathered sandstone shares every rule of dirt")
+	{
+		CHECK(terrainGroup(WEATHERED_SANDSTONE) == TerrainGroup::Barren);
+		CHECK(terrainPaintable(WEATHERED_SANDSTONE));
+		CHECK(sameTerrainProperties(terrainProperties(WEATHERED_SANDSTONE), terrainProperties(DIRT)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(WEATHERED_SANDSTONE) ==
+			  TerrainRegistry::builtins()->propertyIndex(DIRT));
+		CHECK(std::string(terrainPresentation(WEATHERED_SANDSTONE).name) == "weathered_sandstone");
+		CHECK(TerrainRegistry::builtins()->find("weathered_sandstone") == WEATHERED_SANDSTONE);
+	}
 	TEST_CASE("tundra shares every rule of the barren group")
 	{
 		CHECK(terrainGroup(TUNDRA) == TerrainGroup::Barren);
 		CHECK(terrainPaintable(TUNDRA));
-		for (TerrainType member : {DIRT, CLAY, SHALE, HEATH})
+		for (TerrainType member : {DIRT, CLAY, SHALE, HEATH, WEATHERED_SANDSTONE})
 		{
 			CHECK(sameTerrainProperties(terrainProperties(TUNDRA), terrainProperties(member)));
 			CHECK(TerrainRegistry::builtins()->propertyIndex(TUNDRA) ==

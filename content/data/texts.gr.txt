@@ -5724,6 +5724,8 @@ CPU %0%
 Παγωμένη λίμνη
 [wind_swept_snow]
 Ανεμοδαρμένο χιόνι
+[weathered_sandstone]
+Διαβρωμένος ψαμμίτης
 [terrain group water]
 Νερό
 [terrain group sand]

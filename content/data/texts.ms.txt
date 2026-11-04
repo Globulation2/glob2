@@ -6842,6 +6842,8 @@ Padang batu apung
 Tasik beku
 [wind_swept_snow]
 Salji ditiup angin
+[weathered_sandstone]
+Batu pasir terluluhawa
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

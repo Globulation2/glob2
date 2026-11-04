@@ -5724,6 +5724,8 @@ Campo di pomice
 Lago ghiacciato
 [wind_swept_snow]
 Neve spazzata dal vento
+[weathered_sandstone]
+Arenaria erosa
 [terrain group water]
 Acqua
 [terrain group sand]

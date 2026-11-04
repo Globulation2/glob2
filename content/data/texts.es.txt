@@ -5724,6 +5724,8 @@ Campo de piedra pómez
 Lago helado
 [wind_swept_snow]
 Nieve barrida por el viento
+[weathered_sandstone]
+Arenisca erosionada
 [terrain group water]
 Agua
 [terrain group sand]
