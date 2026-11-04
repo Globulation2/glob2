@@ -232,7 +232,7 @@ static void stepsWithoutAnyGradient()
 {
 	World world;
 	world.step(3);
-	world.game.map.getMaterialGradientSlot(0, WOOD, 0);
+	world.game.map.getMaterialGradientSlot(0, WOOD, MovementAccess::Land);
 	world.step(3);
 	std::puts("PASS a world without gradients keeps stepping");
 }

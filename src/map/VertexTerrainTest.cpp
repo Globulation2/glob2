@@ -515,7 +515,7 @@ TEST_CASE("terrain IDs of older files skip the retired shores and follow the cur
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_LATERITE, TERRAIN_COUNT_BEFORE_LATERITE) == TERRAIN_COUNT);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_LATERITE, 45) == 45 - TERRAIN_COUNT_BEFORE_LATERITE + TERRAIN_COUNT);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT, LATERITE) == LATERITE);
-	// Format 204 keeps every built-in through LATERITE and moves custom IDs behind cliffs.
+	// Formats 204 and 205 keep every built-in through LATERITE and move custom IDs behind cliffs.
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_CLIFFS, LATERITE) == LATERITE);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_CLIFFS, TERRAIN_COUNT_BEFORE_CLIFFS) == TERRAIN_COUNT);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT_BEFORE_CLIFFS, 47) == 47 - TERRAIN_COUNT_BEFORE_CLIFFS + TERRAIN_COUNT);

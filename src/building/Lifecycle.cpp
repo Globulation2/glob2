@@ -200,6 +200,7 @@ void Building::resetPathfindGradients(GradientDrop cause)
 		}
 		auto guard = SharedBuildingGradient::lock(sharedGradient[i]);
 		dropGradientSlot(i, cause);
+        owner->game->map.recordFieldCost(globalGradient[i],-1);
 		retireSharedGradient(i);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
 		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
@@ -219,6 +220,7 @@ void Building::freeIdleGradients()
 		{
 			auto guard = SharedBuildingGradient::lock(sharedGradient[c]);
 			dropGradientSlot(c, GradientDrop::Idle);
+            owner->game->map.recordFieldCost(globalGradient[c],-1);
 			retireSharedGradient(c);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
 			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
@@ -235,6 +237,7 @@ void Building::freeGradients()
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		dropGradientSlot(i, GradientDrop::New);
+        if(globalGradient[i] && owner && owner->game)owner->game->map.recordFieldCost(globalGradient[i],-1);
 		retireSharedGradient(i);
 		globalGradientSearch[i].reset();
 		delete[] globalGradient[i];

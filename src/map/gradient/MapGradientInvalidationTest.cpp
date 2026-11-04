@@ -116,20 +116,20 @@ TEST_CASE("forbidden painting delays complete routes across passable resources")
         map.setResource(20,20,*map.resourceRegistry().find("test-passable-fabric"),1);
         REQUIRE_FALSE(map.resourceBlocksGround(map.coordToIndex(20,20)));
         REQUIRE(glob2test::awaitBuildingGradient(f.game,building,swim)!=nullptr);
-        const auto* published=map.buildingGradient(building,swim);
+        const auto* published=map.buildingGradient(building,movementAccessFromLegacy(swim));
         const std::vector<Uint16> old(published,published+map.cellCount());
         edit(f,20,20,true);
         REQUIRE(map.requestBuildingRefresh(building,building->routeSlot(swim,BuildingRoute::Automatic)));
-        REQUIRE(std::equal(old.begin(),old.end(),map.buildingGradient(building,swim)));
+        REQUIRE(std::equal(old.begin(),old.end(),map.buildingGradient(building,movementAccessFromLegacy(swim))));
         // A warm refresh cannot publish during the first K-1 advances,
         // including when the serial executor has already finished it.
         for (unsigned advance=1;advance<map.gradientPipelineStatus().delay;++advance) {
             boundary(f);
-            REQUIRE(std::equal(old.begin(),old.end(),map.buildingGradient(building,swim)));
+            REQUIRE(std::equal(old.begin(),old.end(),map.buildingGradient(building,movementAccessFromLegacy(swim))));
         }
-        await(f,[&]{return map.buildingGradient(building,swim)[map.coordToIndex(20,20)]==GRADIENT_FORBIDDEN;});
+        await(f,[&]{return map.buildingGradient(building,movementAccessFromLegacy(swim))[map.coordToIndex(20,20)]==GRADIENT_FORBIDDEN;});
         const auto expected=referenceBuilding(f,building,swim);
-        CHECK(std::equal(expected.begin(),expected.end(),map.buildingGradient(building,swim)));
+        CHECK(std::equal(expected.begin(),expected.end(),map.buildingGradient(building,movementAccessFromLegacy(swim))));
     }
 }
 
@@ -151,24 +151,24 @@ TEST_CASE("forbidden edits preserve published generations until delayed refresh"
         map.setResourceByIndex(25,24,WHEAT,1); map.addGuardArea(26,26,0);
         if (selected) map.addClearArea(20,20,0);
         if (!add) { map.addForbidden(20,20,0); if (mixed) map.addForbidden(21,20,0); }
-        for (auto* b:buildings) map.buildingGradient(b,swim);
-        map.getForbiddenGradient(0,swim); map.getGuardAreasGradient(0,swim); map.getClearAreasGradient(0,swim);
+        for (auto* b:buildings) map.buildingGradient(b,movementAccessFromLegacy(swim));
+        map.getForbiddenGradient(0,movementAccessFromLegacy(swim)); map.getGuardAreasGradient(0,movementAccessFromLegacy(swim)); map.getClearAreasGradient(0,movementAccessFromLegacy(swim));
         await(f,[&] {
-            return std::all_of(buildings.begin(),buildings.end(),[&](auto* b){return map.buildingGradient(b,swim)!=nullptr;})
-                && map.lookupForbiddenGradient(0,swim) && map.lookupGuardAreasGradient(0,swim) && map.lookupClearAreasGradient(0,swim);
+            return std::all_of(buildings.begin(),buildings.end(),[&](auto* b){return map.buildingGradient(b,movementAccessFromLegacy(swim))!=nullptr;})
+                && map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim)) && map.lookupGuardAreasGradient(0,movementAccessFromLegacy(swim)) && map.lookupClearAreasGradient(0,movementAccessFromLegacy(swim));
         });
         std::vector<std::vector<Uint16>> before;
         for (auto* b:buildings) {
-            const auto* field=map.buildingGradient(b,swim); before.emplace_back(field,field+map.cellCount());
+            const auto* field=map.buildingGradient(b,movementAccessFromLegacy(swim)); before.emplace_back(field,field+map.cellCount());
             const auto slot=b->routeSlot(swim,BuildingRoute::Automatic);
             CHECK((!b->globalGradientSearch[slot] || b->globalGradientSearch[slot]->complete()));
         }
-        const auto* forbidden=map.lookupForbiddenGradient(0,swim);
+        const auto* forbidden=map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim));
         const std::vector<Uint16> oldForbidden(forbidden,forbidden+map.cellCount());
         edit(f,20,20,add,mixed);
         for (unsigned i=0;i<buildings.size();++i)
-            CHECK(std::equal(before[i].begin(),before[i].end(),map.buildingGradient(buildings[i],swim)));
-        CHECK(std::equal(oldForbidden.begin(),oldForbidden.end(),map.lookupForbiddenGradient(0,swim)));
+            CHECK(std::equal(before[i].begin(),before[i].end(),map.buildingGradient(buildings[i],movementAccessFromLegacy(swim))));
+        CHECK(std::equal(oldForbidden.begin(),oldForbidden.end(),map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim))));
         // Repeating the exact brush is a no-op even while a refresh is pending.
         const auto generation=map.topologyGeneration; edit(f,20,20,add,mixed);
         CHECK(map.topologyGeneration==generation);
@@ -181,10 +181,10 @@ TEST_CASE("forbidden edits preserve published generations until delayed refresh"
         const auto clearExpected=referenceArea(f,gradient_preparation::Kind::Clear,0,swim);
         await(f,[&] {
             for (unsigned i=0;i<buildings.size();++i)
-                if (!std::equal(expected[i].begin(),expected[i].end(),map.buildingGradient(buildings[i],swim))) return false;
-            return std::equal(forbiddenExpected.begin(),forbiddenExpected.end(),map.lookupForbiddenGradient(0,swim))
-                && std::equal(guardExpected.begin(),guardExpected.end(),map.lookupGuardAreasGradient(0,swim))
-                && std::equal(clearExpected.begin(),clearExpected.end(),map.lookupClearAreasGradient(0,swim));
+                if (!std::equal(expected[i].begin(),expected[i].end(),map.buildingGradient(buildings[i],movementAccessFromLegacy(swim)))) return false;
+            return std::equal(forbiddenExpected.begin(),forbiddenExpected.end(),map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim)))
+                && std::equal(guardExpected.begin(),guardExpected.end(),map.lookupGuardAreasGradient(0,movementAccessFromLegacy(swim)))
+                && std::equal(clearExpected.begin(),clearExpected.end(),map.lookupClearAreasGradient(0,movementAccessFromLegacy(swim)));
         });
         // Team 1's restrictions did not change; its independently refreshed
         // fields must retain identical complete contents.
@@ -203,9 +203,9 @@ TEST_CASE("explicit research demanded escape refresh publishes complete fields a
         if (mutation==4) map.markImmobileUnit(21,20,0);
         if (mutation==6) map.setBuilding(21,20,1,1,42);
         if (mutation==8) map.paintCell(21,20,WATER);
-        map.getForbiddenGradient(0,swim);
-        await(f,[&]{return map.lookupForbiddenGradient(0,swim)!=nullptr;});
-        const auto* field=map.lookupForbiddenGradient(0,swim);
+        map.getForbiddenGradient(0,movementAccessFromLegacy(swim));
+        await(f,[&]{return map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim))!=nullptr;});
+        const auto* field=map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim));
         const std::vector<Uint16> old(field,field+map.cellCount());
         switch (mutation) {
         case 0:map.setResourceAmount(map.coordToIndex(20,20),1); map.decResource(20,20); break;
@@ -224,14 +224,14 @@ TEST_CASE("explicit research demanded escape refresh publishes complete fields a
         case 11:{auto r=map.getResource(20,20); r.type=WOOD; map.replaceResource(20,20,r); break;}
         }
         const auto expected=referenceArea(f,gradient_preparation::Kind::Forbidden,0,swim);
-        CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)));
+        CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim))));
         const auto jobs=map.gradientPipelineStatus().jobs;
         if((mutation==7 && swim!=WATER_ONLY_CLASS) || mutation==8) {
             // A real terrain paint explicitly invalidates warm route fields
             // (WATER over the water-only fixture is a no-op). That
             // recovery is retained; it is not arbitrary periodic maintenance.
             await(f,[&]{return map.gradientPipelineStatus().jobs==jobs+1 && map.gradientPipelineStatus().pending==0;});
-            CHECK(std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)));
+            CHECK(std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim))));
             for(unsigned idle=0;idle<16;++idle)boundary(f,true);
             CHECK(map.gradientPipelineStatus().jobs==jobs+1);
             continue;
@@ -242,12 +242,12 @@ TEST_CASE("explicit research demanded escape refresh publishes complete fields a
         map.gradientRuntime->exploration->intervals={8};
         for(unsigned idle=0;idle<AdaptiveGradientState::MinimumInterval;++idle)boundary(f,true);
         CHECK(map.gradientPipelineStatus().jobs==jobs);
-        int dx=0,dy=0;map.queryForbiddenStep(nullptr,0,swim,20,20,&dx,&dy);
+        int dx=0,dy=0;map.queryForbiddenStep(nullptr,0,movementAccessFromLegacy(swim),20,20,&dx,&dy);
         boundary(f,true);
         CHECK(map.gradientPipelineStatus().jobs==jobs+1);
-        CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,swim)));
+        CHECK(std::equal(old.begin(),old.end(),map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim))));
         for (unsigned i=0;i<map.gradientPipelineStatus().delay;++i) boundary(f);
-        CHECK(std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,swim)));
+        CHECK(std::equal(expected.begin(),expected.end(),map.lookupForbiddenGradient(0,movementAccessFromLegacy(swim))));
     }
 }
 
@@ -261,18 +261,18 @@ TEST_CASE("escape guidance recovers a depleted exit and does not rebuild on repe
     map.addForbidden(20,20,0);
     for (int y=19;y<=21;++y) for (int x=19;x<=21;++x)
         if (x!=20 || y!=20) map.setResourceByIndex(x,y,WHEAT,1);
-    map.getForbiddenGradient(0,0); await(f,[&]{return map.lookupForbiddenGradient(0,0)!=nullptr;});
+    map.getForbiddenGradient(0,MovementAccess::Land); await(f,[&]{return map.lookupForbiddenGradient(0,MovementAccess::Land)!=nullptr;});
     const auto jobs=map.gradientPipelineStatus().jobs;
     for (unsigned i=0;i<512;++i) {
         int dx=0,dy=0;
-        CHECK(map.queryForbiddenStep(nullptr,0,0,20,20,&dx,&dy)==StepResult::Blocked);
+        CHECK(map.queryForbiddenStep(nullptr,0,MovementAccess::Land,20,20,&dx,&dy)==StepResult::Blocked);
     }
     CHECK(map.gradientPipelineStatus().jobs==jobs);
     map.replaceResource(21,20,Resource{}); map.setResourcesGrow(21,20,false);
     int dx=0,dy=0;
-    CHECK(map.queryForbiddenStep(nullptr,0,0,20,20,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.queryForbiddenStep(nullptr,0,MovementAccess::Land,20,20,&dx,&dy)==StepResult::Blocked);
     const unsigned bound=AdaptiveGradientState::MinimumInterval+map.gradientPipelineStatus().delay+2;
-    await(f,[&]{return map.queryForbiddenStep(nullptr,0,0,20,20,&dx,&dy)==StepResult::Step;},true,bound);
+    await(f,[&]{return map.queryForbiddenStep(nullptr,0,MovementAccess::Land,20,20,&dx,&dy)==StepResult::Step;},true,bound);
     CHECK(dx==1); CHECK(dy==0);
 }
 
@@ -282,31 +282,31 @@ TEST_CASE("idle escape fields cross tick wrap without maintenance and explicit r
     map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();map.gradientRuntime->exploration->intervals={8};
     f.game.stepCounter=Uint32((1ULL<<32)-16);
     std::vector<GradientFieldKey> keys;
-    for(int team=0;team<4;++team)for(int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim) {
+    for(int team=0;team<4;++team)for(int swim:{0,int(MovementAccess::Amphibious)}) {
         keys.push_back({GradientFieldFamily::Forbidden,Uint8(team),Uint8(swim)});
-        map.getForbiddenGradient(team,swim);
+        map.getForbiddenGradient(team,movementAccessFromLegacy(swim));
     }
     await(f,[&]{
-        for(auto key:keys)if(!map.lookupForbiddenGradient(key.team,key.swim))return false;
+        for(auto key:keys)if(!map.lookupForbiddenGradient(key.team,movementAccessFromLegacy(key.swim)))return false;
         return true;
     });
     const auto jobs=map.gradientPipelineStatus().jobs;
     std::vector<const Uint16*> fields;
-    for(auto key:keys)fields.push_back(map.lookupForbiddenGradient(key.team,key.swim));
+    for(auto key:keys)fields.push_back(map.lookupForbiddenGradient(key.team,movementAccessFromLegacy(key.swim)));
     for(unsigned elapsed=0;elapsed<AdaptiveGradientState::QueryHistoryTicks+16;++elapsed) {
         boundary(f,true);
         CHECK(map.gradientPipelineStatus().jobs==jobs);
-        for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,keys[i].swim)==fields[i]);
+        for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,movementAccessFromLegacy(keys[i].swim))==fields[i]);
     }
     for(auto key:keys)map.gradientMovementDemand(key);
     boundary(f,true);
     CHECK(map.gradientPipelineStatus().jobs==jobs+keys.size());
     for(unsigned elapsed=1;elapsed<8;++elapsed) {
         boundary(f,true);
-        for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,keys[i].swim)==fields[i]);
+        for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,movementAccessFromLegacy(keys[i].swim))==fields[i]);
     }
     boundary(f,true);
-    for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,keys[i].swim)!=fields[i]);
+    for(unsigned i=0;i<keys.size();++i)CHECK(map.lookupForbiddenGradient(keys[i].team,movementAccessFromLegacy(keys[i].swim))!=fields[i]);
 }
 
 }
@@ -318,27 +318,27 @@ TEST_CASE("empty painted areas produce no demand or cold jobs and first paint be
     EntityRandom random;random.seed(123,456);const auto before=random;
     int dx=7,dy=9;
     for(auto kind:{Map::AreaKind::Guard,Map::AreaKind::Clear}) {
-        CHECK_FALSE(map.pathfindArea(random,kind,0,0,10,10,&dx,&dy));
-        CHECK(map.queryAreaStep(random,kind,0,0,10,10,&dx,&dy)==StepResult::Blocked);
+        CHECK_FALSE(map.pathfindArea(random,kind,0,MovementAccess::Land,10,10,&dx,&dy));
+        CHECK(map.queryAreaStep(random,kind,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Blocked);
     }
     CHECK(random==before);CHECK(dx==7);CHECK(dy==9);
     CHECK(map.gradientRuntime->adaptive.fields.empty());
     CHECK(map.gradientPipelineStatus().jobs==0);
     map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,1);
-    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,0,10,10,&dx,&dy)==StepResult::Pending);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Pending);
     CHECK_FALSE(map.gradientRuntime->adaptive.fields.empty());
-    await(f,[&]{return map.lookupGuardAreasGradient(0,0)!=nullptr;});
+    await(f,[&]{return map.lookupGuardAreasGradient(0,MovementAccess::Land)!=nullptr;});
     const GradientFieldKey key{GradientFieldFamily::Guard,0,0};
     const auto& field=map.gradientRuntime->adaptive.fields.at(key);
     const auto queries=field.queries;const auto outcomes=field.total;
     const auto savedRandom=random;
     map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,0);
     const auto fields=map.gradientRuntime->adaptive.fields.size();
-    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,0,10,10,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Blocked);
     CHECK(map.gradientRuntime->adaptive.fields.size()==fields);
     CHECK(field.queries==queries);CHECK(field.total==outcomes);CHECK(random==savedRandom);
     map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,1);
-    CHECK(map.pathfindArea(random,Map::AreaKind::Guard,0,0,10,10,&dx,&dy));
+    CHECK(map.pathfindArea(random,Map::AreaKind::Guard,0,MovementAccess::Land,10,10,&dx,&dy));
 }
 }
 
@@ -349,11 +349,11 @@ TEST_CASE("farm-only paint enables clearing requests only under the farming rule
     map.setAreaMask(0,&Tile::farmArea,1);
     CHECK_FALSE(map.hasClearingArea(0));
     EntityRandom random;int dx=0,dy=0;
-    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,0,10,10,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Blocked);
     CHECK(map.gradientRuntime->adaptive.fields.empty());
     f.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
     CHECK(map.hasClearingArea(0));
-    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,0,10,10,&dx,&dy)==StepResult::Pending);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Pending);
     map.setAreaMask(0,&Tile::farmArea,0);
     CHECK_FALSE(map.hasClearingArea(0));
     map.setAreaMask(0,&Tile::clearArea,1);

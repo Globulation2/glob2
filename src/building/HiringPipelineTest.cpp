@@ -492,7 +492,10 @@ TEST_SUITE("HiringGradientPreparation")
 				u->medical = Unit::MED_FREE;
 				u->hungriness = 0;
 				u->carriedMaterial = WHEAT;
-				const auto slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+                u->performance[WALK]=30;u->performance[SWIM]=10;
+                w.game.teams[0]->updateRoutingRatio();
+                REQUIRE(w.game.teams[0]->routingRatio.selected==6);
+				const auto slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
 				REQUIRE(!b->globalGradient[slot]);
 				GradientExecutionAudit audit;
 				HiringPipeline pipeline(w.game.map.computeExecutor());
@@ -508,7 +511,8 @@ TEST_SUITE("HiringGradientPreparation")
 					w.game.map.bumpTopologyGeneration();
 				else if (invalidate == 2)
 					b->supersedeGradient(slot);
-				pipeline.publishDue(HiringPipeline::Delay);
+				w.game.teams[0]->routingRatio.selected=1;
+                pipeline.publishDue(HiringPipeline::Delay);
 				const auto *lists = pipeline.suggestions(*b);
 				REQUIRE(lists);
 				bool found = false;
@@ -522,6 +526,7 @@ TEST_SUITE("HiringGradientPreparation")
 				else
 				{
 					REQUIRE(b->globalGradient[slot]);
+                    CHECK(w.game.map.publishedCostClass(b->globalGradient[slot])==6);
 					REQUIRE(b->globalGradientSearch[slot]);
 					CHECK(b->globalGradientSearch[slot]->resolved(
 						w.game.map.coordToIndex(u->posX, u->posY)));
@@ -539,9 +544,9 @@ TEST_SUITE("HiringGradientPreparation")
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
 		auto *b = innWithWorker(w);
 		auto *u = w.game.teams[0]->myUnits[0];
-		const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+		const int slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
 		b->globalGradient[slot] = w.game.map.acquireBuildingGradientBuffer();
-		w.game.map.updateGlobalGradient(b, u->swimClass(), BuildingRoute::Footprint);
+		w.game.map.updateGlobalGradient(b, u->movementAccess(), BuildingRoute::Footprint);
 		auto *data = b->globalGradient[slot];
 		auto *search = b->globalGradientSearch[slot].get();
 		b->dirtyGradient[slot] = true;
@@ -564,7 +569,7 @@ TEST_SUITE("HiringGradientPreparation")
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
 		auto *b = innWithWorker(w);
 		auto *u = w.game.teams[0]->myUnits[0];
-		const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+		const int slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
 		b->globalGradient[slot] = w.game.map.acquireBuildingGradientBuffer();
 		std::fill_n(b->globalGradient[slot], std::size_t(w.game.map.getW()) * w.game.map.getH(),
 					GRADIENT_FORBIDDEN);
@@ -626,7 +631,7 @@ TEST_SUITE("HiringGradientPreparation")
 				CHECK(delivery->primaryCount == 1);
 				CHECK(delivery->candidates.front().unit == Game::refOf(units.front()));
 				const auto slot =
-					b->routeSlot(units.front()->swimClass(), BuildingRoute::Footprint);
+					b->routeSlot(accessClass(units.front()->movementAccess()), BuildingRoute::Footprint);
 				REQUIRE(b->globalGradientSearch[slot]);
 				CHECK(b->globalGradientSearch[slot]->resolved(
 					w.game.map.coordToIndex(units.front()->posX, 8)));
@@ -667,7 +672,7 @@ TEST_SUITE("HiringGradientPreparation")
 			u->hungriness = 0;
 			u->carriedMaterial = WHEAT;
 			const auto ref = Game::refOf(b);
-			const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+			const int slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
 			original.game.observeCompletedWorld();
 			auto *storage = new GAGCore::MemoryStreamBackend;
 			std::unique_ptr<GAGCore::OutputStream> out;
@@ -836,14 +841,14 @@ TEST_SUITE("BuildingGradientInitialization")
 			b->updateCallLists();
 			auto *u = w.addUnit(WORKER, 60, 8);
 			u->medical = Unit::MED_HUNGRY;
-			const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+			const int slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
 			GradientExecutionAudit audit;
 			w.game.hiringPipeline = std::make_unique<HiringPipeline>(w.game.map.computeExecutor());
 			auto &pipeline = *w.game.hiringPipeline;
 			pipeline.requestInitialization(*b);
 			pipeline.observe(w.game, observation(w));
 			CHECK(pipeline.preparing(*b, slot));
-			CHECK(w.game.map.requestBuildingField(b, u->swimClass(), BuildingRoute::Footprint) ==
+			CHECK(w.game.map.requestBuildingField(b, u->movementAccess(), BuildingRoute::Footprint) ==
 				  FieldReadiness::Pending);
 			CHECK(w.game.map.buildingGradientPipelineStatus().queued == 0);
 			pipeline.drain();
@@ -883,7 +888,7 @@ TEST_SUITE("BuildingGradientInitialization")
 		b->cancelConstruction(0);
 		w.game.stepCounter = 3;
 		checkLazy();
-		CHECK(w.game.map.requestBuildingField(b, 0, BuildingRoute::Footprint) ==
+		CHECK(w.game.map.requestBuildingField(b, MovementAccess::Land, BuildingRoute::Footprint) ==
 			  FieldReadiness::Pending);
 		CHECK(w.game.map.buildingGradientPipelineStatus().queued == 1);
 	}
@@ -894,7 +899,7 @@ TEST_SUITE("BuildingGradientInitialization")
 			{.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
 		w.game.stepCounter = 4;
 		auto *b = innWithWorker(w);
-		CHECK(w.game.map.requestBuildingField(b, 0, BuildingRoute::Footprint) ==
+		CHECK(w.game.map.requestBuildingField(b, MovementAccess::Land, BuildingRoute::Footprint) ==
 			  FieldReadiness::Pending);
 		GradientExecutionAudit audit;
 		w.game.hiringPipeline = std::make_unique<HiringPipeline>(w.game.map.computeExecutor());
@@ -930,7 +935,7 @@ TEST_SUITE("BuildingGradientInitialization")
 					std::make_unique<HiringPipeline>(original.game.map.computeExecutor());
 				original.game.hiringPipeline->requestInitialization(*b);
 				const auto ref = Game::refOf(b);
-				const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+				const int slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
 				if (pending)
 					original.game.observeCompletedWorld();
 				auto *storage = new GAGCore::MemoryStreamBackend;

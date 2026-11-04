@@ -395,6 +395,9 @@ static constexpr int FILE_FORMAT_VERSION_OVERGROWN_ROAD = 203;
 //! terrain IDs starting at 44 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_LATERITE = 204;
 
+//! Stable access fields retain published and in-flight preparation costs.
+static constexpr int FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY = 205;
+
 //! Built-in cliffs: TERRAIN_COUNT grew from 45 to 46, so earlier files carry custom
 //! terrain IDs starting at 45 that the loader renumbers.
-static constexpr int FILE_FORMAT_VERSION_CLIFFS = 205;
+static constexpr int FILE_FORMAT_VERSION_CLIFFS = 206;

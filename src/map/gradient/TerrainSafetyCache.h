@@ -18,6 +18,7 @@ struct TerrainSafetyCache
         static constexpr std::uint32_t Blocked = Unreachable - 1;
         std::vector<std::uint32_t> costs;
         std::uint64_t generation = 0;
+        int preparationCost = -1;
         std::uint64_t used = 0;
     };
 

@@ -934,8 +934,8 @@ public:
 private:
 	//! Read or move on a prepared field. Both settle their input cell first;
 	//! neither refreshes the field or changes its use timestamp.
-	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route = BuildingRoute::Automatic) const;
-	bool buildingGradientDirection(EntityRandom& random, Building *building, int swimClass, int x, int y,
+	Uint16 buildingGradientValue(Building *building, MovementAccess movementAccessValue, size_t cell, BuildingRoute route = BuildingRoute::Automatic) const;
+	bool buildingGradientDirection(EntityRandom& random, Building *building, MovementAccess movementAccessValue, int x, int y,
 		int *dx, int *dy, bool strict, BuildingRoute route = BuildingRoute::Automatic) const;
 	//! Per-tile predicate driver shared by isFree*/isHardSpace*.
 	//! Each flag toggles whether one occupancy/terrain test contributes to rejection.
@@ -1102,6 +1102,15 @@ public:
 	
 	//! Swim class of a unit with these walk and swim speeds (0 = cannot swim).
 	static int swimClass(int walkSpeed, int swimSpeed);
+    // Cost selection belongs to preparation, never the public lookup identity.
+    int preparationCostClass(int team,int access) const;
+    // A serving generation can predate the team mode; score it with its own costs.
+    int publishedCostClass(const Uint16* field,int access=SWIM_CLASS_EVEN) const;
+    void recordFieldCost(const Uint16* field,int cost);
+    void saveGradient(GAGCore::OutputStream*,const Uint16*,size_t,int cost) const;
+    void loadGradient(GAGCore::InputStream*,Uint16*&,size_t,bool,int legacyCost=-1);
+    void consolidateLegacyRoutingFields();
+
 	//! Swim class used where no unit is at hand: water costs the same as land.
 	static constexpr int SWIM_CLASS_EVEN = 3;
 	//! Cheapest possible step for a class, the A* heuristic unit.
@@ -1116,17 +1125,21 @@ public:
 	//! withMarkets: the variant where the team's stocked markets are goals too,
 	//! priced by each supplier's configured pickup penalty. Used when a
 	//! consumer enables stock fetching (Building::fetchesFromMarkets).
-    const Uint16* lookupMaterialGradientSlot(int team, int material, int swim, bool markets = false, const Building* consumer = nullptr) const;
-    const Uint16* lookupForbiddenGradient(int team, int swim) const { return forbiddenGradient[team][swim]; }
-    const Uint16* lookupGuardAreasGradient(int team, int swim) const { return guardAreasGradient[team][swim]; }
-    const Uint16* lookupClearAreasGradient(int team, int swim) const { return clearAreasGradient[team][swim]; }
-	const Uint16 *getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets = false, const Building* consumer = nullptr, std::optional<GradientFieldKey>* selectedKey = nullptr);
-    const Uint16* getMaterialGradient(int team,MaterialId material,int swim,bool withMarkets=false,const Building* consumer=nullptr) { return getMaterialGradientSlot(team,materialIndex(material),swim,withMarkets,consumer); }
+    const Uint16* lookupMaterialGradientSlot(int team, int material, MovementAccess movementAccessValue, bool markets = false, const Building* consumer = nullptr) const;
+    const Uint16* lookupForbiddenGradient(int team, MovementAccess movementAccessValue) const {
+    int swim=accessClass(movementAccessValue); return forbiddenGradient[team][swim]; }
+    const Uint16* lookupGuardAreasGradient(int team, MovementAccess movementAccessValue) const {
+    int swim=accessClass(movementAccessValue); return guardAreasGradient[team][swim]; }
+    const Uint16* lookupClearAreasGradient(int team, MovementAccess movementAccessValue) const {
+    int swim=accessClass(movementAccessValue); return clearAreasGradient[team][swim]; }
+	const Uint16 *getMaterialGradientSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, bool withMarkets = false, const Building* consumer = nullptr, std::optional<GradientFieldKey>* selectedKey = nullptr);
+    const Uint16* getMaterialGradient(int team,MaterialId material,MovementAccess movementAccessValue,bool withMarkets=false,const Building* consumer=nullptr) {
+        return getMaterialGradientSlot(team,materialIndex(material),movementAccessValue,withMarkets,consumer); }
 
 	// Consumer-aware requests are simulation-thread only. Returned cache pointers
 	// remain valid until the next consumer-aware request (which may evict them).
 	unsigned materialSupplyModesSlot(const Building* consumer, int resource) const;
-	const Uint16 *cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes);
+	const Uint16 *cachedMaterialGradientSlot(const Building* consumer, int resource, MovementAccess movementAccessValue, unsigned modes);
 	bool stockSupplierEligibleSlot(const Building* supplier, const Building* consumer, int resource, unsigned modes) const;
 	void setMaterialRoutingCacheBudget(Uint64 bytes);
 	Uint64 materialRoutingCacheBytes() const;
@@ -1147,28 +1160,30 @@ public:
     bool gradientGoalValid(GradientFieldKey,int x,int y) const;
     GradientQueryResult selectGradientQueryImpl(GradientQueryContext&,const Uint16*) const;
     GradientQueryResult selectGradientQuery(const GradientQueryContext&,const Uint16*) const;
-    std::optional<GradientFieldKey> materialGradientFieldKey(int team,int material,int swim,const Uint16*) const;
+    std::optional<GradientFieldKey> materialGradientFieldKey(int team,int material,MovementAccess movementAccessValue,const Uint16*) const;
     void directGradientMovement(GradientFieldKey,int x,int y,const EntityRandom&,const Uint16*,bool moved,bool destinationValid,bool recordDemand=true);
     void gradientMovementDemand(GradientFieldKey);
     void gradientMovementOutcome(const GradientQueryContext&,const Uint16*,const GradientQueryResult&);
-    bool requestGradientField(Uint16** slot, int kind, int team, int material, int swim, int consumer = -1, unsigned modes = 1, int refreshReason = -1);
-    StepResult queryMaterialStep(EntityRandom&, int, Uint8, int, int, int, int*, int*, bool*, Building*, bool = false);
+    bool requestGradientField(Uint16** slot, int kind, int team, int material, MovementAccess movementAccessValue, int consumer = -1, unsigned modes = 1, int refreshReason = -1);
+    StepResult queryMaterialStep(EntityRandom&, int, Uint8, MovementAccess movementAccessValue, int, int, int*, int*, bool*, Building*, bool = false);
 
-    StepResult queryForbiddenStep(const Uint16*, int, int, int, int, int*, int*);
-	const Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
-	const Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
-	const Uint16 *getClearAreasGradient(int teamNumber, int swimClass);
+    StepResult queryForbiddenStep(const Uint16*, int, MovementAccess movementAccessValue, int, int, int*, int*);
+	const Uint16 *getForbiddenGradient(int teamNumber, MovementAccess movementAccessValue);
+	const Uint16 *getGuardAreasGradient(int teamNumber, MovementAccess movementAccessValue);
+	const Uint16 *getClearAreasGradient(int teamNumber, MovementAccess movementAccessValue);
 	//! Guard-area balancing: out[i] = number of the team's warriors within
 	//! GUARD_CROWD_RADIUS tiles of tile i (units inside buildings excluded).
 	//! Separable box sum, linear in map size. Returns false, leaving out
 	//! untouched, when the team has no such warrior.
 	bool computeWarriorCrowding(int teamNumber, Uint16 *out) const;
 	
-	bool materialAvailableSlot(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets = false, const Building* consumer = nullptr);
-    bool materialAvailable(int team,MaterialId material,int swim,int x,int y,bool markets=false,const Building* consumer=nullptr) { return materialAvailableSlot(team,materialIndex(material),swim,x,y,markets,consumer); }
-	bool materialAvailableSlot(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
-    bool materialAvailable(int team,MaterialId material,int swim,int x,int y,int* distance,bool markets=false,const Building* consumer=nullptr) { return materialAvailableSlot(team,materialIndex(material),swim,x,y,distance,markets,consumer); }
-	bool materialAvailableUpdateSlot(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
+	bool materialAvailableSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, int x, int y, bool withMarkets = false, const Building* consumer = nullptr);
+    bool materialAvailable(int team,MaterialId material,MovementAccess movementAccessValue,int x,int y,bool markets=false,const Building* consumer=nullptr) {
+        return materialAvailableSlot(team,materialIndex(material),movementAccessValue,x,y,markets,consumer); }
+	bool materialAvailableSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, int x, int y, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
+    bool materialAvailable(int team,MaterialId material,MovementAccess movementAccessValue,int x,int y,int* distance,bool markets=false,const Building* consumer=nullptr) {
+        return materialAvailableSlot(team,materialIndex(material),movementAccessValue,x,y,distance,markets,consumer); }
+	bool materialAvailableUpdateSlot(int teamNumber, int resourceType, MovementAccess movementAccessValue, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
 	//! The team's own, alive market next to the unit that holds resourceType, or NULL.
 	Building *touchedStockedMarketSlot(Unit *unit, int resourceType) const;
 	//! A stock of resourceType in one of the team's markets appeared or ran out:
@@ -1188,10 +1203,10 @@ public:
 	template<typename T>
 	bool isGradientPeak(const T *gradient, int x, int y) const;
 
-	RouteResult queryMaterialDistance(int team, int material, int swim, int x, int y, int* distance = nullptr, bool withMarkets = false, const Building* consumer = nullptr);
-	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, bool withMarkets = false, const Building* consumer = nullptr)
+	RouteResult queryMaterialDistance(int team, int material, MovementAccess movementAccessValue, int x, int y, int* distance = nullptr, bool withMarkets = false, const Building* consumer = nullptr);
+	Uint16 getGradient(int teamNumber, Uint8 resourceType, MovementAccess movementAccessValue, int x, int y, bool withMarkets = false, const Building* consumer = nullptr)
 	{
-		const auto* field = getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, consumer);
+		const auto* field = getMaterialGradientSlot(teamNumber, resourceType, movementAccessValue, withMarkets, consumer);
 		return field ? field[coordToIndex(x, y)] : GRADIENT_UNREACHABLE;
 	}
 	
@@ -1215,11 +1230,11 @@ public:
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	//! With guardAreaMask, only neighbours painted as a guard area for those teams count
 	//! (guard-area balancing: stepping within an area).
-	bool directionByGradient(EntityRandom& random, Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
-	void updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets = false);
+	bool directionByGradient(EntityRandom& random, Uint32 teamMask, MovementAccess movementAccessValue, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
+	void updateMaterialGradient(int teamNumber, Uint8 resourceType, MovementAccess movementAccessValue, bool withMarkets = false);
 	//! Direction toward the resource of resourceType nearest to (x, y). A target building
 	//! selects which suppliers (markets, stock) its resource gradient includes.
-	bool pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
+	bool pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceType, MovementAccess movementAccessValue, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
 	void pathfindRandom(Unit *unit);
 	//! Idle escape toward non-damaging terrain using a lazily shared field.
 	//! Checks live occupancy at descent; returns false with zero direction if blocked.
@@ -1227,24 +1242,24 @@ public:
 
 	//! Request a lazy building field. A fresh field is Pending until publication;
 	//! point reads then extend its retained frontier and buildingGradient completes it.
-    FieldReadiness requestBuildingField(Building*,int,BuildingRoute = BuildingRoute::Automatic);
-    const Uint16* lookupBuildingField(const Building*,int,BuildingRoute = BuildingRoute::Automatic) const;
-    RouteResult queryBuildingDistance(Building*,int,int,int,int*,BuildingRoute = BuildingRoute::Automatic);
-    StepResult queryBuildingStep(EntityRandom&,Building*,int,int,int,int*,int*,BuildingRoute = BuildingRoute::Automatic);
+    FieldReadiness requestBuildingField(Building*,MovementAccess movementAccessValue,BuildingRoute = BuildingRoute::Automatic);
+    const Uint16* lookupBuildingField(const Building*,MovementAccess movementAccessValue,BuildingRoute = BuildingRoute::Automatic) const;
+    RouteResult queryBuildingDistance(Building*,MovementAccess movementAccessValue,int,int,int*,BuildingRoute = BuildingRoute::Automatic);
+    StepResult queryBuildingStep(EntityRandom&,Building*,MovementAccess movementAccessValue,int,int,int*,int*,BuildingRoute = BuildingRoute::Automatic);
 	//! Allocate/refresh and mark use without completing the lazy generation.
 	//! Warm fields retain their published guidance while a refresh is queued.
-	bool prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
+	bool prepareBuildingGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route = BuildingRoute::Automatic);
 	//! Initialize a lazy field from the current map; point reads settle demand.
-	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
+	void updateGlobalGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route = BuildingRoute::Automatic);
 	//! Complete a lazy generation; return NULL when its route is locked.
-	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
+	const Uint16 *buildingGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route = BuildingRoute::Automatic);
 	// Owner-only: establish a safe generation without querying or finishing it.
-	std::shared_ptr<SharedBuildingGradient> leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route);
+	std::shared_ptr<SharedBuildingGradient> leaseBuildingRoute(Building *building, MovementAccess movementAccessValue, BuildingRoute route);
 	//! Finish a cached field without refreshing its age or last-use timestamp.
-	void finishBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic) const;
-	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);
+	void finishBuildingGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route = BuildingRoute::Automatic) const;
+	bool buildingAvailable(Building *building, MovementAccess movementAccessValue, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y)
-	bool pathfindBuilding(EntityRandom& random, Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);
+	bool pathfindBuilding(EntityRandom& random, Building *building, MovementAccess movementAccessValue, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);
 
 	//! Bumped whenever a footprint or a forbidden mask changes. A route field
 	//! spans the map, so any such change may cross it: each field records the
@@ -1253,26 +1268,26 @@ public:
 	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
 	Uint32 topologyGeneration;
 	void bumpTopologyGeneration() { topologyGeneration++; }
-	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
+	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, MovementAccess movementAccessValue, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
-    StepResult queryAreaStep(EntityRandom&, AreaKind, int, int, int, int, int*, int*);
+    StepResult queryAreaStep(EntityRandom&, AreaKind, int, MovementAccess movementAccessValue, int, int, int*, int*);
 	//! Find the best direction toward a guard or clear area; return true if one has been found.
-	bool pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
+	bool pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, MovementAccess movementAccessValue, int x, int y, int *dx, int *dy);
 	//! Update the forbidden gradient, 
-	void updateForbiddenGradient(int teamNumber, int swimClass);
+	void updateForbiddenGradient(int teamNumber, MovementAccess movementAccessValue);
 	void updateForbiddenGradient(int teamNumber);
 	void updateForbiddenGradient();
 	//! Update the guard area gradient
-	void updateGuardAreasGradient(int teamNumber, int swimClass);
+	void updateGuardAreasGradient(int teamNumber, MovementAccess movementAccessValue);
 	void updateGuardAreasGradient(int teamNumber);
 	void updateGuardAreasGradient();
 	//! Update the clear area gradient
-	void updateClearAreasGradient(int teamNumber, int swimClass);
+	void updateClearAreasGradient(int teamNumber, MovementAccess movementAccessValue);
 	void updateClearAreasGradient(int teamNumber);
 	void updateClearAreasGradient();
 	
 	///Implements A* algorithm for point to point pathfinding. Does not cache path, designed to be fast
-	bool pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, int swimClass, Uint32 teamMask, int maximumLength);
+	bool pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, MovementAccess movementAccessValue, Uint32 teamMask, int maximumLength);
 	bool pathfindAirPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy);
 	
 	void initExploredArea(int teamNumber);

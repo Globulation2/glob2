@@ -1476,7 +1476,7 @@ void TeamStats::observeMeasurementUnit(Unit *u)
 	if (u && !u->isDead)
 	{
         if (!u->performance[FLY] && (u->performance[WALK] || u->performance[SWIM])) {
-            ++editMeasurements().groundUnitsByMovementClass[u->swimClass()];
+            ++editMeasurements().groundUnitsByMovementClass[Map::swimClass(u->performance[WALK],u->performance[SWIM])];
         }
 		if (!u->widePrimaryCargo() && u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
 			++editMeasurements().carried[u->carriedMaterial];

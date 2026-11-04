@@ -37,7 +37,7 @@ TEST_CASE("cold initialization publishes a resumable frontier at fixed deadlines
         map.configureCompute(participants);
         auto* b=world.addBuilding("inn",4,4);
         GradientExecutionAudit audit;
-        CHECK(map.requestBuildingField(b,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
+        CHECK(map.requestBuildingField(b,MovementAccess::Land,BuildingRoute::Footprint)==FieldReadiness::Pending);
         CHECK(b->globalGradient[0]==nullptr);
         CHECK(map.buildingGradientPipelineStatus().synchronous==0);
         std::ostringstream trace;
@@ -64,7 +64,7 @@ TEST_CASE("cold initialization publishes a resumable frontier at fixed deadlines
         CHECK(search->requiredCost()==demand);
         CHECK_FALSE(search->complete());
         int distance=-1;
-        CHECK(map.queryBuildingDistance(b,0,90,90,&distance,BuildingRoute::Footprint)==RouteResult::Reachable);
+        CHECK(map.queryBuildingDistance(b,MovementAccess::Land,90,90,&distance,BuildingRoute::Footprint)==RouteResult::Reachable);
         CHECK(search->settledCost()>before);
         CHECK_FALSE(search->resolved(120*256+120));
         // Serial participation can execute the same job on the owner; threaded
@@ -84,7 +84,7 @@ TEST_CASE("queued and privately completed cold initialization survives binary an
         auto& game=world.game;auto& map=game.map;
         game.gameHeader.setBuildingGradientDelay(3);map.configureCompute(2);
         auto* b=world.addBuilding("inn",4,4);
-        REQUIRE(map.requestBuildingField(b,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
+        REQUIRE(map.requestBuildingField(b,MovementAccess::Land,BuildingRoute::Footprint)==FieldReadiness::Pending);
         for(unsigned i=0;i<checkpoint;++i)advance(game);
         auto* storage=new GAGCore::MemoryStreamBackend;
         std::unique_ptr<GAGCore::OutputStream> output(text
@@ -106,8 +106,8 @@ TEST_CASE("queued and privately completed cold initialization survives binary an
         auto* restored=resumed.game.teams[0]->myBuildings[Building::GIDtoID(b->gid)];
         REQUIRE(restored);REQUIRE(b->globalGradient[0]);REQUIRE(restored->globalGradient[0]);
         int d1=-1,d2=-1;
-        CHECK(map.queryBuildingDistance(b,0,70,70,&d1,BuildingRoute::Footprint)==RouteResult::Reachable);
-        CHECK(resumed.game.map.queryBuildingDistance(restored,0,70,70,&d2,BuildingRoute::Footprint)==RouteResult::Reachable);
+        CHECK(map.queryBuildingDistance(b,MovementAccess::Land,70,70,&d1,BuildingRoute::Footprint)==RouteResult::Reachable);
+        CHECK(resumed.game.map.queryBuildingDistance(restored,MovementAccess::Land,70,70,&d2,BuildingRoute::Footprint)==RouteResult::Reachable);
         CHECK(d1==d2);
     }
 }
@@ -117,18 +117,18 @@ TEST_CASE("soft edits retain cold deadlines while a building reset supersedes it
     auto& game=world.game;auto& map=game.map;
     game.gameHeader.setBuildingGradientDelay(3);map.configureCompute(2);
     auto* b=world.addBuilding("inn",4,4);
-    REQUIRE(map.requestBuildingField(b,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
+    REQUIRE(map.requestBuildingField(b,MovementAccess::Land,BuildingRoute::Footprint)==FieldReadiness::Pending);
     advance(game);
     const auto epoch=b->refreshEpoch[0];
     for(int tick=0;tick<1;++tick) {
         b->resetPathfindGradients(Building::GradientDrop::Area);
         CHECK(b->refreshEpoch[0]==epoch);
-        CHECK(map.requestBuildingField(b,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
+        CHECK(map.requestBuildingField(b,MovementAccess::Land,BuildingRoute::Footprint)==FieldReadiness::Pending);
         advance(game);
     }
     advance(game);REQUIRE(b->globalGradient[0]);
     b->resetPathfindGradients();
-    REQUIRE(map.requestBuildingField(b,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
+    REQUIRE(map.requestBuildingField(b,MovementAccess::Land,BuildingRoute::Footprint)==FieldReadiness::Pending);
     advance(game);
     b->resetPathfindGradients();
     for(int tick=0;tick<4;++tick)advance(game);
@@ -141,7 +141,7 @@ TEST_CASE("cold requests beyond the former FIFO limit never initialize synchrono
     auto& map=world.game.map;world.game.gameHeader.setBuildingGradientDelay(3);map.configureCompute(2);
     for(int i=0;i<70;++i) {
         auto* b=world.addBuilding("inn",(i%10)*8,(i/10)*8);
-        REQUIRE(b);CHECK(map.requestBuildingField(b,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
+        REQUIRE(b);CHECK(map.requestBuildingField(b,MovementAccess::Land,BuildingRoute::Footprint)==FieldReadiness::Pending);
         CHECK(b->globalGradient[0]==nullptr);
     }
     CHECK(map.buildingGradientPipelineStatus().synchronous==0);

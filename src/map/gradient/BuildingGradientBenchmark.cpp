@@ -40,9 +40,9 @@ TEST_CASE("building and resource preparation kernels [benchmark][pathfinding]")
         for(int swim : {0,3}) for(int kind=0;kind<5;++kind)
         {
             auto* building=kind==0 ? inn : kind==1 ? clear : combat;
-            if(kind<3) REQUIRE(map.buildingGradient(building,swim));
+            if(kind<3) REQUIRE(map.buildingGradient(building,movementAccessFromLegacy(swim)));
             const auto prepare=[&] {
-                if(kind<3) map.updateGlobalGradient(building,swim);
+                if(kind<3) map.updateGlobalGradient(building,movementAccessFromLegacy(swim));
                 else map.seedMaterialGradient(0,WHEAT,swim,resource.data(),kind==4);
             };
             prepare();
@@ -52,7 +52,7 @@ TEST_CASE("building and resource preparation kernels [benchmark][pathfinding]")
                 for(int iteration=0;iteration<iterations;++iteration) prepare();
                 const auto ns=std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-started).count();
                 // Read outside the timed region so a compiler cannot discard work.
-                const Uint16* field=kind<3 ? map.buildingGradient(building,swim) : resource.data();
+                const Uint16* field=kind<3 ? map.buildingGradient(building,movementAccessFromLegacy(swim)) : resource.data();
                 std::uint64_t digest=1469598103934665603ULL;
                 for(int i=0;i<size;++i) digest=(digest^field[i])*1099511628211ULL;
                 std::printf("building_kernel,%d,%d,%d,%d,%d,%lld,%llu\n",width,kind,swim,repeat,
@@ -157,7 +157,7 @@ TEST_CASE("footprint preparation diagnostic phases [benchmark][pathfinding]")
         const int iterations=std::max(8,1048576/size);
         for(int swim : {0,3})
         {
-            REQUIRE(map.buildingGradient(inn,swim));
+            REQUIRE(map.buildingGradient(inn,movementAccessFromLegacy(swim)));
             Uint16* gradient=inn->globalGradient[swim];
             const Uint16 gid=inn->gid;
             const Uint32 teamMask=inn->owner->me;
@@ -179,12 +179,12 @@ TEST_CASE("footprint preparation diagnostic phases [benchmark][pathfinding]")
             for(int phase=0;phase<4;++phase) {
                 seed();
                 const auto prepare=[&] {
-                    if(phase==0) map.updateGlobalGradient(inn,swim);
+                    if(phase==0) map.updateGlobalGradient(inn,movementAccessFromLegacy(swim));
                     else if(phase==1) {
 #if VERSION_MINOR >= 137
-                        map.updateGlobalGradient(inn,swim,BuildingRoute::Footprint);
+                        map.updateGlobalGradient(inn,movementAccessFromLegacy(swim),BuildingRoute::Footprint);
 #else
-                        map.updateGlobalGradient(inn,swim);
+                        map.updateGlobalGradient(inn,movementAccessFromLegacy(swim));
 #endif
                     }
                     else if(phase==2) seed();

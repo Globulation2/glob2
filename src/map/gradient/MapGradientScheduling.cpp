@@ -111,7 +111,7 @@ void Map::ensureBuildingGradientPipeline()
 		auto& p = job.payload;
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
 		if (!b || b->refreshEpoch[p.slot] != p.epoch) return false;
-		const int slot = p.slot, swim = p.swim;
+		const int slot = p.slot, swim = slotSwim(p.slot);
         auto guard=SharedBuildingGradient::lock(b->sharedGradient[slot]);
 
 		// Pointer swap: the transferred search already points at data, so a
@@ -119,10 +119,12 @@ void Map::ensureBuildingGradientPipeline()
 		auto& search = b->globalGradientSearch[slot];
 		// The depth model reads the replaced lifetime; a locked one leaves the older value.
 		if (search) b->settledCostHint[slot] = Uint16(std::min(search->requiredCost(), 0xFFFE));
+        recordFieldCost(b->globalGradient[slot],-1);
 		b->retireSharedGradient(slot);
         recycleBuildingGradientSearch(std::move(search));
 		recycleBuildingGradientBuffer(b->globalGradient[slot]);
 		b->globalGradient[slot] = p.data.release();
+        recordFieldCost(b->globalGradient[slot],p.swim);
 		if (!p.locked) search = std::move(p.search);
 		b->lastGlobalGradientUpdateStepCounter[slot] = p.captureTick;
 		b->gradientGeneration[slot] = p.generation;
@@ -156,7 +158,7 @@ void Map::ensureBuildingGradientPipeline()
 			if (p.route == BuildingRoute::Clearing) b->anyResourceToClear[swimAccessVariant(swim)] = p.resourceState;
 		}
         if(auto& stats=gradientRuntime->workStats) {
-            const auto key=GradientWorkStats::buildingKey(p.team,p.swim,p.buildingId,p.scriptIdentity,unsigned(p.route));
+            const auto key=GradientWorkStats::buildingKey(p.team,slotSwim(p.slot),p.buildingId,p.scriptIdentity,unsigned(p.route));
             stats->published(key,game->stepCounter,p.workReason,size);
             if(b->globalGradientSearch[slot])stats->partial(key,game->stepCounter,0,b->globalGradientSearch[slot]->settledCost(),true);
         }
@@ -247,9 +249,9 @@ void Map::stageBuildingGradientPreparation()
 		job->payload = {};
 		auto& p = job->payload;
 		p.team = request.team; p.buildingId = request.building; p.scriptIdentity = request.identity;
-		p.slot = request.slot; p.swim = slotSwim(request.slot); p.route = slotRoute(request.slot);
+		p.slot = request.slot; p.swim = preparationCostClass(p.team,slotSwim(request.slot)); p.route = slotRoute(request.slot);
 		p.epoch = request.epoch; p.captureTick = game->stepCounter; p.generation = topologyGeneration;
-        if(auto& stats=rt.workStats)p.workReason=stats->admitted(GradientWorkStats::buildingKey(p.team,p.swim,p.buildingId,p.scriptIdentity,unsigned(p.route)),game->stepCounter,size);
+        if(auto& stats=rt.workStats)p.workReason=stats->admitted(GradientWorkStats::buildingKey(p.team,slotSwim(p.slot),p.buildingId,p.scriptIdentity,unsigned(p.route)),game->stepCounter,size);
 		p.data.reset(acquireBuildingGradientBuffer());
 		p.search = acquireBuildingGradientSearch();
 		// Cold initialization stays lazy for every route, including flags.

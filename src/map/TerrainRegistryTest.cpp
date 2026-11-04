@@ -366,7 +366,7 @@ TEST_SUITE("TerrainRegistry")
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeLaterite.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeLaterite.dump(), TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD));
 
-		// Format 204 numbers its definitions from 45, before cliffs.
+		// Formats 204 and 205 number their definitions from 45, before cliffs.
 		auto beforeCliffs = Json::parse(registry->serialize());
 		for (auto &item : beforeCliffs["terrains"])
 			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_CLIFFS;

@@ -7,8 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 205
-// version 205 adds built-in cliffs; custom terrain IDs move up by one.
+#define VERSION_MINOR 206
+// version 206 adds built-in cliffs; custom terrain IDs move up by one.
+// version 205 shares amphibious fields and stores captured preparation costs.
 // version 204 adds built-in laterite; custom terrain IDs move up by one.
 // version 203 adds built-in overgrown road; custom terrain IDs move up by one.
 // version 202 adds built-in glacier ice; custom terrain IDs move up by one.

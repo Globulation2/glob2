@@ -14,6 +14,7 @@
 #include <queue>
 
 #include "Race.h"
+#include "RoutingRatioPolicy.h"
 #include "TeamStat.h"
 #include "GameEvent.h"
 
@@ -91,6 +92,8 @@ public:
 
 	//! Step every unit, building and bullet of the team.
 	void syncStep(void);
+    RoutingRatioState routingRatio;
+    void updateRoutingRatio();
 
 	void pushGameEvent(GameEvent event);
 	//! Pop the oldest event, if any.

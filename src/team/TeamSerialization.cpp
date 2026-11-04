@@ -28,6 +28,15 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		co_return false;
 
 	stream->readEnterSection("Team");
+    routingRatio={};
+    if(versionMinor>=FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY) {
+        routingRatio.selected=stream->readUint8("routingRatioClass");
+        routingRatio.tick=stream->readUint32("routingRatioTick");
+        const auto known=stream->readUint8("routingRatioKnown");
+        if(!RoutingRatioState::amphibious(routingRatio.selected) || known>1)
+            throw std::runtime_error("Invalid saved routing ratio policy");
+        routingRatio.known=known;
+    }
 
 	// Bind immutable definitions before any entity takes a descriptor pointer.
 	// Older formats already bound their saved Race while reading BaseTeam.
@@ -281,6 +290,9 @@ void Team::save(GAGCore::OutputStream *stream)
 	BaseTeam::save(stream);
 
 	stream->writeEnterSection("Team");
+    stream->writeUint8(routingRatio.selected,"routingRatioClass");
+    stream->writeUint32(routingRatio.tick,"routingRatioTick");
+    stream->writeUint8(routingRatio.known,"routingRatioKnown");
 
 	// Entity record order is simulation state; never derive it from free IDs.
 	stream->writeEnterSection("myUnits");
@@ -395,6 +407,9 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	Uint32 cs=0;
 
 	cs^=BaseTeam::checkSum();
+    if (!legacy152) {
+        for(auto value:{routingRatio.selected,routingRatio.tick,unsigned(routingRatio.known)}) cs=rotr1(cs)^value;
+    }
 	if (!legacy152) { cs=rotr1(cs)^taskSwapNext; cs=rotr1(cs)^liveUnits.size(); cs=rotr1(cs)^liveBuildings.size(); }
 	cs=rotr1(cs);
 	if (checkSumsVector)
