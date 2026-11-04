@@ -1,0 +1,60 @@
+{
+  "pid": 2722039,
+  "revision": "b51a87edea61817d57cf6499b042dec680a03bdc",
+  "base": "ce8924e6fff7e659f8c6ab855099cc49825c5b73",
+  "implementation_byte_equality_to_hosted_verified_6ca": {
+    "platforms/mobile/AssetIndex.h": true,
+    "platforms/mobile/AssetIndexTest.cpp": true,
+    "platforms/mobile/MobilePaths.cpp": true,
+    "platforms/mobile/asset_bundle.py": true,
+    "platforms/mobile/android.py": true
+  },
+  "results": [
+    {
+      "name": "mobile-asset-bundle",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test",
+        "-p",
+        "test_mobile_asset_bundle.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 0.1
+    },
+    {
+      "name": "latest-package-assets",
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_package_assets.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 3.4
+    }
+  ],
+  "note": "Latest terrain pack/source provenance changes touch packaging. Rebased only after prior native tests ended; all implementation files byte-identical to actual3ABI/emulator-qualified6ca. Focused latest packaging contracts and native-capacity checks; full browser and current native WT/helper/SDL remain frozen.",
+  "phase": "latest terrain-pack integration passed; actual hosted startup-qualified implementation unchanged",
+  "command": [
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "test/build_system",
+    "-p",
+    "test_package_assets.py",
+    "-v"
+  ],
+  "child_pid": 2722051
+}
