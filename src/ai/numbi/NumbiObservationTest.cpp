@@ -39,7 +39,8 @@ TEST_SUITE("NumbiObservation")
     }
    }
   }
-  CHECK(enrollments.size()==9);
+  // Three materials, each with land and one shared amphibious field.
+  CHECK(enrollments.size()==6);
  }
  TEST_CASE("published aged resource fields survive changed resources without fresh reconstruction")
  {

@@ -282,7 +282,7 @@ TEST_CASE("idle escape fields cross tick wrap without maintenance and explicit r
     map.gradientRuntime->exploration=std::make_unique<ResourceGradientExploration>();map.gradientRuntime->exploration->intervals={8};
     f.game.stepCounter=Uint32((1ULL<<32)-16);
     std::vector<GradientFieldKey> keys;
-    for(int team=0;team<4;++team)for(int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim) {
+    for(int team=0;team<4;++team)for(int swim:{0,int(MovementAccess::Amphibious)}) {
         keys.push_back({GradientFieldFamily::Forbidden,Uint8(team),Uint8(swim)});
         map.getForbiddenGradient(team,movementAccessFromLegacy(swim));
     }

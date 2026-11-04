@@ -144,7 +144,8 @@ TEST_CASE("save preserves distinct serving and in-flight costs across a policy s
     const auto* serving=glob2test::awaitGradient(source.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious);});
     REQUIRE(map.publishedCostClass(serving)==6);
     source.team->routingRatio.selected=1;
-    map.updateMaterialGradient(0,WHEAT,MovementAccess::Amphibious);boundary(source.game);
+    map.updateMaterialGradient(0,WHEAT,MovementAccess::Amphibious);
+    for(unsigned n=0;n<64 && !map.gradientPipelineStatus().pending;++n)boundary(source.game);
     REQUIRE(map.gradientPipelineStatus().pending>0);
     source.team->routingRatio.selected=6;
     auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(bytes);

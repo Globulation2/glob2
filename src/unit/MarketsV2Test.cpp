@@ -359,8 +359,9 @@ TEST_CASE("market routes respect forbidden ground and water across swim classes"
 	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw)
 	{
 		std::vector<Uint16> expected(world.game.map.cellCount());
-		world.game.map.seedMaterialGradient(0,CHERRY,sw,expected.data(),true);
-		world.game.map.propagateGradient(expected.data(),sw);
+		const int cost=world.game.map.preparationCostClass(0,accessClass(movementAccessFromLegacy(sw)));
+        world.game.map.seedMaterialGradient(0,CHERRY,cost,expected.data(),true);
+		world.game.map.propagateGradient(expected.data(),cost);
 		world.game.map.updateMaterialGradient(0,CHERRY,movementAccessFromLegacy(sw),true);
 		// An older in-flight refresh may publish first. Wait for the generation
 		// captured after painting rather than treating any pointer swap as fresh.

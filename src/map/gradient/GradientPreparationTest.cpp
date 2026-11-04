@@ -1134,7 +1134,7 @@ TEST_CASE("compact clearing traits preserve custom high-ID property combinations
             scalarGuard(map,0,swim,expected.data());
             map.seedGuardAreasGradient(0,swim,actual.data());
             CHECK(actual==expected);
-            const auto* previous=map.forbiddenGradient[0][swim];
+            const auto* previous=map.forbiddenGradient[0][accessClass(movementAccessFromLegacy(swim))];
             map.updateForbiddenGradient(0,movementAccessFromLegacy(swim));
             const auto* forbidden=glob2test::awaitGradient(world.game,[&] {
                 const auto* field=map.getForbiddenGradient(0,movementAccessFromLegacy(swim));
@@ -1204,7 +1204,7 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	const auto handle = SimulationSnapshot::capture(world.game, SimulationSnapshot::captureCatalog(world.game));
 	REQUIRE(handle.resourceFields);
 	CHECK(handle.resourceFields->planes.size() == 3);
-	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, 1, false));
+	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, int(MovementAccess::Amphibious), false));
 	REQUIRE(stone);
 	CHECK(std::equal(stone->values->begin(), stone->values->end(), liveStone));
 	const auto frozen = *stone->values;

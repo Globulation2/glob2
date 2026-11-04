@@ -154,6 +154,7 @@ struct World
 	// requestBuildingField directly and never call this synchronous helper.
 	void warm(Building* b, int swim = 0)
 	{
+        swim=accessClass(movementAccessFromLegacy(swim));
 		const int slot = b->routeSlot(swim, BuildingRoute::Automatic);
 		if (!b->globalGradient[slot]) b->globalGradient[slot] = game.map.acquireBuildingGradientBuffer();
 		game.map.updateGlobalGradient(b, movementAccessFromLegacy(swim));
@@ -323,8 +324,10 @@ static void publicReadsResolveTheirInputs()
 	World world;
 	Map &map = world.game.map;
 	Building *centre = world.place(20, 20);
-	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+	for (int cost = 0; cost < SWIM_CLASS_COUNT; ++cost)
 	{
+        const int swim=accessClass(movementAccessFromLegacy(cost));
+        world.team->routingRatio.known=true;world.team->routingRatio.selected=cost>0 && cost<LEGACY_SWIM_CLASS_COUNT ? cost : Map::SWIM_CLASS_EVEN;
         // Water-only callers need water outside the inn's occupied grass island.
         // Retain the original all-grass setup for walking/swimming classes0-6.
         if(swim==SWIM_CLASS_COUNT-1)
@@ -371,7 +374,7 @@ static void delayedFields()
 		map.setResourceByIndex(30, 30, 0, 1);
 		map.addGuardArea(40, 40, 0);
 		map.addClearArea(30, 30, 0);
-		const int swim=1;
+		const int swim=int(MovementAccess::Amphibious);
 		auto field=[&]() { return kind==0 ? map.getMaterialGradientSlot(0, 0, movementAccessFromLegacy(swim))
 			: kind==1 ? map.getGuardAreasGradient(0, movementAccessFromLegacy(swim)) : map.getClearAreasGradient(0, movementAccessFromLegacy(swim)); };
 		auto refresh=[&]() { if(kind==0) map.updateMaterialGradient(0, 0, movementAccessFromLegacy(swim));
@@ -518,16 +521,18 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 	int locked = 0, clearing = 0, partials = 0;
 	for (Building* b : buildings)
 		for (BuildingRoute route : {BuildingRoute::Footprint, BuildingRoute::Clearing, BuildingRoute::Combat})
-			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+			for (int cost = 0; cost < SWIM_CLASS_COUNT; ++cost)
 			{
+                const int swim=accessClass(movementAccessFromLegacy(cost));
+                b->owner->routingRatio.known=true;b->owner->routingRatio.selected=cost>0 && cost<LEGACY_SWIM_CLASS_COUNT ? cost : Map::SWIM_CLASS_EVEN;
 				const std::string what = std::string(b->type->type) + " route " + std::to_string(int(route)) + " swim " + std::to_string(swim);
 				const int slot = b->routeSlot(swim, route), access = b->routeAccess(swim, route);
 				if (!b->globalGradient[slot]) b->globalGradient[slot] = m.acquireBuildingGradientBuffer();
 				m.updateGlobalGradient(b, movementAccessFromLegacy(swim), route);
 				m.finishBuildingGradient(b, movementAccessFromLegacy(swim), route);
 				const Uint16* expected = b->globalGradient[slot];
-				const auto seed = captureBuildingSeed(*b, swim, route);
-				const auto inputs = BuildingGradientSearch::Inputs::ofSnapshot(snapshot, swim);
+				const auto seed = captureBuildingSeed(*b, cost, route);
+				const auto inputs = BuildingGradientSearch::Inputs::ofSnapshot(snapshot, cost);
 				BuildingGradientSearch search;
 				const auto result = buildBuilding(seed, snapshot, inputs, actual.data(), search, gradient_kernel::COST_LIMIT);
 				INFO(what);
@@ -539,7 +544,7 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 				// Partial: settle a few layers, check them, then resume by cell and finish.
 				seedBuilding(seed, snapshot, partial.data());
 				BuildingGradientSearch resumed;
-				resumed.begin(inputs, partial.data(), swim, m.getW(), m.getH());
+				resumed.begin(inputs, partial.data(), cost, m.getW(), m.getH());
 				for (int depth : {0, 7, 40, 160})
 				{
 					resumed.resolveToCost(depth);

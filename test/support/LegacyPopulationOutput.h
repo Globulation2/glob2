@@ -268,6 +268,7 @@ public:
     { if (!suppressed() && !observationField(name) && !(name=="airLocked" && !hasUnifiedMovement(formatVersion))) BinaryOutputStream::writeEndianIndependent(data,size,name); }
     void writeUint32(Uint32 value, std::string_view name) override
     {
+        if(formatVersion<FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY && name=="routingRatioTick")return;
         if (suppressed()) return;
         if (formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
             && (name=="adaptiveKey" || name=="preparedGoalCount")) return;
@@ -339,6 +340,8 @@ public:
     void writeUint8(Uint8 value,std::string_view name) override
     {
         if(suppressed()) return;
+        if(formatVersion<FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY
+            && (name=="preparationCost" || name=="routingRatioClass" || name=="routingRatioKnown"))return;
         if(formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS
             && (name=="hasAdaptiveKey" || name=="legacyAssociation")) return;
         if(formatVersion<FILE_FORMAT_VERSION_UNIFIED_GRADIENTS && name=="suspendedStale") {

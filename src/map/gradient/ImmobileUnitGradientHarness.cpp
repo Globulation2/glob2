@@ -59,6 +59,7 @@ struct World
 
 	void settle(int swimClass)
 	{
+        swimClass=accessClass(movementAccessFromLegacy(swimClass));
         // These field tests inspect the replacement after fixed publication,
         // without moving units or changing occupancy during the wait.
         glob2test::awaitGradient(game,[&]() -> const Uint16* {

@@ -1575,6 +1575,27 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 void Map::consolidateLegacyRoutingFields()
 {
     auto& rt=*gradientRuntime;
+    const auto obsolete=[](int access) {return access>0 && access<LEGACY_SWIM_CLASS_COUNT && access!=int(MovementAccess::Amphibious);};
+    bool needsMigration=false;
+    for(int team=0;team<game->teamsCount();++team) {
+        for(int access=1;access<LEGACY_SWIM_CLASS_COUNT;++access)if(obsolete(access)) {
+            needsMigration|=forbiddenGradient[team][access] || guardAreasGradient[team][access] || clearAreasGradient[team][access];
+            for(int material=0;material<MaterialSlotCount;++material)
+                needsMigration|=materialGradients[team][material][access] || marketMaterialGradients[team][material][access];
+        }
+        for(const auto* building:game->teams[team]->liveBuildings.entries())
+            for(int slot=0;slot<BUILDING_GRADIENT_COUNT;++slot)if(obsolete(slot%MOVEMENT_CLASS_COUNT))
+                needsMigration|=building->globalGradient[slot] || building->refreshRequested.test(slot);
+    }
+    for(const auto& [key,field]:rt.materialFields)needsMigration|=obsolete(field.swim);
+    for(const auto& [key,field]:rt.adaptive.fields)needsMigration|=obsolete(key.swim);
+    for(const auto& request:rt.fieldRequests)needsMigration|=obsolete(request.request.swim);
+    rt.pipeline.visitLogical([&](auto* slot,unsigned,bool) {if(const auto key=gradientFieldKey(slot))needsMigration|=obsolete(key->swim);});
+    for(const auto& request:rt.buildingRequests)needsMigration|=obsolete(request.slot%MOVEMENT_CLASS_COUNT);
+    rt.buildings.visitLogical([&](const auto& job,unsigned,bool) {needsMigration|=obsolete(job.slot%MOVEMENT_CLASS_COUNT);});
+    // Unchanged access identities retain their exact queues, deadlines and
+    // adaptive history. Only historical ratio-keyed state needs consolidation.
+    if(!needsMigration)return;
     rt.pipeline.reset();rt.preparations.clear();rt.fieldRequests.clear();
     resetBuildingGradientPipeline();rt.adaptive={};
     const auto collapse=[&](auto& fields,auto& stale,int preferred) {
