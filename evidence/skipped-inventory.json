@@ -1,0 +1,62 @@
+[
+  {
+    "file": "apps/ai-building-worker/test/pipeline.test.ts",
+    "case": "validates through the actual native decoder and retains archive evidence"
+  },
+  {
+    "file": "apps/ai-building-worker/test/pipeline.test.ts",
+    "case": "generates a real building family through the live paid provider and native engine"
+  },
+  {
+    "file": "apps/ai-map-worker/test/pipeline.test.ts",
+    "case": "native AI map delivery > discusses, imports, validates and privately delivers a map and revision with exactly one credit each"
+  },
+  {
+    "file": "apps/ai-music-worker/test/runner.test.ts",
+    "case": "isolates generated code and independently rejects forged data"
+  },
+  {
+    "file": "apps/ai-music-worker/test/runner.test.ts",
+    "case": "renders both CPU palettes through independent encoded QA"
+  },
+  {
+    "file": "apps/ai-terrain-worker/test/pipeline.test.ts",
+    "case": "delivers through the actual native importer and gallery renderer"
+  },
+  {
+    "file": "apps/api/test/generator-real-flow.test.ts",
+    "case": "real shared generator publication and room flow > publishes an isolated validated package and starts a pinned room whose guest downloads only the map"
+  },
+  {
+    "file": "apps/engine-agent/test/generator-real.test.ts",
+    "case": "real isolated generator packages > probes, canonicalizes, samples, reloads and generates the exact package"
+  },
+  {
+    "file": "apps/engine-agent/test/real-binary.test.ts",
+    "case": "real glob2 binary > generates, validates and previews symmetric-arena from the default 1v1 pool"
+  },
+  {
+    "file": "apps/engine-agent/test/real-binary.test.ts",
+    "case": "real glob2 binary > generates, validates and previews even-ground from the default 1v1 pool"
+  },
+  {
+    "file": "apps/engine-agent/test/real-binary.test.ts",
+    "case": "real glob2 binary > generates, validates and previews marchland from the default 1v1 pool"
+  },
+  {
+    "file": "apps/engine-agent/test/real-binary.test.ts",
+    "case": "real glob2 binary > validates a saved game and lists its players"
+  },
+  {
+    "file": "apps/engine-agent/test/real-binary.test.ts",
+    "case": "real glob2 binary > rejects a corrupt map with the engine loader"
+  },
+  {
+    "file": "apps/skin-render-worker/test/native.test.ts",
+    "case": "the deployed renderer adapter bakes and atomically stores a real skin"
+  },
+  {
+    "file": "apps/skin-render-worker/test/native.test.ts",
+    "case": "CLI validation and partial-output cleanup preserve existing directories"
+  }
+]

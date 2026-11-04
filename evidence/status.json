@@ -1,0 +1,36 @@
+{
+  "pid": 2105003,
+  "revision": "ab9fba8a8d76bb06b6102f60b2271da3f12bdbf5",
+  "phase": "finished; inspect full platform results and explicit opt-in omissions",
+  "results": [
+    {
+      "name": "platform-full",
+      "exit_code": 0,
+      "seconds": 80.7,
+      "command": [
+        "npm",
+        "test",
+        "--",
+        "--maxWorkers=4",
+        "--reporter=default",
+        "--reporter=junit",
+        "--outputFile=/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/engine-fake-catalog-bounded/junit.xml"
+      ]
+    }
+  ],
+  "container": "glob2-ci-fake-catalog-066c246c",
+  "note": "Full unchangeddefaultplatforminventoryat4workers,Node22;lint/type/i18nalreadypassedatthisexacthead. InitialautoworkersrunexhaustedPostgreSQLlocktableon64corehost;allinitialfailuresretained. Boundedworkersdonotomitcases. Existinglocalpostgres16imagepinnedbyimageID,no upgrade/pull. Dedicatedephemeralloopbackport,tmpfsdatabase,andscopedcleanup. No sourcechangesduringvalidation;recordnative/provideroptinlimitsfromJUnit.",
+  "postgres_image_id": "sha256:275447c94b11b151decd1f29877965301d5a77032037c46de93d990f739f00a9",
+  "postgres_port": 32769,
+  "command": [
+    "npm",
+    "test",
+    "--",
+    "--maxWorkers=4",
+    "--reporter=default",
+    "--reporter=junit",
+    "--outputFile=/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/engine-fake-catalog-bounded/junit.xml"
+  ],
+  "child_pid": 2105318,
+  "container_removed": true
+}
