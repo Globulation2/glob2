@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Bounded candidate selection for the optional HD artwork index."""
+"""Bounded candidate selection for native and HD sprite packs."""
 
 import hashlib
 from itertools import groupby
@@ -17,8 +17,14 @@ from PIL import Image, ImageChops
 from tools import package_assets as images
 
 HD = Path("data/highres/v1")
-TERRAIN_CRF = {"terrain-grass": 20.25, "terrain-water": 24.5,
-               "terrain-ember_field": 26.5, "terrain-lava": 29.5}
+# Frozen HD profiles from the terrain and stock unit probes.
+TERRAIN_CRF = {
+    "terrain-grass": 20.25,
+    "terrain-water": 24.5,
+    "terrain-ember_field": 26.5,
+    "terrain-lava": 29.5,
+    "terrain-molten_lava_pool": 29.5,
+}
 UNIT_CRF = (31, 31, 30.25, 31.25, 30, 29.5, 29.75)
 PACK_RECIPE = "packed-sprites-v8"
 
