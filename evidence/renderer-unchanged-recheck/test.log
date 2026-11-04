@@ -1,0 +1,4 @@
+PASS RendererSelection/native switching preserves surfaces commits preferences and rejects unavailable choices [display] (3.6s)
+
+1 passed, 0 failed, 0 skipped (3.6s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/renderer-selection-recheck/junit.xml (1 cases)

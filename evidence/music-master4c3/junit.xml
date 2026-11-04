@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="3" failures="0" errors="0" time="354.514591268">
+    <testsuite name="apps/ai-music-worker/test/runner.test.ts" timestamp="2026-11-04T09:55:19.295Z" hostname="devlaptop" tests="3" failures="0" errors="0" skipped="0" time="354.514591268">
+        <testcase classname="apps/ai-music-worker/test/runner.test.ts" name="isolates generated code and independently rejects forged data" time="27.662346375">
+        </testcase>
+        <testcase classname="apps/ai-music-worker/test/runner.test.ts" name="renders both CPU palettes through independent encoded QA" time="326.846453874">
+        </testcase>
+        <testcase classname="apps/ai-music-worker/test/runner.test.ts" name="requires a finite aggregate memory limit on the worker cgroup or an ancestor" time="0.004295596">
+        </testcase>
+    </testsuite>
+</testsuites>
