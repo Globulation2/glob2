@@ -49,10 +49,13 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
 			for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior})
 				for (int frame : frames)
-					if (frame >= decor->getFrameCount() || decor->getW(frame) > 64 ||
-						decor->getH(frame) > 64)
-						throw std::runtime_error("Terrain decor frame missing or larger than 64x64: " +
+				{
+					if (frame >= decor->getFrameCount() || decor->getW(frame) > MaximumDecorFrame ||
+						decor->getH(frame) > MaximumDecorFrame)
+						throw std::runtime_error("Terrain decor frame missing or larger than 128x128: " +
 												 m.key);
+					reach.include(decor->getW(frame), decor->getH(frame));
+				}
 			if (sharedDecorSprite && sharedDecorSprite != decor) mixedDecorSprites = true;
             sharedDecorSprite = decor;
 		}

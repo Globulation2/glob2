@@ -2266,9 +2266,24 @@ TEST_SUITE("TerrainValidation")
 					auto *hd = decor->baseFrame(frame);
 					REQUIRE(hd);
 					CHECK(hd->getW() == 128);
-					// Cliffs stand twice as tall as foliage, in 32x64 frames.
-					CHECK(hd->getH() == (material.key == "cliffs" ? 256 : 192));
+					CHECK(hd->getH() == 256);
 				}
+			}
+			else if (material.key == "boulders")
+			{
+				// Tall boulders: 128x128 native frames, 512x512 in HD.
+				auto *decor = GAGCore::Toolkit::getSprite(material.decor.sprite);
+				REQUIRE(decor);
+				for (const auto &frames : {material.decor.full, material.decor.edge})
+					for (int frame : frames)
+					{
+						CHECK(decor->getW(frame) == TerrainVisual::MaximumDecorFrame);
+						CHECK(decor->getH(frame) == TerrainVisual::MaximumDecorFrame);
+						auto *hd = decor->baseFrame(frame);
+						REQUIRE(hd);
+						CHECK(hd->getW() == 512);
+						CHECK(hd->getH() == 512);
+					}
 			}
 			TerrainVisual::Recipe recipe;
 			recipe.corners.fill(id);
