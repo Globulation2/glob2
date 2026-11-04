@@ -5698,6 +5698,8 @@ AI से नहीं बना
 झाँवे का मैदान
 [frozen_lake]
 जमी हुई झील
+[windy_sand_dune]
+हवा से लहरदार टीले
 [terrain group water]
 पानी
 [terrain group sand]

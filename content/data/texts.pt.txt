@@ -5722,6 +5722,8 @@ Lajes de arenito
 Campo de pedra-pomes
 [frozen_lake]
 Lago congelado
+[windy_sand_dune]
+Dunas de vento
 [terrain group water]
 Água
 [terrain group sand]

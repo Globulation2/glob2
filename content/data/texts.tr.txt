@@ -5722,6 +5722,8 @@ Kumtaşı karolar
 Sünger taşı alanı
 [frozen_lake]
 Donmuş göl
+[windy_sand_dune]
+Rüzgâr dalgalı kumullar
 [terrain group water]
 Su
 [terrain group sand]

@@ -5722,6 +5722,8 @@ Cát trắng
 Bãi đá bọt
 [frozen_lake]
 Hồ đóng băng
+[windy_sand_dune]
+Đụn cát gợn gió
 [terrain group water]
 Nước
 [terrain group sand]

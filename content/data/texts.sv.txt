@@ -5722,6 +5722,8 @@ Sandstensplattor
 Pimpstensfält
 [frozen_lake]
 Frusen sjö
+[windy_sand_dune]
+Vindräfflade dyner
 [terrain group water]
 Vatten
 [terrain group sand]

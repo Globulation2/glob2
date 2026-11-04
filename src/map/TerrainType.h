@@ -51,7 +51,9 @@ enum TerrainType : std::uint16_t
 	SANDSTONE=33,
 	PUMICE=34,
 	FROZEN_LAKE=35,
-	TERRAIN_COUNT=36,
+	// Sand swept into wind ripples (Sand), format 195.
+	WINDY_SAND_DUNE=36,
+	TERRAIN_COUNT=37,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load

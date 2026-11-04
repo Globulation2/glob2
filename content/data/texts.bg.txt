@@ -5698,6 +5698,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Поле от пемза
 [frozen_lake]
 Замръзнало езеро
+[windy_sand_dune]
+Набраздени от вятъра дюни
 [terrain group water]
 Вода
 [terrain group sand]

@@ -5722,6 +5722,8 @@ Homokkő burkolólapok
 Horzsakőmező
 [frozen_lake]
 Befagyott tó
+[windy_sand_dune]
+Szélfodrozta dűnék
 [terrain group water]
 Víz
 [terrain group sand]

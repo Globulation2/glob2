@@ -5722,6 +5722,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Пемзовое поле
 [frozen_lake]
 Замёрзшее озеро
+[windy_sand_dune]
+Барханы с ветровой рябью
 [terrain group water]
 Вода
 [terrain group sand]

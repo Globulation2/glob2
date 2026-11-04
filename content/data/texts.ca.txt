@@ -5722,6 +5722,8 @@ Lloses de gres
 Camp de pedra tosca
 [frozen_lake]
 Llac glaçat
+[windy_sand_dune]
+Dunes de vent
 [terrain group water]
 Aigua
 [terrain group sand]

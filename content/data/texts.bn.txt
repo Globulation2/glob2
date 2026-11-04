@@ -5698,6 +5698,8 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 পিউমিস পাথরের প্রান্তর
 [frozen_lake]
 জমে যাওয়া হ্রদ
+[windy_sand_dune]
+বাতাসে ঢেউ খেলানো বালিয়াড়ি
 [terrain group water]
 জল
 [terrain group sand]

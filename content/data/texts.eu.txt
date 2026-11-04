@@ -5722,6 +5722,8 @@ Hareharrizko lauzak
 Apar-harrizko eremua
 [frozen_lake]
 Laku izoztua
+[windy_sand_dune]
+Haizeak uhindutako dunak
 [terrain group water]
 Ura
 [terrain group sand]

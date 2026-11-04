@@ -5722,6 +5722,8 @@ Losas de arenisca
 Campo de piedra pómez
 [frozen_lake]
 Lago helado
+[windy_sand_dune]
+Dunas de viento
 [terrain group water]
 Agua
 [terrain group sand]

@@ -296,6 +296,7 @@ TEST_CASE("terrain IDs of older files skip the retired shores and follow the cur
 	CHECK(R::currentTerrainId(TERRAIN_COUNT, SANDSTONE) == SANDSTONE);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT, PUMICE) == PUMICE);
 	CHECK(R::currentTerrainId(TERRAIN_COUNT, FROZEN_LAKE) == FROZEN_LAKE);
+	CHECK(R::currentTerrainId(TERRAIN_COUNT, WINDY_SAND_DUNE) == WINDY_SAND_DUNE);
 	CHECK(legacyFrameCorners(16) == std::array{SAND, SAND, SAND, GRASS});
 	CHECK(legacyFrameCorners(3) == std::array{GRASS, GRASS, GRASS, GRASS});
 	CHECK_FALSE(legacyFrameCorners(272));

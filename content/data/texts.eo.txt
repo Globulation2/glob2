@@ -5722,6 +5722,8 @@ Grejsaj platoj
 Pumika kampo
 [frozen_lake]
 Frostiĝinta lago
+[windy_sand_dune]
+Ventaj sabloondoj
 [terrain group water]
 Akvo
 [terrain group sand]

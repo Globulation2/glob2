@@ -5722,6 +5722,8 @@ AI 生成
 浮石地
 [frozen_lake]
 冰封湖面
+[windy_sand_dune]
+風紋沙丘
 [terrain group water]
 水
 [terrain group sand]

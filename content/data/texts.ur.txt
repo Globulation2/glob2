@@ -5698,6 +5698,8 @@ AI کی بنائی ہوئی نہیں
 جھانویں کا میدان
 [frozen_lake]
 منجمد جھیل
+[windy_sand_dune]
+ہوا سے لہردار ٹیلے
 [terrain group water]
 پانی
 [terrain group sand]
