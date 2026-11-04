@@ -5702,6 +5702,8 @@ Frossen innsjø
 Snøfokk
 [weathered_sandstone]
 Forvitret sandstein
+[hardpan]
+Hardskorpe
 [terrain group water]
 Vann
 [terrain group sand]

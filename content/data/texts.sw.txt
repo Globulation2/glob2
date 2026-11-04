@@ -5702,6 +5702,8 @@ Ziwa lililoganda
 Theluji iliyopeperushwa na upepo
 [weathered_sandstone]
 Mchanga-mawe uliomomonyoka
+[hardpan]
+Ganda gumu
 [terrain group water]
 Maji
 [terrain group sand]

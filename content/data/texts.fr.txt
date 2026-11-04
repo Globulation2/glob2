@@ -5726,6 +5726,8 @@ Lac gelé
 Neige balayée par le vent
 [weathered_sandstone]
 Grès érodé
+[hardpan]
+Croûte durcie
 [terrain group water]
 Eau
 [terrain group sand]

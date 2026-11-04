@@ -159,7 +159,7 @@ TEST_SUITE("BrushCatalog")
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
-		// Sandstone tiles close the path brushes, wind-swept snow (after pumice) the
+		// Sandstone tiles close the path brushes, hardpan (after wind-swept snow) the
 		// rough-ground brushes, the frozen lake the ice brushes and weathered sandstone
 		// the barren brushes.
 		const auto *paths = findBrushGroup(catalog, BrushSection::Terrain, "paths");
@@ -175,7 +175,7 @@ TEST_SUITE("BrushCatalog")
 		REQUIRE_FALSE(ice->entries.empty());
 		REQUIRE_FALSE(barren->entries.empty());
 		CHECK(paths->entries.back().id == "terrain/sandstone");
-		CHECK(rough->entries.back().id == "terrain/wind_swept_snow");
+		CHECK(rough->entries.back().id == "terrain/hardpan");
 		CHECK(ice->entries.back().id == "terrain/frozen_lake");
 		CHECK(barren->entries.back().id == "terrain/weathered_sandstone");
 

@@ -5726,6 +5726,8 @@ Zamrzlé jezero
 Navátý sníh
 [weathered_sandstone]
 Zvětralý pískovec
+[hardpan]
+Tvrdá krusta
 [terrain group water]
 Voda
 [terrain group sand]

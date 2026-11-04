@@ -128,9 +128,9 @@ Trail) plus every terrain-catalogue type (`boulders`, `hedge`, `thicket`, `ridge
 `scree`, `brick_path`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
 `spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`, the grass and
 sand looks `lush_grass`, `dry_grass`, `dune_sand` and `pale_sand`, then `sandstone`,
-`pumice`, `frozen_lake`, `wind_swept_snow` and `weathered_sandstone`). The looks share every rule of grass or sand and differ only in artwork and
+`pumice`, `frozen_lake`, `wind_swept_snow`, `weathered_sandstone` and `hardpan`). The looks share every rule of grass or sand and differ only in artwork and
 colours; sandstone tiles follow the path rules of road, brick path and boardwalk, and a
-pumice field the rough-ground rules of mud, mudflat and scree; a frozen lake plays exactly
+pumice field and hardpan the rough-ground rules of mud, mudflat and scree; a frozen lake plays exactly
 like ice, wind-swept snow exactly like deep snow, and weathered sandstone exactly like dirt. The earlier names
 `gravel`, `flower_meadow`, `marsh` and `dirt_track` are still accepted as aliases of
 `shale`, `heath`, `mudflat` and `brick_path` (`LEGACY_TERRAIN_NAMES` in

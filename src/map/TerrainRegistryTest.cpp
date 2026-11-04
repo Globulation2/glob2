@@ -288,6 +288,17 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(drifts->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeWeathered.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeWeathered.dump(), TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW));
+
+		// Format 197 numbers its definitions from 38, before hardpan.
+		auto beforeHardpan = Json::parse(registry->serialize());
+		for (auto &item : beforeHardpan["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_HARDPAN;
+		const auto slabs = TerrainRegistry::deserialize(beforeHardpan.dump(), TERRAIN_COUNT_BEFORE_HARDPAN);
+		CHECK(slabs->serialize() == registry->serialize());
+		CHECK(slabs->digest() == registry->digest());
+		CHECK(slabs->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeHardpan.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeHardpan.dump(), TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

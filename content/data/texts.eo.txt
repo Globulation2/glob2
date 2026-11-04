@@ -5726,6 +5726,8 @@ Frostiĝinta lago
 Ventblovita neĝo
 [weathered_sandstone]
 Eroziita grejso
+[hardpan]
+Malmola krusto
 [terrain group water]
 Akvo
 [terrain group sand]

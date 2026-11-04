@@ -5726,6 +5726,8 @@ Bevroren meer
 Verwaaide sneeuw
 [weathered_sandstone]
 Verweerde zandsteen
+[hardpan]
+Harde korst
 [terrain group water]
 Water
 [terrain group sand]

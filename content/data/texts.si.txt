@@ -5726,6 +5726,8 @@ Zamrznjeno jezero
 Zameten sneg
 [weathered_sandstone]
 Preperel peščenjak
+[hardpan]
+Trda skorja
 [terrain group water]
 Voda
 [terrain group sand]

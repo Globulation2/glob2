@@ -5726,6 +5726,8 @@ Frossen sø
 Snefygning
 [weathered_sandstone]
 Forvitret sandsten
+[hardpan]
+Hårdskorpe
 [terrain group water]
 Vand
 [terrain group sand]

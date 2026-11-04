@@ -5726,6 +5726,8 @@ Hồ đóng băng
 Tuyết gió thổi
 [weathered_sandstone]
 Sa thạch phong hóa
+[hardpan]
+Bãi đất cứng
 [terrain group water]
 Nước
 [terrain group sand]

@@ -94,7 +94,7 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 | Sand | warm fine grain | `sand_look` |
 | Barren (dirt, clay, shale, heath, weathered sandstone) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone` |
-| Rough (mud, mudflat, scree, pumice field) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
+| Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
 | Obstacles | tall raised decor | `terrain_decor.py` |
@@ -112,7 +112,9 @@ cell, ochre and grey in a checker. Mud is churned lumps and water-filled pits;
 mudflat is desiccated mud in big curled plates split by deep cracks,
 with salt bloom and a few damp sunken plates; scree is big jagged slabs heaped
 over one another, each tipped to its own brightness; pumice field is dark porous
-volcanic rock riddled with vesicles, beside lava and ember field. Frozen lake
+volcanic rock riddled with vesicles, beside lava and ember field; hardpan is pale
+baked crust in small, even, low pillows split by thin cracks, dimpled at their
+centres, with a few shallow damp hollows. Frozen lake
 plays exactly like ice: frosted teal lake ice with a few long white pressure
 cracks, trapped bubbles and frost patches, static and paler than any water.
 Wind-swept snow plays exactly like deep snow: one prevailing wind carves it into
@@ -451,7 +453,7 @@ without pair treatments. Classes, strongest first:
 | `molten` | smooth, wiggle 1536 / 64 px | 0 | – / – / 320 / – / 512 | lava, ember_field |
 | `still` | smooth, wiggle 1536 / 128 px | 0 | – / – / 320 / – / 640 | water, deep_water, dark_water |
 | `rock` | contextual | 50 | 384 / 896 / 192 / 448 / 192 | boulders, ridge_rock, outcrop, scree, shale, pumice, weathered_sandstone |
-| `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, mud, mudflat, deep_snow, wind_swept_snow, loam, moss |
+| `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, mud, mudflat, hardpan, deep_snow, wind_swept_snow, loam, moss |
 | `frozen` | contextual | 30 | 320 / 768 / 320 / 128 / 256 | ice, frozen_lake |
 | `brush` | contextual | 20 / `shore` | 320 / 768 / 320 / 384 / 512 | heath, spring_meadow |
 | `turf` | contextual | 10 / `shore` | 256 / 1024 / 320 / 512 / 512 | grass, lush_grass, dry_grass |
@@ -491,7 +493,7 @@ exception the classes cannot express, not the way to tune a material.
 | 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |
 | 2 | heath | 48 / 480 |
 | 2 | dirt, clay, shale, weathered_sandstone | 40 / 448 |
-| 1 | sand (existing), mud, mudflat, scree, pumice | no cast |
+| 1 | sand (existing), mud, mudflat, scree, pumice, hardpan | no cast |
 
 Casts stay within two to three pixels and near or under a third strength, as
 [Seams](terrain-rendering.md#seams) requires. Equal ranks cast nothing, so barren ground beside grass

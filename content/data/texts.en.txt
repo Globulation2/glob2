@@ -5702,6 +5702,8 @@ Frozen lake
 Wind-swept snow
 [weathered_sandstone]
 Weathered sandstone
+[hardpan]
+Hardpan
 [terrain group water]
 Water
 [terrain group sand]

@@ -6844,6 +6844,8 @@ Tasik beku
 Salji ditiup angin
 [weathered_sandstone]
 Batu pasir terluluhawa
+[hardpan]
+Tanah keras
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

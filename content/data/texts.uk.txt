@@ -5726,6 +5726,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Наметений вітром сніг
 [weathered_sandstone]
 Вивітрений пісковик
+[hardpan]
+Тверда кірка
 [terrain group water]
 Вода
 [terrain group sand]

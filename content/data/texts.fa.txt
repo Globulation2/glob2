@@ -5726,6 +5726,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 برف بادرُفته
 [weathered_sandstone]
 ماسه‌سنگ فرسوده
+[hardpan]
+سخت‌لایه
 [terrain group water]
 آب
 [terrain group sand]

@@ -366,3 +366,7 @@ static constexpr int FILE_FORMAT_VERSION_WIND_SWEPT_SNOW = 196;
 //! Built-in weathered sandstone: TERRAIN_COUNT grew from 37 to 38, so earlier files
 //! carry custom terrain IDs starting at 37 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_WEATHERED_SANDSTONE = 197;
+
+//! Built-in hardpan: TERRAIN_COUNT grew from 38 to 39, so earlier files carry custom
+//! terrain IDs starting at 38 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_HARDPAN = 198;

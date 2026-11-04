@@ -5726,6 +5726,8 @@ Llac glaçat
 Neu escombrada pel vent
 [weathered_sandstone]
 Gres erosionat
+[hardpan]
+Crosta endurida
 [terrain group water]
 Aigua
 [terrain group sand]

@@ -5702,6 +5702,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Навят сняг
 [weathered_sandstone]
 Изветрял пясъчник
+[hardpan]
+Твърда кора
 [terrain group water]
 Вода
 [terrain group sand]

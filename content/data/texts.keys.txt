@@ -2850,6 +2850,7 @@
 [frozen_lake]
 [wind_swept_snow]
 [weathered_sandstone]
+[hardpan]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]

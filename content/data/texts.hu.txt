@@ -5726,6 +5726,8 @@ Befagyott tó
 Szélfútta hó
 [weathered_sandstone]
 Mállott homokkő
+[hardpan]
+Kemény kéreg
 [terrain group water]
 Víz
 [terrain group sand]
