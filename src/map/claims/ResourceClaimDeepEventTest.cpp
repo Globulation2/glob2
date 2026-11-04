@@ -121,3 +121,22 @@ TEST_CASE("Admission loss is never salvaged by later replacement or fewer writte
     ResourceClaims::Experiment::TopKDeepSlot empty;CHECK(empty.retained()==0);CHECK_FALSE(empty.censored());
 }
 }
+
+TEST_CASE("Scalable capture keeps exact lowest priorities for every supported capacity" * doctest::test_suite("ResourceClaimTopKDeep"))
+{
+    using namespace ResourceClaims::Experiment;
+    CHECK_THROWS_AS(TopKDeepSlot(0),std::invalid_argument);
+    CHECK_THROWS_AS(TopKDeepSlot(17),std::invalid_argument);
+    for(unsigned k=1;k<=16;++k) {
+        TopKDeepSlot state(k);
+        for(Uint64 i=1;i<=41;++i) {
+            const auto slot=state.consider(100-i,i,0,true);
+            REQUIRE(slot>=0);CHECK(state.written(slot,i,"digest"));
+            CHECK(state.retained()==std::min<Uint64>(i,k));CHECK_FALSE(state.censored());
+        }
+        for(const auto& entry:state.entries)CHECK(entry.ordinal>41-k);
+        CHECK(state.eligible==41);CHECK(topKFinalLimit(k)==DeepRecordLimit*DeepStratumCount*k);
+        CHECK_NOTHROW(topKFilename(15,k-1,k));CHECK_THROWS_AS(topKFilename(15,k,k),std::invalid_argument);
+        state.excluded(true);CHECK(state.censored());
+    }
+}

@@ -120,7 +120,7 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified', 'resource_claims_deep_top_four', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified', 'resource_claims_deep_top_four', 'resource_claims_deep_top_k', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
@@ -155,6 +155,8 @@ class EngineJob:
             raise ValueError('active probe requires active new game or saved state')
         if 'resource_claims_deep_stratified' in config and (config['resource_claims_deep_stratified'] is not True or 'resource_claims_deep_context' not in config):
             raise ValueError('stratified capture requires explicit true and deep context')
+        if 'resource_claims_deep_top_k' in config and (type(config['resource_claims_deep_top_k']) is not int or not 1 <= config['resource_claims_deep_top_k'] <= 16 or config.get('resource_claims_deep_stratified') is not True or 'resource_claims_deep_top_four' in config):
+            raise ValueError('configured top-k requires integer1..16 and stratified, excludes legacy flag')
         if 'resource_claims_deep_top_four' in config and (config['resource_claims_deep_top_four'] is not True or config.get('resource_claims_deep_stratified') is not True):
             raise ValueError('top-four capture requires explicit true and stratified capture')
         if 'resource_claims_deep_context' in config:
@@ -263,7 +265,9 @@ class EngineJob:
                 *(['game', 'run'] if self.kind == 'game' else ['map', 'study', str(job['config']['generator'])]),
                 '--output-dir', str(out), '--profile', 'glob2-tournament-' + Path(attempt_dir).name]
         config, outputs = job['config'], job['outputs']
-        if config.get('resource_claims_deep_top_four') and bundle.get('capabilities', {}).get('resource_claims_deep_topk_version') != 3:
+        if 'resource_claims_deep_top_k' in config and (bundle.get('capabilities', {}).get('resource_claims_deep_topk_version') != 4 or bundle.get('capabilities', {}).get('resource_claims_deep_topk_max', 0) < config['resource_claims_deep_top_k']):
+            raise ValueError('bundle lacks configured V4 top-k capture')
+        if config.get('resource_claims_deep_top_four') and bundle.get('capabilities', {}).get('resource_claims_deep_topk_version') not in (3, 4):
             raise ValueError('bundle lacks V3 top-four capture')
         if config.get('resource_claims_deep_stratified') and bundle.get('capabilities', {}).get('resource_claims_deep_stratified_version') != 2:
             raise ValueError('bundle does not support stratified deep capture V2')
@@ -319,6 +323,8 @@ class EngineJob:
                 add('--resource-claims-deep-context', json.dumps(config['resource_claims_deep_context'], separators=(',', ':')))
                 if config.get('resource_claims_deep_stratified'):
                     args.append('--resource-claims-deep-stratified')
+                if 'resource_claims_deep_top_k' in config:
+                    add('--resource-claims-deep-top-k', config['resource_claims_deep_top_k'])
                 if config.get('resource_claims_deep_top_four'):
                     args.append('--resource-claims-deep-top-four')
             if 'resource_claims_active' in config:
@@ -466,11 +472,18 @@ class EngineJob:
         if result.get('status') == 'completed' and 'resource_claims_deep_context' in job['config']:
             from .claim_capture import read_capture, DESIGN, validate_manifest
             deep = path.parent / 'resource-claims-deep'
-            if (deep / 'manifest.json').stat().st_size > 65536:
+            if (deep / 'manifest.json').stat().st_size > (262144 if 'resource_claims_deep_top_k' in job['config'] else 65536):
                 raise ValueError('oversized deep manifest')
             manifest = json.loads((deep / 'manifest.json').read_text())
             context = job['config']['resource_claims_deep_context']
-            if job['config'].get('resource_claims_deep_top_four'):
+            if 'resource_claims_deep_top_k' in job['config']:
+                from .claim_capture_scalable import read_scalable_captures
+                if manifest.get('context') != context or manifest.get('top_k') != job['config']['resource_claims_deep_top_k']:
+                    raise ValueError('configured top-k context/count mismatch')
+                for _, _, _, capture in read_scalable_captures(deep, manifest, expected_provenance={k:v for k,v in context.items() if k != 'game_id'}):
+                    if capture is not None and capture[0].get('game_id') != context['game_id']:
+                        raise ValueError('configured top-k game identity mismatch')
+            elif job['config'].get('resource_claims_deep_top_four'):
                 from .claim_capture_topk import read_topk_captures
                 if manifest.get('context') != context:
                     raise ValueError('top-four deep context mismatch')

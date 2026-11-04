@@ -75,7 +75,7 @@ struct Probe::Impl
         bool deepSelected=false;
         Uint64 deepPriority=0;
         unsigned deepStratum=Experiment::DeepStratumCount;
-        unsigned deepRetainedSlot=0;bool deepTopFour=false;
+        unsigned deepRetainedSlot=0;bool deepTopFour=false;unsigned deepTopK=0;
         Uint64 inputReservation=0;
         Json deepContext;
         std::vector<Uint8> deepBytes;
@@ -415,6 +415,10 @@ struct Probe::Impl
 
     static std::string deepFilename(unsigned slot) {return "event-"+std::string(slot<10?"0":"")+std::to_string(slot)+".bin";}
 
+    unsigned topKCapacity() const {return config.deepTopK?config.deepTopK:Experiment::DeepTopK;}
+    const char* topKDesign() const {return config.deepTopK?Experiment::ScalableTopKDeepDesign:Experiment::TopKDeepDesign;}
+    Uint64 topKManifestLimit() const {return config.deepTopK?256*1024:64*1024;}
+
     void deepManifest(bool complete)
     {
         if(config.deepContext.empty())return;
@@ -424,7 +428,7 @@ struct Probe::Impl
                 const auto& r=topSlots[i];Json records=Json::array();const bool missing=r.censored();censored|=missing;
                 for(unsigned k=0;k<r.entries.size();++k) {
                     const auto& e=r.entries[k];if(!e.ordinal)continue;
-                    records.push_back(Json{{"slot",k},{"file",Experiment::topKFilename(i,k)},
+                    records.push_back(Json{{"slot",k},{"file",Experiment::topKFilename(i,k,topKCapacity())},
                         {"priority",e.priority},{"ordinal",e.ordinal},{"captured_ordinal",e.writtenOrdinal},
                         {"replacements",e.replacements},{"file_sha256",e.digest}});
                 }
@@ -438,17 +442,17 @@ struct Probe::Impl
                     {"weight_numerator",!missing && r.eligible?Json(r.eligible):Json(nullptr)},
                     {"weight_denominator",!missing && r.eligible?Json(r.retained()):Json(nullptr)}});
             }
-            const auto value=Json{{"version",3},{"top_k",Experiment::DeepTopK},{"complete",complete},{"censored",censored},
-                {"design",Experiment::TopKDeepDesign},{"context",deepContext},{"strata",std::move(strata)},
-                {"weight_contract","Ns/min(4,Ns) only for complete uncensored exact selected sets; nominal independent uniform hash priorities, ordinal tie-break; observed current-priority ties exposed"},
+            const auto value=Json{{"version",config.deepTopK?4:3},{"top_k",topKCapacity()},{"complete",complete},{"censored",censored},
+                {"design",topKDesign()},{"context",deepContext},{"strata",std::move(strata)},
+                {"weight_contract",config.deepTopK?"Ns/min(k,Ns) only for complete uncensored exact selected sets; nominal independent uniform hash priorities, ordinal tie-break; observed current-priority ties exposed":"Ns/min(4,Ns) only for complete uncensored exact selected sets; nominal independent uniform hash priorities, ordinal tie-break; observed current-priority ties exposed"},
                 {"ineligible_contested_no_xy",deepIneligibleNoXY},{"ordinary_missing_field",metrics.excludedMissingField},
                 {"encoded_pending_limit",Experiment::StratifiedEncodedPendingLimit},{"input_pending_limit",InputPendingLimit},
                 {"peak_input_reservations",peakInputReservations},{"input_admission_exclusions",inputAdmissionExclusions},
                 {"input_ineligible_exclusions",inputIneligibleExclusions},{"peak_input_payload",peakInputPayload},
                 {"input_accounting","vector-capacity-payload-plus-serialized-metadata; excludes allocator/json-node/map/experiment-set-node/shared-registry/pool/oracle-scratch RSS"},
-                {"final_limit",Experiment::TopKFinalLimit},{"transient_limit",Experiment::StratifiedTransientLimit}}.dump();
-            if(value.size()>64*1024)throw std::runtime_error("top-k manifest exceeds allowance");
-            Experiment::replaceTopKDeepFile(deepDirectory/"manifest.json",std::span(reinterpret_cast<const Uint8*>(value.data()),value.size()));return;
+                {"final_limit",Experiment::topKFinalLimit(topKCapacity())},{"transient_limit",Experiment::StratifiedTransientLimit}}.dump();
+            if(value.size()>topKManifestLimit())throw std::runtime_error("top-k manifest exceeds allowance");
+            Experiment::replaceTopKDeepFile(deepDirectory/"manifest.json",std::span(reinterpret_cast<const Uint8*>(value.data()),value.size()),topKCapacity(),config.deepTopK!=0);return;
         }
         if(config.deepStratified) {
             Json slots=Json::array();bool censored=false;
@@ -483,6 +487,8 @@ struct Probe::Impl
     {
         if (!config.sampleEvery || !config.maxSamples || !config.maxOutputBytes || !config.maxPending || config.maxPending>8)
             throw std::invalid_argument("invalid resource claim probe limits");
+        if(config.deepTopK && (!config.deepTopFour || config.deepTopK>Experiment::DeepTopKMaximum))throw std::invalid_argument("invalid scalable capture configuration");
+        if(config.deepTopK)for(auto& slot:topSlots)slot=Experiment::TopKDeepSlot(config.deepTopK);
         if(config.deepTopFour && !config.deepStratified)throw std::invalid_argument("top-four capture requires stratified capture");
         if(config.deepStratified && config.deepContext.empty())throw std::invalid_argument("stratified capture requires deep context");
         if (std::filesystem::exists(this->path)) throw std::runtime_error("resource claim probe output already exists");
@@ -649,7 +655,7 @@ struct Probe::Impl
                 metadata["event_id"]=std::to_string(work.seed)+":"+std::to_string(work.ordinal);
                 metadata["priority"]=work.deepPriority;
                 if(work.deepStratum<Experiment::DeepStratumCount) {
-                    metadata["deep_design"]=work.deepTopFour?Experiment::TopKDeepDesign:Experiment::StratifiedDeepDesign;
+                    metadata["deep_design"]=work.deepTopFour?(work.deepTopK?Experiment::ScalableTopKDeepDesign:Experiment::TopKDeepDesign):Experiment::StratifiedDeepDesign;
                     if(work.deepTopFour)metadata["deep_slot"]=work.deepRetainedSlot;
                     metadata["deep_stratum"]=work.deepStratum;
                 }
@@ -677,7 +683,7 @@ struct Probe::Impl
                 if(config.deepTopFour) {
                     auto& slot=topSlots.at(work.deepStratum);
                     if(slot.current(work.deepRetainedSlot,work.ordinal)) {
-                        Experiment::replaceTopKDeepFile(deepDirectory/Experiment::topKFilename(work.deepStratum,work.deepRetainedSlot),work.deepBytes);
+                        Experiment::replaceTopKDeepFile(deepDirectory/Experiment::topKFilename(work.deepStratum,work.deepRetainedSlot,topKCapacity()),work.deepBytes,topKCapacity(),config.deepTopK!=0);
                         slot.written(work.deepRetainedSlot,work.ordinal,digest);
                     }
                 } else if(config.deepStratified) {
@@ -699,7 +705,7 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
     Json patterns=Json::array();
     for (const auto& pattern:Experiment::pilotPatterns()) patterns.push_back(pattern.name);
     impl->write(Json{{"kind","schema"},{"version",1},{"timing_clock","worker-steady-clock-elapsed"},{"cohort","sampled-material-movement-and-pickup-decisions-before-choice"},
-        {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",config.deepTopFour?Experiment::TopKDeepDesign:config.deepStratified?Experiment::StratifiedDeepDesign:Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",config.deepTopFour?Experiment::TopKFinalLimit+Experiment::StratifiedTransientLimit:config.deepStratified?Experiment::StratifiedFinalLimit+Experiment::StratifiedTransientLimit:Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
+        {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",config.deepTopFour?impl->topKDesign():config.deepStratified?Experiment::StratifiedDeepDesign:Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",config.deepTopFour?Experiment::topKFinalLimit(impl->topKCapacity())+Experiment::StratifiedTransientLimit:config.deepStratified?Experiment::StratifiedFinalLimit+Experiment::StratifiedTransientLimit:Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
         {"sample_every",config.sampleEvery},{"max_samples",config.maxSamples},{"max_pending",config.maxPending},
         {"movement_audit_version",1},
         {"movement_only",config.movementOnly},{"decision_sampling_enabled",!config.movementOnly},
@@ -1050,7 +1056,7 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
     impl->pendingInputReservations+=inputReservation;
     impl->peakInputReservations=std::max(impl->peakInputReservations,impl->pendingInputReservations);
     work->deepSelected=deepSelected;work->deepPriority=deepPriority;work->deepStratum=stratum;
-    work->deepTopFour=impl->config.deepTopFour;work->deepRetainedSlot=retainedSlot>=0?unsigned(retainedSlot):0;
+    work->deepTopFour=impl->config.deepTopFour;work->deepTopK=impl->config.deepTopK;work->deepRetainedSlot=retainedSlot>=0?unsigned(retainedSlot):0;
     if(deepSelected)work->deepContext=impl->deepContext;
     using C=SimulationSnapshot::Component;
     const auto mask=SimulationSnapshot::bit(C::Catalogs)|SimulationSnapshot::bit(C::Terrain)|SimulationSnapshot::bit(C::Resources)

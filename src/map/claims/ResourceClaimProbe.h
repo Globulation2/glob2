@@ -23,6 +23,7 @@ public:
         Uint64 maxOutputBytes=64ull*1024*1024;
         unsigned maxPending=8;
         std::string deepContext; // Diagnostic JSON: source_revision,bundle_id,cohort_id,game_id.
+        unsigned deepTopK=0; // Explicit V4 capacity 1..16; zero keeps legacy capture.
         bool deepTopFour=false; // Explicit V3 diagnostic, requires deepStratified.
         bool deepStratified=false; // Explicit V2 diagnostic; deepContext alone remains V1.
         std::optional<Uint32> movementStartTick;
