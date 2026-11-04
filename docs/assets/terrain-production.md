@@ -28,6 +28,7 @@ ENC=artifacts/asset-tools/venv/bin/python
 "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
 "$ENC" tools/artwork/terrain_synth.py --emit-catalog        # material blocks and colour initialisers
 "$ENC" tools/artwork/terrain_synth.py --write-catalog       # refresh tileset.json from committed frames (no render)
+"$ENC" tools/artwork/terrain_glints.py --write-catalog      # then restore the fertile glint overlays
 "$ENC" tools/artwork/validate_material.py --all
 "$ENC" -m unittest discover -s tools/artwork -p 'test_*material*.py'
 "$ENC" -m unittest discover -s tools/artwork -p test_terrain_synth.py
@@ -211,6 +212,44 @@ value. The tool writes `content/data/gfx/terrain-decorN.png`
 for before/after fields with narrow strips, corners, isolated vegetation and a
 hole. Decor is presentation only: the minimap, the overview and
 the simulation ignore it.
+
+### Ground overlays: fertile glints
+
+Each terrain group carries one shared mark, and fertile ground (loam, moss,
+spring meadow) twinkles. The glints are a flat animated overlay, not an animated
+ground texture: fertile land covers large areas, and an overlay is drawn as
+sprites every frame without invalidating cached terrain pages. A material opts in
+with an `overlay` block:
+
+```json
+"overlay": {"sprite": "data/gfx/terrain-glint", "cycles": [[0, 1, 2, 3, -1, -1, -1, -1]],
+            "ticks": 3, "density_q8": 112}
+```
+
+- Only `density_q8`/256 of the cells draw an overlay at all, chosen by a
+  presentation hash of the cell, the material and the map's terrain seed.
+- A chosen cell keeps one of the `cycles` and starts it at its own hashed step,
+  so neighbouring glints never flash together. It advances one step every
+  `ticks` scene ticks (30 per second), so overlays pause with the game. A step of
+  `-1` draws nothing.
+- A cell draws an overlay only when all four corners resolve to materials with
+  one, so glints stay on their ground; a mixed cell picks one corner's material.
+- Overlays lie flat: the renderer draws every visible row's overlays before any
+  decor or resources, so raised decor reaching down from the row above still
+  covers them. Frames may be up to 64×64 and are centred on the cell, like decor.
+  All overlay blocks share one sprite. Editor swatches show one lit step per cell.
+- Timing and density can be tuned in tileset.json without regenerating frames.
+
+`tools/artwork/terrain_glints.py` draws one mote per layout at four brightness
+levels (rising, a four-pointed peak star with short diagonals, falling, fading)
+using integer arithmetic only, so every platform renders identical pixels. It
+writes `content/data/gfx/terrain-glintN.png`, the HD frames and
+`content-src/gfx/terrain-glint/provenance.json`; `--write-catalog` adds the overlay
+blocks, `--check` reproduces frames and blocks, and `--sheet`/`--gif` write a
+still and an animated review of the three fertile fields.
+`terrain_synth.py --write-catalog` rewrites fertile material blocks without
+their overlay, so run `terrain_glints.py --write-catalog` after it; `--check`
+reports a missing block.
 
 ### Periodic edges
 

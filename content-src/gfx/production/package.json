@@ -2764,12 +2764,12 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "38b3161e6b24a7e7c7b8b9fbffc38401c0ee228cb8f56eb04254e2c9bb5190e1"
+      "sha256": "fdaeb91c6fe304e87ab16b12a2a65d3c4f8114e08abe7bcb62d936a5347942d8"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "6d4fd2ffbbd65ef89a649660244ab47aab1ab7c8ab2d0cd27b3f418149522214"
+      "sha256": "cbe2a03ea2ed17eb64be9044dabc89314266745e8fec3d878e3abae569e7d892"
     },
     {
       "runtime": "README.md",
@@ -71875,6 +71875,166 @@
       "runtime": "terrain-weathered_sandstone255.png",
       "source": "procedural-materials/terrain-weathered_sandstone255.png",
       "sha256": "5aad593746c2920ebbac5f07f387d2583f48e91422486726f54983116664c09e"
+    },
+    {
+      "runtime": "terrain-glint0.png",
+      "source": "procedural-materials/terrain-glint0.png",
+      "sha256": "2a72201722d68afd888038a1ba7d846e6dcf222428b3620dd3ab98be7f119ede"
+    },
+    {
+      "runtime": "terrain-glint1.png",
+      "source": "procedural-materials/terrain-glint1.png",
+      "sha256": "ef182552f958e785600609b15a89c9ba8e85bc9bb6449020f3db5afae1fdcd82"
+    },
+    {
+      "runtime": "terrain-glint2.png",
+      "source": "procedural-materials/terrain-glint2.png",
+      "sha256": "49d0de11af7e8e9e84e24d88830143e72c29a4df019eade27d59ee2ed0177ce2"
+    },
+    {
+      "runtime": "terrain-glint3.png",
+      "source": "procedural-materials/terrain-glint3.png",
+      "sha256": "9796854d51e79f2a27940fa58ab53313e3c1569e0dbf06d4a036aad2cff10664"
+    },
+    {
+      "runtime": "terrain-glint4.png",
+      "source": "procedural-materials/terrain-glint4.png",
+      "sha256": "c771e324bce86264fe4e848e9907e92171be0fbb307bef0801497f9b8b19b898"
+    },
+    {
+      "runtime": "terrain-glint5.png",
+      "source": "procedural-materials/terrain-glint5.png",
+      "sha256": "cafb9338127311809bede41ebee0dbfd2e38b4672b6f7238f88544a6960801a9"
+    },
+    {
+      "runtime": "terrain-glint6.png",
+      "source": "procedural-materials/terrain-glint6.png",
+      "sha256": "e8f72f9479017fe97a70c0003a6d05ce96469a979aca2f75837b4d550cdc1f18"
+    },
+    {
+      "runtime": "terrain-glint7.png",
+      "source": "procedural-materials/terrain-glint7.png",
+      "sha256": "df1d999ab706e2dd5acd96e0bad808a5e95e308b586825619e802c6e60a2d880"
+    },
+    {
+      "runtime": "terrain-glint8.png",
+      "source": "procedural-materials/terrain-glint8.png",
+      "sha256": "d3db14d53db7ed25bb6a548533b0b58b947460df67c69cbfee981daa2acf8669"
+    },
+    {
+      "runtime": "terrain-glint9.png",
+      "source": "procedural-materials/terrain-glint9.png",
+      "sha256": "83d020f0334db40ad0e7bd20244abbbe10361c8968c774a1d5afe80ab3259330"
+    },
+    {
+      "runtime": "terrain-glint10.png",
+      "source": "procedural-materials/terrain-glint10.png",
+      "sha256": "209926d7b0deadf20e2aec324640294c2f6d718be96393a0c6aaa97ab0dd34aa"
+    },
+    {
+      "runtime": "terrain-glint11.png",
+      "source": "procedural-materials/terrain-glint11.png",
+      "sha256": "210e61691ea68298cdaf4de9b02c2530dcc6cfad862e65c2fb4bc85694fa5ce4"
+    },
+    {
+      "runtime": "terrain-glint12.png",
+      "source": "procedural-materials/terrain-glint12.png",
+      "sha256": "f1cf811d9b15d24def0f454c04d3fc582363ee6edfc898812bc4ffaba9f6d065"
+    },
+    {
+      "runtime": "terrain-glint13.png",
+      "source": "procedural-materials/terrain-glint13.png",
+      "sha256": "9478233e1e454e57c74f963a014a46a384d8eb9c29b9925826b48d74ee516f90"
+    },
+    {
+      "runtime": "terrain-glint14.png",
+      "source": "procedural-materials/terrain-glint14.png",
+      "sha256": "bb50e4a628de6cc8bf1abbf0f5e8e5ef757089725fd61de3a60280792695b84f"
+    },
+    {
+      "runtime": "terrain-glint15.png",
+      "source": "procedural-materials/terrain-glint15.png",
+      "sha256": "c669ca50a2849b45ed84c5ce78f016ff2ca6e7fc863a83483526f55a8bd5f54a"
+    },
+    {
+      "runtime": "terrain-glint16.png",
+      "source": "procedural-materials/terrain-glint16.png",
+      "sha256": "4dd66d5d4446bda5fa71ce09116dc6d7f82070e836c34712a9f07f2bec624212"
+    },
+    {
+      "runtime": "terrain-glint17.png",
+      "source": "procedural-materials/terrain-glint17.png",
+      "sha256": "e424cf50f6e1e2e019a559e8f4c8689847e857b6c3e3e2917f9f4020025bbe4e"
+    },
+    {
+      "runtime": "terrain-glint18.png",
+      "source": "procedural-materials/terrain-glint18.png",
+      "sha256": "bd905f40777a5872167f0d5f6bcb4f31027ce08ddea1e0b81b57b461a61b5377"
+    },
+    {
+      "runtime": "terrain-glint19.png",
+      "source": "procedural-materials/terrain-glint19.png",
+      "sha256": "b7d19b42217d1145493d87a75a645fa7f0cfb6b5848a071efe9e9c1eea07f53b"
+    },
+    {
+      "runtime": "terrain-glint20.png",
+      "source": "procedural-materials/terrain-glint20.png",
+      "sha256": "8c78e2bb93c2b72846015d2df6ca9d600dea4e1580e2610d610b21a26696b6e6"
+    },
+    {
+      "runtime": "terrain-glint21.png",
+      "source": "procedural-materials/terrain-glint21.png",
+      "sha256": "ea8a903357978385d66fb3de7d8b7583f988ed6e51a88e5880a87705323f033b"
+    },
+    {
+      "runtime": "terrain-glint22.png",
+      "source": "procedural-materials/terrain-glint22.png",
+      "sha256": "511e4d39d9712de3761722712fbc16c5cac6e9cd071298df8a1dec2d51bf0305"
+    },
+    {
+      "runtime": "terrain-glint23.png",
+      "source": "procedural-materials/terrain-glint23.png",
+      "sha256": "2db461fa0afc039807e21d3f87c10638659efe980abdf5e4f474efca2238fd51"
+    },
+    {
+      "runtime": "terrain-glint24.png",
+      "source": "procedural-materials/terrain-glint24.png",
+      "sha256": "0efea7e1d0460b2d8c6a819ac2b3c5ef1bb323225a5fdf5ba413255ccc0f559e"
+    },
+    {
+      "runtime": "terrain-glint25.png",
+      "source": "procedural-materials/terrain-glint25.png",
+      "sha256": "f61bc6ae9fbcd9d6d511a5915153f46931abcdadb2e8e6b34d974f65e3d0a003"
+    },
+    {
+      "runtime": "terrain-glint26.png",
+      "source": "procedural-materials/terrain-glint26.png",
+      "sha256": "48a6e1a8b30d08929e8e8ad280c463c1fca603aabb92a7b338297b9be24ec75c"
+    },
+    {
+      "runtime": "terrain-glint27.png",
+      "source": "procedural-materials/terrain-glint27.png",
+      "sha256": "41a9abaa57b78392b173347e9c51203b316f3c2f9e7ff88571d6d6a7e941bae8"
+    },
+    {
+      "runtime": "terrain-glint28.png",
+      "source": "procedural-materials/terrain-glint28.png",
+      "sha256": "f31edaee9d27cd99a81eb9c3a1599a272021235abe8156cce944778a91d5d522"
+    },
+    {
+      "runtime": "terrain-glint29.png",
+      "source": "procedural-materials/terrain-glint29.png",
+      "sha256": "a45e28f4ce69ea9fbeabd45172d45e1c2802ea672c633d99e187e1ca9b1e2a26"
+    },
+    {
+      "runtime": "terrain-glint30.png",
+      "source": "procedural-materials/terrain-glint30.png",
+      "sha256": "c749aabf0103c71c0bf653eb3e9680819ce61b4c986778c9523f2d54c7cb9a3d"
+    },
+    {
+      "runtime": "terrain-glint31.png",
+      "source": "procedural-materials/terrain-glint31.png",
+      "sha256": "ad3a2683a73a07e6a03ef9950f98c0956a6fee7b52ba944f7c9e570437e36eac"
     },
     {
       "runtime": "terrain-windy_sand_dune0.png",
