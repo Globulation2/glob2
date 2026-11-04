@@ -39,9 +39,14 @@ def factor_configs(control, patterns=()):
         ('selection', ('first_available', 'closest_geometric')),
     ):
         for value in values:
+            if control['source_version'] == 5 and factor == 'selection' and value != 'first_available':
+                continue
             add(f'{factor}-{str(value).lower()}', {factor: value})
     for asset in patterns:
-        add('pattern-' + asset['name'], {'pattern': asset['name'], 'pattern_digest': asset['digest']})
+        change = {'pattern': asset['name'], 'pattern_digest': asset['digest']}
+        if control['source_version'] == 5:
+            change.update(pattern_format=asset['format'], pattern_frame=asset['frame'])
+        add('pattern-' + asset['name'], change)
     if 'opportunistic_adjacent_pickup' in control:
         for enabled in (False,True):
             add('adjacent-pickup-'+str(enabled).lower(),{'opportunistic_adjacent_pickup':enabled})
@@ -53,7 +58,7 @@ def fractional_configs(control, factors):
     validate_policy(control)
     if not 3 <= len(factors) <= 5:
         raise ValueError('interaction confirmation requires 3 to 5 binary factors')
-    if any(key not in control or key in ('pattern', 'pattern_digest', 'source_version') or
+    if any(key not in control or key in ('pattern', 'pattern_digest', 'source_version', 'pattern_format', 'pattern_frame') or
            not isinstance(levels, list) or len(levels) != 2 or levels[0] == levels[1]
            for key, levels in factors.items()):
         raise ValueError('two distinct scalar levels per supported policy factor required')

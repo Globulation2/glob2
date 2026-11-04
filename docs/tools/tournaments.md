@@ -1028,6 +1028,18 @@ movement-only runs mean unobserved work. `raw_best_candidate_improvements` count
 provisional winners, while `raw_final_selections` counts a raw winner only after
 reservation commit succeeds (including a successful unchanged held claim).
 
+Experimental policy source version 5 uses explicitly typed `mixed-v1` entries,
+with `pattern_frame` set to `mapaxes` or `nearest-d4-v1`. Each entry encodes its
+initial unit/nearest-resource origin and its gradient/direct check separately;
+legacy five-byte probe arrays cannot be reinterpreted as this format. The pinned
+`resource_claims_policy_mixed_patterns` catalog binds name, format, frame and
+asset digest. Source 5 requires the adjacent-pickup boolean and recovery fields,
+rejects `direct_resource_probes`, and initially accepts only `first_available`.
+The digest includes the format/frame prefix and ordered little-endian signed
+coordinates plus tag bytes. Versions 1–4 retain their existing canonical
+identities. The illustrative registry entry is plumbing for evaluation, not an
+adopted policy or evidence of a gameplay improvement.
+
 Policy source version 3 adds the explicit boolean `opportunistic_adjacent_pickup`;
 it retains the version 2 recovery contract. When enabled, a worker can exchange a
 distant reservation for available material within pickup range. An already

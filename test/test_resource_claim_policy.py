@@ -47,7 +47,7 @@ class LivePolicy(unittest.TestCase):
                 with self.assertRaises(ValueError):validate_policy(current|{field:bad})
             with self.assertRaises(ValueError):validate_policy({k:v for k,v in current.items() if k!=field})
         with self.assertRaises(ValueError):validate_policy(current,caps|{'resource_claims_policy_config_version':3})
-        with self.assertRaises(ValueError):validate_policy(current,caps|{'resource_claims_policy_config_version':5})
+        with self.assertRaises(ValueError):validate_policy(current,caps|{'resource_claims_policy_config_version':6})
 
     def test_adjacent_pickup_policy_requires_explicit_version_and_boolean(self):
         legacy=policy()|{'source_version':2}|RECOVERY_V1

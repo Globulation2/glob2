@@ -2,6 +2,7 @@
 import hashlib
 import json
 import re
+import struct
 
 INTERVALS = {0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128}
 ENUMS = {
@@ -30,9 +31,9 @@ def validate_policy(policy, capabilities=None):
     if not isinstance(policy, dict):
         raise ValueError('claim policy requires all canonical configuration fields')
     version = policy.get('source_version')
-    if type(version) is not int or version not in (1, 2, 3, 4):
+    if type(version) is not int or version not in (1, 2, 3, 4, 5):
         raise ValueError('unsupported claim policy source version')
-    expected_keys = KEYS | (set(RECOVERY_V1) if version >= 2 else set()) | ({'opportunistic_adjacent_pickup'} if version >= 3 else set()) | ({'direct_resource_probes'} if version >= 4 else set())
+    expected_keys = KEYS | (set(RECOVERY_V1) if version >= 2 else set()) | ({'opportunistic_adjacent_pickup'} if version >= 3 else set()) | ({'direct_resource_probes'} if version == 4 else set()) | ({'pattern_format', 'pattern_frame'} if version == 5 else set())
     if set(policy) != expected_keys:
         raise ValueError('claim policy requires all canonical configuration fields')
     if version >= 2:
@@ -54,16 +55,24 @@ def validate_policy(policy, capabilities=None):
             raise ValueError('invalid claim policy bound: ' + key)
     if version >= 3 and type(policy['opportunistic_adjacent_pickup']) is not bool:
         raise ValueError('claim adjacent pickup option must be boolean')
-    if version >= 4 and type(policy['direct_resource_probes']) is not bool:
+    if version == 4 and type(policy['direct_resource_probes']) is not bool:
         raise ValueError('claim direct resource probes option must be boolean')
+    if version == 5:
+        if policy['pattern_format'] != 'mixed-v1' or policy['pattern_frame'] not in ('mapaxes', 'nearest-d4-v1'):
+            raise ValueError('unsupported mixed pattern format/frame')
+        if policy['selection'] != 'first_available':
+            raise ValueError('mixed policy currently requires first_available')
     if type(policy['use_primary_gradient']) is not bool:
         raise ValueError('claim primary gradient option must be boolean')
     if capabilities is not None:
         supported = capabilities.get('resource_claims_policy_config_version')
-        if type(supported) is not int or supported not in (1, 2, 3, 4) or supported < version or 'experimental' not in capabilities.get('resource_claims_active_policies', []):
+        if type(supported) is not int or supported not in (1, 2, 3, 4, 5) or supported < version or 'experimental' not in capabilities.get('resource_claims_active_policies', []):
             raise ValueError('build does not advertise claim policy config version ' + str(version))
-        assets = capabilities.get('resource_claims_policy_patterns', [])
-        if {'name': policy['pattern'], 'digest': policy['pattern_digest']} not in assets:
+        assets = capabilities.get('resource_claims_policy_mixed_patterns' if version == 5 else 'resource_claims_policy_patterns', [])
+        asset = {'name': policy['pattern'], 'digest': policy['pattern_digest']}
+        if version == 5:
+            asset.update(format=policy['pattern_format'], frame=policy['pattern_frame'])
+        if asset not in assets:
             raise ValueError('claim policy asset absent from pinned build catalog')
     return policy
 
@@ -89,3 +98,20 @@ def attested_policy_digest(resolved):
     if resolved.get('resource_claims_policy_digest') != identity:
         raise ValueError('engine experimental claim policy digest does not match config')
     return identity
+
+
+def mixed_pattern_digest(entries, frame):
+    """Exact mixed-v1 asset bytes; never reinterpret legacy 5-byte probes."""
+    if frame not in ('mapaxes', 'nearest-d4-v1'):
+        raise ValueError('unsupported mixed pattern frame')
+    data = bytearray(('mixed-v1:' + frame + ':').encode())
+    count = 0
+    for x, y, tag in entries:
+        if any(type(v) is not int for v in (x, y, tag)) or not (-32768 <= x <= 32767 and -32768 <= y <= 32767 and 0 <= tag <= 3):
+            raise ValueError('invalid mixed-v1 entry')
+        data.extend(struct.pack('<hhB', x, y, tag)); count += 1
+        if count > 65535:
+            raise ValueError('mixed asset entry bound')
+    if not count:
+        raise ValueError('empty mixed asset')
+    return hashlib.sha256(data).hexdigest()

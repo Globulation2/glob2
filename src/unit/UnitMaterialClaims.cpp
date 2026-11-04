@@ -1,3 +1,4 @@
+#include "map/claims/ClaimMixedPatterns.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Unit.h"
 #include "Map.h"
@@ -166,6 +167,39 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
         const bool nearestValid=nx<map.getW() && ny<map.getH();
         const auto delta=[](int a,int b,int size){return ((b-a+size/2)&(size-1))-size/2;};
         const int nearDx=nearestValid?delta(posX,nx,map.getW()):0,nearDy=nearestValid?delta(posY,ny,map.getH()):0;
+        if(config.sourceVersion==5) {
+            const auto nearest=nearestValid?Uint32(map.coordToIndex(nx,ny)):UINT32_MAX;
+            const unsigned frame=config.patternFrame==ResourceClaims::ClaimPolicyConfig::PatternFrame::NearestD4?
+                ResourceClaims::Mixed::frame(map.getW(),map.getH(),origin,nearest):0;
+            const auto probes=ResourceClaims::Mixed::view(config.pattern,frame);
+            const unsigned count=unsigned(probes.x.size());
+            const unsigned begin=recovering?recovery.firstProbe:0;
+            for(unsigned i=begin;i<count;++i) {
+                const auto tag=probes.tag[i];
+                if((tag&1) && !nearestValid)continue;
+                const int ox=(tag&1)?nx:posX,oy=(tag&1)?ny:posY;
+                const auto probe=Uint32(map.coordToIndex(ox+probes.x[i],oy+probes.y[i]));
+                const unsigned x=(tag&2)?probe%map.getW():destinations->x[probe];
+                const unsigned y=(tag&2)?probe/map.getW():destinations->y[probe];
+                if(x>=unsigned(map.getW()) || y>=unsigned(map.getH()))continue;
+                const auto access=Uint32(map.coordToIndex(x,y));
+                if(visited[access]==epoch)continue;
+                visited[access]=epoch;
+                if((!recovery.mayRoute || recovery.rejects(access)) && map.warpDistMax(posX,posY,x,y)>1)continue;
+                const auto resolved=resolveClaim(*this,access,&farmMemo);
+                if(!resolved || !map.materialClaimLedger().available(ResourceClaims::unitOwner(gid,scriptIdentity),
+                    resolved->claim,resolved->capacity,resolved->infinite))continue;
+                const auto oldTask=materialClaimTask;
+                if(!commitResolvedClaim(*this,*resolved))return false;
+                if(oldTask!=materialClaimTask || materialClaimPolicyState.probe==UINT32_MAX) {
+                    materialClaimPolicyState.probe=probe;
+                    map.finishClaimRecoverySelection(*this,i,count);
+                }
+                return true;
+            }
+            if(recovery.mayRoute && !activeMaterialClaim)map.finishClaimRecoverySelection(*this,count,count);
+            return false;
+        }
         unsigned octant=0;
         if(nearDx || nearDy) {
             if(std::abs(nearDx)>=2*std::abs(nearDy))octant=nearDx>=0?0:4;
@@ -248,7 +282,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
     for(std::size_t i=0;i<pattern.x.size();++i) {
         const auto probe=map.coordToIndex(posX+pattern.x[i],posY+pattern.y[i]);
         const auto x=destinations->x[probe],y=destinations->y[probe];
-        if(x>=map.getW() || y>=map.getH())continue;
+        if(x>=unsigned(map.getW()) || y>=unsigned(map.getH()))continue;
         const auto access=Uint32(map.coordToIndex(x,y));
         if(visited[access]==epoch)continue;
         visited[access]=epoch;

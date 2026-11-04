@@ -1,3 +1,4 @@
+#include "map/claims/ClaimMixedPatterns.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
@@ -1182,7 +1183,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_shadow_version\":1,\"material_destinations_version\":1,\"resource_claims_deep_version\":1,\"resource_claims_deep_stratified_version\":2,\"resource_claims_deep_topk_version\":5,\"resource_claims_deep_topk_max\":64,\"resource_claims_deep_missing_version\":2,\"resource_claims_deep_missing_max\":64,\"resource_claims_capture_only_version\":1,\"resource_claims_probe_version\":2,\"resource_claims_movement_audit_version\":1,\"resource_claims_movement_only_version\":1,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":4,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"resource_claims_shadow_version\":1,\"material_destinations_version\":1,\"resource_claims_deep_version\":1,\"resource_claims_deep_stratified_version\":2,\"resource_claims_deep_topk_version\":5,\"resource_claims_deep_topk_max\":64,\"resource_claims_deep_missing_version\":2,\"resource_claims_deep_missing_max\":64,\"resource_claims_capture_only_version\":1,\"resource_claims_probe_version\":2,\"resource_claims_movement_audit_version\":1,\"resource_claims_movement_only_version\":1,\"resource_claims_active_policies\":[\"prototype-stationary-v1\",\"experimental\"],\"resource_claims_policy_config_version\":5,\"ai_telemetry_version\":1,\"performance_telemetry_version\":2,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"resource_claims_policy_patterns\":";
 
             // Config asset identities are frozen by the planner before dispatch.
             // This catalog path is diagnostic setup, never a simulation hot loop.
@@ -1192,7 +1193,17 @@ int runHeadlessCommand(const Cli::Request &request)
                 const auto canonical=nlohmann::json::parse(config.canonicalJson());
                 policyPatterns.push_back({{"name",pattern.name},{"digest",canonical.at("pattern_digest")}});
             }
-            std::cout << policyPatterns.dump() << ",\"resource_claims_policy_default\":"
+            nlohmann::json mixedPatterns=nlohmann::json::array();
+            for(const auto frame:{ResourceClaims::ClaimPolicyConfig::PatternFrame::MapAxes,
+                                  ResourceClaims::ClaimPolicyConfig::PatternFrame::NearestD4}) {
+                ResourceClaims::ClaimPolicyConfig config;config.sourceVersion=5;
+                config.pattern=std::string(ResourceClaims::Mixed::IllustrativeName);config.patternFrame=frame;
+                const auto canonical=nlohmann::json::parse(config.canonicalJson());
+                mixedPatterns.push_back({{"name",config.pattern},{"format",canonical.at("pattern_format")},
+                    {"frame",canonical.at("pattern_frame")},{"digest",canonical.at("pattern_digest")}});
+            }
+            std::cout << policyPatterns.dump() << ",\"resource_claims_policy_mixed_patterns\":" << mixedPatterns.dump()
+                << ",\"resource_claims_policy_default\":"
                 << ResourceClaims::ClaimPolicyConfig{}.canonicalJson() << ",\"ais\":[";
 
 			bool comma=false;
