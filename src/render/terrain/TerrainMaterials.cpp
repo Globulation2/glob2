@@ -274,6 +274,27 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				(v.decor.connectedCorners && v.decor.connectedInterior.size() % 16 == 0),
 				"connected_interior needs connected_corners and equal variants per colour");
 		}
+		if (m.contains("overlay"))
+		{
+			const auto &o = m.at("overlay");
+			require(o.is_object(), "overlay must be an object");
+			v.overlay.sprite = dataPath(o.at("sprite"));
+			const auto &cycles = o.at("cycles");
+			require(cycles.is_array() && !cycles.empty() && cycles.size() <= 64,
+					"overlay cycles must be a non-empty array of at most 64 cycles");
+			for (const auto &cycle : cycles)
+			{
+				require(cycle.is_array() && !cycle.empty() && cycle.size() <= 64,
+						"overlay cycle must be a non-empty array of at most 64 steps");
+				auto &steps = v.overlay.cycles.emplace_back();
+				for (const auto &frame : cycle)
+					steps.push_back(integerInRange(frame, -1, 65535));
+				require(std::any_of(steps.begin(), steps.end(), [](int f) { return f >= 0; }),
+						"overlay cycle must draw at least one frame");
+			}
+			v.overlay.ticks = integerInRange(o.value("ticks", nlohmann::json(1)), 1, 65535);
+			v.overlay.densityQ8 = integerInRange(o.value("density_q8", nlohmann::json(256)), 1, 256);
+		}
 		v.animationFrames = integerInRange(m.value("animation_frames", nlohmann::json(1)), 1, 256);
 		v.animationTicks = integerInRange(m.value("animation_ticks", nlohmann::json(1)), 1,
 										  std::numeric_limits<int>::max());
@@ -420,6 +441,19 @@ int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t se
 		return -1;
 	// A salt distinct from the ground variant's, so the two choices are independent.
 	return frames[hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % frames.size()];
+}
+int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t tick, std::uint32_t seed) const
+{
+	const auto &o = materials[id].overlay;
+	if (o.cycles.empty())
+		return -1;
+	// Distinct salts keep the chosen cells, their cycles and their phases independent.
+	const std::uint32_t salt = materials[id].salt ^ mapSeedSalt(seed);
+	if (int(hash(x, y, salt ^ 0x6a1170u) & 255u) >= o.densityQ8)
+		return -1;
+	const auto &cycle = o.cycles[hash(x, y, salt ^ 0x6a1171u) % o.cycles.size()];
+	const std::uint32_t step = tick / std::uint32_t(o.ticks) + hash(x, y, salt ^ 0x6a1172u);
+	return cycle[step % cycle.size()];
 }
 namespace
 {
