@@ -120,6 +120,25 @@ TEST_SUITE("TerrainMaterials")
 		}
 	}
 
+	TEST_CASE("tall decor grows upward from its cell; frames up to 64 px stay centred")
+	{
+		using namespace TerrainVisual;
+		// Frames up to 64 px are centred on the 32 px cell, as before.
+		CHECK(decorOffsetX(64) == 16);
+		CHECK(decorOffsetY(64) == 16);
+		CHECK(decorOffsetY(48) == 8);
+		CHECK(decorOffsetY(32) == 0);
+		// Taller frames keep the 64 px frame's bottom, 16 px below the cell.
+		CHECK(decorOffsetY(96) == 48);
+		CHECK(decorOffsetY(MaximumDecorFrame) == 80);
+		CHECK(MaximumDecorFrame - 32 - decorOffsetY(MaximumDecorFrame) == 16);
+		CHECK(decorOffsetX(MaximumDecorFrame) == 48);
+		DecorReach reach;
+		reach.include(32, 64);
+		CHECK((reach.up == 16 && reach.down == 16 && reach.side == 0));
+		reach.include(128, 128);
+		CHECK((reach.up == 80 && reach.down == 16 && reach.side == 48));
+	}
 	TEST_CASE("connected foliage rejects incomplete corner groups")
 	{
 		glob2test::HeadlessGlobals globals;

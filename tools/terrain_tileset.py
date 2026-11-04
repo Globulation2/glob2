@@ -328,8 +328,8 @@ def _validate(document, root):
                     integer(frame, 0, 65535, "Decor frame")
                     source = assets(root) / f"{decor_sprite.as_posix()}{frame}.png"
                     with Image.open(source) as image:
-                        if image.width > 64 or image.height > 64:
-                            raise ValueError(f"Decor frame larger than 64x64: {source}")
+                        if image.width > 128 or image.height > 128:
+                            raise ValueError(f"Decor frame larger than 128x128: {source}")
             if "connected_corners" in decor:
                 if not isinstance(decor["connected_corners"], bool):
                     raise ValueError("connected_corners must be a boolean")
