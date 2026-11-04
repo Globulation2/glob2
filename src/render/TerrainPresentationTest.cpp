@@ -2082,7 +2082,7 @@ TEST_SUITE("TerrainValidation")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
-		REQUIRE(types.size() == 31);
+		REQUIRE(types.size() == 35);
 		for (std::size_t n = 0; n < types.size(); ++n)
 		{
 			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..27 are rendered
@@ -2164,7 +2164,7 @@ TEST_SUITE("TerrainValidation")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				keys.push_back(terrainPresentation(TerrainType(i)).name);
-		REQUIRE(keys.size() == 31);
+		REQUIRE(keys.size() == 35);
 		// One 4x composed tile per catalogue material, six per row.
 		GAGCore::DrawableSurface sheet(6 * 128, 6 * 128);
 		for (std::size_t n = 0; n < keys.size(); ++n)

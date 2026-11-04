@@ -196,6 +196,7 @@ def _validate(document, root):
     materials = {}
     sources = {}
     decor_sprites = set()
+    overlay_sprites = set()
     for m in document["materials"]:
         if (
             not isinstance(m["key"], str)
@@ -333,9 +334,32 @@ def _validate(document, root):
             if "connected_interior" in decor and not decor.get("connected_corners"):
                 raise ValueError("connected_interior needs connected_corners")
             decor_sprites.add(decor["sprite"])
+        if "overlay" in m:
+            overlay = m["overlay"]
+            overlay_sprite = data_path(overlay["sprite"], "Overlay sprite")
+            cycles = overlay.get("cycles")
+            if not isinstance(cycles, list) or not 1 <= len(cycles) <= 64:
+                raise ValueError("Overlay cycles must be a non-empty array of at most 64 cycles")
+            for cycle in cycles:
+                if not isinstance(cycle, list) or not 1 <= len(cycle) <= 64:
+                    raise ValueError("Overlay cycle must be a non-empty array of at most 64 steps")
+                if all(integer(frame, -1, 65535, "Overlay frame") < 0 for frame in cycle):
+                    raise ValueError("Overlay cycle must draw at least one frame")
+                for frame in cycle:
+                    if frame < 0:
+                        continue
+                    source = assets(root) / f"{overlay_sprite.as_posix()}{frame}.png"
+                    with Image.open(source) as image:
+                        if image.width > 64 or image.height > 64:
+                            raise ValueError(f"Overlay frame larger than 64x64: {source}")
+            integer(overlay.get("ticks", 1), 1, 65535, "Overlay ticks")
+            integer(overlay.get("density_q8", 256), 1, 256, "Overlay density")
+            overlay_sprites.add(overlay["sprite"])
         materials[m["key"]] = m
     if len(decor_sprites) > 1:
         raise ValueError("All decor blocks must share one sprite")
+    if len(overlay_sprites) > 1:
+        raise ValueError("All overlay blocks must share one sprite")
     if not 0 < len(materials) < 65536:
         raise ValueError("Invalid material count")
     if not isinstance(document["bindings"], dict):

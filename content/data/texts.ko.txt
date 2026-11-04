@@ -5726,6 +5726,10 @@ AI 생성 아님
 바람에 깎인 눈
 [weathered_sandstone]
 풍화된 사암
+[windy_sand_dune]
+바람 물결 사구
+[hardpan]
+경반
 [terrain group water]
 물
 [terrain group sand]

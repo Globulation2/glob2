@@ -541,6 +541,9 @@
         "weathered_sandstone": {
           "$ref": "#/$defs/coverage"
         },
+        "hardpan": {
+          "$ref": "#/$defs/coverage"
+        },
         "tundra": {
           "$ref": "#/$defs/coverage"
         },

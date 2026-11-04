@@ -2850,6 +2850,8 @@
 [frozen_lake]
 [wind_swept_snow]
 [weathered_sandstone]
+[windy_sand_dune]
+[hardpan]
 [tundra]
 [terrain group water]
 [terrain group sand]

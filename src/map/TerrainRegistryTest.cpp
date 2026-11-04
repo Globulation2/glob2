@@ -289,16 +289,38 @@ TEST_SUITE("TerrainRegistry")
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeWeathered.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeWeathered.dump(), TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW));
 
-		// Format 197 numbers its definitions from 38, before tundra.
-		auto beforeTundra = Json::parse(registry->serialize());
-		for (auto &item : beforeTundra["terrains"])
-			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_TUNDRA;
-		const auto weathered = TerrainRegistry::deserialize(beforeTundra.dump(), TERRAIN_COUNT_BEFORE_TUNDRA);
+		// Format 197 numbers its definitions from 38, before windy sand dune.
+		auto beforeDunes = Json::parse(registry->serialize());
+		for (auto &item : beforeDunes["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE;
+		const auto weathered = TerrainRegistry::deserialize(beforeDunes.dump(), TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE);
 		CHECK(weathered->serialize() == registry->serialize());
 		CHECK(weathered->digest() == registry->digest());
 		CHECK(weathered->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeDunes.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeDunes.dump(), TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE));
+
+		// Format 198 numbers its definitions from 39, before hardpan.
+		auto beforeHardpan = Json::parse(registry->serialize());
+		for (auto &item : beforeHardpan["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_HARDPAN;
+		const auto dunes = TerrainRegistry::deserialize(beforeHardpan.dump(), TERRAIN_COUNT_BEFORE_HARDPAN);
+		CHECK(dunes->serialize() == registry->serialize());
+		CHECK(dunes->digest() == registry->digest());
+		CHECK(dunes->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeHardpan.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeHardpan.dump(), TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE));
+
+		// Format 199 numbers its definitions from 40, before tundra.
+		auto beforeTundra = Json::parse(registry->serialize());
+		for (auto &item : beforeTundra["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_TUNDRA;
+		const auto crust = TerrainRegistry::deserialize(beforeTundra.dump(), TERRAIN_COUNT_BEFORE_TUNDRA);
+		CHECK(crust->serialize() == registry->serialize());
+		CHECK(crust->digest() == registry->digest());
+		CHECK(crust->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeTundra.dump()));
-		CHECK_THROWS(TerrainRegistry::deserialize(beforeTundra.dump(), TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeTundra.dump(), TERRAIN_COUNT_BEFORE_HARDPAN));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

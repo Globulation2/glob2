@@ -5726,6 +5726,10 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 ثلج تذروه الرياح
 [weathered_sandstone]
 حجر رملي متآكل
+[windy_sand_dune]
+كثبان رملية متموجة بالرياح
+[hardpan]
+قشرة صلبة
 [terrain group water]
 ماء
 [terrain group sand]

@@ -5702,6 +5702,10 @@ AI से नहीं बना
 हवा से उड़ी बर्फ़
 [weathered_sandstone]
 अपक्षयित बलुआ पत्थर
+[windy_sand_dune]
+हवा से लहरदार टीले
+[hardpan]
+कठोर परत
 [terrain group water]
 पानी
 [terrain group sand]
