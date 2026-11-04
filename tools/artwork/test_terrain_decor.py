@@ -129,16 +129,19 @@ class TerrainDecor(unittest.TestCase):
         # pixels above the bottom edge, centred horizontally.
         cell_left, cell_top = decor.offset_x(n) * decor.SCALE, decor.offset_y(n) * decor.SCALE
         self.assertEqual((cell_left, cell_top), (48 * decor.SCALE, 80 * decor.SCALE))
+        tops = []
         for index, (_, hd) in enumerate(frames[:decor.FULL]):
-            alpha = hd.getchannel("A")
-            pixels = alpha.load()
+            pixels = hd.getchannel("A").load()
             body_top = min(y for y in range(hd.height) for x in range(0, hd.width, 2) if pixels[x, y] > 240)
             shadow_right = max(x for x in range(hd.width) for y in range(0, hd.height, 2) if 20 < pixels[x, y] < 200)
+            tops.append(body_top)
             with self.subTest(frame=index):
-                # Every full frame rises over half a cell above its own cell...
-                self.assertLess(body_top, cell_top - 16 * decor.SCALE)
+                # Every full frame rises above its own cell into the row above...
+                self.assertLess(body_top, cell_top)
                 # ...and throws a shadow well past the cell's right edge.
                 self.assertGreater(shadow_right, cell_left + (32 + 8) * decor.SCALE)
+        # The tallest stand most of a cell above their own.
+        self.assertLess(min(tops), cell_top - 24 * decor.SCALE)
 
     def test_objects_rise_above_their_shadow(self):
         """Three-quarter view: opaque body mass sits higher in the frame than

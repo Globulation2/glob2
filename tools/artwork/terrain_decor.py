@@ -468,11 +468,13 @@ def boulder_height(rng, r, kind, edge):
     if kind == "rubble":
         lo, hi = 0.3, 0.45
     elif r > 50:
-        lo, hi = 1.7, 2.4    # the anchor stands a cell or more above its base
+        lo, hi = 1.9, 2.6    # the anchor stands well over a cell above its base
     elif r > 40:
-        lo, hi = 1.4, 2.0
+        lo, hi = 1.7, 2.3
+    elif r > 32:
+        lo, hi = 1.6, 2.2
     else:
-        lo, hi = 1.1, 1.7
+        lo, hi = 1.5, 2.1
     return r * rng.uniform(lo, hi) * (0.75 if edge else 1.0)
 
 
