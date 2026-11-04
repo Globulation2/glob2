@@ -5732,6 +5732,8 @@ Dunes de vent
 Crosta endurida
 [volcanic_ash]
 Cendra volcànica
+[glacier_ice]
+Gel de glacera
 [terrain group water]
 Aigua
 [terrain group sand]

@@ -5732,6 +5732,8 @@ AI 생성 아님
 경반
 [volcanic_ash]
 화산재
+[glacier_ice]
+빙하 얼음
 [terrain group water]
 물
 [terrain group sand]

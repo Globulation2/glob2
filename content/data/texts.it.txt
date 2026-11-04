@@ -5732,6 +5732,8 @@ Dune increspate dal vento
 Crosta indurita
 [volcanic_ash]
 Cenere vulcanica
+[glacier_ice]
+Ghiaccio di ghiacciaio
 [terrain group water]
 Acqua
 [terrain group sand]

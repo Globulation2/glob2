@@ -5732,6 +5732,8 @@ Dunes ridées par le vent
 Croûte durcie
 [volcanic_ash]
 Cendre volcanique
+[glacier_ice]
+Glace de glacier
 [terrain group water]
 Eau
 [terrain group sand]

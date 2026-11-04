@@ -5732,6 +5732,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Твёрдая корка
 [volcanic_ash]
 Вулканический пепел
+[glacier_ice]
+Ледниковый лёд
 [terrain group water]
 Вода
 [terrain group sand]

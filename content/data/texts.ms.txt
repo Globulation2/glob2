@@ -6850,6 +6850,8 @@ Gumuk pasir berangin
 Tanah keras
 [volcanic_ash]
 Abu gunung berapi
+[glacier_ice]
+Ais glasier
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

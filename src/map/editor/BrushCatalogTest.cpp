@@ -160,9 +160,9 @@ TEST_SUITE("BrushCatalog")
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
-		// Sandstone tiles close the path brushes, hardpan (after wind-swept snow) the
-		// rough-ground brushes, the frozen lake the ice brushes and tundra (after
-		// weathered sandstone) the barren brushes.
+		// Sandstone tiles close the path brushes, hardpan the rough-ground brushes,
+		// glacier ice (after wind-swept snow) the ice brushes and volcanic ash the
+		// barren brushes.
 		const auto *paths = findBrushGroup(catalog, BrushSection::Terrain, "paths");
 		const auto *rough = findBrushGroup(catalog, BrushSection::Terrain, "rough");
 		const auto *ice = findBrushGroup(catalog, BrushSection::Terrain, "ice");
@@ -177,7 +177,8 @@ TEST_SUITE("BrushCatalog")
 		REQUIRE_FALSE(barren->entries.empty());
 		CHECK(paths->entries.back().id == "terrain/sandstone");
 		CHECK(rough->entries.back().id == "terrain/hardpan");
-		CHECK(ice->entries.back().id == "terrain/wind_swept_snow");
+		CHECK(ice->entries.back().id == "terrain/glacier_ice");
+		CHECK(ice->entries[ice->entries.size() - 2].id == "terrain/wind_swept_snow");
 		CHECK(barren->entries.back().id == "terrain/volcanic_ash");
 
 		// Resources: every registry entry, foundation ones included, with placement

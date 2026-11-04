@@ -5732,6 +5732,8 @@ Ventaj sabloondoj
 Malmola krusto
 [volcanic_ash]
 Vulkana cindro
+[glacier_ice]
+Glaĉera glacio
 [terrain group water]
 Akvo
 [terrain group sand]

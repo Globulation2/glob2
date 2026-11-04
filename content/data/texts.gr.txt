@@ -5732,6 +5732,8 @@ CPU %0%
 Σκληρή κρούστα
 [volcanic_ash]
 Ηφαιστειακή τέφρα
+[glacier_ice]
+Πάγος παγετώνα
 [terrain group water]
 Νερό
 [terrain group sand]

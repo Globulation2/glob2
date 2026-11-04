@@ -5732,6 +5732,8 @@ Rüzgâr dalgalı kumullar
 Sert kabuk
 [volcanic_ash]
 Volkanik kül
+[glacier_ice]
+Buzul buzu
 [terrain group water]
 Su
 [terrain group sand]

@@ -5732,6 +5732,8 @@ AI 生成
 硬壳地
 [volcanic_ash]
 火山灰
+[glacier_ice]
+冰川冰
 [terrain group water]
 水
 [terrain group sand]

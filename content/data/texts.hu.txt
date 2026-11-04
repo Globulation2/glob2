@@ -5732,6 +5732,8 @@ Szélfodrozta dűnék
 Kemény kéreg
 [volcanic_ash]
 Vulkáni hamu
+[glacier_ice]
+Gleccserjég
 [terrain group water]
 Víz
 [terrain group sand]

@@ -90,7 +90,7 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 | Grass | baseline, no mark | |
 | Fertile (loam, moss, spring meadow) | warm, saturated ground | |
 | Water, deep water, lava | reserved colour | |
-| Snow and ice (ice, deep snow, wind-swept snow, frozen lake) | reserved cold white and pale teal | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow) |
+| Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
 | Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone` |
@@ -122,6 +122,9 @@ baked crust in small, even, low pillows split by thin cracks, dimpled at their
 centres, with a few shallow damp hollows. Frozen lake
 plays exactly like ice: frosted teal lake ice with a few long white pressure
 cracks, trapped bubbles and frost patches, static and paler than any water.
+Glacier ice also plays exactly like ice: bright cyan-blue depth in broad calm
+plates, crossed by about two long kinked white fractures per tile that throw a
+feathered glow to one side, with rare large flattened bubbles and fine rime.
 Wind-swept snow plays exactly like deep snow: one prevailing wind carves it into
 drifts about a tile apart, each a long lit windward slope rising to a crisp
 bright crest over a short lavender lee shadow, with quiet flats and faint ripples
@@ -462,7 +465,7 @@ without pair treatments. Classes, strongest first:
 | `still` | smooth, wiggle 1536 / 128 px | 0 | – / – / 320 / – / 640 | water, deep_water, dark_water |
 | `rock` | contextual | 50 | 384 / 896 / 192 / 448 / 192 | boulders, ridge_rock, outcrop, scree, shale, pumice, weathered_sandstone |
 | `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, volcanic_ash, mud, mudflat, hardpan, deep_snow, wind_swept_snow, loam, moss |
-| `frozen` | contextual | 30 | 320 / 768 / 320 / 128 / 256 | ice, frozen_lake |
+| `frozen` | contextual | 30 | 320 / 768 / 320 / 128 / 256 | ice, frozen_lake, glacier_ice |
 | `brush` | contextual | 20 / `shore` | 320 / 768 / 320 / 384 / 512 | heath, tundra, spring_meadow |
 | `turf` | contextual | 10 / `shore` | 256 / 1024 / 320 / 512 / 512 | grass, lush_grass, dry_grass |
 | `sand` | contextual | 10 / `beach` | 256 / 1024 / 320 / 512 / 512 | sand, dune_sand, pale_sand |
@@ -495,7 +498,7 @@ exception the classes cannot express, not the way to tune a material.
 | 4 | boulders, hedge, thicket | 88 / 832, a sense of height on the grass side |
 | 4 | ridge_rock, outcrop | 72 / 768 |
 | 4 | lava, ember_field | no cast; scorch fringe `[214,110,40]` 128/640 and `[160,80,40]` 96/512 |
-| 4 | ice (existing), frozen_lake | 64 / 640 with frost fringe |
+| 4 | ice (existing), frozen_lake, glacier_ice | 64 / 640 with frost fringe |
 | 3 | road (existing), brick_path, boardwalk, sandstone | 48 / 512 |
 | 3 | deep_snow, wind_swept_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
 | 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |

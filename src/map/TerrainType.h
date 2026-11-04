@@ -63,7 +63,9 @@ enum TerrainType : std::uint16_t
 	TUNDRA=40,
 	// Dark volcanic ash (Barren, like dirt), format 201.
 	VOLCANIC_ASH=41,
-	TERRAIN_COUNT=42,
+	// Cracked blue glacier ice (Ice, like ice), format 202.
+	GLACIER_ICE=42,
+	TERRAIN_COUNT=43,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -88,6 +90,8 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_HARDPAN = 39;
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_TUNDRA = 40;
 // Format 200 ended the built-ins at TUNDRA.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_VOLCANIC_ASH = 41;
+// Format 201 ended the built-ins at VOLCANIC_ASH.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_GLACIER_ICE = 42;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);
