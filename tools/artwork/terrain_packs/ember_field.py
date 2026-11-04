@@ -26,7 +26,7 @@ from terrain_core import (
         palette={"dark": (50, 28, 24), "mid": (60, 34, 28), "light": (80, 44, 32),
                  "ember_dim": (120, 50, 30), "ember": (230, 120, 40), "ember_core": (250, 200, 80)},
         style=Style(luma=48, std=10, grain_max=9, match=0.7), phases=4, animation_ticks=8,
-        periodic=True, grid=8,
+        blend_steps=4, periodic=True, grid=8, blocks=4,
         preview=(110, 52, 36), minimap=(120, 48, 30),
         note="placeholder until the image-generated ember field lands")
 def render_ember_field(ctx):

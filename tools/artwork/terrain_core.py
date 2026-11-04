@@ -792,6 +792,9 @@ class Recipe:
     render: object = field(repr=False, compare=False)
     phases: int = 1
     animation_ticks: int = 8
+    # Crossfade weights per phase ("animation_blend_steps"); 0 blends every
+    # tick. Fewer steps recompose animated terrain pages less often.
+    blend_steps: int = 0
     alpha_range: tuple = (255, 255)
     preview: tuple = None
     minimap: tuple = None
