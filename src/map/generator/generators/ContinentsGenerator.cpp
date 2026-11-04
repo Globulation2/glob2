@@ -372,11 +372,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// when a small or ragged continent has too few roomy squares for its colonies.
 	TerrainSketch beached = L.terrain;
 	layBeaches(beached, t);
-	const std::vector<unsigned char> pureWater = pureTiles(beached, t, WATER);
 	const std::vector<unsigned char> pureGrass = pureTiles(beached, t, GRASS);
-	std::vector<unsigned char> walkable(size_t(n), 0);
-	for (int i = 0; i < n; ++i)
-		walkable[i] = !pureWater[i];
+	const auto walkable = walkableTiles(beached, t);
 	// Islets are not the mainland even when they are the largest land: they must be excluded
 	// before the largest piece is taken.
 	std::vector<unsigned char> ground = walkable;
@@ -730,7 +727,7 @@ GeneratorDefinition continentsDefinition()
 		44,
 		// 33 was Patchwork, retired 2026-09-13 and never reused
 		"Continents",
-		4, // 3: the dry reserve's fields are dealt patchiest first, not from the top rows
+		5, // 3: the dry reserve's fields are dealt patchiest first, not from the top rows
 		false,
 		{GeneratorControl::choice(
 			 "continent", "Continent",

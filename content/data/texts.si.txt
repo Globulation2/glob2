@@ -5722,6 +5722,10 @@ Plošče iz peščenjaka
 Polje plovca
 [frozen_lake]
 Zamrznjeno jezero
+[wind_swept_snow]
+Zameten sneg
+[weathered_sandstone]
+Preperel peščenjak
 [windy_sand_dune]
 Vetrovne sipine
 [terrain group water]

@@ -160,20 +160,25 @@ TEST_SUITE("BrushCatalog")
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
-		// Sandstone tiles close the path brushes, pumice the rough-ground brushes and
-		// the frozen lake the ice brushes.
+		// Sandstone tiles close the path brushes, wind-swept snow (after pumice) the
+		// rough-ground brushes, the frozen lake the ice brushes and weathered sandstone
+		// the barren brushes.
 		const auto *paths = findBrushGroup(catalog, BrushSection::Terrain, "paths");
 		const auto *rough = findBrushGroup(catalog, BrushSection::Terrain, "rough");
 		const auto *ice = findBrushGroup(catalog, BrushSection::Terrain, "ice");
+		const auto *barren = findBrushGroup(catalog, BrushSection::Terrain, "barren");
 		REQUIRE(paths);
 		REQUIRE(rough);
 		REQUIRE(ice);
+		REQUIRE(barren);
 		REQUIRE_FALSE(paths->entries.empty());
 		REQUIRE_FALSE(rough->entries.empty());
 		REQUIRE_FALSE(ice->entries.empty());
+		REQUIRE_FALSE(barren->entries.empty());
 		CHECK(paths->entries.back().id == "terrain/sandstone");
-		CHECK(rough->entries.back().id == "terrain/pumice");
+		CHECK(rough->entries.back().id == "terrain/wind_swept_snow");
 		CHECK(ice->entries.back().id == "terrain/frozen_lake");
+		CHECK(barren->entries.back().id == "terrain/weathered_sandstone");
 
 		// Resources: every registry entry, foundation ones included, with placement
 		// validity taken from the map's habitat rules.

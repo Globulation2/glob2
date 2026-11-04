@@ -1448,7 +1448,10 @@ TEST_CASE("JavaScript path fields use terrain travel costs and invalidate speed-
     CHECK_EQ(sample(spec),2);
     for(int x=0;x<16;++x) map.paintCell(x,1,ICE);
     ++world.game.stepCounter;
-    CHECK_EQ(sample(spec),8);
+    // The adjoining rows tie ice with water, so they remain walkable at
+    // mean speed 192. Three diagonal/shore steps cost 13 each and entry
+    // into the pure-ice source costs 20: ceil((3*13+20)/10) == 6.
+    CHECK_EQ(sample(spec),6);
     spec.set("metric","chebyshev");
     CHECK_EQ(sample(spec),4);
 }

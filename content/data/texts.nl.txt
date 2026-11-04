@@ -5722,6 +5722,10 @@ Zandsteentegels
 Puimsteenveld
 [frozen_lake]
 Bevroren meer
+[wind_swept_snow]
+Verwaaide sneeuw
+[weathered_sandstone]
+Verweerde zandsteen
 [windy_sand_dune]
 Windribbels in duinzand
 [terrain group water]

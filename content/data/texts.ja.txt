@@ -5722,6 +5722,10 @@ AI 生成ではない
 軽石の原
 [frozen_lake]
 凍った湖
+[wind_swept_snow]
+風紋の雪
+[weathered_sandstone]
+風化した砂岩
 [windy_sand_dune]
 風紋の砂丘
 [terrain group water]

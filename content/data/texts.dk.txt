@@ -5722,6 +5722,10 @@ Sandstensfliser
 Pimpstensfelt
 [frozen_lake]
 Frossen sø
+[wind_swept_snow]
+Snefygning
+[weathered_sandstone]
+Forvitret sandsten
 [windy_sand_dune]
 Vindriflede klitter
 [terrain group water]

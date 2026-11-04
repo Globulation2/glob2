@@ -5698,6 +5698,10 @@ AI ద్వారా రూపొందించబడలేదు
 ప్యూమిస్ రాతి మైదానం
 [frozen_lake]
 గడ్డకట్టిన సరస్సు
+[wind_swept_snow]
+గాలికి ఎగిరిన మంచు
+[weathered_sandstone]
+శిథిలమైన ఇసుకరాయి
 [windy_sand_dune]
 గాలి అలల ఇసుక దిబ్బలు
 [terrain group water]

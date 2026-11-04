@@ -5722,6 +5722,10 @@ Ubin batu pasir
 Hamparan batu apung
 [frozen_lake]
 Danau beku
+[wind_swept_snow]
+Salju tersapu angin
+[weathered_sandstone]
+Batu pasir lapuk
 [windy_sand_dune]
 Bukit pasir berangin
 [terrain group water]

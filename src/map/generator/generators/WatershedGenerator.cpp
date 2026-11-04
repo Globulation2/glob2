@@ -1242,10 +1242,10 @@ std::vector<int> components(const std::vector<unsigned char> &open, int w, int h
 struct Tiles
 {
 	int w = 0, h = 0;
-	std::vector<unsigned char> water, grass;
+	std::vector<unsigned char> water, grass, walkable;
 	std::vector<int> waterSteps; // 8-neighbour steps to the nearest water tile
 	std::vector<int> grassDepth; // 8-neighbour steps to the nearest tile that isn't pure grass
-	std::vector<int> component;  // walkable component, -1 on water
+	std::vector<int> component;  // walkable component, -1 on impassable ground
 	int mainComponent = -1;
 };
 
@@ -1257,11 +1257,12 @@ Tiles tileView(const std::vector<unsigned char> &terrain, int w, int h)
 	const size_t n = size_t(w) * h;
 	t.water = pureTiles(terrain, Torus{w, h}, WATER);
 	t.grass = pureTiles(terrain, Torus{w, h}, GRASS);
+	t.walkable = walkableTiles(terrain, Torus{w, h});
 	t.waterSteps = stepsFrom(Torus{w, h}, t.water);
 	std::vector<unsigned char> land(n), notGrass(n);
 	for (size_t i = 0; i < n; ++i)
 	{
-		land[i] = !t.water[i];
+		land[i] = t.walkable[i];
 		notGrass[i] = !t.grass[i];
 	}
 	t.grassDepth = stepsFrom(Torus{w, h}, notGrass);
@@ -1284,7 +1285,7 @@ std::vector<int> bankRegions(const Layout &layout, const Tiles &t)
 	const int w = t.w, h = t.h;
 	std::vector<unsigned char> open(t.water.size());
 	for (size_t i = 0; i < open.size(); ++i)
-		open[i] = !t.water[i];
+		open[i] = t.walkable[i];
 	auto close = [&](int x, int y) { open[size_t(wrapIndex(y, h)) * w + wrapIndex(x, w)] = 0; };
 	for (const Ford &f : layout.fords)
 	{
@@ -1822,7 +1823,7 @@ bool generate(Game &game, GenerationContext &context)
 			{
 				const int x = wrapIndex(sites[team].x + dx, w),
 						  y = wrapIndex(sites[team].y + dy, h);
-				home[size_t(y) * w + x] = !tiles.water[size_t(y) * w + x];
+				home[size_t(y) * w + x] = tiles.walkable[size_t(y) * w + x];
 			}
 		return home;
 	};
@@ -1937,7 +1938,7 @@ GeneratorDefinition watershedDefinition()
 		"watershed",
 		13,
 		"Watershed",
-		2,
+		3,
 		false,
 		{// Springs per area of land; each one that finds its way to the network is a tributary.
 		 GeneratorControl{"river-density", "River density", 1, 10, 1, 5, ControlGroup::Terrain}

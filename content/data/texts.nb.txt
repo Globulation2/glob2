@@ -5698,6 +5698,10 @@ Sandsteinsheller
 Pimpsteinsfelt
 [frozen_lake]
 Frossen innsjø
+[wind_swept_snow]
+Snøfokk
+[weathered_sandstone]
+Forvitret sandstein
 [windy_sand_dune]
 Vindrifla dyner
 [terrain group water]

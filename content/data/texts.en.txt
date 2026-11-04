@@ -5698,6 +5698,10 @@ Sandstone tiles
 Pumice field
 [frozen_lake]
 Frozen lake
+[wind_swept_snow]
+Wind-swept snow
+[weathered_sandstone]
+Weathered sandstone
 [windy_sand_dune]
 Windy sand dune
 [terrain group water]

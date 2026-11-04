@@ -5722,6 +5722,10 @@ Dalles de grès
 Champ de pierre ponce
 [frozen_lake]
 Lac gelé
+[wind_swept_snow]
+Neige balayée par le vent
+[weathered_sandstone]
+Grès érodé
 [windy_sand_dune]
 Dunes ridées par le vent
 [terrain group water]

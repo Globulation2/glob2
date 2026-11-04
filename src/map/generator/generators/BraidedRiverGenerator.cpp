@@ -463,7 +463,7 @@ void planWall(Layout &L, GenerationContext &context)
 				   });
 }
 
-// The land parted by the channels: every tile that is not pure water and not wall, in
+// The land parted by the channels: every walkable tile not occupied by a wall, in
 // 8-connected components (units step diagonally), so a channel whose water core is 4-connected
 // parts the ground on its two sides. The two terraces are the components six tiles outside the
 // belt on either side, which no thread reaches.
@@ -471,11 +471,10 @@ void labelLand(Layout &L)
 {
 	const Axes &axes = L.axes;
 	const int n = L.t.size();
-	const std::vector<unsigned char> pureWater = pureTiles(L.terrain, L.t, WATER);
 	const std::vector<unsigned char> pureGrass = pureTiles(L.terrain, L.t, GRASS);
-	std::vector<unsigned char> land(size_t(n), 0);
+	auto land = walkableTiles(L.terrain, L.t);
 	for (int i = 0; i < n; ++i)
-		land[i] = !pureWater[i] && !L.wall[i];
+		land[i] = land[i] && !L.wall[i];
 	L.comp = connectedRegions(land, L.t.w, L.t.h, true, GridNeighbors::Eight);
 	int count = 0;
 	for (int c : L.comp)
@@ -1323,7 +1322,7 @@ GeneratorDefinition braidedRiverDefinition()
 	return {"braided-river",
 			42,
 			"Braided river",
-			3,
+			4,
 			false,
 			{// The belt of channels and bars as a share of the map's breadth; what is left either
 			 // side is terrace. Below 30 the braid is two threads; above 60 a 128 map has no

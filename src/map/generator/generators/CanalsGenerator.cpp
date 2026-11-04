@@ -73,8 +73,8 @@ constexpr int kHomeWheat = 14, kHomeWood = 12, kHomeQuarry = 2;
 // about 0.58 of its pitch, so at the square's spacing its canals would leave blocks too small for their
 // kinds.
 constexpr int kHexPitchPercent = 150;
-// A bridge is a line of sand corners kBridgeHalfWidth wide across the canal (a 1-corner line already
-// carries units two tiles wide, since a tile with a sand corner is no longer pure water), reaching
+// A bridge is a connected sand stroke kBridgeHalfWidth either side of its centre line.
+// Traversed tiles need at least two sand corners to favor walking over swimming. It reaches
 // this far past the canal's edge onto each bank so it lands on grass, not beach.
 constexpr double kBridgeLanding = 2.5;
 // What a block holds (first play: "each cell has its own little surprise"), and the weight each kind
@@ -843,7 +843,7 @@ GeneratorDefinition canalsDefinition()
 		"canals",
 		29,
 		"Canals",
-		8,
+		9,
 		false,
 		// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
 		// water) is sealed against diagonal steps and is reached by a level-2 tower, one upgrade

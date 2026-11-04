@@ -6838,6 +6838,10 @@ Baldosang batong-buhangin
 Parang ng pumice
 [frozen_lake]
 Nagyelong lawa
+[wind_swept_snow]
+Niyebeng tinangay ng hangin
+[weathered_sandstone]
+Lumang batong-buhangin
 [windy_sand_dune]
 Mahanging buhangin ng burol
 [AI for all computer colonies]

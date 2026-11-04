@@ -5722,6 +5722,10 @@ Lloses de gres
 Camp de pedra tosca
 [frozen_lake]
 Llac glaçat
+[wind_swept_snow]
+Neu escombrada pel vent
+[weathered_sandstone]
+Gres erosionat
 [windy_sand_dune]
 Dunes de vent
 [terrain group water]

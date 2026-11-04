@@ -6840,6 +6840,10 @@ Jubin batu pasir
 Padang batu apung
 [frozen_lake]
 Tasik beku
+[wind_swept_snow]
+Salji ditiup angin
+[weathered_sandstone]
+Batu pasir terluluhawa
 [windy_sand_dune]
 Gumuk pasir berangin
 [AI for all computer colonies]
