@@ -5698,6 +5698,8 @@ AI ทำงาน​อย่างไร
 ลาน​หิน​พัมมิซ
 [frozen_lake]
 ทะเลสาบ​น้ำแข็ง
+[wind_swept_snow]
+หิมะ​ที่​ลม​พัด
 [terrain group water]
 น้ำ
 [terrain group sand]

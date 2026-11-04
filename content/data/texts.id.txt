@@ -5722,6 +5722,8 @@ Ubin batu pasir
 Hamparan batu apung
 [frozen_lake]
 Danau beku
+[wind_swept_snow]
+Salju tersapu angin
 [terrain group water]
 Air
 [terrain group sand]

@@ -2764,12 +2764,12 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "fef64d3d0e33bdd84c937537db57028c36f6e56a470b08d64e5198491f4be26f"
+      "sha256": "84b0ffdadb20882f91cfc5ab5e67c9a8f0bc14a9cbcbf4bf50deb94ea3fb34c2"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "c727905531a5fc19118734c2573cbac3b2e36fbc704a536afdff91bfe53f4899"
+      "sha256": "f91fa9be906b45caf946c2cf5a2262332d3ae7ddac8120ca0635dfe52bdb1ef5"
     },
     {
       "runtime": "README.md",
@@ -69315,6 +69315,1286 @@
       "runtime": "terrain-frozen_lake255.png",
       "source": "procedural-materials/terrain-frozen_lake255.png",
       "sha256": "5dff8318ee6d656e831dcb23540d12428f3863578429ab8f76914ec1f443cc37"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow0.png",
+      "source": "procedural-materials/terrain-wind_swept_snow0.png",
+      "sha256": "2365bec47cabb813f0577a05c46b796b0a0500e1a26975045b7a05033981cd02"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow1.png",
+      "source": "procedural-materials/terrain-wind_swept_snow1.png",
+      "sha256": "80b1ccc43eb3be55184e7f40b89df896d60eafc9c401596117191769b637919d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow2.png",
+      "source": "procedural-materials/terrain-wind_swept_snow2.png",
+      "sha256": "2a04a3f5b9bf21e48482d11fbf3712048cc27e65f2f7d4cbc06af4759779a1f5"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow3.png",
+      "source": "procedural-materials/terrain-wind_swept_snow3.png",
+      "sha256": "ca6c8b290df35edd645b2fa8a1d73c6478e5913a8f99271de25435f84a224e8a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow4.png",
+      "source": "procedural-materials/terrain-wind_swept_snow4.png",
+      "sha256": "8a7fd056b3f4bb6a099e615689426e3c3d28b45164a246622d9bae7121240aa3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow5.png",
+      "source": "procedural-materials/terrain-wind_swept_snow5.png",
+      "sha256": "09191707b09224141708ff10360dc8a793f93c3536978df452c133ca9a551eff"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow6.png",
+      "source": "procedural-materials/terrain-wind_swept_snow6.png",
+      "sha256": "73b6f4c06a39805ffa1001f18df971c8e460b3240010335a27662e6dc2f5081f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow7.png",
+      "source": "procedural-materials/terrain-wind_swept_snow7.png",
+      "sha256": "d562557e8064fb59eaf027ab3abf79c6b3837639adf8bd701f6a1082a8f830de"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow8.png",
+      "source": "procedural-materials/terrain-wind_swept_snow8.png",
+      "sha256": "f59079f80fd256a28782315b7591014eaaea5837647c11f05a8d59c9f071ac57"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow9.png",
+      "source": "procedural-materials/terrain-wind_swept_snow9.png",
+      "sha256": "05652527d4df74e550809763f61e590050989b6ac35da9afdb40c7ebc0e716c8"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow10.png",
+      "source": "procedural-materials/terrain-wind_swept_snow10.png",
+      "sha256": "908268318d441d9de7c9b9db7986dd9c1f26205310ed2c5f097998ef5b16ce25"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow11.png",
+      "source": "procedural-materials/terrain-wind_swept_snow11.png",
+      "sha256": "713134f485a47a35726b59d58c90c8efc11b85484089d6dc4de5171a69588e6c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow12.png",
+      "source": "procedural-materials/terrain-wind_swept_snow12.png",
+      "sha256": "45c7120f0a71a91fd8f76c0483b675206122d8251a5152d84e9ca12d9599cd8b"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow13.png",
+      "source": "procedural-materials/terrain-wind_swept_snow13.png",
+      "sha256": "64450d9c0c7cc38d33f9fa4d871a491efa11d5678f53246a9bf14339cc5ca696"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow14.png",
+      "source": "procedural-materials/terrain-wind_swept_snow14.png",
+      "sha256": "2b81ef0ce127017f12f77d6c1ccca7515122d5f7d8786d1bfec6c84ee1e99100"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow15.png",
+      "source": "procedural-materials/terrain-wind_swept_snow15.png",
+      "sha256": "0c449d2703087c4b346324f50d91502ed11496497a6da02eec485a6d515c73e2"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow16.png",
+      "source": "procedural-materials/terrain-wind_swept_snow16.png",
+      "sha256": "e4be49f932f4a120bb4a5b4ade5974a95fbc4b393675af2b3718f908b4780ca9"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow17.png",
+      "source": "procedural-materials/terrain-wind_swept_snow17.png",
+      "sha256": "c7ee6325262623f0e6729770dd876831a69027b78bcf3c43fd2865b901767da6"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow18.png",
+      "source": "procedural-materials/terrain-wind_swept_snow18.png",
+      "sha256": "78e9d917d2a210978c1b3f571cb9b3812d5bd593ca51057c7e6bf27bccb2a405"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow19.png",
+      "source": "procedural-materials/terrain-wind_swept_snow19.png",
+      "sha256": "b5e44505aa05e7affb13fe001532432657a2ff60b66f836c2c190325b20006d2"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow20.png",
+      "source": "procedural-materials/terrain-wind_swept_snow20.png",
+      "sha256": "495bc3f8dbc453ca14ad0076577fb7beb46c7fd760fc9bf66ad37dd681e401bc"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow21.png",
+      "source": "procedural-materials/terrain-wind_swept_snow21.png",
+      "sha256": "42d2dfa03acfacc2175b69392cb96a0bf8ffccf2570015df4535f1a53c82a07a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow22.png",
+      "source": "procedural-materials/terrain-wind_swept_snow22.png",
+      "sha256": "1c8179f1d1a439bc3a1488b1c61b2bc2a866af44f69b12bbed4355198d2add55"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow23.png",
+      "source": "procedural-materials/terrain-wind_swept_snow23.png",
+      "sha256": "75ad794ca4ff54cca7fa00f4dc3f89b127c18f74fb00e57c17f149f2b76a0b66"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow24.png",
+      "source": "procedural-materials/terrain-wind_swept_snow24.png",
+      "sha256": "d93dbe655a9b52fdad279195e86437961c54b2538b6e130937268c375aacbb8d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow25.png",
+      "source": "procedural-materials/terrain-wind_swept_snow25.png",
+      "sha256": "458a0bc767d0292ab3e9280d07d5960f1ff948568e008906436dfda4eadb0dfc"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow26.png",
+      "source": "procedural-materials/terrain-wind_swept_snow26.png",
+      "sha256": "be5c71b68b4008f36df53d55c32bf31b458f89efb146565471ffa81c52fbd2ea"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow27.png",
+      "source": "procedural-materials/terrain-wind_swept_snow27.png",
+      "sha256": "f1d6e942f73ae43e722d80d4c561df1d57cfe30e7fe03182230fc949ab95e41b"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow28.png",
+      "source": "procedural-materials/terrain-wind_swept_snow28.png",
+      "sha256": "b05371738ab7308d940f31b0ce083c5c065c9eb786176625e255737fd27144ab"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow29.png",
+      "source": "procedural-materials/terrain-wind_swept_snow29.png",
+      "sha256": "2c27578fa371e3247a98730de122c30f7bf814f43fb1e19840f8d484c1731588"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow30.png",
+      "source": "procedural-materials/terrain-wind_swept_snow30.png",
+      "sha256": "251473e3380b9d7c4e5b664d454907a308ee14e017688a9773a437752c9ef3b4"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow31.png",
+      "source": "procedural-materials/terrain-wind_swept_snow31.png",
+      "sha256": "777d49e31f2a4ce941aa543d45627678150d63d07bca68fd08add14a710fe5cb"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow32.png",
+      "source": "procedural-materials/terrain-wind_swept_snow32.png",
+      "sha256": "b6089c3a647d4f8724ad2bc6a8ad4a651f720155595fee61a8d7c38b6ce524a3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow33.png",
+      "source": "procedural-materials/terrain-wind_swept_snow33.png",
+      "sha256": "ffe1e88f3ab79b2dcaf846be5dfc965316db5f201b16d9f61ed95e331777a91c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow34.png",
+      "source": "procedural-materials/terrain-wind_swept_snow34.png",
+      "sha256": "406cb41934bee0aa0d318773efbaaf20355a2d5b722cc528013bf08e37b0799f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow35.png",
+      "source": "procedural-materials/terrain-wind_swept_snow35.png",
+      "sha256": "704cb9d68253b6cb7714ec3d3e8de158fc96a91e6e320a4b5b4bed1256a36022"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow36.png",
+      "source": "procedural-materials/terrain-wind_swept_snow36.png",
+      "sha256": "12f907b9c616606504d9deb5170547b2590a1c3fa9cb693e396c5cb8691a7504"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow37.png",
+      "source": "procedural-materials/terrain-wind_swept_snow37.png",
+      "sha256": "e795023d1a0e3e0b54f361b0b172d10ff341ca698f65f9066714e73c59b4190c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow38.png",
+      "source": "procedural-materials/terrain-wind_swept_snow38.png",
+      "sha256": "af4195fdc6ed652b5ce96f5235cf8bc16bea30c173fa73c444f72248e79357ce"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow39.png",
+      "source": "procedural-materials/terrain-wind_swept_snow39.png",
+      "sha256": "f177cde5c68ef133be09441a4cc7e7cb20f5e3d2a7feb7c692cc3c2e6486b573"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow40.png",
+      "source": "procedural-materials/terrain-wind_swept_snow40.png",
+      "sha256": "ffe8cedc6cf9766df856f5fa0d92dc9d8de3279c22da51223f98d8cdd460528e"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow41.png",
+      "source": "procedural-materials/terrain-wind_swept_snow41.png",
+      "sha256": "67c6952d36eabe95c935e4ae88398ba181f43ab1d1d65fc64f709662eaef21c5"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow42.png",
+      "source": "procedural-materials/terrain-wind_swept_snow42.png",
+      "sha256": "b80177ed1e59f9e66fa369d5e45fb35439792997508d3639d7e7bfc9134689f0"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow43.png",
+      "source": "procedural-materials/terrain-wind_swept_snow43.png",
+      "sha256": "c1f033d8edcb3986b0e67f7ec2047d2215e30dd949cd6401cfcbcda9e3ef18f1"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow44.png",
+      "source": "procedural-materials/terrain-wind_swept_snow44.png",
+      "sha256": "df6d000aee0e3e60d41614e37e2daa11df5971552d5284ecb8b0db7087af4d38"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow45.png",
+      "source": "procedural-materials/terrain-wind_swept_snow45.png",
+      "sha256": "e35bbd78b6fa9871336c9e0a8b49915efd4dd018cf08a3915b936649101ae366"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow46.png",
+      "source": "procedural-materials/terrain-wind_swept_snow46.png",
+      "sha256": "00837857934f97bbe732685d494bffd04b81db2e14e593039d6d9d153a61690f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow47.png",
+      "source": "procedural-materials/terrain-wind_swept_snow47.png",
+      "sha256": "1df2002635f5e718e913e9fe2caea7a89e23166bf28cf0950aa398d3296e797a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow48.png",
+      "source": "procedural-materials/terrain-wind_swept_snow48.png",
+      "sha256": "de383aea88d468aa88fcdd63049c655d553a6b1ab0f1224b47a5630dd83a412c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow49.png",
+      "source": "procedural-materials/terrain-wind_swept_snow49.png",
+      "sha256": "08cfd74da2dbd24a33bc04ae2326c09180303dd932dde7d3b4e856b648b32074"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow50.png",
+      "source": "procedural-materials/terrain-wind_swept_snow50.png",
+      "sha256": "2605e90d1ce37339d1a90f409d6cdc78a616ad4feb18777a0e197987cce86931"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow51.png",
+      "source": "procedural-materials/terrain-wind_swept_snow51.png",
+      "sha256": "d1af97a0da97519cb4a6c63f5f29202670a788b7a9c607425a02f913b141a52f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow52.png",
+      "source": "procedural-materials/terrain-wind_swept_snow52.png",
+      "sha256": "c4743e60f04c01016e660a85d4fe8827df7ec521800920228d082d85ae603dd5"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow53.png",
+      "source": "procedural-materials/terrain-wind_swept_snow53.png",
+      "sha256": "ec34affd8b6460c0caaeaaab534d77f47e005808a33f481e364360ba46fbe60d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow54.png",
+      "source": "procedural-materials/terrain-wind_swept_snow54.png",
+      "sha256": "6011b2a6cef5ea179e9661a06979ce93f8c09f25f169fab76a240971613c4704"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow55.png",
+      "source": "procedural-materials/terrain-wind_swept_snow55.png",
+      "sha256": "1947368670c623a355eee6c31c7640e271abf74a676692b4d1a6304a687c9166"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow56.png",
+      "source": "procedural-materials/terrain-wind_swept_snow56.png",
+      "sha256": "5d1e0c3a1974fdcaad25cfa06a10aa8d30f33c517e53664fd53802bcee3a5f1c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow57.png",
+      "source": "procedural-materials/terrain-wind_swept_snow57.png",
+      "sha256": "3acd66046458ea5252533e1b9485ee0ba607764ed737681f9e6bcce2ad3d5091"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow58.png",
+      "source": "procedural-materials/terrain-wind_swept_snow58.png",
+      "sha256": "871d5f7ce614ae9e23f9fd8b66cab9d1f4de130450642d4feb287741fbbbcc2e"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow59.png",
+      "source": "procedural-materials/terrain-wind_swept_snow59.png",
+      "sha256": "779bf60293a393a0b1e5e82365189ff5d35841b34f4fca3cb9f4f9066b1fb177"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow60.png",
+      "source": "procedural-materials/terrain-wind_swept_snow60.png",
+      "sha256": "b762997f2152942ed75b5033aeeae1c22387359cb52c7f4a23556f70d7bb9fe5"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow61.png",
+      "source": "procedural-materials/terrain-wind_swept_snow61.png",
+      "sha256": "7703f9265dd70fecf041a41068f839db3653b04bd59951ffae1ff864bc01e1db"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow62.png",
+      "source": "procedural-materials/terrain-wind_swept_snow62.png",
+      "sha256": "a5fc2ac36d0cd5c9ec076256aadbac365f47cc46983169e1e8ffe7ae69585e35"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow63.png",
+      "source": "procedural-materials/terrain-wind_swept_snow63.png",
+      "sha256": "5fb5a9d66c7fb49897067ac52e42aff1960c30b6a8ca41e45a35849c58ff1f9a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow64.png",
+      "source": "procedural-materials/terrain-wind_swept_snow64.png",
+      "sha256": "0814ad5cc610b81f48863705712d837addc0a52e28738add382ed9dcb2d59cc3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow65.png",
+      "source": "procedural-materials/terrain-wind_swept_snow65.png",
+      "sha256": "7782ab3fba3bc964aff83ffd64d03b4b0678e4a3d8f00a52b46d1a24d91ff119"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow66.png",
+      "source": "procedural-materials/terrain-wind_swept_snow66.png",
+      "sha256": "e44958e958686c5b707afc99f3da9f897a0aa133d809583861a806c339934cad"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow67.png",
+      "source": "procedural-materials/terrain-wind_swept_snow67.png",
+      "sha256": "96faa2d681d6f7ea1d8ccdae4018764885629018066d4957f896b912be455697"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow68.png",
+      "source": "procedural-materials/terrain-wind_swept_snow68.png",
+      "sha256": "ec44c4994404683b9a45a2a2fffa661216c417df13858cf58d5b919cf19b4c7f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow69.png",
+      "source": "procedural-materials/terrain-wind_swept_snow69.png",
+      "sha256": "2aa63e30c30b16d9533eb096cfb5d0acda26d2ab51bc6af911ad2066fa3b6d6c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow70.png",
+      "source": "procedural-materials/terrain-wind_swept_snow70.png",
+      "sha256": "d18b48ea5085b4baba61254547afadb33345a124ce794cde2b5b04b2196717ab"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow71.png",
+      "source": "procedural-materials/terrain-wind_swept_snow71.png",
+      "sha256": "2a4ed55e0e198ae3d5046015796cbfcddc3b3601c423a8918c4a0ac75bbdf449"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow72.png",
+      "source": "procedural-materials/terrain-wind_swept_snow72.png",
+      "sha256": "f6d651a5f250b5b1d96d1b97538ecc152a07eca1c809ea3efc9397e91585ea33"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow73.png",
+      "source": "procedural-materials/terrain-wind_swept_snow73.png",
+      "sha256": "12c2046be7785e0baddef3322c77b46901b4d78e799b62e5d6537f74c649b07c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow74.png",
+      "source": "procedural-materials/terrain-wind_swept_snow74.png",
+      "sha256": "c6da0e82c4e67aa30f8b6bea7686251ff7a83329524fe8169c75e9aad3bdaf0c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow75.png",
+      "source": "procedural-materials/terrain-wind_swept_snow75.png",
+      "sha256": "65caa34e7ae0ddc8520612413bc6344a284da140196e833cc110abde36f5c209"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow76.png",
+      "source": "procedural-materials/terrain-wind_swept_snow76.png",
+      "sha256": "8eb5f3428fe523eb55c2a08631b7e52534d5412ab0b2c867f8b7fe4e47086db8"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow77.png",
+      "source": "procedural-materials/terrain-wind_swept_snow77.png",
+      "sha256": "8df51ac6ae22650afd9fc1b7b0520cea2647b1ddfdb0b389cd59212ea2cfe8dc"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow78.png",
+      "source": "procedural-materials/terrain-wind_swept_snow78.png",
+      "sha256": "eb8da1260adc95cdaa22e5e6cebb22874a9d0610626d0a454c026a695aad9e24"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow79.png",
+      "source": "procedural-materials/terrain-wind_swept_snow79.png",
+      "sha256": "be6ffc057c2d306500dc18c7c215e7553d95bf0b4461d7c397bf1330d225dd6c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow80.png",
+      "source": "procedural-materials/terrain-wind_swept_snow80.png",
+      "sha256": "4ea8df455f51da6c2d85388b5c027d9fd34fd0efaaca285ef7c2b817a48c1630"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow81.png",
+      "source": "procedural-materials/terrain-wind_swept_snow81.png",
+      "sha256": "957f5d866319d8f759e052cf914c400a847367a8f03a3484f9390c9ebb860f6b"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow82.png",
+      "source": "procedural-materials/terrain-wind_swept_snow82.png",
+      "sha256": "56a1529a3c8cb31fe4be368e0653af6470bd40f9a88178c5b379c20ff6ea54a9"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow83.png",
+      "source": "procedural-materials/terrain-wind_swept_snow83.png",
+      "sha256": "0482aba95882f42e2061eec595a4930364e83be7f9bfc586751d1513f60f8dd3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow84.png",
+      "source": "procedural-materials/terrain-wind_swept_snow84.png",
+      "sha256": "a9210a2088324cf8bc28f411c05d7d06ef73dda699712fc4a339d961bdfbcac4"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow85.png",
+      "source": "procedural-materials/terrain-wind_swept_snow85.png",
+      "sha256": "235ae18e469e87badd106782bc4ec59bd842e4aa130ff60b42f3095f5f5f7404"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow86.png",
+      "source": "procedural-materials/terrain-wind_swept_snow86.png",
+      "sha256": "2eab10ca4f68d5dafda8e816b4f05796cf04e4d47b512bfce7268ec766e0f7c2"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow87.png",
+      "source": "procedural-materials/terrain-wind_swept_snow87.png",
+      "sha256": "f24355792ebb19010967da207c1c7bf168177ff6ac2f8b20e889daabca66257c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow88.png",
+      "source": "procedural-materials/terrain-wind_swept_snow88.png",
+      "sha256": "e4872a2867dc024142a0c3b9b8cae4d9b308e200b341aa0208f3459c4e64142a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow89.png",
+      "source": "procedural-materials/terrain-wind_swept_snow89.png",
+      "sha256": "71b8f5afafd37704978d38dd284f0c6ffcc74863a95ee246a165189786bec615"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow90.png",
+      "source": "procedural-materials/terrain-wind_swept_snow90.png",
+      "sha256": "61182e736fbc854705a245e080255c01e114ec3cddc7e66064a0b1789ee5d441"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow91.png",
+      "source": "procedural-materials/terrain-wind_swept_snow91.png",
+      "sha256": "b7c266c0d661fdf4828c4dc7a7566efcf4b76183dc436e3af8f48db0c90ad587"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow92.png",
+      "source": "procedural-materials/terrain-wind_swept_snow92.png",
+      "sha256": "d797dec04c1fb62bb3335444beb8610c0152238d2223aa4aa7a6580accfd3011"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow93.png",
+      "source": "procedural-materials/terrain-wind_swept_snow93.png",
+      "sha256": "fc9c772db8e7a72215fa9fd18cbc0beaf4701797bf80008ff81412bd146884ee"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow94.png",
+      "source": "procedural-materials/terrain-wind_swept_snow94.png",
+      "sha256": "f88e80f2c22ccab3b66f4c3140eb78de5e2ba7f9f5289c27a8cf076bc3498d0f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow95.png",
+      "source": "procedural-materials/terrain-wind_swept_snow95.png",
+      "sha256": "99ec4db3a889e2b6c0c92c7d41dd44a52b3cab0629fa2cbb54b0a430bd8b9def"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow96.png",
+      "source": "procedural-materials/terrain-wind_swept_snow96.png",
+      "sha256": "6b59f7ec42c95601577e8cc5c25fff0edb38ee673b02649b6544a9a1242059ca"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow97.png",
+      "source": "procedural-materials/terrain-wind_swept_snow97.png",
+      "sha256": "ad0b8b9c956aeccb4181545a6bd4c58bed4a5721696a86e70214598d2bfe8c64"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow98.png",
+      "source": "procedural-materials/terrain-wind_swept_snow98.png",
+      "sha256": "08d5d1e77f290c8a400e87efaf93ec53100e5b48a5df0a9089790e1dbd770e3b"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow99.png",
+      "source": "procedural-materials/terrain-wind_swept_snow99.png",
+      "sha256": "59c1ace4ef33eb8176042c0ca73d07d33d134d90acbf8cb5cef6dd8db9446d96"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow100.png",
+      "source": "procedural-materials/terrain-wind_swept_snow100.png",
+      "sha256": "a6fa52657f1a2b64ac8237dd621660a3394012630cfdf14f919d009763156fa4"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow101.png",
+      "source": "procedural-materials/terrain-wind_swept_snow101.png",
+      "sha256": "392f74ef753bc4662a72221db483198d697a9837cb39fae84f0b412a420988b3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow102.png",
+      "source": "procedural-materials/terrain-wind_swept_snow102.png",
+      "sha256": "0ec67c11107f8a0d1ec7f6d98b993dfd29f89eee4e2e765732afd8722d7ed29a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow103.png",
+      "source": "procedural-materials/terrain-wind_swept_snow103.png",
+      "sha256": "aef122054b5ba79cb5b02af5427ecba36c4786836f81eb14a2828d2f420de6a3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow104.png",
+      "source": "procedural-materials/terrain-wind_swept_snow104.png",
+      "sha256": "8595374092ae7e990f4d7068054e59a87cded1487566ffbf75d6c5cd1fc80701"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow105.png",
+      "source": "procedural-materials/terrain-wind_swept_snow105.png",
+      "sha256": "4bb8dd5a7195e2ed33a24fa42a16d9eae5426df2168f62ff2a9a693b0c0655ab"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow106.png",
+      "source": "procedural-materials/terrain-wind_swept_snow106.png",
+      "sha256": "8b1f82ccffab13d28c1314d310ce1bf9d2655a6bd58e8da3cc05591ad07521e8"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow107.png",
+      "source": "procedural-materials/terrain-wind_swept_snow107.png",
+      "sha256": "b545c102a1ae77767686fc2a81c740a3142ea18b730b99c14e8823cf4c46c3db"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow108.png",
+      "source": "procedural-materials/terrain-wind_swept_snow108.png",
+      "sha256": "1b354b80d51fa6a394e9620d5b355afb688cc32dc0de4a1e8a77bf3e18ba65ac"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow109.png",
+      "source": "procedural-materials/terrain-wind_swept_snow109.png",
+      "sha256": "62ca98611bcf5611dd0d24c2a137f4d966d2cd029bbca19ba8b8198eb9e49e91"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow110.png",
+      "source": "procedural-materials/terrain-wind_swept_snow110.png",
+      "sha256": "636f768948ca7df824c03f6496a41f9ee67090654e69af0207e166479b0dfbfb"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow111.png",
+      "source": "procedural-materials/terrain-wind_swept_snow111.png",
+      "sha256": "2519a8184ae535d35602bbcfc5bfb7df05ce536384693de5e9a5daea20b51b5c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow112.png",
+      "source": "procedural-materials/terrain-wind_swept_snow112.png",
+      "sha256": "863fe0ae041c995e0b6bc8d786dc4cc7d8f5defc2afb9108c7b040e61e74fc7a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow113.png",
+      "source": "procedural-materials/terrain-wind_swept_snow113.png",
+      "sha256": "5454a14b2a42e099ab9030e32670ef6ec197a82ffa027b2b0ab0c07fbf352fb6"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow114.png",
+      "source": "procedural-materials/terrain-wind_swept_snow114.png",
+      "sha256": "f352ce0caaabb00f6694cf9e0b6ec3250c486d4c6d8ca2b06e07687f2dffa749"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow115.png",
+      "source": "procedural-materials/terrain-wind_swept_snow115.png",
+      "sha256": "01833054360e3a16042e831fc9047359f5ca967d89a6f99407ecb248f4c23fa5"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow116.png",
+      "source": "procedural-materials/terrain-wind_swept_snow116.png",
+      "sha256": "ea49055df125b027cac7c4e2d635d9c099dc74945741492ff29167c6725dd9e3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow117.png",
+      "source": "procedural-materials/terrain-wind_swept_snow117.png",
+      "sha256": "53c1f7241312ae44558556a19714c69592816aa14613b211c94afe6d9ee92b47"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow118.png",
+      "source": "procedural-materials/terrain-wind_swept_snow118.png",
+      "sha256": "ac108ae450fb4fbbf62a1cf1d5432c45475d226793adeb0be6bef9f50da8d9ee"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow119.png",
+      "source": "procedural-materials/terrain-wind_swept_snow119.png",
+      "sha256": "ce78c71bbe4048b46088f2cbf020084625bc45f6649317c28518767b42722692"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow120.png",
+      "source": "procedural-materials/terrain-wind_swept_snow120.png",
+      "sha256": "813f025528f7c8a875191722e4cd9a6691f3446b5e1b01c51e08ed4a8c371e94"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow121.png",
+      "source": "procedural-materials/terrain-wind_swept_snow121.png",
+      "sha256": "92622a2b1deeb1fed6f45c49bfec945a247479f3a2e6f5049959af8c6a49ca98"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow122.png",
+      "source": "procedural-materials/terrain-wind_swept_snow122.png",
+      "sha256": "8d09a05a3d06f021894a9f2f43d233d5fedf5e44df5e6f75de2ee303f1787714"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow123.png",
+      "source": "procedural-materials/terrain-wind_swept_snow123.png",
+      "sha256": "8934abf390fc34dca194391f3f3e06a6b0e8f06a460db81df01989caf6f98d98"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow124.png",
+      "source": "procedural-materials/terrain-wind_swept_snow124.png",
+      "sha256": "d8953fc3d58f53ad1c1f523ce0a0209fe02f66a166a81b453a3ee8f3b048f209"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow125.png",
+      "source": "procedural-materials/terrain-wind_swept_snow125.png",
+      "sha256": "3e8d16d015240cfd87d68d880309de1ae8650beb6479747dab488723d5d716c4"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow126.png",
+      "source": "procedural-materials/terrain-wind_swept_snow126.png",
+      "sha256": "49de39f72680c071b0b98ade1125520a773f6d5b07649b393b033fc5adebcd7a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow127.png",
+      "source": "procedural-materials/terrain-wind_swept_snow127.png",
+      "sha256": "963270dcf5dd5de48f900f29ebb0cfcd60d098f7023567b2c2d13c29a92d8dc4"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow128.png",
+      "source": "procedural-materials/terrain-wind_swept_snow128.png",
+      "sha256": "5b43bf56dda415ea4d4cdc285582fd0636227f356e8b468c9b47b315ff10cdf9"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow129.png",
+      "source": "procedural-materials/terrain-wind_swept_snow129.png",
+      "sha256": "31e5dfcc3b0dca843f07a5d9991ba54a5eac6ef8b9ebf83c214a96861eb816f1"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow130.png",
+      "source": "procedural-materials/terrain-wind_swept_snow130.png",
+      "sha256": "ed07bcd818aa70f0839f140c1889c760fd74a6dddda88e2230429165a2f3e416"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow131.png",
+      "source": "procedural-materials/terrain-wind_swept_snow131.png",
+      "sha256": "c4eace699fe31eb8ac280adc5cdd4bdabfe2e417e32f97dd57c91c4a23adad3e"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow132.png",
+      "source": "procedural-materials/terrain-wind_swept_snow132.png",
+      "sha256": "afbc27191612a4b492e718dd53f4ddc30f662f0b60d8702d2ff49d4fce89bd03"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow133.png",
+      "source": "procedural-materials/terrain-wind_swept_snow133.png",
+      "sha256": "d7e72734c4a1f64f898d20d4c03dab412b6eaf64fa28be31dd1011d3be45447e"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow134.png",
+      "source": "procedural-materials/terrain-wind_swept_snow134.png",
+      "sha256": "31934abc34bcab40d10d5c3c4199756945680631fe837f1c7a2bb10e02140dca"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow135.png",
+      "source": "procedural-materials/terrain-wind_swept_snow135.png",
+      "sha256": "e9bb4bb0b92a690fc1d41730acf1758f685616a08a0484593aa9070ce5058747"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow136.png",
+      "source": "procedural-materials/terrain-wind_swept_snow136.png",
+      "sha256": "d99ca45e25746f1884450b9d80955d1d3b6a315666ab9b6fa7f895d51ec5a287"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow137.png",
+      "source": "procedural-materials/terrain-wind_swept_snow137.png",
+      "sha256": "55affe786c36acde8e8482b9957763902dbb05fd32a1713fe3cade31c5bff63c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow138.png",
+      "source": "procedural-materials/terrain-wind_swept_snow138.png",
+      "sha256": "3d7c7aa08a66b2270b46c3daf5ae6de69b773017da68b6ccd15046a2fbc9d560"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow139.png",
+      "source": "procedural-materials/terrain-wind_swept_snow139.png",
+      "sha256": "4bbc75d4cb6d0b2ac54766775eb6f666ddd41f3ed07dd3d087c67d85fc1a0ed3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow140.png",
+      "source": "procedural-materials/terrain-wind_swept_snow140.png",
+      "sha256": "6aaf049112c56d3290e08c26c59f2cbf9afa4a1996706d829cda807776d06d28"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow141.png",
+      "source": "procedural-materials/terrain-wind_swept_snow141.png",
+      "sha256": "79fbef78afb54d2993f1cec1c04fde84803c0ac545a7e1d4da40d3abb235c99a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow142.png",
+      "source": "procedural-materials/terrain-wind_swept_snow142.png",
+      "sha256": "d53e2f9c510164ee6b2eeb42ace23796e2ebf2c19ea39dcccf0c23027cfe280a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow143.png",
+      "source": "procedural-materials/terrain-wind_swept_snow143.png",
+      "sha256": "4092907f5446cf5092c2e53ae1f2cb495404da729996f56499f5837df8a17213"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow144.png",
+      "source": "procedural-materials/terrain-wind_swept_snow144.png",
+      "sha256": "712add81b15dd3e96e4ed312c9e0f5ded72dfed3fbb62907a13aef82132fce08"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow145.png",
+      "source": "procedural-materials/terrain-wind_swept_snow145.png",
+      "sha256": "618f7f10a0768279b09148ebe8791af5b83a47a93c52d9ac05e6c567ca5b5b5f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow146.png",
+      "source": "procedural-materials/terrain-wind_swept_snow146.png",
+      "sha256": "4ce5539f8379113dd9a3d1bf33b706820ab4dde7dd0b236f91ec2e88d8c9a6d1"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow147.png",
+      "source": "procedural-materials/terrain-wind_swept_snow147.png",
+      "sha256": "76da8d0e573d74400b87fa65324aaa4af68860ae88cd75ffb751e1224cabc578"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow148.png",
+      "source": "procedural-materials/terrain-wind_swept_snow148.png",
+      "sha256": "03618bbed51e91fc8681337085885c1e22769c24b1e7efb5f3108da37c20c134"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow149.png",
+      "source": "procedural-materials/terrain-wind_swept_snow149.png",
+      "sha256": "6010edb8d606422c172368a5038702f768f68266bd1db0bb8a3f6235ee7a840f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow150.png",
+      "source": "procedural-materials/terrain-wind_swept_snow150.png",
+      "sha256": "618fbdfab4855363aecf9458189ee2340ea7f4684a51d8b00aa214df8670beee"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow151.png",
+      "source": "procedural-materials/terrain-wind_swept_snow151.png",
+      "sha256": "745a9dbc52c32e15474c3092a50793077d85667961872237b55f030928a2980d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow152.png",
+      "source": "procedural-materials/terrain-wind_swept_snow152.png",
+      "sha256": "0ffdad94cd9ccaaa250e683791b4451cda912a1cd47d4f7dfba156101be5d041"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow153.png",
+      "source": "procedural-materials/terrain-wind_swept_snow153.png",
+      "sha256": "d75e441790d59bdef3c6c4d3c741e1732d91fdb98e46f6c5cf1172d7e76e04af"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow154.png",
+      "source": "procedural-materials/terrain-wind_swept_snow154.png",
+      "sha256": "d2b178eb1cf92cecfb448082f2c750875db46956133e15e2da2c0bc7ad2f17ca"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow155.png",
+      "source": "procedural-materials/terrain-wind_swept_snow155.png",
+      "sha256": "88f3184145be9b3387f6ad798cd27f2d54a6695e7e6ffa02e56d4957bcb0ff3a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow156.png",
+      "source": "procedural-materials/terrain-wind_swept_snow156.png",
+      "sha256": "52df58e578846e99e4818d6d07b03d04b1fbbf14e14abf3ac0ff73a09f5c29c8"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow157.png",
+      "source": "procedural-materials/terrain-wind_swept_snow157.png",
+      "sha256": "d4ffb71ea4984c33166b6cc66c5458f622805989188ebcc0a77cb32d0c588c64"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow158.png",
+      "source": "procedural-materials/terrain-wind_swept_snow158.png",
+      "sha256": "77ca8777fc9e4c1d028dfb657913a00f4ed0b9facf699874d37f253aeb2c9388"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow159.png",
+      "source": "procedural-materials/terrain-wind_swept_snow159.png",
+      "sha256": "b0b8602c07add5b73bd53830f85f54b9e85a4a139ed6849bd7bb0f1232af79e0"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow160.png",
+      "source": "procedural-materials/terrain-wind_swept_snow160.png",
+      "sha256": "e854934d303e781a80ae9e12203395ac40af010c0e0967ed9de27e403b546b74"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow161.png",
+      "source": "procedural-materials/terrain-wind_swept_snow161.png",
+      "sha256": "d79e10a4ca6a99ce90c57ed23e900c30b725e983628f7b3754798451e5a8aa64"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow162.png",
+      "source": "procedural-materials/terrain-wind_swept_snow162.png",
+      "sha256": "2d1100327f250b87c3ae9032223f35fa3245c5152781e9b3f84c7ca14f7a2cf9"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow163.png",
+      "source": "procedural-materials/terrain-wind_swept_snow163.png",
+      "sha256": "3778fc94db2983da57224d84c5e3e398824eaff6fd6495fe3db9bf62785d7de2"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow164.png",
+      "source": "procedural-materials/terrain-wind_swept_snow164.png",
+      "sha256": "b2313fe6a63e3e9d5395d3416066afd4e691f8f331e78d674c6db23a1c04b2ba"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow165.png",
+      "source": "procedural-materials/terrain-wind_swept_snow165.png",
+      "sha256": "6a7b144d19b0bd239300795ce1bc972e45907e7173415d73c88482bd856155ab"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow166.png",
+      "source": "procedural-materials/terrain-wind_swept_snow166.png",
+      "sha256": "3b508bf14cdcd87a6c9ed3e02249463f65021768c11ccc56de9410161bccc196"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow167.png",
+      "source": "procedural-materials/terrain-wind_swept_snow167.png",
+      "sha256": "d214aef0448d0bd79778efa2026f2c2a0fdfbeeea958dc5a0e73828a78bf13e9"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow168.png",
+      "source": "procedural-materials/terrain-wind_swept_snow168.png",
+      "sha256": "76d7a27bbc062ad9a048e0be4ad2f4fe68eb867bc8adbf1e08bfd52de27e93d9"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow169.png",
+      "source": "procedural-materials/terrain-wind_swept_snow169.png",
+      "sha256": "412e661efe2fba179a299d92d141a8aa364f5ea71e94c5ca9886c57461e5a443"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow170.png",
+      "source": "procedural-materials/terrain-wind_swept_snow170.png",
+      "sha256": "b863ac761799b2603e5bf64148607bc8c47a008edab81fbc1bb016a9c2439294"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow171.png",
+      "source": "procedural-materials/terrain-wind_swept_snow171.png",
+      "sha256": "afd56cd4c711795c1355b16e3f2b2b651a2e79d6d5396defde5013e15b2447f8"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow172.png",
+      "source": "procedural-materials/terrain-wind_swept_snow172.png",
+      "sha256": "d87fa26598d3430264d2a5d5df944be008c4e2a5fc5262e3bb33c4913eb0f51d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow173.png",
+      "source": "procedural-materials/terrain-wind_swept_snow173.png",
+      "sha256": "a15ff2d31ad18936d3830fe3f961ced9fd0d7b2a1ec94907c239d5884569b790"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow174.png",
+      "source": "procedural-materials/terrain-wind_swept_snow174.png",
+      "sha256": "281748ad097b833180f71d07d1026256a383a84ee9b7d625ee12dd7a39649e02"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow175.png",
+      "source": "procedural-materials/terrain-wind_swept_snow175.png",
+      "sha256": "d3680ef23020f8049671e1b48043ffd70ac78ffb0bacb87bd560b27753d62afb"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow176.png",
+      "source": "procedural-materials/terrain-wind_swept_snow176.png",
+      "sha256": "02b1d8f6e61b0e5efab94903053d4cf89cd6063cdf27323fef5f99230e8ecd07"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow177.png",
+      "source": "procedural-materials/terrain-wind_swept_snow177.png",
+      "sha256": "268708b8f81a16cf52a35aaf1fdc321491155b432df48744664d05bba70a6046"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow178.png",
+      "source": "procedural-materials/terrain-wind_swept_snow178.png",
+      "sha256": "563833d6c3a575f6b9a9f6d8ff51624ec7062e75d50cffb054002849cd28c430"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow179.png",
+      "source": "procedural-materials/terrain-wind_swept_snow179.png",
+      "sha256": "c432618adda3d2090c49324a4fb6ef750fa7879c575fc35256fff4dda1d5d247"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow180.png",
+      "source": "procedural-materials/terrain-wind_swept_snow180.png",
+      "sha256": "9cc8b9a93792fc41edf1743944ada39abad1edac0ac07568719546496b1257df"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow181.png",
+      "source": "procedural-materials/terrain-wind_swept_snow181.png",
+      "sha256": "61bd04109b614549d176b6881369ea851c6aca48bfcdeec18b0df820dfce8d09"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow182.png",
+      "source": "procedural-materials/terrain-wind_swept_snow182.png",
+      "sha256": "4690bf5fe3648d463a59aa8bd35f7d5b51e9e461af8929ac996015da87121dad"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow183.png",
+      "source": "procedural-materials/terrain-wind_swept_snow183.png",
+      "sha256": "57e79738735dd222316957f70fe4c17e4ccaf2c6f6d02ed09ee67be0e3cffc12"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow184.png",
+      "source": "procedural-materials/terrain-wind_swept_snow184.png",
+      "sha256": "a6e8b619e2f0869d07e6b787403e8c79d0845eac6456c66f54ed83312ad8171d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow185.png",
+      "source": "procedural-materials/terrain-wind_swept_snow185.png",
+      "sha256": "edb6e24c30c3616e45677d106bf370160cf0af4f6ad5bdac965d26a00db753dd"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow186.png",
+      "source": "procedural-materials/terrain-wind_swept_snow186.png",
+      "sha256": "5a8e4d9b899230169df32042e99ca8e6cd8445c1078c1675b9e29ba338720fdc"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow187.png",
+      "source": "procedural-materials/terrain-wind_swept_snow187.png",
+      "sha256": "1cc3a5e67a21402eea63d2db9f729a18086f09bfa226985d34c7d2959e77a1fd"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow188.png",
+      "source": "procedural-materials/terrain-wind_swept_snow188.png",
+      "sha256": "fcd196bbcf5561558779095c36b6ea500d5ba25f069f3ff84790e958b2460b70"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow189.png",
+      "source": "procedural-materials/terrain-wind_swept_snow189.png",
+      "sha256": "2f741d22832d10403847b07e799111d4d577c0088620dfea35e5d67d35a36f94"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow190.png",
+      "source": "procedural-materials/terrain-wind_swept_snow190.png",
+      "sha256": "3d658d68af062ddb6df4167ba6a53ea671aeaf4868a51b6d84d2c29600cd6581"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow191.png",
+      "source": "procedural-materials/terrain-wind_swept_snow191.png",
+      "sha256": "1a6b8754d0e53fcf7630d91431dcd3b0488733bd3d624338ddbb19f7e3c53cd4"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow192.png",
+      "source": "procedural-materials/terrain-wind_swept_snow192.png",
+      "sha256": "c0d7637e59723f68e925a7ecd0f6a3aa88100b64b3e0ef5c175700af5ba1b184"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow193.png",
+      "source": "procedural-materials/terrain-wind_swept_snow193.png",
+      "sha256": "03c63e640d93cdd3e9d082db51a589f8dd5abe7d6e4dbd295e3a33018ca328ec"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow194.png",
+      "source": "procedural-materials/terrain-wind_swept_snow194.png",
+      "sha256": "ee4b12e6c642bfd8f26dd6ee9e50d35ecd26fa4ab7675b1985b577379b9eba97"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow195.png",
+      "source": "procedural-materials/terrain-wind_swept_snow195.png",
+      "sha256": "b0e15fe289085252178fb041a8270350cd28a3f4239f3db2a9e41fa6852b6c1f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow196.png",
+      "source": "procedural-materials/terrain-wind_swept_snow196.png",
+      "sha256": "661f50aed1d8499f40b552e4319fa90e04f8fbb347a510b5f65ab56cb6ec5b3c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow197.png",
+      "source": "procedural-materials/terrain-wind_swept_snow197.png",
+      "sha256": "c15adac8fc1c03b8eb5d929b447b862a03ecbc2a82a629a04e5eddb635e9ec06"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow198.png",
+      "source": "procedural-materials/terrain-wind_swept_snow198.png",
+      "sha256": "a7e44a60901e558fda2378325f9b531f96d801bc251e4690b2326f6668297b29"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow199.png",
+      "source": "procedural-materials/terrain-wind_swept_snow199.png",
+      "sha256": "afa0b7c1c5a4eaf0ea1d5b640e96571a192ee6f9cb7b46df6ba41415a9967972"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow200.png",
+      "source": "procedural-materials/terrain-wind_swept_snow200.png",
+      "sha256": "7bf83eb72e9ad4830258044b9948883a4d522964b2fb15afbbce54a825cede3e"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow201.png",
+      "source": "procedural-materials/terrain-wind_swept_snow201.png",
+      "sha256": "4c20d79bcee4c27bf7279c6dbca1fbf006173f78e3cfe5096b695821ee3a1659"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow202.png",
+      "source": "procedural-materials/terrain-wind_swept_snow202.png",
+      "sha256": "39539da0cfa09d0ce3a9b172e2aacccf03f6e5c2ff671ec25748b1029b91174d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow203.png",
+      "source": "procedural-materials/terrain-wind_swept_snow203.png",
+      "sha256": "eb9f57b04da9bbc192db2ca408e16700518ec0034f8ffd9cdfe6299f0a3f10a3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow204.png",
+      "source": "procedural-materials/terrain-wind_swept_snow204.png",
+      "sha256": "20b58dcb841608f97cb8f11923dceb1c39e5a72a1a95cd1f713092d31ebc5fc7"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow205.png",
+      "source": "procedural-materials/terrain-wind_swept_snow205.png",
+      "sha256": "c8b37dea5edb5334e6089fb3721b4c80b77204e524f6bd03ab61a37ae4e331a8"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow206.png",
+      "source": "procedural-materials/terrain-wind_swept_snow206.png",
+      "sha256": "9517d2ac94a4152d7c69ecd840f4dd1b2123efcd26558155f02429c679edaf8d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow207.png",
+      "source": "procedural-materials/terrain-wind_swept_snow207.png",
+      "sha256": "2f821818d6531ced68e51eeb8b1015dbb148a527a37644bb98cfa99fc2c858ad"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow208.png",
+      "source": "procedural-materials/terrain-wind_swept_snow208.png",
+      "sha256": "faea8229e62f5d4e56df31e466412f8e25ca4006f5a8961fd2dcc30368671250"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow209.png",
+      "source": "procedural-materials/terrain-wind_swept_snow209.png",
+      "sha256": "9d678f454d1dabc132b7295ac76239916c08c39efbcbd16d6bd6d2796cbc0677"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow210.png",
+      "source": "procedural-materials/terrain-wind_swept_snow210.png",
+      "sha256": "6777d9a79a5dded4f424eae485aaf20314550209c1e7c61798f7f317d6400d4d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow211.png",
+      "source": "procedural-materials/terrain-wind_swept_snow211.png",
+      "sha256": "a65281bbd60e4697724d4430081c75a5d0da222dd68cecab99d354ccb22a8f8c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow212.png",
+      "source": "procedural-materials/terrain-wind_swept_snow212.png",
+      "sha256": "4369956021eec0af337ac213abfc04bac7dcc5ff19501145dd07ba953b6026c3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow213.png",
+      "source": "procedural-materials/terrain-wind_swept_snow213.png",
+      "sha256": "b8db40295edd8aa6d80e5edc486d788b73a09586d0358afb04ab9bb499be192e"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow214.png",
+      "source": "procedural-materials/terrain-wind_swept_snow214.png",
+      "sha256": "3e9cdd709b2b7ca2d3f875399e32e8bf85430860934bc5b0beee18722a6609bb"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow215.png",
+      "source": "procedural-materials/terrain-wind_swept_snow215.png",
+      "sha256": "ef21e5836439f033de0116f825ec4d5db43a9ecdc477fde13fc673bddce614a0"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow216.png",
+      "source": "procedural-materials/terrain-wind_swept_snow216.png",
+      "sha256": "566f62de62080b08a569ae89e3c06ee7c2a6993d12a63bd18c251579da0cc278"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow217.png",
+      "source": "procedural-materials/terrain-wind_swept_snow217.png",
+      "sha256": "236f378836820fd0cad4dcbdbfefe0882916e480192c2875e2e21fd7b32565c5"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow218.png",
+      "source": "procedural-materials/terrain-wind_swept_snow218.png",
+      "sha256": "02d3ac732131a63ddb79fd992720850809a873e7d6d4ee2e309650bd9912cc31"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow219.png",
+      "source": "procedural-materials/terrain-wind_swept_snow219.png",
+      "sha256": "b8ab56290744c856c97f4b6a65220d2f5cc8a506e5fdc4404e6e1d24b2718463"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow220.png",
+      "source": "procedural-materials/terrain-wind_swept_snow220.png",
+      "sha256": "ffb6b877d626ada707ff5ab359ab1832dd03f32faaac91cb7b461837e0bb3e42"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow221.png",
+      "source": "procedural-materials/terrain-wind_swept_snow221.png",
+      "sha256": "204595c1017e4a4ead0b9ccbdbb381b1d0777e1789a23523ca73ba15a97b8188"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow222.png",
+      "source": "procedural-materials/terrain-wind_swept_snow222.png",
+      "sha256": "e3539e336ad193af9a309974c54380ea8923d97f73d49da34f5721784a602453"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow223.png",
+      "source": "procedural-materials/terrain-wind_swept_snow223.png",
+      "sha256": "f08f0234798ce47787b7b8a9bc6839dd0e451890dad18ea7002957fb9c231fa2"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow224.png",
+      "source": "procedural-materials/terrain-wind_swept_snow224.png",
+      "sha256": "be148138eecce06ea8c4e98aded3133ff450e92cc75f40581b8818382131a5e8"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow225.png",
+      "source": "procedural-materials/terrain-wind_swept_snow225.png",
+      "sha256": "d3a33030e98ab9fdcc187743ca991366305b7c282c9121bf6cd82dfc57b9ee8b"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow226.png",
+      "source": "procedural-materials/terrain-wind_swept_snow226.png",
+      "sha256": "418052a0d901d95ad82db86eec0b499d5811caa7acb37734b9f2f6ab7c9abd98"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow227.png",
+      "source": "procedural-materials/terrain-wind_swept_snow227.png",
+      "sha256": "9f5e4864b72d66ac6b4473b2c5be55e124d0c2ee8c762c33c72b0b73a5e6ab22"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow228.png",
+      "source": "procedural-materials/terrain-wind_swept_snow228.png",
+      "sha256": "692de65d27cce71082bd70c2c4f5bc8136cb6f2cedbc22e1e9446795d6dc85fe"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow229.png",
+      "source": "procedural-materials/terrain-wind_swept_snow229.png",
+      "sha256": "cebf403f5e8d896734cc7ed3a7b83d6184a79baecaeb4df638923c61424f1146"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow230.png",
+      "source": "procedural-materials/terrain-wind_swept_snow230.png",
+      "sha256": "d6740e5a5b63c63f1f3180c638c572421e5c6bdd3792c50014f7ec10e44a1c67"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow231.png",
+      "source": "procedural-materials/terrain-wind_swept_snow231.png",
+      "sha256": "e160c45128e08b473f4d1da1a2a08c535a57a636fb3d713b52a8ad4508274630"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow232.png",
+      "source": "procedural-materials/terrain-wind_swept_snow232.png",
+      "sha256": "8a45795dfc70cb48dcb07135da330dbb74dc8c8a013b74f183fb45b83e3b3302"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow233.png",
+      "source": "procedural-materials/terrain-wind_swept_snow233.png",
+      "sha256": "3ee11b32dcb32988d02a20343a20ad0ea4b647c07b5d6ebecebdb3cf62f3db55"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow234.png",
+      "source": "procedural-materials/terrain-wind_swept_snow234.png",
+      "sha256": "c6cf51041e9bd6ddb70e63557d1b6f9c017a4812c9fc9c2b01f37160f5f36a4c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow235.png",
+      "source": "procedural-materials/terrain-wind_swept_snow235.png",
+      "sha256": "ec175ed871d808735e339a74d82a6f61a29e0fc918d70784377e23c989db20e9"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow236.png",
+      "source": "procedural-materials/terrain-wind_swept_snow236.png",
+      "sha256": "73757648a57d091aa9be541f1c5319c55639778bab8a6d38508b9e3a2f3a26b5"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow237.png",
+      "source": "procedural-materials/terrain-wind_swept_snow237.png",
+      "sha256": "5c7e3bbb1ab21a2a10f0dbcbd2a44ff6bef0b2283725931f99a23575e9e85cd3"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow238.png",
+      "source": "procedural-materials/terrain-wind_swept_snow238.png",
+      "sha256": "967d739a0fb2e69d97002b0ce9bbcb0350aad4a17fcb4ccf36f71fe2f377bf07"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow239.png",
+      "source": "procedural-materials/terrain-wind_swept_snow239.png",
+      "sha256": "4bb2da07846f129c35f497fb81f99a389116a01145b02213221fb6dac345aa4c"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow240.png",
+      "source": "procedural-materials/terrain-wind_swept_snow240.png",
+      "sha256": "9d54ae4060a8cca05b5110a2af81b21afc9209d559bd0877451f1a71ccd71d53"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow241.png",
+      "source": "procedural-materials/terrain-wind_swept_snow241.png",
+      "sha256": "f5121cc4908eb868dee7823c5521e7dd027d52f85eb74eeaec76eac966a4367f"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow242.png",
+      "source": "procedural-materials/terrain-wind_swept_snow242.png",
+      "sha256": "4677a9c863a7d53ad16f7a5f02d4bc35dcab588eb7c46160747170e3f04c8ec4"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow243.png",
+      "source": "procedural-materials/terrain-wind_swept_snow243.png",
+      "sha256": "ff3002c173beb4c928316694aea8d427d0e4108f4132d10eef1071a4794a45b2"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow244.png",
+      "source": "procedural-materials/terrain-wind_swept_snow244.png",
+      "sha256": "a16f3ca8c167deee1f9b2cca19343080c021372714a76f00b164788bfbcae96d"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow245.png",
+      "source": "procedural-materials/terrain-wind_swept_snow245.png",
+      "sha256": "2bfd4b2384e8bf00392dfdde420e90472157850559673aaa1ef2bced5269c089"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow246.png",
+      "source": "procedural-materials/terrain-wind_swept_snow246.png",
+      "sha256": "26d163c79262c794c020d9eb577aae79c0cb3953277d386bb61255bd66187c56"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow247.png",
+      "source": "procedural-materials/terrain-wind_swept_snow247.png",
+      "sha256": "55a8b7b010695986d3656b7308c82d1ba797769637079875e40705ae495ebb1e"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow248.png",
+      "source": "procedural-materials/terrain-wind_swept_snow248.png",
+      "sha256": "53227cdb287b66fd956edb79b681aedf836c3491c880e4c2aaae7b3472c87fe0"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow249.png",
+      "source": "procedural-materials/terrain-wind_swept_snow249.png",
+      "sha256": "1d41a0081d8adeae2dca7e0336e4d80942307b05fc963ba26bd7d77c8bc98c7b"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow250.png",
+      "source": "procedural-materials/terrain-wind_swept_snow250.png",
+      "sha256": "ea8e7f0053eefe5ced6069cf531d4b6df696b7da5ab9d69fcd4a96b1af7f2fc7"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow251.png",
+      "source": "procedural-materials/terrain-wind_swept_snow251.png",
+      "sha256": "5a10031c725b6043bf7d87490285639dc57d9ad38f8a3e3b7a2028a3841a1be1"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow252.png",
+      "source": "procedural-materials/terrain-wind_swept_snow252.png",
+      "sha256": "409574ce806f9782fda3dddc4e8f20ca5896cbb9d488506dbbbcf08b919fc208"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow253.png",
+      "source": "procedural-materials/terrain-wind_swept_snow253.png",
+      "sha256": "8e2e864b407a39873e5b6cb01635cad066629e1dbc67169c32f191c90b0c7a0a"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow254.png",
+      "source": "procedural-materials/terrain-wind_swept_snow254.png",
+      "sha256": "3a8d98d2846f2e5e368a25c542411febf902a805782193ceb1582a1c316d6630"
+    },
+    {
+      "runtime": "terrain-wind_swept_snow255.png",
+      "source": "procedural-materials/terrain-wind_swept_snow255.png",
+      "sha256": "f4d25beb600bfcb512b2d4a727bcffa24b1d2290219f60c0af5a1275c5158327"
     }
   ]
 }

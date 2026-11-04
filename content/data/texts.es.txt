@@ -5722,6 +5722,8 @@ Losas de arenisca
 Campo de piedra pómez
 [frozen_lake]
 Lago helado
+[wind_swept_snow]
+Nieve barrida por el viento
 [terrain group water]
 Agua
 [terrain group sand]
