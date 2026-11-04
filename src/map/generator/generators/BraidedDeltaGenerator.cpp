@@ -691,10 +691,10 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 				const int right = labelAt(p.x - nu * probe, p.y - nv * probe);
 				if (left < 0 || right < 0 || left == right)
 					continue;
-				bool far = true;
+				bool sufficientlySeparated = true;
 				for (const ShapePoint &q : laid)
-					far = far && N::hypot(q.x - p.x, across(q.y - p.y)) >= (pass ? 44 : 10);
-				if (!far || (pass == 0 && joined.find(left) == joined.find(right)))
+					sufficientlySeparated = sufficientlySeparated && N::hypot(q.x - p.x, across(q.y - p.y)) >= (pass ? 44 : 10);
+				if (!sufficientlySeparated || (pass == 0 && joined.find(left) == joined.find(right)))
 					continue;
 				SandFord ford{p.x, p.y, tu / len, tv / len, nu, nv, p.halfWidth + 2.5, 2};
 				stampFord(sketch, f, ford);
