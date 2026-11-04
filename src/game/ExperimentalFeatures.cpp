@@ -23,10 +23,6 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."},
 		{ExperimentId::MarketsV2, "markets-v2", "Markets V2",
 		 "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."},
-        {ExperimentId::GradientRatioMode, "gradient-ratio-mode", "Gradient ratio mode", "Retired research key; amphibious routing always uses the team's most common ratio."},
-        {ExperimentId::GradientSpeedModes, "gradient-speed-modes", "Gradient speed modes", "Retired research key; amphibious routing always uses the team's most common ratio."},
-        {ExperimentId::GradientRatioMedian, "gradient-ratio-median", "Gradient ratio median", "Retired research key; amphibious routing always uses the team's most common ratio."},
-        {ExperimentId::GradientRatioEqual, "gradient-ratio-equal", "Gradient equal ratio", "Retired research key; amphibious routing always uses the team's most common ratio."},
 	};
 	return definitions;
 }
@@ -160,8 +156,7 @@ std::vector<CatalogExperimentDefinition> registeredExperimentDefinitions()
 {
 	std::vector<CatalogExperimentDefinition> definitions;
 	for (const auto &builtin : experimentDefinitions())
-        if (builtin.id < ExperimentId::GradientRatioMode || builtin.id > ExperimentId::GradientRatioEqual)
-		    definitions.push_back({builtin.key, builtin.label, builtin.help});
+		definitions.push_back({builtin.key, builtin.label, builtin.help});
 	const auto &catalog = catalogRegistry().definitions();
 	definitions.insert(definitions.end(), catalog.begin(), catalog.end());
 	return definitions;
@@ -183,10 +178,6 @@ void ExperimentSet::set(ExperimentId id, bool on)
 {
 	if (on && !has(id) && size() >= MAX_STORED)
 		throw std::length_error("Too many enabled experiments");
-    if (on && id>=ExperimentId::GradientRatioMode && id<=ExperimentId::GradientRatioEqual)
-        for (unsigned other=unsigned(ExperimentId::GradientRatioMode); other<=unsigned(ExperimentId::GradientRatioEqual); ++other)
-            if (other!=unsigned(id) && bits.test(other))
-                throw std::invalid_argument("Gradient ratio policies are mutually exclusive");
 	bits.set(static_cast<std::size_t>(id), on);
 }
 

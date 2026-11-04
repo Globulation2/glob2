@@ -425,7 +425,7 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 		noteUnitFailing(unit, UnitTooFarFromBuilding);
 		return false;
 	}
-	if (anyResourceToClear[swimAccessVariant(unit->movementClass())] == 2)
+	if (anyResourceToClear[swimAccessVariant(accessClass(unit->movementAccess()))] == 2)
 	{
 		noteUnitFailing(unit, UnitCantAccessResource);
 		return false;

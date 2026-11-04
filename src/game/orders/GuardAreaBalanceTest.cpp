@@ -118,7 +118,7 @@ namespace
 		{
 			if (options.resourceGradients)
 				for (int r = 0; r < MaterialCount; ++r)
-					glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,r,movementAccessFromLegacy(0)); });
+					glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,r,MovementAccess::Land); });
 			if (options.slowCadence)
 			{
 				// Two more teams with every resource field allocated: the round-robin

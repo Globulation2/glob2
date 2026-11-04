@@ -6,7 +6,6 @@
 // the same improvements; queue order within a layer may differ, but the final
 // field and the completed-layer boundary must not.
 #include "GradientCosts.h"
-#include "GradientKernelWork.h"
 #include "Grid.h"
 #include "GradientSelection.h"
 
@@ -48,13 +47,12 @@ namespace gradient_kernel
 	// The search runs backward from goals: when expanding i, each neighbor is a
 	// possible predecessor, so all eight edges charge the cost of entering i.
 	// Weighted layers read isWater(i) for that cost; uniform layers omit the read.
-	template<bool Weighted, bool Masked, typename IsWater,typename Reserve=DefaultGradientReserve,bool Simd=true,bool Track=false>
+	template<bool Weighted, bool Masked, typename IsWater,typename Reserve=DefaultGradientReserve,bool Simd=true>
 	void expandBucketRangeAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue, size_t &pending,
 		int cur, int limit, const field::Grid& grid, EntrySteps waterSteps, IsWater isWater,
 		std::size_t begin,std::size_t end,Reserve reserve={})
 	{
 		GradientBucket &bucket = queue[unsigned(cur) % BUCKETS];
-        if constexpr(Track)GradientKernelWork::entries(end-begin);
 		const size_t wMask = size_t(grid.width()-1), hMask = size_t(grid.height()-1);
 		const unsigned wDec = Masked ? unsigned(grid.widthShift()) : 0;
 		const std::uint16_t curValue = std::uint16_t(GRADIENT_AT_GOAL - cur);
@@ -155,8 +153,7 @@ namespace gradient_kernel
 			{
 				const size_t i = cells[ci];
 				if (gradient[i] != curValue)
-					continue;
-                if constexpr(Track)GradientKernelWork::expansion(); // stale entry, a cheaper path was found later
+					continue; // stale entry, a cheaper path was found later
 				const size_t x = Masked ? i & wMask : i % grid.width();
 				const size_t y = Masked ? i >> wDec : i / grid.width();
 				const size_t left = Masked ? (x - 1) & wMask : grid.wrapX(int(x)-1);
@@ -296,16 +293,10 @@ namespace gradient_kernel
 		int cur,int limit,const field::Grid& grid,EntrySteps waterSteps,IsWater isWater,
 		std::size_t begin,std::size_t end,Reserve reserve={})
 	{
-        // Keep diagnostic branching outside the cell loop. Ordinary timing
-        // runs execute the same kernel with counting compiled out.
-        const auto run=[&]<bool Track>() {
-            if(grid.powerOfTwo())
-                expandBucketRangeAddressed<Weighted,true,IsWater,Reserve,Simd,Track>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
-            else
-                expandBucketRangeAddressed<Weighted,false,IsWater,Reserve,Simd,Track>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
-        };
-        if(GradientKernelWork::active)run.template operator()<true>();
-        else run.template operator()<false>();
+		if(grid.powerOfTwo())
+			expandBucketRangeAddressed<Weighted,true,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+		else
+			expandBucketRangeAddressed<Weighted,false,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
 	}
 	// Optional references may pause between <=CHUNK entries; required searches
 	// clear only after a complete layer, preserving their observable boundary.

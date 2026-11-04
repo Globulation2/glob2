@@ -93,7 +93,6 @@ void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, 
 {
 	assert(width > 0 && height > 0 && !(width & (width - 1)) && !(height & (height - 1)));
 	gradient = seeded;
-    work={};workSink=inputs.workSink;workKey=inputs.workKey;
 	cells = std::size_t(width) * height;
 	widthMask = width - 1;
 	heightMask = height - 1;
@@ -184,7 +183,6 @@ void BuildingGradientSearch::resolveToCost(int cost)
 // Expands one whole cost layer per iteration until done() or the queues drain.
 template <class Done> void BuildingGradientSearch::advance(Done done)
 {
-    GradientKernelWork::Scope workScope(work,workSink,workKey);
 	// A resume may select a different CPU variant from the previous resume,
 	// but every completed layer in this invocation uses one resolved choice.
 	gradient_kernel::CPUSelectionScope cpuSelection(gradient_kernel::cpuBackend());
@@ -251,7 +249,6 @@ void BuildingGradientSearch::clearForReuse()
 	cells = pending = 0;
 	currentCost = readerCost = 0;
 	registry.reset();
-    workSink.reset();
 	profiles.reset();
 	water.reset();
 	if (custom)

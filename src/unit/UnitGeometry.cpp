@@ -140,11 +140,6 @@ void Unit::dxDyFromDirection(void)
 	findDisplacement([&](int* pathDx, int* pathDy) { dxDyFromDirection(direction,pathDx,pathDy); return true; });
 }
 
-int Unit::swimClass() const
-{
-	return accessClass(movementAccessForSpeeds(performance[WALK],performance[SWIM]));
-}
-
 int Unit::directionFromDxDy(int dx, int dy)
 {
 	const int tab[3][3]={	{0, 1, 2},
@@ -162,11 +157,6 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
     const auto step=direct_flight::bearing(ldx,ldy,owner->map->getW(),owner->map->getH());
     *cdx=step.dx;*cdy=step.dy;
 
-}
-
-int Unit::movementClass() const
-{
-    return performance[FLY]>0 ? AIR_MOVEMENT_CLASS : swimClass();
 }
 
 MovementAccess Unit::movementAccess() const

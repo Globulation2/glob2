@@ -22,10 +22,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 200 shares amphibious routing fields; earlier
+//! the reader still accepts. Version 201 shares amphibious routing fields; earlier
 //! recordings follow different simulation trajectories.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 200;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 201;
 
 
 /// This class is used for reading replays.

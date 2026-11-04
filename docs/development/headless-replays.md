@@ -9,7 +9,7 @@ capped-game adjudication belongs in offline analysis.
 
 Run AI games without a GUI to generate `.replay` files for cross-codebase fidelity testing (C++ vs Rust).
 
-Version 200 shares amphibious routing fields and stores their captured preparation
+Version 201 shares amphibious routing fields and stores their captured preparation
 costs. Earlier replays are rejected; supported older saves still load and retain a
 minimum save version of 58. See [shared amphibious routing](resource-gradient-model.md#shared-amphibious-routing)
 for field transitions and cache migration. Version 194 previously changed

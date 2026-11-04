@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "GradientKernelWork.h"
 
 #include "GradientPropagation.h"
 #include "PreparedTerrainCosts.h"
@@ -15,7 +14,7 @@ namespace gradient_kernel
 // including cardinal/diagonal aliases, rather than assuming four distinct costs.
 // Reserve once per chunk, outside neighbor loops; retain vector relaxation on
 // SSE2/NEON and the same scalar wrapped-edge path as the legacy specialization.
-template<bool Masked, std::size_t N, class ClassAt, unsigned QueueBuckets = BUCKETS,class Reserve=DefaultGradientReserve,bool Simd=true,bool Track=false>
+template<bool Masked, std::size_t N, class ClassAt, unsigned QueueBuckets = BUCKETS,class Reserve=DefaultGradientReserve,bool Simd=true>
 void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue,
     std::size_t &pending, int cur, int limit, const field::Grid &grid,
     const PreparedTerrainCosts<N> &profile, ClassAt classAt,std::size_t begin,std::size_t end,Reserve reserve={})
@@ -26,7 +25,6 @@ void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradien
     if (begin==end) return;
     GLOB2_GRADIENT_BENCH_EVENT(occupied, 1);
     GLOB2_GRADIENT_BENCH_EVENT(popped, count-begin);
-    if constexpr(Track)GradientKernelWork::entries(count-begin);
     const auto &steps = profile.steps;
     const unsigned stepCount = profile.stepCount;
     // Class/slot membership is invariant; only candidate values depend on cur.
@@ -87,7 +85,6 @@ void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradien
         {
             const auto i = cells[ci];
             if (gradient[i] != GRADIENT_AT_GOAL - cur) { GLOB2_GRADIENT_BENCH_EVENT(stale, 1); continue; }
-            if constexpr(Track)GradientKernelWork::expansion();
             const unsigned x = Masked ? i & (width-1) : i % width;
             const unsigned y = Masked ? i >> shift : i / width;
             const unsigned left = x ? x-1 : width-1, right = x+1 == width ? 0 : x+1;
@@ -158,19 +155,14 @@ void expandPreparedTerrainBucketRange(std::uint16_t *gradient,GradientBucket *qu
     std::size_t& pending,int cur,int limit,const field::Grid& grid,
     const PreparedTerrainCosts<N>& profile,ClassAt classAt,std::size_t begin,std::size_t end,Reserve reserve={})
 {
-    const auto dispatch=[&]<bool Simd,bool Track>() {
+    const auto dispatch=[&]<bool Simd>() {
         if(grid.powerOfTwo())
-            expandPreparedTerrainBucketRangeAddressed<true,N,ClassAt,QueueBuckets,Reserve,Simd,Track>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
+            expandPreparedTerrainBucketRangeAddressed<true,N,ClassAt,QueueBuckets,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
         else
-            expandPreparedTerrainBucketRangeAddressed<false,N,ClassAt,QueueBuckets,Reserve,Simd,Track>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
+            expandPreparedTerrainBucketRangeAddressed<false,N,ClassAt,QueueBuckets,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
     };
-    if(GradientKernelWork::active) {
-        if(cpuBackend()==Backend::Scalar)dispatch.template operator()<false,true>();
-        else dispatch.template operator()<true,true>();
-    } else {
-        if(cpuBackend()==Backend::Scalar)dispatch.template operator()<false,false>();
-        else dispatch.template operator()<true,false>();
-    }
+    if(cpuBackend()==Backend::Scalar)dispatch.template operator()<false>();
+    else dispatch.template operator()<true>();
     pending-=end-begin;
 }
 

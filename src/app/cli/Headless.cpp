@@ -617,9 +617,6 @@ struct HeadlessRunner
 			// not apply here, only --experiment does.
 			for(const auto &key : many(options,"--experiment"))
 			{
-                const auto id=parseExperimentKey(key);
-                if(id && *id>=ExperimentId::GradientRatioMode && *id<=ExperimentId::GradientRatioEqual)
-                    throw std::invalid_argument("movement-ratio research policies are retired; use the frozen research build");
 				if(!knownExperimentKey(key, header.catalogExperimentKeys())) throw std::invalid_argument("unknown experiment: " + key);
 				header.getExperiments().set(key, true, header.catalogExperimentKeys());
 			}
@@ -723,7 +720,7 @@ struct HeadlessRunner
         if (options.count("--gradient-work-stats")) {
             const auto path=fs::absolute(one(options,"--gradient-work-stats"));
             fs::create_directories(path.parent_path());
-            engine.gui.game.map.configureGradientWorkStats(path.string(),options.count("--gradient-work-aggregate")!=0,options.count("--gradient-work-kernels")!=0);
+            engine.gui.game.map.configureGradientWorkStats(path.string());
         }
         if (options.count("--resource-gradient-exploration")) {
             if (one(options,"--resource-gradient-probe","false")!="true" || recordReplay)

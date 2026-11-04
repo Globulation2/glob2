@@ -114,9 +114,7 @@ Uint16 Map::buildingGradientValue(Building *building, MovementAccess movementAcc
     if(auto& search=building->globalGradientSearch[slot]) {
         if(auto& stats=gradientRuntime->workStats) {
             const auto before=search->settledCost();const bool complete=search->complete();
-            const auto work=search->work;
             search->resolve(cell);
-            stats->kernel(6,GradientWorkStats::Unknown,search->work.queued-work.queued,search->work.expanded-work.expanded);
             if(before!=search->settledCost() || complete!=search->complete())
                 stats->partial(GradientWorkStats::buildingKey(building->owner->teamNumber,swimClass,Building::GIDtoID(building->gid),building->scriptIdentity,unsigned(building->resolveRoute(route))),game->stepCounter,before,search->settledCost());
         } else search->resolve(cell);

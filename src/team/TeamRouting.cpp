@@ -112,7 +112,7 @@ Building *Team::findNearestFood(Unit *unit)
 				{
 			if (!(*bi)->canOfferService(unit, FEED) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 					int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
-					if ((dist >= maxDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(unit->movementClass()))))
+					if ((dist >= maxDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(accessClass(unit->movementAccess())))))
 						|| !(*bi)->canConvertUnit()
 						)
 					{
@@ -152,7 +152,7 @@ Building *Team::findNearestFood(Unit *unit)
 			if ((*bi)->availableHappynessLevel() < bestEnemyHappyness)
 				continue;
 			int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
-			if (dist >= bestDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(unit->movementClass()))))
+			if (dist >= bestDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(accessClass(unit->movementAccess())))))
 				continue;
 
 			if (!directAir && !map->buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
@@ -242,15 +242,19 @@ int Team::maxBuildLevel(void)
 
 void Team::updateRoutingRatio()
 {
-
-    const unsigned now=game->stepCounter;
-    if (routingRatio.known && ((now & 511u)!=0 || routingRatio.tick==now)) return;
-    std::map<unsigned,unsigned> classes;
-    for (const Unit* unit:liveUnits.entries()) {
-        if(unit->isDead || unit->performance[FLY]>0 || unit->performance[WALK]<=0 || unit->performance[SWIM]<=0) continue;
-        ++classes[Map::swimClass(unit->performance[WALK],unit->performance[SWIM])];
+    const unsigned now = game->stepCounter;
+    // Read authoritative units at fixed simulation boundaries, before snapshot
+    // capture. Presentation statistics can arrive asynchronously and cannot select costs.
+    if (routingRatio.known && (now % RoutingRatioState::SelectionInterval != 0 || routingRatio.tick == now)) return;
+    RoutingRatioState::Population classes{};
+    for (const Unit* unit : liveUnits.entries())
+    {
+        if (unit->isDead || unit->performance[FLY] > 0 || unit->performance[WALK] <= 0 || unit->performance[SWIM] <= 0) continue;
+        ++classes[Map::swimClass(unit->performance[WALK], unit->performance[SWIM])];
     }
-    unsigned selected=Map::SWIM_CLASS_EVEN;
-    if (!classes.empty()) selected=RoutingRatioState::mode(classes,routingRatio.selected);
-    routingRatio.selected=selected; routingRatio.tick=now; routingRatio.known=true;
+    routingRatio.selected = RoutingRatioState::mode(classes, routingRatio.selected);
+    routingRatio.tick = now;
+    routingRatio.known = true;
+    // No invalidation here: existing guidance and adaptive refresh history stay
+    // usable. Each normally admitted replacement captures the current selection.
 }

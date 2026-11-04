@@ -146,5 +146,5 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 // Compatibility entry point for existing callers. All movement uses the same A*.
 bool Map::pathfindAirPointToPoint(int x,int y,int targetX,int targetY,int* dx,int* dy)
 {
-    return pathfindPointToPoint(x,y,targetX,targetY,dx,dy,movementAccessFromLegacy(AIR_MOVEMENT_CLASS),0,GRADIENT_COST_LIMIT/GRADIENT_STEP);
+    return pathfindPointToPoint(x,y,targetX,targetY,dx,dy,MovementAccess::Air,0,GRADIENT_COST_LIMIT/GRADIENT_STEP);
 }

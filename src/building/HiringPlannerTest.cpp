@@ -59,8 +59,8 @@ TEST_SUITE("HiringPlanner")
         worker->hungriness=0;
         // Cold building routes now publish at a completed-world boundary.
         // Await the seed without completing its retained lazy frontier.
-        glob2test::awaitBuildingGradient(game,building,worker->swimClass(),BuildingRoute::Footprint);
-        const auto slot=building->routeSlot(worker->swimClass(),BuildingRoute::Footprint);
+        glob2test::awaitBuildingGradient(game,building,accessClass(worker->movementAccess()),BuildingRoute::Footprint);
+        const auto slot=building->routeSlot(accessClass(worker->movementAccess()),BuildingRoute::Footprint);
         auto* search=building->globalGradientSearch[slot].get();
         REQUIRE(search);
         REQUIRE_FALSE(search->complete());
@@ -167,7 +167,7 @@ TEST_SUITE("HiringPlanner")
 		HiringPlanner::Planner planner;
 		const auto expected = planner.rank(input, 0);
 		CHECK(expected.metrics.resourcePlaneReads > 0);
-		const auto key = MapState::planeKey(0, WHEAT, u->swimClass(), false);
+		const auto key = MapState::planeKey(0, WHEAT, accessClass(u->movementAccess()), false);
 		const auto plane = input.world.resourceFields->find(key)->values;
 		const auto frozen = *plane;
 		// Normal field publication can replace a generation without changing
@@ -230,7 +230,7 @@ TEST_SUITE("HiringPlanner")
 			CHECK(route.field->values == nullptr);
 		}
 		// A normal simulation query establishes the shared generation.
-		glob2test::awaitBuildingGradient(w.game,b, u->swimClass());
+		glob2test::awaitBuildingGradient(w.game,b, accessClass(u->movementAccess()));
 		CHECK_FALSE(HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary()).routes->empty());
 	}
 	TEST_CASE("cold route observation suggests candidates while live admission remains Pending")
@@ -246,7 +246,7 @@ TEST_SUITE("HiringPlanner")
 		u->activity = Unit::ACT_RANDOM;
 		u->hungriness = 0;
 		u->carriedMaterial = WHEAT;
-		const auto slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+		const auto slot = b->routeSlot(accessClass(u->movementAccess()), BuildingRoute::Footprint);
 		CHECK(b->globalGradient[slot] == nullptr);
 		const auto input=HiringPipeline::bindRoutes(w.game,w.game.captureReadBoundary());
 		REQUIRE_FALSE(input.routes->empty());
@@ -269,7 +269,7 @@ TEST_SUITE("HiringPlanner")
 		CHECK(distance==-1);
 		CHECK(b->unitsWorking.empty());
 		CHECK(b->globalGradient[slot] == nullptr);
-		glob2test::awaitBuildingGradient(w.game,b,u->swimClass(),BuildingRoute::Footprint);
+		glob2test::awaitBuildingGradient(w.game,b,accessClass(u->movementAccess()),BuildingRoute::Footprint);
 		CHECK(w.game.map.queryBuildingDistance(b,u->movementAccess(),u->posX,u->posY,&distance,BuildingRoute::Footprint)==RouteResult::Reachable);
 	}
 	TEST_CASE("unrelated live route enrollment cannot change hiring inputs")
@@ -499,7 +499,7 @@ TEST_SUITE("HiringPlanner")
 		warrior->experienceLevel = INT_MAX;
 		world.game.gameHeader.setGlassCannonLevel(2);
 		world.game.areaEffects.beginTick(world.game);
-		glob2test::awaitBuildingGradient(world.game,flag, warrior->swimClass(), BuildingRoute::Combat);
+		glob2test::awaitBuildingGradient(world.game,flag, accessClass(warrior->movementAccess()), BuildingRoute::Combat);
 		const auto expected =
 			std::int64_t(warrior->performance[ATTACK_SPEED]) * warrior->getRealAttackStrength();
 		const auto snapshot = world.game.captureReadBoundary();
@@ -597,7 +597,7 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(inn);
 		REQUIRE(worker);
 		worker->carriedMaterial = WHEAT;
-		glob2test::awaitBuildingGradient(world.game,inn, worker->swimClass());
+		glob2test::awaitBuildingGradient(world.game,inn, accessClass(worker->movementAccess()));
 		HiringPlanner::Planner cache;
 		const auto plan = [&]
 		{
@@ -719,7 +719,7 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(inn);
 		int distance = 0;
 		glob2test::awaitBuildingGradient(world.game,inn,0);
-		REQUIRE(world.game.map.buildingAvailable(inn, movementAccessFromLegacy(0), 12, 12, &distance));
+		REQUIRE(world.game.map.buildingAvailable(inn, MovementAccess::Land, 12, 12, &distance));
 		auto lease = inn->leaseGradient(inn->routeSlot(0, BuildingRoute::Automatic));
 		REQUIRE(lease);
 		REQUIRE(lease->search);
@@ -736,10 +736,10 @@ TEST_SUITE("HiringPlanner")
 					lease->distance(24 + i % 4, 24);
 			});
 		for (int i = 0; i < 1000; ++i)
-			CHECK(world.game.map.buildingAvailable(inn, movementAccessFromLegacy(0), 12 + i % 4, 12, &distance));
+			CHECK(world.game.map.buildingAvailable(inn, MovementAccess::Land, 12 + i % 4, 12, &distance));
 		inn->resetPathfindGradients();
 		glob2test::awaitBuildingGradient(world.game,inn,0);
-		REQUIRE(world.game.map.buildingAvailable(inn, movementAccessFromLegacy(0), 20, 20, &distance));
+		REQUIRE(world.game.map.buildingAvailable(inn, MovementAccess::Land, 20, 20, &distance));
 		worker.join();
 		CHECK(distance == oldDistance);
 		CHECK(lease->values != inn->globalGradient[0]);
@@ -802,7 +802,7 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(worker);
 		inn->desiredMaxUnitWorking = 1;
 		world.game.map.incResourceByIndex(16, 16, WHEAT, 0);
-		const int swim = worker->swimClass();
+		const int swim = accessClass(worker->movementAccess());
 		glob2test::awaitBuildingGradient(world.game,inn, swim);
         glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(0, WHEAT, movementAccessFromLegacy(swim), false, inn); });
 		const auto checksum = world.checksum();

@@ -15,7 +15,7 @@ their lazy initialization/invalidation paths. Skipping one field does not cause
 another family to fill an executor slot. With no initialization, reactive request
 or accepted demanded refresh, no periodic work is submitted.
 
-A logical field key contains a stable family, team, movement class and optional
+A logical field key contains a stable family, team, movement access and optional
 material identity. Its publication carries the immutable capture tick, effective
 seed count and change epochs, movement-counter baseline and history-known flag.
 Requests made while a replacement is pending do not move its deadline. Published
@@ -460,18 +460,15 @@ use the same access identities. Single-team point searches use that team's polic
 multi-team searches use equal cost because they have no single owner. Maxima's
 independent strategic travel fields retain their neutral access-based semantics.
 
-Save format 200 preserves each published and pending field's captured costs.
+Save format 201 preserves each published and pending field's captured costs.
 Older saves coalesce ratio-keyed fields into one amphibious field, preserving
 available published guidance while restarting obsolete preparation queues. The
-save-format floor remains unchanged. The retired research-policy experiment keys
-are recognized in old headers but no longer select different routing policies;
-new command-line selections of these keys are rejected.
-The temporary `--routing-ratio-study` observer has been removed; historical
-campaigns require their frozen binaries and tool packages.
+save-format floor remains unchanged. Historical research campaigns require their
+frozen binaries and tool packages; production exposes no ratio-policy selector.
 
-For ongoing diagnostics, `--gradient-work-stats PATH --gradient-work-aggregate`
-retains bounded request, refresh and publication statistics. The separately opt-in
-unified quality probe uses private fresh fields and copied selector RNG state;
-its counterfactual results do not describe completed journeys. Its private fields
-retain captured preparation costs independently of live caches. Elapsed scopes
-remain attribution aids, not additive process CPU measurements.
+The existing unified quality probe uses private fresh fields and copied selector
+RNG state. Its private fields retain captured preparation costs independently of
+live caches; counterfactual results do not describe completed journeys. Existing
+`--gradient-work-stats PATH` diagnostics retain request, refresh and publication
+statistics. Elapsed scopes remain attribution aids, not additive process CPU
+measurements.

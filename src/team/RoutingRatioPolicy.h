@@ -1,17 +1,30 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "UnitConsts.h"
-#include <map>
+#include <array>
 
-// Authoritative modal-cost selection and deterministic selection boundary.
-struct RoutingRatioState {
-    unsigned selected=3, tick=0;
-    bool known=false;
-    static bool amphibious(int c) { return c>0 && c<LEGACY_SWIM_CLASS_COUNT; }
-    static unsigned mode(const std::map<unsigned,unsigned>& counts,unsigned previous) {
-        unsigned best=0,maximum=0;
-        for (const auto& [value,count]:counts) if(count>maximum){best=value;maximum=count;}
-        if (auto i=counts.find(previous); i!=counts.end() && i->second==maximum) return previous;
-        return best;
+// Authoritative preparation-cost policy. Field identities describe access only;
+// the selected ratio is captured by each preparation and never changes a serving field.
+struct RoutingRatioState
+{
+    static constexpr unsigned SelectionInterval = 512;
+    static constexpr unsigned EqualCost = unsigned(MovementAccess::Amphibious);
+    using Population = std::array<unsigned, LEGACY_SWIM_CLASS_COUNT>;
+
+    unsigned selected = EqualCost;
+    unsigned tick = 0;
+    bool known = false;
+
+    static bool amphibious(int cost) { return cost > 0 && cost < LEGACY_SWIM_CLASS_COUNT; }
+
+    static unsigned mode(const Population& counts, unsigned previous)
+    {
+        unsigned best = EqualCost, maximum = 0;
+        // Ascending traversal resolves an otherwise unresolved tie to the lower ratio.
+        for (unsigned cost = 1; cost < counts.size(); ++cost)
+            if (counts[cost] > maximum) { best = cost; maximum = counts[cost]; }
+        // Keeping a tied choice avoids needless changes as populations fluctuate.
+        if (amphibious(previous) && maximum && counts[previous] == maximum) return previous;
+        return best; // An empty population uses equal cost.
     }
 };

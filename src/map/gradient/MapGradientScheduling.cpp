@@ -43,8 +43,6 @@ void buildScheduled(PipelineJob& job)
 	auto& p = job.payload;
 	if (building_gradient::workHook) building_gradient::workHook(p);
     p.inputs=BuildingGradientSearch::Inputs::ofSnapshot(*job.snapshotLease,p.swim);
-    p.inputs.workSink=p.workSink;p.inputs.workKey=GradientKernelWork::key(6,p.team,p.swim);
-    if(p.workSink){auto& counter=p.workSink->fields[p.inputs.workKey];++counter.builds;counter.initializedCells+=std::size_t(job.snapshotLease->width)*job.snapshotLease->height;}
 	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, p.depthTarget);
 	p.locked = result.locked;
 	p.resourceState = result.resourceState;
@@ -161,7 +159,6 @@ void Map::ensureBuildingGradientPipeline()
 		}
         if(auto& stats=gradientRuntime->workStats) {
             const auto key=GradientWorkStats::buildingKey(p.team,slotSwim(p.slot),p.buildingId,p.scriptIdentity,unsigned(p.route));
-            if(b->globalGradientSearch[slot])stats->kernel(6,p.workReason,b->globalGradientSearch[slot]->work.queued,b->globalGradientSearch[slot]->work.expanded);
             stats->published(key,game->stepCounter,p.workReason,size);
             if(b->globalGradientSearch[slot])stats->partial(key,game->stepCounter,0,b->globalGradientSearch[slot]->settledCost(),true);
         }
@@ -252,7 +249,6 @@ void Map::stageBuildingGradientPreparation()
 		job->payload = {};
 		auto& p = job->payload;
 		p.team = request.team; p.buildingId = request.building; p.scriptIdentity = request.identity;
-		p.workSink=rt.workSink;
 		p.slot = request.slot; p.swim = preparationCostClass(p.team,slotSwim(request.slot)); p.route = slotRoute(request.slot);
 		p.epoch = request.epoch; p.captureTick = game->stepCounter; p.generation = topologyGeneration;
         if(auto& stats=rt.workStats)p.workReason=stats->admitted(GradientWorkStats::buildingKey(p.team,slotSwim(p.slot),p.buildingId,p.scriptIdentity,unsigned(p.route)),game->stepCounter,size);

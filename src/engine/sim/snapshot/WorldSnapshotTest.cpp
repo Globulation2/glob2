@@ -646,7 +646,7 @@ TEST_SUITE("WorldSnapshot")
 		REQUIRE(building); REQUIRE(worker);
 		building->unitsWorking.push_back(worker);
 		game.map.setResourceByIndex(20, 20,WHEAT, 1);
-		glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0, materialIndex(MaterialId::Food), movementAccessFromLegacy(0)); });
+		glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0, materialIndex(MaterialId::Food), MovementAccess::Land); });
 		SimulationSnapshot::Store store;
 		auto mutateAndCapture = [&] {
 			++game.stepCounter;
@@ -654,7 +654,7 @@ TEST_SUITE("WorldSnapshot")
 			game.map.setGroundUnit(25, 25, NOGUID);
 			game.map.addGuardArea(20, 20, 0);
 			game.map.setMapDiscovered(20, 20, game.teams[0]->me);
-			game.map.updateMaterialGradient(0, Uint8(materialIndex(MaterialId::Food)), movementAccessFromLegacy(0));
+			game.map.updateMaterialGradient(0, Uint8(materialIndex(MaterialId::Food)), MovementAccess::Land);
 			building->priority = int(game.stepCounter);
 			return store.captureBoundary(game, allOptions);
 		};

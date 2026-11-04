@@ -385,18 +385,18 @@ TEST_CASE("explicit market refresh publishes depletion and restocking after the 
     REQUIRE(market);
     map.configureGradientPipeline(2,3);
     market->setMaterial(CHERRY,20);
-    glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(0),true); });
-    CHECK(map.materialAvailableSlot(0,CHERRY,movementAccessFromLegacy(0),5,5,true));
+    glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,CHERRY,MovementAccess::Land,true); });
+    CHECK(map.materialAvailableSlot(0,CHERRY,MovementAccess::Land,5,5,true));
     for (bool stocked:{false,true}) {
         market->setMaterial(CHERRY,stocked ? 1 : 0);
         map.dirtyMarketGradientsSlot(0,CHERRY);
         world.game.stepCounter+=AdaptiveGradientState::MinimumInterval;
-        map.updateMaterialGradient(0,CHERRY,movementAccessFromLegacy(0),true);
+        map.updateMaterialGradient(0,CHERRY,MovementAccess::Land,true);
         glob2test::awaitGradient(world.game,[&] {
-            const auto* field=map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(0),true);
-            return map.materialAvailableSlot(0,CHERRY,movementAccessFromLegacy(0),5,5,true)==stocked ? field : nullptr;
+            const auto* field=map.getMaterialGradientSlot(0,CHERRY,MovementAccess::Land,true);
+            return map.materialAvailableSlot(0,CHERRY,MovementAccess::Land,5,5,true)==stocked ? field : nullptr;
         });
-        CHECK(map.materialAvailableSlot(0,CHERRY,movementAccessFromLegacy(0),5,5,true)==stocked);
+        CHECK(map.materialAvailableSlot(0,CHERRY,MovementAccess::Land,5,5,true)==stocked);
     }
 }
 TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")

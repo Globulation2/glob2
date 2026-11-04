@@ -544,6 +544,9 @@
         "hardpan": {
           "$ref": "#/$defs/coverage"
         },
+        "tundra": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

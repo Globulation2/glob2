@@ -74,7 +74,8 @@ public:
 	static std::shared_ptr<const AIWorldView> capture(const Game& game, std::shared_ptr<const Catalog> catalog);
     int preparationCostClass(int team,int access) const {
         if(access!=int(MovementAccess::Amphibious) || team<0 || std::size_t(team)>=teams.size())return access;
-        return teams[team].amphibiousRoutingClass ? teams[team].amphibiousRoutingClass : 3;
+        const auto& ratio = teams[team].routingRatio;
+        return ratio.known ? int(ratio.selected) : int(MovementAccess::Amphibious);
     }
 
 	std::span<const Uint16> resourceGradient(int team, int resource, MovementAccess movementAccessValue, bool market = false) const

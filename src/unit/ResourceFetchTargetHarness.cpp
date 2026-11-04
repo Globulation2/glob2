@@ -75,7 +75,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	unit->setValidTarget(true);
 	unit->setPerformance(WALK,swimOnly?0:10);
 	unit->setPerformance(SWIM,swimSpeed);
-	const int swimClass = unit->swimClass();
+	const int swimClass = accessClass(unit->movementAccess());
 	require(swimClass == expectedClass, "exercise the requested swim class");
 
 	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass)); });
@@ -166,7 +166,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	unit->activity = Unit::ACT_FILLING;
 	unit->displacement = Unit::DIS_GOING_TO_RESOURCE;
 	unit->setValidTarget(true);
-	const int swimClass = unit->swimClass();
+	const int swimClass = accessClass(unit->movementAccess());
 
 	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass)); });
 	require(game.map.getGlobalGradientDestination(game.map.getMaterialGradientSlot(teamNumber, WHEAT, movementAccessFromLegacy(swimClass)), unit->posX, unit->posY, &unit->targetX, &unit->targetY),

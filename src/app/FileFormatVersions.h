@@ -375,5 +375,9 @@ static constexpr int FILE_FORMAT_VERSION_WINDY_SAND_DUNE = 198;
 //! terrain IDs starting at 39 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_HARDPAN = 199;
 
-// Stable access fields retain captured preparation costs.
-static constexpr int FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY = 200;
+//! Built-in tundra: TERRAIN_COUNT grew from 40 to 41, so earlier files carry custom
+//! terrain IDs starting at 40 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_TUNDRA = 200;
+
+//! Stable access fields retain published and in-flight preparation costs.
+static constexpr int FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY = 201;

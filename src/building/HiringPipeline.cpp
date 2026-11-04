@@ -188,8 +188,6 @@ struct HiringPlanner::PreparedRoute
 		job.data.reset(new Uint16[std::size_t(snapshot.width) * snapshot.height]);
 		job.search = acquireBuildingGradientSearch();
         auto inputs=BuildingGradientSearch::Inputs::ofSnapshot(snapshot,job.swim);
-        inputs.workSink=job.workSink;inputs.workKey=GradientKernelWork::key(6,Building::GIDtoTeam(building.gid),job.swim);
-        if(job.workSink){auto& counter=job.workSink->fields[inputs.workKey];++counter.builds;counter.initializedCells+=std::size_t(snapshot.width)*snapshot.height;}
 		const auto result = gradient_preparation::buildBuilding(
 			job.seed, snapshot, inputs,
 			job.data.get(), *job.search, BuildingGradientDepth::MIN_DEPTH);
@@ -838,7 +836,6 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						prepared->building = b.identity;
 						prepared->proactive = initialize;
 						auto &job = prepared->job;
-                        job.workSink=game.map.gradientWorkSink();
 						job.slot = slot;
 						job.swim = game.map.preparationCostClass(b.team,c);
 						job.route = route;

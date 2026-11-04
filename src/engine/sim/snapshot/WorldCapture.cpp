@@ -346,7 +346,6 @@ Handle capture(const Game& game,
 		if (needs(requirements, Component::Teams)) {
 		auto& target = teams->values[t]; target.number = t;
         target.routingRatio=team->routingRatio;
-        target.amphibiousRoutingClass=team->routingRatio.known ? int(team->routingRatio.selected) : 0;
         target.supplierPresence=(!team->stockSuppliers.empty()?1:0)|(!team->directStockSuppliers.empty()?2:0);
 		target.virtualBuildings.clear(); target.swarms.clear();
 		target.prestige = team->prestige; target.alive = team->isAlive;

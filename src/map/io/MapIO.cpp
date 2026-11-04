@@ -681,7 +681,11 @@ void Map::removeTeam(void)
         auto& fields=probe->fields;std::erase_if(fields,[&](const auto& item){return GradientFieldKey::unpack(std::uint32_t(item.first)).team==t;});
     }
 	for (auto it=gradientRuntime->materialFields.begin(); it!=gradientRuntime->materialFields.end();) {
-		if (it->second.team==t) { gradientRuntime->materialLru.erase(it->second.lru); it=gradientRuntime->materialFields.erase(it); }
+		if (it->second.team==t) {
+            recordFieldCost(it->second.published, -1);
+            gradientRuntime->materialLru.erase(it->second.lru);
+            it=gradientRuntime->materialFields.erase(it);
+        }
 		else ++it;
 	}
 	gradientRuntime->stockRevision[t]={};
@@ -689,19 +693,24 @@ void Map::removeTeam(void)
 	{
 		for (int r=0; r<MaterialCount; r++)
 		{
+			recordFieldCost(materialGradients[t][r][s], -1);
 			delete[] materialGradients[t][r][s];
 			materialGradientStale[t][r][s]=false;
 			materialGradients[t][r][s]=NULL;
+			recordFieldCost(marketMaterialGradients[t][r][s], -1);
 			delete[] marketMaterialGradients[t][r][s];
 			marketMaterialGradientStale[t][r][s]=false;
 			marketMaterialGradients[t][r][s]=NULL;
 		}
+		recordFieldCost(forbiddenGradient[t][s], -1);
 		delete[] forbiddenGradient[t][s];
 		forbiddenGradientStale[t][s]=false;
 		forbiddenGradient[t][s]=NULL;
+		recordFieldCost(guardAreasGradient[t][s], -1);
 		delete[] guardAreasGradient[t][s];
 		guardGradientStale[t][s]=false;
 		guardAreasGradient[t][s]=NULL;
+		recordFieldCost(clearAreasGradient[t][s], -1);
 		delete[] clearAreasGradient[t][s];
 		clearGradientStale[t][s]=false;
 		clearAreasGradient[t][s]=NULL;
@@ -1032,7 +1041,11 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeEnterSection(sw);
 				// Materialize the old full-field representation from its frozen inputs.
 				// This changes no routing answers, timestamps, RNG or save bytes.
-				finishBuildingGradient(building, movementAccessFromLegacy(sw), BuildingRoute::Footprint);
+                // Obsolete wire slots are empty placeholders, not aliases of
+                // the live amphibious search. Finish each live field once.
+                const auto access=movementAccessFromLegacy(sw);
+                if(accessClass(access)==sw)
+                    finishBuildingGradient(building, access, BuildingRoute::Footprint);
 				saveGradient(stream, building->globalGradient[sw], size);
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
@@ -1064,7 +1077,9 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				{
 					stream->writeEnterSection(sw);
 					const int slot=profile*MOVEMENT_CLASS_COUNT+sw;
-					finishBuildingGradient(building, movementAccessFromLegacy(sw), BuildingRoute(profile));
+                    const auto access=movementAccessFromLegacy(sw);
+                    if(accessClass(access)==sw)
+                        finishBuildingGradient(building, access, BuildingRoute(profile));
 					saveGradient(stream, building->globalGradient[slot], size);
 					stream->writeUint8(building->dirtyGradient[slot], "dirty");
 					stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[slot], "lastUpdate");
@@ -1547,6 +1562,9 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         gradientRuntime->adaptive={};
         gradientRuntime->marketTargets={};
         if (delay) configureGradientPipeline(2,delay);
+        // This migration discards every published routing cache below; its
+        // address-keyed cost metadata must not outlive those buffers.
+        gradientRuntime->fieldCosts.clear();
         gradientRuntime->materialFields.clear();
         gradientRuntime->materialLru.clear();
         for (int t=0; t<game->teamsCount(); ++t) {

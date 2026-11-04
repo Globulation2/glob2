@@ -343,15 +343,15 @@ void GradientTest::testDirectionPrefersCheapestTotal()
 	map.propagateGradient(g.data(), 0);
 	int dx = 9, dy = 9;
 	// From (3,3) the cheapest neighbour is the diagonal (2,2).
-	CHECK(map.directionByGradient(random, 1, movementAccessFromLegacy(0), 3, 3, g.data(), &dx, &dy, true));
+	CHECK(map.directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, true));
 	CHECK_EQ(-1, dx);
 	CHECK_EQ(-1, dy);
 	// From (3,0) it is straight west.
-	CHECK(map.directionByGradient(random, 1, movementAccessFromLegacy(0), 3, 0, g.data(), &dx, &dy, true));
+	CHECK(map.directionByGradient(random, 1, MovementAccess::Land, 3, 0, g.data(), &dx, &dy, true));
 	CHECK_EQ(-1, dx);
 	CHECK_EQ(0, dy);
 	// At the goal: stay.
-	CHECK(map.directionByGradient(random, 1, movementAccessFromLegacy(0), 0, 0, g.data(), &dx, &dy, true));
+	CHECK(map.directionByGradient(random, 1, MovementAccess::Land, 0, 0, g.data(), &dx, &dy, true));
 	CHECK_EQ(0, dx);
 	CHECK_EQ(0, dy);
 
@@ -383,15 +383,15 @@ void GradientTest::testDirectionBlockedNeighbour()
 	// progress through (2,3) or (3,2), never the occupied diagonal.
 	map.putGroundUnit(2, 2);
 	int dx = 9, dy = 9;
-	CHECK(map.directionByGradient(random, 1, movementAccessFromLegacy(0), 3, 3, g.data(), &dx, &dy, true));
+	CHECK(map.directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, true));
 	CHECK(((dx == -1 && dy == 0) || (dx == 0 && dy == -1)));
 	// Fully surrounded by units: strict fails, and so does the sidestep (no free cell).
 	for (int ddy = -1; ddy <= 1; ddy++)
 		for (int ddx = -1; ddx <= 1; ddx++)
 			if (ddx || ddy)
 				map.putGroundUnit(3 + ddx, 3 + ddy);
-	CHECK(!map.directionByGradient(random, 1, movementAccessFromLegacy(0), 3, 3, g.data(), &dx, &dy, true));
-	CHECK(!map.directionByGradient(random, 1, movementAccessFromLegacy(0), 3, 3, g.data(), &dx, &dy, false));
+	CHECK(!map.directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, true));
+	CHECK(!map.directionByGradient(random, 1, MovementAccess::Land, 3, 3, g.data(), &dx, &dy, false));
 }
 
 void GradientTest::testSwimClassFromSpeeds()

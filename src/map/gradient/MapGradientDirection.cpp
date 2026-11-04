@@ -115,6 +115,3 @@ int Map::publishedCostClass(const Uint16* field,int access) const
 }
 void Map::recordFieldCost(const Uint16* field,int cost)
 { if(field) {if(cost<0)gradientRuntime->fieldCosts.erase(field);else gradientRuntime->fieldCosts[field]=cost;} }
-
-std::shared_ptr<GradientKernelWork::Sink> Map::gradientWorkSink() const
-{ return gradientRuntime->workSink; }

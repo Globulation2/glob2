@@ -89,8 +89,8 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 
 	// Confirm the layout really is lopsided, so a pass here means the
 	// apportionment did the work and not an accidentally even map.
-	game.map.buildingGradient(site,movementAccessFromLegacy(0));
-	for (int material : {WOOD,STONE}) glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,material,movementAccessFromLegacy(0)); });
+	game.map.buildingGradient(site,MovementAccess::Land);
+	for (int material : {WOOD,STONE}) glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,material,MovementAccess::Land); });
 	int woodDistance = 0, stoneDistance = 0;
 	Unit* probe = team->myUnits[0];
 	require(game.map.materialAvailableSlot(0, WOOD, probe->movementAccess(), probe->posX, probe->posY, &woodDistance),
@@ -164,7 +164,7 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	team->myUnits[1]->carriedMaterial = WHEAT;
 	require(site->neededMaterial(WHEAT) == 0, "the wheat is of no use here");
 
-	const int swimClass = team->myUnits[0]->swimClass();
+	const int swimClass = accessClass(team->myUnits[0]->movementAccess());
 	game.map.buildingGradient(site,movementAccessFromLegacy(swimClass));
 	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,STONE,movementAccessFromLegacy(swimClass)); });
 	for (int n = 0; n < 2; ++n)

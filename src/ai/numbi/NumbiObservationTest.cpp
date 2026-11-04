@@ -50,8 +50,8 @@ TEST_SUITE("NumbiObservation")
   auto& game=fixture.game;auto& map=game.map;
   map.setResourceByIndex(5,5,WHEAT,1);
   int initialX,initialY,initialDistance;
-  glob2test::awaitGradient(game,[&] { return map.getMaterialGradientSlot(0,WHEAT,movementAccessFromLegacy(0)); });
-  REQUIRE(map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),movementAccessFromLegacy(0),8,8,&initialX,&initialY,&initialDistance));
+  glob2test::awaitGradient(game,[&] { return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Land); });
+  REQUIRE(map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land,8,8,&initialX,&initialY,&initialDistance));
   map.setNoResource(5,5,0);map.setResourceByIndex(24,24,WHEAT,1);
   auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
   NumbiObservation::ResourceInitializations cache;

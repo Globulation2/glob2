@@ -199,7 +199,7 @@ namespace
 	bool jobCost(Unit *u, Building *b, int resource, int *cost)
 	{
 		Map *map = b->owner->map;
-		int swimClass = u->movementClass();
+		int swimClass = accessClass(u->movementAccess());
 		if (b->globalGradient[swimClass] == NULL)
 			return false;
 		if (u->carriedMaterial >= 0)

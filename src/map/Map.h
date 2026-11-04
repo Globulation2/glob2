@@ -3,7 +3,6 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
-#include "field/GradientKernelWork.h"
 struct GradientTargetCell;
 #include "OwnerRandom.h"
 #include "gradient/FieldReadiness.h"
@@ -291,7 +290,7 @@ public:
 	void resetGradientPipeline(bool replacingWorld=false) noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
-    void configureGradientWorkStats(const std::string& csvPath,bool aggregate=false,bool kernels=false);
+    void configureGradientWorkStats(const std::string& csvPath);
     void configureResourceGradientExploration(const std::string& intervals, Uint32 seed,
         const std::string& decisionPath);
     void applyGradientBackendRequest();
@@ -1103,13 +1102,14 @@ public:
 	
 	//! Swim class of a unit with these walk and swim speeds (0 = cannot swim).
 	static int swimClass(int walkSpeed, int swimSpeed);
+    // Cost selection belongs to preparation, never the public lookup identity.
     int preparationCostClass(int team,int access) const;
+    // A serving generation can predate the team mode; score it with its own costs.
     int publishedCostClass(const Uint16* field,int access=SWIM_CLASS_EVEN) const;
     void recordFieldCost(const Uint16* field,int cost);
     void saveGradient(GAGCore::OutputStream*,const Uint16*,size_t,int cost=-1) const;
     void loadGradient(GAGCore::InputStream*,Uint16*&,size_t,bool,int legacyCost=-1);
     void consolidateLegacyRoutingFields();
-    std::shared_ptr<GradientKernelWork::Sink> gradientWorkSink() const;
 
 	//! Swim class used where no unit is at hand: water costs the same as land.
 	static constexpr int SWIM_CLASS_EVEN = 3;

@@ -261,18 +261,18 @@ TEST_CASE("escape guidance recovers a depleted exit and does not rebuild on repe
     map.addForbidden(20,20,0);
     for (int y=19;y<=21;++y) for (int x=19;x<=21;++x)
         if (x!=20 || y!=20) map.setResourceByIndex(x,y,WHEAT,1);
-    map.getForbiddenGradient(0,movementAccessFromLegacy(0)); await(f,[&]{return map.lookupForbiddenGradient(0,movementAccessFromLegacy(0))!=nullptr;});
+    map.getForbiddenGradient(0,MovementAccess::Land); await(f,[&]{return map.lookupForbiddenGradient(0,MovementAccess::Land)!=nullptr;});
     const auto jobs=map.gradientPipelineStatus().jobs;
     for (unsigned i=0;i<512;++i) {
         int dx=0,dy=0;
-        CHECK(map.queryForbiddenStep(nullptr,0,movementAccessFromLegacy(0),20,20,&dx,&dy)==StepResult::Blocked);
+        CHECK(map.queryForbiddenStep(nullptr,0,MovementAccess::Land,20,20,&dx,&dy)==StepResult::Blocked);
     }
     CHECK(map.gradientPipelineStatus().jobs==jobs);
     map.replaceResource(21,20,Resource{}); map.setResourcesGrow(21,20,false);
     int dx=0,dy=0;
-    CHECK(map.queryForbiddenStep(nullptr,0,movementAccessFromLegacy(0),20,20,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.queryForbiddenStep(nullptr,0,MovementAccess::Land,20,20,&dx,&dy)==StepResult::Blocked);
     const unsigned bound=AdaptiveGradientState::MinimumInterval+map.gradientPipelineStatus().delay+2;
-    await(f,[&]{return map.queryForbiddenStep(nullptr,0,movementAccessFromLegacy(0),20,20,&dx,&dy)==StepResult::Step;},true,bound);
+    await(f,[&]{return map.queryForbiddenStep(nullptr,0,MovementAccess::Land,20,20,&dx,&dy)==StepResult::Step;},true,bound);
     CHECK(dx==1); CHECK(dy==0);
 }
 
@@ -318,27 +318,27 @@ TEST_CASE("empty painted areas produce no demand or cold jobs and first paint be
     EntityRandom random;random.seed(123,456);const auto before=random;
     int dx=7,dy=9;
     for(auto kind:{Map::AreaKind::Guard,Map::AreaKind::Clear}) {
-        CHECK_FALSE(map.pathfindArea(random,kind,0,movementAccessFromLegacy(0),10,10,&dx,&dy));
-        CHECK(map.queryAreaStep(random,kind,0,movementAccessFromLegacy(0),10,10,&dx,&dy)==StepResult::Blocked);
+        CHECK_FALSE(map.pathfindArea(random,kind,0,MovementAccess::Land,10,10,&dx,&dy));
+        CHECK(map.queryAreaStep(random,kind,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Blocked);
     }
     CHECK(random==before);CHECK(dx==7);CHECK(dy==9);
     CHECK(map.gradientRuntime->adaptive.fields.empty());
     CHECK(map.gradientPipelineStatus().jobs==0);
     map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,1);
-    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,movementAccessFromLegacy(0),10,10,&dx,&dy)==StepResult::Pending);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Pending);
     CHECK_FALSE(map.gradientRuntime->adaptive.fields.empty());
-    await(f,[&]{return map.lookupGuardAreasGradient(0,movementAccessFromLegacy(0))!=nullptr;});
+    await(f,[&]{return map.lookupGuardAreasGradient(0,MovementAccess::Land)!=nullptr;});
     const GradientFieldKey key{GradientFieldFamily::Guard,0,0};
     const auto& field=map.gradientRuntime->adaptive.fields.at(key);
     const auto queries=field.queries;const auto outcomes=field.total;
     const auto savedRandom=random;
     map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,0);
     const auto fields=map.gradientRuntime->adaptive.fields.size();
-    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,movementAccessFromLegacy(0),10,10,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Guard,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Blocked);
     CHECK(map.gradientRuntime->adaptive.fields.size()==fields);
     CHECK(field.queries==queries);CHECK(field.total==outcomes);CHECK(random==savedRandom);
     map.setAreaMask(map.coordToIndex(12,12),&Tile::guardArea,1);
-    CHECK(map.pathfindArea(random,Map::AreaKind::Guard,0,movementAccessFromLegacy(0),10,10,&dx,&dy));
+    CHECK(map.pathfindArea(random,Map::AreaKind::Guard,0,MovementAccess::Land,10,10,&dx,&dy));
 }
 }
 
@@ -349,11 +349,11 @@ TEST_CASE("farm-only paint enables clearing requests only under the farming rule
     map.setAreaMask(0,&Tile::farmArea,1);
     CHECK_FALSE(map.hasClearingArea(0));
     EntityRandom random;int dx=0,dy=0;
-    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,movementAccessFromLegacy(0),10,10,&dx,&dy)==StepResult::Blocked);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Blocked);
     CHECK(map.gradientRuntime->adaptive.fields.empty());
     f.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
     CHECK(map.hasClearingArea(0));
-    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,movementAccessFromLegacy(0),10,10,&dx,&dy)==StepResult::Pending);
+    CHECK(map.queryAreaStep(random,Map::AreaKind::Clear,0,MovementAccess::Land,10,10,&dx,&dy)==StepResult::Pending);
     map.setAreaMask(0,&Tile::farmArea,0);
     CHECK_FALSE(map.hasClearingArea(0));
     map.setAreaMask(0,&Tile::clearArea,1);

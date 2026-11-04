@@ -418,7 +418,7 @@ TEST_SUITE("UnitContinuation")
                 world.team->addToStaticAbilitiesLists(service);
                 service->update();
                 if (!unit->performance[FLY] || world.game.map.hasAirRoutingConstraints())
-                    glob2test::awaitBuildingGradient(world.game,service,unit->movementClass());
+                    glob2test::awaitBuildingGradient(world.game,service,accessClass(unit->movementAccess()));
                 REQUIRE((medical==Unit::MED_HUNGRY?world.team->findNearestFood(unit):world.team->findNearestHeal(unit))==service);
             }
             unit->medical=Unit::Medical(medical);

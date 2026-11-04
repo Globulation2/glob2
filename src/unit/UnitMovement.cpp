@@ -366,7 +366,7 @@ void Unit::handleMovementAttackingAround()
 		};
 		if (!attachedBuilding && performance[FLY] && !owner->map->hasAirRoutingConstraints()
             && !balancing && !insideGuardArea(posX,posY)) {
-            const auto* field=owner->map->getGuardAreasGradient(owner->teamNumber,movementAccessFromLegacy(AIR_MOVEMENT_CLASS));
+            const auto* field=owner->map->getGuardAreasGradient(owner->teamNumber,MovementAccess::Air);
             if(!field){owner->map->gradientMovementDemand({GradientFieldFamily::Guard,Uint8(owner->teamNumber),AIR_MOVEMENT_CLASS});waitForGradient();return;}
             Sint32 goalX=0,goalY=0;
             setValidTarget(owner->map->getGlobalGradientDestination(field,posX,posY,&goalX,&goalY));
@@ -513,11 +513,11 @@ void Unit::handleMovementClearingResources()
         bool source=validTarget() && map->warpDistSquare(targetX,targetY,bx,by)<=usr2
             && map->isClearableResourceForMaterials(targetX,targetY,attachedBuilding->clearingMaterialMask);
         if (!source) {
-            if (map->requestBuildingField(attachedBuilding,movementAccessFromLegacy(AIR_MOVEMENT_CLASS),BuildingRoute::Clearing)==FieldReadiness::Pending) {
+            if (map->requestBuildingField(attachedBuilding,MovementAccess::Air,BuildingRoute::Clearing)==FieldReadiness::Pending) {
                 waitForGradient();
                 return;
             }
-            const auto* field=map->buildingGradient(attachedBuilding,movementAccessFromLegacy(AIR_MOVEMENT_CLASS),BuildingRoute::Clearing);
+            const auto* field=map->buildingGradient(attachedBuilding,MovementAccess::Air,BuildingRoute::Clearing);
             source=field && map->getGlobalGradientDestination(field,posX,posY,&targetX,&targetY);
         }
         setValidTarget(source);
@@ -770,7 +770,7 @@ void Unit::handleMovementGoingToResource()
         std::optional<GradientFieldKey> demandKey;
         if(needsDestination) {
             const bool sharedMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
-            demandField=map->getMaterialGradientSlot(owner->teamNumber,destinationPurpose,movementAccessFromLegacy(AIR_MOVEMENT_CLASS),sharedMarkets,attachedBuilding,&demandKey);
+            demandField=map->getMaterialGradientSlot(owner->teamNumber,destinationPurpose,MovementAccess::Air,sharedMarkets,attachedBuilding,&demandKey);
             if(!demandField){if(demandKey)map->gradientMovementDemand(*demandKey);waitForGradient();return;}
         }
         const auto observeFlight=[&](bool moved,bool valid) {

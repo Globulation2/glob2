@@ -162,8 +162,8 @@ class EngineJob:
             raise ValueError('generation requires map seed and generator ID')
         if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack', 'result', 'log_mode'}:
             raise ValueError('unknown requested output')
-        if job['outputs'].get('log_mode', 'full') not in ('full', 'win-probability', 'telemetry', 'research'):
-            raise ValueError('log_mode must be full, telemetry, research or win-probability')
+        if job['outputs'].get('log_mode', 'full') not in ('full', 'win-probability', 'telemetry'):
+            raise ValueError('log_mode must be full, telemetry or win-probability')
         if job['outputs'].get('log_mode') == 'telemetry' and not job['outputs'].get('telemetry'):
             raise ValueError('telemetry log mode requires requested telemetry')
         if job['outputs'].get('log_mode') == 'win-probability' and (self.kind != 'game' or 'team-timeline' not in job['outputs'].get('telemetry', [])):

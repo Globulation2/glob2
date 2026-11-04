@@ -100,7 +100,7 @@ Uint32 hashState(const SimulationSnapshot::Handle& w)
     for (const auto& team:w.teams->values) {
         Checksum t;
         t.add(team.number); t.add(team.playersMask);
-        if(team.amphibiousRoutingClass) for(auto value:{team.routingRatio.selected,team.routingRatio.tick,unsigned(team.routingRatio.known)}) t.add(value);
+        if(team.routingRatio.known) for(auto value:{team.routingRatio.selected,team.routingRatio.tick,unsigned(team.routingRatio.known)}) t.add(value);
         const auto units=w.entities->unitsForTeam(team.number);
         const auto buildings=w.entities->buildingsForTeam(team.number);
         t.add(Uint32(units.size())); t.add(Uint32(buildings.size()));

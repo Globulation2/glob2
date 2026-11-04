@@ -4,6 +4,7 @@
 // Private Map-owned execution state. Keeping this behind a pointer in Map.h
 // prevents queue, thread and scratch-storage details from entering Map's API.
 #include "GradientPipeline.h"
+#include "FileFormatVersions.h"
 #include "BuildingGradientJob.h"
 #include "ResourceGrowth.h"
 #include "BuildingGradientDepthPolicy.h"
@@ -30,9 +31,11 @@
 
 struct GradientRuntime
 {
-    std::map<const Uint16*,int> fieldCosts;
-    int loadingGradientVersion=200;
-    std::shared_ptr<GradientKernelWork::Sink> workSink;
+    // Owner-thread metadata for published generations. A team mode switch must
+    // not change direction scoring or lazy expansion of an existing field.
+    // Publication/retirement own entry lifetime; checksums iterate logical slots.
+    std::map<const Uint16*, int> fieldCosts;
+    int loadingGradientVersion=FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY;
     std::unique_ptr<ResourceGradientProbe> qualityProbe;
     AdaptiveGradientState adaptive;
     std::unique_ptr<GradientWorkStats> workStats;
