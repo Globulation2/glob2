@@ -346,7 +346,8 @@ checksum adapter remains available for diagnostic fixtures.
   intermediate steps. Ground escape fields are keyed by team, movement access and
   whether the unit is escaping forbidden paint. Amphibious preparation uses the
   team's most common ratio. A ratio change rebuilds this synchronous derived field
-  on its next query, so eviction and save/load keep identical directions. Air safety fields ignore forbidden paint and
+  on its next query, so eviction and save/load keep identical directions. Air
+  safety fields ignore forbidden paint and
   share across teams.
   Buildings, terrain and forbidden paint invalidate ground fields. Resource edits
   invalidate only the movement classes whose blocking properties changed; stock
@@ -361,7 +362,8 @@ checksum adapter remains available for diagnostic fixtures.
   separate air damage rate. These rules are preferences for travel, not
   guarantees against lethal crossings or overrides of explicit local combat moves.
 - Flyers use movement class 8 in the same material, building, guard, clearing and
-  forbidden gradients as ground units. Legacy ground IDs 0–7 remain readable; live ground lookups use access IDs 0, 3 and 7;
+  forbidden gradients as ground units. Legacy ground IDs 0–7 remain readable;
+  live ground lookups use access IDs 0, 3 and 7;
   all flyers share one class regardless of speed or other capabilities. The air
   profile combines `airSpeedQ8` and `airHealthQ8` with the same damage preference,
   integer costs and scalar/SIMD/backend kernels. Flyable terrain and resource
@@ -568,6 +570,15 @@ checksum adapter remains available for diagnostic fixtures.
   Consumer-specific ground material fields also refresh through this queue on stock or
   topology changes and at their existing 128-tick age, serving the previous field
   while replacement work waits.
+- Gradient identity uses movement access, not speed ratio. Amphibious units share
+  one field per destination and owner, prepared with that team's most common
+  walking/swimming ratio. Selection is deterministic at 512-tick boundaries.
+  Changing the selection leaves published guidance and adaptive refresh history
+  intact; the next ordinary preparation captures the new ratio. Allied building
+  visitors reuse the owner's field. Published and in-flight costs survive saving
+  independently of the current selection. See
+  [shared amphibious routing](../development/resource-gradient-model.md#shared-amphibious-routing)
+  for tie-breaking, legacy migration and independent strategic-field semantics.
 - For Pending ground material and area guidance, units retain targets, activities
   and reservations and wait with the existing zero-displacement movement state on their normal decision cadence.
   Hunger, health and local combat/adjacent interactions continue. This introduces
