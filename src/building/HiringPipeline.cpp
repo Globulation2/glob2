@@ -381,7 +381,7 @@ void HiringPipeline::compute(void *context, std::size_t)
 					: list.key.job == Hiring::Job::Clear ? BuildingRoute::Clearing
 														 : BuildingRoute::Combat;
 				const int slot = int(kind) * MOVEMENT_CLASS_COUNT +
-								 (unit->performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(unit->performance[WALK], unit->performance[SWIM]));
+								 accessClass(movementAccessForSpeeds(unit->performance[WALK],unit->performance[SWIM],unit->performance[FLY]));
 				for (const auto &route : *w.input->routes)
 					if (route.building == building.building && route.slot == slot)
 					{
@@ -775,7 +775,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 				for (const auto &unit : view.unitsForTeam(team))
 					if (!unit->isDead)
 						movementClasses[team] |=
-							1u << game.map.routingClass(team,unit->performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(unit->performance[WALK], unit->performance[SWIM]));
+							1u << accessClass(movementAccessForSpeeds(unit->performance[WALK],unit->performance[SWIM],unit->performance[FLY]));
 	}
 	for (const auto &b : inputs.world.entities->buildings)
 	{
@@ -815,7 +815,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						(route == BuildingRoute::Combat && !combat))
 						continue;
 					const int slot = live->routeSlot(c, route);
-					auto field = game.map.leaseBuildingRoute(live, c, route);
+					auto field = game.map.leaseBuildingRoute(live, movementAccessFromLegacy(c), route);
 					const bool estimate = !field;
 					// Stale fields keep the optimistic ranking fallback. A stale
 					// unreachable result must not hide candidates whose live

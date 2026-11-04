@@ -110,17 +110,17 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
         // part of the lookup measurement. Absent natural materials use the
         // shared negative field immediately and never enroll a ticket.
         for(int team=0;team<8;++team) for(unsigned material=0;material<MaterialCount;++material)
-            map.getMaterialGradientSlot(team,material,0);
+            map.getMaterialGradientSlot(team,material,movementAccessFromLegacy(0));
         glob2test::awaitGradient(world.game,[&]() -> const Uint16* {
             for(int team=0;team<8;++team) for(unsigned material=0;material<MaterialCount;++material)
-                if(!map.getMaterialGradientSlot(team,material,0)) return nullptr;
-            return map.getMaterialGradientSlot(0,0,0);
+                if(!map.getMaterialGradientSlot(team,material,movementAccessFromLegacy(0))) return nullptr;
+            return map.getMaterialGradientSlot(0,0,movementAccessFromLegacy(0));
         });
         std::uint64_t digest=0;
         for(int repeat=0;repeat<3;++repeat) {
             start=Clock::now();
             for(int team=0;team<8;++team) for(unsigned m=0;m<MaterialCount;++m) {
-                const auto* field=map.getMaterialGradientSlot(team,m,0);
+                const auto* field=map.getMaterialGradientSlot(team,m,movementAccessFromLegacy(0));
                 REQUIRE(field);
                 digest+=field[(team*313+repeat)%cells];
             }

@@ -65,8 +65,8 @@ void clearingUsesMaterialSwitchesAndResourceProperties() {
                 for(unsigned material=0;material<MaterialCount;++material) for(bool enabled:{false,true}) {
                     flag->clearingMaterialMask=0;
                     flag->setClearsMaterial(material,enabled);
-                    f.game.map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
-                    f.game.map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
+                    f.game.map.updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
+                    f.game.map.finishBuildingGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
                     const bool expected=type!=NO_RES_TYPE && enabled && f.game.map.resourcePropertiesByIndex(type).clearable
                         && (f.game.map.resourcePropertiesByIndex(type).materialMask & materialBit(static_cast<MaterialId>(material)));
                     REQUIRE((flag->globalGradient[slot][21+20*64]==GRADIENT_AT_GOAL)==expected);
@@ -115,8 +115,8 @@ TEST_CASE("passable clearing sources respect forbidden paint buildings and immob
     {
         const auto verify=[&](Uint16 expected) {
             ensureClearingReferenceStorage(map,flag,swim);
-            map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
-            map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
+            map.updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
+            map.finishBuildingGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
             CHECK(flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)][index]==expected);
         };
         verify(GRADIENT_AT_GOAL);
@@ -169,8 +169,8 @@ TEST_CASE("empty persistent deposits remain clearing flag goals and worker targe
         for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
         {
             ensureClearingReferenceStorage(map,flag,swim);
-            map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
-            map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
+            map.updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
+            map.finishBuildingGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
             CHECK(flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)][index]==GRADIENT_AT_GOAL);
         }
         auto* worker=f.game.addUnit(20,21,0,WORKER,0,0,0,0);

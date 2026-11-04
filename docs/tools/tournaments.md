@@ -925,6 +925,14 @@ See [AI evaluation](../ai/README.md), [map-generator verification](../map-genera
 
 ### Movement-ratio research campaign
 
+This is the historical research workflow for frozen experiment builds. Production
+routing now shares one amphibious field per team using the most common ratio
+captured at preparation time; the alternative policy flags and
+`--routing-ratio-study` observer no longer change current routing. Reproduce old
+campaigns with their recorded binaries and frozen tool packages, rather than
+starting this planner against a current build. See
+[shared amphibious routing](../development/resource-gradient-model.md#shared-amphibious-routing).
+
 An explicitly approved capacity expansion can be recorded in
 `cpu-allocation-amendment.json` with `original_cpu_ids`, `original_deadline`,
 and the expanded `cpu_ids`. Continuation validates that amendment and retains
@@ -1036,5 +1044,5 @@ allocation when running it.
 `analyze RESULTS --output REPORT.json --stages artifacts/ratio-campaign/stages.json`
 exports independent-game confidence intervals and raw game/interval summaries.
 Per-map intervals, actual outcomes and AI/seat trajectory scores remain separate.
-See [movement-ratio diagnostics](../development/resource-gradient-model.md#movement-ratio-sharing-research)
+See [movement-ratio diagnostics](../development/resource-gradient-model.md#shared-amphibious-routing)
 for counterfactual and memory accounting limits.

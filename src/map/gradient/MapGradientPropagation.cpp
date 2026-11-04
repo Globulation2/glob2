@@ -22,6 +22,7 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 }
 void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradient_kernel::Family family)
 {
+    recordFieldCost(gradient,swimClass);
 	GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
 	PERF_SCOPE_TIME(Propagation);
     auto& scratch = gradientRuntime->workspaces[compute.slot()].propagation;

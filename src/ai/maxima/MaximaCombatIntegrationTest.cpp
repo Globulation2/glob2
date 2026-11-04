@@ -287,9 +287,9 @@ static void forbiddenDefenseZones()
             REQUIRE(!f.game.map.isForbidden(i%64,i/64,f.player.team->me));
             f.game.map.addGuardArea(i%64,i/64,0);
         }
-        glob2test::awaitGradient(f.game,[&] { return f.game.map.getGuardAreasGradient(0,amphibious); });
-        f.game.map.updateGuardAreasGradient(0,amphibious);
-        REQUIRE(f.game.map.getGuardAreasGradient(0,amphibious)[22*64+8]>1);
+        glob2test::awaitGradient(f.game,[&] { return f.game.map.getGuardAreasGradient(0,movementAccessFromLegacy(amphibious)); });
+        f.game.map.updateGuardAreasGradient(0,movementAccessFromLegacy(amphibious));
+        REQUIRE(f.game.map.getGuardAreasGradient(0,movementAccessFromLegacy(amphibious))[22*64+8]>1);
     }
 }
 

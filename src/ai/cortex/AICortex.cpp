@@ -628,7 +628,7 @@ shared_ptr<Order> AICortex::decide()
 						continue;
                     int rx=0,ry=0,distance=0;
                     const bool available=diagnosticQueries.resourceAvailableUpdate(tm->number,materialIndex(MaterialId::Food),0,Cortex::plannedX(intents,*bb),Cortex::plannedY(intents,*bb),&rx,&ry,&distance);
-                    auto field=g->resourceGradient(tm->number,materialIndex(MaterialId::Food),0);
+                    auto field=g->resourceGradient(tm->number,materialIndex(MaterialId::Food),movementAccessFromLegacy(0));
                     if(field.empty()) field=*diagnosticFields.at((tm->number*MaterialSlotCount+materialIndex(MaterialId::Food))*7).values;
                     const auto gradient=field[g->tileIndex(Cortex::plannedX(intents,*bb),Cortex::plannedY(intents,*bb))];
 					diagnosticStream << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++

@@ -23,10 +23,10 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."},
 		{ExperimentId::MarketsV2, "markets-v2", "Markets V2",
 		 "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."},
-        {ExperimentId::GradientRatioMode, "gradient-ratio-mode", "Gradient ratio mode", "Research: share amphibious routing using the team's most common ratio class."},
+        {ExperimentId::GradientRatioMode, "gradient-ratio-mode", "Gradient ratio mode", "Retired research key; amphibious routing always uses the team's most common ratio."},
         {ExperimentId::GradientSpeedModes, "gradient-speed-modes", "Gradient speed modes", "Research: share amphibious routing using the team's modal walking and swimming speeds."},
-        {ExperimentId::GradientRatioMedian, "gradient-ratio-median", "Gradient ratio median", "Research: share amphibious routing using the team's median ratio class."},
-        {ExperimentId::GradientRatioEqual, "gradient-ratio-equal", "Gradient equal ratio", "Research: share amphibious routing using equal walking and swimming costs."},
+        {ExperimentId::GradientRatioMedian, "gradient-ratio-median", "Gradient ratio median", "Retired research key; amphibious routing always uses the team's most common ratio."},
+        {ExperimentId::GradientRatioEqual, "gradient-ratio-equal", "Gradient equal ratio", "Retired research key; amphibious routing always uses the team's most common ratio."},
 	};
 	return definitions;
 }
@@ -160,7 +160,8 @@ std::vector<CatalogExperimentDefinition> registeredExperimentDefinitions()
 {
 	std::vector<CatalogExperimentDefinition> definitions;
 	for (const auto &builtin : experimentDefinitions())
-		definitions.push_back({builtin.key, builtin.label, builtin.help});
+        if (builtin.id < ExperimentId::GradientRatioMode || builtin.id > ExperimentId::GradientRatioEqual)
+		    definitions.push_back({builtin.key, builtin.label, builtin.help});
 	const auto &catalog = catalogRegistry().definitions();
 	definitions.insert(definitions.end(), catalog.begin(), catalog.end());
 	return definitions;

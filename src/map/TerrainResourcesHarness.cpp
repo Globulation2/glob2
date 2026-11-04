@@ -39,9 +39,9 @@ CHECK_MAP_ID_ARGUMENT(HarvestArgument,MaterialId,ResourceId,map.takeHarvest(0,0,
 CHECK_MAP_ID_ARGUMENT(MaterialHabitatArgument,MaterialId,ResourceId,map.terrainSupportsMaterialAt(0,0,id));
 CHECK_MAP_ID_ARGUMENT(MaterialGrowthArgument,MaterialId,ResourceId,map.materialGrowthRateAt(0,id));
 CHECK_MAP_ID_ARGUMENT(MaterialExpansionArgument,MaterialId,ResourceId,map.materialExpansionRateAt(0,id));
-CHECK_MAP_ID_ARGUMENT(MaterialGradientArgument,MaterialId,ResourceId,map.getMaterialGradient(0,id,0));
-CHECK_MAP_ID_ARGUMENT(MaterialAvailabilityArgument,MaterialId,ResourceId,map.materialAvailable(0,id,0,0,0));
-CHECK_MAP_ID_ARGUMENT(MaterialDistanceArgument,MaterialId,ResourceId,map.materialAvailable(0,id,0,0,0,static_cast<int*>(nullptr)));
+CHECK_MAP_ID_ARGUMENT(MaterialGradientArgument,MaterialId,ResourceId,map.getMaterialGradient(0,id,movementAccessFromLegacy(0)));
+CHECK_MAP_ID_ARGUMENT(MaterialAvailabilityArgument,MaterialId,ResourceId,map.materialAvailable(0,id,movementAccessFromLegacy(0),0,0));
+CHECK_MAP_ID_ARGUMENT(MaterialDistanceArgument,MaterialId,ResourceId,map.materialAvailable(0,id,movementAccessFromLegacy(0),0,0,static_cast<int*>(nullptr)));
 CHECK_MAP_ID_ARGUMENT(ResourceIncrementArgument,ResourceId,MaterialId,map.incResource(0,0,id,0));
 CHECK_MAP_ID_ARGUMENT(ResourceSetArgument,ResourceId,MaterialId,map.setResource(0,0,id,0));
 CHECK_MAP_ID_ARGUMENT(ResourcePropertiesArgument,ResourceId,MaterialId,map.resourceProperties(id));
@@ -1390,7 +1390,7 @@ TEST_CASE("custom ground and air obstruction independently govern routes across 
                 if(x==8 && y==8) return true;
                 int dx=0,dy=0;
                 const bool found=air ? map.pathfindAirPointToPoint(x,y,8,8,&dx,&dy)
-                    : map.pathfindPointToPoint(x,y,8,8,&dx,&dy,0,1,32);
+                    : map.pathfindPointToPoint(x,y,8,8,&dx,&dy,movementAccessFromLegacy(0),1,32);
                 if(!found) return false;
                 REQUIRE((dx || dy));
                 const int nx=(x+dx+map.getW())%map.getW(),ny=(y+dy+map.getH())%map.getH();

@@ -89,13 +89,13 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 
 	// Confirm the layout really is lopsided, so a pass here means the
 	// apportionment did the work and not an accidentally even map.
-	game.map.buildingGradient(site,0);
-	for (int material : {WOOD,STONE}) glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,material,0); });
+	game.map.buildingGradient(site,movementAccessFromLegacy(0));
+	for (int material : {WOOD,STONE}) glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,material,movementAccessFromLegacy(0)); });
 	int woodDistance = 0, stoneDistance = 0;
 	Unit* probe = team->myUnits[0];
-	require(game.map.materialAvailableSlot(0, WOOD, probe->swimClass(), probe->posX, probe->posY, &woodDistance),
+	require(game.map.materialAvailableSlot(0, WOOD, probe->movementAccess(), probe->posX, probe->posY, &woodDistance),
 		"the wood is reachable");
-	require(game.map.materialAvailableSlot(0, STONE, probe->swimClass(), probe->posX, probe->posY, &stoneDistance),
+	require(game.map.materialAvailableSlot(0, STONE, probe->movementAccess(), probe->posX, probe->posY, &stoneDistance),
 		"the stone is reachable");
 	std::printf("probe distances: wood=%d stone=%d\n", woodDistance, stoneDistance);
 	require(stoneDistance > 3 * woodDistance, "the stone is far enough to tempt the old scorer");
@@ -165,15 +165,15 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	require(site->neededMaterial(WHEAT) == 0, "the wheat is of no use here");
 
 	const int swimClass = team->myUnits[0]->swimClass();
-	game.map.buildingGradient(site,swimClass);
-	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,STONE,swimClass); });
+	game.map.buildingGradient(site,movementAccessFromLegacy(swimClass));
+	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,STONE,movementAccessFromLegacy(swimClass)); });
 	for (int n = 0; n < 2; ++n)
 	{
 		Unit* unit = team->myUnits[n];
 		int distBuilding = 0, distResource = 0;
-		require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
+		require(game.map.buildingAvailable(site, movementAccessFromLegacy(swimClass), unit->posX, unit->posY, &distBuilding),
 			"the site is reachable from the candidate");
-		require(game.map.materialAvailableSlot(0, STONE, swimClass, unit->posX, unit->posY, &distResource),
+		require(game.map.materialAvailableSlot(0, STONE, movementAccessFromLegacy(swimClass), unit->posX, unit->posY, &distResource),
 			"the stone is reachable from the candidate");
 		*(n == 0 ? emptyCost : loadedCost) = distBuilding + distResource;
 	}

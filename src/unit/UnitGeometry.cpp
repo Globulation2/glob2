@@ -142,7 +142,7 @@ void Unit::dxDyFromDirection(void)
 
 int Unit::swimClass() const
 {
-	return Map::swimClass(performance[WALK], performance[SWIM]);
+	return accessClass(movementAccessForSpeeds(performance[WALK],performance[SWIM]));
 }
 
 int Unit::directionFromDxDy(int dx, int dy)
@@ -168,3 +168,6 @@ int Unit::movementClass() const
 {
     return performance[FLY]>0 ? AIR_MOVEMENT_CLASS : swimClass();
 }
+
+MovementAccess Unit::movementAccess() const
+{ return movementAccessForSpeeds(performance[WALK],performance[SWIM],performance[FLY]); }

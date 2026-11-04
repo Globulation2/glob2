@@ -118,7 +118,7 @@ namespace
 		{
 			if (options.resourceGradients)
 				for (int r = 0; r < MaterialCount; ++r)
-					glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,r,0); });
+					glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,r,movementAccessFromLegacy(0)); });
 			if (options.slowCadence)
 			{
 				// Two more teams with every resource field allocated: the round-robin
@@ -128,7 +128,7 @@ namespace
 				for (int t = 0; t < 3; ++t)
 					for (int r = 0; r < MaterialCount; ++r)
 						for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
-							glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(t,r,c); });
+							glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(t,r,movementAccessFromLegacy(c)); });
 			}
 		}
 

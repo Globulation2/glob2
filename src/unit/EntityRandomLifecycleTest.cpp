@@ -187,7 +187,7 @@ TEST_SUITE("EntityRandomLifecycle")
         std::vector<Uint16> gradient(world.game.map.getW() * world.game.map.getH(), 100);
         int dx = 0, dy = 0;
         REQUIRE(world.game.map.directionByGradient(worker->entityRandom,
-            worker->owner->me, worker->swimClass(), worker->posX, worker->posY,
+            worker->owner->me, worker->movementAccess(), worker->posX, worker->posY,
             gradient.data(), &dx, &dy, false));
         CHECK(worker->entityRandom == expected);
         CHECK(target->entityRandom == targetRandom);

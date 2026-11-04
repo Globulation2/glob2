@@ -11,7 +11,7 @@ struct RoutingRatioState {
     unsigned selected=3, walk=0, swim=0, tick=0;
     bool known=false;
     static bool amphibious(int c) { return c>0 && c<LEGACY_SWIM_CLASS_COUNT; }
-    int route(int physical) const { return known && amphibious(physical) ? int(selected) : physical; }
+    int route(int physical) const { return accessClass(movementAccessFromLegacy(physical)); }
     static unsigned mode(const std::map<unsigned,unsigned>& counts,unsigned previous) {
         unsigned best=0,maximum=0;
         for (const auto& [value,count]:counts) if(count>maximum){best=value;maximum=count;}
@@ -19,7 +19,3 @@ struct RoutingRatioState {
         return best;
     }
 };
-inline bool sharedRoutingRatios(const ExperimentSet& experiments) {
-    return experiments.has(ExperimentId::GradientRatioMode) || experiments.has(ExperimentId::GradientSpeedModes)
-        || experiments.has(ExperimentId::GradientRatioMedian) || experiments.has(ExperimentId::GradientRatioEqual);
-}

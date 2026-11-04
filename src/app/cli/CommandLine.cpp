@@ -562,7 +562,6 @@ const std::vector<Command> &commands()
 			 integer("--ai-profile-min-ms", "Minimum decision elapsed time to export", 0, 60000, "20"),
 			 integer("--ai-profile-from-tick", "First observed tick to profile", 0, 2147483647, "0"),
 			 value("--ai-profile-gate", "player:observed-tick", "Hold one decision until ai-profile-release exists in output-dir; diagnostic sampling only"),
-			 value("--routing-ratio-study", "counts|routes", "Bounded movement-ratio research telemetry; routes enables expensive private comparisons"),
              flag("--gradient-work-kernels", "Count exact CPU kernel expansions (diagnostic overhead)"),
              flag("--gradient-work-aggregate", "Export aggregate gradient work without per-event rows"),
              value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),

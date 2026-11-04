@@ -233,6 +233,7 @@ public:
 	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
 	int swimClass() const;
 	int movementClass() const;
+    MovementAccess movementAccess() const;
 	//! Construction eligibility is independent of work/harvest speed.
 	Sint32 workerLevel() const { return constructionLevel; }
 	bool needsTraining(const BuildingTrainingSpec& training, int ability) const;

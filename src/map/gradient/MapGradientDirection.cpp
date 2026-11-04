@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "gradient/GradientRuntime.h"
 #include "Game.h"
 #include "MapInternal.h"
 #include "Utilities.h"
@@ -40,8 +41,9 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 	return dx != 0 && dy != 0 ? cost.diagonal : cost.cardinal;
 }
 
-bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
+bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, MovementAccess movementAccessValue, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
 {
+    int swimClass=accessClass(movementAccessValue);
 	PERF_SCOPE_TIME(PathDirection);
 	Uint16 here = gradient[coordToIndex(x, y)];
 	// Settling the whole cost layer of `here` also finalizes every better or
@@ -71,7 +73,7 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimCla
 		if (g > here)
 		{
 			// Worth of going through n: its value less the step to get there.
-			int score = g - stepCost(ddx, ddy, n, swimClass);
+			int score = g - stepCost(ddx, ddy, n, publishedCostClass(gradient,swimClass));
 			if (score > best)
 			{
 				best = score;
@@ -98,12 +100,20 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimCla
 	return true;
 }
 
-int Map::routingClass(int team,int physical) const
+int Map::preparationCostClass(int team,int access) const
 {
-    if(!game || !RoutingRatioState::amphibious(physical))return physical;
+    if(access!=int(MovementAccess::Amphibious) || !game || team<0 || team>=game->teamsCount())return access;
     const auto& state=game->teams[team]->routingRatio;
-    // Baseline games and already-canonical nested adapters avoid repeatedly
-    // checking experiment bits in the hot query path.
-    if(!state.known || state.selected==unsigned(physical))return physical;
-    return sharedRoutingRatios(static_cast<const GameHeader&>(game->gameHeader).getExperiments()) ? int(state.selected) : physical;
+    return state.known ? int(state.selected) : SWIM_CLASS_EVEN;
 }
+
+int Map::publishedCostClass(const Uint16* field,int access) const
+{
+    const auto it=gradientRuntime->fieldCosts.find(field);
+    return it!=gradientRuntime->fieldCosts.end()?it->second:access;
+}
+void Map::recordFieldCost(const Uint16* field,int cost)
+{ if(field) {if(cost<0)gradientRuntime->fieldCosts.erase(field);else gradientRuntime->fieldCosts[field]=cost;} }
+
+std::shared_ptr<GradientKernelWork::Sink> Map::gradientWorkSink() const
+{ return gradientRuntime->workSink; }

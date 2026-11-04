@@ -438,62 +438,37 @@ with missing adapters is not a self-contained build recipe. The driver and its
 focused mocked orchestration tests can be verified without starting games;
 adopting a live campaign or replacing its frozen tools is deliberately excluded.
 
-## Movement-ratio sharing research
+## Shared amphibious routing
 
-Four mutually exclusive, opt-in game experiments select one amphibious routing
-class per team: `gradient-ratio-mode`, `gradient-speed-modes`,
-`gradient-ratio-median`, and `gradient-ratio-equal`. Building visitors reuse the
-building owner’s selected ratio, including allied services, so cross-team access
-shares the same field. The default continues to use class-specific fields. Land-only, water-only and air access remain separate;
-actual unit movement speeds are unchanged. Building fields use their owner's
-selection. Single-team point queries and snapshot-backed resource/hiring queries
-use the same selection. Multi-team-mask point searches retain their explicit
-caller-supplied cost because they have no single team policy. Maxima's independent
-`TerrainTravel` fields and land/amphibious defense topology already use access
-modes and neutral strategic distances rather than six ratio-specific costs;
-those distinct semantics are unchanged. Castor's engine-backed material fields
-pass through the shared snapshot query adapter.
+Live gradient lookups use movement access, rather than a walking/swimming speed
+ratio. Land-only and amphibious ground units each share a field; water-only and
+air access remain separate. Actual movement speeds and physical passability are
+unchanged. Living amphibious ground units determine their team's most common
+quantized ratio initially and every 512 simulation ticks. A tie retains the
+previous choice when possible, otherwise choosing the lower class; an empty
+team uses equal walking/swimming cost.
 
-Selection uses living amphibious ground units at the initial completed-world
-boundary and every 512 ticks thereafter. Class and speed modes retain a previous
-value on a tie, otherwise choosing the smaller value. An even-population median
-retains the previous class when it lies in the median interval, otherwise using
-the lower median. Empty populations select equal cost. Format 195 saves the
-selection, last selection tick, and separate speed-mode tie history; older saves
-start without research state. These policies can change routing and therefore
-carry a new simulation revision.
+The ratio is captured when a field preparation starts. Published fields retain
+their own preparation costs for direction selection and lazy expansion. A policy
+change does not discard published guidance or eagerly rebuild all fields: units
+continue using the existing field until its ordinary refresh publishes a
+replacement. Allied visitors share the building owner's field and cost policy.
+Periodic, consumer-specific, building, snapshot-backed material and hiring queries
+use the same access identities. Single-team point searches use that team's policy;
+multi-team searches use equal cost because they have no single owner. Maxima's
+independent strategic travel fields retain their neutral access-based semantics.
 
-`game run --routing-ratio-study counts|routes` writes `routing-ratio.*.csv` in its
-output directory. Counts mode records physical/selected query classes, population,
-field and queue memory, process CPU/RSS, tick-duration histograms and kernel work.
-Use `--gradient-work-stats PATH --gradient-work-aggregate` alongside it for
-admission/publication reasons and refresh-interval distributions without raw
-per-event rows. The `.identity.csv` companion retains bounded per-window counts
-by family, team, selected class, event and refresh reason. Add `--gradient-work-kernels` only to diagnostic runs for exact
-expanded-cell counts in `routing-ratio.kernel.csv`; ordinary runs select kernels
-with per-cell counting compiled out. `gradient-work.csv.sharing.csv` records
-movement-class masks admitted for the same field and window. Model input and
-prediction aggregates and point-query reachability have separate CSVs. The
-existing unified quality probe remains separately opt-in.
+Save format 196 preserves each published and pending field's captured costs.
+Older saves coalesce ratio-keyed fields into one amphibious field, preserving
+available published guidance while restarting obsolete preparation queues. The
+save-format floor remains unchanged. The retired research-policy experiment keys
+are recognized in old headers but no longer select different routing policies.
+The temporary `--routing-ratio-study` observer has been removed; historical
+campaigns require their frozen binaries and tool packages.
 
-Routes mode additionally hashes eligible real unit movement queries at a fixed
-1/1024 rate, without gameplay RNG. Private fresh fields trace static routes using
-the actual unit's terrain and diagonal movement clocks, with independent copies
-of its selector RNG for plateau sidesteps. These are frozen-field
-counterfactuals: congestion, future world changes, supplier pickup penalties and
-forbidden secondary ranking are not modeled as journey time. Live first-direction
-comparisons are separately available for material/market/guard/clear fields.
-A bounded subset also runs a shortest expected-travel-time oracle. An eight-query budget per 512-tick window reserves
-coverage throughout a 90,000-tick game rather than exhausting the global budget
-early. Sampling caps and their dropped candidates are exported; capped samples cannot establish an
-unqualified whole-game route distribution. Diagnostic CPU is never production
-policy CPU.
-
-Kernel counters use per-job/search storage and shared diagnostic sinks. Worker
-expansions of leased building fields are included, with no additional joins.
-Interval counts may cross a window boundary when a worker's expansion finishes;
-whole-game totals are the stronger work comparison. Memory components cover
-attached fields, attached search queues, idle field buffers and pending output
-reservations. Process RSS includes other storage, including detached leases,
-shared terrain snapshots, executor workspaces and pools. Do not present the
-component sum as exhaustive engine memory.
+For ongoing diagnostics, `--gradient-work-stats PATH --gradient-work-aggregate`
+retains bounded request, refresh and publication statistics. The separately opt-in
+unified quality probe uses private fresh fields and copied selector RNG state;
+its counterfactual results do not describe completed journeys. Its private fields
+retain captured preparation costs independently of live caches. Elapsed scopes
+remain attribution aids, not additive process CPU measurements.

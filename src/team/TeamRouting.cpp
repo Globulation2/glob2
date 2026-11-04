@@ -65,7 +65,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		{
 			if (!(*bi)->canOfferService(unit, HEAL) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 			int buildingDist;//initialized in buildingAvailable next line
-			if (map->buildingAvailable((*bi), unit->movementClass(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
+			if (map->buildingAvailable((*bi), unit->movementAccess(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
 			{
 				choosen = (*bi);
 				bestDist = buildingDist;
@@ -118,7 +118,7 @@ Building *Team::findNearestFood(Unit *unit)
 					{
 						continue;
 					}
-					if (!directAir && !map->buildingAvailable(*bi, unit->movementClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+					if (!directAir && !map->buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 						continue;
 					if (dist >= maxDist)
 						continue;
@@ -155,7 +155,7 @@ Building *Team::findNearestFood(Unit *unit)
 			if (dist >= bestDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(unit->movementClass()))))
 				continue;
 
-			if (!directAir && !map->buildingAvailable(*bi, unit->movementClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+			if (!directAir && !map->buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 				continue;
 			if (dist >= bestDist)
 				continue;
@@ -201,7 +201,7 @@ Building *Team::findBestUpgrade(Unit *unit)
             if(routeAir || (!unit->performance[FLY] && (map->hasTerrainMovementModifiers() || !unit->performance[WALK])))
             {
                 int distance=0;
-                if(!map->buildingAvailable(b,unit->movementClass(),x,y,&distance,BuildingRoute::Footprint)) continue;
+                if(!map->buildingAvailable(b,unit->movementAccess(),x,y,&distance,BuildingRoute::Footprint)) continue;
                 distanceSquared=std::int64_t(distance)*distance;
             }
             const auto capacity=b->maxUnitInside-b->unitsInside.size();
@@ -242,33 +242,17 @@ int Team::maxBuildLevel(void)
 
 void Team::updateRoutingRatio()
 {
-    const auto& experiments=static_cast<const GameHeader&>(game->gameHeader).getExperiments();
-    if (!sharedRoutingRatios(experiments)) return;
+
     const unsigned now=game->stepCounter;
     if (routingRatio.known && ((now & 511u)!=0 || routingRatio.tick==now)) return;
-    std::map<unsigned,unsigned> classes,walks,swims;
+    std::map<unsigned,unsigned> classes;
     for (const Unit* unit:liveUnits.entries()) {
         if(unit->isDead || unit->performance[FLY]>0 || unit->performance[WALK]<=0 || unit->performance[SWIM]<=0) continue;
-        ++classes[unit->swimClass()]; ++walks[unit->performance[WALK]]; ++swims[unit->performance[SWIM]];
+        ++classes[Map::swimClass(unit->performance[WALK],unit->performance[SWIM])];
     }
     unsigned selected=Map::SWIM_CLASS_EVEN;
-    routingRatio.walk=RoutingRatioState::mode(walks,routingRatio.walk);
-    routingRatio.swim=RoutingRatioState::mode(swims,routingRatio.swim);
-    if (!classes.empty()) {
-        if (experiments.has(ExperimentId::GradientRatioMode)) selected=RoutingRatioState::mode(classes,routingRatio.selected);
-        else if (experiments.has(ExperimentId::GradientSpeedModes)) selected=Map::swimClass(routingRatio.walk,routingRatio.swim);
-        else if (experiments.has(ExperimentId::GradientRatioMedian)) {
-            unsigned total=0,cumulative=0;
-            for(const auto& [c,n]:classes)total+=n;
-            unsigned lower=0,upper=0;
-            for(const auto& [c,n]:classes) {
-                cumulative+=n;
-                if(!lower && cumulative>=(total+1)/2)lower=c;
-                if(cumulative>=total/2+1){upper=c;break;}
-            }
-            selected=lower;
-            if(routingRatio.known && routingRatio.selected>=lower && routingRatio.selected<=upper) selected=routingRatio.selected;
-        }
-    }
+    routingRatio.walk=0;
+    routingRatio.swim=0;
+    if (!classes.empty()) selected=RoutingRatioState::mode(classes,routingRatio.selected);
     routingRatio.selected=selected; routingRatio.tick=now; routingRatio.known=true;
 }

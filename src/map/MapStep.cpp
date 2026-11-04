@@ -350,6 +350,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
     };
 	gradientRuntime->pipeline.onPublished = [this](GradientPipeline::Job& job) {
         auto** slot=job.slot;
+        recordFieldCost(*slot,job.swim);
         if(job.adaptiveKey) {
             auto capture=job.adaptiveCapture;
             capture.goalCount=job.preparedGoalCount;
@@ -434,8 +435,10 @@ void Map::stagePeriodicGradientPreparation()
     auto& pipeline=gradientRuntime->pipeline;
     auto& policy=gradientRuntime->adaptive;
     const auto admit=[&](const GradientRuntime::FieldRequest& request) {
-        auto* job=pipeline.reserve(request.slot,request.request.swim);
+        const int cost=preparationCostClass(request.request.team,request.request.swim);
+        auto* job=pipeline.reserve(request.slot,cost);
         job->request=request.request;
+        job->request.swim=cost;
         job->workSink=gradientRuntime->workSink;
         job->adaptiveKey=gradientFieldKey(request.slot);
         if(job->adaptiveKey) {
@@ -444,7 +447,7 @@ void Map::stagePeriodicGradientPreparation()
         if(auto& stats=gradientRuntime->workStats)
             if(const auto key=gradientWorkIdentity(*this,job->adaptiveKey,int(request.request.kind),request.request.team,request.request.material,request.request.swim,request.request.consumer,request.request.modes))
                 job->workReason=stats->admitted(*key,game->stepCounter,size);
-        gradientRuntime->preparations.push_back({job,request.request.kind,request.request.team,request.request.material,request.request.swim});
+        gradientRuntime->preparations.push_back({job,request.request.kind,request.request.team,request.request.material,cost});
     };
     // Restored tickets may have been queued under an earlier, shorter minimum.
     // Keep them pending without preventing a missing field behind them from
@@ -466,14 +469,13 @@ void Map::stagePeriodicGradientPreparation()
         const auto interval=gradientRuntime->exploration?gradientRuntime->exploration->intervalFor(key.packed()):0;
         const auto prediction=[this,key](const auto& inputs,const auto& counts) {
             const auto result=AdaptiveGradientModel::predict(inputs,counts,unsigned(key.family));
-            if(auto& study=gradientRuntime->ratioStudy)study->modelPrediction(game->stepCounter,key,inputs,counts,result,AdaptiveGradientState::Threshold);
             return result;
         };
         const auto evaluation=field.evaluate(game->stepCounter,policy.currentTargets(key),*slot!=nullptr,
             prediction,interval);
         if(!evaluation.requested())continue;
         if(!pipeline.canReserve()){field.defer(evaluation.reason);continue;}
-        if(!requestGradientField(slot,int(key.family),key.team,key.material==GradientFieldKey::NoMaterial?0:key.material,key.swim,-1,1,int(evaluation.reason)))continue;
+        if(!requestGradientField(slot,int(key.family),key.team,key.material==GradientFieldKey::NoMaterial?0:key.material,movementAccessFromLegacy(key.swim),-1,1,int(evaluation.reason)))continue;
         const auto request=gradientRuntime->fieldRequests.back();
         gradientRuntime->fieldRequests.pop_back();admit(request);
         if(auto& exploration=gradientRuntime->exploration)
@@ -653,8 +655,9 @@ void Map::updateExploredArea(int teamNumber)
 			exploredArea[teamNumber][i]--;
 }
 
-bool Map::requestGradientField(Uint16** slot, int kind, int team, int material, int swim, int consumer, unsigned modes, int refreshReason)
+bool Map::requestGradientField(Uint16** slot, int kind, int team, int material, MovementAccess movementAccessValue, int consumer, unsigned modes, int refreshReason)
 {
+    int swim=accessClass(movementAccessValue);
     // Snapshot readers cannot mutate shared scheduling, even when a serial
     // executor runs their job on the owner thread. Enrollment is owner-only.
     if (compute.insideJob()) return false;

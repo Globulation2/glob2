@@ -2,7 +2,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Unit.h"
-#include "map/gradient/RoutingRatioStudy.h"
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -456,7 +455,6 @@ void Unit::applyAreaServices()
 
 void Unit::syncStep(void)
 {
-    RoutingRatioReader ratioReader(this);
 	if (owner->map->hasTerrainHealthEffects()) applyTerrainHealth();
 	if (isDead) return;
 	//warrior attacks?
@@ -779,9 +777,9 @@ bool Unit::continueExtendedCargoCollection()
 bool Unit::findMaterialDestination(int material,Sint32* x,Sint32* y,int* distance,bool withMarkets,const Building* consumer)
 {
 	Map& map=*owner->map;
-    if (!x || !y) return distance ? map.materialAvailableSlot(owner->teamNumber,material,movementClass(),posX,posY,distance,withMarkets,consumer)
-        : map.materialAvailableSlot(owner->teamNumber,material,movementClass(),posX,posY,withMarkets,consumer);
-    return map.materialAvailableUpdateSlot(owner->teamNumber,material,movementClass(),posX,posY,x,y,distance,withMarkets,consumer);
+    if (!x || !y) return distance ? map.materialAvailableSlot(owner->teamNumber,material,movementAccess(),posX,posY,distance,withMarkets,consumer)
+        : map.materialAvailableSlot(owner->teamNumber,material,movementAccess(),posX,posY,withMarkets,consumer);
+    return map.materialAvailableUpdateSlot(owner->teamNumber,material,movementAccess(),posX,posY,x,y,distance,withMarkets,consumer);
 
 }
 
@@ -789,8 +787,8 @@ RouteResult Unit::queryMaterialDestination(int material,Sint32* x,Sint32* y,int*
 {
     Map& map=*owner->map;
     if (performance[FLY]) return findMaterialDestination(material,x,y,distance,withMarkets,consumer) ? RouteResult::Reachable : RouteResult::Unreachable;
-    const auto result=map.queryMaterialDistance(owner->teamNumber,material,movementClass(),posX,posY,distance,withMarkets,consumer);
+    const auto result=map.queryMaterialDistance(owner->teamNumber,material,movementAccess(),posX,posY,distance,withMarkets,consumer);
     if (result!=RouteResult::Reachable || !x || !y) return result;
-    return map.materialAvailableUpdateSlot(owner->teamNumber,material,movementClass(),posX,posY,x,y,distance,withMarkets,consumer) ? RouteResult::Reachable : RouteResult::Unreachable;
+    return map.materialAvailableUpdateSlot(owner->teamNumber,material,movementAccess(),posX,posY,x,y,distance,withMarkets,consumer) ? RouteResult::Reachable : RouteResult::Unreachable;
 
 }

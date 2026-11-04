@@ -18,8 +18,9 @@
 
 
 
-void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRoute route) const
+void Map::finishBuildingGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route) const
 {
+    int swimClass=accessClass(movementAccessValue);
 	const int slot=building->routeSlot(swimClass,route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
     if (auto &search = building->globalGradientSearch[slot]) {
@@ -31,13 +32,15 @@ void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRout
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a
 // flag's zone or, for a clearing flag, the clearable resources in its range.
 
-void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute route)
+void Map::updateGlobalGradient(Building *building, MovementAccess movementAccessValue, BuildingRoute route)
 {
+    int swimClass=accessClass(movementAccessValue);
 	PERF_SCOPE_TIME(BuildingGradient);
 	route = building->resolveRoute(route);
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	const int access = building->routeAccess(swimClass, route);
+    const int costClass=preparationCostClass(building->owner->teamNumber,swimClass);
 	assert(building);
 	assert(building->type);
 
@@ -68,12 +71,13 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	building->lastGlobalGradientUpdateStepCounter[slot]=game->stepCounter;
 	building->gradientGeneration[slot]=topologyGeneration;
 
-    const auto seed=gradient_preparation::captureBuildingSeed(*building,swimClass,route);
+    recordFieldCost(gradient,costClass);
+    const auto seed=gradient_preparation::captureBuildingSeed(*building,costClass,route);
     const auto seeded=gradient_preparation::buildingCells(stateView(),seed,gradient,
         [&](auto fn) { initializeGradientCells(fn); });
     if(seeded.resourceState) building->anyResourceToClear[swimAccessVariant(swimClass)]=seeded.resourceState;
 
-	auto routeInputs = BuildingGradientSearch::Inputs::of(*this, swimClass);
+	auto routeInputs = BuildingGradientSearch::Inputs::of(*this, costClass);
     routeInputs.workSink=gradientRuntime->workSink;
     routeInputs.workKey=GradientKernelWork::key(6,building->owner->teamNumber,swimClass);
     if(routeInputs.workSink){auto& counter=routeInputs.workSink->fields[routeInputs.workKey];++counter.builds;counter.initializedCells+=size;}
@@ -93,5 +97,5 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 
 	auto &search = building->globalGradientSearch[slot];
 	if (!search) search = acquireBuildingGradientSearch();
-	search->begin(routeInputs, gradient, swimClass, w, h);
+	search->begin(routeInputs, gradient, costClass, w, h);
 }

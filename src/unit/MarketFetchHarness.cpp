@@ -83,10 +83,10 @@ struct Bed
 	}
 	void hire()
 	{
-		game.map.buildingGradient(inn,unit->swimClass());
+		game.map.buildingGradient(inn,unit->movementAccess());
 		for (int material=0; material<MaterialSlotCount; ++material)
 			if (inn->neededMaterial(material)>0)
-				glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,material,unit->swimClass(),true,inn); });
+				glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,material,unit->movementAccess(),true,inn); });
 		glob2test::publishCurrentHiringSuggestions(game);
 		team->updateAllBuildingTasks();
 	}
@@ -103,10 +103,10 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		Bed bed(36, 36);
 		bed.market->setMaterial(CHERRY, 10);
 		int dist = 0;
-		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),true); });
-		require(bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "the with-markets gradient reaches the stocked market");
-		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),false); });
-		require(!bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, false), "the plain gradient knows no cherries");
+		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(bed.unit->swimClass()),true); });
+		require(bed.game.map.materialAvailableSlot(0, CHERRY, movementAccessFromLegacy(bed.unit->swimClass()), 36, 36, &dist, true), "the with-markets gradient reaches the stocked market");
+		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(bed.unit->swimClass()),false); });
+		require(!bed.game.map.materialAvailableSlot(0, CHERRY, movementAccessFromLegacy(bed.unit->swimClass()), 36, 36, &dist, false), "the plain gradient knows no cherries");
 		bed.hire();
 		require(bed.inn->unitsWorking.size() == 1 && bed.unit->destinationPurpose == CHERRY, "inn hires the worker for cherries held by the market");
 		require(bed.unit->displacement == Unit::DIS_GOING_TO_RESOURCE, "walking the fetch gradient");
@@ -163,19 +163,19 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		Bed bed(36, 36);
 		bed.market->setMaterial(CHERRY, 1);
 		int dist = 0;
-		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),true); });
-		require(bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "stocked market is a goal");
+		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(bed.unit->swimClass()),true); });
+		require(bed.game.map.materialAvailableSlot(0, CHERRY, movementAccessFromLegacy(bed.unit->swimClass()), 36, 36, &dist, true), "stocked market is a goal");
 		bed.market->removeMaterialFromBuilding(CHERRY);
-		const auto* oldField=bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),true);
-		bed.game.map.updateMaterialGradient(0, CHERRY, bed.unit->swimClass(), true);
-		CHECK(bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),true)==oldField);
+		const auto* oldField=bed.game.map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(bed.unit->swimClass()),true);
+		bed.game.map.updateMaterialGradient(0, CHERRY, movementAccessFromLegacy(bed.unit->swimClass()), true);
+		CHECK(bed.game.map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(bed.unit->swimClass()),true)==oldField);
 		glob2test::awaitGradient(bed.game, [&] {
-			const auto* field=bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),true);
+			const auto* field=bed.game.map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(bed.unit->swimClass()),true);
 			// An already admitted old-stock output may publish before this refresh.
-			return field && !bed.game.map.materialAvailableSlot(0,CHERRY,bed.unit->swimClass(),36,36,true) ? field : nullptr;
+			return field && !bed.game.map.materialAvailableSlot(0,CHERRY,movementAccessFromLegacy(bed.unit->swimClass()),36,36,true) ? field : nullptr;
 		});
-		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),true); });
-		require(!bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "an empty market is no goal");
+		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(bed.unit->swimClass()),true); });
+		require(!bed.game.map.materialAvailableSlot(0, CHERRY, movementAccessFromLegacy(bed.unit->swimClass()), 36, 36, &dist, true), "an empty market is no goal");
 		bed.hire();
 		require(bed.inn->unitsWorking.empty() && bed.inn->unitsFailingRequirements[Building::UnitCantAccessFruit] == 0, "no cached suggestion; no population-wide failure tally");
 		std::puts("market fetch: an empty market is no source");
@@ -187,21 +187,21 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		require(bed.game.buildingsTypes.getTypeNum("market", 1, false) >= 0 && bed.game.buildingsTypes.getTypeNum("market", 2, false) >= 0, "market levels 2 and 3 exist");
 		bed.market->setMaterial(WOOD, 20);
 		int dist = 0;
-		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,WOOD,bed.unit->swimClass(),true); });
-		require(!bed.game.map.materialAvailableSlot(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-1 market is no wood goal");
+		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,WOOD,movementAccessFromLegacy(bed.unit->swimClass()),true); });
+		require(!bed.game.map.materialAvailableSlot(0, WOOD, movementAccessFromLegacy(bed.unit->swimClass()), 36, 36, &dist, true), "a level-1 market is no wood goal");
 		int top = bed.game.buildingsTypes.getTypeNum("market", 2, false);
         auto* supplier=bed.game.addBuilding(50,50,top,0);
         REQUIRE(supplier);
         bed.game.map.setBuilding(50,50,supplier->type->width,supplier->type->height,supplier->gid);
-		const auto* oldField=bed.game.map.getMaterialGradientSlot(0,WOOD,bed.unit->swimClass(),true);
-		bed.game.map.updateMaterialGradient(0, WOOD, bed.unit->swimClass(), true);
-		CHECK(bed.game.map.getMaterialGradientSlot(0,WOOD,bed.unit->swimClass(),true)==oldField);
+		const auto* oldField=bed.game.map.getMaterialGradientSlot(0,WOOD,movementAccessFromLegacy(bed.unit->swimClass()),true);
+		bed.game.map.updateMaterialGradient(0, WOOD, movementAccessFromLegacy(bed.unit->swimClass()), true);
+		CHECK(bed.game.map.getMaterialGradientSlot(0,WOOD,movementAccessFromLegacy(bed.unit->swimClass()),true)==oldField);
 		glob2test::awaitGradient(bed.game, [&] {
-			const auto* field=bed.game.map.getMaterialGradientSlot(0,WOOD,bed.unit->swimClass(),true);
-			return field && bed.game.map.materialAvailableSlot(0,WOOD,bed.unit->swimClass(),36,36,true) ? field : nullptr;
+			const auto* field=bed.game.map.getMaterialGradientSlot(0,WOOD,movementAccessFromLegacy(bed.unit->swimClass()),true);
+			return field && bed.game.map.materialAvailableSlot(0,WOOD,movementAccessFromLegacy(bed.unit->swimClass()),36,36,true) ? field : nullptr;
 		});
-		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,WOOD,bed.unit->swimClass(),true); });
-		require(bed.game.map.materialAvailableSlot(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-3 market hands out wood");
+		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,WOOD,movementAccessFromLegacy(bed.unit->swimClass()),true); });
+		require(bed.game.map.materialAvailableSlot(0, WOOD, movementAccessFromLegacy(bed.unit->swimClass()), 36, 36, &dist, true), "a level-3 market hands out wood");
 		std::puts("market levels: only a level that takes the resource hands it out");
 	}
 	std::puts("PASS stocked markets are goals of the fetch gradients");
@@ -258,7 +258,7 @@ TEST_CASE("MarketFetch/market fields and pending publications survive binary and
 		{
 			bed->game.gameHeader.setResourceGrowthDisabled(true);
 			bed->market->setMaterial(CHERRY, 10);
-			bed->game.map.getMaterialGradientSlot(0,CHERRY,0,true);
+			bed->game.map.getMaterialGradientSlot(0,CHERRY,movementAccessFromLegacy(0),true);
 		}
 		source.game.map.configureGradientPipeline(2,3);
 		// Capture each queue phase, including a market job's publication deadline.

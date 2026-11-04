@@ -541,7 +541,7 @@ TEST_SUITE("HiringGradientPreparation")
 		auto *u = w.game.teams[0]->myUnits[0];
 		const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
 		b->globalGradient[slot] = w.game.map.acquireBuildingGradientBuffer();
-		w.game.map.updateGlobalGradient(b, u->swimClass(), BuildingRoute::Footprint);
+		w.game.map.updateGlobalGradient(b, u->movementAccess(), BuildingRoute::Footprint);
 		auto *data = b->globalGradient[slot];
 		auto *search = b->globalGradientSearch[slot].get();
 		b->dirtyGradient[slot] = true;
@@ -843,7 +843,7 @@ TEST_SUITE("BuildingGradientInitialization")
 			pipeline.requestInitialization(*b);
 			pipeline.observe(w.game, observation(w));
 			CHECK(pipeline.preparing(*b, slot));
-			CHECK(w.game.map.requestBuildingField(b, u->swimClass(), BuildingRoute::Footprint) ==
+			CHECK(w.game.map.requestBuildingField(b, u->movementAccess(), BuildingRoute::Footprint) ==
 				  FieldReadiness::Pending);
 			CHECK(w.game.map.buildingGradientPipelineStatus().queued == 0);
 			pipeline.drain();
@@ -883,7 +883,7 @@ TEST_SUITE("BuildingGradientInitialization")
 		b->cancelConstruction(0);
 		w.game.stepCounter = 3;
 		checkLazy();
-		CHECK(w.game.map.requestBuildingField(b, 0, BuildingRoute::Footprint) ==
+		CHECK(w.game.map.requestBuildingField(b, movementAccessFromLegacy(0), BuildingRoute::Footprint) ==
 			  FieldReadiness::Pending);
 		CHECK(w.game.map.buildingGradientPipelineStatus().queued == 1);
 	}
@@ -894,7 +894,7 @@ TEST_SUITE("BuildingGradientInitialization")
 			{.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
 		w.game.stepCounter = 4;
 		auto *b = innWithWorker(w);
-		CHECK(w.game.map.requestBuildingField(b, 0, BuildingRoute::Footprint) ==
+		CHECK(w.game.map.requestBuildingField(b, movementAccessFromLegacy(0), BuildingRoute::Footprint) ==
 			  FieldReadiness::Pending);
 		GradientExecutionAudit audit;
 		w.game.hiringPipeline = std::make_unique<HiringPipeline>(w.game.map.computeExecutor());

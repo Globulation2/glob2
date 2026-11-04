@@ -11,16 +11,15 @@
 #include <queue>
 #include <tuple>
 
-bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, int swimClass, Uint32 teamMask, int maximumLength)
+bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, MovementAccess movementAccessValue, Uint32 teamMask, int maximumLength)
 {
+    int swimClass=accessClass(movementAccessValue);
     const int physical=swimClass;
     const int readerTeam=game && std::has_single_bit(teamMask)?int(std::countr_zero(teamMask)):-1;
     if(readerTeam>=0) {
-        observeRoutingRatioQuery(RoutingRatioStudy::Point,readerTeam,physical,x,y);
-        swimClass=routingClass(readerTeam,physical);
+        swimClass=preparationCostClass(readerTeam,physical);
     }
     const auto observed=[&](bool reachable) {
-        if(readerTeam>=0 && gradientRuntime->ratioStudy)gradientRuntime->ratioStudy->pointResult(game->stepCounter,readerTeam,physical,swimClass,reachable);
         return reachable;
     };
 	PERF_SCOPE_TIME(PathPoint);
@@ -150,5 +149,5 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 // Compatibility entry point for existing callers. All movement uses the same A*.
 bool Map::pathfindAirPointToPoint(int x,int y,int targetX,int targetY,int* dx,int* dy)
 {
-    return pathfindPointToPoint(x,y,targetX,targetY,dx,dy,AIR_MOVEMENT_CLASS,0,GRADIENT_COST_LIMIT/GRADIENT_STEP);
+    return pathfindPointToPoint(x,y,targetX,targetY,dx,dy,movementAccessFromLegacy(AIR_MOVEMENT_CLASS),0,GRADIENT_COST_LIMIT/GRADIENT_STEP);
 }

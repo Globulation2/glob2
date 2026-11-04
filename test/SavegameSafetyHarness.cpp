@@ -697,8 +697,8 @@ static void checkRandomContinuation(bool text, bool ai)
     // Idle matches no longer schedule periodic route work. Explicitly admit a
     // cold, otherwise unused movement class so malformed pending-job checks
     // always exercise a real saved destination and publication deadline.
-    REQUIRE(gui.game.map.lookupForbiddenGradient(0,WATER_ONLY_CLASS)==nullptr);
-    gui.game.map.getForbiddenGradient(0,WATER_ONLY_CLASS);
+    REQUIRE(gui.game.map.lookupForbiddenGradient(0,movementAccessFromLegacy(WATER_ONLY_CLASS))==nullptr);
+    gui.game.map.getForbiddenGradient(0,movementAccessFromLegacy(WATER_ONLY_CLASS));
     gui.game.observeCompletedWorld();
 	const auto savedRandom = gui.game.syncRandom;
 	auto *backend = new MemoryStreamBackend();

@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 195
+#define VERSION_MINOR 196
+// version 196 stores field preparation costs independently of routing access.
 // version 195 saves research routing-ratio selection and tie history.
 // version 194 lets replenishment couriers finish trips before demand-driven dismissal; save encoding is unchanged.
 // version 193 adds the saved adaptive prestige pipeline limit.

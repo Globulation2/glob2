@@ -10,7 +10,7 @@
 
 void Map::gradientMovementDemand(GradientFieldKey key)
 {
-    key.swim=routingClass(key.team,key.swim);
+    key.swim=accessClass(movementAccessFromLegacy(key.swim));
     if(game && !compute.insideJob())gradientRuntime->adaptive.queried(key,game->stepCounter);
 }
 void Map::gradientMovementOutcome(const GradientQueryContext& context,const Uint16* cells,const GradientQueryResult& result)
@@ -39,7 +39,7 @@ void Map::directGradientMovement(GradientFieldKey key,int x,int y,const EntityRa
     gradientMovementOutcome(context,cells,result);
     if(!destinationValid || (result.atGoal&&!result.goalValid)) {
         if(auto** slot=gradientFieldDestination(key))
-            requestGradientField(slot,int(key.family),key.team,key.material==GradientFieldKey::NoMaterial?0:key.material,key.swim);
+            requestGradientField(slot,int(key.family),key.team,key.material==GradientFieldKey::NoMaterial?0:key.material,movementAccessFromLegacy(key.swim));
     }
 }
 GradientQueryResult Map::selectGradientQuery(const GradientQueryContext& context,const Uint16* cells) const
@@ -103,42 +103,44 @@ GradientQueryResult Map::selectGradientQueryImpl(GradientQueryContext& context,c
         // This branch is intentional area balancing, never a failed required trip.
         result.travelRequired=false;result.goalValid=gradientGoalValid(key,x,y);
         if((context.random.nextU32()&((1<<GUARD_LEAVE_CHANCE_SHIFT)-1))==0)
-            result.moved=directionByGradient(context.random,mask,swim,x,y,cells,&result.dx,&result.dy,true);
-        else result.moved=directionByGradient(context.random,mask,swim,x,y,cells,&result.dx,&result.dy,true,mask);
+            result.moved=directionByGradient(context.random,mask,movementAccessFromLegacy(swim),x,y,cells,&result.dx,&result.dy,true);
+        else result.moved=directionByGradient(context.random,mask,movementAccessFromLegacy(swim),x,y,cells,&result.dx,&result.dy,true,mask);
         return result;
     }
-    result.moved=directionByGradient(context.random,mask,swim,x,y,cells,&result.dx,&result.dy,true);
-    if(!result.moved)result.moved=directionByGradient(context.random,mask,swim,x,y,cells,&result.dx,&result.dy,false);
+    result.moved=directionByGradient(context.random,mask,movementAccessFromLegacy(swim),x,y,cells,&result.dx,&result.dy,true);
+    if(!result.moved)result.moved=directionByGradient(context.random,mask,movementAccessFromLegacy(swim),x,y,cells,&result.dx,&result.dy,false);
     if(!result.moved && key.family==GradientFieldFamily::Markets && gradientGoalValid(key,x,y)) {
         result.atGoal=result.goalValid=true;result.travelRequired=false;
     }
     return result;
 }
 
-bool Map::pathfindForbidden(const Uint16* option,int team,int swim,int x,int y,int* dx,int* dy)
+bool Map::pathfindForbidden(const Uint16* option,int team,MovementAccess movementAccessValue,int x,int y,int* dx,int* dy)
 {
-    swim=routingClass(team,swim);
+    int swim=accessClass(movementAccessValue);
+
     PERF_SCOPE_TIME(PathArea);
     const GradientFieldKey key{GradientFieldFamily::Forbidden,Uint8(team),Uint8(swim)};
     gradientMovementDemand(key);
-    const auto* cells=getForbiddenGradient(team,swim);
+    const auto* cells=getForbiddenGradient(team,movementAccessFromLegacy(swim));
     if(!cells)return false;
     GradientQueryContext context{key,x,y,EntityRandom{},option,GradientQueryContext::Mode::ForbiddenEscape};
     const auto result=selectGradientQuery(context,cells);
     gradientMovementOutcome(context,cells,result);
-    if(result.atGoal&&!result.goalValid)updateForbiddenGradient(team,swim);
+    if(result.atGoal&&!result.goalValid)updateForbiddenGradient(team,movementAccessFromLegacy(swim));
     if(result.moved){*dx=result.dx;*dy=result.dy;return true;}
-    if(result.travelRequired && cells[coordToIndex(x,y)]>GRADIENT_UNREACHABLE)updateForbiddenGradient(team,swim);
+    if(result.travelRequired && cells[coordToIndex(x,y)]>GRADIENT_UNREACHABLE)updateForbiddenGradient(team,movementAccessFromLegacy(swim));
     return false;
 }
-bool Map::pathfindArea(EntityRandom& random,AreaKind kind,int team,int swim,int x,int y,int* dx,int* dy)
+bool Map::pathfindArea(EntityRandom& random,AreaKind kind,int team,MovementAccess movementAccessValue,int x,int y,int* dx,int* dy)
 {
-    swim=routingClass(team,swim);
+    int swim=accessClass(movementAccessValue);
+
     PERF_SCOPE_TIME(PathArea);
     if (kind==AreaKind::Guard ? !paintedAreaTileCount(GuardArea,team) : !hasClearingArea(team)) return false;
     const GradientFieldKey key{kind==AreaKind::Guard?GradientFieldFamily::Guard:GradientFieldFamily::Clear,Uint8(team),Uint8(swim)};
     gradientMovementDemand(key);
-    const auto* cells=kind==AreaKind::Guard?getGuardAreasGradient(team,swim):getClearAreasGradient(team,swim);
+    const auto* cells=kind==AreaKind::Guard?getGuardAreasGradient(team,movementAccessFromLegacy(swim)):getClearAreasGradient(team,movementAccessFromLegacy(swim));
     if(!cells)return false;
     const GradientQueryContext before{key,x,y,random};
     auto context=before;
@@ -147,31 +149,31 @@ bool Map::pathfindArea(EntityRandom& random,AreaKind kind,int team,int swim,int 
     gradientMovementOutcome(before,cells,result);
     if(result.moved){*dx=result.dx;*dy=result.dy;return true;}
     if((result.atGoal&&!result.goalValid)||(result.travelRequired&&cells[coordToIndex(x,y)]>GRADIENT_UNREACHABLE&&!result.atGoal)) {
-        if(kind==AreaKind::Guard)updateGuardAreasGradient(team,swim);else updateClearAreasGradient(team,swim);
+        if(kind==AreaKind::Guard)updateGuardAreasGradient(team,movementAccessFromLegacy(swim));else updateClearAreasGradient(team,movementAccessFromLegacy(swim));
     }
     return false;
 }
-StepResult Map::queryForbiddenStep(const Uint16* option,int team,int swim,int x,int y,int* dx,int* dy)
+StepResult Map::queryForbiddenStep(const Uint16* option,int team,MovementAccess movementAccessValue,int x,int y,int* dx,int* dy)
 {
-    observeRoutingRatioQuery(4,team,swim,x,y);
-    swim=routingClass(team,swim);
-    if(!getForbiddenGradient(team,swim)) {
+    int swim=accessClass(movementAccessValue);
+
+    if(!getForbiddenGradient(team,movementAccessFromLegacy(swim))) {
         gradientMovementDemand({GradientFieldFamily::Forbidden,Uint8(team),Uint8(swim)});
         return StepResult::Pending;
     }
-    return pathfindForbidden(option,team,swim,x,y,dx,dy)?StepResult::Step:StepResult::Blocked;
+    return pathfindForbidden(option,team,movementAccessFromLegacy(swim),x,y,dx,dy)?StepResult::Step:StepResult::Blocked;
 }
-StepResult Map::queryAreaStep(EntityRandom& random,AreaKind kind,int team,int swim,int x,int y,int* dx,int* dy)
+StepResult Map::queryAreaStep(EntityRandom& random,AreaKind kind,int team,MovementAccess movementAccessValue,int x,int y,int* dx,int* dy)
 {
-    observeRoutingRatioQuery(kind==AreaKind::Guard?2:3,team,swim,x,y);
-    swim=routingClass(team,swim);
+    int swim=accessClass(movementAccessValue);
+
     if (kind==AreaKind::Guard ? !paintedAreaTileCount(GuardArea,team) : !hasClearingArea(team)) return StepResult::Blocked;
-    const auto* cells=kind==AreaKind::Guard?getGuardAreasGradient(team,swim):getClearAreasGradient(team,swim);
+    const auto* cells=kind==AreaKind::Guard?getGuardAreasGradient(team,movementAccessFromLegacy(swim)):getClearAreasGradient(team,movementAccessFromLegacy(swim));
     if(!cells) {
         gradientMovementDemand({kind==AreaKind::Guard?GradientFieldFamily::Guard:GradientFieldFamily::Clear,Uint8(team),Uint8(swim)});
         return StepResult::Pending;
     }
     const bool arrival=cells[coordToIndex(x,y)]==GRADIENT_AT_GOAL;
-    const bool moved=pathfindArea(random,kind,team,swim,x,y,dx,dy);
+    const bool moved=pathfindArea(random,kind,team,movementAccessFromLegacy(swim),x,y,dx,dy);
     return arrival?StepResult::AtGoal:moved?StepResult::Step:StepResult::Blocked;
 }

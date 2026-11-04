@@ -50,7 +50,7 @@ struct ColorRecord { Uint8 r = 0, g = 0, b = 0, a = 255; };
 struct TeamView
 {
     RoutingRatioState routingRatio;
-    int amphibiousRoutingClass=0; // zero means class-specific baseline
+    int amphibiousRoutingClass=0; // preparation cost; lookup identity is passability only
 	int number = 0, prestige = 0, startX = 0, startY = 0;
 	bool alive = false, won = false, lost = false;
 	ColorRecord color;

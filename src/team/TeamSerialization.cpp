@@ -411,7 +411,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	Uint32 cs=0;
 
 	cs^=BaseTeam::checkSum();
-    if (!legacy152 && sharedRoutingRatios(static_cast<const GameHeader&>(game->gameHeader).getExperiments())) {
+    if (!legacy152) {
         for(auto value:{routingRatio.selected,routingRatio.walk,routingRatio.swim,routingRatio.tick,unsigned(routingRatio.known)}) cs=rotr1(cs)^value;
     }
 	if (!legacy152) { cs=rotr1(cs)^taskSwapNext; cs=rotr1(cs)^liveUnits.size(); cs=rotr1(cs)^liveBuildings.size(); }

@@ -433,7 +433,7 @@ bool OrderScheduler::load(GAGCore::InputStream* stream)
                 command.diagnostics.push_back(std::move(diagnostic));
 			stream->readLeaveSection();
 		}
-		const auto enrollmentCount = stream->readCount("enrollments", 32 * MaterialSlotCount * 7);
+		const auto enrollmentCount = stream->readCount("enrollments", 32 * MaterialSlotCount * MOVEMENT_CLASS_COUNT);
         std::set<Uint16> enrollmentKeys; // plane keys, see MapState::planeKey
 		for (unsigned j = 0; j < enrollmentCount; ++j)
 		{
@@ -442,7 +442,7 @@ bool OrderScheduler::load(GAGCore::InputStream* stream)
 			enrollment.team = stream->readUint32("team"); enrollment.resource = stream->readUint32("resource");
 			enrollment.swim = stream->readUint32("swim"); enrollment.observedTick = stream->readUint32("tick");
 			const auto cells = stream->readCount("cells", 1024 * 1024);
-			if (enrollment.team >= 32 || enrollment.resource >= MaterialSlotCount || enrollment.swim >= 7 || !cells || enrollment.observedTick > entry.request.observedTick
+			if (enrollment.team >= 32 || enrollment.resource >= MaterialSlotCount || enrollment.swim >= MOVEMENT_CLASS_COUNT || !cells || enrollment.observedTick > entry.request.observedTick
                 || !enrollmentKeys.emplace(MapState::planeKey(int(enrollment.team),int(enrollment.resource),int(enrollment.swim),false)).second) return false;
             const PlaneKey planeKey{enrollment.team,enrollment.resource,enrollment.swim,enrollment.observedTick,cells};
             const auto existing=loadedPlanes.find(planeKey);

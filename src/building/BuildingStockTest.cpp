@@ -554,7 +554,7 @@ TEST_CASE("format167 warm consumer fields restore complete arrays and pool polic
         supplier->setMaterial(WHEAT,10);
         const Uint16* field=nullptr;
         for(unsigned tick=0;!field && tick<32;++tick) {
-            field=map.getMaterialGradientSlot(0,WHEAT,0,false,consumer);
+            field=map.getMaterialGradientSlot(0,WHEAT,movementAccessFromLegacy(0),false,consumer);
             if(!field) game.step(0);
         }
         REQUIRE(field); REQUIRE(map.gradientRuntime->materialFields.size()==1);
@@ -604,7 +604,7 @@ TEST_CASE("format167 warm consumer fields restore complete arrays and pool polic
         REQUIRE(restored.published); CHECK(restored.cells.get()==restored.published);
         CHECK(std::equal(expected.begin(),expected.end(),restored.published));
         auto* copiedConsumer=migrated.game.resolveBuilding(Game::refOf(consumer)); REQUIRE(copiedConsumer);
-        CHECK(migrated.game.map.lookupMaterialGradientSlot(0,WHEAT,0,false,copiedConsumer)==restored.published);
+        CHECK(migrated.game.map.lookupMaterialGradientSlot(0,WHEAT,movementAccessFromLegacy(0),false,copiedConsumer)==restored.published);
         CHECK(continuationComponents(migrated.game)==continuationComponents(game));
         const auto upgradedBytes=saveGame(migrated.game);
         glob2test::HeadlessGame upgraded({.header=true}); REQUIRE(loadGame(upgraded.game,upgradedBytes));

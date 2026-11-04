@@ -167,7 +167,7 @@ TEST_CASE("format166 pending jobs and append order survive an immediate upgrade 
             const auto slot=building->routeSlot(0,BuildingRoute::Automatic);
             REQUIRE(!building->globalGradient[slot]);
             building->globalGradient[slot]=game.map.acquireBuildingGradientBuffer();
-            game.map.updateGlobalGradient(building,0);
+            game.map.updateGlobalGradient(building,movementAccessFromLegacy(0));
         }
         game.map.setResourceByIndex(20,20,WHEAT,1);
         glob2test::LegacyPopulationOutput::primeMaterialGradient(game.map,0,WHEAT,0);

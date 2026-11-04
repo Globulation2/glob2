@@ -728,7 +728,7 @@ bool loadFlag(GAGCore::InputStream *stream, const char *name)
 	if (value>1) throw std::runtime_error("Invalid saved routing flag");
 	return value != 0;
 }
-void saveGradient(GAGCore::OutputStream *stream, const Uint16 *field, size_t size)
+void saveGradientCells(GAGCore::OutputStream *stream, const Uint16 *field, size_t size)
 {
     stream->writeUint8(field != nullptr, "present");
     if(field) {
@@ -736,7 +736,7 @@ void saveGradient(GAGCore::OutputStream *stream, const Uint16 *field, size_t siz
         else stream->writeUint16Sections(field,size,"value");
     }
 }
-void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size, bool packed)
+void loadGradientCells(GAGCore::InputStream *stream, Uint16 *&field, size_t size, bool packed)
 {
 	const bool present=loadFlag(stream,"present");
 	std::unique_ptr<Uint16[]> restored;
@@ -761,6 +761,42 @@ void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size, boo
 // complete with their remaining publication advances. Supersession is resolved
 // here into a flag, since slot epochs are owner-only. Saves before 148 carry
 // none of this; format 167 also permits destinations without a published field.
+void Map::saveGradient(GAGCore::OutputStream* stream,const Uint16* field,size_t cells,int cost) const
+{
+    saveGradientCells(stream,field,cells);
+    if(field) {
+        if(cost<0) {
+            cost=SWIM_CLASS_EVEN;
+            if(!gradientRuntime->fieldCosts.contains(field) && game) {
+                for(int t=0;t<game->teamsCount();++t)for(int a=0;a<MOVEMENT_CLASS_COUNT;++a) {
+                    if(field==forbiddenGradient[t][a] || field==guardAreasGradient[t][a] || field==clearAreasGradient[t][a])cost=a;
+                    for(int r=0;r<MaterialSlotCount;++r)
+                        if(field==materialGradients[t][r][a] || field==marketMaterialGradients[t][r][a])cost=a;
+                }
+                for(int t=0;t<game->teamsCount();++t)for(const auto* b:game->teams[t]->liveBuildings.entries())
+                    for(int slot=0;slot<BUILDING_GRADIENT_COUNT;++slot)if(field==b->globalGradient[slot])cost=slot%MOVEMENT_CLASS_COUNT;
+                for(const auto& [key,entry]:gradientRuntime->materialFields)if(field==entry.published)cost=entry.swim;
+            }
+            cost=publishedCostClass(field,cost);
+        }
+        stream->writeUint8(cost,"preparationCost");
+    }
+}
+void Map::loadGradient(GAGCore::InputStream* stream,Uint16*& field,size_t cells,bool packed,int legacyCost)
+{
+    if(legacyCost<0) {
+        const auto key=gradientFieldKey(&field);
+        legacyCost=key?int(key->swim):SWIM_CLASS_EVEN;
+    }
+    gradientRuntime->fieldCosts.erase(field);
+    loadGradientCells(stream,field,cells,packed);
+    if(field) {
+        const int cost=gradientRuntime->loadingGradientVersion>=196 ? stream->readUint8("preparationCost") : legacyCost;
+        if(cost<0 || cost>=MOVEMENT_CLASS_COUNT || movementAccessFromLegacy(cost)!=movementAccessFromLegacy(legacyCost))throw std::runtime_error("Invalid field preparation cost");
+        recordFieldCost(field,cost);
+    }
+}
+
 void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 {
 	static_assert(BuildingGradientJobPipeline::MaxDelay *
@@ -803,7 +839,7 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 		stream->writeUint8(superseded, "superseded");
 		stream->writeUint8(p.locked, "locked");
 		stream->writeUint8(p.resourceState, "resourceState");
-		saveGradient(stream, superseded ? nullptr : p.data.get(), size);
+		saveGradient(stream, superseded ? nullptr : p.data.get(), size,p.swim);
 		stream->writeLeaveSection();
 	});
 	stream->writeLeaveSection();
@@ -812,6 +848,7 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 
 void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed, int versionMinor)
 {
+    gradientRuntime->loadingGradientVersion=versionMinor;
 	auto &rt=*gradientRuntime;
 	stream->readEnterSection("buildingGradientPipeline");
 	const unsigned delay=stream->readUint8("delay");
@@ -888,7 +925,8 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		p.resourceState=stream->readUint8("resourceState");
 		if (p.resourceState>2) throw std::runtime_error("Invalid saved resource state");
 		Uint16 *field=nullptr;
-		loadGradient(stream, field, size, packed);
+		loadGradient(stream, field, size, packed,p.swim);
+        p.swim=publishedCostClass(field,p.swim);
 		p.data.reset(field);
 		stream->readLeaveSection();
 		if (!superseded && !p.data) throw std::runtime_error("Missing saved building gradient result");
@@ -992,7 +1030,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeEnterSection(sw);
 				// Materialize the old full-field representation from its frozen inputs.
 				// This changes no routing answers, timestamps, RNG or save bytes.
-				finishBuildingGradient(building, sw, BuildingRoute::Footprint);
+				finishBuildingGradient(building, movementAccessFromLegacy(sw), BuildingRoute::Footprint);
 				saveGradient(stream, building->globalGradient[sw], size);
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
@@ -1024,7 +1062,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				{
 					stream->writeEnterSection(sw);
 					const int slot=profile*MOVEMENT_CLASS_COUNT+sw;
-					finishBuildingGradient(building, sw, BuildingRoute(profile));
+					finishBuildingGradient(building, movementAccessFromLegacy(sw), BuildingRoute(profile));
 					saveGradient(stream, building->globalGradient[slot], size);
 					stream->writeUint8(building->dirtyGradient[slot], "dirty");
 					stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[slot], "lastUpdate");
@@ -1062,7 +1100,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
             stream->writeUint32(snapshot.preparedGoalCount,"preparedGoalCount");
             stream->writeUint8(snapshot.legacyAssociation,"legacyAssociation");
         }
-		saveGradient(stream, snapshot.data, size);
+		saveGradient(stream, snapshot.data, size,snapshot.swim);
 		stream->writeLeaveSection();
 	});
     stream->writeUint32(gradientRuntime->fieldRequests.size(),"requests");
@@ -1096,6 +1134,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 
 void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+    gradientRuntime->loadingGradientVersion=versionMinor;
 	const unsigned savedSwimClasses=hasUnifiedMovement(versionMinor)?MOVEMENT_CLASS_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
 	const unsigned savedAccessVariants=hasUnifiedMovement(versionMinor)?SWIM_VARIANT_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?3:2;
 	invalidateResourceSeeds();
@@ -1202,7 +1241,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				// Existing saves contain complete fields; discard any previous queue
 				// before replacing its buffer, including when reusing a loaded object.
 				building->globalGradientSearch[building->routeSlot(sw, savedRoute)].reset();
-				loadGradient(stream, building->globalGradient[building->routeSlot(sw, savedRoute)], size, packed);
+				loadGradient(stream, building->globalGradient[building->routeSlot(sw, savedRoute)], size, packed,sw);
 				building->dirtyGradient[building->routeSlot(sw, savedRoute)]=loadFlag(stream,"dirty");
 				building->lastGlobalGradientUpdateStepCounter[building->routeSlot(sw, savedRoute)]=stream->readUint32("lastUpdate");
 				// An older save restored its fields as current; keep them so.
@@ -1269,7 +1308,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 						stream->readEnterSection(sw);
 						const int slot=profile*MOVEMENT_CLASS_COUNT+sw;
 						building->globalGradientSearch[slot].reset();
-						loadGradient(stream, building->globalGradient[slot], size, packed);
+						loadGradient(stream, building->globalGradient[slot], size, packed,slot%MOVEMENT_CLASS_COUNT);
 						building->dirtyGradient[slot]=loadFlag(stream,"dirty");
 						building->lastGlobalGradientUpdateStepCounter[slot]=stream->readUint32("lastUpdate");
 						building->gradientGeneration[slot]=stream->readUint32("generation");
@@ -1349,8 +1388,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
                     legacyPendingCaptures.emplace_back(*key,capture);
             }
 			Uint16 *field=nullptr;
-			loadGradient(stream, field, size, packed);
-			gradientRuntime->pipeline.restoreCompleted({slot, static_cast<int>(sw), remaining,
+			loadGradient(stream, field, size, packed,gradientFieldKey(slot)?int(gradientFieldKey(slot)->swim):int(sw));
+			gradientRuntime->pipeline.restoreCompleted({slot, publishedCostClass(field,int(sw)), remaining,
 				superseded, std::unique_ptr<Uint16[]>(field),adaptiveKey,adaptiveCapture,preparedGoalCount,legacyAssociation});
 			stream->readLeaveSection();
 		}
@@ -1520,10 +1559,77 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
             for (auto* building : game->teams[t]->liveBuildings.entries()) building->freeGradients();
         }
     }
+    if(versionMinor<196)consolidateLegacyRoutingFields();
     // Loaded and discarded slots bypassed publishPlane.
     rebuildPlaneRegistry();
 }
 
+
+// Older saves may have one published plane per ratio. Keep a usable plane in
+// the stable amphibious slot and its original costs; future preparation uses
+// the current team mode. Only old-format scheduling is rebuilt during migration.
+void Map::consolidateLegacyRoutingFields()
+{
+    auto& rt=*gradientRuntime;
+    rt.pipeline.reset();rt.preparations.clear();rt.fieldRequests.clear();
+    resetBuildingGradientPipeline();rt.adaptive={};
+    const auto collapse=[&](auto& fields,auto& stale,int preferred) {
+        constexpr int shared=int(MovementAccess::Amphibious);
+        int source=shared;
+        if(!fields[source]) {
+            source=preferred;
+            if(source<=0 || source>=LEGACY_SWIM_CLASS_COUNT || !fields[source])
+                for(source=1;source<LEGACY_SWIM_CLASS_COUNT && !fields[source];++source){}
+            if(source<LEGACY_SWIM_CLASS_COUNT && source!=shared) {
+                std::swap(fields[shared],fields[source]);stale[shared]=stale[source];
+            }
+        }
+        for(int c=1;c<LEGACY_SWIM_CLASS_COUNT;++c)if(c!=shared) {
+            rt.fieldCosts.erase(fields[c]);delete[] fields[c];fields[c]=nullptr;stale[c]=false;
+        }
+    };
+    for(int team=0;team<game->teamsCount();++team) {
+        const int preferred=int(game->teams[team]->routingRatio.selected);
+        for(int material=0;material<MaterialSlotCount;++material) {
+            collapse(materialGradients[team][material],materialGradientStale[team][material],preferred);
+            collapse(marketMaterialGradients[team][material],marketMaterialGradientStale[team][material],preferred);
+        }
+        collapse(forbiddenGradient[team],forbiddenGradientStale[team],preferred);
+        collapse(guardAreasGradient[team],guardGradientStale[team],preferred);
+        collapse(clearAreasGradient[team],clearGradientStale[team],preferred);
+        for(auto* b:game->teams[team]->liveBuildings.entries()) {
+            b->refreshRequested.reset();
+            for(int route=0;route<BUILDING_ROUTE_COUNT;++route) {
+                const int base=route*MOVEMENT_CLASS_COUNT,shared=base+int(MovementAccess::Amphibious);
+                int source=shared;
+                if(!b->globalGradient[source]) {
+                    source=base+preferred;
+                    if(source<=base || source>=base+LEGACY_SWIM_CLASS_COUNT || !b->globalGradient[source])
+                        for(source=base+1;source<base+LEGACY_SWIM_CLASS_COUNT && !b->globalGradient[source];++source){}
+                    if(source<base+LEGACY_SWIM_CLASS_COUNT && source!=shared) {
+                        std::swap(b->globalGradient[shared],b->globalGradient[source]);
+                        std::swap(b->globalGradientSearch[shared],b->globalGradientSearch[source]);
+                        b->dirtyGradient[shared]=b->dirtyGradient[source];
+                        b->lastGlobalGradientUpdateStepCounter[shared]=b->lastGlobalGradientUpdateStepCounter[source];
+                        b->gradientGeneration[shared]=b->gradientGeneration[source];
+                    }
+                }
+                for(int c=1;c<LEGACY_SWIM_CLASS_COUNT;++c)if(c!=int(MovementAccess::Amphibious)) {
+                    const int slot=base+c;rt.fieldCosts.erase(b->globalGradient[slot]);
+                    b->retireSharedGradient(slot);recycleBuildingGradientBuffer(b->globalGradient[slot]);
+                    recycleBuildingGradientSearch(std::move(b->globalGradientSearch[slot]));
+                }
+            }
+        }
+    }
+    for(auto it=rt.materialFields.begin();it!=rt.materialFields.end();) {
+        if(it->second.swim<=0 || it->second.swim>=LEGACY_SWIM_CLASS_COUNT || it->second.swim==int(MovementAccess::Amphibious)){++it;continue;}
+        auto node=rt.materialFields.extract(it++);auto& field=node.mapped();
+        const auto key=MapState::materialFieldKey(field.consumer,field.team,field.resource,int(MovementAccess::Amphibious),field.modes);
+        if(rt.materialFields.contains(key)) {rt.materialLru.erase(field.lru);rt.fieldCosts.erase(field.published);}
+        else {node.key()=key;field.swim=int(MovementAccess::Amphibious);*field.lru=key;rt.materialFields.insert(std::move(node));}
+    }
+}
 
 void Map::saveMaterialRoutingCache(GAGCore::OutputStream* stream) const
 {
@@ -1565,6 +1671,7 @@ void Map::saveMaterialRoutingCache(GAGCore::OutputStream* stream) const
 
 void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, int versionMinor)
 {
+    gradientRuntime->loadingGradientVersion=versionMinor;
     auto& cache=*gradientRuntime;
     const auto read64=[&](const char* name) {
         stream->readEnterSection(name); const Uint64 high=stream->readUint32("high"), low=stream->readUint32("low"); stream->readLeaveSection();
@@ -1614,7 +1721,7 @@ void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, in
         if (entry.consumer<0 && entry.excludesShared) throw std::runtime_error("Shared resource routing field excludes a consumer pool");
         entry.awaitingFirstRead=hasDelayedGradientState(versionMinor) ? loadFlag(stream,"awaitingFirstRead") : false;
         entry.publishedStep=hasDelayedGradientState(versionMinor) ? stream->readUint32("publishedStep") : 0;
-        Uint16* field=nullptr; loadGradient(stream,field,size,packed); entry.cells.reset(field);
+        Uint16* field=nullptr; loadGradient(stream,field,size,packed,entry.swim); entry.cells.reset(field);
         if (!field && (!hasDelayedGradientState(versionMinor) || entry.awaitingFirstRead)) throw std::runtime_error("Missing resource routing cache field");
         entry.published=field;
         cache.materialLru.push_back(key); entry.lru=std::prev(cache.materialLru.end());

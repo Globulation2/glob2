@@ -181,7 +181,7 @@ void initialFlagStaffing()
         {
             Unit* worker=f.game.addUnit(21,20,0,WORKER,0,0,0,0);REQUIRE(worker);
             setYoungResource(f.game.map,22,20,WHEAT);
-            f.game.map.buildingGradient(flag,0);
+            f.game.map.buildingGradient(flag,movementAccessFromLegacy(0));
             // Even if discovery/management is delayed past a recruitment cycle,
             // the default broad resource selector cannot recruit a worker.
             for(int tick=0;tick<70;++tick)REQUIRE(!(glob2test::publishCurrentHiringSuggestions(*flag->owner->game), flag->subscribeForFlagingStep()));

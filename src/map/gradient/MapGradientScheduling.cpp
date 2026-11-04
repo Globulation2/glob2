@@ -113,7 +113,7 @@ void Map::ensureBuildingGradientPipeline()
 		auto& p = job.payload;
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
 		if (!b || b->refreshEpoch[p.slot] != p.epoch) return false;
-		const int slot = p.slot, swim = p.swim;
+		const int slot = p.slot, swim = slotSwim(p.slot);
         auto guard=SharedBuildingGradient::lock(b->sharedGradient[slot]);
 
 		// Pointer swap: the transferred search already points at data, so a
@@ -123,8 +123,10 @@ void Map::ensureBuildingGradientPipeline()
 		if (search) b->settledCostHint[slot] = Uint16(std::min(search->requiredCost(), 0xFFFE));
 		b->retireSharedGradient(slot);
         recycleBuildingGradientSearch(std::move(search));
+		gradientRuntime->fieldCosts.erase(b->globalGradient[slot]);
 		recycleBuildingGradientBuffer(b->globalGradient[slot]);
 		b->globalGradient[slot] = p.data.release();
+        recordFieldCost(b->globalGradient[slot],p.swim);
 		if (!p.locked) search = std::move(p.search);
 		b->lastGlobalGradientUpdateStepCounter[slot] = p.captureTick;
 		b->gradientGeneration[slot] = p.generation;
@@ -251,7 +253,7 @@ void Map::stageBuildingGradientPreparation()
 		auto& p = job->payload;
 		p.team = request.team; p.buildingId = request.building; p.scriptIdentity = request.identity;
 		p.workSink=rt.workSink;
-		p.slot = request.slot; p.swim = slotSwim(request.slot); p.route = slotRoute(request.slot);
+		p.slot = request.slot; p.swim = preparationCostClass(p.team,slotSwim(request.slot)); p.route = slotRoute(request.slot);
 		p.epoch = request.epoch; p.captureTick = game->stepCounter; p.generation = topologyGeneration;
         if(auto& stats=rt.workStats)p.workReason=stats->admitted(GradientWorkStats::buildingKey(p.team,p.swim,p.buildingId,p.scriptIdentity,unsigned(p.route)),game->stepCounter,size);
 		p.data.reset(acquireBuildingGradientBuffer());

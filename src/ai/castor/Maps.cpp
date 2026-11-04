@@ -531,14 +531,14 @@ Uint8 castorWheatGradient(Uint16 g)
 
 Uint8 AICastor::wheatGradientAt(size_t index)
 {
-	return castorWheatGradient(queries->resourceGradient(teamNumber,materialIndex(MaterialId::Food),canSwim ? Map::SWIM_CLASS_EVEN : 0).data()[index]);
+	return castorWheatGradient(queries->resourceGradient(teamNumber,materialIndex(MaterialId::Food),movementAccessFromLegacy(canSwim ? Map::SWIM_CLASS_EVEN : 0)).data()[index]);
 }
 
 void AICastor::copyWheatGradient(Uint8* destination)
 {
 	const size_t size=observation->width*observation->height;
 	if (!size) return;
-	const auto* gradient=queries->resourceGradient(teamNumber,materialIndex(MaterialId::Food),canSwim ? Map::SWIM_CLASS_EVEN : 0).data();
+	const auto* gradient=queries->resourceGradient(teamNumber,materialIndex(MaterialId::Food),movementAccessFromLegacy(canSwim ? Map::SWIM_CLASS_EVEN : 0)).data();
 	for (size_t i=0; i<size; ++i)
 		destination[i]=castorWheatGradient(gradient[i]);
 }
@@ -554,7 +554,7 @@ void AICastor::computeWheatGrowthMap()
 	size_t size=w*h;
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	
-	const auto* gradient=size ? queries->resourceGradient(teamNumber,materialIndex(MaterialId::Food),canSwim ? Map::SWIM_CLASS_EVEN : 0).data() : nullptr;
+	const auto* gradient=size ? queries->resourceGradient(teamNumber,materialIndex(MaterialId::Food),movementAccessFromLegacy(canSwim ? Map::SWIM_CLASS_EVEN : 0)).data() : nullptr;
 	for (size_t i=0; i<size; i++)
 		if (castorWheatGradient(gradient[i])==AI_CASTOR_WHEAT_GRADIENT_PEAK)
 			wheatGrowthMap[i]=AI_CASTOR_WHEAT_GROWTH_BASE+(hydratationMap[i]>>AI_CASTOR_WHEAT_GROWTH_HYDRATATION_SHIFT);

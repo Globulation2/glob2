@@ -78,12 +78,12 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	const int swimClass = unit->swimClass();
 	require(swimClass == expectedClass, "exercise the requested swim class");
 
-	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass); });
+	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass)); });
 	// Task assignment: ascend the resource gradient once, same call as
 	// Unit.cpp/UnitDisplacement.cpp.
-	game.map.materialAvailableUpdateSlot(teamNumber, WHEAT, swimClass, unit->posX, unit->posY, &unit->targetX, &unit->targetY, NULL);
+	game.map.materialAvailableUpdateSlot(teamNumber, WHEAT, movementAccessFromLegacy(swimClass), unit->posX, unit->posY, &unit->targetX, &unit->targetY, NULL);
 	require(unit->targetX == nearX && unit->targetY == nearY, "initial target is the nearer wheat tile");
-	require(game.map.getGradient(teamNumber, WHEAT, swimClass, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
+	require(game.map.getGradient(teamNumber, WHEAT, movementAccessFromLegacy(swimClass), unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
 		"initial target is the gradient's goal");
 
 	// One action of walking: the target must not move while it is still valid.
@@ -94,20 +94,20 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	// layer directly, the same way Map::decResource does; the cached
 	// gradient is untouched until something rebuilds it.
 	game.map.replaceResource(nearX, nearY, Resource{});
-	require(game.map.getGradient(teamNumber, WHEAT, swimClass, nearX, nearY) == GRADIENT_AT_GOAL,
+	require(game.map.getGradient(teamNumber, WHEAT, movementAccessFromLegacy(swimClass), nearX, nearY) == GRADIENT_AT_GOAL,
 		"the cached gradient does not notice the depletion by itself");
 
 	// Simulate the periodic rebuild every cached gradient gets from
 	// Map::syncStep once per its round-robin turn.
-	const auto* previous=game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass);
-	game.map.updateMaterialGradient(teamNumber, WHEAT, swimClass);
+	const auto* previous=game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass));
+	game.map.updateMaterialGradient(teamNumber, WHEAT, movementAccessFromLegacy(swimClass));
 	// Stale guidance remains visible until the fixed publication boundary.
-	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass)==previous,"refresh keeps the published generation");
+	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass))==previous,"refresh keeps the published generation");
 	glob2test::awaitGradient(game, [&] {
-		const auto* field=game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass);
+		const auto* field=game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass));
 		return field && field[game.map.coordToIndex(nearX,nearY)]!=GRADIENT_AT_GOAL ? field : nullptr;
 	});
-	require(game.map.getGradient(teamNumber, WHEAT, swimClass, nearX, nearY) != GRADIENT_AT_GOAL,
+	require(game.map.getGradient(teamNumber, WHEAT, movementAccessFromLegacy(swimClass), nearX, nearY) != GRADIENT_AT_GOAL,
 		"the rebuilt gradient no longer marks the depleted tile as the goal");
 
 	// The unit takes its next action. pathfindResource reads the fresh
@@ -116,7 +116,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	unit->stepGoingToResource();
 	require(unit->targetX == farX && unit->targetY == farY,
 		"target is refreshed to the far wheat tile once the near one is gone");
-	require(game.map.getGradient(teamNumber, WHEAT, swimClass, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
+	require(game.map.getGradient(teamNumber, WHEAT, movementAccessFromLegacy(swimClass), unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
 		"refreshed target is the rebuilt gradient's goal");
 
 	std::puts("PASS resource-fetch target is refreshed when the gradient it was ascended from is rebuilt");
@@ -168,8 +168,8 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	unit->setValidTarget(true);
 	const int swimClass = unit->swimClass();
 
-	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass); });
-	require(game.map.getGlobalGradientDestination(game.map.getMaterialGradientSlot(teamNumber, WHEAT, swimClass), unit->posX, unit->posY, &unit->targetX, &unit->targetY),
+	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass)); });
+	require(game.map.getGlobalGradientDestination(game.map.getMaterialGradientSlot(teamNumber, WHEAT, movementAccessFromLegacy(swimClass)), unit->posX, unit->posY, &unit->targetX, &unit->targetY),
 		"sanity: ascending the plain gradient reaches an exact goal");
 	require(unit->targetX == nearUnitX && unit->targetY == nearUnitY,
 		"sanity: the plain gradient's nearest tile is the one close to the unit, not the building");
@@ -187,12 +187,12 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	// The near-unit tile gets fully harvested by someone else. The resource
 	// gradient does not notice by itself.
 	game.map.replaceResource(nearUnitX, nearUnitY, Resource{});
-	const auto* previous=game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass);
-	game.map.updateMaterialGradient(teamNumber, WHEAT, swimClass);
+	const auto* previous=game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass));
+	game.map.updateMaterialGradient(teamNumber, WHEAT, movementAccessFromLegacy(swimClass));
 	// Stale guidance remains visible until the fixed publication boundary.
-	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass)==previous,"refresh keeps the published generation");
+	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass))==previous,"refresh keeps the published generation");
 	glob2test::awaitGradient(game, [&] {
-		const auto* field=game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass);
+		const auto* field=game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass));
 		return field && field[game.map.coordToIndex(nearUnitX,nearUnitY)]!=GRADIENT_AT_GOAL ? field : nullptr;
 	});
 
@@ -203,14 +203,14 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 		"target is refreshed to the only remaining wheat tile");
 
 	require(game.map.materialRoutingCacheBytes() == 0, "ordinary natural fetch allocates no supplier cache");
-	const auto* natural=game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass);
+	const auto* natural=game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass));
 	const int marketType=game.buildingsTypes.getTypeNum("market",0,false);
 	auto* market=game.addBuilding(24,24,marketType,0);
 	require(market!=nullptr, "fruit-only market placed");
 	market->setMaterial(CHERRY, 1);
 	require(!team->directStockSuppliers.empty(), "fruit-only market is a direct supplier");
 	require(game.map.materialSupplyModesSlot(inn,WHEAT)==0, "fruit-only supplier cannot alter wheat routing");
-	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass,true,inn)==natural,
+	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,movementAccessFromLegacy(swimClass),true,inn)==natural,
 		"fruit-only supplier retains the original natural wheat field");
 	require(game.map.materialRoutingCacheBytes()==0, "impossible wheat supplier creates no cached field");
 	std::puts("PASS resource-fetch target tracks the nearest resource and refreshes when its gradient is rebuilt");

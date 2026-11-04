@@ -389,13 +389,13 @@ TEST_CASE("point routes prefer trails and reject impassable destination terrain"
     for(int x=0;x<8;++x)map.paintCell(x,2,TRAIL);
     for(int x=2;x<=4;++x)map.paintCell(x,3,ICE);
     int dx=0,dy=0;
-    REQUIRE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,0,1,100));
+    REQUIRE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,movementAccessFromLegacy(0),1,100));
     CHECK_EQ(dy,-1);
     CHECK_EQ(std::abs(dx),1);
     map.paintCell(5,3,WATER);
-    CHECK_FALSE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,0,1,100));
-    REQUIRE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,3,1,100));
-    CHECK_FALSE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,3,1,1));
+    CHECK_FALSE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,movementAccessFromLegacy(0),1,100));
+    REQUIRE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,movementAccessFromLegacy(3),1,100));
+    CHECK_FALSE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,movementAccessFromLegacy(3),1,1));
 }
 
 TEST_CASE("shared air point routing ignores forbidden paint while respecting air occupancy")
@@ -403,7 +403,7 @@ TEST_CASE("shared air point routing ignores forbidden paint while respecting air
     GrassMap map;map.enableRouting();
     for(int y=0;y<8;++y) if(y!=5)map.setForbidden(2,y,1);
     int dx=0,dy=0;
-    REQUIRE(map.pathfindPointToPoint(1,3,3,3,&dx,&dy,AIR_MOVEMENT_CLASS,1,100));
+    REQUIRE(map.pathfindPointToPoint(1,3,3,3,&dx,&dy,movementAccessFromLegacy(AIR_MOVEMENT_CLASS),1,100));
     CHECK(map.isFreeForMovement(1+dx,3+dy,AIR_MOVEMENT_CLASS,1));
     CHECK(dx==1); CHECK(dy==0);
     map.setAirUnit(1+dx,3+dy,123);
@@ -418,7 +418,7 @@ TEST_CASE("air routes detour around blocked cells and reset reusable search stat
     REQUIRE(map.pathfindAirPointToPoint(1,3,3,3,&dx,&dy));
     CHECK_EQ(dx,0);CHECK_EQ(dy,1);
     // Calling a different search on the same Map must not leave stale nodes.
-    REQUIRE(map.pathfindPointToPoint(1,3,3,3,&dx,&dy,0,1,100));
+    REQUIRE(map.pathfindPointToPoint(1,3,3,3,&dx,&dy,movementAccessFromLegacy(0),1,100));
     CHECK_EQ(dx,1);CHECK_EQ(dy,0);
     map.setAirUnit(3,3,123);
     REQUIRE(map.pathfindAirPointToPoint(1,3,3,3,&dx,&dy));
