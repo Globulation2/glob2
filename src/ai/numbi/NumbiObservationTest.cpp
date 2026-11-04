@@ -27,7 +27,7 @@ TEST_SUITE("NumbiObservation")
    for(int y=0;y<32;++y) for(int x=0;x<32;++x) {
     CAPTURE(resource);CAPTURE(swim);CAPTURE(x);CAPTURE(y);
     int snapshotX=-1,snapshotY=-1,snapshotDistance=-1,liveX=-1,liveY=-1,liveDistance=-1;
-    const bool captured=query.resourceAvailableUpdate(0,resource,swim,x,y,&snapshotX,&snapshotY,&snapshotDistance);
+    const bool captured=query.resourceAvailableUpdate(0,resource,movementAccessFromLegacy(swim),x,y,&snapshotX,&snapshotY,&snapshotDistance);
     const bool live=map.materialAvailableUpdateSlot(0,resource,movementAccessFromLegacy(swim),x,y,&liveX,&liveY,&liveDistance);
     CHECK(captured==live);
     // Destination outputs are meaningful only on success. The live Pending /
@@ -57,7 +57,7 @@ TEST_SUITE("NumbiObservation")
   {
    NumbiObservation::Queries query(*world,0,cache);
    int x,y,distance;
-   REQUIRE(query.resourceAvailableUpdate(0,materialIndex(MaterialId::Food),0,8,8,&x,&y,&distance));
+   REQUIRE(query.resourceAvailableUpdate(0,materialIndex(MaterialId::Food),MovementAccess::Land,8,8,&x,&y,&distance));
    CHECK(x==initialX);CHECK(y==initialY);CHECK(distance==initialDistance);
   }
   CHECK(cache.empty());

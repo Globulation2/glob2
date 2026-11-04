@@ -928,6 +928,7 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		Uint16 *field=nullptr;
 		loadGradient(stream, field, size, packed,p.swim);
         p.swim=publishedCostClass(field,p.swim);
+        recordFieldCost(field,-1);
 		p.data.reset(field);
 		stream->readLeaveSection();
 		if (!superseded && !p.data) throw std::runtime_error("Missing saved building gradient result");
@@ -1390,7 +1391,9 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
             }
 			Uint16 *field=nullptr;
 			loadGradient(stream, field, size, packed,gradientFieldKey(slot)?int(gradientFieldKey(slot)->swim):int(sw));
-			gradientRuntime->pipeline.restoreCompleted({slot, publishedCostClass(field,int(sw)), remaining,
+			const int capturedCost=publishedCostClass(field,int(sw));
+            recordFieldCost(field,-1);
+			gradientRuntime->pipeline.restoreCompleted({slot, capturedCost, remaining,
 				superseded, std::unique_ptr<Uint16[]>(field),adaptiveKey,adaptiveCapture,preparedGoalCount,legacyAssociation});
 			stream->readLeaveSection();
 		}
@@ -1617,7 +1620,7 @@ void Map::consolidateLegacyRoutingFields()
                 }
                 for(int c=1;c<LEGACY_SWIM_CLASS_COUNT;++c)if(c!=int(MovementAccess::Amphibious)) {
                     const int slot=base+c;rt.fieldCosts.erase(b->globalGradient[slot]);
-                    b->retireSharedGradient(slot);recycleBuildingGradientBuffer(b->globalGradient[slot]);
+                    b->retireSharedGradient(slot);recycleBuildingGradientBuffer(std::exchange(b->globalGradient[slot],nullptr));
                     recycleBuildingGradientSearch(std::move(b->globalGradientSearch[slot]));
                 }
             }

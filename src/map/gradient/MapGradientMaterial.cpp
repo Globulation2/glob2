@@ -99,6 +99,7 @@ void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, MovementAcc
 		PERF_SCOPE_TIME(PropagationResource);
 		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT,
             withMarkets ? gradient_kernel::Family::Markets : gradient_kernel::Family::Materials);
+        recordFieldCost(gradient,swimClass);
 	}
     (withMarkets ? marketMaterialGradientStale[teamNumber][resourceType][swimClass]
                  : materialGradientStale[teamNumber][resourceType][swimClass])=false;
@@ -250,6 +251,7 @@ const Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int reso
             if (!entry.cells) entry.cells=std::make_unique<Uint16[]>(size);
             seedMaterialGradient(team,resource,swim,entry.cells.get(),true,privateField ? consumer : nullptr,modes);
             propagateGradient(entry.cells.get(),swim,GRADIENT_COST_LIMIT,gradient_kernel::Family::Markets);
+            recordFieldCost(entry.cells.get(),swim);
             entry.published=entry.cells.get();
             if(auto& stats=runtime.workStats)stats->published(workKey,game->stepCounter,workReason,size);
         } else if (!compute.insideJob()) requestGradientField(&entry.published, int(gradient_preparation::Kind::Markets),team,resource,movementAccessFromLegacy(swim),excluded,modes);

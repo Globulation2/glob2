@@ -226,6 +226,7 @@ struct HiringPlanner::PreparedRoute
 		s->writeUint8(job.locked, "locked");
 		s->writeUint8(job.resourceState, "resourceState");
 		s->writeUint8(proactive, "proactive");
+        s->writeUint8(job.swim,"preparationCost");
 		const auto cells = std::size_t(field->width) * field->height;
 		if (GAGCore::PackedArray::binary(s))
 			GAGCore::PackedArray::write<Uint16>(s, cells,
@@ -256,7 +257,11 @@ struct HiringPlanner::PreparedRoute
 			job.slot >= BUILDING_GRADIENT_COUNT || job.captureTick != captured ||
 			!result->building.generation || job.resourceState > 2)
 			throw std::runtime_error("Invalid prepared hiring gradient");
-		job.swim = job.slot % MOVEMENT_CLASS_COUNT;
+		job.swim = versionMinor>=FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY ? s->readUint8("preparationCost") : job.slot % MOVEMENT_CLASS_COUNT;
+        if(job.swim<0 || job.swim>=MOVEMENT_CLASS_COUNT || movementAccessFromLegacy(job.swim)!=movementAccessFromLegacy(job.slot%MOVEMENT_CLASS_COUNT))
+            throw std::runtime_error("Invalid prepared hiring gradient cost");
+        if(versionMinor<FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY)
+            job.slot=(job.slot/MOVEMENT_CLASS_COUNT)*MOVEMENT_CLASS_COUNT+accessClass(movementAccessFromLegacy(job.slot%MOVEMENT_CLASS_COUNT));
 		job.route = BuildingRoute(job.slot / MOVEMENT_CLASS_COUNT);
 		auto *live = game.resolveBuilding(result->building);
 		if (live)
@@ -286,11 +291,13 @@ struct HiringPlanner::PreparedRoute
 			return;
 		const int slot = job.slot;
 		auto guard = SharedBuildingGradient::lock(live->sharedGradient[slot]);
-		live->retireSharedGradient(slot);
+		game.map.recordFieldCost(live->globalGradient[slot],-1);
+        live->retireSharedGradient(slot);
 		game.map.recycleBuildingGradientBuffer(live->globalGradient[slot]);
 		recycleBuildingGradientSearch(std::move(live->globalGradientSearch[slot]));
 		live->supersedeGradient(slot);
 		live->globalGradient[slot] = job.data.release();
+        game.map.recordFieldCost(live->globalGradient[slot],job.swim);
 		live->globalGradientSearch[slot] = std::move(job.search);
 		live->sharedGradient[slot] = field;
 		live->dirtyGradient[slot] = false;
@@ -674,8 +681,10 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 					s->readEnterSection(i);
 					auto gradient =
 						HiringPlanner::PreparedRoute::load(game, s, o->team, b->tick, versionMinor);
-					if (!destinations.emplace(gradient->building.gid, gradient->job.slot).second)
-						throw std::runtime_error("Duplicate prepared hiring gradient");
+					if (!destinations.emplace(gradient->building.gid, gradient->job.slot).second) {
+                        if(versionMinor>=FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY)throw std::runtime_error("Duplicate prepared hiring gradient");
+                        s->readLeaveSection();continue;
+                    }
 					if (gradient->proactive)
 						initializing.push_back({gradient->building, gradient->job.slot,
 												gradient->job.epoch, gradient->job.generation});
@@ -831,14 +840,14 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						auto &job = prepared->job;
                         job.workSink=game.map.gradientWorkSink();
 						job.slot = slot;
-						job.swim = c;
+						job.swim = game.map.preparationCostClass(b.team,c);
 						job.route = route;
 						if (initialize)
 							live->supersedeGradient(slot); // Cancel an older queued cold request.
 						job.epoch = live->refreshEpoch[slot];
 						job.generation = game.map.topologyGeneration;
 						job.captureTick = game.stepCounter;
-						job.seed = gradient_preparation::captureBuildingSeed(*live, c, route);
+						job.seed = gradient_preparation::captureBuildingSeed(*live, job.swim, route);
 						prepared->snapshot = world.buildingGradientView();
 						field = prepared->field;
 					}

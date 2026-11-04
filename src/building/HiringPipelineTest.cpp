@@ -492,6 +492,9 @@ TEST_SUITE("HiringGradientPreparation")
 				u->medical = Unit::MED_FREE;
 				u->hungriness = 0;
 				u->carriedMaterial = WHEAT;
+                u->performance[WALK]=30;u->performance[SWIM]=10;
+                w.game.teams[0]->updateRoutingRatio();
+                REQUIRE(w.game.teams[0]->routingRatio.selected==6);
 				const auto slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
 				REQUIRE(!b->globalGradient[slot]);
 				GradientExecutionAudit audit;
@@ -508,7 +511,8 @@ TEST_SUITE("HiringGradientPreparation")
 					w.game.map.bumpTopologyGeneration();
 				else if (invalidate == 2)
 					b->supersedeGradient(slot);
-				pipeline.publishDue(HiringPipeline::Delay);
+				w.game.teams[0]->routingRatio.selected=1;
+                pipeline.publishDue(HiringPipeline::Delay);
 				const auto *lists = pipeline.suggestions(*b);
 				REQUIRE(lists);
 				bool found = false;
@@ -522,6 +526,7 @@ TEST_SUITE("HiringGradientPreparation")
 				else
 				{
 					REQUIRE(b->globalGradient[slot]);
+                    CHECK(w.game.map.publishedCostClass(b->globalGradient[slot])==6);
 					REQUIRE(b->globalGradientSearch[slot]);
 					CHECK(b->globalGradientSearch[slot]->resolved(
 						w.game.map.coordToIndex(u->posX, u->posY)));

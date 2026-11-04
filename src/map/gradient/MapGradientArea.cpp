@@ -107,6 +107,7 @@ void Map::updateForbiddenGradient(int teamNumber, MovementAccess movementAccessV
 	{
 		PERF_SCOPE_TIME(PropagationArea);
 		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT, gradient_kernel::Family::Forbidden);
+        recordFieldCost(gradient,swimClass);
 	}
 }
 
@@ -218,6 +219,7 @@ void Map::updateGuardAreasGradient(int teamNumber, MovementAccess movementAccess
 	{
 		PERF_SCOPE_TIME(PropagationArea);
 		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT, gradient_kernel::Family::Guard);
+        recordFieldCost(gradient,swimClass);
 	}
 }
 
@@ -257,6 +259,7 @@ void Map::updateClearAreasGradient(int teamNumber, MovementAccess movementAccess
 	{
 		PERF_SCOPE_TIME(PropagationArea);
 		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT, gradient_kernel::Family::Clear);
+        recordFieldCost(gradient,swimClass);
 	}
 }
 

@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "GradientFixture.h"
 #include "Engine.h"
+#include "Version.h"
 #include "ai/observation/AIWorldView.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -126,4 +127,61 @@ TEST_CASE("saved mode and field costs continue through the next boundary with on
         CHECK(continuationState(source.game)==continuationState(restored.game));
     }
 }
+TEST_CASE("save preserves distinct serving and in-flight costs across a policy switch") {
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame source({.discovered=true,.loadDefaultRace=true,.header=true});
+    glob2test::HeadlessGame restored({.discovered=true,.loadDefaultRace=true,.header=true});
+    auto& map=source.game.map;auto& copy=restored.game.map;
+    for(auto* world:{&source,&restored}) {
+        REQUIRE(world->game.map.incResourceByIndex(24,24,WHEAT,0));
+        world->team->routingRatio.known=true;world->team->routingRatio.selected=6;
+    }
+    const auto* serving=glob2test::awaitGradient(source.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious);});
+    REQUIRE(map.publishedCostClass(serving)==6);
+    source.team->routingRatio.selected=1;
+    map.updateMaterialGradient(0,WHEAT,MovementAccess::Amphibious);boundary(source.game);
+    REQUIRE(map.gradientPipelineStatus().pending>0);
+    source.team->routingRatio.selected=6;
+    auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(bytes);
+    map.saveRuntimeState(&out);out.flush();
+    restored.game.stepCounter=source.game.stepCounter;
+    GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes->getBuffer(),bytes->getPosition()));in.seekFromStart(0);
+    copy.loadRuntimeState(&in,VERSION_MINOR);copy.configureCompute(4);
+    REQUIRE(copy.publishedCostClass(copy.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious))==6);
+    for(unsigned n=0;n<16;++n) {
+        boundary(source.game);boundary(restored.game);
+        const auto* a=map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious);
+        const auto* b=copy.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious);
+        REQUIRE(a);REQUIRE(b);CHECK(map.publishedCostClass(a)==copy.publishedCostClass(b));
+        CHECK(std::equal(a,a+map.cellCount(),b));
+    }
+    CHECK(map.publishedCostClass(map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious))==1);
+}
+TEST_CASE("legacy production caches coalesce without losing their published ratio costs") {
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame source({.discovered=true,.loadDefaultRace=true,.header=true});
+    glob2test::HeadlessGame restored({.discovered=true,.loadDefaultRace=true,.header=true});
+    auto& map=source.game.map;auto& copy=restored.game.map;
+    REQUIRE(map.incResourceByIndex(24,24,WHEAT,0));REQUIRE(copy.incResourceByIndex(24,24,WHEAT,0));
+    source.team->routingRatio.known=true;source.team->routingRatio.selected=6;
+    glob2test::awaitGradient(source.game,[&]{return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious);});
+    const GradientFieldKey legacyKey{GradientFieldFamily::Materials,0,6,WHEAT};
+    const GradientFieldKey sharedKey{GradientFieldFamily::Materials,0,3,WHEAT};
+    *map.gradientFieldDestination(legacyKey)=std::exchange(*map.gradientFieldDestination(sharedKey),nullptr);
+    // Format196 has identical runtime layout except for the new cost footers.
+    struct LegacyWriter:GAGCore::BinaryOutputStream {
+        using BinaryOutputStream::BinaryOutputStream;
+        void writeUint8(Uint8 value,std::string_view name) override {
+            if(name!="preparationCost")BinaryOutputStream::writeUint8(value,name);
+        }
+    };
+    auto* bytes=new GAGCore::MemoryStreamBackend;LegacyWriter out(bytes);map.saveRuntimeState(&out);out.flush();
+    restored.game.stepCounter=source.game.stepCounter;
+    GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes->getBuffer(),bytes->getPosition()));in.seekFromStart(0);
+    copy.loadRuntimeState(&in,196);
+    const auto* field=copy.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious);
+    REQUIRE(field);CHECK(copy.publishedCostClass(field)==6);CHECK(*copy.gradientFieldDestination(legacyKey)==nullptr);
+    CHECK(std::equal(field,field+map.cellCount(),*map.gradientFieldDestination(legacyKey)));
+}
+
 }

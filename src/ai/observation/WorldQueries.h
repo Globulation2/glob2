@@ -185,6 +185,7 @@ public:
     gradient_preparation::Request request;
     request.kind=gradient_preparation::Kind::Materials;request.team=owner;request.material=resource;
     request.swim=world.preparationCostClass(owner,swim);
+    request.terrainBuckets=256; // Snapshot catalogs may include costly custom terrain.
     gradient_preparation::seed(request,world.components(),values.data(),seedScratch);
     gradient_preparation::propagateCPU(request,world.components(),values.data(),scratch);
     initialization.values=std::move(buffer);
@@ -195,9 +196,9 @@ public:
   }
   return gradient;
  }
- bool resourceAvailableUpdate(int owner,int resource,int swim,int x,int y,int* rx,int* ry,int* distance)
+ bool resourceAvailableUpdate(int owner,int resource,MovementAccess access,int x,int y,int* rx,int* ry,int* distance)
  {
-  const auto gradient=resourceGradient(owner,resource,movementAccessFromLegacy(swim));
+  const auto gradient=resourceGradient(owner,resource,access);
   const auto index=[&](int px,int py){return world.tileIndex(px,py);};
   Uint16 best=gradient[index(x,y)];
   const bool found=best>GRADIENT_UNREACHABLE;

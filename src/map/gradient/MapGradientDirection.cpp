@@ -56,6 +56,7 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, MovementAcc
 		*dy = 0;
 		return true;
 	}
+    const int costClass=publishedCostClass(gradient,swimClass);
 	int best = -1;
 	int bestD = -1;
 	int sidesteps[8];
@@ -73,7 +74,7 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, MovementAcc
 		if (g > here)
 		{
 			// Worth of going through n: its value less the step to get there.
-			int score = g - stepCost(ddx, ddy, n, publishedCostClass(gradient,swimClass));
+			int score = g - stepCost(ddx, ddy, n, costClass);
 			if (score > best)
 			{
 				best = score;

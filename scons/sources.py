@@ -433,7 +433,6 @@ CLIENT_SOURCES = (
     'map/pathfind/MapPathfindBuilding.cpp',
     'map/pathfind/MapPathfindMaterial.cpp',
     'map/gradient/ResourceGradientProbe.cpp',
-    'map/gradient/RoutingRatioStudy.cpp',
     'map/gradient/LegacyResourceGradientState.cpp',
     'map/pathfind/MapTerrainSafety.cpp',
     'map/MapQuery.cpp',

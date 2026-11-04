@@ -350,6 +350,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
     };
 	gradientRuntime->pipeline.onPublished = [this](GradientPipeline::Job& job) {
         auto** slot=job.slot;
+        recordFieldCost(job.data.get(),-1);
         recordFieldCost(*slot,job.swim);
         if(job.adaptiveKey) {
             auto capture=job.adaptiveCapture;
@@ -359,7 +360,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
             field.inflight=gradientRuntime->pipeline.contains(*job.adaptiveKey,&job);
         }
         if(auto& stats=gradientRuntime->workStats)
-            if(const auto key=gradientWorkIdentity(*this,job.adaptiveKey,int(job.request.kind),job.request.team,job.request.material,job.request.swim,job.request.consumer,job.request.modes))
+            if(const auto key=gradientWorkIdentity(*this,job.adaptiveKey,int(job.request.kind),job.request.team,job.request.material,accessClass(movementAccessFromLegacy(job.request.swim)),job.request.consumer,job.request.modes))
             {
                 stats->kernel(unsigned(key->family),job.workReason,job.work.queued,job.work.expanded);
                 stats->published(*key,game->stepCounter,job.workReason,size);
