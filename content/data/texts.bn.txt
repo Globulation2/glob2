@@ -5716,6 +5716,8 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 ল্যাটেরাইট
 [cliffs]
 খাড়া পাহাড়
+[molten_lava_pool]
+গলিত লাভার পুকুর
 [terrain group water]
 জল
 [terrain group sand]

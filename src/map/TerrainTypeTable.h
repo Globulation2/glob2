@@ -105,6 +105,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(LATERITE, G::Barren, "laterite", "[laterite]", {150, 76, 46}, {166, 90, 54}),
 		// A raised rock plateau walled by cliffs: plays exactly like hedge and thicket.
 		authored(CLIFFS, G::Obstacles, "cliffs", "[cliffs]", {118, 92, 70}, {136, 108, 82}),
+		// Red-hot crust on bright yellow molten channels: plays exactly like lava.
+		authored(MOLTEN_LAVA_POOL, G::Lava, "molten_lava_pool", "[molten_lava_pool]", {214, 74, 14}, {183, 63, 12}),
 	}};
 	return rows;
 }();

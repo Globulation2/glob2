@@ -5740,6 +5740,8 @@ Igenvuxen väg
 Laterit
 [cliffs]
 Klippor
+[molten_lava_pool]
+Pöl av smält lava
 [terrain group water]
 Vatten
 [terrain group sand]

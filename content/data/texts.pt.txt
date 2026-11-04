@@ -5740,6 +5740,8 @@ Estrada coberta de vegetação
 Laterita
 [cliffs]
 Penhascos
+[molten_lava_pool]
+Poça de lava derretida
 [terrain group water]
 Água
 [terrain group sand]

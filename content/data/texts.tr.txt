@@ -5740,6 +5740,8 @@ Otlarla kaplı yol
 Laterit
 [cliffs]
 Uçurumlar
+[molten_lava_pool]
+Erimiş lav gölü
 [terrain group water]
 Su
 [terrain group sand]

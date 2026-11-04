@@ -5740,6 +5740,8 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 لاتريت
 [cliffs]
 منحدرات
+[molten_lava_pool]
+بركة حمم منصهرة
 [terrain group water]
 ماء
 [terrain group sand]

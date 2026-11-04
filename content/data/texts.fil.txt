@@ -6856,6 +6856,8 @@ Daang tinubuan ng damo
 Lupang laterita
 [cliffs]
 Bangin
+[molten_lava_pool]
+Lawa ng tunaw na lava
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
 [script error at %0:%1: %2]

@@ -5716,6 +5716,8 @@ AI ద్వారా రూపొందించబడలేదు
 లాటరైట్
 [cliffs]
 కొండచరియలు
+[molten_lava_pool]
+కరిగిన లావా కొలను
 [terrain group water]
 నీరు
 [terrain group sand]

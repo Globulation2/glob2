@@ -5740,6 +5740,8 @@ Zaraščena cesta
 Lateritna tla
 [cliffs]
 ප්‍රපාත
+[molten_lava_pool]
+ද්‍රවිත ලාවා පොකුණ
 [terrain group water]
 Voda
 [terrain group sand]

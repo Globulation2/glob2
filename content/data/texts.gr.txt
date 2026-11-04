@@ -5740,6 +5740,8 @@ CPU %0%
 Λατερίτης
 [cliffs]
 Γκρεμοί
+[molten_lava_pool]
+Λίμνη λιωμένης λάβας
 [terrain group water]
 Νερό
 [terrain group sand]

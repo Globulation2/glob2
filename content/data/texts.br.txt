@@ -5740,6 +5740,8 @@ Hent goloet gant ar geot
 Laterita
 [cliffs]
 Torgennoù
+[molten_lava_pool]
+Poull lava teuz
 [terrain group water]
 Água
 [terrain group sand]

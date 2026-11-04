@@ -5740,6 +5740,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Латерит
 [cliffs]
 Скелі
+[molten_lava_pool]
+Озеро розплавленої лави
 [terrain group water]
 Вода
 [terrain group sand]

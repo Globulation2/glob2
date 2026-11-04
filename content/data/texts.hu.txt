@@ -5740,6 +5740,8 @@ Benőtt út
 Laterit
 [cliffs]
 Sziklafalak
+[molten_lava_pool]
+Olvadt lávató
 [terrain group water]
 Víz
 [terrain group sand]

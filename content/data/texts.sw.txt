@@ -5716,6 +5716,8 @@ Barabara iliyomea majani
 Udongo wa lateriti
 [cliffs]
 Majabali
+[molten_lava_pool]
+Dimbwi la lava iliyoyeyuka
 [terrain group water]
 Maji
 [terrain group sand]

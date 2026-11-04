@@ -5740,6 +5740,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 لاتریت
 [cliffs]
 صخره‌ها
+[molten_lava_pool]
+برکه گدازه مذاب
 [terrain group water]
 آب
 [terrain group sand]

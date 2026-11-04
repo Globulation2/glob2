@@ -5740,6 +5740,8 @@ Camino invadido por la vegetación
 Laterita
 [cliffs]
 Acantilados
+[molten_lava_pool]
+Estanque de lava fundida
 [terrain group water]
 Agua
 [terrain group sand]

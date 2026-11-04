@@ -5740,6 +5740,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Латерит
 [cliffs]
 Утёсы
+[molten_lava_pool]
+Озеро расплавленной лавы
 [terrain group water]
 Вода
 [terrain group sand]

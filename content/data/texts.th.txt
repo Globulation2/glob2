@@ -5716,6 +5716,8 @@ AI ทำงาน​อย่างไร
 ดินศิลาแลง
 [cliffs]
 หน้าผา
+[molten_lava_pool]
+บ่อลาวาหลอมเหลว
 [terrain group water]
 น้ำ
 [terrain group sand]

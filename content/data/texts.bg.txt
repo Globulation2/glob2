@@ -5716,6 +5716,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Латерит
 [cliffs]
 Скали
+[molten_lava_pool]
+Езеро от разтопена лава
 [terrain group water]
 Вода
 [terrain group sand]

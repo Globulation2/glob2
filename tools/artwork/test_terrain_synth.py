@@ -224,7 +224,7 @@ class TerrainSynth(unittest.TestCase):
                     self.assertGreaterEqual(color_distance(means[a], means[b]), 14)
 
     def test_animated_phase_continuity(self):
-        for name in ("lava", "ember_field"):
+        for name in ("lava", "ember_field", "molten_lava_pool"):
             recipe = synth.RECIPES[name]
             self.assertGreater(recipe.phases, 1)
             frames = synth.frames_of(name, self.results[name])

@@ -47,6 +47,7 @@ export const TERRAIN_PRESETS = [
   'overgrown_road',
   'laterite',
   'cliffs',
+  'molten_lava_pool',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay

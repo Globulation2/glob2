@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 206
+#define VERSION_MINOR 207
+// version 207 adds built-in molten lava pool; custom terrain IDs move up by one.
 // version 206 adds built-in cliffs; custom terrain IDs move up by one.
 // version 205 shares amphibious fields and stores captured preparation costs.
 // version 204 adds built-in laterite; custom terrain IDs move up by one.

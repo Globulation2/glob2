@@ -2858,6 +2858,7 @@
 [overgrown_road]
 [laterite]
 [cliffs]
+[molten_lava_pool]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]

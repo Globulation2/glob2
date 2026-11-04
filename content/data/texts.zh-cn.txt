@@ -5740,6 +5740,8 @@ AI 生成
 红土
 [cliffs]
 悬崖
+[molten_lava_pool]
+熔岩池
 [terrain group water]
 水
 [terrain group sand]

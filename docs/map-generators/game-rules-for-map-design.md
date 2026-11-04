@@ -128,11 +128,11 @@ Trail) plus every terrain-catalogue type (`boulders`, `hedge`, `thicket`, `ridge
 `scree`, `brick_path`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
 `spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`, the grass and
 sand looks `lush_grass`, `dry_grass`, `dune_sand` and `pale_sand`, then `sandstone`,
-`pumice`, `frozen_lake`, `wind_swept_snow`, `weathered_sandstone`, `hardpan`, `tundra`, `volcanic_ash`, `glacier_ice`, `overgrown_road`, `laterite` and `cliffs`). The looks share every rule of grass or sand and differ only in artwork and
+`pumice`, `frozen_lake`, `wind_swept_snow`, `weathered_sandstone`, `hardpan`, `tundra`, `volcanic_ash`, `glacier_ice`, `overgrown_road`, `laterite`, `cliffs` and `molten_lava_pool`). The looks share every rule of grass or sand and differ only in artwork and
 colours; sandstone tiles and overgrown road follow the path rules of road, brick path and boardwalk, and a
 pumice field and hardpan the rough-ground rules of mud, mudflat and scree; a frozen lake and glacier ice play exactly
 like ice, wind-swept snow exactly like deep snow, and weathered sandstone and tundra exactly like dirt, as do volcanic ash and laterite; cliffs play exactly like hedge and thicket:
-impassable, and they stop projectiles. The earlier names
+impassable, and they stop projectiles; a molten lava pool plays exactly like lava. The earlier names
 `gravel`, `flower_meadow`, `marsh` and `dirt_track` are still accepted as aliases of
 `shale`, `heath`, `mudflat` and `brick_path` (`LEGACY_TERRAIN_NAMES` in
 `src/map/TerrainTypeTable.h`), but maps, saves and reports are written with the
