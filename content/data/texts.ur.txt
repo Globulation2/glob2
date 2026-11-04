@@ -5708,6 +5708,8 @@ AI کی بنائی ہوئی نہیں
 سخت تہہ
 [volcanic_ash]
 آتش فشانی راکھ
+[glacier_ice]
+گلیشیئر کی برف
 [terrain group water]
 پانی
 [terrain group sand]

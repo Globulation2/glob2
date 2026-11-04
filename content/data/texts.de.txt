@@ -5732,6 +5732,8 @@ Windgeriffelte Dünen
 Hartkruste
 [volcanic_ash]
 Vulkanasche
+[glacier_ice]
+Gletschereis
 [terrain group water]
 Wasser
 [terrain group sand]

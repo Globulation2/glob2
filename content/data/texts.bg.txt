@@ -5708,6 +5708,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Твърда кора
 [volcanic_ash]
 Вулканична пепел
+[glacier_ice]
+Ледников лед
 [terrain group water]
 Вода
 [terrain group sand]

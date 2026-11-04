@@ -5732,6 +5732,8 @@ Bukit pasir berangin
 Tanah keras
 [volcanic_ash]
 Abu vulkanik
+[glacier_ice]
+Es gletser
 [terrain group water]
 Air
 [terrain group sand]

@@ -5732,6 +5732,8 @@ Windribbels in duinzand
 Harde korst
 [volcanic_ash]
 Vulkanische as
+[glacier_ice]
+Gletsjerijs
 [terrain group water]
 Water
 [terrain group sand]

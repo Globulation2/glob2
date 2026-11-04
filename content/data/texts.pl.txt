@@ -5732,6 +5732,8 @@ Wydmy z falami od wiatru
 Twarda skorupa
 [volcanic_ash]
 Popiół wulkaniczny
+[glacier_ice]
+Lód lodowcowy
 [terrain group water]
 Woda
 [terrain group sand]

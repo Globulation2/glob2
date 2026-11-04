@@ -5708,6 +5708,8 @@ AI से नहीं बना
 कठोर परत
 [volcanic_ash]
 ज्वालामुखीय राख
+[glacier_ice]
+हिमनद की बर्फ़
 [terrain group water]
 पानी
 [terrain group sand]

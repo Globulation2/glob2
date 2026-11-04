@@ -43,6 +43,7 @@ export const TERRAIN_PRESETS = [
   'hardpan',
   'tundra',
   'volcanic_ash',
+  'glacier_ice',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay

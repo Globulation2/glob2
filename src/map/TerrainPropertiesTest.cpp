@@ -1026,6 +1026,15 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(VOLCANIC_ASH).name) == "volcanic_ash");
 		CHECK(TerrainRegistry::builtins()->find("volcanic_ash") == VOLCANIC_ASH);
 	}
+	TEST_CASE("glacier ice shares every rule of ice")
+	{
+		CHECK(terrainGroup(GLACIER_ICE) == TerrainGroup::Ice);
+		CHECK(terrainPaintable(GLACIER_ICE));
+		CHECK(sameTerrainProperties(terrainProperties(GLACIER_ICE), terrainProperties(ICE)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(GLACIER_ICE) == TerrainRegistry::builtins()->propertyIndex(ICE));
+		CHECK(std::string(terrainPresentation(GLACIER_ICE).name) == "glacier_ice");
+		CHECK(TerrainRegistry::builtins()->find("glacier_ice") == GLACIER_ICE);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},

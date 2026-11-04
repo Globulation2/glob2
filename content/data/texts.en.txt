@@ -5710,6 +5710,8 @@ Hardpan
 Tundra
 [volcanic_ash]
 Volcanic ash
+[glacier_ice]
+Glacier ice
 [terrain group water]
 Water
 [terrain group sand]

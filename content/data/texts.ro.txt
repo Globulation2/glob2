@@ -5732,6 +5732,8 @@ Dune vălurite de vânt
 Crustă întărită
 [volcanic_ash]
 Cenușă vulcanică
+[glacier_ice]
+Gheață de ghețar
 [terrain group water]
 Apă
 [terrain group sand]

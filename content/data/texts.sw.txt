@@ -5708,6 +5708,8 @@ Matuta ya mchanga ya upepo
 Ganda gumu
 [volcanic_ash]
 Majivu ya volkano
+[glacier_ice]
+Barafu ya theluji ya mlimani
 [terrain group water]
 Maji
 [terrain group sand]

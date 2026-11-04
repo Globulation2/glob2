@@ -383,5 +383,9 @@ static constexpr int FILE_FORMAT_VERSION_TUNDRA = 200;
 //! custom terrain IDs starting at 41 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_VOLCANIC_ASH = 201;
 
+//! Built-in glacier ice: TERRAIN_COUNT grew from 42 to 43, so earlier files carry
+//! custom terrain IDs starting at 42 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_GLACIER_ICE = 202;
+
 //! Stable access fields retain published and in-flight preparation costs.
-static constexpr int FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY = 202;
+static constexpr int FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY = 203;

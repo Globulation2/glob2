@@ -5732,6 +5732,8 @@ Vindriflede klitter
 Hårdskorpe
 [volcanic_ash]
 Vulkansk aske
+[glacier_ice]
+Gletsjeris
 [terrain group water]
 Vand
 [terrain group sand]

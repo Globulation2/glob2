@@ -5732,6 +5732,8 @@ Vindräfflade dyner
 Hårdskorpa
 [volcanic_ash]
 Vulkanaska
+[glacier_ice]
+Glaciäris
 [terrain group water]
 Vatten
 [terrain group sand]

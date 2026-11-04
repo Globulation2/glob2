@@ -5732,6 +5732,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 سخت‌لایه
 [volcanic_ash]
 خاکستر آتشفشانی
+[glacier_ice]
+یخ یخچال طبیعی
 [terrain group water]
 آب
 [terrain group sand]

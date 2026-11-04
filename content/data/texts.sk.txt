@@ -5732,6 +5732,8 @@ Vetrom zvlnené duny
 Tvrdá krusta
 [volcanic_ash]
 Sopečný popol
+[glacier_ice]
+Ľadovcový ľad
 [terrain group water]
 Voda
 [terrain group sand]

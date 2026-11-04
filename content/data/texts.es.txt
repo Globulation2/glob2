@@ -5732,6 +5732,8 @@ Dunas de viento
 Costra endurecida
 [volcanic_ash]
 Ceniza volcánica
+[glacier_ice]
+Hielo glaciar
 [terrain group water]
 Agua
 [terrain group sand]

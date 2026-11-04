@@ -5732,6 +5732,8 @@ AI 生成ではない
 硬盤
 [volcanic_ash]
 火山灰
+[glacier_ice]
+氷河の氷
 [terrain group water]
 水
 [terrain group sand]

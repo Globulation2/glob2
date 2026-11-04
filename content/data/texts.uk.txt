@@ -5732,6 +5732,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Тверда кірка
 [volcanic_ash]
 Вулканічний попіл
+[glacier_ice]
+Льодовиковий лід
 [terrain group water]
 Вода
 [terrain group sand]

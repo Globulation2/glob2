@@ -7,8 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 202
-// version 202 shares amphibious fields and stores captured preparation costs.
+#define VERSION_MINOR 203
+// version 203 shares amphibious fields and stores captured preparation costs.
+// version 202 adds built-in glacier ice; custom terrain IDs move up by one.
 // version 201 adds built-in volcanic ash; custom terrain IDs move up by one.
 // version 200 adds built-in tundra; custom terrain IDs move up by one.
 // version 199 adds built-in hardpan; custom terrain IDs move up by one.

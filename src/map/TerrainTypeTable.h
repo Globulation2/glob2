@@ -97,6 +97,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(TUNDRA, G::Barren, "tundra", "[tundra]", {82, 78, 62}, {91, 87, 69}),
 		// Charcoal ash with porous black stones: plays exactly like dirt.
 		authored(VOLCANIC_ASH, G::Barren, "volcanic_ash", "[volcanic_ash]", {58, 56, 56}, {72, 70, 69}),
+		// Blue glacier ice crossed by white fractures: plays exactly like ice.
+		authored(GLACIER_ICE, G::Ice, "glacier_ice", "[glacier_ice]", {93, 158, 207}, {96, 160, 210}),
 	}};
 	return rows;
 }();
