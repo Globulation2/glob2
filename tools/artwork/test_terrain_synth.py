@@ -401,6 +401,20 @@ class TerrainBlockContracts(unittest.TestCase):
                 actual = core._worley_indexed(points, metric, rotations, stretch, size=32)
                 self.assertEqual(actual, expected)
 
+    def test_catalog_merge_keeps_keys_authored_elsewhere(self):
+        previous = {"key": "loam", "sprite": "old", "decor": {"d": 1}, "surf": {"s": 2},
+                    "overlay": {"sprite": "data/gfx/terrain-glint"}, "stale": True}
+        document = {"materials": [previous, {"key": "dirt", "sprite": "dirt"}], "bindings": {"loam": "loam"}}
+        fragment = {"materials": [{"key": "loam", "sprite": "new"}, {"key": "moss", "sprite": "moss"}],
+                    "bindings": {"loam": "loam", "moss": "moss"}}
+        merged = synth.merge_catalog(document, fragment)
+        loam, dirt, moss = merged["materials"]
+        self.assertEqual(loam, {"key": "loam", "sprite": "new", "decor": {"d": 1}, "surf": {"s": 2},
+                                "overlay": {"sprite": "data/gfx/terrain-glint"}})
+        self.assertEqual(dirt, {"key": "dirt", "sprite": "dirt"})
+        self.assertEqual(moss, {"key": "moss", "sprite": "moss"})
+        self.assertEqual(merged["bindings"], {"loam": "loam", "moss": "moss"})
+
     def test_sampling_uses_the_whole_block_and_wraps_at_512(self):
         size = 4 * synth.N
         values = [float(x + size * y) for y in range(size) for x in range(size)]
