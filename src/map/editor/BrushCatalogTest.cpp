@@ -177,7 +177,7 @@ TEST_SUITE("BrushCatalog")
 		REQUIRE_FALSE(barren->entries.empty());
 		CHECK(paths->entries.back().id == "terrain/sandstone");
 		CHECK(rough->entries.back().id == "terrain/hardpan");
-		CHECK(ice->entries.back().id == "terrain/frozen_lake");
+		CHECK(ice->entries.back().id == "terrain/wind_swept_snow");
 		CHECK(barren->entries.back().id == "terrain/volcanic_ash");
 
 		// Resources: every registry entry, foundation ones included, with placement

@@ -47,8 +47,8 @@ using namespace MapGeneration;
 // hex's label).
 //
 // THE TERRAIN. The layout is drawn with one terrain per mechanic (grass, sand, water, deep water,
-// road, gravel, scree, loam, boulders, ridge rock), so every measurement of the design (pure tiles,
-// crop growth) sees exactly the rules the game will; a last pass paints the looks that share each
+// road, gravel, scree, loam, boulders, ridge rock, ice), so every measurement of the design (pure
+// tiles, crop growth) sees exactly the rules the game will; a last pass paints the looks that share each
 // mechanic (moss, spring meadow, clay, flower meadow, mud, deep snow, thicket, hedge,
 // outcrop, boardwalk, dirt track, dark water, lush and dry grass, pale and dune sand). One look per
 // kind of ground: one sand on every shore, solid fields, solid clay hills.
@@ -926,7 +926,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 									   return;
 								   const double r = std::hypot(dx, dy);
 								   const bool cap = r <= peak * 0.4;
-								   setVertex(L, look, i, cap ? SCREE : RIDGE_ROCK,
+								   setVertex(L, look, i, cap ? ICE : RIDGE_ROCK,
 											 cap ? DEEP_SNOW : grain[i] > 65536 * 70 / 100 ? OUTCROP : RIDGE_ROCK);
 							   });
 			++mountains;

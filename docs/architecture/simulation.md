@@ -259,7 +259,7 @@ checksum adapter remains available for diagnostic fixtures.
   appended the grass and sand looks (`LUSH_GRASS`, `DRY_GRASS`, `DUNE_SAND`,
   `PALE_SAND`, in the Grass and Sand groups) for 33; format 195 appended `SANDSTONE`
   (Paths), `PUMICE` (Rough) and `FROZEN_LAKE` (Ice) for 36; format 196 appended
-  `WIND_SWEPT_SNOW` (Rough, like deep snow) for 37; format 197 appended
+  `WIND_SWEPT_SNOW` (snow and ice, like deep snow) for 37; format 197 appended
   `WEATHERED_SANDSTONE` (Barren, like dirt) for 38; format 198 appended
   `WINDY_SAND_DUNE` (Sand, like sand) for 39; format 199 appended `HARDPAN`
   (Rough, like mud) for 40; format 200 appended `TUNDRA` (Barren, like dirt) for 41; format 201 appended `VOLCANIC_ASH` (Barren, like

@@ -51,7 +51,7 @@ enum TerrainType : std::uint16_t
 	SANDSTONE=33,
 	PUMICE=34,
 	FROZEN_LAKE=35,
-	// Snow carved into drifts (Rough, like deep snow), format 196.
+	// Snow carved into drifts (snow and ice, like deep snow), format 196.
 	WIND_SWEPT_SNOW=36,
 	// Ochre bedrock worn into rounded slabs (Barren, like dirt), format 197.
 	WEATHERED_SANDSTONE=37,

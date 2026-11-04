@@ -33,7 +33,7 @@ its own.
 | Forest | Trees on lush grass round a heart of moss and a thicket that never clears | Wood; the moss keeps it growing |
 | Pasture | Grass with drifts of heath, and a hedgerow across it with a gap | Building room; the hedge stops arrows |
 | Hills | Clay with two or three outcrop knolls and a grass pocket | Building room and two stone |
-| Mountain | A ridge-rock and outcrop massif with a deep-snow cap, a scree and boulder skirt | Eight stone at its foot; rock towers shoot over, boulders stop arrows |
+| Mountain | A ridge-rock and outcrop massif with a deep-snow cap, a scree and boulder skirt | Eight stone at its foot; rock towers shoot over, boulders stop arrows; the snow cap slows and wears down units like ice |
 | Lake | A pond with a dark deep middle, a garden round it, a mud rim | Food and wood between the homes |
 | Oasis (the middle; two on maps of more than four colonies) | Dune and pale sand round a pond, lush grass and the orchard | The fruit prize |
 
