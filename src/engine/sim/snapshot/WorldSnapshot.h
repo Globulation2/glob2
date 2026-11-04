@@ -81,7 +81,12 @@ struct Occupancy { std::vector<OccupancyCell> cells; ChunkStamps stamps; };
 using AreaCell = MapState::AreaCell;
 struct Areas { std::vector<AreaCell> cells; bool farmEnabled = false; ChunkStamps stamps; };
 struct VisibilityCell { Uint32 discovered = 0, visible = 0; };
-struct Visibility { std::vector<Uint32> discovered, visible; ChunkStamps stamps; };
+struct Visibility
+{
+	std::vector<Uint32> discovered, visible;
+	ChunkStamps stamps;
+	Uint64 discoveryRevision = 0;
+};
 static_assert(std::is_trivially_copyable_v<ResourceCell>);
 static_assert(std::is_trivially_copyable_v<OccupancyCell>);
 static_assert(std::is_trivially_copyable_v<AreaCell>);

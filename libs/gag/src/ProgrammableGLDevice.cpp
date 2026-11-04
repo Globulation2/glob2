@@ -7,6 +7,7 @@
 #if defined(HAVE_OPENGL) || defined(GLOB2_PROGRAMMABLE_GL) || defined(__EMSCRIPTEN__)
 #include <RendererShaderLayouts.h>
 #include <SDL3/SDL_opengl.h>
+#include <DirectTerrainShader.h>
 #include <SDL3/SDL_opengl_glext.h>
 #include <algorithm>
 #include <cmath>
@@ -190,6 +191,8 @@ class ProgrammableGLDevice final : public RenderDevice
     SDL_GLContext context = nullptr;
     GLApi gl;
     GLuint program = 0, vao = 0, vertexBuffer = 0, whiteTexture = 0, screenTexture = 0, screenFramebuffer = 0, committedTexture = 0, committedFramebuffer = 0;
+    GLuint directTerrainProgram = 0;
+    std::array<GLint, 7> directTerrainUniforms{};
     GLint viewportUniform = -1, imageUniform = -1, texturedUniform = -1, alphaUniform = -1, boundsUniform = -1;
     int width = 0, height = 0, maxTexture = 0;
     std::uint64_t epoch = 1, issued = 0, completed = 0;
@@ -561,6 +564,88 @@ class ProgrammableGLDevice final : public RenderDevice
     };
     static bool sameRect(const std::optional<SDL_Rect> &stored, const SDL_Rect &value)
     { return stored && stored->x==value.x && stored->y==value.y && stored->w==value.w && stored->h==value.h; }
+    void initDirectTerrain(bool es)
+    {
+        const std::string version = es ? "#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;\n"
+                                       : "#version 330 core\n";
+        const auto vertex = shader(GL_VERTEX_SHADER, version + R"(
+layout(location=0) in vec2 position;
+layout(location=2) in vec2 texcoord;
+uniform vec2 viewport;
+out vec2 world;
+void main() {
+    world = texcoord;
+    gl_Position = vec4(position / viewport * vec2(2, -2) + vec2(-1, 1), 0, 1);
+}
+)");
+        GLuint fragment = 0;
+        try {
+            fragment = shader(GL_FRAGMENT_SHADER, version + "#define DIRECT_TERRAIN_PACKED\n" +
+                              DirectTerrainFragment);
+        } catch (...) {
+            gl.glDeleteShader(vertex);
+            throw;
+        }
+        directTerrainProgram = gl.glCreateProgram();
+        gl.glAttachShader(directTerrainProgram, vertex);
+        gl.glAttachShader(directTerrainProgram, fragment);
+        gl.glLinkProgram(directTerrainProgram);
+        gl.glDeleteShader(vertex);
+        gl.glDeleteShader(fragment);
+        GLint linked = GL_FALSE;
+        gl.glGetProgramiv(directTerrainProgram, GL_LINK_STATUS, &linked);
+        if (!linked) {
+            char log[4096]{};
+            gl.glGetProgramInfoLog(directTerrainProgram, sizeof(log), nullptr, log);
+            throw std::runtime_error(std::string("Direct terrain shader link: ") + log);
+        }
+        gl.glUseProgram(directTerrainProgram);
+        for (unsigned i = 0; i < DirectTerrainDraw::Count; ++i)
+            gl.glUniform1i(gl.glGetUniformLocation(directTerrainProgram, DirectTerrainDraw::Samplers[i]), i);
+        constexpr std::array names{"viewport", "mapSize", "artSize", "coverageSize", "variantSize",
+                                   "animationTime", "wholeMap"};
+        for (unsigned i = 0; i < names.size(); ++i)
+            directTerrainUniforms[i] = gl.glGetUniformLocation(directTerrainProgram, names[i]);
+    }
+    void validateDirectTerrain(const DrawPacket &packet) const
+    {
+        if (!directTerrainProgram || !packet.directTerrain || packet.vertices.size() != 6 ||
+            packet.texture || packet.blend != DrawPacket::Blend::Premultiplied ||
+            packet.depth != DrawPacket::Depth::Disabled || packet.depthWrite)
+            throw std::invalid_argument("Invalid direct terrain draw");
+        const auto &sources = packet.directTerrain->textures;
+        for (const auto &source : sources)
+            if (!source || !source->pixels || targets.contains(key(source)) ||
+                (packet.target && key(source) == key(packet.target)))
+                throw std::invalid_argument("Invalid direct terrain texture");
+    }
+    void drawDirectTerrain(const DirectTerrainDraw &data, float logicalW, float logicalH,
+                           std::size_t first, std::size_t count)
+    {
+        gl.glUseProgram(directTerrainProgram);
+        for (unsigned unit = 0; unit < data.textures.size(); ++unit) {
+            gl.glActiveTexture(GL_TEXTURE0 + unit);
+            const auto &source = data.textures[unit];
+            gl.glBindTexture(GL_TEXTURE_2D, texture(source, false).texture);
+            const GLint filter = source->descriptor.sampling == TextureDescriptor::Sampling::Linear ? GL_LINEAR : GL_NEAREST;
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+        }
+        const auto setSize = [&](unsigned uniform, DirectTerrainDraw::Texture slot, int widthDivisor) {
+            const auto &size = data.textures[slot]->descriptor;
+            gl.glUniform2f(directTerrainUniforms[uniform], size.width / widthDivisor, size.height);
+        };
+        gl.glUniform2f(directTerrainUniforms[0], logicalW, logicalH);
+        setSize(1, DirectTerrainDraw::Cells, 2);
+        setSize(2, DirectTerrainDraw::Art, 1);
+        setSize(3, DirectTerrainDraw::Coverage, 1);
+        setSize(4, DirectTerrainDraw::Variants, 2);
+        gl.glUniform1f(directTerrainUniforms[5], data.animationTime);
+        gl.glUniform1i(directTerrainUniforms[6], data.wholeMap);
+        gl.glDrawArrays(GL_TRIANGLES, GLint(first), GLsizei(count));
+        gl.glActiveTexture(GL_TEXTURE0);
+        ++counts.batches;
+    }
     void draw(const DrawPacket &packet, std::size_t first, std::size_t count, float logicalW, float logicalH, PrimitiveState &cached)
     {
         GLuint framebuffer = screenFramebuffer;
@@ -583,6 +668,11 @@ class ProgrammableGLDevice final : public RenderDevice
         if(!cached.scissor) gl.glEnable(GL_SCISSOR_TEST);
         if(!sameRect(cached.scissor,scissor)) {gl.glScissor(scissor.x,scissor.y,scissor.w,scissor.h);cached.scissor=scissor;}
         state(packet, premultiplied);
+        if (packet.kind == DrawPacket::Kind::DirectTerrain) {
+            drawDirectTerrain(*packet.directTerrain, logicalW, logicalH, first, count);
+            cached.selectedProgram = directTerrainProgram;
+            return;
+        }
         GLuint selectedProgram = packet.material == DrawPacket::Material::SmoothPoint ? pointProgram : program;
         if (!selectedProgram) throw std::invalid_argument("Unsupported point material");
         if(cached.selectedProgram!=selectedProgram) {gl.glUseProgram(selectedProgram);cached.selectedProgram=selectedProgram;}
@@ -948,6 +1038,7 @@ class ProgrammableGLDevice final : public RenderDevice
             for (auto &value : readbacks) { gl.glDeleteSync(value.fence); gl.glDeleteBuffers(1, &value.buffer); }
             for (auto &[key, value] : masks) destroy(value);
             for (auto &[key, value] : scratchTargets) destroy(value);
+            if (directTerrainProgram) gl.glDeleteProgram(directTerrainProgram);
             if(composeProgram.program)gl.glDeleteProgram(composeProgram.program);
             if(reduceProgram.program)gl.glDeleteProgram(reduceProgram.program);
             for (auto &[key, value] : meshes) destroyMesh(value);
@@ -993,9 +1084,9 @@ class ProgrammableGLDevice final : public RenderDevice
             // The rollout build includes legacy GL hooks. SDL3 bypasses their
             // Browser context callbacks, so initialize each newly owned canvas
             // before invoking wrapped GL entry points. Programmable materials
-            // use six real texture units; the legacy renderer's one-unit tuning
+            // use eight real texture units; the legacy renderer's one-unit tuning
             // remains unchanged outside this initialization.
-            const int previousUnits=glob2_gl_override_texture_units(6);
+            const int previousUnits=glob2_gl_override_texture_units(8);
             try {ApplicationHost::initializeOpenGLContext();}
             catch(...) {
                 glob2_gl_restore_texture_units(previousUnits);
@@ -1048,12 +1139,19 @@ class ProgrammableGLDevice final : public RenderDevice
                 composeProgram=terrainProgram(shaderRoot+"terrain-compose.vert",shaderRoot+"terrain-compose.frag",false);
                 reduceProgram=terrainProgram(shaderRoot+"terrain-reduce.vert",shaderRoot+"terrain-reduce.frag",true);supportsTerrain=true;
             }
+            try {
+                initDirectTerrain(profile == SDL_GL_CONTEXT_PROFILE_ES);
+            } catch (const std::exception &error) {
+                if (directTerrainProgram) gl.glDeleteProgram(directTerrainProgram);
+                directTerrainProgram = 0;
+                SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Direct terrain unavailable: %s", error.what());
+            }
             SDL_GL_SetSwapInterval(0); screen(); initTiming();
         } catch (...) { cleanup(); throw; }
     }
     ~ProgrammableGLDevice() override { cleanup(); }
     SDL_GLContext borrowedContext() const { return context; }
-    RenderDeviceCapabilities capabilities() const override { return {true, true, timingSupported, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain}; }
+    RenderDeviceCapabilities capabilities() const override { return {true, true, timingSupported, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain,directTerrainProgram != 0}; }
     bool canBeginFrame() override
     {
         current(); poll();
@@ -1079,6 +1177,7 @@ class ProgrammableGLDevice final : public RenderDevice
         std::size_t vertices = 0;
         for (const auto &packet : frame.packets) {
             if(packet.kind==DrawPacket::Kind::WeightedCompose)validateCompose(packet);
+            if (packet.kind == DrawPacket::Kind::DirectTerrain) validateDirectTerrain(packet);
             if (packet.vertices.size() > RenderFrame::VertexCapacity - vertices) throw std::length_error("GL frame geometry capacity");
             vertices += packet.vertices.size();
             if (packet.kind == DrawPacket::Kind::MeshTriangles &&

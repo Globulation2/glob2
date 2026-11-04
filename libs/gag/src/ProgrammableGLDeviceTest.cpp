@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "DirectTerrainReadbackFixture.h"
 #include <cstring>
 #include <ProgrammableGLDevice.h>
 #include <SpriteRenderAtlas.h>
@@ -73,6 +74,12 @@ void scene(RenderBackend &backend, SDL_Surface *source)
 }
 TEST_SUITE("ProgrammableGLDevice")
 {
+    GLOB2_TEST_CASE("direct terrain decodes packed records and preserves draw order", "[display]")
+    {
+        GLFixture fixture;
+        REQUIRE(fixture.device->capabilities().directTerrain);
+        verifyDirectTerrainReadback(*fixture.device);
+    }
     GLOB2_TEST_CASE("ordered primitive segments share uploads across state and point changes", "[display]")
     {
         GLFixture fixture;

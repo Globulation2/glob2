@@ -85,6 +85,8 @@ class SceneMap
     Uint64 terrainRevision() const;
     Uint64 resourcePresentationRevision() const { return resourceRevision; }
     void resourceRowRevisions(std::span<Uint64> rows) const;
+    Uint64 discoveryRevision() const;
+    std::span<const Uint32> discoveredTerrain() const;
 	TerrainType vertexTerrainAt(int x, int y) const;
 	//! Corners of cell (x,y): top-left, top-right, bottom-left, bottom-right.
 	std::array<TerrainType, 4> cellCorners(int x, int y) const

@@ -8,6 +8,8 @@
 #include "AINicowar.h"
 
 #include <algorithm>
+#include <cstdlib>
+#include <string_view>
 #include <assert.h>
 #include <string.h>
 
@@ -34,6 +36,7 @@
 
 #include "GameRenderInternal.h"
 #include "SoftwareTerrainCache.h"
+#include "terrain/DirectTerrain.h"
 #include "unit/render/UnitMotion.h"
 #include "UnitEffects.h"
 #include "scene/SceneExtract.h"
@@ -299,12 +302,32 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 					swarm = std::max(swarm, glow);
 				}
 			}
-	// Prepare terrain pages first, keeping scene ordering independent of the
-	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
-	// Software keeps opaque runs; GPU views draw the same composed pages.
-	const bool cacheEligible = true;
+	// The overview fully replaces detailed terrain at the far end of zoom.
+	const bool overviewOnly = view.render.detail.terrainOverview >= 1;
+	static const bool directEnabled = [] {
+		const char *value = std::getenv("GLOB2_DIRECT_TERRAIN");
+		return value && std::string_view(value) == "1";
+	}();
+	bool direct = false;
+	// The direct atlas currently contains native-resolution artwork only.
+	const bool useDirect = view.render.benchmarkDirectTerrain < 0 ? directEnabled :
+        view.render.benchmarkDirectTerrain != 0;
+    if (useDirect && !globalContainer->settings.highResolutionArtwork &&
+		!overviewOnly && !(frame.options & DRAW_TILED_CAPTURE))
+	{
+		PERF_SCOPE_TIME(Terrain);
+		try
+		{
+			direct = view.render.directTerrain().draw(frame.target, scene.map,
+				frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
+				frame.viewportY, frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time);
+		}
+		catch (const std::bad_alloc &)
+		{ /* The reference renderer remains available under memory pressure. */ }
+	}
+	// Reference terrain pages use the same discovery rule as direct terrain.
 	SoftwareTerrainCache *softwareTerrainCache = nullptr;
-	if (cacheEligible)
+	if (!direct && !overviewOnly)
 	{
 		try
 		{
@@ -314,24 +337,24 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 		{ /* Keep the uncached renderer available under memory pressure. */
 		}
 	}
-	// Far enough out the flat overview covers the terrain completely, so the
-	// detailed water, terrain and resource passes underneath are not drawn.
-	const bool overviewOnly = view.render.detail.terrainOverview >= 1;
-	bool cached = !overviewOnly &&
-		softwareTerrainCache &&
+	bool cached = softwareTerrainCache &&
 		softwareTerrainCache->prepare(scene.map, frame.terrain, frame.left, frame.top, frame.right,
 									  frame.bottom, frame.viewportX, frame.viewportY,
 									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time,
 									  frame.options & DRAW_TILED_CAPTURE);
-	if (overviewOnly)
-		;
-	else if (cached)
+	if (cached)
 	{
 		PERF_SCOPE_TIME(Terrain);
 		softwareTerrainCache->draw(frame.target);
 	}
-	else
+	else if (!overviewOnly && !direct)
 		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map, time);
+
+    const auto *atlas = view.render.existingDirectTerrain();
+    const auto *pages = view.render.existingTerrainCache();
+    const auto textureBytes = (atlas ? atlas->textureBytes() : 0) +
+        (pages ? pages->residentTextureBytes() : 0);
+    view.render.peakTerrainTextureBytes = std::max(view.render.peakTerrainTextureBytes, textureBytes);
 
 	// Pass adapters keep the two coordinate conventions in one place. Individual
 	// layers still own their visibility decisions and their original draw order.

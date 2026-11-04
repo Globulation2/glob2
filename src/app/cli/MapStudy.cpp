@@ -381,6 +381,7 @@ void shiftTeams(Game &game, int shift)
 	}
 	for (auto &bits : game.map.mapDiscovered)
 		bits = mask(bits);
+	game.map.markDiscoveryChanged();
 }
 
 // Writes <prefix>-r<k>.map for k = 0..rotations-1, where colony t (the generator's team t, which

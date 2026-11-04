@@ -26,12 +26,14 @@
 #include <RendererSelection.h>
 #include <memory>
 #include <stdexcept>
+#include <string_view>
 #include <MapGeometryCache.h>
 #include <PerformanceTelemetry.h>
 #include "TorusMapFixture.h"
 #include "render/scene/SceneExtract.h"
 #include "render/SoftwareTerrainCache.h"
 #include "render/terrain/TerrainCompositor.h"
+#include "render/terrain/DirectTerrain.h"
 #include "render/OverviewTerrainCache.h"
 #include <algorithm>
 #include <cassert>
@@ -402,15 +404,28 @@ static int run(int argc, char **argv)
                         std::printf("FRAME_SCOPE frame=%d scope=%u elapsed_ms=%.6f\n", i, unsigned(id),
                             (scopes[unsigned(id)].time.total - scopesBefore[unsigned(id)].time.total) / 1e6);
                     if (auto *cache = gui.view.render.existingTerrainCache())
-                        std::printf("FRAME_CACHE frame=%d bytes=%zu mask_bytes=%zu rebuilds=%llu hits=%llu reductions=%llu resolution=%d downsample=%d\n", i,
-                            cache->bytes(), cache->maskBytes(), static_cast<unsigned long long>(cache->cacheRebuilds()),
+                        std::printf("FRAME_CACHE frame=%d bytes=%zu texture_bytes=%zu mask_bytes=%zu rebuilds=%llu hits=%llu reductions=%llu resolution=%d downsample=%d\n", i,
+                            cache->bytes(), cache->residentTextureBytes(), cache->maskBytes(), static_cast<unsigned long long>(cache->cacheRebuilds()),
                             static_cast<unsigned long long>(cache->cacheHits()),
                             static_cast<unsigned long long>(cache->cacheReductions()),
                             cache->samplingResolution(), cache->samplingReduction());
+                    const auto *pages = gui.view.render.existingTerrainCache();
+                    const auto *atlas = gui.view.render.existingDirectTerrain();
+                    std::printf("FRAME_TERRAIN_RESIDENCY frame=%d direct_bytes=%zu page_bytes=%zu page_retained_bytes=%zu peak_texture_bytes=%zu\n",
+                        i, atlas ? atlas->textureBytes() : 0, pages ? pages->residentTextureBytes() : 0,
+                        pages ? pages->bytes() : 0, gui.view.render.peakTerrainTextureBytes);
                     const auto &rows = gui.view.render.resourceRowMetrics;
                     std::printf("FRAME_RESOURCE_ROWS frame=%d eligibility_cells=%llu frame_cells=%llu animated_cells=%llu\n", i,
                         static_cast<unsigned long long>(rows.eligibilityCells), static_cast<unsigned long long>(rows.frameCells),
                         static_cast<unsigned long long>(rows.animatedCells));
+                    if (const auto *direct = gui.view.render.existingDirectTerrain())
+                    {
+                        std::printf("FRAME_DIRECT_TERRAIN frame=%d draws=%u texture_bytes=%zu uploaded_bytes=%zu\n",
+                            i, direct->draws(), direct->textureBytes(), direct->uploadBytes());
+                        const auto fog = direct->discoveryMetrics();
+                        std::printf("FRAME_DIRECT_DISCOVERY frame=%d compared_cells=%zu rebuilt_cells=%zu\n",
+                            i, fog.compared, fog.rebuilt);
+                    }
                     if (gui.view.render.overviewCache)
                         std::printf("FRAME_OVERVIEW frame=%d composed_cells=%llu\n", i,
                             static_cast<unsigned long long>(gui.view.render.overviewCache->composedCells()));
@@ -473,6 +488,14 @@ static int run(int argc, char **argv)
         };
         if (std::getenv("GLOB2_BENCH_FLAT"))
         {
+            if (const char *density = std::getenv("GLOB2_BENCH_TERRAIN_PIXELS_PER_TILE"))
+            {
+                const std::string_view pixels(density);
+                if ((pixels != "16" && pixels != "32") || !capabilities.accelerated)
+                    throw std::invalid_argument("Fixed terrain density requires a GPU backend and 16 or 32 pixels per tile");
+                gui.view.render.terrainCache(gui.game.map.identity()).benchmarkDownsample = pixels == "16" ? 2 : 1;
+                std::printf("BENCH_TERRAIN_PIXELS_PER_TILE %s\n", density);
+            }
             MapCamera camera;
             camera.resize(width, height, gui.game.map.getW()*32, gui.game.map.getH()*32);
             camera.zoom = camera.minimumZoom();
@@ -490,6 +513,16 @@ static int run(int argc, char **argv)
             const int worldH = int(std::ceil(camera.visibleH()));
             if (savedGame) warmupCheckpoint(gui);
             else populateSynthetic(gui.game, worldW, worldH);
+            const bool discoveryCrossing = std::getenv("GLOB2_BENCH_DISCOVERY_CROSSING");
+            if (discoveryCrossing)
+            {
+                if (!std::getenv("GLOB2_BENCH_FOG"))
+                    throw std::invalid_argument("Discovery fixture requires GLOB2_BENCH_FOG");
+                gui.game.map.unsetMapDiscovered();
+                for (int y = 0; y < 15; ++y)
+                    for (int x = 0; x < 15; ++x)
+                        gui.game.map.setMapDiscovered(x, y, 1);
+            }
             // Interactive drawing consumes a published scene. Keep extraction
             // outside the renderer timing interval rather than recapturing the
             // complete simulation through the fixture adapter on every draw.
@@ -514,16 +547,52 @@ static int run(int argc, char **argv)
                 PerformanceTelemetry::collector().reset();
                 if (!clouds && std::getenv("GLOB2_BENCH_COMPARE_RENDERER"))
                     globalContainer->gfx->setRenderBatchEnabled(false);
+                bool crossedDiscovery = false;
+                bool switchedBackend = false;
                 measure(clouds ? "2D clouds" : "2D no clouds", [&](int cameraFrame) {
-                    globalContainer->gfx->resetDrawCallCount();
-                    globalContainer->gfx->setClipRect();
-                    globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), GAGCore::Color(0, 0, 0));
+                    if (discoveryCrossing && !crossedDiscovery && cameraFrame >= 4)
+                    {
+                        gui.game.map.setMapDiscovered(15, 15, 1);
+                        gui.game.map.setMapDiscovered(16, 16, 1);
+                        prepareScene(gui);
+                        crossedDiscovery = true;
+                    }
+                    Uint32 frameOptions = options;
+                    if (const auto *terrainSwitch = std::getenv("GLOB2_BENCH_TERRAIN_SWITCH"))
+                    {
+                        const bool switchToHD = std::string_view(terrainSwitch) == "hd";
+                        const bool switchToTiled = std::string_view(terrainSwitch) == "tiled";
+                        if (std::string_view(terrainSwitch) == "backend" && cameraFrame >= 68 && !switchedBackend)
+                        {
+                            using GAGCore::RendererBackend;
+                            if (!gfx->requestBackendSwitch(RendererBackend::LegacyGL))
+                                throw std::runtime_error("Could not request legacy OpenGL for terrain switch");
+                            gfx->nextFrame();
+                            if (gfx->backendSwitchStatus().active != RendererBackend::LegacyGL)
+                                throw std::runtime_error("Terrain switch did not activate legacy OpenGL");
+                            std::printf("BENCH_TERRAIN_SWITCH frame=%d active=legacy-gl\n", cameraFrame);
+                            switchedBackend = true;
+                        }
+                        gui.view.render.benchmarkDirectTerrain = cameraFrame >= 4 &&
+                            (switchToHD || switchToTiled || cameraFrame < 68);
+                        if (switchToTiled && cameraFrame >= 68)
+                            frameOptions |= Game::DRAW_TILED_CAPTURE;
+                        if (switchToHD && cameraFrame >= 68 && !globalContainer->settings.highResolutionArtwork)
+                        {
+                            globalContainer->settings.highResolutionArtwork = true;
+                            GAGCore::Sprite::setHighResolution(true);
+                        }
+                    }
+                    gfx->resetDrawCallCount();
+                    gfx->setClipRect();
+                    gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
                     const bool sweep = std::getenv("GLOB2_BENCH_CAMERA_SWEEP");
                     const bool motion = std::getenv("GLOB2_BENCH_CAMERA_MOTION");
                     const bool pan = motion || std::getenv("GLOB2_BENCH_CAMERA_PAN");
+                    const bool zoomCycle = motion || std::getenv("GLOB2_BENCH_CAMERA_ZOOM");
                     // A repeatable wheel-like zoom cycle with sub-tile scrolling.
                     // Unlike the seam stress sweep this does not teleport the view.
-                    const double zoom = motion ? std::min(MapCamera::MAX_ZOOM,
+                    const double zoom = zoomCycle ? std::min(MapCamera::MAX_ZOOM,
                         camera.zoom * std::pow(4.0, (1 - std::cos(cameraFrame * 6.283185307179586 / 120)) / 2))
                         : sweep ? camera.zoom * (1 + cameraFrame%8) : camera.zoom;
                     // GLOB2_BENCH_PAN_X/Y place a fixed camera's top-left tile, so a
@@ -549,7 +618,7 @@ static int run(int argc, char **argv)
                     const bool pausePresentation = std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
                     if (pausePresentation) gui.view.render.animationTime = 22;
                     Game::drawMap(0, 0, drawW, drawH, 0, 0,
-                        panX, panY, 0, gui.view, options, nullptr, nullptr, pausePresentation,
+                        panX, panY, 0, gui.view, frameOptions, nullptr, nullptr, pausePresentation,
                         detailForZoom(gui.game, zoom));
                     globalContainer->gfx->endMapTransform();
                 });
@@ -563,7 +632,9 @@ static int run(int argc, char **argv)
                         textures.textureBytes, geometry.bytes, geometry.builds, geometry.deferred);
                 }
                 PerformanceTelemetry::collector().write(std::cout, "BENCH_SCOPE", 0, false);
-                assert(gui.game.checkSum(nullptr, nullptr, nullptr, true) == initialChecksum);
+                assert(discoveryCrossing || gui.game.checkSum(nullptr, nullptr, nullptr, true) == initialChecksum);
+                if (discoveryCrossing)
+                    std::printf("discovery_checksum=%08x\n", gui.game.checkSum(nullptr, nullptr, nullptr, true));
                 std::printf("simulation_checksum=%08x\n", initialChecksum);
                 // Optional same-process comparisons hold camera and simulation
                 // fixed within each pair. Readback/checksum work is deliberately

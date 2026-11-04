@@ -18,11 +18,11 @@ output = args.output.resolve()
 output.mkdir(parents=True, exist_ok=True)
 shader_directory = args.shader_directory.resolve()
 command = [str(args.emxx.resolve()), '-std=c++20', '-O1', '-fexceptions',
-           '-sDISABLE_EXCEPTION_CATCHING=0', '-Ilibgag/include',
+           '-sDISABLE_EXCEPTION_CATCHING=0', '-Ilibs/gag/include',
            '-I' + str(args.sdl_prefix.resolve() / 'include'),
            '-I' + str(shader_directory),
            'tools/shaders/WebGPUThreadPreparationProof.cpp' if args.thread_preparation else 'tools/shaders/WebGPUCppProof.cpp',
-           'libs/gag/src/WebGPUDevice.cpp', 'libs/gag/src/RenderFrame.cpp',
+           'libs/gag/src/WebGPUDevice.cpp', 'libs/gag/src/RenderFrame.cpp', 'libs/gag/src/PerformanceTelemetry.cpp',
            str(args.sdl_prefix.resolve() / 'lib/libSDL3.a'),
            '--js-library', 'platforms/web/webgpu-device.js', '-sALLOW_MEMORY_GROWTH=1',
            '-sINITIAL_MEMORY=67108864', '-sENVIRONMENT=web',

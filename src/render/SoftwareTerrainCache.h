@@ -139,6 +139,8 @@ class SoftwareTerrainCache
 							 int animationTime = 0, FallbackMode mode = FallbackMode::StreamPages,
 							 bool tiledCapture = false);
 	bool enabled = true;
+	// Benchmark override for comparing stable page density with adaptive sampling.
+	int benchmarkDownsample = 0;
 	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,
 				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0,
 				 bool tiledCapture = false);

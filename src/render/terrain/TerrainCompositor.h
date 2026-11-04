@@ -115,6 +115,8 @@ class Compositor
     // Published material revisions own only composition data. A later prepare
     // can replace animated pixels without invalidating a running CPU batch.
     using MaterialPixels = std::vector<std::array<unsigned char, 4>>;
+    // A single immutable animation phase, prepared with the reference variant edges.
+    MaterialPixels nativeMaterialPixels(MaterialId id, unsigned variant, unsigned phase);
     struct CpuScratch
     {
         CellMask mask;

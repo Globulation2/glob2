@@ -140,6 +140,16 @@ std::pair<GAGCore::Sprite *, unsigned> Compositor::editorIcon(TerrainType type) 
 	const auto id = terrainBindings[unsigned(type)];
 	return {sprites[id], unsigned(definitions.materials[id].variants.front().frame)};
 }
+Compositor::MaterialPixels Compositor::nativeMaterialPixels(MaterialId id, unsigned variant, unsigned phase)
+{
+    const auto count = definitions.materials.at(id).variants.size();
+    std::vector<Texture> prepared(count);
+    std::vector<unsigned char> wanted(count);
+    wanted.at(variant) = 1;
+    wanted.front() = 1; // Variant zero defines the shared edge band.
+    prepareMaterial(id, false, phase, prepared, &wanted);
+    return std::move(prepared[variant].pixels);
+}
 std::size_t Compositor::sourceBytes() const
 {
 	std::size_t bytes = pack ? pack->bytes() : 0;

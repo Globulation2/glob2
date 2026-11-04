@@ -319,6 +319,7 @@ Handle capture(const Game& game,
 	}
 	if (needs(requirements, Component::Visibility))
 	{
+		visibility->discoveryRevision = game.map.discoveryRevision();
 		const std::span<const Uint32> discovered(game.map.mapDiscovered);
 		const std::span<const Uint32> visible = game.map.fogOfWar ? std::span<const Uint32>(game.map.fogOfWar, cellCount) : std::span<const Uint32>{};
 		bool resized = prepare(visibility->discovered, discovered.size());

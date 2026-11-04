@@ -554,8 +554,10 @@ bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
 								   bool wholeMap, int time, bool tiledCapture)
 {
+	const bool fixedDensity = benchmarkDownsample > 0 && !tiledCapture;
 	return prepareAtResolution(map, sprite, left, top, right, bottom, vx, vy, visibleTeams,
-							   wholeMap, time, 0, tiledCapture);
+							   wholeMap, time, fixedDensity ? 1 : 0, tiledCapture,
+							   fixedDensity ? benchmarkDownsample : 0);
 }
 bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                         const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,

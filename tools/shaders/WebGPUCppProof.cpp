@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Browser correctness fixture for the actual C++ packet/owned-resource adapter.
 #include <WebGPUDevice.h>
+#include "DirectTerrainProofFixture.h"
 #include <emscripten.h>
 #include <cstring>
 #include <memory>
@@ -49,6 +50,10 @@ EMSCRIPTEN_KEEPALIVE int proof_terrain(int premultiplied){return checked([&]{
     auto compose=std::make_shared<WeightedComposeData>();compose->paletteCount=1;compose->compositionSize=32;compose->reductionDivisor=8;compose->targetRect={0,0,4,4};compose->materials[0]=image(1,1,{0,255,0,128});
     DrawPacket packet;packet.kind=DrawPacket::Kind::WeightedCompose;packet.target=target;packet.weightedCompose=compose;
     submit({packet,clear(),blit(target,{0,0,64,64})});
+});}
+EMSCRIPTEN_KEEPALIVE int proof_direct_terrain(int mixed){return checked([&]{
+    if (!device->capabilities().directTerrain) throw std::runtime_error("Direct terrain unavailable");
+    submit({clear(), directTerrainProofPacket([](int w, int h, SDL_Color color) { return image(w, h, color); }, mixed != 0)});
 });}
 EMSCRIPTEN_KEEPALIVE int proof_scissor(){return checked([&]{
     DrawPacket left;left.kind=DrawPacket::Kind::Fill;left.destination={0,0,93,77};left.color={200,90,40,128};left.targetLogicalWidth=93;left.targetLogicalHeight=77;left.targetScissor=SDL_Rect{0,0,32,64};
