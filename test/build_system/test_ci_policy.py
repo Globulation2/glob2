@@ -188,6 +188,16 @@ class PolicyTest(unittest.TestCase):
                     with self.subTest(browser=browser, title=title):
                         self.assertRegex(title, re.compile(pattern))
 
+    def test_browser_matrix_python_entrypoints_exist_from_browser_directory(self):
+        import shlex
+        rows = json.loads((ROOT / '.github/scripts/ci_browser_matrix.json').read_text())
+        for row in rows:
+            command = shlex.split(row['command'])
+            if command[0] == 'python3':
+                with self.subTest(job=row['name']):
+                    self.assertTrue((ROOT / 'platforms/web' / command[1]).is_file(),
+                                    'Python entrypoint must resolve from platforms/web')
+
     def test_release_metadata_does_not_compile_engine(self):
         paths=['platforms/stores/fdroid/metadata.yml','fastlane/metadata/title.txt','tools/package_steam_windows.py',
                '.github/workflows/steam-windows-package.yml','.github/workflows/mac-app-store.yml',
