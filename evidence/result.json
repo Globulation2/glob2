@@ -1,0 +1,8 @@
+{
+  "revision": "419450b6ed5cee111a094c179a2e73a32d7a6903",
+  "base": "474c670d37ba3fd14f2e002dadb984763d945ec7",
+  "original_macro_compile_exit": 1,
+  "renamed_macro_compile_exit": 0,
+  "renamed_normal_compile_exit": 0,
+  "scope": "GNU13 syntax-only entire real translation unit using exact native build include/define flags, with the empty far macro verified from installed MinGW Windows headers. Not a full Windows link or runtime qualification."
+}

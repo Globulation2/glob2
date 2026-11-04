@@ -1,0 +1,16 @@
+src/map/generator/generators/BraidedDeltaGenerator.cpp: In function ‘{anonymous}::Layout {anonymous}::designAfresh(const GenerationRequest&, GenerationContext&)’:
+src/map/generator/generators/BraidedDeltaGenerator.cpp:694:42: error: expected unqualified-id before ‘=’ token
+  694 |                                 bool far = true;
+      |                                          ^
+src/map/generator/generators/BraidedDeltaGenerator.cpp:696:45: error: expected primary-expression before ‘=’ token
+  696 |                                         far = far && N::hypot(q.x - p.x, across(q.y - p.y)) >= (pass ? 44 : 10);
+      |                                             ^
+src/map/generator/generators/BraidedDeltaGenerator.cpp:695:56: warning: unused variable ‘q’ [-Wunused-variable]
+  695 |                                 for (const ShapePoint &q : laid)
+      |                                                        ^
+src/map/generator/generators/BraidedDeltaGenerator.cpp:697:42: error: expected primary-expression before ‘||’ token
+  697 |                                 if (!far || (pass == 0 && joined.find(left) == joined.find(right)))
+      |                                          ^~
+src/map/generator/generators/BraidedDeltaGenerator.cpp:696:54: error: label ‘N’ used but not defined
+  696 |                                         far = far && N::hypot(q.x - p.x, across(q.y - p.y)) >= (pass ? 44 : 10);
+      |                                                      ^
