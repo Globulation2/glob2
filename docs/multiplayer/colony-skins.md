@@ -326,9 +326,12 @@ checksums or `SIM_REVISION`.
 Units animate from fitted rigs rather than the baked per-frame meshes: GSB1
 blend-shape clips for workers and warriors and a GSR1 bone rig for the
 explorer, all fitted to the baked clips so they keep the original metaball
-look and paint layout. The baked GSK1 clips remain the fallback when a fitted
-asset is missing or invalid, and `GLOB2_SKIN_RIGS=0` selects them in gameplay
-for comparison. Sprite publishing always renders the rigs; its recipe digest
+look and paint layout. Runtime packages ship the fitted clips and static GSK1
+swarm meshes. The baked unit clips remain in the source tree for fitting and
+comparison. Use `GLOB2_SKIN_PREVIEW_DIR` to point at that source directory and
+`GLOB2_SKIN_RIGS=0` to select the baked clips. A missing or invalid fitted
+clip in a fresh install falls back to stock artwork when no baked clip is
+available. Sprite publishing always renders the rigs; its recipe digest
 covers their bytes and decoders, so a changed rig never overwrites a published
 bundle. Software clients continue using their authorized published sprites.
 

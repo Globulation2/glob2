@@ -50,6 +50,16 @@ SHEET_HEADER = """\
 """
 
 
+def is_baked_unit_clip(relative):
+    """Identify the authoring and comparison meshes superseded by fitted clips."""
+    p = Path(relative)
+    return (
+        p.parent == Path("data/skins/colony-v1")
+        and p.suffix == ".gsk"
+        and p.name.startswith(("worker-", "warrior-", "explorer-"))
+    )
+
+
 def include_asset(relative, platform="generic"):
     p = Path(relative)
     if any(x.startswith(".") or x in ("CVS", "__pycache__") for x in p.parts):
@@ -62,6 +72,8 @@ def include_asset(relative, platform="generic"):
         return False
     if p.as_posix() in ("data/highres/v1/manifest.json", "data/highres/v1/README.md",
                         "data/fonts/script-probes.json"):
+        return False
+    if is_baked_unit_clip(p):
         return False
     if p.parts[:2] == ("data", "screenshots") and platform != "linux":
         return False

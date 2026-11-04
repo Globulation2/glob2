@@ -261,6 +261,18 @@ class AssetExportTests(unittest.TestCase):
         self.assertTrue(include_asset("data/screenshots/game.png", "linux"))
         self.assertTrue(include_asset("data/fonts/README.md"))
 
+    def test_export_omits_baked_unit_clips_and_keeps_fitted_and_static_meshes(self):
+        skins = self.root / "content/data/skins/colony-v1"
+        skins.mkdir(parents=True)
+        baked = {"worker-prone-harvest.gsk", "warrior-fight.gsk", "explorer-fly.gsk"}
+        shipped = {"worker-prone-harvest.gsb", "warrior-fight.gsb", "explorer-fly.gsr", "swarm.gsk"}
+        for name in baked | shipped:
+            (skins / name).write_bytes(name.encode())
+
+        self.export(lossy=False)
+        self.assertEqual({p.name for p in (self.output / "data/skins/colony-v1").iterdir()}, shipped)
+        self.assertEqual({p.name for p in skins.iterdir()}, baked | shipped)
+
     def test_refuses_source_and_unowned_output(self):
         with self.assertRaises(ValueError):
             export_assets(self.root, self.root / "content/data")

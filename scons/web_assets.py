@@ -268,8 +268,9 @@ def plan(root, source=None):
     `source` is the tree to package (the runtime export), `root` the repository."""
     packages = {name: [] for name in PACKAGES}
     files, skipped = [], []
+    exporter = load_module(Path(__file__).resolve().parents[1], 'glob2_package_assets', 'tools/package_assets.py')
     for path in source_files(source or Path(root) / 'content'):
-        (skipped if excluded(path) else files).append(path)
+        (skipped if excluded(path) or exporter.is_baked_unit_clip(path) else files).append(path)
     game = game_files(files, game_sprites(root))
     lossy = images = True
     if source:
