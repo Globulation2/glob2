@@ -19,6 +19,19 @@ inline std::string topKFilename(unsigned stratum,unsigned slot,unsigned capacity
     if(stratum>=DeepStratumCount || slot>=capacity || !capacity || capacity>DeepTopKMaximum)throw std::invalid_argument("invalid top-k file slot");
     return "event-"+std::string(stratum<10?"0":"")+std::to_string(stratum)+"-"+std::to_string(slot)+".bin";
 }
+inline bool topKOutputName(std::string_view name,unsigned capacity)
+{
+    if(!capacity || capacity>DeepTopKMaximum)return false;
+    if(name=="manifest.json")return true;
+    if(name.size()<14 || name.size()>15 || !name.starts_with("event-") || !name.ends_with(".bin") || name[8]!='-')return false;
+    if(name[6]<'0' || name[6]>'9' || name[7]<'0' || name[7]>'9')return false;
+    const unsigned stratum=unsigned(name[6]-'0')*10+unsigned(name[7]-'0');
+    const auto slot=name.substr(9,name.size()-13);
+    if(slot.empty() || (slot.size()>1 && slot[0]=='0'))return false;
+    unsigned value=0;
+    for(char c:slot) {if(c<'0' || c>'9')return false;value=value*10+unsigned(c-'0');}
+    return stratum<DeepStratumCount && value<capacity;
+}
 struct TopKDeepSlot
 {
     struct Entry { Uint64 priority=UINT64_MAX,ordinal=0,writtenOrdinal=0,replacements=0;std::string digest; };
@@ -64,14 +77,12 @@ inline void replaceTopKDeepFile(const std::filesystem::path& path,std::span<cons
     const auto finalLimit=topKFinalLimit(capacity);
     const Uint64 manifestLimit=topKManifestLimit(capacity,scalable);
     const bool manifest=path.filename()=="manifest.json";
-    bool knownTarget=manifest;
-    for(unsigned i=0;i<DeepStratumCount;++i)for(unsigned k=0;k<capacity;++k)knownTarget|=path.filename()==topKFilename(i,k,capacity);
+    const bool knownTarget=topKOutputName(path.filename().string(),capacity);
     if(!knownTarget)throw std::invalid_argument("invalid top-k output target");
     if(bytes.size()>(manifest?manifestLimit:DeepRecordLimit))throw std::runtime_error("top-k record allowance exhausted");
     Uint64 existing=0;
     for(const auto& entry:std::filesystem::directory_iterator(path.parent_path())) {
-        const auto name=entry.path().filename().string();bool known=name=="manifest.json";
-        for(unsigned i=0;i<DeepStratumCount;++i)for(unsigned k=0;k<capacity;++k)known|=name==topKFilename(i,k,capacity);
+        const auto name=entry.path().filename().string();const bool known=topKOutputName(name,capacity);
         if(!known || entry.is_symlink() || !entry.is_regular_file())throw std::runtime_error("unexpected top-k output entry");
         const auto size=entry.file_size();
         if(size>(name=="manifest.json"?manifestLimit:DeepRecordLimit))throw std::runtime_error("oversized top-k output entry");

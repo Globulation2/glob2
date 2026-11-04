@@ -162,3 +162,13 @@ TEST_CASE("Missing destination wire represents absent plane separately from inva
     CHECK(invalid.size()==absent.size()+256);CHECK(absent[20]==0);CHECK(invalid[20]==64);
     CHECK_THROWS(encodeMissingEvent(m,64,std::span<const Uint32>(labels.data(),1),{}));
 }
+TEST_CASE("Top-k output filenames are canonical and capacity bounded" * doctest::test_suite("ResourceClaimTopKDeep")) {
+    using namespace ResourceClaims::Experiment;
+    for(unsigned capacity=1;capacity<=64;++capacity) {
+        CHECK(topKOutputName("manifest.json",capacity));
+        for(unsigned stratum=0;stratum<16;++stratum)for(unsigned slot=0;slot<64;++slot)
+            CHECK(topKOutputName(topKFilename(stratum,slot,64),capacity)==(slot<capacity));
+    }
+    for(const auto name:{"event-0-0.bin","event-16-0.bin","event-00-64.bin","event-00-00.bin","event-00-01.bin","event-00--1.bin","event-00-+1.bin","event-00-1.bin.partial","event-00-1.bin/","event-00-1.BIN","event-00-.bin","event-00-a.bin","../manifest.json","manifest.json.partial"})CHECK_FALSE(topKOutputName(name,64));
+    CHECK_FALSE(topKOutputName("manifest.json",0));CHECK_FALSE(topKOutputName("manifest.json",65));
+}
