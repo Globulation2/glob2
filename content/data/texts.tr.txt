@@ -5722,6 +5722,10 @@ Kumtaşı karolar
 Sünger taşı alanı
 [frozen_lake]
 Donmuş göl
+[wind_swept_snow]
+Rüzgârın savurduğu kar
+[weathered_sandstone]
+Aşınmış kumtaşı
 [terrain group water]
 Su
 [terrain group sand]

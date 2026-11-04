@@ -535,6 +535,12 @@
         "frozen_lake": {
           "$ref": "#/$defs/coverage"
         },
+        "wind_swept_snow": {
+          "$ref": "#/$defs/coverage"
+        },
+        "weathered_sandstone": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

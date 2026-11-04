@@ -417,6 +417,8 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/MapAssetBundle.cpp',
     '#src/render/terrain/TerrainCatalogIO.cpp',
     '#src/render/terrain/TerrainMaterials.cpp',
+    '#src/render/terrain/TerrainBorderRules.cpp',
+    '#src/render/terrain/TerrainSmoothBorders.cpp',
     '#src/scripting/javascript/ScriptValue.cpp',
     '#src/scripting/javascript/ScriptRuntime.cpp',
     '#src/hive/HiveWorker.cpp',

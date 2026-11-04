@@ -764,9 +764,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 	layBeaches(beached, t);
 	const std::vector<unsigned char> pureWater = pureTiles(beached, t, WATER);
 	const std::vector<unsigned char> pureGrass = pureTiles(beached, t, GRASS);
-	std::vector<unsigned char> walkable(n, 0);
-	for (int i = 0; i < n; ++i)
-		walkable[i] = !pureWater[i];
+	const auto walkable = walkableTiles(beached, t);
 	TerrainSketch islandSketch(n, WATER);
 	for (int i = 0; i < n; ++i)
 		if (islandCorners[i])
@@ -1388,7 +1386,7 @@ GeneratorDefinition centralQuarryDefinition()
 		"central-quarry",
 		56,
 		"Central Quarry",
-		2,
+		3,
 		false,
 		{GeneratorControl{"lake-size", "Lake size", 14, 30, 2, 24, ControlGroup::Terrain}
 			 .withSearchRange(20, 28),

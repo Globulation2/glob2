@@ -6838,6 +6838,10 @@ MCP सर्व्हर सक्षम करा
 प्युमिस दगडाचे मैदान
 [frozen_lake]
 गोठलेले सरोवर
+[wind_swept_snow]
+वाऱ्याने उडालेले बर्फ
+[weathered_sandstone]
+झिजलेला वालुकाश्म
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
 [script error at %0:%1: %2]

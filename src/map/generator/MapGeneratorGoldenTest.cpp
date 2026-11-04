@@ -287,7 +287,9 @@ int update(const std::string &path, bool toStdout, bool force, const std::set<in
 			++silent;
 		}
 	}
-	if (silent && !force)
+	// Read-only observations do not approve a new baseline. --print must expose
+	// fresh rows even at an unchanged revision; only writes enforce this guard.
+	if (silent && !force && !toStdout)
 	{
 		std::printf("%d rows changed without a revision bump. Bump the generator's revision, or"
 					" pass --force if the change is intended to stay unversioned.\n",

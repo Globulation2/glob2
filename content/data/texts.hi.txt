@@ -5698,6 +5698,10 @@ AI से नहीं बना
 झाँवे का मैदान
 [frozen_lake]
 जमी हुई झील
+[wind_swept_snow]
+हवा से उड़ी बर्फ़
+[weathered_sandstone]
+अपक्षयित बलुआ पत्थर
 [terrain group water]
 पानी
 [terrain group sand]

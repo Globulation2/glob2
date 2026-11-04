@@ -5722,6 +5722,10 @@ Dale de gresie
 Câmp de piatră ponce
 [frozen_lake]
 Lac înghețat
+[wind_swept_snow]
+Zăpadă spulberată de vânt
+[weathered_sandstone]
+Gresie erodată
 [terrain group water]
 Apă
 [terrain group sand]

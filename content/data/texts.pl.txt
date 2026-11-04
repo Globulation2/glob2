@@ -5722,6 +5722,10 @@ Płyty z piaskowca
 Pole pumeksu
 [frozen_lake]
 Zamarznięte jezioro
+[wind_swept_snow]
+Śnieg nawiany wiatrem
+[weathered_sandstone]
+Zwietrzały piaskowiec
 [terrain group water]
 Woda
 [terrain group sand]
