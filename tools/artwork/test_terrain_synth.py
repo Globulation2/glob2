@@ -49,7 +49,9 @@ class TerrainSynth(unittest.TestCase):
         profiles = {p["key"] for p in catalog["profiles"]}
         classes = {c["key"] for c in catalog["border_classes"]}
         self.assertEqual(sorted(synth.RECIPES), sorted(synth.SYNTH_ORDER))
-        self.assertEqual(len(synth.BUILTIN_ORDER), 31)
+        # Every built-in the engine lists has a catalogue binding.
+        for name in synth.BUILTIN_ORDER:
+            self.assertIn(name, catalog["bindings"])
         for name, recipe in synth.RECIPES.items():
             self.assertEqual(recipe.name, name)
             self.assertIn(recipe.profile, profiles)
@@ -237,12 +239,12 @@ class TerrainSynth(unittest.TestCase):
         from material_tiles import runtime_blend
 
         for name in ("shale", "deep_water"):
-            document = {"materials": [{"sprite": f"content/data/gfx/terrain-{name}",
+            document = {"materials": [{"sprite": f"data/gfx/terrain-{name}",
                                        "variants": [{"frame": i} for i in range(synth.VARIANTS)]}]}
             prepared = seamless_sources(document, ROOT)
             tiles = [Image.open(ROOT / f"content/data/gfx/terrain-{name}{i}.png").convert("RGBA") for i in range(synth.VARIANTS)]
             for i, blended in enumerate(runtime_blend(tiles)):
-                self.assertEqual(blended.tobytes(), prepared[f"content/data/gfx/terrain-{name}{i}.png"].tobytes(), (name, i))
+                self.assertEqual(blended.tobytes(), prepared[f"data/gfx/terrain-{name}{i}.png"].tobytes(), (name, i))
 
     def test_periodic_materials_share_their_outer_ring_and_wrap(self):
         """Periodic variants join any variant: identical outer ring, and each
@@ -387,6 +389,20 @@ class TerrainBlockContracts(unittest.TestCase):
                 expected = synth._worley_from_points(points, metric, rotations, stretch, size=32)
                 actual = synth._worley_indexed(points, metric, rotations, stretch, size=32)
                 self.assertEqual(actual, expected)
+
+    def test_catalog_merge_keeps_keys_authored_elsewhere(self):
+        previous = {"key": "loam", "sprite": "old", "decor": {"d": 1}, "surf": {"s": 2},
+                    "overlay": {"sprite": "data/gfx/terrain-glint"}, "stale": True}
+        document = {"materials": [previous, {"key": "dirt", "sprite": "dirt"}], "bindings": {"loam": "loam"}}
+        fragment = {"materials": [{"key": "loam", "sprite": "new"}, {"key": "moss", "sprite": "moss"}],
+                    "bindings": {"loam": "loam", "moss": "moss"}}
+        merged = synth.merge_catalog(document, fragment)
+        loam, dirt, moss = merged["materials"]
+        self.assertEqual(loam, {"key": "loam", "sprite": "new", "decor": {"d": 1}, "surf": {"s": 2},
+                                "overlay": {"sprite": "data/gfx/terrain-glint"}})
+        self.assertEqual(dirt, {"key": "dirt", "sprite": "dirt"})
+        self.assertEqual(moss, {"key": "moss", "sprite": "moss"})
+        self.assertEqual(merged["bindings"], {"loam": "loam", "moss": "moss"})
 
     def test_sampling_uses_the_whole_block_and_wraps_at_512(self):
         size = 4 * synth.N

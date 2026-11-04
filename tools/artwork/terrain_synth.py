@@ -3652,6 +3652,11 @@ def catalog_fragment(results):
     }
 
 
+# Material keys authored outside terrain_synth.py in the blocks it owns: raised
+# decor (terrain_decor.py), shoreline surf and glint overlays (terrain_glints.py).
+AUTHORED_ELSEWHERE = ("decor", "surf", "overlay")
+
+
 def merge_catalog(document, fragment):
     """Replace or append the fragment's materials and bindings.
 
@@ -3663,9 +3668,9 @@ def merge_catalog(document, fragment):
     for block in fragment["materials"]:
         if block["key"] in by_key:
             previous = document["materials"][by_key[block["key"]]]
-            # Raised decor and shoreline surf are authored elsewhere; refreshing
-            # ground must retain them.
-            block = dict(block, **{k: previous[k] for k in ("decor", "surf") if k in previous})
+            # Raised decor, shoreline surf and glint overlays are authored
+            # elsewhere; refreshing ground must retain them.
+            block = dict(block, **{k: previous[k] for k in AUTHORED_ELSEWHERE if k in previous})
             document["materials"][by_key[block["key"]]] = block
         else:
             document["materials"].append(block)
