@@ -5722,6 +5722,8 @@ Hareharrizko lauzak
 Apar-harrizko eremua
 [frozen_lake]
 Laku izoztua
+[wind_swept_snow]
+Haizeak eramandako elurra
 [terrain group water]
 Ura
 [terrain group sand]

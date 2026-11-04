@@ -5722,6 +5722,8 @@ Sandsteinplatten
 Bimssteinfeld
 [frozen_lake]
 Zugefrorener See
+[wind_swept_snow]
+Verwehter Schnee
 [terrain group water]
 Wasser
 [terrain group sand]

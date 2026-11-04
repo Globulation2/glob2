@@ -5698,6 +5698,8 @@ Vigae vya mawe ya mchanga
 Uwanda wa mawe ya pumisi
 [frozen_lake]
 Ziwa lililoganda
+[wind_swept_snow]
+Theluji iliyopeperushwa na upepo
 [terrain group water]
 Maji
 [terrain group sand]

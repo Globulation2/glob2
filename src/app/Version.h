@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 195
+#define VERSION_MINOR 196
+// version 196 adds built-in wind-swept snow; custom terrain IDs move up by one.
 // version 195 adds built-in sandstone tiles, pumice field and frozen lake; custom terrain IDs move up by three.
 // version 194 lets replenishment couriers finish trips before demand-driven dismissal; save encoding is unchanged.
 // version 193 adds the saved adaptive prestige pipeline limit.

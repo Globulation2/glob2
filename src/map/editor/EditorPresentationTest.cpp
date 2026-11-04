@@ -167,7 +167,8 @@ TEST_SUITE("EditorPresentation")
 		CHECK(phone.content.y + phone.content.h <= phone.modeBar.y);
 		CHECK(phone.mapButton().w >= globalContainer->standardFont->getStringWidth("Minimap") *
 			gfx->textUnitsPerPoint() + 8 * gfx->logicalUnitsPerPoint());
-		for (const char *terrain : {"lush_grass", "dry_grass", "dune_sand", "pale_sand", "sandstone", "pumice", "frozen_lake"})
+		for (const char *terrain : {"lush_grass", "dry_grass", "dune_sand", "pale_sand", "sandstone", "pumice", "frozen_lake",
+								 "wind_swept_snow"})
 		{
 			CAPTURE(terrain);
 			editor.performAction(std::string("select terrain ") + terrain);

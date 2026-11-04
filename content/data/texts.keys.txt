@@ -2848,6 +2848,7 @@
 [sandstone]
 [pumice]
 [frozen_lake]
+[wind_swept_snow]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]
