@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 196
+#define VERSION_MINOR 197
+// version 197 adds built-in weathered sandstone; custom terrain IDs move up by one.
 // version 196 adds built-in wind-swept snow; custom terrain IDs move up by one.
 // version 195 adds built-in sandstone tiles, pumice field and frozen lake; custom terrain IDs move up by three.
 // version 194 lets replenishment couriers finish trips before demand-driven dismissal; save encoding is unchanged.

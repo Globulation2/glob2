@@ -5724,6 +5724,8 @@ Camp de pedra tosca
 Llac glaçat
 [wind_swept_snow]
 Neu escombrada pel vent
+[weathered_sandstone]
+Gres erosionat
 [terrain group water]
 Aigua
 [terrain group sand]

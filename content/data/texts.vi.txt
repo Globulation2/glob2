@@ -5724,6 +5724,8 @@ Bãi đá bọt
 Hồ đóng băng
 [wind_swept_snow]
 Tuyết gió thổi
+[weathered_sandstone]
+Sa thạch phong hóa
 [terrain group water]
 Nước
 [terrain group sand]

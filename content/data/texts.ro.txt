@@ -5724,6 +5724,8 @@ Câmp de piatră ponce
 Lac înghețat
 [wind_swept_snow]
 Zăpadă spulberată de vânt
+[weathered_sandstone]
+Gresie erodată
 [terrain group water]
 Apă
 [terrain group sand]

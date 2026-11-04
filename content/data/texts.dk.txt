@@ -5724,6 +5724,8 @@ Pimpstensfelt
 Frossen sø
 [wind_swept_snow]
 Snefygning
+[weathered_sandstone]
+Forvitret sandsten
 [terrain group water]
 Vand
 [terrain group sand]

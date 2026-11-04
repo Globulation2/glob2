@@ -6840,6 +6840,8 @@ GL மட்டும்
 உறைந்த ஏரி
 [wind_swept_snow]
 காற்றடித்த பனி
+[weathered_sandstone]
+அரிக்கப்பட்ட மணற்கல்
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]
