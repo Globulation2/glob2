@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="1" errors="0" skipped="0"><testsuite name="UnitHighResolutionCache"><testcase classname="UnitHighResolutionCache" name="HD layer mappings and fallbacks in software rendering" time="0.170404" status="run" />
+  <testcase classname="UnitHighResolutionCache" name="HD layer mappings; fallbacks; zoom and shader cache behaviour [display]" time="0.633578" status="run">
+      <failure message="false" type="REQUIRE">
+src/unit/render/UnitHighResolutionCacheTest.cpp:33:
+REQUIRE( static_cast&lt;bool&gt;(bool(experimentRotated[i]) == (high &amp;&amp; bool(rotated[i]))) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: HD team layer mapping at frame 2016
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

@@ -1,0 +1,77 @@
+{
+  "pid": 1898324,
+  "revision": "3a7b17eab47a9eb704464f41d29f6d02b54cb579",
+  "phase": "finished; inspect production/source/release full HD cache qualification",
+  "results": [
+    {
+      "name": "production-pack-contracts",
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_artwork_package.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.1
+    },
+    {
+      "name": "release-asset-export",
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+        "-c",
+        "from tools.package_assets import export_assets; from pathlib import Path; export_assets(Path.cwd(),Path('/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/harvest-hd-final-validation/runtime-assets'),platform='linux',optimized=True,lossy=True,jobs=2)"
+      ],
+      "exit_code": 0,
+      "seconds": 535.4
+    },
+    {
+      "name": "complete-hd-cache-case",
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/terrain-master-current/build/ci-latest-release",
+        "--filter",
+        "UnitHighResolutionCache/*",
+        "--jobs",
+        "1",
+        "--display-jobs",
+        "1",
+        "--fullscreen",
+        "--timeout",
+        "900",
+        "--junit",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/harvest-hd-final-validation/junit.xml",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/harvest-hd-final-validation/artifacts"
+      ],
+      "exit_code": 0,
+      "seconds": 2.7
+    }
+  ],
+  "note": "Source3af+HDmetadatarepair;productionpackinventoryvalidated15687records;noPNGbyteschanged. Fullreleaseexportseparateoutput,j2. Afterexportwait1897288nativeproducerfinishbeforeHDtest;no binary/sourceeditsunderactivework.",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/terrain-master-current/build/ci-latest-release",
+    "--filter",
+    "UnitHighResolutionCache/*",
+    "--jobs",
+    "1",
+    "--display-jobs",
+    "1",
+    "--fullscreen",
+    "--timeout",
+    "900",
+    "--junit",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/harvest-hd-final-validation/junit.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/harvest-hd-final-validation/artifacts"
+  ],
+  "child_pid": 1988042
+}

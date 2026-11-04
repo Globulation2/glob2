@@ -1,0 +1,21 @@
+{
+  "tested_asset_revision": "3a7b17eab47a9eb704464f41d29f6d02b54cb579",
+  "current_repair_revision": "212ad788a91ce427a39484ea3dd794cd906735f2",
+  "current_base": "c6c6a6d090e619adfbea12c5068f875bf91af2d9",
+  "approved_original": "972dd6f9b3",
+  "restored_frame_count": 512,
+  "current_existing_runtime_metadata_preserved_exactly": true,
+  "all_restored_PNG_hashes_match_approved": true,
+  "runtime_or_source_PNG_bytes_changed": false,
+  "current_production_full_inventory_records": 15943,
+  "unit_code_changes_since_native_proof": false,
+  "native_HD_software_and_GPU_cases": {
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "artwork_contracts": 7,
+  "release_export": "complete linux optimized lossy export passed; source/export audits retained",
+  "limitations": "Full native suite not rerun on current master; current rebase adds unrelated terrain pack rows. Runtime/source production metadata and complete package index refreshed for all current rows; unit image bytes/code/metadata inputs unchanged from passing qualification. Initial incorrect asset-root attempts remain retained."
+}
