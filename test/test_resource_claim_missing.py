@@ -1,4 +1,4 @@
-import unittest,tempfile,json,hashlib,struct,copy
+import unittest,tempfile,json,hashlib,struct,copy,gzip,subprocess,sys,os
 from pathlib import Path
 from tools.tournaments.claim_capture_missing import *
 class MissingCaptureTests(unittest.TestCase):
@@ -47,6 +47,20 @@ class MissingCaptureTests(unittest.TestCase):
   b['capabilities']['resource_claims_deep_missing_version']=1
   args=EngineJob('game').command(j,b,'/tmp/attempt',{'map':'fixture.map'});self.assertIn('--resource-claims-deep-missing',args);self.assertEqual(args[args.index('--resource-claims-missing-sample-every')+1],'32')
   del j['config']['resource_claims_missing_sample_every'];args=EngineJob('game').command(j,b,'/tmp/attempt',{'map':'fixture.map'});self.assertEqual(args[args.index('--resource-claims-missing-sample-every')+1],'256')
+ def test_isolated_zip_collects_v4_and_missing_stream_independently(self):
+  from tools.tournaments.transport import worker_archive
+  from test_resource_claim_scalable import empty
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);output=root/'attempt/output';missing=output/'resource-claims-missing';missing.mkdir(parents=True);deep=output/'resource-claims-deep';deep.mkdir()
+   context={'source_revision':'r','game_id':'g'};mm=self.fixture(missing);mm['context']=context;(missing/'manifest.json').write_text(json.dumps(mm));dm=empty();dm['context']=context;(deep/'manifest.json').write_text(json.dumps(dm))
+   schema={'kind':'schema','version':1,'patterns':['fixture'],'policies':['first_available'],'sample_every':1000,'max_samples':10000,'max_output_bytes':1048576,'outcome_columns':['pattern','policy','source','access','probe','weighted_cost','probes','new_destination_reads','fallback','access_weighted_cost']}
+   with gzip.open(output/'resource-claims-shadow.jsonl.gz','wt') as stream:
+    for row in [schema,{'kind':'summary','complete':True,'submitted':0,'completed':0}]:stream.write(json.dumps(row)+'\n')
+   (output/'result.json').write_text(json.dumps({'schema_version':1,'status':'completed','resolved':{'material_destinations_enabled':True},'resource_claims_shadow':{'schema_version':1,'enforced':False,'submitted':0,'completed':0}}))
+   job={'config':{'material_destinations':True,'resource_claims_shadow':{'sample_every':1000,'max_samples':10000,'max_bytes':1048576},'resource_claims_deep_context':context,'resource_claims_deep_stratified':True,'resource_claims_deep_top_k':16,'resource_claims_deep_missing':True}}
+   (root/'job.json').write_text(json.dumps(job));archive=root/'worker.pyz';worker_archive(archive)
+   code="import sys,json;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from tournaments.jobs import EngineJob;assert EngineJob('game').collect(json.loads(Path(sys.argv[2]).read_text()),sys.argv[3])['status']=='completed';assert 'numpy' not in sys.modules"
+   env=dict(os.environ);env.pop('PYTHONPATH',None);env.pop('PYTHONHOME',None);run=subprocess.run([sys.executable,'-I','-S','-c',code,str(archive),str(root/'job.json'),str(root/'attempt')],cwd=root,env=env,capture_output=True,text=True);self.assertEqual(run.returncode,0,run.stderr)
  def test_tamper_and_extra_file_reject(self):
   with tempfile.TemporaryDirectory() as tmp:
    p=Path(tmp);m=self.fixture(p);f=p/'event-04.bin';b=f.read_bytes();f.write_bytes(b[:-1]+bytes([b[-1]^1]))

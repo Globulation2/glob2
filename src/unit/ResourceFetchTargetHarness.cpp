@@ -1420,7 +1420,7 @@ TEST_CASE("missing destination observer distinguishes absent fields from stale i
     REQUIRE(labels->x[map.coordToIndex(8,8)]>=map.getW());
     const auto root=glob2test::artifactDir();const auto path=(root/"missing-observer.jsonl.gz").string();std::filesystem::remove(path);
     std::filesystem::remove_all(root/"resource-claims-deep");std::filesystem::remove_all(root/"resource-claims-missing");
-    ResourceClaims::Probe::Config config;config.sampleEvery=1;config.deepStratified=true;config.deepTopFour=true;config.deepMissing=true;config.missingSampleEvery=1;
+    ResourceClaims::Probe::Config config;config.sampleEvery=1;config.deepStratified=true;config.deepTopFour=true;config.deepTopK=16;config.deepMissing=true;config.missingSampleEvery=1;
     config.deepContext=nlohmann::json{{"source_revision","diagnostic"},{"bundle_id","diagnostic"},{"cohort_id","missing-wire"},{"game_id","missing-finite"}}.dump();
     auto probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);
     const auto before=f.game.checkSum();probe->missingDecision(f.game,*u,nullptr,UINT32_MAX,0,true);CHECK(f.game.checkSum()==before);CHECK(probe->metrics().decisions==0);
