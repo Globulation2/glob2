@@ -1,0 +1,29 @@
+{
+  "base": "eacd8450ff6822becc0ad51b3d187aeee1eaffc3",
+  "head": "540fbcf03deaf5946aaacee2c38961bb28c933f8",
+  "previous": "7a1f5b49e095b4b4d08cfb6067e6cde0ddbaa4bf",
+  "native_revision": "e28aea45f10dc21f15e23cef84da94e55d888fec",
+  "scope": "five complete expected trace/hash files; original saves and all checker fields/ticks untouched",
+  "files": {
+    "test/maxima/fixtures/save-continuation/expected-units-30000-30512.json": {
+      "sha256": "9ddfc78e9bd66034eec7fe680a40ad540104ab164850b91e0757c9056a56626b",
+      "bytes": 40451
+    },
+    "test/fixtures/scoped-gradients/gd-large-4ai-1024.units.checksums.gz": {
+      "sha256": "c4b0266856e5f917155ca549c7c59aa483b459959a77a29b938086c9fb8fa4e6",
+      "bytes": 373618
+    },
+    "test/fixtures/scoped-gradients/gd-bigarena-2048.units.checksums.gz": {
+      "sha256": "8dfd8196ad0722a0e34ba703f84410d7c44998b8929199fdae01b21aa9d2bc43",
+      "bytes": 2176194
+    },
+    "test/fixtures/scoped-gradients/numbi-castor-2048.units.checksums.gz": {
+      "sha256": "752aa409e1d6a304ebec8994beabd7f9bec3533d7ca8b555c451bad0b92d307d",
+      "bytes": 297196
+    },
+    "test/fixtures/scoped-gradients/v108-reload-256.units.checksums.gz": {
+      "sha256": "5c8030cc97d300aec8d037276c925b3f168537b09d2119c0ef91c228d76c3aa7",
+      "bytes": 121973
+    }
+  }
+}
