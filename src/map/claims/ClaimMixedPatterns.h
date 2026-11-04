@@ -47,6 +47,61 @@ template<std::size_t N> constexpr auto allFrames(const std::array<Entry,N>& entr
     return result;
 }
 inline constexpr auto IllustrativeFrames=allFrames(Illustrative);
+// Frozen research candidates trained on3424 decisions; no default policy change.
+// Source summary SHA256: 27a139b4b1e00cdd1888515bb6d2989a215dbb8a4f38588469816a8f10ad1c53
+inline constexpr std::string_view LearnedR24Support4Name="discovery3424-r24-support4-v1";
+inline constexpr std::array<Entry,21> LearnedR24Support4{{
+    {0,0,0},
+    {1,0,1},
+    {-1,7,1},
+    {13,-5,1},
+    {23,5,1},
+    {-21,-9,0},
+    {0,21,1},
+    {15,-17,1},
+    {6,-7,1},
+    {-11,12,1},
+    {-20,12,0},
+    {22,-4,1},
+    {1,23,1},
+    {-13,-20,0},
+    {1,1,3},
+    {0,2,3},
+    {-13,20,0},
+    {2,0,3},
+    {0,-24,0},
+    {14,15,1},
+    {0,-1,3},
+}};
+inline constexpr auto LearnedR24Support4Frames=allFrames(LearnedR24Support4);
+// Source summary SHA256: 51e2b063e813bec7a7dda5178ef02f911b9d08cccc4bec72fd75abf8a2c85c4e
+inline constexpr std::string_view LearnedR32Support4Name="discovery3424-r32-support4-v1";
+inline constexpr std::array<Entry,22> LearnedR32Support4{{
+    {0,0,0},
+    {1,0,1},
+    {-1,7,1},
+    {13,-5,1},
+    {29,11,1},
+    {-6,31,1},
+    {-21,-9,0},
+    {6,-7,1},
+    {19,-21,1},
+    {24,21,1},
+    {-11,12,1},
+    {-5,-31,1},
+    {3,31,1},
+    {-30,-8,0},
+    {21,2,1},
+    {-27,14,0},
+    {20,-24,1},
+    {1,1,3},
+    {29,-7,0},
+    {0,4,3},
+    {2,0,3},
+    {6,-28,0},
+}};
+inline constexpr auto LearnedR32Support4Frames=allFrames(LearnedR32Support4);
+inline constexpr std::array<std::string_view,3> Names{IllustrativeName,LearnedR24Support4Name,LearnedR32Support4Name};
 // Powers-of-two map dimensions and valid origin are guaranteed by the engine.
 // Missing/coincident nearest is identity; half-world ties are negative.
 constexpr unsigned frame(unsigned width,unsigned height,unsigned origin,unsigned nearest)
@@ -59,7 +114,10 @@ constexpr unsigned frame(unsigned width,unsigned height,unsigned origin,unsigned
 }
 inline View view(std::string_view name,unsigned direction)
 {
-    if(name!=IllustrativeName || direction>=8)return {};
-    return IllustrativeFrames[direction].view();
+    if(direction>=8)return {};
+    if(name==IllustrativeName)return IllustrativeFrames[direction].view();
+    if(name==LearnedR24Support4Name)return LearnedR24Support4Frames[direction].view();
+    if(name==LearnedR32Support4Name)return LearnedR32Support4Frames[direction].view();
+    return {};
 }
 }

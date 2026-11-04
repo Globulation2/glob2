@@ -1194,10 +1194,11 @@ int runHeadlessCommand(const Cli::Request &request)
                 policyPatterns.push_back({{"name",pattern.name},{"digest",canonical.at("pattern_digest")}});
             }
             nlohmann::json mixedPatterns=nlohmann::json::array();
+            for(const auto name:ResourceClaims::Mixed::Names)
             for(const auto frame:{ResourceClaims::ClaimPolicyConfig::PatternFrame::MapAxes,
                                   ResourceClaims::ClaimPolicyConfig::PatternFrame::NearestD4}) {
                 ResourceClaims::ClaimPolicyConfig config;config.sourceVersion=5;
-                config.pattern=std::string(ResourceClaims::Mixed::IllustrativeName);config.patternFrame=frame;
+                config.pattern=std::string(name);config.patternFrame=frame;
                 const auto canonical=nlohmann::json::parse(config.canonicalJson());
                 mixedPatterns.push_back({{"name",config.pattern},{"format",canonical.at("pattern_format")},
                     {"frame",canonical.at("pattern_frame")},{"digest",canonical.at("pattern_digest")}});
