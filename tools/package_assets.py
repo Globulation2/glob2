@@ -937,6 +937,7 @@ def _export_assets(
         for sprite, plan in sheets.items():
             if sprite in native_futures:
                 lines = ["GLOB2_SPRITES 2"]
+                index_groups = []
                 index_path = Path(sprite + ".sheet")
                 for name, future in native_futures[sprite].items():
                     directory, result, cache_hit = future.result()
@@ -948,6 +949,7 @@ def _export_assets(
                     if sprite in terrain_sprites:
                         terrain_selections[sprite] = audit
                     group = native_groups[sprite][name]
+                    index_groups.append(len(group["frames"]))
                     for index, _, layer, path in group["frames"]:
                         key = str(index) if cache_hit else index
                         lines.append(f"{result['refs'][key]} {'rotated' if layer == 5 else 'image'} {index}")
@@ -976,7 +978,8 @@ def _export_assets(
                 digest = hashlib.sha256(blob).hexdigest()
                 records.append(dict(source=index_path.as_posix(), output=index_path.as_posix(),
                     source_sha256=digest, output_sha256=digest, source_bytes=0,
-                    output_bytes=len(blob), lossy=False, recipe=packed_sprite_assets.PACK_RECIPE))
+                    output_bytes=len(blob), lossy=False, recipe=packed_sprite_assets.PACK_RECIPE,
+                    sprite_index_groups=index_groups))
                 continue
             if sprite in encoded_terrain:
                 pages, terrain_selections[sprite] = encoded_terrain[sprite].result()

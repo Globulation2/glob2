@@ -284,6 +284,35 @@ class WebAssetPlanTests(unittest.TestCase):
 
 
 class WebAssetPackageTests(unittest.TestCase):
+    def test_startup_sprite_index_ships_its_scored_row_blocks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            source, output = work / "runtime", work / "served"
+            relative = "data/gfx/unit.sheet"
+            header = b"GLOB2_SPRITES 2\n"
+            groups = [b"@walk.webp,0,0,8,8 image 0\n@walk.webp,8,0,8,8 image 1\n",
+                      b"@turn.webp,0,0,8,8 image 2\n"]
+            for name in web_assets.sim_data_files(ROOT):
+                target = source / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes((ROOT / "content" / name).read_bytes())
+            index = source / relative
+            index.parent.mkdir(parents=True, exist_ok=True)
+            index.write_bytes(header + b"".join(groups))
+            source.with_suffix(".json").write_text(json.dumps({"files": [
+                {"output": relative, "sprite_index_groups": [2, 1]},
+            ]}))
+            manifest = web_assets.write_packages(ROOT, output, source)
+            game = next(entry for entry in manifest["packages"] if entry["name"] == "game")
+            blocks = []
+            for part in game["parts"]:
+                for path, start, end, *fragment in part["files"]:
+                    if path == "/" + relative:
+                        self.assertEqual(fragment, [True])
+                        blocks.append((output / part["url"]).read_bytes()[start:end])
+            self.assertEqual(blocks, [header, *groups])
+            self.assertEqual(game["size"], sum(part["size"] for part in game["parts"]))
+
     def test_split_hd_index_and_video_sidecars_stay_with_their_family(self):
         with tempfile.TemporaryDirectory() as directory:
             work = Path(directory)

@@ -143,21 +143,40 @@ class Glob2AssetLoader {
   install(name, contents) {
     const entry = this.package(name);
     const directories = new Set();
+    const fragments = new Map();
+    const installFile = (path, bytes) => {
+      const slash = path.lastIndexOf('/');
+      const directory = path.slice(0, slash) || '/';
+      if (!directories.has(directory)) {
+        this.host.fs.createPath('/', directory.slice(1), true, true);
+        directories.add(directory);
+      }
+      // A later package may replace a file (the full font replaces the core
+      // package's subset); the game reopens it when told (takeInstalled).
+      if (this.host.fs.analyzePath(path).exists) this.host.fs.unlink(path);
+      // The file system owns the slice; packages are never written back.
+      this.host.fs.createDataFile(directory, path.slice(slash + 1), bytes, true, true, true);
+    };
     entry.parts.forEach((part, index) => {
-      for (const [path, start, end] of part.files) {
-        const slash = path.lastIndexOf('/');
-        const directory = path.slice(0, slash) || '/';
-        if (!directories.has(directory)) {
-          this.host.fs.createPath('/', directory.slice(1), true, true);
-          directories.add(directory);
+      for (const [path, start, end, fragment] of part.files) {
+        const bytes = contents[index].subarray(start, end);
+        if (fragment) {
+          if (!fragments.has(path)) fragments.set(path, []);
+          fragments.get(path).push(bytes);
+        } else {
+          installFile(path, bytes);
         }
-        // A later package may replace a file (the full font replaces the core
-        // package's subset); the game reopens it when told (takeInstalled).
-        if (this.host.fs.analyzePath(path).exists) this.host.fs.unlink(path);
-        // The file system owns the slice; packages are never written back.
-        this.host.fs.createDataFile(directory, path.slice(slash + 1), contents[index].subarray(start, end), true, true, true);
       }
     });
+    for (const [path, blocks] of fragments) {
+      const bytes = new Uint8Array(blocks.reduce((size, block) => size + block.length, 0));
+      let offset = 0;
+      for (const block of blocks) {
+        bytes.set(block, offset);
+        offset += block.length;
+      }
+      installFile(path, bytes);
+    }
     this.states[name] = 'ready';
     this.installed.push(name);
   }

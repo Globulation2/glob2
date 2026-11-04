@@ -68,6 +68,18 @@ test('installs a package into the file system with byte progress', async () => {
   assert.equal(loader.state().core, 'ready');
 });
 
+test('installs a sprite index once with its fragments in manifest order', () => {
+  const environment = host();
+  const assets = manifest();
+  const file = '/data/gfx/unit.sheet';
+  const blocks = ['GLOB2_SPRITES 2\n', '@walk.webp,0,0,8,8 image 0\n', '@turn.webp,0,0,8,8 image 1\n'];
+  assets.packages[0].parts = blocks.map(block => ({files: [[file, 0, block.length, true]]}));
+  const loader = new Loader(assets, environment);
+  loader.install('core', blocks.map(text));
+  assert.deepEqual(Object.fromEntries(environment.files), {[file]: blocks.join('')});
+  assert.equal(loader.state().core, 'ready');
+});
+
 test('a later package replaces a core file and is reported once to the game', async () => {
   const replacing = manifest();
   replacing.packages.push({name:'font-cjk', optional:true, size:3, parts:[

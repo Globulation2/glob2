@@ -162,9 +162,11 @@ RGB errors over pixels with nonzero source alpha in the Q75 sheets sets the
 group's error ceiling. Video stores nonopaque alpha in separate zlib blocks.
 
 The exporter uses stored bytes for native packages and Brotli transfer sizes
-for browser sprite payload parts. Terrain family indexes are measured as
-separate parts. For unit indexes shared across groups, each score includes an
-estimate from compressing the group's rows independently. The audit records size, error, rejections,
+for browser sprite payload parts. Terrain family indexes and startup sprite
+index blocks are delivered as separately scored parts. The browser assembles
+startup indexes at installation. For shared optional HD unit indexes, each
+score estimates the index contribution by compressing the group's rows
+independently. The audit records size, error, rejections,
 and whether the verified group came from cache. Equal scores prefer lossless
 WebP, then Q75 WebP, then H.264. The native compiled terrain fingerprint uses
 the decoded pixels of the winning candidate.

@@ -392,16 +392,33 @@ def write_packages(root, output, source=None):
     directory.mkdir(parents=True, exist_ok=True)
     packages, _, substitutes = plan(root, source)
     sprite_groups = {}
+    sprite_indexes = {}
     if source:
         try:
             audit = json.loads(Path(source).with_suffix('.json').read_text())
             sprite_groups = {item['output']: item['sprite_group']
                              for item in audit.get('files', []) if 'sprite_group' in item}
+            sprite_indexes = {item['output']: item['sprite_index_groups']
+                              for item in audit.get('files', []) if 'sprite_index_groups' in item}
         except (OSError, ValueError):
             pass
     manifest, written = {'version': MANIFEST_VERSION, 'packages': []}, set()
     for name, paths in packages.items():
         data = {path: contents(root, name, path, substitutes, source) for path in paths}
+        fragments = {}
+        for path in paths:
+            counts = sprite_indexes.get(path)
+            if not counts:
+                continue
+            header, *rows = data[path].splitlines(keepends=True)
+            if header != b'GLOB2_SPRITES 2\n' or any(count <= 0 for count in counts) or sum(counts) != len(rows):
+                raise ValueError(f'invalid packed sprite index partition: {path}')
+            fragments[path] = []
+            offset = 0
+            for count in counts:
+                fragments[path].append(b''.join(rows[offset:offset + count]))
+                offset += count
+        paths = [path for path in paths if path not in fragments]
         sizes = {path: len(value) for path, value in data.items()}
         if name == 'core':
             groups = [paths]
@@ -413,14 +430,27 @@ def write_packages(root, output, source=None):
                 partitions.setdefault(sprite_groups.get(path), []).append(path)
             groups = [part for partition in partitions.values() for part in split(partition, sizes, PART_BYTES)]
         entry = {'name': name, 'optional': name not in ('core', 'game'), 'size': sum(sizes.values()), 'parts': []}
-        for index, group in enumerate(groups):
-            blob, files = bytearray(), []
-            for path in group:
-                start = len(blob)
-                blob += data[path]
-                files.append(['/' + path, start, len(blob)])
+        # The browser reconstructs each index from the independently scored row blocks.
+        index_parts = []
+        if fragments:
+            header = b'GLOB2_SPRITES 2\n'
+            index_parts.append((header, [['/' + path, 0, len(header), True] for path in fragments]))
+            entry['size'] -= (len(fragments) - 1) * len(header)
+        for path, blocks in fragments.items():
+            for block in blocks:
+                index_parts.append((block, [['/' + path, 0, len(block), True]]))
+        part_count = len(groups) + len(index_parts)
+        for index in range(part_count):
+            if index < len(groups):
+                blob, files = bytearray(), []
+                for path in groups[index]:
+                    start = len(blob)
+                    blob += data[path]
+                    files.append(['/' + path, start, len(blob)])
+            else:
+                blob, files = index_parts[index - len(groups)]
             digest = hashlib.sha256(blob).hexdigest()[:16]
-            stem = name if len(groups) == 1 else f'{name}-{index + 1}'
+            stem = name if part_count == 1 else f'{name}-{index + 1}'
             filename = f'{stem}.{digest}.data'
             target = directory / filename
             if not target.is_file() or target.stat().st_size != len(blob):
