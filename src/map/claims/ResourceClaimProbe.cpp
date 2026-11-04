@@ -2,6 +2,7 @@
 #include "ResourceClaimProbe.h"
 #include "ResourceClaimOracle.h"
 #include "ResourceClaimDeepEvent.h"
+#include "ResourceClaimStratifiedDeep.h"
 #include "ClaimPolicyConfig.h"
 #include "ResourceClaimPatternEvaluation.h"
 #include "ResourceClaimPilotPatterns.h"
@@ -72,6 +73,8 @@ struct Probe::Impl
         std::shared_ptr<const gradient_kernel::OwnedDestinations> destinations;
         bool deepSelected=false;
         Uint64 deepPriority=0;
+        unsigned deepStratum=Experiment::DeepStratumCount;
+        Uint64 inputReservation=0;
         Json deepContext;
         std::vector<Uint8> deepBytes;
         bool metadataEnabled=false;
@@ -88,6 +91,82 @@ struct Probe::Impl
         ComputeExecutor::Batch batch;
         std::exception_ptr error;
     };
+    // Payload bounds, not allocator/RSS bounds. Five captured chunk-stamp
+    // planes are bounded by cell count; stock sidecars have at most one row/cell.
+    static constexpr Uint64 CellInputAllowance=128,OwnerInputAllowance=128;
+    static_assert(sizeof(MapState::ResourceCell)+sizeof(Uint32)+sizeof(std::array<Uint16,MaterialCount>)+
+        sizeof(MapState::OccupancyCell)+sizeof(MapState::AreaCell)+2*sizeof(Uint32)+
+        sizeof(Uint16)+sizeof(Uint16)+2*sizeof(Uint16)+sizeof(TerrainType)+5*sizeof(Uint64)<=CellInputAllowance);
+    static_assert(sizeof(std::pair<Owner,Claim>)+sizeof(Claimant)<=OwnerInputAllowance);
+    static Uint64 inputPayloadBytes(const Work& work)
+    {
+        const auto vectorBytes=[]<class T>(const std::vector<T>& v){return Uint64(v.capacity())*sizeof(T);};
+        const auto& w=work.world;
+        Uint64 bytes=sizeof(Work)+vectorBytes(work.owners)+vectorBytes(work.claimants)+vectorBytes(work.field);
+        if(w.terrain) {
+            bytes+=sizeof(*w.terrain)+vectorBytes(w.terrain->cellRules)+vectorBytes(w.terrain->stamps.chunks);
+            if(w.terrain->vertices)bytes+=vectorBytes(*w.terrain->vertices);
+        }
+        if(w.resources)bytes+=sizeof(*w.resources)+vectorBytes(w.resources->cells)+vectorBytes(w.resources->stockIndices)+vectorBytes(w.resources->stocks)+vectorBytes(w.resources->stamps.chunks);
+        if(w.occupancy)bytes+=sizeof(*w.occupancy)+vectorBytes(w.occupancy->cells)+vectorBytes(w.occupancy->stamps.chunks);
+        if(w.areas)bytes+=sizeof(*w.areas)+vectorBytes(w.areas->cells)+vectorBytes(w.areas->stamps.chunks);
+        if(w.visibility)bytes+=sizeof(*w.visibility)+vectorBytes(w.visibility->discovered)+vectorBytes(w.visibility->visible)+vectorBytes(w.visibility->stamps.chunks);
+        if(w.rules) {
+            bytes+=sizeof(*w.rules)+vectorBytes(w.rules->named)+vectorBytes(w.rules->experiments);
+            for(const auto& row:w.rules->named)bytes+=row.first.capacity();
+            for(const auto& row:w.rules->experiments)bytes+=row.capacity();
+        }
+        const auto selectionBytes=[&](const BuildingUnitSelection& selection) {
+            Uint64 n=vectorBytes(selection.keys)+vectorBytes(selection.resolved);
+            for(const auto& key:selection.keys)n+=key.capacity();
+            return n;
+        };
+        const auto mapBytes=[](const auto& entries) {
+            Uint64 n=0;for(const auto& entry:entries)n+=sizeof(entry)+entry.first.capacity();
+            return n; // Tree-node links/allocator overhead explicitly excluded.
+        };
+        const auto semanticsBytes=[&](const BuildingSemantics& semantics) {
+            Uint64 n=selectionBytes(semantics.admittedUnits)+selectionBytes(semantics.feeding.units)+selectionBytes(semantics.healing.units);
+            for(const auto& units:semantics.attractionUnits)n+=selectionBytes(units);
+            for(const auto& training:semantics.training)n+=selectionBytes(training.units);
+            const auto& production=semantics.production;
+            return n+vectorBytes(production.recipes)+vectorBytes(production.enabledUnits)+vectorBytes(production.initialRatios)+
+                mapBytes(production.additionalRecipes)+mapBytes(production.additionalInitialRatios)+
+                mapBytes(semantics.additionalProjectileDamage)+vectorBytes(semantics.resolvedProjectileDamage)+
+                semantics.market.suppliesStockExperiment.capacity()+semantics.market.fetchesStockExperiment.capacity();
+        };
+        const auto typeBytes=[&](const BuildingType& type) {
+            return type.type.capacity()+type.gameSprite.capacity()+type.miniSprite.capacity()+type.key.capacity()+
+                type.previousKey.capacity()+type.nextKey.capacity()+type.requiredExperiment.capacity()+
+                semanticsBytes(type.semantics)+type.presentation.displayName.capacity()+
+                type.presentation.skinSlot.capacity()+type.presentation.connectionGroup.capacity();
+        };
+        if(w.catalogs) {
+            bytes+=sizeof(*w.catalogs)+w.catalogs->buildingFingerprint.capacity();
+            if(w.catalogs->buildings) {
+                bytes+=vectorBytes(*w.catalogs->buildings);
+                for(const auto& kind:*w.catalogs->buildings)
+                    bytes+=kind.key.capacity()+kind.legacyType.capacity()+typeBytes(kind.resolvedType)+semanticsBytes(kind.semantics);
+            }
+            if(w.catalogs->typeDefinitions) {
+                bytes+=vectorBytes(*w.catalogs->typeDefinitions);
+                for(const auto& type:*w.catalogs->typeDefinitions)bytes+=typeBytes(type);
+            }
+        }
+        if(w.rules && w.rules->configuration) {
+            const auto& config=*w.rules->configuration;
+            bytes+=sizeof(config)+config.getBuildingCatalogSnapshot().capacity()+vectorBytes(config.buildingExperimentKeys())+vectorBytes(config.resourceExperiments());
+            for(const auto& key:config.buildingExperimentKeys())bytes+=key.capacity();
+            for(const auto& experiment:config.resourceExperiments())bytes+=experiment.key.capacity()+experiment.label.capacity()+experiment.help.capacity();
+            for(int team=0;team<Team::MAX_COUNT;++team)bytes+=config.getAIConfig(team).capacity()+config.getBasePlayer(team).name.capacity();
+        }
+        if(work.destinations)bytes+=Uint64(work.destinations->cells)*2*sizeof(Uint16);
+        // Bound serialized metadata separately; JSON nodes/allocator bookkeeping,
+        // shared registries/catalog assets and snapshot-pool retention are outside payload accounting.
+        const auto metadata=work.features.dump().size()+work.deepContext.dump().size()+work.policyConfig.dump().size()+work.policyDigest.size();
+        if(metadata>64*1024)throw std::runtime_error("stratified input metadata exceeds allowance");
+        return bytes+metadata;
+    }
     struct Baseline {
         SimulationSnapshot::Handle world;
         RouteProfile profile;
@@ -321,6 +400,9 @@ struct Probe::Impl
     bool finished=false;
     Json deepContext;
     Experiment::DeepReservoir deep;
+    std::array<Experiment::StratifiedDeepSlot,Experiment::DeepStratumCount> deepSlots;
+    static constexpr Uint64 InputPendingLimit=128ull*1024*1024;
+    Uint64 pendingInputReservations=0,peakInputReservations=0,inputAdmissionExclusions=0,inputIneligibleExclusions=0,peakInputPayload=0;
     Uint64 deepIneligibleNoXY=0;
     std::string deepDigest;
     std::optional<ClaimPolicyConfig> cachedPolicy;
@@ -328,9 +410,33 @@ struct Probe::Impl
     std::string cachedPolicyDigest;
     std::filesystem::path deepDirectory;
 
+    static std::string deepFilename(unsigned slot) {return "event-"+std::string(slot<10?"0":"")+std::to_string(slot)+".bin";}
+
     void deepManifest(bool complete)
     {
         if(config.deepContext.empty())return;
+        if(config.deepStratified) {
+            Json slots=Json::array();bool censored=false;
+            for(unsigned i=0;i<deepSlots.size();++i) {
+                const auto& slot=deepSlots[i];const auto& r=slot.reservoir;
+                censored|=slot.censored();
+                slots.push_back(Json{{"id",i},{"name",Experiment::DeepStratumNames[i]},
+                    {"file",deepFilename(i)},{"censored",slot.censored()},{"eligible",r.eligible},
+                    {"excluded_eligible_admission",r.excludedSampleCap+r.excludedQueueCap},
+                    {"excluded_eligible_sample_cap",r.excludedSampleCap},{"excluded_eligible_queue_cap",r.excludedQueueCap},
+                    {"excluded_input_bytes",slot.excludedInputBytes},{"reasons",slot.reasons},{"unknown_pool",slot.unknownPool},
+                    {"minimum_priority_ties",slot.minimumPriorityTies},{"priority",r.priority},{"ordinal",r.ordinal},
+                    {"captured_ordinal",r.writtenOrdinal},{"replacements",r.replacements},{"file_sha256",slot.digest}});
+            }
+            const auto value=Json{{"version",2},{"complete",complete},{"censored",censored},
+                {"design",Experiment::StratifiedDeepDesign},{"context",deepContext},{"strata",std::move(slots)},
+                {"ineligible_contested_no_xy",deepIneligibleNoXY},{"ordinary_missing_field",metrics.excludedMissingField},
+                {"encoded_pending_limit",Experiment::StratifiedEncodedPendingLimit},{"input_pending_limit",InputPendingLimit},{"peak_input_reservations",peakInputReservations},{"input_admission_exclusions",inputAdmissionExclusions},{"input_ineligible_exclusions",inputIneligibleExclusions},{"peak_input_payload",peakInputPayload},{"input_accounting","vector-capacity-payload-plus-serialized-metadata; excludes allocator/json-node/map/experiment-set-node/shared-registry/pool/oracle-scratch RSS"},
+                {"final_limit",Experiment::StratifiedFinalLimit},{"transient_limit",Experiment::StratifiedTransientLimit}}.dump();
+            if(value.size()>64*1024)throw std::runtime_error("stratified manifest exceeds allowance");
+            Experiment::replaceStratifiedDeepFile(deepDirectory/"manifest.json",std::span(reinterpret_cast<const Uint8*>(value.data()),value.size()));
+            return;
+        }
         const bool censored=deep.censored();
         const auto value=Json{{"version",1},{"complete",complete},{"censored",bool(censored)},{"design",Experiment::DeepDesign},
             {"eligible",deep.eligible},{"excluded_eligible_admission",deep.excludedSampleCap+deep.excludedQueueCap},{"excluded_eligible_sample_cap",deep.excludedSampleCap},{"excluded_eligible_queue_cap",deep.excludedQueueCap},{"ineligible_contested_no_xy",deepIneligibleNoXY},{"ordinary_missing_field",metrics.excludedMissingField},{"priority",deep.priority},{"ordinal",deep.ordinal},{"captured_ordinal",deep.writtenOrdinal},
@@ -342,6 +448,7 @@ struct Probe::Impl
     {
         if (!config.sampleEvery || !config.maxSamples || !config.maxOutputBytes || !config.maxPending || config.maxPending>8)
             throw std::invalid_argument("invalid resource claim probe limits");
+        if(config.deepStratified && config.deepContext.empty())throw std::invalid_argument("stratified capture requires deep context");
         if (std::filesystem::exists(this->path)) throw std::runtime_error("resource claim probe output already exists");
         if (std::filesystem::space(std::filesystem::path(this->path).parent_path()).available<16ull*1024*1024)
             throw std::runtime_error("insufficient free space for resource claim probe");
@@ -505,6 +612,10 @@ struct Probe::Impl
                 metadata["game_id"]=work.deepContext.at("game_id");
                 metadata["event_id"]=std::to_string(work.seed)+":"+std::to_string(work.ordinal);
                 metadata["priority"]=work.deepPriority;
+                if(work.deepStratum<Experiment::DeepStratumCount) {
+                    metadata["deep_design"]=Experiment::StratifiedDeepDesign;
+                    metadata["deep_stratum"]=work.deepStratum;
+                }
                 metadata["optimum"]=oracle.best?distanceJson(oracle.candidates[*oracle.best].distance):Json(nullptr);
                 auto provenance=work.deepContext;provenance.erase("game_id");
                 provenance["metadata_mode"]="published-xy";provenance["censored"]=false;
@@ -525,10 +636,16 @@ struct Probe::Impl
             if(work.error) std::rethrow_exception(work.error);
             write(work.line);
             if(work.deepSelected) {
-                Experiment::replaceDeepFile(deepDirectory/"event.bin",work.deepBytes);
-                deepDigest=Online::Sha256::toHex(Online::Sha256::of(work.deepBytes));
-                deep.written(work.ordinal);
+                const auto digest=Online::Sha256::toHex(Online::Sha256::of(work.deepBytes));
+                if(config.deepStratified) {
+                    Experiment::replaceStratifiedDeepFile(deepDirectory/deepFilename(work.deepStratum),work.deepBytes);
+                    auto& slot=deepSlots.at(work.deepStratum);slot.digest=digest;slot.reservoir.written(work.ordinal);
+                } else {
+                    Experiment::replaceDeepFile(deepDirectory/"event.bin",work.deepBytes);
+                    deepDigest=digest;deep.written(work.ordinal);
+                }
             }
+            pendingInputReservations-=work.inputReservation;
             ++metrics.completed; pending.pop_front();
         }
     }
@@ -539,7 +656,7 @@ Probe::Probe(ComputeExecutor& executor,std::string path,Config config):impl(std:
     Json patterns=Json::array();
     for (const auto& pattern:Experiment::pilotPatterns()) patterns.push_back(pattern.name);
     impl->write(Json{{"kind","schema"},{"version",1},{"timing_clock","worker-steady-clock-elapsed"},{"cohort","sampled-material-movement-and-pickup-decisions-before-choice"},
-        {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
+        {"deep_capture",config.deepContext.empty()?Json(nullptr):Json{{"design",config.deepStratified?Experiment::StratifiedDeepDesign:Experiment::DeepDesign},{"context",impl->deepContext},{"record_limit",Experiment::DeepRecordLimit},{"directory_limit",config.deepStratified?Experiment::StratifiedFinalLimit+Experiment::StratifiedTransientLimit:Experiment::DeepDirectoryLimit},{"free_reserve",Experiment::DeepFreeReserve}}},
         {"sample_every",config.sampleEvery},{"max_samples",config.maxSamples},{"max_pending",config.maxPending},
         {"movement_audit_version",1},
         {"movement_only",config.movementOnly},{"decision_sampling_enabled",!config.movementOnly},
@@ -836,17 +953,58 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
     if(!staleGoal && map.materialClaimLedger().available(unitOwner(unit.gid,unit.scriptIdentity),desired,capacity,yield.consumption==ResourceConsumption::Infinite))return {};
     ++metrics.contested;
     ++impl->materialContested.at(unit.destinationPurpose);
+    unsigned forbiddenNeighbors=0,forbiddenMaterialNeighbors=0,growingForbiddenMaterialNeighbors=0;
+    Uint32 forbiddenMaterialStock=0,growingForbiddenMaterialStock=0;
+    const auto collectNeighborhood=[&] {
+    for (int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx) {
+        if(!map.isForbidden(x+dx,y+dy,unit.owner->me))continue;
+        ++forbiddenNeighbors;
+        const auto neighbor=map.coordToIndex(x+dx,y+dy);
+        const auto stock=map.materialAmountAtSlot(neighbor,unit.destinationPurpose);
+        if(!stock)continue;
+        ++forbiddenMaterialNeighbors;forbiddenMaterialStock+=stock;
+        const auto resource=static_cast<ResourceId>(map.getResource(neighbor).type);
+        const auto& traits=map.resourceRegistry().properties(resource);
+        const auto& materialYield=map.resourceRegistry().yields(resource)[unit.destinationPurpose];
+        // Configured regrowth potential, not a prediction of habitat/fertility
+        // success or proof that an AI intentionally reserved this donor.
+        if(!game.gameHeader.isResourceGrowthDisabled() && traits.ecology!=ResourceEcology::None &&
+            traits.growthRate && materialYield.growthRate) {
+            ++growingForbiddenMaterialNeighbors;growingForbiddenMaterialStock+=stock;
+        }
+    }
+    };
+    if(impl->config.deepStratified)collectNeighborhood();
+    const unsigned stratum=impl->config.deepStratified?Experiment::deepStratum(game.stepCounter,
+        MaterialId(unit.destinationPurpose),pickupAccess!=UINT32_MAX,pooled,growingForbiddenMaterialNeighbors>0):Experiment::DeepStratumCount;
     bool deepSelected=false;
     Uint64 deepPriority=0;
     if(!impl->config.deepContext.empty() && destinations) {
         deepPriority=mix(0xD33FC1A17A93B561ull ^ mix(seed) ^ mix(game.stepCounter) ^ mix(unitOwner(unit.gid,unit.scriptIdentity)) ^ mix(ordinal));
-        deepSelected=impl->deep.consider(deepPriority,ordinal);
+        if(impl->config.deepStratified) {
+            deepPriority=mix(deepPriority ^ mix(0x5354524154410000ull+stratum));
+            deepSelected=impl->deepSlots[stratum].consider(deepPriority,ordinal,staleGoal?1:exhaustedPool?2:0,!staleGoal);
+        } else deepSelected=impl->deep.consider(deepPriority,ordinal);
     }
     if(!impl->config.deepContext.empty() && !destinations)++impl->deepIneligibleNoXY;
-    if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;if(!impl->config.deepContext.empty() && destinations)impl->deep.excluded(false);return {};}
-    if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;if(!impl->config.deepContext.empty() && destinations)impl->deep.excluded(true);return {};}
+    if(metrics.submitted>=impl->config.maxSamples){++metrics.excludedSampleLimit;if(!impl->config.deepContext.empty() && destinations)(impl->config.deepStratified?impl->deepSlots[stratum].reservoir:impl->deep).excluded(false);return {};}
+    if(impl->pending.size()>=impl->config.maxPending){++metrics.excludedQueueLimit;if(!impl->config.deepContext.empty() && destinations)(impl->config.deepStratified?impl->deepSlots[stratum].reservoir:impl->deep).excluded(true);return {};}
+    // Conservative copied-input reservation: every cell includes all 12 material
+    // stocks, planes and publication data; owner vectors have the engine unit cap.
+    // Shared immutable catalogs and worker oracle scratch are outside this input
+    // allowance and must be measured separately in calibration RSS.
+    const Uint64 inputReservation=impl->config.deepStratified?
+        Uint64(map.cellCount())*Impl::CellInputAllowance+Uint64(Impl::MaximumTrackedClaimants)*Impl::OwnerInputAllowance+1024*1024:0;
+    if(inputReservation>Impl::InputPendingLimit-impl->pendingInputReservations) {
+        ++impl->inputAdmissionExclusions;
+        if(destinations)++impl->deepSlots[stratum].excludedInputBytes;else ++impl->inputIneligibleExclusions;
+        return {};
+    }
     auto work=std::make_unique<Impl::Work>();
-    work->deepSelected=deepSelected;work->deepPriority=deepPriority;
+    work->inputReservation=inputReservation;
+    impl->pendingInputReservations+=inputReservation;
+    impl->peakInputReservations=std::max(impl->peakInputReservations,impl->pendingInputReservations);
+    work->deepSelected=deepSelected;work->deepPriority=deepPriority;work->deepStratum=stratum;
     if(deepSelected)work->deepContext=impl->deepContext;
     using C=SimulationSnapshot::Component;
     const auto mask=SimulationSnapshot::bit(C::Catalogs)|SimulationSnapshot::bit(C::Terrain)|SimulationSnapshot::bit(C::Resources)
@@ -855,6 +1013,8 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
     // Private exact-event capture: never reuse/invalidate the game's completed observation.
     work->world=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),mask,nullptr,&impl->storage,false);
     metrics.captureBytes+=impl->storage.bytesCopied-bytes;
+    if(inputReservation && impl->storage.bytesCopied-bytes>inputReservation)
+        throw std::runtime_error("stratified snapshot exceeds conservative input reservation; dataset incomplete");
     work->owners=map.materialClaimLedger().entries();
     work->selectedSource=Uint32(source);work->pooledGoal=pooled;work->desiredExclusive=exclusive;work->desiredInfinite=yield.consumption==ResourceConsumption::Infinite;
     if(map.activeClaimsEnabled()) {
@@ -916,25 +1076,7 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
         fieldKey=plane.key; fieldGeneration=plane.generation; break;
     }
     const auto properties=hasResource?map.resourcePropertiesByIndex(map.getResource(source).type):ResourceProperties{};
-    unsigned forbiddenNeighbors=0,forbiddenMaterialNeighbors=0,growingForbiddenMaterialNeighbors=0;
-    Uint32 forbiddenMaterialStock=0,growingForbiddenMaterialStock=0;
-    for (int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx) {
-        if(!map.isForbidden(x+dx,y+dy,unit.owner->me))continue;
-        ++forbiddenNeighbors;
-        const auto neighbor=map.coordToIndex(x+dx,y+dy);
-        const auto stock=map.materialAmountAtSlot(neighbor,unit.destinationPurpose);
-        if(!stock)continue;
-        ++forbiddenMaterialNeighbors;forbiddenMaterialStock+=stock;
-        const auto resource=static_cast<ResourceId>(map.getResource(neighbor).type);
-        const auto& traits=map.resourceRegistry().properties(resource);
-        const auto& materialYield=map.resourceRegistry().yields(resource)[unit.destinationPurpose];
-        // Configured regrowth potential, not a prediction of habitat/fertility
-        // success or proof that an AI intentionally reserved this donor.
-        if(!game.gameHeader.isResourceGrowthDisabled() && traits.ecology!=ResourceEcology::None &&
-            traits.growthRate && materialYield.growthRate) {
-            ++growingForbiddenMaterialNeighbors;growingForbiddenMaterialStock+=stock;
-        }
-    }
+    if(!impl->config.deepStratified)collectNeighborhood();
     Uint32 effectiveReserve=reserve;
     for(const auto claimant:map.materialClaimLedger().ownersAtSource(Uint32(source))) {
         if(claimant==unitOwner(unit.gid,unit.scriptIdentity))continue;
@@ -961,6 +1103,11 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
         {"field_key",fieldKey},{"field_generation",fieldGeneration},
         {"consumer_gid",unit.attachedBuilding?Json(unit.attachedBuilding->gid):Json(nullptr)},
         {"consumer_identity",unit.attachedBuilding?Json(unit.attachedBuilding->scriptIdentity):Json(nullptr)}};
+    if(inputReservation) {
+        const auto actual=Impl::inputPayloadBytes(*work);
+        if(actual>inputReservation)throw std::runtime_error("stratified input vector payload exceeds reservation; dataset incomplete");
+        impl->peakInputPayload=std::max(impl->peakInputPayload,actual);
+    }
     auto* raw=work.get(); impl->pending.push_back(std::move(work));
     const ComputeExecutor::Group group{1,{Impl::run,raw},ComputeExecutor::NoLane};
     try { raw->batch=impl->executor.submit(std::span(&group,1),ComputeExecutor::boundaryDue(Uint64(game.stepCounter)+1),

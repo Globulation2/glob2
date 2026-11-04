@@ -890,6 +890,37 @@ standard library; offline NumPy helpers are loaded separately. Verify collection
 from the actual archive with `python -I -S`, outside the checkout, so missing
 package files cannot be hidden by contributor imports.
 
+For stratified diagnostic acquisition, explicitly add
+`resource_claims_deep_stratified: true` alongside the context. This requires
+`resource_claims_deep_stratified_version: 2` and forwards
+`--resource-claims-deep-stratified`. Context alone retains the V1 behavior.
+V2 keeps one independent minimum per each of 16 disjoint bins: before tick 60000,
+food/fruit/other by movement/pickup; later, fruit/other by phase and food by
+pooled/protected-growing-proxy/other-or-unverified by phase. Pooled evidence takes
+precedence; the protected proxy means nearby forbidden requested-material stock
+with configured regrowth potential, not demonstrated growth or AI intent.
+Classification and population counts precede admission limits. Stale-goal pool
+interpretation remains explicitly unknown.
+
+V2 manifests retain every bin, including empty and censored bins, and bind each
+unchanged V1 binary record to its V2 stratum. The strict reader rejects any
+censored bin, inconsistent counts, missing minima or unexpected files. Reserve
+160 MiB final deep storage plus 24 MiB serialized replacement space, separately
+from ordinary traces and logs. Pending encoded payload is bounded by eight
+10 MiB records. A separate 128 MiB admission reservation bounds accounted input
+payload (vector capacities and serialized metadata); it is not an RSS limit.
+Allocator/JSON/map-node overhead, shared registries, retained snapshot pools and
+oracle scratch remain separate and require measured memory calibration. A
+reservation underestimate fails the capture rather than silently exceeding its
+accounted allowance.
+
+For uncensored bins, eligible-count expansion describes the ordinary sampled
+population under the independent hash-priority model; it does not correct unknown
+admission exclusions. Aggregate within game, then by independent parent world.
+Policy arms and multiple bins from the same world are dependent observations.
+The native disk writer requires the same 8 GiB free reserve; browser MEMFS tests
+of ordinary observation do not establish browser deep-file capture coverage.
+
 New-game claim cohorts explicitly freeze `material_destinations: true` and require
 the bundle's `material_destinations_version: 1` capability. This temporary mode
 forwards `--material-destinations` and cannot record replay output. Saved-state

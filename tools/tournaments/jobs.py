@@ -120,7 +120,7 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
@@ -153,6 +153,8 @@ class EngineJob:
             raise ValueError('movement-only observer excludes deep capture')
         if 'resource_claims_probe' in config and 'resource_claims_active' not in config and 'resource_claims_policy' not in config and 'save' not in job['inputs']:
             raise ValueError('active probe requires active new game or saved state')
+        if 'resource_claims_deep_stratified' in config and (config['resource_claims_deep_stratified'] is not True or 'resource_claims_deep_context' not in config):
+            raise ValueError('stratified capture requires explicit true and deep context')
         if 'resource_claims_deep_context' in config:
             context = config['resource_claims_deep_context']
             keys = {'source_revision', 'bundle_id', 'cohort_id', 'game_id'}
@@ -259,6 +261,8 @@ class EngineJob:
                 *(['game', 'run'] if self.kind == 'game' else ['map', 'study', str(job['config']['generator'])]),
                 '--output-dir', str(out), '--profile', 'glob2-tournament-' + Path(attempt_dir).name]
         config, outputs = job['config'], job['outputs']
+        if config.get('resource_claims_deep_stratified') and bundle.get('capabilities', {}).get('resource_claims_deep_stratified_version') != 2:
+            raise ValueError('bundle does not support stratified deep capture V2')
         if 'resource_claims_deep_context' in config and config['resource_claims_deep_context']['source_revision'] != bundle.get('source_revision'):
             raise ValueError('deep source revision differs from frozen bundle')
         for key,path in sorted(inputs.items()):
@@ -309,6 +313,8 @@ class EngineJob:
             if outputs.get('replay', False): args.append('--write-replay')
             if 'resource_claims_deep_context' in config:
                 add('--resource-claims-deep-context', json.dumps(config['resource_claims_deep_context'], separators=(',', ':')))
+                if config.get('resource_claims_deep_stratified'):
+                    args.append('--resource-claims-deep-stratified')
             if 'resource_claims_active' in config:
                 add('--resource-claims-active', config['resource_claims_active'])
             if 'resource_claims_policy' in config:
@@ -458,19 +464,27 @@ class EngineJob:
                 raise ValueError('oversized deep manifest')
             manifest = json.loads((deep / 'manifest.json').read_text())
             context = job['config']['resource_claims_deep_context']
-            validate_manifest(manifest)
-            if manifest.get('complete') is not True or manifest.get('context') != context or manifest.get('design') != DESIGN:
-                raise ValueError('deep completion/context attestation mismatch')
-            if manifest.get('censored') is not False:
-                raise ValueError('censored deep reservoir cannot enter policy dataset')
-            if type(manifest.get('eligible')) is not int or manifest['eligible'] < 0:
-                raise ValueError('invalid deep eligible count')
-            if manifest['eligible']:
-                metadata, _, _ = read_capture(deep / 'event.bin', manifest, expected_provenance={k:v for k,v in context.items() if k != 'game_id'})
-                if metadata.get('game_id') != context['game_id']:
-                    raise ValueError('deep game identity mismatch')
-            elif (deep / 'event.bin').exists():
-                raise ValueError('zero-eligible deep capture has event')
+            if job['config'].get('resource_claims_deep_stratified'):
+                from .claim_capture import read_stratified_captures
+                if manifest.get('context') != context:
+                    raise ValueError('stratified deep context mismatch')
+                for _, _, capture in read_stratified_captures(deep, manifest, expected_provenance={k:v for k,v in context.items() if k != 'game_id'}):
+                    if capture is not None and capture[0].get('game_id') != context['game_id']:
+                        raise ValueError('stratified deep game identity mismatch')
+            else:
+                validate_manifest(manifest)
+                if manifest.get('complete') is not True or manifest.get('context') != context or manifest.get('design') != DESIGN:
+                    raise ValueError('deep completion/context attestation mismatch')
+                if manifest.get('censored') is not False:
+                    raise ValueError('censored deep reservoir cannot enter policy dataset')
+                if type(manifest.get('eligible')) is not int or manifest['eligible'] < 0:
+                    raise ValueError('invalid deep eligible count')
+                if manifest['eligible']:
+                    metadata, _, _ = read_capture(deep / 'event.bin', manifest, expected_provenance={k:v for k,v in context.items() if k != 'game_id'})
+                    if metadata.get('game_id') != context['game_id']:
+                        raise ValueError('deep game identity mismatch')
+                elif (deep / 'event.bin').exists():
+                    raise ValueError('zero-eligible deep capture has event')
         if result.get('status') == 'completed' and 'resource_gradient_collection' in job['config']:
             collection=job['config']['resource_gradient_collection']
             if collection.get('contract') in _UNIFIED_COLLECTORS and result.get('adaptive_gradient_policy',{}).get('collector_contract')!=collection['contract']:
