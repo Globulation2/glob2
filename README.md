@@ -1,0 +1,11 @@
+# Merge verification: shared amphibious gradients
+
+Final source `064718088daf3861bec9de1dc9a007d1405d32df`, integrated base `4c3ea56450c5bb269a672319d4117eeae5b243b5`. Save/replay205, sim127, save floor58, network75.
+
+115native cases passed;5display cases skipped. All11fixture-generation cases passed independently, including one/fourparticipant execution, binary/text continuations and replay checks. Original19released/historical inputs were SHA256-pinned and unchanged. Updated only current-engine JavaScript deep168 traces and current-forward143trajectory, plus ordinary current checksum/golden records. Both native and optimized release builds passed; optimized1/4verification matches842committed checksums. Release SHA256 `d5d127fc71ec6f32bffdf98333f65af3076e7d46e9a33116b50972091c02e87e`.
+
+The prior full1019-case run (1004pass/15display skips), subagent reviews and subsequent focused integrations are retained at https://github.com/Globulation2/glob2/tree/885dd0a31fdbd6c49e87f487e53b02ec8496b164 with their exact revisions. This package is the final new-base/CI-fix run, not a fresh full1019-case run.
+
+CI triage: stale replay200 assertions fixed by using the format milestone while preserving the upstream exhaustive acceptance-window loop. Current-script/legacy-forward checksum fixtures refreshed after strong execution/resume/playback checks. The unrelated colony-screen browser timeout also occurs on master run41784163727/job126454771938 (baseline14cd8e8a93); exact baseline log retained. Hosted final-head checks may be pending. No claim of non-Linux final execution, GPU hardware or manual play locally.
+
+validation.tar.gz contains exactcommands/buildlogs/JUnit, current205save/runtime/continuation and1/4replay/checksum evidence, immutable-input hashes, source patch and CI triage. Environment: Linux x86_64 GCC15.2, verified native SDL prefix from earlier receipt, OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1, CPU affinity0-31. Initial native/release builds used tools/dev_build.py -j16 engine-tests unit-tests and tools/dev_build.py dev_fast=0 release=1 linker=default -j16; final incremental release uses-j24. Adaptive model unchanged. Experiments and schedule remain cancelled. This branch is evidence only.
