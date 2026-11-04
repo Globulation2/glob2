@@ -552,6 +552,14 @@ TEST_SUITE("TerrainRuntime")
 				glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
 				auto &map = world.game.map;
 				world.game.gameHeader.setResourceGrowthDisabled(true);
+				// Lookup identity is amphibious access; the team's living units
+				// select the weighted preparation costs exercised by this case.
+				auto* swimmer = world.addUnit(WORKER, 2, 2);
+				REQUIRE(swimmer);
+				swimmer->performance[WALK] = 30;
+				swimmer->performance[SWIM] = 10;
+				world.team->updateRoutingRatio();
+				REQUIRE(world.team->routingRatio.selected == 6);
 				auto definitions = [](unsigned factor)
 				{
 					return nlohmann::json{
@@ -574,7 +582,7 @@ TEST_SUITE("TerrainRuntime")
 				}
 				CHECK(map.hasTerrainMovementModifiers() == (speed != 256));
 				map.setResourceByIndex(20, 20, WHEAT, 1);
-				map.getMaterialGradientSlot(0, WHEAT, movementAccessFromLegacy(6));
+				map.getMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
 				std::vector<Uint16> expected(1024);
 				map.seedMaterialGradient(0, WHEAT, 6, expected.data());
 				map.propagateGradient(expected.data(), 6);
@@ -592,6 +600,7 @@ TEST_SUITE("TerrainRuntime")
 					[&](const auto &pending)
 					{
 						CHECK_FALSE(pending.superseded);
+						CHECK(pending.swim == 6);
 						CHECK(std::equal(expected.begin(), expected.end(), pending.data));
 					});
 
@@ -603,16 +612,18 @@ TEST_SUITE("TerrainRuntime")
 				map.seedMaterialGradient(0, WHEAT, 6, replacement.data());
 				map.propagateGradient(replacement.data(), 6);
 				REQUIRE(replacement != expected);
-				map.updateMaterialGradient(0, WHEAT, movementAccessFromLegacy(6));
+				map.updateMaterialGradient(0, WHEAT, MovementAccess::Amphibious);
 				map.advanceGradientPipeline();
 				map.advanceGradientPipeline();
 				CHECK(map.gradientRuntime->pipeline.metrics.discarded == 1);
 				CHECK(map.gradientRuntime->pipeline.pendingCount() == 0);
-				CHECK(map.materialGradients[0][WHEAT][6]==nullptr);
+				CHECK(map.lookupMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious) == nullptr);
 				// The replacement is queued, not synchronously built by update. Admit
 				// it at a completed-world boundary and await its own fixed deadline.
-				const auto* published=glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,movementAccessFromLegacy(6)); });
+				const auto* published=glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious); });
 				CHECK(map.gradientRuntime->pipeline.metrics.published==1);
+				CHECK(map.publishedCostClass(published) == 6);
+				CHECK(map.materialGradients[0][WHEAT][6] == nullptr);
 				CHECK(std::equal(replacement.begin(),replacement.end(),published));
 			}
 	}
@@ -708,7 +719,7 @@ TEST_SUITE("TerrainRuntime")
 		for (int i = 0; i < 7; ++i)
 			worker->applyTerrainHealth();
 		map.setResourceByIndex(15, 15, WHEAT, 1);
-		map.getMaterialGradientSlot(0, WHEAT, movementAccessFromLegacy(6));
+		map.getMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
 		map.configureGradientPipeline(1, 2);
 		map.advanceGradientPipeline();
 		map.stagePeriodicGradientPreparation();
@@ -733,9 +744,14 @@ TEST_SUITE("TerrainRuntime")
 			map.advanceGradientPipeline();
 			resumed.game.map.advanceGradientPipeline();
 		}
-		CHECK(std::equal(map.materialGradients[0][WHEAT][6],
-						 map.materialGradients[0][WHEAT][6] + 1024,
-						 resumed.game.map.materialGradients[0][WHEAT][6]));
+		const auto* sourceField = map.lookupMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
+		const auto* restoredField = resumed.game.map.lookupMaterialGradientSlot(0, WHEAT, MovementAccess::Amphibious);
+		REQUIRE(sourceField);
+		REQUIRE(restoredField);
+		CHECK(std::equal(sourceField, sourceField + map.getW() * map.getH(), restoredField));
+		CHECK(map.publishedCostClass(sourceField) == resumed.game.map.publishedCostClass(restoredField));
+		CHECK(map.materialGradients[0][WHEAT][6] == nullptr);
+		CHECK(resumed.game.map.materialGradients[0][WHEAT][6] == nullptr);
 		for (int i = 0; i < 100; ++i)
 		{
 			world.game.step(0);
@@ -1030,7 +1046,8 @@ TEST_SUITE("TerrainRuntime")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				painted.push_back(TerrainType(i));
-		REQUIRE(painted.size() == 31);
+		REQUIRE(painted.size() == 32);
+		CHECK(std::find(painted.begin(), painted.end(), TUNDRA) != painted.end());
 		for (std::size_t n = 0; n < painted.size(); ++n)
 		{
 			map.paintCell(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);
