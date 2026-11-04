@@ -5726,6 +5726,8 @@ Zamrznjeno jezero
 Zameten sneg
 [weathered_sandstone]
 Preperel peščenjak
+[windy_sand_dune]
+Vetrovne sipine
 [terrain group water]
 Voda
 [terrain group sand]

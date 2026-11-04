@@ -5726,6 +5726,8 @@ Danau beku
 Salju tersapu angin
 [weathered_sandstone]
 Batu pasir lapuk
+[windy_sand_dune]
+Bukit pasir berangin
 [terrain group water]
 Air
 [terrain group sand]

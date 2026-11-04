@@ -5726,6 +5726,8 @@ Bevroren meer
 Verwaaide sneeuw
 [weathered_sandstone]
 Verweerde zandsteen
+[windy_sand_dune]
+Windribbels in duinzand
 [terrain group water]
 Water
 [terrain group sand]

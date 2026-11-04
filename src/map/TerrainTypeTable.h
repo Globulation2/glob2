@@ -89,6 +89,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		// Solid ochre bedrock worn into rounded slabs: plays exactly like dirt.
 		authored(WEATHERED_SANDSTONE, G::Barren, "weathered_sandstone", "[weathered_sandstone]", {150, 124, 76},
 				 {166, 138, 86}),
+		// Sand in wind ripples: plays exactly like sand.
+		authored(WINDY_SAND_DUNE, G::Sand, "windy_sand_dune", "[windy_sand_dune]", {212, 182, 134}, {214, 184, 136}),
 	}};
 	return rows;
 }();

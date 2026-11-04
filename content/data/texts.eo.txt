@@ -5726,6 +5726,8 @@ Frostiĝinta lago
 Ventblovita neĝo
 [weathered_sandstone]
 Eroziita grejso
+[windy_sand_dune]
+Ventaj sabloondoj
 [terrain group water]
 Akvo
 [terrain group sand]

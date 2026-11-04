@@ -5702,6 +5702,8 @@ AI کی بنائی ہوئی نہیں
 ہوا سے اڑی برف
 [weathered_sandstone]
 گھسا ہوا ریتلا پتھر
+[windy_sand_dune]
+ہوا سے لہردار ٹیلے
 [terrain group water]
 پانی
 [terrain group sand]

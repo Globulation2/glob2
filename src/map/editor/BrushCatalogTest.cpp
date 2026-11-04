@@ -130,7 +130,8 @@ TEST_SUITE("BrushCatalog")
 		CHECK(catalog.front().key == "classic");
 		CHECK(ids(catalog.front()) ==
 			  std::vector<std::string>{"terrain/water", "terrain/sand", "terrain/grass", "terrain/lush_grass",
-									   "terrain/dry_grass", "terrain/dune_sand", "terrain/pale_sand"});
+									   "terrain/dry_grass", "terrain/dune_sand", "terrain/pale_sand",
+									   "terrain/windy_sand_dune"});
 		// Every selectable built-in type is immediately available.
 		const auto &registry = editor.game.map.terrainRegistry();
 		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)

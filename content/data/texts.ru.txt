@@ -5726,6 +5726,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Заметённый ветром снег
 [weathered_sandstone]
 Выветренный песчаник
+[windy_sand_dune]
+Барханы с ветровой рябью
 [terrain group water]
 Вода
 [terrain group sand]

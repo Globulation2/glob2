@@ -5726,6 +5726,8 @@ Lago ghiacciato
 Neve spazzata dal vento
 [weathered_sandstone]
 Arenaria erosa
+[windy_sand_dune]
+Dune increspate dal vento
 [terrain group water]
 Acqua
 [terrain group sand]
