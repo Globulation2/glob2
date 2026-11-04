@@ -250,7 +250,7 @@ with an `overlay` block:
 
 ```json
 "overlay": {"sprite": "data/gfx/terrain-glint", "cycles": [[0, 1, 2, 3, -1, -1, -1, -1]],
-            "ticks": 3, "density_q8": 112}
+            "ticks": 5, "density_q8": 64}
 ```
 
 - Only `density_q8`/256 of the cells draw an overlay at all, chosen by a
