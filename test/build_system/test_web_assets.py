@@ -69,7 +69,13 @@ class WebAssetPlanTests(unittest.TestCase):
         manifest = json.loads((ROOT / 'content/data/skins/colony-v1/manifest.json').read_text())
         self.assertEqual(sorted(p.name for p in meshes), sorted(manifest['meshes']))
         for path in meshes:
-            self.assertEqual(self.owner[path.relative_to(ROOT / 'content').as_posix()], 'skins')
+            relative = path.relative_to(ROOT / 'content').as_posix()
+            if path.name.startswith('swarm'):
+                self.assertEqual(self.owner[relative], 'skins')
+            else:
+                self.assertNotIn(relative, self.owner)
+                fitted = path.with_suffix('.gsr' if path.name.startswith('explorer-') else '.gsb')
+                self.assertEqual(self.owner[fitted.relative_to(ROOT / 'content').as_posix()], 'skins')
         self.assertNotIn('data/skins/colony-v1/manifest.json', self.packages['core'])
 
     def test_simulation_data_starts_with_the_game(self):
