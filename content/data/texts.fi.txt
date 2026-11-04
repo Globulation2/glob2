@@ -5722,6 +5722,10 @@ Hiekkakivilaatat
 Hohkakivikenttä
 [frozen_lake]
 Jäätynyt järvi
+[wind_swept_snow]
+Tuulen pieksämä lumi
+[weathered_sandstone]
+Rapautunut hiekkakivi
 [terrain group water]
 Vesi
 [terrain group sand]

@@ -497,7 +497,7 @@ TEST_SUITE("TerrainMaterials")
 			{"water", "sand", nullptr}, {"ice", "water", nullptr},
 			{"lava", "grass", nullptr}, {"lava", "boulders", nullptr},
 			{"road", "grass", nullptr}, {"road", "boulders", nullptr},
-			{"dirt_track", "flower_meadow", nullptr}, {"boardwalk", "water", nullptr}};
+			{"brick_path", "heath", nullptr}, {"boardwalk", "water", nullptr}};
 		const auto shape = [](int x, int y)
 		{
 			const float dx = x - 2.5f, dy = y - 2.5f;
@@ -1468,8 +1468,11 @@ TEST_SUITE("TerrainMaterials")
 						}
 					}
 		}
-		// Intentional profile changes need a rendered comparison and a new digest.
-		CHECK(digest == 10118148687011034825ull);
+		// This hashes catalog IDs as well as coverage. The group-look catalog
+		// reordered mud (14 -> 12) and void_hole (27 -> 23) after the reviewed
+		// semantic-border update, preserving its profiles. Geometry changes still
+		// need a rendered comparison.
+		CHECK(digest == 12872139009941546255ull);
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
 	{
@@ -1948,13 +1951,13 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(profile("deep_water", "boulders") == "rock");
 		CHECK(profile("ice", "water") == "frozen");
 		// Flowing lava overruns natural ground and water alike.
-		for (const auto *other : {"grass", "boulders", "ridge_rock", "gravel", "sand", "mud", "water"})
+		for (const auto *other : {"grass", "boulders", "ridge_rock", "shale", "sand", "mud", "water"})
 			CHECK(profile("lava", other) == "molten");
 		// Built surfaces keep their own straight edges against everything natural.
-		for (const auto *other : {"grass", "boulders", "scree", "mud", "flower_meadow", "lava", "water"})
+		for (const auto *other : {"grass", "boulders", "scree", "mud", "heath", "lava", "water"})
 		{
 			CHECK(profile("road", other) == "paved");
-			CHECK(profile("dirt_track", other) == "track");
+			CHECK(profile("brick_path", other) == "paved");
 			CHECK(profile("boardwalk", other) == "crisp");
 		}
 		CHECK(profile("road", "boardwalk") == "crisp");
@@ -1966,7 +1969,7 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(profile("boulders", "mud") == "rock");
 		CHECK(profile("dirt", "grass") == "soil");
 		CHECK(profile("deep_snow", "ice") == "soil");
-		CHECK(profile("flower_meadow", "grass") == "brush");
+		CHECK(profile("heath", "grass") == "brush");
 		CHECK(profile("grass", "lush_grass") == "turf");
 		for (unsigned a = 0; a < c.materials.size(); ++a)
 			for (unsigned b = 0; b < c.materials.size(); ++b)

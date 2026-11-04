@@ -57,7 +57,7 @@ TEST_CASE("idle decisions at fixed origins across safe and trapped terrain [benc
         {
             auto edit=map.editTerrain();
             // The ice cell is two cells away: the cell between mixes grass and
-            // ice corners and is therefore hazardous.
+            // ice corners and has a proportionally diluted hazard rate.
             if(layout=="safe-near-ice") paintCell(map,x+2,y,ICE);
             if(layout=="ice-edge") paintCell(map,x,y,ICE);
             if(layout=="ice-patch") {
@@ -68,9 +68,9 @@ TEST_CASE("idle decisions at fixed origins across safe and trapped terrain [benc
                 map.paintVertices(vertices,ICE,false);
             }
             if(layout=="unreachable-safety") {
-                // Grass corners make a safe cell; the mixed grass/water cells
-                // around it stay walkable and safe, and a ring of all-water
-                // cells separates them from the ice.
+                // Grass corners make a safe cell; edge cells with two grass
+                // corners are walkable and safe, while three-water/one-grass
+                // corners swim. An all-water ring separates the pocket from ice.
                 const int safe=map.getW()*3/4;
                 for(int dy=-2;dy<=3;++dy) for(int dx=-2;dx<=3;++dx)
                     map.setVertexTerrain(safe+dx,safe+dy,
@@ -80,6 +80,12 @@ TEST_CASE("idle decisions at fixed origins across safe and trapped terrain [benc
         auto* unit=world.addUnit(WORKER,x,y);
         REQUIRE(unit);
         REQUIRE((map.terrainPropertiesAt(x,y).groundHealthQ8<0)==exposed);
+        if(layout=="safe-near-ice") {
+            // The actor is safe, with a half-strength edge and quarter-strength
+            // diagonal fringe nearby; averaging must not erase either exposure.
+            REQUIRE(map.terrainPropertiesAt(x+1,y).groundHealthQ8==-4);
+            REQUIRE(map.terrainPropertiesAt(x+1,y-1).groundHealthQ8==-2);
+        }
         // Fixed origin isolates the cost of one decision. A real successful
         // escape changes its next origin; this intentionally stresses retries.
         // Invalidate outside the timer, then measure first-query rebuild separately.

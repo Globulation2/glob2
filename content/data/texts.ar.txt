@@ -5722,6 +5722,10 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 حقل الحجر الخفاف
 [frozen_lake]
 بحيرة متجمدة
+[wind_swept_snow]
+ثلج تذروه الرياح
+[weathered_sandstone]
+حجر رملي متآكل
 [terrain group water]
 ماء
 [terrain group sand]

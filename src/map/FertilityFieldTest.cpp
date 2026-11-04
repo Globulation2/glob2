@@ -340,17 +340,42 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
     const auto land=cache.landField().values(), aquatic=cache.aquaticField();
     const auto wheat=map.resourceGrowthRateAt(index,WHEAT);
     REQUIRE(wheat>0);
-    // A lone sand vertex makes the four cells around it shore, without sand's inhibition.
-    for(const auto type : {TRAIL,ICE,SAND,GRASS})
+    for(const auto type : {TRAIL,ICE,GRASS})
     {
-        if (type==SAND) { map.paintCell(index,GRASS); map.setVertexTerrain(7,8,SAND); }
-        else map.paintCell(index,type);
+        map.paintCell(index,type);
+        // Habitat and movement differ, but the numeric ecology inputs do not.
         // This also checks validity after each edit's terrain-generation bump.
         REQUIRE(cache.validFor(map));
         CHECK(map.resourceGrowthField().landField().values()==land);
         CHECK(cache.aquaticField()==aquatic);
         CHECK(map.resourceGrowthRateAt(index,WHEAT)==(type==GRASS ? wheat : 0));
     }
+    // One sand corner contributes a quarter of its inhibition and shore support,
+    // so the four surrounding cells now change the cached numeric ecology inputs.
+    map.setVertexTerrain(7,8,SAND);
+    CHECK_FALSE(cache.validFor(map));
+    CHECK(map.terrainPropertiesAt(index).inhibitionQ8==64);
+    CHECK(map.terrainPropertiesAt(index).shoreSupportQ8==64);
+    CHECK(map.terrainPropertiesAt(index).walkable);
+    CHECK_FALSE(map.terrainPropertiesAt(index).resourcesGrow);
+    CHECK_FALSE(map.terrainPropertiesAt(index).buildable);
+    map.resourceGrowthField();
+    REQUIRE(cache.validFor(map));
+    CHECK(cache.landField().values()!=land);
+    CHECK(map.resourceGrowthRateAt(index,WHEAT)==0);
+    Fertility::GrowthCache fresh;
+    fresh.rebuild(map);
+    CHECK(cache.landField().values()==fresh.landField().values());
+    CHECK(cache.aquaticField()==fresh.aquaticField());
+    // Removing the numeric sand contribution invalidates again and restores the
+    // exact original fields and wheat rate before occupancy-only edits below.
+    map.setVertexTerrain(7,8,GRASS);
+    CHECK_FALSE(cache.validFor(map));
+    map.resourceGrowthField();
+    REQUIRE(cache.validFor(map));
+    CHECK(cache.landField().values()==land);
+    CHECK(cache.aquaticField()==aquatic);
+    CHECK(map.resourceGrowthRateAt(index,WHEAT)==wheat);
     map.putResource(8,8,WHEAT);
     map.setResourceAmount(index,8);
     map.setResourcesGrow(index % map.getW(),index / map.getW(),false);

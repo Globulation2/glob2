@@ -97,8 +97,8 @@ operations explain their units; the evidence section records actual verification
   scaled by abundance using the existing fertility-aware `seedAlgae` operation.
   It never creates water or changes land connectivity.
 - **Watering holes:** radius 6.5, 25% ripple, with vertices three or more steps inside
-  the shallows turned to deep water (no algae or fish grow there; a tile mixing shallow
-  and deep corners is neither walkable nor swimmable, which only matters inside the pond).
+  the shallows turned to deep water (no algae or fish grow there). Mixed shallow/deep
+  cells remain swimmable, with an averaged movement speed.
   Crop plots radius five lie 11.5 tiles either side of the centre: one holds maize or rice
   (drawn per hole, 38 tiles at 100%, scaled by the wheat amount), the other wood (28).
   Three radius-two fruit plots lie on the local east side, 12 tiles out and seven apart,

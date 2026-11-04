@@ -69,7 +69,7 @@ inline constexpr auto TERRAIN_GROUPS = []
 		grass.farmMaterial = materialIndex(MaterialId::Food);
 	}
 	{
-		// Ice, deep snow and frozen lake: slow, and the cold wears ground units down.
+		// Ice, deep snow, wind-swept snow and frozen lake: slow, and the cold wears ground units down.
 		auto &ice = define(TerrainGroup::Ice, "ice", "[terrain group ice]", true);
 		ice.walkable = true;
 		ice.groundSpeedQ8 = 128;

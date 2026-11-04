@@ -1203,6 +1203,62 @@ def render_shale(ctx):
     return barren_mark(ctx, rgb, p["crack"], cells=4, strength=0.7, fade=0.15), None
 
 
+@recipe(name="weathered_sandstone", group="barren", label="Weathered sandstone", profile="rock",
+        border_class="solid", seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
+        palette={"tones": [(182, 152, 86), (170, 140, 76), (188, 162, 98), (164, 132, 72), (176, 150, 92)],
+                 "rust": (150, 98, 54), "pale": (206, 192, 142), "joint": (110, 88, 56), "crack": (100, 80, 52)},
+        style=Style(luma=134, std=12, grain_max=14, match=0.75), periodic=True, grid=8, blocks=4)
+def render_weathered_sandstone(ctx):
+    """Weathered sandstone: one solid bed of ochre stone worn into rounded,
+    pillowed blocks with fine joints, faint bedding, iron stain and pale
+    nodules, under the barren group's cracks."""
+    p = RECIPES["weathered_sandstone"].palette
+    size, shared, own = ctx.size, ctx.shared_rng, ctx.rng
+    cells = 2
+    f1, f2, ids, common1, common2, common_ids = block_worley(ctx, cells)
+    common_x, common_y = fbm(shared, 4, 2, size=size), fbm(shared, 4, 2, size=size)
+    wx = blend_fields(common_x, fbm(own, 4, 2, size=size), ctx.interior_mask)
+    wy = blend_fields(common_y, fbm(own, 4, 2, size=size), ctx.interior_mask)
+    edge = domain_warp([b - a for a, b in zip(f1, f2)], wx, wy, 10)
+    common_edge = domain_warp([b - a for a, b in zip(common1, common2)], common_x, common_y, 10)
+    common_wear = fbm(shared, 4, 2, size=size)
+    wear = blend_fields(common_wear, fbm(own, 4, 2, size=size), ctx.interior_mask)
+
+    def relief(e, w):
+        # A broad, low dome per slab, gently undulating on top.
+        return 0.9 * smoothstep(0.0, 0.7, e) + 0.1 * w
+
+    height = [relief(e, w) for e, w in zip(edge, wear)]
+    common = [relief(e, w) for e, w in zip(common_edge, common_wear)]
+    count = cells * ctx.area_scale
+    tones = [p["tones"][int(shared.random() * len(p["tones"]))] for _ in range(count)]
+    rgb = [[tones[i][k] for i in ids] for k in range(3)]
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(shared, count, 0.05))
+    bedding = layout_field(ctx, lambda rng: fbm(rng, 3, 2, cells_y=20, size=size))
+    rgb = [[c * (0.93 + 0.14 * v) for c, v in zip(ch, bedding)] for ch in rgb]
+    stain = layout_field(ctx, lambda rng: fbm(rng, 3, 3, size=size))
+    rgb = mix(rgb, p["rust"], [smoothstep(0.52, 0.8, v) for v in stain], 0.5)
+    bloom = layout_field(ctx, lambda rng: fbm(rng, 9, 3, size=size))
+    rgb = mix(rgb, p["pale"], [smoothstep(0.5, 0.75, b) * smoothstep(0.55, 0.85, h) for b, h in zip(bloom, height)], 0.45)
+    nodules = layout_field(ctx, lambda rng: sandstone_nodules(rng, size))
+    rgb = mix(rgb, p["pale"], nodules, 0.6)
+    height = [h + 0.04 * n for h, n in zip(height, nodules)]
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
+    rgb = [[c * (0.95 + 0.10 * v) for c, v in zip(ch, speck)] for ch in rgb]
+    rgb = shade(rgb, height, 0.15, reference_height=common)
+    rgb = cast(rgb, height, p["joint"], reach=2, strength=0.15)
+    rgb = mix(rgb, p["joint"], band(edge, 0.012, 0.025), 0.85)
+    return barren_mark(ctx, rgb, p["crack"], cells=4, strength=0.55, fade=0.22), None
+
+
+def sandstone_nodules(rng, size):
+    """Small pale concretions weathered out of the stone, 2-3 native px."""
+    mask = [0.0] * (size * size)
+    for _ in range(10 * (size // N) ** 2):
+        stamp_disc(mask, rng.random() * size, rng.random() * size, rng.uniform(4.5, 6.5), softness=0.5)
+    return mask
+
+
 @recipe(name="heath", group="barren", label="Heath", profile="brush", border_class="solid",
         seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
         palette={"dark": (108, 98, 86), "mid": (126, 116, 102), "light": (138, 128, 114),
@@ -1498,6 +1554,73 @@ def render_deep_snow(ctx):
     own_sparkle, _, _ = soft_blobs(ctx, 6, 3.0, 4.0)
     sparkle = [a + (b - a) * w for a, b, w in zip(common_sparkle, own_sparkle, interior)]
     rgb = mix(rgb, p["sparkle"], sparkle, 0.6)
+    return rgb, None
+
+
+def drift_ridges(phase, crest=0.72):
+    """Asymmetric drift profile in [0, 1] from a ridge phase: a long windward
+    rise easing out of the trough and steepening to a sharp crest, then a
+    short lee face that falls steeply and flattens into the next trough."""
+    f = phase % 1.0
+    rise = f / crest
+    lee = (1 - f) / (1 - crest)
+    return np.where(f < crest, rise ** 1.5, lee * lee)
+
+
+@recipe(name="wind_swept_snow", group="ice", label="Wind-swept snow", profile="soil", border_class="solid",
+        seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512, "fringe": [196, 210, 232], "fringe_q8": 64,
+              "fringe_width_q8": 384},
+        palette={"shadow": (168, 176, 200), "lee": (186, 192, 214), "mid": (208, 212, 232),
+                 "lit": (232, 234, 250), "crest": (250, 250, 255), "sparkle": (255, 255, 255)},
+        style=Style(luma=204, std=11, grain_max=6, match=0.6), periodic=True, grid=8, blocks=4)
+def render_wind_swept_snow(ctx):
+    """Snow carved by one prevailing wind into drifts: long, gently curving
+    crests lit along a crisp rim, each falling to a soft lavender lee shadow
+    that fades into broad quiet troughs, with faint ripples on the scoured
+    flats and scattered sparkle; deep snow's palette at a little more relief.
+
+    The ridge phase is a plane wave with whole wave numbers on the block, so
+    every layout shares it; only the smooth warps and drift heights vary
+    inside, which keeps crests continuous across block boundaries.
+    """
+    p, size = RECIPES["wind_swept_snow"].palette, ctx.size
+    yy, xx = np.indices((size, size), dtype=np.float64)
+    # Whole ridge counts per 8-tile block: drifts about a tile apart across
+    # the diagonal, faint ripples a third of that, a little off parallel.
+    scale = size / (8 * N)
+    drift_k, ripple_k = (5, 5), (16, 10)
+    base = scale * (drift_k[0] * xx + drift_k[1] * yy) / size
+    fine = scale * (ripple_k[0] * xx + ripple_k[1] * yy) / size
+    # Broad bends keep crests long and roughly parallel; a weaker, finer warp
+    # offsets neighbouring stretches so crests split and merge.
+    bend = np.array(layout_field(ctx, lambda rng: fbm(rng, 2, 1, size=size))).reshape(size, size)
+    fray = np.array(layout_field(ctx, lambda rng: fbm(rng, 4, 2, size=size))).reshape(size, size)
+    phase = base + 0.6 * (bend - 0.5) + 0.12 * (fray - 0.5)
+    ripple_phase = fine + 0.6 * (bend - 0.5) + 0.1 * (fray - 0.5)
+    # Drift height: tall drifts where snow piled up, low scoured flats elsewhere.
+    pile = np.array(layout_field(ctx, lambda rng: fbm(rng, 3, 2, size=size))).reshape(size, size)
+    amp = np.clip((pile - 0.3) / 0.45, 0, 1)
+    amp = 0.3 + 0.7 * amp * amp * (3 - 2 * amp)
+    crest = 0.8
+    height = 34.0 * amp * drift_ridges(phase, crest) + 0.5 * (1.2 - amp) * drift_ridges(ripple_phase, 0.65)
+    # Low sun from the upper left, as a fixed light so shared boundaries
+    # match; tone is measured from flat snow, which sits at the mid colour.
+    hx = (np.roll(height, -1, 1) - np.roll(height, 1, 1)) / 2
+    hy = (np.roll(height, -1, 0) - np.roll(height, 1, 0)) / 2
+    light = np.array([-0.62, -0.62, 0.48])
+    light /= np.linalg.norm(light)
+    lambert = (-hx * light[0] - hy * light[1] + light[2]) / np.sqrt(hx * hx + hy * hy + 1)
+    tone = np.clip(0.55 + 1.2 * (lambert - light[2]), 0, 1)
+    rgb = ramp(as_list(tone), [(0.0, p["shadow"]), (0.3, p["lee"]), (0.55, p["mid"]), (1.0, p["lit"])])
+    # A crisp rim catches the sun along each crest.
+    f = phase % 1.0
+    rim = np.clip(1 - np.maximum(crest - f, 0) / 0.02 - np.maximum(f - crest, 0) / 0.006, 0, 1) * amp
+    rgb = mix(rgb, p["crest"], as_list(rim), 0.6)
+    # Wind-polished grain and sparkle on the lit faces.
+    grain_field = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
+    rgb = [[c * (1 + 0.02 * (v - 0.5) * 2) for c, v in zip(channel, grain_field)] for channel in rgb]
+    speck = np.array(layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size)))
+    rgb = mix(rgb, p["sparkle"], as_list(np.clip((speck - 0.9) / 0.06, 0, 1) * tone.ravel()), 0.6)
     return rgb, None
 
 

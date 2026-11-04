@@ -81,10 +81,10 @@ void disc(std::vector<unsigned char> &mask, const Torus &t, int p, int radius)
 }
 std::vector<unsigned char> land(const Layout &L)
 {
-	auto water = pureTiles(L.terrain, L.t, WATER);
+	auto walkable = walkableTiles(L.terrain, L.t);
 	for (int i = 0; i < L.t.size(); ++i)
-		water[i] = !water[i] && !L.forest[i] && !L.rock[i];
-	return water;
+		walkable[i] = walkable[i] && !L.forest[i] && !L.rock[i];
+	return walkable;
 }
 // Endpoint queries need only the first arrival, not a complete catchment. Keep
 // reachFrom's eight-neighbour topology, admitted source and 256-step limit.
@@ -265,9 +265,8 @@ Layout landscape(const GenerationRequest &r, GenerationContext &c)
 			L.candidates.push_back(i);
 	}
 	c.shuffle(L.candidates.begin(), L.candidates.end(), "portage-bay-candidates");
-	std::vector<unsigned char> candidates = tileMask(t, L.candidates), open(t.size());
-	for (int i = 0; i < t.size(); ++i)
-		open[i] = !L.lakeWater[i];
+	std::vector<unsigned char> candidates = tileMask(t, L.candidates);
+	const auto open = walkableTiles(L.terrain, t);
 	for (int p = 0; p < 4; ++p)
 	{
 		auto homes = farthestSites(t, candidates, open, r.nbTeams, c, "portage-start-proposals", 2);
@@ -1539,7 +1538,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			6,
+			7,
 			false,
 			{GeneratorControl{"lake-elongation", "Lake elongation", 125, 300, 25, 200,
 							  ControlGroup::Terrain}

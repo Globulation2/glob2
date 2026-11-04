@@ -5722,6 +5722,10 @@ AI 생성 아님
 부석 지대
 [frozen_lake]
 얼어붙은 호수
+[wind_swept_snow]
+바람에 깎인 눈
+[weathered_sandstone]
+풍화된 사암
 [terrain group water]
 물
 [terrain group sand]

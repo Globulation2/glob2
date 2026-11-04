@@ -5722,6 +5722,10 @@ FFmpeg није доступан, па је снимање искључено. �
 Поље пловућца
 [frozen_lake]
 Залеђено језеро
+[wind_swept_snow]
+Наметен снег
+[weathered_sandstone]
+Распаднути пешчар
 [terrain group water]
 Вода
 [terrain group sand]
