@@ -25,8 +25,8 @@ the game reads at run time into content-addressed packages under `assets/`, and
 - `menu-music`, `music` (the original in-game set), `music-sets` (the other
   soundtrack sets) and `hd` (high-resolution artwork): the game tolerates them
   being absent and loads them when they arrive or when a match starts.
-- `hd-terrain-*` packages carry individual terrain families. Their shared lookup
-  is in core so the game can request just the families a map uses.
+- `hd-terrain-*` packages carry individual terrain families. The package manifest
+  lists the available families, and each packed family carries its own frame index.
 
 The build packages the verified runtime export (tools/package_assets.py, which
 re-encodes artwork and drops build scripts) when it has one, or the repository's
