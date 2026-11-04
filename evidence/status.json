@@ -1,0 +1,80 @@
+{
+  "pid": 2179455,
+  "revision": "7e1c2d8dfa662a6f203a7103f1b7621a623300da",
+  "worktree": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/terrain-master-current",
+  "results": [
+    {
+      "name": "native-release-build",
+      "command": [
+        "python3",
+        "tools/dev_build.py",
+        "--build=build/ci-latest-release",
+        "dev_fast=0",
+        "release=1",
+        "server=0",
+        "-j4",
+        "engine-tests"
+      ],
+      "exit_code": 0,
+      "seconds": 1529.3
+    },
+    {
+      "name": "replay-and-terrain-regressions",
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/ci-latest-release",
+        "--filter",
+        "JavaScriptCompatibility/*",
+        "--filter",
+        "TerrainRuntime/painted catalogue*",
+        "--filter",
+        "TerrainValidation/terrain catalogue gallery*",
+        "--filter",
+        "TerrainValidation/catalogue materials load*",
+        "--jobs",
+        "2",
+        "--display-jobs",
+        "1",
+        "--fullscreen",
+        "--timeout",
+        "900",
+        "--junit",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/replay-window-validation/junit.xml",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/replay-window-validation/artifacts"
+      ],
+      "exit_code": 0,
+      "seconds": 13.3
+    }
+  ],
+  "phase": "finished; inspect latest integration evidence",
+  "note": "Separatebuild/ci-latest-release;unchangedrootpinnedprefixreadreuse,no rootnativebinarywrites. Priorfb082browserandab643nativebothfinished;latestca21format204plusreplaytest-onlyrangeexpansion;allhistorical0..current+1formats;replayfloor194/oldsavefloor58/NET75unchanged. Latestterraincountrepairsalsoqualified. No fixture/header/codebehavior changes.;masteralreadySIM125fordeepsnowgroup;recoveryusesSIM126namespacebumprequiredbystrictrecord-changeguard;regenerateactualmatchrecordandtrace;savefloor58unchanged;noenginecalculationchange. DiagnosticHDmessagepreviouslyreverted. No manualrecordheaderpatching.;existingobjectsreusedbybuildsystemonlywhenvalid. Fullregistry/CLI/toolinglatestcoverage;no duplicate same-SHArun.",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/ci-latest-release",
+    "--filter",
+    "JavaScriptCompatibility/*",
+    "--filter",
+    "TerrainRuntime/painted catalogue*",
+    "--filter",
+    "TerrainValidation/terrain catalogue gallery*",
+    "--filter",
+    "TerrainValidation/catalogue materials load*",
+    "--jobs",
+    "2",
+    "--display-jobs",
+    "1",
+    "--fullscreen",
+    "--timeout",
+    "900",
+    "--junit",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/replay-window-validation/junit.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/replay-window-validation/artifacts"
+  ],
+  "child_pid": 2274112
+}
