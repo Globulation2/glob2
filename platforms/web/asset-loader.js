@@ -181,8 +181,8 @@ class Glob2AssetLoader {
     downloaded.catch(() => {});
     // Downloads overlap, installation follows request order so replacements win
     // consistently regardless of which package finishes first.
-    // Terrain family paths are disjoint. Let a demanded family install even
-    // when an unrelated background package is paused between parts.
+    // Terrain packages only overlap at byte-identical files. Let a demanded
+    // family install while an unrelated background download is paused.
     const independent = name.startsWith('hd-terrain-');
     const installed = (independent ? Promise.resolve() : this.installing).then(async () => {
       try { this.install(name, await downloaded); }
