@@ -5736,6 +5736,8 @@ Cinza vulcânica
 Gelo glaciar
 [overgrown_road]
 Estrada coberta de vegetação
+[laterite]
+Laterita
 [terrain group water]
 Água
 [terrain group sand]

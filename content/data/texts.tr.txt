@@ -5736,6 +5736,8 @@ Volkanik kül
 Buzul buzu
 [overgrown_road]
 Otlarla kaplı yol
+[laterite]
+Laterit
 [terrain group water]
 Su
 [terrain group sand]

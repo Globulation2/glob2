@@ -5736,6 +5736,8 @@ Ceniza volcánica
 Hielo glaciar
 [overgrown_road]
 Camino invadido por la vegetación
+[laterite]
+Laterita
 [terrain group water]
 Agua
 [terrain group sand]

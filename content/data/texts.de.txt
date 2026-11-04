@@ -5736,6 +5736,8 @@ Vulkanasche
 Gletschereis
 [overgrown_road]
 Überwucherte Straße
+[laterite]
+Laterit
 [terrain group water]
 Wasser
 [terrain group sand]

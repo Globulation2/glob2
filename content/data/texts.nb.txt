@@ -5712,6 +5712,8 @@ Vulkansk aske
 Breis
 [overgrown_road]
 Gjengrodd vei
+[laterite]
+Laterittjord
 [terrain group water]
 Vann
 [terrain group sand]

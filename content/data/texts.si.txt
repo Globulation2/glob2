@@ -5736,6 +5736,8 @@ Trda skorja
 Ledeniški led
 [overgrown_road]
 වල් වැඩුණු මාර්ගය
+[laterite]
+කබොක්
 [terrain group water]
 Voda
 [terrain group sand]

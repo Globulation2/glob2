@@ -5712,6 +5712,8 @@ AI کی بنائی ہوئی نہیں
 گلیشیئر کی برف
 [overgrown_road]
 گھاس سے ڈھکی سڑک
+[laterite]
+لیٹرائٹ
 [terrain group water]
 پانی
 [terrain group sand]

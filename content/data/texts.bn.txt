@@ -5712,6 +5712,8 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 হিমবাহের বরফ
 [overgrown_road]
 আগাছায় ঢাকা রাস্তা
+[laterite]
+ল্যাটেরাইট
 [terrain group water]
 জল
 [terrain group sand]

@@ -2856,6 +2856,7 @@
 [volcanic_ash]
 [glacier_ice]
 [overgrown_road]
+[laterite]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]

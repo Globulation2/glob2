@@ -5736,6 +5736,8 @@ Abu vulkanik
 Es gletser
 [overgrown_road]
 Jalan ditumbuhi tanaman
+[laterite]
+Laterit
 [terrain group water]
 Air
 [terrain group sand]

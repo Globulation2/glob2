@@ -5712,6 +5712,8 @@ AI ద్వారా రూపొందించబడలేదు
 హిమానీనదపు మంచు
 [overgrown_road]
 పిచ్చిమొక్కలు పెరిగిన రహదారి
+[laterite]
+లాటరైట్
 [terrain group water]
 నీరు
 [terrain group sand]

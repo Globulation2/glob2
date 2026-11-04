@@ -5714,6 +5714,8 @@ Volcanic ash
 Glacier ice
 [overgrown_road]
 Overgrown road
+[laterite]
+Laterite
 [terrain group water]
 Water
 [terrain group sand]

@@ -5736,6 +5736,8 @@ Cendra volcànica
 Gel de glacera
 [overgrown_road]
 Camí envaït per la vegetació
+[laterite]
+Laterita
 [terrain group water]
 Aigua
 [terrain group sand]

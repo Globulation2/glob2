@@ -5736,6 +5736,8 @@ Vulkanische as
 Gletsjerijs
 [overgrown_road]
 Overwoekerde weg
+[laterite]
+Lateriet
 [terrain group water]
 Water
 [terrain group sand]

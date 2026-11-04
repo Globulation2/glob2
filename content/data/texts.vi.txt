@@ -5736,6 +5736,8 @@ Tro núi lửa
 Băng sông băng
 [overgrown_road]
 Con đường cỏ mọc um tùm
+[laterite]
+Đá ong
 [terrain group water]
 Nước
 [terrain group sand]

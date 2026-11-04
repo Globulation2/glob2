@@ -179,7 +179,7 @@ TEST_SUITE("BrushCatalog")
 		CHECK(rough->entries.back().id == "terrain/hardpan");
 		CHECK(ice->entries.back().id == "terrain/glacier_ice");
 		CHECK(ice->entries[ice->entries.size() - 2].id == "terrain/wind_swept_snow");
-		CHECK(barren->entries.back().id == "terrain/volcanic_ash");
+		CHECK(barren->entries.back().id == "terrain/laterite");
 
 		// Resources: every registry entry, foundation ones included, with placement
 		// validity taken from the map's habitat rules.

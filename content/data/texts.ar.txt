@@ -5736,6 +5736,8 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 جليد النهر الجليدي
 [overgrown_road]
 طريق مكسو بالعشب
+[laterite]
+لاتريت
 [terrain group water]
 ماء
 [terrain group sand]

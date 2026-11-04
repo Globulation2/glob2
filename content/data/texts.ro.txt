@@ -5736,6 +5736,8 @@ Cenușă vulcanică
 Gheață de ghețar
 [overgrown_road]
 Drum năpădit de vegetație
+[laterite]
+Laterit
 [terrain group water]
 Apă
 [terrain group sand]

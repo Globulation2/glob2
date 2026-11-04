@@ -5712,6 +5712,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Ледников лед
 [overgrown_road]
 Обрасъл път
+[laterite]
+Латерит
 [terrain group water]
 Вода
 [terrain group sand]
