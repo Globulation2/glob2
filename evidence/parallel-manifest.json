@@ -1,0 +1,19 @@
+{
+  "revision": "261684229665bb411198dd087cb642d3a9107309",
+  "dirty": false,
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "parallelAI": true,
+  "binarySha256": "90536fc8a3504c5e33a91a653265bd928cc5a1cf7f49ce7387a7c850c9a2606e",
+  "fixtureHashes": {
+    "content/games/gd-large-4ai.game.gz": "e2b1ba36d6ab0a2f6c3c4aebd7178a6df5f39f39fb1100fb52bd18e8f9f73d11",
+    "test/fixtures/scoped-gradients/gd-large-4ai-1024.units.checksums.gz": "4041f840bf37aaa546398a13d259ac79a8cd61c7180cd84c3ff1d16c1709abae",
+    "content/games/gd-bigarena-long.game.gz": "542c151e914440c4d501ca7019888103a1c52dd98f522a0837412fc00ae9bedf",
+    "test/fixtures/scoped-gradients/gd-bigarena-2048.units.checksums.gz": "d1e1ca8f6286c44091aedfbd89c41ec90bf165c393011aa1caee643eb4740323",
+    "test/fixtures/ai-random-streams/numbi-castor-v121.game.gz": "5c80f02ec6b37b2b8b49e181366949bd1f0812039a53fbbe9f755f1e32659307",
+    "test/fixtures/scoped-gradients/numbi-castor-2048.units.checksums.gz": "0de5cf07bd21318348d98ca7f491fc935b3e974a2942599b25e365d4db994102",
+    "test/fixtures/team-stats/telemetry-expansion-validation/checkpoint-1024-v108.game.gz": "eeefbbe29f3b8e08a1b15fed408378530bf963858d970706091e85cd33aab4f4",
+    "test/fixtures/scoped-gradients/v108-reload-256.units.checksums.gz": "ded9c5dae8493a7ea5df405262b6812c9b5081ad0258eef0d3b0bad870a5fe6c"
+  },
+  "updatedFixtures": false,
+  "checksumCoverage": "Complete checksum sidecars, including aggregate, for all legacy fresh loads and the retained v108 checkpoint."
+}
