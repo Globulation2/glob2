@@ -53,7 +53,9 @@ enum TerrainType : std::uint16_t
 	FROZEN_LAKE=35,
 	// Snow carved into drifts (Rough, like deep snow), format 196.
 	WIND_SWEPT_SNOW=36,
-	TERRAIN_COUNT=37,
+	// Ochre bedrock worn into rounded slabs (Barren, like dirt), format 197.
+	WEATHERED_SANDSTONE=37,
+	TERRAIN_COUNT=38,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -68,6 +70,8 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_GROUND_LOOKS = 29;
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE = 33;
 // Format 195 ended the built-ins at FROZEN_LAKE.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW = 36;
+// Format 196 ended the built-ins at WIND_SWEPT_SNOW.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE = 37;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

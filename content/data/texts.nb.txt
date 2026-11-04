@@ -5700,6 +5700,8 @@ Pimpsteinsfelt
 Frossen innsjø
 [wind_swept_snow]
 Snøfokk
+[weathered_sandstone]
+Forvitret sandstein
 [terrain group water]
 Vann
 [terrain group sand]

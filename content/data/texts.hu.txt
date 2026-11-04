@@ -5724,6 +5724,8 @@ Horzsakőmező
 Befagyott tó
 [wind_swept_snow]
 Szélfútta hó
+[weathered_sandstone]
+Mállott homokkő
 [terrain group water]
 Víz
 [terrain group sand]

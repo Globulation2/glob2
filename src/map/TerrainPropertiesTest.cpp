@@ -952,6 +952,16 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(WIND_SWEPT_SNOW).name) == "wind_swept_snow");
 		CHECK(TerrainRegistry::builtins()->find("wind_swept_snow") == WIND_SWEPT_SNOW);
 	}
+	TEST_CASE("weathered sandstone shares every rule of dirt")
+	{
+		CHECK(terrainGroup(WEATHERED_SANDSTONE) == TerrainGroup::Barren);
+		CHECK(terrainPaintable(WEATHERED_SANDSTONE));
+		CHECK(sameTerrainProperties(terrainProperties(WEATHERED_SANDSTONE), terrainProperties(DIRT)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(WEATHERED_SANDSTONE) ==
+			  TerrainRegistry::builtins()->propertyIndex(DIRT));
+		CHECK(std::string(terrainPresentation(WEATHERED_SANDSTONE).name) == "weathered_sandstone");
+		CHECK(TerrainRegistry::builtins()->find("weathered_sandstone") == WEATHERED_SANDSTONE);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},

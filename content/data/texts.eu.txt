@@ -5724,6 +5724,8 @@ Apar-harrizko eremua
 Laku izoztua
 [wind_swept_snow]
 Haizeak eramandako elurra
+[weathered_sandstone]
+Hareharri higatua
 [terrain group water]
 Ura
 [terrain group sand]

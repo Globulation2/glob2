@@ -5724,6 +5724,8 @@ Pole pumeksu
 Zamarznięte jezioro
 [wind_swept_snow]
 Śnieg nawiany wiatrem
+[weathered_sandstone]
+Zwietrzały piaskowiec
 [terrain group water]
 Woda
 [terrain group sand]
