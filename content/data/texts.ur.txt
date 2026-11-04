@@ -5698,6 +5698,22 @@ AI کی بنائی ہوئی نہیں
 جھانویں کا میدان
 [frozen_lake]
 منجمد جھیل
+[wind_swept_snow]
+ہوا سے اڑی برف
+[weathered_sandstone]
+گھسا ہوا ریتلا پتھر
+[windy_sand_dune]
+ہوا سے لہردار ٹیلے
+[hardpan]
+سخت تہہ
+[volcanic_ash]
+آتش فشانی راکھ
+[glacier_ice]
+گلیشیئر کی برف
+[overgrown_road]
+گھاس سے ڈھکی سڑک
+[laterite]
+لیٹرائٹ
 [cliffs]
 چٹانیں
 [terrain group water]
@@ -6926,3 +6942,5 @@ MCP سرور چالو کریں
 
 [hive standing order update failed]
 مستقل حکم کو اپ ڈیٹ کرنا ناکام رہا۔ آپ کا حکم اس ڈیوائس پر عارضی طور پر روکا گیا ہے؛ متعلقہ کنٹرول استعمال کرکے دوبارہ کوشش کریں۔
+[tundra]
+ٹنڈرا کی زمین

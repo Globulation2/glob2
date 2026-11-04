@@ -5722,6 +5722,22 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Пемзовое поле
 [frozen_lake]
 Замёрзшее озеро
+[wind_swept_snow]
+Заметённый ветром снег
+[weathered_sandstone]
+Выветренный песчаник
+[windy_sand_dune]
+Барханы с ветровой рябью
+[hardpan]
+Твёрдая корка
+[volcanic_ash]
+Вулканический пепел
+[glacier_ice]
+Ледниковый лёд
+[overgrown_road]
+Заросшая дорога
+[laterite]
+Латерит
 [cliffs]
 Утёсы
 [terrain group water]
@@ -6926,3 +6942,5 @@ Discord открыт. Вы можете вернуться в игру в люб
 
 [AI for all computer colonies]
 ИИ для всех колоний под управлением компьютера
+[tundra]
+Тундровая почва

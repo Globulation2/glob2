@@ -5722,6 +5722,22 @@ Sandstensfliser
 Pimpstensfelt
 [frozen_lake]
 Frossen sø
+[wind_swept_snow]
+Snefygning
+[weathered_sandstone]
+Forvitret sandsten
+[windy_sand_dune]
+Vindriflede klitter
+[hardpan]
+Hårdskorpe
+[volcanic_ash]
+Vulkansk aske
+[glacier_ice]
+Gletsjeris
+[overgrown_road]
+Tilgroet vej
+[laterite]
+Laterit
 [cliffs]
 Klipper
 [terrain group water]
@@ -6926,3 +6942,5 @@ Opdatering af stående ordre mislykkedes. Din ordre er sat på pause på denne e
 
 [AI for all computer colonies]
 AI for alle computerstyrede kolonier
+[tundra]
+Tundrajord

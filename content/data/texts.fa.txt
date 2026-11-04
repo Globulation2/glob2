@@ -5722,6 +5722,22 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 دشت سنگ پا
 [frozen_lake]
 دریاچهٔ یخ‌زده
+[wind_swept_snow]
+برف بادرُفته
+[weathered_sandstone]
+ماسه‌سنگ فرسوده
+[windy_sand_dune]
+تپه‌های شنی بادخورده
+[hardpan]
+سخت‌لایه
+[volcanic_ash]
+خاکستر آتشفشانی
+[glacier_ice]
+یخ یخچال طبیعی
+[overgrown_road]
+جاده پوشیده از گیاه
+[laterite]
+لاتریت
 [cliffs]
 صخره‌ها
 [terrain group water]
@@ -6926,3 +6942,5 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 
 [AI for all computer colonies]
 هوش مصنوعی برای همهٔ مستعمره‌های تحت کنترل رایانه
+[tundra]
+زمین توندرا

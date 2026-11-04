@@ -130,7 +130,8 @@ TEST_SUITE("BrushCatalog")
 		CHECK(catalog.front().key == "classic");
 		CHECK(ids(catalog.front()) ==
 			  std::vector<std::string>{"terrain/water", "terrain/sand", "terrain/grass", "terrain/lush_grass",
-									   "terrain/dry_grass", "terrain/dune_sand", "terrain/pale_sand"});
+									   "terrain/dry_grass", "terrain/dune_sand", "terrain/pale_sand",
+									   "terrain/windy_sand_dune"});
 		// Every selectable built-in type is immediately available.
 		const auto &registry = editor.game.map.terrainRegistry();
 		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
@@ -159,20 +160,26 @@ TEST_SUITE("BrushCatalog")
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
-		// Sandstone tiles close the path brushes, pumice the rough-ground brushes and
-		// the frozen lake the ice brushes.
+		// Overgrown road (after sandstone tiles) closes the path brushes, hardpan the rough-ground brushes,
+		// glacier ice (after wind-swept snow) the ice brushes and volcanic ash the
+		// barren brushes.
 		const auto *paths = findBrushGroup(catalog, BrushSection::Terrain, "paths");
 		const auto *rough = findBrushGroup(catalog, BrushSection::Terrain, "rough");
 		const auto *ice = findBrushGroup(catalog, BrushSection::Terrain, "ice");
+		const auto *barren = findBrushGroup(catalog, BrushSection::Terrain, "barren");
 		REQUIRE(paths);
 		REQUIRE(rough);
 		REQUIRE(ice);
+		REQUIRE(barren);
 		REQUIRE_FALSE(paths->entries.empty());
 		REQUIRE_FALSE(rough->entries.empty());
 		REQUIRE_FALSE(ice->entries.empty());
-		CHECK(paths->entries.back().id == "terrain/sandstone");
-		CHECK(rough->entries.back().id == "terrain/pumice");
-		CHECK(ice->entries.back().id == "terrain/frozen_lake");
+		REQUIRE_FALSE(barren->entries.empty());
+		CHECK(paths->entries.back().id == "terrain/overgrown_road");
+		CHECK(rough->entries.back().id == "terrain/hardpan");
+		CHECK(ice->entries.back().id == "terrain/glacier_ice");
+		CHECK(ice->entries[ice->entries.size() - 2].id == "terrain/wind_swept_snow");
+		CHECK(barren->entries.back().id == "terrain/laterite");
 
 		// Resources: every registry entry, foundation ones included, with placement
 		// validity taken from the map's habitat rules.

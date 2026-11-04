@@ -60,9 +60,16 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
     auto *decorSprite = compositor.decorSprite();
     if (!decorSprite && std::any_of(compositor.catalog().materials.begin(), compositor.catalog().materials.end(),
         [](const auto &m) { return !m.decor.sprite.empty(); })) return false;
-    std::vector<int> frames, decorFrames;
+    auto *overlaySprite = compositor.overlaySprite();
+    if (!overlaySprite && std::any_of(compositor.catalog().materials.begin(), compositor.catalog().materials.end(),
+        [](const auto &m) { return !m.overlay.sprite.empty(); })) return false;
+    std::vector<int> frames, decorFrames, overlayFrames;
     GAGCore::MapGeometryCache *cache;
-    try { frames.resize(map.getW()); decorFrames.resize(map.getW()); cache = &batch->geometryCache(); }
+    try
+    {
+        frames.resize(map.getW()); decorFrames.resize(map.getW()); overlayFrames.resize(map.getW());
+        cache = &batch->geometryCache();
+    }
     catch (const std::bad_alloc&) { return false; }
     // Decide before emitting geometry: fallback must never redraw earlier rows.
     for (int y = top; y <= bottom; ++y)
@@ -75,6 +82,55 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
             if (map.resourceRegistry().presentation(static_cast<ResourceId>(r.type)).frame(r.amount, x, mapY, map.tick) >= sprite->getFrameCount()) return false;
         }
     GAGCore::MapGeometryCache::Layer layer(*cache);
+    auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames, int layerKey, int y, int mapY)
+    {
+        auto draw = [&](int first, int last, int originX, int originY)
+        {
+            for (int mapX = first; mapX <= last; ++mapX)
+            {
+                int frame = layerFrames[mapX];
+                if (frame < 0) continue;
+                int dx = (layerSprite->getW(frame) - 32) >> 1;
+                int dy = (layerSprite->getH(frame) - 32) >> 1;
+                gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, layerSprite, frame);
+            }
+            gfx->finishDrawingSprite(layerSprite, 255);
+        };
+        for (int x = left; x <= right;)
+        {
+            int mapX = (x + viewportX) & map.getMaskW();
+            int width = std::min(right - x + 1, map.getW() - mapX);
+            bool drawn = false;
+            try
+            {
+                drawn = cache->draw({mapIdentity, layerKey, 0, mapY, map.getW(), 1}, layerFrames,
+                    [&] { draw(0, map.getW() - 1, 0, 0); }, mapX, mapX + width - 1,
+                    float((x - mapX) * 32), float(y * 32));
+            }
+            catch (const std::bad_alloc&) {}
+            if (!drawn)
+            {
+                layer.prepareFallback();
+                // Cold-cache budget exhaustion must retain the family
+                // batching path instead of reverting to one HD bind per sprite.
+                GAGCore::SpriteDrawBatch fallback(gfx, layerSprite);
+                draw(mapX, mapX + width - 1, x - mapX, y);
+            }
+            x += width;
+        }
+    };
+    // Overlays lie flat on the ground: every row's before any decor, so decor
+    // reaching down from the row above still covers them.
+    if (overlaySprite)
+        for (int y = top; y <= bottom; ++y)
+        {
+            int mapY = (y + viewportY) & map.getMaskH();
+            bool anyOverlay = false;
+            for (int mapX = 0; mapX < map.getW(); ++mapX)
+                anyOverlay |= (overlayFrames[mapX] = compositor.overlayFrame(map, mapX, mapY)) >= 0;
+            if (anyOverlay)
+                drawLayer(overlaySprite, overlayFrames, 3, y, mapY);
+        }
     for (int y = top; y <= bottom; ++y)
     {
         int mapY = (y + viewportY) & map.getMaskH();
@@ -91,46 +147,9 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
             decorFrames[mapX] = decorSprite ? compositor.decorFrame(map, mapX, mapY) : -1;
             anyDecor |= decorFrames[mapX] >= 0;
         }
-        auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames, int layerKey)
-        {
-            auto draw = [&](int first, int last, int originX, int originY)
-            {
-                for (int mapX = first; mapX <= last; ++mapX)
-                {
-                    int frame = layerFrames[mapX];
-                    if (frame < 0) continue;
-                    int dx = (layerSprite->getW(frame) - 32) >> 1;
-                    int dy = (layerSprite->getH(frame) - 32) >> 1;
-                    gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, layerSprite, frame);
-                }
-                gfx->finishDrawingSprite(layerSprite, 255);
-            };
-            for (int x = left; x <= right;)
-            {
-                int mapX = (x + viewportX) & map.getMaskW();
-                int width = std::min(right - x + 1, map.getW() - mapX);
-                bool drawn = false;
-                try
-                {
-                    drawn = cache->draw({mapIdentity, layerKey, 0, mapY, map.getW(), 1}, layerFrames,
-                        [&] { draw(0, map.getW() - 1, 0, 0); }, mapX, mapX + width - 1,
-                        float((x - mapX) * 32), float(y * 32));
-                }
-                catch (const std::bad_alloc&) {}
-                if (!drawn)
-                {
-                    layer.prepareFallback();
-                    // Cold-cache budget exhaustion must retain the family
-                    // batching path instead of reverting to one HD bind per sprite.
-                    GAGCore::SpriteDrawBatch fallback(gfx, layerSprite);
-                    draw(mapX, mapX + width - 1, x - mapX, y);
-                }
-                x += width;
-            }
-        };
         if (anyDecor)
-            drawLayer(decorSprite, decorFrames, 2);
-        drawLayer(sprite, frames, 1);
+            drawLayer(decorSprite, decorFrames, 2, y, mapY);
+        drawLayer(sprite, frames, 1, y, mapY);
     }
     return true;
 }
@@ -175,6 +194,25 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 												 x + viewportX + 1, y + viewportY + 1,
 												 visibleTeams);
 	};
+	// Overlays lie flat on the ground, under every row's decor.
+	for (int y = top; y <= bot; ++y)
+		for (int x = left; x <= right; ++x)
+		{
+			auto *overlaySprite = compositor.overlaySprite(sceneMap, x + viewportX, y + viewportY);
+			if (!overlaySprite || !visible(x, y))
+				continue;
+			const int frame = compositor.overlayFrame(sceneMap, x + viewportX, y + viewportY);
+			if (frame < 0)
+				continue;
+			if (pendingSprite != overlaySprite)
+			{
+				flush();
+				pendingSprite = overlaySprite;
+			}
+			globalContainer->gfx->drawSprite((x << 5) - ((overlaySprite->getW(frame) - 32) >> 1),
+											 (y << 5) - ((overlaySprite->getH(frame) - 32) >> 1),
+											 overlaySprite, frame);
+		}
 	std::vector<int> visibleColumns;
 	for (int y = top; y <= bot; ++y)
 	{

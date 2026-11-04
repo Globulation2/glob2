@@ -5722,6 +5722,22 @@ Pieskovcové dlaždice
 Pemzové pole
 [frozen_lake]
 Zamrznuté jazero
+[wind_swept_snow]
+Naviaty sneh
+[weathered_sandstone]
+Zvetraný pieskovec
+[windy_sand_dune]
+Vetrom zvlnené duny
+[hardpan]
+Tvrdá krusta
+[volcanic_ash]
+Sopečný popol
+[glacier_ice]
+Ľadovcový ľad
+[overgrown_road]
+Zarastená cesta
+[laterite]
+Laterit
 [cliffs]
 Útesy
 [terrain group water]
@@ -6926,3 +6942,5 @@ Aktualizácia trvalého príkazu zlyhala. Váš príkaz je na tomto zariadení p
 
 [AI for all computer colonies]
 UI pre všetky kolónie ovládané počítačom
+[tundra]
+Tundrová pôda

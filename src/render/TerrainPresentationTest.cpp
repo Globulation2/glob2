@@ -1591,7 +1591,8 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(map.vertexTerrainAt(7, 8) == WATER);
 		CHECK(map.vertexTerrainAt(8, 7) == WATER);
 		CHECK(map.vertexTerrainAt(7, 7) == WATER);
-		CHECK(map.terrainPropertiesAt(7, 7).walkable);
+		CHECK_FALSE(map.terrainPropertiesAt(7, 7).walkable);
+		CHECK(map.terrainPropertiesAt(7, 7).swimmable);
 		CHECK_FALSE(map.terrainPropertiesAt(6, 6).walkable);
 		CHECK(map.vertexTerrainAt(0, 10) == ICE);
 		CHECK(map.vertexTerrainAt(63, 10) == WATER);
@@ -2121,17 +2122,17 @@ TEST_SUITE("TerrainValidation")
 	TEST_CASE("terrain catalogue gallery renders every group beside grass, sand and water [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(
-			{.display = true, .width = 1024, .height = 896, .seed = 7331});
+			{.display = true, .width = 1024, .height = 1280, .seed = 7331});
 		globals->terrainCompositor().prepare(false, 0);
 		glob2test::HeadlessGame fixture({.wDec = 5,
-										 .hDec = 5,
+										 .hDec = 6,
 										 .discovered = true,
 										 .loadDefaultRace = true,
 										 .header = true,
 										 .seed = 7331});
 		auto &map = fixture.game.map;
 		// Ocean and a sand beach on the left, as in the mixed gallery.
-		for (int y = 0; y < 32; ++y)
+		for (int y = 0; y < 40; ++y)
 			for (int x = 0; x < 32; ++x)
 			{
 				if (x < 5)
@@ -2141,15 +2142,16 @@ TEST_SUITE("TerrainValidation")
 			}
 		// Every catalogue type as a 3x3 island on grass with a detached diagonal cell,
 		// five per row on a four-cell pitch, so interior variants, boundaries and seams
-		// are all visible in the 28 rendered rows.
+		// are all visible in the 40 rendered rows (room for 50 types).
 		std::vector<TerrainType> types;
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
-		REQUIRE(types.size() == 32);
+		REQUIRE(types.size() == TERRAIN_COUNT - BOULDERS);
+		REQUIRE(types.size() <= 50);
 		for (std::size_t n = 0; n < types.size(); ++n)
 		{
-			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..27 are rendered
+			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 4; // rows 0..39 are rendered
 			for (int dy = 0; dy < 3; ++dy)
 				for (int dx = 0; dx < 3; ++dx)
 					map.paintCell(ox + dx, oy + dy, types[n]);
@@ -2169,9 +2171,9 @@ TEST_SUITE("TerrainValidation")
 			map.paintCell(4, y, VOID_HOLE);
 		SceneMap scene;
 		glob2test::observeMap(map,scene);
-		fixture.game.drawMapTerrain(0, 0, 31, 27, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapTerrain(0, 0, 31, 39, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		// Raised obstacle decor is drawn with the resources, row by row.
-		fixture.game.drawMapResources(0, 0, 31, 27, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		fixture.game.drawMapResources(0, 0, 31, 39, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
@@ -2235,9 +2237,9 @@ TEST_SUITE("TerrainValidation")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				keys.push_back(terrainPresentation(TerrainType(i)).name);
-		REQUIRE(keys.size() == 32);
+		REQUIRE(keys.size() == TERRAIN_COUNT - BOULDERS);
 		// One 4x composed tile per catalogue material, six per row.
-		GAGCore::DrawableSurface sheet(6 * 128, 6 * 128);
+		GAGCore::DrawableSurface sheet(6 * 128, int((keys.size() + 5) / 6) * 128);
 		for (std::size_t n = 0; n < keys.size(); ++n)
 		{
 			INFO(keys[n]);

@@ -5698,6 +5698,22 @@ Sandsteinsheller
 Pimpsteinsfelt
 [frozen_lake]
 Frossen innsjø
+[wind_swept_snow]
+Snøfokk
+[weathered_sandstone]
+Forvitret sandstein
+[windy_sand_dune]
+Vindrifla dyner
+[hardpan]
+Hardskorpe
+[volcanic_ash]
+Vulkansk aske
+[glacier_ice]
+Breis
+[overgrown_road]
+Gjengrodd vei
+[laterite]
+Laterittjord
 [cliffs]
 Klipper
 [terrain group water]
@@ -6926,3 +6942,5 @@ Påkrevd venting: %0 ms; venting i eiertråden: %1 ms; låser: %2 ms
 Spillsteg %0: %1 ms forløpt tid
 [script saving failed %0]
 Kunne ikke lagre skriptet i %0
+[tundra]
+Tundramark

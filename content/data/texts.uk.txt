@@ -5722,6 +5722,22 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Поле пемзи
 [frozen_lake]
 Замерзле озеро
+[wind_swept_snow]
+Наметений вітром сніг
+[weathered_sandstone]
+Вивітрений пісковик
+[windy_sand_dune]
+Дюни з вітровими брижами
+[hardpan]
+Тверда кірка
+[volcanic_ash]
+Вулканічний попіл
+[glacier_ice]
+Льодовиковий лід
+[overgrown_road]
+Зарослий шлях
+[laterite]
+Латерит
 [cliffs]
 Скелі
 [terrain group water]
@@ -6926,3 +6942,5 @@ Discord відкрито. Ви можете повернутися до гри �
 
 [AI for all computer colonies]
 ШІ для всіх колоній під керуванням комп’ютера
+[tundra]
+Тундровий ґрунт

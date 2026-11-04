@@ -4,8 +4,8 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 37 built-in materials, including grass, sand, their lush, dry, dune and pale
-looks, road, ice and regular water,
+All 45 built-in materials, including grass, sand, their lush, dry, dune, pale and
+windy dune looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Static materials have four
 interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
 layout and water and deep water one 4×4 layout, keeping their animated banks
@@ -28,6 +28,7 @@ ENC=artifacts/asset-tools/venv/bin/python
 "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
 "$ENC" tools/artwork/terrain_synth.py --emit-catalog        # material blocks and colour initialisers
 "$ENC" tools/artwork/terrain_synth.py --write-catalog       # refresh tileset.json from committed frames (no render)
+"$ENC" tools/artwork/terrain_glints.py --write-catalog      # then restore the fertile glint overlays
 "$ENC" tools/artwork/validate_material.py --all
 "$ENC" -m unittest discover -s tools/artwork -p 'test_*material*.py'
 "$ENC" -m unittest discover -s tools/artwork -p test_terrain_synth.py
@@ -89,36 +90,63 @@ helper in `terrain_synth.py`, while colour and material stay free per biome:
 | Grass | baseline, no mark | |
 | Fertile (loam, moss, spring meadow) | warm, saturated ground | |
 | Water, deep water, lava | reserved colour | |
-| Snow and ice (ice, deep snow, frozen lake) | reserved cold white and pale teal | `warped_edges`, `bubbles` (frozen lake) |
+| Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
-| Barren (dirt, clay, shale, heath) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
-| Paths (road, brick path, boardwalk, sandstone tiles) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone` |
-| Rough (mud, mudflat, scree, pumice field) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
+| Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
+| Paths (road, brick path, boardwalk, sandstone tiles, overgrown road) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone`, `hex_paving` (overgrown road) |
+| Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
 | Obstacles (boulders, hedge, thicket, cliffs) | tall raised decor | `terrain_decor.py` |
 
 Within the groups: dirt keeps the original speckled earth and stones under the
 shared cracks; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
-heath is clumps of dormant and dead heather cushions,
-each built of lit sprig tufts, over pale cracked sandy peat. Paths are all laid by the
+volcanic ash is dark charcoal fine-grained ash with scattered porous black stones and
+rusty mineral specks;
+weathered sandstone is a solid bed of ochre stone worn into large, low, rounded slabs with
+fine joints, rust stain and pale nodules; laterite is a packed bed of rounded, hardened
+iron-red nodules (a few glossy brown-black iron) over a red crust whose softer cracks run
+between them, with lower patches of bare ochre fines; heath is clumps of dormant and dead heather cushions,
+each built of lit sprig tufts, over pale cracked sandy peat; tundra is its cold
+counterpart on frost-patterned ground: polygons about two cells across with faint
+pale rims, flat olive moss pads (the heath cushion helper) in their centres, beds of
+grey stones, and the shared cracks in dark peaty earth. Paths are all laid by the
 globs, never natural ground: road is stone setts in running-bond courses; brick
 path is long clay pavers in an axis-aligned herringbone that
 reads the same whichever way the path runs; boardwalk is long weathered planks
 with grain, knots and nails; sandstone tiles are square flags, two by two per
-cell, ochre and grey in a checker. Mud is churned lumps and water-filled pits;
+cell, ochre and grey in a checker; overgrown road is hexagonal stone setts
+about twelve native pixels across in dark joints, decaying: moss along part of
+the joints, a few cracked setts, and reclaimed patches where setts are lost to
+soil, olive moss and weeds and moss creeps over the stone edges. Its hex lattice
+is squashed by under one percent so it repeats exactly on the block, and each
+sett's tone, tilt and fate come from the shared stream when it reaches the
+block edge. Mud is churned lumps and water-filled pits;
 mudflat is desiccated mud in big curled plates split by deep cracks,
 with salt bloom and a few damp sunken plates; scree is big jagged slabs heaped
 over one another, each tipped to its own brightness; pumice field is dark porous
-volcanic rock riddled with vesicles, beside lava and ember field. Frozen lake
+volcanic rock riddled with vesicles, beside lava and ember field; hardpan is pale
+baked crust in small, even, low pillows split by thin cracks, dimpled at their
+centres, with a few shallow damp hollows. Frozen lake
 plays exactly like ice: frosted teal lake ice with a few long white pressure
-cracks, trapped bubbles and frost patches, static and paler than any water. The helpers keep the block contract: geometry comes from
+cracks, trapped bubbles and frost patches, static and paler than any water.
+Glacier ice also plays exactly like ice: bright cyan-blue depth in broad calm
+plates, crossed by about two long kinked white fractures per tile that throw a
+feathered glow to one side, with rare large flattened bubbles and fine rime.
+Wind-swept snow plays exactly like deep snow: one prevailing wind carves it into
+drifts about a tile apart, each a long lit windward slope rising to a crisp
+bright crest over a short lavender lee shadow, with quiet flats and faint ripples
+between. Its ridges are a plane wave with whole wave numbers on the block, so
+only the smooth warps and drift heights vary between layouts. The helpers keep the block contract: geometry comes from
 the shared stream at the block edge, interiors vary, and any normalisation or
 lighting uses the common reference. Obstacles are lit from the top left and cast
 onto grass, and void casts onto every neighbour. The grass and sand
 looks keep the grain of the classic tile they stand in for and change only its
 colour: lush and dry grass are soft like grass, dune and pale sand speckled like
-sand. All three sands use lit grains one or two native pixels across, half the
+sand. Windy sand dune keeps that grain and sweeps it into wind ripples
+(`ripple_light`): long lit windward slopes, a bright crest and a short shaded lee,
+with crests square to the water's main swell (`RIPPLE_WIND` matches `WAVE_SWELL`)
+and a second ripple family that breaks them into forks and ends. All four sands use lit grains one or two native pixels across, half the
 size of the original sand tile's grains. Like grass and sand they are four-layout 8×8 block
 materials, and they take the same pair treatments (`GRASS_LOOKS` and `SAND_LOOKS`
 in the synthesiser).
@@ -201,18 +229,22 @@ outcrop rocks are flat-shaded prisms: a convex ring raised into walls, with
 sloping top facets meeting at an off-centre peak, so each face takes one light
 value.
 
-Cliffs use the same connected corner tiles, but as rock: a craggy plateau
-standing twelve native pixels above its footprint, twice the rise of foliage,
-in 32×64 frames. Its exposed fronts drop as warm, vertically fractured walls,
-darkest at the foot, over a long contact shadow. The plateau has a lit lip
-toward the light, a dark one away from it, and broad light that falls off
-toward its far rims. It has no discrete objects that could repeat. Each vertex
-colour owns a patch of noise fields: relief, joints, tone and grain. A cell
-blends the patches of its four corners with variance-preserving bilinear
-weights, so along a shared edge only that edge's two vertices count. Filled
-cells add a seeded interior patch whose weight is zero at the cell edge. The
-wall fractures are the plateau's tone and joints smeared down the face. Its
-ground material is talus: the chips and cobbles of scree in the cliff stone.
+Cliffs use the same connected corner tiles, but as rock: a weathered ochre
+plateau standing twelve native pixels above its footprint, twice the rise of
+foliage, in 32×64 frames. Its relief is broad shelves with fine grain, pits,
+lichen stains, loose rocks and a few jointed fractures, under broad light that
+rises toward the rims facing the light. Each south face is the plateau's own
+stone, stretched down the drop and put in shade: broad facets each turned their
+own way to the light, faint broken bedding, darkest at the foot, over a dark
+contact strip and a long shadow. The lip is lit in broken stretches; rims facing
+away from the light fall dark. The plateau has no discrete objects that could
+repeat. Each vertex colour owns a patch of noise fields (relief, tone and grain)
+that a cell blends with variance-preserving bilinear weights, so along a shared
+edge only that edge's two vertices count, and filled cells add a seeded interior
+patch whose weight is zero at the cell edge. Rocks belong to vertex discs and
+fractures to cell edges (keyed by both end colours) or interiors, each drawn only
+by the frames that share it. Its ground material is talus: the chips and cobbles
+of scree in the cliff stone.
 Cliffs set `connected_open`, so their partial-corner tiles draw against open
 ground and even a one-vertex ridge stands up with its walls; the plateau's rim
 follows the crags rather than the cell grid. Connected materials join one
@@ -227,6 +259,44 @@ set appends its twelve object frames and its connected frames, so cliffs take
 for before/after fields with narrow strips, corners, isolated vegetation and a
 hole. Decor is presentation only: the minimap, the overview and
 the simulation ignore it.
+
+### Ground overlays: fertile glints
+
+Each terrain group carries one shared mark, and fertile ground (loam, moss,
+spring meadow) twinkles. The glints are a flat animated overlay, not an animated
+ground texture: fertile land covers large areas, and an overlay is drawn as
+sprites every frame without invalidating cached terrain pages. A material opts in
+with an `overlay` block:
+
+```json
+"overlay": {"sprite": "data/gfx/terrain-glint", "cycles": [[0, 1, 2, 3, -1, -1, -1, -1]],
+            "ticks": 3, "density_q8": 112}
+```
+
+- Only `density_q8`/256 of the cells draw an overlay at all, chosen by a
+  presentation hash of the cell, the material and the map's terrain seed.
+- A chosen cell keeps one of the `cycles` and starts it at its own hashed step,
+  so neighbouring glints never flash together. It advances one step every
+  `ticks` scene ticks (30 per second), so overlays pause with the game. A step of
+  `-1` draws nothing.
+- A cell draws an overlay only when all four corners resolve to materials with
+  one, so glints stay on their ground; a mixed cell picks one corner's material.
+- Overlays lie flat: the renderer draws every visible row's overlays before any
+  decor or resources, so raised decor reaching down from the row above still
+  covers them. Frames may be up to 64×64 and are centred on the cell, like decor.
+  All overlay blocks share one sprite. Editor swatches show one lit step per cell.
+- Timing and density can be tuned in tileset.json without regenerating frames.
+
+`tools/artwork/terrain_glints.py` draws one mote per layout at four brightness
+levels (rising, a four-pointed peak star with short diagonals, falling, fading)
+using integer arithmetic only, so every platform renders identical pixels. It
+writes `content/data/gfx/terrain-glintN.png`, the HD frames and
+`content-src/gfx/terrain-glint/provenance.json`; `--write-catalog` adds the overlay
+blocks, `--check` reproduces frames and blocks, and `--sheet`/`--gif` write a
+still and an animated review of the three fertile fields.
+`terrain_synth.py --write-catalog` rewrites fertile material blocks without
+their overlay, so run `terrain_glints.py --write-catalog` after it; `--check`
+reports a missing block.
 
 ### Periodic edges
 
@@ -417,7 +487,7 @@ without pair treatments. Classes, strongest first:
 | --- | --- | --- |
 | `cover` | hedge, thicket, cliffs | `canopy` |
 | `cut` | void_hole, chasm | `crisp` |
-| `built` | road, brick_path, sandstone, boardwalk | `paved`, `crisp` |
+| `built` | road, brick_path, sandstone, overgrown_road, boardwalk | `paved`, `crisp` |
 | `flow` | lava, ember_field | `molten` |
 | `solid` | everything else | `rock`, `soil`, `frozen`, `brush`, `turf`, `sand` |
 | `pool` (shoreline) | water, deep_water, dark_water | `still` |
@@ -426,14 +496,14 @@ without pair treatments. Classes, strongest first:
 | --- | --- | --- | --- | --- |
 | `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket, cliffs |
 | `crisp` | patch | 20 | 96 / 256 / 128 / 0 / 256 | void_hole, chasm, boardwalk |
-| `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone |
+| `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone, overgrown_road |
 | `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | none since dirt track became brick path; kept for future tracks |
 | `molten` | smooth, wiggle 1536 / 64 px | 0 | – / – / 320 / – / 512 | lava, ember_field |
 | `still` | smooth, wiggle 1536 / 128 px | 0 | – / – / 320 / – / 640 | water, deep_water, dark_water |
-| `rock` | contextual | 50 | 384 / 896 / 192 / 448 / 192 | boulders, ridge_rock, outcrop, scree, shale, pumice |
-| `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, mud, mudflat, deep_snow, loam, moss |
-| `frozen` | contextual | 30 | 320 / 768 / 320 / 128 / 256 | ice, frozen_lake |
-| `brush` | contextual | 20 / `shore` | 320 / 768 / 320 / 384 / 512 | heath, spring_meadow |
+| `rock` | contextual | 50 | 384 / 896 / 192 / 448 / 192 | boulders, ridge_rock, outcrop, scree, shale, pumice, weathered_sandstone |
+| `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, volcanic_ash, mud, mudflat, hardpan, deep_snow, wind_swept_snow, loam, moss |
+| `frozen` | contextual | 30 | 320 / 768 / 320 / 128 / 256 | ice, frozen_lake, glacier_ice |
+| `brush` | contextual | 20 / `shore` | 320 / 768 / 320 / 384 / 512 | heath, tundra, spring_meadow |
 | `turf` | contextual | 10 / `shore` | 256 / 1024 / 320 / 512 / 512 | grass, lush_grass, dry_grass |
 | `sand` | contextual | 10 / `beach` | 256 / 1024 / 320 / 512 / 512 | sand, dune_sand, pale_sand |
 | `shore` | contextual | coast only | 256 / 832 / 320 / 384 / 704 | grassy and earthen coasts |
@@ -465,13 +535,13 @@ exception the classes cannot express, not the way to tune a material.
 | 4 | boulders, hedge, thicket, cliffs | 88 / 832, a sense of height on the grass side |
 | 4 | ridge_rock, outcrop | 72 / 768 |
 | 4 | lava, ember_field | no cast; scorch fringe `[214,110,40]` 128/640 and `[160,80,40]` 96/512 |
-| 4 | ice (existing), frozen_lake | 64 / 640 with frost fringe |
-| 3 | road (existing), brick_path, boardwalk, sandstone | 48 / 512 |
-| 3 | deep_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
+| 4 | ice (existing), frozen_lake, glacier_ice | 64 / 640 with frost fringe |
+| 3 | road (existing), brick_path, boardwalk, sandstone, overgrown_road | 48 / 512 |
+| 3 | deep_snow, wind_swept_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
 | 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |
-| 2 | heath | 48 / 480 |
-| 2 | dirt, clay, shale | 40 / 448 |
-| 1 | sand (existing), mud, mudflat, scree, pumice | no cast |
+| 2 | heath, tundra | 48 / 480 |
+| 2 | dirt, clay, shale, weathered_sandstone, volcanic_ash, laterite | 40 / 448 |
+| 1 | sand (existing), mud, mudflat, scree, pumice, hardpan | no cast |
 
 Casts stay within two to three pixels and near or under a third strength, as
 [Seams](terrain-rendering.md#seams) requires. Equal ranks cast nothing, so barren ground beside grass

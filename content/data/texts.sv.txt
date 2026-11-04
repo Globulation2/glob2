@@ -5722,6 +5722,22 @@ Sandstensplattor
 Pimpstensfält
 [frozen_lake]
 Frusen sjö
+[wind_swept_snow]
+Vindpinad snö
+[weathered_sandstone]
+Vittrad sandsten
+[windy_sand_dune]
+Vindräfflade dyner
+[hardpan]
+Hårdskorpa
+[volcanic_ash]
+Vulkanaska
+[glacier_ice]
+Glaciäris
+[overgrown_road]
+Igenvuxen väg
+[laterite]
+Laterit
 [cliffs]
 Klippor
 [terrain group water]
@@ -6926,3 +6942,5 @@ Uppdateringen av den stående ordern misslyckades. Din order är pausad på den 
 
 [AI for all computer colonies]
 AI för alla datorstyrda kolonier
+[tundra]
+Tundramark

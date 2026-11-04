@@ -57,6 +57,21 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
             sharedDecorSprite = decor;
 		}
 		decorSprites.push_back(m.decor.sprite.empty() ? nullptr : customSprites.resolve(m.decor.sprite));
+		if (!m.overlay.sprite.empty())
+		{
+			auto *overlay = customSprites.resolve(m.overlay.sprite);
+			if (!overlay)
+				throw std::runtime_error("Missing terrain overlay sprite: " + m.key);
+			for (const auto &cycle : m.overlay.cycles)
+				for (int frame : cycle)
+					if (frame >= 0 && (frame >= overlay->getFrameCount() || overlay->getW(frame) > 64 ||
+									   overlay->getH(frame) > 64))
+						throw std::runtime_error("Terrain overlay frame missing or larger than 64x64: " +
+												 m.key);
+			if (sharedOverlaySprite && sharedOverlaySprite != overlay) mixedOverlaySprites = true;
+			sharedOverlaySprite = overlay;
+		}
+		overlaySprites.push_back(m.overlay.sprite.empty() ? nullptr : customSprites.resolve(m.overlay.sprite));
         sprites.push_back(sprite);
 		textures.emplace_back(m.variants.size());
 		animationTextures.emplace_back();
@@ -69,6 +84,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 		highResolutionSizes.push_back(0);
 	}
     if (mixedDecorSprites) sharedDecorSprite = nullptr;
+	if (mixedOverlaySprites) sharedOverlaySprite = nullptr;
 	// Shore calm pulls waves toward one colour per material, so the fade
 	// stays continuous across variants and does not shift the shore's tone.
 	for (unsigned id = 0; id < definitions.materials.size(); ++id)
@@ -507,6 +523,36 @@ int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 		material, x, y, count < 4, map.terrainSeed(), mask,
 		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
 }
+MaterialId Compositor::overlayMaterial(const SceneMap &map, int x, int y, bool &found) const
+{
+	const auto corners = map.cellCorners(x, y);
+	std::array<MaterialId, 4> materials;
+	found = false;
+	for (unsigned k = 0; k < corners.size(); ++k)
+	{
+		materials[k] = materialFor(map, corners[k]);
+		if (!overlaySprites[materials[k]])
+			return 0;
+	}
+	found = true;
+	// Only cells whose four corners all carry an overlay draw one, so it never
+	// spills past its ground; a mixed cell picks a corner with presentation hashing.
+	return materials[hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0x0e71a7u) & 3u];
+}
+GAGCore::Sprite *Compositor::overlaySprite(const SceneMap &map, int x, int y) const
+{
+	bool found;
+	const auto material = overlayMaterial(map, x & map.getMaskW(), y & map.getMaskH(), found);
+	return found ? overlaySprites[material] : nullptr;
+}
+int Compositor::overlayFrame(const SceneMap &map, int x, int y) const
+{
+	x &= map.getMaskW();
+	y &= map.getMaskH();
+	bool found;
+	const auto material = overlayMaterial(map, x, y, found);
+	return found ? definitions.overlayFrame(material, x, y, map.tick, map.terrainSeed()) : -1;
+}
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
 	Recipe r;
@@ -645,7 +691,10 @@ std::size_t Compositor::cpuMaterialBytesSelected(std::span<const MaterialId> nee
                  material.variants.capacity() * sizeof(Variant) + material.decor.sprite.capacity() +
                  (material.decor.full.capacity() + material.decor.edge.capacity() + material.decor.connected.capacity() +
                   material.decor.connectedInterior.capacity()) * sizeof(int) +
-                 256;
+                 material.overlay.sprite.capacity() + 256;
+    for (const auto &material : definitions.materials)
+        for (const auto &cycle : material.overlay.cycles)
+            bytes += sizeof(cycle) + cycle.capacity() * sizeof(int);
     for (const auto &binding : definitions.bindings)
         bytes += sizeof(binding) + binding.first.capacity() + 128;
     for (const auto &entry : definitions.borderClasses)

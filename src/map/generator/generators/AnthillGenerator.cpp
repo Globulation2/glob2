@@ -22,8 +22,8 @@
 #include <vector>
 using namespace MapGeneration;
 
-// Anthill: a map of solid rock, carved into chambers joined by winding tunnels two or three tiles
-// wide. Every colony starts in a queen chamber of its own, a dry cul-de-sac with a single door;
+// Anthill: a map of solid rock, carved into chambers joined by winding tunnels, four tiles
+// wide by default. Every colony starts in a queen chamber of its own, a dry cul-de-sac with a single door;
 // the other chambers are farm chambers with a pond and a field, plain chambers with a pond and a
 // wheat or wood patch, dead-end treasure chambers with fruit and wheat, or quarry chambers with a
 // stone deposit. The rock cannot be built on, walked or cleared, so the one thing scarce on this
@@ -72,8 +72,8 @@ using namespace MapGeneration;
 // chambers instead, dry chambers with a deposit at the middle in a field of scree spoil, and from
 // a small clump in every queen chamber's kit. The roads are dirt track, not sand: a line one
 // vertex wide spoils the tiles beside it for building and crops exactly as the sand did,
-// at ordinary walking speed (a mixed tile walks at its slowest walkable corner's speed and grows
-// only what every corner allows). Ridge rock stops no projectile, so towers still shoot over it.
+// with speed blended from the grass and track corners. Mixed cells grow only
+// what every corner allows. Ridge rock stops no projectile, so towers still shoot over it.
 namespace
 {
 
@@ -120,8 +120,14 @@ constexpr int kQueenExtra = 3, kQueenGrowthLimit = 400;
 constexpr double kFace = 1.5;
 // Tunnels likewise: the open tile beside the rock is drawn half rock, so a tunnel stroked to its
 // width read a tile narrower than it (first previews of revision 6). Each side is dug this much
-// further, so a tunnel looks `tunnel-width` across; it walks about a tile wider than revision 5's.
+// further, so a tunnel looks `tunnel-width` across. Corner voting requires three
+// walkable corners against rock; the default width is four to keep bends open to traffic.
 constexpr double kTunnelFace = 0.5;
+// Painting rock on every closed tile's corners erodes a narrow diagonal neck.
+// A 1.5-radius stroke can leave only two walking corners in its cells, which
+// the blocked-corner tie closes. Keep sampled radii above that neck threshold;
+// default width 4 already stays at least 1.875 even at maximum width jitter.
+constexpr double kMinimumTunnelHalfWidth = 1.6;
 // A quarry chamber (REVISION 2026-10-26) is dug to a farm chamber's size but has no pond: a stone
 // deposit of radius kQuarryRadius at its middle at the default stone amount, its roads stopping
 // kQuarryRoadStop short of the middle so the tiles they spoil never reach the deposit. Round the
@@ -296,9 +302,11 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			continue;
 		const int siteA = graph.edgeCells[edge][0], siteB = graph.edgeCells[edge][1];
 		const Site a = L.sites[siteA], b = L.sites[siteB];
-		const std::vector<StrokePoint> path =
+		auto path =
 			wanderingPath(t, {a.x + 0.5, a.y + 0.5}, {b.x + 0.5, b.y + 0.5}, o.tunnelWidth / 2.0 + kTunnelFace,
 						  kWanderShare * o.chamberSpacing, kWidthJitter, tunnels);
+		for (auto &point : path)
+			point.halfWidth = std::max(point.halfWidth, kMinimumTunnelHalfWidth);
 		strokePath(L.open, t, path);
 		if (!o.sandRoads)
 			continue;
@@ -434,8 +442,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.homeOf[i] = k;
 	// The terrain (REVISION 2026-10-26): ponds, dirt-track roads and scree spoil on open ground, and
 	// rock on every vertex of a closed tile, so a closed tile is rock on all four corners and as
-	// impassable as the stone was, while an open tile against the rock face is mixed: walkable, but
-	// holding no building and no crop.
+	// impassable as the stone was. Mixed face cells need at least three walking corners;
+	// single-corner fringes stay blocked. Mixed face cells hold no building or crop.
 	{
 		std::vector<unsigned char> closed(n, 0);
 		for (int i = 0; i < n; ++i)
@@ -684,22 +692,22 @@ GeneratorDefinition anthillDefinition()
 		"anthill",
 		32,
 		"Anthill",
-		6,
+		8,
 		false,
 		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
 		// pond and a few buildings; a queen chamber grown to 60 building sites (overlapping 4x4
 		// footprints, the start scorer's measure) holds a swarm, an inn and a few more; tunnels
-		// three wide take a column of units and are closed by one tower; a fifth of the chambers'
+		// four wide take a column of units and are closed by one tower; a fifth of the chambers'
 		// count in loops keeps a way round most blockades.
 		{GeneratorControl{"chamber-spacing", "Chamber spacing", 20, 40, 2, 28, ControlGroup::Layout}
 			 .withSearchRange(24, 34),
 		 // FEEDBACK 2026-09-13: chambers of 7 (was 5) with a pond each, queen chambers grown to
-		 // 60 sites (was 40); tunnels stay 3 wide but carry a road so nothing is built across.
+		 // 60 sites (was 40); tunnels carry a road so nothing is built across.
 		 GeneratorControl{"chamber-size", "Chamber size", 5, 10, 1, 7, ControlGroup::Layout}
 			 .withSearchRange(7, 10),
 		 GeneratorControl{"queen-room", "Queen room", 20, 160, 10, 60, ControlGroup::Layout}
 			 .withSearchRange(60, 120),
-		 GeneratorControl{"tunnel-width", "Tunnel width", 2, 4, 1, 3, ControlGroup::Terrain}
+		 GeneratorControl{"tunnel-width", "Tunnel width", 2, 4, 1, 4, ControlGroup::Terrain}
 			 .withSearchRange(3, 4),
 		 GeneratorControl{"loops", "Loops", 0, 60, 10, 20, ControlGroup::Terrain}.withSearchRange(
 			 10, 40),

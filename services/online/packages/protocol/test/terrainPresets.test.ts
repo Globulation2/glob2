@@ -24,11 +24,19 @@ describe('built-in terrain presets', () => {
     );
     expect(names.length).toBeGreaterThan(30);
     expect(TERRAIN_PRESETS).toEqual(names);
-    expect(TERRAIN_PRESETS.slice(-5)).toEqual([
-      'pale_sand',
+    expect(TERRAIN_PRESETS.slice(-13)).toEqual([
       'sandstone',
       'pumice',
       'frozen_lake',
+      'wind_swept_snow',
+      'weathered_sandstone',
+      'windy_sand_dune',
+      'hardpan',
+      'tundra',
+      'volcanic_ash',
+      'glacier_ice',
+      'overgrown_road',
+      'laterite',
       'cliffs',
     ]);
   });

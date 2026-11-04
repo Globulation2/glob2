@@ -5722,6 +5722,22 @@ Płyty z piaskowca
 Pole pumeksu
 [frozen_lake]
 Zamarznięte jezioro
+[wind_swept_snow]
+Śnieg nawiany wiatrem
+[weathered_sandstone]
+Zwietrzały piaskowiec
+[windy_sand_dune]
+Wydmy z falami od wiatru
+[hardpan]
+Twarda skorupa
+[volcanic_ash]
+Popiół wulkaniczny
+[glacier_ice]
+Lód lodowcowy
+[overgrown_road]
+Zarośnięta droga
+[laterite]
+Lateryt
 [cliffs]
 Klify
 [terrain group water]
@@ -6926,3 +6942,5 @@ Aktualizacja stałego rozkazu nie powiodła się. Twój rozkaz jest wstrzymany n
 
 [AI for all computer colonies]
 SI dla wszystkich kolonii sterowanych przez komputer
+[tundra]
+Gleba tundrowa

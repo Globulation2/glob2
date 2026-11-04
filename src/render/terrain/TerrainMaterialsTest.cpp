@@ -123,6 +123,73 @@ TEST_SUITE("TerrainMaterials")
 			}
 	}
 
+	TEST_CASE("fertile ground overlays glint sparsely, out of step and on its own cycle")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto c = catalog();
+		for (const char *key : {"loam", "moss", "spring_meadow"})
+			CHECK_FALSE(c.materials[c.find(key)].overlay.cycles.empty());
+		for (const char *key : {"grass", "sand", "boulders", "lava"})
+			CHECK(c.materials[c.find(key)].overlay.cycles.empty());
+		CHECK(c.overlayFrame(c.find("grass"), 3, 4, 100) == -1);
+		const auto id = c.find("loam");
+		const auto &overlay = c.materials[id].overlay;
+		const auto period = std::uint32_t(overlay.ticks * overlay.cycles.front().size());
+		unsigned glinting = 0, lit = 0, startsAtZero = 0;
+		for (int y = 0; y < 64; ++y)
+			for (int x = 0; x < 64; ++x)
+			{
+				bool cellGlints = false;
+				for (std::uint32_t tick = 0; tick < period; tick += std::uint32_t(overlay.ticks))
+				{
+					const int frame = c.overlayFrame(id, x, y, tick, 9);
+					// A step holds for `ticks` scene ticks and the cycle repeats.
+					CHECK(c.overlayFrame(id, x, y, tick + std::uint32_t(overlay.ticks) - 1, 9) == frame);
+					CHECK(c.overlayFrame(id, x, y, tick + period, 9) == frame);
+					if (frame >= 0)
+					{
+						cellGlints = true;
+						++lit;
+					}
+				}
+				glinting += cellGlints;
+				startsAtZero += c.overlayFrame(id, x, y, 0, 9) == overlay.cycles.front().front();
+			}
+		// About density_q8 / 256 of the cells glint, and they do not all flash together.
+		const double share = glinting / 4096.0;
+		CHECK(std::abs(share - overlay.densityQ8 / 256.0) < 0.05);
+		CHECK(lit > glinting);
+		CHECK(startsAtZero < glinting / 4);
+		// A different map seed picks different cells.
+		unsigned moved = 0;
+		for (int x = 0; x < 256; ++x)
+			for (std::uint32_t tick = 0; tick < period; tick += std::uint32_t(overlay.ticks))
+				moved += (c.overlayFrame(id, x, 0, tick, 9) >= 0) != (c.overlayFrame(id, x, 0, tick, 10) >= 0);
+		CHECK(moved > 0);
+	}
+
+	TEST_CASE("overlays reject empty, all-dark and out-of-range cycles")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto original = nlohmann::json::parse(catalog().serialized);
+		for (const auto &cycles : {nlohmann::json::array(), nlohmann::json::array({nlohmann::json::array()}),
+								   nlohmann::json::array({nlohmann::json::array({-1, -1})}),
+								   nlohmann::json::array({nlohmann::json::array({-2})}),
+								   nlohmann::json::array({nlohmann::json::array({70000})})})
+		{
+			auto document = original;
+			for (auto &material : document["materials"])
+				if (material["key"] == "loam")
+					material["overlay"]["cycles"] = cycles;
+			CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+		}
+		auto document = original;
+		for (auto &material : document["materials"])
+			if (material["key"] == "loam")
+				material["overlay"]["density_q8"] = 0;
+		CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+	}
+
 	TEST_CASE("open-edged connected decor is a validated catalog flag")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -523,7 +590,7 @@ TEST_SUITE("TerrainMaterials")
 			{"water", "sand", nullptr}, {"ice", "water", nullptr},
 			{"lava", "grass", nullptr}, {"lava", "boulders", nullptr},
 			{"road", "grass", nullptr}, {"road", "boulders", nullptr},
-			{"dirt_track", "flower_meadow", nullptr}, {"boardwalk", "water", nullptr}};
+			{"brick_path", "heath", nullptr}, {"boardwalk", "water", nullptr}};
 		const auto shape = [](int x, int y)
 		{
 			const float dx = x - 2.5f, dy = y - 2.5f;
@@ -1494,8 +1561,11 @@ TEST_SUITE("TerrainMaterials")
 						}
 					}
 		}
-		// Intentional profile changes need a rendered comparison and a new digest.
-		CHECK(digest == 10118148687011034825ull);
+		// This hashes catalog IDs as well as coverage. The group-look catalog
+		// reordered mud (14 -> 12) and void_hole (27 -> 23) after the reviewed
+		// semantic-border update, preserving its profiles. Geometry changes still
+		// need a rendered comparison.
+		CHECK(digest == 12872139009941546255ull);
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
 	{
@@ -1974,13 +2044,13 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(profile("deep_water", "boulders") == "rock");
 		CHECK(profile("ice", "water") == "frozen");
 		// Flowing lava overruns natural ground and water alike.
-		for (const auto *other : {"grass", "boulders", "ridge_rock", "gravel", "sand", "mud", "water"})
+		for (const auto *other : {"grass", "boulders", "ridge_rock", "shale", "sand", "mud", "water"})
 			CHECK(profile("lava", other) == "molten");
 		// Built surfaces keep their own straight edges against everything natural.
-		for (const auto *other : {"grass", "boulders", "scree", "mud", "flower_meadow", "lava", "water"})
+		for (const auto *other : {"grass", "boulders", "scree", "mud", "heath", "lava", "water"})
 		{
 			CHECK(profile("road", other) == "paved");
-			CHECK(profile("dirt_track", other) == "track");
+			CHECK(profile("brick_path", other) == "paved");
 			CHECK(profile("boardwalk", other) == "crisp");
 		}
 		CHECK(profile("road", "boardwalk") == "crisp");
@@ -1992,7 +2062,7 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(profile("boulders", "mud") == "rock");
 		CHECK(profile("dirt", "grass") == "soil");
 		CHECK(profile("deep_snow", "ice") == "soil");
-		CHECK(profile("flower_meadow", "grass") == "brush");
+		CHECK(profile("heath", "grass") == "brush");
 		CHECK(profile("grass", "lush_grass") == "turf");
 		for (unsigned a = 0; a < c.materials.size(); ++a)
 			for (unsigned b = 0; b < c.materials.size(); ++b)

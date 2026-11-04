@@ -5722,6 +5722,22 @@ AI 생성 아님
 부석 지대
 [frozen_lake]
 얼어붙은 호수
+[wind_swept_snow]
+바람에 깎인 눈
+[weathered_sandstone]
+풍화된 사암
+[windy_sand_dune]
+바람 물결 사구
+[hardpan]
+경반
+[volcanic_ash]
+화산재
+[glacier_ice]
+빙하 얼음
+[overgrown_road]
+풀로 뒤덮인 길
+[laterite]
+라테라이트
 [cliffs]
 절벽
 [terrain group water]
@@ -6926,3 +6942,5 @@ GL 전용
 
 [AI for all computer colonies]
 모든 컴퓨터 제어 식민지의 AI
+[tundra]
+툰드라 지형

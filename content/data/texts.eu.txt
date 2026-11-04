@@ -5722,6 +5722,22 @@ Hareharrizko lauzak
 Apar-harrizko eremua
 [frozen_lake]
 Laku izoztua
+[wind_swept_snow]
+Haizeak eramandako elurra
+[weathered_sandstone]
+Hareharri higatua
+[windy_sand_dune]
+Haizeak uhindutako dunak
+[hardpan]
+Lurrazal gogorra
+[volcanic_ash]
+Errauts bolkanikoa
+[glacier_ice]
+Glaziar-izotza
+[overgrown_road]
+Landaretzaz estalitako bidea
+[laterite]
+Laterita
 [cliffs]
 Labarrak
 [terrain group water]
@@ -6926,3 +6942,5 @@ Agindu iraunkorra eguneratzeak huts egin du. Zure agindua gailu honetan pausatut
 
 [AI for all computer colonies]
 AA ordenagailuak kontrolatutako kolonia guztientzat
+[tundra]
+Tundrako lurra

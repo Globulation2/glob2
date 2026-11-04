@@ -5722,6 +5722,22 @@ Grejsaj platoj
 Pumika kampo
 [frozen_lake]
 Frostiĝinta lago
+[wind_swept_snow]
+Ventblovita neĝo
+[weathered_sandstone]
+Eroziita grejso
+[windy_sand_dune]
+Ventaj sabloondoj
+[hardpan]
+Malmola krusto
+[volcanic_ash]
+Vulkana cindro
+[glacier_ice]
+Glaĉera glacio
+[overgrown_road]
+Superkreskita vojo
+[laterite]
+Laterito
 [cliffs]
 Klifoj
 [terrain group water]
@@ -6926,3 +6942,5 @@ Ordono ne konfirmita. Malfermu la komandanton por reprovi; via mesaĝo estas kon
 
 [AI for all computer colonies]
 AI por ĉiuj komputile regataj kolonioj
+[tundra]
+Tundra grundo

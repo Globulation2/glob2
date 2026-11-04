@@ -5722,6 +5722,22 @@ Zandsteentegels
 Puimsteenveld
 [frozen_lake]
 Bevroren meer
+[wind_swept_snow]
+Verwaaide sneeuw
+[weathered_sandstone]
+Verweerde zandsteen
+[windy_sand_dune]
+Windribbels in duinzand
+[hardpan]
+Harde korst
+[volcanic_ash]
+Vulkanische as
+[glacier_ice]
+Gletsjerijs
+[overgrown_road]
+Overwoekerde weg
+[laterite]
+Lateriet
 [cliffs]
 Kliffen
 [terrain group water]
@@ -6926,3 +6942,5 @@ Het bijwerken van het vaste bevel is mislukt. Uw bevel is op dit apparaat gepauz
 
 [AI for all computer colonies]
 AI voor alle computergestuurde kolonies
+[tundra]
+Toendrabodem

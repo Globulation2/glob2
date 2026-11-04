@@ -936,6 +936,12 @@ The native and HD frames occupy `unit2016` through `unit2527` (direction × 64 +
 phase). Movement installers preserve both appended presentation blocks. Saved
 action offsets remain unchanged.
 
+The `--capture-approved` step also updates the separated production pack's
+frame metadata and file inventory. Keep these changes with the runtime pack so
+later terrain or artwork assembly retains the appended harvest frames. Verify
+the complete production inventory with
+`python3 tools/artwork/package_runtime.py --check` after capture.
+
 Two 256-frame mesh clips, `worker-prone-harvest` and
 `worker-prone-harvest-mid`, hold even and odd phases respectively. This preserves
 the GSK1/GSB1 formats while giving both baked and deformable rendering the full

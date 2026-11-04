@@ -51,9 +51,27 @@ enum TerrainType : std::uint16_t
 	SANDSTONE=33,
 	PUMICE=34,
 	FROZEN_LAKE=35,
-	// Raised rock cliffs (Obstacles), format 196.
-	CLIFFS=36,
-	TERRAIN_COUNT=37,
+	// Snow carved into drifts (snow and ice, like deep snow), format 196.
+	WIND_SWEPT_SNOW=36,
+	// Ochre bedrock worn into rounded slabs (Barren, like dirt), format 197.
+	WEATHERED_SANDSTONE=37,
+	// Sand swept into wind ripples (Sand, like sand), format 198.
+	WINDY_SAND_DUNE=38,
+	// Pale baked crust in small cracked pillows (Rough, like mud), format 199.
+	HARDPAN=39,
+	// Cold heath (Barren), format 200.
+	TUNDRA=40,
+	// Dark volcanic ash (Barren, like dirt), format 201.
+	VOLCANIC_ASH=41,
+	// Cracked blue glacier ice (Ice, like ice), format 202.
+	GLACIER_ICE=42,
+	// Hexagonal setts reclaimed by moss (Paths, like road), format 203.
+	OVERGROWN_ROAD=43,
+	// Iron-red earth packed with hardened nodules (Barren, like dirt), format 204.
+	LATERITE=44,
+	// A raised rock plateau walled by cliffs (Obstacles, like hedge), format 205.
+	CLIFFS=45,
+	TERRAIN_COUNT=46,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -67,7 +85,25 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_GROUND_LOOKS = 29;
 // Formats 191 to 194 ended the built-ins at PALE_SAND.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE = 33;
 // Format 195 ended the built-ins at FROZEN_LAKE.
-inline constexpr unsigned TERRAIN_COUNT_BEFORE_CLIFFS = 36;
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW = 36;
+// Format 196 ended the built-ins at WIND_SWEPT_SNOW.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE = 37;
+// Format 197 ended the built-ins at WEATHERED_SANDSTONE.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE = 38;
+// Format 198 ended the built-ins at WINDY_SAND_DUNE.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_HARDPAN = 39;
+// Format 199 ended the built-ins at HARDPAN.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_TUNDRA = 40;
+// Format 200 ended the built-ins at TUNDRA.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_VOLCANIC_ASH = 41;
+// Format 201 ended the built-ins at VOLCANIC_ASH.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_GLACIER_ICE = 42;
+// Format 202 ended the built-ins at GLACIER_ICE.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD = 43;
+// Format 203 ended the built-ins at OVERGROWN_ROAD.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_LATERITE = 44;
+// Format 204 ended the built-ins at LATERITE.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_CLIFFS = 45;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

@@ -5698,6 +5698,22 @@ AI से नहीं बना
 झाँवे का मैदान
 [frozen_lake]
 जमी हुई झील
+[wind_swept_snow]
+हवा से उड़ी बर्फ़
+[weathered_sandstone]
+अपक्षयित बलुआ पत्थर
+[windy_sand_dune]
+हवा से लहरदार टीले
+[hardpan]
+कठोर परत
+[volcanic_ash]
+ज्वालामुखीय राख
+[glacier_ice]
+हिमनद की बर्फ़
+[overgrown_road]
+घास से ढकी सड़क
+[laterite]
+लेटराइट
 [cliffs]
 चट्टानें
 [terrain group water]
@@ -6926,3 +6942,5 @@ MCP सर्वर चालू करें
 
 [hive standing order update failed]
 स्थायी आदेश को अपडेट करना विफल रहा। आपका आदेश इस डिवाइस पर अस्थायी रूप से रोका गया है; संबंधित नियंत्रण का उपयोग करके फिर से प्रयास करें।
+[tundra]
+टुंड्रा की भूमि

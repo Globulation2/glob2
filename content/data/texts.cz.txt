@@ -5722,6 +5722,22 @@ Pískovcové dlaždice
 Pemzové pole
 [frozen_lake]
 Zamrzlé jezero
+[wind_swept_snow]
+Navátý sníh
+[weathered_sandstone]
+Zvětralý pískovec
+[windy_sand_dune]
+Větrem zvlněné duny
+[hardpan]
+Tvrdá krusta
+[volcanic_ash]
+Sopečný popel
+[glacier_ice]
+Ledovcový led
+[overgrown_road]
+Zarostlá cesta
+[laterite]
+Laterit
 [cliffs]
 Útesy
 [terrain group water]
@@ -6926,3 +6942,5 @@ Aktualizace trvalého rozkazu selhala. Váš rozkaz je na tomto zařízení poza
 
 [AI for all computer colonies]
 AI pro všechny počítačem řízené kolonie
+[tundra]
+Tundrová půda

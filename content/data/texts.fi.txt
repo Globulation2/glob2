@@ -5722,6 +5722,22 @@ Hiekkakivilaatat
 Hohkakivikenttä
 [frozen_lake]
 Jäätynyt järvi
+[wind_swept_snow]
+Tuulen pieksämä lumi
+[weathered_sandstone]
+Rapautunut hiekkakivi
+[windy_sand_dune]
+Tuulen uurtamat dyynit
+[hardpan]
+Kovettuma
+[volcanic_ash]
+Vulkaanista tuhkaa
+[glacier_ice]
+Jäätikköjää
+[overgrown_road]
+Umpeen kasvanut tie
+[laterite]
+Lateriitti
 [cliffs]
 Jyrkänteet
 [terrain group water]
@@ -6926,3 +6942,5 @@ Pysyvän käskyn päivitys epäonnistui. Käskysi on keskeytetty tällä laittee
 
 [AI for all computer colonies]
 Tekoäly kaikille tietokoneen ohjaamille siirtokunnille
+[tundra]
+Tundramaa

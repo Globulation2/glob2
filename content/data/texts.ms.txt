@@ -6840,6 +6840,22 @@ Jubin batu pasir
 Padang batu apung
 [frozen_lake]
 Tasik beku
+[wind_swept_snow]
+Salji ditiup angin
+[weathered_sandstone]
+Batu pasir terluluhawa
+[windy_sand_dune]
+Gumuk pasir berangin
+[hardpan]
+Tanah keras
+[volcanic_ash]
+Abu gunung berapi
+[glacier_ice]
+Ais glasier
+[overgrown_road]
+Jalan ditumbuhi tumbuhan
+[laterite]
+Laterit
 [cliffs]
 Tebing
 [AI for all computer colonies]
@@ -6926,3 +6942,5 @@ Penantian wajib: %0 ms; utas pemilik menunggu tugas: %1 ms; kunci: %2 ms
 Detik %0: %1 ms masa berlalu
 [hive standing order update failed]
 Kemas kini arahan tetap gagal. Arahan anda dijeda secara setempat; cuba semula melalui kawalan berkenaan.
+[tundra]
+Tanah tundra

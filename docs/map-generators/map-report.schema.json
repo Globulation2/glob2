@@ -535,6 +535,30 @@
         "frozen_lake": {
           "$ref": "#/$defs/coverage"
         },
+        "wind_swept_snow": {
+          "$ref": "#/$defs/coverage"
+        },
+        "weathered_sandstone": {
+          "$ref": "#/$defs/coverage"
+        },
+        "hardpan": {
+          "$ref": "#/$defs/coverage"
+        },
+        "tundra": {
+          "$ref": "#/$defs/coverage"
+        },
+        "volcanic_ash": {
+          "$ref": "#/$defs/coverage"
+        },
+        "glacier_ice": {
+          "$ref": "#/$defs/coverage"
+        },
+        "overgrown_road": {
+          "$ref": "#/$defs/coverage"
+        },
+        "laterite": {
+          "$ref": "#/$defs/coverage"
+        },
         "cliffs": {
           "$ref": "#/$defs/coverage"
         },

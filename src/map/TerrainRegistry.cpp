@@ -336,17 +336,31 @@ unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
 		 : versionMinor < FILE_FORMAT_VERSION_VERTEX_TERRAIN	   ? TERRAIN_COUNT_BEFORE_VERTEX
 		 : versionMinor < FILE_FORMAT_VERSION_GROUND_LOOKS	   ? TERRAIN_COUNT_BEFORE_GROUND_LOOKS
 		 : versionMinor < FILE_FORMAT_VERSION_SANDSTONE_PUMICE ? TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE
-		 : versionMinor < FILE_FORMAT_VERSION_CLIFFS		   ? TERRAIN_COUNT_BEFORE_CLIFFS
+		 : versionMinor < FILE_FORMAT_VERSION_WIND_SWEPT_SNOW  ? TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW
+		 : versionMinor < FILE_FORMAT_VERSION_WEATHERED_SANDSTONE ? TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE
+		 : versionMinor < FILE_FORMAT_VERSION_WINDY_SAND_DUNE ? TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE
+		 : versionMinor < FILE_FORMAT_VERSION_HARDPAN		  ? TERRAIN_COUNT_BEFORE_HARDPAN
+		 : versionMinor < FILE_FORMAT_VERSION_TUNDRA		  ? TERRAIN_COUNT_BEFORE_TUNDRA
+		 : versionMinor < FILE_FORMAT_VERSION_VOLCANIC_ASH ? TERRAIN_COUNT_BEFORE_VOLCANIC_ASH
+		 : versionMinor < FILE_FORMAT_VERSION_GLACIER_ICE ? TERRAIN_COUNT_BEFORE_GLACIER_ICE
+		 : versionMinor < FILE_FORMAT_VERSION_OVERGROWN_ROAD ? TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD
+		 : versionMinor < FILE_FORMAT_VERSION_LATERITE ? TERRAIN_COUNT_BEFORE_LATERITE
+		 : versionMinor < FILE_FORMAT_VERSION_CLIFFS ? TERRAIN_COUNT_BEFORE_CLIFFS
 																   : unsigned(TERRAIN_COUNT);
 }
 std::optional<unsigned> TerrainRegistry::currentTerrainId(unsigned savedBuiltins, unsigned saved)
 {
 	if (savedBuiltins == TERRAIN_COUNT)
 		return saved;
-	// Formats 146 to 195 kept every built-in ID (ending at CHASM, PALE_SAND, then
-	// FROZEN_LAKE); custom IDs follow the built-ins.
+	// Formats 146 to 197 kept every built-in ID (ending at CHASM, PALE_SAND,
+	// FROZEN_LAKE, WIND_SWEPT_SNOW, WEATHERED_SANDSTONE, WINDY_SAND_DUNE, HARDPAN, TUNDRA,
+	// then VOLCANIC_ASH); custom IDs follow the built-ins.
 	if (savedBuiltins == TERRAIN_COUNT_BEFORE_GROUND_LOOKS || savedBuiltins == TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE ||
-		savedBuiltins == TERRAIN_COUNT_BEFORE_CLIFFS)
+		savedBuiltins == TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW || savedBuiltins == TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE ||
+		savedBuiltins == TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE || savedBuiltins == TERRAIN_COUNT_BEFORE_HARDPAN ||
+		savedBuiltins == TERRAIN_COUNT_BEFORE_TUNDRA || savedBuiltins == TERRAIN_COUNT_BEFORE_VOLCANIC_ASH ||
+		savedBuiltins == TERRAIN_COUNT_BEFORE_GLACIER_ICE || savedBuiltins == TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD ||
+		savedBuiltins == TERRAIN_COUNT_BEFORE_LATERITE || savedBuiltins == TERRAIN_COUNT_BEFORE_CLIFFS)
 		return saved < savedBuiltins ? saved : saved - savedBuiltins + TERRAIN_COUNT;
 	// Older files: the classic five keep their IDs; 5 and 6 were the shores.
 	if (saved <= TRAIL)
@@ -364,7 +378,15 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 	if (savedBuiltinCount != TERRAIN_COUNT_BEFORE_CATALOGUE && savedBuiltinCount != TERRAIN_COUNT_BEFORE_VERTEX &&
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_GROUND_LOOKS &&
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE &&
-		savedBuiltinCount != TERRAIN_COUNT_BEFORE_CLIFFS && savedBuiltinCount != TERRAIN_COUNT)
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_HARDPAN && savedBuiltinCount != TERRAIN_COUNT_BEFORE_TUNDRA &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_VOLCANIC_ASH &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_GLACIER_ICE &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD &&
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_LATERITE && savedBuiltinCount != TERRAIN_COUNT_BEFORE_CLIFFS &&
+		savedBuiltinCount != TERRAIN_COUNT)
 		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);
 	if (j.at("terrains").empty())

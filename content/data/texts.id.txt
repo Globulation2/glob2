@@ -5722,6 +5722,22 @@ Ubin batu pasir
 Hamparan batu apung
 [frozen_lake]
 Danau beku
+[wind_swept_snow]
+Salju tersapu angin
+[weathered_sandstone]
+Batu pasir lapuk
+[windy_sand_dune]
+Bukit pasir berangin
+[hardpan]
+Tanah keras
+[volcanic_ash]
+Abu vulkanik
+[glacier_ice]
+Es gletser
+[overgrown_road]
+Jalan ditumbuhi tanaman
+[laterite]
+Laterit
 [cliffs]
 Tebing
 [terrain group water]
@@ -6926,3 +6942,5 @@ Pembaruan perintah tetap gagal. Perintah Anda dijeda pada perangkat ini; coba la
 
 [AI for all computer colonies]
 AI untuk semua koloni yang dikendalikan komputer
+[tundra]
+Tanah tundra

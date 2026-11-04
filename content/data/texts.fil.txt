@@ -5675,7 +5675,7 @@ Lupa
 [clay]
 Luwad
 [shale]
-Shale
+Batong luwad na patong-patong
 [heath]
 Tuyong kaparangan
 [mud]
@@ -6838,6 +6838,22 @@ Baldosang batong-buhangin
 Parang ng pumice
 [frozen_lake]
 Nagyelong lawa
+[wind_swept_snow]
+Niyebeng tinangay ng hangin
+[weathered_sandstone]
+Lumang batong-buhangin
+[windy_sand_dune]
+Mahanging buhangin ng burol
+[hardpan]
+Matigas na lupa
+[volcanic_ash]
+Abo ng bulkan
+[glacier_ice]
+Yelo ng glacier
+[overgrown_road]
+Daang tinubuan ng damo
+[laterite]
+Lupang laterita
 [cliffs]
 Bangin
 [AI for all computer colonies]
@@ -6926,3 +6942,5 @@ Kinakailangang paghihintay: %0 ms; paghihintay ng thread na may-ari sa mga gawai
 Hakbang %0: %1 ms na lumipas
 [hive standing order update failed]
 Nabigo ang pag-update ng standing order. Naka-pause ang iyong utos sa device na ito; gamitin muli ang kaukulang kontrol.
+[tundra]
+Lupang tundra

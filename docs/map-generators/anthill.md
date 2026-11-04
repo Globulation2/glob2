@@ -11,9 +11,12 @@ buildings, and growing means taking the next chamber down the tunnel.
   cells the graph (`cellGraph` over `siteNeighbours`); a spanning tree through every chamber but the
   queens' (`carveSpanningTree`), one door into each queen chamber, and `loops` percent (0-60, 20) of
   the chambers' count in extra tunnels. Every open edge is a wandering tunnel `tunnel-width` wide as drawn (2-4,
-  3; dug half a tile further each side, since the tile beside the rock is drawn half rock) between its chambers' middles (`wanderingPath`), with a dirt-track road traced down its middle that
+  default 4; dug half a tile further each side, since the tile beside the rock is drawn half rock).
+  At widths 2–3, sampled stroke radii are floored at 1.6 so rock-corner erosion cannot close a
+  narrow neck under the three-walkable-corner rule. Default width 4 already clears this floor.
+  Tunnels join their chambers' middles (`wanderingPath`), with a dirt-track road traced down the middle that
   stops on the pond's beach at each end (`sand-roads`, on). The road is one vertex wide, so it never
-  makes a pure dirt-track tile: the tiles either side are mixed, which walk at grass speed and hold
+  makes a pure dirt-track tile: the tiles either side are mixed, blending grass and track speeds while holding
   no building and no crop, so nothing can be built across a tunnel (first play had AIs walling
   themselves in); every chamber a
   rough disc of `chamber-size` (5-10, 7), farm chambers two bigger, queen chambers three, each turned
@@ -41,9 +44,9 @@ buildings, and growing means taking the next chamber down the tunnel.
 - **Rock.** Every vertex of an uncarved tile is ridge rock or outcrop,
   so an uncarved tile is as impassable as the stone it replaced, and towers still shoot over it.
   Outcrop takes the face where smooth noise is high and thins out behind it, so walls read broken at
-  the face and solid within. Open tiles against the face are mixed: walkable, no building, no crop,
-  so every chamber is dug a tile and a half wider than its size and keeps the room it had with
-  stone walls.
+  the face and solid within. Mixed face cells need at least three walking corners and support
+  neither buildings nor crops; single-corner fringes stay blocked. Every chamber is dug a tile
+  and a half wider than its size to retain the building and crop room it had with stone walls.
   `openColonyRoutes` only clears crops in a tunnel; it never cuts rock, and the validator checks that
   the finished terrain is the design's vertex for vertex.
 - **Experiments.** A generated map declares the ridge, rough (scree) and path (brick path) terrain

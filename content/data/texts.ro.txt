@@ -5722,6 +5722,22 @@ Dale de gresie
 Câmp de piatră ponce
 [frozen_lake]
 Lac înghețat
+[wind_swept_snow]
+Zăpadă spulberată de vânt
+[weathered_sandstone]
+Gresie erodată
+[windy_sand_dune]
+Dune vălurite de vânt
+[hardpan]
+Crustă întărită
+[volcanic_ash]
+Cenușă vulcanică
+[glacier_ice]
+Gheață de ghețar
+[overgrown_road]
+Drum năpădit de vegetație
+[laterite]
+Laterit
 [cliffs]
 Stânci
 [terrain group water]
@@ -6926,3 +6942,5 @@ Actualizarea ordinului permanent a eșuat. Ordinul dvs. este pus pe pauză pe ac
 
 [AI for all computer colonies]
 IA pentru toate coloniile controlate de calculator
+[tundra]
+Sol de tundră

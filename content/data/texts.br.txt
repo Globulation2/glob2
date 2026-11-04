@@ -5722,6 +5722,22 @@ Lajotas de arenito
 Campo de pedra-pomes
 [frozen_lake]
 Lago congelado
+[wind_swept_snow]
+Neve varrida pelo vento
+[weathered_sandstone]
+Arenito desgastado
+[windy_sand_dune]
+Dunas de vento
+[hardpan]
+Crosta endurecida
+[volcanic_ash]
+Ludu menezioù-tan
+[glacier_ice]
+Gelo glacial
+[overgrown_road]
+Hent goloet gant ar geot
+[laterite]
+Laterita
 [cliffs]
 Torgennoù
 [terrain group water]
@@ -6926,3 +6942,5 @@ A atualização da ordem permanente falhou. Sua ordem está pausada neste dispos
 
 [AI for all computer colonies]
 IA evit an holl drevadennoù meret gant an urzhiataer
+[tundra]
+Douar toundra

@@ -40,9 +40,9 @@ namespace N = ::MapGeneration::Numeric;
 //
 // PLAY INTENT: water and food are in the middle, building room and stone at the edge. Colonies
 // start round the swamp's rim on dry ground and push inward for floodplain farms and islands. The
-// panhandle's river is deep, a wall even to swimmers, crossed only at its boardwalk bridges; the
-// swamp's channels are shallow, forded or swum; marsh is slow ground nobody can build on. Starts
-// are found, not stamped: fairness is measured.
+// panhandle's deep river is crossed on foot only at its boardwalk bridges; trained units can
+// swim across it. The swamp's channels are shallow, forded or swum; marsh is slow ground nobody
+// can build on. Starts are found, not stamped: fairness is measured.
 //
 // Everything is drawn in a frame along the flow (u downstream, v across), on a torus of its own,
 // and transposed onto the map at the end, so every rule below reads the same on either axis.
@@ -50,9 +50,8 @@ namespace
 {
 constexpr const char *kLayout = "braided-delta-layout";
 
-// A tile mixing shallow and deep corners is neither walkable nor swimmable, so a deep core whose
-// banks are three vertices of shallow water is a wall to every unit: the panhandle's river and the
-// lagoons have one.
+// The panhandle's river and lagoons keep a deep core behind three vertices of
+// shallow banks. Both depths and their transition cells permit swimming.
 constexpr int kDeep = 3;
 // Levees: a loam crest two to three vertices from a floodplain channel's water.
 constexpr int kLeveeCrest = 3, kLeveeWidth = 7;
@@ -67,8 +66,8 @@ constexpr int kKitWheat = 24, kKitWood = 18, kKitDistance = 11;
 constexpr double kWheatShare = 0.45, kWoodShare = 0.22;
 constexpr int kGroveTrees = 4, kQuarryStone = 6;
 // The repair joins pieces of land of this many corners or more. The validator counts tiles, and
-// every tile with a land corner is walkable, so a thin strip of a few corners can make a piece of
-// tens of tiles: keep this far below the validator's 48.
+// corner voting can make a thin strip of a few corners into a larger piece of
+// walking tiles: keep this far below the validator's 48.
 constexpr int kRepairPiece = 8;
 // Where the zones end, as a share of the fan's radius (the swamp's edge depends on the flood).
 constexpr double kFloodplainEdge = 0.9, kWetEdge = 0.95, kFringeEdge = 1.02;
@@ -430,8 +429,8 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		const std::vector<int> depth = clearance(f, wet);
 		for (int i = 0; i < n; ++i)
 		{
-			// Inside the range all the river's water is deep, so the deep core runs into the rock: a
-			// shallow tip there would let a swimmer round the core from one bank to the other.
+			// Inside the range the river stays deep to the rock; downstream the
+			// core gives way to its shallow banks.
 			const bool gorge = core[i] && f.remainderX(i) < rangeEdge(i / f.w) + 1;
 			if (sketch[i] == WATER && (core[i] || lagoon[i]) && (depth[i] >= kDeep || gorge))
 			{
@@ -439,10 +438,9 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 				look[i] = depth[i] >= kDeep + 2 ? DARK_WATER : DEEP_WATER;
 			}
 		}
-		// Deep water is swimmable: it is a wall only behind the ring of tiles mixing it with shallow
-		// water, which nobody can enter. Where it would touch ground a unit can stand on (the gorge's
-		// mouth, where the rock gives way to the banks), a swimmer could step straight in and across,
-		// so there it stays shallow. Rock (the range, still to be laid) may touch it.
+		// Keep shallow shoals where the deep core approaches the banks at the
+		// gorge's mouth. The range (still to be laid) may touch deep water.
+		// Both depths remain accessible to swimmers.
 		const auto rock = [&](int j) { return f.remainderX(j) < rangeEdge(j / f.w) && sketch[j] != WATER; };
 		std::vector<int> shoal;
 		for (int i = 0; i < n; ++i)
@@ -693,10 +691,10 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 				const int right = labelAt(p.x - nu * probe, p.y - nv * probe);
 				if (left < 0 || right < 0 || left == right)
 					continue;
-				bool far = true;
+				bool sufficientlySeparated = true;
 				for (const ShapePoint &q : laid)
-					far = far && N::hypot(q.x - p.x, across(q.y - p.y)) >= (pass ? 44 : 10);
-				if (!far || (pass == 0 && joined.find(left) == joined.find(right)))
+					sufficientlySeparated = sufficientlySeparated && N::hypot(q.x - p.x, across(q.y - p.y)) >= (pass ? 44 : 10);
+				if (!sufficientlySeparated || (pass == 0 && joined.find(left) == joined.find(right)))
 					continue;
 				SandFord ford{p.x, p.y, tu / len, tv / len, nu, nv, p.halfWidth + 2.5, 2};
 				stampFord(sketch, f, ford);
@@ -1011,9 +1009,10 @@ bool generate(Game &game, GenerationContext &context)
 	return true;
 }
 
-// The panhandle's river is a wall to every unit between its gorge, its bridges and the apex: in
-// each stretch between two cuts, nothing that walks or swims can get from one bank to the other
-// inside a band along the river. A tile's bank is the side of the river's middle it lies on.
+// The panhandle's river blocks walking between its gorge, bridges and apex.
+// In each stretch between two cuts, a unit without swimming cannot reach the
+// other bank inside the river band. Trained swimmers may cross either depth.
+// A tile's bank is the side of the river's middle it lies on.
 std::string riverWallFault(const Layout &L, const Map &map)
 {
 	const Torus &t = L.t;
@@ -1042,7 +1041,7 @@ std::string riverWallFault(const Layout &L, const Map &map)
 				continue;
 			side[i] = offset > 0 ? 1 : -1;
 			const TerrainProperties &rules = map.terrainPropertiesAt(i);
-			if (side[i] > 0 && offset > bank && (rules.walkable || rules.swimmable))
+			if (side[i] > 0 && offset > bank && rules.walkable)
 				queue.push_back(i);
 		}
 		std::vector<unsigned char> seen(t.size(), 0);
@@ -1057,7 +1056,7 @@ std::string riverWallFault(const Layout &L, const Map &map)
 				const double offset =
 					ChannelDetail::centred(L.frameV[i] + 0.5 - river.middle[size_t(L.frameU[i])], L.across);
 				if (-offset > bank)
-					return "Units can cross the panhandle's river near (" + std::to_string(x) + ", " + std::to_string(y) +
+					return "Units without swimming can cross the panhandle's river near (" + std::to_string(x) + ", " + std::to_string(y) +
 						   "), between flow " + std::to_string(int(from)) + " and " + std::to_string(int(to)) +
 						   ", away from its bridges.";
 			}
@@ -1068,7 +1067,7 @@ std::string riverWallFault(const Layout &L, const Map &map)
 					if (seen[j] || !side[j])
 						continue;
 					const TerrainProperties &rules = map.terrainPropertiesAt(j);
-					if (rules.walkable || rules.swimmable)
+					if (rules.walkable)
 					{
 						seen[j] = 1;
 						queue.push_back(j);
@@ -1148,7 +1147,7 @@ GeneratorDefinition braidedDeltaDefinition()
 	return {"braided-delta",
 			36,
 			"Braided Delta",
-			6,
+			7,
 			false,
 			{GeneratorControl::choice("flood", "Flood", {"Dry", "Normal", "Wet"}, 1, ControlGroup::Terrain)
 				 .withSearchValues({0, 1, 2}),

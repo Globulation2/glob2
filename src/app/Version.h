@@ -7,8 +7,17 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 196
-// version 196 adds built-in cliffs; custom terrain IDs move up by one.
+#define VERSION_MINOR 205
+// version 205 adds built-in cliffs; custom terrain IDs move up by one.
+// version 204 adds built-in laterite; custom terrain IDs move up by one.
+// version 203 adds built-in overgrown road; custom terrain IDs move up by one.
+// version 202 adds built-in glacier ice; custom terrain IDs move up by one.
+// version 201 adds built-in volcanic ash; custom terrain IDs move up by one.
+// version 200 adds built-in tundra; custom terrain IDs move up by one.
+// version 199 adds built-in hardpan; custom terrain IDs move up by one.
+// version 198 adds built-in windy sand dune; custom terrain IDs move up by one.
+// version 197 adds built-in weathered sandstone; custom terrain IDs move up by one.
+// version 196 adds built-in wind-swept snow; custom terrain IDs move up by one.
 // version 195 adds built-in sandstone tiles, pumice field and frozen lake; custom terrain IDs move up by three.
 // version 194 lets replenishment couriers finish trips before demand-driven dismissal; save encoding is unchanged.
 // version 193 adds the saved adaptive prestige pipeline limit.

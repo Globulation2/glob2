@@ -5722,6 +5722,22 @@ Losas de arenisca
 Campo de piedra pómez
 [frozen_lake]
 Lago helado
+[wind_swept_snow]
+Nieve barrida por el viento
+[weathered_sandstone]
+Arenisca erosionada
+[windy_sand_dune]
+Dunas de viento
+[hardpan]
+Costra endurecida
+[volcanic_ash]
+Ceniza volcánica
+[glacier_ice]
+Hielo glaciar
+[overgrown_road]
+Camino invadido por la vegetación
+[laterite]
+Laterita
 [cliffs]
 Acantilados
 [terrain group water]
@@ -6926,3 +6942,5 @@ La actualización de la orden permanente falló. Tu orden está pausada en este 
 
 [AI for all computer colonies]
 IA para todas las colonias controladas por ordenador
+[tundra]
+Suelo de tundra

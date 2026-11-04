@@ -19,9 +19,9 @@ its own.
   middle. The bridges are where the two halves of the island meet.
 - **Fast roads.** Roads are cobbled road with shale shoulders: fast, buildable, and nothing grows
   on them, so every hex is a sealed plot of its own.
-- **The deep sea is a wall.** The sea deepens eight tiles from the shore, and a tile mixing
-  shallow and deep water can be neither walked nor swum, so swimming opens the river and the
-  coast, never a way across the sea.
+- **The deep sea slows swimmers.** The sea deepens eight tiles from the shore. Mixed
+  shallow/deep cells remain swimmable, so swimmers can use the river, follow the coast
+  or take a longer route around the island through the slower open sea.
 
 ## The hexes
 
@@ -33,7 +33,7 @@ its own.
 | Forest | Trees on lush grass round a heart of moss and a thicket that never clears | Wood; the moss keeps it growing |
 | Pasture | Grass with drifts of heath, and a hedgerow across it with a gap | Building room; the hedge stops arrows |
 | Hills | Clay with two or three outcrop knolls and a grass pocket | Building room and two stone |
-| Mountain | A ridge-rock and outcrop massif with a deep-snow cap, a scree and boulder skirt | Eight stone at its foot; rock towers shoot over, boulders stop arrows |
+| Mountain | A ridge-rock and outcrop massif with a deep-snow cap, a scree and boulder skirt | Eight stone at its foot; rock towers shoot over, boulders stop arrows; the snow cap slows and wears down units like ice |
 | Lake | A pond with a dark deep middle, a garden round it, a mud rim | Food and wood between the homes |
 | Oasis (the middle; two on maps of more than four colonies) | Dune and pale sand round a pond, lush grass and the orchard | The fruit prize |
 

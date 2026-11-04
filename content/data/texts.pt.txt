@@ -5722,6 +5722,22 @@ Lajes de arenito
 Campo de pedra-pomes
 [frozen_lake]
 Lago congelado
+[wind_swept_snow]
+Neve varrida pelo vento
+[weathered_sandstone]
+Arenito erodido
+[windy_sand_dune]
+Dunas de vento
+[hardpan]
+Crosta endurecida
+[volcanic_ash]
+Cinza vulcânica
+[glacier_ice]
+Gelo glaciar
+[overgrown_road]
+Estrada coberta de vegetação
+[laterite]
+Laterita
 [cliffs]
 Penhascos
 [terrain group water]
@@ -6926,3 +6942,5 @@ A atualização da ordem permanente falhou. A sua ordem está em pausa neste dis
 
 [AI for all computer colonies]
 IA para todas as colónias controladas pelo computador
+[tundra]
+Solo de tundra

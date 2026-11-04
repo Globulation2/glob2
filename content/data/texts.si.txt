@@ -5722,6 +5722,22 @@ Plošče iz peščenjaka
 Polje plovca
 [frozen_lake]
 Zamrznjeno jezero
+[wind_swept_snow]
+Zameten sneg
+[weathered_sandstone]
+Preperel peščenjak
+[windy_sand_dune]
+Vetrovne sipine
+[hardpan]
+Trda skorja
+[volcanic_ash]
+Vulkanski pepel
+[glacier_ice]
+Ledeniški led
+[overgrown_road]
+Zaraščena cesta
+[laterite]
+Lateritna tla
 [cliffs]
 ප්‍රපාත
 [terrain group water]
@@ -6926,3 +6942,5 @@ Posodobitev trajnega ukaza ni uspela. Vaš ukaz je začasno ustavljen na tej nap
 
 [AI for all computer colonies]
 Umetna inteligenca za vse računalniško vodene kolonije
+[tundra]
+Tundrska tla

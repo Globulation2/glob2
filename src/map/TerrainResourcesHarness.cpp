@@ -23,6 +23,7 @@
 #include <fstream>
 #include <sstream>
 #include <locale>
+#include <bit>
 #include "online/Sha256.h"
 #include <vector>
 
@@ -1157,13 +1158,35 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
     constexpr std::array<Uint32,3> seeds={0x1875a203u,0x4bfa021du,0xb037a19fu};
     std::ostringstream trace;
     trace.imbue(std::locale::classic());
+    std::ostringstream currentFormatTrace;
+    currentFormatTrace.imbue(std::locale::classic());
     const auto record=[&](Uint32 seed,Game& game) {
+        // This golden was recorded at format 195. Keep that non-simulation
+        // header contribution stable, while retaining every other checksum bit.
+        // Empty header experiment keys make its version contribution a rotation;
+        // verify this assumption against the real header checksum before using it.
+        constexpr Uint32 goldenHeaderMinor=195;
+        const auto& header=game.mapHeader;
+        REQUIRE(header.getVersionMajor()==VERSION_MAJOR);
+        REQUIRE(header.getVersionMinor()==VERSION_MINOR);
+        REQUIRE(VERSION_MINOR>=goldenHeaderMinor);
+        REQUIRE(header.requiredResourceExperiments.empty());
+        const Uint32 headerInputs=Uint32(header.getVersionMajor())^
+            Uint32(header.getVersionMinor())^Uint32(header.getNumberOfTeams());
+        REQUIRE(header.checkSum()==std::rotr(headerInputs,1));
+        // MapHeader rotates once; Game adds teams + players + six rotations
+        // through the unit-catalog/statistics checksum protocol.
+        const auto versionDelta=std::rotr(Uint32(header.getVersionMinor())^goldenHeaderMinor,
+            header.getNumberOfTeams()+game.gameHeader.getNumberOfPlayers()+7);
+        const auto checksum=game.checkSum(nullptr,nullptr,nullptr,true);
         std::ostringstream randomState;
         randomState.imbue(std::locale::classic());
         randomState << game.syncRandom;
+        const auto randomDigest=Online::Sha256::hex(randomState.str());
         trace << seed << ' ' << game.stepCounter << ' '
-              << game.checkSum(nullptr,nullptr,nullptr,true) << ' '
-              << Online::Sha256::hex(randomState.str()) << '\n';
+              << (checksum^versionDelta) << ' ' << randomDigest << '\n';
+        currentFormatTrace << seed << ' ' << game.stepCounter << ' '
+              << checksum << ' ' << randomDigest << '\n';
     };
     for (const auto seed:seeds)
     {
@@ -1336,6 +1359,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
         }
     }
     glob2test::writeFile(glob2test::artifactDir()/"seeded-compositions.trace",trace.str());
+    glob2test::writeFile(glob2test::artifactDir()/"seeded-compositions.current-format.trace",currentFormatTrace.str());
     glob2test::expectGolden("resources/seeded-compositions-units.trace",trace.str());
 }
 

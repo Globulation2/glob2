@@ -5722,6 +5722,22 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 حقل الحجر الخفاف
 [frozen_lake]
 بحيرة متجمدة
+[wind_swept_snow]
+ثلج تذروه الرياح
+[weathered_sandstone]
+حجر رملي متآكل
+[windy_sand_dune]
+كثبان رملية متموجة بالرياح
+[hardpan]
+قشرة صلبة
+[volcanic_ash]
+رماد بركاني
+[glacier_ice]
+جليد النهر الجليدي
+[overgrown_road]
+طريق مكسو بالعشب
+[laterite]
+لاتريت
 [cliffs]
 منحدرات
 [terrain group water]
@@ -6926,3 +6942,5 @@ GL فقط
 
 [AI for all computer colonies]
 الذكاء الاصطناعي لكل المستعمرات التي يديرها الحاسوب
+[tundra]
+أرض التندرا

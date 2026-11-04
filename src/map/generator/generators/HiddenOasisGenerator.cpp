@@ -1019,9 +1019,9 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 		L.failure = "The gorge does not open onto the country.";
 		return L;
 	}
-	std::vector<unsigned char> walkable(n, 0);
+	auto walkable = walkableTiles(beached, t);
 	for (int i = 0; i < n; ++i)
-		walkable[i] = !pureWater[i] && !L.rock[i] && !L.buttes[i];
+		walkable[i] = walkable[i] && !L.rock[i] && !L.buttes[i];
 
 	// Every tile's walk to the mouth: the one whole-map flood the design needs (profiling, 2026-09-17:
 	// whole-map floods were half of generation, most of them proving facts about the plateau alone).
@@ -1873,7 +1873,7 @@ GeneratorDefinition hiddenOasisDefinition()
 		"hidden-oasis",
 		57,
 		"Hidden Oasis",
-		2,
+		3,
 		false,
 		{GeneratorControl{"pond-size", "Pond size", 5, 12, 1, 8, ControlGroup::Terrain}
 			 .withSearchRange(7, 11),

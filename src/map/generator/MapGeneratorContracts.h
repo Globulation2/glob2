@@ -500,7 +500,7 @@ inline void savannahContracts()
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(definition.legacyId == 45 && definition.revision == 4);
+	assert(definition.legacyId == 45 && definition.revision == 5);
 	assert(request.option("watering-holes") == 1 && request.option("dry-patches") == 8);
 	assert(request.option("grassland") == 70 && request.option("kopjes") == 1 &&
 		   request.option("game-trails") == 1);
@@ -801,7 +801,7 @@ inline void honeycombIsleContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("honeycomb-isle"));
-	assert(definition.legacyId == 53 && definition.revision == 5);
+	assert(definition.legacyId == 53 && definition.revision == 6);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("block-shape") == 1 && request.option("river-width") == 12 &&
@@ -1046,7 +1046,7 @@ inline void karstTowersContracts()
 inline void bajadaContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("bajada"));
-	assert(definition.legacyId == 55 && definition.revision == 2);
+	assert(definition.legacyId == 55 && definition.revision == 3);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("range-spacing") == 128 && request.option("passes") == 2 &&
@@ -1164,7 +1164,7 @@ inline void evenGroundContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
-	assert(definition.legacyId == 60 && definition.revision == 3);
+	assert(definition.legacyId == 60 && definition.revision == 4);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
@@ -1273,7 +1273,7 @@ inline void marchlandContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("marchland"));
-	assert(definition.legacyId == 61 && definition.revision == 3);
+	assert(definition.legacyId == 61 && definition.revision == 4);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("prizes") == 6 && request.option("march") == 16 &&
@@ -2188,9 +2188,8 @@ inline void bastionKeysContracts()
 	assert(GenerationService().generate(bridged, request));
 	assert(coloniesApart(bridged.map, 2, "without swimming").empty());
 	const Torus t(bridged.map);
-	// The estates are dressed in catalogue ground. Deep water is
-	// absent by design: a tile between shallow and deep water is not swimmable, so a ring of it
-	// would seal every island from swimmers.
+	// The estates are dressed in catalogue ground; the sea uses ordinary water.
+	// This recipe does not add a deep-water band around the islands.
 	{
 		std::set<int> used;
 		int pier = -1;

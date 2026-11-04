@@ -5651,7 +5651,7 @@ Udongo
 [clay]
 Udongo wa mfinyanzi
 [shale]
-Shale
+Mwamba wa udongo wenye tabaka
 [heath]
 Nyika ya vichaka
 [mud]
@@ -5698,6 +5698,22 @@ Vigae vya mawe ya mchanga
 Uwanda wa mawe ya pumisi
 [frozen_lake]
 Ziwa lililoganda
+[wind_swept_snow]
+Theluji iliyopeperushwa na upepo
+[weathered_sandstone]
+Mchanga-mawe uliomomonyoka
+[windy_sand_dune]
+Matuta ya mchanga ya upepo
+[hardpan]
+Ganda gumu
+[volcanic_ash]
+Majivu ya volkano
+[glacier_ice]
+Barafu ya theluji ya mlimani
+[overgrown_road]
+Barabara iliyomea majani
+[laterite]
+Udongo wa lateriti
 [cliffs]
 Majabali
 [terrain group water]
@@ -6926,3 +6942,5 @@ Amri haijathibitishwa. Fungua kamanda ili ujaribu tena; ujumbe wako umehifadhiwa
 
 [hive standing order update failed]
 Usasishaji wa amri inayoendelea umeshindwa. Amri yako imesitishwa kwa muda kwenye kifaa hiki; jaribu tena kwa kutumia kidhibiti husika.
+[tundra]
+Ardhi ya tundra

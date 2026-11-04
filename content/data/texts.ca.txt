@@ -5722,6 +5722,22 @@ Lloses de gres
 Camp de pedra tosca
 [frozen_lake]
 Llac glaçat
+[wind_swept_snow]
+Neu escombrada pel vent
+[weathered_sandstone]
+Gres erosionat
+[windy_sand_dune]
+Dunes de vent
+[hardpan]
+Crosta endurida
+[volcanic_ash]
+Cendra volcànica
+[glacier_ice]
+Gel de glacera
+[overgrown_road]
+Camí envaït per la vegetació
+[laterite]
+Laterita
 [cliffs]
 Penya-segats
 [terrain group water]
@@ -6926,3 +6942,5 @@ L'actualització de l'ordre permanent ha fallat. La teva ordre està en pausa en
 
 [AI for all computer colonies]
 IA per a totes les colònies controlades per l’ordinador
+[tundra]
+Sòl de tundra

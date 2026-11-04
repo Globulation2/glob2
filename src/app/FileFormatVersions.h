@@ -354,11 +354,47 @@ static constexpr int FILE_FORMAT_VERSION_MAXIMA_PRESTIGE = 192;
 // Adaptive prestige preparation; older strategies retain a single pipeline.
 static constexpr int FILE_FORMAT_VERSION_MAXIMA_PRESTIGE_PARALLEL = 193;
 
-//! Built-in sandstone tiles, pumice field and frozen lake: TERRAIN_COUNT grew from
-//! 33 to 36, so earlier files carry custom terrain IDs starting at 33 that the
-//! loader renumbers.
+//! Built-in sandstone tiles, pumice field, frozen lake and windy sand dune:
+//! TERRAIN_COUNT grew from 33 to 37, so earlier files carry custom terrain IDs
+//! starting at 33 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_SANDSTONE_PUMICE = 195;
 
-//! Built-in cliffs: TERRAIN_COUNT grew from 36 to 37, so earlier files carry
+//! Built-in wind-swept snow: TERRAIN_COUNT grew from 36 to 37, so earlier files carry
 //! custom terrain IDs starting at 36 that the loader renumbers.
-static constexpr int FILE_FORMAT_VERSION_CLIFFS = 196;
+static constexpr int FILE_FORMAT_VERSION_WIND_SWEPT_SNOW = 196;
+
+//! Built-in weathered sandstone: TERRAIN_COUNT grew from 37 to 38, so earlier files
+//! carry custom terrain IDs starting at 37 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_WEATHERED_SANDSTONE = 197;
+
+//! Built-in windy sand dune: TERRAIN_COUNT grew from 38 to 39, so earlier files carry
+//! custom terrain IDs starting at 38 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_WINDY_SAND_DUNE = 198;
+
+//! Built-in hardpan: TERRAIN_COUNT grew from 39 to 40, so earlier files carry custom
+//! terrain IDs starting at 39 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_HARDPAN = 199;
+
+//! Built-in tundra: TERRAIN_COUNT grew from 40 to 41, so earlier files carry custom
+//! terrain IDs starting at 40 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_TUNDRA = 200;
+
+//! Built-in volcanic ash: TERRAIN_COUNT grew from 41 to 42, so earlier files carry
+//! custom terrain IDs starting at 41 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_VOLCANIC_ASH = 201;
+
+//! Built-in glacier ice: TERRAIN_COUNT grew from 42 to 43, so earlier files carry
+//! custom terrain IDs starting at 42 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_GLACIER_ICE = 202;
+
+//! Built-in overgrown road: TERRAIN_COUNT grew from 43 to 44, so earlier files carry
+//! custom terrain IDs starting at 43 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_OVERGROWN_ROAD = 203;
+
+//! Built-in laterite: TERRAIN_COUNT grew from 44 to 45, so earlier files carry custom
+//! terrain IDs starting at 44 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_LATERITE = 204;
+
+//! Built-in cliffs: TERRAIN_COUNT grew from 45 to 46, so earlier files carry custom
+//! terrain IDs starting at 45 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_CLIFFS = 205;

@@ -62,7 +62,7 @@ inline constexpr auto TERRAIN_TYPES = []
 		{HEATH, G::Barren, "heath", "[heath]", {104, 72, 86}, {118, 86, 100}, {60, 126, 48}, {104, 72, 86}},
 		authored(MUD, G::Rough, "mud", "[mud]", {82, 64, 48}, {96, 76, 56}),
 		{MUDFLAT, G::Rough, "mudflat", "[mudflat]", {140, 126, 108}, {156, 142, 123}, {74, 96, 78}, {140, 126, 108}},
-		authored(DEEP_SNOW, G::Rough, "deep_snow", "[deep_snow]", {208, 216, 226}, {222, 228, 236}),
+		authored(DEEP_SNOW, G::Ice, "deep_snow", "[deep_snow]", {208, 216, 226}, {222, 228, 236}),
 		authored(SCREE, G::Rough, "scree", "[scree]", {104, 108, 116}, {118, 122, 128}),
 		{BRICK_PATH, G::Paths, "brick_path", "[brick_path]", {120, 90, 82}, {136, 103, 94}, {170, 142, 104}, {120, 90, 82}},
 		authored(BOARDWALK, G::Paths, "boardwalk", "[boardwalk]", {142, 110, 72}, {164, 128, 84}),
@@ -84,6 +84,25 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(PUMICE, G::Rough, "pumice", "[pumice]", {44, 42, 42}, {58, 55, 54}),
 		// Ice over a lake: plays exactly like ice.
 		authored(FROZEN_LAKE, G::Ice, "frozen_lake", "[frozen_lake]", {128, 160, 174}, {141, 172, 185}),
+		// Snow carved by the wind into drifts: plays exactly like deep snow.
+		authored(WIND_SWEPT_SNOW, G::Ice, "wind_swept_snow", "[wind_swept_snow]", {202, 206, 226}, {202, 206, 226}),
+		// Solid ochre bedrock worn into rounded slabs: plays exactly like dirt.
+		authored(WEATHERED_SANDSTONE, G::Barren, "weathered_sandstone", "[weathered_sandstone]", {150, 124, 76},
+				 {166, 138, 86}),
+		// Sand in wind ripples: plays exactly like sand.
+		authored(WINDY_SAND_DUNE, G::Sand, "windy_sand_dune", "[windy_sand_dune]", {212, 182, 134}, {214, 184, 136}),
+		// Pale baked crust in small cracked pillows: plays exactly like mud and scree.
+		authored(HARDPAN, G::Rough, "hardpan", "[hardpan]", {196, 188, 176}, {212, 204, 192}),
+		// Olive moss, grey stones and dark cracked earth: plays exactly like dirt.
+		authored(TUNDRA, G::Barren, "tundra", "[tundra]", {82, 78, 62}, {91, 87, 69}),
+		// Charcoal ash with porous black stones: plays exactly like dirt.
+		authored(VOLCANIC_ASH, G::Barren, "volcanic_ash", "[volcanic_ash]", {58, 56, 56}, {72, 70, 69}),
+		// Blue glacier ice crossed by white fractures: plays exactly like ice.
+		authored(GLACIER_ICE, G::Ice, "glacier_ice", "[glacier_ice]", {93, 158, 207}, {96, 160, 210}),
+		// Hexagonal road setts reclaimed by moss: plays exactly like road.
+		authored(OVERGROWN_ROAD, G::Paths, "overgrown_road", "[overgrown_road]", {122, 118, 98}, {134, 128, 106}),
+		// Iron-red earth packed with hardened nodules: plays exactly like dirt.
+		authored(LATERITE, G::Barren, "laterite", "[laterite]", {150, 76, 46}, {166, 90, 54}),
 		// A raised rock plateau walled by cliffs: plays exactly like hedge and thicket.
 		authored(CLIFFS, G::Obstacles, "cliffs", "[cliffs]", {118, 92, 70}, {136, 108, 82}),
 	}};

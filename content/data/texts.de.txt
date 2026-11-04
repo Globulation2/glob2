@@ -5722,6 +5722,22 @@ Sandsteinplatten
 Bimssteinfeld
 [frozen_lake]
 Zugefrorener See
+[wind_swept_snow]
+Verwehter Schnee
+[weathered_sandstone]
+Verwitterter Sandstein
+[windy_sand_dune]
+Windgeriffelte Dünen
+[hardpan]
+Hartkruste
+[volcanic_ash]
+Vulkanasche
+[glacier_ice]
+Gletschereis
+[overgrown_road]
+Überwucherte Straße
+[laterite]
+Laterit
 [cliffs]
 Klippen
 [terrain group water]
@@ -6926,3 +6942,5 @@ Die Aktualisierung Ihres Dauerauftrags ist fehlgeschlagen. Ihr Auftrag ist auf d
 
 [AI for all computer colonies]
 KI für alle computergesteuerten Kolonien
+[tundra]
+Tundraboden

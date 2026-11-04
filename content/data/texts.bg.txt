@@ -5698,6 +5698,22 @@ FFmpeg не е наличен, така че записът е изключен.
 Поле от пемза
 [frozen_lake]
 Замръзнало езеро
+[wind_swept_snow]
+Навят сняг
+[weathered_sandstone]
+Изветрял пясъчник
+[windy_sand_dune]
+Набраздени от вятъра дюни
+[hardpan]
+Твърда кора
+[volcanic_ash]
+Вулканична пепел
+[glacier_ice]
+Ледников лед
+[overgrown_road]
+Обрасъл път
+[laterite]
+Латерит
 [cliffs]
 Скали
 [terrain group water]
@@ -6926,3 +6942,5 @@ MCP сървър
 Такт %0: %1 ms изминало време
 [AI for all computer colonies]
 ИИ за всички компютърни колонии
+[tundra]
+Тундрова почва

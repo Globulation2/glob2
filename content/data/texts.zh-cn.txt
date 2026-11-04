@@ -5722,6 +5722,22 @@ AI 生成
 浮石地
 [frozen_lake]
 冰封湖面
+[wind_swept_snow]
+风吹雪
+[weathered_sandstone]
+风化砂岩
+[windy_sand_dune]
+风纹沙丘
+[hardpan]
+硬壳地
+[volcanic_ash]
+火山灰
+[glacier_ice]
+冰川冰
+[overgrown_road]
+杂草丛生的石路
+[laterite]
+红土
 [cliffs]
 悬崖
 [terrain group water]
@@ -6926,3 +6942,5 @@ MCP 服务器
 
 [AI for all computer colonies]
 所有电脑控制殖民地的 AI
+[tundra]
+苔原地面
