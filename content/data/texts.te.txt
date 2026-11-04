@@ -5708,6 +5708,8 @@ AI ద్వారా రూపొందించబడలేదు
 గట్టి నేల పొర
 [volcanic_ash]
 అగ్నిపర్వత బూడిద
+[glacier_ice]
+హిమానీనదపు మంచు
 [terrain group water]
 నీరు
 [terrain group sand]

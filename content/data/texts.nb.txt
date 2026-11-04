@@ -5708,6 +5708,8 @@ Vindrifla dyner
 Hardskorpe
 [volcanic_ash]
 Vulkansk aske
+[glacier_ice]
+Breis
 [terrain group water]
 Vann
 [terrain group sand]

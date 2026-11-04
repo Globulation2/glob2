@@ -550,6 +550,9 @@
         "volcanic_ash": {
           "$ref": "#/$defs/coverage"
         },
+        "glacier_ice": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

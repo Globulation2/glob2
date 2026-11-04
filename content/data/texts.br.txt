@@ -5732,6 +5732,8 @@ Dunas de vento
 Crosta endurecida
 [volcanic_ash]
 Ludu menezioù-tan
+[glacier_ice]
+Gelo glacial
 [terrain group water]
 Água
 [terrain group sand]

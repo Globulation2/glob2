@@ -5732,6 +5732,8 @@ Sa thạch phong hóa
 Bãi đất cứng
 [volcanic_ash]
 Tro núi lửa
+[glacier_ice]
+Băng sông băng
 [terrain group water]
 Nước
 [terrain group sand]

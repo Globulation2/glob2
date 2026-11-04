@@ -5732,6 +5732,8 @@ Tuulen uurtamat dyynit
 Kovettuma
 [volcanic_ash]
 Vulkaanista tuhkaa
+[glacier_ice]
+Jäätikköjää
 [terrain group water]
 Vesi
 [terrain group sand]

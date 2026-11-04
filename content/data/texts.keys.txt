@@ -2854,6 +2854,7 @@
 [hardpan]
 [tundra]
 [volcanic_ash]
+[glacier_ice]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]

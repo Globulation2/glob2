@@ -5732,6 +5732,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Тврда кора
 [volcanic_ash]
 Вулкански пепео
+[glacier_ice]
+Глечерски лед
 [terrain group water]
 Вода
 [terrain group sand]

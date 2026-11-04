@@ -5732,6 +5732,8 @@ Vetrovne sipine
 Trda skorja
 [volcanic_ash]
 ගිනිකඳු අළු
+[glacier_ice]
+Ledeniški led
 [terrain group water]
 Voda
 [terrain group sand]

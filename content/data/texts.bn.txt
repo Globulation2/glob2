@@ -5708,6 +5708,8 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 শক্ত মাটির স্তর
 [volcanic_ash]
 আগ্নেয় ছাই
+[glacier_ice]
+হিমবাহের বরফ
 [terrain group water]
 জল
 [terrain group sand]
