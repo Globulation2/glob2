@@ -5730,6 +5730,8 @@ Zvetraný pieskovec
 Vetrom zvlnené duny
 [hardpan]
 Tvrdá krusta
+[volcanic_ash]
+Sopečný popol
 [terrain group water]
 Voda
 [terrain group sand]

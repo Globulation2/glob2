@@ -5730,6 +5730,8 @@ Zwietrzały piaskowiec
 Wydmy z falami od wiatru
 [hardpan]
 Twarda skorupa
+[volcanic_ash]
+Popiół wulkaniczny
 [terrain group water]
 Woda
 [terrain group sand]

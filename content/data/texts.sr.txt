@@ -5730,6 +5730,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Ветровите дине
 [hardpan]
 Тврда кора
+[volcanic_ash]
+Вулкански пепео
 [terrain group water]
 Вода
 [terrain group sand]

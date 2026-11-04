@@ -95,6 +95,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(HARDPAN, G::Rough, "hardpan", "[hardpan]", {196, 188, 176}, {212, 204, 192}),
 		// Olive moss, grey stones and dark cracked earth: plays exactly like dirt.
 		authored(TUNDRA, G::Barren, "tundra", "[tundra]", {82, 78, 62}, {91, 87, 69}),
+		// Charcoal ash with porous black stones: plays exactly like dirt.
+		authored(VOLCANIC_ASH, G::Barren, "volcanic_ash", "[volcanic_ash]", {58, 56, 56}, {72, 70, 69}),
 	}};
 	return rows;
 }();

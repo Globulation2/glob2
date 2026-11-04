@@ -169,7 +169,7 @@ TEST_SUITE("EditorPresentation")
 			gfx->textUnitsPerPoint() + 8 * gfx->logicalUnitsPerPoint());
 		for (const char *terrain : {"lush_grass", "dry_grass", "dune_sand", "pale_sand", "sandstone", "pumice", "frozen_lake",
 								 "wind_swept_snow", "weathered_sandstone", "windy_sand_dune", "hardpan",
-								 "tundra"})
+								 "tundra", "volcanic_ash"})
 		{
 			CAPTURE(terrain);
 			editor.performAction(std::string("select terrain ") + terrain);

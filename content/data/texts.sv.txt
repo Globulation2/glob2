@@ -5730,6 +5730,8 @@ Vittrad sandsten
 Vindräfflade dyner
 [hardpan]
 Hårdskorpa
+[volcanic_ash]
+Vulkanaska
 [terrain group water]
 Vatten
 [terrain group sand]

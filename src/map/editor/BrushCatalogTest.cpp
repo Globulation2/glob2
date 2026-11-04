@@ -178,7 +178,7 @@ TEST_SUITE("BrushCatalog")
 		CHECK(paths->entries.back().id == "terrain/sandstone");
 		CHECK(rough->entries.back().id == "terrain/hardpan");
 		CHECK(ice->entries.back().id == "terrain/frozen_lake");
-		CHECK(barren->entries.back().id == "terrain/tundra");
+		CHECK(barren->entries.back().id == "terrain/volcanic_ash");
 
 		// Resources: every registry entry, foundation ones included, with placement
 		// validity taken from the map's habitat rules.

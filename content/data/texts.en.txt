@@ -5708,6 +5708,8 @@ Windy sand dune
 Hardpan
 [tundra]
 Tundra
+[volcanic_ash]
+Volcanic ash
 [terrain group water]
 Water
 [terrain group sand]

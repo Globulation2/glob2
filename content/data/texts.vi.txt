@@ -5730,6 +5730,8 @@ Sa thạch phong hóa
 Đụn cát gợn gió
 [hardpan]
 Bãi đất cứng
+[volcanic_ash]
+Tro núi lửa
 [terrain group water]
 Nước
 [terrain group sand]
