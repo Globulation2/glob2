@@ -5726,6 +5726,8 @@ Zamrznuté jazero
 Naviaty sneh
 [weathered_sandstone]
 Zvetraný pieskovec
+[windy_sand_dune]
+Vetrom zvlnené duny
 [hardpan]
 Tvrdá krusta
 [terrain group water]

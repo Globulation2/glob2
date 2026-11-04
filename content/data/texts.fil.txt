@@ -6842,6 +6842,8 @@ Nagyelong lawa
 Niyebeng tinangay ng hangin
 [weathered_sandstone]
 Lumang batong-buhangin
+[windy_sand_dune]
+Mahanging buhangin ng burol
 [hardpan]
 Matigas na lupa
 [AI for all computer colonies]

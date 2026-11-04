@@ -5726,6 +5726,8 @@ Lago congelado
 Neve varrida pelo vento
 [weathered_sandstone]
 Arenito erodido
+[windy_sand_dune]
+Dunas de vento
 [hardpan]
 Crosta endurecida
 [terrain group water]

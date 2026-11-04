@@ -5726,6 +5726,8 @@ CPU %0%
 Ανεμοδαρμένο χιόνι
 [weathered_sandstone]
 Διαβρωμένος ψαμμίτης
+[windy_sand_dune]
+Ανεμοδαρμένοι αμμόλοφοι
 [hardpan]
 Σκληρή κρούστα
 [terrain group water]

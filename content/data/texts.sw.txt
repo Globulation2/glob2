@@ -5702,6 +5702,8 @@ Ziwa lililoganda
 Theluji iliyopeperushwa na upepo
 [weathered_sandstone]
 Mchanga-mawe uliomomonyoka
+[windy_sand_dune]
+Matuta ya mchanga ya upepo
 [hardpan]
 Ganda gumu
 [terrain group water]

@@ -4,8 +4,8 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 37 built-in materials, including grass, sand, their lush, dry, dune and pale
-looks, road, ice and regular water,
+All 39 built-in materials, including grass, sand, their lush, dry, dune, pale and
+windy dune looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Static materials have four
 interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
 layout and water and deep water one 4×4 layout, keeping their animated banks
@@ -127,7 +127,10 @@ lighting uses the common reference. Obstacles are lit from the top left and cast
 onto grass, and void casts onto every neighbour. The grass and sand
 looks keep the grain of the classic tile they stand in for and change only its
 colour: lush and dry grass are soft like grass, dune and pale sand speckled like
-sand. All three sands use lit grains one or two native pixels across, half the
+sand. Windy sand dune keeps that grain and sweeps it into wind ripples
+(`ripple_light`): long lit windward slopes, a bright crest and a short shaded lee,
+with crests square to the water's main swell (`RIPPLE_WIND` matches `WAVE_SWELL`)
+and a second ripple family that breaks them into forks and ends. All four sands use lit grains one or two native pixels across, half the
 size of the original sand tile's grains. Like grass and sand they are four-layout 8×8 block
 materials, and they take the same pair treatments (`GRASS_LOOKS` and `SAND_LOOKS`
 in the synthesiser).

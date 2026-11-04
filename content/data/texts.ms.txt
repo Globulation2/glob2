@@ -6844,6 +6844,8 @@ Tasik beku
 Salji ditiup angin
 [weathered_sandstone]
 Batu pasir terluluhawa
+[windy_sand_dune]
+Gumuk pasir berangin
 [hardpan]
 Tanah keras
 [AI for all computer colonies]

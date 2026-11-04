@@ -6842,6 +6842,8 @@ GL மட்டும்
 காற்றடித்த பனி
 [weathered_sandstone]
 அரிக்கப்பட்ட மணற்கல்
+[windy_sand_dune]
+காற்றலை மணற்குன்றுகள்
 [hardpan]
 கடின மண் அடுக்கு
 [AI for all computer colonies]

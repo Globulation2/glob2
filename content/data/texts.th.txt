@@ -5702,6 +5702,8 @@ AI ทำงาน​อย่างไร
 หิมะ​ที่​ลม​พัด
 [weathered_sandstone]
 หินทราย​ผุกร่อน
+[windy_sand_dune]
+เนินทราย​ลอน​ลม
 [hardpan]
 ดินดาน
 [terrain group water]

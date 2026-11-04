@@ -5726,6 +5726,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Наметен снег
 [weathered_sandstone]
 Распаднути пешчар
+[windy_sand_dune]
+Ветровите дине
 [hardpan]
 Тврда кора
 [terrain group water]
