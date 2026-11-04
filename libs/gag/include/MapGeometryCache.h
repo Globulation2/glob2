@@ -16,7 +16,8 @@ class RenderBatch;
 // Presentation-only geometry retained by one graphics context. Keys describe
 // canonical map coordinates, while the caller's model-view translation places
 // them in the current torus view. Exact frame vectors (including visibility)
-// validate entries; hashes are used only for lookup, never for validity.
+// validate entries. A caller may supply a unique revision that identifies the
+// same exact frames and artwork to skip the vector comparison on hits.
 class MapGeometryCache
 {
 public:
@@ -42,7 +43,7 @@ public:
     // select SOURCE tiles, including their complete overhanging artwork.
     bool draw(const Key& key, const std::vector<int>& frames,
               const std::function<void()>& emit, int firstTile = -1, int lastTile = -1,
-              float translateX = 0, float translateY = 0);
+              float translateX = 0, float translateY = 0, std::uint64_t frameRevision = 0);
     // Amortize client-array and texture state across one terrain/resource pass.
     // Keep this scope on the stack; scopes must not nest. Draw failures restore
     // the ordinary baseline before the caller takes its fallback path.

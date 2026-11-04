@@ -5,7 +5,7 @@
 
 // A real map with a regular terrain pattern for aspect-ratio visual checks.
 // Used only by rendering tests/benchmarks; no simulation or desktop input.
-inline void makeTorusMapFixture(Game &game, int width, int height)
+inline void makeTorusMapFixture(Game &game, int width, int height, int terrainBlock = 4)
 {
     assert(width >= 64 && height >= 64 && width <= 512 && height <= 512);
     assert(!(width & (width - 1)) && !(height & (height - 1)));
@@ -18,5 +18,5 @@ inline void makeTorusMapFixture(Game &game, int width, int height)
     game.gameHeader.setNumberOfPlayers(1);
     for (int y = 0; y < height; ++y)
         for (int x = 0; x < width; ++x)
-            game.map.paintVertexSquare(x, y, ((x / 4 + y / 4) & 1) ? SAND : GRASS, 1);
+            game.map.paintVertexSquare(x, y, ((x / terrainBlock + y / terrainBlock) & 1) ? SAND : GRASS, 1);
 }

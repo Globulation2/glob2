@@ -14,6 +14,8 @@
 #include <deque>
 #include <unordered_set>
 #include <chrono>
+#include <cstdio>
+#include <cstdlib>
 namespace GAGCore
 {
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
@@ -62,6 +64,7 @@ struct RenderBatch::State
 		int used = 0;
 		size_t bytes;
 		int layers;
+		unsigned live = 0;
 	};
 	std::map<ArrayDescriptor, std::vector<Page>> pages;
 	std::unordered_map<unsigned, ArrayView> views;
@@ -329,11 +332,28 @@ struct RenderBatch::State
 		return newRun;
 	}
 
-	// Array slots are immutable. Mutation removes only the source-ID mapping;
-	// previously captured slots stay alive until context teardown. This avoids
-	// dangling page references during capture, and bounds wasted slots by the
-	// same 64 MiB cap. New textures fall back to their ordinary 2D textures once
-	// the cap is reached. Geometry validates the generation before replay.
+	// Slots are immutable while any source still points into their page.
+	// Reclaim whole pages under pressure after queued work has flushed and
+	// the last source's invalidation removed all cached geometry references.
+	void reclaimRetiredPages(std::size_t needed)
+	{
+		if (capture) return;
+		constexpr std::size_t limit = 64 * 1024 * 1024;
+		for (auto &[descriptor, list] : pages)
+			for (auto page = list.begin(); page != list.end() && bytes + needed > limit;)
+			{
+				if (page->live)
+				{
+					++page;
+					continue;
+				}
+				glDeleteTextures(1, &page->texture);
+				--glState.allocatedTextureCount;
+				glState.allocatedTextureBytes -= page->bytes;
+				bytes -= page->bytes;
+				page = list.erase(page);
+			}
+	}
 	void clearPages()
 	{
 		if (geometry)
@@ -443,31 +463,54 @@ ArrayView RenderBatch::pack(unsigned texture)
 				bytes += n * layers;
 			}
 			if (s.bytes + bytes > 64 * 1024 * 1024)
-				return fallback();
-			// Reserve metadata before acquiring a GL handle, so bad_alloc cannot
-			// leak an untracked page or bypass the GPU memory limit.
-			pages.reserve(pages.size() + 1);
-			unsigned tex;
-			glGenTextures(1, &tex);
-			glBindTexture(GL_TEXTURE_2D_ARRAY_EXT, tex);
-			glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_MIN_FILTER, minFilter);
-			glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_MAG_FILTER, magFilter);
-			glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_WRAP_S, ws);
-			glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_WRAP_T, wt);
-			glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_MAX_LEVEL, maxLevel);
-			for (int l = 0; l <= maxLevel; ++l)
-				glTexImage3D(GL_TEXTURE_2D_ARRAY_EXT, l, fmt, std::max(1, w >> l),
-							 std::max(1, h >> l), layers, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-			if (glGetError() != GL_NO_ERROR)
 			{
-				glDeleteTextures(1, &tex);
-				glBindTexture(GL_TEXTURE_2D_ARRAY_EXT, 0);
-				return fallback();
+				static const bool reclaim = [] {
+					const char *value = std::getenv("GLOB2_RECLAIM_GL_ARRAYS");
+					return value && std::strcmp(value, "1") == 0;
+				}();
+				if (reclaim && !s.capture)
+				{
+					const auto retired = std::find_if(pages.begin(), pages.end(),
+						[](const auto &page) { return page.live == 0; });
+					if (retired != pages.end())
+					{
+						// Previous draws were flushed and their layers stay ordered
+						// before uploads in this context. Reuse the storage.
+						std::iter_swap(retired, pages.end() - 1);
+						pages.back().used = 0;
+					}
+					else
+						s.reclaimRetiredPages(bytes);
+				}
 			}
-			pages.push_back({tex, 0, bytes, layers});
-			s.bytes += bytes;
-			++GAGCore::glState.allocatedTextureCount;
-			GAGCore::glState.allocatedTextureBytes += bytes;
+			if (pages.empty() || pages.back().used >= layers)
+			{
+				if (s.bytes + bytes > 64 * 1024 * 1024) return fallback();
+				// Reserve metadata before acquiring a GL handle, so bad_alloc cannot
+				// leak an untracked page or bypass the GPU memory limit.
+				pages.reserve(pages.size() + 1);
+				unsigned tex;
+				glGenTextures(1, &tex);
+				glBindTexture(GL_TEXTURE_2D_ARRAY_EXT, tex);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_MIN_FILTER, minFilter);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_MAG_FILTER, magFilter);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_WRAP_S, ws);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_WRAP_T, wt);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY_EXT, GL_TEXTURE_MAX_LEVEL, maxLevel);
+				for (int l = 0; l <= maxLevel; ++l)
+					glTexImage3D(GL_TEXTURE_2D_ARRAY_EXT, l, fmt, std::max(1, w >> l),
+								 std::max(1, h >> l), layers, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+				if (glGetError() != GL_NO_ERROR)
+				{
+					glDeleteTextures(1, &tex);
+					glBindTexture(GL_TEXTURE_2D_ARRAY_EXT, 0);
+					return fallback();
+				}
+				pages.push_back({tex, 0, bytes, layers});
+				s.bytes += bytes;
+				++GAGCore::glState.allocatedTextureCount;
+				GAGCore::glState.allocatedTextureBytes += bytes;
+			}
 		}
 		auto &page = pages.back();
 		glBindTexture(GL_TEXTURE_2D_ARRAY_EXT, page.texture);
@@ -497,6 +540,7 @@ ArrayView RenderBatch::pack(unsigned texture)
 			return fallback();
 		ArrayView v{page.texture, float(page.used++)};
 		s.views.emplace(texture, v);
+		++page.live;
 		return v;
 	}
 	catch (const std::bad_alloc &)
@@ -648,6 +692,19 @@ void RenderBatch::abortFrame() noexcept
 }
 RenderBatch::Stats RenderBatch::stats() const
 {
+	if (std::getenv("GLOB2_PROFILE_GL_ARRAYS"))
+	{
+		std::size_t live = 0, used = 0, capacity = 0;
+		for (const auto &[source, view] : state->views) live += view.texture != 0;
+		for (const auto &[descriptor, pages] : state->pages)
+			for (const auto &page : pages)
+			{
+				used += page.used;
+				capacity += page.layers;
+			}
+		std::printf("GL_ARRAY_RESIDENCY live=%zu retired=%zu free=%zu bytes=%zu\n",
+			live, used - live, capacity - used, state->bytes);
+	}
 	return {state->pending.size(), state->bytes, state->warmAttempts, state->warmPromotions};
 }
 RenderBatch::RenderBatch(GraphicContext *g) : state(std::make_unique<State>(g)) {}
@@ -721,6 +778,18 @@ void RenderBatch::textureChanged(unsigned texture)
 		state->geometry->invalidateTexture(texture, oldPage);
 	++state->generation; // Captures reject mutation while their emitter runs.
 	state->views.erase(texture);
+	if (oldPage)
+		for (auto &[descriptor, list] : state->pages)
+		{
+			auto page = std::find_if(list.begin(), list.end(),
+				[&](const auto &candidate) { return candidate.texture == oldPage; });
+			if (page != list.end())
+			{
+				assert(page->live > 0);
+				--page->live;
+				break;
+			}
+		}
 	if (state->pendingIDs.erase(texture))
 		std::erase(state->pending, texture);
 }

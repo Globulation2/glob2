@@ -87,6 +87,26 @@ path is not an untouched-master baseline.
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.
 
+### Resource rows
+
+Use `GLOB2_BENCH_RESOURCE_ROWS=1` with the 512×64 synthetic map, Original
+artwork, and legacy OpenGL. Compare `GLOB2_RESOURCE_ROWS=0` and
+`GLOB2_RESOURCE_ROWS=1` with the same narrow window and zoom. Repeat with
+`GLOB2_BENCH_CAMERA_PAN=1` to include wrapped row selection. The
+`FRAME_RESOURCE_ROWS` counters report eligibility, frame-vector construction,
+and animated cell visits separately.
+
+On legacy OpenGL, `GLOB2_PROFILE_GL_ARRAYS=1` reports live, retired, and free
+array slots and allocated bytes. `GLOB2_BENCH_ARRAY_CHURN=1` replaces the same
+16 source textures across 21 cycles. Compare
+`GLOB2_RECLAIM_GL_ARRAYS=0` and `GLOB2_RECLAIM_GL_ARRAYS=1` to measure
+promotion after the page budget fills.
+
+On programmable OpenGL, `GLOB2_SWAP_FULL_GL_FRAMES=1` is an opt-in experiment
+that swaps the backing color textures for a full opaque redraw. Run the same
+scene at the same drawable size with the flag set to 0 and 1. Check partial
+redraws and discarded frames against the committed image as well.
+
 ## CPU presentation batches
 
 Build `software-render-benchmark` and `torus-render-benchmark` with `release=1`.

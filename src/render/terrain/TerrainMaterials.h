@@ -229,7 +229,7 @@ class Catalog
 		unsigned cornerMask = 15, unsigned cornerColours = 0) const;
 	// Overlay frame for a cell of this material at a scene tick, or -1 when the
 	// material has no overlay, the cell is not chosen or its step is empty.
-	int overlayFrame(MaterialId material, int x, int y, std::uint32_t tick, std::uint32_t seed = 0) const;
+	int overlayFrame(MaterialId material, int x, int y, std::uint32_t tick, std::uint32_t seed = 0, bool *animated = nullptr) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
 std::uint32_t mapSeedSalt(std::uint32_t seed);

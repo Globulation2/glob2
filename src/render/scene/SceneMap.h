@@ -82,6 +82,9 @@ class SceneMap
 	Uint32 terrainSeed() const { return terrainSeedValue; }
 
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
+    Uint64 terrainRevision() const;
+    Uint64 resourcePresentationRevision() const { return resourceRevision; }
+    void resourceRowRevisions(std::span<Uint64> rows) const;
 	TerrainType vertexTerrainAt(int x, int y) const;
 	//! Corners of cell (x,y): top-left, top-right, bottom-left, bottom-right.
 	std::array<TerrainType, 4> cellCorners(int x, int y) const
