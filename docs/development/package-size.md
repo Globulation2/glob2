@@ -28,11 +28,11 @@ candidate and sheet is verified before the export is published.
 
 Source PNG artwork stays in the repository. SCons prepares lossless WebP for
 normal source/debug builds and exposes that generated tree to the client and
-native test programs. Release builds select the smaller permitted WebP encoding.
+native test programs. Release builds compare verified WebP and video candidates for packed sprite groups.
 Image lookup searches existing directories in order using the exact WebP name;
 custom artwork overrides must therefore use `.webp`. Theme backdrop and wordmark
-paths also use WebP. Sprite frames, sheets, and HD atlas loaders decode only WebP;
-there is no PNG fallback for bundled artwork. PNG/JPEG decoding remains available
+paths also use WebP. Bundled artwork uses WebP or packed H.264 sprite groups.
+PNG is used for source artwork. PNG/JPEG decoding remains available
 for end-user imports and screenshot tools. Online previews and skin textures use
 WebP wire renditions (see the platform architecture guide).
 
@@ -45,6 +45,14 @@ Mesh parsing and stereo Opus stream preparation use the same scheduler. Mutable
 music playback cursors belong to the dedicated music producer. GPU creation/upload,
 SDL renderer textures and live object publication run on the owner thread. Workers never wait on child
 jobs or call renderer APIs.
+
+Clients with H.264 asset decoding can use `AssetLoader::requestVideoFrames`
+to load an independently decodable Annex B group as CPU images. Each group
+begins with parameter sets and an IDR picture. The caller supplies the expected
+dimensions and frame count, then addresses decoded frames in presentation order.
+Use `AssetLoader::videoFramesSupported()` when choosing asset sources. The browser
+decodes optional groups in one lazy worker shared by both browser variants.
+Startup sprite sheets in browser exports use WebP.
 
 Use `requestSprite`/`findSprite` and `pollAssets` for asynchronous families;
 `SpriteLoad` publishes only complete prepared sprites. Existing synchronous APIs
@@ -145,9 +153,32 @@ HD terrain/resource atlases also have exact source frame placement verified befo
 encoding; the renderer checks their exact alpha against decoded HD frames, allowing
 independently encoded lossy RGB to differ.
 
+Release packages use `sprite_packing=auto`. For each catalog terrain family
+and stock unit clip and layer, the exporter compares lossless and Q75 WebP
+sheets with one eligible RGB H.264 candidate. Native and HD resolutions are
+scored separately. Lossless must preserve RGBA exactly, and every candidate
+must preserve exact alpha and logical frame coverage. The sum of squared
+RGB errors over pixels with nonzero source alpha in the Q75 sheets sets the
+group's error ceiling. Video stores nonopaque alpha in separate zlib blocks.
+
+The exporter uses stored bytes for native packages and Brotli transfer sizes
+for browser sprite payload parts. The audit records size, error, rejections,
+and whether the verified group came from cache. Equal scores prefer lossless
+WebP, then Q75 WebP, then H.264. The native compiled terrain fingerprint uses
+the decoded pixels of the winning candidate.
+
+Use `sprite_packing=webp` for the same selection without video, or
+`sprite_packing=legacy` for the old layout. Mobile wrappers accept the same
+values via `--sprite-packing`. Standalone exports expose `--terrain-sheets`
+and `--packed-hd-sprites` for packed WebP, with `--video-sprites` to add the
+pinned host encoder. Pass `--lossless-images` to require exact RGBA. Existing
+`.sheet` and HD indexes are readable alongside the versioned packed indexes.
+
 Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
-when the current Python lacks the pinned encoder. This is a build dependency,
-never application content. It requires network access on first setup; subsequent
+when the current Python lacks the pinned encoder. Browser candidate scoring
+uses pinned Brotli, and video exports build the host FFmpeg executable from
+the same pinned sources used by recording. These are build dependencies,
+separate from the shipped runtime. First setup may download source archives; subsequent
 exports reuse cached verified conversions. Image recipe identity includes the
 recipe version, encoder pins, Q90 quality/method and depth conversion policy;
 older recipes regenerate automatically. Corrupt cache entries regenerate from

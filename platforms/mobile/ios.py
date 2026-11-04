@@ -44,6 +44,7 @@ def main():
     parser.add_argument('command',choices=['configure','build','install','launch'])
     parser.add_argument('--environment',default='simulator',choices=['device','simulator'])
     parser.add_argument('--release',action='store_true')
+    parser.add_argument('--sprite-packing', choices=('auto','legacy','webp','video'), default='auto')
     parser.add_argument('--script-tests',action='store_true',help='Build the separate production scripting test app')
     parser.add_argument('--mobile-deps',type=Path,help='Read-only dependency prefix to reuse')
     parser.add_argument('--china',action='store_true',help='Package the China local-play client')
@@ -169,8 +170,12 @@ def main():
         lines += ['target_link_options(Glob2 PRIVATE '+cmake_quote('-Wl,-force_load,'+str(output/'lib/libglob2-script-tests.a'))+')']
     sys.path.insert(0, str(ROOT))
     from tools.package_assets import export_assets
+    from runtime_assets import sprite_packing_profile
+    packing = sprite_packing_profile(args.sprite_packing, args.release)
     asset_root = output/'runtime-assets'
-    export_assets(ROOT, asset_root, platform='ios', optimized=True, lossy=args.release)
+    export_assets(ROOT, asset_root, platform='ios', optimized=True, lossy=args.release, jobs=args.jobs,
+                      terrain_sheets=packing != 'legacy', packed_hd_sprites=packing != 'legacy',
+                      video_sprites=packing == 'video')
     shutil.copytree(output/'shaders', asset_root/'shaders', dirs_exist_ok=True,
                     ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
     shutil.copytree(recording_prefix/'share/licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)

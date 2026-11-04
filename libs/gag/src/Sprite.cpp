@@ -11,10 +11,14 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
+#include <optional>
 #include <cstdlib>
 #include <cstring>
 #include <SpriteLoad.h>
 #include <AssetLoader.h>
+#ifdef __EMSCRIPTEN__
+#include <ApplicationHost.h>
+#endif
 #include <RenderDevice.h>
 
 #include <memory>
@@ -50,15 +54,13 @@ namespace GAGCore
     static bool requestedHighResolutionMipmaps = false;
     static bool requestedHighResolutionCPUChain = false;
     static std::string requestedHighResolutionDirectory;
-    static std::string packDirectory, packText;
-    static bool packRead=false;
     static size_t packGeneration = 0;
     struct PackEntry {
         int width, height, scale;
         std::string base, team;
     };
-    static std::unordered_map<std::string, PackEntry> packEntries;
-    static AssetLoader::Handle<AssetLoader::Bytes> packSource;
+    using PackEntries = std::unordered_map<std::string, PackEntry>;
+    static std::unordered_map<std::string, std::optional<PackEntries>> packIndexes;
     struct HighResolutionReload {
         HighResolutionInputs inputs;
         std::unique_ptr<Sprite> prepared;
@@ -85,23 +87,92 @@ namespace GAGCore
     {
         return _gc && _gc->rendererCapabilities().textureFiltering;
     }
-    static bool readPack(const std::string &directory)
+    static bool highResolutionPackageReady(const std::string& name, const std::string& directory)
+    {
+#ifdef __EMSCRIPTEN__
+        if (directory == "data/highres/v1") {
+            const auto package = name.starts_with("data/gfx/terrain-") ? "hd-" + name.substr(9) : "hd";
+            return ApplicationHost::assetPackageReady(package.c_str());
+        }
+#else
+        (void)name;
+        (void)directory;
+#endif
+        return true;
+    }
+    static const PackEntries* readPackIndex(const std::string& path)
     {
         const auto generation = Toolkit::assets().sourceGeneration();
-        if(packRead && packDirectory==directory && packGeneration==generation)return !packText.empty();
-        packGeneration= generation;
-        packRead=true;packDirectory=directory;packText.clear();
-        packEntries.clear();
-        packSource = Toolkit::assets().requestBytes(directory + "/frames.txt");
-        auto bytes = Toolkit::assets().wait(packSource);
-        if (!bytes || bytes->empty() || bytes->size() > 8 * 1024 * 1024) return false;
+        if (packGeneration != generation) {
+            packGeneration = generation;
+            packIndexes.clear();
+        }
+        auto [found, inserted] = packIndexes.try_emplace(path);
+        if (!inserted) return found->second ? &*found->second : nullptr;
+        auto bytes = Toolkit::assets().wait(Toolkit::assets().requestBytes(path));
+        if (!bytes || bytes->empty() || bytes->size() > 8 * 1024 * 1024) return nullptr;
         std::string text(bytes->begin(), bytes->end());
-        std::istringstream header(text);std::string magic;int version=0;header>>magic>>version;
-        if(magic!="GLOB2_HIGHRES"||version!=1){std::cerr<<"Unsupported high-resolution pack"<<std::endl;return false;}
-        std::string id; PackEntry entry;
-        while (header >> id >> entry.width >> entry.height >> entry.scale >> entry.base >> entry.team)
-            packEntries.emplace(id, entry);
-        packText=std::move(text);return true;
+        std::istringstream index(text);
+        std::string line, magic;
+        int version = 0;
+        if (!std::getline(index, line)) return nullptr;
+        std::istringstream header(line);
+        if (!(header >> magic >> version) || magic != "GLOB2_HIGHRES" ||
+            (version != 1 && version != 2) || (header >> line)) return nullptr;
+        PackEntries entries;
+        while (std::getline(index, line)) {
+            std::istringstream row(line);
+            std::string id, extra;
+            PackEntry entry;
+            if (!(row >> id)) continue;
+            if (!(row >> entry.width >> entry.height >> entry.scale >> entry.base >> entry.team) ||
+                (row >> extra) || entry.width <= 0 || entry.height <= 0) return nullptr;
+            for (const auto& token : {entry.base, entry.team}) {
+                PackedSpriteFrame location;
+                if (token.starts_with('@') &&
+                    (version != 2 || !PackedSpriteFrame::parse(token, location))) return nullptr;
+            }
+            if (!entries.emplace(id, std::move(entry)).second) return nullptr;
+        }
+        if (packGeneration != generation) return nullptr;
+        auto& parsed = packIndexes.at(path);
+        parsed.emplace(std::move(entries));
+        return &*parsed;
+    }
+    static const PackEntries* readPack(const std::string& directory, const std::string& name)
+    {
+        if (!highResolutionPackageReady(name, directory)) return nullptr;
+#ifdef __EMSCRIPTEN__
+        if (directory == "data/highres/v1" && name.starts_with("data/gfx/terrain-")) {
+            if (const auto* family = readPackIndex(directory + '/' + name.substr(9) + ".frames"))
+                return family;
+        }
+#endif
+        return readPackIndex(directory + "/frames.txt");
+    }
+
+    bool highResolutionNeedsAsyncLoad(const std::string& name, size_t frames)
+    {
+#ifdef __EMSCRIPTEN__
+        if (!highResolutionEnabled || !highResolutionFramesSupported() || Sprite::highResolutionDeferred(name))
+            return false;
+        const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+        const auto* packEntries = readPack(directory, name);
+        if (!packEntries) return false;
+        const auto prefix = name.substr(name.find_last_of('/') + 1);
+        for (size_t frame = 0; frame < frames; ++frame) {
+            auto entry = packEntries->find(prefix + std::to_string(frame));
+            if (entry != packEntries->end() &&
+                (entry->second.base.find(".h264,") != std::string::npos ||
+                 entry->second.team.find(".h264,") != std::string::npos))
+                return true;
+        }
+#else
+        (void)name;
+        (void)frames;
+#endif
+        return false;
     }
 
 	Sprite::RotatedImage::~RotatedImage()
@@ -115,6 +186,13 @@ namespace GAGCore
 	
     void Sprite::registerLoaded() {
         loadedSprites.insert(this);
+        if (highResolutionNeedsAsyncLoad(fileName, images.size())) {
+            auto prepared = std::make_unique<Sprite>();
+            prepared->fileName = fileName;
+            prepared->dynamicTeamColor = dynamicTeamColor;
+            pendingHighResolution.insert_or_assign(this, HighResolutionReload{
+                prefetchHighResolutionIncremental(fileName, images.size()), std::move(prepared), 0, true});
+        }
         for (std::size_t index=0;index<images.size();++index) if(images[index]) {
             images[index]->spriteSource=this; images[index]->spriteFrame=index;
         }
@@ -543,20 +621,62 @@ namespace GAGCore
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return;
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
-        if (!readPack(directory)) return;
+        const auto* packEntries = readPack(directory, fileName);
+        if (!packEntries) return;
         const auto prefix = fileName.substr(fileName.find_last_of('/') + 1);
         const bool mipmaps = false; // Deferred terrain is sampled by CPU page composition.
         // Preserve caller order, which interleaves current/next animation endpoints.
         for (unsigned frame : indices) {
             if (!stream.wanted.contains(frame)) continue;
             if (experimentImages[frame] || stream.pending.contains(frame) || stream.completed.contains(frame)) continue;
-            auto entry = packEntries.find(prefix + std::to_string(frame));
-            if (entry == packEntries.end()) continue;
+            auto entry = packEntries->find(prefix + std::to_string(frame));
+            if (entry == packEntries->end()) continue;
             auto &inputs = stream.pending[frame];
             stream.queued.push_back(frame);
             for (const auto &file : {entry->second.base, entry->second.team})
                 if (validHighResolutionFile(file)) inputs.add(directory + '/' + file, mipmaps);
         }
+    }
+
+    bool Sprite::highResolutionRequested()
+    {
+        return highResolutionEnabled && highResolutionFramesSupported();
+    }
+
+    void Sprite::refreshHighResolutionSprite(const std::string &name)
+    {
+        if (!highResolutionEnabled || !highResolutionFramesSupported()) return;
+#ifdef __EMSCRIPTEN__
+        // Package installation keeps the same source roots. Retain parsed
+        // indexes for other families when the loader invalidates file requests.
+        packGeneration = Toolkit::assets().sourceGeneration();
+        packIndexes.erase(name.empty() ? "data/highres/v1/frames.txt"
+                                        : "data/highres/v1/" + name.substr(name.find_last_of('/') + 1) + ".frames");
+#endif
+        for (auto *sprite : loadedSprites) {
+            const auto& spriteName = sprite->fileName;
+            if (name.empty() ? spriteName.starts_with("data/gfx/terrain-") : spriteName != name) continue;
+            if (highResolutionDeferred(spriteName)) {
+                auto &stream = deferredHighResolution[sprite];
+                auto wanted = stream.order;
+                stream.pending.clear();
+                stream.active.clear();
+                stream.queued.clear();
+                stream.completed.clear();
+                stream.wanted.clear();
+                sprite->setHighResolutionFrames(wanted);
+            } else {
+                auto prepared = std::make_unique<Sprite>();
+                prepared->fileName = sprite->fileName;
+                prepared->dynamicTeamColor = sprite->dynamicTeamColor;
+                pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
+                    prefetchHighResolutionIncremental(spriteName, sprite->images.size()),
+                    std::move(prepared), 0, true});
+            }
+        }
+        // The application invalidated the file cache for this installation.
+        // Subsequent renderer polls should not turn it into a global HD reload.
+        requestedHighResolutionGeneration = Toolkit::assets().sourceGeneration();
     }
 
     void Sprite::requestHighResolution(bool enabled)
@@ -569,10 +689,15 @@ namespace GAGCore
             requestedHighResolutionGeneration == Toolkit::assets().sourceGeneration() &&
             requestedHighResolutionDirectory == directory;
         if (sameSource && requestedHighResolutionMipmaps == mipmaps) return;
+#ifdef __EMSCRIPTEN__
+        if (enabled && !overrideDir && highResolutionFramesSupported() &&
+            !ApplicationHost::assetPackageReady("hd"))
+            ApplicationHost::requestAssetPackage("hd");
+#endif
         const bool retainPublishedOnFailure = sameSource;
         requestedHighResolutionMipmaps = mipmaps;
         highResolutionEnabled = enabled;
-        packRead = false; packText.clear(); packEntries.clear(); packSource = {};
+        packIndexes.clear();
         pendingHighResolution.clear();
         Toolkit::assets().invalidate();
         requestedHighResolutionGeneration = Toolkit::assets().sourceGeneration();
@@ -645,7 +770,7 @@ namespace GAGCore
             reload.prepared->createHighResolutionAtlas(reload.inputs);
             if (reload.retainPublishedOnFailure) {
                 for (size_t frame = 0; frame < sprite->experimentImages.size(); ++frame) {
-                    if (!reload.prepared->experimentImages[frame]) {
+                    if (!reload.prepared->experimentImages[frame] && !reload.prepared->experimentRotated[frame]) {
                         std::swap(reload.prepared->experimentImages[frame], sprite->experimentImages[frame]);
                         std::swap(reload.prepared->experimentRotated[frame], sprite->experimentRotated[frame]);
                     }
@@ -714,7 +839,9 @@ namespace GAGCore
     {
         while (!pollHighResolution(4)) {
             Toolkit::assets().poll();
-#ifndef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
+            if (Toolkit::assets().browserVideoPending()) break;
+#else
             SDL_Delay(1);
 #endif
         }
@@ -842,7 +969,8 @@ namespace GAGCore
         const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return inputs;
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
-        if (!readPack(directory)) return inputs;
+        const auto* packEntries = readPack(directory, name);
+        if (!packEntries) return inputs;
         const auto prefix = name.substr(name.find_last_of('/') + 1);
         const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !Sprite::highResolutionDeferred(name);
         size_t firstFrame = frames;
@@ -851,8 +979,8 @@ namespace GAGCore
             if (!incremental) inputs.request(Toolkit::assets(), path, mipmaps);
         };
         for (size_t i = 0; i < frames; ++i) {
-            auto found = packEntries.find(prefix + std::to_string(i));
-            if (found == packEntries.end()) continue;
+            auto found = packEntries->find(prefix + std::to_string(i));
+            if (found == packEntries->end()) continue;
             for (const auto& file : {found->second.base, found->second.team}) {
                 if (!validHighResolutionFile(file)) continue;
                 firstFrame = std::min(firstFrame, i);
@@ -879,20 +1007,21 @@ namespace GAGCore
         const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return true;
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
-        if (!readPack(directory)) return true;
+        const auto* packEntries = readPack(directory, name);
+        if (!packEntries) return true;
         const auto prefix = name.substr(name.find_last_of('/') + 1);
         const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !Sprite::highResolutionDeferred(name);
         // Deferred sparse inputs own one frame; numeric lookahead only adds
         // repeated failed lookups there. Ordinary sprite prefetch keeps eight.
         const size_t lookahead = Sprite::highResolutionDeferred(name) ? 1 : 8;
         for (size_t frame = index; frame < index + lookahead; ++frame) {
-            auto entry = packEntries.find(prefix + std::to_string(frame));
-            if (entry == packEntries.end()) continue;
+            auto entry = packEntries->find(prefix + std::to_string(frame));
+            if (entry == packEntries->end()) continue;
             for (const auto& file : {entry->second.base, entry->second.team})
                 if (validHighResolutionFile(file)) inputs.request(Toolkit::assets(), directory + '/' + file, mipmaps);
         }
-        auto found = packEntries.find(prefix + std::to_string(index));
-        if (found == packEntries.end()) return true;
+        auto found = packEntries->find(prefix + std::to_string(index));
+        if (found == packEntries->end()) return true;
         for (const auto& file : {found->second.base, found->second.team})
             if (validHighResolutionFile(file) && inputs.pending(directory + '/' + file, mipmaps)) return false;
         return true;
@@ -923,9 +1052,10 @@ namespace GAGCore
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return;
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
-        if (!readPack(directory)) return;
+        const auto* packEntries = readPack(directory, fileName);
+        if (!packEntries) return;
         const auto wanted = fileName.substr(fileName.find_last_of('/') + 1) + std::to_string(index);
-        auto found = packEntries.find(wanted); if (found == packEntries.end()) return;
+        auto found = packEntries->find(wanted); if (found == packEntries->end()) return;
         const auto &entry = found->second;
         if (entry.width != getW(index) || entry.height != getH(index) || entry.scale != (dynamicTeamColor ? 0 : 4)) return;
         const bool deferred = highResolutionDeferred(fileName);

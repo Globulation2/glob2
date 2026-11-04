@@ -208,6 +208,11 @@ class Compositor
 	};
 	std::vector<AnimationTextures> animationTextures;
 	using Usage = std::vector<std::vector<unsigned char>>;
+#ifdef __EMSCRIPTEN__
+    void requestMapTerrain(const SceneMap&);
+    Uint64 requestedMapIdentity = 0;
+    std::vector<std::string> requestedTerrainPackages;
+#endif
     void prepareSelected(bool hd, int time, const Usage *usage);
     Usage recipeUsage(std::span<const Recipe> recipes) const;
     std::size_t cpuMaterialBytesSelected(std::span<const MaterialId>, const Usage *) const;

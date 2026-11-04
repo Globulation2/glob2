@@ -56,9 +56,14 @@ class Glob2AssetLoader {
     if (next) next(); else this.activeParts--;
   }
   async fetchPart(part, counted, sized, between) {
+    await between?.();
     await this.acquirePart();
+    while (between?.paused?.()) {
+      this.releasePart();
+      await between();
+      await this.acquirePart();
+    }
     try {
-      await between?.();
       return await this.readPart(part, counted, sized);
     }
     finally { this.releasePart(); }
@@ -161,6 +166,8 @@ class Glob2AssetLoader {
   // Non-blocking demand from the running game. Repeated frames share the
   // in-flight load; failed optional downloads retry at most once per ten seconds.
   request(name, now = Date.now()) {
+    if (!Object.hasOwn(this.states, name)) return;
+    if ((name === 'hd' || name.startsWith('hd-terrain-')) && this.host.saveData?.()) return;
     if (this.states[name] === 'ready' || this.states[name] === 'downloading' ||
         now < (this.retryAfter[name] || 0)) return;
     this.retryAfter[name] = now + 10000;
@@ -174,11 +181,14 @@ class Glob2AssetLoader {
     downloaded.catch(() => {});
     // Downloads overlap, installation follows request order so replacements win
     // consistently regardless of which package finishes first.
-    const installed = this.installing.then(async () => {
+    // Terrain family paths are disjoint. Let a demanded family install even
+    // when an unrelated background package is paused between parts.
+    const independent = name.startsWith('hd-terrain-');
+    const installed = (independent ? Promise.resolve() : this.installing).then(async () => {
       try { this.install(name, await downloaded); }
       catch (error) { this.states[name] = 'failed'; throw error; }
     });
-    this.installing = installed.catch(() => {});
+    if (!independent) this.installing = installed.catch(() => {});
     const pending = installed.finally(() => this.inFlight.delete(name));
     this.inFlight.set(name, pending);
     return pending;
@@ -207,6 +217,7 @@ if (typeof Module !== 'undefined' && Module.glob2AssetManifest && typeof window 
     resolve,
     wireSize: (url, encoding) => Module.glob2WireSize?.(url, encoding),
     get fs() { return FS; },
+    saveData: () => globalThis.navigator?.connection?.saveData === true,
     onProgress: (name, loaded, total) => Module.glob2AssetProgress?.(name, loaded, total),
   });
   Module.glob2Assets = loader;

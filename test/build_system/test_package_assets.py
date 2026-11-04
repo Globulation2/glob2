@@ -74,13 +74,13 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
             (root / "tools").mkdir()
             for tool in ("terrain_tileset.py", "terrain_catalog.py"):
                 shutil.copyfile(Path(package_assets.__file__).with_name(tool), root / "tools" / tool)
-            Image.new("RGBA", (32, 32), (20, 80, 130, 255)).save(root / "content/data/gfx/tile0.png")
+            Image.new("RGBA", (32, 32), (20, 80, 130, 255)).save(root / "content/data/gfx/terrain-test0.png")
             document = {
                 "version": 1, "compiled_pack": "data/terrain/compiled/atlas.json",
                 "profiles": [{"key": "flat", "roughness_q8": 0,
                               "contours_q12": [[0] * 5 for _ in range(4)]}],
                 "materials": [{"key": "water", "profile": "flat",
-                               "sprite": "data/gfx/tile", "preview": [20, 80, 130],
+                               "sprite": "data/gfx/terrain-test", "preview": [20, 80, 130],
                                "variants": [{"frame": 0, "weight": 1}]}],
                 "bindings": {key: "water" for key in terrain_tileset.BINDINGS},
             }
@@ -89,7 +89,7 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                 "import importlib.util,sys; "
                 "assert importlib.util.find_spec('PIL') is None; "
                 "from tools.package_assets import export_assets; "
-                "export_assets(sys.argv[1],sys.argv[2],optimized=sys.argv[3]=='1')"
+                "export_assets(sys.argv[1],sys.argv[2],optimized=sys.argv[3]=='1',terrain_sheets=True)"
             )
             env = dict(os.environ, GLOB2_ASSET_ENCODER_PYTHON=package_assets.encoder_python())
             for optimized in (True, False):
@@ -103,9 +103,22 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                     audit = json.loads(output.with_suffix(".json").read_text())
                     self.assertEqual(audit["optimized"], optimized)
                     self.assertTrue((output / document["compiled_pack"]).is_file())
-                    if not optimized:
-                        self.assertEqual((output / "data/gfx/tile0.png").read_bytes(),
-                                         (root / "content/data/gfx/tile0.png").read_bytes())
+                    if optimized:
+                        family = "data/gfx/terrain-test"
+                        selection = audit["terrain_sheet_selections"][family]
+                        candidates = selection["candidates"]
+                        self.assertEqual(set(candidates), {"lossless", "q75"})
+                        self.assertEqual(candidates[selection["winner"]]["stored_bytes"],
+                                         min(c["stored_bytes"] for c in candidates.values()))
+                        self.assertEqual(candidates["lossless"]["visible_rgb_sse"], 0)
+                        self.assertTrue((output / (family + ".sheet")).is_file())
+                        self.assertFalse((output / (family + "0.webp")).exists())
+                        with Image.open(output / (family + "-sheet-0.webp")) as sheet:
+                            self.assertEqual(sheet.convert("RGBA").crop((0, 0, 32, 32))
+                                             .getchannel("A").getextrema(), (255, 255))
+                    else:
+                        self.assertEqual((output / "data/gfx/terrain-test0.png").read_bytes(),
+                                         (root / "content/data/gfx/terrain-test0.png").read_bytes())
 
 
 class AssetExportTests(unittest.TestCase):
@@ -577,6 +590,27 @@ class SpriteSheetExportTests(unittest.TestCase):
         )
         self.assertEqual(audit["source_bytes"], sum(p.stat().st_size for p in self.gfx.iterdir()))
 
+    def test_version_two_webp_groups_keep_variable_sizes_and_frame_layers(self):
+        audit = self.export(packed_hd_sprites=True, lossy=False)
+        header, *lines = (self.output / "data/gfx/unit.sheet").read_text().splitlines()
+        self.assertEqual(header, "GLOB2_SPRITES 2")
+        unpacked = {}
+        for line in lines:
+            token, layer, index = line.split()
+            page, *geometry = token[1:].split(",")
+            x, y, width, height = map(int, geometry)
+            key = f"unit{index}{'r' if layer == 'rotated' else ''}.png"
+            with Image.open(self.output / "data/gfx" / page) as image:
+                unpacked[key] = image.convert("RGBA").crop((x, y, x + width, y + height)).tobytes()
+        self.assertEqual(unpacked, self.frames)
+        self.assertEqual(set(audit["native_sprite_selections"]),
+                         {"unit-movement-0-team", "unit-movement-0-base"})
+        self.assertTrue(all(entry["winner"] == "lossless"
+                            for entry in audit["native_sprite_selections"].values()))
+        warm = self.export(packed_hd_sprites=True, lossy=False)
+        self.assertTrue(all(entry["cache_hit"] for entry in warm["native_sprite_selections"].values()))
+        self.assertEqual(audit["files"], warm["files"])
+
     def test_runs_split_by_layer_size_and_sheet_capacity(self):
         with patch.object(package_assets, "SHEET_FRAMES", 2):
             self.export(lossy=False)
@@ -622,6 +656,43 @@ class SpriteSheetExportTests(unittest.TestCase):
         Image.new("RGBA", (4, 4)).save(self.gfx / "unit8r.png")
         with self.assertRaises(ValueError):
             self.export()
+
+
+
+
+class VerifiedSpritePackTests(unittest.TestCase):
+    def test_small_video_above_q75_ceiling_loses_and_warm_cache_never_encodes(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "frame.png"
+            Image.new("RGBA", (8, 8), (43, 106, 215, 127)).save(source)
+            group = dict(material=None, crf=26, frames=[(0, "unit0", 5, source)])
+
+            def over_budget(frames, size, name, spec, ffmpeg, directory, fingerprint):
+                (directory / "tiny.h264").write_bytes(b"1")
+                return dict(files=["tiny.h264"], refs={0: "@tiny.h264,-,8,8,1,0,0,0,8,8"},
+                            visible_rgb_sse=100_000_000, fingerprints={})
+
+            with patch.object(packed, "write_video", side_effect=over_budget):
+                directory, result, cache_hit = packed.encode_group(
+                    "test", group, root / "cache", "generic", ("encoder", "hash"), True)
+            self.assertFalse(cache_hit)
+            self.assertNotEqual(result["winner"], "video")
+            self.assertEqual(result["candidates"]["video"]["rejected"], "above Q75 squared RGB error ceiling")
+            self.assertFalse((directory / "tiny.h264").exists())
+            with patch.object(packed, "write_webp", side_effect=AssertionError("warm encode")), \
+                 patch.object(packed, "write_video", side_effect=AssertionError("warm encode")):
+                _, warm, cache_hit = packed.encode_group(
+                    "test", group, root / "cache", "generic", ("encoder", "hash"), True)
+            self.assertTrue(cache_hit)
+            self.assertEqual(result["winner"], warm["winner"])
+            Image.new("RGBA", (8, 8), (44, 106, 215, 127)).save(source)
+            with patch.object(packed, "write_video", side_effect=over_budget):
+                _, _, cache_hit = packed.encode_group(
+                    "test", group, root / "cache", "generic", ("encoder", "hash"), True)
+            self.assertFalse(cache_hit)
 
 
 if __name__ == "__main__":

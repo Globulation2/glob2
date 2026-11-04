@@ -24,7 +24,8 @@ except ImportError:
     brotli = None
 
 
-RUNTIME_FILES = ('index.js', 'index.wasm', 'threaded/index.js', 'threaded/index.wasm', 'loader.js')
+RUNTIME_FILES = ('index.js', 'index.wasm', 'threaded/index.js', 'threaded/index.wasm', 'loader.js',
+                 'asset-video-runtime.js', 'asset-video-runtime.wasm', 'asset-video-worker.js')
 
 
 def targets(directory):

@@ -255,7 +255,9 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertEqual(self.owner['data/zik/menu.opus'], 'menu-music')
         self.assertEqual(self.owner['data/zik/original/a1.opus'], 'music')
         self.assertEqual(self.owner['data/zik/moss-lanterns/a1.opus'], 'music-sets')
-        self.assertEqual(self.owner['data/highres/v1/frames.txt'], 'hd')
+        self.assertEqual(self.owner['data/highres/v1/frames.txt'], 'core')
+        self.assertEqual(self.owner['data/highres/v1/terrain-grass0.png'], 'hd-terrain-grass')
+        self.assertEqual(self.owner['data/highres/v1/terrain-water0.png'], 'hd-terrain-water')
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))
 
     def test_every_installed_music_set_is_owned_and_opus_only(self):
@@ -282,6 +284,35 @@ class WebAssetPlanTests(unittest.TestCase):
 
 
 class WebAssetPackageTests(unittest.TestCase):
+    def test_split_hd_index_and_video_sidecars_stay_with_their_family(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            source, output = work / "runtime", work / "served"
+            hd = source / "data/highres/v1"
+            hd.mkdir(parents=True)
+            for name in web_assets.sim_data_files(ROOT):
+                target = source / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes((ROOT / "content" / name).read_bytes())
+            (hd / "frames.txt").write_text("GLOB2_HIGHRES 2\nunit0 32 32 0 - unit.webp\n")
+            (hd / "terrain-grass.frames").write_text(
+                "GLOB2_HIGHRES 2\nterrain-grass0 32 32 4 @page.h264,alpha.z,128,128,4,0,0,0,128,128 -\n")
+            for name in ("page.h264", "alpha.z", "unit.webp"):
+                (hd / name).write_bytes(name.encode())
+            source.with_suffix(".json").write_text(json.dumps({"files": [
+                {"output": f"data/highres/v1/{name}", "sprite_group": "hd/terrain-grass-base"}
+                for name in ("page.h264", "alpha.z")
+            ]}))
+            manifest = web_assets.write_packages(ROOT, output, source)
+            packages = {entry["name"]: entry for entry in manifest["packages"]}
+            paths = lambda package: {path for part in packages[package]["parts"] for path, *_ in part["files"]}
+            self.assertEqual(paths("hd"), {"/data/highres/v1/frames.txt", "/data/highres/v1/unit.webp"})
+            self.assertEqual(paths("hd-terrain-grass"), {
+                "/data/highres/v1/page.h264", "/data/highres/v1/alpha.z", "/data/highres/v1/terrain-grass.frames"})
+            data_parts = [part["files"] for part in packages["hd-terrain-grass"]["parts"]]
+            self.assertEqual([len(part) for part in data_parts], [2, 1])
+            self.assertTrue(packages["hd-terrain-grass"]["optional"])
+
     def test_packages_round_trip_and_are_content_addressed(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

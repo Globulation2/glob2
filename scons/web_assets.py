@@ -25,6 +25,8 @@ the game reads at run time into content-addressed packages under `assets/`, and
 - `menu-music`, `music` (the original in-game set), `music-sets` (the other
   soundtrack sets) and `hd` (high-resolution artwork): the game tolerates them
   being absent and loads them when they arrive or when a match starts.
+- `hd-terrain-*` packages carry individual terrain families. Their shared lookup
+  is in core so the game can request just the families a map uses.
 
 The build packages the verified runtime export (tools/package_assets.py, which
 re-encodes artwork and drops build scripts) when it has one, or the repository's
@@ -250,6 +252,8 @@ def game_files(paths, sprites):
                re.fullmatch(r'(?:\d+r?|-sheet-\d+)\.(?:png|webp)|\.sheet', path[len(prefix):])
                for prefix in prefixes):
             files.add(path)
+    files.update(path for path in paths if re.fullmatch(
+        r'data/gfx/pack-(?:unit|terrain)-[a-zA-Z0-9_-]+\.webp', path))
     return files
 
 
@@ -260,6 +264,45 @@ def source_files(root):
     root = Path(root)
     return sorted(p.relative_to(root).as_posix() for directory in ROOTS
                   for p in (root / directory).rglob('*') if p.is_file())
+
+
+def hd_terrain_packages(root, source):
+    """Assign registered HD sprite layers to their owning terrain families."""
+    catalog = Path(root) / 'content/data/terrain/tileset.json'
+    index = source / 'data/highres/v1/frames.txt'
+    if not catalog.is_file() or not index.is_file():
+        return {}
+    loader = load_module(root, 'glob2_hd_terrain_catalog', 'tools/terrain_catalog.py')
+    names = {Path(material['sprite']).name
+             for material in loader.load(Path(root) / 'content')['materials']
+             if material['sprite'].startswith('data/gfx/terrain-')}
+    prefixes = sorted(names, key=lambda name: (-len(name), name))
+    owners = {}
+    indexes = [index, *(index.with_name(name + '.frames') for name in prefixes)]
+    for current in indexes:
+        if not current.is_file():
+            continue
+        if current != index:
+            owners[current.relative_to(source).as_posix()] = {current.stem}
+        for row in current.read_text().splitlines()[1:]:
+            fields = row.split()
+            if len(fields) != 6:
+                continue
+            frame = fields[0]
+            family = next((name for name in prefixes
+                           if frame.startswith(name) and frame[len(name):].isdigit()), None)
+            for layer in fields[4:]:
+                if layer.startswith('@'):
+                    parts = layer[1:].split(',')
+                    paths = parts[:2] if parts[0].endswith('.h264') else parts[:1]
+                else:
+                    paths = [layer]
+                for path in paths:
+                    if path != '-' and Path(path).name == path:
+                        owners.setdefault('data/highres/v1/' + path, set()).add(family)
+    return {path: 'hd-' + next(iter(families)) for path, families in owners.items()
+            if len(families) == 1 and None not in families}
+
 
 
 def plan(root, source=None):
@@ -281,7 +324,15 @@ def plan(root, source=None):
         except (OSError, ValueError):
             lossy = images = False
     substitutes = exported_substitutes(root, source, files, derived_assets(root, lossy, images))
+    hd_owners = hd_terrain_packages(root, Path(source) if source else Path(root) / 'content')
+    split_hd_index = any(path.endswith('.frames') for path in hd_owners)
     for path in files:
+        if path in hd_owners:
+            packages.setdefault(hd_owners[path], []).append(path)
+            continue
+        if hd_owners and not split_hd_index and path == 'data/highres/v1/frames.txt':
+            packages['core'].append(path)
+            continue
         name = 'game' if path in game or path.startswith(GAME_EXTRA) else next(
             (name for name, prefixes in OPTIONAL if path.startswith(prefixes)), 'core')
         if name == 'font-cjk':
@@ -336,11 +387,27 @@ def write_packages(root, output, source=None):
     directory = output / 'assets'
     directory.mkdir(parents=True, exist_ok=True)
     packages, _, substitutes = plan(root, source)
+    sprite_groups = {}
+    if source:
+        try:
+            audit = json.loads(Path(source).with_suffix('.json').read_text())
+            sprite_groups = {item['output']: item['sprite_group']
+                             for item in audit.get('files', []) if 'sprite_group' in item}
+        except (OSError, ValueError):
+            pass
     manifest, written = {'version': MANIFEST_VERSION, 'packages': []}, set()
     for name, paths in packages.items():
         data = {path: contents(root, name, path, substitutes, source) for path in paths}
         sizes = {path: len(value) for path, value in data.items()}
-        groups = [paths] if name == 'core' else split(paths, sizes, PART_BYTES)
+        if name == 'core':
+            groups = [paths]
+        else:
+            # Give scored sprite groups the same independent compression and
+            # part boundaries that the exporter used to choose their codecs.
+            partitions = {}
+            for path in paths:
+                partitions.setdefault(sprite_groups.get(path), []).append(path)
+            groups = [part for partition in partitions.values() for part in split(partition, sizes, PART_BYTES)]
         entry = {'name': name, 'optional': name not in ('core', 'game'), 'size': sum(sizes.values()), 'parts': []}
         for index, group in enumerate(groups):
             blob, files = bytearray(), []
@@ -411,7 +478,7 @@ def report(root):
         row[2] += len(zlib.compress(data, 9))
     order = {name: index for index, name in enumerate(PACKAGES + ('-',))}
     print(f'{"category":45} {"package":10} {"files":>6} {"MB":>7} {"gzip MB":>8}')
-    for (label, package), (count, raw, packed) in sorted(rows.items(), key=lambda item: (order[item[0][1]], -item[1][1])):
+    for (label, package), (count, raw, packed) in sorted(rows.items(), key=lambda item: (order.get(item[0][1], len(order)), item[0][1], -item[1][1])):
         print(f'{label:45} {package:10} {count:6} {raw / 1e6:7.2f} {packed / 1e6:8.2f}')
     for name, paths in packages.items():
         size = sum(len(contents(root, name, p, substitutes)) for p in paths)

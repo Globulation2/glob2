@@ -17,6 +17,7 @@ POLICY = b"browser-static-gzip-v2\0"
 OWNED_POLICIES = {"browser-static-gzip-v1", POLICY.decode().rstrip("\0")}
 MARKER = "package.json"
 ROOT = Path(__file__).resolve().parents[2]
+ASSET_VIDEO_FILES = ("asset-video-worker.js", "asset-video-runtime.js", "asset-video-runtime.wasm")
 MUSIC_FILES = ("music-worker.js", "music-output.js", "music-runtime.js", "music-runtime.wasm")
 LAUNCHER_CORE_ASSETS = {
     'fonts/sans-core.ttf': 'platforms/web/assets/sans-core.ttf',
@@ -83,6 +84,9 @@ def package(source, destination):
                  ('recording-worker.js', 'recording-storage.js', 'recording-video.js', 'recording-runtime.js', 'recording-runtime.wasm') if (source / name).exists()}
     if recording and len(recording) != 5:
         raise ValueError("Incomplete recording runtime")
+    asset_video = {name: (source / name).read_bytes() for name in ASSET_VIDEO_FILES if (source / name).exists()}
+    if asset_video and len(asset_video) != len(ASSET_VIDEO_FILES):
+        raise ValueError("Incomplete asset video runtime")
     music = {name: (source / name).read_bytes() for name in MUSIC_FILES if (source / name).exists()}
     needs_music = any(
         b"music-worker.js" in data for name, data in files.items() if name.endswith("js")
@@ -116,6 +120,7 @@ def package(source, destination):
         + b"".join(hive.values())
         + b"".join(recording.values())
         + b"".join(music.values())
+        + b"".join(asset_video.values())
         + b"".join(name.encode() + data for name, data in localization.items())
         + b"".join(name.encode() + data for name, data in launcher_fonts.items())
         + b"".join(files.values())
@@ -124,7 +129,7 @@ def package(source, destination):
     names = {ext: f"index-{version}.{ext}" for ext in ("js", "wasm")}
     # Worker entry points, imports, and Wasm URLs must share the release identity.
     # Rewriting both game runtimes prevents cached code from loading an old backend.
-    worker_assets = {**recording, **music, **surface}
+    worker_assets = {**recording, **music, **asset_video, **surface}
     worker_names = {name: name.replace("-", f"-{version}-", 1) for name in worker_assets}
 
     def runtime_references(text):
@@ -330,6 +335,8 @@ def verify(directory):
         names += recording
     if marker.get("music") or any(name.startswith("music-") for name in expected):
         names += [name.replace("music-", f"music-{marker['version']}-", 1) for name in MUSIC_FILES]
+    if any(name.startswith("asset-") and "-video-" in name for name in expected):
+        names += [name.replace("-", f"-{marker['version']}-", 1) for name in ASSET_VIDEO_FILES]
     names += [
         name for name in expected
         if name.startswith(("licenses/recording/", "licenses/opus/")) and not name.endswith(".gz")

@@ -11,6 +11,7 @@
 #include <cstring>
 #include <fstream>
 #include <thread>
+#include <zlib.h>
 
 namespace {
 const unsigned char webp[] = {82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
@@ -20,6 +21,112 @@ void write(const std::filesystem::path& path, const void *bytes, size_t size) {
 }
 }
 TEST_SUITE("AssetLoader") {
+TEST_CASE("H.264 asset groups publish decoded frames in order through the asset scheduler") {
+#ifdef __EMSCRIPTEN__
+    // Browser groups use the asynchronous worker, which cannot run in this synchronous fixture.
+    return;
+#endif
+    const auto fixture = glob2test::fixture("image-assets/video-group.h264");
+    glob2test::TempDir temp("video-asset");
+    std::filesystem::copy_file(fixture, temp.path / "group.h264");
+    const auto corrupt = std::string("not an Annex B group");
+    write(temp.path / "corrupt.h264", corrupt.data(), corrupt.size());
+    GAGCore::FileManager files("asset-loader-test");
+    files.addDir(temp.path.string());
+    for (unsigned workers : {0u, 2u}) {
+        GAGCore::AssetLoader loader(files, {workers, workers, 128u * 1024u * 1024u});
+        auto first = loader.requestVideoFrames("group.h264", 1024, 1024, 4);
+        if (!GAGCore::AssetLoader::videoFramesSupported()) {
+            CHECK_FALSE(loader.wait(first));
+            CHECK(first.error().find("unavailable") != std::string::npos);
+            continue;
+        }
+        auto second = loader.requestVideoFrames("group.h264", 1024, 1024, 4);
+        const auto group = loader.wait(first);
+        REQUIRE_MESSAGE(group, first.error());
+        CHECK(loader.wait(second) == group);
+        const auto submitted = loader.metrics().submitted;
+        CHECK(loader.wait(loader.requestVideoFrames("group.h264", 1024, 1024, 4)) == group);
+        CHECK(loader.metrics().submitted == submitted);
+        REQUIRE(group->frames.size() == 4);
+        CHECK_FALSE(group->frame(4));
+        for (unsigned i = 0; i < 4; ++i) {
+            const auto frame = group->frame(i);
+            REQUIRE(frame);
+            REQUIRE(frame->surface);
+            CHECK(frame->surface->format == SDL_PIXELFORMAT_ARGB8888);
+            CHECK(frame->surface->w == 1024);
+            CHECK(frame->surface->h == 1024);
+            Uint8 r, g, b, a;
+            REQUIRE(SDL_ReadSurfacePixel(frame->surface, 900, 900, &r, &g, &b, &a));
+            CHECK(r == 20 + 30 * i);
+            CHECK(g == 190 - 20 * i);
+            CHECK(b == 75 + 40 * i);
+            CHECK(a == 255);
+        }
+        auto wrongCount = loader.requestVideoFrames("group.h264", 1024, 1024, 3);
+        CHECK_FALSE(loader.wait(wrongCount));
+        auto wrongSize = loader.requestVideoFrames("group.h264", 1000, 1024, 4);
+        CHECK_FALSE(loader.wait(wrongSize));
+        auto malformed = loader.requestVideoFrames("corrupt.h264", 1024, 1024, 4);
+        CHECK_FALSE(loader.wait(malformed));
+        auto outOfBudget = loader.requestVideoFrames("group.h264", 2048, 2048, 16);
+        CHECK_FALSE(loader.wait(outOfBudget));
+        CHECK(outOfBudget.error().find("description") != std::string::npos);
+    }
+}
+TEST_CASE("Packed sprite locations preserve crop pixels and exact video alpha") {
+    using GAGCore::PackedSpriteFrame;
+    PackedSpriteFrame location;
+    CHECK_FALSE(PackedSpriteFrame::parse("@../page.webp,0,0,1,1", location));
+    CHECK_FALSE(PackedSpriteFrame::parse("@group.h264,-,1024,1024,4,4,0,0,1,1", location));
+    CHECK_FALSE(PackedSpriteFrame::parse("@group.h264,-,1024,1024,4,3,1024,0,1,1", location));
+    CHECK_FALSE(PackedSpriteFrame::parse("@page.webp,0,0,1,1,", location));
+    REQUIRE(PackedSpriteFrame::parse("@group.h264,-,1024,1024,4,3", location));
+    CHECK(location.cropWidth == 1024);
+    CHECK(location.cropHeight == 1024);
+    glob2test::TempDir temp("packed-sprite");
+    write(temp.path / "page.webp", webp, sizeof(webp));
+    GAGCore::FileManager files("asset-loader-test");
+    files.addDir(temp.path.string());
+    GAGCore::AssetLoader loader(files, {0, 0, 128u * 1024u * 1024u});
+    const std::string crop = "@page.webp,1,0,1,1";
+    REQUIRE(PackedSpriteFrame::parse(crop, location));
+    auto image = loader.wait(location.request(loader, crop, false));
+    REQUIRE(image);
+    Uint8 r, g, b, a;
+    REQUIRE(SDL_ReadSurfacePixel(image->surface, 0, 0, &r, &g, &b, &a));
+    CHECK(r == 121);
+    CHECK(g == 77);
+    CHECK(b == 55);
+    CHECK(a == 0);
+    const std::string badCrop = "@page.webp,2,0,1,1";
+    REQUIRE(PackedSpriteFrame::parse(badCrop, location));
+    CHECK_FALSE(loader.wait(location.request(loader, badCrop, false)));
+#ifndef __EMSCRIPTEN__
+    if (!GAGCore::AssetLoader::videoFramesSupported()) return;
+    std::filesystem::copy_file(glob2test::fixture("image-assets/video-group.h264"), temp.path / "group.h264");
+    std::vector<unsigned char> alpha(1024 * 1024, 255);
+    alpha[900 * 1024 + 900] = 73;
+    uLongf capacity = compressBound(alpha.size());
+    std::vector<unsigned char> compressed(capacity);
+    REQUIRE(compress(compressed.data(), &capacity, alpha.data(), alpha.size()) == Z_OK);
+    write(temp.path / "alpha.z", compressed.data(), capacity);
+    const std::string video = "@group.h264,alpha.z,1024,1024,4,1,900,900,1,1";
+    REQUIRE(PackedSpriteFrame::parse(video, location));
+    image = loader.wait(location.request(loader, video, false));
+    REQUIRE(image);
+    REQUIRE(SDL_ReadSurfacePixel(image->surface, 0, 0, &r, &g, &b, &a));
+    CHECK(r == 50);
+    CHECK(g == 170);
+    CHECK(b == 115);
+    CHECK(a == 73);
+    const std::string wrongAlpha = "@group.h264,broken.z,1024,1024,4,1,900,900,1,1";
+    write(temp.path / "broken.z", compressed.data(), capacity - 1);
+    REQUIRE(PackedSpriteFrame::parse(wrongAlpha, location));
+    CHECK_FALSE(loader.wait(location.request(loader, wrongAlpha, false)));
+#endif
+}
 TEST_CASE("directory snapshots share sorted membership and refresh without changing root precedence") {
     glob2test::TempDir temp("directory-membership");
     const std::string folder = temp.path.filename().string() + "-frames";

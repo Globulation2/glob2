@@ -45,6 +45,7 @@ def establish_options(env):
         opts.Add("feature_" + feature, "Override client feature (0 or 1)", "auto")
     opts.Add("size_optimization", "Opt-in GCC release experiment: none, gc, lto, size", "none")
     opts.Add(BoolVariable("lean_images", "Use private PNG/JPEG/WebP SDL_image for native release packages", 0))
+    opts.Add("sprite_packing", "Sprite packing: auto (release), legacy, webp, or video", "auto")
     opts.Add("optimized_assets", "Offer lossy WebP artwork: auto (release), 0 (lossless), or 1", "auto")
     opts.Add(BoolVariable("china", "Build the mainland China local-play client", 0))
     opts.Add(BoolVariable("opengl", "Enable OpenGL detection; set to 0 for software rendering only", 1))
@@ -605,8 +606,11 @@ def main():
         application = env.Bundle(env.Dir(env["BUNDLE_NAME"] + ".app"), env["BUNDLE_BINARIES"])
         from tools.package_assets import source_files
         bundle_assets = [str(p) for p in source_files(Path.cwd(), 'macos')]
-        env.Depends(application, bundle_assets + ['tools/package_assets.py', 'tools/asset-requirements.txt',
-            'scons/bundle.py', 'scons/addDependentLibsToBundle.py', 'scons/moltenvk.py', 'scons/moltenvk.json', Value(bundle_assets)])
+        env.Depends(application, bundle_assets + [
+            'tools/package_assets.py', 'tools/asset-requirements.txt', 'tools/packed_sprite_assets.py',
+            'scons/runtime_assets.py', 'scons/recording_dependencies.py', 'scons/recording-versions.json',
+            'scons/bundle.py', 'scons/addDependentLibsToBundle.py', 'scons/moltenvk.py', 'scons/moltenvk.json',
+            Value(bundle_assets), Value(env['sprite_packing'])])
         env.Alias("bundle", application)
         if "package" in COMMAND_LINE_TARGETS:
             image = env.Dmg("Glob2-%s.dmg" % env["VERSION"], application)

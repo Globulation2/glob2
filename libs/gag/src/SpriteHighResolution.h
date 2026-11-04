@@ -7,6 +7,7 @@
 #include <AssetLoader.h>
 
 namespace GAGCore {
+bool highResolutionNeedsAsyncLoad(const std::string& name, size_t frames);
 HighResolutionInputs prefetchHighResolutionIncremental(
     const std::string& name, size_t frames);
 // Adopt ready HD frames into a private sprite while other frames decode.

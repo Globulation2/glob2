@@ -5,6 +5,9 @@
 #include <chrono>
 #include <cstdint>
 #include <functional>
+#ifdef __EMSCRIPTEN__
+#include <deque>
+#endif
 #include <memory>
 #include <map>
 #include <string>
@@ -14,6 +17,7 @@
 
 namespace GAGCore {
 class FileManager;
+struct PackedSpriteFrame;
 
 // CPU data only: destroying this object never calls a rendering API.
 struct AssetImage {
@@ -28,6 +32,15 @@ struct AssetImage {
     AssetImage& operator=(const AssetImage&) = delete;
     // Only after Handle::take() grants exclusive ownership.
     SDL_Surface *releaseSurface() const { return std::exchange(surface, nullptr); }
+};
+
+// One independently decodable H.264 group. Frames are immutable CPU images in
+// presentation order and live as long as a caller retains the group or frame.
+struct AssetVideoFrames {
+    std::vector<std::shared_ptr<const AssetImage>> frames;
+    std::shared_ptr<const AssetImage> frame(size_t index) const {
+        return index < frames.size() ? frames[index] : nullptr;
+    }
 };
 
 // Requests/polling/publication belong to the service's owner thread. Preparation
@@ -75,6 +88,7 @@ public:
     };
     template<class T> class Handle {
         friend class AssetLoader;
+        friend struct PackedSpriteFrame;
         std::shared_ptr<Subscription> subscription;
         explicit Handle(std::shared_ptr<Result> result) : subscription(std::make_shared<Subscription>(result)) { --result->consumers; }
     public:
@@ -119,6 +133,16 @@ public:
     Handle<Bytes> requestBytes(const std::string& path, Priority priority = Priority::Required);
     Handle<AssetImage> requestImage(const std::string& path, Priority priority = Priority::Required, bool highResolution = false);
     Handle<AssetImage> requestImageBytes(const std::string& key, std::shared_ptr<const Bytes> bytes, Priority priority = Priority::Interactive);
+    static bool videoFramesSupported();
+#ifdef __EMSCRIPTEN__
+    bool browserVideoPending() const { return !browserVideoJobs.empty(); }
+#endif
+    // A .h264 Annex B group starts with SPS/PPS and an IDR picture. The caller
+    // supplies expected dimensions and frame count from its asset index. Output
+    // is opaque ARGB8888. Browser callers must use optional priority and poll
+    // across event-loop turns. Unsupported builds return a failed request.
+    Handle<AssetVideoFrames> requestVideoFrames(const std::string& path, unsigned width, unsigned height,
+        unsigned frameCount, Priority priority = Priority::Required);
     template<class T> void onReady(Handle<T> handle, std::weak_ptr<void> lifetime,
             std::function<void(std::shared_ptr<const T>)> finalize) {
         scheduleFinalizer(handle.dependency(), std::move(lifetime),
@@ -161,12 +185,25 @@ public:
     Metrics metrics() const;
     void shutdown();
 private:
+#ifdef __EMSCRIPTEN__
+    struct BrowserVideoJob {
+        Handle<Bytes> encoded;
+        std::shared_ptr<Result> decoded;
+        unsigned width, height, count;
+        bool started = false;
+    };
+    std::deque<BrowserVideoJob> browserVideoJobs;
+    void pollBrowserVideo();
+#endif
+    friend struct PackedSpriteFrame;
     struct Impl;
     std::unique_ptr<Impl> impl;
+    std::shared_ptr<Result> findReady(const std::string&, std::type_index, Priority);
     std::shared_ptr<Result> submit(const std::string&, std::type_index,
         std::vector<Dependency>, std::function<std::shared_ptr<const void>()>,
         std::function<size_t()>, bool read, Priority);
-    Handle<Bytes> requestBytesImpl(const std::string&, Priority, bool transient);
+    Handle<Bytes> requestBytesImpl(const std::string&, Priority, bool transient,
+        size_t maxBytes = 256u * 1024u * 1024u);
     void yieldWhileWaiting();
     void scheduleFinalizer(Dependency, std::weak_ptr<void>, std::function<void()>);
 };

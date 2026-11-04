@@ -274,3 +274,28 @@ test('out-of-order downloads preserve package replacement order', async () => {
   assert.equal(environment.files.get('/data/shared'), 'new');
   assert.deepEqual(loader.takeInstalled(), ['first', 'second']);
 });
+
+test('demanded HD terrain installs while shared HD is paused', async () => {
+  const packages = manifest();
+  packages.packages.push({name:'hd-terrain-grass', optional:true, size:3, parts:[
+    {url:'assets/hd-1.bbbbbbbbbbbbbbbb.data', size:3,
+      files:[['/data/highres/v1/grass.webp', 0, 3]]},
+  ]});
+  const environment = host();
+  environment.partConcurrency = 1;
+  environment.saveData = () => true;
+  const loader = new Loader(packages, environment);
+  let resume;
+  const paused = new Promise(resolve => { resume = resolve; });
+  const shared = loader.load('hd', () => paused);
+  loader.request('hd-terrain-grass');
+  assert.equal(loader.state()['hd-terrain-grass'], 'idle');
+  environment.saveData = () => false;
+  loader.request('hd-terrain-grass');
+  await loader.inFlight.get('hd-terrain-grass');
+  assert.equal(environment.files.get('/data/highres/v1/grass.webp'), 'png');
+  assert.deepEqual(loader.takeInstalled(), ['hd-terrain-grass']);
+  resume();
+  await shared;
+  assert.deepEqual(loader.takeInstalled(), ['hd']);
+});

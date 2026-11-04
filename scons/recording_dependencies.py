@@ -44,12 +44,13 @@ def configure_bash(environment):
 
 
 def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
-          target=None, arch=None, cflags=(), ldflags=(), environment=None, jobs=2, sdk_identity=None, video_codec='h264', opus_configuration=None):
+          target=None, arch=None, cflags=(), ldflags=(), environment=None, jobs=2, sdk_identity=None, video_codec='h264', opus_configuration=None, sprite_tool=False):
     prefix, work = Path(prefix).resolve(), Path(work).resolve()
     env = dict(environment if environment is not None else os.environ)
     if video_codec not in ('h264', 'vp9', 'av1'):
         raise ValueError('recording_codec must be h264, vp9, or av1')
-    versions = {name: spec for name, spec in json.loads(LOCK.read_text()).items() if name in codec_sources(video_codec)}
+    needed = ('ffmpeg', 'x264') if sprite_tool else codec_sources(video_codec)
+    versions = {name: spec for name, spec in json.loads(LOCK.read_text()).items() if name in needed}
     target = target or {'Darwin': 'darwin', 'Windows': 'mingw32'}.get(platform.system(), 'linux')
     if video_codec != 'h264' and target != 'linux':
         raise ValueError('WebM recording builds currently support native Linux only')
@@ -64,7 +65,7 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
         sdk_identity = {key: subprocess.check_output(['xcrun', '--show-sdk-'+key],env=env,text=True).strip() for key in ('path','version')}
     cflags, ldflags = list(cflags), list(ldflags)
     vaapi = None
-    if target == 'linux' and video_codec == 'h264':
+    if target == 'linux' and video_codec == 'h264' and not sprite_tool:
         probe_env = dict(env)
         probe_env.pop('PKG_CONFIG_LIBDIR', None)
         try:
@@ -79,11 +80,13 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
             raise RuntimeError('Embedded recording requires NASM 2.13 or newer on x86 targets; install nasm and retry.')
         assembler = subprocess.check_output(['nasm', '--version'], env=env, text=True).strip()
     compiler = subprocess.check_output(shlex.split(str(cc)) + ['--version'], env=env, text=True)
-    identity = dict(configuration=3, video_codec=video_codec, opus=opus_configuration, versions=versions, target=target, arch=arch,
+    identity = dict(configuration=3, sprite_tool=sprite_tool, video_codec=video_codec, opus=opus_configuration, versions=versions, target=target, arch=arch,
                     compiler=compiler, cc=str(cc), ar=str(ar), flags=[cflags, ldflags],
                     vaapi_api=vaapi, assembler=assembler, sdk=sdk_identity, environment={name:env.get(name,'') for name in ('CFLAGS','CXXFLAGS','CPPFLAGS','LDFLAGS','SDKROOT','MACOSX_DEPLOYMENT_TARGET','DEVELOPER_DIR')}, recipe=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     manifest = prefix / 'recording-manifest.json'
     archives = [prefix / 'lib' / ('lib' + name + '.a') for name in codec_libraries(video_codec)]
+    if sprite_tool:
+        archives.append(prefix / 'bin' / ('ffmpeg.exe' if target == 'mingw32' else 'ffmpeg'))
     if video_codec != 'h264' and any((prefix / name).exists() for name in ('lib/libopus.a', 'lib/pkgconfig/opus.pc')):
         raise ValueError('Recording prefix contains bundled Opus; choose a clean recording prefix')
     if manifest.exists():
@@ -134,13 +137,17 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
         x264 = [configure_bash(env), (sources['x264'] / 'configure').as_posix(), '--prefix=' + prefix.as_posix(),
                 '--enable-static', '--enable-pic', '--disable-cli', '--disable-opencl',
                 '--disable-avs', '--disable-lavf', '--disable-swscale', '--disable-ffms',
-                '--bit-depth=8', '--chroma-format=420', '--extra-cflags=' + extra_c,
+                '--bit-depth=8', '--chroma-format=' + ('all' if sprite_tool else '420'), '--extra-cflags=' + extra_c,
                 '--extra-ldflags=' + extra_ld]
         if arch in ('arm64','arm64-v8a','armeabi-v7a','aarch64'):
             x264 += ['--extra-asflags=' + shlex.join(cflags)]
         encoders = ['libx264', 'aac']
         hardware = []
-        if target == 'wasm':
+        if sprite_tool:
+            encoders = ['libx264rgb', 'rawvideo']
+            if target == 'mingw32':
+                x264 += ['--host=x86_64-w64-mingw32']
+        elif target == 'wasm':
             x264 += ['--host=wasm32-unknown-linux', '--disable-asm', '--disable-thread']
         elif target == 'android':
             x264 += ['--host=' + {'arm64-v8a': 'aarch64-linux-android', 'armeabi-v7a': 'arm-linux-androideabi', 'x86_64': 'x86_64-linux-android'}[arch]]
@@ -157,7 +164,7 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
             # VAAPI is linked only to its runtime API, never to codec implementations.
             encoders += ['h264_nvenc']; hardware = ['--enable-ffnvcodec','--enable-nvenc']
             if vaapi: encoders += ['h264_vaapi']; hardware += ['--enable-vaapi']
-        if target in ('linux', 'mingw32'):
+        if target in ('linux', 'mingw32') and not sprite_tool:
             subprocess.run(['make', 'install', 'PREFIX=' + prefix.as_posix()], cwd=sources['nv-codec-headers'], env=env, check=True)
     else:
         encoders = ['libvpx-vp9' if video_codec == 'vp9' else 'libaom-av1', 'libopus']
@@ -172,6 +179,15 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
               '--ar=' + str(ar), '--ranlib=' + str(ranlib),
               '--extra-cflags=' + shlex.join(['-O3', '-fPIC', '-I' + (prefix / 'include').as_posix()] + cflags),
               '--extra-ldflags=' + shlex.join(['-L' + (prefix / 'lib').as_posix()] + ldflags)] + hardware
+    if sprite_tool:
+        ffmpeg.remove('--disable-programs')
+        ffmpeg.remove('--disable-avfilter')
+        ffmpeg += ['--disable-ffplay', '--disable-ffprobe', '--enable-ffmpeg', '--enable-avfilter',
+                   '--enable-demuxer=rawvideo,h264', '--enable-muxer=rawvideo,h264',
+                   '--enable-decoder=rawvideo', '--enable-protocol=pipe,file',
+                   '--enable-filter=format,null,scale,trim,atrim,aformat,anull,aresample']
+    # Native clients and the isolated browser asset decoder share this profile.
+    ffmpeg += ['--enable-decoder=h264', '--enable-parser=h264']
     ffmpeg += ['--enable-gpl', '--enable-libx264'] if video_codec == 'h264' else ['--pkg-config-flags=--static', '--enable-libopus', '--enable-libvpx' if video_codec == 'vp9' else '--enable-libaom']
     if target in ('wasm', 'android', 'ios', 'mingw32'):
         mapped = {'arm64-v8a': 'aarch64', 'armeabi-v7a': 'arm', 'arm64': 'aarch64'}.get(arch, arch)
@@ -208,7 +224,7 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
     licenses += [('x264','COPYING')] if video_codec == 'h264' else ([('vpx','LICENSE'), ('vpx','PATENTS')] if video_codec == 'vp9' else [('aom','LICENSE'), ('aom','PATENTS')])
     for name, filename in licenses:
         shutil.copy2(sources[name] / filename, notices / (name + '-' + filename))
-    if video_codec == 'h264': shutil.copy2(sources['nv-codec-headers']/'include/ffnvcodec/nvEncodeAPI.h',notices/'nvEncodeAPI.h')
+    if 'nv-codec-headers' in sources: shutil.copy2(sources['nv-codec-headers']/'include/ffnvcodec/nvEncodeAPI.h',notices/'nvEncodeAPI.h')
     (notices/'configuration.json').write_text(json.dumps(dict(target=target,arch=arch,video_codec=video_codec,opus=opus_configuration,encoders=encoders,hardware=hardware,ffmpeg=[flag for flag in ffmpeg if flag.startswith(('--disable-','--enable-','--arch=','--target-os='))],x264=[flag for flag in x264 if flag.startswith(('--disable-','--enable-','--bit-depth=','--chroma-format='))] if video_codec == 'h264' else [],wasm_vectorization=target=='wasm',compiler=compiler.splitlines()[0],flags=[cflags,ldflags]),indent=2)+'\n')
     (notices / 'sources.json').write_text(json.dumps(versions, indent=2) + '\n')
     manifest.write_text(json.dumps(dict(identity=identity, archives={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in archives}), indent=2) + '\n')
@@ -242,6 +258,8 @@ def attach(env, prefix, target, video_codec='h264'):
     manifest = prefix / 'recording-manifest.json'
     if manifest.exists() and json.loads(manifest.read_text())['identity'].get('video_codec', 'h264') != video_codec:
         raise ValueError('Recording prefix codec does not match recording_codec')
+    if target != 'wasm':
+        env.Append(CPPDEFINES=['GLOB2_H264_ASSETS'])
     if video_codec != 'h264':
         env.Append(CPPDEFINES=['GLOB2_RECORDING_' + video_codec.upper()])
     env.Prepend(CPPPATH=[str(prefix / 'include')])

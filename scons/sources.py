@@ -689,6 +689,9 @@ RELAY_GAG_SOURCES = (
 
 GAG_SOURCES = (
     'AssetLoader.cpp',
+    'AssetVideo.cpp',
+    'AssetVideoDecoder.cpp',
+    'PackedSpriteFrame.cpp',
     'SpriteLoad.cpp',
     'SpriteRenderAtlas.cpp',
     'GameplayRecording.cpp',

@@ -148,13 +148,17 @@ The rest follows in the background once the main menu is up, most needed first:
   Opus at 48 kbps VBR. Until it arrives the
   game lists and plays only the original set; a saved preference for another set
   falls back to a random available one.
-- `music` and `hd`: the in-game music and the high-resolution artwork (WebGL2
+- `music` and `hd`: the in-game music and shared high-resolution artwork (WebGL2
   only, and only while that setting is on). The game reads them when a match or
   the editor starts, so on a first visit a match started before the artwork
   arrives uses the original artwork; the next match uses the high-resolution set.
+- `hd-terrain-*`: catalog terrain families requested as the renderer encounters
+  them, when HD art is enabled. A family can arrive during a match. The renderer
+  keeps native art available while it waits and updates the corresponding sprites
+  when the family installs. Data Saver suppresses these requests.
 
 Later packages download in parts of about 4 MB. Optional ones (music and
-artwork) pause while a match is running and are skipped when the browser asks to
+shared artwork) pause while a match is running and are skipped when the browser asks to
 save data; `font-cjk` and `translations` are retried until they arrive. A package becomes
 visible to the game only when complete. Native builds load everything at startup
 as before (`ApplicationHost::assetPackageReady` is always true there).

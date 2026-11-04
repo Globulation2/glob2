@@ -22,6 +22,7 @@ WORKER_RUNTIMES = (
     ('music-worker.js', 'music-output.js', 'music-runtime.js', 'music-runtime.wasm'),
     ('recording-worker.js', 'recording-storage.js', 'recording-video.js',
      'recording-runtime.js', 'recording-runtime.wasm'),
+    ('asset-video-worker.js', 'asset-video-runtime.js', 'asset-video-runtime.wasm'),
     ('hive-worker.js', 'hive-runtime.js', 'hive-runtime.wasm'),
 )
 ENCODINGS = ('', '.br', '.gz')
