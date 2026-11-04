@@ -6940,3 +6940,5 @@ Opdatering af stående ordre mislykkedes. Din ordre er sat på pause på denne e
 
 [AI for all computer colonies]
 AI for alle computerstyrede kolonier
+[tundra]
+Tundrajord

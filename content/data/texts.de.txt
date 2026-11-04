@@ -6940,3 +6940,5 @@ Die Aktualisierung Ihres Dauerauftrags ist fehlgeschlagen. Ihr Auftrag ist auf d
 
 [AI for all computer colonies]
 KI für alle computergesteuerten Kolonien
+[tundra]
+Tundraboden

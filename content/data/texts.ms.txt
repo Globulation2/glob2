@@ -6940,3 +6940,5 @@ Penantian wajib: %0 ms; utas pemilik menunggu tugas: %1 ms; kunci: %2 ms
 Detik %0: %1 ms masa berlalu
 [hive standing order update failed]
 Kemas kini arahan tetap gagal. Arahan anda dijeda secara setempat; cuba semula melalui kawalan berkenaan.
+[tundra]
+Tanah tundra

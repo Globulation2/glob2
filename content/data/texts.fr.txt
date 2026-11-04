@@ -6940,3 +6940,5 @@ La mise à jour de votre ordre permanent a échoué. Votre ordre est suspendu su
 
 [AI for all computer colonies]
 IA de toutes les colonies contrôlées par l’ordinateur
+[tundra]
+Sol de toundra

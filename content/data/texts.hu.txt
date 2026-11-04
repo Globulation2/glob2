@@ -6940,3 +6940,5 @@ Az állandó parancs frissítése sikertelen. A parancsod ezen az eszközön sz�
 
 [AI for all computer colonies]
 MI minden számítógép vezérelte kolóniához
+[tundra]
+Tundratalaj

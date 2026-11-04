@@ -6940,3 +6940,5 @@ Aktualizácia trvalého príkazu zlyhala. Váš príkaz je na tomto zariadení p
 
 [AI for all computer colonies]
 UI pre všetky kolónie ovládané počítačom
+[tundra]
+Tundrová pôda

@@ -6940,3 +6940,5 @@ A atualização da ordem permanente falhou. A sua ordem está em pausa neste dis
 
 [AI for all computer colonies]
 IA para todas as colónias controladas pelo computador
+[tundra]
+Solo de tundra

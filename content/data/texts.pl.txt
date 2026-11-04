@@ -6940,3 +6940,5 @@ Aktualizacja stałego rozkazu nie powiodła się. Twój rozkaz jest wstrzymany n
 
 [AI for all computer colonies]
 SI dla wszystkich kolonii sterowanych przez komputer
+[tundra]
+Gleba tundrowa
