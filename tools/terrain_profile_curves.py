@@ -23,10 +23,13 @@ since been tuned by hand, so review the diff before writing.
 import argparse
 import json
 import random
-import re
+import sys
 from pathlib import Path
 
 from PIL import Image
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import terrain_catalog  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 LIMIT = 1024
@@ -110,20 +113,10 @@ def generate(root, sand_count=24):
     return curves
 
 
-def dump_catalog(document):
-    """Serialise a catalog the way the shipped tileset.json is formatted."""
-    text = json.dumps(document, indent=2)
-    text = re.sub(
-        r"\[\s+((?:-?\d+,\s+)*-?\d+)\s+\]",
-        lambda m: "[" + re.sub(r",\s+", ", ", m.group(1)) + "]",
-        text,
-    )
-    return text + "\n"
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=ROOT / "content/data/terrain/tileset.json")
+    # The profiles are shared tables, kept in the catalog index (tileset.json).
+    parser.add_argument("--manifest", type=Path, default=ROOT / "content" / terrain_catalog.INDEX)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
     document = json.loads(args.manifest.read_text())
@@ -140,7 +133,7 @@ def main():
         peak = max(abs(v) for curve in value for v in curve)
         print(f"{key}: {len(value)} curves, peak displacement {peak / 256:.2f} px")
     if args.write:
-        args.manifest.write_text(dump_catalog(document))
+        args.manifest.write_text(terrain_catalog.dump(document))
 
 
 if __name__ == "__main__":

@@ -11,8 +11,12 @@ Textures and masks are separate: no terrain-pair Cartesian product is baked.
 import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
 from PIL import Image
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import terrain_catalog  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 LEGACY_BINDINGS = ("water", "sand", "grass", "ice", "road")
@@ -598,9 +602,27 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
     return manifest
 
 
+def read_catalog(path):
+    """A catalog from a runtime tree, or from an index file (or a whole
+    single-file catalog) with its material files beside it in materials/."""
+    path = Path(path)
+    if path.is_dir():
+        return terrain_catalog.load(path)
+    return terrain_catalog.assemble(json.loads(path.read_text()), lambda key: json.loads(
+        (path.parent / "materials" / f"{key}.json").read_text()))
+
+
+def unlisted_materials(content):
+    """Material files the index does not list: stale packs left behind."""
+    listed = {Path(p).name for p in terrain_catalog.sources(content)[1:]}
+    directory = Path(content) / terrain_catalog.MATERIALS
+    return sorted(p.name for p in directory.glob("*.json") if p.name not in listed)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--manifest", type=Path, default=ROOT / "content/data/terrain/tileset.json")
+    ap.add_argument("--manifest", type=Path, default=assets(ROOT),
+                    help="runtime tree or catalog index to read (default: the checkout's content/)")
     ap.add_argument("--output", type=Path)
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--page-size", type=int, default=1024)
@@ -609,11 +631,14 @@ def main():
     ap.add_argument("--compare", type=Path,
                     help="with --border-table, list only pairs whose profile differs from this catalog")
     args = ap.parse_args()
-    document = json.loads(args.manifest.read_text())
+    document = read_catalog(args.manifest)
     sources = validate(document)
+    if args.manifest.is_dir() and unlisted_materials(args.manifest):
+        raise SystemExit(f"Material files not listed in {terrain_catalog.INDEX}: "
+                         + ", ".join(unlisted_materials(args.manifest)))
     if args.border_table:
         table = border_table(document)
-        previous = border_table(json.loads(args.compare.read_text())) if args.compare else None
+        previous = border_table(read_catalog(args.compare)) if args.compare else None
         for (a, b), profile in table.items():
             if previous is None:
                 print(f"{a:>14} | {b:<14} {profile}")

@@ -33,7 +33,8 @@ frames 12k..12k+11 in `ORDER`, followed by connected hedge/thicket frames
 (16 corner masks, a 4x4 continuous texture block each), so the runtime batches every decor draw like
 resources. HD frames are registered through tools/artwork/highres_pack.py and
 provenance is written to `content-src/gfx/terrain-decor/provenance.json`.
-`--write-catalog` adds the `decor` block to each material in tileset.json.
+`--write-catalog` adds the `decor` block to each obstacle material file in
+content/data/terrain/materials/.
 Pure Python 3 plus Pillow; no numpy.
 """
 import argparse
@@ -1205,12 +1206,11 @@ def write(results, root):
 
 
 def write_catalog(root):
-    """Add or refresh each obstacle material's decor block in tileset.json."""
+    """Add or refresh each obstacle material's decor block in the catalog."""
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from terrain_profile_curves import dump_catalog
+    import terrain_catalog
 
-    path = root / "content/data/terrain/tileset.json"
-    document = json.loads(path.read_text())
+    document = terrain_catalog.load(root / "content")
     # Connected foliage keeps the quiet "canopy" edge of the "cover" border
     # class (authored by terrain_synth.py), so no ground contour shows below it.
     for material in document["materials"]:
@@ -1228,7 +1228,7 @@ def write_catalog(root):
                                                                  start + CONNECTED_FRAMES))
             material["decor"].pop("connected_grid", None)
             material["decor"]["connected_corners"] = True
-    path.write_text(dump_catalog(document))
+    terrain_catalog.save(root / "content", document)
 
 
 def connected_sheet(results):
@@ -1310,7 +1310,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--decor", action="append", help="decor name (repeatable; default all)")
     parser.add_argument("--sheet", type=Path, help="write a review sheet and nothing else")
-    parser.add_argument("--write-catalog", action="store_true", help="also add decor blocks to tileset.json")
+    parser.add_argument("--write-catalog", action="store_true", help="also add decor blocks to the terrain catalog")
     parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args(argv)
     names = args.decor or list(ORDER)

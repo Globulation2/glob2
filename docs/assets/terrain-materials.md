@@ -1,6 +1,10 @@
 # Terrain materials
 
-Detailed terrain rendering uses `content/data/terrain/tileset.json`. Gameplay continues to
+Detailed terrain rendering uses the terrain catalog, stored one file per terrain:
+`content/data/terrain/tileset.json` holds the shared tables and lists the materials
+in catalog order, and `content/data/terrain/materials/<key>.json` holds each
+material's block. `tools/terrain_catalog.py` and `TerrainVisual::loadCatalogDocument`
+read them back as one document. Gameplay continues to
 use stable `TerrainType` identities and properties. Visual material handles, masks,
 texture choices and composed pages are transient; they never enter saves, orders,
 checksums or the synchronized random stream.
@@ -8,7 +12,8 @@ checksums or the synchronized random stream.
 ## Add artwork
 
 A version-4 catalog contains `border_classes`, `profiles`, `materials`, `bindings`
-and optional `pair_treatments`. Version-1 packs remain readable with their original five-point
+and optional `pair_treatments`. Each `materials` entry is a key naming a material
+file, or an inline block (as map bundles and test catalogs use). Version-1 packs remain readable with their original five-point
 contours and sampling behavior; version 2 adds denser contours, edge softness and
 world-space bends; version 3 adds per-profile displacement amplitude, pebble
 speckle, diagonal bridging and up to sixty-four curves per profile; version 4 adds
@@ -137,7 +142,6 @@ python3 tools/terrain_tileset.py --check
 python3 tools/terrain_tileset.py --output artifacts/terrain/compiled --page-size 256
 python3 tools/terrain_profile_curves.py --write
 python3 -m unittest discover -s tools -p test_terrain_tileset.py
-"$(python3 tools/package_assets.py --encoder-python)" tools/artwork/terrain_synth.py --check
 "$(python3 tools/package_assets.py --encoder-python)" tools/artwork/validate_material.py --all
 python3 test/run_tests.py --filter 'TerrainMaterials/*'
 python3 test/run_tests.py --filter 'TerrainPresentation/*'
