@@ -82,7 +82,8 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
             if (map.resourceRegistry().presentation(static_cast<ResourceId>(r.type)).frame(r.amount, x, mapY, map.tick) >= sprite->getFrameCount()) return false;
         }
     GAGCore::MapGeometryCache::Layer layer(*cache);
-    auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames, int layerKey, int y, int mapY)
+    auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames, int layerKey, int y, int mapY,
+        bool decor = false)
     {
         auto draw = [&](int first, int last, int originX, int originY)
         {
@@ -90,8 +91,9 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
             {
                 int frame = layerFrames[mapX];
                 if (frame < 0) continue;
+                const int h = layerSprite->getH(frame);
                 int dx = (layerSprite->getW(frame) - 32) >> 1;
-                int dy = (layerSprite->getH(frame) - 32) >> 1;
+                int dy = decor ? TerrainVisual::decorOffsetY(h) : (h - 32) >> 1;
                 gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, layerSprite, frame);
             }
             gfx->finishDrawingSprite(layerSprite, 255);
@@ -148,7 +150,7 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
             anyDecor |= decorFrames[mapX] >= 0;
         }
         if (anyDecor)
-            drawLayer(decorSprite, decorFrames, 2, y, mapY);
+            drawLayer(decorSprite, decorFrames, 2, y, mapY, true);
         drawLayer(sprite, frames, 1, y, mapY);
     }
     return true;
@@ -177,6 +179,16 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam); // the local team's Team::me
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
+    // Decor overhangs its cell, tall obstacles by up to 80 px above: draw the
+    // rows and columns just outside the view whose frames reach into it, so
+    // they do not pop in at the screen edges.
+    {
+        const auto reach = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle()).decorReach();
+        top -= (reach.down + 31) >> 5;
+        bot += (reach.up + 31) >> 5;
+        left -= (reach.side + 31) >> 5;
+        right += (reach.side + 31) >> 5;
+    }
     if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
             right, bot, viewportX, viewportY)) return;
     const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry(), sceneMap.frozenAssetBundle());
@@ -234,9 +246,9 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 					flush();
 					pendingSprite = decorSprite;
 				}
-				globalContainer->gfx->drawSprite((x << 5) - ((decorSprite->getW(frame) - 32) >> 1),
-												 (y << 5) - ((decorSprite->getH(frame) - 32) >> 1),
-												 decorSprite, frame);
+				globalContainer->gfx->drawSprite(
+					(x << 5) - TerrainVisual::decorOffsetX(decorSprite->getW(frame)),
+					(y << 5) - TerrainVisual::decorOffsetY(decorSprite->getH(frame)), decorSprite, frame);
 			}
 		for (int x : visibleColumns)
 		{

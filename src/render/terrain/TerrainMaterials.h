@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <string>
@@ -114,6 +115,26 @@ struct Decor
 	// Optional extra filled-mask frames ("connected_interior"), colour-major with
 	// the same count per colour: alternative interiors picked by a cell hash.
 	std::vector<int> connectedInterior;
+};
+// Decor frames may be up to MaximumDecorFrame native pixels on each side. A
+// frame up to 64 px tall is centred on its 32 px cell; a taller frame keeps a
+// 64 px frame's bottom edge, 16 px below the cell, and grows upward, so tall
+// obstacles stand on their own cell rather than spilling into the row south.
+// Every frame is centred horizontally. Offsets are subtracted from the cell's
+// top-left corner.
+constexpr int MaximumDecorFrame = 128;
+constexpr int decorOffsetX(int width) { return (width - 32) >> 1; }
+constexpr int decorOffsetY(int height) { return std::max((height - 32) >> 1, height - 48); }
+// Native pixels a decor frame extends beyond its cell on each side.
+struct DecorReach
+{
+	int up = 0, down = 0, side = 0;
+	void include(int width, int height)
+	{
+		up = std::max(up, decorOffsetY(height));
+		down = std::max(down, height - 32 - decorOffsetY(height));
+		side = std::max(side, decorOffsetX(width));
+	}
 };
 // Version 4 border class: what kind of surface a material is (cover, cut,
 // built, flow, solid, pool). Classes are listed strongest first; the stronger

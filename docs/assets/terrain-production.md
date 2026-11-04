@@ -205,9 +205,19 @@ A material opts in with a `decor` block:
   hedge and thicket.
 - All decor blocks share one sprite, so the cached GPU path batches decor rows
   like resource rows.
-- Frames are at most 64×64 and centred on the 32×32 cell. Connected foliage
-  uses cropped 32×48 frames to limit texture memory. Object silhouettes
-  may overhang neighbours; connected canopy surfaces join at cell boundaries.
+- Frames are at most 128×128 (`TerrainVisual::MaximumDecorFrame`). Frames up to
+  64 pixels tall are centred on the 32×32 cell; a taller frame keeps a 64×64
+  frame's bottom edge, 16 pixels below the cell, and grows upward, so tall
+  obstacles stand on their own cell instead of spilling into the row to the
+  south. Every frame is centred horizontally (`decorOffsetX`/`decorOffsetY` in
+  `TerrainMaterials.h`; the map, editor swatches and the review sheets share the
+  rule). The resource pass draws the rows and columns just outside the view
+  whose decor reaches into it, from the catalog's largest frame, so tall decor
+  does not pop in at screen edges. Connected foliage uses cropped 32×64 frames
+  to limit texture memory. Object silhouettes may overhang neighbours;
+  connected canopy surfaces join at cell boundaries.
+- Units and buildings draw after all decor, so a unit standing just north of a
+  tall boulder draws over the boulder's top.
 
 `tools/artwork/terrain_decor.py` synthesises the frames in the game's soft
 three-quarter view:
@@ -216,6 +226,11 @@ three-quarter view:
 - The body has a lit top and a darker front face, with edge shading only on the
   side away from the light.
 - One soft ground shadow falls to the lower right.
+- Boulders are tall: 128×128 frames whose stones are a faceted, lit top on a
+  front face extruded down to the ground, flaring slightly toward it. The
+  largest stand most of a cell above their own. Each stone's footprint, swept
+  along a low sun to the lower right, gives a long shadow that fades with
+  distance and lies on the ground under every stone.
 
 Hedge and thicket use connected canopy surfaces rather than shaded bushes
 stamped on every cell. Only exposed contours receive front-edge shading;
@@ -227,8 +242,12 @@ roughness, speckle or contour displacement; irregularity belongs to the
 foliage silhouette rather than exposed soil spikes. `--write-catalog` installs
 this profile and applies it to foliage material pairs as well as their decor. Hedge has dense green leaf
 strokes and soft crowns. Thicket has sparser olive foliage with visible branches.
-Both rise six native pixels above their ground material and sample one
-continuous canopy texture across a 4×4 block of cells. Thicket has broader
+Hedge rises sixteen native pixels above its ground material and thicket
+fourteen; both sample one continuous canopy texture across a 4×4 block of
+cells. Their front wall shows the foliage just behind the rim above it, and the
+raised mass casts a long shadow straight down the screen into the 16 pixels
+below its cell, fading to nothing; where the canopy continues, the next row's
+frame covers it. Thicket has broader
 boundary irregularity and woody gaps between crowns. The other sets are faceted boulders and rubble, clusters of faceted crags along
 a shared grain, and broad stepped bedrock blocks with sparse lichen. Ridge and
 outcrop rocks are flat-shaded prisms: a convex ring raised into walls, with

@@ -90,6 +90,8 @@ class Compositor
 	GAGCore::Sprite *decorSprite() const { return sharedDecorSprite; }
     GAGCore::Sprite *decorSprite(MaterialId id) const { return decorSprites.at(id); }
     GAGCore::Sprite *decorSprite(const SceneMap &map, int x, int y) const;
+	// How far the largest decor frame reaches past its cell, for view culling.
+	DecorReach decorReach() const { return reach; }
 	// Any undecorated corner suppresses raised objects. Decorated-only borders
 	// choose one material, weighted by corner count, using presentation hashing.
 	int decorFrame(const SceneMap &, int x, int y) const;
@@ -191,6 +193,7 @@ class Compositor
 	std::vector<GAGCore::Sprite *> decorSprites;
     GAGCore::Sprite *sharedDecorSprite = nullptr;
     bool mixedDecorSprites = false;
+	DecorReach reach;
 	std::vector<GAGCore::Sprite *> overlaySprites;
 	GAGCore::Sprite *sharedOverlaySprite = nullptr;
 	bool mixedOverlaySprites = false;

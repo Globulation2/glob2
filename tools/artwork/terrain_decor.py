@@ -8,11 +8,17 @@ decor sprite per cell drawn with the resources in screen-row order, so objects
 overlap their neighbours and occlude each other. This tool renders those
 sprites from scratch.
 
-Object sprites are 64x64 native (256x256 HD), centred on a 32x32 cell.
-Connected foliage uses cropped 32x48 native frames (128x192 HD).
-Objects stand on the lower part of their cell and rise up to sixteen native
-pixels into the cell above, as trees do; drawn back to front, interior cells
-overlap into one continuous mass. A frame
+Object sprites are 64x64 native (256x256 HD), centred on a 32x32 cell, except
+the tall boulders, which are 128x128 native (512x512 HD). The runtime keeps a
+tall frame's bottom edge where a 64x64 frame's would be, sixteen native pixels
+below the cell, so a tall frame grows upward: its cell is the 32x32 square 48
+pixels from either side and 16 from the bottom. Boulders rise well over a cell
+into the rows above and cast long shadows to the lower right. Connected
+foliage uses cropped 32x64 native frames (128x256 HD): a raised canopy whose
+long shadow falls on the open ground south of it. Smaller objects stand on the
+lower part of their cell and rise up to sixteen native pixels into the cell
+above, as trees do; drawn back to front, interior cells overlap into one
+continuous mass. A frame
 holds a small cluster of objects in the game's soft three-quarter view: a lit
 top, a darker front face below it, top-left light and a soft contact shadow to
 the lower right, drawn back to front. Frames come in two sizes: `full` for
@@ -60,6 +66,32 @@ SCALE = 4
 S = NATIVE * SCALE   # render size
 CELL = 32 * SCALE
 PAD = (S - CELL) // 2
+CY = S - CELL        # render row of the cell centre (S / 2 for 64x64 frames)
+# Sets whose full and edge frames are taller than 64x64 native.
+TALL = {"boulders": 128}
+
+
+def native_size(name):
+    return TALL.get(name, 64)
+
+
+def use_frame(native):
+    """Select the frame geometry the object primitives render into."""
+    global NATIVE, S, PAD, CY
+    NATIVE, S = native, native * SCALE
+    PAD = (S - CELL) // 2
+    CY = S - CELL
+
+
+def offset_x(width):
+    """TerrainVisual::decorOffsetX: native pixels a frame starts left of its cell."""
+    return (width - 32) // 2
+
+
+def offset_y(height):
+    """TerrainVisual::decorOffsetY: frames up to 64 tall are centred; taller
+    frames keep a 64x64 frame's bottom edge and grow upward."""
+    return max((height - 32) // 2, height - 48)
 FULL, EDGE = 8, 4    # frames per size class: full 0..7, edge 8..11
 FRAMES = FULL + EDGE
 PREFIX = "content/data/gfx/terrain-decor"
@@ -359,12 +391,14 @@ def place_rocks(rng, sizes, edge):
     spread = 0.24 if edge else 0.42
     wander = 0.12 if edge else 0.2
     ox = S / 2 + rng.uniform(-1, 1) * CELL * wander
-    oy = S / 2 + CELL * 0.14 + rng.uniform(-1, 1) * CELL * wander * 1.2
+    oy = CY + CELL * 0.04 + rng.uniform(-1, 1) * CELL * wander
     items = []
     for r, kind in sorted(sizes, key=lambda t: -t[0]):
         ry = r * 0.8
         lo_x, hi_x = r * 1.45 + 6, S - r * 1.45 - 6
-        lo_y, hi_y = ry * 2.0 + 8, S - ry * 0.9 - 16
+        # Bases stay on the cell: the bodies rise from it and the long
+        # shadows need the frame's room to the lower right.
+        lo_y, hi_y = ry * 2.0 + 8, min(S - ry * 0.9 - 16, CY + CELL * 0.3)
         for _ in range(60):
             cx = clamp(ox + rng.uniform(-1, 1) * CELL * spread, lo_x, hi_x)
             cy = clamp(oy + rng.uniform(-1, 1) * CELL * spread * 0.9, lo_y, hi_y)
@@ -399,37 +433,156 @@ def boulder_palette(rng):
     return rng.choice(tones)
 
 
-@spec("boulders", "faceted weathered boulders and rubble, three-quarter view")
+# Long cast shadows fall to the lower right from a low sun; a little flatter
+# than the contact shadows so they reach across the open ground.
+LONG = tuple(c / math.hypot(0.9, 0.43) for c in (0.9, 0.43))
+
+
+def mask_image(pixels, threshold=0.0):
+    """An "L" image of [(i, alpha, ...)] silhouette pixels."""
+    values = bytearray(S * S)
+    for i, alpha, *_ in pixels:
+        if alpha > threshold:
+            values[i] = int(alpha * 255 + 0.5)
+    return Image.frombytes("L", (S, S), bytes(values))
+
+
+def translate(image, dx, dy):
+    return image.transform(image.size, Image.Transform.AFFINE, (1, 0, -dx, 0, 1, -dy))
+
+
+def sweep(mask, length, direction, taper):
+    """The ground shadow of an upright prism: its footprint swept along the
+    light, fading with distance from the object."""
+    out = Image.new("L", mask.size)
+    steps = max(1, int(length / 3))
+    for k in range(steps + 1):
+        t = k / steps
+        moved = translate(mask, t * length * direction[0], t * length * direction[1])
+        out = ImageChops.lighter(out, moved.point(lambda v, f=1 - taper * t: int(v * f)))
+    return out
+
+
+def boulder_height(rng, r, kind, edge):
+    """How far a boulder's top stands above its base, in render pixels."""
+    if kind == "rubble":
+        lo, hi = 0.3, 0.45
+    elif r > 50:
+        lo, hi = 1.9, 2.6    # the anchor stands well over a cell above its base
+    elif r > 40:
+        lo, hi = 1.7, 2.3
+    elif r > 32:
+        lo, hi = 1.6, 2.2
+    else:
+        lo, hi = 1.5, 2.1
+    return r * rng.uniform(lo, hi) * (0.75 if edge else 1.0)
+
+
+@spec("boulders", "tall faceted boulders casting long shadows, three-quarter view")
 def render_boulders(rng, edge):
+    """Each boulder is a faceted, lit top on a tall front face: the top's
+    outline extruded down to the ground. Its footprint, swept along the light,
+    gives the long shadow, drawn on the ground before any stone."""
     canvas = Canvas()
-    grit = fbm(rng, 12, 3)
-    lichen = fbm(rng, 18, 2)
+    k = S // 256
+    grit = fbm(rng, 12 * k, 3)
+    lichen = fbm(rng, 18 * k, 2)
+    cracks = fbm(rng, 10 * k, 2)
     family = boulder_palette(rng)  # one rock type per frame, varied per stone
     owner = [-1] * (S * S)
-    rocks = place_rocks(rng, boulder_sizes(rng, edge), edge)
-    for k, (bx, by, r, kind) in enumerate(rocks):
-        squash = rng.uniform(0.72, 0.86)
-        cy = by - r * squash * 0.55  # the body rises above its base
+    rocks = []
+    for bx, by, r, kind in place_rocks(rng, boulder_sizes(rng, edge), edge):
+        squash = rng.uniform(0.55, 0.7)  # the top, seen obliquely
+        h = min(boulder_height(rng, r, kind, edge), by - r * squash * 1.4 - 16)
+        top = facet_rock(rng, bx, by - h, r, squash, 0.7 if kind == "rubble" else 0.95)
+        rocks.append((bx, by, r, kind, squash, h, top))
+    # Long shadows first: they lie on the ground under every stone.
+    shadows = Image.new("L", (S, S))
+    for bx, by, r, kind, squash, h, top in rocks:
+        footprint = translate(mask_image(top), 0, h)
+        blur = max(3.0, r * 0.08)
+        length = min(h * 1.15, (S - 16 - blur * 2 - (by + r * squash)) / LONG[1],
+                     (S - 16 - blur * 2 - (bx + r)) / LONG[0])
+        shade = sweep(footprint, max(0.0, length), LONG, 0.55).filter(ImageFilter.GaussianBlur(blur))
+        shadows = ImageChops.lighter(shadows, shade)
+    for i, v in enumerate(shadows.getdata()):
+        if v:
+            canvas.over(i, (12, 14, 10), 0.6 * v / 255, body=False)
+    for n, (bx, by, r, kind, squash, h, top) in enumerate(rocks):
         ground_shadow(canvas, bx + r * 0.1, by, r * 1.05, r * squash * 0.42, 0.55)
         j = rng.uniform(-9, 9)
         tone = tuple(c + j + rng.uniform(-2, 2) for c in family)
-        face = (tone[0] * 0.5, tone[1] * 0.5, tone[2] * 0.52)
+        face_colour = (tone[0] * 0.5, tone[1] * 0.5, tone[2] * 0.52)
         speck = random.Random(rng.random())
-        for i, alpha, nx, ny, nz, rim in facet_rock(rng, bx, cy, r, squash,
-                                                    0.7 if kind == "rubble" else 0.95):
+        # Front face: below each column of the top, down to the ground. Each
+        # stretch of the top's front outline is one flat face, lit by the
+        # light's horizontal part as the outline turns, so the facets carry
+        # down the body.
+        columns = {}
+        for i, alpha, *_ in top:
+            if alpha > 0.02:
+                x, y = i % S, i // S
+                lo, hi, a = columns.get(x, (y, y, 0.0))
+                columns[x] = (min(lo, y), max(hi, y) if alpha > 0.5 or x not in columns else hi, max(a, alpha))
+        foot = fbm(random.Random(rng.random()), 6 * k, 2)
+        faces = {}
+        for x, (lo, hi, coverage) in columns.items():
+            before = columns.get(x - 2, columns.get(x - 1, (lo, hi, 0)))[1]
+            after = columns.get(x + 2, columns.get(x + 1, (lo, hi, 0)))[1]
+            slope = (after - before) / 4 / squash
+            norm = math.hypot(slope, 1)
+            fx, fy = -slope / norm, 1 / norm  # outward horizontal normal
+            lam = max(0.0, fx * LIGHT3[0] + fy * LIGHT3[1]) / math.hypot(LIGHT3[0], LIGHT3[1])
+            base = h + (foot(x, by) - 0.5) * r * 0.25  # an uneven foot on the ground
+            faces[x] = (lo, hi, coverage, lam, base)
+        if faces:
+            middle = (min(faces) + max(faces) + 1) / 2
+            flare = 0.0 if kind == "rubble" else 0.14  # bodies spread toward the ground
+            reach = int((max(faces) - min(faces)) * flare / 2) + 2
+            bottom = min(S, int(max(f[1] + f[4] for f in faces.values())) + 2)
+            for x in range(max(0, min(faces) - reach), min(S, max(faces) + reach + 1)):
+                for y in range(min(f[0] for f in faces.values()), bottom):
+                    # The source column under the top, found through the flare.
+                    source = middle + (x + 0.5 - middle)
+                    for _ in range(2):
+                        face = faces.get(int(source))
+                        if not face:
+                            break
+                        t = clamp((y - face[1]) / max(1.0, face[4]))
+                        source = middle + (x + 0.5 - middle) / (1 + flare * t)
+                    face = faces.get(int(source))
+                    if not face or y < face[0]:
+                        continue
+                    lo, hi, coverage, lam, base = face
+                    depth = (y + 0.5 - hi) / max(1.0, base)  # 0 under the top, 1 at the ground
+                    alpha = coverage * clamp(1 + base - (y - hi))
+                    if alpha <= 0:
+                        continue
+                    i = y * S + x
+                    g = grit(x, y)
+                    streak = cracks(x, y * 0.2)
+                    c = mix3(face_colour, tone, 0.4 + 0.5 * lam)
+                    value = (0.68 + 0.55 * lam) * (0.88 + 0.24 * g) * (0.82 + 0.3 * streak)
+                    value *= 1 + 0.22 * (1 - smoothstep(0.0, 0.14, depth))  # a rounded shoulder
+                    value *= 1 - 0.32 * smoothstep(0.3, 1.0, depth)  # darker toward the ground
+                    value *= speck.uniform(0.97, 1.03)
+                    canvas.over(i, tuple(v * value for v in c), alpha)
+                    if alpha > 0.5:
+                        owner[i] = n
+        for i, alpha, nx, ny, nz, rim in top:
             x, y = i % S, i // S
             lam = max(0.0, nx * LIGHT3[0] + ny * LIGHT3[1] + nz * LIGHT3[2])
             g = grit(x, y)
-            c = mix3(tone, face, smoothstep(0.25, 0.75, ny) * 0.6)
+            c = mix3(tone, face_colour, smoothstep(0.25, 0.75, ny) * 0.6)
             if nz > 0.8 and lichen(x, y) > 0.72:
                 c = mix3(c, (128, 128, 92), smoothstep(0.72, 0.82, lichen(x, y)) * 0.3)
-            value = (0.4 + 0.8 * lam) * (0.86 + 0.28 * g) * speck.uniform(0.96, 1.04)
+            value = (0.45 + 0.8 * lam) * (0.86 + 0.28 * g) * speck.uniform(0.96, 1.04)
             # A dark line on the outline turned from the light separates stones.
             away = clamp(0.5 + 0.5 * (nx * -LIGHT[0] + ny * -LIGHT[1]) / max(1e-6, math.hypot(nx, ny)))
             value *= 1 - 0.35 * rim * away
             canvas.over(i, tuple(v * value for v in c), alpha)
             if alpha > 0.5:
-                owner[i] = k
+                owner[i] = n
     # Crevices where stones meet, and each stone's shade on the others.
     seam = Image.new("L", (S, S), 0)
     seam.putdata([255 if o >= 0 and ((i % S + 1 < S and owner[i + 1] not in (-1, o)) or
@@ -437,14 +590,13 @@ def render_boulders(rng, edge):
                   for i, o in enumerate(owner)])
     seam = list(seam.filter(ImageFilter.GaussianBlur(3.5)).getdata())
     shade = [0.0] * (S * S)
-    for k, (bx, by, r, _) in enumerate(rocks):
+    for n, (bx, by, r, *_) in enumerate(rocks):
         mask = Image.new("L", (S, S), 0)
-        mask.putdata([255 if o == k else 0 for o in owner])
+        mask.putdata([255 if o == n else 0 for o in owner])
         d = r * 0.3
-        mask = mask.transform(mask.size, Image.Transform.AFFINE,
-                              (1, 0, -d * SHADOW[0], 0, 1, -d * SHADOW[1]))
+        mask = translate(mask, d * SHADOW[0], d * SHADOW[1])
         for i, v in enumerate(mask.filter(ImageFilter.GaussianBlur(r * 0.12)).getdata()):
-            if v and owner[i] not in (-1, k):
+            if v and owner[i] not in (-1, n):
                 shade[i] = max(shade[i], v / 255)
     for i in range(S * S):
         if owner[i] >= 0:
@@ -762,10 +914,10 @@ CONNECTED = ("hedge", "thicket")
 CANOPY_VARIANTS = 16          # one per combination of the four corner colours
 CANOPY_INTERIORS = 8          # interior crown arrangements of a filled cell
 BAND = 20                     # vertex crowns centre this close to a cell edge
-RAISE = 24                    # HD pixels the surface stands above its footprint
 HALO = 22                     # height field kept around the cell
 REACH = CELL - HALO - 4       # a cluster never reaches another cell's halo
-CANOPY_TOP = 32               # frame rows above the cell (8 native)
+CANOPY_TOP = 64               # frame rows above the cell (16 native)
+CANOPY_BELOW = 64             # frame rows below it, for the long shadow (16 native)
 CANOPY_LIGHT = (-0.50, -0.62, 0.60)
 CANOPY_STYLE = {
     # Shadow, mid and highlight ramps keep the vegetation brighter and more
@@ -775,13 +927,16 @@ CANOPY_STYLE = {
               (0.76, (84, 162, 58)), (1.0, (168, 212, 98))),
         big=(3, 21, 25), medium=(4, 12, 17), sprigs=(3, 8, 11),
         tint=((0.88, (0, 0, 4)), (1.08, (8, 6, -6))),
-        lumps=(7, 0.10), dab=(4, 7, 0.05, 40), amplitude=0.30, wood=0),
+        lumps=(7, 0.10), dab=(4, 7, 0.05, 40), amplitude=0.30, wood=0,
+        # HD pixels the clipped top stands above its footprint (16 native).
+        raise_=64),
     "thicket": dict(
         ramp=((0.0, (30, 34, 16)), (0.28, (66, 76, 26)), (0.52, (112, 128, 38)),
               (0.76, (164, 172, 58)), (1.0, (222, 214, 118))),
         big=(3, 19, 22), medium=(4, 11, 16), sprigs=(4, 7, 10),
         tint=((0.88, (-4, 0, 2)), (1.08, (10, 4, -8))),
-        lumps=(5, 0.22), dab=(4, 8, 0.07, 50), amplitude=0.32, wood=14),
+        lumps=(5, 0.22), dab=(4, 8, 0.07, 50), amplitude=0.32, wood=14,
+        raise_=56),
 }
 
 
@@ -1054,17 +1209,25 @@ def shifted(image, dx, dy):
     return out
 
 
+def raise_of(name):
+    """HD pixels a connected canopy's top stands above its footprint."""
+    return CANOPY_STYLE[name]["raise_"]
+
+
 def render_connected(name, mask, colours, interior=0):
-    """A 32x48 native frame: ground shadow, front wall, then the raised top.
+    """A 32x64 native frame: ground shadows, front wall, then the raised top.
 
     The frame owns the canopy whose footprint lies inside its cell. The top is
-    drawn RAISE pixels up and the front wall fills down to the footprint, so the
-    next row's frame covers this row's wall wherever the canopy continues.
+    drawn raise_of(name) pixels up and the front wall fills down to the
+    footprint, so the next row's frame covers this row's wall wherever the
+    canopy continues. Below the cell, the canopy's long shadow falls on the open
+    ground south of it; where the canopy continues, the next row covers it too.
     """
-    frame = Image.new("RGBA", (CELL, CELL + 64))
+    frame = Image.new("RGBA", (CELL, CANOPY_TOP + CELL + CANOPY_BELOW))
     if not mask:
         return frame
     style = CANOPY_STYLE[name]
+    lift = raise_of(name)
     # Interior crowns never cross the cell edge, so every frame may choose its
     # own: spreading choices over masks and colours keeps edge cells varied too.
     surface, heights = canopy_surface(name, colours, (interior + colours * 3 + mask * 5) % CANOPY_INTERIORS)
@@ -1076,29 +1239,56 @@ def render_connected(name, mask, colours, interior=0):
     raw = raw.filter(ImageFilter.GaussianBlur(2.5))
     coverage = raw.point(lambda v: int(smoothstep(0.47 * 255, 0.53 * 255, v) * 255))
     falloff = raw.point(lambda v: int(smoothstep(0.50 * 255, 0.70 * 255, v) * 255))
-    cell = (HALO, HALO, HALO + CELL, HALO + CELL)
+
+    # Work on canvases with room above for the raised top and below for the
+    # long shadow; the cell and its halo sit between.
+    def pad(image):
+        out = Image.new(image.mode, (image.width, CANOPY_TOP + image.height + CANOPY_BELOW))
+        out.paste(image, (0, CANOPY_TOP))
+        return out
+
+    coverage, falloff, surface = pad(coverage), pad(falloff), pad(surface)
+    cell = (HALO, CANOPY_TOP + HALO, HALO + CELL, CANOPY_TOP + HALO + CELL)
+    below = (HALO, cell[3], HALO + CELL, cell[3] + CANOPY_BELOW)
     own = Image.new("L", coverage.size)
     own.paste(coverage.crop(cell), cell[:2])
 
-    # Soft contact shadow on the ground inside this cell, from all canopy nearby.
-    shadow = shifted(coverage, 8, 10).filter(ImageFilter.GaussianBlur(4)).point(lambda v: int(v * 0.42))
-    layer = Image.new("RGBA", (CELL, CELL), (6, 26, 10, 255))
-    layer.putalpha(shadow.crop(cell))
-    frame.alpha_composite(layer, (0, CANOPY_TOP))
+    # Ground shadows: a soft contact shadow from all canopy nearby, and the
+    # long shadow of the raised mass, fading with distance down the screen.
+    contact = shifted(coverage, 8, 10).filter(ImageFilter.GaussianBlur(4)).point(lambda v: int(v * 0.42))
+    # It comes from the canopy down to this cell's bottom edge, with the side
+    # halos, so the blur matches across neighbouring columns.
+    caster = Image.new("L", coverage.size)
+    caster.paste(coverage.crop((0, 0, coverage.width, cell[3])), (0, 0))
+    length = int(lift * 0.95)
+    long_shadow = Image.new("L", coverage.size)
+    for d in range(0, length + 1, 2):
+        long_shadow = ImageChops.lighter(
+            long_shadow, shifted(caster, 0, d).point(lambda v, f=1 - d / length: int(v * f)))
+    long_shadow = long_shadow.filter(ImageFilter.GaussianBlur(6)).point(lambda v: int(v * 0.62))
+    for box, row, shadow in ((cell, CANOPY_TOP, ImageChops.lighter(contact, long_shadow)),
+                             (below, CANOPY_TOP + CELL, long_shadow)):
+        layer = Image.new("RGBA", (CELL, box[3] - box[1]), (4, 18, 8, 255))
+        layer.putalpha(shadow.crop(box))
+        frame.alpha_composite(layer, (0, row))
 
     # Front wall from the footprint up to the raised top: brightest just under
-    # the top edge, darkening to the ground.
+    # the top edge, darkening to the ground. Each wall pixel shows the foliage
+    # a little behind the rim above it, so the face reads as leaves, not as
+    # the rim's colour smeared down.
     wall_alpha, wall_height = Image.new("L", own.size), Image.new("L", own.size)
+    texture = Image.new("RGB", own.size)
     solid = own.point(lambda v: 255 if v > 127 else 0)
-    for d in range(RAISE + 1):
+    for d in range(lift + 1):
+        cover = shifted(solid, 0, -d)
         wall_alpha = ImageChops.lighter(wall_alpha, shifted(own, 0, -d))
-        wall_height = ImageChops.lighter(wall_height, shifted(solid, 0, -d).point(lambda v, d=d: v and int(d * 255 / RAISE)))
-    texture = shifted(surface, 0, -RAISE)
+        wall_height = ImageChops.lighter(wall_height, cover.point(lambda v, d=d: v and int(d * 255 / lift)))
+        texture.paste(shifted(surface, 0, -(d - (lift - d) // 2)), (0, 0), cover)
     wall = Image.composite(texture.point(lambda v: int(v * 0.66)), texture.point(lambda v: int(v * 0.30)), wall_height)
-    region = (HALO, HALO - RAISE, HALO + CELL, HALO + CELL)
+    region = (HALO, cell[1] - lift, HALO + CELL, cell[3])
     layer = wall.crop(region).convert("RGBA")
     layer.putalpha(wall_alpha.crop(region))
-    frame.alpha_composite(layer, (0, CANOPY_TOP - RAISE))
+    frame.alpha_composite(layer, (0, CANOPY_TOP - lift))
 
     # Raised top. Its silhouette is lit where it faces the light and shaded on
     # the far side, so the edge reads as a rounded rim rather than a cut-out.
@@ -1108,7 +1298,7 @@ def render_connected(name, mask, colours, interior=0):
     top = Image.composite(surface.point(lambda v: int(v * 0.62)), top, dark)
     layer = top.crop(cell).convert("RGBA")
     layer.putalpha(own.crop(cell))
-    frame.alpha_composite(layer, (0, CANOPY_TOP - RAISE))
+    frame.alpha_composite(layer, (0, CANOPY_TOP - lift))
     return frame
 
 
@@ -1117,7 +1307,15 @@ def render_connected(name, mask, colours, interior=0):
 # --------------------------------------------------------------------------
 
 
+def frame_size(name, index):
+    """Native (width, height) of a set's frame."""
+    if index >= FRAMES:
+        return 32, (CANOPY_TOP + CELL + CANOPY_BELOW) // SCALE
+    return native_size(name), native_size(name)
+
+
 def render_frame(name, index):
+    use_frame(native_size(name))
     rng = random.Random(fnv1a32(f"decor:{name}:{index}"))
     hd = (render_connected(name, *connected_frame(index - FRAMES)) if index >= FRAMES else
           SPECS[name].render(rng, index >= FULL).image())
@@ -1140,8 +1338,8 @@ def synthesize(names, jobs=None):
     for group in rendered:
         for name, index, native, hd in group:
             out.setdefault(name, [None] * frame_count(name))[index] = (
-                Image.frombytes("RGBA", (32, 48) if index >= FRAMES else (NATIVE, NATIVE), native),
-                Image.frombytes("RGBA", (128, 192) if index >= FRAMES else (S, S), hd))
+                Image.frombytes("RGBA", frame_size(name, index), native),
+                Image.frombytes("RGBA", tuple(n * SCALE for n in frame_size(name, index)), hd))
     return out
 
 
@@ -1186,6 +1384,7 @@ def write(results, root):
             "connected": list(range(connected_first(name), connected_first(name) + 16 * CANOPY_VARIANTS)) if name in CONNECTED else [],
             "connected_interior": list(range(connected_first(name) + 16 * CANOPY_VARIANTS,
                                              connected_first(name) + CONNECTED_FRAMES)) if name in CONNECTED else [],
+            "native_size": native_size(name),
             "runtime_sha256": hashes,
             "highres_sha256": hd_hashes,
         }
@@ -1194,9 +1393,9 @@ def write(results, root):
         "generator": "tools/artwork/terrain_decor.py",
         "method": "procedural",
         "generator_sha256": generator_sha(),
-        "native_size": NATIVE,
-        "render_size": S,
-        "connected_native_size": [32, 48],
+        "native_size": 64,
+        "render_size": 64 * SCALE,
+        "connected_native_size": list(frame_size(CONNECTED[0], FRAMES)),
         "connected_corners": True,
         "pillow": PIL.__version__,
     })
@@ -1264,7 +1463,8 @@ def connected_sheet(results):
                     index = (FRAMES + connected_index(x, y, mask, variant) if after else
                              variant % FULL if count == 4 else FULL + variant % EDGE)
                     frame = frames[index][0]
-                    patch.alpha_composite(frame, (x * 32 - (frame.width - 32) // 2, y * 32 - (frame.height - 32) // 2))
+                    px, py = x * 32 - offset_x(frame.width), y * 32 - offset_y(frame.height)
+                    patch.alpha_composite(frame, (max(0, px), max(0, py)), (max(0, -px), max(0, -py)))
             oy = row * (panel_h + 28)
             out.paste(patch, (int(after) * panel_w, oy + 28))
             labels.text((int(after) * panel_w + 8, oy + 7), f"{name}: {'connected canopy' if after else 'previous bushes'}", fill="white")
@@ -1272,37 +1472,47 @@ def connected_sheet(results):
 
 
 def sheet(results, ground=None):
-    """Review sheet: each frame over its ground tile (or a neutral green), at 2x,
-    plus a 4x3 field of full frames drawn in row order with overlaps."""
+    """Review sheet: each frame over its ground tile (or a neutral green), at
+    128 display pixels per frame, plus a 4x3 field of full frames drawn in row
+    order with overlaps and the runtime's anchoring, at 2x."""
     names = list(results)
-    cell = NATIVE * 2
-    width = FRAMES * cell + 32 + 4 * 64 + 16
-    out = Image.new("RGBA", (width, len(names) * (cell + 3 * 64 // 2 + 24)), (36, 36, 40, 255))
-    y = 0
+    cell = 128
+    rows = []
     for name in names:
         frames = results[name]
+        n = frames[0][0].width
         bg = (ground or {}).get(name)
-        for i, (native, _) in enumerate(frames[:FRAMES]):
-            tile = Image.new("RGBA", (NATIVE, NATIVE), (82, 120, 64, 255))
+        left, top = offset_x(n), offset_y(n)
+        bottom = n - 32 - top
+
+        def ground_tile(width, height, ox, oy):
+            tile = Image.new("RGBA", (width, height), (82, 120, 64, 255))
             if bg:
-                for oy in range(0, NATIVE, 32):
-                    for ox in range(0, NATIVE, 32):
-                        tile.paste(bg, (ox - 8, oy - 8))
+                for gy in range(oy % 32 - 32, height, 32):
+                    for gx in range(ox % 32 - 32, width, 32):
+                        tile.paste(bg, (gx, gy))
+            return tile
+
+        strip = Image.new("RGBA", (FRAMES * cell, cell), (36, 36, 40, 255))
+        for i, (native, _) in enumerate(frames[:FRAMES]):
+            tile = ground_tile(n, n, left, top)
             tile.alpha_composite(native)
-            out.paste(tile.resize((cell, cell), Image.Resampling.NEAREST), (i * cell, y))
+            strip.paste(tile.resize((cell, cell), Image.Resampling.NEAREST), (i * cell, 0))
         # Field: 4 x 3 cells, drawn back to front like the runtime.
-        field_img = Image.new("RGBA", (4 * 32 + 16, 3 * 32 + 16), (82, 120, 64, 255))
-        if bg:
-            for fy in range(0, field_img.height, 32):
-                for fx in range(0, field_img.width, 32):
-                    field_img.paste(bg, (fx, fy))
+        field_img = ground_tile(4 * 32 + 2 * left, 3 * 32 + top + bottom, left, top)
         rng = random.Random(fnv1a32(name))
         for fy in range(3):
             for fx in range(4):
-                field_img.alpha_composite(frames[rng.randrange(FULL)][0], (fx * 32 + 8 - 8, fy * 32 + 8 - 8))
-        out.paste(field_img.resize((field_img.width * 2, field_img.height * 2), Image.Resampling.NEAREST),
-                  (FRAMES * cell + 32, y))
-        y += cell + 3 * 64 // 2 + 24
+                field_img.alpha_composite(frames[rng.randrange(FULL)][0], (fx * 32, fy * 32))
+        field_img = field_img.resize((field_img.width * 2, field_img.height * 2), Image.Resampling.NEAREST)
+        rows.append((strip, field_img))
+    width = max(strip.width + 32 + field.width for strip, field in rows)
+    out = Image.new("RGBA", (width, sum(max(cell, field.height) + 24 for _, field in rows)), (36, 36, 40, 255))
+    y = 0
+    for strip, field in rows:
+        out.paste(strip, (0, y))
+        out.paste(field, (strip.width + 32, y))
+        y += max(cell, field.height) + 24
     return out
 
 
