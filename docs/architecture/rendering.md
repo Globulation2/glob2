@@ -371,8 +371,9 @@ When a swarm produces a unit:
 - The unit fades in over 10 ticks, sliding 2 pixels out of the swarm, as a team-colour
   silhouette that settles to normal shading over one second while a few twinkles drift
   up over it.
-- A cloud of team-coloured dust twinkles on its birth tile, with motes flashing white,
-  and fades out within 0.75 seconds. It stays on the tile while the unit walks away.
+- A cloud of team-coloured dust twinkles around the unit, with motes flashing white,
+  and fades out within 0.75 seconds. It travels with the unit as it walks away, its
+  motes spreading outward on top of the unit's own motion.
 
 When a unit comes out of a building that healed, fed or trained it:
 
@@ -380,8 +381,10 @@ When a unit comes out of a building that healed, fed or trained it:
   white-gold) that settles over one second from 90%.
 - Seven copies of that building's own map icon (`presentation.iconFrame`, the glyph on
   its zoomed-out chip) burst out of it at random angles, distances, sizes and start
-  times, then drift and fade within about 0.9 seconds. They never fly into the sector
-  above the unit, where level numbers rise.
+  times, then drift and fade within about 0.9 seconds. Like the dust, they are placed
+  around the unit's drawn centre each frame, so they keep pace with it rather than
+  being left behind. They never fly into the sector above the unit, where level
+  numbers rise.
 - A trained unit floats its highest new level, displayed as in the unit panel, rising
   like a combat level-up number.
 

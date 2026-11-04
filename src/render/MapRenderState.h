@@ -70,8 +70,9 @@ struct MapRenderState
 	//! What is drawn over a unit playing an effect (a spawn's twinkles, a trained
 	//! unit's level number), queued as the unit is drawn and drawn by the effects
 	//! pass, after the buildings that would otherwise cover it. (x, y) is the
-	//! unit's top-left corner.
-	struct UnitOverlay { float x, y, age, hue, opacity; std::uint32_t seed; Uint8 kind, level; };
+	//! unit's drawn top-left corner, which a spawn's dust and a service's icons
+	//! also follow; a unit drawn on both sides of a map seam queues one per copy.
+	struct UnitOverlay { float x, y, age, hue, opacity; std::uint32_t seed; Uint16 unit; Uint8 kind, level; };
 	std::vector<UnitOverlay> unitOverlays;
 
 	//! The cloud field for this view, created on first use.

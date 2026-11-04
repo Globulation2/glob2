@@ -191,7 +191,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 	if (hasEffect && detail.unitSprite > 0)
 		view.render.unitOverlays.push_back({float(px), float(py), effectAge, teamHue, opacity,
-			UnitEffect::seedOf(effect->second.x, effect->second.y, gid), effect->second.kind, effect->second.level});
+			UnitEffect::seedOf(effect->second.x, effect->second.y, gid), gid, effect->second.kind, effect->second.level});
 	if (swimming && pronePhase < 0)
 	{
 		// Each stroke sends a ring back across the water over the faded limbs.
