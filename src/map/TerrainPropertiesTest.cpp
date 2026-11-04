@@ -962,6 +962,44 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(WEATHERED_SANDSTONE).name) == "weathered_sandstone");
 		CHECK(TerrainRegistry::builtins()->find("weathered_sandstone") == WEATHERED_SANDSTONE);
 	}
+	TEST_CASE("windy sand dunes share every rule of sand")
+	{
+		CHECK(terrainGroup(WINDY_SAND_DUNE) == TerrainGroup::Sand);
+		CHECK(terrainPaintable(WINDY_SAND_DUNE));
+		CHECK(sameTerrainProperties(terrainProperties(WINDY_SAND_DUNE), terrainProperties(SAND)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(WINDY_SAND_DUNE) ==
+			  TerrainRegistry::builtins()->propertyIndex(SAND));
+		CHECK(std::string(terrainPresentation(WINDY_SAND_DUNE).name) == "windy_sand_dune");
+		CHECK(TerrainRegistry::builtins()->find("windy_sand_dune") == WINDY_SAND_DUNE);
+	}
+	TEST_CASE("hardpan shares every rule of the rough group")
+	{
+		for (auto member : {MUD, MUDFLAT, SCREE, PUMICE})
+		{
+			CAPTURE(terrainPresentation(member).name);
+			CHECK(terrainGroup(HARDPAN) == terrainGroup(member));
+			CHECK(sameTerrainProperties(terrainProperties(HARDPAN), terrainProperties(member)));
+			CHECK(TerrainRegistry::builtins()->propertyIndex(HARDPAN) ==
+				  TerrainRegistry::builtins()->propertyIndex(member));
+		}
+		CHECK(terrainGroup(HARDPAN) == TerrainGroup::Rough);
+		CHECK(terrainPaintable(HARDPAN));
+		CHECK(std::string(terrainPresentation(HARDPAN).name) == "hardpan");
+		CHECK(TerrainRegistry::builtins()->find("hardpan") == HARDPAN);
+	}
+	TEST_CASE("tundra shares every rule of the barren group")
+	{
+		CHECK(terrainGroup(TUNDRA) == TerrainGroup::Barren);
+		CHECK(terrainPaintable(TUNDRA));
+		for (TerrainType member : {DIRT, CLAY, SHALE, HEATH, WEATHERED_SANDSTONE})
+		{
+			CHECK(sameTerrainProperties(terrainProperties(TUNDRA), terrainProperties(member)));
+			CHECK(TerrainRegistry::builtins()->propertyIndex(TUNDRA) ==
+				  TerrainRegistry::builtins()->propertyIndex(member));
+		}
+		CHECK(std::string(terrainPresentation(TUNDRA).name) == "tundra");
+		CHECK(TerrainRegistry::builtins()->find("tundra") == TUNDRA);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},

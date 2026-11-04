@@ -5726,6 +5726,10 @@ AI 生成ではない
 風紋の雪
 [weathered_sandstone]
 風化した砂岩
+[windy_sand_dune]
+風紋の砂丘
+[hardpan]
+硬盤
 [terrain group water]
 水
 [terrain group sand]

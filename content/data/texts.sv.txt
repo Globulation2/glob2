@@ -5726,6 +5726,10 @@ Frusen sjö
 Vindpinad snö
 [weathered_sandstone]
 Vittrad sandsten
+[windy_sand_dune]
+Vindräfflade dyner
+[hardpan]
+Hårdskorpa
 [terrain group water]
 Vatten
 [terrain group sand]

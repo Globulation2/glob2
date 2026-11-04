@@ -5726,6 +5726,10 @@ Zugefrorener See
 Verwehter Schnee
 [weathered_sandstone]
 Verwitterter Sandstein
+[windy_sand_dune]
+Windgeriffelte Dünen
+[hardpan]
+Hartkruste
 [terrain group water]
 Wasser
 [terrain group sand]

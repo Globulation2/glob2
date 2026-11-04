@@ -5726,6 +5726,10 @@ Zamarznięte jezioro
 Śnieg nawiany wiatrem
 [weathered_sandstone]
 Zwietrzały piaskowiec
+[windy_sand_dune]
+Wydmy z falami od wiatru
+[hardpan]
+Twarda skorupa
 [terrain group water]
 Woda
 [terrain group sand]

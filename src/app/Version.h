@@ -7,7 +7,10 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 197
+#define VERSION_MINOR 200
+// version 200 adds built-in tundra; custom terrain IDs move up by one.
+// version 199 adds built-in hardpan; custom terrain IDs move up by one.
+// version 198 adds built-in windy sand dune; custom terrain IDs move up by one.
 // version 197 adds built-in weathered sandstone; custom terrain IDs move up by one.
 // version 196 adds built-in wind-swept snow; custom terrain IDs move up by one.
 // version 195 adds built-in sandstone tiles, pumice field and frozen lake; custom terrain IDs move up by three.

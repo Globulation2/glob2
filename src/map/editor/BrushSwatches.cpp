@@ -165,6 +165,25 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 			compositor.compose(recipe, texture.getSDLSurface(), recipe.x * cell, recipe.y * cell, scale);
 		texture.markPixelsChanged();
 		base.drawSurface(0, 0, &texture);
+		// Flat overlays (fertile glints): one lit step of each cell's cycle, so the
+		// still swatch shows the mark the map animates.
+		if (auto *sprite = compositor.overlaySprite(binding->second))
+		{
+			const auto &cycles = catalog.materials[binding->second].overlay.cycles;
+			for (int y = 0; y < 2; ++y)
+				for (int x = 0; x < 2; ++x)
+				{
+					const auto &cycle = cycles[unsigned(y * 2 + x) % cycles.size()];
+					const auto lit = std::find_if(cycle.begin(), cycle.end(), [](int f) { return f >= 0; });
+					auto *source = lit == cycle.end() ? nullptr : sprite->nativeFrame(*lit);
+					if (source && source->getSDLSurface())
+					{
+						const int w = source->getW() * scale, h = source->getH() * scale;
+						drawFrame(base, x * cell + cell / 2 - w / 2, y * cell + cell / 2 - h / 2, w,
+								  h, source);
+					}
+				}
+		}
 		// Raised decor (boulders, hedges, rock) over each cell, as the map draws
 		// it for cells surrounded by the same material.
 		if (auto *sprite = compositor.decorSprite(binding->second))

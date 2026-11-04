@@ -89,6 +89,12 @@ inline constexpr auto TERRAIN_TYPES = []
 		// Solid ochre bedrock worn into rounded slabs: plays exactly like dirt.
 		authored(WEATHERED_SANDSTONE, G::Barren, "weathered_sandstone", "[weathered_sandstone]", {150, 124, 76},
 				 {166, 138, 86}),
+		// Sand in wind ripples: plays exactly like sand.
+		authored(WINDY_SAND_DUNE, G::Sand, "windy_sand_dune", "[windy_sand_dune]", {212, 182, 134}, {214, 184, 136}),
+		// Pale baked crust in small cracked pillows: plays exactly like mud and scree.
+		authored(HARDPAN, G::Rough, "hardpan", "[hardpan]", {196, 188, 176}, {212, 204, 192}),
+		// Olive moss, grey stones and dark cracked earth: plays exactly like dirt.
+		authored(TUNDRA, G::Barren, "tundra", "[tundra]", {82, 78, 62}, {91, 87, 69}),
 	}};
 	return rows;
 }();

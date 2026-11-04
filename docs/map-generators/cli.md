@@ -250,7 +250,7 @@ heath `#3C7E30`, mud `#604C38`, mudflat `#4A604E`, deep snow `#DEE4EC`, scree
 `#0A3CA0`, dark water `#0E264E`, hole `#0A0A0E`, chasm `#18121A`, lush grass `#196531`,
 dry grass `#787B34`, dune sand `#CC9755`, pale sand `#D3CAA8`, sandstone tiles
 `#968C6E`, pumice field `#3A3736`, frozen lake `#8DACB9`, weathered sandstone
-`#A68A56`). Heath, shale, mudflat
+`#A68A56`, hardpan `#D4CCC0`, tundra `#5B5745`). Heath, shale, mudflat
 and brick path keep the image colours they had before their redesign, so
 existing exported images still import them, although the minimap shows the
 colour of each new texture. Import recognises the catalogue types **only by

@@ -39,6 +39,9 @@ export const TERRAIN_PRESETS = [
   'frozen_lake',
   'wind_swept_snow',
   'weathered_sandstone',
+  'windy_sand_dune',
+  'hardpan',
+  'tundra',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay

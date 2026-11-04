@@ -397,6 +397,8 @@ void GlobalContainer::requestGameGraphics()
 		Toolkit::requestSprite(material.sprite);
 		if (!material.decor.sprite.empty())
 			Toolkit::requestSprite(material.decor.sprite);
+		if (!material.overlay.sprite.empty())
+			Toolkit::requestSprite(material.overlay.sprite);
 	}
 	for (size_t i = 0; i < buildingsTypes.size(); ++i) {
         const auto *type = buildingsTypes.get(i);

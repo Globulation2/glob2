@@ -5726,6 +5726,10 @@ Laku izoztua
 Haizeak eramandako elurra
 [weathered_sandstone]
 Hareharri higatua
+[windy_sand_dune]
+Haizeak uhindutako dunak
+[hardpan]
+Lurrazal gogorra
 [terrain group water]
 Ura
 [terrain group sand]

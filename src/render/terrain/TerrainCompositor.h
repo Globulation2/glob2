@@ -93,6 +93,12 @@ class Compositor
 	// Any undecorated corner suppresses raised objects. Decorated-only borders
 	// choose one material, weighted by corner count, using presentation hashing.
 	int decorFrame(const SceneMap &, int x, int y) const;
+	// Flat animated overlays (fertile glints), drawn under decor. A cell draws
+	// one only when all four corners carry an overlay; it follows the scene tick.
+	GAGCore::Sprite *overlaySprite() const { return sharedOverlaySprite; }
+	GAGCore::Sprite *overlaySprite(MaterialId id) const { return overlaySprites.at(id); }
+	GAGCore::Sprite *overlaySprite(const SceneMap &map, int x, int y) const;
+	int overlayFrame(const SceneMap &, int x, int y) const;
     struct PreparedMaterialView
     {
         unsigned variant = 0;
@@ -177,6 +183,7 @@ class Compositor
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
     void describeShoreCalm(const SceneMap&, Recipe &) const;
     std::pair<MaterialId, unsigned> decorMaterial(const SceneMap&, int x, int y) const;
+	MaterialId overlayMaterial(const SceneMap &, int x, int y, bool &found) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;
 	std::array<MaterialId, TERRAIN_COUNT> terrainBindings{};
@@ -184,6 +191,9 @@ class Compositor
 	std::vector<GAGCore::Sprite *> decorSprites;
     GAGCore::Sprite *sharedDecorSprite = nullptr;
     bool mixedDecorSprites = false;
+	std::vector<GAGCore::Sprite *> overlaySprites;
+	GAGCore::Sprite *sharedOverlaySprite = nullptr;
+	bool mixedOverlaySprites = false;
 	static void readTexture(Texture &, GAGCore::DrawableSurface *);
 	std::vector<std::vector<Texture>> textures;
 	struct AnimationTextures
