@@ -1,0 +1,71 @@
+{
+  "pid": 2456988,
+  "revision": "9a62c5db6038355c26497bae1a06e2e16ac12465",
+  "worktree": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-repair",
+  "results": [
+    {
+      "name": "native-unit-build",
+      "command": [
+        "python3",
+        "tools/dev_build.py",
+        "--build=build/android-index-release",
+        "dev_fast=0",
+        "release=1",
+        "server=0",
+        "-j2",
+        "unit-tests"
+      ],
+      "exit_code": 0,
+      "seconds": 1203.4
+    },
+    {
+      "name": "native-reader-cases",
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/android-index-release",
+        "--filter",
+        "MobileAssetIndex/*",
+        "--jobs",
+        "1",
+        "--junit",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-validation/reader-junit.xml",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/android-index-validation/reader-artifacts"
+      ],
+      "exit_code": 0,
+      "seconds": 0.1
+    },
+    {
+      "name": "python-mobile-assets",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test",
+        "-p",
+        "test_mobile_asset_bundle.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 0.1
+    }
+  ],
+  "phase": "native reader and packaging boundaries passed; actual APK verification and hosted Android startup still required",
+  "note": "Current master4c3 Androidstartup logcat provesInvalidassetindexsize; exactAPKindex1102050bytes31076paths>old1048576bytecap. Bounded4MiBreaderandmatchingproducer/APKvalidationcapacity; no assets omitted, no timeout/checksum/schema/simulation changes. New native unit cases exercise>1MiB complete read and>4MiB pre-read rejection;Pythonchecks producer/verifier. Android/iOSactualcompile/startup pendinghosted; no nativehelper/pinnedSDLwrites. Own build/android-index-release.",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "test",
+    "-p",
+    "test_mobile_asset_bundle.py",
+    "-v"
+  ],
+  "child_pid": 2508816
+}

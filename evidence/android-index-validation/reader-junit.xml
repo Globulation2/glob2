@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="MobileAssetIndex"><testcase classname="MobileAssetIndex" name="current artwork inventory can exceed the previous one MiB startup bound" time="0.005007" status="run" />
+    <testcase classname="MobileAssetIndex" name="oversized packaged indexes remain rejected before reading" time="0.002744" status="run" />
+  </testsuite></testsuites>

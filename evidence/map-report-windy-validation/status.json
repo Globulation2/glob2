@@ -1,0 +1,50 @@
+{
+  "pid": 2449673,
+  "revision": "6b5a748ef6f685eb76afe860cd9c62097a32ffc6",
+  "worktree": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/recording-download-repair",
+  "results": [
+    {
+      "name": "native-build",
+      "command": [
+        "python3",
+        "tools/dev_build.py",
+        "--build=build/ci-schema-release",
+        "dev_fast=0",
+        "release=1",
+        "server=0",
+        "-j2",
+        "map-report-test",
+        "build/ci-schema-release/src/glob2"
+      ],
+      "exit_code": 0,
+      "seconds": 2661.6
+    },
+    {
+      "name": "map-report-contract",
+      "command": [
+        "python3",
+        "test/test_map_report.py",
+        "build/ci-schema-release/src/glob2",
+        "build/ci-schema-release/test/MapReportHarness"
+      ],
+      "exit_code": 0,
+      "seconds": 2.3
+    },
+    {
+      "name": "map-telemetry",
+      "command": [
+        "python3",
+        "test/test_map_telemetry.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.7
+    }
+  ],
+  "phase": "finished; all complete map-report and telemetry checks passed",
+  "note": "Current fetched master4c3 plus one published schema property. Actual GCC11 failed map-report contract rejected built-in windy_sand_dune. Preserve strict unknown-field rejection, coverage type/range, all fixtures, analytic checks, and native/CLI schema checks. Own build/ci-schema-release; current native/browser helper and SDL untouched. No engine/simulation/save/replay/network change.",
+  "command": [
+    "python3",
+    "test/test_map_telemetry.py"
+  ],
+  "child_pid": 2527839
+}
