@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="31" failures="0" errors="0" skipped="0"><testsuite name="RuntimeResources"><testcase classname="RuntimeResources" name="a half-harvested scavenge site survives save and continues identically" time="0.137338" status="run" />
+  <testcase classname="RuntimeResources" name="bounded starter crop replacement uses surplus materials and respects clearability" time="0.053003" status="run" />
+  <testcase classname="RuntimeResources" name="custom compound deposit has independent material stock and destructive harvest" time="0.028732" status="run" />
+  <testcase classname="RuntimeResources" name="custom ground and air obstruction independently govern routes across toroidal barriers" time="0.143818" status="run" />
+  <testcase classname="RuntimeResources" name="destructive resources cannot bridge pooled farms even without reserves or regrowth" time="0.142128" status="run" />
+  <testcase classname="RuntimeResources" name="editor catalog replacement preserves materials across layouts and rejects invalid imports atomically" time="0.029742" status="run" />
+  <testcase classname="RuntimeResources" name="embedded resource save starts with an invalid installed catalog" time="0.156925" status="run" />
+  <testcase classname="RuntimeResources" name="farm harvest uses the touched material policy before pooling neighboring stock" time="0.090264" status="run" />
+  <testcase classname="RuntimeResources" name="fixed property ablations preserve harvest growth clearing and movement invariants" time="0.059981" status="run" />
+  <testcase classname="RuntimeResources" name="frozen resource saves ignore reordered modified installed defaults in a fresh process" time="0.076759" status="run" />
+  <testcase classname="RuntimeResources" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="0.493313" status="run" />
+  <testcase classname="RuntimeResources" name="growth at capacity oscillates and persistent fruit depletes" time="0.028001" status="run" />
+  <testcase classname="RuntimeResources" name="infinite farm stocks remain harvestable at their seed reserve" time="0.057161" status="run" />
+  <testcase classname="RuntimeResources" name="landscape dead trees, undergrowth and fish keep their habitats and obstruction" time="0.027819" status="run" />
+  <testcase classname="RuntimeResources" name="landscape scavenge sites start full, deplete per material and vanish when empty" time="0.027685" status="run" />
+  <testcase classname="RuntimeResources" name="landscape showcase map places every landscape resource [artifacts]" time="0.067172" status="run" />
+  <testcase classname="RuntimeResources" name="last finite source extinction and persistent source regrowth update material presence" time="0.027294" status="run" />
+  <testcase classname="RuntimeResources" name="legacy pending natural publication can be saved before any movement query" time="0.447554" status="run" />
+  <testcase classname="RuntimeResources" name="material frontage counts secondary stocks and prospective renewable supply" time="0.040733" status="run" />
+  <testcase classname="RuntimeResources" name="material harvesting consumes stock and never invents a delivery" time="0.0273" status="run" />
+  <testcase classname="RuntimeResources" name="redefined builtin resource follows declarative habitat and terrain whitelist intersection" time="0.029186" status="run" />
+  <testcase classname="RuntimeResources" name="released observation format 139 imports legacy stocks and preserves current save continuation" time="0.194699" status="run" />
+  <testcase classname="RuntimeResources" name="released terrain-seed format 138 retains legacy resource and material continuation" time="0.168649" status="run" />
+  <testcase classname="RuntimeResources" name="renamed deposits and sprite variants preserve stochastic stock trajectories" time="0.10412" status="run" />
+  <testcase classname="RuntimeResources" name="resource identities above byte range preserve compound stocks through save and continuation" time="0.186157" status="run" />
+  <testcase classname="RuntimeResources" name="seed cache allocates only live material bitsets and reuses them after depletion" time="0.062208" status="run" />
+  <testcase classname="RuntimeResources" name="shared starting supply checks accept material sources above resource id 255" time="0.09332" status="run" />
+  <testcase classname="RuntimeResources" name="start diagnostics distinguish configured renewal from spreading pressure" time="0.060813" status="run" />
+  <testcase classname="RuntimeResources" name="starting crop guarantees and adjacent supply use live material yields" time="0.041247" status="run" />
+  <testcase classname="RuntimeResources" name="unused catalog definitions allocate no material gradients and schedule no extra work" time="0.112312" status="run" />
+  <testcase classname="RuntimeResources" name="workers carry food from camp-sites to an inn and leave their other yields" time="0.058823" status="run" />
+  </testsuite></testsuites>

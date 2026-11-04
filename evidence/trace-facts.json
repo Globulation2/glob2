@@ -1,0 +1,10 @@
+{
+  "rows": 150,
+  "canonical_trace_identical_to_unchanged_golden": true,
+  "raw_current_format_trace_preserved": true,
+  "all_seed_tick_rng_fields_identical": true,
+  "runtime_checksum_or_state_modified": false,
+  "source": "e92d9635aa7265ba944805a99729ba6fb2b52f07",
+  "base": "6a8a33cc9e37752a424a9abe02da0cb2cbd625f7",
+  "qualification": "all31RuntimeResourcescasespassed0fail/error/skip"
+}

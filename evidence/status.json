@@ -1,0 +1,62 @@
+{
+  "pid": 2314314,
+  "revision": "e92d9635aa7265ba944805a99729ba6fb2b52f07",
+  "worktree": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/terrain-master-current",
+  "results": [
+    {
+      "name": "native-release-build",
+      "command": [
+        "python3",
+        "tools/dev_build.py",
+        "--build=build/ci-latest-release",
+        "dev_fast=0",
+        "release=1",
+        "server=0",
+        "-j4",
+        "engine-tests"
+      ],
+      "exit_code": 0,
+      "seconds": 26.5
+    },
+    {
+      "name": "resource-continuation",
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/ci-latest-release",
+        "--filter",
+        "RuntimeResources/*",
+        "--jobs",
+        "2",
+        "--timeout",
+        "900",
+        "--junit",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/resource-golden-validation/junit.xml",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/resource-golden-validation/artifacts"
+      ],
+      "exit_code": 0,
+      "seconds": 2.4
+    }
+  ],
+  "phase": "finished; inspect latest integration evidence",
+  "note": "Separatebuild/ci-latest-release;unchangedrootpinnedprefixreadreuse,no rootnativebinarywrites. Priorfb082browserandab643nativebothfinished;Current6a8format204;onlytestgoldenoutputcanonicalizesprovenempty-keyheaderformatcontributionto195. Rawcurrent-format150checksumsalsoemitted;allrawsave/reload/RNG/materialassertionsunchanged;goldenfixturebytesunchanged;no runtimechecksumchange.;masteralreadySIM125fordeepsnowgroup;recoveryusesSIM126namespacebumprequiredbystrictrecord-changeguard;regenerateactualmatchrecordandtrace;savefloor58unchanged;noenginecalculationchange. DiagnosticHDmessagepreviouslyreverted. No manualrecordheaderpatching.;existingobjectsreusedbybuildsystemonlywhenvalid. Fullregistry/CLI/toolinglatestcoverage;no duplicate same-SHArun.",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/ci-latest-release",
+    "--filter",
+    "RuntimeResources/*",
+    "--jobs",
+    "2",
+    "--timeout",
+    "900",
+    "--junit",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/resource-golden-validation/junit.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/resource-golden-validation/artifacts"
+  ],
+  "child_pid": 2314731
+}
