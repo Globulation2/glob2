@@ -5730,6 +5730,8 @@ Rapautunut hiekkakivi
 Tuulen uurtamat dyynit
 [hardpan]
 Kovettuma
+[volcanic_ash]
+Vulkaanista tuhkaa
 [terrain group water]
 Vesi
 [terrain group sand]

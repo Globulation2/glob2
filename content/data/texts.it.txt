@@ -5730,6 +5730,8 @@ Arenaria erosa
 Dune increspate dal vento
 [hardpan]
 Crosta indurita
+[volcanic_ash]
+Cenere vulcanica
 [terrain group water]
 Acqua
 [terrain group sand]

@@ -5730,6 +5730,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Дюни з вітровими брижами
 [hardpan]
 Тверда кірка
+[volcanic_ash]
+Вулканічний попіл
 [terrain group water]
 Вода
 [terrain group sand]

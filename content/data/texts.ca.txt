@@ -5730,6 +5730,8 @@ Gres erosionat
 Dunes de vent
 [hardpan]
 Crosta endurida
+[volcanic_ash]
+Cendra volcànica
 [terrain group water]
 Aigua
 [terrain group sand]

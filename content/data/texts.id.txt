@@ -5730,6 +5730,8 @@ Batu pasir lapuk
 Bukit pasir berangin
 [hardpan]
 Tanah keras
+[volcanic_ash]
+Abu vulkanik
 [terrain group water]
 Air
 [terrain group sand]

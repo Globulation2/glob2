@@ -5730,6 +5730,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Барханы с ветровой рябью
 [hardpan]
 Твёрдая корка
+[volcanic_ash]
+Вулканический пепел
 [terrain group water]
 Вода
 [terrain group sand]

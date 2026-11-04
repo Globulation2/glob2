@@ -5706,6 +5706,8 @@ AI से नहीं बना
 हवा से लहरदार टीले
 [hardpan]
 कठोर परत
+[volcanic_ash]
+ज्वालामुखीय राख
 [terrain group water]
 पानी
 [terrain group sand]

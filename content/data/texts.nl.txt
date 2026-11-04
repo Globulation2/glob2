@@ -5730,6 +5730,8 @@ Verweerde zandsteen
 Windribbels in duinzand
 [hardpan]
 Harde korst
+[volcanic_ash]
+Vulkanische as
 [terrain group water]
 Water
 [terrain group sand]

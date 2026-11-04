@@ -5730,6 +5730,8 @@ Grès érodé
 Dunes ridées par le vent
 [hardpan]
 Croûte durcie
+[volcanic_ash]
+Cendre volcanique
 [terrain group water]
 Eau
 [terrain group sand]

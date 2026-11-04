@@ -5730,6 +5730,8 @@ Mállott homokkő
 Szélfodrozta dűnék
 [hardpan]
 Kemény kéreg
+[volcanic_ash]
+Vulkáni hamu
 [terrain group water]
 Víz
 [terrain group sand]

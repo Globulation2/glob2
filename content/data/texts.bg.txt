@@ -5706,6 +5706,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Набраздени от вятъра дюни
 [hardpan]
 Твърда кора
+[volcanic_ash]
+Вулканична пепел
 [terrain group water]
 Вода
 [terrain group sand]

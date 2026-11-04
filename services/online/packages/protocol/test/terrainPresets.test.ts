@@ -24,7 +24,7 @@ describe('built-in terrain presets', () => {
     );
     expect(names.length).toBeGreaterThan(30);
     expect(TERRAIN_PRESETS).toEqual(names);
-    expect(TERRAIN_PRESETS.slice(-8)).toEqual([
+    expect(TERRAIN_PRESETS.slice(-9)).toEqual([
       'sandstone',
       'pumice',
       'frozen_lake',
@@ -33,6 +33,7 @@ describe('built-in terrain presets', () => {
       'windy_sand_dune',
       'hardpan',
       'tundra',
+      'volcanic_ash',
     ]);
   });
 

@@ -5706,6 +5706,8 @@ Forvitret sandstein
 Vindrifla dyner
 [hardpan]
 Hardskorpe
+[volcanic_ash]
+Vulkansk aske
 [terrain group water]
 Vann
 [terrain group sand]
