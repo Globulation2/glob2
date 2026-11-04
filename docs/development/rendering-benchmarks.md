@@ -46,9 +46,19 @@ Sweep measurements mix those view sizes; use a fixed camera for paired timings.
 cycles smoothly between the selected zoom and four times that zoom over 120
 frames. It takes precedence over the seam sweep in the ordinary flat pass.
 `GLOB2_BENCH_CAMERA_PAN=1` uses the same scrolling at a fixed zoom.
+`GLOB2_BENCH_CAMERA_ZOOM=1` runs the smooth zoom cycle with a stationary
+map origin. Run it on its own to separate zoom from panning.
+`GLOB2_BENCH_TERRAIN_PIXELS_PER_TILE=32` or `16` requests a constant
+terrain page density in the flat GPU fixture. With the variable unset, the
+fixture uses the normal adaptive page density. Compare both densities with
+and without `GLOB2_BENCH_PAUSE_PRESENTATION=1` using the same camera path.
+Inspect the reported sampling resolution and downsample before attributing a
+result to fixed-density reuse. If the view cannot fit the requested density,
+the renderer can still fall back to its normal streaming path.
 `GLOB2_BENCH_FRAME_TIMES=1` prints each measured and warmup frame; summaries
 include p99 and maximum latency as well as median and p95. Per-frame records
-include process CPU time captured before diagnostic output on platforms where
+include estimated resident terrain texture bytes within the cache accounting.
+They also include process CPU time captured before diagnostic output on platforms where
 `clock()` measures CPU time; Windows omits that field. The benchmark finishes
 deferred HD artwork loading before timing, so density changes compare identical
 source artwork rather than different asset-loader progress. Keep cold frames when
@@ -68,14 +78,86 @@ mixed unit queue, texture arrays and persistent map geometry.
 `GLOB2_BENCH_COMPARE_CAPTURE_PREFIX=artifacts/render-profile/pair` saves the final
 pair as `pair-immediate.ppm` and `pair-optimized.ppm` for visual review.
 
-Timings include GPU completion (`glFinish`) and exclude frame presentation, AI,
+Timings include GPU completion (`glFinish` on legacy GL, synchronous readback on
+device backends) and exclude final frame presentation, AI,
 input, scene extraction and simulation work. Flat passes retain a prepared scene;
 AI comparisons refresh it before each timed pair. They are renderer measurements,
 not whole-game FPS.
 POSIX builds also report process CPU time separately from elapsed time.
 Scope timings separately report CPU submission and overlap; do not sum inclusive
-scopes. The fixture is native OpenGL only; mobile uses the SDL portable renderer,
-so desktop results do not qualify Android/iOS hardware performance.
+scopes. Check the reported active backend to catch renderer fallback.
+Desktop results do not qualify Android/iOS hardware performance.
+
+### Resource rows and terrain residency
+
+Use `GLOB2_BENCH_RESOURCE_ROWS=1` with the 512×64 synthetic map, Original
+artwork, and legacy OpenGL. Repeat with `GLOB2_BENCH_CAMERA_PAN=1` to
+include wrapped row selection. The
+`FRAME_RESOURCE_ROWS` counters report eligibility, frame-vector construction,
+and animated cell visits separately.
+
+For terrain residency, use `GLOB2_BENCH_TERRAIN_SWITCH=pages` with at least 72
+frames and zero warmup. The benchmark draws pages for four frames, direct
+terrain for 64 frames, then pages again.
+`FRAME_TERRAIN_RESIDENCY` reports direct atlas bytes, page texture bytes,
+retained page bytes, and peak combined texture bytes for the view. Compare
+the first frame after the switch and the final capture. Use
+`GLOB2_BENCH_TERRAIN_SWITCH=hd` to return through the HD artwork path, or
+`GLOB2_BENCH_TERRAIN_SWITCH=tiled` to exercise the tiled-capture draw options.
+Starting on programmable OpenGL, use `GLOB2_BENCH_TERRAIN_SWITCH=backend` to
+switch to legacy OpenGL and draw pages there on frame 68.
+
+### Direct terrain discovery and OpenGL diagnostics
+
+Set `GLOB2_BENCH_FOG=1` and `GLOB2_BENCH_DISCOVERY_CROSSING=1` on a
+synthetic map with at least 32 tiles on both axes. Place tiles (15, 15) and
+(16, 16) in the viewport. The fixture reveals those tiles on frame 4.
+The cumulative `FRAME_DIRECT_DISCOVERY` counter tracks rebuilt cells.
+Capture before and after the reveal to verify the boundary transition.
+
+On legacy OpenGL, `GLOB2_PROFILE_GL_ARRAYS=1` reports live, retired, and free
+array slots and allocated bytes. `GLOB2_BENCH_ARRAY_CHURN=1` replaces the same
+16 source textures across 21 cycles to verify that promotions continue after
+the page budget fills.
+
+On programmable OpenGL, full opaque redraws swap the backing color textures.
+Check partial redraws and discarded frames against the committed image.
+
+### Direct terrain
+
+Direct terrain is the default for flat views with Original artwork
+(`highResolutionArtwork=0`) on legacy OpenGL, programmable OpenGL, WebGL2,
+SDL GPU with the direct terrain shaders, and WebGPU with the WGSL assets.
+It uses the map's terrain variants, coverage, contact bands, surf, and
+discovery. HD artwork, tiled captures, and backends without direct terrain
+support use composed terrain pages.
+
+The shader blends in floating point and uses linear atlas sampling. The page
+renderer can box-filter composed terrain when zoomed out. Compare captures
+at native zoom and during motion to check color and distant texture detail.
+
+`FRAME_DIRECT_TERRAIN` reports cumulative draws and upload bytes plus
+resident texture bytes. A rising draw count confirms direct terrain
+drew the frame. After startup, camera motion and animation should leave upload
+bytes stable. Terrain, asset bundle, or registry changes rebuild the atlases.
+Discovery changes can upload a separate visibility texture. On programmable GL,
+`FRAME_DEVICE` also reports physical uploads for the whole renderer. Compare capture
+pixels, frame p95 and p99, startup time, and resident terrain memory on the same
+map and camera path. HD artwork, other backends, and tiled captures use the
+page renderer. Direct terrain also falls back when map tables or atlases
+exceed the device texture dimensions, 16-bit index capacity, or 64 MiB texture
+budget. On programmable GL, actual GPU uploads happen during frame submission,
+where device-wide memory pressure can defer the frame. Far zoom uses the shared overview. For a large-map admission check,
+set `GLOB2_BENCH_SIZE=512x64`, `GLOB2_BENCH_SPARSE_TERRAIN=1`,
+`GLOB2_BENCH_UNITS=0`, and `GLOB2_BENCH_ZOOM=0.55`. The sparse fixture uses
+32-cell terrain blocks so it exercises map dimensions without a dense
+coverage atlas. GPU time for a terrain-only draw and elapsed time
+for the complete renderer through GPU completion are separate measurements.
+
+Use `GLOB2_RENDER_EXECUTION=parallel` to test building direct terrain coverage
+with presentation workers. The graphics thread allocates the atlases, prepares
+material textures, and uploads the result. Compare first-frame time and captures
+against the default serial initialization.
 
 For comparisons with another revision, set `GLOB2_BENCH_PAUSE_PRESENTATION=1`
 to freeze terrain animation and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of
@@ -86,26 +168,6 @@ path is not an untouched-master baseline.
 
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.
-
-### Resource rows
-
-Use `GLOB2_BENCH_RESOURCE_ROWS=1` with the 512×64 synthetic map, Original
-artwork, and legacy OpenGL. Compare `GLOB2_RESOURCE_ROWS=0` and
-`GLOB2_RESOURCE_ROWS=1` with the same narrow window and zoom. Repeat with
-`GLOB2_BENCH_CAMERA_PAN=1` to include wrapped row selection. The
-`FRAME_RESOURCE_ROWS` counters report eligibility, frame-vector construction,
-and animated cell visits separately.
-
-On legacy OpenGL, `GLOB2_PROFILE_GL_ARRAYS=1` reports live, retired, and free
-array slots and allocated bytes. `GLOB2_BENCH_ARRAY_CHURN=1` replaces the same
-16 source textures across 21 cycles. Compare
-`GLOB2_RECLAIM_GL_ARRAYS=0` and `GLOB2_RECLAIM_GL_ARRAYS=1` to measure
-promotion after the page budget fills.
-
-On programmable OpenGL, `GLOB2_SWAP_FULL_GL_FRAMES=1` is an opt-in experiment
-that swaps the backing color textures for a full opaque redraw. Run the same
-scene at the same drawable size with the flag set to 0 and 1. Check partial
-redraws and discarded frames against the committed image as well.
 
 ## CPU presentation batches
 

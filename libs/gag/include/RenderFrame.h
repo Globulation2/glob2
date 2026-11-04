@@ -100,9 +100,18 @@ inline std::array<std::int32_t,52> surfUniforms(const WeightedComposeData &data)
     }
     return values;
 }
+struct DirectTerrainDraw
+{
+    enum Texture { Cells, MaskIndex, Art, Coverage, Edges, Variants, Discovery, ShoreCalm, Count };
+    static constexpr std::array Samplers{"cells", "coverageIndex", "art", "coverage", "edges",
+                                         "variants", "discovery", "shoreCalm"};
+    std::array<TextureSnapshot, Count> textures;
+    float animationTime = 0;
+    bool wholeMap = false;
+};
 struct DrawPacket
 {
-    enum class Kind { Fill, Blit, Triangles, ScreenTriangles, Barrier, Clear, MeshTriangles, WeightedCompose };
+    enum class Kind { Fill, Blit, Triangles, ScreenTriangles, Barrier, Clear, MeshTriangles, WeightedCompose, DirectTerrain };
     Kind kind = Kind::Fill;
     enum class Material { Primitive, WorldLit, Cloud, SmoothPoint, Skin, SkinRig };
     enum class Blend { Automatic, SourceOver, Premultiplied, Additive, Opaque };
@@ -116,6 +125,7 @@ struct DrawPacket
     WorldMaterial world;
     std::shared_ptr<const SkinMaterial> skin;
     std::shared_ptr<const WeightedComposeData> weightedCompose;
+    std::shared_ptr<const DirectTerrainDraw> directTerrain;
     GeometrySnapshot geometry;
     std::uint32_t first = 0, count = 0;
     bool indexed = false;

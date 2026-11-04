@@ -85,6 +85,7 @@ static void tiledCapture(bool hd = false)
         game.map.fogOfWarA[index] = game.map.fogOfWarB[index] = visible;
         game.map.mapDiscovered[index] = unknown ? 0 : 1;
     }
+    game.map.markDiscoveryChanged();
     TorusView view;
     view.textureLimit = 1024;
     view.toggle();

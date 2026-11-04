@@ -29,6 +29,7 @@ unsigned glob2_webgpu_memory();
 int glob2_webgpu_can_begin();
 int glob2_webgpu_present();
 int glob2_webgpu_timing_supported();
+int glob2_webgpu_direct_terrain_supported();
 unsigned glob2_webgpu_timing_pending();
 unsigned glob2_webgpu_timing_count(int);
 int glob2_webgpu_timing_poll(double *);
@@ -67,6 +68,7 @@ class WebGPUDevice final:public RenderDevice {
     std::deque<CaptureRequest> captures;
     std::deque<std::chrono::steady_clock::time_point> captureAdmitted;
     unsigned nextTexture=0,maxTexture=0;
+    bool directTerrainAvailable=false;
     std::uint64_t epoch=1,issued=0;
     std::size_t textureBytes=0;
     RenderTelemetry counts;
@@ -150,9 +152,9 @@ class WebGPUDevice final:public RenderDevice {
         for(std::size_t i=begin;i<v.size();++i){auto&vertex=v[i];if(p.kind!=DrawPacket::Kind::ScreenTriangles){vertex.position.x=vertex.position.x*p.transform.scale+p.transform.x;vertex.position.y=vertex.position.y*p.transform.scale+p.transform.y;}if(premultiplied){const float a=vertex.color.a*p.alpha/255.f;vertex.color.r*=a;vertex.color.g*=a;vertex.color.b*=a;}}
     }
   public:
-    explicit WebGPUDevice(SDL_Window *borrowed):window(borrowed){maxTexture=glob2_webgpu_attach();if(!maxTexture)fail();issued=glob2_webgpu_issued();}
+    explicit WebGPUDevice(SDL_Window *borrowed):window(borrowed){maxTexture=glob2_webgpu_attach();if(!maxTexture)fail();issued=glob2_webgpu_issued();directTerrainAvailable=glob2_webgpu_direct_terrain_supported();}
     ~WebGPUDevice() override{glob2_webgpu_reset();}
-    RenderDeviceCapabilities capabilities() const override{return {true,true,bool(glob2_webgpu_timing_supported()),int(maxTexture),true,true,true,true};}
+    RenderDeviceCapabilities capabilities() const override{return {true,true,bool(glob2_webgpu_timing_supported()),int(maxTexture),true,true,true,true,directTerrainAvailable};}
     bool canBeginFrame() override{poll();const int ready=glob2_webgpu_can_begin();if(ready<0)fail();return ready>0;}
     RenderSubmission submit(RenderFrame frame) override{
         detail::RenderCpuTimer timing(counts.cpuSubmitNanoseconds);
@@ -214,6 +216,44 @@ class WebGPUDevice final:public RenderDevice {
                 if(p.indexed){if(std::size_t(p.first)+p.count>p.geometry->indices.size())throw std::out_of_range("WebGPU mesh index range");draw.indexOffset=p.first*4;draw.indexCount=p.count;draw.first=0;}
                 else if((std::size_t(p.first)+p.count)*p.geometry->stride>p.geometry->vertices.size())throw std::out_of_range("WebGPU mesh vertex range");
             }else{
+                if (p.kind == DrawPacket::Kind::DirectTerrain) {
+                    if (!directTerrainAvailable || !p.directTerrain || p.vertices.size() != 6 ||
+                        p.texture || p.blend != DrawPacket::Blend::Premultiplied ||
+                        p.depth != DrawPacket::Depth::Disabled || p.depthWrite)
+                        throw std::invalid_argument("Invalid WebGPU direct terrain draw");
+                    draw.kind = 5;
+                    using Terrain = DirectTerrainDraw;
+                    const auto &data = *p.directTerrain;
+                    std::array<std::uint32_t, Terrain::Count> images{};
+                    for (unsigned i = 0; i < images.size(); ++i) {
+                        const auto &source = data.textures[i];
+                        if (!source || !source->pixels || (p.target && source->handle == p.target->handle))
+                            throw std::invalid_argument("Invalid WebGPU direct terrain texture");
+                        auto &image = allocation(source, false, false);
+                        if (image.target) throw std::invalid_argument("WebGPU direct terrain requires immutable textures");
+                        images[i] = image.identity;
+                        if (source->descriptor.sampling == TextureDescriptor::Sampling::Linear)
+                            draw.linear |= 1u << i;
+                    }
+                    std::memcpy(draw.world, images.data(), sizeof images);
+                    namespace L = RendererShaderLayouts;
+                    std::array<float, L::terrain_direct_fragment_size / sizeof(float)> params{};
+                    const auto size = [&](std::size_t offset, Terrain::Texture slot, int widthDivisor = 1) {
+                        const auto &descriptor = data.textures[slot]->descriptor;
+                        params[offset / sizeof(float)] = descriptor.width / widthDivisor;
+                        params[offset / sizeof(float) + 1] = descriptor.height;
+                    };
+                    size(L::terrain_direct_fragment_mapSize_offset, Terrain::Cells, 2);
+                    size(L::terrain_direct_fragment_artSize_offset, Terrain::Art);
+                    size(L::terrain_direct_fragment_coverageSize_offset, Terrain::Coverage);
+                    size(L::terrain_direct_fragment_variantSize_offset, Terrain::Variants, 2);
+                    params[L::terrain_direct_fragment_animationTime_offset / sizeof(float)] = data.animationTime;
+                    params[L::terrain_direct_fragment_wholeMapValue_offset / sizeof(float)] = data.wholeMap;
+                    const std::uint32_t offset = uniforms.size();
+                    std::memcpy(draw.bounds, &offset, sizeof offset);
+                    const auto *bytes = reinterpret_cast<const std::byte *>(params.data());
+                    uniforms.insert(uniforms.end(), bytes, bytes + sizeof params);
+                }
                 end=frame.batchEnd(begin);std::vector<SDL_Vertex> geometry;
                 for(auto i=begin;i<end;++i){if(frame.packets[i].vertices.size()%3)throw std::invalid_argument("Incomplete WebGPU triangles");appendVertices(geometry,frame.packets[i],premultiplied);}
                 if(geometry.size()>RenderFrame::VertexCapacity)throw std::length_error("WebGPU vertex capacity");draw.count=geometry.size();draw.vertexBytes=geometry.size()*sizeof(SDL_Vertex);
@@ -221,7 +261,7 @@ class WebGPUDevice final:public RenderDevice {
                 if(p.linear&&p.kind==DrawPacket::Kind::Blit){const auto&d=p.texture->descriptor;draw.bounds[0]=(p.source.x+.5f)/d.width;draw.bounds[1]=(p.source.y+.5f)/d.height;draw.bounds[2]=(p.source.x+p.source.w-.5f)/d.width;draw.bounds[3]=(p.source.y+p.source.h-.5f)/d.height;}
             }
             if(vertices.size()>32*1024*1024||uniforms.size()>8*1024*1024)throw std::length_error("WebGPU frame geometry budget");
-            records.push_back(draw);counts.packets+=end-begin;counts.batches+=draw.kind<2;begin=end;
+            records.push_back(draw);counts.packets+=end-begin;counts.batches+=draw.kind<2 || draw.kind==5;begin=end;
         }
         const auto identity=glob2_webgpu_submit(records.data(),records.size(),vertices.data(),vertices.size(),uniforms.data(),uniforms.size(),width,height,double(PerformanceTelemetry::now()));if(!identity)fail();issued=identity;RenderSubmission submission{identity,epoch};pending.push_back({submission,std::move(frame)});return submission;
     }

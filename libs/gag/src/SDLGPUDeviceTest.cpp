@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "DirectTerrainReadbackFixture.h"
 #include <cstring>
 #include <SDLGPUDevice.h>
 #ifdef HAVE_CONFIG_H
@@ -63,6 +64,15 @@ struct Video
 }
 TEST_SUITE("SDLGPUDevice")
 {
+    GLOB2_TEST_CASE("direct terrain decodes packed records and preserves draw order", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY");
+        REQUIRE(shaders);
+        Video video;
+        auto device = makeSDLGPUDevice(nullptr, 16, 16, shaders);
+        REQUIRE(device->capabilities().directTerrain);
+        verifyDirectTerrainReadback(*device);
+    }
     GLOB2_TEST_CASE("Shared terrain passes match separated cells across targets reduction and barriers", "[display][isolated]")
     {
         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);

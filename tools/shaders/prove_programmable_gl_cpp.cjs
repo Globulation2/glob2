@@ -42,6 +42,8 @@ const assert = require('node:assert/strict');
                 if (cycle) replaceCanvas();
                 call('init');
                 const samples = [];
+                call('direct_terrain');
+                samples.push({ directTerrain: true, pixel: await capture() });
                 for (const reduction of [1, 2, 8, 32]) {
                     for (const mixed of [0, 1]) {
                         call('terrain', reduction, mixed);

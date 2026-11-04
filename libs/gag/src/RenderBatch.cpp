@@ -462,26 +462,19 @@ ArrayView RenderBatch::pack(unsigned texture)
 					n = std::max(1, w >> l) * std::max(1, h >> l) * 4;
 				bytes += n * layers;
 			}
-			if (s.bytes + bytes > 64 * 1024 * 1024)
+			if (s.bytes + bytes > 64 * 1024 * 1024 && !s.capture)
 			{
-				static const bool reclaim = [] {
-					const char *value = std::getenv("GLOB2_RECLAIM_GL_ARRAYS");
-					return value && std::strcmp(value, "1") == 0;
-				}();
-				if (reclaim && !s.capture)
+				const auto retired = std::find_if(pages.begin(), pages.end(),
+					[](const auto &page) { return page.live == 0; });
+				if (retired != pages.end())
 				{
-					const auto retired = std::find_if(pages.begin(), pages.end(),
-						[](const auto &page) { return page.live == 0; });
-					if (retired != pages.end())
-					{
-						// Previous draws were flushed and their layers stay ordered
-						// before uploads in this context. Reuse the storage.
-						std::iter_swap(retired, pages.end() - 1);
-						pages.back().used = 0;
-					}
-					else
-						s.reclaimRetiredPages(bytes);
+					// Previous draws were flushed and their layers stay ordered
+					// before uploads in this context. Reuse the storage.
+					std::iter_swap(retired, pages.end() - 1);
+					pages.back().used = 0;
 				}
+				else
+					s.reclaimRetiredPages(bytes);
 			}
 			if (pages.empty() || pages.back().used >= layers)
 			{

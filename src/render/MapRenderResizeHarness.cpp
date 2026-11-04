@@ -413,8 +413,8 @@ void run(bool gpu)
 		fadeView.render.overlays.markers.clear();
 		globals->settings.adaptiveZoomDetail=adaptiveZoomDetail;
 
-		game.map.visibilityChanges.markAll();
 		game.map.mapDiscovered=discovered;
+		game.map.markDiscoveryChanged();
 		std::copy(fog.begin(), fog.end(), game.map.fogOfWar);
 	}
 	std::cout << "PASS fog of war shade fades between in sight and fogged\n";

@@ -167,6 +167,29 @@
         }
       ]
     },
+    "terrain-direct": {
+      "stride": 32,
+      "attributes": [
+        {
+          "name": "position",
+          "location": 0,
+          "components": 2,
+          "offset": 0
+        },
+        {
+          "name": "vertexColor",
+          "location": 1,
+          "components": 4,
+          "offset": 8
+        },
+        {
+          "name": "texcoord",
+          "location": 2,
+          "components": 2,
+          "offset": 24
+        }
+      ]
+    },
     "terrain-compose": {
       "stride": 32,
       "attributes": [
@@ -382,6 +405,17 @@
         }
       ]
     },
+    "terrain-direct": {
+      "stage": "vertex",
+      "set": 1,
+      "binding": 0,
+      "members": [
+        {
+          "name": "viewport",
+          "type": "vec2"
+        }
+      ]
+    },
     "terrain-compose": {
       "stage": "vertex",
       "set": 1,
@@ -401,6 +435,37 @@
         {
           "name": "viewport",
           "type": "vec2"
+        }
+      ]
+    },
+    "terrain-direct-fragment": {
+      "stage": "fragment",
+      "set": 3,
+      "binding": 0,
+      "members": [
+        {
+          "name": "mapSize",
+          "type": "vec2"
+        },
+        {
+          "name": "artSize",
+          "type": "vec2"
+        },
+        {
+          "name": "coverageSize",
+          "type": "vec2"
+        },
+        {
+          "name": "variantSize",
+          "type": "vec2"
+        },
+        {
+          "name": "animationTime",
+          "type": "float"
+        },
+        {
+          "name": "wholeMapValue",
+          "type": "float"
         }
       ]
     },
@@ -477,6 +542,7 @@
     "world",
     "cloud",
     "point",
+    "terrain-direct",
     "terrain-compose",
     "terrain-reduce"
   ],
@@ -503,6 +569,7 @@
     "worldFragment": "libs/gag/shaders/world-fragment.glsl",
     "cloudFragment": "libs/gag/shaders/cloud-fragment.glsl",
     "pointFragment": "libs/gag/shaders/point-fragment.glsl",
+    "terrain-directFragment": "libs/gag/include/DirectTerrainShader.h",
     "terrain-composeFragment": "libs/gag/shaders/terrain-compose-fragment.glsl",
     "terrain-reduceFragment": "libs/gag/shaders/terrain-reduce-fragment.glsl"
   },
@@ -523,6 +590,72 @@
       ]
     }
   },
+  "terrainDirectTextures": [
+    {
+      "name": "cells",
+      "layoutName": "terrain_direct_cells",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 0,
+      "type": "sampler2D"
+    },
+    {
+      "name": "coverageIndex",
+      "layoutName": "terrain_direct_coverageIndex",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 1,
+      "type": "sampler2D"
+    },
+    {
+      "name": "art",
+      "layoutName": "terrain_direct_art",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 2,
+      "type": "sampler2D"
+    },
+    {
+      "name": "coverage",
+      "layoutName": "terrain_direct_coverage",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 3,
+      "type": "sampler2D"
+    },
+    {
+      "name": "edges",
+      "layoutName": "terrain_direct_edges",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 4,
+      "type": "sampler2D"
+    },
+    {
+      "name": "variants",
+      "layoutName": "terrain_direct_variants",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 5,
+      "type": "sampler2D"
+    },
+    {
+      "name": "discovery",
+      "layoutName": "terrain_direct_discovery",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 6,
+      "type": "sampler2D"
+    },
+    {
+      "name": "shoreCalm",
+      "layoutName": "terrain_direct_shoreCalm",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 7,
+      "type": "sampler2D"
+    }
+  ],
   "terrainComposeTextures": [
     {
       "name": "material0",

@@ -81,6 +81,36 @@ addToLibrary({
           const pipeline=await device.createRenderPipelineAsync(description);if(!current())return;
           this.pipelines.set(variant+':0:0:0:0',pipeline);
         }
+        if (this.metadata.shaderArtifacts?.webgpu?.['terrain-direct']) {
+          device.pushErrorScope('validation');
+          try {
+            const variant = 'terrain-direct', stages = {};
+            for (const stage of ['vert', 'frag']) {
+              const code = ownedSources ? ownedSources.stages[variant][stage] :
+                FS.readFile(root+'/'+variant+'.'+stage+'.wgsl',{encoding:'utf8'});
+              stages[stage] = device.createShaderModule({code});
+              const info = await stages[stage].getCompilationInfo();
+              if (!current()) return;
+              const errors = info.messages.filter(message => message.type === 'error');
+              if (errors.length) throw Error(errors.map(message => message.message).join('\n'));
+            }
+            this.shaders[variant] = stages;
+            const pipeline = await device.createRenderPipelineAsync(this.pipelineDescription(variant,1,0,false,0));
+            if (!current()) return;
+            this.pipelines.set(variant+':1:0:0:0',pipeline);
+          } catch (error) {
+            if (!current()) return;
+            delete this.shaders['terrain-direct'];
+            console.warn('Direct terrain unavailable: '+error.message);
+          } finally {
+            const error = await device.popErrorScope();
+            if (error && current()) {
+              delete this.shaders['terrain-direct'];
+              this.pipelines.delete('terrain-direct:1:0:0:0');
+              console.warn('Direct terrain unavailable: '+error.message);
+            }
+          }
+        }
         const present=this.pipelineDescription('primitive',3,0,false,0);present.fragment.targets[0].format=gpu.getPreferredCanvasFormat();
         const pipeline=await device.createRenderPipelineAsync(present);if(!current())return;
         this.presentPipeline=pipeline;this.state=1;
@@ -216,7 +246,9 @@ addToLibrary({
         }
         const pass=active.pass;
         if(kind===2){if(clearColor&&!fullColor)this.clearRegion(pass,target,clip,[f(224),f(228),f(232),f(236)],owned);endPass();continue;}
-        const variant=['primitive','world','cloud','point','skin','skin-rig'][u(4)],skin=u(4)>=4,world=kind===1&&!skin;
+        const direct = kind === 5;
+        const variant = direct ? 'terrain-direct' : ['primitive','world','cloud','point','skin','skin-rig'][u(4)];
+        const skin = !direct && u(4)>=4, world=kind===1&&!skin;
         const pipeline=this.pipeline(variant,u(8),u(12),u(16),u(20));
         if(active.pipeline!==pipeline){pass.setPipeline(pipeline);active.pipeline=pipeline;active.groups=[];}
         const viewport=[n(64),n(68),n(72),n(76)];
@@ -229,18 +261,27 @@ addToLibrary({
           pass.setVertexBuffer(0,vertexBuffer,vertexOffset,vertexSize);active.vertex=vertexBuffer;active.vertexOffset=vertexOffset;active.vertexSize=vertexSize;
         }
         const vertexData=skin?uniforms.slice(u(112),u(112)+u(116)):world?records.slice(base+128,base+208):new Float32Array([f(96),f(100),0,0]);
-        const fragmentData=skin?uniforms.slice(u(120),u(120)+u(124)):world?records.slice(base+208,base+224):records.slice(base+104,base+128);
+        const fragmentData=direct ? uniforms.slice(u(112),u(112)+this.metadata.uniformBlocks['terrain-direct-fragment'].size) :
+          skin?uniforms.slice(u(120),u(120)+u(124)):world?records.slice(base+208,base+224):records.slice(base+104,base+128);
         // Primitive block: textured/alpha, std140 padding, UV bounds.
         const primitiveData=new Float32Array([f(108),f(104),0,0,f(112),f(116),f(120),f(124)]);
         for(let group=0;group<=(variant==='cloud'?2:3);group++){
           const entries=[];
           if(group===1){const b=bindings.uniform(vertexData);entries.push({binding:0,resource:{buffer:b}});}
-          if(group===2&&variant!=='point'){
+          if (group === 2 && direct) {
+            for (const {name, binding} of this.metadata.terrainDirectTextures) {
+              const image = this.resources.get(u(128+binding*4));
+              if (!image || image === target) throw Error('Invalid WebGPU direct terrain texture');
+              entries.push({binding:binding*2,resource:this.textureView(image.texture)});
+              if (name === 'art' || name === 'coverage' || name === 'shoreCalm')
+                entries.push({binding:binding*2+1,resource:this.samplers[(u(56)>>binding)&1]});
+            }
+          } else if(group===2&&variant!=='point'){
             const sampler=this.samplers[(!skin&&u(56)?1:0)+(texture.repeatU?2:0)+(texture.repeatV?4:0)];
             entries.push({binding:0,resource:this.textureView(texture.texture)},{binding:1,resource:sampler});
             if(skin){const second=this.resources.get(u(60));if(!second)throw Error('Stale WebGPU material texture');entries.push({binding:2,resource:this.textureView(second.texture)},{binding:3,resource:this.samplers[0]});}
           }
-          if(group===3){const b=bindings.uniform(skin||world?fragmentData:primitiveData);entries.push({binding:0,resource:{buffer:b}});}
+          if(group===3){const b=bindings.uniform(skin||world||direct?fragmentData:primitiveData);entries.push({binding:0,resource:{buffer:b}});}
           const binding=bindings.group(pipeline,group,entries);
           if(active.groups[group]!==binding){pass.setBindGroup(group,binding);active.groups[group]=binding;}
         }
@@ -315,6 +356,16 @@ addToLibrary({
       for(const variant of['primitive','world','cloud','point','skin','skin-rig','terrain-compose','terrain-reduce']){
         stages[variant]={};for(const stage of['vert','frag'])stages[variant][stage]=FS.readFile(directory+'/'+variant+'.'+stage+'.wgsl',{encoding:'utf8'});
       }
+      if (metadata.shaderArtifacts?.webgpu?.['terrain-direct']) {
+        const variant = 'terrain-direct';
+        stages[variant] = {};
+        try {
+          for (const stage of ['vert', 'frag'])
+            stages[variant][stage] = FS.readFile(directory+'/'+variant+'.'+stage+'.wgsl',{encoding:'utf8'});
+        } catch (_) {
+          delete stages[variant];
+        }
+      }
       sources={metadata,stages};
     }catch(error){sources={error:String(error?.message||error)};}
     let text=JSON.stringify(sources),bytes=lengthBytesUTF8(text)+1;
@@ -371,6 +422,8 @@ addToLibrary({
   glob2_webgpu_can_begin(){return Glob2WebGPU.lost?-1:(Glob2WebGPU.activeFrame||Glob2WebGPU.frames.length<8)?1:0;},
   glob2_webgpu_present__deps:['$Glob2WebGPU'],
   glob2_webgpu_present(){try{Glob2WebGPU.present();return 1;}catch(e){Glob2WebGPU.handle(e);return 0;}},
+  glob2_webgpu_direct_terrain_supported__deps:['$Glob2WebGPU'],
+  glob2_webgpu_direct_terrain_supported(){return Glob2WebGPU.shaders?.['terrain-direct'] ? 1 : 0;},
   glob2_webgpu_timing_supported__deps:['$Glob2WebGPU'],
   glob2_webgpu_timing_supported(){return Glob2WebGPU.timingSupported?1:0;},
   glob2_webgpu_timing_pending__deps:['$Glob2WebGPU'],

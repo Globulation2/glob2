@@ -30,7 +30,7 @@ class SoftwareRenderDevice final : public RenderDevice
                 throw std::length_error("Unbounded render geometry");
             vertexCount += packet.vertices.size();
             detail::intersectTargetScissor({0,0,target->w,target->h}, packet.targetScissor);
-            if (packet.kind == DrawPacket::Kind::MeshTriangles || packet.kind == DrawPacket::Kind::WeightedCompose || packet.kind == DrawPacket::Kind::Clear)
+            if (packet.kind == DrawPacket::Kind::MeshTriangles || packet.kind == DrawPacket::Kind::WeightedCompose || packet.kind == DrawPacket::Kind::DirectTerrain || packet.kind == DrawPacket::Kind::Clear)
                 throw std::invalid_argument("Software device does not support depth/mesh passes");
             if (packet.target) throw std::invalid_argument("Software offscreen targets require a separate device");
             if (packet.kind == DrawPacket::Kind::Blit && !packet.texture)
@@ -68,6 +68,7 @@ class SoftwareRenderDevice final : public RenderDevice
                 case DrawPacket::Kind::Triangles: backend->triangles(packet.vertices, key, pixels, revision); break;
                 case DrawPacket::Kind::ScreenTriangles: backend->screenTriangles(packet.vertices); break;
                 case DrawPacket::Kind::Barrier: backend->flush(); break;
+                case DrawPacket::Kind::DirectTerrain:
                 case DrawPacket::Kind::WeightedCompose:
                 case DrawPacket::Kind::Clear:
                 case DrawPacket::Kind::MeshTriangles: throw std::invalid_argument("Unsupported software mesh pass");

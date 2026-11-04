@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Pinned-SDK fixture for the actual C++ programmable GL resource/packet path.
 #include <ProgrammableGLDevice.h>
+#include "DirectTerrainProofFixture.h"
 #include <emscripten.h>
 #include <memory>
 #include <cstring>
@@ -58,6 +59,10 @@ EMSCRIPTEN_KEEPALIVE int proof_terrain(int reduction,int mixed){return checked([
     DrawPacket clear;clear.kind=DrawPacket::Kind::Clear;clear.clearColor=true;clear.clearValue={0,0,0,1};
     DrawPacket blit;blit.kind=DrawPacket::Kind::Blit;blit.texture=target;blit.source={0,0,32/reduction,32/reduction};blit.destination={0,0,64,64};blit.blend=DrawPacket::Blend::Premultiplied;
     submit({compose,clear,blit});
+});}
+EMSCRIPTEN_KEEPALIVE int proof_direct_terrain(){return checked([]{
+    if (!device->capabilities().directTerrain) throw std::runtime_error("Direct terrain unavailable");
+    submit({directTerrainProofPacket([](int w, int h, SDL_Color color) { return image(w, h, color); })});
 });}
 EMSCRIPTEN_KEEPALIVE int proof_world(){return checked([]{
     if(!target)return;

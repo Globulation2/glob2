@@ -13,6 +13,7 @@ struct RenderDeviceCapabilities
     bool offscreenTargets = false, asynchronousCapture = false, gpuTiming = false;
     int maximumTextureSize = 0;
     bool mesh3D = false, torus = false, skinMaterials = false, terrainComposition = false;
+    bool directTerrain = false;
 };
 struct RenderSubmission
 {

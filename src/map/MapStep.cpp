@@ -508,8 +508,9 @@ void Map::setMapDiscovered(int x, int y, Uint32 sharedVision)
 		: std::optional{captureGradientTargetCell(index)};
 	// The snapshot observes discovery and the active fog plane. Updating only
 	// the inactive plane becomes visible after switchFogOfWar invalidates it.
-	if ((mapDiscovered[index] & sharedVision) != sharedVision
-		|| (fogOfWar && (fogOfWar[index] & sharedVision) != sharedVision))
+	const bool discoveryChanged = (mapDiscovered[index] & sharedVision) != sharedVision;
+	if (discoveryChanged) ++discoveryRevisionValue;
+	if (discoveryChanged || (fogOfWar && (fogOfWar[index] & sharedVision) != sharedVision))
 		markVisibility(index);
 	mapDiscovered[index] |= sharedVision;
 	fogOfWarA[index] |= sharedVision;
@@ -564,7 +565,7 @@ void Map::setMapExploredByBuilding(int x, int y, int w, int h, int team)
 void Map::unsetMapDiscovered(void)
 {
 	fill(mapDiscovered, 0u);
-	visibilityChanges.markAll();
+	markDiscoveryChanged();
 }
 
 bool Map::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const
@@ -586,7 +587,7 @@ bool Map::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 vision
 void Map::setMapDiscovered(void)
 {
 	fill(mapDiscovered, ~0u);
-	visibilityChanges.markAll();
+	markDiscoveryChanged();
 }
 
 void Map::computeDisplayedForbidden(int teamNumber)

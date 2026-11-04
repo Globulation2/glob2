@@ -131,6 +131,7 @@ class Map
 	// Per-array change tracking at chunk granularity; see MapChangeTracking.h.
 	MapState::ChunkGeometry chunkGeometry;
 	MapState::ChangeTracker terrainChanges, resourceChanges, occupancyChanges, areaChanges, visibilityChanges;
+	Uint64 discoveryRevisionValue = 1;
 	// Derived from painted masks, independent of reachable gradient goals.
 	std::array<std::array<Uint32, Team::MAX_COUNT>, 4> paintedAreaCounts{};
 	void paintedAreaMaskChanged(AreaType kind, Uint32 before, Uint32 after);
@@ -140,7 +141,7 @@ class Map
 	void markOccupancy(size_t index) { occupancyChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markArea(size_t index) { areaChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markVisibility(size_t index) { visibilityChanges.mark(chunkGeometry.chunkOf(index)); }
-	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); }
+	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); markDiscoveryChanged(); }
 	//! For fixtures that assign the cell arrays directly instead of calling
 	//! setSize: size the change trackers and bind the live view to the arrays.
 	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); rebuildPaintedAreaCounts(); }
@@ -150,7 +151,7 @@ class Map
 		chunkGeometry.reset(w, h, unsigned(wDec), Uint32(wMask));
 		const auto count = chunkGeometry.count();
 		terrainChanges.reset(count); resourceChanges.reset(count); occupancyChanges.reset(count);
-		areaChanges.reset(count); visibilityChanges.reset(count);
+		areaChanges.reset(count); visibilityChanges.reset(count); ++discoveryRevisionValue;
 	}
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
@@ -231,6 +232,9 @@ class Map
 	std::mutex gradientBufferPoolMutex;
 	void clearGradientBufferPool();
 public:
+	// Bulk discovery replacements also invalidate the combined snapshot plane.
+	void markDiscoveryChanged() { ++discoveryRevisionValue; visibilityChanges.markAll(); }
+	Uint64 discoveryRevision() const { return discoveryRevisionValue; }
 	WorldRandomStreams worldRandom;
 	EntityRandom& privateRandom(RandomDomain domain);
 	std::array<Uint64, 5> snapshotGenerations() const

@@ -32,7 +32,7 @@ bool DrawPacket::compatible(const DrawPacket &other) const
 {
     if (linear && kind == Kind::Blit && (source.x != other.source.x || source.y != other.source.y ||
         source.w != other.source.w || source.h != other.source.h)) return false;
-    return kind != Kind::Barrier && kind != Kind::WeightedCompose && kind != Kind::Clear && kind != Kind::MeshTriangles && kind == other.kind &&
+    return kind != Kind::Barrier && kind != Kind::WeightedCompose && kind != Kind::DirectTerrain && kind != Kind::Clear && kind != Kind::MeshTriangles && kind == other.kind &&
         material == other.material && skin == other.skin && secondTexture == other.secondTexture && blend == other.blend && depth == other.depth && depthWrite == other.depthWrite && cull == other.cull &&
         equal(viewport, other.viewport) && targetLogicalWidth == other.targetLogicalWidth && targetLogicalHeight == other.targetLogicalHeight && texture == other.texture && target == other.target &&
         opaque == other.opaque && linear == other.linear && alpha == other.alpha &&

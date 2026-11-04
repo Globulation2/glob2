@@ -644,6 +644,8 @@ namespace GAGCore
 		//! Bounded software pass; borrows pixels and restores facade/backend state on failure.
 		void drawToSurface(SDL_Surface* surface, float scale, const std::function<void()>& draw);
 		unsigned getGLContextGeneration() const { return glContextGeneration; }
+        bool isLegacyGLScreen() const
+        { return backendStatus.active == RendererBackend::LegacyGL && !offscreenPass && !nativeSoftware; }
         // Failed bounded admission invalidates composed pixels, not logical leases.
         std::uint64_t renderTargetContentRevision() const { return targetContentRevision; }
 
