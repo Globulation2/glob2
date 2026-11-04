@@ -1,0 +1,116 @@
+{
+  "pid": 2544807,
+  "revision": "e28aea45f10dc21f15e23cef84da94e55d888fec",
+  "worktree": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/recording-download-repair",
+  "results": [
+    {
+      "name": "native-build",
+      "command": [
+        "python3",
+        "tools/dev_build.py",
+        "--build=build/ci-schema-release",
+        "dev_fast=0",
+        "release=1",
+        "server=0",
+        "-j2",
+        "tests",
+        "map-report-test",
+        "build/ci-schema-release/src/glob2"
+      ],
+      "exit_code": 0,
+      "seconds": 3389.8
+    },
+    {
+      "name": "map-report-contract",
+      "command": [
+        "python3",
+        "test/test_map_report.py",
+        "build/ci-schema-release/src/glob2",
+        "build/ci-schema-release/test/MapReportHarness"
+      ],
+      "exit_code": 0,
+      "seconds": 1.8
+    },
+    {
+      "name": "map-telemetry",
+      "command": [
+        "python3",
+        "test/test_map_telemetry.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.6
+    },
+    {
+      "name": "frozen-reference-candidates",
+      "command": [
+        "python3",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/reference-master127/run.py"
+      ],
+      "exit_code": 0,
+      "seconds": 20.0
+    },
+    {
+      "name": "native-full",
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/ci-schema-release",
+        "--jobs",
+        "2",
+        "--display-jobs",
+        "1",
+        "--fullscreen",
+        "--coverage-profile",
+        "full",
+        "--timeout",
+        "900",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/master127-native/native-inventory.json",
+        "--junit",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/master127-native/native-junit.xml",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/master127-native/native-tests"
+      ],
+      "exit_code": 0,
+      "seconds": 4562.4
+    },
+    {
+      "name": "cli-smoke",
+      "command": [
+        "python3",
+        "test/test_cli_smoke.py",
+        "--binary",
+        "build/ci-schema-release/src/glob2",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/master127-native/cli-smoke",
+        "--junit",
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/master127-native/cli-smoke.xml"
+      ],
+      "exit_code": 0,
+      "seconds": 16.7
+    },
+    {
+      "name": "cli-reference",
+      "command": [
+        "python3",
+        "tools/cli_reference.py",
+        "--binary",
+        "build/ci-schema-release/src/glob2",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.1
+    }
+  ],
+  "phase": "finished; inspect all current-master native, compatibility candidates and CLI results",
+  "note": "Current fetched master601926 SIM127/format205 plus schema-only1417 fix. Fresh integration because master changes pathfinding/gradient state and asset packaging inputs. Separate ci-schema-release; root/c7a nativehelper/SDL unchanged for active browser2351216. Build once and reuse exact-source CLI for complete frozen-save serial/parallel candidates, current Studio candidates and native full registry. Do not edit/switch recording-download-repair while active. No weakenedtests, candidate fixtures remain ignored outputs until full review.",
+  "command": [
+    "python3",
+    "tools/cli_reference.py",
+    "--binary",
+    "build/ci-schema-release/src/glob2",
+    "--check"
+  ],
+  "child_pid": 2730554
+}
