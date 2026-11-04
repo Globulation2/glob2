@@ -453,7 +453,9 @@ their own preparation costs for direction selection and lazy expansion. A policy
 change does not discard published guidance or eagerly rebuild all fields: units
 continue using the existing field until its ordinary refresh publishes a
 replacement. Allied visitors share the building owner's field and cost policy.
-Periodic, consumer-specific, building, snapshot-backed material and hiring queries
+Synchronous hazard-escape caches use the same access identities and team ratio;
+a ratio change rebuilds their derived field on the next query to keep cache resets
+and save/load directionally equivalent. Periodic, consumer-specific, building, snapshot-backed material and hiring queries
 use the same access identities. Single-team point searches use that team's policy;
 multi-team searches use equal cost because they have no single owner. Maxima's
 independent strategic travel fields retain their neutral access-based semantics.

@@ -1683,3 +1683,28 @@ TEST_CASE("escape cache evicts the least recently used profile and resets genera
     CHECK(cache.fields.empty());
     CHECK(cache.groundGeneration==1); CHECK(cache.airGeneration==1);
 }
+
+TEST_CASE("hazard escape shares the team ratio and remains independent of cache resets" * doctest::test_suite("TerrainProperties"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    glob2test::importTerrainBeforeMatch(world.game,R"({"schemaVersion":1,"terrains":[{"key":"mode:hazard","name":"Hazard","base":"grass","properties":{"groundHealthQ8":-13},"appearance":"ice"}]})");
+    map.fillTerrain(*map.terrainRegistry().find("mode:hazard"));
+    map.paintCell(8,6,GRASS);map.paintCell(9,8,WATER);
+    auto* unit=world.addUnit(WORKER,8,8);REQUIRE(unit);
+    unit->performance[FLY]=0;unit->performance[WALK]=30;unit->performance[SWIM]=10;
+    world.team->updateRoutingRatio();REQUIRE(world.team->routingRatio.selected==6);
+    REQUIRE(map.pathfindTerrainSafety(unit));CHECK(unit->dx==0);CHECK(unit->dy==-1);
+    auto& cache=map.gradientRuntime->safety;
+    REQUIRE(cache.fields.size()==1);CHECK(cache.builds==1);
+    unit->performance[WALK]=10;unit->performance[SWIM]=30;
+    REQUIRE(map.pathfindTerrainSafety(unit));CHECK(unit->dx==0);CHECK(unit->dy==-1);
+    CHECK(cache.fields.size()==1);CHECK(cache.builds==1);
+    world.game.stepCounter=512;world.team->updateRoutingRatio();REQUIRE(world.team->routingRatio.selected==1);
+    REQUIRE(map.pathfindTerrainSafety(unit));CHECK(unit->dx==1);CHECK(unit->dy==0);
+    CHECK(cache.fields.size()==1);CHECK(cache.builds==2);
+    cache.reset();
+    REQUIRE(map.pathfindTerrainSafety(unit));CHECK(unit->dx==1);CHECK(unit->dy==0);
+    CHECK(cache.fields.size()==1);CHECK(cache.builds==1);
+}

@@ -333,7 +333,7 @@ checksum adapter remains available for diagnostic fixtures.
   speed-adjusted cardinal cost once, round its weighted value to nearest integer,
   then derive the diagonal with the existing `cardinal*14/10` integer rule.
   Ice therefore costs 33 straight and 46 diagonal; grass remains 10/14. Healing
-  gives no discount. Ground profiles remain shared by swim class, independent of
+  gives no discount. Ground cost profiles remain shared by preparation cost, independent of
   unit type, current HP or hospital availability. Strategic travel/influence
   fields retain travel-only costs; route-derived distance estimates include the
   preference penalty and can consequently make long hazardous jobs less attractive.
@@ -341,8 +341,10 @@ checksum adapter remains available for diagnostic fixtures.
   fields and readable maps. Finite field range still limits very long costly routes.
   Idle units on safe ground never wander onto damaging terrain. Idle units already
   exposed follow a lazily built shared reverse escape field, allowing hazardous
-  intermediate steps. Ground fields are keyed by team, swim class and whether the
-  unit is escaping forbidden paint. Air safety fields ignore forbidden paint and
+  intermediate steps. Ground escape fields are keyed by team, movement access and
+  whether the unit is escaping forbidden paint. Amphibious preparation uses the
+  team's most common ratio. A ratio change rebuilds this synchronous derived field
+  on its next query, so eviction and save/load keep identical directions. Air safety fields ignore forbidden paint and
   share across teams.
   Buildings, terrain and forbidden paint invalidate ground fields. Resource edits
   invalidate only the movement classes whose blocking properties changed; stock
@@ -357,7 +359,7 @@ checksum adapter remains available for diagnostic fixtures.
   separate air damage rate. These rules are preferences for travel, not
   guarantees against lethal crossings or overrides of explicit local combat moves.
 - Flyers use movement class 8 in the same material, building, guard, clearing and
-  forbidden gradients as ground units. Ground ratio IDs 0–7 remain unchanged;
+  forbidden gradients as ground units. Legacy ground IDs 0–7 remain readable; live ground lookups use access IDs 0, 3 and 7;
   all flyers share one class regardless of speed or other capabilities. The air
   profile combines `airSpeedQ8` and `airHealthQ8` with the same damage preference,
   integer costs and scalar/SIMD/backend kernels. Flyable terrain and resource
