@@ -6850,6 +6850,8 @@ MCP सर्व्हर सक्षम करा
 ज्वालामुखीची राख
 [glacier_ice]
 हिमनदीचा बर्फ
+[overgrown_road]
+गवताने झाकलेला रस्ता
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
 [script error at %0:%1: %2]

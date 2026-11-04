@@ -5710,6 +5710,8 @@ Ganda gumu
 Majivu ya volkano
 [glacier_ice]
 Barafu ya theluji ya mlimani
+[overgrown_road]
+Barabara iliyomea majani
 [terrain group water]
 Maji
 [terrain group sand]

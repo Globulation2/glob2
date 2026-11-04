@@ -386,3 +386,7 @@ static constexpr int FILE_FORMAT_VERSION_VOLCANIC_ASH = 201;
 //! Built-in glacier ice: TERRAIN_COUNT grew from 42 to 43, so earlier files carry
 //! custom terrain IDs starting at 42 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_GLACIER_ICE = 202;
+
+//! Built-in overgrown road: TERRAIN_COUNT grew from 43 to 44, so earlier files carry
+//! custom terrain IDs starting at 43 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_OVERGROWN_ROAD = 203;

@@ -5734,6 +5734,8 @@ Tvrdá krusta
 Sopečný popel
 [glacier_ice]
 Ledovcový led
+[overgrown_road]
+Zarostlá cesta
 [terrain group water]
 Voda
 [terrain group sand]

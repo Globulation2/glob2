@@ -5734,6 +5734,8 @@ Tvrdá krusta
 Sopečný popol
 [glacier_ice]
 Ľadovcový ľad
+[overgrown_road]
+Zarastená cesta
 [terrain group water]
 Voda
 [terrain group sand]

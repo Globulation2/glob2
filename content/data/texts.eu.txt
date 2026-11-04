@@ -5734,6 +5734,8 @@ Lurrazal gogorra
 Errauts bolkanikoa
 [glacier_ice]
 Glaziar-izotza
+[overgrown_road]
+Landaretzaz estalitako bidea
 [terrain group water]
 Ura
 [terrain group sand]

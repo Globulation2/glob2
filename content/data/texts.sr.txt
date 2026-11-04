@@ -5734,6 +5734,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Вулкански пепео
 [glacier_ice]
 Глечерски лед
+[overgrown_road]
+Зарастао пут
 [terrain group water]
 Вода
 [terrain group sand]

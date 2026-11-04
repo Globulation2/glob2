@@ -5734,6 +5734,8 @@ Twarda skorupa
 Popiół wulkaniczny
 [glacier_ice]
 Lód lodowcowy
+[overgrown_road]
+Zarośnięta droga
 [terrain group water]
 Woda
 [terrain group sand]

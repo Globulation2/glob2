@@ -5734,6 +5734,8 @@ Malmola krusto
 Vulkana cindro
 [glacier_ice]
 Glaĉera glacio
+[overgrown_road]
+Superkreskita vojo
 [terrain group water]
 Akvo
 [terrain group sand]

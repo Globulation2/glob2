@@ -5734,6 +5734,8 @@ Kovettuma
 Vulkaanista tuhkaa
 [glacier_ice]
 Jäätikköjää
+[overgrown_road]
+Umpeen kasvanut tie
 [terrain group water]
 Vesi
 [terrain group sand]

@@ -5734,6 +5734,8 @@ Trda skorja
 ගිනිකඳු අළු
 [glacier_ice]
 Ledeniški led
+[overgrown_road]
+වල් වැඩුණු මාර්ගය
 [terrain group water]
 Voda
 [terrain group sand]

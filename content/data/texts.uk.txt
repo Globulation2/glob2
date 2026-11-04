@@ -5734,6 +5734,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Вулканічний попіл
 [glacier_ice]
 Льодовиковий лід
+[overgrown_road]
+Зарослий шлях
 [terrain group water]
 Вода
 [terrain group sand]

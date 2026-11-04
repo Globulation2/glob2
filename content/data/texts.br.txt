@@ -5734,6 +5734,8 @@ Crosta endurecida
 Ludu menezioù-tan
 [glacier_ice]
 Gelo glacial
+[overgrown_road]
+Hent goloet gant ar geot
 [terrain group water]
 Água
 [terrain group sand]

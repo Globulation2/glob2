@@ -5734,6 +5734,8 @@ Hårdskorpa
 Vulkanaska
 [glacier_ice]
 Glaciäris
+[overgrown_road]
+Igenvuxen väg
 [terrain group water]
 Vatten
 [terrain group sand]

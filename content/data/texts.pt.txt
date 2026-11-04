@@ -5734,6 +5734,8 @@ Crosta endurecida
 Cinza vulcânica
 [glacier_ice]
 Gelo glaciar
+[overgrown_road]
+Estrada coberta de vegetação
 [terrain group water]
 Água
 [terrain group sand]

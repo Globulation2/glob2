@@ -5734,6 +5734,8 @@ Hårdskorpe
 Vulkansk aske
 [glacier_ice]
 Gletsjeris
+[overgrown_road]
+Tilgroet vej
 [terrain group water]
 Vand
 [terrain group sand]

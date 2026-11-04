@@ -5710,6 +5710,8 @@ AI ทำงาน​อย่างไร
 เถ้าภูเขาไฟ
 [glacier_ice]
 น้ำแข็งธารน้ำแข็ง
+[overgrown_road]
+ถนนที่รกด้วยพืช
 [terrain group water]
 น้ำ
 [terrain group sand]

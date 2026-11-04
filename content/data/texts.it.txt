@@ -5734,6 +5734,8 @@ Crosta indurita
 Cenere vulcanica
 [glacier_ice]
 Ghiaccio di ghiacciaio
+[overgrown_road]
+Strada invasa dalla vegetazione
 [terrain group water]
 Acqua
 [terrain group sand]

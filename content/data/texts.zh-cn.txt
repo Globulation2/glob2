@@ -5734,6 +5734,8 @@ AI 生成
 火山灰
 [glacier_ice]
 冰川冰
+[overgrown_road]
+杂草丛生的石路
 [terrain group water]
 水
 [terrain group sand]

@@ -5734,6 +5734,8 @@ Bãi đất cứng
 Tro núi lửa
 [glacier_ice]
 Băng sông băng
+[overgrown_road]
+Con đường cỏ mọc um tùm
 [terrain group water]
 Nước
 [terrain group sand]

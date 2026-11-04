@@ -5734,6 +5734,8 @@ Kemény kéreg
 Vulkáni hamu
 [glacier_ice]
 Gleccserjég
+[overgrown_road]
+Benőtt út
 [terrain group water]
 Víz
 [terrain group sand]

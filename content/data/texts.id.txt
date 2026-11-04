@@ -5734,6 +5734,8 @@ Tanah keras
 Abu vulkanik
 [glacier_ice]
 Es gletser
+[overgrown_road]
+Jalan ditumbuhi tanaman
 [terrain group water]
 Air
 [terrain group sand]
