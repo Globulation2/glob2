@@ -6940,3 +6940,5 @@ A atualização da ordem permanente falhou. Sua ordem está pausada neste dispos
 
 [AI for all computer colonies]
 IA evit an holl drevadennoù meret gant an urzhiataer
+[tundra]
+Douar toundra

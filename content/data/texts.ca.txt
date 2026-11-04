@@ -6940,3 +6940,5 @@ L'actualització de l'ordre permanent ha fallat. La teva ordre està en pausa en
 
 [AI for all computer colonies]
 IA per a totes les colònies controlades per l’ordinador
+[tundra]
+Sòl de tundra

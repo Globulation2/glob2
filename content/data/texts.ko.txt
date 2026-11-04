@@ -6940,3 +6940,5 @@ GL 전용
 
 [AI for all computer colonies]
 모든 컴퓨터 제어 식민지의 AI
+[tundra]
+툰드라 지형

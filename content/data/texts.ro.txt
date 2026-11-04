@@ -6940,3 +6940,5 @@ Actualizarea ordinului permanent a eșuat. Ordinul dvs. este pus pe pauză pe ac
 
 [AI for all computer colonies]
 IA pentru toate coloniile controlate de calculator
+[tundra]
+Sol de tundră

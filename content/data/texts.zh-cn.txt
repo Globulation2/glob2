@@ -6940,3 +6940,5 @@ MCP 服务器
 
 [AI for all computer colonies]
 所有电脑控制殖民地的 AI
+[tundra]
+苔原地面

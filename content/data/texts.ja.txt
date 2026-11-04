@@ -6940,3 +6940,5 @@ GL のみ
 
 [AI for all computer colonies]
 すべてのコンピューター操作コロニーのAI
+[tundra]
+ツンドラ地帯

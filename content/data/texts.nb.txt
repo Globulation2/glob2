@@ -6940,3 +6940,5 @@ Påkrevd venting: %0 ms; venting i eiertråden: %1 ms; låser: %2 ms
 Spillsteg %0: %1 ms forløpt tid
 [script saving failed %0]
 Kunne ikke lagre skriptet i %0
+[tundra]
+Tundramark

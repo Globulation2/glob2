@@ -5651,7 +5651,7 @@ Udongo
 [clay]
 Udongo wa mfinyanzi
 [shale]
-Shale
+Mwamba wa udongo wenye tabaka
 [heath]
 Nyika ya vichaka
 [mud]
@@ -5713,7 +5713,7 @@ Barafu ya theluji ya mlimani
 [overgrown_road]
 Barabara iliyomea majani
 [laterite]
-Laterite
+Udongo wa lateriti
 [terrain group water]
 Maji
 [terrain group sand]
@@ -6940,3 +6940,5 @@ Amri haijathibitishwa. Fungua kamanda ili ujaribu tena; ujumbe wako umehifadhiwa
 
 [hive standing order update failed]
 Usasishaji wa amri inayoendelea umeshindwa. Amri yako imesitishwa kwa muda kwenye kifaa hiki; jaribu tena kwa kutumia kidhibiti husika.
+[tundra]
+Ardhi ya tundra

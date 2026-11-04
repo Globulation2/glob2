@@ -6940,3 +6940,5 @@ Uppdateringen av den stående ordern misslyckades. Din order är pausad på den 
 
 [AI for all computer colonies]
 AI för alla datorstyrda kolonier
+[tundra]
+Tundramark

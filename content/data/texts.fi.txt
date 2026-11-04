@@ -6940,3 +6940,5 @@ Pysyvän käskyn päivitys epäonnistui. Käskysi on keskeytetty tällä laittee
 
 [AI for all computer colonies]
 Tekoäly kaikille tietokoneen ohjaamille siirtokunnille
+[tundra]
+Tundramaa

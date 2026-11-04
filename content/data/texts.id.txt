@@ -6940,3 +6940,5 @@ Pembaruan perintah tetap gagal. Perintah Anda dijeda pada perangkat ini; coba la
 
 [AI for all computer colonies]
 AI untuk semua koloni yang dikendalikan komputer
+[tundra]
+Tanah tundra
