@@ -43,6 +43,7 @@ struct Run
 struct Entry
 {
     std::vector<int> frames;
+    std::uint64_t frameRevision = 0;
     std::vector<Run> runs;
     unsigned buffer = 0;
     std::size_t bytes = 0;
@@ -271,15 +272,17 @@ MapGeometryCache::Stats MapGeometryCache::stats() const
 }
 
 bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
-    const std::function<void()>& emit, int firstTile, int lastTile, float translateX, float translateY)
+    const std::function<void()>& emit, int firstTile, int lastTile, float translateX, float translateY, std::uint64_t frameRevision)
 {
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
     auto& cache = *impl;
     if (cache.batch->active()) return false;
     MatrixScope matrix(translateX, translateY);
     auto found = cache.entries.find(key);
-    if (found != cache.entries.end() && found->second.frames == frames)
+    if (found != cache.entries.end() && (frameRevision ? found->second.frameRevision == frameRevision :
+                                         found->second.frames == frames))
     {
+        found->second.frameRevision = frameRevision;
         found->second.touched = ++cache.clock;
         ++cache.counters.hits;
         cache.replay(found->second, firstTile, lastTile);
@@ -308,6 +311,7 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
     try
     {
         entry.frames = frames;
+        entry.frameRevision = frameRevision;
         cache.batch->beginCapture([&](const QueueKey& drawKey, const std::vector<QueueVertex>& input)
         {
             // This cache accepts static sprite quads only. Reject rather than

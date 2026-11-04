@@ -449,8 +449,9 @@ int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t se
 	// A salt distinct from the ground variant's, so the two choices are independent.
 	return frames[hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % frames.size()];
 }
-int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t tick, std::uint32_t seed) const
+int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t tick, std::uint32_t seed, bool *animated) const
 {
+	if (animated) *animated = false;
 	const auto &o = materials[id].overlay;
 	if (o.cycles.empty())
 		return -1;
@@ -459,6 +460,7 @@ int Catalog::overlayFrame(MaterialId id, int x, int y, std::uint32_t tick, std::
 	if (int(hash(x, y, salt ^ 0x6a1170u) & 255u) >= o.densityQ8)
 		return -1;
 	const auto &cycle = o.cycles[hash(x, y, salt ^ 0x6a1171u) % o.cycles.size()];
+	if (animated) *animated = cycle.size() > 1;
 	const std::uint32_t step = tick / std::uint32_t(o.ticks) + hash(x, y, salt ^ 0x6a1172u);
 	return cycle[step % cycle.size()];
 }

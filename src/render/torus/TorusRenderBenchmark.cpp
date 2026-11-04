@@ -206,6 +206,46 @@ class TorusRenderBenchmark
 #endif
     }
 
+#ifdef HAVE_OPENGL
+    static void profileArrayChurn(GAGCore::GraphicContext &gfx)
+    {
+        auto *batch = gfx.getRenderBatch();
+        if (!batch) throw std::runtime_error("Array churn requires legacy OpenGL");
+        constexpr int side = 256;
+        std::array<GLuint, 16> textures{};
+        std::vector<Uint8> pixels(side * side * 4, 255);
+        glGenTextures(textures.size(), textures.data());
+        for (int cycle = 0; cycle <= 20; ++cycle)
+        {
+            unsigned promoted = 0;
+            for (const auto texture : textures)
+            {
+                batch->textureChanged(texture);
+                GLint previous = 0;
+                glGetIntegerv(GL_TEXTURE_BINDING_2D, &previous);
+                glBindTexture(GL_TEXTURE_2D, texture);
+                if (cycle == 0)
+                {
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, side, side, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+                }
+                else
+                {
+                    pixels.front() = Uint8(cycle);
+                    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+                }
+                glBindTexture(GL_TEXTURE_2D, previous);
+                promoted += batch->pack(texture).texture != 0;
+            }
+            std::printf("GL_ARRAY_CHURN cycle=%d promoted=%u sources=%zu\n", cycle, promoted, textures.size());
+            batch->stats();
+        }
+        for (const auto texture : textures) batch->textureChanged(texture);
+        glDeleteTextures(textures.size(), textures.data());
+    }
+#endif
+
 public:
 static int run(int argc, char **argv)
 {
@@ -235,6 +275,14 @@ static int run(int argc, char **argv)
 #ifdef HAVE_OPENGL
     if(SDL_GL_GetCurrentContext())SDL_GL_SetSwapInterval(0);
 #endif
+#ifdef HAVE_OPENGL
+    if (std::getenv("GLOB2_BENCH_ARRAY_CHURN"))
+    {
+        profileArrayChurn(*gfx);
+        delete globalContainer;
+        return 0;
+    }
+#endif
     if(gfx->renderDevice() && std::getenv("GLOB2_BENCH_COMPARE_RENDERER"))
         throw std::runtime_error("The immediate-versus-batched comparison requires legacy GL");
     {
@@ -255,8 +303,16 @@ static int run(int argc, char **argv)
             int w = 0, h = 0;
             assert(std::sscanf(size, "%dx%d", &w, &h) == 2);
             gui.init();
-            makeTorusMapFixture(gui.game, w, h);
-            path = "synthetic checkerboard";
+            const bool sparseTerrain = std::getenv("GLOB2_BENCH_SPARSE_TERRAIN");
+            makeTorusMapFixture(gui.game, w, h, sparseTerrain ? 32 : 4);
+            if (std::getenv("GLOB2_BENCH_RESOURCE_ROWS"))
+            {
+                gui.game.map.worldRandom.initialize(1);
+                for (int row = 0; row < h; ++row)
+                    for (int col = (row % 2) * 4; col < w; col += 8)
+                        gui.game.map.setResourceByIndex(col, row, WOOD, 1);
+            }
+            path = sparseTerrain ? "synthetic sparse checkerboard" : "synthetic checkerboard";
         }
         else
         {
@@ -351,6 +407,10 @@ static int run(int argc, char **argv)
                             static_cast<unsigned long long>(cache->cacheHits()),
                             static_cast<unsigned long long>(cache->cacheReductions()),
                             cache->samplingResolution(), cache->samplingReduction());
+                    const auto &rows = gui.view.render.resourceRowMetrics;
+                    std::printf("FRAME_RESOURCE_ROWS frame=%d eligibility_cells=%llu frame_cells=%llu animated_cells=%llu\n", i,
+                        static_cast<unsigned long long>(rows.eligibilityCells), static_cast<unsigned long long>(rows.frameCells),
+                        static_cast<unsigned long long>(rows.animatedCells));
                     if (gui.view.render.overviewCache)
                         std::printf("FRAME_OVERVIEW frame=%d composed_cells=%llu\n", i,
                             static_cast<unsigned long long>(gui.view.render.overviewCache->composedCells()));

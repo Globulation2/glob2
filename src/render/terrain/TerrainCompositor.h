@@ -100,7 +100,7 @@ class Compositor
 	GAGCore::Sprite *overlaySprite() const { return sharedOverlaySprite; }
 	GAGCore::Sprite *overlaySprite(MaterialId id) const { return overlaySprites.at(id); }
 	GAGCore::Sprite *overlaySprite(const SceneMap &map, int x, int y) const;
-	int overlayFrame(const SceneMap &, int x, int y) const;
+	int overlayFrame(const SceneMap &, int x, int y, bool *animated = nullptr) const;
     struct PreparedMaterialView
     {
         unsigned variant = 0;

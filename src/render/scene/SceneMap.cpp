@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SceneMap.h"
+#include "MapChangeTracking.h"
 #include "MapAssetBundle.h"
 
 #include "TerrainRegistry.h"
@@ -123,6 +124,28 @@ void SceneMap::prepareChunk(size_t first,size_t count)
         }
     }
     if (end==size_t(w)*h) derivedComplete=true;
+}
+
+Uint64 SceneMap::terrainRevision() const { return snapshot->terrain->revision; }
+
+void SceneMap::resourceRowRevisions(std::span<Uint64> rows) const
+{
+    constexpr auto side = MapState::ChunkGeometry::Side;
+    const auto &chunks = snapshot->resources->stamps.chunks;
+    const auto wide = (std::size_t(w) + side - 1) / side;
+    const auto high = (std::size_t(h) + side - 1) / side;
+    if (chunks.size() != wide * high)
+    {
+        std::fill(rows.begin(), rows.end(), resourceRevision);
+        return;
+    }
+    // Each changed chunk receives a new value from one monotonic sequence.
+    for (std::size_t band = 0; band < high; ++band)
+    {
+        const auto begin = chunks.begin() + band * wide;
+        const auto revision = *std::max_element(begin, begin + wide);
+        std::fill_n(rows.begin() + band * side, std::min(side, rows.size() - band * side), revision);
+    }
 }
 
 TerrainType SceneMap::vertexTerrainAt(int x, int y) const

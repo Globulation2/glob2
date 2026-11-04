@@ -347,7 +347,7 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 	};
 
 	if (!overviewOnly)
-		tilePass(&Game::drawMapResources, scene.map);
+		tilePass(&Game::drawMapResources, scene.map, &view.render);
 	tilePass(&Game::drawMapOverview, scene.map, view.render);
 	tilePass(&Game::drawMapTerritory, scene, view.render.detail.strategic);
 	scenePass(&Game::drawMapGroundUnits, view, scene);

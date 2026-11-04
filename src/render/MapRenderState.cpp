@@ -6,6 +6,7 @@
 #include "GlobalContainer.h"
 #include "SoftwareTerrainCache.h"
 #include "OverviewTerrainCache.h"
+#include "ResourceRowCache.h"
 #include "UnitEffectArt.h"
 
 MapRenderState::MapRenderState() = default;

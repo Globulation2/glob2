@@ -194,6 +194,8 @@ class ProgrammableGLDevice final : public RenderDevice
     int width = 0, height = 0, maxTexture = 0;
     std::uint64_t epoch = 1, issued = 0, completed = 0;
     bool frameOpen = false;
+    bool swappedForFrame = false;
+    bool swapFullFrames = false;
     using TextureKey = std::tuple<std::uint32_t, std::uint32_t, std::uint64_t>;
     static TextureKey key(const TextureSnapshot &snapshot)
     { return {snapshot->handle.slot, snapshot->handle.generation, snapshot->contentRevision}; }
@@ -347,6 +349,7 @@ class ProgrammableGLDevice final : public RenderDevice
         if (committedFramebuffer) gl.glDeleteFramebuffers(1,&committedFramebuffer);
         if (committedTexture) gl.glDeleteTextures(1,&committedTexture);
         width = w; height = h;
+        swappedForFrame = false;
         gl.glGenTextures(1, &screenTexture); gl.glBindTexture(GL_TEXTURE_2D, screenTexture);
         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -363,6 +366,40 @@ class ProgrammableGLDevice final : public RenderDevice
         if(gl.glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE)throw std::runtime_error("Completed output framebuffer incomplete");
         gl.glClear(GL_COLOR_BUFFER_BIT);
         check("Create output");
+    }
+    bool beginsFullRedraw(const RenderFrame &frame)
+    {
+        if (!swapFullFrames || frame.packets.empty()) return false;
+        const auto &packet = frame.packets.front();
+        if (packet.target || packet.viewport || packet.depth != DrawPacket::Depth::Disabled ||
+            packet.depthWrite || packet.cull != DrawPacket::Cull::Disabled)
+            return false;
+        const float logicalW = packet.targetLogicalWidth > 0 ? packet.targetLogicalWidth : frame.logicalWidth;
+        const float logicalH = packet.targetLogicalHeight > 0 ? packet.targetLogicalHeight : frame.logicalHeight;
+        const auto bounds = clip(packet, width, height, logicalW, logicalH);
+        if (bounds.x || bounds.y || bounds.w != width || bounds.h != height)
+            return false;
+        if (packet.kind == DrawPacket::Kind::Clear)
+            return packet.clearColor && !packet.clip && !packet.targetScissor && !packet.transform.bounds;
+        if (packet.kind != DrawPacket::Kind::Fill || packet.material != DrawPacket::Material::Primitive ||
+            packet.texture || packet.alpha != 255 || packet.color.a != 255 ||
+            (packet.blend != DrawPacket::Blend::Automatic && packet.blend != DrawPacket::Blend::Opaque &&
+             packet.blend != DrawPacket::Blend::SourceOver))
+            return false;
+        const auto &rect = packet.destination;
+        const auto &t = packet.transform;
+        const float x = rect.x * t.scale + t.x, y = rect.y * t.scale + t.y;
+        return x <= 0 && y <= 0 && x + rect.w * t.scale >= logicalW && y + rect.h * t.scale >= logicalH;
+    }
+    void swapFrameColor()
+    {
+        // Keep the screen framebuffer's depth attachment. Only its color
+        // backing changes, and a discarded redraw can reattach the old color.
+        std::swap(screenTexture, committedTexture);
+        gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, screenFramebuffer);
+        gl.glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
+        gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, committedFramebuffer);
+        gl.glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, committedTexture, 0);
     }
     Allocation allocate(TextureSnapshot snapshot, bool premultiplied, bool target)
     {
@@ -945,6 +982,8 @@ class ProgrammableGLDevice final : public RenderDevice
   public:
     ProgrammableGLDevice(SDL_Window *window, const std::string &directory) : window(window)
     {
+        const char *swap = SDL_getenv_unsafe("GLOB2_SWAP_FULL_GL_FRAMES");
+        swapFullFrames = swap && std::strcmp(swap, "1") == 0;
         if (!window) throw std::invalid_argument("GL rendering requires an OPENGL window");
         context = SDL_GL_CreateContext(window);
         if (!context) throw std::runtime_error(SDL_GetError());
@@ -1053,9 +1092,17 @@ class ProgrammableGLDevice final : public RenderDevice
         screen();
         if(!frameOpen){
             beginTiming();
-            gl.glDisable(GL_SCISSOR_TEST);gl.glBindFramebuffer(GL_READ_FRAMEBUFFER,screenFramebuffer);gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER,committedFramebuffer);
-            gl.glBlitFramebuffer(0,0,width,height,0,0,width,height,GL_COLOR_BUFFER_BIT,GL_NEAREST);
-            check("Retain completed renderer output");frameOpen=true;
+            swappedForFrame = beginsFullRedraw(frame);
+            frameOpen = true;
+            if (swappedForFrame)
+                swapFrameColor();
+            else {
+                gl.glDisable(GL_SCISSOR_TEST);
+                gl.glBindFramebuffer(GL_READ_FRAMEBUFFER,screenFramebuffer);
+                gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER,committedFramebuffer);
+                gl.glBlitFramebuffer(0,0,width,height,0,0,width,height,GL_COLOR_BUFFER_BIT,GL_NEAREST);
+            }
+            check("Retain completed renderer output");
         }
         auto &geometry = vertexScratch;
         geometry.clear();
@@ -1128,8 +1175,15 @@ class ProgrammableGLDevice final : public RenderDevice
         if(!frameOpen)return;
         endTiming();
         ++counts.deferredFrames;
-        gl.glDisable(GL_SCISSOR_TEST);gl.glBindFramebuffer(GL_READ_FRAMEBUFFER,committedFramebuffer);gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER,screenFramebuffer);
-        gl.glBlitFramebuffer(0,0,width,height,0,0,width,height,GL_COLOR_BUFFER_BIT,GL_NEAREST);
+        if (swappedForFrame) {
+            swapFrameColor();
+            swappedForFrame = false;
+        } else {
+            gl.glDisable(GL_SCISSOR_TEST);
+            gl.glBindFramebuffer(GL_READ_FRAMEBUFFER,committedFramebuffer);
+            gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER,screenFramebuffer);
+            gl.glBlitFramebuffer(0,0,width,height,0,0,width,height,GL_COLOR_BUFFER_BIT,GL_NEAREST);
+        }
         const auto fence=gl.glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE,0);
         if(!fence)throw std::runtime_error("Cannot fence deferred renderer frame");
         pending.push_back({{++issued,epoch},fence});frameOpen=false;gl.glFlush();poll();

@@ -19,7 +19,9 @@ class ColonySkinPreview;
 class UnitEffectArt;
 namespace GAGCore { class DrawableSurface; }
 class SoftwareTerrainCache;
+
 class OverviewTerrainCache;
+class ResourceRowCache;
 
 //! Presentation state one map view keeps between frames: animation phases, the
 //! cloud field, the terrain page cache and scratch buffers. Owned by the
@@ -82,10 +84,16 @@ struct MapRenderState
 	//! The terrain page cache for map, rebuilt when the map was replaced.
 	//! May throw std::bad_alloc; callers fall back to uncached terrain.
 	SoftwareTerrainCache &terrainCache(Uint64 mapIdentity);
+    struct ResourceRowMetrics { std::uint64_t eligibilityCells = 0, frameCells = 0, animatedCells = 0; };
+    ResourceRowMetrics resourceRowMetrics;
+
+    std::unique_ptr<ResourceRowCache> resourceRows;
+
 	//! The current terrain page cache, or null if none was created yet.
 	SoftwareTerrainCache *existingTerrainCache() const { return terrainCache_.get(); }
 
 private:
+
 	std::unique_ptr<DynamicClouds> clouds_;
 	std::unique_ptr<ColonySkinPreview> skinPreview_;
 	std::unique_ptr<UnitEffectArt> effectArt_;
