@@ -1,0 +1,15 @@
+{
+  "base": "7c5bb968a59a8c3526e7567d02f5734c90e85666",
+  "results": [
+    {
+      "name": "baseline",
+      "exit_code": 1
+    },
+    {
+      "name": "fixed",
+      "exit_code": 0
+    }
+  ],
+  "change": "Only Slovenian [cliffs] and [molten_lava_pool] labels replace accidental Sinhala. No font/runtime/simulation/save/replay changes.",
+  "hosted_failure": "https://github.com/Globulation2/glob2/actions/runs/41882197351/job/126785883033"
+}
