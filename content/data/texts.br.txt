@@ -5724,6 +5724,12 @@ Campo de pedra-pomes
 Lago congelado
 [wind_swept_snow]
 Neve varrida pelo vento
+[weathered_sandstone]
+Arenito desgastado
+[windy_sand_dune]
+Dunas de vento
+[hardpan]
+Crosta endurecida
 [terrain group water]
 Água
 [terrain group sand]

@@ -31,7 +31,7 @@
 struct GradientRuntime
 {
     std::map<const Uint16*,int> fieldCosts;
-    int loadingGradientVersion=197;
+    int loadingGradientVersion=200;
     std::shared_ptr<GradientKernelWork::Sink> workSink;
     std::unique_ptr<ResourceGradientProbe> qualityProbe;
     AdaptiveGradientState adaptive;

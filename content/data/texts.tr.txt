@@ -5724,6 +5724,12 @@ Sünger taşı alanı
 Donmuş göl
 [wind_swept_snow]
 Rüzgârın savurduğu kar
+[weathered_sandstone]
+Aşınmış kumtaşı
+[windy_sand_dune]
+Rüzgâr dalgalı kumullar
+[hardpan]
+Sert kabuk
 [terrain group water]
 Su
 [terrain group sand]

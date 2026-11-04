@@ -5700,6 +5700,12 @@ Pumice field
 Frozen lake
 [wind_swept_snow]
 Wind-swept snow
+[weathered_sandstone]
+Weathered sandstone
+[windy_sand_dune]
+Windy sand dune
+[hardpan]
+Hardpan
 [terrain group water]
 Water
 [terrain group sand]

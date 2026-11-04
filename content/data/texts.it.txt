@@ -5724,6 +5724,12 @@ Campo di pomice
 Lago ghiacciato
 [wind_swept_snow]
 Neve spazzata dal vento
+[weathered_sandstone]
+Arenaria erosa
+[windy_sand_dune]
+Dune increspate dal vento
+[hardpan]
+Crosta indurita
 [terrain group water]
 Acqua
 [terrain group sand]

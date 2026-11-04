@@ -5700,6 +5700,12 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 জমে যাওয়া হ্রদ
 [wind_swept_snow]
 বাতাসে ওড়া তুষার
+[weathered_sandstone]
+ক্ষয়প্রাপ্ত বেলেপাথর
+[windy_sand_dune]
+বাতাসে ঢেউ খেলানো বালিয়াড়ি
+[hardpan]
+শক্ত মাটির স্তর
 [terrain group water]
 জল
 [terrain group sand]

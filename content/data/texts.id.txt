@@ -5724,6 +5724,12 @@ Hamparan batu apung
 Danau beku
 [wind_swept_snow]
 Salju tersapu angin
+[weathered_sandstone]
+Batu pasir lapuk
+[windy_sand_dune]
+Bukit pasir berangin
+[hardpan]
+Tanah keras
 [terrain group water]
 Air
 [terrain group sand]

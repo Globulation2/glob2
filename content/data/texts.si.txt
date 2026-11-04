@@ -5724,6 +5724,12 @@ Polje plovca
 Zamrznjeno jezero
 [wind_swept_snow]
 Zameten sneg
+[weathered_sandstone]
+Preperel peščenjak
+[windy_sand_dune]
+Vetrovne sipine
+[hardpan]
+Trda skorja
 [terrain group water]
 Voda
 [terrain group sand]

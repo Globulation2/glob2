@@ -5700,6 +5700,12 @@ AI کی بنائی ہوئی نہیں
 منجمد جھیل
 [wind_swept_snow]
 ہوا سے اڑی برف
+[weathered_sandstone]
+گھسا ہوا ریتلا پتھر
+[windy_sand_dune]
+ہوا سے لہردار ٹیلے
+[hardpan]
+سخت تہہ
 [terrain group water]
 پانی
 [terrain group sand]

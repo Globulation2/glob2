@@ -5724,6 +5724,12 @@ Puimsteenveld
 Bevroren meer
 [wind_swept_snow]
 Verwaaide sneeuw
+[weathered_sandstone]
+Verweerde zandsteen
+[windy_sand_dune]
+Windribbels in duinzand
+[hardpan]
+Harde korst
 [terrain group water]
 Water
 [terrain group sand]

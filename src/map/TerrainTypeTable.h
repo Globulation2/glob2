@@ -86,6 +86,13 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(FROZEN_LAKE, G::Ice, "frozen_lake", "[frozen_lake]", {128, 160, 174}, {141, 172, 185}),
 		// Snow carved by the wind into drifts: plays exactly like deep snow.
 		authored(WIND_SWEPT_SNOW, G::Rough, "wind_swept_snow", "[wind_swept_snow]", {202, 206, 226}, {202, 206, 226}),
+		// Solid ochre bedrock worn into rounded slabs: plays exactly like dirt.
+		authored(WEATHERED_SANDSTONE, G::Barren, "weathered_sandstone", "[weathered_sandstone]", {150, 124, 76},
+				 {166, 138, 86}),
+		// Sand in wind ripples: plays exactly like sand.
+		authored(WINDY_SAND_DUNE, G::Sand, "windy_sand_dune", "[windy_sand_dune]", {212, 182, 134}, {214, 184, 136}),
+		// Pale baked crust in small cracked pillows: plays exactly like mud and scree.
+		authored(HARDPAN, G::Rough, "hardpan", "[hardpan]", {196, 188, 176}, {212, 204, 192}),
 	}};
 	return rows;
 }();

@@ -5700,6 +5700,12 @@ Uwanda wa mawe ya pumisi
 Ziwa lililoganda
 [wind_swept_snow]
 Theluji iliyopeperushwa na upepo
+[weathered_sandstone]
+Mchanga-mawe uliomomonyoka
+[windy_sand_dune]
+Matuta ya mchanga ya upepo
+[hardpan]
+Ganda gumu
 [terrain group water]
 Maji
 [terrain group sand]

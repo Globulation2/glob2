@@ -792,7 +792,7 @@ void Map::loadGradient(GAGCore::InputStream* stream,Uint16*& field,size_t cells,
     gradientRuntime->fieldCosts.erase(field);
     loadGradientCells(stream,field,cells,packed);
     if(field) {
-        const int cost=gradientRuntime->loadingGradientVersion>=197 ? stream->readUint8("preparationCost") : legacyCost;
+        const int cost=gradientRuntime->loadingGradientVersion>=FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY ? stream->readUint8("preparationCost") : legacyCost;
         if(cost<0 || cost>=MOVEMENT_CLASS_COUNT || movementAccessFromLegacy(cost)!=movementAccessFromLegacy(legacyCost))throw std::runtime_error("Invalid field preparation cost");
         recordFieldCost(field,cost);
     }
@@ -1563,7 +1563,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
             for (auto* building : game->teams[t]->liveBuildings.entries()) building->freeGradients();
         }
     }
-    if(versionMinor<197)consolidateLegacyRoutingFields();
+    if(versionMinor<FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY)consolidateLegacyRoutingFields();
     // Loaded and discarded slots bypassed publishPlane.
     rebuildPlaneRegistry();
 }

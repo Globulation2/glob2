@@ -6840,6 +6840,12 @@ Parang ng pumice
 Nagyelong lawa
 [wind_swept_snow]
 Niyebeng tinangay ng hangin
+[weathered_sandstone]
+Lumang batong-buhangin
+[windy_sand_dune]
+Mahanging buhangin ng burol
+[hardpan]
+Matigas na lupa
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
 [script error at %0:%1: %2]

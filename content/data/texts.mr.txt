@@ -6840,6 +6840,12 @@ MCP सर्व्हर सक्षम करा
 गोठलेले सरोवर
 [wind_swept_snow]
 वाऱ्याने उडालेले बर्फ
+[weathered_sandstone]
+झिजलेला वालुकाश्म
+[windy_sand_dune]
+वाऱ्याने लहरलेल्या वाळूच्या टेकड्या
+[hardpan]
+कठीण थर
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
 [script error at %0:%1: %2]

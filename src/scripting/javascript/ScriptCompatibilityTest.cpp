@@ -136,9 +136,9 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::HeadlessGlobals globals(options);
 	// Replenishment staffing changes require the current replay acceptance floor.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 197);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 200);
 	CHECK(VERSION_MINOR >= REPLAY_MINIMUM_VERSION_MINOR);
-	CHECK(FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY == 197);
+	CHECK(FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY == 200);
 
 	CHECK(NET_PROTOCOL_VERSION == 75);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);

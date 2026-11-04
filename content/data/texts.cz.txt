@@ -5724,6 +5724,12 @@ Pemzové pole
 Zamrzlé jezero
 [wind_swept_snow]
 Navátý sníh
+[weathered_sandstone]
+Zvětralý pískovec
+[windy_sand_dune]
+Větrem zvlněné duny
+[hardpan]
+Tvrdá krusta
 [terrain group water]
 Voda
 [terrain group sand]

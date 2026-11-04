@@ -1203,6 +1203,62 @@ def render_shale(ctx):
     return barren_mark(ctx, rgb, p["crack"], cells=4, strength=0.7, fade=0.15), None
 
 
+@recipe(name="weathered_sandstone", group="barren", label="Weathered sandstone", profile="rock",
+        border_class="solid", seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
+        palette={"tones": [(182, 152, 86), (170, 140, 76), (188, 162, 98), (164, 132, 72), (176, 150, 92)],
+                 "rust": (150, 98, 54), "pale": (206, 192, 142), "joint": (110, 88, 56), "crack": (100, 80, 52)},
+        style=Style(luma=134, std=12, grain_max=14, match=0.75), periodic=True, grid=8, blocks=4)
+def render_weathered_sandstone(ctx):
+    """Weathered sandstone: one solid bed of ochre stone worn into rounded,
+    pillowed blocks with fine joints, faint bedding, iron stain and pale
+    nodules, under the barren group's cracks."""
+    p = RECIPES["weathered_sandstone"].palette
+    size, shared, own = ctx.size, ctx.shared_rng, ctx.rng
+    cells = 2
+    f1, f2, ids, common1, common2, common_ids = block_worley(ctx, cells)
+    common_x, common_y = fbm(shared, 4, 2, size=size), fbm(shared, 4, 2, size=size)
+    wx = blend_fields(common_x, fbm(own, 4, 2, size=size), ctx.interior_mask)
+    wy = blend_fields(common_y, fbm(own, 4, 2, size=size), ctx.interior_mask)
+    edge = domain_warp([b - a for a, b in zip(f1, f2)], wx, wy, 10)
+    common_edge = domain_warp([b - a for a, b in zip(common1, common2)], common_x, common_y, 10)
+    common_wear = fbm(shared, 4, 2, size=size)
+    wear = blend_fields(common_wear, fbm(own, 4, 2, size=size), ctx.interior_mask)
+
+    def relief(e, w):
+        # A broad, low dome per slab, gently undulating on top.
+        return 0.9 * smoothstep(0.0, 0.7, e) + 0.1 * w
+
+    height = [relief(e, w) for e, w in zip(edge, wear)]
+    common = [relief(e, w) for e, w in zip(common_edge, common_wear)]
+    count = cells * ctx.area_scale
+    tones = [p["tones"][int(shared.random() * len(p["tones"]))] for _ in range(count)]
+    rgb = [[tones[i][k] for i in ids] for k in range(3)]
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(shared, count, 0.05))
+    bedding = layout_field(ctx, lambda rng: fbm(rng, 3, 2, cells_y=20, size=size))
+    rgb = [[c * (0.93 + 0.14 * v) for c, v in zip(ch, bedding)] for ch in rgb]
+    stain = layout_field(ctx, lambda rng: fbm(rng, 3, 3, size=size))
+    rgb = mix(rgb, p["rust"], [smoothstep(0.52, 0.8, v) for v in stain], 0.5)
+    bloom = layout_field(ctx, lambda rng: fbm(rng, 9, 3, size=size))
+    rgb = mix(rgb, p["pale"], [smoothstep(0.5, 0.75, b) * smoothstep(0.55, 0.85, h) for b, h in zip(bloom, height)], 0.45)
+    nodules = layout_field(ctx, lambda rng: sandstone_nodules(rng, size))
+    rgb = mix(rgb, p["pale"], nodules, 0.6)
+    height = [h + 0.04 * n for h, n in zip(height, nodules)]
+    speck = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))
+    rgb = [[c * (0.95 + 0.10 * v) for c, v in zip(ch, speck)] for ch in rgb]
+    rgb = shade(rgb, height, 0.15, reference_height=common)
+    rgb = cast(rgb, height, p["joint"], reach=2, strength=0.15)
+    rgb = mix(rgb, p["joint"], band(edge, 0.012, 0.025), 0.85)
+    return barren_mark(ctx, rgb, p["crack"], cells=4, strength=0.55, fade=0.22), None
+
+
+def sandstone_nodules(rng, size):
+    """Small pale concretions weathered out of the stone, 2-3 native px."""
+    mask = [0.0] * (size * size)
+    for _ in range(10 * (size // N) ** 2):
+        stamp_disc(mask, rng.random() * size, rng.random() * size, rng.uniform(4.5, 6.5), softness=0.5)
+    return mask
+
+
 @recipe(name="heath", group="barren", label="Heath", profile="brush", border_class="solid",
         seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
         palette={"dark": (108, 98, 86), "mid": (126, 116, 102), "light": (138, 128, 114),
@@ -1395,6 +1451,66 @@ def render_pumice(ctx):
     rgb = mix(rgb, p["hole"], pit, 0.9)
     rust = layout_field(ctx, lambda rng: fbm(rng, 14, 2, size=size))
     return mix(rgb, p["rust"], [smoothstep(0.74, 0.88, v) * r for v, r in zip(rust, rock)], 0.4), None
+
+
+@recipe(name="hardpan", group="rough", label="Hardpan", profile="soil", border_class="solid", seam={"height": 1},
+        palette={"dark": (186, 176, 164), "mid": (214, 204, 190), "light": (232, 224, 212),
+                 "crack": (104, 94, 88), "dimple": (180, 170, 158), "damp": (150, 138, 124),
+                 "glint": (196, 188, 176)},
+        style=Style(luma=176, std=20, grain_max=14, match=0.8), periodic=True, grid=8, blocks=4)
+def render_hardpan(ctx):
+    """Hardpan: the rough group's heavy lumps as small, tightly packed, low
+    pillows of chalky baked crust, split by thin cracks, dimpled at their
+    centres, with a few cells sunk into shallow damp hollows."""
+    p, size = RECIPES["hardpan"].palette, ctx.size
+    # About six pillows per tile, far finer than mudflat's plates. As in
+    # `lumps`, but each cell's rise is capped by its own widest F2-F1, so the
+    # narrow cells of a random point clump still reach a lit top instead of
+    # sinking under the crack threshold. Pits are shallow, not cliffs.
+    f1, f2, ids, c1, c2, cids = block_worley(ctx, 6)
+    count = 6 * ctx.area_scale
+    sunk = [ctx.shared_rng.random() < 0.03 for _ in range(count)]
+
+    def pillows(a_field, b_field, id_field):
+        reach = [0.0] * count
+        for a, b, i in zip(a_field, b_field, id_field):
+            reach[i] = max(reach[i], b - a)
+        rise = [max(0.05, min(0.35, 0.8 * r)) for r in reach]
+        return [smoothstep(0.0, rise[i], b - a) * (-0.3 if sunk[i] else 1.0)
+                for a, b, i in zip(a_field, b_field, id_field)]
+
+    height, common = pillows(f1, f2, ids), pillows(c1, c2, cids)
+    # Round the outlines into soft blobs; the reference takes the common warp.
+    common_x, common_y = fbm(ctx.shared_rng, 4, 2, size=size), fbm(ctx.shared_rng, 4, 2, size=size)
+    wx = blend_fields(common_x, fbm(ctx.rng, 4, 2, size=size), ctx.interior_mask)
+    wy = blend_fields(common_y, fbm(ctx.rng, 4, 2, size=size), ctx.interior_mask)
+    height, common = domain_warp(height, wx, wy, 10), domain_warp(common, common_x, common_y, 10)
+    tone = layout_field(ctx, lambda rng: fbm(rng, 10, 3, size=size))
+    rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(ctx.shared_rng, count, 0.04))
+
+    def dimples(rng):
+        holes = [0.0] * (size * size)
+        for _ in range(15 * (size // N) ** 2):
+            x, y = rng.random() * size, rng.random() * size
+            stamp_disc(holes, x, y, rng.uniform(4.0, 7.0), softness=0.6)
+        return holes
+
+    # Dimples dent only the pillow centres, so the bevel lights their far rim.
+    holes = layout_field(ctx, dimples)
+    dent = [v * smoothstep(0.6, 0.9, h) for v, h in zip(holes, height)]
+    rgb = mix(rgb, p["dimple"], dent, 0.35)
+    height = [h - 0.2 * d for h, d in zip(height, dent)]
+    fine = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))
+    rgb = [[c * (1 + 0.04 * (v - 0.5) * 2) for c, v in zip(ch, fine)] for ch in rgb]
+    # Finer, crenellated polygon edges rather than straight Voronoi lines.
+    (*rgb, height), (common,) = jag(ctx, [*rgb, height], [common], 4, cells=16)
+    rgb = shade(rgb, height, 0.2, reference_height=common)
+    # Cracks outline every cell, sunken ones included.
+    crack = [1 - smoothstep(0.02, 0.10, abs(h)) for h in height]
+    rgb = mix(rgb, p["crack"], crack, 0.8)
+    pit = [smoothstep(0.05, 0.2, -h) for h in height]
+    return wet_pits(rgb, height, common, pit, p["damp"], p["glint"], depth=0.6), None
 
 
 def warped_edges(ctx, cells, warp, cells_warp=4):
@@ -2080,6 +2196,62 @@ def render_pale_sand(ctx):
     p = RECIPES["pale_sand"].palette
     rgb, flecks = sand_look(ctx, p)
     return mix(rgb, p["shell"], flecks, 0.7), None
+
+
+# Wind ripples run across the wind that drives the water swell (WAVE_SWELL's
+# main term, toward the lower right), so dune crests and wave crests share one
+# angle. Whole wave numbers on the block keep the ripples periodic; a second
+# family one cycle denser drifts out of phase with the first, and switching
+# between them breaks crests into forks and ends.
+RIPPLE_WIND = (2, 1)
+RIPPLE_CYCLES = 6
+RIPPLE_CREST = 0.68  # fraction of each ripple that is the long windward rise
+
+
+@recipe(name="windy_sand_dune", group="sand", label="Windy sand dune", profile="sand", border_class="solid",
+        seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
+        palette={"dark": (184, 148, 98), "mid": (212, 180, 130), "light": (236, 212, 166), "lee": (168, 132, 88)},
+        style=Style(luma=184, std=20, grain_max=26, match=0.9), periodic=True, grid=8, blocks=4)
+def render_windy_sand_dune(ctx):
+    """Classic sand grain swept into wind ripples: broad lit windward slopes up
+    to a bright crest, then a short shaded lee face toward the lower right."""
+    p, size = RECIPES["windy_sand_dune"].palette, ctx.size
+    rgb, flecks = sand_look(ctx, p)
+    light = blend_fields(ripple_light(ctx.shared_rng, size), ripple_light(ctx.rng, size), ctx.interior_mask)
+    rgb = [[c * (1 + 0.18 * v) for c, v in zip(channel, light)] for channel in rgb]
+    rgb = mix(rgb, p["lee"], [max(0.0, -v) for v in light], 0.3)
+    return mix(rgb, p["dark"], flecks, 0.18), None
+
+
+def ripple_tone(t):
+    """Light across one ripple from trough (0) over the crest to the next trough."""
+    if t < RIPPLE_CREST:
+        u = t / RIPPLE_CREST
+        return 0.1 + 0.5 * u + 0.3 * smoothstep(0.8, 1.0, u)
+    # Lee: the crest highlight falls into shadow, which lifts toward the trough.
+    u = (t - RIPPLE_CREST) / (1 - RIPPLE_CREST)
+    crest, shadow = 1 - smoothstep(0.0, 0.15, u), 1 - smoothstep(0.0, 1.0, u)
+    return 0.1 + 0.8 * crest - 0.8 * shadow * (1 - crest)
+
+
+def ripple_light(rng, size):
+    """Signed light of meandering, forking wind ripples, from the ripple phase."""
+    kx, ky = (RIPPLE_CYCLES * k for k in RIPPLE_WIND)
+    # Cells per 128 px canvas: the bend spans a tile, the wobble a ripple or two.
+    bend = fbm(rng, 1, 2, size=size)
+    wobble = fbm(rng, 6, 1, size=size)
+    family = fbm(rng, 2, 2, size=size)
+    relief = fbm(rng, 4, 2, size=size)
+    light = []
+    for i, (b, w, f, r) in enumerate(zip(bend, wobble, family, relief)):
+        x, y = i % size, i // size
+        offset = 1.0 * (b - 0.5) + 0.05 * (w - 0.5)
+        first = (kx * x + ky * y) / size + offset
+        second = ((kx + 1) * x + ky * y) / size + offset + 0.5
+        m = smoothstep(0.47, 0.53, f)
+        tone = ripple_tone(first - math.floor(first)) * (1 - m) + ripple_tone(second - math.floor(second)) * m
+        light.append(tone * (0.25 + 0.75 * smoothstep(0.3, 0.62, r)))
+    return light
 
 
 def sand_look(ctx, p):

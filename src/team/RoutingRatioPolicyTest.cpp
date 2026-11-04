@@ -174,7 +174,7 @@ TEST_CASE("legacy production caches coalesce without losing their published rati
     const GradientFieldKey legacyKey{GradientFieldFamily::Materials,0,6,WHEAT};
     const GradientFieldKey sharedKey{GradientFieldFamily::Materials,0,3,WHEAT};
     *map.gradientFieldDestination(legacyKey)=std::exchange(*map.gradientFieldDestination(sharedKey),nullptr);
-    // Format196 has identical runtime layout except for the new cost footers.
+    // Format199 has identical runtime layout except for the new cost footers.
     struct LegacyWriter:GAGCore::BinaryOutputStream {
         using BinaryOutputStream::BinaryOutputStream;
         void writeUint8(Uint8 value,std::string_view name) override {
@@ -184,7 +184,7 @@ TEST_CASE("legacy production caches coalesce without losing their published rati
     auto* bytes=new GAGCore::MemoryStreamBackend;LegacyWriter out(bytes);map.saveRuntimeState(&out);out.flush();
     restored.game.stepCounter=source.game.stepCounter;
     GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes->getBuffer(),bytes->getPosition()));in.seekFromStart(0);
-    copy.loadRuntimeState(&in,196);
+    copy.loadRuntimeState(&in,199);
     const auto* field=copy.getMaterialGradientSlot(0,WHEAT,MovementAccess::Amphibious);
     REQUIRE(field);CHECK(copy.publishedCostClass(field)==6);CHECK(*copy.gradientFieldDestination(legacyKey)==nullptr);
     CHECK(std::equal(field,field+map.cellCount(),*map.gradientFieldDestination(legacyKey)));

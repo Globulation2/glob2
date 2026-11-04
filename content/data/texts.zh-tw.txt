@@ -5724,6 +5724,12 @@ AI 生成
 冰封湖面
 [wind_swept_snow]
 風吹雪
+[weathered_sandstone]
+風化砂岩
+[windy_sand_dune]
+風紋沙丘
+[hardpan]
+硬殼地
 [terrain group water]
 水
 [terrain group sand]
