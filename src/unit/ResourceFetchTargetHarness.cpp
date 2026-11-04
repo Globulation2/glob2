@@ -1439,6 +1439,9 @@ TEST_CASE("missing destination observer distinguishes absent fields from stale i
 #ifndef __EMSCRIPTEN__
 TEST_CASE("capture-only preserves bottom-k membership while skipping nonretained work" * doctest::test_suite("ActiveMaterialClaims"))
 {
+    unsigned capacity=16;
+    SUBCASE("legacy V4 capacity16") {capacity=16;}
+    SUBCASE("V5 capacity64") {capacity=64;}
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame f({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
     auto& map=f.game.map;auto* team=f.game.teams[0];
@@ -1460,7 +1463,7 @@ TEST_CASE("capture-only preserves bottom-k membership while skipping nonretained
         const auto directory=glob2test::artifactDir()/(mode?"capture-only":"capture-all");
         std::filesystem::remove_all(directory);std::filesystem::create_directories(directory);
         ResourceClaims::Probe::Config config;config.sampleEvery=1;config.maxSamples=96;
-        config.deepStratified=true;config.deepTopFour=true;config.deepTopK=16;config.captureOnly=mode;
+        config.deepStratified=true;config.deepTopFour=true;config.deepTopK=capacity;config.captureOnly=mode;
         config.deepContext=nlohmann::json{{"source_revision","fixture"},{"bundle_id","fixture"},
             {"cohort_id","retained-parity"},{"game_id","same-frozen-world"}}.dump();
         auto probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),(directory/"trace.jsonl.gz").string(),config);
@@ -1475,9 +1478,11 @@ TEST_CASE("capture-only preserves bottom-k membership while skipping nonretained
         submitted[mode]=probe->metrics().submitted;CHECK(probe->metrics().completed==submitted[mode]);
         std::ifstream input(directory/"resource-claims-deep/manifest.json");manifests[mode]=nlohmann::json::parse(input);
         CHECK(manifests[mode]["censored"]==false);
+        CHECK(manifests[mode]["version"]==(capacity>16?5:4));
+        CHECK(manifests[mode]["top_k"]==capacity);
         map.setMaterialClaimProbe(nullptr);
     }
-    CHECK(submitted[0]==96);CHECK(submitted[1]>=16);CHECK(submitted[1]<submitted[0]);
+    CHECK(submitted[0]==96);CHECK(submitted[1]>=capacity);CHECK(submitted[1]<submitted[0]);
     CHECK(manifests[1]["work_scope"]=="retained-replacements-only-v1");
     for(unsigned stratum=0;stratum<16;++stratum) {
         auto left=manifests[0]["strata"][stratum],right=manifests[1]["strata"][stratum];

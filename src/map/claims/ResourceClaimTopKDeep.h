@@ -7,8 +7,10 @@
 
 namespace ResourceClaims::Experiment
 {
-inline constexpr unsigned DeepTopK=4, DeepTopKMaximum=16;
+inline constexpr unsigned DeepTopK=4, DeepTopKMaximum=64;
 inline constexpr const char* ScalableTopKDeepDesign="independent-bottom-k-per-disjoint-stratum-v4";
+inline constexpr const char* Retention64DeepDesign="independent-bottom-k-per-disjoint-stratum-v5";
+inline Uint64 topKManifestLimit(unsigned k,bool scalable) {return k>16?1024*1024:(scalable?256*1024:64*1024);}
 inline Uint64 topKFinalLimit(unsigned k) {if(!k || k>DeepTopKMaximum)throw std::invalid_argument("invalid top-k capacity");return DeepStratumCount*Uint64(k)*DeepRecordLimit;}
 inline constexpr Uint64 TopKFinalLimit=DeepStratumCount*DeepTopK*DeepRecordLimit;
 inline constexpr const char* TopKDeepDesign="independent-bottom-four-per-disjoint-stratum-v3";
@@ -60,7 +62,7 @@ struct TopKDeepSlot
 inline void replaceTopKDeepFile(const std::filesystem::path& path,std::span<const Uint8> bytes,unsigned capacity=DeepTopK,bool scalable=false)
 {
     const auto finalLimit=topKFinalLimit(capacity);
-    const Uint64 manifestLimit=scalable?256*1024:64*1024;
+    const Uint64 manifestLimit=topKManifestLimit(capacity,scalable);
     const bool manifest=path.filename()=="manifest.json";
     bool knownTarget=manifest;
     for(unsigned i=0;i<DeepStratumCount;++i)for(unsigned k=0;k<capacity;++k)knownTarget|=path.filename()==topKFilename(i,k,capacity);

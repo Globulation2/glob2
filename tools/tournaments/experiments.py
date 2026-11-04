@@ -43,9 +43,9 @@ class Planner:
             raise ValueError('build lacks missing capture capability')
         if 'resource_claims_capture_only' in config and (config['resource_claims_capture_only'] is not True or 'resource_claims_deep_top_k' not in config or any(self.bundles[build]['capabilities'].get('resource_claims_capture_only_version') != 1 for build in self.builds)):
             raise ValueError('capture-only requires numeric top-k and capability1')
-        if 'resource_claims_deep_top_k' in config and (type(config['resource_claims_deep_top_k']) is not int or not 1 <= config['resource_claims_deep_top_k'] <= 16 or any(self.bundles[build]['capabilities'].get('resource_claims_deep_topk_version') != 4 or self.bundles[build]['capabilities'].get('resource_claims_deep_topk_max', 0) < config['resource_claims_deep_top_k'] for build in self.builds)):
+        if 'resource_claims_deep_top_k' in config and (type(config['resource_claims_deep_top_k']) is not int or not 1 <= config['resource_claims_deep_top_k'] <= 64 or any(self.bundles[build]['capabilities'].get('resource_claims_deep_topk_version') not in ((5,) if config['resource_claims_deep_top_k'] > 16 else (4, 5)) or self.bundles[build]['capabilities'].get('resource_claims_deep_topk_max', 0) < config['resource_claims_deep_top_k'] for build in self.builds)):
             raise ValueError('bundle lacks configured V4 top-k capture')
-        if config.get('resource_claims_deep_top_four') and any(self.bundles[build]['capabilities'].get('resource_claims_deep_topk_version') not in (3, 4) for build in self.builds):
+        if config.get('resource_claims_deep_top_four') and any(self.bundles[build]['capabilities'].get('resource_claims_deep_topk_version') not in (3, 4, 5) for build in self.builds):
             raise ValueError('bundle lacks V3 top-four capture')
         if config.get('resource_claims_deep_stratified') and any(self.bundles[build]['capabilities'].get('resource_claims_deep_stratified_version') != 2 for build in self.builds):
             raise ValueError('stratified deep capture requires capability V2')

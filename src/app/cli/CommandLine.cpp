@@ -597,7 +597,7 @@ const std::vector<Command> &commands()
              flag("--resource-claims-deep-missing", "Temporary independent missing-destination capture; requires deep context"),
              flag("--resource-claims-deep-top-four", "Temporary V3 bottom-four capture per stratum; requires stratified capture"),
              flag("--resource-claims-capture-only", "Temporary retained-replacement-only capture work"),
-             integer("--resource-claims-deep-top-k", "Temporary V4 retained samples per stratum", 1, 16),
+             integer("--resource-claims-deep-top-k", "Temporary V4/V5 retained samples per stratum", 1, 64),
              flag("--resource-claims-probe", "Collect diagnostic claim decisions from an active-policy game without a shadow ledger"),
              flag("--resource-claims-movement-only", "Measure transport movement without decision sampling or changing claim enforcement"),
              value("--resource-claims-policy-json", "JSON", "Explicit live resource-claim experiment configuration; requires material destinations"),

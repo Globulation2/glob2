@@ -11,7 +11,7 @@ TEST_CASE("Claim deep reservoir replaces three eligible minima deterministically
     DeepReservoir state;
     CHECK_FALSE(state.censored());
     for(Uint64 i=1;i<=3;++i) {
-        CHECK(state.consider(100-i,i));
+        CHECK(state.consider(200-i,i));
         CHECK(state.censored());
         state.written(i);
         CHECK_FALSE(state.censored());
@@ -127,16 +127,19 @@ TEST_CASE("Scalable capture keeps exact lowest priorities for every supported ca
 {
     using namespace ResourceClaims::Experiment;
     CHECK_THROWS_AS(TopKDeepSlot(0),std::invalid_argument);
-    CHECK_THROWS_AS(TopKDeepSlot(17),std::invalid_argument);
-    for(unsigned k=1;k<=16;++k) {
+    CHECK_THROWS_AS(TopKDeepSlot(65),std::invalid_argument);
+    CHECK(topKManifestLimit(4,false)==64*1024);
+    CHECK(topKManifestLimit(16,true)==256*1024);
+    CHECK(topKManifestLimit(17,true)==1024*1024);
+    for(unsigned k=1;k<=64;++k) {
         TopKDeepSlot state(k);
-        for(Uint64 i=1;i<=41;++i) {
-            const auto slot=state.consider(100-i,i,0,true);
+        for(Uint64 i=1;i<=101;++i) {
+            const auto slot=state.consider(200-i,i,0,true);
             REQUIRE(slot>=0);CHECK(state.written(slot,i,"digest"));
             CHECK(state.retained()==std::min<Uint64>(i,k));CHECK_FALSE(state.censored());
         }
-        for(const auto& entry:state.entries)CHECK(entry.ordinal>41-k);
-        CHECK(state.eligible==41);CHECK(topKFinalLimit(k)==DeepRecordLimit*DeepStratumCount*k);
+        for(const auto& entry:state.entries)CHECK(entry.ordinal>101-k);
+        CHECK(state.eligible==101);CHECK(topKFinalLimit(k)==DeepRecordLimit*DeepStratumCount*k);
         CHECK_NOTHROW(topKFilename(15,k-1,k));CHECK_THROWS_AS(topKFilename(15,k,k),std::invalid_argument);
         state.excluded(true);CHECK(state.censored());
     }

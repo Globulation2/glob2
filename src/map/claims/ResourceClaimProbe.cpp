@@ -476,8 +476,8 @@ struct Probe::Impl
     static std::string deepFilename(unsigned slot) {return "event-"+std::string(slot<10?"0":"")+std::to_string(slot)+".bin";}
 
     unsigned topKCapacity() const {return config.deepTopK?config.deepTopK:Experiment::DeepTopK;}
-    const char* topKDesign() const {return config.deepTopK?Experiment::ScalableTopKDeepDesign:Experiment::TopKDeepDesign;}
-    Uint64 topKManifestLimit() const {return config.deepTopK?256*1024:64*1024;}
+    const char* topKDesign() const {return config.deepTopK>16?Experiment::Retention64DeepDesign:(config.deepTopK?Experiment::ScalableTopKDeepDesign:Experiment::TopKDeepDesign);}
+    Uint64 topKManifestLimit() const {return Experiment::topKManifestLimit(topKCapacity(),config.deepTopK!=0);}
 
     void deepManifest(bool complete)
     {
@@ -502,7 +502,7 @@ struct Probe::Impl
                     {"weight_numerator",!missing && r.eligible?Json(r.eligible):Json(nullptr)},
                     {"weight_denominator",!missing && r.eligible?Json(r.retained()):Json(nullptr)}});
             }
-            auto document=Json{{"version",config.deepTopK?4:3},{"top_k",topKCapacity()},{"complete",complete},{"censored",censored},
+            auto document=Json{{"version",config.deepTopK>16?5:(config.deepTopK?4:3)},{"top_k",topKCapacity()},{"complete",complete},{"censored",censored},
                 {"design",topKDesign()},{"context",deepContext},{"strata",std::move(strata)},
                 {"weight_contract",config.deepTopK?"Ns/min(k,Ns) only for complete uncensored exact selected sets; nominal independent uniform hash priorities, ordinal tie-break; observed current-priority ties exposed":"Ns/min(4,Ns) only for complete uncensored exact selected sets; nominal independent uniform hash priorities, ordinal tie-break; observed current-priority ties exposed"},
                 {"ineligible_contested_no_xy",deepIneligibleNoXY},{"ordinary_missing_field",metrics.excludedMissingField},
@@ -725,7 +725,7 @@ struct Probe::Impl
                 metadata["event_id"]=std::to_string(work.seed)+":"+std::to_string(work.ordinal);
                 metadata["priority"]=work.deepPriority;
                 if(work.deepStratum<Experiment::DeepStratumCount) {
-                    metadata["deep_design"]=work.deepTopFour?(work.deepTopK?Experiment::ScalableTopKDeepDesign:Experiment::TopKDeepDesign):Experiment::StratifiedDeepDesign;
+                    metadata["deep_design"]=work.deepTopFour?(work.deepTopK>16?Experiment::Retention64DeepDesign:(work.deepTopK?Experiment::ScalableTopKDeepDesign:Experiment::TopKDeepDesign)):Experiment::StratifiedDeepDesign;
                     if(work.deepTopFour)metadata["deep_slot"]=work.deepRetainedSlot;
                     metadata["deep_stratum"]=work.deepStratum;
                 }
