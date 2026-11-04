@@ -42,7 +42,6 @@
 #include <AssetLoader.h>
 #include <Toolkit.h>
 #include <atomic>
-#include <cstdlib>
 
 namespace
 {
@@ -54,7 +53,7 @@ namespace
 // searches. Splitting rectangles vertically would change the painter order.
 // Partial discovery uses the ordinary path below instead.
 bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int top,
-    int right, int bottom, int viewportX, int viewportY, MapRenderState *render)
+    int right, int bottom, int viewportX, int viewportY, MapRenderState &render)
 {
     const auto& presentation = ResourceSprites::resolve(map.frozenResourceRegistry(), map.frozenAssetBundle());
     auto *gfx = globalContainer->gfx;
@@ -69,55 +68,39 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
     auto *overlaySprite = compositor.overlaySprite();
     if (!overlaySprite && std::any_of(compositor.catalog().materials.begin(), compositor.catalog().materials.end(),
         [](const auto &m) { return !m.overlay.sprite.empty(); })) return false;
-    MapRenderState::ResourceRowMetrics ignored;
-    auto &metrics = render ? render->resourceRowMetrics : ignored;
-    static const bool reuseRows = [] {
-        const auto *value = std::getenv("GLOB2_RESOURCE_ROWS");
-        return value && std::string_view(value) == "1";
-    }();
-    std::vector<int> frames, decorFrames, overlayFrames;
-    ResourceRowCache *rows = nullptr;
+    auto &metrics = render.resourceRowMetrics;
     GAGCore::MapGeometryCache *cache;
     try
     {
         cache = &batch->geometryCache();
-        if (reuseRows && render)
+        if (!render.resourceRows)
+            render.resourceRows = std::make_unique<ResourceRowCache>();
+        auto &rows = *render.resourceRows;
+        const ResourceRowCache::Stamp stamp{
+            mapIdentity, map.terrainRevision(),
+            GAGCore::Toolkit::assets().sourceGeneration(), map.terrainSeed(),
+            map.frozenResourceRegistry(), map.frozenTerrainRegistry(), map.frozenAssetBundle(),
+            sprite, decorSprite, overlaySprite, sprite->getFrameCount()};
+        if (rows.stamp != stamp || rows.rows.size() != std::size_t(map.getH()))
         {
-            if (!render->resourceRows)
-                render->resourceRows = std::make_unique<ResourceRowCache>();
-            rows = render->resourceRows.get();
-            const ResourceRowCache::Stamp stamp{
-                mapIdentity, map.terrainRevision(),
-                GAGCore::Toolkit::assets().sourceGeneration(), map.terrainSeed(),
-                map.frozenResourceRegistry(), map.frozenTerrainRegistry(), map.frozenAssetBundle(),
-                sprite, decorSprite, overlaySprite, sprite->getFrameCount()};
-            if (rows->stamp != stamp || rows->rows.size() != std::size_t(map.getH()))
+            rows.rows.resize(map.getH());
+            const auto &previous = rows.stamp;
+            const bool artworkChanged = previous.artwork != stamp.artwork || previous.sprite != stamp.sprite ||
+                previous.decor != stamp.decor || previous.overlay != stamp.overlay ||
+                previous.assets != stamp.assets || previous.frameCount != stamp.frameCount;
+            for (auto &row : rows.rows)
             {
-                rows->rows.resize(map.getH());
-                const auto &previous = rows->stamp;
-                const bool artworkChanged = previous.artwork != stamp.artwork || previous.sprite != stamp.sprite ||
-                    previous.decor != stamp.decor || previous.overlay != stamp.overlay ||
-                    previous.assets != stamp.assets || previous.frameCount != stamp.frameCount;
-                for (auto &row : rows->rows)
-                {
-                    row.built = false;
-                    row.refreshGeometry |= artworkChanged;
-                }
-                rows->stamp = stamp;
-                rows->resourceRevisions.clear();
+                row.built = false;
+                row.refreshGeometry |= artworkChanged;
             }
-            if (rows->resourceRevisions.empty() || rows->resourceGeneration != map.resourcePresentationRevision())
-            {
-                rows->resourceRevisions.resize(map.getH());
-                map.resourceRowRevisions(rows->resourceRevisions);
-                rows->resourceGeneration = map.resourcePresentationRevision();
-            }
+            rows.stamp = stamp;
+            rows.resourceRevisions.clear();
         }
-        else
+        if (rows.resourceRevisions.empty() || rows.resourceGeneration != map.resourcePresentationRevision())
         {
-            frames.resize(map.getW());
-            decorFrames.resize(map.getW());
-            overlayFrames.resize(map.getW());
+            rows.resourceRevisions.resize(map.getH());
+            map.resourceRowRevisions(rows.resourceRevisions);
+            rows.resourceGeneration = map.resourcePresentationRevision();
         }
 
         // Decide before emitting geometry so fallback cannot redraw earlier rows.
@@ -129,20 +112,8 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                 return map.resourceRegistry().presentation(static_cast<ResourceId>(resource.type))
                     .frame(resource.amount, x, mapY, map.tick);
             };
-            if (!rows)
-            {
-                for (int x = 0; x < map.getW(); ++x)
-                {
-                    ++metrics.eligibilityCells;
-                    const auto &r = map.getResource(x, mapY);
-                    if (r.type == NO_RES_TYPE) continue;
-                    if (presentation.sprites[r.type] != sprite || resourceFrame(x, r) >= sprite->getFrameCount())
-                        return false;
-                }
-                continue;
-            }
-            auto &row = rows->rows[mapY];
-            if (!row.built || row.resourceRevision != rows->resourceRevisions[mapY])
+            auto &row = rows.rows[mapY];
+            if (!row.built || row.resourceRevision != rows.resourceRevisions[mapY])
             {
                 const auto resetLayer = [&](ResourceRowCache::Layer &layer) {
                     const bool changed = row.refreshGeometry || layer.frames.size() != std::size_t(map.getW());
@@ -184,7 +155,7 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                     if (overlayAnimated) row.overlay.animated.push_back(x);
                     row.overlay.visibleFrames += overlay >= 0;
                 }
-                row.resourceRevision = rows->resourceRevisions[mapY];
+                row.resourceRevision = rows.resourceRevisions[mapY];
                 if (resourcesChanged) row.resources.revision = ++nextRevision;
                 if (decorChanged) row.decor.revision = ++nextRevision;
                 if (overlayChanged) row.overlay.revision = ++nextRevision;
@@ -225,12 +196,12 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
     }
     catch (const std::bad_alloc&)
     {
-        if (render) render->resourceRows.reset();
+        render.resourceRows.reset();
         return false;
     }
     GAGCore::MapGeometryCache::Layer layer(*cache);
     auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames,
-        int layerKey, int y, int mapY, std::uint64_t revision = 0)
+        int layerKey, int y, int mapY, std::uint64_t revision)
     {
         auto draw = [&](int first, int last, int originX, int originY)
         {
@@ -268,54 +239,23 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
             x += width;
         }
     };
-    // Overlays lie flat on the ground: every row's before any decor, so decor
-    // reaching down from the row above still covers them.
+    // Every overlay row draws before the raised decor and resources.
+    const auto &rows = render.resourceRows->rows;
     if (overlaySprite)
         for (int y = top; y <= bottom; ++y)
         {
-            int mapY = (y + viewportY) & map.getMaskH();
-            if (rows)
-            {
-                const auto &overlay = rows->rows[mapY].overlay;
-                if (overlay.visibleFrames) drawLayer(overlaySprite, overlay.frames, 3, y, mapY, overlay.revision);
-                continue;
-            }
-            bool anyOverlay = false;
-            for (int mapX = 0; mapX < map.getW(); ++mapX)
-            {
-                ++metrics.frameCells;
-                anyOverlay |= (overlayFrames[mapX] = compositor.overlayFrame(map, mapX, mapY)) >= 0;
-            }
-            if (anyOverlay)
-                drawLayer(overlaySprite, overlayFrames, 3, y, mapY);
+            const int mapY = (y + viewportY) & map.getMaskH();
+            const auto &overlay = rows[mapY].overlay;
+            if (overlay.visibleFrames)
+                drawLayer(overlaySprite, overlay.frames, 3, y, mapY, overlay.revision);
         }
     for (int y = top; y <= bottom; ++y)
     {
-        int mapY = (y + viewportY) & map.getMaskH();
-        if (rows)
-        {
-            const auto &row = rows->rows[mapY];
-            if (row.decor.visibleFrames) drawLayer(decorSprite, row.decor.frames, 2, y, mapY, row.decor.revision);
-            drawLayer(sprite, row.resources.frames, 1, y, mapY, row.resources.revision);
-            continue;
-        }
-        bool anyDecor = false;
-        for (int mapX = 0; mapX < map.getW(); ++mapX)
-        {
-            ++metrics.frameCells;
-            const auto& resource = map.getResource(mapX, mapY);
-            if (resource.type == NO_RES_TYPE) frames[mapX] = -1;
-            else
-            {
-                const auto& type = map.resourceRegistry().presentation(static_cast<ResourceId>(resource.type));
-                frames[mapX] = type.frame(resource.amount, mapX, mapY, map.tick);
-            }
-            decorFrames[mapX] = decorSprite ? compositor.decorFrame(map, mapX, mapY) : -1;
-            anyDecor |= decorFrames[mapX] >= 0;
-        }
-        if (anyDecor)
-            drawLayer(decorSprite, decorFrames, 2, y, mapY);
-        drawLayer(sprite, frames, 1, y, mapY);
+        const int mapY = (y + viewportY) & map.getMaskH();
+        const auto &row = rows[mapY];
+        if (row.decor.visibleFrames)
+            drawLayer(decorSprite, row.decor.frames, 2, y, mapY, row.decor.revision);
+        drawLayer(sprite, row.resources.frames, 1, y, mapY, row.resources.revision);
     }
     return true;
 }
@@ -354,8 +294,8 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
         left -= (reach.side + 31) >> 5;
         right += (reach.side + 31) >> 5;
     }
-    if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
-            right, bot, viewportX, viewportY, render)) return;
+    if (render && (drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
+            right, bot, viewportX, viewportY, *render)) return;
     const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry(), sceneMap.frozenAssetBundle());
     const auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
     Sprite* pendingSprite = nullptr;

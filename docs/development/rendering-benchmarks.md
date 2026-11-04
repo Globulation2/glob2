@@ -91,9 +91,8 @@ Desktop results do not qualify Android/iOS hardware performance.
 ### Resource rows and terrain residency
 
 Use `GLOB2_BENCH_RESOURCE_ROWS=1` with the 512×64 synthetic map, Original
-artwork, and legacy OpenGL. Compare `GLOB2_RESOURCE_ROWS=0` and
-`GLOB2_RESOURCE_ROWS=1` with the same narrow window and zoom. Repeat with
-`GLOB2_BENCH_CAMERA_PAN=1` to include wrapped row selection. The
+artwork, and legacy OpenGL. Repeat with `GLOB2_BENCH_CAMERA_PAN=1` to
+include wrapped row selection. The
 `FRAME_RESOURCE_ROWS` counters report eligibility, frame-vector construction,
 and animated cell visits separately.
 
@@ -108,45 +107,37 @@ the first frame after the switch and the final capture. Use
 Starting on programmable OpenGL, use `GLOB2_BENCH_TERRAIN_SWITCH=backend` to
 switch to legacy OpenGL and draw pages there on frame 68.
 
-### Direct terrain discovery and OpenGL experiments
+### Direct terrain discovery and OpenGL diagnostics
 
 Set `GLOB2_BENCH_FOG=1` and `GLOB2_BENCH_DISCOVERY_CROSSING=1` on a
 synthetic map with at least 32 tiles on both axes. Place tiles (15, 15) and
 (16, 16) in the viewport. The fixture reveals those tiles on frame 4.
-Compare runs with `GLOB2_DIRECT_DISCOVERY_STAMP=0` and
-`GLOB2_DIRECT_DISCOVERY_STAMP=1`. The cumulative
-`FRAME_DIRECT_DISCOVERY` counters separate unchanged map comparisons from
-visibility rebuilds. Capture before and after the reveal and compare each
-capture against the corresponding reference.
+The cumulative `FRAME_DIRECT_DISCOVERY` counter tracks rebuilt cells.
+Capture before and after the reveal to verify the boundary transition.
 
 On legacy OpenGL, `GLOB2_PROFILE_GL_ARRAYS=1` reports live, retired, and free
 array slots and allocated bytes. `GLOB2_BENCH_ARRAY_CHURN=1` replaces the same
-16 source textures across 21 cycles. Compare
-`GLOB2_RECLAIM_GL_ARRAYS=0` and `GLOB2_RECLAIM_GL_ARRAYS=1` to measure
-promotion after the page budget fills.
+16 source textures across 21 cycles to verify that promotions continue after
+the page budget fills.
 
-On programmable OpenGL, `GLOB2_SWAP_FULL_GL_FRAMES=1` is an opt-in experiment
-that swaps the backing color textures for a full opaque redraw. Run the same
-scene at the same drawable size with the flag set to 0 and 1. Check partial
-redraws and discarded frames against the committed image as well.
+On programmable OpenGL, full opaque redraws swap the backing color textures.
+Check partial redraws and discarded frames against the committed image.
 
-### Direct terrain prototype
+### Direct terrain
 
-On desktop legacy OpenGL, programmable OpenGL, or SDL GPU with the offline
-direct terrain shaders, set `GLOB2_DIRECT_TERRAIN=1` to try direct terrain in
-the flat game view and the flat benchmark with Original artwork
-(`highResolutionArtwork=0`). Use separate processes for the reference and
-prototype. The prototype uses the map's terrain variants, coverage, contact
-bands, surf, and discovery. The programmable backend also supports GLSL ES
-3.0 for WebGL2. To opt in from a browser, open the game with
-`?renderer=programmable-gl&direct-terrain=1` and select Original artwork. With WGSL assets for direct
-terrain, the same opt-in works with `?renderer=webgpu&direct-terrain=1`.
+Direct terrain is the default for flat views with Original artwork
+(`highResolutionArtwork=0`) on legacy OpenGL, programmable OpenGL, WebGL2,
+SDL GPU with the direct terrain shaders, and WebGPU with the WGSL assets.
+It uses the map's terrain variants, coverage, contact bands, surf, and
+discovery. HD artwork, tiled captures, and backends without direct terrain
+support use composed terrain pages.
+
 The shader blends in floating point and uses linear atlas sampling. The page
 renderer can box-filter composed terrain when zoomed out. Compare captures
 at native zoom and during motion to check color and distant texture detail.
 
 `FRAME_DIRECT_TERRAIN` reports cumulative draws and upload bytes plus
-resident texture bytes. A rising draw count confirms the prototype actually
+resident texture bytes. A rising draw count confirms direct terrain
 drew the frame. After startup, camera motion and animation should leave upload
 bytes stable. Terrain, asset bundle, or registry changes rebuild the atlases.
 Discovery changes can upload a separate visibility texture. On programmable GL,

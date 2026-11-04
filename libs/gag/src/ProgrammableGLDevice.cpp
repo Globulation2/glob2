@@ -198,7 +198,6 @@ class ProgrammableGLDevice final : public RenderDevice
     std::uint64_t epoch = 1, issued = 0, completed = 0;
     bool frameOpen = false;
     bool swappedForFrame = false;
-    bool swapFullFrames = false;
     using TextureKey = std::tuple<std::uint32_t, std::uint32_t, std::uint64_t>;
     static TextureKey key(const TextureSnapshot &snapshot)
     { return {snapshot->handle.slot, snapshot->handle.generation, snapshot->contentRevision}; }
@@ -372,7 +371,7 @@ class ProgrammableGLDevice final : public RenderDevice
     }
     bool beginsFullRedraw(const RenderFrame &frame)
     {
-        if (!swapFullFrames || frame.packets.empty()) return false;
+        if (frame.packets.empty()) return false;
         const auto &packet = frame.packets.front();
         if (packet.target || packet.viewport || packet.depth != DrawPacket::Depth::Disabled ||
             packet.depthWrite || packet.cull != DrawPacket::Cull::Disabled)
@@ -1073,8 +1072,6 @@ void main() {
   public:
     ProgrammableGLDevice(SDL_Window *window, const std::string &directory) : window(window)
     {
-        const char *swap = SDL_getenv_unsafe("GLOB2_SWAP_FULL_GL_FRAMES");
-        swapFullFrames = swap && std::strcmp(swap, "1") == 0;
         if (!window) throw std::invalid_argument("GL rendering requires an OPENGL window");
         context = SDL_GL_CreateContext(window);
         if (!context) throw std::runtime_error(SDL_GetError());

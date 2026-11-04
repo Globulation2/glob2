@@ -8,8 +8,6 @@
 #include "AINicowar.h"
 
 #include <algorithm>
-#include <cstdlib>
-#include <string_view>
 #include <assert.h>
 #include <string.h>
 
@@ -304,15 +302,10 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 			}
 	// The overview fully replaces detailed terrain at the far end of zoom.
 	const bool overviewOnly = view.render.detail.terrainOverview >= 1;
-	static const bool directEnabled = [] {
-		const char *value = std::getenv("GLOB2_DIRECT_TERRAIN");
-		return value && std::string_view(value) == "1";
-	}();
 	bool direct = false;
-	// The direct atlas currently contains native-resolution artwork only.
-	const bool useDirect = view.render.benchmarkDirectTerrain < 0 ? directEnabled :
-        view.render.benchmarkDirectTerrain != 0;
-    if (useDirect && !globalContainer->settings.highResolutionArtwork &&
+	// Direct terrain uses native-resolution art. The benchmark can force pages
+	// to measure transitions through the same fallback used for HD and captures.
+	if (!view.render.benchmarkForceTerrainPages && !globalContainer->settings.highResolutionArtwork &&
 		!overviewOnly && !(frame.options & DRAW_TILED_CAPTURE))
 	{
 		PERF_SCOPE_TIME(Terrain);

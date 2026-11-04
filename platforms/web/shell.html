@@ -369,8 +369,6 @@ var Module = {
     const graphicsQuery = new URLSearchParams(location.search);
     if (graphicsQuery.get('gl-errors') === '1')
       ENV.GLOB2_WEBGL_ERRORS = '1';
-    if (graphicsQuery.get('direct-terrain') === '1')
-      ENV.GLOB2_DIRECT_TERRAIN = '1';
     FS.mkdirTree('/home/web_user');
     if (globalThis.glob2Studio || globalThis.glob2SetPreview) {
       applyOnlineLanguage();

@@ -41,7 +41,7 @@ optional layers through asset polling, rather than through screen destruction.
 
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
-The opt-in [direct terrain prototype](../development/rendering-benchmarks.md#direct-terrain-prototype)
+[Direct terrain](../development/rendering-benchmarks.md#direct-terrain)
 uses map-space atlases for Original artwork on legacy OpenGL, programmable
 OpenGL, SDL GPU, and WebGPU. SDL GPU and WebGPU use offline shader assets. The atlas builder packs terrain data independently of the device. The
 camera transforms a terrain quad while its fragment shader blends material
@@ -50,7 +50,7 @@ other GPU backends, and tiled captures.
 Fully revealed resources use canonical map rows, with sorted source-tile indices
 selecting the contiguous visible vertex range. Translation places a canonical row
 at its wrapped-map position, so camera panning does not change its vertices.
-Each resource entry compares its exact frame/visibility vector before reuse.
+Cached rows reuse frame data until their resource or terrain revisions change. Animated cells update their selected frames as the scene tick advances.
 Partial-discovery resources keep the ordinary drawing path. The resource geometry budget
 is 32 MiB of buffer payload with at most 4096 entries and least-recently-used
 eviction; CPU metadata and driver allocation overhead are additional. Each scene

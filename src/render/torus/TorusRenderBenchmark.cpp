@@ -423,8 +423,8 @@ static int run(int argc, char **argv)
                         std::printf("FRAME_DIRECT_TERRAIN frame=%d draws=%u texture_bytes=%zu uploaded_bytes=%zu\n",
                             i, direct->draws(), direct->textureBytes(), direct->uploadBytes());
                         const auto fog = direct->discoveryMetrics();
-                        std::printf("FRAME_DIRECT_DISCOVERY frame=%d compared_cells=%zu rebuilt_cells=%zu\n",
-                            i, fog.compared, fog.rebuilt);
+                        std::printf("FRAME_DIRECT_DISCOVERY frame=%d rebuilt_cells=%zu\n",
+                            i, fog.rebuilt);
                     }
                     if (gui.view.render.overviewCache)
                         std::printf("FRAME_OVERVIEW frame=%d composed_cells=%llu\n", i,
@@ -573,8 +573,8 @@ static int run(int argc, char **argv)
                             std::printf("BENCH_TERRAIN_SWITCH frame=%d active=legacy-gl\n", cameraFrame);
                             switchedBackend = true;
                         }
-                        gui.view.render.benchmarkDirectTerrain = cameraFrame >= 4 &&
-                            (switchToHD || switchToTiled || cameraFrame < 68);
+                        gui.view.render.benchmarkForceTerrainPages = cameraFrame < 4 ||
+                            (!switchToHD && !switchToTiled && cameraFrame >= 68);
                         if (switchToTiled && cameraFrame >= 68)
                             frameOptions |= Game::DRAW_TILED_CAPTURE;
                         if (switchToHD && cameraFrame >= 68 && !globalContainer->settings.highResolutionArtwork)

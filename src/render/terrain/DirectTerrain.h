@@ -22,7 +22,7 @@ public:
     std::size_t textureBytes() const;
     std::size_t uploadBytes() const;
     unsigned draws() const;
-    struct DiscoveryMetrics { std::size_t compared = 0, rebuilt = 0; };
+    struct DiscoveryMetrics { std::size_t rebuilt = 0; };
     DiscoveryMetrics discoveryMetrics() const;
 
 private:

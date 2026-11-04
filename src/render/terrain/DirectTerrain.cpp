@@ -26,9 +26,7 @@
 #include <algorithm>
 #include <array>
 #include <cstdio>
-#include <cstdlib>
 #include <stdexcept>
-#include <string_view>
 #include <vector>
 
 namespace
@@ -111,7 +109,6 @@ struct DirectTerrain::State
     std::size_t bytes = 0, uploaded = 0;
     unsigned frames = 0;
     bool failed = false;
-    std::vector<Uint32> discovered;
     std::vector<Uint8> visibility;
     Uint32 discoveryTeams = 0;
     Uint64 discoveryRevision = 0;
@@ -295,27 +292,9 @@ struct DirectTerrain::State
 
     void updateDiscovery(const SceneMap &map, Uint32 teams)
     {
-        static const bool useStamp = [] {
-            const auto *value = std::getenv("GLOB2_DIRECT_DISCOVERY_STAMP");
-            return value && std::string_view(value) == "1";
-        }();
-        const auto revision = useStamp ? map.discoveryRevision() : 0;
-        if (revision)
-        {
-            if (discoveryTeams == teams && discoveryRevision == revision)
-                return;
-        }
-        else
-        {
-            const auto current = map.discoveredTerrain();
-            if (discoveryTeams == teams &&
-                std::equal(current.begin(), current.end(), discovered.begin(), discovered.end()))
-            {
-                discoveryStats.compared += current.size();
-                return;
-            }
-            discovered.assign(current.begin(), current.end());
-        }
+        const auto revision = map.discoveryRevision();
+        if (revision && discoveryTeams == teams && discoveryRevision == revision)
+            return;
         discoveryRevision = revision;
         discoveryTeams = teams;
         discoveryStats.rebuilt += visibility.size();

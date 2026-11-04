@@ -150,9 +150,6 @@ void SceneMap::resourceRowRevisions(std::span<Uint64> rows) const
 
 Uint64 SceneMap::discoveryRevision() const { return snapshot->visibility->discoveryRevision; }
 
-std::span<const Uint32> SceneMap::discoveredTerrain() const
-{ return snapshot->visibility->discovered; }
-
 TerrainType SceneMap::vertexTerrainAt(int x, int y) const
 { return (*snapshot->terrain->vertices)[coordToIndex(x,y)]; }
 TerrainType SceneMap::terrainTypeAt(int x, int y) const
