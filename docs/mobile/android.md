@@ -72,6 +72,8 @@ retains the full artwork bundle while writing the archive. Native compilation
 keeps its separate `--jobs` setting; Gradle packaging uses two workers.
 
 The asset packager excludes local caches and metadata before writing its index.
+The index has a 4 MiB limit shared by packaging validation and the native startup
+reader; packaging rejects an oversized index before producing an unusable APK.
 The completed APK is checked against that index and its content digest, so an
 AAPT-filtered or missing file fails the build instead of failing on first launch.
 Release packaging restores gzip assets that AAPT expands and renames, then aligns

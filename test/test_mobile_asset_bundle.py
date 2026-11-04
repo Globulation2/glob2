@@ -8,10 +8,27 @@ import unittest
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'platforms/mobile'))
-from asset_bundle import include_asset, restore_gzip_assets, verify_apk_assets
+from asset_bundle import encode_asset_index, include_asset, restore_gzip_assets, verify_apk_assets
 
 
 class AssetBundleTest(unittest.TestCase):
+    def test_index_larger_than_old_startup_bound_keeps_every_path(self):
+        names = ['data/gfx/terrain/catalogue/material/frame-' + str(i) + '.png'
+                 for i in range(32000)]
+        index = encode_asset_index('0' * 64, names)
+        self.assertGreater(len(index), 1024 * 1024)
+        self.assertEqual(index.decode().splitlines(), ['0' * 64] + names)
+
+    def test_packaging_rejects_index_above_native_capacity(self):
+        with self.assertRaisesRegex(ValueError, 'native startup capacity'):
+            encode_asset_index('0' * 64, ['a' * (4 * 1024 * 1024)])
+        with tempfile.TemporaryDirectory() as directory:
+            apk = Path(directory) / 'app.apk'
+            with zipfile.ZipFile(apk, 'w', compression=zipfile.ZIP_DEFLATED) as package:
+                package.writestr('assets/glob2-bundle/index.list', b'a' * (4 * 1024 * 1024 + 1))
+            with self.assertRaisesRegex(ValueError, 'native startup capacity'):
+                verify_apk_assets(apk)
+
     def test_cache_and_metadata_are_not_indexed(self):
         for name in ('data/__pycache__/check_translations.cpython-314.pyc',
                      'maps/.DS_Store', 'data/CVS/Entries', 'scripts/editor~'):

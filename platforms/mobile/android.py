@@ -17,7 +17,7 @@ from mobile_toolchain import ROOT, LOCK, discover
 from mobile_artifacts import verify_android_shared_library, verify_android_symbols, verify_android_archive_symbols
 import developer_apk
 from dev_paths import android_sdk, mobile_tools, gradle_home, dependency_prefix
-from asset_bundle import restore_gzip_assets, verify_apk_assets
+from asset_bundle import encode_asset_index, restore_gzip_assets, verify_apk_assets
 
 
 # Intent filters that open invite links (glob2://join and the official App Link),
@@ -205,7 +205,7 @@ def main():
             if source.is_file():
                 relative=source.relative_to(assets);names.append(relative.as_posix())
                 digest.update(relative.as_posix().encode()+b'\0'+hashlib.sha256(source.read_bytes()).digest())
-        (assets/'index.list').write_text(digest.hexdigest()+'\n'+'\n'.join(names)+'\n')
+        (assets/'index.list').write_bytes(encode_asset_index(digest.hexdigest(), names))
         (project/'local.properties').write_text('sdk.dir='+str(sdk).replace('\\','\\\\').replace(':','\\:')+'\n')
         print('Android Studio project:',project)
     if args.command in ('build','bundle'):
