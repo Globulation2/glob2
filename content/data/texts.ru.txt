@@ -5734,6 +5734,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Вулканический пепел
 [glacier_ice]
 Ледниковый лёд
+[overgrown_road]
+Заросшая дорога
 [terrain group water]
 Вода
 [terrain group sand]

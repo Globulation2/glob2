@@ -6852,6 +6852,8 @@ Tanah keras
 Abu gunung berapi
 [glacier_ice]
 Ais glasier
+[overgrown_road]
+Jalan ditumbuhi tumbuhan
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

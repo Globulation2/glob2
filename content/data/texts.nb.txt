@@ -5710,6 +5710,8 @@ Hardskorpe
 Vulkansk aske
 [glacier_ice]
 Breis
+[overgrown_road]
+Gjengrodd vei
 [terrain group water]
 Vann
 [terrain group sand]

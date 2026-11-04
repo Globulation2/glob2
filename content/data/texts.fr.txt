@@ -5734,6 +5734,8 @@ Croûte durcie
 Cendre volcanique
 [glacier_ice]
 Glace de glacier
+[overgrown_road]
+Route envahie par la végétation
 [terrain group water]
 Eau
 [terrain group sand]

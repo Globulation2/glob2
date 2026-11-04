@@ -5734,6 +5734,8 @@ Crustă întărită
 Cenușă vulcanică
 [glacier_ice]
 Gheață de ghețar
+[overgrown_road]
+Drum năpădit de vegetație
 [terrain group water]
 Apă
 [terrain group sand]

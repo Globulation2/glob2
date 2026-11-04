@@ -5734,6 +5734,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 خاکستر آتشفشانی
 [glacier_ice]
 یخ یخچال طبیعی
+[overgrown_road]
+جاده پوشیده از گیاه
 [terrain group water]
 آب
 [terrain group sand]

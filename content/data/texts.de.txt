@@ -5734,6 +5734,8 @@ Hartkruste
 Vulkanasche
 [glacier_ice]
 Gletschereis
+[overgrown_road]
+Überwucherte Straße
 [terrain group water]
 Wasser
 [terrain group sand]

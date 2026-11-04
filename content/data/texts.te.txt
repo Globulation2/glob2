@@ -5710,6 +5710,8 @@ AI ద్వారా రూపొందించబడలేదు
 అగ్నిపర్వత బూడిద
 [glacier_ice]
 హిమానీనదపు మంచు
+[overgrown_road]
+పిచ్చిమొక్కలు పెరిగిన రహదారి
 [terrain group water]
 నీరు
 [terrain group sand]

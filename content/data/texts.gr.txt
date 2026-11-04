@@ -5734,6 +5734,8 @@ CPU %0%
 Ηφαιστειακή τέφρα
 [glacier_ice]
 Πάγος παγετώνα
+[overgrown_road]
+Κατάφυτος δρόμος
 [terrain group water]
 Νερό
 [terrain group sand]

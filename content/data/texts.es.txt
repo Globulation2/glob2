@@ -5734,6 +5734,8 @@ Costra endurecida
 Ceniza volcánica
 [glacier_ice]
 Hielo glaciar
+[overgrown_road]
+Camino invadido por la vegetación
 [terrain group water]
 Agua
 [terrain group sand]

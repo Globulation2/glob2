@@ -5734,6 +5734,8 @@ Sert kabuk
 Volkanik kül
 [glacier_ice]
 Buzul buzu
+[overgrown_road]
+Otlarla kaplı yol
 [terrain group water]
 Su
 [terrain group sand]

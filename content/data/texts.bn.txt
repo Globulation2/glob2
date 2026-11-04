@@ -5710,6 +5710,8 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 আগ্নেয় ছাই
 [glacier_ice]
 হিমবাহের বরফ
+[overgrown_road]
+আগাছায় ঢাকা রাস্তা
 [terrain group water]
 জল
 [terrain group sand]

@@ -2368,11 +2368,11 @@ def hex_paving(size, columns, gap):
 
 @recipe(name="overgrown_road", group="paths", label="Overgrown road", profile="paved", border_class="built",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
-        palette={"dark": (106, 98, 86), "mid": (146, 137, 120), "light": (180, 171, 152),
-                 "warm": (160, 138, 118), "cool": (122, 126, 130), "joint": (54, 42, 32),
+        palette={"dark": (95, 102, 84), "mid": (135, 144, 118), "light": (169, 178, 150),
+                 "warm": (148, 144, 116), "cool": (116, 130, 128), "joint": (54, 42, 32),
                  "soil": (62, 52, 40), "moss_dark": (58, 66, 38), "moss": (88, 98, 52), "moss_light": (122, 128, 70),
                  "leaf": (104, 126, 58), "lichen": (156, 150, 96), "shadow": (34, 32, 26), "crack": (64, 58, 50)},
-        style=Style(luma=120, std=22, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=120, std=24, grain_max=16, match=0.8), periodic=True, grid=8, blocks=4)
 def render_overgrown_road(ctx):
     """Overgrown road: neat hexagonal stone setts in dark joints, decaying.
     Moss tints stretches of the joints, some setts are cracked or lost to soil
@@ -2411,15 +2411,32 @@ def render_overgrown_road(ctx):
     reach = 32 + radius + NATIVE_PX
     stones = [c if min(x, y, size - x, size - y) < reach else o for (x, y), c, o in zip(centres, common, own)]
 
-    # Slightly chipped rims, and the joint between setts.
-    chip = layout_field(ctx, lambda rng: fbm(rng, 48, 2, size=size))
-    face = [e - 1.2 * (c - 0.5) * 2 for e, c in zip(edge, chip)]
-    lost = [1.0 if stones[k][3] else 0.0 for k in ids]
-    joint = [1 - smoothstep(0.5, 2.0, f) for f in face]
-    # Moss creeps 1-2 native px over the stone, only in reclaimed patches.
-    creep = [1 - smoothstep(c * 2 * NATIVE_PX, c * 2 * NATIVE_PX + 1.5, f) if c > 0.05 else 0.0
-             for f, c in zip(face, patch)]
-    covered = [max(l, c) for l, c in zip(lost, creep)]
+    # Slightly chipped rims, the joint between setts, moss creeping 1-2 native
+    # px over the stone in reclaimed patches, and each sett's settled height.
+    # The shared stream's own surface is the common reference that keeps the
+    # bevel's lighting scale, and so the block perimeter, identical in every layout.
+    def surface(chip, setts_of, patch_of):
+        face = [e - 1.2 * (c - 0.5) * 2 for e, c in zip(edge, chip)]
+        lost = [1.0 if setts_of[k][3] else 0.0 for k in ids]
+        joint = [1 - smoothstep(0.5, 2.0, f) for f in face]
+        creep = [1 - smoothstep(c * 2 * NATIVE_PX, c * 2 * NATIVE_PX + 1.5, f) if c > 0.05 else 0.0
+                 for f, c in zip(face, patch_of)]
+        height = []
+        for i in range(size * size):
+            x, y, k = i % size + 0.5, i // size + 0.5, ids[i]
+            cx, cy = centres[k]
+            ox = (x - cx + size / 2) % size - size / 2
+            oy = (y - cy + size / 2) % size - size / 2
+            tx, ty = setts_of[k][2]
+            h = smoothstep(-0.5, 2.0 * NATIVE_PX, face[i]) * (1 + 0.012 * (tx * ox + ty * oy))
+            height.append(0.0 if lost[i] else h)
+        return joint, [max(l, c) for l, c in zip(lost, creep)], height
+
+    common_chip = fbm(ctx.shared_rng, 48, 2, size=size)
+    chip = blend_fields(common_chip, fbm(ctx.rng, 48, 2, size=size), interior)
+    joint, covered, height = surface(chip, stones, patch)
+    common_joint, common_covered, common_height = surface(
+        common_chip, common, [smoothstep(0.68, 0.9, g) for g in common_growth])
 
     # Stone colour, bevel and settling tilt.
     texture = layout_field(ctx, lambda rng: fbm(rng, 10, 3, size=size))
@@ -2428,16 +2445,7 @@ def render_overgrown_road(ctx):
     cast_w = [stones[k][1] for k in ids]
     rgb = mix(rgb, p["warm"], [max(0.0, c) for c in cast_w], 0.35)
     rgb = mix(rgb, p["cool"], [max(0.0, -c) for c in cast_w], 0.35)
-    height = []
-    for i in range(size * size):
-        x, y, k = i % size + 0.5, i // size + 0.5, ids[i]
-        cx, cy = centres[k]
-        ox = (x - cx + size / 2) % size - size / 2
-        oy = (y - cy + size / 2) % size - size / 2
-        tx, ty = stones[k][2]
-        h = smoothstep(-0.5, 2.0 * NATIVE_PX, face[i]) * (1 + 0.012 * (tx * ox + ty * oy))
-        height.append(0.0 if lost[i] else h)
-    rgb = shade(rgb, height, 0.3)
+    rgb = shade(rgb, height, 0.3, reference_height=common_height)
     # A jagged crack running in from the rim of some setts, with a kink or two.
     cracks = [0.0] * (size * size)
     for (cx, cy), s in zip(centres, stones):
@@ -2474,12 +2482,15 @@ def render_overgrown_road(ctx):
                            softness=0.5)
         return mask
     # Weeds grow from lost setts and the joints of reclaimed patches.
-    leaves = [l * max(c, j * smoothstep(0.4, 0.8, g)) for l, c, j, g in
-              zip(layout_field(ctx, clumps), covered, joint, growth)]
+    def weeds(clump, covered_of, joint_of, growth_of):
+        return [l * max(c, j * smoothstep(0.4, 0.8, g)) for l, c, j, g in zip(clump, covered_of, joint_of, growth_of)]
+    common_clumps = clumps(ctx.shared_rng)
+    leaves = weeds(blend_fields(common_clumps, clumps(ctx.rng), interior), covered, joint, growth)
+    common_leaves = weeds(common_clumps, common_covered, common_joint, common_growth)
     veg = mix(veg, p["leaf"], leaves, 0.8)
     rgb = mix(rgb, veg, covered)
     rgb = mix(rgb, p["leaf"], leaves, 0.8)
-    rgb = shade(rgb, leaves, 0.2)
+    rgb = shade(rgb, leaves, 0.2, reference_height=common_leaves)
     # Raised setts and weeds shadow the ground beside them; the Paths mark's
     # worn lip runs beside every joint.
     rgb = cast(rgb, [h + 0.6 * l for h, l in zip(height, leaves)], p["shadow"], reach=NATIVE_PX, strength=0.4)

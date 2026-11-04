@@ -160,7 +160,7 @@ TEST_SUITE("BrushCatalog")
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
-		// Sandstone tiles close the path brushes, hardpan the rough-ground brushes,
+		// Overgrown road (after sandstone tiles) closes the path brushes, hardpan the rough-ground brushes,
 		// glacier ice (after wind-swept snow) the ice brushes and volcanic ash the
 		// barren brushes.
 		const auto *paths = findBrushGroup(catalog, BrushSection::Terrain, "paths");
@@ -175,7 +175,7 @@ TEST_SUITE("BrushCatalog")
 		REQUIRE_FALSE(rough->entries.empty());
 		REQUIRE_FALSE(ice->entries.empty());
 		REQUIRE_FALSE(barren->entries.empty());
-		CHECK(paths->entries.back().id == "terrain/sandstone");
+		CHECK(paths->entries.back().id == "terrain/overgrown_road");
 		CHECK(rough->entries.back().id == "terrain/hardpan");
 		CHECK(ice->entries.back().id == "terrain/glacier_ice");
 		CHECK(ice->entries[ice->entries.size() - 2].id == "terrain/wind_swept_snow");

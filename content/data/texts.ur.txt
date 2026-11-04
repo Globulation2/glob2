@@ -5710,6 +5710,8 @@ AI کی بنائی ہوئی نہیں
 آتش فشانی راکھ
 [glacier_ice]
 گلیشیئر کی برف
+[overgrown_road]
+گھاس سے ڈھکی سڑک
 [terrain group water]
 پانی
 [terrain group sand]

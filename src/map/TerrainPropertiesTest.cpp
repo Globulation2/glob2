@@ -1019,6 +1019,21 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(GLACIER_ICE).name) == "glacier_ice");
 		CHECK(TerrainRegistry::builtins()->find("glacier_ice") == GLACIER_ICE);
 	}
+	TEST_CASE("overgrown road shares every rule of the other paths")
+	{
+		for (auto member : {TRAIL, BRICK_PATH, BOARDWALK, SANDSTONE})
+		{
+			CAPTURE(member);
+			CHECK(terrainGroup(OVERGROWN_ROAD) == terrainGroup(member));
+			CHECK(sameTerrainProperties(terrainProperties(OVERGROWN_ROAD), terrainProperties(member)));
+			CHECK(TerrainRegistry::builtins()->propertyIndex(OVERGROWN_ROAD) ==
+				  TerrainRegistry::builtins()->propertyIndex(member));
+		}
+		CHECK(terrainGroup(OVERGROWN_ROAD) == TerrainGroup::Paths);
+		CHECK(terrainPaintable(OVERGROWN_ROAD));
+		CHECK(std::string(terrainPresentation(OVERGROWN_ROAD).name) == "overgrown_road");
+		CHECK(TerrainRegistry::builtins()->find("overgrown_road") == OVERGROWN_ROAD);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},
@@ -1049,7 +1064,7 @@ TEST_SUITE("TerrainRuntime")
 		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				painted.push_back(TerrainType(i));
-		REQUIRE(painted.size() == 31);
+		REQUIRE(painted.size() == 39);
 		for (std::size_t n = 0; n < painted.size(); ++n)
 		{
 			map.paintCell(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);
