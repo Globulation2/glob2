@@ -65,7 +65,7 @@
       "match": 0.7
     },
     "phases": 4,
-    "animation_ticks": 8,
+    "animation_ticks": 16,
     "blend_steps": 4,
     "alpha_range": [
       255,
