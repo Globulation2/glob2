@@ -187,8 +187,9 @@ struct HiringPlanner::PreparedRoute
 		field->height = snapshot.height;
 		job.data.reset(new Uint16[std::size_t(snapshot.width) * snapshot.height]);
 		job.search = acquireBuildingGradientSearch();
+        auto inputs=BuildingGradientSearch::Inputs::ofSnapshot(snapshot,job.swim);
 		const auto result = gradient_preparation::buildBuilding(
-			job.seed, snapshot, BuildingGradientSearch::Inputs::ofSnapshot(snapshot, job.swim),
+			job.seed, snapshot, inputs,
 			job.data.get(), *job.search, BuildingGradientDepth::MIN_DEPTH);
 		job.locked = result.locked;
 		job.resourceState = result.resourceState;
@@ -223,6 +224,7 @@ struct HiringPlanner::PreparedRoute
 		s->writeUint8(job.locked, "locked");
 		s->writeUint8(job.resourceState, "resourceState");
 		s->writeUint8(proactive, "proactive");
+        s->writeUint8(job.swim,"preparationCost");
 		const auto cells = std::size_t(field->width) * field->height;
 		if (GAGCore::PackedArray::binary(s))
 			GAGCore::PackedArray::write<Uint16>(s, cells,
@@ -253,7 +255,11 @@ struct HiringPlanner::PreparedRoute
 			job.slot >= BUILDING_GRADIENT_COUNT || job.captureTick != captured ||
 			!result->building.generation || job.resourceState > 2)
 			throw std::runtime_error("Invalid prepared hiring gradient");
-		job.swim = job.slot % MOVEMENT_CLASS_COUNT;
+		job.swim = versionMinor>=FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY ? s->readUint8("preparationCost") : job.slot % MOVEMENT_CLASS_COUNT;
+        if(job.swim<0 || job.swim>=MOVEMENT_CLASS_COUNT || movementAccessFromLegacy(job.swim)!=movementAccessFromLegacy(job.slot%MOVEMENT_CLASS_COUNT))
+            throw std::runtime_error("Invalid prepared hiring gradient cost");
+        if(versionMinor<FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY)
+            job.slot=(job.slot/MOVEMENT_CLASS_COUNT)*MOVEMENT_CLASS_COUNT+accessClass(movementAccessFromLegacy(job.slot%MOVEMENT_CLASS_COUNT));
 		job.route = BuildingRoute(job.slot / MOVEMENT_CLASS_COUNT);
 		auto *live = game.resolveBuilding(result->building);
 		if (live)
@@ -283,11 +289,13 @@ struct HiringPlanner::PreparedRoute
 			return;
 		const int slot = job.slot;
 		auto guard = SharedBuildingGradient::lock(live->sharedGradient[slot]);
-		live->retireSharedGradient(slot);
+		game.map.recordFieldCost(live->globalGradient[slot],-1);
+        live->retireSharedGradient(slot);
 		game.map.recycleBuildingGradientBuffer(live->globalGradient[slot]);
 		recycleBuildingGradientSearch(std::move(live->globalGradientSearch[slot]));
 		live->supersedeGradient(slot);
 		live->globalGradient[slot] = job.data.release();
+        game.map.recordFieldCost(live->globalGradient[slot],job.swim);
 		live->globalGradientSearch[slot] = std::move(job.search);
 		live->sharedGradient[slot] = field;
 		live->dirtyGradient[slot] = false;
@@ -378,7 +386,7 @@ void HiringPipeline::compute(void *context, std::size_t)
 					: list.key.job == Hiring::Job::Clear ? BuildingRoute::Clearing
 														 : BuildingRoute::Combat;
 				const int slot = int(kind) * MOVEMENT_CLASS_COUNT +
-								 (unit->performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(unit->performance[WALK], unit->performance[SWIM]));
+								 accessClass(movementAccessForSpeeds(unit->performance[WALK],unit->performance[SWIM],unit->performance[FLY]));
 				for (const auto &route : *w.input->routes)
 					if (route.building == building.building && route.slot == slot)
 					{
@@ -671,8 +679,10 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 					s->readEnterSection(i);
 					auto gradient =
 						HiringPlanner::PreparedRoute::load(game, s, o->team, b->tick, versionMinor);
-					if (!destinations.emplace(gradient->building.gid, gradient->job.slot).second)
-						throw std::runtime_error("Duplicate prepared hiring gradient");
+					if (!destinations.emplace(gradient->building.gid, gradient->job.slot).second) {
+                        if(versionMinor>=FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY)throw std::runtime_error("Duplicate prepared hiring gradient");
+                        s->readLeaveSection();continue;
+                    }
 					if (gradient->proactive)
 						initializing.push_back({gradient->building, gradient->job.slot,
 												gradient->job.epoch, gradient->job.generation});
@@ -772,7 +782,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 				for (const auto &unit : view.unitsForTeam(team))
 					if (!unit->isDead)
 						movementClasses[team] |=
-							1u << (unit->performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(unit->performance[WALK], unit->performance[SWIM]));
+							1u << accessClass(movementAccessForSpeeds(unit->performance[WALK],unit->performance[SWIM],unit->performance[FLY]));
 	}
 	for (const auto &b : inputs.world.entities->buildings)
 	{
@@ -812,7 +822,7 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						(route == BuildingRoute::Combat && !combat))
 						continue;
 					const int slot = live->routeSlot(c, route);
-					auto field = game.map.leaseBuildingRoute(live, c, route);
+					auto field = game.map.leaseBuildingRoute(live, movementAccessFromLegacy(c), route);
 					const bool estimate = !field;
 					// Stale fields keep the optimistic ranking fallback. A stale
 					// unreachable result must not hide candidates whose live
@@ -827,14 +837,14 @@ HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world, 
 						prepared->proactive = initialize;
 						auto &job = prepared->job;
 						job.slot = slot;
-						job.swim = c;
+						job.swim = game.map.preparationCostClass(b.team,c);
 						job.route = route;
 						if (initialize)
 							live->supersedeGradient(slot); // Cancel an older queued cold request.
 						job.epoch = live->refreshEpoch[slot];
 						job.generation = game.map.topologyGeneration;
 						job.captureTick = game.stepCounter;
-						job.seed = gradient_preparation::captureBuildingSeed(*live, c, route);
+						job.seed = gradient_preparation::captureBuildingSeed(*live, job.swim, route);
 						prepared->snapshot = world.buildingGradientView();
 						field = prepared->field;
 					}

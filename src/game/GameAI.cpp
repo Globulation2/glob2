@@ -43,6 +43,7 @@ const SimulationSnapshot::Handle& Game::observeCompletedWorld(SimulationSnapshot
         || completedObservation->tick != stepCounter;
     if (fresh)
     {
+        for (int t=0;t<teamsCount();++t) teams[t]->updateRoutingRatio();
         ensureTurretTargeting();
         if (!hiringPipeline)
             hiringPipeline = std::make_unique<HiringPipeline>(map.computeExecutor());

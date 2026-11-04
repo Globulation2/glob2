@@ -56,8 +56,8 @@ inline const Uint16* awaitBuildingGradient(Game& game, Building* building, int s
     BuildingRoute route=BuildingRoute::Automatic)
 {
     return awaitGradient(game,[&] {
-        game.map.requestBuildingField(building,swim,route);
-        return game.map.lookupBuildingField(building,swim,route);
+        game.map.requestBuildingField(building,movementAccessFromLegacy(swim),route);
+        return game.map.lookupBuildingField(building,movementAccessFromLegacy(swim),route);
     });
 }
 }

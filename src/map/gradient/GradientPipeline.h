@@ -60,6 +60,7 @@ class GradientPipeline
         AdaptiveGradientState::Capture adaptiveCapture;
         std::uint64_t preparedGoalCount=0; // Worker output; read only after join.
         bool legacyAssociation=false; // Only imported pre178 queues may overlap one logical key.
+		int swim=0; // Captured preparation cost, independent of the destination access.
 	};
 	struct RestoredSnapshot
 	{
@@ -305,7 +306,7 @@ class GradientPipeline
 		finish({JoinReason::Save, ComputeTelemetry::NoTick});
 		for (const auto &job : pending)
 			visitor(PendingSnapshot{job->slot, job->data.get(), unsigned(job->due - tick),
-									job->superseded, job->adaptiveKey,job->adaptiveCapture,job->preparedGoalCount,job->legacyAssociation});
+									job->superseded, job->adaptiveKey,job->adaptiveCapture,job->preparedGoalCount,job->legacyAssociation,job->swim});
 	}
 	void restoreCompleted(RestoredSnapshot value)
 	{
@@ -347,6 +348,8 @@ class GradientPipeline
 			pending.pop_front();
 		}
 	}
+    template<class Visitor> void visitPreparationCosts(Visitor visitor) const
+    { for(const auto& job:pending)visitor(job->swim); }
     template<class Visitor> void visitLogical(Visitor visitor) const
     { for (const auto& job:pending) visitor(job->slot, unsigned(job->due-tick), job->superseded); }
     // Metadata is owner-written before launch and immutable during worker work;

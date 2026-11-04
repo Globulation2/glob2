@@ -72,9 +72,17 @@ public:
 	AIWorldView& operator=(AIWorldView&&) = delete;
 	static std::shared_ptr<const Catalog> captureCatalog(const Game& game);
 	static std::shared_ptr<const AIWorldView> capture(const Game& game, std::shared_ptr<const Catalog> catalog);
-	std::span<const Uint16> resourceGradient(int team, int resource, int swim, bool market = false) const
+    int preparationCostClass(int team,int access) const {
+        if(access!=int(MovementAccess::Amphibious) || team<0 || std::size_t(team)>=teams.size())return access;
+        const auto& ratio = teams[team].routingRatio;
+        return ratio.known ? int(ratio.selected) : int(MovementAccess::Amphibious);
+    }
+
+	std::span<const Uint16> resourceGradient(int team, int resource, MovementAccess movementAccessValue, bool market = false) const
 	{
+    int swim=accessClass(movementAccessValue);
 		if (!lease.resourceFields || !MapState::validPlane(team, resource, swim)) return {};
+
 		const auto* found = lease.resourceFields->find(MapState::planeKey(team, resource, swim, market));
 		return found ? std::span<const Uint16>(*found->values) : std::span<const Uint16>{};
 	}

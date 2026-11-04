@@ -52,11 +52,11 @@ void prepareUnitBuildingGradient(Game& game,Building* building,int type,int team
     const auto* definition=game.teams[team]->race.getUnitType(type,0);
     const int access=definition->performance[FLY] ? AIR_MOVEMENT_CLASS
         : Map::swimClass(definition->performance[WALK],definition->performance[SWIM]);
-    for (unsigned tick=0; !game.map.lookupBuildingField(building,access,BuildingRoute::Footprint) && tick<4096; ++tick) {
-        game.map.requestBuildingField(building,access,BuildingRoute::Footprint);
+    for (unsigned tick=0; !game.map.lookupBuildingField(building,movementAccessFromLegacy(access),BuildingRoute::Footprint) && tick<4096; ++tick) {
+        game.map.requestBuildingField(building,movementAccessFromLegacy(access),BuildingRoute::Footprint);
         game.step(0);
     }
-    REQUIRE(game.map.lookupBuildingField(building,access,BuildingRoute::Footprint));
+    REQUIRE(game.map.lookupBuildingField(building,movementAccessFromLegacy(access),BuildingRoute::Footprint));
 }
 
 // The steering fixtures combine existing guard/exploration policies with
@@ -234,7 +234,7 @@ TEST_SUITE("UnitCustomization")
             CHECK(unit->action==(mode==0?SWIM:mode==1?WALK:mode==2?FLY:STOP_WALK));
             CHECK((mode==2?map.getAirUnit(unit->posX,unit->posY):map.getGroundUnit(unit->posX,unit->posY))==unit->gid);
             if(mode==0) {
-                REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
+                REQUIRE(accessClass(unit->movementAccess())==WATER_ONLY_CLASS);
                 for(int tick=0;tick<64;++tick) {
                     CAPTURE(tick); game.step(0);
                     REQUIRE(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
@@ -282,7 +282,7 @@ TEST_SUITE("UnitCustomization")
             CHECK(unit->action==(mode==0?SWIM:mode==1?WALK:mode==2?FLY:STOP_WALK));
             CHECK((mode==2?map.getAirUnit(unit->posX,unit->posY):map.getGroundUnit(unit->posX,unit->posY))==unit->gid);
             if(mode==0) {
-                REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
+                REQUIRE(accessClass(unit->movementAccess())==WATER_ONLY_CLASS);
                 for(int tick=0;tick<64;++tick) {
                     CAPTURE(tick); game.step(0);
                     REQUIRE(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
@@ -1124,11 +1124,11 @@ TEST_SUITE("UnitCustomization")
         for (int y=10;y<=12;++y) for (int x=4;x<=14;++x) world.game.map.paintCell(x,y,WATER);
         auto* swimmer=world.addUnit(*world.game.unitCatalog().find("swimmer"),5,11);
         REQUIRE(swimmer);
-        CHECK(swimmer->swimClass()==WATER_ONLY_CLASS);
+        CHECK(accessClass(swimmer->movementAccess())==WATER_ONLY_CLASS);
         int dx=0,dy=0;
-        CHECK(world.game.map.pathfindPointToPoint(5,11,13,11,&dx,&dy,swimmer->swimClass(),world.team->me,20));
+        CHECK(world.game.map.pathfindPointToPoint(5,11,13,11,&dx,&dy,swimmer->movementAccess(),world.team->me,20));
         CHECK(world.game.map.terrainPropertiesAt(5+dx,11+dy).swimmable);
-        CHECK_FALSE(world.game.map.pathfindPointToPoint(5,11,13,9,&dx,&dy,swimmer->swimClass(),world.team->me,20));
+        CHECK_FALSE(world.game.map.pathfindPointToPoint(5,11,13,9,&dx,&dy,swimmer->movementAccess(),world.team->me,20));
         swimmer->dx=1; swimmer->dy=-1;
         int quality=INT_MAX;
         swimmer->tryAcquireAttackTarget(8,-2,0,quality);
@@ -1172,8 +1172,8 @@ TEST_SUITE("UnitCustomization")
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit);
             if(warm) {
-                glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(world.team->teamNumber,WHEAT,unit->swimClass(),false,inn); });
-                REQUIRE(world.game.map.materialAvailableSlot(world.team->teamNumber,WHEAT,unit->swimClass(),6,8,false,inn));
+                glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(world.team->teamNumber,WHEAT,unit->movementAccess(),false,inn); });
+                REQUIRE(world.game.map.materialAvailableSlot(world.team->teamNumber,WHEAT,unit->movementAccess(),6,8,false,inn));
             }
             world.game.map.markImmobileUnit(6,8,world.team->teamNumber);
             REQUIRE(world.game.map.isImmobileUnit(6,8));
@@ -1195,7 +1195,7 @@ TEST_SUITE("UnitCustomization")
                     CHECK(unit->displacement==Unit::DIS_GOING_TO_RESOURCE);
                     CHECK_FALSE(unit->validTarget());
                     glob2test::awaitGradient(world.game,[&] {
-                        return world.game.map.getMaterialGradientSlot(world.team->teamNumber,WHEAT,unit->swimClass(),false,inn);
+                        return world.game.map.getMaterialGradientSlot(world.team->teamNumber,WHEAT,unit->movementAccess(),false,inn);
                     });
                     REQUIRE(unit->continueCargoCollection());
                     CHECK(unit->entityRandom==entityRandom); CHECK(world.game.syncRandom==gameRandom);
@@ -1263,7 +1263,7 @@ TEST_SUITE("UnitCustomization")
             // The scenario tests mixed cargo, so make both destination queries
             // available before travel; a cold second field may deliver wood first.
             for (int material:{WOOD,WHEAT}) glob2test::awaitGradient(world.game,[&] {
-                return world.game.map.getMaterialGradientSlot(0,material,unit->movementClass(),false,inn);
+                return world.game.map.getMaterialGradientSlot(0,material,unit->movementAccess(),false,inn);
             });
             unit->destinationPurpose=WOOD;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
@@ -2334,14 +2334,14 @@ TEST_SUITE("UnitCustomization")
             deposit(map,7,y,ALGA,3);
             auto* unit=world.addUnit(type,5,y); REQUIRE(unit);
             const auto unitId=Unit::GIDtoID(unit->gid), buildingId=Building::GIDtoID(inn->gid);
-            REQUIRE(game.hasWaterOnlyUnits()); REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
+            REQUIRE(game.hasWaterOnlyUnits()); REQUIRE(accessClass(unit->movementAccess())==WATER_ONLY_CLASS);
             unit->receiveCarriedMaterial(STONE,{1,2});
             unit->destinationPurpose=ALGA;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit); inn->updateCallLists();
-            glob2test::awaitGradient(game,[&] { return map.getMaterialGradient(0,MaterialId::Algae,WATER_ONLY_CLASS); });
-            game.map.prepareBuildingGradient(inn,WATER_ONLY_CLASS);
-            REQUIRE(map.materialAvailable(0,MaterialId::Algae,WATER_ONLY_CLASS,5,y));
+            glob2test::awaitGradient(game,[&] { return map.getMaterialGradient(0,MaterialId::Algae,MovementAccess::Water); });
+            game.map.prepareBuildingGradient(inn,MovementAccess::Water);
+            REQUIRE(map.materialAvailable(0,MaterialId::Algae,MovementAccess::Water,5,y));
             glob2test::awaitBuildingGradient(game,inn,WATER_ONLY_CLASS);
             const int slot=inn->routeSlot(WATER_ONLY_CLASS,BuildingRoute::Footprint);
             const auto probe=map.coordToIndex(13,y);
@@ -2362,8 +2362,8 @@ TEST_SUITE("UnitCustomization")
             }
             if (superseded) {
                 // A newer synchronous lifetime invalidates queued or pending work.
-                map.updateGlobalGradient(inn,WATER_ONLY_CLASS,BuildingRoute::Footprint);
-                map.finishBuildingGradient(inn,WATER_ONLY_CLASS,BuildingRoute::Footprint);
+                map.updateGlobalGradient(inn,MovementAccess::Water,BuildingRoute::Footprint);
+                map.finishBuildingGradient(inn,MovementAccess::Water,BuildingRoute::Footprint);
                 REQUIRE_FALSE(inn->refreshRequested.test(slot));
             }
             const auto runtimeBytes=[](Map& value) {
@@ -2399,7 +2399,7 @@ TEST_SUITE("UnitCustomization")
             restored.map.setGradientWorkerCount(threads>1?threads-1:0); // loader defaults to shared2
             auto* restoredInn=restored.teams[0]->myBuildings[buildingId]; REQUIRE(restoredInn);
             auto* restoredUnit=restored.teams[0]->myUnits[unitId]; REQUIRE(restoredUnit);
-            REQUIRE(restoredUnit->swimClass()==WATER_ONLY_CLASS);
+            REQUIRE(accessClass(restoredUnit->movementAccess())==WATER_ONLY_CLASS);
             REQUIRE(authoritativeAudit(restored)==authoritativeAudit(game));
             REQUIRE(runtimeBytes(restored.map)==baselineRuntime);
             REQUIRE(restoredInn->refreshRequested.test(slot)==inn->refreshRequested.test(slot));
@@ -2469,8 +2469,8 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(world.team->stats.events().materialSpillageEvents==0);
             REQUIRE(unit->integrity()); REQUIRE(restoredUnit->integrity());
             // Check the selected row actually publishes the new passability value.
-            map.finishBuildingGradient(inn,WATER_ONLY_CLASS,BuildingRoute::Footprint);
-            restored.map.finishBuildingGradient(restoredInn,WATER_ONLY_CLASS,BuildingRoute::Footprint);
+            map.finishBuildingGradient(inn,MovementAccess::Water,BuildingRoute::Footprint);
+            restored.map.finishBuildingGradient(restoredInn,MovementAccess::Water,BuildingRoute::Footprint);
             REQUIRE(inn->globalGradient[slot]);
             REQUIRE(inn->globalGradient[slot][probe]==GRADIENT_FORBIDDEN);
             REQUIRE(restoredInn->globalGradient[slot]);
@@ -2515,11 +2515,11 @@ TEST_SUITE("UnitCustomization")
                 unit->destinationPurpose=material;
                 unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
                 inn->unitsWorking.push_back(unit); inn->updateCallLists();
-                glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(world.team->teamNumber,material,unit->swimClass()); });
-                world.game.map.prepareBuildingGradient(inn,unit->swimClass());
-                REQUIRE(world.game.map.materialAvailable(world.team->teamNumber,static_cast<MaterialId>(material),unit->swimClass(),unit->posX,unit->posY));
-                glob2test::awaitBuildingGradient(world.game,inn,unit->swimClass());
-                if(waterOnly) REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
+                glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(world.team->teamNumber,material,unit->movementAccess()); });
+                world.game.map.prepareBuildingGradient(inn,unit->movementAccess());
+                REQUIRE(world.game.map.materialAvailable(world.team->teamNumber,static_cast<MaterialId>(material),unit->movementAccess(),unit->posX,unit->posY));
+                glob2test::awaitBuildingGradient(world.game,inn,accessClass(unit->movementAccess()));
+                if(waterOnly) REQUIRE(accessClass(unit->movementAccess())==WATER_ONLY_CLASS);
                 for(int tick=0;tick<4096 && unit->displacement!=phase;++tick) world.game.step(0);
                 REQUIRE(unit->displacement==phase);
                 REQUIRE(unit->jobPurpose==UnitJobPurpose::Transport);
@@ -3454,7 +3454,7 @@ TEST_CASE("shared air routing stress exports a reproducible benchmark setup [art
     for(int tick=0;tick<256;++tick) game.step(0);
     CHECK(game.teams[0]->liveUnits.size()==64);
     for(const auto* unit:game.teams[0]->liveUnits.entries())
-        CHECK(unit->movementClass()==AIR_MOVEMENT_CLASS);
+        CHECK(accessClass(unit->movementAccess())==AIR_MOVEMENT_CLASS);
 }
 
 TEST_CASE("ordinary flyers retain angular steering and local avoidance without movement fields" * doctest::test_suite("UnitCustomization"))
@@ -3564,7 +3564,7 @@ TEST_CASE("flying carriers steer directly between shared destination queries" * 
     flyer->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
     inn->unitsWorking.push_back(flyer);
     deposit(map,18,11,WHEAT,1);
-    glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,AIR_MOVEMENT_CLASS,false,inn); });
+    glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Air,false,inn); });
     flyer->setValidTarget(false);
     flyer->handleMovementGoingToResource();
     REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
@@ -3574,9 +3574,9 @@ TEST_CASE("flying carriers steer directly between shared destination queries" * 
     flyer->handleMovementGoingToResource();
     CHECK(flyer->movement==Unit::MOV_RANDOM_FLY);
     CHECK(flyer->attachedBuilding==inn); // Keep the job until shared guidance refreshes.
-    map.updateMaterialGradient(0,WHEAT,AIR_MOVEMENT_CLASS,false);
+    map.updateMaterialGradient(0,WHEAT,MovementAccess::Air,false);
     glob2test::awaitGradient(world.game,[&] {
-        const auto* field=map.getMaterialGradientSlot(0,WHEAT,AIR_MOVEMENT_CLASS,false,inn);
+        const auto* field=map.getMaterialGradientSlot(0,WHEAT,MovementAccess::Air,false,inn);
         return field && field[map.coordToIndex(18,9)]==GRADIENT_AT_GOAL ? field : nullptr;
     });
     flyer->handleMovementGoingToResource();
@@ -3611,7 +3611,7 @@ TEST_CASE("direct flying clearers retain shared goals and clearing claims" * doc
             glob2test::awaitBuildingGradient(world.game,flag,AIR_MOVEMENT_CLASS,BuildingRoute::Clearing);
             flyer->handleMovementClearingResources();
         } else {
-            glob2test::awaitGradient(world.game,[&] { return map.getClearAreasGradient(0,AIR_MOVEMENT_CLASS); });
+            glob2test::awaitGradient(world.game,[&] { return map.getClearAreasGradient(0,MovementAccess::Air); });
             flyer->handleMovementRandom();
             CHECK(map.isClearingAreaClaimed(18,12,0)==flyer->gid);
         }
@@ -3708,7 +3708,7 @@ TEST_CASE("direct flying carriers retain priced overlay and direct stock destina
         REQUIRE_FALSE(map.hasAirRoutingConstraints());
         REQUIRE(map.getBuilding(18,12)==NOGBID);
         glob2test::awaitGradient(game,[&] {
-            return map.getMaterialGradientSlot(0,WOOD,AIR_MOVEMENT_CLASS,consumer->fetchesFromMarkets(),consumer);
+            return map.getMaterialGradientSlot(0,WOOD,MovementAccess::Air,consumer->fetchesFromMarkets(),consumer);
         });
         flyer->handleMovementGoingToResource();
         REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);

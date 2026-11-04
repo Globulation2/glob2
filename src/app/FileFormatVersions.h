@@ -394,3 +394,6 @@ static constexpr int FILE_FORMAT_VERSION_OVERGROWN_ROAD = 203;
 //! Built-in laterite: TERRAIN_COUNT grew from 44 to 45, so earlier files carry custom
 //! terrain IDs starting at 44 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_LATERITE = 204;
+
+//! Stable access fields retain published and in-flight preparation costs.
+static constexpr int FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY = 205;

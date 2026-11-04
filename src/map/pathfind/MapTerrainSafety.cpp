@@ -149,7 +149,8 @@ bool Map::pathfindTerrainSafety(Unit* unit)
     unit->dx = unit->dy = 0;
     unit->direction = 8;
     const bool air = unit->performance[FLY] > 0;
-    const EscapeProfile profile{air, unit->movementClass(), unit->owner->me,
+    const int access=accessClass(unit->movementAccess());
+    const EscapeProfile profile{air, preparationCostClass(unit->owner->teamNumber,access), unit->owner->me,
         !air && bool(getForbidden(unit->posX, unit->posY) & unit->owner->me)};
 
     // Avoid allocating a field on wholly hazardous maps. Counts are maintained
@@ -165,14 +166,15 @@ bool Map::pathfindTerrainSafety(Unit* unit)
 
     // Ground fields depend on team paint and escape policy. Air fields ignore
     // paint and share across teams; occupancy is checked only at descent.
-    const unsigned key = 1 + ((air ? 0 : unit->owner->teamNumber) * MOVEMENT_CLASS_COUNT + profile.swim) * 2 + profile.escapeForbidden;
+    const unsigned key = 1 + ((air ? 0 : unit->owner->teamNumber) * MOVEMENT_CLASS_COUNT + access) * 2 + profile.escapeForbidden;
     auto& cache = gradientRuntime->safety;
     auto& field = cache.acquire(key, size);
     const Uint64 generation = air ? cache.airGeneration : cache.groundGeneration;
-    if (field.costs.size() != size || field.generation != generation)
+    if (field.costs.size() != size || field.generation != generation || field.preparationCost != profile.swim)
     {
         buildEscapeField(*this, profile, field);
         field.generation = generation;
+        field.preparationCost = profile.swim;
         ++cache.builds;
     }
     return chooseEscapeStep(*this, profile, field, *unit);

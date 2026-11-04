@@ -345,6 +345,7 @@ Handle capture(const Game& game,
 		}
 		if (needs(requirements, Component::Teams)) {
 		auto& target = teams->values[t]; target.number = t;
+        target.routingRatio=team->routingRatio;
         target.supplierPresence=(!team->stockSuppliers.empty()?1:0)|(!team->directStockSuppliers.empty()?2:0);
 		target.virtualBuildings.clear(); target.swarms.clear();
 		target.prestige = team->prestige; target.alive = team->isAlive;
@@ -427,7 +428,7 @@ Handle capture(const Game& game,
 			if (storage) storage->entityBytesCopied += sizeof(UnitState);
 			v.identity = Game::refOf(u); v.team = t;
 			v.realAttackStrength = u->getRealAttackStrength();
-                if(!v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableMovementClasses[t]|=Uint16(1u<<(v.performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(v.performance[WALK],v.performance[SWIM])));
+                if(!v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableMovementClasses[t]|=Uint16(1u<<accessClass(movementAccessForSpeeds(v.performance[WALK],v.performance[SWIM],v.performance[FLY])));
 			v.attached = Game::refOf(u->attachedBuilding);
 			v.target = Game::refOf(u->targetBuilding);
 		}

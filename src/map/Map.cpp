@@ -431,7 +431,7 @@ void Map::finishTerrainEdit()
                 // Repeated painting must not starve all visible generations.
                 // Escape fields use the same delayed refresh contract, including
                 // cost-only terrain changes such as grass becoming trail.
-				if (forbiddenGradient[team][swim]) updateForbiddenGradient(team, swim);
+				if (forbiddenGradient[team][swim]) updateForbiddenGradient(team, movementAccessFromLegacy(swim));
 			}
 	}
 	terrainEditChanged = terrainRoutesChanged = false;
@@ -599,6 +599,7 @@ void Map::clear()
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();
 	growthCoverageValid = false;
 	gradientRuntime->materialFields.clear();
+	gradientRuntime->fieldCosts.clear();
 	gradientRuntime->materialLru.clear();
 	gradientRuntime->stockRevision={};
 	gradientRuntime->materialCacheClock=0;
