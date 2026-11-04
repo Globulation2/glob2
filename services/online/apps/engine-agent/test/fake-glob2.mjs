@@ -89,7 +89,7 @@ const GENERATORS = [
   {
     method: 15,
     id: 'symmetric-arena',
-    revision: 2,
+    revision: 3,
     editorOnly: false,
     controls: [
       { id: 'width', values: [6, 7, 8, 9] },
@@ -147,7 +147,7 @@ switch (command) {
       job_type: 'generate_map',
       status: 'completed',
       generator: 'symmetric-arena',
-      revision: 2,
+      revision: 3,
       map_seed: seed,
       chosen_seed: (seed * 7 + 1) % 4294967296,
       quality: { score: 0.99, fairness: 0.98 },
