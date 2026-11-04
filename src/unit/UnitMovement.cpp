@@ -800,10 +800,10 @@ void Unit::handleMovementGoingToResource()
     }
 
 	int teamNumber=owner->teamNumber;
-	int swim=accessClass(movementAccess());
+	const auto access=movementAccess();
 	bool stopWork;
 	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
-	const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryMaterialStep(entityRandom, teamNumber, destinationPurpose, movementAccessFromLegacy(swim), posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets); });
+	const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryMaterialStep(entityRandom, teamNumber, destinationPurpose, access, posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets); });
 	if (result == StepResult::Pending || result == StepResult::AtGoal) { waitForGradient(); return; }
 	if (result == StepResult::Step)
 	{
@@ -816,7 +816,7 @@ void Unit::handleMovementGoingToResource()
 		// walking. Re-ascend from here whenever the stored target has stopped
 		// being a peak of that same gradient; isGradientPeak is a cheap check
 		// to run every action, the ascent itself only when it actually goes stale.
-		const Uint16 *gradient = map->getMaterialGradientSlot(teamNumber, destinationPurpose, movementAccessFromLegacy(swim), withMarkets, attachedBuilding);
+		const Uint16 *gradient = map->getMaterialGradientSlot(teamNumber, destinationPurpose, access, withMarkets, attachedBuilding);
 		if (gradient && !map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}
