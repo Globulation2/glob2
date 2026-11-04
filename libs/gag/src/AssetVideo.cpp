@@ -3,7 +3,7 @@
 #include "AssetVideoDecoder.h"
 #include <stdexcept>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+#include <ApplicationHost.h>
 #endif
 
 namespace GAGCore {
@@ -24,60 +24,6 @@ std::shared_ptr<const AssetImage> makeVideoImage(unsigned width, unsigned height
 #endif
 
 #ifdef __EMSCRIPTEN__
-namespace {
-int startAssetVideo(const uint8_t *bytes, size_t length, unsigned width, unsigned height, unsigned count)
-{
-    return MAIN_THREAD_EM_ASM_INT({
-        try {
-            if (!Module.glob2AssetVideo) {
-                const worker = new Worker(new URL('asset-video-worker.js', document.baseURI));
-                const state = Module.glob2AssetVideo = ({worker, sequence: 0});
-                const fail = () => {
-                    state.failed = true;
-                    worker.terminate();
-                };
-                worker.onerror = fail;
-                worker.onmessageerror = fail;
-                worker.onmessage = ({data}) => {
-                    if (data.id === state.sequence) state.reply = data;
-                };
-            }
-            const state = Module.glob2AssetVideo;
-            if (state.failed) return 0;
-            state.reply = null;
-            state.started = performance.now();
-            const input = HEAPU8.slice($0, $0 + $1).buffer;
-            state.worker.postMessage({id: ++state.sequence, bytes: input, width: $2, height: $3, count: $4}, [input]);
-            return 1;
-        } catch (_) { return 0; }
-    }, bytes, length, width, height, count);
-}
-
-int assetVideoStatus()
-{
-    return MAIN_THREAD_EM_ASM_INT({
-        const state = Module.glob2AssetVideo;
-        if (!state || state.failed) return -1;
-        if (state.reply) return state.reply.rgba?.byteLength || -1;
-        if (performance.now() - state.started > 30000) {
-            state.failed = true;
-            state.worker.terminate();
-            return -1;
-        }
-        return 0;
-    });
-}
-
-void takeAssetVideo(uint8_t *pixels, size_t size)
-{
-    MAIN_THREAD_EM_ASM({
-        const state = Module.glob2AssetVideo;
-        if ($1) HEAPU8.set(new Uint8Array(state.reply.rgba), $0);
-        if (state) state.reply = null;
-    }, pixels, size);
-}
-}
-
 void AssetLoader::pollBrowserVideo() {
     if (browserVideoJobs.empty()) return;
     auto &job = browserVideoJobs.front();
@@ -92,25 +38,25 @@ void AssetLoader::pollBrowserVideo() {
         if (job.encoded.pending()) return;
         const auto bytes = job.encoded.get();
         if (!bytes || bytes->empty() ||
-                !startAssetVideo(bytes->data(), bytes->size(), job.width, job.height, job.count))
+                !ApplicationHost::startAssetVideo(bytes->data(), bytes->size(), job.width, job.height, job.count))
             return finish(State::Failed);
         job.encoded = {};
         job.started = true;
         return;
     }
-    const int status = assetVideoStatus();
+    const int status = ApplicationHost::assetVideoStatus();
     if (!status) return;
     const auto size = size_t(job.width) * job.height * job.count * 4;
     if (!job.decoded->consumers || status < 0 || size_t(status) != size) {
-        takeAssetVideo(nullptr, 0);
+        ApplicationHost::takeAssetVideo(nullptr, 0);
         return finish(job.decoded->consumers ? State::Failed : State::Cancelled);
     }
     try {
         auto result = std::make_shared<Bytes>(size);
-        takeAssetVideo(result->data(), size);
+        ApplicationHost::takeAssetVideo(result->data(), size);
         finish(State::Ready, std::move(result));
     } catch (const std::bad_alloc&) {
-        takeAssetVideo(nullptr, 0);
+        ApplicationHost::takeAssetVideo(nullptr, 0);
         finish(State::Failed);
     }
 }
