@@ -1104,7 +1104,8 @@ void scheduledAccessMetadata()
 	World world;
 	Scheduler s(world, 2, 4);
 	Building* b = world.place(24, 24);
-	world.warm(b); // Isolate the two access variants.
+	world.warm(b);
+    world.team->routingRatio.known=true;world.team->routingRatio.selected=1;
 	int dist = 0;
 	for (int swim : {1, 3}) { world.warm(b, swim); require(s.map.buildingAvailable(b, movementAccessFromLegacy(swim), 2, 2, &dist), "reference warm field"); }
 	const int access = b->routeAccess(1, BuildingRoute::Footprint);
@@ -1119,21 +1120,23 @@ void scheduledAccessMetadata()
 	s.tick([&] { s.map.buildingAvailable(b, movementAccessFromLegacy(1), 2, 2, &dist); }); // captures the fence: locked
 	s.tick([&] {
 		paint(false);
+        world.team->routingRatio.selected=6;
 		s.map.updateGlobalGradient(b, movementAccessFromLegacy(3)); // stamped with the capture's tick, but newer
 		require(!b->isLocked(access), "synchronous build sees the open fence");
 	});
 	for (int i = 2; i < 4; ++i) s.tick();
 	s.map.advanceGradientPipeline();
-	require(s.status().published == 1 && !b->isLocked(access), "an older capture cannot overwrite newer access metadata");
+	require(s.status().published == 0 && s.status().discarded == 1 && !b->isLocked(access), "an older capture cannot overwrite newer access metadata");
 	s.game.stepCounter += DIRTY_GRACE_TICKS;
 	paint(true);
 	s.tick([&] { s.map.buildingAvailable(b, movementAccessFromLegacy(1), 2, 2, &dist); });
 	for (int i = 1; i < 4; ++i) s.tick();
 	s.map.advanceGradientPipeline();
-	require(s.status().published == 2 && b->isLocked(access), "the newest capture writes access metadata");
+	require(s.status().published == 1 && b->isLocked(access), "the newest capture writes access metadata");
 	const auto bytes = saveRuntime(s.map);
 	loadRuntime(s.map, bytes);
 	require(b->isLocked(access), "saves keep the published metadata");
+    CHECK(s.map.publishedCostClass(b->globalGradient[int(MovementAccess::Amphibious)])==6);
 	std::puts("PASS access metadata follows the newest capture across swim classes and saves");
 }
 
@@ -1331,12 +1334,17 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 	s.map.buildingAvailable(b, movementAccessFromLegacy(3), 2, 2, &dist); // same tick, open fence
 	s.map.stagePeriodicGradientPreparation();
 	s.map.game->snapshotStore().invalidateBoundary(); s.map.preparePendingGradient(s.map.game->snapshotStore().captureBoundary(*s.map.game));
-	require(s.status().pending == 2, "both swim classes are pending with one capture tick");
-	require(b->lastGlobalGradientUpdateStepCounter[b->routeSlot(1, BuildingRoute::Footprint)] < s.game.stepCounter, "nothing published yet");
+	require(s.status().pending == 1, "amphibious requests share one pending generation");
+	require(b->lastGlobalGradientUpdateStepCounter[b->routeSlot(int(MovementAccess::Amphibious), BuildingRoute::Footprint)] < s.game.stepCounter, "nothing published yet");
 	for (int i = 1; i < 4; ++i) s.tick();
 	s.map.advanceGradientPipeline();
-	require(s.status().published == 2, "both published at one deadline");
-	require(!b->isLocked(access), "scheduled: the later capture of the same tick wins, like the synchronous build");
+	require(s.status().published == 1, "the shared generation publishes once");
+    require(b->isLocked(access), "a repeated read cannot mutate the frozen capture");
+    REQUIRE(s.map.requestBuildingRefresh(b,int(MovementAccess::Amphibious)));
+    s.map.stagePeriodicGradientPreparation();glob2test::prepareGradientBoundary(s.game);
+    for(int i=0;i<4;++i)s.tick();
+    s.map.advanceGradientPipeline();
+    require(s.status().published==2 && !b->isLocked(access), "a subsequent refresh captures the open fence");
 	std::puts("PASS same-tick swim classes write access metadata in request order");
 }
 
@@ -1758,7 +1766,7 @@ TEST_SUITE("BuildingGradientInvalidation")
 		glob2test::HeadlessGlobals globals;
 		scheduledReusedDestination();
 	}
-	TEST_CASE("access metadata follows the newest capture across swim classes and saves")
+	TEST_CASE("shared access metadata ignores superseded captures across ratio changes and saves")
 	{
 		glob2test::HeadlessGlobals globals;
 		scheduledAccessMetadata();
@@ -1778,7 +1786,7 @@ TEST_SUITE("BuildingGradientInvalidation")
 		glob2test::HeadlessGlobals globals;
 		scheduledForbiddenEditCarriesPendingGeneration();
 	}
-	TEST_CASE("same-tick swim classes write access metadata in request order")
+	TEST_CASE("same-tick amphibious requests share one immutable capture")
 	{
 		glob2test::HeadlessGlobals globals;
 		scheduledSameTickSwimClassesKeepRequestOrder();

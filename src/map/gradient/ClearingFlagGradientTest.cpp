@@ -52,7 +52,7 @@ void clearingUsesMaterialSwitchesAndResourceProperties() {
     const auto begin=reinterpret_cast<unsigned char*>(flag->localMaterials)-bytes+sizeof(flag->localMaterials);
     const auto end=reinterpret_cast<unsigned char*>(flag->wishedMaterials)-bytes;
     REQUIRE(end>=begin);
-    for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
+    for(int swim:{0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS}) {
         const int slot=flag->routeSlot(swim, BuildingRoute::Clearing);
         ensureClearingReferenceStorage(f.game.map,flag,swim);
         for(unsigned char padding:{0,1}) {
@@ -111,7 +111,7 @@ TEST_CASE("passable clearing sources respect forbidden paint buildings and immob
     REQUIRE(map.resourceRegistry().properties(id).clearable);
     const auto index=map.coordToIndex(21,20);
     map.replaceResource(index,Resource{static_cast<Uint16>(resourceIndex(id)),0,1,0});
-    for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
+    for(int swim:{0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS})
     {
         const auto verify=[&](Uint16 expected) {
             ensureClearingReferenceStorage(map,flag,swim);
@@ -166,7 +166,7 @@ TEST_CASE("empty persistent deposits remain clearing flag goals and worker targe
         CHECK_FALSE(map.isClearableResourceForMaterials(21,21,flag->clearingMaterialMask));
         flag->setClearsMaterial(materialIndex(MaterialId::Gold),true);
         REQUIRE(map.isClearableResourceForMaterials(21,21,flag->clearingMaterialMask));
-        for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
+        for(int swim:{0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS})
         {
             ensureClearingReferenceStorage(map,flag,swim);
             map.updateGlobalGradient(flag,movementAccessFromLegacy(swim),BuildingRoute::Clearing);
