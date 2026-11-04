@@ -1,0 +1,29 @@
+{
+  "base": "1eed495f5664973c94ef9ac5768d20a5d485f728",
+  "results": [
+    {
+      "name": "policy",
+      "exit_code": 0,
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+        "test/build_system/test_ci_policy.py"
+      ]
+    },
+    {
+      "name": "tiers",
+      "exit_code": 0,
+      "command": [
+        "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_ci_tiers.py"
+      ]
+    }
+  ],
+  "inventory": "WholeworkflowbyteidenticalafterremovingoneSDKcleanupstep. Alljobs,buildimages,AppArmorprofilesandtestsretained.",
+  "limit": "No localfullDockerbuild repeated; actualhostedcapacityrecoveryawaitsnextmaster. CleanuponlyonfreshhostedjobVM; no Dockerprune/sharedrunnerdata/enginecontentschanged."
+}
