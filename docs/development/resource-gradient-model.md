@@ -15,7 +15,7 @@ their lazy initialization/invalidation paths. Skipping one field does not cause
 another family to fill an executor slot. With no initialization, reactive request
 or accepted demanded refresh, no periodic work is submitted.
 
-A logical field key contains a stable family, team, movement class and optional
+A logical field key contains a stable family, team, movement access and optional
 material identity. Its publication carries the immutable capture tick, effective
 seed count and change epochs, movement-counter baseline and history-known flag.
 Requests made while a replacement is pending do not move its deadline. Published
@@ -437,3 +437,38 @@ Adapter implementation is an explicit environment-specific boundary: a config
 with missing adapters is not a self-contained build recipe. The driver and its
 focused mocked orchestration tests can be verified without starting games;
 adopting a live campaign or replacing its frozen tools is deliberately excluded.
+
+## Shared amphibious routing
+
+Live gradient lookups use movement access, rather than a walking/swimming speed
+ratio. Land-only and amphibious ground units each share a field; water-only and
+air access remain separate. Actual movement speeds and physical passability are
+unchanged. Living amphibious ground units determine their team's most common
+quantized ratio initially and every 512 simulation ticks. A tie retains the
+previous choice when possible, otherwise choosing the lower class; an empty
+team uses equal walking/swimming cost.
+
+The ratio is captured when a field preparation starts. Published fields retain
+their own preparation costs for direction selection and lazy expansion. A policy
+change does not discard published guidance or eagerly rebuild all fields: units
+continue using the existing field until its ordinary refresh publishes a
+replacement. Allied visitors share the building owner's field and cost policy.
+Synchronous hazard-escape caches use the same access identities and team ratio;
+a ratio change rebuilds their derived field on the next query to keep cache resets
+and save/load directionally equivalent. Periodic, consumer-specific, building,
+snapshot-backed material and hiring queries use the same access identities. Single-team point searches use that team's policy;
+multi-team searches use equal cost because they have no single owner. Maxima's
+independent strategic travel fields retain their neutral access-based semantics.
+
+Save format 205 preserves each published and pending field's captured costs.
+Older saves coalesce ratio-keyed fields into one amphibious field, preserving
+available published guidance while restarting obsolete preparation queues. The
+save-format floor remains unchanged. Historical research campaigns require their
+frozen binaries and tool packages; production exposes no ratio-policy selector.
+
+The existing unified quality probe uses private fresh fields and copied selector
+RNG state. Its private fields retain captured preparation costs independently of
+live caches; counterfactual results do not describe completed journeys. Existing
+`--gradient-work-stats PATH` diagnostics retain request, refresh and publication
+statistics. Elapsed scopes remain attribution aids, not additive process CPU
+measurements.

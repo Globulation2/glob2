@@ -56,6 +56,27 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
 			cs = rotl1(cs) ^ static_cast<Uint32>(sectors[sector].bullets.size());
 			for (const Bullet* bullet : sectors[sector].bullets) cs = rotl1(cs) ^ bullet->checkSum();
 		}
+    // Costs belong to each published generation, independently of team policy.
+    // Iterate logical slots, never the address-keyed metadata registry.
+    if(!legacy152 && game) {
+        const auto field=[&](const Uint16* cells,int access) {
+            cs=rotl1(cs)^Uint32(cells?publishedCostClass(cells,access)+1:0);
+        };
+        for(int team=0;team<game->teamsCount();++team) {
+            for(int access:{0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS,AIR_MOVEMENT_CLASS}) {
+                for(int material=0;material<MaterialSlotCount;++material) {
+                    field(materialGradients[team][material][access],access);
+                    field(marketMaterialGradients[team][material][access],access);
+                }
+                field(forbiddenGradient[team][access],access);
+                field(guardAreasGradient[team][access],access);field(clearAreasGradient[team][access],access);
+            }
+            for(const auto* building:game->teams[team]->liveBuildings.entries())
+                for(int slot=0;slot<BUILDING_GRADIENT_COUNT;++slot)
+                    field(building->globalGradient[slot],slot%MOVEMENT_CLASS_COUNT);
+        }
+        if(includePending)gradientRuntime->pipeline.visitPreparationCosts([&](int cost){cs=rotl1(cs)^Uint32(cost);});
+    }
 	// Cache age and eviction order affect subsequent routes and are simulation state.
 	const auto mix64=[&](Uint64 value) { cs=rotl1(cs)^Uint32(value)^Uint32(value>>32); };
 	mix64(std::max<Uint64>(gradientRuntime->materialCacheBudget,Uint64(size)*sizeof(Uint16))); mix64(gradientRuntime->materialCacheClock);
@@ -68,6 +89,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
         if (!legacy152) {
             cs=rotl1(cs)^Uint32(entry.published!=nullptr)^Uint32(entry.awaitingFirstRead<<1)^Uint32(entry.excludesShared<<2);
             cs=rotl1(cs)^entry.publishedStep;
+            if(entry.published)cs=rotl1(cs)^publishedCostClass(entry.published,entry.swim);
         }
         if (heavy && entry.published) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.published[i];
 	}
@@ -95,7 +117,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
         }
         gradientRuntime->buildings.visitLogical([&](const auto& p,unsigned remaining,bool superseded) {
             const auto* b=buildingGradientDestination(p.team,p.buildingId,p.scriptIdentity);
-            mix(p.team); mix(p.buildingId); mix(p.scriptIdentity); mix(p.slot);
+            mix(p.team); mix(p.buildingId); mix(p.scriptIdentity); mix(p.slot);mix(p.swim);
             mix(p.captureTick); mix(p.generation); mix(remaining);
             mix(superseded || !b || b->refreshEpoch[p.slot]!=p.epoch);
         });

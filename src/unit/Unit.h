@@ -230,9 +230,8 @@ public:
 	int diagnosticDeathCause = 4; // GameplayMeasurements::UNKNOWN; never checksum this field.
 	void recordLethalDamage(int damage, int cause);
 
-	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
-	int swimClass() const;
-	int movementClass() const;
+	//! Routing access is independent of speed; field preparation selects team costs.
+	MovementAccess movementAccess() const;
 	//! Construction eligibility is independent of work/harvest speed.
 	Sint32 workerLevel() const { return constructionLevel; }
 	bool needsTraining(const BuildingTrainingSpec& training, int ability) const;

@@ -284,7 +284,7 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 			auto *inn = match.teams[original->owner->teamNumber]
 						->myBuildings[Building::GIDtoID(original->gid)];
 			require(inn != nullptr, "scenario inn exists before routing");
-			glob2test::awaitBuildingGradient(match, inn, worker->swimClass(), BuildingRoute::Footprint);
+			glob2test::awaitBuildingGradient(match, inn, accessClass(worker->movementAccess()), BuildingRoute::Footprint);
 		}
 	};
 	prepareFoodRoutes(game);

@@ -68,7 +68,7 @@ struct Colony
         if (type == EXPLORER) game.map.setAirUnit(6, 8, u->gid);
         else game.map.setGroundUnit(6, 8, u->gid);
         // These fixtures test occupied service capacity after route publication.
-        if (!u->performance[FLY]) glob2test::awaitBuildingGradient(game,inn,u->swimClass());
+        if (!u->performance[FLY]) glob2test::awaitBuildingGradient(game,inn,accessClass(u->movementAccess()));
         return u;
     }
 
@@ -157,7 +157,7 @@ TEST_SUITE("HungryDefeat")
         Unit* patient = world.addUnit(WORKER, 6, 8);
         patient->hp = patient->trigHP;
         patient->medical = Unit::MED_DAMAGED;
-        glob2test::awaitBuildingGradient(world.game,hospital,patient->swimClass());
+        glob2test::awaitBuildingGradient(world.game,hospital,accessClass(patient->movementAccess()));
         patient->delta = 255;
         REQUIRE(world.addUnit(WORKER, 20, 20, 1));
         world.step();

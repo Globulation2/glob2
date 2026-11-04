@@ -24,6 +24,7 @@ struct ResourceGradientProbe {
     explicit ResourceGradientProbe(const char* path);
     ~ResourceGradientProbe();
     struct Episode {
+        int deferredCost=0,refreshedCost=0;
         unsigned tick=0,delay=8,queries=0,planningQueries=0,behaviorInterval=0,behaviorSeed=0;
         bool movementObserved=false,contradictionCaptureKnown=false;
         unsigned guardBalanceQueries=0;

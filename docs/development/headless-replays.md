@@ -9,9 +9,11 @@ capped-game adjudication belongs in offline analysis.
 
 Run AI games without a GUI to generate `.replay` files for cross-codebase fidelity testing (C++ vs Rust).
 
-Version 194 changes replenishment staffing: assigned couriers finish deliveries
-before inventory-driven dismissal. Earlier replays are rejected; supported older
-saves still load, with unchanged save encoding and a minimum save version of 58.
+Version 205 shares amphibious routing fields and stores their captured preparation
+costs. Earlier replays are rejected; supported older saves still load and retain a
+minimum save version of 58. See [shared amphibious routing](resource-gradient-model.md#shared-amphibious-routing)
+for field transitions and cache migration. Version 194 previously changed
+replenishment staffing so assigned couriers finish deliveries before dismissal.
 
 Version 121 gives each AI controller an independent saved random stream. Version
 122 also gives each Econo and Nicowar controller a private gradient cache. AI

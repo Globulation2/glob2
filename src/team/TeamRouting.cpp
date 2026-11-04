@@ -65,7 +65,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		{
 			if (!(*bi)->canOfferService(unit, HEAL) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 			int buildingDist;//initialized in buildingAvailable next line
-			if (map->buildingAvailable((*bi), unit->movementClass(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
+			if (map->buildingAvailable((*bi), unit->movementAccess(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
 			{
 				choosen = (*bi);
 				bestDist = buildingDist;
@@ -112,13 +112,13 @@ Building *Team::findNearestFood(Unit *unit)
 				{
 			if (!(*bi)->canOfferService(unit, FEED) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 					int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
-					if ((dist >= maxDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(unit->movementClass()))))
+					if ((dist >= maxDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(accessClass(unit->movementAccess())))))
 						|| !(*bi)->canConvertUnit()
 						)
 					{
 						continue;
 					}
-					if (!directAir && !map->buildingAvailable(*bi, unit->movementClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+					if (!directAir && !map->buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 						continue;
 					if (dist >= maxDist)
 						continue;
@@ -152,10 +152,10 @@ Building *Team::findNearestFood(Unit *unit)
 			if ((*bi)->availableHappynessLevel() < bestEnemyHappyness)
 				continue;
 			int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
-			if (dist >= bestDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(unit->movementClass()))))
+			if (dist >= bestDist && (directAir || (!unit->performance[FLY] && !map->hasMovementCostModifiers(accessClass(unit->movementAccess())))))
 				continue;
 
-			if (!directAir && !map->buildingAvailable(*bi, unit->movementClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
+			if (!directAir && !map->buildingAvailable(*bi, unit->movementAccess(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 				continue;
 			if (dist >= bestDist)
 				continue;
@@ -201,7 +201,7 @@ Building *Team::findBestUpgrade(Unit *unit)
             if(routeAir || (!unit->performance[FLY] && (map->hasTerrainMovementModifiers() || !unit->performance[WALK])))
             {
                 int distance=0;
-                if(!map->buildingAvailable(b,unit->movementClass(),x,y,&distance,BuildingRoute::Footprint)) continue;
+                if(!map->buildingAvailable(b,unit->movementAccess(),x,y,&distance,BuildingRoute::Footprint)) continue;
                 distanceSquared=std::int64_t(distance)*distance;
             }
             const auto capacity=b->maxUnitInside-b->unitsInside.size();
@@ -238,4 +238,23 @@ int Team::maxBuildLevel(void)
 		}
 	}
 	return maxLevel;
+}
+
+void Team::updateRoutingRatio()
+{
+    const unsigned now = game->stepCounter;
+    // Read authoritative units at fixed simulation boundaries, before snapshot
+    // capture. Presentation statistics can arrive asynchronously and cannot select costs.
+    if (routingRatio.known && (now % RoutingRatioState::SelectionInterval != 0 || routingRatio.tick == now)) return;
+    RoutingRatioState::Population classes{};
+    for (const Unit* unit : liveUnits.entries())
+    {
+        if (unit->isDead || unit->performance[FLY] > 0 || unit->performance[WALK] <= 0 || unit->performance[SWIM] <= 0) continue;
+        ++classes[Map::swimClass(unit->performance[WALK], unit->performance[SWIM])];
+    }
+    routingRatio.selected = RoutingRatioState::mode(classes, routingRatio.selected);
+    routingRatio.tick = now;
+    routingRatio.known = true;
+    // No invalidation here: existing guidance and adaptive refresh history stay
+    // usable. Each normally admitted replacement captures the current selection.
 }

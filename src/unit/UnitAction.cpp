@@ -109,7 +109,7 @@ void Unit::handleActionGoingTarget()
     if (performance[FLY] && !owner->map->hasAirRoutingConstraints())
         flyToTarget();
     else
-        findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, movementClass(), owner->me, performance[FLY] ? Map::GRADIENT_COST_LIMIT/GRADIENT_STEP : GOING_TARGET_MAX_PATH_LENGTH); });
+        findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, movementAccess(), owner->me, performance[FLY] ? Map::GRADIENT_COST_LIMIT/GRADIENT_STEP : GOING_TARGET_MAX_PATH_LENGTH); });
 	directionFromDxDy();
 	wrapPosition();
 

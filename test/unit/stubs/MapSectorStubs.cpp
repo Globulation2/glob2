@@ -30,7 +30,7 @@ void GameAnimations::resize(int) {}
 // future test reaches this engine-only refresh; those tests belong in engine.
 #include "Map.h"
 #include <cstdlib>
-void Map::updateForbiddenGradient(int, int) { std::abort(); }
+void Map::updateForbiddenGradient(int, MovementAccess movementAccessValue) { std::abort(); }
 
 #include "Building.h"
 // Real automatic building routes belong to engine fixtures. Diagnostic calls

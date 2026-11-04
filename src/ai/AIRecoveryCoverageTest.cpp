@@ -122,8 +122,8 @@ TEST_SUITE("AIRecoveryCoverage")
   REQUIRE(fixture.addBuilding("swarm",4,4));
   game.map.setResourceByIndex(18,18,WHEAT,1);
   Sint32 x=0,y=0,distance=0;
-  glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,materialIndex(MaterialId::Food),0); });
-  game.map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),0,4,4,&x,&y,&distance);
+  glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land); });
+  game.map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),MovementAccess::Land,4,4,&x,&y,&distance);
   Cabino::AICabino full(game.players[0]),projected(game.players[0]);
   MersenneTwister fullRandom(713),projectedRandom(713);
   full.setRandomEngine(fullRandom);projected.setRandomEngine(projectedRandom);
@@ -131,7 +131,7 @@ TEST_SUITE("AIRecoveryCoverage")
   CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::ResourceFields));
   CHECK(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::Growth));
   const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
-  REQUIRE_FALSE(world->resourceGradient(0,WHEAT,0).empty());
+  REQUIRE_FALSE(world->resourceGradient(0,WHEAT,MovementAccess::Land).empty());
   const AIEngine::AIWorldView input(world->components().project(requirements));
   CHECK_FALSE(input.components().resourceFields);
   std::vector<AIEngine::ExecutionReceipt> receipts;

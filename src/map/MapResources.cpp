@@ -293,12 +293,12 @@ void Map::setAreaName(int n, std::string name)
 }
 
 
-RouteResult Map::queryMaterialDistance(int team, int material, int swim, int x, int y, int* distance, bool markets, const Building* consumer)
+RouteResult Map::queryMaterialDistance(int team, int material, MovementAccess movementAccessValue, int x, int y, int* distance, bool markets, const Building* consumer)
 {
-	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
+	const auto* field=getMaterialGradientSlot(team,material,movementAccessValue,markets,consumer);
 	if (!field) return RouteResult::Pending;
 	const auto value=field[coordToIndex(x,y)];
-    const auto key=materialGradientFieldKey(team,material,swim,field);
+    const auto key=materialGradientFieldKey(team,material,movementAccessValue,field);
     if(key && gradientRuntime->qualityProbe && game && !compute.insideJob())
         gradientRuntime->qualityProbe->observePlanning(*this,*key,x,y,field);
     if(value<=GRADIENT_UNREACHABLE) {
@@ -312,20 +312,20 @@ RouteResult Map::queryMaterialDistance(int team, int material, int swim, int x, 
 	return RouteResult::Reachable;
 }
 
-bool Map::materialAvailableSlot(int team, int material, int swim, int x, int y, bool markets, const Building* consumer)
+bool Map::materialAvailableSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, bool markets, const Building* consumer)
 {
-	return queryMaterialDistance(team,material,swim,x,y,nullptr,markets,consumer)==RouteResult::Reachable;
+	return queryMaterialDistance(team,material,movementAccessValue,x,y,nullptr,markets,consumer)==RouteResult::Reachable;
 }
 
-bool Map::materialAvailableSlot(int team, int material, int swim, int x, int y, int* distance, bool markets, const Building* consumer)
+bool Map::materialAvailableSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, int* distance, bool markets, const Building* consumer)
 {
-	return queryMaterialDistance(team,material,swim,x,y,distance,markets,consumer)==RouteResult::Reachable;
+	return queryMaterialDistance(team,material,movementAccessValue,x,y,distance,markets,consumer)==RouteResult::Reachable;
 }
 
-bool Map::materialAvailableUpdateSlot(int team, int material, int swim, int x, int y, Sint32* targetX, Sint32* targetY, int* distance, bool markets, const Building* consumer)
+bool Map::materialAvailableUpdateSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, Sint32* targetX, Sint32* targetY, int* distance, bool markets, const Building* consumer)
 {
-	if (queryMaterialDistance(team,material,swim,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
-	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
+	if (queryMaterialDistance(team,material,movementAccessValue,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
+	const auto* field=getMaterialGradientSlot(team,material,movementAccessValue,markets,consumer);
 	// Supplier seeds include a pickup penalty, so their valid local peak can
 	// sit below GRADIENT_AT_GOAL. Availability comes from the complete field;
 	// ascent selects its pickup coordinate without redefining reachability.

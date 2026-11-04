@@ -411,7 +411,7 @@ TEST_CASE("failed live admission preserves route queries and a later successful 
     unit->carriedMaterial=WHEAT;
     glob2test::publishCurrentHiringSuggestions(world.game);
     REQUIRE(world.game.hiringCandidates(*b));
-    const auto slot=b->routeSlot(unit->swimClass(),BuildingRoute::Footprint);
+    const auto slot=b->routeSlot(accessClass(unit->movementAccess()),BuildingRoute::Footprint);
     // Fixture publication prepares the route just as the live hiring pipeline
     // does. Its worker query must not stand in for the later owner admission.
     REQUIRE(b->globalGradient[slot]!=nullptr);

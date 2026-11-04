@@ -1,6 +1,8 @@
 """Runtime export selection, identity, cleanup and source preservation."""
 
+import os
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -8,6 +10,21 @@ from PIL import Image
 from tools import package_assets
 from tools.package_assets import export_assets, include_asset
 from tools import terrain_tileset
+
+
+class EncodingExecutorTests(unittest.TestCase):
+    def test_spawned_workers_import_tools_after_the_repository_leaves_sys_path(self):
+        # SCons restores sys.path after each SConscript, so by build time the
+        # repository root that scons/runtime_assets.py inserted is gone while
+        # tools.package_assets stays imported.
+        root = package_assets.ROOT.resolve()
+        saved = list(sys.path)
+        sys.path[:] = [p for p in sys.path if Path(p or os.getcwd()).resolve() != root]
+        try:
+            with package_assets.encoding_executor(2) as executor:
+                self.assertEqual(executor.submit(package_assets.packaging_jobs, 3).result(timeout=120), 3)
+        finally:
+            sys.path[:] = saved
 
 
 class TerrainRuntimeFingerprintTests(unittest.TestCase):

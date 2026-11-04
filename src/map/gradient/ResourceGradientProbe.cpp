@@ -9,14 +9,21 @@
 #include <stdexcept>
 
 namespace {
+// Private comparison arrays carry their captured costs only during selection.
+// Restore the metadata registry on exit; no live field or cache is changed.
+struct PrivateCost {
+    Map& map; const Uint16* field; int previous;
+    PrivateCost(Map& m,const Uint16* f,int cost):map(m),field(f),previous(m.publishedCostClass(f,-1)) {map.recordFieldCost(field,cost);}
+    ~PrivateCost(){map.recordFieldCost(field,previous);}
+};
 void identity(std::ostream& out,GradientFieldKey k) {out<<unsigned(k.family)<<','<<unsigned(k.team)<<','<<unsigned(k.swim)<<','<<unsigned(k.material)<<','<<k.packed();}
 const Uint16* serving(Map& map,GradientFieldKey k) {
     switch(k.family) {
-    case GradientFieldFamily::Materials:return map.lookupMaterialGradientSlot(k.team,k.material,k.swim,false);
-    case GradientFieldFamily::Markets:return map.lookupMaterialGradientSlot(k.team,k.material,k.swim,true);
-    case GradientFieldFamily::Guard:return map.lookupGuardAreasGradient(k.team,k.swim);
-    case GradientFieldFamily::Clear:return map.lookupClearAreasGradient(k.team,k.swim);
-    case GradientFieldFamily::Forbidden:return map.lookupForbiddenGradient(k.team,k.swim);
+    case GradientFieldFamily::Materials:return map.lookupMaterialGradientSlot(k.team,k.material,movementAccessFromLegacy(k.swim),false);
+    case GradientFieldFamily::Markets:return map.lookupMaterialGradientSlot(k.team,k.material,movementAccessFromLegacy(k.swim),true);
+    case GradientFieldFamily::Guard:return map.lookupGuardAreasGradient(k.team,movementAccessFromLegacy(k.swim));
+    case GradientFieldFamily::Clear:return map.lookupClearAreasGradient(k.team,movementAccessFromLegacy(k.swim));
+    case GradientFieldFamily::Forbidden:return map.lookupForbiddenGradient(k.team,movementAccessFromLegacy(k.swim));
     }
     return nullptr;
 }
@@ -55,7 +62,7 @@ void ResourceGradientProbe::rebuildFresh(Map& map,GradientFieldKey key,std::vect
     // used: it may publish/admit owner work and is fixed before mid-tick edits.
     constexpr auto requirements=SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs)|SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain)|SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)|SimulationSnapshot::bit(SimulationSnapshot::Component::Occupancy)|SimulationSnapshot::bit(SimulationSnapshot::Component::Areas)|SimulationSnapshot::bit(SimulationSnapshot::Component::Visibility)|SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)|SimulationSnapshot::bit(SimulationSnapshot::Component::Teams)|SimulationSnapshot::bit(SimulationSnapshot::Component::Rules);
     const auto snapshot=SimulationSnapshot::capture(*map.game,SimulationSnapshot::captureCatalog(*map.game),requirements);
-    gradient_preparation::Request r;r.kind=gradient_preparation::Kind(key.family);r.team=key.team;r.swim=key.swim;r.material=key.material==GradientFieldKey::NoMaterial?0:key.material;r.allies=map.game->teams[key.team]->allies;r.crowding=map.game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);r.terrainBuckets=map.movementQueueBuckets(key.swim);
+    gradient_preparation::Request r;r.kind=gradient_preparation::Kind(key.family);r.team=key.team;r.swim=map.preparationCostClass(key.team,key.swim);r.material=key.material==GradientFieldKey::NoMaterial?0:key.material;r.allies=map.game->teams[key.team]->allies;r.crowding=map.game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);r.terrainBuckets=map.movementQueueBuckets(r.swim);
     fresh.resize(map.size);gradient_kernel::CPUSelectionScope cpu(gradient_kernel::Backend::CPU);gradient_preparation::seed(r,snapshot,fresh.data(),seedScratch);gradient_preparation::propagateCPU(r,snapshot,fresh.data(),scratch);
 }
 void ResourceGradientProbe::stageEpisodes(Map& map){
@@ -68,23 +75,23 @@ void ResourceGradientProbe::stageEpisodes(Map& map){
         const auto* old=serving(map,key);if(!old)continue;
         auto state=it->second;const auto targets=map.gradientRuntime->adaptive.currentTargets(key);Episode e;e.tick=lastTick;e.delay=map.gradientRuntime->pipeline.delayTicks();e.inputs=state.inputs(lastTick,targets);const auto counts=state.contradictions();e.contradictions.values[0]=counts[0];e.contradictions.values[4]=counts[1];e.contradictions.values[5]=counts[2];e.contradictionCaptureKnown=state.serving.known;e.servingCaptureTick=state.serving.tick;e.capturedGoalCount=state.serving.goalCount;e.capturedTargets=state.serving.targets;e.currentTargets=targets;e.movementObserved=f.movementObserved||state.count128>0;e.routeChanges=targets.routeEpoch-state.serving.targets.routeEpoch;e.seedCostChanges=targets.seedCostEpoch-state.serving.targets.seedCostEpoch;
         if(const auto& behavior=map.gradientRuntime->exploration){e.behaviorInterval=behavior->intervalFor(packed);e.behaviorSeed=behavior->seed;}
-        e.deferred.assign(old,old+map.size);rebuildFresh(map,key,e.refreshed);f.episodes.push_back(std::move(e));f.lastEpisode=lastTick;f.episodeKnown=true;
+        e.deferredCost=map.publishedCostClass(old,key.swim);e.refreshedCost=map.preparationCostClass(key.team,key.swim);e.deferred.assign(old,old+map.size);rebuildFresh(map,key,e.refreshed);f.episodes.push_back(std::move(e));f.lastEpisode=lastTick;f.episodeKnown=true;
     }
 }
 void ResourceGradientProbe::observe(Map& map,const GradientQueryContext& context,const Uint16* live){
     const auto tick=map.game->stepCounter;auto* f=sampleField(tick,context.key);if(!f)return;++query;f->movementObserved=true;for(auto&e:f->episodes)e.movementObserved=true;
-    std::vector<Uint16> fresh;rebuildFresh(map,context.key,fresh);const auto here=map.coordToIndex(context.x,context.y);const auto reference=map.selectGradientQuery(context,fresh.data());
+    std::vector<Uint16> fresh;rebuildFresh(map,context.key,fresh);const int freshCost=map.preparationCostClass(context.key.team,context.key.swim);PrivateCost freshMetadata(map,fresh.data(),freshCost);const auto here=map.coordToIndex(context.x,context.y);const auto reference=map.selectGradientQuery(context,fresh.data());
     const bool balancing=context.key.family==GradientFieldFamily::Guard && !reference.travelRequired && !reference.atGoal;
-    const auto score=[&](const GradientQueryResult&r){const auto next=map.coordToIndex(context.x+r.dx,context.y+r.dy);return int(fresh[next])-map.stepCost(r.dx,r.dy,next,context.key.swim);};
-    const auto quality=[&](const Uint16*cells){const auto selected=map.selectGradientQuery(context,cells);const auto next=map.coordToIndex(context.x+selected.dx,context.y+selected.dy);const bool reachable=cells[here]>GRADIENT_UNREACHABLE;const bool comparable=selected.moved&&reference.moved&&((selected.travelRequired&&reference.travelRequired)||balancing)&&fresh[next]>GRADIENT_UNREACHABLE;
+    const auto score=[&](const GradientQueryResult&r){const auto next=map.coordToIndex(context.x+r.dx,context.y+r.dy);return int(fresh[next])-map.stepCost(r.dx,r.dy,next,freshCost);};
+    const auto quality=[&](const Uint16*cells,int fieldCost){PrivateCost metadata(map,cells,fieldCost);const auto selected=map.selectGradientQuery(context,cells);const auto next=map.coordToIndex(context.x+selected.dx,context.y+selected.dy);const bool reachable=cells[here]>GRADIENT_UNREACHABLE;const bool comparable=selected.moved&&reference.moved&&((selected.travelRequired&&reference.travelRequired)||balancing)&&fresh[next]>GRADIENT_UNREACHABLE;
         const int cost=comparable?std::max(0,score(reference)-score(selected)):0;const bool missed=!selected.moved&&reference.moved&&reference.travelRequired;const bool invalid=selected.atGoal&&!selected.goalValid;const bool stall=reachable&&selected.travelRequired&&!selected.moved&&!selected.atGoal;const bool escape=context.key.family==GradientFieldFamily::Forbidden&&missed;
         return std::array<std::int64_t,5>{cost,stall,invalid,missed,escape};};
-    for(auto&e:f->episodes)if(labelEligible(unsigned(tick-e.tick),e.delay)){const auto a=quality(e.deferred.data()),b=quality(e.refreshed.data());++e.queries;const bool freshReachable=fresh[here]>GRADIENT_UNREACHABLE;
+    for(auto&e:f->episodes)if(labelEligible(unsigned(tick-e.tick),e.delay)){const auto a=quality(e.deferred.data(),e.deferredCost),b=quality(e.refreshed.data(),e.refreshedCost);++e.queries;const bool freshReachable=fresh[here]>GRADIENT_UNREACHABLE;
         e.deferFalseUnreachable+=e.deferred[here]<=GRADIENT_UNREACHABLE&&freshReachable;
         e.refreshFalseUnreachable+=e.refreshed[here]<=GRADIENT_UNREACHABLE&&freshReachable;
         e.deferFalseReachable+=e.deferred[here]>GRADIENT_UNREACHABLE&&!freshReachable;
         e.refreshFalseReachable+=e.refreshed[here]>GRADIENT_UNREACHABLE&&!freshReachable;
         e.guardBalanceQueries+=balancing;e.deferExtra+=a[0];e.refreshExtra+=b[0];e.deferStalls+=a[1];e.refreshStalls+=b[1];e.deferInvalidGoals+=a[2];e.refreshInvalidGoals+=b[2];e.deferMissedMoves+=a[3];e.refreshMissedMoves+=b[3];e.deferEscapeFailures+=a[4];e.refreshEscapeFailures+=b[4];}
-    const auto q=quality(live);output<<query<<','<<tick<<',';identity(output,context.key);output<<','<<q[0]<<','<<(live[here]<=GRADIENT_UNREACHABLE&&fresh[here]>GRADIENT_UNREACHABLE)<<','<<(live[here]>GRADIENT_UNREACHABLE&&fresh[here]<=GRADIENT_UNREACHABLE)<<','<<q[2]<<','<<q[3]<<','<<q[4]<<','<<q[1]<<','<<balancing<<'\n';
+    const auto q=quality(live,map.publishedCostClass(live,context.key.swim));output<<query<<','<<tick<<',';identity(output,context.key);output<<','<<q[0]<<','<<(live[here]<=GRADIENT_UNREACHABLE&&fresh[here]>GRADIENT_UNREACHABLE)<<','<<(live[here]>GRADIENT_UNREACHABLE&&fresh[here]<=GRADIENT_UNREACHABLE)<<','<<q[2]<<','<<q[3]<<','<<q[4]<<','<<q[1]<<','<<balancing<<'\n';
 }
 void ResourceGradientProbe::observePlanning(Map& map,GradientFieldKey key,int x,int y,const Uint16* live){const auto tick=map.game->stepCounter;auto*f=sampleField(tick,key);if(!f)return;std::vector<Uint16> fresh;rebuildFresh(map,key,fresh);const auto here=map.coordToIndex(x,y);const bool reachable=fresh[here]>GRADIENT_UNREACHABLE;for(auto&e:f->episodes)if(labelEligible(unsigned(tick-e.tick),e.delay)){++e.planningQueries;e.deferFalseNegative+=e.deferred[here]<=GRADIENT_UNREACHABLE&&reachable;e.deferFalsePositive+=e.deferred[here]>GRADIENT_UNREACHABLE&&!reachable;e.refreshFalseNegative+=e.refreshed[here]<=GRADIENT_UNREACHABLE&&reachable;e.refreshFalsePositive+=e.refreshed[here]>GRADIENT_UNREACHABLE&&!reachable;}planning<<++planningQuery<<','<<tick<<',';identity(planning,key);planning<<','<<(live[here]<=GRADIENT_UNREACHABLE&&reachable)<<','<<(live[here]>GRADIENT_UNREACHABLE&&!reachable)<<','<<live[here]<<','<<fresh[here]<<'\n';}

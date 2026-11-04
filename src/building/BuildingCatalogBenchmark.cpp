@@ -104,7 +104,7 @@ TEST_CASE("private stock routing measures warm fields invalidation and working s
             Uint64 digest=0; const auto start=Clock::now();
             for(auto* consumer : consumers)
             {
-                const auto* field=map.getMaterialGradientSlot(0,WOOD,0,false,consumer);
+                const auto* field=map.getMaterialGradientSlot(0,WOOD,MovementAccess::Land,false,consumer);
                 digest+=field[map.coordToIndex(consumer->posX,consumer->posY)];
             }
             const auto duration=elapsed(start);
