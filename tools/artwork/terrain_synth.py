@@ -27,9 +27,9 @@ painterly beside them.
 
 Ground materials render periodic grid blocks, sliced into 128x128 positional
 tiles (`variant_grid`) and box-downsampled to 32x32. Static materials use
-8x8 blocks with four seeded interiors and common boundaries; lava and ember
-field use one 8x8 block, and water and deep water one 4x4 block, to keep their
-animated frame banks small. Feature
+8x8 blocks with four seeded interiors and common boundaries, as do lava and
+ember field (crossfading in four steps per phase); water and deep water use
+one 4x4 block, to keep their animated frame banks small. Feature
 counts and noise frequencies scale with canvas size to keep their native density.
 The interchangeable blocks preserve shared edge geometry while varying their
 interiors. Frames are phase-major, block-major, then
@@ -288,6 +288,8 @@ def material_block(name, phases):
         block["animation_frames"] = rec.phases
         block["animation_stride"] = rec.cells * rec.blocks
         block["animation_ticks"] = rec.animation_ticks
+        if rec.blend_steps:
+            block["animation_blend_steps"] = rec.blend_steps
     if rec.periodic:
         block["edges"] = "periodic"
     if rec.grid:
