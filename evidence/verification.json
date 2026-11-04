@@ -1,0 +1,16 @@
+{
+  "head": "747c684fc9bec4fb3aafc6d78799acfc71075b29",
+  "base": "c4186c5e9a6e14d25294ad174d6d8364210508a9",
+  "node_command": [
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/node/node_modules/.bin/node",
+    "--test",
+    "--test-name-pattern=browser replay fixture",
+    "platforms/web/unit/replay-fixture.test.js"
+  ],
+  "node_exit": 0,
+  "replay_bytes": 2784998,
+  "replay_sha256": "05383572ae792b3204f6b4bfc78a482712ac0a2078ff5f9c6e1ba4236c04ca36",
+  "format": 205,
+  "native_revision": "2bec27753857d8defb6bf8b6ce11e2b731e1782f",
+  "limits": "Recorded by frozenformat205SIM127native, acceptedfloor205<=fixture205<=latest207. No current207native/browser execution claim. Studio manifests remain independently stale at latestmaster207; existing1390repair. Browser import qualification queued. No engine replay gate or source map changed."
+}
