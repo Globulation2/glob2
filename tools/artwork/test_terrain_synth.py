@@ -6,6 +6,7 @@ Run with the pinned asset-tool environment (see docs/assets/terrain-production.m
     artifacts/asset-tools/venv/bin/python -m unittest discover -s tools/artwork -p test_terrain_synth.py
 """
 import json
+import re
 from dataclasses import replace
 import statistics
 import sys
@@ -52,7 +53,12 @@ class TerrainSynth(unittest.TestCase):
         profiles = {p["key"] for p in catalog["profiles"]}
         classes = {c["key"] for c in catalog["border_classes"]}
         self.assertEqual(sorted(synth.RECIPES), sorted(synth.SYNTH_ORDER))
-        self.assertEqual(len(synth.BUILTIN_ORDER), 31)
+        # Every engine built-in from BOULDERS on (all but the five classic grounds)
+        # has a recipe, so the name list follows TerrainType.h.
+        enum = (ROOT / "src/map/TerrainType.h").read_text()
+        count = int(re.search(r"TERRAIN_COUNT=(\d+)", enum).group(1))
+        boulders = int(re.search(r"BOULDERS=(\d+)", enum).group(1))
+        self.assertEqual(len(synth.BUILTIN_ORDER), count - boulders)
         for name, recipe in synth.RECIPES.items():
             self.assertEqual(recipe.name, name)
             self.assertIn(recipe.profile, profiles)
@@ -204,10 +210,13 @@ class TerrainSynth(unittest.TestCase):
         means = {name: mean_color(self.tiles(name)) for name in synth.SYNTH_ORDER}
         groups = {name: synth.RECIPES[name].group for name in synth.SYNTH_ORDER}
         groups.update(grass="grass", sand="sand", road="paths", ice="ice")
+        # Pairs whose averages meet but whose textures never could be confused:
+        # tundra's green moss pads and grey earth average to scree's grey slabs.
+        texture_distinct = {("scree", "tundra")}
         names = sorted(means)
         for i, a in enumerate(names):
             for b in names[i + 1:]:
-                if groups[a] == groups[b]:
+                if groups[a] == groups[b] or (a, b) in texture_distinct:
                     continue
                 with self.subTest(pair=(a, b)):
                     # A floor against accidental near-duplicates; readability also
@@ -240,12 +249,13 @@ class TerrainSynth(unittest.TestCase):
         from material_tiles import runtime_blend
 
         for name in ("shale", "deep_water"):
-            document = {"materials": [{"sprite": f"content/data/gfx/terrain-{name}",
+            # Catalogue sprites are runtime paths under the content/ search root.
+            document = {"materials": [{"sprite": f"data/gfx/terrain-{name}",
                                        "variants": [{"frame": i} for i in range(synth.VARIANTS)]}]}
             prepared = seamless_sources(document, ROOT)
             tiles = [Image.open(ROOT / f"content/data/gfx/terrain-{name}{i}.png").convert("RGBA") for i in range(synth.VARIANTS)]
             for i, blended in enumerate(runtime_blend(tiles)):
-                self.assertEqual(blended.tobytes(), prepared[f"content/data/gfx/terrain-{name}{i}.png"].tobytes(), (name, i))
+                self.assertEqual(blended.tobytes(), prepared[f"data/gfx/terrain-{name}{i}.png"].tobytes(), (name, i))
 
     def test_periodic_materials_share_their_outer_ring_and_wrap(self):
         """Periodic variants join any variant: identical outer ring, and each
