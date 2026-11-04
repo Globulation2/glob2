@@ -6,6 +6,7 @@
 #include "ai/observation/AIWorldView.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
+#include <sstream>
 
 namespace {
 Unit* swimmer(glob2test::HeadlessGame& world,int walk,int swim) {
@@ -124,13 +125,20 @@ TEST_CASE("saved mode and field costs continue through the next boundary with on
     for(unsigned tick=0;tick<510;++tick)source.game.step(0);
     auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(bytes);
     source.save(&out,"shared routing continuation");out.flush();
+    glob2test::writeFile(glob2test::artifactDir()/"modal-routing-510.game",std::string(bytes->getBuffer(),bytes->getPosition()));
+    std::ostringstream trace;trace<<"# tick, modal cost, normalized state checksums; verified against restored four-worker execution\n";
     GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes->getBuffer(),bytes->getPosition()));in.seekFromStart(0);
     GameGUI restored;REQUIRE(restored.load(&in));restored.game.map.configureCompute(4);
     for(unsigned tick=0;tick<20;++tick) {
         source.game.step(0);restored.game.step(0);
         CHECK(source.game.teams[0]->routingRatio.selected==restored.game.teams[0]->routingRatio.selected);
-        CHECK(continuationState(source.game)==continuationState(restored.game));
+        const auto state=continuationState(source.game);
+        CHECK(state==continuationState(restored.game));
+        trace<<source.game.stepCounter<<' '<<source.game.teams[0]->routingRatio.selected;
+        for(auto value:state)trace<<' '<<value;
+        trace<<'\n';
     }
+    glob2test::writeFile(glob2test::artifactDir()/"modal-routing-continuation.trace",trace.str());
 }
 TEST_CASE("save preserves distinct serving and in-flight costs across a policy switch") {
     glob2test::HeadlessGlobals globals;
@@ -150,6 +158,7 @@ TEST_CASE("save preserves distinct serving and in-flight costs across a policy s
     source.team->routingRatio.selected=6;
     auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream out(bytes);
     map.saveRuntimeState(&out);out.flush();
+    glob2test::writeFile(glob2test::artifactDir()/"serving6-pending1.runtime.bin",std::string(bytes->getBuffer(),bytes->getPosition()));
     restored.game.stepCounter=source.game.stepCounter;
     GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes->getBuffer(),bytes->getPosition()));in.seekFromStart(0);
     copy.loadRuntimeState(&in,VERSION_MINOR);copy.configureCompute(4);
