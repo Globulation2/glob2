@@ -89,8 +89,9 @@ static void freshMapHasNoImmobileUnits()
 	for (int y = 0; y < world.game.map.getH(); ++y)
 		for (int x = 0; x < world.game.map.getW(); ++x)
 			require(!world.game.map.isImmobileUnit(x, y), "a fresh map has no immobile unit anywhere");
-	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
+	for (int c : {0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS})
 	{
+        if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
 		require(world.value(c, 20, 23) > GRADIENT_UNREACHABLE, "passable terrain near the inn is reachable");
 		require(world.value(c, 40, 45) > GRADIENT_UNREACHABLE, "distant passable terrain is reachable");
 	}
@@ -107,8 +108,9 @@ static void immobileUnitBlocksItsOwnTile()
 	world.clearOccupancy();
 	world.game.map.markImmobileUnit(20, 23, 0);
 	world.game.map.markImmobileUnit(2, 1, 0);
-	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
+	for (int c : {0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS})
 	{
+        if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
 		require(world.value(c, 20, 23) == GRADIENT_FORBIDDEN, "the immobile unit's tile is blocked");
 		require(world.value(c, 2, 1) == GRADIENT_FORBIDDEN, "the distant immobile unit's tile is blocked");
 		require(world.value(c, 20, 22) > GRADIENT_UNREACHABLE && world.value(c, 20, 24) > GRADIENT_UNREACHABLE, "neighbours remain free");
@@ -155,16 +157,18 @@ static void paintingForbiddenAreaRefreshesGradients()
 	forbidRow(world, 55, -1);
 	require(world.game.map.isForbidden(19, 23, team->me) && !world.game.map.isForbidden(20, 23, team->me), "painted rows leave one gap");
 	int dist = -1, dx = 0, dy = 0;
-	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
+	for (int c : {0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS})
 	{
+        if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
         world.settle(c);
 		require(world.game.map.buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "near route uses the gap");
 		require(world.game.map.buildingAvailable(world.inn, movementAccessFromLegacy(c), 40, 45, &dist), "distant route uses the gap");
 		require(world.game.map.pathfindBuilding(random, world.inn, movementAccessFromLegacy(c), 40, 45, &dx, &dy), "distant unit can advance");
 	}
 	forbidRow(world, 23, -1);
-	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
+	for (int c : {0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS})
 	{
+        if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
 		require(!world.inn->globalGradient[c] || world.inn->dirtyGradient[c], "painting invalidates or dirties every cached swim class immediately");
 		if (world.game.map.pathfindBuilding(random,world.inn,movementAccessFromLegacy(c),20,24,&dx,&dy))
 			require(!world.game.map.isForbidden(20+dx,24+dy,team->me), "building guidance cannot step onto freshly forbidden paint");
@@ -176,8 +180,9 @@ static void paintingForbiddenAreaRefreshesGradients()
 	BrushAccumulator gap;
 	gap.applyBrush(BrushApplication(20, 23, 0), &world.game.map);
 	alterForbidden(world, BrushTool::MODE_DEL, gap);
-	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
+	for (int c : {0,int(MovementAccess::Amphibious),WATER_ONLY_CLASS})
 	{
+        if((c==WATER_ONLY_CLASS)!=waterOnly)continue;
 		require(!world.inn->globalGradient[c] || world.inn->dirtyGradient[c], "erasing invalidates or dirties every cached swim class immediately");
         world.settle(c);
 		require(world.game.map.buildingAvailable(world.inn, movementAccessFromLegacy(c), 20, 26, &dist), "erasing restores the near route");
