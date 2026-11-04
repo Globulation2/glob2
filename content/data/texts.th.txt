@@ -5714,6 +5714,8 @@ AI ทำงาน​อย่างไร
 ถนนที่รกด้วยพืช
 [laterite]
 ดินศิลาแลง
+[cliffs]
+หน้าผา
 [terrain group water]
 น้ำ
 [terrain group sand]

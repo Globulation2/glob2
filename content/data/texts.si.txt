@@ -5738,6 +5738,8 @@ Ledeniški led
 Zaraščena cesta
 [laterite]
 Lateritna tla
+[cliffs]
+ප්‍රපාත
 [terrain group water]
 Voda
 [terrain group sand]

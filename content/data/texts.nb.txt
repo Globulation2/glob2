@@ -5714,6 +5714,8 @@ Breis
 Gjengrodd vei
 [laterite]
 Laterittjord
+[cliffs]
+Klipper
 [terrain group water]
 Vann
 [terrain group sand]

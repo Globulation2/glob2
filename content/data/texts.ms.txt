@@ -6856,6 +6856,8 @@ Ais glasier
 Jalan ditumbuhi tumbuhan
 [laterite]
 Laterit
+[cliffs]
+Tebing
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

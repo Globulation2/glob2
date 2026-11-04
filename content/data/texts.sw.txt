@@ -5714,6 +5714,8 @@ Barafu ya theluji ya mlimani
 Barabara iliyomea majani
 [laterite]
 Udongo wa lateriti
+[cliffs]
+Majabali
 [terrain group water]
 Maji
 [terrain group sand]

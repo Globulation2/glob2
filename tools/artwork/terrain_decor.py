@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Synthesise the raised decor sprites drawn over obstacle terrain.
 
-Obstacle terrain (boulders, hedge, thicket, ridge rock, outcrop) is drawn in
+Obstacle terrain (boulders, hedge, thicket, cliffs, ridge rock, outcrop) is drawn in
 two layers, like forest: the ground material in the terrain compositor, then a
 decor sprite per cell drawn with the resources in screen-row order, so objects
 overlap their neighbours and occlude each other. This tool renders those
@@ -15,7 +15,8 @@ below the cell, so a tall frame grows upward: its cell is the 32x32 square 48
 pixels from either side and 16 from the bottom. Boulders rise well over a cell
 into the rows above and cast long shadows to the lower right. Connected
 foliage uses cropped 32x64 native frames (128x256 HD): a raised canopy whose
-long shadow falls on the open ground south of it. Smaller objects stand on the
+long shadow falls on the open ground south of it; cliffs use the same
+frames, their plateau raised twelve native pixels above walls of rock. Smaller objects stand on the
 lower part of their cell and rise up to sixteen native pixels into the cell
 above, as trees do; drawn back to front, interior cells overlap into one
 continuous mass. A frame
@@ -27,6 +28,8 @@ centre) for cells with open neighbours; the runtime picks by corner count.
 Hedge and thicket additionally have connected corner-mask surfaces: their
 interiors have no per-cell front face or ground shadow. Only the exposed
 contour is shaded, and leaf strokes inherit soft overlapping crown lighting.
+Cliffs share that corner-mask layout as a raised rock plateau whose exposed
+fronts drop as fractured walls.
 
 Usage (pinned encoder interpreter, as for terrain_synth.py):
 
@@ -35,8 +38,9 @@ Usage (pinned encoder interpreter, as for terrain_synth.py):
     "$ENC" tools/artwork/terrain_decor.py --sheet artifacts/terrain/decor.png
 
 All sets share one sprite, `content/data/gfx/terrain-decorN.png`, with set k at
-frames 12k..12k+11 in `ORDER`, followed by connected hedge/thicket frames
-(16 corner masks, a 4x4 continuous texture block each), so the runtime batches every decor draw like
+frames 12k..12k+11 for the first five sets in `ORDER`, followed by connected
+hedge/thicket frames (16 corner masks, a 4x4 continuous texture block each);
+later sets append their object and connected frames after those, so the runtime batches every decor draw like
 resources. HD frames are registered through tools/artwork/highres_pack.py and
 provenance is written to `content-src/gfx/terrain-decor/provenance.json`.
 `--write-catalog` adds the `decor` block to each obstacle material file in
@@ -903,6 +907,20 @@ def render_outcrop(rng, edge):
     return draw_rocks(canvas, rng, rocks, lichen=(118, 128, 76), strata=0.0, shadow=0.45)
 
 
+@spec("cliffs", "a raised rock plateau whose exposed fronts drop as fractured walls")
+def render_cliffs(rng, edge):
+    # The decor schema needs object frames for every set; a material with
+    # connected frames never draws them (Catalog::decorFrame), so these are
+    # the outcrop blocks in the warmer cliff-face stone.
+    canvas = Canvas()
+    tone = mix3((128, 110, 88), (150, 130, 102), rng.random())
+    rx = rng.uniform(40, 50) if edge else rng.uniform(66, 82)
+    rocks = [make_rock(rng, S / 2 + rng.uniform(-8, 8), S / 2 + CELL * 0.15, rx, rx * 0.74,
+                       rng.uniform(-0.4, 0.4), rng.uniform(36, 48), 8, rng.uniform(10, 16), tone,
+                       points=8, jag=0.3, peak_offset=0.5)]
+    return draw_rocks(canvas, rng, rocks, strata=0.12, shadow=0.5)
+
+
 # Connected foliage is a raised surface over its painted footprint, not a set of
 # individually lit domes. Crowns are anchored on map vertices: every vertex has
 # one of two seeded colours (cornerColours in TerrainMaterials.cpp), and each
@@ -910,7 +928,10 @@ def render_outcrop(rng, edge):
 # vertex. A cell's frame therefore depends only on its corner mask and its four
 # corner colours, and neighbouring frames agree wherever they meet, so large
 # patches continue without seams and without a periodic repeat.
-CONNECTED = ("hedge", "thicket")
+CONNECTED = ("hedge", "thicket", "cliffs")
+# Connected sets whose edges stand on open ground ("connected_open"): a cliff's
+# rim and walls belong on the grass beside it, where foliage keeps a clear border.
+OPEN_EDGED = ("cliffs",)
 CANOPY_VARIANTS = 16          # one per combination of the four corner colours
 CANOPY_INTERIORS = 8          # interior crown arrangements of a filled cell
 BAND = 20                     # vertex crowns centre this close to a cell edge
@@ -944,7 +965,21 @@ CONNECTED_FRAMES = 16 * CANOPY_VARIANTS + CANOPY_VARIANTS * (CANOPY_INTERIORS - 
 
 
 def connected_first(name):
-    return len(ORDER) * FRAMES + CONNECTED.index(name) * CONNECTED_FRAMES
+    if ORDER.index(name) >= LEGACY_SETS:
+        return first_frame(name) + FRAMES
+    return LEGACY_SETS * FRAMES + CONNECTED.index(name) * CONNECTED_FRAMES
+
+
+def connected_rise(name):
+    """(HD rows above the cell, HD rise of the raised top) of a connected frame:
+    cliffs stand taller than foliage."""
+    return (CLIFF_TOP, CLIFF_RAISE) if name == "cliffs" else (CANOPY_TOP, raise_of(name))
+
+
+def connected_size(name):
+    """HD size of a connected frame: rows above the cell, the cell, and as many
+    below it for the long shadow (canopies) or the cast shadow (cliffs)."""
+    return CELL, CELL + 2 * connected_rise(name)[0]
 
 
 def frame_count(name):
@@ -1302,6 +1337,388 @@ def render_connected(name, mask, colours, interior=0):
     return frame
 
 
+# Cliffs use the connected corner-mask layout of hedge and thicket, but they are
+# a raised block of rock rather than foliage: a craggy plateau split by joints,
+# standing twice the height of foliage, whose exposed fronts drop as fractured
+# walls into a long shadow. Frames are 32x64 native: CLIFF_TOP rows above the
+# cell hold the raised plateau.
+#
+# The plateau has no discrete objects to repeat. Each vertex colour owns a patch
+# of noise fields, and a cell blends the patches of its four corners with
+# bilinear weights, so along a shared edge only the edge's two vertices count and
+# neighbouring frames agree exactly. Filled cells add a seeded interior patch
+# whose weight vanishes at the cell edge.
+CLIFF_TOP = 64
+CLIFF_RAISE = 48
+CLIFF_PATCH = 2 * (CELL + HALO)
+CLIFF_FACETS = 9              # wall facets across the range of the column field
+CLIFF_SHELVES = 3             # weathered beds across the range of the crag field
+CLIFF_STYLE = dict(
+    # Weathered ochre stone, unlike the grey of boulders and ridges: a dusty
+    # sunlit plateau over deeper, redder walls of the same rock.
+    ramp=((0.0, (36, 31, 28)), (0.28, (80, 68, 58)), (0.52, (122, 106, 88)),
+          (0.78, (160, 144, 120)), (1.0, (198, 186, 160))),
+    # The face is the plateau's stone in its own shade, warmed a little by
+    # light thrown back from the ground.
+    wall=((0.0, (20, 17, 15)), (0.35, (60, 51, 43)), (0.70, (106, 92, 76)), (1.0, (150, 134, 112))),
+    crack=(30, 24, 20), scrub=((48, 60, 30), (90, 100, 48)), lichen=(112, 114, 86),
+    amplitude=0.22,
+)
+# Fractures and loose rocks belong to vertex discs no wider than REACH: a disc
+# never reaches the far edges of the cells around its vertex, nor the halo of a
+# farther cell, so every frame that sees a feature draws all of it.
+CLIFF_DISC = REACH - 4
+
+
+def disc_coverage(dx, dy):
+    """How many vertex discs cover a point at (dx, dy) from a vertex."""
+    return sum(math.hypot(dx - i * CELL, dy - j * CELL) < CLIFF_DISC for i in (-1, 0, 1) for j in (-1, 0, 1))
+
+
+def disc_spots(rng, count, extent):
+    """Feature centres in a vertex disc, thinned where discs overlap so the
+    density is the same everywhere on the plateau."""
+    spots = []
+    while len(spots) < count:
+        angle, rho = rng.uniform(0, math.tau), math.sqrt(rng.random()) * (CLIFF_DISC - extent)
+        x, y = math.cos(angle) * rho, math.sin(angle) * rho
+        if rng.random() * disc_coverage(x, y) < 1:
+            spots.append((x, y))
+    return spots
+
+
+def draw_fracture(draw, rng, x, y, length):
+    """A rock joint: straight segments with sharp turns and the odd short branch."""
+    angle = rng.uniform(0, math.tau)
+    points, left = [(x, y)], length
+    while left > 0:
+        step = min(left, rng.uniform(8, 20))
+        ex, ey = x + math.cos(angle) * step, y + math.sin(angle) * step
+        # Short wandering steps, so a joint is a broken line, not a clean stroke.
+        for t in (0.35, 0.7):
+            points.append((lerp(x, ex, t) + rng.uniform(-1.5, 1.5), lerp(y, ey, t) + rng.uniform(-1.5, 1.5)))
+        x, y = ex, ey
+        points.append((x, y))
+        left -= step
+        if rng.random() < 0.25:
+            twig = angle + rng.choice((-1, 1)) * rng.uniform(0.8, 1.4)
+            twig_length = rng.uniform(5, 10)
+            draw.line([(x, y), (x + math.cos(twig) * twig_length, y + math.sin(twig) * twig_length)],
+                      fill=200, width=2)
+        angle += rng.choice((-1, 1)) * rng.uniform(0.3, 1.1)
+    draw.line(points, fill=255, width=2)
+
+
+def draw_rock(draw, rng, x, y, radius):
+    """A loose rock: a small angular polygon raised above the plateau."""
+    angles = sorted(rng.uniform(0, math.tau) for _ in range(rng.randint(5, 7)))
+    hull = convex_hull([(x + math.cos(a) * radius * rng.uniform(0.6, 1.0),
+                         y + math.sin(a) * radius * rng.uniform(0.6, 1.0)) for a in angles])
+    draw.polygon(hull, fill=rng.randint(170, 255))
+
+
+def noise_patch(rng, cells, size=CLIFF_PATCH):
+    """Smooth value noise in 0..1 over a size x size patch, `cells` lattice cells across."""
+    lattice = Image.new("L", (cells + 3, cells + 3))
+    lattice.putdata([rng.randrange(256) for _ in range((cells + 3) ** 2)])
+    step = size / cells
+    big = lattice.resize((int(step * (cells + 3)),) * 2, Image.Resampling.BICUBIC)
+    data = big.crop((int(step), int(step), int(step) + size, int(step) + size)).getdata()
+    return [v / 255 for v in data]
+
+
+def octaves(rng, cells, count, size=CLIFF_PATCH):
+    fields = [noise_patch(rng, cells * 2 ** o, size) for o in range(count)]
+    weights = [0.5 ** o for o in range(count)]
+    total = sum(weights)
+    return [sum(w * f[i] for w, f in zip(weights, fields)) / total for i in range(size * size)]
+
+
+@functools.lru_cache(maxsize=4)
+def cliff_patch(colour):
+    """(relief, joints, tone, grain) noise of one vertex colour, centred on the vertex."""
+    rng = random.Random(fnv1a32(f"cliff-patch:{colour}"))
+    fields = (octaves(rng, 3, 3), octaves(rng, 2, 2), octaves(rng, 10, 3))
+    return fields + cliff_features(rng, CLIFF_PATCH, CLIFF_PATCH // 2, 0, (30, 46), 3)
+
+
+# Edge features: most fractures and rocks belong to a cell edge, keyed by the
+# colours of its two ends, which gives four variants per orientation against
+# the two of a vertex. They keep within CLIFF_EDGE_SPAN of the edge's midpoint
+# along it, short of the halos of the cells beside the two that share it.
+CLIFF_EDGE_SPAN = HALO + 16
+CLIFF_EDGE_DEPTH = 80
+
+
+@functools.lru_cache(maxsize=8)
+def cliff_edge(vertical, first, second):
+    """(joints, stones) images of one edge, centred on its midpoint."""
+    rng = random.Random(fnv1a32(f"cliff-edge:{int(vertical)}:{first}:{second}"))
+    size = (2 * CLIFF_EDGE_SPAN, 2 * CLIFF_EDGE_DEPTH)
+    joints, stones = Image.new("L", size), Image.new("L", size)
+    for _ in range(rng.choice((0, 1))):
+        # Fractures may run past the box; the box clips them to a broken end.
+        draw_fracture(ImageDraw.Draw(joints), rng, CLIFF_EDGE_SPAN + rng.uniform(-14, 14),
+                      CLIFF_EDGE_DEPTH + rng.uniform(-48, 48), rng.uniform(22, 36))
+    for _ in range(2):
+        draw_rock(ImageDraw.Draw(stones), rng, CLIFF_EDGE_SPAN + rng.uniform(-20, 20),
+                  CLIFF_EDGE_DEPTH + rng.uniform(-60, 60), rng.uniform(5, 11))
+    # Fade the box's own edges so a clipped fracture tapers off.
+    fade = Image.new("L", size)
+    ImageDraw.Draw(fade).rectangle((6, 6, size[0] - 7, size[1] - 7), fill=255)
+    fade = fade.filter(ImageFilter.GaussianBlur(3))
+    joints = ImageChops.multiply(joints.filter(ImageFilter.GaussianBlur(0.6)), fade)
+    if vertical:
+        return joints.transpose(Image.Transpose.TRANSPOSE), stones.transpose(Image.Transpose.TRANSPOSE)
+    return joints, stones
+
+
+def cliff_features(rng, size, centre, fractures, lengths, rocks, spots=None):
+    """Fracture and loose-rock coverage as flat lists over a size x size patch.
+
+    A fracture never reaches farther from its start than its length (plus a
+    short branch), which bounds its extent in the disc."""
+    joints, stones = Image.new("L", (size, size)), Image.new("L", (size, size))
+    for (x, y) in (spots or disc_spots)(rng, fractures, lengths[1] + 12):
+        draw_fracture(ImageDraw.Draw(joints), rng, centre + x, centre + y, rng.uniform(*lengths))
+    for (x, y) in (spots or disc_spots)(rng, rocks, 14):
+        draw_rock(ImageDraw.Draw(stones), rng, centre + x, centre + y, rng.uniform(5, 11))
+    joints = joints.filter(ImageFilter.GaussianBlur(0.6))
+    return [v / 255 for v in joints.getdata()], [v / 255 for v in stones.getdata()]
+
+
+@functools.lru_cache(maxsize=8)
+def cliff_detail(interior):
+    """The same fields wholly inside a filled cell, one set per interior variant."""
+    rng = random.Random(fnv1a32(f"cliff-interior:{interior}"))
+    fields = (octaves(rng, 2, 3, CELL), octaves(rng, 1, 2, CELL), octaves(rng, 5, 3, CELL))
+    inside = lambda rng, count, extent: [(rng.uniform(-CELL / 2 + extent + 14, CELL / 2 - extent - 14),
+                                          rng.uniform(-CELL / 2 + extent + 14, CELL / 2 - extent - 14))
+                                         for _ in range(count)]
+    # Features of an interior stay clear of the cell edge, whose fades they
+    # would otherwise cut.
+    return fields + cliff_features(rng, CELL, CELL // 2, 1, (18, 26), 1, spots=inside)
+
+
+@functools.lru_cache(maxsize=48)
+def cliff_surface(colours, interior, filled):
+    """Lit plateau colour, heights and wall streaks of the cell plus its halo."""
+    style = CLIFF_STYLE
+    size = CELL + 2 * HALO
+    patches = [cliff_patch((colours >> k) & 1) for k in range(4)]
+    detail = cliff_detail(interior) if filled else None
+    centre = CLIFF_PATCH // 2
+    fields = [[0.0] * (size * size) for _ in range(5)]
+    for y in range(size):
+        v = clamp((y - HALO + 0.5) / CELL)
+        for x in range(size):
+            u = clamp((x - HALO + 0.5) / CELL)
+            weights = [(1 - u) * (1 - v), u * (1 - v), (1 - u) * v, u * v]
+            samples = []
+            for k in range(4):
+                px = x - HALO - (CELL if k & 1 else 0) + centre
+                py = y - HALO - (CELL if k & 2 else 0) + centre
+                samples.append(py * CLIFF_PATCH + px)
+            inside = 0.0
+            if detail and HALO <= x < HALO + CELL and HALO <= y < HALO + CELL:
+                # Zero at the cell edge, so neighbours never see it.
+                inside = 0.35 * smoothstep(0.0, 0.32, min(u, 1 - u, v, 1 - v))
+                weights = [w * (1 - inside) for w in weights]
+            norm = math.sqrt(sum(w * w for w in weights) + inside * inside)
+            i = y * size + x
+            j = (y - HALO) * CELL + x - HALO
+            for f in range(3):
+                # Variance-preserving blend: the mix is as rough at the middle of
+                # a cell as next to a vertex, so no grid shows through.
+                total = sum(w * (patches[k][f][samples[k]] - 0.5) for k, w in enumerate(weights) if w)
+                if inside:
+                    total += inside * (detail[f][j] - 0.5)
+                fields[f][i] = clamp(0.5 + total / norm)
+            # Fractures and rocks are drawn whole, never faded: every disc that
+            # reaches the pixel contributes.
+            for f in (3, 4):
+                value = max(patch[f][sample] for patch, sample in zip(patches, samples))
+                if detail and HALO <= x < HALO + CELL and HALO <= y < HALO + CELL:
+                    value = max(value, detail[f][j])
+                fields[f][i] = value
+    # Add the features of the cell's four edges.
+    features = []
+    for f in (3, 4):
+        image = Image.new("L", (size, size))
+        image.putdata([int(v * 255) for v in fields[f]])
+        features.append(image)
+    bit = lambda k: (colours >> k) & 1
+    for vertical, first, second, cx, cy in ((False, bit(0), bit(1), HALO + CELL // 2, HALO),
+                                            (False, bit(2), bit(3), HALO + CELL // 2, HALO + CELL),
+                                            (True, bit(0), bit(2), HALO, HALO + CELL // 2),
+                                            (True, bit(1), bit(3), HALO + CELL, HALO + CELL // 2)):
+        for c, source in enumerate(cliff_edge(vertical, first, second)):
+            layer = Image.new("L", (size, size))
+            layer.paste(source, (cx - source.width // 2, cy - source.height // 2))
+            features[c] = ImageChops.lighter(features[c], layer)
+    fields[3], fields[4] = ([v / 255 for v in image.getdata()] for image in features)
+    height, tone, grain, joints, stones = fields
+    # Fine pitting: independent per pixel, so it needs no agreement at edges.
+    rng = random.Random(fnv1a32(f"cliff-pits:{colours}:{interior}:{int(filled)}"))
+    pits = [rng.random() for _ in range(size * size)]
+    # Heights: the crags weather into shelves, flat beds with a short riser at
+    # each step, so the stone breaks into planes with crisp lit and shaded edges.
+    def shelves(h, g):
+        level = h * CLIFF_SHELVES + 0.15 * (g - 0.5)
+        step = math.floor(level)
+        return (step + smoothstep(0.0, 0.4, level - step)) / CLIFF_SHELVES
+    relief = [0.22 + 0.30 * shelves(h, g) + 0.22 * h + 0.03 * (g - 0.5) + 0.015 * (pt - 0.5) - 0.03 * jt + 0.04 * st
+              for h, g, pt, jt, st in zip(height, grain, pits, joints, stones)]
+    lx, ly, lz = CANOPY_LIGHT
+    norm_l = math.sqrt(lx * lx + ly * ly + lz * lz)
+    flat = lz / norm_l
+    image = Image.new("RGB", (size, size))
+    pix = image.load()
+    for y in range(size):
+        for x in range(size):
+            i = y * size + x
+            r = relief[i]
+            gx = (relief[y * size + min(x + 1, size - 1)] - relief[y * size + max(x - 1, 0)]) * 10
+            gy = (relief[min(y + 1, size - 1) * size + x] - relief[max(y - 1, 0) * size + x]) * 10
+            lam = (-gx * lx - gy * ly + lz) / (math.sqrt(gx * gx + gy * gy + 1) * norm_l)
+            t = (0.46 + 0.8 * (lam - flat) + 0.30 * (r - 0.53) + 0.34 * (tone[i] - 0.5)
+                 + 0.14 * (grain[i] - 0.5) + 0.06 * (pits[i] - 0.5))
+            colour = ramp(style["ramp"], clamp(t))
+            # Lichen and weathering stains on the higher, rougher stone.
+            stain = smoothstep(0.58, 0.78, tone[i]) * smoothstep(0.45, 0.7, grain[i])
+            if stain:
+                colour = mix3(colour, style["lichen"], 0.35 * stain)
+            if joints[i]:
+                colour = mix3(colour, style["crack"], 0.85 * joints[i])
+            # Scrub in the lowest hollows, where the grain is also high.
+            low = smoothstep(0.36, 0.28, r) * smoothstep(0.6, 0.8, grain[i])
+            if low:
+                colour = mix3(colour, mix3(*style["scrub"], clamp(lam)), 0.8 * low)
+            pix[x, y] = tuple(int(clamp(c, 0, 255)) for c in colour)
+    # The outline follows the crags but not the joints: a joint reaching the rim
+    # would notch it, and the wall below would extrude the notch into a column.
+    heights = Image.new("L", (size, size))
+    heights.putdata([int(clamp(0.22 + 0.62 * h) * 255) for h in height])
+    # Vertical streaks for the walls: the plateau's tone and joints smeared down
+    # the face, so fractures line up with the joints above them.
+    marks = Image.new("L", (size, size))
+    marks.putdata([int(clamp(0.5 + 0.4 * (tn - 0.5) + 0.6 * (g - 0.5) - 0.35 * j) * 255)
+                   for tn, g, j in zip(tone, grain, joints)])
+    # Columns: the marks drawn out down the face, so fractures line up with
+    # the plateau above; rough: the same marks barely softened, for texture.
+    return image, heights, marks.filter(ImageFilter.GaussianBlur((0.3, 30))), marks.filter(ImageFilter.GaussianBlur(1.0))
+
+
+def render_cliff(mask, colours, interior=0):
+    """A 32x64 native frame: contact shadow, fractured wall, then the plateau.
+
+    The same ownership rules as render_connected: the frame draws the rock whose
+    footprint lies in its cell, and the next row's plateau covers this row's
+    wall wherever the cliff continues.
+    """
+    frame = Image.new("RGBA", (CELL, CELL + 2 * CLIFF_TOP))
+    if not mask:
+        return frame
+    style = CLIFF_STYLE
+    surface, heights, columns, rough = cliff_surface(colours, interior, mask == 15)
+    # Crags push the edge out and hollows pull it in; a blur keeps the rim a
+    # continuous broken line rather than single spikes.
+    smooth = heights.filter(ImageFilter.GaussianBlur(3))
+    bumps = smooth.point(lambda v: int(smoothstep(0.35 * 255, 0.70 * 255, v) * 255 * style["amplitude"]))
+    raw = ImageChops.add(canopy_field(mask), bumps).filter(ImageFilter.GaussianBlur(2.0))
+    coverage = raw.point(lambda v: int(smoothstep(0.50 * 255, 0.54 * 255, v) * 255))
+    cell = (HALO, HALO, HALO + CELL, HALO + CELL)
+    own = Image.new("L", coverage.size)
+    own.paste(coverage.crop(cell), cell[:2])
+
+    # A long contact shadow: the cliff is taller than any foliage.
+    shadow = ImageChops.lighter(ImageChops.lighter(
+        shifted(coverage, 2, 5).filter(ImageFilter.GaussianBlur(1.5)).point(lambda v: int(v * 0.70)),
+        shifted(coverage, 10, 13).filter(ImageFilter.GaussianBlur(3)).point(lambda v: int(v * 0.55))),
+        shifted(coverage, 24, 30).filter(ImageFilter.GaussianBlur(8)).point(lambda v: int(v * 0.40)))
+    layer = Image.new("RGBA", (CELL, CELL), (16, 14, 18, 255))
+    layer.putalpha(shadow.crop(cell))
+    frame.alpha_composite(layer, (0, CLIFF_TOP))
+
+    # Wall: for each pixel, how far above the foot of the face it stands (1 just
+    # under the lip, 0 at the ground).
+    # The wall's shading follows the whole footprint, which continues past the
+    # cell edge: cropped to this cell, a face running on into the next row
+    # would end in a false dark foot at the edge.
+    # The halo below is shorter than the wall, so its last row is carried on down.
+    wall_alpha, wall_height = Image.new("L", own.size), Image.new("L", own.size)
+    width, height = own.size
+    solid = Image.new("L", (width, height + CLIFF_RAISE))
+    solid.paste(coverage.point(lambda v: 255 if v > 127 else 0), (0, 0))
+    solid.paste(solid.crop((0, height - 1, width, height)).resize((width, CLIFF_RAISE)), (0, height))
+    for d in range(CLIFF_RAISE + 1):
+        wall_alpha = ImageChops.lighter(wall_alpha, shifted(own, 0, -d))
+        wall_height = ImageChops.lighter(
+            wall_height, solid.crop((0, d, width, d + height)).point(lambda v, d=d: v and int(d * 255 / CLIFF_RAISE)))
+    column, grit, height_px = columns.load(), rough.load(), wall_height.load()
+    stone = surface.load()
+    wall = Image.new("RGB", own.size)
+    wp = wall.load()
+    for y in range(height):
+        # The face shows the plateau above its foot; below the halo the last
+        # row carries on.
+        yy = min(y + CLIFF_RAISE, height - 1)
+        for x in range(width):
+            t = height_px[x, y] / 255
+            c = column[x, yy] / 255
+            g = grit[x, yy] / 255
+            # Broad facets: the column field cut into bands, each turned its own
+            # way to the light. Bands follow the field, so a facet crossing a
+            # cell edge keeps its shade on both sides.
+            level = c * CLIFF_FACETS
+            turn = runtime_hash(int(level), 7, 0xface7) % 1000 / 1000 - 0.5
+            # Bedding: faint, broken seams under lit steps.
+            band = (t * 2.6 + 0.25 * c) % 1.0
+            ledge = (0.10 * (1 - smoothstep(0.0, 0.07, band)) - 0.05 * smoothstep(0.90, 1.0, band)) * smoothstep(0.42, 0.6, g)
+            # The face is the stone of the plateau above it, in shade: darkest
+            # at the foot, with skylight near the lip.
+            shade = clamp(0.30 + 0.34 * t ** 0.9 + 0.26 * turn - ledge)
+            # Stretched twice down the face so it reads as a drop, not as the
+            # top running on; frames in one row share rows, so it stays seamless.
+            base = stone[x, HALO + 10 + (y - HALO + CLIFF_RAISE) // 2]
+            warm = (1.04, 1.0, 0.94)
+            wp[x, y] = tuple(int(clamp(base[k] * shade * warm[k], 0, 255)) for k in range(3))
+    region = (HALO, HALO - CLIFF_RAISE, HALO + CELL, HALO + CELL)
+    layer = wall.crop(region).convert("RGBA")
+    layer.putalpha(wall_alpha.crop(region))
+    frame.alpha_composite(layer, (0, CLIFF_TOP - CLIFF_RAISE))
+
+    # Broad light over the plateau: it rises toward the rims that face the
+    # light and falls away toward those that do not.
+    dome = coverage.filter(ImageFilter.GaussianBlur(14)).load()
+    shade = Image.new("L", coverage.size)
+    sh = shade.load()
+    lx, ly, _ = CANOPY_LIGHT
+    for y in range(coverage.size[1]):
+        for x in range(coverage.size[0]):
+            gx = dome[min(x + 2, coverage.size[0] - 1), y] - dome[max(x - 2, 0), y]
+            gy = dome[x, min(y + 2, coverage.size[1] - 1)] - dome[x, max(y - 2, 0)]
+            sh[x, y] = int(clamp(0.5 + (gx * lx + gy * ly) / 255 * 1.6) * 255)
+    lighter = surface.point(lambda v: min(255, int(v * 1.12 + 4)))
+    darker = surface.point(lambda v: int(v * 0.80))
+    top = Image.composite(lighter, Image.composite(surface, darker, shade.point(lambda v: min(255, v * 2))),
+                          shade.point(lambda v: max(0, v * 2 - 255)))
+    # The rims catch the light: a lit lip toward it and along the top of each
+    # south face, where the face drops into shade; east-facing rims fall dark.
+    rim = coverage.filter(ImageFilter.GaussianBlur(0.8))
+    chips = rough.point(lambda v: int(smoothstep(0.40 * 255, 0.55 * 255, v) * 255))
+    lit = ImageChops.multiply(ImageChops.lighter(ImageChops.subtract(rim, shifted(rim, 2, 2)),
+                                                 ImageChops.subtract(rim, shifted(rim, 0, -2))), chips
+                              ).point(lambda v: min(255, v * 2))
+    dark = ImageChops.subtract(rim, shifted(rim, -4, 0)).point(lambda v: min(255, v * 2))
+    top = Image.composite(surface.point(lambda v: min(255, int(v * 1.16 + 6))), top, lit)
+    top = Image.composite(surface.point(lambda v: int(v * 0.60)), top, dark)
+    layer = top.crop(cell).convert("RGBA")
+    layer.putalpha(own.crop(cell))
+    frame.alpha_composite(layer, (0, CLIFF_TOP - CLIFF_RAISE))
+    return frame
+
+
 # --------------------------------------------------------------------------
 # Frames, provenance and CLI
 # --------------------------------------------------------------------------
@@ -1310,30 +1727,40 @@ def render_connected(name, mask, colours, interior=0):
 def frame_size(name, index):
     """Native (width, height) of a set's frame."""
     if index >= FRAMES:
-        return 32, (CANOPY_TOP + CELL + CANOPY_BELOW) // SCALE
+        width, height = connected_size(name)
+        return width // SCALE, height // SCALE
     return native_size(name), native_size(name)
 
 
 def render_frame(name, index):
     use_frame(native_size(name))
     rng = random.Random(fnv1a32(f"decor:{name}:{index}"))
-    hd = (render_connected(name, *connected_frame(index - FRAMES)) if index >= FRAMES else
-          SPECS[name].render(rng, index >= FULL).image())
+    if index < FRAMES:
+        hd = SPECS[name].render(rng, index >= FULL).image()
+    elif name == "cliffs":
+        hd = render_cliff(*connected_frame(index - FRAMES))
+    else:
+        hd = render_connected(name, *connected_frame(index - FRAMES))
     native = hd.resize((hd.width // SCALE, hd.height // SCALE), Image.Resampling.BOX)
     return native, hd
 
 
-def _job(name):
-    # Keep a material on one worker so all masks reuse its four textures.
+def _job(task):
+    # A worker renders a run of one material's frames, so they reuse its
+    # cached textures.
+    name, indices = task
     return [(name, index, native.tobytes(), hd.tobytes())
-            for index in range(frame_count(name))
+            for index in indices
             for native, hd in (render_frame(name, index),)]
 
 
 def synthesize(names, jobs=None):
     jobs = jobs or min(8, os.cpu_count() or 1)
-    with concurrent.futures.ProcessPoolExecutor(max_workers=min(jobs, len(names))) as pool:
-        rendered = list(pool.map(_job, names))
+    # Split each material into as many runs as there are workers; strided runs
+    # spread the costly filled-cell frames evenly.
+    tasks = [(name, range(start, frame_count(name), jobs)) for name in names for start in range(jobs)]
+    with concurrent.futures.ProcessPoolExecutor(max_workers=jobs) as pool:
+        rendered = list(pool.map(_job, tasks))
     out = {}
     for group in rendered:
         for name, index, native, hd in group:
@@ -1343,12 +1770,20 @@ def synthesize(names, jobs=None):
     return out
 
 
-ORDER = ["boulders", "hedge", "thicket", "ridge_rock", "outcrop"]
+ORDER = ["boulders", "hedge", "thicket", "ridge_rock", "outcrop", "cliffs"]
 assert sorted(ORDER) == sorted(SPECS)
+# The first sets were numbered before any connected frames, which follow them;
+# later sets append their object and connected frames together, so adding a set
+# never renumbers an existing frame.
+LEGACY_SETS = 5
 
 
 def first_frame(name):
-    return ORDER.index(name) * FRAMES
+    k = ORDER.index(name)
+    if k < LEGACY_SETS:
+        return k * FRAMES
+    return (LEGACY_SETS * FRAMES + 2 * CONNECTED_FRAMES +
+            sum(frame_count(other) for other in ORDER[LEGACY_SETS:k]))
 
 
 def generator_sha():
@@ -1388,6 +1823,9 @@ def write(results, root):
             "runtime_sha256": hashes,
             "highres_sha256": hd_hashes,
         }
+        if name in CONNECTED and connected_size(name) != connected_size("hedge"):
+            width, height = connected_size(name)
+            document["sets"][name]["connected_native_size"] = [width // SCALE, height // SCALE]
     register_frames(hd_frames, HD_CATEGORY, root)
     document.update({
         "generator": "tools/artwork/terrain_decor.py",
@@ -1427,6 +1865,10 @@ def write_catalog(root):
                                                                  start + CONNECTED_FRAMES))
             material["decor"].pop("connected_grid", None)
             material["decor"]["connected_corners"] = True
+            if material["key"] in OPEN_EDGED:
+                material["decor"]["connected_open"] = True
+            else:
+                material["decor"].pop("connected_open", None)
     terrain_catalog.save(root / "content", document)
 
 

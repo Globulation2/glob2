@@ -115,6 +115,10 @@ struct Decor
 	// Optional extra filled-mask frames ("connected_interior"), colour-major with
 	// the same count per colour: alternative interiors picked by a cell hash.
 	std::vector<int> connectedInterior;
+	// Draw the corner-mask frames against open ground too ("connected_open"):
+	// cells with undecorated corners show this material's edge, as for a cliff
+	// whose rim and walls stand on the grass, instead of no raised decor.
+	bool connectedOpen = false;
 };
 // Decor frames may be up to MaximumDecorFrame native pixels on each side. A
 // frame up to 64 px tall is centred on its 32 px cell; a taller frame keeps a

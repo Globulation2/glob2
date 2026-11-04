@@ -5738,6 +5738,8 @@ Gletsjeris
 Tilgroet vej
 [laterite]
 Laterit
+[cliffs]
+Klipper
 [terrain group water]
 Vand
 [terrain group sand]

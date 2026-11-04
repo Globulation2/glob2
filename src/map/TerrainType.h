@@ -69,7 +69,9 @@ enum TerrainType : std::uint16_t
 	OVERGROWN_ROAD=43,
 	// Iron-red earth packed with hardened nodules (Barren, like dirt), format 204.
 	LATERITE=44,
-	TERRAIN_COUNT=45,
+	// A raised rock plateau walled by cliffs (Obstacles, like hedge), format 206.
+	CLIFFS=45,
+	TERRAIN_COUNT=46,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -100,6 +102,8 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_GLACIER_ICE = 42;
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD = 43;
 // Format 203 ended the built-ins at OVERGROWN_ROAD.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_LATERITE = 44;
+// Formats 204 and 205 ended the built-ins at LATERITE.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_CLIFFS = 45;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

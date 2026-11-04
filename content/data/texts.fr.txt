@@ -5738,6 +5738,8 @@ Glace de glacier
 Route envahie par la végétation
 [laterite]
 Latérite
+[cliffs]
+Falaises
 [terrain group water]
 Eau
 [terrain group sand]

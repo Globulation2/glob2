@@ -5738,6 +5738,8 @@ Gel de glacera
 Camí envaït per la vegetació
 [laterite]
 Laterita
+[cliffs]
+Penya-segats
 [terrain group water]
 Aigua
 [terrain group sand]

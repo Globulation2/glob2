@@ -5738,6 +5738,8 @@ Gletsjerijs
 Overwoekerde weg
 [laterite]
 Lateriet
+[cliffs]
+Kliffen
 [terrain group water]
 Water
 [terrain group sand]

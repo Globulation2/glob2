@@ -190,6 +190,23 @@ class TerrainTileset(unittest.TestCase):
         hedge["decor"]["connected"] = original
         validate(self.document)
 
+    def test_open_edged_decor_is_a_flag_on_connected_frames(self):
+        cliffs = next(m for m in self.document["materials"] if m["key"] == "cliffs")
+        hedge = next(m for m in self.document["materials"] if m["key"] == "hedge")
+        # Cliffs stand on open ground; foliage keeps a clear border.
+        self.assertIs(cliffs["decor"]["connected_open"], True)
+        self.assertNotIn("connected_open", hedge["decor"])
+        cliffs["decor"]["connected_open"] = 1
+        with self.assertRaises(ValueError):
+            validate(self.document)
+        boulders = next(m for m in self.document["materials"] if m["key"] == "boulders")
+        boulders["decor"]["connected_open"] = True
+        cliffs["decor"]["connected_open"] = True
+        with self.assertRaises(ValueError):
+            validate(self.document)
+        del boulders["decor"]["connected_open"]
+        validate(self.document)
+
     def test_invalid_catalogs(self):
         mutations = [
             lambda d: d.update(version=9),

@@ -5738,6 +5738,8 @@ Glaĉera glacio
 Superkreskita vojo
 [laterite]
 Laterito
+[cliffs]
+Klifoj
 [terrain group water]
 Akvo
 [terrain group sand]

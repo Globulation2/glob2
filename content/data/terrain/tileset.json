@@ -702,7 +702,8 @@
     "volcanic_ash",
     "glacier_ice",
     "overgrown_road",
-    "laterite"
+    "laterite",
+    "cliffs"
   ],
   "bindings": {
     "water": "water",
@@ -749,7 +750,8 @@
     "volcanic_ash": "volcanic_ash",
     "glacier_ice": "glacier_ice",
     "overgrown_road": "overgrown_road",
-    "laterite": "laterite"
+    "laterite": "laterite",
+    "cliffs": "cliffs"
   },
   "boundary_warp_q8": [960, 352, 120]
 }

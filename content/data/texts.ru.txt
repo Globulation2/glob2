@@ -5738,6 +5738,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Заросшая дорога
 [laterite]
 Латерит
+[cliffs]
+Утёсы
 [terrain group water]
 Вода
 [terrain group sand]

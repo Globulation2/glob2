@@ -5738,6 +5738,8 @@ AI 生成
 杂草丛生的石路
 [laterite]
 红土
+[cliffs]
+悬崖
 [terrain group water]
 水
 [terrain group sand]

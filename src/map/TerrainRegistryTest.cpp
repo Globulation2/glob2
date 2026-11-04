@@ -365,6 +365,17 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(prior->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeLaterite.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeLaterite.dump(), TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD));
+
+		// Formats 204 and 205 number their definitions from 45, before cliffs.
+		auto beforeCliffs = Json::parse(registry->serialize());
+		for (auto &item : beforeCliffs["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_CLIFFS;
+		const auto cliffless = TerrainRegistry::deserialize(beforeCliffs.dump(), TERRAIN_COUNT_BEFORE_CLIFFS);
+		CHECK(cliffless->serialize() == registry->serialize());
+		CHECK(cliffless->digest() == registry->digest());
+		CHECK(cliffless->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeCliffs.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeCliffs.dump(), TERRAIN_COUNT_BEFORE_LATERITE));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

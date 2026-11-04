@@ -5738,6 +5738,8 @@ Glaciäris
 Igenvuxen väg
 [laterite]
 Laterit
+[cliffs]
+Klippor
 [terrain group water]
 Vatten
 [terrain group sand]

@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 44 built-in materials, including grass, sand, their lush, dry, dune, pale and
+All 45 built-in materials, including grass, sand, their lush, dry, dune, pale and
 windy dune looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Each material is a small
 pack that can be tuned on its own: its recipe and render function live in
@@ -107,7 +107,7 @@ colour and material stay free per biome:
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
-| Obstacles | tall raised decor | `terrain_decor.py` |
+| Obstacles (boulders, hedge, thicket, cliffs) | tall raised decor | `terrain_decor.py` |
 
 Within the groups: dirt keeps the original speckled earth and stones under the
 shared cracks; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
@@ -165,7 +165,7 @@ in the synthesiser).
 
 Obstacle terrain is drawn in two layers, as forest is. The ground material is
 composed like any other terrain: dusty earth for boulders, leaf litter for hedge,
-undergrowth for thicket, and rock for ridge rock and outcrop. A decor sprite per
+undergrowth for thicket, talus for cliffs, and rock for ridge rock and outcrop. A decor sprite per
 cell is then drawn with the resources, row by row, so objects stand up, overlap
 neighbouring cells and occlude each other.
 
@@ -179,6 +179,10 @@ A material opts in with a `decor` block:
   material. An undecorated corner, such as ordinary grass, sand or water, suppresses all
   raised objects in that cell, preserving a clear border against open ground.
   Eligibility follows rendered material bindings, including custom materials.
+  The exception is connected decor with `"connected_open": true` (cliffs): when
+  every decorated corner of a cell has it, open-ground corners simply count as
+  empty in the corner mask, so the rim and walls stand on the grass. A cell where
+  such a material meets foliage and open ground keeps the foliage rule.
 - Uniform cells keep their existing `full` or connected mask-15 frames and
   interior variants. A border between decorated materials draws just one
   material's ornament: a deterministic coordinate/terrain-seed hash chooses a
@@ -252,9 +256,34 @@ boundary irregularity and woody gaps between crowns. The other sets are faceted 
 a shared grain, and broad stepped bedrock blocks with sparse lichen. Ridge and
 outcrop rocks are flat-shaded prisms: a convex ring raised into walls, with
 sloping top facets meeting at an off-centre peak, so each face takes one light
-value. The tool writes `content/data/gfx/terrain-decorN.png`
+value.
+
+Cliffs use the same connected corner tiles, but as rock: a weathered ochre
+plateau standing twelve native pixels above its footprint, twice the rise of
+foliage, in 32×64 frames. Its relief is broad shelves with fine grain, pits,
+lichen stains, loose rocks and a few jointed fractures, under broad light that
+rises toward the rims facing the light. Each south face is the plateau's own
+stone, stretched down the drop and put in shade: broad facets each turned their
+own way to the light, faint broken bedding, darkest at the foot, over a dark
+contact strip and a long shadow. The lip is lit in broken stretches; rims facing
+away from the light fall dark. The plateau has no discrete objects that could
+repeat. Each vertex colour owns a patch of noise fields (relief, tone and grain)
+that a cell blends with variance-preserving bilinear weights, so along a shared
+edge only that edge's two vertices count, and filled cells add a seeded interior
+patch whose weight is zero at the cell edge. Rocks belong to vertex discs and
+fractures to cell edges (keyed by both end colours) or interiors, each drawn only
+by the frames that share it. Its ground material is talus: the chips and cobbles
+of scree in the cliff stone.
+Cliffs set `connected_open`, so their partial-corner tiles draw against open
+ground and even a one-vertex ridge stands up with its walls; the plateau's rim
+follows the crags rather than the cell grid. Connected materials join one
+another, so cliffs painted against hedge or thicket meet them without a wall.
+
+The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
-316–427; thicket corner tiles at 428–683 and interiors at 684–795), the HD frames, provenance and, with
+316–427; thicket corner tiles at 428–683 and interiors at 684–795; then each later
+set appends its twelve object frames and its connected frames, so cliffs take
+796–807 and 808–1175), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--sheet` writes a review sheet. Select `--decor hedge --decor thicket --sheet <path>`
 for before/after fields with narrow strips, corners, isolated vegetation and a
 hole. Decor is presentation only: the minimap, the overview and
@@ -487,7 +516,7 @@ without pair treatments. Classes, strongest first:
 
 | Class | Materials | Edge profile |
 | --- | --- | --- |
-| `cover` | hedge, thicket | `canopy` |
+| `cover` | hedge, thicket, cliffs | `canopy` |
 | `cut` | void_hole, chasm | `crisp` |
 | `built` | road, brick_path, sandstone, overgrown_road, boardwalk | `paved`, `crisp` |
 | `flow` | lava, ember_field | `molten` |
@@ -496,7 +525,7 @@ without pair treatments. Classes, strongest first:
 
 | Profile | Shape | Precedence / coast | roughness / amplitude / feather / speckle / bridge (Q8) | Materials |
 | --- | --- | --- | --- | --- |
-| `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket |
+| `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket, cliffs |
 | `crisp` | patch | 20 | 96 / 256 / 128 / 0 / 256 | void_hole, chasm, boardwalk |
 | `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone, overgrown_road |
 | `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | none since dirt track became brick path; kept for future tracks |
@@ -534,7 +563,7 @@ exception the classes cannot express, not the way to tune a material.
 | 7 | dark_water | 80 / 704 |
 | 6 | deep_water | 72 / 640, a drop-off lip on shallow water and shores |
 | 5 | water (existing) | 72 / 640 |
-| 4 | boulders, hedge, thicket | 88 / 832, a sense of height on the grass side |
+| 4 | boulders, hedge, thicket, cliffs | 88 / 832, a sense of height on the grass side |
 | 4 | ridge_rock, outcrop | 72 / 768 |
 | 4 | lava, ember_field | no cast; scorch fringe `[214,110,40]` 128/640 and `[160,80,40]` 96/512 |
 | 4 | ice (existing), frozen_lake, glacier_ice | 64 / 640 with frost fringe |

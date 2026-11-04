@@ -5738,6 +5738,8 @@ Gelo glacial
 Hent goloet gant ar geot
 [laterite]
 Laterita
+[cliffs]
+Torgennoù
 [terrain group water]
 Água
 [terrain group sand]

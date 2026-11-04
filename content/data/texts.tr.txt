@@ -5738,6 +5738,8 @@ Buzul buzu
 Otlarla kaplı yol
 [laterite]
 Laterit
+[cliffs]
+Uçurumlar
 [terrain group water]
 Su
 [terrain group sand]

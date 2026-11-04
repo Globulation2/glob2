@@ -5738,6 +5738,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Зарослий шлях
 [laterite]
 Латерит
+[cliffs]
+Скелі
 [terrain group water]
 Вода
 [terrain group sand]

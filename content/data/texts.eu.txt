@@ -5738,6 +5738,8 @@ Glaziar-izotza
 Landaretzaz estalitako bidea
 [laterite]
 Laterita
+[cliffs]
+Labarrak
 [terrain group water]
 Ura
 [terrain group sand]

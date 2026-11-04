@@ -5738,6 +5738,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Зарастао пут
 [laterite]
 Латерит
+[cliffs]
+Литице
 [terrain group water]
 Вода
 [terrain group sand]

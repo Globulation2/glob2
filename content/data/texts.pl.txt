@@ -5738,6 +5738,8 @@ Lód lodowcowy
 Zarośnięta droga
 [laterite]
 Lateryt
+[cliffs]
+Klify
 [terrain group water]
 Woda
 [terrain group sand]

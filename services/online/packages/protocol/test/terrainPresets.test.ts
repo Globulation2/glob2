@@ -24,7 +24,7 @@ describe('built-in terrain presets', () => {
     );
     expect(names.length).toBeGreaterThan(30);
     expect(TERRAIN_PRESETS).toEqual(names);
-    expect(TERRAIN_PRESETS.slice(-12)).toEqual([
+    expect(TERRAIN_PRESETS.slice(-13)).toEqual([
       'sandstone',
       'pumice',
       'frozen_lake',
@@ -37,6 +37,7 @@ describe('built-in terrain presets', () => {
       'glacier_ice',
       'overgrown_road',
       'laterite',
+      'cliffs',
     ]);
   });
 

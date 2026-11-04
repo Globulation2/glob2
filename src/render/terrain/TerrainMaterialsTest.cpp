@@ -221,6 +221,32 @@ TEST_SUITE("TerrainMaterials")
 		CHECK_THROWS(TerrainVisual::Catalog::parse(document));
 	}
 
+	TEST_CASE("open-edged connected decor is a validated catalog flag")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto definitions = catalog();
+		CHECK(definitions.materials[definitions.find("cliffs")].decor.connectedOpen);
+		CHECK_FALSE(definitions.materials[definitions.find("hedge")].decor.connectedOpen);
+		auto document = nlohmann::json::parse(definitions.serialized);
+		for (auto &material : document["materials"])
+		{
+			if (material["key"] == "cliffs")
+			{
+				material["decor"]["connected_open"] = 1;
+				CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+				material["decor"]["connected_open"] = true;
+			}
+			if (material["key"] == "boulders")
+			{
+				// Object decor has no corner-mask edges to draw on open ground.
+				material["decor"]["connected_open"] = true;
+				CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+				material["decor"].erase("connected_open");
+			}
+		}
+		CHECK_NOTHROW(TerrainVisual::Catalog::parse(document));
+	}
+
 	TEST_CASE("connected canopy ground leaves contact shadows to the foliage [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});

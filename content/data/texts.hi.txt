@@ -5714,6 +5714,8 @@ AI से नहीं बना
 घास से ढकी सड़क
 [laterite]
 लेटराइट
+[cliffs]
+चट्टानें
 [terrain group water]
 पानी
 [terrain group sand]

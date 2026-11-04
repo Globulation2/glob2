@@ -5714,6 +5714,8 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 আগাছায় ঢাকা রাস্তা
 [laterite]
 ল্যাটেরাইট
+[cliffs]
+খাড়া পাহাড়
 [terrain group water]
 জল
 [terrain group sand]

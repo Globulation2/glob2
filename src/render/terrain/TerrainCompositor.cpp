@@ -474,18 +474,32 @@ std::pair<MaterialId, unsigned> Compositor::decorMaterial(const SceneMap &map, i
 	y &= map.getMaskH();
 	const auto corners = map.cellCorners(x, y);
 	std::array<MaterialId, 4> materials;
+	std::array<bool, 4> decorated{};
+	bool open = false, closed = false;
 	for (unsigned k = 0; k < corners.size(); ++k)
 	{
 		materials[k] = materialFor(map, corners[k]);
-		if (!decorSprites[materials[k]] || definitions.materials[materials[k]].decor.full.empty())
-			return {0, 0};
+		decorated[k] = decorSprites[materials[k]] && !definitions.materials[materials[k]].decor.full.empty();
+		if (decorated[k])
+			(definitions.materials[materials[k]].decor.connectedOpen ? open : closed) = true;
 	}
+	// An undecorated corner suppresses all raised objects in the cell, unless
+	// every decorated corner draws its edge against open ground.
+	const bool anyOpenGround = std::find(decorated.begin(), decorated.end(), false) != decorated.end();
+	if (!open && !closed)
+		return {0, 0};
+	if (anyOpenGround && closed)
+		return {0, 0};
 	if (materials[0] == materials[1] && materials[0] == materials[2] &&
 		materials[0] == materials[3])
 		return {materials[0], 4};
 	// Choosing one of four corners gives 2+2 borders equal odds and 3+1
 	// borders a three-to-one split. Presentation hashing never consumes game RNG.
-	const auto chosen = materials[hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0xd3c04a71u) & 3u];
+	// Open ground is never chosen: the next decorated corner stands in for it.
+	unsigned k = hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0xd3c04a71u) & 3u;
+	while (!decorated[k])
+		k = (k + 1) & 3u;
+	const auto chosen = materials[k];
 	return {chosen, unsigned(std::count(materials.begin(), materials.end(), chosen))};
 }
 GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const

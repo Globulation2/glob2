@@ -337,6 +337,11 @@ def _validate(document, root):
                     raise ValueError("Corner-tiled connected decor needs 16 variants per mask")
             if "connected_interior" in decor and not decor.get("connected_corners"):
                 raise ValueError("connected_interior needs connected_corners")
+            if "connected_open" in decor:
+                if not isinstance(decor["connected_open"], bool):
+                    raise ValueError("connected_open must be a boolean")
+                if decor["connected_open"] and not decor.get("connected"):
+                    raise ValueError("connected_open needs connected frames")
             decor_sprites.add(decor["sprite"])
         if "overlay" in m:
             overlay = m["overlay"]

@@ -5738,6 +5738,8 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 طريق مكسو بالعشب
 [laterite]
 لاتريت
+[cliffs]
+منحدرات
 [terrain group water]
 ماء
 [terrain group sand]

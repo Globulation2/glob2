@@ -5714,6 +5714,8 @@ AI ద్వారా రూపొందించబడలేదు
 పిచ్చిమొక్కలు పెరిగిన రహదారి
 [laterite]
 లాటరైట్
+[cliffs]
+కొండచరియలు
 [terrain group water]
 నీరు
 [terrain group sand]

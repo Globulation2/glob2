@@ -1059,6 +1059,17 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(LATERITE).name) == "laterite");
 		CHECK(TerrainRegistry::builtins()->find("laterite") == LATERITE);
 	}
+	TEST_CASE("cliffs share every rule of hedge and thicket")
+	{
+		CHECK(terrainGroup(CLIFFS) == TerrainGroup::Obstacles);
+		CHECK(terrainPaintable(CLIFFS));
+		CHECK(sameTerrainProperties(terrainProperties(CLIFFS), terrainProperties(HEDGE)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(CLIFFS) == TerrainRegistry::builtins()->propertyIndex(THICKET));
+		CHECK_FALSE(terrainProperties(CLIFFS).walkable);
+		CHECK(terrainProperties(CLIFFS).projectileBlocks);
+		CHECK(std::string(terrainPresentation(CLIFFS).name) == "cliffs");
+		CHECK(TerrainRegistry::builtins()->find("cliffs") == CLIFFS);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},

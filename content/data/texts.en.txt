@@ -5716,6 +5716,8 @@ Glacier ice
 Overgrown road
 [laterite]
 Laterite
+[cliffs]
+Cliffs
 [terrain group water]
 Water
 [terrain group sand]

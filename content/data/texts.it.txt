@@ -5738,6 +5738,8 @@ Ghiaccio di ghiacciaio
 Strada invasa dalla vegetazione
 [laterite]
 Suolo lateritico
+[cliffs]
+Scogliere
 [terrain group water]
 Acqua
 [terrain group sand]

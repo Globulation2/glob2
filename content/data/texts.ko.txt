@@ -5738,6 +5738,8 @@ AI 생성 아님
 풀로 뒤덮인 길
 [laterite]
 라테라이트
+[cliffs]
+절벽
 [terrain group water]
 물
 [terrain group sand]

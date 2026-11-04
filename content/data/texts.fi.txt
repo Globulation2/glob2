@@ -5738,6 +5738,8 @@ Jäätikköjää
 Umpeen kasvanut tie
 [laterite]
 Lateriitti
+[cliffs]
+Jyrkänteet
 [terrain group water]
 Vesi
 [terrain group sand]

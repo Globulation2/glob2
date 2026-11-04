@@ -5738,6 +5738,8 @@ Gleccserjég
 Benőtt út
 [laterite]
 Laterit
+[cliffs]
+Sziklafalak
 [terrain group water]
 Víz
 [terrain group sand]

@@ -5738,6 +5738,8 @@ Gletschereis
 Überwucherte Straße
 [laterite]
 Laterit
+[cliffs]
+Klippen
 [terrain group water]
 Wasser
 [terrain group sand]

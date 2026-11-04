@@ -5738,6 +5738,8 @@ Gelo glaciar
 Estrada coberta de vegetação
 [laterite]
 Laterita
+[cliffs]
+Penhascos
 [terrain group water]
 Água
 [terrain group sand]

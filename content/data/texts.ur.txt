@@ -5714,6 +5714,8 @@ AI کی بنائی ہوئی نہیں
 گھاس سے ڈھکی سڑک
 [laterite]
 لیٹرائٹ
+[cliffs]
+چٹانیں
 [terrain group water]
 پانی
 [terrain group sand]

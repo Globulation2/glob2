@@ -103,6 +103,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(OVERGROWN_ROAD, G::Paths, "overgrown_road", "[overgrown_road]", {122, 118, 98}, {134, 128, 106}),
 		// Iron-red earth packed with hardened nodules: plays exactly like dirt.
 		authored(LATERITE, G::Barren, "laterite", "[laterite]", {150, 76, 46}, {166, 90, 54}),
+		// A raised rock plateau walled by cliffs: plays exactly like hedge and thicket.
+		authored(CLIFFS, G::Obstacles, "cliffs", "[cliffs]", {118, 92, 70}, {136, 108, 82}),
 	}};
 	return rows;
 }();

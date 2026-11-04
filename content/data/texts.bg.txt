@@ -5714,6 +5714,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Обрасъл път
 [laterite]
 Латерит
+[cliffs]
+Скали
 [terrain group water]
 Вода
 [terrain group sand]

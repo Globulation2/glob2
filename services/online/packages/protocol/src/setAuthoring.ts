@@ -46,6 +46,7 @@ export const TERRAIN_PRESETS = [
   'glacier_ice',
   'overgrown_road',
   'laterite',
+  'cliffs',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay
