@@ -1,0 +1,31 @@
+{
+  "pid": 2096920,
+  "phase": "finished; inspect candidate complete traces, continuity and cross-worker equality;no canonical fixtures edited",
+  "results": [
+    {
+      "name": "maxima-serial-candidate",
+      "exit_code": 0,
+      "seconds": 3.5
+    },
+    {
+      "name": "maxima-parallel-check",
+      "exit_code": 0,
+      "seconds": 5.1
+    },
+    {
+      "name": "telemetry-serial-candidate",
+      "exit_code": 0,
+      "seconds": 17.3
+    },
+    {
+      "name": "telemetry-parallel-check",
+      "exit_code": 0,
+      "seconds": 18.1
+    }
+  ],
+  "candidate_directory": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/terrain-master-current/artifacts/ci-recovery/sim126-reference-candidates",
+  "budget_bytes": 2147483648,
+  "minimum_free_bytes": 21474836480,
+  "note": "Candidateexpectedtraceswrittenonlyunderignoredartifacts;canonicalfixturesandfrozenv108/v115inputsunchanged. Maintainedcompletechecksumcheckers,serialthenparallel,independentmidpointreload;current14cd source and binary. No testweakening or automatic baseline promotion.",
+  "retained_bytes": 270727128
+}

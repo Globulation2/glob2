@@ -1,0 +1,40 @@
+{
+  "head": "031c13a4aebc0a879bb387180cbaeb4337624084",
+  "base": "5593287ee5e5892e237ec025ce725cc58b73ed8a",
+  "generation_source": "14cd8e8a93512d87302455749bd44b2d19c42158",
+  "candidate_status": "all4maintainedserial/parallelcheckerspassed;Maximamidpointreloadindependentlycheckedbeforebaselinegeneration;currentnewerbaseintegrationandcrossplatformverificationpending",
+  "reference_files": [
+    {
+      "path": "test/maxima/fixtures/save-continuation/expected-units-30000-30512.json",
+      "old_sha256": "1089dc1d75d2a9477abe67b8c7762af25f578f9689f630beb04221299e1d67dc",
+      "new_sha256": "1bb55681b8a1022ebee23c8f10e55cae7336c3f5060d25697f6cbd187c927a12",
+      "bytes": 40451
+    },
+    {
+      "path": "test/fixtures/scoped-gradients/gd-large-4ai-1024.units.checksums.gz",
+      "old_sha256": "4041f840bf37aaa546398a13d259ac79a8cd61c7180cd84c3ff1d16c1709abae",
+      "new_sha256": "5b6384501f1a06d843f4a1cf803d65fc82d8142ebe50d2dafb17740ad90dea75",
+      "bytes": 373658
+    },
+    {
+      "path": "test/fixtures/scoped-gradients/gd-bigarena-2048.units.checksums.gz",
+      "old_sha256": "d1e1ca8f6286c44091aedfbd89c41ec90bf165c393011aa1caee643eb4740323",
+      "new_sha256": "4fe99d63683fb4177df85077e9a96a39ce7cfb18dad0afe54079a3c586e5de30",
+      "bytes": 2176141
+    },
+    {
+      "path": "test/fixtures/scoped-gradients/numbi-castor-2048.units.checksums.gz",
+      "old_sha256": "0de5cf07bd21318348d98ca7f491fc935b3e974a2942599b25e365d4db994102",
+      "new_sha256": "ae46bab9df7744f2c788fc5ba4d09986f374dac2ba1b5e46580c1b2c22043d47",
+      "bytes": 297193
+    },
+    {
+      "path": "test/fixtures/scoped-gradients/v108-reload-256.units.checksums.gz",
+      "old_sha256": "ded9c5dae8493a7ea5df405262b6812c9b5081ad0258eef0d3b0bad870a5fe6c",
+      "new_sha256": "b84988fad1916a7e129b289197e70ee3742dff5085fb91503915cbd32ea97329",
+      "bytes": 121980
+    }
+  ],
+  "canonical_retained_save_files_modified": false,
+  "assertions_jobs_or_checks_disabled": false
+}
