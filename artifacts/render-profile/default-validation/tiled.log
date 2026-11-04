@@ -1,0 +1,811 @@
+BACKEND requested=programmable-gl active=programmable-gl fallback_reason=
+BENCH_CAPABILITIES torus=1 skin_materials=1 async_capture=1 terrain_composition=1 gpu_timing=1 max_texture=16384
+GPU=Apple M3 map=synthetic sparse checkerboard 64x64 viewport=480x480 frames=72
+BENCH_TIMING wall=draw_flush_completion_with_readback_overhead process_cpu=completion_inclusive submission_cpu=draw_flush gpu_timestamp=unavailable final_presentation=outside_timing retry_discard=inside_timing retry_yield_ms=1
+mapped_units=0 (excludes units inside buildings)
+flat zoom=1.000000 world=480x480 total_units=0 shader=0 cloud_grid_limit=0
+FRAME_DEVICE frame=0 packets=1033 batches=1029 upload_bytes=6011913 resource_bytes=17605933 submit_cpu_ns=33682458 capture_cpu_ns=3996500 capture_drops=0
+FRAME mode=2D no clouds frame=0 elapsed_ms=2385.965000 process_cpu_ms=2273.031000
+FRAME_SCOPE frame=0 scope=37 elapsed_ms=53.479584
+FRAME_SCOPE frame=0 scope=36 elapsed_ms=0.004583
+FRAME_SCOPE frame=0 scope=39 elapsed_ms=2294.601333
+FRAME_SCOPE frame=0 scope=41 elapsed_ms=0.002750
+FRAME_CACHE frame=0 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=0 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=0 direct_bytes=0 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=4194304
+FRAME_RESOURCE_ROWS frame=0 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DEVICE frame=1 packets=5 batches=5 upload_bytes=0 resource_bytes=17606125 submit_cpu_ns=77875 capture_cpu_ns=3733833 capture_drops=0
+FRAME mode=2D no clouds frame=1 elapsed_ms=4.609208 process_cpu_ms=1.115000
+FRAME_SCOPE frame=1 scope=37 elapsed_ms=0.665292
+FRAME_SCOPE frame=1 scope=36 elapsed_ms=0.007125
+FRAME_SCOPE frame=1 scope=39 elapsed_ms=0.077500
+FRAME_SCOPE frame=1 scope=41 elapsed_ms=0.002167
+FRAME_CACHE frame=1 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=4 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=1 direct_bytes=0 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=4194304
+FRAME_RESOURCE_ROWS frame=1 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DEVICE frame=2 packets=5 batches=5 upload_bytes=0 resource_bytes=17606125 submit_cpu_ns=62458 capture_cpu_ns=614667 capture_drops=0
+FRAME mode=2D no clouds frame=2 elapsed_ms=1.436792 process_cpu_ms=0.940000
+FRAME_SCOPE frame=2 scope=37 elapsed_ms=0.648208
+FRAME_SCOPE frame=2 scope=36 elapsed_ms=0.006083
+FRAME_SCOPE frame=2 scope=39 elapsed_ms=0.076875
+FRAME_SCOPE frame=2 scope=41 elapsed_ms=0.001875
+FRAME_CACHE frame=2 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=8 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=2 direct_bytes=0 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=4194304
+FRAME_RESOURCE_ROWS frame=2 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DEVICE frame=3 packets=5 batches=5 upload_bytes=0 resource_bytes=17606125 submit_cpu_ns=162542 capture_cpu_ns=2875291 capture_drops=0
+FRAME mode=2D no clouds frame=3 elapsed_ms=4.459500 process_cpu_ms=1.629000
+FRAME_SCOPE frame=3 scope=37 elapsed_ms=1.214708
+FRAME_SCOPE frame=3 scope=36 elapsed_ms=0.009458
+FRAME_SCOPE frame=3 scope=39 elapsed_ms=0.101542
+FRAME_SCOPE frame=3 scope=41 elapsed_ms=0.003750
+FRAME_CACHE frame=3 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=3 direct_bytes=0 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=4194304
+FRAME_RESOURCE_ROWS frame=3 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DEVICE frame=4 packets=2 batches=2 upload_bytes=3766272 resource_bytes=21371821 submit_cpu_ns=1328542 capture_cpu_ns=1101833 capture_drops=0
+FRAME mode=2D no clouds frame=4 elapsed_ms=212.137083 process_cpu_ms=211.356000
+FRAME_SCOPE frame=4 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=4 scope=36 elapsed_ms=209.570292
+FRAME_SCOPE frame=4 scope=39 elapsed_ms=0.082167
+FRAME_SCOPE frame=4 scope=41 elapsed_ms=0.002625
+FRAME_CACHE frame=4 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=4 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=4 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=4 draws=1 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=4 rebuilt_cells=0
+FRAME_DEVICE frame=5 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=72417 capture_cpu_ns=5054959 capture_drops=0
+FRAME mode=2D no clouds frame=5 elapsed_ms=5.255125 process_cpu_ms=0.365000
+FRAME_SCOPE frame=5 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=5 scope=36 elapsed_ms=0.011875
+FRAME_SCOPE frame=5 scope=39 elapsed_ms=0.077958
+FRAME_SCOPE frame=5 scope=41 elapsed_ms=0.002125
+FRAME_CACHE frame=5 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=5 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=5 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=5 draws=2 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=5 rebuilt_cells=0
+FRAME_DEVICE frame=6 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=76334 capture_cpu_ns=990208 capture_drops=0
+FRAME mode=2D no clouds frame=6 elapsed_ms=1.192250 process_cpu_ms=0.300000
+FRAME_SCOPE frame=6 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=6 scope=36 elapsed_ms=0.007833
+FRAME_SCOPE frame=6 scope=39 elapsed_ms=0.079250
+FRAME_SCOPE frame=6 scope=41 elapsed_ms=0.005209
+FRAME_CACHE frame=6 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=6 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=6 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=6 draws=3 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=6 rebuilt_cells=0
+FRAME_DEVICE frame=7 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=61333 capture_cpu_ns=872208 capture_drops=0
+FRAME mode=2D no clouds frame=7 elapsed_ms=1.037417 process_cpu_ms=0.257000
+FRAME_SCOPE frame=7 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=7 scope=36 elapsed_ms=0.006125
+FRAME_SCOPE frame=7 scope=39 elapsed_ms=0.074958
+FRAME_SCOPE frame=7 scope=41 elapsed_ms=0.003084
+FRAME_CACHE frame=7 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=7 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=7 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=7 draws=4 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=7 rebuilt_cells=0
+FRAME_DEVICE frame=8 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=47000 capture_cpu_ns=875042 capture_drops=0
+FRAME mode=2D no clouds frame=8 elapsed_ms=1.017625 process_cpu_ms=0.242000
+FRAME_SCOPE frame=8 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=8 scope=36 elapsed_ms=0.004417
+FRAME_SCOPE frame=8 scope=39 elapsed_ms=0.073167
+FRAME_SCOPE frame=8 scope=41 elapsed_ms=0.001708
+FRAME_CACHE frame=8 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=8 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=8 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=8 draws=5 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=8 rebuilt_cells=0
+FRAME_DEVICE frame=9 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=40125 capture_cpu_ns=915625 capture_drops=0
+FRAME mode=2D no clouds frame=9 elapsed_ms=1.053750 process_cpu_ms=0.218000
+FRAME_SCOPE frame=9 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=9 scope=36 elapsed_ms=0.004584
+FRAME_SCOPE frame=9 scope=39 elapsed_ms=0.076708
+FRAME_SCOPE frame=9 scope=41 elapsed_ms=0.001583
+FRAME_CACHE frame=9 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=9 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=9 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=9 draws=6 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=9 rebuilt_cells=0
+FRAME_DEVICE frame=10 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=79583 capture_cpu_ns=3706208 capture_drops=0
+FRAME mode=2D no clouds frame=10 elapsed_ms=3.916708 process_cpu_ms=0.363000
+FRAME_SCOPE frame=10 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=10 scope=36 elapsed_ms=0.011791
+FRAME_SCOPE frame=10 scope=39 elapsed_ms=0.079708
+FRAME_SCOPE frame=10 scope=41 elapsed_ms=0.001875
+FRAME_CACHE frame=10 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=10 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=10 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=10 draws=7 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=10 rebuilt_cells=0
+FRAME_DEVICE frame=11 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=70917 capture_cpu_ns=912542 capture_drops=0
+FRAME mode=2D no clouds frame=11 elapsed_ms=1.093458 process_cpu_ms=0.339000
+FRAME_SCOPE frame=11 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=11 scope=36 elapsed_ms=0.007708
+FRAME_SCOPE frame=11 scope=39 elapsed_ms=0.076958
+FRAME_SCOPE frame=11 scope=41 elapsed_ms=0.001709
+FRAME_CACHE frame=11 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=11 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=11 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=11 draws=8 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=11 rebuilt_cells=0
+FRAME_DEVICE frame=12 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=86333 capture_cpu_ns=926250 capture_drops=0
+FRAME mode=2D no clouds frame=12 elapsed_ms=1.132333 process_cpu_ms=0.303000
+FRAME_SCOPE frame=12 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=12 scope=36 elapsed_ms=0.008458
+FRAME_SCOPE frame=12 scope=39 elapsed_ms=0.075917
+FRAME_SCOPE frame=12 scope=41 elapsed_ms=0.002916
+FRAME_CACHE frame=12 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=12 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=12 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=12 draws=9 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=12 rebuilt_cells=0
+FRAME_DEVICE frame=13 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=89125 capture_cpu_ns=919542 capture_drops=0
+FRAME mode=2D no clouds frame=13 elapsed_ms=1.134375 process_cpu_ms=0.328000
+FRAME_SCOPE frame=13 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=13 scope=36 elapsed_ms=0.008917
+FRAME_SCOPE frame=13 scope=39 elapsed_ms=0.078458
+FRAME_SCOPE frame=13 scope=41 elapsed_ms=0.002792
+FRAME_CACHE frame=13 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=13 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=13 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=13 draws=10 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=13 rebuilt_cells=0
+FRAME_DEVICE frame=14 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=101125 capture_cpu_ns=1261125 capture_drops=0
+FRAME mode=2D no clouds frame=14 elapsed_ms=1.493208 process_cpu_ms=0.381000
+FRAME_SCOPE frame=14 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=14 scope=36 elapsed_ms=0.008541
+FRAME_SCOPE frame=14 scope=39 elapsed_ms=0.081625
+FRAME_SCOPE frame=14 scope=41 elapsed_ms=0.003084
+FRAME_CACHE frame=14 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=14 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=14 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=14 draws=11 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=14 rebuilt_cells=0
+FRAME_DEVICE frame=15 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=74584 capture_cpu_ns=4823041 capture_drops=0
+FRAME mode=2D no clouds frame=15 elapsed_ms=5.051958 process_cpu_ms=0.475000
+FRAME_SCOPE frame=15 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=15 scope=36 elapsed_ms=0.012333
+FRAME_SCOPE frame=15 scope=39 elapsed_ms=0.096667
+FRAME_SCOPE frame=15 scope=41 elapsed_ms=0.005375
+FRAME_CACHE frame=15 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=15 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=15 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=15 draws=12 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=15 rebuilt_cells=0
+FRAME_DEVICE frame=16 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=64459 capture_cpu_ns=1417041 capture_drops=0
+FRAME mode=2D no clouds frame=16 elapsed_ms=1.605458 process_cpu_ms=0.292000
+FRAME_SCOPE frame=16 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=16 scope=36 elapsed_ms=0.011584
+FRAME_SCOPE frame=16 scope=39 elapsed_ms=0.076250
+FRAME_SCOPE frame=16 scope=41 elapsed_ms=0.002000
+FRAME_CACHE frame=16 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=16 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=16 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=16 draws=13 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=16 rebuilt_cells=0
+FRAME_DEVICE frame=17 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=60459 capture_cpu_ns=874750 capture_drops=0
+FRAME mode=2D no clouds frame=17 elapsed_ms=1.036042 process_cpu_ms=0.252000
+FRAME_SCOPE frame=17 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=17 scope=36 elapsed_ms=0.005208
+FRAME_SCOPE frame=17 scope=39 elapsed_ms=0.072750
+FRAME_SCOPE frame=17 scope=41 elapsed_ms=0.002375
+FRAME_CACHE frame=17 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=17 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=17 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=17 draws=14 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=17 rebuilt_cells=0
+FRAME_DEVICE frame=18 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=119000 capture_cpu_ns=1083875 capture_drops=0
+FRAME mode=2D no clouds frame=18 elapsed_ms=1.303458 process_cpu_ms=0.367000
+FRAME_SCOPE frame=18 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=18 scope=36 elapsed_ms=0.006458
+FRAME_SCOPE frame=18 scope=39 elapsed_ms=0.073375
+FRAME_SCOPE frame=18 scope=41 elapsed_ms=0.001792
+FRAME_CACHE frame=18 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=18 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=18 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=18 draws=15 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=18 rebuilt_cells=0
+FRAME_DEVICE frame=19 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=47708 capture_cpu_ns=841916 capture_drops=0
+FRAME mode=2D no clouds frame=19 elapsed_ms=0.990167 process_cpu_ms=0.258000
+FRAME_SCOPE frame=19 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=19 scope=36 elapsed_ms=0.006083
+FRAME_SCOPE frame=19 scope=39 elapsed_ms=0.074666
+FRAME_SCOPE frame=19 scope=41 elapsed_ms=0.001625
+FRAME_CACHE frame=19 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=19 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=19 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=19 draws=16 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=19 rebuilt_cells=0
+FRAME_DEVICE frame=20 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=56000 capture_cpu_ns=5237166 capture_drops=0
+FRAME mode=2D no clouds frame=20 elapsed_ms=5.408708 process_cpu_ms=0.352000
+FRAME_SCOPE frame=20 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=20 scope=36 elapsed_ms=0.007292
+FRAME_SCOPE frame=20 scope=39 elapsed_ms=0.080750
+FRAME_SCOPE frame=20 scope=41 elapsed_ms=0.001791
+FRAME_CACHE frame=20 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=20 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=20 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=20 draws=17 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=20 rebuilt_cells=0
+FRAME_DEVICE frame=21 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=95208 capture_cpu_ns=929958 capture_drops=0
+FRAME mode=2D no clouds frame=21 elapsed_ms=1.151125 process_cpu_ms=0.305000
+FRAME_SCOPE frame=21 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=21 scope=36 elapsed_ms=0.008500
+FRAME_SCOPE frame=21 scope=39 elapsed_ms=0.076083
+FRAME_SCOPE frame=21 scope=41 elapsed_ms=0.007792
+FRAME_CACHE frame=21 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=21 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=21 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=21 draws=18 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=21 rebuilt_cells=0
+FRAME_DEVICE frame=22 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=64084 capture_cpu_ns=1018083 capture_drops=0
+FRAME mode=2D no clouds frame=22 elapsed_ms=1.188667 process_cpu_ms=0.253000
+FRAME_SCOPE frame=22 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=22 scope=36 elapsed_ms=0.005917
+FRAME_SCOPE frame=22 scope=39 elapsed_ms=0.075500
+FRAME_SCOPE frame=22 scope=41 elapsed_ms=0.002250
+FRAME_CACHE frame=22 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=22 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=22 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=22 draws=19 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=22 rebuilt_cells=0
+FRAME_DEVICE frame=23 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=58625 capture_cpu_ns=865625 capture_drops=0
+FRAME mode=2D no clouds frame=23 elapsed_ms=1.022500 process_cpu_ms=0.230000
+FRAME_SCOPE frame=23 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=23 scope=36 elapsed_ms=0.005208
+FRAME_SCOPE frame=23 scope=39 elapsed_ms=0.075209
+FRAME_SCOPE frame=23 scope=41 elapsed_ms=0.002209
+FRAME_CACHE frame=23 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=23 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=23 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=23 draws=20 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=23 rebuilt_cells=0
+FRAME_DEVICE frame=24 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=53166 capture_cpu_ns=873584 capture_drops=0
+FRAME mode=2D no clouds frame=24 elapsed_ms=1.027750 process_cpu_ms=0.246000
+FRAME_SCOPE frame=24 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=24 scope=36 elapsed_ms=0.006083
+FRAME_SCOPE frame=24 scope=39 elapsed_ms=0.075500
+FRAME_SCOPE frame=24 scope=41 elapsed_ms=0.001666
+FRAME_CACHE frame=24 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=24 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=24 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=24 draws=21 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=24 rebuilt_cells=0
+FRAME_DEVICE frame=25 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=70458 capture_cpu_ns=2005458 capture_drops=0
+FRAME mode=2D no clouds frame=25 elapsed_ms=2.203917 process_cpu_ms=0.299000
+FRAME_SCOPE frame=25 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=25 scope=36 elapsed_ms=0.010417
+FRAME_SCOPE frame=25 scope=39 elapsed_ms=0.077167
+FRAME_SCOPE frame=25 scope=41 elapsed_ms=0.001875
+FRAME_CACHE frame=25 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=25 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=25 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=25 draws=22 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=25 rebuilt_cells=0
+FRAME_DEVICE frame=26 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=45583 capture_cpu_ns=651708 capture_drops=0
+FRAME mode=2D no clouds frame=26 elapsed_ms=0.797083 process_cpu_ms=0.240000
+FRAME_SCOPE frame=26 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=26 scope=36 elapsed_ms=0.005917
+FRAME_SCOPE frame=26 scope=39 elapsed_ms=0.074041
+FRAME_SCOPE frame=26 scope=41 elapsed_ms=0.001750
+FRAME_CACHE frame=26 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=26 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=26 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=26 draws=23 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=26 rebuilt_cells=0
+FRAME_DEVICE frame=27 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=40917 capture_cpu_ns=677042 capture_drops=0
+FRAME mode=2D no clouds frame=27 elapsed_ms=0.814458 process_cpu_ms=0.216000
+FRAME_SCOPE frame=27 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=27 scope=36 elapsed_ms=0.005166
+FRAME_SCOPE frame=27 scope=39 elapsed_ms=0.074917
+FRAME_SCOPE frame=27 scope=41 elapsed_ms=0.001666
+FRAME_CACHE frame=27 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=27 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=27 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=27 draws=24 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=27 rebuilt_cells=0
+FRAME_DEVICE frame=28 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=107041 capture_cpu_ns=883250 capture_drops=0
+FRAME mode=2D no clouds frame=28 elapsed_ms=1.160792 process_cpu_ms=0.371000
+FRAME_SCOPE frame=28 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=28 scope=36 elapsed_ms=0.016417
+FRAME_SCOPE frame=28 scope=39 elapsed_ms=0.101000
+FRAME_SCOPE frame=28 scope=41 elapsed_ms=0.002917
+FRAME_CACHE frame=28 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=28 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=28 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=28 draws=25 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=28 rebuilt_cells=0
+FRAME_DEVICE frame=29 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=73667 capture_cpu_ns=512875 capture_drops=0
+FRAME mode=2D no clouds frame=29 elapsed_ms=0.700792 process_cpu_ms=0.285000
+FRAME_SCOPE frame=29 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=29 scope=36 elapsed_ms=0.006208
+FRAME_SCOPE frame=29 scope=39 elapsed_ms=0.073625
+FRAME_SCOPE frame=29 scope=41 elapsed_ms=0.004750
+FRAME_CACHE frame=29 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=29 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=29 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=29 draws=26 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=29 rebuilt_cells=0
+FRAME_DEVICE frame=30 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=80125 capture_cpu_ns=589000 capture_drops=0
+FRAME mode=2D no clouds frame=30 elapsed_ms=0.787208 process_cpu_ms=0.278000
+FRAME_SCOPE frame=30 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=30 scope=36 elapsed_ms=0.006625
+FRAME_SCOPE frame=30 scope=39 elapsed_ms=0.076917
+FRAME_SCOPE frame=30 scope=41 elapsed_ms=0.004750
+FRAME_CACHE frame=30 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=30 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=30 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=30 draws=27 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=30 rebuilt_cells=0
+FRAME_DEVICE frame=31 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=89792 capture_cpu_ns=614833 capture_drops=0
+FRAME mode=2D no clouds frame=31 elapsed_ms=0.823833 process_cpu_ms=0.419000
+FRAME_SCOPE frame=31 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=31 scope=36 elapsed_ms=0.006542
+FRAME_SCOPE frame=31 scope=39 elapsed_ms=0.076834
+FRAME_SCOPE frame=31 scope=41 elapsed_ms=0.005333
+FRAME_CACHE frame=31 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=31 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=31 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=31 draws=28 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=31 rebuilt_cells=0
+FRAME_DEVICE frame=32 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=79750 capture_cpu_ns=1957958 capture_drops=0
+FRAME mode=2D no clouds frame=32 elapsed_ms=2.196167 process_cpu_ms=0.365000
+FRAME_SCOPE frame=32 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=32 scope=36 elapsed_ms=0.012042
+FRAME_SCOPE frame=32 scope=39 elapsed_ms=0.080084
+FRAME_SCOPE frame=32 scope=41 elapsed_ms=0.002791
+FRAME_CACHE frame=32 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=32 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=32 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=32 draws=29 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=32 rebuilt_cells=0
+FRAME_DEVICE frame=33 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=64500 capture_cpu_ns=3123875 capture_drops=0
+FRAME mode=2D no clouds frame=33 elapsed_ms=3.308583 process_cpu_ms=0.280000
+FRAME_SCOPE frame=33 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=33 scope=36 elapsed_ms=0.009333
+FRAME_SCOPE frame=33 scope=39 elapsed_ms=0.078666
+FRAME_SCOPE frame=33 scope=41 elapsed_ms=0.002000
+FRAME_CACHE frame=33 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=33 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=33 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=33 draws=30 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=33 rebuilt_cells=0
+FRAME_DEVICE frame=34 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=81375 capture_cpu_ns=575542 capture_drops=0
+FRAME mode=2D no clouds frame=34 elapsed_ms=0.767750 process_cpu_ms=0.304000
+FRAME_SCOPE frame=34 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=34 scope=36 elapsed_ms=0.006292
+FRAME_SCOPE frame=34 scope=39 elapsed_ms=0.076125
+FRAME_SCOPE frame=34 scope=41 elapsed_ms=0.004375
+FRAME_CACHE frame=34 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=34 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=34 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=34 draws=31 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=34 rebuilt_cells=0
+FRAME_DEVICE frame=35 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=60333 capture_cpu_ns=599959 capture_drops=0
+FRAME mode=2D no clouds frame=35 elapsed_ms=0.768250 process_cpu_ms=0.249000
+FRAME_SCOPE frame=35 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=35 scope=36 elapsed_ms=0.007125
+FRAME_SCOPE frame=35 scope=39 elapsed_ms=0.075292
+FRAME_SCOPE frame=35 scope=41 elapsed_ms=0.003917
+FRAME_CACHE frame=35 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=35 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=35 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=35 draws=32 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=35 rebuilt_cells=0
+FRAME_DEVICE frame=36 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=49417 capture_cpu_ns=618166 capture_drops=0
+FRAME mode=2D no clouds frame=36 elapsed_ms=0.760792 process_cpu_ms=0.224000
+FRAME_SCOPE frame=36 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=36 scope=36 elapsed_ms=0.004542
+FRAME_SCOPE frame=36 scope=39 elapsed_ms=0.072583
+FRAME_SCOPE frame=36 scope=41 elapsed_ms=0.001625
+FRAME_CACHE frame=36 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=36 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=36 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=36 draws=33 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=36 rebuilt_cells=0
+FRAME_DEVICE frame=37 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=39875 capture_cpu_ns=610458 capture_drops=0
+FRAME mode=2D no clouds frame=37 elapsed_ms=0.747833 process_cpu_ms=0.218000
+FRAME_SCOPE frame=37 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=37 scope=36 elapsed_ms=0.005458
+FRAME_SCOPE frame=37 scope=39 elapsed_ms=0.074958
+FRAME_SCOPE frame=37 scope=41 elapsed_ms=0.001583
+FRAME_CACHE frame=37 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=37 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=37 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=37 draws=34 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=37 rebuilt_cells=0
+FRAME_DEVICE frame=38 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=37708 capture_cpu_ns=842750 capture_drops=0
+FRAME mode=2D no clouds frame=38 elapsed_ms=0.972958 process_cpu_ms=0.251000
+FRAME_SCOPE frame=38 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=38 scope=36 elapsed_ms=0.004000
+FRAME_SCOPE frame=38 scope=39 elapsed_ms=0.073500
+FRAME_SCOPE frame=38 scope=41 elapsed_ms=0.001583
+FRAME_CACHE frame=38 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=38 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=38 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=38 draws=35 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=38 rebuilt_cells=0
+FRAME_DEVICE frame=39 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=65542 capture_cpu_ns=593542 capture_drops=0
+FRAME mode=2D no clouds frame=39 elapsed_ms=0.753417 process_cpu_ms=0.234000
+FRAME_SCOPE frame=39 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=39 scope=36 elapsed_ms=0.004375
+FRAME_SCOPE frame=39 scope=39 elapsed_ms=0.073708
+FRAME_SCOPE frame=39 scope=41 elapsed_ms=0.002042
+FRAME_CACHE frame=39 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=39 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=39 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=39 draws=36 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=39 rebuilt_cells=0
+FRAME_DEVICE frame=40 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=62250 capture_cpu_ns=919000 capture_drops=0
+FRAME mode=2D no clouds frame=40 elapsed_ms=1.082042 process_cpu_ms=0.323000
+FRAME_SCOPE frame=40 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=40 scope=36 elapsed_ms=0.005083
+FRAME_SCOPE frame=40 scope=39 elapsed_ms=0.074250
+FRAME_SCOPE frame=40 scope=41 elapsed_ms=0.003250
+FRAME_CACHE frame=40 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=40 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=40 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=40 draws=37 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=40 rebuilt_cells=0
+FRAME_DEVICE frame=41 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=62459 capture_cpu_ns=3683709 capture_drops=0
+FRAME mode=2D no clouds frame=41 elapsed_ms=3.866917 process_cpu_ms=0.338000
+FRAME_SCOPE frame=41 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=41 scope=36 elapsed_ms=0.010292
+FRAME_SCOPE frame=41 scope=39 elapsed_ms=0.075875
+FRAME_SCOPE frame=41 scope=41 elapsed_ms=0.002167
+FRAME_CACHE frame=41 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=41 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=41 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=41 draws=38 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=41 rebuilt_cells=0
+FRAME_DEVICE frame=42 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=89500 capture_cpu_ns=985917 capture_drops=0
+FRAME mode=2D no clouds frame=42 elapsed_ms=1.184917 process_cpu_ms=0.320000
+FRAME_SCOPE frame=42 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=42 scope=36 elapsed_ms=0.005292
+FRAME_SCOPE frame=42 scope=39 elapsed_ms=0.073125
+FRAME_SCOPE frame=42 scope=41 elapsed_ms=0.004166
+FRAME_CACHE frame=42 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=42 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=42 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=42 draws=39 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=42 rebuilt_cells=0
+FRAME_DEVICE frame=43 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=87583 capture_cpu_ns=835333 capture_drops=0
+FRAME mode=2D no clouds frame=43 elapsed_ms=1.042833 process_cpu_ms=0.287000
+FRAME_SCOPE frame=43 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=43 scope=36 elapsed_ms=0.008916
+FRAME_SCOPE frame=43 scope=39 elapsed_ms=0.077083
+FRAME_SCOPE frame=43 scope=41 elapsed_ms=0.003208
+FRAME_CACHE frame=43 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=43 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=43 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=43 draws=40 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=43 rebuilt_cells=0
+FRAME_DEVICE frame=44 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=58375 capture_cpu_ns=950291 capture_drops=0
+FRAME mode=2D no clouds frame=44 elapsed_ms=1.125292 process_cpu_ms=0.264000
+FRAME_SCOPE frame=44 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=44 scope=36 elapsed_ms=0.006750
+FRAME_SCOPE frame=44 scope=39 elapsed_ms=0.082791
+FRAME_SCOPE frame=44 scope=41 elapsed_ms=0.003250
+FRAME_CACHE frame=44 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=44 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=44 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=44 draws=41 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=44 rebuilt_cells=0
+FRAME_DEVICE frame=45 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=52791 capture_cpu_ns=870083 capture_drops=0
+FRAME mode=2D no clouds frame=45 elapsed_ms=1.024750 process_cpu_ms=0.238000
+FRAME_SCOPE frame=45 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=45 scope=36 elapsed_ms=0.005542
+FRAME_SCOPE frame=45 scope=39 elapsed_ms=0.075458
+FRAME_SCOPE frame=45 scope=41 elapsed_ms=0.002375
+FRAME_CACHE frame=45 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=45 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=45 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=45 draws=42 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=45 rebuilt_cells=0
+FRAME_DEVICE frame=46 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=45792 capture_cpu_ns=866458 capture_drops=0
+FRAME mode=2D no clouds frame=46 elapsed_ms=1.010500 process_cpu_ms=0.249000
+FRAME_SCOPE frame=46 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=46 scope=36 elapsed_ms=0.005791
+FRAME_SCOPE frame=46 scope=39 elapsed_ms=0.075083
+FRAME_SCOPE frame=46 scope=41 elapsed_ms=0.001584
+FRAME_CACHE frame=46 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=46 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=46 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=46 draws=43 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=46 rebuilt_cells=0
+FRAME_DEVICE frame=47 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=213500 capture_cpu_ns=5001625 capture_drops=0
+FRAME mode=2D no clouds frame=47 elapsed_ms=5.346542 process_cpu_ms=0.482000
+FRAME_SCOPE frame=47 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=47 scope=36 elapsed_ms=0.010333
+FRAME_SCOPE frame=47 scope=39 elapsed_ms=0.078958
+FRAME_SCOPE frame=47 scope=41 elapsed_ms=0.001875
+FRAME_CACHE frame=47 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=47 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=47 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=47 draws=44 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=47 rebuilt_cells=0
+FRAME_DEVICE frame=48 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=90125 capture_cpu_ns=837458 capture_drops=0
+FRAME mode=2D no clouds frame=48 elapsed_ms=1.047292 process_cpu_ms=0.300000
+FRAME_SCOPE frame=48 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=48 scope=36 elapsed_ms=0.008041
+FRAME_SCOPE frame=48 scope=39 elapsed_ms=0.075292
+FRAME_SCOPE frame=48 scope=41 elapsed_ms=0.004209
+FRAME_CACHE frame=48 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=48 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=48 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=48 draws=45 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=48 rebuilt_cells=0
+FRAME_DEVICE frame=49 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=91750 capture_cpu_ns=921875 capture_drops=0
+FRAME mode=2D no clouds frame=49 elapsed_ms=1.129833 process_cpu_ms=0.368000
+FRAME_SCOPE frame=49 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=49 scope=36 elapsed_ms=0.005542
+FRAME_SCOPE frame=49 scope=39 elapsed_ms=0.077666
+FRAME_SCOPE frame=49 scope=41 elapsed_ms=0.003917
+FRAME_CACHE frame=49 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=49 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=49 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=49 draws=46 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=49 rebuilt_cells=0
+FRAME_DEVICE frame=50 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=98083 capture_cpu_ns=2717875 capture_drops=0
+FRAME mode=2D no clouds frame=50 elapsed_ms=2.957625 process_cpu_ms=0.371000
+FRAME_SCOPE frame=50 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=50 scope=36 elapsed_ms=0.013625
+FRAME_SCOPE frame=50 scope=39 elapsed_ms=0.083459
+FRAME_SCOPE frame=50 scope=41 elapsed_ms=0.002291
+FRAME_CACHE frame=50 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=50 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=50 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=50 draws=47 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=50 rebuilt_cells=0
+FRAME_DEVICE frame=51 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=64208 capture_cpu_ns=5003458 capture_drops=0
+FRAME mode=2D no clouds frame=51 elapsed_ms=5.190000 process_cpu_ms=0.449000
+FRAME_SCOPE frame=51 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=51 scope=36 elapsed_ms=0.009000
+FRAME_SCOPE frame=51 scope=39 elapsed_ms=0.083542
+FRAME_SCOPE frame=51 scope=41 elapsed_ms=0.001792
+FRAME_CACHE frame=51 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=51 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=51 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=51 draws=48 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=51 rebuilt_cells=0
+FRAME_DEVICE frame=52 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=83875 capture_cpu_ns=950709 capture_drops=0
+FRAME mode=2D no clouds frame=52 elapsed_ms=1.161417 process_cpu_ms=0.296000
+FRAME_SCOPE frame=52 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=52 scope=36 elapsed_ms=0.009666
+FRAME_SCOPE frame=52 scope=39 elapsed_ms=0.077500
+FRAME_SCOPE frame=52 scope=41 elapsed_ms=0.002500
+FRAME_CACHE frame=52 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=52 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=52 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=52 draws=49 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=52 rebuilt_cells=0
+FRAME_DEVICE frame=53 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=73750 capture_cpu_ns=876792 capture_drops=0
+FRAME mode=2D no clouds frame=53 elapsed_ms=1.056583 process_cpu_ms=0.278000
+FRAME_SCOPE frame=53 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=53 scope=36 elapsed_ms=0.005458
+FRAME_SCOPE frame=53 scope=39 elapsed_ms=0.073458
+FRAME_SCOPE frame=53 scope=41 elapsed_ms=0.002833
+FRAME_CACHE frame=53 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=53 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=53 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=53 draws=50 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=53 rebuilt_cells=0
+FRAME_DEVICE frame=54 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=57791 capture_cpu_ns=1093750 capture_drops=0
+FRAME mode=2D no clouds frame=54 elapsed_ms=1.258542 process_cpu_ms=0.259000
+FRAME_SCOPE frame=54 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=54 scope=36 elapsed_ms=0.006542
+FRAME_SCOPE frame=54 scope=39 elapsed_ms=0.074750
+FRAME_SCOPE frame=54 scope=41 elapsed_ms=0.002375
+FRAME_CACHE frame=54 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=54 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=54 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=54 draws=51 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=54 rebuilt_cells=0
+FRAME_DEVICE frame=55 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=46000 capture_cpu_ns=941083 capture_drops=0
+FRAME mode=2D no clouds frame=55 elapsed_ms=1.086750 process_cpu_ms=0.280000
+FRAME_SCOPE frame=55 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=55 scope=36 elapsed_ms=0.005917
+FRAME_SCOPE frame=55 scope=39 elapsed_ms=0.075625
+FRAME_SCOPE frame=55 scope=41 elapsed_ms=0.001667
+FRAME_CACHE frame=55 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=55 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=55 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=55 draws=52 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=55 rebuilt_cells=0
+FRAME_DEVICE frame=56 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=63250 capture_cpu_ns=5074292 capture_drops=0
+FRAME mode=2D no clouds frame=56 elapsed_ms=5.254667 process_cpu_ms=0.348000
+FRAME_SCOPE frame=56 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=56 scope=36 elapsed_ms=0.008084
+FRAME_SCOPE frame=56 scope=39 elapsed_ms=0.076750
+FRAME_SCOPE frame=56 scope=41 elapsed_ms=0.001958
+FRAME_CACHE frame=56 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=56 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=56 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=56 draws=53 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=56 rebuilt_cells=0
+FRAME_DEVICE frame=57 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=86375 capture_cpu_ns=913541 capture_drops=0
+FRAME mode=2D no clouds frame=57 elapsed_ms=1.136583 process_cpu_ms=0.307000
+FRAME_SCOPE frame=57 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=57 scope=36 elapsed_ms=0.009917
+FRAME_SCOPE frame=57 scope=39 elapsed_ms=0.080292
+FRAME_SCOPE frame=57 scope=41 elapsed_ms=0.004917
+FRAME_CACHE frame=57 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=57 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=57 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=57 draws=54 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=57 rebuilt_cells=0
+FRAME_DEVICE frame=58 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=164208 capture_cpu_ns=1434125 capture_drops=0
+FRAME mode=2D no clouds frame=58 elapsed_ms=1.768208 process_cpu_ms=0.422000
+FRAME_SCOPE frame=58 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=58 scope=36 elapsed_ms=0.011542
+FRAME_SCOPE frame=58 scope=39 elapsed_ms=0.104416
+FRAME_SCOPE frame=58 scope=41 elapsed_ms=0.002375
+FRAME_CACHE frame=58 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=58 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=58 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=58 draws=55 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=58 rebuilt_cells=0
+FRAME_DEVICE frame=59 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=64583 capture_cpu_ns=992875 capture_drops=0
+FRAME mode=2D no clouds frame=59 elapsed_ms=1.166250 process_cpu_ms=0.368000
+FRAME_SCOPE frame=59 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=59 scope=36 elapsed_ms=0.007583
+FRAME_SCOPE frame=59 scope=39 elapsed_ms=0.074042
+FRAME_SCOPE frame=59 scope=41 elapsed_ms=0.004167
+FRAME_CACHE frame=59 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=59 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=59 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=59 draws=56 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=59 rebuilt_cells=0
+FRAME_DEVICE frame=60 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=44583 capture_cpu_ns=985334 capture_drops=0
+FRAME mode=2D no clouds frame=60 elapsed_ms=1.129417 process_cpu_ms=0.257000
+FRAME_SCOPE frame=60 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=60 scope=36 elapsed_ms=0.005459
+FRAME_SCOPE frame=60 scope=39 elapsed_ms=0.073083
+FRAME_SCOPE frame=60 scope=41 elapsed_ms=0.002917
+FRAME_CACHE frame=60 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=60 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=60 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=60 draws=57 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=60 rebuilt_cells=0
+FRAME_DEVICE frame=61 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=56292 capture_cpu_ns=5120333 capture_drops=0
+FRAME mode=2D no clouds frame=61 elapsed_ms=5.291083 process_cpu_ms=0.410000
+FRAME_SCOPE frame=61 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=61 scope=36 elapsed_ms=0.007125
+FRAME_SCOPE frame=61 scope=39 elapsed_ms=0.080583
+FRAME_SCOPE frame=61 scope=41 elapsed_ms=0.001750
+FRAME_CACHE frame=61 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=61 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=61 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=61 draws=58 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=61 rebuilt_cells=0
+FRAME_DEVICE frame=62 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=55125 capture_cpu_ns=1135916 capture_drops=0
+FRAME mode=2D no clouds frame=62 elapsed_ms=1.300208 process_cpu_ms=0.253000
+FRAME_SCOPE frame=62 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=62 scope=36 elapsed_ms=0.005875
+FRAME_SCOPE frame=62 scope=39 elapsed_ms=0.080625
+FRAME_SCOPE frame=62 scope=41 elapsed_ms=0.001875
+FRAME_CACHE frame=62 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=62 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=62 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=62 draws=59 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=62 rebuilt_cells=0
+FRAME_DEVICE frame=63 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=70417 capture_cpu_ns=862125 capture_drops=0
+FRAME mode=2D no clouds frame=63 elapsed_ms=1.050000 process_cpu_ms=0.279000
+FRAME_SCOPE frame=63 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=63 scope=36 elapsed_ms=0.007166
+FRAME_SCOPE frame=63 scope=39 elapsed_ms=0.081208
+FRAME_SCOPE frame=63 scope=41 elapsed_ms=0.004334
+FRAME_CACHE frame=63 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=63 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=63 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=63 draws=60 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=63 rebuilt_cells=0
+FRAME_DEVICE frame=64 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=43416 capture_cpu_ns=1022250 capture_drops=0
+FRAME mode=2D no clouds frame=64 elapsed_ms=1.163208 process_cpu_ms=0.226000
+FRAME_SCOPE frame=64 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=64 scope=36 elapsed_ms=0.005042
+FRAME_SCOPE frame=64 scope=39 elapsed_ms=0.076000
+FRAME_SCOPE frame=64 scope=41 elapsed_ms=0.001625
+FRAME_CACHE frame=64 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=64 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=64 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=64 draws=61 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=64 rebuilt_cells=0
+FRAME_DEVICE frame=65 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=45292 capture_cpu_ns=982000 capture_drops=0
+FRAME mode=2D no clouds frame=65 elapsed_ms=1.127250 process_cpu_ms=0.259000
+FRAME_SCOPE frame=65 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=65 scope=36 elapsed_ms=0.005666
+FRAME_SCOPE frame=65 scope=39 elapsed_ms=0.076208
+FRAME_SCOPE frame=65 scope=41 elapsed_ms=0.002041
+FRAME_CACHE frame=65 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=65 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=65 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=65 draws=62 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=65 rebuilt_cells=0
+FRAME_DEVICE frame=66 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=70958 capture_cpu_ns=5091292 capture_drops=0
+FRAME mode=2D no clouds frame=66 elapsed_ms=5.279458 process_cpu_ms=0.324000
+FRAME_SCOPE frame=66 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=66 scope=36 elapsed_ms=0.009375
+FRAME_SCOPE frame=66 scope=39 elapsed_ms=0.077625
+FRAME_SCOPE frame=66 scope=41 elapsed_ms=0.002292
+FRAME_CACHE frame=66 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=66 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=66 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=66 draws=63 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=66 rebuilt_cells=0
+FRAME_DEVICE frame=67 packets=2 batches=2 upload_bytes=0 resource_bytes=21371821 submit_cpu_ns=84750 capture_cpu_ns=833208 capture_drops=0
+FRAME mode=2D no clouds frame=67 elapsed_ms=1.041125 process_cpu_ms=0.286000
+FRAME_SCOPE frame=67 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=67 scope=36 elapsed_ms=0.009083
+FRAME_SCOPE frame=67 scope=39 elapsed_ms=0.077583
+FRAME_SCOPE frame=67 scope=41 elapsed_ms=0.004125
+FRAME_CACHE frame=67 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=12 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=67 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=67 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=67 draws=64 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=67 rebuilt_cells=0
+FRAME_DEVICE frame=68 packets=5 batches=5 upload_bytes=0 resource_bytes=21372397 submit_cpu_ns=67667 capture_cpu_ns=2645417 capture_drops=0
+FRAME mode=2D no clouds frame=68 elapsed_ms=4.350708 process_cpu_ms=1.799000
+FRAME_SCOPE frame=68 scope=37 elapsed_ms=1.515625
+FRAME_SCOPE frame=68 scope=36 elapsed_ms=0.008875
+FRAME_SCOPE frame=68 scope=39 elapsed_ms=0.083250
+FRAME_SCOPE frame=68 scope=41 elapsed_ms=0.002417
+FRAME_CACHE frame=68 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=16 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=68 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=68 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=68 draws=64 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=68 rebuilt_cells=0
+FRAME_DEVICE frame=69 packets=5 batches=5 upload_bytes=0 resource_bytes=21372397 submit_cpu_ns=53917 capture_cpu_ns=787500 capture_drops=0
+FRAME mode=2D no clouds frame=69 elapsed_ms=2.190000 process_cpu_ms=1.547000
+FRAME_SCOPE frame=69 scope=37 elapsed_ms=1.241167
+FRAME_SCOPE frame=69 scope=36 elapsed_ms=0.005542
+FRAME_SCOPE frame=69 scope=39 elapsed_ms=0.074292
+FRAME_SCOPE frame=69 scope=41 elapsed_ms=0.001750
+FRAME_CACHE frame=69 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=20 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=69 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=69 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=69 draws=64 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=69 rebuilt_cells=0
+FRAME_DEVICE frame=70 packets=5 batches=5 upload_bytes=0 resource_bytes=21372397 submit_cpu_ns=45834 capture_cpu_ns=3423875 capture_drops=0
+FRAME mode=2D no clouds frame=70 elapsed_ms=4.795125 process_cpu_ms=1.655000
+FRAME_SCOPE frame=70 scope=37 elapsed_ms=1.220542
+FRAME_SCOPE frame=70 scope=36 elapsed_ms=0.005375
+FRAME_SCOPE frame=70 scope=39 elapsed_ms=0.073333
+FRAME_SCOPE frame=70 scope=41 elapsed_ms=0.001750
+FRAME_CACHE frame=70 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=24 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=70 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=70 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=70 draws=64 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=70 rebuilt_cells=0
+FRAME_DEVICE frame=71 packets=5 batches=5 upload_bytes=0 resource_bytes=21372397 submit_cpu_ns=63875 capture_cpu_ns=620500 capture_drops=0
+FRAME mode=2D no clouds frame=71 elapsed_ms=2.146125 process_cpu_ms=1.674000
+FRAME_SCOPE frame=71 scope=37 elapsed_ms=1.359167
+FRAME_SCOPE frame=71 scope=36 elapsed_ms=0.006750
+FRAME_SCOPE frame=71 scope=39 elapsed_ms=0.073208
+FRAME_SCOPE frame=71 scope=41 elapsed_ms=0.001791
+FRAME_CACHE frame=71 bytes=9462832 texture_bytes=4194304 mask_bytes=0 rebuilds=4 hits=28 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=71 direct_bytes=3766272 page_bytes=4194304 page_retained_bytes=9462832 peak_texture_bytes=7960576
+FRAME_RESOURCE_ROWS frame=71 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_DIRECT_TERRAIN frame=71 draws=64 texture_bytes=3766272 uploaded_bytes=3766272
+FRAME_DIRECT_DISCOVERY frame=71 rebuilt_cells=0
+COMPLETION_SUMMARY mode=2D no clouds completed=72 attempts=72 intentional_holds=0 admission_deferrals=0 completed_per_second=26.324981
+WARMUP_COMPLETION_SUMMARY mode=2D no clouds completed=0 attempts=0 intentional_holds=0 admission_deferrals=0
+terrain_hd mode=2D no clouds prepares=12 fallback_prepares=0 warmup_prepares=0 warmup_fallback_prepares=0
+2D no clouds median=1.161 ms p95=5.347 ms
+2D no clouds p99=2385.965 ms max=2385.965 ms
+2D no clouds submission_cpu_median=0.190 ms submission_cpu_p95=1.574 ms
+2D no clouds process_cpu_median=0.303 ms process_cpu_p95=1.674 ms
+draw_calls=0 texture_bytes=0
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.skins.prepare thread=main calls=72 samples=72 stride=1 mean_ns=212.34722222222223 stddev_ns=127.33934974030589 max_ns=500 observed_total_ns=15289 m2_ns2=1167502.3194444438 total_ns=15289 cpu_samples=0 cpu_total_ns=na p50_ns=255 p95_ns=500 p99_ns=500 histogram="0,0,0,0,0,0,7,21,22,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=15289 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.terrain thread=main calls=72 samples=72 stride=1 mean_ns=2918099.4999999991 stddev_ns=24525103.293894071 max_ns=209570292 observed_total_ns=210103164 m2_ns2=43306609793484512 total_ns=210103164 cpu_samples=0 cpu_total_ns=na p50_ns=8191 p95_ns=16383 p99_ns=209570292 histogram="0,0,0,0,0,0,0,0,0,0,0,0,1,46,23,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=210103164 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.terrain_cache thread=main calls=8 samples=8 stride=1 mean_ns=7668036.6250000019 stddev_ns=17317579.920077905 max_ns=53479584 observed_total_ns=61344293 m2_ns2=2399188594306284 total_ns=61344293 cpu_samples=0 cpu_total_ns=na p50_ns=2097151 p95_ns=53479584 p99_ns=53479584 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,5,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=48902127 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.resources thread=main calls=72 samples=72 stride=1 mean_ns=31946482.000000015 stddev_ns=268527727.67120385 max_ns=2294601333 observed_total_ns=2300146704 m2_ns2=5.1917141180347351e+18 total_ns=2300146704 cpu_samples=0 cpu_total_ns=na p50_ns=131071 p95_ns=131071 p99_ns=2294601333 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,71,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=2300146704 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.buildings thread=main calls=72 samples=72 stride=1 mean_ns=2202.6111111111099 stddev_ns=613.82022240400238 max_ns=4417 observed_total_ns=158588 m2_ns2=27127819.111111119 total_ns=158588 cpu_samples=0 cpu_total_ns=na p50_ns=4095 p95_ns=4095 p99_ns=4417 histogram="0,0,0,0,0,0,0,0,0,0,0,34,37,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=158588 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.ground_units thread=main calls=72 samples=72 stride=1 mean_ns=2730.9305555555552 stddev_ns=1222.5413572462362 max_ns=7792 observed_total_ns=196627 m2_ns2=107611730.65277779 total_ns=196627 cpu_samples=0 cpu_total_ns=na p50_ns=4095 p95_ns=7792 p99_ns=7792 histogram="0,0,0,0,0,0,0,0,0,0,0,30,29,13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=196627 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.air_units thread=main calls=72 samples=72 stride=1 mean_ns=1596.1666666666665 stddev_ns=141.13527789559444 max_ns=2417 observed_total_ns=114924 m2_ns2=1434180.0000000005 total_ns=114924 cpu_samples=0 cpu_total_ns=na p50_ns=2047 p95_ns=2047 p99_ns=2417 histogram="0,0,0,0,0,0,0,0,0,0,0,71,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=114924 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.fog thread=main calls=72 samples=72 stride=1 mean_ns=40.500000000000014 stddev_ns=37.39095255985508 max_ns=125 observed_total_ns=2916 m2_ns2=100661.99999999999 total_ns=2916 cpu_samples=0 cpu_total_ns=na p50_ns=63 p95_ns=125 p99_ns=125 histogram="22,0,0,0,0,0,38,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=2916 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.effects thread=main calls=72 samples=72 stride=1 mean_ns=1713.5 stddev_ns=740.58042177140442 max_ns=6000 observed_total_ns=123372 m2_ns2=39489074.000000007 total_ns=123372 cpu_samples=0 cpu_total_ns=na p50_ns=2047 p95_ns=4095 p99_ns=6000 histogram="0,0,0,0,0,0,0,0,0,0,9,47,15,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=123372 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.overlay thread=main calls=144 samples=144 stride=1 mean_ns=57.006944444444457 stddev_ns=115.17598228892658 max_ns=1084 observed_total_ns=8209 m2_ns2=1910232.9930555546 total_ns=8209 cpu_samples=0 cpu_total_ns=na p50_ns=63 p95_ns=127 p99_ns=1023 histogram="33,0,0,0,0,0,94,10,3,1,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=8209 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.terrain_materials thread=main calls=8 samples=8 stride=1 mean_ns=1555270.75 stddev_ns=1246753.2356947935 max_ns=4763166 observed_total_ns=12442166 m2_ns2=12435149045723.498 total_ns=12442166 cpu_samples=0 cpu_total_ns=na p50_ns=2097151 p95_ns=4763166 p99_ns=4763166 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,5,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=12442166 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2830740291 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=budgets work.count=0 work.overruns=0 work.excess_ns=0 work.worst_ns=0 work.longest_streak=0 presentation.count=0 presentation.overruns=0 presentation.excess_ns=0 presentation.worst_ns=0 presentation.longest_streak=0 tick.count=0 tick.overruns=0 tick.excess_ns=0 tick.worst_ns=0 tick.longest_streak=0 saved_total=0 failed_total=0 superseded_total=0 dropped_scope_samples=0 dropped_actor_records=0
+simulation_checksum=42126f39

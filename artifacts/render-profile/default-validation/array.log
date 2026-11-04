@@ -1,0 +1,44 @@
+BACKEND requested=legacy-gl active=legacy-gl fallback_reason=
+BENCH_CAPABILITIES torus=1 skin_materials=1 async_capture=0 terrain_composition=0 gpu_timing=0 max_texture=0
+GL_ARRAY_CHURN cycle=0 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=0 free=48 bytes=16777216
+GL_ARRAY_CHURN cycle=1 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=16 free=32 bytes=16777216
+GL_ARRAY_CHURN cycle=2 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=32 free=16 bytes=16777216
+GL_ARRAY_CHURN cycle=3 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=48 free=0 bytes=16777216
+GL_ARRAY_CHURN cycle=4 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=64 free=48 bytes=33554432
+GL_ARRAY_CHURN cycle=5 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=80 free=32 bytes=33554432
+GL_ARRAY_CHURN cycle=6 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=96 free=16 bytes=33554432
+GL_ARRAY_CHURN cycle=7 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=112 free=0 bytes=33554432
+GL_ARRAY_CHURN cycle=8 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=128 free=48 bytes=50331648
+GL_ARRAY_CHURN cycle=9 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=144 free=32 bytes=50331648
+GL_ARRAY_CHURN cycle=10 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=160 free=16 bytes=50331648
+GL_ARRAY_CHURN cycle=11 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=176 free=0 bytes=50331648
+GL_ARRAY_CHURN cycle=12 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=192 free=48 bytes=67108864
+GL_ARRAY_CHURN cycle=13 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=208 free=32 bytes=67108864
+GL_ARRAY_CHURN cycle=14 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=224 free=16 bytes=67108864
+GL_ARRAY_CHURN cycle=15 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=240 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=16 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=192 free=48 bytes=67108864
+GL_ARRAY_CHURN cycle=17 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=208 free=32 bytes=67108864
+GL_ARRAY_CHURN cycle=18 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=224 free=16 bytes=67108864
+GL_ARRAY_CHURN cycle=19 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=240 free=0 bytes=67108864
+GL_ARRAY_CHURN cycle=20 promoted=16 sources=16
+GL_ARRAY_RESIDENCY live=16 retired=192 free=48 bytes=67108864
