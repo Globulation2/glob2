@@ -385,6 +385,38 @@ def contents(root, name, path, substitutes, source=None):
     return (tree / path).read_bytes()
 
 
+def hd_index_blocks(path, data, groups):
+    """Split an HD index by logical layer, leaving unpacked layers in a shared block."""
+    header, *lines = data.splitlines()
+    if header != b'GLOB2_HIGHRES 2':
+        raise ValueError(f'invalid packed HD index header: {path}')
+    rows = {}
+    for line in lines:
+        fields = line.split()
+        if len(fields) != 6 or fields[0] in rows:
+            raise ValueError(f'invalid packed HD index row: {path}')
+        rows[fields[0]] = fields
+    blocks, packed = [], set()
+    for layer, ids in groups:
+        if layer not in (4, 5):
+            raise ValueError(f'invalid packed HD index layer: {path}')
+        block = [header + b'\n'] if path.endswith('.frames') else []
+        for ident in ids:
+            fields = rows.get(ident.encode())
+            if fields is None or not fields[layer].startswith(b'@'):
+                raise ValueError(f'invalid packed HD index reference: {path}: {ident}')
+            refs = [b'-', b'-']
+            refs[layer - 4], fields[layer] = fields[layer], b'-'
+            block.append(b' '.join(fields[:4] + refs) + b'\n')
+            packed.add(fields[0])
+        blocks.append(b''.join(block))
+    remaining = [b' '.join(fields) + b'\n' for ident, fields in rows.items()
+                 if ident not in packed or fields[4:] != [b'-', b'-']]
+    if remaining:
+        blocks.append(b''.join(remaining))
+    return blocks
+
+
 def write_packages(root, output, source=None):
     """Write assets/<package>[-<part>].<hash>.data under output; return the manifest."""
     root, output = Path(root), Path(output)
@@ -393,6 +425,7 @@ def write_packages(root, output, source=None):
     packages, _, substitutes = plan(root, source)
     sprite_groups = {}
     sprite_indexes = {}
+    hd_indexes = {}
     if source:
         try:
             audit = json.loads(Path(source).with_suffix('.json').read_text())
@@ -400,11 +433,15 @@ def write_packages(root, output, source=None):
                              for item in audit.get('files', []) if 'sprite_group' in item}
             sprite_indexes = {item['output']: item['sprite_index_groups']
                               for item in audit.get('files', []) if 'sprite_index_groups' in item}
+            hd_indexes = {item['output']: item['sprite_hd_index_groups']
+                          for item in audit.get('files', []) if item.get('sprite_hd_index_groups')}
         except (OSError, ValueError):
             pass
     manifest, written = {'version': MANIFEST_VERSION, 'packages': []}, set()
     for name, paths in packages.items():
         data = {path: contents(root, name, path, substitutes, source) for path in paths}
+        hd_fragments = {path: hd_index_blocks(path, data[path], hd_indexes[path])
+                        for path in paths if path in hd_indexes}
         fragments = {}
         for path in paths:
             counts = sprite_indexes.get(path)
@@ -418,7 +455,7 @@ def write_packages(root, output, source=None):
             for count in counts:
                 fragments[path].append(b''.join(rows[offset:offset + count]))
                 offset += count
-        paths = [path for path in paths if path not in fragments]
+        paths = [path for path in paths if path not in fragments and path not in hd_fragments]
         sizes = {path: len(value) for path, value in data.items()}
         if name == 'core':
             groups = [paths]
@@ -439,6 +476,10 @@ def write_packages(root, output, source=None):
         for path, blocks in fragments.items():
             for block in blocks:
                 index_parts.append((block, [['/' + path, 0, len(block), True]]))
+        for path, blocks in hd_fragments.items():
+            entry['size'] += sum(map(len, blocks)) - sizes[path]
+            for block in blocks:
+                index_parts.append((block, [['/' + path, 0, len(block), 'hd']]))
         part_count = len(groups) + len(index_parts)
         for index in range(part_count):
             if index < len(groups):

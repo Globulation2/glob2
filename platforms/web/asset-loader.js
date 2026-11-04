@@ -143,7 +143,7 @@ class Glob2AssetLoader {
   install(name, contents) {
     const entry = this.package(name);
     const directories = new Set();
-    const fragments = new Map();
+    const fragments = new Map(), hdFragments = new Map();
     const installFile = (path, bytes) => {
       const slash = path.lastIndexOf('/');
       const directory = path.slice(0, slash) || '/';
@@ -161,8 +161,9 @@ class Glob2AssetLoader {
       for (const [path, start, end, fragment] of part.files) {
         const bytes = contents[index].subarray(start, end);
         if (fragment) {
-          if (!fragments.has(path)) fragments.set(path, []);
-          fragments.get(path).push(bytes);
+          const indexes = fragment === 'hd' ? hdFragments : fragments;
+          if (!indexes.has(path)) indexes.set(path, []);
+          indexes.get(path).push(bytes);
         } else {
           installFile(path, bytes);
         }
@@ -176,6 +177,32 @@ class Glob2AssetLoader {
         offset += block.length;
       }
       installFile(path, bytes);
+    }
+    for (const [path, blocks] of hdFragments) {
+      // Each scored block supplies one layer. Rejoin layers on the logical frame ID.
+      const rows = new Map();
+      const decoder = new TextDecoder();
+      for (const block of blocks) {
+        for (const line of decoder.decode(block).split('\n')) {
+          if (!line || line === 'GLOB2_HIGHRES 2') continue;
+          const fields = line.split(' ');
+          if (fields.length !== 6) throw Error('Invalid HD sprite index row: ' + path);
+          const previous = rows.get(fields[0]);
+          if (!previous) {
+            rows.set(fields[0], fields);
+            continue;
+          }
+          if (fields.slice(1, 4).some((field, index) => field !== previous[index + 1]))
+            throw Error('Conflicting HD sprite geometry: ' + path);
+          for (let layer = 4; layer <= 5; layer++) {
+            if (fields[layer] === '-') continue;
+            if (previous[layer] !== '-') throw Error('Duplicate HD sprite layer: ' + path);
+            previous[layer] = fields[layer];
+          }
+        }
+      }
+      const index = ['GLOB2_HIGHRES 2', ...Array.from(rows.values(), row => row.join(' ')), ''];
+      installFile(path, new TextEncoder().encode(index.join('\n')));
     }
     this.states[name] = 'ready';
     this.installed.push(name);

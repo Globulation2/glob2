@@ -771,7 +771,7 @@ def _export_assets(
     terrain_selections = {}
     hd_selections = {}
     native_selections = {}
-    hd_rows, hd_groups, hd_references = [], {}, {}
+    hd_rows, hd_groups, hd_references, hd_index_groups = [], {}, {}, {}
     if optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg):
         if str(ROOT) not in sys.path:
             sys.path.insert(0, str(ROOT))
@@ -850,6 +850,11 @@ def _export_assets(
             if result["winner"] is None:
                 continue
             group = hd_groups[name]
+            if platform == "web":
+                frames = sorted(group["frames"])
+                family = Path(group["material"]["sprite"]).name if group["material"] else None
+                hd_index_groups.setdefault(family, []).append(
+                    [frames[0][2], [ident for _, ident, _, _ in frames]])
             for index, ident, layer, path in group["frames"]:
                 hd_references[ident, layer] = result["refs"].get(index, result["refs"].get(str(index)))
                 packed.add(path)
@@ -876,6 +881,7 @@ def _export_assets(
             relative = source.relative_to(content)
             blob = source
             record = dict(lossy=False)
+            audit_fields = {}
             # AppStream screenshot references are public PNG URLs, not image-loader
             # logical names. Keep their original representation on Linux.
             public_png = platform == "linux" and relative.parts[:2] == (
@@ -917,7 +923,10 @@ def _export_assets(
                         records.append(dict(source=relative.as_posix(), output=index_path.as_posix(),
                             source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
                             output_sha256=hashlib.sha256(blob).hexdigest(), source_bytes=0,
-                            output_bytes=len(blob), lossy=False, recipe=packed_sprite_assets.PACK_RECIPE))
+                            output_bytes=len(blob), lossy=False, recipe=packed_sprite_assets.PACK_RECIPE,
+                            sprite_hd_index_groups=hd_index_groups.get(family, [])))
+                    if platform == "web":
+                        audit_fields["sprite_hd_index_groups"] = hd_index_groups.get(None, [])
                 else:
                     target.write_bytes(re.sub(rb"\.png(?=\s|$)", b".webp", blob.read_bytes()))
             else:
@@ -932,6 +941,7 @@ def _export_assets(
                     output_bytes=target.stat().st_size,
                     lossy=record["lossy"],
                     recipe=record.get("recipe"),
+                    **audit_fields,
                 )
             )
         for sprite, plan in sheets.items():

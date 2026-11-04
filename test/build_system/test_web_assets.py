@@ -324,13 +324,17 @@ class WebAssetPackageTests(unittest.TestCase):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / "content" / name).read_bytes())
             (hd / "frames.txt").write_text("GLOB2_HIGHRES 2\nunit0 32 32 0 - unit.webp\n")
+            ref = "@page.h264,alpha.z,128,128,4,0,0,0,128,128"
             (hd / "terrain-grass.frames").write_text(
-                "GLOB2_HIGHRES 2\nterrain-grass0 32 32 4 @page.h264,alpha.z,128,128,4,0,0,0,128,128 unit.webp\n")
+                f"GLOB2_HIGHRES 2\nterrain-grass0 32 32 4 {ref} unit.webp\n")
             for name in ("page.h264", "alpha.z", "unit.webp"):
                 (hd / name).write_bytes(name.encode())
             source.with_suffix(".json").write_text(json.dumps({"files": [
                 {"output": f"data/highres/v1/{name}", "sprite_group": "hd/terrain-grass-base"}
                 for name in ("page.h264", "alpha.z")
+            ] + [
+                {"output": "data/highres/v1/terrain-grass.frames",
+                 "sprite_hd_index_groups": [[4, ["terrain-grass0"]]]},
             ]}))
             manifest = web_assets.write_packages(ROOT, output, source)
             packages = {entry["name"]: entry for entry in manifest["packages"]}
@@ -339,8 +343,12 @@ class WebAssetPackageTests(unittest.TestCase):
             self.assertEqual(paths("hd-terrain-grass"), {
                 "/data/highres/v1/page.h264", "/data/highres/v1/alpha.z",
                 "/data/highres/v1/terrain-grass.frames", "/data/highres/v1/unit.webp"})
-            data_parts = [part["files"] for part in packages["hd-terrain-grass"]["parts"]]
-            self.assertEqual([len(part) for part in data_parts], [2, 2])
+            data_parts = packages["hd-terrain-grass"]["parts"]
+            self.assertEqual([len(part["files"]) for part in data_parts], [2, 1, 1, 1])
+            blocks = [(output / part["url"]).read_text() for part in data_parts
+                      if part["files"][0][-1] == "hd"]
+            self.assertEqual(blocks, [f"GLOB2_HIGHRES 2\nterrain-grass0 32 32 4 {ref} -\n",
+                                      "terrain-grass0 32 32 4 - unit.webp\n"])
             self.assertTrue(packages["hd-terrain-grass"]["optional"])
 
     def test_packages_round_trip_and_are_content_addressed(self):

@@ -281,8 +281,7 @@ def score(candidate, directory, platform, sources, group):
         for part in split(paths, sizes, PART_BYTES):
             payload = b"".join((directory / name).read_bytes() for name in part)
             result["transfer_bytes"] += brotli_size(payload)
-        # Family indexes ship in their own part. For rows in a shared index,
-        # charge the independently compressed contribution of this group.
+        # The browser installs these independently compressed rows as one index.
         result["transfer_bytes"] += brotli_size(index)
     return result
 

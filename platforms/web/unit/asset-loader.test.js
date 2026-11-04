@@ -80,6 +80,20 @@ test('installs a sprite index once with its fragments in manifest order', () => 
   assert.equal(loader.state().core, 'ready');
 });
 
+test('rejoins independently scored HD layers and keeps standalone frames', () => {
+  const environment = host();
+  const assets = manifest();
+  const file = '/data/highres/v1/frames.txt';
+  const blocks = ['unit0 32 32 4 @base.webp,0,0,8,8 -\n',
+    'unit0 32 32 4 - @team.webp,0,0,8,8\n', 'unit1 32 32 4 base.webp -\n'];
+  assets.packages[1].parts = blocks.map(block => ({files: [[file, 0, block.length, 'hd']]}));
+  const loader = new Loader(assets, environment);
+  loader.install('hd', blocks.map(text));
+  assert.equal(environment.files.get(file),
+    'GLOB2_HIGHRES 2\nunit0 32 32 4 @base.webp,0,0,8,8 @team.webp,0,0,8,8\nunit1 32 32 4 base.webp -\n');
+  assert.equal(loader.state().hd, 'ready');
+});
+
 test('a later package replaces a core file and is reported once to the game', async () => {
   const replacing = manifest();
   replacing.packages.push({name:'font-cjk', optional:true, size:3, parts:[
