@@ -5734,6 +5734,10 @@ Hartkruste
 Vulkanasche
 [glacier_ice]
 Gletschereis
+[overgrown_road]
+Überwucherte Straße
+[laterite]
+Laterit
 [terrain group water]
 Wasser
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Die Aktualisierung Ihres Dauerauftrags ist fehlgeschlagen. Ihr Auftrag ist auf d
 
 [AI for all computer colonies]
 KI für alle computergesteuerten Kolonien
+[tundra]
+Tundraboden

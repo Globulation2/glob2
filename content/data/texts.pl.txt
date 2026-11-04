@@ -5734,6 +5734,10 @@ Twarda skorupa
 Popiół wulkaniczny
 [glacier_ice]
 Lód lodowcowy
+[overgrown_road]
+Zarośnięta droga
+[laterite]
+Lateryt
 [terrain group water]
 Woda
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Aktualizacja stałego rozkazu nie powiodła się. Twój rozkaz jest wstrzymany n
 
 [AI for all computer colonies]
 SI dla wszystkich kolonii sterowanych przez komputer
+[tundra]
+Gleba tundrowa

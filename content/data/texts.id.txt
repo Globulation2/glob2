@@ -5734,6 +5734,10 @@ Tanah keras
 Abu vulkanik
 [glacier_ice]
 Es gletser
+[overgrown_road]
+Jalan ditumbuhi tanaman
+[laterite]
+Laterit
 [terrain group water]
 Air
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Pembaruan perintah tetap gagal. Perintah Anda dijeda pada perangkat ini; coba la
 
 [AI for all computer colonies]
 AI untuk semua koloni yang dikendalikan komputer
+[tundra]
+Tanah tundra

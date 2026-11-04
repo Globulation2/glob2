@@ -5734,6 +5734,10 @@ Sert kabuk
 Volkanik kül
 [glacier_ice]
 Buzul buzu
+[overgrown_road]
+Otlarla kaplı yol
+[laterite]
+Laterit
 [terrain group water]
 Su
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Kalıcı emir güncellenemedi. Emriniz bu cihazda duraklatıldı; ilgili denetim
 
 [AI for all computer colonies]
 Bilgisayar kontrollü tüm koloniler için yapay zekâ
+[tundra]
+Tundra toprağı

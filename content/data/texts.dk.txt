@@ -5734,6 +5734,10 @@ Hårdskorpe
 Vulkansk aske
 [glacier_ice]
 Gletsjeris
+[overgrown_road]
+Tilgroet vej
+[laterite]
+Laterit
 [terrain group water]
 Vand
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Opdatering af stående ordre mislykkedes. Din ordre er sat på pause på denne e
 
 [AI for all computer colonies]
 AI for alle computerstyrede kolonier
+[tundra]
+Tundrajord

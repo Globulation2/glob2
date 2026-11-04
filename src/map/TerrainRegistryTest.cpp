@@ -343,6 +343,28 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(volcanic->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeGlacier.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeGlacier.dump(), TERRAIN_COUNT_BEFORE_VOLCANIC_ASH));
+
+		// Format 202 numbers its definitions from 43, before overgrown road.
+		auto beforeOvergrown = Json::parse(registry->serialize());
+		for (auto &item : beforeOvergrown["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD;
+		const auto glacier = TerrainRegistry::deserialize(beforeOvergrown.dump(), TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD);
+		CHECK(glacier->serialize() == registry->serialize());
+		CHECK(glacier->digest() == registry->digest());
+		CHECK(glacier->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeOvergrown.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeOvergrown.dump(), TERRAIN_COUNT_BEFORE_GLACIER_ICE));
+
+		// Format 203 numbers its definitions from 44, before laterite.
+		auto beforeLaterite = Json::parse(registry->serialize());
+		for (auto &item : beforeLaterite["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_LATERITE;
+		const auto prior = TerrainRegistry::deserialize(beforeLaterite.dump(), TERRAIN_COUNT_BEFORE_LATERITE);
+		CHECK(prior->serialize() == registry->serialize());
+		CHECK(prior->digest() == registry->digest());
+		CHECK(prior->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeLaterite.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeLaterite.dump(), TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

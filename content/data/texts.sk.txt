@@ -5734,6 +5734,10 @@ Tvrdá krusta
 Sopečný popol
 [glacier_ice]
 Ľadovcový ľad
+[overgrown_road]
+Zarastená cesta
+[laterite]
+Laterit
 [terrain group water]
 Voda
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Aktualizácia trvalého príkazu zlyhala. Váš príkaz je na tomto zariadení p
 
 [AI for all computer colonies]
 UI pre všetky kolónie ovládané počítačom
+[tundra]
+Tundrová pôda

@@ -5675,7 +5675,7 @@ Lupa
 [clay]
 Luwad
 [shale]
-Shale
+Batong luwad na patong-patong
 [heath]
 Tuyong kaparangan
 [mud]
@@ -6850,6 +6850,10 @@ Matigas na lupa
 Abo ng bulkan
 [glacier_ice]
 Yelo ng glacier
+[overgrown_road]
+Daang tinubuan ng damo
+[laterite]
+Lupang laterita
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
 [script error at %0:%1: %2]
@@ -6936,3 +6940,5 @@ Kinakailangang paghihintay: %0 ms; paghihintay ng thread na may-ari sa mga gawai
 Hakbang %0: %1 ms na lumipas
 [hive standing order update failed]
 Nabigo ang pag-update ng standing order. Naka-pause ang iyong utos sa device na ito; gamitin muli ang kaukulang kontrol.
+[tundra]
+Lupang tundra

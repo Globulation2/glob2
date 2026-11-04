@@ -5734,6 +5734,10 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Вулканічний попіл
 [glacier_ice]
 Льодовиковий лід
+[overgrown_road]
+Зарослий шлях
+[laterite]
+Латерит
 [terrain group water]
 Вода
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Discord відкрито. Ви можете повернутися до гри �
 
 [AI for all computer colonies]
 ШІ для всіх колоній під керуванням комп’ютера
+[tundra]
+Тундровий ґрунт

@@ -5734,6 +5734,10 @@ Kemény kéreg
 Vulkáni hamu
 [glacier_ice]
 Gleccserjég
+[overgrown_road]
+Benőtt út
+[laterite]
+Laterit
 [terrain group water]
 Víz
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Az állandó parancs frissítése sikertelen. A parancsod ezen az eszközön sz�
 
 [AI for all computer colonies]
 MI minden számítógép vezérelte kolóniához
+[tundra]
+Tundratalaj

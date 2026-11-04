@@ -5734,6 +5734,10 @@ Kovettuma
 Vulkaanista tuhkaa
 [glacier_ice]
 Jäätikköjää
+[overgrown_road]
+Umpeen kasvanut tie
+[laterite]
+Lateriitti
 [terrain group water]
 Vesi
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Pysyvän käskyn päivitys epäonnistui. Käskysi on keskeytetty tällä laittee
 
 [AI for all computer colonies]
 Tekoäly kaikille tietokoneen ohjaamille siirtokunnille
+[tundra]
+Tundramaa

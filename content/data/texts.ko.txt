@@ -5734,6 +5734,10 @@ AI 생성 아님
 화산재
 [glacier_ice]
 빙하 얼음
+[overgrown_road]
+풀로 뒤덮인 길
+[laterite]
+라테라이트
 [terrain group water]
 물
 [terrain group sand]
@@ -6936,3 +6940,5 @@ GL 전용
 
 [AI for all computer colonies]
 모든 컴퓨터 제어 식민지의 AI
+[tundra]
+툰드라 지형

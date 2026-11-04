@@ -5734,6 +5734,10 @@ Hårdskorpa
 Vulkanaska
 [glacier_ice]
 Glaciäris
+[overgrown_road]
+Igenvuxen väg
+[laterite]
+Laterit
 [terrain group water]
 Vatten
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Uppdateringen av den stående ordern misslyckades. Din order är pausad på den 
 
 [AI for all computer colonies]
 AI för alla datorstyrda kolonier
+[tundra]
+Tundramark

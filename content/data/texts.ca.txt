@@ -5734,6 +5734,10 @@ Crosta endurida
 Cendra volcànica
 [glacier_ice]
 Gel de glacera
+[overgrown_road]
+Camí envaït per la vegetació
+[laterite]
+Laterita
 [terrain group water]
 Aigua
 [terrain group sand]
@@ -6936,3 +6940,5 @@ L'actualització de l'ordre permanent ha fallat. La teva ordre està en pausa en
 
 [AI for all computer colonies]
 IA per a totes les colònies controlades per l’ordinador
+[tundra]
+Sòl de tundra

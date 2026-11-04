@@ -5734,6 +5734,10 @@ Crosta endurecida
 Cinza vulcânica
 [glacier_ice]
 Gelo glaciar
+[overgrown_road]
+Estrada coberta de vegetação
+[laterite]
+Laterita
 [terrain group water]
 Água
 [terrain group sand]
@@ -6936,3 +6940,5 @@ A atualização da ordem permanente falhou. A sua ordem está em pausa neste dis
 
 [AI for all computer colonies]
 IA para todas as colónias controladas pelo computador
+[tundra]
+Solo de tundra

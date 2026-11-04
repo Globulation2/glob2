@@ -76,7 +76,8 @@ inline constexpr auto TERRAIN_GROUPS = []
 		ice.groundHealthQ8 = -8;
 	}
 	{
-		// Trail, brick path, boardwalk, sandstone: fast, buildable, nothing grows.
+		// Trail, brick path, boardwalk, sandstone, overgrown road: fast, buildable,
+		// nothing grows.
 		auto &paths = define(TerrainGroup::Paths, "paths", "[terrain group paths]", true);
 		paths.walkable = paths.buildable = true;
 		paths.groundSpeedQ8 = 512;

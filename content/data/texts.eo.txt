@@ -5734,6 +5734,10 @@ Malmola krusto
 Vulkana cindro
 [glacier_ice]
 Glaĉera glacio
+[overgrown_road]
+Superkreskita vojo
+[laterite]
+Laterito
 [terrain group water]
 Akvo
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Ordono ne konfirmita. Malfermu la komandanton por reprovi; via mesaĝo estas kon
 
 [AI for all computer colonies]
 AI por ĉiuj komputile regataj kolonioj
+[tundra]
+Tundra grundo

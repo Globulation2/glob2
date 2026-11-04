@@ -5734,6 +5734,10 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 رماد بركاني
 [glacier_ice]
 جليد النهر الجليدي
+[overgrown_road]
+طريق مكسو بالعشب
+[laterite]
+لاتريت
 [terrain group water]
 ماء
 [terrain group sand]
@@ -6936,3 +6940,5 @@ GL فقط
 
 [AI for all computer colonies]
 الذكاء الاصطناعي لكل المستعمرات التي يديرها الحاسوب
+[tundra]
+أرض التندرا

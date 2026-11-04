@@ -5734,6 +5734,10 @@ CPU %0%
 Ηφαιστειακή τέφρα
 [glacier_ice]
 Πάγος παγετώνα
+[overgrown_road]
+Κατάφυτος δρόμος
+[laterite]
+Λατερίτης
 [terrain group water]
 Νερό
 [terrain group sand]
@@ -6936,3 +6940,5 @@ CPU (αυτόματα)
 
 [AI for all computer colonies]
 ΤΝ για όλες τις αποικίες που ελέγχει ο υπολογιστής
+[tundra]
+Έδαφος τούνδρας

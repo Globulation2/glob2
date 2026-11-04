@@ -5734,6 +5734,10 @@ FFmpeg није доступан, па је снимање искључено. �
 Вулкански пепео
 [glacier_ice]
 Глечерски лед
+[overgrown_road]
+Зарастао пут
+[laterite]
+Латерит
 [terrain group water]
 Вода
 [terrain group sand]
@@ -6936,3 +6940,5 @@ MCP сервер није доступан у овој апликацији
 
 [AI for all computer colonies]
 ВИ за све колоније којима управља рачунар
+[tundra]
+Тундрено тло

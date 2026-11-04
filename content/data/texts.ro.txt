@@ -5734,6 +5734,10 @@ Crustă întărită
 Cenușă vulcanică
 [glacier_ice]
 Gheață de ghețar
+[overgrown_road]
+Drum năpădit de vegetație
+[laterite]
+Laterit
 [terrain group water]
 Apă
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Actualizarea ordinului permanent a eșuat. Ordinul dvs. este pus pe pauză pe ac
 
 [AI for all computer colonies]
 IA pentru toate coloniile controlate de calculator
+[tundra]
+Sol de tundră

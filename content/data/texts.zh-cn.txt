@@ -5734,6 +5734,10 @@ AI 生成
 火山灰
 [glacier_ice]
 冰川冰
+[overgrown_road]
+杂草丛生的石路
+[laterite]
+红土
 [terrain group water]
 水
 [terrain group sand]
@@ -6936,3 +6940,5 @@ MCP 服务器
 
 [AI for all computer colonies]
 所有电脑控制殖民地的 AI
+[tundra]
+苔原地面

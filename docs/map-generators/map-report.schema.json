@@ -553,6 +553,12 @@
         "glacier_ice": {
           "$ref": "#/$defs/coverage"
         },
+        "overgrown_road": {
+          "$ref": "#/$defs/coverage"
+        },
+        "laterite": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

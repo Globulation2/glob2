@@ -5734,6 +5734,10 @@ Croûte durcie
 Cendre volcanique
 [glacier_ice]
 Glace de glacier
+[overgrown_road]
+Route envahie par la végétation
+[laterite]
+Latérite
 [terrain group water]
 Eau
 [terrain group sand]
@@ -6936,3 +6940,5 @@ La mise à jour de votre ordre permanent a échoué. Votre ordre est suspendu su
 
 [AI for all computer colonies]
 IA de toutes les colonies contrôlées par l’ordinateur
+[tundra]
+Sol de toundra

@@ -5734,6 +5734,10 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 خاکستر آتشفشانی
 [glacier_ice]
 یخ یخچال طبیعی
+[overgrown_road]
+جاده پوشیده از گیاه
+[laterite]
+لاتریت
 [terrain group water]
 آب
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 
 [AI for all computer colonies]
 هوش مصنوعی برای همهٔ مستعمره‌های تحت کنترل رایانه
+[tundra]
+زمین توندرا

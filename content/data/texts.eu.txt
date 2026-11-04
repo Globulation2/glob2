@@ -5734,6 +5734,10 @@ Lurrazal gogorra
 Errauts bolkanikoa
 [glacier_ice]
 Glaziar-izotza
+[overgrown_road]
+Landaretzaz estalitako bidea
+[laterite]
+Laterita
 [terrain group water]
 Ura
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Agindu iraunkorra eguneratzeak huts egin du. Zure agindua gailu honetan pausatut
 
 [AI for all computer colonies]
 AA ordenagailuak kontrolatutako kolonia guztientzat
+[tundra]
+Tundrako lurra

@@ -5734,6 +5734,10 @@ Harde korst
 Vulkanische as
 [glacier_ice]
 Gletsjerijs
+[overgrown_road]
+Overwoekerde weg
+[laterite]
+Lateriet
 [terrain group water]
 Water
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Het bijwerken van het vaste bevel is mislukt. Uw bevel is op dit apparaat gepauz
 
 [AI for all computer colonies]
 AI voor alle computergestuurde kolonies
+[tundra]
+Toendrabodem

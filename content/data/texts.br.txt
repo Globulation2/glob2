@@ -5734,6 +5734,10 @@ Crosta endurecida
 Ludu menezioù-tan
 [glacier_ice]
 Gelo glacial
+[overgrown_road]
+Hent goloet gant ar geot
+[laterite]
+Laterita
 [terrain group water]
 Água
 [terrain group sand]
@@ -6936,3 +6940,5 @@ A atualização da ordem permanente falhou. Sua ordem está pausada neste dispos
 
 [AI for all computer colonies]
 IA evit an holl drevadennoù meret gant an urzhiataer
+[tundra]
+Douar toundra

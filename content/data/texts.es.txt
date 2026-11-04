@@ -5734,6 +5734,10 @@ Costra endurecida
 Ceniza volcánica
 [glacier_ice]
 Hielo glaciar
+[overgrown_road]
+Camino invadido por la vegetación
+[laterite]
+Laterita
 [terrain group water]
 Agua
 [terrain group sand]
@@ -6936,3 +6940,5 @@ La actualización de la orden permanente falló. Tu orden está pausada en este 
 
 [AI for all computer colonies]
 IA para todas las colonias controladas por ordenador
+[tundra]
+Suelo de tundra

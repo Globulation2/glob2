@@ -99,6 +99,10 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(VOLCANIC_ASH, G::Barren, "volcanic_ash", "[volcanic_ash]", {58, 56, 56}, {72, 70, 69}),
 		// Blue glacier ice crossed by white fractures: plays exactly like ice.
 		authored(GLACIER_ICE, G::Ice, "glacier_ice", "[glacier_ice]", {93, 158, 207}, {96, 160, 210}),
+		// Hexagonal road setts reclaimed by moss: plays exactly like road.
+		authored(OVERGROWN_ROAD, G::Paths, "overgrown_road", "[overgrown_road]", {122, 118, 98}, {134, 128, 106}),
+		// Iron-red earth packed with hardened nodules: plays exactly like dirt.
+		authored(LATERITE, G::Barren, "laterite", "[laterite]", {150, 76, 46}, {166, 90, 54}),
 	}};
 	return rows;
 }();

@@ -5710,6 +5710,10 @@ FFmpeg не е наличен, така че записът е изключен.
 Вулканична пепел
 [glacier_ice]
 Ледников лед
+[overgrown_road]
+Обрасъл път
+[laterite]
+Латерит
 [terrain group water]
 Вода
 [terrain group sand]
@@ -6936,3 +6940,5 @@ MCP сървър
 Такт %0: %1 ms изминало време
 [AI for all computer colonies]
 ИИ за всички компютърни колонии
+[tundra]
+Тундрова почва

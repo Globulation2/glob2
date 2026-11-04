@@ -5734,6 +5734,10 @@ Crosta indurita
 Cenere vulcanica
 [glacier_ice]
 Ghiaccio di ghiacciaio
+[overgrown_road]
+Strada invasa dalla vegetazione
+[laterite]
+Suolo lateritico
 [terrain group water]
 Acqua
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Aggiornamento dell'ordine permanente non riuscito. Il tuo ordine è sospeso su q
 
 [AI for all computer colonies]
 IA per tutte le colonie controllate dal computer
+[tundra]
+Terreno di tundra

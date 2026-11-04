@@ -5712,6 +5712,10 @@ Tundra
 Volcanic ash
 [glacier_ice]
 Glacier ice
+[overgrown_road]
+Overgrown road
+[laterite]
+Laterite
 [terrain group water]
 Water
 [terrain group sand]

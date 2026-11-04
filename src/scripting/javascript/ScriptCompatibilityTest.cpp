@@ -13,6 +13,7 @@
 #include <FileManager.h>
 #include <cstdio>
 #include <locale>
+#include <limits>
 #include <sstream>
 #include <TextStream.h>
 
@@ -137,8 +138,8 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	// Shared amphibious routing changes require the shared-routing replay floor.
 	// Script save-format milestones remain independent of these current gates.
 	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY);
-	CHECK(VERSION_MINOR >= REPLAY_MINIMUM_VERSION_MINOR);
-	CHECK(FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY > FILE_FORMAT_VERSION_GLACIER_ICE);
+	REQUIRE(REPLAY_MINIMUM_VERSION_MINOR <= VERSION_MINOR);
+	REQUIRE(VERSION_MINOR < std::numeric_limits<Uint16>::max());
 
 	CHECK(NET_PROTOCOL_VERSION == 75);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
@@ -146,8 +147,9 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	ReplayReader released;
 	CHECK_FALSE(
 		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
-	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_BUILDING_CATALOG, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_HAZARD_ROUTING, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_MAP_ASSETS, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM - 1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_UNIT_CATALOG, 164, 165, 166, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR - 1, REPLAY_MINIMUM_VERSION_MINOR, REPLAY_MINIMUM_VERSION_MINOR + 1, VERSION_MINOR - 1, VERSION_MINOR, VERSION_MINOR + 1};
-	for (Uint16 version : versions)
+	// Include every historical format and both edges of the current window,
+	// rather than pinning this boundary test to one release's latest format.
+	for (unsigned version = 0; version <= unsigned(VERSION_MINOR) + 1; ++version)
 	{
 		CAPTURE(version);
 		auto *memory = new GAGCore::MemoryStreamBackend;

@@ -5731,9 +5731,13 @@ Vetrovne sipine
 [hardpan]
 Trda skorja
 [volcanic_ash]
-ගිනිකඳු අළු
+Vulkanski pepel
 [glacier_ice]
 Ledeniški led
+[overgrown_road]
+Zaraščena cesta
+[laterite]
+Lateritna tla
 [terrain group water]
 Voda
 [terrain group sand]
@@ -6936,3 +6940,5 @@ Posodobitev trajnega ukaza ni uspela. Vaš ukaz je začasno ustavljen na tej nap
 
 [AI for all computer colonies]
 Umetna inteligenca za vse računalniško vodene kolonije
+[tundra]
+Tundrska tla

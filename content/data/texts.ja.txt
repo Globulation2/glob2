@@ -5734,6 +5734,10 @@ AI 生成ではない
 火山灰
 [glacier_ice]
 氷河の氷
+[overgrown_road]
+草に覆われた石畳
+[laterite]
+ラテライト
 [terrain group water]
 水
 [terrain group sand]
@@ -6936,3 +6940,5 @@ GL のみ
 
 [AI for all computer colonies]
 すべてのコンピューター操作コロニーのAI
+[tundra]
+ツンドラ地帯
