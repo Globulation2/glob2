@@ -13,7 +13,7 @@ import {
 describe('queue config', () => {
   it('serves the current Even Ground revision in every queue mode', () => {
     for (const mode of ['1v1', '2v2'] as const) {
-      expect(defaultMapPool(mode).find((m) => m.generatorId === 'even-ground')?.revision).toBe(3);
+      expect(defaultMapPool(mode).find((m) => m.generatorId === 'even-ground')?.revision).toBe(4);
     }
   });
   it('serves the Caravanserai revision with owner-specific resource placement', () => {
