@@ -1,0 +1,45 @@
+{
+  "revision": "e28aea45f10dc21f15e23cef84da94e55d888fec",
+  "worktree": "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/recording-download-repair",
+  "note": "Current fetched master601926 SIM127/format205 plus schema-only1417 fix. Fresh integration because master changes pathfinding/gradient state and asset packaging inputs. Separate ci-schema-release; root/c7a nativehelper/SDL unchanged for active browser2351216. Build once and reuse exact-source CLI for complete frozen-save serial/parallel candidates, current Studio candidates and native full registry. Do not edit/switch recording-download-repair while active. No weakenedtests, candidate fixtures remain ignored outputs until full review.",
+  "results": [
+    {
+      "name": "native-build",
+      "command": [
+        "python3",
+        "tools/dev_build.py",
+        "--build=build/ci-schema-release",
+        "dev_fast=0",
+        "release=1",
+        "server=0",
+        "-j2",
+        "tests",
+        "map-report-test",
+        "build/ci-schema-release/src/glob2"
+      ],
+      "exit_code": 0,
+      "seconds": 3389.8
+    },
+    {
+      "name": "map-report-contract",
+      "command": [
+        "python3",
+        "test/test_map_report.py",
+        "build/ci-schema-release/src/glob2",
+        "build/ci-schema-release/test/MapReportHarness"
+      ],
+      "exit_code": 0,
+      "seconds": 1.8
+    },
+    {
+      "name": "map-telemetry",
+      "command": [
+        "python3",
+        "test/test_map_telemetry.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.6
+    }
+  ],
+  "base": "601926024674108244845b806ac9ac49f4546cac"
+}
