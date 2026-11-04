@@ -38,17 +38,6 @@ def get_job_type(name):
         raise ValueError('unknown job type: ' + name) from None
 
 
-def routing_ratio_outputs(config):
-    names=[]
-    if config.get('study','counts')!='off':
-        names += ['routing-ratio.'+suffix+'.csv' for suffix in ('queries','state','routes','process','work','ticks','kernel','model','points')]
-    if config.get('work',True):
-        names += ['gradient-work.csv','gradient-work.csv.summary.csv','gradient-work.csv.intervals.csv','gradient-work.csv.sharing.csv','gradient-work.csv.identity.csv']
-    if config.get('quality',False):
-        names += ['gradient-quality.csv','gradient-episodes.csv','gradient-planning-quality.csv','gradient-contradictions.csv']
-    return names
-
-
 def resource_gradient_collection_outputs(collection):
     """Files kept by the generic worker, including zero-row oracle streams.
 
@@ -124,27 +113,12 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille', 'resource_gradient_collection', 'routing_ratio'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille', 'resource_gradient_collection'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
             raise ValueError('saved games retain their seeds')
-        if self.kind == 'game' and 'routing_ratio' in config:
-            ratio=config['routing_ratio']
-            if not isinstance(ratio,dict) or set(ratio)-{'policy','study','work','quality','kernels'}:
-                raise ValueError('invalid routing_ratio configuration')
-            if ratio.get('policy','baseline') not in ('baseline','mode','speed-modes','median','equal'):
-                raise ValueError('unknown routing ratio policy')
-            if ratio.get('study','counts') not in ('counts','routes','off'):
-                raise ValueError('unknown routing ratio study mode')
-            if any(type(ratio[k]) is not bool for k in ('work','quality','kernels') if k in ratio):
-                raise ValueError('routing ratio work and quality must be booleans')
-            if 'save' in job['inputs'] and 'policy' in ratio:
-                raise ValueError('saved games retain their routing policy; omit the policy override')
-            required=set(routing_ratio_outputs(ratio))
-            if required-set(job['outputs'].get('required',[])):
-                raise ValueError('routing ratio diagnostics must be retained as required outputs')
         if self.kind == 'game' and 'resource_gradient_collection' in config:
             collection = config['resource_gradient_collection']
             _validate_resource_gradient_collection(collection)
@@ -240,18 +214,6 @@ class EngineJob:
             # CLI defaults (95% on new games); an explicit zero disables it.
             if 'win_probability_permille' in config:
                 add('--win-probability', config['win_probability_permille'])
-            if 'routing_ratio' in config:
-                add('--benchmark-warmup',0)
-                ratio=config['routing_ratio']
-                experiment={'mode':'gradient-ratio-mode','speed-modes':'gradient-speed-modes','median':'gradient-ratio-median','equal':'gradient-ratio-equal'}.get(ratio.get('policy'))
-                if experiment: add('--experiment',experiment)
-                add('--gpu','off')
-                if ratio.get('study','counts')!='off': add('--routing-ratio-study',ratio.get('study','counts'))
-                if ratio.get('work',True):
-                    add('--gradient-work-stats',str(out/'gradient-work.csv'))
-                    args.append('--gradient-work-aggregate')
-                    if ratio.get('kernels',False):args.append('--gradient-work-kernels')
-                if ratio.get('quality',False): args.append('--resource-gradient-probe')
             for save in outputs.get('saves', []):
                 add('--save', save)
             for telemetry in outputs.get('telemetry', []):
