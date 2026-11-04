@@ -1,0 +1,11 @@
+Actual Windows build/test job: https://github.com/Globulation2/glob2/actions/runs/41748968031/job/126310487029
+The MinGW compile/link completed; later existing reference comparisons failed:
+2026-11-04T02:03:13.8715358Z scons: done building targets.
+2026-11-04T02:20:02.8123927Z     assert hashes[tick] == expected[tick], f"continuation baseline diverges at {tick}"
+2026-11-04T02:20:02.8124550Z AssertionError: continuation baseline diverges at 30001
+2026-11-04T02:20:05.6159037Z gd-large-4ai.game: per-tick checksums differ from the current simulation serial reference
+2026-11-04T02:20:05.6191698Z expected SHA-256 7b2e7b97ac916e342034a3b702507830bfec4e880503469429f340714064b4a2
+2026-11-04T02:20:05.6224823Z actual   SHA-256 92c1641a27eb37b7427561623a90f2f79fc63f05b97200094b16e3a8d65b21e7
+2026-11-04T02:20:08.1829956Z gd-large-4ai.game: per-tick checksums differ from the current simulation serial reference
+2026-11-04T02:20:08.1862528Z expected SHA-256 7b2e7b97ac916e342034a3b702507830bfec4e880503469429f340714064b4a2
+2026-11-04T02:20:08.1896161Z actual   SHA-256 92c1641a27eb37b7427561623a90f2f79fc63f05b97200094b16e3a8d65b21e7
