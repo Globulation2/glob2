@@ -1,0 +1,14 @@
+{
+  "revision": "2bec27753857d8defb6bf8b6ce11e2b731e1782f",
+  "command": [
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/recording-download-repair/build/ci-schema-release/src/glob2",
+    "game",
+    "repeat",
+    "content/games/cross-replay.game.gz",
+    "--ticks",
+    "1500",
+    "--runs",
+    "1"
+  ],
+  "exit_code": 0
+}
