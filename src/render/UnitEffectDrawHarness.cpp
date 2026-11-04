@@ -19,8 +19,10 @@
 #else
 #include <epoxy/gl.h>
 #endif
+#include <cmath>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 namespace
@@ -72,6 +74,26 @@ namespace
 			if (a.data[i] != b.data[i] || a.data[i + 1] != b.data[i + 1] || a.data[i + 2] != b.data[i + 2])
 				++count;
 		return count;
+	}
+
+	//! Centre, in screen pixels from the top left, of the pixels differing between two frames.
+	std::pair<double, double> differenceCentre(const Frame& a, const Frame& b)
+	{
+		double sumX = 0, sumY = 0;
+		int count = 0;
+		for (int y = 0; y < a.h; ++y)
+			for (int x = 0; x < a.w; ++x)
+			{
+				const size_t i = (size_t(y) * a.w + x) * 4;
+				if (a.data[i] != b.data[i] || a.data[i + 1] != b.data[i + 1] || a.data[i + 2] != b.data[i + 2])
+				{
+					sumX += x;
+					sumY += a.h - 1 - y;
+					++count;
+				}
+			}
+		GLOB2_REQUIRE(count > 0, "the frames differ");
+		return {sumX / count, sumY / count};
 	}
 
 	Frame draw(Game& game)
@@ -182,6 +204,53 @@ TEST_CASE("service effects play over a unit leaving a hospital and a school [dis
 		globalContainer->settings.buildingParticles = true;
 		serve(UnitEffect::LifetimeTicks);
 		CHECK(differing(draw(game), ordinary) == 0);
+	}
+}
+TEST_CASE("exit effects travel with a unit that has walked on from its exit tile [display:640x480][artifacts]")
+{
+	glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true,
+		.width = SCREEN_W, .height = SCREEN_H, .screenFlags = GraphicContext::USEGPU});
+	globalContainer->settings.clouds = false;
+	globalContainer->settings.cloudShadows = false;
+	globalContainer->settings.buildingParticles = true;
+	// The unit has walked this many tiles right of the tile it came out on.
+	constexpr int Walked = 5;
+
+	for (const auto &[typeName, kind] : {std::pair{"swarm", UnitEffect::Kind::Spawn},
+		std::pair{"hospital", UnitEffect::Kind::Heal}})
+	{
+		Game game(nullptr);
+		game.map.setSize(5, 5, GRASS);
+		game.map.setGame(&game);
+		game.addTeam(0);
+		Building* building = game.addBuilding(SWARM_X, SWARM_Y, globalContainer->buildingsTypes.getFinishedTypeNum(typeName), 0);
+		REQUIRE(building != nullptr);
+		exitX = building->posX + building->type->width / 2;
+		exitY = building->posY + building->type->height;
+		Unit* unit = game.addUnit(exitX + Walked, exitY, 0, WORKER, 0, 0, 0, 1);
+		REQUIRE(unit != nullptr);
+
+		game.animations->clear();
+		const Frame ordinary = draw(game);
+		game.animations->clear();
+		if (kind == UnitEffect::Kind::Spawn)
+			game.animations->onUnitSpawn(game.map, exitX, exitY, game.teams[0], unit->gid, building->gid, 0, 1);
+		else
+		{
+			game.animations->onUnitServiced(unit->gid, Uint8(kind), building->gid, building->typeNum, 0);
+			game.animations->onUnitLeftBuilding(game.map, unit->gid, exitX, exitY, 0, 1, game.teams[0], 0);
+		}
+		// Past the swarm's glow (PulseRiseTicks + PulseFallTicks), which stays on the swarm.
+		for (int tick = 0; tick <= 14; ++tick)
+			game.animations->step();
+		const Frame frame = draw(game);
+		save(frame, std::string("travel-") + typeName);
+		// The burst is centred on the unit, not left behind on the exit tile.
+		const auto [cx, cy] = differenceCentre(frame, ordinary);
+		const double unitX = (exitX + Walked) * 32 + 16, exitPixelX = exitX * 32 + 16;
+		CHECK_MESSAGE(std::abs(cx - unitX) < 16, typeName, " effect centred at x ", cx, ", unit at ", unitX);
+		CHECK_MESSAGE(std::abs(cx - unitX) < std::abs(cx - exitPixelX), typeName, " effect nearer the unit");
+		CHECK_MESSAGE(std::abs(cy - (exitY * 32 + 16)) < 24, typeName, " effect centred at y ", cy);
 	}
 }
 }

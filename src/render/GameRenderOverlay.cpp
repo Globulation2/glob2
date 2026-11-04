@@ -149,7 +149,10 @@ void Game::drawMapUnitEffects(int left, int top, int right, int bot, int sw, int
 	GAGCore::GraphicContext &gfx = *globalContainer->gfx;
 	const float pixelsPerUnit = gfx.mapTransformScale() * gfx.getRasterScale();
 	Sprite::flushBatches(&gfx);
-	// A spawn's dust and a service's icons stay on the tile the unit came out on.
+	// A spawn's dust and a service's icons travel with their unit: they burst
+	// around its drawn centre, so their outward motion adds to its own. The unit
+	// pass queued where it drew each unit (one entry per seam copy).
+	const auto &overlays = view.render.unitOverlays;
 	for (const SceneSectorEffects &sector : entities.sectors)
 		for (const SceneUnitEffect &effect : sector.unitEffects)
 		{
@@ -171,6 +174,31 @@ void Game::drawMapUnitEffects(int left, int top, int right, int bot, int sw, int
 				color = GAGCore::Color((*chosen >> 16) & 255, (*chosen >> 8) & 255, *chosen & 255);
 			const float hue = UnitEffectArt::hueOf(color);
 			const std::uint32_t seed = UnitEffect::seedOf(effect.x, effect.y, effect.unit);
+			const auto drawAt = [&](float cx, float cy, float opacity) {
+				if (spawn)
+				{
+					UnitEffect::forEachDustGlow(age, [&](const UnitEffect::Glow &glow) { art.draw(gfx, hue, cx, cy, glow, 1); });
+					UnitEffect::forEachDustMote(seed, age,
+						[&](const UnitEffect::Sparkle &mote) { art.draw(gfx, hue, cx, cy, mote, 1); });
+				}
+				else
+					UnitEffect::forEachServiceIcon(seed, age, [&](const UnitEffect::Icon &icon) {
+						art.draw(gfx, *globalContainer->mapIcons, glyph, kind, cx, cy, icon, opacity, pixelsPerUnit);
+					});
+			};
+			bool drawn = false;
+			for (const auto &unit : overlays)
+				if (unit.unit == effect.unit)
+				{
+					// A spawn fades in with its own opacity, which its dust does not
+					// share; a serviced unit's opacity is its fog fade, which its icons do.
+					drawAt(unit.x + 16, unit.y + 16, spawn ? 1 : unit.opacity);
+					drawn = true;
+				}
+			if (drawn)
+				continue;
+			// The unit was not drawn this frame (it died, or is outside the drawn
+			// area): play the effect from the tile it came out on.
 			int x, y;
 			map.mapCaseToDisplayable(effect.x, effect.y, &x, &y, viewportX, viewportY);
 			// A cloud reaches about two tiles; icons a little over one.
@@ -178,20 +206,11 @@ void Game::drawMapUnitEffects(int left, int top, int right, int bot, int sw, int
 			forEachMapCopy(centreX - reach, centreY - reach, centreX + reach, centreY + reach,
 				mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
 					const float cx = float(centreX + dx), cy = float(centreY + dy);
+					// A service's icons burst once the unit is half out, half a tile short of its exit tile.
 					if (spawn)
-					{
-						UnitEffect::forEachDustGlow(age, [&](const UnitEffect::Glow &glow) { art.draw(gfx, hue, cx, cy, glow, 1); });
-						UnitEffect::forEachDustMote(seed, age,
-							[&](const UnitEffect::Sparkle &mote) { art.draw(gfx, hue, cx, cy, mote, 1); });
-					}
+						drawAt(cx, cy, 1);
 					else
-					{
-						// The icons burst once the unit is half out, half a tile short of its exit tile.
-						const float ux = cx - effect.dx * 16.f, uy = cy - effect.dy * 16.f;
-						UnitEffect::forEachServiceIcon(seed, age, [&](const UnitEffect::Icon &icon) {
-							art.draw(gfx, *globalContainer->mapIcons, glyph, kind, ux, uy, icon, 1, pixelsPerUnit);
-						});
-					}
+						drawAt(cx - effect.dx * 16.f, cy - effect.dy * 16.f, 1);
 				});
 		}
 	// Over each unit: a spawn's twinkles, and a trained unit's new level rising like
