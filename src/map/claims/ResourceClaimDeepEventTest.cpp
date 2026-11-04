@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ResourceClaimDeepEvent.h"
 #include "ResourceClaimStratifiedDeep.h"
+#include "ResourceClaimMissingDeep.h"
 #include "Glob2Test.h"
 using ResourceClaims::Experiment::DeepReservoir;
 TEST_SUITE("ResourceClaimDeepEvent")
@@ -120,4 +121,22 @@ TEST_CASE("Admission loss is never salvaged by later replacement or fewer writte
     }
     ResourceClaims::Experiment::TopKDeepSlot empty;CHECK(empty.retained()==0);CHECK_FALSE(empty.censored());
 }
+}
+
+TEST_CASE("Missing destination reservoir keeps independent reasons and censored minima") {
+    using namespace ResourceClaims::Experiment;
+    MissingSlot s;CHECK(s.consider(50,1,MissingReason::MissingScalar));s.reservoir.written(1);
+    CHECK_FALSE(s.consider(50,2,MissingReason::MissingXYPlane));CHECK(s.reasons[1]==1);CHECK(s.reasons[2]==1);
+    CHECK(s.consider(40,3,MissingReason::MissingXYPlane));++s.inputExcluded;CHECK(s.censored());
+    CHECK(missingStratum(MissingReason::InvalidXY,MaterialId::Food,false)==0);
+    CHECK(missingStratum(MissingReason::MissingScalar,MaterialId::Food,true)==5);
+    CHECK(missingStratum(MissingReason::MissingXYPlane,MaterialId::Wood,true)==7);
+}
+TEST_CASE("Missing destination wire represents absent plane separately from invalid labels") {
+    using namespace ResourceClaims::Experiment;
+    const nlohmann::json m={{"nearest",nullptr},{"optimum",nullptr}};
+    const auto absent=encodeMissingEvent(m,64,{},{});std::vector<Uint32> labels(64,UINT32_MAX);
+    const auto invalid=encodeMissingEvent(m,64,labels,{});
+    CHECK(invalid.size()==absent.size()+256);CHECK(absent[20]==0);CHECK(invalid[20]==64);
+    CHECK_THROWS(encodeMissingEvent(m,64,std::span<const Uint32>(labels.data(),1),{}));
 }

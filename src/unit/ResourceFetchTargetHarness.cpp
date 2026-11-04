@@ -1404,3 +1404,34 @@ TEST_CASE("shadow tracks stationary adjacent harvesting without changing executi
     unit->stopAttachedForBuilding(false);unit->reconcileMaterialClaim();
     CHECK(map.materialClaimLedger().size()==0);
 }
+
+#ifndef __EMSCRIPTEN__
+TEST_CASE("missing destination observer distinguishes absent fields from stale invalid labels" * doctest::test_suite("ActiveMaterialClaims"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame f({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
+    auto& map=f.game.map;
+    { Map::TerrainEditBatch edit(map);for(int y=0;y<32;++y)for(int x:{0,1,16,17})map.setVertexTerrain(x,y,WATER); }
+    REQUIRE(map.incResourceByIndex(24,8,WHEAT,0)); // Seed only the other disconnected island.
+    map.setMaterialDestinationsEnabled(true);map.setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1);
+    auto* inn=f.addBuilding("inn",20,20);REQUIRE(inn);auto* u=f.addUnit(WORKER,8,8);REQUIRE(u);u->setPerformance(SWIM,0);u->attachedBuilding=inn;u->activity=Unit::ACT_FILLING;u->displacement=Unit::DIS_GOING_TO_RESOURCE;u->destinationPurpose=WHEAT;
+    const auto* field=glob2test::awaitGradient(f.game,[&]{const auto* value=map.getMaterialGradientSlot(0,WHEAT,u->movementClass());return map.materialGradientDestinations(value)?value:nullptr;});REQUIRE(field);
+    const auto labels=map.materialGradientDestinations(field);REQUIRE(labels);
+    REQUIRE(labels->x[map.coordToIndex(8,8)]>=map.getW());
+    const auto root=glob2test::artifactDir();const auto path=(root/"missing-observer.jsonl.gz").string();std::filesystem::remove(path);
+    std::filesystem::remove_all(root/"resource-claims-deep");std::filesystem::remove_all(root/"resource-claims-missing");
+    ResourceClaims::Probe::Config config;config.sampleEvery=1;config.deepStratified=true;config.deepTopFour=true;config.deepMissing=true;config.missingSampleEvery=1;
+    config.deepContext=nlohmann::json{{"source_revision","diagnostic"},{"bundle_id","diagnostic"},{"cohort_id","missing-wire"},{"game_id","missing-finite"}}.dump();
+    auto probe=std::make_shared<ResourceClaims::Probe>(map.computeExecutor(),path,config);map.setMaterialClaimProbe(probe);
+    const auto before=f.game.checkSum();probe->missingDecision(f.game,*u,nullptr,UINT32_MAX,0,true);CHECK(f.game.checkSum()==before);CHECK(probe->metrics().decisions==0);
+    probe->publish(f.game.stepCounter+1); // diagnostic deadline only; no simulation tick advanced
+    REQUIRE(map.incResourceByIndex(9,8,WHEAT,0));
+    const auto withStock=f.game.checkSum();map.observeMaterialClaimDecision(*u,field);CHECK(f.game.checkSum()==withStock);
+    probe->finish();CHECK(f.game.checkSum()==withStock);CHECK_FALSE(u->activeMaterialClaim);CHECK(map.materialClaimTelemetry.sweeps==0);
+    std::ifstream file(root/"resource-claims-missing/manifest.json");auto manifest=nlohmann::json::parse(file);
+    CHECK(manifest.at("complete")==true);CHECK(manifest.at("censored")==false);CHECK(manifest.at("calls")==2);
+    CHECK(manifest.at("strata")[0].at("eligible")==1);CHECK(manifest.at("strata")[4].at("eligible")==1);
+    REQUIRE(std::filesystem::is_regular_file(root/"resource-claims-missing/event-00.bin"));
+    REQUIRE(std::filesystem::is_regular_file(root/"resource-claims-missing/event-04.bin"));
+}
+#endif

@@ -23,6 +23,8 @@ public:
         Uint64 maxOutputBytes=64ull*1024*1024;
         unsigned maxPending=8;
         std::string deepContext; // Diagnostic JSON: source_revision,bundle_id,cohort_id,game_id.
+        bool deepMissing=false; // Additive missing-destination stream; requires deepContext.
+        Uint32 missingSampleEvery=256;
         bool deepTopFour=false; // Explicit V3 diagnostic, requires deepStratified.
         bool deepStratified=false; // Explicit V2 diagnostic; deepContext alone remains V1.
         std::optional<Uint32> movementStartTick;
@@ -55,6 +57,7 @@ public:
     Probe(ComputeExecutor&, std::string path, Config);
     ~Probe();
     DecisionToken decision(Game&, const Unit&, const Uint16* field, Uint32 pickupAccess = UINT32_MAX);
+    void missingDecision(Game&,const Unit&,const Uint16*,Uint32 pickupAccess=UINT32_MAX,Uint64 legacyOrdinal=0,bool naturalOnly=false) const;
     // Owner-stack observation only. Never shared with a diagnostic worker.
     struct DecisionOutcome {
         DecisionToken token;

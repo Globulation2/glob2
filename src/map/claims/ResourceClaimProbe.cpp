@@ -4,6 +4,7 @@
 #include "ResourceClaimDeepEvent.h"
 #include "ResourceClaimStratifiedDeep.h"
 #include "ResourceClaimTopKDeep.h"
+#include "ResourceClaimMissingDeep.h"
 #include "ClaimPolicyConfig.h"
 #include "ResourceClaimPatternEvaluation.h"
 #include "ResourceClaimPilotPatterns.h"
@@ -93,6 +94,7 @@ struct Probe::Impl
         ComputeExecutor::Batch batch;
         std::exception_ptr error;
     };
+    struct MissingWork:Work {Json missingMetadata;};
     // Payload bounds, not allocator/RSS bounds. Five captured chunk-stamp
     // planes are bounded by cell count; stock sidecars have at most one row/cell.
     static constexpr Uint64 CellInputAllowance=128,OwnerInputAllowance=128;
@@ -399,6 +401,63 @@ struct Probe::Impl
     gzFile file=nullptr;
     SimulationSnapshot::Storage storage;
     std::deque<std::unique_ptr<Work>> pending;
+    std::deque<std::unique_ptr<MissingWork>> missingPending;
+    SimulationSnapshot::Storage missingStorage;
+    std::array<Experiment::MissingSlot,Experiment::MissingStrata> missingSlots;
+    std::filesystem::path missingDirectory;
+    Uint64 missingCalls=0,missingSampled=0,missingMixed=0,missingValid=0,missingAdmissions=0,missingCompleted=0,missingObsolete=0;
+    Uint64 missingInputReservations=0,missingPeakInput=0,missingPeakPayload=0,missingOracleNs=0;
+    void missingManifest(bool complete) {
+        if(!config.deepMissing)return;
+        Json slots=Json::array();bool censored=false;
+        for(unsigned i=0;i<missingSlots.size();++i) {
+            const auto& s=missingSlots[i];const auto& r=s.reservoir;censored|=s.censored();
+            slots.push_back({{"id",i},{"eligible",r.eligible},{"priority",r.priority},{"ordinal",r.ordinal},{"captured_ordinal",r.writtenOrdinal},
+                {"reasons",s.reasons},{"ties",s.ties},{"excluded_sample_cap",r.excludedSampleCap},{"excluded_queue_cap",r.excludedQueueCap},
+                {"excluded_input_bytes",s.inputExcluded},{"replacements",r.replacements},{"censored",s.censored()},
+                {"file",r.eligible?Json(Experiment::missingFilename(i)):Json(nullptr)},{"file_sha256",r.eligible?Json(s.digest):Json(nullptr)}});
+        }
+        const auto value=Json{{"version",1},{"design",Experiment::MissingDesign},{"complete",complete},{"censored",censored},{"context",deepContext},
+            {"sample_every",config.missingSampleEvery},{"calls",missingCalls},{"sampled",missingSampled},{"excluded_mixed",missingMixed},{"valid_destination",missingValid},
+            {"admitted",missingAdmissions},{"completed",missingCompleted},{"obsolete_completed",missingObsolete},{"oracle_elapsed_ns",missingOracleNs},{"strata",std::move(slots)},
+            {"input_pending_limit",Experiment::MissingInputLimit},{"peak_input_reservations",missingPeakInput},{"peak_input_payload",missingPeakPayload},
+            {"pending_limit",Experiment::MissingPendingLimit},{"encoded_pending_limit",Experiment::MissingPendingLimit*Experiment::DeepRecordLimit},
+            {"record_limit",Experiment::DeepRecordLimit},{"final_limit",Experiment::MissingFinalLimit},{"transient_limit",Experiment::MissingTransientLimit},
+            {"free_reserve",Experiment::DeepFreeReserve},{"max_admissions",Experiment::MissingAdmissionLimit},
+            {"capture_timing","pre-legacy-reconciliation; immutable observed ledger, no extra reconciliation"},
+            {"population","independent hash over existing decision hooks plus exclusive active missing-field acquisition hook; not all worker ticks"},
+            {"input_accounting","same vector-capacity/metadata accounting as legacy; excludes allocator/node/shared-registry/pool/oracle RSS"}}.dump();
+        Experiment::replaceMissingFile(missingDirectory/"manifest.json",std::span(reinterpret_cast<const Uint8*>(value.data()),value.size()));
+    }
+    static void runMissing(void* context,std::size_t) noexcept {
+        auto& w=*static_cast<MissingWork*>(context);
+        try {
+            const auto start=std::chrono::steady_clock::now();const auto result=Oracle::evaluate(w.world,w.query,w.owners);
+            w.missingMetadata["oracle_elapsed_ns"]=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+            w.missingMetadata["oracle_expanded"]=result.expanded;
+            w.missingMetadata["optimum"]=result.best?Json(result.candidates[*result.best].distance):Json(nullptr);
+            const auto view=w.world.view();std::vector<Uint32> plane;
+            if(w.destinations) {
+                plane.resize(view.width*view.height);
+                for(Uint32 i=0;i<plane.size();++i) {auto x=w.destinations->x[i],y=w.destinations->y[i];plane[i]=x<view.width && y<view.height?Uint32(y*view.width+x):Oracle::NoTile;}
+            }
+            w.deepBytes=Experiment::encodeMissingEvent(w.missingMetadata,Uint32(view.width*view.height),plane,result.candidates);
+        }catch(...){w.error=std::current_exception();}
+        w.world={};w.owners.clear();w.destinations.reset();
+    }
+    void publishMissing(Uint64 tick,bool all=false) {
+        while(!missingPending.empty() && (all || Uint64(missingPending.front()->tick)+1<=tick)) {
+            auto& w=*missingPending.front();executor.join(w.batch,{all?JoinReason::Save:JoinReason::TickDeadline,Uint32(tick)});
+            if(w.error)std::rethrow_exception(w.error);
+            auto& slot=missingSlots.at(w.deepStratum);
+            if(slot.reservoir.ordinal==w.ordinal) {
+                Experiment::replaceMissingFile(missingDirectory/Experiment::missingFilename(w.deepStratum),w.deepBytes);
+                slot.digest=Online::Sha256::toHex(Online::Sha256::of(w.deepBytes));slot.reservoir.written(w.ordinal);
+            } else ++missingObsolete;
+            missingOracleNs+=w.missingMetadata.at("oracle_elapsed_ns").get<Uint64>();
+            missingInputReservations-=w.inputReservation;++missingCompleted;missingPending.pop_front();
+        }
+    }
     bool finished=false;
     Json deepContext;
     Experiment::DeepReservoir deep;
@@ -483,6 +542,7 @@ struct Probe::Impl
     {
         if (!config.sampleEvery || !config.maxSamples || !config.maxOutputBytes || !config.maxPending || config.maxPending>8)
             throw std::invalid_argument("invalid resource claim probe limits");
+        if(config.deepMissing && (config.deepContext.empty() || !config.missingSampleEvery || config.movementOnly))throw std::invalid_argument("missing capture requires full observer/context/sample rate");
         if(config.deepTopFour && !config.deepStratified)throw std::invalid_argument("top-four capture requires stratified capture");
         if(config.deepStratified && config.deepContext.empty())throw std::invalid_argument("stratified capture requires deep context");
         if (std::filesystem::exists(this->path)) throw std::runtime_error("resource claim probe output already exists");
@@ -496,6 +556,11 @@ struct Probe::Impl
             deepDirectory=std::filesystem::path(this->path).parent_path()/"resource-claims-deep";
             if(!std::filesystem::create_directory(deepDirectory))throw std::runtime_error("deep output already exists");
             deepManifest(false);
+            if(config.deepMissing) {
+                missingDirectory=std::filesystem::path(this->path).parent_path()/"resource-claims-missing";
+                if(!std::filesystem::create_directory(missingDirectory))throw std::runtime_error("missing output already exists");
+                missingManifest(false);
+            }
         }
         file=gzopen(this->path.c_str(),"wb6");
         if (!file) throw std::runtime_error("cannot open resource claim probe output");
@@ -504,6 +569,7 @@ struct Probe::Impl
     {
         // Explicit finish reports errors; teardown still waits for every borrower.
         for (auto& work:pending) { try { executor.join(work->batch,{JoinReason::Teardown,ComputeTelemetry::NoTick}); } catch (...) {} }
+        for(auto& work:missingPending){try{executor.join(work->batch,{JoinReason::Teardown,ComputeTelemetry::NoTick});}catch(...) {}}
         const auto joinBaseline=[&](Journey& journey){if(journey.baseline)try{executor.join(journey.baseline->batch,{JoinReason::Teardown,ComputeTelemetry::NoTick});}catch(...) {}};
         for(auto& [owner,journey]:journeys)joinBaseline(journey);
         for(auto& closed:closedJourneys)joinBaseline(closed.journey);
@@ -728,6 +794,7 @@ Probe::~Probe()=default;
 const Probe::Metrics& Probe::metrics() const {return impl->metrics;}
 void Probe::publish(Uint32 tick) {
     impl->publish(tick);
+    impl->publishMissing(tick);
     if(!impl->finished) {
         impl->publishBaselines(tick);impl->expireJourneys(tick);
         // Publications inside a decision can precede later moves at the same
@@ -740,6 +807,7 @@ void Probe::finish()
 {
     if(impl->finished)return;
     impl->publish(UINT32_MAX,true);
+    impl->publishMissing(UINT32_MAX,true);
     impl->publishBaselines(UINT32_MAX,true);
     while(!impl->journeys.empty())impl->closeJourney(impl->journeys.begin(),"end_of_segment",impl->latestLiveTick);
     const auto& m=impl->metrics;
@@ -770,6 +838,7 @@ void Probe::finish()
     if(gzclose(file)!=Z_OK) throw std::runtime_error("resource claim probe close failed; dataset is incomplete");
     impl->metrics.outputBytes=std::filesystem::file_size(impl->path);
     impl->deepManifest(true);
+    impl->missingManifest(true);
     impl->finished=true;
 }
 
@@ -941,9 +1010,69 @@ void Probe::finishDecisionOutcome(const DecisionOutcome& out,const Unit& unit) c
         {"final_task",unit.materialClaimTask},{"final_has_claim",unit.activeMaterialClaim.has_value()}}.dump()+"\n");
 }
 
+void Probe::missingDecision(Game& game,const Unit& unit,const Uint16* field,Uint32 pickupAccess,Uint64 legacyOrdinal,bool naturalOnly) const
+{
+    if(impl->finished || !impl->config.deepMissing || impl->config.movementOnly)return;
+    const auto ordinal=++impl->missingCalls;const auto owner=unitOwner(unit.gid,unit.scriptIdentity);
+    const auto seed=game.gameHeader.getRandomSeed();
+    if(mix(0x4d49535353414d50ull^mix(seed)^mix(owner)^mix(game.stepCounter)^mix(ordinal))%impl->config.missingSampleEvery)return;
+    ++impl->missingSampled;auto& map=game.map;
+    // Read-only classification: never project, request a field, reconcile claims,
+    // or run the live pooled-resource picker merely to observe a missing label.
+    const auto* natural=map.lookupMaterialGradientSlot(unit.owner->teamNumber,unit.destinationPurpose,unit.movementClass(),false,nullptr);
+    if((field && field!=natural) || (!field && !naturalOnly && unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets())) {++impl->missingMixed;return;}
+    const auto labels=field?map.materialGradientDestinations(field):nullptr;
+    const auto origin=Uint32(map.coordToIndex(unit.posX,unit.posY));
+    if(labels && labels->cells!=map.cellCount())throw std::logic_error("missing observer destination shape");
+    auto reason=!field?Experiment::MissingReason::MissingScalar:!labels?Experiment::MissingReason::MissingXYPlane:Experiment::MissingReason::InvalidXY;
+    if(labels && labels->x[origin]<map.getW() && labels->y[origin]<map.getH()){++impl->missingValid;return;}
+    const auto stratum=Experiment::missingStratum(reason,MaterialId(unit.destinationPurpose),pickupAccess!=UINT32_MAX);
+    auto& slot=impl->missingSlots[stratum];const auto rank=mix(0x4d49535352414e4bull^mix(seed)^mix(owner)^mix(game.stepCounter)^mix(ordinal)^mix(stratum));
+    const bool selected=slot.consider(rank,ordinal,reason);
+    if(!selected)return;
+    if(impl->missingAdmissions>=Experiment::MissingAdmissionLimit){slot.reservoir.excluded(false);return;}
+    if(impl->missingPending.size()>=Experiment::MissingPendingLimit){slot.reservoir.excluded(true);return;}
+    const Uint64 reserve=Uint64(map.cellCount())*Impl::CellInputAllowance+Uint64(Impl::MaximumTrackedClaimants)*Impl::OwnerInputAllowance+1024*1024;
+    if(reserve>Experiment::MissingInputLimit-impl->missingInputReservations){++slot.inputExcluded;return;}
+    auto w=std::make_unique<Impl::MissingWork>();w->inputReservation=reserve;w->ordinal=ordinal;w->tick=game.stepCounter;w->deepStratum=stratum;w->destinations=labels;
+    using C=SimulationSnapshot::Component;
+    const auto mask=SimulationSnapshot::bit(C::Catalogs)|SimulationSnapshot::bit(C::Terrain)|SimulationSnapshot::bit(C::Resources)
+        |SimulationSnapshot::bit(C::Occupancy)|SimulationSnapshot::bit(C::Areas)|SimulationSnapshot::bit(C::Visibility)|SimulationSnapshot::bit(C::Rules);
+    const auto before=impl->missingStorage.bytesCopied;
+    w->world=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),mask,nullptr,&impl->missingStorage,false);
+    if(impl->missingStorage.bytesCopied-before>reserve)throw std::runtime_error("missing observer capture exceeds input reservation");
+    w->owners=map.materialClaimLedger().entries();
+    w->query={owner,origin,Uint8(unit.destinationPurpose),{unit.movementClass(),unit.owner->me,unit.gid,OccupancyPolicy::Static}};
+    auto provenance=impl->deepContext;provenance.erase("game_id");provenance["metadata_mode"]=labels?"published-xy-invalid-origin":"absent-xy";provenance["censored"]=false;
+    w->missingMetadata={{"design",Experiment::MissingDesign},{"stratum",stratum},{"priority",rank},{"ordinal",ordinal},
+        {"legacy_ordinal",legacyOrdinal?Json(legacyOrdinal):Json(nullptr)},{"event_id",std::to_string(ordinal)},
+        {"game_id",impl->deepContext.at("game_id")},{"provenance",provenance},{"owner",owner},{"pre_task",unit.materialClaimTask},
+        {"tick",game.stepCounter},{"seed",seed},{"width",map.getW()},{"height",map.getH()},{"origin",origin},{"nearest",nullptr},
+        {"pickup_access",pickupAccess==UINT32_MAX?Json(nullptr):Json(pickupAccess)},{"phase",pickupAccess==UINT32_MAX?"movement":"pickup"},
+        {"material",unit.destinationPurpose},{"movement",unsigned(unit.movementClass())},{"team_mask",unit.owner->me},
+        {"field_present",field!=nullptr},{"label_present",bool(labels)},
+        {"reason",reason==Experiment::MissingReason::InvalidXY?"invalid_xy":reason==Experiment::MissingReason::MissingScalar?"missing_scalar":"missing_xy_plane"},
+        {"natural_only_hook",naturalOnly},{"supplier_capable_consumer",unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets()},
+        {"claims_enforced",map.activeClaimsEnabled()},{"ledger_timing","pre-legacy-reconcile observed state"},
+        {"farm_areas_enabled",map.farmAreasEnabled()},{"walk_speed",unit.performance[WALK]},{"swim_speed",unit.performance[SWIM]},
+        {"fly_speed",unit.performance[FLY]},{"hp",unit.hp},{"medical",int(unit.medical)}};
+    if(map.materialClaimPolicy()==ActiveClaimPolicy::Experimental) {
+        const auto canonical=map.materialClaimPolicyConfig().canonicalJson();w->missingMetadata["policy_config"]=Json::parse(canonical);w->missingMetadata["policy_digest"]=Online::Sha256::hex(canonical);
+    }else {w->missingMetadata["policy_config"]=nullptr;w->missingMetadata["policy_digest"]=nullptr;}
+    const auto payload=Impl::inputPayloadBytes(*w)+sizeof(Impl::MissingWork)-sizeof(Impl::Work)+w->missingMetadata.dump().size();
+    if(payload>reserve)throw std::runtime_error("missing observer copied payload exceeds reservation");
+    impl->missingPeakPayload=std::max(impl->missingPeakPayload,payload);
+    auto* raw=w.get();impl->missingPending.push_back(std::move(w));
+    const ComputeExecutor::Group group{1,{Impl::runMissing,raw},ComputeExecutor::NoLane};
+    try {raw->batch=impl->executor.submit(std::span(&group,1),ComputeExecutor::boundaryDue(Uint64(game.stepCounter)+1),{ComputeProducer::Other,game.stepCounter,Uint64(game.stepCounter)+1});}
+    catch(...){impl->missingPending.pop_back();throw;}
+    impl->missingInputReservations+=reserve;impl->missingPeakInput=std::max(impl->missingPeakInput,impl->missingInputReservations);++impl->missingAdmissions;
+}
+
 DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Uint32 pickupAccess)
 {
     if(impl->finished || impl->config.movementOnly)return {};
+    missingDecision(game,unit,field,pickupAccess,impl->metrics.decisions+1);
     auto& metrics=impl->metrics;
     const Uint64 ordinal=++metrics.decisions;
     ++impl->materialDecisions.at(unit.destinationPurpose);
