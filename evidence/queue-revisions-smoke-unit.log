@@ -1,0 +1,7 @@
+[20:39:41] building images (platform, music-worker, skin-render-worker, engine-agent, relay, caddy)
+[20:39:41] starting project test on https://localhost
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK
