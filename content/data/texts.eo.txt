@@ -5740,6 +5740,8 @@ Superkreskita vojo
 Laterito
 [cliffs]
 Klifoj
+[molten_lava_pool]
+Lageto de fandita lafo
 [terrain group water]
 Akvo
 [terrain group sand]

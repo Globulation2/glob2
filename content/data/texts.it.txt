@@ -5740,6 +5740,8 @@ Strada invasa dalla vegetazione
 Suolo lateritico
 [cliffs]
 Scogliere
+[molten_lava_pool]
+Pozza di lava fusa
 [terrain group water]
 Acqua
 [terrain group sand]

@@ -6858,6 +6858,8 @@ Jalan ditumbuhi tumbuhan
 Laterit
 [cliffs]
 Tebing
+[molten_lava_pool]
+Kolam lava lebur
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

@@ -5716,6 +5716,8 @@ AI से नहीं बना
 लेटराइट
 [cliffs]
 चट्टानें
+[molten_lava_pool]
+पिघले लावा का कुंड
 [terrain group water]
 पानी
 [terrain group sand]

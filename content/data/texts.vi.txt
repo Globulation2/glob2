@@ -5740,6 +5740,8 @@ Con đường cỏ mọc um tùm
 Đá ong
 [cliffs]
 Vách đá
+[molten_lava_pool]
+Hồ dung nham nóng chảy
 [terrain group water]
 Nước
 [terrain group sand]

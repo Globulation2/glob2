@@ -5740,6 +5740,8 @@ AI 生成ではない
 ラテライト
 [cliffs]
 断崖
+[molten_lava_pool]
+溶岩の池
 [terrain group water]
 水
 [terrain group sand]

@@ -5740,6 +5740,8 @@ Landaretzaz estalitako bidea
 Laterita
 [cliffs]
 Labarrak
+[molten_lava_pool]
+Laba urtuaren putzua
 [terrain group water]
 Ura
 [terrain group sand]

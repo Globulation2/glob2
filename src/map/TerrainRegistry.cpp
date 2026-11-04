@@ -346,6 +346,7 @@ unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
 		 : versionMinor < FILE_FORMAT_VERSION_OVERGROWN_ROAD ? TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD
 		 : versionMinor < FILE_FORMAT_VERSION_LATERITE ? TERRAIN_COUNT_BEFORE_LATERITE
 		 : versionMinor < FILE_FORMAT_VERSION_CLIFFS ? TERRAIN_COUNT_BEFORE_CLIFFS
+		 : versionMinor < FILE_FORMAT_VERSION_MOLTEN_LAVA_POOL ? TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL
 																   : unsigned(TERRAIN_COUNT);
 }
 std::optional<unsigned> TerrainRegistry::currentTerrainId(unsigned savedBuiltins, unsigned saved)
@@ -360,7 +361,8 @@ std::optional<unsigned> TerrainRegistry::currentTerrainId(unsigned savedBuiltins
 		savedBuiltins == TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE || savedBuiltins == TERRAIN_COUNT_BEFORE_HARDPAN ||
 		savedBuiltins == TERRAIN_COUNT_BEFORE_TUNDRA || savedBuiltins == TERRAIN_COUNT_BEFORE_VOLCANIC_ASH ||
 		savedBuiltins == TERRAIN_COUNT_BEFORE_GLACIER_ICE || savedBuiltins == TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD ||
-		savedBuiltins == TERRAIN_COUNT_BEFORE_LATERITE || savedBuiltins == TERRAIN_COUNT_BEFORE_CLIFFS)
+		savedBuiltins == TERRAIN_COUNT_BEFORE_LATERITE || savedBuiltins == TERRAIN_COUNT_BEFORE_CLIFFS ||
+		savedBuiltins == TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL)
 		return saved < savedBuiltins ? saved : saved - savedBuiltins + TERRAIN_COUNT;
 	// Older files: the classic five keep their IDs; 5 and 6 were the shores.
 	if (saved <= TRAIL)
@@ -386,7 +388,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_GLACIER_ICE &&
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD &&
 		savedBuiltinCount != TERRAIN_COUNT_BEFORE_LATERITE && savedBuiltinCount != TERRAIN_COUNT_BEFORE_CLIFFS &&
-		savedBuiltinCount != TERRAIN_COUNT)
+		savedBuiltinCount != TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL && savedBuiltinCount != TERRAIN_COUNT)
 		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);
 	if (j.at("terrains").empty())

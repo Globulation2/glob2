@@ -5740,6 +5740,8 @@ AI 생성 아님
 라테라이트
 [cliffs]
 절벽
+[molten_lava_pool]
+용암 웅덩이
 [terrain group water]
 물
 [terrain group sand]

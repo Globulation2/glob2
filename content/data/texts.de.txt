@@ -5740,6 +5740,8 @@ Gletschereis
 Laterit
 [cliffs]
 Klippen
+[molten_lava_pool]
+Lavasee
 [terrain group water]
 Wasser
 [terrain group sand]

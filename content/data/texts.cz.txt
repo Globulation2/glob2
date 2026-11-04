@@ -5740,6 +5740,8 @@ Zarostlá cesta
 Laterit
 [cliffs]
 Útesy
+[molten_lava_pool]
+Jezírko roztavené lávy
 [terrain group water]
 Voda
 [terrain group sand]

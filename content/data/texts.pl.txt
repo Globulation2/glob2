@@ -5740,6 +5740,8 @@ Zarośnięta droga
 Lateryt
 [cliffs]
 Klify
+[molten_lava_pool]
+Jezioro roztopionej lawy
 [terrain group water]
 Woda
 [terrain group sand]

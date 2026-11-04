@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 45 built-in materials, including grass, sand, their lush, dry, dune, pale and
+All 47 built-in materials, including grass, sand, their lush, dry, dune, pale and
 windy dune looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Each material is a small
 pack that can be tuned on its own: its recipe and render function live in
@@ -16,7 +16,7 @@ helpers and the recipe registry. A material's provenance records the pipeline,
 the shared library, its own module and the family helpers it imports, so tuning
 one material changes only that material's record. To add a material, add a
 module there; the package registers every module it contains. Static materials have four
-interchangeable 8×8 layouts (256 variants), and so do lava and ember field, so
+interchangeable 8×8 layouts (256 variants), and so do lava, ember field and molten lava pool, so
 their glow no longer repeats on the 8×8 grid (1,024 frames each over four
 phases); water and deep water have one 4×4 layout, keeping their animated
 banks at 256 frames each. Frames are stored as
@@ -69,7 +69,7 @@ wrapped boundary, before it is sliced. One affine luma transform, computed from
 the pooled native statistics, gives every frame the same tone.
 
 All built-in recipes declare `periodic=True` and a `grid`; static recipes use
-`grid=8, blocks=4`, as do lava and ember field, and the waters `grid=4`:
+`grid=8, blocks=4`, as do lava, ember field and molten lava pool, and the waters `grid=4`:
 cell position selects the corresponding frame within one seeded layout, and
 runtime and compiled packs skip border preparation. This includes object-based
 grounds such as heath as well as the legacy bindings.
@@ -99,7 +99,7 @@ colour and material stay free per biome:
 | --- | --- | --- |
 | Grass | baseline, no mark | |
 | Fertile (loam, moss, spring meadow) | warm, saturated ground | |
-| Water, deep water, lava | reserved colour | |
+| Water, deep water, lava (lava, ember field, molten lava pool) | reserved colour | |
 | Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
 | Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
@@ -137,7 +137,12 @@ with salt bloom and a few damp sunken plates; scree is big jagged slabs heaped
 over one another, each tipped to its own brightness; pumice field is dark porous
 volcanic rock riddled with vesicles, beside lava and ember field; hardpan is pale
 baked crust in small, even, low pillows split by thin cracks, dimpled at their
-centres, with a few shallow damp hollows. Frozen lake
+centres, with a few shallow damp hollows. Molten lava pool plays exactly like
+lava, but brighter and hotter: thin red-hot crust plates about a cell across
+float on a molten pool, split by a few wide yellow trunk channels that taper
+into branches and thin seams, with an orange halo bleeding into each plate's
+rim, connected orange secondary cracks and lumpy crust; each plate's channels
+and halo pulse on their own clock. Frozen lake
 plays exactly like ice: frosted teal lake ice with a few long white pressure
 cracks, trapped bubbles and frost patches, static and paler than any water.
 Glacier ice also plays exactly like ice: bright cyan-blue depth in broad calm
@@ -519,7 +524,7 @@ without pair treatments. Classes, strongest first:
 | `cover` | hedge, thicket, cliffs | `canopy` |
 | `cut` | void_hole, chasm | `crisp` |
 | `built` | road, brick_path, sandstone, overgrown_road, boardwalk | `paved`, `crisp` |
-| `flow` | lava, ember_field | `molten` |
+| `flow` | lava, ember_field, molten_lava_pool | `molten` |
 | `solid` | everything else | `rock`, `soil`, `frozen`, `brush`, `turf`, `sand` |
 | `pool` (shoreline) | water, deep_water, dark_water | `still` |
 
@@ -529,7 +534,7 @@ without pair treatments. Classes, strongest first:
 | `crisp` | patch | 20 | 96 / 256 / 128 / 0 / 256 | void_hole, chasm, boardwalk |
 | `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone, overgrown_road |
 | `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | none since dirt track became brick path; kept for future tracks |
-| `molten` | smooth, wiggle 1536 / 64 px | 0 | – / – / 320 / – / 512 | lava, ember_field |
+| `molten` | smooth, wiggle 1536 / 64 px | 0 | – / – / 320 / – / 512 | lava, ember_field, molten_lava_pool |
 | `still` | smooth, wiggle 1536 / 128 px | 0 | – / – / 320 / – / 640 | water, deep_water, dark_water |
 | `rock` | contextual | 50 | 384 / 896 / 192 / 448 / 192 | boulders, ridge_rock, outcrop, scree, shale, pumice, weathered_sandstone |
 | `soil` | contextual | 40 / `shore` | 288 / 896 / 448 / 320 / 512 | dirt, clay, volcanic_ash, mud, mudflat, hardpan, deep_snow, wind_swept_snow, loam, moss |
@@ -565,7 +570,7 @@ exception the classes cannot express, not the way to tune a material.
 | 5 | water (existing) | 72 / 640 |
 | 4 | boulders, hedge, thicket, cliffs | 88 / 832, a sense of height on the grass side |
 | 4 | ridge_rock, outcrop | 72 / 768 |
-| 4 | lava, ember_field | no cast; scorch fringe `[214,110,40]` 128/640 and `[160,80,40]` 96/512 |
+| 4 | lava, ember_field, molten_lava_pool | no cast; scorch fringe `[214,110,40]` 128/640, `[160,80,40]` 96/512 and a hotter `[255,120,10]` 160/768 |
 | 4 | ice (existing), frozen_lake, glacier_ice | 64 / 640 with frost fringe |
 | 3 | road (existing), brick_path, boardwalk, sandstone, overgrown_road | 48 / 512 |
 | 3 | deep_snow, wind_swept_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |

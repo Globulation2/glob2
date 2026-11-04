@@ -5740,6 +5740,8 @@ Jalan ditumbuhi tanaman
 Laterit
 [cliffs]
 Tebing
+[molten_lava_pool]
+Kolam lava cair
 [terrain group water]
 Air
 [terrain group sand]

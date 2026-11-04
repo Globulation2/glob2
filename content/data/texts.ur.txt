@@ -5716,6 +5716,8 @@ AI کی بنائی ہوئی نہیں
 لیٹرائٹ
 [cliffs]
 چٹانیں
+[molten_lava_pool]
+پگھلے لاوے کا تالاب
 [terrain group water]
 پانی
 [terrain group sand]

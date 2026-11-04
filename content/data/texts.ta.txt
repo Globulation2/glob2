@@ -6856,6 +6856,8 @@ GL மட்டும்
 செம்புரை
 [cliffs]
 செங்குத்துப் பாறைகள்
+[molten_lava_pool]
+உருகிய லாவா குளம்
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]

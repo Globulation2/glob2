@@ -376,6 +376,17 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(cliffless->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeCliffs.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeCliffs.dump(), TERRAIN_COUNT_BEFORE_LATERITE));
+
+		// Format 206 numbers its definitions from 46, before molten lava pool.
+		auto beforePool = Json::parse(registry->serialize());
+		for (auto &item : beforePool["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL;
+		const auto cliffsFormat = TerrainRegistry::deserialize(beforePool.dump(), TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL);
+		CHECK(cliffsFormat->serialize() == registry->serialize());
+		CHECK(cliffsFormat->digest() == registry->digest());
+		CHECK(cliffsFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforePool.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforePool.dump(), TERRAIN_COUNT_BEFORE_CLIFFS));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

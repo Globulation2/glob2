@@ -5740,6 +5740,8 @@ Camí envaït per la vegetació
 Laterita
 [cliffs]
 Penya-segats
+[molten_lava_pool]
+Bassa de lava fosa
 [terrain group water]
 Aigua
 [terrain group sand]

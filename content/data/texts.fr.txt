@@ -5740,6 +5740,8 @@ Route envahie par la végétation
 Latérite
 [cliffs]
 Falaises
+[molten_lava_pool]
+Bassin de lave en fusion
 [terrain group water]
 Eau
 [terrain group sand]

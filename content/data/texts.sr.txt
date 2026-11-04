@@ -5740,6 +5740,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Латерит
 [cliffs]
 Литице
+[molten_lava_pool]
+Језеро растопљене лаве
 [terrain group water]
 Вода
 [terrain group sand]

@@ -5740,6 +5740,8 @@ Umpeen kasvanut tie
 Lateriitti
 [cliffs]
 Jyrkänteet
+[molten_lava_pool]
+Sulan laavan allas
 [terrain group water]
 Vesi
 [terrain group sand]

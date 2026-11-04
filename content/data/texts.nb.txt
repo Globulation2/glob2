@@ -5716,6 +5716,8 @@ Gjengrodd vei
 Laterittjord
 [cliffs]
 Klipper
+[molten_lava_pool]
+Pøl av smeltet lava
 [terrain group water]
 Vann
 [terrain group sand]

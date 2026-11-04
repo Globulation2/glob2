@@ -5740,6 +5740,8 @@ Drum năpădit de vegetație
 Laterit
 [cliffs]
 Stânci
+[molten_lava_pool]
+Lac de lavă topită
 [terrain group water]
 Apă
 [terrain group sand]

@@ -265,7 +265,8 @@ checksum adapter remains available for diagnostic fixtures.
   (Rough, like mud) for 40; format 200 appended `TUNDRA` (Barren, like dirt) for 41; format 201 appended `VOLCANIC_ASH` (Barren, like
   dirt) for 42; format 202 appended `GLACIER_ICE` (Ice, like ice) for
   43; format 203 appended `OVERGROWN_ROAD` (Paths, like road) for 44; format 204 appended `LATERITE` (Barren, like dirt) for 45; format 206 appended `CLIFFS`
-  (Obstacles, like hedge) for `TERRAIN_COUNT` 46.
+  (Obstacles, like hedge) for 46; format 207 appended `MOLTEN_LAVA_POOL` (Lava, like lava) for
+  `TERRAIN_COUNT` 47.
   Built-in IDs only
   ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
   a format gate. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
@@ -274,8 +275,9 @@ checksum adapter remains available for diagnostic fixtures.
   `TERRAIN_COUNT_BEFORE_WIND_SWEPT_SNOW`, `TERRAIN_COUNT_BEFORE_WEATHERED_SANDSTONE`,
   `TERRAIN_COUNT_BEFORE_WINDY_SAND_DUNE`, `TERRAIN_COUNT_BEFORE_HARDPAN`,
   `TERRAIN_COUNT_BEFORE_TUNDRA`,
-  `TERRAIN_COUNT_BEFORE_VOLCANIC_ASH`, `TERRAIN_COUNT_BEFORE_GLACIER_ICE` `TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD`
-  `TERRAIN_COUNT_BEFORE_LATERITE` or `TERRAIN_COUNT_BEFORE_CLIFFS` for older files),
+  `TERRAIN_COUNT_BEFORE_VOLCANIC_ASH`, `TERRAIN_COUNT_BEFORE_GLACIER_ICE`,
+  `TERRAIN_COUNT_BEFORE_OVERGROWN_ROAD`, `TERRAIN_COUNT_BEFORE_LATERITE`, `TERRAIN_COUNT_BEFORE_CLIFFS`
+  or `TERRAIN_COUNT_BEFORE_MOLTEN_LAVA_POOL` for older files),
   `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
   `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize
   with shifted IDs, so their digest changes and replays that embed one no longer

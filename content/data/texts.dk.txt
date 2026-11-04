@@ -5740,6 +5740,8 @@ Tilgroet vej
 Laterit
 [cliffs]
 Klipper
+[molten_lava_pool]
+Pøl af smeltet lava
 [terrain group water]
 Vand
 [terrain group sand]

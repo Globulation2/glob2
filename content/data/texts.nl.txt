@@ -5740,6 +5740,8 @@ Overwoekerde weg
 Lateriet
 [cliffs]
 Kliffen
+[molten_lava_pool]
+Poel van gesmolten lava
 [terrain group water]
 Water
 [terrain group sand]

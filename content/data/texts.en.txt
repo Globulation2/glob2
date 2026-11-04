@@ -5718,6 +5718,8 @@ Overgrown road
 Laterite
 [cliffs]
 Cliffs
+[molten_lava_pool]
+Molten lava pool
 [terrain group water]
 Water
 [terrain group sand]
