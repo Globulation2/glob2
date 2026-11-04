@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "MobilePaths.h"
+#include "AssetIndex.h"
 #include "TemporaryFiles.h"
 #include "Documents.h"
 #include <SDL3/SDL.h>
@@ -43,12 +44,7 @@ std::string readAsset(const char* name)
 {
     Stream stream(SDL_IOFromFile(name,"rb"),SDL_CloseIO);
     if(!stream) throw std::runtime_error(std::string("Cannot open packaged asset: ")+name);
-    auto size=SDL_GetIOSize(stream.get());
-    if(size<0 || size>1024*1024) throw std::runtime_error("Invalid asset index size");
-    std::string contents(size,'\0');
-    if(SDL_ReadIO(stream.get(),contents.data(),contents.size())!=contents.size())
-        throw std::runtime_error("Cannot read asset index");
-    return contents;
+    return MobileAssetIndex::read(stream.get());
 }
 }
 void initializeMobilePaths()
