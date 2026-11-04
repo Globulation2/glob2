@@ -127,7 +127,14 @@ def build_mobile(directory, identity, arguments):
         bind_online_error_objects(env, by_source, online_error_catalog)
         objects = unique([by_source[name] for name in files]) + script_objects
         numeric_guard(strict, [by_source[name] for name in files if guarded_numeric_source(name)])
-        program = record(env, env.SharedLibrary(str(output / 'lib/main'), objects), 'link')
+        # Only Android and SDL entry points need dynamic visibility. Keep the
+        # version script off the test executable and dependency link commands.
+        client_link = env.Clone()
+        exports = 'platforms/mobile/android/libmain.exports'
+        client_link.Append(LINKFLAGS=['-Wl,--version-script=' + exports,
+                                     '-Wl,--no-undefined-version'])
+        program = record(client_link, client_link.SharedLibrary(str(output / 'lib/main'), objects), 'link')
+        client_link.Depends(program, client_link.File(exports))
         if 'android-tests' in COMMAND_LINE_TARGETS:
             # Cross-compile the two doctest binaries from test/tests.py as Android PIE
             # executables for adb shell (platforms/mobile/android_device_tests.py). They reuse the

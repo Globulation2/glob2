@@ -1,0 +1,7 @@
+{
+    global:
+        SDL_main;
+        Java_org_globulation2_glob2_Glob2Activity_documentResult;
+    local:
+        *;
+};
