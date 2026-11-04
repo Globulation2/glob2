@@ -937,6 +937,19 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(FROZEN_LAKE).name) == "frozen_lake");
 		CHECK(TerrainRegistry::builtins()->find("frozen_lake") == FROZEN_LAKE);
 	}
+	TEST_CASE("tundra shares every rule of the barren group")
+	{
+		CHECK(terrainGroup(TUNDRA) == TerrainGroup::Barren);
+		CHECK(terrainPaintable(TUNDRA));
+		for (TerrainType member : {DIRT, CLAY, SHALE, HEATH})
+		{
+			CHECK(sameTerrainProperties(terrainProperties(TUNDRA), terrainProperties(member)));
+			CHECK(TerrainRegistry::builtins()->propertyIndex(TUNDRA) ==
+				  TerrainRegistry::builtins()->propertyIndex(member));
+		}
+		CHECK(std::string(terrainPresentation(TUNDRA).name) == "tundra");
+		CHECK(TerrainRegistry::builtins()->find("tundra") == TUNDRA);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},

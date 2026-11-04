@@ -173,6 +173,11 @@ TEST_SUITE("BrushCatalog")
 		CHECK(paths->entries.back().id == "terrain/sandstone");
 		CHECK(rough->entries.back().id == "terrain/pumice");
 		CHECK(ice->entries.back().id == "terrain/frozen_lake");
+		// Tundra closes the barren brushes.
+		const auto *barren = findBrushGroup(catalog, BrushSection::Terrain, "barren");
+		REQUIRE(barren);
+		REQUIRE_FALSE(barren->entries.empty());
+		CHECK(barren->entries.back().id == "terrain/tundra");
 
 		// Resources: every registry entry, foundation ones included, with placement
 		// validity taken from the map's habitat rules.

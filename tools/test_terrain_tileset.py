@@ -49,7 +49,8 @@ class TerrainTileset(unittest.TestCase):
                 self.assertEqual(border_profile(self.document, a, b), profile)
                 self.assertEqual(border_profile(self.document, b, a), profile)
         table = border_table(self.document)
-        self.assertEqual(len(table), 33 * 32 // 2)
+        materials = len(self.document["materials"])
+        self.assertEqual(len(table), materials * (materials - 1) // 2)
         # An explicit pair treatment remains an escape hatch.
         self.document["pair_treatments"] = [{"a": "water", "b": "grass", "profile": "beach"}]
         self.assertEqual(border_profile(self.document, "grass", "water"), "beach")

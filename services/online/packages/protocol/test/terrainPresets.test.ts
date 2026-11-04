@@ -24,7 +24,7 @@ describe('built-in terrain presets', () => {
     );
     expect(names.length).toBeGreaterThan(30);
     expect(TERRAIN_PRESETS).toEqual(names);
-    expect(TERRAIN_PRESETS.slice(-4)).toEqual(['pale_sand', 'sandstone', 'pumice', 'frozen_lake']);
+    expect(TERRAIN_PRESETS.slice(-5)).toEqual(['pale_sand', 'sandstone', 'pumice', 'frozen_lake', 'tundra']);
   });
 
   it('map every retired name to a current preset', () => {

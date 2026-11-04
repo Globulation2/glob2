@@ -245,11 +245,13 @@ checksum adapter remains available for diagnostic fixtures.
   shore types (IDs 5 and 6), moving the catalogue down by two to 29; format 191
   appended the grass and sand looks (`LUSH_GRASS`, `DRY_GRASS`, `DUNE_SAND`,
   `PALE_SAND`, in the Grass and Sand groups) for 33; format 195 appended `SANDSTONE`
-  (Paths), `PUMICE` (Rough) and `FROZEN_LAKE` (Ice) for `TERRAIN_COUNT` 36. Built-in IDs only
+  (Paths), `PUMICE` (Rough) and `FROZEN_LAKE` (Ice) for 36; format 196 appended
+  `TUNDRA` (Barren) for `TERRAIN_COUNT` 37. Built-in IDs only
   ever grow at the end, but custom IDs follow the built-ins, so appending a type needs
   a format gate. `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
   (`TERRAIN_COUNT_BEFORE_CATALOGUE`, `TERRAIN_COUNT_BEFORE_VERTEX`,
-  `TERRAIN_COUNT_BEFORE_GROUND_LOOKS` or `TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE` for
+  `TERRAIN_COUNT_BEFORE_GROUND_LOOKS`, `TERRAIN_COUNT_BEFORE_SANDSTONE_PUMICE` or
+  `TERRAIN_COUNT_BEFORE_TUNDRA` for
   older files),
   `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
   `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize
