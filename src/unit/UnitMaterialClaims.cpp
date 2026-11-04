@@ -337,7 +337,7 @@ void Unit::handleActiveMaterialMovement()
             if(refresh)if(const auto* probe=map.resourceClaimProbe())probe->liveEvent(*this,!selected?ResourceClaims::Probe::LiveEvent::GoalRefreshFailed:
                 previousTask==materialClaimTask?ResourceClaims::Probe::LiveEvent::GoalRefreshSame:ResourceClaims::Probe::LiveEvent::GoalRefreshChanged);
         }
-        else if(observer)outcome->noAttempt="missing_field";
+        else if(observer) {observer->missingDecision(*owner->game,*this,nullptr,UINT32_MAX,0,true);outcome->noAttempt="missing_field";}
         // Failed refresh leaves the old valid reservation and route untouched.
     }
     if(observer)observer->selectedDecisionOutcome(*outcome,*this);

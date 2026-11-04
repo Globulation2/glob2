@@ -387,6 +387,8 @@ void constraints(const Request &r)
         if(r.has("--resource-claims-movement-only") && (r.has("--resource-claims-shadow") || r.has("--resource-claims-probe") || r.has("--resource-claims-deep-context")))
             throw std::invalid_argument("movement-only observer excludes decision, shadow and deep observation");
         requireParent("--resource-claims-deep-stratified", "--resource-claims-deep-context");
+        requireParent("--resource-claims-missing-sample-every", "--resource-claims-deep-missing");
+        requireParent("--resource-claims-deep-missing", "--resource-claims-deep-context");
         requireParent("--resource-claims-deep-top-four", "--resource-claims-deep-stratified");
         requireParent("--resource-claims-deep-top-k", "--resource-claims-deep-stratified");
         if(r.has("--resource-claims-deep-top-k") && r.has("--resource-claims-deep-top-four"))throw std::invalid_argument("select only one top-k capture mode");
@@ -590,6 +592,8 @@ const std::vector<Command> &commands()
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
              value("--resource-claims-deep-context", "json", "Temporary bounded min-hash capture provenance: source_revision,bundle_id,cohort_id,game_id"),
              flag("--resource-claims-deep-stratified", "Temporary V2 sixteen-stratum deep capture; requires deep context"),
+             integer("--resource-claims-missing-sample-every", "Independent missing-destination diagnostic sample period", 1, 1000000000, "256"),
+             flag("--resource-claims-deep-missing", "Temporary independent missing-destination capture; requires deep context"),
              flag("--resource-claims-deep-top-four", "Temporary V3 bottom-four capture per stratum; requires stratified capture"),
              integer("--resource-claims-deep-top-k", "Temporary V4 retained samples per stratum", 1, 16),
              flag("--resource-claims-probe", "Collect diagnostic claim decisions from an active-policy game without a shadow ledger"),

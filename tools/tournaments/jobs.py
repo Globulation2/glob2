@@ -120,7 +120,7 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified', 'resource_claims_deep_top_four', 'resource_claims_deep_top_k', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'experiments', 'win_probability_permille', 'resource_gradient_collection', 'resource_claims_shadow', 'resource_claims_probe', 'resource_claims_movement_only', 'resource_claims_active', 'resource_claims_policy', 'resource_claims_deep_context', 'resource_claims_deep_stratified', 'resource_claims_deep_top_four', 'resource_claims_deep_top_k', 'resource_claims_deep_missing', 'resource_claims_missing_sample_every', 'material_destinations', 'benchmark_warmup_ticks', 'gradient_backend'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
@@ -157,6 +157,12 @@ class EngineJob:
             raise ValueError('stratified capture requires explicit true and deep context')
         if 'resource_claims_deep_top_k' in config and (type(config['resource_claims_deep_top_k']) is not int or not 1 <= config['resource_claims_deep_top_k'] <= 16 or config.get('resource_claims_deep_stratified') is not True or 'resource_claims_deep_top_four' in config):
             raise ValueError('configured top-k requires integer1..16 and stratified, excludes legacy flag')
+        if 'resource_claims_missing_sample_every' in config and (config.get('resource_claims_deep_missing') is not True or type(config['resource_claims_missing_sample_every']) is not int or not 1 <= config['resource_claims_missing_sample_every'] <= 1000000000):
+            raise ValueError('invalid independent missing sample period')
+        if 'resource_claims_deep_missing' in config and (config['resource_claims_deep_missing'] is not True or 'resource_claims_deep_context' not in config):
+            raise ValueError('missing-destination capture requires deep context')
+        if config.get('resource_claims_deep_missing') and 'resource-claims-missing/manifest.json' not in job['outputs'].get('required', []):
+            raise ValueError('missing capture requires its manifest output')
         if 'resource_claims_deep_top_four' in config and (config['resource_claims_deep_top_four'] is not True or config.get('resource_claims_deep_stratified') is not True):
             raise ValueError('top-four capture requires explicit true and stratified capture')
         if 'resource_claims_deep_context' in config:
@@ -265,6 +271,8 @@ class EngineJob:
                 *(['game', 'run'] if self.kind == 'game' else ['map', 'study', str(job['config']['generator'])]),
                 '--output-dir', str(out), '--profile', 'glob2-tournament-' + Path(attempt_dir).name]
         config, outputs = job['config'], job['outputs']
+        if config.get('resource_claims_deep_missing') and bundle.get('capabilities', {}).get('resource_claims_deep_missing_version') != 1:
+            raise ValueError('bundle lacks missing-destination capture capability')
         if 'resource_claims_deep_top_k' in config and (bundle.get('capabilities', {}).get('resource_claims_deep_topk_version') != 4 or bundle.get('capabilities', {}).get('resource_claims_deep_topk_max', 0) < config['resource_claims_deep_top_k']):
             raise ValueError('bundle lacks configured V4 top-k capture')
         if config.get('resource_claims_deep_top_four') and bundle.get('capabilities', {}).get('resource_claims_deep_topk_version') not in (3, 4):
@@ -325,6 +333,9 @@ class EngineJob:
                     args.append('--resource-claims-deep-stratified')
                 if 'resource_claims_deep_top_k' in config:
                     add('--resource-claims-deep-top-k', config['resource_claims_deep_top_k'])
+                if config.get('resource_claims_deep_missing'):
+                    args.append('--resource-claims-deep-missing')
+                    add('--resource-claims-missing-sample-every', config.get('resource_claims_missing_sample_every', 256))
                 if config.get('resource_claims_deep_top_four'):
                     args.append('--resource-claims-deep-top-four')
             if 'resource_claims_active' in config:
@@ -476,6 +487,16 @@ class EngineJob:
                 raise ValueError('oversized deep manifest')
             manifest = json.loads((deep / 'manifest.json').read_text())
             context = job['config']['resource_claims_deep_context']
+            if job['config'].get('resource_claims_deep_missing'):
+                from .claim_capture_missing import read_missing_captures
+                missing = path.parent / 'resource-claims-missing'
+                if (missing / 'manifest.json').stat().st_size > 65536:
+                    raise ValueError('oversized missing manifest')
+                missing_manifest = json.loads((missing / 'manifest.json').read_text())
+                if missing_manifest.get('context') != context or missing_manifest.get('sample_every') != job['config'].get('resource_claims_missing_sample_every', 256):
+                    raise ValueError('missing stream context/sampling mismatch')
+                for _ in read_missing_captures(missing, missing_manifest, expected_provenance={k:v for k,v in context.items() if k != 'game_id'}):
+                    pass
             if 'resource_claims_deep_top_k' in job['config']:
                 from .claim_capture_scalable import read_scalable_captures
                 if manifest.get('context') != context or manifest.get('top_k') != job['config']['resource_claims_deep_top_k']:
