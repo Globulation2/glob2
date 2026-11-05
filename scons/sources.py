@@ -172,6 +172,7 @@ CLIENT_SOURCES = (
     'render/terrain/TerrainMaterials.cpp',
     'render/terrain/TerrainBorderRules.cpp',
     'render/terrain/TerrainSmoothBorders.cpp',
+    'render/terrain/TerrainStones.cpp',
     'render/terrain/TerrainCatalogIO.cpp',
     'render/terrain/TerrainCompositor.cpp',
     'render/terrain/DirectTerrain.cpp',

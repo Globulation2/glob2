@@ -811,6 +811,10 @@ class Recipe:
     blocks: int = 1
     block_group: str = ""
     note: str = ""
+    # Laid stone paths whose edges follow whole stones ("stones" in the
+    # catalog): the runtime keeps or drops each stone as a unit, so a border
+    # never cuts one. Sawn materials such as boardwalk leave this off.
+    stone_edges: bool = False
 
     @property
     def cells(self):
@@ -858,6 +862,8 @@ class Ctx:
         self.t = phase / phases
         # Shared by every variant of a periodic material (and every phase).
         self.base_rng = random.Random(fnv1a32(f"{name}:base"))
+        # Laid-stone geometry recorded by record_stones, for stone maps.
+        self.stones = None
 
     @property
     def interior_mask(self):
@@ -869,6 +875,19 @@ class Ctx:
             return self.rng.random() * self.size, self.rng.random() * self.size
         span = max(1.0, N - 2 * margin)
         return margin + self.rng.random() * span, margin + self.rng.random() * span
+
+
+def record_stones(ctx, ids, edge, centres, inlays=()):
+    """Keep a laid surface's stone geometry on the render context.
+
+    `ids` gives each render pixel's stone, `edge` its distance from the stone
+    face's edge in render pixels (negative inside the joint) and `centres`
+    each stone's centre. `inlays` names small stones set between others, such
+    as keystones, which follow the stones around them at a border rather than
+    standing alone. The stone layout is common to every layout of the block,
+    so any layout's record describes the world's stones.
+    """
+    ctx.stones = (ids, edge, centres, frozenset(inlays))
 
 
 def ground(ctx, cells, octaves, anchors, warp=0.0, stretch=(0.02, 0.98), grit=0.12):

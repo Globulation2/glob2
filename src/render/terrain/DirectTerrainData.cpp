@@ -144,8 +144,7 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
             if (streamCoverage && i % 64 == 0) co_yield 0;
             const auto recipe = compositor.describe(map, x, y);
             calm[i] = recipe.calm;
-            if (std::all_of(recipe.corners.begin(), recipe.corners.end(),
-                            [&](auto id) { return id == recipe.corners.front(); }))
+            if (recipe.uniform())
             {
                 cells[i][0] = variantSlot(recipe, recipe.corners.front());
                 continue;
@@ -170,10 +169,10 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
         const auto &recipe = mixed[i];
         const auto cell = map.coordToIndex(recipe.x, recipe.y);
         auto &record = cells[cell];
-        unsigned slot = 0;
-        for (auto corner = recipe.corners.begin(); corner != recipe.corners.end(); ++corner)
-            if (std::find(recipe.corners.begin(), corner, *corner) == corner)
-                record[slot++] = variantSlot(recipe, *corner);
+        // The record's slots follow the coverage palette: corners, then stones.
+        std::array<TerrainVisual::MaterialId, 4> palette;
+        for (unsigned slot = 0, n = recipe.palette(palette); slot < n; ++slot)
+            record[slot] = variantSlot(recipe, palette[slot]);
         masks[cell] = Uint16(i + 1);
     }
     if (!streamCoverage)

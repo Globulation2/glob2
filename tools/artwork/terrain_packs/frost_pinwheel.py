@@ -4,6 +4,7 @@
 from ._frost_paths import FROST, SEAM, weather
 from ._paving import decay_fields, dress, rectangle_geometry, stone_colour, stone_fates
 from terrain_core import (
+    record_stones,
     NATIVE_PX,
     RECIPES,
     Style,
@@ -39,7 +40,7 @@ def pinwheel_rectangles(size, cell, offset):
         palette={**FROST, "dark": (186, 186, 198), "mid": (210, 210, 220), "light": (232, 232, 240),
                  "warm": (222, 216, 214), "cool": (194, 198, 228), "ice": (124, 144, 204), "ice_light": (184, 196, 236),
                  "glint": (255, 255, 255)},
-        style=Style(luma=188, std=20, grain_max=12, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=188, std=20, grain_max=12, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_frost_pinwheel(ctx):
     """Frosted quartz pavers in a pinwheel around clear blue ice squares, with
     crystal glints and hoarfrost spreading out of the joints."""
@@ -62,4 +63,6 @@ def render_frost_pinwheel(ctx):
                 joint=(0.0, 2.0), creep=3.5, chipping=1.0, bevel=2.0, bevel_strength=0.3,
                 moss=1.0, weeds=0.6, lichen=0.6, grit=0.7, dust=0.18, lip=0.2, shadow=0.35, damp=0.5)
     rgb = weather(ctx, rgb, edge, decay, streaks=0.5, glaze=0.25)
+    # The ice squares are inlays: they follow the pavers turning around them.
+    record_stones(ctx, ids, edge, centres, inlays=squares)
     return rgb, None

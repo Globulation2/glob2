@@ -50,7 +50,7 @@ def ashlar(size, rng):
         palette={**SLATE_GROUND, "dark": (58, 62, 70), "mid": (94, 100, 108), "light": (132, 138, 144),
                  "warm": (112, 102, 94), "cool": (78, 92, 112), "stain": (120, 92, 70), "fresh": (62, 72, 90),
                  "lichen_pale": (178, 180, 170), "lichen_ochre": (170, 156, 96)},
-        style=Style(luma=96, std=20, grain_max=14, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=96, std=20, grain_max=14, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_slate_ashlar(ctx):
     p, size = RECIPES["slate_ashlar"].palette, ctx.size
     rects = ashlar(size, ctx.shared_rng)

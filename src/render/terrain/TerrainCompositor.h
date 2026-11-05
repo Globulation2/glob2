@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "TerrainMaterials.h"
+#include "TerrainStones.h"
 #include "TerrainType.h"
 #include "render/MapAssetSprites.h"
 #include <SDLGraphicContext.h>
@@ -156,6 +157,7 @@ class Compositor
             std::shared_ptr<const MaterialPixels> pixels;
         };
         std::shared_ptr<const Catalog> definitions;
+        std::shared_ptr<const StoneMaps> stones;
         std::vector<std::vector<Texture>> textures;
         std::vector<char> included;
         std::size_t bytes = 0;
@@ -194,10 +196,10 @@ class Compositor
       std::vector<CpuPublication> publishedPixels;
       std::weak_ptr<const Catalog> publishedCatalog;
       std::size_t cpuPublicationBytes() const;
-      static void composePixels(const Catalog &, const Recipe &, SDL_Surface *, int, int, int,
+      static void composePixels(const Catalog &, const StoneMaps &, const Recipe &, SDL_Surface *, int, int, int,
                                 std::span<const PreparedMaterialView>, const CellMask *,
                                 unsigned surfTime);
-      static void buildMask(const Catalog &, const Recipe &, int, CellMask &);
+      static void buildMask(const Catalog &, const StoneMaps &, const Recipe &, int, CellMask &);
 	struct Texture
 	{
 		GAGCore::DrawableSurface *source = nullptr;
@@ -211,8 +213,13 @@ class Compositor
 	bool hasNeighborhoodProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
-    Recipe describe(const SceneMap &, int x, int y, bool shoreCalm) const;
+    // Detailed recipes add shore calm and whole-stone path edges.
+    Recipe describe(const SceneMap &, int x, int y, bool detailed) const;
+    Recipe describeCell(const SceneMap &, int x, int y, bool shoreCalm) const;
 	void describeShoreCalm(const SceneMap&, Recipe &) const;
+	void describeStones(const SceneMap &, Recipe &) const;
+	std::shared_ptr<const StoneMaps> stoneMaps;
+	std::uint64_t instance = 0; // Distinguishes compositors in shared presentation caches.
     unsigned decorSlot(MaterialId) const;
 	MaterialId overlayMaterial(const SceneMap &, int x, int y, bool &found) const;
 	std::shared_ptr<CompiledPack> pack;

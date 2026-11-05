@@ -90,7 +90,7 @@ def herringbone(size, width, length):
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
         palette={"joint": (72, 58, 46), "grit": (162, 142, 112), "dust": (140, 116, 92), "soil": (74, 60, 46),
                  "crack": (54, 38, 32)},
-        style=Style(luma=100, std=20, grain_max=12), periodic=True, grid=8, blocks=4)
+        style=Style(luma=100, std=20, grain_max=12), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_brick_path(ctx):
     """Brick path: long clay pavers laid in an axis-aligned herringbone, so the
     path reads the same whichever way it runs, worn by years of use: bricks
