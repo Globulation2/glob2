@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="19" failures="0" errors="0" skipped="0"><testsuite name="VertexTerrain"><testcase classname="VertexTerrain" name="a cell's four corners paint it uniform and its neighbours mixed" time="0.252006" status="run" />
+  <testcase classname="VertexTerrain" name="a vertex write re-derives the four cells around it" time="0.239" status="run" />
+  <testcase classname="VertexTerrain" name="all numeric modifiers use four-corner means in every arrangement" time="0.000123" status="run" />
+  <testcase classname="VertexTerrain" name="classic transitions vote on movement and blend ecology" time="0.000148" status="run" />
+  <testcase classname="VertexTerrain" name="compiled CPU seed columns preserve frozen rules when mixed rules grow" time="0.241006" status="run" />
+  <testcase classname="VertexTerrain" name="compiled movement queries respect corner votes and vertex edits" time="0.257936" status="run" />
+  <testcase classname="VertexTerrain" name="corner movement votes cover every arrangement and tie" time="0.000119" status="run" />
+  <testcase classname="VertexTerrain" name="different water profiles join without a movement barrier" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="equal corners keep their terrain's exact rules" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="every built-in pair combines into valid transition rules" time="0.003493" status="run" />
+  <testcase classname="VertexTerrain" name="mean health rates neither overflow nor clip authored extremes" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="mixed cells take the shore habitat and intersect explicit resource lists" time="0.484282" status="run" />
+  <testcase classname="VertexTerrain" name="numeric terrain effects blend proportionally at boundaries" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="old cell terrain moves onto the vertices it covers" time="0.2489" status="run" />
+  <testcase classname="VertexTerrain" name="snapshots keep the rule table they were taken with" time="0.276308" status="run" />
+  <testcase classname="VertexTerrain" name="terrain IDs of older files skip the retired shores and follow the current built-ins" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="the rule table numbers uniform rules by terrain and interns mixed ones in order" time="0.248586" status="run" />
+  <testcase classname="VertexTerrain" name="vertex terrain round-trips through packed and text saves" time="3.3236" status="run" />
+  <testcase classname="VertexTerrain" name="water-majority grass transitions are swimmable and unbuildable" time="0" status="run" />
+  </testsuite></testsuites>

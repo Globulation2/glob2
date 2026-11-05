@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="50" failures="0" errors="0" skipped="0"><testsuite name="MapGeneratorDefaults"><testcase classname="MapGeneratorDefaults" name="Bastion Keys contracts" time="34.0226" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Braided Delta retained generation and damage contracts" time="25.0476" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Braided Delta scales every resource and keeps its colonies supplied" time="11.3506" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Honeycomb isle contracts [slow]" time="37.9122" status="run" />
+  </testsuite><testsuite name="TerrainEcology"><testcase classname="TerrainEcology" name="empty and prohibited resource cells do not acquire bonus growth" time="2.08854" status="run" />
+  <testcase classname="TerrainEcology" name="four growth opportunities preserve capped stacks and measured conservation" time="5.85657" status="run" />
+  </testsuite><testsuite name="TerrainProperties"><testcase classname="TerrainProperties" name="Trail retains legacy identities and terrain behavior" time="0.0001" status="run" />
+  <testcase classname="TerrainProperties" name="constrained explorer flag eligibility applies route accessibility and hunger distance" time="1.51247" status="run" />
+  <testcase classname="TerrainProperties" name="exclusive movement modes and bounded compile-time definitions" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="explorers ignore ice damage and no-permadeath applies to ground hazards" time="1.95194" status="run" />
+  <testcase classname="TerrainProperties" name="hazard escape shares the team ratio and remains independent of cache resets" time="3.8703" status="run" />
+  <testcase classname="TerrainProperties" name="health modifiers clip healing and expose units that have found an exit" time="1.38961" status="run" />
+  <testcase classname="TerrainProperties" name="ice exposure includes stationary units and preserves fractional health in saves" time="2.80997" status="run" />
+  <testcase classname="TerrainProperties" name="projectile supercover tests intermediate cells corners and wrapped coordinates" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="retired terrain flags load from old headers without becoming experiments" time="2.75414" status="run" />
+  <testcase classname="TerrainProperties" name="same-size map replacement and terrain edits refresh ecology" time="0.620069" status="run" />
+  <testcase classname="TerrainProperties" name="terrain edits refresh escape costs after captured routes publish at their fixed deadline" time="1.51828" status="run" />
+  <testcase classname="TerrainProperties" name="terrain health profiles choose independent air and ground rates" time="1.50611" status="run" />
+  <testcase classname="TerrainProperties" name="vertex terrain survives tiling and batches snapshot invalidation" time="0.705515" status="run" />
+  </testsuite><testsuite name="TerrainRuntime"><testcase classname="TerrainRuntime" name="a frozen lake shares every rule of ice" time="0.000721" status="run" />
+  <testcase classname="TerrainRuntime" name="cliffs share every rule of hedge and thicket" time="0.00184" status="run" />
+  <testcase classname="TerrainRuntime" name="custom capabilities drive map queries health ecology and immutable match definitions" time="1.6078" status="run" />
+  <testcase classname="TerrainRuntime" name="each catalogue type shares its group profile" time="8.37217" status="run" />
+  <testcase classname="TerrainRuntime" name="eager resumed and worker gradients agree on custom slow swimming" time="0.850658" status="run" />
+  <testcase classname="TerrainRuntime" name="embedded registry restores custom state and pending gradients without source files" time="4.81491" status="run" />
+  <testcase classname="TerrainRuntime" name="format-137 saves with custom terrain load with remapped IDs and resave at the current format" time="5.55416" status="run" />
+  <testcase classname="TerrainRuntime" name="format-186 saves keep built-in IDs and move custom terrain behind the grass and sand looks" time="13.0172" status="run" />
+  <testcase classname="TerrainRuntime" name="format-194 saves keep built-in IDs and move custom terrain behind the format-195 built-ins" time="48.1431" status="run" />
+  <testcase classname="TerrainRuntime" name="glacier ice shares every rule of ice" time="0.094197" status="run" />
+  <testcase classname="TerrainRuntime" name="grass and sand looks share every rule of grass and sand" time="5.09326" status="run" />
+  <testcase classname="TerrainRuntime" name="hardpan shares every rule of the rough group" time="0.009908" status="run" />
+  <testcase classname="TerrainRuntime" name="large embedded registry crosses the stream string limit" time="112.065" status="run" />
+  <testcase classname="TerrainRuntime" name="laterite shares every rule of dirt" time="0.000585" status="run" />
+  <testcase classname="TerrainRuntime" name="maps isolate registries and reject failed imports atomically" time="0.872541" status="run" />
+  <testcase classname="TerrainRuntime" name="molten lava pool shares every rule of lava" time="0.000633" status="run" />
+  <testcase classname="TerrainRuntime" name="overgrown road shares every rule of the other paths" time="0.00119" status="run" />
+  <testcase classname="TerrainRuntime" name="painted catalogue terrain survives save and reload with its checksum" time="22.1671" status="run" />
+  <testcase classname="TerrainRuntime" name="production pipeline captures custom movement and discards fields after reimport" time="6.00927" status="run" />
+  <testcase classname="TerrainRuntime" name="sandstone and pumice share every rule of their path and rough groups" time="0.000695" status="run" />
+  <testcase classname="TerrainRuntime" name="tundra shares every rule of the barren group" time="0.000677" status="run" />
+  <testcase classname="TerrainRuntime" name="unused distinct costs do not expand map movement setup" time="2.27842" status="run" />
+  <testcase classname="TerrainRuntime" name="volcanic ash shares every rule of dirt" time="0.000674" status="run" />
+  <testcase classname="TerrainRuntime" name="weathered sandstone shares every rule of dirt" time="0.00072" status="run" />
+  <testcase classname="TerrainRuntime" name="wind-swept snow shares every rule of deep snow" time="0.012183" status="run" />
+  <testcase classname="TerrainRuntime" name="windy sand dunes share every rule of sand" time="0.002679" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="AI-only turn recordings replay through their terminal checksum [network-sim][artifacts]" time="4.87946" status="run" />
+  <testcase classname="TurnEngineHarness" name="Filipino registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="8.95871" status="run" />
+  <testcase classname="TurnEngineHarness" name="Marathi registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="8.73825" status="run" />
+  <testcase classname="TurnEngineHarness" name="Thai registration rejects earlier match identities without changing replay file floors [network-sim][artifacts]" time="8.85047" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="3.30783" status="run" />
+  </testsuite></testsuites>
