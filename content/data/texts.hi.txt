@@ -5740,12 +5740,6 @@ AI से नहीं बना
 रेत
 [terrain group grass]
 घास
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 बर्फ़
 [terrain group paths]

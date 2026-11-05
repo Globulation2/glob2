@@ -5764,12 +5764,6 @@ Voda
 Pesek
 [terrain group grass]
 Trava
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Led
 [terrain group paths]

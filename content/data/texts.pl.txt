@@ -5764,12 +5764,6 @@ Woda
 Piasek
 [terrain group grass]
 Trawa
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Lód
 [terrain group paths]

@@ -5740,12 +5740,6 @@ Vann
 Sand
 [terrain group grass]
 Gress
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Is
 [terrain group paths]

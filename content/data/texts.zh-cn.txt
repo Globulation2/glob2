@@ -5764,12 +5764,6 @@ AI 生成
 沙地
 [terrain group grass]
 草地
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 冰
 [terrain group paths]

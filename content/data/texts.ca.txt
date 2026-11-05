@@ -5764,12 +5764,6 @@ Aigua
 Sorra
 [terrain group grass]
 Herba
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Gel
 [terrain group paths]
