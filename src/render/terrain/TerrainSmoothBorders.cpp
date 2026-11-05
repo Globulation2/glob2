@@ -53,6 +53,8 @@ constexpr float MaximumWiggle = .75f;
 // pulls the spline towards its vertices just enough that the contour through a
 // staircase of vertices runs straight, within a pixel, instead of stepping.
 constexpr float DiagonalSquareness = -.2f;
+// Logical pixels between the lattice points of the fine detail octave.
+constexpr int DetailPeriod = 16;
 // Whether the vertex's 3x3 neighbourhood holds exactly two materials split by
 // a 45-degree line: the vertices on either side of one of the lines
 // dx - dy = t + 1/2 or dx + dy = t + 1/2 are uniform. Both a staircase's edge
@@ -81,17 +83,24 @@ bool onDiagonal(const Vertex &vertex, int cx, int cy)
 }
 } // namespace
 
-float SmoothBorders::NoiseLayer::at(int px, int py) const
+float SmoothBorders::NoiseLayer::at(int px, int py, float &dx, float &dy) const
 {
+	dx = dy = 0;
 	if (!shift)
 		return 0;
 	const int x = px + offsetX, y = py + offsetY;
 	const int ix = std::min(x >> shift, 3), iy = std::min(y >> shift, 3);
-	const float u = smoothstep(float(x - (ix << shift)) / float(1 << shift));
-	const float v = smoothstep(float(y - (iy << shift)) / float(1 << shift));
-	const auto lerp = [](float a, float b, float t) { return a + (b - a) * t; };
-	return lerp(lerp(vertices[iy * 5 + ix], vertices[iy * 5 + ix + 1], u),
-				lerp(vertices[(iy + 1) * 5 + ix], vertices[(iy + 1) * 5 + ix + 1], u), v);
+	const float span = float(1 << shift);
+	const float tu = std::clamp(float(x - (ix << shift)) / span, 0.f, 1.f);
+	const float tv = std::clamp(float(y - (iy << shift)) / span, 0.f, 1.f);
+	const float u = smoothstep(tu), v = smoothstep(tv);
+	const float du = 6 * tu * (1 - tu) / span, dv = 6 * tv * (1 - tv) / span;
+	const float a = vertices[iy * 5 + ix], b = vertices[iy * 5 + ix + 1];
+	const float c = vertices[(iy + 1) * 5 + ix], d = vertices[(iy + 1) * 5 + ix + 1];
+	const float top = a + (b - a) * u, bottom = c + (d - c) * u;
+	dx = ((b - a) + ((d - c) - (b - a)) * v) * du;
+	dy = (bottom - top) * dv;
+	return top + (bottom - top) * v;
 }
 
 void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
@@ -101,6 +110,8 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 	const auto &corners = r.corners;
 	if (std::all_of(corners.begin(), corners.end(), [&](auto id) { return id == corners[0]; }))
 		return;
+	// Version 4 draws every contact smoothly; profiles only set parameters.
+	const bool everyContact = c.version >= 4;
 	// Shares and wiggle are decided per vertex from its eight neighbours, all of
 	// which lie in the 4x4 neighbourhood, so adjacent tiles agree on every
 	// shared corner.
@@ -111,7 +122,7 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 		const int cx = int(k & 1), cy = int(k >> 1);
 		const auto own = vertex(cx, cy);
 		bool smooth = true;
-		int wiggle = 0, square = 0;
+		int wiggle = 0, square = 0, detail = 0;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
@@ -119,16 +130,19 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 				if (other == own)
 					continue;
 				const auto &profile = c.profiles[c.profileFor(own, other)];
-				if (profile.shape != BoundaryShape::Smooth)
+				if (!everyContact && profile.shape != BoundaryShape::Smooth)
 					smooth = false;
 				else
 				{
 					wiggle = std::max(wiggle, profile.wiggle);
 					square = std::max(square, profile.squareness);
+					detail = std::max(detail, profile.detail);
 				}
 			}
 		cornerShare[k] = smooth ? 4096 : 0;
 		cornerWiggle[k] = std::min(MaximumWiggle, float(wiggle) / 256 / PixelsPerFieldUnit);
+		// Detail shares the bound that keeps every field positive at its vertices.
+		cornerDetail[k] = std::min(MaximumWiggle - cornerWiggle[k], float(detail) / 256 / PixelsPerFieldUnit);
 		// Square profiles keep right angles but run straight along diagonals;
 		// round profiles are left as they are.
 		cornerSquareness[k] = square && smooth && onDiagonal(vertex, cx, cy) ? DiagonalSquareness
@@ -158,10 +172,12 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 		// Per-material value noise in world space: the same function in every
 		// tile, so a pair's contour meanders by the difference of its two fields.
 		const std::uint32_t seed = mapSeedSalt(r.seed);
-		for (unsigned octave = 0; octave < field.noise.size(); ++octave)
+		for (unsigned octave = 0; octave <= field.noise.size(); ++octave)
 		{
-			auto &layer = field.noise[octave];
-			const int spacing = std::min({edge.wigglePeriod >> octave, r.width * 32, r.height * 32});
+			const bool fine = octave == field.noise.size();
+			auto &layer = fine ? field.detail : field.noise[octave];
+			const int period = fine ? DetailPeriod : edge.wigglePeriod >> octave;
+			const int spacing = std::min({period, r.width * 32, r.height * 32});
 			if (spacing < 8)
 				continue;
 			layer.shift = 8;
@@ -171,8 +187,8 @@ void SmoothBorders::prepare(const Catalog &c, const Recipe &r)
 			layer.offsetY = (r.y * 32 % spacing) * 256;
 			const int columns = std::min(4, (layer.offsetX / 256 + 32) / spacing + 1);
 			const int rows = std::min(4, (layer.offsetY / 256 + 32) / spacing + 1);
-			// The finer octave carries a third of the meander.
-			const float weight = octave ? 1.f / 3 : 2.f / 3;
+			// The finer meander octave carries a third of it; detail is its own layer.
+			const float weight = fine ? 1.f : octave ? 1.f / 3 : 2.f / 3;
 			for (int y = 0; y <= rows; ++y)
 				for (int x = 0; x <= columns; ++x)
 				{
@@ -248,18 +264,28 @@ Coverage SmoothBorders::at(int px, int py) const
 				slopeY[f] += wx[i] * dwy[j];
 			}
 	const float wiggle = bilinear(cornerWiggle, u, v);
+	const float detail = bilinear(cornerDetail, u, v);
 	const float saddle = 16 * u * (1 - u) * v * (1 - v);
 	std::array<float, 4> score{};
 	for (unsigned f = 0; f < count; ++f)
 	{
-		float noise = 0;
+		// Noise and its gradient per Q8 pixel.
+		float noise = 0, noiseX = 0, noiseY = 0, gx, gy;
 		for (const auto &layer : fields[f].noise)
-			noise += layer.at(px, py);
-		const float scale = 1 + wiggle * noise;
+		{
+			noise += wiggle * layer.at(px, py, gx, gy);
+			noiseX += wiggle * gx;
+			noiseY += wiggle * gy;
+		}
+		noise += detail * fields[f].detail.at(px, py, gx, gy);
+		noiseX += detail * gx;
+		noiseY += detail * gy;
+		const float scale = 1 + noise;
 		score[f] = value[f] * scale + fields[f].bias * saddle;
-		// Per pixel; the slow noise contributes little slope of its own.
-		slopeX[f] *= scale / 32;
-		slopeY[f] *= scale / 32;
+		// Per pixel. The noise slope matters once fine detail roughens a contour:
+		// without it seams and surf would measure the wrong distance.
+		slopeX[f] = slopeX[f] * scale / 32 + value[f] * noiseX * 256;
+		slopeY[f] = slopeY[f] * scale / 32 + value[f] * noiseY * 256;
 	}
 	// Signed pixel distance from field f to field g, from a first-order
 	// expansion of their score difference.

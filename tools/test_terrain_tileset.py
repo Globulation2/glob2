@@ -71,11 +71,14 @@ class TerrainTileset(unittest.TestCase):
             lambda d: d["profiles"][0].update(coast="absent"),
             lambda d: d["profiles"][0].update(coast=d["profiles"][0]["key"]),
             lambda d: d["profiles"][0].update(precedence=256),
-            lambda d: d["profiles"][0].update(wiggle_q8=64),
+            # Version 4 draws every profile smoothly: any profile may set these,
+            # within their ranges.
+            lambda d: d["profiles"][0].update(wiggle_q8=2049),
+            lambda d: d["profiles"][0].update(detail_q8=1025),
             lambda d: next(p for p in d["profiles"] if p.get("shape") == "smooth").update(wiggle_period=48),
             lambda d: next(p for p in d["profiles"] if p.get("shape") == "smooth").update(wiggle_q8=2049),
             lambda d: next(p for p in d["profiles"] if p.get("shape") == "smooth").update(squareness_q8=257),
-            lambda d: d["profiles"][0].update(squareness_q8=64),
+            lambda d: d["profiles"][0].update(squareness_q8=257),
         ]
         for mutate in mutations:
             with self.subTest(mutate=mutate):

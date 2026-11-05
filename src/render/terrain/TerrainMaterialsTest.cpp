@@ -307,8 +307,11 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("contextual contours use their halo and leave ambiguous and sharp borders unchanged")
 	{
 		glob2test::HeadlessGlobals globals;
-		auto c = catalog(); c.boundaryWarp = {};
-		const auto a = c.find("sand"), b = c.find("water");
+		// Contextual geometry is the version 1-3 path; version 4 draws every
+		// contact with the smooth field (TerrainContinuity covers it).
+		auto c = catalog(); c.boundaryWarp = {}; c.version = 3;
+		// Both profiles opt in to contextual geometry under the version 3 rule.
+		const auto a = c.find("sand"), b = c.find("grass");
 		auto additional = c.materials[c.find("grass")];
 		additional.key = "fixture-natural";
 		c.materials.push_back(additional); // Sharp borders also remain sharp against new materials.
@@ -422,7 +425,9 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("straight contextual borders have seeded scallops without folding")
 	{
 		glob2test::HeadlessGlobals globals;
-		auto c = catalog(); c.boundaryWarp = {};
+		// Contextual geometry is the version 1-3 path; version 4 draws every
+		// contact with the smooth field (TerrainContinuity covers it).
+		auto c = catalog(); c.boundaryWarp = {}; c.version = 3;
 		const auto a = c.find("sand"), b = c.find("grass");
 		std::array<std::set<std::vector<int>>, 2> shapes;
 		for (unsigned seed : {0u, 19u, 73u, 291u})
@@ -2241,11 +2246,15 @@ TEST_SUITE("TerrainMaterials")
 			{nlohmann::json::json_pointer("/profiles/0/coast"), "absent"},
 			{nlohmann::json::json_pointer("/profiles/0/coast"), "canopy"},
 			{nlohmann::json::json_pointer("/profiles/0/precedence"), 256},
-			{nlohmann::json::json_pointer("/profiles/0/wiggle_q8"), 64}, // Patch profiles do not meander.
+			// Version 4 draws every profile smoothly, so a patch profile may meander,
+			// but its parameters keep their ranges.
+			{nlohmann::json::json_pointer("/profiles/0/wiggle_q8"), 2049},
+			{nlohmann::json::json_pointer("/profiles/0/detail_q8"), 1025},
+			{nlohmann::json::json_pointer("/profiles/0/detail_q8"), -1},
 			{nlohmann::json::json_pointer("/profiles/2/wiggle_period"), 48},
 			{nlohmann::json::json_pointer("/profiles/2/wiggle_q8"), 2049},
 			{nlohmann::json::json_pointer("/profiles/2/squareness_q8"), 257},
-			{nlohmann::json::json_pointer("/profiles/0/squareness_q8"), 128},
+			{nlohmann::json::json_pointer("/profiles/0/squareness_q8"), 257},
 		};
 		for (const auto &[field, value] : malformed)
 		{

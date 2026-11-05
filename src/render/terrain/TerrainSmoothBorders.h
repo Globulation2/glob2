@@ -18,10 +18,13 @@ struct Coverage;
 // noise multiplied into each field: noise never reaches a field that is zero,
 // so a material cannot appear where its vertices do not reach.
 //
-// The share of smooth geometry is decided per vertex: a vertex is smooth when
-// every contact with its eight neighbours resolves to a smooth profile. Vertex
-// shares interpolate bilinearly across the tile, so a smooth region fades into
-// the patch and contextual geometry of its surroundings without tile seams.
+// Version-4 catalogs draw every contact with this geometry; a profile only
+// sets its parameters (meander, fine detail, squareness, feather, bridge), and
+// these interpolate between vertices, so contours keep one algorithm and one
+// distance measure across every tile edge whatever terrains meet. Earlier
+// catalogs keep patch and contextual geometry: for them a vertex is smooth when
+// every contact with its eight neighbours names a smooth profile, and vertex
+// shares fade one geometry into the other.
 class SmoothBorders
 {
   public:
@@ -40,12 +43,14 @@ class SmoothBorders
 		int shift = 0, offsetX = 0, offsetY = 0;
 		// At most five lattice vertices span a tile at the 8px finest spacing.
 		float vertices[25]{};
-		float at(int px, int py) const;
+		// Value and its gradient per Q8 pixel.
+		float at(int px, int py, float &dx, float &dy) const;
 	};
 	struct Field
 	{
 		MaterialId material = 0;
-		std::array<NoiseLayer, 2> noise{};
+		std::array<NoiseLayer, 2> noise{}; // Broad meander: the period and half of it.
+		NoiseLayer detail{};               // Fine edge roughness at DetailPeriod.
 		float feather = 1;   // Pixels; the ramp width shared with a competitor is the mean.
 		float bias = 0;      // Saddle bias that joins diagonal lobes of this material.
 	};
@@ -55,6 +60,7 @@ class SmoothBorders
 	std::array<int, 16> owner{};
 	std::array<int, 4> cornerShare{};     // Q12 per corner, TL TR BL BR.
 	std::array<float, 4> cornerWiggle{};  // Multiplicative noise strength per corner.
+	std::array<float, 4> cornerDetail{};  // Fine roughness strength per corner.
 	std::array<float, 4> cornerSquareness{}; // 0 round to 1 square, per corner.
 	bool anyShare = false, fullShare = false;
 	static float bilinear(const std::array<float, 4> &corner, float u, float v);

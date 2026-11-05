@@ -170,13 +170,21 @@ unordered, unique and must reference existing materials and profiles.
 
 ### Smooth borders
 
-Version-4 profiles may set `"shape": "smooth"` for contacts that should read as
-one continuous line: liquid against liquid, lava against its surroundings and
-roads. Smooth profiles need no `roughness_q8` or `contours_q12`; they take
-`wiggle_q8` (0–2048, the Q8 pixels a straight contour meanders) and
-`wiggle_period` (32, 64, 128 or 256 logical pixels between the broadest bends)
-and `squareness_q8` (0 round to 256 square corners). `feather_q8` and
-`bridge_q8` keep their meanings.
+Version-4 catalogs draw every contact with smooth geometry, whatever the
+profile's `shape`. One algorithm and one distance measure therefore cover every
+tile edge, whichever terrains meet, and a new terrain needs no boundary code of
+its own: its profile only sets parameters. The patch and contextual geometry
+described above remain for version 1–3 catalogs.
+
+A profile takes `wiggle_q8` (0–2048, the Q8 pixels a straight contour meanders),
+`wiggle_period` (32, 64, 128 or 256 logical pixels between the broadest bends),
+`squareness_q8` (0 round to 256 square corners) and `detail_q8` (0–1024, Q8
+pixels of fine roughness on a 16-pixel lattice). `feather_q8` and `bridge_q8`
+keep their meanings. A rough profile that names none of these takes its meander
+from its contour strength: `wiggle_q8` is `amplitude_q8 × roughness_q8 / 256`,
+`detail_q8` a third of that, and a profile without roughness (foliage that hides
+its own edge) gets square corners. `roughness_q8` and `contours_q12` no longer
+shape version-4 contacts.
 
 `SmoothBorders` gives each corner material of a cell a field interpolated
 through the 4×4 vertex neighbourhood with Catmull-Rom splines; the strongest
@@ -209,10 +217,13 @@ two materials' mean feather from a first-order distance to the competing field,
 and seams and surf read that distance to the nearest field of any neighbourhood
 material, including vertices beyond the cell edge.
 
-A vertex is smooth when every contact with its eight neighbours resolves to a
-smooth profile. A cell interpolates its four corner shares bilinearly (with a
-smoothstep) and blends smooth coverage with the patch or contextual coverage
-by that share, so smooth water fades into a rough coast without tile seams.
+Seams and surf read the distance including the noise's own slope, so bands keep
+their width along rough contours as well as smooth ones.
+
+In version 1–3 catalogs, a vertex is smooth when every contact with its eight
+neighbours resolves to a smooth profile. A cell interpolates its four corner
+shares bilinearly (with a smoothstep) and blends smooth coverage with the patch
+or contextual coverage by that share.
 Version-4 cells with more than one material read the one-vertex halo; earlier
 catalogs keep halo-free recipes outside two-material contextual cells.
 

@@ -144,11 +144,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		for (const char *field : {"precedence", "coast"})
 			require(version >= 4 || !p.contains(field), "precedence and coast require catalog version 4");
 		v.precedence = integerInRange(p.value("precedence", nlohmann::json(0)), 0, 255);
+		// Version 4 draws every contact with smooth geometry, so any profile may
+		// set its parameters; earlier catalogs reserve them for smooth profiles.
 		for (const char *field : {"wiggle_q8", "wiggle_period", "squareness_q8"})
-			require(smooth || !p.contains(field), "wiggle requires the smooth shape");
+			require(smooth || version >= 4 || !p.contains(field), "wiggle requires the smooth shape");
+		require(version >= 4 || !p.contains("detail_q8"), "detail requires catalog version 4");
 		v.wiggle = integerInRange(p.value("wiggle_q8", nlohmann::json(0)), 0, 2048);
 		v.wigglePeriod = integerInRange(p.value("wiggle_period", nlohmann::json(64)), 32, 256);
 		v.squareness = integerInRange(p.value("squareness_q8", nlohmann::json(0)), 0, 256);
+		v.detail = integerInRange(p.value("detail_q8", nlohmann::json(0)), 0, 1024);
 		require((v.wigglePeriod & (v.wigglePeriod - 1)) == 0, "wiggle period must be a power of two");
 		require(version >= 2 || !p.contains("feather_q8"),
 				"boundary feather requires catalog version 2");
@@ -160,6 +164,17 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		v.speckle = integerInRange(p.value("speckle_q8", nlohmann::json(0)), 0, 1024);
 		v.bridge = integerInRange(p.value("bridge_q8", nlohmann::json(0)), 0, 1024);
 		v.shearScale = version >= 3 ? 256 : 128;
+		// A version-4 rough profile without smooth parameters takes them from its
+		// contour strength: the broad meander from roughness times amplitude, a
+		// third of it as fine detail, and square corners where it has no
+		// roughness at all (foliage that hides its own edge).
+		if (version >= 4 && !smooth && !p.contains("wiggle_q8"))
+		{
+			const int strength = v.amplitude * v.roughness / 256;
+			v.wiggle = std::min(2048, strength);
+			if (!p.contains("detail_q8")) v.detail = std::min(1024, strength / 3);
+			if (!p.contains("squareness_q8") && !v.roughness) v.squareness = 256;
+		}
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate boundary profile");
 		if (smooth && !p.contains("contours_q12"))
 		{
