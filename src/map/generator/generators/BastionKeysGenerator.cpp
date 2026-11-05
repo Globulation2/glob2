@@ -916,7 +916,8 @@ GeneratorDefinition bastionKeysDefinition()
 		"bastion-keys",
 		68,
 		"Bastion Keys",
-		4,
+		// Revision 5: fertile ground contributes 48 Q8 to crop growth.
+		5,
 		false,
 		{GeneratorControl{"home-size", "Home size", 13, 15, 1, 14, ControlGroup::Layout}
 			 .withSearchRange(13, 15),

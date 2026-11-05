@@ -194,7 +194,7 @@ outside this format.
 ## The rules of resources
 
 Loam, moss and spring meadow support land crops directly and each contribute
-128 Q8 fertility (half of water’s 256). Their contributions also feed shore
+48 Q8 fertility (18.75% of water’s 256). Their contributions also feed shore
 ecology, but they supply no shoreline support. Built-in terrain uses these values
 when existing maps and saves load; embedded custom terrain keeps its authored values.
 

@@ -112,11 +112,11 @@ inline constexpr auto TERRAIN_GROUPS = []
 	}
 	{
 		// Loam, moss, spring meadow: buildable crop land that irrigates its
-		// surroundings at half the contribution of water.
+		// surroundings with a smaller contribution than water.
 		auto &fertile = define(TerrainGroup::Fertile, "fertile", "[terrain group fertile]", true);
 		fertile.walkable = fertile.buildable = fertile.resourcesGrow = true;
 		fertile.nonGrowingResources = fertile.fertilitySource = true;
-		fertile.fertilityQ8 = 128;
+		fertile.fertilityQ8 = 48;
 		fertile.allowedResources = TERRAIN_GRASS_RESOURCES;
 		fertile.farmMaterial = materialIndex(MaterialId::Food);
 	}
