@@ -1930,13 +1930,25 @@ TEST_SUITE("TerrainMaterials")
 		const auto c = catalog();
 		for (unsigned id = 0; id < c.materials.size(); ++id)
 		{
+			const auto &material = c.materials[id];
+			INFO(material.key);
+			const int cycle = material.animationFrames * material.animationTicks;
 			std::set<int> seen;
 			for (int y = 0; y < 64; ++y)
 				for (int x = 0; x < 64; ++x)
 				{
 					auto frame = c.frame(id, x, y, 0);
 					seen.insert(frame);
-					CHECK(frame == c.frame(id, x, y, 100));
+					// The artwork may animate; its spatial variant stays the same
+					// at every matching phase, even a hundred cycles later.
+					for (int phase = 0; phase < material.animationFrames; ++phase)
+					{
+						const int time = phase * material.animationTicks;
+						const auto atPhase = c.frame(id, x, y, time);
+						if (phase > 0)
+							CHECK(atPhase == frame + phase * material.animationStride);
+						CHECK(atPhase == c.frame(id, x, y, time + 100 * cycle));
+					}
 				}
 			CHECK(seen.size() == c.materials[id].variants.size());
 		}
