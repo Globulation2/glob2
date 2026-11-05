@@ -403,6 +403,20 @@ class AssetExportTests(unittest.TestCase):
         for p, data in originals.items():
             self.assertEqual(p.read_bytes(), data)
 
+    def test_terrain_stone_maps_stay_exact_under_lossy_policy(self):
+        import random
+        stones = self.root / "content/data/terrain/stones"
+        stones.mkdir(parents=True)
+        # Noise makes lossy WebP smaller, so only the data-image rule keeps it exact.
+        source = Image.frombytes("RGBA", (64, 64), random.Random(7).randbytes(64 * 64 * 4))
+        source.save(stones / "brick_path.png")
+        audit = self.export()
+        self.assertTrue(audit["lossy_images"])
+        record = next(r for r in audit["files"] if r["source"] == "data/terrain/stones/brick_path.png")
+        self.assertFalse(record["lossy"])
+        decoded = Image.open(self.output / record["output"]).convert("RGBA")
+        self.assertEqual(decoded.tobytes(), source.tobytes())
+
     def test_png_cannot_win_even_when_smaller_and_hd_index_uses_webp(self):
         # This artwork's optimized PNG is smaller than either WebP encoding.
         source = self.root / "content/data/gfx/gamegui47.png"

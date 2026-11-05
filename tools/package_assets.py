@@ -51,6 +51,17 @@ SHEET_HEADER = """\
 """
 
 
+# Images whose texels are data the renderer decodes rather than colour it shows:
+# terrain stone maps pack stone ids and joint distances into RGBA8, so any lossy
+# change moves stone borders and opens holes in laid paths.
+DATA_IMAGE_DIRECTORIES = (Path("data/terrain/stones"),)
+
+
+def is_data_image(relative):
+    """Identify images that must survive export bit-exact."""
+    return Path(relative).parent in DATA_IMAGE_DIRECTORIES
+
+
 def is_baked_unit_clip(relative):
     """Identify the authoring and comparison meshes superseded by fitted clips."""
     p = Path(relative)
@@ -831,7 +842,8 @@ def _export_assets(
             relative = source.relative_to(content)
             public_png = platform == "linux" and relative.parts[:2] == ("data", "screenshots")
             if optimized and source not in packed and source not in hd_sources and source.suffix.lower() == ".png" and not public_png:
-                encoded[source] = encoders.submit(encode_image, source, relative.as_posix(), cache, lossy)
+                encoded[source] = encoders.submit(encode_image, source, relative.as_posix(), cache,
+                                                  lossy and not is_data_image(relative))
         encoded_sheets = {}
         encoded_terrain = {}
         for sprite, plan in sheets.items():
