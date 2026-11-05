@@ -2865,6 +2865,7 @@
 [rime_ashlar]
 [moonstone_lozenge]
 [frost_pinwheel]
+[arctic_tundra]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]

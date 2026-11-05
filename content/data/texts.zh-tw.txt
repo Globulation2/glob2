@@ -5754,6 +5754,8 @@ AI 生成
 月光石菱磚
 [frost_pinwheel]
 霜花風車磚
+[arctic_tundra]
+極地苔原地面
 [terrain group water]
 水
 [terrain group sand]

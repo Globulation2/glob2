@@ -5754,6 +5754,8 @@ Rimfrostkvadre
 Månestensruder
 [frost_pinwheel]
 Frostmølle
+[arctic_tundra]
+Arktisk tundrajord
 [terrain group water]
 Vand
 [terrain group sand]

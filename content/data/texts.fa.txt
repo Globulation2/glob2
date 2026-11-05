@@ -5754,6 +5754,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 لوزی‌های سنگ ماه
 [frost_pinwheel]
 فرفره یخ‌بندان
+[arctic_tundra]
+زمین توندرای قطبی
 [terrain group water]
 آب
 [terrain group sand]

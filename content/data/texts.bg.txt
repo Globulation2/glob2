@@ -5730,6 +5730,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Ромбове от лунен камък
 [frost_pinwheel]
 Скрежна мелничка
+[arctic_tundra]
+Арктическа тундрова почва
 [terrain group water]
 Вода
 [terrain group sand]

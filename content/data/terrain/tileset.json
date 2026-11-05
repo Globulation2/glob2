@@ -710,7 +710,8 @@
     "scoria_blocks",
     "rime_ashlar",
     "moonstone_lozenge",
-    "frost_pinwheel"
+    "frost_pinwheel",
+    "arctic_tundra"
   ],
   "bindings": {
     "water": "water",
@@ -765,7 +766,8 @@
     "scoria_blocks": "scoria_blocks",
     "rime_ashlar": "rime_ashlar",
     "moonstone_lozenge": "moonstone_lozenge",
-    "frost_pinwheel": "frost_pinwheel"
+    "frost_pinwheel": "frost_pinwheel",
+    "arctic_tundra": "arctic_tundra"
   },
   "boundary_warp_q8": [960, 352, 120]
 }

@@ -5754,6 +5754,8 @@ AI 생성 아님
 월장석 마름모 타일
 [frost_pinwheel]
 서리 바람개비
+[arctic_tundra]
+북극 툰드라 지형
 [terrain group water]
 물
 [terrain group sand]

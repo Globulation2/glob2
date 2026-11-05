@@ -5732,6 +5732,8 @@ Rime ashlar
 Moonstone lozenges
 [frost_pinwheel]
 Frost pinwheel
+[arctic_tundra]
+Arctic tundra
 [terrain group water]
 Water
 [terrain group sand]

@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 53 built-in materials, including grass, sand, their lush, dry, dune, pale and
+All 54 built-in materials, including grass, sand, their lush, dry, dune, pale and
 windy dune looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Each material is a small
 pack that can be tuned on its own: its recipe and render function live in
@@ -102,7 +102,7 @@ colour and material stay free per biome:
 | Water, deep water, lava (lava, ember field, molten lava pool) | reserved colour | |
 | Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
-| Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
+| Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite, arctic tundra) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles, mossy setts, slate ashlar, basalt causeway, scoria blocks, rime ashlar, moonstone lozenges, frost pinwheel) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip, worn into the ground | `worn_edge`, `_paving` (settle, chip, crack, lose, fill and reclaim), `herringbone`, `hex_paving` (mossy setts); `_rock_paths` (ash and upland joint ground, lichen and grain stamps); `_frost_paths` (snow in place of soil and moss, `weather`) |
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Crags (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
@@ -120,7 +120,11 @@ between them, with lower patches of bare ochre fines; heath is clumps of dormant
 each built of lit sprig tufts, over pale cracked sandy peat; tundra is its cold
 counterpart on frost-patterned ground: polygons about two cells across with faint
 pale rims, flat olive moss pads (the heath cushion helper) in their centres, beds of
-grey stones, and the shared cracks in dark peaty earth. Paths are all laid by the
+grey stones, and the shared cracks in dark peaty earth. Arctic tundra is tundra
+under snow: the same polygons, stones and cracks, with snow drifts in place of the
+moss pads (the same cushion helper and placement, merged into scalloped drifts), rime
+on the rims, a dusting on the stones and the cracks running faintly through the snow
+as blue fissures. Paths are all laid by the
 globs, never natural ground, and all of them have been walked for years: the
 `_paving` family module settles every stone with its own tilt, sink or heave
 (half of it following broad subsidence hollows, so neighbours sink together)
@@ -643,7 +647,7 @@ exception the classes cannot express, not the way to tune a material.
 | 3 | rime_ashlar, moonstone_lozenge, frost_pinwheel | 24 / 512, a soft cast so their pale stone sits low in the snow |
 | 3 | deep_snow, wind_swept_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
 | 2 | grass (existing), loam, moss, spring_meadow | 56 / 512 |
-| 2 | heath, tundra | 48 / 480 |
+| 2 | heath, tundra, arctic_tundra | 48 / 480 |
 | 2 | dirt, clay, shale, weathered_sandstone, volcanic_ash, laterite | 40 / 448 |
 | 1 | sand (existing), mud, mudflat, scree, pumice, hardpan | no cast |
 

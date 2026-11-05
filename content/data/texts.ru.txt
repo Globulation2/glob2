@@ -5754,6 +5754,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Ромбы из лунного камня
 [frost_pinwheel]
 Морозная вертушка
+[arctic_tundra]
+Арктическая тундровая почва
 [terrain group water]
 Вода
 [terrain group sand]

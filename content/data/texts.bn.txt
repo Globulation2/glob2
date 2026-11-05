@@ -5730,6 +5730,8 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 চন্দ্রকান্ত মণির রম্বস
 [frost_pinwheel]
 তুষার ঘূর্ণি টালি
+[arctic_tundra]
+সুমেরু তুন্দ্রার ভূমি
 [terrain group water]
 জল
 [terrain group sand]

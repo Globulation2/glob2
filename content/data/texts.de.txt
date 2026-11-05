@@ -5754,6 +5754,8 @@ Raureif-Quader
 Mondstein-Rauten
 [frost_pinwheel]
 Frost-Windrad
+[arctic_tundra]
+Arktischer Tundraboden
 [terrain group water]
 Wasser
 [terrain group sand]

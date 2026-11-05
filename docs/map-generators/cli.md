@@ -253,7 +253,7 @@ dry grass `#787B34`, dune sand `#CC9755`, pale sand `#D3CAA8`, sandstone tiles
 `#A68A56`, hardpan `#D4CCC0`, tundra `#5B5745`, glacier ice `#60A0D2`, overgrown road `#86806A`, laterite `#A65A36`,
 cliffs `#886C52`, molten lava pool `#B73F0C`, slate ashlar `#686C76`, basalt causeway
 `#4C4A4C`, scoria blocks `#584C44`, rime ashlar `#B5BBD4`, moonstone lozenges `#BEC0D1`,
-frost pinwheel `#B9BCD2`). Heath, shale, mudflat
+frost pinwheel `#B9BCD2`, arctic tundra `#89888D`). Heath, shale, mudflat
 and brick path keep the image colours they had before their redesign, so
 existing exported images still import them, although the minimap shows the
 colour of each new texture. Import recognises the catalogue types **only by

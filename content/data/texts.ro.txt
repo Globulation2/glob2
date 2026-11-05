@@ -5754,6 +5754,8 @@ Blocuri de chiciură
 Romburi de piatra-lunii
 [frost_pinwheel]
 Morișcă de brumă
+[arctic_tundra]
+Sol de tundră arctică
 [terrain group water]
 Apă
 [terrain group sand]

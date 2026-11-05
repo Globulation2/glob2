@@ -5730,6 +5730,8 @@ Matofali ya barafu
 Almasi za jiwe la mwezi
 [frost_pinwheel]
 Gurudumu la barafu
+[arctic_tundra]
+Ardhi ya tundra ya aktiki
 [terrain group water]
 Maji
 [terrain group sand]

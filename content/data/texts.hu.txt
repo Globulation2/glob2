@@ -5754,6 +5754,8 @@ Zúzmarás kváderkő
 Holdkő rombuszok
 [frost_pinwheel]
 Dérforgó
+[arctic_tundra]
+Sarkvidéki tundratalaj
 [terrain group water]
 Víz
 [terrain group sand]

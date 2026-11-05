@@ -5754,6 +5754,8 @@ Szronione ciosy
 Romby z kamienia księżycowego
 [frost_pinwheel]
 Szronowy wiatraczek
+[arctic_tundra]
+Gleba tundry arktycznej
 [terrain group water]
 Woda
 [terrain group sand]

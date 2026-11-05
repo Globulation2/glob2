@@ -5754,6 +5754,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Ромби з місячного каменю
 [frost_pinwheel]
 Морозний вітрячок
+[arctic_tundra]
+Арктичний тундровий ґрунт
 [terrain group water]
 Вода
 [terrain group sand]

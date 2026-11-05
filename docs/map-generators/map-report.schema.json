@@ -586,6 +586,9 @@
         "frost_pinwheel": {
           "$ref": "#/$defs/coverage"
         },
+        "arctic_tundra": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

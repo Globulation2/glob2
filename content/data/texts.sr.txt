@@ -5754,6 +5754,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Ромбови од месечевог камена
 [frost_pinwheel]
 Мразна вртешка
+[arctic_tundra]
+Арктичко тундрено тло
 [terrain group water]
 Вода
 [terrain group sand]

@@ -5754,6 +5754,8 @@ Prujnaj kvadroŝtonoj
 Lunŝtonaj romboj
 [frost_pinwheel]
 Frosta ventoturnilo
+[arctic_tundra]
+Arkta tundra grundo
 [terrain group water]
 Akvo
 [terrain group sand]

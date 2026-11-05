@@ -409,6 +409,18 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(rockFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcePaths.dump()));
 		CHECK_THROWS(TerrainRegistry::deserialize(beforeIcePaths.dump(), TERRAIN_COUNT_BEFORE_ROCK_PATHS));
+
+		// Format 209 numbers its definitions from 53, before arctic tundra.
+		auto beforeArcticTundra = Json::parse(registry->serialize());
+		for (auto &item : beforeArcticTundra["terrains"])
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA;
+		const auto iceFormat =
+			TerrainRegistry::deserialize(beforeArcticTundra.dump(), TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA);
+		CHECK(iceFormat->serialize() == registry->serialize());
+		CHECK(iceFormat->digest() == registry->digest());
+		CHECK(iceFormat->find("test:a") == TerrainType(TERRAIN_COUNT));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeArcticTundra.dump()));
+		CHECK_THROWS(TerrainRegistry::deserialize(beforeArcticTundra.dump(), TERRAIN_COUNT_BEFORE_ICE_PATHS));
 	}
 	TEST_CASE("renamed built-ins still resolve by their legacy names")
 	{

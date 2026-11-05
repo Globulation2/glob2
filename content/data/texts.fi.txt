@@ -5754,6 +5754,8 @@ Huurrekivimuuraus
 Kuukivivinoneliöt
 [frost_pinwheel]
 Huurretuulimylly
+[arctic_tundra]
+Arktinen tundramaa
 [terrain group water]
 Vesi
 [terrain group sand]

@@ -119,6 +119,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(MOONSTONE_LOZENGE, G::Paths, "moonstone_lozenge", "[moonstone_lozenge]", {190, 192, 209}, {190, 192, 209}),
 		// Frosted quartz pavers in a pinwheel around ice squares: plays exactly like road.
 		authored(FROST_PINWHEEL, G::Paths, "frost_pinwheel", "[frost_pinwheel]", {185, 188, 210}, {185, 188, 210}),
+		// Snow drifts, grey stones and frozen cracked earth: plays exactly like dirt.
+		authored(ARCTIC_TUNDRA, G::Barren, "arctic_tundra", "[arctic_tundra]", {137, 136, 141}, {137, 136, 141}),
 	}};
 	return rows;
 }();

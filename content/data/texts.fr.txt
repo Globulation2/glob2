@@ -5754,6 +5754,8 @@ Pierres de givre
 Losanges de pierre de lune
 [frost_pinwheel]
 Moulinet de givre
+[arctic_tundra]
+Sol de toundra arctique
 [terrain group water]
 Eau
 [terrain group sand]

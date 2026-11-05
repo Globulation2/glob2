@@ -5730,6 +5730,8 @@ AI ทำงาน​อย่างไร
 หินมูนสโตนข้าวหลามตัด
 [frost_pinwheel]
 กังหันน้ำค้างแข็ง
+[arctic_tundra]
+พื้นดินทุนดราอาร์กติก
 [terrain group water]
 น้ำ
 [terrain group sand]

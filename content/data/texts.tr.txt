@@ -5754,6 +5754,8 @@ Kırağı kesme taşı
 Aytaşı eşkenar dörtgenleri
 [frost_pinwheel]
 Ayaz fırıldağı
+[arctic_tundra]
+Arktik tundra toprağı
 [terrain group water]
 Su
 [terrain group sand]
