@@ -169,9 +169,10 @@ TEST_CASE("mixed D4 frame matches wrapped signed displacement and precomputed vi
 TEST_CASE("learned research assets bind exact trained sequence and typed cursor count" * doctest::test_suite("ClaimPolicyConfig"))
 {
     struct Model {const char* name; const char* digest; unsigned entries;};
-    const std::array<Model,2> models{{
+    const std::array<Model,3> models{{
         {"discovery3424-r24-support4-v1","58ff1585709e4ee43375df51db5189e8f61898fec229ca22f34b7e5b68056ad6",21},
-        {"discovery3424-r32-support4-v1","a40c126ef9f29de1a200923825325988772f245b0d018308046e82c1822fe785",22}
+        {"discovery3424-r32-support4-v1","a40c126ef9f29de1a200923825325988772f245b0d018308046e82c1822fe785",22},
+        {"final-r32-exact24-assembled-v1","44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c",24}
     }};
     for(const auto& model:models) {
         ClaimPolicyConfig config; config.sourceVersion=5; config.pattern=model.name;

@@ -175,7 +175,7 @@ ResourceClaims::StepResult Map::nextClaimRouteStep(Unit& unit, int* dx, int* dy)
             if(direct)state.probeFinished=true;
             Uint32 waypoint = target; unsigned radius = 1;
             if (!state.probeFinished && config.routeTarget == ClaimPolicyConfig::RouteTarget::ProbeThenGradient &&
-                unit.materialClaimPolicyState.probe < cellCount()) {
+                unit.materialClaimPolicyState.probe < cellCount() && unit.materialClaimPolicyState.probe != target) {
                 waypoint = unit.materialClaimPolicyState.probe; radius = 0;
             }
             using C = SimulationSnapshot::Component;

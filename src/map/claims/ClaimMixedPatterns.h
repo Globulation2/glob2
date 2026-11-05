@@ -101,7 +101,37 @@ inline constexpr std::array<Entry,22> LearnedR32Support4{{
     {6,-28,0},
 }};
 inline constexpr auto LearnedR32Support4Frames=allFrames(LearnedR32Support4);
-inline constexpr std::array<std::string_view,3> Names{IllustrativeName,LearnedR24Support4Name,LearnedR32Support4Name};
+// Frozen final24/R32 fit: c1f194c374d584fbcf95a28ae42b7595b7cbbf1cd1fb05a9ad46cc653f242438
+// Source inventory: 69e1e857392defda2345e1817be946a77db63d5f4a9a39e69be9fcb70b051597
+inline constexpr std::string_view Final24R32Name="final-r32-exact24-assembled-v1";
+inline constexpr std::array<Entry,24> Final24R32{{
+    {0,0,0},
+    {1,0,1},
+    {-1,0,0},
+    {13,-6,1},
+    {-1,7,1},
+    {-28,-8,0},
+    {6,31,0},
+    {25,14,1},
+    {4,-21,1},
+    {-2,-2,0},
+    {21,-13,0},
+    {-26,12,0},
+    {-13,-29,0},
+    {31,-1,0},
+    {-5,29,1},
+    {-9,30,0},
+    {6,-2,1},
+    {21,24,1},
+    {2,-30,0},
+    {5,29,1},
+    {-30,-1,0},
+    {28,-13,0},
+    {1,-2,3},
+    {1,1,3},
+}};
+inline constexpr auto Final24R32Frames=allFrames(Final24R32);
+inline constexpr std::array<std::string_view,4> Names{IllustrativeName,LearnedR24Support4Name,LearnedR32Support4Name,Final24R32Name};
 // Powers-of-two map dimensions and valid origin are guaranteed by the engine.
 // Missing/coincident nearest is identity; half-world ties are negative.
 constexpr unsigned frame(unsigned width,unsigned height,unsigned origin,unsigned nearest)
@@ -118,6 +148,7 @@ inline View view(std::string_view name,unsigned direction)
     if(name==IllustrativeName)return IllustrativeFrames[direction].view();
     if(name==LearnedR24Support4Name)return LearnedR24Support4Frames[direction].view();
     if(name==LearnedR32Support4Name)return LearnedR32Support4Frames[direction].view();
+    if(name==Final24R32Name)return Final24R32Frames[direction].view();
     return {};
 }
 }
