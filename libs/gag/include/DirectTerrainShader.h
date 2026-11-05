@@ -15,6 +15,9 @@ uniform sampler2D cells, coverageIndex, art, coverage, edges, variants, discover
 uniform vec2 mapSize, artSize, coverageSize, variantSize;
 uniform float animationTime;
 uniform bool wholeMap;
+#ifdef DIRECT_TERRAIN_ANIMATION
+uniform float artTilePixels;
+#endif
 
 // The offline generator supplies its own interface above this shared shader.
 #ifndef DIRECT_TERRAIN_SAMPLE
@@ -26,10 +29,14 @@ uniform bool wholeMap;
 #endif
 #endif
 
+#ifndef DIRECT_TERRAIN_ANIMATION
+const float artTilePixels = 32.0;
+#endif
+
 vec2 atlasUV(float index, vec2 pixel, vec2 size) {
-    float columns = size.x / 32.0;
-    vec2 base = vec2(mod(index, columns), floor(index / columns)) * 32.0;
-    return (base + pixel) / size;
+    float columns = size.x / artTilePixels;
+    vec2 base = vec2(mod(index, columns), floor(index / columns)) * artTilePixels;
+    return (base + pixel * (artTilePixels / 32.0)) / size;
 }
 
 vec2 maskAtlasUV(float index, vec2 pixel) {
@@ -169,7 +176,8 @@ void main() {
 #endif
     }
     vec4 indices = readRecord(cells, slot, mapSize);
-    vec2 uv = clamp(fract(world) * 32.0, vec2(0.5), vec2(31.5));
+    float halfTexel = 16.0 / artTilePixels;
+    vec2 uv = clamp(fract(world) * 32.0, vec2(halfTexel), vec2(32.0 - halfTexel));
     float mask = readScalar(coverageIndex, cell, mapSize);
     if (mask >= 65535.0) discard;
     vec4 quiet = DIRECT_TERRAIN_SAMPLE(shoreCalm, cell);

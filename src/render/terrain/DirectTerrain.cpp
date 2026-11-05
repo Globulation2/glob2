@@ -11,6 +11,8 @@
 
 #include "GlobalContainer.h"
 #include "DirectTerrainData.h"
+#include "TerrainCompositor.h"
+#include "render/SoftwareTerrainCache.h"
 #include "render/scene/SceneMap.h"
 #ifdef DIRECT_TERRAIN_LEGACY_GL
 #ifdef __APPLE__
@@ -27,9 +29,12 @@
 #include <array>
 #include <cstdio>
 #include <chrono>
+#include <cmath>
 #include <optional>
 #include <stdexcept>
 #include <vector>
+#include <map>
+#include <set>
 
 namespace
 {
@@ -122,9 +127,27 @@ struct DirectTerrain::State
     };
     std::optional<CoverageStream> coverageStream;
     std::array<GLuint, Count> textures{};
-    std::array<GLint, 6> uniforms{};
+    std::array<GLint, 7> uniforms{};
+    std::vector<Record> animationCells, animationVariants;
+    std::vector<DirectTerrainData::Source> animationSources;
+    struct Animation {
+        static constexpr int AtlasSize = 2048;
+        struct Entry {
+            unsigned pair;
+            std::array<unsigned, 2> phases{~0u, ~0u};
+            std::array<TerrainVisual::Compositor::PhaseSource, 2> stamps{};
+        };
+        GLuint art = 0, variants = 0;
+        std::size_t bytes = 0;
+        int pixels = 0;
+        bool failed = false;
+        std::map<unsigned, Entry> entries;
+        std::vector<unsigned> freePairs;
+        std::vector<SDL_Rect> regions;
+    } animation;
 #endif
     int width = 0, height = 0;
+    int nativeArtHeight = 0;
     std::size_t bytes = 0, uploaded = 0;
     unsigned frames = 0;
     bool failed = false;
@@ -152,6 +175,12 @@ struct DirectTerrain::State
 
     ~State()
     {
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+        if (context && context == SDL_GL_GetCurrentContext()) {
+            glDeleteTextures(1, &animation.art);
+            glDeleteTextures(1, &animation.variants);
+        }
+#endif
         releaseDeviceTextures();
 #ifdef DIRECT_TERRAIN_LEGACY_GL
         if (context && SDL_GL_GetCurrentContext() == context)
@@ -257,7 +286,7 @@ struct DirectTerrain::State
     }
 
 #ifdef DIRECT_TERRAIN_LEGACY_GL
-    void initialize(const SceneMap &map, const DirectTerrainData &data)
+    void initialize(const SceneMap &map, DirectTerrainData &data)
     {
         GLint units = 0;
         glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &units);
@@ -276,7 +305,7 @@ struct DirectTerrain::State
             glDeleteShader(shader);
         };
         attach(GL_VERTEX_SHADER, Vertex);
-        const auto fragment = std::string("#version 120\n") + GAGCore::DirectTerrainFragment;
+        const auto fragment = std::string("#version 120\n#define DIRECT_TERRAIN_ANIMATION\n") + GAGCore::DirectTerrainFragment;
         attach(GL_FRAGMENT_SHADER, fragment.c_str());
         glLinkProgram(program);
         GLint linked = GL_FALSE;
@@ -291,7 +320,7 @@ struct DirectTerrain::State
         glGenTextures(Count, textures.data());
         for (unsigned unit = 0; unit < Count; ++unit)
             glUniform1i(glGetUniformLocation(program, Draw::Samplers[unit]), unit);
-        const char *names[] = {"mapSize", "artSize", "coverageSize", "variantSize", "animationTime", "wholeMap"};
+        const char *names[] = {"mapSize", "artSize", "coverageSize", "variantSize", "animationTime", "wholeMap", "artTilePixels"};
         for (unsigned i = 0; i < uniforms.size(); ++i)
             uniforms[i] = glGetUniformLocation(program, names[i]);
         glUniform2f(uniforms[0], width, height);
@@ -311,6 +340,10 @@ struct DirectTerrain::State
         upload(Variants, DirectTerrainData::VariantWidth, data.variantHeight, GL_RGBA16, GL_RGBA, GL_UNSIGNED_SHORT, data.variants.data(), data.variants.size() * sizeof(Record), GL_NEAREST);
         upload(Discovery, width, height, GL_LUMINANCE8, GL_LUMINANCE, GL_UNSIGNED_BYTE, visibility.data(), count, GL_NEAREST);
         upload(ShoreCalm, width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data.calm.data(), data.calm.size() * sizeof(Pixel), GL_NEAREST);
+        nativeArtHeight = data.artHeight;
+        animationCells = std::move(data.cells);
+        animationVariants = std::move(data.variants);
+        animationSources = std::move(data.sources);
         if (streaming)
         {
             const auto uninitializedBytes = std::size_t(DirectTerrainData::AtlasWidth) * data.coverageHeight *
@@ -323,7 +356,7 @@ struct DirectTerrain::State
 
     void advanceCoverage(const SceneMap &map, const TerrainVisual::Compositor &compositor,
                          const std::array<int, 4> &view,
-                         std::chrono::steady_clock::time_point deadline, bool fillBackground)
+                         std::chrono::steady_clock::time_point deadline)
     {
         if (!coverageStream) return;
         auto &stream = *coverageStream;
@@ -366,7 +399,7 @@ struct DirectTerrain::State
                 if (slot && !stream.ready[slot - 1])
                     uploadTile(slot - 1);
             }
-            else if (fillBackground && stream.backgroundCursor < stream.recipes.size())
+            else if (stream.backgroundCursor < stream.recipes.size())
             {
                 const auto index = stream.backgroundCursor++;
                 if (!stream.ready[index]) uploadTile(index);
@@ -419,8 +452,16 @@ DirectTerrain::~DirectTerrain() = default;
 
 bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int left, int top,
                          int right, int bottom, int viewportX, int viewportY,
+                         Uint32 visibleTeams, bool wholeMap, int animationTime, std::span<const SDL_Rect> regions)
+{
+    return drawInternal(gfx, map, left, top, right, bottom, viewportX, viewportY,
+                        visibleTeams, wholeMap, animationTime, regions, false);
+}
+
+bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &map, int left, int top,
+                         int right, int bottom, int viewportX, int viewportY,
                          Uint32 visibleTeams, bool wholeMap, int animationTime,
-                         std::span<const SDL_Rect> regions, [[maybe_unused]] bool completeVisible)
+                         std::span<const SDL_Rect> regions, bool prepareOnly)
 {
 #ifdef DIRECT_TERRAIN_LEGACY_GL
     const auto context = SDL_GL_GetCurrentContext();
@@ -458,6 +499,7 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
 
     if (resources)
     {
+        if (prepareOnly) return false;
         try
         {
             if (!state->handles[State::Cells])
@@ -506,10 +548,7 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
     // Check the deadline between work items. Driver allocation and the first
     // metadata upload are indivisible and can take longer than the slice.
     constexpr auto coverageSlice = std::chrono::milliseconds(3);
-    // The first frame waits for visible coverage only. Later camera moves
-    // retain the time slice and spend spare time filling the rest of the atlas.
-    const auto deadline = completeVisible ? std::chrono::steady_clock::time_point::max()
-        : std::chrono::steady_clock::now() + coverageSlice;
+    const auto deadline = std::chrono::steady_clock::now() + coverageSlice;
     try
     {
         if (!state->program)
@@ -541,8 +580,7 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
         }
         if (state->coverageStream)
             state->advanceCoverage(map, globalContainer->terrainCompositor(assets),
-                {left + viewportX, top + viewportY, right + viewportX, bottom + viewportY},
-                deadline, !completeVisible);
+                {left + viewportX, top + viewportY, right + viewportX, bottom + viewportY}, deadline);
         if (!wholeMap)
             state->updateDiscovery(map, visibleTeams);
     }
@@ -560,7 +598,9 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
         return false;
     }
 
+    if (prepareOnly) return true;
     glUseProgram(state->program);
+    glUniform1f(state->uniforms[6], 32.f);
     for (unsigned unit = 0; unit < State::Count; ++unit)
     {
         glActiveTexture(GL_TEXTURE0 + unit);
@@ -597,6 +637,247 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
     return true;
 #else
     return false;
+#endif
+}
+
+bool DirectTerrain::prepareAnimation(GAGCore::GraphicContext &gfx, const SceneMap &map,
+    int left, int top, int right, int bottom, int viewportX, int viewportY,
+    Uint32 visibleTeams, bool wholeMap, int animationTime)
+{
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    if (!gfx.isLegacyGLScreen() || left > right || top > bottom) return false;
+    if (!drawInternal(gfx, map, left, top, right, bottom, viewportX, viewportY,
+                      visibleTeams, wholeMap, animationTime, {}, true) ||
+        needsBackdrop(gfx, map, left + viewportX, top + viewportY,
+                      right + viewportX, bottom + viewportY))
+        return false;
+    auto &out = state->animation;
+    out.regions.clear();
+    if (out.failed) return false;
+    auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
+    // Match the page compositor's streaming window. Narrowing it between the
+    // two passes would evict and decode the fringe variants every frame.
+    constexpr int pageTiles = SoftwareTerrainCache::ChunkTiles;
+    const auto page = [](int cell) { return int(std::floor(double(cell) / pageTiles)); };
+    compositor.prepareVisible(true, animationTime, map,
+        page(left + viewportX) * pageTiles, page(top + viewportY) * pageTiles,
+        (page(right + viewportX) + 1) * pageTiles - 1,
+        (page(bottom + viewportY) + 1) * pageTiles - 1);
+    const auto &catalog = compositor.catalog();
+    std::set<unsigned> wanted;
+    // The immutable map table supplies the same palette as the native shader.
+    // Read only the current view; panning does not reconstruct terrain recipes.
+    for (int y = top; y <= bottom; ++y)
+    {
+        int run = -1;
+        for (int x = left; x <= right + 1; ++x)
+        {
+            bool animated = false;
+            if (x <= right && (wholeMap || map.isMapPartiallyDiscovered(
+                    x + viewportX - 1, y + viewportY - 1,
+                    x + viewportX + 1, y + viewportY + 1, visibleTeams)))
+            {
+                const auto &cell = state->animationCells[map.coordToIndex(x + viewportX, y + viewportY)];
+                bool wet = false, dry = false;
+                for (auto slot : cell)
+                {
+                    if (!slot) continue;
+                    const auto &material = catalog.materials[state->animationSources[slot].material];
+                    animated |= material.animationFrames > 1;
+                    wet |= material.surf.period > 0;
+                    dry |= material.surf.period == 0;
+                }
+                animated |= wet && dry;
+                if (animated)
+                    for (auto slot : cell)
+                        if (slot) wanted.insert(slot);
+            }
+            if (animated && run < 0) run = x;
+            if (!animated && run >= 0)
+            {
+                out.regions.push_back({run, y, x - run, 1});
+                run = -1;
+            }
+        }
+    }
+    if (wanted.empty()) return true;
+
+    // Two endpoints per visible material variant, sampled near the display
+    // density. This independent 16 MiB allocation replaces repeated page
+    // composition; it never expands the terrain page cache.
+    constexpr int atlasSize = State::Animation::AtlasSize;
+    int pixels = 32;
+    const double density = gfx.mapTransformScale() * gfx.getRasterScale();
+    while (pixels < 128 && pixels < 32 * density) pixels *= 2;
+    while (pixels > 32 && wanted.size() * 2 > std::size_t(atlasSize / pixels) * (atlasSize / pixels))
+        pixels /= 2;
+    const unsigned pairs = (atlasSize / pixels) * (atlasSize / pixels) / 2;
+    if (wanted.size() > pairs) { out.regions.clear(); return false; }
+    GAGCore::Sprite::flushBatches(&gfx);
+    if (auto *batch = gfx.getRenderBatch()) batch->stateChange();
+    RestoreGL restore;
+    try
+    {
+        if (!out.art)
+        {
+            glGenTextures(1, &out.art);
+            glActiveTexture(GL_TEXTURE0 + State::Art);
+            glBindTexture(GL_TEXTURE_2D, out.art);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, atlasSize, atlasSize, 0,
+                         GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glGenTextures(1, &out.variants);
+            glActiveTexture(GL_TEXTURE0 + State::Variants);
+            glBindTexture(GL_TEXTURE_2D, out.variants);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16, DirectTerrainData::VariantWidth,
+                int(state->animationVariants.size() / DirectTerrainData::VariantWidth), 0,
+                GL_RGBA, GL_UNSIGNED_SHORT, state->animationVariants.data());
+            out.bytes = std::size_t(atlasSize) * atlasSize * sizeof(Pixel) +
+                state->animationVariants.size() * sizeof(Record);
+            state->bytes += out.bytes;
+        }
+        if (out.pixels != pixels)
+        {
+            out.entries.clear();
+            out.freePairs.clear();
+            for (unsigned pair = pairs; pair > 0; --pair) out.freePairs.push_back(pair - 1);
+            out.pixels = pixels;
+        }
+        for (auto slot : wanted)
+        {
+            auto it = out.entries.find(slot);
+            const bool added = it == out.entries.end();
+            if (it == out.entries.end())
+            {
+                if (out.freePairs.empty())
+                {
+                    const auto idle = std::find_if(out.entries.begin(), out.entries.end(),
+                        [&](const auto &item) { return !wanted.contains(item.first); });
+                    out.freePairs.push_back(idle->second.pair);
+                    out.entries.erase(idle);
+                }
+                const auto pair = out.freePairs.back();
+                out.freePairs.pop_back();
+                it = out.entries.emplace(slot, State::Animation::Entry{pair}).first;
+            }
+            auto &entry = it->second;
+            const auto source = state->animationSources[slot];
+            const auto &material = catalog.materials[source.material];
+            const unsigned absolutePhase = unsigned(animationTime) / material.animationTicks;
+            const unsigned endpoints = material.animationFrames > 1 ? 2 : 1;
+            for (unsigned ahead = 0; ahead < endpoints; ++ahead)
+            {
+                const unsigned phase = (absolutePhase + ahead) % material.animationFrames;
+                const unsigned parity = endpoints == 2 ? (absolutePhase + ahead) % 2 : 0;
+                const auto stamp = compositor.phaseSource(source.material, source.variant, phase);
+                if (entry.phases[parity] == phase && entry.stamps[parity] == stamp) continue;
+                const auto input = compositor.phasePixels(source.material, source.variant, phase);
+                if (input.size() != std::size_t(stamp.size) * stamp.size)
+                    throw std::runtime_error("Animated terrain source changed dimensions");
+                std::vector<Pixel> tile(std::size_t(pixels) * pixels);
+                for (int y = 0; y < pixels; ++y)
+                    for (int x = 0; x < pixels; ++x)
+                        tile[y * pixels + x] = input[(y * stamp.size / pixels) * stamp.size + x * stamp.size / pixels];
+                const unsigned index = entry.pair * 2 + parity;
+                const int columns = atlasSize / pixels;
+                glActiveTexture(GL_TEXTURE0 + State::Art);
+                glBindTexture(GL_TEXTURE_2D, out.art);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, (index % columns) * pixels,
+                    (index / columns) * pixels, pixels, pixels, GL_RGBA, GL_UNSIGNED_BYTE, tile.data());
+                state->uploaded += tile.size() * sizeof(Pixel);
+                entry.phases[parity] = phase;
+                entry.stamps[parity] = stamp;
+            }
+            if (added)
+            {
+                const auto recordIndex = slot * DirectTerrainData::VariantRecords;
+                auto record = state->animationVariants[recordIndex];
+                record[0] = Uint16(entry.pair * 2);
+                // Parity addresses the streamed current/next endpoints independently
+                // of the material's original loop length, including odd-length loops.
+                record[1] = Uint16(endpoints);
+                glActiveTexture(GL_TEXTURE0 + State::Variants);
+                glBindTexture(GL_TEXTURE_2D, out.variants);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, recordIndex % DirectTerrainData::VariantWidth,
+                    recordIndex / DirectTerrainData::VariantWidth, 1, 1, GL_RGBA, GL_UNSIGNED_SHORT, record.data());
+                state->uploaded += sizeof(Record);
+            }
+        }
+        if (glGetError() != GL_NO_ERROR)
+            throw std::runtime_error("Animated terrain source upload failed");
+        return true;
+    }
+    catch (const std::exception &error)
+    {
+        std::fprintf(stderr, "ANIMATED_TERRAIN_FALLBACK %s\n", error.what());
+        glDeleteTextures(1, &out.art);
+        glDeleteTextures(1, &out.variants);
+        state->bytes -= out.bytes;
+        out = {};
+        out.failed = true;
+        out.regions.clear();
+        return false;
+    }
+#else
+    return false;
+#endif
+}
+
+std::span<const SDL_Rect> DirectTerrain::animationRegions() const
+{
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    if (state) return state->animation.regions;
+#endif
+    return {};
+}
+
+void DirectTerrain::drawAnimation(GAGCore::GraphicContext &gfx, int viewportX, int viewportY,
+                                  bool wholeMap, int animationTime)
+{
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    if (!state || state->animation.regions.empty()) return;
+    GAGCore::Sprite::flushBatches(&gfx);
+    if (auto *batch = gfx.getRenderBatch()) batch->stateChange();
+    RestoreGL restore;
+    glUseProgram(state->program);
+    for (unsigned unit = 0; unit < State::Count; ++unit)
+    {
+        glActiveTexture(GL_TEXTURE0 + unit);
+        const auto texture = unit == State::Art ? state->animation.art
+            : unit == State::Variants ? state->animation.variants : state->textures[unit];
+        glBindTexture(GL_TEXTURE_2D, texture);
+    }
+    glUniform2f(state->uniforms[1], State::Animation::AtlasSize, State::Animation::AtlasSize);
+    glUniform1f(state->uniforms[4], float(animationTime));
+    glUniform1i(state->uniforms[5], wholeMap);
+    glUniform1f(state->uniforms[6], float(state->animation.pixels));
+    glEnable(GL_BLEND);
+    glDisable(GL_ALPHA_TEST);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glBegin(GL_QUADS);
+    for (const auto &rect : state->animation.regions)
+    {
+        const auto corner = [&](int x, int y) {
+            glMultiTexCoord2f(GL_TEXTURE0, float(x + viewportX), float(y + viewportY));
+            glVertex2f(float(x * TilePixels), float(y * TilePixels));
+        };
+        corner(rect.x, rect.y);
+        corner(rect.x + rect.w, rect.y);
+        corner(rect.x + rect.w, rect.y + rect.h);
+        corner(rect.x, rect.y + rect.h);
+    }
+    glEnd();
+    // The ordinary atlas uses its own dimensions on its next draw.
+    glUniform2f(state->uniforms[1], DirectTerrainData::AtlasWidth, float(state->nativeArtHeight));
+    gfx.countRenderBatchDraw();
 #endif
 }
 

@@ -18,9 +18,8 @@ class GpuTerrainPageCache;
 class SoftwareTerrainCache
 {
   public:
-	enum class Preparation { Immediate, Progressive, InitialView };
 	static constexpr int ChunkTiles = 16, ChunkPixels = ChunkTiles * 32;
-	static constexpr std::size_t Budget = 32u * 1024u * 1024u, GPUBudget = 256u * 1024u * 1024u;
+	static constexpr std::size_t Budget = 32u * 1024u * 1024u, GPUBudget = 128u * 1024u * 1024u;
 	// Preserve the existing density/GPU allowance; keep inactive zoom pixels
 	// in an additional bounded CPU reserve rather than recomposing them.
 #if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
@@ -29,9 +28,9 @@ class SoftwareTerrainCache
 	static constexpr std::size_t GPUCacheBudget = GPUBudget + 128u * 1024u * 1024u;
 #endif
 	// Coverage kept for mixed cells next to animated materials, so a phase change
-	// re-blends their textures instead of re-sampling coverage. Keep the mask
-	// allowance independent of the texture budget. Excess cells compose without it.
-	static constexpr std::size_t MaskBudget = Budget / 2, GPUMaskBudget = Budget;
+	// re-blends their textures instead of re-sampling coverage. Half of the software
+	// density budget (a quarter of the GPU one); cells beyond it compose without a kept mask.
+	static constexpr std::size_t MaskBudget = Budget / 2, GPUMaskBudget = GPUBudget / 4;
 	struct HeldMask
 	{
 		TerrainVisual::Compositor::CellMask mask;
@@ -100,7 +99,7 @@ class SoftwareTerrainCache
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
 							 int animationTime, int preferredResolution, bool tiledCapture = false,
-							 int preferredDownsample = 0, Preparation = Preparation::Immediate);
+							 int preferredDownsample = 0, bool progressive = false);
 	// Frees kept masks of pages not drawn this frame, oldest first, until
 	// `needed` more bytes fit the mask budget. Returns whether they now fit.
 	bool releaseMasks(std::size_t needed);
@@ -110,6 +109,8 @@ class SoftwareTerrainCache
     std::shared_ptr<const MapAssetBundle> assets;
 	std::vector<Copy> copies;
 	std::vector<SDL_Rect> missingPages;
+	// Whole cells owned by the Legacy GL animation pass for this prepare/draw.
+	std::vector<SDL_Rect> animationRegions;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	std::uint64_t textureUse = 0, reductions = 0;
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
@@ -149,7 +150,8 @@ class SoftwareTerrainCache
 	int benchmarkDownsample = 0;
 	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,
 				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0,
-				 bool tiledCapture = false, Preparation = Preparation::Immediate);
+				 bool tiledCapture = false, bool progressive = false,
+				 std::span<const SDL_Rect> animationRegions = {});
 	std::span<const SDL_Rect> missingPageRegions() const { return missingPages; }
 	void draw(GAGCore::GraphicContext &);
 	std::size_t bytes() const;

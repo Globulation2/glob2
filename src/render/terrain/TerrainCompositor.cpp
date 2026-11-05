@@ -154,6 +154,27 @@ Compositor::MaterialPixels Compositor::nativeMaterialPixels(MaterialId id, unsig
     prepareMaterial(id, false, phase, prepared, &wanted);
     return std::move(prepared[variant].pixels);
 }
+Compositor::PhaseSource Compositor::phaseSource(MaterialId id, unsigned variant, unsigned phase) const
+{
+    const auto &material = definitions.materials.at(id);
+    const auto frame = material.variants.at(variant).frame + phase * material.animationStride;
+    auto *source = sprites.at(id)->baseFrame(frame);
+    if (!source) throw std::runtime_error("Missing animated terrain source");
+    auto *edge = material.periodicEdges ? nullptr : sprites.at(id)->baseFrame(
+        material.variants.front().frame + phase * material.animationStride);
+    return {source->lifetimeIdentity(), source->contentRevision(), source->getW(),
+        edge ? edge->lifetimeIdentity() : 0, edge ? edge->contentRevision() : 0};
+}
+Compositor::MaterialPixels Compositor::phasePixels(MaterialId id, unsigned variant, unsigned phase)
+{
+    const auto count = definitions.materials.at(id).variants.size();
+    std::vector<Texture> prepared(count);
+    std::vector<unsigned char> wanted(count);
+    wanted.at(variant) = 1;
+    wanted.front() = 1;
+    prepareMaterial(id, true, phase, prepared, &wanted);
+    return std::move(prepared[variant].pixels);
+}
 std::size_t Compositor::sourceBytes() const
 {
 	std::size_t bytes = pack ? pack->bytes() : 0;

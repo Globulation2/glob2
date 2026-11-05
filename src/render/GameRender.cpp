@@ -315,7 +315,6 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 	const bool allowAtlas = !view.render.benchmarkForceTerrainPages && !scene.editor &&
 		!overviewOnly && !(frame.options & DRAW_TILED_CAPTURE);
 	const bool progressiveHD = allowAtlas && legacy && !nativeTerrain;
-	const bool initialView = allowAtlas && legacy && view.render.initialTerrainMap != map.identity();
 	const auto drawBackdrop = [&]
 	{
 		const auto alpha = view.render.detail.terrainOverview;
@@ -339,14 +338,14 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 		try
 		{
 			auto &terrain = view.render.directTerrain();
-			if (legacy && !initialView && terrain.needsBackdrop(frame.target, scene.map,
+			if (legacy && terrain.needsBackdrop(frame.target, scene.map,
 				frame.left + frame.viewportX, frame.top + frame.viewportY,
 				frame.right + frame.viewportX, frame.bottom + frame.viewportY))
 				drawBackdrop();
 			direct = terrain.draw(frame.target, scene.map, frame.left, frame.top, frame.right,
 				frame.bottom, frame.viewportX, frame.viewportY, frame.visibleTeams,
-				frame.options & DRAW_WHOLE_MAP, time, regions, initialView);
-			if (!initialView && !direct && terrain.preparing())
+				frame.options & DRAW_WHOLE_MAP, time, regions);
+			if (!direct && terrain.preparing())
 			{
 				if (progressiveHD)
 				{
@@ -373,19 +372,32 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 		catch (const std::bad_alloc &)
 		{ /* Keep the uncached renderer available under memory pressure. */ }
 	}
-	using Preparation = SoftwareTerrainCache::Preparation;
-	const auto preparation = progressiveHD
-		? (initialView ? Preparation::InitialView : Preparation::Progressive)
-		: Preparation::Immediate;
+	DirectTerrain *animationTerrain = nullptr;
+	std::span<const SDL_Rect> animationRegions;
+	if (progressiveHD)
+	{
+		try
+		{
+			auto &terrain = view.render.directTerrain();
+			if (terrain.prepareAnimation(frame.target, scene.map,
+				frame.left, frame.top, frame.right, frame.bottom, frame.viewportX, frame.viewportY,
+				frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time))
+			{
+				animationTerrain = &terrain;
+				animationRegions = terrain.animationRegions();
+			}
+		}
+		catch (const std::bad_alloc &) { /* Pages remain the allocation fallback. */ }
+	}
 	const bool cached = pagesForView && pagesForView->prepare(scene.map, frame.terrain,
 		frame.left, frame.top, frame.right, frame.bottom, frame.viewportX, frame.viewportY,
 		frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time,
-		frame.options & DRAW_TILED_CAPTURE, preparation);
+		frame.options & DRAW_TILED_CAPTURE, progressiveHD, animationRegions);
 	if (progressiveHD)
 	{
 		if (!cached)
 			drawAtlas({});
-		else if (!initialView && !pagesForView->missingPageRegions().empty())
+		else if (!pagesForView->missingPageRegions().empty())
 		{
 			drawAtlas(pagesForView->missingPageRegions());
 			if (!direct && !terrainBackdrop)
@@ -396,11 +408,12 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 	{
 		PERF_SCOPE_TIME(Terrain);
 		pagesForView->draw(frame.target);
+		if (animationTerrain)
+			animationTerrain->drawAnimation(frame.target, frame.viewportX, frame.viewportY,
+				frame.options & DRAW_WHOLE_MAP, time);
 	}
 	else if (!overviewOnly && !direct && !terrainBackdrop)
 		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map, time);
-	if (initialView)
-		view.render.initialTerrainMap = map.identity();
 
     const auto *atlas = view.render.existingDirectTerrain();
     const auto *pages = view.render.existingTerrainCache();

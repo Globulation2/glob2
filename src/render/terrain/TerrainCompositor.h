@@ -121,6 +121,18 @@ class Compositor
     using MaterialPixels = std::vector<std::array<unsigned char, 4>>;
     // A single immutable animation phase, prepared with the reference variant edges.
     MaterialPixels nativeMaterialPixels(MaterialId id, unsigned variant, unsigned phase);
+    // Individual source endpoints for GPU crossfades. Stamps include deferred HD
+    // publication and edits; phasePixels applies the same shared variant edges
+    // as the CPU compositor without blending the two animation endpoints.
+    struct PhaseSource
+    {
+        std::uint64_t identity, revision;
+        int size;
+        std::uint64_t edgeIdentity, edgeRevision;
+        bool operator==(const PhaseSource &) const = default;
+    };
+    PhaseSource phaseSource(MaterialId id, unsigned variant, unsigned phase) const;
+    MaterialPixels phasePixels(MaterialId id, unsigned variant, unsigned phase);
     struct CpuScratch
     {
         CellMask mask;
