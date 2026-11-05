@@ -58,7 +58,8 @@ class SoftwareTerrainCache
 	{
 		int x = 0, y = 0, scale = 1, downsample = 1;
 		Uint32 seed = 0; // Map terrain seed the page was composed with.
-		// Corner vertices and one-vertex halo used by contextual borders.
+		Uint64 recipeTerrainRevision = 0;
+		// Corner vertices and one-vertex halo used by contextual borders and shore calm.
 		std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
 		std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 		// Empty cells expose only the separately drawn ocean and submit no software blit.

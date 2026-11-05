@@ -87,8 +87,9 @@ constexpr int ShoreCalmContrastQ8 = 64;
 // Q8 calm of a liquid vertex whose nearest non-surf vertex is at squared
 // vertex distance d2 (zero means none within reach).
 unsigned shoreCalmAt(int d2);
-// Vertex radius searched for land around each corner.
-constexpr int ShoreCalmSearch = (ShoreCalmReachQ8 + 128 + 255) / 256;
+// An offset beyond this integer radius already has zero calm, even on
+// an axis. The half-cell term matches the shoreline offset in shoreCalmAt.
+constexpr int ShoreCalmSearch = (ShoreCalmReachQ8 + 128) / 256;
 // Calm at a sample: corner calm bilinearly interpolated at Q8 cell position
 // fx, fy (0..256). The result is continuous across cells.
 unsigned shoreCalm(const std::array<std::uint8_t, 4> &corners, unsigned fx, unsigned fy);

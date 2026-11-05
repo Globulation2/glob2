@@ -908,6 +908,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								ox * 4,
 							static_cast<const Uint8 *>(tile->pixels) + y * tile->pitch, n * 4);
 		};
+		const auto terrainRevision = map.terrainRevision();
 		for (int cy = y0; cy <= y1; ++cy)
 			for (int cx = x0; cx <= x1; ++cx)
 			{
@@ -920,15 +921,24 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						entry = c.get();
 						break;
 					}
-				// Compare the complete vertex window including the contour halo.
+				// Animation and artwork revisions change pixels but keep their
+				// recipes. The terrain revision avoids scanning the vertex
+				// window on ordinary frames.
+				const bool sameTerrain = entry && entry->valid &&
+					entry->recipeTerrainRevision == terrainRevision && entry->seed == map.terrainSeed();
+				// Compare the complete vertex window on edits, including the
+				// one-vertex halo needed by borders and shore calm.
 				std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
-				const int halo = compositor.neighborhoodBorders() ? 1 : 0;
-				for (int y = -halo; y <= ChunkTiles + halo; ++y)
-					for (int x = -halo; x <= ChunkTiles + halo; ++x)
-						sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);
+				if (!sameTerrain)
+				{
+					for (int y = -1; y <= ChunkTiles + 1; ++y)
+						for (int x = -1; x <= ChunkTiles + 1; ++x)
+							sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);
+				}
 				const auto revisionChanged = [&](const auto &revision)
 				{ return compositor.materialRevision(revision.first) != revision.second; };
-				bool unchanged = entry && entry->valid && (!gpuPages || gpuPages->find(*entry)) && entry->sources == sources &&
+				bool unchanged = entry && entry->valid && (!gpuPages || gpuPages->find(*entry)) &&
+								 (sameTerrain || entry->sources == sources) &&
 								 entry->seed == map.terrainSeed() &&
 								 std::none_of(entry->materialRevisions.begin(),
 											  entry->materialRevisions.end(), revisionChanged);
@@ -949,6 +959,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (unchanged)
 				{
 					entry->used = frame;
+					entry->recipeTerrainRevision = terrainRevision;
 					++hits;
 					copies.push_back(
 						{entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
@@ -958,12 +969,16 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				for (int y = 0; y < ChunkTiles; ++y)
 					for (int x = 0; x < ChunkTiles; ++x)
 					{
-						auto &t = tiles[y * ChunkTiles + x];
+						const int index = y * ChunkTiles + x;
+						auto &t = tiles[index];
 						t.discovered = wholeMap || map.isMapPartiallyDiscovered(
 													   wx + x - 1, wy + y - 1, wx + x + 1,
 													   wy + y + 1, visibleTeams);
 						if (t.discovered)
-							t.recipe = compositor.describe(map, wx + x, wy + y);
+						{
+							t.recipe = sameTerrain && entry->tiles[index].discovered
+								? entry->tiles[index].recipe : compositor.describe(map, wx + x, wy + y);
+						}
 					}
 				// Reduced pages average native composition. A retained native
 				// page is already that exact input, including coverage and alpha;
@@ -1146,8 +1161,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				}
 				else
 					++hits;
-				entry->sources = sources;
+				if (!sameTerrain) entry->sources = sources;
 				entry->seed = map.terrainSeed();
+				entry->recipeTerrainRevision = terrainRevision;
 				if (native) native->used = nativeUsed;
 				copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 			}

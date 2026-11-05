@@ -656,10 +656,18 @@ void Compositor::describeShoreCalm(const SceneMap &map, Recipe &r) const
 	// Vertices around the cell, enough to reach land within the fade of every corner.
 	constexpr int R = ShoreCalmSearch, W = 2 * R + 2;
 	std::array<bool, W * W> land{};
+	bool hasLand = false;
 	for (int y = 0; y < W; ++y)
 		for (int x = 0; x < W; ++x)
-			land[y * W + x] = definitions.materials[materialFor(
+		{
+			const bool dry = definitions.materials[materialFor(
 				map, map.vertexTerrainAt(r.x + x - R, r.y + y - R))].surf.period == 0;
+			land[y * W + x] = dry;
+			hasLand |= dry;
+		}
+	// In open water every corner would search the same empty neighborhood.
+	if (!hasLand)
+		return;
 	for (int k = 0; k < 4; ++k)
 	{
 		const int cx = R + (k & 1), cy = R + (k >> 1);

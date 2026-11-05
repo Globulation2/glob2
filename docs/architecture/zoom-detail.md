@@ -63,6 +63,8 @@ it is saved, checksummed or read by the simulation.
   In the interactive Legacy OpenGL view, pages that need reduction below
   native resolution use native artwork for composition. HD artwork still
   streams for use when zooming back in.
+  Animation and artwork updates reuse existing page recipes while the terrain
+  revision and seed match. Newly discovered cells compute their own recipes.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Bullets, explosions, death animations, the magic effect and the
   level-up number go with the unit sprites. Building sprites cross-fade to chips in the
