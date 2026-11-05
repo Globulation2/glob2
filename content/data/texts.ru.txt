@@ -5764,12 +5764,6 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Песок
 [terrain group grass]
 Трава
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Лёд
 [terrain group paths]

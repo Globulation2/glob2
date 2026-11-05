@@ -139,15 +139,10 @@ TEST_SUITE("BrushCatalog")
 		CHECK(catalog[3].key == "deep-water");
 		CHECK(ids(catalog[3]) == std::vector<std::string>{"terrain/deep_water", "terrain/dark_water"});
 		CHECK(catalog[4].key == "ice");
-		// Classic ground explains how it plays under the shared rule line.
-		for (const auto *key : {"water", "sand", "grass"})
-		{
-			const auto *group = findBrushGroup(catalog, BrushSection::Terrain, key);
-			REQUIRE(group);
-			CHECK(group->rules.find('\n') != std::string::npos);
-			CHECK(group->rules.find("[terrain group note") == std::string::npos);
-		}
-		CHECK(findBrushGroup(catalog, BrushSection::Terrain, "ice")->rules.find('\n') == std::string::npos);
+		// Every group, classic ground included, shows only its one-line rule summary.
+		for (const auto &group : catalog)
+			if (group.section == BrushSection::Terrain)
+				CHECK(group.rules.find('\n') == std::string::npos);
 		// Every selectable built-in type is immediately available.
 		const auto &registry = editor.game.map.terrainRegistry();
 		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)

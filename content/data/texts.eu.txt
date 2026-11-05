@@ -5764,12 +5764,6 @@ Ura
 Harea
 [terrain group grass]
 Belarra
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Izotza
 [terrain group paths]

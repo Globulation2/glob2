@@ -5764,12 +5764,6 @@ Su
 Kum
 [terrain group grass]
 Çimen
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Buz
 [terrain group paths]

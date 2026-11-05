@@ -5764,12 +5764,6 @@ Vatten
 Sand
 [terrain group grass]
 Gräs
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Is
 [terrain group paths]

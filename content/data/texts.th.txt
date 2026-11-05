@@ -5740,12 +5740,6 @@ AI ทำงาน​อย่างไร
 ทราย
 [terrain group grass]
 หญ้า
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 น้ำแข็ง
 [terrain group paths]

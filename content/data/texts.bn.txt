@@ -5740,12 +5740,6 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 বালি
 [terrain group grass]
 ঘাস
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 বরফ
 [terrain group paths]

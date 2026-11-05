@@ -5690,12 +5690,6 @@ Air
 Pasir
 [terrain group grass]
 Rumput
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Ais
 [terrain group paths]

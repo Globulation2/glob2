@@ -5690,12 +5690,6 @@ ZIP அல்லது மூன்று இசைத்தடங்களை �
 மணல்
 [terrain group grass]
 புல்
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 பனிக்கட்டி
 [terrain group paths]

@@ -5764,12 +5764,6 @@ Apă
 Nisip
 [terrain group grass]
 Iarbă
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Gheață
 [terrain group paths]

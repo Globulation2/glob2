@@ -5764,12 +5764,6 @@ Voda
 Piesok
 [terrain group grass]
 Tráva
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Ľad
 [terrain group paths]

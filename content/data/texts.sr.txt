@@ -5764,12 +5764,6 @@ FFmpeg није доступан, па је снимање искључено. �
 Песак
 [terrain group grass]
 Трава
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Лед
 [terrain group paths]

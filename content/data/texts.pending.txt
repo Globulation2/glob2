@@ -64,6 +64,3 @@
 [ridge_rock]
 [outcrop]
 [terrain group ridges]
-[terrain group note water]
-[terrain group note sand]
-[terrain group note grass]
