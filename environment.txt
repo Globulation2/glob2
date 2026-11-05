@@ -1,0 +1,9 @@
+Tested base: 8bf9c6e7864fa37ab23a76d1f6bd78f718d2bc91
+Tested source: 1c19591d5d843e91bcd8117477c4eb36b136ec65 (same tree as the locally tested edits)
+ProductName:		macOS
+ProductVersion:		27.2
+BuildVersion:		26B123
+Architecture: arm64
+
+Cached runtime asset export audit digest:
+f2e7c00ecded47f2bc47c1bf26dbcb5d89e1b44c79a2459157727263f3fa4865

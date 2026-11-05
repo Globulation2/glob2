@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="animation invalidates only pages using that material [display]" time="1.52554" status="run" />
+  <testcase classname="TerrainMaterials" name="initial native atlas draw completes visible terrain coverage [display]" time="1.43784" status="run" />
+  <testcase classname="TerrainMaterials" name="interactive HD pages retain density across page boundaries [display]" time="1.53764" status="run" />
+  <testcase classname="TerrainMaterials" name="progressive terrain pages keep the native fallback limited to missing regions [display]" time="1.48923" status="run" />
+  <testcase classname="TerrainMaterials" name="surf steps rebuild shoreline pages but keep static open water resident [display]" time="2.43801" status="run" />
+  </testsuite><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="GPU terrain retains CPU pages when the visible textures exceed its budget [display]" time="1.83946" status="run" />
+  <testcase classname="TerrainPresentation" name="tiled capture keeps whole-map density and warm pages at narrow edges [display]" time="3.70481" status="run" />
+  </testsuite></testsuites>

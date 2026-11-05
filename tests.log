@@ -1,0 +1,10 @@
+PASS TerrainMaterials/animation invalidates only pages using that material [display] (1.6s)
+PASS TerrainPresentation/GPU terrain retains CPU pages when the visible textures exceed its budget [display] (1.9s)
+PASS TerrainMaterials/surf steps rebuild shoreline pages but keep static open water resident [display] (2.5s)
+PASS TerrainMaterials/progressive terrain pages keep the native fallback limited to missing regions [display] (1.6s)
+PASS TerrainMaterials/interactive HD pages retain density across page boundaries [display] (1.6s)
+PASS TerrainPresentation/tiled capture keeps whole-map density and warm pages at narrow edges [display] (3.8s)
+PASS TerrainMaterials/initial native atlas draw completes visible terrain coverage [display] (1.5s)
+
+7 passed, 0 failed, 0 skipped (14.4s of test time)
+[run_tests] JUnit report: /Users/bradley/.codex/worktrees/water-overlay/glob2/artifacts/hd-pan-fix/junit.xml (7 cases)

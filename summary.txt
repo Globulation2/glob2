@@ -1,0 +1,20 @@
+close-pan
+  BACKEND requested=legacy-gl active=legacy-gl fallback_reason=
+  simulation_checksum=7a0465db
+  Cold 225.526917 ms, measured n=240, median=6.50 ms, p95=63.58 ms, max=182.53 ms
+  Page resolutions {4: 240}, peak terrain textures 192.00 MiB
+hd-start
+  BACKEND requested=legacy-gl active=legacy-gl fallback_reason=
+  simulation_checksum=7a0465db
+  Cold 403.49 ms, measured n=240, median=4.87 ms, p95=5.97 ms, max=7.28 ms
+  Page resolutions {2: 240}, peak terrain textures 72.00 MiB
+native-start
+  BACKEND requested=legacy-gl active=legacy-gl fallback_reason=
+  simulation_checksum=7a0465db
+  Cold 77.272625 ms, measured n=240, median=4.44 ms, p95=5.38 ms, max=7.02 ms
+  Page resolutions {}, peak terrain textures 50.73 MiB
+zoom-pan
+  BACKEND requested=legacy-gl active=legacy-gl fallback_reason=
+  simulation_checksum=7a0465db
+  Cold 400.093708 ms, measured n=240, median=8.50 ms, p95=56.02 ms, max=72.40 ms
+  Page resolutions {1: 78, 2: 138}, peak terrain textures 298.73 MiB
