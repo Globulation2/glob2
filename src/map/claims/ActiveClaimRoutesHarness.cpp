@@ -680,4 +680,79 @@ TEST_SUITE("ActiveClaimRoutes")
         }
     }
 
+    TEST_CASE("claim oversubscription admits claimants up to the scaled limit and later holders fail cleanly")
+    {
+        glob2test::HeadlessGlobals globals;
+        using Config=ResourceClaims::ClaimPolicyConfig;
+        // Stock 1: exact admits one, 2000 two, 3000 three, unlimited all five.
+        for(const auto& [permille,expected]:std::vector<std::pair<unsigned,unsigned>>{{1000u,1u},{2000u,2u},{3000u,3u},{Config::UnlimitedClaimOversubscription,5u}}) {
+            CAPTURE(permille);
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);map.setMaterialDestinationsEnabled(true);
+            Config config;config.claimOversubscriptionPermille=permille;
+            map.setMaterialClaimPolicyConfig(config);
+            CHECK(map.materialClaimLimitPermille()==permille);
+            auto* building=fixture.addBuilding("inn",2,2);
+            const int tx=14,ty=8;const auto target=Uint32(map.coordToIndex(tx,ty));
+            map.setResourceByIndex(tx,ty,WHEAT,1);map.setMaterialAmountSlot(target,WHEAT,1);
+            std::vector<Unit*> units;
+            struct Cleanup { std::vector<Unit*>& units; ~Cleanup(){for(auto* u:units){u->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);u->attachedBuilding=nullptr;}} } cleanup{units};
+            for(int i=0;i<5;++i) {
+                auto* unit=fixture.addUnit(WORKER,8,6+i);REQUIRE(unit);units.push_back(unit);
+                unit->attachedBuilding=building;unit->activity=Unit::ACT_FILLING;
+                unit->displacement=Unit::DIS_GOING_TO_RESOURCE;unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
+            }
+            unsigned admitted=0;
+            for(auto* unit:units) {
+                const bool acquired=unit->acquireMaterialClaimAt(target);
+                CHECK(acquired==(admitted<expected));
+                admitted+=acquired;
+                if(acquired)CHECK(unit->activeMaterialClaimValid());else CHECK_FALSE(unit->activeMaterialClaim);
+            }
+            CHECK(admitted==expected);
+            CHECK(map.materialClaimLedger().materialCount(target,WHEAT)==expected);
+            // Selection's availability check agrees with acquisition.
+            const auto& probe=*units.front()->activeMaterialClaim;
+            const auto lastOwner=ResourceClaims::unitOwner(units.back()->gid,units.back()->scriptIdentity);
+            CHECK(map.materialClaimAvailable(lastOwner,probe,1)==(permille==Config::UnlimitedClaimOversubscription));
+            // The first holder harvests the only unit; the others then hold a
+            // depleted claim, which reports ResourceDepleted and releases.
+            auto* first=units.front();const auto claim=*first->activeMaterialClaim;
+            first->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Harvest);
+            REQUIRE(map.takeClaimedMaterial(claim,first->owner->me));
+            CHECK(map.materialAmountAtSlot(target,WHEAT)==0);
+            CHECK_FALSE(map.takeClaimedMaterial(claim,first->owner->me));
+            for(auto* unit:units) if(unit!=first && unit->activeMaterialClaim) {
+                CHECK(unit->activeMaterialClaimInvalidity()==ResourceClaims::ReleaseReason::ResourceDepleted);
+                unit->releaseInvalidActiveMaterialClaim();CHECK_FALSE(unit->activeMaterialClaim);
+            }
+            CHECK(map.materialClaimLedger().materialCount(target,WHEAT)==0);
+        }
+        // A stock decrease releases only the holders beyond the scaled limit,
+        // retaining the lowest owner IDs exactly as at exact capacity.
+        {
+            glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=9183});
+            auto& game=fixture.game;auto& map=game.map;game.gameHeader.setResourceGrowthDisabled(true);map.setMaterialDestinationsEnabled(true);
+            Config config;config.claimOversubscriptionPermille=1500;
+            map.setMaterialClaimPolicyConfig(config);
+            auto* building=fixture.addBuilding("inn",2,2);
+            const int tx=14,ty=8;const auto target=Uint32(map.coordToIndex(tx,ty));
+            map.setResourceByIndex(tx,ty,WHEAT,1);map.setMaterialAmountSlot(target,WHEAT,4);
+            std::vector<Unit*> units;
+            struct Cleanup { std::vector<Unit*>& units; ~Cleanup(){for(auto* u:units){u->releaseActiveMaterialClaim(ResourceClaims::ReleaseReason::Other);u->attachedBuilding=nullptr;}} } cleanup{units};
+            std::vector<ResourceClaims::Owner> owners;
+            for(int i=0;i<8;++i) {
+                auto* unit=fixture.addUnit(WORKER,8,4+i);REQUIRE(unit);units.push_back(unit);
+                unit->attachedBuilding=building;unit->activity=Unit::ACT_FILLING;
+                unit->displacement=Unit::DIS_GOING_TO_RESOURCE;unit->destinationPurpose=WHEAT;unit->medical=Unit::MED_FREE;
+                if(unit->acquireMaterialClaimAt(target))owners.push_back(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity));
+            }
+            REQUIRE(owners.size()==6); // floor(4*1500/1000)
+            map.setMaterialAmountSlot(target,WHEAT,3);
+            map.revalidateMaterialClaimOwners(owners);
+            CHECK(map.materialClaimLedger().materialCount(target,WHEAT)==4); // floor(3*1500/1000)
+            std::sort(owners.begin(),owners.end());
+            for(std::size_t i=0;i<owners.size();++i)CHECK((map.materialClaimLedger().find(owners[i])!=nullptr)==(i<4));
+        }
+    }
 }

@@ -47,6 +47,19 @@ PARITY = [
      '1f553328cad74f7dc147fd5e60db23269d0bbc4db2e439048b9a8eb4979223d5'),
 ]
 
+# Engine-reported (game run resolved config/digest) for the production policy
+# with claim_oversubscription_permille 2000 and "unlimited".
+OVERSUBSCRIPTION_PARITY = [
+    # 2000
+    (json.loads('{"claim_oversubscription_permille":2000,"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
+     '{"claim_oversubscription_permille":2000,"destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
+     'ffc2148b7c9b99a6ed772697c9802f453f494f3ca47a41e6940d8457c91e02ea'),
+    # unlimited
+    (json.loads('{"claim_oversubscription_permille":"unlimited","destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}'),
+     '{"claim_oversubscription_permille":"unlimited","destination_refresh_j":12,"fallback":"wait","fallback_after_decisions":16,"maximum_expansions":4096,"opportunistic_adjacent_pickup":true,"pattern":"final-r32-exact24-assembled-v1","pattern_digest":"44af8d18d898b137c62432a56ca0229875b810062502584fad2e2f0976623c3c","pattern_format":"mixed-v1","pattern_frame":"nearest-d4-v1","pending_step":"wait","recovery_attempt_window_ticks":64,"recovery_backoff_ticks":16,"recovery_cache_entries":4,"recovery_max_attempts":4,"recovery_selection":"first_available_cursor","recovery_source_version":1,"recovery_ttl_ticks":128,"route_refresh_j":0,"route_target":"claimed_access","selection":"first_available","source_version":5,"use_primary_gradient":false}',
+     '27ebf691125c94cc2a0b61ca15d2144f8d3f1d7d1d2f6a6fecec1c17d1500263'),
+]
+
 
 class PolicyOptions(unittest.TestCase):
     def test_defaults_are_omitted_and_existing_digests_unchanged(self):
@@ -97,6 +110,50 @@ class PolicyOptions(unittest.TestCase):
             self.assertEqual(policy_digest(value), engine_digest)
         off = PARITY[0][0] | {'refresh_switch_margin_permille': 0, 'terrain_component_prefilter': False}
         self.assertEqual(policy_digest(off), '362f54bc04bd81fb1120c727cbb6413348f0dbd1fa63278d61e1728503c3e9f0')
+
+
+class ClaimOversubscription(unittest.TestCase):
+    def test_default_is_omitted_and_existing_digests_unchanged(self):
+        for version in (1, 2, 3):
+            base = policy(version)
+            explicit = base | {'claim_oversubscription_permille': 1000}
+            self.assertEqual(validate_policy(explicit), explicit)
+            self.assertEqual(canonical_policy(explicit), canonical_policy(base))
+            self.assertEqual(policy_digest(explicit), policy_digest(base))
+            self.assertEqual(normalized_policy(explicit), base)
+        production = PARITY[0][0] | {'claim_oversubscription_permille': 1000}
+        self.assertEqual(canonical_policy(production), PARITY[0][1])
+        self.assertEqual(policy_digest(production), '362f54bc04bd81fb1120c727cbb6413348f0dbd1fa63278d61e1728503c3e9f0')
+
+    def test_non_default_values_are_canonical(self):
+        base = policy()
+        for value, text in ((1001, '1001'), (2000, '2000'), (100000, '100000'), ('unlimited', '"unlimited"')):
+            option = base | {'claim_oversubscription_permille': value}
+            self.assertIn('"claim_oversubscription_permille":' + text, canonical_policy(option))
+            self.assertNotEqual(policy_digest(option), policy_digest(base))
+            self.assertEqual(normalized_policy(option), option)
+
+    def test_domain_is_strict(self):
+        for value in (999, 0, -1, 100001, 4294967295, 1500.0, True, '2000', 'Unlimited', None):
+            with self.assertRaises(ValueError):
+                validate_policy(policy() | {'claim_oversubscription_permille': value})
+
+    def test_capabilities_must_advertise_non_default_value(self):
+        caps = {'resource_claims_policy_config_version': 2, 'resource_claims_active_policies': ['experimental'],
+            'resource_claims_policy_patterns': [{'name': policy()['pattern'], 'digest': 'a'*64}],
+            'resource_claims_policy_options': ['refresh_switch_margin_permille', 'terrain_component_prefilter']}
+        validate_policy(policy() | {'claim_oversubscription_permille': 1000}, caps)
+        for value in (2000, 'unlimited'):
+            with self.assertRaises(ValueError):
+                validate_policy(policy() | {'claim_oversubscription_permille': value}, caps)
+            validate_policy(policy() | {'claim_oversubscription_permille': value},
+                caps | {'resource_claims_policy_options': sorted(OPTIONS)})
+
+    def test_engine_canonical_json_and_digest_match(self):
+        self.assertTrue(OVERSUBSCRIPTION_PARITY)
+        for value, engine_json, engine_digest in OVERSUBSCRIPTION_PARITY:
+            self.assertEqual(canonical_policy(value), engine_json)
+            self.assertEqual(policy_digest(value), engine_digest)
 
 
 def journey_trace(release_reasons=None, filters=None):

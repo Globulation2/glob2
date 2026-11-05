@@ -864,7 +864,7 @@ void Unit::reconcileMaterialClaim()
         ++map.materialClaimTelemetry.changed;
         const Uint32 amount=map.materialAmountAtSlot(source,destinationPurpose);
         const Uint32 capacity=amount>reserve?amount-reserve:0;
-        if (!map.materialClaimLedger().available(ResourceClaims::unitOwner(gid,scriptIdentity),claim,capacity,
+        if (!map.materialClaimAvailable(ResourceClaims::unitOwner(gid,scriptIdentity),claim,capacity,
             sourceYield.consumption==ResourceConsumption::Infinite))
             ++map.materialClaimTelemetry.overcommittedSelections;
         map.materialClaimTelemetry.peakActive=std::max<Uint64>(map.materialClaimTelemetry.peakActive,map.materialClaimLedger().size());

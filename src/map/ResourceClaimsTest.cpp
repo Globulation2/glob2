@@ -176,3 +176,34 @@ TEST_SUITE("ResourceClaims")
         claims.reset(2); CHECK(claims.size() == 0); CHECK(claims.counts().at(1) == 0);
     }
 }
+
+TEST_CASE("claim limit permille scales the claimant count and leaves exclusivity and floors intact" * doctest::test_suite("ResourceClaims"))
+{
+    using namespace ResourceClaims;
+    const auto noop=[](std::size_t){};
+    for(const std::uint32_t permille:{1000u,1500u,2000u,3000u,Ledger::UnlimitedLimitPermille}) {
+        CAPTURE(permille);
+        for(const std::uint32_t stock:{0u,1u,2u,4u}) {
+            CAPTURE(stock);
+            Ledger ledger;ledger.reset(16);
+            const Claim claim{1,1,0,0,false,0};
+            unsigned admitted=0;
+            for(Owner owner=1;owner<=32;++owner)admitted+=ledger.acquire(owner,claim,stock,false,noop,permille);
+            const unsigned expected=permille==Ledger::UnlimitedLimitPermille?(stock?32u:0u):unsigned(std::uint64_t(stock)*permille/1000);
+            CHECK(admitted==expected);
+            // A holder re-checking its own claim never counts itself.
+            if(admitted)CHECK(ledger.available(1,claim,stock,false,permille));
+        }
+        // Exclusive claims still admit a single holder.
+        Ledger exclusive;exclusive.reset(16);
+        const Claim sole{2,2,0,0,true,0};
+        CHECK(exclusive.acquire(1,sole,1,false,noop,permille));
+        CHECK_FALSE(exclusive.available(2,sole,1,false,permille));
+        CHECK_FALSE(exclusive.available(2,{2,2,0,0,false,0},4,false,permille));
+        // The shared seed floor is not scaled: stock at the floor admits nobody.
+        Ledger floor;floor.reset(16);
+        CHECK(floor.acquire(1,{3,3,0,0,false,5},1,false,noop,permille)); // physical 6, floor 5
+        CHECK(floor.available(2,{3,3,0,0,false,0},6,false,permille)==(permille>=2000));
+        CHECK_FALSE(floor.available(2,{3,3,0,0,false,6},0,false,permille));
+    }
+}

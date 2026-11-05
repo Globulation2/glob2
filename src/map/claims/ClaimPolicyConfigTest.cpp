@@ -231,3 +231,45 @@ TEST_CASE("optional refresh margin and terrain prefilter keep every existing can
     // Digests recorded from the build before these options existed.
     CHECK(existing[1].digest()=="ecd0f62776a44cc849227ded464b60e3032d4de9549e92164f176406fe251c4b");
 }
+
+TEST_CASE("claim oversubscription keeps every existing canonical identity and has a strict domain" * doctest::test_suite("ClaimPolicyConfig"))
+{
+    std::vector<ClaimPolicyConfig> existing;
+    for(unsigned version:{1u,2u,3u,4u}) {ClaimPolicyConfig c;c.sourceVersion=version;existing.push_back(c);}
+    {ClaimPolicyConfig c;c.sourceVersion=5;c.pattern="final-r32-exact24-assembled-v1";
+        c.patternFrame=ClaimPolicyConfig::PatternFrame::NearestD4;c.destinationRefreshJ=12;c.opportunisticAdjacentPickup=true;existing.push_back(c);}
+    for(const auto& config:existing) {
+        CAPTURE(config.sourceVersion);
+        CHECK(config.claimOversubscriptionPermille==1000);
+        const auto canonical=config.canonicalJson();
+        CHECK(canonical.find("claim_oversubscription_permille")==std::string::npos);
+        // Explicit 1000 is the default and canonicalizes to the same identity.
+        auto wire=nlohmann::json::parse(canonical);wire["claim_oversubscription_permille"]=1000;
+        const auto exact=ClaimPolicyConfig::parse(wire.dump());
+        CHECK(exact==config);CHECK(exact.digest()==config.digest());CHECK(exact.canonicalJson()==canonical);
+        for(unsigned permille:{1001u,2000u,3000u,100000u}) {
+            wire=nlohmann::json::parse(canonical);wire["claim_oversubscription_permille"]=permille;
+            const auto parsed=ClaimPolicyConfig::parse(wire.dump());
+            CHECK(parsed.claimOversubscriptionPermille==permille);CHECK(parsed.digest()!=config.digest());
+            CHECK(ClaimPolicyConfig::parse(parsed.canonicalJson())==parsed);
+            CHECK(nlohmann::json::parse(parsed.canonicalJson()).at("claim_oversubscription_permille")==permille);
+        }
+        wire=nlohmann::json::parse(canonical);wire["claim_oversubscription_permille"]="unlimited";
+        const auto unlimited=ClaimPolicyConfig::parse(wire.dump());
+        CHECK(unlimited.claimOversubscriptionPermille==ClaimPolicyConfig::UnlimitedClaimOversubscription);
+        CHECK(unlimited.digest()!=config.digest());CHECK(ClaimPolicyConfig::parse(unlimited.canonicalJson())==unlimited);
+        CHECK(nlohmann::json::parse(unlimited.canonicalJson()).at("claim_oversubscription_permille")=="unlimited");
+        for(const auto& invalid:{nlohmann::json(999),nlohmann::json(0),nlohmann::json(100001),nlohmann::json(-1),
+            nlohmann::json(4294967295u),nlohmann::json(1500.0),nlohmann::json(true),nlohmann::json("2000"),
+            nlohmann::json("Unlimited"),nlohmann::json(nullptr)}) {
+            CAPTURE(invalid.dump());
+            wire=nlohmann::json::parse(canonical);wire["claim_oversubscription_permille"]=invalid;
+            CHECK_THROWS(ClaimPolicyConfig::parse(wire.dump()));
+        }
+        for(unsigned bad:{0u,999u,100001u,4294967294u}) {auto c=config;c.claimOversubscriptionPermille=bad;CHECK_THROWS(c.validate());}
+    }
+    // Digests recorded before this option existed (source 2 default; source 5
+    // production policy as reported by game run).
+    CHECK(existing[1].digest()=="ecd0f62776a44cc849227ded464b60e3032d4de9549e92164f176406fe251c4b");
+    CHECK(existing[4].digest()=="362f54bc04bd81fb1120c727cbb6413348f0dbd1fa63278d61e1728503c3e9f0");
+}

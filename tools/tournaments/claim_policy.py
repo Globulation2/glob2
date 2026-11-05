@@ -19,8 +19,13 @@ KEYS = set(ENUMS) | {'source_version', 'pattern', 'pattern_digest',
 OPTIONS = {
     'refresh_switch_margin_permille': 0,
     'terrain_component_prefilter': False,
+    'claim_oversubscription_permille': 1000,
 }
 MAXIMUM_REFRESH_SWITCH_MARGIN_PERMILLE = 900
+# Claimants per source stay below spendable*permille/1000 (integer, rounded
+# down); 1000 is exact capacity and 'unlimited' removes the count limit.
+MINIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE = 1000
+MAXIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE = 100000
 RECOVERY_V1 = {
     'recovery_source_version': 1,
     'recovery_cache_entries': 4,
@@ -48,6 +53,10 @@ def validate_policy(policy, capabilities=None):
         raise ValueError('invalid claim refresh switch margin')
     if type(policy.get('terrain_component_prefilter', False)) is not bool:
         raise ValueError('claim terrain component prefilter option must be boolean')
+    oversubscription = policy.get('claim_oversubscription_permille', 1000)
+    if oversubscription != 'unlimited' and (type(oversubscription) is not int or not
+            MINIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE <= oversubscription <= MAXIMUM_CLAIM_OVERSUBSCRIPTION_PERMILLE):
+        raise ValueError('invalid claim oversubscription permille')
     if version >= 2:
         for key, value in RECOVERY_V1.items():
             if type(policy[key]) is not type(value) or policy[key] != value:

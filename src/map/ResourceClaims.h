@@ -48,6 +48,12 @@ struct Counts
 // order. Capacity/eligibility come from the current world, never stale gradients.
 class Ledger
 {
+public:
+    // Claim-count limit as a permille of spendable stock. Exact (1000) is the
+    // original one-claimant-per-unit rule; Unlimited admits any count.
+    static constexpr std::uint32_t ExactLimitPermille = 1000;
+    static constexpr std::uint32_t UnlimitedLimitPermille = std::numeric_limits<std::uint32_t>::max();
+private:
     struct Tile
     {
         std::array<std::uint32_t, MaterialCount> materials{};
@@ -167,7 +173,11 @@ public:
     // Reservations for one material share the largest seed floor, including
     // holders approaching through a different farm or an ordinary pickup.
     // Infinite yields carry reserve zero and bypass finite stock/floor limits.
-    bool available(Owner owner, const Claim& claim, std::uint32_t capacity, bool infinite = false) const
+    // Same-material claimants (excluding this owner's replaced claim) must stay
+    // below floor(spendable*limitPermille/1000); spendable is stock above the
+    // shared floor. Exclusivity and floor rules do not depend on the limit.
+    bool available(Owner owner, const Claim& claim, std::uint32_t capacity, bool infinite = false,
+        std::uint32_t limitPermille = ExactLimitPermille) const
     {
         validate(claim);
         if (!capacity && !infinite) return false;
@@ -193,7 +203,13 @@ public:
         }
         const std::uint64_t physical=std::uint64_t(capacity)+claim.reserve;
         const auto floor=std::max(otherReserve,claim.reserve);
-        return physical>=floor && std::uint64_t(tile->second.materials[claim.material]-ownMaterial)+1<=physical-floor;
+        if (physical<floor) return false;
+        const std::uint64_t spendable=physical-floor;
+        if (limitPermille==UnlimitedLimitPermille) return spendable!=0;
+        // limitPermille>=1000 in policy use, so the scaled limit is zero only
+        // when spendable is; 1000 reduces exactly to claimed+1<=spendable.
+        const std::uint64_t limit=limitPermille==ExactLimitPermille?spendable:spendable*limitPermille/1000;
+        return std::uint64_t(tile->second.materials[claim.material]-ownMaterial)+1<=limit;
     }
     // Shadow observation deliberately allows overcommitment. The same mutation
     // maintains counts once enforcement starts using acquire instead.
@@ -211,9 +227,9 @@ public:
         return true;
     }
     template<class Changed> bool acquire(Owner owner, const Claim& claim, std::uint32_t capacity,
-        bool infinite, Changed&& changed)
+        bool infinite, Changed&& changed, std::uint32_t limitPermille = ExactLimitPermille)
     {
-        if (!available(owner, claim, capacity, infinite)) return false;
+        if (!available(owner, claim, capacity, infinite, limitPermille)) return false;
         observe(owner, claim, changed);
         return true;
     }

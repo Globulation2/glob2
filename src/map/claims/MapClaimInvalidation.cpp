@@ -117,7 +117,7 @@ void Map::revalidateMaterialClaimOwners(std::vector<ResourceClaims::Owner> owner
         const auto claim=*stored;
         const auto& yield=resourceRegistry().yields(static_cast<ResourceId>(claim.resource))[claim.material];
         const auto amount=materialAmountAtSlot(claim.source,claim.material);
-        if (!materialClaims.available(owner,claim,amount>claim.reserve?amount-claim.reserve:0,
+        if (!materialClaimAvailable(owner,claim,amount>claim.reserve?amount-claim.reserve:0,
             yield.consumption==ResourceConsumption::Infinite)) invalidateMaterialClaimOwners({owner});
     }
 }

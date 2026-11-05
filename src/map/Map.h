@@ -835,8 +835,14 @@ public:
 	const ResourceClaims::Ledger& materialClaimLedger() const { return materialClaims; }
 	bool observeMaterialClaim(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim)
 	{ return materialClaims.observe(owner, claim, [this](size_t index) { markClaim(index); }); }
+	//! Claim-count limit of the active policy (permille of spendable stock).
+	Uint32 materialClaimLimitPermille() const;
+	//! Ledger availability under the active policy's limit. Selection,
+	//! acquisition, revalidation and telemetry all use this same rule.
+	bool materialClaimAvailable(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim, Uint32 capacity, bool infinite = false) const
+	{ return materialClaims.available(owner, claim, capacity, infinite, materialClaimLimitPermille()); }
 	bool acquireMaterialClaim(ResourceClaims::Owner owner, const ResourceClaims::Claim& claim, Uint32 capacity, bool infinite = false)
-	{ return materialClaims.acquire(owner, claim, capacity, infinite, [this](size_t index) { markClaim(index); }); }
+	{ return materialClaims.acquire(owner, claim, capacity, infinite, [this](size_t index) { markClaim(index); }, materialClaimLimitPermille()); }
 	bool releaseMaterialClaim(ResourceClaims::Owner owner)
 	{
         const bool changed=materialClaims.release(owner, [this](size_t index) { markClaim(index); });

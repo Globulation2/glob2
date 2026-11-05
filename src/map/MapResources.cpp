@@ -137,7 +137,7 @@ std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceTyp
 		// Infinite harvests leave the reserve intact even at the reserve level.
         const Uint16 claimReserve=harvest.consumption==ResourceConsumption::Infinite?0:seedAmount;
         const ResourceClaims::Claim candidate{Uint32(index),Uint32(entry.value_or(index)),Uint8(resourceType),resourceCells[index].resource.type,false,claimReserve};
-        const bool unclaimed=!availableOwner || materialClaims.available(*availableOwner,candidate,
+        const bool unclaimed=!availableOwner || materialClaimAvailable(*availableOwner,candidate,
             amount>claimReserve?amount-claimReserve:0,harvest.consumption==ResourceConsumption::Infinite);
 		if (unclaimed && (amount > seedAmount || harvest.consumption == ResourceConsumption::Infinite)
 			&& (amount > bestAmount
@@ -587,6 +587,13 @@ const ResourceClaims::ClaimPolicyConfig& Map::materialClaimPolicyConfig() const
 {
     static const ResourceClaims::ClaimPolicyConfig prototype;
     return materialClaimConfiguration?*materialClaimConfiguration:prototype;
+}
+
+Uint32 Map::materialClaimLimitPermille() const
+{
+    static_assert(ResourceClaims::ClaimPolicyConfig::ExactClaimOversubscriptionPermille==ResourceClaims::Ledger::ExactLimitPermille);
+    static_assert(ResourceClaims::ClaimPolicyConfig::UnlimitedClaimOversubscription==ResourceClaims::Ledger::UnlimitedLimitPermille);
+    return materialClaimConfiguration?materialClaimConfiguration->claimOversubscriptionPermille:ResourceClaims::Ledger::ExactLimitPermille;
 }
 
 void Map::setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)

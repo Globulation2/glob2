@@ -39,6 +39,13 @@ struct ClaimPolicyConfig
     static constexpr unsigned MaximumRefreshSwitchMarginPermille=900;
     // Skip accesses whose terrain-only connected component excludes the unit.
     bool terrainComponentPrefilter=false;
+    // A source admits claimants while its claim count stays below
+    // spendable*permille/1000 (rounded down). 1000 is exact capacity; the
+    // Unlimited sentinel (canonical "unlimited") drops the count limit.
+    static constexpr unsigned ExactClaimOversubscriptionPermille=1000;
+    static constexpr unsigned MaximumClaimOversubscriptionPermille=100000;
+    static constexpr unsigned UnlimitedClaimOversubscription=UINT32_MAX;
+    unsigned claimOversubscriptionPermille=ExactClaimOversubscriptionPermille;
     unsigned recoveryCandidateCount(std::size_t coordinates) const;
     unsigned maximumRecoveryCandidateCount() const;
     static ClaimPolicyConfig parse(std::string_view);

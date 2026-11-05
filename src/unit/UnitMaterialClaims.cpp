@@ -222,7 +222,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
                 if(filtered(access,x,y))continue;
                 if((!recovery.mayRoute || recovery.rejects(access)) && map.warpDistMax(posX,posY,x,y)>1)continue;
                 const auto resolved=resolveClaim(*this,access,&farmMemo);
-                if(!resolved || !map.materialClaimLedger().available(ResourceClaims::unitOwner(gid,scriptIdentity),
+                if(!resolved || !map.materialClaimAvailable(ResourceClaims::unitOwner(gid,scriptIdentity),
                     resolved->claim,resolved->capacity,resolved->infinite))continue;
                 const auto oldTask=materialClaimTask;
                 if(!commitResolvedClaim(*this,*resolved))return false;
@@ -270,7 +270,7 @@ bool Unit::selectActiveMaterialClaim(const Uint16* field)
                 // first-available exits below, so its evaluation order is unchanged.
                 if(bestAccess!=UINT32_MAX && score>=bestScore)return false;
                 const auto resolved=resolveClaim(*this,access,&farmMemo);if(!resolved)return false;
-                if(!map.materialClaimLedger().available(ResourceClaims::unitOwner(gid,scriptIdentity),resolved->claim,resolved->capacity,resolved->infinite))return false;
+                if(!map.materialClaimAvailable(ResourceClaims::unitOwner(gid,scriptIdentity),resolved->claim,resolved->capacity,resolved->infinite))return false;
                 if constexpr(Record && Physical)++rawImprovements;
                 bestAccess=access;bestProbe=probe;bestScore=score;bestResolved=*resolved;bestOrdinal=Raw?2*i+unsigned(Physical):i;
                 return true;

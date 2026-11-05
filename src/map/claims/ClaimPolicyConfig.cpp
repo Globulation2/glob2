@@ -99,7 +99,10 @@ void ClaimPolicyConfig::validate() const
         || !interval(destinationRefreshJ) || !interval(routeRefreshJ)
         || !fallbackAfterDecisions || fallbackAfterDecisions>65535
         || !maximumExpansions || maximumExpansions>4096
-        || refreshSwitchMarginPermille>MaximumRefreshSwitchMarginPermille)
+        || refreshSwitchMarginPermille>MaximumRefreshSwitchMarginPermille
+        || (claimOversubscriptionPermille!=UnlimitedClaimOversubscription
+            && (claimOversubscriptionPermille<ExactClaimOversubscriptionPermille
+                || claimOversubscriptionPermille>MaximumClaimOversubscriptionPermille)))
         throw std::invalid_argument("invalid resource claim policy parameters");
 }
 std::string ClaimPolicyConfig::canonicalJson() const
@@ -124,6 +127,9 @@ std::string ClaimPolicyConfig::canonicalJson() const
     if(sourceVersion==4)result["direct_resource_probes"]=directResourceProbes;
     if(refreshSwitchMarginPermille)result["refresh_switch_margin_permille"]=refreshSwitchMarginPermille;
     if(terrainComponentPrefilter)result["terrain_component_prefilter"]=true;
+    if(claimOversubscriptionPermille==UnlimitedClaimOversubscription)result["claim_oversubscription_permille"]="unlimited";
+    else if(claimOversubscriptionPermille!=ExactClaimOversubscriptionPermille)
+        result["claim_oversubscription_permille"]=claimOversubscriptionPermille;
     if(sourceVersion==5) {result["pattern_format"]="mixed-v1";result["pattern_frame"]=patternFrame==PatternFrame::MapAxes?"mapaxes":"nearest-d4-v1";}
     return result.dump();
 }
@@ -174,6 +180,18 @@ ClaimPolicyConfig ClaimPolicyConfig::parse(std::string_view text)
         else if(key=="terrain_component_prefilter") {
             if(!value.is_boolean())throw std::invalid_argument("invalid terrain component prefilter flag");
             result.terrainComponentPrefilter=value.get<bool>();
+        }
+        else if(key=="claim_oversubscription_permille") {
+            if(value.is_string()) {
+                if(value!="unlimited")throw std::invalid_argument("invalid claim oversubscription");
+                result.claimOversubscriptionPermille=UnlimitedClaimOversubscription;
+            } else {
+                // Bounded before assignment: the sentinel is never an integer.
+                const auto permille=number(value);
+                if(permille<ExactClaimOversubscriptionPermille || permille>MaximumClaimOversubscriptionPermille)
+                    throw std::invalid_argument("claim oversubscription permille out of range");
+                result.claimOversubscriptionPermille=permille;
+            }
         }
         else if(key=="pattern_format" && result.sourceVersion==5) {}
         else if(key=="pattern_frame" && result.sourceVersion==5) {

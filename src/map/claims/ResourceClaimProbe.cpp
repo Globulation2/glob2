@@ -1198,7 +1198,7 @@ DecisionToken Probe::decision(Game& game,const Unit& unit,const Uint16* field,Ui
     const Claim desired{Uint32(source),Uint32(access),Uint8(unit.destinationPurpose),map.getResource(source).type,exclusive,Uint16(reserve)};
     impl->sampledInfinite+=yield.consumption==ResourceConsumption::Infinite;
     impl->sampledPooled+=pooled; impl->sampledExhaustedPools+=exhaustedPool;
-    if(!staleGoal && map.materialClaimLedger().available(unitOwner(unit.gid,unit.scriptIdentity),desired,capacity,yield.consumption==ResourceConsumption::Infinite))return {};
+    if(!staleGoal && map.materialClaimAvailable(unitOwner(unit.gid,unit.scriptIdentity),desired,capacity,yield.consumption==ResourceConsumption::Infinite))return {};
     ++metrics.contested;
     ++impl->materialContested.at(unit.destinationPurpose);
     unsigned forbiddenNeighbors=0,forbiddenMaterialNeighbors=0,growingForbiddenMaterialNeighbors=0;

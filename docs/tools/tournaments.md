@@ -1050,7 +1050,7 @@ bundle policy capability 3; batches testing this option require the transport
 movement audit on every arm. This is an experimental variant, not a selected
 default or a demonstrated throughput improvement.
 
-Two optional keys apply to every source version and are omitted from the
+Three optional keys apply to every source version and are omitted from the
 canonical JSON at their defaults, so existing policies keep their digests (the
 Python `canonical_policy` applies the same rule). `refresh_switch_margin_permille`
 (integer 0–900, default 0) adds hysteresis to destination refreshes: while a claim
@@ -1061,7 +1061,16 @@ the margin rejects every alternative the claim and route are kept (a
 an access when no cell of its 3×3 stance shares the worker's terrain-only connected
 component (8-neighbour, toroidal, per movement class, ignoring units, buildings and
 resources). The labelling is derived per map, rebuilt when the terrain revision
-changes and never saved. Builds advertise both in `resource_claims_policy_options`.
+changes and never saved. `claim_oversubscription_permille` (integer 1000–100000 or
+`"unlimited"`, default 1000) relaxes the capacity gate: a source admits another
+same-material claimant only while its existing claimant count stays below
+`floor(spendable*permille/1000)`, where `spendable` is the stock above the shared
+seed floor. 1000 is the exact one-claimant-per-unit rule; `"unlimited"` admits any
+number while at least one unit is spendable. Exclusive sources, seed floors and
+infinite yields behave as before, and selection, acquisition, stock-decrease
+revalidation and the overcommit telemetry all use the scaled limit. Surplus
+holders that arrive after the stock is gone fail the harvest and release
+(`resource_depleted`). Builds advertise all three in `resource_claims_policy_options`.
 
 Live probe summaries count every `released` event by reason in
 `live.release_reason_counts` (names in `live.release_reason_names`, version
