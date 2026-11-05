@@ -11,6 +11,7 @@
 #include "TerrainRegistry.h"
 #include "TerrainCornerPresentation.h"
 #include "terrain/TerrainCompositor.h"
+#include "terrain/DirectTerrain.h"
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
@@ -1030,6 +1031,92 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(partial.composedCells() == 20);
 	}
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+
+	TEST_CASE("Legacy GL HD water blends every frame without rebuilding terrain pages [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.isLegacyGLScreen());
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		GAGCore::Sprite::setHighResolution(true);
+		struct Restore { ~Restore() { GAGCore::Sprite::setHighResolution(false); } } restore;
+		DirectTerrain atlas;
+		SoftwareTerrainCache pages;
+		gfx.beginMapTransform(.76f, 0, 0, 0, 0, 640, 480);
+		bool ready = false;
+		for (int attempt = 0; attempt < 200 && !ready; ++attempt)
+			ready = atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, true, 0);
+		REQUIRE(ready);
+		REQUIRE_FALSE(atlas.animationRegions().empty());
+		GAGCore::Sprite::finishHighResolution();
+		std::vector<Uint8> previous;
+		for (int time = 0; time < 9; ++time)
+		{
+			CAPTURE(time);
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			REQUIRE(atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, true, time));
+			REQUIRE(pages.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
+				fixture.team->me, true, time, false, true, atlas.animationRegions()));
+			pages.draw(gfx);
+			atlas.drawAnimation(gfx, 0, 0, true, time);
+			const auto pixels = terrainPixels(true);
+			if (time > 0) CHECK(pixels != previous);
+			previous = pixels;
+			CHECK(pages.cacheRebuilds() == 0);
+		}
+
+        // The same pass owns complete mixed shoreline cells. Static land in
+        // those pages must stay cached while its adjacent water animates.
+        for (int y = 0; y < 32; ++y)
+            for (int x = 12; x <= 20; ++x)
+                fixture.game.map.setVertexTerrain(x, y, GRASS);
+        glob2test::observeMap(fixture.game.map, scene);
+        ready = false;
+        for (int attempt = 0; attempt < 300 && !ready; ++attempt)
+            ready = atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, true, 0);
+        REQUIRE(ready);
+        REQUIRE_FALSE(atlas.animationRegions().empty());
+        GAGCore::Sprite::finishHighResolution();
+        SoftwareTerrainCache shorePages;
+        const auto shoreFrame = [&](int time)
+        {
+            REQUIRE(atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, true, time));
+            REQUIRE(shorePages.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
+                fixture.team->me, true, time, false, true, atlas.animationRegions()));
+            shorePages.draw(gfx);
+            atlas.drawAnimation(gfx, 0, 0, true, time);
+        };
+        for (int i = 0; i < 4; ++i) shoreFrame(0);
+        const auto rebuilt = shorePages.cacheRebuilds();
+        REQUIRE(rebuilt > 0);
+        for (int time = 1; time < 9; ++time)
+        {
+            shoreFrame(time);
+            CHECK(shorePages.cacheRebuilds() == rebuilt);
+        }
+
+        // Changing discovery must remove both cached land and animated water.
+        fixture.game.map.unsetMapDiscovered();
+        glob2test::observeMap(fixture.game.map, scene);
+        for (int i = 0; i < 3; ++i)
+        {
+            gfx.drawFilledRect(0, 0, 2048, 2048, 11, 23, 37);
+            const auto hidden = terrainPixels(true);
+            REQUIRE(atlas.prepareAnimation(gfx, scene, 0, 0, 31, 15, 0, 0, fixture.team->me, false, 9));
+            CHECK(atlas.animationRegions().empty());
+            REQUIRE(shorePages.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
+                fixture.team->me, false, 9, false, true, atlas.animationRegions()));
+            shorePages.draw(gfx);
+            atlas.drawAnimation(gfx, 0, 0, false, 9);
+            CHECK(terrainPixels(true) == hidden);
+        }
+		gfx.endMapTransform();
+	}
+
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
@@ -1100,17 +1187,17 @@ TEST_SUITE("TerrainPresentation")
 		REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me,
 									true));
 		CHECK(globals->terrainCompositor().scale() == 4);
-		CHECK(independent.resolution == 4);
+		CHECK(independent.resolution == 2);
 		SoftwareTerrainCache tiled;
 		REQUIRE(tiled.prepare(scene, *globals->terrain, 0, 0, 63, 63, 0, 0, fixture.team->me, true,
 							  0, true));
-		CHECK(tiled.resolution == 2);
+		CHECK(tiled.resolution == 1);
 		const auto rebuilds = tiled.cacheRebuilds();
 		for (const auto &strip : {SDL_Rect{0, 0, 7, 64}, SDL_Rect{0, 0, 64, 7}})
 		{
 			REQUIRE(tiled.prepare(scene, *globals->terrain, strip.x, strip.y, strip.x + strip.w - 1,
 								  strip.y + strip.h - 1, 0, 0, fixture.team->me, true, 0, true));
-			CHECK(tiled.resolution == 2);
+			CHECK(tiled.resolution == 1);
 			CHECK(tiled.cacheRebuilds() == rebuilds);
 			CHECK(tiled.bytes() <= SoftwareTerrainCache::GPUBudget);
 		}
@@ -1176,20 +1263,17 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(fixture.game.map, scene);
 		SoftwareTerrainCache cache;
 		auto &gfx = *globals->gfx;
-		// 132 native pages exceed the 256 MiB texture reservation once mip
-		// storage is counted, so some composed pixels must stay parked.
-		constexpr int right = 173, bottom = 158;
 		const auto draw = [&](bool cached)
 		{
 			gfx.drawFilledRect(0, 0, 1600, 1280, 17, 29, 41);
 			gfx.beginMapTransform(.75f, .375f, .625f, 0, 0, 1600, 1280);
 			if (cached)
 			{
-				REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, right, bottom, 15, 15,
+				REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 125, 100, 15, 15,
 					fixture.team->me, true, 19));
 				cache.draw(gfx);
 			}
-			else SoftwareTerrainCache::drawUncached(scene, *globals->terrain, 0, 0, right, bottom,
+			else SoftwareTerrainCache::drawUncached(scene, *globals->terrain, 0, 0, 125, 100,
 				15, 15, fixture.team->me, true, 19);
 			gfx.endMapTransform();
 			return terrainPixels(true);

@@ -8,7 +8,6 @@
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
 #include "TerrainCatalogIO.h"
-#include "DirectTerrain.h"
 #include "render/SoftwareTerrainCache.h"
 #include "render/scene/SceneMap.h"
 #include "TerrainCompiledPack.h"
@@ -937,7 +936,7 @@ TEST_SUITE("TerrainMaterials")
 		const auto prepare = [&]
 		{
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 31, 15, 0, 0,
-				fixture.team->me, false, 0, false, SoftwareTerrainCache::Preparation::Progressive));
+				fixture.team->me, false, 0, false, true));
 		};
 		prepare();
 		CHECK(cache.cacheRebuilds() == 1);
@@ -957,7 +956,7 @@ TEST_SUITE("TerrainMaterials")
 
 		SoftwareTerrainCache wrapped;
 		REQUIRE(wrapped.prepare(scene, *globals->terrain, -3, 0, 3, 15, 0, 0,
-			fixture.team->me, true, 0, false, SoftwareTerrainCache::Preparation::Progressive));
+			fixture.team->me, true, 0, false, true));
 		REQUIRE(wrapped.missingPageRegions().size() == 1);
 		const auto region = wrapped.missingPageRegions().front();
 		CHECK(region.x == -3);
@@ -987,53 +986,35 @@ TEST_SUITE("TerrainMaterials")
 		GAGCore::Sprite::setHighResolution(true);
 		struct Restore { ~Restore() { GAGCore::Sprite::setHighResolution(false); } } restore;
 
+		auto &compositor = globals->terrainCompositor(scene.frozenAssetBundle());
+		compositor.prepareVisible(true, 0, scene, 0, 0, 31, 15);
+		GAGCore::Sprite::finishHighResolution();
+
 		SoftwareTerrainCache cache;
-		using Preparation = SoftwareTerrainCache::Preparation;
-		const auto prepare = [&](int offset, Preparation preparation)
+		const auto prepare = [&](int offset)
 		{
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 21, 11, offset, offset,
-				fixture.team->me, true, 0, false, preparation));
-			CHECK(cache.samplingResolution() == 4);
+				fixture.team->me, true, 0, false, true));
+			CHECK(cache.samplingResolution() == 2);
 			cache.draw(*globals->gfx);
 			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
 			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
 		};
-		prepare(0, Preparation::InitialView);
+		prepare(0);
+		CHECK(cache.missingPageRegions().size() == 1);
+		prepare(0);
 		CHECK(cache.missingPageRegions().empty());
 		CHECK(cache.cacheRebuilds() == 2);
 		// This diagonal pan changes the visible working set from two pages to six.
-		prepare(12, Preparation::Progressive);
+		prepare(12);
 		CHECK(cache.missingPageRegions().size() == 3);
 		for (int i = 0; i < 3; ++i)
-			prepare(12, Preparation::Progressive);
+			prepare(12);
 		CHECK(cache.missingPageRegions().empty());
 		CHECK(cache.cacheRebuilds() == 6);
-		prepare(0, Preparation::Progressive);
+		prepare(0);
 		CHECK(cache.cacheRebuilds() == 6);
 	}
-
-#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
-	TEST_CASE("initial native atlas draw completes visible terrain coverage [display]")
-	{
-		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
-			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
-			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
-		auto &target = *globals->gfx;
-		if (!target.isLegacyGLScreen()) return;
-		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
-		for (int y = 0; y < 64; ++y)
-			for (int x = 0; x < 64; x += 2)
-				fixture.game.map.setVertexTerrain(x, y, SAND);
-		SceneMap scene;
-		glob2test::observeMap(fixture.game.map, scene);
-		DirectTerrain atlas;
-		CHECK(atlas.needsBackdrop(target, scene, 0, 0, 15, 15));
-		REQUIRE(atlas.draw(target, scene, 0, 0, 15, 15, 0, 0,
-			fixture.team->me, true, 0, {}, true));
-		CHECK_FALSE(atlas.needsBackdrop(target, scene, 0, 0, 15, 15));
-		CHECK(atlas.needsBackdrop(target, scene, 32, 32, 47, 47));
-	}
-#endif
 
 	TEST_CASE("unequal variant weights affect deterministic texture selection")
 	{
@@ -1381,10 +1362,11 @@ TEST_SUITE("TerrainMaterials")
 		using TerrainVisual::shoreCalmAt;
 		// Full calm at the shoreline, fading out within the reach and smoothly.
 		CHECK(shoreCalmAt(0) == 0);
-		CHECK(shoreCalmAt(1) == 128); // The adjacent water vertex is half a tile from shore.
+		CHECK(shoreCalmAt(1) == 215); // The adjacent water vertex is half a tile from shore.
 		CHECK(shoreCalmAt(1) > shoreCalmAt(2));
 		CHECK(shoreCalmAt(2) > 0);
-		CHECK(shoreCalmAt(4) == 0);
+		CHECK(shoreCalmAt(4) == 40); // Waves still calm at one and a half tiles.
+		CHECK(shoreCalmAt(9) == 0); // Beyond the two-tile reach.
 		CHECK(TerrainVisual::shoreCalm({255, 255, 255, 255}, 37, 200) == 255);
 		CHECK(TerrainVisual::shoreCalm({}, 37, 200) == 0);
 		CHECK(TerrainVisual::shoreCalm({200, 0, 200, 0}, 0, 128) == 200);

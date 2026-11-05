@@ -24,6 +24,7 @@ struct DirectTerrainData
     static constexpr Uint16 PendingMask = 65535;
     static constexpr int AtlasWidth = 2048;
     static constexpr int VariantWidth = 256;
+    static constexpr unsigned VariantRecords = 8;
 
     // One palette and coverage index per wrapped cell. Index zero is uniform.
     std::vector<Record> cells;
@@ -36,6 +37,10 @@ struct DirectTerrainData
     std::vector<Pixel> calm;
     int artHeight, coverageHeight, variantHeight;
 
+    // One entry per variant-table slot, including the unused slot zero.
+    // The Legacy GL animation pass streams the visible phase endpoints.
+    struct Source { TerrainVisual::MaterialId material; unsigned variant; };
+    std::vector<Source> sources;
     std::vector<TerrainVisual::Recipe> pendingCoverage;
     struct CoverageTile
     {

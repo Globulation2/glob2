@@ -89,8 +89,9 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
         throw std::runtime_error("Direct terrain map tables exceed the texture budget");
     auto remainingBytes = TextureBudget - initialAtlasBytes - mapBytes;
     // Keep this stride in sync with variantRecord() in the shader.
-    constexpr unsigned VariantRecords = 8;
+    constexpr unsigned VariantRecords = DirectTerrainData::VariantRecords;
     std::vector<Record> variants(VariantRecords); // Slot zero represents an unused palette entry.
+    std::vector<DirectTerrainData::Source> sources(1);
     std::map<std::pair<TerrainVisual::MaterialId, unsigned>, Uint16> variantSlots;
     const auto variantSlot = [&](const TerrainVisual::Recipe &recipe, TerrainVisual::MaterialId id) {
         const auto variant = catalog.variantIndex(id, recipe.x, recipe.y, recipe.seed);
@@ -128,6 +129,7 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
         variants.push_back({mean[0], mean[1], mean[2],
             Uint16(material.shoreCalm ? 256 - TerrainVisual::ShoreCalmContrastQ8 : 0)});
         variantSlots.emplace(key, slot);
+        sources.push_back({id, variant});
         return slot;
     };
 
@@ -204,6 +206,7 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
     co_return DirectTerrainData{std::move(cells), std::move(masks), std::move(art.pixels),
             std::move(coverage.pixels), std::move(edges.pixels), std::move(variants),
             std::move(calm), art.height(), coverageHeight, variantHeight,
+            std::move(sources),
             streamCoverage ? std::move(mixed) : std::vector<TerrainVisual::Recipe>{}};
 }
 

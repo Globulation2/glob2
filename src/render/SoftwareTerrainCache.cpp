@@ -236,6 +236,30 @@ int chunkOf(int tile)
 {
 	return int(std::floor(double(tile) / SoftwareTerrainCache::ChunkTiles));
 }
+// Emit whole-cell static runs. The animated pass owns complete cells, including
+// mixed shorelines, so translucent material coverage is composited only once.
+template<class Emit>
+void staticTerrainRegions(SDL_Rect view, std::span<const SDL_Rect> animated, Emit emit)
+{
+    if (animated.empty()) { emit(view); return; }
+    for (int y = view.y; y < view.y + view.h; ++y)
+    {
+        int run = -1;
+        const int end = view.x + view.w;
+        for (int x = view.x; x <= end; ++x)
+        {
+            const bool covered = std::any_of(animated.begin(), animated.end(), [&](const auto &rect) {
+                return x >= rect.x && x < rect.x + rect.w && y >= rect.y && y < rect.y + rect.h;
+            });
+            if (x < end && !covered && run < 0) run = x;
+            if ((x == end || covered) && run >= 0)
+            {
+                emit(SDL_Rect{run, y, x - run, 1});
+                run = -1;
+            }
+        }
+    }
+}
 std::size_t pageStorage(int scale, bool gpu, int downsample = 1)
 {
 	// Retain the fixed recipe/run allowance at every density. GPU accounting
@@ -277,13 +301,6 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 	const auto visiblePages = std::uint64_t(std::min(columns, std::max(1, map.getW() / tiles))) *
 		std::min(rows, std::max(1, map.getH() / tiles));
 	const auto cacheBudget = gpu ? SoftwareTerrainCache::GPUCacheBudget : budget;
-	const auto fitsDensity = [&](int scale)
-	{
-		const auto total = pageStorage(scale, gpu);
-		if (!stableView || !gpu) return visiblePages * total <= budget;
-		const auto texture = total - pageStorage(scale, false);
-		return visiblePages * texture <= budget && visiblePages * total <= cacheBudget;
-	};
 	const int limit = globalContainer->gfx->maximumTextureSize();
 	const auto fitsDevice = [&](int resolution)
 	{ return limit <= 0 || SoftwareTerrainCache::ChunkPixels * resolution <= limit; };
@@ -291,7 +308,7 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 	// Cache and streaming draws choose density from the complete view, not from
 	// each submitted page. Memory pressure must not change sampling page by page.
 	while (resolution > 1 &&
-		   (!fitsDevice(resolution) || !fitsDensity(resolution)))
+		   (!fitsDevice(resolution) || visiblePages * pageStorage(resolution, gpu) > budget))
 		resolution /= 2;
 	// A zoomed-out view can exceed the budget even at native density. Streaming
 	// then recomposes and uploads the entire view every frame. Retain filtered
@@ -565,12 +582,16 @@ int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
 
 bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite, int left, int top,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
-								   bool wholeMap, int time, bool tiledCapture, Preparation preparation)
+								   bool wholeMap, int time, bool tiledCapture, bool progressive,
+								   std::span<const SDL_Rect> liveRegions)
 {
+    animationRegions.clear();
+    if (progressive && globalContainer->gfx->isLegacyGLScreen())
+        animationRegions.assign(liveRegions.begin(), liveRegions.end());
 	const bool fixedDensity = benchmarkDownsample > 0 && !tiledCapture;
 	return prepareAtResolution(map, sprite, left, top, right, bottom, vx, vy, visibleTeams,
 							   wholeMap, time, fixedDensity ? 1 : 0, tiledCapture,
-							   fixedDensity ? benchmarkDownsample : 0, preparation);
+							   fixedDensity ? benchmarkDownsample : 0, progressive);
 }
 namespace
 {
@@ -740,7 +761,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 											   int top, int right, int bottom, int vx, int vy,
 											   Uint32 visibleTeams, bool wholeMap, int time,
 											   int preferredResolution, bool tiledCapture,
-											   int preferredDownsample, Preparation preparation)
+											   int preferredDownsample, bool progressive)
 {
 	if (registry.get() != &map.terrainRegistry() || assets != map.frozenAssetBundle())
 	{
@@ -756,8 +777,6 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         cpuMaterialLease.reset();
     }
 	PERF_SCOPE_TIME(TerrainCache);
-	const bool progressive = preparation == Preparation::Progressive;
-	const bool initialView = preparation == Preparation::InitialView;
 	copies.clear();
 	missingPages.clear();
 	++frame;
@@ -788,9 +807,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, reducedLegacyView);
 	};
 	prepareMaterials();
-	// The first gameplay view and tiled captures wait for their HD sources.
-	// Subsequent interactive frames publish pages as those sources arrive.
-	if ((tiledCapture || initialView) && nextGPU)
+	// A capture is drawn once, so it waits for streamed HD rather than
+	// keeping the native fallback that interactive frames replace later.
+	if (tiledCapture && nextGPU)
 	{
 		GAGCore::Sprite::finishHighResolution();
 		prepareMaterials();
@@ -799,7 +818,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	const auto plan =
 		viewSamplingPlan(map, left, top, right, bottom, vx, vy,
 						 preferredResolution > 0 ? preferredResolution : compositor.scale(),
-						 tiledCapture, preferredDownsample, progressive || initialView);
+						 tiledCapture, preferredDownsample, progressive);
 	if (!plan.viewFits)
 	{
         chunks.clear();
@@ -968,11 +987,16 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					return chunk.get();
 			return nullptr;
 		};
+        const auto staticRegions = [&](int x, int y, int endX, int endY, auto emit)
+        {
+            staticTerrainRegions({x, y, endX - x, endY - y}, animationRegions, emit);
+        };
 		const auto missing = [&](int originX, int originY)
 		{
 			const int x = std::max(left, originX), y = std::max(top, originY);
-			missingPages.push_back({x, y, std::min(right + 1, originX + ChunkTiles) - x,
-				std::min(bottom + 1, originY + ChunkTiles) - y});
+			staticRegions(x, y, std::min(right + 1, originX + ChunkTiles),
+				std::min(bottom + 1, originY + ChunkTiles),
+				[&](SDL_Rect rect) { missingPages.push_back(rect); });
 		};
 		if (progressive)
 			for (std::size_t i = 0; i < pageCount; ++i)
@@ -993,6 +1017,13 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				const int cx = x0 + int(index % columns), cy = y0 + int(index / columns);
 				const int wx = (cx * ChunkTiles) & map.getMaskW();
 				const int wy = (cy * ChunkTiles) & map.getMaskH();
+				bool staticVisible = false;
+				staticRegions(std::max(left, cx * ChunkTiles - vx),
+					std::max(top, cy * ChunkTiles - vy),
+					std::min(right + 1, (cx + 1) * ChunkTiles - vx),
+					std::min(bottom + 1, (cy + 1) * ChunkTiles - vy),
+					[&](SDL_Rect) { staticVisible = true; });
+				if (!staticVisible) continue;
 				Chunk *entry = findPage(cx, cy);
 				// Animation and artwork revisions change pixels but keep their
 				// recipes. The terrain revision avoids scanning the vertex
@@ -1014,8 +1045,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				{
 					return std::any_of(page.materialRevisions.begin(), page.materialRevisions.end(),
 						[&](const auto &revision) {
-							return revisionChanged(revision) || (page.hasShoreline &&
-								surfStepChanged(revision.first, page.surfTime, compositor));
+							return (animationRegions.empty() || !compositor.animated(revision.first)) &&
+								(revisionChanged(revision) || (page.hasShoreline &&
+								surfStepChanged(revision.first, page.surfTime, compositor)));
 						});
 				};
 				bool sameContent = entry && entry->valid && (!gpuPages || gpuPages->find(*entry)) &&
@@ -1392,11 +1424,18 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 			copy.chunk->textureUsed = ++textureUse;
 			SDL_Rect area{copy.x, copy.y, ChunkPixels, ChunkPixels}, visible;
 			if (SDL_GetRectIntersection(&area, &paintBounds, &visible))
-				target.drawSurface(
-					visible.x, visible.y, visible.w, visible.h, copy.chunk->image.get(),
-					(visible.x - area.x) * resolution / downsample,
-					(visible.y - area.y) * resolution / downsample,
-					visible.w * resolution / downsample, visible.h * resolution / downsample);
+			{
+				const auto draw = [&](SDL_Rect rect)
+				{
+					target.drawSurface(rect.x, rect.y, rect.w, rect.h, copy.chunk->image.get(),
+						(rect.x - area.x) * resolution / downsample,
+						(rect.y - area.y) * resolution / downsample,
+						rect.w * resolution / downsample, rect.h * resolution / downsample);
+				};
+                staticTerrainRegions({visible.x / 32, visible.y / 32,
+                    visible.w / 32, visible.h / 32}, animationRegions,
+                    [&](SDL_Rect rect) { draw({rect.x * 32, rect.y * 32, rect.w * 32, rect.h * 32}); });
+			}
 			continue;
 		}
 		for (const auto &run : copy.chunk->opaqueRuns)
@@ -1426,7 +1465,7 @@ bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
 #if !defined(GLOB2_MOBILE) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 	// Reduced desktop views cover many more mixed animated cells. Keep their
 	// native coverage too; otherwise every phase samples those contours again.
-	if (gpu && downsample > 1) budget = 128u * 1024u * 1024u;
+	if (gpu && downsample > 1) budget = GPUBudget;
 #endif
 	if (needed > budget)
 		return false;

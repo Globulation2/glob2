@@ -285,20 +285,26 @@ until memory pressure retires them. Returning to a density revalidates terrain,
 discovery and material revisions before reusing its pixels.
 The historical `SoftwareTerrainCache` name is retained for benchmark controls,
 but the cache also draws GPU pages. Software page storage stays bounded by
-32 MiB. GPU density selection and resident texture and mip reservations use a
-256 MiB allowance. On desktop, the total GPU-page cache has a 384 MiB ceiling including CPU pixels,
+32 MiB. GPU density selection retains its 128 MiB allowance, and resident
+textures remain bounded by 128 MiB of conservative texture/mip reservations.
+On desktop, the total GPU-page cache has a 256 MiB ceiling including CPU pixels,
 bookkeeping and resident texture reservations. The additional 128 MiB lets
 inactive zoom densities retain their CPU pixels without sacrificing sampling
-quality. Android and browser builds use a 256 MiB total ceiling.
+quality. Android and browser builds retain the 128 MiB total ceiling.
 These are maximum memory allowances, not up-front allocations.
 Generated/edited pages keep alpha-weighted mip filtering but upload uncompressed
 textures. Driver-side DXT encoding is reserved for artwork with prepared mip
 chains; repeating that encoding on animated terrain updates stalls rendering.
-Crossfades update material revisions on each visual tick, so pages containing
-animated materials recompose at that cadence; `animation_blend_steps` lowers it
+Crossfades update material revisions on each visual tick. CPU-composed animation
+pages recompose at that cadence; `animation_blend_steps` lowers it
 to that many recompositions per phase (see
 [terrain materials](terrain-materials.md)). Repeating the same animation time
-reuses their pixels. Device composition keeps up to 1024 material source
+reuses their pixels. Interactive HD terrain on Legacy OpenGL draws animated
+cells, including mixed shorelines, through the atlas shader. A separate source
+atlas holds visible current/next HD phases within 16 MiB and blends every frame.
+Static page draws omit those complete cells, so alpha and fog apply once.
+Shore calming fades wave contrast over two tiles from the shoreline.
+Device composition keeps up to 1024 material source
 textures and never evicts one the current frame already drew, so a view with
 several four-layout materials (256 variants each) does not re-upload its own
 sources within one frame. Pages also keep the coverage of mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per

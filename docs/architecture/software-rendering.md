@@ -56,9 +56,9 @@ cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game`
 the simulation neither reads nor writes it and each view animates independently. The
 terrain cache is transient presentation state: 16×16-cell composed pages, a 32 MiB
 software storage reservation including pixels, recipes and borrowed views, and a
-separate 256 MiB allowance for GPU density selection and resident texture/mip
-reservations. The desktop GPU-mode cache has a 384 MiB total ceiling, including
-CPU pixels and bookkeeping. Android and browser builds use a 256 MiB total ceiling.
+separate 128 MiB allowance for GPU density selection and resident texture/mip
+reservations. The desktop GPU-mode cache has a 256 MiB total ceiling, including
+CPU pixels and bookkeeping; Android/browser builds retain the 128 MiB total limit.
 On desktop, the additional CPU retention allowance avoids evicting inactive
 zoom densities. GPU views retain pixels and textures across sampling
 changes, retiring idle textures first when needed. When the visible textures
