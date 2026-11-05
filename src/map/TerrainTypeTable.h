@@ -121,6 +121,8 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(FROST_PINWHEEL, G::Paths, "frost_pinwheel", "[frost_pinwheel]", {185, 188, 210}, {185, 188, 210}),
 		// Snow drifts, grey stones and frozen cracked earth: plays exactly like dirt.
 		authored(ARCTIC_TUNDRA, G::Barren, "arctic_tundra", "[arctic_tundra]", {137, 136, 141}, {137, 136, 141}),
+		// A raised snowfield walled by blue ice: plays exactly like cliffs.
+		authored(GLACIER, G::Obstacles, "glacier", "[glacier]", {196, 212, 230}, {176, 200, 226}),
 	}};
 	return rows;
 }();

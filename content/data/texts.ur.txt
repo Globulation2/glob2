@@ -5732,6 +5732,8 @@ AI کی بنائی ہوئی نہیں
 پالے کی پھرکی
 [arctic_tundra]
 قطبی ٹنڈرا کی زمین
+[glacier]
+گلیشیئر
 [terrain group water]
 پانی
 [terrain group sand]

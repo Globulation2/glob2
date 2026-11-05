@@ -5756,6 +5756,8 @@ Lozanjoù maen-loar
 Rod-avel frim
 [arctic_tundra]
 Douar toundra arktek
+[glacier]
+Geleira
 [terrain group water]
 Água
 [terrain group sand]

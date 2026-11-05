@@ -1137,6 +1137,17 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(MOLTEN_LAVA_POOL).name) == "molten_lava_pool");
 		CHECK(TerrainRegistry::builtins()->find("molten_lava_pool") == MOLTEN_LAVA_POOL);
 	}
+	TEST_CASE("glacier shares every rule of cliffs")
+	{
+		CHECK(terrainGroup(GLACIER) == TerrainGroup::Obstacles);
+		CHECK(terrainPaintable(GLACIER));
+		CHECK(sameTerrainProperties(terrainProperties(GLACIER), terrainProperties(CLIFFS)));
+		CHECK(TerrainRegistry::builtins()->propertyIndex(GLACIER) == TerrainRegistry::builtins()->propertyIndex(CLIFFS));
+		CHECK_FALSE(terrainProperties(GLACIER).walkable);
+		CHECK(terrainProperties(GLACIER).projectileBlocks);
+		CHECK(std::string(terrainPresentation(GLACIER).name) == "glacier");
+		CHECK(TerrainRegistry::builtins()->find("glacier") == GLACIER);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},

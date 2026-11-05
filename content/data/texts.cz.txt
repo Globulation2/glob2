@@ -5756,6 +5756,8 @@ Kosočtverce z měsíčního kamene
 Mrazivý větrník
 [arctic_tundra]
 Arktická tundrová půda
+[glacier]
+Ledovec
 [terrain group water]
 Voda
 [terrain group sand]

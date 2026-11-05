@@ -5756,6 +5756,8 @@ Khối đá xỉ
 Chong chóng sương giá
 [arctic_tundra]
 Đất lãnh nguyên Bắc Cực
+[glacier]
+Sông băng
 [terrain group water]
 Nước
 [terrain group sand]

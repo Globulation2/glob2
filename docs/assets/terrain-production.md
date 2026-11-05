@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 54 built-in materials, including grass, sand, their lush, dry, dune, pale and
+All 55 built-in materials, including grass, sand, their lush, dry, dune, pale and
 windy dune looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Each material is a small
 pack that can be tuned on its own: its recipe and render function live in
@@ -107,7 +107,7 @@ colour and material stay free per biome:
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Crags (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
-| Obstacles (boulders, hedge, thicket, cliffs) | tall raised decor | `terrain_decor.py` |
+| Obstacles (boulders, hedge, thicket, cliffs, glacier) | tall raised decor | `terrain_decor.py` |
 
 Within the groups: dirt keeps the original speckled earth and stones under the
 shared cracks; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
@@ -239,7 +239,7 @@ in the synthesiser).
 
 Obstacle terrain is drawn in two layers, as forest is. The ground material is
 composed like any other terrain: dusty earth for boulders, leaf litter for hedge,
-undergrowth for thicket, talus for cliffs, and rock for ridge rock and outcrop. A decor sprite per
+undergrowth for thicket, talus for cliffs, moraine on snow for glacier, and rock for ridge rock and outcrop. A decor sprite per
 cell is then drawn with the resources, row by row, so objects stand up, overlap
 neighbouring cells and occlude each other.
 
@@ -253,7 +253,7 @@ A material opts in with a `decor` block:
   material. An undecorated corner, such as ordinary grass, sand or water, suppresses all
   raised objects in that cell, preserving a clear border against open ground.
   Eligibility follows rendered material bindings, including custom materials.
-  The exception is connected decor with `"connected_open": true` (cliffs): when
+  The exception is connected decor with `"connected_open": true` (cliffs and glacier): when
   every decorated corner of a cell has it, open-ground corners simply count as
   empty in the corner mask, so the rim and walls stand on the grass. A cell where
   such a material meets foliage and open ground keeps the foliage rule.
@@ -353,11 +353,23 @@ ground and even a one-vertex ridge stands up with its walls; the plateau's rim
 follows the crags rather than the cell grid. Connected materials join one
 another, so cliffs painted against hedge or thicket meet them without a wall.
 
+Glacier is the same connected plateau rendered in ice by a second cliff style
+(`GLACIER_STYLE` in `terrain_decor.py`): a snowfield of firn with wind-packed
+drifts and smoother, low shelves, split by transverse crevasses that open on
+blue depths, over walls of blue ice that deepen toward the foot, crossed by
+broken debris bands under a white snow cornice at the lip, with a blue cast
+shadow. A cell edge has only four variants, which would line its crevasses up
+along rows, so glacier crevasses belong to the hash-chosen interiors of filled
+cells, at most two per cell on separate rows. Its ground material is moraine:
+the talus chips and cobbles, thinned out, in cold grey stone on packed snow.
+Glacier sets `connected_open` like cliffs and joins cliffs, hedge and thicket
+without a wall between them.
+
 The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
 316–427; thicket corner tiles at 428–683 and interiors at 684–795; then each later
 set appends its twelve object frames and its connected frames, so cliffs take
-796–807 and 808–1175), the HD frames, provenance and, with
+796–807 and 808–1175 and glacier 1176–1187 and 1188–1555), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--sheet` writes a review sheet. Select `--decor hedge --decor thicket --sheet <path>`
 for before/after fields with narrow strips, corners, isolated vegetation and a
 hole. Decor is presentation only: the minimap, the overview and
@@ -592,7 +604,7 @@ without pair treatments. Classes, strongest first:
 
 | Class | Materials | Edge profile |
 | --- | --- | --- |
-| `cover` | hedge, thicket, cliffs | `canopy` |
+| `cover` | hedge, thicket, cliffs, glacier | `canopy` |
 | `cut` | void_hole, chasm | `crisp` |
 | `built` | road, brick_path, sandstone, overgrown_road, boardwalk, slate_ashlar, basalt_causeway, scoria_blocks, rime_ashlar, moonstone_lozenge, frost_pinwheel | `paved`, `crisp` |
 | `flow` | lava, ember_field, molten_lava_pool | `molten` |
@@ -601,7 +613,7 @@ without pair treatments. Classes, strongest first:
 
 | Profile | Shape | Precedence / coast | roughness / amplitude / feather / speckle / bridge (Q8) | Materials |
 | --- | --- | --- | --- | --- |
-| `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket, cliffs |
+| `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket, cliffs, glacier |
 | `crisp` | patch | 20 | 96 / 256 / 128 / 0 / 256 | void_hole, chasm, boardwalk |
 | `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone, overgrown_road, slate_ashlar, basalt_causeway, scoria_blocks, rime_ashlar, moonstone_lozenge, frost_pinwheel |
 | `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | none since dirt track became brick path; kept for future tracks |
@@ -639,7 +651,7 @@ exception the classes cannot express, not the way to tune a material.
 | 7 | dark_water | 80 / 704 |
 | 6 | deep_water | 72 / 640, a drop-off lip on shallow water and shores |
 | 5 | water (existing) | 72 / 640 |
-| 4 | boulders, hedge, thicket, cliffs | 88 / 832, a sense of height on the grass side |
+| 4 | boulders, hedge, thicket, cliffs, glacier | 88 / 832, a sense of height on the grass side |
 | 4 | ridge_rock, outcrop | 72 / 768 |
 | 4 | lava, ember_field, molten_lava_pool | no cast; scorch fringe `[214,110,40]` 128/640, `[160,80,40]` 96/512 and a hotter `[255,120,10]` 160/768 |
 | 4 | ice (existing), frozen_lake, glacier_ice | 64 / 640 with frost fringe |

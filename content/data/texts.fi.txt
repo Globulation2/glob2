@@ -5756,6 +5756,8 @@ Kuukivivinoneliöt
 Huurretuulimylly
 [arctic_tundra]
 Arktinen tundramaa
+[glacier]
+Jäätikkö
 [terrain group water]
 Vesi
 [terrain group sand]

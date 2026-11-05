@@ -2866,6 +2866,7 @@
 [moonstone_lozenge]
 [frost_pinwheel]
 [arctic_tundra]
+[glacier]
 [terrain group water]
 [terrain group sand]
 [terrain group grass]

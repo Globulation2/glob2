@@ -5756,6 +5756,8 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 دولاب الصقيع
 [arctic_tundra]
 أرض التندرا القطبية
+[glacier]
+نهر جليدي
 [terrain group water]
 ماء
 [terrain group sand]

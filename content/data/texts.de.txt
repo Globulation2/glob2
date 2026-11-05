@@ -5756,6 +5756,8 @@ Mondstein-Rauten
 Frost-Windrad
 [arctic_tundra]
 Arktischer Tundraboden
+[glacier]
+Gletscher
 [terrain group water]
 Wasser
 [terrain group sand]

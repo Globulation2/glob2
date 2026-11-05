@@ -5732,6 +5732,8 @@ AI ทำงาน​อย่างไร
 กังหันน้ำค้างแข็ง
 [arctic_tundra]
 พื้นดินทุนดราอาร์กติก
+[glacier]
+ธารน้ำแข็ง
 [terrain group water]
 น้ำ
 [terrain group sand]

@@ -5756,6 +5756,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Мразна вртешка
 [arctic_tundra]
 Арктичко тундрено тло
+[glacier]
+Глечер
 [terrain group water]
 Вода
 [terrain group sand]

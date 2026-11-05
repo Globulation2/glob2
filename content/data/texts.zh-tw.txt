@@ -5756,6 +5756,8 @@ AI 生成
 霜花風車磚
 [arctic_tundra]
 極地苔原地面
+[glacier]
+冰川
 [terrain group water]
 水
 [terrain group sand]

@@ -5732,6 +5732,8 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 তুষার ঘূর্ণি টালি
 [arctic_tundra]
 সুমেরু তুন্দ্রার ভূমি
+[glacier]
+হিমবাহ
 [terrain group water]
 জল
 [terrain group sand]

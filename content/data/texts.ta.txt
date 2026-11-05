@@ -6876,6 +6876,8 @@ GL மட்டும்
 உறைபனிச் சுழலி
 [arctic_tundra]
 ஆர்க்டிக் துந்திரா நிலம்
+[glacier]
+பனியாறு
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]

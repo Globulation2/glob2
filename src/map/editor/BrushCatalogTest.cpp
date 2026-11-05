@@ -170,7 +170,8 @@ TEST_SUITE("BrushCatalog")
 		const auto *obstacles = findBrushGroup(catalog, BrushSection::Terrain, "obstacles");
 		REQUIRE(obstacles);
 		CHECK(ids(*obstacles) ==
-			  std::vector<std::string>{"terrain/boulders", "terrain/hedge", "terrain/thicket", "terrain/cliffs"});
+			  std::vector<std::string>{"terrain/boulders", "terrain/hedge", "terrain/thicket", "terrain/cliffs",
+									   "terrain/glacier"});
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
 						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());

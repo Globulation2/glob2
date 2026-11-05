@@ -5732,6 +5732,8 @@ AI से नहीं बना
 पाला फिरकी
 [arctic_tundra]
 आर्कटिक टुंड्रा की भूमि
+[glacier]
+हिमनद
 [terrain group water]
 पानी
 [terrain group sand]

@@ -5734,6 +5734,8 @@ Moonstone lozenges
 Frost pinwheel
 [arctic_tundra]
 Arctic tundra
+[glacier]
+Glacier
 [terrain group water]
 Water
 [terrain group sand]

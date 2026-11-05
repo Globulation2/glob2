@@ -5756,6 +5756,8 @@ Losanges de pierre de lune
 Moulinet de givre
 [arctic_tundra]
 Sol de toundra arctique
+[glacier]
+Glacier
 [terrain group water]
 Eau
 [terrain group sand]

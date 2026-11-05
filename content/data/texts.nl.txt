@@ -5756,6 +5756,8 @@ Maansteenruiten
 Rijpmolentje
 [arctic_tundra]
 Arctische toendrabodem
+[glacier]
+Gletsjer
 [terrain group water]
 Water
 [terrain group sand]

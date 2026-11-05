@@ -5756,6 +5756,8 @@ AI 생성 아님
 서리 바람개비
 [arctic_tundra]
 북극 툰드라 지형
+[glacier]
+빙하
 [terrain group water]
 물
 [terrain group sand]

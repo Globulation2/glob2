@@ -5756,6 +5756,8 @@ Kosoštvorce z mesačného kameňa
 Mrazivý veterník
 [arctic_tundra]
 Arktická tundrová pôda
+[glacier]
+Ľadovec
 [terrain group water]
 Voda
 [terrain group sand]
