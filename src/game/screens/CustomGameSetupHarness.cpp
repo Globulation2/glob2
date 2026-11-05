@@ -1952,6 +1952,12 @@ struct CustomGameSetupHarness
       auto seedsShown = [&] {
         std::vector<std::uint32_t> seeds;
         for (const auto &tile : picker.tiles) {
+            const auto slot = std::size_t(&tile - picker.tiles.data());
+            INFO("landscape=" << shown[slot].name << " slot=" << slot
+                 << " rootSeed=" << picker.previewer.seeds[slot]
+                 << " state=" << int(tile.preview.state) << " size=" << tile.preview.width
+                 << "x" << tile.preview.height << " colonies=" << tile.preview.starts.size()
+                 << " diagnostic=" << tile.preview.detail);
 			REQUIRE((tile.preview.state == LandscapePreviewer::State::Ready &&
 				   tile.preview.width == 256 && tile.preview.height == 256 &&
 				   tile.preview.starts.size() == 4));
