@@ -5667,9 +5667,9 @@ Siepe
 [thicket]
 Boscaglia
 [ridge_rock]
-Cresta rocciosa
+
 [outcrop]
-Affioramento
+
 [dirt]
 Terra
 [clay]
@@ -5748,6 +5748,12 @@ Acqua
 Sabbia
 [terrain group grass]
 Erba
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Ghiaccio
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Percorsi
 [terrain group obstacles]
 Ostacoli
 [terrain group ridges]
-Creste
+
 [terrain group barren]
 Suolo sterile
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Acqua profonda
 Vuoto
 [terrain group custom]
 Personalizzato
-[terrain group classic]
-Suolo classico
 [terrain rule walkable]
 Percorribile a piedi
 [terrain rule swimmable]

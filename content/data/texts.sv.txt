@@ -5667,9 +5667,9 @@ Häck
 [thicket]
 Snår
 [ridge_rock]
-Ås
+
 [outcrop]
-Klippa
+
 [dirt]
 Jord
 [clay]
@@ -5748,6 +5748,12 @@ Vatten
 Sand
 [terrain group grass]
 Gräs
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Is
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Stigar
 [terrain group obstacles]
 Hinder
 [terrain group ridges]
-Åsar
+
 [terrain group barren]
 Obördig mark
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Djupt vatten
 Tomrum
 [terrain group custom]
 Anpassad
-[terrain group classic]
-Klassisk mark
 [terrain rule walkable]
 Gångbar
 [terrain rule swimmable]

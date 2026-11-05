@@ -5667,9 +5667,9 @@ AI 생성 아님
 [thicket]
 덤불
 [ridge_rock]
-바위 능선
+
 [outcrop]
-노출된 바위
+
 [dirt]
 흙
 [clay]
@@ -5748,6 +5748,12 @@ AI 생성 아님
 모래
 [terrain group grass]
 풀
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 얼음
 [terrain group paths]
@@ -5755,7 +5761,7 @@ AI 생성 아님
 [terrain group obstacles]
 장애물
 [terrain group ridges]
-능선
+
 [terrain group barren]
 척박한 땅
 [terrain group rough]
@@ -5770,8 +5776,6 @@ AI 생성 아님
 공허
 [terrain group custom]
 사용자 지정
-[terrain group classic]
-기본 지면
 [terrain rule walkable]
 걸을 수 있음
 [terrain rule swimmable]

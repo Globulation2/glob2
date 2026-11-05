@@ -5667,9 +5667,9 @@ Balvani
 [thicket]
 Goščava
 [ridge_rock]
-Greben
+
 [outcrop]
-Skalni izdanek
+
 [dirt]
 Prst
 [clay]
@@ -5748,6 +5748,12 @@ Voda
 Pesek
 [terrain group grass]
 Trava
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Led
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Poti
 [terrain group obstacles]
 Ovire
 [terrain group ridges]
-Grebeni
+
 [terrain group barren]
 Nerodovitna tla
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Globoka voda
 Praznina
 [terrain group custom]
 Po meri
-[terrain group classic]
-Klasičen teren
 [terrain rule walkable]
 Prehodno
 [terrain rule swimmable]

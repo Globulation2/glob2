@@ -5667,9 +5667,9 @@ Haie
 [thicket]
 Fourré
 [ridge_rock]
-Crête rocheuse
+
 [outcrop]
-Affleurement
+
 [dirt]
 Terre
 [clay]
@@ -5748,6 +5748,12 @@ Eau
 Sable
 [terrain group grass]
 Herbe
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Glace
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Chemins
 [terrain group obstacles]
 Obstacles
 [terrain group ridges]
-Crêtes
+
 [terrain group barren]
 Sol stérile
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Eau profonde
 Vide
 [terrain group custom]
 Personnalisé
-[terrain group classic]
-Sol classique
 [terrain rule walkable]
 Praticable à pied
 [terrain rule swimmable]

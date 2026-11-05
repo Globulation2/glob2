@@ -5643,9 +5643,9 @@ FFmpeg не е наличен, така че записът е изключен.
 [thicket]
 Гъсталак
 [ridge_rock]
-Хребет
+
 [outcrop]
-Разкритие
+
 [dirt]
 Почва
 [clay]
@@ -5724,6 +5724,12 @@ FFmpeg не е наличен, така че записът е изключен.
 Пясък
 [terrain group grass]
 Трева
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Лед
 [terrain group paths]
@@ -5731,7 +5737,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [terrain group obstacles]
 Препятствия
 [terrain group ridges]
-Хребети
+
 [terrain group barren]
 Безплодна земя
 [terrain group rough]
@@ -5746,8 +5752,6 @@ FFmpeg не е наличен, така че записът е изключен.
 Празнота
 [terrain group custom]
 Персонализирано
-[terrain group classic]
-Класическа земя
 [terrain rule walkable]
 Проходим пеша
 [terrain rule swimmable]

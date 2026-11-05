@@ -5667,9 +5667,9 @@ Hàng rào cây
 [thicket]
 Bụi rậm
 [ridge_rock]
-Sống đá
+
 [outcrop]
-Đá lộ thiên
+
 [dirt]
 Đất
 [clay]
@@ -5748,6 +5748,12 @@ Nước
 Cát
 [terrain group grass]
 Cỏ
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Băng
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Băng
 [terrain group obstacles]
 Chướng ngại vật
 [terrain group ridges]
-Sống đá
+
 [terrain group barren]
 Đất cằn
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Nước sâu
 Khoảng không
 [terrain group custom]
 Tùy chỉnh
-[terrain group classic]
-Đất cổ điển
 [terrain rule walkable]
 Có thể đi bộ
 [terrain rule swimmable]

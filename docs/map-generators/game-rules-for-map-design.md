@@ -88,10 +88,11 @@ of your game profile (the directory selected by `GLOB2_USER_DATA_DIR`, when set)
 Select the file in the import dialog; on desktop and tablet layouts the editor dock
 then shows the new types in its **Terrain** tab, and you paint them like built-in
 terrain. The dock shows a composed swatch of every brush, grouped into collapsible
-sections: classic ground, then each terrain group (see
-[experimental features](../features/experimental-features.md)) with the group's rules
-under its heading, then **Custom** for the map's imported definitions in natural name
-order with their own rules. Types whose experiment is off are shown locked, and their
+sections: one per terrain group, grass, sand, water and deep water first and the rest
+in table order (see [experimental features](../features/experimental-features.md)), with the
+group's rules under its heading (grass, sand and water add a sentence on how they
+shape growth and building), then **Custom** for the map's imported definitions in
+natural name order with their own rules. Types whose experiment is off are shown locked, and their
 section offers **Enable for this map**. The editor action `open terrain palette <group>`
 switches the dock to the Terrain tab, expands that group and scrolls it to the top,
 keeping the brush you had; `open resource palette [group]` does the same for

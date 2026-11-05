@@ -5667,9 +5667,9 @@ Haag
 [thicket]
 Struikgewas
 [ridge_rock]
-Rotskam
+
 [outcrop]
-Rotsuitsteeksel
+
 [dirt]
 Aarde
 [clay]
@@ -5748,6 +5748,12 @@ Water
 Zand
 [terrain group grass]
 Gras
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 IJs
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Paden
 [terrain group obstacles]
 Obstakels
 [terrain group ridges]
-Rotskammen
+
 [terrain group barren]
 Onvruchtbare grond
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Diep water
 Leegte
 [terrain group custom]
 Aangepast
-[terrain group classic]
-Klassieke grond
 [terrain rule walkable]
 Beloopbaar
 [terrain rule swimmable]

@@ -100,8 +100,8 @@ struct BrushEntry
 
 struct BrushGroup
 {
-	// Unique within its section: "classic", a terrain catalogue group key such as
-	// "obstacles", "custom"; "base", an experiment key or "custom" for resources;
+	// Unique within its section: a terrain catalogue group key such as "grass"
+	// or "obstacles", or "custom"; "base", an experiment key or "custom" for resources;
 	// "buildings", "flags", "units", "zones", "areas", "tools" otherwise.
 	std::string key;
 	BrushSection section = BrushSection::Terrain;
@@ -151,11 +151,15 @@ std::vector<BrushGroup> buildBrushCatalog(const BrushCatalogInputs &inputs);
 const BrushEntry *findBrushEntry(const std::vector<BrushGroup> &catalog, std::string_view id);
 const BrushGroup *findBrushGroup(const std::vector<BrushGroup> &catalog, BrushSection section, std::string_view key);
 
-// Classic ground (water, sand, grass) has its own section of the catalogue.
+// Classic ground (water, sand, grass) keeps the desktop editor's fixed
+// side-panel selectors; the catalogue lists each as an ordinary group.
 constexpr bool terrainGroupIsClassic(TerrainGroup group)
 {
 	return group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass;
 }
+// The string-table key of the sentence a group's rule line carries on how it
+// plays (water, sand and grass), or nullptr for the other groups.
+const char *terrainGroupNoteKey(TerrainGroup group);
 // The selectable built-in members of a catalogue group, in table order.
 std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, TerrainGroup group);
 // One line of plain rules read from the properties, so a brush tells the author

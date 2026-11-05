@@ -5667,9 +5667,9 @@ CPU %0%
 [thicket]
 Πυκνή βλάστηση
 [ridge_rock]
-Κορυφογραμμή
+
 [outcrop]
-Βραχώδης προεξοχή
+
 [dirt]
 Χώμα
 [clay]
@@ -5748,6 +5748,12 @@ CPU %0%
 Άμμος
 [terrain group grass]
 Γρασίδι
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Πάγος
 [terrain group paths]
@@ -5755,7 +5761,7 @@ CPU %0%
 [terrain group obstacles]
 Εμπόδια
 [terrain group ridges]
-Κορυφογραμμές
+
 [terrain group barren]
 Άγονο έδαφος
 [terrain group rough]
@@ -5770,8 +5776,6 @@ CPU %0%
 Κενό
 [terrain group custom]
 Προσαρμοσμένο
-[terrain group classic]
-Κλασικό έδαφος
 [terrain rule walkable]
 Βατό
 [terrain rule swimmable]

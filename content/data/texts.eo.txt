@@ -5667,9 +5667,9 @@ Heĝo
 [thicket]
 Densejo
 [ridge_rock]
-Roka kresto
+
 [outcrop]
-Elstara roko
+
 [dirt]
 Tero
 [clay]
@@ -5748,6 +5748,12 @@ Akvo
 Sablo
 [terrain group grass]
 Herbo
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Glacio
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Padoj
 [terrain group obstacles]
 Obstakloj
 [terrain group ridges]
-Krestoj
+
 [terrain group barren]
 Malfekunda grundo
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Profunda akvo
 Malpleno
 [terrain group custom]
 Propra
-[terrain group classic]
-Klasika grundo
 [terrain rule walkable]
 Piedirebla
 [terrain rule swimmable]

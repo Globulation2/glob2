@@ -5643,9 +5643,9 @@ ZIP किंवा तीन ट्रॅक आयात करा
 [thicket]
 दाट झुडपे
 [ridge_rock]
-डोंगररांग
+
 [outcrop]
-जमिनीतून बाहेर आलेला खडक
+
 [dirt]
 माती
 [clay]
@@ -5690,6 +5690,12 @@ ZIP किंवा तीन ट्रॅक आयात करा
 वाळू
 [terrain group grass]
 गवत
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 बर्फ
 [terrain group paths]
@@ -5697,7 +5703,7 @@ ZIP किंवा तीन ट्रॅक आयात करा
 [terrain group obstacles]
 अडथळे
 [terrain group ridges]
-कटक
+
 [terrain group barren]
 पडीक जमीन
 [terrain group rough]
@@ -5712,8 +5718,6 @@ ZIP किंवा तीन ट्रॅक आयात करा
 रिक्त
 [terrain group custom]
 सानुकूल
-[terrain group classic]
-क्लासिक ग्राउंड
 [terrain rule walkable]
 चालण्यायोग्य
 [terrain rule swimmable]

@@ -105,7 +105,7 @@ colour and material stay free per biome:
 | Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles, overgrown road) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip | `worn_edge`, `herringbone`, `hex_paving` (overgrown road) |
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
-| Ridges (ridge rock, outcrop) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
+| Crags (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
 | Obstacles (boulders, hedge, thicket, cliffs) | tall raised decor | `terrain_decor.py` |
 
@@ -122,8 +122,8 @@ counterpart on frost-patterned ground: polygons about two cells across with fain
 pale rims, flat olive moss pads (the heath cushion helper) in their centres, beds of
 grey stones, and the shared cracks in dark peaty earth. Paths are all laid by the
 globs, never natural ground: road is stone setts in running-bond courses; brick
-path is long clay pavers in an axis-aligned herringbone that
-reads the same whichever way the path runs; boardwalk is long weathered planks
+path is clay pavers, two by one and a quarter of a tile long, in an axis-aligned
+herringbone that reads the same whichever way the path runs; boardwalk is long weathered planks
 with grain, knots and nails; sandstone tiles are square flags, two by two per
 cell, ochre and grey in a checker; overgrown road is hexagonal stone setts
 about twelve native pixels across in dark joints, decaying: moss along part of
@@ -131,11 +131,19 @@ the joints, a few cracked setts, and reclaimed patches where setts are lost to
 soil, olive moss and weeds and moss creeps over the stone edges. Its hex lattice
 is squashed by under one percent so it repeats exactly on the block, and each
 sett's tone, tilt and fate come from the shared stream when it reaches the
-block edge. Mud is churned lumps and water-filled pits;
+block edge. Mud is churned lumps about a fifth of a tile across and
+water-filled pits;
 mudflat is desiccated mud in big curled plates split by deep cracks,
-with salt bloom and a few damp sunken plates; scree is big jagged slabs heaped
-over one another, each tipped to its own brightness; pumice field is dark porous
-volcanic rock riddled with vesicles, beside lava and ember field; hardpan is pale
+with salt bloom and a few damp sunken plates; scree is a bed of loose, angular,
+weathered cool-grey stone from chips to slabs about half a tile across, heaped so
+they rest on and lap over each other over ochre fines, each stone its own mottled
+tone, softly lit with shaded gaps between and lichen on a few upper faces, on a
+bed that rises and falls about a tile across so lit heaps and shadowed hollows
+carry the group's relief; a step lighter and cooler than the ochre talus under
+the cliffs;
+pumice field is dark porous
+volcanic rock in blocks about a third of a tile across, riddled with vesicles,
+beside lava and ember field; hardpan is pale
 baked crust in small, even, low pillows split by thin cracks, dimpled at their
 centres, with a few shallow damp hollows. Molten lava pool plays exactly like
 lava, but brighter and hotter: thin red-hot crust plates about a cell across
@@ -145,20 +153,28 @@ rim, connected orange secondary cracks and lumpy crust; each plate's channels
 and halo pulse on their own clock. Frozen lake
 plays exactly like ice: frosted teal lake ice with a few long white pressure
 cracks, trapped bubbles and frost patches, static and paler than any water.
-Glacier ice also plays exactly like ice: bright cyan-blue depth in broad calm
-plates, crossed by about two long kinked white fractures per tile that throw a
-feathered glow to one side, with rare large flattened bubbles and fine rime.
+Glacier ice also plays exactly like ice: bright cyan-blue depth in calm plates,
+crossed by a web of short kinked white cracks, a little over one per tile and
+each under two tiles long, that throw a feathered glow to one side, with small
+flattened bubbles and fine rime.
 Wind-swept snow plays exactly like deep snow: one prevailing wind carves it into
-drifts about a tile apart, each a long lit windward slope rising to a crisp
-bright crest over a short lavender lee shadow, with quiet flats and faint ripples
-between. Its ridges are a plane wave with whole wave numbers on the block, so
+drifts a little under half a tile apart, each a long lit windward slope rising to
+a crisp bright crest over a short lavender lee shadow, with quiet flats and faint
+ripples between. Its ridges are a plane wave with whole wave numbers on the block, so
 only the smooth warps and drift heights vary between layouts. The helpers keep the block contract: geometry comes from
 the shared stream at the block edge, interiors vary, and any normalisation or
 lighting uses the common reference. Obstacles are lit from the top left and cast
-onto grass, and void casts onto every neighbour. The grass and sand
+onto grass, and void casts onto every neighbour. Feature sizes are judged
+against the globs, not against a photograph: a tile is about a glob across, so
+a brick, a cobble, a sand ripple or a crack in the ice should be the size it
+would be beside a glob standing on it, and nothing but broad tone should span
+several tiles. The cracks of glacier ice, the drifts of wind-swept snow, the
+ripples of windy sand, the pavers of brick path, the stones of scree and the
+blocks of pumice and mud were all brought down to that scale. The grass and sand
 looks keep the grain of the classic tile they stand in for and change only its
 colour: lush and dry grass are soft like grass, dune and pale sand speckled like
-sand. Windy sand dune keeps that grain and sweeps it into wind ripples
+sand. Windy sand dune keeps that grain and sweeps it into wind ripples about a
+quarter of a tile apart
 (`ripple_light`): long lit windward slopes, a bright crest and a short shaded lee,
 with crests square to the water's main swell (`RIPPLE_WIND` matches `WAVE_SWELL`)
 and a second ripple family that breaks them into forks and ends. All four sands use lit grains one or two native pixels across, half the

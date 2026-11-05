@@ -19,8 +19,8 @@ from terrain_core import (
 
 # Brick firings, after the reference: red, plum, grey-brown, dark, rust.
 BRICK_FIRINGS = [
-    ((156, 84, 68), 3), ((116, 82, 76), 3), ((118, 102, 88), 3),
-    ((94, 68, 64), 2), ((166, 96, 70), 1),
+    ((150, 88, 68), 3), ((112, 84, 74), 2), ((122, 102, 86), 3),
+    ((92, 70, 62), 2), ((160, 100, 72), 1), ((134, 96, 72), 2),
 ]
 
 
@@ -92,15 +92,19 @@ def herringbone(size, width, length):
 
 @recipe(name="brick_path", group="paths", label="Brick path", profile="paved", border_class="built",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
-        palette={"joint": (38, 28, 28)},
-        style=Style(luma=112, std=20, grain_max=16), periodic=True, grid=8, blocks=4)
+        palette={"joint": (30, 22, 20)},
+        # Dark mortar between small pavers: grainier than ground, so the joints
+        # still read at native size.
+        style=Style(luma=112, std=20, grain_max=18), periodic=True, grid=8, blocks=4)
 def render_brick_path(ctx):
-    """Brick path: long clay pavers laid in an axis-aligned herringbone, so the
+    """Brick path: clay pavers laid in an axis-aligned herringbone, so the
     path reads the same whichever way it runs."""
     p, size = RECIPES["brick_path"].palette, ctx.size
-    # Long 4:1 pavers, 4 x 16 native px with their joint: every joint lands on
-    # whole native pixels, so the 32 px tiles stay crisp.
-    bricks, ids, edge, joint, along = herringbone(size, 4 * NATIVE_PX, 16 * NATIVE_PX)
+    # Pavers of 2:1 proportion, 4 x 8 native px with their joint: a quarter of
+    # a tile long, so the path reads as brick at the globs' scale rather than
+    # as slabs, and every joint lands on whole native pixels, so the 32 px
+    # tiles stay crisp.
+    bricks, ids, edge, joint, along = herringbone(size, 4 * NATIVE_PX, 8 * NATIVE_PX)
     # Joint geometry is a fixed lattice common to every layout; brick firings
     # come from the shared stream at the block edge and each layout's own
     # stream inside, like road's stone tones.

@@ -5643,9 +5643,9 @@ AI ద్వారా రూపొందించబడలేదు
 [thicket]
 దట్టమైన పొదలు
 [ridge_rock]
-రిడ్జ్
+
 [outcrop]
-శిలా బహిర్గతం
+
 [dirt]
 మట్టి
 [clay]
@@ -5724,6 +5724,12 @@ AI ద్వారా రూపొందించబడలేదు
 ఇసుక
 [terrain group grass]
 గడ్డి
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 మంచు
 [terrain group paths]
@@ -5731,7 +5737,7 @@ AI ద్వారా రూపొందించబడలేదు
 [terrain group obstacles]
 అడ్డంకులు
 [terrain group ridges]
-రిడ్జెస్
+
 [terrain group barren]
 బీడు భూమి
 [terrain group rough]
@@ -5746,8 +5752,6 @@ AI ద్వారా రూపొందించబడలేదు
 శూన్యం
 [terrain group custom]
 కస్టమ్
-[terrain group classic]
-క్లాసిక్ గ్రౌండ్
 [terrain rule walkable]
 నడవడానికి అనుకూలమైనది
 [terrain rule swimmable]

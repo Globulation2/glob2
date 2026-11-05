@@ -5667,9 +5667,9 @@ Pensasaita
 [thicket]
 Tiheikkö
 [ridge_rock]
-Harjanne
+
 [outcrop]
-Kalliopaljastuma
+
 [dirt]
 Multa
 [clay]
@@ -5748,6 +5748,12 @@ Vesi
 Hiekka
 [terrain group grass]
 Ruoho
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Jää
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Polut
 [terrain group obstacles]
 Esteet
 [terrain group ridges]
-Harjanteet
+
 [terrain group barren]
 Karuton maa
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Syvä vesi
 Tyhjyys
 [terrain group custom]
 Mukautettu
-[terrain group classic]
-Klassinen maa
 [terrain rule walkable]
 Käveltävä
 [terrain rule swimmable]

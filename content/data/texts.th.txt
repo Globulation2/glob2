@@ -5643,9 +5643,9 @@ AI ทำงาน​อย่างไร
 [thicket]
 ดง​ไม้พุ่ม
 [ridge_rock]
-สันเขา
+
 [outcrop]
-หิน​โผล่
+
 [dirt]
 ดิน
 [clay]
@@ -5724,6 +5724,12 @@ AI ทำงาน​อย่างไร
 ทราย
 [terrain group grass]
 หญ้า
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 น้ำแข็ง
 [terrain group paths]
@@ -5731,7 +5737,7 @@ AI ทำงาน​อย่างไร
 [terrain group obstacles]
 อุปสรรค
 [terrain group ridges]
-สันเขา
+
 [terrain group barren]
 พื้นที่​แห้งแล้ง
 [terrain group rough]
@@ -5746,8 +5752,6 @@ AI ทำงาน​อย่างไร
 ว่างเปล่า
 [terrain group custom]
 กำหนด​เอง
-[terrain group classic]
-พื้นดิน​แบบ​คลาสสิก
 [terrain rule walkable]
 เดินผ่าน​ได้
 [terrain rule swimmable]

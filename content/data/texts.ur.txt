@@ -5643,9 +5643,9 @@ AI کی بنائی ہوئی نہیں
 [thicket]
 گھنی جھاڑیاں
 [ridge_rock]
-پہاڑی دھار
+
 [outcrop]
-باہر نکلی چٹان
+
 [dirt]
 مٹی
 [clay]
@@ -5724,6 +5724,12 @@ AI کی بنائی ہوئی نہیں
 ریت
 [terrain group grass]
 گھاس
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 برف
 [terrain group paths]
@@ -5731,7 +5737,7 @@ AI کی بنائی ہوئی نہیں
 [terrain group obstacles]
 رکاوٹیں
 [terrain group ridges]
-پہاڑی دھاریں
+
 [terrain group barren]
 بنجر زمین
 [terrain group rough]
@@ -5746,8 +5752,6 @@ AI کی بنائی ہوئی نہیں
 خلا
 [terrain group custom]
 اپنی مرضی کی
-[terrain group classic]
-روایتی زمین
 [terrain rule walkable]
 چلنے کے قابل
 [terrain rule swimmable]

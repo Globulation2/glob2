@@ -16,7 +16,7 @@ from terrain_core import (
     shade,
 )
 
-from .scree import SCREE_LAYERS, SCREE_TONES, scree_fields, wrap_blur
+from .scree import SCREE_TONES, TALUS_LAYERS, scree_fields, wrap_blur
 
 
 @recipe(name="cliffs", group="obstacles", label="Cliffs", profile="canopy", border_class="cover",
@@ -29,7 +29,7 @@ def render_cliffs(ctx):
     """Talus at the foot of the cliff walls: the chips and cobbles of scree,
     without its dominant blocks, in the ochre stone of the cliff faces."""
     p, size = RECIPES["cliffs"].palette, ctx.size
-    top, common_top, layer, fragment = scree_fields(ctx, SCREE_LAYERS[:2])
+    top, common_top, layer, fragment = scree_fields(ctx, TALUS_LAYERS[:2])
     rock = layer >= 0
     tones = np.array([ctx.shared_rng.random() for _ in range(SCREE_TONES)])
     key = (fragment * 7 + layer * 1031 + 3) % SCREE_TONES

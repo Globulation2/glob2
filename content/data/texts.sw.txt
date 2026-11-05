@@ -5643,9 +5643,9 @@ Ua wa mimea
 [thicket]
 Kichaka kizito
 [ridge_rock]
-Tuta
+
 [outcrop]
-Mwamba unaojitokeza
+
 [dirt]
 Udongo
 [clay]
@@ -5724,6 +5724,12 @@ Maji
 Mchanga
 [terrain group grass]
 Nyasi
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Barafu
 [terrain group paths]
@@ -5731,7 +5737,7 @@ Njia
 [terrain group obstacles]
 Vizuizi
 [terrain group ridges]
-Miinuko ya miamba
+
 [terrain group barren]
 Ardhi kame
 [terrain group rough]
@@ -5746,8 +5752,6 @@ Maji ya kina kirefu
 Pengo
 [terrain group custom]
 Maalumu
-[terrain group classic]
-Ardhi ya kawaida
 [terrain rule walkable]
 Inapitika kwa miguu
 [terrain rule swimmable]

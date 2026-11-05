@@ -5667,9 +5667,9 @@ Pagar tanaman
 [thicket]
 Semak lebat
 [ridge_rock]
-Punggung batu
+
 [outcrop]
-Singkapan batu
+
 [dirt]
 Tanah
 [clay]
@@ -5748,6 +5748,12 @@ Air
 Pasir
 [terrain group grass]
 Rumput
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Es
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Jalan
 [terrain group obstacles]
 Penghalang
 [terrain group ridges]
-Punggung bukit
+
 [terrain group barren]
 Tanah tandus
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Air dalam
 Kehampaan
 [terrain group custom]
 Kustom
-[terrain group classic]
-Tanah klasik
 [terrain rule walkable]
 Dapat dilalui pejalan
 [terrain rule swimmable]

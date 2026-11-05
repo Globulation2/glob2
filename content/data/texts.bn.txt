@@ -5643,9 +5643,9 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 [thicket]
 ঘন ঝোপ
 [ridge_rock]
-শৈলশিরা
+
 [outcrop]
-উন্মুক্ত শিলাস্তর
+
 [dirt]
 মাটি
 [clay]
@@ -5724,6 +5724,12 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 বালি
 [terrain group grass]
 ঘাস
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 বরফ
 [terrain group paths]
@@ -5731,7 +5737,7 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 [terrain group obstacles]
 বাধা
 [terrain group ridges]
-শৈলশিরা
+
 [terrain group barren]
 অনুর্বর ভূমি
 [terrain group rough]
@@ -5746,8 +5752,6 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 শূন্য
 [terrain group custom]
 কাস্টম
-[terrain group classic]
-প্রচলিত ভূমি
 [terrain rule walkable]
 হাঁটার যোগ্য
 [terrain rule swimmable]

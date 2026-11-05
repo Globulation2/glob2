@@ -5667,9 +5667,9 @@ Hesia
 [thicket]
 Sastrakadia
 [ridge_rock]
-Harkaitz-gandorra
+
 [outcrop]
-Azaleratzea
+
 [dirt]
 Lurra
 [clay]
@@ -5748,6 +5748,12 @@ Ura
 Harea
 [terrain group grass]
 Belarra
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Izotza
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Bideak
 [terrain group obstacles]
 Oztopoak
 [terrain group ridges]
-Gandorrak
+
 [terrain group barren]
 Lur antzua
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Ur sakona
 Hutsa
 [terrain group custom]
 Pertsonalizatua
-[terrain group classic]
-Lur klasikoa
 [terrain rule walkable]
 Oinez ibiltzeko modukoa
 [terrain rule swimmable]

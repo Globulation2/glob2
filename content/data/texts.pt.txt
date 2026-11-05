@@ -5667,9 +5667,9 @@ Sebe
 [thicket]
 Matagal
 [ridge_rock]
-Crista rochosa
+
 [outcrop]
-Afloramento
+
 [dirt]
 Terra
 [clay]
@@ -5748,6 +5748,12 @@ Poça de lava derretida
 Areia
 [terrain group grass]
 Relva
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Gelo
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Caminhos
 [terrain group obstacles]
 Obstáculos
 [terrain group ridges]
-Cristas
+
 [terrain group barren]
 Solo estéril
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Solo fértil
 Vazio
 [terrain group custom]
 Personalizado
-[terrain group classic]
-Solo clássico
 [terrain rule walkable]
 Transitável a pé
 [terrain rule swimmable]

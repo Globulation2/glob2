@@ -5643,9 +5643,9 @@ ZIP அல்லது மூன்று இசைத்தடங்களை �
 [thicket]
 புதர்
 [ridge_rock]
-முகடு
+
 [outcrop]
-வெளிப்பாறை
+
 [dirt]
 மண்
 [clay]
@@ -5690,6 +5690,12 @@ ZIP அல்லது மூன்று இசைத்தடங்களை �
 மணல்
 [terrain group grass]
 புல்
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 பனிக்கட்டி
 [terrain group paths]
@@ -5697,7 +5703,7 @@ ZIP அல்லது மூன்று இசைத்தடங்களை �
 [terrain group obstacles]
 தடைகள்
 [terrain group ridges]
-முகடுகள்
+
 [terrain group barren]
 தரிசு நிலம்
 [terrain group rough]
@@ -5712,8 +5718,6 @@ ZIP அல்லது மூன்று இசைத்தடங்களை �
 வெற்றிடம்
 [terrain group custom]
 தனிப்பயன்
-[terrain group classic]
-வழக்கமான தரை
 [terrain rule walkable]
 நடக்கக்கூடிய
 [terrain rule swimmable]

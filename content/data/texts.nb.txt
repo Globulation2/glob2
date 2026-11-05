@@ -5643,9 +5643,9 @@ Hekk
 [thicket]
 Kratt
 [ridge_rock]
-Åsrygg
+
 [outcrop]
-Bergblotning
+
 [dirt]
 Jord
 [clay]
@@ -5724,6 +5724,12 @@ Vann
 Sand
 [terrain group grass]
 Gress
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Is
 [terrain group paths]
@@ -5731,7 +5737,7 @@ Stier
 [terrain group obstacles]
 Hindringer
 [terrain group ridges]
-Rygger
+
 [terrain group barren]
 Goldmark
 [terrain group rough]
@@ -5746,8 +5752,6 @@ Dypt vann
 Tomrom
 [terrain group custom]
 Tilpasset
-[terrain group classic]
-Klassisk terreng
 [terrain rule walkable]
 Gangbart
 [terrain rule swimmable]
