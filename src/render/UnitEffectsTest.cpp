@@ -101,7 +101,7 @@ TEST_SUITE("UnitEffect")
 		CHECK(count > 0);
 	}
 
-	TEST_CASE("A serviced unit's shimmer settles over a second")
+	TEST_CASE("A serviced unit's shimmer settles over a second and a half")
 	{
 		CHECK(UnitEffect::serviceSilhouette(0) == doctest::Approx(UnitEffect::ServiceShimmerPeak));
 		float previous = UnitEffect::serviceSilhouette(0);
