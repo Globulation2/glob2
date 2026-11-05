@@ -1,0 +1,8 @@
+ProductName:		macOS
+ProductVersion:		27.2
+BuildVersion:		26B123
+arm64
+19315630e88c1ee66e0e2d83bed3938101a3e0e6
+92a92bc90201a38659609031a3db968599d68ec5
+2b0caf3e0b50b2edc1e32b625dc0434f5ba2ac5e20b0ba73f9626e05b5c85116  /Users/bradley/.codex/worktrees/water-overlay/glob2/artifacts/water-cadence/baseline-benchmark
+7833c03d22c8c6a563f5e7eafd78b4c98d802b332200ec730e4d207df494af0a  build/terrain-rollback-release/test/torus-render-benchmark

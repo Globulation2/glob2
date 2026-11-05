@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="animation invalidates only pages using that material [display]" time="7.74748" status="run" />
+  <testcase classname="TerrainMaterials" name="interactive HD pages retain density across page boundaries [display]" time="7.13813" status="run" />
+  <testcase classname="TerrainMaterials" name="progressive terrain pages keep the native fallback limited to missing regions [display]" time="7.67502" status="run" />
+  <testcase classname="TerrainMaterials" name="shore calm quiets waves toward land without shifting the water's colour [display]" time="6.7795" status="run" />
+  <testcase classname="TerrainMaterials" name="surf steps rebuild shoreline pages but keep static open water resident [display]" time="7.76114" status="run" />
+  </testsuite><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="Legacy GL HD water blends every frame without rebuilding terrain pages [display]" time="20.497" status="run" />
+  </testsuite></testsuites>

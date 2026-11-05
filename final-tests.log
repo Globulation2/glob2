@@ -1,0 +1,9 @@
+PASS TerrainMaterials/progressive terrain pages keep the native fallback limited to missing regions [display] (7.8s)
+PASS TerrainMaterials/animation invalidates only pages using that material [display] (7.8s)
+PASS TerrainMaterials/surf steps rebuild shoreline pages but keep static open water resident [display] (7.9s)
+PASS TerrainMaterials/shore calm quiets waves toward land without shifting the water's colour [display] (6.9s)
+PASS TerrainMaterials/interactive HD pages retain density across page boundaries [display] (7.3s)
+PASS TerrainPresentation/Legacy GL HD water blends every frame without rebuilding terrain pages [display] (20.6s)
+
+6 passed, 0 failed, 0 skipped (58.2s of test time)
+[run_tests] JUnit report: artifacts/water-cadence/final-junit.xml (6 cases)
