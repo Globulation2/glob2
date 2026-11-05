@@ -5756,6 +5756,8 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Морозная вертушка
 [arctic_tundra]
 Арктическая тундровая почва
+[glacier]
+Ледник
 [terrain group water]
 Вода
 [terrain group sand]

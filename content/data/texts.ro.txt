@@ -5756,6 +5756,8 @@ Romburi de piatra-lunii
 Morișcă de brumă
 [arctic_tundra]
 Sol de tundră arctică
+[glacier]
+Ghețar
 [terrain group water]
 Apă
 [terrain group sand]

@@ -5756,6 +5756,8 @@ Månestensruder
 Frostmølle
 [arctic_tundra]
 Arktisk tundrajord
+[glacier]
+Gletsjer
 [terrain group water]
 Vand
 [terrain group sand]

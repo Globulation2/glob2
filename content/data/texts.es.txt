@@ -5756,6 +5756,8 @@ Rombos de piedra lunar
 Molinete de escarcha
 [arctic_tundra]
 Suelo de tundra ártica
+[glacier]
+Glaciar
 [terrain group water]
 Agua
 [terrain group sand]

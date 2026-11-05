@@ -711,7 +711,8 @@
     "rime_ashlar",
     "moonstone_lozenge",
     "frost_pinwheel",
-    "arctic_tundra"
+    "arctic_tundra",
+    "glacier"
   ],
   "bindings": {
     "water": "water",
@@ -767,7 +768,8 @@
     "rime_ashlar": "rime_ashlar",
     "moonstone_lozenge": "moonstone_lozenge",
     "frost_pinwheel": "frost_pinwheel",
-    "arctic_tundra": "arctic_tundra"
+    "arctic_tundra": "arctic_tundra",
+    "glacier": "glacier"
   },
   "boundary_warp_q8": [960, 352, 120]
 }

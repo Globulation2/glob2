@@ -5756,6 +5756,8 @@ Belah ketupat batu bulan
 Kincir embun beku
 [arctic_tundra]
 Tanah tundra Arktik
+[glacier]
+Gletser
 [terrain group water]
 Air
 [terrain group sand]

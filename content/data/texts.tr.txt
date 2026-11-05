@@ -5756,6 +5756,8 @@ Aytaşı eşkenar dörtgenleri
 Ayaz fırıldağı
 [arctic_tundra]
 Arktik tundra toprağı
+[glacier]
+Buzul
 [terrain group water]
 Su
 [terrain group sand]

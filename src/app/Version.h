@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 210
+#define VERSION_MINOR 211
+// version 211 adds built-in glacier; custom terrain IDs move up by one.
 // version 210 adds built-in arctic tundra; custom terrain IDs move up by one.
 // version 209 adds built-in rime ashlar, moonstone lozenge and frost pinwheel; custom terrain IDs move up by three.
 // version 208 adds built-in slate ashlar, basalt causeway and scoria blocks; custom terrain IDs move up by three.

@@ -419,3 +419,7 @@ static constexpr int FILE_FORMAT_VERSION_ICE_PATHS = 209;
 //! Built-in arctic tundra: TERRAIN_COUNT grew from 53 to 54, so earlier files carry custom
 //! terrain IDs starting at 53 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_ARCTIC_TUNDRA = 210;
+
+//! Built-in glacier: TERRAIN_COUNT grew from 54 to 55, so earlier files carry custom
+//! terrain IDs starting at 54 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_GLACIER = 211;

@@ -5756,6 +5756,8 @@ Losangos de pedra-da-lua
 Cata-vento de geada
 [arctic_tundra]
 Solo de tundra ártica
+[glacier]
+Glaciar
 [terrain group water]
 Água
 [terrain group sand]

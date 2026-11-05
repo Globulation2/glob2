@@ -5732,6 +5732,8 @@ Månesteinsruter
 Frostvindmølle
 [arctic_tundra]
 Arktisk tundramark
+[glacier]
+Isbre
 [terrain group water]
 Vann
 [terrain group sand]

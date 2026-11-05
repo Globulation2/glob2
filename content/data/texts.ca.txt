@@ -5756,6 +5756,8 @@ Rombes de pedra de lluna
 Molinet de gebre
 [arctic_tundra]
 Sòl de tundra àrtica
+[glacier]
+Glacera
 [terrain group water]
 Aigua
 [terrain group sand]

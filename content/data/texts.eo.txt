@@ -5756,6 +5756,8 @@ Lunŝtonaj romboj
 Frosta ventoturnilo
 [arctic_tundra]
 Arkta tundra grundo
+[glacier]
+Glaĉero
 [terrain group water]
 Akvo
 [terrain group sand]

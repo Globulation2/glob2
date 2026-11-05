@@ -5732,6 +5732,8 @@ FFmpeg не е наличен, така че записът е изключен.
 Скрежна мелничка
 [arctic_tundra]
 Арктическа тундрова почва
+[glacier]
+Ледник
 [terrain group water]
 Вода
 [terrain group sand]

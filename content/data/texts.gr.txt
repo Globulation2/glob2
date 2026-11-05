@@ -5756,6 +5756,8 @@ CPU %0%
 Ανεμόμυλος παγετού
 [arctic_tundra]
 Έδαφος αρκτικής τούνδρας
+[glacier]
+Παγετώνας
 [terrain group water]
 Νερό
 [terrain group sand]

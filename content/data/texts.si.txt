@@ -5756,6 +5756,8 @@ Rombi iz mesečevega kamna
 Ivjasta vetrnica
 [arctic_tundra]
 Arktična tundrska tla
+[glacier]
+Ledenik
 [terrain group water]
 Voda
 [terrain group sand]

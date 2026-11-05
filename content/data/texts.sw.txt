@@ -5732,6 +5732,8 @@ Almasi za jiwe la mwezi
 Gurudumu la barafu
 [arctic_tundra]
 Ardhi ya tundra ya aktiki
+[glacier]
+Mto wa barafu
 [terrain group water]
 Maji
 [terrain group sand]

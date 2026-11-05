@@ -86,7 +86,9 @@ enum TerrainType : std::uint16_t
 	FROST_PINWHEEL=52,
 	// Snow-drifted frost-patterned ground (Barren, like dirt), format 210.
 	ARCTIC_TUNDRA=53,
-	TERRAIN_COUNT=54,
+	// A raised glacier walled by blue ice (Obstacles, like cliffs), format 211.
+	GLACIER=54,
+	TERRAIN_COUNT=55,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -127,6 +129,8 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_ROCK_PATHS = 47;
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_ICE_PATHS = 50;
 // Format 209 ended the built-ins at FROST_PINWHEEL.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA = 53;
+// Format 210 ended the built-ins at ARCTIC_TUNDRA.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_GLACIER = 54;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

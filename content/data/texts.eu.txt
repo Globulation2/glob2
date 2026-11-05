@@ -5756,6 +5756,8 @@ Ilargi-harrizko erronboak
 Izotz-haize-errota
 [arctic_tundra]
 Tundra artikoko lurra
+[glacier]
+Glaziarra
 [terrain group water]
 Ura
 [terrain group sand]

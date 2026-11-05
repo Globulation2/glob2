@@ -921,6 +921,19 @@ def render_cliffs(rng, edge):
     return draw_rocks(canvas, rng, rocks, strata=0.12, shadow=0.5)
 
 
+@spec("glacier", "a raised glacier whose exposed fronts drop as blue ice walls")
+def render_glacier(rng, edge):
+    # Object frames the runtime never draws for a connected set (see
+    # render_cliffs): blocks of blue serac ice.
+    canvas = Canvas()
+    tone = mix3((150, 190, 220), (196, 222, 240), rng.random())
+    rx = rng.uniform(40, 50) if edge else rng.uniform(66, 82)
+    rocks = [make_rock(rng, S / 2 + rng.uniform(-8, 8), S / 2 + CELL * 0.15, rx, rx * 0.74,
+                       rng.uniform(-0.4, 0.4), rng.uniform(36, 48), 8, rng.uniform(10, 16), tone,
+                       points=8, jag=0.2, peak_offset=0.5)]
+    return draw_rocks(canvas, rng, rocks, strata=0.0, shadow=0.5)
+
+
 # Connected foliage is a raised surface over its painted footprint, not a set of
 # individually lit domes. Crowns are anchored on map vertices: every vertex has
 # one of two seeded colours (cornerColours in TerrainMaterials.cpp), and each
@@ -928,10 +941,10 @@ def render_cliffs(rng, edge):
 # vertex. A cell's frame therefore depends only on its corner mask and its four
 # corner colours, and neighbouring frames agree wherever they meet, so large
 # patches continue without seams and without a periodic repeat.
-CONNECTED = ("hedge", "thicket", "cliffs")
+CONNECTED = ("hedge", "thicket", "cliffs", "glacier")
 # Connected sets whose edges stand on open ground ("connected_open"): a cliff's
 # rim and walls belong on the grass beside it, where foliage keeps a clear border.
-OPEN_EDGED = ("cliffs",)
+OPEN_EDGED = ("cliffs", "glacier")
 CANOPY_VARIANTS = 16          # one per combination of the four corner colours
 CANOPY_INTERIORS = 8          # interior crown arrangements of a filled cell
 BAND = 20                     # vertex crowns centre this close to a cell edge
@@ -973,7 +986,7 @@ def connected_first(name):
 def connected_rise(name):
     """(HD rows above the cell, HD rise of the raised top) of a connected frame:
     cliffs stand taller than foliage."""
-    return (CLIFF_TOP, CLIFF_RAISE) if name == "cliffs" else (CANOPY_TOP, raise_of(name))
+    return (CLIFF_TOP, CLIFF_RAISE) if name in CLIFF_STYLES else (CANOPY_TOP, raise_of(name))
 
 
 def connected_size(name):
@@ -1363,7 +1376,37 @@ CLIFF_STYLE = dict(
     wall=((0.0, (20, 17, 15)), (0.35, (60, 51, 43)), (0.70, (106, 92, 76)), (1.0, (150, 134, 112))),
     crack=(30, 24, 20), scrub=((48, 60, 30), (90, 100, 48)), lichen=(112, 114, 86),
     amplitude=0.22,
+    # Seed prefix of the vertex, edge and interior fields.
+    seed="cliff",
+    # Fractures per edge (choices) and the joint drawer.
+    edge_fractures=(0, 1), fracture="joint", interior_fractures=1,
+    # Plateau relief: base + shelves + crags + grain + pits - joints + rocks.
+    relief=(0.22, 0.30, 0.22, 0.03, 0.015, 0.03, 0.04),
+    shadow=(16, 14, 18),
 )
+# A glacier is the same connected plateau in ice: a snowfield split by
+# crevasses whose exposed fronts drop as blue ice walls under a snow cornice.
+GLACIER_STYLE = dict(
+    # Firn and wind-packed snow over blue ice, cooler and bluer in shade.
+    ramp=((0.0, (40, 70, 112)), (0.28, (118, 152, 192)), (0.52, (190, 210, 230)),
+          (0.78, (228, 237, 248)), (1.0, (248, 251, 255))),
+    # The face is ice, not stone: deep blue at the foot, paler and greener
+    # toward the lip where light passes through it.
+    wall=((0.0, (8, 22, 50)), (0.30, (22, 64, 118)), (0.62, (62, 132, 190)), (0.86, (132, 194, 228)),
+          (1.0, (196, 230, 246))),
+    # Crevasses open on blue depths; hollows show bare blue ice; drifts of
+    # fresh snow lie on the high ground where cliffs carry lichen.
+    crack=(26, 74, 136), scrub=((70, 128, 182), (128, 188, 226)), lichen=(250, 252, 255),
+    # Cornice: snow overhanging the lip, and the debris bands of old seasons.
+    cornice=(238, 244, 252), debris=(74, 82, 96),
+    amplitude=0.18,
+    seed="glacier",
+    edge_fractures=(0,), fracture="crevasse", interior_fractures=0, interior_crevasses=(0, 1, 1, 2),
+    # Smoother than rock: low shelves, deep crevasses, no pitting to speak of.
+    relief=(0.24, 0.12, 0.34, 0.02, 0.006, 0.10, 0.03),
+    shadow=(20, 34, 60),
+)
+CLIFF_STYLES = {"cliffs": CLIFF_STYLE, "glacier": GLACIER_STYLE}
 # Fractures and loose rocks belong to vertex discs no wider than REACH: a disc
 # never reaches the far edges of the cells around its vertex, nor the halo of a
 # farther cell, so every frame that sees a feature draws all of it.
@@ -1409,6 +1452,31 @@ def draw_fracture(draw, rng, x, y, length):
     draw.line(points, fill=255, width=2)
 
 
+def draw_crevasse(draw, rng, x, y, length):
+    """A crevasse centred on (x, y): a gently curving slot across the ice,
+    widest in the middle, running roughly east-west as transverse crevasses do
+    across a flow. Its walls fade from the lip into the full depth of the slot."""
+    angle = rng.uniform(-0.22, 0.22)
+    bend = rng.uniform(-0.012, 0.012)
+    steps = max(3, int(length / 4))
+    x, y = x - math.cos(angle) * length / 2, y - math.sin(angle) * length / 2
+    points = [(x, y)]
+    for k in range(steps):
+        angle += bend + rng.uniform(-0.03, 0.03)
+        x, y = x + math.cos(angle) * length / steps, y + math.sin(angle) * length / steps
+        points.append((x, y))
+    for fill, extra in ((120, 3), (255, 0)):
+        for k, (a, b) in enumerate(zip(points, points[1:])):
+            # Widest at the middle, pinched shut at both ends.
+            t = (k + 0.5) / steps
+            width = 1 + int(round(6 * math.sin(math.pi * t))) + extra
+            draw.line([a, b], fill=fill, width=width)
+            draw.ellipse((b[0] - width / 2, b[1] - width / 2, b[0] + width / 2, b[1] + width / 2), fill=fill)
+
+
+FRACTURES = {"joint": draw_fracture, "crevasse": draw_crevasse}
+
+
 def draw_rock(draw, rng, x, y, radius):
     """A loose rock: a small angular polygon raised above the plateau."""
     angles = sorted(rng.uniform(0, math.tau) for _ in range(rng.randint(5, 7)))
@@ -1434,12 +1502,12 @@ def octaves(rng, cells, count, size=CLIFF_PATCH):
     return [sum(w * f[i] for w, f in zip(weights, fields)) / total for i in range(size * size)]
 
 
-@functools.lru_cache(maxsize=4)
-def cliff_patch(colour):
+@functools.lru_cache(maxsize=8)
+def cliff_patch(name, colour):
     """(relief, joints, tone, grain) noise of one vertex colour, centred on the vertex."""
-    rng = random.Random(fnv1a32(f"cliff-patch:{colour}"))
+    rng = random.Random(fnv1a32(f"{CLIFF_STYLES[name]['seed']}-patch:{colour}"))
     fields = (octaves(rng, 3, 3), octaves(rng, 2, 2), octaves(rng, 10, 3))
-    return fields + cliff_features(rng, CLIFF_PATCH, CLIFF_PATCH // 2, 0, (30, 46), 3)
+    return fields + cliff_features(name, rng, CLIFF_PATCH, CLIFF_PATCH // 2, 0, (30, 46), 3)
 
 
 # Edge features: most fractures and rocks belong to a cell edge, keyed by the
@@ -1450,13 +1518,16 @@ CLIFF_EDGE_SPAN = HALO + 16
 CLIFF_EDGE_DEPTH = 80
 
 
-@functools.lru_cache(maxsize=8)
-def cliff_edge(vertical, first, second):
+@functools.lru_cache(maxsize=16)
+def cliff_edge(name, vertical, first, second):
     """(joints, stones) images of one edge, centred on its midpoint."""
-    rng = random.Random(fnv1a32(f"cliff-edge:{int(vertical)}:{first}:{second}"))
+    style = CLIFF_STYLES[name]
+    rng = random.Random(fnv1a32(f"{style['seed']}-edge:{int(vertical)}:{first}:{second}"))
     size = (2 * CLIFF_EDGE_SPAN, 2 * CLIFF_EDGE_DEPTH)
     joints, stones = Image.new("L", size), Image.new("L", size)
-    for _ in range(rng.choice((0, 1))):
+    # Glacier draws no edge crevasses: an edge has only four variants, which
+    # would line them up along rows, so they belong to the interior variants.
+    for _ in range(rng.choice(style["edge_fractures"])):
         # Fractures may run past the box; the box clips them to a broken end.
         draw_fracture(ImageDraw.Draw(joints), rng, CLIFF_EDGE_SPAN + rng.uniform(-14, 14),
                       CLIFF_EDGE_DEPTH + rng.uniform(-48, 48), rng.uniform(22, 36))
@@ -1473,40 +1544,60 @@ def cliff_edge(vertical, first, second):
     return joints, stones
 
 
-def cliff_features(rng, size, centre, fractures, lengths, rocks, spots=None):
+def cliff_features(name, rng, size, centre, fractures, lengths, rocks, spots=None):
     """Fracture and loose-rock coverage as flat lists over a size x size patch.
 
     A fracture never reaches farther from its start than its length (plus a
     short branch), which bounds its extent in the disc."""
     joints, stones = Image.new("L", (size, size)), Image.new("L", (size, size))
     for (x, y) in (spots or disc_spots)(rng, fractures, lengths[1] + 12):
-        draw_fracture(ImageDraw.Draw(joints), rng, centre + x, centre + y, rng.uniform(*lengths))
+        FRACTURES[CLIFF_STYLES[name]["fracture"]](ImageDraw.Draw(joints), rng, centre + x, centre + y,
+                                                  rng.uniform(*lengths))
     for (x, y) in (spots or disc_spots)(rng, rocks, 14):
         draw_rock(ImageDraw.Draw(stones), rng, centre + x, centre + y, rng.uniform(5, 11))
     joints = joints.filter(ImageFilter.GaussianBlur(0.6))
     return [v / 255 for v in joints.getdata()], [v / 255 for v in stones.getdata()]
 
 
-@functools.lru_cache(maxsize=8)
-def cliff_detail(interior):
+@functools.lru_cache(maxsize=16)
+def cliff_detail(name, interior):
     """The same fields wholly inside a filled cell, one set per interior variant."""
-    rng = random.Random(fnv1a32(f"cliff-interior:{interior}"))
+    rng = random.Random(fnv1a32(f"{CLIFF_STYLES[name]['seed']}-interior:{interior}"))
     fields = (octaves(rng, 2, 3, CELL), octaves(rng, 1, 2, CELL), octaves(rng, 5, 3, CELL))
     inside = lambda rng, count, extent: [(rng.uniform(-CELL / 2 + extent + 14, CELL / 2 - extent - 14),
                                           rng.uniform(-CELL / 2 + extent + 14, CELL / 2 - extent - 14))
                                          for _ in range(count)]
     # Features of an interior stay clear of the cell edge, whose fades they
     # would otherwise cut.
-    return fields + cliff_features(rng, CELL, CELL // 2, 1, (18, 26), 1, spots=inside)
+    style = CLIFF_STYLES[name]
+    features = cliff_features(name, rng, CELL, CELL // 2, style["interior_fractures"], (18, 26), 1, spots=inside)
+    if style["fracture"] == "crevasse":
+        # Crevasses picked by the cell hash, wherever they fit clear of the edge.
+        joints = Image.new("L", (CELL, CELL))
+        count = rng.choice(style["interior_crevasses"])
+        for k in range(count):
+            length = rng.uniform(48, 94)
+            reach = CELL / 2 - 16 - length / 2
+            # Two crevasses keep to their own halves, so they never converge.
+            rows = (26, CELL - 26) if count == 1 else ((26, CELL / 2 - 8), (CELL / 2 + 8, CELL - 26))[k]
+            draw_crevasse(ImageDraw.Draw(joints), rng, CELL / 2 + rng.uniform(-reach, reach),
+                          rng.uniform(*rows), length)
+        # A crevasse that wanders toward the edge tapers off well short of it.
+        fade = Image.new("L", (CELL, CELL))
+        ImageDraw.Draw(fade).rectangle((18, 18, CELL - 19, CELL - 19), fill=255)
+        joints = ImageChops.multiply(joints.filter(ImageFilter.GaussianBlur(0.6)),
+                                     fade.filter(ImageFilter.GaussianBlur(3)))
+        features = ([max(a, b / 255) for a, b in zip(features[0], joints.getdata())], features[1])
+    return fields + features
 
 
 @functools.lru_cache(maxsize=48)
-def cliff_surface(colours, interior, filled):
+def cliff_surface(name, colours, interior, filled):
     """Lit plateau colour, heights and wall streaks of the cell plus its halo."""
-    style = CLIFF_STYLE
+    style = CLIFF_STYLES[name]
     size = CELL + 2 * HALO
-    patches = [cliff_patch((colours >> k) & 1) for k in range(4)]
-    detail = cliff_detail(interior) if filled else None
+    patches = [cliff_patch(name, (colours >> k) & 1) for k in range(4)]
+    detail = cliff_detail(name, interior) if filled else None
     centre = CLIFF_PATCH // 2
     fields = [[0.0] * (size * size) for _ in range(5)]
     for y in range(size):
@@ -1552,14 +1643,14 @@ def cliff_surface(colours, interior, filled):
                                             (False, bit(2), bit(3), HALO + CELL // 2, HALO + CELL),
                                             (True, bit(0), bit(2), HALO, HALO + CELL // 2),
                                             (True, bit(1), bit(3), HALO + CELL, HALO + CELL // 2)):
-        for c, source in enumerate(cliff_edge(vertical, first, second)):
+        for c, source in enumerate(cliff_edge(name, vertical, first, second)):
             layer = Image.new("L", (size, size))
             layer.paste(source, (cx - source.width // 2, cy - source.height // 2))
             features[c] = ImageChops.lighter(features[c], layer)
     fields[3], fields[4] = ([v / 255 for v in image.getdata()] for image in features)
     height, tone, grain, joints, stones = fields
     # Fine pitting: independent per pixel, so it needs no agreement at edges.
-    rng = random.Random(fnv1a32(f"cliff-pits:{colours}:{interior}:{int(filled)}"))
+    rng = random.Random(fnv1a32(f"{style['seed']}-pits:{colours}:{interior}:{int(filled)}"))
     pits = [rng.random() for _ in range(size * size)]
     # Heights: the crags weather into shelves, flat beds with a short riser at
     # each step, so the stone breaks into planes with crisp lit and shaded edges.
@@ -1567,7 +1658,9 @@ def cliff_surface(colours, interior, filled):
         level = h * CLIFF_SHELVES + 0.15 * (g - 0.5)
         step = math.floor(level)
         return (step + smoothstep(0.0, 0.4, level - step)) / CLIFF_SHELVES
-    relief = [0.22 + 0.30 * shelves(h, g) + 0.22 * h + 0.03 * (g - 0.5) + 0.015 * (pt - 0.5) - 0.03 * jt + 0.04 * st
+    k0, k_shelf, k_crag, k_grain, k_pit, k_joint, k_rock = style["relief"]
+    relief = [k0 + k_shelf * shelves(h, g) + k_crag * h + k_grain * (g - 0.5) + k_pit * (pt - 0.5) - k_joint * jt
+              + k_rock * st
               for h, g, pt, jt, st in zip(height, grain, pits, joints, stones)]
     lx, ly, lz = CANOPY_LIGHT
     norm_l = math.sqrt(lx * lx + ly * ly + lz * lz)
@@ -1609,7 +1702,20 @@ def cliff_surface(colours, interior, filled):
     return image, heights, marks.filter(ImageFilter.GaussianBlur((0.3, 30))), marks.filter(ImageFilter.GaussianBlur(1.0))
 
 
-def render_cliff(mask, colours, interior=0):
+def ice_face(style, base, shade, t, c, g, band):
+    """One pixel of a glacier front: blue ice whose depth follows the facet
+    shade, crossed by broken debris bands, under a snow cornice at the lip."""
+    colour = ramp(style["wall"], clamp(0.02 + 1.25 * shade + 0.36 * (c - 0.5)))
+    # A little of the snowfield above, so facets keep its tone.
+    colour = mix3(colour, tuple(v * (0.45 + 0.5 * shade) for v in base), 0.15)
+    seam = (1 - smoothstep(0.0, 0.05, band)) * smoothstep(0.5, 0.66, g)
+    colour = mix3(colour, style["debris"], 0.40 * seam)
+    lip = smoothstep(0.80, 0.92, t + 0.10 * (g - 0.5))
+    colour = mix3(colour, tuple(v * (0.86 + 0.14 * t) for v in style["cornice"]), lip)
+    return tuple(int(clamp(v, 0, 255)) for v in colour)
+
+
+def render_cliff(name, mask, colours, interior=0):
     """A 32x64 native frame: contact shadow, fractured wall, then the plateau.
 
     The same ownership rules as render_connected: the frame draws the rock whose
@@ -1619,8 +1725,8 @@ def render_cliff(mask, colours, interior=0):
     frame = Image.new("RGBA", (CELL, CELL + 2 * CLIFF_TOP))
     if not mask:
         return frame
-    style = CLIFF_STYLE
-    surface, heights, columns, rough = cliff_surface(colours, interior, mask == 15)
+    style = CLIFF_STYLES[name]
+    surface, heights, columns, rough = cliff_surface(name, colours, interior, mask == 15)
     # Crags push the edge out and hollows pull it in; a blur keeps the rim a
     # continuous broken line rather than single spikes.
     smooth = heights.filter(ImageFilter.GaussianBlur(3))
@@ -1636,7 +1742,7 @@ def render_cliff(mask, colours, interior=0):
         shifted(coverage, 2, 5).filter(ImageFilter.GaussianBlur(1.5)).point(lambda v: int(v * 0.70)),
         shifted(coverage, 10, 13).filter(ImageFilter.GaussianBlur(3)).point(lambda v: int(v * 0.55))),
         shifted(coverage, 24, 30).filter(ImageFilter.GaussianBlur(8)).point(lambda v: int(v * 0.40)))
-    layer = Image.new("RGBA", (CELL, CELL), (16, 14, 18, 255))
+    layer = Image.new("RGBA", (CELL, CELL), (*style["shadow"], 255))
     layer.putalpha(shadow.crop(cell))
     frame.alpha_composite(layer, (0, CLIFF_TOP))
 
@@ -1681,6 +1787,9 @@ def render_cliff(mask, colours, interior=0):
             # Stretched twice down the face so it reads as a drop, not as the
             # top running on; frames in one row share rows, so it stays seamless.
             base = stone[x, HALO + 10 + (y - HALO + CLIFF_RAISE) // 2]
+            if "cornice" in style:
+                wp[x, y] = ice_face(style, base, shade, t, c, g, band)
+                continue
             warm = (1.04, 1.0, 0.94)
             wp[x, y] = tuple(int(clamp(base[k] * shade * warm[k], 0, 255)) for k in range(3))
     region = (HALO, HALO - CLIFF_RAISE, HALO + CELL, HALO + CELL)
@@ -1737,8 +1846,8 @@ def render_frame(name, index):
     rng = random.Random(fnv1a32(f"decor:{name}:{index}"))
     if index < FRAMES:
         hd = SPECS[name].render(rng, index >= FULL).image()
-    elif name == "cliffs":
-        hd = render_cliff(*connected_frame(index - FRAMES))
+    elif name in CLIFF_STYLES:
+        hd = render_cliff(name, *connected_frame(index - FRAMES))
     else:
         hd = render_connected(name, *connected_frame(index - FRAMES))
     native = hd.resize((hd.width // SCALE, hd.height // SCALE), Image.Resampling.BOX)
@@ -1770,7 +1879,7 @@ def synthesize(names, jobs=None):
     return out
 
 
-ORDER = ["boulders", "hedge", "thicket", "ridge_rock", "outcrop", "cliffs"]
+ORDER = ["boulders", "hedge", "thicket", "ridge_rock", "outcrop", "cliffs", "glacier"]
 assert sorted(ORDER) == sorted(SPECS)
 # The first sets were numbered before any connected frames, which follow them;
 # later sets append their object and connected frames together, so adding a set

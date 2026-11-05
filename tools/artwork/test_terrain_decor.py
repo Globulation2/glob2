@@ -44,24 +44,26 @@ class TerrainDecor(unittest.TestCase):
         # A vertex disc's rocks keep within CLIFF_DISC of the vertex, so no frame
         # beyond the four around it, nor their halos, sees them.
         size, centre = decor.CLIFF_PATCH, decor.CLIFF_PATCH // 2
-        for colour in (0, 1):
-            joints, stones = decor.cliff_patch(colour)[3:]
-            for field in (joints, stones):
-                inked = [(i % size - centre, i // size - centre) for i, v in enumerate(field) if v]
-                self.assertTrue(all(abs(complex(x, y)) <= decor.CLIFF_DISC for x, y in inked))
-        # Edge features keep short of the halos of the cells beside the two that
-        # share the edge.
-        for vertical in (False, True):
-            for first in (0, 1):
-                for second in (0, 1):
-                    for image in decor.cliff_edge(vertical, first, second):
-                        along = image.height if vertical else image.width
-                        self.assertLessEqual(along // 2, decor.CELL // 2 - decor.HALO)
-        # Interior features stay clear of the cell edge.
-        for interior in range(decor.CANOPY_INTERIORS):
-            for field in decor.cliff_detail(interior)[3:]:
-                inked = [(i % decor.CELL, i // decor.CELL) for i, v in enumerate(field) if v]
-                self.assertTrue(all(8 <= x < decor.CELL - 8 and 8 <= y < decor.CELL - 8 for x, y in inked))
+        for name in decor.CLIFF_STYLES:
+            for colour in (0, 1):
+                joints, stones = decor.cliff_patch(name, colour)[3:]
+                for field in (joints, stones):
+                    inked = [(i % size - centre, i // size - centre) for i, v in enumerate(field) if v]
+                    self.assertTrue(all(abs(complex(x, y)) <= decor.CLIFF_DISC for x, y in inked), name)
+            # Edge features keep short of the halos of the cells beside the two
+            # that share the edge.
+            for vertical in (False, True):
+                for first in (0, 1):
+                    for second in (0, 1):
+                        for image in decor.cliff_edge(name, vertical, first, second):
+                            along = image.height if vertical else image.width
+                            self.assertLessEqual(along // 2, decor.CELL // 2 - decor.HALO)
+            # Interior features, glacier crevasses among them, stay clear of the
+            # cell edge.
+            for interior in range(decor.CANOPY_INTERIORS):
+                for field in decor.cliff_detail(name, interior)[3:]:
+                    inked = [(i % decor.CELL, i // decor.CELL) for i, v in enumerate(field) if v]
+                    self.assertTrue(all(8 <= x < decor.CELL - 8 and 8 <= y < decor.CELL - 8 for x, y in inked), name)
 
     def test_catalog_blocks_name_the_shared_sprite_and_frames(self):
         catalog = terrain_catalog.load(ROOT / "content")

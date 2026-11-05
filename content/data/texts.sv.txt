@@ -5756,6 +5756,8 @@ Månstensrutor
 Frostsnurra
 [arctic_tundra]
 Arktisk tundramark
+[glacier]
+Glaciär
 [terrain group water]
 Vatten
 [terrain group sand]

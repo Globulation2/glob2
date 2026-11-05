@@ -5756,6 +5756,8 @@ Holdkő rombuszok
 Dérforgó
 [arctic_tundra]
 Sarkvidéki tundratalaj
+[glacier]
+Gleccser
 [terrain group water]
 Víz
 [terrain group sand]

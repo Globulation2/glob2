@@ -5732,6 +5732,8 @@ AI ద్వారా రూపొందించబడలేదు
 మంచు గిరగిర
 [arctic_tundra]
 ఆర్కిటిక్ టండ్రా నేల
+[glacier]
+హిమానీనదం
 [terrain group water]
 నీరు
 [terrain group sand]

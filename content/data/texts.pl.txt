@@ -5756,6 +5756,8 @@ Romby z kamienia księżycowego
 Szronowy wiatraczek
 [arctic_tundra]
 Gleba tundry arktycznej
+[glacier]
+Lodowiec
 [terrain group water]
 Woda
 [terrain group sand]

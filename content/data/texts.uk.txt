@@ -5756,6 +5756,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Морозний вітрячок
 [arctic_tundra]
 Арктичний тундровий ґрунт
+[glacier]
+Льодовик
 [terrain group water]
 Вода
 [terrain group sand]

@@ -5756,6 +5756,8 @@ Losanghe di pietra di luna
 Girandola di brina
 [arctic_tundra]
 Terreno di tundra artica
+[glacier]
+Ghiacciaio
 [terrain group water]
 Acqua
 [terrain group sand]
