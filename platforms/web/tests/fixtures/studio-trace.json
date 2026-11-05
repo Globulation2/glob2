@@ -7,7 +7,7 @@
   "opponent": "numbi",
   "ticks": 1024,
   "traceBytes": 2083950,
-  "traceSha256": "2490b3666170d72659a73f9a6e024a6d6de698a98447103aa59b007224494e6c",
-  "versionMinor": 194,
-  "simRevision": 122
+  "traceSha256": "f8061df9dc0ffc2f7c52b4c623f90943a4a24e7ec24cb548c644d52365286a9a",
+  "versionMinor": 207,
+  "simRevision": 128
 }
