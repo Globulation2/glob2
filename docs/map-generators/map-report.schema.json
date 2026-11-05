@@ -592,6 +592,33 @@
         "glacier": {
           "$ref": "#/$defs/coverage"
         },
+        "icefall": {
+          "$ref": "#/$defs/coverage"
+        },
+        "sandstone_benches": {
+          "$ref": "#/$defs/coverage"
+        },
+        "obsidian_ridge": {
+          "$ref": "#/$defs/coverage"
+        },
+        "granite_tors": {
+          "$ref": "#/$defs/coverage"
+        },
+        "travertine_terraces": {
+          "$ref": "#/$defs/coverage"
+        },
+        "penitentes": {
+          "$ref": "#/$defs/coverage"
+        },
+        "termite_mounds": {
+          "$ref": "#/$defs/coverage"
+        },
+        "hoodoos": {
+          "$ref": "#/$defs/coverage"
+        },
+        "petrified_stumps": {
+          "$ref": "#/$defs/coverage"
+        },
         "gravel": {
           "description": "Reports written before the rename to shale.",
           "$ref": "#/$defs/coverage"

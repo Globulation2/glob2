@@ -6872,6 +6872,24 @@ MCP सर्व्हर सक्षम करा
 आर्क्टिक टुंड्राची जमीन
 [glacier]
 हिमनदी
+[icefall]
+हिमप्रपात
+[sandstone_benches]
+वाळूदगडी पायऱ्या
+[obsidian_ridge]
+ऑब्सिडियन कडा
+[granite_tors]
+ग्रॅनाइट टॉर
+[travertine_terraces]
+ट्रॅव्हर्टाइन पायऱ्या
+[penitentes]
+हिम पेनिटेंटेस
+[termite_mounds]
+वारुळे
+[hoodoos]
+हूडू स्तंभ
+[petrified_stumps]
+जीवाश्म बुंधे
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
 [script error at %0:%1: %2]

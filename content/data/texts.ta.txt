@@ -6872,6 +6872,24 @@ GL மட்டும்
 ஆர்க்டிக் துந்திரா நிலம்
 [glacier]
 பனியாறு
+[icefall]
+பனிக்கட்டி வீழ்ச்சி
+[sandstone_benches]
+மணற்கல் படிகள்
+[obsidian_ridge]
+அப்சிடியன் முகடு
+[granite_tors]
+கருங்கல் குன்றுகள்
+[travertine_terraces]
+டிராவர்டைன் படிமாடங்கள்
+[penitentes]
+பனிக் கூர்முனைகள்
+[termite_mounds]
+கறையான் புற்றுகள்
+[hoodoos]
+ஹூடூ தூண்கள்
+[petrified_stumps]
+கல்லான மரக்கட்டைகள்
 [AI for all computer colonies]
 அனைத்துக் கணினிக் குடியிருப்புகளுக்குமான AI
 [script error at %0:%1: %2]

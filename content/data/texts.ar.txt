@@ -5758,6 +5758,24 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 أرض التندرا القطبية
 [glacier]
 نهر جليدي
+[icefall]
+شلال جليدي
+[sandstone_benches]
+مصاطب الحجر الرملي
+[obsidian_ridge]
+سلسلة الزجاج البركاني
+[granite_tors]
+صخور الغرانيت
+[travertine_terraces]
+مدرجات الترافرتين
+[penitentes]
+أشواك الثلج
+[termite_mounds]
+تلال النمل الأبيض
+[hoodoos]
+أعمدة الهودو
+[petrified_stumps]
+جذوع متحجرة
 [terrain group water]
 ماء
 [terrain group sand]

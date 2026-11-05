@@ -423,3 +423,9 @@ static constexpr int FILE_FORMAT_VERSION_ARCTIC_TUNDRA = 210;
 //! Built-in glacier: TERRAIN_COUNT grew from 54 to 55, so earlier files carry custom
 //! terrain IDs starting at 54 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_GLACIER = 211;
+
+//! Built-in icefall, sandstone benches, obsidian ridge, granite tors and travertine
+//! terraces (Barriers) and penitentes, termite mounds, hoodoos and petrified stumps
+//! (Outcrops): TERRAIN_COUNT grew from 55 to 64, so earlier files carry custom terrain
+//! IDs starting at 55 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_ICEFALL = 212;

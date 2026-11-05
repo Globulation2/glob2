@@ -1148,6 +1148,28 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(GLACIER).name) == "glacier");
 		CHECK(TerrainRegistry::builtins()->find("glacier") == GLACIER);
 	}
+	TEST_CASE("the new Barriers masses play like cliffs and the Outcrops looks like rock spires")
+	{
+		for (const auto type : {ICEFALL, SANDSTONE_BENCHES, OBSIDIAN_RIDGE, GRANITE_TORS, TRAVERTINE_TERRACES})
+		{
+			CAPTURE(int(type));
+			CHECK(terrainGroup(type) == TerrainGroup::Obstacles);
+			CHECK(terrainPaintable(type));
+			CHECK(sameTerrainProperties(terrainProperties(type), terrainProperties(CLIFFS)));
+			CHECK(terrainProperties(type).projectileBlocks);
+		}
+		for (const auto type : {PENITENTES, TERMITE_MOUNDS, HOODOOS, PETRIFIED_STUMPS})
+		{
+			CAPTURE(int(type));
+			CHECK(terrainGroup(type) == TerrainGroup::Ridges);
+			CHECK(terrainPaintable(type));
+			CHECK(sameTerrainProperties(terrainProperties(type), terrainProperties(RIDGE_ROCK)));
+			CHECK_FALSE(terrainProperties(type).walkable);
+			CHECK_FALSE(terrainProperties(type).projectileBlocks);
+		}
+		CHECK(TerrainRegistry::builtins()->find("icefall") == ICEFALL);
+		CHECK(TerrainRegistry::builtins()->find("petrified_stumps") == PETRIFIED_STUMPS);
+	}
 	TEST_CASE("grass and sand looks share every rule of grass and sand")
 	{
 		for (auto [look, classic] : {std::pair{LUSH_GRASS, GRASS}, std::pair{DRY_GRASS, GRASS},

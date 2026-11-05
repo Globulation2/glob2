@@ -5734,6 +5734,24 @@ AI ทำงาน​อย่างไร
 พื้นดินทุนดราอาร์กติก
 [glacier]
 ธารน้ำแข็ง
+[icefall]
+น้ำตกน้ำแข็ง
+[sandstone_benches]
+ขั้นหินทราย
+[obsidian_ridge]
+สันหินออบซิเดียน
+[granite_tors]
+กองหินแกรนิต
+[travertine_terraces]
+ขั้นบันไดหินทราเวอร์ทีน
+[penitentes]
+หนามหิมะ
+[termite_mounds]
+จอมปลวก
+[hoodoos]
+เสาหินฮูดู
+[petrified_stumps]
+ตอไม้กลายเป็นหิน
 [terrain group water]
 น้ำ
 [terrain group sand]

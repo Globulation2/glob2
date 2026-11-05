@@ -5758,6 +5758,24 @@ Frostsnurra
 Arktisk tundramark
 [glacier]
 Glaciär
+[icefall]
+Isfall
+[sandstone_benches]
+Sandstensbänkar
+[obsidian_ridge]
+Obsidiankam
+[granite_tors]
+Granitblock
+[travertine_terraces]
+Travertinterrasser
+[penitentes]
+Botgörarsnö
+[termite_mounds]
+Termitstackar
+[hoodoos]
+Jordpyramider
+[petrified_stumps]
+Förstenade stubbar
 [terrain group water]
 Vatten
 [terrain group sand]

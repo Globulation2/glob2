@@ -88,7 +88,25 @@ enum TerrainType : std::uint16_t
 	ARCTIC_TUNDRA=53,
 	// A raised glacier walled by blue ice (Obstacles, like cliffs), format 211.
 	GLACIER=54,
-	TERRAIN_COUNT=55,
+	// A crevassed glacier tongue on fluted blue ice walls (Obstacles, like cliffs), format 212.
+	ICEFALL=55,
+	// Flat-topped sandstone benches on stepped beds (Obstacles, like cliffs), format 212.
+	SANDSTONE_BENCHES=56,
+	// A heap of glassy black obsidian shards (Obstacles, like cliffs), format 212.
+	OBSIDIAN_RIDGE=57,
+	// Rounded, mossy granite blocks (Obstacles, like cliffs), format 212.
+	GRANITE_TORS=58,
+	// Calcite terraces holding milky pools (Obstacles, like cliffs), format 212.
+	TRAVERTINE_TERRACES=59,
+	// Fields of snow-ice blades (Ridges, like rock spires), format 212.
+	PENITENTES=60,
+	// Tall red-earth termite mounds (Ridges, like rock spires), format 212.
+	TERMITE_MOUNDS=61,
+	// Banded sandstone pillars under dark caprocks (Ridges, like rock spires), format 212.
+	HOODOOS=62,
+	// Snapped stone stumps with growth rings (Ridges, like rock spires), format 212.
+	PETRIFIED_STUMPS=63,
+	TERRAIN_COUNT=64,
 };
 // Built-in counts of older files. Their custom definitions and terrain IDs start
 // at the count they were written with and are remapped on load
@@ -131,6 +149,8 @@ inline constexpr unsigned TERRAIN_COUNT_BEFORE_ICE_PATHS = 50;
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_ARCTIC_TUNDRA = 53;
 // Format 210 ended the built-ins at ARCTIC_TUNDRA.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_GLACIER = 54;
+// Format 211 ended the built-ins at GLACIER; format 212 added ICEFALL through PETRIFIED_STUMPS.
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_ICEFALL = 55;
 // Not an identity: the answer of per-cell type queries for a cell whose four
 // corners hold different terrains. It is never stored.
 inline constexpr TerrainType MIXED_TERRAIN = TerrainType(0xFFFF);

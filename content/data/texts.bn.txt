@@ -5734,6 +5734,24 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 সুমেরু তুন্দ্রার ভূমি
 [glacier]
 হিমবাহ
+[icefall]
+বরফপ্রপাত
+[sandstone_benches]
+বেলেপাথরের ধাপ
+[obsidian_ridge]
+অবসিডিয়ান শৈলশিরা
+[granite_tors]
+গ্রানাইটের টর
+[travertine_terraces]
+ট্রাভার্টাইন ধাপ
+[penitentes]
+পেনিটেন্টেস তুষার
+[termite_mounds]
+উইপোকার ঢিবি
+[hoodoos]
+হুডু স্তম্ভ
+[petrified_stumps]
+জীবাশ্ম গুঁড়ি
 [terrain group water]
 জল
 [terrain group sand]

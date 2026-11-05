@@ -5758,6 +5758,24 @@ Izotz-haize-errota
 Tundra artikoko lurra
 [glacier]
 Glaziarra
+[icefall]
+Izotz-jauzia
+[sandstone_benches]
+Hareharri-bankuak
+[obsidian_ridge]
+Obsidiana-gailurra
+[granite_tors]
+Granitozko harkaitzak
+[travertine_terraces]
+Trabertino-terrazak
+[penitentes]
+Elur penitenteak
+[termite_mounds]
+Termita-tontorrak
+[hoodoos]
+Maitagarrien tximiniak
+[petrified_stumps]
+Harritutako enborrak
 [terrain group water]
 Ura
 [terrain group sand]

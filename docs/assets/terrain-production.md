@@ -105,9 +105,9 @@ colour and material stay free per biome:
 | Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite, arctic tundra) | firm, level, packed ground: faded colour, relief two to twelve native pixels across damped, a fine compaction grain, evenly strewn grit and small flat stones with short shadows, and a few faint hairline cracks; contrast targets about 0.7 of other grounds' so it reads quiet and buildable rather than broken | `barren_mark` (`level_ground`, `compaction_grain`, `group_gravel`, `group_cracks`); `plates`, `jag`, `cast` (shale) |
 | Paths (road, brick path, boardwalk, sandstone tiles, mossy setts, slate ashlar, basalt causeway, scoria blocks, rime ashlar, moonstone lozenges, frost pinwheel) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip, worn into the ground | `worn_edge`, `_paving` (settle, chip, crack, lose, fill and reclaim), `herringbone`, `hex_paving` (mossy setts); `_rock_paths` (ash and upland joint ground, lichen and grain stamps); `_frost_paths` (snow in place of soil and moss, `weather`) |
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
-| Crags (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
+| Outcrops (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns; penitentes, termite mounds, hoodoos, petrified stumps) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
-| Obstacles (boulders, hedge, thicket, cliffs, glacier) | tall raised decor | `terrain_decor.py` |
+| Barriers (`boulders`, shown as Stone pillars; hedge, thicket, cliffs, glacier, icefall, sandstone benches, obsidian ridge, granite tors, travertine terraces) | tall raised decor | `terrain_decor.py` |
 
 Within the groups: dirt keeps the original speckled earth and stones under the
 shared mark; clay is red baked clay in bold plates; shale is big flat plates of grey stone lying over one another;
@@ -239,7 +239,9 @@ in the synthesiser).
 
 Obstacle terrain is drawn in two layers, as forest is. The ground material is
 composed like any other terrain: dusty earth for boulders, leaf litter for hedge,
-undergrowth for thicket, talus for cliffs, moraine on snow for glacier, and rock for ridge rock and outcrop. A decor sprite per
+undergrowth for thicket, talus for cliffs, moraine on snow for glacier, trampled snow and fallen ice for
+icefall, ground strewn with loose stones of their own rock for the other masses and the Outcrops looks
+(`terrain_packs/_strewn.py`, with the group's ledges under the Outcrops looks), and rock for ridge rock and outcrop. A decor sprite per
 cell is then drawn with the resources, row by row, so objects stand up, overlap
 neighbouring cells and occlude each other.
 
@@ -249,10 +251,11 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "content/data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- A cell draws up to three decor layers, in order: connected decor that
-  stands on open ground (`"connected_open": true`, cliffs and glacier),
-  connected foliage (hedge and thicket), then every other obstacle (boulders
-  and crags). Each layer draws only from its own corners, so cliffs show their walls where they
+- A cell draws up to seven decor layers, in order: up to two connected masses
+  that stand on open ground (`"connected_open": true`: cliffs, glacier and the
+  other Barriers masses), connected foliage (hedge and thicket), every other
+  obstacle (stone pillars and the Outcrops looks), then the terraces of tiered
+  masses. Each layer draws only from its own corners, so cliffs show their walls where they
   meet foliage or crags, and the foliage or rocks keep their own edge on the
   other side. Eligibility follows rendered material bindings, including custom
   materials.
@@ -340,8 +343,10 @@ sloping top facets meeting at an off-centre peak, so each face takes one light
 value.
 
 Cliffs use the same connected corner tiles, but as rock: a weathered ochre
-plateau standing twelve native pixels above its footprint, twice the rise of
-foliage, in 32×64 frames. Its relief is broad shelves with fine grain, pits,
+plateau standing twenty native pixels above its footprint, well above
+foliage, in 32×68 frames (20 native rows above the cell, 16 of shadow below; the
+runtime keeps a taller frame's bottom 16 below the cell, so it grows upward).
+Every rock-like mass stands as high, which is also the terrace rise. Its relief is broad shelves with fine grain, pits,
 lichen stains, loose rocks and a few jointed fractures, under broad light that
 rises toward the rims facing the light. Each south face is the plateau's own
 stone, stretched down the drop and put in shade: broad facets each turned their
@@ -370,19 +375,70 @@ shadow. A cell edge has only four variants, which would line its crevasses up
 along rows, so glacier crevasses belong to the hash-chosen interiors of filled
 cells, at most two per cell on separate rows. Its ground material is moraine:
 the talus chips and cobbles, thinned out, in cold grey stone on packed snow.
-Glacier sets `connected_open` like cliffs and draws in the same decor layer,
-so it joins cliffs without a wall between them; against hedge, thicket or
-crags it keeps its walls, as cliffs do.
+Glacier sets `connected_open` like cliffs; against crags it keeps its walls,
+as cliffs do.
+
+Where an open-edged mass meets another connected material (another mass, or
+hedge and thicket), each draws only its own corners, the mass with more north
+corners first, and the mass stands back from the other: its `connected_foreign`
+frames count each corner as its own, open ground or another mass, and a foreign
+corner counts as -1 in the corner field, so the rim crosses a quarter of the way
+from its own corner and two masses stand apart across a valley half a cell wide,
+each with its own rim and wall. Along an edge only that edge's two corners count,
+so these frames agree with their neighbours too. There are 50 such corner codes
+(base 3, with at least one own and one foreign corner), 16 colours each. Hedge
+against thicket still joins.
+
+Open-edged masses also terrace (`connected_tiers`). `Compositor::tierField` keeps,
+for each map vertex, how many vertices deep it lies inside its mass (Chebyshev
+distance to another material, capped), built by raster passes once per terrain
+revision and shared, so a cell's terraces cost four array reads in
+`Compositor::decorLayers`. Terrace k (up to `MaxDecorTiers`, three) covers the
+corners at least 2k vertices deep, or 2k + 1 by a seeded per-vertex choice so
+terraces wander like ledges, drawn with the same corner frames `DecorTierRise`
+(twenty native pixels) higher per terrace. Terraces nest and draw after the base
+decor in their row, so a large patch climbs toward its middle while thin strips
+stay one tier. The decor reach grows by the terraces' rise so culling keeps them
+in view.
+
+The masses beside cliffs and glacier share one renderer (`render_mass`): each
+names a surface (`tools/artwork/terrain_masses.py`, numpy) giving its lit top,
+outline heights and wall marks over the cell and halo, a wall colour by height,
+its rise and its rim and shadow colours. Surfaces are built only from parts
+neighbouring frames share: per-vertex-colour noise patches with variance-preserving
+bilinear weights, an interior patch that vanishes at the cell edge, features
+(shards, blocks) placed in vertex discs, edge boxes keyed by both end colours and
+filled-cell interiors, and cracks that follow cell edges. Icefall is a wind-packed
+snow surface with patches of scoured blue ice and crevasses that follow horizontal
+cell edges (their offset and width at a vertex depend only on its colour, their
+course only on the edge's two colours), on fluted blue walls with a snow rind.
+Sandstone benches are a pale caprock split by joints over thick beds that step back
+at their feet. Obsidian ridge is a heap of flat glassy shards, each turned its own
+way to the sky with an occasional glint and bright crests where they meet. Granite
+tors are rounded blocks broken by sheeting joints, with moss in the shaded gaps.
+Travertine terraces are matte calcite steps holding shallow milky pools, each
+spilling over a rounded drape.
 
 The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at
 316–427; thicket corner tiles at 428–683 and interiors at 684–795; then each later
 set appends its twelve object frames and its connected frames, so cliffs take
-796–807 and 808–1175 and glacier 1176–1187 and 1188–1555), the HD frames, provenance and, with
+796–807 and 808–1175 and glacier 1176–1187 and 1188–1555; icefall, sandstone benches, obsidian ridge,
+granite tors and travertine terraces take 1180 frames each from 1556, their valley tiles included;
+penitentes, termite mounds, hoodoos and petrified stumps twelve each from 7456; then the valley tiles of
+cliffs and glacier, which were numbered before those existed, at 7504–9103), the HD frames, provenance and, with
 `--write-catalog`, the `decor` blocks. `--sheet` writes a review sheet. Select `--decor hedge --decor thicket --sheet <path>`
 for before/after fields with narrow strips, corners, isolated vegetation and a
 hole. Decor is presentation only: the minimap, the overview and
 the simulation ignore it.
+
+The Outcrops looks (`tools/artwork/terrain_outcrops.py`) are object decor like rock
+spires: one cluster per cell, kept inside its own cell's footprint so row order
+draws it correctly, rendered as a height field in the three-quarter view with
+ray-marched shadows. Penitentes are snow-ice blades all facing one way; termite
+mounds are fluted red-earth mounds with chimneys; hoodoos are banded pillars
+waisted by weathering under dark caprocks; petrified stumps are snapped stone
+stumps showing their growth rings.
 
 ### Ground overlays: fertile glints
 

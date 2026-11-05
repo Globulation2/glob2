@@ -5758,6 +5758,24 @@ Frost-Windrad
 Arktischer Tundraboden
 [glacier]
 Gletscher
+[icefall]
+Eisbruch
+[sandstone_benches]
+Sandsteinbänke
+[obsidian_ridge]
+Obsidiangrat
+[granite_tors]
+Granitfelsen
+[travertine_terraces]
+Travertinterrassen
+[penitentes]
+Büßerschnee
+[termite_mounds]
+Termitenhügel
+[hoodoos]
+Felstürme
+[petrified_stumps]
+Versteinerte Baumstümpfe
 [terrain group water]
 Wasser
 [terrain group sand]

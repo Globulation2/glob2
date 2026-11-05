@@ -5734,6 +5734,24 @@ FFmpeg не е наличен, така че записът е изключен.
 Арктическа тундрова почва
 [glacier]
 Ледник
+[icefall]
+Ледопад
+[sandstone_benches]
+Пясъчникови прагове
+[obsidian_ridge]
+Обсидианов хребет
+[granite_tors]
+Гранитни скали
+[travertine_terraces]
+Травертинови тераси
+[penitentes]
+Покаяни снегове
+[termite_mounds]
+Термитници
+[hoodoos]
+Земни пирамиди
+[petrified_stumps]
+Вкаменени пънове
 [terrain group water]
 Вода
 [terrain group sand]

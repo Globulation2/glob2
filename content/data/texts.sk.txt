@@ -5758,6 +5758,24 @@ Mrazivý veterník
 Arktická tundrová pôda
 [glacier]
 Ľadovec
+[icefall]
+Ľadopád
+[sandstone_benches]
+Pieskovcové lavice
+[obsidian_ridge]
+Obsidiánový hrebeň
+[granite_tors]
+Žulové skaly
+[travertine_terraces]
+Travertínové terasy
+[penitentes]
+Kajúcny sneh
+[termite_mounds]
+Termitiská
+[hoodoos]
+Skalné hríby
+[petrified_stumps]
+Skamenené pne
 [terrain group water]
 Voda
 [terrain group sand]

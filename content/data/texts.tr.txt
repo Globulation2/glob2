@@ -5758,6 +5758,24 @@ Ayaz fırıldağı
 Arktik tundra toprağı
 [glacier]
 Buzul
+[icefall]
+Buz şelalesi
+[sandstone_benches]
+Kumtaşı sekileri
+[obsidian_ridge]
+Obsidyen sırtı
+[granite_tors]
+Granit kayalıkları
+[travertine_terraces]
+Traverten terasları
+[penitentes]
+Tövbekâr karlar
+[termite_mounds]
+Termit tümsekleri
+[hoodoos]
+Peri bacaları
+[petrified_stumps]
+Taşlaşmış kütükler
 [terrain group water]
 Su
 [terrain group sand]

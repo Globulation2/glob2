@@ -5758,6 +5758,24 @@ Ivjasta vetrnica
 Arktična tundrska tla
 [glacier]
 Ledenik
+[icefall]
+Ledeni slap
+[sandstone_benches]
+Peščenjakove police
+[obsidian_ridge]
+Obsidianski greben
+[granite_tors]
+Granitni skalniki
+[travertine_terraces]
+Travertinske terase
+[penitentes]
+Spokorniški sneg
+[termite_mounds]
+Termitnjaki
+[hoodoos]
+Zemeljske piramide
+[petrified_stumps]
+Okameneli štori
 [terrain group water]
 Voda
 [terrain group sand]

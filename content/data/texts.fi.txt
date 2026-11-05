@@ -5758,6 +5758,24 @@ Huurretuulimylly
 Arktinen tundramaa
 [glacier]
 Jäätikkö
+[icefall]
+Jääputous
+[sandstone_benches]
+Hiekkakivipenkat
+[obsidian_ridge]
+Obsidiaaniharjanne
+[granite_tors]
+Graniittikalliot
+[travertine_terraces]
+Travertiiniterassit
+[penitentes]
+Katumuslumi
+[termite_mounds]
+Termiittikeot
+[hoodoos]
+Maapyramidit
+[petrified_stumps]
+Kivettyneet kannot
 [terrain group water]
 Vesi
 [terrain group sand]

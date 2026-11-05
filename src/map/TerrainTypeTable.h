@@ -123,6 +123,16 @@ inline constexpr auto TERRAIN_TYPES = []
 		authored(ARCTIC_TUNDRA, G::Barren, "arctic_tundra", "[arctic_tundra]", {137, 136, 141}, {137, 136, 141}),
 		// A raised snowfield walled by blue ice: plays exactly like cliffs.
 		authored(GLACIER, G::Obstacles, "glacier", "[glacier]", {196, 212, 230}, {176, 200, 226}),
+		// The other Barriers masses play exactly like cliffs; the Outcrops looks like rock spires.
+		authored(ICEFALL, G::Obstacles, "icefall", "[icefall]", {120, 172, 210}, {148, 196, 226}),
+		authored(SANDSTONE_BENCHES, G::Obstacles, "sandstone_benches", "[sandstone_benches]", {196, 150, 104}, {214, 170, 124}),
+		authored(OBSIDIAN_RIDGE, G::Obstacles, "obsidian_ridge", "[obsidian_ridge]", {46, 46, 56}, {62, 62, 74}),
+		authored(GRANITE_TORS, G::Obstacles, "granite_tors", "[granite_tors]", {120, 124, 104}, {140, 140, 124}),
+		authored(TRAVERTINE_TERRACES, G::Obstacles, "travertine_terraces", "[travertine_terraces]", {214, 206, 186}, {226, 218, 200}),
+		authored(PENITENTES, G::Ridges, "penitentes", "[penitentes]", {204, 218, 236}, {222, 232, 246}),
+		authored(TERMITE_MOUNDS, G::Ridges, "termite_mounds", "[termite_mounds]", {150, 96, 62}, {170, 112, 72}),
+		authored(HOODOOS, G::Ridges, "hoodoos", "[hoodoos]", {204, 140, 98}, {222, 160, 116}),
+		authored(PETRIFIED_STUMPS, G::Ridges, "petrified_stumps", "[petrified_stumps]", {124, 110, 92}, {142, 128, 108}),
 	}};
 	return rows;
 }();

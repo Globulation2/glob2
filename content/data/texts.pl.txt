@@ -5758,6 +5758,24 @@ Szronowy wiatraczek
 Gleba tundry arktycznej
 [glacier]
 Lodowiec
+[icefall]
+Lodospad
+[sandstone_benches]
+Ławice piaskowca
+[obsidian_ridge]
+Grzbiet obsydianowy
+[granite_tors]
+Ostańce granitowe
+[travertine_terraces]
+Tarasy trawertynowe
+[penitentes]
+Penitenty śnieżne
+[termite_mounds]
+Termitiery
+[hoodoos]
+Grzyby skalne
+[petrified_stumps]
+Skamieniałe pnie
 [terrain group water]
 Woda
 [terrain group sand]

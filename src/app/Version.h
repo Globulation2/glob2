@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 211
+#define VERSION_MINOR 212
+// version 212 adds nine built-in Barriers and Outcrops looks; custom terrain IDs move up by nine.
 // version 211 adds built-in glacier; custom terrain IDs move up by one.
 // version 210 adds built-in arctic tundra; custom terrain IDs move up by one.
 // version 209 adds built-in rime ashlar, moonstone lozenge and frost pinwheel; custom terrain IDs move up by three.

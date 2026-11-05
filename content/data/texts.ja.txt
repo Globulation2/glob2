@@ -5758,6 +5758,24 @@ AI 生成ではない
 極地ツンドラ地帯
 [glacier]
 氷河
+[icefall]
+アイスフォール
+[sandstone_benches]
+砂岩の段丘
+[obsidian_ridge]
+黒曜石の尾根
+[granite_tors]
+花崗岩のトア
+[travertine_terraces]
+石灰華の段々
+[penitentes]
+ペニテンテ
+[termite_mounds]
+シロアリ塚
+[hoodoos]
+フードゥー
+[petrified_stumps]
+珪化木の切り株
 [terrain group water]
 水
 [terrain group sand]

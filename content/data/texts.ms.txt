@@ -6874,6 +6874,24 @@ Kincir fros
 Tanah tundra artik
 [glacier]
 Glasier
+[icefall]
+Air terjun ais
+[sandstone_benches]
+Bangku batu pasir
+[obsidian_ridge]
+Rabung obsidian
+[granite_tors]
+Tor granit
+[travertine_terraces]
+Teres travertin
+[penitentes]
+Salji penitentes
+[termite_mounds]
+Busut anai-anai
+[hoodoos]
+Cerobong pari-pari
+[petrified_stumps]
+Tunggul membatu
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]
