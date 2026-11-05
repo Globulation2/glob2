@@ -12,9 +12,48 @@
 #include <queue>
 #include <random>
 #include <vector>
+#include <tuple>
 
 namespace
 {
+// Independent heap oracle: queue entries include source identity and settle
+// cost/source pairs, unlike production's cost-only Dial queue.
+void destinationReference(std::vector<std::uint16_t>& field,
+    std::vector<std::uint16_t>& targetX, std::vector<std::uint16_t>& targetY,
+    const std::vector<gradient_kernel::EntrySteps>& costs, int w, int h, int cap)
+{
+    using namespace gradient_kernel;
+    using Entry = std::tuple<int, int, int>;
+    std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> pending;
+    std::vector<int> source(field.size(), INT_MAX);
+    for (int i = 0; i < int(field.size()); ++i) if (field[i] > GRADIENT_UNREACHABLE) {
+        source[i] = i;
+        pending.emplace(GRADIENT_AT_GOAL - field[i], i, i);
+    }
+    cap = std::min(cap, COST_LIMIT);
+    while (!pending.empty()) {
+        const auto [distance, origin, i] = pending.top(); pending.pop();
+        if (distance > cap) break;
+        if (GRADIENT_AT_GOAL - field[i] != distance || source[i] != origin) continue;
+        for (int dy = -1; dy <= 1; ++dy) for (int dx = -1; dx <= 1; ++dx) {
+            if (!dx && !dy) continue;
+            const int n = ((i / w + dy + h) % h) * w + (i % w + dx + w) % w;
+            if (!field[n]) continue;
+            const int candidate = distance + int(dx && dy ? costs[i].diagonal : costs[i].cardinal);
+            if (candidate > cap) continue;
+            const int old = GRADIENT_AT_GOAL - field[n];
+            if (candidate < old || (candidate == old && origin < source[n])) {
+                field[n] = std::uint16_t(GRADIENT_AT_GOAL - candidate);
+                source[n] = origin;
+                pending.emplace(candidate, origin, n);
+            }
+        }
+    }
+    for (int i = 0; i < int(field.size()); ++i) {
+        targetX[i] = source[i] == INT_MAX ? DestinationPlanes::Invalid : std::uint16_t(source[i] % w);
+        targetY[i] = source[i] == INT_MAX ? DestinationPlanes::Invalid : std::uint16_t(source[i] / w);
+    }
+}
 template<class Stencil>
 std::vector<int> reference(int w,int h,std::vector<int> values,
     const std::vector<int>& seeds,const Stencil& stencil)
@@ -36,6 +75,60 @@ std::vector<int> reference(int w,int h,std::vector<int> values,
 }
 TEST_SUITE("FieldGradient")
 {
+TEST_CASE("destination propagation agrees with independent cost and source oracle")
+{
+    using namespace gradient_kernel;
+    std::mt19937 random(88314);
+    GradientWorkspace workspace;
+    for (const auto [w,h] : {std::pair{1,1}, std::pair{1,17}, std::pair{2,9},
+        std::pair{7,1}, std::pair{8,8}, std::pair{9,5}, std::pair{32,16}})
+        for (unsigned buckets : {64u,128u,256u}) for (int cap : {-1,0,9,71,401,COST_LIMIT})
+        for (int trial = 0; trial < 4; ++trial)
+    {
+        CAPTURE(w); CAPTURE(h); CAPTURE(buckets); CAPTURE(cap); CAPTURE(trial);
+        std::vector<std::uint16_t> field(w*h, GRADIENT_UNREACHABLE), x(w*h), y(w*h);
+        std::vector<EntrySteps> costs(w*h);
+        for (int i = 0; i < w*h; ++i) {
+            costs[i] = trial == 0 ? LAND_STEPS : EntrySteps{1 + unsigned(random() % (buckets-1)), 1 + unsigned(random() % (buckets-1))};
+            if (random()%5 == 0) field[i] = GRADIENT_FORBIDDEN;
+            else if (random()%7 == 0) field[i] = GRADIENT_AT_GOAL - (trial ? random()%600 : 0);
+        }
+        field[0] = GRADIENT_AT_GOAL;
+        if (w*h > 1) field.back() = GRADIENT_AT_GOAL - (trial ? 500 : 0);
+        auto expected = field, expectedX = x, expectedY = y;
+        destinationReference(expected, expectedX, expectedY, costs, w, h, cap);
+        const auto at = [&](std::size_t i) { return costs[i]; };
+        if (buckets == 64) propagateDestinationFieldCPU<64>(field.data(), {x.data(),y.data()}, cap, {w,h}, workspace, at);
+        else if (buckets == 128) propagateDestinationFieldCPU<128>(field.data(), {x.data(),y.data()}, cap, {w,h}, workspace, at);
+        else propagateDestinationFieldCPU<256>(field.data(), {x.data(),y.data()}, cap, {w,h}, workspace, at);
+        CHECK(field == expected); CHECK(x == expectedX); CHECK(y == expectedY);
+    }
+}
+
+TEST_CASE("destination classic overload preserves costs and clears old labels on reuse")
+{
+    using namespace gradient_kernel;
+    GradientWorkspace ordinary, labeled;
+    constexpr int w = 32, h = 16;
+    for (int swim = 0; swim < int(std::size(WATER_STEP)); ++swim) {
+        std::vector<std::uint16_t> seeds(w*h, GRADIENT_UNREACHABLE), x(w*h), y(w*h);
+        seeds[3] = seeds[11] = GRADIENT_AT_GOAL;
+        seeds[100] = GRADIENT_AT_GOAL - 300;
+        seeds[45] = GRADIENT_FORBIDDEN;
+        auto expected = seeds;
+        const auto water = [](std::size_t i) { return i % 3 == 0; };
+        propagateFieldCPU(expected.data(), swim, COST_LIMIT, {w,h}, ordinary, water);
+        propagateFieldCPU(seeds.data(), {x.data(),y.data()}, swim, COST_LIMIT, {w,h}, labeled, water);
+        CHECK(seeds == expected);
+        CHECK(x[3] == 3); CHECK(y[3] == 0);
+        CHECK(x[45] == DestinationPlanes::Invalid); CHECK(y[45] == DestinationPlanes::Invalid);
+        std::fill(seeds.begin(), seeds.end(), GRADIENT_UNREACHABLE);
+        propagateFieldCPU(seeds.data(), {x.data(),y.data()}, swim, COST_LIMIT, {w,h}, labeled, water);
+        CHECK(std::all_of(x.begin(), x.end(), [](auto value) { return value == DestinationPlanes::Invalid; }));
+        CHECK(std::all_of(y.begin(), y.end(), [](auto value) { return value == DestinationPlanes::Invalid; }));
+    }
+}
+
 TEST_CASE("classic propagation preserves deferred seeds weighted costs and scratch reuse")
 {
     using namespace gradient_kernel;

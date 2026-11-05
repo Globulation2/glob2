@@ -285,6 +285,7 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
         request.consumer=job->request.consumer;
         request.modes=job->request.modes;
         request.excludesShared=job->request.excludesShared;
+        request.destinations=job->request.destinations;
         job->request=request;
         job->snapshotLease=foundation.gradientView();
         if(job->adaptiveKey) {
@@ -391,11 +392,14 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	};
 	gradientRuntime->pipeline.configure(compute, delay, size,
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
-            gradient_preparation::propagateCPU(job.request,*job.snapshotLease,job.data.get(),scratch);
+            if (job.destinations)
+                gradient_preparation::propagateCPU(job.request,*job.snapshotLease,job.data.get(),scratch,job.destinations->planes());
+            else
+                gradient_preparation::propagateCPU(job.request,*job.snapshotLease,job.data.get(),scratch);
         });
     gradientRuntime->pipeline.setAsyncWork([](GradientPipeline::Job& job,gradient_kernel::PlanDecision decision) {
         return gradient_preparation::ownPropagation(job.request,*job.snapshotLease,job.data,
-            job.owner->session(),decision,job.executorDue);
+            job.owner->session(),decision,job.executorDue,job.destinations);
     });
 }
 
@@ -480,7 +484,7 @@ void Map::switchFogOfWar(void)
 	PERF_SCOPE_TIME(Fog);
 	auto* previous=fogOfWar;
 	auto* next=previous==fogOfWarA.data() ? fogOfWarB.data() : fogOfWarA.data();
-	if(gradientRuntime->adaptive.fields.empty()) {
+	if(gradientRuntime->adaptive.fields.empty() && !activeClaimsEnabled()) {
 		memset(previous,0,size*sizeof(Uint32));
 		fogOfWar=next;
 	} else {
@@ -493,9 +497,14 @@ void Map::switchFogOfWar(void)
 			const auto type=resourceCells[index].resource.type;
 			if(old==next[index] || type==NO_RES_TYPE
 				|| !resourcePropertiesByIndex(type).visibleToHarvest || !materialMaskAt(index)) continue;
-			auto before=captureGradientTargetCell(index);
-			before.visibleTeams=old;
-			gradientTargetCellChanged(index,before);
+
+            // Pooling reads remote stock through its claimed access tile.
+            if (old&~next[index]) invalidateMaterialClaimsAt(index,false,true,old&~next[index]);
+            if (!gradientRuntime->adaptive.fields.empty()) {
+                auto before=captureGradientTargetCell(index);
+                before.visibleTeams=old;
+                gradientTargetCellChanged(index,before);
+            }
 		}
 	}
 }
@@ -689,6 +698,8 @@ bool Map::requestGradientField(Uint16** slot, int kind, int team, int material, 
     gradient_preparation::Request request;
     request.kind=static_cast<gradient_preparation::Kind>(kind); request.team=team;
     request.material=material; request.swim=swim; request.consumer=consumer; request.modes=modes;
+    request.destinations=gradientRuntime->materialDestinationsEnabled &&
+        (request.kind==gradient_preparation::Kind::Materials || request.kind==gradient_preparation::Kind::Markets);
     if (consumer>=0) {
         const auto* building=game->teams[team]->myBuildings[Building::GIDtoID(consumer)];
         request.excludesShared=building && building->usesTeamMaterials();

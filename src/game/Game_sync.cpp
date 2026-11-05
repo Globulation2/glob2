@@ -243,6 +243,10 @@ void Game::advanceLiveSimulation(Sint32 localTeam)
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
 
+        // Unit decisions are complete: seal one route batch now so its frozen
+        // searches overlap map, script and telemetry work before tick+1.
+        map.flushClaimRoutes();
+
 		map.syncStep(stepCounter);
 		if (globalContainer->replaying && globalContainer->replayReader)
 			globalContainer->replayReader->applyTelemetry(*this);

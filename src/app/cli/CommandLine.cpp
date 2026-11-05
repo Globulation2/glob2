@@ -4,6 +4,7 @@
 #include "MapRender.h"
 #include "gradient/ResourceGradientExploration.h"
 #include "gradient/AdaptiveGradientModel.h"
+#include "map/claims/ClaimPolicyConfig.h"
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -370,6 +371,33 @@ void constraints(const Request &r)
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
         requireParent("--resource-gradient-exploration", "--resource-gradient-probe");
+        if(r.has("--resource-claims-active")) {
+            if(r.get("--resource-claims-active")!="prototype-stationary-v1" || !r.has("--material-destinations")
+                || r.has("--resource-claims-shadow") || r.has("--load-game") || r.has("--write-replay"))
+                throw std::invalid_argument("active claim prototype requires new-game material destinations, excludes shadow/replay");
+        }
+        if(r.has("--resource-claims-policy-json")) {
+            if(!r.has("--material-destinations") || r.has("--resource-claims-active") || r.has("--resource-claims-shadow")
+                || r.has("--load-game") || r.has("--write-replay"))
+                throw std::invalid_argument("claim policy JSON requires new-game material destinations and excludes other claim modes/replay");
+            ResourceClaims::ClaimPolicyConfig::parse(r.get("--resource-claims-policy-json"));
+        }
+        if (r.has("--material-destinations") && (r.has("--load-game") || r.has("--write-replay")))
+            throw std::invalid_argument("Material destination research mode requires a new game and cannot record a replay");
+        if(r.has("--resource-claims-movement-only") && (r.has("--resource-claims-shadow") || r.has("--resource-claims-probe") || r.has("--resource-claims-deep-context")))
+            throw std::invalid_argument("movement-only observer excludes decision, shadow and deep observation");
+        requireParent("--resource-claims-deep-stratified", "--resource-claims-deep-context");
+        requireParent("--resource-claims-missing-sample-every", "--resource-claims-deep-missing");
+        requireParent("--resource-claims-deep-missing", "--resource-claims-deep-context");
+        requireParent("--resource-claims-deep-top-four", "--resource-claims-deep-stratified");
+        requireParent("--resource-claims-deep-top-k", "--resource-claims-deep-stratified");
+        requireParent("--resource-claims-capture-only", "--resource-claims-deep-top-k");
+        if(r.has("--resource-claims-deep-top-k") && r.has("--resource-claims-deep-top-four"))throw std::invalid_argument("select only one top-k capture mode");
+        for(const auto* option:{"--resource-claims-sample-every","--resource-claims-max-samples","--resource-claims-max-bytes","--resource-claims-deep-context"})
+            if(r.has(option) && !r.has("--resource-claims-shadow") && !r.has("--resource-claims-probe") && !r.has("--resource-claims-movement-only"))
+                throw std::invalid_argument("claim sample options require an explicit observer");
+        if(r.has("--resource-claims-probe") && !r.has("--resource-claims-shadow") && !r.has("--resource-claims-active") && !r.has("--resource-claims-policy-json") && !r.has("--load-game"))
+            throw std::invalid_argument("claim probe requires active or shadow ledger mode");
         if (r.has("--resource-gradient-exploration")) {
             const auto intervals=ResourceGradientExploration::parseIntervals(r.get("--resource-gradient-exploration"));
             if (!AdaptiveGradientModel::Trained && std::find(intervals.begin(),intervals.end(),0)!=intervals.end())
@@ -563,6 +591,23 @@ const std::vector<Command> &commands()
 			 integer("--ai-profile-from-tick", "First observed tick to profile", 0, 2147483647, "0"),
 			 value("--ai-profile-gate", "player:observed-tick", "Hold one decision until ai-profile-release exists in output-dir; diagnostic sampling only"),
 			 value("--gradient-work-stats", "file", "Opt-in gradient-work events CSV plus .summary.csv and .intervals.csv; independent of quality collection"),
+             value("--resource-claims-deep-context", "json", "Temporary bounded min-hash capture provenance: source_revision,bundle_id,cohort_id,game_id"),
+             flag("--resource-claims-deep-stratified", "Temporary V2 sixteen-stratum deep capture; requires deep context"),
+             integer("--resource-claims-missing-sample-every", "Independent missing-destination diagnostic sample period", 1, 1000000000, "256"),
+             integer("--resource-claims-missing-top-k", "Temporary V2 missing-destination samples per stratum", 1, 64),
+             flag("--resource-claims-deep-missing", "Temporary independent missing-destination capture; requires deep context"),
+             flag("--resource-claims-deep-top-four", "Temporary V3 bottom-four capture per stratum; requires stratified capture"),
+             flag("--resource-claims-capture-only", "Temporary retained-replacement-only capture work"),
+             integer("--resource-claims-deep-top-k", "Temporary V4/V5 retained samples per stratum", 1, 64),
+             flag("--resource-claims-probe", "Collect diagnostic claim decisions from an active-policy game without a shadow ledger"),
+             flag("--resource-claims-movement-only", "Measure transport movement without decision sampling or changing claim enforcement"),
+             value("--resource-claims-policy-json", "JSON", "Explicit live resource-claim experiment configuration; requires material destinations"),
+             value("--resource-claims-active", "policy", "Experimental active policy: prototype-stationary-v1; requires material destinations"),
+             flag("--material-destinations", "Enable experimental material destination metadata for a new game; excludes replay recording"),
+             flag("--resource-claims-shadow", "Observe worker material claims without enforcing capacity; rebuild diagnostic state after load"),
+             integer("--resource-claims-sample-every", "Sample one in N material movement/pickup decisions using diagnostic hashing", 1, 1000000000, "1000"),
+             integer("--resource-claims-max-samples", "Maximum submitted shadow oracle samples (excluded events are counted)", 1, 1000000, "10000"),
+             integer("--resource-claims-max-bytes", "Maximum compressed shadow dataset bytes; exhaustion fails collection", 1024, 2147483647, "67108864"),
              flag("--resource-gradient-probe", "Collect unified-gradient-h128-v4 quality for all periodic field families (historical flag alias)"),
              value("--resource-gradient-exploration", "intervals", "All-family collection: seeded per-field intervals32..65536;0=adaptive only after unified model training"),
              integer("--resource-gradient-exploration-seed", "Seed for deterministic per-field collection assignment", 0, 4294967295LL),

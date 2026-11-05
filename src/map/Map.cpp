@@ -7,6 +7,8 @@
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
+#include "claims/ActiveRouteRuntime.h"
+#include "claims/ClaimPolicyConfig.h"
 #include "gradient/GradientTargetCell.h"
 #include "gradient/GradientExecutionAudit.h"
 #include "Game.h"
@@ -483,11 +485,22 @@ void Map::clearGradientBufferPool()
 
 std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
 {
-    if (!gradientRuntime->deviceService) return {};
-    const auto device=gradientRuntime->deviceService->metrics();
-    return {{"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},
-        {"coordinator_executed",device.executed},{"coordinator_fallbacks",device.fallbacks},
-        {"coordinator_queued",device.queued}};
+    std::vector<std::pair<std::string,Uint64>> result;
+    if (gradientRuntime->materialDestinationsEnabled) {
+        // Owner-held published allocations and immutable pending reservations
+        // only: memory observation must not join work or inspect worker output.
+        // Retained snapshots, workspaces and allocator slack remain part of RSS.
+        const auto memory=gradientRuntime->pipeline.destinationMemory();
+        result.emplace_back("destination_published_bytes",memory.publishedBytes);
+        result.emplace_back("destination_pending_reserved_bytes",memory.pendingReservedBytes);
+    }
+    if (gradientRuntime->deviceService) {
+        const auto device=gradientRuntime->deviceService->metrics();
+        result.insert(result.end(),{{"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},
+            {"coordinator_executed",device.executed},{"coordinator_fallbacks",device.fallbacks},
+            {"coordinator_queued",device.queued}});
+    }
+    return result;
 }
 
 void Map::configureGradientExecution()
@@ -525,6 +538,8 @@ void Map::applyGradientBackendRequest()
 void Map::configureCompute(unsigned threads)
 {
     if(game){game->drainTeamStats();game->drainHiring();}
+    // Retire our executor handles without publishing their future results.
+    if (materialClaimRoutes) (void)materialClaimRoutes->pipeline.exportPending();
 	finishGradientPipeline({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	finishResourceGrowth({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	compute.configure(threads);
@@ -536,6 +551,17 @@ void Map::configureCompute(unsigned threads)
 
 void Map::clear()
 {
+    materialClaimRoutes.reset();
+    materialClaimConfiguration.reset();
+    materialClaimConfigurationDigest={};
+    materialClaimProbe.reset();
+    materialClaimFarmCache.clear();
+    materialClaimFarmEpoch = {};
+    materialClaimTracking = false;
+    activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Disabled;
+    activeClaimRules.reset();
+    materialClaimTelemetry = {};
+    materialClaims.reset(0);
 	if (game) game->areaEffects.reset();
 	loadedHistoricalGrowthVersion = 0;
 	loadedLegacyGrowth144 = false;
@@ -555,6 +581,7 @@ void Map::clear()
     }
     gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
+    gradientRuntime->materialDestinationsEnabled = false;
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();

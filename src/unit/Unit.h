@@ -4,6 +4,8 @@
 #pragma once
 
 #include "UnitState.h"
+#include "ResourceClaims.h"
+#include "map/claims/ClaimPolicyConfig.h"
 #include "gradient/FieldReadiness.h"
 #include "gradient/GradientFieldIdentity.h"
 #include "UnitCatalog.h"
@@ -42,6 +44,16 @@ class Unit : public UnitUtils, public UnitState
 	friend struct UnitActivityAccess;
 	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 public:
+    std::optional<ResourceClaims::Claim> activeMaterialClaim;
+    Uint64 materialClaimTask=0;
+    ResourceClaims::MaterialClaimPolicyState materialClaimPolicyState;
+    bool acquireMaterialClaimAt(Uint32 access);
+    void releaseActiveMaterialClaim();
+    bool activeMaterialClaimValid();
+    bool takeActiveMaterialClaim();
+    bool selectActiveMaterialClaim(const Uint16* field);
+    bool prepareActiveMaterialPickup(int x,int y);
+    void handleActiveMaterialMovement();
 	// Owner-thread hooks; excluded from immutable state record copies.
 	Unit* populationPrevious=nullptr;
 	Unit* populationNext=nullptr;
@@ -84,6 +96,11 @@ public:
 
 	bool findMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
 		bool withMarkets=false, const Building* consumer=nullptr);
+    void reconcileMaterialClaim();
+    struct MaterialClaimObservation {
+        Unit& unit;
+        ~MaterialClaimObservation() { unit.reconcileMaterialClaim(); }
+    };
 	void syncStep(void);
 	
 	void directionFromDxDy(void);

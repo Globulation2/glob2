@@ -160,6 +160,11 @@ BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter, Uin
 // 2. Version floor and ceiling.
 void testVersionBounds()
 {
+	for (Uint16 version : {194, 205, 209}) {
+		ReplayReader beforeTargetFix;
+		check(!beforeTargetFix.loadReplay(writeReplayBody(version, 1), false),
+		      "material target boundary: earlier worker execution rejected");
+	}
     ReplayReader previousStaffing;
     check(!previousStaffing.loadReplay(writeReplayBody(193,1),false),
           "replenishment boundary: immediate-dismissal replay rejected");

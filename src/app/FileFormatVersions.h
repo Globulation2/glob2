@@ -415,3 +415,7 @@ static constexpr int FILE_FORMAT_VERSION_ROCK_PATHS = 208;
 //! from 50 to 53, so earlier files carry custom terrain IDs starting at 50 that the loader
 //! renumbers.
 static constexpr int FILE_FORMAT_VERSION_ICE_PATHS = 209;
+
+//! Resource claims: material destination planes on gradient fields, active claims, pending
+//! unit routes, claim policy cadence and bounded claim recovery are saved.
+static constexpr int FILE_FORMAT_VERSION_RESOURCE_CLAIMS = 210;

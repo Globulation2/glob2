@@ -9,6 +9,7 @@
 
 #include "Utilities.h"
 #include "UnitTiming.h"
+#include "map/claims/ResourceClaimProbe.h"
 
 namespace
 {
@@ -30,6 +31,7 @@ void Unit::wrapPosition()
     const int oldX=posX,oldY=posY;
 	posX=(posX+dx)&(owner->map->getMaskW());
 	posY=(posY+dy)&(owner->map->getMaskH());
+    if(const auto* probe=owner->map->resourceClaimProbe())probe->moved(*this,oldX,oldY);
     if((posX!=oldX || posY!=oldY) && !isDead && displacement!=DIS_INSIDE && hasCapability(UnitRuntimeTraits::GuardIdle))
         owner->map->gradientGuardCostsChanged(owner->teamNumber);
 }

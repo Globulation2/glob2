@@ -334,8 +334,20 @@ class Worker:
                     if stage == 'pack':
                         self.db.execute("UPDATE queue SET state='executed',updated=? WHERE id=?", (now, row['id']))
                     else:
-                        atomic_json(directory / 'execution.json', {'category': 'interrupted', 'diagnostic': 'attempt supervisor interrupted',
-                                                                   'started': row['started'], 'finished': now, 'exit_code': None, 'result': None})
+                        # Keep the failed attempt's immutable CPU assignment:
+                        # coordinator admission validates it even for retries.
+                        # Reacquire the supervisor lock so a concurrent startup
+                        # or completion cannot race the synthesized record.
+                        with contextlib.suppress(BlockingIOError):
+                            with lock(directory / 'execute.lock'):
+                                if (directory / 'execution.json').exists():
+                                    continue
+                                attempt = json.loads(row['job'])
+                                execution = {'category': 'interrupted', 'diagnostic': 'attempt supervisor interrupted',
+                                             'started': row['started'], 'finished': now, 'exit_code': None, 'result': None}
+                                if 'execution_allocation' in attempt:
+                                    execution['execution_allocation'] = attempt['execution_allocation']
+                                atomic_json(directory / 'execution.json', execution)
         running = self.db.execute("SELECT count(*) FROM queue WHERE state='running'").fetchone()[0]
         collecting = self.db.execute("SELECT count(*) FROM queue WHERE state='packing'").fetchone()[0]
         for row in self.db.execute("SELECT * FROM queue WHERE state='executed' ORDER BY updated").fetchall():
@@ -362,11 +374,13 @@ class Worker:
 
 
 def execute(root, identity):
-    worker = Worker(root)
-    directory = worker.root / 'attempts' / identifier(identity)
+    directory = Path(root).resolve() / 'attempts' / identifier(identity)
     with lock(directory / 'execute.lock') as guard:
         if (directory / 'execution.json').exists():
             return
+        # Bundle CLI probes in Worker construction may exceed the daemon's
+        # startup grace. Hold ownership throughout initialization as well.
+        worker = Worker(root)
         attempt = read_json(directory / 'attempt.json')
         job = attempt['job']
         started = time.time()

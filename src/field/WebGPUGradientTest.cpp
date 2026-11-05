@@ -32,7 +32,7 @@ TEST_CASE("owned worker bridge commits exact retained fields and recovers cancel
         gradient_fixture::retainedVulkanRuns0, gradient_fixture::retainedVulkanRuns1,
         gradient_fixture::retainedVulkanRuns2, gradient_fixture::retainedVulkanRuns3,
         gradient_fixture::retainedVulkanRuns4};
-    for (auto runs : fixtures) {
+    for (bool destinations : {false,true}) for (auto runs : fixtures) {
         std::vector<std::uint16_t> seeds;
         for (auto run : runs) seeds.insert(seeds.end(), run >> 2, (run & 3) == 2 ? 65535 : run & 3);
         REQUIRE(seeds.size() == grid.cells());
@@ -40,6 +40,13 @@ TEST_CASE("owned worker bridge commits exact retained fields and recovers cancel
         GradientWorkspace scratch;
         propagateFieldCPUVariant<false>(expected.data(), 0, gradient_fixture::retainedVulkanCap,
                                         grid, scratch, [](std::size_t) { return false; });
+        OwnedDestinations expectedDestinations(grid.cells());
+        if (destinations) {
+            auto labeled=seeds;
+            propagateFieldCPU(labeled.data(),expectedDestinations.planes(),0,gradient_fixture::retainedVulkanCap,
+                grid,scratch,[](std::size_t){return false;});
+            REQUIRE(labeled==expected);
+        }
         for (auto algorithm : {Algorithm::Frozen8, Algorithm::Jacobi})
         for (unsigned repeat = 0; repeat < 2; ++repeat) {
             auto field = std::make_shared<OwnedGradientField>();
@@ -50,11 +57,15 @@ TEST_CASE("owned worker bridge commits exact retained fields and recovers cancel
             field->limit = gradient_fixture::retainedVulkanCap;
             field->inputs = costs;
             field->data = std::make_unique<std::uint16_t[]>(grid.cells());
+            if (destinations) field->destinations=std::make_shared<OwnedDestinations>(grid.cells());
             std::copy(seeds.begin(), seeds.end(), field->data.get());
             field->costAt = [](const auto&, std::size_t) { return LAND_STEPS; };
             field->cpu = [](auto& value) {
                 GradientWorkspace scratch;
-                propagateFieldCPUVariant<false>(value.data.get(), 0, value.limit, value.grid,
+                if (value.destinations)
+                    propagateFieldCPU(value.data.get(),value.destinations->planes(),0,value.limit,value.grid,
+                        scratch,[](std::size_t){return false;});
+                else propagateFieldCPUVariant<false>(value.data.get(), 0, value.limit, value.grid,
                                                 scratch, [](std::size_t) { return false; });
             };
             // The canceled iteration must finish on the submitting worker, with
@@ -85,12 +96,58 @@ TEST_CASE("owned worker bridge commits exact retained fields and recovers cancel
             CHECK(field->deviceExecutionObserved == !canceled);
             const std::span<const std::uint16_t> actual(field->data.get(), grid.cells());
             CHECK(std::equal(actual.begin(), actual.end(), expected.begin()));
+            if (destinations) {
+                CHECK(std::equal(field->destinations->x.get(),field->destinations->x.get()+grid.cells(),expectedDestinations.x.get()));
+                CHECK(std::equal(field->destinations->y.get(),field->destinations->y.get()+grid.cells(),expectedDestinations.y.get()));
+            }
             CHECK(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds), actual,
                   grid, field->limit, [](std::size_t) { return LAND_STEPS; }));
         }
     }
-    CHECK(service->metrics().executed == 15);
-    CHECK(service->metrics().fallbacks == 5);
+    CHECK(service->metrics().executed == 30);
+    CHECK(service->metrics().fallbacks == 10);
+    // Cancel the completed first member from the second member's cost callback.
+    // This deterministically exercises the aggregate commit gate on a real worker.
+    for (auto plan : {Plan::WebGPUFrozen8, Plan::WebGPUJacobi}) {
+        const field::Grid small{17,19};
+        std::vector<std::uint16_t> seeds(small.cells(),1); seeds[0]=65535;
+        auto first=seeds, second=seeds;
+        OwnedDestinations firstXY(small.cells()), secondXY(small.cells());
+        for (auto* xy : {&firstXY,&secondXY}) {
+            std::fill_n(xy->x.get(),small.cells(),123);
+            std::fill_n(xy->y.get(),small.cells(),456);
+        }
+        auto control=std::make_shared<OpenCLRequiredControl>();
+        std::array<BackendRequest,2> requests{
+            BackendRequest{first.data(),COST_LIMIT,small,*session,nullptr,
+                [](void*,auto){return LAND_STEPS;},nullptr},
+            BackendRequest{second.data(),COST_LIMIT,small,*session,control.get(),
+                [](void* p,auto){static_cast<OpenCLRequiredControl*>(p)->requestCancel();return LAND_STEPS;},nullptr}};
+        requests[0].requiredControl=control;
+        requests[0].destinations=firstXY.planes(); requests[1].destinations=secondXY.planes();
+        std::array<bool,2> committed{}, observed{};
+        for (unsigned i=0;i<2;++i) {
+            requests[i].executedOnDevice=&committed[i];
+            requests[i].deviceExecutionObserved=&observed[i];
+        }
+        struct Batch { std::span<const BackendRequest> requests; Plan plan; bool result=true; } batch{requests,plan};
+        const ComputeExecutor::Group group{1,{[](void* p,std::size_t){
+            auto& batch=*static_cast<Batch*>(p);
+            batch.result=executeWebGPUGradient(batch.requests,batch.plan);
+        },&batch}};
+        const auto fields=webGPUGradientStatus().fields;
+        auto batchTicket=executor.submit(std::span(&group,1));
+        executor.join(batchTicket);
+        CHECK_FALSE(batch.result);
+        CHECK(observed[0]); CHECK(observed[1]);
+        CHECK_FALSE(committed[0]); CHECK_FALSE(committed[1]);
+        CHECK(first==seeds); CHECK(second==seeds);
+        for (auto* xy : {&firstXY,&secondXY}) {
+            CHECK(std::all_of(xy->x.get(),xy->x.get()+small.cells(),[](auto v){return v==123;}));
+            CHECK(std::all_of(xy->y.get(),xy->y.get()+small.cells(),[](auto v){return v==456;}));
+        }
+        CHECK(webGPUGradientStatus().fields==fields);
+    }
     service->stop();
 }
 #endif

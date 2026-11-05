@@ -3,6 +3,7 @@
 
 #include "Material.h"
 #include <algorithm>
+#include <limits>
 #include "Unit.h"
 #include <BinaryStream.h>
 #include <stdexcept>
@@ -21,6 +22,10 @@
 
 void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
+    // Shadow ownership is diagnostic only; identity/relationships may change on
+    // load and the completed-world sweep rebuilds it after links are resolved.
+    if(this->owner && this->owner->map->activeClaimsEnabled())releaseActiveMaterialClaim();
+    if (this->owner && this->owner->map->materialClaimTrackingEnabled()) this->owner->map->releaseMaterialClaim(ResourceClaims::unitOwner(gid,scriptIdentity));
 	stream->readEnterSection("Unit");
 
 	// unit specification
@@ -250,7 +255,43 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	magicActionAnimation = 0;
 
 	verbose = false;
-
+    activeMaterialClaim.reset();materialClaimTask=0;materialClaimPolicyState={};
+    if(versionMinor>=ResourceClaims::ActiveClaimsFormat) {
+        GAGCore::BinaryInputStream::CheckedReads checked(stream);
+        stream->readEnterSection("activeMaterialClaim");
+        const auto has=stream->readUint8("has");
+        const Uint64 high=stream->readUint32("taskHigh"),low=stream->readUint32("taskLow");
+        materialClaimTask=(high<<32)|low;
+        if(has>1)throw std::runtime_error("invalid active material claim flag");
+        if(has) {
+            ResourceClaims::Claim claim;
+            claim.source=stream->readUint32("source");claim.access=stream->readUint32("access");
+            claim.material=stream->readUint8("material");claim.resource=stream->readUint16("resource");
+            const auto exclusive=stream->readUint8("exclusive");claim.reserve=stream->readUint16("reserve");
+            // Units precede Map in a full save. The destination dimensions and
+            // custom resource catalog are not loaded yet; validate those in
+            // Map::rebuildActiveMaterialClaims after all map state and links.
+            if(!materialClaimTask || materialClaimTask==std::numeric_limits<Uint64>::max()
+                || claim.source==UINT32_MAX || claim.access==UINT32_MAX
+                || !validMaterial(claim.material) || claim.resource==NO_RES_TYPE || exclusive>1)
+                throw std::runtime_error("invalid active material claim state");
+            claim.exclusive=exclusive;activeMaterialClaim=claim;
+        }
+        stream->readLeaveSection();
+    }
+    if(versionMinor>=ResourceClaims::PolicyConfigFormat) {
+        GAGCore::BinaryInputStream::CheckedReads checked(stream);
+        stream->readEnterSection("materialClaimPolicyState");
+        const Uint64 ordinalHigh=stream->readUint32("ordinalHigh"),ordinalLow=stream->readUint32("ordinalLow");
+        const Uint64 goalHigh=stream->readUint32("goalHigh"),goalLow=stream->readUint32("goalLow");
+        materialClaimPolicyState.decisionOrdinal=(ordinalHigh<<32)|ordinalLow;
+        materialClaimPolicyState.lastGoalAttempt=(goalHigh<<32)|goalLow;
+        materialClaimPolicyState.fallbackCount=stream->readUint32("fallbackCount");
+        materialClaimPolicyState.probe=stream->readUint32("probe");
+        if(materialClaimPolicyState.lastGoalAttempt>materialClaimPolicyState.decisionOrdinal)
+            throw std::runtime_error("invalid material claim policy cadence");
+        stream->readLeaveSection();
+    }
 	stream->readLeaveSection();
 }
 
@@ -352,7 +393,26 @@ void Unit::save(GAGCore::OutputStream *stream)
 		stream->writeLeaveSection();
 	}
 
-
+    // Map export deliberately omits active policy/runtime. Project transient
+    // ownership out of the bytes without changing the continuing live match.
+    const bool persistClaims=owner->game->mapHeader.getIsSavedGame();
+    stream->writeEnterSection("activeMaterialClaim");
+    stream->writeUint8(persistClaims && activeMaterialClaim.has_value(),"has");
+    stream->writeUint32(persistClaims?materialClaimTask>>32:0,"taskHigh");stream->writeUint32(persistClaims?materialClaimTask:0,"taskLow");
+    if(persistClaims && activeMaterialClaim) {
+        const auto& claim=*activeMaterialClaim;
+        stream->writeUint32(claim.source,"source");stream->writeUint32(claim.access,"access");
+        stream->writeUint8(claim.material,"material");stream->writeUint16(claim.resource,"resource");
+        stream->writeUint8(claim.exclusive,"exclusive");stream->writeUint16(claim.reserve,"reserve");
+    }
+    stream->writeLeaveSection();
+    const auto cadence=persistClaims && owner->map->materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental
+        ? materialClaimPolicyState : ResourceClaims::MaterialClaimPolicyState{};
+    stream->writeEnterSection("materialClaimPolicyState");
+    stream->writeUint32(cadence.decisionOrdinal>>32,"ordinalHigh");stream->writeUint32(cadence.decisionOrdinal,"ordinalLow");
+    stream->writeUint32(cadence.lastGoalAttempt>>32,"goalHigh");stream->writeUint32(cadence.lastGoalAttempt,"goalLow");
+    stream->writeUint32(cadence.fallbackCount,"fallbackCount");stream->writeUint32(cadence.probe,"probe");
+    stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
@@ -578,6 +638,18 @@ Uint32 Unit::checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152)
 		const auto append=[&](Uint32 value) { cs=rotl1(cs)^value; if constexpr (Diagnostic) checkSumsVector->push_back(value); };
 		append(Uint8(jobPurpose)|(Uint32(regenerationRemainder)<<8)|(Uint32(widePrimaryCargo())<<16));
 		append(configuredFoodCapacity); append(capabilityFlags);
+        if(owner->map->activeClaimsEnabled()) {
+            append(activeMaterialClaim.has_value());append(materialClaimTask>>32);append(materialClaimTask);
+            if(activeMaterialClaim) {
+                const auto& c=*activeMaterialClaim;
+                append(c.source);append(c.access);append(c.material);append(c.resource);append(c.exclusive);append(c.reserve);
+            }
+        }
+        if(owner->map->materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental) {
+            append(materialClaimPolicyState.decisionOrdinal>>32);append(materialClaimPolicyState.decisionOrdinal);
+            append(materialClaimPolicyState.lastGoalAttempt>>32);append(materialClaimPolicyState.lastGoalAttempt);
+            append(materialClaimPolicyState.fallbackCount);append(materialClaimPolicyState.probe);
+        }
 		if (hasCapability(UnitRuntimeTraits::ExtendedCargo) || widePrimaryCargo()) {
 			const auto* extra=owner->game->unitCargo.find(gid); append(extra?extra->size():0);
 			if (extra) for (const auto& entry:*extra) {

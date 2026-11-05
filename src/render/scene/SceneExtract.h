@@ -38,5 +38,5 @@ private:
 	int overlayTeam = -1;
     Uint64 overlayWorld=0, overlayConfiguration=0, overlayObservation=0;
     Uint32 overlayTick=0;
-    std::array<Uint64,5> overlayMapGenerations{};
+    std::array<Uint64,6> overlayMapGenerations{};
 };

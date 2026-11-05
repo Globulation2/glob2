@@ -32,7 +32,7 @@ bool Map::gradientGoalValid(GradientFieldKey key,int x,int y) const
     case GradientFieldFamily::Materials:
     case GradientFieldFamily::Markets: {
         if (forbidden || !mobile) return false;
-        const bool natural=(materialMaskAt(index)&(1u<<key.material))
+        const bool natural=!(area.forbidden&teamMask) && (materialMaskAt(index)&(1u<<key.material))
             && (!properties || !properties->visibleToHarvest || (fogOfWar[index]&teamMask));
         // Natural sources precede resource/building/terrain obstacles in both
         // seed builders. Do not impose movement-blocker precedence on goals.

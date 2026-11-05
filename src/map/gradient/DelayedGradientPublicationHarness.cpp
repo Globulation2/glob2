@@ -60,6 +60,43 @@ template<class Values> std::string evidenceHash(const Values& values)
 
 TEST_SUITE("DelayedGradientPublication")
 {
+TEST_CASE("the last published format before resource claims loads without destination and claim fields")
+{
+    glob2test::HeadlessGlobals globals;
+    static constexpr int PreviousFormat=FILE_FORMAT_VERSION_RESOURCE_CLAIMS-1;
+    glob2test::HeadlessGame source({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=source.game;
+    source.addBuilding("inn",2,2);
+    source.addUnit(WORKER,8,8);
+    game.map.setResourceByIndex(12,8,WHEAT,1);
+    for(unsigned tick=0;tick<16;++tick)game.step(0);
+    class PreviousFormatOutput final : public glob2test::LegacyPopulationOutput {
+    public:
+        PreviousFormatOutput(GAGCore::MemoryStreamBackend* bytes,Game& game)
+            : LegacyPopulationOutput(bytes,&game,PreviousFormat,GradientLayout::PreservePending) {}
+        void writeSint32(Sint32 value,std::string_view name) override {
+            LegacyPopulationOutput::writeSint32(name=="versionMinor"?PreviousFormat:value,name);
+        }
+    };
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    PreviousFormatOutput output(memory,game);
+    game.save(&output,false,"published-without-claims");output.flush();
+    const auto bytes=memory->takeContents();
+    glob2test::HeadlessGame restored({.loadDefaultRace=true,.header=true});
+    restored.game.map.clear();restored.game.map.resourceCells.clear();
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    REQUIRE(restored.game.load(&input));
+    REQUIRE(restored.game.mapHeader.getVersionMinor()==PreviousFormat);
+    CHECK_FALSE(restored.game.map.materialDestinationsEnabled());
+    CHECK_FALSE(restored.game.map.activeClaimsEnabled());
+    CHECK(normalizedChecksums(game)==normalizedChecksums(restored.game));
+    for(unsigned tick=0;tick<64;++tick) {
+        game.step(0);restored.game.step(0);
+        REQUIRE(normalizedChecksums(game)==normalizedChecksums(restored.game));
+    }
+}
+
 TEST_CASE("private174 migration profile is explicit and does not replace published layouts")
 {
     class HeaderVersionOutput final : public glob2test::LegacyPopulationOutput {

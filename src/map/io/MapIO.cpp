@@ -732,6 +732,9 @@ void Map::removeTeam(void)
 
 namespace
 {
+// Material destination planes and claim state were first saved in format 210.
+constexpr int MaterialDestinationsFormat = FILE_FORMAT_VERSION_RESOURCE_CLAIMS;
+static_assert(ResourceClaims::ActiveClaimsFormat == FILE_FORMAT_VERSION_RESOURCE_CLAIMS);
 bool loadFlag(GAGCore::InputStream *stream, const char *name)
 {
 	const auto value=stream->readUint8(name);
@@ -764,6 +767,48 @@ void loadGradientCells(GAGCore::InputStream *stream, Uint16 *&field, size_t size
 	delete[] field;
 	field=restored.release();
 }
+
+void saveDestinations(GAGCore::OutputStream* stream, const gradient_kernel::OwnedDestinations* planes, size_t cells)
+{
+    stream->writeEnterSection("destinations");
+    stream->writeUint8(planes!=nullptr,"present");
+    if (planes) {
+        stream->writeEnterSection("x"); saveGradientCells(stream,planes->x.get(),cells); stream->writeLeaveSection();
+        stream->writeEnterSection("y"); saveGradientCells(stream,planes->y.get(),cells); stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+}
+std::shared_ptr<gradient_kernel::OwnedDestinations> loadDestinations(GAGCore::InputStream* stream,
+    const Uint16* costs, size_t cells, unsigned width, unsigned height, bool packed)
+{
+    stream->readEnterSection("destinations");
+    std::shared_ptr<gradient_kernel::OwnedDestinations> planes;
+    if (loadFlag(stream,"present")) {
+        if (!costs) throw std::runtime_error("Saved destinations without costs");
+        planes=std::make_shared<gradient_kernel::OwnedDestinations>(cells);
+        Uint16* raw=nullptr;
+        stream->readEnterSection("x"); loadGradientCells(stream,raw,cells,packed); planes->x.reset(raw); stream->readLeaveSection();
+        raw=nullptr;
+        stream->readEnterSection("y"); loadGradientCells(stream,raw,cells,packed); planes->y.reset(raw); stream->readLeaveSection();
+        if (!planes->x || !planes->y) throw std::runtime_error("Missing saved destination plane");
+        for (size_t i=0;i<cells;++i) {
+            const unsigned x=planes->x[i],y=planes->y[i];
+            if (costs[i]<=1 ? (x!=65535 || y!=65535) : (x>=width || y>=height || costs[y*width+x]<=1))
+                throw std::runtime_error("Invalid saved gradient destination");
+        }
+    }
+    stream->readLeaveSection();
+    return planes;
+}
+void saveDestinationSequence(GAGCore::OutputStream* stream, Uint64 value)
+{
+    stream->writeUint32(value>>32,"high"); stream->writeUint32(value,"low");
+}
+Uint64 loadDestinationSequence(GAGCore::InputStream* stream)
+{
+    const Uint64 high=stream->readUint32("high"); return (high<<32)|stream->readUint32("low");
+}
+
 }
 
 // Scheduled building gradients: FIFO metadata and pending jobs in publication
@@ -943,6 +988,8 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 // changes decisions before their scheduled refresh, even with an identical RNG.
 void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
+    if (VERSION_MINOR<MaterialDestinationsFormat && gradientRuntime->materialDestinationsEnabled)
+        throw std::runtime_error("Material destinations require save format 210");
 	// A header changed since the last tick (a fork) reconfigures an empty pipeline first.
 	const_cast<Map*>(this)->ensureBuildingGradientPipeline();
 	stream->writeEnterSection("mapRuntime");
@@ -1102,6 +1149,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
             stream->writeUint8(snapshot.legacyAssociation,"legacyAssociation");
         }
 		saveGradient(stream, snapshot.data, size,snapshot.swim);
+        if (VERSION_MINOR>=MaterialDestinationsFormat) saveDestinations(stream,snapshot.destinations.get(),size);
 		stream->writeLeaveSection();
 	});
     stream->writeUint32(gradientRuntime->fieldRequests.size(),"requests");
@@ -1115,7 +1163,9 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
         stream->writeUint8(unsigned(queued.request.kind),"kind");
         stream->writeUint8(queued.request.team,"team"); stream->writeUint8(queued.request.material,"material");
         stream->writeUint8(queued.request.swim,"swim"); stream->writeSint32(queued.request.consumer,"consumer");
-        stream->writeUint8(queued.request.modes,"modes"); stream->writeUint8(queued.request.excludesShared,"excludesShared"); stream->writeLeaveSection();
+        stream->writeUint8(queued.request.modes,"modes"); stream->writeUint8(queued.request.excludesShared,"excludesShared");
+        if (VERSION_MINOR>=MaterialDestinationsFormat) stream->writeUint8(queued.request.destinations,"destinations");
+        stream->writeLeaveSection();
     }
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
@@ -1130,6 +1180,25 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
     stream->writeUint8(gradientRuntime->worldWorkSubmittedTick.has_value(), "worldWorkSubmitted");
     stream->writeUint32(gradientRuntime->worldWorkSubmittedTick.value_or(0), "worldWorkSubmittedTick");
     gradientRuntime->adaptive.save(stream);
+    if (VERSION_MINOR>=MaterialDestinationsFormat) {
+        stream->writeEnterSection("materialDestinations");
+        stream->writeUint8(gradientRuntime->materialDestinationsEnabled,"enabled");
+        saveDestinationSequence(stream,gradientRuntime->pipeline.destinationPublicationSequence());
+        struct Saved { unsigned id; std::shared_ptr<const gradient_kernel::OwnedDestinations> planes; Uint64 generation; };
+        std::vector<Saved> fields;
+        gradientRuntime->pipeline.visitPublishedDestinations([&](auto* slot,auto planes,auto generation) {
+            fields.push_back({gradientDestination(slot),std::move(planes),generation});
+        });
+        std::sort(fields.begin(),fields.end(),[](const auto& a,const auto& b){return a.id<b.id;});
+        stream->writeUint32(fields.size(),"count");
+        for (unsigned i=0;i<fields.size();++i) {
+            stream->writeEnterSection(i); stream->writeUint32(fields[i].id,"destination");
+            saveDestinationSequence(stream,fields[i].generation); saveDestinations(stream,fields[i].planes.get(),size);
+            stream->writeLeaveSection();
+        }
+        stream->writeLeaveSection();
+    }
+    if (VERSION_MINOR >= ResourceClaims::ActiveClaimsFormat) saveActiveClaimRoutes(stream);
 	stream->writeLeaveSection();
 }
 
@@ -1141,11 +1210,13 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	invalidateResourceSeeds();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
     std::vector<std::pair<GradientFieldKey,LegacyResourceGradientState::Capture>> legacyPendingCaptures;
+    bool hasPendingDestinations=false;
 	gradientRuntime->preparations.clear();
     gradientRuntime->fieldRequests.clear();
     gradientRuntime->adaptive={};
     gradientRuntime->marketTargets={};
     gradientRuntime->pipeline.reset();
+    gradientRuntime->materialDestinationsEnabled=false;
     resetBuildingGradientPipeline();
 	for (int t=0; t<game->teamsCount(); ++t)
 		for (auto *building : game->teams[t]->liveBuildings.entries()) building->refreshRequested.reset();
@@ -1392,8 +1463,13 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			loadGradient(stream, field, size, packed,gradientFieldKey(slot)?int(gradientFieldKey(slot)->swim):int(sw));
 			const int capturedCost=publishedCostClass(field,int(sw));
             recordFieldCost(field,-1);
+            std::unique_ptr<Uint16[]> restoredCosts(field);
+            auto destinations=versionMinor>=MaterialDestinationsFormat ? loadDestinations(stream,field,size,w,h,packed) : nullptr;
+            hasPendingDestinations=hasPendingDestinations || bool(destinations);
+            if (destinations && ((!adaptiveKey && std::none_of(gradientRuntime->materialFields.begin(),gradientRuntime->materialFields.end(),[&](const auto& entry){return &entry.second.published==slot;})) || (adaptiveKey && adaptiveKey->family!=GradientFieldFamily::Materials && adaptiveKey->family!=GradientFieldFamily::Markets)))
+                throw std::runtime_error("Destinations on non-material pending field");
 			gradientRuntime->pipeline.restoreCompleted({slot, capturedCost, remaining,
-				superseded, std::unique_ptr<Uint16[]>(field),adaptiveKey,adaptiveCapture,preparedGoalCount,legacyAssociation});
+				superseded, std::move(restoredCosts),adaptiveKey,adaptiveCapture,preparedGoalCount,legacyAssociation,std::move(destinations)});
 			stream->readLeaveSection();
 		}
         if (hasDelayedGradientState(versionMinor)) {
@@ -1407,8 +1483,10 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
                 const auto kind=stream->readUint8("kind"); request.kind=static_cast<gradient_preparation::Kind>(kind);
                 request.team=stream->readUint8("team"); request.material=stream->readUint8("material"); request.swim=stream->readUint8("swim");
                 request.consumer=stream->readSint32("consumer"); request.modes=stream->readUint8("modes"); request.excludesShared=loadFlag(stream,"excludesShared");
+                if (versionMinor>=MaterialDestinationsFormat) request.destinations=loadFlag(stream,"destinations");
                 if (kind>unsigned(gradient_preparation::Kind::Forbidden) || request.team>=game->teamsCount() || request.material>=MaterialCount || request.swim>=savedSwimClasses || request.modes>3)
                     throw std::runtime_error("Invalid gradient request");
+                if (request.destinations && request.kind!=gradient_preparation::Kind::Materials && request.kind!=gradient_preparation::Kind::Markets) throw std::runtime_error("Destinations on non-material request");
                 Uint16** expected=nullptr;
                 using Kind=gradient_preparation::Kind;
                 if (request.kind==Kind::Materials) expected=&materialGradients[request.team][request.material][request.swim];
@@ -1465,6 +1543,31 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
     }
     if(versionMinor>=FILE_FORMAT_VERSION_UNIFIED_GRADIENTS) {
         gradientRuntime->adaptive.load(stream,game->teamsCount(),MOVEMENT_CLASS_COUNT,MaterialCount);
+        if (versionMinor>=MaterialDestinationsFormat) {
+            stream->readEnterSection("materialDestinations");
+            gradientRuntime->materialDestinationsEnabled=loadFlag(stream,"enabled");
+            gradientRuntime->pipeline.restoreDestinationSequence(loadDestinationSequence(stream));
+            const auto count=stream->readUint32("count");
+            if (!gradientRuntime->materialDestinationsEnabled && (count || hasPendingDestinations ||
+                std::any_of(gradientRuntime->fieldRequests.begin(),gradientRuntime->fieldRequests.end(),[](const auto& queued){return queued.request.destinations;})))
+                throw std::runtime_error("Destination metadata on disabled material policy");
+            if (count>Team::MAX_COUNT*2*MaterialSlotCount*MOVEMENT_CLASS_COUNT+gradientRuntime->materialFields.size()) throw std::runtime_error("Invalid destination field count");
+            unsigned previous=0;
+            for (unsigned i=0;i<count;++i) {
+                stream->readEnterSection(i);
+                const unsigned id=stream->readUint32("destination");
+                if (i && id<=previous) throw std::runtime_error("Duplicate or unordered destination field");
+                previous=id;
+                auto* slot=gradientDestination(id,savedSwimClasses);
+                const auto key=gradientFieldKey(slot);
+                if ((!key && std::none_of(gradientRuntime->materialFields.begin(),gradientRuntime->materialFields.end(),[&](const auto& entry){return &entry.second.published==slot;})) || (key && key->family!=GradientFieldFamily::Materials && key->family!=GradientFieldFamily::Markets)) throw std::runtime_error("Destinations on non-material published field");
+                const auto generation=loadDestinationSequence(stream);
+                auto planes=loadDestinations(stream,*slot,size,w,h,packed);
+                gradientRuntime->pipeline.restorePublishedDestinations(slot,std::move(planes),generation);
+                stream->readLeaveSection();
+            }
+            stream->readLeaveSection();
+        }
     } else {
     if (hasAdaptiveGradientState(versionMinor,game->mapHeader.privateAdaptive174)) {
         LegacyResourceGradientState legacyState;
@@ -1534,7 +1637,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         if(field.inflight!=pendingKeys.contains(key) || field.queued!=queuedKeys.contains(key) || field.serving.goalCount>size)
             throw std::runtime_error("Invalid adaptive field association");
     }
-
+    loadActiveClaimRoutes(stream, versionMinor);
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
         // Consume the complete old state first, then discard only route caches.
@@ -1653,7 +1756,7 @@ void Map::consolidateLegacyRoutingFields()
         if(it->second.swim<=0 || it->second.swim>=LEGACY_SWIM_CLASS_COUNT || it->second.swim==int(MovementAccess::Amphibious)){++it;continue;}
         auto node=rt.materialFields.extract(it++);auto& field=node.mapped();
         const auto key=MapState::materialFieldKey(field.consumer,field.team,field.resource,int(MovementAccess::Amphibious),field.modes);
-        if(rt.materialFields.contains(key)) {rt.materialLru.erase(field.lru);rt.fieldCosts.erase(field.published);}
+        if(rt.materialFields.contains(key)) {rt.materialLru.erase(field.lru);rt.fieldCosts.erase(field.published);rt.pipeline.forgetDestinations(&field.published);}
         else {node.key()=key;field.swim=int(MovementAccess::Amphibious);*field.lru=key;rt.materialFields.insert(std::move(node));}
     }
 }

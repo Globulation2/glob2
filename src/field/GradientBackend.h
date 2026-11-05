@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GradientCosts.h"
+#include "GradientDestinationPlanes.h"
 #include "OpenCLRequiredControl.h"
 #include "BackendSession.h"
 #include "Grid.h"
@@ -65,6 +66,7 @@ struct BackendRequest
     // Legacy direct callers may omit it; group/coordinator dispatch supplies it.
     std::optional<Configuration> capturedConfiguration;
     std::optional<std::uint64_t> capturedGeneration;
+    DestinationPlanes destinations;
 };
 inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
     const auto source=std::find_if(seeds.begin(),seeds.end(),[](auto value){return value>1;});
@@ -109,8 +111,12 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
         // trivial-field scan. Every admitted group must have a safe CPU path.
         if (!request.gradient || !request.costAt || (!request.cpu && !batchRecovery))
             throw std::invalid_argument("Gradient group requires seeds, costs and CPU recovery");
+        if (bool(request.destinations.x) != bool(request.destinations.y) ||
+            (request.destinations && (request.grid.width() > DestinationPlanes::Invalid ||
+                request.grid.height() > DestinationPlanes::Invalid)))
+            throw std::invalid_argument("Invalid gradient destination output");
         if (request.family != first.family || &request.session != &first.session ||
-            request.operation != first.operation)
+            request.operation != first.operation || bool(request.destinations) != bool(first.destinations))
             throw std::invalid_argument("Gradient group requires one family, session and operation");
     }
     const bool eligible=std::all_of(requests.begin(),requests.end(),[](const auto& request) {
@@ -124,7 +130,11 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
     // credited as an accelerator advantage. Resumable phase state is observable.
     if(eligible && std::all_of(requests.begin(),requests.end(),[](const auto& request) {
         return alreadyFixedGradient(std::span(request.gradient,request.grid.cells()));
-    })) return;
+    })) {
+        for (const auto& request : requests)
+            initializeDestinationSeeds({request.gradient, request.grid.cells()}, request.destinations, request.grid.width());
+        return;
+    }
     const auto chosen=eligible ? first.session.choose(first.family,requests.size(),mode) : PlanDecision{};
     // CPU recovery belongs to this captured invocation, including when the
     // caller selected a variant different from the process preference.
@@ -168,7 +178,8 @@ inline void executeGradientBatch(std::span<const BackendRequest> input, Backend 
     for(std::size_t begin=0;begin<input.size();) {
         std::size_t end=begin+1;
         while(end<input.size() && end-begin<8 && input[end].family==input[begin].family &&
-              &input[end].session==&input[begin].session && input[end].operation==input[begin].operation) ++end;
+              &input[end].session==&input[begin].session && input[end].operation==input[begin].operation &&
+              bool(input[end].destinations)==bool(input[begin].destinations)) ++end;
         executeGradientGroup(input.subspan(begin,end-begin),mode); begin=end;
     }
 }

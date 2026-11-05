@@ -738,40 +738,35 @@ void Unit::handleMovementExitingBuilding()
 
 void Unit::handleMovementGoingToResource()
 {
+    if(owner->map->activeClaimsEnabled()) {
+        bool supplier=false;
+        if(!activeMaterialClaim && attachedBuilding) {
+            const auto* field=owner->map->getMaterialGradientSlot(owner->teamNumber,destinationPurpose,movementAccess(),attachedBuilding->fetchesFromMarkets(),attachedBuilding);
+            Sint32 x=0,y=0;
+            supplier=field && owner->map->projectMaterialDestination(field,owner->teamNumber,destinationPurpose,movementAccess(),posX,posY,&x,&y,
+                attachedBuilding->fetchesFromMarkets(),attachedBuilding) && !owner->map->materialAmountAtSlot(owner->map->coordToIndex(x,y),destinationPurpose);
+        }
+        if(!supplier){handleActiveMaterialMovement();return;}
+    }
+    const MaterialClaimObservation claimObservation{*this};
 	Map *map=owner->map;
 
 	if (performance[FLY] && !map->hasAirRoutingConstraints()) {
         // Reuse the shared destination query only when the old source expires;
         // ordinary travel neither follows nor refreshes a movement field.
         const auto sourceAvailable=[&] {
-            if (map->isMaterialTakeableSlot(targetX,targetY,destinationPurpose)) return true;
-            if (!attachedBuilding) return false;
-            const unsigned modes=map->materialSupplyModesSlot(attachedBuilding,destinationPurpose);
-            const auto eligible=[&](const Building* supplier) {
-                return map->stockSupplierEligibleSlot(supplier,attachedBuilding,destinationPurpose,modes);
-            };
-            const auto supplier=map->getBuilding(targetX,targetY);
-            if (supplier!=NOGBID && Building::GIDtoTeam(supplier)==owner->teamNumber
-                && eligible(owner->myBuildings[Building::GIDtoID(supplier)])) return true;
-            // Overlay providers have no building tile. Inspect their small
-            // instance lists, retaining the shared query's supplier policies.
-            const auto overlay=[&](const Building* b) {
-                return !b->type->semantics.occupiesGround
-                    && ((targetX-b->posX+map->getW()) & (map->getW()-1))<b->type->width
-                    && ((targetY-b->posY+map->getH()) & (map->getH()-1))<b->type->height
-                    && eligible(b);
-            };
-            if (modes&1) for (const Building* b:owner->stockSuppliers) if (overlay(b)) return true;
-            if (modes&2) for (const Building* b:owner->directStockSuppliers) if (overlay(b)) return true;
-            return false;
+            return map->materialDestinationValidSlot(owner->teamNumber,destinationPurpose,MovementAccess::Air,
+                targetX,targetY,attachedBuilding && attachedBuilding->fetchesFromMarkets(),attachedBuilding);
         };
         const bool needsDestination=!validTarget() || !sourceAvailable();
         const Uint16* demandField=nullptr;
         std::optional<GradientFieldKey> demandKey;
         if(needsDestination) {
+            setValidTarget(false);
             const bool sharedMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
             demandField=map->getMaterialGradientSlot(owner->teamNumber,destinationPurpose,MovementAccess::Air,sharedMarkets,attachedBuilding,&demandKey);
             if(!demandField){if(demandKey)map->gradientMovementDemand(*demandKey);waitForGradient();return;}
+            map->observeMaterialClaimDecision(*this,demandField);
         }
         const auto observeFlight=[&](bool moved,bool valid) {
             if(!demandKey)return;
@@ -781,7 +776,11 @@ void Unit::handleMovementGoingToResource()
         if (needsDestination && !findMaterialDestination(destinationPurpose,&targetX,&targetY,nullptr,
                 attachedBuilding && attachedBuilding->fetchesFromMarkets(),attachedBuilding)) {
             observeFlight(false,false);
-            stopAttachedForBuilding(false);
+            // A reachable but stale field can resolve to an expired source.
+            // Keep the assignment while the normal demand recovery refreshes it.
+            if (map->queryMaterialDistance(owner->teamNumber,destinationPurpose,MovementAccess::Air,
+                    posX,posY,nullptr,attachedBuilding && attachedBuilding->fetchesFromMarkets(),attachedBuilding)!=RouteResult::Reachable)
+                stopAttachedForBuilding(false);
             movement=MOV_RANDOM_FLY;
             return;
         }
@@ -803,22 +802,16 @@ void Unit::handleMovementGoingToResource()
 	const auto access=movementAccess();
 	bool stopWork;
 	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
-	const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryMaterialStep(entityRandom, teamNumber, destinationPurpose, access, posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets); });
+    bool projectedValid=false;
+	const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryMaterialStep(entityRandom, teamNumber, destinationPurpose, access, posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets,&targetX,&targetY,&projectedValid,this); });
+    setValidTarget(projectedValid);
 	if (result == StepResult::Pending || result == StepResult::AtGoal) { waitForGradient(); return; }
 	if (result == StepResult::Step)
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
-		// targetX/Y (also the debug path line, hotkey T) were set once, by
-		// ascending a gradient, when the fetch task started. pathfindMaterial
-		// above re-reads the resource gradient that governs the step fresh
-		// every action, and that field can be rebuilt while the unit is still
-		// walking. Re-ascend from here whenever the stored target has stopped
-		// being a peak of that same gradient; isGradientPeak is a cheap check
-		// to run every action, the ascent itself only when it actually goes stale.
-		const Uint16 *gradient = map->getMaterialGradientSlot(teamNumber, destinationPurpose, access, withMarkets, attachedBuilding);
-		if (gradient && !map->isGradientPeak(gradient, targetX, targetY))
-			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
+        // The projection came from the actual first step and the same field.
+        // It describes this decision, not a commitment across future rebuilds.
 	}
 	else
 	{

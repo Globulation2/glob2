@@ -40,8 +40,11 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     Team* team = nullptr;
     unsigned populationSection = 0;
 
-    bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY || formatVersion<FILE_FORMAT_VERSION_MAINLINE_TERRAINS || formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
+    // Units injected in legacy population order bypass ordinary section
+    // tracking; their post-format sections are tracked by depth instead.
+    unsigned injectedDepth = 0, injectedSuppressedAt = 0;
+    bool suppressed() const { return injecting ? injectedSuppressedAt!=0 : suppressedAt!=0; }
+    bool tracking() const { return formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS || formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY || formatVersion<FILE_FORMAT_VERSION_MAINLINE_TERRAINS || formatVersion<FILE_FORMAT_VERSION_GRADIENT_DEMAND || legacy || !hasInitialBuildingGradient(formatVersion) || !hasDelayedGradientState(formatVersion); }
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
@@ -153,11 +156,32 @@ public:
         : LegacyPopulationOutput(backend,map.game,version,GradientLayout::PreservePending) {}
     void writeEnterSection(std::string_view name) override
     {
-        if (injecting || !tracking()) return;
+        if (injecting) {
+            ++injectedDepth;
+            if (!injectedSuppressedAt && formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS
+                && (name=="activeMaterialClaim" || name=="materialClaimPolicyState"))
+                injectedSuppressedAt=injectedDepth;
+            return;
+        }
+        if (!tracking()) return;
 
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
+        if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && (name=="claimRecovery" || name=="claimRecoveryRoute")) {
+            suppressedAt=sections.size(); return;
+        }
+        if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && (name=="materialClaimPolicyState" || name=="materialClaimPolicyConfig" || name=="experimentalRoute")) {
+            suppressedAt=sections.size(); return;
+        }
+        if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && (name=="activeMaterialClaim" || name=="activeMaterialClaims")) {
+            suppressedAt=sections.size(); return;
+        }
+        if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && (name=="materialDestinations" ||
+            (name=="destinations" && std::find(sections.begin(),sections.end(),"gradientPipeline")!=sections.end()))) {
+            suppressedAt=sections.size();
+            return;
+        }
         if (formatVersion<FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY && name=="winProbability") {
             suppressedAt=sections.size();
             return;
@@ -219,7 +243,8 @@ public:
     }
     void writeEnterSection(unsigned index) override
     {
-        if(injecting || !tracking()) return;
+        if(injecting) { ++injectedDepth; return; }
+        if(!tracking()) return;
         const std::string parent=sections.empty()?std::string{}:sections.back();
         const bool mapRuntime=std::find(sections.begin(),sections.end(),"mapRuntime")!=sections.end();
         const bool building=std::find(sections.begin(),sections.end(),"buildings")!=sections.end();
@@ -234,7 +259,15 @@ public:
     }
     void writeLeaveSection(std::size_t count=1) override
     {
-        if (injecting || !tracking()) return;
+        if (injecting) {
+            while (count--) {
+                if (!injectedDepth) throw std::logic_error("Unbalanced injected historical sections");
+                if (injectedSuppressedAt==injectedDepth) injectedSuppressedAt=0;
+                --injectedDepth;
+            }
+            return;
+        }
+        if (!tracking()) return;
 
         while (count--) {
             if (sections.empty()) throw std::logic_error("Unbalanced synthetic historical sections");
@@ -339,6 +372,9 @@ public:
     }
     void writeUint8(Uint8 value,std::string_view name) override
     {
+        if (formatVersion<FILE_FORMAT_VERSION_RESOURCE_CLAIMS && name=="destinations" &&
+            std::find(sections.begin(),sections.end(),"queuedRequests")!=sections.end()) return;
+
         if(suppressed()) return;
         if(formatVersion<FILE_FORMAT_VERSION_ROUTING_RATIO_POLICY
             && (name=="preparationCost" || name=="routingRatioClass" || name=="routingRatioKnown"))return;

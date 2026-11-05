@@ -234,6 +234,7 @@ void Map::materialStockChanged(size_t index, MaterialMask before, MaterialMask b
 
 void Map::rebuildResourceState()
 {
+    invalidateAllActiveMaterialClaims();
     resourceChanges.markAll();
     gradientRuntime->adaptive={};
     gradientRuntime->marketTargets={};
@@ -258,6 +259,15 @@ void Map::setMaterialAmount(size_t index,MaterialId materialId,Uint16 amount)
     const auto& yield=resourceRegistry().yields(static_cast<ResourceId>(r.type))[material];
     amount=std::min(amount,yield.capacity);
     if (amount==oldAmount) return;
+    auto claimOwners=amount<oldAmount && !amount ? farmMaterialClaimOwners(index,~Uint32(0),MaterialMask(1u<<material)) : std::vector<ResourceClaims::Owner>{};
+    if (activeClaimsEnabled() && amount<oldAmount) {
+        const auto source=materialClaims.ownersAtSource(Uint32(index));
+        claimOwners.insert(claimOwners.end(),source.begin(),source.end());
+        if (!amount) {
+            const auto access=materialClaims.ownersAtAccess(Uint32(index));
+            claimOwners.insert(claimOwners.end(),access.begin(),access.end());
+        }
+    }
     const bool crossesZero=(oldAmount==0)!=(amount==0);
     // Only availability transitions affect counters; capture renewable membership
     // before mutation, including an empty persistent stock that can regrow.
@@ -268,6 +278,7 @@ void Map::setMaterialAmount(size_t index,MaterialId materialId,Uint16 amount)
     else { resourceStocks[resourceStockIndices[index]-1][material]=amount; refreshResourceTotal(index); }
     if (crossesZero) materialStockChanged(index,before,beforeAvailable);
     if (!r.amount && !p.persistsWhenEmpty) replaceResource(index,Resource{});
+    revalidateMaterialClaimOwners(std::move(claimOwners),!amount);
 }
 
 void Map::setResourceAmount(size_t index, Uint32 amount)
@@ -354,6 +365,7 @@ void Map::refreshLiveView()
     MapState::View view;
     view.width=w; view.height=h; view.wDec=unsigned(wDec); view.wMask=Uint32(wMask); view.hMask=Uint32(hMask);
     view.resources=resourceCells; view.occupancy=occupancyCells; view.areas=areaCells;
+    view.claims=&materialClaims.counts();
     view.cellRules=cellRules;
     view.stockIndices=&resourceStockIndices; view.stocks=&resourceStocks; view.materialSourceCounts=materialSourceCounts;
     view.terrainRegistry=terrainRegistryValue.get(); view.resourceRegistry=resourceRegistryValue.get(); view.rules=cellRuleTable.get();

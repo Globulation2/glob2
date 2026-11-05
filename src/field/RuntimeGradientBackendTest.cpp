@@ -58,6 +58,74 @@ std::vector<std::uint16_t> oracle(std::vector<std::uint16_t> values, field::Grid
 } // namespace
 TEST_SUITE("RuntimeGradientBackend")
 {
+    TEST_CASE("Vulkan destination planes match canonical CPU labels and roll back atomically")
+    {
+        using namespace gradient_kernel;
+        if (!initializeVulkanGradient()) {
+            if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
+            MESSAGE("Vulkan unavailable; destination device parity was not exercised: ",vulkanGradientStatus().error);
+            return;
+        }
+        std::mt19937 random(41731);
+        BackendSession session;
+        for (const auto& [w,h] : {std::pair{1,17},std::pair{19,1},std::pair{17,33},std::pair{32,32}})
+            for (int cap : {0,70,COST_LIMIT}) for (unsigned trial=0;trial<2;++trial) {
+            const field::Grid grid(w,h);
+            std::vector<std::uint16_t> seeds(grid.cells(),GRADIENT_UNREACHABLE);
+            std::vector<EntrySteps> costs(grid.cells());
+            for (std::size_t i=0;i<grid.cells();++i) {
+                costs[i]=trial ? entrySteps(1+unsigned(random()%30)) : LAND_STEPS;
+                if (random()%7==0) seeds[i]=GRADIENT_FORBIDDEN;
+                else if (random()%17==0) seeds[i]=GRADIENT_AT_GOAL-(trial?random()%300:0);
+            }
+            seeds[0]=seeds.back()=GRADIENT_AT_GOAL;
+            auto expected=seeds;
+            OwnedDestinations reference(grid.cells());
+            GradientWorkspace scratch;
+            propagateDestinationFieldCPU(expected.data(),reference.planes(),cap,grid,scratch,
+                [&](std::size_t i){return costs[i];});
+            for (auto plan : {Plan::VulkanFrozen8,Plan::VulkanJacobi}) {
+                auto actual=seeds;
+                OwnedDestinations output(grid.cells());
+                BackendRequest request{actual.data(),cap,grid,session,&costs,
+                    [](void* value,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(value))[i];},nullptr};
+                request.destinations=output.planes();
+                bool executed=false;
+                request.executedOnDevice=&executed;
+                REQUIRE(executeVulkanGradient(std::span(&request,1),plan));
+                CHECK(executed); CHECK(actual==expected);
+                CHECK(std::equal(output.x.get(),output.x.get()+grid.cells(),reference.x.get()));
+                CHECK(std::equal(output.y.get(),output.y.get()+grid.cells(),reference.y.get()));
+                actual=seeds;request.gradient=actual.data();request.destinations={};
+                REQUIRE(executeVulkanGradient(std::span(&request,1),plan));
+                CHECK(actual==expected);
+            }
+        }
+        const field::Grid grid(17,19);
+        for (auto plan : {Plan::VulkanFrozen8,Plan::VulkanJacobi}) {
+            std::vector<std::uint16_t> seeds(grid.cells(),GRADIENT_UNREACHABLE);
+            seeds[0]=GRADIENT_AT_GOAL;
+            auto first=seeds, second=seeds;
+            OwnedDestinations a(grid.cells()),b(grid.cells());
+            for (auto* output : {&a,&b}) {
+                std::fill_n(output->x.get(),grid.cells(),91);
+                std::fill_n(output->y.get(),grid.cells(),92);
+            }
+            std::array<BackendRequest,2> requests{
+                BackendRequest{first.data(),COST_LIMIT,grid,session,nullptr,[](void*,auto){return LAND_STEPS;},nullptr},
+                BackendRequest{second.data(),COST_LIMIT,grid,session,nullptr,[](void*,auto){return LAND_STEPS;},nullptr}};
+            requests[0].destinations=a.planes();requests[1].destinations=b.planes();
+            requests[1].requiredControl=makeOpenCLRequiredControl();
+            REQUIRE(requests[1].requiredControl);
+            requests[1].requiredControl->requestCancel();
+            CHECK_FALSE(executeVulkanGradient(requests,plan));
+            CHECK(first==seeds);CHECK(second==seeds);
+            for (auto* output : {&a,&b}) {
+                CHECK(std::all_of(output->x.get(),output->x.get()+grid.cells(),[](auto value){return value==91;}));
+                CHECK(std::all_of(output->y.get(),output->y.get()+grid.cells(),[](auto value){return value==92;}));
+            }
+        }
+    }
 
 	TEST_CASE("stable selection IDs and unsupported algorithm normalization")
 	{
@@ -644,6 +712,48 @@ TEST_SUITE("RuntimeGradientBackend")
 			CHECK(vulkanGradientStatus().fields == before.fields);
 		}
 	}
+    TEST_CASE("Vulkan late batch cancellation preserves costs and destination planes")
+    {
+        using namespace gradient_kernel;
+        if (!initializeVulkanGradient()) {
+            if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
+            return;
+        }
+        BackendSession session;
+        for (auto plan : {Plan::VulkanFrozen8, Plan::VulkanJacobi}) {
+            const field::Grid grid{17,19};
+            std::vector<std::uint16_t> seeds(grid.cells(),1); seeds[0]=65535;
+            auto first=seeds, second=seeds;
+            OwnedDestinations firstXY(grid.cells()), secondXY(grid.cells());
+            for (auto* xy : {&firstXY,&secondXY}) {
+                std::fill_n(xy->x.get(),grid.cells(),123);
+                std::fill_n(xy->y.get(),grid.cells(),456);
+            }
+            auto control=std::make_shared<OpenCLRequiredControl>();
+            std::array<BackendRequest,2> requests{
+                BackendRequest{first.data(),COST_LIMIT,grid,session,nullptr,
+                    [](void*,auto){return LAND_STEPS;},nullptr},
+                BackendRequest{second.data(),COST_LIMIT,grid,session,control.get(),
+                    [](void* p,auto){static_cast<OpenCLRequiredControl*>(p)->requestCancel();return LAND_STEPS;},nullptr}};
+            requests[0].requiredControl=control;
+            requests[0].destinations=firstXY.planes(); requests[1].destinations=secondXY.planes();
+            std::array<bool,2> committed{}, observed{};
+            for (unsigned i=0;i<2;++i) {
+                requests[i].executedOnDevice=&committed[i];
+                requests[i].deviceExecutionObserved=&observed[i];
+            }
+            const auto fields=vulkanGradientStatus().fields;
+            CHECK_FALSE(executeVulkanGradient(requests,plan));
+            CHECK(observed[0]); CHECK(observed[1]);
+            CHECK_FALSE(committed[0]); CHECK_FALSE(committed[1]);
+            CHECK(first==seeds); CHECK(second==seeds);
+            for (auto* xy : {&firstXY,&secondXY}) {
+                CHECK(std::all_of(xy->x.get(),xy->x.get()+grid.cells(),[](auto v){return v==123;}));
+                CHECK(std::all_of(xy->y.get(),xy->y.get()+grid.cells(),[](auto v){return v==456;}));
+            }
+            CHECK(vulkanGradientStatus().fields==fields);
+        }
+    }
 	TEST_CASE("Vulkan cancellation leaves original seeds untouched")
 	{
 		using namespace gradient_kernel;

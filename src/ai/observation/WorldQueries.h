@@ -203,6 +203,17 @@ public:
   Uint16 best=gradient[index(x,y)];
   const bool found=best>GRADIENT_UNREACHABLE;
   if(found && distance) *distance=gradientTiles(best);
+  const int swim=accessClass(access);
+  if(found && world.components().resourceFields && MapState::validPlane(owner,resource,swim)) {
+   const auto* published=world.components().resourceFields->find(MapState::planeKey(owner,resource,swim,false));
+   if(published && published->destinations) {
+    // Use the same published source as live planning, including aged goals.
+    // Private cold-start planes deliberately retain their cost-only ascent.
+    const auto cell=index(x,y);
+    *rx=published->destinations->x[cell];*ry=published->destinations->y[cell];
+    return true;
+   }
+  }
   int px=world.normalizeX(x),py=world.normalizeY(y);
   static constexpr int directions[8][2]={{0,-1},{1,0},{0,1},{-1,0},{-1,-1},{1,-1},{1,1},{-1,1}};
   while(true) {

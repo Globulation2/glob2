@@ -7,6 +7,13 @@
 #include "Utilities.h"
 #include "ExperimentalFeatures.h"
 #include "Game.h"
+#include "Building.h"
+#include "Team.h"
+#include "Unit.h"
+#include "claims/ResourceClaimProbe.h"
+#include "claims/ActiveRouteRuntime.h"
+#include "claims/ClaimPolicyConfig.h"
+#include "online/Sha256.h"
 #include "GlobalContainer.h"
 #include "MapInternal.h"
 #include "TerrainResourceProperties.h"
@@ -17,6 +24,7 @@
 #include <map>
 #include <cstdlib>
 #include <limits>
+#include <chrono>
 
 
 
@@ -52,7 +60,7 @@ bool Map::isFarmableResourceByIndex(int resourceType) const
     return MapState::isFarmableResource(liveCells,resourceType);
 }
 
-std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask)
+std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceType, Uint32 teamMask, std::optional<size_t> entry, std::optional<ResourceClaims::Owner> availableOwner)
 {
 	if (resourceType < 0 || resourceType >= int(MaterialCount)) return std::nullopt;
 
@@ -85,7 +93,13 @@ std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceTyp
 	// the 3x3 seeds, which a map narrow enough to wrap can contribute twice.
 	std::vector<size_t>& frontier = farmFloodQueue;
 	frontier.clear();
-	for (int tdy = -1; tdy <= 1; tdy++)
+    // Shadow travel observations enter the projected field at its target tile;
+    // real harvesting still starts from all touched tiles around the unit.
+    if (entry && inField(*entry)) {
+        farmFloodStamps[*entry]=farmFloodGeneration;
+        frontier.push_back(*entry);
+    }
+	for (int tdy = -1; !entry && tdy <= 1; tdy++)
 		for (int tdx = -1; tdx <= 1; tdx++)
 		{
 			const size_t index = coordToIndex(x + tdx, y + tdy);
@@ -121,7 +135,11 @@ std::optional<size_t> Map::pickFarmHarvestTileSlot(int x, int y, int resourceTyp
         const auto& harvest=resourceRegistry().yields(static_cast<ResourceId>(resourceCells[index].resource.type))[resourceType];
         const int seedAmount=game && game->gameHeader.isResourceGrowthDisabled() ? 0 : harvest.seedReserve;
 		// Infinite harvests leave the reserve intact even at the reserve level.
-		if ((amount > seedAmount || harvest.consumption == ResourceConsumption::Infinite)
+        const Uint16 claimReserve=harvest.consumption==ResourceConsumption::Infinite?0:seedAmount;
+        const ResourceClaims::Claim candidate{Uint32(index),Uint32(entry.value_or(index)),Uint8(resourceType),resourceCells[index].resource.type,false,claimReserve};
+        const bool unclaimed=!availableOwner || materialClaims.available(*availableOwner,candidate,
+            amount>claimReserve?amount-claimReserve:0,harvest.consumption==ResourceConsumption::Infinite);
+		if (unclaimed && (amount > seedAmount || harvest.consumption == ResourceConsumption::Infinite)
 			&& (amount > bestAmount
 				|| (amount == bestAmount && distance < bestDistance)
 				|| (amount == bestAmount && distance == bestDistance && index < best)))
@@ -326,11 +344,82 @@ bool Map::materialAvailableUpdateSlot(int team, int material, MovementAccess mov
 {
 	if (queryMaterialDistance(team,material,movementAccessValue,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
 	const auto* field=getMaterialGradientSlot(team,material,movementAccessValue,markets,consumer);
-	// Supplier seeds include a pickup penalty, so their valid local peak can
-	// sit below GRADIENT_AT_GOAL. Availability comes from the complete field;
-	// ascent selects its pickup coordinate without redefining reachability.
-	getGlobalGradientDestination(field,x,y,targetX,targetY);
-	return true;
+    if (const auto destinations=materialGradientDestinations(field)) {
+        // Planning intentionally observes the published field's age. Workers
+        // separately validate current stock in projectMaterialDestination.
+        const size_t index=coordToIndex(x,y);
+        *targetX=destinations->x[index]; *targetY=destinations->y[index];
+        return true;
+    }
+    // Supplier seeds include a pickup penalty, so their valid local peak can
+    // sit below GRADIENT_AT_GOAL. Availability comes from the complete field;
+    // ascent selects its pickup coordinate without redefining reachability.
+    // Planning adapters retain this ascent; workers use projectMaterialDestination
+    // to track their weighted movement decisions.
+    getGlobalGradientDestination(field,x,y,targetX,targetY);
+    return true;
+}
+
+bool Map::materialDestinationValidSlot(int team, int material, MovementAccess movementAccessValue, int x, int y, bool markets, const Building* consumer) const
+{
+    const int movement=accessClass(movementAccessValue);
+    if (movement!=AIR_MOVEMENT_CLASS && isForbidden(x,y,Team::teamNumberToMask(team))) return false;
+    if (isMaterialTakeableSlot(x,y,material) && !isForbidden(x,y,Team::teamNumberToMask(team))) {
+        const auto index=coordToIndex(x,y);
+        const auto& properties=resourcePropertiesByIndex(getResource(index).type);
+        if(!properties.visibleToHarvest || (fogOfWar[index]&Team::teamNumberToMask(team)))return true;
+    }
+    if (!game) return false;
+    const unsigned modes=consumer ? materialSupplyModesSlot(consumer,material) : (markets && marketsV2Enabled() ? 1u : 0u);
+    if (!modes) return false;
+    const Team& owner=*game->teams[team];
+    const auto eligible=[&](const Building* b) { return stockSupplierEligibleSlot(b,consumer,material,modes); };
+    const Uint16 id=getBuilding(x,y);
+    if (id!=NOGBID && Building::GIDtoTeam(id)==team && eligible(owner.myBuildings[Building::GIDtoID(id)])) return true;
+    const auto overlay=[&](const Building* b) {
+        return !b->type->semantics.occupiesGround && ((x-b->posX)&wMask)<b->type->width
+            && ((y-b->posY)&hMask)<b->type->height && eligible(b);
+    };
+    if (modes&1) for (const Building* b:owner.stockSuppliers) if (overlay(b)) return true;
+    if (modes&2) for (const Building* b:owner.directStockSuppliers) if (overlay(b)) return true;
+    return false;
+}
+
+bool Map::projectMaterialDestination(const Uint16* field, int team, int material, MovementAccess movementAccessValue, int x, int y,
+    Sint32* targetX, Sint32* targetY, bool markets, const Building* consumer) const
+{
+    const int movement=accessClass(movementAccessValue);
+    if (!field) return false;
+    x&=wMask; y&=hMask;
+    Uint16 here=field[coordToIndex(x,y)];
+    if (here<=GRADIENT_UNREACHABLE) return false;
+    if (const auto destinations=materialGradientDestinations(field)) {
+        const size_t index=coordToIndex(x,y);
+        const unsigned dx=destinations->x[index],dy=destinations->y[index];
+        if (dx>=unsigned(w) || dy>=unsigned(h) || !materialDestinationValidSlot(team,material,movementAccessValue,dx,dy,markets,consumer)) return false;
+        *targetX=dx; *targetY=dy;
+        return true;
+    }
+    // Match directionByGradient's cost and tie order. The actual first step
+    // already accounts for traffic; projection ignores future moving units and
+    // never draws random sidesteps. Strict improvement bounds this traversal.
+    while (here!=GRADIENT_AT_GOAL) {
+        int best=-1, direction=-1;
+        for (int d=0;d<8;++d) {
+            const int dx=tabClose[d][0], dy=tabClose[d][1];
+            const size_t next=coordToIndex(x+dx,y+dy);
+            if (field[next]<=here) continue;
+            const int score=field[next]-stepCost(dx,dy,next,movement);
+            if (score>best) { best=score; direction=d; }
+        }
+        if (direction<0) break;
+        x=(x+tabClose[direction][0])&wMask;
+        y=(y+tabClose[direction][1])&hMask;
+        here=field[coordToIndex(x,y)];
+    }
+    if (!materialDestinationValidSlot(team,material,movementAccessValue,x,y,markets,consumer)) return false;
+    *targetX=x; *targetY=y;
+    return true;
 }
 
 template<typename T>
@@ -410,3 +499,178 @@ bool Map::isGradientPeak(const T *gradient, int x, int y) const
 template bool Map::isGradientPeak<Uint8>(const Uint8 *gradient, int x, int y) const;
 template bool Map::isGradientPeak<Uint16>(const Uint16 *gradient, int x, int y) const;
 
+
+void Map::setMaterialClaimTrackingEnabled(bool enabled)
+{
+    if(activeClaimsEnabled()) {
+        if(enabled)throw std::invalid_argument("active claims and shadow tracking are separate modes");
+        return;
+    }
+    materialClaimTracking=enabled;
+    materialClaimTelemetry={};
+    materialClaimFarmCache.clear(); materialClaimFarmEpoch={};
+    materialClaims.reset(cellCount());
+    claimChanges.markAll();
+    if (enabled) reconcileMaterialClaims();
+}
+
+void Map::reconcileMaterialClaims()
+{
+    if (!game) return;
+    if (materialClaimProbe) materialClaimProbe->publish(game->stepCounter);
+    if (!materialClaimTracking) return;
+    const auto start=std::chrono::steady_clock::now();
+    for (int team=0;team<game->teamsCount();++team)
+        for (Unit* unit:game->teams[team]->liveUnits) unit->reconcileMaterialClaim();
+    ++materialClaimTelemetry.sweeps;
+    materialClaimTelemetry.sweepNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+}
+
+ResourceClaims::DecisionToken Map::observeMaterialClaimDecision(const Unit& unit,const Uint16* field)
+{
+    if ((materialClaimTracking || activeClaimsEnabled()) && materialClaimProbe && game) return materialClaimProbe->decision(*game,unit,field);
+    return {};
+}
+void Map::finishMaterialClaimProbe()
+{
+    if (materialClaimProbe) {
+        if(game)materialClaimProbe->publish(game->stepCounter);
+        if(materialClaimRoutes)materialClaimProbe->routeWork(materialClaimRoutes->pipeline.takeDiagnostics());
+        materialClaimProbe->finish();
+    }
+}
+
+ResourceClaims::DecisionToken Map::observeMaterialClaimPickupDecision(const Unit& unit,int x,int y)
+{
+    if ((!materialClaimTracking && !activeClaimsEnabled()) || !materialClaimProbe || !game) return {};
+    const auto* field=lookupMaterialGradientSlot(unit.owner->teamNumber,unit.destinationPurpose,unit.movementAccess(),
+        unit.attachedBuilding && unit.attachedBuilding->fetchesFromMarkets(),unit.attachedBuilding);
+    return materialClaimProbe->decision(*game,unit,field,Uint32(coordToIndex(x,y)));
+}
+
+std::optional<size_t> Map::pickClaimFarmHarvestTileSlot(int x,int y,int material,Uint32 teamMask,std::optional<size_t> entry)
+{
+    ++materialClaimTelemetry.farmQueries;
+    const std::array<Uint64,4> epoch{resourceChanges.generation,areaChanges.generation,
+        game?game->gameHeader.observationRevision():0,identity()};
+    if (epoch!=materialClaimFarmEpoch) { materialClaimFarmCache.clear(); materialClaimFarmEpoch=epoch; }
+    const std::array<Uint32,5> key{teamMask,Uint32(material),Uint32(x&wMask),Uint32(y&hMask),entry?Uint32(*entry):UINT32_MAX};
+    const auto found=materialClaimFarmCache.find(key);
+    if (found!=materialClaimFarmCache.end()) { ++materialClaimTelemetry.farmCacheHits; return found->second; }
+    const auto result=pickFarmHarvestTileSlot(x,y,material,teamMask,entry);
+    materialClaimTelemetry.farmFloodCells+=farmFloodQueue.size();
+    if (materialClaimFarmCache.size()>=4096) materialClaimFarmCache.clear();
+    materialClaimFarmCache.emplace(key,result);
+    return result;
+}
+
+void Map::setActiveClaimPolicy(ResourceClaims::ActiveClaimPolicy policy)
+{
+    if(policy!=ResourceClaims::ActiveClaimPolicy::Disabled && policy!=ResourceClaims::ActiveClaimPolicy::PrototypeStationaryV1)
+        throw std::invalid_argument("unknown active claim research policy");
+    if(policy==activeClaimPolicy)return;
+    if(policy!=ResourceClaims::ActiveClaimPolicy::Disabled && (!materialDestinationsEnabled() || materialClaimTracking))
+        throw std::invalid_argument("active claims require material destinations and exclude shadow tracking");
+    if(game && game->stepCounter)throw std::logic_error("active claim policy changes require new game setup");
+    if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
+        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
+    }
+    materialClaimRoutes.reset();activeClaimRules.reset();
+    materialClaimConfiguration.reset();materialClaimConfigurationDigest={};
+    activeClaimPolicy=policy;
+    materialClaims.reset(cellCount());claimChanges.markAll();
+    checkActiveClaimRules();
+    if(game)game->invalidateObservation();
+}
+
+const ResourceClaims::ClaimPolicyConfig& Map::materialClaimPolicyConfig() const
+{
+    static const ResourceClaims::ClaimPolicyConfig prototype;
+    return materialClaimConfiguration?*materialClaimConfiguration:prototype;
+}
+
+void Map::setMaterialClaimPolicyConfig(ResourceClaims::ClaimPolicyConfig config)
+{
+    config.validate();
+    if(!materialDestinationsEnabled() || materialClaimTracking)
+        throw std::invalid_argument("experimental claims require material destinations and exclude shadow tracking");
+    if(game && game->stepCounter)throw std::logic_error("claim policy configuration requires new game setup");
+    const auto digest=Online::Sha256::digest(config.canonicalJson());
+    auto frozen=std::make_unique<const ResourceClaims::ClaimPolicyConfig>(std::move(config));
+    if(game)for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
+        unit->releaseActiveMaterialClaim();unit->materialClaimTask=0;unit->materialClaimPolicyState={};
+    }
+    materialClaimRoutes.reset();activeClaimRules.reset();
+    materialClaimConfiguration=std::move(frozen);materialClaimConfigurationDigest=digest;
+    activeClaimPolicy=ResourceClaims::ActiveClaimPolicy::Experimental;
+    materialClaims.reset(cellCount());claimChanges.markAll();checkActiveClaimRules();
+    if(game)game->invalidateObservation();
+}
+
+void Map::rebuildActiveMaterialClaims()
+{
+    const std::array<Uint64,3> currentRules{Uint64(farmAreasEnabled()),Uint64(game && game->gameHeader.isResourceGrowthDisabled()),resourceRegistry().checksum()};
+    const bool rulesMismatch=activeClaimRules && *activeClaimRules!=currentRules;
+    materialClaims.reset(cellCount());claimChanges.markAll();
+    for(int team=0;team<game->teamsCount();++team)for(Unit* unit:game->teams[team]->liveUnits) {
+        if(!activeClaimsEnabled() && (unit->activeMaterialClaim || unit->materialClaimTask))
+            throw std::runtime_error("disabled active claims contain unit state");
+        const auto& cadence=unit->materialClaimPolicyState;
+        if(materialClaimPolicy()!=ResourceClaims::ActiveClaimPolicy::Experimental) {
+            if(cadence!=ResourceClaims::MaterialClaimPolicyState{})throw std::runtime_error("nonexperimental claims contain policy state");
+        } else if(cadence.lastGoalAttempt>cadence.decisionOrdinal || (cadence.probe!=UINT32_MAX && cadence.probe>=cellCount()))
+            throw std::runtime_error("invalid saved material claim policy state");
+        if(unit->activeMaterialClaim) {
+            const auto& saved=*unit->activeMaterialClaim;
+            if(saved.source>=cellCount() || saved.access>=cellCount() || !validMaterial(saved.material) || !unit->materialClaimTask)
+                throw std::runtime_error("invalid saved active claim structure");
+            if(rulesMismatch) {
+                observeMaterialClaim(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity),saved);
+                continue; // Preserve the scheduled rule-change invalidation for next publication.
+            }
+            if(!resourceRegistry().valid(static_cast<ResourceId>(saved.resource))
+                || !unit->activeMaterialClaimValid() || !activeClaimFarmConnected(*unit->activeMaterialClaim,unit->owner->me))
+                throw std::runtime_error("invalid saved active claim ownership");
+            const auto& c=*unit->activeMaterialClaim;
+            const auto& yield=resourceRegistry().yields(static_cast<ResourceId>(c.resource))[c.material];
+            const bool exclusive=yield.consumption==ResourceConsumption::All || yield.destroysDeposit;
+            const bool pooled=!exclusive && farmAreasEnabled() && isFarmArea(int(c.access%getW()),int(c.access/getW()),unit->owner->me)
+                && isFarmableResourceByIndex(c.resource);
+            const unsigned reserve=pooled && yield.consumption!=ResourceConsumption::Infinite && !game->gameHeader.isResourceGrowthDisabled()?yield.seedReserve:0;
+            const auto amount=materialAmountAtSlot(c.source,c.material);
+            if(c.exclusive!=exclusive || c.reserve!=reserve || !acquireMaterialClaim(ResourceClaims::unitOwner(unit->gid,unit->scriptIdentity),c,
+                amount>reserve?amount-reserve:0,yield.consumption==ResourceConsumption::Infinite))
+                throw std::runtime_error("saved active claims exceed source capacity");
+        }
+    }
+    if(materialClaimRoutes)for(const auto& [owner,state]:materialClaimRoutes->states) {
+        const auto gid=Uint16(owner);const auto team=Unit::GIDtoTeam(gid),slot=Unit::GIDtoID(gid);
+        if(team>=game->teamsCount() || !game->teams[team])throw std::runtime_error("invalid saved claim route owner");
+        const auto* unit=game->teams[team]->myUnits[slot];
+        if(!unit || ResourceClaims::unitOwner(gid,unit->scriptIdentity)!=owner || !unit->activeMaterialClaim
+            || unit->materialClaimTask!=state.identity.task || unit->activeMaterialClaim->access!=state.target)
+            throw std::runtime_error("saved claim route does not match unit claim");
+        if(materialClaimPolicy()==ResourceClaims::ActiveClaimPolicy::Experimental && state.lastRefreshOrdinal>unit->materialClaimPolicyState.decisionOrdinal)
+            throw std::runtime_error("saved route refresh exceeds unit decision ordinal");
+    }
+
+}
+
+bool Map::activeClaimFarmConnected(const ResourceClaims::Claim& claim,Uint32 teamMask)
+{
+    if(claim.source==claim.access)return true;
+    if(claim.source>=cellCount() || claim.access>=cellCount() || !farmAreasEnabled())return false;
+    pickFarmHarvestTileSlot(int(claim.access%getW()),int(claim.access/getW()),claim.material,teamMask,claim.access);
+    return farmFloodStamps.size()==cellCount() && farmFloodStamps[claim.source]==farmFloodGeneration;
+}
+
+bool Map::takeClaimedMaterial(const ResourceClaims::Claim& claim,Uint32 teamMask)
+{
+    if(claim.source>=cellCount() || claim.access>=cellCount() || !validMaterial(claim.material)
+        || getResource(claim.source).type!=claim.resource || !materialAmountAtSlot(claim.source,claim.material)
+        || isForbidden(int(claim.access%getW()),int(claim.access/getW()),teamMask)
+        || !activeClaimFarmConnected(claim,teamMask))return false;
+    const auto& yield=resourceRegistry().yields(static_cast<ResourceId>(claim.resource))[claim.material];
+    if(yield.consumption!=ResourceConsumption::Infinite && materialAmountAtSlot(claim.source,claim.material)<=claim.reserve)return false;
+    return harvestMaterial(claim.source,claim.material);
+}

@@ -24,6 +24,7 @@ struct OwnedGradientField
 {
     std::shared_ptr<OpenCLRequiredControl> requiredControl=makeOpenCLRequiredControl();
     std::unique_ptr<std::uint16_t[]> data;
+    std::shared_ptr<OwnedDestinations> destinations;
     std::shared_ptr<const void> inputs;
     std::shared_ptr<BackendSession> session;
     field::Grid grid{1,1};

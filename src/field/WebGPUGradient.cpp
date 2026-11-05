@@ -10,9 +10,9 @@
 // task storage, so owner-side failure cannot release in-flight memory.
 extern "C" int glob2_gradient_worker_context();
 extern "C" void glob2_gradient_worker_wait(int *);
-extern "C" void glob2_gradient_prepare(int *, const char *, const char *, char *);
+extern "C" void glob2_gradient_prepare(int *, const char *, const char *, char *, const char *, const char *);
 extern "C" void glob2_gradient_execute(int *, const std::uint32_t *, const std::uint32_t *,
-									   std::uint32_t *, int, int, int, int);
+									   std::uint32_t *, int, int, int, int, int);
 extern "C" void glob2_gradient_shutdown();
 #endif
 namespace gradient_kernel
@@ -121,7 +121,8 @@ bool initializeWebGPUGradient()
 	task->hostBytes = sizeof(Task) + 128;
 	s.status.availability = Availability::Initializing;
 	glob2_gradient_prepare(task->signal.data(), gradient_shaders::frozen8WGSL,
-						   gradient_shaders::jacobiWGSL, task->metadata.data());
+						   gradient_shaders::jacobiWGSL, task->metadata.data(),
+                           gradient_shaders::frozen8_destinationsWGSL, gradient_shaders::jacobi_destinationsWGSL);
 	s.initialization = std::move(task);
 	// Initialization callbacks must not make owner-side coordinator shutdown wait
 	// on the browser event loop. Readiness is published by worker maintenance.
@@ -137,6 +138,8 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 		return false;
 	for (const auto &request : requests)
 		if (!request.gradient || !request.costAt || request.limit < 0 ||
+            bool(request.destinations.x) != bool(request.destinations.y) ||
+            (request.destinations && (request.grid.width() > DestinationPlanes::Invalid || request.grid.height() > DestinationPlanes::Invalid)) ||
 			request.operation != Operation::CompleteField)
 			return false;
 	maintainWebGPUGradient();
@@ -169,25 +172,29 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 	std::vector<std::unique_ptr<Task>> tasks;
 	for (const auto &request : requests)
 	{
-		const auto n = request.grid.cells(), tiles = std::size_t((request.grid.width() + 15) / 16) *
+		const bool destinations = bool(request.destinations);
+        const unsigned stride = destinations ? 2 : 1;
+        const auto n = request.grid.cells(), tiles = std::size_t((request.grid.width() + 15) / 16) *
 													 ((request.grid.height() + 15) / 16);
-		if (n > OpenCLHostBudget / 20)
+		if (n > OpenCLHostBudget / (destinations ? 32 : 20) ||
+            request.grid.width() > DestinationPlanes::Invalid || request.grid.height() > DestinationPlanes::Invalid)
 			return false;
 		auto task = std::make_unique<Task>();
-		const auto hostBytes = sizeof(Task) + 128 + n * 20 + tiles * 4 + 20,
-				   deviceBytes = n * 16 + 20 + tiles * 8;
+		const auto hostBytes = sizeof(Task) + 128 + n * (destinations ? 32 : 20) + tiles * 4 + 20,
+                   deviceBytes = n * (destinations ? 28 : 16) + 20 + tiles * 8;
 		if (!reserveOpenCLHostBytes(hostBytes))
 			return false;
 		task->hostBytes = hostBytes;
 		if (!reserveGradientDeviceBytes(deviceBytes))
 			return false;
 		task->deviceBytes = deviceBytes;
-		task->seeds.resize(n);
+		task->seeds.resize(n * stride);
 		task->costs.resize(n);
-		task->output.resize(n);
+		task->output.resize(n * stride);
 		for (std::size_t i = 0; i < n; ++i)
 		{
-			task->seeds[i] = request.gradient[i];
+			task->seeds[i * stride] = request.gradient[i];
+            if (destinations) task->seeds[i * stride + 1] = request.gradient[i] > GRADIENT_UNREACHABLE ? std::uint32_t(i) : UINT32_MAX;
 			const auto c = request.gradient[i] || request.identity.allCells
 							   ? request.costAt(request.context, i)
 							   : LAND_STEPS;
@@ -197,7 +204,7 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 		}
 		glob2_gradient_execute(task->signal.data(), task->seeds.data(), task->costs.data(),
 							   task->output.data(), request.grid.width(), request.grid.height(),
-							   std::min(request.limit, COST_LIMIT), plan == Plan::WebGPUFrozen8);
+							   std::min(request.limit, COST_LIMIT), plan == Plan::WebGPUFrozen8, destinations);
 		const bool ready = wait(task, &request);
 		if (task && task->signal[2] && request.deviceExecutionObserved)
 			*request.deviceExecutionObserved = true;
@@ -220,9 +227,21 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 			return false;
 		}		tasks.push_back(std::move(task));
 	}
+	// All results remain private until every member passes the commit gate.
+	for (const auto& request : requests)
+		if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
+			return false;
 	for (std::size_t i = 0; i < tasks.size(); ++i)
 	{
-		std::copy(tasks[i]->output.begin(), tasks[i]->output.end(), requests[i].gradient);
+		const auto& request = requests[i];
+        if (request.destinations) {
+            for (std::size_t cell = 0; cell < request.grid.cells(); ++cell) {
+                request.gradient[cell] = std::uint16_t(tasks[i]->output[cell*2]);
+                const auto source = tasks[i]->output[cell*2+1];
+                request.destinations.x[cell] = source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source % request.grid.width());
+                request.destinations.y[cell] = source == UINT32_MAX ? DestinationPlanes::Invalid : std::uint16_t(source / request.grid.width());
+            }
+        } else std::copy(tasks[i]->output.begin(), tasks[i]->output.end(), request.gradient);
 		if (requests[i].executedOnDevice)
 			*requests[i].executedOnDevice = true;
 	}

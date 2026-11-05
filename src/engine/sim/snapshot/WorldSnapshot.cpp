@@ -60,6 +60,7 @@ Handle Handle::project(Requirements requested) const
 	Handle result;
 	result.tick = tick; result.width = width; result.height = height; result.requirements = requested;
 	result.observationRevision = observationRevision;
+    result.activeClaimRuntimeChecksum = activeClaimRuntimeChecksum;
 	result.configurationRevision = configurationRevision; result.worldIdentity = worldIdentity; result.mapGenerations = mapGenerations;
 	if (needs(requested, Component::Session)) result.session = session;
 	if (needs(requested, Component::Effects)) result.effects = effects;
@@ -72,6 +73,7 @@ Handle Handle::project(Requirements requested) const
 	if (needs(requested, Component::Catalogs)) result.catalogs = catalogs;
 	if (needs(requested, Component::Terrain)) result.terrain = terrain;
 	if (needs(requested, Component::Resources)) result.resources = resources;
+	if (needs(requested, Component::Claims)) result.claims = claims;
 	if (needs(requested, Component::Occupancy)) result.occupancy = occupancy;
 	if (needs(requested, Component::Areas)) result.areas = areas;
 	if (needs(requested, Component::Visibility)) result.visibility = visibility;
@@ -89,6 +91,7 @@ MapState::View Handle::view() const
 	v.wDec = width > 0 ? unsigned(std::countr_zero(unsigned(width))) : 0;
 	v.wMask = Uint32(width - 1); v.hMask = Uint32(height - 1);
 	if (resources) { v.resources = resources->cells; v.stockIndices = &resources->stockIndices; v.stocks = &resources->stocks; v.materialSourceCounts = resources->materialSourceCounts; }
+	if (claims) v.claims = &claims->counts;
 	if (occupancy) v.occupancy = occupancy->cells;
 	if (areas) v.areas = areas->cells;
 	if (terrain) { v.cellRules = terrain->cellRules; v.rules = terrain->rules.get(); v.terrainRegistry = terrain->registry.get(); }
@@ -109,6 +112,7 @@ TileView Handle::tileAt(std::size_t index) const
 {
 	if (index >= std::size_t(width) * height) throw std::out_of_range("snapshot tile index");
 	TileView result;
+	result.materialClaims = materialClaimCountAt(index);
 	if (terrain) result.cellRule = terrain->cellRules.at(index);
 	if (resources) { const auto& c = resources->cells.at(index); result.resource = c.resource; result.fertility = c.fertility; result.resourcesMayGrow = c.mayGrow; }
 	// Derived ecology is read from frozen inputs on demand. Extraction never

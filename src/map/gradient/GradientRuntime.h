@@ -82,6 +82,7 @@ struct GradientRuntime
 	std::optional<Uint32> worldResultsPublishedTick;
 	std::optional<Uint32> worldWorkSubmittedTick;
 	GradientPipeline pipeline;
+    bool materialDestinationsEnabled = false;
     struct FieldRequest { Uint16** slot; gradient_preparation::Request request; };
     std::deque<FieldRequest> fieldRequests;
 	// Scheduled building fields share the executor with the periodic pipeline.

@@ -31,6 +31,7 @@ struct Storage
 	BufferPool<EntityDiagnostics> entityDiagnostics;
 	BufferPool<Annotations> annotations;
 	BufferPool<Resources> resources;
+	BufferPool<Claims> claims;
 	BufferPool<Occupancy> occupancy;
 	BufferPool<Areas> areas;
 	BufferPool<Visibility> visibility;
