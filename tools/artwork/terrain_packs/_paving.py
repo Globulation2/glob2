@@ -13,6 +13,7 @@ import math
 from dataclasses import dataclass
 
 from terrain_core import (
+    record_stones,
     NATIVE_PX,
     TAU,
     blend_fields,
@@ -285,6 +286,7 @@ def dress(ctx, rgb, p, decay, ids, edge, centres, stones, common_stones, radius,
     Paths group's worn lip and dull everything with dust.
 
     `rgb` is the stones' own colour. The knobs scale each kind of wear."""
+    record_stones(ctx, ids, edge, centres)
     size = ctx.size
     p = {**GROUND_PALETTE, **p}
     joint_mask, covered, height = surface(ctx, ids, edge, centres, stones, decay.chip, decay.patch, decay.wear,

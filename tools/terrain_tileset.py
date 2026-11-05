@@ -313,6 +313,17 @@ def _validate(document, root):
             grid = integer(m["variant_grid"], 1, 16, "Variant grid")
             if grid & (grid - 1) or m.get("edges") != "periodic" or len(m["variants"]) != grid * grid * blocks:
                 raise ValueError("variant_grid needs a power of two, periodic edges and grid*grid*blocks variants")
+        if "stones" in m:
+            # Whole-stone path edges: the stone map spans one variant block.
+            if version < 4 or "variant_grid" not in m:
+                raise ValueError("stones require catalog version 4 and a variant_grid")
+            stones = assets(root) / data_path(m["stones"], "Stone map")
+            if not stones.is_file():
+                raise ValueError(f"Missing stone map: {stones}")
+            with Image.open(stones) as image:
+                side = m["variant_grid"] * 128
+                if image.size != (2 * side, side):
+                    raise ValueError(f"Stone map must be two {side}x{side} blocks: {stones}")
         if "decor" in m:
             decor = m["decor"]
             decor_sprite = data_path(decor["sprite"], "Decor sprite")

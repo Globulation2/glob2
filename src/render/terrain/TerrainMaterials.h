@@ -185,6 +185,10 @@ struct Material
 	int variantGrid = 0;
 	// Interchangeable blocks share boundary geometry; choose one per map block.
 	int variantBlocks = 1;
+	// Laid stone paths ("stones"): the data path of the stone map that numbers
+	// the stones of the variant block, so their borders keep or drop whole
+	// stones (see TerrainStones.h). Empty for every other material.
+	std::string stones;
 	Decor decor;
 	Overlay overlay;
 	std::array<unsigned char, 3> preview{}, minimap{};
@@ -254,6 +258,40 @@ struct Recipe
 	// Q8 shore calm of each corner (see shoreCalm), zero away from land.
 	std::array<std::uint8_t, 4> calm{};
 	bool calmed() const { return calm != std::array<std::uint8_t, 4>{}; }
+	// Whole-stone path edges (see TerrainStones.h). When `stones` is set, the
+	// laid stones of stoneMaterial reach this cell: stoneGround is the ground
+	// a dropped stone reveals, and stonesKept holds, for this cell and its
+	// eight neighbours in row-major order from (-1,-1), one bit per stone
+	// centred in that cell, numbered as in the stone map: set when kept.
+	bool stones = false;
+	MaterialId stoneMaterial = 0, stoneGround = 0;
+	std::array<std::uint64_t, 9> stonesKept{};
+	// One material fills the whole cell: its corners agree and no stone
+	// border reaches it.
+	bool uniform() const
+	{
+		return !stones && corners[1] == corners[0] && corners[2] == corners[0] && corners[3] == corners[0];
+	}
+	// The distinct materials the cell may draw, in palette order: its corners,
+	// then the stone material and the ground of a stone border. Returns the count.
+	unsigned palette(std::array<MaterialId, 4> &out) const
+	{
+		unsigned count = 0;
+		const auto add = [&](MaterialId id)
+		{
+			for (unsigned i = 0; i < count; ++i)
+				if (out[i] == id) return;
+			// describe() sets stones only when all of them fit.
+			if (count < out.size()) out[count++] = id;
+		};
+		for (const auto id : corners) add(id);
+		if (stones)
+		{
+			add(stoneMaterial);
+			add(stoneGround);
+		}
+		return count;
+	}
 	bool operator==(const Recipe &) const = default;
 };
 struct Coverage

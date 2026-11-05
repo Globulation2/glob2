@@ -200,6 +200,7 @@ ENGINE_TESTS = [
     '#libs/gag/src/PortableRendererHarness.cpp',
     '#src/render/SoftwareRendererTest.cpp',
     '#src/render/terrain/TerrainMaterialsTest.cpp',
+    '#src/render/terrain/TerrainStonesTest.cpp',
     ('#src/render/TerrainPresentationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#libs/gag/src/RuntimePackCheck.cpp', dict(require={'opengl'})),
     ('#libs/gag/src/TextRasterHarness.cpp', dict(require={'opengl'})),

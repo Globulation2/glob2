@@ -238,6 +238,12 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		}
 		v.variantBlocks = integerInRange(m.value("variant_blocks", nlohmann::json(1)), 1, 16);
 		require(!m.contains("variant_blocks") || v.variantGrid, "variant_blocks requires variant_grid");
+		if (m.contains("stones"))
+		{
+			// The stone map numbers the stones of one variant block.
+			require(version >= 4 && v.variantGrid, "stones require catalog version 4 and a variant_grid");
+			v.stones = dataPath(m.at("stones"));
+		}
 		if (m.contains("variant_block_group"))
 		{
 			const auto &group = m.at("variant_block_group");

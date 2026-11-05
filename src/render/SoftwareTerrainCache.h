@@ -2,6 +2,7 @@
 #pragma once
 #include <SDLGraphicContext.h>
 #include "terrain/TerrainCompositor.h"
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <memory>
@@ -20,8 +21,10 @@ class SoftwareTerrainCache
   public:
 	static constexpr int ChunkTiles = 16, ChunkPixels = ChunkTiles * 32;
 	// Vertices beyond a page's corners that its cells read: contextual borders
-	// need one, shore calm searches ShoreCalmSearch toward land.
-	static constexpr int SourceHalo = std::max(1, TerrainVisual::ShoreCalmSearch);
+	// need one, shore calm searches ShoreCalmSearch toward land and whole-stone
+	// path edges StoneSearch.
+	static constexpr int SourceHalo =
+		std::max({1, TerrainVisual::ShoreCalmSearch, TerrainVisual::StoneSearch});
 	static constexpr int SourceSpan = ChunkTiles + 1 + 2 * SourceHalo;
 	static constexpr std::size_t Budget = 32u * 1024u * 1024u, GPUBudget = 128u * 1024u * 1024u;
 	// Preserve the existing density/GPU allowance; keep inactive zoom pixels

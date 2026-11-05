@@ -2468,6 +2468,30 @@ TEST_SUITE("TerrainValidation")
 			{{"brick-path-staircase", 0, 12}, {"trail-plaza-corner", 15, 2}});
 	}
 
+	GLOB2_TEST_CASE("stone paths end on whole stones in HD",
+					"[display][isolated][artifacts][writes-preferences]")
+	{
+		// Four stone paths, each a staircase beside a block with a notch and a bump.
+		static constexpr TerrainType paths[4] = {SANDSTONE, SLATE_ASHLAR, OVERGROWN_ROAD, MOONSTONE_LOZENGE};
+		captureHd(
+			[](auto &map)
+			{
+				for (int panel = 0; panel < 4; ++panel)
+				{
+					const int ox = (panel & 1) * 16, oy = (panel >> 1) * 16;
+					for (int y = 1; y <= 14; ++y)
+						for (int x = 1; x <= 14; ++x)
+						{
+							const bool stairs = x - y >= -1 && x - y < 2 && x <= 7;
+							const bool block = x >= 9 && x <= 14 && y >= 2 && y <= 8 && !(x == 14 && y == 5);
+							if (stairs || block || (x == 8 && y == 4))
+								map.setVertexTerrain(ox + x, oy + y, paths[panel]);
+						}
+				}
+			},
+			{{"sandstone", 3, 0}, {"slate-ashlar", 19, 0}, {"mossy-setts", 3, 16}, {"moonstone-lozenge", 19, 16}});
+	}
+
 	TEST_CASE("shoreline surf animation frames around an island [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(

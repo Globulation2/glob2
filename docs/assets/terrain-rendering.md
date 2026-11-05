@@ -222,6 +222,39 @@ texture detail. The four-pixel border blend operates on premultiplied RGBA, so b
 color and opacity agree across variants without introducing dark transparent fringes.
 The compositor does not bake a texture-by-mask-by-material-pair product.
 
+### Whole-stone edges
+
+Laid stone paths end on whole stones: where trail, brick path, mossy setts,
+sandstone tiles or the ashlar, causeway, scoria, lozenge and pinwheel paths meet
+other ground, each stone is kept or dropped as a unit, so the edge runs along
+the joints instead of cutting a stone. Boardwalk keeps the cut border, as sawn
+planks would. A material opts in with `"stones"`, the data path of its stone
+map (see [Stone maps](terrain-production.md#stone-maps)).
+
+A stone follows the smooth border at its centre: it is kept when its material
+has the largest coverage there. The decision is made once per stone, not per
+pixel. `Compositor::describe` records, for a cell and its eight neighbours, one
+bit per stone centred in each (`Recipe::stonesKept`), because a stone reaches at
+most one cell beyond the one holding its centre. A stone that spans two cells
+reads the same bit from both, and cached pages that compare recipes rebuild
+when any decision changes. Where two stone paths meet, the dominant one keeps
+whole stones; a cell whose corners, stone material and revealed ground would
+exceed four materials keeps the smooth border.
+
+Sampling a pixel then costs one stone-map lookup and a bit test. A kept stone's
+face fades into the ground it borders over one logical pixel, half on either
+side of the joint; a dropped stone reveals the most common other ground around
+the cell. The seam distance measures from the stone edge, so the path's seam
+cast draws a contact shadow along the stones. Kept stones may overhang into a
+cell whose corners all show other ground, so such cells are not uniform
+(`Recipe::uniform`) and draw a mask; their palette lists the stone material and
+the revealed ground after the corners (`Recipe::palette`). Every pipeline,
+software and GPU pages at any oversampling and direct terrain, reads the same
+masks. Overview recipes leave stones out.
+
+Stone maps are decoded on first use (four bytes per texel, 4 MiB for an 8×8
+block at HD resolution) and kept; a map without stone paths decodes none.
+
 ### Seams
 
 Textures are never cross-faded across a boundary; a wide fade averages unrelated

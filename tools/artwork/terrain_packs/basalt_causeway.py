@@ -95,7 +95,7 @@ def fragments(size, rng, spacing):
         palette={**ASH_GROUND, "dark": (30, 32, 36), "mid": (52, 54, 58), "light": (80, 82, 86),
                  "warm": (66, 58, 54), "cool": (44, 52, 64), "sheen": (112, 116, 122),
                  "ash_dark": (64, 60, 57), "ash_light": (94, 89, 83), "cinder": (30, 28, 28)},
-        style=Style(luma=60, std=16, grain_max=14, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=60, std=16, grain_max=14, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_basalt_causeway(ctx):
     p, size = RECIPES["basalt_causeway"].palette, ctx.size
     centres, ids, edge, step = polygons(size, ctx.shared_rng, gap=1.2 * NATIVE_PX)

@@ -459,6 +459,23 @@ as for periodic edges. Use it for a field that must be larger than one cell, suc
 as travelling waves. Map artwork bundles do not accept the key, so maps that
 carry custom art still load in older clients.
 
+#### Stone maps
+
+Laid stone paths set `stone_edges=True` on their recipe, and their geometry
+calls `record_stones(ctx, ids, edge, centres)` (the shared `dress` step does so
+for every path built on `_paving.py`). `terrain_synth.py --stone-maps` renders
+layout 0 of each such path, since every layout shares the stone layout, and
+writes `content/data/terrain/stones/<key>.png` together with the material's
+`stones` catalog field. Rerun it whenever a path's stone layout changes. The map
+covers the whole variant block at HD resolution (four texels per logical pixel).
+Each RGBA8 texel holds the texel's stone and the stone across the nearest joint,
+each as its number among the stones centred in one cell plus that cell's offset
+(`(dx + 1) + 3 (dy + 1)`), and the joint distance in native pixels × 32; a cell
+may hold the centres of at most 64 stones, and no stone may reach more than one
+cell beyond the cell holding its centre (`terrain_stones.py` checks both). See
+[Whole-stone edges](terrain-rendering.md#whole-stone-edges) for the runtime.
+Sawn wooden paths such as boardwalk leave the flag off.
+
 #### Interchangeable blocks
 
 Every static built-in material uses four interchangeable 8×8 blocks with

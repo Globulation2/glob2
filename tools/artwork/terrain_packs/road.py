@@ -39,7 +39,7 @@ def sett_rectangles(size, rng):
                  'warm': (152, 124, 86), 'cool': (100, 112, 124), 'stain': (138, 96, 58), 'joint': (62, 50, 36),
                  'grit': (112, 98, 76), 'soil': (70, 56, 40), 'dust': (132, 120, 100)},
         style=Style(luma=116, std=22, grain_max=11),
-        periodic=True, grid=8, blocks=4, preview=(133, 120, 101), minimap=(176, 138, 98))
+        periodic=True, grid=8, blocks=4, preview=(133, 120, 101), minimap=(176, 138, 98), stone_edges=True)
 def render_road(ctx):
     """An old trail of stone setts in uneven running courses: settled, chipped
     and sunken, a few cracked or lost to the dirt, grit and moss in the joints

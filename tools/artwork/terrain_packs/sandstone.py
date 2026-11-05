@@ -65,7 +65,7 @@ def flag_geometry(size, rng, merge=0.12):
                  "crack": (86, 76, 62), "speck": (96, 86, 70), "warm": (178, 136, 104), "cool": (126, 136, 118),
                  "dust": (146, 130, 102), "soil": (96, 84, 64), "grit": (138, 122, 96), "stain": (158, 112, 70),
                  "rubble": (150, 140, 118)},
-        style=Style(luma=130, std=18, grain_max=10, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=130, std=18, grain_max=10, match=0.8), periodic=True, grid=8, blocks=4, stone_edges=True)
 def render_sandstone(ctx):
     """Square sandstone flags, two by two per cell, each its own shade between
     ochre and grey as the bed it was cut from ran, set in dark joints and worn:
