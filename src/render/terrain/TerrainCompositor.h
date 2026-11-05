@@ -91,12 +91,22 @@ class Compositor
 	// the ordinary renderer. Material lookup also serves editor swatches.
 	GAGCore::Sprite *decorSprite() const { return sharedDecorSprite; }
     GAGCore::Sprite *decorSprite(MaterialId id) const { return decorSprites.at(id); }
-    GAGCore::Sprite *decorSprite(const SceneMap &map, int x, int y) const;
 	// How far the largest decor frame reaches past its cell, for view culling.
 	DecorReach decorReach() const { return reach; }
-	// Any undecorated corner suppresses raised objects. Decorated-only borders
-	// choose one material, weighted by corner count, using presentation hashing.
-	int decorFrame(const SceneMap &, int x, int y) const;
+	// A cell's raised decor, one frame per slot, drawn in slot order: connected
+	// decor that stands on open ground (cliffs), connected foliage (hedge and
+	// thicket, which join one another), then every other obstacle. Each slot
+	// draws only from its own corners, so cliffs keep their walls against
+	// foliage and crags. An undecorated corner suppresses the last two slots;
+	// within a slot, mixed materials choose one by presentation hashing,
+	// weighted by corner count.
+	static constexpr unsigned DecorSlots = 3;
+	struct DecorLayer
+	{
+		GAGCore::Sprite *sprite = nullptr;
+		int frame = -1;
+	};
+	std::array<DecorLayer, DecorSlots> decorLayers(const SceneMap &, int x, int y) const;
 	// Flat animated overlays (fertile glints), drawn under decor. A cell draws
 	// one only when all four corners carry an overlay. `time` is the presentation
 	// clock that animates lava and water (MapRenderState::animationTime), not the
@@ -203,7 +213,7 @@ class Compositor
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
     Recipe describe(const SceneMap &, int x, int y, bool shoreCalm) const;
 	void describeShoreCalm(const SceneMap&, Recipe &) const;
-    std::pair<MaterialId, unsigned> decorMaterial(const SceneMap&, int x, int y) const;
+    unsigned decorSlot(MaterialId) const;
 	MaterialId overlayMaterial(const SceneMap &, int x, int y, bool &found) const;
 	std::shared_ptr<CompiledPack> pack;
 	std::map<std::uint64_t, std::uint64_t> cleanSources;

@@ -249,23 +249,30 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "content/data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- A cell draws raised decor only when every corner resolves to a decorated
-  material. An undecorated corner, such as ordinary grass, sand or water, suppresses all
-  raised objects in that cell, preserving a clear border against open ground.
-  Eligibility follows rendered material bindings, including custom materials.
-  The exception is connected decor with `"connected_open": true` (cliffs and glacier): when
-  every decorated corner of a cell has it, open-ground corners simply count as
-  empty in the corner mask, so the rim and walls stand on the grass. A cell where
-  such a material meets foliage and open ground keeps the foliage rule.
+- A cell draws up to three decor layers, in order: connected decor that
+  stands on open ground (`"connected_open": true`, cliffs and glacier),
+  connected foliage (hedge and thicket), then every other obstacle (boulders
+  and crags). Each layer draws only from its own corners, so cliffs show their walls where they
+  meet foliage or crags, and the foliage or rocks keep their own edge on the
+  other side. Eligibility follows rendered material bindings, including custom
+  materials.
+- An undecorated corner, such as ordinary grass, sand or water, suppresses the
+  foliage and obstacle layers in that cell, preserving a clear border against
+  open ground. The open-ground layer still draws there, so the rim and walls of
+  cliffs and glacier stand on the grass.
+- Obstacle clusters stand in the middle of their cell, not on their corners,
+  so a cell where cliffs hold more corners than the obstacles draws only the
+  cliff edge; otherwise a stray rock would stand on the plateau.
 - Uniform cells keep their existing `full` or connected mask-15 frames and
-  interior variants. A border between decorated materials draws just one
+  interior variants. Within one layer, mixed materials draw just one
   material's ornament: a deterministic coordinate/terrain-seed hash chooses a
   corner, so two-plus-two corners give each material equal odds and three-plus-one
   corners give a three-to-one split. This uses no simulation random numbers.
 - Mixed decorated cells use the selected material's `edge` frames, including
-  when it occupies just one corner. Connected foliage retains its authored
-  corner geometry; adjacent connected foliage materials join into one crown of
-  the selected material. No overlapping ornaments or new artwork are needed.
+  when it occupies just one corner. Connected decor retains its authored
+  corner geometry; connected materials of the same layer join into one crown of
+  the selected material (hedge with thicket), while other layers' corners count
+  as an edge. No overlapping ornaments or new artwork are needed.
 - Connected arrays have 16 mask groups with equal variant counts (top-left bit 1,
   top-right bit 2, bottom-left bit 4, bottom-right bit 8). `connected_corners`
   retains its seeded corner-colour variants; `connected_interior` supplies
@@ -350,8 +357,9 @@ by the frames that share it. Its ground material is talus: the chips and cobbles
 of scree in the cliff stone.
 Cliffs set `connected_open`, so their partial-corner tiles draw against open
 ground and even a one-vertex ridge stands up with its walls; the plateau's rim
-follows the crags rather than the cell grid. Connected materials join one
-another, so cliffs painted against hedge or thicket meet them without a wall.
+follows the crags rather than the cell grid. Cliffs draw in their own decor
+layer, so against hedge, thicket or crags they keep their walls and the
+neighbour keeps its own edge.
 
 Glacier is the same connected plateau rendered in ice by a second cliff style
 (`GLACIER_STYLE` in `terrain_decor.py`): a snowfield of firn with wind-packed
@@ -362,8 +370,9 @@ shadow. A cell edge has only four variants, which would line its crevasses up
 along rows, so glacier crevasses belong to the hash-chosen interiors of filled
 cells, at most two per cell on separate rows. Its ground material is moraine:
 the talus chips and cobbles, thinned out, in cold grey stone on packed snow.
-Glacier sets `connected_open` like cliffs and joins cliffs, hedge and thicket
-without a wall between them.
+Glacier sets `connected_open` like cliffs and draws in the same decor layer,
+so it joins cliffs without a wall between them; against hedge, thicket or
+crags it keeps its walls, as cliffs do.
 
 The tool writes `content/data/gfx/terrain-decorN.png`
 (legacy set k at frames 12k–12k+11; hedge corner tiles at 60–315 and interiors at

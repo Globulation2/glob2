@@ -44,6 +44,8 @@
 
 namespace
 {
+// Geometry cache keys: resources 1, overlays 3, then one per decor slot.
+constexpr int DecorLayerKey = 4;
 // Obstacle decor (boulders, hedges, rock) and resource images overlap
 // neighboring tiles. Each canonical row draws its decor first, then its
 // resources, so lower rows stay in front of higher ones across both layers.
@@ -124,7 +126,9 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                     return changed;
                 };
                 bool resourcesChanged = resetLayer(row.resources);
-                bool decorChanged = resetLayer(row.decor);
+                std::array<bool, TerrainVisual::Compositor::DecorSlots> decorChanged{};
+                for (unsigned slot = 0; slot < decorChanged.size(); ++slot)
+                    decorChanged[slot] = resetLayer(row.decor[slot]);
                 bool overlayChanged = resetLayer(row.overlay);
                 const auto store = [](int &previous, int value, bool &changed) {
                     changed |= previous != value;
@@ -147,9 +151,13 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                         if (type.animationFrames > 1) row.resources.animated.push_back(x);
                     }
                     store(row.resources.frames[x], frame, resourcesChanged);
-                    const int decor = decorSprite ? compositor.decorFrame(map, x, mapY) : -1;
-                    store(row.decor.frames[x], decor, decorChanged);
-                    row.decor.visibleFrames += decor >= 0;
+                    std::array<TerrainVisual::Compositor::DecorLayer, TerrainVisual::Compositor::DecorSlots> decor{};
+                    if (decorSprite) decor = compositor.decorLayers(map, x, mapY);
+                    for (unsigned slot = 0; slot < decor.size(); ++slot)
+                    {
+                        store(row.decor[slot].frames[x], decor[slot].frame, decorChanged[slot]);
+                        row.decor[slot].visibleFrames += decor[slot].frame >= 0;
+                    }
                     bool overlayAnimated = false;
                     const int overlay = overlaySprite ? compositor.overlayFrame(map, x, mapY, animationTime, &overlayAnimated) : -1;
                     store(row.overlay.frames[x], overlay, overlayChanged);
@@ -158,7 +166,8 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                 }
                 row.resourceRevision = rows.resourceRevisions[mapY];
                 if (resourcesChanged) row.resources.revision = ++nextRevision;
-                if (decorChanged) row.decor.revision = ++nextRevision;
+                for (unsigned slot = 0; slot < decorChanged.size(); ++slot)
+                    if (decorChanged[slot]) row.decor[slot].revision = ++nextRevision;
                 if (overlayChanged) row.overlay.revision = ++nextRevision;
                 row.refreshGeometry = false;
                 row.built = true;
@@ -215,7 +224,7 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                 if (frame < 0) continue;
                 const int h = layerSprite->getH(frame);
                 int dx = (layerSprite->getW(frame) - 32) >> 1;
-                int dy = layerKey == 2 ? TerrainVisual::decorOffsetY(h) : (h - 32) >> 1;
+                int dy = layerKey >= DecorLayerKey ? TerrainVisual::decorOffsetY(h) : (h - 32) >> 1;
                 gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, layerSprite, frame);
             }
             gfx->finishDrawingSprite(layerSprite, 255);
@@ -257,8 +266,10 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
     {
         const int mapY = (y + viewportY) & map.getMaskH();
         const auto &row = rows[mapY];
-        if (row.decor.visibleFrames)
-            drawLayer(decorSprite, row.decor.frames, 2, y, mapY, row.decor.revision);
+        for (unsigned slot = 0; slot < row.decor.size(); ++slot)
+            if (row.decor[slot].visibleFrames)
+                drawLayer(decorSprite, row.decor[slot].frames, DecorLayerKey + int(slot), y, mapY,
+                    row.decor[slot].revision);
         drawLayer(sprite, row.resources.frames, 1, y, mapY, row.resources.revision);
     }
     return true;
@@ -338,29 +349,35 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 											 overlaySprite, frame);
 		}
 	std::vector<int> visibleColumns;
+	std::vector<std::array<TerrainVisual::Compositor::DecorLayer, TerrainVisual::Compositor::DecorSlots>> rowDecor;
 	for (int y = top; y <= bot; ++y)
 	{
 		visibleColumns.clear();
-		// Keep canonical row layering identical to cached GPU geometry: all
-		// terrain decorations, then all resources, preserving cell order.
+		// Keep canonical row layering identical to cached GPU geometry: each
+		// decor slot in turn, then all resources, preserving cell order.
+		rowDecor.clear();
 		for (int x = left; x <= right; ++x)
 			if (visible(x, y))
 			{
 				visibleColumns.push_back(x);
-				auto *decorSprite = compositor.decorSprite(sceneMap, x + viewportX, y + viewportY);
-				if (!decorSprite)
+				rowDecor.push_back(compositor.decorLayers(sceneMap, x + viewportX, y + viewportY));
+			}
+		for (unsigned slot = 0; slot < TerrainVisual::Compositor::DecorSlots; ++slot)
+			for (std::size_t column = 0; column < visibleColumns.size(); ++column)
+			{
+				const int x = visibleColumns[column];
+				const auto &layer = rowDecor[column][slot];
+				if (!layer.sprite)
 					continue;
-				const int frame = compositor.decorFrame(sceneMap, x + viewportX, y + viewportY);
-				if (frame < 0)
-					continue;
-				if (pendingSprite != decorSprite)
+				if (pendingSprite != layer.sprite)
 				{
 					flush();
-					pendingSprite = decorSprite;
+					pendingSprite = layer.sprite;
 				}
 				globalContainer->gfx->drawSprite(
-					(x << 5) - TerrainVisual::decorOffsetX(decorSprite->getW(frame)),
-					(y << 5) - TerrainVisual::decorOffsetY(decorSprite->getH(frame)), decorSprite, frame);
+					(x << 5) - TerrainVisual::decorOffsetX(layer.sprite->getW(layer.frame)),
+					(y << 5) - TerrainVisual::decorOffsetY(layer.sprite->getH(layer.frame)), layer.sprite,
+					layer.frame);
 			}
 		for (int x : visibleColumns)
 		{
