@@ -1473,7 +1473,8 @@ GeneratorDefinition honeycombIsleDefinition()
 		"Honeycomb isle",
 		// Revision 5: a board of terrain hexes on the terrain catalogue (fields, forests, pastures,
 		// hills, mountains, lakes, a desert oasis), cobbled roads and a deep sea.
-		6,
+		// Revision 7: fertile ground contributes 48 Q8 to crop growth.
+		7,
 		false,
 		// Hexes of 18 with roads of 3 leave a hex's inside about 15 tiles across, room for a
 		// cistern garden and a swarm's neighbourhood, or a mountain and its quarry.
