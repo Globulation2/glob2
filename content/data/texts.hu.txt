@@ -5742,6 +5742,12 @@ Laterit
 Sziklafalak
 [molten_lava_pool]
 Olvadt lávató
+[slate_ashlar]
+Palalapok
+[basalt_causeway]
+Bazaltút
+[scoria_blocks]
+Salakkőtömbök
 [terrain group water]
 Víz
 [terrain group sand]

@@ -5742,6 +5742,12 @@ Lateriitti
 Jyrkänteet
 [molten_lava_pool]
 Sulan laavan allas
+[slate_ashlar]
+Liuskekivilaatat
+[basalt_causeway]
+Basalttipenger
+[scoria_blocks]
+Kuonakivet
 [terrain group water]
 Vesi
 [terrain group sand]

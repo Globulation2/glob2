@@ -5742,6 +5742,12 @@ Laterit
 Klippor
 [molten_lava_pool]
 Pöl av smält lava
+[slate_ashlar]
+Skifferhällar
+[basalt_causeway]
+Basaltvall
+[scoria_blocks]
+Slaggblock
 [terrain group water]
 Vatten
 [terrain group sand]

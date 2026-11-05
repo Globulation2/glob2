@@ -5718,6 +5718,12 @@ Laterittjord
 Klipper
 [molten_lava_pool]
 Pøl av smeltet lava
+[slate_ashlar]
+Skiferheller
+[basalt_causeway]
+Basaltdemning
+[scoria_blocks]
+Slaggblokker
 [terrain group water]
 Vann
 [terrain group sand]

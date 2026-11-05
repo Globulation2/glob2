@@ -5718,6 +5718,12 @@ FFmpeg не е наличен, така че записът е изключен.
 Скали
 [molten_lava_pool]
 Езеро от разтопена лава
+[slate_ashlar]
+Плочи от шисти
+[basalt_causeway]
+Базалтов път
+[scoria_blocks]
+Блокове от скория
 [terrain group water]
 Вода
 [terrain group sand]

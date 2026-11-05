@@ -5742,6 +5742,12 @@ Laterita
 Acantilados
 [molten_lava_pool]
 Estanque de lava fundida
+[slate_ashlar]
+Losas de pizarra
+[basalt_causeway]
+Calzada de basalto
+[scoria_blocks]
+Bloques de escoria
 [terrain group water]
 Agua
 [terrain group sand]

@@ -6864,6 +6864,12 @@ Laterit
 Tebing
 [molten_lava_pool]
 Kolam lava lebur
+[slate_ashlar]
+Jubin batu loh
+[basalt_causeway]
+Jalan basalt
+[scoria_blocks]
+Bongkah skoria
 [AI for all computer colonies]
 AI untuk semua koloni komputer
 [script compilation success]

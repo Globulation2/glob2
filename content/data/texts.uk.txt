@@ -5742,6 +5742,12 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Скелі
 [molten_lava_pool]
 Озеро розплавленої лави
+[slate_ashlar]
+Сланцеві плити
+[basalt_causeway]
+Базальтова гребля
+[scoria_blocks]
+Блоки шлаку
 [terrain group water]
 Вода
 [terrain group sand]

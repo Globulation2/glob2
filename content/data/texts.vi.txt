@@ -5742,6 +5742,12 @@ Con đường cỏ mọc um tùm
 Vách đá
 [molten_lava_pool]
 Hồ dung nham nóng chảy
+[slate_ashlar]
+Đá phiến lát
+[basalt_causeway]
+Đường đá bazan
+[scoria_blocks]
+Khối đá xỉ
 [terrain group water]
 Nước
 [terrain group sand]

@@ -5718,6 +5718,12 @@ AI کی بنائی ہوئی نہیں
 چٹانیں
 [molten_lava_pool]
 پگھلے لاوے کا تالاب
+[slate_ashlar]
+سلیٹ پتھر کی سلیں
+[basalt_causeway]
+بیسالٹ کی گزرگاہ
+[scoria_blocks]
+اسکوریا کے بلاک
 [terrain group water]
 پانی
 [terrain group sand]

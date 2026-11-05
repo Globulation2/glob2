@@ -5742,6 +5742,12 @@ Laterit
 Stânci
 [molten_lava_pool]
 Lac de lavă topită
+[slate_ashlar]
+Dale de ardezie
+[basalt_causeway]
+Drum de bazalt
+[scoria_blocks]
+Blocuri de zgură
 [terrain group water]
 Apă
 [terrain group sand]

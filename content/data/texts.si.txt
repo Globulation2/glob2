@@ -5742,6 +5742,12 @@ Lateritna tla
 Pečine
 [molten_lava_pool]
 Bazen staljene lave
+[slate_ashlar]
+Skrilaste plošče
+[basalt_causeway]
+Bazaltni nasip
+[scoria_blocks]
+Bloki žlindre
 [terrain group water]
 Voda
 [terrain group sand]

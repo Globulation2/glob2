@@ -4,7 +4,7 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-All 47 built-in materials, including grass, sand, their lush, dry, dune, pale and
+All 50 built-in materials, including grass, sand, their lush, dry, dune, pale and
 windy dune looks, road, ice and regular water,
 are produced by `tools/artwork/terrain_synth.py`. Each material is a small
 pack that can be tuned on its own: its recipe and render function live in
@@ -103,7 +103,7 @@ colour and material stay free per biome:
 | Snow and ice (ice, deep snow, wind-swept snow, frozen lake, glacier ice) | reserved cold white, pale teal and glacier blue | `warped_edges`, `bubbles` (frozen lake), `drift_ridges` (wind-swept snow), `fracture_planes`, `flat_bubbles` (glacier ice) |
 | Sand | warm fine grain | `sand_look` |
 | Barren (dirt, clay, shale, heath, weathered sandstone, tundra, volcanic ash, laterite) | faded colour, prominent broken dry cracks one to two native pixels wide | `barren_mark`, `group_cracks`; `plates`, `jag`, `cast` (shale) |
-| Paths (road, brick path, boardwalk, sandstone tiles, mossy setts) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip, worn into the ground | `worn_edge`, `_paving` (settle, chip, crack, lose, fill and reclaim), `herringbone`, `hex_paving` (mossy setts) |
+| Paths (road, brick path, boardwalk, sandstone tiles, mossy setts, slate ashlar, basalt causeway, scoria blocks) | laid, made surfaces: joints between setts, bricks, planks or flags, with a crisp, lighter worn lip, worn into the ground | `worn_edge`, `_paving` (settle, chip, crack, lose, fill and reclaim), `herringbone`, `hex_paving` (mossy setts); `_rock_paths` (ash and upland joint ground, lichen and grain stamps) |
 | Rough (mud, mudflat, scree, pumice field, hardpan) | heavy relief about two native tiles across: lumps, curled plates or heaped slabs, with sunken pits | `lumps`, `wet_pits`; `rock_layer`, `scree_fields` (scree) |
 | Crags (`ridge_rock`, shown as Rock spires; `outcrop`, shown as Basalt columns) | long low ledges: a lit lip, then a short shaded riser | `ridge_mark` |
 | Void (hole, chasm) | near-black depth; the hole casts onto every neighbour | |
@@ -148,7 +148,26 @@ the joints, a few cracked setts, and reclaimed patches where setts are lost to
 soil, olive moss and weeds and moss creeps over the stone edges. Its hex lattice
 is squashed by under one percent so it repeats exactly on the block, and each
 sett's tone, tilt and fate come from the shared stream when it reaches the
-block edge. Mud is churned lumps about a fifth of a tile across and
+block edge. The three rock paths sit beside the grey and volcanic grounds and
+each has its own wear language over `_paving`'s; `_rock_paths` gives them their
+joint ground and stamps. Slate ashlar is blue-grey slabs of a few modular sizes,
+a quarter tile to a tile long, in random ashlar with dark grit joints: the grain
+runs along each slab's long side, rims flake away in thin stepped layers that
+show darker fresh stone, a few slabs have lost a whole top lamina or split right
+across along the grain with one side settled lower, crusty lichen rosettes hug
+the rims of quiet stretches, and lost slabs leave grit and grey moss. Basalt
+causeway is near-black polygonal stones about half a tile across, five to seven
+sided and evened out by one Lloyd relaxation step so they read as laid rather
+than as a honeycomb, in pale ash joints so the dark stone stays a road beside
+volcanic ash and pumice: walked stretches polish the crowns, stones tip and
+sink unevenly, about one in six has shattered along a finer web of cooling
+joints, and ash drifts fill the joints and settle over sunken stones. Scoria
+blocks is dressed porous lava stone, a tile by half a tile, in basketweave
+offset half a square so no joint follows a tile edge: rims are bitten back and
+shed cinders into the joints, walked stretches dish the faces, vesicles come in
+clusters, some packed with ash, a few oxidised blocks are brown and bleed rust
+into their joints, and lost blocks are often only partly gone, leaving a pit of
+loose cinder. Mud is churned lumps about a fifth of a tile across and
 water-filled pits;
 mudflat is desiccated mud in big curled plates split by deep cracks,
 with salt bloom and a few damp sunken plates; scree is a bed of loose, angular,
@@ -558,7 +577,7 @@ without pair treatments. Classes, strongest first:
 | --- | --- | --- |
 | `cover` | hedge, thicket, cliffs | `canopy` |
 | `cut` | void_hole, chasm | `crisp` |
-| `built` | road, brick_path, sandstone, overgrown_road, boardwalk | `paved`, `crisp` |
+| `built` | road, brick_path, sandstone, overgrown_road, boardwalk, slate_ashlar, basalt_causeway, scoria_blocks | `paved`, `crisp` |
 | `flow` | lava, ember_field, molten_lava_pool | `molten` |
 | `solid` | everything else | `rock`, `soil`, `frozen`, `brush`, `turf`, `sand` |
 | `pool` (shoreline) | water, deep_water, dark_water | `still` |
@@ -567,7 +586,7 @@ without pair treatments. Classes, strongest first:
 | --- | --- | --- | --- | --- |
 | `canopy` | patch | 0 | 0 / 0 / 128 / 0 / 512 | hedge, thicket, cliffs |
 | `crisp` | patch | 20 | 96 / 256 / 128 / 0 / 256 | void_hole, chasm, boardwalk |
-| `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone, overgrown_road |
+| `paved` | smooth, wiggle 256 / 128 px, squareness 224 | 10 | – / – / 224 / – / 384 | road, brick_path, sandstone, overgrown_road, slate_ashlar, basalt_causeway, scoria_blocks |
 | `track` | smooth, wiggle 768 / 64 px, squareness 128 | 0 | – / – / 320 / – / 512 | none since dirt track became brick path; kept for future tracks |
 | `molten` | smooth, wiggle 1536 / 64 px | 0 | – / – / 320 / – / 512 | lava, ember_field, molten_lava_pool |
 | `still` | smooth, wiggle 1536 / 128 px | 0 | – / – / 320 / – / 640 | water, deep_water, dark_water |

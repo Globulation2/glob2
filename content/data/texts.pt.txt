@@ -5742,6 +5742,12 @@ Laterita
 Penhascos
 [molten_lava_pool]
 Poça de lava derretida
+[slate_ashlar]
+Lajes de ardósia
+[basalt_causeway]
+Calçada de basalto
+[scoria_blocks]
+Blocos de escória
 [terrain group water]
 Água
 [terrain group sand]

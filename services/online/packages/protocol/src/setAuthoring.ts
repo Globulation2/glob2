@@ -48,6 +48,9 @@ export const TERRAIN_PRESETS = [
   'laterite',
   'cliffs',
   'molten_lava_pool',
+  'slate_ashlar',
+  'basalt_causeway',
+  'scoria_blocks',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay

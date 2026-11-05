@@ -5742,6 +5742,12 @@ Laterit
 Klipper
 [molten_lava_pool]
 Pøl af smeltet lava
+[slate_ashlar]
+Skiferfliser
+[basalt_causeway]
+Basaltdæmning
+[scoria_blocks]
+Slaggeblokke
 [terrain group water]
 Vand
 [terrain group sand]

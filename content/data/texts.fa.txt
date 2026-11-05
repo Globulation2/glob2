@@ -5742,6 +5742,12 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 صخره‌ها
 [molten_lava_pool]
 برکه گدازه مذاب
+[slate_ashlar]
+سنگ‌فرش لوح
+[basalt_causeway]
+گذرگاه بازالتی
+[scoria_blocks]
+بلوک‌های اسکوریا
 [terrain group water]
 آب
 [terrain group sand]

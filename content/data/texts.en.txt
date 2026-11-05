@@ -5720,6 +5720,12 @@ Laterite
 Cliffs
 [molten_lava_pool]
 Molten lava pool
+[slate_ashlar]
+Slate ashlar
+[basalt_causeway]
+Basalt causeway
+[scoria_blocks]
+Scoria blocks
 [terrain group water]
 Water
 [terrain group sand]

@@ -5742,6 +5742,12 @@ Lateryt
 Klify
 [molten_lava_pool]
 Jezioro roztopionej lawy
+[slate_ashlar]
+Płyty łupkowe
+[basalt_causeway]
+Bazaltowa grobla
+[scoria_blocks]
+Bloki żużlowe
 [terrain group water]
 Woda
 [terrain group sand]

@@ -5718,6 +5718,12 @@ AI ద్వారా రూపొందించబడలేదు
 కొండచరియలు
 [molten_lava_pool]
 కరిగిన లావా కొలను
+[slate_ashlar]
+స్లేట్ రాతి పలకలు
+[basalt_causeway]
+బసాల్ట్ కాలిబాట
+[scoria_blocks]
+స్కోరియా దిమ్మెలు
 [terrain group water]
 నీరు
 [terrain group sand]

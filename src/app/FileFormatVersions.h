@@ -405,3 +405,8 @@ static constexpr int FILE_FORMAT_VERSION_CLIFFS = 206;
 //! Built-in molten lava pool: TERRAIN_COUNT grew from 46 to 47, so earlier files carry
 //! custom terrain IDs starting at 46 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_MOLTEN_LAVA_POOL = 207;
+
+//! Built-in rock paths (slate ashlar, basalt causeway, scoria blocks): TERRAIN_COUNT grew
+//! from 47 to 50, so earlier files carry custom terrain IDs starting at 47 that the loader
+//! renumbers.
+static constexpr int FILE_FORMAT_VERSION_ROCK_PATHS = 208;

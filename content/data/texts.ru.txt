@@ -5742,6 +5742,12 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Утёсы
 [molten_lava_pool]
 Озеро расплавленной лавы
+[slate_ashlar]
+Сланцевые плиты
+[basalt_causeway]
+Базальтовая гать
+[scoria_blocks]
+Блоки шлака
 [terrain group water]
 Вода
 [terrain group sand]

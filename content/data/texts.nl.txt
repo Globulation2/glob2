@@ -5742,6 +5742,12 @@ Lateriet
 Kliffen
 [molten_lava_pool]
 Poel van gesmolten lava
+[slate_ashlar]
+Leistenen platen
+[basalt_causeway]
+Basalten dam
+[scoria_blocks]
+Slakkenblokken
 [terrain group water]
 Water
 [terrain group sand]
