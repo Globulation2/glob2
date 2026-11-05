@@ -26,6 +26,8 @@
 #include <algorithm>
 #include <array>
 #include <cstdio>
+#include <chrono>
+#include <optional>
 #include <stdexcept>
 #include <vector>
 
@@ -49,19 +51,26 @@ struct RestoreGL
 {
     GLint program = 0;
     GLint activeTexture = GL_TEXTURE0;
+    GLint unpackBuffer = 0;
     RestoreGL()
     {
         glGetIntegerv(GL_CURRENT_PROGRAM, &program);
         glGetIntegerv(GL_ACTIVE_TEXTURE, &activeTexture);
         glPushAttrib(GL_CURRENT_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);
         glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
+        glGetIntegerv(GL_PIXEL_UNPACK_BUFFER_BINDING, &unpackBuffer);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+        glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+        glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+        glPixelStorei(GL_UNPACK_SWAP_BYTES, GL_FALSE);
     }
     ~RestoreGL()
     {
         glUseProgram(program);
         glPopClientAttrib();
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, GLuint(unpackBuffer));
         glPopAttrib();
         glActiveTexture(activeTexture);
     }
@@ -102,6 +111,16 @@ struct DirectTerrain::State
     std::shared_ptr<const TerrainRegistry> registry;
 #ifdef DIRECT_TERRAIN_LEGACY_GL
     GLuint program = 0;
+    std::optional<DirectTerrainData::Build> building;
+    struct CoverageStream
+    {
+        std::vector<TerrainVisual::Recipe> recipes;
+        std::vector<Uint16> slots;
+        std::vector<bool> ready;
+        std::array<int, 4> requested{};
+        std::size_t viewCursor = 0, backgroundCursor = 0, completed = 0;
+    };
+    std::optional<CoverageStream> coverageStream;
     std::array<GLuint, Count> textures{};
     std::array<GLint, 6> uniforms{};
 #endif
@@ -113,6 +132,13 @@ struct DirectTerrain::State
     Uint32 discoveryTeams = 0;
     Uint64 discoveryRevision = 0;
     DirectTerrain::DiscoveryMetrics discoveryStats;
+
+    bool matchesMap(const SceneMap &map) const
+    {
+        return identity == map.identity() && revision == map.terrainRevision() &&
+            seed == map.terrainSeed() && assets == map.frozenAssetBundle() &&
+            registry == map.frozenTerrainRegistry();
+    }
 
     void releaseDeviceTextures()
     {
@@ -194,8 +220,7 @@ struct DirectTerrain::State
         height = map.getH();
         if (width > maxSize / 2 || DirectTerrainData::VariantWidth > maxSize / 2)
             throw std::runtime_error("Packed direct terrain tables exceed the device texture dimensions");
-        auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
-        const auto data = DirectTerrainData::build(map, compositor, maxSize);
+        const auto data = DirectTerrainData::build(map, globalContainer->terrainCompositorOwner(assets), maxSize);
         visibility.resize(data.cells.size());
 
         // RGBA8 is shared by the device resource path. A record occupies two
@@ -232,18 +257,15 @@ struct DirectTerrain::State
     }
 
 #ifdef DIRECT_TERRAIN_LEGACY_GL
-    void initialize(const SceneMap &map)
+    void initialize(const SceneMap &map, const DirectTerrainData &data)
     {
-        GLint maxSize = 0, units = 0;
-        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxSize);
+        GLint units = 0;
         glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &units);
         width = map.getW();
         height = map.getH();
         if (units < Count)
             throw std::runtime_error("Direct terrain requires eight texture units");
 
-        auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
-        const auto data = DirectTerrainData::build(map, compositor, maxSize);
         const auto count = data.cells.size();
         visibility.resize(count);
 
@@ -277,15 +299,84 @@ struct DirectTerrain::State
         glUniform2f(uniforms[2], DirectTerrainData::AtlasWidth, data.coverageHeight);
         glUniform2f(uniforms[3], DirectTerrainData::VariantWidth, data.variantHeight);
         upload(Cells, width, height, GL_RGBA16, GL_RGBA, GL_UNSIGNED_SHORT, data.cells.data(), count * sizeof(Record), GL_NEAREST);
-        upload(MaskIndex, width, height, GL_LUMINANCE16, GL_LUMINANCE, GL_UNSIGNED_SHORT, data.masks.data(), count * sizeof(Uint16), GL_NEAREST);
+        const bool streaming = !data.pendingCoverage.empty();
+        auto masks = streaming ? data.masks : std::vector<Uint16>{};
+        for (auto &slot : masks)
+            if (slot) slot = DirectTerrainData::PendingMask;
+        upload(MaskIndex, width, height, GL_LUMINANCE16, GL_LUMINANCE, GL_UNSIGNED_SHORT,
+               streaming ? masks.data() : data.masks.data(), count * sizeof(Uint16), GL_NEAREST);
         upload(Art, DirectTerrainData::AtlasWidth, data.artHeight, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data.art.data(), data.art.size() * sizeof(Pixel), GL_LINEAR);
-        upload(Coverage, DirectTerrainData::AtlasWidth, data.coverageHeight, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data.coverage.data(), data.coverage.size() * sizeof(Pixel), GL_LINEAR);
-        upload(Edges, DirectTerrainData::AtlasWidth, data.coverageHeight, GL_LUMINANCE16, GL_LUMINANCE, GL_UNSIGNED_SHORT, data.edges.data(), data.edges.size() * sizeof(Uint16), GL_NEAREST);
+        upload(Coverage, DirectTerrainData::AtlasWidth, data.coverageHeight, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, streaming ? nullptr : data.coverage.data(), std::size_t(DirectTerrainData::AtlasWidth) * data.coverageHeight * sizeof(Pixel), GL_LINEAR);
+        upload(Edges, DirectTerrainData::AtlasWidth, data.coverageHeight, GL_LUMINANCE16, GL_LUMINANCE, GL_UNSIGNED_SHORT, streaming ? nullptr : data.edges.data(), std::size_t(DirectTerrainData::AtlasWidth) * data.coverageHeight * sizeof(Uint16), GL_NEAREST);
         upload(Variants, DirectTerrainData::VariantWidth, data.variantHeight, GL_RGBA16, GL_RGBA, GL_UNSIGNED_SHORT, data.variants.data(), data.variants.size() * sizeof(Record), GL_NEAREST);
         upload(Discovery, width, height, GL_LUMINANCE8, GL_LUMINANCE, GL_UNSIGNED_BYTE, visibility.data(), count, GL_NEAREST);
         upload(ShoreCalm, width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data.calm.data(), data.calm.size() * sizeof(Pixel), GL_NEAREST);
+        if (streaming)
+        {
+            const auto uninitializedBytes = std::size_t(DirectTerrainData::AtlasWidth) * data.coverageHeight *
+                (sizeof(Pixel) + sizeof(Uint16));
+            uploaded -= uninitializedBytes;
+        }
         if (glGetError() != GL_NO_ERROR)
             throw std::runtime_error("Direct terrain texture setup failed");
+    }
+
+    void advanceCoverage(const SceneMap &map, const TerrainVisual::Compositor &compositor,
+                         const std::array<int, 4> &view,
+                         std::chrono::steady_clock::time_point deadline)
+    {
+        if (!coverageStream) return;
+        auto &stream = *coverageStream;
+        if (stream.requested != view)
+        {
+            stream.requested = view;
+            stream.viewCursor = 0;
+        }
+        const auto columns = std::min(view[2] - view[0] + 1, width);
+        const auto rows = std::min(view[3] - view[1] + 1, height);
+        const auto visibleCount = std::size_t(columns) * rows;
+        constexpr int size = DirectTerrainData::MaskPixels;
+        constexpr int perRow = DirectTerrainData::AtlasWidth / size;
+        const auto uploadTile = [&](std::size_t index) {
+            const auto &recipe = stream.recipes[index];
+            const auto tile = DirectTerrainData::makeCoverage(compositor, recipe);
+            const int x = int(index % perRow) * size, y = int(index / perRow) * size;
+            glActiveTexture(GL_TEXTURE0 + Coverage);
+            glBindTexture(GL_TEXTURE_2D, textures[Coverage]);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, size, size, GL_RGBA, GL_UNSIGNED_BYTE, tile.weights.data());
+            glActiveTexture(GL_TEXTURE0 + Edges);
+            glBindTexture(GL_TEXTURE_2D, textures[Edges]);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, size, size, GL_LUMINANCE, GL_UNSIGNED_SHORT, tile.edges.data());
+            glActiveTexture(GL_TEXTURE0 + MaskIndex);
+            glBindTexture(GL_TEXTURE_2D, textures[MaskIndex]);
+            // Publish the index only after both sampled textures contain this tile.
+            const auto slot = Uint16(index + 1);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, recipe.x, recipe.y, 1, 1, GL_LUMINANCE, GL_UNSIGNED_SHORT, &slot);
+            uploaded += sizeof(tile) + sizeof(slot);
+            stream.ready[index] = true;
+            ++stream.completed;
+        };
+        while (std::chrono::steady_clock::now() < deadline)
+        {
+            if (stream.viewCursor < visibleCount)
+            {
+                const int x = view[0] + int(stream.viewCursor % columns), y = view[1] + int(stream.viewCursor / columns);
+                ++stream.viewCursor;
+                const auto slot = stream.slots[map.coordToIndex(x, y)];
+                if (slot && !stream.ready[slot - 1])
+                    uploadTile(slot - 1);
+            }
+            else if (stream.backgroundCursor < stream.recipes.size())
+            {
+                const auto index = stream.backgroundCursor++;
+                if (!stream.ready[index]) uploadTile(index);
+            }
+            else break;
+        }
+        if (glGetError() != GL_NO_ERROR)
+            throw std::runtime_error("Direct terrain coverage upload failed");
+        if (stream.completed == stream.recipes.size())
+            coverageStream.reset();
     }
 
 #endif
@@ -347,8 +438,7 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
     const auto registry = map.frozenTerrainRegistry();
     const bool sameContext = state && state->context == (resources ? nullptr : context) &&
         state->resources == resources && state->generation == generation;
-    if (!sameContext || state->identity != map.identity() || state->revision != map.terrainRevision() ||
-        state->seed != map.terrainSeed() || state->assets != assets || state->registry != registry)
+    if (!sameContext || !state->matchesMap(map))
     {
         if (state && !sameContext)
             state->context = nullptr; // The retired context owns its old names.
@@ -412,10 +502,42 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
     if (auto *batch = gfx.getRenderBatch())
         batch->stateChange();
     RestoreGL restore;
+    // Check the deadline between work items. Driver allocation and the first
+    // metadata upload are indivisible and can take longer than the slice.
+    constexpr auto coverageSlice = std::chrono::milliseconds(3);
+    const auto deadline = std::chrono::steady_clock::now() + coverageSlice;
     try
     {
         if (!state->program)
-            state->initialize(map);
+        {
+            if (!state->building)
+            {
+                GLint maxSize = 0;
+                glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxSize);
+                state->building.emplace(DirectTerrainData::begin(
+                    map, globalContainer->terrainCompositorOwner(assets), maxSize, true));
+            }
+            bool ready;
+            do
+            {
+                ready = state->building->advance();
+            } while (!ready && std::chrono::steady_clock::now() < deadline);
+            if (!ready)
+                return false;
+            auto data = state->building->take();
+            state->building.reset();
+            state->initialize(map, data);
+            if (!data.pendingCoverage.empty())
+            {
+                auto &stream = state->coverageStream.emplace();
+                stream.recipes = std::move(data.pendingCoverage);
+                stream.slots = std::move(data.masks);
+                stream.ready.resize(stream.recipes.size());
+            }
+        }
+        if (state->coverageStream)
+            state->advanceCoverage(map, globalContainer->terrainCompositor(assets),
+                {left + viewportX, top + viewportY, right + viewportX, bottom + viewportY}, deadline);
         if (!wholeMap)
             state->updateDiscovery(map, visibleTeams);
     }
@@ -423,6 +545,8 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
     {
         std::fprintf(stderr, "DIRECT_TERRAIN_FALLBACK %s\n", error.what());
         state->failed = true;
+        state->building.reset();
+        state->coverageStream.reset();
         glDeleteProgram(state->program);
         glDeleteTextures(State::Count, state->textures.data());
         state->program = 0;
@@ -464,6 +588,34 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
 #endif
 }
 
+bool DirectTerrain::needsBackdrop(GAGCore::GraphicContext &gfx, const SceneMap &map,
+                                  int left, int top, int right, int bottom) const
+{
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    const auto context = SDL_GL_GetCurrentContext();
+    if (!context) return false;
+    if (!state || state->context != context || state->generation != gfx.getGLContextGeneration() ||
+        !state->matchesMap(map))
+        return true;
+    if (!state->program) return !state->failed;
+    if (!state->coverageStream) return false;
+    const auto &stream = *state->coverageStream;
+    return stream.requested != std::array<int, 4>{left, top, right, bottom} ||
+        stream.viewCursor < std::size_t(std::min(right - left + 1, state->width)) *
+            std::min(bottom - top + 1, state->height);
+#else
+    return false;
+#endif
+}
+
+bool DirectTerrain::preparing() const
+{
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    return state && state->building.has_value();
+#else
+    return false;
+#endif
+}
 std::size_t DirectTerrain::textureBytes() const { return state ? state->bytes : 0; }
 std::size_t DirectTerrain::uploadBytes() const { return state ? state->uploaded : 0; }
 unsigned DirectTerrain::draws() const { return state ? state->frames : 0; }

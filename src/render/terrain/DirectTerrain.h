@@ -8,8 +8,8 @@
 class SceneMap;
 namespace GAGCore { class GraphicContext; }
 
-// Experimental legacy GL terrain pass. It owns source art and terrain metadata,
-// while the ordinary compositor remains the reference for visual comparison.
+// Owns the native terrain atlas for one map and graphics generation.
+// Legacy GL publishes visible coverage incrementally over the overview.
 class DirectTerrain
 {
 public:
@@ -19,6 +19,8 @@ public:
     bool draw(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
               int right, int bottom, int viewportX, int viewportY,
               Uint32 visibleTeams, bool wholeMap, int animationTime);
+    bool preparing() const;
+    bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &, int left, int top, int right, int bottom) const;
     std::size_t textureBytes() const;
     std::size_t uploadBytes() const;
     unsigned draws() const;

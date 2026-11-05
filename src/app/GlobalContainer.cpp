@@ -502,17 +502,28 @@ TerrainVisual::Compositor &GlobalContainer::terrainCompositor()
 {
 	if (!terrainCompositor_)
 		terrainCompositor_ =
-			std::make_unique<TerrainVisual::Compositor>(TerrainVisual::loadCatalog());
+			std::make_shared<TerrainVisual::Compositor>(TerrainVisual::loadCatalog());
 	return *terrainCompositor_;
 }
 
 TerrainVisual::Compositor &GlobalContainer::terrainCompositor(std::shared_ptr<const MapAssetBundle> assets)
 {
-    if (!assets || assets->isEmpty()) return terrainCompositor();
-    if (compositorAssets != assets) {
-        auto replacement = std::make_unique<TerrainVisual::Compositor>(TerrainVisual::loadCatalog(assets), assets);
-        customTerrainCompositor = std::move(replacement);
+    return *terrainCompositorOwner(std::move(assets));
+}
+
+std::shared_ptr<TerrainVisual::Compositor> GlobalContainer::terrainCompositorOwner(
+    std::shared_ptr<const MapAssetBundle> assets)
+{
+    if (!assets || assets->isEmpty())
+    {
+        terrainCompositor();
+        return terrainCompositor_;
+    }
+    if (compositorAssets != assets)
+    {
+        customTerrainCompositor = std::make_shared<TerrainVisual::Compositor>(
+            TerrainVisual::loadCatalog(assets), assets);
         compositorAssets = std::move(assets);
     }
-    return *customTerrainCompositor;
+    return customTerrainCompositor;
 }

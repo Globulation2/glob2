@@ -274,13 +274,15 @@ struct Coverage
 class PreparedCoverage
 {
   public:
-	PreparedCoverage(const Catalog &, const Recipe &);
+	enum class Detail { Surface, Weights };
+	PreparedCoverage(const Catalog &, const Recipe &, Detail = Detail::Surface);
 	// Q8 local pixel coordinates; resolution independent and toroidally periodic.
 	Coverage at(int px, int py) const;
 
   private:
 	SmoothBorders smooth;
 	Coverage roughCoverage(int px, int py) const;
+	bool edgeMetadata;
 	struct Point { float x = 0, y = 0; };
 	struct Border
 	{

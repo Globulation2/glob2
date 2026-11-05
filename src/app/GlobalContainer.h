@@ -97,8 +97,9 @@ public:
 	TerrainVisual::Compositor &terrainCompositor();
     TerrainVisual::Compositor &terrainCompositor(std::shared_ptr<const MapAssetBundle> assets);
     std::shared_ptr<const MapAssetBundle> compositorAssets;
-    std::unique_ptr<TerrainVisual::Compositor> customTerrainCompositor;
-    std::unique_ptr<TerrainVisual::Compositor> terrainCompositor_;
+    std::shared_ptr<TerrainVisual::Compositor> terrainCompositorOwner(std::shared_ptr<const MapAssetBundle> assets);
+    std::shared_ptr<TerrainVisual::Compositor> customTerrainCompositor;
+    std::shared_ptr<TerrainVisual::Compositor> terrainCompositor_;
 	Sprite *terrain = nullptr;
 
 	Sprite *terrainCloud = nullptr;

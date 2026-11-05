@@ -301,22 +301,45 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 				}
 			}
 	// The overview fully replaces detailed terrain at the far end of zoom.
-	const bool overviewOnly = view.render.detail.terrainOverview >= 1;
+	bool overviewOnly = view.render.detail.terrainOverview >= 1;
+	const bool legacy = frame.target.isLegacyGLScreen();
 	bool direct = false;
-	// Direct terrain uses native-resolution art. The benchmark can force pages
-	// to measure transitions through the same fallback used for HD and captures.
-	if (!view.render.benchmarkForceTerrainPages && !globalContainer->settings.highResolutionArtwork &&
-		!overviewOnly && !(frame.options & DRAW_TILED_CAPTURE))
+	bool terrainBackdrop = false;
+	// The direct atlas contains native artwork. At higher raster density,
+	// route HD views through the page compositor so streamed HD art is used.
+	// Keep the native atlas resident for the next zoom-out.
+	const bool hdArtwork = globalContainer->settings.highResolutionArtwork;
+	const double rasterDensity = frame.target.mapTransformScale() * frame.target.getRasterScale();
+	const bool nativeTerrain = !hdArtwork || (legacy && rasterDensity <= 1);
+	// Editors and tiled captures need complete, current terrain immediately.
+	if (!view.render.benchmarkForceTerrainPages && !scene.editor && !overviewOnly &&
+		!(frame.options & DRAW_TILED_CAPTURE) &&
+		nativeTerrain)
 	{
 		PERF_SCOPE_TIME(Terrain);
+		const auto overviewAlpha = view.render.detail.terrainOverview;
 		try
 		{
-			direct = view.render.directTerrain().draw(frame.target, scene.map,
+			auto &terrain = view.render.directTerrain();
+			if (legacy && terrain.needsBackdrop(frame.target, scene.map,
+				frame.left + frame.viewportX, frame.top + frame.viewportY,
+				frame.right + frame.viewportX, frame.bottom + frame.viewportY))
+			{
+				view.render.detail.terrainOverview = 1;
+				drawMapOverview(frame.left, frame.top, frame.right, frame.bottom,
+					frame.viewportX, frame.viewportY, frame.localTeam, frame.options, scene.map, view.render);
+				view.render.detail.terrainOverview = overviewAlpha;
+				terrainBackdrop = true;
+			}
+			direct = terrain.draw(frame.target, scene.map,
 				frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
 				frame.viewportY, frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time);
+			overviewOnly = !direct && terrain.preparing();
 		}
 		catch (const std::bad_alloc &)
-		{ /* The reference renderer remains available under memory pressure. */ }
+		{
+			view.render.detail.terrainOverview = overviewAlpha;
+		}
 	}
 	// Reference terrain pages use the same discovery rule as direct terrain.
 	SoftwareTerrainCache *softwareTerrainCache = nullptr;
@@ -364,7 +387,8 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 
 	if (!overviewOnly)
 		tilePass(&Game::drawMapResources, scene.map, &view.render);
-	tilePass(&Game::drawMapOverview, scene.map, view.render);
+	if (!terrainBackdrop || direct)
+		tilePass(&Game::drawMapOverview, scene.map, view.render);
 	tilePass(&Game::drawMapTerritory, scene, view.render.detail.strategic);
 	scenePass(&Game::drawMapGroundUnits, view, scene);
 	scenePass(&Game::drawMapDebugAreas, view);

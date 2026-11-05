@@ -87,7 +87,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			animationTextures.back().current.resize(m.variants.size());
 			animationTextures.back().next.resize(m.variants.size());
 		}
-		materialRevisions.push_back(0);
+		textureRevisions.push_back(0);
 		highResolutionSizes.push_back(0);
 	}
     if (mixedDecorSprites) sharedDecorSprite = nullptr;
@@ -386,14 +386,10 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
     hd = hd && !nativeComposition;
 	int nextResolution = 1;
 	bool fallback = false;
-	// Surf moves once per `ticks`, so entering a new step invalidates its pages
-	// too, also when the texture itself is still (dark water).
-	const unsigned previousTime = preparedTime;
 	preparedTime = unsigned(time);
 	for (unsigned id = 0; id < definitions.materials.size(); ++id)
 	{
 		const auto &m = definitions.materials[id];
-		const auto revision = materialRevisions[id];
         const auto *wanted = requested ? &(*requested)[id] : nullptr;
         bool evicted = false;
         const auto evict = [&](auto &set) {
@@ -423,7 +419,7 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
 		auto &animation = animationTextures[id];
 		if (animation.current.empty())
 		{
-			if (prepareMaterial(id, hd, phase, textures[id], wanted)) ++materialRevisions[id];
+			if (prepareMaterial(id, hd, phase, textures[id], wanted)) ++textureRevisions[id];
 		}
 		else
 		{
@@ -445,7 +441,7 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
             const bool animationChanged = advanced || currentChanged || nextChanged || animation.blend != blend;
 			if (animationChanged || missingOutput)
 			{
-                if (animationChanged) ++materialRevisions[id];
+                if (animationChanged) ++textureRevisions[id];
 				animation.blend = blend;
 				for (unsigned i = 0; i < m.variants.size(); ++i)
 				{
@@ -496,10 +492,6 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
 				}
 			}
 		}
-		const unsigned ticks = unsigned(m.surf.ticks);
-		if (m.surf.period && unsigned(time) / ticks != previousTime / ticks &&
-			materialRevisions[id] == revision)
-			++materialRevisions[id];
 		for (const auto &texture : textures[id])
 			if (texture.size > 32) nextResolution = 4;
 		if (hd)
@@ -619,6 +611,14 @@ int Compositor::overlayFrame(const SceneMap &map, int x, int y, int time, bool *
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
+	return describe(map, x, y, true);
+}
+Recipe Compositor::describeOverview(const SceneMap &map, int x, int y) const
+{
+	return describe(map, x, y, false);
+}
+Recipe Compositor::describe(const SceneMap &map, int x, int y, bool shoreCalm) const
+{
 	Recipe r;
 	r.x = x & map.getMaskW();
 	r.y = y & map.getMaskH();
@@ -628,7 +628,7 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	const auto corners = map.cellCorners(r.x, r.y);
 	for (unsigned k = 0; k < corners.size(); ++k)
 		r.corners[k] = materialFor(map, corners[k]);
-	describeShoreCalm(map, r);
+	if (shoreCalm) describeShoreCalm(map, r);
 	const auto first = r.corners[0];
 	MaterialId other = first;
 	for (const auto id : r.corners)
@@ -699,7 +699,7 @@ Compositor::PreparedMaterialView Compositor::preparedMaterial(const Recipe &reci
 {
     const unsigned variant = definitions.variantIndex(id, recipe.x, recipe.y, recipe.seed);
     const auto &texture = textures.at(id).at(variant);
-    return {variant, materialRevisions.at(id), texture.size, texture.pixels};
+    return {variant, textureRevisions.at(id), texture.size, texture.pixels};
 }
 std::size_t Compositor::cpuPublicationBytes() const
 {
@@ -796,7 +796,8 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsSelected
     if (usage)
         for (unsigned id = 0; id < usage->size(); ++id)
             included[id] = std::any_of((*usage)[id].begin(), (*usage)[id].end(), [](auto v) { return v != 0; });
-    if (!usage && !publishedSubset && previous && previous->included == included && publishedRevisions == materialRevisions)
+    if (!usage && !publishedSubset && previous && previous->surfTime == preparedTime &&
+        previous->included == included && publishedRevisions == textureRevisions)
         return previous;
     auto next = std::make_shared<CpuMaterials>();
     next->definitions = publishedCatalog.lock();
@@ -822,10 +823,10 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsSelected
     {
         if (!next->included[id]) continue;
         auto &record = publishedPixels[id];
-        if (record.revision != materialRevisions[id])
+        if (record.revision != textureRevisions[id])
         {
             record.pixels.assign(textures[id].size(), {});
-            record.revision = materialRevisions[id];
+            record.revision = textureRevisions[id];
         }
         else
             record.pixels.resize(textures[id].size());
@@ -850,7 +851,7 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsSelected
     next->bytes = cpuMaterialBytesSelected(needed, usage);
     publishedSubset = usage != nullptr;
     next->surfTime = preparedTime;
-    publishedRevisions = materialRevisions;
+    publishedRevisions = textureRevisions;
     publishedCpu = next;
     return next;
 }
@@ -1145,7 +1146,7 @@ void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, i
 		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.corners[0])));
 		return;
 	}
-	const PreparedCoverage prepared(definitions, r);
+	const PreparedCoverage prepared(definitions, r, PreparedCoverage::Detail::Weights);
 	for (int y = 0; y < OverviewSamples; ++y)
 		for (int x = 0; x < OverviewSamples; ++x)
 		{

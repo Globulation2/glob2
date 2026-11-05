@@ -702,19 +702,19 @@ TEST_SUITE("TerrainMaterials")
 		};
 		CHECK(pixel(0) == 0xfff00000u);
 		CHECK(pixel(2) == 0xff780078u);
-		const auto revision = compositor.materialRevision(id);
+		const auto revision = compositor.textureRevision(id);
 		const auto bytes = compositor.sourceBytes();
 		CHECK(pixel(2) == 0xff780078u);
-		CHECK(compositor.materialRevision(id) == revision);
+		CHECK(compositor.textureRevision(id) == revision);
 		CHECK(pixel(4) == 0xff0000f0u);
 		CHECK(pixel(6) == 0xff780078u);
 		CHECK(pixel(8) == 0xfff00000u);
 		CHECK(compositor.sourceBytes() == bytes);
 		// Jump by a whole phase with the same blend fraction: swapped endpoints
 		// must still invalidate composed terrain pages.
-		const auto beforeJump = compositor.materialRevision(id);
+		const auto beforeJump = compositor.textureRevision(id);
 		CHECK(pixel(12) == 0xff0000f0u);
-		CHECK(compositor.materialRevision(id) == beforeJump + 1);
+		CHECK(compositor.textureRevision(id) == beforeJump + 1);
 		b->drawFilledRect(0, 0, 32, 32, 0, 240, 0);
 		CHECK(pixel(12) == 0xff00f000u);
 		REQUIRE(SDL_FillSurfaceRect(b->getSDLSurface(), nullptr, 0x0000ffffu));
@@ -763,7 +763,7 @@ TEST_SUITE("TerrainMaterials")
 			{
 				const Uint32 expected[] = {0xfff00000u, 0xff780078u, 0xff0000f0u, 0xff780078u};
 				CHECK(pixel(time) == expected[time / 4 % 4]);
-				revisions.push_back(compositor.materialRevision(id));
+				revisions.push_back(compositor.textureRevision(id));
 			}
 			for (int time = 1; time < 17; ++time)
 				CHECK(revisions[time] == revisions[time - 1] + (time % 4 == 0));
@@ -901,6 +901,31 @@ TEST_SUITE("TerrainMaterials")
 		prepare(0, 2);
 		CHECK(cache.cacheRebuilds() == iceRebuilds + 1);
 	}
+	TEST_CASE("surf steps rebuild shoreline pages but keep static open water resident [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = DARK_WATER, .discovered = true});
+		for (int y = 0; y < 32; ++y)
+			for (int x = 40; x < 48; ++x)
+				fixture.game.map.setVertexTerrain(x, y, SAND);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		SoftwareTerrainCache cache;
+		const auto prepare = [&](int x, int time) {
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, x, 0,
+			                      fixture.team->me, true, time));
+		};
+		auto &compositor = globals->terrainCompositor(scene.frozenAssetBundle());
+		const int step = compositor.catalog().materials[compositor.catalog().find("dark_water")].surf.ticks;
+		prepare(0, 0);
+		prepare(32, 0);
+		const auto before = cache.cacheRebuilds();
+		prepare(0, step);
+		CHECK(cache.cacheRebuilds() == before);
+		prepare(32, step);
+		CHECK(cache.cacheRebuilds() == before + 1);
+	}
+
 	TEST_CASE("unequal variant weights affect deterministic texture selection")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -1201,23 +1226,24 @@ TEST_SUITE("TerrainMaterials")
 		const auto &textured = definitions.materials[water];
 		const int cycle = std::lcm(surf.period, textured.animationFrames * textured.animationTicks);
 		CHECK(render(surfCompositor, cycle + surf.period / 8) == frames[1]);
-		// Surf without texture animation still invalidates its pages as time advances.
+		// Surf time advances independently of static source artwork.
 		const auto dark = definitions.find("dark_water");
 		REQUIRE(definitions.materials[dark].animationFrames == 1);
 		REQUIRE(definitions.materials[dark].surf.period > 0);
 		CHECK(surfCompositor.animated(dark));
-		// Still dark water re-blends once per surf step, not on every tick.
+		// Dark water keeps its artwork revision even when a surf step advances.
 		const auto &darkSurf = definitions.materials[dark].surf;
 		REQUIRE(darkSurf.ticks > 1);
 		const int step = 7 * darkSurf.ticks;
 		surfCompositor.prepare(false, step);
-		const auto revision = surfCompositor.materialRevision(dark);
+		const auto revision = surfCompositor.textureRevision(dark);
 		surfCompositor.prepare(false, step);
-		CHECK(surfCompositor.materialRevision(dark) == revision);
+		CHECK(surfCompositor.textureRevision(dark) == revision);
 		surfCompositor.prepare(false, step + darkSurf.ticks - 1);
-		CHECK(surfCompositor.materialRevision(dark) == revision);
+		CHECK(surfCompositor.textureRevision(dark) == revision);
 		surfCompositor.prepare(false, step + darkSurf.ticks);
-		CHECK(surfCompositor.materialRevision(dark) == revision + 1);
+		CHECK(surfCompositor.textureRevision(dark) == revision);
+		CHECK(surfCompositor.surfTime() == unsigned(step + darkSurf.ticks));
 		// Within one step the composed wash is identical.
 		const auto washed = [&](int time)
 		{
@@ -2272,7 +2298,7 @@ TEST_CASE("selected terrain preparation bounds pixels and preserves retained sna
     for (bool hd : {false, true})
     {
         INFO("hd=" << hd);
-        const auto idleWaterRevision = compositor.materialRevision(water);
+        const auto idleWaterRevision = compositor.textureRevision(water);
         compositor.prepareForRecipes(hd, 0, grassRecipes);
         const auto grassView = compositor.preparedMaterial(grassRecipes[0], grass);
         REQUIRE(grassView.size > 0);
@@ -2303,7 +2329,7 @@ TEST_CASE("selected terrain preparation bounds pixels and preserves retained sna
         CHECK(twoGrass->bytes <= retained->bytes +
               pixelCount * sizeof(TerrainVisual::Compositor::MaterialPixels::value_type) + 4096);
         compositor.prepareForRecipes(hd, 0, grassRecipes);
-        const auto selectedGrassRevision = compositor.materialRevision(grass);
+        const auto selectedGrassRevision = compositor.textureRevision(grass);
         const auto original = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
             SDL_CreateSurface(32, 32, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
         const auto actual = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
@@ -2312,8 +2338,8 @@ TEST_CASE("selected terrain preparation bounds pixels and preserves retained sna
         REQUIRE(actual);
         retained->compose(grassRecipes[0], original.get(), 1);
         compositor.prepareForRecipes(hd, 5, grassRecipes);
-        CHECK(compositor.materialRevision(grass) == selectedGrassRevision);
-        CHECK(compositor.materialRevision(water) == idleWaterRevision);
+        CHECK(compositor.textureRevision(grass) == selectedGrassRevision);
+        CHECK(compositor.textureRevision(water) == idleWaterRevision);
 
         compositor.prepareForRecipes(hd, 0, waterRecipes);
         const auto phase0View = compositor.preparedMaterial(waterRecipes[0], water);

@@ -73,7 +73,9 @@ class SoftwareTerrainCache
 		bool valid = false;
 		// Device-composed pages have no matching pixels in image/parked.
 		bool cpuComposed = true;
-		// Only materials present in discovered recipes invalidate this page.
+		// Texture changes and shoreline animation invalidate independently.
+		unsigned surfTime = 0;
+		bool hasShoreline = false;
 		std::vector<std::pair<TerrainVisual::MaterialId, std::uint64_t>> materialRevisions;
 		std::uint64_t used = 0;
 		std::uint64_t textureUsed = 0;
