@@ -1017,6 +1017,17 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(map, scene);
 		check(29, 30);
 		CHECK(cache.composedCells() == seeded + 4);
+
+		// A narrow view composes just its visible cells. Panning within the
+		// same page builds one newly exposed column and reuses the overlap.
+		OverviewTerrainCache partial;
+		GAGCore::DrawableSurface small(4 * samples, 4 * samples);
+		partial.update(scene, 0, 0, 3, 3, 0, 0, fixture.team->me, true, small);
+		CHECK(partial.composedCells() == 16);
+		partial.update(scene, 0, 0, 3, 3, 1, 0, fixture.team->me, true, small);
+		CHECK(partial.composedCells() == 20);
+		partial.update(scene, 0, 0, 3, 3, 0, 0, fixture.team->me, true, small);
+		CHECK(partial.composedCells() == 20);
 	}
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
