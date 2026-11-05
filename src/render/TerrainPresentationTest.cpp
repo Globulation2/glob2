@@ -2377,7 +2377,9 @@ TEST_SUITE("TerrainValidation")
 			(glob2test::artifactDir() / "cliffs-beside-obstacles.png").string().c_str()));
 	}
 
-	TEST_CASE("cliffs beside foliage and crags in HD [display][artifacts]")
+	// Switching to programmable OpenGL saves the renderer choice.
+	GLOB2_TEST_CASE("cliffs beside foliage and crags in HD",
+					"[display][isolated][artifacts][writes-preferences]")
 	{
 		glob2test::HeadlessGlobals globals(
 			{.display = true, .width = 1024, .height = 1024,
