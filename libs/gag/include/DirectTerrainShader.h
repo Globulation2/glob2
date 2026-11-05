@@ -65,6 +65,49 @@ float decodeScalar(vec4 packedBytes, int column) {
 #define readScalar(image, uv, size) floor(DIRECT_TERRAIN_SAMPLE(image, uv).r * 65535.0 + 0.5)
 #endif
 
+// Edge records pack a Q8 margin with dominant/neighbor selectors, so they
+// cannot be filtered by the sampler.
+vec3 edgeTexel(float index, vec2 texel) {
+    float columns = coverageSize.x / 16.0;
+    vec2 base = vec2(mod(index, columns), floor(index / columns)) * 16.0;
+    float packedEdge = readScalar(edges, (base + texel + 0.5) / coverageSize, coverageSize);
+    float selectors = floor(packedEdge / 4096.0);
+    return vec3(mod(packedEdge, 4096.0), mod(selectors, 4.0), floor(selectors / 4.0));
+}
+
+// Margin relative to the reference pair: positive on its dominant side,
+// negative where the same two materials meet the other way round.
+float signedMargin(vec3 sampleEdge, vec3 reference) {
+    if (sampleEdge.y == reference.y && sampleEdge.z == reference.z)
+        return sampleEdge.x;
+    if (sampleEdge.y == reference.z && sampleEdge.z == reference.y)
+        return -sampleEdge.x;
+    return reference.x;
+}
+
+// The mask stores every second compositor sample. Nearest edge records
+// would step the surf bands in two-texel blocks, so interpolate the margin
+// bilinearly as a signed distance across the boundary, keeping the nearest
+// record's material pair (swapped where the interpolated side flips). The
+// outer half texel of a tile extrapolates linearly, so margins meet the
+// neighboring cell's instead of flattening into a step at the border.
+vec3 edgeAt(float index, vec2 pixel) {
+    vec2 p = pixel * 0.5 - 0.75;
+    vec2 low = clamp(floor(p), vec2(0.0), vec2(14.0));
+    vec2 f = p - low;
+    vec2 high = low + 1.0;
+    vec3 e00 = edgeTexel(index, low);
+    vec3 e10 = edgeTexel(index, vec2(high.x, low.y));
+    vec3 e01 = edgeTexel(index, vec2(low.x, high.y));
+    vec3 e11 = edgeTexel(index, high);
+    vec3 nearest = f.y < 0.5 ? (f.x < 0.5 ? e00 : e10) : (f.x < 0.5 ? e01 : e11);
+    if (nearest.y == nearest.z)
+        return nearest;
+    float s = mix(mix(signedMargin(e00, nearest), signedMargin(e10, nearest), f.x),
+                  mix(signedMargin(e01, nearest), signedMargin(e11, nearest), f.x), f.y);
+    return s >= 0.0 ? vec3(s, nearest.yz) : vec3(-s, nearest.zy);
+}
+
 vec4 variantRecord(float index, float field) {
     float address = index * 8.0 + field;
     vec2 slot = vec2(mod(address, variantSize.x), floor(address / variantSize.x));
@@ -191,9 +234,7 @@ void main() {
         if (weights.y > 0.0) color += weights.y * material(indices.y, uv, calm);
         if (weights.z > 0.0) color += weights.z * material(indices.z, uv, calm);
         if (weights.w > 0.0) color += weights.w * material(indices.w, uv, calm);
-        float packedEdge = readScalar(edges, maskAtlasUV(mask - 1.0, uv), coverageSize);
-        float selectors = floor(packedEdge / 4096.0);
-        vec3 edge = vec3(mod(packedEdge, 4096.0), mod(selectors, 4.0), floor(selectors / 4.0));
+        vec3 edge = edgeAt(mask - 1.0, uv);
         if (color.a > 0.0)
             color.rgb = surf(indices, uv, edge, contact(indices, edge, color.rgb / color.a)) * color.a;
     }
