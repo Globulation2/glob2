@@ -541,63 +541,71 @@ MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const 
             return found->second;
     return terrainBindings[unsigned(map.terrainRegistry().appearance(type))];
 }
-std::pair<MaterialId, unsigned> Compositor::decorMaterial(const SceneMap &map, int x, int y) const
+unsigned Compositor::decorSlot(MaterialId id) const
+{
+	const auto &decor = definitions.materials[id].decor;
+	if (!decorSprites[id] || decor.full.empty())
+		return DecorSlots;
+	if (decor.connected.empty())
+		return 2;
+	return decor.connectedOpen ? 0 : 1;
+}
+std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLayers(const SceneMap &map, int x, int y) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
+	std::array<DecorLayer, DecorSlots> layers{};
 	const auto corners = map.cellCorners(x, y);
 	std::array<MaterialId, 4> materials;
-	std::array<bool, 4> decorated{};
-	bool open = false, closed = false;
+	std::array<unsigned, 4> slots;
+	bool openGround = false;
 	for (unsigned k = 0; k < corners.size(); ++k)
 	{
 		materials[k] = materialFor(map, corners[k]);
-		decorated[k] = decorSprites[materials[k]] && !definitions.materials[materials[k]].decor.full.empty();
-		if (decorated[k])
-			(definitions.materials[materials[k]].decor.connectedOpen ? open : closed) = true;
+		slots[k] = decorSlot(materials[k]);
+		openGround |= slots[k] == DecorSlots;
 	}
-	// An undecorated corner suppresses all raised objects in the cell, unless
-	// every decorated corner draws its edge against open ground.
-	const bool anyOpenGround = std::find(decorated.begin(), decorated.end(), false) != decorated.end();
-	if (!open && !closed)
-		return {0, 0};
-	if (anyOpenGround && closed)
-		return {0, 0};
-	if (materials[0] == materials[1] && materials[0] == materials[2] &&
-		materials[0] == materials[3])
-		return {materials[0], 4};
 	// Choosing one of four corners gives 2+2 borders equal odds and 3+1
 	// borders a three-to-one split. Presentation hashing never consumes game RNG.
-	// Open ground is never chosen: the next decorated corner stands in for it.
-	unsigned k = hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0xd3c04a71u) & 3u;
-	while (!decorated[k])
-		k = (k + 1) & 3u;
-	const auto chosen = materials[k];
-	return {chosen, unsigned(std::count(materials.begin(), materials.end(), chosen))};
-}
-GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const
-{
-	const auto [material, count] = decorMaterial(map, x, y);
-	return count ? decorSprites[material] : nullptr;
-}
-int Compositor::decorFrame(const SceneMap &map, int x, int y) const
-{
-	x &= map.getMaskW();
-	y &= map.getMaskH();
-	const auto [material, count] = decorMaterial(map, x, y);
-	if (!count)
-		return -1;
-	const auto &decor = definitions.materials[material].decor;
-	unsigned mask = 0;
-	const auto corners = map.cellCorners(x, y);
-	for (unsigned k = 0; k < corners.size(); ++k)
-		if (const auto id = materialFor(map, corners[k]);
-			id == material ||
-			(!decor.connected.empty() && !definitions.materials[id].decor.connected.empty()))
-			mask |= 1u << k;
-	return definitions.decorFrame(
-		material, x, y, count < 4, map.terrainSeed(), mask,
-		cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed()));
+	const unsigned pick = hash(x, y, mapSeedSalt(map.terrainSeed()) ^ 0xd3c04a71u) & 3u;
+	unsigned colours = 0;
+	bool coloured = false;
+	for (unsigned slot = 0; slot < DecorSlots; ++slot)
+	{
+		// Only decor that draws its edge on open ground stands beside it.
+		if (slot > 0 && openGround)
+			break;
+		unsigned k = pick, tries = 0;
+		while (slots[k] != slot && tries++ < 4)
+			k = (k + 1) & 3u;
+		if (slots[k] != slot)
+			continue;
+		// Obstacle clusters sit in the middle of the cell rather than on their
+		// corners: where an open-ground plateau holds most of the cell, one
+		// would stand on top of it, so the plateau's edge is drawn alone.
+		if (slot == 2 && std::count(slots.begin(), slots.end(), 0u) > std::count(slots.begin(), slots.end(), 2u))
+			continue;
+		const auto chosen = materials[k];
+		const auto &decor = definitions.materials[chosen].decor;
+		unsigned mask = 0, count = 0;
+		for (unsigned c = 0; c < 4; ++c)
+		{
+			count += materials[c] == chosen;
+			// Connected decor joins every corner of its own slot, so hedge and
+			// thicket form one crown, but meets other slots as an edge.
+			if (materials[c] == chosen || (!decor.connected.empty() && slots[c] == slot))
+				mask |= 1u << c;
+		}
+		if (!coloured)
+		{
+			colours = cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed());
+			coloured = true;
+		}
+		const int frame = definitions.decorFrame(chosen, x, y, count < 4, map.terrainSeed(), mask, colours);
+		if (frame >= 0)
+			layers[slot] = {decorSprites[chosen], frame};
+	}
+	return layers;
 }
 MaterialId Compositor::overlayMaterial(const SceneMap &map, int x, int y, bool &found) const
 {

@@ -5764,12 +5764,6 @@ Eau
 Sable
 [terrain group grass]
 Herbe
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Glace
 [terrain group paths]

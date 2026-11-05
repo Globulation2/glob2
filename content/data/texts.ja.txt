@@ -5764,12 +5764,6 @@ AI 生成ではない
 砂
 [terrain group grass]
 草
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 氷
 [terrain group paths]

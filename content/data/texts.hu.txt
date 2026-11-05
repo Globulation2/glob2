@@ -5764,12 +5764,6 @@ Víz
 Homok
 [terrain group grass]
 Fű
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Jég
 [terrain group paths]

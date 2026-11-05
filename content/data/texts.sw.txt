@@ -5740,12 +5740,6 @@ Maji
 Mchanga
 [terrain group grass]
 Nyasi
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Barafu
 [terrain group paths]

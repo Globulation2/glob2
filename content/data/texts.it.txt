@@ -5764,12 +5764,6 @@ Acqua
 Sabbia
 [terrain group grass]
 Erba
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Ghiaccio
 [terrain group paths]

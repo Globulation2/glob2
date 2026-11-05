@@ -5740,12 +5740,6 @@ AI ద్వారా రూపొందించబడలేదు
 ఇసుక
 [terrain group grass]
 గడ్డి
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 మంచు
 [terrain group paths]

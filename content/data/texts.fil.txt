@@ -5714,12 +5714,6 @@ Tubig
 Buhangin
 [terrain group grass]
 Damo
-[terrain group note water]
-
-[terrain group note sand]
-
-[terrain group note grass]
-
 [terrain group ice]
 Yelo
 [terrain group paths]

@@ -5742,12 +5742,6 @@ Water
 Sand
 [terrain group grass]
 Grass
-[terrain group note water]
-Globs swim across it, algae grow in it, and it waters the land around it so crops spread faster. Nothing can be built on it.
-[terrain group note sand]
-Walkable, but nothing is built on sand and nothing grows in it. A band of sand inland also holds back the crops spreading next to it; on a coast it is the beach.
-[terrain group note grass]
-Buildable, and crops and trees grow on it, but it does not water its neighbours: water and fertile ground do that.
 [terrain group ice]
 Snow and ice
 [terrain group paths]
