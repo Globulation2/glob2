@@ -19,6 +19,10 @@ class SoftwareTerrainCache
 {
   public:
 	static constexpr int ChunkTiles = 16, ChunkPixels = ChunkTiles * 32;
+	// Vertices beyond a page's corners that its cells read: contextual borders
+	// need one, shore calm searches ShoreCalmSearch toward land.
+	static constexpr int SourceHalo = std::max(1, TerrainVisual::ShoreCalmSearch);
+	static constexpr int SourceSpan = ChunkTiles + 1 + 2 * SourceHalo;
 	static constexpr std::size_t Budget = 32u * 1024u * 1024u, GPUBudget = 128u * 1024u * 1024u;
 	// Preserve the existing density/GPU allowance; keep inactive zoom pixels
 	// in an additional bounded CPU reserve rather than recomposing them.
@@ -60,8 +64,8 @@ class SoftwareTerrainCache
 		int x = 0, y = 0, scale = 1, downsample = 1;
 		Uint32 seed = 0; // Map terrain seed the page was composed with.
 		Uint64 recipeTerrainRevision = 0;
-		// Corner vertices and one-vertex halo used by contextual borders and shore calm.
-		std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
+		// Corner vertices and the SourceHalo used by contextual borders and shore calm.
+		std::array<Uint32, SourceSpan * SourceSpan> sources{};
 		std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 		// Empty cells expose only the separately drawn ocean and submit no software blit.
 		std::array<bool, ChunkTiles * ChunkTiles> opaque{}, empty{};

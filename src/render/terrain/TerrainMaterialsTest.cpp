@@ -508,6 +508,48 @@ TEST_SUITE("TerrainMaterials")
 		}
 	}
 
+	TEST_CASE("shore calm edits beyond the border halo invalidate the calmed page [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		// Page zero ends at vertex 16; land at vertex 18 still calms its water.
+		constexpr int land = SoftwareTerrainCache::ChunkTiles + TerrainVisual::ShoreCalmSearch;
+		REQUIRE(TerrainVisual::ShoreCalmSearch >= 2);
+		REQUIRE(SoftwareTerrainCache::SourceHalo >= TerrainVisual::ShoreCalmSearch);
+		fixture.game.map.setVertexTerrain(land, 8, SAND);
+		SceneMap scene;
+		SoftwareTerrainCache cache;
+		const auto prepare = [&]
+		{
+			glob2test::observeMap(fixture.game.map, scene);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me, true, 0));
+			std::vector<Uint32> expected;
+			for (bool cached : {false, true})
+			{
+				globals->gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(11, 22, 33));
+				if (cached) cache.draw(*globals->gfx);
+				else SoftwareTerrainCache::drawUncached(scene, *globals->terrain,
+					0, 0, 15, 15, 0, 0, fixture.team->me, true, 0);
+				const auto *surface = globals->gfx->getSDLSurface();
+				std::vector<Uint32> pixels;
+				for (int y = 0; y < surface->h; ++y)
+				{
+					const auto *row = reinterpret_cast<const Uint32 *>(
+						static_cast<const Uint8 *>(surface->pixels) + y * surface->pitch);
+					pixels.insert(pixels.end(), row, row + surface->w);
+				}
+				if (cached) CHECK(pixels == expected);
+				else expected = std::move(pixels);
+			}
+		};
+		prepare();
+		const auto before = cache.cacheRebuilds();
+		fixture.game.map.setVertexTerrain(land, 8, WATER);
+		prepare(); CHECK(cache.cacheRebuilds() == before + 1);
+		fixture.game.map.setVertexTerrain(land, 8, SAND);
+		prepare(); CHECK(cache.cacheRebuilds() == before + 2);
+	}
+
 	TEST_CASE("natural border visual fixture and cold composition timings [display] [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 768, .height = 768});
