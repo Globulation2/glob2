@@ -2377,9 +2377,16 @@ TEST_SUITE("TerrainValidation")
 			(glob2test::artifactDir() / "cliffs-beside-obstacles.png").string().c_str()));
 	}
 
-	// Switching to programmable OpenGL saves the renderer choice.
-	GLOB2_TEST_CASE("cliffs beside foliage and crags in HD",
-					"[display][isolated][artifacts][writes-preferences]")
+	// Draws eight-tile views of a painted 32x32 map at 4x with HD frames on
+	// programmable OpenGL, terrain and decor as the game draws them, and saves
+	// each as <name>-hd.png. Skips where programmable OpenGL is unavailable.
+	struct HdView
+	{
+		const char *name;
+		int x, y;
+	};
+	template <class Paint>
+	void captureHd(Paint paint, std::initializer_list<HdView> views)
 	{
 		glob2test::HeadlessGlobals globals(
 			{.display = true, .width = 1024, .height = 1024,
@@ -2390,7 +2397,7 @@ TEST_SUITE("TerrainValidation")
 			programmable |= choice.backend == RendererBackend::ProgrammableGL && choice.available;
 		if (!programmable)
 		{
-			MESSAGE("No programmable OpenGL: HD decor capture skipped");
+			MESSAGE("No programmable OpenGL: HD capture skipped");
 			return;
 		}
 		REQUIRE(gfx.requestBackendSwitch(RendererBackend::ProgrammableGL));
@@ -2405,19 +2412,18 @@ TEST_SUITE("TerrainValidation")
 		globals->terrainCompositor().prepare(true, 0);
 		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true,
 			.loadDefaultRace = true, .header = true, .seed = 7331});
-		paintCliffPanels(fixture.game.map);
+		paint(fixture.game.map);
 		SceneMap scene;
 		glob2test::observeMap(fixture.game.map, scene);
-		// Eight tiles at 4x: the stepped border of the thicket and rock-spire panels.
-		for (const auto [name, viewY] : {std::pair{"thicket", 1}, std::pair{"crags", 17}})
+		for (const auto &view : views)
 		{
 			MapRenderState render;
 			{
 				GAGCore::FrameDrawBatch frameBatch(&gfx);
 				gfx.setClipRect();
 				gfx.beginMapTransform(4, 0, 0, 0, 0, 1024, 1024);
-				Game::drawMapTerrain(0, 0, 7, 7, 2, viewY, 0, Game::DRAW_WHOLE_MAP, scene, 0);
-				Game::drawMapResources(0, 0, 7, 7, 2, viewY, 0, Game::DRAW_WHOLE_MAP, scene, &render);
+				Game::drawMapTerrain(0, 0, 7, 7, view.x, view.y, 0, Game::DRAW_WHOLE_MAP, scene, 0);
+				Game::drawMapResources(0, 0, 7, 7, view.x, view.y, 0, Game::DRAW_WHOLE_MAP, scene, &render);
 				GAGCore::Sprite::flushBatches(&gfx);
 				gfx.endMapTransform();
 			}
@@ -2425,10 +2431,41 @@ TEST_SUITE("TerrainValidation")
 			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx.renderer->capture(),
 																				 SDL_DestroySurface);
 			REQUIRE(captured);
-			CHECK(IMG_SavePNG(captured.get(), (glob2test::artifactDir() /
-				("cliffs-beside-" + std::string(name) + "-hd.png")).string().c_str()));
+			CHECK(IMG_SavePNG(captured.get(),
+				(glob2test::artifactDir() / (std::string(view.name) + "-hd.png")).string().c_str()));
 			gfx.nextFrame();
 		}
+	}
+
+	// Switching to programmable OpenGL saves the renderer choice.
+	GLOB2_TEST_CASE("cliffs beside foliage and crags in HD",
+					"[display][isolated][artifacts][writes-preferences]")
+	{
+		// The stepped border of the thicket and rock-spire panels.
+		captureHd([](auto &map) { paintCliffPanels(map); },
+				  {{"cliffs-beside-thicket", 2, 1}, {"cliffs-beside-crags", 2, 17}});
+	}
+
+	GLOB2_TEST_CASE("paths along staircases and corners in HD",
+					"[display][isolated][artifacts][writes-preferences]")
+	{
+		captureHd(
+			[](auto &map)
+			{
+				for (int y = 0; y < 32; ++y)
+					for (int x = 0; x < 32; ++x)
+					{
+						// A brick path three vertices wide along a 45-degree
+						// staircase, and a trail plaza with a notch and a bump.
+						const int d = x - y;
+						if (y >= 2 && y <= 28 && d >= -12 && d < -9)
+							map.setVertexTerrain(x, y, BRICK_PATH);
+						if (x >= 18 && x <= 28 && y >= 4 && y <= 12 && !(x == 28 && y == 8))
+							map.setVertexTerrain(x, y, TRAIL);
+					}
+				map.setVertexTerrain(17, 8, TRAIL);
+			},
+			{{"brick-path-staircase", 0, 12}, {"trail-plaza-corner", 15, 2}});
 	}
 
 	TEST_CASE("shoreline surf animation frames around an island [display][artifacts]")
