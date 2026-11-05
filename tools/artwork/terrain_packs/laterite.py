@@ -26,14 +26,14 @@ from terrain_core import (
         palette={"dark": (112, 46, 26), "mid": (136, 60, 32), "light": (154, 76, 42), "fines": (198, 120, 62),
                  "nodule": (168, 78, 40), "brown": (130, 66, 42), "orange": (190, 94, 46), "nodule_lit": (212, 124, 72), "iron": (54, 34, 28),
                  "iron_lit": (168, 138, 118), "gap": (66, 26, 14), "crack": (84, 34, 20)},
-        style=Style(luma=96, std=14, grain_max=12, match=0.8), periodic=True, grid=8, blocks=4)
+        style=Style(luma=96, std=12, grain_max=12, match=0.8), periodic=True, grid=8, blocks=4)
 def render_laterite(ctx):
     """Laterite: a packed bed of rounded, hardened iron-red nodules, a few of
     them glossy brown-black iron, over a cracked red crust with lower
     patches of bare ochre fines."""
     p = RECIPES["laterite"].palette
     size = ctx.size
-    # Crust and fines first, so the barren cracks run between the nodules.
+    # Crust and fines first, so the barren mark lies between the nodules.
     soil = layout_field(ctx, lambda rng: fbm(rng, 5, 3, size=size))
     rgb = ramp(soil, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
     grit = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))

@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-laterite",
   "profile": "soil",
   "class": "solid",
-  "preview": [149, 76, 45],
+  "preview": [148, 77, 47],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [149, 76, 45],
+  "minimap": [148, 77, 47],
   "seam": {
     "height": 2,
     "cast_q8": 40,

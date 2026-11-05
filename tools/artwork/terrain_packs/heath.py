@@ -20,7 +20,7 @@ from ._heather import heather_cushions, soft_shadow
                  "crack": (74, 62, 54), "shadow": (78, 68, 60),
                  "stem": (56, 47, 42), "body": (90, 75, 65), "tip": (132, 118, 96),
                  "dead": (92, 86, 78), "deadtip": (124, 118, 106)},
-        style=Style(luma=100, std=15, grain_max=14, match=0.7), periodic=True, grid=8, blocks=4)
+        style=Style(luma=100, std=10.5, grain_max=14, match=0.7), periodic=True, grid=8, blocks=4)
 def render_heath(ctx):
     """Dry heath: clumps of dormant and dead heather cushions, each built of
     lit sprig tufts, over pale, faded, cracked sandy peat."""
@@ -32,7 +32,7 @@ def render_heath(ctx):
 
 
 def heath_ground(ctx, p):
-    """Pale, faded sandy peat under the barren group's cracks."""
+    """Pale, faded sandy peat under the barren group's mark."""
     size = ctx.size
     base = layout_field(ctx, lambda rng: fbm(rng, 4, 3, size=size))
     rgb = ramp(base, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])

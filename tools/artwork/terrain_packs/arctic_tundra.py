@@ -6,16 +6,15 @@ from scipy.ndimage import gaussian_filter
 from terrain_core import (
     RECIPES,
     Style,
+    barren_mark,
     desaturate,
     fbm,
     flat,
-    group_cracks,
     lattice_noise,
     layout_field,
     mix,
     ramp,
     recipe,
-    shifted,
     smoothstep,
 )
 from ._heather import heather_cushions, soft_shadow
@@ -30,13 +29,13 @@ from .tundra import frost_polygons, tundra_stones
                  "stem": (164, 172, 204), "body": (208, 212, 234), "tip": (238, 240, 250),
                  "dead": (208, 212, 234), "deadtip": (238, 240, 250),
                  "sparkle": (252, 252, 255)},
-        style=Style(luma=136, std=58, grain_max=16, match=0.7), periodic=True, grid=8, blocks=4)
+        style=Style(luma=136, std=44, grain_max=16, match=0.7), periodic=True, grid=8, blocks=4)
 def render_arctic_tundra(ctx):
     """Tundra's frost-patterned ground under snow: the same polygons about two
     cells across, but snow lies in scalloped patches where the moss pads would
-    grow, leaving frozen peaty earth bare in the troughs, where the barren
-    group's cracks run and rime frosts the raised rims. The cracks carry on
-    faintly through the snow, and grey stone beds keep a dusting on top."""
+    grow, leaving frozen peaty earth bare in the troughs, packed and gritty
+    under the barren group's mark, and rime frosts the raised rims. The faint
+    cracks carry on through the snow, and grey stone beds keep a dusting on top."""
     p = RECIPES["arctic_tundra"].palette
     size = ctx.size
     centre, _ = frost_polygons(ctx)
@@ -61,19 +60,13 @@ def render_arctic_tundra(ctx):
     # A thin dusting of snow caught on the stone tops.
     dust = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size))
     rgb = mix(rgb, p["tip"], [c * smoothstep(0.55, 0.8, v) for c, v in zip(cover, dust)], 0.55)
-    # The barren group's cracks run through earth and snow alike: dark in the
-    # bare troughs, blue shadowed fissures where they split the snow.
+    # The barren group's mark lies mostly on the bare ground: its faint cracks
+    # dark in the troughs, blue shadowed fissures where they split the snow,
+    # with a quarter of its packing and gravel showing through the drifts.
     crack = mix(flat(p["crack"], size), p["fissure"], snow, 1.0)
-    return crack_mark(ctx, desaturate(rgb, 0.05), crack, [0.85 - 0.65 * s for s in snow]), None
-
-
-def crack_mark(ctx, rgb, crack, strength):
-    """barren_mark's shared cracks and lit lower lip, with a per-pixel crack
-    colour and strength."""
-    cracks = group_cracks(ctx)
-    lip = [max(0.0, b - a) for a, b in zip(cracks, shifted(cracks, 1, 1))]
-    rgb = mix(rgb, crack, [c * k for c, k in zip(cracks, strength)], 1.0)
-    return [[c * (1 + 0.20 * l) for c, l in zip(channel, lip)] for channel in rgb]
+    rgb = desaturate(rgb, 0.05)
+    marked = barren_mark(ctx, rgb, crack, fade=0.0)
+    return mix(rgb, marked, [1 - 0.75 * s for s in snow], 1.0), None
 
 
 def frozen_ground(ctx, p, rim):

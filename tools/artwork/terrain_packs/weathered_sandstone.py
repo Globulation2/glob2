@@ -27,11 +27,11 @@ from terrain_core import (
         border_class="solid", seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"tones": [(182, 152, 86), (170, 140, 76), (188, 162, 98), (164, 132, 72), (176, 150, 92)],
                  "rust": (150, 98, 54), "pale": (206, 192, 142), "joint": (110, 88, 56), "crack": (100, 80, 52)},
-        style=Style(luma=134, std=12, grain_max=14, match=0.75), periodic=True, grid=8, blocks=4)
+        style=Style(luma=134, std=8.4, grain_max=14, match=0.75), periodic=True, grid=8, blocks=4)
 def render_weathered_sandstone(ctx):
     """Weathered sandstone: one solid bed of ochre stone worn into rounded,
     pillowed blocks with fine joints, faint bedding, iron stain and pale
-    nodules, under the barren group's cracks."""
+    nodules, under the barren group's mark."""
     p = RECIPES["weathered_sandstone"].palette
     size, shared, own = ctx.size, ctx.shared_rng, ctx.rng
     cells = 2
