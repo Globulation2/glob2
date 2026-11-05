@@ -1,0 +1,46 @@
+{
+  "pid": 3396106,
+  "revision": "7439a9f01546126117d728551c3c3d35c84f944a",
+  "phase": "finished; inspectdiagnosticlandscape/seed/statewithoutweakeningoriginalassertion",
+  "results": [
+    {
+      "name": "build",
+      "exit_code": 0,
+      "seconds": 6914.1
+    },
+    {
+      "name": "targeted-1",
+      "exit_code": 0,
+      "seconds": 102.5
+    },
+    {
+      "name": "targeted-2",
+      "exit_code": 0,
+      "seconds": 101.1
+    },
+    {
+      "name": "targeted-3",
+      "exit_code": 0,
+      "seconds": 99.7
+    }
+  ],
+  "note": "Only6INFO lines added aroundunchangedpreviewassertion. No generator/runtime/gate/timing change. Oldandroid-indexbuildoutputinactiveand reusedthroughSConsdependencyvalidation; current207native/Wasmhelpersunchanged.",
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/android-index-release",
+    "--filter",
+    "CustomGameSetup/custom game screens*",
+    "--jobs",
+    "1",
+    "--fullscreen",
+    "--timeout",
+    "900",
+    "--junit",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/preview-failure-diagnostics/attempt-3.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/307ed29a-915d-4451-b89a-dd866c5cb3af/glob2/artifacts/ci-recovery/preview-failure-diagnostics/attempt-3"
+  ],
+  "child_pid": 3522534
+}
