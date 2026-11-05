@@ -1,0 +1,8 @@
+Glslang Version: 11:16.6.0
+ESSL Version: OpenGL ES GLSL 3.20 glslang Khronos. 16.6.0
+GLSL Version: 4.60 glslang Khronos. 16.6.0
+desktop-gl passed
+webgl2 passed
+/Users/bradley/.codex/worktrees/water-overlay/glob2/artifacts/water-cadence/shaders/vulkan/terrain-direct.frag
+Vulkan passed
+Legacy GL animation passed
