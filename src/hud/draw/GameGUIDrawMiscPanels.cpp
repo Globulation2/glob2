@@ -37,8 +37,8 @@ void GameGUI::drawResourceInfos(void)
 	globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, resourceName.c_str());
 	ypos += 2*YOFFSET_TEXT_PARA;
 
-	const auto& sprites = ResourceSprites::resolve(drawnScene().map.frozenResourceRegistry());
-	auto* sprite = sprites.sprites[r.type];
+	const auto &map = drawnScene().map;
+	auto *sprite = ResourceSprites::resolve(map.frozenResourceRegistry(), map.frozenAssetBundle()).sprite(id);
 	const int img = catalog.presentation(id).frame(r.amount, 0, 0);
 	if (sprite && img < sprite->getFrameCount())
 	{

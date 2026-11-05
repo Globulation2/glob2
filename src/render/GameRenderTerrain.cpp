@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include <iostream>
 
@@ -55,7 +54,6 @@ namespace
 bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int top,
     int right, int bottom, int viewportX, int viewportY, MapRenderState &render)
 {
-    const auto& presentation = ResourceSprites::resolve(map.frozenResourceRegistry(), map.frozenAssetBundle());
     auto *gfx = globalContainer->gfx;
     auto *batch = gfx->getRenderBatch();
     if (!batch) return false;
@@ -143,7 +141,7 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
                     if (r.type != NO_RES_TYPE)
                     {
                         const auto &type = map.resourceRegistry().presentation(static_cast<ResourceId>(r.type));
-                        row.customSprites |= presentation.sprites[r.type] != sprite;
+                        row.customSprites |= type.sprite != ResourceSprites::LegacyArtwork;
                         frame = resourceFrame(x, r);
                         row.invalidFrames += frame >= sprite->getFrameCount();
                         if (type.animationFrames > 1) row.resources.animated.push_back(x);
@@ -302,7 +300,8 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
     }
     if (render && (drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
             right, bot, viewportX, viewportY, *render)) return;
-    const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry(), sceneMap.frozenAssetBundle());
+    auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry(), sceneMap.frozenAssetBundle());
+    const bool capture = (drawOptions & DRAW_TILED_CAPTURE) != 0;
     const auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
     Sprite* pendingSprite = nullptr;
     const auto flush = [&] {
@@ -370,7 +369,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 			{
 				const auto &presentation =
 					sceneMap.resourceRegistry().presentation(static_cast<ResourceId>(r.type));
-				Sprite *sprite = catalog.sprites[r.type];
+				Sprite *sprite = catalog.sprite(static_cast<ResourceId>(r.type), capture);
 				const int imgid =
 					presentation.frame(r.amount, (x + viewportX) & sceneMap.getMaskW(),
 									   (y + viewportY) & sceneMap.getMaskH(), sceneMap.tick);
@@ -412,12 +411,10 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 		render.overview = std::make_unique<GAGCore::DrawableSurface>(columns*samples, rows*samples);
 	else if (render.overview->getW()!=columns*samples || render.overview->getH()!=rows*samples)
 		render.overview->setRes(columns*samples, rows*samples);
-	auto *pixels = render.overview->getSDLSurface();
 	if (!render.overviewCache)
 		render.overviewCache = std::make_unique<OverviewTerrainCache>();
-	render.overviewCache->copy(sceneMap, left, top, right, bot, viewportX, viewportY,
-							   visibleTeams, drawOptions & DRAW_WHOLE_MAP, pixels);
-	render.overview->markPixelsChanged();
+	render.overviewCache->update(sceneMap, left, top, right, bot, viewportX, viewportY,
+								 visibleTeams, drawOptions & DRAW_WHOLE_MAP, *render.overview);
 	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
 }
 
@@ -464,11 +461,15 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 						cell = Uint16(teamNumber << 8 | distance);
 				}
 		}
-	const auto teamAt = [&](int x, int y) -> int
+	const auto rowAt = [&](int y)
 	{
-		const int cellX = powerOfTwoRemainder(powerOfTwoRemainder((x+viewportX), sceneMap.getW())+sceneMap.getW(), sceneMap.getW())/Cell;
-		const int cellY = powerOfTwoRemainder(powerOfTwoRemainder((y+viewportY), sceneMap.getH())+sceneMap.getH(), sceneMap.getH())/Cell;
-		const Uint16 cell = owner[size_t(std::min(cellY, gridH-1))*gridW + std::min(cellX, gridW-1)];
+		const int cellY = ((y + viewportY) & sceneMap.getMaskH()) / Cell;
+		return owner.data() + size_t(cellY) * gridW;
+	};
+	const auto teamAt = [&](const Uint16 *row, int x) -> int
+	{
+		const int cellX = ((x + viewportX) & sceneMap.getMaskW()) / Cell;
+		const Uint16 cell = row[cellX];
 		return cell==0xFFFF ? -1 : cell >> 8;
 	};
 	// Dark team colours vanish against dark ground, so every team's wash is
@@ -483,42 +484,53 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	// The border keeps its width on screen: two points, in map pixels.
 	GAGCore::GraphicContext *gfx = globalContainer->gfx;
 	const int border = std::clamp(int(std::lround(2 * gfx->logicalUnitsPerPoint() / gfx->mapTransformScale())), 1, 16);
-	for (int y=top; y<=bot; y++)
+	const auto nextCell = [](int tile, int origin, int limit)
 	{
+		return std::min(tile + Cell - ((tile + origin) & (Cell - 1)), limit);
+	};
+	for (int y=top; y<=bot;)
+	{
+		// Ownership stays constant between coarse cell boundaries. Wash and
+		// vertical borders can span the band. Horizontal borders sit at its ends.
+		const int endY = nextCell(y, viewportY, bot+1);
+		const auto *row = rowAt(y);
 		for (int x=left; x<=right;)
 		{
-			const int team = teamAt(x, y);
-			int end = x+1;
-			while (end<=right && teamAt(end, y)==team)
-				end++;
+			const int team = teamAt(row, x);
+			int end = nextCell(x, viewportX, right+1);
+			while (end<=right && teamAt(row, end)==team)
+				end = nextCell(end, viewportX, right+1);
 			if (team>=0)
 			{
-				gfx->drawMapFill(x*32, y*32, end*32, (y+1)*32, washColor(team, alpha));
+				gfx->drawMapFill(x*32, y*32, end*32, endY*32, washColor(team, alpha));
 				const GAGCore::Color edge = washColor(team, borderAlpha);
-				if (teamAt(x-1, y)!=team)
-					gfx->drawMapFill(x*32, y*32, x*32+border, (y+1)*32, edge);
-				if (teamAt(end, y)!=team)
-					gfx->drawMapFill(end*32-border, y*32, end*32, (y+1)*32, edge);
+				if (teamAt(row, x-1)!=team)
+					gfx->drawMapFill(x*32, y*32, x*32+border, endY*32, edge);
+				if (teamAt(row, end)!=team)
+					gfx->drawMapFill(end*32-border, y*32, end*32, endY*32, edge);
 			}
 			x = end;
 		}
-		// Top and bottom edges, in runs along the row.
-		for (int side=-1; side<=1; side+=2)
+		for (const int adjacentY : {y-1, endY})
+		{
+			const auto *adjacent = rowAt(adjacentY);
+			if (adjacent == row)
+				continue;
+			const int edgeY = adjacentY<y ? y*32 : endY*32-border;
 			for (int x=left; x<=right;)
 			{
-				const int team = teamAt(x, y);
-				if (team<0 || teamAt(x, y+side)==team)
+				const int team = teamAt(row, x);
+				int end = nextCell(x, viewportX, right+1);
+				if (team>=0 && teamAt(adjacent, x)!=team)
 				{
-					x++;
-					continue;
+					while (end<=right && teamAt(row, end)==team && teamAt(adjacent, end)!=team)
+						end = nextCell(end, viewportX, right+1);
+					gfx->drawMapFill(x*32, edgeY, end*32, edgeY+border, washColor(team, borderAlpha));
 				}
-				int end = x+1;
-				while (end<=right && teamAt(end, y)==team && teamAt(end, y+side)!=team)
-					end++;
-				const int edgeY = side<0 ? y*32 : (y+1)*32-border;
-				gfx->drawMapFill(x*32, edgeY, end*32, edgeY+border, washColor(team, borderAlpha));
 				x = end;
 			}
+		}
+		y = endY;
 	}
 }
 

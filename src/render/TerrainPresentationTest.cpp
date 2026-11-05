@@ -18,6 +18,7 @@
 #include <Toolkit.h>
 #include "MapRenderState.h"
 #include "ResourceRowCache.h"
+#include "ResourceSprites.h"
 #include "MapThumbnail.h"
 #include "MapImage.h"
 #include "GenerationRequest.h"
@@ -418,6 +419,25 @@ void layeredCache(bool gpu, bool hd = false)
 } // namespace
 TEST_SUITE("TerrainPresentation")
 {
+	TEST_CASE("resource artwork requests are lazy and captures can wait for them [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		const auto registry = ResourceRegistry::builtins();
+		const auto gold = registry->find("gold-ore");
+		const auto iron = registry->find("iron-ore");
+		REQUIRE(gold);
+		REQUIRE(iron);
+		const auto &goldPath = registry->presentation(*gold).sprite;
+		const auto &ironPath = registry->presentation(*iron).sprite;
+		auto &artwork = ResourceSprites::resolve(registry, MapAssetBundle::empty());
+		REQUIRE_FALSE(GAGCore::Toolkit::findSprite(goldPath));
+		CHECK_FALSE(artwork.sprite(*gold));
+		auto *ready = artwork.sprite(*gold, /*waitForLoad=*/true);
+		REQUIRE(ready);
+		CHECK(artwork.sprite(*gold) == ready);
+		CHECK_FALSE(GAGCore::Toolkit::findSprite(ironPath));
+	}
+
     GLOB2_TEST_CASE("GPU terrain pages match CPU composition through edits wrapping recovery and live switches", "[display][isolated][artifacts][writes-preferences]")
     {
         using namespace GAGCore;
@@ -949,7 +969,7 @@ TEST_SUITE("TerrainPresentation")
 		OverviewTerrainCache cache;
 		const auto check = [&](int vx, int vy, bool wholeMap = true)
 		{
-			cache.copy(scene, -3, -2, 36, 21, vx, vy, fixture.team->me, wholeMap, actual.getSDLSurface());
+			cache.update(scene, -3, -2, 36, 21, vx, vy, fixture.team->me, wholeMap, actual);
 			for (int y = -2; y <= 21; ++y)
 				for (int x = -3; x <= 36; ++x)
 					compositor.composeOverview(compositor.describe(scene, x + vx, y + vy),
@@ -959,20 +979,29 @@ TEST_SUITE("TerrainPresentation")
 		};
 		check(29, 30);
 		const auto cold = cache.composedCells();
+		const auto originalRevision = actual.contentRevision();
 		check(29, 30);
 		check(-3, -2);
 		CHECK(cache.composedCells() == cold);
+		CHECK(actual.contentRevision() == originalRevision);
+		// Resizing back to the same extent replaces the pixel storage.
+		actual.setRes(8 * samples, 8 * samples);
+		actual.setRes(40 * samples, 24 * samples);
+		check(29, 30);
+		CHECK(cache.composedCells() == cold);
 		map.setVertexTerrain(31, 0, GRASS); // Halo edit across both page and map seams.
 		glob2test::observeMap(map, scene);
+		const auto resizedRevision = actual.contentRevision();
 		check(29, 30);
 		CHECK(cache.composedCells() > cold);
+		CHECK(actual.contentRevision() > resizedRevision);
 		map.setTerrainSeed(197);
 		glob2test::observeMap(map, scene);
 		check(29, 30);
 		const auto seeded = cache.composedCells();
 		map.setResourceByIndex(9, 9, WHEAT, 1);
 		glob2test::observeMap(map, scene);
-		cache.copy(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, true, actual.getSDLSurface());
+		cache.update(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, false, actual);
 		CHECK(cache.composedCells() == seeded + 1);
 		CHECK(std::memcmp(actual.getSDLSurface()->pixels, expected.getSDLSurface()->pixels,
 			actual.getSDLSurface()->pitch * actual.getH()) != 0);
@@ -982,7 +1011,7 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(map, scene);
 		check(29, 30, false);
 		CHECK(cache.composedCells() == seeded + 2);
-		cache.copy(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, true, actual.getSDLSurface());
+		cache.update(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, true, actual);
 		CHECK(cache.composedCells() == seeded + 3);
 		map.setNoResource(9, 9, 1);
 		glob2test::observeMap(map, scene);

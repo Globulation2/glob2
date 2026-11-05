@@ -1198,7 +1198,9 @@ void GameGUITouch::drawResourceInfo()
 	const auto info = resourceInfo();
 	const auto rect = allocationRect();
 	if (!info || rect.h <= 0) return;
-	auto *sprite = ResourceSprites::resolve(gui.drawnScene().map.frozenResourceRegistry()).sprites[info->resource];
+	const auto &map = gui.drawnScene().map;
+	auto *sprite = ResourceSprites::resolve(map.frozenResourceRegistry(), map.frozenAssetBundle())
+		.sprite(static_cast<ResourceId>(info->resource));
 	drawSelectionHeader(rect, sprite, info->sprite,
 		info->name + (info->amount.empty() ? "" : "\n" + info->amount));
 }

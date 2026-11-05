@@ -1,12 +1,41 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OverviewTerrainCache.h"
 #include "GlobalContainer.h"
+#include "GraphicContext.h"
 #include "scene/SceneMap.h"
 #include "terrain/TerrainCompositor.h"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <new>
+
+void OverviewTerrainCache::update(const SceneMap &map, int left, int top, int right, int bottom,
+								  int vx, int vy, Uint32 visibleTeams, bool wholeMap,
+								  GAGCore::DrawableSurface &target)
+{
+	Output next{
+		.x = (left + vx) & map.getMaskW(),
+		.y = (top + vy) & map.getMaskH(),
+		.columns = right - left + 1,
+		.rows = bottom - top + 1,
+		.seed = map.terrainSeed(),
+		.visibleTeams = wholeMap ? 0u : visibleTeams,
+		.wholeMap = wholeMap,
+		.terrainRevision = map.terrainRevision(),
+		.resourceRevision = map.resourcePresentationRevision(),
+		.discoveryRevision = wholeMap ? 0 : map.discoveryRevision(),
+		.surfaceIdentity = target.lifetimeIdentity(),
+		.surfaceRevision = target.contentRevision(),
+	};
+	if (output == next && mapIdentity == map.identity() && terrain == map.frozenTerrainRegistry() &&
+		resources == map.frozenResourceRegistry() && assets == map.frozenAssetBundle())
+		return;
+	output.reset();
+	copy(map, left, top, right, bottom, vx, vy, visibleTeams, wholeMap, target.getSDLSurface());
+	target.markPixelsChanged();
+	next.surfaceRevision = target.contentRevision();
+	output = next;
+}
 
 void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int right, int bottom,
 								int vx, int vy, Uint32 visibleTeams, bool wholeMap,
@@ -31,29 +60,22 @@ void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int righ
 		for (int cx = chunkOf(left + vx); cx <= chunkOf(right + vx); ++cx)
 		{
 			const int wx = (cx * Tiles) & map.getMaskW(), wy = (cy * Tiles) & map.getMaskH();
-			Page *page = nullptr;
-			for (auto &candidate : pages)
-				if (candidate->x == wx && candidate->y == wy)
-				{
-					page = candidate.get();
-					break;
-				}
-			if (!page)
+			const auto key = std::size_t(wy) * map.getW() + wx;
+			auto found = pages.find(key);
+			if (found == pages.end())
 			{
 				if ((pages.size() + 1) * PageBytes > Budget)
 					pages.erase(std::min_element(pages.begin(), pages.end(),
 												 [](const auto &a, const auto &b)
-												 { return a->used < b->used; }));
-				auto candidate = std::make_unique<Page>();
-				candidate->x = wx;
-				candidate->y = wy;
-				candidate->pixels.reset(
+												 { return a.second.used < b.second.used; }));
+				Page candidate;
+				candidate.pixels.reset(
 					SDL_CreateSurface(Pixels, Pixels, SDL_PIXELFORMAT_ARGB8888));
-				if (!candidate->pixels)
+				if (!candidate.pixels)
 					throw std::bad_alloc();
-				page = candidate.get();
-				pages.push_back(std::move(candidate));
+				found = pages.emplace(key, std::move(candidate)).first;
 			}
+			auto *page = &found->second;
 			page->used = ++use;
 			std::array<Uint32, (Tiles + 3) * (Tiles + 3)> vertices{};
 			for (int y = -1; y <= Tiles + 1; ++y)

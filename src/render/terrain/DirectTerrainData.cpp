@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <map>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace
@@ -32,8 +33,17 @@ struct Atlas
             return;
         const auto size = std::size_t(Width) * neededRows * TilePixels;
         const auto extra = (size - pixels.size()) * sizeof(Texel);
-        if (neededRows * TilePixels > maxSize || extra > remainingBytes)
-            throw std::runtime_error("Direct terrain atlas exceeds the prototype budget");
+        const int height = neededRows * TilePixels;
+        if (height > maxSize || extra > remainingBytes)
+        {
+            const auto dimensions = std::to_string(Width) + "x" + std::to_string(height);
+            if (height > maxSize)
+                throw std::runtime_error("Direct terrain atlas " + dimensions +
+                                         " exceeds device texture limit " + std::to_string(maxSize));
+            throw std::runtime_error("Direct terrain atlas " + dimensions + " needs " +
+                                     std::to_string(extra) + " additional bytes with " +
+                                     std::to_string(remainingBytes) + " bytes left in the terrain budget");
+        }
         pixels.resize(size);
         rows = neededRows;
         remainingBytes -= extra;

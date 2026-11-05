@@ -68,7 +68,8 @@ def main():
                     metrics.setdefault(label+'/first_draw_process_cpu',[]).append(float(cpu))
         if not metrics: raise ValueError('Missing production benchmark metrics')
         for name,values in metrics.items():
-            report['performance'].append({'workload':data.get('workload'),'metric':name,**gate(values)})
+            report['performance'].append({'workload':data.get('workload'),
+                'animation':data.get('animation', 'paused'),'metric':name,**gate(values)})
     if args.software_aa:
         data=json.loads(args.software_aa.read_text()); params=data['arguments']
         if Path(params['baseline']).resolve()!=Path(params['candidate']).resolve():

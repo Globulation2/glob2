@@ -305,7 +305,7 @@ void Compositor::requestMapTerrain(const SceneMap& map)
 }
 #endif
 void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
-                                int left, int top, int right, int bottom)
+                                int left, int top, int right, int bottom, bool nativeComposition)
 {
     Usage usage;
     for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
@@ -314,16 +314,22 @@ void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
 #endif
     const int width = std::min(map.getW(), std::max(0, right - left + 1));
     const int height = std::min(map.getH(), std::max(0, bottom - top + 1));
+    const auto seed = map.terrainSeed();
     for (int y = 0; y < height; ++y)
         for (int x = 0; x < width; ++x)
         {
-            const auto r = describe(map, left + x, top + y);
-            for (const auto id : r.corners)
-                usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
+            const int wx = (left + x) & map.getMaskW(), wy = (top + y) & map.getMaskH();
+            // Variant selection only needs corner materials and canonical
+            // coordinates. Shoreline and halo data are needed at composition.
+            for (const auto corner : map.cellCorners(wx, wy))
+            {
+                const auto id = materialFor(map, corner);
+                usage[id][definitions.variantIndex(id, wx, wy, seed)] = 1;
+            }
         }
-    prepareSelected(hd, time, &usage);
+    prepareSelected(hd, time, &usage, nativeComposition);
 }
-void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
+void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool nativeComposition)
 {
     // Nonperiodic custom art uses variant zero as its shared boundary source.
     Usage normalized;
@@ -375,6 +381,9 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
     }
     for (auto &[sprite, window] : windows) sprite->setHighResolutionFrames(window);
 
+    // Keep the existing stream window ready for the next zoom level while
+    // reduced pages compose from the smaller native inputs.
+    hd = hd && !nativeComposition;
 	int nextResolution = 1;
 	bool fallback = false;
 	// Surf moves once per `ticks`, so entering a new step invalidates its pages

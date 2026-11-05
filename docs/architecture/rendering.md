@@ -805,6 +805,9 @@ mip chains keep their existing upload and compression path. Unsupported contexts
 (including older contexts without integer shaders), non-power-of-two surfaces and failed pipeline
 creation retain CPU preparation. Native scratch textures and shaders are released
 before their owning context is destroyed.
+On little-endian desktop OpenGL, the CPU fallback for tightly packed,
+power-of-two ARGB surfaces uploads the original pixels directly and reuses
+one scratch buffer for the smaller levels.
 
 The portable SDL renderer used on mobile samples standalone HD frames without
 mip chains, so those requests decode only base pixels. In-flight HD requests retain

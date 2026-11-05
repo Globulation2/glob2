@@ -222,9 +222,7 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeResource(ResourceId id, T
 	if (auto *ground = terrain(backdrop, px))
 		result->drawSurface(0, 0, ground);
 	const auto &presentation = resourceRegistry->presentation(id);
-	const auto &sprites = ResourceSprites::resolve(resourceRegistry, assets);
-	auto *sprite =
-		resourceIndex(id) < sprites.sprites.size() ? sprites.sprites[resourceIndex(id)] : nullptr;
+	auto *sprite = ResourceSprites::resolve(resourceRegistry, assets).sprite(id, /*waitForLoad=*/true);
 	if (sprite && !presentation.levels.empty())
 	{
 		// The fullest stage, the look an author expects of a freshly painted deposit.
@@ -356,9 +354,7 @@ GAGCore::DrawableSurface *BrushSwatches::resourceStage(ResourceId id, TerrainTyp
 	if (auto *ground = terrain(backdrop, px))
 		result->drawSurface(0, 0, ground);
 	const auto &presentation = resourceRegistry->presentation(id);
-	const auto &sprites = ResourceSprites::resolve(resourceRegistry, assets);
-	auto *sprite =
-		resourceIndex(id) < sprites.sprites.size() ? sprites.sprites[resourceIndex(id)] : nullptr;
+	auto *sprite = ResourceSprites::resolve(resourceRegistry, assets).sprite(id, /*waitForLoad=*/true);
 	if (sprite && !presentation.levels.empty())
 	{
 		const ResourceSpriteLevel *level = &presentation.levels.front();
