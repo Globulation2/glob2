@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-scree",
   "profile": "rock",
   "class": "solid",
-  "preview": [90, 86, 81],
+  "preview": [94, 90, 84],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [90, 86, 81],
+  "minimap": [94, 90, 84],
   "seam": {
     "height": 1
   }

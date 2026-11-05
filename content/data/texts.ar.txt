@@ -5667,9 +5667,9 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [thicket]
 أجمة
 [ridge_rock]
-حيد صخري
+
 [outcrop]
-نتوء صخري
+
 [dirt]
 تراب
 [clay]
@@ -5748,6 +5748,12 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 رمل
 [terrain group grass]
 عشب
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 جليد
 [terrain group paths]
@@ -5755,7 +5761,7 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [terrain group obstacles]
 عوائق
 [terrain group ridges]
-حيود
+
 [terrain group barren]
 أرض قاحلة
 [terrain group rough]
@@ -5770,8 +5776,6 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 فراغ
 [terrain group custom]
 مخصص
-[terrain group classic]
-أرض تقليدية
 [terrain rule walkable]
 يمكن المشي عليها
 [terrain rule swimmable]

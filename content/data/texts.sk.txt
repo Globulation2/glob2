@@ -5667,9 +5667,9 @@ Balvany
 [thicket]
 Húština
 [ridge_rock]
-Hrebeň
+
 [outcrop]
-Skalný výchoz
+
 [dirt]
 Hlina
 [clay]
@@ -5748,6 +5748,12 @@ Voda
 Piesok
 [terrain group grass]
 Tráva
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Ľad
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Cesty
 [terrain group obstacles]
 Prekážky
 [terrain group ridges]
-Hrebene
+
 [terrain group barren]
 Neúrodná pôda
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Hlboká voda
 Prázdnota
 [terrain group custom]
 Vlastné
-[terrain group classic]
-Klasický terén
 [terrain rule walkable]
 Priechodný
 [terrain rule swimmable]

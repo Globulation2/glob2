@@ -44,24 +44,29 @@ def render_wind_swept_snow(ctx):
     """
     p, size = RECIPES["wind_swept_snow"].palette, ctx.size
     yy, xx = np.indices((size, size), dtype=np.float64)
-    # Whole ridge counts per 8-tile block: drifts about a tile apart across
-    # the diagonal, faint ripples a third of that, a little off parallel.
+    # Whole ridge counts per 8-tile block: drifts a little under half a tile
+    # apart across the diagonal, as a glob would see them, with faint ripples
+    # a third of that, a little off parallel.
     scale = size / (8 * N)
-    drift_k, ripple_k = (5, 5), (16, 10)
+    drift_k, ripple_k = (13, 13), (40, 26)
     base = scale * (drift_k[0] * xx + drift_k[1] * yy) / size
     fine = scale * (ripple_k[0] * xx + ripple_k[1] * yy) / size
     # Broad bends keep crests long and roughly parallel; a weaker, finer warp
     # offsets neighbouring stretches so crests split and merge.
-    bend = np.array(layout_field(ctx, lambda rng: fbm(rng, 2, 1, size=size))).reshape(size, size)
-    fray = np.array(layout_field(ctx, lambda rng: fbm(rng, 4, 2, size=size))).reshape(size, size)
-    phase = base + 0.6 * (bend - 0.5) + 0.12 * (fray - 0.5)
-    ripple_phase = fine + 0.6 * (bend - 0.5) + 0.1 * (fray - 0.5)
+    bend = np.array(layout_field(ctx, lambda rng: fbm(rng, 3, 1, size=size))).reshape(size, size)
+    fray = np.array(layout_field(ctx, lambda rng: fbm(rng, 8, 2, size=size))).reshape(size, size)
+    # A very broad swing turns the local crest direction by about fifteen
+    # degrees either way across a few tiles, so a field is not one corduroy.
+    swing = np.array(layout_field(ctx, lambda rng: fbm(rng, 0.375, 1, size=size))).reshape(size, size)
+    phase = base + 1.1 * (swing - 0.5) + 0.7 * (bend - 0.5) + 0.18 * (fray - 0.5)
+    ripple_phase = fine + 1.1 * (swing - 0.5) + 0.7 * (bend - 0.5) + 0.12 * (fray - 0.5)
     # Drift height: tall drifts where snow piled up, low scoured flats elsewhere.
-    pile = np.array(layout_field(ctx, lambda rng: fbm(rng, 3, 2, size=size))).reshape(size, size)
-    amp = np.clip((pile - 0.3) / 0.45, 0, 1)
-    amp = 0.3 + 0.7 * amp * amp * (3 - 2 * amp)
+    pile = np.array(layout_field(ctx, lambda rng: fbm(rng, 4, 2, size=size))).reshape(size, size)
+    amp = np.clip((pile - 0.4) / 0.38, 0, 1)
+    amp = 0.08 + 0.92 * amp * amp * (3 - 2 * amp)
     crest = 0.8
-    height = 34.0 * amp * drift_ridges(phase, crest) + 0.5 * (1.2 - amp) * drift_ridges(ripple_phase, 0.65)
+    # Drift height scales with their spacing, so slopes keep the same pitch.
+    height = 14.0 * amp * drift_ridges(phase, crest) + 0.3 * (1.2 - amp) * drift_ridges(ripple_phase, 0.65)
     # Low sun from the upper left, as a fixed light so shared boundaries
     # match; tone is measured from flat snow, which sits at the mid colour.
     hx = (np.roll(height, -1, 1) - np.roll(height, 1, 1)) / 2
@@ -73,7 +78,7 @@ def render_wind_swept_snow(ctx):
     rgb = ramp(as_list(tone), [(0.0, p["shadow"]), (0.3, p["lee"]), (0.55, p["mid"]), (1.0, p["lit"])])
     # A crisp rim catches the sun along each crest.
     f = phase % 1.0
-    rim = np.clip(1 - np.maximum(crest - f, 0) / 0.02 - np.maximum(f - crest, 0) / 0.006, 0, 1) * amp
+    rim = np.clip(1 - np.maximum(crest - f, 0) / 0.04 - np.maximum(f - crest, 0) / 0.012, 0, 1) * amp
     rgb = mix(rgb, p["crest"], as_list(rim), 0.6)
     # Wind-polished grain and sparkle on the lit faces.
     grain_field = layout_field(ctx, lambda rng: lattice_noise(rng, 48, size=size))

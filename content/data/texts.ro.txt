@@ -5667,9 +5667,9 @@ Gard viu
 [thicket]
 Desiș
 [ridge_rock]
-Creastă
+
 [outcrop]
-Afloriment
+
 [dirt]
 Pământ
 [clay]
@@ -5748,6 +5748,12 @@ Apă
 Nisip
 [terrain group grass]
 Iarbă
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Gheață
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Drumuri
 [terrain group obstacles]
 Obstacole
 [terrain group ridges]
-Creste
+
 [terrain group barren]
 Pământ sterp
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Apă adâncă
 Vid
 [terrain group custom]
 Personalizat
-[terrain group classic]
-Teren clasic
 [terrain rule walkable]
 Traversabil pe jos
 [terrain rule swimmable]

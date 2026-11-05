@@ -89,7 +89,7 @@ inline constexpr auto TERRAIN_GROUPS = []
 		obstacles.projectileBlocks = true;
 	}
 	{
-		// Ridges and outcrops: impassable on the ground, towers shoot over them.
+		// Crags (rock spires, basalt columns): impassable on the ground, towers shoot over them.
 		define(TerrainGroup::Ridges, "ridges", "[terrain group ridges]", true);
 	}
 	{

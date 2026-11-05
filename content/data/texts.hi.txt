@@ -5643,9 +5643,9 @@ AI से नहीं बना
 [thicket]
 घनी झाड़ियाँ
 [ridge_rock]
-पर्वत धार
+
 [outcrop]
-चट्टानी उभार
+
 [dirt]
 मिट्टी
 [clay]
@@ -5724,6 +5724,12 @@ AI से नहीं बना
 रेत
 [terrain group grass]
 घास
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 बर्फ़
 [terrain group paths]
@@ -5731,7 +5737,7 @@ AI से नहीं बना
 [terrain group obstacles]
 बाधाएँ
 [terrain group ridges]
-पथरीली धारें
+
 [terrain group barren]
 बंजर ज़मीन
 [terrain group rough]
@@ -5746,8 +5752,6 @@ AI से नहीं बना
 शून्य
 [terrain group custom]
 कस्टम
-[terrain group classic]
-पारंपरिक ज़मीन
 [terrain rule walkable]
 चलने योग्य
 [terrain rule swimmable]

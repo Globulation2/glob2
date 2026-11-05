@@ -211,7 +211,7 @@ class TerrainSynth(unittest.TestCase):
         groups = {name: synth.RECIPES[name].group for name in synth.SYNTH_ORDER}
         groups.update(grass="grass", sand="sand", road="paths", ice="ice")
         # Pairs whose averages meet but whose textures never could be confused:
-        # tundra's green moss pads and grey earth average to scree's grey slabs.
+        # tundra's green moss pads and grey earth average to scree's warm-grey stones.
         texture_distinct = {("scree", "tundra")}
         names = sorted(means)
         for i, a in enumerate(names):

@@ -118,8 +118,8 @@ bool fullyOpaque(GAGCore::DrawableSurface &surface)
 
 TEST_SUITE("BrushCatalog")
 {
-	TEST_CASE("catalogue lists classic ground every catalogue member and every registry resource "
-			  "[display]")
+	TEST_CASE("catalogue lists grass, sand and water first, every catalogue member and every registry "
+			  "resource [display]")
 	{
 		glob2test::HeadlessGlobals globals(display());
 		MapEdit editor;
@@ -127,11 +127,27 @@ TEST_SUITE("BrushCatalog")
 		const auto &catalog = editor.brushCatalog();
 		REQUIRE_FALSE(catalog.empty());
 		CHECK(catalog.front().section == BrushSection::Terrain);
-		CHECK(catalog.front().key == "classic");
+		CHECK(catalog.front().key == "grass");
 		CHECK(ids(catalog.front()) ==
-			  std::vector<std::string>{"terrain/water", "terrain/sand", "terrain/grass", "terrain/lush_grass",
-									   "terrain/dry_grass", "terrain/dune_sand", "terrain/pale_sand",
-									   "terrain/windy_sand_dune"});
+			  std::vector<std::string>{"terrain/grass", "terrain/lush_grass", "terrain/dry_grass"});
+		REQUIRE(catalog.size() > 3);
+		CHECK(catalog[1].key == "sand");
+		CHECK(ids(catalog[1]) == std::vector<std::string>{"terrain/sand", "terrain/dune_sand", "terrain/pale_sand",
+														   "terrain/windy_sand_dune"});
+		CHECK(catalog[2].key == "water");
+		CHECK(ids(catalog[2]) == std::vector<std::string>{"terrain/water"});
+		CHECK(catalog[3].key == "deep-water");
+		CHECK(ids(catalog[3]) == std::vector<std::string>{"terrain/deep_water", "terrain/dark_water"});
+		CHECK(catalog[4].key == "ice");
+		// Classic ground explains how it plays under the shared rule line.
+		for (const auto *key : {"water", "sand", "grass"})
+		{
+			const auto *group = findBrushGroup(catalog, BrushSection::Terrain, key);
+			REQUIRE(group);
+			CHECK(group->rules.find('\n') != std::string::npos);
+			CHECK(group->rules.find("[terrain group note") == std::string::npos);
+		}
+		CHECK(findBrushGroup(catalog, BrushSection::Terrain, "ice")->rules.find('\n') == std::string::npos);
 		// Every selectable built-in type is immediately available.
 		const auto &registry = editor.game.map.terrainRegistry();
 		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
@@ -149,9 +165,7 @@ TEST_SUITE("BrushCatalog")
 			CHECK_FALSE(entry->locked);
 			CHECK(entry->experiment.empty());
 			CHECK(entry->swatch.terrain == type);
-			CHECK(entry->group == (terrainGroupIsClassic(terrainGroup(type))
-									   ? std::string("classic")
-									   : std::string(terrainGroupDefinition(terrainGroup(type)).key)));
+			CHECK(entry->group == std::string(terrainGroupDefinition(terrainGroup(type)).key));
 		}
 		const auto *obstacles = findBrushGroup(catalog, BrushSection::Terrain, "obstacles");
 		REQUIRE(obstacles);
@@ -275,12 +289,12 @@ TEST_SUITE("BrushCatalog")
 		CHECK(custom->entries[1].label == "Terrain 2");
 		CHECK_FALSE(custom->entries[1].rules.empty());
 		CHECK_FALSE(custom->entries[1].locked);
-		// The terrain section stays classic, catalogue groups, then custom.
+		// The terrain section stays grass, sand, water, deep water, the other groups, then custom.
 		std::vector<std::string> keys;
 		for (const auto &group : editor.brushCatalog())
 			if (group.section == BrushSection::Terrain)
 				keys.push_back(group.key);
-		CHECK(keys.front() == "classic");
+		CHECK(keys.front() == "grass");
 		CHECK(keys.back() == "custom");
 		// Imported types appear among resource habitats as well.
 		const auto type = *editor.game.map.terrainRegistry().find("example:t2");

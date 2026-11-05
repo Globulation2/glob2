@@ -5667,9 +5667,9 @@ AI 生成
 [thicket]
 灌木叢
 [ridge_rock]
-巖脊
+
 [outcrop]
-岩石露頭
+
 [dirt]
 泥土
 [clay]
@@ -5748,6 +5748,12 @@ AI 生成
 沙地
 [terrain group grass]
 草地
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 冰
 [terrain group paths]
@@ -5755,7 +5761,7 @@ AI 生成
 [terrain group obstacles]
 障礙物
 [terrain group ridges]
-巖脊
+
 [terrain group barren]
 貧瘠地面
 [terrain group rough]
@@ -5770,8 +5776,6 @@ AI 生成
 虛空
 [terrain group custom]
 自定義
-[terrain group classic]
-經典地面
 [terrain rule walkable]
 可步行
 [terrain rule swimmable]

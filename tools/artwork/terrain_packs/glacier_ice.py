@@ -53,12 +53,13 @@ def stamp_fracture(core, glow, x0, y0, a, span, w, reach, side, bright, t0=0.0, 
 
 
 def fracture_planes(rng, size, count, length, width, halo):
-    """Long fracture planes that kink a few times and throw short branches.
+    """Fracture planes that may kink once and rarely throw a short branch.
 
     Returns (core, glow): a bright line and the feathered sheet of light the
     fracture throws to one side, as cracks deep in clear ice look from above.
-    Primaries span several tiles; their branches are short, thin and dimmer,
-    so the cracks enclose large calm plates. Segments wrap across the canvas.
+    Primaries are at most a tile or so long; their branches are shorter,
+    thinner and dimmer, so the cracks enclose calm plates about a tile
+    across. Segments wrap across the canvas.
     """
     core = np.zeros((size, size))
     glow = np.zeros((size, size))
@@ -70,13 +71,13 @@ def fracture_planes(rng, size, count, length, width, halo):
         reach = halo * rng.uniform(0.7, 1.3)
         side = 1.0 if rng.random() < 0.5 else -1.0
         bright = rng.choice((0.45, 0.6, 0.8, 1.0, 1.0))
-        pieces = rng.randint(2, 4)
+        pieces = rng.randint(1, 2)
         done = 0.0
         for k in range(pieces):
             span = total / pieces * rng.uniform(0.8, 1.2) if k < pieces - 1 else total - done
             stamp_fracture(core, glow, x, y, a, span, w, reach, side, bright, done, total)
             # Branches leave the primary at a sharp angle and die out quickly.
-            if rng.random() < 0.6:
+            if rng.random() < 0.15:
                 f = rng.uniform(0.2, 0.8) * span
                 b = a + (1 if rng.random() < 0.5 else -1) * rng.uniform(0.45, 1.0)
                 stamp_fracture(core, glow, x + math.cos(a) * f, y + math.sin(a) * f, b,
@@ -88,15 +89,15 @@ def fracture_planes(rng, size, count, length, width, halo):
 
 
 def flat_bubbles(rng, size, clusters):
-    """Large flattened air pockets: a pale body under a bright soft rim."""
+    """Small flattened air pockets: a pale body under a bright soft rim."""
     mask = np.zeros((size, size))
     for _ in range(round(clusters * (size // N) ** 2)):
         cx, cy = rng.random() * size, rng.random() * size
         a = rng.random() * TAU
         for _ in range(rng.randint(1, 2)):
-            step = rng.gauss(0, 18)
+            step = rng.gauss(0, 6)
             x, y = cx + step * math.cos(a), cy + step * math.sin(a)
-            rx, ry = rng.uniform(16.0, 28.0), rng.uniform(9.0, 15.0)
+            rx, ry = rng.uniform(5.0, 9.0), rng.uniform(3.0, 5.0)
             b = a + rng.gauss(0, 0.4)
             index, ox, oy = wrapped_window(size, x, y, rx)
             u, v = ox * math.cos(b) + oy * math.sin(b), oy * math.cos(b) - ox * math.sin(b)
@@ -113,25 +114,29 @@ def flat_bubbles(rng, size, clusters):
                  "glow": (178, 220, 246), "white": (238, 248, 253), "rime": (204, 230, 248)},
         style=Style(luma=145, std=22, grain_max=16, match=0.7), periodic=True, grid=8, blocks=4)
 def render_glacier_ice(ctx):
-    """Blue glacier ice: bright cyan-blue depth in broad calm plates, crossed
-    by a few long kinked white fractures that throw a feathered glow to one
-    side, with rare large flattened bubbles and fine rime speckle."""
+    """Blue glacier ice: bright cyan-blue depth in calm plates, crossed by a
+    web of short kinked white cracks, each well under a tile long, that throw
+    a feathered glow to one side, with small flattened bubbles and fine rime
+    speckle. Feature sizes are what a glob would see underfoot: no crack or
+    bubble spans more than a tile."""
     p, size = RECIPES["glacier_ice"].palette, ctx.size
     # Depth: broad cloudy and clear zones, with soft darker clear pockets.
-    depth = layout_field(ctx, lambda rng: domain_warp(fbm(rng, 1.5, 4, size=size), fbm(rng, 2, 2, size=size),
-                                                      fbm(rng, 2, 2, size=size), 40))
+    depth = layout_field(ctx, lambda rng: domain_warp(fbm(rng, 3, 4, size=size), fbm(rng, 3, 2, size=size),
+                                                      fbm(rng, 3, 2, size=size), 24))
     rgb = ramp(depth, [(0.0, p["abyss"]), (0.3, p["deep"]), (0.7, p["mid"]), (1.0, p["pale"])])
-    pockets = layout_field(ctx, lambda rng: fbm(rng, 4, 2, size=size))
+    pockets = layout_field(ctx, lambda rng: fbm(rng, 6, 2, size=size))
     rgb = mix(rgb, p["abyss"], [smoothstep(0.6, 0.8, v) for v in pockets], 0.3)
-    # Fractures: about two per tile, primaries spanning several tiles.
-    core, glow = layout_field_pair(ctx, lambda rng: fracture_planes(rng, size, 0.45, (320, 700), 3.0, 16.0))
+    # Fractures: under one per tile, mostly single straight runs between half
+    # a tile and a tile and a half long, so the ice reads as crevassed rather
+    # than scratched.
+    core, glow = layout_field_pair(ctx, lambda rng: fracture_planes(rng, size, 0.7, (64, 190), 2.0, 9.0))
     wobble_x = layout_field(ctx, lambda rng: fbm(rng, 12, 2, size=size))
     wobble_y = layout_field(ctx, lambda rng: fbm(rng, 12, 2, size=size))
     core, glow = (domain_warp(f, wobble_x, wobble_y, 2) for f in (core, glow))
     rgb = mix(rgb, p["glow"], glow, 0.7)
-    rgb = mix(rgb, p["white"], core, 0.9)
-    # Rare large flattened bubbles and rime speckle frozen into the surface.
-    rgb = mix(rgb, p["white"], layout_field(ctx, lambda rng: flat_bubbles(rng, size, 0.2)), 0.85)
+    rgb = mix(rgb, p["white"], core, 0.75)
+    # Small flattened bubbles and rime speckle frozen into the surface.
+    rgb = mix(rgb, p["white"], layout_field(ctx, lambda rng: flat_bubbles(rng, size, 1.5)), 0.85)
     speck = layout_field(ctx, lambda rng: lattice_noise(rng, 96, size=size))
     rgb = mix(rgb, p["rime"], [smoothstep(0.72, 0.92, v) for v in speck], 0.3)
     grain_field = layout_field(ctx, lambda rng: lattice_noise(rng, 64, size=size))

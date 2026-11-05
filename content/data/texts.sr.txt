@@ -5667,9 +5667,9 @@ FFmpeg није доступан, па је снимање искључено. �
 [thicket]
 Густиш
 [ridge_rock]
-Гребен
+
 [outcrop]
-Изданак стене
+
 [dirt]
 Земља
 [clay]
@@ -5748,6 +5748,12 @@ FFmpeg није доступан, па је снимање искључено. �
 Песак
 [terrain group grass]
 Трава
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Лед
 [terrain group paths]
@@ -5755,7 +5761,7 @@ FFmpeg није доступан, па је снимање искључено. �
 [terrain group obstacles]
 Препреке
 [terrain group ridges]
-Гребени
+
 [terrain group barren]
 Неплодна земља
 [terrain group rough]
@@ -5770,8 +5776,6 @@ FFmpeg није доступан, па је снимање искључено. �
 Празнина
 [terrain group custom]
 Прилагођено
-[terrain group classic]
-Класичан терен
 [terrain rule walkable]
 Проходно
 [terrain rule swimmable]

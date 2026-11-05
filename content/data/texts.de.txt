@@ -5667,9 +5667,9 @@ Hecke
 [thicket]
 Dickicht
 [ridge_rock]
-Felsrücken
+
 [outcrop]
-Felsvorsprung
+
 [dirt]
 Erde
 [clay]
@@ -5748,6 +5748,12 @@ Wasser
 Sand
 [terrain group grass]
 Gras
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Eis
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Wege
 [terrain group obstacles]
 Hindernisse
 [terrain group ridges]
-Felsrücken
+
 [terrain group barren]
 Unfruchtbarer Boden
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Tiefes Wasser
 Leere
 [terrain group custom]
 Benutzerdefiniert
-[terrain group classic]
-Klassischer Boden
 [terrain rule walkable]
 Begehbar
 [terrain rule swimmable]

@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-glacier_ice",
   "profile": "frozen",
   "class": "solid",
-  "preview": [93, 158, 207],
+  "preview": [86, 156, 209],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [93, 158, 207],
+  "minimap": [86, 156, 209],
   "seam": {
     "height": 4,
     "cast_q8": 64,

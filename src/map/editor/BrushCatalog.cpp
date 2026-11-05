@@ -103,28 +103,26 @@ void addTerrain(const BrushCatalogInputs &inputs, const Text &text, std::vector<
 		if (!group.entries.empty())
 			catalog.push_back(std::move(group));
 	};
-	{
-		BrushGroup classic{"classic", BrushSection::Terrain, text.tr("[terrain group classic]"), "", {}};
-		// Water, sand, grass, then the other looks of sand and grass.
-		std::vector<TerrainType> types{WATER, SAND, GRASS};
-		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
-			if (terrainGroupIsClassic(terrainGroup(TerrainType(id))) &&
-				std::find(types.begin(), types.end(), TerrainType(id)) == types.end())
-				types.push_back(TerrainType(id));
-		for (auto type : types)
-			if (selectable(type))
-				classic.entries.push_back(terrainEntry(inputs, text, type, classic.key,
-													   terrainRuleSummary(registry.properties(type), translate), ""));
-		push(std::move(classic));
-	}
+	// One section per group: grass, sand and water first, since those three
+	// decide where a colony can live and grass is the brush reached for most
+	// (the phone tray shows the first cards without scrolling), deep water
+	// right under water, then the other groups in table order. Grass, sand
+	// and water gain a sentence on how they shape growth and building under
+	// the shared rule line.
+	std::vector<TerrainGroup> order{TerrainGroup::Grass, TerrainGroup::Sand, TerrainGroup::Water,
+									TerrainGroup::DeepWater};
 	for (unsigned g = 0; g < TERRAIN_GROUP_COUNT; ++g)
+		if (std::find(order.begin(), order.end(), TerrainGroup(g)) == order.end())
+			order.push_back(TerrainGroup(g));
+	for (const auto group : order)
 	{
-		const auto group = TerrainGroup(g);
 		const auto &definition = terrainGroupDefinition(group);
-		if (!definition.paletteVisible || terrainGroupIsClassic(group))
+		if (!definition.paletteVisible)
 			continue;
-		BrushGroup entries{definition.key, BrushSection::Terrain, text.tr(definition.label),
-						   terrainRuleSummary(definition.properties, translate), {}};
+		std::string rules = terrainRuleSummary(definition.properties, translate);
+		if (const char *note = terrainGroupNoteKey(group))
+			rules = joinLines({rules, translate(note)});
+		BrushGroup entries{definition.key, BrushSection::Terrain, text.tr(definition.label), std::move(rules), {}};
 		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
 			if (terrainGroup(TerrainType(id)) == group && selectable(TerrainType(id)))
 				entries.entries.push_back(terrainEntry(inputs, text, TerrainType(id), entries.key, "", entries.rules));
@@ -337,6 +335,21 @@ std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, 
 			registry.presentation(TerrainType(id)).editorSelectable)
 			brushes.push_back(TerrainType(id));
 	return brushes;
+}
+
+const char *terrainGroupNoteKey(TerrainGroup group)
+{
+	switch (group)
+	{
+	case TerrainGroup::Water:
+		return "[terrain group note water]";
+	case TerrainGroup::Sand:
+		return "[terrain group note sand]";
+	case TerrainGroup::Grass:
+		return "[terrain group note grass]";
+	default:
+		return nullptr;
+	}
 }
 
 std::string terrainRuleSummary(const TerrainProperties &p, const std::function<std::string(const std::string &)> &tr)

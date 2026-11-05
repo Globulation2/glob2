@@ -1108,7 +1108,7 @@ class GameGUITouchHarness
 			require(touch.chips.size() > 1, "Terrain groups have header chips");
 			std::string variant;
 			for (const auto &group : editor.brushCatalog())
-				if (group.section == BrushSection::Terrain && group.key != "classic" && group.key != "custom")
+				if (group.section == BrushSection::Terrain && group.key != "custom")
 					for (const auto &entry : group.entries)
 						if (variant.empty() && (group.entries.size() > 1 || entry.locked))
 							variant = entry.id;

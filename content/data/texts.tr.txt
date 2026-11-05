@@ -5667,9 +5667,9 @@ Bitki çiti
 [thicket]
 Çalılık
 [ridge_rock]
-Sırt
+
 [outcrop]
-Kaya çıkıntısı
+
 [dirt]
 Toprak
 [clay]
@@ -5748,6 +5748,12 @@ Su
 Kum
 [terrain group grass]
 Çimen
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Buz
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Yollar
 [terrain group obstacles]
 Engeller
 [terrain group ridges]
-Sırtlar
+
 [terrain group barren]
 Çorak arazi
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Derin su
 Boşluk
 [terrain group custom]
 Özel
-[terrain group classic]
-Klasik arazi
 [terrain rule walkable]
 Yürünebilir
 [terrain rule swimmable]

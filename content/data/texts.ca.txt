@@ -5667,9 +5667,9 @@ Bardissa
 [thicket]
 Matollar
 [ridge_rock]
-Cresta rocosa
+
 [outcrop]
-Aflorament
+
 [dirt]
 Terra
 [clay]
@@ -5748,6 +5748,12 @@ Aigua
 Sorra
 [terrain group grass]
 Herba
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 Gel
 [terrain group paths]
@@ -5755,7 +5761,7 @@ Camins
 [terrain group obstacles]
 Obstacles
 [terrain group ridges]
-Crestes
+
 [terrain group barren]
 Sòl estèril
 [terrain group rough]
@@ -5770,8 +5776,6 @@ Aigua profunda
 Buit
 [terrain group custom]
 Personalitzat
-[terrain group classic]
-Sòl clàssic
 [terrain rule walkable]
 Transitable a peu
 [terrain rule swimmable]

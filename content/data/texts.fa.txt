@@ -5667,9 +5667,9 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [thicket]
 بیشه
 [ridge_rock]
-یال سنگی
+
 [outcrop]
-رخنمون سنگی
+
 [dirt]
 خاک
 [clay]
@@ -5748,6 +5748,12 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 ماسه
 [terrain group grass]
 چمن
+[terrain group note water]
+
+[terrain group note sand]
+
+[terrain group note grass]
+
 [terrain group ice]
 یخ
 [terrain group paths]
@@ -5755,7 +5761,7 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [terrain group obstacles]
 موانع
 [terrain group ridges]
-یال‌ها
+
 [terrain group barren]
 زمین بایر
 [terrain group rough]
@@ -5770,8 +5776,6 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 خلأ
 [terrain group custom]
 سفارشی
-[terrain group classic]
-زمین کلاسیک
 [terrain rule walkable]
 قابل پیاده‌روی
 [terrain rule swimmable]

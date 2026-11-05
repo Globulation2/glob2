@@ -14,7 +14,9 @@ from ._sand import sand_look
 RIPPLE_WIND = (2, 1)
 
 
-RIPPLE_CYCLES = 6
+# Thirteen cycles put the ripples about a quarter of a tile apart: hand-sized
+# ripples at the globs' scale, rather than dune-sized ones.
+RIPPLE_CYCLES = 13
 
 
 RIPPLE_CREST = 0.68  # fraction of each ripple that is the long windward rise
@@ -30,9 +32,9 @@ def render_windy_sand_dune(ctx):
     p, size = RECIPES["windy_sand_dune"].palette, ctx.size
     rgb, flecks = sand_look(ctx, p)
     light = blend_fields(ripple_light(ctx.shared_rng, size), ripple_light(ctx.rng, size), ctx.interior_mask)
-    rgb = [[c * (1 + 0.18 * v) for c, v in zip(channel, light)] for channel in rgb]
-    rgb = mix(rgb, p["lee"], [max(0.0, -v) for v in light], 0.3)
-    return mix(rgb, p["dark"], flecks, 0.18), None
+    rgb = [[c * (1 + 0.2 * v) for c, v in zip(channel, light)] for channel in rgb]
+    rgb = mix(rgb, p["lee"], [max(0.0, -v) for v in light], 0.4)
+    return mix(rgb, p["dark"], flecks, 0.12), None
 
 
 def ripple_tone(t):
@@ -49,11 +51,11 @@ def ripple_tone(t):
 def ripple_light(rng, size):
     """Signed light of meandering, forking wind ripples, from the ripple phase."""
     kx, ky = (RIPPLE_CYCLES * k for k in RIPPLE_WIND)
-    # Cells per 128 px canvas: the bend spans a tile, the wobble a ripple or two.
-    bend = fbm(rng, 1, 2, size=size)
-    wobble = fbm(rng, 6, 1, size=size)
-    family = fbm(rng, 2, 2, size=size)
-    relief = fbm(rng, 4, 2, size=size)
+    # Cells per 128 px canvas: the bend spans half a tile, the wobble a ripple or two.
+    bend = fbm(rng, 2, 2, size=size)
+    wobble = fbm(rng, 12, 1, size=size)
+    family = fbm(rng, 4, 2, size=size)
+    relief = fbm(rng, 5, 2, size=size)
     light = []
     for i, (b, w, f, r) in enumerate(zip(bend, wobble, family, relief)):
         x, y = i % size, i // size
