@@ -3,7 +3,7 @@
   "sprite": "data/gfx/terrain-mud",
   "profile": "soil",
   "class": "solid",
-  "preview": [90, 73, 56],
+  "preview": [88, 74, 58],
   "variants": [
     {
       "frame": 0,
@@ -1033,7 +1033,7 @@
   "edges": "periodic",
   "variant_grid": 8,
   "variant_blocks": 4,
-  "minimap": [90, 73, 56],
+  "minimap": [88, 74, 58],
   "seam": {
     "height": 1
   }

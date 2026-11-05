@@ -20,7 +20,7 @@ from terrain_core import (
 
 @recipe(name="mud", group="rough", label="Mud", profile="soil", border_class="solid",
         seam={"height": 1},
-        palette={"dark": (62, 48, 36), "mid": (88, 70, 52), "light": (116, 96, 74), "sheen": (150, 132, 112),
+        palette={"dark": (60, 49, 38), "mid": (86, 71, 54), "light": (114, 97, 76), "sheen": (148, 133, 114),
                  "water": (46, 38, 32), "glint": (168, 160, 150)},
         style=Style(luma=76, std=11, grain_max=8), periodic=True, grid=8, blocks=4)
 def render_mud(ctx):

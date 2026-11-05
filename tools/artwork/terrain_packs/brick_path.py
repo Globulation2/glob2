@@ -19,8 +19,8 @@ from terrain_core import (
 
 # Brick firings, after the reference: red, plum, grey-brown, dark, rust.
 BRICK_FIRINGS = [
-    ((150, 88, 68), 3), ((112, 84, 74), 2), ((122, 102, 86), 3),
-    ((92, 70, 62), 2), ((160, 100, 72), 1), ((134, 96, 72), 2),
+    ((156, 84, 68), 3), ((116, 82, 76), 3), ((118, 102, 88), 3),
+    ((94, 68, 64), 2), ((166, 96, 70), 1),
 ]
 
 
@@ -92,9 +92,8 @@ def herringbone(size, width, length):
 
 @recipe(name="brick_path", group="paths", label="Brick path", profile="paved", border_class="built",
         seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512},
-        palette={"joint": (30, 22, 20)},
-        # Dark mortar between small pavers: grainier than ground, so the joints
-        # still read at native size.
+        palette={"joint": (38, 28, 28)},
+        # Small pavers put more joint into every tile than ground has grain.
         style=Style(luma=112, std=20, grain_max=18), periodic=True, grid=8, blocks=4)
 def render_brick_path(ctx):
     """Brick path: clay pavers laid in an axis-aligned herringbone, so the
