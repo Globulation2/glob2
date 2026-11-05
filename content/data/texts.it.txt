@@ -5754,6 +5754,8 @@ Conci di brina
 Losanghe di pietra di luna
 [frost_pinwheel]
 Girandola di brina
+[arctic_tundra]
+Terreno di tundra artica
 [terrain group water]
 Acqua
 [terrain group sand]

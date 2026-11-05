@@ -5730,6 +5730,8 @@ AI ద్వారా రూపొందించబడలేదు
 చంద్రకాంత రాంబస్‌లు
 [frost_pinwheel]
 మంచు గిరగిర
+[arctic_tundra]
+ఆర్కిటిక్ టండ్రా నేల
 [terrain group water]
 నీరు
 [terrain group sand]

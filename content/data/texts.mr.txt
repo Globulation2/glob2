@@ -6874,6 +6874,8 @@ MCP सर्व्हर सक्षम करा
 चंद्रकांत समभुज
 [frost_pinwheel]
 हिम भिंगरी
+[arctic_tundra]
+आर्क्टिक टुंड्राची जमीन
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
 [script error at %0:%1: %2]

@@ -5754,6 +5754,8 @@ Khối đá xỉ
 Đá mặt trăng hình thoi
 [frost_pinwheel]
 Chong chóng sương giá
+[arctic_tundra]
+Đất lãnh nguyên Bắc Cực
 [terrain group water]
 Nước
 [terrain group sand]

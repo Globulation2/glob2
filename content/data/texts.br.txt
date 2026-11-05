@@ -5754,6 +5754,8 @@ Mogerezh frim
 Lozanjoù maen-loar
 [frost_pinwheel]
 Rod-avel frim
+[arctic_tundra]
+Douar toundra arktek
 [terrain group water]
 Água
 [terrain group sand]

@@ -5754,6 +5754,8 @@ Batu pahat embun beku
 Belah ketupat batu bulan
 [frost_pinwheel]
 Kincir embun beku
+[arctic_tundra]
+Tanah tundra Arktik
 [terrain group water]
 Air
 [terrain group sand]

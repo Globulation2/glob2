@@ -1016,6 +1016,20 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(std::string(terrainPresentation(TUNDRA).name) == "tundra");
 		CHECK(TerrainRegistry::builtins()->find("tundra") == TUNDRA);
 	}
+	TEST_CASE("arctic tundra shares every rule of tundra and the barren group")
+	{
+		CHECK(terrainGroup(ARCTIC_TUNDRA) == TerrainGroup::Barren);
+		CHECK(terrainPaintable(ARCTIC_TUNDRA));
+		for (TerrainType member : {DIRT, CLAY, SHALE, HEATH, WEATHERED_SANDSTONE, TUNDRA})
+		{
+			CAPTURE(member);
+			CHECK(sameTerrainProperties(terrainProperties(ARCTIC_TUNDRA), terrainProperties(member)));
+			CHECK(TerrainRegistry::builtins()->propertyIndex(ARCTIC_TUNDRA) ==
+				  TerrainRegistry::builtins()->propertyIndex(member));
+		}
+		CHECK(std::string(terrainPresentation(ARCTIC_TUNDRA).name) == "arctic_tundra");
+		CHECK(TerrainRegistry::builtins()->find("arctic_tundra") == ARCTIC_TUNDRA);
+	}
 	TEST_CASE("volcanic ash shares every rule of dirt")
 	{
 		CHECK(terrainGroup(VOLCANIC_ASH) == TerrainGroup::Barren);

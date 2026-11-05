@@ -54,6 +54,7 @@ export const TERRAIN_PRESETS = [
   'rime_ashlar',
   'moonstone_lozenge',
   'frost_pinwheel',
+  'arctic_tundra',
 ];
 /**
  * Built-in terrain names retired by renames (old -> current). Numeric IDs and gameplay

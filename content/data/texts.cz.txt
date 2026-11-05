@@ -5754,6 +5754,8 @@ Kvádry z jinovatky
 Kosočtverce z měsíčního kamene
 [frost_pinwheel]
 Mrazivý větrník
+[arctic_tundra]
+Arktická tundrová půda
 [terrain group water]
 Voda
 [terrain group sand]

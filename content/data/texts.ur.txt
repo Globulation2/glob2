@@ -5730,6 +5730,8 @@ AI کی بنائی ہوئی نہیں
 چاند پتھر کے معین
 [frost_pinwheel]
 پالے کی پھرکی
+[arctic_tundra]
+قطبی ٹنڈرا کی زمین
 [terrain group water]
 پانی
 [terrain group sand]

@@ -5754,6 +5754,8 @@ Rimfrostkvader
 Månstensrutor
 [frost_pinwheel]
 Frostsnurra
+[arctic_tundra]
+Arktisk tundramark
 [terrain group water]
 Vatten
 [terrain group sand]

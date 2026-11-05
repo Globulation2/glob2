@@ -5754,6 +5754,8 @@ Carreus de gebre
 Rombes de pedra de lluna
 [frost_pinwheel]
 Molinet de gebre
+[arctic_tundra]
+Sòl de tundra àrtica
 [terrain group water]
 Aigua
 [terrain group sand]

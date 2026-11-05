@@ -5754,6 +5754,8 @@ Cantaria de geada
 Losangos de pedra-da-lua
 [frost_pinwheel]
 Cata-vento de geada
+[arctic_tundra]
+Solo de tundra ártica
 [terrain group water]
 Água
 [terrain group sand]

@@ -6874,6 +6874,8 @@ Batong may hamog na yelo
 Mga rombo ng moonstone
 [frost_pinwheel]
 Pinwheel ng hamog na yelo
+[arctic_tundra]
+Lupang tundra ng Artiko
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
 [script error at %0:%1: %2]

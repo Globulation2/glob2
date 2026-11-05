@@ -5754,6 +5754,8 @@ AI 生成ではない
 ムーンストーンの菱形石
 [frost_pinwheel]
 霜の風車敷き
+[arctic_tundra]
+極地ツンドラ地帯
 [terrain group water]
 水
 [terrain group sand]

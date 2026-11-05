@@ -5754,6 +5754,8 @@ CPU %0%
 Ρόμβοι σεληνόλιθου
 [frost_pinwheel]
 Ανεμόμυλος παγετού
+[arctic_tundra]
+Έδαφος αρκτικής τούνδρας
 [terrain group water]
 Νερό
 [terrain group sand]

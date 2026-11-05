@@ -5730,6 +5730,8 @@ Rimfrostkvader
 Månesteinsruter
 [frost_pinwheel]
 Frostvindmølle
+[arctic_tundra]
+Arktisk tundramark
 [terrain group water]
 Vann
 [terrain group sand]

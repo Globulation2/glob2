@@ -5754,6 +5754,8 @@ Kvádre z inovati
 Kosoštvorce z mesačného kameňa
 [frost_pinwheel]
 Mrazivý veterník
+[arctic_tundra]
+Arktická tundrová pôda
 [terrain group water]
 Voda
 [terrain group sand]

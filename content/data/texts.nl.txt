@@ -5754,6 +5754,8 @@ Rijpblokken
 Maansteenruiten
 [frost_pinwheel]
 Rijpmolentje
+[arctic_tundra]
+Arctische toendrabodem
 [terrain group water]
 Water
 [terrain group sand]

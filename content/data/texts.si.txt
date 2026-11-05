@@ -5754,6 +5754,8 @@ Ivjasti klesanci
 Rombi iz mesečevega kamna
 [frost_pinwheel]
 Ivjasta vetrnica
+[arctic_tundra]
+Arktična tundrska tla
 [terrain group water]
 Voda
 [terrain group sand]

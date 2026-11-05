@@ -5754,6 +5754,8 @@ Sillares de escarcha
 Rombos de piedra lunar
 [frost_pinwheel]
 Molinete de escarcha
+[arctic_tundra]
+Suelo de tundra ártica
 [terrain group water]
 Agua
 [terrain group sand]
