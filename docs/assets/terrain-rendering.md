@@ -194,7 +194,11 @@ evaluated. The remap keeps both cell ends and one slope at each, so fields stay
 continuous across cells while contours hug the midlines and corners tighten from
 arcs toward right angles; roads use 224, tracks 128 and liquids and lava 0.
 Corner shares take the squarest smooth contact around a vertex and interpolate
-like wiggle.
+like wiggle. A square vertex whose 3×3 neighbourhood is two materials split by a
+45-degree line (a staircase edge, or one step off it) takes a squareness of -0.2
+instead, which runs the contour along the staircase straight to within a pixel.
+Right-angled corners keep their profile squareness, and round profiles are
+unchanged. Shallower staircases (2:1 and steeper) still step.
 
 Meanders multiply each field by world-anchored value noise of the material's own
 `wiggle_period`, in two octaves. Noise never reaches a zero field, so a material

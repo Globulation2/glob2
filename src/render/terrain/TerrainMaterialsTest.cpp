@@ -2376,6 +2376,27 @@ TEST_SUITE("TerrainMaterials")
 		const TerrainVisual::PreparedCoverage square(c, recipe), arc(round, recipe);
 		CHECK(weightOf(square.at(19 * 256, 19 * 256), road) > 32768);
 		CHECK(weightOf(arc.at(19 * 256, 19 * 256), road) < 32768);
+		// A 45-degree staircase of road vertices runs as one straight diagonal
+		// rather than square steps: along every pixel row, the road's far edge
+		// keeps a constant offset from the diagonal, apart from the meander.
+		const auto stairs = [&](int x, int y) { return ((x - y) % size + size) % size < 6 ? road : grass; };
+		std::vector<float> offset;
+		for (int y = 4; y < 10; ++y)
+		{
+			std::vector<TerrainVisual::PreparedCoverage> row;
+			for (int x = y + 3; x <= y + 7; ++x) row.emplace_back(c, contextualRecipe(x, y, size, stairs));
+			for (int py = 128; py < 8192; py += 256)
+			{
+				float position = -1;
+				for (int sx = 0; sx < 5 * 8192 && position < 0; sx += 32)
+					if (weightOf(row[sx / 8192].at(sx % 8192, py), road) < 32768)
+						position = sx / 256.f;
+				REQUIRE(position >= 0);
+				offset.push_back(position - py / 256.f);
+			}
+		}
+		const auto [nearest, farthest] = std::minmax_element(offset.begin(), offset.end());
+		CHECK(*farthest - *nearest < 4.f);
 	}
 	TEST_CASE("single vertices own their corner and animation does not reseed variants")
 	{
