@@ -1031,13 +1031,13 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				const bool sameTerrain = entry && entry->valid &&
 					entry->recipeTerrainRevision == terrainRevision && entry->seed == map.terrainSeed();
 				// Compare the complete vertex window on edits, including the
-				// one-vertex halo needed by borders and shore calm.
-				std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
+				// halo needed by borders and shore calm.
+				std::array<Uint32, SourceSpan * SourceSpan> sources{};
 				if (!sameTerrain)
 				{
-					for (int y = -1; y <= ChunkTiles + 1; ++y)
-						for (int x = -1; x <= ChunkTiles + 1; ++x)
-							sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);
+					for (int y = -SourceHalo; y <= ChunkTiles + SourceHalo; ++y)
+						for (int x = -SourceHalo; x <= ChunkTiles + SourceHalo; ++x)
+							sources[(y + SourceHalo) * SourceSpan + x + SourceHalo] = map.vertexTerrainAt(wx + x, wy + y);
 				}
 				const auto revisionChanged = [&](const auto &revision)
 				{ return compositor.textureRevision(revision.first) != revision.second; };
