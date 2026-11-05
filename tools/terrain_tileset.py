@@ -264,6 +264,10 @@ def _validate(document, root):
                     type(n) is not int or not 0 <= n <= 255 for n in color
                 ):
                     raise ValueError(f"Invalid surf {field} color")
+        if "shore_wash_q8" in m:
+            if version < 3:
+                raise ValueError("shore_wash_q8 requires catalog version 3")
+            integer(m["shore_wash_q8"], 0, 256, "shore_wash_q8")
         phases, stride, ticks = (
             m.get("animation_frames", 1),
             m.get("animation_stride", 0),

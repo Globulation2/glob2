@@ -208,7 +208,8 @@ class GpuTerrainPageCache
                 const std::uint32_t calm=material.shoreCalm?
                     std::uint32_t(256-TerrainVisual::ShoreCalmContrastQ8)<<24|material.calmMean[0]<<16|material.calmMean[1]<<8|material.calmMean[2]:0;
                 data->surfs[slot]={surf.period,surf.reach,surf.foam,surf.foamWidth,surf.shallow,surf.shallowWidth,
-                                   surf.wet,surf.wetWidth,surf.shallowColor,surf.foamColor,surf.ticks,calm};
+                                   surf.wet,surf.wetWidth,surf.shallowColor,surf.foamColor,surf.ticks,calm,
+                                   material.shoreWash};
             }
             data->surfOriginX=recipe.x*8192;data->surfOriginY=recipe.y*8192;data->surfTime=compositor.surfTime();
             for(unsigned k=0;k<4;++k)data->shoreCalm|=std::uint32_t(recipe.calm[k])<<(8*k);

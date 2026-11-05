@@ -108,6 +108,8 @@ HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain synthesis v1"
 # Stone maps of the laid paths with whole-stone edges (see terrain_stones.py).
 STONE_MAP_PREFIX = "data/terrain/stones/"
+# Q8 surf strength washing against laid paths (built border class).
+SHORE_WASH_BUILT = 77
 
 
 # Catalogue order of the built-in types, from the engine's generated name list.
@@ -305,6 +307,9 @@ def material_block(name, phases):
     block["seam"] = dict(rec.seam)
     if rec.stone_edges:
         block["stones"] = f"{STONE_MAP_PREFIX}{name}.png"
+    if rec.border_class == "built":
+        # Water laps gently at laid paths: their shoreline wash is a calmer 30%.
+        block["shore_wash_q8"] = SHORE_WASH_BUILT
     return block
 
 

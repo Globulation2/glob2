@@ -1396,8 +1396,9 @@ void Compositor::composePixels(const Catalog &definitions, const StoneMaps &ston
 				// Q8 world pixels of the sample centre, as the coverage samples it.
 				const int wx = r.x * 8192 + (2 * x + 1) * 4096 / size;
 				const int wy = r.y * 8192 + (2 * y + 1) * 4096 / size;
+				const auto land = definitions.materials[selfSurf.period ? neighbor : dominant].shoreWash;
 				applySurf(selfSurf.period ? selfSurf : otherSurf, selfSurf.period > 0, margin, wx,
-						  wy, surfTime, value);
+						  wy, surfTime, value, land);
 			}
 			*p = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) | (value[1] << 8) | value[2];
 		}
