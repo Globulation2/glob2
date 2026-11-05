@@ -1,0 +1,7 @@
+PASS TerrainMaterials/progressive terrain pages keep the native fallback limited to missing regions [display] (3.6s)
+PASS TerrainMaterials/surf steps rebuild shoreline pages but keep static open water resident [display] (3.6s)
+PASS TerrainMaterials/animation invalidates only pages using that material [display] (3.7s)
+PASS TerrainPresentation/overview pages retain wrapped samples and invalidate edits, resources and visibility [display] (3.7s)
+
+4 passed, 0 failed, 0 skipped (14.5s of test time)
+[run_tests] JUnit report: /Users/bradley/.codex/worktrees/water-overlay/glob2/artifacts/hd-handoff/verified-junit.xml (4 cases)

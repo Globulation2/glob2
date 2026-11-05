@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="0" errors="0" skipped="0"><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="animation invalidates only pages using that material [display]" time="3.58121" status="run" />
+  <testcase classname="TerrainMaterials" name="progressive terrain pages keep the native fallback limited to missing regions [display]" time="3.53327" status="run" />
+  <testcase classname="TerrainMaterials" name="surf steps rebuild shoreline pages but keep static open water resident [display]" time="3.58109" status="run" />
+  </testsuite><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="overview pages retain wrapped samples and invalidate edits, resources and visibility [display]" time="3.60053" status="run" />
+  </testsuite></testsuites>
