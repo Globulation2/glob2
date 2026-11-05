@@ -1,0 +1,4 @@
+PASS ImageAssets/mip preparation preserves padded alpha weighted integer filtering (0.2s)
+
+1 passed, 0 failed, 0 skipped (0.2s of test time)
+[run_tests] JUnit report: ./artifacts/zoom-stall/pr-verification/mip-junit.xml (1 cases)

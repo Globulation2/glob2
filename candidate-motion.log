@@ -1,0 +1,459 @@
+BACKEND requested=legacy-gl active=legacy-gl fallback_reason=
+BENCH_CAPABILITIES torus=1 skin_materials=1 async_capture=0 terrain_composition=0 gpu_timing=0 max_texture=0
+GPU=Apple M3 map=./artifacts/zoom-stall/honeycomb/initial.game.gz 512x512 viewport=1120x800 frames=48
+BENCH_TIMING wall=assets_draw_flush_completion_with_readback_overhead process_cpu=completion_inclusive submission_cpu=assets_draw_flush gpu_timestamp=unavailable final_presentation=outside_timing retry_discard=inside_timing retry_yield_ms=1
+AI checkpoint tick=0 units=16 natural_units=16 advanced_ticks=0
+mapped_units=16 (excludes units inside buildings)
+flat zoom=0.100000 world=11200x8000 total_units=16 shader=1 cloud_grid_limit=128
+FRAME mode=2D clouds frame=-3 elapsed_ms=1022.077750 process_cpu_ms=945.486000
+FRAME_SCOPE frame=-3 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=-3 scope=36 elapsed_ms=1008.457875
+FRAME_SCOPE frame=-3 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=-3 scope=41 elapsed_ms=0.479750
+FRAME_TERRAIN_RESIDENCY frame=-3 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=-3 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=-3 composed_cells=90112
+WARMUP frame=0 elapsed_ms=1022.078 process_cpu_ms=945.486
+FRAME mode=2D clouds frame=-2 elapsed_ms=10.734750 process_cpu_ms=8.475000
+FRAME_SCOPE frame=-2 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=-2 scope=36 elapsed_ms=0.049542
+FRAME_SCOPE frame=-2 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=-2 scope=41 elapsed_ms=0.447625
+FRAME_TERRAIN_RESIDENCY frame=-2 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=-2 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=-2 composed_cells=90112
+WARMUP frame=1 elapsed_ms=10.735 process_cpu_ms=8.475
+FRAME mode=2D clouds frame=-1 elapsed_ms=15.214583 process_cpu_ms=13.346000
+FRAME_SCOPE frame=-1 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=-1 scope=36 elapsed_ms=5.116083
+FRAME_SCOPE frame=-1 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=-1 scope=41 elapsed_ms=0.514166
+FRAME_TERRAIN_RESIDENCY frame=-1 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=-1 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=-1 composed_cells=90112
+WARMUP frame=2 elapsed_ms=15.215 process_cpu_ms=13.346
+FRAME mode=2D clouds frame=0 elapsed_ms=14.593708 process_cpu_ms=12.728000
+FRAME_SCOPE frame=0 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=0 scope=36 elapsed_ms=4.609500
+FRAME_SCOPE frame=0 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=0 scope=41 elapsed_ms=0.451000
+FRAME_TERRAIN_RESIDENCY frame=0 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=0 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=0 composed_cells=90112
+FRAME mode=2D clouds frame=1 elapsed_ms=14.603792 process_cpu_ms=12.786000
+FRAME_SCOPE frame=1 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=1 scope=36 elapsed_ms=4.626125
+FRAME_SCOPE frame=1 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=1 scope=41 elapsed_ms=0.465667
+FRAME_TERRAIN_RESIDENCY frame=1 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=1 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=1 composed_cells=90112
+FRAME mode=2D clouds frame=2 elapsed_ms=14.200833 process_cpu_ms=12.516000
+FRAME_SCOPE frame=2 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=2 scope=36 elapsed_ms=4.479000
+FRAME_SCOPE frame=2 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=2 scope=41 elapsed_ms=0.446167
+FRAME_TERRAIN_RESIDENCY frame=2 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=2 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=2 composed_cells=90112
+FRAME mode=2D clouds frame=3 elapsed_ms=13.830500 process_cpu_ms=12.068000
+FRAME_SCOPE frame=3 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=3 scope=36 elapsed_ms=4.338667
+FRAME_SCOPE frame=3 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=3 scope=41 elapsed_ms=0.429041
+FRAME_TERRAIN_RESIDENCY frame=3 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=3 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=3 composed_cells=90112
+FRAME mode=2D clouds frame=4 elapsed_ms=15.878917 process_cpu_ms=11.642000
+FRAME_SCOPE frame=4 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=4 scope=36 elapsed_ms=4.118000
+FRAME_SCOPE frame=4 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=4 scope=41 elapsed_ms=0.408417
+FRAME_TERRAIN_RESIDENCY frame=4 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=4 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=4 composed_cells=90112
+FRAME mode=2D clouds frame=5 elapsed_ms=16.300208 process_cpu_ms=11.575000
+FRAME_SCOPE frame=5 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=5 scope=36 elapsed_ms=4.101458
+FRAME_SCOPE frame=5 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=5 scope=41 elapsed_ms=0.378875
+FRAME_TERRAIN_RESIDENCY frame=5 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=5 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=5 composed_cells=90112
+FRAME mode=2D clouds frame=6 elapsed_ms=13.938458 process_cpu_ms=11.432000
+FRAME_SCOPE frame=6 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=6 scope=36 elapsed_ms=4.384542
+FRAME_SCOPE frame=6 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=6 scope=41 elapsed_ms=0.374500
+FRAME_TERRAIN_RESIDENCY frame=6 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=6 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=6 composed_cells=90112
+FRAME mode=2D clouds frame=7 elapsed_ms=11.949500 process_cpu_ms=11.155000
+FRAME_SCOPE frame=7 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=7 scope=36 elapsed_ms=4.346583
+FRAME_SCOPE frame=7 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=7 scope=41 elapsed_ms=0.370292
+FRAME_TERRAIN_RESIDENCY frame=7 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=7 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=7 composed_cells=90112
+FRAME mode=2D clouds frame=8 elapsed_ms=11.518792 process_cpu_ms=10.807000
+FRAME_SCOPE frame=8 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=8 scope=36 elapsed_ms=4.167000
+FRAME_SCOPE frame=8 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=8 scope=41 elapsed_ms=0.347875
+FRAME_TERRAIN_RESIDENCY frame=8 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=8 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=8 composed_cells=90112
+FRAME mode=2D clouds frame=9 elapsed_ms=12.756042 process_cpu_ms=10.293000
+FRAME_SCOPE frame=9 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=9 scope=36 elapsed_ms=3.791125
+FRAME_SCOPE frame=9 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=9 scope=41 elapsed_ms=0.345292
+FRAME_TERRAIN_RESIDENCY frame=9 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=9 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=9 composed_cells=90112
+FRAME mode=2D clouds frame=10 elapsed_ms=15.223583 process_cpu_ms=9.912000
+FRAME_SCOPE frame=10 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=10 scope=36 elapsed_ms=3.656333
+FRAME_SCOPE frame=10 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=10 scope=41 elapsed_ms=0.323083
+FRAME_TERRAIN_RESIDENCY frame=10 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=10 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=10 composed_cells=90112
+FRAME mode=2D clouds frame=11 elapsed_ms=11.397083 process_cpu_ms=9.688000
+FRAME_SCOPE frame=11 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=11 scope=36 elapsed_ms=3.716459
+FRAME_SCOPE frame=11 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=11 scope=41 elapsed_ms=0.310000
+FRAME_TERRAIN_RESIDENCY frame=11 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=11 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=11 composed_cells=90112
+FRAME mode=2D clouds frame=12 elapsed_ms=10.524792 process_cpu_ms=9.284000
+FRAME_SCOPE frame=12 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=12 scope=36 elapsed_ms=3.478167
+FRAME_SCOPE frame=12 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=12 scope=41 elapsed_ms=0.296542
+FRAME_TERRAIN_RESIDENCY frame=12 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=12 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=12 composed_cells=90112
+FRAME mode=2D clouds frame=13 elapsed_ms=19.568375 process_cpu_ms=18.711000
+FRAME_SCOPE frame=13 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=13 scope=36 elapsed_ms=3.313125
+FRAME_SCOPE frame=13 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=13 scope=41 elapsed_ms=0.294083
+FRAME_TERRAIN_RESIDENCY frame=13 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=13 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=13 composed_cells=90112
+FRAME mode=2D clouds frame=14 elapsed_ms=20.242083 process_cpu_ms=17.960000
+FRAME_SCOPE frame=14 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=14 scope=36 elapsed_ms=3.439667
+FRAME_SCOPE frame=14 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=14 scope=41 elapsed_ms=0.284375
+FRAME_TERRAIN_RESIDENCY frame=14 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=14 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=14 composed_cells=90112
+FRAME mode=2D clouds frame=15 elapsed_ms=22.368250 process_cpu_ms=16.563000
+FRAME_SCOPE frame=15 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=15 scope=36 elapsed_ms=3.163208
+FRAME_SCOPE frame=15 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=15 scope=41 elapsed_ms=0.248209
+FRAME_TERRAIN_RESIDENCY frame=15 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=15 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=15 composed_cells=90112
+FRAME mode=2D clouds frame=16 elapsed_ms=16.323375 process_cpu_ms=15.468000
+FRAME_SCOPE frame=16 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=16 scope=36 elapsed_ms=2.985125
+FRAME_SCOPE frame=16 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=16 scope=41 elapsed_ms=0.231541
+FRAME_TERRAIN_RESIDENCY frame=16 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=16 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=16 composed_cells=90112
+FRAME mode=2D clouds frame=17 elapsed_ms=17.867750 process_cpu_ms=14.571000
+FRAME_SCOPE frame=17 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=17 scope=36 elapsed_ms=2.631667
+FRAME_SCOPE frame=17 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=17 scope=41 elapsed_ms=0.228541
+FRAME_TERRAIN_RESIDENCY frame=17 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=17 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=17 composed_cells=90112
+FRAME mode=2D clouds frame=18 elapsed_ms=14.414625 process_cpu_ms=13.317000
+FRAME_SCOPE frame=18 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=18 scope=36 elapsed_ms=2.169958
+FRAME_SCOPE frame=18 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=18 scope=41 elapsed_ms=0.202000
+FRAME_TERRAIN_RESIDENCY frame=18 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=18 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=18 composed_cells=90112
+FRAME mode=2D clouds frame=19 elapsed_ms=18.041958 process_cpu_ms=12.548000
+FRAME_SCOPE frame=19 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=19 scope=36 elapsed_ms=2.118833
+FRAME_SCOPE frame=19 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=19 scope=41 elapsed_ms=0.189458
+FRAME_TERRAIN_RESIDENCY frame=19 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=19 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=19 composed_cells=90112
+FRAME mode=2D clouds frame=20 elapsed_ms=12.733333 process_cpu_ms=12.097000
+FRAME_SCOPE frame=20 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=20 scope=36 elapsed_ms=2.097291
+FRAME_SCOPE frame=20 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=20 scope=41 elapsed_ms=0.181166
+FRAME_TERRAIN_RESIDENCY frame=20 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=20 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=20 composed_cells=90112
+FRAME mode=2D clouds frame=21 elapsed_ms=11.882167 process_cpu_ms=10.969000
+FRAME_SCOPE frame=21 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=21 scope=36 elapsed_ms=1.847458
+FRAME_SCOPE frame=21 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=21 scope=41 elapsed_ms=0.164292
+FRAME_TERRAIN_RESIDENCY frame=21 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=21 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=21 composed_cells=90112
+FRAME mode=2D clouds frame=22 elapsed_ms=12.633542 process_cpu_ms=10.713000
+FRAME_SCOPE frame=22 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=22 scope=36 elapsed_ms=1.964375
+FRAME_SCOPE frame=22 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=22 scope=41 elapsed_ms=0.162125
+FRAME_TERRAIN_RESIDENCY frame=22 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=22 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=22 composed_cells=90112
+FRAME mode=2D clouds frame=23 elapsed_ms=12.811083 process_cpu_ms=9.981000
+FRAME_SCOPE frame=23 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=23 scope=36 elapsed_ms=1.738625
+FRAME_SCOPE frame=23 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=23 scope=41 elapsed_ms=0.145375
+FRAME_TERRAIN_RESIDENCY frame=23 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=23 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=23 composed_cells=90112
+FRAME mode=2D clouds frame=24 elapsed_ms=10.689583 process_cpu_ms=9.452000
+FRAME_SCOPE frame=24 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=24 scope=36 elapsed_ms=1.769959
+FRAME_SCOPE frame=24 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=24 scope=41 elapsed_ms=0.189375
+FRAME_TERRAIN_RESIDENCY frame=24 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=24 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=24 composed_cells=90112
+FRAME mode=2D clouds frame=25 elapsed_ms=9.794708 process_cpu_ms=8.806000
+FRAME_SCOPE frame=25 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=25 scope=36 elapsed_ms=1.676333
+FRAME_SCOPE frame=25 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=25 scope=41 elapsed_ms=0.154541
+FRAME_TERRAIN_RESIDENCY frame=25 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=25 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=25 composed_cells=90112
+FRAME mode=2D clouds frame=26 elapsed_ms=11.189708 process_cpu_ms=8.322000
+FRAME_SCOPE frame=26 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=26 scope=36 elapsed_ms=1.466250
+FRAME_SCOPE frame=26 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=26 scope=41 elapsed_ms=0.117250
+FRAME_TERRAIN_RESIDENCY frame=26 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=26 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=26 composed_cells=90112
+FRAME mode=2D clouds frame=27 elapsed_ms=8.654833 process_cpu_ms=7.565000
+FRAME_SCOPE frame=27 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=27 scope=36 elapsed_ms=1.272125
+FRAME_SCOPE frame=27 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=27 scope=41 elapsed_ms=0.114625
+FRAME_TERRAIN_RESIDENCY frame=27 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=27 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=27 composed_cells=90112
+FRAME mode=2D clouds frame=28 elapsed_ms=8.131875 process_cpu_ms=7.002000
+FRAME_SCOPE frame=28 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=28 scope=36 elapsed_ms=1.057667
+FRAME_SCOPE frame=28 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=28 scope=41 elapsed_ms=0.103291
+FRAME_TERRAIN_RESIDENCY frame=28 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=28 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=28 composed_cells=90112
+FRAME mode=2D clouds frame=29 elapsed_ms=7.611917 process_cpu_ms=6.456000
+FRAME_SCOPE frame=29 scope=37 elapsed_ms=0.000000
+FRAME_SCOPE frame=29 scope=36 elapsed_ms=1.053708
+FRAME_SCOPE frame=29 scope=39 elapsed_ms=0.000000
+FRAME_SCOPE frame=29 scope=41 elapsed_ms=0.096334
+FRAME_TERRAIN_RESIDENCY frame=29 direct_bytes=0 page_bytes=0 page_retained_bytes=0 peak_texture_bytes=0
+FRAME_RESOURCE_ROWS frame=29 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=29 composed_cells=90112
+FRAME mode=2D clouds frame=30 elapsed_ms=126.483750 process_cpu_ms=123.987000
+FRAME_SCOPE frame=30 scope=37 elapsed_ms=75.001333
+FRAME_SCOPE frame=30 scope=36 elapsed_ms=32.111542
+FRAME_SCOPE frame=30 scope=39 elapsed_ms=10.080834
+FRAME_SCOPE frame=30 scope=41 elapsed_ms=0.093291
+FRAME_CACHE frame=30 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=88 hits=0 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=30 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=30 eligibility_cells=60416 frame_cells=60416 animated_cells=0
+FRAME_OVERVIEW frame=30 composed_cells=90112
+FRAME mode=2D clouds frame=31 elapsed_ms=17.482500 process_cpu_ms=20.725000
+FRAME_SCOPE frame=31 scope=37 elapsed_ms=2.910542
+FRAME_SCOPE frame=31 scope=36 elapsed_ms=1.101416
+FRAME_SCOPE frame=31 scope=39 elapsed_ms=0.180583
+FRAME_SCOPE frame=31 scope=41 elapsed_ms=0.086708
+FRAME_CACHE frame=31 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=88 hits=70 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=31 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=31 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=31 composed_cells=90112
+FRAME mode=2D clouds frame=32 elapsed_ms=43.169958 process_cpu_ms=48.315000
+FRAME_SCOPE frame=32 scope=37 elapsed_ms=14.770459
+FRAME_SCOPE frame=32 scope=36 elapsed_ms=19.234626
+FRAME_SCOPE frame=32 scope=39 elapsed_ms=0.194958
+FRAME_SCOPE frame=32 scope=41 elapsed_ms=0.083458
+FRAME_CACHE frame=32 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=158 hits=70 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=32 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=32 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=32 composed_cells=90112
+FRAME mode=2D clouds frame=33 elapsed_ms=12.671750 process_cpu_ms=17.575000
+FRAME_SCOPE frame=33 scope=37 elapsed_ms=2.804333
+FRAME_SCOPE frame=33 scope=36 elapsed_ms=1.117750
+FRAME_SCOPE frame=33 scope=39 elapsed_ms=0.163083
+FRAME_SCOPE frame=33 scope=41 elapsed_ms=0.080084
+FRAME_CACHE frame=33 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=158 hits=140 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=33 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=33 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=33 composed_cells=90112
+FRAME mode=2D clouds frame=34 elapsed_ms=20.061542 process_cpu_ms=25.771000
+FRAME_SCOPE frame=34 scope=37 elapsed_ms=2.523958
+FRAME_SCOPE frame=34 scope=36 elapsed_ms=1.002708
+FRAME_SCOPE frame=34 scope=39 elapsed_ms=0.140459
+FRAME_SCOPE frame=34 scope=41 elapsed_ms=0.068708
+FRAME_CACHE frame=34 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=158 hits=203 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=34 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=34 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=34 composed_cells=90112
+FRAME mode=2D clouds frame=35 elapsed_ms=19.587333 process_cpu_ms=25.624000
+FRAME_SCOPE frame=35 scope=37 elapsed_ms=2.592250
+FRAME_SCOPE frame=35 scope=36 elapsed_ms=0.960168
+FRAME_SCOPE frame=35 scope=39 elapsed_ms=0.141917
+FRAME_SCOPE frame=35 scope=41 elapsed_ms=0.076916
+FRAME_CACHE frame=35 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=158 hits=266 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=35 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=35 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=35 composed_cells=90112
+FRAME mode=2D clouds frame=36 elapsed_ms=19.559083 process_cpu_ms=23.724000
+FRAME_SCOPE frame=36 scope=37 elapsed_ms=2.272584
+FRAME_SCOPE frame=36 scope=36 elapsed_ms=0.980750
+FRAME_SCOPE frame=36 scope=39 elapsed_ms=0.049042
+FRAME_SCOPE frame=36 scope=41 elapsed_ms=0.065542
+FRAME_CACHE frame=36 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=158 hits=320 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=36 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=36 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=36 composed_cells=90112
+FRAME mode=2D clouds frame=37 elapsed_ms=15.138167 process_cpu_ms=21.292000
+FRAME_SCOPE frame=37 scope=37 elapsed_ms=2.234125
+FRAME_SCOPE frame=37 scope=36 elapsed_ms=0.069375
+FRAME_SCOPE frame=37 scope=39 elapsed_ms=0.040084
+FRAME_SCOPE frame=37 scope=41 elapsed_ms=0.062250
+FRAME_CACHE frame=37 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=158 hits=374 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=37 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=37 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=37 composed_cells=90112
+FRAME mode=2D clouds frame=38 elapsed_ms=36.331500 process_cpu_ms=35.439000
+FRAME_SCOPE frame=38 scope=37 elapsed_ms=10.961291
+FRAME_SCOPE frame=38 scope=36 elapsed_ms=12.290333
+FRAME_SCOPE frame=38 scope=39 elapsed_ms=0.056041
+FRAME_SCOPE frame=38 scope=41 elapsed_ms=0.073042
+FRAME_CACHE frame=38 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=206 hits=374 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=38 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=38 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=38 composed_cells=90112
+FRAME mode=2D clouds frame=39 elapsed_ms=15.367625 process_cpu_ms=11.088000
+FRAME_SCOPE frame=39 scope=37 elapsed_ms=2.064958
+FRAME_SCOPE frame=39 scope=36 elapsed_ms=0.063250
+FRAME_SCOPE frame=39 scope=39 elapsed_ms=0.038750
+FRAME_SCOPE frame=39 scope=41 elapsed_ms=0.058542
+FRAME_CACHE frame=39 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=206 hits=422 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=39 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=39 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=39 composed_cells=90112
+FRAME mode=2D clouds frame=40 elapsed_ms=12.412292 process_cpu_ms=10.331000
+FRAME_SCOPE frame=40 scope=37 elapsed_ms=2.031042
+FRAME_SCOPE frame=40 scope=36 elapsed_ms=0.060208
+FRAME_SCOPE frame=40 scope=39 elapsed_ms=0.035875
+FRAME_SCOPE frame=40 scope=41 elapsed_ms=0.051750
+FRAME_CACHE frame=40 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=206 hits=470 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=40 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=40 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=40 composed_cells=90112
+FRAME mode=2D clouds frame=41 elapsed_ms=12.013083 process_cpu_ms=10.028000
+FRAME_SCOPE frame=41 scope=37 elapsed_ms=2.016917
+FRAME_SCOPE frame=41 scope=36 elapsed_ms=0.052416
+FRAME_SCOPE frame=41 scope=39 elapsed_ms=0.034959
+FRAME_SCOPE frame=41 scope=41 elapsed_ms=0.047833
+FRAME_CACHE frame=41 bytes=78579776 texture_bytes=46137344 mask_bytes=0 rebuilds=206 hits=518 reductions=0 resolution=1 downsample=2
+FRAME_TERRAIN_RESIDENCY frame=41 direct_bytes=0 page_bytes=46137344 page_retained_bytes=78579776 peak_texture_bytes=46137344
+FRAME_RESOURCE_ROWS frame=41 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=41 composed_cells=90112
+FRAME mode=2D clouds frame=42 elapsed_ms=118.434750 process_cpu_ms=117.163000
+FRAME_SCOPE frame=42 scope=37 elapsed_ms=91.044417
+FRAME_SCOPE frame=42 scope=36 elapsed_ms=17.344917
+FRAME_SCOPE frame=42 scope=39 elapsed_ms=0.055292
+FRAME_SCOPE frame=42 scope=41 elapsed_ms=0.065083
+FRAME_CACHE frame=42 bytes=208669696 texture_bytes=130023424 mask_bytes=0 rebuilds=246 hits=518 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=42 direct_bytes=0 page_bytes=130023424 page_retained_bytes=208669696 peak_texture_bytes=130023424
+FRAME_RESOURCE_ROWS frame=42 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=42 composed_cells=90112
+FRAME mode=2D clouds frame=43 elapsed_ms=10.935000 process_cpu_ms=8.892000
+FRAME_SCOPE frame=43 scope=37 elapsed_ms=1.628708
+FRAME_SCOPE frame=43 scope=36 elapsed_ms=0.056667
+FRAME_SCOPE frame=43 scope=39 elapsed_ms=0.036042
+FRAME_SCOPE frame=43 scope=41 elapsed_ms=0.046875
+FRAME_CACHE frame=43 bytes=208669696 texture_bytes=130023424 mask_bytes=0 rebuilds=246 hits=553 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=43 direct_bytes=0 page_bytes=130023424 page_retained_bytes=208669696 peak_texture_bytes=130023424
+FRAME_RESOURCE_ROWS frame=43 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=43 composed_cells=90112
+FRAME mode=2D clouds frame=44 elapsed_ms=51.532125 process_cpu_ms=49.909000
+FRAME_SCOPE frame=44 scope=37 elapsed_ms=33.997625
+FRAME_SCOPE frame=44 scope=36 elapsed_ms=8.547209
+FRAME_SCOPE frame=44 scope=39 elapsed_ms=0.050708
+FRAME_SCOPE frame=44 scope=41 elapsed_ms=0.065709
+FRAME_CACHE frame=44 bytes=208669696 texture_bytes=130023424 mask_bytes=0 rebuilds=281 hits=553 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=44 direct_bytes=0 page_bytes=130023424 page_retained_bytes=208669696 peak_texture_bytes=130023424
+FRAME_RESOURCE_ROWS frame=44 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=44 composed_cells=90112
+FRAME mode=2D clouds frame=45 elapsed_ms=10.243708 process_cpu_ms=8.301000
+FRAME_SCOPE frame=45 scope=37 elapsed_ms=1.617708
+FRAME_SCOPE frame=45 scope=36 elapsed_ms=0.046709
+FRAME_SCOPE frame=45 scope=39 elapsed_ms=0.035166
+FRAME_SCOPE frame=45 scope=41 elapsed_ms=0.041542
+FRAME_CACHE frame=45 bytes=208669696 texture_bytes=130023424 mask_bytes=0 rebuilds=281 hits=588 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=45 direct_bytes=0 page_bytes=130023424 page_retained_bytes=208669696 peak_texture_bytes=130023424
+FRAME_RESOURCE_ROWS frame=45 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=45 composed_cells=90112
+FRAME mode=2D clouds frame=46 elapsed_ms=9.914542 process_cpu_ms=7.992000
+FRAME_SCOPE frame=46 scope=37 elapsed_ms=1.602750
+FRAME_SCOPE frame=46 scope=36 elapsed_ms=0.047375
+FRAME_SCOPE frame=46 scope=39 elapsed_ms=0.034209
+FRAME_SCOPE frame=46 scope=41 elapsed_ms=0.041917
+FRAME_CACHE frame=46 bytes=208669696 texture_bytes=130023424 mask_bytes=0 rebuilds=281 hits=623 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=46 direct_bytes=0 page_bytes=130023424 page_retained_bytes=208669696 peak_texture_bytes=130023424
+FRAME_RESOURCE_ROWS frame=46 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=46 composed_cells=90112
+FRAME mode=2D clouds frame=47 elapsed_ms=9.822500 process_cpu_ms=7.959000
+FRAME_SCOPE frame=47 scope=37 elapsed_ms=1.639042
+FRAME_SCOPE frame=47 scope=36 elapsed_ms=0.044166
+FRAME_SCOPE frame=47 scope=39 elapsed_ms=0.031666
+FRAME_SCOPE frame=47 scope=41 elapsed_ms=0.042250
+FRAME_CACHE frame=47 bytes=208669696 texture_bytes=130023424 mask_bytes=0 rebuilds=281 hits=658 reductions=0 resolution=1 downsample=1
+FRAME_TERRAIN_RESIDENCY frame=47 direct_bytes=0 page_bytes=130023424 page_retained_bytes=208669696 peak_texture_bytes=130023424
+FRAME_RESOURCE_ROWS frame=47 eligibility_cells=0 frame_cells=0 animated_cells=0
+FRAME_OVERVIEW frame=47 composed_cells=90112
+COMPLETION_SUMMARY mode=2D clouds completed=48 attempts=48 intentional_holds=0 admission_deferrals=0 completed_per_second=49.340250
+WARMUP_COMPLETION_SUMMARY mode=2D clouds completed=3 attempts=3 intentional_holds=0 admission_deferrals=0
+terrain_hd mode=2D clouds prepares=6 fallback_prepares=0 warmup_prepares=0 warmup_fallback_prepares=0
+2D clouds median=14.201 ms p95=51.532 ms
+2D clouds p99=126.484 ms max=126.484 ms
+2D clouds submission_cpu_median=11.486 ms submission_cpu_p95=49.738 ms
+2D clouds process_cpu_median=11.642 ms process_cpu_p95=49.909 ms
+draw_calls=38 texture_bytes=496337344
+STEADY_CACHE pending=0 attempts=0 promotions=0 array_bytes=0 geometry_bytes=0 builds=97 deferred=315
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.skins.prepare thread=main calls=51 samples=51 stride=1 mean_ns=143.82352941176467 stddev_ns=198.88884528726118 max_ns=1458 observed_total_ns=7335 m2_ns2=2017395.4117647058 total_ns=7335 cpu_samples=0 cpu_total_ns=na p50_ns=127 p95_ns=511 p99_ns=1458 histogram="1,0,0,0,0,0,11,22,14,2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=7335 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.terrain thread=main calls=58 samples=58 stride=1 mean_ns=20660921 stddev_ns=130937672.49326004 max_ns=1008457875 observed_total_ns=1198333418 m2_ns2=9.9439109652122906e+17 total_ns=1198333418 cpu_samples=0 cpu_total_ns=na p50_ns=2097151 p95_ns=33554431 p99_ns=1008457875 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,6,0,0,6,10,15,7,2,3,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=1198333418 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.terrain_cache thread=main calls=18 samples=18 stride=1 mean_ns=14095224.555555554 stddev_ns=25706514.496720601 max_ns=91044417 observed_total_ns=253714042 m2_ns2=11894847976261918 total_ns=253714042 cpu_samples=0 cpu_total_ns=na p50_ns=4194303 p95_ns=91044417 p99_ns=91044417 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,6,0,2,0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=20116507 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.resources thread=main calls=18 samples=18 stride=1 mean_ns=633314.88888888864 stddev_ns=2292042.0184032619 max_ns=10080834 observed_total_ns=11399668 m2_ns2=94562219054269.781 total_ns=11399668 cpu_samples=0 cpu_total_ns=na p50_ns=65535 p95_ns=10080834 p99_ns=10080834 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,11,0,5,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=11399668 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.buildings thread=main calls=51 samples=51 stride=1 mean_ns=192667.5294117647 stddev_ns=141322.83980227174 max_ns=467250 observed_total_ns=9826044 m2_ns2=1018579397538.7065 total_ns=9826044 cpu_samples=0 cpu_total_ns=na p50_ns=262143 p95_ns=467250 p99_ns=467250 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,14,9,10,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=9826044 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.ground_units thread=main calls=51 samples=51 stride=1 mean_ns=208752.4117647059 stddev_ns=146573.75650105462 max_ns=514166 observed_total_ns=10646373 m2_ns2=1095677170836.353 total_ns=10646373 cpu_samples=0 cpu_total_ns=na p50_ns=262143 p95_ns=514166 p99_ns=514166 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,13,11,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=10646373 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.air_units thread=main calls=51 samples=51 stride=1 mean_ns=189340.68627450985 stddev_ns=133099.34936546246 max_ns=426416 observed_total_ns=9656375 m2_ns2=903487276876.98096 total_ns=9656375 cpu_samples=0 cpu_total_ns=na p50_ns=262143 p95_ns=426416 p99_ns=426416 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,10,11,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=9656375 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.fog thread=main calls=51 samples=51 stride=1 mean_ns=65.333333333333357 stddev_ns=49.734852523713741 max_ns=292 observed_total_ns=3332 m2_ns2=126151.33333333331 total_ns=3332 cpu_samples=0 cpu_total_ns=na p50_ns=63 p95_ns=127 p99_ns=292 histogram="6,0,0,0,0,0,23,20,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=3332 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.effects thread=main calls=18 samples=18 stride=1 mean_ns=45634.277777777781 stddev_ns=1004.4924536830395 max_ns=48875 observed_total_ns=821417 m2_ns2=18162091.611111119 total_ns=821417 cpu_samples=0 cpu_total_ns=na p50_ns=48875 p95_ns=48875 p99_ns=48875 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=821417 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.overlay thread=main calls=142 samples=142 stride=1 mean_ns=28362.92957746478 stddev_ns=60306.616115054618 max_ns=463583 observed_total_ns=4027536 m2_ns2=516438088509.29633 total_ns=4027536 cpu_samples=0 cpu_total_ns=na p50_ns=127 p95_ns=262143 p99_ns=262143 histogram="21,0,0,0,0,0,40,30,7,4,0,0,0,0,0,0,17,12,10,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=4027536 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.terrain_materials thread=main calls=18 samples=18 stride=1 mean_ns=8089143.6666666651 stddev_ns=17403706.548741572 max_ns=62020250 observed_total_ns=145604586 m2_ns2=5452002029424785 total_ns=145604586 cpu_samples=0 cpu_total_ns=na p50_ns=2097151 p95_ns=62020250 p99_ns=62020250 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,11,5,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=145604586 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=render.terrain_batch thread=main calls=281 samples=281 stride=1 mean_ns=313142.16725978651 stddev_ns=401577.24979376723 max_ns=2150250 observed_total_ns=87992949 m2_ns2=45315264802091.125 total_ns=87992949 cpu_samples=0 cpu_total_ns=na p50_ns=131071 p95_ns=1048575 p99_ns=2150250 histogram="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,86,113,1,0,75,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" self_ns=87992949 self_cpu_ns=na
+BENCH_SCOPE session=1 tick_start=0 tick=0 elapsed_start_ns=0 elapsed_ns=2022260750 mode=startup budget_ns=0 presentation_budget_ns=0 boundaries=0 scope=budgets work.count=0 work.overruns=0 work.excess_ns=0 work.worst_ns=0 work.longest_streak=0 presentation.count=0 presentation.overruns=0 presentation.excess_ns=0 presentation.worst_ns=0 presentation.longest_streak=0 tick.count=0 tick.overruns=0 tick.excess_ns=0 tick.worst_ns=0 tick.longest_streak=0 saved_total=0 failed_total=0 superseded_total=0 dropped_scope_samples=0 dropped_actor_records=0
+simulation_checksum=7a0465db
